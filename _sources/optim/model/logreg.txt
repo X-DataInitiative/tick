@@ -1,0 +1,10 @@
+:orphan:
+
+.. _model-logreg:
+
+Logistic regression model
+-------------------------
+
+.. autoclass:: mlpp.optim.model.ModelLogReg
+    :members:
+    :inherited-members:

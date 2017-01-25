@@ -1,0 +1,11 @@
+:orphan:
+
+.. _bfgs:
+
+
+BFGS (Broyden, Fletcher, Goldfarb, and Shanno)
+----------------------------------------------
+
+.. autoclass:: mlpp.optim.solver.BFGS
+    :members:
+    :inherited-members:

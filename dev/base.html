@@ -1,0 +1,304 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Basic tools &#8212; MLPP 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/agogo.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="MLPP 0.1 documentation" href="../index.html" /> 
+  </head>
+  <body role="document">
+    <div class="header-wrapper" role="banner">
+      <div class="header">
+        <div class="headertitle"><a
+          href="../index.html">MLPP 0.1 documentation</a></div>
+        <div class="rel" role="navigation" aria-label="related navigation">
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a>
+        </div>
+       </div>
+    </div>
+
+    <div class="content-wrapper">
+      <div class="content">
+        <div class="document">
+            
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-mlpp.base">
+<span id="basic-tools"></span><h1>Basic tools<a class="headerlink" href="#module-mlpp.base" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="mlpp.base.Base">
+<em class="property">class </em><code class="descclassname">mlpp.base.</code><code class="descname">Base</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mlpp/base/utils/newbase.html#Base"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlpp.base.Base" title="Permalink to this definition">¶</a></dt>
+<dd><p>The BaseClass of the MLPP project. This relies on some dark
+magic based on a metaclass. The aim is to have read-only attributes,
+docstring for all parameters, and so other nasty features</p>
+<p class="rubric">Attributes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>name</td>
+<td>(str (read-only)) Name of the class</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="mlpp.base.BaseClass">
+<em class="property">class </em><code class="descclassname">mlpp.base.</code><code class="descname">BaseClass</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mlpp/base/utils/baseclass.html#BaseClass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlpp.base.BaseClass" title="Permalink to this definition">¶</a></dt>
+<dd><p>The base class of many objects</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
+<li><strong>params</strong> &#8211; Dict
+contains all parameters of the object</li>
+<li><strong>_info</strong> &#8211; Dict
+contains all information of the object</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="mlpp.base.BaseClass.get_info">
+<code class="descname">get_info</code><span class="sig-paren">(</span><em>kw: str = None</em><span class="sig-paren">)</span> &rarr; object<a class="reference internal" href="../_modules/mlpp/base/utils/baseclass.html#BaseClass.get_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlpp.base.BaseClass.get_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get information, logs etc.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>kw</strong> &#8211; The name of the information to be returned. If None, the dict
+of all parameters is returned</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">either the required parameter of the dict of all information</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mlpp.base.BaseClass.get_params">
+<code class="descname">get_params</code><span class="sig-paren">(</span><em>kw: str = None</em><span class="sig-paren">)</span> &rarr; object<a class="reference internal" href="../_modules/mlpp/base/utils/baseclass.html#BaseClass.get_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlpp.base.BaseClass.get_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get current parameters</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>kw</strong> &#8211; The name of the parameter to be returned. If None, the dict
+of all parameters is returned</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">either the required parameter of the dict of all parameters</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mlpp.base.BaseClass.set_params">
+<code class="descname">set_params</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mlpp/base/utils/baseclass.html#BaseClass.set_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlpp.base.BaseClass.set_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set parameters</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="mlpp.base.TimeFunction">
+<em class="property">class </em><code class="descclassname">mlpp.base.</code><code class="descname">TimeFunction</code><span class="sig-paren">(</span><em>values</em>, <em>border_type: int = 0</em>, <em>inter_mode: int = 0</em>, <em>dt: float = 0</em>, <em>border_value: float = 0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mlpp/base/utils/timefunc.html#TimeFunction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlpp.base.TimeFunction" title="Permalink to this definition">¶</a></dt>
+<dd><p>A function depending on time.</p>
+<p>It is causal as its value is zero for all <span class="math">\(t &lt; 0\)</span>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>values</strong> &#8211; Either a number if the TimeFunction is constant or a list of two numpy arrays <code class="docutils literal"><span class="pre">[T,</span> <span class="pre">Y]</span></code> where
+<code class="docutils literal"><span class="pre">Y</span></code> are the values taken by the TimeFunction at times <code class="docutils literal"><span class="pre">T</span></code></li>
+<li><strong>border_type</strong> &#8211; <p>Handle the values returned after the after the last given <code class="docutils literal"><span class="pre">t</span></code> (non constant case)</p>
+<ul>
+<li><code class="docutils literal"><span class="pre">Border0</span></code> : value will be <span class="math">\(0\)</span></li>
+<li><code class="docutils literal"><span class="pre">BorderConstant</span></code> : value will be given by <code class="docutils literal"><span class="pre">border_value</span></code></li>
+<li><code class="docutils literal"><span class="pre">BorderConstant</span></code> : value will equal to the last known value</li>
+</ul>
+</li>
+<li><strong>inter_mode</strong> &#8211; <p>Handle the way we extrapolate between two known values (non constant case)</p>
+<ul>
+<li><code class="docutils literal"><span class="pre">InterLinear</span></code> : value will be linearly interpolated following the formula <span class="math">\(f(x) = \frac{y_{t+1} - y_{t}}{x_{t+1} - x_{t}}\)</span></li>
+<li><code class="docutils literal"><span class="pre">InterConstLeft</span></code> : value will be equal to the next known point</li>
+<li><code class="docutils literal"><span class="pre">InterConstRight</span></code> : value will equal to the previous known point</li>
+</ul>
+</li>
+<li><strong>dt</strong> &#8211; The value used for the sub-sampling. If left to 0, it will be assigned automatically to a fifth of the smallest
+distance between two points</li>
+<li><strong>border_value</strong> &#8211; See <code class="docutils literal"><span class="pre">border_type</span></code>, <code class="docutils literal"><span class="pre">BorderConstant</span></code> case</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">TimeFunction are made to be every efficient when call if to get a specific value (<span class="math">\(\mathcal{O}(1)\)</span>),
+however this leads us to have it taking a lot of space in memory.</p>
+</div>
+<dl class="method">
+<dt id="mlpp.base.TimeFunction.plot">
+<code class="descname">plot</code><span class="sig-paren">(</span><em>ax=None</em>, <em>labels='default'</em>, <em>num_points=100</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mlpp/base/utils/timefunc.html#TimeFunction.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlpp.base.TimeFunction.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the TimeFunction</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ax</strong> &#8211; if filled, the object will be plot directly on it, otherwise a new ax will be created</li>
+<li><strong>labels</strong> &#8211; labels you want to see attached to you figure, you can leave it to default for automatic fill
+or None if you do not want any.</li>
+<li><strong>num_points</strong> &#8211; The number of points (evenly distributed) you want your function to be plotted with.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">ax if you want to modify it afterwards</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mlpp.base.TimeFunction.value">
+<code class="descname">value</code><span class="sig-paren">(</span><em>t</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mlpp/base/utils/timefunc.html#TimeFunction.value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlpp.base.TimeFunction.value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gives the value of the TimeFunction</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>t</strong> &#8211; either a time or an array of times</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the value at <code class="docutils literal"><span class="pre">t</span></code> or at each value in the array</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="mlpp.base.actual_kwargs">
+<code class="descclassname">mlpp.base.</code><code class="descname">actual_kwargs</code><span class="sig-paren">(</span><em>function</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mlpp/base/utils/decorators.html#actual_kwargs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlpp.base.actual_kwargs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decorator that provides the wrapped function with an attribute
+&#8216;actual_kwargs&#8217;
+containing just those keyword arguments actually passed in to the function.</p>
+<p class="rubric">Notes</p>
+<p>We override the signature of the decorated function to ensure it will be
+displayed correctly in sphinx</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+        </div>
+        <div class="sidebar">
+          <h3>Table Of Contents</h3>
+          <ul>
+<li class="toctree-l1"><a class="reference internal" href="../z_tutorials/simulation/poisson_process_simulation.html">Poisson processes simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../z_tutorials/simulation/hawkes_simulation.html">Hawkes processes simulation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../z_tutorials/inference/hawkes_non_parametric.html">Hawkes non parametric inference</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../z_tutorials/optimization/stochastic_solver.html">Stochastic solvers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../z_tutorials/optimization/linear_model.html">Generalized linear models</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../z_tutorials/misc/time_function.html">Time functions</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../optim/optimization_toolbox.html">Presentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../optim/model.html">Models [<code class="docutils literal"><span class="pre">mlpp.optim.model</span></code>]</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../optim/prox.html">Proximal operators [<code class="docutils literal"><span class="pre">mlpp.optim.prox</span></code>]</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../optim/solver.html">Solvers [<code class="docutils literal"><span class="pre">mlpp.optim.solver</span></code>]</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../simu/simu.html">Simulation toolbox [<code class="docutils literal"><span class="pre">mlpp.simulation</span></code>]</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="dev.html">Developer documentation</a></li>
+</ul>
+
+          <div role="search">
+            <h3 style="margin-top: 1.5em;">Search</h3>
+            <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+            </form>
+          </div>
+        </div>
+        <div class="clearer"></div>
+      </div>
+    </div>
+
+    <div class="footer-wrapper">
+      <div class="footer">
+        <div class="left">
+          <div role="navigation" aria-label="related navigaton">
+            <a href="../py-modindex.html" title="Python Module Index"
+              >modules</a> |
+            <a href="../genindex.html" title="General Index"
+              >index</a>
+          </div>
+          <div role="note" aria-label="source link">
+              <br/>
+              <a href="../_sources/dev/base.txt"
+                rel="nofollow">Show Source</a>
+          </div>
+        </div>
+
+        <div class="right">
+          
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015, Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Poulsen.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.8.
+    </div>
+        </div>
+        <div class="clearer"></div>
+      </div>
+    </div>
+
+  </body>
+</html>

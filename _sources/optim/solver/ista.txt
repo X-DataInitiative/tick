@@ -1,0 +1,14 @@
+:orphan:
+
+.. _ista:
+
+
+Proximal gradient descent
+-------------------------
+
+Proximal gradient descent
+
+
+.. autoclass:: mlpp.optim.solver.Ista
+    :members:
+    :inherited-members:

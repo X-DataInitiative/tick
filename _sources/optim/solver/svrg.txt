@@ -1,0 +1,13 @@
+:orphan:
+
+.. _svrg:
+
+Stochastic variance reduced gradient descent
+--------------------------------------------
+
+Stochastic variance reduced gradient descent
+
+
+.. autoclass:: mlpp.optim.solver.SVRG
+    :members:
+    :inherited-members:

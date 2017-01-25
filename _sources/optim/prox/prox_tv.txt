@@ -1,0 +1,14 @@
+:orphan:
+
+.. _prox-tv:
+
+Total-variation penalization
+----------------------------
+
+Proximal operator of the total-variation penalization.
+
+BLABLA
+
+.. autoclass:: mlpp.optim.prox.ProxTV
+    :members:
+    :inherited-members:

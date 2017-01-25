@@ -1,0 +1,9 @@
+:orphan:
+
+.. _simu-inhomogeneous-poisson:
+
+Inhomogeneous Poisson Process
+=============================
+
+.. autoclass:: mlpp.simulation.SimuInhomogeneousPoisson
+	:members:

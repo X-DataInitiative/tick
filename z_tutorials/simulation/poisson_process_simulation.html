@@ -1,0 +1,211 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Poisson processes simulation &#8212; MLPP 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/agogo.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="top" title="MLPP 0.1 documentation" href="../../index.html" />
+    <link rel="next" title="Hawkes processes simulation" href="hawkes_simulation.html" />
+    <link rel="prev" title="MLPP" href="../../index.html" /> 
+  </head>
+  <body role="document">
+    <div class="header-wrapper" role="banner">
+      <div class="header">
+        <div class="headertitle"><a
+          href="../../index.html">MLPP 0.1 documentation</a></div>
+        <div class="rel" role="navigation" aria-label="related navigation">
+          <a href="../../index.html" title="MLPP"
+             accesskey="P">previous</a> |
+          <a href="hawkes_simulation.html" title="Hawkes processes simulation"
+             accesskey="N">next</a> |
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a>
+        </div>
+       </div>
+    </div>
+
+    <div class="content-wrapper">
+      <div class="content">
+        <div class="document">
+            
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="poisson-processes-simulation">
+<h1>Poisson processes simulation<a class="headerlink" href="#poisson-processes-simulation" title="Permalink to this headline">¶</a></h1>
+<p>This example illustrates the use of <a class="reference internal" href="../../simu/point_process/inhomo_poisson.html#mlpp.simulation.SimuInhomogeneousPoisson" title="mlpp.simulation.SimuInhomogeneousPoisson"><code class="xref py py-obj docutils literal"><span class="pre">mlpp.simulation.SimuInhomogeneousPoisson</span></code></a>
+and <a class="reference internal" href="../../simu/point_process/poisson.html#mlpp.simulation.SimuPoissonProcess" title="mlpp.simulation.SimuPoissonProcess"><code class="xref py py-obj docutils literal"><span class="pre">mlpp.simulation.SimuPoissonProcess</span></code></a> which are classes that allow us to simulate
+these two kinds of processes.</p>
+<div class="contents topic" id="contents">
+<p class="topic-title first">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#poisson-processes-simulation" id="id1">Poisson processes simulation</a><ul>
+<li><a class="reference internal" href="#poisson-process-with-constant-intensity" id="id2">Poisson process with constant intensity</a></li>
+<li><a class="reference internal" href="#inhomogeneous-poisson-processes" id="id3">Inhomogeneous Poisson processes</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="poisson-process-with-constant-intensity">
+<h2>Poisson process with constant intensity<a class="headerlink" href="#poisson-process-with-constant-intensity" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pylab</span> <span class="kn">import</span> <span class="n">rcParams</span>
+<span class="kn">from</span> <span class="nn">mlpp.simulation</span> <span class="kn">import</span> <span class="n">SimuPoissonProcess</span>
+
+<span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;figure.figsize&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">4</span>
+<span class="n">run_time</span> <span class="o">=</span> <span class="mi">10000</span>
+<span class="n">intensity</span> <span class="o">=</span> <span class="mi">5</span>
+
+<span class="c1"># We define a 1 dimensional homogeneous Poisson process</span>
+<span class="n">poi</span> <span class="o">=</span> <span class="n">SimuPoissonProcess</span><span class="p">(</span><span class="n">intensity</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">run_time</span><span class="p">)</span>
+
+<span class="c1"># We launch the process during t = runtime</span>
+<span class="n">poi</span><span class="o">.</span><span class="n">simulate</span><span class="p">()</span>
+<span class="n">poi</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s1">&#39;hist&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>(<a class="reference external" href="../../z_tutorials/simulation/code_samples/poisson_constant_intensity.py">Source code</a>)</p>
+<p>We can notice that elapsed time between two jumps follow as expected an
+exponential distribution of parameter <span class="math">\(\frac{1}{\lambda}\)</span> where
+<span class="math">\(\lambda\)</span> is the constant intensity of the Poisson process.</p>
+</div>
+<div class="section" id="inhomogeneous-poisson-processes">
+<h2>Inhomogeneous Poisson processes<a class="headerlink" href="#inhomogeneous-poisson-processes" title="Permalink to this headline">¶</a></h2>
+<p>Now we plot a Poisson process with varying intensity</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">mlpp.base.utils</span> <span class="kn">import</span> <span class="n">TimeFunction</span>
+<span class="kn">from</span> <span class="nn">pylab</span> <span class="kn">import</span> <span class="n">rcParams</span>
+<span class="kn">from</span> <span class="nn">mlpp.simulation.inhomogeneous_poisson</span> <span class="kn">import</span> <span class="n">SimuInhomogeneousPoisson</span>
+
+<span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;figure.figsize&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">4</span>
+<span class="n">run_time</span> <span class="o">=</span> <span class="mi">30</span>
+
+<span class="n">T</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">((</span><span class="n">run_time</span> <span class="o">*</span> <span class="mf">0.9</span><span class="p">)</span> <span class="o">*</span> <span class="mi">5</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span> <span class="o">/</span> <span class="mi">5</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="mi">15</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">T</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">T</span><span class="p">),</span>
+                                           <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">T</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="n">T</span><span class="p">)),</span> <span class="mf">0.001</span><span class="p">)</span>
+
+<span class="n">tf</span> <span class="o">=</span> <span class="n">TimeFunction</span><span class="p">((</span><span class="n">T</span><span class="p">,</span> <span class="n">Y</span><span class="p">),</span> <span class="n">dt</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+
+<span class="c1"># We define a 1 dimentional inhomogeneous Poisson process with the</span>
+<span class="c1"># intensity function seen above</span>
+<span class="n">in_poi</span> <span class="o">=</span> <span class="n">SimuInhomogeneousPoisson</span><span class="p">([</span><span class="n">tf</span><span class="p">],</span> <span class="n">end_time</span><span class="o">=</span><span class="n">run_time</span><span class="p">)</span>
+
+<span class="c1"># We activate intensity tracking and launch the process during t = runtime</span>
+<span class="n">in_poi</span><span class="o">.</span><span class="n">track_intensity</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="n">in_poi</span><span class="o">.</span><span class="n">simulate</span><span class="p">()</span>
+
+<span class="c1"># We plot the resulting inhomogeneous Poisson process with its</span>
+<span class="c1"># intensity and its ticks over time</span>
+<span class="n">in_poi</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>(<a class="reference external" href="../../z_tutorials/simulation/code_samples/poisson_simple_homogeneous.py">Source code</a>)</p>
+<p>We see that the higher the intensity is, the more ticks we have.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+        </div>
+        <div class="sidebar">
+          <h3>Table Of Contents</h3>
+          <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Poisson processes simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hawkes_simulation.html">Hawkes processes simulation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../inference/hawkes_non_parametric.html">Hawkes non parametric inference</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../optimization/stochastic_solver.html">Stochastic solvers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../optimization/linear_model.html">Generalized linear models</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../misc/time_function.html">Time functions</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../optim/optimization_toolbox.html">Presentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../optim/model.html">Models [<code class="docutils literal"><span class="pre">mlpp.optim.model</span></code>]</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../optim/prox.html">Proximal operators [<code class="docutils literal"><span class="pre">mlpp.optim.prox</span></code>]</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../optim/solver.html">Solvers [<code class="docutils literal"><span class="pre">mlpp.optim.solver</span></code>]</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../simu/simu.html">Simulation toolbox [<code class="docutils literal"><span class="pre">mlpp.simulation</span></code>]</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../dev/dev.html">Developer documentation</a></li>
+</ul>
+
+          <div role="search">
+            <h3 style="margin-top: 1.5em;">Search</h3>
+            <form class="search" action="../../search.html" method="get">
+                <input type="text" name="q" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+            </form>
+          </div>
+        </div>
+        <div class="clearer"></div>
+      </div>
+    </div>
+
+    <div class="footer-wrapper">
+      <div class="footer">
+        <div class="left">
+          <div role="navigation" aria-label="related navigaton">
+            <a href="../../index.html" title="MLPP"
+              >previous</a> |
+            <a href="hawkes_simulation.html" title="Hawkes processes simulation"
+              >next</a> |
+            <a href="../../py-modindex.html" title="Python Module Index"
+              >modules</a> |
+            <a href="../../genindex.html" title="General Index"
+              >index</a>
+          </div>
+          <div role="note" aria-label="source link">
+              <br/>
+              <a href="../../_sources/z_tutorials/simulation/poisson_process_simulation.txt"
+                rel="nofollow">Show Source</a>
+          </div>
+        </div>
+
+        <div class="right">
+          
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015, Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Poulsen.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.8.
+    </div>
+        </div>
+        <div class="clearer"></div>
+      </div>
+    </div>
+
+  </body>
+</html>

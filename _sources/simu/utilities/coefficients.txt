@@ -1,0 +1,7 @@
+
+Coefficients simulation
+=======================
+
+.. automodule:: mlpp.simulation
+   :members: weights_sparse_exp, weights_sparse_gauss
+   :noindex:

@@ -1,0 +1,103 @@
+.. MLPP documentation master file, created by
+   sphinx-quickstart on Mon Jun 29 11:10:36 2015.
+
+MLPP
+====
+
+Machine Learning (*not only*) with Point Processes
+--------------------------------------------------
+
+`MLPP` is yet another machine learning library for ``Python``, with a
+particular emphasis on point processes (Poisson processes,
+Hawkes processes, Cox regression), but includes also generalized linear
+models (GLM). It comes with optimization algorithms for inference and
+provides tools for simulation of datasets.
+A particular focus is on optimization: an extensive optimization toolbox
+is proposed, with recent state-of-the-art stochastic solvers.
+
+Main highlights
+---------------
+
+* **Python 3 only**!
+* Fast, most computation are done in C++11 (including multi-threading)
+* Contains an optimization toolbox: solvers (optimization algorithms),
+  models (for computing gradient among other things) and
+  prox (penalization) classes can be combined interactively in
+  ``iPython`` for instance
+* Features state-of-the-art stochastic optimization algorithms, with
+  parallel implementations
+* Support sparse datasets (sparse features matrices)
+* Interplay between Python and C++ is done using swig
+
+Tutorials
+---------
+
+Simulation
+^^^^^^^^^^
+
+.. toctree::
+   :maxdepth: 1
+
+   z_tutorials/simulation/poisson_process_simulation
+   z_tutorials/simulation/hawkes_simulation
+
+Inference
+^^^^^^^^^
+
+.. toctree::
+   :maxdepth: 1
+
+   z_tutorials/inference/hawkes_non_parametric
+
+Optimization
+^^^^^^^^^^^^
+
+.. toctree::
+   :maxdepth: 1
+
+   z_tutorials/optimization/stochastic_solver
+   z_tutorials/optimization/linear_model
+
+Misc
+^^^^
+
+.. toctree::
+   :maxdepth: 1
+
+   z_tutorials/misc/time_function
+
+
+Optimization toolbox
+--------------------
+
+.. toctree::
+   :maxdepth: 2
+
+   optim/optimization_toolbox
+   optim/model
+   optim/prox
+   optim/solver
+
+
+Simulation toolbox
+------------------
+
+.. toctree::
+   :maxdepth: 2
+
+   simu/simu
+
+Developer documentation
+-----------------------
+.. toctree::
+   :maxdepth: 2
+
+   dev/dev
+
+Indices and tables
+------------------
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
+

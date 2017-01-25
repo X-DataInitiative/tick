@@ -1,0 +1,10 @@
+:orphan:
+
+.. _model-poisreg:
+
+Poisson regression model
+------------------------
+
+.. autoclass:: mlpp.optim.model.ModelPoisReg
+    :members:
+    :inherited-members:

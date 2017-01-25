@@ -1,0 +1,358 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Proximal gradient descent &#8212; MLPP 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/agogo.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="top" title="MLPP 0.1 documentation" href="../../index.html" /> 
+  </head>
+  <body role="document">
+    <div class="header-wrapper" role="banner">
+      <div class="header">
+        <div class="headertitle"><a
+          href="../../index.html">MLPP 0.1 documentation</a></div>
+        <div class="rel" role="navigation" aria-label="related navigation">
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a>
+        </div>
+       </div>
+    </div>
+
+    <div class="content-wrapper">
+      <div class="content">
+        <div class="document">
+            
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="proximal-gradient-descent">
+<span id="ista"></span><h1>Proximal gradient descent<a class="headerlink" href="#proximal-gradient-descent" title="Permalink to this headline">¶</a></h1>
+<p>Proximal gradient descent</p>
+<dl class="class">
+<dt id="mlpp.optim.solver.Ista">
+<em class="property">class </em><code class="descclassname">mlpp.optim.solver.</code><code class="descname">Ista</code><span class="sig-paren">(</span><em>step: float = None</em>, <em>tol: float = 0.0</em>, <em>max_iter: int = 100</em>, <em>linesearch: bool = True</em>, <em>linesearch_step_increase: float = 2.0</em>, <em>linesearch_step_decrease: float = 0.5</em>, <em>verbose: bool = True</em>, <em>print_every: int = 10</em>, <em>record_every: int = 1</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mlpp/optim/solver/ista.html#Ista"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlpp.optim.solver.Ista" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ista (proximal gradient descent) algorithm.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>step</strong> : <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">float</span></code></a> default=None</p>
+<blockquote>
+<div><p>Step-size of the algorithm. If <code class="docutils literal"><span class="pre">linesearch=True</span></code>, this is the
+first step-size to be used in the linesearch
+(typically taken too large). Otherwise, it&#8217;s the constant step
+to be used along iterations.</p>
+</div></blockquote>
+<p><strong>tol</strong> : <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">float</span></code></a>, default=0.</p>
+<blockquote>
+<div><p>The tolerance of the solver (iterations stop when the stopping
+criterion is below it). By default the solver does <code class="docutils literal"><span class="pre">max_iter</span></code>
+iterations</p>
+</div></blockquote>
+<p><strong>max_iter</strong> : <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">int</span></code></a>, default=100</p>
+<blockquote>
+<div><p>Maximum number of iterations of the solver</p>
+</div></blockquote>
+<p><strong>linesearch</strong> : <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">bool</span></code></a>, default=True</p>
+<blockquote>
+<div><p>Use backtracking linesearch</p>
+</div></blockquote>
+<p><strong>linesearch_step_increase</strong> : <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">float</span></code></a>, default=2.</p>
+<blockquote>
+<div><p>Factor of step increase when using linesearch</p>
+</div></blockquote>
+<p><strong>linesearch_step_decrease</strong> : <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">float</span></code></a>, default=0.5</p>
+<blockquote>
+<div><p>Factor of step decrease when using linesearch</p>
+</div></blockquote>
+<p><strong>verbose</strong> : <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">bool</span></code></a>, default=True</p>
+<blockquote>
+<div><p>If <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">True</span></code></a>, we verbose things, otherwise the solver does not
+print anything (but records information in history anyway)</p>
+</div></blockquote>
+<p><strong>print_every</strong> : <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">int</span></code></a>, default=10</p>
+<blockquote>
+<div><p>Print history information when <code class="docutils literal"><span class="pre">n_iter</span></code> (iteration number) is
+a multiple of <code class="docutils literal"><span class="pre">print_every</span></code></p>
+</div></blockquote>
+<p><strong>record_every</strong> : <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">int</span></code></a>, default=1</p>
+<blockquote class="last">
+<div><p>Record history information when <code class="docutils literal"><span class="pre">n_iter</span></code> (iteration number) is
+a multiple of <code class="docutils literal"><span class="pre">record_every</span></code></p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="17%" />
+<col width="83%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>model</td>
+<td>(<code class="xref py py-obj docutils literal"><span class="pre">Model</span></code>) The model to solve</td>
+</tr>
+<tr class="row-even"><td>prox</td>
+<td>(<code class="xref py py-obj docutils literal"><span class="pre">Prox</span></code>) Proximal operator to solve</td>
+</tr>
+<tr class="row-odd"><td>time_start</td>
+<td>(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">str</span></code></a>) Start date of the call to <code class="docutils literal"><span class="pre">solve()</span></code></td>
+</tr>
+<tr class="row-even"><td>time_elapsed</td>
+<td>(<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">float</span></code></a>) Duration of the call to <code class="docutils literal"><span class="pre">solve()</span></code>, in seconds</td>
+</tr>
+<tr class="row-odd"><td>time_end</td>
+<td>(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">str</span></code></a>) End date of the call to <code class="docutils literal"><span class="pre">solve()</span></code></td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="mlpp.optim.solver.Ista.get_history">
+<code class="descname">get_history</code><span class="sig-paren">(</span><em>key=None</em><span class="sig-paren">)</span><a class="headerlink" href="#mlpp.optim.solver.Ista.get_history" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns history of the solver</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>key</strong> : <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">str</span></code></a>, default=None</p>
+<blockquote>
+<div><ul class="simple">
+<li>If <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">None</span></code></a> all history is returned as a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">dict</span></code></a></li>
+<li>If <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">str</span></code></a>, name of the history element to retrieve</li>
+</ul>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> : <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">list</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">dict</span></code></a></p>
+<blockquote class="last">
+<div><ul class="simple">
+<li>If <code class="docutils literal"><span class="pre">key</span></code> is None or <code class="docutils literal"><span class="pre">key</span></code> is not in history then
+output is a dict containing history of all keys</li>
+<li>If <code class="docutils literal"><span class="pre">key</span></code> is the name of an element in the history,
+output is a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">list</span></code></a> containing the history of this element</li>
+</ul>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mlpp.optim.solver.Ista.objective">
+<code class="descname">objective</code><span class="sig-paren">(</span><em>coeffs</em>, <em>loss: float = None</em><span class="sig-paren">)</span><a class="headerlink" href="#mlpp.optim.solver.Ista.objective" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the objective minimized by the solver at <code class="docutils literal"><span class="pre">coeffs</span></code></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>coeffs</strong> : <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.12)"><code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code></a>, shape=(n_coeffs,)</p>
+<blockquote>
+<div><p>The objective is computed at this point</p>
+</div></blockquote>
+<p><strong>loss</strong> : <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">float</span></code></a>, default=`None`</p>
+<blockquote>
+<div><p>Gives the value of the loss if already known (allows to
+avoid its computation in some cases)</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> : <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">float</span></code></a></p>
+<blockquote class="last">
+<div><p>Value of the objective at given <code class="docutils literal"><span class="pre">coeffs</span></code></p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mlpp.optim.solver.Ista.set_model">
+<code class="descname">set_model</code><span class="sig-paren">(</span><em>model: mlpp.optim.model.base.model.Model</em><span class="sig-paren">)</span><a class="headerlink" href="#mlpp.optim.solver.Ista.set_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set model in the solver</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>model</strong> : <code class="xref py py-obj docutils literal"><span class="pre">Model</span></code></p>
+<blockquote>
+<div><p>Sets the model in the solver. The model gives the first
+order information about the model (loss, gradient, among
+other things)</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> : <code class="xref py py-obj docutils literal"><span class="pre">Solver</span></code></p>
+<blockquote class="last">
+<div><p>The same instance with given model</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mlpp.optim.solver.Ista.set_prox">
+<code class="descname">set_prox</code><span class="sig-paren">(</span><em>prox: mlpp.optim.prox.base.prox.Prox</em><span class="sig-paren">)</span><a class="headerlink" href="#mlpp.optim.solver.Ista.set_prox" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set proximal operator in the solver.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>prox</strong> : <code class="xref py py-obj docutils literal"><span class="pre">Prox</span></code></p>
+<blockquote>
+<div><p>The proximal operator of the penalization function</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> : <code class="xref py py-obj docutils literal"><span class="pre">Solver</span></code></p>
+<blockquote class="last">
+<div><p>The solver with given prox</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>In some solvers, <code class="docutils literal"><span class="pre">set_model</span></code> must be called before
+<code class="docutils literal"><span class="pre">set_prox</span></code>, otherwise and error might be raised.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mlpp.optim.solver.Ista.solve">
+<code class="descname">solve</code><span class="sig-paren">(</span><em>x0=None</em>, <em>step=None</em><span class="sig-paren">)</span><a class="headerlink" href="#mlpp.optim.solver.Ista.solve" title="Permalink to this definition">¶</a></dt>
+<dd><p>Launch the solver</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>x0</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.array</span></code>, shape=(n_coeffs,), default=`None`</p>
+<blockquote>
+<div><p>Starting point of the solver</p>
+</div></blockquote>
+<p><strong>step</strong> : <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">float</span></code></a>, default=`None`</p>
+<blockquote>
+<div><p>Step-size or learning rate for the solver</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.array</span></code>, shape=(n_coeffs,)</p>
+<blockquote class="last">
+<div><p>Obtained minimizer for the problem</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+        </div>
+        <div class="sidebar">
+          <h3>Table Of Contents</h3>
+          <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../z_tutorials/simulation/poisson_process_simulation.html">Poisson processes simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../z_tutorials/simulation/hawkes_simulation.html">Hawkes processes simulation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../z_tutorials/inference/hawkes_non_parametric.html">Hawkes non parametric inference</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../z_tutorials/optimization/stochastic_solver.html">Stochastic solvers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../z_tutorials/optimization/linear_model.html">Generalized linear models</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../z_tutorials/misc/time_function.html">Time functions</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../optimization_toolbox.html">Presentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../model.html">Models [<code class="docutils literal"><span class="pre">mlpp.optim.model</span></code>]</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prox.html">Proximal operators [<code class="docutils literal"><span class="pre">mlpp.optim.prox</span></code>]</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../solver.html">Solvers [<code class="docutils literal"><span class="pre">mlpp.optim.solver</span></code>]</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../simu/simu.html">Simulation toolbox [<code class="docutils literal"><span class="pre">mlpp.simulation</span></code>]</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../dev/dev.html">Developer documentation</a></li>
+</ul>
+
+          <div role="search">
+            <h3 style="margin-top: 1.5em;">Search</h3>
+            <form class="search" action="../../search.html" method="get">
+                <input type="text" name="q" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+            </form>
+          </div>
+        </div>
+        <div class="clearer"></div>
+      </div>
+    </div>
+
+    <div class="footer-wrapper">
+      <div class="footer">
+        <div class="left">
+          <div role="navigation" aria-label="related navigaton">
+            <a href="../../py-modindex.html" title="Python Module Index"
+              >modules</a> |
+            <a href="../../genindex.html" title="General Index"
+              >index</a>
+          </div>
+          <div role="note" aria-label="source link">
+              <br/>
+              <a href="../../_sources/optim/solver/ista.txt"
+                rel="nofollow">Show Source</a>
+          </div>
+        </div>
+
+        <div class="right">
+          
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015, Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Poulsen.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.8.
+    </div>
+        </div>
+        <div class="clearer"></div>
+      </div>
+    </div>
+
+  </body>
+</html>

@@ -1,0 +1,7 @@
+:orphan:
+
+Basic tools
+===========
+
+.. automodule:: mlpp.base
+   :members:

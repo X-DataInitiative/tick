@@ -1,0 +1,296 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>mlpp.simulation.poisreg &#8212; MLPP 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/agogo.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="top" title="MLPP 0.1 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body role="document">
+    <div class="header-wrapper" role="banner">
+      <div class="header">
+        <div class="headertitle"><a
+          href="../../../index.html">MLPP 0.1 documentation</a></div>
+        <div class="rel" role="navigation" aria-label="related navigation">
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a>
+        </div>
+       </div>
+    </div>
+
+    <div class="content-wrapper">
+      <div class="content">
+        <div class="document">
+            
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for mlpp.simulation.poisreg</h1><div class="highlight"><pre>
+<span></span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">numpy.random.mtrand</span> <span class="k">import</span> <span class="n">poisson</span>
+<span class="kn">from</span> <span class="nn">os</span> <span class="k">import</span> <span class="n">linesep</span>
+<span class="kn">from</span> <span class="nn">warnings</span> <span class="k">import</span> <span class="n">warn</span>
+
+<span class="kn">from</span> <span class="nn">.base</span> <span class="k">import</span> <span class="n">SimuWithFeatures</span>
+
+
+<span class="c1"># TODO: raise a warning when the maximum label value is too large</span>
+<span class="c1"># TODO: unittest for SimuPoisReg</span>
+
+
+<div class="viewcode-block" id="SimuPoisReg"><a class="viewcode-back" href="../../../simu/linear_model/poisreg.html#mlpp.simulation.SimuPoisReg">[docs]</a><span class="k">class</span> <span class="nc">SimuPoisReg</span><span class="p">(</span><span class="n">SimuWithFeatures</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Simulation of a Poisson regression model, with</span>
+<span class="sd">    identity of exponential link.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    weights : `numpy.ndarray`, shape=(n_features,)</span>
+<span class="sd">        The array of weights of the model</span>
+
+<span class="sd">    intercept : `float`, default=`None`</span>
+<span class="sd">        The intercept. If None, then no intercept is used</span>
+
+<span class="sd">    features : `numpy.ndarray`, shape=(n_samples, n_features), default=`None`</span>
+<span class="sd">        The features matrix to use. If None, it is simulated</span>
+
+<span class="sd">    n_samples : `int`, default=200</span>
+<span class="sd">        Number of samples</span>
+
+<span class="sd">    link : `str`, default=&quot;exponential&quot;</span>
+<span class="sd">        Type of link function</span>
+
+<span class="sd">        * if ``&quot;identity&quot;`` : the intensity is the inner product of the</span>
+<span class="sd">          model&#39;s weights with the features. In this case, one must</span>
+<span class="sd">          ensure that the intensity is non-negative</span>
+
+<span class="sd">        * if ``&quot;exponential&quot;`` : the intensity is the exponential of the</span>
+<span class="sd">          inner product of the model&#39;s weights with the features</span>
+
+<span class="sd">    features_type : `str`, default=&quot;cov_toeplitz&quot;</span>
+<span class="sd">        The type of features matrix to simulate</span>
+
+<span class="sd">        * If ``&quot;cov_toeplitz&quot;`` : a Gaussian distribution with</span>
+<span class="sd">          Toeplitz correlation matrix</span>
+
+<span class="sd">        * If ``&quot;cov_uniform&quot;`` : a Gaussian distribution with</span>
+<span class="sd">          correlation matrix given by .5 * (U + U.T), where U is</span>
+<span class="sd">          uniform on [0, 1] and diagonal filled with ones.</span>
+
+<span class="sd">    cov_corr : `float`, default=.5</span>
+<span class="sd">        Correlation to use in the Toeplitz correlation matrix</span>
+
+<span class="sd">    features_scaling : `str`, default=&quot;none&quot;</span>
+<span class="sd">        The way the features matrix is scaled after simulation</span>
+
+<span class="sd">        * If ``&quot;standard&quot;`` : the columns are centered and</span>
+<span class="sd">          normalized</span>
+
+<span class="sd">        * If ``&quot;min-max&quot;`` : remove the minimum and divide by</span>
+<span class="sd">          max-min</span>
+
+<span class="sd">        * If ``&quot;norm&quot;`` : the columns are normalized but not centered</span>
+
+<span class="sd">        * If ``&quot;none&quot;`` : nothing is done to the features</span>
+
+<span class="sd">    seed : `int`, default=None</span>
+<span class="sd">        The seed of the random number generator. If `None` it is not</span>
+<span class="sd">        seeded</span>
+
+<span class="sd">    verbose : `bool`, default=True</span>
+<span class="sd">        If `True`, print things</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    features : `numpy.ndarray`, shape=(n_samples, n_features)</span>
+<span class="sd">        The simulated (or given) features matrix</span>
+
+<span class="sd">    labels : `numpy.ndarray`, shape=(n_samples,)</span>
+<span class="sd">        The simulated labels</span>
+
+<span class="sd">    time_start : `str`</span>
+<span class="sd">        Start date of the simulation</span>
+
+<span class="sd">    time_elapsed : `int`</span>
+<span class="sd">        Duration of the simulation, in seconds</span>
+
+<span class="sd">    time_end : `str`</span>
+<span class="sd">        End date of the simulation</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_attrinfos</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;labels&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;_link&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">weights</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">intercept</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">features</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">200</span><span class="p">,</span>
+                 <span class="n">link</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;exponential&quot;</span><span class="p">,</span>
+                 <span class="n">features_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;cov_toeplitz&quot;</span><span class="p">,</span>
+                 <span class="n">cov_corr</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">features_scaling</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;none&quot;</span><span class="p">,</span>
+                 <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+
+        <span class="n">n_features</span> <span class="o">=</span> <span class="n">weights</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">SimuWithFeatures</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intercept</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">,</span>
+                                  <span class="n">n_features</span><span class="p">,</span> <span class="n">features_type</span><span class="p">,</span> <span class="n">cov_corr</span><span class="p">,</span>
+                                  <span class="n">features_scaling</span><span class="p">,</span> <span class="n">seed</span><span class="p">,</span> <span class="n">verbose</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="n">weights</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">link</span> <span class="o">=</span> <span class="n">link</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;labels&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">link</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_link</span>
+
+    <span class="nd">@link</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">link</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">val</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;identity&quot;</span><span class="p">,</span> <span class="s2">&quot;exponential&quot;</span><span class="p">]:</span>
+            <span class="n">warn</span><span class="p">(</span><span class="n">linesep</span> <span class="o">+</span> <span class="s2">&quot;link was not understood, using&quot;</span> <span class="o">+</span>
+                 <span class="s2">&quot; exponential instead.&quot;</span><span class="p">)</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="s2">&quot;exponential&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;_link&quot;</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SimuPoisReg.simulate"><a class="viewcode-back" href="../../../simu/linear_model/poisreg.html#mlpp.simulation.SimuPoisReg.simulate">[docs]</a>    <span class="k">def</span> <span class="nf">simulate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Launch simulation of the data</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        features: `numpy.ndarray`, shape=(n_samples, n_features)</span>
+<span class="sd">            The features matrix</span>
+
+<span class="sd">        labels: `numpy.ndarray`, shape=(n_samples,)</span>
+<span class="sd">            The labels vector</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">SimuWithFeatures</span><span class="o">.</span><span class="n">simulate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_simulate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Note: the features matrix already exists, and is created by</span>
+        <span class="c1"># the super class</span>
+        <span class="n">features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">features</span>
+        <span class="n">n_samples</span><span class="p">,</span> <span class="n">n_features</span> <span class="o">=</span> <span class="n">features</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">link</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">link</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="n">features</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">)</span>
+        <span class="c1"># Add the intercept if necessary</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">intercept</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">u</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">intercept</span>
+        <span class="c1"># Compute the intensities</span>
+        <span class="k">if</span> <span class="n">link</span> <span class="o">==</span> <span class="s2">&quot;identity&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">u</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s2">&quot;features and weights leads to ,&quot;</span><span class="p">,</span>
+                                  <span class="s2">&quot;non-negative intensities for &quot;</span><span class="p">,</span>
+                                  <span class="s2">&quot;Poisson.&quot;</span><span class="p">))</span>
+            <span class="n">intensity</span> <span class="o">=</span> <span class="n">u</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">intensity</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+        <span class="c1"># Simulate the Poisson variables. We want it in float64 for</span>
+        <span class="c1">#   later computations, hence the next line.</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">n_samples</span><span class="p">)</span>
+        <span class="n">labels</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">poisson</span><span class="p">(</span><span class="n">intensity</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;labels&quot;</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">features</span><span class="p">,</span> <span class="n">labels</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+        </div>
+        <div class="sidebar">
+          <h3>Table Of Contents</h3>
+          <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../z_tutorials/simulation/poisson_process_simulation.html">Poisson processes simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../z_tutorials/simulation/hawkes_simulation.html">Hawkes processes simulation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../z_tutorials/inference/hawkes_non_parametric.html">Hawkes non parametric inference</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../z_tutorials/optimization/stochastic_solver.html">Stochastic solvers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../z_tutorials/optimization/linear_model.html">Generalized linear models</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../z_tutorials/misc/time_function.html">Time functions</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../optim/optimization_toolbox.html">Presentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../optim/model.html">Models [<code class="docutils literal"><span class="pre">mlpp.optim.model</span></code>]</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../optim/prox.html">Proximal operators [<code class="docutils literal"><span class="pre">mlpp.optim.prox</span></code>]</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../optim/solver.html">Solvers [<code class="docutils literal"><span class="pre">mlpp.optim.solver</span></code>]</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../simu/simu.html">Simulation toolbox [<code class="docutils literal"><span class="pre">mlpp.simulation</span></code>]</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../dev/dev.html">Developer documentation</a></li>
+</ul>
+
+          <div role="search">
+            <h3 style="margin-top: 1.5em;">Search</h3>
+            <form class="search" action="../../../search.html" method="get">
+                <input type="text" name="q" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+            </form>
+          </div>
+        </div>
+        <div class="clearer"></div>
+      </div>
+    </div>
+
+    <div class="footer-wrapper">
+      <div class="footer">
+        <div class="left">
+          <div role="navigation" aria-label="related navigaton">
+            <a href="../../../py-modindex.html" title="Python Module Index"
+              >modules</a> |
+            <a href="../../../genindex.html" title="General Index"
+              >index</a>
+          </div>
+          <div role="note" aria-label="source link">
+          </div>
+        </div>
+
+        <div class="right">
+          
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015, Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Poulsen.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.8.
+    </div>
+        </div>
+        <div class="clearer"></div>
+      </div>
+    </div>
+
+  </body>
+</html>

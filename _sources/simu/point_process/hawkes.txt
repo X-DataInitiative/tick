@@ -1,0 +1,18 @@
+:orphan:
+
+.. _simu-hawkes:
+
+Hawkes Process
+==============
+
+Hawkes point process
+--------------------
+
+.. autoclass:: mlpp.simulation.SimuHawkes
+	:members:
+
+Hawkes kernels
+--------------
+
+.. autoclass:: mlpp.simulation.HawkesKernelExp
+	:members:
