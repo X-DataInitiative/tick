@@ -14,7 +14,7 @@ hawkes.set_baseline(0, 1.5)  # And the exogeneous intensity element 0
 dt = 0.01
 hawkes.track_intensity(dt)
 hawkes.simulate()
-ticks = hawkes.process
+timestamps = hawkes.timestamps
 intensity = hawkes.tracked_intensity
 intensity_times = hawkes.intensity_tracked_times
 

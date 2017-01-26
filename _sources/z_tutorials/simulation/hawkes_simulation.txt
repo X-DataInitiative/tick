@@ -99,7 +99,7 @@ notation to build the SimuHawkes object.
     hawkes = SimuHawkes(kernels =
                     [[kernel_diag, kernel_cross],
                     [0, kernel_diag]],
-                    baselines=[0.5, 0.5],
+                    baseline=[0.5, 0.5],
                     verbose=False)
 
 
@@ -125,7 +125,7 @@ We are ready for the Hawkes simulation.
     hawkes.simulate()
 
     # We obtain all the jumps from the process for each coordinate
-    ticks = hawkes.process
+    timestamps = hawkes.timestamps
 
     # And the evolution of its intensity over time for each coordinate
     intensity = hawkes.tracked_intensity
@@ -136,7 +136,7 @@ We are ready for the Hawkes simulation.
 
     >>> print("hawkes simulated with %i points" % hawkes.n_total_jumps) # doctest: +SKIP
     hawkes simulated with 891 points
-    >>> ai = [len(t)/run_time for t in ticks]
+    >>> ai = [len(t)/run_time for t in timestamps]
     >>> print("The realized averaged intensity is %s" % ai) # doctest: +SKIP
     The realized averaged intensity is [12.92, 2.525]
 

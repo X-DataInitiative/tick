@@ -33,6 +33,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="top" title="MLPP 0.1 documentation" href="../../index.html" />
+    <link rel="up" title="Tutorials" href="../index.html" />
     <link rel="next" title="Generalized linear models" href="linear_model.html" />
     <link rel="prev" title="Hawkes non parametric inference" href="../inference/hawkes_non_parametric.html" />
 <meta charset='utf-8'>
@@ -69,31 +70,13 @@
      href="../../index.html">Site <b class="caret"></b></a>
   <ul class="dropdown-menu globaltoc"
       role="menu"
-      aria-labelledby="dLabelGlobalToc"><ul>
-<li class="toctree-l1"><a class="reference internal" href="../simulation/poisson_process_simulation.html">Poisson processes simulation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../simulation/hawkes_simulation.html">Hawkes processes simulation</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../inference/hawkes_non_parametric.html">Hawkes non parametric inference</a></li>
-</ul>
-<ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Stochastic solvers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="linear_model.html">Generalized linear models</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../misc/time_function.html">Time functions</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../optim/optimization_toolbox.html">Presentation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../optim/model.html">Models [<code class="docutils literal"><span class="pre">mlpp.optim.model</span></code>]</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../optim/prox.html">Proximal operators [<code class="docutils literal"><span class="pre">mlpp.optim.prox</span></code>]</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../optim/solver.html">Solvers [<code class="docutils literal"><span class="pre">mlpp.optim.solver</span></code>]</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../simu/simu.html">Simulation toolbox [<code class="docutils literal"><span class="pre">mlpp.simulation</span></code>]</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../dev/dev.html">Developer documentation</a></li>
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../inference/index.html">Inference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../simulation/index.html">Simulation toolbox [<code class="docutils literal"><span class="pre">mlpp.simulation</span></code>]</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../optim/index.html">Optimization toolbox</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">API reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dev/index.html">Developer documentation</a></li>
 </ul>
 </ul>
 </li>
@@ -167,8 +150,8 @@
   <div class="section" id="stochastic-solvers">
 <h1>Stochastic solvers<a class="headerlink" href="#stochastic-solvers" title="Permalink to this headline">¶</a></h1>
 <p>This example illustrates the use of several solvers, including
-<a class="reference internal" href="../../optim/solver/sgd.html#mlpp.optim.solver.SGD" title="mlpp.optim.solver.SGD"><code class="xref py py-obj docutils literal"><span class="pre">mlpp.optim.solver.SGD</span></code></a>, <a class="reference internal" href="../../optim/solver/svrg.html#mlpp.optim.solver.SVRG" title="mlpp.optim.solver.SVRG"><code class="xref py py-obj docutils literal"><span class="pre">mlpp.optim.solver.SVRG</span></code></a>, and
-<a class="reference internal" href="../../optim/solver/fista.html#mlpp.optim.solver.Fista" title="mlpp.optim.solver.Fista"><code class="xref py py-obj docutils literal"><span class="pre">mlpp.optim.solver.Fista</span></code></a>.</p>
+<code class="xref py py-obj docutils literal"><span class="pre">mlpp.optim.solver.SGD</span></code>, <code class="xref py py-obj docutils literal"><span class="pre">mlpp.optim.solver.SVRG</span></code>, and
+<code class="xref py py-obj docutils literal"><span class="pre">mlpp.optim.solver.Fista</span></code>.</p>
 <div class="contents topic" id="contents">
 <p class="topic-title first">Contents</p>
 <ul class="simple">
@@ -231,14 +214,14 @@ solvers.</p>
 <span class="kn">import</span> <span class="nn">scipy</span>
 <span class="kn">from</span> <span class="nn">pylab</span> <span class="kn">import</span> <span class="n">rcParams</span>
 <span class="kn">from</span> <span class="nn">mlpp.simulation</span> <span class="kn">import</span> <span class="n">SimuLogReg</span>
-<span class="kn">from</span> <span class="nn">mlpp.optim.solver</span> <span class="kn">import</span> <span class="n">SGD</span><span class="p">,</span> <span class="n">SVRG</span><span class="p">,</span> <span class="n">Fista</span>
+<span class="kn">from</span> <span class="nn">mlpp.optim.solver</span> <span class="kn">import</span> <span class="n">SGD</span><span class="p">,</span> <span class="n">SVRG</span><span class="p">,</span> <span class="n">Fista</span><span class="p">,</span> <span class="n">AdaGrad</span>
 <span class="kn">from</span> <span class="nn">mlpp.optim.model</span> <span class="kn">import</span> <span class="n">ModelLogReg</span>
 <span class="kn">from</span> <span class="nn">mlpp.optim.prox</span> <span class="kn">import</span> <span class="n">ProxL2Sq</span>
 
 <span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;figure.figsize&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">4</span>
 
 <span class="c1"># We simulate logistic data with feature vector w and intercept c</span>
-<span class="n">n_features</span><span class="p">,</span> <span class="n">n_samples</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10000</span>
+<span class="n">n_features</span><span class="p">,</span> <span class="n">n_samples</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10000</span>
 <span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n_features</span><span class="p">)</span>
 <span class="n">c</span> <span class="o">=</span> <span class="mf">0.2</span>
 <span class="n">sim</span> <span class="o">=</span> <span class="n">SimuLogReg</span><span class="p">(</span><span class="n">weights</span><span class="o">=</span><span class="n">w</span><span class="p">,</span> <span class="n">intercept</span><span class="o">=</span><span class="n">c</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="n">n_samples</span><span class="p">)</span>
@@ -266,7 +249,8 @@ solvers.</p>
 <span class="n">svrg</span><span class="o">.</span><span class="n">set_prox</span><span class="p">(</span><span class="n">prox</span><span class="p">)</span>
 <span class="n">svrg</span><span class="o">.</span><span class="n">history</span><span class="o">.</span><span class="n">set_minimizer</span><span class="p">(</span><span class="n">minimizer</span><span class="p">)</span>
 <span class="n">svrg</span><span class="o">.</span><span class="n">history</span><span class="o">.</span><span class="n">set_minimum</span><span class="p">(</span><span class="n">minimum</span><span class="p">)</span>
-<span class="n">svrg</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
+<span class="n">step</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">model</span><span class="o">.</span><span class="n">get_lip_max</span><span class="p">()</span>
+<span class="n">svrg</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
 
 <span class="c1"># Fista solver</span>
 <span class="n">fista</span> <span class="o">=</span> <span class="n">Fista</span><span class="p">(</span><span class="n">max_iter</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">print_every</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">record_every</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">)</span>
@@ -277,17 +261,28 @@ solvers.</p>
 <span class="n">fista</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">x0</span><span class="p">)</span>
 
 <span class="c1"># SGD solver</span>
-<span class="n">sgd</span> <span class="o">=</span> <span class="n">SGD</span><span class="p">(</span><span class="n">max_iter</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">print_every</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">record_every</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">)</span>
+<span class="n">sgd</span> <span class="o">=</span> <span class="n">SGD</span><span class="p">(</span><span class="n">max_iter</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">print_every</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">record_every</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">1516</span><span class="p">,</span>
+          <span class="n">rand_type</span><span class="o">=</span><span class="s1">&#39;perm&#39;</span><span class="p">)</span>
 <span class="n">sgd</span><span class="o">.</span><span class="n">set_model</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
 <span class="n">sgd</span><span class="o">.</span><span class="n">set_prox</span><span class="p">(</span><span class="n">prox</span><span class="p">)</span>
 <span class="n">sgd</span><span class="o">.</span><span class="n">history</span><span class="o">.</span><span class="n">set_minimizer</span><span class="p">(</span><span class="n">minimizer</span><span class="p">)</span>
 <span class="n">sgd</span><span class="o">.</span><span class="n">history</span><span class="o">.</span><span class="n">set_minimum</span><span class="p">(</span><span class="n">minimum</span><span class="p">)</span>
-<span class="n">sgd</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="n">sgd</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+
+<span class="c1"># AdaGrad solver</span>
+<span class="n">adagrad</span> <span class="o">=</span> <span class="n">AdaGrad</span><span class="p">(</span><span class="n">max_iter</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">print_every</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">record_every</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">,</span>
+                  <span class="n">seed</span><span class="o">=</span><span class="mi">1516</span><span class="p">,</span> <span class="n">rand_type</span><span class="o">=</span><span class="s1">&#39;perm&#39;</span><span class="p">)</span>
+<span class="n">adagrad</span><span class="o">.</span><span class="n">set_model</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+<span class="n">adagrad</span><span class="o">.</span><span class="n">set_prox</span><span class="p">(</span><span class="n">prox</span><span class="p">)</span>
+<span class="n">adagrad</span><span class="o">.</span><span class="n">history</span><span class="o">.</span><span class="n">set_minimizer</span><span class="p">(</span><span class="n">minimizer</span><span class="p">)</span>
+<span class="n">adagrad</span><span class="o">.</span><span class="n">history</span><span class="o">.</span><span class="n">set_minimum</span><span class="p">(</span><span class="n">minimum</span><span class="p">)</span>
+<span class="n">adagrad</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">x0</span><span class="p">)</span>
+
 
 <span class="c1"># We plot our solvers results</span>
 <span class="n">ax1</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">121</span><span class="p">)</span>
 <span class="n">ax2</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">122</span><span class="p">)</span>
-<span class="n">solvers</span> <span class="o">=</span> <span class="p">[</span><span class="n">svrg</span><span class="p">,</span> <span class="n">sgd</span><span class="p">,</span> <span class="n">fista</span><span class="p">]</span>
+<span class="n">solvers</span> <span class="o">=</span> <span class="p">[</span><span class="n">svrg</span><span class="p">,</span> <span class="n">sgd</span><span class="p">,</span> <span class="n">fista</span><span class="p">,</span> <span class="n">adagrad</span><span class="p">]</span>
 <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">solvers</span><span class="p">:</span>
     <span class="n">s</span><span class="o">.</span><span class="n">history</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax1</span><span class="p">,</span> <span class="n">y_axis</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;dist_obj&#39;</span><span class="p">],</span> <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="n">s</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">])</span>
     <span class="n">s</span><span class="o">.</span><span class="n">history</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax2</span><span class="p">,</span> <span class="n">y_axis</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;rel_obj&#39;</span><span class="p">],</span> <span class="n">x_axis</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">,</span>
@@ -299,10 +294,7 @@ solvers.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>(<a class="reference external" href="../../z_tutorials/optimization/code_samples/solvers_convergence.py">Source code</a>, <a class="reference external" href="../../z_tutorials/optimization/code_samples/solvers_convergence.png">png</a>, <a class="reference external" href="../../z_tutorials/optimization/code_samples/solvers_convergence.hires.png">hires.png</a>, <a class="reference external" href="../../z_tutorials/optimization/code_samples/solvers_convergence.pdf">pdf</a>)</p>
-<div class="figure">
-<img alt="../../_images/solvers_convergence.png" src="../../_images/solvers_convergence.png" />
-</div>
+<p>(<a class="reference external" href="../../z_tutorials/optimization/code_samples/solvers_convergence.py">Source code</a>)</p>
 </div>
 </div>
 

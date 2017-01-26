@@ -33,6 +33,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="top" title="MLPP 0.1 documentation" href="../../index.html" />
+    <link rel="up" title="Tutorials" href="../index.html" />
     <link rel="next" title="Stochastic solvers" href="../optimization/stochastic_solver.html" />
     <link rel="prev" title="Hawkes processes simulation" href="../simulation/hawkes_simulation.html" />
 <meta charset='utf-8'>
@@ -69,31 +70,13 @@
      href="../../index.html">Site <b class="caret"></b></a>
   <ul class="dropdown-menu globaltoc"
       role="menu"
-      aria-labelledby="dLabelGlobalToc"><ul>
-<li class="toctree-l1"><a class="reference internal" href="../simulation/poisson_process_simulation.html">Poisson processes simulation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../simulation/hawkes_simulation.html">Hawkes processes simulation</a></li>
-</ul>
-<ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Hawkes non parametric inference</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../optimization/stochastic_solver.html">Stochastic solvers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../optimization/linear_model.html">Generalized linear models</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../misc/time_function.html">Time functions</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../optim/optimization_toolbox.html">Presentation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../optim/model.html">Models [<code class="docutils literal"><span class="pre">mlpp.optim.model</span></code>]</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../optim/prox.html">Proximal operators [<code class="docutils literal"><span class="pre">mlpp.optim.prox</span></code>]</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../optim/solver.html">Solvers [<code class="docutils literal"><span class="pre">mlpp.optim.solver</span></code>]</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../simu/simu.html">Simulation toolbox [<code class="docutils literal"><span class="pre">mlpp.simulation</span></code>]</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../dev/dev.html">Developer documentation</a></li>
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../inference/index.html">Inference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../simulation/index.html">Simulation toolbox [<code class="docutils literal"><span class="pre">mlpp.simulation</span></code>]</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../optim/index.html">Optimization toolbox</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">API reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dev/index.html">Developer documentation</a></li>
 </ul>
 </ul>
 </li>
@@ -178,7 +161,7 @@
 <p>We simulate a 2-dimensional Hawkes process with exponential kernels</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">h</span> <span class="o">=</span> <span class="n">SimuHawkes</span><span class="p">(</span><span class="n">kernels</span><span class="o">=</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="n">HawkesKernelExp</span><span class="p">(</span><span class="mf">0.1</span> <span class="o">/</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">)],</span>
                     <span class="p">[</span><span class="n">HawkesKernelExp</span><span class="p">(</span><span class="mf">0.1</span> <span class="o">/</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">),</span> <span class="mi">0</span><span class="p">]],</span>
-       <span class="n">baselines</span><span class="o">=</span><span class="p">[</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">],</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+       <span class="n">baseline</span><span class="o">=</span><span class="p">[</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">],</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">h</span><span class="o">.</span><span class="n">end_time</span> <span class="o">=</span> <span class="mi">1000000</span>
 <span class="n">h</span><span class="o">.</span><span class="n">simulate</span><span class="p">()</span>
 </pre></div>
@@ -197,7 +180,7 @@ object.</p>
 whole Hawkes process, so that it can display (see later on) the exact kernels
 and compare them with the estimation. If you don&#8217;t want to do that, you could
 have typed instead</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">e</span> <span class="o">=</span> <span class="n">Estim</span><span class="p">(</span><span class="n">h</span><span class="o">.</span><span class="n">process</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">e</span> <span class="o">=</span> <span class="n">Estim</span><span class="p">(</span><span class="n">h</span><span class="o">.</span><span class="n">timestamps</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Here the Hawkes realization is just given by a list of np.arrays corresponding
@@ -217,10 +200,7 @@ to the arrival times of each component</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">e</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span> 
 </pre></div>
 </div>
-<p>(<a class="reference external" href="../../z_tutorials/inference/code_samples/hawkes_non_parametric_exp.py">Source code</a>, <a class="reference external" href="../../z_tutorials/inference/code_samples/hawkes_non_parametric_exp.png">png</a>, <a class="reference external" href="../../z_tutorials/inference/code_samples/hawkes_non_parametric_exp.hires.png">hires.png</a>, <a class="reference external" href="../../z_tutorials/inference/code_samples/hawkes_non_parametric_exp.pdf">pdf</a>)</p>
-<div class="figure">
-<img alt="../../_images/hawkes_non_parametric_exp.png" src="../../_images/hawkes_non_parametric_exp.png" />
-</div>
+<p>(<a class="reference external" href="../../z_tutorials/inference/code_samples/hawkes_non_parametric_exp.py">Source code</a>)</p>
 </div>
 <div class="section" id="case-of-a-2-dimensional-hawkes-process-with-power-law-kernels">
 <h2>Case of a 2-dimensional Hawkes process with power-law kernels<a class="headerlink" href="#case-of-a-2-dimensional-hawkes-process-with-power-law-kernels" title="Permalink to this headline">¶</a></h2>
@@ -237,7 +217,7 @@ default is <span class="math">\(10^{-5}\)</span>.</p>
                           <span class="n">HawkesKernelPowerLaw</span><span class="p">(</span><span class="n">alphas</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">delta</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="mi">2000</span><span class="p">)],</span>
                          <span class="p">[</span><span class="n">HawkesKernelPowerLaw</span><span class="p">(</span><span class="n">alphas</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">delta</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="mi">2000</span><span class="p">),</span>
                           <span class="n">HawkesKernelPowerLaw</span><span class="p">(</span><span class="n">alphas</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">delta</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="mi">2000</span><span class="p">)]],</span>
-                <span class="n">baselines</span><span class="o">=</span><span class="p">[</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">],</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                    <span class="n">baseline</span><span class="o">=</span><span class="p">[</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">],</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 <span class="n">hawkes</span><span class="o">.</span><span class="n">end_time</span> <span class="o">=</span> <span class="mi">50000</span>
 <span class="n">hawkes</span><span class="o">.</span><span class="n">simulate</span><span class="p">()</span>
@@ -276,7 +256,7 @@ above)</p>
 <span class="n">e</span><span class="o">.</span><span class="n">add_realization</span><span class="p">(</span><span class="n">hawkes</span><span class="p">)</span>
 
 <span class="c1"># Again you could have done instead</span>
-<span class="c1"># e.add_realization(hawkes.process)</span>
+<span class="c1"># e.add_realization(hawkes.timestamps)</span>
 </pre></div>
 </div>
 <p>Then we perform the solving of the Wiener Hopf equation. Let&#8217;s look at the
@@ -291,10 +271,7 @@ estimated [<code class="xref py py-obj docutils literal"><span class="pre">xmin<
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">e</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">loglogscale</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> 
 </pre></div>
 </div>
-<p>(<a class="reference external" href="../../z_tutorials/inference/code_samples/hawkes_non_parametric_power_law.py">Source code</a>, <a class="reference external" href="../../z_tutorials/inference/code_samples/hawkes_non_parametric_power_law.png">png</a>, <a class="reference external" href="../../z_tutorials/inference/code_samples/hawkes_non_parametric_power_law.hires.png">hires.png</a>, <a class="reference external" href="../../z_tutorials/inference/code_samples/hawkes_non_parametric_power_law.pdf">pdf</a>)</p>
-<div class="figure">
-<img alt="../../_images/hawkes_non_parametric_power_law.png" src="../../_images/hawkes_non_parametric_power_law.png" />
-</div>
+<p>(<a class="reference external" href="../../z_tutorials/inference/code_samples/hawkes_non_parametric_power_law.py">Source code</a>)</p>
 </div>
 <div class="section" id="a-case-with-time-function-kernels-and-negative-kernels">
 <h2>A case with Time function kernels and negative kernels<a class="headerlink" href="#a-case-with-time-function-kernels-and-negative-kernels" title="Permalink to this headline">¶</a></h2>
@@ -320,7 +297,7 @@ estimated [<code class="xref py py-obj docutils literal"><span class="pre">xmin<
 <span class="n">hawkes</span> <span class="o">=</span> <span class="n">SimuHawkes</span><span class="p">(</span><span class="n">kernels</span><span class="o">=</span>
                     <span class="p">[[</span><span class="n">kernel_1</span><span class="p">,</span> <span class="n">HawkesKernelExp</span><span class="p">(</span><span class="o">-.</span><span class="mo">03</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">],</span>
                      <span class="p">[</span><span class="n">HawkesKernelExp</span><span class="p">(</span><span class="o">.</span><span class="mo">07</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">kernel_2</span><span class="p">]],</span>
-                    <span class="n">baselines</span><span class="o">=</span><span class="p">[</span><span class="mf">3.5</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">],</span>
+                    <span class="n">baseline</span><span class="o">=</span><span class="p">[</span><span class="mf">3.5</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">],</span>
                     <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
 
 <span class="n">hawkes</span><span class="o">.</span><span class="n">end_time</span> <span class="o">=</span> <span class="mi">500000</span>

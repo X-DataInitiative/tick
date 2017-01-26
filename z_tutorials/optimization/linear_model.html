@@ -33,6 +33,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="top" title="MLPP 0.1 documentation" href="../../index.html" />
+    <link rel="up" title="Tutorials" href="../index.html" />
     <link rel="next" title="Time functions" href="../misc/time_function.html" />
     <link rel="prev" title="Stochastic solvers" href="stochastic_solver.html" />
 <meta charset='utf-8'>
@@ -69,31 +70,13 @@
      href="../../index.html">Site <b class="caret"></b></a>
   <ul class="dropdown-menu globaltoc"
       role="menu"
-      aria-labelledby="dLabelGlobalToc"><ul>
-<li class="toctree-l1"><a class="reference internal" href="../simulation/poisson_process_simulation.html">Poisson processes simulation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../simulation/hawkes_simulation.html">Hawkes processes simulation</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../inference/hawkes_non_parametric.html">Hawkes non parametric inference</a></li>
-</ul>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="stochastic_solver.html">Stochastic solvers</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Generalized linear models</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../misc/time_function.html">Time functions</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../optim/optimization_toolbox.html">Presentation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../optim/model.html">Models [<code class="docutils literal"><span class="pre">mlpp.optim.model</span></code>]</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../optim/prox.html">Proximal operators [<code class="docutils literal"><span class="pre">mlpp.optim.prox</span></code>]</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../optim/solver.html">Solvers [<code class="docutils literal"><span class="pre">mlpp.optim.solver</span></code>]</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../simu/simu.html">Simulation toolbox [<code class="docutils literal"><span class="pre">mlpp.simulation</span></code>]</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../dev/dev.html">Developer documentation</a></li>
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../inference/index.html">Inference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../simulation/index.html">Simulation toolbox [<code class="docutils literal"><span class="pre">mlpp.simulation</span></code>]</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../optim/index.html">Optimization toolbox</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">API reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dev/index.html">Developer documentation</a></li>
 </ul>
 </ul>
 </li>
@@ -160,18 +143,18 @@
 <dl class="docutils">
 <dt>This example illustrates the opimization of three linear models:</dt>
 <dd><ul class="first last simple">
-<li>Linear regression (<a class="reference internal" href="../../optim/model/linreg.html#mlpp.optim.model.ModelLinReg" title="mlpp.optim.model.ModelLinReg"><code class="xref py py-obj docutils literal"><span class="pre">mlpp.optim.model.ModelLinReg</span></code></a>)</li>
-<li>Logistic regression (<a class="reference internal" href="../../optim/model/logreg.html#mlpp.optim.model.ModelLogReg" title="mlpp.optim.model.ModelLogReg"><code class="xref py py-obj docutils literal"><span class="pre">mlpp.optim.model.ModelLogReg</span></code></a>)</li>
-<li>Poisson regression (<a class="reference internal" href="../../optim/model/poisreg.html#mlpp.optim.model.ModelPoisReg" title="mlpp.optim.model.ModelPoisReg"><code class="xref py py-obj docutils literal"><span class="pre">mlpp.optim.model.ModelPoisReg</span></code></a>)</li>
+<li>Linear regression (<code class="xref py py-obj docutils literal"><span class="pre">mlpp.optim.model.ModelLinReg</span></code>)</li>
+<li>Logistic regression (<code class="xref py py-obj docutils literal"><span class="pre">mlpp.optim.model.ModelLogReg</span></code>)</li>
+<li>Poisson regression (<code class="xref py py-obj docutils literal"><span class="pre">mlpp.optim.model.ModelPoisReg</span></code>)</li>
 </ul>
 </dd>
 <dt>with five different solvers:</dt>
 <dd><ul class="first last simple">
-<li>LBFGS (<a class="reference internal" href="../../optim/solver/bfgs.html#mlpp.optim.solver.BFGS" title="mlpp.optim.solver.BFGS"><code class="xref py py-obj docutils literal"><span class="pre">mlpp.optim.solver.BFGS</span></code></a>)</li>
-<li>SVRG (<a class="reference internal" href="../../optim/solver/svrg.html#mlpp.optim.solver.SVRG" title="mlpp.optim.solver.SVRG"><code class="xref py py-obj docutils literal"><span class="pre">mlpp.optim.solver.SVRG</span></code></a>)</li>
-<li>SDCA (<a class="reference internal" href="../../optim/solver/sdca.html#mlpp.optim.solver.SDCA" title="mlpp.optim.solver.SDCA"><code class="xref py py-obj docutils literal"><span class="pre">mlpp.optim.solver.SDCA</span></code></a>)</li>
-<li>ISTA (<a class="reference internal" href="../../optim/solver/ista.html#mlpp.optim.solver.Ista" title="mlpp.optim.solver.Ista"><code class="xref py py-obj docutils literal"><span class="pre">mlpp.optim.solver.Ista</span></code></a>)</li>
-<li>FISTA (<a class="reference internal" href="../../optim/solver/fista.html#mlpp.optim.solver.Fista" title="mlpp.optim.solver.Fista"><code class="xref py py-obj docutils literal"><span class="pre">mlpp.optim.solver.Fista</span></code></a>)</li>
+<li>LBFGS (<code class="xref py py-obj docutils literal"><span class="pre">mlpp.optim.solver.BFGS</span></code>)</li>
+<li>SVRG (<code class="xref py py-obj docutils literal"><span class="pre">mlpp.optim.solver.SVRG</span></code>)</li>
+<li>SDCA (<code class="xref py py-obj docutils literal"><span class="pre">mlpp.optim.solver.SDCA</span></code>)</li>
+<li>ISTA (<code class="xref py py-obj docutils literal"><span class="pre">mlpp.optim.solver.Ista</span></code>)</li>
+<li>FISTA (<code class="xref py py-obj docutils literal"><span class="pre">mlpp.optim.solver.Fista</span></code>)</li>
 </ul>
 </dd>
 </dl>
@@ -304,10 +287,7 @@
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>(<a class="reference external" href="../../z_tutorials/optimization/code_samples/linear_model.py">Source code</a>, <a class="reference external" href="../../z_tutorials/optimization/code_samples/linear_model.png">png</a>, <a class="reference external" href="../../z_tutorials/optimization/code_samples/linear_model.hires.png">hires.png</a>, <a class="reference external" href="../../z_tutorials/optimization/code_samples/linear_model.pdf">pdf</a>)</p>
-<div class="figure">
-<img alt="../../_images/linear_model.png" src="../../_images/linear_model.png" />
-</div>
+<p>(<a class="reference external" href="../../z_tutorials/optimization/code_samples/linear_model.py">Source code</a>)</p>
 </div>
 
 

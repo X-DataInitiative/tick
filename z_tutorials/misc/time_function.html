@@ -33,7 +33,8 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="top" title="MLPP 0.1 documentation" href="../../index.html" />
-    <link rel="next" title="Presentation" href="../../optim/optimization_toolbox.html" />
+    <link rel="up" title="Tutorials" href="../index.html" />
+    <link rel="next" title="Inference" href="../../inference/index.html" />
     <link rel="prev" title="Generalized linear models" href="../optimization/linear_model.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
@@ -69,31 +70,13 @@
      href="../../index.html">Site <b class="caret"></b></a>
   <ul class="dropdown-menu globaltoc"
       role="menu"
-      aria-labelledby="dLabelGlobalToc"><ul>
-<li class="toctree-l1"><a class="reference internal" href="../simulation/poisson_process_simulation.html">Poisson processes simulation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../simulation/hawkes_simulation.html">Hawkes processes simulation</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../inference/hawkes_non_parametric.html">Hawkes non parametric inference</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../optimization/stochastic_solver.html">Stochastic solvers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../optimization/linear_model.html">Generalized linear models</a></li>
-</ul>
-<ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Time functions</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../optim/optimization_toolbox.html">Presentation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../optim/model.html">Models [<code class="docutils literal"><span class="pre">mlpp.optim.model</span></code>]</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../optim/prox.html">Proximal operators [<code class="docutils literal"><span class="pre">mlpp.optim.prox</span></code>]</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../optim/solver.html">Solvers [<code class="docutils literal"><span class="pre">mlpp.optim.solver</span></code>]</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../simu/simu.html">Simulation toolbox [<code class="docutils literal"><span class="pre">mlpp.simulation</span></code>]</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../dev/dev.html">Developer documentation</a></li>
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../inference/index.html">Inference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../simulation/index.html">Simulation toolbox [<code class="docutils literal"><span class="pre">mlpp.simulation</span></code>]</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../optim/index.html">Optimization toolbox</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">API reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dev/index.html">Developer documentation</a></li>
 </ul>
 </ul>
 </li>
@@ -125,7 +108,7 @@
     </a>
   </li>
   <li>
-    <a href="../../optim/optimization_toolbox.html" title="Next Chapter: Presentation"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">Presentation &raquo;</span>
+    <a href="../../inference/index.html" title="Next Chapter: Inference"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">Inference &raquo;</span>
     </a>
   </li>
               
@@ -161,7 +144,7 @@
       
   <div class="section" id="time-functions">
 <h1>Time functions<a class="headerlink" href="#time-functions" title="Permalink to this headline">¶</a></h1>
-<p>This example illustrates the use of <a class="reference internal" href="../../dev/base.html#mlpp.base.TimeFunction" title="mlpp.base.TimeFunction"><code class="xref py py-obj docutils literal"><span class="pre">mlpp.base.TimeFunction</span></code></a>.</p>
+<p>This example illustrates the use of <code class="xref py py-obj docutils literal"><span class="pre">mlpp.base.TimeFunction</span></code>.</p>
 <div class="contents topic" id="contents">
 <p class="topic-title first">Contents</p>
 <ul class="simple">
@@ -239,10 +222,7 @@ between two points kept for our interpolation</li>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>(<a class="reference external" href="../../z_tutorials/misc/code_samples/time_function_example.py">Source code</a>, <a class="reference external" href="../../z_tutorials/misc/code_samples/time_function_example.png">png</a>, <a class="reference external" href="../../z_tutorials/misc/code_samples/time_function_example.hires.png">hires.png</a>, <a class="reference external" href="../../z_tutorials/misc/code_samples/time_function_example.pdf">pdf</a>)</p>
-<div class="figure">
-<img alt="../../_images/time_function_example.png" src="../../_images/time_function_example.png" />
-</div>
+<p>(<a class="reference external" href="../../z_tutorials/misc/code_samples/time_function_example.py">Source code</a>)</p>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
 <p>If the value for dt is not well chosen, then you could receive

@@ -1,0 +1,10 @@
+:orphan:
+
+.. _learner-logreg:
+
+Logistic regression
+-------------------
+
+.. autoclass:: mlpp.inference.LearnerLogReg
+    :members:
+    :inherited-members:

@@ -33,6 +33,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="top" title="MLPP 0.1 documentation" href="../../index.html" />
+    <link rel="up" title="Tutorials" href="../index.html" />
     <link rel="next" title="Hawkes non parametric inference" href="../inference/hawkes_non_parametric.html" />
     <link rel="prev" title="Poisson processes simulation" href="poisson_process_simulation.html" />
 <meta charset='utf-8'>
@@ -70,30 +71,12 @@
   <ul class="dropdown-menu globaltoc"
       role="menu"
       aria-labelledby="dLabelGlobalToc"><ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="poisson_process_simulation.html">Poisson processes simulation</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Hawkes processes simulation</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../inference/hawkes_non_parametric.html">Hawkes non parametric inference</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../optimization/stochastic_solver.html">Stochastic solvers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../optimization/linear_model.html">Generalized linear models</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../misc/time_function.html">Time functions</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../optim/optimization_toolbox.html">Presentation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../optim/model.html">Models [<code class="docutils literal"><span class="pre">mlpp.optim.model</span></code>]</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../optim/prox.html">Proximal operators [<code class="docutils literal"><span class="pre">mlpp.optim.prox</span></code>]</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../optim/solver.html">Solvers [<code class="docutils literal"><span class="pre">mlpp.optim.solver</span></code>]</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../simu/simu.html">Simulation toolbox [<code class="docutils literal"><span class="pre">mlpp.simulation</span></code>]</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../dev/dev.html">Developer documentation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../inference/index.html">Inference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../simulation/index.html">Simulation toolbox [<code class="docutils literal"><span class="pre">mlpp.simulation</span></code>]</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../optim/index.html">Optimization toolbox</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">API reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dev/index.html">Developer documentation</a></li>
 </ul>
 </ul>
 </li>
@@ -169,22 +152,22 @@
       
   <div class="section" id="hawkes-processes-simulation">
 <h1>Hawkes processes simulation<a class="headerlink" href="#hawkes-processes-simulation" title="Permalink to this headline">¶</a></h1>
-<p>This example illustrates the use of <a class="reference internal" href="../../simu/point_process/hawkes.html#mlpp.simulation.SimuHawkes" title="mlpp.simulation.SimuHawkes"><code class="xref py py-obj docutils literal"><span class="pre">mlpp.simulation.SimuHawkes</span></code></a>, and its kernels
+<p>This example illustrates the use of <code class="xref py py-obj docutils literal"><span class="pre">mlpp.simulation.SimuHawkes</span></code>, and its kernels
 <code class="xref py py-obj docutils literal"><span class="pre">mlpp.simulation.hawkes_kernels.HawkesKernelExp</span></code>,
 <code class="xref py py-obj docutils literal"><span class="pre">mlpp.simulation.hawkes_kernels.HawkesKernelPowerLaw</span></code> and
 <code class="xref py py-obj docutils literal"><span class="pre">mlpp.simulation.hawkes_kernels.HawkesKernelTimeFunc</span></code></p>
 <div class="contents topic" id="contents">
 <p class="topic-title first">Contents</p>
 <ul class="simple">
-<li><a class="reference internal" href="#hawkes-processes-simulation" id="id4">Hawkes processes simulation</a><ul>
-<li><a class="reference internal" href="#one-dimensional" id="id5">One dimensional</a><ul>
-<li><a class="reference internal" href="#exponential-kernel" id="id6">Exponential kernel</a></li>
+<li><a class="reference internal" href="#hawkes-processes-simulation" id="id2">Hawkes processes simulation</a><ul>
+<li><a class="reference internal" href="#one-dimensional" id="id3">One dimensional</a><ul>
+<li><a class="reference internal" href="#exponential-kernel" id="id4">Exponential kernel</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#multi-dimensional" id="id7">Multi-dimensional</a><ul>
-<li><a class="reference internal" href="#id1" id="id8">Exponential kernel</a></li>
-<li><a class="reference internal" href="#truncated-power-law-kernels" id="id9">Truncated power law kernels</a></li>
-<li><a class="reference internal" href="#time-functions-and-small-negative-kernels" id="id10">Time Functions and small negative kernels</a></li>
+<li><a class="reference internal" href="#multi-dimensional" id="id5">Multi-dimensional</a><ul>
+<li><a class="reference internal" href="#id1" id="id6">Exponential kernel</a></li>
+<li><a class="reference internal" href="#truncated-power-law-kernels" id="id7">Truncated power law kernels</a></li>
+<li><a class="reference internal" href="#time-functions-and-small-negative-kernels" id="id8">Time Functions and small negative kernels</a></li>
 </ul>
 </li>
 </ul>
@@ -218,7 +201,7 @@ as this will not work as it might last forever.</p>
 <span class="n">dt</span> <span class="o">=</span> <span class="mf">0.01</span>
 <span class="n">hawkes</span><span class="o">.</span><span class="n">track_intensity</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span>
 <span class="n">hawkes</span><span class="o">.</span><span class="n">simulate</span><span class="p">()</span>
-<span class="n">ticks</span> <span class="o">=</span> <span class="n">hawkes</span><span class="o">.</span><span class="n">process</span>
+<span class="n">timestamps</span> <span class="o">=</span> <span class="n">hawkes</span><span class="o">.</span><span class="n">timestamps</span>
 <span class="n">intensity</span> <span class="o">=</span> <span class="n">hawkes</span><span class="o">.</span><span class="n">tracked_intensity</span>
 <span class="n">intensity_times</span> <span class="o">=</span> <span class="n">hawkes</span><span class="o">.</span><span class="n">intensity_tracked_times</span>
 
@@ -231,10 +214,7 @@ as this will not work as it might last forever.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>(<a class="reference external" href="../../z_tutorials/simulation/code_samples/hawkes_1d_simu.py">Source code</a>, <a class="reference external" href="../../z_tutorials/simulation/code_samples/hawkes_1d_simu.png">png</a>, <a class="reference external" href="../../z_tutorials/simulation/code_samples/hawkes_1d_simu.hires.png">hires.png</a>, <a class="reference external" href="../../z_tutorials/simulation/code_samples/hawkes_1d_simu.pdf">pdf</a>)</p>
-<div class="figure">
-<img alt="../../_images/hawkes_1d_simu.png" src="../../_images/hawkes_1d_simu.png" />
-</div>
+<p>(<a class="reference external" href="../../z_tutorials/simulation/code_samples/hawkes_1d_simu.py">Source code</a>)</p>
 </div>
 </div>
 <div class="section" id="multi-dimensional">
@@ -259,7 +239,7 @@ method)</p>
 <span class="n">betas</span> <span class="o">=</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">d</span><span class="p">,</span> <span class="n">d</span><span class="p">))</span>
 <span class="n">mus</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
 <span class="n">hawkes</span> <span class="o">=</span> <span class="n">SimuHawkesExpKernels</span><span class="p">(</span><span class="n">adjacency</span><span class="o">=</span><span class="n">alphas</span><span class="p">,</span> <span class="n">decays</span><span class="o">=</span><span class="n">betas</span><span class="p">,</span>
-                              <span class="n">baselines</span><span class="o">=</span><span class="n">mus</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+                              <span class="n">baseline</span><span class="o">=</span><span class="n">mus</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
 
 <span class="n">run_time</span> <span class="o">=</span> <span class="mi">1000</span>
 <span class="n">hawkes</span><span class="o">.</span><span class="n">end_time</span> <span class="o">=</span> <span class="n">run_time</span>
@@ -276,10 +256,7 @@ method)</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>(<a class="reference external" href="../../z_tutorials/simulation/code_samples/hawkes_multidim_simu.py">Source code</a>, <a class="reference external" href="../../z_tutorials/simulation/code_samples/hawkes_multidim_simu.png">png</a>, <a class="reference external" href="../../z_tutorials/simulation/code_samples/hawkes_multidim_simu.hires.png">hires.png</a>, <a class="reference external" href="../../z_tutorials/simulation/code_samples/hawkes_multidim_simu.pdf">pdf</a>)</p>
-<div class="figure">
-<img alt="../../_images/hawkes_multidim_simu.png" src="../../_images/hawkes_multidim_simu.png" />
-</div>
+<p>(<a class="reference external" href="../../z_tutorials/simulation/code_samples/hawkes_multidim_simu.py">Source code</a>)</p>
 </div>
 <div class="section" id="truncated-power-law-kernels">
 <h3>Truncated power law kernels<a class="headerlink" href="#truncated-power-law-kernels" title="Permalink to this headline">¶</a></h3>
@@ -308,7 +285,7 @@ notation to build the SimuHawkes object.</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">hawkes</span> <span class="o">=</span> <span class="n">SimuHawkes</span><span class="p">(</span><span class="n">kernels</span> <span class="o">=</span>
                 <span class="p">[[</span><span class="n">kernel_diag</span><span class="p">,</span> <span class="n">kernel_cross</span><span class="p">],</span>
                 <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">kernel_diag</span><span class="p">]],</span>
-                <span class="n">baselines</span><span class="o">=</span><span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span>
+                <span class="n">baseline</span><span class="o">=</span><span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span>
                 <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -328,7 +305,7 @@ notation to build the SimuHawkes object.</p>
 <span class="n">hawkes</span><span class="o">.</span><span class="n">simulate</span><span class="p">()</span>
 
 <span class="c1"># We obtain all the jumps from the process for each coordinate</span>
-<span class="n">ticks</span> <span class="o">=</span> <span class="n">hawkes</span><span class="o">.</span><span class="n">process</span>
+<span class="n">timestamps</span> <span class="o">=</span> <span class="n">hawkes</span><span class="o">.</span><span class="n">timestamps</span>
 
 <span class="c1"># And the evolution of its intensity over time for each coordinate</span>
 <span class="n">intensity</span> <span class="o">=</span> <span class="n">hawkes</span><span class="o">.</span><span class="n">tracked_intensity</span>
@@ -337,7 +314,7 @@ notation to build the SimuHawkes object.</p>
 </div>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;hawkes simulated with </span><span class="si">%i</span><span class="s2"> points&quot;</span> <span class="o">%</span> <span class="n">hawkes</span><span class="o">.</span><span class="n">n_total_jumps</span><span class="p">)</span> 
 <span class="go">hawkes simulated with 891 points</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ai</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">/</span><span class="n">run_time</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">ticks</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ai</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">/</span><span class="n">run_time</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">timestamps</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The realized averaged intensity is </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">ai</span><span class="p">)</span> 
 <span class="go">The realized averaged intensity is [12.92, 2.525]</span>
 </pre></div>
@@ -356,7 +333,7 @@ notation to build the SimuHawkes object.</p>
 <span class="n">hawkes</span> <span class="o">=</span> <span class="n">SimuHawkes</span><span class="p">(</span><span class="n">kernels</span><span class="o">=</span>
                     <span class="p">[[</span><span class="n">kernel_diag</span><span class="p">,</span> <span class="n">kernel_cross</span><span class="p">],</span>
                      <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">kernel_diag</span><span class="p">]],</span>
-                    <span class="n">baselines</span><span class="o">=</span><span class="p">[</span><span class="mf">1.5</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">],</span>
+                    <span class="n">baseline</span><span class="o">=</span><span class="p">[</span><span class="mf">1.5</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">],</span>
                     <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
 
 <span class="n">run_time</span> <span class="o">=</span> <span class="mi">200</span>
@@ -374,10 +351,7 @@ notation to build the SimuHawkes object.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>(<a class="reference external" href="../../z_tutorials/simulation/code_samples/hawkes_power_law.py">Source code</a>, <a class="reference external" href="../../z_tutorials/simulation/code_samples/hawkes_power_law.png">png</a>, <a class="reference external" href="../../z_tutorials/simulation/code_samples/hawkes_power_law.hires.png">hires.png</a>, <a class="reference external" href="../../z_tutorials/simulation/code_samples/hawkes_power_law.pdf">pdf</a>)</p>
-<div class="figure">
-<img alt="../../_images/hawkes_power_law.png" src="../../_images/hawkes_power_law.png" />
-</div>
+<p>(<a class="reference external" href="../../z_tutorials/simulation/code_samples/hawkes_power_law.py">Source code</a>)</p>
 </div>
 <div class="section" id="time-functions-and-small-negative-kernels">
 <h3>Time Functions and small negative kernels<a class="headerlink" href="#time-functions-and-small-negative-kernels" title="Permalink to this headline">¶</a></h3>
@@ -402,7 +376,7 @@ notation to build the SimuHawkes object.</p>
 <span class="n">hawkes</span> <span class="o">=</span> <span class="n">SimuHawkes</span><span class="p">(</span><span class="n">kernels</span><span class="o">=</span>
                     <span class="p">[[</span><span class="n">kernel_1</span><span class="p">,</span> <span class="n">kernel_1</span><span class="p">],</span>
                      <span class="p">[</span><span class="n">HawkesKernelExp</span><span class="p">(</span><span class="o">.</span><span class="mo">07</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">kernel_2</span><span class="p">]],</span>
-                    <span class="n">baselines</span><span class="o">=</span><span class="p">[</span><span class="mf">1.5</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">],</span>
+                    <span class="n">baseline</span><span class="o">=</span><span class="p">[</span><span class="mf">1.5</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">],</span>
                     <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
 
 <span class="n">hawkes</span><span class="o">.</span><span class="n">plot_kernels</span><span class="p">()</span>
@@ -425,14 +399,6 @@ notation to build the SimuHawkes object.</p>
 </pre></div>
 </div>
 <p>(<a class="reference external" href="../../z_tutorials/simulation/code_samples/hawkes_time_func_simu.py">Source code</a>)</p>
-<div class="figure" id="id2">
-<img alt="../../_images/hawkes_time_func_simu_00.png" src="../../_images/hawkes_time_func_simu_00.png" />
-<p class="caption"><span class="caption-text">(<a class="reference external" href="../../z_tutorials/simulation/code_samples/hawkes_time_func_simu_00.png">png</a>, <a class="reference external" href="../../z_tutorials/simulation/code_samples/hawkes_time_func_simu_00.hires.png">hires.png</a>, <a class="reference external" href="../../z_tutorials/simulation/code_samples/hawkes_time_func_simu_00.pdf">pdf</a>)</span></p>
-</div>
-<div class="figure" id="id3">
-<img alt="../../_images/hawkes_time_func_simu_01.png" src="../../_images/hawkes_time_func_simu_01.png" />
-<p class="caption"><span class="caption-text">(<a class="reference external" href="../../z_tutorials/simulation/code_samples/hawkes_time_func_simu_01.png">png</a>, <a class="reference external" href="../../z_tutorials/simulation/code_samples/hawkes_time_func_simu_01.hires.png">hires.png</a>, <a class="reference external" href="../../z_tutorials/simulation/code_samples/hawkes_time_func_simu_01.pdf">pdf</a>)</span></p>
-</div>
 </div>
 </div>
 </div>

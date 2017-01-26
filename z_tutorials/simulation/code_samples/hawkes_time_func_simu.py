@@ -19,7 +19,7 @@ kernel_2 = HawkesKernelTimeFunc(tf2)
 hawkes = SimuHawkes(kernels=
                     [[kernel_1, kernel_1],
                      [HawkesKernelExp(.07, 4), kernel_2]],
-                    baselines=[1.5, 1.5],
+                    baseline=[1.5, 1.5],
                     verbose=False)
 
 hawkes.plot_kernels()

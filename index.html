@@ -5,7 +5,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MLPP &#8212; MLPP 0.1 documentation</title>
+    <title>Tick &#8212; MLPP 0.1 documentation</title>
     
     <link rel="stylesheet" href="_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -33,7 +33,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="top" title="MLPP 0.1 documentation" href="#" />
-    <link rel="next" title="Poisson processes simulation" href="z_tutorials/simulation/poisson_process_simulation.html" />
+    <link rel="next" title="Tutorials" href="z_tutorials/index.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -69,30 +69,12 @@
   <ul class="dropdown-menu globaltoc"
       role="menu"
       aria-labelledby="dLabelGlobalToc"><ul>
-<li class="toctree-l1"><a class="reference internal" href="z_tutorials/simulation/poisson_process_simulation.html">Poisson processes simulation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="z_tutorials/simulation/hawkes_simulation.html">Hawkes processes simulation</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="z_tutorials/inference/hawkes_non_parametric.html">Hawkes non parametric inference</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="z_tutorials/optimization/stochastic_solver.html">Stochastic solvers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="z_tutorials/optimization/linear_model.html">Generalized linear models</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="z_tutorials/misc/time_function.html">Time functions</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="optim/optimization_toolbox.html">Presentation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="optim/model.html">Models [<code class="docutils literal"><span class="pre">mlpp.optim.model</span></code>]</a></li>
-<li class="toctree-l1"><a class="reference internal" href="optim/prox.html">Proximal operators [<code class="docutils literal"><span class="pre">mlpp.optim.prox</span></code>]</a></li>
-<li class="toctree-l1"><a class="reference internal" href="optim/solver.html">Solvers [<code class="docutils literal"><span class="pre">mlpp.optim.solver</span></code>]</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="simu/simu.html">Simulation toolbox [<code class="docutils literal"><span class="pre">mlpp.simulation</span></code>]</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="dev/dev.html">Developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="z_tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="inference/index.html">Inference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="simulation/index.html">Simulation toolbox [<code class="docutils literal"><span class="pre">mlpp.simulation</span></code>]</a></li>
+<li class="toctree-l1"><a class="reference internal" href="optim/index.html">Optimization toolbox</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/index.html">API reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/index.html">Developer documentation</a></li>
 </ul>
 </ul>
 </li>
@@ -105,25 +87,7 @@
      href="#">Page <b class="caret"></b></a>
   <ul class="dropdown-menu localtoc"
       role="menu"
-      aria-labelledby="dLabelLocalToc"><ul>
-<li><a class="reference internal" href="#">MLPP</a><ul>
-<li><a class="reference internal" href="#machine-learning-not-only-with-point-processes">Machine Learning (<em>not only</em>) with Point Processes</a></li>
-<li><a class="reference internal" href="#main-highlights">Main highlights</a></li>
-<li><a class="reference internal" href="#tutorials">Tutorials</a><ul>
-<li><a class="reference internal" href="#simulation">Simulation</a></li>
-<li><a class="reference internal" href="#inference">Inference</a></li>
-<li><a class="reference internal" href="#optimization">Optimization</a></li>
-<li><a class="reference internal" href="#misc">Misc</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#optimization-toolbox">Optimization toolbox</a></li>
-<li><a class="reference internal" href="#simulation-toolbox">Simulation toolbox</a></li>
-<li><a class="reference internal" href="#developer-documentation">Developer documentation</a></li>
-<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
-</ul>
-</li>
-</ul>
-</ul>
+      aria-labelledby="dLabelLocalToc"></ul>
 </li>
               
             
@@ -131,7 +95,7 @@
               
                 
   <li>
-    <a href="z_tutorials/simulation/poisson_process_simulation.html" title="Next Chapter: Poisson processes simulation"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">Poisson proce... &raquo;</span>
+    <a href="z_tutorials/index.html" title="Next Chapter: Tutorials"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">Tutorials &raquo;</span>
     </a>
   </li>
               
@@ -165,134 +129,94 @@
   <div class="row">
     <div class="col-md-12 content">
       
-  <div class="section" id="mlpp">
-<h1>MLPP<a class="headerlink" href="#mlpp" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="machine-learning-not-only-with-point-processes">
-<h2>Machine Learning (<em>not only</em>) with Point Processes<a class="headerlink" href="#machine-learning-not-only-with-point-processes" title="Permalink to this headline">¶</a></h2>
-<p><code class="xref py py-obj docutils literal"><span class="pre">MLPP</span></code> is yet another machine learning library for <code class="docutils literal"><span class="pre">Python</span></code>, with a
-particular emphasis on point processes (Poisson processes,
-Hawkes processes, Cox regression), but includes also generalized linear
-models (GLM). It comes with optimization algorithms for inference and
-provides tools for simulation of datasets.
-A particular focus is on optimization: an extensive optimization toolbox
-is proposed, with recent state-of-the-art stochastic solvers.</p>
+  <div
+  class="jumbotron"
+  style="padding-top: 10px; padding-bottom: 30px;"
+>
+   <div class="container">
+      <h1 style="font-size:40px">tick</h1>
+      <p style="font-size:18px">
+         tick is yet another machine learning library for Python 3, with
+         a particular emphasis on point processes (Poisson processes,
+         Hawkes processes, Cox regression), but includes also generalized
+         linear models (GLM). It comes with optimization algorithms for
+         inference and provides tools for simulation of datasets.
+         A particular focus is on optimization: an extensive optimization
+         toolbox is proposed, with recent state-of-the-art stochastic
+         solvers.
+      </p>
+      <a class="btn btn-primary btn-lg" href="z_tutorials/index.html" role="button">
+         Show me »
+      </a>
+   </div>
 </div>
-<div class="section" id="main-highlights">
-<h2>Main highlights<a class="headerlink" href="#main-highlights" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li><strong>Python 3 only</strong>!</li>
-<li>Fast, most computation are done in C++11 (including multi-threading)</li>
-<li>Contains an optimization toolbox: solvers (optimization algorithms),
-models (for computing gradient among other things) and
-prox (penalization) classes can be combined interactively in
-<code class="docutils literal"><span class="pre">iPython</span></code> for instance</li>
-<li>Features state-of-the-art stochastic optimization algorithms, with
-parallel implementations</li>
-<li>Support sparse datasets (sparse features matrices)</li>
-<li>Interplay between Python and C++ is done using swig</li>
-</ul>
+
+<div class="row">
+   <div class="col-sm-4 col-sm-offset-1">
+      <a class="reference internal" href="z_tutorials/index.html">
+         <h2>Tutorials</h2>
+      </a>
+      <p>
+         Let us show you all the uses cases you might want to solve using
+         tick. This includes simulation of many types, inference of
+         different models or how to use the optimization toolbox.
+      </p>
+   </div>
+
+   <div class="col-sm-4 col-sm-offset-1">
+      <a class="reference internal" href="inference/index.html">
+         <h2>Inference</h2>
+      </a>
+      <p>
+         User friendly classes that are used to learn models from data.
+         These classes are scikit-learn compatible.
+      </p>
+   </div>
 </div>
-<div class="section" id="tutorials">
-<h2>Tutorials<a class="headerlink" href="#tutorials" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="simulation">
-<h3>Simulation<a class="headerlink" href="#simulation" title="Permalink to this headline">¶</a></h3>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="z_tutorials/simulation/poisson_process_simulation.html">Poisson processes simulation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="z_tutorials/simulation/hawkes_simulation.html">Hawkes processes simulation</a></li>
-</ul>
+
+<div class="row">
+   <div class="col-sm-4 col-sm-offset-1">
+      <a class="reference internal" href="simulation/index.html">
+         <h2>Simulation</h2>
+      </a>
+      <p>
+         tick provides several classes to simulate datasets. This is
+         particularly useful to test optimization algorithms, and to
+         compare the statistical properties of inference methods.
+      </p>
+   </div>
+
+   <div class="col-sm-4 col-sm-offset-1">
+      <a class="reference internal" href="optim/index.html">
+         <h2>Optimization</h2>
+      </a>
+      <p>
+         This optimization toolbox is the core of most learners. It allows
+         you to apply many optimization algorithms on a set of models and
+         regularization techniques of your choice.
+      </p>
+   </div>
 </div>
-</div>
-<div class="section" id="inference">
-<h3>Inference<a class="headerlink" href="#inference" title="Permalink to this headline">¶</a></h3>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="z_tutorials/inference/hawkes_non_parametric.html">Hawkes non parametric inference</a></li>
-</ul>
-</div>
-</div>
-<div class="section" id="optimization">
-<h3>Optimization<a class="headerlink" href="#optimization" title="Permalink to this headline">¶</a></h3>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="z_tutorials/optimization/stochastic_solver.html">Stochastic solvers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="z_tutorials/optimization/linear_model.html">Generalized linear models</a></li>
-</ul>
-</div>
-</div>
-<div class="section" id="misc">
-<h3>Misc<a class="headerlink" href="#misc" title="Permalink to this headline">¶</a></h3>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="z_tutorials/misc/time_function.html">Time functions</a></li>
-</ul>
-</div>
-</div>
-</div>
-<div class="section" id="optimization-toolbox">
-<h2>Optimization toolbox<a class="headerlink" href="#optimization-toolbox" title="Permalink to this headline">¶</a></h2>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="optim/optimization_toolbox.html">Presentation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="optim/model.html">Models [<code class="docutils literal"><span class="pre">mlpp.optim.model</span></code>]</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="optim/model.html#introduction">Introduction</a></li>
-<li class="toctree-l2"><a class="reference internal" href="optim/model.html#contents">Contents</a></li>
-<li class="toctree-l2"><a class="reference internal" href="optim/model.html#generalized-linear-models">Generalized linear models</a></li>
-<li class="toctree-l2"><a class="reference internal" href="optim/model.html#hawkes-model">Hawkes model</a></li>
-<li class="toctree-l2"><a class="reference internal" href="optim/model.html#what-s-under-the-hood">What&#8217;s under the hood?</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="optim/prox.html">Proximal operators [<code class="docutils literal"><span class="pre">mlpp.optim.prox</span></code>]</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="optim/prox.html#introduction">Introduction</a></li>
-<li class="toctree-l2"><a class="reference internal" href="optim/prox.html#available-operators">Available operators</a></li>
-<li class="toctree-l2"><a class="reference internal" href="optim/prox.html#example">Example</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="optim/solver.html">Solvers [<code class="docutils literal"><span class="pre">mlpp.optim.solver</span></code>]</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="optim/solver.html#introduction">Introduction</a></li>
-<li class="toctree-l2"><a class="reference internal" href="optim/solver.html#batch-solvers">Batch solvers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="optim/solver.html#stochastic-solvers">Stochastic solvers</a></li>
-</ul>
-</li>
-</ul>
-</div>
-</div>
-<div class="section" id="simulation-toolbox">
-<h2>Simulation toolbox<a class="headerlink" href="#simulation-toolbox" title="Permalink to this headline">¶</a></h2>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="simu/simu.html">Simulation toolbox [<code class="docutils literal"><span class="pre">mlpp.simulation</span></code>]</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="simu/simu.html#introduction">Introduction</a></li>
-<li class="toctree-l2"><a class="reference internal" href="simu/simu.html#contents">Contents</a></li>
-<li class="toctree-l2"><a class="reference internal" href="simu/simu.html#linear-model-simulation">Linear model simulation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="simu/simu.html#point-process-simulation">Point process simulation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="simu/simu.html#utilities">Utilities</a></li>
-<li class="toctree-l2"><a class="reference internal" href="simu/simu.html#example">Example</a></li>
-</ul>
-</li>
-</ul>
-</div>
-</div>
-<div class="section" id="developer-documentation">
-<h2>Developer documentation<a class="headerlink" href="#developer-documentation" title="Permalink to this headline">¶</a></h2>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="dev/dev.html">Developer documentation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="dev/dev.html#base-class">Base class</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dev/dev.html#how-to-add-a-new-model-solver-or-prox">How to add a new model, solver or prox</a></li>
-</ul>
-</li>
-</ul>
-</div>
-</div>
-<div class="section" id="indices-and-tables">
-<h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
-<li><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></li>
-<li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>
-</ul>
-</div>
+
+<div class="row" style="margin-bottom:40px">
+   <div class="col-sm-4 col-sm-offset-1">
+      <a class="reference internal" href="api/index.html">
+         <h2>API reference</h2>
+      </a>
+      <p>
+         A global vision of all tick's possibilities
+      </p>
+   </div>
+
+   <div class="col-sm-4 col-sm-offset-1">
+      <a class="reference internal" href="dev/index.html">
+         <h2>Development</h2>
+      </a>
+      <p>
+         You would like to contribute? Here you will find many tips.
+      </p>
+   </div>
+</div><div class="toctree-wrapper compound">
 </div>
 
 

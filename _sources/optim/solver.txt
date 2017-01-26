@@ -35,4 +35,5 @@ Solver                    Class
 :ref:`sgd`                `SGD`
 :ref:`svrg`               `SVRG`
 :ref:`sdca`               `SDCA`
+:ref:`adagrad`            `AdaGrad`
 ======================    ==============

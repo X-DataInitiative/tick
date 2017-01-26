@@ -68,30 +68,12 @@
   <ul class="dropdown-menu globaltoc"
       role="menu"
       aria-labelledby="dLabelGlobalToc"><ul>
-<li class="toctree-l1"><a class="reference internal" href="../../z_tutorials/simulation/poisson_process_simulation.html">Poisson processes simulation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../z_tutorials/simulation/hawkes_simulation.html">Hawkes processes simulation</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../z_tutorials/inference/hawkes_non_parametric.html">Hawkes non parametric inference</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../z_tutorials/optimization/stochastic_solver.html">Stochastic solvers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../z_tutorials/optimization/linear_model.html">Generalized linear models</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../z_tutorials/misc/time_function.html">Time functions</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../optimization_toolbox.html">Presentation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../model.html">Models [<code class="docutils literal"><span class="pre">mlpp.optim.model</span></code>]</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../prox.html">Proximal operators [<code class="docutils literal"><span class="pre">mlpp.optim.prox</span></code>]</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../solver.html">Solvers [<code class="docutils literal"><span class="pre">mlpp.optim.solver</span></code>]</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../simu/simu.html">Simulation toolbox [<code class="docutils literal"><span class="pre">mlpp.simulation</span></code>]</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../dev/dev.html">Developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../z_tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../inference/index.html">Inference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../simulation/index.html">Simulation toolbox [<code class="docutils literal"><span class="pre">mlpp.simulation</span></code>]</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Optimization toolbox</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">API reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dev/index.html">Developer documentation</a></li>
 </ul>
 </ul>
 </li>
@@ -148,129 +130,6 @@
   <div class="section" id="sorted-l1-penalization">
 <span id="prox-sorted-l1"></span><h1>Sorted-L1 penalization<a class="headerlink" href="#sorted-l1-penalization" title="Permalink to this headline">¶</a></h1>
 <p>Proximal operator of the sorted L1 penalization</p>
-<dl class="class">
-<dt id="mlpp.optim.prox.ProxSortedL1">
-<em class="property">class </em><code class="descclassname">mlpp.optim.prox.</code><code class="descname">ProxSortedL1</code><span class="sig-paren">(</span><em>strength: float</em>, <em>fdr: float = 0.6</em>, <em>weights_type: str = 'bh'</em>, <em>range: tuple = None</em>, <em>positive: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mlpp/optim/prox/prox_sortedl1.html#ProxSortedL1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlpp.optim.prox.ProxSortedL1" title="Permalink to this definition">¶</a></dt>
-<dd><p>Proximal operator of sorted L1 penalization</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>strength</strong> : <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">float</span></code></a></p>
-<blockquote>
-<div><p>Level of penalization</p>
-</div></blockquote>
-<p><strong>fdr</strong> : <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">float</span></code></a>, default=0.6</p>
-<blockquote>
-<div><p>Desired False Discovery Rate for detection of non-zeros in
-the coefficients</p>
-</div></blockquote>
-<p><strong>weights_type</strong> : &#8220;bh&#8221; | &#8220;oscar&#8221;, default=&#8221;bh&#8221;</p>
-<blockquote>
-<div><ul class="simple">
-<li>If &#8220;bh&#8221;, we use Benjamini-Hochberg weights, under a Gaussian
-error assumption, and expect a FDR control</li>
-<li>If &#8220;oscar&#8221;, there is no FDR control, and we get the OSCAR
-penalization, see notes below for references</li>
-</ul>
-</div></blockquote>
-<p><strong>range</strong> : <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">tuple</span></code></a> of two <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">int</span></code></a>, default=`None`</p>
-<blockquote class="last">
-<div><p>Range on which the prox is applied. If <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">None</span></code></a> then the prox is
-applied on the whole vector</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-<p class="rubric">Notes</p>
-<p>Uses the stack-based algorithm for FastProxL1 from</p>
-<ul class="simple">
-<li>SLOPE&#8211;Adaptive Variable Selection via Convex Optimization, by
-Bogdan, M. and Berg, E. van den and Sabatti, C. and Su, W. and Candes, E. J.
-arXiv preprint arXiv:1407.3824, 2014</li>
-</ul>
-<p class="rubric">Attributes</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="4%" />
-<col width="96%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td>weights</td>
-<td>(<code class="xref py py-obj docutils literal"><span class="pre">np.array</span></code>, shape=(n_coeffs,)) The weights used in the penalization. They are automatically setted, depending on the <code class="docutils literal"><span class="pre">weights_type</span></code> and <code class="docutils literal"><span class="pre">fdr</span></code> parameters.</td>
-</tr>
-</tbody>
-</table>
-<dl class="method">
-<dt id="mlpp.optim.prox.ProxSortedL1.call">
-<code class="descname">call</code><span class="sig-paren">(</span><em>coeffs: numpy.ndarray</em>, <em>step: object = 1.0</em>, <em>out: numpy.ndarray = None</em><span class="sig-paren">)</span> &rarr; numpy.ndarray<a class="headerlink" href="#mlpp.optim.prox.ProxSortedL1.call" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>coeffs</strong> : <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.12)"><code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code></a>, shape=(n_coeffs,)</p>
-<blockquote>
-<div><p>Input vector on which is applied the proximal operator</p>
-</div></blockquote>
-<p><strong>step</strong> : <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">float</span></code></a> or <code class="xref py py-obj docutils literal"><span class="pre">np.array</span></code>, default=1.</p>
-<blockquote>
-<div><p>The amount of penalization is multiplied by this amount</p>
-<ul class="simple">
-<li>If <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">float</span></code></a>, the amount of penalization is multiplied by
-this amount</li>
-<li>If <code class="xref py py-obj docutils literal"><span class="pre">np.array</span></code>, then each coordinate of coeffs (within
-the given range), receives an amount of penalization
-multiplied by t (available only for separable prox)</li>
-</ul>
-</div></blockquote>
-<p><strong>out</strong> : <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.12)"><code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code></a>, shape=(n_params,), default=None</p>
-<blockquote>
-<div><p>If not <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">None</span></code></a>, the output is stored in the given <code class="docutils literal"><span class="pre">out</span></code>.
-Otherwise, a new vector is created.</p>
-</div></blockquote>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> : <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.12)"><code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code></a>, shape=(n_coeffs,)</p>
-<blockquote class="last">
-<div><p>Same object as out</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-<p class="rubric">Notes</p>
-<p><code class="docutils literal"><span class="pre">step</span></code> must have the same size as <code class="docutils literal"><span class="pre">coeffs</span></code> whenever range is
-<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">None</span></code></a>, or a size matching the one given by the range
-otherwise</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="mlpp.optim.prox.ProxSortedL1.value">
-<code class="descname">value</code><span class="sig-paren">(</span><em>coeffs: numpy.ndarray</em><span class="sig-paren">)</span> &rarr; float<a class="reference internal" href="../../_modules/mlpp/optim/prox/prox_sortedl1.html#ProxSortedL1.value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlpp.optim.prox.ProxSortedL1.value" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the value of the penalization at <code class="docutils literal"><span class="pre">coeffs</span></code></p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>coeffs</strong> : <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.12)"><code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code></a>, shape=(n_coeffs,)</p>
-<blockquote>
-<div><p>The value of the penalization is computed at this point</p>
-</div></blockquote>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> : <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">float</span></code></a></p>
-<blockquote class="last">
-<div><p>Value of the penalization at <code class="docutils literal"><span class="pre">coeffs</span></code></p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
 </div>
 
 

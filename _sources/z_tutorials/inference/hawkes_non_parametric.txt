@@ -20,7 +20,7 @@ We simulate a 2-dimensional Hawkes process with exponential kernels
 
     h = SimuHawkes(kernels=[[0, HawkesKernelExp(0.1 / 0.2, 0.2)],
                         [HawkesKernelExp(0.1 / 0.2, 0.2), 0]],
-           baselines=[0.05, 0.05], verbose=False)
+           baseline=[0.05, 0.05], verbose=False)
     h.end_time = 1000000
     h.simulate()
 
@@ -43,7 +43,7 @@ have typed instead
 
 .. testcode:: [exp_kernels]
 
-    e = Estim(h.process)
+    e = Estim(h.timestamps)
 
 Here the Hawkes realization is just given by a list of np.arrays corresponding
 to the arrival times of each component
@@ -92,7 +92,7 @@ default is :math:`10^{-5}`.
                               HawkesKernelPowerLaw(alphas[1], delta, beta, 2000)],
                              [HawkesKernelPowerLaw(alphas[2], delta, beta, 2000),
                               HawkesKernelPowerLaw(alphas[3], delta, beta, 2000)]],
-                    baselines=[0.05, 0.05], verbose=False)
+                        baseline=[0.05, 0.05], verbose=False)
 
     hawkes.end_time = 50000
     hawkes.simulate()
@@ -127,7 +127,7 @@ above)
     e.add_realization(hawkes)
 
     # Again you could have done instead
-    # e.add_realization(hawkes.process)
+    # e.add_realization(hawkes.timestamps)
 
 Then we perform the solving of the Wiener Hopf equation. Let's look at the
 options again. It is solved using a quadrature method. You have to choose the

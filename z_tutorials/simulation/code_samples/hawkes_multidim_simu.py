@@ -11,7 +11,7 @@ alphas[0, 1] = 0
 betas = 3 * np.ones((d, d))
 mus = 0.5 * np.ones(d)
 hawkes = SimuHawkesExpKernels(adjacency=alphas, decays=betas,
-                              baselines=mus, verbose=False)
+                              baseline=mus, verbose=False)
 
 run_time = 1000
 hawkes.end_time = run_time

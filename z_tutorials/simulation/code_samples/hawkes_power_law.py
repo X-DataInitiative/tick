@@ -11,7 +11,7 @@ kernel_cross = HawkesKernelPowerLaw(2, 1, 2, error=1e-5)
 hawkes = SimuHawkes(kernels=
                     [[kernel_diag, kernel_cross],
                      [0, kernel_diag]],
-                    baselines=[1.5, 1.5],
+                    baseline=[1.5, 1.5],
                     verbose=False)
 
 run_time = 200

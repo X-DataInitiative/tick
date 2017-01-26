@@ -3,14 +3,14 @@ import numpy as np
 import scipy
 from pylab import rcParams
 from mlpp.simulation import SimuLogReg
-from mlpp.optim.solver import SGD, SVRG, Fista
+from mlpp.optim.solver import SGD, SVRG, Fista, AdaGrad
 from mlpp.optim.model import ModelLogReg
 from mlpp.optim.prox import ProxL2Sq
 
 rcParams['figure.figsize'] = 16, 4
 
 # We simulate logistic data with feature vector w and intercept c
-n_features, n_samples = 5, 10000
+n_features, n_samples = 10, 10000
 w = np.random.normal(0, 1, n_features)
 c = 0.2
 sim = SimuLogReg(weights=w, intercept=c, n_samples=n_samples)
@@ -38,7 +38,8 @@ svrg.set_model(model)
 svrg.set_prox(prox)
 svrg.history.set_minimizer(minimizer)
 svrg.history.set_minimum(minimum)
-svrg.solve(x0, 0.1)
+step = 1. / model.get_lip_max()
+svrg.solve(x0, step)
 
 # Fista solver
 fista = Fista(max_iter=100, print_every=3, record_every=1, tol=1e-10)
@@ -49,17 +50,28 @@ fista.history.set_minimum(minimum)
 fista.solve(x0)
 
 # SGD solver
-sgd = SGD(max_iter=100, print_every=10, record_every=1, tol=1e-10)
+sgd = SGD(max_iter=100, print_every=10, record_every=1, tol=1e-10, seed=1516,
+          rand_type='perm')
 sgd.set_model(model)
 sgd.set_prox(prox)
 sgd.history.set_minimizer(minimizer)
 sgd.history.set_minimum(minimum)
-sgd.solve(x0, 10)
+sgd.solve(x0, 5)
+
+# AdaGrad solver
+adagrad = AdaGrad(max_iter=100, print_every=10, record_every=1, tol=1e-10,
+                  seed=1516, rand_type='perm')
+adagrad.set_model(model)
+adagrad.set_prox(prox)
+adagrad.history.set_minimizer(minimizer)
+adagrad.history.set_minimum(minimum)
+adagrad.solve(x0)
+
 
 # We plot our solvers results
 ax1 = plt.subplot(121)
 ax2 = plt.subplot(122)
-solvers = [svrg, sgd, fista]
+solvers = [svrg, sgd, fista, adagrad]
 for s in solvers:
     s.history.plot(ax=ax1, y_axis=['dist_obj'], labels=[s.__class__.__name__])
     s.history.plot(ax=ax2, y_axis=['rel_obj'], x_axis='time',

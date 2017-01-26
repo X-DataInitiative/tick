@@ -109,7 +109,7 @@ Model                    Class
 
 
 What's under the hood?
-------------------------
+----------------------
 All model classes have a ``loss`` and ``grad`` method, that are used by batch
 algorithms to fit the model. These classes contains a C++ object, that does the
 computations. Some methods are hidden within this C++ object, and are accessible

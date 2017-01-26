@@ -4,7 +4,7 @@ from mlpp.simulation import SimuHawkes, HawkesKernelExp
 
 h = SimuHawkes(kernels=[[0, HawkesKernelExp(0.1 / 0.2, 0.2)],
                         [HawkesKernelExp(0.1 / 0.2, 0.2), 0]],
-               baselines=[0.05, 0.05],
+               baseline=[0.05, 0.05],
                verbose=False)
 h.end_time = 1000000
 h.simulate()

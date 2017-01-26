@@ -1,0 +1,10 @@
+:orphan:
+
+.. _learner-hawkes:
+
+Hawkes model with exponential kernels
+-------------------------------------
+
+.. autoclass:: mlpp.inference.LearnerHawkesExpKernFixedDecay
+    :members:
+    :inherited-members:

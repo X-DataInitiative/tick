@@ -13,7 +13,7 @@ hawkes = SimuHawkes(kernels=[[HawkesKernelPowerLaw(alphas[0], delta, beta, 2000)
                               HawkesKernelPowerLaw(alphas[1], delta, beta, 2000)],
                              [HawkesKernelPowerLaw(alphas[2], delta, beta, 2000),
                           HawkesKernelPowerLaw(alphas[3], delta, beta, 2000)]],
-                    baselines=[0.05, 0.05],
+                    baseline=[0.05, 0.05],
                     verbose=False)
 hawkes.end_time = 50000
 hawkes.simulate()

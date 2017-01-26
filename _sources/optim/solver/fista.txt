@@ -19,7 +19,7 @@ algorithm is given by
 
 where :math:`\eta > 0` is the step-size.
 
-INSERT REFERENCE
+TODO: INSERT REFERENCE
 
 
 .. autoclass:: mlpp.optim.solver.Fista
