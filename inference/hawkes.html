@@ -129,6 +129,160 @@
       
   <div class="section" id="hawkes-model-with-exponential-kernels">
 <span id="learner-hawkes"></span><h1>Hawkes model with exponential kernels<a class="headerlink" href="#hawkes-model-with-exponential-kernels" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="mlpp.inference.LearnerHawkesExpKernFixedDecay">
+<em class="property">class </em><code class="descclassname">mlpp.inference.</code><code class="descname">LearnerHawkesExpKernFixedDecay</code><span class="sig-paren">(</span><em>decays</em>, <em>gofit='least-squares'</em>, <em>penalty='l2'</em>, <em>C=1000.0</em>, <em>solver='fista'</em>, <em>step=None</em>, <em>tol=1e-05</em>, <em>max_iter=100</em>, <em>verbose=False</em>, <em>print_every=10</em>, <em>record_every=10</em>, <em>elastic_net_ratio=0.95</em>, <em>random_state=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mlpp/inference/hawkes_expkern_fixeddecay.html#LearnerHawkesExpKernFixedDecay"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlpp.inference.LearnerHawkesExpKernFixedDecay" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hawkes process learner for exponential kernels with fixed and given decays,
+with many choices of penalization and solvers.</p>
+<p>The intensity of the node <span class="math">\(i\)</span> of this Hawkes process can be
+written :</p>
+<div class="math">
+\[\lambda^i(t) = \mu^i + \sum_{j=1}^{n\_nodes} \alpha ^{ij}
+\beta ^{ij} \sum_{t_k^j &lt; t} \exp (-\beta^{ij} (t - t_k^j))\]</div>
+<p>In our implementation we denote:</p>
+<ul class="simple">
+<li>Vector <span class="math">\(\mu \in \mathbb{R}^{n\_nodes}\)</span> by the attribute
+<code class="xref py py-obj docutils literal"><span class="pre">baseline</span></code></li>
+<li>Matrix <span class="math">\(A = (\alpha^{ij})_{ij} \in \mathbb{R}^{n\_nodes \times
+n\_nodes}\)</span> by the attribute <code class="xref py py-obj docutils literal"><span class="pre">adjacency</span></code></li>
+<li>Matrix <span class="math">\(B = (\beta_{ij})_{ij} \in \mathbb{R}^{n\_nodes \times
+n\_nodes}\)</span> by the parameter <code class="xref py py-obj docutils literal"><span class="pre">decays</span></code>. This parameter is given to
+the model</li>
+</ul>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>decays</strong> : <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">float</span></code></a> or <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code>, shape=(n_nodes, n_nodes)</p>
+<blockquote>
+<div><p>The decays used in the exponential kernels. If a <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">float</span></code></a> is given,
+the initial point will be the matrix filled with this float.</p>
+</div></blockquote>
+<p><strong>gofit</strong> : &#8216;least-squares&#8217; | &#8216;likelihood&#8217;, default=&#8217;least-squares&#8217;</p>
+<blockquote>
+<div><p>Goodness-of-fit used for model&#8217;s fitting</p>
+</div></blockquote>
+<p><strong>C</strong> : <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">float</span></code></a>, default=1e3</p>
+<blockquote>
+<div><p>Level of penalization</p>
+</div></blockquote>
+<p><strong>penalty</strong> : &#8216;l1&#8217;, &#8216;l2&#8217;, &#8216;elasticnet&#8217;, &#8216;nuclear&#8217;, default=&#8217;l2&#8217;</p>
+<blockquote>
+<div><p>The penalization to use. Default is ridge penalization.
+If nuclear is chosen, it is applied on the adjacency matrix.</p>
+</div></blockquote>
+<p><strong>solver</strong> : &#8216;ista&#8217;, &#8216;fista&#8217;, &#8216;bfgs&#8217;, &#8216;svrg&#8217;, default=&#8217;fista&#8217;</p>
+<blockquote>
+<div><p>The name of the solver to use</p>
+</div></blockquote>
+<p><strong>step</strong> : <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">float</span></code></a>, default=None</p>
+<blockquote>
+<div><p>Initial step size used for learning. Used in &#8216;ista&#8217;, &#8216;fista&#8217;, &#8216;sgd&#8217;
+and &#8216;svrg&#8217; solvers</p>
+</div></blockquote>
+<p><strong>tol</strong> : <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">float</span></code></a>, default=1e-5</p>
+<blockquote>
+<div><p>The tolerance of the solver (iterations stop when the stopping
+criterion is below it). If not reached the solver does <code class="docutils literal"><span class="pre">max_iter</span></code>
+iterations</p>
+</div></blockquote>
+<p><strong>max_iter</strong> : <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">int</span></code></a>, default=100</p>
+<blockquote>
+<div><p>Maximum number of iterations of the solver</p>
+</div></blockquote>
+<p><strong>verbose</strong> : <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">bool</span></code></a>, default=False</p>
+<blockquote>
+<div><p>If <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">True</span></code></a>, we verbose things, otherwise the solver does not
+print anything (but records information in history anyway)</p>
+</div></blockquote>
+<p><strong>print_every</strong> : <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">int</span></code></a>, default=10</p>
+<blockquote>
+<div><p>Print history information when <code class="docutils literal"><span class="pre">n_iter</span></code> (iteration number) is
+a multiple of <code class="docutils literal"><span class="pre">print_every</span></code></p>
+</div></blockquote>
+<p><strong>record_every</strong> : <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">int</span></code></a>, default=10</p>
+<blockquote>
+<div><p>Record history information when <code class="docutils literal"><span class="pre">n_iter</span></code> (iteration number) is
+a multiple of <code class="docutils literal"><span class="pre">record_every</span></code></p>
+</div></blockquote>
+<p><strong>elastic_net_ratio</strong> : <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">float</span></code></a>, default=0.95</p>
+<blockquote>
+<div><p>Ratio of elastic net mixing parameter with 0 &lt;= ratio &lt;= 1.</p>
+<ul class="simple">
+<li>For ratio = 0 this is ridge (L2 squared) regularization.</li>
+<li>For ratio = 1 this is lasso (L1) regularization.</li>
+<li>For 0 &lt; ratio &lt; 1, the regularization is a linear combination
+of L1 and L2.</li>
+</ul>
+<p>Used in &#8216;elasticnet&#8217; penalty</p>
+</div></blockquote>
+<p><strong>random_state</strong> : int seed, or None (default)</p>
+<blockquote class="last">
+<div><p>The seed that will be used by stochastic solvers. If <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">None</span></code></a>, a random
+seed will be used (based on timestamp and other physical metrics).
+Used in &#8216;sgd&#8217;, and &#8216;svrg&#8217; solvers</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="6%" />
+<col width="94%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>n_nodes</td>
+<td>(<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">int</span></code></a>) Number of nodes / components in the Hawkes model</td>
+</tr>
+<tr class="row-even"><td>baseline</td>
+<td>(<code class="xref py py-obj docutils literal"><span class="pre">np.array</span></code>, shape=(n_nodes,)) Inferred baseline of each component&#8217;s intensity</td>
+</tr>
+<tr class="row-odd"><td>adjacency</td>
+<td>(<code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code>, shape=(n_nodes, n_nodes)) Inferred adjacency matrix</td>
+</tr>
+<tr class="row-even"><td>coeffs</td>
+<td>(<code class="xref py py-obj docutils literal"><span class="pre">np.array</span></code>, shape=(n_nodes * n_nodes + n_nodes, )) Raw coefficients of the model. Row stack of <code class="xref py py-obj docutils literal"><span class="pre">self.baseline</span></code> and <code class="xref py py-obj docutils literal"><span class="pre">self.adjacency</span></code></td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="mlpp.inference.LearnerHawkesExpKernFixedDecay.fit">
+<code class="descname">fit</code><span class="sig-paren">(</span><em>events: list</em>, <em>start=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mlpp/inference/hawkes_expkern_fixeddecay.html#LearnerHawkesExpKernFixedDecay.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlpp.inference.LearnerHawkesExpKernFixedDecay.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit the model according to the given training data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>events</strong> : <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">list</span></code></a> of <code class="xref py py-obj docutils literal"><span class="pre">np.array</span></code></p>
+<blockquote>
+<div><p>The events of each component of the Hawkes. Namely
+<code class="xref py py-obj docutils literal"><span class="pre">events[j]</span></code> contains a one-dimensional <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.12)"><code class="xref py py-obj docutils literal"><span class="pre">numpy.array</span></code></a> of
+the events&#8217; timestamps of component j</p>
+</div></blockquote>
+<p><strong>start</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.array</span></code> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">float</span></code></a>, default=None</p>
+<blockquote>
+<div><p>If <code class="xref py py-obj docutils literal"><span class="pre">np.array</span></code>, the initial <code class="xref py py-obj docutils literal"><span class="pre">coeffs</span></code> coefficients passed to the
+solver, ie. the optimization algorithm.
+If a <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">float</span></code></a> is given, the initial point will be the vector
+filled with this float.
+If <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">None</span></code></a> it will be automatically chosen.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> : <code class="xref py py-obj docutils literal"><span class="pre">LearnerHawkesExpKernFixedDecay</span></code></p>
+<blockquote class="last">
+<div><p>The current instance of the Learner</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 
 

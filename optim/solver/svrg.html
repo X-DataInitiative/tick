@@ -130,6 +130,223 @@
   <div class="section" id="stochastic-variance-reduced-gradient-descent">
 <span id="svrg"></span><h1>Stochastic variance reduced gradient descent<a class="headerlink" href="#stochastic-variance-reduced-gradient-descent" title="Permalink to this headline">¶</a></h1>
 <p>Stochastic variance reduced gradient descent</p>
+<dl class="class">
+<dt id="mlpp.optim.solver.SVRG">
+<em class="property">class </em><code class="descclassname">mlpp.optim.solver.</code><code class="descname">SVRG</code><span class="sig-paren">(</span><em>step: float = None</em>, <em>epoch_size: int = None</em>, <em>rand_type: str = 'unif'</em>, <em>tol: float = 0.0</em>, <em>max_iter: int = 100</em>, <em>verbose: bool = True</em>, <em>print_every: int = 10</em>, <em>record_every: int = 1</em>, <em>seed: int = -1</em>, <em>variance_reduction: str = 'last'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mlpp/optim/solver/svrg.html#SVRG"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlpp.optim.solver.SVRG" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stochastic variance reduced gradient</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>epoch_size</strong> : <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">int</span></code></a></p>
+<blockquote>
+<div><p>Epoch size</p>
+</div></blockquote>
+<p><strong>rand_type</strong> : <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">str</span></code></a></p>
+<blockquote>
+<div><p>Type of random sampling</p>
+<ul class="simple">
+<li>if <code class="docutils literal"><span class="pre">&quot;unif&quot;</span></code> samples are uniformly drawn among all possibilities</li>
+<li>if <code class="docutils literal"><span class="pre">&quot;perm&quot;</span></code> a random permutation of all possibilities is
+generated and samples are sequentially taken from it. Once all of
+them have been taken, a new random permutation is generated</li>
+</ul>
+</div></blockquote>
+<p><strong>tol</strong> : <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">float</span></code></a>, default=0</p>
+<blockquote>
+<div><p>The tolerance of the solver (iterations stop when the stopping
+criterion is below it). By default the solver does <code class="docutils literal"><span class="pre">max_iter</span></code>
+iterations</p>
+</div></blockquote>
+<p><strong>max_iter</strong> : <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">int</span></code></a></p>
+<blockquote>
+<div><p>Maximum number of iterations of the solver</p>
+</div></blockquote>
+<p><strong>verbose</strong> : <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">bool</span></code></a>, default=True</p>
+<blockquote>
+<div><p>If <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">True</span></code></a>, we verbose things, otherwise the solver does not
+print anything (but records information in history anyway)</p>
+</div></blockquote>
+<p><strong>print_every</strong> : <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">int</span></code></a>, default = 10</p>
+<blockquote>
+<div><p>Print history information every time the iteration number is a
+multiple of <code class="docutils literal"><span class="pre">print_every</span></code></p>
+</div></blockquote>
+<p><strong>record_every</strong> : <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">int</span></code></a>, default = 1</p>
+<blockquote>
+<div><p>Information along iteration is recorded in history each time the
+iteration number of a multiple of <code class="docutils literal"><span class="pre">record_every</span></code></p>
+</div></blockquote>
+<p><strong>variance_reduction</strong> : {&#8216;last&#8217;, &#8216;avg&#8217;, &#8216;rand&#8217;}, default = last</p>
+<blockquote class="last">
+<div><p>Determine what is used as phase iterate for variance reduction.</p>
+<ul class="simple">
+<li>&#8216;last&#8217; : the phase iterate is the last iterate of the previous epoch</li>
+<li>&#8216;avg&#8217; : the phase iterate is the average over the iterates in the past
+epoch</li>
+<li>&#8216;rand&#8217;: the phase iterate is a random iterate of the previous epoch</li>
+</ul>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="13%" />
+<col width="88%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>model</td>
+<td>(<code class="xref py py-obj docutils literal"><span class="pre">Solver</span></code>) The model to solve</td>
+</tr>
+<tr class="row-even"><td>prox</td>
+<td>(<code class="xref py py-obj docutils literal"><span class="pre">Prox</span></code>) Proximal operator to solve</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="mlpp.optim.solver.SVRG.get_history">
+<code class="descname">get_history</code><span class="sig-paren">(</span><em>key=None</em><span class="sig-paren">)</span><a class="headerlink" href="#mlpp.optim.solver.SVRG.get_history" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns history of the solver</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>key</strong> : <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">str</span></code></a>, default=None</p>
+<blockquote>
+<div><ul class="simple">
+<li>If <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">None</span></code></a> all history is returned as a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">dict</span></code></a></li>
+<li>If <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">str</span></code></a>, name of the history element to retrieve</li>
+</ul>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> : <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">list</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">dict</span></code></a></p>
+<blockquote class="last">
+<div><ul class="simple">
+<li>If <code class="docutils literal"><span class="pre">key</span></code> is None or <code class="docutils literal"><span class="pre">key</span></code> is not in history then
+output is a dict containing history of all keys</li>
+<li>If <code class="docutils literal"><span class="pre">key</span></code> is the name of an element in the history,
+output is a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">list</span></code></a> containing the history of this element</li>
+</ul>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mlpp.optim.solver.SVRG.objective">
+<code class="descname">objective</code><span class="sig-paren">(</span><em>coeffs</em>, <em>loss: float = None</em><span class="sig-paren">)</span><a class="headerlink" href="#mlpp.optim.solver.SVRG.objective" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the objective minimized by the solver at <code class="docutils literal"><span class="pre">coeffs</span></code></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>coeffs</strong> : <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.12)"><code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code></a>, shape=(n_coeffs,)</p>
+<blockquote>
+<div><p>The objective is computed at this point</p>
+</div></blockquote>
+<p><strong>loss</strong> : <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">float</span></code></a>, default=`None`</p>
+<blockquote>
+<div><p>Gives the value of the loss if already known (allows to
+avoid its computation in some cases)</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> : <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">float</span></code></a></p>
+<blockquote class="last">
+<div><p>Value of the objective at given <code class="docutils literal"><span class="pre">coeffs</span></code></p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mlpp.optim.solver.SVRG.set_model">
+<code class="descname">set_model</code><span class="sig-paren">(</span><em>model: mlpp.optim.model.base.model.Model</em><span class="sig-paren">)</span><a class="headerlink" href="#mlpp.optim.solver.SVRG.set_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set model in the solver</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>model</strong> : <code class="xref py py-obj docutils literal"><span class="pre">Model</span></code></p>
+<blockquote>
+<div><p>Sets the model in the solver. The model gives the first
+order information about the model (loss, gradient, among
+other things)</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> : <code class="xref py py-obj docutils literal"><span class="pre">Solver</span></code></p>
+<blockquote class="last">
+<div><p>The <code class="xref py py-obj docutils literal"><span class="pre">Solver</span></code> with given model</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mlpp.optim.solver.SVRG.set_prox">
+<code class="descname">set_prox</code><span class="sig-paren">(</span><em>prox: mlpp.optim.prox.base.prox.Prox</em><span class="sig-paren">)</span><a class="headerlink" href="#mlpp.optim.solver.SVRG.set_prox" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set prox in the solver</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>prox</strong> : <code class="xref py py-obj docutils literal"><span class="pre">Prox</span></code></p>
+<blockquote>
+<div><p>Sets the prox in the solver</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> : <code class="xref py py-obj docutils literal"><span class="pre">Solver</span></code></p>
+<blockquote class="last">
+<div><p>The <code class="xref py py-obj docutils literal"><span class="pre">Solver</span></code> with given prox</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mlpp.optim.solver.SVRG.solve">
+<code class="descname">solve</code><span class="sig-paren">(</span><em>x0=None</em>, <em>step=None</em><span class="sig-paren">)</span><a class="headerlink" href="#mlpp.optim.solver.SVRG.solve" title="Permalink to this definition">¶</a></dt>
+<dd><p>Launch the solver</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>x0</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.array</span></code>, shape=(n_coeffs,), default=`None`</p>
+<blockquote>
+<div><p>Starting point of the solver</p>
+</div></blockquote>
+<p><strong>step</strong> : <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">float</span></code></a>, default=`None`</p>
+<blockquote>
+<div><p>Step-size or learning rate for the solver</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.array</span></code>, shape=(n_coeffs,)</p>
+<blockquote class="last">
+<div><p>Obtained minimizer for the problem</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 
 

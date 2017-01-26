@@ -129,6 +129,114 @@
       
   <div class="section" id="poisson-process">
 <span id="simu-poisson"></span><h1>Poisson Process<a class="headerlink" href="#poisson-process" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="mlpp.simulation.SimuPoissonProcess">
+<em class="property">class </em><code class="descclassname">mlpp.simulation.</code><code class="descname">SimuPoissonProcess</code><span class="sig-paren">(</span><em>intensities</em>, <em>end_time=None</em>, <em>max_jumps=None</em>, <em>verbose=True</em>, <em>seed=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mlpp/simulation/poisson_process.html#SimuPoissonProcess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlpp.simulation.SimuPoissonProcess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Homogeneous Poisson process simulation</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>intensities</strong> : <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">float</span></code></a> or a <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code></p>
+<blockquote>
+<div><p>The intensities of the poisson process. If float this Poisson process
+has one node, otherwise it is multidimensional</p>
+</div></blockquote>
+<p><strong>end_time</strong> : <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">float</span></code></a>, default=None</p>
+<blockquote>
+<div><p>Time until which this point process will be simulated</p>
+</div></blockquote>
+<p><strong>max_jumps</strong> : <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">int</span></code></a>, default=None</p>
+<blockquote>
+<div><p>Simulation will stop if this number of jumps in reached</p>
+</div></blockquote>
+<p><strong>seed</strong> : <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">int</span></code></a>, default = None</p>
+<blockquote>
+<div><p>The seed of the random sampling. If it is None then a random seed
+(different at each run) will be chosen.</p>
+</div></blockquote>
+<p><strong>verbose</strong> : <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">bool</span></code></a>, default=True</p>
+<blockquote class="last">
+<div><p>If True, simulation information is printed</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="12%" />
+<col width="89%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>n_nodes</td>
+<td>(<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">int</span></code></a>) The number of nodes of the point process</td>
+</tr>
+<tr class="row-even"><td>end_time</td>
+<td>(<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">float</span></code></a>) Time until which this point process has been simulated</td>
+</tr>
+<tr class="row-odd"><td>n_total_jumps</td>
+<td>(<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">int</span></code></a>) Total number of jumps simulated</td>
+</tr>
+<tr class="row-even"><td>timestamps</td>
+<td>(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">list</span></code></a> of <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code>, size=n_nodes) A list of n_nodes timestamps arrays, each array containing the timestamps of all the jumps for this node</td>
+</tr>
+<tr class="row-odd"><td>tracked_intensity</td>
+<td>(<code class="xref py py-obj docutils literal"><span class="pre">list[np.ndarray]</span></code>, size=n_nodes) A record of the intensity with which this point process has been simulated. Note: you must call track_intensity before simulation to record it</td>
+</tr>
+<tr class="row-even"><td>intensity_tracked_times</td>
+<td>(<code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code>) The times at which intensity has been recorded. Note: you must call track_intensity before simulation to record it</td>
+</tr>
+<tr class="row-odd"><td>intensity_track_step</td>
+<td>(<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">float</span></code></a>) Step with which the intensity has been recorded</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="mlpp.simulation.SimuPoissonProcess.plot">
+<code class="descname">plot</code><span class="sig-paren">(</span><em>ax=None</em>, <em>labels='default'</em>, <em>style='over_time'</em>, <em>dim=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mlpp/simulation/poisson_process.html#SimuPoissonProcess.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlpp.simulation.SimuPoissonProcess.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Quick plot of the Poisson process</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>ax :</strong></p>
+<blockquote>
+<div><p>if filled,
+he object will be plot directly on it, otherwise a
+new ax will be created</p>
+</div></blockquote>
+<p><strong>labels</strong> : <code class="xref py py-obj docutils literal"><span class="pre">list[str]</span></code></p>
+<blockquote>
+<div><p>labels you want to see attached to you figure, you can leave it to 
+default for automatic fill or None if you do not want any.</p>
+</div></blockquote>
+<p><strong>style</strong> : <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">str</span></code></a></p>
+<blockquote>
+<div><p>The type of plot</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">'time'</span></code> or <code class="docutils literal"><span class="pre">'over_time'</span></code> (default) plot for each dimension t`
+he time of their jumps</li>
+<li><code class="docutils literal"><span class="pre">'hist'</span></code> or <code class="docutils literal"><span class="pre">'histogram'</span></code> Plot for one dimension the histogram
+of the distribution of time between two ticks</li>
+</ul>
+</div></blockquote>
+<p><strong>dim</strong> : <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">int</span></code></a></p>
+<blockquote>
+<div><p>The dimension for the <code class="docutils literal"><span class="pre">hist</span></code> case</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">ax in case you want to modify it afterwards</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 
 

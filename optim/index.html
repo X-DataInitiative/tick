@@ -175,22 +175,22 @@ algorithm to solve it.</p>
 statistical model based on the data our problem relies on.
 Depending on the case, it gives first order information (loss, gradient) or
 second order information (hessian related values).<ul>
-<li>linear regression <code class="xref py py-obj docutils literal"><span class="pre">mlpp.optim.model.ModelLinReg</span></code></li>
-<li>logistic regression <code class="xref py py-obj docutils literal"><span class="pre">mlpp.optim.model.ModelLogReg</span></code></li>
+<li>linear regression <a class="reference internal" href="model/linreg.html#mlpp.optim.model.ModelLinReg" title="mlpp.optim.model.ModelLinReg"><code class="xref py py-obj docutils literal"><span class="pre">mlpp.optim.model.ModelLinReg</span></code></a></li>
+<li>logistic regression <a class="reference internal" href="model/logreg.html#mlpp.optim.model.ModelLogReg" title="mlpp.optim.model.ModelLogReg"><code class="xref py py-obj docutils literal"><span class="pre">mlpp.optim.model.ModelLogReg</span></code></a></li>
 </ul>
 </li>
 <li>we call <span class="math">\(g\)</span> the <strong>prox</strong>. The prox will make our solution looks like
 what we think it should.<ul>
-<li>Prox L1 (or lasso) <code class="xref py py-obj docutils literal"><span class="pre">mlpp.optim.prox.ProxL1</span></code></li>
-<li>Prox L2 (or ridge) <code class="xref py py-obj docutils literal"><span class="pre">mlpp.optim.prox.ProxL2Sq</span></code></li>
+<li>Prox L1 (or lasso) <a class="reference internal" href="prox/prox_l1.html#mlpp.optim.prox.ProxL1" title="mlpp.optim.prox.ProxL1"><code class="xref py py-obj docutils literal"><span class="pre">mlpp.optim.prox.ProxL1</span></code></a></li>
+<li>Prox L2 (or ridge) <a class="reference internal" href="prox/prox_l2sq.html#mlpp.optim.prox.ProxL2Sq" title="mlpp.optim.prox.ProxL2Sq"><code class="xref py py-obj docutils literal"><span class="pre">mlpp.optim.prox.ProxL2Sq</span></code></a></li>
 </ul>
 </li>
 <li>we call the algorithm the <strong>solver</strong>. The solver associated the model and
 the prox use an algorithm to determine what is the minimizer of our problem.
 Examples of solver are SGD (stochastic gradient descent), Fista or SVRG.<ul>
-<li>SGD <code class="xref py py-obj docutils literal"><span class="pre">mlpp.optim.solver.SGD</span></code></li>
-<li>Fista <code class="xref py py-obj docutils literal"><span class="pre">mlpp.optim.solver.Fista</span></code></li>
-<li>SVRG <code class="xref py py-obj docutils literal"><span class="pre">mlpp.optim.solver.SVRG</span></code></li>
+<li>SGD <a class="reference internal" href="solver/sgd.html#mlpp.optim.solver.SGD" title="mlpp.optim.solver.SGD"><code class="xref py py-obj docutils literal"><span class="pre">mlpp.optim.solver.SGD</span></code></a></li>
+<li>Fista <a class="reference internal" href="solver/fista.html#mlpp.optim.solver.Fista" title="mlpp.optim.solver.Fista"><code class="xref py py-obj docutils literal"><span class="pre">mlpp.optim.solver.Fista</span></code></a></li>
+<li>SVRG <a class="reference internal" href="solver/svrg.html#mlpp.optim.solver.SVRG" title="mlpp.optim.solver.SVRG"><code class="xref py py-obj docutils literal"><span class="pre">mlpp.optim.solver.SVRG</span></code></a></li>
 </ul>
 </li>
 </ul>

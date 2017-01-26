@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>mlpp.simulation.inhomogeneous_poisson &#8212; MLPP 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootstrap-3.3.6/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootstrap-3.3.6/css/bootstrap-theme.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../../../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../../../_static/bootstrap-3.3.6/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../../_static/bootstrap-sphinx.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="top" title="MLPP 0.1 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body role="document">
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../../index.html">
+          MLPP</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.1</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../z_tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../inference/index.html">Inference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../simulation/index.html">Simulation toolbox [<code class="docutils literal"><span class="pre">mlpp.simulation</span></code>]</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../optim/index.html">Optimization toolbox</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../dev/index.html">Developer documentation</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"></ul>
+</li>
+              
+            
+            
+              
+                
+              
+            
+            
+            
+            
+              <li class="hidden-sm"></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12 content">
+      
+  <h1>Source code for mlpp.simulation.inhomogeneous_poisson</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">mlpp.base.utils</span> <span class="k">import</span> <span class="n">_Plottable</span><span class="p">,</span> <span class="n">TimeFunction</span>
+<span class="kn">from</span> <span class="nn">mlpp.simulation.base.simu_point_process</span> <span class="k">import</span> <span class="n">SimuPointProcess</span>
+<span class="kn">from</span> <span class="nn">.base.pp_plot_utils</span> <span class="k">import</span> <span class="n">_intensity_ticks_plot</span>
+<span class="kn">from</span> <span class="nn">.build.simulation</span> <span class="k">import</span> <span class="n">InhomogeneousPoisson</span> <span class="k">as</span> <span class="n">_InhomogeneousPoisson</span>
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;MartinBompaire&#39;</span>
+
+
+<div class="viewcode-block" id="SimuInhomogeneousPoisson"><a class="viewcode-back" href="../../../simulation/point_process/inhomo_poisson.html#mlpp.simulation.SimuInhomogeneousPoisson">[docs]</a><span class="k">class</span> <span class="nc">SimuInhomogeneousPoisson</span><span class="p">(</span><span class="n">SimuPointProcess</span><span class="p">,</span> <span class="n">_Plottable</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Class of inhomogeneous Poisson process</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    intensities_functions : `list[TimeFunction]`</span>
+<span class="sd">        The intensities functions of the inhomogeneous Poisson process</span>
+
+<span class="sd">    end_time : `float`, default=None</span>
+<span class="sd">        Time until which this point process will be simulated</span>
+
+<span class="sd">    max_jumps : `int`, default=None</span>
+<span class="sd">        Simulation will stop if this number of jumps in reached</span>
+
+<span class="sd">    seed : `int`, default = None</span>
+<span class="sd">        The seed of the random sampling. If it is None then a random seed</span>
+<span class="sd">        (different at each run) will be chosen.</span>
+
+<span class="sd">    verbose : `bool`, default=True</span>
+<span class="sd">        If True, simulation information is printed</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n_nodes : `int`</span>
+<span class="sd">        The number of nodes of the point process</span>
+
+<span class="sd">    end_time : `float`</span>
+<span class="sd">        Time until which this point process has been simulated</span>
+
+<span class="sd">    n_total_jumps : `int`</span>
+<span class="sd">        Total number of jumps simulated</span>
+
+<span class="sd">    timestamps : `list` of `np.ndarray`, size=n_nodes</span>
+<span class="sd">        A list of n_nodes timestamps arrays, each array containing the</span>
+<span class="sd">        timestamps of all the jumps for this node</span>
+
+<span class="sd">    tracked_intensity : `list[np.ndarray]`, size=n_nodes</span>
+<span class="sd">        A record of the intensity with which this point process has been</span>
+<span class="sd">        simulated.</span>
+<span class="sd">        Note: you must call track_intensity before simulation to record it</span>
+
+<span class="sd">    intensity_tracked_times : `np.ndarray`</span>
+<span class="sd">        The times at which intensity has been recorded.</span>
+<span class="sd">        Note: you must call track_intensity before simulation to record it</span>
+
+<span class="sd">    intensity_track_step : `float`</span>
+<span class="sd">        Step with which the intensity has been recorded</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intensities_functions</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_jumps</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="n">SimuPointProcess</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">end_time</span><span class="p">,</span> <span class="n">max_jumps</span><span class="o">=</span><span class="n">max_jumps</span><span class="p">,</span>
+                                  <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pp</span> <span class="o">=</span> <span class="n">_InhomogeneousPoisson</span><span class="p">(</span><span class="n">intensities_functions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pp_seed</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SimuInhomogeneousPoisson.plot"><a class="viewcode-back" href="../../../simulation/point_process/inhomo_poisson.html#mlpp.simulation.SimuInhomogeneousPoisson.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s1">&#39;over_time&#39;</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Quick plot of the inhomogeneous Poisson process for a specified</span>
+<span class="sd">        dimension</span>
+
+<span class="sd">         Parameters</span>
+<span class="sd">         ----------</span>
+<span class="sd">         ax :</span>
+<span class="sd">            if filled, the object will be plot directly on it, otherwise a</span>
+<span class="sd">            new ax will be created</span>
+
+<span class="sd">        labels : `list[str]`</span>
+<span class="sd">            labels you want to see attached to you figure, you can leave it to</span>
+<span class="sd">            default for automatic fill or None if you do not want any.</span>
+
+<span class="sd">        style : `str`</span>
+<span class="sd">            The type of plot</span>
+
+<span class="sd">            * ``&#39;time&#39;`` or ``&#39;over_time&#39;`` (default) plot for each dimension t`</span>
+<span class="sd">              he time of their jumps</span>
+<span class="sd">            * ``&#39;hist&#39;`` or ``&#39;histogram&#39;`` Plot for one dimension the histogram</span>
+<span class="sd">              of the distribution of time between two ticks</span>
+
+<span class="sd">        dim : `int`</span>
+<span class="sd">            The dimension for the ``hist`` case</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ax in case you want to modify it afterwards</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">SimuInhomogeneousPoisson</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">,</span>
+                                                   <span class="n">dim</span><span class="o">=</span><span class="n">dim</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">intensity_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">times</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pp</span><span class="o">.</span><span class="n">intensity_value</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">times</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">dim</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;You must specify a dimension for multi &#39;</span>
+                             <span class="s1">&#39;dimensional inhomogeneous Poisson process&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">dim</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">dim</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">if</span> <span class="n">style</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;over_time&#39;</span><span class="p">]:</span>
+            <span class="n">_intensity_ticks_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span>
+                                  <span class="s1">&#39;Inhomogeneous Poisson process&#39;</span><span class="p">,</span> <span class="n">dim</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">style</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;hist&#39;</span><span class="p">,</span> <span class="s1">&#39;histogram&#39;</span><span class="p">]:</span>
+            <span class="n">timestamps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">timestamps</span><span class="p">[</span><span class="n">dim</span><span class="p">]</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">timestamps</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="n">normed</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.75</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Distribution of all ticks over time&#39;</span><span class="p">)</span>
+
+            <span class="n">ax_bis</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">twinx</span><span class="p">()</span>
+            <span class="n">ax_bis</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">intensity_tracked_times</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">tracked_intensity</span><span class="p">[</span><span class="n">dim</span><span class="p">],</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;unknown style for plot&#39;</span><span class="p">)</span></div>
+</pre></div>
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2015, Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Poulsen.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.8.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

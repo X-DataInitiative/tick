@@ -140,6 +140,74 @@
       
   <div class="section" id="coefficients-simulation">
 <h1>Coefficients simulation<a class="headerlink" href="#coefficients-simulation" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt>
+<code class="descclassname">mlpp.simulation.</code><code class="descname">weights_sparse_exp</code><span class="sig-paren">(</span><em>n_weigths: int = 100</em>, <em>nnz: int = 10</em>, <em>scale: float = 10.0</em><span class="sig-paren">)</span> &rarr; numpy.ndarray<a class="reference internal" href="../../_modules/mlpp/simulation/base/weights.html#weights_sparse_exp"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Instance of weights for a model, given by a vector with
+exponentially decaying components: the j-th entry is given by</p>
+<p>for 0 &lt;= j &lt;= nnz - 1. For j &gt;= nnz, the entry is zero.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>n_weigths</strong> : <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">int</span></code></a>, default=100</p>
+<blockquote>
+<div><p>Number of weights</p>
+</div></blockquote>
+<p><strong>nnz</strong> : <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">int</span></code></a>, default=10</p>
+<blockquote>
+<div><p>Number of non-zero weights</p>
+</div></blockquote>
+<p><strong>scale</strong> : <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">float</span></code></a>, default=10.</p>
+<blockquote>
+<div><p>The scaling of the exponential decay</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> : np.ndarray, shape=(n_weigths,)</p>
+<blockquote class="last">
+<div><p>The weights vector</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descclassname">mlpp.simulation.</code><code class="descname">weights_sparse_gauss</code><span class="sig-paren">(</span><em>n_weights: int = 100</em>, <em>nnz: int = 10</em>, <em>std: float = 1.0</em><span class="sig-paren">)</span> &rarr; numpy.ndarray<a class="reference internal" href="../../_modules/mlpp/simulation/base/weights.html#weights_sparse_gauss"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Instance of weights for a model, given by a sparse vector,
+where non-zero coordinates (chosen at random) are centered Gaussian
+with given standard-deviation</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>n_weights</strong> : <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">int</span></code></a>, default=100</p>
+<blockquote>
+<div><p>Number of weights</p>
+</div></blockquote>
+<p><strong>nnz</strong> : <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">int</span></code></a>, default=10</p>
+<blockquote>
+<div><p>Number of non-zero weights</p>
+</div></blockquote>
+<p><strong>std</strong> : <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">float</span></code></a>, default=1.</p>
+<blockquote>
+<div><p>Standard deviation of the Gaussian non-zero entries</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> : <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.12)"><code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code></a>, shape=(n_weights,)</p>
+<blockquote class="last">
+<div><p>The weights vector</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
 
 

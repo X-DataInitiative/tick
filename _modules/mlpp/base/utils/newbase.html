@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>mlpp.base.utils.newbase &#8212; MLPP 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../../../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/bootstrap-3.3.6/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/bootstrap-3.3.6/css/bootstrap-theme.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../../../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../../../../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../../../../_static/bootstrap-3.3.6/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../../../_static/bootstrap-sphinx.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="top" title="MLPP 0.1 documentation" href="../../../../index.html" />
+    <link rel="up" title="Module code" href="../../../index.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body role="document">
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../../../index.html">
+          MLPP</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.1</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../../../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../z_tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../inference/index.html">Inference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../simulation/index.html">Simulation toolbox [<code class="docutils literal"><span class="pre">mlpp.simulation</span></code>]</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../optim/index.html">Optimization toolbox</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/index.html">API reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../dev/index.html">Developer documentation</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"></ul>
+</li>
+              
+            
+            
+              
+                
+              
+            
+            
+            
+            
+              <li class="hidden-sm"></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12 content">
+      
+  <h1>Source code for mlpp.base.utils.newbase</h1><div class="highlight"><pre>
+<span></span><span class="c1"># import warnings</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">inspect</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">abc</span> <span class="k">import</span> <span class="n">ABCMeta</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">pydoc</span>
+<span class="kn">import</span> <span class="nn">numpydoc</span> <span class="k">as</span> <span class="nn">nd</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+
+
+<span class="c1"># The metaclass inherits from ABCMeta and not type, since we&#39;d like to</span>
+<span class="c1"># do abstract classes in MLPP that inherits from ABC</span>
+
+<span class="c1"># TODO: readonly attributes cannot be linked to c++ setters</span>
+
+<span class="k">class</span> <span class="nc">BaseMeta</span><span class="p">(</span><span class="n">ABCMeta</span><span class="p">):</span>
+    <span class="c1"># Default behaviour of an attribute is writable, with no C++ setter</span>
+    <span class="n">default_attrinfo</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;cpp_setter&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
+    <span class="n">default_classinfo</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;is_prop&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;in_doc&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;doc&#39;</span><span class="p">:</span> <span class="p">[],</span>
+                         <span class="s1">&#39;in_init&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">hidden_attr</span><span class="p">(</span><span class="n">attr_name</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;__&#39;</span> <span class="o">+</span> <span class="n">attr_name</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">set_cpp_attribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">cpp_setter</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Set the linked cpp attribute if possible</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self : `object`</span>
+<span class="sd">            the instance</span>
+
+<span class="sd">        val : `object`</span>
+<span class="sd">            the value to be set</span>
+
+<span class="sd">        cpp_setter : `function`</span>
+<span class="sd">            the function to use</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># First we get the C++ object from its name (its name is an attribute</span>
+        <span class="c1"># in the class)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_cpp_obj_name&quot;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s2">&quot;_cpp_obj_name must be set as class attribute to &quot;</span>
+                            <span class="s2">&quot;use automatic C++ setters&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Retrieve C++ associated object if it has been instantiated</span>
+        <span class="n">cpp_obj</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cpp_obj_name</span><span class="p">):</span>
+            <span class="n">cpp_obj</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cpp_obj_name</span><span class="p">)</span>
+
+        <span class="c1"># If the cpp_obj is instantiated, we update it</span>
+        <span class="k">if</span> <span class="n">cpp_obj</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Get the setter for this attribute in the C++</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">cpp_obj</span><span class="p">,</span> <span class="n">cpp_setter</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> is not a method of </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span>
+                                <span class="p">(</span><span class="n">cpp_setter</span><span class="p">,</span> <span class="n">cpp_obj</span><span class="o">.</span><span class="n">__class__</span><span class="p">))</span>
+            <span class="n">cpp_obj_setter</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">cpp_obj</span><span class="p">,</span> <span class="n">cpp_setter</span><span class="p">)</span>
+            <span class="n">cpp_obj_setter</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">detect_if_called_in_init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This function examine stacktrace in order to determine if it has</span>
+<span class="sd">        been called from the __init__ function of the given instance</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self : `object`</span>
+<span class="sd">            The instance</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        set_int_init : `bool`</span>
+<span class="sd">            True if this function was called by __init__</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># It is forbidden to set a readonly (non writable) attribute</span>
+        <span class="c1"># expect from __init__ function of the class</span>
+        <span class="n">set_in_init</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="c1"># trace contains information of the current execution</span>
+        <span class="c1"># environment</span>
+        <span class="n">trace</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">currentframe</span><span class="p">()</span>
+        <span class="k">while</span> <span class="n">trace</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># We retrieve the name of the executor (for example the</span>
+            <span class="c1"># function that launched this command)</span>
+            <span class="n">exec_name</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">f_code</span><span class="o">.</span><span class="n">co_name</span>
+            <span class="c1"># We inspect the local variables</span>
+            <span class="k">if</span> <span class="s1">&#39;self&#39;</span> <span class="ow">in</span> <span class="n">trace</span><span class="o">.</span><span class="n">f_locals</span><span class="p">:</span>
+                <span class="n">local_self</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">f_locals</span><span class="p">[</span><span class="s1">&#39;self&#39;</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">local_self</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="c1"># We check if environment corresponds to our instance&#39;s</span>
+            <span class="c1"># __init__</span>
+            <span class="k">if</span> <span class="n">exec_name</span> <span class="o">==</span> <span class="s1">&#39;__init__&#39;</span> <span class="ow">and</span> <span class="n">local_self</span> <span class="o">==</span> <span class="bp">self</span><span class="p">:</span>
+                <span class="n">set_in_init</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">break</span>
+            <span class="c1"># If this frame was not the good one, we try the previous</span>
+            <span class="c1"># one, the one that has launched it</span>
+            <span class="c1"># If there is no previous one, `None` will be returned</span>
+            <span class="n">trace</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">f_back</span>
+
+        <span class="k">return</span> <span class="n">set_in_init</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">build_property</span><span class="p">(</span><span class="n">class_name</span><span class="p">,</span> <span class="n">attrs</span><span class="p">,</span> <span class="n">attr_name</span><span class="p">,</span> <span class="n">writable</span><span class="p">,</span>
+                       <span class="n">cpp_setter</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Builds a property</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        class_name : `str`</span>
+<span class="sd">            Name of the class</span>
+
+<span class="sd">        attrs : `dict`</span>
+<span class="sd">            The attributes of the class</span>
+
+<span class="sd">        attr_name : `str`</span>
+<span class="sd">            Name of the attribute for which we build a property</span>
+
+<span class="sd">        writable : `bool`</span>
+<span class="sd">            If True, we attribute can be changed by the user. If not,</span>
+<span class="sd">            then an error will be raise when trying to change it.</span>
+
+<span class="sd">        override : `bool`</span>
+<span class="sd">            Not implemented yet</span>
+
+<span class="sd">        cpp_setter : `str` or `None`</span>
+<span class="sd">            Name of the setter in the c++ object embedded in the class</span>
+<span class="sd">            for the attribute</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        output : property</span>
+<span class="sd">            The required property</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">hidden_name</span> <span class="o">=</span> <span class="n">BaseMeta</span><span class="o">.</span><span class="n">hidden_attr</span><span class="p">(</span><span class="n">attr_name</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">getter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="c1"># if it was not assigned yet we raise the correct error message</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hidden_name</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;&#39;</span><span class="si">%s</span><span class="s2">&#39; object has no attribute &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span>
+                                     <span class="p">(</span><span class="n">class_name</span><span class="p">,</span> <span class="n">attr_name</span><span class="p">))</span>
+            <span class="c1"># Get the attribute</span>
+            <span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="n">__getattribute__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hidden_name</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">create_base_setter</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">cpp_setter</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># There is no C++ setter, we just set the attribute</span>
+                <span class="k">def</span> <span class="nf">setter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+                    <span class="nb">object</span><span class="o">.</span><span class="n">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hidden_name</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># There is a C++ setter to apply</span>
+                <span class="k">def</span> <span class="nf">setter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+                    <span class="nb">object</span><span class="o">.</span><span class="n">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hidden_name</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+                    <span class="c1"># We update the C++ object embedded in the class</span>
+                    <span class="c1"># as well.</span>
+                    <span class="n">BaseMeta</span><span class="o">.</span><span class="n">set_cpp_attribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">cpp_setter</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">setter</span>
+
+        <span class="n">base_setter</span> <span class="o">=</span> <span class="n">create_base_setter</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">writable</span><span class="p">:</span>
+            <span class="n">setter</span> <span class="o">=</span> <span class="n">base_setter</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># If it is not writable we wrap the base setter with something</span>
+            <span class="c1"># that detect if attribute setting was called in __init__</span>
+            <span class="k">def</span> <span class="nf">setter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+                <span class="n">set_in_init</span> <span class="o">=</span> <span class="n">Base</span><span class="o">.</span><span class="n">detect_if_called_in_init</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+                <span class="c1"># If and only if this was launched from our instance&#39;s __init__</span>
+                <span class="c1"># we allow user to set the attribute</span>
+                <span class="k">if</span> <span class="n">set_in_init</span><span class="p">:</span>
+                    <span class="n">base_setter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> is readonly in </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span>
+                                         <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">attr_name</span><span class="p">),</span> <span class="n">class_name</span><span class="p">))</span>
+
+        <span class="k">def</span> <span class="nf">deletter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;can&#39;t delete </span><span class="si">%s</span><span class="s2"> in </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span>
+                                 <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">attr_name</span><span class="p">),</span> <span class="n">class_name</span><span class="p">))</span>
+
+        <span class="c1"># We set doc to None otherwise it will interfere with</span>
+        <span class="c1"># the docstring of the class.</span>
+        <span class="c1"># This is very useful as we can have bugs with sphinx</span>
+        <span class="c1"># otherwise (conflict between an attribute&#39;s docstring</span>
+        <span class="c1"># and a docstring of a property with the same name).</span>
+        <span class="c1"># All attributes are actually properties when the base</span>
+        <span class="c1"># class is Base.</span>
+        <span class="c1"># The docstring of all properties are then putted back</span>
+        <span class="c1"># in the __init__ of the Base class below.</span>
+        <span class="n">prop</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="n">getter</span><span class="p">,</span> <span class="n">setter</span><span class="p">,</span> <span class="n">deletter</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">prop</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">create_property_doc</span><span class="p">(</span><span class="n">class_name</span><span class="p">,</span> <span class="n">attr_doc</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create doc that will be attached to property</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        class_name : `str`</span>
+<span class="sd">            Name of the class the property comes from</span>
+
+<span class="sd">        attr_doc : `list`</span>
+<span class="sd">            List output by numpydoc contained parsed documentation</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        The formatted doc</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">attr_type</span> <span class="o">=</span> <span class="n">attr_doc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">attr_docstring</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">attr_doc</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+                          <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="n">attr_from</span> <span class="o">=</span> <span class="s1">&#39;from </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">class_name</span>
+
+        <span class="n">doc</span> <span class="o">=</span> <span class="p">[</span><span class="n">attr_type</span><span class="p">]</span> <span class="o">+</span> <span class="n">attr_docstring</span> <span class="o">+</span> <span class="p">[</span><span class="n">attr_from</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">doc</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">find_init_params</span><span class="p">(</span><span class="n">attrs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Find the parameters passed to the class&#39;s __init__</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ignore</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;self&#39;</span><span class="p">,</span> <span class="s1">&#39;args&#39;</span><span class="p">,</span> <span class="s1">&#39;kwargs&#39;</span><span class="p">]</span>
+
+        <span class="c1"># if class has no __init__ method</span>
+        <span class="k">if</span> <span class="s2">&quot;__init__&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">attrs</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="k">return</span> <span class="p">[</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span>
+                <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;__init__&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ignore</span><span class="p">]</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">find_properties</span><span class="p">(</span><span class="n">attrs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Find all native properties of the class</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">attr_name</span> <span class="k">for</span> <span class="n">attr_name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">attrs</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span>
+                <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">property</span><span class="p">)]</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">find_documented_attributes</span><span class="p">(</span><span class="n">class_name</span><span class="p">,</span> <span class="n">attrs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Parse the documentation to retrieve all attributes that have been</span>
+<span class="sd">        documented and their documentation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># If a class is not documented we return an empty list</span>
+        <span class="k">if</span> <span class="s1">&#39;__doc__&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">attrs</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="n">current_class_doc</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">cleandoc</span><span class="p">(</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;__doc__&#39;</span><span class="p">])</span>
+        <span class="n">parsed_doc</span> <span class="o">=</span> <span class="n">nd</span><span class="o">.</span><span class="n">docscrape</span><span class="o">.</span><span class="n">ClassDoc</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="n">current_class_doc</span><span class="p">)</span>
+        <span class="n">attr_docs</span> <span class="o">=</span> <span class="n">parsed_doc</span><span class="p">[</span><span class="s1">&#39;Parameters&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">parsed_doc</span><span class="p">[</span><span class="s1">&#39;Attributes&#39;</span><span class="p">]</span>
+
+        <span class="n">attr_and_doc</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">create_property_doc</span> <span class="o">=</span> <span class="n">BaseMeta</span><span class="o">.</span><span class="n">create_property_doc</span>
+        <span class="k">for</span> <span class="n">attr_doc</span> <span class="ow">in</span> <span class="n">attr_docs</span><span class="p">:</span>
+            <span class="n">attr_name</span> <span class="o">=</span> <span class="n">attr_doc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="s1">&#39;:&#39;</span> <span class="ow">in</span> <span class="n">attr_name</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Attribute &#39;</span><span class="si">%s</span><span class="s2">&#39; has not a proper &quot;</span>
+                                 <span class="s2">&quot;documentation, a space might be missing &quot;</span>
+                                 <span class="s2">&quot;before colon&quot;</span> <span class="o">%</span> <span class="n">attr_name</span><span class="p">)</span>
+            <span class="n">attr_and_doc</span> <span class="o">+=</span> <span class="p">[(</span><span class="n">attr_name</span><span class="p">,</span>
+                              <span class="n">create_property_doc</span><span class="p">(</span><span class="n">class_name</span><span class="p">,</span> <span class="n">attr_doc</span><span class="p">))]</span>
+        <span class="k">return</span> <span class="n">attr_and_doc</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">extract_attrinfos</span><span class="p">(</span><span class="n">class_name</span><span class="p">,</span> <span class="n">attrs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Inspect class attrs to create aggregate all attributes info of the</span>
+<span class="sd">        current class</span>
+
+<span class="sd">        In practice, we inspect documented attributes, properties,</span>
+<span class="sd">        parameters given to __init__ function and finally what user has</span>
+<span class="sd">        filled in _attrinfos</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        class_name : `str`</span>
+<span class="sd">            The name of the class (needed to create associated doc)</span>
+
+<span class="sd">        atts : `dict`</span>
+<span class="sd">            Dictionary of all futures attributes of the class</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        current_attrinfos : `dict`</span>
+<span class="sd">            Subdict of the global classinfos dict concerning the attributes</span>
+<span class="sd">            of the current class.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">current_attrinfos</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># First we look at all documented attributes</span>
+        <span class="k">for</span> <span class="n">attr_name</span><span class="p">,</span> <span class="n">attr_doc</span> <span class="ow">in</span> \
+                <span class="n">BaseMeta</span><span class="o">.</span><span class="n">find_documented_attributes</span><span class="p">(</span><span class="n">class_name</span><span class="p">,</span> <span class="n">attrs</span><span class="p">):</span>
+            <span class="n">current_attrinfos</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">attr_name</span><span class="p">,</span> <span class="p">{})</span>
+            <span class="n">current_attrinfos</span><span class="p">[</span><span class="n">attr_name</span><span class="p">][</span><span class="s1">&#39;in_doc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">current_attrinfos</span><span class="p">[</span><span class="n">attr_name</span><span class="p">][</span><span class="s1">&#39;doc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr_doc</span>
+
+        <span class="c1"># Second we look all native properties</span>
+        <span class="k">for</span> <span class="n">attr_name</span> <span class="ow">in</span> <span class="n">BaseMeta</span><span class="o">.</span><span class="n">find_properties</span><span class="p">(</span><span class="n">attrs</span><span class="p">):</span>
+            <span class="n">current_attrinfos</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">attr_name</span><span class="p">,</span> <span class="p">{})</span>
+            <span class="n">current_attrinfos</span><span class="p">[</span><span class="n">attr_name</span><span class="p">][</span><span class="s1">&#39;is_prop&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># Third we look at parameters given to __init__</span>
+        <span class="k">for</span> <span class="n">attr_name</span> <span class="ow">in</span> <span class="n">BaseMeta</span><span class="o">.</span><span class="n">find_init_params</span><span class="p">(</span><span class="n">attrs</span><span class="p">):</span>
+            <span class="n">current_attrinfos</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">attr_name</span><span class="p">,</span> <span class="p">{})</span>
+            <span class="n">current_attrinfos</span><span class="p">[</span><span class="n">attr_name</span><span class="p">][</span><span class="s1">&#39;in_init&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># Finally we use _attrinfos provided dictionary</span>
+        <span class="n">attrinfos</span> <span class="o">=</span> <span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_attrinfos&quot;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="k">for</span> <span class="n">attr_name</span> <span class="ow">in</span> <span class="n">attrinfos</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="c1"># Check that no unexpected key appears</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">attrinfos</span><span class="p">[</span><span class="n">attr_name</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">BaseMeta</span><span class="o">.</span><span class="n">default_attrinfo</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;_attrinfos does not handle key </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">key</span><span class="p">)</span>
+            <span class="c1"># Add behavior specified in attrinfo</span>
+            <span class="n">current_attrinfos</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">attr_name</span><span class="p">,</span> <span class="p">{})</span>
+            <span class="n">current_attrinfos</span><span class="p">[</span><span class="n">attr_name</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">attrinfos</span><span class="p">[</span><span class="n">attr_name</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">current_attrinfos</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">inherited_classinfos</span><span class="p">(</span><span class="n">bases</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Looks at all classinfos dictionary of bases class and merge them to</span>
+<span class="sd">        create the initial classinfos dictionary</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        bases : `list`</span>
+<span class="sd">            All the bases of the class</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        The initial classinfos dictionary</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        index corresponds to the distance in terms of inheritance.</span>
+<span class="sd">        The highest index (in terms of inheritance) at</span>
+<span class="sd">        which this class has been seen. We take the highest in</span>
+<span class="sd">        case of multiple inheritance. If we have the following :</span>
+<span class="sd">                   A0</span>
+<span class="sd">                  / \</span>
+<span class="sd">                 A1 B1</span>
+<span class="sd">                 |  |</span>
+<span class="sd">                 A2 |</span>
+<span class="sd">                  \/</span>
+<span class="sd">                  A3</span>
+<span class="sd">        We want index of A0 to be higher than index of A1 which</span>
+<span class="sd">        inherits from A0.</span>
+<span class="sd">        In this example:</span>
+<span class="sd">            * A3 has index 0</span>
+<span class="sd">            * A2 and B1 have index 1</span>
+<span class="sd">            * A1 has index 2</span>
+<span class="sd">            * A0 has index 3 (even if it could be 2 through B1)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">classinfos</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">base</span> <span class="ow">in</span> <span class="n">bases</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="s2">&quot;_classinfos&quot;</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">cls_key</span> <span class="ow">in</span> <span class="n">base</span><span class="o">.</span><span class="n">_classinfos</span><span class="p">:</span>
+                    <span class="n">base_infos</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">_classinfos</span><span class="p">[</span><span class="n">cls_key</span><span class="p">]</span>
+
+                    <span class="k">if</span> <span class="n">cls_key</span> <span class="ow">in</span> <span class="n">classinfos</span><span class="p">:</span>
+                        <span class="n">current_info</span> <span class="o">=</span> <span class="n">classinfos</span><span class="p">[</span><span class="n">cls_key</span><span class="p">]</span>
+                        <span class="n">current_info</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">current_info</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">],</span>
+                                                    <span class="n">base_infos</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">classinfos</span><span class="p">[</span><span class="n">cls_key</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+                        <span class="n">classinfos</span><span class="p">[</span><span class="n">cls_key</span><span class="p">][</span><span class="s1">&#39;index&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">base_infos</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+                        <span class="n">classinfos</span><span class="p">[</span><span class="n">cls_key</span><span class="p">][</span><span class="s1">&#39;attr&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">base_infos</span><span class="p">[</span><span class="s1">&#39;attr&#39;</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">classinfos</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">create_attrinfos</span><span class="p">(</span><span class="n">classinfos</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Browse all class in classinfos dict to create a final attrinfo dict</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        classinfos : `dict`</span>
+<span class="sd">            The final classinfos dict</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        attrinfos : `dict`</span>
+<span class="sd">            Dictionary in which key is an attribute name and value is a dict</span>
+<span class="sd">            with all its information.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># We sort the doc reversely by index, in order to see the</span>
+        <span class="c1"># furthest classes first (and potentially override infos of</span>
+        <span class="c1"># parents for an attribute if two classes document it)</span>
+        <span class="n">attrinfos</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">cls_key</span><span class="p">,</span> <span class="n">info_index</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">classinfos</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span>
+                                          <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">item</span><span class="p">:</span> <span class="n">item</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;index&#39;</span><span class="p">],</span>
+                                          <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+            <span class="n">classinfos</span> <span class="o">=</span> <span class="n">info_index</span><span class="p">[</span><span class="s1">&#39;attr&#39;</span><span class="p">]</span>
+
+            <span class="k">for</span> <span class="n">attr_name</span> <span class="ow">in</span> <span class="n">classinfos</span><span class="p">:</span>
+                <span class="n">attrinfos</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">attr_name</span><span class="p">,</span> <span class="p">{})</span>
+                <span class="n">attrinfos</span><span class="p">[</span><span class="n">attr_name</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">classinfos</span><span class="p">[</span><span class="n">attr_name</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">attrinfos</span>
+
+    <span class="k">def</span> <span class="nf">__new__</span><span class="p">(</span><span class="n">mcs</span><span class="p">,</span> <span class="n">class_name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">attrs</span><span class="p">):</span>
+
+        <span class="c1"># Initialize classinfos dictionnary with all classinfos dictionnary</span>
+        <span class="c1"># of bases</span>
+        <span class="n">classinfos</span> <span class="o">=</span> <span class="n">BaseMeta</span><span class="o">.</span><span class="n">inherited_classinfos</span><span class="p">(</span><span class="n">bases</span><span class="p">)</span>
+
+        <span class="c1"># Inspect current class to have get information about its atributes</span>
+        <span class="c1"># cls_key is an unique hashable identifier for the class</span>
+        <span class="n">cls_key</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">.</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;__module__&#39;</span><span class="p">],</span> <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;__qualname__&#39;</span><span class="p">])</span>
+        <span class="n">classinfos</span><span class="p">[</span><span class="n">cls_key</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;index&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
+        <span class="n">extract_attrinfos</span> <span class="o">=</span> <span class="n">BaseMeta</span><span class="o">.</span><span class="n">extract_attrinfos</span>
+        <span class="n">classinfos</span><span class="p">[</span><span class="n">cls_key</span><span class="p">][</span><span class="s1">&#39;attr&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">extract_attrinfos</span><span class="p">(</span><span class="n">class_name</span><span class="p">,</span> <span class="n">attrs</span><span class="p">)</span>
+
+        <span class="c1"># Once we have collected all classinfos we can extract from it all</span>
+        <span class="c1"># attributes information</span>
+        <span class="n">attrinfos</span> <span class="o">=</span> <span class="n">BaseMeta</span><span class="o">.</span><span class="n">create_attrinfos</span><span class="p">(</span><span class="n">classinfos</span><span class="p">)</span>
+
+        <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;_classinfos&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">classinfos</span>
+        <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;_attrinfos&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">attrinfos</span>
+
+        <span class="n">build_property</span> <span class="o">=</span> <span class="n">BaseMeta</span><span class="o">.</span><span class="n">build_property</span>
+
+        <span class="c1"># Create properties for all attributes described in attrinfos if they</span>
+        <span class="c1"># are not already a property; This allow us to set a special behavior</span>
+        <span class="k">for</span> <span class="n">attr_name</span><span class="p">,</span> <span class="n">info</span> <span class="ow">in</span> <span class="n">attrinfos</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">attr_is_property</span> <span class="o">=</span> <span class="n">attrinfos</span><span class="p">[</span><span class="n">attr_name</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;is_prop&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
+            <span class="c1"># We create the corresponding property if our item is not a property</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">attr_is_property</span><span class="p">:</span>
+                <span class="n">writable</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;writable&quot;</span><span class="p">,</span>
+                                    <span class="n">BaseMeta</span><span class="o">.</span><span class="n">default_attrinfo</span><span class="p">[</span><span class="s2">&quot;writable&quot;</span><span class="p">])</span>
+
+                <span class="n">cpp_setter</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;cpp_setter&quot;</span><span class="p">,</span>
+                                      <span class="n">BaseMeta</span><span class="o">.</span><span class="n">default_attrinfo</span><span class="p">[</span><span class="s2">&quot;cpp_setter&quot;</span><span class="p">])</span>
+
+                <span class="n">attrs</span><span class="p">[</span><span class="n">attr_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">build_property</span><span class="p">(</span><span class="n">class_name</span><span class="p">,</span> <span class="n">attrs</span><span class="p">,</span>
+                                                  <span class="n">attr_name</span><span class="p">,</span> <span class="n">writable</span><span class="p">,</span>
+                                                  <span class="n">cpp_setter</span><span class="p">)</span>
+
+        <span class="c1"># Add a __setattr__ method that forbids to add an non-existing</span>
+        <span class="c1"># attribute</span>
+        <span class="k">def</span> <span class="nf">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">attrinfos</span><span class="p">:</span>
+                <span class="nb">object</span><span class="o">.</span><span class="n">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;&#39;</span><span class="si">%s</span><span class="s2">&#39; object has no settable attribute &quot;</span>
+                                     <span class="s2">&quot;&#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">class_name</span><span class="p">,</span> <span class="n">key</span><span class="p">))</span>
+        <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;__setattr__&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">__setattr__</span>
+
+        <span class="c1"># Add a method allowing to force set an attribute</span>
+        <span class="k">def</span> <span class="nf">_set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;A method allowing to force set an attribute</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;In _set function you must pass key as string&#39;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">attrinfos</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;&#39;</span><span class="si">%s</span><span class="s2">&#39; object has no settable attribute &quot;</span>
+                                     <span class="s2">&quot;&#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">class_name</span><span class="p">,</span> <span class="n">key</span><span class="p">))</span>
+
+            <span class="nb">object</span><span class="o">.</span><span class="n">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">BaseMeta</span><span class="o">.</span><span class="n">hidden_attr</span><span class="p">(</span><span class="n">key</span><span class="p">),</span> <span class="n">val</span><span class="p">)</span>
+
+            <span class="n">cpp_setter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attrinfos</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;cpp_setter&quot;</span><span class="p">,</span>
+                                                  <span class="n">BaseMeta</span><span class="o">.</span><span class="n">default_attrinfo</span><span class="p">[</span>
+                                                      <span class="s2">&quot;cpp_setter&quot;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">cpp_setter</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">BaseMeta</span><span class="o">.</span><span class="n">set_cpp_attribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">cpp_setter</span><span class="p">)</span>
+
+        <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;_set&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_set</span>
+
+        <span class="k">return</span> <span class="n">ABCMeta</span><span class="o">.</span><span class="n">__new__</span><span class="p">(</span><span class="n">mcs</span><span class="p">,</span> <span class="n">class_name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">attrs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">class_name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">attrs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ABCMeta</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">class_name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">attrs</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="Base"><a class="viewcode-back" href="../../../../dev/base.html#mlpp.base.Base">[docs]</a><span class="k">class</span> <span class="nc">Base</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">BaseMeta</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;The BaseClass of the MLPP project. This relies on some dark</span>
+<span class="sd">    magic based on a metaclass. The aim is to have read-only attributes,</span>
+<span class="sd">    docstring for all parameters, and so other nasty features</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name : str (read-only)</span>
+<span class="sd">        Name of the class</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_attrinfos</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+    <span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1"># We add the name of the class</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">attr_name</span><span class="p">,</span> <span class="n">prop</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">prop</span><span class="p">,</span> <span class="nb">property</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">attr_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attrinfos</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_attrinfos</span><span class="p">[</span><span class="n">attr_name</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;doc&#39;</span><span class="p">,</span> <span class="p">[]))</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="c1"># we create the property documentation based o what we</span>
+                    <span class="c1"># have found in the docstring.</span>
+                    <span class="c1"># First we will have the type of the property, then the</span>
+                    <span class="c1"># documentation and finally the closest class (in terms</span>
+                    <span class="c1"># of inheritance) in which it is documented</span>
+                    <span class="c1"># Note: We join doc with &#39;-&#39; instead of &#39;\n&#39;</span>
+                    <span class="c1"># because multiline doc does not print well in iPython</span>
+
+                    <span class="n">prop_doc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attrinfos</span><span class="p">[</span><span class="n">attr_name</span><span class="p">][</span><span class="s1">&#39;doc&#39;</span><span class="p">]</span>
+                    <span class="n">prop_doc</span> <span class="o">=</span> <span class="s1">&#39; - &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">d</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                                           <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">prop_doc</span>
+                                           <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">d</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">])</span>
+
+                    <span class="c1"># We copy property and add the doc found in docstring</span>
+                    <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="p">,</span> <span class="n">attr_name</span><span class="p">,</span>
+                            <span class="nb">property</span><span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">fget</span><span class="p">,</span> <span class="n">prop</span><span class="o">.</span><span class="n">fset</span><span class="p">,</span> <span class="n">prop</span><span class="o">.</span><span class="n">fdel</span><span class="p">,</span>
+                                     <span class="n">prop_doc</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">set_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_get_now</span><span class="p">():</span>
+        <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">_%H-%M-%S-</span><span class="si">%f</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="c1"># TODO: What do we want this to print exactly?</span>
+    <span class="k">def</span> <span class="nf">print_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># print(self._doc_attrs)</span>
+        <span class="k">raise</span> <span class="p">(</span><span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;This behavior has not defined yet&#39;</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_as_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">dd</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attrinfos</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="c1"># private and protected attributes are not shown in the</span>
+            <span class="c1"># dict</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">):</span>
+                <span class="n">dd</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">dd</span>
+
+    <span class="k">def</span> <span class="nf">_inc_attr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">step</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Increment an attribute of the class by ``step``</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        key : `str`</span>
+<span class="sd">            Name of the class&#39;s attribute</span>
+
+<span class="sd">        step : `int`</span>
+<span class="sd">            Size of the increase</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span> <span class="o">+</span> <span class="n">step</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_as_dict</span><span class="p">(),</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span></div>
+</pre></div>
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2015, Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Poulsen.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.8.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

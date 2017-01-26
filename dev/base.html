@@ -127,8 +127,182 @@
   <div class="row">
     <div class="col-md-12 content">
       
-  <div class="section" id="basic-tools">
-<h1>Basic tools<a class="headerlink" href="#basic-tools" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-mlpp.base">
+<span id="basic-tools"></span><h1>Basic tools<a class="headerlink" href="#module-mlpp.base" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="mlpp.base.Base">
+<em class="property">class </em><code class="descclassname">mlpp.base.</code><code class="descname">Base</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mlpp/base/utils/newbase.html#Base"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlpp.base.Base" title="Permalink to this definition">¶</a></dt>
+<dd><p>The BaseClass of the MLPP project. This relies on some dark
+magic based on a metaclass. The aim is to have read-only attributes,
+docstring for all parameters, and so other nasty features</p>
+<p class="rubric">Attributes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>name</td>
+<td>(str (read-only)) Name of the class</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="mlpp.base.BaseClass">
+<em class="property">class </em><code class="descclassname">mlpp.base.</code><code class="descname">BaseClass</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mlpp/base/utils/baseclass.html#BaseClass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlpp.base.BaseClass" title="Permalink to this definition">¶</a></dt>
+<dd><p>The base class of many objects</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
+<li><strong>params</strong> &#8211; Dict
+contains all parameters of the object</li>
+<li><strong>_info</strong> &#8211; Dict
+contains all information of the object</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="mlpp.base.BaseClass.get_info">
+<code class="descname">get_info</code><span class="sig-paren">(</span><em>kw: str = None</em><span class="sig-paren">)</span> &rarr; object<a class="reference internal" href="../_modules/mlpp/base/utils/baseclass.html#BaseClass.get_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlpp.base.BaseClass.get_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get information, logs etc.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>kw</strong> &#8211; The name of the information to be returned. If None, the dict
+of all parameters is returned</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">either the required parameter of the dict of all information</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mlpp.base.BaseClass.get_params">
+<code class="descname">get_params</code><span class="sig-paren">(</span><em>kw: str = None</em><span class="sig-paren">)</span> &rarr; object<a class="reference internal" href="../_modules/mlpp/base/utils/baseclass.html#BaseClass.get_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlpp.base.BaseClass.get_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get current parameters</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>kw</strong> &#8211; The name of the parameter to be returned. If None, the dict
+of all parameters is returned</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">either the required parameter of the dict of all parameters</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mlpp.base.BaseClass.set_params">
+<code class="descname">set_params</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mlpp/base/utils/baseclass.html#BaseClass.set_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlpp.base.BaseClass.set_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set parameters</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="mlpp.base.TimeFunction">
+<em class="property">class </em><code class="descclassname">mlpp.base.</code><code class="descname">TimeFunction</code><span class="sig-paren">(</span><em>values</em>, <em>border_type: int = 0</em>, <em>inter_mode: int = 0</em>, <em>dt: float = 0</em>, <em>border_value: float = 0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mlpp/base/utils/timefunc.html#TimeFunction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlpp.base.TimeFunction" title="Permalink to this definition">¶</a></dt>
+<dd><p>A function depending on time.</p>
+<p>It is causal as its value is zero for all <span class="math">\(t &lt; 0\)</span>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>values</strong> &#8211; Either a number if the TimeFunction is constant or a list of two numpy arrays <code class="docutils literal"><span class="pre">[T,</span> <span class="pre">Y]</span></code> where
+<code class="docutils literal"><span class="pre">Y</span></code> are the values taken by the TimeFunction at times <code class="docutils literal"><span class="pre">T</span></code></li>
+<li><strong>border_type</strong> &#8211; <p>Handle the values returned after the after the last given <code class="docutils literal"><span class="pre">t</span></code> (non constant case)</p>
+<ul>
+<li><code class="docutils literal"><span class="pre">Border0</span></code> : value will be <span class="math">\(0\)</span></li>
+<li><code class="docutils literal"><span class="pre">BorderConstant</span></code> : value will be given by <code class="docutils literal"><span class="pre">border_value</span></code></li>
+<li><code class="docutils literal"><span class="pre">BorderConstant</span></code> : value will equal to the last known value</li>
+</ul>
+</li>
+<li><strong>inter_mode</strong> &#8211; <p>Handle the way we extrapolate between two known values (non constant case)</p>
+<ul>
+<li><code class="docutils literal"><span class="pre">InterLinear</span></code> : value will be linearly interpolated following the formula <span class="math">\(f(x) = \frac{y_{t+1} - y_{t}}{x_{t+1} - x_{t}}\)</span></li>
+<li><code class="docutils literal"><span class="pre">InterConstLeft</span></code> : value will be equal to the next known point</li>
+<li><code class="docutils literal"><span class="pre">InterConstRight</span></code> : value will equal to the previous known point</li>
+</ul>
+</li>
+<li><strong>dt</strong> &#8211; The value used for the sub-sampling. If left to 0, it will be assigned automatically to a fifth of the smallest
+distance between two points</li>
+<li><strong>border_value</strong> &#8211; See <code class="docutils literal"><span class="pre">border_type</span></code>, <code class="docutils literal"><span class="pre">BorderConstant</span></code> case</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">TimeFunction are made to be every efficient when call if to get a specific value (<span class="math">\(\mathcal{O}(1)\)</span>),
+however this leads us to have it taking a lot of space in memory.</p>
+</div>
+<dl class="method">
+<dt id="mlpp.base.TimeFunction.plot">
+<code class="descname">plot</code><span class="sig-paren">(</span><em>ax=None</em>, <em>labels='default'</em>, <em>num_points=100</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mlpp/base/utils/timefunc.html#TimeFunction.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlpp.base.TimeFunction.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the TimeFunction</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ax</strong> &#8211; if filled, the object will be plot directly on it, otherwise a new ax will be created</li>
+<li><strong>labels</strong> &#8211; labels you want to see attached to you figure, you can leave it to default for automatic fill
+or None if you do not want any.</li>
+<li><strong>num_points</strong> &#8211; The number of points (evenly distributed) you want your function to be plotted with.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">ax if you want to modify it afterwards</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mlpp.base.TimeFunction.value">
+<code class="descname">value</code><span class="sig-paren">(</span><em>t</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mlpp/base/utils/timefunc.html#TimeFunction.value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlpp.base.TimeFunction.value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gives the value of the TimeFunction</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>t</strong> &#8211; either a time or an array of times</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the value at <code class="docutils literal"><span class="pre">t</span></code> or at each value in the array</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="mlpp.base.actual_kwargs">
+<code class="descclassname">mlpp.base.</code><code class="descname">actual_kwargs</code><span class="sig-paren">(</span><em>function</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mlpp/base/utils/decorators.html#actual_kwargs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlpp.base.actual_kwargs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decorator that provides the wrapped function with an attribute
+&#8216;actual_kwargs&#8217;
+containing just those keyword arguments actually passed in to the function.</p>
+<p class="rubric">Notes</p>
+<p>We override the signature of the decorated function to ensure it will be
+displayed correctly in sphinx</p>
+<p class="rubric">References</p>
+<p><a class="reference external" href="http://stackoverflow.com/questions/1408818/getting-the-the-keyword">http://stackoverflow.com/questions/1408818/getting-the-the-keyword</a>
+-arguments-actually-passed-to-a-python-method</p>
+</dd></dl>
+
 </div>
 
 

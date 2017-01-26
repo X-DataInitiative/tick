@@ -135,9 +135,159 @@
 <span id="simu-hawkes"></span><h1>Hawkes Process<a class="headerlink" href="#hawkes-process" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="hawkes-point-process">
 <h2>Hawkes point process<a class="headerlink" href="#hawkes-point-process" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="mlpp.simulation.SimuHawkes">
+<em class="property">class </em><code class="descclassname">mlpp.simulation.</code><code class="descname">SimuHawkes</code><span class="sig-paren">(</span><em>kernels=None</em>, <em>baseline=None</em>, <em>n_nodes=None</em>, <em>end_time=None</em>, <em>max_jumps=None</em>, <em>seed=None</em>, <em>verbose=True</em>, <em>force_simulation=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mlpp/simulation/hawkes.html#SimuHawkes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlpp.simulation.SimuHawkes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class for simulation of Hawkes process</p>
+<blockquote>
+<div><p>They are defined by the intensity:</p>
+<div class="math">
+\[\]</div>
+</div></blockquote>
+<dl class="docutils">
+<dt>orall i in [1 dots D], quad</dt>
+<dd><blockquote class="first">
+<div>lambda_i(t) = mu_i + sum_{j=1}^D int phi_{ij}(t - s) dN_j(s)</div></blockquote>
+<p>where</p>
+<blockquote class="last">
+<div><ul class="simple">
+<li><span class="math">\(D\)</span> is the number of nodes</li>
+<li><span class="math">\(\mu_i\)</span> are the baseline intensities</li>
+<li><span class="math">\(\phi_{ij}\)</span> are the kernels</li>
+<li><span class="math">\(dN_j\)</span> are the processes differentiates</li>
+</ul>
+</div></blockquote>
+</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>kernels</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code>, shape=(n_nodes, n_nodes)</p>
+<blockquote class="last">
+<div><blockquote>
+<div><p>A 2-dimensional arrays of kernels, also noted <span class="math">\(\phi_{ij}\)</span></p>
+</div></blockquote>
+<dl class="docutils">
+<dt>baseline</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code>, shape=(n_nodes, )</span><dd><p class="first last">The baseline of all intensities, also noted <span class="math">\(\mu\)</span></p>
+</dd>
+<dt>n_nodes</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">int</span></code></a></span><dd><p class="first last">The number of nodes of the Hawkes process. If kernels and baseline
+are None this will create a Hawkes process with n_nodes nodes of zero
+kernels and with zero baseline</p>
+</dd>
+<dt>end_time</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">float</span></code></a>, default=None</span><dd><p class="first last">Time until which this point process will be simulated</p>
+</dd>
+<dt>max_jumps</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">int</span></code></a>, default=None</span><dd><p class="first last">Simulation will stop if this number of jumps in reached</p>
+</dd>
+<dt>seed</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">int</span></code></a>, default = None</span><dd><p class="first last">The seed of the random sampling. If it is None then a random seed
+(different at each run) will be chosen.</p>
+</dd>
+<dt>force_simulation</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">bool</span></code></a>, default = False</span><dd><p class="first last">If force is not set to True, simulation won&#8217;t be run if the matrix of
+the L1 norm of kernels has a spectral radius greater or equal to 1 as
+it would be unstable</p>
+</dd>
+</dl>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="1%" />
+<col width="99%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>timestamps</td>
+<td>(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">list</span></code></a> of <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code>, size=n_nodes) A list of n_nodes timestamps arrays, each array containing the timestamps of all the jumps for this node  simulation_time : <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">float</span></code></a> Time until which this point process has been simulated  n_total_jumps : <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">int</span></code></a> Total number of jumps simulated  tracked_intensity : <code class="xref py py-obj docutils literal"><span class="pre">list[np.ndarray]</span></code>, size=n_nodes A record of the intensity with which this point process has been simulated. Note: you must call track_intensity before simulation to record it  intensity_tracked_times : <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code> The times at which intensity has been recorded. Note: you must call track_intensity before simulation to record it  intensity_track_step : <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">float</span></code></a> Step with which the intensity has been recorded</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="mlpp.simulation.SimuHawkes.mean_intensity">
+<code class="descname">mean_intensity</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mlpp/simulation/hawkes.html#SimuHawkes.mean_intensity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlpp.simulation.SimuHawkes.mean_intensity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the mean intensity vector</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mlpp.simulation.SimuHawkes.plot">
+<code class="descname">plot</code><span class="sig-paren">(</span><em>ax=None</em>, <em>labels='default'</em>, <em>style='over_time'</em>, <em>dim=None</em>, <em>t_min: float = None</em>, <em>t_max: float = None</em>, <em>max_points: int = inf</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mlpp/simulation/hawkes.html#SimuHawkes.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlpp.simulation.SimuHawkes.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Quick plot of the Hawkes process</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>ax :</strong></p>
+<blockquote>
+<div><p>if filled, the object will be plot directly on it, otherwise a new
+ax will be created</p>
+</div></blockquote>
+<p><strong>labels</strong> : <code class="xref py py-obj docutils literal"><span class="pre">list[str]</span></code></p>
+<blockquote>
+<div><p>labels you want to see attached to you figure, you can leave it to
+default for automatic fill or None if you do not want any.</p>
+</div></blockquote>
+<p><strong>dim</strong> : <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">int</span></code></a></p>
+<blockquote>
+<div><p>The selected node</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">ax in case you want to modify it afterwards</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mlpp.simulation.SimuHawkes.spectral_radius">
+<code class="descname">spectral_radius</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mlpp/simulation/hawkes.html#SimuHawkes.spectral_radius"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlpp.simulation.SimuHawkes.spectral_radius" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the spectral radius of the matrix of l1 norm of Hawkes
+kernels.</p>
+<p class="rubric">Notes</p>
+<p>If the spectral radius is greater that 1, the hawkes process is not
+stable</p>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 <div class="section" id="hawkes-kernels">
 <h2>Hawkes kernels<a class="headerlink" href="#hawkes-kernels" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="mlpp.simulation.HawkesKernelExp">
+<em class="property">class </em><code class="descclassname">mlpp.simulation.</code><code class="descname">HawkesKernelExp</code><span class="sig-paren">(</span><em>intensity</em>, <em>decay</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mlpp/simulation/hawkes_kernels/hawkes_kernel_exp.html#HawkesKernelExp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlpp.simulation.HawkesKernelExp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hawkes kernel with exponential decay</p>
+<div class="math">
+\[\phi(t) = lpha eta \exp (- eta t) 1_{t &gt; 0}\]</div>
+<p>where <span class="math">\(lpha\)</span> is the intensity of the kernel and
+<span class="math">\(eta\)</span> its decay.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>intensity</strong> : <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">float</span></code></a></p>
+<blockquote>
+<div><p>Intensity of the kernel, also noted <span class="math">\(lpha\)</span></p>
+</div></blockquote>
+<p><strong>decay</strong> : <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">float</span></code></a></p>
+<blockquote class="last">
+<div><p>Decay of the kernel, also noted <span class="math">\(eta\)</span></p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
 </div>
 

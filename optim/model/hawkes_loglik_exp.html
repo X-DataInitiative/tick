@@ -129,6 +129,196 @@
       
   <div class="section" id="hawkes-likelihood-model-with-exponential-kernels-and-with-decrease">
 <span id="model-hawkes-exp"></span><h1>Hawkes likelihood model with exponential kernels and with decrease<a class="headerlink" href="#hawkes-likelihood-model-with-exponential-kernels-and-with-decrease" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="mlpp.optim.model.ModelHawkesFixedExpKernLogLik">
+<em class="property">class </em><code class="descclassname">mlpp.optim.model.</code><code class="descname">ModelHawkesFixedExpKernLogLik</code><span class="sig-paren">(</span><em>decays: numpy.ndarray</em>, <em>n_threads: int = -1</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mlpp/optim/model/hawkes_fixed_expkern_loglik.html#ModelHawkesFixedExpKernLogLik"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlpp.optim.model.ModelHawkesFixedExpKernLogLik" title="Permalink to this definition">¶</a></dt>
+<dd><p>Model for Hawkes processes with fixed exponential kernels using the
+log-likelihood contrast.
+For now, all kernels are equal to an exponential and a fixed decay
+across nodes.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>decays</strong> : <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">float</span></code></a></p>
+<blockquote>
+<div><p>The decay coefficient of the exponential kernel</p>
+</div></blockquote>
+<p><strong>n_threads</strong> : <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">int</span></code></a>, default=-1 (read-only)</p>
+<blockquote class="last">
+<div><p>Number of threads used for parallel computation.</p>
+<ul class="simple">
+<li>if <code class="docutils literal"><span class="pre">int</span> <span class="pre">&lt;=</span> <span class="pre">0</span></code>: the number of physical cores available on
+the CPU</li>
+<li>otherwise the desired number of threads</li>
+</ul>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="4%" />
+<col width="96%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>n_nodes</td>
+<td>(<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">int</span></code></a> (read-only)) Number of components, or dimension of the Hawkes model</td>
+</tr>
+<tr class="row-even"><td>data</td>
+<td>(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">list</span></code></a> of <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.12)"><code class="xref py py-obj docutils literal"><span class="pre">numpy.array</span></code></a> (read-only)) The events of each component of the Hawkes. Namely <code class="docutils literal"><span class="pre">data[j]</span></code> contains a one-dimensional <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.12)"><code class="xref py py-obj docutils literal"><span class="pre">numpy.array</span></code></a> of the events&#8217; timestamps of component j</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="mlpp.optim.model.ModelHawkesFixedExpKernLogLik.fit">
+<code class="descname">fit</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mlpp/optim/model/hawkes_fixed_expkern_loglik.html#ModelHawkesFixedExpKernLogLik.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlpp.optim.model.ModelHawkesFixedExpKernLogLik.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the data into the model object</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data</strong> : <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">list</span></code></a> of <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.12)"><code class="xref py py-obj docutils literal"><span class="pre">numpy.array</span></code></a></p>
+<blockquote class="last">
+<div><p>The events of each component of the Hawkes. Namely
+<code class="docutils literal"><span class="pre">data[j]</span></code> contains a one-dimensional <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.12)"><code class="xref py py-obj docutils literal"><span class="pre">numpy.array</span></code></a> of
+the events&#8217; timestamps of component j</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mlpp.optim.model.ModelHawkesFixedExpKernLogLik.grad">
+<code class="descname">grad</code><span class="sig-paren">(</span><em>coeffs: numpy.ndarray</em>, <em>out: numpy.ndarray = None</em><span class="sig-paren">)</span> &rarr; numpy.ndarray<a class="headerlink" href="#mlpp.optim.model.ModelHawkesFixedExpKernLogLik.grad" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the gradient of the model at <code class="docutils literal"><span class="pre">coeffs</span></code></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>coeffs</strong> : <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.12)"><code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code></a></p>
+<blockquote>
+<div><p>Vector where gradient is computed</p>
+</div></blockquote>
+<p><strong>out</strong> : <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.12)"><code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">None</span></code></a></p>
+<blockquote>
+<div><p>If <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">None</span></code></a> a new vector containing the gradient is returned,
+otherwise, the result is saved in <code class="docutils literal"><span class="pre">out</span></code> and returned</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> : <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.12)"><code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code></a></p>
+<blockquote class="last">
+<div><p>The gradient of the model at <code class="docutils literal"><span class="pre">coeffs</span></code></p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>The <code class="docutils literal"><span class="pre">fit</span></code> method must be called to give data to the model,
+before using <code class="docutils literal"><span class="pre">grad</span></code>. An error is raised otherwise.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mlpp.optim.model.ModelHawkesFixedExpKernLogLik.hessian_norm">
+<code class="descname">hessian_norm</code><span class="sig-paren">(</span><em>coeffs: numpy.ndarray</em>, <em>point: numpy.ndarray</em><span class="sig-paren">)</span> &rarr; float<a class="headerlink" href="#mlpp.optim.model.ModelHawkesFixedExpKernLogLik.hessian_norm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the norm given by coeffs^top * H * coeffs here H
+is the hessian of the model computed at <code class="docutils literal"><span class="pre">point</span></code></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>coeffs</strong> : <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.12)"><code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code></a></p>
+<blockquote>
+<div><p>Vector where the hessian norm is computed</p>
+</div></blockquote>
+<p><strong>point</strong> : <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.12)"><code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code></a></p>
+<blockquote>
+<div><p>Vector where we compute the hessian of the model</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> : <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">float</span></code></a></p>
+<blockquote class="last">
+<div><p>Value of the hessian norm</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mlpp.optim.model.ModelHawkesFixedExpKernLogLik.loss">
+<code class="descname">loss</code><span class="sig-paren">(</span><em>coeffs: numpy.ndarray</em><span class="sig-paren">)</span> &rarr; float<a class="headerlink" href="#mlpp.optim.model.ModelHawkesFixedExpKernLogLik.loss" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the value of the goodness-of-fit at <code class="docutils literal"><span class="pre">coeffs</span></code></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>coeffs</strong> : <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.12)"><code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code></a></p>
+<blockquote>
+<div><p>The loss is computed at this point</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> : <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">float</span></code></a></p>
+<blockquote class="last">
+<div><p>The value of the loss</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>The <code class="docutils literal"><span class="pre">fit</span></code> method must be called to give data to the model,
+before using <code class="docutils literal"><span class="pre">loss</span></code>. An error is raised otherwise.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mlpp.optim.model.ModelHawkesFixedExpKernLogLik.loss_and_grad">
+<code class="descname">loss_and_grad</code><span class="sig-paren">(</span><em>coeffs: numpy.ndarray</em>, <em>out: numpy.ndarray = None</em><span class="sig-paren">)</span> &rarr; tuple<a class="headerlink" href="#mlpp.optim.model.ModelHawkesFixedExpKernLogLik.loss_and_grad" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the value and the gradient of the function at
+<code class="docutils literal"><span class="pre">coeffs</span></code></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>coeffs</strong> : <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.12)"><code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code></a></p>
+<blockquote>
+<div><p>Vector where the loss and gradient are computed</p>
+</div></blockquote>
+<p><strong>out</strong> : <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.12)"><code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">None</span></code></a></p>
+<blockquote>
+<div><p>If <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">None</span></code></a> a new vector containing the gradient is returned,
+otherwise, the result is saved in <code class="docutils literal"><span class="pre">out</span></code> and returned</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>loss</strong> : <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">float</span></code></a></p>
+<blockquote>
+<div><p>The value of the loss</p>
+</div></blockquote>
+<p><strong>grad</strong> : <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.12)"><code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code></a></p>
+<blockquote class="last">
+<div><p>The gradient of the model at <code class="docutils literal"><span class="pre">coeffs</span></code></p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>The <code class="docutils literal"><span class="pre">fit</span></code> method must be called to give data to the model,
+before using <code class="docutils literal"><span class="pre">loss_and_grad</span></code>. An error is raised otherwise.</p>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 
 

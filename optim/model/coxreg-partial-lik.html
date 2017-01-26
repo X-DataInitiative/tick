@@ -129,6 +129,180 @@
       
   <div class="section" id="cox-regression-with-partial-likelihood-model">
 <span id="coxreg-partial-lik"></span><h1>Cox regression with partial likelihood model<a class="headerlink" href="#cox-regression-with-partial-likelihood-model" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="mlpp.optim.model.ModelCoxRegPartialLik">
+<em class="property">class </em><code class="descclassname">mlpp.optim.model.</code><code class="descname">ModelCoxRegPartialLik</code><a class="reference internal" href="../../_modules/mlpp/optim/model/coxreg_partial_lik.html#ModelCoxRegPartialLik"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlpp.optim.model.ModelCoxRegPartialLik" title="Permalink to this definition">¶</a></dt>
+<dd><p>Partial likelihood of the Cox regression model (proportional
+hazards).
+This class gives first order information (gradient and loss) for
+this model.</p>
+<p class="rubric">Notes</p>
+<p>There is no intercept in this model</p>
+<p class="rubric">Attributes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="8%" />
+<col width="92%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>features</td>
+<td>(<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.12)"><code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code></a>, shape=(n_samples, n_features), (read-only)) The features matrix</td>
+</tr>
+<tr class="row-even"><td>times</td>
+<td>(<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.12)"><code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code></a>, shape = (n_samples,), (read-only)) Obverved times</td>
+</tr>
+<tr class="row-odd"><td>censoring</td>
+<td>(<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.12)"><code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code></a>, shape = (n_samples,), (read-only)) Boolean indicator of censoring of each sample. <code class="docutils literal"><span class="pre">True</span></code> means true failure, namely non-censored time</td>
+</tr>
+<tr class="row-even"><td>n_samples</td>
+<td>(<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">int</span></code></a> (read-only)) Number of samples</td>
+</tr>
+<tr class="row-odd"><td>n_features</td>
+<td>(<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">int</span></code></a> (read-only)) Number of features</td>
+</tr>
+<tr class="row-even"><td>n_failures</td>
+<td>(<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">int</span></code></a> (read-only)) Number of true failure times</td>
+</tr>
+<tr class="row-odd"><td>n_coeffs</td>
+<td>(<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">int</span></code></a> (read-only)) Total number of coefficients of the model</td>
+</tr>
+<tr class="row-even"><td>censoring_rate</td>
+<td>(<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">float</span></code></a>) The censoring_rate (percentage of ???)</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="mlpp.optim.model.ModelCoxRegPartialLik.fit">
+<code class="descname">fit</code><span class="sig-paren">(</span><em>features: numpy.ndarray</em>, <em>times: &lt;built-in function array&gt;</em>, <em>censoring: &lt;built-in function array&gt;</em><span class="sig-paren">)</span> &rarr; mlpp.optim.model.base.model.Model<a class="reference internal" href="../../_modules/mlpp/optim/model/coxreg_partial_lik.html#ModelCoxRegPartialLik.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mlpp.optim.model.ModelCoxRegPartialLik.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the data into the model object</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>features</strong> : <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.12)"><code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code></a>, shape=(n_samples, n_features)</p>
+<blockquote>
+<div><p>The features matrix</p>
+</div></blockquote>
+<p><strong>times</strong> : <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.12)"><code class="xref py py-obj docutils literal"><span class="pre">numpy.array</span></code></a>, shape = (n_samples,)</p>
+<blockquote>
+<div><p>Observed times</p>
+</div></blockquote>
+<p><strong>censoring</strong> : <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.12)"><code class="xref py py-obj docutils literal"><span class="pre">numpy.array</span></code></a>, shape = (n_samples,)</p>
+<blockquote>
+<div><p>Indicator of censoring of each sample.
+<code class="docutils literal"><span class="pre">True</span></code> means true failure, namely non-censored time.
+dtype must be unsigned short</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> : <code class="xref py py-obj docutils literal"><span class="pre">ModelCoxRegPartialLik</span></code></p>
+<blockquote class="last">
+<div><p>The current instance with given data</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mlpp.optim.model.ModelCoxRegPartialLik.grad">
+<code class="descname">grad</code><span class="sig-paren">(</span><em>coeffs: numpy.ndarray</em>, <em>out: numpy.ndarray = None</em><span class="sig-paren">)</span> &rarr; numpy.ndarray<a class="headerlink" href="#mlpp.optim.model.ModelCoxRegPartialLik.grad" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the gradient of the model at <code class="docutils literal"><span class="pre">coeffs</span></code></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>coeffs</strong> : <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.12)"><code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code></a></p>
+<blockquote>
+<div><p>Vector where gradient is computed</p>
+</div></blockquote>
+<p><strong>out</strong> : <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.12)"><code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">None</span></code></a></p>
+<blockquote>
+<div><p>If <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">None</span></code></a> a new vector containing the gradient is returned,
+otherwise, the result is saved in <code class="docutils literal"><span class="pre">out</span></code> and returned</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> : <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.12)"><code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code></a></p>
+<blockquote class="last">
+<div><p>The gradient of the model at <code class="docutils literal"><span class="pre">coeffs</span></code></p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>The <code class="docutils literal"><span class="pre">fit</span></code> method must be called to give data to the model,
+before using <code class="docutils literal"><span class="pre">grad</span></code>. An error is raised otherwise.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mlpp.optim.model.ModelCoxRegPartialLik.loss">
+<code class="descname">loss</code><span class="sig-paren">(</span><em>coeffs: numpy.ndarray</em><span class="sig-paren">)</span> &rarr; float<a class="headerlink" href="#mlpp.optim.model.ModelCoxRegPartialLik.loss" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the value of the goodness-of-fit at <code class="docutils literal"><span class="pre">coeffs</span></code></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>coeffs</strong> : <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.12)"><code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code></a></p>
+<blockquote>
+<div><p>The loss is computed at this point</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> : <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">float</span></code></a></p>
+<blockquote class="last">
+<div><p>The value of the loss</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>The <code class="docutils literal"><span class="pre">fit</span></code> method must be called to give data to the model,
+before using <code class="docutils literal"><span class="pre">loss</span></code>. An error is raised otherwise.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mlpp.optim.model.ModelCoxRegPartialLik.loss_and_grad">
+<code class="descname">loss_and_grad</code><span class="sig-paren">(</span><em>coeffs: numpy.ndarray</em>, <em>out: numpy.ndarray = None</em><span class="sig-paren">)</span> &rarr; tuple<a class="headerlink" href="#mlpp.optim.model.ModelCoxRegPartialLik.loss_and_grad" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the value and the gradient of the function at
+<code class="docutils literal"><span class="pre">coeffs</span></code></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>coeffs</strong> : <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.12)"><code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code></a></p>
+<blockquote>
+<div><p>Vector where the loss and gradient are computed</p>
+</div></blockquote>
+<p><strong>out</strong> : <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.12)"><code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">None</span></code></a></p>
+<blockquote>
+<div><p>If <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">None</span></code></a> a new vector containing the gradient is returned,
+otherwise, the result is saved in <code class="docutils literal"><span class="pre">out</span></code> and returned</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>loss</strong> : <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">float</span></code></a></p>
+<blockquote>
+<div><p>The value of the loss</p>
+</div></blockquote>
+<p><strong>grad</strong> : <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.12)"><code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code></a></p>
+<blockquote class="last">
+<div><p>The gradient of the model at <code class="docutils literal"><span class="pre">coeffs</span></code></p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>The <code class="docutils literal"><span class="pre">fit</span></code> method must be called to give data to the model,
+before using <code class="docutils literal"><span class="pre">loss_and_grad</span></code>. An error is raised otherwise.</p>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 
 

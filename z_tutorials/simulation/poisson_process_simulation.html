@@ -144,8 +144,8 @@
       
   <div class="section" id="poisson-processes-simulation">
 <h1>Poisson processes simulation<a class="headerlink" href="#poisson-processes-simulation" title="Permalink to this headline">¶</a></h1>
-<p>This example illustrates the use of <code class="xref py py-obj docutils literal"><span class="pre">mlpp.simulation.SimuInhomogeneousPoisson</span></code>
-and <code class="xref py py-obj docutils literal"><span class="pre">mlpp.simulation.SimuPoissonProcess</span></code> which are classes that allow us to simulate
+<p>This example illustrates the use of <a class="reference internal" href="../../simulation/point_process/inhomo_poisson.html#mlpp.simulation.SimuInhomogeneousPoisson" title="mlpp.simulation.SimuInhomogeneousPoisson"><code class="xref py py-obj docutils literal"><span class="pre">mlpp.simulation.SimuInhomogeneousPoisson</span></code></a>
+and <a class="reference internal" href="../../simulation/point_process/poisson.html#mlpp.simulation.SimuPoissonProcess" title="mlpp.simulation.SimuPoissonProcess"><code class="xref py py-obj docutils literal"><span class="pre">mlpp.simulation.SimuPoissonProcess</span></code></a> which are classes that allow us to simulate
 these two kinds of processes.</p>
 <div class="contents topic" id="contents">
 <p class="topic-title first">Contents</p>
@@ -174,7 +174,10 @@ these two kinds of processes.</p>
 <span class="n">poi</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s1">&#39;hist&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>(<a class="reference external" href="../../z_tutorials/simulation/code_samples/poisson_constant_intensity.py">Source code</a>)</p>
+<p>(<a class="reference external" href="../../z_tutorials/simulation/code_samples/poisson_constant_intensity.py">Source code</a>, <a class="reference external" href="../../z_tutorials/simulation/code_samples/poisson_constant_intensity.png">png</a>, <a class="reference external" href="../../z_tutorials/simulation/code_samples/poisson_constant_intensity.hires.png">hires.png</a>, <a class="reference external" href="../../z_tutorials/simulation/code_samples/poisson_constant_intensity.pdf">pdf</a>)</p>
+<div class="figure">
+<img alt="../../_images/poisson_constant_intensity.png" src="../../_images/poisson_constant_intensity.png" />
+</div>
 <p>We can notice that elapsed time between two jumps follow as expected an
 exponential distribution of parameter <span class="math">\(\frac{1}{\lambda}\)</span> where
 <span class="math">\(\lambda\)</span> is the constant intensity of the Poisson process.</p>
@@ -209,7 +212,10 @@ exponential distribution of parameter <span class="math">\(\frac{1}{\lambda}\)</
 <span class="n">in_poi</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>(<a class="reference external" href="../../z_tutorials/simulation/code_samples/poisson_simple_homogeneous.py">Source code</a>)</p>
+<p>(<a class="reference external" href="../../z_tutorials/simulation/code_samples/poisson_simple_homogeneous.py">Source code</a>, <a class="reference external" href="../../z_tutorials/simulation/code_samples/poisson_simple_homogeneous.png">png</a>, <a class="reference external" href="../../z_tutorials/simulation/code_samples/poisson_simple_homogeneous.hires.png">hires.png</a>, <a class="reference external" href="../../z_tutorials/simulation/code_samples/poisson_simple_homogeneous.pdf">pdf</a>)</p>
+<div class="figure">
+<img alt="../../_images/poisson_simple_homogeneous.png" src="../../_images/poisson_simple_homogeneous.png" />
+</div>
 <p>We see that the higher the intensity is, the more jumps we have.</p>
 </div>
 </div>

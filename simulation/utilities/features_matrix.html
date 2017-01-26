@@ -140,6 +140,71 @@
       
   <div class="section" id="features-matrix-simulation">
 <h1>Features matrix simulation<a class="headerlink" href="#features-matrix-simulation" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt>
+<code class="descclassname">mlpp.simulation.</code><code class="descname">features_normal_cov_uniform</code><span class="sig-paren">(</span><em>n_samples: int = 200</em>, <em>n_features: int = 30</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mlpp/simulation/base/features.html#features_normal_cov_uniform"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>An example of features obtained as samples of a centered Gaussian
+vector with a specific covariance matrix given by O.5 * (U + U.T),
+where U is uniform on [0, 1] and diagonal filled by ones.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>n_samples</strong> : <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">int</span></code></a>, default=200</p>
+<blockquote>
+<div><p>Number of samples</p>
+</div></blockquote>
+<p><strong>n_features</strong> : <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">int</span></code></a>, default=30</p>
+<blockquote>
+<div><p>Number of features</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> : <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.12)"><code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code></a>, shape=(n_samples, n_features)</p>
+<blockquote class="last">
+<div><p>n_samples realization of a Gaussian vector with the described
+covariance</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descclassname">mlpp.simulation.</code><code class="descname">features_normal_cov_toeplitz</code><span class="sig-paren">(</span><em>n_samples: int = 200</em>, <em>n_features: int = 30</em>, <em>cov_corr: float = 0.5</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mlpp/simulation/base/features.html#features_normal_cov_toeplitz"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>An example of features obtained as samples of a centered Gaussian
+vector with a toeplitz covariance matrix</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>n_samples</strong> : <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">int</span></code></a>, default=200</p>
+<blockquote>
+<div><p>Number of samples</p>
+</div></blockquote>
+<p><strong>n_features</strong> : <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">int</span></code></a>, default=30</p>
+<blockquote>
+<div><p>Number of features</p>
+</div></blockquote>
+<p><strong>cov_corr</strong> : <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">float</span></code></a>, default=0.5</p>
+<blockquote>
+<div><p>correlation coefficient of the Toeplitz correlation matrix</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> : <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.12)"><code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code></a>, shape=(n_samples, n_features)</p>
+<blockquote class="last">
+<div><p>n_samples realization of a Gaussian vector with the described
+covariance</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
 
 
