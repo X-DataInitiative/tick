@@ -35,7 +35,7 @@ from scipy.sparse import csr_matrix
 #                'DEBUG_SHAREDARRAY', 'DEBUG_VARRAY', 'DEBUG_VERBOSE']
 
 
-debug_flags = ['DEBUG_COSTLY_THROW', 'DEBUG_VERBOSE']
+debug_flags = ['DEBUG_COSTLY_THROW']
 
 # We need to understand what kind of ints are used by the sparse matrices of
 # scipy
@@ -531,7 +531,7 @@ class CustomInstall(install):
 
 
 setup(name="tick",
-      version='0.1.1030',
+      version='0.1.2002',
       author="Emmanuel Bacry, "
              "Stephane Gaiffas, "
              "Martin Bompaire, "
@@ -570,3 +570,5 @@ setup(name="tick",
                    'Programming Language :: Python :: 3.6',
                    'License :: OSI Approved :: BSD License'],
       )
+
+
