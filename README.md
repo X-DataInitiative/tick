@@ -1,5 +1,5 @@
 
-[![Build Status](https://travis-ci.com/X-DataInitiative/tick.svg?token=sQJ9HAvgQkqM6Z5CF631&branch=dev)](https://travis-ci.com/X-DataInitiative/tick) [![Documentation Status](https://readthedocs.org/projects/tick/badge/?version=latest)](http://tick.readthedocs.io/en/latest/?badge=latest)
+[![Build Status](https://travis-ci.com/X-DataInitiative/tick.svg?token=sQJ9HAvgQkqM6Z5CF631&branch=dev)](https://travis-ci.com/X-DataInitiative/tick)
 
 # tick
 
