@@ -1,0 +1,17 @@
+:orphan:
+
+.. _prox-l2sq:
+
+
+Ridge penalization
+------------------
+
+Proximal operator of the :math:`\ell_2^2` penalization, also called
+Ridge penalization
+
+BLABLABLABLA
+
+
+.. autoclass:: tick.optim.prox.ProxL2Sq
+    :members:
+    :inherited-members:

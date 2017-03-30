@@ -1,0 +1,44 @@
+_*.so
+build/
+
+# All hidden files except for gitignore
+.*
+!.gitignore
+
+*.pyc
+*__pycache__*
+
+*_log.txt
+
+# SWIG common generated files
+*_wrap.c
+*_wrap.cpp
+*_wrap.cxx
+*_wrap.h
+*-gypcopy.cxx
+
+# Sphinx generated files
+DOC/_build/
+
+# Latex generated
+DOC/tex/**/*.pdf
+DOC/tex/**/*.gz
+DOC/tex/**/*.out
+DOC/tex/**/*.log
+DOC/tex/**/*.fls
+DOC/tex/**/*.aux
+DOC/tex/**/*.fdb_latexmk
+DOC/tex/**/*.bbl
+DOC/tex/**/*.blg
+
+
+# Doxygen generated files
+DOC_C/
+!DOC_C/mainpage.dox
+
+# XCode Project
+XCode/
+
+# Build directory for C++ tests
+cpp_test_build/
+tick/cmake-build-debug

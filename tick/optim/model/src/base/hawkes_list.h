@@ -1,0 +1,48 @@
+
+#ifndef TICK_OPTIM_MODEL_SRC_BASE_HAWKES_LIST_H_
+#define TICK_OPTIM_MODEL_SRC_BASE_HAWKES_LIST_H_
+
+#include "base.h"
+#include "hawkes_model.h"
+#include "hawkes_single.h"
+
+/** \class ModelHawkesList
+ * \brief Base class of Hawkes models handling several realizations
+ */
+class ModelHawkesList : public ModelHawkes {
+ protected:
+  //! @brief number of given realization (size of timestamps_list)
+  ulong n_realizations;
+
+  //! @brief The process timestamps (a list of list of arrays)
+  SArrayDoublePtrList2D timestamps_list;
+
+  //! @brief Ending time of the realization
+  VArrayDoublePtr end_times;
+
+  //! @brief Number of jumps of the process per realization (size=n_realizations)
+  VArrayULongPtr n_jumps_per_realization;
+
+ public:
+  //! @brief Constructor
+  //! \param max_n_threads : number of cores to be used for multithreading. If negative,
+  //! the number of physical cores will be used
+  //! \param optimization_level : 0 corresponds to no optimization and 1 to use of faster (approximated) exponential function
+  ModelHawkesList(const int max_n_threads = 1,
+                  const unsigned int optimization_level = 0);
+
+  void set_data(const SArrayDoublePtrList2D &timestamps_list, const VArrayDoublePtr end_times);
+
+  //! @brief returns the number of jumps per realization
+  SArrayULongPtr get_n_jumps_per_realization() const {
+    return n_jumps_per_realization;
+  }
+
+  VArrayDoublePtr get_end_times() const {
+    return end_times;
+  }
+
+  virtual unsigned int get_n_threads() const;
+};
+
+#endif  // TICK_OPTIM_MODEL_SRC_BASE_HAWKES_LIST_H_

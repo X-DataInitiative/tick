@@ -1,0 +1,503 @@
+/*! \mainpage API Guidelines
+
+This documentation gives you the main guidelines for using the C++ part of the package
+and for the interface between C++ and Python (using swig).
+You should definitely read them if you intend to extend the package using C++.
+
+This documentation is divided into several sections
+- \subpage APIArray_page "API concerning use of array templates (Array<T>, SArray<T>, VArray<T>)"
+- \subpage APIThread_page "API concerning the use of multithreading"
+- \subpage APIError_page "Guidelines for dealing with C++ errors (try, catch, throw)"
+- \subpage Interruption_page "Guidelines for dealing Ctrl-C interruption"
+
+*/
+
+//-----------------------------------------------------------------------------------------------
+
+/*! \page APIArray_page Array templates API
+
+In this page we explain everything you should know for dealing with the different array template
+classes, namely :
+the Array classes, the SArray class and the VArray class.
+
+\tableofcontents
+
+
+\section array_sec About Array and Array2d templates
+ 
+\subsection array_C_sec Using Array and Array2d templates in C++ code
+ 
+The Array template is used for temporary non resizeable arrays.
+The different instances of this template are given in \ref Main_types_module.\n
+The Array template is the simplest (and thus the most efficient) class to use in order
+to get hold in C++ on numpy python arrays.
+
+The most important thing to understand when you manipulate an Array is : who is the owner of the
+data allocation. Actually it is pretty simple, here are the rules
+
++ If the Array comes from Python, then Python owns the associated allocation. Code in C++ should
+never keep a reference on it when going back to Python.
++ If the Array comes from C++, the allocation is owned by the function which instantiated it.
+When the function returns, the Array of the data on this Array cannot be used.
++ Always use temporary allocation (i.e., never use the operator new)
++ All functions having an Array as an argument should use Array &
++ A C++ function returning an Array should only return Array and never return Array &.
+Moreover such a function cannot be used in Python. If you want to return an array in Python,
+you should use the template classes SharedArrayPtr instead.
++ The only way to have several Arrays pointing sharing their data is to build "views" using the
+Array<T>::view method. In that case the allocation is owned by the initial Array and you should
+be careful not to use a view on an Array that has been deleted.
+
+For the sake of simplicity some aliases have been defined such as ArrayDouble for Array<double>
+and so on : see @ref array_sub_mod
+
+For efficiency, one also has to master when the data are copied and when they are not.
+Here are a few examples
+
+\code 
+
+ArrayDouble c(10); 				  // Creates an array of double of size 10, initialized with 0's
+ArrayDouble c = ArrayDouble(10);  // Strictly equivalent to the line above
+ArrayDouble b = c; 				  // Creates an array b which is a copy of c (so the data are copied)
+ArrayDouble d = c.view() 	      // Creates a view that shares the data with c (Be sure c is desallocated first !), Data are not copied
+b = c.view()                  // with this line, the data of b are deleted and then b and c share there data
+ArrayDouble e = c.view(1,5)       // Here e is a view on c starting at index 1 up to index 5 (excluded).
+
+\endcode
+
+Here is an example of a function using an Array as an input
+
+\code 
+ // File test.cpp
+ #include "base.h"
+ 
+ // Computes the sum of the array
+ double test_array_double(ArrayDouble &array)  
+ {
+	  double sum = 0;
+
+	  for (long i=0; i<array.size(); i++)
+		  sum += array[i];
+
+	  return(sum);
+ }
+ \endcode
+
+Let us note that there are also 2D arrays implemented by the template Array2d. It adds a view
+method for getting a Array view on a single row. Here is an example
+
+\code 
+ // File test2.cpp
+ #include "base.h"
+ 
+ // Computes the sum of the ith row of the 2d array
+ double test_array_double(ArrayDouble2d &array, int i)  
+ {
+	  double sum = 0;
+	  ArrayDouble row = array.view_row(i);
+
+	  for (long i=0; i<row.size(); i++)
+		  sum += row[i];
+
+	  return(sum);
+ }
+ \endcode
+See @ref array2d_sub_mod for aliases
+
+ \subsection listarray_C_sec Using 1d and 2d list of Array's in C++
+ 
+ There are two types that are defined in C++ for dealing with list of arrays. They use the Standard
+Library (STL). For instance, for ArrayDouble this is how they are defined
+
+\code
+typedef std::vector<Array<double> > ArrayDoubleList1D;
+typedef std::vector<ArrayDoubleList1D> ArrayDoubleList2D;
+\endcode
+See @ref arraylist1d_sub_mod and @ref arraylist2d_sub_mod.
+
+Be careful when you use them : if you are not careful you can easily generate copies of data. Here
+is an example
+
+\code
+
+void f (ArrayDoubleList1D &array_list) 
+{
+	// The following line makes a copy of the data
+	ArrayDouble a = array_list[0];  
+
+	// One way not to make a copy is to write
+	ArrayDouble *a = &(array_list[0]);
+
+	// Or you could do also
+	ArrayDouble b = array_list[0].view();
+}
+
+\endcode
+For the sake of efficiency, we recommend again that, as arguments you should always use the type
+ArrayDoubleList1D & and not directly ArrayDoubleList1D.
+
+
+\subsection array_py_sec Using Array and Array2d and the corresponding list classes templates with
+Python
+
+ Let's make the last code (test.cpp) a Python extension using SWIG. You first need a .h file
+ \code
+ // File test.h
+ 
+ extern double test_array_double(ArrayDouble &array);
+ \endcode
+ Then a SWIG interface file
+ \code{.unparsed}
+%{
+   #include "tick_python.h"
+   #include "test.h"
+%}
+
+%import(module="tick.base") base.i
+
+%include test.h
+\endcode
+ 
+Then you just need to build your setup file (see example in directory). 
+Then you can use it in python
+\code{py}
+import numpy
+test_array_double(numpy.array([1.,2,3,4]))
+\endcode
+
+Here is an example with lists 
+
+
+\code
+ // File test_list.cpp
+ 
+ double test_list_array_double(ArrayDoubleList1D &array_list)
+ {
+ 	double sum = 0;
+ 	for (int i =0; i<array_list.size(); i++) {
+ 		for (long j=0;j<array_list[0].get_size(); j++) {
+ 			sum += array_list[0][j];
+ 		}
+ 	}
+ 	return sum;
+ }
+ \endcode
+
+
+\code
+ // File test_list.h
+ 
+ extern double test_list_array_double(ArrayDoubleList1D &array_list);
+ \endcode
+ The SWIG interface file
+ \code{.unparsed}
+%{
+   #include "tick_python.h"
+   #include "test_list.h"
+%}
+
+%import(module="tick.base") base.i
+
+%include test_list.h
+\endcode
+And in Python  
+Then you just need to build your setup file (see example in directory). 
+Then you can use it in python
+\code{py}
+import numpy
+a = numpy.array([1.,2,3,4]
+array_list = [a,a,a]
+test_list_array_double(array_list])
+\endcode
+
+
+\section sarray_sec About SArrayPtr and SArray2dPtr templates
+
+\subsection sarray_C_sec Using SArrayPtr and SArray2dPtr templates in C++ code
+These templates correspond to Python/C++ Smart Pointers, thus it means that there is a reference
+counter that will work in both C++ and
+Python. So you can share easily arrays in C++ (that can be persistent in different objects)
+and Python. The S letter of SArray stands for Shared.
+The ONLY constructor you are allowed to use corresponds to a static method of the SArray template :
+
+\code
+// Allocates a SharedArray of size 30
+SArrayDoublePtr sa = SArrayDouble::new_ptr(30);
+\endcode
+
+or
+
+\code
+// Allocates a SharedArray from an ArrayDouble
+// WARNING : Here there is a copy of the data (since ArrayDouble refuses to share data except
+with ArrayDouble views)
+ArrayDouble b(10);
+SArrayDoublePtr sa = SArrayDouble.new_ptr(b);
+\endcode
+You have to be aware that you can build a SArrayDoublePtr from an ArrayDouble stealing the
+ownership of the data using the method
+Array<T>::as_sarray_ptr(). Warning : (i) you cannot call this method on a view (ii) the calling
+array becomes a view.
+
+For various aliases you should see @ref sarray_sub_mod and @ref sarrayptr_sub_mod
+\subsection sarray_py_sec Using SharedArrayPtr with Python
+It is very simple
+
+\code
+static SArrayDoublePtr reference; // We can keep a refence in the C++ code it is not a problem
+SArrayDoublePtr  f (SArrayDoublePtr sarray, double factor)
+{
+	for (long i=0;i<sarray->size();i++) {
+		(*sarray)[i] *= factor;
+	}
+	reference = sarray;
+	return sarray
+}
+\endcode
+Let us note that you could also do
+\code
+static SArrayDoublePtr reference; // We can keep a refence in the C++ code it is not a problem
+SArrayDoublePtr  f (SArrayDoublePtr sarray, double factor)
+{
+	ArrayDouble a = sarray->view(); // No copy of the data
+
+	for (long i=0;i<a.get_size();i++) {
+		a[i] *= factor;
+	}
+	reference = sarray;
+	return sarray
+}
+\endcode
+Then you can simply declare this function in the .i file as usual and you will have it available
+in Python.
+
+It is important to understand that you should not declare your array as an ArrayDouble if you want
+to get at the end a SArrayDouble.
+Indeed, it would lead to a useless copy of the data
+\code
+static SArrayDoublePtr reference; // We can keep a refence in the C++ code it is not a problem
+SArrayDoublePtr  f (ArrayDouble &a, double factor)
+{
+	for (long i=0;i<a.get_size();i++) {
+		a[i] *= factor;
+	}
+	reference = SArrayDouble::new_ptr(a); // HERE WE COPY THE DATA !
+
+	return reference
+}
+\endcode
+Let us note that you can use 2d shared arrays (see @ref sarray2d_sub_mod) and 1d/2d list of 1d/2d
+shared arrays (see @ref sarray2dptr_sub_mod,
+@ref sarrayptrlist1d_sub_mod, @ref sarrayptrlist2d_sub_mod).
+
+\section varrayptr_C_sec Using VArrayPtr in C++ code
+
+The VArrayPtr template is used for resizeable arrays of different types that can share allocation
+with python numpy. They are smart pointers to the class VArray which inherits
+from SArray. Again you should only use the smart pointers.
+For instance, again, to create a VArray you should do
+\code
+VArrayDoublePtr a = VArrayDouble::new_ptr();
+\endcode
+Then you can resize in place
+\code
+a->set_size(100);
+\endcode
+The second argument of set_size is a boolean that allows you to keep the old values of tha array
+in place (see next example).
+
+The different instances of this template are given in @ref varrayptr_sub_mod.\n
+Here is a simple example that changes in place an array and duplicate its values.
+\code
+// File test.cpp
+#include "base.h"
+
+double test_varrayptr_double(VArrayDoublePtr varrayptr)
+{
+    varrayptr->set_size(varrayptr->size()*2,true);
+
+    for (unsigned long i=0; i<varrayptr->size(); i++)
+        varrayptr[i+varrayptr->size()] = varrayptr[i];
+
+    return(varrayptr);
+}
+\endcode
+
+\section varrayptr_py_sec Using VArrayPtr in Python extension
+Let's make the last code a Python extension using SWIG. You first need a .h file
+\code
+// File test.h
+
+extern double test_varrayptr_double(VArrayDoublePtr array);
+\endcode
+Then a SWIG interface file
+\code{.unparsed}
+%{
+#include "tick_python.h"
+#include "test.h"
+%}
+%import(module="tick.base") base.i
+
+%include test.h
+\endcode
+
+Then you just need to build your setup file (see example in directory).
+Then you can use it in python
+\code{py}
+import numpy
+test_array_double(numpy.array([1.,2,3,4]))
+\endcode
+
+Be aware that, for now a VArrayPtr in Python is seen as a numpy array.
+ */
+
+
+//------------------------------------------------------------------------------------------------
+
+
+/*! \page APIThread_page
+
+\section thread_sec Dealing with multithreading.
+
+There are some templates to help you perform multithreading in C++.
+For now there are two templates :
+    - ::parallel_run : This is to be used when you want to call a method of an object for a range
+of indices (the index is the frist parameter
+of the method) independantly for each index. In this case the method is supposed to return
+non value, i.e., it is void method(...)
+    - ::parallel_map : Same as parallel_run, but this time the method returns a value
+(we shall call V its type). Then parallel_map returns the results
+returned by all the calls. If V is a type that can be used in the Array template then a
+shared pointer to the corresponding SArray is returned with
+all the collected values (e.g., SArrayDoublePtr), if not than a std::vector<V> is returned.
+    - ::parallel_map_reduce : Same as parallel_map, but this time the method returns a value
+that will be treated by a given reduced function. The final reduced result is returned
+    - ::parallel_map_additive_reduce : Same as parallel_map_reduce, but the reduce method is 
+already set to (a, b) => a + b;
+*/
+
+//-----------------------------------------------------------------------------------------------
+
+
+/*! \page APIError_page
+
+\section exception_sec Guidelines for dealing with C++ errors (try, catch, throw)
+
+In C++ you are authorised to throw two types of exceptions that will be caught by python
+interpreter using two different macros.
+An exception that throws a std::string (or const char *) using
+
+\code
+THROWSTR("Big bug")
+\endcode
+
+And one that throws an BadIndex error, the syntax is
+\code
+THROWBADINDEX(imin,imax, i)
+\endcode
+These two errors will be always caught by Python interpreter.
+
+If you want to generate an error ONLY in a debug mode (generally this is the case if the condition
+that has to be tested in order to understand if an error must be thrown is costly), then you should
+use the DEBUG_COSTLY_THROW in C++ (using #ifdef syntax). This is for instance the
+case for the operator [] of Array templates which tests if the
+index is within the right range.
+
+*/
+
+//-----------------------------------------------------------------------------------------------------------
+
+
+/*! \page Interruption_page
+
+\section interruption_sec Guidelines for dealing with Ctrl-C interruption
+
+Whenever a C++ code includes intensive computation, it is a good idea enable a way to interrupt it using Ctrl-C.
+There are some primitives you can use for doing so. They are implemented as static method of Interruption class.
+
+The main method for dealing with interruption is the method Interruption::throw_if_raised(). It allows to test whether Ctrl-C was hit by the user.
+If it is the case then it throws an exception of type Interruption. So it means that the currently executed function is returning
+immediately. If you need to do some cleaning first, you have two options. Let us point out that, whatever option you choose, at the end, it is important that
+you call Interruption::throw_if_raised(). Either you call it in the currently executing function or, later, in a calling function.
+Here are the two options :
+
+- The method Interruption::is_raised() allows to test whether Ctrl-C was hit by the user. It returns a boolean.
+  If true then you should "cleanly" return as soon as possible.
+- You can catch the exception, using try {} catch (Interruption i) {} block
+
+Let us point out that, a thread in C++ cannot throw an exception outside of his scope. So if you use Interruption::throw_if_raised() in a thread you should catch
+the exception within the thread. Then when you join all the threads, you should call again Interruption::throw_if_raised(). This technique has been
+coded in the two templates ::parallel_run and ::parallel_map discussed in Section @ref thread_sec. So you can use Interruption::throw_if_raised() safely in methods
+called by these templates.
+
+You can find two examples of use of interruption in the file tick/base/utils/src/interruption_test.cpp. The first one looks like that
+\code
+// A class with an intensive (stupid) method that can be interrupted
+class TestInterrupt {
+
+    public :
+
+    TestInterrupt() {};
+
+    void test(unsigned long i) {
+        int res = 0;
+        for (int j = 0; j< 1000000; j++) {
+            Interruption::throw_if_raised();
+            for (int k = 0; k< 1000000; k++) {
+                res += 1;
+                res = res % 100;
+            }
+        }
+    }
+};
+
+// A standard non parallel test
+void test_interrupt()
+{
+    TestInterrupt ti;
+    for (int i = 0; i< 1000000; i++)
+        ti.test(i);
+}
+\endcode
+It can be ran in python in the following way (try tp hit Ctrl-C while running)
+\code
+import tick.base.utils
+tick.base.utils.build.utils.test_interrupt()
+\endcode
+
+The second example is very close but it uses threads :
+\code
+// A class with an intensive (stupid) method that can be interrupted
+class TestInterrupt {
+
+    public :
+
+    TestInterrupt() {};
+
+    void test(unsigned long i) {
+        int res = 0;
+        for (int j = 0; j< 1000000; j++) {
+            Interruption::throw_if_raised();
+            for (int k = 0; k< 1000000; k++) {
+                res += 1;
+                res = res % 100;
+            }
+        }
+    }
+};
+
+
+// A parallel test
+void test_interrupt_parallel()
+{
+    TestInterrupt ti;
+    parallel_run(4,1000000,&TestInterrupt::test,&ti);
+}
+\endcode
+and is ran in the following way
+\code
+import tick.base.utils
+tick.base.utils.build.utils.test_interrupt_parallel()
+\endcode
+
+*/

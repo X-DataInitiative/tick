@@ -1,0 +1,8 @@
+# Setuptools is not aware of source headers, or non-module SWIG files, so we
+# grab them here
+global-include *.h
+global-include *.i
+global-include *.inl
+
+# Getting the Cereal header-only library
+recursive-include tick/third_party/cereal/include *.h *.hpp

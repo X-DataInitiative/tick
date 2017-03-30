@@ -1,0 +1,160 @@
+% Declare that this style file requires at least LaTeX version 2e.
+\NeedsTeXFormat{LaTeX2e}
+
+% Provide the name of your page, the date it was last updated, and a comment about what it's used for
+\ProvidesPackage{preamble}
+
+% Now paste your code from the preamble here
+
+%% Customize draft behavior
+\RequirePackage{ifdraft}
+\RequirePackage{setspace}
+\ifdraft{\doublespace}{\singlespace}
+\ifdraft{
+\RequirePackage{geometry}
+ \geometry{
+ a4paper,
+ top=30mm,
+ bottom=30mm,
+ left=20mm,
+ right=50mm,
+ }    
+}{
+\RequirePackage[in, plain]{fullpage}    
+}
+% Comments on the doc
+\RequirePackage[colorinlistoftodos, textwidth=40mm, obeyFinal, textsize=small, color=blue!20!white]{todonotes}
+
+\RequirePackage{geometry}
+\RequirePackage{array,tabularx}
+
+% Adjust typography
+\RequirePackage[utf8]{inputenc}
+\RequirePackage[T1]{fontenc}
+\RequirePackage[english]{babel}
+
+% \RequirePackage{ulem} % FOr \sout 
+% use Times
+\RequirePackage{times}
+% For figures
+\RequirePackage{graphicx}
+\RequirePackage[format=plain,indention=.5cm,textfont={small}]{caption}
+\RequirePackage{amsmath}
+\RequirePackage{amssymb}
+\RequirePackage{amsthm}
+\RequirePackage{subfigure} 
+% Beautiful matrices
+\RequirePackage{tabstackengine}
+\stackMath
+\RequirePackage{tikz}
+\usetikzlibrary{matrix}
+% For color
+\RequirePackage{color}
+% For citations
+\RequirePackage{natbib}
+\RequirePackage{verbatim}
+
+% For algorithms
+\RequirePackage{algorithm}
+\RequirePackage{algorithmic}
+\RequirePackage{hyperref}
+% Packages hyperref and algorithmic misbehave sometimes.  We can fix
+% this with the following command.
+\newcommand{\theHalgorithm}{\arabic{algorithm}}
+
+\RequirePackage{url}
+
+\RequirePackage[toc,page]{appendix}
+\RequirePackage{blkarray}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Header for thm and def %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Theorem Styles
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+% Definition Styles
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{example}{Example}[section]
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+\newtheorem{hypothesis}{Hypothesis}
+
+\renewcommand{\qedsymbol}{$\blacksquare$}
+
+\newcommand{\smallcopyright}{$^{\mbox{\scriptsize{\copyright}}}$}
+%%%%%%%%%%%%%%%%%%%%
+%%% New commands %%%
+%%%%%%%%%%%%%%%%%%%%
+\newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\grad}{\nabla}
+\newcommand{\E}{\mathbb E}
+\newcommand{\N}{\mathbb N}
+\newcommand{\R}{\mathbb R}
+\renewcommand{\P}{\mathbb P}
+
+\newcommand{\X}{\mathbf X}
+\newcommand{\x}{\mathbf x}
+\newcommand{\Z}{\mathbf Z}
+\newcommand{\z}{\mathbf z}
+
+\newcommand{\bul}{\bullet}
+
+\newcommand{\norm}[1]{\|#1\|}
+\newcommand{\biginr}[1]{\Big\langle #1 \Big\rangle}
+
+\newcommand{\mgeq}{\succcurlyeq}%
+\newcommand{\mleq}{\preccurlyeq}
+\newcommand{\mg}{\succ}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Header for thm and def %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Theorem Styles
+
+\newtheorem{assump}{}
+\renewcommand{\theassump}{Assumption~\arabic{assump}}
+\renewcommand{\qedsymbol}{$\blacksquare$}
+
+%%%%%%%%%%%%%%%%%%%%
+%%% New commands %%%
+%%%%%%%%%%%%%%%%%%%%
+% \newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
+
+\newcommand{\bs}{\boldsymbol}
+\newcommand{\btheta}{\bs \theta}
+\newcommand{\bbeta}{\bs \beta}
+
+\newcommand{\bO}{\boldsymbol O}
+\newcommand{\bX}{\boldsymbol X}
+\newcommand{\bT}{\boldsymbol T}
+\newcommand{\bZ}{\boldsymbol Z}
+
+\newcommand{\cB}{\mathcal B}
+\newcommand{\cU}{\mathcal U}
+\newcommand{\cG}{\mathcal G}
+
+\newcommand{\ind}[1]{\mathbf 1_{#1}}%
+\newcommand{\inr}[1]{\langle #1 \rangle}
+
+\newcommand{\bignorm}[1]{\Big\|#1\Big\|}%
+
+\DeclareMathOperator{\pen}{pen}
+\DeclareMathOperator{\prox}{prox}
+\DeclareMathOperator*{\supp}{supp}
+\DeclareMathOperator*{\rank}{rank}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+%\newcommand{\l(}{\left(}
+%\newcommand{\r(}{\right(}
+
+
+% Finally, we'll use \endinput to indicate that LaTeX can stop reading this file. LaTeX will ignore anything after this line.
+\endinput

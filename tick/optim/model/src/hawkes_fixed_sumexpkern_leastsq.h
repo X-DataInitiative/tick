@@ -1,0 +1,99 @@
+#ifndef TICK_OPTIM_MODEL_SRC_HAWKES_FIXED_SUMEXPKERN_LEASTSQ_H_
+#define TICK_OPTIM_MODEL_SRC_HAWKES_FIXED_SUMEXPKERN_LEASTSQ_H_
+
+#include "base.h"
+#include "base/hawkes_single.h"
+
+/** \class ModelHawkesFixedSumExpKernLeastSq
+ * \brief Class for computing L2 Contrast function and gradient for Hawkes processes with
+ * sum exponential kernels with fixed exponent (i.e., \sum_u alpha_u*beta_u*e^{-beta_u t},
+ * with fixed beta)
+ */
+class ModelHawkesFixedSumExpKernLeastSq : public ModelHawkesSingle {
+  //! @brief Some arrays used for intermediate computings.
+  ArrayDouble2dList1D E, Dgg, C;
+  ArrayDoubleList1D Dg;
+
+  //! @brief The array of decays (remember that the decays are fixed!)
+  ArrayDouble decays;
+
+  //! @brief n_decays (number of decays in the sum exponential kernel)
+  ulong n_decays;
+
+ public:
+  //! @brief Default constructor
+  //! @note This constructor is only used to create vectors of ModelHawkesFixedExpKernLeastSq
+  ModelHawkesFixedSumExpKernLeastSq() {}
+
+  //! @brief Constructor
+  //! \param timestamps : a list of arrays representing the realization
+  //! \param decays : the 2d array of the decays
+  //! \param end_time : The time until which this process has been observed
+  //! \param max_n_threads : maximum number of threads to be used for multithreading
+  //! \param optimization_level : 0 corresponds to no optimization and 1 to use of faster
+  //! (approximated) exponential function
+  ModelHawkesFixedSumExpKernLeastSq(const ArrayDouble &decays,
+                                    const unsigned int max_n_threads = 1,
+                                    const unsigned int optimization_level = 0);
+
+
+  /**
+   * @brief Precomputations of intermediate values
+   * They will be used to compute faster loss, gradient and hessian norm.
+   */
+  void compute_weights();
+
+  /**
+   * @brief Compute loss
+   * \param coeffs : Point in which loss is computed
+   * \return Loss' value
+   */
+  double loss(const ArrayDouble &coeffs) override;
+
+  /**
+   * @brief Compute loss corresponding to sample i (between 0 and rand_max = n_nodes)
+   * \param i : selected component
+   * \param coeffs : Point in which loss is computed
+   * \return Loss' value
+   */
+  double loss_i(const ulong i, const ArrayDouble &coeffs) override;
+
+  /**
+   * @brief Compute gradient
+   * \param coeffs : Point in which gradient is computed
+   * \param out : Array in which the value of the gradient is stored
+   */
+  void grad(const ArrayDouble &coeffs, ArrayDouble &out) override;
+
+  /**
+   * @brief Compute gradient corresponding to sample i (between 0 and rand_max = n_nodes)
+   * \param i : selected component
+   * \param coeffs : Point in which gradient is computed
+   * \param out : Array in which the value of the gradient is stored
+   */
+  void grad_i(ulong i, const ArrayDouble &coeffs, ArrayDouble &out) override;
+
+  /**
+   * @brief Compute loss and gradient
+   * \param coeffs : Point in which loss and gradient are computed
+   * \param out : Array in which the value of the gradient is stored
+   * \return Loss' value
+   */
+  double loss_and_grad(const ArrayDouble &coeffs, ArrayDouble &out);
+
+  //! @brief Synchronize n_coeffs given other attributes
+  ulong get_n_coeffs() const override;
+
+ private:
+  void allocate_weights();
+
+  /**
+   * @brief Precomputations of intermediate values for component i
+   * \param i : selected component
+   */
+  void compute_weights_i(const ulong i);
+
+  friend class ModelHawkesFixedSumExpKernLeastSqList;
+};
+
+#endif  // TICK_OPTIM_MODEL_SRC_HAWKES_FIXED_SUMEXPKERN_LEASTSQ_H_

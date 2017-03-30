@@ -1,0 +1,269 @@
+\documentclass[11pt]{article}%
+\usepackage{preamble}
+
+\title{Hawkes EM with basis functions}
+\date{\vspace{-5ex}} % avoid date
+
+\begin{document}
+
+\maketitle
+
+\noindent
+{\bf Notes on the implementation of the non parametric Hawkes estimation
+algorithm presented in the \citep{zhou2013learning}
+}
+
+\vskip 1cm
+\section{The original paper}
+\subsection{Notations}
+\begin{itemize}
+\item $c$ : an id that identifies the realization of the process
+\item $T_c$ : the duration of the realization $c$
+\item $u$ : component
+\item $i$ or $j$ : some events
+\item $u_i^c$ : the component associated to the event $i$ in the realization $c$
+\item $t_i$ : the time of event $i$
+\item $d$ : an id that identifies the kernel components (there are $D$ kernels $g_d(t)$)
+\item $\Delta t$ : the discretization step of the kernels
+\item $m$ : an index used for discretzing the kernels $g_d(m\Delta t)$
+\item $M\Delta t$ : the size of the support of the kernels
+\end{itemize}
+\subsection{The model}
+\begin{equation}
+\lambda_u(t) = \mu_u + \sum_{i:t_i<t} \sum_{d=1}^D a_{uu_i}^d g_d(t-t_i) 
+\end{equation}
+\subsection{The formula for estimation (as given in the original paper)}
+\subsubsection{The probabilities}
+\begin{equation}
+p_{ii}^c = 
+\frac
+{\mu_{u_i^c}^{(k)}}
+{\mu_{u_i^c}^{(k)} + \sum_{j=1}^{i-1}\sum_d a_{u_i^cu_j^c}^{d,(k)}g_d^{(k)}(t_i^c-t_j^c)}
+\end{equation}
+\begin{equation}
+p_{ijd}^c = 
+\frac
+{a_{u_i^cu_j^c}^{d,(k)} g_d^{(k)}(t_i^c - t_j^c)}
+{\mu_{u_i^c}^{(k)} + \sum_{j=1}^{i-1}\sum_d a_{u_i^cu_j^c}^{d,(k)}g_d^{(k)}(t_i^c-t_j^c)}.
+\end{equation}
+\subsubsection{\texorpdfstring{Going from $k$-step to $k+1$-step for $\mu_u$ and the amplitudes $a_{uu'}$}
+                              {Change step for amplitude}}
+The update of the exogenous intensity $\mu_u$
+\begin{equation}
+\mu_u^{(k+1)} = \frac{1}{\sum_c T_c} \left( \sum_c \sum_{i=1,u_i^c=u}^{n_c} p_{ii}^c\right).
+\end{equation}
+The update of the amplitudes (there is an error in the paper $\alpha$ is written instead of $2\alpha$)
+\begin{equation}
+\label{ak}
+a_{u,v}^{d,(k+1)} =
+\left(
+\frac
+{a_{uv}^{d,(k)}\sum_c \sum_{i:u_i^c=u} \sum_{j<i,u_j^c=v} p_{ijd}^c}
+{\sum_c \sum_{j:u_j^c=v} \int_0^{T_c-t_j^c} g_d^{(k)}(t)dt + 2\alpha}
+\right)^{\frac 1 2}
+\end{equation}
+\subsubsection{\texorpdfstring{Going from $k$-step to $k+1$-step for the kernel functions $g_d(m\Delta t)$}
+                              {Change step for the kernel functions}}
+We first compute (let us note that both $C_{m}^d$ and $D_{m}^d$ are noted $C_m$ and $D_m$ in the original paper and a small index bug in $C_m$)
+\begin{equation}
+C_{m}^d = \frac{1}{g_d^{(k)}(m\Delta t)} \sum_c \sum_{u=1}^U\sum_{i=1}^{n_c} a_{uu_i^c}^{d,(k)} \mathbf{I}[m\Delta t \le T_c - t_i^c]
+\end{equation} 
+and
+\begin{equation}
+D_{m}^d = \frac 1 {\Delta t} \sum_c \sum_{i,j:m\Delta t \le t_i^c-t_j^c<(m+1)\Delta t} p_{ijd}^c.
+\end{equation}
+Then independantly for each $d$, we set $g_{dm} = g_d(m\Delta t)$ then we iterate the following algo until convergence
+\begin{itemize}
+\item for $m=1$ to $M$ solve the quadratic following equation in $g_{dm}$ (fixing the other $g_{dm'}$ with $m'\neq m$)
+\begin{equation}
+\label{ODE}
+-2\alpha \frac{g_{d,m+1} -2g_{dm}+g_{d,m-1}}{\Delta^2} + C_{m}^dg_{dm} = \frac{D_{m}^d}{g_{dm}}
+\end{equation}
+\end{itemize}
+Let us point out that $C_m^d$ can be rewritten :
+\begin{eqnarray}
+C_{m}^d & = & \frac{1}{g_d^{(k)}(m\Delta t)} \sum_c \sum_{u=1}^U\sum_{v=1}^U a_{uv}^{d,(k)} \sum_{i=1, u_i^c = v}^{n_c}  \mathbf{I}[m\Delta t \le T_c - t_i^c] \\
+& = &\frac{1}{g_d^{(k)}(m\Delta t)} \sum_c \sum_{v=1}^U \left( \sum_{u=1}^U a_{uv}^{d,(k)}\right) 
+\left( \sum_{i=1, u_i^c = v}^{n_c}   \mathbf{I}[m\Delta t \le T_c - t_i^c] \right)\\
+& = &\frac{1}{g_d^{(k)}(m\Delta t)} \sum_c \sum_{u=1}^U  
+\left(\sum_{v=1}^U a_{vu}^{d,(k)}\right)
+\left(\sum_{i=1, u_i^c = u}^{n_c}\mathbf{I}[m\Delta t \le T_c - t_i^c] \right) \\
+& = &\frac{1}{g_d^{(k)}(m\Delta t)} \sum_c \sum_{u=1}^U  
+\left(\sum_{v=1}^U a_{vu}^{d,(k)}\right)
+\left(\#\{i~/ ~u_i^c=u,~t_i^c\le T_c-m\Delta t\}\right)
+\end{eqnarray} 
+\section{Our implementation}
+\subsection{New notations}
+The core computation will be made for a fixed component $u$ and a fixed realization $c$ (we will be able to parallelize the computations for each component).
+So we set
+\begin{equation}
+\mu_u^c = \sum_{i=1,u_i^c=u}^{n_c} p_{ii}^c, ~~~\mbox{such that}~~
+\mu_u = \frac{1}{\sum_c T_c} \sum_c \mu_u^c.
+\end{equation}
+Moreover
+\begin{equation}
+q_{uv}^{d,c} = a_{uv}^d \sum_{i:u_i^c=u} \sum_{j<i,u_j^c = v} p_{ijd}^c
+\end{equation}
+and
+\begin{equation}
+r_u^{d,c} = \sum_{j:u_j^c=u} \int_0^{T_c-t_j^c} g_d^{(k)}(t)dt
+\end{equation}
+so that formula \eqref{ak} writes
+\begin{equation}
+a_{u,v}^{d,(k+1)} = 
+\left( 
+\frac 
+{\sum_c q_{uv}^{d,c,(k)}}
+{\sum_c r_{v}^{d,c} + 2\alpha}
+\right)^{\frac 1 2}
+\end{equation}
+and in the same way
+\begin{equation}
+C_{m,u}^{c,d} = 
+\frac{1}{g_d^{(k)}(m\Delta t)}  
+\left(\sum_{v=1}^U a_{vu}^{d,(k)}\right)
+\left(\#\{i~/ ~u_i^c=u,~t_i^c\le T_c-m\Delta t\}\right),~~\mbox{such that}~~C_{m}^d = \sum_c \sum_{u=1}^U C_{m,u}^{c,d}
+\end{equation} 
+and 
+\begin{equation}
+D_{m,u}^{c,d} = \frac 1 {\Delta t} \sum_{i,j:u^i = u, m\Delta t \le t_i^c-t_j^c<(m+1)\Delta t} p_{ijd}^c~~\mbox{such that}~~D_{m}^d = \sum_c \sum_{u=1}^U D_{m,u}^{c,d}
+\end{equation} 
+
+\subsection{Solving the ODE}
+The quadratic equation \eqref{ODE} in $g_{d,m}$  writes
+\begin{equation}
+-2\alpha \frac{g_{d,m+1} -2g_{dm}+g_{d,m-1}}{\Delta t^2} + C_{m}^dg_{dm} = \frac{D_{m}^d}{g_{dm}}
+\end{equation}
+\begin{equation}
+\left(\frac{4\alpha}{\Delta t^2} + C_{m}^d\right) g_{dm}^2
+-\frac{2\alpha}{\Delta t^2} 
+\left(
+ g_{d,m+1} +g_{d,m-1}
+ \right)g_{dm} 
+  - D_{m}^d = 0
+\end{equation}
+
+
+\subsection{The basic methods in the tick package}
+
+\vskip .5cm
+\noindent 
+{\bf The {\em compute\_r} method} \\
+For fixed $u$ and a fixed realization $c$ this function performs the update
+\begin{itemize}
+\item $\forall d$, $\sum_{c'<c} r_u^{d,c'} \longrightarrow \sum_{c'\le c} r_u^{d,c'}$ 
+\end{itemize}
+\begin{algorithmic}[1]
+\STATE \% In this function {\bf $u$ and $c$ are fixed}
+\STATE \% {\bf The arguments are}
+\STATE \% $T \gets$ a read-only parameter which corresponds to $T_c$
+\STATE \% $\Delta t \gets$ a read-only parameter which corresponds to $\Delta t$
+\STATE \% $g_d(m\Delta t) \gets$ a read-only $D \times M$ matrix representing the kernels $g_d(m\Delta t)$
+\STATE \% $G_d(m\Delta t) \gets$ a read-only $D \times M$ matrix representing $\int_0^{(m+1)\Delta t} g_d(t) dt$
+\STATE \% $r[d] \gets$ a $D$-vector which corresponds to $\sum_{c'<c} r_u^{d,c'}$ (will be updated)
+\STATE \% {\bf The function starts here}
+\FOR{$j$ all events of $u$}
+\STATE $m_0 \gets floor((T-t_j)/\Delta t)$
+\FOR{$d=0 \ldots D-1$}
+\STATE $r[d] \gets r[d] + G_d[m_0-1] + (T-t_j-m_0\Delta t)g_d(m_0\Delta t)$
+\ENDFOR
+\ENDFOR
+\end{algorithmic}
+
+\vskip .5cm
+\noindent 
+{\bf The {\em compute\_C} method} \\
+For fixed $u$ and a fixed realization $c$ this function performs the update
+\begin{itemize}
+\item  $\forall m,~~\sum_{c'<c} C_{m,u}^{c',d} \longrightarrow \sum_{c'\le c} C_{m,u}^{c',d}$
+\end{itemize}
+\begin{algorithmic}[1]
+\STATE \% In this function {\bf $u$ and $c$ are fixed}
+\STATE \% {\bf The arguments are}
+\STATE \% $T \gets$ a read-only parameter which corresponds to $T_c$
+\STATE \% $\Delta t \gets$ a read-only parameter which corresponds to $\Delta t$
+\STATE \% $g_d(m\Delta t) \gets$ a read-only $D \times M$ matrix representing the kernels
+\STATE \% $a\_sum[d] \gets$ a read-only $D$-vector which corresponds to $\sum_{v=1}^U a_{vu}^{d}$
+\STATE \% $C[d,m] \gets$ a $D \times M$ matrix which corresponds to $\sum_{c'<c} C_{m,u}^{c',d}$ (will be updated)
+\STATE \% {\bf The function starts here}
+\FOR{$m=0 \ldots M-1$}
+\STATE $i \gets$ the greatest $i$ such that $t_i \le T-m\Delta t$
+\FOR{$d=0 \ldots D-1$}
+\STATE $C[d,m] \gets C[d,m] + a\_sum[d]*i/g_d(m\Delta t)$
+\ENDFOR
+\ENDFOR
+\end{algorithmic}
+
+
+\vskip .5cm
+\noindent 
+{\bf The {\em compute\_mu\_q\_D} method} \\
+For a fixed component $u$ and a fixed realization $c$ this function basically
+performs the updates
+\begin{itemize}
+\item $\sum_{c'<c} \mu_u^{c'} \longrightarrow \sum_{c'\le c} \mu_u^{c'}$
+\item  $\forall v,d~~\sum_{c'<c} q_{u,v}^{c',d} \longrightarrow \sum_{c'\le c} q_{u,v}^{c',d}$
+\item  $\forall m,d~~\sum_{c'<c} D_{m,u}^{c',d} \longrightarrow \sum_{c'\le c} D_{m,u}^{c',d}$
+\end{itemize}
+
+
+\begin{algorithmic}[1]
+\STATE \% In this function {\bf $u$ and $c$ are fixed}
+\STATE \% {\bf The arguments are}
+\STATE \% $T \gets$ a read-only parameter which corresponds to $T_c$
+\STATE \% $\Delta t \gets$ a read-only parameter which corresponds to $\Delta t$
+\STATE \% $g_d(m\Delta t) \gets$ a read-only $D \times M$ matrix representing the kernels
+\STATE \% $a[v,d] \gets$ a read-only $U \times D$ matrix which corresponds to $\{a_{uv}^{d}\}_{vd}$
+\STATE \% $q[v,d] \gets$ a $U \times D$ matrix which corresponds to $\sum_{c'<c} q_{u,v}^{c',d}$ (will be updated)
+\STATE \% $D[d,m] \gets$ a $D \times M$ matrix which corresponds to $\sum_{c'<c} D_{m,u}^{c',d}$ (will be updated)
+\STATE \% $\mu \gets$ a number which corresponds to $\sum_{c'<c} \mu_u^{c'}$ (will be updated)
+\STATE \% {\bf The function starts here}
+\STATE $v\_indices \gets$ a vector of size $U$ initialized to the last indices of each component
+\STATE $mu\_out \gets 0$
+\FOR{$i$ all events of $u$ reverse order}
+\STATE \% Then we take care of the other quantitites 
+\STATE $norm \gets 0$ ~~~ \% used to store the normalization factor such that $\sum_{j,d} p_{ijd}=1$
+\STATE $q\_temp \gets 0$ ~~~\% a $U \times D$ matrix that is needed as a buffer for $q[v,d]$
+\STATE $D\_temp \gets 0$ ~~~\% a $D \times M$ matrix that is needed as a buffer for $C[d,m]$
+\FOR{$v$ all components}
+  \STATE Update the $v\_indices[v]$ to point to the last event $j_0$ of $v$  such that $t_{j_0}\le t_i$
+  \STATE If no such event then skip to the next component $v$ (i.e., continue loop)
+  \FOR{$j=j_0\ldots 0$} 
+  \IF{u==v and j==i}
+  \STATE $norm \gets norm + \mu$
+  \ELSE
+  \IF{$t_i-t_j > Support(g_d)$}
+   \STATE break loop since probability $p_{ijd}=0$
+  \ENDIF
+  \FOR{$d=1\ldots D$}
+   \STATE $val \gets a[v,d]*g_d(t_i-t_j)$
+  \STATE $m \gets (t_i-t_j)/\Delta t$
+   \STATE $q\_temp[v,d] \gets q\_temp[v,d] + val$
+   \STATE $D\_temp[d,m] \gets D\_temp[d,m]+ val$
+   \STATE $norm \gets norm + val$
+  \ENDFOR
+  \ENDIF
+  \ENDFOR
+  \ENDFOR
+  \STATE \% We are ready to perform proba normalization such that $\sum_{j,d} p_{ijd}=1$
+  \STATE $mu\_out \gets mu\_out+mu/norm$ 
+  \STATE \% The following is performed for all $v,d,m$
+  \STATE $q[v,d] \gets q[v,d]+a[v,d]*q\_temp[v,d]/norm$
+  \STATE $D[d,m] \gets D[d,m]+D\_temp[d,m]/(norm*\Delta t)$
+  \ENDFOR
+  \STATE $\mu \gets mu\_out$
+
+\end{algorithmic}
+
+
+
+\vskip .5cm
+\noindent 
+{\bf The {\em compute\_g} method} \\
+This method is pretty straightforward, so it is not described here.
+
+
+\bibliographystyle{plainnat}
+\bibliography{ref}
+
+\end{document}

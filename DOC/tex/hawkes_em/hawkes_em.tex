@@ -1,0 +1,237 @@
+\documentclass[a4paper]{article}
+
+\usepackage{preamble}
+
+\title{Hawkes EM}
+\date{\vspace{-5ex}} % avoid date
+
+\begin{document}
+\maketitle
+
+The following presents the n-dimensional version of the 1-dimensional algorithm
+presented in \citep{lewis2011nonparametric}.
+
+\section{Original paper} % (fold)
+\label{sec:original_paper}
+
+\subsection{Notations}
+\begin{itemize}
+\item $n$ : Number of events in the process
+\item $T$ : duration of the time serie
+\item $\lambda$ : Hawkes intensity
+\item $\mu$ : Hawkes baseline
+\item $g$ : Hawkes kernel
+\item $i$ or $j$ : some events
+\item $t_i$ : the time of event $i$
+\item $\delta t$ : the discretization step of the kernel
+\item $m$ : an index used for discretzing the kernels $g_d(m\Delta t)$
+\item $M$ : number of discretizations of the kernel
+\item $M \delta t$ : the size of the support of the kernel
+\item $I_m$ : time interval : $[(m-1) \delta t, m \delta t)$
+\item $A_m$ : set of all events $(i, j)$ such that $(t_i - t_j) \in I_m$
+\item $k$ : algorithm iteration number
+\end{itemize}
+
+\subsection{Context} % (fold)
+\label{sub:context}
+
+One dimensional Hawkes process with the following intensity
+\begin{equation}
+\label{eq:one_dimensional_intensity}
+	\lambda(t) = \mu + \sum_{t_i < t} g(t - t_i)
+\end{equation}
+Hence, $\mu$ is the baseline and $g$ is the kernel.
+To perform non parametric estimation of $g$ we will suppose the following form for $g$:
+\[
+	g(t) = \sum_{m=1}^{M} g_m 1_{(t \in I_m)}
+\]
+Where $\forall m \in \{1 \dots M\}, g_m \in \R$ and $I_m = [(m-1) \delta t, m \delta t)$, where $\delta t$ is
+the kernel discretization parameter.
+
+% subsection context (end)
+
+\subsection{Algorithm} % (fold)
+\label{sub:algorithm}
+
+\subsubsection{Expectation} % (fold)
+\label{ssub:expectation}
+
+At iteration $k$,
+the triggering weight (the probabilty that event $i$ was caused by event $j$) is estimated by
+\begin{equation}
+	\label{eq:expectation_triggering}
+	p_{ij}^k = \frac{g^k(t_i - t_j)}{\mu^k + \sum_{l=1}^{i-1} g^k(t_i - t_l)}
+\end{equation}
+for $t_i < t_j$. The background weight (the probability that $i$ is a background event) is estimated as
+\begin{equation}
+	\label{eq:expectation_background}
+	p_{ii}^k = \frac{\mu^k}{\mu^k + \sum_{l=1}^{i-1} g^k(t_i - t_l)}
+\end{equation}
+
+% subsubsection expectation (end)
+
+\subsubsection{Maximization} % (fold)
+\label{ssub:maximization}
+
+Knowing that
+\begin{align*}
+	\int_0^T \lambda(t) dt &= \int_0^T \sum_{t_j < t} g(t - t_j) dt = \int_0^T \sum_{t_j} g(t - t_j) 1_{t_j < t} dt \\
+						   &= \sum_{t_j} \int_{t_j}^T g(t - t_j) dt
+						    = \sum_{t_j} \int_{t_j}^{\min (T, t_j + M \delta t)} g(t - t_j) dt \\
+						   &\approx \sum_{t_j} \sum_{m=1}^M g_m \delta t = n \sum_{m=1}^M g_m \delta t \\
+\end{align*}
+where $T$ is the duration of the time serie. Approximation is valid as $M \delta t \ll T$.
+With intensity specified in~\ref{eq:one_dimensional_intensity}, expectation of complete data log-likelihood is:
+\begin{align}
+\label{eq:complete_data_loglik_expectation}
+	\E[ L(\mu, g)] &= \sum_{i=1}^n p_{ii} \log \mu - \mu T
+	             + \sum_{i=2}^n \left[ \sum_{j=1}^{i-1} \left[ p_{ij} \log g(t_i - t_j) \right]
+	                                   - \int_{t_j}^T g(t - t_j) dt \right] \\
+              &= \sum_{i=1}^n p_{ii} \log \mu - \mu T
+                 + \sum_{m=1}^M \sum_{i, j \in A_m} p_{ij} \log g_m
+                 - n \sum_{m=1}^M g_m \delta t \\
+\end{align}
+where $A_m$ is the set of pairs of events such that $(t_i - t_j) \in I_m$.
+The background rate is computed as:
+\begin{equation}
+	\label{eq:maximization_baseline}
+	\frac{\partial \E[ L(\mu, g)]}{\partial \mu} = 0
+	\quad \Leftrightarrow \quad
+	\mu^{k+1} = \frac{1}{T} \sum_{j=1}^{n} p_{jj}^k
+\end{equation}
+And the updated rates are computed as ($\frac{\partial \E[ L(\mu, g)]}{\partial g_m}$):
+\begin{equation}
+	\label{eq:maximization_rates}
+	\frac{\partial \E[ L(\mu, g)]}{\partial g_m} = 0
+	\quad \Leftrightarrow \quad
+	g_m^{k+1} = \frac{1}{n \delta t } \sum_{i,j \in A_m} p_{ij}^k
+\end{equation}
+
+
+% subsubsection maximization (end)
+
+% subsection algorithm (end)
+
+% section original_paper (end)
+
+\section{Multi dimensional Hawkes process} % (fold)
+\label{sec:multi_dimensional_hawkes_process}
+
+\subsection{Context} % (fold)
+\label{sub:multi_context}
+
+Now our hawkes process has $D$ nodes. We replace intensity of equation~\ref{eq:one_dimensional_intensity} by
+\begin{equation}
+\label{eq:multi_dimensional_intensity}
+	\lambda(t) = \sum_{u=1}^{D} \left( \mu^u + \sum_{v=1}^{D} \sum_{t_j^v < t} g^{uv}(t - t_j^v) \right)
+\end{equation}
+we will still suppose the following form for each $g^{uv}$:
+\[
+	g^{uv}(t) = \sum_{i=1}^{M} g_m^{uv} 1_{(t \in I_m)}
+\]
+
+% subsection context (end)
+
+\subsection{Algorithm} % (fold)
+\label{sub:multi_algorithm}
+
+For more clarity we will omit iteration $k$ index in the following equations.
+
+\subsubsection{Expectation} % (fold)
+\label{ssub:multi_expectation}
+
+Equation~\ref{eq:expectation_triggering} (the probabilty that event $i$ from node $u$ was caused by event $j$ from node $v$) becomes:
+\begin{equation}
+	\label{eq:multi_expectation_triggering}
+	p_{ij}^{uv} = \frac{g^{uv}(t_i - t_j)}{\mu^u + \sum_{w = 1}^{D} \sum_{t_l^w < t_i} g^{uw}(t_i - t_l^w)}
+\end{equation}
+where $\{t_l^w < t_i\}$ are events of node $w$ occuring before $t_i$. Equation~\ref{eq:expectation_background} becomes:
+\begin{equation}
+	\label{eq:multi_expectation_background}
+	p_{ii}^{u} = \frac{\mu^u}{\mu^u + \sum_{w = 1}^{D} \sum_{t_l^w < t_i} g^{uw}(t_i - t_l^w)}
+\end{equation}
+% subsubsection expectation (end)
+
+\subsubsection{Maximization} % (fold)
+\label{ssub:multi_maximization}
+
+Complete loglikelihood equation~\ref{eq:complete_data_loglik_expectation} data becomes for each node $u$:
+\begin{align*}
+\E[ L_u(\mu, g)] &= \sum_{i=1}^n p_{ii}^u \log \mu^u - \mu^u T  \\
+	             &\quad +  \sum_{t_i^u}^n \sum_{v=1}^D \sum_{t_j^v < t_i^u} p_{ij}^{uv} \log g^{uv}(t_i^u - t_j^v)
+	                                               - \sum_{v=1}^D \sum_{t_j^v} \int_{t_j^v}^T g^{uv}(t - t_j^v) dt \\
+                 &= \sum_{i=1}^n p_{ii}^u \log \mu^u - \mu^u T
+                    + \sum_{v=1}^D \sum_{m=1}^M \left[ \sum_{i, j \in A_m^{uv}} p^{uv}_{ij} \log g_m^{uv}
+                     - n_v g_m^{uv} \delta t \right]
+\end{align*}
+Where $A_m^{uv}$ is the set of pairs of events such that $(t_i^u - t_j^v) \in I_m$.
+We have
+\[\E[ L(\mu, g)] = \sum_{u=1}^D \E[ L_u(\mu, g)] \]
+Equation~\ref{eq:maximization_baseline} becomes:
+\begin{equation}
+	\label{eq:multi_maximization_baseline}
+	\frac{\partial \E[ L(\mu, g)]}{\partial \mu^u} = 0
+	\quad \Leftrightarrow \quad
+	\mu^u = \frac{1}{T} \sum_{i=1}^{n} p_{ii}^u
+\end{equation}
+and equation~\ref{eq:maximization_rates} becomes:
+\begin{equation}
+	\label{eq:multi_maximization_rates}
+	\frac{\partial \E[ L(\mu, g)]}{\partial g_m^{uv}} = 0
+	\quad \Leftrightarrow \quad
+	g_m^{uv} = \frac{1}{n_v \delta t } \sum_{i, j \in A_m^{uv}} p_{ij}^{uv}
+\end{equation}
+
+% subsubsection maximization (end)
+
+% section multi_dimensional_hawkes_process (end)
+
+\newpage
+
+\section{Efficient implementation} % (fold)
+\label{sec:efficient_implementation}
+
+On each node $u$ we can compute directly $p_{ij}^{uv}$ and the following $g^{uv}_m$ with this procedure:
+\begin{algorithmic}[1]
+\REQUIRE $g^u$ $D \times M$ array used to compute $g^{uv}_m$
+\FOR {$i=n_u \ldots 1$}
+	\STATE {$\text{norm}_u \gets 0$}
+	\STATE {$\text{next}\_\hat{g}^u \gets (0, \dots, 0)$}
+	\FOR {$v=1 \ldots D$}
+		\STATE {$j \gets$ the biggest $j$ such that $t_j \le t_i$} \label{op:find_tj}
+		\WHILE {$j \geq 0$}
+			\IF {$t_i - t_j \geq M \delta t$}
+				\STATE {break}
+				\COMMENT{Events are too far away, out of kernel support}
+			\ENDIF
+			\IF {$u = v$ \AND $t_i = t_j$}
+				\STATE {$\text{norm}_u \mathrel{{+}{=}} \mu^u$}
+			\ELSE
+				\STATE {$m = \lfloor \frac{t_i - t_j}{\delta t} \rfloor $}
+				\STATE {$\text{next}\_\hat{g}_m^{uv} \mathrel{{+}{=}} g_m^{uv} $}
+				\COMMENT {$g_m^{uv}$ is equal to $g^{uv}(t_i - t_j)$}
+				\STATE {$\text{norm}_u \mathrel{{+}{=}} g_m^{uv}$}
+			\ENDIF
+			\STATE {$j \mathrel{{-}{=}} 1$}
+		\ENDWHILE
+	\ENDFOR \\
+	\COMMENT {At this point $\text{norm}_u = \mu^u + \sum_{w=1}^D \sum_{t_l^w < t_i} g^{uw} (t_i - t_l^w)$}
+	\STATE {$\text{next}\_\mu^u \mathrel{{+}{=}} \frac{\mu^u}{\text{norm}_u} $}
+	\COMMENT {This equals $p^u_{ii}$}
+	\FOR {$v=1 \ldots D$}
+		\STATE {$\text{next}\_g^{uv}_m \mathrel{{+}{=}} \frac{\text{next}\_\hat{g}_m^{uv}}{\text{norm}_u n_v \delta t}$}
+		\COMMENT {This equals $p^{uv}_{ij} / n_v \delta t$}
+	\ENDFOR
+\ENDFOR
+\end{algorithmic}
+%
+This algorithm can be launched in parallel on all node $u$ and will result in one step of expectation-maximization.
+We loop in reverse order such that line~\ref{op:find_tj} can be executed very quickly by storing last indices of each
+node $v$ in memory.
+
+% section efficient_implementation (end)
+
+\bibliographystyle{plainnat}
+\bibliography{ref}
+
+\end{document}

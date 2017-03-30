@@ -1,0 +1,13 @@
+add_library(prox EXCLUDE_FROM_ALL
+        prox.cpp prox.h
+        prox_separable.cpp prox_separable.h
+        prox_l2sq.cpp prox_l2sq.h
+        prox_l1.cpp prox_l1.h
+        prox_l1w.cpp prox_l1w.h
+        prox_positive.cpp prox_positive.h
+        prox_zero.cpp prox_zero.h
+        prox_sorted_l1.cpp prox_sorted_l1.h
+        prox_tv.cpp prox_tv.h
+        prox_l1w.cpp prox_l1w.h
+        prox_elasticnet.cpp prox_elasticnet.h
+        prox_multi.cpp prox_multi.h)

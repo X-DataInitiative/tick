@@ -1,0 +1,44 @@
+sudo: required
+
+branches:
+  only:
+    - dev
+
+cache:
+  directories:
+    - $HOME/.pyenv
+    - googletest
+    - swig-3.0.10
+
+matrix:
+  include:
+  - os: linux
+    language: generic
+    env: TOXENV=py34
+  - os: linux
+    language: generic
+    env: TOXENV=py35
+  - os: osx
+    language: generic
+    env: TOXENV=py34
+  - os: osx
+    language: generic
+    env: TOXENV=py35
+
+before_install:
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then source .travis_install_mac.sh; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then source .travis_install_linux.sh; fi
+
+install:
+  - python3 -m pip install --quiet -U pip
+  - python3 -m pip install --quiet numpy pandas
+  - python3 -m pip install -r requirements.txt
+  - python3 -m pip install cpplint
+
+script:
+  - ./build_test.sh
+  - export PYTHONPATH=${PYTHONPATH}:${TRAVIS_BUILD_DIR} && (cd DOC && make doctest)
+
+notifications:
+  slack:
+    secure: m9B/ZFfTZRZTRT5yVXdHKOfO+f7Nnq5w9sewxMXFe0RQ/jaEFWt2b/jA9gTR1WJKvQ/05hmShMlz7UMCZguXqElYzsLvdribmV94TvmFpJdsoF80palZzzjRCm9lNHx66RWJ4l5p9wKAS+73tafDBBlGwaOqc234le+YxYsTIGgzeb69WS547LkHhbmPTgbhG+k8jAfE0OByXsSmaOTVyqbWerK1WF8KzlGx5WqWkGhECloTBLdcK0+oxelHYGdwI2CCRi/SfOfEyO6ceyV6hqE6Xt0g/RJhO4lEs9ahIVryUKUTpYxbgO0eWJ0LwM0OolfCAaphKHogd4Z6zHGr2EXmkXzElUcT5fMFhSD1/KxBXWxSl3TdAOpzaXG5WTYDV+38rM15FGhQD+q9monR3q7aHs/P7BkAcZBJGns61gTV1R9o+xMV4naMGH7/SRPxS9Jmz6h7Wg6WzoH2E2/Qq0YL+w3BDg6vpXNoBstmX/3D0G7S+SFmQcZqXQ18RGC5HqP1YA0gJyX89Bl8ZRBD4JTplh/Mnb20ORBNt+aaWzGEdOf7DRcGfc0Yl7Wyap92+dvX+wW7KPEUU04uRlKk/FHXA6U3NcsL9Le//+SsPveW7iCMF8e2jct9E5e7kCd2fkiExwH130zfhmDXApTBHVZGjiB/swx0X+utiXkQUbQ=

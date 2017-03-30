@@ -1,0 +1,6 @@
+#!/bin/bash
+
+make clean
+make doctest html
+
+open _build/html/index.html
