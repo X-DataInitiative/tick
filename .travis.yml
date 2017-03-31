@@ -2,7 +2,7 @@ sudo: required
 
 branches:
   only:
-    - dev
+    - master
 
 cache:
   directories:
@@ -30,10 +30,10 @@ before_install:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then source .travis_install_linux.sh; fi
 
 install:
-  - python3 -m pip install --quiet -U pip
-  - python3 -m pip install --quiet numpy pandas
-  - python3 -m pip install -r requirements.txt
-  - python3 -m pip install cpplint
+  - python -m pip install --quiet -U pip
+  - python -m pip install --quiet numpy pandas
+  - python -m pip install -r requirements.txt
+  - python -m pip install cpplint
 
 script:
   - ./build_test.sh

@@ -1,5 +1,7 @@
 
-[![Build Status](https://travis-ci.com/X-DataInitiative/tick.svg?token=sQJ9HAvgQkqM6Z5CF631&branch=dev)](https://travis-ci.com/X-DataInitiative/tick)
+[![PyPI version](https://badge.fury.io/py/tick.svg)](https://badge.fury.io/py/tick)
+[![Build Status](https://travis-ci.org/X-DataInitiative/tick.svg?branch=master)](https://travis-ci.org/X-DataInitiative/tick)
+[![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 
 # tick
 
