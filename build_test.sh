@@ -18,6 +18,7 @@ exec 2> >(tee error_log.txt)
 CPPLINT_DIRS=(
     tick/base/array/src
     tick/base/array/tests/src
+    tick/base/array_test/src
     tick/base/src
     tick/base/src/math
     tick/base/src/parallel

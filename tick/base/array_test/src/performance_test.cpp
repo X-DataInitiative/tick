@@ -4,53 +4,53 @@
 
 #include "performance_test.h"
 
-using namespace std;
+using std::cout;
+using std::endl;
 
-
-double test_sum_double_pointer(unsigned long size, unsigned long n_loops){
+double test_sum_double_pointer(ulong size, ulong n_loops) {
     double *values = new double[size];
-    for (unsigned long i = 0; i < size; i++) values[i] = 1;
+    for (ulong i = 0; i < size; i++) values[i] = 1;
 
     double sum = 0;
-    for (unsigned long j = 0; j < n_loops; j++) {
-        for (unsigned long i = 0; i < size; i++)
+    for (ulong j = 0; j < n_loops; j++) {
+        for (ulong i = 0; i < size; i++)
             sum += values[i];
     }
     delete[] values;
     return sum;
 }
 
-double test_sum_ArrayDouble(unsigned long size, unsigned long n_loops){
+double test_sum_ArrayDouble(ulong size, ulong n_loops) {
     ArrayDouble array = ArrayDouble(size);
     array.fill(1);
 
     double sum = 0;
-    for (unsigned long j = 0; j < n_loops; j++) {
-        for (unsigned long i = 0; i < size; i++)
+    for (ulong j = 0; j < n_loops; j++) {
+        for (ulong i = 0; i < size; i++)
             sum += array[i];
     }
     return sum;
 }
 
-double test_sum_SArray_shared_ptr(unsigned long size, unsigned long n_loops){
+double test_sum_SArray_shared_ptr(ulong size, ulong n_loops) {
     SArrayDoublePtr sarray = SArrayDouble::new_ptr(size);
     sarray->fill(1);
 
     double sum = 0;
-    for (unsigned long j = 0; j < n_loops; j++) {
-        for (unsigned long i = 0; i < size; i++)
+    for (ulong j = 0; j < n_loops; j++) {
+        for (ulong i = 0; i < size; i++)
             sum += (*sarray)[i];
     }
     return sum;
 }
 
-double test_sum_VArray_shared_ptr(unsigned long size, unsigned long n_loops){
+double test_sum_VArray_shared_ptr(ulong size, ulong n_loops) {
     VArrayDoublePtr varray = VArrayDouble::new_ptr(size);
     varray->fill(1);
 
     double sum = 0;
-    for (unsigned long j = 0; j < n_loops; j++) {
-        for (unsigned long i = 0; i < size; i++)
+    for (ulong j = 0; j < n_loops; j++) {
+        for (ulong i = 0; i < size; i++)
             sum += (*varray)[i];
     }
     return sum;
@@ -59,13 +59,13 @@ double test_sum_VArray_shared_ptr(unsigned long size, unsigned long n_loops){
 // Testing array_double accessing directly to the pointer
 // versus the inline [] method
 void test_element_access() {
-    unsigned long size = 50000;
-    unsigned long nLoops = 10000;
+    ulong size = 50000;
+    ulong nLoops = 10000;
 
     cout << "*** Testing accessing elements of ArrayDouble and VArrayDouble" << endl;
 
     double *values = new double[size];
-    for (unsigned long i = 0; i < size; i++) values[i] = 1;
+    for (ulong i = 0; i < size; i++) values[i] = 1;
     ArrayDouble array = ArrayDouble(size, values);
 
     array.print();
@@ -73,8 +73,8 @@ void test_element_access() {
     double *val = array.data();
 
     START_TIMER(1, "fast_array");
-    for (unsigned long j = 0; j < nLoops; j++) {
-        for (unsigned long i = 0; i < array.size(); i++)
+    for (ulong j = 0; j < nLoops; j++) {
+        for (ulong i = 0; i < array.size(); i++)
             sum += val[i];
     }
     END_TIMER(1);
@@ -82,8 +82,8 @@ void test_element_access() {
 
     sum = 0;
     START_TIMER(2, "slow_array");
-    for (unsigned long j = 0; j < nLoops; j++) {
-        for (unsigned long i = 0; i < array.size(); i++)
+    for (ulong j = 0; j < nLoops; j++) {
+        for (ulong i = 0; i < array.size(); i++)
             sum += array[i];
     }
     END_TIMER(2);
@@ -95,13 +95,13 @@ void test_element_access() {
     cout << "intial data=" << values << endl;
     sum = 0;
     VArrayDoublePtr vv = VArrayDouble::new_ptr(size);
-    for (unsigned long i = 0; i < size; i++) (*vv)[i] = values[i];
+    for (ulong i = 0; i < size; i++) (*vv)[i] = values[i];
 
     cout << "created " << vv << endl;
 
     START_TIMER(4, "varray_shared_ptr");
-    for (unsigned long j = 0; j < nLoops; j++) {
-        for (unsigned long i = 0; i < vv->size(); i++)
+    for (ulong j = 0; j < nLoops; j++) {
+        for (ulong i = 0; i < vv->size(); i++)
             sum += (*vv)[0];
     }
     END_TIMER(4);
@@ -114,28 +114,28 @@ void test_element_access() {
     delete[] values;
 }
 
-double inherited_func(InheritedArray* array, unsigned long* nLoops){
+double inherited_func(InheritedArray* array, ulong* nLoops) {
     double sum = 0;
-    for (unsigned long j = 0; j < *nLoops; j++) {
-        for (unsigned long i = 0; i < array->size; i++)
+    for (ulong j = 0; j < *nLoops; j++) {
+        for (ulong i = 0; i < array->size; i++)
             sum += (*array)[i];
     }
     return sum;
 }
 
-double abstract_func(ToyAbstractArray * array, unsigned long* nLoops){
+double abstract_func(ToyAbstractArray * array, ulong* nLoops) {
     double sum = 0.0;
-    for (unsigned long j = 0; j < *nLoops; j++) {
-        for (unsigned long i = 0; i < array->size; i++)
+    for (ulong j = 0; j < *nLoops; j++) {
+        for (ulong i = 0; i < array->size; i++)
             sum += array->getValue(i);
     }
     return sum;
 }
 
-double inherited_func_no_ptr(InheritedArray array, unsigned long nLoops){
+double inherited_func_no_ptr(InheritedArray array, ulong nLoops) {
     double sum = 0.0;
-    for (unsigned long j = 0; j < nLoops; j++) {
-        for (unsigned long i = 0; i < array.size; i++)
+    for (ulong j = 0; j < nLoops; j++) {
+        for (ulong i = 0; i < array.size; i++)
             sum += array[i];
     }
     return sum;
@@ -145,20 +145,20 @@ double inherited_func_no_ptr(InheritedArray array, unsigned long nLoops){
 // Testing array_double accessing directly to the pointer
 // versus the inline [] method
 void test_element_access_inherited_array() {
-    unsigned long size = 50000;
-    unsigned long nLoops = 10000;
+    ulong size = 50000;
+    ulong nLoops = 10000;
 
     cout << "\n*** Testing accessing elements from inherited Array " << endl;
 
     double *values = new double[size];
-    for (unsigned long i = 0; i < size; i++) values[i] = 1;
+    for (ulong i = 0; i < size; i++) values[i] = 1;
     ArrayDouble array = ArrayDouble(size, values);
 
     double sum = 0;
 
     START_TIMER(1, "direct_array");
-    for (unsigned long j = 0; j < nLoops; j++) {
-        for (unsigned long i = 0; i < array.size(); i++)
+    for (ulong j = 0; j < nLoops; j++) {
+        for (ulong i = 0; i < array.size(); i++)
             sum += array[i];
     }
     END_TIMER(1);
@@ -171,8 +171,8 @@ void test_element_access_inherited_array() {
 
     sum = 0;
     START_TIMER(5, "inherited_array");
-    for (unsigned long j = 0; j < nLoops; j++) {
-        for (unsigned long i = 0; i < inheritedArray.size; i++)
+    for (ulong j = 0; j < nLoops; j++) {
+        for (ulong i = 0; i < inheritedArray.size; i++)
             sum += inheritedArray[i];
     }
     END_TIMER(5);
@@ -186,8 +186,8 @@ void test_element_access_inherited_array() {
 
     sum = 0;
     START_TIMER(2, "inherited_array_ptr");
-    for (unsigned long j = 0; j < nLoops; j++) {
-        for (unsigned long i = 0; i < inheritedArrayPtr->size; i++)
+    for (ulong j = 0; j < nLoops; j++) {
+        for (ulong i = 0; i < inheritedArrayPtr->size; i++)
             sum += (*inheritedArrayPtr)[i];
     }
     END_TIMER(2);
@@ -195,8 +195,8 @@ void test_element_access_inherited_array() {
 
     sum = 0;
     START_TIMER(8, "abstract_array_ptr");
-    for (unsigned long j = 0; j < nLoops; j++) {
-        for (unsigned long i = 0; i < abstractArrayPtr->size; i++)
+    for (ulong j = 0; j < nLoops; j++) {
+        for (ulong i = 0; i < abstractArrayPtr->size; i++)
             sum += abstractArrayPtr->getValue(i);
     }
     END_TIMER(8);
