@@ -12,20 +12,20 @@ void VarrayContainer::initVarray(int size) {
     varrayPtr = test_VArrayDouble_append1(size);
 }
 
-long VarrayContainer::nRef() {
+std::int64_t VarrayContainer::nRef() {
     if (varrayPtr)
         return varrayPtr.use_count();
     else
         return 0;
 }
 
-long VarrayUser::nRef() {
+std::int64_t VarrayUser::nRef() {
     if (varrayPtr)
         return varrayPtr.use_count();
     else
         return 0;
 }
 
-void VarrayUser::setArray(VarrayContainer vcc){
+void VarrayUser::setArray(VarrayContainer vcc) {
     varrayPtr = vcc.varrayPtr;
 }

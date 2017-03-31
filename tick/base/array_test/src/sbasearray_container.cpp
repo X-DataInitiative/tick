@@ -10,12 +10,15 @@
 // Test classes in order to see if a ssparsearray is correctly deallocated
 
 class SAbstractArrayContainer {
-public:
+ public:
     SBaseArrayDoublePtr arrayPtr;
-    SAbstractArrayContainer() {};
+
+    SAbstractArrayContainer() {}
+
     void init(SBaseArrayDoublePtr arrayPtr1) {
         arrayPtr = arrayPtr1;
-    };
+    }
+
     void clear() {
         arrayPtr = nullptr;
     }
@@ -36,18 +39,21 @@ double test_sbasearray_container_compute() {
     if (container.arrayPtr->is_dense()) return container.arrayPtr->sum();
     double res = container.arrayPtr->sum();
     SSparseArrayDoublePtr ptr = std::static_pointer_cast<SSparseArrayDouble>(container.arrayPtr);
-    for (ulong i=0;i<ptr->size_sparse();i++) res += ptr->indices()[i];
+    for (ulong i = 0; i < ptr->size_sparse(); i++) res += ptr->indices()[i];
     return res;
 }
 
 
 class SAbstractArray2dContainer {
-public:
+ public:
     SBaseArrayDouble2dPtr arrayPtr;
-    SAbstractArray2dContainer() {};
+
+    SAbstractArray2dContainer() {}
+
     void init(SBaseArrayDouble2dPtr arrayPtr1) {
         arrayPtr = arrayPtr1;
-    };
+    }
+
     void clear() {
         arrayPtr = nullptr;
     }
@@ -68,7 +74,7 @@ double test_sbasearray2d_container_compute() {
     if (container2.arrayPtr->is_dense()) return container2.arrayPtr->sum();
     double res = container2.arrayPtr->sum();
     SSparseArrayDouble2dPtr ptr = std::static_pointer_cast<SSparseArrayDouble2d>(container2.arrayPtr);
-    for (ulong i=0;i<ptr->size_sparse();i++) res += ptr->indices()[i];
-    for (ulong i=0;i<=ptr->n_rows();i++) res += ptr->row_indices()[i];
+    for (ulong i = 0; i < ptr->size_sparse(); i++) res += ptr->indices()[i];
+    for (ulong i = 0; i <= ptr->n_rows(); i++) res += ptr->row_indices()[i];
     return res;
 }

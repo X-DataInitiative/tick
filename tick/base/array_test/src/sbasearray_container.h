@@ -6,9 +6,8 @@
 //  Copyright (c) 2016 bacry. All rights reserved.
 //
 
-#ifndef __TICK__ssparsearray_container__
-#define __TICK__ssparsearray_container__
-
+#ifndef TICK_BASE_ARRAY_TEST_SRC_SBASEARRAY_CONTAINER_H_
+#define TICK_BASE_ARRAY_TEST_SRC_SBASEARRAY_CONTAINER_H_
 
 #include "base.h"
 
@@ -20,4 +19,4 @@ extern void test_sbasearray2d_container_new(SBaseArrayDouble2dPtr a);
 extern void test_sbasearray2d_container_clear();
 extern double test_sbasearray2d_container_compute();
 
-#endif /* defined(__TICK__ssparsearray_container__) */
+#endif  // TICK_BASE_ARRAY_TEST_SRC_SBASEARRAY_CONTAINER_H_

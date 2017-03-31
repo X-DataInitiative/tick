@@ -2,13 +2,13 @@
 // Created by Martin Bompaire on 13/12/15.
 //
 
-#ifndef TICK_TYPEMAP_TEST_H
-#define TICK_TYPEMAP_TEST_H
+#ifndef TICK_BASE_ARRAY_TEST_SRC_TYPEMAP_TEST_H_
+#define TICK_BASE_ARRAY_TEST_SRC_TYPEMAP_TEST_H_
 
 
 #include "base.h"
 
-///@brief Test ArrayDouble Typemap
+/// @brief Test ArrayDouble Typemap
 
 #define ARRAY_TYPEMAP(TYPE, \
                       ARRAY_TYPE, ARRAY2D_TYPE, ARRAYLIST1D_TYPE, ARRAYLIST2D_TYPE, \
@@ -115,12 +115,12 @@
     extern void test_typemap_in_not_ol_##ARRAYLIST2D_TYPE(ARRAYLIST2D_TYPE & array_list_list); \
     \
     /******************************** TYPEMAP OUT ********************************/ \
-    extern SARRAYPTR_TYPE test_typemap_out_##SARRAYPTR_TYPE(unsigned long size); \
+    extern SARRAYPTR_TYPE test_typemap_out_##SARRAYPTR_TYPE(ulong size); \
     extern SARRAYPTRLIST1D_TYPE test_typemap_out_##SARRAYPTRLIST1D_TYPE(int size); \
     extern SARRAYPTRLIST2D_TYPE test_typemap_out_##SARRAYPTRLIST2D_TYPE(int size1, \
                                                                         int size2); \
-    extern SARRAY2DPTR_TYPE test_typemap_out_##SARRAY2DPTR_TYPE(unsigned long row_size, \
-                                                                unsigned long col_size);
+    extern SARRAY2DPTR_TYPE test_typemap_out_##SARRAY2DPTR_TYPE(ulong row_size, \
+                                                                ulong col_size);
 
 
 ARRAY_TYPEMAP(double,
@@ -140,7 +140,7 @@ ARRAY_TYPEMAP(double,
               SBaseArrayDoublePtrList1D, SBaseArrayDoublePtrList2D,
               SBaseArrayDouble2dPtrList1D, SBaseArrayDouble2dPtrList2D);
 
-ARRAY_TYPEMAP(int,
+ARRAY_TYPEMAP(std::int32_t,
               ArrayInt, ArrayInt2d, ArrayIntList1D, ArrayIntList2D,
               SparseArrayInt, SparseArrayInt2d,
               SArrayInt, SArrayInt2d,
@@ -157,7 +157,7 @@ ARRAY_TYPEMAP(int,
               SBaseArrayIntPtrList1D, SBaseArrayIntPtrList2D,
               SBaseArrayInt2dPtrList1D, SBaseArrayInt2dPtrList2D);
 
-ARRAY_TYPEMAP(short,
+ARRAY_TYPEMAP(std::int16_t,
               ArrayShort, ArrayShort2d, ArrayShortList1D, ArrayShortList2D,
               SparseArrayShort, SparseArrayShort2d,
               SArrayShort, SArrayShort2d,
@@ -175,7 +175,7 @@ ARRAY_TYPEMAP(short,
               SBaseArrayShort2dPtrList1D, SBaseArrayShort2dPtrList2D);
 
 
-ARRAY_TYPEMAP(unsigned short,
+ARRAY_TYPEMAP(std::uint16_t,
               ArrayUShort, ArrayUShort2d, ArrayUShortList1D, ArrayUShortList2D,
               SparseArrayUShort, SparseArrayUShort2d,
               SArrayUShort, SArrayUShort2d,
@@ -193,7 +193,7 @@ ARRAY_TYPEMAP(unsigned short,
               SBaseArrayUShort2dPtrList1D, SBaseArrayUShort2dPtrList2D);
 
 
-ARRAY_TYPEMAP(long,
+ARRAY_TYPEMAP(std::int64_t,
               ArrayLong, ArrayLong2d, ArrayLongList1D, ArrayLongList2D,
               SparseArrayLong, SparseArrayLong2d,
               SArrayLong, SArrayLong2d,
@@ -211,7 +211,7 @@ ARRAY_TYPEMAP(long,
               SBaseArrayLong2dPtrList1D, SBaseArrayLong2dPtrList2D);
 
 
-ARRAY_TYPEMAP(unsigned long,
+ARRAY_TYPEMAP(std::uint64_t,
               ArrayULong, ArrayULong2d, ArrayULongList1D, ArrayULongList2D,
               SparseArrayULong, SparseArrayULong2d,
               SArrayULong, SArrayULong2d,
@@ -229,7 +229,7 @@ ARRAY_TYPEMAP(unsigned long,
               SBaseArrayULong2dPtrList1D, SBaseArrayULong2dPtrList2D);
 
 
-ARRAY_TYPEMAP(unsigned int,
+ARRAY_TYPEMAP(std::uint32_t,
               ArrayUInt, ArrayUInt2d, ArrayUIntList1D, ArrayUIntList2D,
               SparseArrayUInt, SparseArrayUInt2d,
               SArrayUInt, SArrayUInt2d,
@@ -263,4 +263,5 @@ ARRAY_TYPEMAP(float,
               BaseArrayFloat2dList1D, BaseArrayFloat2dList2D,
               SBaseArrayFloatPtrList1D, SBaseArrayFloatPtrList2D,
               SBaseArrayFloat2dPtrList1D, SBaseArrayFloat2dPtrList2D);
-#endif //TICK_TYPEMAP_TEST_H
+
+#endif  // TICK_BASE_ARRAY_TEST_SRC_TYPEMAP_TEST_H_

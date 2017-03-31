@@ -1,5 +1,5 @@
-#ifndef _TEST_H_
-#define _TEST_H_
+#ifndef TICK_BASE_ARRAY_TEST_SRC_ARRAY_TEST_H_
+#define TICK_BASE_ARRAY_TEST_SRC_ARRAY_TEST_H_
 
 #include "base.h"
 
@@ -13,15 +13,15 @@
  * Assign value to specified index
  * Always returns 210
  */
-extern double test_constructor_ArrayDouble(unsigned long size);
+extern double test_constructor_ArrayDouble(ulong size);
 
-///@brief Testing arange function
-extern SArrayDoublePtr test_arange(long min, long max);
+/// @brief Testing arange function
+extern SArrayDoublePtr test_arange(std::int64_t min, std::int64_t max);
 
-///@brief  Testing that out of bound index in an array correctly return an error
+/// @brief  Testing that out of bound index in an array correctly return an error
 double test_IndexError_ArrayDouble(ArrayDouble & array);
 
-///@brief  Testing that out of bound index in an array correctly return an error
+/// @brief  Testing that out of bound index in an array correctly return an error
 extern double test_IndexError_cols_ArrayDouble2d(ArrayDouble2d &array);
 
 //! @brief Test that we can create SparseArrayDouble with different constructor
@@ -104,13 +104,13 @@ TEST_MOVE(SparseArrayDouble2d);
  * @brief Test value method (only available for 1d arrays)
  */
 #define TEST_VALUE(ARRAY_TYPE) \
-    extern double test_value_##ARRAY_TYPE(ARRAY_TYPE & array, unsigned long index);
+    extern double test_value_##ARRAY_TYPE(ARRAY_TYPE & array, ulong index);
 TEST_VALUE(BaseArrayDouble);
 TEST_VALUE(ArrayDouble);
 TEST_VALUE(SparseArrayDouble);
 
 #define TEST_VALUE_PTR(ARRAY_PTR_TYPE) \
-    extern double test_value_##ARRAY_PTR_TYPE(ARRAY_PTR_TYPE array_ptr, unsigned long index);
+    extern double test_value_##ARRAY_PTR_TYPE(ARRAY_PTR_TYPE array_ptr, ulong index);
 TEST_VALUE_PTR(SBaseArrayDoublePtr);
 TEST_VALUE_PTR(SArrayDoublePtr);
 TEST_VALUE_PTR(VArrayDoublePtr);
@@ -232,8 +232,8 @@ TEST_NEW_PTR(SparseArrayDouble2d, SSparseArrayDouble2d, SSparseArrayDouble2dPtr)
  * It also sets data of the last two to 0
  */
 #define TEST_VIEW(ARRAY_TYPE) \
-    extern SArrayDoublePtr test_view_##ARRAY_TYPE(ARRAY_TYPE & array1, ARRAY_TYPE & array2,\
-                                                  ARRAY_TYPE & array3);
+    extern SArrayDoublePtr test_view_##ARRAY_TYPE(ARRAY_TYPE & array1, ARRAY_TYPE & array2, ARRAY_TYPE & array3);
+
 TEST_VIEW(BaseArrayDouble);
 TEST_VIEW(ArrayDouble);
 TEST_VIEW(SparseArrayDouble);
@@ -241,12 +241,12 @@ TEST_VIEW(BaseArrayDouble2d);
 TEST_VIEW(ArrayDouble2d);
 TEST_VIEW(SparseArrayDouble2d);
 
-extern SArrayDoublePtrList1D test_slice_view1d(ArrayDouble & a, unsigned long start,
-                                         unsigned long end);
+extern SArrayDoublePtrList1D test_slice_view1d(ArrayDouble & a, ulong start,
+                                         ulong end);
 
 #define TEST_ROW_VIEW(ARRAY_TYPE, ARRAY_2D_TYPE) \
     extern SArrayDoublePtrList1D test_row_view_##ARRAY_2D_TYPE(ARRAY_2D_TYPE & a, \
-                                                               unsigned long row);
+                                                               ulong row);
 TEST_ROW_VIEW(BaseArrayDouble, BaseArrayDouble2d);
 TEST_ROW_VIEW(ArrayDouble, ArrayDouble2d);
 TEST_ROW_VIEW(SparseArrayDouble, SparseArrayDouble2d);
@@ -396,10 +396,10 @@ TEST_DIVIDE_PTR(SArrayDouble2dPtr);
 TEST_DIVIDE_PTR(SSparseArrayDouble2dPtr);
 
 
-///@brief Testing VArrayDouble_arange_by_append : Init an empty VArray and append integers in order to create a range
+/// @brief Testing VArrayDouble_arange_by_append : Init an empty VArray and append integers in order to create a range
 extern VArrayDoublePtr test_VArrayDouble_append1(int size);
 
-///@brief Testing VArrayDouble_append : Creates two ranges and join each other
+/// @brief Testing VArrayDouble_append : Creates two ranges and join each other
 extern VArrayDoublePtr test_VArrayDouble_append(VArrayDoublePtr va, SArrayDoublePtr sa);
 
 /// @brief Test sort method of array
@@ -424,4 +424,5 @@ extern void test_mult_incr_ArrayDouble(ArrayDouble &array, BaseArrayDouble& x, d
 extern void test_mult_fill_ArrayDouble(ArrayDouble &array, BaseArrayDouble& x, double a);
 extern void test_mult_add_mult_incr_ArrayDouble(ArrayDouble &array, BaseArrayDouble& x, double a,
                                                 BaseArrayDouble& y, double b);
-#endif
+
+#endif  // TICK_BASE_ARRAY_TEST_SRC_ARRAY_TEST_H_
