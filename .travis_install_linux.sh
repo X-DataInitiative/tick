@@ -37,7 +37,7 @@ fi
 if [ ! -d swig-3.0.10 ] || [ ! -f swig-3.0.10/configure ]
     then
         wget http://prdownloads.sourceforge.net/swig/swig-3.0.10.tar.gz && tar -xf swig-3.0.10.tar.gz
-        (cd swig-3.0.10 && /configure && make -s)
+        (cd swig-3.0.10 && ./configure && make -s)
 fi
 
 (cd googletest && cd build && sudo make -s install)
