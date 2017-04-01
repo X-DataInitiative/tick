@@ -5,8 +5,11 @@
 
 /** @file */
 
+#include "defs.h"
+
 #include <cmath>
 #include <memory>
+
 #include "array.h"
 #include "sarray.h"
 

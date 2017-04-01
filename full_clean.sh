@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
-rm -r build/*
+## Using the python executable defined in env. variable TICK_PYTHON otherwise fall back to "python"
+PYTHON_EXEC=${TICK_PYTHON:=python}
 
-find . -name '*.so' -delete
-find . -name '*_wrap.cpp' -delete
-find . -name '*.pyc' -delete
+${PYTHON_EXEC} setup.py clean

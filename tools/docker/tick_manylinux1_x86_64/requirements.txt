@@ -1,0 +1,15 @@
+numpy
+numpydoc
+scipy
+matplotlib
+scikit-learn
+pandas
+
+cpplint
+wheel
+twine
+sphinx
+pillow
+bokeh
+
+auditwheel

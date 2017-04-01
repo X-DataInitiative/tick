@@ -1,4 +1,4 @@
-add_library(base EXCLUDE_FROM_ALL
+add_library(tick_base EXCLUDE_FROM_ALL
         time_func.h
         time_func.cpp
 

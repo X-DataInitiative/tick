@@ -1,4 +1,4 @@
-add_library(model EXCLUDE_FROM_ALL
+add_library(tick_model EXCLUDE_FROM_ALL
         model.h
         model_labels_features.cpp model_labels_features.h
         model_generalized_linear.cpp model_generalized_linear.h
@@ -22,4 +22,6 @@ add_library(model EXCLUDE_FROM_ALL
         variants/hawkes_fixed_sumexpkern_leastsq_list.h variants/hawkes_fixed_sumexpkern_leastsq_list.cpp
         sccs.cpp sccs.h)
 
-target_link_libraries(model base array)
+target_link_libraries(tick_model
+		${TICK_LIB_BASE}
+		${TICK_LIB_ARRAY})

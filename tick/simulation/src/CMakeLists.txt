@@ -1,4 +1,4 @@
-add_library(simulation EXCLUDE_FROM_ALL
+add_library(tick_simulation EXCLUDE_FROM_ALL
         pp.cpp pp.h
         poisson.cpp poisson.h
         hawkes.cpp hawkes.h
@@ -13,4 +13,7 @@ add_library(simulation EXCLUDE_FROM_ALL
         hawkes_baselines/constant_baseline.cpp hawkes_baselines/constant_baseline.h
         hawkes_baselines/timefunction_baseline.cpp hawkes_baselines/timefunction_baseline.h)
 
-target_link_libraries(simulation random base array)
+target_link_libraries(tick_simulation
+        ${TICK_LIB_ARRAY}
+        ${TICK_LIB_BASE}
+        ${TICK_LIB_CRANDOM})

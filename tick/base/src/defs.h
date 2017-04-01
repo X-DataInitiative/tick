@@ -10,6 +10,10 @@
 
 // License: BSD 3 clause
 
+#ifdef PYTHON_LINK
+#include <Python.h>
+#endif
+
 #include <cstdint>
 
 #if defined _WIN32 || defined __CYGWIN__

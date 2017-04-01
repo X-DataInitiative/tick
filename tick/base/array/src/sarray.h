@@ -5,6 +5,8 @@
 
 /** @file */
 
+#include "defs.h"
+
 #include <memory>
 #include "array.h"
 

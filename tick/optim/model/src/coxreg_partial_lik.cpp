@@ -4,12 +4,12 @@
 // Created by Stéphane GAIFFAS on 12/04/2016.
 //
 
-#include <cmath>
 #include "coxreg_partial_lik.h"
 
-// Include this to get DBL_MAX, DBL_MIN and DBL_MIN_EXP
-#include <float.h>
+#include <cmath>
 
+// Include this to get DBL_MAX, DBL_MIN and DBL_MIN_EXP
+#include <cfloat>
 
 ModelCoxRegPartialLik::ModelCoxRegPartialLik(const SBaseArrayDouble2dPtr features,
                                              const SArrayDoublePtr times_,

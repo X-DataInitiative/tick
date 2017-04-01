@@ -7,8 +7,9 @@
 
 // License: BSD 3 clause
 
-#include <iostream>
 #include "model.h"
+
+#include <iostream>
 
 class ModelLabelsFeatures : public virtual Model {
  protected:

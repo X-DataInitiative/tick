@@ -9,6 +9,13 @@
 
 #include <memory>
 
+#include <cfloat>
+#include <memory>
+
+#include "time_func.h"
+#include "varray.h"
+#include "pp.h"
+
 #include "hawkes_baselines/baseline.h"
 #include "hawkes_baselines/constant_baseline.h"
 #include "hawkes_baselines/timefunction_baseline.h"

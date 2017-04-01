@@ -4,9 +4,10 @@
 // Created by Martin Bompaire on 17/06/15.
 //
 
+#include "test_rand.h"
+
 #include <thread>
 #include <chrono>
-#include "test_rand.h"
 
 Rand _init_rand(int seed) {
     return Rand(seed);
