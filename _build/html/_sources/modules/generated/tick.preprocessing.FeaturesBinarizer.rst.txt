@@ -1,0 +1,12 @@
+
+.. _FeaturesBinarizer:
+
+tick.preprocessing.FeaturesBinarizer
+====================================
+
+.. currentmodule:: tick.preprocessing
+
+.. autoclass:: FeaturesBinarizer
+
+.. include:: tick.preprocessing.FeaturesBinarizer.examples
+    :allowmissing:

@@ -1,0 +1,9 @@
+tick.simulation.weights_sparse_gauss
+====================================
+
+.. currentmodule:: tick.simulation
+
+.. autofunction:: weights_sparse_gauss
+
+.. include:: tick.simulation.weights_sparse_gauss.examples
+    :allowmissing:

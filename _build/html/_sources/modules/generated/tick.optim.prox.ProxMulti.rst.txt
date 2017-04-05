@@ -1,0 +1,12 @@
+
+.. _ProxMulti:
+
+tick.optim.prox.ProxMulti
+=========================
+
+.. currentmodule:: tick.optim.prox
+
+.. autoclass:: ProxMulti
+
+.. include:: tick.optim.prox.ProxMulti.examples
+    :allowmissing:

@@ -1,0 +1,12 @@
+
+.. _ModelLinRegWithIntercepts:
+
+tick.optim.model.ModelLinRegWithIntercepts
+==========================================
+
+.. currentmodule:: tick.optim.model
+
+.. autoclass:: ModelLinRegWithIntercepts
+
+.. include:: tick.optim.model.ModelLinRegWithIntercepts.examples
+    :allowmissing:

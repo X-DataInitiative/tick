@@ -1,0 +1,377 @@
+
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>tick.preprocessing.FeaturesBinarizer &#8212; tick 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/bootstrap-3.3.4/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/bootstrap-3.3.4/css/bootstrap-theme.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../_static/bootstrap-sphinx.js"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body role="document">
+
+  <div id="navbar" class="None navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../index.html">
+          tick</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.1</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../../index.html">Home</a></li>
+                <li><a href="../../auto_examples/index.html">Examples</a></li>
+                <li><a href="../api.html">API</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../index.html">Browse <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="../inference.html"><code class="docutils literal"><span class="pre">tick.inference</span></code>: user-friendly inference tools</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../inference.html#generalized-linear-models">1. Generalized linear models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../inference.html#hawkes">2. Hawkes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../optim.html"><code class="docutils literal"><span class="pre">tick.optim</span></code>: optimization toolbox</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../optim.html#contents">Contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../optim.html#a-first-example">A First example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../optim.html#tick-optim-model-model-classes">1. <code class="docutils literal"><span class="pre">tick.optim.model</span></code>: model classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../optim.html#tick-optim-prox-proximal-operators">2. <code class="docutils literal"><span class="pre">tick.optim.prox</span></code>: proximal operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../optim.html#tick-optim-solver-solvers">3. <code class="docutils literal"><span class="pre">tick.optim.solver</span></code>: solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../optim.html#what-s-under-the-hood">4. What&#8217;s under the hood?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../plot.html"><code class="docutils literal"><span class="pre">tick.plot</span></code>: plotting utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../plot.html#optimization">Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plot.html#hawkes-estimation">Hawkes estimation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plot.html#point-process-simulation">Point process simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plot.html#others">Others</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code>: simulation toolbox</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../simulation.html#simulation-tools">1. Simulation tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../simulation.html#linear-model-simulation">2. Linear model simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../simulation.html#survival-analysis-simulation">3. Survival analysis simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../simulation.html#point-process-simulation">4. Point process simulation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../dataset.html"><code class="docutils literal"><span class="pre">tick.dataset</span></code>: real world datasets</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../dataset.html#functions">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dataset.html#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../dev.html">Developer documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../dev.html#main-highlights">Main highlights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dev.html#base-class">Base class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dev.html#how-to-add-a-new-model-solver-or-prox">How to add a new model, solver or prox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dev.html#enable-python-pickling-of-c-objects">Enable Python-pickling of C++ objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dev.html#tips-for-debugging-c-classes-in-tick">Tips for debugging C++ classes in tick</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container content-container">
+  
+  <div class="section" id="tick-preprocessing-featuresbinarizer">
+<span id="featuresbinarizer"></span><h1>tick.preprocessing.FeaturesBinarizer<a class="headerlink" href="#tick-preprocessing-featuresbinarizer" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="tick.preprocessing.FeaturesBinarizer">
+<em class="property">class </em><code class="descclassname">tick.preprocessing.</code><code class="descname">FeaturesBinarizer</code><span class="sig-paren">(</span><em>method='quantile'</em>, <em>n_cuts=10</em>, <em>detect_column_type='auto'</em>, <em>remove_first=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/preprocessing/features_binarizer.html#FeaturesBinarizer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.preprocessing.FeaturesBinarizer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transforms continuous data into bucketed binary data.</p>
+<p>This is a scikit-learn transformer that transform an input
+pandas DataFrame X of shape (n_samples, n_features) into a binary
+matrix of size (n_samples, n_new_features).
+Continous features are modified and extended into binary features, using
+linearly or inter-quantiles spaced bins.
+Discrete features are binary encoded with K columns, where K is the number
+of modalities.
+Other features (none of the above) are left unchanged.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>n_cuts</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code>, default=10</p>
+<blockquote>
+<div><p>Number of cut points for continuous features.</p>
+</div></blockquote>
+<p><strong>method</strong> : &#8220;quantile&#8221; or &#8220;linspace&#8221;, default=&#8221;quantile&#8221;</p>
+<blockquote>
+<div><ul class="simple">
+<li>If <code class="docutils literal"><span class="pre">&quot;quantile&quot;</span></code> quantile-based cuts are used.</li>
+<li>If <code class="docutils literal"><span class="pre">&quot;linspace&quot;</span></code> linearly spaced cuts are used.</li>
+</ul>
+</div></blockquote>
+<p><strong>detect_column_type</strong> : &#8220;auto&#8221; or &#8220;column_names&#8221;, default=&#8221;auto&#8221;</p>
+<blockquote>
+<div><ul class="simple">
+<li>If <code class="docutils literal"><span class="pre">&quot;auto&quot;</span></code> feature type detection done automatically.</li>
+<li>If <code class="docutils literal"><span class="pre">&quot;column_names&quot;</span></code> feature type detection done using column names.
+In this case names ending by &#8221;:continuous&#8221; means continuous
+while &#8221;:discrete&#8221; means a discrete feature</li>
+</ul>
+</div></blockquote>
+<p><strong>remove_first</strong> : <code class="xref py py-obj docutils literal"><span class="pre">bool</span></code></p>
+<blockquote>
+<div><p>If <code class="xref py py-obj docutils literal"><span class="pre">True</span></code>, first column of each binarized continuous feature block is
+removed.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Attributes:</th><td class="field-body"><p class="first"><strong>one_hot_encoder</strong> : <code class="xref py py-obj docutils literal"><span class="pre">OneHotEncoder</span></code></p>
+<blockquote>
+<div><p>OneHotEncoders for continuous and discrete features.</p>
+</div></blockquote>
+<p><strong>bins_boundaries</strong> : <code class="xref py py-obj docutils literal"><span class="pre">list</span></code></p>
+<blockquote>
+<div><p>Bins boundaries for continuous features.</p>
+</div></blockquote>
+<p><strong>mapper</strong> : <code class="xref py py-obj docutils literal"><span class="pre">dict</span></code></p>
+<blockquote>
+<div><p>Map modalities to column indexes for categorical features.</p>
+</div></blockquote>
+<p><strong>feature_type</strong> : <code class="xref py py-obj docutils literal"><span class="pre">dict</span></code></p>
+<blockquote class="last">
+<div><p>Features type.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">References</p>
+<p><a class="reference external" href="http://scikit-learn.org/stable/modules/preprocessing.html#preprocessing">http://scikit-learn.org/stable/modules/preprocessing.html#preprocessing</a></p>
+<dl class="method">
+<dt id="tick.preprocessing.FeaturesBinarizer.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>method='quantile'</em>, <em>n_cuts=10</em>, <em>detect_column_type='auto'</em>, <em>remove_first=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/preprocessing/features_binarizer.html#FeaturesBinarizer.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.preprocessing.FeaturesBinarizer.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="tick.preprocessing.FeaturesBinarizer.cast_to_array">
+<em class="property">static </em><code class="descname">cast_to_array</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/preprocessing/features_binarizer.html#FeaturesBinarizer.cast_to_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.preprocessing.FeaturesBinarizer.cast_to_array" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cast input matrix to <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code>, <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code></p>
+<blockquote class="last">
+<div><p>The input matrix and the corresponding column names.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tick.preprocessing.FeaturesBinarizer.fit">
+<code class="descname">fit</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/preprocessing/features_binarizer.html#FeaturesBinarizer.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.preprocessing.FeaturesBinarizer.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit the binarization using the features matrix.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>X</strong> : <code class="xref py py-obj docutils literal"><span class="pre">pd.DataFrame</span></code>  or <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code>, shape=(n_samples, n_features)</p>
+<blockquote>
+<div><p>The features matrix.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> : <a class="reference internal" href="#tick.preprocessing.FeaturesBinarizer" title="tick.preprocessing.FeaturesBinarizer"><code class="xref py py-obj docutils literal"><span class="pre">FeaturesBinarizer</span></code></a></p>
+<blockquote class="last">
+<div><p>The fitted current instance.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tick.preprocessing.FeaturesBinarizer.fit_transform">
+<code class="descname">fit_transform</code><span class="sig-paren">(</span><em>X</em>, <em>y=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/preprocessing/features_binarizer.html#FeaturesBinarizer.fit_transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.preprocessing.FeaturesBinarizer.fit_transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit and apply the binarization using the features matrix.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>X</strong> : <code class="xref py py-obj docutils literal"><span class="pre">pd.DataFrame</span></code> or <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code>, shape=(n_samples, n_features)</p>
+<blockquote>
+<div><p>The features matrix.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> : <code class="xref py py-obj docutils literal"><span class="pre">pd.DataFrame</span></code></p>
+<blockquote class="last">
+<div><p>The binarized features matrix. The number of columns is
+larger than n_features, smaller than n_cuts * n_features,
+depending on the actual number of columns that have been
+binarized.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tick.preprocessing.FeaturesBinarizer.get_params">
+<code class="descname">get_params</code><span class="sig-paren">(</span><em>deep=True</em><span class="sig-paren">)</span><a class="headerlink" href="#tick.preprocessing.FeaturesBinarizer.get_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get parameters for this estimator.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>deep: boolean, optional</strong> :</p>
+<blockquote>
+<div><p>If True, will return the parameters for this estimator and
+contained subobjects that are estimators.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>params</strong> : mapping of string to any</p>
+<blockquote class="last">
+<div><p>Parameter names mapped to their values.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tick.preprocessing.FeaturesBinarizer.set_params">
+<code class="descname">set_params</code><span class="sig-paren">(</span><em>**params</em><span class="sig-paren">)</span><a class="headerlink" href="#tick.preprocessing.FeaturesBinarizer.set_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the parameters of this estimator.</p>
+<p>The method works on simple estimators as well as on nested objects
+(such as pipelines). The former have parameters of the form
+<code class="docutils literal"><span class="pre">&lt;component&gt;__&lt;parameter&gt;</span></code> so that it&#8217;s possible to update each
+component of a nested object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>self</strong> :</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tick.preprocessing.FeaturesBinarizer.transform">
+<code class="descname">transform</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/preprocessing/features_binarizer.html#FeaturesBinarizer.transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.preprocessing.FeaturesBinarizer.transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply the binarization to the given features matrix.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>X</strong> : <code class="xref py py-obj docutils literal"><span class="pre">pd.DataFrame</span></code> or <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code>, shape=(n_samples, n_features)</p>
+<blockquote>
+<div><p>The features matrix.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> : <code class="xref py py-obj docutils literal"><span class="pre">pd.DataFrame</span></code></p>
+<blockquote class="last">
+<div><p>The binarized features matrix. The number of columns is
+larger than n_features, smaller than n_cuts * n_features,
+depending on the actual number of columns that have been
+binarized.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Poulsen.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

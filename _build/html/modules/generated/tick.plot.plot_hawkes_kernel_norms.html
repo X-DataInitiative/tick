@@ -1,0 +1,217 @@
+
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>tick.plot.plot_hawkes_kernel_norms &#8212; tick 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/bootstrap-3.3.4/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/bootstrap-3.3.4/css/bootstrap-theme.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../_static/bootstrap-sphinx.js"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="tick.plot.plot_basis_kernels" href="tick.plot.plot_basis_kernels.html" />
+    <link rel="prev" title="tick.plot.plot_hawkes_kernels" href="tick.plot.plot_hawkes_kernels.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body role="document">
+
+  <div id="navbar" class="None navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../index.html">
+          tick</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.1</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../../index.html">Home</a></li>
+                <li><a href="../../auto_examples/index.html">Examples</a></li>
+                <li><a href="../api.html">API</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../index.html">Browse <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../inference.html"><code class="docutils literal"><span class="pre">tick.inference</span></code>: user-friendly inference tools</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../inference.html#generalized-linear-models">1. Generalized linear models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../inference.html#hawkes">2. Hawkes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../optim.html"><code class="docutils literal"><span class="pre">tick.optim</span></code>: optimization toolbox</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../optim.html#contents">Contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../optim.html#a-first-example">A First example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../optim.html#tick-optim-model-model-classes">1. <code class="docutils literal"><span class="pre">tick.optim.model</span></code>: model classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../optim.html#tick-optim-prox-proximal-operators">2. <code class="docutils literal"><span class="pre">tick.optim.prox</span></code>: proximal operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../optim.html#tick-optim-solver-solvers">3. <code class="docutils literal"><span class="pre">tick.optim.solver</span></code>: solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../optim.html#what-s-under-the-hood">4. What&#8217;s under the hood?</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../plot.html"><code class="docutils literal"><span class="pre">tick.plot</span></code>: plotting utilities</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../plot.html#optimization">Optimization</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../plot.html#hawkes-estimation">Hawkes estimation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plot.html#point-process-simulation">Point process simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plot.html#others">Others</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code>: simulation toolbox</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../simulation.html#simulation-tools">1. Simulation tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../simulation.html#linear-model-simulation">2. Linear model simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../simulation.html#survival-analysis-simulation">3. Survival analysis simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../simulation.html#point-process-simulation">4. Point process simulation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../dataset.html"><code class="docutils literal"><span class="pre">tick.dataset</span></code>: real world datasets</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../dataset.html#functions">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dataset.html#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../dev.html">Developer documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../dev.html#main-highlights">Main highlights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dev.html#base-class">Base class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dev.html#how-to-add-a-new-model-solver-or-prox">How to add a new model, solver or prox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dev.html#enable-python-pickling-of-c-objects">Enable Python-pickling of C++ objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dev.html#tips-for-debugging-c-classes-in-tick">Tips for debugging C++ classes in tick</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container content-container">
+  
+  <div class="section" id="tick-plot-plot-hawkes-kernel-norms">
+<h1>tick.plot.plot_hawkes_kernel_norms<a class="headerlink" href="#tick-plot-plot-hawkes-kernel-norms" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="tick.plot.plot_hawkes_kernel_norms">
+<code class="descclassname">tick.plot.</code><code class="descname">plot_hawkes_kernel_norms</code><span class="sig-paren">(</span><em>kernel_object</em>, <em>show=True</em>, <em>pcolor_kwargs=None</em>, <em>node_names=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/plot/plot_hawkes.html#plot_hawkes_kernel_norms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.plot.plot_hawkes_kernel_norms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generic function to plot Hawkes kernel norms.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>kernel_object</strong> : <code class="xref py py-obj docutils literal"><span class="pre">Object</span></code></p>
+<blockquote>
+<div><p>An object that must have the following API :</p>
+<ul class="simple">
+<li><code class="xref py py-obj docutils literal"><span class="pre">kernel_object.n_nodes</span></code> : a field that stores the number of nodes
+of the associated Hawkes process (thus the number of kernels is
+this number squared)</li>
+<li><code class="xref py py-obj docutils literal"><span class="pre">kernel_object.get_kernel_norms()</span></code> : must return a 2d numpy
+array with the norm of each kernel</li>
+</ul>
+</div></blockquote>
+<p><strong>show</strong> : <code class="xref py py-obj docutils literal"><span class="pre">bool</span></code>, default=`True`</p>
+<blockquote>
+<div><p>if <code class="xref py py-obj docutils literal"><span class="pre">True</span></code>, show the plot. Otherwise an explicit call to the show
+function is necessary. Useful when superposing several plots.</p>
+</div></blockquote>
+<p><strong>pcolor_kwargs</strong> : <code class="xref py py-obj docutils literal"><span class="pre">dict</span></code>, default=`None`</p>
+<blockquote>
+<div><p>Extra pcolor kwargs such as cmap, vmin, vmax</p>
+</div></blockquote>
+<p><strong>node_names</strong> : <code class="xref py py-obj docutils literal"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal"><span class="pre">str</span></code>, shape=(n_nodes, ), default=`None`</p>
+<blockquote class="last">
+<div><p>node names that will be displayed on axis.
+If <code class="xref py py-obj docutils literal"><span class="pre">None</span></code>, node index will be used.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>Kernels are displayed such that it shows norm of column influence&#8217;s
+on row.</p>
+</dd></dl>
+
+<div class="section" id="examples-using-tick-plot-plot-hawkes-kernel-norms">
+<h2>Examples using <code class="docutils literal"><span class="pre">tick.plot.plot_hawkes_kernel_norms</span></code><a class="headerlink" href="#examples-using-tick-plot-plot-hawkes-kernel-norms" title="Permalink to this headline">¶</a></h2>
+<div class="thumbnailContainer" tooltip="Hawkes ADM4 algorithm (`tick.inference.HawkesADM4`) enforce sparse and low rank adjacency matri..."><div class="figure" id="id1">
+<a class="reference external image-reference" href="./../../auto_examples/./plot_hawkes_adm4.html"><img alt="../../_images/plot_hawkes_adm41.png" src="../../_images/plot_hawkes_adm41.png" /></a>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="../../auto_examples/plot_hawkes_adm4.html#example-plot-hawkes-adm4-py"><span class="std std-ref">Fit sparse and low rank adjacency matrix with Hawkes ADM4</span></a></span></p>
+</div>
+</div></div>
+</div>
+
+
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Poulsen.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

@@ -1,0 +1,12 @@
+
+.. _ProxElasticNet:
+
+tick.optim.prox.ProxElasticNet
+==============================
+
+.. currentmodule:: tick.optim.prox
+
+.. autoclass:: ProxElasticNet
+
+.. include:: tick.optim.prox.ProxElasticNet.examples
+    :allowmissing:

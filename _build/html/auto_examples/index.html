@@ -1,0 +1,262 @@
+
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Examples &#8212; tick 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-3.3.4/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-3.3.4/css/bootstrap-theme.min.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body role="document">
+
+  <div id="navbar" class="None navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          tick</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.1</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="#">Examples</a></li>
+                <li><a href="../modules/api.html">API</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Browse <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="../modules/inference.html"><code class="docutils literal"><span class="pre">tick.inference</span></code>: user-friendly inference tools</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/inference.html#generalized-linear-models">1. Generalized linear models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/inference.html#hawkes">2. Hawkes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/optim.html"><code class="docutils literal"><span class="pre">tick.optim</span></code>: optimization toolbox</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/optim.html#contents">Contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/optim.html#a-first-example">A First example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/optim.html#tick-optim-model-model-classes">1. <code class="docutils literal"><span class="pre">tick.optim.model</span></code>: model classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/optim.html#tick-optim-prox-proximal-operators">2. <code class="docutils literal"><span class="pre">tick.optim.prox</span></code>: proximal operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/optim.html#tick-optim-solver-solvers">3. <code class="docutils literal"><span class="pre">tick.optim.solver</span></code>: solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/optim.html#what-s-under-the-hood">4. What&#8217;s under the hood?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/plot.html"><code class="docutils literal"><span class="pre">tick.plot</span></code>: plotting utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/plot.html#optimization">Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/plot.html#hawkes-estimation">Hawkes estimation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/plot.html#point-process-simulation">Point process simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/plot.html#others">Others</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code>: simulation toolbox</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/simulation.html#simulation-tools">1. Simulation tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/simulation.html#linear-model-simulation">2. Linear model simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/simulation.html#survival-analysis-simulation">3. Survival analysis simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/simulation.html#point-process-simulation">4. Point process simulation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/dataset.html"><code class="docutils literal"><span class="pre">tick.dataset</span></code>: real world datasets</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/dataset.html#functions">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/dataset.html#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/dev.html">Developer documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/dev.html#main-highlights">Main highlights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/dev.html#base-class">Base class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/dev.html#how-to-add-a-new-model-solver-or-prox">How to add a new model, solver or prox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/dev.html#enable-python-pickling-of-c-objects">Enable Python-pickling of C++ objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/dev.html#tips-for-debugging-c-classes-in-tick">Tips for debugging C++ classes in tick</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container content-container">
+  
+  <style type="text/css">
+div#sidebarbutton {
+    /* hide the sidebar collapser, while ensuring vertical arrangement */
+    display: none;
+}
+</style><div class="section" id="examples">
+<span id="examples-index"></span><h1>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h1>
+<p id="id1">How to use tick in practise?</p>
+<div class="thumbnailContainer" tooltip="Generates Cox Regression realization given a weight vector "><div class="figure" id="id2">
+<a class="reference external image-reference" href="./plot_simulation_coxreg.html"><img alt="../_images/plot_simulation_coxreg.png" src="../_images/plot_simulation_coxreg.png" /></a>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="plot_simulation_coxreg.html#example-plot-simulation-coxreg-py"><span class="std std-ref">Cox regression data simulation</span></a></span></p>
+</div>
+</div><div class="toctree-wrapper compound">
+</div>
+<div class="thumbnailContainer" tooltip="This code perform binary classification on adult dataset with logistic regression learner (`tic..."><div class="figure" id="id3">
+<a class="reference external image-reference" href="./plot_logistic_adult.html"><img alt="../_images/plot_logistic_adult.png" src="../_images/plot_logistic_adult.png" /></a>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="plot_logistic_adult.html#example-plot-logistic-adult-py"><span class="std std-ref">Binary classification with logistic regression</span></a></span></p>
+</div>
+</div><div class="toctree-wrapper compound">
+</div>
+<div class="thumbnailContainer" tooltip="This example show how to simulate any inhomogeneous Poisson process. Its intensity is modeled t..."><div class="figure" id="id4">
+<a class="reference external image-reference" href="./plot_poisson_inhomogeneous.html"><img alt="../_images/plot_poisson_inhomogeneous.png" src="../_images/plot_poisson_inhomogeneous.png" /></a>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="plot_poisson_inhomogeneous.html#example-plot-poisson-inhomogeneous-py"><span class="std std-ref">Inhomogeneous Poisson process simulation</span></a></span></p>
+</div>
+</div><div class="toctree-wrapper compound">
+</div>
+<div class="thumbnailContainer" tooltip="Hawkes ADM4 algorithm (`tick.inference.HawkesADM4`) enforce sparse and low rank adjacency matri..."><div class="figure" id="id5">
+<a class="reference external image-reference" href="./plot_hawkes_adm4.html"><img alt="../_images/plot_hawkes_adm4.png" src="../_images/plot_hawkes_adm4.png" /></a>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="plot_hawkes_adm4.html#example-plot-hawkes-adm4-py"><span class="std std-ref">Fit sparse and low rank adjacency matrix with Hawkes ADM4</span></a></span></p>
+</div>
+</div><div class="toctree-wrapper compound">
+</div>
+<div class="thumbnailContainer" tooltip="Simulation of Hawkes processes with usage of custom kernels "><div class="figure" id="id6">
+<a class="reference external image-reference" href="./plot_hawkes_time_func_simu.html"><img alt="../_images/plot_hawkes_time_func_simu.png" src="../_images/plot_hawkes_time_func_simu.png" /></a>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="plot_hawkes_time_func_simu.html#example-plot-hawkes-time-func-simu-py"><span class="std std-ref">Hawkes simulation with exotic kernels</span></a></span></p>
+</div>
+</div><div class="toctree-wrapper compound">
+</div>
+<div class="thumbnailContainer" tooltip="Plot examples of proximal operators available in `tick.optim.prox` "><div class="figure" id="id7">
+<a class="reference external image-reference" href="./plot_prox_example.html"><img alt="../_images/plot_prox_example.png" src="../_images/plot_prox_example.png" /></a>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="plot_prox_example.html#example-plot-prox-example-py"><span class="std std-ref">Examples of proximal operators</span></a></span></p>
+</div>
+</div><div class="toctree-wrapper compound">
+</div>
+<div class="thumbnailContainer" tooltip="Generates Linear, Logistic and Poisson regression realizations given a weight vector. "><div class="figure" id="id8">
+<a class="reference external image-reference" href="./plot_simulation_linear_model.html"><img alt="../_images/plot_simulation_linear_model.png" src="../_images/plot_simulation_linear_model.png" /></a>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="plot_simulation_linear_model.html#example-plot-simulation-linear-model-py"><span class="std std-ref">Linear models data simulation</span></a></span></p>
+</div>
+</div><div class="toctree-wrapper compound">
+</div>
+<div class="thumbnailContainer" tooltip="This Hawkes EM (`tick.inference.HawkesEM`) algorithm assume that kernels are piecewise constant..."><div class="figure" id="id9">
+<a class="reference external image-reference" href="./plot_hawkes_em.html"><img alt="../_images/plot_hawkes_em.png" src="../_images/plot_hawkes_em.png" /></a>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="plot_hawkes_em.html#example-plot-hawkes-em-py"><span class="std std-ref">Fit Hawkes random kernels</span></a></span></p>
+</div>
+</div><div class="toctree-wrapper compound">
+</div>
+<div class="thumbnailContainer" tooltip="This Hawkes learner based on conditional laws (`tick.inference.HawkesConditionalLaw`) is able t..."><div class="figure" id="id10">
+<a class="reference external image-reference" href="./plot_hawkes_conditional_law.html"><img alt="../_images/plot_hawkes_conditional_law.png" src="../_images/plot_hawkes_conditional_law.png" /></a>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="plot_hawkes_conditional_law.html#example-plot-hawkes-conditional-law-py"><span class="std std-ref">Fit Hawkes power law kernels</span></a></span></p>
+</div>
+</div><div class="toctree-wrapper compound">
+</div>
+<div class="thumbnailContainer" tooltip="This learner assumes Hawkes kernels are linear combinations of a given number of kernel basis."><div class="figure" id="id11">
+<a class="reference external image-reference" href="./plot_hawkes_basis_kernels.html"><img alt="../_images/plot_hawkes_basis_kernels.png" src="../_images/plot_hawkes_basis_kernels.png" /></a>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="plot_hawkes_basis_kernels.html#example-plot-hawkes-basis-kernels-py"><span class="std std-ref">Fit exotic Hawkes kernels</span></a></span></p>
+</div>
+</div><div class="toctree-wrapper compound">
+</div>
+<div class="thumbnailContainer" tooltip="This example illustrates the opimization of three linear models:     * Linear regression (`tick..."><div class="figure" id="id12">
+<a class="reference external image-reference" href="./plot_glm_convergence.html"><img alt="../_images/plot_glm_convergence.png" src="../_images/plot_glm_convergence.png" /></a>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="plot_glm_convergence.html#example-plot-glm-convergence-py"><span class="std std-ref">Generalized linear models solver convergence</span></a></span></p>
+</div>
+</div><div class="toctree-wrapper compound">
+</div>
+<div class="clearer"></div><div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
+</div>
+
+
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Poulsen.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

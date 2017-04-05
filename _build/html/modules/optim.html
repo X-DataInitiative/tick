@@ -1,0 +1,845 @@
+
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>tick.optim: optimization toolbox &#8212; tick 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-3.3.4/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-3.3.4/css/bootstrap-theme.min.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="tick.plot: plotting utilities" href="plot.html" />
+    <link rel="prev" title="tick.inference.HawkesConditionalLaw" href="generated/tick.inference.HawkesConditionalLaw.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body role="document">
+
+  <div id="navbar" class="None navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          tick</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.1</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="../auto_examples/index.html">Examples</a></li>
+                <li><a href="api.html">API</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Browse <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="inference.html"><code class="docutils literal"><span class="pre">tick.inference</span></code>: user-friendly inference tools</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="inference.html#generalized-linear-models">1. Generalized linear models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inference.html#hawkes">2. Hawkes</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#"><code class="docutils literal"><span class="pre">tick.optim</span></code>: optimization toolbox</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#contents">Contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#a-first-example">A First example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tick-optim-model-model-classes">1. <code class="docutils literal"><span class="pre">tick.optim.model</span></code>: model classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tick-optim-prox-proximal-operators">2. <code class="docutils literal"><span class="pre">tick.optim.prox</span></code>: proximal operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tick-optim-solver-solvers">3. <code class="docutils literal"><span class="pre">tick.optim.solver</span></code>: solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#what-s-under-the-hood">4. What&#8217;s under the hood?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="plot.html"><code class="docutils literal"><span class="pre">tick.plot</span></code>: plotting utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="plot.html#optimization">Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot.html#hawkes-estimation">Hawkes estimation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot.html#point-process-simulation">Point process simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot.html#others">Others</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code>: simulation toolbox</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="simulation.html#simulation-tools">1. Simulation tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="simulation.html#linear-model-simulation">2. Linear model simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="simulation.html#survival-analysis-simulation">3. Survival analysis simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="simulation.html#point-process-simulation">4. Point process simulation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="dataset.html"><code class="docutils literal"><span class="pre">tick.dataset</span></code>: real world datasets</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dataset.html#functions">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dataset.html#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="dev.html">Developer documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dev.html#main-highlights">Main highlights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev.html#base-class">Base class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev.html#how-to-add-a-new-model-solver-or-prox">How to add a new model, solver or prox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev.html#enable-python-pickling-of-c-objects">Enable Python-pickling of C++ objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev.html#tips-for-debugging-c-classes-in-tick">Tips for debugging C++ classes in tick</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container content-container">
+  
+  <div class="section" id="tick-optim-optimization-toolbox">
+<span id="optim"></span><h1><code class="xref py py-mod docutils literal"><span class="pre">tick.optim</span></code>: optimization toolbox<a class="headerlink" href="#tick-optim-optimization-toolbox" title="Permalink to this headline">¶</a></h1>
+<p>This is the core module of <code class="docutils literal"><span class="pre">tick</span></code> : an optimization toolbox, that allows
+to combine models (<code class="docutils literal"><span class="pre">model</span></code> classes), penalizations (<code class="docutils literal"><span class="pre">prox</span></code> classes) and
+solvers (<code class="docutils literal"><span class="pre">solver</span></code> classes) in many ways.
+Most of the optimization problems considered in <code class="docutils literal"><span class="pre">tick</span></code> (but not all)
+can be written as</p>
+<div class="math">
+\[\min_w f(w) + g(w)\]</div>
+<p>where <span class="math">\(f\)</span> is a goodness-of-fit term and <span class="math">\(g\)</span> is a function penalizing <span class="math">\(w\)</span>.
+Depending on the problem, you might want to use a specific algorithm to solve it.
+This optimization module is therefore organized in the following three main submodules.</p>
+<div class="section" id="contents">
+<h2>Contents<a class="headerlink" href="#contents" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="30%" />
+<col width="51%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Module API</th>
+<th class="head">Documentation        Description</th>
+<th class="head">&#160;</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><a class="reference internal" href="api.html#module-tick.optim.model" title="tick.optim.model"><code class="xref py py-mod docutils literal"><span class="pre">tick.optim.model</span></code></a></td>
+<td><a class="reference internal" href="#optim-model"><span class="std std-ref">Model classes</span></a></td>
+<td>Gives information about <span class="math">\(f\)</span>: value, gradient, hessian</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="api.html#module-tick.optim.prox" title="tick.optim.prox"><code class="xref py py-mod docutils literal"><span class="pre">tick.optim.prox</span></code></a></td>
+<td><a class="reference internal" href="#optim-prox"><span class="std std-ref">Prox classes</span></a></td>
+<td>Gives information about <span class="math">\(g\)</span>: value and proximal operator</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="api.html#module-tick.optim.solver" title="tick.optim.solver"><code class="xref py py-mod docutils literal"><span class="pre">tick.optim.solver</span></code></a></td>
+<td><a class="reference internal" href="#optim-solver"><span class="std std-ref">Solver classes</span></a></td>
+<td>Given a model and a prox, minimizes <span class="math">\(f + g\)</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="a-first-example">
+<span id="optim-first-example"></span><h2>A First example<a class="headerlink" href="#a-first-example" title="Permalink to this headline">¶</a></h2>
+<p>Here is an example of combination of a <code class="docutils literal"><span class="pre">model</span></code> a <code class="docutils literal"><span class="pre">prox</span></code> and a <code class="docutils literal"><span class="pre">solver</span></code> to
+compare the training time of several solvers for logistic regression with the
+elastic-net penalization.
+Note that, we specify a <code class="docutils literal"><span class="pre">range=(0,</span> <span class="pre">n_features)</span></code> so that the intercept is not penalized
+(see <a class="reference internal" href="#optim-prox"><span class="std std-ref">Prox classes</span></a> below for more details).</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">tick.simulation</span> <span class="kn">import</span> <span class="n">SimuLogReg</span><span class="p">,</span> <span class="n">weights_sparse_gauss</span>
+<span class="kn">from</span> <span class="nn">tick.optim.solver</span> <span class="kn">import</span> <span class="n">GD</span><span class="p">,</span> <span class="n">AGD</span><span class="p">,</span> <span class="n">SGD</span><span class="p">,</span> <span class="n">SVRG</span><span class="p">,</span> <span class="n">SDCA</span>
+<span class="kn">from</span> <span class="nn">tick.optim.model</span> <span class="kn">import</span> <span class="n">ModelLogReg</span>
+<span class="kn">from</span> <span class="nn">tick.optim.prox</span> <span class="kn">import</span> <span class="n">ProxElasticNet</span><span class="p">,</span> <span class="n">ProxL1</span>
+<span class="kn">from</span> <span class="nn">tick.plot</span> <span class="kn">import</span> <span class="n">plot_history</span>
+
+<span class="n">n_samples</span><span class="p">,</span> <span class="n">n_features</span><span class="p">,</span> <span class="o">=</span> <span class="mi">5000</span><span class="p">,</span> <span class="mi">50</span>
+<span class="n">weights0</span> <span class="o">=</span> <span class="n">weights_sparse_gauss</span><span class="p">(</span><span class="n">n_features</span><span class="p">,</span> <span class="n">nnz</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">intercept0</span> <span class="o">=</span> <span class="mf">0.2</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">SimuLogReg</span><span class="p">(</span><span class="n">weights</span><span class="o">=</span><span class="n">weights0</span><span class="p">,</span> <span class="n">intercept</span><span class="o">=</span><span class="n">intercept0</span><span class="p">,</span>
+                  <span class="n">n_samples</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">123</span><span class="p">)</span><span class="o">.</span><span class="n">simulate</span><span class="p">()</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">ModelLogReg</span><span class="p">(</span><span class="n">fit_intercept</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="n">prox</span> <span class="o">=</span> <span class="n">ProxElasticNet</span><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span> <span class="n">ratio</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_features</span><span class="p">))</span>
+
+<span class="n">solver_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;max_iter&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;tol&#39;</span><span class="p">:</span> <span class="mf">0.</span><span class="p">}</span>
+<span class="n">x0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">n_coeffs</span><span class="p">)</span>
+
+<span class="n">gd</span> <span class="o">=</span> <span class="n">GD</span><span class="p">(</span><span class="n">linesearch</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="o">**</span><span class="n">solver_params</span><span class="p">)</span><span class="o">.</span><span class="n">set_model</span><span class="p">(</span><span class="n">model</span><span class="p">)</span><span class="o">.</span><span class="n">set_prox</span><span class="p">(</span><span class="n">prox</span><span class="p">)</span>
+<span class="n">gd</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span> <span class="o">/</span> <span class="n">model</span><span class="o">.</span><span class="n">get_lip_best</span><span class="p">())</span>
+
+<span class="n">agd</span> <span class="o">=</span> <span class="n">AGD</span><span class="p">(</span><span class="n">linesearch</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="o">**</span><span class="n">solver_params</span><span class="p">)</span><span class="o">.</span><span class="n">set_model</span><span class="p">(</span><span class="n">model</span><span class="p">)</span><span class="o">.</span><span class="n">set_prox</span><span class="p">(</span><span class="n">prox</span><span class="p">)</span>
+<span class="n">agd</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span> <span class="o">/</span> <span class="n">model</span><span class="o">.</span><span class="n">get_lip_best</span><span class="p">())</span>
+
+<span class="n">sgd</span> <span class="o">=</span> <span class="n">SGD</span><span class="p">(</span><span class="o">**</span><span class="n">solver_params</span><span class="p">)</span><span class="o">.</span><span class="n">set_model</span><span class="p">(</span><span class="n">model</span><span class="p">)</span><span class="o">.</span><span class="n">set_prox</span><span class="p">(</span><span class="n">prox</span><span class="p">)</span>
+<span class="n">sgd</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mf">500.</span><span class="p">)</span>
+
+<span class="n">svrg</span> <span class="o">=</span> <span class="n">SVRG</span><span class="p">(</span><span class="o">**</span><span class="n">solver_params</span><span class="p">)</span><span class="o">.</span><span class="n">set_model</span><span class="p">(</span><span class="n">model</span><span class="p">)</span><span class="o">.</span><span class="n">set_prox</span><span class="p">(</span><span class="n">prox</span><span class="p">)</span>
+<span class="n">svrg</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span> <span class="o">/</span> <span class="n">model</span><span class="o">.</span><span class="n">get_lip_max</span><span class="p">())</span>
+
+<span class="n">plot_history</span><span class="p">([</span><span class="n">gd</span><span class="p">,</span> <span class="n">agd</span><span class="p">,</span> <span class="n">sgd</span><span class="p">,</span> <span class="n">svrg</span><span class="p">],</span> <span class="n">log_scale</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">dist_min</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>(<a class="reference external" href="../modules/code_samples/optim/plot_optim_comparison.py">Source code</a>, <a class="reference external" href="../modules/code_samples/optim/plot_optim_comparison.png">png</a>, <a class="reference external" href="../modules/code_samples/optim/plot_optim_comparison.hires.png">hires.png</a>, <a class="reference external" href="../modules/code_samples/optim/plot_optim_comparison.pdf">pdf</a>)</p>
+<div class="figure">
+<img alt="../_images/plot_optim_comparison1.png" src="../_images/plot_optim_comparison1.png" />
+</div>
+</div>
+<div class="section" id="tick-optim-model-model-classes">
+<span id="optim-model"></span><h2>1. <a class="reference internal" href="api.html#module-tick.optim.model" title="tick.optim.model"><code class="xref py py-mod docutils literal"><span class="pre">tick.optim.model</span></code></a>: model classes<a class="headerlink" href="#tick-optim-model-model-classes" title="Permalink to this headline">¶</a></h2>
+<p>In <code class="docutils literal"><span class="pre">tick</span></code> a <code class="docutils literal"><span class="pre">model</span></code> class gives information about a statistical model.
+Depending on the case, it gives first order information (loss, gradient) or
+second order information (hessian norm evaluation).</p>
+<div class="section" id="the-model-class-api">
+<h3>1.1. The <code class="docutils literal"><span class="pre">model</span></code> class API<a class="headerlink" href="#the-model-class-api" title="Permalink to this headline">¶</a></h3>
+<p>All model classes allow to compute the loss (value of the objective function <span class="math">\(f\)</span>) and
+its gradient. Let us illustrate this with the logistic regression model. First, we simulate
+some data, see <a class="reference internal" href="simulation.html#simulation-linear-model"><span class="std std-ref">linear model simulation</span></a> to have more information about this.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">tick.simulation</span> <span class="k">import</span> <span class="n">SimuLogReg</span><span class="p">,</span> <span class="n">weights_sparse_gauss</span>
+
+<span class="n">n_samples</span><span class="p">,</span> <span class="n">n_features</span> <span class="o">=</span> <span class="mi">2000</span><span class="p">,</span> <span class="mi">50</span>
+<span class="n">weights0</span> <span class="o">=</span> <span class="n">weights_sparse_gauss</span><span class="p">(</span><span class="n">n_weights</span><span class="o">=</span><span class="n">n_features</span><span class="p">,</span> <span class="n">nnz</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">intercept0</span> <span class="o">=</span> <span class="mf">1.</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">SimuLogReg</span><span class="p">(</span><span class="n">weights0</span><span class="p">,</span> <span class="n">intercept</span><span class="o">=</span><span class="n">intercept0</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">123</span><span class="p">,</span>
+                  <span class="n">n_samples</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">simulate</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Now, we can create the model object for logistic regression</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tick.optim.model</span> <span class="k">import</span> <span class="n">ModelLogReg</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">ModelLogReg</span><span class="p">(</span><span class="n">fit_intercept</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>outputs</p>
+<div class="highlight-none"><div class="highlight"><pre><span></span>{
+  &quot;fit_intercept&quot;: true,
+  &quot;n_calls_grad&quot;: 0,
+  &quot;n_calls_loss&quot;: 0,
+  &quot;n_calls_loss_and_grad&quot;: 0,
+  &quot;n_coeffs&quot;: 51,
+  &quot;n_features&quot;: 50,
+  &quot;n_passes_over_data&quot;: 0,
+  &quot;n_samples&quot;: 2000,
+  &quot;n_threads&quot;: 1,
+  &quot;name&quot;: &quot;ModelLogReg&quot;
+}
+</pre></div>
+</div>
+<p>Printing any object in tick returns a json formatted description of it.
+We see that this model uses 50 features, 51 coefficients (including the intercept),
+and that it received 2000 sample points. Now we can compute the loss of the model using
+the <code class="docutils literal"><span class="pre">loss</span></code> method (its objective, namely the value of the function <span class="math">\(f\)</span>
+to be minimized) by using</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">coeffs0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">weights0</span><span class="p">,</span> <span class="p">[</span><span class="n">intercept0</span><span class="p">]])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">loss</span><span class="p">(</span><span class="n">coeffs0</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>which outputs</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="mf">0.3551082120992899</span>
+</pre></div>
+</div>
+<p>while</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">loss</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">n_coeffs</span><span class="p">)))</span>
+</pre></div>
+</div>
+<p>outputs</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="mf">5.793300908869233</span>
+</pre></div>
+</div>
+<p>which is explained by the fact that the loss is larger for a parameter which is far from
+the ones used for the simulation.
+The gradient of the model can be computed using the <code class="docutils literal"><span class="pre">grad</span></code> method</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">_</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">stem</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">grad</span><span class="p">(</span><span class="n">coeffs0</span><span class="p">))</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$\nabla f(\mathrm{coeffs0})$&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">stem</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">grad</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">n_coeffs</span><span class="p">)))</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$\nabla f(\mathrm{coeffs1})$&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>which plots</p>
+<p>(<a class="reference external" href="../modules/code_samples/optim/plot_grad_coeff0.py">Source code</a>, <a class="reference external" href="../modules/code_samples/optim/plot_grad_coeff0.png">png</a>, <a class="reference external" href="../modules/code_samples/optim/plot_grad_coeff0.hires.png">hires.png</a>, <a class="reference external" href="../modules/code_samples/optim/plot_grad_coeff0.pdf">pdf</a>)</p>
+<div class="figure">
+<img alt="../_images/plot_grad_coeff01.png" src="../_images/plot_grad_coeff01.png" />
+</div>
+<p>We observe that the gradient near the optimum is much smaller than far from it.</p>
+<p>Model classes can be used with any solver class, by simply passing them using the
+solver&#8217;s <code class="docutils literal"><span class="pre">set_model</span></code> method, see the <a class="reference internal" href="#optim-first-example"><span class="std std-ref">example given above</span></a>.</p>
+</div>
+<div class="section" id="generalized-linear-models">
+<span id="optim-model-glm"></span><h3>1.2. Generalized linear models<a class="headerlink" href="#generalized-linear-models" title="Permalink to this headline">¶</a></h3>
+<p>We describe here generalized linear models for supervised learning.
+Given training data <span class="math">\((x_i, y_i) \in \mathbb R^d \times \mathbb R\)</span>
+for <span class="math">\(i=1, \ldots, n\)</span>, we consider models with a goodness-of-fit that
+writes</p>
+<div class="math">
+\[f(w, b) = \frac 1n \sum_{i=1}^n \ell(y_i, b + x_i^\top w),\]</div>
+<p>where <span class="math">\(w \in \mathbb R^d\)</span> is a vector containing the model weights,
+<span class="math">\(b \in \mathbb R\)</span> is the intercept and
+<span class="math">\(\ell : \mathbb R^2 \rightarrow \mathbb R\)</span> is a loss function.
+The loss function depends on the model. The following table describes the
+different losses implemented for now in tick and its associated class.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="24%" />
+<col width="26%" />
+<col width="49%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Model</th>
+<th class="head">Loss formula</th>
+<th class="head">Class</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Linear regression</td>
+<td><span class="math">\(\ell(y, y') = \frac 12 (y - y')^2\)</span></td>
+<td><a class="reference internal" href="generated/tick.optim.model.ModelLinReg.html#tick.optim.model.ModelLinReg" title="tick.optim.model.ModelLinReg"><code class="xref py py-class docutils literal"><span class="pre">ModelLinReg</span></code></a></td>
+</tr>
+<tr class="row-odd"><td>Logistic regression</td>
+<td><span class="math">\(\ell(y, y') = \log(1 + \exp(-y y'))\)</span></td>
+<td><a class="reference internal" href="generated/tick.optim.model.ModelLogReg.html#tick.optim.model.ModelLogReg" title="tick.optim.model.ModelLogReg"><code class="xref py py-class docutils literal"><span class="pre">ModelLogReg</span></code></a></td>
+</tr>
+<tr class="row-even"><td>Poisson regression with exponential link</td>
+<td><span class="math">\(\ell(y, y') = y' - y \log(y')\)</span></td>
+<td><a class="reference internal" href="generated/tick.optim.model.ModelPoisReg.html#tick.optim.model.ModelPoisReg" title="tick.optim.model.ModelPoisReg"><code class="xref py py-class docutils literal"><span class="pre">ModelPoisReg</span></code></a> with <code class="docutils literal"><span class="pre">link=&quot;exponential&quot;</span></code></td>
+</tr>
+<tr class="row-odd"><td>Poisson regression with identity link</td>
+<td><span class="math">\(\ell(y, y') = e^{y'} - y y'\)</span></td>
+<td><a class="reference internal" href="generated/tick.optim.model.ModelPoisReg.html#tick.optim.model.ModelPoisReg" title="tick.optim.model.ModelPoisReg"><code class="xref py py-class docutils literal"><span class="pre">ModelPoisReg</span></code></a> with <code class="docutils literal"><span class="pre">link=&quot;identity&quot;</span></code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="generalized-linear-models-with-individual-intercepts">
+<h3>1.3 Generalized linear models with individual intercepts<a class="headerlink" href="#generalized-linear-models-with-individual-intercepts" title="Permalink to this headline">¶</a></h3>
+<p>The setting is the same as with generalized linear models, but where we used an
+individual intercept <span class="math">\(b_i\)</span> for each <span class="math">\(i=1, \ldots, n\)</span>.
+Namely we consider a goodness-of-fit of the form</p>
+<div class="math">
+\[f(w, b) = \frac 1n \sum_{i=1}^n \ell(y_i, b_i + x_i^\top w),\]</div>
+<p>where <span class="math">\(w \in \mathbb R^d\)</span> is a vector containing the model weights,
+<span class="math">\(b \in \mathbb R^n\)</span> is a vector of individual intercepts and
+<span class="math">\(\ell : \mathbb R^2 \rightarrow \mathbb R\)</span> is a loss function.
+Estimation of <span class="math">\(b\)</span> under a sparse penalization (such as L1 or
+Sorted L1, see <a class="reference internal" href="#optim-prox"><span class="std std-ref">prox classes</span></a> below) allows to detect outliers
+using this model.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="22%" />
+<col width="27%" />
+<col width="52%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Model</th>
+<th class="head">Loss formula</th>
+<th class="head">Class</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Linear regression with intercepts</td>
+<td><span class="math">\(\ell(y, y') = \frac 12 (y - y')^2\)</span></td>
+<td><a class="reference internal" href="generated/tick.optim.model.ModelLinRegWithIntercepts.html#tick.optim.model.ModelLinRegWithIntercepts" title="tick.optim.model.ModelLinRegWithIntercepts"><code class="xref py py-class docutils literal"><span class="pre">ModelLinRegWithIntercepts</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="survival-analysis">
+<span id="optim-model-survival"></span><h3>1.4. Survival analysis<a class="headerlink" href="#survival-analysis" title="Permalink to this headline">¶</a></h3>
+<div class="admonition-todo admonition" id="index-0">
+<p class="first admonition-title">Todo</p>
+<p class="last">Describe cox model</p>
+</div>
+<table border="1" class="docutils">
+<colgroup>
+<col width="32%" />
+<col width="68%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Model</th>
+<th class="head">Class</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Cox regression partial likelihood</td>
+<td><a class="reference internal" href="generated/tick.optim.model.ModelCoxRegPartialLik.html#tick.optim.model.ModelCoxRegPartialLik" title="tick.optim.model.ModelCoxRegPartialLik"><code class="xref py py-class docutils literal"><span class="pre">ModelCoxRegPartialLik</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="hawkes-models">
+<span id="optim-model-hawkes"></span><h3>1.5. Hawkes models<a class="headerlink" href="#hawkes-models" title="Permalink to this headline">¶</a></h3>
+<p>Hawkes processes are point processes defined by the intensities:</p>
+<div class="math">
+\[\forall i \in [1 \dots D], \quad
+\lambda_i(t) = \mu_i + \sum_{j=1}^D \int \phi_{ij}(t - s) dN_j(s)\]</div>
+<p>where</p>
+<ul class="simple">
+<li><span class="math">\(D\)</span> is the number of nodes</li>
+<li><span class="math">\(\mu_i\)</span> are the baseline intensities</li>
+<li><span class="math">\(\phi_{ij}\)</span> are the kernels</li>
+<li><span class="math">\(dN_j\)</span> are the processes differentiates</li>
+</ul>
+<p>One way to infer Hawkes processes is to suppose their kernels have a
+parametric shape. Usually kernels have an exponential parametrization as it
+allows very fast computations.</p>
+<p>In <em>tick</em>, three exponential models are implemented. They differ by the
+parametrization of the kernel (exponential or sum-exponential) or by the loss
+function used (least squares or log-likelihood).</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="39%" />
+<col width="61%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Model</th>
+<th class="head">Class</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Least-squares for Hawkes model with exponential kernels</td>
+<td><a class="reference internal" href="generated/tick.optim.model.ModelHawkesFixedExpKernLeastSq.html#tick.optim.model.ModelHawkesFixedExpKernLeastSq" title="tick.optim.model.ModelHawkesFixedExpKernLeastSq"><code class="xref py py-class docutils literal"><span class="pre">ModelHawkesFixedExpKernLeastSq</span></code></a></td>
+</tr>
+<tr class="row-odd"><td>Log-likelihood for Hawkes model with exponential kernels</td>
+<td><a class="reference internal" href="generated/tick.optim.model.ModelHawkesFixedExpKernLogLik.html#tick.optim.model.ModelHawkesFixedExpKernLogLik" title="tick.optim.model.ModelHawkesFixedExpKernLogLik"><code class="xref py py-class docutils literal"><span class="pre">ModelHawkesFixedExpKernLogLik</span></code></a></td>
+</tr>
+<tr class="row-even"><td>Least-squares for Hawkes model with sum of exponential kernels</td>
+<td><a class="reference internal" href="generated/tick.optim.model.ModelHawkesFixedSumExpKernLeastSq.html#tick.optim.model.ModelHawkesFixedSumExpKernLeastSq" title="tick.optim.model.ModelHawkesFixedSumExpKernLeastSq"><code class="xref py py-class docutils literal"><span class="pre">ModelHawkesFixedSumExpKernLeastSq</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="tick-optim-prox-proximal-operators">
+<span id="optim-prox"></span><h2>2. <a class="reference internal" href="api.html#module-tick.optim.prox" title="tick.optim.prox"><code class="xref py py-mod docutils literal"><span class="pre">tick.optim.prox</span></code></a>: proximal operators<a class="headerlink" href="#tick-optim-prox-proximal-operators" title="Permalink to this headline">¶</a></h2>
+<p>This module provides several proximal operators for the regularization of the weights
+of a model. The proximal operator of a convex function <span class="math">\(g\)</span>
+at some point <span class="math">\(w\)</span> is defined as the unique minimizer of the problem</p>
+<div class="math">
+\[\text{prox}_{g}(w, t) = \text{argmin}_{w'} \Big\{ \frac 12 \| w - w' \|_2^2 + t g(w') \Big\}\]</div>
+<p>where <span class="math">\(t &gt; 0\)</span> is a regularization parameter and <span class="math">\(\| \cdot \|_2\)</span> is the
+Euclidean norm. Note that in the particular case where <span class="math">\(g(w) = \delta_{C}(w)\)</span>,
+with <span class="math">\(C\)</span> a convex set, then <span class="math">\(\text{prox}_g\)</span> is a projection
+operator (here <span class="math">\(\delta_{C}(w) = 0\)</span> if <span class="math">\(w \in C\)</span>
+and <span class="math">\(+\infty\)</span> otherwise).</p>
+<p>Note that depending on the problem, <span class="math">\(g\)</span> might actually be used only a subset of
+entries of <span class="math">\(w\)</span>.
+For instance, for generalized linear models, <span class="math">\(w\)</span> contains the model weights and
+an intercept, which is not penalized, see <a class="reference internal" href="#optim-model-glm"><span class="std std-ref">generalized linear models</span></a>.
+Indeed, in all <code class="docutils literal"><span class="pre">prox</span></code> classes, an optional <code class="docutils literal"><span class="pre">range</span></code> parameter is available, to apply
+the regularization only to a subset of entries of <span class="math">\(w\)</span>.</p>
+<div class="section" id="the-prox-class-api">
+<h3>2.1 The <code class="docutils literal"><span class="pre">prox</span></code> class API<a class="headerlink" href="#the-prox-class-api" title="Permalink to this headline">¶</a></h3>
+<p>Let us describe the <code class="docutils literal"><span class="pre">prox</span></code> API with the <a class="reference internal" href="generated/tick.optim.prox.ProxL1.html#tick.optim.prox.ProxL1" title="tick.optim.prox.ProxL1"><code class="xref py py-class docutils literal"><span class="pre">ProxL1</span></code></a>
+class, that provides the proximal operator of the function <span class="math">\(g(w) = s \|w\|_1 = s \sum_{j=1}^d |w_j|\)</span>.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">tick.optim.prox</span> <span class="k">import</span> <span class="n">ProxL1</span>
+
+<span class="n">prox</span> <span class="o">=</span> <span class="n">ProxL1</span><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">prox</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>prints</p>
+<div class="highlight-none"><div class="highlight"><pre><span></span>{
+  &quot;name&quot;: &quot;ProxL1&quot;,
+  &quot;positive&quot;: false,
+  &quot;range&quot;: null,
+  &quot;strength&quot;: 0.01
+}
+</pre></div>
+</div>
+<p>The <code class="docutils literal"><span class="pre">positive</span></code> parameter allows to enforce positivity, namely when <code class="docutils literal"><span class="pre">positive=True</span></code> then
+the considered function is actually <span class="math">\(g(w) = s \|w\|_1 + \delta_{C}(x)\)</span> where <span class="math">\(C\)</span> is
+the set of vectors with non-negative coordinates.
+Note that no <code class="docutils literal"><span class="pre">range</span></code> was specified to this prox so that it is null (<code class="docutils literal"><span class="pre">None</span></code>) for now.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">prox</span> <span class="o">=</span> <span class="n">ProxL1</span><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">30</span><span class="p">),</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">prox</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>prints</p>
+<div class="highlight-none"><div class="highlight"><pre><span></span>{
+  &quot;name&quot;: &quot;ProxL1&quot;,
+  &quot;positive&quot;: true,
+  &quot;range&quot;: [
+    0,
+    30
+  ],
+  &quot;strength&quot;: 0.01
+}
+</pre></div>
+</div>
+<p>The parameter <span class="math">\(s\)</span> corresponds to the strength of penalization, and can be tuned using
+the <code class="docutils literal"><span class="pre">strength</span></code> parameter.</p>
+<p>All <code class="docutils literal"><span class="pre">prox</span></code> classes provide a method <code class="docutils literal"><span class="pre">call</span></code> that computes <span class="math">\(\text{prox}_{g}(w, t)\)</span>
+where <span class="math">\(t\)</span> is a parameter passed using the <code class="docutils literal"><span class="pre">step</span></code> argument.
+The output of <code class="docutils literal"><span class="pre">call</span></code> can optionally be passed using the <code class="docutils literal"><span class="pre">out</span></code> argument (this avoid unnecessary copies, and
+thus extra memory allocation).</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">tick.optim.prox</span> <span class="kn">import</span> <span class="n">ProxL1</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
+<span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">-</span> <span class="mf">1e-1</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">+</span> <span class="mf">1e-1</span>
+
+<span class="n">proxs</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">ProxL1</span><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="mf">0.</span><span class="p">),</span>
+    <span class="n">ProxL1</span><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="mf">3e-1</span><span class="p">),</span>
+    <span class="n">ProxL1</span><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="mf">3e-1</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">40</span><span class="p">)),</span>
+    <span class="n">ProxL1</span><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="mf">3e-1</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="bp">True</span><span class="p">),</span>
+    <span class="n">ProxL1</span><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="mf">3e-1</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">40</span><span class="p">),</span> <span class="n">positive</span><span class="o">=</span><span class="bp">True</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="n">names</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;original vector&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;prox&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;prox with range=(10, 40)&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;prox with positive=True&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;range=(10, 40) and positive=True&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="n">_</span><span class="p">,</span> <span class="n">ax_list</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">sharey</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">prox</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">ax</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">proxs</span><span class="p">,</span> <span class="n">names</span><span class="p">,</span> <span class="n">ax_list</span><span class="p">):</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">stem</span><span class="p">(</span><span class="n">prox</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">51</span><span class="p">))</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">((</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">))</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>(<a class="reference external" href="../modules/code_samples/optim/plot_prox_api.py">Source code</a>, <a class="reference external" href="../modules/code_samples/optim/plot_prox_api.png">png</a>, <a class="reference external" href="../modules/code_samples/optim/plot_prox_api.hires.png">hires.png</a>, <a class="reference external" href="../modules/code_samples/optim/plot_prox_api.pdf">pdf</a>)</p>
+<div class="figure">
+<img alt="../_images/plot_prox_api1.png" src="../_images/plot_prox_api1.png" />
+</div>
+<p>The value of <span class="math">\(g\)</span> is simply obtained using the <code class="docutils literal"><span class="pre">value</span></code> method</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">prox</span> <span class="o">=</span> <span class="n">ProxL1</span><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="n">val</span> <span class="o">=</span> <span class="n">prox</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">double</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>simply prints</p>
+<div class="highlight-none"><div class="highlight"><pre><span></span>35.0
+</pre></div>
+</div>
+<p>which corresponds to the sum of integers between 5 and 9 included.</p>
+</div>
+<div class="section" id="available-operators">
+<h3>2.2 Available operators<a class="headerlink" href="#available-operators" title="Permalink to this headline">¶</a></h3>
+<p>The list of available operators in <code class="docutils literal"><span class="pre">tick</span></code> given in the next table.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%" />
+<col width="53%" />
+<col width="34%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Penalization</th>
+<th class="head">Function</th>
+<th class="head">Class</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Identity</td>
+<td><span class="math">\(g(w) = 0\)</span></td>
+<td><a class="reference internal" href="generated/tick.optim.prox.ProxZero.html#tick.optim.prox.ProxZero" title="tick.optim.prox.ProxZero"><code class="xref py py-class docutils literal"><span class="pre">ProxZero</span></code></a></td>
+</tr>
+<tr class="row-odd"><td>Non-negative constraint</td>
+<td><span class="math">\(g(w) = s \delta_C(w)\)</span> where <span class="math">\(C=\)</span> set of vectors with non-negative entries</td>
+<td><a class="reference internal" href="generated/tick.optim.prox.ProxPositive.html#tick.optim.prox.ProxPositive" title="tick.optim.prox.ProxPositive"><code class="xref py py-class docutils literal"><span class="pre">ProxPositive</span></code></a></td>
+</tr>
+<tr class="row-even"><td>L1 norm</td>
+<td><span class="math">\(g(w) = s \sum_{j=1}^d |w_j|\)</span></td>
+<td><a class="reference internal" href="generated/tick.optim.prox.ProxL1.html#tick.optim.prox.ProxL1" title="tick.optim.prox.ProxL1"><code class="xref py py-class docutils literal"><span class="pre">ProxL1</span></code></a></td>
+</tr>
+<tr class="row-odd"><td>L1 norm with weights</td>
+<td><span class="math">\(g(w) = s \sum_{j=1}^d c_j |w_j|\)</span></td>
+<td><a class="reference internal" href="generated/tick.optim.prox.ProxL1w.html#tick.optim.prox.ProxL1w" title="tick.optim.prox.ProxL1w"><code class="xref py py-class docutils literal"><span class="pre">ProxL1w</span></code></a></td>
+</tr>
+<tr class="row-even"><td>Ridge</td>
+<td><span class="math">\(g(w) = s \sum_{j=1}^d \frac{w_j^2}{2}\)</span></td>
+<td><a class="reference internal" href="generated/tick.optim.prox.ProxL2Sq.html#tick.optim.prox.ProxL2Sq" title="tick.optim.prox.ProxL2Sq"><code class="xref py py-class docutils literal"><span class="pre">ProxL2Sq</span></code></a></td>
+</tr>
+<tr class="row-odd"><td>Elastic-net</td>
+<td><span class="math">\(g(w) = s \Big(\sum_{j=1}^{d} \alpha |w_j| + (1 - \alpha) \frac{w_j^2}{2} \Big)\)</span></td>
+<td><a class="reference internal" href="generated/tick.optim.prox.ProxElasticNet.html#tick.optim.prox.ProxElasticNet" title="tick.optim.prox.ProxElasticNet"><code class="xref py py-class docutils literal"><span class="pre">ProxElasticNet</span></code></a></td>
+</tr>
+<tr class="row-even"><td>Total-variation</td>
+<td><span class="math">\(g(w) = s \sum_{j=2}^d |w_j - w_{j-1}|\)</span></td>
+<td><a class="reference internal" href="generated/tick.optim.prox.ProxTV.html#tick.optim.prox.ProxTV" title="tick.optim.prox.ProxTV"><code class="xref py py-class docutils literal"><span class="pre">ProxTV</span></code></a></td>
+</tr>
+<tr class="row-odd"><td>Nuclear norm</td>
+<td><span class="math">\(g(w) = s \sum_{j=1}^{q} \sigma_j(w)\)</span></td>
+<td><a class="reference internal" href="generated/tick.optim.prox.ProxNuclear.html#tick.optim.prox.ProxNuclear" title="tick.optim.prox.ProxNuclear"><code class="xref py py-class docutils literal"><span class="pre">ProxNuclear</span></code></a></td>
+</tr>
+<tr class="row-even"><td>Sorted L1</td>
+<td><span class="math">\(g(w) = s \sum_{j=1}^{d} c_j |w_{(j)}|\)</span> where <span class="math">\(|w_{(j)}|\)</span> is decreasing</td>
+<td><a class="reference internal" href="generated/tick.optim.prox.ProxSortedL1.html#tick.optim.prox.ProxSortedL1" title="tick.optim.prox.ProxSortedL1"><code class="xref py py-class docutils literal"><span class="pre">ProxSortedL1</span></code></a></td>
+</tr>
+</tbody>
+</table>
+<p>Another <code class="docutils literal"><span class="pre">prox</span></code> class is the <a class="reference internal" href="generated/tick.optim.prox.ProxMulti.html#tick.optim.prox.ProxMulti" title="tick.optim.prox.ProxMulti"><code class="xref py py-class docutils literal"><span class="pre">ProxMulti</span></code></a> that allows
+to combine any proximal operators together.
+It simply applies sequentially each operator passed to <a class="reference internal" href="generated/tick.optim.prox.ProxMulti.html#tick.optim.prox.ProxMulti" title="tick.optim.prox.ProxMulti"><code class="xref py py-class docutils literal"><span class="pre">ProxMulti</span></code></a>,
+one after the other. Here is an example of combination of a total-variation penalization and L1 penalization
+applied to different parts of a vector.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">tick.optim.prox</span> <span class="kn">import</span> <span class="n">ProxL1</span><span class="p">,</span> <span class="n">ProxTV</span><span class="p">,</span> <span class="n">ProxMulti</span>
+
+<span class="n">s</span> <span class="o">=</span> <span class="mf">0.4</span>
+
+<span class="n">prox</span> <span class="o">=</span> <span class="n">ProxMulti</span><span class="p">(</span>
+    <span class="n">proxs</span><span class="o">=</span><span class="p">(</span>
+        <span class="n">ProxTV</span><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="n">s</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">)),</span>
+        <span class="n">ProxL1</span><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="mi">2</span> <span class="o">*</span> <span class="n">s</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">50</span><span class="p">))</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
+<span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">-</span> <span class="mf">1e-1</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">+</span> <span class="mf">1e-1</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">stem</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;original vector&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">51</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">((</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">stem</span><span class="p">(</span><span class="n">prox</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;ProxMulti: TV and L1&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">51</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">((</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">vlines</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">linestyles</span><span class="o">=</span><span class="s1">&#39;dashed&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>(<a class="reference external" href="../modules/code_samples/optim/plot_prox_multi.py">Source code</a>, <a class="reference external" href="../modules/code_samples/optim/plot_prox_multi.png">png</a>, <a class="reference external" href="../modules/code_samples/optim/plot_prox_multi.hires.png">hires.png</a>, <a class="reference external" href="../modules/code_samples/optim/plot_prox_multi.pdf">pdf</a>)</p>
+<div class="figure">
+<img alt="../_images/plot_prox_multi1.png" src="../_images/plot_prox_multi1.png" />
+</div>
+</div>
+<div class="section" id="example">
+<h3>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h3>
+<p>Here is an illustration of the effect of these proximal operators on an example.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">==============================</span>
+<span class="sd">Examples of proximal operators</span>
+<span class="sd">==============================</span>
+
+<span class="sd">Plot examples of proximal operators available in `tick.optim.prox`</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">tick.optim.prox</span> <span class="kn">import</span> <span class="n">ProxL1</span><span class="p">,</span> <span class="n">ProxElasticNet</span><span class="p">,</span> <span class="n">ProxL2Sq</span><span class="p">,</span> \
+    <span class="n">ProxPositive</span><span class="p">,</span> <span class="n">ProxSortedL1</span><span class="p">,</span> <span class="n">ProxTV</span><span class="p">,</span> <span class="n">ProxZero</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
+<span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">-</span> <span class="mf">1e-1</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">+</span> <span class="mf">1e-1</span>
+<span class="n">s</span> <span class="o">=</span> <span class="mf">0.4</span>
+
+<span class="n">proxs</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">ProxZero</span><span class="p">(),</span>
+    <span class="n">ProxPositive</span><span class="p">(),</span>
+    <span class="n">ProxL2Sq</span><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="n">s</span><span class="p">),</span>
+    <span class="n">ProxL1</span><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="n">s</span><span class="p">),</span>
+    <span class="n">ProxElasticNet</span><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="n">s</span><span class="p">,</span> <span class="n">ratio</span><span class="o">=</span><span class="mf">0.5</span><span class="p">),</span>
+    <span class="n">ProxSortedL1</span><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="n">s</span><span class="p">),</span>
+    <span class="n">ProxTV</span><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="n">s</span><span class="p">)</span>
+<span class="p">]</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span> <span class="n">sharey</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">sharex</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">stem</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;original vector&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">51</span><span class="p">))</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">((</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">))</span>
+
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">prox</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">proxs</span><span class="p">):</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">stem</span><span class="p">(</span><span class="n">prox</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">prox</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">51</span><span class="p">))</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">((</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">))</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>(<a class="reference external" href="../../examples/plot_prox_example.py">Source code</a>, <a class="reference external" href="../../examples/plot_prox_example.png">png</a>, <a class="reference external" href="../../examples/plot_prox_example.hires.png">hires.png</a>, <a class="reference external" href="../../examples/plot_prox_example.pdf">pdf</a>)</p>
+<div class="figure">
+<img alt="../_images/plot_prox_example2.png" src="../_images/plot_prox_example2.png" />
+</div>
+</div>
+</div>
+<div class="section" id="tick-optim-solver-solvers">
+<span id="optim-solver"></span><h2>3. <a class="reference internal" href="api.html#module-tick.optim.solver" title="tick.optim.solver"><code class="xref py py-mod docutils literal"><span class="pre">tick.optim.solver</span></code></a>: solvers<a class="headerlink" href="#tick-optim-solver-solvers" title="Permalink to this headline">¶</a></h2>
+<p>This module contains all the solvers available in <code class="docutils literal"><span class="pre">tick</span></code>.
+It features two types of solvers: deterministic and stochastic.
+Deterministic solvers use a full pass over
+data at each iteration, while stochastic solvers make <code class="docutils literal"><span class="pre">epoch_size</span></code> iterations
+within each iteration.</p>
+<div class="section" id="the-solver-class-api">
+<h3>3.1 The <code class="docutils literal"><span class="pre">solver</span></code> class API<a class="headerlink" href="#the-solver-class-api" title="Permalink to this headline">¶</a></h3>
+<p>All the solvers have a <code class="docutils literal"><span class="pre">set_model</span></code> method to pass the model to be trained, and
+a <code class="docutils literal"><span class="pre">set_prox</span></code> method to pass the penalization.
+The solver is launched using the <code class="docutils literal"><span class="pre">solve</span></code> method to which a starting point and
+eventually a step-size can be given. Here is an example</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">tick.simulation</span> <span class="k">import</span> <span class="n">SimuLogReg</span><span class="p">,</span> <span class="n">weights_sparse_gauss</span>
+<span class="kn">from</span> <span class="nn">tick.optim.solver</span> <span class="k">import</span> <span class="n">SVRG</span>
+<span class="kn">from</span> <span class="nn">tick.optim.model</span> <span class="k">import</span> <span class="n">ModelLogReg</span>
+<span class="kn">from</span> <span class="nn">tick.optim.prox</span> <span class="k">import</span> <span class="n">ProxElasticNet</span>
+
+<span class="n">n_samples</span><span class="p">,</span> <span class="n">n_features</span> <span class="o">=</span> <span class="mi">5000</span><span class="p">,</span> <span class="mi">10</span>
+<span class="n">weights0</span> <span class="o">=</span> <span class="n">weights_sparse_gauss</span><span class="p">(</span><span class="n">n_weights</span><span class="o">=</span><span class="n">n_features</span><span class="p">,</span> <span class="n">nnz</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">intercept0</span> <span class="o">=</span> <span class="mf">1.</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">SimuLogReg</span><span class="p">(</span><span class="n">weights0</span><span class="p">,</span> <span class="n">intercept</span><span class="o">=</span><span class="n">intercept0</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">123</span><span class="p">,</span>
+                  <span class="n">n_samples</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">simulate</span><span class="p">()</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">ModelLogReg</span><span class="p">(</span><span class="n">fit_intercept</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="n">prox</span> <span class="o">=</span> <span class="n">ProxElasticNet</span><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span> <span class="n">ratio</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_features</span><span class="p">))</span>
+
+<span class="n">svrg</span> <span class="o">=</span> <span class="n">SVRG</span><span class="p">(</span><span class="n">tol</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">print_every</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">set_model</span><span class="p">(</span><span class="n">model</span><span class="p">)</span><span class="o">.</span><span class="n">set_prox</span><span class="p">(</span><span class="n">prox</span><span class="p">)</span>
+<span class="n">x0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">n_coeffs</span><span class="p">)</span>
+<span class="n">minimizer</span> <span class="o">=</span> <span class="n">svrg</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span> <span class="o">/</span> <span class="n">model</span><span class="o">.</span><span class="n">get_lip_max</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">found minimizer</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">minimizer</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>which outputs</p>
+<div class="highlight-none"><div class="highlight"><pre><span></span>Launching the solver SVRG...
+  n_iter  |    obj    |  rel_obj
+        0 |  5.29e-01 |  2.37e-01
+        1 |  5.01e-01 |  5.15e-02
+        2 |  4.97e-01 |  8.44e-03
+        3 |  4.97e-01 |  5.00e-04
+        4 |  4.97e-01 |  2.82e-05
+        5 |  4.97e-01 |  7.28e-07
+
+Done solving using SVRG in 0.03281998634338379 seconds
+
+found minimizer
+ [ 0.01992683  0.00456966 -0.16595686 -0.08619878  0.01059461  0.6144692
+  0.0049031  -0.07767023  0.07550217  1.18493663  0.9424508 ]
+</pre></div>
+</div>
+<p>Note the argument <code class="docutils literal"><span class="pre">step=1</span> <span class="pre">/</span> <span class="pre">model.get_lip_max())</span></code> passed to the <code class="docutils literal"><span class="pre">solve</span></code> method that gives
+an automatic tuning of the step size.</p>
+</div>
+<div class="section" id="available-solvers">
+<h3>3.2 Available solvers<a class="headerlink" href="#available-solvers" title="Permalink to this headline">¶</a></h3>
+<p>Here is the list of the solvers available in <code class="docutils literal"><span class="pre">tick</span></code>.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="58%" />
+<col width="42%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Solver</th>
+<th class="head">Class</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Proximal gradient descent</td>
+<td><a class="reference internal" href="generated/tick.optim.solver.GD.html#tick.optim.solver.GD" title="tick.optim.solver.GD"><code class="xref py py-class docutils literal"><span class="pre">GD</span></code></a></td>
+</tr>
+<tr class="row-odd"><td>Accelerated proximal gradient descent</td>
+<td><a class="reference internal" href="generated/tick.optim.solver.AGD.html#tick.optim.solver.AGD" title="tick.optim.solver.AGD"><code class="xref py py-class docutils literal"><span class="pre">AGD</span></code></a></td>
+</tr>
+<tr class="row-even"><td>Broyden, Fletcher, Goldfarb, and Shannon (quasi-newton)</td>
+<td><a class="reference internal" href="generated/tick.optim.solver.BFGS.html#tick.optim.solver.BFGS" title="tick.optim.solver.BFGS"><code class="xref py py-class docutils literal"><span class="pre">BFGS</span></code></a></td>
+</tr>
+<tr class="row-odd"><td>Self-Concordant Proximal Gradient Descent</td>
+<td><code class="xref py py-class docutils literal"><span class="pre">SCPG</span></code></td>
+</tr>
+<tr class="row-even"><td>Stochastic Gradient Descent</td>
+<td><a class="reference internal" href="generated/tick.optim.solver.SGD.html#tick.optim.solver.SGD" title="tick.optim.solver.SGD"><code class="xref py py-class docutils literal"><span class="pre">SGD</span></code></a></td>
+</tr>
+<tr class="row-odd"><td>Stochastic Variance Reduced Descent</td>
+<td><a class="reference internal" href="generated/tick.optim.solver.SVRG.html#tick.optim.solver.SVRG" title="tick.optim.solver.SVRG"><code class="xref py py-class docutils literal"><span class="pre">SVRG</span></code></a></td>
+</tr>
+<tr class="row-even"><td>Stochastic Dual Coordinate Ascent</td>
+<td><a class="reference internal" href="generated/tick.optim.solver.SDCA.html#tick.optim.solver.SDCA" title="tick.optim.solver.SDCA"><code class="xref py py-class docutils literal"><span class="pre">SDCA</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="what-s-under-the-hood">
+<h2>4. What&#8217;s under the hood?<a class="headerlink" href="#what-s-under-the-hood" title="Permalink to this headline">¶</a></h2>
+<p>All model classes have a <code class="docutils literal"><span class="pre">loss</span></code> and <code class="docutils literal"><span class="pre">grad</span></code> method, that are used by batch
+algorithms to fit the model. These classes contains a C++ object, that does the
+computations. Some methods are hidden within this C++ object, and are accessible
+only through C++ (such as <code class="docutils literal"><span class="pre">loss_i</span></code> and <code class="docutils literal"><span class="pre">grad_i</span></code> that compute the gradient
+using the single data point <span class="math">\((x_i, y_i)\)</span>). These hidden methods are used
+in the stochastic solvers, and are available through C++ only for efficiency.</p>
+</div>
+</div>
+
+
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Poulsen.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

@@ -1,0 +1,12 @@
+
+.. _GFB:
+
+tick.optim.solver.GFB
+=====================
+
+.. currentmodule:: tick.optim.solver
+
+.. autoclass:: GFB
+
+.. include:: tick.optim.solver.GFB.examples
+    :allowmissing:

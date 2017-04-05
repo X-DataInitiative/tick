@@ -1,0 +1,12 @@
+
+.. _HawkesConditionalLaw:
+
+tick.inference.HawkesConditionalLaw
+===================================
+
+.. currentmodule:: tick.inference
+
+.. autoclass:: HawkesConditionalLaw
+
+.. include:: tick.inference.HawkesConditionalLaw.examples
+    :allowmissing:

@@ -1,0 +1,404 @@
+
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>tick.optim.solver.AGD &#8212; tick 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/bootstrap-3.3.4/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/bootstrap-3.3.4/css/bootstrap-theme.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../_static/bootstrap-sphinx.js"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body role="document">
+
+  <div id="navbar" class="None navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../index.html">
+          tick</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.1</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../../index.html">Home</a></li>
+                <li><a href="../../auto_examples/index.html">Examples</a></li>
+                <li><a href="../api.html">API</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../index.html">Browse <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="../inference.html"><code class="docutils literal"><span class="pre">tick.inference</span></code>: user-friendly inference tools</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../inference.html#generalized-linear-models">1. Generalized linear models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../inference.html#hawkes">2. Hawkes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../optim.html"><code class="docutils literal"><span class="pre">tick.optim</span></code>: optimization toolbox</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../optim.html#contents">Contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../optim.html#a-first-example">A First example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../optim.html#tick-optim-model-model-classes">1. <code class="docutils literal"><span class="pre">tick.optim.model</span></code>: model classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../optim.html#tick-optim-prox-proximal-operators">2. <code class="docutils literal"><span class="pre">tick.optim.prox</span></code>: proximal operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../optim.html#tick-optim-solver-solvers">3. <code class="docutils literal"><span class="pre">tick.optim.solver</span></code>: solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../optim.html#what-s-under-the-hood">4. What&#8217;s under the hood?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../plot.html"><code class="docutils literal"><span class="pre">tick.plot</span></code>: plotting utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../plot.html#optimization">Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plot.html#hawkes-estimation">Hawkes estimation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plot.html#point-process-simulation">Point process simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plot.html#others">Others</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code>: simulation toolbox</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../simulation.html#simulation-tools">1. Simulation tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../simulation.html#linear-model-simulation">2. Linear model simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../simulation.html#survival-analysis-simulation">3. Survival analysis simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../simulation.html#point-process-simulation">4. Point process simulation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../dataset.html"><code class="docutils literal"><span class="pre">tick.dataset</span></code>: real world datasets</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../dataset.html#functions">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dataset.html#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../dev.html">Developer documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../dev.html#main-highlights">Main highlights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dev.html#base-class">Base class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dev.html#how-to-add-a-new-model-solver-or-prox">How to add a new model, solver or prox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dev.html#enable-python-pickling-of-c-objects">Enable Python-pickling of C++ objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dev.html#tips-for-debugging-c-classes-in-tick">Tips for debugging C++ classes in tick</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container content-container">
+  
+  <div class="section" id="tick-optim-solver-agd">
+<span id="agd"></span><h1>tick.optim.solver.AGD<a class="headerlink" href="#tick-optim-solver-agd" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="tick.optim.solver.AGD">
+<em class="property">class </em><code class="descclassname">tick.optim.solver.</code><code class="descname">AGD</code><span class="sig-paren">(</span><em>step: float = None</em>, <em>tol: float = 0.0</em>, <em>max_iter: int = 100</em>, <em>linesearch: bool = True</em>, <em>linesearch_step_increase: float = 2.0</em>, <em>linesearch_step_decrease: float = 0.5</em>, <em>verbose: bool = True</em>, <em>print_every: int = 10</em>, <em>record_every: int = 1</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/optim/solver/agd.html#AGD"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.optim.solver.AGD" title="Permalink to this definition">¶</a></dt>
+<dd><p>AGD (accelerated proximal gradient descent) algorithm.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>step</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code> default=None</p>
+<blockquote>
+<div><p>Step-size of the algorithm. If <code class="docutils literal"><span class="pre">linesearch=True</span></code>, this is the
+first step-size to be used in the linesearch
+(typically taken too large). Otherwise, it&#8217;s the constant step
+to be used along iterations.</p>
+</div></blockquote>
+<p><strong>tol</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default=0.</p>
+<blockquote>
+<div><p>The tolerance of the solver (iterations stop when the stopping
+criterion is below it). By default the solver does <code class="docutils literal"><span class="pre">max_iter</span></code>
+iterations</p>
+</div></blockquote>
+<p><strong>max_iter</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code>, default=100</p>
+<blockquote>
+<div><p>Maximum number of iterations of the solver</p>
+</div></blockquote>
+<p><strong>linesearch</strong> : <code class="xref py py-obj docutils literal"><span class="pre">bool</span></code>, default=True</p>
+<blockquote>
+<div><p>Use backtracking linesearch</p>
+</div></blockquote>
+<p><strong>linesearch_step_increase</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default=2.</p>
+<blockquote>
+<div><p>Factor of step increase when using linesearch</p>
+</div></blockquote>
+<p><strong>linesearch_step_decrease</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default=0.5</p>
+<blockquote>
+<div><p>Factor of step decrease when using linesearch</p>
+</div></blockquote>
+<p><strong>verbose</strong> : <code class="xref py py-obj docutils literal"><span class="pre">bool</span></code>, default=True</p>
+<blockquote>
+<div><p>If <code class="xref py py-obj docutils literal"><span class="pre">True</span></code>, we verbose things, otherwise the solver does not
+print anything (but records information in history anyway)</p>
+</div></blockquote>
+<p><strong>print_every</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code>, default=10</p>
+<blockquote>
+<div><p>Print history information when <code class="docutils literal"><span class="pre">n_iter</span></code> (iteration number) is
+a multiple of <code class="docutils literal"><span class="pre">print_every</span></code></p>
+</div></blockquote>
+<p><strong>record_every</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code>, default=1</p>
+<blockquote>
+<div><p>Record history information when <code class="docutils literal"><span class="pre">n_iter</span></code> (iteration number) is
+a multiple of <code class="docutils literal"><span class="pre">record_every</span></code></p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Attributes:</th><td class="field-body"><p class="first"><strong>model</strong> : <code class="xref py py-obj docutils literal"><span class="pre">Model</span></code></p>
+<blockquote>
+<div><p>The model to solve</p>
+</div></blockquote>
+<p><strong>prox</strong> : <code class="xref py py-obj docutils literal"><span class="pre">Prox</span></code></p>
+<blockquote>
+<div><p>Proximal operator to solve</p>
+</div></blockquote>
+<p><strong>time_start</strong> : <code class="xref py py-obj docutils literal"><span class="pre">str</span></code></p>
+<blockquote>
+<div><p>Start date of the call to <code class="docutils literal"><span class="pre">solve()</span></code></p>
+</div></blockquote>
+<p><strong>time_elapsed</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code></p>
+<blockquote>
+<div><p>Duration of the call to <code class="docutils literal"><span class="pre">solve()</span></code>, in seconds</p>
+</div></blockquote>
+<p><strong>time_end</strong> : <code class="xref py py-obj docutils literal"><span class="pre">str</span></code></p>
+<blockquote class="last">
+<div><p>End date of the call to <code class="docutils literal"><span class="pre">solve()</span></code></p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="tick.optim.solver.AGD.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>step: float = None</em>, <em>tol: float = 0.0</em>, <em>max_iter: int = 100</em>, <em>linesearch: bool = True</em>, <em>linesearch_step_increase: float = 2.0</em>, <em>linesearch_step_decrease: float = 0.5</em>, <em>verbose: bool = True</em>, <em>print_every: int = 10</em>, <em>record_every: int = 1</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/optim/solver/agd.html#AGD.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.optim.solver.AGD.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="tick.optim.solver.AGD.get_history">
+<code class="descname">get_history</code><span class="sig-paren">(</span><em>key=None</em><span class="sig-paren">)</span><a class="headerlink" href="#tick.optim.solver.AGD.get_history" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns history of the solver</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>key</strong> : <code class="xref py py-obj docutils literal"><span class="pre">str</span></code>, default=None</p>
+<blockquote>
+<div><ul class="simple">
+<li>If <code class="xref py py-obj docutils literal"><span class="pre">None</span></code> all history is returned as a <code class="xref py py-obj docutils literal"><span class="pre">dict</span></code></li>
+<li>If <code class="xref py py-obj docutils literal"><span class="pre">str</span></code>, name of the history element to retrieve</li>
+</ul>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> : <code class="xref py py-obj docutils literal"><span class="pre">list</span></code> or <code class="xref py py-obj docutils literal"><span class="pre">dict</span></code></p>
+<blockquote class="last">
+<div><ul class="simple">
+<li>If <code class="docutils literal"><span class="pre">key</span></code> is None or <code class="docutils literal"><span class="pre">key</span></code> is not in history then
+output is a dict containing history of all keys</li>
+<li>If <code class="docutils literal"><span class="pre">key</span></code> is the name of an element in the history,
+output is a <code class="xref py py-obj docutils literal"><span class="pre">list</span></code> containing the history of this element</li>
+</ul>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tick.optim.solver.AGD.objective">
+<code class="descname">objective</code><span class="sig-paren">(</span><em>coeffs</em>, <em>loss: float = None</em><span class="sig-paren">)</span><a class="headerlink" href="#tick.optim.solver.AGD.objective" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the objective minimized by the solver at <code class="docutils literal"><span class="pre">coeffs</span></code></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>coeffs</strong> : <code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code>, shape=(n_coeffs,)</p>
+<blockquote>
+<div><p>The objective is computed at this point</p>
+</div></blockquote>
+<p><strong>loss</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default=`None`</p>
+<blockquote>
+<div><p>Gives the value of the loss if already known (allows to
+avoid its computation in some cases)</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code></p>
+<blockquote class="last">
+<div><p>Value of the objective at given <code class="docutils literal"><span class="pre">coeffs</span></code></p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tick.optim.solver.AGD.set_model">
+<code class="descname">set_model</code><span class="sig-paren">(</span><em>model: tick.optim.model.base.model.Model</em><span class="sig-paren">)</span><a class="headerlink" href="#tick.optim.solver.AGD.set_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set model in the solver</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>model</strong> : <code class="xref py py-obj docutils literal"><span class="pre">Model</span></code></p>
+<blockquote>
+<div><p>Sets the model in the solver. The model gives the first
+order information about the model (loss, gradient, among
+other things)</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> : <code class="xref py py-obj docutils literal"><span class="pre">Solver</span></code></p>
+<blockquote class="last">
+<div><p>The same instance with given model</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tick.optim.solver.AGD.set_prox">
+<code class="descname">set_prox</code><span class="sig-paren">(</span><em>prox: tick.optim.prox.base.prox.Prox</em><span class="sig-paren">)</span><a class="headerlink" href="#tick.optim.solver.AGD.set_prox" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set proximal operator in the solver.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>prox</strong> : <code class="xref py py-obj docutils literal"><span class="pre">Prox</span></code></p>
+<blockquote>
+<div><p>The proximal operator of the penalization function</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> : <code class="xref py py-obj docutils literal"><span class="pre">Solver</span></code></p>
+<blockquote class="last">
+<div><p>The solver with given prox</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>In some solvers, <code class="docutils literal"><span class="pre">set_model</span></code> must be called before
+<code class="docutils literal"><span class="pre">set_prox</span></code>, otherwise and error might be raised.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tick.optim.solver.AGD.solve">
+<code class="descname">solve</code><span class="sig-paren">(</span><em>x0=None</em>, <em>step=None</em><span class="sig-paren">)</span><a class="headerlink" href="#tick.optim.solver.AGD.solve" title="Permalink to this definition">¶</a></dt>
+<dd><p>Launch the solver</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>x0</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.array</span></code>, shape=(n_coeffs,), default=`None`</p>
+<blockquote>
+<div><p>Starting point of the solver</p>
+</div></blockquote>
+<p><strong>step</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default=`None`</p>
+<blockquote>
+<div><p>Step-size or learning rate for the solver</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.array</span></code>, shape=(n_coeffs,)</p>
+<blockquote class="last">
+<div><p>Obtained minimizer for the problem</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<div class="section" id="examples-using-tick-optim-solver-agd">
+<h2>Examples using <code class="docutils literal"><span class="pre">tick.optim.solver.AGD</span></code><a class="headerlink" href="#examples-using-tick-optim-solver-agd" title="Permalink to this headline">¶</a></h2>
+<div class="thumbnailContainer" tooltip="This example illustrates the opimization of three linear models:     * Linear regression (`tick..."><div class="figure" id="id1">
+<a class="reference external image-reference" href="./../../auto_examples/./plot_glm_convergence.html"><img alt="../../_images/plot_glm_convergence1.png" src="../../_images/plot_glm_convergence1.png" /></a>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="../../auto_examples/plot_glm_convergence.html#example-plot-glm-convergence-py"><span class="std std-ref">Generalized linear models solver convergence</span></a></span></p>
+</div>
+</div><div class="thumbnailContainer" tooltip=""><div class="figure" id="id2">
+<a class="reference external image-reference" href="./../../auto_examples/optim/plot_optim_comparison.html"><img alt="../../_images/plot_optim_comparison.png" src="../../_images/plot_optim_comparison.png" /></a>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="../../auto_examples/optim/plot_optim_comparison.html#example-optim-plot-optim-comparison-py"><span class="std std-ref">plot_optim_comparison.py</span></a></span></p>
+</div>
+</div></div>
+</div>
+
+
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Poulsen.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

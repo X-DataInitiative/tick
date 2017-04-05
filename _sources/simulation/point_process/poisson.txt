@@ -1,9 +1,0 @@
-:orphan:
-
-.. _simu-poisson:
-
-Poisson Process
-===============
-
-.. autoclass:: mlpp.simulation.SimuPoissonProcess
-	:members:

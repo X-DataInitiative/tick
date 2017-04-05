@@ -1,0 +1,389 @@
+:orphan:
+
+
+.. raw:: html
+
+
+    <style type="text/css">
+    div#sidebarbutton {
+        /* hide the sidebar collapser, while ensuring vertical arrangement */
+        display: none;
+    }
+    </style>
+
+.. _examples-index:
+
+Examples
+========
+
+
+
+
+.. _examples:
+
+How to use tick in practise?
+
+
+
+
+.. raw:: html
+
+    <div class="thumbnailContainer" tooltip="Generates Cox Regression realization given a weight vector ">
+
+.. only:: html
+
+  .. figure:: ./images/thumb/plot_simulation_coxreg.png
+    :target: ./plot_simulation_coxreg.html
+
+    :ref:`example_plot_simulation_coxreg.py`
+
+
+.. raw:: html
+
+    </div>
+
+
+
+.. toctree::
+   :hidden:
+
+   ./plot_simulation_coxreg
+
+
+
+.. raw:: html
+
+    <div class="thumbnailContainer" tooltip="This code perform binary classification on adult dataset with logistic regression learner (`tic...">
+
+.. only:: html
+
+  .. figure:: ./images/thumb/plot_logistic_adult.png
+    :target: ./plot_logistic_adult.html
+
+    :ref:`example_plot_logistic_adult.py`
+
+
+.. raw:: html
+
+    </div>
+
+
+
+.. toctree::
+   :hidden:
+
+   ./plot_logistic_adult
+
+
+
+.. raw:: html
+
+    <div class="thumbnailContainer" tooltip="This example show how to simulate any inhomogeneous Poisson process. Its intensity is modeled t...">
+
+.. only:: html
+
+  .. figure:: ./images/thumb/plot_poisson_inhomogeneous.png
+    :target: ./plot_poisson_inhomogeneous.html
+
+    :ref:`example_plot_poisson_inhomogeneous.py`
+
+
+.. raw:: html
+
+    </div>
+
+
+
+.. toctree::
+   :hidden:
+
+   ./plot_poisson_inhomogeneous
+
+
+
+.. raw:: html
+
+    <div class="thumbnailContainer" tooltip="Hawkes ADM4 algorithm (`tick.inference.HawkesADM4`) enforce sparse and low rank adjacency matri...">
+
+.. only:: html
+
+  .. figure:: ./images/thumb/plot_hawkes_adm4.png
+    :target: ./plot_hawkes_adm4.html
+
+    :ref:`example_plot_hawkes_adm4.py`
+
+
+.. raw:: html
+
+    </div>
+
+
+
+.. toctree::
+   :hidden:
+
+   ./plot_hawkes_adm4
+
+
+
+.. raw:: html
+
+    <div class="thumbnailContainer" tooltip="Simulation of Hawkes processes with usage of custom kernels ">
+
+.. only:: html
+
+  .. figure:: ./images/thumb/plot_hawkes_time_func_simu.png
+    :target: ./plot_hawkes_time_func_simu.html
+
+    :ref:`example_plot_hawkes_time_func_simu.py`
+
+
+.. raw:: html
+
+    </div>
+
+
+
+.. toctree::
+   :hidden:
+
+   ./plot_hawkes_time_func_simu
+
+
+
+.. raw:: html
+
+    <div class="thumbnailContainer" tooltip="Plot examples of proximal operators available in `tick.optim.prox` ">
+
+.. only:: html
+
+  .. figure:: ./images/thumb/plot_prox_example.png
+    :target: ./plot_prox_example.html
+
+    :ref:`example_plot_prox_example.py`
+
+
+.. raw:: html
+
+    </div>
+
+
+
+.. toctree::
+   :hidden:
+
+   ./plot_prox_example
+
+
+
+.. raw:: html
+
+    <div class="thumbnailContainer" tooltip="Generates Linear, Logistic and Poisson regression realizations given a weight vector. ">
+
+.. only:: html
+
+  .. figure:: ./images/thumb/plot_simulation_linear_model.png
+    :target: ./plot_simulation_linear_model.html
+
+    :ref:`example_plot_simulation_linear_model.py`
+
+
+.. raw:: html
+
+    </div>
+
+
+
+.. toctree::
+   :hidden:
+
+   ./plot_simulation_linear_model
+
+
+
+.. raw:: html
+
+    <div class="thumbnailContainer" tooltip="This Hawkes EM (`tick.inference.HawkesEM`) algorithm assume that kernels are piecewise constant...">
+
+.. only:: html
+
+  .. figure:: ./images/thumb/plot_hawkes_em.png
+    :target: ./plot_hawkes_em.html
+
+    :ref:`example_plot_hawkes_em.py`
+
+
+.. raw:: html
+
+    </div>
+
+
+
+.. toctree::
+   :hidden:
+
+   ./plot_hawkes_em
+
+
+
+.. raw:: html
+
+    <div class="thumbnailContainer" tooltip="This Hawkes learner based on conditional laws (`tick.inference.HawkesConditionalLaw`) is able t...">
+
+.. only:: html
+
+  .. figure:: ./images/thumb/plot_hawkes_conditional_law.png
+    :target: ./plot_hawkes_conditional_law.html
+
+    :ref:`example_plot_hawkes_conditional_law.py`
+
+
+.. raw:: html
+
+    </div>
+
+
+
+.. toctree::
+   :hidden:
+
+   ./plot_hawkes_conditional_law
+
+
+
+.. raw:: html
+
+    <div class="thumbnailContainer" tooltip="This learner assumes Hawkes kernels are linear combinations of a given number of kernel basis.">
+
+.. only:: html
+
+  .. figure:: ./images/thumb/plot_hawkes_basis_kernels.png
+    :target: ./plot_hawkes_basis_kernels.html
+
+    :ref:`example_plot_hawkes_basis_kernels.py`
+
+
+.. raw:: html
+
+    </div>
+
+
+
+.. toctree::
+   :hidden:
+
+   ./plot_hawkes_basis_kernels
+
+
+
+.. raw:: html
+
+    <div class="thumbnailContainer" tooltip="This example illustrates the opimization of three linear models:     * Linear regression (`tick...">
+
+.. only:: html
+
+  .. figure:: ./images/thumb/plot_glm_convergence.png
+    :target: ./plot_glm_convergence.html
+
+    :ref:`example_plot_glm_convergence.py`
+
+
+.. raw:: html
+
+    </div>
+
+
+
+.. toctree::
+   :hidden:
+
+   ./plot_glm_convergence
+
+
+.. raw:: html
+
+    <div class="clearer"></div>
+    
+
+.. toctree::
+   :hidden:
+
+   inference/plot_hawkes_sum_exp_kernels
+
+
+
+.. toctree::
+   :hidden:
+
+   optim/plot_grad_coeff0
+
+
+
+.. toctree::
+   :hidden:
+
+   optim/plot_prox_multi
+
+
+
+.. toctree::
+   :hidden:
+
+   optim/plot_optim_comparison
+
+
+
+.. toctree::
+   :hidden:
+
+   optim/plot_prox_api
+
+
+
+.. toctree::
+   :hidden:
+
+   plot/plot_hawkes_matrix_exp_kernels
+
+
+
+.. toctree::
+   :hidden:
+
+   simulation/plot_poisson_constant_intensity
+
+
+
+.. toctree::
+   :hidden:
+
+   simulation/plot_simulation_weights
+
+
+
+.. toctree::
+   :hidden:
+
+   simulation/plot_hawkes_multidim_simu
+
+
+
+.. toctree::
+   :hidden:
+
+   simulation/plot_time_function
+
+
+
+.. toctree::
+   :hidden:
+
+   simulation/plot_hawkes_1d_simu
+
+
+
+.. toctree::
+   :hidden:
+
+   simulation/plot_hawkes_kernels
+

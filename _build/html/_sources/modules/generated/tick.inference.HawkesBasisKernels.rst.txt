@@ -1,0 +1,12 @@
+
+.. _HawkesBasisKernels:
+
+tick.inference.HawkesBasisKernels
+=================================
+
+.. currentmodule:: tick.inference
+
+.. autoclass:: HawkesBasisKernels
+
+.. include:: tick.inference.HawkesBasisKernels.examples
+    :allowmissing:

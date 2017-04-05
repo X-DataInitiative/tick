@@ -1,0 +1,12 @@
+
+.. _ModelPoisReg:
+
+tick.optim.model.ModelPoisReg
+=============================
+
+.. currentmodule:: tick.optim.model
+
+.. autoclass:: ModelPoisReg
+
+.. include:: tick.optim.model.ModelPoisReg.examples
+    :allowmissing:

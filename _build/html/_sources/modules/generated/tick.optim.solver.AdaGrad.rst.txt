@@ -1,0 +1,12 @@
+
+.. _AdaGrad:
+
+tick.optim.solver.AdaGrad
+=========================
+
+.. currentmodule:: tick.optim.solver
+
+.. autoclass:: AdaGrad
+
+.. include:: tick.optim.solver.AdaGrad.examples
+    :allowmissing:

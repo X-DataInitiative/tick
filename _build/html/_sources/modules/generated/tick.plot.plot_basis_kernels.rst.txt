@@ -1,0 +1,9 @@
+tick.plot.plot_basis_kernels
+============================
+
+.. currentmodule:: tick.plot
+
+.. autofunction:: plot_basis_kernels
+
+.. include:: tick.plot.plot_basis_kernels.examples
+    :allowmissing:

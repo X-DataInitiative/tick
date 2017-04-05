@@ -1,0 +1,9 @@
+tick.dataset.fetch_tick_dataset
+===============================
+
+.. currentmodule:: tick.dataset
+
+.. autofunction:: fetch_tick_dataset
+
+.. include:: tick.dataset.fetch_tick_dataset.examples
+    :allowmissing:

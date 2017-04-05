@@ -1,0 +1,12 @@
+
+.. _HawkesKernelPowerLaw:
+
+tick.simulation.HawkesKernelPowerLaw
+====================================
+
+.. currentmodule:: tick.simulation
+
+.. autoclass:: HawkesKernelPowerLaw
+
+.. include:: tick.simulation.HawkesKernelPowerLaw.examples
+    :allowmissing:

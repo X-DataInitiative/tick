@@ -1,0 +1,9 @@
+tick.simulation.features_normal_cov_toeplitz
+============================================
+
+.. currentmodule:: tick.simulation
+
+.. autofunction:: features_normal_cov_toeplitz
+
+.. include:: tick.simulation.features_normal_cov_toeplitz.examples
+    :allowmissing:

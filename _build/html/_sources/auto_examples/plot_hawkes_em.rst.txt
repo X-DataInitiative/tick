@@ -1,0 +1,57 @@
+
+
+.. _example_plot_hawkes_em.py:
+
+
+=========================
+Fit Hawkes random kernels
+=========================
+
+This Hawkes EM (`tick.inference.HawkesEM`) algorithm assume that kernels are
+piecewise constant. Hence it can fit basically any kernel form. However it
+doesn't scale very well.
+
+I has been originally described in this paper:
+
+Lewis, E., & Mohler, G. (2011).
+A nonparametric EM algorithm for multiscale Hawkes processes.
+`preprint, 1-16`_.
+
+.. _preprint, 1-16: http://paleo.sscnet.ucla.edu/Lewis-Molher-EM_Preprint.pdf
+
+
+
+.. image:: images/plot_hawkes_em_001.png
+    :align: center
+
+
+**Script output**::
+
+  Launching the solver HawkesEM...
+    n_iter  | rel_baseline | rel_kernel
+          0 |     5.50e-01 |   4.26e-01
+         10 |     4.10e-02 |   5.55e-02
+         20 |     5.12e-03 |   9.39e-03
+         30 |     1.02e-03 |   2.48e-03
+         40 |     5.59e-04 |   1.30e-03
+         47 |     4.03e-04 |   9.72e-04
+  Done solving using HawkesEM in 0.6815471649169922 seconds
+
+
+
+**Python source code:** :download:`plot_hawkes_em.py <plot_hawkes_em.py>`
+
+.. literalinclude:: plot_hawkes_em.py
+    :lines: 18-
+
+**Total running time of the example:**  0.93 seconds
+( 0 minutes  0.93 seconds)
+    
+Mentioned *tick* classes:
+   * `tick.base.TimeFunction`
+   * `tick.base.TimeFunction.InterConstRight`
+   * `tick.inference.HawkesEM`
+   * `tick.plot.plot_hawkes_kernels`
+   * `tick.simulation.HawkesKernelExp`
+   * `tick.simulation.HawkesKernelTimeFunc`
+   * `tick.simulation.SimuHawkes`

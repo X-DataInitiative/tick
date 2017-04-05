@@ -1,0 +1,9 @@
+tick.plot.plot_history
+======================
+
+.. currentmodule:: tick.plot
+
+.. autofunction:: plot_history
+
+.. include:: tick.plot.plot_history.examples
+    :allowmissing:

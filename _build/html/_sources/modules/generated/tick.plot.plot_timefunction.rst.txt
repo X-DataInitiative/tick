@@ -1,0 +1,9 @@
+tick.plot.plot_timefunction
+===========================
+
+.. currentmodule:: tick.plot
+
+.. autofunction:: plot_timefunction
+
+.. include:: tick.plot.plot_timefunction.examples
+    :allowmissing:

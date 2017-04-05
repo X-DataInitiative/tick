@@ -1,0 +1,12 @@
+
+.. _ModelCoxRegPartialLik:
+
+tick.optim.model.ModelCoxRegPartialLik
+======================================
+
+.. currentmodule:: tick.optim.model
+
+.. autoclass:: ModelCoxRegPartialLik
+
+.. include:: tick.optim.model.ModelCoxRegPartialLik.examples
+    :allowmissing:

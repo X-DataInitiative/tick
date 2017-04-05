@@ -1,0 +1,9 @@
+tick.plot.plot_hawkes_kernels
+=============================
+
+.. currentmodule:: tick.plot
+
+.. autofunction:: plot_hawkes_kernels
+
+.. include:: tick.plot.plot_hawkes_kernels.examples
+    :allowmissing:

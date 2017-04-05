@@ -1,0 +1,42 @@
+
+
+.. _example_plot_hawkes_conditional_law.py:
+
+
+============================
+Fit Hawkes power law kernels
+============================
+
+This Hawkes learner based on conditional laws
+(`tick.inference.HawkesConditionalLaw`) is able to fit Hawkes power law
+kernels commonly found in finance applications.
+
+It has been introduced in the following paper:
+
+Bacry, E., & Muzy, J. F. (2014).
+Second order statistics characterization of Hawkes processes and
+non-parametric estimation. `arXiv preprint arXiv:1401.0903`_.
+
+.. _arXiv preprint arXiv:1401.0903: https://arxiv.org/pdf/1401.0903.pdf
+
+
+
+.. image:: images/plot_hawkes_conditional_law_001.png
+    :align: center
+
+
+
+
+**Python source code:** :download:`plot_hawkes_conditional_law.py <plot_hawkes_conditional_law.py>`
+
+.. literalinclude:: plot_hawkes_conditional_law.py
+    :lines: 18-
+
+**Total running time of the example:**  5.45 seconds
+( 0 minutes  5.45 seconds)
+    
+Mentioned *tick* classes:
+   * `tick.inference.HawkesConditionalLaw`
+   * `tick.plot.plot_hawkes_kernels`
+   * `tick.simulation.HawkesKernelPowerLaw`
+   * `tick.simulation.SimuHawkes`

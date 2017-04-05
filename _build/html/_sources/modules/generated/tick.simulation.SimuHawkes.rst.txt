@@ -1,0 +1,12 @@
+
+.. _SimuHawkes:
+
+tick.simulation.SimuHawkes
+==========================
+
+.. currentmodule:: tick.simulation
+
+.. autoclass:: SimuHawkes
+
+.. include:: tick.simulation.SimuHawkes.examples
+    :allowmissing:

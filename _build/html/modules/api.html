@@ -1,0 +1,563 @@
+
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>API Reference &#8212; tick 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-3.3.4/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-3.3.4/css/bootstrap-theme.min.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body role="document">
+
+  <div id="navbar" class="None navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          tick</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.1</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="../auto_examples/index.html">Examples</a></li>
+                <li><a href="#">API</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Browse <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="inference.html"><code class="docutils literal"><span class="pre">tick.inference</span></code>: user-friendly inference tools</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="inference.html#generalized-linear-models">1. Generalized linear models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inference.html#hawkes">2. Hawkes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="optim.html"><code class="docutils literal"><span class="pre">tick.optim</span></code>: optimization toolbox</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="optim.html#contents">Contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="optim.html#a-first-example">A First example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="optim.html#tick-optim-model-model-classes">1. <code class="docutils literal"><span class="pre">tick.optim.model</span></code>: model classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="optim.html#tick-optim-prox-proximal-operators">2. <code class="docutils literal"><span class="pre">tick.optim.prox</span></code>: proximal operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="optim.html#tick-optim-solver-solvers">3. <code class="docutils literal"><span class="pre">tick.optim.solver</span></code>: solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="optim.html#what-s-under-the-hood">4. What&#8217;s under the hood?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="plot.html"><code class="docutils literal"><span class="pre">tick.plot</span></code>: plotting utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="plot.html#optimization">Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot.html#hawkes-estimation">Hawkes estimation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot.html#point-process-simulation">Point process simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot.html#others">Others</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code>: simulation toolbox</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="simulation.html#simulation-tools">1. Simulation tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="simulation.html#linear-model-simulation">2. Linear model simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="simulation.html#survival-analysis-simulation">3. Survival analysis simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="simulation.html#point-process-simulation">4. Point process simulation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="dataset.html"><code class="docutils literal"><span class="pre">tick.dataset</span></code>: real world datasets</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dataset.html#functions">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dataset.html#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="dev.html">Developer documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dev.html#main-highlights">Main highlights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev.html#base-class">Base class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev.html#how-to-add-a-new-model-solver-or-prox">How to add a new model, solver or prox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev.html#enable-python-pickling-of-c-objects">Enable Python-pickling of C++ objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev.html#tips-for-debugging-c-classes-in-tick">Tips for debugging C++ classes in tick</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container content-container">
+  
+  <div class="section" id="api-reference">
+<span id="api"></span><h1>API Reference<a class="headerlink" href="#api-reference" title="Permalink to this headline">¶</a></h1>
+<p>This is the full class and function references of tick. Please look at
+the modules documentation cited below for more examples and use cases,
+since direct class and function API is not enough for understanding their uses.</p>
+<div class="section" id="tick-inference-inference-classes">
+<span id="api-inference"></span><h2><a class="reference internal" href="#module-tick.inference" title="tick.inference"><code class="xref py py-mod docutils literal"><span class="pre">tick.inference</span></code></a>: Inference classes<a class="headerlink" href="#tick-inference-inference-classes" title="Permalink to this headline">¶</a></h2>
+<p>This module contains all classes giving inference tools, intended for end-users.</p>
+<p><strong>User guide:</strong> See the <a class="reference internal" href="inference.html#inference"><span class="std std-ref">tick.inference: user-friendly inference tools</span></a> section for further details.</p>
+<span class="target" id="module-tick.inference"></span><div class="section" id="generalized-linear-models">
+<h3>Generalized linear models<a class="headerlink" href="#generalized-linear-models" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.inference.LogisticRegression.html#tick.inference.LogisticRegression" title="tick.inference.LogisticRegression"><code class="xref py py-obj docutils literal"><span class="pre">inference.LogisticRegression</span></code></a>([...])</td>
+<td>Logistic regression learner, with many choices of penalization and solvers.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/tick.inference.CoxRegression.html#tick.inference.CoxRegression" title="tick.inference.CoxRegression"><code class="xref py py-obj docutils literal"><span class="pre">inference.CoxRegression</span></code></a>([penalty,&nbsp;C,&nbsp;...])</td>
+<td>Cox regression learner, using the partial Cox likelihood for proportional risks, with many choices of penalization.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="hawkes">
+<h3>Hawkes<a class="headerlink" href="#hawkes" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.inference.HawkesExpKern.html#tick.inference.HawkesExpKern" title="tick.inference.HawkesExpKern"><code class="xref py py-obj docutils literal"><span class="pre">inference.HawkesExpKern</span></code></a>(decays[,&nbsp;gofit,&nbsp;...])</td>
+<td>Hawkes process learner for exponential kernels with fixed and given decays, with many choices of penalization and solvers.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/tick.inference.HawkesSumExpKern.html#tick.inference.HawkesSumExpKern" title="tick.inference.HawkesSumExpKern"><code class="xref py py-obj docutils literal"><span class="pre">inference.HawkesSumExpKern</span></code></a>(decays[,&nbsp;...])</td>
+<td>Hawkes process learner for sum-exponential kernels with fixed and given decays, with many choices of penalization and solvers.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.inference.HawkesEM.html#tick.inference.HawkesEM" title="tick.inference.HawkesEM"><code class="xref py py-obj docutils literal"><span class="pre">inference.HawkesEM</span></code></a>([kernel_support,&nbsp;...])</td>
+<td>This class is used for performing non parametric estimation of multi-dimensional Hawkes processes based on expectation maximization algorithm.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/tick.inference.HawkesADM4.html#tick.inference.HawkesADM4" title="tick.inference.HawkesADM4"><code class="xref py py-obj docutils literal"><span class="pre">inference.HawkesADM4</span></code></a>(decay[,&nbsp;C,&nbsp;...])</td>
+<td>A class that implements parametric inference for Hawkes processes</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.inference.HawkesBasisKernels.html#tick.inference.HawkesBasisKernels" title="tick.inference.HawkesBasisKernels"><code class="xref py py-obj docutils literal"><span class="pre">inference.HawkesBasisKernels</span></code></a>(kernel_support)</td>
+<td>This class is used for performing non parametric estimation of multi-dimensional Hawkes processes based on expectation maximization algorithm and the hypothesis that kernels are linear combinations of some basis kernels.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/tick.inference.HawkesConditionalLaw.html#tick.inference.HawkesConditionalLaw" title="tick.inference.HawkesConditionalLaw"><code class="xref py py-obj docutils literal"><span class="pre">inference.HawkesConditionalLaw</span></code></a>([delta_lag,&nbsp;...])</td>
+<td>This class is used for performing non parametric estimation of multi-dimensional marked Hawkes processes based on conditional laws.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="tick-optim-model-models-classes">
+<span id="api-optim-model"></span><h2><a class="reference internal" href="#module-tick.optim.model" title="tick.optim.model"><code class="xref py py-mod docutils literal"><span class="pre">tick.optim.model</span></code></a>: Models classes<a class="headerlink" href="#tick-optim-model-models-classes" title="Permalink to this headline">¶</a></h2>
+<p>This module contains classes giving computational informations about the models available
+in tick.</p>
+<p><strong>User guide:</strong> See the <a class="reference internal" href="optim.html#optim-model"><span class="std std-ref">1. tick.optim.model: model classes</span></a> section for further details.</p>
+<span class="target" id="module-tick.optim.model"></span><div class="section" id="id1">
+<h3>Generalized Linear Models<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.optim.model.ModelLinReg.html#tick.optim.model.ModelLinReg" title="tick.optim.model.ModelLinReg"><code class="xref py py-obj docutils literal"><span class="pre">optim.model.ModelLinReg</span></code></a>(...)</td>
+<td>Linear regression model.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/tick.optim.model.ModelLinRegWithIntercepts.html#tick.optim.model.ModelLinRegWithIntercepts" title="tick.optim.model.ModelLinRegWithIntercepts"><code class="xref py py-obj docutils literal"><span class="pre">optim.model.ModelLinRegWithIntercepts</span></code></a>(...)</td>
+<td>Linear regression model with individual intercepts.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.optim.model.ModelLogReg.html#tick.optim.model.ModelLogReg" title="tick.optim.model.ModelLogReg"><code class="xref py py-obj docutils literal"><span class="pre">optim.model.ModelLogReg</span></code></a>(...)</td>
+<td>Logistic regression model.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/tick.optim.model.ModelPoisReg.html#tick.optim.model.ModelPoisReg" title="tick.optim.model.ModelPoisReg"><code class="xref py py-obj docutils literal"><span class="pre">optim.model.ModelPoisReg</span></code></a>(...)</td>
+<td>Poisson regression model with identity or exponential link.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.optim.model.ModelCoxRegPartialLik.html#tick.optim.model.ModelCoxRegPartialLik" title="tick.optim.model.ModelCoxRegPartialLik"><code class="xref py py-obj docutils literal"><span class="pre">optim.model.ModelCoxRegPartialLik</span></code></a>()</td>
+<td>Partial likelihood of the Cox regression model (proportional hazards).</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="id2">
+<h3>Hawkes<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.optim.model.ModelHawkesFixedExpKernLogLik.html#tick.optim.model.ModelHawkesFixedExpKernLogLik" title="tick.optim.model.ModelHawkesFixedExpKernLogLik"><code class="xref py py-obj docutils literal"><span class="pre">optim.model.ModelHawkesFixedExpKernLogLik</span></code></a>(...)</td>
+<td>Hawkes process model exponential kernels with fixed and given decay.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/tick.optim.model.ModelHawkesFixedExpKernLeastSq.html#tick.optim.model.ModelHawkesFixedExpKernLeastSq" title="tick.optim.model.ModelHawkesFixedExpKernLeastSq"><code class="xref py py-obj docutils literal"><span class="pre">optim.model.ModelHawkesFixedExpKernLeastSq</span></code></a>(...)</td>
+<td>Hawkes process model exponential kernels with fixed and given decays.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.optim.model.ModelHawkesFixedSumExpKernLeastSq.html#tick.optim.model.ModelHawkesFixedSumExpKernLeastSq" title="tick.optim.model.ModelHawkesFixedSumExpKernLeastSq"><code class="xref py py-obj docutils literal"><span class="pre">optim.model.ModelHawkesFixedSumExpKernLeastSq</span></code></a>(...)</td>
+<td>Hawkes process learner for sum-exponential kernels with fixed and given</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="tick-optim-prox-proximal-operators-classes">
+<h2><a class="reference internal" href="#module-tick.optim.prox" title="tick.optim.prox"><code class="xref py py-mod docutils literal"><span class="pre">tick.optim.prox</span></code></a>: Proximal operators classes<a class="headerlink" href="#tick-optim-prox-proximal-operators-classes" title="Permalink to this headline">¶</a></h2>
+<p>This module contains all the proximal operators available in tick.</p>
+<p><strong>User guide:</strong> See the <a class="reference internal" href="optim.html#optim-prox"><span class="std std-ref">2. tick.optim.prox: proximal operators</span></a> section for further details.</p>
+<span class="target" id="module-tick.optim.prox"></span><table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.optim.prox.ProxZero.html#tick.optim.prox.ProxZero" title="tick.optim.prox.ProxZero"><code class="xref py py-obj docutils literal"><span class="pre">optim.prox.ProxZero</span></code></a>(range:&nbsp;tuple&nbsp;=&nbsp;None)</td>
+<td>Proximal operator of the null function (identity)</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/tick.optim.prox.ProxL1.html#tick.optim.prox.ProxL1" title="tick.optim.prox.ProxL1"><code class="xref py py-obj docutils literal"><span class="pre">optim.prox.ProxL1</span></code></a>(strength:&nbsp;float,&nbsp;...)</td>
+<td>Proximal operator of the L1 norm (soft-thresholding)</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.optim.prox.ProxL1w.html#tick.optim.prox.ProxL1w" title="tick.optim.prox.ProxL1w"><code class="xref py py-obj docutils literal"><span class="pre">optim.prox.ProxL1w</span></code></a>(strength:&nbsp;float,&nbsp;...)</td>
+<td>Proximal operator of the weighted L1 norm (weighted</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/tick.optim.prox.ProxElasticNet.html#tick.optim.prox.ProxElasticNet" title="tick.optim.prox.ProxElasticNet"><code class="xref py py-obj docutils literal"><span class="pre">optim.prox.ProxElasticNet</span></code></a>(strength:&nbsp;float,&nbsp;...)</td>
+<td>Proximal operator of the ElasticNet regularization.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.optim.prox.ProxL2Sq.html#tick.optim.prox.ProxL2Sq" title="tick.optim.prox.ProxL2Sq"><code class="xref py py-obj docutils literal"><span class="pre">optim.prox.ProxL2Sq</span></code></a>(strength:&nbsp;float,&nbsp;...)</td>
+<td>Proximal operator of the squared L2 norm (ridge penalization)</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/tick.optim.prox.ProxMulti.html#tick.optim.prox.ProxMulti" title="tick.optim.prox.ProxMulti"><code class="xref py py-obj docutils literal"><span class="pre">optim.prox.ProxMulti</span></code></a>(proxs:&nbsp;tuple)</td>
+<td>Multiple proximal operator.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.optim.prox.ProxNuclear.html#tick.optim.prox.ProxNuclear" title="tick.optim.prox.ProxNuclear"><code class="xref py py-obj docutils literal"><span class="pre">optim.prox.ProxNuclear</span></code></a>(strength:&nbsp;float,&nbsp;...)</td>
+<td>Proximal operator of the nuclear norm, aka trace norm</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/tick.optim.prox.ProxPositive.html#tick.optim.prox.ProxPositive" title="tick.optim.prox.ProxPositive"><code class="xref py py-obj docutils literal"><span class="pre">optim.prox.ProxPositive</span></code></a>(range:&nbsp;tuple&nbsp;=&nbsp;None,&nbsp;...)</td>
+<td>Projection operator onto the half-space of vectors with</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.optim.prox.ProxSortedL1.html#tick.optim.prox.ProxSortedL1" title="tick.optim.prox.ProxSortedL1"><code class="xref py py-obj docutils literal"><span class="pre">optim.prox.ProxSortedL1</span></code></a>(strength:&nbsp;float,&nbsp;...)</td>
+<td>Proximal operator of sorted L1 penalization</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/tick.optim.prox.ProxTV.html#tick.optim.prox.ProxTV" title="tick.optim.prox.ProxTV"><code class="xref py py-obj docutils literal"><span class="pre">optim.prox.ProxTV</span></code></a>(strength:&nbsp;float,&nbsp;...)</td>
+<td>Proximal operator of the total-variation penalization</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="tick-optim-solver-solver-classes">
+<span id="api-optim-solver"></span><h2><a class="reference internal" href="#module-tick.optim.solver" title="tick.optim.solver"><code class="xref py py-mod docutils literal"><span class="pre">tick.optim.solver</span></code></a>: Solver classes<a class="headerlink" href="#tick-optim-solver-solver-classes" title="Permalink to this headline">¶</a></h2>
+<p>This module contains all the solvers available in tick.</p>
+<p><strong>User guide:</strong> See the <a class="reference internal" href="optim.html#optim-solver"><span class="std std-ref">3. tick.optim.solver: solvers</span></a> section for further details.</p>
+<span class="target" id="module-tick.optim.solver"></span><div class="section" id="batch-solvers">
+<h3>Batch solvers<a class="headerlink" href="#batch-solvers" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.optim.solver.GD.html#tick.optim.solver.GD" title="tick.optim.solver.GD"><code class="xref py py-obj docutils literal"><span class="pre">optim.solver.GD</span></code></a>(step:&nbsp;float&nbsp;=&nbsp;None,&nbsp;...)</td>
+<td>GD (proximal gradient descent) algorithm.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/tick.optim.solver.AGD.html#tick.optim.solver.AGD" title="tick.optim.solver.AGD"><code class="xref py py-obj docutils literal"><span class="pre">optim.solver.AGD</span></code></a>(step:&nbsp;float&nbsp;=&nbsp;None,&nbsp;...)</td>
+<td>AGD (accelerated proximal gradient descent) algorithm.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.optim.solver.BFGS.html#tick.optim.solver.BFGS" title="tick.optim.solver.BFGS"><code class="xref py py-obj docutils literal"><span class="pre">optim.solver.BFGS</span></code></a>(tol:&nbsp;float&nbsp;=&nbsp;0.0,&nbsp;...)</td>
+<td>BFGS (Broyden, Fletcher, Goldfarb, and Shanno ) algorithm.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/tick.optim.solver.GFB.html#tick.optim.solver.GFB" title="tick.optim.solver.GFB"><code class="xref py py-obj docutils literal"><span class="pre">optim.solver.GFB</span></code></a>(step:&nbsp;float&nbsp;=&nbsp;None,&nbsp;...[,&nbsp;...])</td>
+<td>Generalized Forward-Backward algorithm</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="stochastic-solvers">
+<h3>Stochastic solvers<a class="headerlink" href="#stochastic-solvers" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.optim.solver.SGD.html#tick.optim.solver.SGD" title="tick.optim.solver.SGD"><code class="xref py py-obj docutils literal"><span class="pre">optim.solver.SGD</span></code></a>(step:&nbsp;float&nbsp;=&nbsp;None,&nbsp;...)</td>
+<td>Stochastic Gradient Descent solver</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/tick.optim.solver.SVRG.html#tick.optim.solver.SVRG" title="tick.optim.solver.SVRG"><code class="xref py py-obj docutils literal"><span class="pre">optim.solver.SVRG</span></code></a>(step:&nbsp;float&nbsp;=&nbsp;None,&nbsp;...)</td>
+<td>Stochastic variance reduced gradient</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.optim.solver.SDCA.html#tick.optim.solver.SDCA" title="tick.optim.solver.SDCA"><code class="xref py py-obj docutils literal"><span class="pre">optim.solver.SDCA</span></code></a>(l_l2sq:&nbsp;float,&nbsp;...)</td>
+<td>Stochastic Dual Coordinate Ascent solver</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/tick.optim.solver.AdaGrad.html#tick.optim.solver.AdaGrad" title="tick.optim.solver.AdaGrad"><code class="xref py py-obj docutils literal"><span class="pre">optim.solver.AdaGrad</span></code></a>(step:&nbsp;float&nbsp;=&nbsp;0.01,&nbsp;...)</td>
+<td>Adaptive Gradient Descent solver</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="history">
+<h3>History<a class="headerlink" href="#history" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.optim.history.History.html#tick.optim.history.History" title="tick.optim.history.History"><code class="xref py py-obj docutils literal"><span class="pre">optim.history.History</span></code></a>()</td>
+<td>A class to manage the history along iterations of a solver</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="tick-plot-plotting-utilities">
+<span id="api-plot"></span><h2><code class="xref py py-mod docutils literal"><span class="pre">tick.plot</span></code>: Plotting utilities<a class="headerlink" href="#tick-plot-plotting-utilities" title="Permalink to this headline">¶</a></h2>
+<p>This module contains some utilities functions for plotting</p>
+<p><strong>User guide:</strong> See the <a class="reference internal" href="plot.html#plot"><span class="std std-ref">tick.plot: plotting utilities</span></a> section for further details.</p>
+<div class="section" id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.plot.plot_history.html#tick.plot.plot_history" title="tick.plot.plot_history"><code class="xref py py-obj docutils literal"><span class="pre">plot.plot_history</span></code></a>(solvers[,&nbsp;x,&nbsp;y,&nbsp;labels,&nbsp;...])</td>
+<td>Plot the history of convergence of learners or solvers.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/tick.plot.plot_hawkes_kernels.html#tick.plot.plot_hawkes_kernels" title="tick.plot.plot_hawkes_kernels"><code class="xref py py-obj docutils literal"><span class="pre">plot.plot_hawkes_kernels</span></code></a>(kernel_object[,&nbsp;...])</td>
+<td>Generic function to plot Hawkes kernels.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.plot.plot_hawkes_kernel_norms.html#tick.plot.plot_hawkes_kernel_norms" title="tick.plot.plot_hawkes_kernel_norms"><code class="xref py py-obj docutils literal"><span class="pre">plot.plot_hawkes_kernel_norms</span></code></a>(kernel_object)</td>
+<td>Generic function to plot Hawkes kernel norms.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/tick.plot.plot_basis_kernels.html#tick.plot.plot_basis_kernels" title="tick.plot.plot_basis_kernels"><code class="xref py py-obj docutils literal"><span class="pre">plot.plot_basis_kernels</span></code></a>(learner[,&nbsp;support,&nbsp;...])</td>
+<td>Function used to plot basis of kernels</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.plot.plot_timefunction.html#tick.plot.plot_timefunction" title="tick.plot.plot_timefunction"><code class="xref py py-obj docutils literal"><span class="pre">plot.plot_timefunction</span></code></a>(time_function[,&nbsp;...])</td>
+<td>Quick plot of a <a class="reference internal" href="generated/tick.base.TimeFunction.html#tick.base.TimeFunction" title="tick.base.TimeFunction"><code class="xref py py-obj docutils literal"><span class="pre">tick.base.TimeFunction</span></code></a></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/tick.plot.plot_point_process.html#tick.plot.plot_point_process" title="tick.plot.plot_point_process"><code class="xref py py-obj docutils literal"><span class="pre">plot.plot_point_process</span></code></a>(point_process[,&nbsp;...])</td>
+<td>Plot point process realization</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.plot.stem.html#tick.plot.stem" title="tick.plot.stem"><code class="xref py py-obj docutils literal"><span class="pre">plot.stem</span></code></a>(y:&nbsp;numpy.ndarray[,&nbsp;show,&nbsp;title,&nbsp;...])</td>
+<td>Stem plot using bokeh</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/tick.plot.stems.html#tick.plot.stems" title="tick.plot.stems"><code class="xref py py-obj docutils literal"><span class="pre">plot.stems</span></code></a>(ys:&nbsp;list,&nbsp;titles:&nbsp;list&nbsp;=&nbsp;None[,&nbsp;...])</td>
+<td>Several stem plots with synchronized axes</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="tick-preprocessing-preprocessing-utilities">
+<span id="api-preprocessing"></span><h2><code class="xref py py-mod docutils literal"><span class="pre">tick.preprocessing</span></code>: Preprocessing utilities<a class="headerlink" href="#tick-preprocessing-preprocessing-utilities" title="Permalink to this headline">¶</a></h2>
+<p>This module contains some utilities functions for preprocessing of data.</p>
+<p><strong>User guide:</strong> See the <a class="reference internal" href="preprocessing.html#preprocessing"><span class="std std-ref">tick.preprocessing: preprocessing utilities</span></a> section for further details.</p>
+<div class="section" id="classes">
+<h3>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.preprocessing.FeaturesBinarizer.html#tick.preprocessing.FeaturesBinarizer" title="tick.preprocessing.FeaturesBinarizer"><code class="xref py py-obj docutils literal"><span class="pre">preprocessing.FeaturesBinarizer</span></code></a>([method,&nbsp;...])</td>
+<td>Transforms continuous data into bucketed binary data.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="tick-simulation-simulation-classes-and-functions">
+<span id="api-simulation"></span><h2><code class="xref py py-mod docutils literal"><span class="pre">tick.simulation</span></code>: Simulation classes and functions<a class="headerlink" href="#tick-simulation-simulation-classes-and-functions" title="Permalink to this headline">¶</a></h2>
+<p>This module contains all simulation tools available in tick.</p>
+<p><strong>User guide:</strong> See the <a class="reference internal" href="simulation.html#simulation"><span class="std std-ref">tick.simulation: simulation toolbox</span></a> section for further details.</p>
+<div class="section" id="id3">
+<h3>Generalized linear models<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.SimuLinReg.html#tick.simulation.SimuLinReg" title="tick.simulation.SimuLinReg"><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuLinReg</span></code></a>(...)</td>
+<td>Simulation of a Linear regression model</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/tick.simulation.SimuLogReg.html#tick.simulation.SimuLogReg" title="tick.simulation.SimuLogReg"><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuLogReg</span></code></a>(...)</td>
+<td>Simulation of a Logistic regression model</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.SimuPoisReg.html#tick.simulation.SimuPoisReg" title="tick.simulation.SimuPoisReg"><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuPoisReg</span></code></a>(...)</td>
+<td>Simulation of a Poisson regression model, with identity or exponential link.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/tick.simulation.SimuCoxReg.html#tick.simulation.SimuCoxReg" title="tick.simulation.SimuCoxReg"><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuCoxReg</span></code></a>(coeffs:&nbsp;numpy.ndarray,&nbsp;...)</td>
+<td>Simulation of a Cox regression for proportional hazards</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="point-processes">
+<h3>Point processes<a class="headerlink" href="#point-processes" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.SimuPoissonProcess.html#tick.simulation.SimuPoissonProcess" title="tick.simulation.SimuPoissonProcess"><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuPoissonProcess</span></code></a>(intensities[,&nbsp;...])</td>
+<td>Homogeneous Poisson process simulation</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/tick.simulation.SimuInhomogeneousPoisson.html#tick.simulation.SimuInhomogeneousPoisson" title="tick.simulation.SimuInhomogeneousPoisson"><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuInhomogeneousPoisson</span></code></a>(...[,&nbsp;...])</td>
+<td>Inhomogeneous Poisson process simulation</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.SimuHawkes.html#tick.simulation.SimuHawkes" title="tick.simulation.SimuHawkes"><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuHawkes</span></code></a>([kernels,&nbsp;baseline,&nbsp;...])</td>
+<td>Hawkes process simulation</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/tick.simulation.SimuHawkesExpKernels.html#tick.simulation.SimuHawkesExpKernels" title="tick.simulation.SimuHawkesExpKernels"><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuHawkesExpKernels</span></code></a>(adjacency,&nbsp;...)</td>
+<td>Hawkes process with exponential kernels simulation</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.SimuHawkesSumExpKernels.html#tick.simulation.SimuHawkesSumExpKernels" title="tick.simulation.SimuHawkesSumExpKernels"><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuHawkesSumExpKernels</span></code></a>(...[,&nbsp;...])</td>
+<td>Hawkes process with sum-exponential kernels simulation</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/tick.simulation.SimuHawkesMulti.html#tick.simulation.SimuHawkesMulti" title="tick.simulation.SimuHawkesMulti"><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuHawkesMulti</span></code></a>(hawkes_simu,&nbsp;...)</td>
+<td>Parallel simulations of a single Hawkes simulation</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="hawkes-kernels">
+<h3>Hawkes kernels<a class="headerlink" href="#hawkes-kernels" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.HawkesKernelExp.html#tick.simulation.HawkesKernelExp" title="tick.simulation.HawkesKernelExp"><code class="xref py py-obj docutils literal"><span class="pre">simulation.HawkesKernelExp</span></code></a>(intensity,&nbsp;decay)</td>
+<td>Hawkes kernel with exponential decay</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/tick.simulation.HawkesKernelSumExp.html#tick.simulation.HawkesKernelSumExp" title="tick.simulation.HawkesKernelSumExp"><code class="xref py py-obj docutils literal"><span class="pre">simulation.HawkesKernelSumExp</span></code></a>(intensities,&nbsp;...)</td>
+<td>Hawkes kernel with sum exponential decays</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.HawkesKernelPowerLaw.html#tick.simulation.HawkesKernelPowerLaw" title="tick.simulation.HawkesKernelPowerLaw"><code class="xref py py-obj docutils literal"><span class="pre">simulation.HawkesKernelPowerLaw</span></code></a>(multiplier,&nbsp;...)</td>
+<td>Hawkes kernel for power law</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/tick.simulation.HawkesKernelTimeFunc.html#tick.simulation.HawkesKernelTimeFunc" title="tick.simulation.HawkesKernelTimeFunc"><code class="xref py py-obj docutils literal"><span class="pre">simulation.HawkesKernelTimeFunc</span></code></a>([...])</td>
+<td>Hawkes kernel defined by an arbitrary time function.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.base.TimeFunction.html#tick.base.TimeFunction" title="tick.base.TimeFunction"><code class="xref py py-obj docutils literal"><span class="pre">base.TimeFunction</span></code></a>(values,&nbsp;...)</td>
+<td>A function depending on time.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="features-generators">
+<h3>Features generators<a class="headerlink" href="#features-generators" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.features_normal_cov_uniform.html#tick.simulation.features_normal_cov_uniform" title="tick.simulation.features_normal_cov_uniform"><code class="xref py py-obj docutils literal"><span class="pre">simulation.features_normal_cov_uniform</span></code></a>(...)</td>
+<td>Normal features generator with uniform covariance</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/tick.simulation.features_normal_cov_toeplitz.html#tick.simulation.features_normal_cov_toeplitz" title="tick.simulation.features_normal_cov_toeplitz"><code class="xref py py-obj docutils literal"><span class="pre">simulation.features_normal_cov_toeplitz</span></code></a>(...)</td>
+<td>Normal features generator with toeplitz covariance</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.weights_sparse_exp.html#tick.simulation.weights_sparse_exp" title="tick.simulation.weights_sparse_exp"><code class="xref py py-obj docutils literal"><span class="pre">simulation.weights_sparse_exp</span></code></a>(...)</td>
+<td>Sparse and exponential model weights generator</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/tick.simulation.weights_sparse_gauss.html#tick.simulation.weights_sparse_gauss" title="tick.simulation.weights_sparse_gauss"><code class="xref py py-obj docutils literal"><span class="pre">simulation.weights_sparse_gauss</span></code></a>(...)</td>
+<td>Sparse and gaussian model weights generator</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="tick-dataset-real-world-dataset">
+<span id="api-datasets"></span><h2><code class="xref py py-mod docutils literal"><span class="pre">tick.dataset</span></code>: Real world dataset<a class="headerlink" href="#tick-dataset-real-world-dataset" title="Permalink to this headline">¶</a></h2>
+<p><strong>User guide:</strong> See the <a class="reference internal" href="dataset.html#dataset"><span class="std std-ref">tick.dataset: real world datasets</span></a> section for further details.</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.dataset.fetch_tick_dataset.html#tick.dataset.fetch_tick_dataset" title="tick.dataset.fetch_tick_dataset"><code class="xref py py-obj docutils literal"><span class="pre">dataset.fetch_tick_dataset</span></code></a>(dataset_path[,&nbsp;...])</td>
+<td>Fetch dataset from tick_datasets github repository.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/tick.dataset.fetch_hawkes_bund_data.html#tick.dataset.fetch_hawkes_bund_data" title="tick.dataset.fetch_hawkes_bund_data"><code class="xref py py-obj docutils literal"><span class="pre">dataset.fetch_hawkes_bund_data</span></code></a>()</td>
+<td>Load Hawkes formatted bund data from</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Poulsen.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

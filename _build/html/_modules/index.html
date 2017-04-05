@@ -1,0 +1,241 @@
+
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Overview: module code &#8212; tick 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-3.3.4/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-3.3.4/css/bootstrap-theme.min.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body role="document">
+
+  <div id="navbar" class="None navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          tick</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.1</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="../auto_examples/index.html">Examples</a></li>
+                <li><a href="../modules/api.html">API</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Browse <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="../modules/inference.html"><code class="docutils literal"><span class="pre">tick.inference</span></code>: user-friendly inference tools</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/inference.html#generalized-linear-models">1. Generalized linear models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/inference.html#hawkes">2. Hawkes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/optim.html"><code class="docutils literal"><span class="pre">tick.optim</span></code>: optimization toolbox</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/optim.html#contents">Contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/optim.html#a-first-example">A First example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/optim.html#tick-optim-model-model-classes">1. <code class="docutils literal"><span class="pre">tick.optim.model</span></code>: model classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/optim.html#tick-optim-prox-proximal-operators">2. <code class="docutils literal"><span class="pre">tick.optim.prox</span></code>: proximal operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/optim.html#tick-optim-solver-solvers">3. <code class="docutils literal"><span class="pre">tick.optim.solver</span></code>: solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/optim.html#what-s-under-the-hood">4. What&#8217;s under the hood?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/plot.html"><code class="docutils literal"><span class="pre">tick.plot</span></code>: plotting utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/plot.html#optimization">Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/plot.html#hawkes-estimation">Hawkes estimation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/plot.html#point-process-simulation">Point process simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/plot.html#others">Others</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code>: simulation toolbox</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/simulation.html#simulation-tools">1. Simulation tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/simulation.html#linear-model-simulation">2. Linear model simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/simulation.html#survival-analysis-simulation">3. Survival analysis simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/simulation.html#point-process-simulation">4. Point process simulation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/dataset.html"><code class="docutils literal"><span class="pre">tick.dataset</span></code>: real world datasets</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/dataset.html#functions">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/dataset.html#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/dev.html">Developer documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/dev.html#main-highlights">Main highlights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/dev.html#base-class">Base class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/dev.html#how-to-add-a-new-model-solver-or-prox">How to add a new model, solver or prox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/dev.html#enable-python-pickling-of-c-objects">Enable Python-pickling of C++ objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/dev.html#tips-for-debugging-c-classes-in-tick">Tips for debugging C++ classes in tick</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container content-container">
+  
+  <h1>All modules for which code is available</h1>
+<ul><li><a href="sklearn/base.html">sklearn.base</a></li>
+<li><a href="tick/base/decorators.html">tick.base.decorators</a></li>
+<li><a href="tick/base/timefunc.html">tick.base.timefunc</a></li>
+<li><a href="tick/dataset/download_helper.html">tick.dataset.download_helper</a></li>
+<li><a href="tick/dataset/fetch_hawkes_data.html">tick.dataset.fetch_hawkes_data</a></li>
+<li><a href="tick/inference/base/learner_glm.html">tick.inference.base.learner_glm</a></li>
+<li><a href="tick/inference/base/learner_hawkes_param.html">tick.inference.base.learner_hawkes_param</a></li>
+<li><a href="tick/inference/cox_regression.html">tick.inference.cox_regression</a></li>
+<li><a href="tick/inference/hawkes_adm4.html">tick.inference.hawkes_adm4</a></li>
+<li><a href="tick/inference/hawkes_basis_kernels.html">tick.inference.hawkes_basis_kernels</a></li>
+<li><a href="tick/inference/hawkes_conditional_law.html">tick.inference.hawkes_conditional_law</a></li>
+<li><a href="tick/inference/hawkes_em.html">tick.inference.hawkes_em</a></li>
+<li><a href="tick/inference/hawkes_expkern_fixeddecay.html">tick.inference.hawkes_expkern_fixeddecay</a></li>
+<li><a href="tick/inference/hawkes_sumexpkern_fixeddecay.html">tick.inference.hawkes_sumexpkern_fixeddecay</a></li>
+<li><a href="tick/inference/logistic_regression.html">tick.inference.logistic_regression</a></li>
+<li><a href="tick/optim/history/history.html">tick.optim.history.history</a></li>
+<li><a href="tick/optim/model/base/model.html">tick.optim.model.base.model</a></li>
+<li><a href="tick/optim/model/base/model_first_order.html">tick.optim.model.base.model_first_order</a></li>
+<li><a href="tick/optim/model/base/model_hawkes.html">tick.optim.model.base.model_hawkes</a></li>
+<li><a href="tick/optim/model/base/model_lipschitz.html">tick.optim.model.base.model_lipschitz</a></li>
+<li><a href="tick/optim/model/base/model_second_order.html">tick.optim.model.base.model_second_order</a></li>
+<li><a href="tick/optim/model/coxreg_partial_lik.html">tick.optim.model.coxreg_partial_lik</a></li>
+<li><a href="tick/optim/model/hawkes_fixed_expkern_leastsq.html">tick.optim.model.hawkes_fixed_expkern_leastsq</a></li>
+<li><a href="tick/optim/model/hawkes_fixed_expkern_loglik.html">tick.optim.model.hawkes_fixed_expkern_loglik</a></li>
+<li><a href="tick/optim/model/hawkes_fixed_sumexpkern_leastsq.html">tick.optim.model.hawkes_fixed_sumexpkern_leastsq</a></li>
+<li><a href="tick/optim/model/linreg.html">tick.optim.model.linreg</a></li>
+<li><a href="tick/optim/model/linreg_with_intercepts.html">tick.optim.model.linreg_with_intercepts</a></li>
+<li><a href="tick/optim/model/logreg.html">tick.optim.model.logreg</a></li>
+<li><a href="tick/optim/model/poisreg.html">tick.optim.model.poisreg</a></li>
+<li><a href="tick/optim/prox/base/prox.html">tick.optim.prox.base.prox</a></li>
+<li><a href="tick/optim/prox/prox_elasticnet.html">tick.optim.prox.prox_elasticnet</a></li>
+<li><a href="tick/optim/prox/prox_l1.html">tick.optim.prox.prox_l1</a></li>
+<li><a href="tick/optim/prox/prox_l1w.html">tick.optim.prox.prox_l1w</a></li>
+<li><a href="tick/optim/prox/prox_l2sq.html">tick.optim.prox.prox_l2sq</a></li>
+<li><a href="tick/optim/prox/prox_multi.html">tick.optim.prox.prox_multi</a></li>
+<li><a href="tick/optim/prox/prox_nuclear.html">tick.optim.prox.prox_nuclear</a></li>
+<li><a href="tick/optim/prox/prox_positive.html">tick.optim.prox.prox_positive</a></li>
+<li><a href="tick/optim/prox/prox_sortedl1.html">tick.optim.prox.prox_sortedl1</a></li>
+<li><a href="tick/optim/prox/prox_tv.html">tick.optim.prox.prox_tv</a></li>
+<li><a href="tick/optim/prox/prox_zero.html">tick.optim.prox.prox_zero</a></li>
+<li><a href="tick/optim/solver/adagrad.html">tick.optim.solver.adagrad</a></li>
+<li><a href="tick/optim/solver/agd.html">tick.optim.solver.agd</a></li>
+<li><a href="tick/optim/solver/base/first_order.html">tick.optim.solver.base.first_order</a></li>
+<li><a href="tick/optim/solver/base/first_order_sto.html">tick.optim.solver.base.first_order_sto</a></li>
+<li><a href="tick/optim/solver/base/solver.html">tick.optim.solver.base.solver</a></li>
+<li><a href="tick/optim/solver/bfgs.html">tick.optim.solver.bfgs</a></li>
+<li><a href="tick/optim/solver/gd.html">tick.optim.solver.gd</a></li>
+<li><a href="tick/optim/solver/gfb.html">tick.optim.solver.gfb</a></li>
+<li><a href="tick/optim/solver/sdca.html">tick.optim.solver.sdca</a></li>
+<li><a href="tick/optim/solver/sgd.html">tick.optim.solver.sgd</a></li>
+<li><a href="tick/optim/solver/svrg.html">tick.optim.solver.svrg</a></li>
+<li><a href="tick/plot/plot_hawkes.html">tick.plot.plot_hawkes</a></li>
+<li><a href="tick/plot/plot_history.html">tick.plot.plot_history</a></li>
+<li><a href="tick/plot/plot_point_process.html">tick.plot.plot_point_process</a></li>
+<li><a href="tick/plot/plot_stem.html">tick.plot.plot_stem</a></li>
+<li><a href="tick/plot/plot_timefunction.html">tick.plot.plot_timefunction</a></li>
+<li><a href="tick/preprocessing/features_binarizer.html">tick.preprocessing.features_binarizer</a></li>
+<li><a href="tick/simulation/base/features.html">tick.simulation.base.features</a></li>
+<li><a href="tick/simulation/base/simu.html">tick.simulation.base.simu</a></li>
+<li><a href="tick/simulation/base/simu_point_process.html">tick.simulation.base.simu_point_process</a></li>
+<li><a href="tick/simulation/base/weights.html">tick.simulation.base.weights</a></li>
+<li><a href="tick/simulation/coxreg.html">tick.simulation.coxreg</a></li>
+<li><a href="tick/simulation/hawkes.html">tick.simulation.hawkes</a></li>
+<li><a href="tick/simulation/hawkes_exp_kernels.html">tick.simulation.hawkes_exp_kernels</a></li>
+<li><a href="tick/simulation/hawkes_kernels/hawkes_kernel.html">tick.simulation.hawkes_kernels.hawkes_kernel</a></li>
+<li><a href="tick/simulation/hawkes_kernels/hawkes_kernel_0.html">tick.simulation.hawkes_kernels.hawkes_kernel_0</a></li>
+<li><a href="tick/simulation/hawkes_kernels/hawkes_kernel_exp.html">tick.simulation.hawkes_kernels.hawkes_kernel_exp</a></li>
+<li><a href="tick/simulation/hawkes_kernels/hawkes_kernel_power_law.html">tick.simulation.hawkes_kernels.hawkes_kernel_power_law</a></li>
+<li><a href="tick/simulation/hawkes_kernels/hawkes_kernel_sum_exp.html">tick.simulation.hawkes_kernels.hawkes_kernel_sum_exp</a></li>
+<li><a href="tick/simulation/hawkes_kernels/hawkes_kernel_time_func.html">tick.simulation.hawkes_kernels.hawkes_kernel_time_func</a></li>
+<li><a href="tick/simulation/hawkes_multi.html">tick.simulation.hawkes_multi</a></li>
+<li><a href="tick/simulation/hawkes_sumexp_kernels.html">tick.simulation.hawkes_sumexp_kernels</a></li>
+<li><a href="tick/simulation/inhomogeneous_poisson.html">tick.simulation.inhomogeneous_poisson</a></li>
+<li><a href="tick/simulation/linreg.html">tick.simulation.linreg</a></li>
+<li><a href="tick/simulation/logreg.html">tick.simulation.logreg</a></li>
+<li><a href="tick/simulation/poisreg.html">tick.simulation.poisreg</a></li>
+<li><a href="tick/simulation/poisson_process.html">tick.simulation.poisson_process</a></li>
+</ul>
+
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Poulsen.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

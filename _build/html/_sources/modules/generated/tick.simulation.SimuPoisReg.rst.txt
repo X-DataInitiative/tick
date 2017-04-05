@@ -1,0 +1,12 @@
+
+.. _SimuPoisReg:
+
+tick.simulation.SimuPoisReg
+===========================
+
+.. currentmodule:: tick.simulation
+
+.. autoclass:: SimuPoisReg
+
+.. include:: tick.simulation.SimuPoisReg.examples
+    :allowmissing:

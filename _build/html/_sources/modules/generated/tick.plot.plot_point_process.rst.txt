@@ -1,0 +1,9 @@
+tick.plot.plot_point_process
+============================
+
+.. currentmodule:: tick.plot
+
+.. autofunction:: plot_point_process
+
+.. include:: tick.plot.plot_point_process.examples
+    :allowmissing:

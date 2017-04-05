@@ -1,0 +1,12 @@
+
+.. _TimeFunction:
+
+tick.base.TimeFunction
+======================
+
+.. currentmodule:: tick.base
+
+.. autoclass:: TimeFunction
+
+.. include:: tick.base.TimeFunction.examples
+    :allowmissing:

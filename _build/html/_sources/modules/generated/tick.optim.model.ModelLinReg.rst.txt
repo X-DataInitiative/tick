@@ -1,0 +1,12 @@
+
+.. _ModelLinReg:
+
+tick.optim.model.ModelLinReg
+============================
+
+.. currentmodule:: tick.optim.model
+
+.. autoclass:: ModelLinReg
+
+.. include:: tick.optim.model.ModelLinReg.examples
+    :allowmissing:

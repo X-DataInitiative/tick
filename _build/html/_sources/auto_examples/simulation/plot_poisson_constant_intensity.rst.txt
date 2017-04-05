@@ -1,0 +1,32 @@
+
+
+.. _example_simulation_plot_poisson_constant_intensity.py:
+
+plot_poisson_constant_intensity.py
+==================================
+
+
+
+.. image:: images/plot_poisson_constant_intensity_001.png
+    :align: center
+
+
+**Script output**::
+
+  ------------------------------------------------
+  Launching simulation using SimuPoissonProcess...
+  Done simulating using SimuPoissonProcess in 8.58e-05 seconds.
+
+
+
+**Python source code:** :download:`plot_poisson_constant_intensity.py <plot_poisson_constant_intensity.py>`
+
+.. literalinclude:: plot_poisson_constant_intensity.py
+    :lines: 2-
+
+**Total running time of the example:**  0.09 seconds
+( 0 minutes  0.09 seconds)
+    
+Mentioned *tick* classes:
+   * `tick.plot.plot_point_process`
+   * `tick.simulation.SimuPoissonProcess`

@@ -1,0 +1,12 @@
+
+.. _HawkesADM4:
+
+tick.inference.HawkesADM4
+=========================
+
+.. currentmodule:: tick.inference
+
+.. autoclass:: HawkesADM4
+
+.. include:: tick.inference.HawkesADM4.examples
+    :allowmissing:

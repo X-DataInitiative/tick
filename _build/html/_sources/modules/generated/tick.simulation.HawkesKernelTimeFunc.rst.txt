@@ -1,0 +1,12 @@
+
+.. _HawkesKernelTimeFunc:
+
+tick.simulation.HawkesKernelTimeFunc
+====================================
+
+.. currentmodule:: tick.simulation
+
+.. autoclass:: HawkesKernelTimeFunc
+
+.. include:: tick.simulation.HawkesKernelTimeFunc.examples
+    :allowmissing:

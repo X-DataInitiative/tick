@@ -1,0 +1,9 @@
+tick.plot.plot_hawkes_kernel_norms
+==================================
+
+.. currentmodule:: tick.plot
+
+.. autofunction:: plot_hawkes_kernel_norms
+
+.. include:: tick.plot.plot_hawkes_kernel_norms.examples
+    :allowmissing:

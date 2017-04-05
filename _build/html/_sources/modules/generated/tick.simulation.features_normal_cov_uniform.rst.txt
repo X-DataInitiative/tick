@@ -1,0 +1,9 @@
+tick.simulation.features_normal_cov_uniform
+===========================================
+
+.. currentmodule:: tick.simulation
+
+.. autofunction:: features_normal_cov_uniform
+
+.. include:: tick.simulation.features_normal_cov_uniform.examples
+    :allowmissing:

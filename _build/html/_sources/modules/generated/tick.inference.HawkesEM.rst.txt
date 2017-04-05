@@ -1,0 +1,12 @@
+
+.. _HawkesEM:
+
+tick.inference.HawkesEM
+=======================
+
+.. currentmodule:: tick.inference
+
+.. autoclass:: HawkesEM
+
+.. include:: tick.inference.HawkesEM.examples
+    :allowmissing:

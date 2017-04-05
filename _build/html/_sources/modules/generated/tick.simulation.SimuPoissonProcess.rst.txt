@@ -1,0 +1,12 @@
+
+.. _SimuPoissonProcess:
+
+tick.simulation.SimuPoissonProcess
+==================================
+
+.. currentmodule:: tick.simulation
+
+.. autoclass:: SimuPoissonProcess
+
+.. include:: tick.simulation.SimuPoissonProcess.examples
+    :allowmissing:

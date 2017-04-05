@@ -1,0 +1,423 @@
+
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>tick.inference.HawkesEM &#8212; tick 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/bootstrap-3.3.4/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/bootstrap-3.3.4/css/bootstrap-theme.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../_static/bootstrap-sphinx.js"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="tick.inference.HawkesBasisKernels" href="tick.inference.HawkesBasisKernels.html" />
+    <link rel="prev" title="tick.inference.HawkesADM4" href="tick.inference.HawkesADM4.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body role="document">
+
+  <div id="navbar" class="None navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../index.html">
+          tick</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.1</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../../index.html">Home</a></li>
+                <li><a href="../../auto_examples/index.html">Examples</a></li>
+                <li><a href="../api.html">API</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../index.html">Browse <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../inference.html"><code class="docutils literal"><span class="pre">tick.inference</span></code>: user-friendly inference tools</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../inference.html#generalized-linear-models">1. Generalized linear models</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../inference.html#hawkes">2. Hawkes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../optim.html"><code class="docutils literal"><span class="pre">tick.optim</span></code>: optimization toolbox</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../optim.html#contents">Contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../optim.html#a-first-example">A First example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../optim.html#tick-optim-model-model-classes">1. <code class="docutils literal"><span class="pre">tick.optim.model</span></code>: model classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../optim.html#tick-optim-prox-proximal-operators">2. <code class="docutils literal"><span class="pre">tick.optim.prox</span></code>: proximal operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../optim.html#tick-optim-solver-solvers">3. <code class="docutils literal"><span class="pre">tick.optim.solver</span></code>: solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../optim.html#what-s-under-the-hood">4. What&#8217;s under the hood?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../plot.html"><code class="docutils literal"><span class="pre">tick.plot</span></code>: plotting utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../plot.html#optimization">Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plot.html#hawkes-estimation">Hawkes estimation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plot.html#point-process-simulation">Point process simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plot.html#others">Others</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code>: simulation toolbox</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../simulation.html#simulation-tools">1. Simulation tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../simulation.html#linear-model-simulation">2. Linear model simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../simulation.html#survival-analysis-simulation">3. Survival analysis simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../simulation.html#point-process-simulation">4. Point process simulation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../dataset.html"><code class="docutils literal"><span class="pre">tick.dataset</span></code>: real world datasets</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../dataset.html#functions">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dataset.html#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../dev.html">Developer documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../dev.html#main-highlights">Main highlights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dev.html#base-class">Base class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dev.html#how-to-add-a-new-model-solver-or-prox">How to add a new model, solver or prox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dev.html#enable-python-pickling-of-c-objects">Enable Python-pickling of C++ objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dev.html#tips-for-debugging-c-classes-in-tick">Tips for debugging C++ classes in tick</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container content-container">
+  
+  <div class="section" id="tick-inference-hawkesem">
+<span id="hawkesem"></span><h1>tick.inference.HawkesEM<a class="headerlink" href="#tick-inference-hawkesem" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="tick.inference.HawkesEM">
+<em class="property">class </em><code class="descclassname">tick.inference.</code><code class="descname">HawkesEM</code><span class="sig-paren">(</span><em>kernel_support=None</em>, <em>kernel_size=10</em>, <em>kernel_discretization=None</em>, <em>tol=1e-05</em>, <em>max_iter=100</em>, <em>print_every=10</em>, <em>record_every=10</em>, <em>verbose=False</em>, <em>n_threads=1</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/inference/hawkes_em.html#HawkesEM"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.inference.HawkesEM" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class is used for performing non parametric estimation of
+multi-dimensional Hawkes processes based on expectation
+maximization algorithm.</p>
+<p>Hawkes processes are point processes defined by the intensity:</p>
+<div class="math">
+\[\forall i \in [1 \dots D], \quad
+\lambda_i = \mu_i + \sum_{j=1}^D \int \phi_{ij} dN_j\]</div>
+<p>where</p>
+<ul class="simple">
+<li><span class="math">\(D\)</span> is the number of nodes</li>
+<li><span class="math">\(\mu_i\)</span> are the baseline intensities</li>
+<li><span class="math">\(\phi_{ij}\)</span> are the kernels</li>
+</ul>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>kernel_support</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default=`None`</p>
+<blockquote>
+<div><p>The support size common to all the kernels. Might be <code class="xref py py-obj docutils literal"><span class="pre">None</span></code> if
+<code class="xref py py-obj docutils literal"><span class="pre">kernel_discretization</span></code> is set</p>
+</div></blockquote>
+<p><strong>kernel_size</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code>, default=10</p>
+<blockquote>
+<div><p>Number of discretizations of the kernel</p>
+</div></blockquote>
+<p><strong>kernel_discretization</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code>, default=None</p>
+<blockquote>
+<div><p>Explicit discretization of the kernel. If set, it will override
+<code class="xref py py-obj docutils literal"><span class="pre">kernel_support</span></code> and <code class="xref py py-obj docutils literal"><span class="pre">kernel_size</span></code> values.</p>
+</div></blockquote>
+<p><strong>tol</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default=1e-5</p>
+<blockquote>
+<div><p>The tolerance of the solver (iterations stop when the stopping
+criterion is below it). If not reached the solver does <code class="docutils literal"><span class="pre">max_iter</span></code>
+iterations</p>
+</div></blockquote>
+<p><strong>max_iter</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code>, default=100</p>
+<blockquote>
+<div><p>Maximum number of iterations of the solver</p>
+</div></blockquote>
+<p><strong>verbose</strong> : <code class="xref py py-obj docutils literal"><span class="pre">bool</span></code>, default=False</p>
+<blockquote>
+<div><p>If <code class="xref py py-obj docutils literal"><span class="pre">True</span></code>, we verbose things, otherwise the solver does not
+print anything (but records information in history anyway)</p>
+</div></blockquote>
+<p><strong>print_every</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code>, default=10</p>
+<blockquote>
+<div><p>Print history information when <code class="docutils literal"><span class="pre">n_iter</span></code> (iteration number) is
+a multiple of <code class="docutils literal"><span class="pre">print_every</span></code></p>
+</div></blockquote>
+<p><strong>record_every</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code>, default=10</p>
+<blockquote>
+<div><p>Record history information when <code class="docutils literal"><span class="pre">n_iter</span></code> (iteration number) is
+a multiple of <code class="docutils literal"><span class="pre">record_every</span></code></p>
+</div></blockquote>
+<p><strong>n_threads</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code>, default=1</p>
+<blockquote>
+<div><p>Number of threads used for parallel computation.</p>
+<ul class="simple">
+<li>if <code class="xref py py-obj docutils literal"><span class="pre">int</span> <span class="pre">&lt;=</span> <span class="pre">0</span></code>: the number of physical cores available on the CPU</li>
+<li>otherwise the desired number of threads</li>
+</ul>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Attributes:</th><td class="field-body"><p class="first"><strong>n_nodes</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code></p>
+<blockquote>
+<div><p>Number of nodes of the estimated Hawkes process</p>
+</div></blockquote>
+<p><strong>n_realizations</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code></p>
+<blockquote>
+<div><p>Number of given realizations</p>
+</div></blockquote>
+<p><strong>kernel</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.array</span></code> shape=(n_nodes, n_nodes, kernel_size)</p>
+<blockquote>
+<div><p>The estimated kernels</p>
+</div></blockquote>
+<p><strong>baseline</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.array</span></code> shape=(n_nodes)</p>
+<blockquote class="last">
+<div><p>The estimated baseline</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">References</p>
+<p>Lewis, E., &amp; Mohler, G. (2011).
+A nonparametric EM algorithm for multiscale Hawkes processes.
+<a class="reference external" href="http://paleo.sscnet.ucla.edu/Lewis-Molher-EM_Preprint.pdf">preprint, 1-16</a>.</p>
+<p>The n-dimensional extension of this algorithm can be found in the latex
+documentation.</p>
+<dl class="method">
+<dt id="tick.inference.HawkesEM.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>kernel_support=None</em>, <em>kernel_size=10</em>, <em>kernel_discretization=None</em>, <em>tol=1e-05</em>, <em>max_iter=100</em>, <em>print_every=10</em>, <em>record_every=10</em>, <em>verbose=False</em>, <em>n_threads=1</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/inference/hawkes_em.html#HawkesEM.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.inference.HawkesEM.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="tick.inference.HawkesEM.fit">
+<code class="descname">fit</code><span class="sig-paren">(</span><em>events</em>, <em>end_times=None</em>, <em>baseline_start=None</em>, <em>kernel_start=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/inference/hawkes_em.html#HawkesEM.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.inference.HawkesEM.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit the model according to the given training data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>events</strong> : <code class="xref py py-obj docutils literal"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code></p>
+<blockquote>
+<div><p>List of Hawkes processes realizations.
+Each realization of the Hawkes process is a list of n_node for
+each component of the Hawkes. Namely <code class="xref py py-obj docutils literal"><span class="pre">events[i][j]</span></code> contains a
+one-dimensional <code class="xref py py-obj docutils literal"><span class="pre">numpy.array</span></code> of the events&#8217; timestamps of
+component j of realization i.
+If only one realization is given, it will be wrapped into a list</p>
+</div></blockquote>
+<p><strong>end_times</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code> or <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default = None</p>
+<blockquote>
+<div><p>List of end time of all hawkes processes that will be given to the
+model. If None, it will be set to each realization&#8217;s latest time.
+If only one realization is provided, then a float can be given.</p>
+</div></blockquote>
+<p><strong>baseline_start</strong> : <code class="xref py py-obj docutils literal"><span class="pre">None</span></code> or <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code>, shape=(n_nodes), default=None</p>
+<blockquote>
+<div><p>Used to force start values for baseline parameter
+If <code class="xref py py-obj docutils literal"><span class="pre">None</span></code> starts with uniform 1 values</p>
+</div></blockquote>
+<p><strong>kernel_start</strong> : <code class="xref py py-obj docutils literal"><span class="pre">None</span></code> or <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code>, shape=(n_nodes, n_nodes, kernel_size), default=None</p>
+<blockquote class="last">
+<div><p>Used to force start values for kernel parameter
+If <code class="xref py py-obj docutils literal"><span class="pre">None</span></code> starts with random values</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tick.inference.HawkesEM.get_history">
+<code class="descname">get_history</code><span class="sig-paren">(</span><em>key=None</em><span class="sig-paren">)</span><a class="headerlink" href="#tick.inference.HawkesEM.get_history" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns history of the solver</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>key</strong> : <code class="xref py py-obj docutils literal"><span class="pre">str</span></code>, default=None</p>
+<blockquote>
+<div><ul class="simple">
+<li>If <code class="xref py py-obj docutils literal"><span class="pre">None</span></code> all history is returned as a <code class="xref py py-obj docutils literal"><span class="pre">dict</span></code></li>
+<li>If <code class="xref py py-obj docutils literal"><span class="pre">str</span></code>, name of the history element to retrieve</li>
+</ul>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> : <code class="xref py py-obj docutils literal"><span class="pre">list</span></code> or <code class="xref py py-obj docutils literal"><span class="pre">dict</span></code></p>
+<blockquote class="last">
+<div><ul class="simple">
+<li>If <code class="docutils literal"><span class="pre">key</span></code> is None or <code class="docutils literal"><span class="pre">key</span></code> is not in history then
+output is a dict containing history of all keys</li>
+<li>If <code class="docutils literal"><span class="pre">key</span></code> is the name of an element in the history,
+output is a <code class="xref py py-obj docutils literal"><span class="pre">list</span></code> containing the history of this element</li>
+</ul>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tick.inference.HawkesEM.get_kernel_norms">
+<code class="descname">get_kernel_norms</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/inference/hawkes_em.html#HawkesEM.get_kernel_norms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.inference.HawkesEM.get_kernel_norms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes kernel norms. This makes our learner compliant with
+<a class="reference internal" href="tick.plot.plot_hawkes_kernel_norms.html#tick.plot.plot_hawkes_kernel_norms" title="tick.plot.plot_hawkes_kernel_norms"><code class="xref py py-obj docutils literal"><span class="pre">tick.plot.plot_hawkes_kernel_norms</span></code></a> API</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>norms</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code>, shape=(n_nodes, n_nodes)</p>
+<blockquote class="last">
+<div><p>2d array in which each entry i, j corresponds to the norm of
+kernel i, j</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tick.inference.HawkesEM.get_kernel_supports">
+<code class="descname">get_kernel_supports</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/inference/hawkes_em.html#HawkesEM.get_kernel_supports"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.inference.HawkesEM.get_kernel_supports" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes kernel support. This makes our learner compliant with
+<a class="reference internal" href="tick.plot.plot_hawkes_kernels.html#tick.plot.plot_hawkes_kernels" title="tick.plot.plot_hawkes_kernels"><code class="xref py py-obj docutils literal"><span class="pre">tick.plot.plot_hawkes_kernels</span></code></a> API</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code>, shape=(n_nodes, n_nodes)</p>
+<blockquote class="last">
+<div><p>2d array in which each entry i, j corresponds to the support of
+kernel i, j</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tick.inference.HawkesEM.get_kernel_values">
+<code class="descname">get_kernel_values</code><span class="sig-paren">(</span><em>i</em>, <em>j</em>, <em>abscissa_array</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/inference/hawkes_em.html#HawkesEM.get_kernel_values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.inference.HawkesEM.get_kernel_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes value of the specified kernel on given time values. This
+makes our learner compliant with <a class="reference internal" href="tick.plot.plot_hawkes_kernels.html#tick.plot.plot_hawkes_kernels" title="tick.plot.plot_hawkes_kernels"><code class="xref py py-obj docutils literal"><span class="pre">tick.plot.plot_hawkes_kernels</span></code></a> API</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>i</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code></p>
+<blockquote>
+<div><p>First index of the kernel</p>
+</div></blockquote>
+<p><strong>j</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code></p>
+<blockquote>
+<div><p>Second index of the kernel</p>
+</div></blockquote>
+<p><strong>abscissa_array</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code>, shape=(n_points, )</p>
+<blockquote>
+<div><p>1d array containing all the times at which this kernel will
+computes it value</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code>, shape=(n_points, )</p>
+<blockquote class="last">
+<div><p>1d array containing the values of the specified kernels at the
+given times.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<div class="section" id="examples-using-tick-inference-hawkesem">
+<h2>Examples using <code class="docutils literal"><span class="pre">tick.inference.HawkesEM</span></code><a class="headerlink" href="#examples-using-tick-inference-hawkesem" title="Permalink to this headline">¶</a></h2>
+<div class="thumbnailContainer" tooltip="This Hawkes EM (`tick.inference.HawkesEM`) algorithm assume that kernels are piecewise constant..."><div class="figure" id="id1">
+<a class="reference external image-reference" href="./../../auto_examples/./plot_hawkes_em.html"><img alt="../../_images/plot_hawkes_em1.png" src="../../_images/plot_hawkes_em1.png" /></a>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="../../auto_examples/plot_hawkes_em.html#example-plot-hawkes-em-py"><span class="std std-ref">Fit Hawkes random kernels</span></a></span></p>
+</div>
+</div></div>
+</div>
+
+
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Poulsen.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

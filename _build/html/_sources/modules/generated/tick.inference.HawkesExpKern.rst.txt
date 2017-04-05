@@ -1,0 +1,12 @@
+
+.. _HawkesExpKern:
+
+tick.inference.HawkesExpKern
+============================
+
+.. currentmodule:: tick.inference
+
+.. autoclass:: HawkesExpKern
+
+.. include:: tick.inference.HawkesExpKern.examples
+    :allowmissing:

@@ -1,0 +1,12 @@
+
+.. _LogisticRegression:
+
+tick.inference.LogisticRegression
+=================================
+
+.. currentmodule:: tick.inference
+
+.. autoclass:: LogisticRegression
+
+.. include:: tick.inference.LogisticRegression.examples
+    :allowmissing:
