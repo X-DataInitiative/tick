@@ -1,0 +1,53 @@
+
+
+.. _example_plot_hawkes_basis_kernels.py:
+
+
+=========================
+Fit exotic Hawkes kernels
+=========================
+
+This learner assumes Hawkes kernels are linear combinations of a given number
+of kernel basis.
+
+Here it is run on a an exotic data set generated with mixtures of two cosinus
+functions. We observe that we can correctly retrieve the kernels and the two
+cosinus basis functions which have generated the kernels. This experiment
+is run on toy datasets in the `original paper`_.
+
+It could have been more precise if end_time or kernel_size was increased.
+
+.. _original paper: http://jmlr.org/proceedings/papers/v28/zhou13.html
+
+
+
+.. rst-class:: horizontal
+
+
+    *
+
+      .. image:: images/plot_hawkes_basis_kernels_001.png
+            :scale: 47
+
+    *
+
+      .. image:: images/plot_hawkes_basis_kernels_002.png
+            :scale: 47
+
+
+
+
+**Python source code:** :download:`plot_hawkes_basis_kernels.py <plot_hawkes_basis_kernels.py>`
+
+.. literalinclude:: plot_hawkes_basis_kernels.py
+    :lines: 18-
+
+**Total running time of the example:**  2.09 seconds
+( 0 minutes  2.09 seconds)
+    
+Mentioned *tick* classes:
+   * `tick.inference.HawkesBasisKernels`
+   * `tick.plot.plot_basis_kernels`
+   * `tick.plot.plot_hawkes_kernels`
+   * `tick.simulation.HawkesKernelTimeFunc`
+   * `tick.simulation.SimuHawkes`

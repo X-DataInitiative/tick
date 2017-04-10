@@ -1,0 +1,31 @@
+
+
+.. _example_plot_logistic_adult.py:
+
+
+==============================================
+Binary classification with logistic regression
+==============================================
+
+This code perform binary classification on adult dataset with logistic
+regression learner (`tick.inference.LogisticRegression`).
+
+
+
+.. image:: images/plot_logistic_adult_001.png
+    :align: center
+
+
+
+
+**Python source code:** :download:`plot_logistic_adult.py <plot_logistic_adult.py>`
+
+.. literalinclude:: plot_logistic_adult.py
+    :lines: 9-
+
+**Total running time of the example:**  2.13 seconds
+( 0 minutes  2.13 seconds)
+    
+Mentioned *tick* classes:
+   * `tick.dataset.fetch_tick_dataset`
+   * `tick.inference.LogisticRegression`
