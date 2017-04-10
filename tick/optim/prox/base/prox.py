@@ -48,9 +48,13 @@ class Prox(ABC, Base):
             if _prox is not None:
                 _prox.set_start_end(val[0], val[1])
 
-    def call(self, coeffs: np.ndarray, step: object=1.,
-             out: np.ndarray = None) -> np.ndarray:
-        """
+    def call(self, coeffs, step=1., out=None):
+        """Apply proximal operator on a vector.
+        It computes:
+
+        .. math::
+            argmin_x \\big( f(x) + \\frac{1}{2} \|x - v\|_2^2 \\big)
+
         Parameters
         ----------
         coeffs : `numpy.ndarray`, shape=(n_coeffs,)

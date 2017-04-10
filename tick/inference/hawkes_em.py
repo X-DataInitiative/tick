@@ -133,7 +133,7 @@ class HawkesEM(LearnerHawkesNoParam):
             Used to force start values for baseline parameter
             If `None` starts with uniform 1 values
 
-        kernel_start : `None` or `np.ndarray', shape=(n_nodes, n_nodes, kernel_size), default=None
+        kernel_start : `None` or `np.ndarray`, shape=(n_nodes, n_nodes, kernel_size), default=None
             Used to force start values for kernel parameter
             If `None` starts with random values
         """

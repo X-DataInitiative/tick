@@ -75,8 +75,9 @@ def download_tick_dataset(dataset_path, data_home=None, verbose=True):
 
 
 def fetch_tick_dataset(dataset_path, data_home=None, verbose=True):
-    """Fetch dataset from tick_datasets github repository or cache if this
-    dataset has already been downloaded
+    """Fetch dataset from tick_datasets github repository.
+     
+    Uses cache if this dataset has already been downloaded.
 
     Parameters
     ----------

@@ -13,7 +13,7 @@ from .base import SimuWithFeatures
 
 class SimuPoisReg(SimuWithFeatures):
     """Simulation of a Poisson regression model, with
-    identity of exponential link.
+    identity or exponential link.
 
     Parameters
     ----------

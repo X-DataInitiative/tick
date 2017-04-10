@@ -41,8 +41,9 @@ def extract_history(solvers, x, y, given_labels):
 def plot_history(solvers, x='n_iter', y='obj', labels=None, show=True,
                  log_scale: bool = False, dist_min: bool = False,
                  rendering: str = 'matplotlib', ax=None):
-    """Plot the history of convergence of learners or solvers, used to
-    compare easily their convergence performance.
+    """Plot the history of convergence of learners or solvers.
+    
+    It is used to compare easily their convergence performance.
 
     Parameters
     ----------

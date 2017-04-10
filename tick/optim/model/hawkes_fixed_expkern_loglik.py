@@ -14,7 +14,7 @@ class ModelHawkesFixedExpKernLogLik(ModelHawkes,
 
     .. math::
         \\sum_{i=1}^{D} \\left(
-            - \\int_0^T \\lambda_i(t) dt
+            \\int_0^T \\lambda_i(t) dt
             - \\int_0^T \\log \\lambda_i(t) dN_i(t)
         \\right)
 

@@ -7,7 +7,8 @@ from warnings import warn
 def weights_sparse_gauss(n_weights: int = 100,
                          nnz: int=10,
                          std: float = 1.) -> np.ndarray:
-    """
+    """Sparse and gaussian model weights generator
+    
     Instance of weights for a model, given by a sparse vector,
     where non-zero coordinates (chosen at random) are centered Gaussian
     with given standard-deviation
@@ -43,7 +44,8 @@ def weights_sparse_gauss(n_weights: int = 100,
 def weights_sparse_exp(n_weigths: int = 100,
                        nnz: int=10,
                        scale: float = 10.) -> np.ndarray:
-    """
+    """Sparse and exponential model weights generator
+    
     Instance of weights for a model, given by a vector with
     exponentially decaying components: the j-th entry is given by
 

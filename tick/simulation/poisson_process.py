@@ -1,7 +1,7 @@
 import numpy as np
 from scipy import stats
 
-from tick.simulation.base.simu_point_process import SimuPointProcess
+from tick.simulation.base import SimuPointProcess
 from .build.simulation import Poisson as _Poisson
 
 

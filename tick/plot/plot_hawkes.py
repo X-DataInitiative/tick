@@ -5,7 +5,7 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 def plot_hawkes_kernel_norms(kernel_object, show=True, pcolor_kwargs=None,
                              node_names=None):
-    """Generic function to plot Hawkes kernels.
+    """Generic function to plot Hawkes kernel norms.
 
     Parameters
     ----------
@@ -163,7 +163,6 @@ def plot_hawkes_kernels(kernel_object, support=None, hawkes=None,
     return fig
 
 
-
 def _normalize_functions(y_values_list, t_values):
     """Normalize list of functions by their integral value
 
@@ -217,8 +216,9 @@ def _find_best_match(diff_matrix):
 
 def plot_basis_kernels(learner, support=None, basis_kernels=None,
                        n_points=300, show=True):
-    """Function used to plot basis kernels of
-    `tick.inference.HawkesBasisKernels` learner class
+    """Function used to plot basis of kernels
+    
+    It is used jointly with `tick.inference.HawkesBasisKernels` learner class.
 
     Parameters
     ----------

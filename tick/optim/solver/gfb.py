@@ -58,7 +58,8 @@ class CompositeProx(Prox):
 
 
 class GFB(SolverFirstOrder):
-    """
+    """Generalized Forward-Backward algorithm
+    
     Minimize the objective
 
     .. math:: f(x) + sum_i g_i(x)

@@ -3,6 +3,21 @@ from ..build.simulation import HawkesKernelTimeFunc as _HawkesKernelTimeFunc
 
 
 class HawkesKernelTimeFunc(HawkesKernel):
+    """Hawkes kernel defined by an arbitrary time function.
+    
+    Parameters
+    ----------
+    time_function : `tick.base.TimeFunc`
+        Time function defining the kernel.
+        
+    t_values : `np.ndarray` shape=(n_points,)
+        time array  used to build the time function. Might be given together 
+        with `y_values` instead of `time_function`.
+        
+    y_values : `np.ndarray` shape=(n_points,)
+        values array used to build the time function. Might be given together 
+        with `t_values` instead of `time_function`.
+    """
     def __init__(self, time_function=None, t_values=None, y_values=None):
         HawkesKernel.__init__(self)
         if (t_values is None and time_function is None) \

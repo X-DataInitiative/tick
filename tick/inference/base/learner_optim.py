@@ -374,7 +374,7 @@ class LearnerOptim(ABC, Base):
         if isinstance(X, pd.DataFrame):
             X = X.values
 
-        if not X.flags['C_CONTIGUOUS']:
+        if isinstance(X, np.ndarray) and not X.flags['C_CONTIGUOUS']:
             warn('Copying array of size %s to create a C-contiguous '
                  'version of it' % str(X.shape), RuntimeWarning)
             X = np.ascontiguousarray(X)

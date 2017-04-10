@@ -6,18 +6,18 @@ class HawkesKernelExp(HawkesKernel):
     """Hawkes kernel with exponential decay
 
     .. math::
-        \phi(t) = \alpha \beta \exp (- \beta t) 1_{t > 0}
+        \\phi(t) = \\alpha \\beta \\exp (- \\beta t) 1_{t > 0}
 
-    where :math:`\alpha` is the intensity of the kernel and
-    :math:`\beta` its decay.
+    where :math:`\\alpha` is the intensity of the kernel and
+    :math:`\\beta` its decay.
 
     Parameters
     ----------
     intensity : `float`
-        Intensity of the kernel, also noted :math:`\alpha`
+        Intensity of the kernel, also noted :math:`\\alpha`
 
     decay : `float`
-        Decay of the kernel, also noted :math:`\beta`
+        Decay of the kernel, also noted :math:`\\beta`
     """
     def __init__(self, intensity, decay):
         HawkesKernel.__init__(self)

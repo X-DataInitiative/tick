@@ -33,7 +33,7 @@ def _extended_discrete_xaxis(x_axis, n_points=100, eps=0.10):
 
 def plot_timefunction(time_function, labels=None, n_points=300, show=True,
                       ax=None):
-    """Quick plot of a `TimeFunction`
+    """Quick plot of a `tick.base.TimeFunction`
     
     Parameters
     ----------
@@ -93,7 +93,7 @@ def plot_timefunction(time_function, labels=None, n_points=300, show=True,
                 ls='', marker='o', label=labels[0])
         ax.plot(t_values, time_function.value(t_values), label=labels[1])
 
-    plt.legend()
+    ax.legend()
     if show is True:
         plt.show()
 

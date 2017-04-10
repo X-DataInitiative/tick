@@ -14,7 +14,7 @@ def simulate_single(simulation):
 
 
 class SimuHawkesMulti(Simu):
-    """Class for parallel simulations of a single Hawkes simulation
+    """Parallel simulations of a single Hawkes simulation
 
     The incoming Hawkes simulation is replicated by the number n_simulations. At
     simulation time, the replicated Hawkes processes are run in parallel on a

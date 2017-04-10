@@ -181,12 +181,12 @@ class HawkesBasisKernels(LearnerHawkesNoParam):
             Used to force start values for baseline attribute
             If `None` starts with uniform 1 values
 
-        amplitudes_start : `None` or `np.ndarray', shape=(n_nodes,n_nodes,D)
+        amplitudes_start : `None` or `np.ndarray`, shape=(n_nodes,n_nodes,D)
             Used to force start values for amplitude parameter
             If `None` starts with random values uniformly sampled between
             0.5 and 0.9
 
-        basis_kernels_start : `None` or `p.andarray, shape=(D,kernel_size)
+        basis_kernels_start : `None` or `np.darray`, shape=(D,kernel_size)
             Used to force start values for the basis kernels
             If `None` starts with random values uniformly sampled between
             0 and 0.1

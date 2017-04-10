@@ -8,8 +8,7 @@ __author__ = 'Stephane Gaiffas'
 
 
 class ProxL1(Prox):
-    """
-    Proximal operator of the L1 norm (soft-thresholding)
+    """Proximal operator of the L1 norm (soft-thresholding)
 
     Parameters
     ----------
@@ -50,8 +49,7 @@ class ProxL1(Prox):
         self._prox.call(coeffs, step, out)
 
     def value(self, coeffs: np.ndarray):
-        """
-        Returns the value of the penalization at ``coeffs``
+        """Returns the value of the penalization at ``coeffs``
 
         Parameters
         ----------

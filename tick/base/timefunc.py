@@ -47,6 +47,25 @@ class TimeFunction(Base):
     TimeFunction are made to be very efficient when call if to  get a
     specific value (:math:`\mathcal{O}(1)`), however this leads us to
     have it taking a lot of space in memory.
+    
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from tick.base import TimeFunction
+    >>> t_values = np.array([0, 1, 2, 5], dtype=float)
+    >>> y_values = np.array([2, 4.1, 1, 2], dtype=float)
+    >>> linear_timefunction = TimeFunction([t_values, y_values])
+    >>> # By default the time function will give a linear interpolation from 
+    >>> # the two nearest points for any time value
+    >>> '%.2f' % linear_timefunction.value(2)
+    '1.00'
+    >>> '%.2f' % linear_timefunction.value(3)
+    '1.33'
+    >>> # and it equals 0 outside of its bounds
+    >>> linear_timefunction.value(-1)
+    0.0
+    >>> linear_timefunction.value(7)
+    0.0
     """
 
     _attrinfos = {
