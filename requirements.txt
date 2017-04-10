@@ -2,6 +2,5 @@ numpy
 numpydoc
 scipy
 matplotlib
-sphinx
 scikit-learn
 pandas

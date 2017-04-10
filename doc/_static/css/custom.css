@@ -1,0 +1,8 @@
+body .content-container{
+    margin-top: 10px;
+    max-width: 940px;
+}
+
+blockquote div {
+    font-size: 14px;
+}

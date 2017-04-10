@@ -122,7 +122,7 @@ class HawkesBasisKernels(LearnerHawkesNoParam):
     Multi-dimensional Hawkes Processes. In `ICML (3) (pp. 1301-1309)`_.
 
     Some rewriting notes for implementing the algorithm can be found in the
-    DOC/tex directory.
+    doc/tex directory.
 
     .. _ICML (3) (pp. 1301-1309): http://jmlr.org/proceedings/papers/v28/zhou13.html
     """
