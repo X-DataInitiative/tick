@@ -33,6 +33,7 @@ Generalized linear models
 
    inference.LinearRegression
    inference.LogisticRegression
+   inference.PoissonRegression
 
 Survival Analysis
 -----------------
