@@ -506,9 +506,11 @@ solver_core = create_extension(**solver_core_info)
 
 inference_extension_info = {
     "cpp_files": ["hawkes_conditional_law.cpp", "hawkes_em.cpp",
-                  "hawkes_adm4.cpp", "hawkes_basis_kernels.cpp"],
+                  "hawkes_adm4.cpp", "hawkes_basis_kernels.cpp",
+                  "hawkes_sumgaussians.cpp"],
     "h_files": ["hawkes_conditional_law.h", "hawkes_em.h",
-                "hawkes_adm4.h", "hawkes_basis_kernels.h"],
+                "hawkes_adm4.h", "hawkes_basis_kernels.h",
+                "hawkes_sumgaussians.h"],
     "swig_files": ["inference_module.i"],
     "module_dir": "./tick/inference/",
     "extension_name": "inference",

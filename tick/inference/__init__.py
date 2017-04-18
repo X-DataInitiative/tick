@@ -8,6 +8,7 @@ from .hawkes_conditional_law import HawkesConditionalLaw
 from .hawkes_em import HawkesEM
 from .hawkes_adm4 import HawkesADM4
 from .hawkes_basis_kernels import HawkesBasisKernels
+from .hawkes_sumgaussians import HawkesSumGaussians
 
 __all__ = ["LogisticRegression",
            "CoxRegression",
@@ -17,4 +18,5 @@ __all__ = ["LogisticRegression",
            "HawkesEM",
            "HawkesADM4",
            "HawkesBasisKernels",
+           "HawkesSumGaussians",
            ]

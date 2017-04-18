@@ -21,4 +21,5 @@ Model                                      Class
 :ref:`learner-hawkes-em`                   `HawkesEM`
 :ref:`learner-hawkes-adm4`                 `HawkesADM4`
 :ref:`learner-hawkes-basis-kernels`        `HawkesBasisKernels`
+:ref:`learner-hawkes-sumgaussians`         `HawkesSumGaussians`
 ========================================== ==========================================
