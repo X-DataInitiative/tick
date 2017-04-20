@@ -8,6 +8,9 @@ add_library(simulation EXCLUDE_FROM_ALL
         hawkes_kernels/hawkes_kernel_exp.h hawkes_kernels/hawkes_kernel_sum_exp.cpp
         hawkes_kernels/hawkes_kernel_sum_exp.h hawkes_kernels/hawkes_kernel_power_law.cpp
         hawkes_kernels/hawkes_kernel_power_law.h hawkes_kernels/hawkes_kernel_0.h
-        hawkes_kernels/hawkes_kernel_time_func.cpp hawkes_kernels/hawkes_kernel_time_func.h)
+        hawkes_kernels/hawkes_kernel_time_func.cpp hawkes_kernels/hawkes_kernel_time_func.h
+        hawkes_baselines/baseline.h
+        hawkes_baselines/constant_baseline.cpp hawkes_baselines/constant_baseline.h
+        hawkes_baselines/timefunction_baseline.cpp hawkes_baselines/timefunction_baseline.h)
 
-target_link_libraries(simulation base)
+target_link_libraries(simulation random base)

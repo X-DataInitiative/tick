@@ -2,6 +2,8 @@ import warnings
 from itertools import product
 
 import numpy as np
+
+from tick.base import TimeFunction
 from tick.simulation.base import SimuPointProcess
 from numpy.linalg import eig, inv
 
@@ -16,12 +18,13 @@ class SimuHawkes(SimuPointProcess):
     
     .. math::
         \\forall i \\in [1 \\dots D], \\quad
-        \\lambda_i(t) = \\mu_i + \\sum_{j=1}^D \\int \\phi_{ij}(t - s) dN_j(s)
+        \\lambda_i(t) = \\mu_i(t) + 
+                        \\sum_{j=1}^D \\int \\phi_{ij}(t - s) dN_j(s)
 
     where
     
     * :math:`D` is the number of nodes
-    * :math:`\mu_i` are the baseline intensities
+    * :math:`\mu_i(t)` are the baseline intensities
     * :math:`\phi_{ij}` are the kernels
     * :math:`dN_j` are the processes differentiates
 
@@ -30,8 +33,19 @@ class SimuHawkes(SimuPointProcess):
     kernels : `np.ndarray`, shape=(n_nodes, n_nodes)
         A 2-dimensional arrays of kernels, also noted :math:`\phi_{ij}`
 
-    baseline : `np.ndarray`, shape=(n_nodes, )
-        The baseline of all intensities, also noted :math:`\mu`
+    baseline : `np.ndarray` or `list`
+        The baseline of all intensities, also noted :math:`\mu(t)`. It might 
+        be three different types:
+        
+        * `np.ndarray`, shape=(n_nodes,) : One baseline per node is given. 
+          Hence baseline is assumed to be constant, ie.
+          :math:`\mu_i(t) = \mu_i`
+        * `np.ndarray`, shape=(n_nodes, n_intervals) : `n_intervals` baselines 
+          are given per node. This assumes parameter `period_length` is also 
+          given. In this case baseline is piecewise constant on intervals of 
+          size `period_length / n_intervals` and periodic.
+        * `list` of `tick.base.TimeFunction`, shape=(n_nodes,) : One function 
+          is given per node, ie. :math:`\mu_i(t)` is explicitely given.
 
     n_nodes : `int`
         The number of nodes of the Hawkes process. If kernels and baseline
@@ -40,6 +54,9 @@ class SimuHawkes(SimuPointProcess):
 
     end_time : `float`, default=None
         Time until which this point process will be simulated
+        
+    period_length : `float`, default=None
+        Period of baseline in piecewise constant case. 
 
     max_jumps : `int`, default=None
         Simulation will stop if this number of jumps in reached
@@ -84,7 +101,8 @@ class SimuHawkes(SimuPointProcess):
     }
 
     def __init__(self, kernels=None, baseline=None, n_nodes=None,
-                 end_time=None, max_jumps=None, seed=None, verbose=True,
+                 end_time=None, period_length=None,
+                 max_jumps=None, seed=None, verbose=True,
                  force_simulation=False):
         SimuPointProcess.__init__(self, end_time=end_time, max_jumps=max_jumps,
                                   seed=seed, verbose=verbose)
@@ -92,19 +110,21 @@ class SimuHawkes(SimuPointProcess):
         self.force_simulation = force_simulation
         # We keep a reference on this kernel to avoid copies
         self._kernel_0 = HawkesKernel0()
+        self.period_length = period_length
 
         if isinstance(kernels, list):
             kernels = np.array(kernels)
 
         if isinstance(baseline, list):
-            baseline = np.array(baseline)
+            baseline = np.asarray(baseline)
 
-        if baseline is not None and baseline.dtype != float:
-            baseline = baseline.astype(float)
+        if baseline is not None:
+            if baseline.dtype not in [float, object]:
+                baseline = baseline.astype(float)
 
         self.check_parameters_coherence(kernels, baseline, n_nodes)
 
-        # Init _pp so we hae access to self.n_nodes
+        # Init _pp so we have access to self.n_nodes
         if n_nodes is None:
             if baseline is not None:
                 n_nodes = baseline.shape[0]
@@ -126,9 +146,13 @@ class SimuHawkes(SimuPointProcess):
             self._init_zero_kernels()
 
         if baseline is not None:
-            if baseline.shape != (self.n_nodes,):
-                raise ValueError("baseline shape should be %s instead of %s" %
-                                 ((self.n_nodes,), self.baseline.shape))
+            if baseline.shape[0] != self.n_nodes:
+                raise ValueError("baseline length should be {} instead of {}"
+                                 .format(self.n_nodes, baseline.shape[0]))
+            if len(baseline.shape) > 2:
+                raise ValueError("baseline should have at most {} dimensions, "
+                                 "it currently has"
+                                 .format(2, len(baseline.shape)))
             self.baseline = baseline
             self._init_baseline()
 
@@ -185,12 +209,47 @@ class SimuHawkes(SimuPointProcess):
 
     def set_baseline(self, i, baseline):
         self.baseline[i] = baseline
-        self._pp.set_mu(i, baseline)
+        error_msg = 'Baseline element must be either a float or an ' \
+                    'array or a TimeFunction'
+        if isinstance(baseline, (float, int)):
+            self._pp.set_baseline(i, baseline)
+        elif isinstance(baseline, np.ndarray):
+            if len(baseline.shape) > 1:
+                ValueError('Baseline element might have at most 1 dimension')
+            n_intervals = len(baseline)
+            # We need to append one value as it will be used through
+            # tick.base.TimeFunction with InterConstRight with does not take
+            # into account the last value (except for t = period_length)
+            t_values = np.linspace(0, self.period_length, n_intervals + 1)
+            extended_baseline = np.hstack((baseline, baseline[-1]))
+            self._pp.set_baseline(i, t_values, extended_baseline)
+        elif isinstance(baseline, TimeFunction):
+            self._pp.set_baseline(i, baseline._time_function)
+        else:
+            raise ValueError(error_msg)
+
+    def get_baseline_values(self, i, t_values):
+        """Outputs value of baseline depending on time
+        
+        Parameters
+        ----------
+        i : `int`
+            Selected dimension
+        
+        t_values : `np.ndarray`
+            Values baseline will be computed at
+            
+        Returns
+        -------
+        output : `np.ndarray`
+            Value of baseline `i` at `t_values`
+        """
+        return self._pp.get_baseline(i, t_values)
 
     def _simulate(self):
         """Launch simulation of the Hawkes process by thinning
         """
-        if np.linalg.norm(self.baseline) == 0:
+        if self.baseline.dtype == float and np.linalg.norm(self.baseline) == 0:
             warnings.warn("Baselines have not been set, hence this hawkes "
                           "process won't jump")
 

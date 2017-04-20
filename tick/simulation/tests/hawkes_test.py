@@ -4,6 +4,9 @@ from contextlib import contextmanager
 from itertools import product
 
 import numpy as np
+
+from tick.base import TimeFunction
+from tick.plot import plot_point_process
 from tick.simulation import SimuHawkes, HawkesKernelExp, \
     HawkesKernelSumExp, \
     HawkesKernel0, HawkesKernelPowerLaw, HawkesKernelTimeFunc
@@ -55,6 +58,32 @@ class Test(unittest.TestCase):
 
         hawkes.set_kernel(1, 1, self.time_func_kernel)
         self.assertEqual(hawkes.kernels[1, 1], self.time_func_kernel)
+
+    def test_hawkes_set_baseline_piecewiseconstant(self):
+        """...Test Hawkes process baseline set with time and value arrays
+        """
+        baselines = [[1., 2., 1.5, 4.],
+                     [2., 1.5, 4., 1.]]
+        hawkes = SimuHawkes(baseline=baselines, period_length=3.5,
+                            kernels=self.kernels, verbose=False)
+
+        hawkes.end_time = 10
+        hawkes.simulate()
+        self.assertGreater(hawkes.n_total_jumps, 1)
+
+    def test_hawkes_set_baseline_timefunction(self):
+        """...Test Hawkes process baseline set with TimeFunction
+        """
+        t_values = [0.5, 1., 2., 3.5]
+        y_values_1 = [1., 2., 1.5, 4.]
+        y_values_2 = [2., 1.5, 4., 1.]
+        timefunction1 = TimeFunction((t_values, y_values_1))
+        timefunction2 = TimeFunction((t_values, y_values_2))
+        hawkes = SimuHawkes(baseline=[timefunction1, timefunction2],
+                            kernels=self.kernels, verbose=False)
+        hawkes.end_time = 10
+        hawkes.simulate()
+        self.assertGreater(hawkes.n_total_jumps, 1)
 
     def test_hawkes_mean_intensity(self):
         """...Test that Hawkes obtained mean intensity is consistent

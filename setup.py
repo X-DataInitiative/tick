@@ -405,7 +405,7 @@ simulation_extension_info = {
                   "hawkes.cpp"],
     "h_files": ["pp.h", "poisson.h", "inhomogeneous_poisson.h",
                 "hawkes.h"],
-    "folders": ["hawkes_kernels"],
+    "folders": ["hawkes_baselines", "hawkes_kernels"],
     "swig_files": ["simulation_module.i"],
     "module_dir": "./tick/simulation/",
     "extension_name": "simulation",

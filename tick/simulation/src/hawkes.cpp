@@ -1,17 +1,11 @@
-//
-// Created by Martin Bompaire on 02/06/15.
-//
-
-#define _USE_MATH_DEFINES
 
 #include "hawkes.h"
 
-/// HAWKES
 
-Hawkes::Hawkes(unsigned int dimension1, int seed)
-    : PP(dimension1, seed), kernels(n_nodes * n_nodes), mus(n_nodes) {
+Hawkes::Hawkes(unsigned int n_nodes, int seed)
+    : PP(n_nodes, seed), kernels(n_nodes * n_nodes), baselines(n_nodes) {
   for (unsigned int i = 0; i < n_nodes; i++) {
-    mus[i] = std::make_shared<HawkesMu>();
+    baselines[i] = std::make_shared<HawkesConstantBaseline>(0.);
 
     for (unsigned int j = 0; j < n_nodes; j++) {
       kernels[i * n_nodes + j] = std::make_shared<HawkesKernel0>();
@@ -19,13 +13,11 @@ Hawkes::Hawkes(unsigned int dimension1, int seed)
   }
 }
 
-Hawkes::~Hawkes() {}
-
 void Hawkes::init_intensity_(ArrayDouble &intensity, double *total_intensity_bound) {
   *total_intensity_bound = 0;
   for (unsigned int i = 0; i < n_nodes; i++) {
-    intensity[i] = get_mu(i);
-    *total_intensity_bound += intensity[i];
+    intensity[i] = get_baseline(i, 0.);
+    *total_intensity_bound += get_baseline_bound(i, 0.);
   }
 }
 
@@ -37,9 +29,9 @@ bool Hawkes::update_time_shift_(double delay,
 
   // We loop on the contributions
   for (unsigned int i = 0; i < n_nodes; i++) {
-    intensity[i] = get_mu(i);
+    intensity[i] = get_baseline(i, get_time());
     if (total_intensity_bound1)
-      *total_intensity_bound1 += intensity[i];
+      *total_intensity_bound1 += get_baseline_bound(i, get_time());
 
     for (unsigned int j = 0; j < n_nodes; j++) {
       HawkesKernelPtr &k = kernels[i * n_nodes + j];
@@ -87,27 +79,42 @@ HawkesKernelPtr Hawkes::get_kernel(unsigned int i, unsigned int j) {
   return kernels[i * n_nodes + j];
 }
 
-void Hawkes::set_mu(unsigned int i, const HawkesMuPtr &mu) {
+void Hawkes::set_baseline(unsigned int i, const HawkesBaselinePtr &baseline) {
   if (i >= n_nodes) TICK_BAD_INDEX(0, n_nodes, i);
 
-  mus[i].reset();
-
-  mus[i] = nullptr;
-  if (mu) {
-    mus[i] = mu;
+  if (baseline) {
+    baselines[i] = baseline;
   }
 }
 
-void Hawkes::set_mu(unsigned int i, double mu) {
-  if (i >= n_nodes) TICK_BAD_INDEX(0, n_nodes, i);
-
-  set_mu(i, std::make_shared<HawkesMu>(mu));
+void Hawkes::set_baseline(unsigned int i, double baseline) {
+  set_baseline(i, std::make_shared<HawkesConstantBaseline>(baseline));
 }
 
-double Hawkes::get_mu(unsigned int i) {
+void Hawkes::set_baseline(unsigned int i, TimeFunction time_function) {
+  set_baseline(i, std::make_shared<HawkesTimeFunctionBaseline>(time_function));
+}
+
+void Hawkes::set_baseline(unsigned int i, ArrayDouble &times, ArrayDouble &values) {
+  set_baseline(i, std::make_shared<HawkesTimeFunctionBaseline>(times, values));
+}
+
+double Hawkes::get_baseline(unsigned int i, double t) {
   if (i >= n_nodes) TICK_BAD_INDEX(0, n_nodes, i);
 
-  return mus[i]->get_value();
+  return baselines[i]->get_value(t);
+}
+
+SArrayDoublePtr Hawkes::get_baseline(unsigned int i, ArrayDouble &t) {
+  if (i >= n_nodes) TICK_BAD_INDEX(0, n_nodes, i);
+
+  return baselines[i]->get_value(t);
+}
+
+double Hawkes::get_baseline_bound(unsigned int i, double t) {
+  if (i >= n_nodes) TICK_BAD_INDEX(0, n_nodes, i);
+
+  return baselines[i]->get_future_bound(t);
 }
 
 
