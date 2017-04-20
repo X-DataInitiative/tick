@@ -28,8 +28,8 @@ class HawkesKernel0 : public HawkesKernel {
  */
   double get_norm(int nsteps = 10000) override { return 0; }
 
-  template <class Archive>
-  void serialize(Archive & ar) {
+  template<class Archive>
+  void serialize(Archive &ar) {
     ar(cereal::make_nvp("HawkesKernel", cereal::base_class<HawkesKernel>(this)));
   }
 };

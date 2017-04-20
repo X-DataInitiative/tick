@@ -90,7 +90,9 @@ class HawkesKernelExp : public HawkesKernel {
    * the convolution can reach until next jump. This is useful for Ogata's thinning algorithm.
    * @return the value of the convolution
    */
-  double get_convolution(const double time, const ArrayDouble &timestamps, double *const bound) override;
+  double get_convolution(const double time,
+                         const ArrayDouble &timestamps,
+                         double *const bound) override;
 
   //! simple setter
   static void set_fast_exp(bool flag) { use_fast_exp = flag; }
@@ -118,8 +120,8 @@ class HawkesKernelExp : public HawkesKernel {
     return std::make_shared<HawkesKernelExp>(*this);
   }
 
-  template <class Archive>
-  void serialize(Archive & ar) {
+  template<class Archive>
+  void serialize(Archive &ar) {
     ar(cereal::make_nvp("HawkesKernel", cereal::base_class<HawkesKernel>(this)));
 
     ar(CEREAL_NVP(use_fast_exp));

@@ -81,7 +81,9 @@ class HawkesKernel {
    * @note Should be overloaded for efficiency if there is a faster way to compute
    * this convolution than just regular algorithm
    */
-  virtual double get_convolution(const double time, const ArrayDouble &timestamps, double *const bound);
+  virtual double get_convolution(const double time,
+                                 const ArrayDouble &timestamps,
+                                 double *const bound);
 
   /**
    * Returns the maximum of the kernel after time t
@@ -95,8 +97,8 @@ class HawkesKernel {
   //! Returns support used to plot the kernel
   virtual double get_plot_support() { return get_support(); }
 
-  template <class Archive>
-  void serialize(Archive & ar) {
+  template<class Archive>
+  void serialize(Archive &ar) {
     ar(CEREAL_NVP(support));
   }
 };
