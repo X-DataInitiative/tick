@@ -80,6 +80,7 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../inference.html"><code class="docutils literal"><span class="pre">tick.inference</span></code>: user-friendly inference tools</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../inference.html#generalized-linear-models">1. Generalized linear models</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../inference.html#hawkes">2. Hawkes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../inference.html#survival-analysis">3. Survival analysis</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../optim.html"><code class="docutils literal"><span class="pre">tick.optim</span></code>: optimization toolbox</a><ul>
@@ -98,7 +99,10 @@
 <li class="toctree-l2"><a class="reference internal" href="../plot.html#others">Others</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tick.preprocessing.FeaturesBinarizer.html">tick.preprocessing.FeaturesBinarizer</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code>: simulation toolbox</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../simulation.html#simulation-tools">1. Simulation tools</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../simulation.html#linear-model-simulation">2. Linear model simulation</a></li>
@@ -273,7 +277,7 @@ kernels are piecewise constant.</p>
 <p>Zhou, K., Zha, H. and Song, L., 2013, June. Learning Triggering Kernels for
 Multi-dimensional Hawkes Processes. In <a class="reference external" href="http://jmlr.org/proceedings/papers/v28/zhou13.html">ICML (3) (pp. 1301-1309)</a>.</p>
 <p>Some rewriting notes for implementing the algorithm can be found in the
-DOC/tex directory.</p>
+doc/tex directory.</p>
 <dl class="method">
 <dt id="tick.inference.HawkesBasisKernels.__init__">
 <code class="descname">__init__</code><span class="sig-paren">(</span><em>kernel_support</em>, <em>n_basis=None</em>, <em>kernel_size=10</em>, <em>tol=1e-05</em>, <em>C=0.1</em>, <em>max_iter=100</em>, <em>verbose=False</em>, <em>print_every=10</em>, <em>record_every=10</em>, <em>n_threads=1</em>, <em>ode_max_iter=100</em>, <em>ode_tol=1e-05</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/inference/hawkes_basis_kernels.html#HawkesBasisKernels.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.inference.HawkesBasisKernels.__init__" title="Permalink to this definition">¶</a></dt>

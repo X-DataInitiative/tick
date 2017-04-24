@@ -78,6 +78,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../modules/inference.html"><code class="docutils literal"><span class="pre">tick.inference</span></code>: user-friendly inference tools</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../modules/inference.html#generalized-linear-models">1. Generalized linear models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../modules/inference.html#hawkes">2. Hawkes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/inference.html#survival-analysis">3. Survival analysis</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../modules/optim.html"><code class="docutils literal"><span class="pre">tick.optim</span></code>: optimization toolbox</a><ul>
@@ -96,7 +97,10 @@
 <li class="toctree-l2"><a class="reference internal" href="../../modules/plot.html#others">Others</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../modules/preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/generated/tick.preprocessing.FeaturesBinarizer.html">tick.preprocessing.FeaturesBinarizer</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../../modules/simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code>: simulation toolbox</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../modules/simulation.html#simulation-tools">1. Simulation tools</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../modules/simulation.html#linear-model-simulation">2. Linear model simulation</a></li>
@@ -150,7 +154,7 @@
 <p><strong>Script output</strong>:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">------------------------------------------------</span>
 <span class="n">Launching</span> <span class="n">simulation</span> <span class="n">using</span> <span class="n">SimuPoissonProcess</span><span class="o">...</span>
-<span class="n">Done</span> <span class="n">simulating</span> <span class="n">using</span> <span class="n">SimuPoissonProcess</span> <span class="ow">in</span> <span class="mf">1.05e-04</span> <span class="n">seconds</span><span class="o">.</span>
+<span class="n">Done</span> <span class="n">simulating</span> <span class="n">using</span> <span class="n">SimuPoissonProcess</span> <span class="ow">in</span> <span class="mf">1.50e-04</span> <span class="n">seconds</span><span class="o">.</span>
 </pre></div>
 </div>
 <p><strong>Python source code:</strong> <a class="reference download internal" href="../../_downloads/plot_poisson_constant_intensity.py" download=""><code class="xref download docutils literal"><span class="pre">plot_poisson_constant_intensity.py</span></code></a></p>
@@ -164,8 +168,8 @@
 <a href="../../modules/generated/tick.plot.plot_point_process.html#tick.plot.plot_point_process"><span class="n">plot_point_process</span></a><span class="p">(</span><span class="n">poi</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><strong>Total running time of the example:</strong>  0.12 seconds
-( 0 minutes  0.12 seconds)</p>
+<p><strong>Total running time of the example:</strong>  0.09 seconds
+( 0 minutes  0.09 seconds)</p>
 <dl class="docutils">
 <dt>Mentioned <em>tick</em> classes:</dt>
 <dd><ul class="first last simple">

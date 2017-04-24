@@ -2,13 +2,11 @@
 Simulation of 3-dimensional hawkes process
 ==========================================
 """
-from pylab import rcParams
 import numpy as np
+import matplotlib.pyplot as plt
 
 from tick.simulation import SimuHawkesExpKernels
 from tick.plot import plot_point_process
-
-rcParams['figure.figsize'] = 20, 8
 
 n_nodes = 3  # dimension of the Hawkes process
 adjacency = 0.2 * np.ones((n_nodes, n_nodes))
@@ -24,4 +22,7 @@ dt = 0.01
 hawkes.track_intensity(dt)
 hawkes.simulate()
 
-plot_point_process(hawkes, n_points=50000, t_min=10, max_jumps=30)
+fig, ax = plt.subplots(n_nodes, 1, figsize=(16, 8), sharex=True, sharey=True)
+plot_point_process(hawkes, n_points=50000, t_min=10, max_jumps=30, ax=ax)
+fig.tight_layout()
+plt.show()

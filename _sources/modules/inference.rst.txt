@@ -43,7 +43,6 @@ Classes
    :template: class.rst
 
    inference.LogisticRegression
-   inference.CoxRegression
 
 Example
 ^^^^^^^
@@ -52,6 +51,7 @@ These learners can be easily applied on real world datasets
 
 .. plot:: ../examples/plot_logistic_adult.py
     :include-source:
+
 
 .. _inference-hawkes:
 
@@ -83,8 +83,8 @@ presented in
 
 :ref:`optim-model-hawkes`
 
-As for linear models, these Hawkes learners are combination of solver, model
-and prox (`tick.inference.HawkesADM4` excepted).
+As for linear models, `tick.inference.HawkesExpKern` and
+`tick.inference.HawkesSumExpKern` are combination of solver, model and prox.
 
 .. currentmodule:: tick
 
@@ -95,6 +95,7 @@ and prox (`tick.inference.HawkesADM4` excepted).
    inference.HawkesExpKern
    inference.HawkesSumExpKern
    inference.HawkesADM4
+   inference.HawkesSumGaussians
 
 .. plot:: modules/code_samples/inference/plot_hawkes_sum_exp_kernels.py
     :include-source:
@@ -119,3 +120,14 @@ These learners might then infer much more exotic kernels
 
 .. plot:: ../examples/plot_hawkes_em.py
     :include-source:
+
+
+3. Survival analysis
+--------------------
+.. currentmodule:: tick
+
+.. autosummary::
+   :toctree: generated/
+   :template: class.rst
+
+   inference.CoxRegression

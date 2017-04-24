@@ -80,6 +80,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#"><code class="docutils literal"><span class="pre">tick.inference</span></code>: user-friendly inference tools</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#generalized-linear-models">1. Generalized linear models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#hawkes">2. Hawkes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#survival-analysis">3. Survival analysis</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="optim.html"><code class="docutils literal"><span class="pre">tick.optim</span></code>: optimization toolbox</a><ul>
@@ -98,7 +99,10 @@
 <li class="toctree-l2"><a class="reference internal" href="plot.html#others">Others</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="generated/tick.preprocessing.FeaturesBinarizer.html">tick.preprocessing.FeaturesBinarizer</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code>: simulation toolbox</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="simulation.html#simulation-tools">1. Simulation tools</a></li>
 <li class="toctree-l2"><a class="reference internal" href="simulation.html#linear-model-simulation">2. Linear model simulation</a></li>
@@ -166,6 +170,7 @@ method.</p>
 <li><a class="reference internal" href="#non-parametric-hawkes-learners" id="id7">Non-parametric Hawkes learners</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#survival-analysis" id="id8">3. Survival analysis</a></li>
 </ul>
 </li>
 </ul>
@@ -191,9 +196,6 @@ method.</p>
 <tbody valign="top">
 <tr class="row-odd"><td><a class="reference internal" href="generated/tick.inference.LogisticRegression.html#tick.inference.LogisticRegression" title="tick.inference.LogisticRegression"><code class="xref py py-obj docutils literal"><span class="pre">inference.LogisticRegression</span></code></a>([...])</td>
 <td>Logistic regression learner, with many choices of penalization and solvers.</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/tick.inference.CoxRegression.html#tick.inference.CoxRegression" title="tick.inference.CoxRegression"><code class="xref py py-obj docutils literal"><span class="pre">inference.CoxRegression</span></code></a>([penalty,&nbsp;C,&nbsp;...])</td>
-<td>Cox regression learner, using the partial Cox likelihood for proportional risks, with many choices of penalization.</td>
 </tr>
 </tbody>
 </table>
@@ -261,8 +263,8 @@ parametric shape. Usually people induces an exponential parametrization as it
 allows very fast computations. The models associated to these learners are
 presented in</p>
 <p><a class="reference internal" href="optim.html#optim-model-hawkes"><span class="std std-ref">1.5. Hawkes models</span></a></p>
-<p>As for linear models, these Hawkes learners are combination of solver, model
-and prox (<a class="reference internal" href="generated/tick.inference.HawkesADM4.html#tick.inference.HawkesADM4" title="tick.inference.HawkesADM4"><code class="xref py py-obj docutils literal"><span class="pre">tick.inference.HawkesADM4</span></code></a> excepted).</p>
+<p>As for linear models, <a class="reference internal" href="generated/tick.inference.HawkesExpKern.html#tick.inference.HawkesExpKern" title="tick.inference.HawkesExpKern"><code class="xref py py-obj docutils literal"><span class="pre">tick.inference.HawkesExpKern</span></code></a> and
+<a class="reference internal" href="generated/tick.inference.HawkesSumExpKern.html#tick.inference.HawkesSumExpKern" title="tick.inference.HawkesSumExpKern"><code class="xref py py-obj docutils literal"><span class="pre">tick.inference.HawkesSumExpKern</span></code></a> are combination of solver, model and prox.</p>
 <table border="1" class="longtable docutils">
 <colgroup>
 <col width="10%" />
@@ -276,6 +278,9 @@ and prox (<a class="reference internal" href="generated/tick.inference.HawkesADM
 <td>Hawkes process learner for sum-exponential kernels with fixed and given decays, with many choices of penalization and solvers.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="generated/tick.inference.HawkesADM4.html#tick.inference.HawkesADM4" title="tick.inference.HawkesADM4"><code class="xref py py-obj docutils literal"><span class="pre">inference.HawkesADM4</span></code></a>(decay[,&nbsp;C,&nbsp;...])</td>
+<td>A class that implements parametric inference for Hawkes processes</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/tick.inference.HawkesSumGaussians.html#tick.inference.HawkesSumGaussians" title="tick.inference.HawkesSumGaussians"><code class="xref py py-obj docutils literal"><span class="pre">inference.HawkesSumGaussians</span></code></a>(max_mean_gaussian)</td>
 <td>A class that implements parametric inference for Hawkes processes</td>
 </tr>
 </tbody>
@@ -407,6 +412,20 @@ and hence don&#8217;t rely the previous exponential parametrization.</p>
 <img alt="../_images/plot_hawkes_em2.png" src="../_images/plot_hawkes_em2.png" />
 </div>
 </div>
+</div>
+<div class="section" id="survival-analysis">
+<h2>3. Survival analysis<a class="headerlink" href="#survival-analysis" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.inference.CoxRegression.html#tick.inference.CoxRegression" title="tick.inference.CoxRegression"><code class="xref py py-obj docutils literal"><span class="pre">inference.CoxRegression</span></code></a>([penalty,&nbsp;C,&nbsp;...])</td>
+<td>Cox regression learner, using the partial Cox likelihood for proportional risks, with many choices of penalization.</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 

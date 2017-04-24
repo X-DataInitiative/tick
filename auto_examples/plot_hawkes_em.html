@@ -78,6 +78,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../modules/inference.html"><code class="docutils literal"><span class="pre">tick.inference</span></code>: user-friendly inference tools</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../modules/inference.html#generalized-linear-models">1. Generalized linear models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../modules/inference.html#hawkes">2. Hawkes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/inference.html#survival-analysis">3. Survival analysis</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../modules/optim.html"><code class="docutils literal"><span class="pre">tick.optim</span></code>: optimization toolbox</a><ul>
@@ -96,7 +97,10 @@
 <li class="toctree-l2"><a class="reference internal" href="../modules/plot.html#others">Others</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../modules/preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/generated/tick.preprocessing.FeaturesBinarizer.html">tick.preprocessing.FeaturesBinarizer</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../modules/simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code>: simulation toolbox</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../modules/simulation.html#simulation-tools">1. Simulation tools</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../modules/simulation.html#linear-model-simulation">2. Linear model simulation</a></li>
@@ -163,7 +167,7 @@ A nonparametric EM algorithm for multiscale Hawkes processes.
        <span class="mi">30</span> <span class="o">|</span>     <span class="mf">1.02e-03</span> <span class="o">|</span>   <span class="mf">2.48e-03</span>
        <span class="mi">40</span> <span class="o">|</span>     <span class="mf">5.59e-04</span> <span class="o">|</span>   <span class="mf">1.30e-03</span>
        <span class="mi">47</span> <span class="o">|</span>     <span class="mf">4.03e-04</span> <span class="o">|</span>   <span class="mf">9.72e-04</span>
-<span class="n">Done</span> <span class="n">solving</span> <span class="n">using</span> <a href="../modules/generated/tick.inference.HawkesEM.html#tick.inference.HawkesEM"><span class="n">HawkesEM</span></a> <span class="ow">in</span> <span class="mf">0.7256278991699219</span> <span class="n">seconds</span>
+<span class="n">Done</span> <span class="n">solving</span> <span class="n">using</span> <a href="../modules/generated/tick.inference.HawkesEM.html#tick.inference.HawkesEM"><span class="n">HawkesEM</span></a> <span class="ow">in</span> <span class="mf">0.721189022064209</span> <span class="n">seconds</span>
 </pre></div>
 </div>
 <p><strong>Python source code:</strong> <a class="reference download internal" href="../_downloads/plot_hawkes_em.py" download=""><code class="xref download docutils literal"><span class="pre">plot_hawkes_em.py</span></code></a></p>
@@ -210,8 +214,8 @@ A nonparametric EM algorithm for multiscale Hawkes processes.
 <a href="http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.show"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
 </pre></div>
 </div>
-<p><strong>Total running time of the example:</strong>  1.00 seconds
-( 0 minutes  1.00 seconds)</p>
+<p><strong>Total running time of the example:</strong>  0.99 seconds
+( 0 minutes  0.99 seconds)</p>
 <dl class="docutils">
 <dt>Mentioned <em>tick</em> classes:</dt>
 <dd><ul class="first last simple">

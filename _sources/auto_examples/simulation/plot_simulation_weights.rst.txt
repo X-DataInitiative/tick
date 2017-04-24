@@ -18,8 +18,8 @@ plot_simulation_weights.py
 .. literalinclude:: plot_simulation_weights.py
     :lines: 2-
 
-**Total running time of the example:**  0.39 seconds
-( 0 minutes  0.39 seconds)
+**Total running time of the example:**  0.44 seconds
+( 0 minutes  0.44 seconds)
     
 Mentioned *tick* classes:
    * `tick.simulation.weights_sparse_exp`

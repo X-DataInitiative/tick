@@ -10,8 +10,9 @@
         <h1 style="font-size:40px">tick</h1>
         <p style="font-size:18px">
            tick a machine learning library for Python 3.
-           The focus is on point processes (Poisson processes,
-           Hawkes processes, Cox regression) and Generalized linear models (GLM).
+           The focus is on statistical learning for time dependent systems,
+           such as point processes. Tick features also tools for generalized
+           linear models, and a generic optimization toolbox.
         </p>
         <p style="font-size:18px">
            The core of the library is an optimization module providing model

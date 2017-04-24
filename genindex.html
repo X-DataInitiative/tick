@@ -79,6 +79,7 @@
 <li class="toctree-l1"><a class="reference internal" href="modules/inference.html"><code class="docutils literal"><span class="pre">tick.inference</span></code>: user-friendly inference tools</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="modules/inference.html#generalized-linear-models">1. Generalized linear models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="modules/inference.html#hawkes">2. Hawkes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/inference.html#survival-analysis">3. Survival analysis</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="modules/optim.html"><code class="docutils literal"><span class="pre">tick.optim</span></code>: optimization toolbox</a><ul>
@@ -97,7 +98,10 @@
 <li class="toctree-l2"><a class="reference internal" href="modules/plot.html#others">Others</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="modules/preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/generated/tick.preprocessing.FeaturesBinarizer.html">tick.preprocessing.FeaturesBinarizer</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="modules/simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code>: simulation toolbox</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="modules/simulation.html#simulation-tools">1. Simulation tools</a></li>
 <li class="toctree-l2"><a class="reference internal" href="modules/simulation.html#linear-model-simulation">2. Linear model simulation</a></li>
@@ -188,6 +192,8 @@
         <li><a href="modules/generated/tick.inference.HawkesExpKern.html#tick.inference.HawkesExpKern.__init__">(tick.inference.HawkesExpKern method)</a>
 </li>
         <li><a href="modules/generated/tick.inference.HawkesSumExpKern.html#tick.inference.HawkesSumExpKern.__init__">(tick.inference.HawkesSumExpKern method)</a>
+</li>
+        <li><a href="modules/generated/tick.inference.HawkesSumGaussians.html#tick.inference.HawkesSumGaussians.__init__">(tick.inference.HawkesSumGaussians method)</a>
 </li>
         <li><a href="modules/generated/tick.inference.LogisticRegression.html#tick.inference.LogisticRegression.__init__">(tick.inference.LogisticRegression method)</a>
 </li>
@@ -379,6 +385,8 @@
 </li>
         <li><a href="modules/generated/tick.inference.HawkesSumExpKern.html#tick.inference.HawkesSumExpKern.fit">(tick.inference.HawkesSumExpKern method)</a>
 </li>
+        <li><a href="modules/generated/tick.inference.HawkesSumGaussians.html#tick.inference.HawkesSumGaussians.fit">(tick.inference.HawkesSumGaussians method)</a>
+</li>
         <li><a href="modules/generated/tick.inference.LogisticRegression.html#tick.inference.LogisticRegression.fit">(tick.inference.LogisticRegression method)</a>
 </li>
         <li><a href="modules/generated/tick.optim.model.ModelCoxRegPartialLik.html#tick.optim.model.ModelCoxRegPartialLik.fit">(tick.optim.model.ModelCoxRegPartialLik method)</a>
@@ -419,6 +427,8 @@
 </li>
         <li><a href="modules/generated/tick.inference.HawkesEM.html#tick.inference.HawkesEM.get_history">(tick.inference.HawkesEM method)</a>
 </li>
+        <li><a href="modules/generated/tick.inference.HawkesSumGaussians.html#tick.inference.HawkesSumGaussians.get_history">(tick.inference.HawkesSumGaussians method)</a>
+</li>
         <li><a href="modules/generated/tick.optim.solver.AGD.html#tick.optim.solver.AGD.get_history">(tick.optim.solver.AGD method)</a>
 </li>
         <li><a href="modules/generated/tick.optim.solver.AdaGrad.html#tick.optim.solver.AdaGrad.get_history">(tick.optim.solver.AdaGrad method)</a>
@@ -447,6 +457,8 @@
 </li>
         <li><a href="modules/generated/tick.inference.HawkesSumExpKern.html#tick.inference.HawkesSumExpKern.get_kernel_norms">(tick.inference.HawkesSumExpKern method)</a>
 </li>
+        <li><a href="modules/generated/tick.inference.HawkesSumGaussians.html#tick.inference.HawkesSumGaussians.get_kernel_norms">(tick.inference.HawkesSumGaussians method)</a>
+</li>
       </ul></li>
       <li><a href="modules/generated/tick.inference.HawkesADM4.html#tick.inference.HawkesADM4.get_kernel_supports">get_kernel_supports() (tick.inference.HawkesADM4 method)</a>
 
@@ -458,6 +470,8 @@
         <li><a href="modules/generated/tick.inference.HawkesExpKern.html#tick.inference.HawkesExpKern.get_kernel_supports">(tick.inference.HawkesExpKern method)</a>
 </li>
         <li><a href="modules/generated/tick.inference.HawkesSumExpKern.html#tick.inference.HawkesSumExpKern.get_kernel_supports">(tick.inference.HawkesSumExpKern method)</a>
+</li>
+        <li><a href="modules/generated/tick.inference.HawkesSumGaussians.html#tick.inference.HawkesSumGaussians.get_kernel_supports">(tick.inference.HawkesSumGaussians method)</a>
 </li>
       </ul></li>
       <li><a href="modules/generated/tick.inference.HawkesADM4.html#tick.inference.HawkesADM4.get_kernel_values">get_kernel_values() (tick.inference.HawkesADM4 method)</a>
@@ -472,6 +486,8 @@
         <li><a href="modules/generated/tick.inference.HawkesExpKern.html#tick.inference.HawkesExpKern.get_kernel_values">(tick.inference.HawkesExpKern method)</a>
 </li>
         <li><a href="modules/generated/tick.inference.HawkesSumExpKern.html#tick.inference.HawkesSumExpKern.get_kernel_values">(tick.inference.HawkesSumExpKern method)</a>
+</li>
+        <li><a href="modules/generated/tick.inference.HawkesSumGaussians.html#tick.inference.HawkesSumGaussians.get_kernel_values">(tick.inference.HawkesSumGaussians method)</a>
 </li>
       </ul></li>
       <li><a href="modules/generated/tick.optim.model.ModelLinReg.html#tick.optim.model.ModelLinReg.get_lip_best">get_lip_best() (tick.optim.model.ModelLinReg method)</a>
@@ -608,15 +624,17 @@
 </li>
       <li><a href="modules/generated/tick.simulation.HawkesKernelExp.html#tick.simulation.HawkesKernelExp">HawkesKernelExp (class in tick.simulation)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="modules/generated/tick.simulation.HawkesKernelPowerLaw.html#tick.simulation.HawkesKernelPowerLaw">HawkesKernelPowerLaw (class in tick.simulation)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="modules/generated/tick.simulation.HawkesKernelSumExp.html#tick.simulation.HawkesKernelSumExp">HawkesKernelSumExp (class in tick.simulation)</a>
 </li>
       <li><a href="modules/generated/tick.simulation.HawkesKernelTimeFunc.html#tick.simulation.HawkesKernelTimeFunc">HawkesKernelTimeFunc (class in tick.simulation)</a>
 </li>
       <li><a href="modules/generated/tick.inference.HawkesSumExpKern.html#tick.inference.HawkesSumExpKern">HawkesSumExpKern (class in tick.inference)</a>
+</li>
+      <li><a href="modules/generated/tick.inference.HawkesSumGaussians.html#tick.inference.HawkesSumGaussians">HawkesSumGaussians (class in tick.inference)</a>
 </li>
       <li><a href="modules/generated/tick.optim.model.ModelHawkesFixedExpKernLeastSq.html#tick.optim.model.ModelHawkesFixedExpKernLeastSq.hessian">hessian() (tick.optim.model.ModelHawkesFixedExpKernLeastSq method)</a>
 </li>

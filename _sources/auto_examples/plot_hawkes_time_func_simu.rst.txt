@@ -22,8 +22,8 @@ Simulation of Hawkes processes with usage of custom kernels
 .. literalinclude:: plot_hawkes_time_func_simu.py
     :lines: 8-
 
-**Total running time of the example:**  0.17 seconds
-( 0 minutes  0.17 seconds)
+**Total running time of the example:**  0.09 seconds
+( 0 minutes  0.09 seconds)
     
 Mentioned *tick* classes:
    * `tick.base.TimeFunction`

@@ -78,6 +78,7 @@
 <li class="toctree-l1"><a class="reference internal" href="inference.html"><code class="docutils literal"><span class="pre">tick.inference</span></code>: user-friendly inference tools</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="inference.html#generalized-linear-models">1. Generalized linear models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="inference.html#hawkes">2. Hawkes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inference.html#survival-analysis">3. Survival analysis</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="optim.html"><code class="docutils literal"><span class="pre">tick.optim</span></code>: optimization toolbox</a><ul>
@@ -96,7 +97,10 @@
 <li class="toctree-l2"><a class="reference internal" href="plot.html#others">Others</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="generated/tick.preprocessing.FeaturesBinarizer.html">tick.preprocessing.FeaturesBinarizer</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code>: simulation toolbox</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="simulation.html#simulation-tools">1. Simulation tools</a></li>
 <li class="toctree-l2"><a class="reference internal" href="simulation.html#linear-model-simulation">2. Linear model simulation</a></li>
@@ -164,7 +168,18 @@ since direct class and function API is not enough for understanding their uses.<
 <tr class="row-odd"><td><a class="reference internal" href="generated/tick.inference.LogisticRegression.html#tick.inference.LogisticRegression" title="tick.inference.LogisticRegression"><code class="xref py py-obj docutils literal"><span class="pre">inference.LogisticRegression</span></code></a>([...])</td>
 <td>Logistic regression learner, with many choices of penalization and solvers.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/tick.inference.CoxRegression.html#tick.inference.CoxRegression" title="tick.inference.CoxRegression"><code class="xref py py-obj docutils literal"><span class="pre">inference.CoxRegression</span></code></a>([penalty,&nbsp;C,&nbsp;...])</td>
+</tbody>
+</table>
+</div>
+<div class="section" id="survival-analysis">
+<h3>Survival Analysis<a class="headerlink" href="#survival-analysis" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.inference.CoxRegression.html#tick.inference.CoxRegression" title="tick.inference.CoxRegression"><code class="xref py py-obj docutils literal"><span class="pre">inference.CoxRegression</span></code></a>([penalty,&nbsp;C,&nbsp;...])</td>
 <td>Cox regression learner, using the partial Cox likelihood for proportional risks, with many choices of penalization.</td>
 </tr>
 </tbody>
@@ -193,7 +208,10 @@ since direct class and function API is not enough for understanding their uses.<
 <tr class="row-odd"><td><a class="reference internal" href="generated/tick.inference.HawkesBasisKernels.html#tick.inference.HawkesBasisKernels" title="tick.inference.HawkesBasisKernels"><code class="xref py py-obj docutils literal"><span class="pre">inference.HawkesBasisKernels</span></code></a>(kernel_support)</td>
 <td>This class is used for performing non parametric estimation of multi-dimensional Hawkes processes based on expectation maximization algorithm and the hypothesis that kernels are linear combinations of some basis kernels.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/tick.inference.HawkesConditionalLaw.html#tick.inference.HawkesConditionalLaw" title="tick.inference.HawkesConditionalLaw"><code class="xref py py-obj docutils literal"><span class="pre">inference.HawkesConditionalLaw</span></code></a>([delta_lag,&nbsp;...])</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/tick.inference.HawkesSumGaussians.html#tick.inference.HawkesSumGaussians" title="tick.inference.HawkesSumGaussians"><code class="xref py py-obj docutils literal"><span class="pre">inference.HawkesSumGaussians</span></code></a>(max_mean_gaussian)</td>
+<td>A class that implements parametric inference for Hawkes processes</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.inference.HawkesConditionalLaw.html#tick.inference.HawkesConditionalLaw" title="tick.inference.HawkesConditionalLaw"><code class="xref py py-obj docutils literal"><span class="pre">inference.HawkesConditionalLaw</span></code></a>([delta_lag,&nbsp;...])</td>
 <td>This class is used for performing non parametric estimation of multi-dimensional marked Hawkes processes based on conditional laws.</td>
 </tr>
 </tbody>
@@ -440,9 +458,6 @@ in tick.</p>
 <tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.SimuPoisReg.html#tick.simulation.SimuPoisReg" title="tick.simulation.SimuPoisReg"><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuPoisReg</span></code></a>(...)</td>
 <td>Simulation of a Poisson regression model, with identity or exponential link.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/tick.simulation.SimuCoxReg.html#tick.simulation.SimuCoxReg" title="tick.simulation.SimuCoxReg"><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuCoxReg</span></code></a>(coeffs:&nbsp;numpy.ndarray,&nbsp;...)</td>
-<td>Simulation of a Cox regression for proportional hazards</td>
-</tr>
 </tbody>
 </table>
 </div>
@@ -454,22 +469,25 @@ in tick.</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.SimuPoissonProcess.html#tick.simulation.SimuPoissonProcess" title="tick.simulation.SimuPoissonProcess"><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuPoissonProcess</span></code></a>(intensities[,&nbsp;...])</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.SimuCoxReg.html#tick.simulation.SimuCoxReg" title="tick.simulation.SimuCoxReg"><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuCoxReg</span></code></a>(coeffs:&nbsp;numpy.ndarray,&nbsp;...)</td>
+<td>Simulation of a Cox regression for proportional hazards</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/tick.simulation.SimuPoissonProcess.html#tick.simulation.SimuPoissonProcess" title="tick.simulation.SimuPoissonProcess"><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuPoissonProcess</span></code></a>(intensities[,&nbsp;...])</td>
 <td>Homogeneous Poisson process simulation</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/tick.simulation.SimuInhomogeneousPoisson.html#tick.simulation.SimuInhomogeneousPoisson" title="tick.simulation.SimuInhomogeneousPoisson"><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuInhomogeneousPoisson</span></code></a>(...[,&nbsp;...])</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.SimuInhomogeneousPoisson.html#tick.simulation.SimuInhomogeneousPoisson" title="tick.simulation.SimuInhomogeneousPoisson"><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuInhomogeneousPoisson</span></code></a>(...[,&nbsp;...])</td>
 <td>Inhomogeneous Poisson process simulation</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.SimuHawkes.html#tick.simulation.SimuHawkes" title="tick.simulation.SimuHawkes"><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuHawkes</span></code></a>([kernels,&nbsp;baseline,&nbsp;...])</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/tick.simulation.SimuHawkes.html#tick.simulation.SimuHawkes" title="tick.simulation.SimuHawkes"><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuHawkes</span></code></a>([kernels,&nbsp;baseline,&nbsp;...])</td>
 <td>Hawkes process simulation</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/tick.simulation.SimuHawkesExpKernels.html#tick.simulation.SimuHawkesExpKernels" title="tick.simulation.SimuHawkesExpKernels"><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuHawkesExpKernels</span></code></a>(adjacency,&nbsp;...)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.SimuHawkesExpKernels.html#tick.simulation.SimuHawkesExpKernels" title="tick.simulation.SimuHawkesExpKernels"><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuHawkesExpKernels</span></code></a>(adjacency,&nbsp;...)</td>
 <td>Hawkes process with exponential kernels simulation</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.SimuHawkesSumExpKernels.html#tick.simulation.SimuHawkesSumExpKernels" title="tick.simulation.SimuHawkesSumExpKernels"><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuHawkesSumExpKernels</span></code></a>(...[,&nbsp;...])</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/tick.simulation.SimuHawkesSumExpKernels.html#tick.simulation.SimuHawkesSumExpKernels" title="tick.simulation.SimuHawkesSumExpKernels"><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuHawkesSumExpKernels</span></code></a>(...[,&nbsp;...])</td>
 <td>Hawkes process with sum-exponential kernels simulation</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/tick.simulation.SimuHawkesMulti.html#tick.simulation.SimuHawkesMulti" title="tick.simulation.SimuHawkesMulti"><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuHawkesMulti</span></code></a>(hawkes_simu,&nbsp;...)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.SimuHawkesMulti.html#tick.simulation.SimuHawkesMulti" title="tick.simulation.SimuHawkesMulti"><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuHawkesMulti</span></code></a>(hawkes_simu,&nbsp;...)</td>
 <td>Parallel simulations of a single Hawkes simulation</td>
 </tr>
 </tbody>

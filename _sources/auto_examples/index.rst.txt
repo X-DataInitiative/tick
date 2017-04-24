@@ -128,6 +128,31 @@ How to use tick in practise?
 
 .. raw:: html
 
+    <div class="thumbnailContainer" tooltip="This Hawkes (`tick.inference.HawkesSumGaussians`) algorithm assume that kernels are parametrize...">
+
+.. only:: html
+
+  .. figure:: ./images/thumb/plot_hawkes_gaussian_kernels.png
+    :target: ./plot_hawkes_gaussian_kernels.html
+
+    :ref:`example_plot_hawkes_gaussian_kernels.py`
+
+
+.. raw:: html
+
+    </div>
+
+
+
+.. toctree::
+   :hidden:
+
+   ./plot_hawkes_gaussian_kernels
+
+
+
+.. raw:: html
+
     <div class="thumbnailContainer" tooltip="Simulation of Hawkes processes with usage of custom kernels ">
 
 .. only:: html
@@ -178,6 +203,31 @@ How to use tick in practise?
 
 .. raw:: html
 
+    <div class="thumbnailContainer" tooltip="This Hawkes learner based on conditional laws (`tick.inference.HawkesConditionalLaw`) is able t...">
+
+.. only:: html
+
+  .. figure:: ./images/thumb/plot_hawkes_conditional_law.png
+    :target: ./plot_hawkes_conditional_law.html
+
+    :ref:`example_plot_hawkes_conditional_law.py`
+
+
+.. raw:: html
+
+    </div>
+
+
+
+.. toctree::
+   :hidden:
+
+   ./plot_hawkes_conditional_law
+
+
+
+.. raw:: html
+
     <div class="thumbnailContainer" tooltip="Generates Linear, Logistic and Poisson regression realizations given a weight vector. ">
 
 .. only:: html
@@ -223,31 +273,6 @@ How to use tick in practise?
    :hidden:
 
    ./plot_hawkes_em
-
-
-
-.. raw:: html
-
-    <div class="thumbnailContainer" tooltip="This Hawkes learner based on conditional laws (`tick.inference.HawkesConditionalLaw`) is able t...">
-
-.. only:: html
-
-  .. figure:: ./images/thumb/plot_hawkes_conditional_law.png
-    :target: ./plot_hawkes_conditional_law.html
-
-    :ref:`example_plot_hawkes_conditional_law.py`
-
-
-.. raw:: html
-
-    </div>
-
-
-
-.. toctree::
-   :hidden:
-
-   ./plot_hawkes_conditional_law
 
 
 
@@ -364,13 +389,6 @@ How to use tick in practise?
 .. toctree::
    :hidden:
 
-   simulation/plot_hawkes_multidim_simu
-
-
-
-.. toctree::
-   :hidden:
-
    simulation/plot_time_function
 
 
@@ -379,6 +397,13 @@ How to use tick in practise?
    :hidden:
 
    simulation/plot_hawkes_1d_simu
+
+
+
+.. toctree::
+   :hidden:
+
+   simulation/plot_hawkes_multidim_simu
 
 
 

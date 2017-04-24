@@ -32,6 +32,15 @@ Generalized linear models
    :template: class.rst
 
    inference.LogisticRegression
+
+Survival Analysis
+-----------------
+.. currentmodule:: tick
+
+.. autosummary::
+   :toctree: generated/
+   :template: class.rst
+
    inference.CoxRegression
 
 Hawkes
@@ -47,6 +56,7 @@ Hawkes
    inference.HawkesEM
    inference.HawkesADM4
    inference.HawkesBasisKernels
+   inference.HawkesSumGaussians
    inference.HawkesConditionalLaw
 
 .. _api-optim-model:
@@ -236,7 +246,6 @@ Generalized linear models
    simulation.SimuLinReg
    simulation.SimuLogReg
    simulation.SimuPoisReg
-   simulation.SimuCoxReg
 
 Point processes
 ---------------
@@ -246,6 +255,7 @@ Point processes
    :toctree: generated/
    :template: class.rst
 
+   simulation.SimuCoxReg
    simulation.SimuPoissonProcess
    simulation.SimuInhomogeneousPoisson
    simulation.SimuHawkes

@@ -78,6 +78,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../modules/inference.html"><code class="docutils literal"><span class="pre">tick.inference</span></code>: user-friendly inference tools</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../modules/inference.html#generalized-linear-models">1. Generalized linear models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../modules/inference.html#hawkes">2. Hawkes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/inference.html#survival-analysis">3. Survival analysis</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../modules/optim.html"><code class="docutils literal"><span class="pre">tick.optim</span></code>: optimization toolbox</a><ul>
@@ -96,7 +97,10 @@
 <li class="toctree-l2"><a class="reference internal" href="../modules/plot.html#others">Others</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../modules/preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/generated/tick.preprocessing.FeaturesBinarizer.html">tick.preprocessing.FeaturesBinarizer</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../modules/simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code>: simulation toolbox</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../modules/simulation.html#simulation-tools">1. Simulation tools</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../modules/simulation.html#linear-model-simulation">2. Linear model simulation</a></li>
@@ -176,43 +180,49 @@ div#sidebarbutton {
 </div>
 </div><div class="toctree-wrapper compound">
 </div>
-<div class="thumbnailContainer" tooltip="Simulation of Hawkes processes with usage of custom kernels "><div class="figure" id="id6">
+<div class="thumbnailContainer" tooltip="This Hawkes (`tick.inference.HawkesSumGaussians`) algorithm assume that kernels are parametrize..."><div class="figure" id="id6">
+<a class="reference external image-reference" href="./plot_hawkes_gaussian_kernels.html"><img alt="../_images/plot_hawkes_gaussian_kernels.png" src="../_images/plot_hawkes_gaussian_kernels.png" /></a>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="plot_hawkes_gaussian_kernels.html#example-plot-hawkes-gaussian-kernels-py"><span class="std std-ref">Fit Hawkes with asynchronous causality</span></a></span></p>
+</div>
+</div><div class="toctree-wrapper compound">
+</div>
+<div class="thumbnailContainer" tooltip="Simulation of Hawkes processes with usage of custom kernels "><div class="figure" id="id7">
 <a class="reference external image-reference" href="./plot_hawkes_time_func_simu.html"><img alt="../_images/plot_hawkes_time_func_simu.png" src="../_images/plot_hawkes_time_func_simu.png" /></a>
 <p class="caption"><span class="caption-text"><a class="reference internal" href="plot_hawkes_time_func_simu.html#example-plot-hawkes-time-func-simu-py"><span class="std std-ref">Hawkes simulation with exotic kernels</span></a></span></p>
 </div>
 </div><div class="toctree-wrapper compound">
 </div>
-<div class="thumbnailContainer" tooltip="Plot examples of proximal operators available in `tick.optim.prox` "><div class="figure" id="id7">
+<div class="thumbnailContainer" tooltip="Plot examples of proximal operators available in `tick.optim.prox` "><div class="figure" id="id8">
 <a class="reference external image-reference" href="./plot_prox_example.html"><img alt="../_images/plot_prox_example.png" src="../_images/plot_prox_example.png" /></a>
 <p class="caption"><span class="caption-text"><a class="reference internal" href="plot_prox_example.html#example-plot-prox-example-py"><span class="std std-ref">Examples of proximal operators</span></a></span></p>
 </div>
 </div><div class="toctree-wrapper compound">
 </div>
-<div class="thumbnailContainer" tooltip="Generates Linear, Logistic and Poisson regression realizations given a weight vector. "><div class="figure" id="id8">
-<a class="reference external image-reference" href="./plot_simulation_linear_model.html"><img alt="../_images/plot_simulation_linear_model.png" src="../_images/plot_simulation_linear_model.png" /></a>
-<p class="caption"><span class="caption-text"><a class="reference internal" href="plot_simulation_linear_model.html#example-plot-simulation-linear-model-py"><span class="std std-ref">Linear models data simulation</span></a></span></p>
-</div>
-</div><div class="toctree-wrapper compound">
-</div>
-<div class="thumbnailContainer" tooltip="This Hawkes EM (`tick.inference.HawkesEM`) algorithm assume that kernels are piecewise constant..."><div class="figure" id="id9">
-<a class="reference external image-reference" href="./plot_hawkes_em.html"><img alt="../_images/plot_hawkes_em.png" src="../_images/plot_hawkes_em.png" /></a>
-<p class="caption"><span class="caption-text"><a class="reference internal" href="plot_hawkes_em.html#example-plot-hawkes-em-py"><span class="std std-ref">Fit Hawkes random kernels</span></a></span></p>
-</div>
-</div><div class="toctree-wrapper compound">
-</div>
-<div class="thumbnailContainer" tooltip="This Hawkes learner based on conditional laws (`tick.inference.HawkesConditionalLaw`) is able t..."><div class="figure" id="id10">
+<div class="thumbnailContainer" tooltip="This Hawkes learner based on conditional laws (`tick.inference.HawkesConditionalLaw`) is able t..."><div class="figure" id="id9">
 <a class="reference external image-reference" href="./plot_hawkes_conditional_law.html"><img alt="../_images/plot_hawkes_conditional_law.png" src="../_images/plot_hawkes_conditional_law.png" /></a>
 <p class="caption"><span class="caption-text"><a class="reference internal" href="plot_hawkes_conditional_law.html#example-plot-hawkes-conditional-law-py"><span class="std std-ref">Fit Hawkes power law kernels</span></a></span></p>
 </div>
 </div><div class="toctree-wrapper compound">
 </div>
-<div class="thumbnailContainer" tooltip="This learner assumes Hawkes kernels are linear combinations of a given number of kernel basis."><div class="figure" id="id11">
+<div class="thumbnailContainer" tooltip="Generates Linear, Logistic and Poisson regression realizations given a weight vector. "><div class="figure" id="id10">
+<a class="reference external image-reference" href="./plot_simulation_linear_model.html"><img alt="../_images/plot_simulation_linear_model.png" src="../_images/plot_simulation_linear_model.png" /></a>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="plot_simulation_linear_model.html#example-plot-simulation-linear-model-py"><span class="std std-ref">Linear models data simulation</span></a></span></p>
+</div>
+</div><div class="toctree-wrapper compound">
+</div>
+<div class="thumbnailContainer" tooltip="This Hawkes EM (`tick.inference.HawkesEM`) algorithm assume that kernels are piecewise constant..."><div class="figure" id="id11">
+<a class="reference external image-reference" href="./plot_hawkes_em.html"><img alt="../_images/plot_hawkes_em.png" src="../_images/plot_hawkes_em.png" /></a>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="plot_hawkes_em.html#example-plot-hawkes-em-py"><span class="std std-ref">Fit Hawkes random kernels</span></a></span></p>
+</div>
+</div><div class="toctree-wrapper compound">
+</div>
+<div class="thumbnailContainer" tooltip="This learner assumes Hawkes kernels are linear combinations of a given number of kernel basis."><div class="figure" id="id12">
 <a class="reference external image-reference" href="./plot_hawkes_basis_kernels.html"><img alt="../_images/plot_hawkes_basis_kernels.png" src="../_images/plot_hawkes_basis_kernels.png" /></a>
 <p class="caption"><span class="caption-text"><a class="reference internal" href="plot_hawkes_basis_kernels.html#example-plot-hawkes-basis-kernels-py"><span class="std std-ref">Fit exotic Hawkes kernels</span></a></span></p>
 </div>
 </div><div class="toctree-wrapper compound">
 </div>
-<div class="thumbnailContainer" tooltip="This example illustrates the opimization of three linear models:     * Linear regression (`tick..."><div class="figure" id="id12">
+<div class="thumbnailContainer" tooltip="This example illustrates the opimization of three linear models:     * Linear regression (`tick..."><div class="figure" id="id13">
 <a class="reference external image-reference" href="./plot_glm_convergence.html"><img alt="../_images/plot_glm_convergence.png" src="../_images/plot_glm_convergence.png" /></a>
 <p class="caption"><span class="caption-text"><a class="reference internal" href="plot_glm_convergence.html#example-plot-glm-convergence-py"><span class="std std-ref">Generalized linear models solver convergence</span></a></span></p>
 </div>

@@ -78,6 +78,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../modules/inference.html"><code class="docutils literal"><span class="pre">tick.inference</span></code>: user-friendly inference tools</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../modules/inference.html#generalized-linear-models">1. Generalized linear models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../modules/inference.html#hawkes">2. Hawkes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/inference.html#survival-analysis">3. Survival analysis</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../modules/optim.html"><code class="docutils literal"><span class="pre">tick.optim</span></code>: optimization toolbox</a><ul>
@@ -96,7 +97,10 @@
 <li class="toctree-l2"><a class="reference internal" href="../../modules/plot.html#others">Others</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../modules/preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/generated/tick.preprocessing.FeaturesBinarizer.html">tick.preprocessing.FeaturesBinarizer</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../../modules/simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code>: simulation toolbox</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../modules/simulation.html#simulation-tools">1. Simulation tools</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../modules/simulation.html#linear-model-simulation">2. Linear model simulation</a></li>
@@ -150,7 +154,7 @@
 <p><strong>Script output</strong>:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">----------------------------------------</span>
 <span class="n">Launching</span> <span class="n">simulation</span> <span class="n">using</span> <a href="../../modules/generated/tick.simulation.SimuLogReg.html#tick.simulation.SimuLogReg"><span class="n">SimuLogReg</span></a><span class="o">...</span>
-<span class="n">Done</span> <span class="n">simulating</span> <span class="n">using</span> <a href="../../modules/generated/tick.simulation.SimuLogReg.html#tick.simulation.SimuLogReg"><span class="n">SimuLogReg</span></a> <span class="ow">in</span> <span class="mf">1.42e-02</span> <span class="n">seconds</span><span class="o">.</span>
+<span class="n">Done</span> <span class="n">simulating</span> <span class="n">using</span> <a href="../../modules/generated/tick.simulation.SimuLogReg.html#tick.simulation.SimuLogReg"><span class="n">SimuLogReg</span></a> <span class="ow">in</span> <span class="mf">1.43e-02</span> <span class="n">seconds</span><span class="o">.</span>
 <span class="n">Launching</span> <span class="n">the</span> <span class="n">solver</span> <a href="../../modules/generated/tick.optim.solver.GD.html#tick.optim.solver.GD"><span class="n">GD</span></a><span class="o">...</span>
   <span class="n">n_iter</span>  <span class="o">|</span>    <span class="n">obj</span>    <span class="o">|</span>    <span class="n">step</span>   <span class="o">|</span>  <span class="n">rel_obj</span>
         <span class="mi">0</span> <span class="o">|</span>  <span class="mf">5.25e-01</span> <span class="o">|</span>  <span class="mf">1.31e+00</span> <span class="o">|</span>  <span class="mf">2.42e-01</span>
@@ -164,7 +168,7 @@
        <span class="mi">80</span> <span class="o">|</span>  <span class="mf">3.88e-01</span> <span class="o">|</span>  <span class="mf">1.31e+00</span> <span class="o">|</span>  <span class="mf">6.69e-06</span>
        <span class="mi">90</span> <span class="o">|</span>  <span class="mf">3.88e-01</span> <span class="o">|</span>  <span class="mf">1.31e+00</span> <span class="o">|</span>  <span class="mf">2.93e-06</span>
       <span class="mi">100</span> <span class="o">|</span>  <span class="mf">3.88e-01</span> <span class="o">|</span>  <span class="mf">1.31e+00</span> <span class="o">|</span>  <span class="mf">1.25e-06</span>
-<span class="n">Done</span> <span class="n">solving</span> <span class="n">using</span> <a href="../../modules/generated/tick.optim.solver.GD.html#tick.optim.solver.GD"><span class="n">GD</span></a> <span class="ow">in</span> <span class="mf">0.2530670166015625</span> <span class="n">seconds</span>
+<span class="n">Done</span> <span class="n">solving</span> <span class="n">using</span> <a href="../../modules/generated/tick.optim.solver.GD.html#tick.optim.solver.GD"><span class="n">GD</span></a> <span class="ow">in</span> <span class="mf">0.22197985649108887</span> <span class="n">seconds</span>
 <span class="n">Launching</span> <span class="n">the</span> <span class="n">solver</span> <a href="../../modules/generated/tick.optim.solver.AGD.html#tick.optim.solver.AGD"><span class="n">AGD</span></a><span class="o">...</span>
   <span class="n">n_iter</span>  <span class="o">|</span>    <span class="n">obj</span>    <span class="o">|</span>    <span class="n">step</span>   <span class="o">|</span>  <span class="n">rel_obj</span>
         <span class="mi">0</span> <span class="o">|</span>  <span class="mf">5.25e-01</span> <span class="o">|</span>  <span class="mf">1.31e+00</span> <span class="o">|</span>  <span class="mf">2.42e-01</span>
@@ -176,37 +180,37 @@
        <span class="mi">60</span> <span class="o">|</span>  <span class="mf">3.88e-01</span> <span class="o">|</span>  <span class="mf">1.31e+00</span> <span class="o">|</span>  <span class="mf">1.29e-11</span>
        <span class="mi">70</span> <span class="o">|</span>  <span class="mf">3.88e-01</span> <span class="o">|</span>  <span class="mf">1.31e+00</span> <span class="o">|</span>  <span class="mf">5.72e-11</span>
        <span class="mi">80</span> <span class="o">|</span>  <span class="mf">3.88e-01</span> <span class="o">|</span>  <span class="mf">1.31e+00</span> <span class="o">|</span>  <span class="mf">5.17e-12</span>
-       <span class="mi">90</span> <span class="o">|</span>  <span class="mf">3.88e-01</span> <span class="o">|</span>  <span class="mf">1.31e+00</span> <span class="o">|</span>  <span class="mf">9.61e-14</span>
-      <span class="mi">100</span> <span class="o">|</span>  <span class="mf">3.88e-01</span> <span class="o">|</span>  <span class="mf">1.31e+00</span> <span class="o">|</span>  <span class="mf">1.60e-13</span>
-<span class="n">Done</span> <span class="n">solving</span> <span class="n">using</span> <a href="../../modules/generated/tick.optim.solver.AGD.html#tick.optim.solver.AGD"><span class="n">AGD</span></a> <span class="ow">in</span> <span class="mf">0.20217204093933105</span> <span class="n">seconds</span>
+       <span class="mi">90</span> <span class="o">|</span>  <span class="mf">3.88e-01</span> <span class="o">|</span>  <span class="mf">1.31e+00</span> <span class="o">|</span>  <span class="mf">9.58e-14</span>
+      <span class="mi">100</span> <span class="o">|</span>  <span class="mf">3.88e-01</span> <span class="o">|</span>  <span class="mf">1.31e+00</span> <span class="o">|</span>  <span class="mf">1.61e-13</span>
+<span class="n">Done</span> <span class="n">solving</span> <span class="n">using</span> <a href="../../modules/generated/tick.optim.solver.AGD.html#tick.optim.solver.AGD"><span class="n">AGD</span></a> <span class="ow">in</span> <span class="mf">0.16400909423828125</span> <span class="n">seconds</span>
 <span class="n">Launching</span> <span class="n">the</span> <span class="n">solver</span> <a href="../../modules/generated/tick.optim.solver.SGD.html#tick.optim.solver.SGD"><span class="n">SGD</span></a><span class="o">...</span>
   <span class="n">n_iter</span>  <span class="o">|</span>    <span class="n">obj</span>    <span class="o">|</span>  <span class="n">rel_obj</span>
-        <span class="mi">0</span> <span class="o">|</span>  <span class="mf">7.53e+00</span> <span class="o">|</span>  <span class="mf">9.86e+00</span>
-       <span class="mi">10</span> <span class="o">|</span>  <span class="mf">3.99e-01</span> <span class="o">|</span>  <span class="mf">2.86e-02</span>
-       <span class="mi">20</span> <span class="o">|</span>  <span class="mf">3.96e-01</span> <span class="o">|</span>  <span class="mf">6.66e-03</span>
-       <span class="mi">30</span> <span class="o">|</span>  <span class="mf">3.93e-01</span> <span class="o">|</span>  <span class="mf">2.56e-03</span>
-       <span class="mi">40</span> <span class="o">|</span>  <span class="mf">3.91e-01</span> <span class="o">|</span>  <span class="mf">4.21e-03</span>
-       <span class="mi">50</span> <span class="o">|</span>  <span class="mf">3.91e-01</span> <span class="o">|</span>  <span class="mf">1.13e-03</span>
-       <span class="mi">60</span> <span class="o">|</span>  <span class="mf">3.91e-01</span> <span class="o">|</span>  <span class="mf">8.76e-04</span>
-       <span class="mi">70</span> <span class="o">|</span>  <span class="mf">3.91e-01</span> <span class="o">|</span>  <span class="mf">1.96e-03</span>
-       <span class="mi">80</span> <span class="o">|</span>  <span class="mf">3.90e-01</span> <span class="o">|</span>  <span class="mf">5.13e-04</span>
-       <span class="mi">90</span> <span class="o">|</span>  <span class="mf">3.90e-01</span> <span class="o">|</span>  <span class="mf">1.54e-03</span>
-      <span class="mi">100</span> <span class="o">|</span>  <span class="mf">3.90e-01</span> <span class="o">|</span>  <span class="mf">1.96e-03</span>
-<span class="n">Done</span> <span class="n">solving</span> <span class="n">using</span> <a href="../../modules/generated/tick.optim.solver.SGD.html#tick.optim.solver.SGD"><span class="n">SGD</span></a> <span class="ow">in</span> <span class="mf">0.6394908428192139</span> <span class="n">seconds</span>
+        <span class="mi">0</span> <span class="o">|</span>  <span class="mf">8.97e+00</span> <span class="o">|</span>  <span class="mf">1.19e+01</span>
+       <span class="mi">10</span> <span class="o">|</span>  <span class="mf">4.01e-01</span> <span class="o">|</span>  <span class="mf">3.60e-03</span>
+       <span class="mi">20</span> <span class="o">|</span>  <span class="mf">3.98e-01</span> <span class="o">|</span>  <span class="mf">1.82e-03</span>
+       <span class="mi">30</span> <span class="o">|</span>  <span class="mf">3.95e-01</span> <span class="o">|</span>  <span class="mf">2.11e-03</span>
+       <span class="mi">40</span> <span class="o">|</span>  <span class="mf">3.92e-01</span> <span class="o">|</span>  <span class="mf">3.25e-04</span>
+       <span class="mi">50</span> <span class="o">|</span>  <span class="mf">3.91e-01</span> <span class="o">|</span>  <span class="mf">4.37e-03</span>
+       <span class="mi">60</span> <span class="o">|</span>  <span class="mf">3.91e-01</span> <span class="o">|</span>  <span class="mf">2.63e-04</span>
+       <span class="mi">70</span> <span class="o">|</span>  <span class="mf">3.90e-01</span> <span class="o">|</span>  <span class="mf">2.88e-05</span>
+       <span class="mi">80</span> <span class="o">|</span>  <span class="mf">3.91e-01</span> <span class="o">|</span>  <span class="mf">7.45e-04</span>
+       <span class="mi">90</span> <span class="o">|</span>  <span class="mf">3.91e-01</span> <span class="o">|</span>  <span class="mf">1.52e-03</span>
+      <span class="mi">100</span> <span class="o">|</span>  <span class="mf">3.90e-01</span> <span class="o">|</span>  <span class="mf">7.13e-04</span>
+<span class="n">Done</span> <span class="n">solving</span> <span class="n">using</span> <a href="../../modules/generated/tick.optim.solver.SGD.html#tick.optim.solver.SGD"><span class="n">SGD</span></a> <span class="ow">in</span> <span class="mf">0.4964179992675781</span> <span class="n">seconds</span>
 <span class="n">Launching</span> <span class="n">the</span> <span class="n">solver</span> <a href="../../modules/generated/tick.optim.solver.SVRG.html#tick.optim.solver.SVRG"><span class="n">SVRG</span></a><span class="o">...</span>
   <span class="n">n_iter</span>  <span class="o">|</span>    <span class="n">obj</span>    <span class="o">|</span>  <span class="n">rel_obj</span>
-        <span class="mi">0</span> <span class="o">|</span>  <span class="mf">4.68e-01</span> <span class="o">|</span>  <span class="mf">3.25e-01</span>
-       <span class="mi">10</span> <span class="o">|</span>  <span class="mf">3.88e-01</span> <span class="o">|</span>  <span class="mf">8.78e-09</span>
-       <span class="mi">20</span> <span class="o">|</span>  <span class="mf">3.88e-01</span> <span class="o">|</span>  <span class="mf">2.29e-15</span>
-       <span class="mi">30</span> <span class="o">|</span>  <span class="mf">3.88e-01</span> <span class="o">|</span>  <span class="mf">5.72e-16</span>
-       <span class="mi">40</span> <span class="o">|</span>  <span class="mf">3.88e-01</span> <span class="o">|</span>  <span class="mf">2.86e-16</span>
+        <span class="mi">0</span> <span class="o">|</span>  <span class="mf">4.42e-01</span> <span class="o">|</span>  <span class="mf">3.63e-01</span>
+       <span class="mi">10</span> <span class="o">|</span>  <span class="mf">3.88e-01</span> <span class="o">|</span>  <span class="mf">1.29e-09</span>
+       <span class="mi">20</span> <span class="o">|</span>  <span class="mf">3.88e-01</span> <span class="o">|</span>  <span class="mf">1.43e-16</span>
+       <span class="mi">30</span> <span class="o">|</span>  <span class="mf">3.88e-01</span> <span class="o">|</span>  <span class="mf">4.29e-16</span>
+       <span class="mi">40</span> <span class="o">|</span>  <span class="mf">3.88e-01</span> <span class="o">|</span>  <span class="mf">0.00e+00</span>
        <span class="mi">50</span> <span class="o">|</span>  <span class="mf">3.88e-01</span> <span class="o">|</span>  <span class="mf">0.00e+00</span>
-       <span class="mi">60</span> <span class="o">|</span>  <span class="mf">3.88e-01</span> <span class="o">|</span>  <span class="mf">0.00e+00</span>
-       <span class="mi">70</span> <span class="o">|</span>  <span class="mf">3.88e-01</span> <span class="o">|</span>  <span class="mf">1.43e-16</span>
+       <span class="mi">60</span> <span class="o">|</span>  <span class="mf">3.88e-01</span> <span class="o">|</span>  <span class="mf">1.43e-16</span>
+       <span class="mi">70</span> <span class="o">|</span>  <span class="mf">3.88e-01</span> <span class="o">|</span>  <span class="mf">0.00e+00</span>
        <span class="mi">80</span> <span class="o">|</span>  <span class="mf">3.88e-01</span> <span class="o">|</span>  <span class="mf">2.86e-16</span>
        <span class="mi">90</span> <span class="o">|</span>  <span class="mf">3.88e-01</span> <span class="o">|</span>  <span class="mf">0.00e+00</span>
       <span class="mi">100</span> <span class="o">|</span>  <span class="mf">3.88e-01</span> <span class="o">|</span>  <span class="mf">1.43e-16</span>
-<span class="n">Done</span> <span class="n">solving</span> <span class="n">using</span> <a href="../../modules/generated/tick.optim.solver.SVRG.html#tick.optim.solver.SVRG"><span class="n">SVRG</span></a> <span class="ow">in</span> <span class="mf">1.3781888484954834</span> <span class="n">seconds</span>
+<span class="n">Done</span> <span class="n">solving</span> <span class="n">using</span> <a href="../../modules/generated/tick.optim.solver.SVRG.html#tick.optim.solver.SVRG"><span class="n">SVRG</span></a> <span class="ow">in</span> <span class="mf">1.0462980270385742</span> <span class="n">seconds</span>
 </pre></div>
 </div>
 <p><strong>Python source code:</strong> <a class="reference download internal" href="../../_downloads/plot_optim_comparison.py" download=""><code class="xref download docutils literal"><span class="pre">plot_optim_comparison.py</span></code></a></p>
@@ -243,8 +247,8 @@
 <a href="../../modules/generated/tick.plot.plot_history.html#tick.plot.plot_history"><span class="n">plot_history</span></a><span class="p">([</span><span class="n">gd</span><span class="p">,</span> <span class="n">agd</span><span class="p">,</span> <span class="n">sgd</span><span class="p">,</span> <span class="n">svrg</span><span class="p">],</span> <span class="n">log_scale</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">dist_min</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><strong>Total running time of the example:</strong>  2.56 seconds
-( 0 minutes  2.56 seconds)</p>
+<p><strong>Total running time of the example:</strong>  2.00 seconds
+( 0 minutes  2.00 seconds)</p>
 <dl class="docutils">
 <dt>Mentioned <em>tick</em> classes:</dt>
 <dd><ul class="first last simple">

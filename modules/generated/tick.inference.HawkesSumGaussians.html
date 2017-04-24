@@ -1,0 +1,461 @@
+
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>tick.inference.HawkesSumGaussians &#8212; tick 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/bootstrap-3.3.4/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/bootstrap-3.3.4/css/bootstrap-theme.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../_static/bootstrap-sphinx.js"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="tick.inference.HawkesEM" href="tick.inference.HawkesEM.html" />
+    <link rel="prev" title="tick.inference.HawkesADM4" href="tick.inference.HawkesADM4.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body role="document">
+
+  <div id="navbar" class="None navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../index.html">
+          tick</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.1</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../../index.html">Home</a></li>
+                <li><a href="../../auto_examples/index.html">Examples</a></li>
+                <li><a href="../api.html">API</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../index.html">Browse <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../inference.html"><code class="docutils literal"><span class="pre">tick.inference</span></code>: user-friendly inference tools</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../inference.html#generalized-linear-models">1. Generalized linear models</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../inference.html#hawkes">2. Hawkes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../inference.html#survival-analysis">3. Survival analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../optim.html"><code class="docutils literal"><span class="pre">tick.optim</span></code>: optimization toolbox</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../optim.html#contents">Contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../optim.html#a-first-example">A First example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../optim.html#tick-optim-model-model-classes">1. <code class="docutils literal"><span class="pre">tick.optim.model</span></code>: model classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../optim.html#tick-optim-prox-proximal-operators">2. <code class="docutils literal"><span class="pre">tick.optim.prox</span></code>: proximal operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../optim.html#tick-optim-solver-solvers">3. <code class="docutils literal"><span class="pre">tick.optim.solver</span></code>: solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../optim.html#what-s-under-the-hood">4. What&#8217;s under the hood?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../plot.html"><code class="docutils literal"><span class="pre">tick.plot</span></code>: plotting utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../plot.html#optimization">Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plot.html#hawkes-estimation">Hawkes estimation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plot.html#point-process-simulation">Point process simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plot.html#others">Others</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tick.preprocessing.FeaturesBinarizer.html">tick.preprocessing.FeaturesBinarizer</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code>: simulation toolbox</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../simulation.html#simulation-tools">1. Simulation tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../simulation.html#linear-model-simulation">2. Linear model simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../simulation.html#survival-analysis-simulation">3. Survival analysis simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../simulation.html#point-process-simulation">4. Point process simulation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../dataset.html"><code class="docutils literal"><span class="pre">tick.dataset</span></code>: real world datasets</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../dataset.html#functions">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dataset.html#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../dev.html">Developer documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../dev.html#main-highlights">Main highlights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dev.html#base-class">Base class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dev.html#how-to-add-a-new-model-solver-or-prox">How to add a new model, solver or prox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dev.html#enable-python-pickling-of-c-objects">Enable Python-pickling of C++ objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dev.html#tips-for-debugging-c-classes-in-tick">Tips for debugging C++ classes in tick</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container content-container">
+  
+  <div class="section" id="tick-inference-hawkessumgaussians">
+<span id="hawkessumgaussians"></span><h1>tick.inference.HawkesSumGaussians<a class="headerlink" href="#tick-inference-hawkessumgaussians" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="tick.inference.HawkesSumGaussians">
+<em class="property">class </em><code class="descclassname">tick.inference.</code><code class="descname">HawkesSumGaussians</code><span class="sig-paren">(</span><em>max_mean_gaussian</em>, <em>n_gaussians=5</em>, <em>step_size=1e-07</em>, <em>C=1000.0</em>, <em>lasso_grouplasso_ratio=0.5</em>, <em>max_iter=50</em>, <em>tol=1e-05</em>, <em>n_threads=1</em>, <em>verbose=False</em>, <em>print_every=10</em>, <em>record_every=10</em>, <em>approx=0</em>, <em>em_max_iter=30</em>, <em>em_tol=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/inference/hawkes_sumgaussians.html#HawkesSumGaussians"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.inference.HawkesSumGaussians" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class that implements parametric inference for Hawkes processes
+with parametrisation of the kernels as sum of Gaussian basis functions
+and a mix of Lasso and group-lasso regularization</p>
+<p>Hawkes processes are point processes defined by the intensity:</p>
+<div class="math">
+\[\forall i \in [1 \dots D], \quad
+\lambda_i(t) = \mu_i + \sum_{j=1}^D
+\sum_{t_k^j &lt; t} \phi_{ij}(t - t_k^j)\]</div>
+<p>where</p>
+<ul class="simple">
+<li><span class="math">\(D\)</span> is the number of nodes</li>
+<li><span class="math">\(\mu_i\)</span> are the baseline intensities</li>
+<li><span class="math">\(\phi_{ij}\)</span> are the kernels</li>
+<li><span class="math">\(t_k^j\)</span> are the timestamps of all events of node <span class="math">\(j\)</span></li>
+</ul>
+<p>and with an parametrisation of the kernels as sum of Gaussian basis 
+functions</p>
+<div class="math">
+\[\phi_{ij}(t) = \sum_{m=1}^M \alpha^{ij}_m f (t - t_m), \quad
+f(t) = (2 \pi \sigma^2)^{-1} \exp(- t^2 / (2 \sigma^2))\]</div>
+<p>In our implementation we denote:</p>
+<ul class="simple">
+<li>Integer <span class="math">\(D\)</span> by the attribute <code class="xref py py-obj docutils literal"><span class="pre">n_nodes</span></code></li>
+<li>Vector <span class="math">\(\mu \in \mathbb{R}^{D}\)</span> by the attribute
+<code class="xref py py-obj docutils literal"><span class="pre">baseline</span></code></li>
+<li>Vector <span class="math">\((t_m) \in \mathbb{R}^{M}\)</span> by the variable
+<code class="xref py py-obj docutils literal"><span class="pre">means_gaussians</span></code></li>
+<li>Number <span class="math">\(\sigma\)</span> by the variable <code class="xref py py-obj docutils literal"><span class="pre">std_gaussian</span></code></li>
+<li>Tensor 
+<span class="math">\(A = (\alpha^{ij}_m)_{ijm} \in \mathbb{R}^{D \times D \times M}\)</span>
+by the attribute <code class="xref py py-obj docutils literal"><span class="pre">amplitudes</span></code></li>
+</ul>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>max_mean_gaussian</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code></p>
+<blockquote>
+<div><p>The mean of the last Gaussian basis function. This can be considered
+a proxy of the kernel support.</p>
+</div></blockquote>
+<p><strong>n_gaussians</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code></p>
+<blockquote>
+<div><p>The number of Gaussian basis functions used to approximate each kernel.</p>
+</div></blockquote>
+<p><strong>step_size</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code></p>
+<blockquote>
+<div><p>The step-size used in the optimization for the EM algorithm.</p>
+</div></blockquote>
+<p><strong>C</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default=1e3</p>
+<blockquote>
+<div><p>Level of penalization</p>
+</div></blockquote>
+<p><strong>lasso_grouplasso_ratio</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default=0.5</p>
+<blockquote>
+<div><p>Ratio of Lasso-Nuclear regularization mixing parameter with
+0 &lt;= ratio &lt;= 1.</p>
+<ul class="simple">
+<li>For ratio = 0 this is Group-Lasso regularization</li>
+<li>For ratio = 1 this is lasso (L1) regularization</li>
+<li>For 0 &lt; ratio &lt; 1, the regularization is a linear combination
+of Lasso and Group-Lasso.</li>
+</ul>
+</div></blockquote>
+<p><strong>max_iter</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code>, default=50</p>
+<blockquote>
+<div><p>Maximum number of iterations of the solving algorithm</p>
+</div></blockquote>
+<p><strong>tol</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default=1e-5</p>
+<blockquote>
+<div><p>The tolerance of the solving algorithm (iterations stop when the
+stopping criterion is below it). If not reached it does <code class="docutils literal"><span class="pre">max_iter</span></code>
+iterations</p>
+</div></blockquote>
+<p><strong>n_threads</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code>, default=1</p>
+<blockquote>
+<div><p>Number of threads used for parallel computation.</p>
+</div></blockquote>
+<p><strong>verbose</strong> : <code class="xref py py-obj docutils literal"><span class="pre">bool</span></code>, default=False</p>
+<blockquote>
+<div><p>If <code class="xref py py-obj docutils literal"><span class="pre">True</span></code>, we verbose things</p>
+<ul class="simple">
+<li>if <code class="xref py py-obj docutils literal"><span class="pre">int</span> <span class="pre">&lt;=</span> <span class="pre">0</span></code>: the number of physical cores available on the CPU</li>
+<li>otherwise the desired number of threads</li>
+</ul>
+</div></blockquote>
+<p><strong>print_every</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code>, default=10</p>
+<blockquote>
+<div><p>Print history information when <code class="docutils literal"><span class="pre">n_iter</span></code> (iteration number) is
+a multiple of <code class="docutils literal"><span class="pre">print_every</span></code></p>
+</div></blockquote>
+<p><strong>record_every</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code>, default=10</p>
+<blockquote>
+<div><p>Record history information when <code class="docutils literal"><span class="pre">n_iter</span></code> (iteration number) is
+a multiple of <code class="docutils literal"><span class="pre">record_every</span></code></p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Attributes:</th><td class="field-body"><p class="first"><strong>n_nodes</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code></p>
+<blockquote>
+<div><p>Number of nodes / components in the Hawkes model</p>
+</div></blockquote>
+<p><strong>baseline</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.array</span></code>, shape=(n_nodes,)</p>
+<blockquote>
+<div><p>Inferred baseline of each component&#8217;s intensity</p>
+</div></blockquote>
+<p><strong>amplitudes</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code>, shape=(n_nodes, n_nodes, n_gaussians)</p>
+<blockquote>
+<div><p>Inferred adjacency matrix</p>
+</div></blockquote>
+<p><strong>means_gaussians</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.array</span></code>, shape=(n_gaussians,)</p>
+<blockquote>
+<div><p>The means of the Gaussian basis functions.</p>
+</div></blockquote>
+<p><strong>std_gaussian</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code></p>
+<blockquote class="last">
+<div><p>The standard deviation of each Gaussian basis function.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">References</p>
+<p>Xu, Farajtabar, and Zha (2016, June) in ICML,
+<a class="reference external" href="http://jmlr.org/proceedings/papers/v48/xuc16.pdf">Learning Granger Causality for Hawkes Processes</a>.</p>
+<dl class="method">
+<dt id="tick.inference.HawkesSumGaussians.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>max_mean_gaussian</em>, <em>n_gaussians=5</em>, <em>step_size=1e-07</em>, <em>C=1000.0</em>, <em>lasso_grouplasso_ratio=0.5</em>, <em>max_iter=50</em>, <em>tol=1e-05</em>, <em>n_threads=1</em>, <em>verbose=False</em>, <em>print_every=10</em>, <em>record_every=10</em>, <em>approx=0</em>, <em>em_max_iter=30</em>, <em>em_tol=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/inference/hawkes_sumgaussians.html#HawkesSumGaussians.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.inference.HawkesSumGaussians.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="tick.inference.HawkesSumGaussians.fit">
+<code class="descname">fit</code><span class="sig-paren">(</span><em>events</em>, <em>end_times=None</em>, <em>baseline_start=None</em>, <em>amplitudes_start=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/inference/hawkes_sumgaussians.html#HawkesSumGaussians.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.inference.HawkesSumGaussians.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit the model according to the given training data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>events</strong> : <code class="xref py py-obj docutils literal"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code></p>
+<blockquote>
+<div><p>List of Hawkes processes realizations.
+Each realization of the Hawkes process is a list of n_node for
+each component of the Hawkes. Namely <code class="xref py py-obj docutils literal"><span class="pre">events[i][j]</span></code> contains a
+one-dimensional <code class="xref py py-obj docutils literal"><span class="pre">numpy.array</span></code> of the events&#8217; timestamps of
+component j of realization i.</p>
+<p>If only one realization is given, it will be wrapped into a list</p>
+</div></blockquote>
+<p><strong>end_times</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code> or <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default = None</p>
+<blockquote>
+<div><p>List of end time of all hawkes processes that will be given to the
+model. If None, it will be set to each realization&#8217;s latest time.
+If only one realization is provided, then a float can be given.</p>
+</div></blockquote>
+<p><strong>baseline_start</strong> : <code class="xref py py-obj docutils literal"><span class="pre">None</span></code> or <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code>, shape=(n_nodes)</p>
+<blockquote>
+<div><p>Set initial value of baseline parameter
+If <code class="xref py py-obj docutils literal"><span class="pre">None</span></code> starts with uniform 1 values</p>
+</div></blockquote>
+<p><strong>amplitudes_start</strong> : <code class="xref py py-obj docutils literal"><span class="pre">None</span></code> or <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code>, shape=(n_nodes, n_nodes, n_gaussians)</p>
+<blockquote class="last">
+<div><p>Set initial value of amplitudes parameter
+If <code class="xref py py-obj docutils literal"><span class="pre">None</span></code> starts with random values uniformly sampled between 0.5
+and 0.9`</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tick.inference.HawkesSumGaussians.get_history">
+<code class="descname">get_history</code><span class="sig-paren">(</span><em>key=None</em><span class="sig-paren">)</span><a class="headerlink" href="#tick.inference.HawkesSumGaussians.get_history" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns history of the solver</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>key</strong> : <code class="xref py py-obj docutils literal"><span class="pre">str</span></code>, default=None</p>
+<blockquote>
+<div><ul class="simple">
+<li>If <code class="xref py py-obj docutils literal"><span class="pre">None</span></code> all history is returned as a <code class="xref py py-obj docutils literal"><span class="pre">dict</span></code></li>
+<li>If <code class="xref py py-obj docutils literal"><span class="pre">str</span></code>, name of the history element to retrieve</li>
+</ul>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> : <code class="xref py py-obj docutils literal"><span class="pre">list</span></code> or <code class="xref py py-obj docutils literal"><span class="pre">dict</span></code></p>
+<blockquote class="last">
+<div><ul class="simple">
+<li>If <code class="docutils literal"><span class="pre">key</span></code> is None or <code class="docutils literal"><span class="pre">key</span></code> is not in history then
+output is a dict containing history of all keys</li>
+<li>If <code class="docutils literal"><span class="pre">key</span></code> is the name of an element in the history,
+output is a <code class="xref py py-obj docutils literal"><span class="pre">list</span></code> containing the history of this element</li>
+</ul>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tick.inference.HawkesSumGaussians.get_kernel_norms">
+<code class="descname">get_kernel_norms</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/inference/hawkes_sumgaussians.html#HawkesSumGaussians.get_kernel_norms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.inference.HawkesSumGaussians.get_kernel_norms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes kernel norms. This makes our learner compliant with
+<a class="reference internal" href="tick.plot.plot_hawkes_kernel_norms.html#tick.plot.plot_hawkes_kernel_norms" title="tick.plot.plot_hawkes_kernel_norms"><code class="xref py py-obj docutils literal"><span class="pre">tick.plot.plot_hawkes_kernel_norms</span></code></a> API</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>norms</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code>, shape=(n_nodes, n_nodes)</p>
+<blockquote class="last">
+<div><p>2d array in which each entry i, j corresponds to the norm of
+kernel i, j</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tick.inference.HawkesSumGaussians.get_kernel_supports">
+<code class="descname">get_kernel_supports</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/inference/hawkes_sumgaussians.html#HawkesSumGaussians.get_kernel_supports"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.inference.HawkesSumGaussians.get_kernel_supports" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes kernel support. This makes our learner compliant with
+<a class="reference internal" href="tick.plot.plot_hawkes_kernels.html#tick.plot.plot_hawkes_kernels" title="tick.plot.plot_hawkes_kernels"><code class="xref py py-obj docutils literal"><span class="pre">tick.plot.plot_hawkes_kernels</span></code></a> API</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code>, shape=(n_nodes, n_nodes)</p>
+<blockquote class="last">
+<div><p>2d array in which each entry i, j corresponds to the support of
+kernel i, j</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tick.inference.HawkesSumGaussians.get_kernel_values">
+<code class="descname">get_kernel_values</code><span class="sig-paren">(</span><em>i</em>, <em>j</em>, <em>abscissa_array</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/inference/hawkes_sumgaussians.html#HawkesSumGaussians.get_kernel_values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.inference.HawkesSumGaussians.get_kernel_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes value of the specified kernel on given time values. This
+makes our learner compliant with <a class="reference internal" href="tick.plot.plot_hawkes_kernels.html#tick.plot.plot_hawkes_kernels" title="tick.plot.plot_hawkes_kernels"><code class="xref py py-obj docutils literal"><span class="pre">tick.plot.plot_hawkes_kernels</span></code></a> API</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>i</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code></p>
+<blockquote>
+<div><p>First index of the kernel</p>
+</div></blockquote>
+<p><strong>j</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code></p>
+<blockquote>
+<div><p>Second index of the kernel</p>
+</div></blockquote>
+<p><strong>abscissa_array</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code>, shape=(n_points, )</p>
+<blockquote>
+<div><p>1d array containing all the times at which this kernel will
+computes it value</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code>, shape=(n_points, )</p>
+<blockquote class="last">
+<div><p>1d array containing the values of the specified kernels at the
+given times.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<div class="section" id="examples-using-tick-inference-hawkessumgaussians">
+<h2>Examples using <code class="docutils literal"><span class="pre">tick.inference.HawkesSumGaussians</span></code><a class="headerlink" href="#examples-using-tick-inference-hawkessumgaussians" title="Permalink to this headline">¶</a></h2>
+<div class="thumbnailContainer" tooltip="This Hawkes (`tick.inference.HawkesSumGaussians`) algorithm assume that kernels are parametrize..."><div class="figure" id="id1">
+<a class="reference external image-reference" href="./../../auto_examples/./plot_hawkes_gaussian_kernels.html"><img alt="../../_images/plot_hawkes_gaussian_kernels1.png" src="../../_images/plot_hawkes_gaussian_kernels1.png" /></a>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="../../auto_examples/plot_hawkes_gaussian_kernels.html#example-plot-hawkes-gaussian-kernels-py"><span class="std std-ref">Fit Hawkes with asynchronous causality</span></a></span></p>
+</div>
+</div></div>
+</div>
+
+
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Poulsen.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

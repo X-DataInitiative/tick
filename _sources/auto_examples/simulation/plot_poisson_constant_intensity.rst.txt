@@ -15,7 +15,7 @@ plot_poisson_constant_intensity.py
 
   ------------------------------------------------
   Launching simulation using SimuPoissonProcess...
-  Done simulating using SimuPoissonProcess in 1.05e-04 seconds.
+  Done simulating using SimuPoissonProcess in 1.50e-04 seconds.
 
 
 
@@ -24,8 +24,8 @@ plot_poisson_constant_intensity.py
 .. literalinclude:: plot_poisson_constant_intensity.py
     :lines: 2-
 
-**Total running time of the example:**  0.12 seconds
-( 0 minutes  0.12 seconds)
+**Total running time of the example:**  0.09 seconds
+( 0 minutes  0.09 seconds)
     
 Mentioned *tick* classes:
    * `tick.plot.plot_point_process`

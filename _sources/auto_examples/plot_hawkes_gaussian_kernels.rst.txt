@@ -1,0 +1,47 @@
+
+
+.. _example_plot_hawkes_gaussian_kernels.py:
+
+
+======================================
+Fit Hawkes with asynchronous causality
+======================================
+
+This Hawkes (`tick.inference.HawkesSumGaussians`) algorithm assume 
+that kernels are parametrized as a sum of gaussians. This can be useful to 
+determine whether an action will have an effect in a not so near future. For 
+example if you watch a TV show today you might be stimulated to watch the same 
+TV show one week later.
+
+I has been originally described in this paper:
+
+Xu, Farajtabar, and Zha (2016, June) in ICML,
+`Learning Granger Causality for Hawkes Processes`_.
+
+.. _Learning Granger Causality for Hawkes Processes: http://jmlr.org/proceedings/papers/v48/xuc16.pdf
+
+
+
+.. image:: images/plot_hawkes_gaussian_kernels_001.png
+    :align: center
+
+
+
+
+**Python source code:** :download:`plot_hawkes_gaussian_kernels.py <plot_hawkes_gaussian_kernels.py>`
+
+.. literalinclude:: plot_hawkes_gaussian_kernels.py
+    :lines: 19-
+
+**Total running time of the example:**  1.87 seconds
+( 0 minutes  1.87 seconds)
+    
+Mentioned *tick* classes:
+   * `tick.inference.HawkesSumGaussians`
+   * `tick.plot.plot_hawkes_kernels`
+   * `tick.simulation.HawkesKernel0`
+   * `tick.simulation.HawkesKernelExp`
+   * `tick.simulation.HawkesKernelPowerLaw`
+   * `tick.simulation.HawkesKernelTimeFunc`
+   * `tick.simulation.SimuHawkes`
+   * `tick.simulation.SimuHawkesMulti`

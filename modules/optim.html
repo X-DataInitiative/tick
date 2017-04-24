@@ -37,7 +37,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="tick.plot: plotting utilities" href="plot.html" />
-    <link rel="prev" title="tick.inference.HawkesConditionalLaw" href="generated/tick.inference.HawkesConditionalLaw.html" />
+    <link rel="prev" title="tick.inference.CoxRegression" href="generated/tick.inference.CoxRegression.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -80,6 +80,7 @@
 <li class="toctree-l1"><a class="reference internal" href="inference.html"><code class="docutils literal"><span class="pre">tick.inference</span></code>: user-friendly inference tools</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="inference.html#generalized-linear-models">1. Generalized linear models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="inference.html#hawkes">2. Hawkes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inference.html#survival-analysis">3. Survival analysis</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#"><code class="docutils literal"><span class="pre">tick.optim</span></code>: optimization toolbox</a><ul>
@@ -98,7 +99,10 @@
 <li class="toctree-l2"><a class="reference internal" href="plot.html#others">Others</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="generated/tick.preprocessing.FeaturesBinarizer.html">tick.preprocessing.FeaturesBinarizer</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code>: simulation toolbox</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="simulation.html#simulation-tools">1. Simulation tools</a></li>
 <li class="toctree-l2"><a class="reference internal" href="simulation.html#linear-model-simulation">2. Linear model simulation</a></li>
@@ -782,8 +786,8 @@ an automatic tuning of the step size.</p>
 <p>Here is the list of the solvers available in <code class="docutils literal"><span class="pre">tick</span></code>.</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="58%" />
-<col width="42%" />
+<col width="56%" />
+<col width="44%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Solver</th>
@@ -806,10 +810,13 @@ an automatic tuning of the step size.</p>
 <tr class="row-even"><td>Stochastic Gradient Descent</td>
 <td><a class="reference internal" href="generated/tick.optim.solver.SGD.html#tick.optim.solver.SGD" title="tick.optim.solver.SGD"><code class="xref py py-class docutils literal"><span class="pre">SGD</span></code></a></td>
 </tr>
-<tr class="row-odd"><td>Stochastic Variance Reduced Descent</td>
+<tr class="row-odd"><td>Adaptive Gradient Descent solver</td>
+<td><a class="reference internal" href="generated/tick.optim.solver.AdaGrad.html#tick.optim.solver.AdaGrad" title="tick.optim.solver.AdaGrad"><code class="xref py py-class docutils literal"><span class="pre">AdaGrad</span></code></a></td>
+</tr>
+<tr class="row-even"><td>Stochastic Variance Reduced Descent</td>
 <td><a class="reference internal" href="generated/tick.optim.solver.SVRG.html#tick.optim.solver.SVRG" title="tick.optim.solver.SVRG"><code class="xref py py-class docutils literal"><span class="pre">SVRG</span></code></a></td>
 </tr>
-<tr class="row-even"><td>Stochastic Dual Coordinate Ascent</td>
+<tr class="row-odd"><td>Stochastic Dual Coordinate Ascent</td>
 <td><a class="reference internal" href="generated/tick.optim.solver.SDCA.html#tick.optim.solver.SDCA" title="tick.optim.solver.SDCA"><code class="xref py py-class docutils literal"><span class="pre">SDCA</span></code></a></td>
 </tr>
 </tbody>

@@ -78,6 +78,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../modules/inference.html"><code class="docutils literal"><span class="pre">tick.inference</span></code>: user-friendly inference tools</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../modules/inference.html#generalized-linear-models">1. Generalized linear models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../modules/inference.html#hawkes">2. Hawkes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/inference.html#survival-analysis">3. Survival analysis</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../modules/optim.html"><code class="docutils literal"><span class="pre">tick.optim</span></code>: optimization toolbox</a><ul>
@@ -96,7 +97,10 @@
 <li class="toctree-l2"><a class="reference internal" href="../modules/plot.html#others">Others</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../modules/preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/generated/tick.preprocessing.FeaturesBinarizer.html">tick.preprocessing.FeaturesBinarizer</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../modules/simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code>: simulation toolbox</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../modules/simulation.html#simulation-tools">1. Simulation tools</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../modules/simulation.html#linear-model-simulation">2. Linear model simulation</a></li>
@@ -152,13 +156,13 @@ weight vector.</p>
 <p><strong>Script output</strong>:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">----------------------------------------</span>
 <span class="n">Launching</span> <span class="n">simulation</span> <span class="n">using</span> <a href="../modules/generated/tick.simulation.SimuLinReg.html#tick.simulation.SimuLinReg"><span class="n">SimuLinReg</span></a><span class="o">...</span>
-<span class="n">Done</span> <span class="n">simulating</span> <span class="n">using</span> <a href="../modules/generated/tick.simulation.SimuLinReg.html#tick.simulation.SimuLinReg"><span class="n">SimuLinReg</span></a> <span class="ow">in</span> <span class="mf">5.58e-04</span> <span class="n">seconds</span><span class="o">.</span>
+<span class="n">Done</span> <span class="n">simulating</span> <span class="n">using</span> <a href="../modules/generated/tick.simulation.SimuLinReg.html#tick.simulation.SimuLinReg"><span class="n">SimuLinReg</span></a> <span class="ow">in</span> <span class="mf">5.59e-04</span> <span class="n">seconds</span><span class="o">.</span>
 <span class="o">----------------------------------------</span>
 <span class="n">Launching</span> <span class="n">simulation</span> <span class="n">using</span> <a href="../modules/generated/tick.simulation.SimuLogReg.html#tick.simulation.SimuLogReg"><span class="n">SimuLogReg</span></a><span class="o">...</span>
-<span class="n">Done</span> <span class="n">simulating</span> <span class="n">using</span> <a href="../modules/generated/tick.simulation.SimuLogReg.html#tick.simulation.SimuLogReg"><span class="n">SimuLogReg</span></a> <span class="ow">in</span> <span class="mf">4.18e-04</span> <span class="n">seconds</span><span class="o">.</span>
+<span class="n">Done</span> <span class="n">simulating</span> <span class="n">using</span> <a href="../modules/generated/tick.simulation.SimuLogReg.html#tick.simulation.SimuLogReg"><span class="n">SimuLogReg</span></a> <span class="ow">in</span> <span class="mf">4.95e-04</span> <span class="n">seconds</span><span class="o">.</span>
 <span class="o">-----------------------------------------</span>
 <span class="n">Launching</span> <span class="n">simulation</span> <span class="n">using</span> <a href="../modules/generated/tick.simulation.SimuPoisReg.html#tick.simulation.SimuPoisReg"><span class="n">SimuPoisReg</span></a><span class="o">...</span>
-<span class="n">Done</span> <span class="n">simulating</span> <span class="n">using</span> <a href="../modules/generated/tick.simulation.SimuPoisReg.html#tick.simulation.SimuPoisReg"><span class="n">SimuPoisReg</span></a> <span class="ow">in</span> <span class="mf">3.33e-04</span> <span class="n">seconds</span><span class="o">.</span>
+<span class="n">Done</span> <span class="n">simulating</span> <span class="n">using</span> <a href="../modules/generated/tick.simulation.SimuPoisReg.html#tick.simulation.SimuPoisReg"><span class="n">SimuPoisReg</span></a> <span class="ow">in</span> <span class="mf">4.25e-04</span> <span class="n">seconds</span><span class="o">.</span>
 </pre></div>
 </div>
 <p><strong>Python source code:</strong> <a class="reference download internal" href="../_downloads/plot_simulation_linear_model.py" download=""><code class="xref download docutils literal"><span class="pre">plot_simulation_linear_model.py</span></code></a></p>
@@ -204,8 +208,8 @@ weight vector.</p>
 <a href="http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.show"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
 </pre></div>
 </div>
-<p><strong>Total running time of the example:</strong>  0.35 seconds
-( 0 minutes  0.35 seconds)</p>
+<p><strong>Total running time of the example:</strong>  0.31 seconds
+( 0 minutes  0.31 seconds)</p>
 <dl class="docutils">
 <dt>Mentioned <em>tick</em> classes:</dt>
 <dd><ul class="first last simple">

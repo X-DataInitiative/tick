@@ -20,7 +20,7 @@ intensity is modeled through `tick.base.TimeFunction`
 
   ------------------------------------------------------
   Launching simulation using SimuInhomogeneousPoisson...
-  Done simulating using SimuInhomogeneousPoisson in 2.80e-04 seconds.
+  Done simulating using SimuInhomogeneousPoisson in 1.46e-04 seconds.
 
 
 
@@ -29,8 +29,8 @@ intensity is modeled through `tick.base.TimeFunction`
 .. literalinclude:: plot_poisson_inhomogeneous.py
     :lines: 9-
 
-**Total running time of the example:**  0.05 seconds
-( 0 minutes  0.05 seconds)
+**Total running time of the example:**  0.04 seconds
+( 0 minutes  0.04 seconds)
     
 Mentioned *tick* classes:
    * `tick.base.TimeFunction`

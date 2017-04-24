@@ -501,6 +501,7 @@ Accelerated proximal gradient descent                    :class:`AGD <tick.optim
 Broyden, Fletcher, Goldfarb, and Shannon (quasi-newton)  :class:`BFGS <tick.optim.solver.BFGS>`
 Self-Concordant Proximal Gradient Descent                :class:`SCPG <tick.optim.solver.SCPG>`
 Stochastic Gradient Descent                              :class:`SGD <tick.optim.solver.SGD>`
+Adaptive Gradient Descent solver                         :class:`AdaGrad <tick.optim.solver.AdaGrad>`
 Stochastic Variance Reduced Descent                      :class:`SVRG <tick.optim.solver.SVRG>`
 Stochastic Dual Coordinate Ascent                        :class:`SDCA <tick.optim.solver.SDCA>`
 =======================================================  ========================================

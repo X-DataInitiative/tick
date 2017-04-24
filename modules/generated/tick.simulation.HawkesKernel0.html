@@ -80,6 +80,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../inference.html"><code class="docutils literal"><span class="pre">tick.inference</span></code>: user-friendly inference tools</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../inference.html#generalized-linear-models">1. Generalized linear models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../inference.html#hawkes">2. Hawkes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../inference.html#survival-analysis">3. Survival analysis</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../optim.html"><code class="docutils literal"><span class="pre">tick.optim</span></code>: optimization toolbox</a><ul>
@@ -98,7 +99,10 @@
 <li class="toctree-l2"><a class="reference internal" href="../plot.html#others">Others</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tick.preprocessing.FeaturesBinarizer.html">tick.preprocessing.FeaturesBinarizer</a></li>
+</ul>
+</li>
 <li class="toctree-l1 current"><a class="reference internal" href="../simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code>: simulation toolbox</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="../simulation.html#simulation-tools">1. Simulation tools</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../simulation.html#linear-model-simulation">2. Linear model simulation</a></li>
@@ -214,7 +218,11 @@ It might be overloaded if L1 norm closed formula exists</p>
 
 <div class="section" id="examples-using-tick-simulation-hawkeskernel0">
 <h2>Examples using <code class="docutils literal"><span class="pre">tick.simulation.HawkesKernel0</span></code><a class="headerlink" href="#examples-using-tick-simulation-hawkeskernel0" title="Permalink to this headline">¶</a></h2>
-<div class="thumbnailContainer" tooltip=""><div class="figure" id="id1">
+<div class="thumbnailContainer" tooltip="This Hawkes (`tick.inference.HawkesSumGaussians`) algorithm assume that kernels are parametrize..."><div class="figure" id="id1">
+<a class="reference external image-reference" href="./../../auto_examples/./plot_hawkes_gaussian_kernels.html"><img alt="../../_images/plot_hawkes_gaussian_kernels1.png" src="../../_images/plot_hawkes_gaussian_kernels1.png" /></a>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="../../auto_examples/plot_hawkes_gaussian_kernels.html#example-plot-hawkes-gaussian-kernels-py"><span class="std std-ref">Fit Hawkes with asynchronous causality</span></a></span></p>
+</div>
+</div><div class="thumbnailContainer" tooltip=""><div class="figure" id="id2">
 <a class="reference external image-reference" href="./../../auto_examples/simulation/plot_hawkes_kernels.html"><img alt="../../_images/plot_hawkes_kernels.png" src="../../_images/plot_hawkes_kernels.png" /></a>
 <p class="caption"><span class="caption-text"><a class="reference internal" href="../../auto_examples/simulation/plot_hawkes_kernels.html#example-simulation-plot-hawkes-kernels-py"><span class="std std-ref">plot_hawkes_kernels.py</span></a></span></p>
 </div>

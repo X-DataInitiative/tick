@@ -42,8 +42,8 @@ It could have been more precise if end_time or kernel_size was increased.
 .. literalinclude:: plot_hawkes_basis_kernels.py
     :lines: 18-
 
-**Total running time of the example:**  2.09 seconds
-( 0 minutes  2.09 seconds)
+**Total running time of the example:**  2.06 seconds
+( 0 minutes  2.06 seconds)
     
 Mentioned *tick* classes:
    * `tick.inference.HawkesBasisKernels`
