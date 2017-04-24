@@ -6,21 +6,21 @@ class HawkesKernelPowerLaw(HawkesKernel):
     """Hawkes kernel for power law
 
     .. math::
-        \phi(t) = \phi(t) = \alpha (\delta + t)^{- \beta} 1_{t > 0}
+        \\phi(t) = \\phi(t) = \\alpha (\\delta + t)^{- \\beta} 1_{t > 0}
 
-    Where :math:`\alpha` is called the multiplier, `\delta` the cut-off and
-    :math:`\beta` the exponent
+    Where :math:`\\alpha` is called the multiplier, `\\delta` the cut-off and
+    :math:`\\beta` the exponent
 
     Parameters
     ----------
     multiplier : `float`
-        Multiplier of the kernel, also noted :math:`\alpha`
+        Multiplier of the kernel, also noted :math:`\\alpha`
 
     cutoff : `float`
-        Cut-off of the kernel, also noted :math:`\delta`
+        Cut-off of the kernel, also noted :math:`\\delta`
 
     exponent : `float`
-        Exponent of the kernel, also noted :math:`\beta`
+        Exponent of the kernel, also noted :math:`\\beta`
     """
     def __init__(self, multiplier, cutoff, exponent, support=-1, error=1e-5):
         HawkesKernel.__init__(self)

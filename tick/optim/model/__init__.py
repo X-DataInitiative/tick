@@ -1,7 +1,5 @@
 import tick.base
 
-from .base import ModelLabelsFeatures
-
 from .linreg import ModelLinReg
 from .linreg_with_intercepts import ModelLinRegWithIntercepts
 from .logreg import ModelLogReg
@@ -14,8 +12,7 @@ from .hawkes_fixed_expkern_leastsq import ModelHawkesFixedExpKernLeastSq
 from .hawkes_fixed_sumexpkern_leastsq import ModelHawkesFixedSumExpKernLeastSq
 
 
-__all__ = ["ModelLabelsFeatures",
-           "ModelLinReg",
+__all__ = ["ModelLinReg",
            "ModelLinRegWithIntercepts",
            "ModelLogReg",
            "ModelPoisReg",

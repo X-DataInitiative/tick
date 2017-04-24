@@ -129,9 +129,10 @@ class HawkesSumGaussians(LearnerHawkesNoParam):
 
     References
     ----------
-    Xu, Farajtabar, and Zha (2016, June) in ICML
-    `Learning Granger Causality for Hawkes Processes`
-    <http://jmlr.org/proceedings/papers/v48/xuc16.pdf>`_.
+    Xu, Farajtabar, and Zha (2016, June) in ICML,
+    `Learning Granger Causality for Hawkes Processes`_.
+    
+    .. _Learning Granger Causality for Hawkes Processes: http://jmlr.org/proceedings/papers/v48/xuc16.pdf
     """
 
     _attrinfos = {

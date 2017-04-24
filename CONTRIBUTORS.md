@@ -8,6 +8,7 @@ The _tick_ package was initially implemented by researchers at [CMAP](http://www
 - [Stephane Gaiffas](http://www.cmap.polytechnique.fr/~gaiffas/)
 - Martin Bompaire
 - Søren Vinther Poulsen
+- Massil Achab
 - Maryan Morel
 - Simon Bussy
 

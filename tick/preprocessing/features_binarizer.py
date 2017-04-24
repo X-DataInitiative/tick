@@ -8,11 +8,13 @@ from tick.base import Base
 
 
 class FeaturesBinarizer(Base, BaseEstimator, TransformerMixin):
-    """This is a scikit-learn transformer that transform an input
+    """Transforms continuous data into bucketed binary data. 
+    
+    This is a scikit-learn transformer that transform an input
     pandas DataFrame X of shape (n_samples, n_features) into a binary
     matrix of size (n_samples, n_new_features).
     Continous features are modified and extended into binary features, using
-    linearly or inter-quantiles spaced bins.
+    linearly or inter-quantiles spaced bins. 
     Discrete features are binary encoded with K columns, where K is the number
     of modalities.
     Other features (none of the above) are left unchanged.
@@ -53,6 +55,41 @@ class FeaturesBinarizer(Base, BaseEstimator, TransformerMixin):
     References
     ----------
     http://scikit-learn.org/stable/modules/preprocessing.html#preprocessing
+    
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from tick.preprocessing import FeaturesBinarizer
+    >>> features = np.array([[0.00902084, 0., 'z'],
+    ...                      [0.46599565, 0., 2.],
+    ...                      [0.52091721, 1., 2.],
+    ...                      [0.47315496, 1., 1.],
+    ...                      [0.08180209, 0., 0.],
+    ...                      [0.45011727, 0., 0.],
+    ...                      [2.04347947, 1., 20.],
+    ...                      [-0.9890938, 0., 0.],
+    ...                      [-0.3063761, 1., 1.],
+    ...                      [0.27110903, 0., 0.]])
+    >>> binarizer = FeaturesBinarizer(n_cuts=3)
+    >>> binarized_features = binarizer.fit_transform(features)
+    >>> # output comes as a sparse matrix
+    >>> binarized_features.__class__
+    <class 'scipy.sparse.csr.csr_matrix'>
+    >>> # column type is automatically detected
+    >>> sorted(binarizer.feature_type.items())
+    [('0', 'continuous'), ('1', 'discrete'), ('2', 'discrete')]
+    >>> # features is binarized (first column is removed to avoid colinearity)
+    >>> binarized_features.toarray()
+    array([[ 1.,  0.,  0.,  0.,  1.,  0.,  0.,  0.,  0.,  0.,  1.],
+           [ 0.,  0.,  1.,  0.,  1.,  0.,  0.,  0.,  1.,  0.,  0.],
+           [ 0.,  0.,  0.,  1.,  0.,  1.,  0.,  0.,  1.,  0.,  0.],
+           [ 0.,  0.,  1.,  0.,  0.,  1.,  0.,  1.,  0.,  0.,  0.],
+           [ 0.,  1.,  0.,  0.,  1.,  0.,  1.,  0.,  0.,  0.,  0.],
+           [ 0.,  0.,  1.,  0.,  1.,  0.,  1.,  0.,  0.,  0.,  0.],
+           [ 0.,  0.,  0.,  1.,  0.,  1.,  0.,  0.,  0.,  1.,  0.],
+           [ 1.,  0.,  0.,  0.,  1.,  0.,  1.,  0.,  0.,  0.,  0.],
+           [ 1.,  0.,  0.,  0.,  0.,  1.,  0.,  1.,  0.,  0.,  0.],
+           [ 0.,  1.,  0.,  0.,  1.,  0.,  1.,  0.,  0.,  0.,  0.]])
     """
 
     _attrinfos = {
@@ -156,6 +193,7 @@ class FeaturesBinarizer(Base, BaseEstimator, TransformerMixin):
 
     def transform(self, X):
         """Apply the binarization to the given features matrix.
+
         Parameters
         ----------
         X : `pd.DataFrame` or `np.ndarray`, shape=(n_samples, n_features)
@@ -189,6 +227,7 @@ class FeaturesBinarizer(Base, BaseEstimator, TransformerMixin):
 
     def fit_transform(self, X, y=None, **kwargs):
         """Fit and apply the binarization using the features matrix.
+
         Parameters
         ----------
         X : `pd.DataFrame` or `np.ndarray`, shape=(n_samples, n_features)

@@ -1,12 +1,12 @@
 import numpy as np
-from tick.simulation.base.simu_point_process import SimuPointProcess
+from tick.simulation.base import SimuPointProcess
 
 from tick.base import TimeFunction
 from .build.simulation import InhomogeneousPoisson as _InhomogeneousPoisson
 
 
 class SimuInhomogeneousPoisson(SimuPointProcess):
-    """Class of inhomogeneous Poisson process
+    """Inhomogeneous Poisson process simulation
 
     Parameters
     ----------

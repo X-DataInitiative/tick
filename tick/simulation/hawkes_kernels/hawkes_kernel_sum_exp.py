@@ -6,21 +6,22 @@ from ..build.simulation import HawkesKernelSumExp as _HawkesKernelSumExp
 
 
 class HawkesKernelSumExp(HawkesKernel):
-    """Hawkes kernel with exponential decay
+    """Hawkes kernel with sum exponential decays
 
     .. math::
-        phi(t) = \sum_{u=1}^{U} \alpha_u \beta_u \exp (- \beta_u t) 1_{t > 0}
+        \\phi(t) = \\sum_{u=1}^{U} \\alpha_u \\beta_u \\exp (- \\beta_u t) 
+                                   1_{t > 0}
 
-    where :math:`\alpha_u` are the intensity of the kernel
-    and :math:`\beta_u` its decays.
+    where :math:`\\alpha_u` are the intensity of the kernel
+    and :math:`\\beta_u` its decays.
 
     Parameters
     ----------
     intensities : `np.ndarray`, shape = (n_decays, )
-        Intensity of the kernel, also noted :math:`\alpha`
+        Intensity of the kernel, also noted :math:`\\alpha`
 
     decays : `np.ndarray`, shape = (n_decays, )
-        Decay of the kernel, also noted :math:`\beta`
+        Decay of the kernel, also noted :math:`\\beta`
 
     Attributes
     ----------

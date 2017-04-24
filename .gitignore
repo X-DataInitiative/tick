@@ -4,6 +4,10 @@ build/
 # All hidden files except for gitignore
 .*
 !.gitignore
+!.gitmodules
+!.travis.yml
+!.travis_install_linux.sh
+!.travis_install_mac.sh
 
 *.pyc
 *__pycache__*
@@ -18,22 +22,24 @@ build/
 *-gypcopy.cxx
 
 # Sphinx generated files
-DOC/_build/
+doc/_build
+doc/modules/generated
+doc/auto_examples
 
 # Latex generated
-DOC/tex/**/*.pdf
-DOC/tex/**/*.gz
-DOC/tex/**/*.out
-DOC/tex/**/*.log
-DOC/tex/**/*.fls
-DOC/tex/**/*.aux
-DOC/tex/**/*.fdb_latexmk
-DOC/tex/**/*.bbl
-DOC/tex/**/*.blg
+doc/tex/**/*.pdf
+doc/tex/**/*.gz
+doc/tex/**/*.out
+doc/tex/**/*.log
+doc/tex/**/*.fls
+doc/tex/**/*.aux
+doc/tex/**/*.fdb_latexmk
+doc/tex/**/*.bbl
+doc/tex/**/*.blg
 
 
 # Doxygen generated files
-DOC_C/
+DOC_C/*
 !DOC_C/mainpage.dox
 
 # XCode Project

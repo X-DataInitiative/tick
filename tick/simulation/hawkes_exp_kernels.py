@@ -6,13 +6,13 @@ from .hawkes_kernels import HawkesKernelExp, HawkesKernel0, HawkesKernelSumExp
 
 
 class SimuHawkesExpKernels(SimuHawkes):
-    """Class for simulation of Hawkes process with exponential kernels
+    """Hawkes process with exponential kernels simulation
     
     They are defined by the intensity:
     
     .. math::
-        \forall i \in [1 \dots D], \quad
-        \lambda_i(t) = \mu_i + \sum_{j=1}^D \int \phi_{ij}(t - s) dN_j(s)
+        \\forall i \\in [1 \\dots D], \\quad
+        \\lambda_i(t) = \\mu_i + \\sum_{j=1}^D \\int \\phi_{ij}(t - s) dN_j(s)
     
     where
     
@@ -24,10 +24,10 @@ class SimuHawkesExpKernels(SimuHawkes):
     and with an exponential parametrisation of the kernels
 
     .. math::
-        \phi_{ij}(t) = \alpha_{ij} \beta_{ij} \exp (- \beta_{ij} t) 1_{t > 0}
+        \\phi_{ij}(t) = \\alpha_{ij} \\beta_{ij} \\exp (- \\beta_{ij} t) 1_{t > 0}
 
-    where :math:`\alpha_{ij}` is the intensity of the kernel and
-    :math:`\beta_{ij}` its decay. The matrix of all :math:`\alpha` is called
+    where :math:`\\alpha_{ij}` is the intensity of the kernel and
+    :math:`\\beta_{ij}` its decay. The matrix of all :math:`\\alpha` is called
     adjacency matrix.
 
     Parameters
@@ -36,10 +36,10 @@ class SimuHawkesExpKernels(SimuHawkes):
         The baseline of all intensities, also noted :math:`\mu`
 
     adjacency : `np.ndarray`, shape=(n_nodes, n_nodes)
-        Intensities of exponential kernels, also named :math:`\alpha_{ij}`
+        Intensities of exponential kernels, also named :math:`\\alpha_{ij}`
 
     decays : `float` or `np.ndarray`, shape=(n_nodes, n_nodes)
-        Decays of exponential kernels, also named :math:`\beta_{ij}`
+        Decays of exponential kernels, also named :math:`\\beta_{ij}`
         If a `float` is given, all decays are equal to this float
 
     end_time : `float`, default=None

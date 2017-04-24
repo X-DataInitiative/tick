@@ -7,9 +7,8 @@ from tick.inference.base import LearnerOptim
 
 
 class CoxRegression(LearnerOptim):
-    """
-    Cox regression learner, using the partial Cox likelihood for proportional
-    risks, with many choices of penalization.
+    """Cox regression learner, using the partial Cox likelihood for
+    proportional risks, with many choices of penalization.
 
     Note that this learner does not have predict functions
 

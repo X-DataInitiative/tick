@@ -23,7 +23,7 @@ class History(Base):
         values are the values taken along the iterations
 
     last_values : `dict`
-        A `dict`containing all the last history values
+        A `dict` containing all the last history values
 
     _minimum_col_width : `int`
         Minimal size of a column when printing the history
@@ -60,9 +60,6 @@ class History(Base):
         "last_values": {
             "writable": False
         },
-        # TODO: This is temporary and will be removed once Plottable will be
-        # refactored
-        "_no_labels": {}
     }
 
     def __init__(self):
@@ -161,7 +158,7 @@ class History(Base):
         if n_iter == 0:
             min_width = self._minimum_col_width
             line = ' | '.join(list([name.center(min_width) for name in
-                                   print_order if name in values]))
+                                    print_order if name in values]))
             names = [name.center(min_width) for name in print_order]
             self._col_widths = list(map(len, names))
             print(line)
@@ -225,4 +222,3 @@ class History(Base):
         dd = Base._as_dict(self)
         dd.pop("values", None)
         return dd
-
