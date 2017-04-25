@@ -79,14 +79,21 @@ def plot_timefunction(time_function, labels=None, n_points=300, show=True,
                 TimeFunction.Border0: 'border zero',
                 TimeFunction.BorderConstant: 'border constant at %.3g'
                                              % time_function.border_value,
-                TimeFunction.BorderContinue: 'border continue'}
+                TimeFunction.BorderContinue: 'border continue',
+                TimeFunction.Cyclic: 'cyclic'}
 
             labels = ['original points',
                       '%s and %s' % (
                           interpolation_to_legend[time_function.inter_mode],
                           border_to_legend[time_function.border_type])]
 
-        t_values = _extended_discrete_xaxis(time_function.original_t,
+        original_t = time_function.original_t
+        if time_function.border_type == TimeFunction.Cyclic:
+            cycle_length = original_t[-1]
+            original_t = np.hstack((original_t, original_t + cycle_length,
+                                    original_t + 2 * cycle_length))
+
+        t_values = _extended_discrete_xaxis(original_t,
                                             n_points=n_points)
 
         ax.plot(time_function.original_t, time_function.original_y,

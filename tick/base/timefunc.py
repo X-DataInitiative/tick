@@ -23,7 +23,9 @@ class TimeFunction(Base):
 
         * `Border0` : value will be :math:`0`
         * `BorderConstant` : value will be given by `border_value`
-        * `BorderContinue` : value will equal to the last kno`wn value
+        * `BorderContinue` : value will equal to the last known value
+        * `Cyclic` : value will be equal the value it would have had in the 
+          original given values, modulo the support.
 
     inter_mode : {InterLinear, InterConstLeft, InterConstRight}, default=InterLinear
         Handle the way we extrapolate between two known values.
@@ -75,17 +77,18 @@ class TimeFunction(Base):
         'is_constant': {'writable': False},
     }
 
-    InterLinear = _TimeFunction.InterLinear
-    InterConstLeft = _TimeFunction.InterConstLeft
-    InterConstRight = _TimeFunction.InterConstRight
+    InterLinear = _TimeFunction.InterMode_InterLinear
+    InterConstLeft = _TimeFunction.InterMode_InterConstLeft
+    InterConstRight = _TimeFunction.InterMode_InterConstRight
 
-    Border0 = _TimeFunction.Border0
-    BorderConstant = _TimeFunction.BorderConstant
-    BorderContinue = _TimeFunction.BorderContinue
+    Border0 = _TimeFunction.BorderType_Border0
+    BorderConstant = _TimeFunction.BorderType_BorderConstant
+    BorderContinue = _TimeFunction.BorderType_BorderContinue
+    Cyclic = _TimeFunction.BorderType_Cyclic
 
     def __init__(self, values,
-                 border_type: int = _TimeFunction.Border0,
-                 inter_mode: int = _TimeFunction.InterLinear,
+                 border_type: int = _TimeFunction.BorderType_Border0,
+                 inter_mode: int = _TimeFunction.InterMode_InterLinear,
                  dt: float = 0, border_value: float = 0):
         Base.__init__(self)
 
@@ -93,8 +96,8 @@ class TimeFunction(Base):
             self._time_function = _TimeFunction(values)
             self.is_constant = True
         else:
-            t_values = values[0]
-            y_values = values[1]
+            t_values = np.asarray(values[0], dtype=float)
+            y_values = np.asarray(values[1], dtype=float)
 
             self._time_function = _TimeFunction(t_values, y_values,
                                                 border_type, inter_mode,

@@ -147,6 +147,17 @@ class Test(unittest.TestCase):
         tf = TimeFunction([T, Y], inter_mode=TimeFunction.InterLinear, dt=0.3)
         self.assertAlmostEqual(tf.get_norm(), 0)
 
+    def test_cyclic(self):
+        """...Test cyclic border type
+        """
+        last_value = 2.3
+        T = np.linspace(0, last_value)
+        Y = np.cos(T * np.pi)
+
+        tf = TimeFunction([T, Y], border_type=TimeFunction.Cyclic)
+
+        self.assertAlmostEqual(tf.value(0.3), tf.value(last_value + 0.3),
+                               delta=1e-8)
 
 if __name__ == "__main__":
     unittest.main()
