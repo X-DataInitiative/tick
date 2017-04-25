@@ -15,7 +15,7 @@ plot_poisson_constant_intensity.py
 
   ------------------------------------------------
   Launching simulation using SimuPoissonProcess...
-  Done simulating using SimuPoissonProcess in 1.50e-04 seconds.
+  Done simulating using SimuPoissonProcess in 1.03e-04 seconds.
 
 
 

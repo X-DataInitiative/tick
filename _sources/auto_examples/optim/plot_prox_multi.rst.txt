@@ -18,8 +18,8 @@ plot_prox_multi.py
 .. literalinclude:: plot_prox_multi.py
     :lines: 2-
 
-**Total running time of the example:**  0.23 seconds
-( 0 minutes  0.23 seconds)
+**Total running time of the example:**  0.22 seconds
+( 0 minutes  0.22 seconds)
     
 Mentioned *tick* classes:
    * `tick.optim.prox.ProxL1`

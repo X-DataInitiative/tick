@@ -33,8 +33,8 @@ Xu, Farajtabar, and Zha (2016, June) in ICML,
 .. literalinclude:: plot_hawkes_gaussian_kernels.py
     :lines: 19-
 
-**Total running time of the example:**  1.87 seconds
-( 0 minutes  1.87 seconds)
+**Total running time of the example:**  1.74 seconds
+( 0 minutes  1.74 seconds)
     
 Mentioned *tick* classes:
    * `tick.inference.HawkesSumGaussians`

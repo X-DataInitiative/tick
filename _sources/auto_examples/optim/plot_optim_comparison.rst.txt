@@ -15,7 +15,7 @@ plot_optim_comparison.py
 
   ----------------------------------------
   Launching simulation using SimuLogReg...
-  Done simulating using SimuLogReg in 1.43e-02 seconds.
+  Done simulating using SimuLogReg in 1.33e-02 seconds.
   Launching the solver GD...
     n_iter  |    obj    |    step   |  rel_obj 
           0 |  5.25e-01 |  1.31e+00 |  2.42e-01
@@ -29,7 +29,7 @@ plot_optim_comparison.py
          80 |  3.88e-01 |  1.31e+00 |  6.69e-06
          90 |  3.88e-01 |  1.31e+00 |  2.93e-06
         100 |  3.88e-01 |  1.31e+00 |  1.25e-06
-  Done solving using GD in 0.22197985649108887 seconds
+  Done solving using GD in 0.2122340202331543 seconds
   Launching the solver AGD...
     n_iter  |    obj    |    step   |  rel_obj 
           0 |  5.25e-01 |  1.31e+00 |  2.42e-01
@@ -43,35 +43,35 @@ plot_optim_comparison.py
          80 |  3.88e-01 |  1.31e+00 |  5.17e-12
          90 |  3.88e-01 |  1.31e+00 |  9.58e-14
         100 |  3.88e-01 |  1.31e+00 |  1.61e-13
-  Done solving using AGD in 0.16400909423828125 seconds
+  Done solving using AGD in 0.15743494033813477 seconds
   Launching the solver SGD...
     n_iter  |    obj    |  rel_obj 
-          0 |  8.97e+00 |  1.19e+01
-         10 |  4.01e-01 |  3.60e-03
-         20 |  3.98e-01 |  1.82e-03
-         30 |  3.95e-01 |  2.11e-03
-         40 |  3.92e-01 |  3.25e-04
-         50 |  3.91e-01 |  4.37e-03
-         60 |  3.91e-01 |  2.63e-04
-         70 |  3.90e-01 |  2.88e-05
-         80 |  3.91e-01 |  7.45e-04
-         90 |  3.91e-01 |  1.52e-03
-        100 |  3.90e-01 |  7.13e-04
-  Done solving using SGD in 0.4964179992675781 seconds
+          0 |  4.73e+00 |  5.82e+00
+         10 |  4.06e-01 |  9.91e-03
+         20 |  3.96e-01 |  5.86e-03
+         30 |  3.92e-01 |  3.56e-04
+         40 |  3.95e-01 |  5.17e-03
+         50 |  3.92e-01 |  2.20e-03
+         60 |  3.91e-01 |  1.08e-03
+         70 |  3.91e-01 |  7.21e-04
+         80 |  3.90e-01 |  2.57e-03
+         90 |  3.90e-01 |  1.03e-03
+        100 |  3.90e-01 |  1.13e-03
+  Done solving using SGD in 0.49607110023498535 seconds
   Launching the solver SVRG...
     n_iter  |    obj    |  rel_obj 
-          0 |  4.42e-01 |  3.63e-01
-         10 |  3.88e-01 |  1.29e-09
-         20 |  3.88e-01 |  1.43e-16
-         30 |  3.88e-01 |  4.29e-16
+          0 |  4.58e-01 |  3.40e-01
+         10 |  3.88e-01 |  3.12e-09
+         20 |  3.88e-01 |  1.43e-15
+         30 |  3.88e-01 |  0.00e+00
          40 |  3.88e-01 |  0.00e+00
-         50 |  3.88e-01 |  0.00e+00
-         60 |  3.88e-01 |  1.43e-16
-         70 |  3.88e-01 |  0.00e+00
-         80 |  3.88e-01 |  2.86e-16
+         50 |  3.88e-01 |  2.86e-16
+         60 |  3.88e-01 |  0.00e+00
+         70 |  3.88e-01 |  1.43e-16
+         80 |  3.88e-01 |  0.00e+00
          90 |  3.88e-01 |  0.00e+00
-        100 |  3.88e-01 |  1.43e-16
-  Done solving using SVRG in 1.0462980270385742 seconds
+        100 |  3.88e-01 |  0.00e+00
+  Done solving using SVRG in 0.9975500106811523 seconds
 
 
 
@@ -80,8 +80,8 @@ plot_optim_comparison.py
 .. literalinclude:: plot_optim_comparison.py
     :lines: 2-
 
-**Total running time of the example:**  2.00 seconds
-( 0 minutes  2.00 seconds)
+**Total running time of the example:**  1.93 seconds
+( 0 minutes  1.93 seconds)
     
 Mentioned *tick* classes:
    * `tick.optim.model.ModelLogReg`

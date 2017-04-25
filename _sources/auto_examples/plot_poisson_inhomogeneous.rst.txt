@@ -20,7 +20,7 @@ intensity is modeled through `tick.base.TimeFunction`
 
   ------------------------------------------------------
   Launching simulation using SimuInhomogeneousPoisson...
-  Done simulating using SimuInhomogeneousPoisson in 1.46e-04 seconds.
+  Done simulating using SimuInhomogeneousPoisson in 1.38e-04 seconds.
 
 
 

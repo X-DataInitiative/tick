@@ -19,7 +19,7 @@ Generates Cox Regression realization given a weight vector
 
   ----------------------------------------
   Launching simulation using SimuCoxReg...
-  Done simulating using SimuCoxReg in 6.13e-04 seconds.
+  Done simulating using SimuCoxReg in 6.96e-04 seconds.
 
 
 
