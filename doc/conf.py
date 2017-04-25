@@ -24,9 +24,6 @@ except ImportError:
   warnings.warn('Cannot use boostrap theme, agogo will be used instead.\n'
                 'You can run pip install sphinx_bootstrap_theme')
 
-from docutils.parsers.rst import directives
-
-# TODO: try to remove this
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
@@ -56,6 +53,7 @@ extensions = [
     'matplotlib.sphinxext.plot_directive',
     'sphinxext.gen_rst',
     'sphinxext.directives',
+    'sphinxext.google_analytics'
 ]
 
 
@@ -219,6 +217,7 @@ html_context = {
     'css_files': ['_static/css/custom.css'],
 }
 
+googleanalytics_id = 'UA-97947441-1'
 
 # -- Options for LaTeX output -------------------------------------------------
 
