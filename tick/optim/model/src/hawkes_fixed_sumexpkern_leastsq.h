@@ -12,7 +12,14 @@
 class ModelHawkesFixedSumExpKernLeastSq : public ModelHawkesSingle {
   //! @brief Some arrays used for intermediate computings.
   ArrayDouble2dList1D E, Dgg, C;
-  ArrayDoubleList1D Dg;
+
+  //! @brief some arrays used for intermediate computings in varying baseline case
+  ArrayDouble L;
+  ArrayDoubleList1D K;
+  ArrayDouble2dList1D Dg;
+
+  ulong n_baselines;
+  double period_length;
 
   //! @brief The array of decays (remember that the decays are fixed!)
   ArrayDouble decays;
@@ -33,6 +40,8 @@ class ModelHawkesFixedSumExpKernLeastSq : public ModelHawkesSingle {
   //! \param optimization_level : 0 corresponds to no optimization and 1 to use of faster
   //! (approximated) exponential function
   ModelHawkesFixedSumExpKernLeastSq(const ArrayDouble &decays,
+                                    const ulong n_baselines,
+                                    const double period_length,
                                     const unsigned int max_n_threads = 1,
                                     const unsigned int optimization_level = 0);
 
@@ -84,6 +93,12 @@ class ModelHawkesFixedSumExpKernLeastSq : public ModelHawkesSingle {
   //! @brief Synchronize n_coeffs given other attributes
   ulong get_n_coeffs() const override;
 
+  ulong get_n_baselines() const;
+  double get_period_length() const;
+
+  void set_n_baselines(ulong n_baselines);
+  void set_period_length(double period_length);
+
  private:
   void allocate_weights();
 
@@ -92,6 +107,9 @@ class ModelHawkesFixedSumExpKernLeastSq : public ModelHawkesSingle {
    * \param i : selected component
    */
   void compute_weights_i(const ulong i);
+
+  ulong get_baseline_interval(const double t);
+  double get_baseline_interval_length(const ulong interval_p);
 
   friend class ModelHawkesFixedSumExpKernLeastSqList;
 };
