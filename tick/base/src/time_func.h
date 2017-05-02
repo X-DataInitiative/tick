@@ -16,17 +16,18 @@
 class TimeFunction {
  public:
     //! @brief The different interpolation mode
-    enum InterMode {
+    enum class InterMode {
         InterLinear = 0,
         InterConstRight,
         InterConstLeft
     };
 
     //! @brief The different border effects
-    enum BorderType {
+    enum class BorderType {
         Border0 = 0,
         BorderConstant,
-        BorderContinue
+        BorderContinue,
+        Cyclic,
     };
 
  public:

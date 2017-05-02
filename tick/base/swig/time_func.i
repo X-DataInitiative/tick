@@ -5,18 +5,19 @@
 class TimeFunction {
     public:
         // The different interpolation mode
-        typedef enum {
+        enum class InterMode {
             InterLinear = 0,
             InterConstRight,
             InterConstLeft
-        } InterMode;
+        };
 
         // The different border effects
-        typedef enum {
+        enum class BorderType {
             Border0 = 0,
             BorderConstant,
-            BorderContinue
-        } BorderType;
+            BorderContinue,
+            Cyclic
+        };
 
     public:
         static const InterMode DEFAULT_INTER;
