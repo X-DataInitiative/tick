@@ -31,6 +31,7 @@ Generalized linear models
    :toctree: generated/
    :template: class.rst
 
+   inference.LinearRegression
    inference.LogisticRegression
 
 Survival Analysis

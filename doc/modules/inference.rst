@@ -42,6 +42,7 @@ Classes
    :toctree: generated/
    :template: class.rst
 
+   inference.LinearRegression
    inference.LogisticRegression
 
 Example
