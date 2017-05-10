@@ -7,7 +7,7 @@ from .prox_l1 import ProxL1
 from .prox_l1w import ProxL1w
 from .prox_tv import ProxTV
 from .prox_nuclear import ProxNuclear
-from .prox_sortedl1 import ProxSortedL1
+from .prox_slope import ProxSlope
 from .prox_elasticnet import ProxElasticNet
 from .prox_multi import ProxMulti
 from .prox_equality import ProxEquality
@@ -20,7 +20,7 @@ __all__ = ["ProxZero",
            "ProxL2Sq",
            "ProxTV",
            "ProxNuclear",
-           "ProxSortedL1",
+           "ProxSlope",
            "ProxElasticNet",
            "ProxMulti",
            "ProxEquality"]

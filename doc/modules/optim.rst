@@ -388,7 +388,7 @@ Ridge                    :math:`g(w) = s \sum_{j=1}^d \frac{w_j^2}{2}`          
 Elastic-net              :math:`g(w) = s \Big(\sum_{j=1}^{d} \alpha |w_j| + (1 - \alpha) \frac{w_j^2}{2} \Big)`    :class:`ProxElasticNet <tick.optim.prox.ProxElasticNet>`
 Total-variation          :math:`g(w) = s \sum_{j=2}^d |w_j - w_{j-1}|`                                             :class:`ProxTV <tick.optim.prox.ProxTV>`
 Nuclear norm             :math:`g(w) = s \sum_{j=1}^{q} \sigma_j(w)`                                               :class:`ProxNuclear <tick.optim.prox.ProxNuclear>`
-Sorted L1                :math:`g(w) = s \sum_{j=1}^{d} c_j |w_{(j)}|` where :math:`|w_{(j)}|` is decreasing       :class:`ProxSortedL1 <tick.optim.prox.ProxSortedL1>`
+Sorted L1                :math:`g(w) = s \sum_{j=1}^{d} c_j |w_{(j)}|` where :math:`|w_{(j)}|` is decreasing       :class:`ProxSlope <tick.optim.prox.ProxSlope>`
 =======================  ========================================================================================  ==============
 
 Another ``prox`` class is the :class:`ProxMulti <tick.optim.prox.ProxMulti>` that allows

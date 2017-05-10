@@ -3,7 +3,7 @@ import unittest
 import numpy as np
 from scipy.stats import norm as normal
 
-from tick.optim.prox import ProxSortedL1
+from tick.optim.prox import ProxSlope
 from tick.optim.prox.tests.prox import TestProx
 
 
@@ -20,8 +20,8 @@ class Test(TestProx):
         tmp = fdr / (2 * size)
         return strength * normal.ppf(1 - tmp * np.arange(1, size + 1))
 
-    def test_ProxSortedL1_call(self):
-        """...Test_of ProxSortedL1.call
+    def test_ProxSlope_call(self):
+        """...Test_of ProxSlope.call
         """
         n_coeffs = 30
         np.random.seed(seed=123)
@@ -31,7 +31,7 @@ class Test(TestProx):
         fdr = 0.6
         strength = 4.
         step = 1.
-        prox = ProxSortedL1(strength=strength, fdr=fdr)
+        prox = ProxSlope(strength=strength, fdr=fdr)
 
         x_sl1_truth \
             = np.array([2.13923654, -3.53844034, 7.31022147, -9.87610726,
@@ -66,8 +66,8 @@ class Test(TestProx):
         prox.strength = strength
         np.testing.assert_almost_equal(prox.call(y, step=step), x_sl1_truth)
 
-    def test_ProxSortedL1_weights_bh(self):
-        """...Test of ProxSortedL1 weights computation (bh)
+    def test_ProxSlope_weights_bh(self):
+        """...Test of ProxSlope weights computation
         """
         n_samples = 5000
         n_outliers = int(0.1 * n_samples)
@@ -76,7 +76,7 @@ class Test(TestProx):
         y = interc0 + 3 * np.random.randn(interc0.shape[0])
 
         strength = 2.5
-        prox = ProxSortedL1(strength=strength)
+        prox = ProxSlope(strength=strength)
         prox.value(y)
         prox.strength = 20
         size = y.shape[0]
@@ -88,7 +88,7 @@ class Test(TestProx):
         np.testing.assert_almost_equal(prox_weights, weights, decimal=7)
 
         strength = 2.5
-        prox = ProxSortedL1(strength=strength, range=(300, 3000))
+        prox = ProxSlope(strength=strength, range=(300, 3000))
         prox.value(y)
         prox.strength = 20
         size = prox.range[1] - prox.range[0]
@@ -99,8 +99,8 @@ class Test(TestProx):
                                  for i in range(size)])
         np.testing.assert_almost_equal(prox_weights, weights, decimal=7)
 
-    def test_ProxSortedL1_value(self):
-        """...Test of ProxSortedL1.value
+    def test_ProxSlope_value(self):
+        """...Test of ProxSlope.value
         """
         n_samples = 5000
         n_outliers = int(0.1 * n_samples)
@@ -110,7 +110,7 @@ class Test(TestProx):
 
         fdr = 0.6
         strength = 2.5
-        prox = ProxSortedL1(strength=strength, fdr=fdr)
+        prox = ProxSlope(strength=strength, fdr=fdr)
         prox_value = prox.value(y)
 
         weights = self.get_weights_bh(strength, fdr, size=y.shape[0])
