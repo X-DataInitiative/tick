@@ -381,6 +381,7 @@ Penalization             Function                                               
 =======================  ========================================================================================  ==============
 Identity                 :math:`g(w) = 0`                                                                          :class:`ProxZero <tick.optim.prox.ProxZero>`
 Non-negative constraint  :math:`g(w) = s \delta_C(w)` where :math:`C=` set of vectors with non-negative entries    :class:`ProxPositive <tick.optim.prox.ProxPositive>`
+Equality constraint      :math:`g(w) = s \delta_C(w)` where :math:`C=` set of vectors with identical entries       :class:`ProxEquality <tick.optim.prox.Equality>`
 L1 norm                  :math:`g(w) = s \sum_{j=1}^d |w_j|`                                                       :class:`ProxL1 <tick.optim.prox.ProxL1>`
 L1 norm with weights     :math:`g(w) = s \sum_{j=1}^d c_j |w_j|`                                                   :class:`ProxL1w <tick.optim.prox.ProxL1w>`
 Ridge                    :math:`g(w) = s \sum_{j=1}^d \frac{w_j^2}{2}`                                             :class:`ProxL2Sq <tick.optim.prox.ProxL2Sq>`

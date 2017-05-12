@@ -14,6 +14,7 @@
 %shared_ptr(ProxElasticNet);
 %shared_ptr(ProxSortedL1);
 %shared_ptr(ProxMulti);
+%shared_ptr(ProxEquality);
 
 %{
 #include "tick_python.h"
@@ -42,3 +43,5 @@
 %include prox_sorted_l1.i
 
 %include prox_multi.i
+
+%include prox_equality.i

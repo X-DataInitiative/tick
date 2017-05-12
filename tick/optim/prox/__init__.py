@@ -10,6 +10,7 @@ from .prox_nuclear import ProxNuclear
 from .prox_sortedl1 import ProxSortedL1
 from .prox_elasticnet import ProxElasticNet
 from .prox_multi import ProxMulti
+from .prox_equality import ProxEquality
 
 
 __all__ = ["ProxZero",
@@ -21,7 +22,5 @@ __all__ = ["ProxZero",
            "ProxNuclear",
            "ProxSortedL1",
            "ProxElasticNet",
-           "ProxMulti"]
-
-
-# TODO: add ProxSeparable
+           "ProxMulti",
+           "ProxEquality"]
