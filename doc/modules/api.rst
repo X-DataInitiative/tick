@@ -225,6 +225,7 @@ Classes
    :template: class.rst
 
    preprocessing.FeaturesBinarizer
+   preprocessing.LongitudinalFeaturesProduct
 
 
 .. _api-simulation:
@@ -290,6 +291,7 @@ Features generators
    simulation.features_normal_cov_toeplitz
    simulation.weights_sparse_exp
    simulation.weights_sparse_gauss
+
 
 .. _api-datasets:
 
