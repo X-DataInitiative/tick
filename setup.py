@@ -507,8 +507,10 @@ solver_core_info = {
 solver_core = create_extension(**solver_core_info)
 
 preprocessing_core_info = {
-    "cpp_files": ["sparse_longitudinal_features_product.cpp"],
-    "h_files": ["sparse_longitudinal_features_product.h"],
+    "cpp_files": ["sparse_longitudinal_features_product.cpp",
+                  "longitudinal_features_lagger.cpp"],
+    "h_files": ["sparse_longitudinal_features_product.h",
+                "longitudinal_features_lagger.h"],
     "swig_files": ["preprocessing_module.i"],
     "module_dir": "./tick/preprocessing/",
     "extension_name": "preprocessing",

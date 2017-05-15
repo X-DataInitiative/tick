@@ -265,7 +265,8 @@ class LongitudinalFeaturesProduct(Base):
                                      self._n_output_features)
                               )
 
-    def _check_X_consistency(self, X, shape, dtype):
+    @staticmethod
+    def _check_X_consistency(X, shape, dtype):
         """Checks if all elements of X have the same shape and correct dtype.
         In case the dtype is not correct, convert X elements to the proper 
         dtypes.

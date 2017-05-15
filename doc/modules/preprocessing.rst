@@ -29,3 +29,4 @@ similar API to scikit-learn preprocessors.
    :template: class.rst
 
    preprocessing.LongitudinalFeaturesProduct
+   preprocessing.LongitudinalFeaturesLagger
