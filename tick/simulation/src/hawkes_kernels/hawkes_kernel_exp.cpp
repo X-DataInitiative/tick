@@ -28,7 +28,7 @@ HawkesKernelExp::HawkesKernelExp(const HawkesKernelExp &kernel)
 }
 
 HawkesKernelExp::HawkesKernelExp()
-  : HawkesKernelExp(0.0, 0.0) {
+    : HawkesKernelExp(0.0, 0.0) {
 }
 
 // Getting the value of the kernel at the point x
@@ -45,7 +45,9 @@ double HawkesKernelExp::get_norm(int nsteps) {
 }
 
 // Returns the convolution kernel*process(time)
-double HawkesKernelExp::get_convolution(const double time, const ArrayDouble &timestamps, double *const bound) {
+double HawkesKernelExp::get_convolution(const double time,
+                                        const ArrayDouble &timestamps,
+                                        double *const bound) {
   double value{0.};
   if (intensity == 0 || time < 0) {
     // value stays at 0

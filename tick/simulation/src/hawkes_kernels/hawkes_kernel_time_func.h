@@ -37,10 +37,10 @@ class HawkesKernelTimeFunc : public HawkesKernel {
   double get_future_max(double t, double value_at_t) override;
 
   //! @brief simple getter
-  const TimeFunction& get_time_function() const { return time_function; }
+  const TimeFunction &get_time_function() const { return time_function; }
 
-  template <class Archive>
-  void serialize(Archive & ar) {
+  template<class Archive>
+  void serialize(Archive &ar) {
     ar(cereal::make_nvp("HawkesKernel", cereal::base_class<HawkesKernel>(this)));
 
     ar(CEREAL_NVP(time_function));

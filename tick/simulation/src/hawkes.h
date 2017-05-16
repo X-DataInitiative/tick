@@ -6,8 +6,10 @@
 #define TICK_SIMULATION_SRC_HAWKES_H_
 
 #include <memory>
-#include "time_func.h"
-#include <float.h>
+
+#include "hawkes_baselines/baseline.h"
+#include "hawkes_baselines/constant_baseline.h"
+#include "hawkes_baselines/timefunction_baseline.h"
 
 #include "hawkes_kernels/hawkes_kernel.h"
 #include "hawkes_kernels/hawkes_kernel_0.h"
@@ -18,46 +20,6 @@
 
 #include "varray.h"
 #include "pp.h"
-
-//*********************************************************************************
-//
-// The mu class allows to define 1 element of the mu vector
-//
-//*********************************************************************************
-
-
-// This is a constant mu
-/*! \class HawkesMu
- * \brief A basic wrapper of double to represent \f$ \mu \f$ of Hawkes processes
- */
-class HawkesMu {
-    // The value
-    double mu;
-
- public:
-    /**
-     * @brief constructor that takes a double and wrap it in a HawkesMu
-     * \param mu : The value of \f$ \mu \f$
-     */
-    explicit HawkesMu(double mu = 0) { this->mu = mu; }
-
-    /// @brief getter for \f$ \mu \f$
-    virtual double get_value() { return mu; }
-
-  template <class Archive>
-  void serialize(Archive & ar) {
-      ar(CEREAL_NVP(mu));
-  }
-};
-
-typedef std::shared_ptr<HawkesMu> HawkesMuPtr;
-
-
-//*********************************************************************************
-//
-// The Hawkes class
-//
-//*********************************************************************************
 
 
 /*! \class Hawkes
@@ -75,96 +37,125 @@ typedef std::shared_ptr<HawkesMu> HawkesMuPtr;
  */
 class Hawkes : public PP {
  public:
-    /// @brief The kernel matrix
-    std::vector<HawkesKernelPtr> kernels;
+  /// @brief The kernel matrix
+  std::vector<HawkesKernelPtr> kernels;
 
-    /// @brief The mus
-    std::vector<HawkesMuPtr> mus;
+  /// @brief The mus
+  std::vector<HawkesBaselinePtr> baselines;
 
  public :
-    /**
-     * @brief A constructor for an empty multidimensional Hawkes process
-     * \param dimension : The dimension of the Hawkes process
-     */
-    explicit Hawkes(unsigned int dimension, int seed = -1);
+  /**
+   * @brief A constructor for an empty multidimensional Hawkes process
+   * \param n_nodes : The dimension of the Hawkes process
+   */
+  explicit Hawkes(unsigned int n_nodes, int seed = -1);
 
-    // This forbids the unwanted copy of an Hawkes process
-    Hawkes(Hawkes &hawkes) = delete;
-
-    ~Hawkes();
+  // This forbids the unwanted copy of an Hawkes process
+  Hawkes(Hawkes &hawkes) = delete;
 
  public:
-    virtual void reset();
+  virtual void reset();
 
-    /**
-     * @brief Set kernel for a specific row and column
-     * \param i : the row
-     * \param j : the column
-     * \param kernel : the kernel to be stored
-     * \note This will do a hard copy of the kernel if and only if this
-     * kernel has its own memory (e.g HawkesKernelExp), otherwise we will only
-     * share a pointer to this kernel.
-     */
-    void set_kernel(unsigned int i, unsigned int j, HawkesKernelPtr &kernel);
+  /**
+   * @brief Set kernel for a specific row and column
+   * \param i : the row
+   * \param j : the column
+   * \param kernel : the kernel to be stored
+   * \note This will do a hard copy of the kernel if and only if this
+   * kernel has its own memory (e.g HawkesKernelExp), otherwise we will only
+   * share a pointer to this kernel.
+   */
+  void set_kernel(unsigned int i, unsigned int j, HawkesKernelPtr &kernel);
 
-    /**
-     * @brief Get kernel for a specific row and column
-     * \param i : the row
-     * \param j : the column
-     */
-    HawkesKernelPtr get_kernel(unsigned int i, unsigned int j);
+  /**
+   * @brief Get kernel for a specific row and column
+   * \param i : the row
+   * \param j : the column
+   */
+  HawkesKernelPtr get_kernel(unsigned int i, unsigned int j);
 
-    /**
-     * @brief Set mu for a specific dimension
-     * \param i : the dimension
-     * \param mu : the HawkesMu to be set
-     */
-    void set_mu(unsigned int i, const HawkesMuPtr &mu);
+  /**
+   * @brief Set baseline for a specific dimension
+   * \param i : the dimension
+   * \param baseline : a double that will be used to construct a HawkesConstantBaseline
+   */
+  void set_baseline(unsigned int i, double baseline);
 
-    /**
-     * @brief Set mu for a specific dimension
-     * \param i : the dimension
-     * \param mu : a double that will be used to construct a HawkesMu
-     */
-    void set_mu(unsigned int i, double mu);
+  /**
+   * @brief Set baseline for a specific dimension
+   * \param i : the dimension
+   * \param time_function : a TimeFunction that will be used to construct a
+   * HawkesTimeFunctionBaseline
+   */
+  void set_baseline(unsigned int i, TimeFunction time_function);
 
-    /**
-     * @brief Get mu for a specific dimension
-     * \param i : the dimension
-     */
-    double get_mu(unsigned int i);
+  /**
+  * @brief Set baseline for a specific dimension
+  * \param i : the dimension
+  * \param times : times that will be used to construct a HawkesTimeFunctionBaseline
+  * \param values : values that will be used to construct a HawkesTimeFunctionBaseline
+  */
+  void set_baseline(unsigned int i, ArrayDouble &times, ArrayDouble &values);
+
+  /**
+   * @brief Get baseline for a specific dimension at a given time
+   * \param i : the dimension
+   * \param t : considered time
+   */
+  double get_baseline(unsigned int i, double t);
+
+  /**
+   * @brief Get baseline for a specific dimension at a given time
+   * \param i : the dimension
+   * \param t : considered times
+   */
+  SArrayDoublePtr get_baseline(unsigned int i, ArrayDouble &t);
 
  private :
-    /**
-     * @brief Virtual method called once (at startup) to set the initial
-     * intensity
-     * \param intensity : The intensity vector (of size #dimension) to initialize
-     * \param total_intensity_bound : A pointer to the variable that will hold a
-     * bound of future total intensity
-     */
-    virtual void init_intensity_(ArrayDouble &intensity,
-                                 double *total_intensity_bound);
+  /**
+   * @brief Virtual method called once (at startup) to set the initial
+   * intensity
+   * \param intensity : The intensity vector (of size #dimension) to initialize
+   * \param total_intensity_bound : A pointer to the variable that will hold a
+   * bound of future total intensity
+   */
+  virtual void init_intensity_(ArrayDouble &intensity,
+                               double *total_intensity_bound);
 
-    /**
-     * @brief Updates the current time so that it goes forward of delay seconds
-     * The intensities must be updated and track recorded if needed
-     * Returns false if negative intensities were encountered
-     * \param delay : Time to update
-     * \param intensity : The intensity vector to update
-     * \param total_intensity_bound : If not NULL then used to set a bound of
-     * total future intensity
-     */
-    virtual bool update_time_shift_(double delay,
-                                    ArrayDouble &intensity,
-                                    double *total_intensity_bound);
+  /**
+   * @brief Updates the current time so that it goes forward of delay seconds
+   * The intensities must be updated and track recorded if needed
+   * Returns false if negative intensities were encountered
+   * \param delay : Time to update
+   * \param intensity : The intensity vector to update
+   * \param total_intensity_bound : If not NULL then used to set a bound of
+   * total future intensity
+   */
+  virtual bool update_time_shift_(double delay,
+                                  ArrayDouble &intensity,
+                                  double *total_intensity_bound);
+
+  /**
+   * @brief Get future baseline maximum reachable value for a specific dimension at a given time
+   * \param i : the dimension
+   * \param t : considered time
+   */
+  double get_baseline_bound(unsigned int i, double t);
+
+  /**
+   * @brief Set baseline for a specific dimension
+   * \param i : the dimension
+   * \param baseline : the HawkesBaseline to be set
+   */
+  void set_baseline(unsigned int i, const HawkesBaselinePtr &baseline);
 
  public:
-  template <class Archive>
-  void serialize(Archive & ar) {
-      ar(cereal::make_nvp("PP", cereal::base_class<PP>(this)));
+  template<class Archive>
+  void serialize(Archive &ar) {
+    ar(cereal::make_nvp("PP", cereal::base_class<PP>(this)));
 
-      ar(CEREAL_NVP(mus));
-      ar(CEREAL_NVP(kernels));
+    ar(CEREAL_NVP(baselines));
+    ar(CEREAL_NVP(kernels));
   }
 };
 

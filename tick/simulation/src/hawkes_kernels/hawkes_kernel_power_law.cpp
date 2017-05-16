@@ -17,7 +17,7 @@ HawkesKernelPowerLaw::HawkesKernelPowerLaw(double multiplier,
 }
 
 HawkesKernelPowerLaw::HawkesKernelPowerLaw()
-  : HawkesKernelPowerLaw(0.0, 0.0, 0.0) {
+    : HawkesKernelPowerLaw(0.0, 0.0, 0.0) {
 }
 
 double HawkesKernelPowerLaw::get_value_(double x) {

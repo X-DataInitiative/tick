@@ -17,7 +17,7 @@ class SimuHawkesExpKernels(SimuHawkes):
     where
     
       - :math:`D` is the number of nodes
-      - :math:`\mu_i` are the baseline intensities
+      - :math:`\mu_i(t)` are the baseline intensities
       - :math:`\phi_{ij}` are the kernels
       - :math:`dN_j` are the processes differentiates
 
@@ -32,8 +32,19 @@ class SimuHawkesExpKernels(SimuHawkes):
 
     Parameters
     ----------
-    baseline : `np.ndarray`, shape=(n_nodes, )
-        The baseline of all intensities, also noted :math:`\mu`
+    baseline : `np.ndarray` or `list`
+        The baseline of all intensities, also noted :math:`\mu(t)`. It might 
+        be three different types:
+        
+        * `np.ndarray`, shape=(n_nodes,) : One baseline per node is given. 
+          Hence baseline is assumed to be constant, ie. 
+          :math:`\mu_i(t) = \mu_i`
+        * `np.ndarray`, shape=(n_nodes, n_intervals) : `n_intervals` baselines 
+          are given per node. This assumes parameter `period_length` is also 
+          given. In this case baseline is piecewise constant on intervals of 
+          size `period_length / n_intervals` and periodic.
+        * `list` of `tick.base.TimeFunction`, shape=(n_nodes,) : One function 
+          is given per node, ie. :math:`\mu_i(t)` is explicitely given.
 
     adjacency : `np.ndarray`, shape=(n_nodes, n_nodes)
         Intensities of exponential kernels, also named :math:`\\alpha_{ij}`
@@ -88,8 +99,8 @@ class SimuHawkesExpKernels(SimuHawkes):
     }
 
     def __init__(self, adjacency, decays, baseline=None,
-                 end_time=None, max_jumps=None, seed=None, verbose=True,
-                 force_simulation=False):
+                 end_time=None, period_length=None, max_jumps=None, seed=None,
+                 verbose=True, force_simulation=False):
 
         if isinstance(adjacency, list):
             adjacency = np.array(adjacency)
@@ -116,8 +127,8 @@ class SimuHawkesExpKernels(SimuHawkes):
         kernels = self._build_exp_kernels()
 
         SimuHawkes.__init__(self, kernels=kernels, baseline=baseline,
-                            end_time=end_time, max_jumps=max_jumps,
-                            seed=seed, verbose=verbose,
+                            end_time=end_time, period_length=period_length,
+                            max_jumps=max_jumps, seed=seed, verbose=verbose,
                             force_simulation=force_simulation)
 
     def _build_exp_kernels(self):
