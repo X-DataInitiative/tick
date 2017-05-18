@@ -51,7 +51,15 @@ def plot_hawkes_kernel_norms(kernel_object, show=True, pcolor_kwargs=None,
     if pcolor_kwargs is None:
         pcolor_kwargs = {}
 
-    pcolor_kwargs.setdefault("cmap", plt.cm.Blues)
+    if norms.min() >= 0:
+        pcolor_kwargs.setdefault("cmap", plt.cm.Blues)
+    else:
+        # In this case we want a diverging colormap centered on 0
+        pcolor_kwargs.setdefault("cmap", plt.cm.RdBu)
+        max_abs_norm = np.max(np.abs(norms))
+        pcolor_kwargs.setdefault("vmin", -max_abs_norm)
+        pcolor_kwargs.setdefault("vmax", max_abs_norm)
+
     heatmap = ax.pcolor(norms, **pcolor_kwargs)
 
     # put the major ticks at the middle of each cell
@@ -68,7 +76,7 @@ def plot_hawkes_kernel_norms(kernel_object, show=True, pcolor_kwargs=None,
     fig.subplots_adjust(right=0.8)
     divider = make_axes_locatable(ax)
     cax = divider.append_axes("right", size="5%", pad=0.5)
-    fig.colorbar(heatmap, cax=cax, ticks=[0.0, 0.25, 0.5, 0.75, 1.0])
+    fig.colorbar(heatmap, cax=cax)
 
     if show:
         plt.show()

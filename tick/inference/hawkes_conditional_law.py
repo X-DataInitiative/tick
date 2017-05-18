@@ -237,17 +237,27 @@ class HawkesConditionalLaw(Base):
 
         Parameters
         ----------
-        events: list of `np.ndarray`, shape=(N)`,
-            The events of each component of the Hawkes. Namely `events[j]`
-            contains a one-dimensional `np.ndarray` of the events'
-            timestamps of component j
+        events : `list` of `list` of `np.ndarray`
+            List of Hawkes processes realizations.
+            Each realization of the Hawkes process is a list of n_node for
+            each component of the Hawkes. Namely `events[i][j]` contains a
+            one-dimensional `numpy.array` of the events' timestamps of
+            component j of realization i.
+            If only one realization is given, it will be wrapped into a list
 
         Returns
         -------
         output : `HawkesConditionalLaw`
             The current instance of the Learner
         """
-        self.incremental_fit(events)
+        if not isinstance(events[0][0], np.ndarray):
+            events = [events]
+
+        for timestamps in events:
+            self.incremental_fit(timestamps, compute=False)
+        self.compute()
+
+        return self
 
     def set_model(self, symmetries1d=list(), symmetries2d=list(),
                   delayed_component=None):
@@ -573,6 +583,9 @@ class HawkesConditionalLaw(Base):
                 t = (self._claw[index1] + self._claw[index2]) / 2
                 self._claw[index1] = t
                 self._claw[index2] = t
+
+        # We can remove the thread lock (lock disallows pickling)
+        self._set('_lock', None)
 
         if compute:
             self.compute()
