@@ -65,3 +65,7 @@ class Test(unittest.TestCase):
             .fit_transform(sparse_feat)
         feat_prod = [f.toarray() for f in feat_prod]
         np.testing.assert_equal(feat_prod, expected_output)
+
+
+if __name__ == "__main__":
+    unittest.main()

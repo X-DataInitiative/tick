@@ -226,6 +226,7 @@ Classes
 
    preprocessing.FeaturesBinarizer
    preprocessing.LongitudinalFeaturesProduct
+   preprocessing.LongitudinalFeaturesLagger
 
 
 .. _api-simulation:
