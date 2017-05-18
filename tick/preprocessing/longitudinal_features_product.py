@@ -5,8 +5,8 @@ from copy import deepcopy
 from scipy.misc import comb
 from sklearn.externals.joblib import Parallel, delayed
 from tick.base import Base
-from tick.inference.base.learner_optim import LearnerOptim
 from .build.preprocessing import SparseLongitudinalFeaturesProduct
+from .utils import check_longitudinal_features_consistency
 
 
 class LongitudinalFeaturesProduct(Base):
@@ -114,7 +114,7 @@ class LongitudinalFeaturesProduct(Base):
 
         Parameters
         ----------
-        X : list of np.ndarray or list of scipy.sparse.csr_matrix,
+        X : list of numpy.ndarray or list of scipy.sparse.csr_matrix,
             list of length n_samples, each element of the list of 
             shape=(n_intervals, n_features)
             The list of features matrices.
@@ -126,7 +126,7 @@ class LongitudinalFeaturesProduct(Base):
         """
         self._reset()
         base_shape = X[0].shape
-        X = self._check_X_consistency(X, base_shape, "float64")
+        X = check_longitudinal_features_consistency(X, base_shape, "float64")
         n_intervals, n_init_features = base_shape
         if n_init_features < 2:
             raise ValueError("There should be at least two features to compute\
@@ -151,14 +151,14 @@ class LongitudinalFeaturesProduct(Base):
 
         Parameters
         ----------
-        X : list of np.ndarray or list of scipy.sparse.csr_matrix,
+        X : list of numpy.ndarray or list of scipy.sparse.csr_matrix,
             list of length n_samples, each element of the list of 
             shape=(n_intervals, n_features)
             The list of features matrices.
 
         Returns
         -------
-        output : list of np.ndarray or list of scipy.sparse.csr_matrix,
+        output : list of numpy.ndarray or list of scipy.sparse.csr_matrix,
             list of length n_samples, each element of the list of 
             shape=(n_intervals, n_new_features)
             The list of features matrices with added product features. 
@@ -166,7 +166,7 @@ class LongitudinalFeaturesProduct(Base):
         """
 
         base_shape = (self._n_intervals, self._n_init_features)
-        X = self._check_X_consistency(X, base_shape, "float64")
+        X = check_longitudinal_features_consistency(X, base_shape, "float64")
         if self.exposure_type == "short":
             X_with_products = self.short_exposure_products(X)
         elif self.exposure_type == "infinite":
@@ -183,14 +183,14 @@ class LongitudinalFeaturesProduct(Base):
 
         Parameters
         ----------
-        X : list of np.ndarray or list of scipy.sparse.csr_matrix,
+        X : list of numpy.ndarray or list of scipy.sparse.csr_matrix,
             list of length n_samples, each element of the list of 
             shape=(n_intervals, n_features)
             The list of features matrices.
 
         Returns
         -------
-        output : list of np.ndarray or list of scipy.sparse.csr_matrix,
+        output : list of numpy.ndarray or list of scipy.sparse.csr_matrix,
             list of length n_samples, each element of the list of 
             shape=(n_intervals, n_new_features)
             The list of features matrices with added product features. 
@@ -228,7 +228,7 @@ class LongitudinalFeaturesProduct(Base):
         return X_with_products
 
     def _dense_short_product(self, feat_mat):
-        """Performs feature product on a np.ndarray containing
+        """Performs feature product on a numpy.ndarray containing
         short exposures."""
         feat = [feat_mat]
         feat.extend([(feat_mat[:, i] * feat_mat[:, j]
@@ -264,14 +264,3 @@ class LongitudinalFeaturesProduct(Base):
                               shape=(self._n_intervals,
                                      self._n_output_features)
                               )
-
-    @staticmethod
-    def _check_X_consistency(X, shape, dtype):
-        """Checks if all elements of X have the same shape and correct dtype.
-        In case the dtype is not correct, convert X elements to the proper 
-        dtypes.
-        """
-        if not all([x.shape == shape for x in X]):
-            raise ValueError("All the elements of X should have the same\
-             shape.")
-        return [LearnerOptim._safe_array(x, dtype) for x in X]

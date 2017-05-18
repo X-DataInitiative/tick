@@ -3,10 +3,8 @@ import scipy.sparse as sps
 from tick.base import Base
 from .build.preprocessing import LongitudinalFeaturesLagger\
     as _LongitudinalFeaturesLagger
-from tick.inference.base.learner_optim import LearnerOptim
-from tick.preprocessing.longitudinal_features_product import\
-    LongitudinalFeaturesProduct as LFP
-
+from .utils import check_longitudinal_features_consistency,\
+    check_censoring_consistency
 
 class LongitudinalFeaturesLagger(Base):
     """Transforms longitudinal exposure features to add columns representing 
@@ -31,6 +29,7 @@ class LongitudinalFeaturesLagger(Base):
     n_lags : `int`, default=0
         Number of lags to compute: the preprocessor adds columns representing
         lag = 1, ..., n_lags. If lag = 0, this preprocessor does nothing.
+        n_lags must be non-negative.
     
     Attributes
     ----------
@@ -76,6 +75,8 @@ class LongitudinalFeaturesLagger(Base):
 
     def __init__(self, n_lags=0, n_jobs=-1):
         Base.__init__(self)
+        if n_lags < 0:
+            raise ValueError("`n_lags` should be non-negative.")
         self.n_lags = n_lags
         self.n_jobs = n_jobs
         self._cpp_preprocessor = None
@@ -100,7 +101,7 @@ class LongitudinalFeaturesLagger(Base):
             The column index - feature mapping.
         """
         if not self._fitted:
-            raise ValueError("cannot get mapper if object has not been fitted.")
+            raise ValueError("Cannot get mapper if object has not been fitted.")
         return self._mapper.copy()
 
     def fit(self, X, censoring):
@@ -108,13 +109,12 @@ class LongitudinalFeaturesLagger(Base):
 
         Parameters
         ----------
-        X : list of np.ndarray or list of scipy.sparse.csr_matrix,
+        X : list of numpy.ndarray or list of scipy.sparse.csr_matrix,
             list of length n_samples, each element of the list of 
             shape=(n_intervals, n_features)
             The list of features matrices.
-
             
-        censoring : `np.ndarray`, shape=(n_samples, 1), dtype="uint64"
+        censoring : `numpy.ndarray`, shape=(n_samples, 1), dtype="uint64"
             The censoring data. This array should contain integers in 
             [1, n_intervals]. If the value i is equal to n_intervals, then there
             is no censoring for sample i. If censoring = c < n_intervals, then 
@@ -124,12 +124,12 @@ class LongitudinalFeaturesLagger(Base):
 
         Returns
         -------
-        output : `LongitudinalFeaturesProduct`
+        output : `LongitudinalFeaturesLagger`
             The fitted current instance.
         """
         self._reset()
         base_shape = X[0].shape
-        X = LFP._check_X_consistency(X, base_shape, "float64")
+        X = check_longitudinal_features_consistency(X, base_shape, "float64")
         n_intervals, n_init_features = base_shape
         self._set("_n_init_features", n_init_features)
         self._set("_n_intervals", n_intervals)
@@ -149,12 +149,12 @@ class LongitudinalFeaturesLagger(Base):
 
         Parameters
         ----------
-        X : list of np.ndarray or list of scipy.sparse.csr_matrix,
+        X : list of numpy.ndarray or list of scipy.sparse.csr_matrix,
             list of length n_samples, each element of the list of 
             shape=(n_intervals, n_features)
             The list of features matrices.
 
-        censoring : `np.ndarray`, shape=(n_samples, 1), dtype="uint64"
+        censoring : `numpy.ndarray`, shape=(n_samples, 1), dtype="uint64"
             The censoring data. This array should contain integers in 
             [1, n_intervals]. If the value i is equal to n_intervals, then there
             is no censoring for sample i. If censoring = c < n_intervals, then 
@@ -164,17 +164,18 @@ class LongitudinalFeaturesLagger(Base):
 
         Returns
         -------
-        output : `[np.ndarrays]`  or `[csr_matrices]`, shape=(n_intervals, n_features)
+        output : `[numpy.ndarrays]`  or `[csr_matrices]`, shape=(n_intervals, n_features)
             The list of features matrices with added lagged features.
         """
 
         n_samples = len(X)
-        censoring = self._check_censoring_consistency(censoring, n_samples)
+        censoring = check_censoring_consistency(censoring, n_samples)
         base_shape = (self._n_intervals, self._n_init_features)
-        X = LFP._check_X_consistency(X, base_shape, "float64")
+        X = check_longitudinal_features_consistency(X, base_shape, "float64")
         if sps.issparse(X[0]):
             X_with_lags = [self._sparse_lagger(x, int(censoring[i]))
-                           for i, x in enumerate(X)]  # Don't get why int() is required here as censoring_i is uint64
+                           for i, x in enumerate(X)]
+            # Don't get why int() is required here as censoring_i is uint64
         else:
             X_with_lags = [self._dense_lagger(x, int(censoring[i]))
                            for i, x in enumerate(X)]
@@ -187,12 +188,12 @@ class LongitudinalFeaturesLagger(Base):
 
         Parameters
         ----------
-        X : list of np.ndarray or list of scipy.sparse.csr_matrix,
+        X : list of numpy.ndarray or list of scipy.sparse.csr_matrix,
             list of length n_samples, each element of the list of 
             shape=(n_intervals, n_features)
             The list of features matrices.
             
-        censoring : `np.ndarray`, shape=(n_samples, 1), dtype="uint64"
+        censoring : `numpy.ndarray`, shape=(n_samples, 1), dtype="uint64"
             The censoring data. This array should contain integers in 
             [1, n_intervals]. If the value i is equal to n_intervals, then there
             is no censoring for sample i. If censoring = c < n_intervals, then 
@@ -202,7 +203,7 @@ class LongitudinalFeaturesLagger(Base):
 
         Returns
         -------
-        output : `[np.ndarrays]`  or `[csr_matrices]`, shape=(n_intervals, n_features)
+        output : `[numpy.ndarrays]`  or `[csr_matrices]`, shape=(n_intervals, n_features)
             The list of features matrices with added lagged features.
         """
         self.fit(X, censoring)
@@ -237,14 +238,3 @@ class LongitudinalFeaturesLagger(Base):
         return sps.csr_matrix((out_data, (out_row, out_col)),
                               shape=(self._n_intervals,
                                      self._n_output_features))
-
-    @staticmethod
-    def _check_censoring_consistency(censoring, n_samples):
-        """Checks if `censoring` has the correct dtype and shape."""
-        if censoring.shape != (n_samples, 1):
-            try:
-                censoring = censoring.reshape((-1, 1))
-            except:
-                raise ValueError("`censoring` should be a 2-D numpy ndarray of \
-                    shape (%i, 1)" % n_samples)
-        return LearnerOptim._safe_array(censoring, "uint64")

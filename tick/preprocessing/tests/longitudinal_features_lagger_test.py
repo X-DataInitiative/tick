@@ -37,3 +37,7 @@ class Test(unittest.TestCase):
             .fit_transform(self.sparse_features, self.censoring)
         feat_prod = [f.todense() for f in feat_prod]
         np.testing.assert_equal(feat_prod, self.expected_output)
+
+
+if __name__ == "__main__":
+    unittest.main()

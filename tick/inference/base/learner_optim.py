@@ -5,7 +5,7 @@ import numpy as np
 from tick.base import Base
 from tick.optim.prox import ProxZero, ProxL1, ProxL2Sq, ProxElasticNet, ProxTV
 from tick.optim.solver import AGD, GD, BFGS, SGD, SVRG, SDCA
-import pandas as pd
+from tick.preprocessing.utils import safe_array
 
 
 class LearnerOptim(ABC, Base):
@@ -371,17 +371,4 @@ class LearnerOptim(ABC, Base):
 
     @staticmethod
     def _safe_array(X, dtype=np.float64):
-        if isinstance(X, pd.DataFrame):
-            X = X.values
-
-        if isinstance(X, np.ndarray) and not X.flags['C_CONTIGUOUS']:
-            warn('Copying array of size %s to create a C-contiguous '
-                 'version of it' % str(X.shape), RuntimeWarning)
-            X = np.ascontiguousarray(X)
-
-        if X.dtype != dtype:
-            warn('Copying array of size %s to convert it in the right '
-                 'format' % str(X.shape), RuntimeWarning)
-            X = X.astype(dtype)
-
-        return X
+        return safe_array(X, dtype)
