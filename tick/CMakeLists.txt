@@ -13,6 +13,7 @@ include_directories(
         ${CMAKE_CURRENT_SOURCE_DIR}/optim/prox/src
         ${CMAKE_CURRENT_SOURCE_DIR}/optim/solver/src
         ${CMAKE_CURRENT_SOURCE_DIR}/inference/src
+        ${CMAKE_CURRENT_SOURCE_DIR}/preprocessing/src
 )
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/third_party/cereal/include)
@@ -26,6 +27,7 @@ add_subdirectory(optim/model/src)
 add_subdirectory(optim/prox/src)
 add_subdirectory(optim/solver/src)
 add_subdirectory(inference/src)
+add_subdirectory(preprocessing/src)
 
 set(EXTRA_LIBS ${EXTRA_LIBS} array base random array_test simulation model prox
         solver inference)

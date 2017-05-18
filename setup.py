@@ -506,6 +506,17 @@ solver_core_info = {
 
 solver_core = create_extension(**solver_core_info)
 
+preprocessing_core_info = {
+    "cpp_files": ["sparse_longitudinal_features_product.cpp"],
+    "h_files": ["sparse_longitudinal_features_product.h"],
+    "swig_files": ["preprocessing_module.i"],
+    "module_dir": "./tick/preprocessing/",
+    "extension_name": "preprocessing",
+    "include_modules": base_array_modules
+}
+
+preprocessing_core = create_extension(**preprocessing_core_info)
+
 inference_extension_info = {
     "cpp_files": ["hawkes_conditional_law.cpp", "hawkes_em.cpp",
                   "hawkes_adm4.cpp", "hawkes_basis_kernels.cpp",
@@ -549,14 +560,15 @@ setup(name="tick",
                   "on time-dependent modelling",
       ext_modules=[array_extension, base_extension,
                    test_extension, random_extension, simulation_extension,
-                   model_core, prox_core, solver_core,
+                   model_core, prox_core, solver_core, preprocessing_core,
                    inference_extension],
       install_requires=['numpy',
                         'numpydoc',
                         'scipy',
                         'matplotlib',
                         'sphinx',
-                        'pandas'],
+                        'pandas',
+                        'scikit-learn'],
       packages=find_packages(),
       cmdclass={'build': CustomBuild, 'install': CustomInstall},
       classifiers=['Development Status :: 3 - Alpha',
