@@ -17,7 +17,7 @@ class Test(unittest.TestCase):
                          ]
         self.sparse_features = [csr_matrix(f) for f in self.features]
 
-        self.censoring = np.array([2, 3], dtype="uint64").reshape((-1, 1))
+        self.censoring = np.array([2, 3], dtype="uint64")
 
         self.expected_output = [np.array([[0, 0, 1, 0, 0, 0],
                                           [0, 0, 0, 1, 0, 0],

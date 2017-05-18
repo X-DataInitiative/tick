@@ -48,7 +48,7 @@ class LongitudinalFeaturesLagger(Base):
     ...                         [0, 0, 1],
     ...                         [0, 0, 0]], dtype="float64")
     ...             ]
-    >>> censoring = np.array([3, 2], dtype="uint64").reshape((-1, 1))
+    >>> censoring = np.array([3, 2], dtype="uint64")
     >>> lfl = LongitudinalFeaturesLagger(n_lags=2)
     >>> product_features = lfl.fit_transform(features)
     >>> # output comes as a list of sparse matrices or 2D numpy arrays
@@ -114,7 +114,7 @@ class LongitudinalFeaturesLagger(Base):
             shape=(n_intervals, n_features)
             The list of features matrices.
             
-        censoring : `numpy.ndarray`, shape=(n_samples, 1), dtype="uint64"
+        censoring : `numpy.ndarray`, shape=(n_samples,), dtype="uint64"
             The censoring data. This array should contain integers in 
             [1, n_intervals]. If the value i is equal to n_intervals, then there
             is no censoring for sample i. If censoring = c < n_intervals, then 

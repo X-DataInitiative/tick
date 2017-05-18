@@ -138,6 +138,9 @@ Poisson regression (exponential link)  :math:`\text{Poisson}(e^{w^\top x + b})` 
 3. Survival analysis simulation
 ===============================
 
+3.1 Cox regression simulation (proportional hazards)
+----------------------------------------------------
+
 We provide a class for the simulation of a Cox regression model with right-censoring.
 This generates data in the form of i.i.d triplets :math:`(x_i, t_i, c_i)`
 for :math:`i=1, \ldots, n`, where :math:`x_i \in \mathbb R^d` is a features vector,
@@ -163,6 +166,18 @@ Cox regression with right-censoring  :class:`tick.simulation.SimuCoxReg`
 
 .. plot:: ../examples/plot_simulation_coxreg.py
     :include-source:
+
+3.2 Self-controlled case series (SCCS)
+--------------------------------------
+
+We provide a class for the simulation of a SCCS regression model with right-censoring.
+
+.. autosummary::
+   :toctree: generated/
+   :template: class.rst
+
+   simulation.SimuSCCS
+
 
 
 4. Point process simulation
