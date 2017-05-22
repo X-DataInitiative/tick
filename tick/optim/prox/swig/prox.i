@@ -25,6 +25,8 @@ public:
 
     inline virtual void set_strength(double strength);
 
+    inline virtual double get_strength() const;
+
     inline virtual void set_start_end(unsigned long start,
                                       unsigned long end);
 };

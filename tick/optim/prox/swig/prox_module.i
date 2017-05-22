@@ -12,7 +12,7 @@
 %shared_ptr(ProxL1w);
 %shared_ptr(ProxTV);
 %shared_ptr(ProxElasticNet);
-%shared_ptr(ProxSortedL1);
+%shared_ptr(ProxSlope);
 %shared_ptr(ProxMulti);
 %shared_ptr(ProxEquality);
 
@@ -40,7 +40,7 @@
 
 %include prox_elasticnet.i
 
-%include prox_sorted_l1.i
+%include prox_slope.i
 
 %include prox_multi.i
 

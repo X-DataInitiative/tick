@@ -9,7 +9,7 @@ Plot examples of proximal operators available in `tick.optim.prox`
 import numpy as np
 import matplotlib.pyplot as plt
 from tick.optim.prox import ProxL1, ProxElasticNet, ProxL2Sq, \
-    ProxPositive, ProxSortedL1, ProxTV, ProxZero
+    ProxPositive, ProxSlope, ProxTV, ProxZero
 
 x = np.random.randn(50)
 a, b = x.min() - 1e-1, x.max() + 1e-1
@@ -21,7 +21,7 @@ proxs = [
     ProxL2Sq(strength=s),
     ProxL1(strength=s),
     ProxElasticNet(strength=s, ratio=0.5),
-    ProxSortedL1(strength=s),
+    ProxSlope(strength=s),
     ProxTV(strength=s)
 ]
 
