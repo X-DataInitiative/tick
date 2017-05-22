@@ -8,14 +8,15 @@ from tick.inference.tests.inference import InferenceTest
 from tick.simulation import SimuCoxReg, weights_sparse_gauss
 from tick.inference import CoxRegression
 from tick.optim.solver import GD, AGD
-from tick.optim.prox import ProxZero, ProxL1, ProxL2Sq, ProxElasticNet, ProxTV
+from tick.optim.prox import ProxZero, ProxL1, ProxL2Sq, ProxElasticNet, ProxTV, \
+    ProxBinarsity
+from tick.preprocessing.features_binarizer import FeaturesBinarizer
 
 
 class Test(InferenceTest):
-
     solvers = ['gd', 'agd']
 
-    penalties = ['none', 'l2', 'l1', 'elasticnet', 'tv']
+    penalties = ['none', 'l2', 'l1', 'elasticnet', 'tv', 'binarsity']
 
     float_1 = 5.23e-4
     float_2 = 3.86e-2
@@ -33,7 +34,7 @@ class Test(InferenceTest):
     def test_CoxRegression_fit(self):
         """...Test CoxRegression fit with different solvers and penalties
         """
-        features, times, censoring = Test.get_train_data()
+        raw_features, times, censoring = Test.get_train_data()
 
         coeffs_pen = {
             'none': np.array([-0.03068462, 0.03940001, 0.16758354, -0.24838003,
@@ -54,10 +55,29 @@ class Test(InferenceTest):
 
             'tv': np.array([0.03017556, 0.03714465, 0.0385349, -0.10169967,
                             0.15783755, 0.64860815, -0.00617636, -0.22235137,
-                            -1.07938977, -0.07181225])
+                            -1.07938977, -0.07181225]),
+
+            'binarsity': np.array(
+                [0.03794176, -0.04473702, 0.00339763, 0.00339763, -0.16493989,
+                 0.05497996, 0.05497996, 0.05497996, -0.08457476, -0.08457476,
+                 0.0294825, 0.13966702, 0.10251257, 0.02550264, -0.07207419,
+                 -0.05594102, -0.10018038, -0.10018038, 0.10018038, 0.10018038,
+                 -0.47859686, -0.06685181, -0.00850803, 0.55395669, 0.00556327,
+                 -0.00185442, -0.00185442, -0.00185442, 0.26010429, 0.09752455,
+                 -0.17881442, -0.17881442, 0.932516, 0.32095387, -0.49766315,
+                 -0.75580671, 0.0593833, -0.01433773, 0.01077109, -0.05581666])
         }
 
         for penalty in self.penalties:
+
+            if penalty == 'binarsity':
+                # binarize features
+                n_cuts = 3
+                binarizer = FeaturesBinarizer(n_cuts=n_cuts)
+                features = binarizer.fit_transform(raw_features)
+            else:
+                features = raw_features
+
             for solver in self.solvers:
 
                 solver_kwargs = {'penalty': penalty, 'tol': 0,
@@ -66,6 +86,11 @@ class Test(InferenceTest):
 
                 if penalty != 'none':
                     solver_kwargs['C'] = 50
+
+                if penalty == 'binarsity':
+                    solver_kwargs['blocks_start'] = \
+                        binarizer.feature_indices[:-1, ]
+                    solver_kwargs['blocks_length'] = binarizer.n_values
 
                 learner = CoxRegression(**solver_kwargs)
                 learner.fit(features, times, censoring)
@@ -120,25 +145,35 @@ class Test(InferenceTest):
 
         # prox
         prox_class_map = {'none': ProxZero, 'l1': ProxL1, 'l2': ProxL2Sq,
-                          'elasticnet': ProxElasticNet, 'tv': ProxTV}
+                          'elasticnet': ProxElasticNet, 'tv': ProxTV,
+                          'binarsity': ProxBinarsity}
 
         for penalty in self.penalties:
-            learner = CoxRegression(penalty=penalty)
+            if penalty == 'binarsity':
+                learner = CoxRegression(penalty=penalty, blocks_start=[0],
+                                        blocks_length=[1])
+            else:
+                learner = CoxRegression(penalty=penalty)
+
             prox_class = prox_class_map[penalty]
             self.assertTrue(isinstance(learner._prox_obj, prox_class))
 
-        msg = '^``penalty`` must be one of elasticnet, l1, l2, none, tv, ' \
-              'got wrong_name$'
+        msg = '^``penalty`` must be one of binarsity, elasticnet, l1, l2, none, ' \
+              'tv, got wrong_name$'
         with self.assertRaisesRegex(ValueError, msg):
             CoxRegression(penalty='wrong_name')
 
     def test_CoxRegression_penalty_C(self):
-        """...Test LogisticRegression setting of parameter of C
+        """...Test CoxRegression setting of parameter of C
         """
 
         for penalty in self.penalties:
             if penalty != 'none':
-                learner = CoxRegression(penalty=penalty, C=self.float_1)
+                if penalty == 'binarsity':
+                    learner = CoxRegression(penalty=penalty, C=self.float_1,
+                                            blocks_start=[0], blocks_length=[1])
+                else:
+                    learner = CoxRegression(penalty=penalty, C=self.float_1)
                 self.assertEqual(learner.C, self.float_1)
                 self.assertEqual(learner._prox_obj.strength, 1. / self.float_1)
                 learner.C = self.float_2
@@ -147,7 +182,11 @@ class Test(InferenceTest):
 
                 msg = '^``C`` must be positive, got -1$'
                 with self.assertRaisesRegex(ValueError, msg):
-                    CoxRegression(penalty=penalty, C=-1)
+                    if penalty == 'binarsity':
+                        CoxRegression(penalty=penalty, C=-1, blocks_start=[0],
+                                      blocks_length=[1])
+                    else:
+                        CoxRegression(penalty=penalty, C=-1)
 
             else:
                 msg = '^You cannot set C for penalty "%s"$' % penalty
@@ -163,7 +202,7 @@ class Test(InferenceTest):
                 learner.C = -2
 
     def test_CoxRegression_penalty_elastic_net_ratio(self):
-        """...Test LogisticRegression setting of parameter of elastic_net_ratio
+        """...Test CoxRegression setting of parameter of elastic_net_ratio
         """
         ratio_1 = 0.6
         ratio_2 = 0.3
@@ -187,14 +226,22 @@ class Test(InferenceTest):
                 msg = '^Penalty "%s" has no elastic_net_ratio attribute$' % \
                       penalty
                 with self.assertWarnsRegex(RuntimeWarning, msg):
-                    CoxRegression(penalty=penalty, elastic_net_ratio=0.8)
+                    if penalty == 'binarsity':
+                        CoxRegression(penalty=penalty, elastic_net_ratio=0.8,
+                                      blocks_start=[0], blocks_length=[1])
+                    else:
+                        CoxRegression(penalty=penalty, elastic_net_ratio=0.8)
 
-                learner = CoxRegression(penalty=penalty)
+                if penalty == 'binarsity':
+                    learner = CoxRegression(penalty=penalty, blocks_start=[0],
+                                            blocks_length=[1])
+                else:
+                    learner = CoxRegression(penalty=penalty)
                 with self.assertWarnsRegex(RuntimeWarning, msg):
                     learner.elastic_net_ratio = ratio_1
 
     def test_CoxRegression_solver_basic_settings(self):
-        """...Test LogisticRegression setting of basic parameters of solver
+        """...Test CoxRegression setting of basic parameters of solver
         """
         for solver in self.solvers:
             # tol
@@ -245,7 +292,7 @@ class Test(InferenceTest):
             self.assertEqual(learner._solver_obj.record_every, self.int_2)
 
     def test_CoxRegression_solver_step(self):
-        """...Test LogisticRegression setting of step parameter of solver
+        """...Test CoxRegression setting of step parameter of solver
         """
         for solver in self.solvers:
             learner = CoxRegression(solver=solver, step=self.float_1)
@@ -286,6 +333,7 @@ class Test(InferenceTest):
         learner = CoxRegression().fit(features, times, censoring)
         with self.assertRaisesRegex(ValueError, msg):
             learner.score(features, times, None)
+
 
 if __name__ == "__main__":
     unittest.main()
