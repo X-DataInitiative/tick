@@ -222,13 +222,20 @@ Linear regression with intercepts  :math:`\ell(y, y') = \frac 12 (y - y')^2`  :c
 ----------------------
 
 .. todo::
+    Quick survival analysis presentation here?
 
-    Describe cox model
+.. todo::
+
+    Describe Cox model
+
+.. todo::
+    Describe Self Control Case Series model
 
 =================================  ==============================
 Model                              Class
 =================================  ==============================
 Cox regression partial likelihood  :class:`ModelCoxRegPartialLik <tick.optim.model.ModelCoxRegPartialLik>`
+Self Control Case Series           :class:`ModelSCCS <tick.optim.model.ModelSCCS>`
 =================================  ==============================
 
 

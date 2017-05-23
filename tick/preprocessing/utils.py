@@ -86,6 +86,6 @@ def check_censoring_consistency(censoring, n_samples):
     
     """
     if censoring.shape != (n_samples,):
-        raise ValueError("`censoring` should be a 2-D numpy ndarray of \
-            shape (%i, 1)" % n_samples)
+        raise ValueError("`censoring` should be a 1-D numpy ndarray of \
+            shape (%i,)" % n_samples)
     return safe_array(censoring, "uint64")

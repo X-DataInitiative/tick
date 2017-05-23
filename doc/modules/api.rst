@@ -96,6 +96,16 @@ Generalized Linear Models
    optim.model.ModelPoisReg
    optim.model.ModelCoxRegPartialLik
 
+Self Control Case Series
+-------------------------
+.. currentmodule:: tick
+
+.. autosummary::
+   :toctree: generated/
+   :template: class.rst
+
+   optim.model.ModelSCCS
+
 Hawkes
 ------
 .. currentmodule:: tick

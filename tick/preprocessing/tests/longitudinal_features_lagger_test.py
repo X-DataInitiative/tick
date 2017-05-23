@@ -23,12 +23,12 @@ class Test(unittest.TestCase):
                                           [0, 0, 0, 1, 0, 0],
                                           [0, 0, 0, 0, 0, 0.]]),
                                 np.array([[1, 0, 1, 0, 1, 0],
-                                            [0, 1, 0, 1, 1, 1],
-                                            [1, 0, 1, 0, 0, 1.]])
+                                          [0, 1, 0, 1, 1, 1],
+                                          [1, 0, 1, 0, 0, 1.]])
                                 ]
 
     def test_dense_pre_convolution(self):
-        feat_prod = feat_prod = LongitudinalFeaturesLagger(n_lags=1)\
+        feat_prod = LongitudinalFeaturesLagger(n_lags=1)\
             .fit_transform(self.features, self.censoring)
         np.testing.assert_equal(feat_prod, self.expected_output)
 
