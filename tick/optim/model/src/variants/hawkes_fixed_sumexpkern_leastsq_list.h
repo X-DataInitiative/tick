@@ -13,7 +13,14 @@
 class ModelHawkesFixedSumExpKernLeastSqList : public ModelHawkesLeastSqList {
   //! @brief Some arrays used for intermediate computings.
   std::vector<ArrayDouble2d> E, Dgg, C;
-  std::vector<ArrayDouble> Dg;
+  ArrayDouble2dList1D Dg;
+
+  //! @brief some arrays used for intermediate computings in varying baseline case
+  ArrayDouble L;
+  ArrayDoubleList1D K;
+
+  ulong n_baselines;
+  double period_length;
 
   //! @brief The array of decays (remember that the decays are fixed!)
   ArrayDouble decays;
@@ -28,6 +35,8 @@ class ModelHawkesFixedSumExpKernLeastSqList : public ModelHawkesLeastSqList {
   //! \param n_cores : number of cores to be used for multithreading
   //! \param optimization_level : 0 corresponds to no optimization and 1 to use of faster (approximated) exponential function
   ModelHawkesFixedSumExpKernLeastSqList(const ArrayDouble &decays,
+                                        const ulong n_baselines,
+                                        const double period_length,
                                         const unsigned int max_n_threads = 1,
                                         const unsigned int optimization_level = 0);
 
@@ -41,6 +50,12 @@ class ModelHawkesFixedSumExpKernLeastSqList : public ModelHawkesLeastSqList {
   ulong get_n_coeffs() const override;
 
   ulong get_n_decays() const { return n_decays; }
+
+  ulong get_n_baselines() const;
+  double get_period_length() const;
+
+  void set_n_baselines(ulong n_baselines);
+  void set_period_length(double period_length);
 
  private:
   /**

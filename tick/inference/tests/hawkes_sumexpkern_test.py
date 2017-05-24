@@ -102,8 +102,7 @@ class Test(InferenceTest):
                                 (solver, penalty))
 
     def test_HawkesSumExpKern_fit_start(self):
-        """...Test HawkesSumExpKern starting point of
-        fit method
+        """...Test HawkesSumExpKern starting point of fit method
         """
         n_nodes = len(self.events)
         n_coefs = n_nodes + n_nodes * n_nodes * self.n_decays
@@ -176,18 +175,43 @@ class Test(InferenceTest):
         """...Test HawkesSumExpKern setting of parameters
         of model
         """
+        # Single baseline
         learner = HawkesSumExpKern(self.decays)
         np.testing.assert_array_equal(learner.decays, self.decays)
         np.testing.assert_array_equal(learner._model_obj.decays, self.decays)
+        self.assertEqual(learner.n_baselines, 1)
+        self.assertIsNone(learner.period_length)
+
+        # Multiple baselines
+        n_baselines = 3
+        period_length = 2.
+        learner = HawkesSumExpKern(self.decays, n_baselines=n_baselines,
+                                   period_length=period_length)
+        self.assertEqual(learner.n_baselines, n_baselines)
+        self.assertEqual(learner._model_obj.n_baselines, n_baselines)
+        self.assertEqual(learner.period_length, period_length)
+        self.assertEqual(learner._model_obj.period_length, period_length)
 
         msg = "decays is readonly in HawkesSumExpKern"
         with self.assertRaisesRegex(AttributeError, msg):
             learner.decays = self.decays + 1
+        msg = "n_baselines is readonly in HawkesSumExpKern"
+        with self.assertRaisesRegex(AttributeError, msg):
+            learner.n_baselines = n_baselines + 1
+        msg = "period_length is readonly in HawkesSumExpKern"
+        with self.assertRaisesRegex(AttributeError, msg):
+            learner.period_length = period_length + 1
+
+        msg = "You must fit data before getting estimated baseline"
+        with self.assertRaisesRegex(ValueError, msg):
+            learner.baseline
+        msg = "You must fit data before getting estimated adjacency"
+        with self.assertRaisesRegex(ValueError, msg):
+            learner.adjacency
 
     def test_HawkesSumExpKern_penalty_C(self):
         """...Test HawkesSumExpKern setting of parameter of C
         """
-
         for penalty in penalties:
             if penalty != 'none':
                 learner = HawkesSumExpKern(self.decays,
@@ -378,6 +402,17 @@ class Test(InferenceTest):
         built
         """
         learner = HawkesSumExpKern(self.decays, max_iter=10)
+        learner.fit(self.events)
+
+        corresponding_simu = learner._corresponding_simu()
+        np.testing.assert_array_equal(corresponding_simu.decays, learner.decays)
+        np.testing.assert_array_equal(corresponding_simu.baseline,
+                                      learner.baseline)
+        np.testing.assert_array_equal(corresponding_simu.adjacency,
+                                      learner.adjacency)
+
+        learner = HawkesSumExpKern(self.decays, n_baselines=3, period_length=1,
+                                   max_iter=10)
         learner.fit(self.events)
 
         corresponding_simu = learner._corresponding_simu()

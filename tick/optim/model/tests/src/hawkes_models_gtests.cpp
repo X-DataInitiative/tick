@@ -101,8 +101,9 @@ TEST_F(HawkesModelTest, compute_loss_least_square_sum_exp_kern){
   ArrayDouble decays(2);
   decays.fill(2);
 
-  ModelHawkesFixedSumExpKernLeastSq model(decays, 2);
-  model.set_data(timestamps, 5.65);
+  const double end_time = 5.65;
+  ModelHawkesFixedSumExpKernLeastSq model(decays, 1, end_time, 2);
+  model.set_data(timestamps, end_time);
   model.compute_weights();
 
   ArrayDouble coeffs = ArrayDouble {1., 3., 2., 3., 4., 1., 5., 3., 2., 4.};
@@ -113,6 +114,25 @@ TEST_F(HawkesModelTest, compute_loss_least_square_sum_exp_kern){
   EXPECT_DOUBLE_EQ(model.loss(coeffs), 220.65451132057288);
 
   EXPECT_DOUBLE_EQ(model.get_n_coeffs(), 10);
+}
+
+TEST_F(HawkesModelTest, compute_loss_least_square_sum_exp_varying_baseline){
+  ArrayDouble decays(2);
+  decays.fill(2);
+
+  const double end_time = 5.87;
+  ModelHawkesFixedSumExpKernLeastSq model(decays, 3, 2., 1);
+  model.set_data(timestamps, end_time);
+  model.compute_weights();
+
+  ArrayDouble coeffs = ArrayDouble {1., 3., 0., 1., 1., 3., 2., 3., 4., 1., 5., 3., 2., 4.};
+
+  EXPECT_DOUBLE_EQ(model.loss_i(0, coeffs), 754.50509295231836);
+  EXPECT_DOUBLE_EQ(model.loss_i(1, coeffs), 1488.8712825118096);
+
+  EXPECT_DOUBLE_EQ(model.loss(coeffs), 203.94330686037526);
+
+  EXPECT_DOUBLE_EQ(model.get_n_coeffs(), 14);
 }
 
 TEST_F(HawkesModelTest, compute_loss_least_square_list){
@@ -145,9 +165,10 @@ TEST_F(HawkesModelTest, compute_loss_least_square_sum_exp_list){
   ArrayDouble decays(2);
   decays.fill(2);
 
-  ModelHawkesFixedSumExpKernLeastSqList model(decays, 2);
-  model.incremental_set_data(timestamps, 5.65);
-  model.incremental_set_data(timestamps, 5.87);
+  ArrayDouble end_times {5.65, 5.87};
+  ModelHawkesFixedSumExpKernLeastSqList model(decays, 1, 1e300, 1);
+  model.incremental_set_data(timestamps, end_times[0]);
+  model.incremental_set_data(timestamps, end_times[1]);
 
   ArrayDouble coeffs = ArrayDouble {1., 3., 2., 3., 4., 1., 5., 3., 2., 4.};
 
@@ -157,6 +178,26 @@ TEST_F(HawkesModelTest, compute_loss_least_square_sum_exp_list){
   EXPECT_DOUBLE_EQ(model.loss(coeffs), 220.89769891306648);
 
   EXPECT_DOUBLE_EQ(model.get_n_coeffs(), 10);
+}
+
+
+TEST_F(HawkesModelTest, compute_loss_least_square_sum_exp_list_varying_baseline){
+  ArrayDouble decays(2);
+  decays.fill(2);
+
+  ArrayDouble end_times {5.65, 5.87};
+  ModelHawkesFixedSumExpKernLeastSqList model(decays, 3, 2., 1);
+  model.incremental_set_data(timestamps, end_times[0]);
+  model.incremental_set_data(timestamps, end_times[1]);
+
+  ArrayDouble coeffs = ArrayDouble {1., 3., 0., 1., 1., 3., 2., 3., 4., 1., 5., 3., 2., 4.};
+
+  EXPECT_DOUBLE_EQ(model.loss_i(0, coeffs), 1508.7587849870356);
+  EXPECT_DOUBLE_EQ(model.loss_i(1, coeffs), 2973.3304558342033);
+
+  EXPECT_DOUBLE_EQ(model.loss(coeffs), 203.73132912823812);
+
+  EXPECT_DOUBLE_EQ(model.get_n_coeffs(), 14);
 }
 
 TEST_F(HawkesModelTest, compute_loss_loglik_list){
