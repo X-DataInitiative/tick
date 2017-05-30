@@ -247,6 +247,9 @@ def create_extension(extension_name, module_dir,
     library_dirs.extend(blas_info.get("library_dirs", []))
     define_macros.extend(blas_info.get("define_macros", []))
 
+    if any(key == 'HAVE_CBLAS' for key, _ in blas_info['define_macros']):
+        define_macros.append(('TICK_CBLAS_AVAILABLE', None))
+
     if include_modules is None:
         include_modules = []
 
@@ -331,7 +334,7 @@ array_extension_info = {
                 "sparsearray.h", "sparsearray2d.h",
                 "sparsearray2d.h", "ssparsearray.h", "ssparsearray2d.h",
                 "varray.h", "view.h", "view2d.h",
-                "cblas_wrappers.h"],
+                "vector_operations.h"],
     "swig_files": ["array_module.i"],
     "module_dir": "./tick/base/array/",
     "extension_name": "array"

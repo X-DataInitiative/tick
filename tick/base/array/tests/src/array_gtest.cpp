@@ -27,7 +27,7 @@
 #define TICK_TEST_DATA_MIN_VALUE -10000
 #define TICK_TEST_DATA_MAX_VALUE  10000
 
-#define TICK_TEST_SINGLE_RELATIVE_ERROR 1e-5
+#define TICK_TEST_SINGLE_RELATIVE_ERROR 1e-4
 #define TICK_TEST_DOUBLE_RELATIVE_ERROR 1e-13
 
 #include <array.h>
@@ -333,7 +333,7 @@ TYPED_TEST(ArrayTest, MultIncr) {
     arrA.mult_incr(arrB, factor);
 
     SCOPED_TRACE(factor);
-    for (ulong j = 0; j < arrA.size(); ++j) ASSERT_DOUBLE_EQ(arrA[j], static_cast<VT>(oldA[j] + arrB[j] * factor));
+    for (ulong j = 0; j < arrA.size(); ++j) ASSERT_RELATIVE_ERROR(VT, arrA[j], static_cast<VT>(oldA[j] + arrB[j] * factor));
   }
 }
 
@@ -347,7 +347,7 @@ TYPED_TEST(Array2dTest, MultIncr) {
     arrA.mult_incr(arrB, factor);
 
     SCOPED_TRACE(factor);
-    for (ulong j = 0; j < arrA.size(); ++j) ASSERT_DOUBLE_EQ(arrA[j], static_cast<VT>(oldA[j] + arrB[j] * factor));
+    for (ulong j = 0; j < arrA.size(); ++j) ASSERT_RELATIVE_ERROR(VT, arrA[j], static_cast<VT>(oldA[j] + arrB[j] * factor));
   }
 }
 
@@ -366,7 +366,7 @@ TYPED_TEST(ArrayTest, MultAddMultIncr) {
     for (ulong j = 0; j < arrA.size(); ++j) oldA[j] += arrC[j] * factor_2;
 
     SCOPED_TRACE(factor);
-    for (ulong j = 0; j < arrA.size(); ++j) ASSERT_DOUBLE_EQ(arrA[j], static_cast<VT>(oldA[j]));
+    for (ulong j = 0; j < arrA.size(); ++j) ASSERT_RELATIVE_ERROR(VT, arrA[j], static_cast<VT>(oldA[j]));
   }
 }
 
@@ -385,7 +385,7 @@ TYPED_TEST(Array2dTest, MultAddMultIncr) {
     for (ulong j = 0; j < arrA.size(); ++j) oldA[j] += arrC[j] * factor_2;
 
     SCOPED_TRACE(factor);
-    for (ulong j = 0; j < arrA.size(); ++j) ASSERT_DOUBLE_EQ(arrA[j], static_cast<VT>(oldA[j]));
+    for (ulong j = 0; j < arrA.size(); ++j) ASSERT_RELATIVE_ERROR(VT, arrA[j], static_cast<VT>(oldA[j]));
   }
 }
 
