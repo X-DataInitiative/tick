@@ -85,10 +85,7 @@ def check_censoring_consistency(censoring, n_samples):
         The censoring data with right shape and dtype.
     
     """
-    if censoring.shape != (n_samples, 1):
-        try:
-            censoring = censoring.reshape((-1, 1))
-        except:
-            raise ValueError("`censoring` should be a 2-D numpy ndarray of \
-                shape (%i, 1)" % n_samples)
+    if censoring.shape != (n_samples,):
+        raise ValueError("`censoring` should be a 2-D numpy ndarray of \
+            shape (%i, 1)" % n_samples)
     return safe_array(censoring, "uint64")
