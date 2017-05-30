@@ -46,7 +46,19 @@ class Prox {
                        ulong start,
                        ulong end);
 
-    virtual void set_strength(double strength);
+  // Compute the prox on the i-th coordinate only
+  virtual void _call_i(ulong i,
+                       ArrayDouble &coeffs,
+                       double step,
+                       ArrayDouble &out) const;
+
+  virtual void _call_i(ulong i,
+                       ArrayDouble &coeffs,
+                       double step,
+                       ArrayDouble &out,
+                       ulong repeat) const;
+
+  virtual void set_strength(double strength);
 
     virtual double get_strength() const;
 

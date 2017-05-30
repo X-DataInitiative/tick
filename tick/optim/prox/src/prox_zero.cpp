@@ -47,3 +47,18 @@ void ProxZero::_call(ArrayDouble &coeffs,
         sub_out[i] = sub_coeffs[i];
     }
 }
+
+void ProxZero::_call_i(ulong i,
+             ArrayDouble &coeffs,
+             double step,
+             ArrayDouble &out) const {
+    out[i] = coeffs[i];
+}
+
+void ProxZero::_call_i(ulong i,
+             ArrayDouble &coeffs,
+             double step,
+             ArrayDouble &out,
+             ulong repeat) const {
+    out[i] = coeffs[i];
+}

@@ -42,3 +42,21 @@ void ProxL2Sq::_call_i(ulong i,
         out[i] = coeffs_i / (1 + step * strength);
     }
 }
+
+
+void ProxL2Sq::_call_i(ulong i,
+                       ArrayDouble &coeffs,
+                       double step,
+                       ArrayDouble &out,
+                       ulong repeat) const {
+    double coeffs_i = coeffs[i];
+    if (repeat <= 0) {
+        return;
+    }
+    if (positive && coeffs_i < 0) {
+        out[i] = 0;
+    } else {
+        double c = 1.0 / pow(1.0 + step * strength, repeat);
+        out[i] = c * coeffs_i;
+    }
+}

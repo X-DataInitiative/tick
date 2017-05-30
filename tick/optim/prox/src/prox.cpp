@@ -76,6 +76,23 @@ void Prox::call(ArrayDouble &coeffs,
     TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
 }
 
+// Compute the prox on the i-th coordinate only
+void Prox::_call_i(ulong i,
+                   ArrayDouble &coeffs,
+                   double t,
+                   ArrayDouble &out) const {
+    TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
+}
+
+// Compute the prox on the i-th coordinate only
+void Prox::_call_i(ulong i,
+                   ArrayDouble &coeffs,
+                   double t,
+                   ArrayDouble &out,
+                   ulong repeat) const {
+    TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
+}
+
 void Prox::set_strength(double strength) {
     this->strength = strength;
 }

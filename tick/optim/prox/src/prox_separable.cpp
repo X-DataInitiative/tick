@@ -83,3 +83,11 @@ void ProxSeparable::_call_i(ulong i,
                             ArrayDouble &out) const {
     TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
 }
+
+void ProxSeparable::_call_i(ulong i,
+                            ArrayDouble &coeffs,
+                            double step,
+                            ArrayDouble &out,
+                            ulong repeat) const {
+  TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
+}

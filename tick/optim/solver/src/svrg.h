@@ -18,9 +18,13 @@ class SVRG : public StoSolver {
     };
 
  private:
-    double step;
+   double step;
     VarianceReductionMethod variance_reduction;
     ArrayDouble next_iterate;
+    // An array to save the full gradient used for variance reduction
+    ArrayDouble full_gradient;
+
+    ArrayDouble fixed_w;
 
  public:
     SVRG(ulong epoch_size,

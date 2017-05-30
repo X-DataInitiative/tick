@@ -35,7 +35,8 @@ from scipy.sparse import csr_matrix
 #                'DEBUG_SHAREDARRAY', 'DEBUG_VARRAY', 'DEBUG_VERBOSE']
 
 
-debug_flags = ['DEBUG_COSTLY_THROW']
+# debug_flags = ['DEBUG_COSTLY_THROW']
+debug_flags = []
 
 # We need to understand what kind of ints are used by the sparse matrices of
 # scipy

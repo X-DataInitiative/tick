@@ -29,6 +29,13 @@ class ProxL2Sq : public ProxSeparable {
                          ArrayDouble &coeffs,
                          double step,
                          ArrayDouble &out) const;
+
+    virtual void _call_i(ulong i,
+                         ArrayDouble &coeffs,
+                         double step,
+                         ArrayDouble &out,
+                         ulong repeat) const;
+
 };
 
 #endif  // TICK_OPTIM_PROX_SRC_PROX_L2SQ_H_
