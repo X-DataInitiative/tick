@@ -19,4 +19,4 @@ def fetch_hawkes_bund_data():
         List of 20 days of 4 timestamps data.
     """
     dataset = 'hawkes/bund/bund.npz'
-    return [timestamps for _, timestamps in fetch_tick_dataset(dataset)]
+    return [list(timestamps) for _, timestamps in fetch_tick_dataset(dataset)]
