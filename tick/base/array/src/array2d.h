@@ -166,7 +166,7 @@ Array2d<T>::Array2d(ulong n_rows, ulong n_cols, T *data) :
 // fill with given value
 template<typename T>
 void Array2d<T>::fill(T value) {
-    cblas_wrappers<T>{}.set(_size, value, _data);
+    tick::vector_operations<T>{}.set(_size, value, _data);
 }
 
 template<typename T>

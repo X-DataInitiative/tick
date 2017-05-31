@@ -11,7 +11,7 @@
 
 #include <cstring>
 
-#include "cblas_wrappers.h"
+#include "vector_operations.h"
 #include "promote.h"
 
 #include <cereal/types/base_class.hpp>
@@ -129,7 +129,7 @@ class AbstractArray1d2d {
     //! @brief Fill array with zeros (in case of a sparse array we do not
     //! desallocate the various arrays... so it is a "lazy" but quick init !)
     void init_to_zero() {
-        cblas_wrappers<T>{}.set(size_data(), T{0}, _data);
+        tick::vector_operations<T>{}.set(size_data(), T{0}, _data);
     }
 
     //! @brief Returns the sum of all the elements of the array
@@ -288,7 +288,7 @@ tick::promote_t<T> AbstractArray1d2d<T>::sum() const {
     if (_size == 0) TICK_ERROR("Cannot take the sum of an empty array");
     if (size_data() == 0) return 0;
 
-    return cblas_wrappers<T>{}.sum(size_data(), _data);;
+    return tick::vector_operations<T>{}.sum(size_data(), _data);;
 }
 
 // @brief Returns the min
@@ -344,7 +344,7 @@ void AbstractArray1d2d<T>::operator*=(const T a) {
     if (_size == 0) TICK_ERROR("Cannot apply *= on an empty array");
     if (size_data() == 0) return;
 
-    cblas_wrappers<T>{}.scale(size_data(), a, _data);
+    tick::vector_operations<T>{}.scale(size_data(), a, _data);
 }
 
 namespace tick {

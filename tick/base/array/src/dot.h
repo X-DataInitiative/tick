@@ -8,7 +8,7 @@
 
 #include "array.h"
 #include "sparsearray.h"
-#include "cblas_wrappers.h"
+#include "vector_operations.h"
 
 // @brief Returns the scalar product of the array with `array`
 template<typename T>
@@ -19,7 +19,7 @@ T BaseArray<T>::dot(const BaseArray<T> &array) const {
 
     // Case dense/dense
     if (is_dense() && array.is_dense()) {
-        return (cblas_wrappers<T>{}).dot(this->size(), this->data(), array.data());
+        return (tick::vector_operations<T>{}).dot(this->size(), this->data(), array.data());
     }
 
     // Case sparse/sparse

@@ -3,6 +3,13 @@ project(tick)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
+find_package(BLAS)
+
+if (${BLAS_FOUND})
+    add_definitions(-DTICK_CBLAS_AVAILABLE)
+    set(EXTRA_TEST_LIBS ${BLAS_LIBRARIES})
+endif()
+
 include_directories(
         ${CMAKE_CURRENT_SOURCE_DIR}/base/src
         ${CMAKE_CURRENT_SOURCE_DIR}/base/array/src
@@ -45,7 +52,7 @@ if (${GTEST_FOUND})
     if(APPLE)
         find_library(ACCELERATE_LIBRARY Accelerate)
         mark_as_advanced(ACCELERATE_LIBRARY)
-        set(EXTRA_TEST_LIBS ${ACCELERATE_LIBRARY})
+        set(EXTRA_TEST_LIBS ${EXTRA_TEST_LIBS} ${ACCELERATE_LIBRARY})
     endif(APPLE)
 
     add_subdirectory(base/tests/src)

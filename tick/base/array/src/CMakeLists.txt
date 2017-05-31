@@ -17,7 +17,7 @@ add_library(array EXCLUDE_FROM_ALL
         view.h
         view2d.h
         carray_python.h
-        cblas_wrappers.h
+        vector_operations.h
         alloc.h
         alloc.cpp
         )
