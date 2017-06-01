@@ -54,7 +54,7 @@ extensions = [
     'matplotlib.sphinxext.plot_directive',
     'sphinxext.gen_rst',
     'sphinxext.directives',
-    'sphinxext.google_analytics'
+    'sphinxext.google_analytics',
 ]
 
 
@@ -82,9 +82,9 @@ master_doc = 'index'
 # General information about the project.
 project = 'tick'
 copyright = 'Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, ' \
-            'Maryan Morel, Søren Poulsen'
+            'Maryan Morel, Søren Vinther Poulsen'
 author = 'Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, ' \
-         'Søren Poulsen'
+         'Søren Vinther Poulsen'
 
 
 # The version info for the project you're documenting, acts as replacement for
@@ -267,7 +267,8 @@ man_pages = [
     ('index', 'tick',
      'Module for statistical learning, with a particular emphasis'
      'on time-dependent modelling',
-     ['Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Søren Poulsen'], 1)
+     ['Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, '
+      'Søren Vinther Poulsen'], 1)
 ]
 
 # If true, show URL addresses after external links.
@@ -348,6 +349,7 @@ html_theme_options = {
     # Values: "3" (default) or "2" (in quotes)
     'bootstrap_version': "3",
 }
+
 
 # This allow us to skip properties from sphix documentation
 # We need to do this as with newbase metaclass we pass all attributes as

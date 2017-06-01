@@ -39,6 +39,13 @@ Survival Analysis
 
 .. autosummary::
    :toctree: generated/
+   :template: function.rst
+
+   inference.nelson_aalen
+   inference.kaplan_meier
+
+.. autosummary::
+   :toctree: generated/
    :template: class.rst
 
    inference.CoxRegression
