@@ -128,7 +128,7 @@ void VArray<T>::set_size(ulong newsize, bool flagRemember) {
 #ifdef DEBUG_VARRAY
     std::cout << "VArray : SetSize : Alloc data of sizeAlloc=" << newSizeAlloc << " on " << this << std::endl;
 #endif
-    PYSHARED_ALLOC_ARRAY(tempPtr, T, newSizeAlloc);
+    TICK_PYTHON_MALLOC(tempPtr, T, newSizeAlloc);
     if (flagRemember) memcpy(tempPtr, Array<T>::_data, sizeof(T) * Array<T>::_size);
 
     VArray<T>::clear();

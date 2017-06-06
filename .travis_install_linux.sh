@@ -12,22 +12,6 @@ if [ ! -d $HOME/.pyenv/bin ]
         git clone https://github.com/yyuu/pyenv.git $HOME/.pyenv
 fi
 
-export PYENV_ROOT="$HOME/.pyenv"
-export PATH="$PYENV_ROOT/bin:$PYENV_ROOT/shims:$PATH"
-
-eval "$(pyenv init -)"
-
-case "${TOXENV}" in
-    py34)
-        pyenv install -s 3.4.5
-        pyenv local 3.4.5
-        ;;
-    py35)
-        pyenv install -s 3.5.2
-        pyenv local 3.5.2
-        ;;
-esac
-
 if [ ! -d googletest  ] || [ ! -f googletest/CMakeLists.txt ]
     then
         git clone https://github.com/google/googletest.git
@@ -45,3 +29,9 @@ fi
 
 alias swig=/usr/local/bin/swig
 
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+
+eval "$(pyenv init -)"
+
+pyenv install -s ${PYVER}

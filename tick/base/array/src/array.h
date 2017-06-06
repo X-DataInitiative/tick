@@ -234,7 +234,7 @@ Array<T>::Array(ulong size, T *data1)
     // if no one gave us data we allocate it and are now responsible for it
     if (data1 == nullptr) {
         is_data_allocation_owned = true;
-        PYSHARED_ALLOC_ARRAY(_data, T, _size);
+        TICK_PYTHON_MALLOC(_data, T, _size);
     } else {
         // Otherwise the one who gave the data is responsible for its allocation
         is_data_allocation_owned = false;
@@ -248,7 +248,7 @@ Array<T>::Array(std::initializer_list<T> data_list)
     : BaseArray<T>(true) {
     is_data_allocation_owned = true;
     _size = data_list.size();
-    PYSHARED_ALLOC_ARRAY(_data, T, _size);
+    TICK_PYTHON_MALLOC(_data, T, _size);
     size_t index = 0;
     for (auto it = data_list.begin(); it != data_list.end(); ++it) {
         _data[index] = *it;

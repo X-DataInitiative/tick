@@ -5,64 +5,82 @@
 
 #include "debug.h"
 
-//
-// Macros PYDECREF, PYINCREF, _PYSHARED_FREE_ARRAY and _PYSHARED_ALLOC_ARRAY
-//
-#ifdef PYTHON_LINK
+#if defined(PYTHON_LINK)
+
 #include <Python.h>
 #define PYDECREF(ref) Py_DECREF(reinterpret_cast<PyObject*>(ref))
 #define PYINCREF(ref) Py_INCREF(reinterpret_cast<PyObject*>(ref))
-#define _PYSHARED_FREE_ARRAY(ptr) PyMem_Free(reinterpret_cast<void*> (ptr))
-#define _PYSHARED_ALLOC_ARRAY(ptr, type, n) ptr = reinterpret_cast<type*>(PyMem_Malloc((n)*sizeof(type)))
+
+namespace tick {
+
+template<typename T>
+void python_free(T *&ptr) {
+  PyMem_RawFree(reinterpret_cast<void*>(ptr));
+
+  ptr = nullptr;
+}
+
+template<typename T>
+void python_malloc(T *&ptr, ulong n) {
+  ptr = (n == 0) ? nullptr : reinterpret_cast<T*>(PyMem_RawMalloc(n * sizeof(T)));
+}
+
+}  // namespace tick
+
 #else
 #define PYDECREF(ref)
 #define PYINCREF(ref)
-#define _PYSHARED_FREE_ARRAY(ptr) delete[](ptr)
-#define _PYSHARED_ALLOC_ARRAY(ptr, type, n) ptr = new type[n]
-#endif
 
-//
-// Macros PYSHARED_FREE_ARRAY and PYSHARED_ALLOC_ARRAY
-//
-#ifdef DEBUG_C_ARRAY
+namespace tick {
 
-class DEBUGCAllocArrayCount{
-    static std::int64_t count;
- public:
-    DEBUGCAllocArrayCount() {}
-    static void add() {DEBUGCAllocArrayCount::count++;}
-    static void remove() {DEBUGCAllocArrayCount::count--;}
-    staticstd::int64_t get() {return DEBUGCAllocArrayCount::count;}
-};
+template<typename T>
+void python_free(T *&ptr) {
+  delete[](ptr);
 
-#define PYSHARED_FREE_ARRAY(ptr) {\
-    if (ptr) { \
-        _PYSHARED_FREE_ARRAY(ptr); \
-        DEBUGCAllocArrayCount::remove(); \
-        std::cout << "C-array Free ptr=" << ptr << " --> #AllocArrayCount=" \
-            << DEBUGCAllocArrayCount::get() << std::endl; \
-    }\
+  ptr = nullptr;
 }
 
-#define PYSHARED_ALLOC_ARRAY(ptr, type, n) {\
-    if (n != 0) { \
-        _PYSHARED_ALLOC_ARRAY(ptr, type, n); \
-        DEBUGCAllocArrayCount::add(); \
-        std::cout << "C-array Alloc size=" << n << " ptr=" << ptr << " --> #AllocArrayCount=" \
-            << DEBUGCAllocArrayCount::get() << std::endl; \
-    } else {ptr = nullptr;} \
+template<typename T>
+void python_malloc(T *&ptr, ulong n) {
+  ptr = (n == 0) ? nullptr : new T[n];
+}
+
+}  // namespace tick
+
+#endif
+
+#if defined(DEBUG_C_ARRAY)
+
+class DEBUGCAllocArrayCount_t {
+    std::int64_t count;
+ public:
+    DEBUGCAllocArrayCount_t() : count(0) {}
+
+    void add() { count++; }
+    void remove() { count--; }
+
+    std::int64_t get() const { return count; }
+};
+
+extern DEBUGCAllocArrayCount_t DEBUGCAllocArrayCount;
+
+#define TICK_PYTHON_FREE(ptr) {\
+    (tick::python_free(ptr)); \
+    DEBUGCAllocArrayCount.remove(); \
+    TICK_WARNING() << "C-array Free ptr=" << ptr << " --> #AllocArrayCount=" << DEBUGCAllocArrayCount.get(); \
+}
+
+#define TICK_PYTHON_MALLOC(ptr, type, n) {\
+    (tick::python_malloc<type>(ptr, n)); \
+    DEBUGCAllocArrayCount.add(); \
+    TICK_WARNING() << "C-array Alloc size=" << n << " ptr=" << ptr << " --> #AllocArrayCount=" << DEBUGCAllocArrayCount.get(); \
 }
 
 #else
 
-#define PYSHARED_FREE_ARRAY(ptr) _PYSHARED_FREE_ARRAY(ptr)
-#define PYSHARED_ALLOC_ARRAY(ptr, type, n) \
-    if (n != 0) {\
-        _PYSHARED_ALLOC_ARRAY(ptr, type, n);\
-    } else {\
-        ptr = nullptr;\
-    }
+#define TICK_PYTHON_FREE(ptr)             (tick::python_free(ptr))
+#define TICK_PYTHON_MALLOC(ptr, type, n)  (tick::python_malloc<type>(ptr, n))
 
-#endif
+#endif  // DEBUG_C_ARRAY
 
 #endif  // TICK_BASE_ARRAY_SRC_ALLOC_H_

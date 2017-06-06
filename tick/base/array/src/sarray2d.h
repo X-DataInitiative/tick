@@ -247,7 +247,7 @@ T *SArray2d<T>::_clear() {
 template<typename T>
 void SArray2d<T>::clear() {
     if (_clear()) {
-        PYSHARED_FREE_ARRAY(_data);
+        TICK_PYTHON_FREE(_data);
     }
     _data = nullptr;
 }

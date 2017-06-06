@@ -1,5 +1,7 @@
 #include "alloc.h"
 
-#ifdef DEBUG_C_ARRAY
-std::int64_t DEBUGCAllocArrayCount::count = 0;
+#if defined(DEBUG_C_ARRAY)
+
+DEBUGCAllocArrayCount_t DEBUGCAllocArrayCount;
+
 #endif

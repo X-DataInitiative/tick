@@ -14,31 +14,39 @@ matrix:
   include:
   - os: linux
     language: generic
-    env: TOXENV=py34
+    env: PYVER=3.4.6
   - os: linux
     language: generic
-    env: TOXENV=py35
+    env: PYVER=3.5.3
+  - os: linux
+    language: generic
+    env: PYVER=3.6.1
   - os: osx
     language: generic
-    env: TOXENV=py34
+    env: PYVER=3.4.6
   - os: osx
     language: generic
-    env: TOXENV=py35
+    env: PYVER=3.5.3
+  - os: osx
+    language: generic
+    env: PYVER=3.6.1
 
 before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then source .travis_install_mac.sh; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then source .travis_install_linux.sh; fi
 
 install:
+  - pyenv local ${PYVER}
   - python -m pip install --quiet -U pip
   - python -m pip install --quiet numpy pandas
   - python -m pip install -r requirements.txt
   - python -m pip install sphinx pillow
   - python -m pip install cpplint
+  - pyenv rehash
 
 script:
   - ./build_test.sh
-  - export PYTHONPATH=${PYTHONPATH}:${TRAVIS_BUILD_DIR} && (cd doc && make doctest)
+  - export PYTHONPATH=${PYTHONPATH}:${TRAVIS_BUILD_DIR} && (cd doc && pyenv local ${PYVER} && make doctest)
 
 notifications:
   slack:

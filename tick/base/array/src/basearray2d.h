@@ -75,14 +75,14 @@ class BaseArray2d : public AbstractArray1d2d<T> {
         if (this != &other) {
             AbstractArray1d2d<T>::operator=(other);
             if (is_row_indices_allocation_owned && _row_indices != nullptr)
-                PYSHARED_FREE_ARRAY(_row_indices);
+                TICK_PYTHON_FREE(_row_indices);
             _row_indices = nullptr;
             is_row_indices_allocation_owned = true;
             _n_cols = other._n_cols;
             _n_rows = other._n_rows;
             _size = _n_cols * _n_rows;
             if (other.is_sparse()) {
-                PYSHARED_ALLOC_ARRAY(_row_indices, INDICE_TYPE, _n_rows + 1);
+                TICK_PYTHON_MALLOC(_row_indices, INDICE_TYPE, _n_rows + 1);
                 memcpy(_row_indices, other._row_indices, sizeof(INDICE_TYPE) * (_n_rows + 1));
             }
         }
@@ -94,7 +94,7 @@ class BaseArray2d : public AbstractArray1d2d<T> {
     BaseArray2d &operator=(BaseArray2d<T> &&other) {
         AbstractArray1d2d<T>::operator=(std::move(other));
         if (is_row_indices_allocation_owned && _row_indices != nullptr)
-            PYSHARED_FREE_ARRAY(_row_indices);
+            TICK_PYTHON_FREE(_row_indices);
         _row_indices = other._row_indices;
         other._row_indices = nullptr;
         is_row_indices_allocation_owned = other.is_row_indices_allocation_owned;
@@ -106,7 +106,7 @@ class BaseArray2d : public AbstractArray1d2d<T> {
 
     //! @brief Destructor
     virtual ~BaseArray2d() {
-        if (is_row_indices_allocation_owned && _row_indices != nullptr) PYSHARED_FREE_ARRAY(_row_indices);
+        if (is_row_indices_allocation_owned && _row_indices != nullptr) TICK_PYTHON_FREE(_row_indices);
     }
 
  private:
@@ -138,7 +138,7 @@ BaseArray2d<T>::BaseArray2d(const BaseArray2d<T> &other) : AbstractArray1d2d<T>(
     is_row_indices_allocation_owned = true;
     _row_indices = nullptr;
     if (other.is_sparse()) {
-        PYSHARED_ALLOC_ARRAY(_row_indices, INDICE_TYPE, _n_rows + 1);
+        TICK_PYTHON_MALLOC(_row_indices, INDICE_TYPE, _n_rows + 1);
         memcpy(_row_indices, other._row_indices, sizeof(INDICE_TYPE) * (_n_rows + 1));
     }
 }

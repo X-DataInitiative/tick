@@ -211,9 +211,9 @@ std::shared_ptr<SSparseArray<T>> SSparseArray<T>::new_ptr(ulong size, ulong size
         return aptr;
     }
     T *data;
-    PYSHARED_ALLOC_ARRAY(data, T, size_sparse);
+    TICK_PYTHON_MALLOC(data, T, size_sparse);
     INDICE_TYPE *indices;
-    PYSHARED_ALLOC_ARRAY(indices, INDICE_TYPE, size_sparse);
+    TICK_PYTHON_MALLOC(indices, INDICE_TYPE, size_sparse);
     aptr->set_data_indices(data, indices, size, size_sparse);
     return aptr;
 }
@@ -289,8 +289,8 @@ void SSparseArray<T>::clear() {
     bool flag_desallocate_data;
     bool flag_desallocate_indices;
     _clear(flag_desallocate_data, flag_desallocate_indices);
-    if (flag_desallocate_data) PYSHARED_FREE_ARRAY(_data);
-    if (flag_desallocate_indices) PYSHARED_FREE_ARRAY(_indices);
+    if (flag_desallocate_data) TICK_PYTHON_FREE(_data);
+    if (flag_desallocate_indices) TICK_PYTHON_FREE(_indices);
     _data = nullptr;
     _indices = nullptr;
 }

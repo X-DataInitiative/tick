@@ -262,11 +262,11 @@ std::shared_ptr<SSparseArray2d<T>> SSparseArray2d<T>::new_ptr(ulong n_rows, ulon
         return aptr;
     }
     T *data;
-    PYSHARED_ALLOC_ARRAY(data, T, size_sparse);
+    TICK_PYTHON_MALLOC(data, T, size_sparse);
     INDICE_TYPE *indices;
-    PYSHARED_ALLOC_ARRAY(indices, INDICE_TYPE, size_sparse);
+    TICK_PYTHON_MALLOC(indices, INDICE_TYPE, size_sparse);
     INDICE_TYPE *row_indices;
-    PYSHARED_ALLOC_ARRAY(row_indices, INDICE_TYPE, n_rows + 1);
+    TICK_PYTHON_MALLOC(row_indices, INDICE_TYPE, n_rows + 1);
     row_indices[n_rows] = size_sparse;
     aptr->set_data_indices_rowindices(data, indices, row_indices, n_rows, n_cols);
     return aptr;
@@ -375,9 +375,9 @@ void SSparseArray2d<T>::clear() {
     bool flag_desallocate_indices;
     bool flag_desallocate_row_indices;
     _clear(flag_desallocate_data, flag_desallocate_indices, flag_desallocate_row_indices);
-    if (flag_desallocate_data) PYSHARED_FREE_ARRAY(_data);
-    if (flag_desallocate_indices) PYSHARED_FREE_ARRAY(_indices);
-    if (flag_desallocate_row_indices) PYSHARED_FREE_ARRAY(_row_indices);
+    if (flag_desallocate_data) TICK_PYTHON_FREE(_data);
+    if (flag_desallocate_indices) TICK_PYTHON_FREE(_indices);
+    if (flag_desallocate_row_indices) TICK_PYTHON_FREE(_row_indices);
     _data = nullptr;
     _indices = nullptr;
     _row_indices = nullptr;
