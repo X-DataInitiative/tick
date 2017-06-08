@@ -78,7 +78,6 @@ except AttributeError:
 # Determine if we have an available BLAS implementation
 blas_info = get_info("blas_opt", 0)
 
-
 class SwigExtension(Extension):
     """This only adds information about extension construction, useful for
     library sharing

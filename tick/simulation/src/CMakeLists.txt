@@ -13,4 +13,4 @@ add_library(simulation EXCLUDE_FROM_ALL
         hawkes_baselines/constant_baseline.cpp hawkes_baselines/constant_baseline.h
         hawkes_baselines/timefunction_baseline.cpp hawkes_baselines/timefunction_baseline.h)
 
-target_link_libraries(simulation random base)
+target_link_libraries(simulation random base array)

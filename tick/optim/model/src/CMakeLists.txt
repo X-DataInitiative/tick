@@ -22,4 +22,4 @@ add_library(model EXCLUDE_FROM_ALL
         variants/hawkes_fixed_sumexpkern_leastsq_list.h variants/hawkes_fixed_sumexpkern_leastsq_list.cpp
         )
 
-target_link_libraries(model base)
+target_link_libraries(model base array)

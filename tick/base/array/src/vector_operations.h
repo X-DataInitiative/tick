@@ -58,7 +58,7 @@ using vector_operations = detail::vector_operations_unoptimized<T>;
 
 #else  // if defined(TICK_CBLAS_AVAILABLE)
 
-#ifdef __APPLE__
+#if defined(__APPLE__)
 
 #include <Accelerate/Accelerate.h>
 
@@ -69,7 +69,7 @@ using vector_operations = detail::vector_operations_unoptimized<T>;
 
 #include <cblas.h>
 
-#endif
+#endif  // defined(__APPLE__)
 
 namespace tick {
 

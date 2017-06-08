@@ -5,4 +5,4 @@ add_library(inference EXCLUDE_FROM_ALL
         hawkes_basis_kernels.cpp hawkes_basis_kernels.h
         hawkes_sumgaussians.h hawkes_sumgaussians.cpp)
 
-target_link_libraries(inference base model)
+target_link_libraries(inference base array model)
