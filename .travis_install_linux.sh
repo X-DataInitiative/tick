@@ -2,7 +2,7 @@
 
 sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test;
 sudo apt-get -qq update
-sudo apt-get -yqq install libblas-dev liblapack-dev gfortran gcc-4.8 g++-4.8
+sudo apt-get -yqq install libblas-dev gfortran gcc-4.8 g++-4.8
 
 export CC="gcc-4.8"
 export CXX="g++-4.8"

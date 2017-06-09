@@ -7,7 +7,12 @@ find_package(BLAS)
 
 if (${BLAS_FOUND})
     add_definitions(-DTICK_CBLAS_AVAILABLE)
+
     set(EXTRA_TEST_LIBS ${BLAS_LIBRARIES})
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${BLAS_LINKER_FLAGS}")
+
+    message(STATUS "BLAS Libraries: " ${BLAS_LIBRARIES})
+    message(STATUS "BLAS Linker flags: " ${BLAS_LINKER_FLAGS})
 endif()
 
 include_directories(

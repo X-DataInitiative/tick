@@ -67,7 +67,9 @@ using vector_operations = detail::vector_operations_unoptimized<T>;
 
 #else
 
+extern "C" {
 #include <cblas.h>
+}
 
 #endif  // defined(__APPLE__)
 
