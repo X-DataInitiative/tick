@@ -76,7 +76,7 @@
            <h2>API reference</h2>
         </a>
         <p>
-           The full tick's API
+           The full tick API
         </p>
      </div>
 
