@@ -1,18 +1,11 @@
-//
-// Created by Maryan Morel on 08/03/16.
-//
-
 #include "prox_elasticnet.h"
 
 ProxElasticNet::ProxElasticNet(double strength,
                                double ratio,
                                bool positive)
-    : ProxSeparable(strength) {
-    if (ratio < 0 || ratio > 1)
-        TICK_ERROR("Ratio should be in the [0, 1] interval");
-
+    : ProxSeparable(strength, positive) {
     this->positive = positive;
-    this->ratio = ratio;
+    set_ratio(ratio);
 }
 
 ProxElasticNet::ProxElasticNet(double strength,
@@ -20,52 +13,48 @@ ProxElasticNet::ProxElasticNet(double strength,
                                ulong start,
                                ulong end,
                                bool positive)
-    : ProxSeparable(strength, start, end) {
-    if (ratio < 0 || ratio > 1)
-        TICK_ERROR("Ratio should be in the [0, 1] interval");
-
+    : ProxSeparable(strength, start, end, positive) {
     this->positive = positive;
-    this->ratio = ratio;
+    set_ratio(ratio);
 }
 
 const std::string ProxElasticNet::get_class_name() const {
     return "ProxElasticNet";
 }
 
-double ProxElasticNet::_value_i(ulong i, ArrayDouble &coeffs) const {
-    double coeffs_i = coeffs[i];
-    double value = (1 - ratio) * 0.5 * coeffs_i * coeffs_i;
-    if (coeffs_i > 0) {
-        value += ratio * coeffs_i;
-    } else {
-        value -= ratio * coeffs_i;
-    }
-    return value;
-}
-
-void ProxElasticNet::_call_i(ulong i,
-                             ArrayDouble &coeffs,
-                             double step,
-                             ArrayDouble &out) const {
+double ProxElasticNet::call_single(double x,
+                                   double step) const {
     double thresh = step * ratio * strength;
-    double coeffs_i = coeffs[i];
-    if (coeffs_i > 0) {
-        if (coeffs_i > thresh) {
-            out[i] = (coeffs_i - thresh) / (1 + step * strength * (1 - ratio));
+    if (x > 0) {
+        if (x > thresh) {
+            return (x - thresh) / (1 + step * strength * (1 - ratio));
         } else {
-            out[i] = 0;
+            return 0;
         }
     } else {
-        // If coeffs_i is negative and we project onto the non-negative half-plane
+        // If x is negative and we project onto the non-negative half-plane
         // we set it to 0
         if (positive) {
-            out[i] = 0;
+            return 0;
         } else {
-            if (coeffs_i < -thresh) {
-                out[i] = (coeffs_i + thresh) / (1 + step * strength * (1 - ratio));
+            if (x < -thresh) {
+                return (x + thresh) / (1 + step * strength * (1 - ratio));
             } else {
-                out[i] = 0;
+                return 0;
             }
         }
     }
+}
+
+double ProxElasticNet::value_single(double x) const {
+    return (1 - ratio) * 0.5 * x * x + ratio * std::abs(x);
+}
+
+double ProxElasticNet::get_ratio() const {
+    return ratio;
+}
+
+void ProxElasticNet::set_ratio(double ratio) {
+    if (ratio < 0 || ratio > 1) TICK_ERROR("Ratio should be in the [0, 1] interval");
+    this->ratio = ratio;
 }

@@ -2,33 +2,35 @@
 #include "prox.h"
 %}
 
-
 class Prox {
+ public:
+  Prox(double strength,
+       bool positive);
 
-public:
+  Prox(double strength,
+       unsigned long start,
+       unsigned long end,
+       bool positive);
 
-    Prox(double strength);
+  virtual void call(const ArrayDouble &coeffs,
+                    double step,
+                    ArrayDouble &out);
 
-    Prox(double strength,
-         unsigned long start,
-         unsigned long end);
+  virtual double value(const ArrayDouble &coeffs);
 
-    virtual double value(ArrayDouble &coeffs);
+  virtual double get_strength() const;
 
-    virtual void call(ArrayDouble &coeffs,
-                      double step,
-                      ArrayDouble &out);
+  virtual void set_strength(double strength);
 
-    virtual void call(ArrayDouble &coeffs,
-                      ArrayDouble &step,
-                      ArrayDouble &out);
+  virtual ulong get_start() const final;
 
-    inline virtual void set_strength(double strength);
+  virtual ulong get_end() const final;
 
-    inline virtual double get_strength() const;
+  virtual void set_start_end(ulong start, ulong end);
 
-    inline virtual void set_start_end(unsigned long start,
-                                      unsigned long end);
+  virtual bool get_positive() const final;
+
+  virtual void set_positive(bool positive) final;
 };
 
 typedef std::shared_ptr<Prox> ProxPtr;

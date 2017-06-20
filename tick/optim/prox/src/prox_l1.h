@@ -1,34 +1,22 @@
-//
-// Created by Stéphane GAIFFAS on 30/12/2015.
-//
-
 #ifndef TICK_OPTIM_PROX_SRC_PROX_L1_H_
 #define TICK_OPTIM_PROX_SRC_PROX_L1_H_
 
 #include "prox_separable.h"
 
 class ProxL1 : public ProxSeparable {
- protected:
-    bool positive;
-
  public:
     ProxL1(double strength, bool positive);
 
     ProxL1(double strength, ulong start, ulong end, bool positive);
 
-    const std::string get_class_name() const;
+    const std::string get_class_name() const override;
 
-    virtual double _value_i(ulong i,
-                            ArrayDouble &coeffs) const;
+    double call_single(double x, double step) const override;
 
-    virtual void _call_i(ulong i,
-                         ArrayDouble &coeffs,
-                         double step,
-                         ArrayDouble &out) const;
+    // Repeat n_times the prox on coordinate i
+    double call_single(double x, double step, ulong n_times) const override;
 
-    inline virtual void set_positive(bool positive) {
-        this->positive = positive;
-    }
+    double value_single(double x) const override;
 };
 
 #endif  // TICK_OPTIM_PROX_SRC_PROX_L1_H_

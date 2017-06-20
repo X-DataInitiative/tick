@@ -1,10 +1,18 @@
 #include "adagrad.h"
+#include "prox_separable.h"
 
 AdaGrad::AdaGrad(ulong epoch_size, double tol, RandType rand_type, double step, int seed)
   : StoSolver(epoch_size, tol, rand_type, seed), hist_grad(iterate.size()), step(step) {
 }
 
 void AdaGrad::solve() {
+  std::shared_ptr<ProxSeparable> casted_prox;
+  if (prox->is_separable()) {
+    casted_prox = std::static_pointer_cast<ProxSeparable>(prox);
+  } else {
+    TICK_ERROR("Prox in Adagrad must be separable but got " << prox->get_class_name());
+  }
+
   ArrayDouble grad_i(iterate.size());
   grad_i.init_to_zero();
 
@@ -35,7 +43,7 @@ void AdaGrad::solve() {
 
     ArrayDouble prox_steps = view(steps, prox_start, prox_end);
 
-    prox->call(iterate, prox_steps, iterate);
+    casted_prox->call(iterate, prox_steps, iterate);
   }
 }
 

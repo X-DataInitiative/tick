@@ -2,14 +2,20 @@
 #include "prox_separable.h"
 %}
 
-
 class ProxSeparable : public Prox {
 
-public:
+ public:
+  ProxSeparable(double strength,
+                bool positive);
 
-    ProxSeparable(double strength);
+  ProxSeparable(double strength,
+                unsigned long start,
+                unsigned long end,
+                bool positive);
 
-    ProxSeparable(double strength,
-                  unsigned long start,
-                  unsigned long end);
+  using Prox::call;
+
+  virtual void call(const ArrayDouble &coeffs,
+                    const ArrayDouble &step,
+                    ArrayDouble &out);
 };

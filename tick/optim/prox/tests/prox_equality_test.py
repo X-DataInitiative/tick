@@ -19,7 +19,8 @@ class Test(TestProx):
         self.assertIsNone(prox.strength)
         prox.strength = 2.
         self.assertIsNone(prox.strength)
-        self.assertEquals(prox.value(coeffs), 0.)
+
+        self.assertEqual(prox.value(coeffs), np.inf)
 
         out = np.empty(coeffs.shape)
         out.fill(np.mean(coeffs))
@@ -47,6 +48,9 @@ class Test(TestProx):
         prox.positive = True
         out[3:8].fill(0.)
         np.testing.assert_array_almost_equal(prox.call(coeffs), out)
+
+        self.assertEqual(prox.value(out), 0)
+        self.assertEqual(prox.value(coeffs), np.inf)
 
 if __name__ == '__main__':
     unittest.main()

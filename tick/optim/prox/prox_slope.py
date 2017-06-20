@@ -16,7 +16,8 @@ class ProxSlope(Prox):
 
     fdr : `float`, default=0.6
         Desired False Discovery Rate for detection of non-zeros in
-        the coefficients
+        the coefficients.
+        Must be between 0 and 1.
 
     range : `tuple` of two `int`, default=`None`
         Range on which the prox is applied. If `None` then the prox is
@@ -45,7 +46,7 @@ class ProxSlope(Prox):
         },
         "fdr": {
             "writable": True,
-            "cpp_setter": "set_fdr"
+            "cpp_setter": "set_false_discovery_rate"
         },
         "positive": {
             "writable": True,

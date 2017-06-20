@@ -1,9 +1,10 @@
 # -*- coding: utf8 -*-
 
 import numpy as np
+import sys
+
 from .base import Prox
 from .build.prox import ProxEquality as _ProxEquality
-
 
 __author__ = 'Stephane Gaiffas'
 
@@ -46,8 +47,8 @@ class ProxEquality(Prox):
 
     def value(self, coeffs: np.ndarray):
         """
-        Simply returns 0. This is not a penalization but a projection, hence
-        value function is zero.
+        Simply returns 0 if all coeffs in range are equal. Other wise returns
+        infinity. This is not a penalization but a projection.
 
         Parameters
         ----------
@@ -57,9 +58,13 @@ class ProxEquality(Prox):
         Returns
         -------
         output : `float`
-            Returns 0 (this is a projection)
+            Returns 0 or np.inf
         """
-        return self._prox.value(coeffs)
+        raw_value = self._prox.value(coeffs)
+        if raw_value == sys.float_info.max:
+            return np.inf
+        else:
+            return 0
 
     @property
     def strength(self):
