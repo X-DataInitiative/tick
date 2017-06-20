@@ -5,52 +5,52 @@
 
 class ProxSeparable : public Prox {
  public:
-    ProxSeparable(double strength, bool positive);
+  ProxSeparable(double strength, bool positive);
 
-    ProxSeparable(double strength, ulong start, ulong end, bool positive);
+  ProxSeparable(double strength, ulong start, ulong end, bool positive);
 
-    const std::string get_class_name() const override;
+  const std::string get_class_name() const override;
 
-    const bool is_separable() const override;
+  const bool is_separable() const override;
 
-    using Prox::call;
+  using Prox::call;
 
-    //! @brief call prox on coeffs, with a given step and store result in out
-    //! @note this calls call_single on each coordinate
-    void call(const ArrayDouble &coeffs, double step, ArrayDouble &out, ulong start,
-              ulong end) override;
+  //! @brief call prox on coeffs, with a given step and store result in out
+  //! @note this calls call_single on each coordinate
+  void call(const ArrayDouble &coeffs, double step, ArrayDouble &out, ulong start,
+            ulong end) override;
 
-    //! @brief call prox on coeffs, with a vector of different steps and store result in out
-    virtual void call(const ArrayDouble &coeffs, const ArrayDouble &step, ArrayDouble &out);
+  //! @brief call prox on coeffs, with a vector of different steps and store result in out
+  virtual void call(const ArrayDouble &coeffs, const ArrayDouble &step, ArrayDouble &out);
 
-    //! @brief call prox on a part of coeffs (defined by start-end), with a vector of different
-    //! steps and store result in out
-    virtual void call(const ArrayDouble &coeffs, const ArrayDouble &step, ArrayDouble &out,
-                      ulong start, ulong end);
+  //! @brief call prox on a part of coeffs (defined by start-end), with a vector of different
+  //! steps and store result in out
+  virtual void call(const ArrayDouble &coeffs, const ArrayDouble &step, ArrayDouble &out,
+                    ulong start, ulong end);
 
-    //! @brief apply prox on a single value
-    virtual double call_single(double x, double step) const;
+  //! @brief apply prox on a single value
+  virtual double call_single(double x, double step) const;
 
-    //! @brief apply prox on a single value several times
-    virtual double call_single(double x, double step, ulong n_times) const;
+  //! @brief apply prox on a single value several times
+  virtual double call_single(double x, double step, ulong n_times) const;
 
-    //! @brief apply prox on a single value defined by coordinate i
-    virtual void call_single(ulong i, const ArrayDouble &coeffs, double step,
-                             ArrayDouble &out) const;
+  //! @brief apply prox on a single value defined by coordinate i
+  virtual void call_single(ulong i, const ArrayDouble &coeffs, double step,
+                           ArrayDouble &out) const;
 
-    //! @brief apply prox on a single value defined by coordinate i several times
-    virtual void call_single(ulong i, const ArrayDouble &coeffs, double step,
-                             ArrayDouble &out, ulong n_times) const;
+  //! @brief apply prox on a single value defined by coordinate i several times
+  virtual void call_single(ulong i, const ArrayDouble &coeffs, double step,
+                           ArrayDouble &out, ulong n_times) const;
 
-    double value(const ArrayDouble &coeffs, ulong start, ulong end) override;
+  double value(const ArrayDouble &coeffs, ulong start, ulong end) override;
 
-    //! @brief get penalization value of the prox on a single value defined by coordinate i
-    //! @warning This does not take strength into account
-    virtual double value_single(ulong i, const ArrayDouble &coeffs) const;
+  //! @brief get penalization value of the prox on a single value defined by coordinate i
+  //! @warning This does not take strength into account
+  virtual double value_single(ulong i, const ArrayDouble &coeffs) const;
 
-    //! @brief get penalization value of the prox on a single value
-    //! @warning This does not take strength into account
-    virtual double value_single(double x) const;
+  //! @brief get penalization value of the prox on a single value
+  //! @warning This does not take strength into account
+  virtual double value_single(double x) const;
 };
 
 #endif  // TICK_OPTIM_PROX_SRC_PROX_SEPARABLE_H_
