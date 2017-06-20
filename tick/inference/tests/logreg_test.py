@@ -176,7 +176,6 @@ class Test(InferenceTest):
     def test_LogisticRegression_penalty_C(self):
         """...Test LogisticRegression setting of parameter of C
         """
-
         for penalty in penalties:
             if penalty != 'none':
                 learner = LogisticRegression(penalty=penalty, C=self.float_1)
@@ -185,11 +184,9 @@ class Test(InferenceTest):
                 learner.C = self.float_2
                 self.assertEqual(learner.C, self.float_2)
                 self.assertEqual(learner._prox_obj.strength, 1. / self.float_2)
-
                 msg = '^``C`` must be positive, got -1$'
                 with self.assertRaisesRegex(ValueError, msg):
                     LogisticRegression(penalty=penalty, C=-1)
-
             else:
                 msg = '^You cannot set C for penalty "%s"$' % penalty
                 with self.assertWarnsRegex(RuntimeWarning, msg):
