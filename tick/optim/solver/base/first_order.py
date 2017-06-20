@@ -103,6 +103,13 @@ class SolverFirstOrder(Solver):
         output : `Solver`
             The same instance with given model
         """
+        if not isinstance(model, Model):
+            raise ValueError('Passed object of class %s is not a '
+                             'Model class' % model.name)
+        if not model._fitted:
+            raise ValueError('Passed object %s has not been fitted. You must '
+                             'call ``fit`` on it before passing it to '
+                             '``set_model``' % model.name)
         self._set("model", model)
         return self
 
@@ -174,6 +181,9 @@ class SolverFirstOrder(Solver):
         In some solvers, ``set_model`` must be called before
         ``set_prox``, otherwise and error might be raised.
         """
+        if not isinstance(prox, Prox):
+            raise ValueError('Passed object of class %s is not a '
+                             'Prox class' % prox.name)
         self._set("prox", prox)
         return self
 
@@ -229,6 +239,12 @@ class SolverFirstOrder(Solver):
         output : `np.array`, shape=(n_coeffs,)
             Obtained minimizer for the problem
         """
+        if self.model is None:
+            raise ValueError('You must first set the model using '
+                             '``set_model``.')
+        if self.prox is None:
+            raise ValueError('You must first set the prox using '
+                             '``set_prox``.')
         solution = Solver.solve(self, x0, step)
         return solution
 

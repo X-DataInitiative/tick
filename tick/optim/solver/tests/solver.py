@@ -4,7 +4,7 @@ import itertools
 import numpy as np
 from tick.optim.model import ModelLogReg, ModelPoisReg, ModelLinReg
 from tick.optim.prox import ProxL2Sq, ProxZero, ProxL1
-from tick.optim.solver import SVRG, AGD, SGD, SDCA, GD, BFGS
+from tick.optim.solver import SVRG, AGD, SGD, SDCA, GD, BFGS, AdaGrad
 from scipy.linalg import norm
 
 from tick.simulation import SimuPoisReg
@@ -19,6 +19,8 @@ class TestSolver(unittest.TestCase):
     n_samples = 3000
     l_l2sq = 1e-6
     sto_seed = 179312
+
+    solvers = [SVRG, AGD, SGD, SDCA, GD, BFGS, AdaGrad]
 
     @staticmethod
     def generate_logistic_data(n_features, n_samples, use_intercept=False):
@@ -190,6 +192,44 @@ class TestSolver(unittest.TestCase):
             np.testing.assert_almost_equal(iterate_dense,
                                            iterate_sparse,
                                            err_msg=error_msg)
+
+    def test_set_model_and_set_prox(self):
+        np.random.seed(12)
+        n_samples = TestSolver.n_samples
+        n_features = TestSolver.n_features
+        weights0 = weights_sparse_gauss(n_features, nnz=5)
+        interc0 = 2.
+        model = ModelLinReg()
+        msg = '^Passed object ModelLinReg has not been fitted. You must call' \
+              ' ``fit`` on it before passing it to ``set_model``$'
+        with self.assertRaisesRegex(ValueError, msg):
+            for solver_class in self.solvers:
+                if solver_class is SDCA:
+                    solver = solver_class(l_l2sq=1e-1)
+                else:
+                    solver = solver_class()
+                solver.set_model(model)
+
+        X, y = SimuLinReg(weights0, interc0, n_samples=n_samples,
+                          verbose=False, seed=123).simulate()
+        prox = ProxL2Sq(strength=1e-1)
+        msg = '^Passed object of class ProxL2Sq is not a Model class$'
+        with self.assertRaisesRegex(ValueError, msg):
+            for solver_class in self.solvers:
+                if solver_class is SDCA:
+                    solver = solver_class(l_l2sq=1e-1)
+                else:
+                    solver = solver_class()
+                solver.set_model(prox)
+        model.fit(X, y)
+        msg = '^Passed object of class ModelLinReg is not a Prox class$'
+        with self.assertRaisesRegex(ValueError, msg):
+            for solver_class in self.solvers:
+                if solver_class is SDCA:
+                    solver = solver_class(l_l2sq=1e-1)
+                else:
+                    solver = solver_class()
+                solver.set_model(model).set_prox(model)
 
     @staticmethod
     def evaluate_model(coeffs, w, c=None):
