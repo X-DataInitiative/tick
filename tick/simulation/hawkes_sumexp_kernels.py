@@ -12,7 +12,8 @@ class SimuHawkesSumExpKernels(SimuHawkes):
     
     .. math::
         \\forall i \\in [1 \\dots D], \\quad
-        \\lambda_i(t) = \\mu_i + \\sum_{j=1}^D \\int \\phi_{ij}(t - s) dN_j(s)
+        \\lambda_i(t) = \\mu_i(t)
+                        + \\sum_{j=1}^D \\int \\phi_{ij}(t - s) dN_j(s)
     
     where
     

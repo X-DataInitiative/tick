@@ -2,6 +2,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
+from tick.plot.plot_utilities import share_x, share_y
+
 
 def plot_hawkes_kernel_norms(kernel_object, show=True, pcolor_kwargs=None,
                              node_names=None):
@@ -86,7 +88,7 @@ def plot_hawkes_kernel_norms(kernel_object, show=True, pcolor_kwargs=None,
 
 def plot_hawkes_kernels(kernel_object, support=None, hawkes=None,
                         n_points=300, show=True, log_scale=False,
-                        min_support=1e-4):
+                        min_support=1e-4, ax=None):
     """Generic function to plot Hawkes kernels.
 
     Parameters
@@ -127,6 +129,10 @@ def plot_hawkes_kernels(kernel_object, support=None, hawkes=None,
 
     min_support : `float`, default=1e-4
         Start value of the plot. Only used if log_scale is `True`.
+        
+    ax : `np.ndarray` of `matplotlib.axes`, default=None
+        If not None, the figure will be plot on these axes and show will be
+        set to False.
     """
     if support is None or support <= 0:
         plot_supports = kernel_object.get_kernel_supports()
@@ -140,7 +146,15 @@ def plot_hawkes_kernels(kernel_object, support=None, hawkes=None,
     else:
         x_values = np.linspace(0, support, n_points)
 
-    fig, ax_list_list = plt.subplots(n_nodes, n_nodes, sharex=True, sharey=True)
+    if ax is None:
+        fig, ax_list_list = plt.subplots(n_nodes, n_nodes, sharex=True,
+                                         sharey=True)
+    else:
+        if ax.shape != (n_nodes, n_nodes):
+            raise ValueError('Given ax has shape {} but should have shape {}'
+                             .format(ax.shape, (n_nodes, n_nodes)))
+        ax_list_list = ax
+        show = False
 
     if n_nodes == 1:
         ax_list_list = np.array([[ax_list_list]])
@@ -154,7 +168,11 @@ def plot_hawkes_kernels(kernel_object, support=None, hawkes=None,
                 y_true_values = hawkes.kernels[i, j].get_values(x_values)
                 ax.plot(x_values, y_true_values,
                         label="True Kernel (%d, %d)" % (i, j))
-            ax.set_xlabel(r"$t$", fontsize=18)
+
+            # set x_label for last line
+            if i == n_nodes - 1:
+                ax.set_xlabel(r"$t$", fontsize=18)
+
             ax.set_ylabel(r"$\phi^{%g,%g}(t)$" % (i, j), fontsize=18)
 
             if log_scale:
@@ -168,7 +186,105 @@ def plot_hawkes_kernels(kernel_object, support=None, hawkes=None,
     if show:
         plt.show()
 
-    return fig
+    return ax_list_list.ravel()[0].figure
+
+
+def plot_hawkes_baseline_and_kernels(hawkes_object, kernel_support=None,
+                                     hawkes=None, n_points=300, show=True,
+                                     log_scale=False, min_support=1e-4,
+                                     ax=None):
+    """Generic function to plot Hawkes baseline and kernels.
+
+    Parameters
+    ----------
+    hawkes_object : `Object`
+        An object that must have the following API :
+
+        * `kernel_object.n_nodes` : a field that stores the number of nodes
+          of the associated Hawkes process (thus the number of kernels is
+          this number squared)
+        * `kernel_object.get_baseline_values(self, i, abscissa_array)` :
+          must return as a numpy 1d array the sampled `i` baseline values
+          corresponding to the abscissa `abscissa_array`
+        * `kernel_object.period_length` : a field that stores the size of the 
+          baseline period
+        * `kernel_object.get_kernel_supports()` : must return a 2d numpy
+          array with the size of the support of each kernel
+        * `kernel_object.get_kernel_values(self, i, j, abscissa_array)` :
+          must return as a numpy 1d array the sampled `(i,j)` kernel values
+          corresponding to the abscissa `abscissa_array`
+
+    kernel_support : `float`, default=None
+        the size of the support that will be used to plot all the kernels.
+        If None or non positive then the maximum kernel supports is used
+
+    hawkes : `SimuHawkes`, default=None
+        If a `SimuHawkes` object is given then the baseline and kernels plots 
+        are superposed with those of this object (considered as the `True` 
+        baseline and kernels). This is used to plot on the same plots the 
+        estimated value along with the true values.
+
+    n_points : `int`, default=300
+        Number of points that will be used in abscissa. More points will lead
+        to a more precise graph.
+
+    show : `bool`, default=`True`
+        if `True`, show the plot. Otherwise an explicit call to the show
+        function is necessary. Useful when superposing several plots.
+
+    log_scale : `bool`, default=`False`
+        If `True`, then x-axis and y-axis of kernels are on a log-scale. 
+        This is useful to plot power-law kernels.
+
+    min_support : `float`, default=1e-4
+        Start value of the kernels plot. Only used if log_scale is `True`.
+
+    ax : `np.ndarray` of `matplotlib.axes`, default=None
+        If not None, the figure will be plot on these axes and show will be
+        set to False.
+    """
+    n_nodes = hawkes_object.n_nodes
+
+    if ax is None:
+        fig, ax_list_list = plt.subplots(n_nodes, n_nodes + 1, figsize=(10, 6))
+    else:
+        ax_list_list = ax
+        show = False
+
+    # invoke plot_hawkes_kernels
+    ax_kernels = ax_list_list[:, 1:]
+    plot_hawkes_kernels(hawkes_object, support=kernel_support, hawkes=hawkes,
+                        n_points=n_points, show=False, log_scale=log_scale,
+                        min_support=min_support, ax=ax_kernels)
+    share_x(ax_kernels)
+    share_y(ax_kernels)
+
+    # plot hawkes baselines
+    ax_baselines = ax_list_list[:, 0]
+    t_values = np.linspace(0, hawkes_object.period_length, n_points)
+    for i in range(n_nodes):
+        ax = ax_baselines[i]
+        ax.plot(t_values, hawkes_object.get_baseline_values(i, t_values),
+                label='baseline ({})'.format(i))
+        ax.plot(t_values, hawkes.get_baseline_values(i, t_values),
+                label='true baseline ({})'.format(i))
+        ax.set_ylabel("$\mu_{}(t)$".format(i), fontsize=18)
+
+        # set x_label for last line
+        if i == n_nodes - 1:
+            ax.set_xlabel(r"$t$", fontsize=18)
+
+        legend = ax.legend()
+        for label in legend.get_texts():
+            label.set_fontsize(12)
+
+    share_x(ax_baselines.reshape(2, 1))
+    share_y(ax_baselines.reshape(2, 1))
+
+    if show:
+        plt.show()
+
+    return ax_list_list.ravel()[0].figure
 
 
 def _normalize_functions(y_values_list, t_values):
