@@ -79,10 +79,12 @@ double ModelPoisReg::loss_i(const ulong i, const ArrayDouble &coeffs) {
   const double z = get_inner_prod(i, coeffs);
   switch (link_type) {
     case LinkType::exponential: {
-      return exp(z) - get_label(i) * z;
+      double y_i = get_label(i);
+      return exp(z) - y_i * z + std::lgamma(y_i + 1);
     }
     case LinkType::identity: {
-      return z - get_label(i) * log(z);
+      double y_i = get_label(i);
+      return z - y_i * log(z) + std::lgamma(y_i + 1);
     }
     default:throw std::runtime_error("Undefined link type");
   }

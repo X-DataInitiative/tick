@@ -44,6 +44,7 @@ Classes
 
    inference.LinearRegression
    inference.LogisticRegression
+   inference.PoissonRegression
 
 Example
 ^^^^^^^

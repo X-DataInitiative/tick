@@ -183,6 +183,9 @@ class LearnerGLM(LearnerOptim):
             # ensure starting point has the right format
             if coeffs is not None and coeffs.shape == (model_obj.n_coeffs,):
                 coeffs_start = coeffs
+            else:
+                raise ValueError('Cannot warm start, coeffs don\'t have the '
+                                 'right shape')
 
         # Launch the solver
         coeffs = solver_obj.solve(coeffs_start)
