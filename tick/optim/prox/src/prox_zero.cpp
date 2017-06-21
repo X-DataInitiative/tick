@@ -1,49 +1,30 @@
-//
-// Created by Stéphane GAIFFAS on 29/12/2015.
-//
-
 #include "prox_zero.h"
 
 ProxZero::ProxZero(double strength)
-    : ProxSeparable(strength) {}
+  : ProxSeparable(strength, false) {}
 
 ProxZero::ProxZero(double strength,
                    ulong start,
                    ulong end)
-    : ProxSeparable(strength, start, end) {}
+  : ProxSeparable(strength, start, end, false) {}
 
 const std::string ProxZero::get_class_name() const {
-    return "ProxZero";
+  return "ProxZero";
 }
 
-double ProxZero::_value(ArrayDouble &coeffs,
-                        ulong start,
-                        ulong end) {
-    return 0.;
+double ProxZero::call_single(double x,
+                             double step) const {
+  return x;
 }
 
-void ProxZero::_call(ArrayDouble &coeffs,
-                     double step,
-                     ArrayDouble &out,
-                     ulong start,
-                     ulong end) {
-    // We copy the contents of coeffs into out
-    ArrayDouble sub_coeffs = view(coeffs, start, end);
-    ArrayDouble sub_out = view(out, start, end);
-    for (unsigned int i = 0; i < sub_coeffs.size(); ++i) {
-        sub_out[i] = sub_coeffs[i];
-    }
+double ProxZero::call_single(double x,
+                             double step,
+                             ulong n_times) const {
+  return x;
 }
 
-void ProxZero::_call(ArrayDouble &coeffs,
-                     ArrayDouble &step,
-                     ArrayDouble &out,
-                     ulong start,
-                     ulong end) {
-    // We copy the contents of coeffs into out
-    ArrayDouble sub_coeffs = view(coeffs, start, end);
-    ArrayDouble sub_out = view(out, start, end);
-    for (unsigned int i = 0; i < sub_coeffs.size(); ++i) {
-        sub_out[i] = sub_coeffs[i];
-    }
+double ProxZero::value(const ArrayDouble &coeffs,
+                       ulong start,
+                       ulong end) {
+  return 0.;
 }

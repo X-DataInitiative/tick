@@ -1,7 +1,3 @@
-//
-// Created by Martin Bompaire on 26/10/15.
-//
-
 #ifndef TICK_OPTIM_PROX_SRC_PROX_H_
 #define TICK_OPTIM_PROX_SRC_PROX_H_
 #include <memory>
@@ -10,50 +6,62 @@
 
 class Prox {
  protected:
-    // Weight of the proximal operator
-    double strength;
+  //! @brief Weight of the proximal operator
+  double strength;
 
-    // Flag to know if proximal operator concerns only a part of the vector
-    bool has_range;
+  //! @brief Flag to know if proximal operator concerns only a part of the vector
+  bool has_range;
 
-    // If range is restricted it will be applied from index start to index end
-    ulong start, end;
+  //! @brief If range is restricted it will be applied from index start to index end
+  ulong start, end;
+
+  //! @brief If true, we apply on non negativity constraint
+  bool positive;
 
  public:
-    explicit Prox(double strength);
+  Prox(double strength, bool positive);
 
-    Prox(double strength, ulong start, ulong end);
+  Prox(double strength, ulong start, ulong end, bool positive);
 
-    virtual const std::string get_class_name() const;
+  virtual const std::string get_class_name() const;
 
-    virtual double value(ArrayDouble &coeffs);
+  virtual const bool is_separable() const;
 
-    virtual double _value(ArrayDouble &coeffs,
-                          ulong start,
-                          ulong end);
+  //! @brief call prox on coeffs, with a given step and store result in out
+  virtual void call(const ArrayDouble &coeffs, double step, ArrayDouble &out);
 
-    virtual void call(ArrayDouble &coeffs,
-                      double step,
-                      ArrayDouble &out);
+  //! @brief call prox on a part of coeffs (defined by start-end), with a given step and
+  //! store result in out
+  virtual void call(const ArrayDouble &coeffs,
+                    double step,
+                    ArrayDouble &out,
+                    ulong start,
+                    ulong end);
 
-    virtual void call(ArrayDouble &coeffs,
-                      ArrayDouble &step,
-                      ArrayDouble &out);
+  //! @brief get penalization value of the prox on the coeffs vector.
+  //! This takes strength into account
+  virtual double value(const ArrayDouble &coeffs);
 
-    virtual void _call(ArrayDouble &coeffs,
-                       double step,
-                       ArrayDouble &out,
+  //! @brief get penalization value of the prox on a part of coeffs (defined by start-end).
+  //! This takes strength into account
+  virtual double value(const ArrayDouble &coeffs,
                        ulong start,
                        ulong end);
 
-    virtual void set_strength(double strength);
+  virtual double get_strength() const;
 
-    virtual double get_strength() const;
+  virtual void set_strength(double strength);
 
-    virtual void set_start_end(ulong start, ulong end);
+  virtual ulong get_start() const;
 
-    ulong get_start();
-    ulong get_end();
+  virtual ulong get_end() const;
+
+  virtual void set_start_end(ulong start,
+                             ulong end);
+
+  virtual bool get_positive() const;
+
+  virtual void set_positive(bool positive);
 };
 
 typedef std::shared_ptr<Prox> ProxPtr;

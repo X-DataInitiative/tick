@@ -1,7 +1,3 @@
-//
-// Created by Stéphane GAIFFAS on 29/12/2015.
-//
-
 #ifndef TICK_OPTIM_PROX_SRC_PROX_ZERO_H_
 #define TICK_OPTIM_PROX_SRC_PROX_ZERO_H_
 
@@ -9,27 +5,19 @@
 
 class ProxZero : public ProxSeparable {
  public:
-    explicit ProxZero(double strength);
+  explicit ProxZero(double strength);
 
-    ProxZero(double strength, ulong start, ulong end);
+  ProxZero(double strength,
+           ulong start,
+           ulong end);
 
-    const std::string get_class_name() const;
+  const std::string get_class_name() const override;
 
-    double _value(ArrayDouble &coeffs,
-                  ulong start,
-                  ulong end);
+  double call_single(double x, double step) const override;
 
-    virtual void _call(ArrayDouble &coeffs,
-                       double step,
-                       ArrayDouble &out,
-                       ulong start,
-                       ulong end);
+  double call_single(double x, double step, ulong n_times) const override;
 
-    virtual void _call(ArrayDouble &coeffs,
-                       ArrayDouble &step,
-                       ArrayDouble &out,
-                       ulong start,
-                       ulong end);
+  double value(const ArrayDouble &coeffs, ulong start, ulong end) override;
 };
 
 #endif  // TICK_OPTIM_PROX_SRC_PROX_ZERO_H_

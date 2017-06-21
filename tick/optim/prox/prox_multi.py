@@ -37,7 +37,7 @@ class ProxMulti(Prox):
 
         _proxs = [prox._prox for prox in proxs]
         # strength of ProxMulti is 0., since it's not used
-        self._prox = _ProxMulti(_proxs, 0.)
+        self._prox = _ProxMulti(_proxs)
         # Replace the list by a tuple to forbid changes
         self.proxs = proxs
 
