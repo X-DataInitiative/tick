@@ -1,24 +1,30 @@
-import matplotlib.pyplot as plt
 import numpy as np
 
+# Matplotlib colors of tab cmap (previously called Vega)
+# It has been re-ordered so that light colors apperas at the end
+tab20_colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd',
+                '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf',
+                '#aec7e8', '#ffbb78', '#98df8a', '#ff9896', '#c5b0d5',
+                '#c49c94', '#f7b6d2', '#c7c7c7', '#dbdb8d', '#9edae5']
 
-def get_plot_color(value, n_values=11, palette='Set3'):
-    try:
-        from bokeh.palettes import brewer
-        palette_set = brewer['Spectral']
-        palette = palette_set[max(min(n_values, len(palette_set)), 3)]
-        return palette[value]
 
-    except ImportError:
+def get_plot_color(number):
+    """Return color for a line number.
 
-        import matplotlib.cm as cmx
-        import matplotlib.colors as colors
+    Color are extracted from tab20 colormap which is an extension of
+    matplotlib 2.x CN colors. 20 colors are available.
 
-        cm = plt.get_cmap(palette)
-        c_norm = colors.Normalize(vmin=0, vmax=1)
-        scalar_map = cmx.ScalarMappable(norm=c_norm, cmap=cm)
+    Parameters
+    ----------
+    number : `int`
+        Number of the color to pick
 
-        return scalar_map.to_rgba(value / n_values)
+    Returns
+    -------
+    color : `str`
+        Color in hexadecimal format
+    """
+    return tab20_colors[number % len(tab20_colors)]
 
 
 def share_y(ax):
