@@ -143,9 +143,13 @@ class ModelSCCS(ModelFirstOrder, ModelLipschitz):
             row c - 1 of the correponding matrix. The last n_intervals - c rows
             are then set to 0.
         """
-        n_intervals, n_features = features[0].shape
+        n_intervals, n_coeffs = features[0].shape
+        n_lags = self.n_lags
         self._set("n_intervals", n_intervals)
-        self._set("n_features", n_features)
+        if n_lags > 0 and self.n_coeffs % (n_lags + 1) != 0:
+            raise ValueError("(n_lags + 1) should be a divisor of n_coeffs")
+        else:
+            self._set("n_features", int(n_coeffs / (n_lags + 1)))
         self._set("n_samples", len(features))
         if len(labels) != self.n_samples:
             raise ValueError("Features and labels lists should have the same\
@@ -156,7 +160,7 @@ class ModelSCCS(ModelFirstOrder, ModelLipschitz):
         censoring = check_censoring_consistency(censoring, self.n_samples)
         features = check_longitudinal_features_consistency(features,
                                                            (n_intervals,
-                                                            n_features),
+                                                            self.n_coeffs),
                                                            "float64")
         labels = check_longitudinal_features_consistency(labels,
                                                          (self.n_intervals,),
