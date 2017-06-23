@@ -651,16 +651,15 @@ class Test(unittest.TestCase):
     def test_sarray2dptr_typemap_out(self):
         """...Test we can return an SArray2d shared pointer
         """
-        # SArray2d typemap out is not implemented yet...
-        # row_size = 6
-        # col_size = 4
-        # for array_type, info in self.correspondence_dict.items():
-        #     python_array = np.arange(row_size * col_size,
-        #                              dtype=info['python_type']
-        #                              ).reshape(row_size, col_size)
-        #     extract_function = info['typemap_out_sarray_2d_ptr']
-        #     np.testing.assert_equal(python_array,
-        #                             extract_function(row_size, col_size))
+        row_size = 6
+        col_size = 4
+        for array_type, info in self.correspondence_dict.items():
+            python_array = np.arange(row_size * col_size,
+                                     dtype=info['python_type']
+                                     ).reshape(row_size, col_size)
+            extract_function = info['typemap_out_sarray_2d_ptr']
+            np.testing.assert_equal(python_array,
+                                    extract_function(row_size, col_size))
 
     def test_basearray_errors_typemap_in(self):
         """...Test errors raised by typemap in on BaseArray

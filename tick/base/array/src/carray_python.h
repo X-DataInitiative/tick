@@ -69,6 +69,7 @@ extern DLL_PUBLIC bool BuildFromPyObj_List2d_##SBASEARRAY2DPTR_TYPE(PyObject *ob
     extern DLL_PUBLIC PyObject *BuildPyListFromXArrayPtrList1D_##SARRAY_TYPE(SARRAYPTR_LIST1D_TYPE &list); \
     extern DLL_PUBLIC PyObject *BuildPyListFromXArrayPtrList2D_##SARRAY_TYPE(SARRAYPTR_LIST2D_TYPE &list); \
     extern DLL_PUBLIC PyObject *_XArray2NumpyArray(SARRAY_TYPE *sig); \
+    extern DLL_PUBLIC PyObject *_XArray2d2NumpyArray(SARRAY2D_TYPE *sig); \
     extern DLL_PUBLIC bool BuildFromPyObj_##SARRAY_TYPE(PyObject *obj, SARRAYPTR_TYPE *result); \
     extern DLL_PUBLIC bool BuildFromPyObj_List1d_##SARRAY_TYPE(PyObject *obj, SARRAYPTR_LIST1D_TYPE &list); \
     extern DLL_PUBLIC bool BuildFromPyObj_List2d_##SARRAY_TYPE(PyObject *obj, SARRAYPTR_LIST2D_TYPE &list); \

@@ -50,6 +50,9 @@
 // Dealing with typemap out in templates of SArray
 %include sarray_typemap_out.i
 
+// Dealing with typemap out in templates of VArray
+%include varray_typemap_out.i
+
 
 //
 // Then we define the macro that will call all the above macros
@@ -106,12 +109,14 @@ BASEARRAY_TYPEMAPIN_MACROS(ARRAY_TYPE,ARRAY2D_TYPE,SPARSEARRAY_TYPE,
 VARRAY_TYPEMAPIN_MACROS(ARRAY_TYPE,VARRAYPTR_TYPE,VARRAY_TYPE,VARRAYPTRLIST1D_TYPE,
                         VARRAYPTRLIST2D_TYPE,C_TYPE,NP_TYPE)
 
-XARRAY_FINAL_MACROS(SARRAYPTR_TYPE,SARRAY_TYPE,SARRAYPTRLIST1D_TYPE,SARRAYPTRLIST2D_TYPE,
-                    C_TYPE,NP_TYPE)
+XARRAY_FINAL_MACROS(SARRAYPTR_TYPE, SARRAY_TYPE,
+                    SARRAY2DPTR_TYPE, SARRAY2D_TYPE,
+                    SARRAYPTRLIST1D_TYPE, SARRAYPTRLIST2D_TYPE,
+                    C_TYPE, NP_TYPE)
 
-XARRAY_FINAL_MACROS(VARRAYPTR_TYPE,VARRAY_TYPE,VARRAYPTRLIST1D_TYPE,VARRAYPTRLIST2D_TYPE,
-                    C_TYPE,NP_TYPE)
-
+VARRAY_TYPEMAPOUT_MACROS(VARRAYPTR_TYPE, VARRAY_TYPE,
+                         VARRAYPTRLIST1D_TYPE, VARRAYPTRLIST2D_TYPE,
+                         C_TYPE, NP_TYPE)
 %enddef
 
 

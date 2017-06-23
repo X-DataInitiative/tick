@@ -163,6 +163,45 @@ class Test(unittest.TestCase):
             # Check memory is not increasing
             self.assertAlmostEqual(first_filled_memory - initial_memory, filled_memory - initial_memory, delta=1.1*bytes_size)
 
+    def test_sarray2d_memory_leaks(self):
+        """...Test brute force method in order to see if we have a memory leak
+        during typemap out
+        """
+        import os
+        try:
+            import psutil
+        except ImportError:
+            print('Without psutils we cannot ensure we have no memory leaks')
+            return
+
+        def get_memory_used():
+            """Returns memory used by current process
+            """
+            process = psutil.Process(os.getpid())
+            return process.memory_info()[0]
+
+        initial_memory = get_memory_used()
+
+        n_rows = int(1e2)
+        n_cols = int(1e3)
+        # The size in memory of an array of ``size`` doubles
+        bytes_size = n_rows * n_cols * 8
+        a = test.test_typemap_out_SArrayDouble2dPtr(n_rows, n_cols)
+        first_filled_memory = get_memory_used()
+
+        # Check that new memory is of the correct order (10%)
+        self.assertAlmostEqual(first_filled_memory - initial_memory, bytes_size,
+                               delta=1.1*bytes_size)
+
+        for _ in range(10):
+            del a
+            a = test.test_typemap_out_SArrayDouble2dPtr(n_rows, n_cols)
+            filled_memory = get_memory_used()
+            # Check memory is not increasing
+            self.assertAlmostEqual(first_filled_memory - initial_memory,
+                                   filled_memory - initial_memory,
+                                   delta=1.1*bytes_size)
+
     def test_varray_share_same_support(self):
         """...Test that modifications on Varray of in Python affect the same
         support
