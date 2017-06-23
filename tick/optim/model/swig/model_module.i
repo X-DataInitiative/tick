@@ -27,6 +27,7 @@
 %shared_ptr(ModelHawkesFixedExpKernLogLikList);
 
 %shared_ptr(ModelCoxRegPartialLik);
+%shared_ptr(ModelSCCS);
 
 %{
 #include "tick_python.h"
@@ -55,3 +56,5 @@
 %include poisreg.i
 
 %include coxreg_partial_lik.i
+
+%include sccs.i

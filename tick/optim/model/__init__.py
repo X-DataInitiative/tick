@@ -11,6 +11,8 @@ from .hawkes_fixed_expkern_loglik import ModelHawkesFixedExpKernLogLik
 from .hawkes_fixed_expkern_leastsq import ModelHawkesFixedExpKernLeastSq
 from .hawkes_fixed_sumexpkern_leastsq import ModelHawkesFixedSumExpKernLeastSq
 
+from .sccs import ModelSCCS
+
 
 __all__ = ["ModelLinReg",
            "ModelLinRegWithIntercepts",
@@ -19,5 +21,6 @@ __all__ = ["ModelLinReg",
            "ModelCoxRegPartialLik",
            "ModelHawkesFixedExpKernLogLik",
            "ModelHawkesFixedExpKernLeastSq",
-           "ModelHawkesFixedSumExpKernLeastSq"
+           "ModelHawkesFixedSumExpKernLeastSq",
+           "ModelSCCS"
            ]
