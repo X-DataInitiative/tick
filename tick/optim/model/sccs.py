@@ -146,7 +146,8 @@ class ModelSCCS(ModelFirstOrder, ModelLipschitz):
         n_intervals, n_coeffs = features[0].shape
         n_lags = self.n_lags
         self._set("n_intervals", n_intervals)
-        if n_lags > 0 and self.n_coeffs % (n_lags + 1) != 0:
+        self._set("n_coeffs", n_coeffs)
+        if n_lags > 0 and n_coeffs % (n_lags + 1) != 0:
             raise ValueError("(n_lags + 1) should be a divisor of n_coeffs")
         else:
             self._set("n_features", int(n_coeffs / (n_lags + 1)))
@@ -160,7 +161,7 @@ class ModelSCCS(ModelFirstOrder, ModelLipschitz):
         censoring = check_censoring_consistency(censoring, self.n_samples)
         features = check_longitudinal_features_consistency(features,
                                                            (n_intervals,
-                                                            self.n_coeffs),
+                                                            n_coeffs),
                                                            "float64")
         labels = check_longitudinal_features_consistency(labels,
                                                          (self.n_intervals,),

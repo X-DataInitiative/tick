@@ -47,7 +47,6 @@ class Test(unittest.TestCase):
         np.testing.assert_equal(feat_prod, expected_output)
 
         feat_prod = pp.fit_transform(self.sparse_short_exposures)
-        print(feat_prod.__class__)
         feat_prod = [f.toarray() for f in feat_prod]
         np.testing.assert_equal(feat_prod, expected_output)
 

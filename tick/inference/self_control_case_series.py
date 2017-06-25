@@ -73,6 +73,9 @@ class LearnerSCCS(ABC, Base):
         "n_coeffs": {
             "writable": False
         },
+        "step": {
+            "writable": False
+        },
     }
 
     _penalties = {
@@ -120,6 +123,7 @@ class LearnerSCCS(ABC, Base):
         self._refitted = False
         self._prox_obj = None
         self.warm_start = warm_start
+        self.step = step
 
     def fit(self, features: np.ndarray, labels: np.array,
             censoring: np.array):
@@ -156,7 +160,8 @@ class LearnerSCCS(ABC, Base):
 
         self._compute_step(features, labels, censoring)
 
-        groups = self._coefficient_groups(self.penalty)
+        coeffs = np.zeros(features[0].shape[1])  # TODO: this will lead to a mess if penalty = Equality
+        groups = self._coefficient_groups(self.penalty, coeffs)
         prox_obj = self._construct_prox_obj(self.penalty, groups)
         self._set("_prox_obj", prox_obj)
 
@@ -164,9 +169,9 @@ class LearnerSCCS(ABC, Base):
         self._set("coeffs", coeffs)
         self._set("_fitted", True)
 
-        return self
+        return coeffs
 
-    def score(self, features=None, labels=None, censoring=None):
+    def score(self, features=None, labels=None, censoring=None, preprocess=True):
         """Returns the negative log-likelihood of the model, using the current
         fitted coefficients on the passed data.
         If no data is passed, the negative log-likelihood is computed using the
@@ -211,6 +216,11 @@ class LearnerSCCS(ABC, Base):
             elif censoring is None:
                 raise ValueError('Passed ``censoring`` is None')
             else:
+                # TODO: fuck, cannot preprocess everytime here...
+                if preprocess:
+                    features, labels, censoring = self._preprocess(features,
+                                                                   labels,
+                                                                   censoring)
                 model = self._construct_model_obj().fit(features, labels,
                                                         censoring)
                 loss = model.loss(self.coeffs)
@@ -232,7 +242,9 @@ class LearnerSCCS(ABC, Base):
             else KFold(n_splits, shuffle, random_state)
 
         # Construct prox here
-        groups = self._coefficient_groups(self.penalty)
+        coeffs = np.zeros(features[0].shape[
+                              1])  # TODO: this will lead to a mess if penalty = Equality
+        groups = self._coefficient_groups(self.penalty, coeffs)
 
         # Training loop
         scores = []
@@ -255,9 +267,14 @@ class LearnerSCCS(ABC, Base):
                 self._model_obj.fit(X_train, y_train, censoring_train)
                 self._fit(prox_obj)
 
+                print(X_train[0].shape)
+                print(X_test[0].shape)
+                print(self.coeffs.shape)
+
                 kfold_scores_train.append(self.score())
                 kfold_scores_test.append(self.score(X_test, y_test,
-                                                    censoring_test))
+                                                    censoring_test,
+                                                    preprocess=False))
 
             scores.append({
                 "n_intervals": self.n_intervals,
@@ -319,6 +336,10 @@ class LearnerSCCS(ABC, Base):
         return coeffs, scores, best_model
 
     def _refit(self, coeffs, features, labels, censoring):
+        # TODO: find a way to get rid of preprocess here ?
+        features, labels, censoring = self._preprocess(features,
+                                                       labels,
+                                                       censoring)
         self._model_obj.fit(features, labels, censoring)
         # We do not recompute Lispchitz constant as it might be very similar to
         # the one used in fit. Thus, computing this constant (which takes some
@@ -340,9 +361,9 @@ class LearnerSCCS(ABC, Base):
             y = sim._simulate_outcomes(features, censoring)
             bootstrap_coeffs.append(self._refit(coeffs, features, y, censoring))
         bootstrap_coeffs = np.array(bootstrap_coeffs)
-        bootstrap_coeffs.sort(axis=1)  # TODO check axis
-        lower_bound = bootstrap_coeffs[np.ceil(rep * confidence / 2)]
-        upper_bound = bootstrap_coeffs[np.ceil(rep * (1 - confidence / 2))]
+        bootstrap_coeffs.sort(axis=0)
+        lower_bound = bootstrap_coeffs[int(np.ceil(rep * confidence / 2))]
+        upper_bound = bootstrap_coeffs[int(np.ceil(rep * (1 - confidence / 2)))]
         return lower_bound, upper_bound
 
     def _preprocess(self, features, labels, censoring):
@@ -360,12 +381,13 @@ class LearnerSCCS(ABC, Base):
             ._filter_non_positive_samples(features, labels, censoring)
 
         # Feature products
-        features = preprocessors[0].transform(features)
+        # TODO: fix feature products
+        # features = preprocessors[0].fit_transform(features)
 
         # Lagger
-        features = preprocessors[1].transform(features, censoring)
+        features = preprocessors[1].fit_transform(features, censoring)
 
-        self.set("_model_obj", self._construct_model_obj())
+        self._set("_model_obj", self._construct_model_obj())
 
         return features, labels, censoring
 
@@ -373,7 +395,8 @@ class LearnerSCCS(ABC, Base):
         self._model_obj.fit(features, labels, censoring)
         if self.step is None:
             step = 1 / self._model_obj.get_lip_max()
-            self.step = step
+            self._set("step", step)
+            self._solver_obj.step = step
         return self.step
 
     def _fit(self, prox_obj):
@@ -393,6 +416,9 @@ class LearnerSCCS(ABC, Base):
         # Launch the solver
         coeffs = solver_obj.solve(coeffs_start, step=self.step)
 
+        self._set("coeffs", coeffs)  # TODO: redundant with .fit, useful tu use score in CV
+        self._set("_fitted", True)  # TODO: in order to be able to call score...
+
         return coeffs
 
     def _coefficient_groups(self, penalty, coeffs):
@@ -408,11 +434,12 @@ class LearnerSCCS(ABC, Base):
         return groups
 
     def _detect_change_points(self, coeffs):
-        coeffs = coeffs.reshape((self.n_features, self.n_lags + 1))
+        n_cols = self.n_lags + 1
+        coeffs = coeffs.reshape((self.n_features, n_cols))
         kernel = np.array([1, -1])
         groups = []
         for l in range(self.n_features):
-            idx = 0
+            idx = l * n_cols
             acc = 1
             for change in np.convolve(coeffs[l, :], kernel, 'valid') != 0:
                 if change:
@@ -421,13 +448,15 @@ class LearnerSCCS(ABC, Base):
                     acc = 1
                 else:
                     acc += 1
-            groups.append((idx, 4))
+            groups.append((idx, (l + 1) * n_cols))
         return groups
 
     def _construct_preprocessor_obj(self):
         # TODO: add a filter for useless cases here ?
         # TODO: WARNING, TWO PP OBJECTS, should be used in the right order
-        features_product = LongitudinalFeaturesProduct(self.feature_type)
+        # TODO: multiprocessing does not work for some reason
+        features_product = LongitudinalFeaturesProduct(self.feature_type,
+                                                       n_threads=1)
         lagger = LongitudinalFeaturesLagger(self.n_lags)
         return features_product, lagger
 
