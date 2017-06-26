@@ -6,14 +6,18 @@ import numpy as np
 from tick.inference.tests.inference import InferenceTest
 from tick.simulation import SimuSCCS
 from tick.inference import LearnerSCCS
+from tick.optim.model import ModelSCCS
+from tick.optim.solver import SVRG
+from tick.optim.prox import ProxZero
 
 
 class Test(InferenceTest):
+    # TODO: remove verbose everywhere
     def setUp(self):
-        # Create some data here
-        sim = SimuSCCS(n_samples=300, n_intervals=10, n_features=3, n_lags=4,
+        # Create data
+        sim = SimuSCCS(n_samples=5000, n_intervals=50, n_features=2, n_lags=3,
                        verbose=False, seed=42)
-        self.n_lags = 4
+        self.n_lags = 3
         self.features, self.labels, self.censoring, self.coeffs = sim.simulate()
 
     def test_LearnerSCCS_coefficient_groups(self):
@@ -35,45 +39,60 @@ class Test(InferenceTest):
         self.assertEqual(expected_tv_groups, l1_tv_groups)
 
     def test_LearnerSCCS_preprocess(self):
+        # Just check that the preprocessing is running quickly
         lrn = LearnerSCCS(n_lags=self.n_lags)
         X, y, c = lrn._preprocess(self.features, self.labels, self.censoring)
+        # TODO: Check on small dummy data that preprocessing is working
         pass
 
     def test_LearnerSCCS_fit(self):
-        lrn = LearnerSCCS(n_lags=self.n_lags)
+        # TODO: correct this test
+        lrn = LearnerSCCS(n_lags=self.n_lags, penalty="None", tol=0,
+                          max_iter=20)
         coeffs = lrn.fit(self.features, self.labels, self.censoring)
-        pass
 
-    def test_LearnerSCCS_refit(self):
-        lrn = LearnerSCCS(n_lags=self.n_lags)
-        coeffs = lrn.fit(self.features, self.labels, self.censoring)
-        coeffs_refit = lrn._refit(coeffs, self.features, self.labels, self.censoring)
-        pass
+        p_features, p_labels, p_censoring = lrn._preprocess(self.features,
+                                                            self.labels,
+                                                            self.censoring)
+        model = ModelSCCS(n_intervals=lrn.n_intervals,
+                          n_lags=self.n_lags).fit(p_features, p_labels,
+                                                  p_censoring)
+        solver = SVRG(max_iter=15, verbose=False)
+        solver.set_model(model).set_prox(ProxZero())
+        coeffs_svrg = solver.solve(step=1 / model.get_lip_max())
+        np.testing.assert_almost_equal(coeffs, coeffs_svrg, decimal=1)
+        np.testing.assert_almost_equal(coeffs, self.coeffs, decimal=1)
 
     def test_LearnerSCCS_bootstrap_CI(self):
         lrn = LearnerSCCS(n_lags=self.n_lags)
         coeffs = lrn.fit(self.features, self.labels, self.censoring)
-        coeffs_refit = lrn.bootstrap_CI(coeffs, self.features,
-                                        self.censoring, 10, 0.95,
-                                        random_state=42)
-        # TODO: no verbose here
-        pass
+        p_features, p_labels, p_censoring = lrn._preprocess(self.features,
+                                                            self.labels,
+                                                            self.censoring)
+        coeffs, lb, ub = lrn._bootstrap(p_features, p_labels, p_censoring,
+                                        100, 0.05)
+        self.assertTrue(all(lb <= coeffs),
+                        "lower bound of the confidence interval\
+                               should be <= coeffs")
+        self.assertTrue(all(coeffs <= ub),
+                        "upper bound of the confidence interval\
+                               should be >= coeffs")
 
     def test_LearnerSCCS_score(self):
         lrn = LearnerSCCS(n_lags=self.n_lags)
         coeffs = lrn.fit(self.features, self.labels, self.censoring)
         lrn.score()
         lrn.score(self.features, self.labels, self.censoring)
+        # TODO: compare with model score for this data
         pass
 
     def test_LearnerSCCS_fit_KFold_CV(self):
         lrn = LearnerSCCS(n_lags=self.n_lags)
         coeffs = lrn.fit_KFold_CV(self.features, self.labels, self.censoring,
                                   strength_TV_list=[1e-3, 1e-4], stratified=False)
-        pass
-
-    def test_LearnerSCCS_warm_start(self):
+        # TODO: check that score <= score when no penalization
         pass
 
     def test_LearnerSCCS_settings(self):
+        # TODO: test all the settings here
         pass

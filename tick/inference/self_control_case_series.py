@@ -37,9 +37,6 @@ class LearnerSCCS(ABC, Base):
         "_fitted": {
             "writable": False
         },
-        "_refitted": {
-            "writable": False
-        },
         "random_state": {
             "writable": False
         },
@@ -52,7 +49,7 @@ class LearnerSCCS(ABC, Base):
         "refit_coeffs": {
             "writable": False
         },
-        "refit_CI": {
+        "bootstrap_CI": {
             "writable": False
         },
         "n_intervals": {
@@ -89,7 +86,7 @@ class LearnerSCCS(ABC, Base):
                  feature_type="infinite", penalty='TV', strength_TV: float=0,
                  strength_L1: float=0, step=None, tol=1e-5, max_iter=100,
                  verbose=True, print_every=10, record_every=10,
-                 warm_start=False, random_state=None):
+                 random_state=None):
         Base.__init__(self)
 
         # Check args
@@ -113,16 +110,18 @@ class LearnerSCCS(ABC, Base):
         self.strength_L1 = strength_L1
         self._preprocessor_obj = self._construct_preprocessor_obj()
         self._model_obj = None
+        random_state = int(np.random.randint(0, 1000, 1)[0] \
+            if random_state is None else random_state) # cannot be None
+        self.random_state = random_state # TODO: property
         self._solver_obj = self._construct_solver_obj(step, max_iter, tol,
                                                       print_every, record_every,
                                                       verbose, random_state)
+        np.random.seed(random_state)
         self.refit_coeffs = None
-        self.refit_CI = None
+        self.bootstrap_CI = None
         self.coeffs = None
         self._fitted = False
-        self._refitted = False
         self._prox_obj = None
-        self.warm_start = warm_start
         self.step = step
 
     def fit(self, features: np.ndarray, labels: np.array,
@@ -160,14 +159,13 @@ class LearnerSCCS(ABC, Base):
 
         self._compute_step(features, labels, censoring)
 
-        coeffs = np.zeros(features[0].shape[1])  # TODO: this will lead to a mess if penalty = Equality
+        # Warning: beware of prox_Equality and this init when implementing warm start
+        coeffs = np.zeros(features[0].shape[1])
         groups = self._coefficient_groups(self.penalty, coeffs)
         prox_obj = self._construct_prox_obj(self.penalty, groups)
         self._set("_prox_obj", prox_obj)
 
         coeffs = self._fit(prox_obj)
-        self._set("coeffs", coeffs)
-        self._set("_fitted", True)
 
         return coeffs
 
@@ -196,6 +194,10 @@ class LearnerSCCS(ABC, Base):
             the observation of sample i is stopped at interval c, that is, the
             row c - 1 of the corresponding matrix. The last n_intervals - c rows
             are then set to 0.
+            
+        preprocess : `boolean`
+            If True, the data given in input will be preprocessed to match the
+            n_lags and feature_products parameters of the learner.
 
         Returns
         -------
@@ -216,7 +218,8 @@ class LearnerSCCS(ABC, Base):
             elif censoring is None:
                 raise ValueError('Passed ``censoring`` is None')
             else:
-                # TODO: fuck, cannot preprocess everytime here...
+                # This function is used in KFold CV, we must be able to use this
+                # method without preprocessing
                 if preprocess:
                     features, labels, censoring = self._preprocess(features,
                                                                    labels,
@@ -228,9 +231,10 @@ class LearnerSCCS(ABC, Base):
         return loss
 
     def fit_KFold_CV(self, features, labels, censoring, strength_TV_list,
-                     strength_L1_list=[0], n_splits=3, stratified=True,
-                     shuffle=False, random_state=None, refit=False,
-                     bootstrap_rep=200, bootstrap_confidence=.95, ):
+                     strength_L1_list=(0), n_splits=3, stratified=True,
+                     shuffle=False, random_state=None, bootstrap=False,
+                     bootstrap_rep=200, bootstrap_confidence=.05):
+        # preprocess the data
         features, labels, censoring = self._preprocess(features,
                                                        labels,
                                                        censoring)
@@ -242,8 +246,8 @@ class LearnerSCCS(ABC, Base):
             else KFold(n_splits, shuffle, random_state)
 
         # Construct prox here
-        coeffs = np.zeros(features[0].shape[
-                              1])  # TODO: this will lead to a mess if penalty = Equality
+        # TODO: beware of prox_Equality and this init when implementing warm start
+        coeffs = np.zeros(features[0].shape[1])
         groups = self._coefficient_groups(self.penalty, coeffs)
 
         # Training loop
@@ -297,6 +301,7 @@ class LearnerSCCS(ABC, Base):
                     "kfold_scores": kfold_scores_test
                 }
             })
+
         # Find best parameters and refit on full data
         best_idx = np.argmin([s["test"]["mean"] for s in scores])[0]
         # TODO : get min with smaller penalization
@@ -305,6 +310,7 @@ class LearnerSCCS(ABC, Base):
         best_strength_TV = best_parameters["strength_TV"]
 
         # refit best model on all the data
+        # TODO: using _set everytime is not very elegant
         self._set("strength_L1", best_strength_L1)
         self._set("strength_TV", best_strength_TV)
         self._set('prox_obj', self._construct_prox_obj(self.penalty, groups))
@@ -313,14 +319,13 @@ class LearnerSCCS(ABC, Base):
         coeffs = self._fit(self._prox_obj)
         self._set("coeffs", coeffs)
         self._set("_fitted", True)
-        
-        if refit:
-            self._set('refit_coeffs', self._refit(coeffs, features,
-                                                  labels, censoring))
-            self._set('refit_CI', self.bootstrap_CI(coeffs, features, censoring,
-                                                    bootstrap_rep,
-                                                    bootstrap_confidence, # TODO: ???
-                                                    random_state))
+
+        if bootstrap:
+            refit_coeffs, lower_bound, upper_bound = \
+                self._bootstrap(coeffs, features, censoring, bootstrap_rep,
+                                bootstrap_confidence)
+            self._set('refit_coeffs', refit_coeffs)
+            self._set('bootstrap_CI', (lower_bound, upper_bound))
 
         best_model = {
             "n_intervals": self.n_intervals,
@@ -335,37 +340,6 @@ class LearnerSCCS(ABC, Base):
 
         return coeffs, scores, best_model
 
-    def _refit(self, coeffs, features, labels, censoring):
-        # TODO: find a way to get rid of preprocess here ?
-        features, labels, censoring = self._preprocess(features,
-                                                       labels,
-                                                       censoring)
-        self._model_obj.fit(features, labels, censoring)
-        # We do not recompute Lispchitz constant as it might be very similar to
-        # the one used in fit. Thus, computing this constant (which takes some
-        # time), is not worth it.
-        groups = self._detect_change_points(coeffs)
-        prox_obj = self._construct_prox_obj('Equality', groups)
-        coeffs = self._fit(prox_obj)
-        return coeffs
-
-    def bootstrap_CI(self, coeffs, features, censoring, rep, confidence,
-                     random_state=None):
-        bootstrap_coeffs = []
-        n_samples = len(features)
-        for k in range(rep):
-            sim = SimuSCCS(n_samples, self.n_intervals, self.n_features,
-                           self.n_lags, coeffs=coeffs, sparse=True,
-                           verbose=False, exposure_type=self.feature_type,
-                           distribution="multinomial", seed=random_state)
-            y = sim._simulate_outcomes(features, censoring)
-            bootstrap_coeffs.append(self._refit(coeffs, features, y, censoring))
-        bootstrap_coeffs = np.array(bootstrap_coeffs)
-        bootstrap_coeffs.sort(axis=0)
-        lower_bound = bootstrap_coeffs[int(np.ceil(rep * confidence / 2))]
-        upper_bound = bootstrap_coeffs[int(np.ceil(rep * (1 - confidence / 2)))]
-        return lower_bound, upper_bound
-
     def _preprocess(self, features, labels, censoring):
         preprocessors = self._preprocessor_obj
 
@@ -377,6 +351,8 @@ class LearnerSCCS(ABC, Base):
         self._set('n_coeffs', n_coeffs)
         self._set('n_intervals', n_intervals)
 
+        # Filter patients without event
+        # TODO: create an independent preprocessor
         features, labels, censoring, _ = SimuSCCS\
             ._filter_non_positive_samples(features, labels, censoring)
 
@@ -391,6 +367,63 @@ class LearnerSCCS(ABC, Base):
 
         return features, labels, censoring
 
+    def _fit(self, prox_obj):
+        solver_obj = self._solver_obj
+        model_obj = self._model_obj
+
+        # Now, we can pass the model and prox objects to the solver
+        solver_obj.set_model(model_obj).set_prox(prox_obj)
+
+        # TODO: (later) warm_start
+        coeffs_start = self.coeffs
+        # coeffs_start = None
+        # if self.warm_start and self.coeffs is not None:
+        #     coeffs = self.coeffs
+        #     # ensure starting point has the right format
+        #     if coeffs.shape == (model_obj.n_coeffs,):
+        #         coeffs_start = coeffs
+
+        # Launch the solver
+        coeffs = solver_obj.solve(coeffs_start, step=self.step)
+
+        # We must do this here to be able to call self.score() if fit_KFold_CV
+        self._set("coeffs", coeffs)
+        self._set("_fitted", True)
+
+        return coeffs
+
+    def _refit(self, p_features, p_labels, p_censoring):
+        # WARNING: _refit uses already preprocessed p_features, p_labels
+        # and p_censoring
+        if not self._fitted:
+            raise RuntimeError('You must fit the model first')
+
+        self._model_obj.fit(p_features, p_labels, p_censoring)
+        # We do not recompute Lispchitz constant
+        groups = self._detect_change_points(self.coeffs)
+        prox_obj = self._construct_prox_obj('Equality', groups)
+        refit_coeffs = self._fit(prox_obj)
+        return refit_coeffs
+
+    def _bootstrap(self, p_features, p_labels, p_censoring, rep, confidence):
+        # WARNING: _bootstrap uses already preprocessed p_features, p_labels
+        # and p_censoring
+        if not self._fitted:
+            raise RuntimeError('You must fit the model first')
+
+        refit_coeffs = self._refit(p_features, p_labels, p_censoring)
+
+        bootstrap_coeffs = []
+        for k in range(rep):
+            y = SimuSCCS._simulate_outcome_from_multi(p_features, refit_coeffs)
+            bootstrap_coeffs.append(self._refit(p_features, y, p_censoring))
+
+        bootstrap_coeffs = np.array(bootstrap_coeffs)
+        bootstrap_coeffs.sort(axis=0)
+        lower_bound = bootstrap_coeffs[int(np.ceil(rep * confidence / 2))]
+        upper_bound = bootstrap_coeffs[int(np.ceil(rep * (1 - confidence / 2)))]
+        return refit_coeffs, lower_bound, upper_bound
+
     def _compute_step(self, features, labels, censoring):
         self._model_obj.fit(features, labels, censoring)
         if self.step is None:
@@ -399,28 +432,6 @@ class LearnerSCCS(ABC, Base):
             self._solver_obj.step = step
         return self.step
 
-    def _fit(self, prox_obj):
-        solver_obj = self._solver_obj
-        model_obj = self._model_obj
-
-        # Now, we can pass the model and prox objects to the solver
-        solver_obj.set_model(model_obj).set_prox(prox_obj)
-
-        coeffs_start = None
-        if self.warm_start and self.coeffs is not None:
-            coeffs = self.coeffs
-            # ensure starting point has the right format
-            if coeffs.shape == (model_obj.n_coeffs,):
-                coeffs_start = coeffs
-
-        # Launch the solver
-        coeffs = solver_obj.solve(coeffs_start, step=self.step)
-
-        self._set("coeffs", coeffs)  # TODO: redundant with .fit, useful tu use score in CV
-        self._set("_fitted", True)  # TODO: in order to be able to call score...
-
-        return coeffs
-
     def _coefficient_groups(self, penalty, coeffs):
         if penalty in ["TV", "L1-TV"]:
             n_grouped_cols = self.n_lags + 1
@@ -428,6 +439,8 @@ class LearnerSCCS(ABC, Base):
                       for i in range(self.n_features)]
         elif penalty == "Equality":
             groups = self._detect_change_points(coeffs)
+        elif penalty == "None":
+            groups = (0, self.n_coeffs)
         else:
             raise ValueError("`penalty` should be `TV`, `L1-TV` or `Equality`")
 
@@ -455,6 +468,7 @@ class LearnerSCCS(ABC, Base):
         # TODO: add a filter for useless cases here ?
         # TODO: WARNING, TWO PP OBJECTS, should be used in the right order
         # TODO: multiprocessing does not work for some reason
+        # TODO: use a dict
         features_product = LongitudinalFeaturesProduct(self.feature_type,
                                                        n_threads=1)
         lagger = LongitudinalFeaturesLagger(self.n_lags)
@@ -472,7 +486,9 @@ class LearnerSCCS(ABC, Base):
             # This is a flatmap
             proxs = chain.from_iterable(
                 self._prox_L1_TV(self.strength_L1, self.strength_TV, group)
-                for group in groups) # TODO alternative: ProxMulti(ProxMulti(ProxL1), ProxMulti(ProxTV))
+                for group in groups)
+            # TODO alternative: two loops to create:
+            # ProxMulti(ProxMulti(ProxL1), ProxMulti(ProxTV))
         elif penalty == "Equality":
             proxs = (ProxEquality(0, range=group) for group in groups)
         else:
@@ -485,8 +501,7 @@ class LearnerSCCS(ABC, Base):
 
     def _construct_solver_obj(self, step, max_iter, tol, print_every,
                               record_every, verbose, seed):
-        # Parameters of the solver
-        seed = -1 if seed is None else int(step) # TODO creepy fix
+        # seed cannot be None in SVRG
         solver_obj = SVRG(step=step, max_iter=max_iter, tol=tol,
                           print_every=print_every, record_every=record_every,
                           verbose=verbose, seed=seed)
@@ -495,8 +510,9 @@ class LearnerSCCS(ABC, Base):
 
     @staticmethod
     def _prox_L1_TV(strength_L1, strength_TV, range):
+        # TODO: useless check ?
         if range[1] < (range[0] + 1):
-            raise ValueError("range[1] should be > range[0]")  # TODO: useless check ?
+            raise ValueError("range[1] should be > range[0]")
 
         proxL1 = ProxL1(strength_L1, range=(range[0], range[0]+1))
         proxTV = ProxTV(strength_TV, range=range)
