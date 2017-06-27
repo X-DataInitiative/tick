@@ -125,7 +125,8 @@ class LearnerSCCS(ABC, Base):
         self.step = step
 
     def fit(self, features: np.ndarray, labels: np.array,
-            censoring: np.array):
+            censoring: np.array, bootstrap=False, bootstrap_rep=200,
+            bootstrap_confidence=.05):
         """Fit the model according to the given training data.
 
         Parameters
@@ -153,6 +154,11 @@ class LearnerSCCS(ABC, Base):
         output : `LearnerSCCS`
             The current instance with given data
         """
+        if bootstrap_confidence <= 0 or bootstrap_confidence >= 1:
+            raise ValueError("`bootstrap_confidence` should be in (0, 1)")
+        if bootstrap_confidence > .5:
+            bootstrap_confidence = 1 - bootstrap_confidence
+
         features, labels, censoring = self._preprocess(features,
                                                        labels,
                                                        censoring)
@@ -167,9 +173,18 @@ class LearnerSCCS(ABC, Base):
 
         coeffs = self._fit(prox_obj)
 
-        return coeffs
+        refit_coeffs, lower_bound, upper_bound = (None, None, None)
+        if bootstrap:
+            refit_coeffs, lower_bound, upper_bound = \
+                self._bootstrap(features, labels, censoring, bootstrap_rep,
+                                bootstrap_confidence)
+            self._set('refit_coeffs', refit_coeffs)
+            self._set('bootstrap_CI', (lower_bound, upper_bound))
 
-    def score(self, features=None, labels=None, censoring=None, preprocess=True):
+        return coeffs, (refit_coeffs, (lower_bound, upper_bound))
+
+    def score(self, features=None, labels=None, censoring=None,
+              preprocess=True):
         """Returns the negative log-likelihood of the model, using the current
         fitted coefficients on the passed data.
         If no data is passed, the negative log-likelihood is computed using the
@@ -234,6 +249,11 @@ class LearnerSCCS(ABC, Base):
                      strength_L1_list=(0), n_splits=3, stratified=True,
                      shuffle=False, random_state=None, bootstrap=False,
                      bootstrap_rep=200, bootstrap_confidence=.05):
+        if bootstrap_confidence <= 0 or bootstrap_confidence >= 1:
+            raise ValueError("`bootstrap_confidence` should be in (0, 1)")
+        if bootstrap_confidence > .5:
+            bootstrap_confidence = 1 - bootstrap_confidence
+
         # preprocess the data
         features, labels, censoring = self._preprocess(features,
                                                        labels,
@@ -320,9 +340,10 @@ class LearnerSCCS(ABC, Base):
         self._set("coeffs", coeffs)
         self._set("_fitted", True)
 
+        refit_coeffs, lower_bound, upper_bound = (None, None, None)
         if bootstrap:
             refit_coeffs, lower_bound, upper_bound = \
-                self._bootstrap(coeffs, features, censoring, bootstrap_rep,
+                self._bootstrap(features, labels, censoring, bootstrap_rep,
                                 bootstrap_confidence)
             self._set('refit_coeffs', refit_coeffs)
             self._set('bootstrap_CI', (lower_bound, upper_bound))
@@ -335,7 +356,11 @@ class LearnerSCCS(ABC, Base):
             "feature_type": self.feature_type,
             "strength_L1": self.strength_L1,
             "strength_TV": self.strength_TV,
-            "coeffs": coeffs.tolist()
+            "coeffs": self.coeffs.tolist(),
+            "refit_coeffs": self.refit_coeffs,
+            "boostrap_CI": self.bootstrap_CI,
+            "boostrap_confidence": bootstrap_confidence,
+            "boostrap_rep":bootstrap_rep
         }
 
         return coeffs, scores, best_model
