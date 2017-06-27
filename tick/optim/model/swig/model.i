@@ -17,6 +17,8 @@ class Model {
   virtual double loss(const ArrayDouble& coeffs);
 
   virtual unsigned long get_epoch_size() const;
+
+  virtual bool is_sparse() const;
 };
 
 typedef std::shared_ptr<Model> ModelPtr;

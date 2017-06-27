@@ -11,7 +11,7 @@ from tick.optim.prox.tests.prox import TestProx
 
 class Test(TestProx):
     def test_ProxL1w(self):
-        """...Test of ProxL1
+        """...Test of test_ProxL1w
         """
         coeffs = self.coeffs.copy()
 

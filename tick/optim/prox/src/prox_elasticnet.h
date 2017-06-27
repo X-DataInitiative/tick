@@ -16,13 +16,14 @@ class ProxElasticNet : public ProxSeparable {
 
   const std::string get_class_name() const override;
 
-  double call_single(double x, double step) const override;
-
-  double value_single(double x) const override;
-
   virtual double get_ratio() const;
 
   virtual void set_ratio(double ratio);
+
+ private:
+  double call_single(double x, double step) const override;
+
+  double value_single(double x) const override;
 };
 
 #endif  // TICK_OPTIM_PROX_SRC_PROX_ELASTICNET_H_

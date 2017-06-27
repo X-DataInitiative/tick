@@ -3,10 +3,10 @@
 #include "prox_separable.h"
 
 ProxSeparable::ProxSeparable(double strength, bool positive)
-  : Prox(strength, positive) {}
+    : Prox(strength, positive) {}
 
 ProxSeparable::ProxSeparable(double strength, ulong start, ulong end, bool positive)
-  : Prox(strength, start, end, positive) {}
+    : Prox(strength, start, end, positive) {}
 
 const std::string ProxSeparable::get_class_name() const {
   return "ProxSeparable";
@@ -21,8 +21,8 @@ void ProxSeparable::call(const ArrayDouble &coeffs,
                          ArrayDouble &out) {
   if (has_range) {
     if (end > coeffs.size()) TICK_ERROR(
-      "Range [" << start << ", " << end
-                << "] cannot be called on a vector of size " << coeffs.size());
+        "Range [" << start << ", " << end
+                  << "] cannot be called on a vector of size " << coeffs.size());
     if (step.size() != end - start) TICK_ERROR("step must be of size " << end - start);
 
     call(coeffs, step, out, start, end);
@@ -41,7 +41,7 @@ void ProxSeparable::call(const ArrayDouble &coeffs,
   ArrayDouble sub_out = view(out, start, end);
   for (ulong i = 0; i < sub_coeffs.size(); ++i) {
     // Call the prox on each coordinate
-    call_single(i, sub_coeffs, step, sub_out);
+    sub_out[i] = call_single(sub_coeffs[i], step);
   }
 }
 
@@ -53,7 +53,7 @@ void ProxSeparable::call(const ArrayDouble &coeffs,
   ArrayDouble sub_coeffs = view(coeffs, start, end);
   ArrayDouble sub_out = view(out, start, end);
   for (ulong i = 0; i < sub_coeffs.size(); ++i) {
-    call_single(i, sub_coeffs, step[i], sub_out);
+    sub_out[i] = call_single(sub_coeffs[i], step[i]);
   }
 }
 
@@ -78,7 +78,19 @@ void ProxSeparable::call_single(ulong i,
                                 const ArrayDouble &coeffs,
                                 double step,
                                 ArrayDouble &out) const {
-  out[i] = call_single(coeffs[i], step);
+  if (i >= coeffs.size()) {
+    TICK_ERROR(get_class_name() << "::call_single " << "i= " << i << " while coeffs.size()=" << coeffs.size());
+  } else {
+    if (has_range) {
+      if ((i >= start) && (i < end)) {
+        out[i] = call_single(coeffs[i], step);
+      } else {
+        out[i] = coeffs[i];
+      }
+    } else {
+      out[i] = call_single(coeffs[i], step);
+    }
+  }
 }
 
 // Repeat n_times the prox on coordinate i
@@ -87,7 +99,19 @@ void ProxSeparable::call_single(ulong i,
                                 double step,
                                 ArrayDouble &out,
                                 ulong n_times) const {
-  out[i] = call_single(coeffs[i], step, n_times);
+  if (i >= coeffs.size()) {
+    TICK_ERROR(get_class_name() << "::call_single " << "i= " << i << " while coeffs.size()=" << coeffs.size());
+  } else {
+    if (has_range) {
+      if ((i >= start) && (i < end)) {
+        out[i] = call_single(coeffs[i], step, n_times);
+      } else {
+        out[i] = coeffs[i];
+      }
+    } else {
+      out[i] = call_single(coeffs[i], step, n_times);
+    }
+  }
 }
 
 double ProxSeparable::value(const ArrayDouble &coeffs,
@@ -100,16 +124,11 @@ double ProxSeparable::value(const ArrayDouble &coeffs,
   // coordinate
   ArrayDouble sub_coeffs = view(coeffs, start, end);
   for (ulong i = 0; i < sub_coeffs.size(); ++i) {
-    val += value_single(i, sub_coeffs);
+    val += value_single(sub_coeffs[i]);
   }
   return strength * val;
 }
 
 double ProxSeparable::value_single(double x) const {
   TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
-}
-
-double ProxSeparable::value_single(ulong i,
-                                   const ArrayDouble &coeffs) const {
-  return value_single(coeffs[i]);
 }

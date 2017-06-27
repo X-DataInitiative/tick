@@ -1,9 +1,6 @@
 // License: BSD 3 clause
 
-//
-// Created by Martin Bompaire on 23/10/15.
-//
-
+#include "model_labels_features.h"
 #include "svrg.h"
 
 SVRG::SVRG(ulong epoch_size,
@@ -11,117 +8,144 @@ SVRG::SVRG(ulong epoch_size,
            RandType rand_type,
            double step,
            int seed,
-           VarianceReductionMethod variance_reduction
-)
+           VarianceReductionMethod variance_reduction)
     : StoSolver(epoch_size, tol, rand_type, seed),
-      step(step), variance_reduction(variance_reduction) {
+      step(step), variance_reduction(variance_reduction),
+      ready_step_corrections(false) {}
+
+void SVRG::set_model(ModelPtr model) {
+  StoSolver::set_model(model);
+  ready_step_corrections = false;
+}
+
+void SVRG::prepare_solve() {
+  // The point where we compute the full gradient for variance reduction is the
+  // new iterate obtained at the previous epoch
+  next_iterate = iterate;
+  fixed_w = next_iterate;
+  // Allocation and computation of the full gradient
+  full_gradient = ArrayDouble(iterate.size());
+  model->grad(fixed_w, full_gradient);
+  if ((model->is_sparse()) && (prox->is_separable())) {
+    if (!ready_step_corrections) {
+      compute_step_corrections();
+    }
+  } else {
+    grad_i = ArrayDouble(iterate.size());
+    grad_i_fixed_w = ArrayDouble(iterate.size());
+  }
+  rand_index = 0;
+  if (variance_reduction == VarianceReductionMethod::Random ||
+      variance_reduction == VarianceReductionMethod::Average) {
+    next_iterate.init_to_zero();
+  }
+  if (variance_reduction == VarianceReductionMethod::Random) {
+    rand_index = rand_unif(epoch_size);
+  }
 }
 
 void SVRG::solve() {
-    ArrayDouble mu(iterate.size());
-    ArrayDouble fixed_w = next_iterate;
-    model->grad(fixed_w, mu);
-
-    if (model->is_sparse()) {
-        solve_sparse();
-    } else {
-        // Dense case
-        ArrayDouble grad_i(iterate.size());
-        ArrayDouble grad_i_fixed_w(iterate.size());
-
-        ulong rand_index{0};
-
-        if (variance_reduction == VarianceReductionMethod::Random ||
-            variance_reduction == VarianceReductionMethod::Average) {
-            next_iterate.init_to_zero();
-        }
-
-        if (variance_reduction == VarianceReductionMethod::Random) {
-            rand_index = rand_unif(epoch_size);
-        }
-
-        for (ulong t = 0; t < epoch_size; ++t) {
-            ulong i = get_next_i();
-            model->grad_i(i, iterate, grad_i);
-            model->grad_i(i, fixed_w, grad_i_fixed_w);
-            for (ulong j = 0; j < iterate.size(); ++j) {
-                iterate[j] = iterate[j] - step * (grad_i[j] - grad_i_fixed_w[j] + mu[j]);
-            }
-            prox->call(iterate, step, iterate);
-
-            if (variance_reduction == VarianceReductionMethod::Random && t == rand_index)
-                next_iterate = iterate;
-
-            if (variance_reduction == VarianceReductionMethod::Average)
-                next_iterate.mult_incr(iterate, 1.0 / epoch_size);
-        }
-
-        if (variance_reduction == VarianceReductionMethod::Last)
-            next_iterate = iterate;
-    }
-
-    t += epoch_size;
+  prepare_solve();
+  if ((model->is_sparse()) && (prox->is_separable())) {
+    bool use_intercept = model->use_intercept();
+    ulong n_features = model->get_n_features();
+    solve_sparse_proba_updates(use_intercept, n_features);
+  } else {
+    solve_dense();
+  }
 }
 
-void SVRG::solve_sparse() {
-    // TODO: once lazy updates will be implemented in prox we will be able to
-    // do lazy updating with mu vector
+void SVRG::compute_step_corrections() {
+  ulong n_features = model->get_n_features();
+  std::shared_ptr<ModelLabelsFeatures> casted_model;
+  casted_model = std::dynamic_pointer_cast<ModelLabelsFeatures>(model);
+  ArrayDouble columns_sparsity = casted_model->get_column_sparsity_view();
+  steps_correction = ArrayDouble(n_features);
+  for (ulong j = 0; j < n_features; ++j) {
+    steps_correction[j] = 1. / columns_sparsity[j];
+  }
+  ready_step_corrections = true;
+}
 
-    // The model is sparse, so it is a ModelGeneralizedLinear and the iteration looks a
-    // little bit different
-    ulong n_features = model->get_n_features();
-    bool use_intercept = model->use_intercept();
-
-    ArrayDouble mu(iterate.size());
-    ArrayDouble fixed_w = iterate;
-    model->grad(fixed_w, mu);
-
-    ulong rand_index{0};
-
-    if (variance_reduction == VarianceReductionMethod::Random ||
-        variance_reduction == VarianceReductionMethod::Average) {
-        next_iterate.init_to_zero();
+void SVRG::solve_dense() {
+  for (ulong t = 0; t < epoch_size; ++t) {
+    ulong i = get_next_i();
+    model->grad_i(i, iterate, grad_i);
+    model->grad_i(i, fixed_w, grad_i_fixed_w);
+    for (ulong j = 0; j < iterate.size(); ++j) {
+      iterate[j] = iterate[j] - step * (grad_i[j] - grad_i_fixed_w[j] + full_gradient[j]);
     }
-
-    if (variance_reduction == VarianceReductionMethod::Random) {
-        rand_index = rand_unif(epoch_size);
+    prox->call(iterate, step, iterate);
+    if (variance_reduction == VarianceReductionMethod::Random && t == rand_index) {
+      next_iterate = iterate;
     }
-
-    for (ulong t = 0; t < epoch_size; ++t) {
-        ulong i = get_next_i();
-        // Sparse features vector
-        BaseArrayDouble x_i = model->get_features(i);
-        // Gradients factor
-        double alpha_i_iterate = model->grad_i_factor(i, iterate);
-        double alpha_i_fixed_w = model->grad_i_factor(i, fixed_w);
-        double delta = -step * (alpha_i_iterate - alpha_i_fixed_w);
-        if (use_intercept) {
-            // Get the features vector, which is sparse here
-            ArrayDouble iterate_no_interc = view(iterate, 0, n_features);
-            //
-            iterate_no_interc.mult_incr(x_i, delta);
-            iterate[n_features] += delta;
-            iterate.mult_incr(mu, -step);
-        } else {
-            iterate.mult_incr(x_i, delta);
-            iterate.mult_incr(mu, -step);
-        }
-
-        prox->call(iterate, step, iterate);
-
-        if (variance_reduction == VarianceReductionMethod::Random && t == rand_index)
-            next_iterate = iterate;
-
-        if (variance_reduction == VarianceReductionMethod::Average)
-            next_iterate.mult_incr(iterate, 1.0 / epoch_size);
+    if (variance_reduction == VarianceReductionMethod::Average) {
+      next_iterate.mult_incr(iterate, 1.0 / epoch_size);
     }
+  }
+  if (variance_reduction == VarianceReductionMethod::Last) {
+    next_iterate = iterate;
+  }
+  t += epoch_size;
+}
 
-    if (variance_reduction == VarianceReductionMethod::Last)
-        next_iterate = iterate;
+void SVRG::solve_sparse_proba_updates(bool use_intercept, ulong n_features) {
+  // Data is sparse, and we use the probabilistic update strategy
+  // This means that the model is a child of ModelGeneralizedLinear.
+  // The strategy used here uses non-delayed updates, with corrected
+  // step-sizes using a probabilistic approximation and the
+  // penalization trick: with such a model and prox, we can work only inside the current
+  // support (non-zero values) of the sampled vector of features
+  std::shared_ptr<ProxSeparable> casted_prox;
+  if (prox->is_separable()) {
+    casted_prox = std::static_pointer_cast<ProxSeparable>(prox);
+  } else {
+    TICK_ERROR("SVRG::solve_sparse_proba_updates can be used with a separable prox only.")
+  }
+  for (t = 0; t < epoch_size; ++t) {
+    // Get next sample index
+    ulong i = get_next_i();
+    // Sparse features vector
+    BaseArrayDouble x_i = model->get_features(i);
+    // Gradients factors (model is a GLM)
+    // TODO: a grad_i_factor(i, array1, array2) to loop once on the features
+    double grad_i_diff = model->grad_i_factor(i, iterate) - model->grad_i_factor(i, fixed_w);
+    // We update the iterate within the support of the features vector, with the probabilistic correction
+    for (ulong idx_nnz = 0; idx_nnz < x_i.size_sparse(); ++idx_nnz) {
+      // Get the index of the idx-th sparse feature of x_i
+      ulong j = x_i.indices()[idx_nnz];
+      double full_gradient_j = full_gradient[j];
+      // Step-size correction for coordinate j
+      double step_correction = steps_correction[j];
+      // Gradient descent with probabilistic step-size correction
+      iterate[j] -= step * (x_i.data()[idx_nnz] * grad_i_diff + step_correction * full_gradient_j);
+      // Prox is separable, apply regularization on the current coordinate
+      // iterate[j] = casted_prox->call_single(iterate[j], step * step_correction);
+      casted_prox->call_single(j, iterate, step * step_correction, iterate);
+    }
+    // And let's not forget to update the intercept as well. It's updated at each step, so no step-correction.
+    // Note that we call the prox, in order to be consistent with the dense case (in the case where the user
+    // has the weird desire to to regularize the intercept)
+    if (use_intercept) {
+      iterate[n_features] -= step * (grad_i_diff + full_gradient[n_features]);
+      casted_prox->call_single(n_features, iterate, step, iterate);
+    }
+    // Note that the average option for variance reduction with sparse data is a very bad idea,
+    // but this is caught in the python class
+    if (variance_reduction == VarianceReductionMethod::Random && t == rand_index) {
+      next_iterate = iterate;
+    }
+    if (variance_reduction == VarianceReductionMethod::Average) {
+      next_iterate.mult_incr(iterate, 1.0 / epoch_size);
+    }
+  }
+  t += epoch_size;
+  if (variance_reduction == VarianceReductionMethod::Last) {
+    next_iterate = iterate;
+  }
 }
 
 void SVRG::set_starting_iterate(ArrayDouble &new_iterate) {
-    StoSolver::set_starting_iterate(new_iterate);
-
-    next_iterate = iterate;
+  StoSolver::set_starting_iterate(new_iterate);
+  next_iterate = iterate;
 }
