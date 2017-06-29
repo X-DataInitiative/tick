@@ -75,11 +75,14 @@ class LearnerSCCS(ABC, Base):
         },
     }
 
+    # TODO: This is not that useful in its current form
     _penalties = {
         'None': ProxZero,
         'TV': ProxTV,
         'Equality': ProxEquality,
-        'L1-TV': [ProxL1, ProxTV]
+        'L1-first-TV': [ProxL1, ProxTV],
+        'L1-TV': [ProxL1, ProxTV],
+        'TV-L1': [ProxTV, ProxL1]
     }
 
     def __init__(self, n_lags: int=0, feature_products=False,
@@ -111,7 +114,7 @@ class LearnerSCCS(ABC, Base):
         self._preprocessor_obj = self._construct_preprocessor_obj()
         self._model_obj = None
         random_state = int(np.random.randint(0, 1000, 1)[0] \
-            if random_state is None else random_state) # cannot be None
+            if random_state is None else random_state)  # cannot be None
         self.random_state = random_state # TODO: property
         self._solver_obj = self._construct_solver_obj(step, max_iter, tol,
                                                       print_every, record_every,
@@ -261,9 +264,11 @@ class LearnerSCCS(ABC, Base):
         # Compute lip const on all the data
         self._compute_step(features, labels, censoring)
 
-        # split the data
+        # split the dataratified KFold
+        # TODO fix st
         kf = StratifiedKFold(n_splits, shuffle, random_state) if stratified\
             else KFold(n_splits, shuffle, random_state)
+        labels_interval = np.nonzero(labels)[1]
 
         # Construct prox here
         # TODO: beware of prox_Equality and this init when implementing warm start
@@ -273,6 +278,7 @@ class LearnerSCCS(ABC, Base):
         # Training loop
         scores = []
         strength_list = itertools.product(strength_L1_list, strength_TV_list)
+        # TODO: parallelize CV
         for strength_L1, strength_TV in strength_list:
             # create prox instance
             self._set("strength_L1", strength_L1)
@@ -281,7 +287,7 @@ class LearnerSCCS(ABC, Base):
 
             kfold_scores_train = []
             kfold_scores_test = []
-            for train_index, test_index in kf.split(features, labels):
+            for train_index, test_index in kf.split(features, labels_interval):
                 train = itemgetter(*train_index.tolist())
                 test = itemgetter(*test_index.tolist())
                 X_train, X_test = list(train(features)), list(test(features))
@@ -291,9 +297,9 @@ class LearnerSCCS(ABC, Base):
                 self._model_obj.fit(X_train, y_train, censoring_train)
                 self._fit(prox_obj)
 
-                print(X_train[0].shape)
-                print(X_test[0].shape)
-                print(self.coeffs.shape)
+                # print(X_train[0].shape)
+                # print(X_test[0].shape)
+                # print(self.coeffs.shape)
 
                 kfold_scores_train.append(self.score())
                 kfold_scores_test.append(self.score(X_test, y_test,
@@ -323,17 +329,17 @@ class LearnerSCCS(ABC, Base):
             })
 
         # Find best parameters and refit on full data
-        best_idx = np.argmin([s["test"]["mean"] for s in scores])[0]
+        best_idx = np.argmin([s["test"]["mean"] for s in scores])
         # TODO : get min with smaller penalization
         best_parameters = scores[best_idx]
         best_strength_L1 = best_parameters["strength_L1"]
         best_strength_TV = best_parameters["strength_TV"]
 
         # refit best model on all the data
-        # TODO: using _set everytime is not very elegant
+        # TODO: using _set everytime is ugly
         self._set("strength_L1", best_strength_L1)
         self._set("strength_TV", best_strength_TV)
-        self._set('prox_obj', self._construct_prox_obj(self.penalty, groups))
+        self._set('_prox_obj', self._construct_prox_obj(self.penalty, groups))
 
         self._model_obj.fit(features, labels, censoring)
         coeffs = self._fit(self._prox_obj)
@@ -439,6 +445,7 @@ class LearnerSCCS(ABC, Base):
         refit_coeffs = self._refit(p_features, p_labels, p_censoring)
 
         bootstrap_coeffs = []
+        # TODO: parallelize bootstrap
         for k in range(rep):
             y = SimuSCCS._simulate_outcome_from_multi(p_features, refit_coeffs)
             bootstrap_coeffs.append(self._refit(p_features, y, p_censoring))
@@ -458,7 +465,7 @@ class LearnerSCCS(ABC, Base):
         return self.step
 
     def _coefficient_groups(self, penalty, coeffs):
-        if penalty in ["TV", "L1-TV"]:
+        if penalty in ["TV", "L1-first-TV", "L1-TV", "TV-L1"]:
             n_grouped_cols = self.n_lags + 1
             groups = [(int(n_grouped_cols * i), int(n_grouped_cols * (i + 1)))
                       for i in range(self.n_features)]
@@ -467,7 +474,8 @@ class LearnerSCCS(ABC, Base):
         elif penalty == "None":
             groups = (0, self.n_coeffs)
         else:
-            raise ValueError("`penalty` should be `TV`, `L1-TV` or `Equality`")
+            raise ValueError("`penalty` should be either `TV`, 'L1-first-TV'\
+            `L1-TV`, `TV-L1`, `Equality` or `None`")
 
         return groups
 
@@ -507,18 +515,28 @@ class LearnerSCCS(ABC, Base):
             proxs = [ProxZero()]
         elif penalty == "TV":
             proxs = (ProxTV(self.strength_TV, range=group) for group in groups)
-        elif penalty == "L1_TV":
+        elif penalty == "L1-first-TV":
             # This is a flatmap
             proxs = chain.from_iterable(
-                self._prox_L1_TV(self.strength_L1, self.strength_TV, group)
+                self._prox_L1_TV(self.strength_L1, self.strength_TV, group,
+                                 L1_first_only=True)
                 for group in groups)
-            # TODO alternative: two loops to create:
-            # ProxMulti(ProxMulti(ProxL1), ProxMulti(ProxTV))
+        elif penalty == "L1-TV":
+            # This is a flatmap
+            proxs = chain.from_iterable(
+                self._prox_L1_TV(self.strength_L1, self.strength_TV, group,
+                                 L1_first_only=False)
+                for group in groups)
+        elif penalty == "TV-L1":
+            # This is a flatmap
+            proxs = chain.from_iterable(
+                self._prox_TV_L1(self.strength_L1, self.strength_TV, group)
+                for group in groups)
         elif penalty == "Equality":
             proxs = (ProxEquality(0, range=group) for group in groups)
         else:
-            raise ValueError("`penalty` should be either `TV`, `L1-TV`, \
-            `Equality` or `None`")
+            raise ValueError("`penalty` should be either `TV`, 'L1-first-TV'\
+            `L1-TV`, `TV-L1`, `Equality` or `None`")
 
         prox_obj = ProxMulti(tuple(proxs))
 
@@ -534,12 +552,25 @@ class LearnerSCCS(ABC, Base):
         return solver_obj
 
     @staticmethod
-    def _prox_L1_TV(strength_L1, strength_TV, range):
+    def _prox_L1_TV(strength_L1, strength_TV, range, L1_first_only):
+        # TODO: useless check ?
+        if range[1] < (range[0] + 1):
+            raise ValueError("range[1] should be > range[0]")
+        if L1_first_only:
+            proxL1 = ProxL1(strength_L1, range=(range[0], range[0]+1))
+        else:
+            proxL1 = ProxL1(strength_L1, range=range)
+        proxTV = ProxTV(strength_TV, range=range)
+
+        return proxL1, proxTV
+
+    @staticmethod
+    def _prox_TV_L1(strength_L1, strength_TV, range):
         # TODO: useless check ?
         if range[1] < (range[0] + 1):
             raise ValueError("range[1] should be > range[0]")
 
-        proxL1 = ProxL1(strength_L1, range=(range[0], range[0]+1))
         proxTV = ProxTV(strength_TV, range=range)
+        proxL1 = ProxL1(strength_L1, range=range)
 
         return proxL1, proxTV

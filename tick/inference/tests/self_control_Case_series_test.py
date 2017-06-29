@@ -87,9 +87,11 @@ class Test(InferenceTest):
         pass
 
     def test_LearnerSCCS_fit_KFold_CV(self):
-        lrn = LearnerSCCS(n_lags=self.n_lags)
+        lrn = LearnerSCCS(n_lags=self.n_lags, verbose=False)
         coeffs = lrn.fit_KFold_CV(self.features, self.labels, self.censoring,
-                                  strength_TV_list=[1e-3, 1e-4], stratified=False)
+                                  strength_TV_list=[1e-3, 1e-4],
+                                  strength_L1_list=[1e-3, 1e-4],
+                                  stratified=False)
         # TODO: check that score <= score when no penalization
         pass
 
