@@ -360,13 +360,14 @@ class LearnerSCCS(ABC, Base):
             "n_features": self.n_features,
             "feature_products": self.feature_products,
             "feature_type": self.feature_type,
+            "penalty": self.penalty,
             "strength_L1": self.strength_L1,
             "strength_TV": self.strength_TV,
             "coeffs": self.coeffs.tolist(),
             "refit_coeffs": self.refit_coeffs,
             "boostrap_CI": self.bootstrap_CI,
             "boostrap_confidence": bootstrap_confidence,
-            "boostrap_rep":bootstrap_rep
+            "boostrap_rep": bootstrap_rep
         }
 
         return coeffs, scores, best_model

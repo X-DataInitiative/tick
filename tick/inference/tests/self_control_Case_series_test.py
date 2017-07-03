@@ -15,9 +15,9 @@ class Test(InferenceTest):
     # TODO: remove verbose everywhere
     def setUp(self):
         # Create data
-        sim = SimuSCCS(n_samples=5000, n_intervals=50, n_features=2, n_lags=3,
+        sim = SimuSCCS(n_samples=300, n_intervals=5, n_features=2, n_lags=1,
                        verbose=False, seed=42)
-        self.n_lags = 3
+        self.n_lags = 1
         self.features, self.labels, self.censoring, self.coeffs = sim.simulate()
 
     def test_LearnerSCCS_coefficient_groups(self):
@@ -29,7 +29,7 @@ class Test(InferenceTest):
                                     (4, 6), (6, 8),
                                     (8, 10), (10, 12)]
         expected_tv_groups = [(0, 4), (4, 8), (8, 12)]
-        lrn = LearnerSCCS(n_lags=3)
+        lrn = LearnerSCCS(n_lags=3, verbose=False)
         lrn._set("n_features", 3)
         equality_groups = lrn._coefficient_groups("Equality", coeffs)
         tv_groups = lrn._coefficient_groups("TV", coeffs)
@@ -40,16 +40,17 @@ class Test(InferenceTest):
 
     def test_LearnerSCCS_preprocess(self):
         # Just check that the preprocessing is running quickly
-        lrn = LearnerSCCS(n_lags=self.n_lags)
+        lrn = LearnerSCCS(n_lags=self.n_lags, verbose=False)
         X, y, c = lrn._preprocess(self.features, self.labels, self.censoring)
         # TODO: Check on small dummy data that preprocessing is working
+        # TODO: fix feature products
         pass
 
     def test_LearnerSCCS_fit(self):
         # TODO: correct this test
         lrn = LearnerSCCS(n_lags=self.n_lags, penalty="None", tol=0,
-                          max_iter=20)
-        coeffs = lrn.fit(self.features, self.labels, self.censoring)
+                          max_iter=20, verbose=False)
+        coeffs, _ = lrn.fit(self.features, self.labels, self.censoring)
 
         p_features, p_labels, p_censoring = lrn._preprocess(self.features,
                                                             self.labels,
@@ -64,7 +65,7 @@ class Test(InferenceTest):
         np.testing.assert_almost_equal(coeffs, self.coeffs, decimal=1)
 
     def test_LearnerSCCS_bootstrap_CI(self):
-        lrn = LearnerSCCS(n_lags=self.n_lags)
+        lrn = LearnerSCCS(n_lags=self.n_lags, verbose=False)
         coeffs = lrn.fit(self.features, self.labels, self.censoring)
         p_features, p_labels, p_censoring = lrn._preprocess(self.features,
                                                             self.labels,
@@ -79,7 +80,7 @@ class Test(InferenceTest):
                                should be >= coeffs")
 
     def test_LearnerSCCS_score(self):
-        lrn = LearnerSCCS(n_lags=self.n_lags)
+        lrn = LearnerSCCS(n_lags=self.n_lags, verbose=False)
         coeffs = lrn.fit(self.features, self.labels, self.censoring)
         lrn.score()
         lrn.score(self.features, self.labels, self.censoring)
@@ -88,10 +89,11 @@ class Test(InferenceTest):
 
     def test_LearnerSCCS_fit_KFold_CV(self):
         lrn = LearnerSCCS(n_lags=self.n_lags, verbose=False)
-        coeffs = lrn.fit_KFold_CV(self.features, self.labels, self.censoring,
-                                  strength_TV_list=[1e-3, 1e-4],
-                                  strength_L1_list=[1e-3, 1e-4],
-                                  stratified=False)
+        coeffs, _, _ = lrn.fit_KFold_CV(self.features, self.labels,
+                                        self.censoring,
+                                        strength_TV_list=[1e-3, 1e-4],
+                                        strength_L1_list=[1e-3, 1e-4],
+                                        stratified=True)
         # TODO: check that score <= score when no penalization
         pass
 
