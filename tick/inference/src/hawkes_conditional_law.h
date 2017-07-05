@@ -7,10 +7,12 @@
 
 #include "base.h"
 
-extern void PointProcessCondLaw(ArrayDouble &y_time, ArrayDouble &y_mark,
+extern void PointProcessCondLaw(ArrayDouble &y_time,
                                 ArrayDouble &z_time, ArrayDouble &z_mark,
                                 ArrayDouble &lags,
                                 double zmin, double zmax,
-                                ArrayDouble &res_X,  ArrayDouble &res_Y);
+                                double y_T,
+                                double y_lambda,
+                                ArrayDouble &res_X, ArrayDouble &res_Y);
 
 #endif  // TICK_INFERENCE_SRC_HAWKES_CONDITIONAL_LAW_H_
