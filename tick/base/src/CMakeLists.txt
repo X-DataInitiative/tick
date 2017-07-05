@@ -6,6 +6,8 @@ add_library(base EXCLUDE_FROM_ALL
         interruption.cpp
 
         parallel/parallel.h
+        parallel/parallel_omp.h
+        parallel/parallel_stdthread.h
         parallel/parallel_utils.h
 
         exceptions_test.h

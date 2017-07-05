@@ -11,6 +11,7 @@
 #include "parallel/parallel.h"
 #include "time_func.h"
 #include "array2d.h"
+#include "sparsearray.h"
 
 #include <gtest/gtest.h>
 #include <cereal/archives/json.hpp>
