@@ -78,6 +78,10 @@ except AttributeError:
 # Determine if we have an available BLAS implementation
 blas_info = get_info("blas_opt", 0)
 
+# OpenMP
+use_openmp = True
+
+
 class SwigExtension(Extension):
     """This only adds information about extension construction, useful for
     library sharing
@@ -249,6 +253,10 @@ def create_extension(extension_name, module_dir,
     if any(key == 'HAVE_CBLAS' for key, _ in blas_info['define_macros']):
         define_macros.append(('TICK_CBLAS_AVAILABLE', None))
 
+    if use_openmp:
+        extra_compile_args.append('-fopenmp')
+        libraries.append('gomp')
+
     if include_modules is None:
         include_modules = []
 
@@ -355,7 +363,9 @@ base_extension_info = {
                 "serialization.h",
                 "time_func.h",
 
-                "parallel/parallel.h",
+                "parallel/parallel.h"
+                "parallel/parallel_omp.h"
+                "parallel/parallel_stdthread.h",
                 "parallel/parallel_utils.h",
 
                 "interruption.h",
