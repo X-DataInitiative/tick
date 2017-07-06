@@ -1,3 +1,5 @@
+# License: BSD 3 clause
+
 from abc import abstractmethod
 import numpy as np
 

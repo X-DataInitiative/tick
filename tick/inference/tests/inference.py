@@ -1,3 +1,5 @@
+# License: BSD 3 clause
+
 import unittest
 from contextlib import contextmanager
 import warnings

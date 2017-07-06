@@ -5,6 +5,8 @@
 #ifndef TICK_SIMULATION_SRC_HAWKES_H_
 #define TICK_SIMULATION_SRC_HAWKES_H_
 
+// License: BSD 3 clause
+
 #include <memory>
 
 #include "hawkes_baselines/baseline.h"

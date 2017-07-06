@@ -1,6 +1,8 @@
 #ifndef TICK_OPTIM_PROX_SRC_PROX_SEPARABLE_H_
 #define TICK_OPTIM_PROX_SRC_PROX_SEPARABLE_H_
 
+// License: BSD 3 clause
+
 #include "prox.h"
 
 class ProxSeparable : public Prox {

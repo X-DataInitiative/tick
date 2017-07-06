@@ -1,3 +1,5 @@
+// License: BSD 3 clause
+
 #include "interruption.h"
 
 #include <iostream>

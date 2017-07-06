@@ -1,3 +1,5 @@
+# License: BSD 3 clause
+
 
 from .hawkes_kernel_0 import HawkesKernel0
 from .hawkes_kernel_exp import HawkesKernelExp

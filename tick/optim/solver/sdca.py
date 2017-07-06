@@ -1,3 +1,5 @@
+# License: BSD 3 clause
+
 
 from tick.optim.solver.base import SolverFirstOrderSto
 from .build.solver import SDCA as _SDCA

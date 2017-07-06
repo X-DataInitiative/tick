@@ -1,6 +1,8 @@
 #ifndef TICK_BASE_ARRAY_SRC_BASEARRAY_H_
 #define TICK_BASE_ARRAY_SRC_BASEARRAY_H_
 
+// License: BSD 3 clause
+
 #include "abstractarray1d2d.h"
 
 template<typename T>

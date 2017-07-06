@@ -1,3 +1,5 @@
+# License: BSD 3 clause
+
 import numpy as np
 
 from tick.inference.base import LearnerHawkesNoParam

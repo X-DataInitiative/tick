@@ -1,3 +1,5 @@
+# License: BSD 3 clause
+
 
 from tick.base import actual_kwargs
 from tick.inference.base import LearnerGLM

@@ -1,3 +1,5 @@
+// License: BSD 3 clause
+
 %module math
 
 %include defs.i

@@ -1,3 +1,5 @@
+# License: BSD 3 clause
+
 from .base import ModelFirstOrder
 import numpy as np
 

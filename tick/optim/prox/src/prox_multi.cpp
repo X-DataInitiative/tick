@@ -1,3 +1,5 @@
+// License: BSD 3 clause
+
 #include "prox_multi.h"
 
 // ProxMulti can be instantiated with strength=0 only, since ProxMulti's strength is not used

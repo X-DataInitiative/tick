@@ -1,3 +1,5 @@
+# License: BSD 3 clause
+
 from abc import ABC, abstractmethod
 import numpy as np
 from tick.base import Base

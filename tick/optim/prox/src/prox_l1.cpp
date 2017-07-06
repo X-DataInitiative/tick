@@ -1,3 +1,5 @@
+// License: BSD 3 clause
+
 #include "prox_l1.h"
 
 ProxL1::ProxL1(double strength,

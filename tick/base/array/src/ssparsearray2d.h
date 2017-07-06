@@ -1,6 +1,8 @@
 #ifndef TICK_BASE_ARRAY_SRC_SSPARSEARRAY2D_H_
 #define TICK_BASE_ARRAY_SRC_SSPARSEARRAY2D_H_
 
+// License: BSD 3 clause
+
 //
 //  ssparsearray2d.h
 //  TICK

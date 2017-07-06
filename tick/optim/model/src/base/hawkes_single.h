@@ -2,6 +2,8 @@
 #ifndef TICK_OPTIM_MODEL_SRC_BASE_HAWKES_SINGLE_H_
 #define TICK_OPTIM_MODEL_SRC_BASE_HAWKES_SINGLE_H_
 
+// License: BSD 3 clause
+
 #include "hawkes_model.h"
 
 /** \class ModelHawkesSingle

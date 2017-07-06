@@ -1,3 +1,5 @@
+# License: BSD 3 clause
+
 
 from .build.model import ModelPoisReg as _ModelPoisReg
 from .build.model import LinkType_identity as identity

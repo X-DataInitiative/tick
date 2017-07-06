@@ -1,6 +1,8 @@
 #ifndef TICK_BASE_SRC_SERIALIZATION_H_
 #define TICK_BASE_SRC_SERIALIZATION_H_
 
+// License: BSD 3 clause
+
 #include <cereal/archives/binary.hpp>
 #include <cereal/archives/json.hpp>
 

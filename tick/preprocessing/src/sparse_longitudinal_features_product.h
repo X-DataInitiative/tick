@@ -5,6 +5,8 @@
 #ifndef TICK_SPARSE_LONGITUDINAL_FEATURES_PRODUCT_H
 #define TICK_SPARSE_LONGITUDINAL_FEATURES_PRODUCT_H
 
+// License: BSD 3 clause
+
 #include "base.h"
 #include <cereal/types/polymorphic.hpp>
 #include <cereal/types/base_class.hpp>

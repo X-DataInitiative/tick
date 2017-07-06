@@ -1,3 +1,5 @@
+# License: BSD 3 clause
+
 __author__ = 'stephanegaiffas'
 
 from .solver import Solver

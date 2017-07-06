@@ -1,3 +1,5 @@
+# License: BSD 3 clause
+
 
 from .learner_optim import LearnerOptim
 from .learner_glm import LearnerGLM

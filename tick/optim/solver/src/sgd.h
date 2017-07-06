@@ -5,6 +5,8 @@
 #ifndef TICK_OPTIM_SOLVER_SRC_SGD_H_
 #define TICK_OPTIM_SOLVER_SRC_SGD_H_
 
+// License: BSD 3 clause
+
 #include "model.h"
 #include "../../prox/src/prox.h"
 #include "sto_solver.h"

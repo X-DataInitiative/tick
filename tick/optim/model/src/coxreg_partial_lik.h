@@ -5,6 +5,8 @@
 #ifndef TICK_OPTIM_MODEL_SRC_COXREG_PARTIAL_LIK_H_
 #define TICK_OPTIM_MODEL_SRC_COXREG_PARTIAL_LIK_H_
 
+// License: BSD 3 clause
+
 #include "model.h"
 
 

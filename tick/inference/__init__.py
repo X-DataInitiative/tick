@@ -1,3 +1,5 @@
+# License: BSD 3 clause
+
 import tick.base
 
 from .linear_regression import LinearRegression

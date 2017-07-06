@@ -1,6 +1,8 @@
 #ifndef TICK_BASE_SRC_PARALLEL_PARALLEL_H_
 #define TICK_BASE_SRC_PARALLEL_PARALLEL_H_
 
+// License: BSD 3 clause
+
 #include <iostream>
 #include <thread>
 #include <mutex>

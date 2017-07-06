@@ -5,6 +5,8 @@
 #ifndef TICK_BASE_ARRAY_TEST_SRC_TYPEMAP_TEST_H_
 #define TICK_BASE_ARRAY_TEST_SRC_TYPEMAP_TEST_H_
 
+// License: BSD 3 clause
+
 
 #include "base.h"
 

@@ -1,3 +1,5 @@
+# License: BSD 3 clause
+
 import unittest
 
 from numpy.testing import assert_almost_equal

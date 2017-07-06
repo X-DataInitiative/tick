@@ -1,6 +1,8 @@
 #ifndef TICK_OPTIM_SOLVER_SRC_ADAGRAD_H_
 #define TICK_OPTIM_SOLVER_SRC_ADAGRAD_H_
 
+// License: BSD 3 clause
+
 #include "sto_solver.h"
 
 class AdaGrad : public StoSolver {

@@ -1,6 +1,8 @@
 #ifndef TICK_BASE_SRC_TIME_FUNC_H_
 #define TICK_BASE_SRC_TIME_FUNC_H_
 
+// License: BSD 3 clause
+
 /** @file */
 
 #include <cmath>

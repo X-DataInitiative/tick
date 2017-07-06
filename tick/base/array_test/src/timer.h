@@ -9,6 +9,8 @@
 #ifndef TICK_BASE_ARRAY_TEST_SRC_TIMER_H_
 #define TICK_BASE_ARRAY_TEST_SRC_TIMER_H_
 
+// License: BSD 3 clause
+
 #include <time.h>
 
 #include <iostream>

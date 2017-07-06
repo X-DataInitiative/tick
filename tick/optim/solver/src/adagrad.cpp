@@ -1,3 +1,5 @@
+// License: BSD 3 clause
+
 #include "adagrad.h"
 #include "prox_separable.h"
 

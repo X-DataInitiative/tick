@@ -1,3 +1,5 @@
+// License: BSD 3 clause
+
 
 #ifdef PYTHON_LINK
 #include <Python.h>

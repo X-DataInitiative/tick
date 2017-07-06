@@ -1,3 +1,5 @@
+# License: BSD 3 clause
+
 from .features_binarizer import FeaturesBinarizer
 from .longitudinal_features_product import LongitudinalFeaturesProduct
 from .longitudinal_features_lagger import LongitudinalFeaturesLagger

@@ -5,6 +5,8 @@
 #ifndef TICK_RANDOM_SRC_TEST_RAND_H_
 #define TICK_RANDOM_SRC_TEST_RAND_H_
 
+// License: BSD 3 clause
+
 #include "defs.h"
 #include "sarray.h"
 #include "rand.h"

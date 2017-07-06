@@ -7,6 +7,8 @@
 #ifndef TICK_BASE_ARRAY_SRC_SBASEARRAY2D_H_
 #define TICK_BASE_ARRAY_SRC_SBASEARRAY2D_H_
 
+// License: BSD 3 clause
+
 //
 // IMPORTANT : let us note that we do not define a class SBaseArray2d<T>
 // it would make inheritance much more complicated.

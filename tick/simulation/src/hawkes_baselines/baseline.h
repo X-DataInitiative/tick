@@ -2,6 +2,8 @@
 #ifndef TICK_SIMULATION_SRC_HAWKES_BASELINES_BASELINE_H_
 #define TICK_SIMULATION_SRC_HAWKES_BASELINES_BASELINE_H_
 
+// License: BSD 3 clause
+
 #include <memory>
 #include "base.h"
 

@@ -5,6 +5,8 @@
 #ifndef TICK_BASE_SRC_BASE_TEST_H_
 #define TICK_BASE_SRC_BASE_TEST_H_
 
+// License: BSD 3 clause
+
 class A0 {
  protected:
     int cpp_int;

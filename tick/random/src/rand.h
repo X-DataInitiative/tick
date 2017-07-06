@@ -1,6 +1,8 @@
 #ifndef TICK_RANDOM_SRC_RAND_H_
 #define TICK_RANDOM_SRC_RAND_H_
 
+// License: BSD 3 clause
+
 #include <mutex>
 #include <math.h>
 #include <time.h>

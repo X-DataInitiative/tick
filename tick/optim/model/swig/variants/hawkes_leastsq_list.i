@@ -1,3 +1,5 @@
+// License: BSD 3 clause
+
 
 %{
 #include "variants/hawkes_leastsq_list.h"

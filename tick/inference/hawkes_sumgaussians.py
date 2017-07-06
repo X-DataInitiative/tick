@@ -1,3 +1,5 @@
+# License: BSD 3 clause
+
 import math
 import numpy as np
 from scipy.stats import norm

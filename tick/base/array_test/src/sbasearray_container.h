@@ -9,6 +9,8 @@
 #ifndef TICK_BASE_ARRAY_TEST_SRC_SBASEARRAY_CONTAINER_H_
 #define TICK_BASE_ARRAY_TEST_SRC_SBASEARRAY_CONTAINER_H_
 
+// License: BSD 3 clause
+
 #include "base.h"
 
 extern void test_sbasearray_container_new(SBaseArrayDoublePtr a);

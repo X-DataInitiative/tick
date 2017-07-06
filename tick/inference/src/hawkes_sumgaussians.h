@@ -1,6 +1,8 @@
 #ifndef TICK_INFERENCE_SRC_HAWKES_SUMGAUSSIANS_H_
 #define TICK_INFERENCE_SRC_HAWKES_SUMGAUSSIANS_H_
 
+// License: BSD 3 clause
+
 #include "base.h"
 #include "base/hawkes_list.h"
 

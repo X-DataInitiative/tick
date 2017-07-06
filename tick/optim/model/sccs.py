@@ -1,3 +1,5 @@
+# License: BSD 3 clause
+
 import numpy as np
 from .base import ModelFirstOrder, ModelLipschitz
 from .build.model import ModelSCCS as _ModelSCCS

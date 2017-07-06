@@ -1,3 +1,5 @@
+// License: BSD 3 clause
+
 //
 // Created by Stéphane GAIFFAS on 06/12/2015.
 //

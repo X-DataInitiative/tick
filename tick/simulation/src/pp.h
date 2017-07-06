@@ -1,6 +1,8 @@
 #ifndef TICK_SIMULATION_SRC_PP_H_
 #define TICK_SIMULATION_SRC_PP_H_
 
+// License: BSD 3 clause
+
 #include <rand.h>
 #include "rand.h"
 #include "varray.h"

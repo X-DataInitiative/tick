@@ -1,3 +1,5 @@
+// License: BSD 3 clause
+
 //
 // Created by Maryan Morel on 18/05/2017.
 //

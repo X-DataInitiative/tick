@@ -1,3 +1,5 @@
+// License: BSD 3 clause
+
 #include "constant_baseline.h"
 
 HawkesConstantBaseline::HawkesConstantBaseline(double value) : value(value) {}

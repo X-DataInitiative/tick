@@ -1,3 +1,5 @@
+# License: BSD 3 clause
+
 
 
 from .weights import weights_sparse_gauss, weights_sparse_exp

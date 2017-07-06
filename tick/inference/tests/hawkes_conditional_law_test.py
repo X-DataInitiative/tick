@@ -1,3 +1,5 @@
+# License: BSD 3 clause
+
 import unittest
 import os
 import numpy as np

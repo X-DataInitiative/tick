@@ -1,3 +1,5 @@
+# License: BSD 3 clause
+
 from scipy.integrate import quad
 import numpy as np
 

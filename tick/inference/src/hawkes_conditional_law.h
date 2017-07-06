@@ -3,6 +3,8 @@
 #ifndef TICK_INFERENCE_SRC_HAWKES_CONDITIONAL_LAW_H_
 #define TICK_INFERENCE_SRC_HAWKES_CONDITIONAL_LAW_H_
 
+// License: BSD 3 clause
+
 #include "base.h"
 
 extern void PointProcessCondLaw(ArrayDouble &y_time, ArrayDouble &y_mark,

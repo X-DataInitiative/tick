@@ -2,6 +2,8 @@
 #ifndef TICK_OPTIM_MODEL_SRC_HAWKES_UTILS_H_
 #define TICK_OPTIM_MODEL_SRC_HAWKES_UTILS_H_
 
+// License: BSD 3 clause
+
 #include "base.h"
 
 struct TimestampListDescriptor {

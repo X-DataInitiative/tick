@@ -1,6 +1,8 @@
 #ifndef TICK_BASE_ARRAY_SRC_PROMOTE_H_
 #define TICK_BASE_ARRAY_SRC_PROMOTE_H_
 
+// License: BSD 3 clause
+
 /**
  * @file This file provides the promote<T> type trait class that for floating point and unsigned/signed integer types
  * provides a type that will safely contain a reasonably sized sum of type values.

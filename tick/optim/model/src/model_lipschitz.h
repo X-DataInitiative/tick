@@ -5,6 +5,8 @@
 #ifndef TICK_OPTIM_MODEL_SRC_MODEL_LIPSCHITZ_H_
 #define TICK_OPTIM_MODEL_SRC_MODEL_LIPSCHITZ_H_
 
+// License: BSD 3 clause
+
 #include "model.h"
 
 /**

@@ -1,3 +1,5 @@
+// License: BSD 3 clause
+
 %feature("autodoc", "1");  // 0 == no param types, 1 == show param types
 
 %define %DocMeth(meth,def,details)

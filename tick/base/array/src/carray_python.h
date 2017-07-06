@@ -1,6 +1,8 @@
 #ifndef TICK_BASE_ARRAY_SRC_CARRAY_PYTHON_H_
 #define TICK_BASE_ARRAY_SRC_CARRAY_PYTHON_H_
 
+// License: BSD 3 clause
+
 //
 // This is the file to be included in .i files of other modules that want to use arrays.
 // It includes the declaration for all the needed typemaps in/out and typemap check

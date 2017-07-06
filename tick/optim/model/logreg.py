@@ -1,3 +1,5 @@
+# License: BSD 3 clause
+
 import numpy as np
 from numpy.linalg import svd
 from .base import ModelGeneralizedLinear, ModelFirstOrder, ModelLipschitz

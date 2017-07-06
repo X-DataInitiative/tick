@@ -1,3 +1,5 @@
+// License: BSD 3 clause
+
 #include "prox_sorted_l1.h"
 
 ProxSortedL1::ProxSortedL1(double strength,

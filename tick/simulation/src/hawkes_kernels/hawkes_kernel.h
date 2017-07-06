@@ -2,6 +2,8 @@
 #ifndef TICK_SIMULATION_SRC_HAWKES_KERNELS_HAWKES_KERNEL_H_
 #define TICK_SIMULATION_SRC_HAWKES_KERNELS_HAWKES_KERNEL_H_
 
+// License: BSD 3 clause
+
 #include <memory>
 #include "sarray.h"
 

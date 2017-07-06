@@ -1,3 +1,5 @@
+# License: BSD 3 clause
+
 from operator import itemgetter
 import numpy as np
 import scipy.sparse as sps

@@ -1,3 +1,5 @@
+# License: BSD 3 clause
+
 import errno
 import os
 import unittest

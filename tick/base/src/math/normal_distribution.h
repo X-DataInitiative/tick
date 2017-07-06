@@ -5,6 +5,8 @@
 #ifndef TICK_BASE_SRC_MATH_NORMAL_DISTRIBUTION_H_
 #define TICK_BASE_SRC_MATH_NORMAL_DISTRIBUTION_H_
 
+// License: BSD 3 clause
+
 #include "array.h"
 
 extern double standard_normal_cdf(double x);

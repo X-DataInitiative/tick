@@ -1,3 +1,5 @@
+# License: BSD 3 clause
+
 import matplotlib.pyplot as plt
 import numpy as np
 
