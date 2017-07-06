@@ -8,6 +8,8 @@
 #ifndef TICK_BASE_SRC_DEFS_H_
 #define TICK_BASE_SRC_DEFS_H_
 
+// License: BSD 3 clause
+
 #include <cstdint>
 
 #if defined _WIN32 || defined __CYGWIN__

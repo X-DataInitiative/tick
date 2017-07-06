@@ -1,3 +1,5 @@
+// License: BSD 3 clause
+
 #include "hawkes_leastsq_list.h"
 #include "hawkes_utils.h"
 

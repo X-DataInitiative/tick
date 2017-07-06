@@ -2,6 +2,8 @@
 #ifndef TICK_OPTIM_MODEL_SRC_VARIANTS_HAWKES_LEASTSQ_LIST_H_
 #define TICK_OPTIM_MODEL_SRC_VARIANTS_HAWKES_LEASTSQ_LIST_H_
 
+// License: BSD 3 clause
+
 #include "base.h"
 #include "../base/hawkes_list.h"
 #include "../base/hawkes_single.h"

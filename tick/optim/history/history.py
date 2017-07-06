@@ -1,3 +1,5 @@
+# License: BSD 3 clause
+
 from collections import defaultdict
 
 import numpy as np

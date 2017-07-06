@@ -1,6 +1,8 @@
 #ifndef TICK_BASE_ARRAY_SRC_SPARSEARRAY_H_
 #define TICK_BASE_ARRAY_SRC_SPARSEARRAY_H_
 
+// License: BSD 3 clause
+
 /** @file */
 
 #include "defs.h"

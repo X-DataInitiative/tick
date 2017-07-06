@@ -1,3 +1,5 @@
+# License: BSD 3 clause
+
 
 def kaplan_meier(timestamps, event_observed):
     """Computes the Kaplan-Meier survival function estimation

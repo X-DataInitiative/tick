@@ -1,3 +1,5 @@
+# License: BSD 3 clause
+
 from .hawkes_kernel import HawkesKernel
 from ..build.simulation import HawkesKernelExp as _HawkesKernelExp
 

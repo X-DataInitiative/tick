@@ -5,6 +5,8 @@
 #ifndef TICK_OPTIM_MODEL_SRC_POISREG_H_
 #define TICK_OPTIM_MODEL_SRC_POISREG_H_
 
+// License: BSD 3 clause
+
 #include "model_generalized_linear.h"
 
 

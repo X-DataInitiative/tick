@@ -9,6 +9,8 @@
 #ifndef TICK_BASE_SRC_INTERRUPTION_H_
 #define TICK_BASE_SRC_INTERRUPTION_H_
 
+// License: BSD 3 clause
+
 #include <atomic>
 #include <exception>
 

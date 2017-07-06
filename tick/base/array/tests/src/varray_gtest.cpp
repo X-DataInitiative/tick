@@ -1,3 +1,5 @@
+// License: BSD 3 clause
+
 #include <algorithm>
 
 #define DEBUG_COSTLY_THROW 1

@@ -1,3 +1,5 @@
+// License: BSD 3 clause
+
 //
 // Created by Martin Bompaire on 02/03/2017.
 //

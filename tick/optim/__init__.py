@@ -1,3 +1,5 @@
+# License: BSD 3 clause
+
 import tick.base
 
 # TODO: add notebooks for each models : PoissonReg, CoxPartial, Hawkes, that illustrates simulation and inference of the models, and compares solvers for each models

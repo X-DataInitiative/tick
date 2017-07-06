@@ -1,6 +1,8 @@
 #ifndef TICK_OPTIM_MODEL_SRC_VARIANTS_HAWKES_FIXED_EXPKERN_LOGLIK_LIST_H_
 #define TICK_OPTIM_MODEL_SRC_VARIANTS_HAWKES_FIXED_EXPKERN_LOGLIK_LIST_H_
 
+// License: BSD 3 clause
+
 #include "base.h"
 #include "../base/hawkes_list.h"
 #include "../hawkes_fixed_expkern_loglik.h"

@@ -1,6 +1,8 @@
 #ifndef TICK_BASE_ARRAY_SRC_VARRAY_H_
 #define TICK_BASE_ARRAY_SRC_VARRAY_H_
 
+// License: BSD 3 clause
+
 /** @file */
 
 #include "sarray.h"

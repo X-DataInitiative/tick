@@ -1,6 +1,8 @@
 #ifndef TICK_OPTIM_PROX_SRC_PROX_SLOPE_H_
 #define TICK_OPTIM_PROX_SRC_PROX_SLOPE_H_
 
+// License: BSD 3 clause
+
 #include "prox.h"
 #include "prox_sorted_l1.h"
 

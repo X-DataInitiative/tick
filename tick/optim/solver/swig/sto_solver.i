@@ -1,3 +1,5 @@
+// License: BSD 3 clause
+
 
 %include <std_shared_ptr.i>
 

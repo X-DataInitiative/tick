@@ -9,6 +9,8 @@
 #ifndef TICK_BASE_ARRAY_SRC_ABSTRACTARRAY1D2D_H_
 #define TICK_BASE_ARRAY_SRC_ABSTRACTARRAY1D2D_H_
 
+// License: BSD 3 clause
+
 #include <cstring>
 
 #include "vector_operations.h"

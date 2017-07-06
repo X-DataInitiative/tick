@@ -4,6 +4,8 @@
 #ifndef TICK_OPTIM_MODEL_SRC_MODEL_GENERALIZED_LINEAR_H_
 #define TICK_OPTIM_MODEL_SRC_MODEL_GENERALIZED_LINEAR_H_
 
+// License: BSD 3 clause
+
 #include "model_labels_features.h"
 
 class ModelGeneralizedLinear : public ModelLabelsFeatures {

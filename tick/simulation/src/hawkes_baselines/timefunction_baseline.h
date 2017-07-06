@@ -2,6 +2,8 @@
 #ifndef TICK_SIMULATION_SRC_HAWKES_BASELINES_TIMEFUNCTION_BASELINE_H_
 #define TICK_SIMULATION_SRC_HAWKES_BASELINES_TIMEFUNCTION_BASELINE_H_
 
+// License: BSD 3 clause
+
 #include <cereal/types/polymorphic.hpp>
 #include "base.h"
 #include "baseline.h"

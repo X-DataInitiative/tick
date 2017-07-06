@@ -1,3 +1,5 @@
+// License: BSD 3 clause
+
 %{
 #include "sparse_longitudinal_features_product.h"
 %}

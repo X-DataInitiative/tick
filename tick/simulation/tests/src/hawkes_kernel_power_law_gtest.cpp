@@ -1,3 +1,5 @@
+// License: BSD 3 clause
+
 #include <gtest/gtest.h>
 #include <hawkes_kernels/hawkes_kernel_power_law.h>
 

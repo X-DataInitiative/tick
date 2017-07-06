@@ -1,3 +1,5 @@
+# License: BSD 3 clause
+
 # -*- coding: utf8 -*-
 
 from tick.optim.prox.base import Prox

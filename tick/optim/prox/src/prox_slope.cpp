@@ -1,3 +1,5 @@
+// License: BSD 3 clause
+
 #include "prox_slope.h"
 
 ProxSlope::ProxSlope(double strength,

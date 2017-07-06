@@ -5,6 +5,8 @@
 #ifndef TICK_LONGITUDINAL_FEATURES_LAGGER_H
 #define TICK_LONGITUDINAL_FEATURES_LAGGER_H
 
+// License: BSD 3 clause
+
 #include "base.h"
 #include <cereal/types/polymorphic.hpp>
 #include <cereal/types/base_class.hpp>

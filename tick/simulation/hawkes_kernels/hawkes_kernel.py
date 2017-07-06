@@ -1,3 +1,5 @@
+# License: BSD 3 clause
+
 from tick.base import Base
 from ..build.simulation import HawkesKernel as _HawkesKernel
 

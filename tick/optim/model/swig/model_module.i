@@ -1,3 +1,5 @@
+// License: BSD 3 clause
+
 %module model
 
 %include defs.i

@@ -5,6 +5,8 @@
 #ifndef TICK_SIMULATION_SRC_INHOMOGENEOUS_POISSON_H_
 #define TICK_SIMULATION_SRC_INHOMOGENEOUS_POISSON_H_
 
+// License: BSD 3 clause
+
 #include "time_func.h"
 #include "pp.h"
 

@@ -1,3 +1,5 @@
+# License: BSD 3 clause
+
 import unittest
 import numpy as np
 import itertools

@@ -1,3 +1,5 @@
+# License: BSD 3 clause
+
 from tick.optim.prox.base import Prox
 import numpy as np
 

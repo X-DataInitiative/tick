@@ -5,6 +5,8 @@
 #ifndef TICK_OPTIM_SOLVER_SRC_SVRG_H_
 #define TICK_OPTIM_SOLVER_SRC_SVRG_H_
 
+// License: BSD 3 clause
+
 #include "array.h"
 #include "sgd.h"
 #include "../../prox/src/prox.h"

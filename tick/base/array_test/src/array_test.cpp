@@ -1,3 +1,5 @@
+// License: BSD 3 clause
+
 #include "array_test.h"
 
 using std::cout;

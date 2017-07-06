@@ -1,3 +1,5 @@
+# License: BSD 3 clause
+
 from tick.dataset import fetch_tick_dataset
 
 

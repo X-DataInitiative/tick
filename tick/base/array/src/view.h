@@ -11,6 +11,8 @@
 #ifndef TICK_BASE_ARRAY_SRC_VIEW_H_
 #define TICK_BASE_ARRAY_SRC_VIEW_H_
 
+// License: BSD 3 clause
+
 #include "array.h"
 #include "sparsearray.h"
 #include "sarray.h"

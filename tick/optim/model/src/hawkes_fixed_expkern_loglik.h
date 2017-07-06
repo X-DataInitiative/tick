@@ -5,6 +5,8 @@
 #ifndef TICK_OPTIM_MODEL_SRC_HAWKES_FIXED_EXPKERN_LOGLIK_H_
 #define TICK_OPTIM_MODEL_SRC_HAWKES_FIXED_EXPKERN_LOGLIK_H_
 
+// License: BSD 3 clause
+
 #include "base.h"
 
 #include "base/hawkes_single.h"

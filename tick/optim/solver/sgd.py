@@ -1,3 +1,5 @@
+# License: BSD 3 clause
+
 from tick.optim.solver.base import SolverFirstOrderSto
 from tick.optim.solver.build.solver import SGD as _SGD
 

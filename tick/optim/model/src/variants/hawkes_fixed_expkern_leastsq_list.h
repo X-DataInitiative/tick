@@ -1,6 +1,8 @@
 #ifndef TICK_OPTIM_MODEL_SRC_VARIANTS_HAWKES_FIXED_EXPKERN_LEASTSQ_LIST_H_
 #define TICK_OPTIM_MODEL_SRC_VARIANTS_HAWKES_FIXED_EXPKERN_LEASTSQ_LIST_H_
 
+// License: BSD 3 clause
+
 #include "base.h"
 #include "hawkes_leastsq_list.h"
 #include "../hawkes_fixed_expkern_leastsq.h"

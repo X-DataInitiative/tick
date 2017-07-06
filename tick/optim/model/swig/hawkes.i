@@ -1,3 +1,5 @@
+// License: BSD 3 clause
+
 
 %include hawkes_fixed_expkern_leastsq.i
 %include hawkes_fixed_sumexpkern_leastsq.i

@@ -1,6 +1,8 @@
 #ifndef TICK_BASE_SRC_DEBUG_H_
 #define TICK_BASE_SRC_DEBUG_H_
 
+// License: BSD 3 clause
+
 /** @file
  *
  * Debugging utilities for 'tick'

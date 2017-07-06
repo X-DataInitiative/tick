@@ -5,6 +5,8 @@
 #ifndef TICK_BASE_SRC_PARALLEL_PARALLEL_UTILS_H_
 #define TICK_BASE_SRC_PARALLEL_PARALLEL_UTILS_H_
 
+// License: BSD 3 clause
+
 #include <type_traits>
 #include "sarray.h"
 

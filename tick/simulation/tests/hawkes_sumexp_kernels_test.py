@@ -1,3 +1,5 @@
+# License: BSD 3 clause
+
 import unittest
 from itertools import product
 import numpy as np

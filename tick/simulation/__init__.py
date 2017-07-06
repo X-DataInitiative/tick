@@ -1,3 +1,5 @@
+# License: BSD 3 clause
+
 import tick.base
 
 from .base import features_normal_cov_uniform, \

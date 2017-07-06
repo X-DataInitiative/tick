@@ -1,3 +1,5 @@
+// License: BSD 3 clause
+
 %{
 #include "longitudinal_features_lagger.h"
 %}

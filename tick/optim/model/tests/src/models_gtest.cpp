@@ -1,3 +1,5 @@
+// License: BSD 3 clause
+
 #include <numeric>
 #include <algorithm>
 #include <complex>

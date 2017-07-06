@@ -1,3 +1,5 @@
+# License: BSD 3 clause
+
 import numpy as np
 from numpy.linalg import norm
 from scipy.optimize import check_grad, fmin_bfgs

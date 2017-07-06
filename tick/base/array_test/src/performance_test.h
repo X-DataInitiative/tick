@@ -5,6 +5,8 @@
 #ifndef TICK_BASE_ARRAY_TEST_SRC_PERFORMANCE_TEST_H_
 #define TICK_BASE_ARRAY_TEST_SRC_PERFORMANCE_TEST_H_
 
+// License: BSD 3 clause
+
 #include "timer.h"
 #include "base.h"
 

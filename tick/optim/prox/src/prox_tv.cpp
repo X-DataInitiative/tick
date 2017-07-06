@@ -1,3 +1,5 @@
+// License: BSD 3 clause
+
 #include "base.h"
 #include "prox_tv.h"
 

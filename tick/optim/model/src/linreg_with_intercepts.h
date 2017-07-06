@@ -5,6 +5,8 @@
 #ifndef TICK_OPTIM_MODEL_SRC_LINREG_WITH_INTERCEPTS_H_
 #define TICK_OPTIM_MODEL_SRC_LINREG_WITH_INTERCEPTS_H_
 
+// License: BSD 3 clause
+
 #include "model_generalized_linear_with_intercepts.h"
 #include "model_lipschitz.h"
 

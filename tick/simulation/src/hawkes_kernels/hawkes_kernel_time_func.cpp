@@ -1,3 +1,5 @@
+// License: BSD 3 clause
+
 #include "hawkes_kernel_time_func.h"
 
 HawkesKernelTimeFunc::HawkesKernelTimeFunc(const TimeFunction &time_function)

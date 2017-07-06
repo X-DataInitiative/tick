@@ -5,6 +5,8 @@
 #ifndef TICK_BASE_ARRAY_TEST_SRC_VARRAYCONTAINER_H_
 #define TICK_BASE_ARRAY_TEST_SRC_VARRAYCONTAINER_H_
 
+// License: BSD 3 clause
+
 #include "varray.h"
 #include "array.h"
 #include "array_test.h"

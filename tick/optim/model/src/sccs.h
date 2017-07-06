@@ -5,6 +5,8 @@
 #ifndef TICK_OPTIM_MODEL_SRC_SCCS_H_
 #define TICK_OPTIM_MODEL_SRC_SCCS_H_
 
+// License: BSD 3 clause
+
 #include "base.h"
 #include "model_lipschitz.h"
 

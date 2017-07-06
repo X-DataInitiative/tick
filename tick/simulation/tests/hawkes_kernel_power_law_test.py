@@ -1,3 +1,5 @@
+# License: BSD 3 clause
+
 import unittest
 
 from tick.simulation.hawkes_kernels import HawkesKernelPowerLaw

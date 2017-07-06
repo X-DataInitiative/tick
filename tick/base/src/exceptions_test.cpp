@@ -1,3 +1,5 @@
+// License: BSD 3 clause
+
 #include "exceptions_test.h"
 
 #include <stdexcept>

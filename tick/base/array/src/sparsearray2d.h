@@ -2,6 +2,8 @@
 #ifndef TICK_BASE_ARRAY_SRC_SPARSEARRAY2D_H_
 #define TICK_BASE_ARRAY_SRC_SPARSEARRAY2D_H_
 
+// License: BSD 3 clause
+
 /** @file */
 
 #include "basearray2d.h"
