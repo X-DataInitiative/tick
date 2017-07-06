@@ -1,0 +1,32 @@
+
+
+.. _example_plot_hawkes_varying_baseline_simulation.py:
+
+
+==================================================
+Simulate Hawkes process with non constant baseline
+==================================================
+
+This example simulates a Hawkes process with a non constant, periodic baseline
+
+
+
+.. image:: images/plot_hawkes_varying_baseline_simulation_001.png
+    :align: center
+
+
+
+
+**Python source code:** :download:`plot_hawkes_varying_baseline_simulation.py <plot_hawkes_varying_baseline_simulation.py>`
+
+.. literalinclude:: plot_hawkes_varying_baseline_simulation.py
+    :lines: 8-
+
+**Total running time of the example:**  0.14 seconds
+( 0 minutes  0.14 seconds)
+    
+Mentioned *tick* classes:
+   * `tick.base.TimeFunction`
+   * `tick.base.TimeFunction.Cyclic`
+   * `tick.plot.plot_point_process`
+   * `tick.simulation.SimuHawkesExpKernels`

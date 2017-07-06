@@ -47,7 +47,7 @@
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="tick.inference.LogisticRegression" href="generated/tick.inference.LogisticRegression.html" />
+    <link rel="next" title="tick.inference.LinearRegression" href="generated/tick.inference.LinearRegression.html" />
     <link rel="prev" title="&lt;no title&gt;" href="../index.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
@@ -112,6 +112,8 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="generated/tick.preprocessing.FeaturesBinarizer.html">tick.preprocessing.FeaturesBinarizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/tick.preprocessing.LongitudinalFeaturesProduct.html">tick.preprocessing.LongitudinalFeaturesProduct</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/tick.preprocessing.LongitudinalFeaturesLagger.html">tick.preprocessing.LongitudinalFeaturesLagger</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code>: simulation toolbox</a><ul>
@@ -205,8 +207,14 @@ method.</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.inference.LogisticRegression.html#tick.inference.LogisticRegression" title="tick.inference.LogisticRegression"><code class="xref py py-obj docutils literal"><span class="pre">inference.LogisticRegression</span></code></a>([...])</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.inference.LinearRegression.html#tick.inference.LinearRegression" title="tick.inference.LinearRegression"><code class="xref py py-obj docutils literal"><span class="pre">inference.LinearRegression</span></code></a>([fit_intercept,&nbsp;...])</td>
+<td>Linear regression learner, with many choices of penalization and solvers.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/tick.inference.LogisticRegression.html#tick.inference.LogisticRegression" title="tick.inference.LogisticRegression"><code class="xref py py-obj docutils literal"><span class="pre">inference.LogisticRegression</span></code></a>([...])</td>
 <td>Logistic regression learner, with many choices of penalization and solvers.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.inference.PoissonRegression.html#tick.inference.PoissonRegression" title="tick.inference.PoissonRegression"><code class="xref py py-obj docutils literal"><span class="pre">inference.PoissonRegression</span></code></a>([step,&nbsp;...])</td>
+<td>Poisson regression learner, with exponential link function.</td>
 </tr>
 </tbody>
 </table>
@@ -432,6 +440,20 @@ and hence don&#8217;t rely the previous exponential parametrization.</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.inference.nelson_aalen.html#tick.inference.nelson_aalen" title="tick.inference.nelson_aalen"><code class="xref py py-obj docutils literal"><span class="pre">inference.nelson_aalen</span></code></a>(timestamps,&nbsp;...)</td>
+<td>Computes the Nelson-Aalen cumulative hazard rate estimation</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/tick.inference.kaplan_meier.html#tick.inference.kaplan_meier" title="tick.inference.kaplan_meier"><code class="xref py py-obj docutils literal"><span class="pre">inference.kaplan_meier</span></code></a>(timestamps,&nbsp;...)</td>
+<td>Computes the Kaplan-Meier survival function estimation</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
 <tr class="row-odd"><td><a class="reference internal" href="generated/tick.inference.CoxRegression.html#tick.inference.CoxRegression" title="tick.inference.CoxRegression"><code class="xref py py-obj docutils literal"><span class="pre">inference.CoxRegression</span></code></a>([penalty,&nbsp;C,&nbsp;...])</td>
 <td>Cox regression learner, using the partial Cox likelihood for proportional risks, with many choices of penalization.</td>
 </tr>
@@ -449,7 +471,7 @@ and hence don&#8217;t rely the previous exponential parametrization.</p>
       
     </p>
     <p>
-        &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Poulsen.<br/>
+        &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Vinther Poulsen.<br/>
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.<br/>
     </p>
   </div>

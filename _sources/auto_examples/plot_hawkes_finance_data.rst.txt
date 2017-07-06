@@ -1,0 +1,48 @@
+
+
+.. _example_plot_hawkes_finance_data.py:
+
+
+==========================
+Fit Hawkes on finance data
+==========================
+
+This example fit hawkes kernels on finance data provided by `tick-datasets`_. 
+repository.
+
+Kernels norms of a Hawkes process fit on finance data of Bund market place.
+This reproduces experiments run in
+
+Bacry, E., Jaisson, T. and Muzy, J.F., 2016. Estimation of slowly decreasing
+Hawkes kernels: application to high-frequency order book dynamics.
+Quantitative Finance, 16(8), `pp.1179-1201`_.
+
+with  :math:`P_u` (resp. :math:`P_d`) counts the number of upward (resp.
+downward) mid-price moves and :math:`T_A` (resp. :math:`T_b`) counts the
+number of market  orders at the ask (resp. bid) that do not move the price.
+We observe expected  behavior with for example mid-price moving downward
+triggering (resp. preventing) market orders at the ask (resp. at the bid).
+
+.. _tick-datasets: https://github.com/X-DataInitiative/tick-datasets
+.. _pp.1179-1201: http://www.tandfonline.com/doi/abs/10.1080/14697688.2015.1123287
+
+
+
+.. image:: images/plot_hawkes_finance_data_001.png
+    :align: center
+
+
+
+
+**Python source code:** :download:`plot_hawkes_finance_data.py <plot_hawkes_finance_data.py>`
+
+.. literalinclude:: plot_hawkes_finance_data.py
+    :lines: 25-
+
+**Total running time of the example:**  6.52 seconds
+( 0 minutes  6.52 seconds)
+    
+Mentioned *tick* classes:
+   * `tick.dataset.fetch_hawkes_bund_data`
+   * `tick.inference.HawkesConditionalLaw`
+   * `tick.plot.plot_hawkes_kernel_norms`

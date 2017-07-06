@@ -31,8 +31,8 @@ Multi-dimensional Hawkes Processes. In `AISTATS (Vol. 31, pp. 641-649)
 .. literalinclude:: plot_hawkes_adm4.py
     :lines: 17-
 
-**Total running time of the example:**  0.43 seconds
-( 0 minutes  0.43 seconds)
+**Total running time of the example:**  0.58 seconds
+( 0 minutes  0.58 seconds)
     
 Mentioned *tick* classes:
    * `tick.inference.HawkesADM4`

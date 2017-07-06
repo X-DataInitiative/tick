@@ -110,6 +110,8 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="tick.preprocessing.FeaturesBinarizer.html">tick.preprocessing.FeaturesBinarizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tick.preprocessing.LongitudinalFeaturesProduct.html">tick.preprocessing.LongitudinalFeaturesProduct</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tick.preprocessing.LongitudinalFeaturesLagger.html">tick.preprocessing.LongitudinalFeaturesLagger</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code>: simulation toolbox</a><ul>
@@ -186,7 +188,9 @@ This is only used if the TimeFunction is not a constant.</p>
 <ul class="simple">
 <li><code class="xref py py-obj docutils literal"><span class="pre">Border0</span></code> : value will be <span class="math">\(0\)</span></li>
 <li><code class="xref py py-obj docutils literal"><span class="pre">BorderConstant</span></code> : value will be given by <code class="xref py py-obj docutils literal"><span class="pre">border_value</span></code></li>
-<li><code class="xref py py-obj docutils literal"><span class="pre">BorderContinue</span></code> : value will equal to the last kno`wn value</li>
+<li><code class="xref py py-obj docutils literal"><span class="pre">BorderContinue</span></code> : value will equal to the last known value</li>
+<li><code class="xref py py-obj docutils literal"><span class="pre">Cyclic</span></code> : value will be equal the value it would have had in the 
+original given values, modulo the support.</li>
 </ul>
 </div></blockquote>
 <p><strong>inter_mode</strong> : {InterLinear, InterConstLeft, InterConstRight}, default=InterLinear</p>
@@ -284,11 +288,15 @@ have it taking a lot of space in memory.</p>
 <a class="reference external image-reference" href="./../../auto_examples/./plot_hawkes_time_func_simu.html"><img alt="../../_images/plot_hawkes_time_func_simu1.png" src="../../_images/plot_hawkes_time_func_simu1.png" /></a>
 <p class="caption"><span class="caption-text"><a class="reference internal" href="../../auto_examples/plot_hawkes_time_func_simu.html#example-plot-hawkes-time-func-simu-py"><span class="std std-ref">Hawkes simulation with exotic kernels</span></a></span></p>
 </div>
-</div><div class="thumbnailContainer" tooltip="This Hawkes EM (`tick.inference.HawkesEM`) algorithm assume that kernels are piecewise constant..."><div class="figure" id="id3">
+</div><div class="thumbnailContainer" tooltip="This example simulates a Hawkes process with a non constant, periodic baseline "><div class="figure" id="id3">
+<a class="reference external image-reference" href="./../../auto_examples/./plot_hawkes_varying_baseline_simulation.html"><img alt="../../_images/plot_hawkes_varying_baseline_simulation1.png" src="../../_images/plot_hawkes_varying_baseline_simulation1.png" /></a>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="../../auto_examples/plot_hawkes_varying_baseline_simulation.html#example-plot-hawkes-varying-baseline-simulation-py"><span class="std std-ref">Simulate Hawkes process with non constant baseline</span></a></span></p>
+</div>
+</div><div class="thumbnailContainer" tooltip="This Hawkes EM (`tick.inference.HawkesEM`) algorithm assume that kernels are piecewise constant..."><div class="figure" id="id4">
 <a class="reference external image-reference" href="./../../auto_examples/./plot_hawkes_em.html"><img alt="../../_images/plot_hawkes_em1.png" src="../../_images/plot_hawkes_em1.png" /></a>
 <p class="caption"><span class="caption-text"><a class="reference internal" href="../../auto_examples/plot_hawkes_em.html#example-plot-hawkes-em-py"><span class="std std-ref">Fit Hawkes random kernels</span></a></span></p>
 </div>
-</div><div class="thumbnailContainer" tooltip=""><div class="figure" id="id4">
+</div><div class="thumbnailContainer" tooltip=""><div class="figure" id="id5">
 <a class="reference external image-reference" href="./../../auto_examples/simulation/plot_time_function.html"><img alt="../../_images/plot_time_function.png" src="../../_images/plot_time_function.png" /></a>
 <p class="caption"><span class="caption-text"><a class="reference internal" href="../../auto_examples/simulation/plot_time_function.html#example-simulation-plot-time-function-py"><span class="std std-ref">plot_time_function.py</span></a></span></p>
 </div>
@@ -304,7 +312,7 @@ have it taking a lot of space in memory.</p>
       
     </p>
     <p>
-        &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Poulsen.<br/>
+        &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Vinther Poulsen.<br/>
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.<br/>
     </p>
   </div>

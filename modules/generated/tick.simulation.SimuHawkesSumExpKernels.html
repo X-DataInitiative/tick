@@ -112,6 +112,8 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="tick.preprocessing.FeaturesBinarizer.html">tick.preprocessing.FeaturesBinarizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tick.preprocessing.LongitudinalFeaturesProduct.html">tick.preprocessing.LongitudinalFeaturesProduct</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tick.preprocessing.LongitudinalFeaturesLagger.html">tick.preprocessing.LongitudinalFeaturesLagger</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="reference internal" href="../simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code>: simulation toolbox</a><ul class="current">
@@ -165,17 +167,18 @@
 <span id="simuhawkessumexpkernels"></span><h1>tick.simulation.SimuHawkesSumExpKernels<a class="headerlink" href="#tick-simulation-simuhawkessumexpkernels" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="tick.simulation.SimuHawkesSumExpKernels">
-<em class="property">class </em><code class="descclassname">tick.simulation.</code><code class="descname">SimuHawkesSumExpKernels</code><span class="sig-paren">(</span><em>adjacency</em>, <em>decays</em>, <em>baseline=None</em>, <em>end_time=None</em>, <em>max_jumps=None</em>, <em>seed=None</em>, <em>verbose=True</em>, <em>force_simulation=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/simulation/hawkes_sumexp_kernels.html#SimuHawkesSumExpKernels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.simulation.SimuHawkesSumExpKernels" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">tick.simulation.</code><code class="descname">SimuHawkesSumExpKernels</code><span class="sig-paren">(</span><em>adjacency</em>, <em>decays</em>, <em>baseline=None</em>, <em>end_time=None</em>, <em>period_length=None</em>, <em>max_jumps=None</em>, <em>seed=None</em>, <em>verbose=True</em>, <em>force_simulation=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/simulation/hawkes_sumexp_kernels.html#SimuHawkesSumExpKernels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.simulation.SimuHawkesSumExpKernels" title="Permalink to this definition">¶</a></dt>
 <dd><p>Hawkes process with sum-exponential kernels simulation</p>
 <p>They are defined by the intensity:</p>
 <div class="math">
 \[\forall i \in [1 \dots D], \quad
-\lambda_i(t) = \mu_i + \sum_{j=1}^D \int \phi_{ij}(t - s) dN_j(s)\]</div>
+\lambda_i(t) = \mu_i(t)
+                + \sum_{j=1}^D \int \phi_{ij}(t - s) dN_j(s)\]</div>
 <p>where</p>
 <blockquote>
 <div><ul class="simple">
 <li><span class="math">\(D\)</span> is the number of nodes</li>
-<li><span class="math">\(\mu_i\)</span> are the baseline intensities</li>
+<li><span class="math">\(\mu_i(t)\)</span> are the baseline intensities</li>
 <li><span class="math">\(\phi_{ij}\)</span> are the kernels</li>
 <li><span class="math">\(dN_j\)</span> are the processes differentiates</li>
 </ul>
@@ -191,9 +194,21 @@ adjacency matrix. Note that all nodes kernels share the same decays list.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>baseline</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code>, shape=(n_nodes, )</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>baseline</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code> or <code class="xref py py-obj docutils literal"><span class="pre">list</span></code></p>
 <blockquote>
-<div><p>The baseline of all intensities, also noted <span class="math">\(\mu\)</span></p>
+<div><p>The baseline of all intensities, also noted <span class="math">\(\mu(t)\)</span>. It might 
+be three different types:</p>
+<ul class="simple">
+<li><code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code>, shape=(n_nodes,) : One baseline per node is given. 
+Hence baseline is assumed to be constant, ie. 
+<span class="math">\(\mu_i(t) = \mu_i\)</span></li>
+<li><code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code>, shape=(n_nodes, n_intervals) : <code class="xref py py-obj docutils literal"><span class="pre">n_intervals</span></code> baselines 
+are given per node. This assumes parameter <code class="xref py py-obj docutils literal"><span class="pre">period_length</span></code> is also 
+given. In this case baseline is piecewise constant on intervals of 
+size <code class="xref py py-obj docutils literal"><span class="pre">period_length</span> <span class="pre">/</span> <span class="pre">n_intervals</span></code> and periodic.</li>
+<li><code class="xref py py-obj docutils literal"><span class="pre">list</span></code> of <a class="reference internal" href="tick.base.TimeFunction.html#tick.base.TimeFunction" title="tick.base.TimeFunction"><code class="xref py py-obj docutils literal"><span class="pre">tick.base.TimeFunction</span></code></a>, shape=(n_nodes,) : One function 
+is given per node, ie. <span class="math">\(\mu_i(t)\)</span> is explicitely given.</li>
+</ul>
 </div></blockquote>
 <p><strong>adjacency</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code>, shape=(n_nodes, n_nodes, n_decays)</p>
 <blockquote>
@@ -263,7 +278,7 @@ Note: you must call track_intensity before simulation to record it</p>
 </table>
 <dl class="method">
 <dt id="tick.simulation.SimuHawkesSumExpKernels.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>adjacency</em>, <em>decays</em>, <em>baseline=None</em>, <em>end_time=None</em>, <em>max_jumps=None</em>, <em>seed=None</em>, <em>verbose=True</em>, <em>force_simulation=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/simulation/hawkes_sumexp_kernels.html#SimuHawkesSumExpKernels.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.simulation.SimuHawkesSumExpKernels.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>adjacency</em>, <em>decays</em>, <em>baseline=None</em>, <em>end_time=None</em>, <em>period_length=None</em>, <em>max_jumps=None</em>, <em>seed=None</em>, <em>verbose=True</em>, <em>force_simulation=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/simulation/hawkes_sumexp_kernels.html#SimuHawkesSumExpKernels.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.simulation.SimuHawkesSumExpKernels.__init__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -278,6 +293,34 @@ kernels.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>spectral_radius</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code></p>
 <blockquote class="last">
 <div><p>The targeted spectral radius</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tick.simulation.SimuHawkesSumExpKernels.get_baseline_values">
+<code class="descname">get_baseline_values</code><span class="sig-paren">(</span><em>i</em>, <em>t_values</em><span class="sig-paren">)</span><a class="headerlink" href="#tick.simulation.SimuHawkesSumExpKernels.get_baseline_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Outputs value of baseline depending on time</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>i</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code></p>
+<blockquote>
+<div><p>Selected dimension</p>
+</div></blockquote>
+<p><strong>t_values</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code></p>
+<blockquote>
+<div><p>Values baseline will be computed at</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code></p>
+<blockquote class="last">
+<div><p>Value of baseline <code class="xref py py-obj docutils literal"><span class="pre">i</span></code> at <code class="xref py py-obj docutils literal"><span class="pre">t_values</span></code></p>
 </div></blockquote>
 </td>
 </tr>
@@ -344,7 +387,11 @@ otherwise, it is deactivated.</p>
 
 <div class="section" id="examples-using-tick-simulation-simuhawkessumexpkernels">
 <h2>Examples using <code class="docutils literal"><span class="pre">tick.simulation.SimuHawkesSumExpKernels</span></code><a class="headerlink" href="#examples-using-tick-simulation-simuhawkessumexpkernels" title="Permalink to this headline">¶</a></h2>
-<div class="thumbnailContainer" tooltip=""><div class="figure" id="id1">
+<div class="thumbnailContainer" tooltip="This example simulates and then estimates Hawkes kernels with varying baselines. In this exampl..."><div class="figure" id="id1">
+<a class="reference external image-reference" href="./../../auto_examples/./plot_hawkes_varying_baseline.html"><img alt="../../_images/plot_hawkes_varying_baseline1.png" src="../../_images/plot_hawkes_varying_baseline1.png" /></a>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="../../auto_examples/plot_hawkes_varying_baseline.html#example-plot-hawkes-varying-baseline-py"><span class="std std-ref">Hawkes process with non constant baseline</span></a></span></p>
+</div>
+</div><div class="thumbnailContainer" tooltip=""><div class="figure" id="id2">
 <a class="reference external image-reference" href="./../../auto_examples/inference/plot_hawkes_sum_exp_kernels.html"><img alt="../../_images/plot_hawkes_sum_exp_kernels.png" src="../../_images/plot_hawkes_sum_exp_kernels.png" /></a>
 <p class="caption"><span class="caption-text"><a class="reference internal" href="../../auto_examples/inference/plot_hawkes_sum_exp_kernels.html#example-inference-plot-hawkes-sum-exp-kernels-py"><span class="std std-ref">plot_hawkes_sum_exp_kernels.py</span></a></span></p>
 </div>
@@ -360,7 +407,7 @@ otherwise, it is deactivated.</p>
       
     </p>
     <p>
-        &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Poulsen.<br/>
+        &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Vinther Poulsen.<br/>
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.<br/>
     </p>
   </div>

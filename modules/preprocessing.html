@@ -112,6 +112,8 @@
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="generated/tick.preprocessing.FeaturesBinarizer.html">tick.preprocessing.FeaturesBinarizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/tick.preprocessing.LongitudinalFeaturesProduct.html">tick.preprocessing.LongitudinalFeaturesProduct</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/tick.preprocessing.LongitudinalFeaturesLagger.html">tick.preprocessing.LongitudinalFeaturesLagger</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code>: simulation toolbox</a><ul>
@@ -178,6 +180,22 @@ is more suitable for estimators.</p>
 </tr>
 </tbody>
 </table>
+<p>This module also provides preprocessor specific to longitudinal features with a
+similar API to scikit-learn preprocessors.</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.preprocessing.LongitudinalFeaturesProduct.html#tick.preprocessing.LongitudinalFeaturesProduct" title="tick.preprocessing.LongitudinalFeaturesProduct"><code class="xref py py-obj docutils literal"><span class="pre">preprocessing.LongitudinalFeaturesProduct</span></code></a>([...])</td>
+<td>Transforms longitudinal exposure features to add the corresponding product features.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/tick.preprocessing.LongitudinalFeaturesLagger.html#tick.preprocessing.LongitudinalFeaturesLagger" title="tick.preprocessing.LongitudinalFeaturesLagger"><code class="xref py py-obj docutils literal"><span class="pre">preprocessing.LongitudinalFeaturesLagger</span></code></a>([...])</td>
+<td>Transforms longitudinal exposure features to add columns representing lagged features.</td>
+</tr>
+</tbody>
+</table>
 </div>
 
 
@@ -189,7 +207,7 @@ is more suitable for estimators.</p>
       
     </p>
     <p>
-        &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Poulsen.<br/>
+        &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Vinther Poulsen.<br/>
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.<br/>
     </p>
   </div>

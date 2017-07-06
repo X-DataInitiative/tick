@@ -1,0 +1,38 @@
+
+
+.. _example_plot_hawkes_varying_baseline.py:
+
+
+=========================================
+Hawkes process with non constant baseline
+=========================================
+
+This example simulates and then estimates Hawkes kernels with varying
+baselines. In this example the intensity is written the following way
+
+:math:`\lambda_i(t) = \mu_i(t) + \sum_{j=1}^D \int \phi_{ij}(t - s)dN_j(s)`
+
+Kernels are sum of exponentials and varying baseline :math:`\mu_i(t)`
+piecewise constant.
+
+
+
+.. image:: images/plot_hawkes_varying_baseline_001.png
+    :align: center
+
+
+
+
+**Python source code:** :download:`plot_hawkes_varying_baseline.py <plot_hawkes_varying_baseline.py>`
+
+.. literalinclude:: plot_hawkes_varying_baseline.py
+    :lines: 14-
+
+**Total running time of the example:**  0.65 seconds
+( 0 minutes  0.65 seconds)
+    
+Mentioned *tick* classes:
+   * `tick.inference.HawkesSumExpKern`
+   * `tick.plot.plot_hawkes_baseline_and_kernels`
+   * `tick.simulation.SimuHawkesMulti`
+   * `tick.simulation.SimuHawkesSumExpKernels`

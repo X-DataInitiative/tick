@@ -1,0 +1,12 @@
+
+.. _LongitudinalFeaturesLagger:
+
+tick.preprocessing.LongitudinalFeaturesLagger
+=============================================
+
+.. currentmodule:: tick.preprocessing
+
+.. autoclass:: LongitudinalFeaturesLagger
+
+.. include:: tick.preprocessing.LongitudinalFeaturesLagger.examples
+    :allowmissing:

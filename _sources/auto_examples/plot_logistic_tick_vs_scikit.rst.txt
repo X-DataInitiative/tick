@@ -1,0 +1,46 @@
+
+
+.. _example_plot_logistic_tick_vs_scikit.py:
+
+
+================================================================
+Logistic regression comparison: ``scikit-learn`` versus ``tick``
+================================================================
+
+In this example we give a naive comparison of ``tick`` and ``scikit-learn`` for
+binary classification using logistic regression with :math:`\ell_1`
+penalization.
+This comparison is done using the well-known ``adult`` dataset, a standard
+benchmark dataset for binary clasification.
+Some remarks are the following:
+
+* Both classifiers have the same performance in terms of AUC (area under the
+  ROC curve)
+* Learned model-weights are slightly different. This is explained by the fact
+  that ``scikit-learn`` uses ``liblinear`` for optimization of the
+  :math:`\ell_1`-penalized likelihood. When using this solver, the
+  ``intercept`` is penalized like the model weights (``coeff_``), while this is
+  not the case in `tick`. Note that this difference can be reduced by tuning the
+  ``intercept_scaling`` parameter from ``scikit-learn``'s
+  ``LogisticRegression``
+* In this example, the computational time of ``tick`` is better than ``scikit``'s
+
+
+
+.. image:: images/plot_logistic_tick_vs_scikit_001.png
+    :align: center
+
+
+
+
+**Python source code:** :download:`plot_logistic_tick_vs_scikit.py <plot_logistic_tick_vs_scikit.py>`
+
+.. literalinclude:: plot_logistic_tick_vs_scikit.py
+    :lines: 24-
+
+**Total running time of the example:**  11.91 seconds
+( 0 minutes  11.91 seconds)
+    
+Mentioned *tick* classes:
+   * `tick.dataset.fetch_tick_dataset`
+   * `tick.inference.LogisticRegression`

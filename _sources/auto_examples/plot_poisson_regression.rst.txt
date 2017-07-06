@@ -1,0 +1,56 @@
+
+
+.. _example_plot_poisson_regression.py:
+
+
+============================================
+Comparison of solvers for Poisson regression
+============================================
+
+In this example, we explain how to try out different solvers for the Poisson
+regression model, using :math:`\ell_2^2` penalization, namely ridge (which is
+the default value for the ``penalty`` parameter in
+`tick.inference.PoissonRegression`).
+
+Note that for this learner, the ``step`` of the solver cannot be tuned
+automatically. So, the default value might work, or not.
+We therefore urge users to try out different values of the ``step`` parameter
+until getting good concergence properties.
+
+Other penalizations are available in `tick.inference.PoissonRegression`:
+
+* no penalization, using ``penalty='none'``
+* :math:`\ell_1` penalization, using ``penalty='l1'``
+* elastic-net penalization (combination of :math:`\ell_1` and :math:`\ell_2^2`,
+  using ``penalty='elasticnet'``, where in this case the ``elastic_net_ratio``
+  parameter should be used as well
+* total-variation penalization, using ``penalty='tv'``
+
+**Remark**: we don't use in this example ``solver='sgd'`` (namely vanilla
+stochastic gradient descent, see `tick.optim.solver.SGD`) since it performs
+too poorly.
+
+The plot given below compares the distance to the minimum of each solver along
+iterations, on a logarithmic scale.
+
+
+
+.. image:: images/plot_poisson_regression_001.png
+    :align: center
+
+
+
+
+**Python source code:** :download:`plot_poisson_regression.py <plot_poisson_regression.py>`
+
+.. literalinclude:: plot_poisson_regression.py
+    :lines: 32-
+
+**Total running time of the example:**  5.84 seconds
+( 0 minutes  5.84 seconds)
+    
+Mentioned *tick* classes:
+   * `tick.inference.PoissonRegression`
+   * `tick.plot.plot_history`
+   * `tick.simulation.SimuPoisReg`
+   * `tick.simulation.weights_sparse_gauss`

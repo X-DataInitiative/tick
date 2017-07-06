@@ -1,0 +1,12 @@
+
+.. _ProxEquality:
+
+tick.optim.prox.ProxEquality
+============================
+
+.. currentmodule:: tick.optim.prox
+
+.. autoclass:: ProxEquality
+
+.. include:: tick.optim.prox.ProxEquality.examples
+    :allowmissing:

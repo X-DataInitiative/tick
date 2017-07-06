@@ -110,6 +110,8 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../modules/preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../modules/generated/tick.preprocessing.FeaturesBinarizer.html">tick.preprocessing.FeaturesBinarizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/generated/tick.preprocessing.LongitudinalFeaturesProduct.html">tick.preprocessing.LongitudinalFeaturesProduct</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/generated/tick.preprocessing.LongitudinalFeaturesLagger.html">tick.preprocessing.LongitudinalFeaturesLagger</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../modules/simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code>: simulation toolbox</a><ul>
@@ -175,7 +177,10 @@
 <li><a href="tick/inference/hawkes_expkern_fixeddecay.html">tick.inference.hawkes_expkern_fixeddecay</a></li>
 <li><a href="tick/inference/hawkes_sumexpkern_fixeddecay.html">tick.inference.hawkes_sumexpkern_fixeddecay</a></li>
 <li><a href="tick/inference/hawkes_sumgaussians.html">tick.inference.hawkes_sumgaussians</a></li>
+<li><a href="tick/inference/linear_regression.html">tick.inference.linear_regression</a></li>
 <li><a href="tick/inference/logistic_regression.html">tick.inference.logistic_regression</a></li>
+<li><a href="tick/inference/poisson_regression.html">tick.inference.poisson_regression</a></li>
+<li><a href="tick/inference/survival.html">tick.inference.survival</a></li>
 <li><a href="tick/optim/history/history.html">tick.optim.history.history</a></li>
 <li><a href="tick/optim/model/base/model.html">tick.optim.model.base.model</a></li>
 <li><a href="tick/optim/model/base/model_first_order.html">tick.optim.model.base.model_first_order</a></li>
@@ -190,15 +195,17 @@
 <li><a href="tick/optim/model/linreg_with_intercepts.html">tick.optim.model.linreg_with_intercepts</a></li>
 <li><a href="tick/optim/model/logreg.html">tick.optim.model.logreg</a></li>
 <li><a href="tick/optim/model/poisreg.html">tick.optim.model.poisreg</a></li>
+<li><a href="tick/optim/model/sccs.html">tick.optim.model.sccs</a></li>
 <li><a href="tick/optim/prox/base/prox.html">tick.optim.prox.base.prox</a></li>
 <li><a href="tick/optim/prox/prox_elasticnet.html">tick.optim.prox.prox_elasticnet</a></li>
+<li><a href="tick/optim/prox/prox_equality.html">tick.optim.prox.prox_equality</a></li>
 <li><a href="tick/optim/prox/prox_l1.html">tick.optim.prox.prox_l1</a></li>
 <li><a href="tick/optim/prox/prox_l1w.html">tick.optim.prox.prox_l1w</a></li>
 <li><a href="tick/optim/prox/prox_l2sq.html">tick.optim.prox.prox_l2sq</a></li>
 <li><a href="tick/optim/prox/prox_multi.html">tick.optim.prox.prox_multi</a></li>
 <li><a href="tick/optim/prox/prox_nuclear.html">tick.optim.prox.prox_nuclear</a></li>
 <li><a href="tick/optim/prox/prox_positive.html">tick.optim.prox.prox_positive</a></li>
-<li><a href="tick/optim/prox/prox_sortedl1.html">tick.optim.prox.prox_sortedl1</a></li>
+<li><a href="tick/optim/prox/prox_slope.html">tick.optim.prox.prox_slope</a></li>
 <li><a href="tick/optim/prox/prox_tv.html">tick.optim.prox.prox_tv</a></li>
 <li><a href="tick/optim/prox/prox_zero.html">tick.optim.prox.prox_zero</a></li>
 <li><a href="tick/optim/solver/adagrad.html">tick.optim.solver.adagrad</a></li>
@@ -218,6 +225,8 @@
 <li><a href="tick/plot/plot_stem.html">tick.plot.plot_stem</a></li>
 <li><a href="tick/plot/plot_timefunction.html">tick.plot.plot_timefunction</a></li>
 <li><a href="tick/preprocessing/features_binarizer.html">tick.preprocessing.features_binarizer</a></li>
+<li><a href="tick/preprocessing/longitudinal_features_lagger.html">tick.preprocessing.longitudinal_features_lagger</a></li>
+<li><a href="tick/preprocessing/longitudinal_features_product.html">tick.preprocessing.longitudinal_features_product</a></li>
 <li><a href="tick/simulation/base/features.html">tick.simulation.base.features</a></li>
 <li><a href="tick/simulation/base/simu.html">tick.simulation.base.simu</a></li>
 <li><a href="tick/simulation/base/simu_point_process.html">tick.simulation.base.simu_point_process</a></li>
@@ -238,6 +247,7 @@
 <li><a href="tick/simulation/logreg.html">tick.simulation.logreg</a></li>
 <li><a href="tick/simulation/poisreg.html">tick.simulation.poisreg</a></li>
 <li><a href="tick/simulation/poisson_process.html">tick.simulation.poisson_process</a></li>
+<li><a href="tick/simulation/sccs.html">tick.simulation.sccs</a></li>
 </ul>
 
 </div>
@@ -248,7 +258,7 @@
       
     </p>
     <p>
-        &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Poulsen.<br/>
+        &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Vinther Poulsen.<br/>
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.<br/>
     </p>
   </div>

@@ -112,6 +112,8 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="tick.preprocessing.FeaturesBinarizer.html">tick.preprocessing.FeaturesBinarizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tick.preprocessing.LongitudinalFeaturesProduct.html">tick.preprocessing.LongitudinalFeaturesProduct</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tick.preprocessing.LongitudinalFeaturesLagger.html">tick.preprocessing.LongitudinalFeaturesLagger</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="reference internal" href="../simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code>: simulation toolbox</a><ul class="current">
@@ -165,16 +167,17 @@
 <span id="simuhawkes"></span><h1>tick.simulation.SimuHawkes<a class="headerlink" href="#tick-simulation-simuhawkes" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="tick.simulation.SimuHawkes">
-<em class="property">class </em><code class="descclassname">tick.simulation.</code><code class="descname">SimuHawkes</code><span class="sig-paren">(</span><em>kernels=None</em>, <em>baseline=None</em>, <em>n_nodes=None</em>, <em>end_time=None</em>, <em>max_jumps=None</em>, <em>seed=None</em>, <em>verbose=True</em>, <em>force_simulation=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/simulation/hawkes.html#SimuHawkes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.simulation.SimuHawkes" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">tick.simulation.</code><code class="descname">SimuHawkes</code><span class="sig-paren">(</span><em>kernels=None</em>, <em>baseline=None</em>, <em>n_nodes=None</em>, <em>end_time=None</em>, <em>period_length=None</em>, <em>max_jumps=None</em>, <em>seed=None</em>, <em>verbose=True</em>, <em>force_simulation=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/simulation/hawkes.html#SimuHawkes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.simulation.SimuHawkes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Hawkes process simulation</p>
 <p>They are defined by the intensity:</p>
 <div class="math">
 \[\forall i \in [1 \dots D], \quad
-\lambda_i(t) = \mu_i + \sum_{j=1}^D \int \phi_{ij}(t - s) dN_j(s)\]</div>
+\lambda_i(t) = \mu_i(t) + 
+                \sum_{j=1}^D \int \phi_{ij}(t - s) dN_j(s)\]</div>
 <p>where</p>
 <ul class="simple">
 <li><span class="math">\(D\)</span> is the number of nodes</li>
-<li><span class="math">\(\mu_i\)</span> are the baseline intensities</li>
+<li><span class="math">\(\mu_i(t)\)</span> are the baseline intensities</li>
 <li><span class="math">\(\phi_{ij}\)</span> are the kernels</li>
 <li><span class="math">\(dN_j\)</span> are the processes differentiates</li>
 </ul>
@@ -186,9 +189,21 @@
 <blockquote>
 <div><p>A 2-dimensional arrays of kernels, also noted <span class="math">\(\phi_{ij}\)</span></p>
 </div></blockquote>
-<p><strong>baseline</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code>, shape=(n_nodes, )</p>
+<p><strong>baseline</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code> or <code class="xref py py-obj docutils literal"><span class="pre">list</span></code></p>
 <blockquote>
-<div><p>The baseline of all intensities, also noted <span class="math">\(\mu\)</span></p>
+<div><p>The baseline of all intensities, also noted <span class="math">\(\mu(t)\)</span>. It might 
+be three different types:</p>
+<ul class="simple">
+<li><code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code>, shape=(n_nodes,) : One baseline per node is given. 
+Hence baseline is assumed to be constant, ie.
+<span class="math">\(\mu_i(t) = \mu_i\)</span></li>
+<li><code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code>, shape=(n_nodes, n_intervals) : <code class="xref py py-obj docutils literal"><span class="pre">n_intervals</span></code> baselines 
+are given per node. This assumes parameter <code class="xref py py-obj docutils literal"><span class="pre">period_length</span></code> is also 
+given. In this case baseline is piecewise constant on intervals of 
+size <code class="xref py py-obj docutils literal"><span class="pre">period_length</span> <span class="pre">/</span> <span class="pre">n_intervals</span></code> and periodic.</li>
+<li><code class="xref py py-obj docutils literal"><span class="pre">list</span></code> of <a class="reference internal" href="tick.base.TimeFunction.html#tick.base.TimeFunction" title="tick.base.TimeFunction"><code class="xref py py-obj docutils literal"><span class="pre">tick.base.TimeFunction</span></code></a>, shape=(n_nodes,) : One function 
+is given per node, ie. <span class="math">\(\mu_i(t)\)</span> is explicitely given.</li>
+</ul>
 </div></blockquote>
 <p><strong>n_nodes</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code></p>
 <blockquote>
@@ -199,6 +214,10 @@ kernels and with zero baseline</p>
 <p><strong>end_time</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default=None</p>
 <blockquote>
 <div><p>Time until which this point process will be simulated</p>
+</div></blockquote>
+<p><strong>period_length</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default=None</p>
+<blockquote>
+<div><p>Period of baseline in piecewise constant case.</p>
 </div></blockquote>
 <p><strong>max_jumps</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code>, default=None</p>
 <blockquote>
@@ -251,8 +270,36 @@ Note: you must call track_intensity before simulation to record it</p>
 </table>
 <dl class="method">
 <dt id="tick.simulation.SimuHawkes.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>kernels=None</em>, <em>baseline=None</em>, <em>n_nodes=None</em>, <em>end_time=None</em>, <em>max_jumps=None</em>, <em>seed=None</em>, <em>verbose=True</em>, <em>force_simulation=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/simulation/hawkes.html#SimuHawkes.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.simulation.SimuHawkes.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>kernels=None</em>, <em>baseline=None</em>, <em>n_nodes=None</em>, <em>end_time=None</em>, <em>period_length=None</em>, <em>max_jumps=None</em>, <em>seed=None</em>, <em>verbose=True</em>, <em>force_simulation=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/simulation/hawkes.html#SimuHawkes.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.simulation.SimuHawkes.__init__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="method">
+<dt id="tick.simulation.SimuHawkes.get_baseline_values">
+<code class="descname">get_baseline_values</code><span class="sig-paren">(</span><em>i</em>, <em>t_values</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/simulation/hawkes.html#SimuHawkes.get_baseline_values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.simulation.SimuHawkes.get_baseline_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Outputs value of baseline depending on time</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>i</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code></p>
+<blockquote>
+<div><p>Selected dimension</p>
+</div></blockquote>
+<p><strong>t_values</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code></p>
+<blockquote>
+<div><p>Values baseline will be computed at</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code></p>
+<blockquote class="last">
+<div><p>Value of baseline <code class="xref py py-obj docutils literal"><span class="pre">i</span></code> at <code class="xref py py-obj docutils literal"><span class="pre">t_values</span></code></p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="tick.simulation.SimuHawkes.is_intensity_tracked">
@@ -349,7 +396,7 @@ otherwise, it is deactivated.</p>
       
     </p>
     <p>
-        &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Poulsen.<br/>
+        &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Vinther Poulsen.<br/>
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.<br/>
     </p>
   </div>

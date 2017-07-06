@@ -112,6 +112,8 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="tick.preprocessing.FeaturesBinarizer.html">tick.preprocessing.FeaturesBinarizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tick.preprocessing.LongitudinalFeaturesProduct.html">tick.preprocessing.LongitudinalFeaturesProduct</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tick.preprocessing.LongitudinalFeaturesLagger.html">tick.preprocessing.LongitudinalFeaturesLagger</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code>: simulation toolbox</a><ul>
@@ -165,7 +167,7 @@
 <h1>tick.plot.plot_hawkes_kernels<a class="headerlink" href="#tick-plot-plot-hawkes-kernels" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="tick.plot.plot_hawkes_kernels">
-<code class="descclassname">tick.plot.</code><code class="descname">plot_hawkes_kernels</code><span class="sig-paren">(</span><em>kernel_object</em>, <em>support=None</em>, <em>hawkes=None</em>, <em>n_points=300</em>, <em>show=True</em>, <em>log_scale=False</em>, <em>min_support=0.0001</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/plot/plot_hawkes.html#plot_hawkes_kernels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.plot.plot_hawkes_kernels" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">tick.plot.</code><code class="descname">plot_hawkes_kernels</code><span class="sig-paren">(</span><em>kernel_object</em>, <em>support=None</em>, <em>hawkes=None</em>, <em>n_points=300</em>, <em>show=True</em>, <em>log_scale=False</em>, <em>min_support=0.0001</em>, <em>ax=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/plot/plot_hawkes.html#plot_hawkes_kernels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.plot.plot_hawkes_kernels" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generic function to plot Hawkes kernels.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -213,8 +215,13 @@ function is necessary. Useful when superposing several plots.</p>
 to plot power-law kernels.</p>
 </div></blockquote>
 <p><strong>min_support</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default=1e-4</p>
-<blockquote class="last">
+<blockquote>
 <div><p>Start value of the plot. Only used if log_scale is <code class="xref py py-obj docutils literal"><span class="pre">True</span></code>.</p>
+</div></blockquote>
+<p><strong>ax</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code> of <code class="xref py py-obj docutils literal"><span class="pre">matplotlib.axes</span></code>, default=None</p>
+<blockquote class="last">
+<div><p>If not None, the figure will be plot on these axes and show will be
+set to False.</p>
 </div></blockquote>
 </td>
 </tr>
@@ -260,7 +267,7 @@ to plot power-law kernels.</p>
       
     </p>
     <p>
-        &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Poulsen.<br/>
+        &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Vinther Poulsen.<br/>
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.<br/>
     </p>
   </div>

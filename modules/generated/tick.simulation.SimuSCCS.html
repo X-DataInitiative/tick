@@ -1,0 +1,353 @@
+
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-97947441-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+    <title>tick.simulation.SimuSCCS &#8212; tick 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/bootstrap-3.3.4/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/bootstrap-3.3.4/css/bootstrap-theme.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../_static/bootstrap-sphinx.js"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="tick.simulation.SimuPoissonProcess" href="tick.simulation.SimuPoissonProcess.html" />
+    <link rel="prev" title="tick.simulation.HawkesKernelTimeFunc" href="tick.simulation.HawkesKernelTimeFunc.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body role="document">
+
+  <div id="navbar" class="None navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../index.html">
+          tick</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.1</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../../index.html">Home</a></li>
+                <li><a href="../../auto_examples/index.html">Examples</a></li>
+                <li><a href="../api.html">API</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../index.html">Browse <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../inference.html"><code class="docutils literal"><span class="pre">tick.inference</span></code>: user-friendly inference tools</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../inference.html#generalized-linear-models">1. Generalized linear models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../inference.html#hawkes">2. Hawkes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../inference.html#survival-analysis">3. Survival analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../optim.html"><code class="docutils literal"><span class="pre">tick.optim</span></code>: optimization toolbox</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../optim.html#contents">Contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../optim.html#a-first-example">A First example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../optim.html#tick-optim-model-model-classes">1. <code class="docutils literal"><span class="pre">tick.optim.model</span></code>: model classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../optim.html#tick-optim-prox-proximal-operators">2. <code class="docutils literal"><span class="pre">tick.optim.prox</span></code>: proximal operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../optim.html#tick-optim-solver-solvers">3. <code class="docutils literal"><span class="pre">tick.optim.solver</span></code>: solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../optim.html#what-s-under-the-hood">4. What&#8217;s under the hood?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../plot.html"><code class="docutils literal"><span class="pre">tick.plot</span></code>: plotting utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../plot.html#optimization">Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plot.html#hawkes-estimation">Hawkes estimation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plot.html#point-process-simulation">Point process simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plot.html#others">Others</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tick.preprocessing.FeaturesBinarizer.html">tick.preprocessing.FeaturesBinarizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tick.preprocessing.LongitudinalFeaturesProduct.html">tick.preprocessing.LongitudinalFeaturesProduct</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tick.preprocessing.LongitudinalFeaturesLagger.html">tick.preprocessing.LongitudinalFeaturesLagger</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code>: simulation toolbox</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../simulation.html#simulation-tools">1. Simulation tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../simulation.html#linear-model-simulation">2. Linear model simulation</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../simulation.html#survival-analysis-simulation">3. Survival analysis simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../simulation.html#point-process-simulation">4. Point process simulation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../dataset.html"><code class="docutils literal"><span class="pre">tick.dataset</span></code>: real world datasets</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../dataset.html#functions">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dataset.html#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../dev.html">Developer documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../dev.html#main-highlights">Main highlights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dev.html#base-class">Base class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dev.html#how-to-add-a-new-model-solver-or-prox">How to add a new model, solver or prox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dev.html#enable-python-pickling-of-c-objects">Enable Python-pickling of C++ objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dev.html#tips-for-debugging-c-classes-in-tick">Tips for debugging C++ classes in tick</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container content-container">
+  
+  <div class="section" id="tick-simulation-simusccs">
+<span id="simusccs"></span><h1>tick.simulation.SimuSCCS<a class="headerlink" href="#tick-simulation-simusccs" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="tick.simulation.SimuSCCS">
+<em class="property">class </em><code class="descclassname">tick.simulation.</code><code class="descname">SimuSCCS</code><span class="sig-paren">(</span><em>n_samples</em>, <em>n_intervals</em>, <em>n_features</em>, <em>n_lags</em>, <em>coeffs=None</em>, <em>sparse=True</em>, <em>exposure_type='infinite'</em>, <em>distribution='multinomial'</em>, <em>first_tick_only=True</em>, <em>censoring=True</em>, <em>censoring_prob=0.7</em>, <em>censoring_intensity=0.9</em>, <em>seed=None</em>, <em>verbose=True</em>, <em>batch_size=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/simulation/sccs.html#SimuSCCS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.simulation.SimuSCCS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simulation of a Self Control Case Series (SCCS) model. This simulator can
+produce exposure (features), outcomes (labels) and censoring data.</p>
+<p>The features matrices  are a <code class="xref py py-obj docutils literal"><span class="pre">n_sample</span></code> list of numpy arrays (dense case) or 
+csr_matrices (sparse case) of shape <code class="xref py py-obj docutils literal"><span class="pre">(n_intervals,</span> <span class="pre">n_features)</span></code> containing
+exposures to each feature.
+Exposure can take two forms:
+- short repeated exposures: in that case, each column of the numpy arrays 
+or csr matrices can contain multiple ones, each one representing an exposure
+for a particular time bucket.
+- infinite unique exposures: in that case, each column of the numpy arrays
+or csr matrices can only contain a single one, corresponding to the starting
+date of the exposure.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>n_samples</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code>,</p>
+<blockquote>
+<div><p>Number of samples to generate.</p>
+</div></blockquote>
+<p><strong>n_intervals</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code></p>
+<blockquote>
+<div><p>Number of time intervals used to generate features and outcomes.</p>
+</div></blockquote>
+<p><strong>n_lags</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code></p>
+<blockquote>
+<div><p>Number of lags to be used when simulating the outcomes. The output
+features are returned without lagging to allow the testing of lag
+misspecification in the model.</p>
+</div></blockquote>
+<p><strong>sparse</strong> : <code class="xref py py-obj docutils literal"><span class="pre">boolean</span></code>, default=True</p>
+<blockquote>
+<div><p>Generate sparse or dense features.</p>
+</div></blockquote>
+<p><strong>exposure_type</strong> : {&#8216;infinite&#8217;, &#8216;short&#8217;}, default=&#8217;infinite&#8217;</p>
+<blockquote>
+<div><p>Either &#8216;infinite&#8217; for infinite unique exposures or &#8216;short&#8217; for short
+repeated exposures.</p>
+</div></blockquote>
+<p><strong>distribution</strong> : {&#8216;multinomial&#8217;, &#8216;poisson&#8217;}, default=&#8217;multinomial&#8217;</p>
+<blockquote>
+<div><p>Dristribution used to generate the outcomes. In the &#8216;multinomial&#8217; case,
+the Poisson process used to generate the events is conditionned by total 
+the number event per sample, which is set to be equal to one. In that
+case, the simulation matches exactly the SCCS model hypotheses. In the
+&#8216;poisson&#8217; case, the outcomes are generated from a Poisson process, which
+can result in more than one outcome tick per sample. See 
+<code class="xref py py-obj docutils literal"><span class="pre">first_tick_only</span></code> option to filter out additional events.</p>
+</div></blockquote>
+<p><strong>first_tick_only</strong> : <code class="xref py py-obj docutils literal"><span class="pre">Boolean</span></code>, default=True</p>
+<blockquote>
+<div><p>Keep only the first event and drop the consecutive ones when simulating
+with Poisson distribution.</p>
+</div></blockquote>
+<p><strong>censoring</strong> : <code class="xref py py-obj docutils literal"><span class="pre">Boolean</span></code>, default=True</p>
+<blockquote>
+<div><p>Simulate a censoring vector. In that case, the features and outcomes are
+simulated, then right-censored according to the simulated censoring
+dates.</p>
+</div></blockquote>
+<p><strong>censoring_prob</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default=.7</p>
+<blockquote>
+<div><p>Probability that a sample is censored. Should be in [0, 1].</p>
+</div></blockquote>
+<p><strong>censoring_intensity</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default=.9</p>
+<blockquote>
+<div><p>The number of censored time intervals are drawn from a Poisson 
+distribution with intensity equal to <code class="xref py py-obj docutils literal"><span class="pre">censoring_intensity</span></code>. The higher,
+the more intervals will be censored. Should be greater than 0.</p>
+</div></blockquote>
+<p><strong>coeffs</strong> : <code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code> of shape (n_features * (n_lags + 1)), default=None</p>
+<blockquote>
+<div><p>Can be used to provide your own set of coefficients. If set to None, the
+simulator will generate coefficients randomly.</p>
+</div></blockquote>
+<p><strong>seed</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code></p>
+<blockquote>
+<div><p>The seed of the random number generator</p>
+</div></blockquote>
+<p><strong>verbose</strong> : <code class="xref py py-obj docutils literal"><span class="pre">bool</span></code></p>
+<blockquote>
+<div><p>If True, print things</p>
+</div></blockquote>
+<p><strong>batch_size</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code>, default=None</p>
+<blockquote class="last">
+<div><p>When generating outcomes with Poisson distribution, the simulator will
+discard samples to which no event has occured. In this case, the
+simulator generate successive batches of samples, until it reaches 
+a total of n_samples. This parameter can be used to set the batch size.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">tick.simulation</span> <span class="k">import</span> <span class="n">SimuSCCS</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sim</span> <span class="o">=</span> <span class="n">SimuSCCS</span><span class="p">(</span><span class="n">n_samples</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">n_intervals</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">n_features</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">n_lags</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+<span class="gp">... </span><span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span> <span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">exposure_type</span><span class="o">=</span><span class="s2">&quot;short&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">features</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">censoring</span><span class="p">,</span> <span class="n">coeffs</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">simulate</span><span class="p">()</span>
+<span class="go">--------------------------------------</span>
+<span class="go">Launching simulation using SimuSCCS...</span>
+<span class="go">Done simulating using SimuSCCS in 5.54e-03 seconds.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
+<span class="go">[array([[ 0.,  0.],</span>
+<span class="go">        [ 1.,  0.],</span>
+<span class="go">        [ 1.,  1.]]),</span>
+<span class="go"> array([[ 1.,  1.],</span>
+<span class="go">        [ 1.,  1.],</span>
+<span class="go">        [ 1.,  1.]])</span>
+<span class="go">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
+<span class="go">[array([0, 0, 1], dtype=uint64), array([0, 0, 1], dtype=uint64)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">censoring</span><span class="p">)</span>
+<span class="go">[3 3]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">coeffs</span><span class="p">)</span>
+<span class="go">[ 0.54738557 -0.15109073  0.71345739  1.67633284 -0.25656871 -0.25655065]</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="tick.simulation.SimuSCCS.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>n_samples</em>, <em>n_intervals</em>, <em>n_features</em>, <em>n_lags</em>, <em>coeffs=None</em>, <em>sparse=True</em>, <em>exposure_type='infinite'</em>, <em>distribution='multinomial'</em>, <em>first_tick_only=True</em>, <em>censoring=True</em>, <em>censoring_prob=0.7</em>, <em>censoring_intensity=0.9</em>, <em>seed=None</em>, <em>verbose=True</em>, <em>batch_size=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/simulation/sccs.html#SimuSCCS.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.simulation.SimuSCCS.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="tick.simulation.SimuSCCS.simulate">
+<code class="descname">simulate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/simulation/sccs.html#SimuSCCS.simulate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.simulation.SimuSCCS.simulate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Launch simulation of the data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>features</strong> : <code class="xref py py-obj docutils literal"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code> or <code class="xref py py-obj docutils literal"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal"><span class="pre">scipy.sparse.csr_matrix</span></code>,</p>
+<blockquote>
+<div><p>list of length n_samples, each element of the list of 
+shape=(n_intervals, n_features)
+The list of features matrices.</p>
+</div></blockquote>
+<p><strong>labels</strong> : <code class="xref py py-obj docutils literal"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code>,</p>
+<blockquote>
+<div><p>list of length n_samples, each element of the list of 
+shape=(n_intervals,)
+The labels vector</p>
+</div></blockquote>
+<p><strong>censoring</strong> : <code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code>, shape=(n_samples,), dtype=&#8221;uint64&#8221;</p>
+<blockquote>
+<div><p>The censoring data. This array should contain integers in 
+[1, n_intervals]. If the value i is equal to n_intervals, then there
+is no censoring for sample i. If censoring = c &lt; n_intervals, then 
+the observation of sample i is stopped at interval c, that is, the 
+row c - 1 of the corresponding matrix. The last n_intervals - c rows
+are then set to 0.</p>
+</div></blockquote>
+<p><strong>coeffs</strong> : <code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code>, shape=(n_features * (n_lags + 1),)</p>
+<blockquote class="last">
+<div><p>The coefficients used to simulate the data.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Vinther Poulsen.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

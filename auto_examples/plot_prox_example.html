@@ -110,6 +110,8 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../modules/preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../modules/generated/tick.preprocessing.FeaturesBinarizer.html">tick.preprocessing.FeaturesBinarizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/generated/tick.preprocessing.LongitudinalFeaturesProduct.html">tick.preprocessing.LongitudinalFeaturesProduct</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/generated/tick.preprocessing.LongitudinalFeaturesLagger.html">tick.preprocessing.LongitudinalFeaturesLagger</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../modules/simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code>: simulation toolbox</a><ul>
@@ -168,7 +170,7 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">from</span> <span class="nn">tick.optim.prox</span> <span class="k">import</span> <a href="../modules/generated/tick.optim.prox.ProxL1.html#tick.optim.prox.ProxL1"><span class="n">ProxL1</span></a><span class="p">,</span> <a href="../modules/generated/tick.optim.prox.ProxElasticNet.html#tick.optim.prox.ProxElasticNet"><span class="n">ProxElasticNet</span></a><span class="p">,</span> <a href="../modules/generated/tick.optim.prox.ProxL2Sq.html#tick.optim.prox.ProxL2Sq"><span class="n">ProxL2Sq</span></a><span class="p">,</span> \
-    <a href="../modules/generated/tick.optim.prox.ProxPositive.html#tick.optim.prox.ProxPositive"><span class="n">ProxPositive</span></a><span class="p">,</span> <a href="../modules/generated/tick.optim.prox.ProxSortedL1.html#tick.optim.prox.ProxSortedL1"><span class="n">ProxSortedL1</span></a><span class="p">,</span> <a href="../modules/generated/tick.optim.prox.ProxTV.html#tick.optim.prox.ProxTV"><span class="n">ProxTV</span></a><span class="p">,</span> <a href="../modules/generated/tick.optim.prox.ProxZero.html#tick.optim.prox.ProxZero"><span class="n">ProxZero</span></a>
+    <a href="../modules/generated/tick.optim.prox.ProxPositive.html#tick.optim.prox.ProxPositive"><span class="n">ProxPositive</span></a><span class="p">,</span> <a href="../modules/generated/tick.optim.prox.ProxSlope.html#tick.optim.prox.ProxSlope"><span class="n">ProxSlope</span></a><span class="p">,</span> <a href="../modules/generated/tick.optim.prox.ProxTV.html#tick.optim.prox.ProxTV"><span class="n">ProxTV</span></a><span class="p">,</span> <a href="../modules/generated/tick.optim.prox.ProxZero.html#tick.optim.prox.ProxZero"><span class="n">ProxZero</span></a>
 
 <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
 <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">-</span> <span class="mf">1e-1</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">+</span> <span class="mf">1e-1</span>
@@ -180,7 +182,7 @@
     <a href="../modules/generated/tick.optim.prox.ProxL2Sq.html#tick.optim.prox.ProxL2Sq"><span class="n">ProxL2Sq</span></a><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="n">s</span><span class="p">),</span>
     <a href="../modules/generated/tick.optim.prox.ProxL1.html#tick.optim.prox.ProxL1"><span class="n">ProxL1</span></a><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="n">s</span><span class="p">),</span>
     <a href="../modules/generated/tick.optim.prox.ProxElasticNet.html#tick.optim.prox.ProxElasticNet"><span class="n">ProxElasticNet</span></a><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="n">s</span><span class="p">,</span> <span class="n">ratio</span><span class="o">=</span><span class="mf">0.5</span><span class="p">),</span>
-    <a href="../modules/generated/tick.optim.prox.ProxSortedL1.html#tick.optim.prox.ProxSortedL1"><span class="n">ProxSortedL1</span></a><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="n">s</span><span class="p">),</span>
+    <a href="../modules/generated/tick.optim.prox.ProxSlope.html#tick.optim.prox.ProxSlope"><span class="n">ProxSlope</span></a><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="n">s</span><span class="p">),</span>
     <a href="../modules/generated/tick.optim.prox.ProxTV.html#tick.optim.prox.ProxTV"><span class="n">ProxTV</span></a><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="n">s</span><span class="p">)</span>
 <span class="p">]</span>
 
@@ -200,8 +202,8 @@
 <a href="http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.show"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
 </pre></div>
 </div>
-<p><strong>Total running time of the example:</strong>  0.79 seconds
-( 0 minutes  0.79 seconds)</p>
+<p><strong>Total running time of the example:</strong>  1.14 seconds
+( 0 minutes  1.14 seconds)</p>
 <dl class="docutils">
 <dt>Mentioned <em>tick</em> classes:</dt>
 <dd><ul class="first last simple">
@@ -209,7 +211,7 @@
 <li><a class="reference internal" href="../modules/generated/tick.optim.prox.ProxL1.html#tick.optim.prox.ProxL1" title="tick.optim.prox.ProxL1"><code class="xref py py-obj docutils literal"><span class="pre">tick.optim.prox.ProxL1</span></code></a></li>
 <li><a class="reference internal" href="../modules/generated/tick.optim.prox.ProxL2Sq.html#tick.optim.prox.ProxL2Sq" title="tick.optim.prox.ProxL2Sq"><code class="xref py py-obj docutils literal"><span class="pre">tick.optim.prox.ProxL2Sq</span></code></a></li>
 <li><a class="reference internal" href="../modules/generated/tick.optim.prox.ProxPositive.html#tick.optim.prox.ProxPositive" title="tick.optim.prox.ProxPositive"><code class="xref py py-obj docutils literal"><span class="pre">tick.optim.prox.ProxPositive</span></code></a></li>
-<li><a class="reference internal" href="../modules/generated/tick.optim.prox.ProxSortedL1.html#tick.optim.prox.ProxSortedL1" title="tick.optim.prox.ProxSortedL1"><code class="xref py py-obj docutils literal"><span class="pre">tick.optim.prox.ProxSortedL1</span></code></a></li>
+<li><a class="reference internal" href="../modules/generated/tick.optim.prox.ProxSlope.html#tick.optim.prox.ProxSlope" title="tick.optim.prox.ProxSlope"><code class="xref py py-obj docutils literal"><span class="pre">tick.optim.prox.ProxSlope</span></code></a></li>
 <li><a class="reference internal" href="../modules/generated/tick.optim.prox.ProxTV.html#tick.optim.prox.ProxTV" title="tick.optim.prox.ProxTV"><code class="xref py py-obj docutils literal"><span class="pre">tick.optim.prox.ProxTV</span></code></a></li>
 <li><a class="reference internal" href="../modules/generated/tick.optim.prox.ProxZero.html#tick.optim.prox.ProxZero" title="tick.optim.prox.ProxZero"><code class="xref py py-obj docutils literal"><span class="pre">tick.optim.prox.ProxZero</span></code></a></li>
 </ul>
@@ -226,7 +228,7 @@
       
     </p>
     <p>
-        &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Poulsen.<br/>
+        &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Vinther Poulsen.<br/>
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.<br/>
     </p>
   </div>

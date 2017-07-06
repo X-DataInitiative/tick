@@ -31,11 +31,20 @@ Generalized linear models
    :toctree: generated/
    :template: class.rst
 
+   inference.LinearRegression
    inference.LogisticRegression
+   inference.PoissonRegression
 
 Survival Analysis
 -----------------
 .. currentmodule:: tick
+
+.. autosummary::
+   :toctree: generated/
+   :template: function.rst
+
+   inference.nelson_aalen
+   inference.kaplan_meier
 
 .. autosummary::
    :toctree: generated/
@@ -87,6 +96,16 @@ Generalized Linear Models
    optim.model.ModelPoisReg
    optim.model.ModelCoxRegPartialLik
 
+Self Control Case Series
+-------------------------
+.. currentmodule:: tick
+
+.. autosummary::
+   :toctree: generated/
+   :template: class.rst
+
+   optim.model.ModelSCCS
+
 Hawkes
 ------
 .. currentmodule:: tick
@@ -125,7 +144,8 @@ This module contains all the proximal operators available in tick.
    optim.prox.ProxMulti
    optim.prox.ProxNuclear
    optim.prox.ProxPositive
-   optim.prox.ProxSortedL1
+   optim.prox.ProxEquality
+   optim.prox.ProxSlope
    optim.prox.ProxTV
 
 
@@ -224,6 +244,8 @@ Classes
    :template: class.rst
 
    preprocessing.FeaturesBinarizer
+   preprocessing.LongitudinalFeaturesProduct
+   preprocessing.LongitudinalFeaturesLagger
 
 
 .. _api-simulation:
@@ -289,6 +311,7 @@ Features generators
    simulation.features_normal_cov_toeplitz
    simulation.weights_sparse_exp
    simulation.weights_sparse_gauss
+
 
 .. _api-datasets:
 

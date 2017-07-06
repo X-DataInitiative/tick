@@ -1,0 +1,12 @@
+
+.. _LongitudinalFeaturesProduct:
+
+tick.preprocessing.LongitudinalFeaturesProduct
+==============================================
+
+.. currentmodule:: tick.preprocessing
+
+.. autoclass:: LongitudinalFeaturesProduct
+
+.. include:: tick.preprocessing.LongitudinalFeaturesProduct.examples
+    :allowmissing:

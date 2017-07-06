@@ -42,7 +42,9 @@ Classes
    :toctree: generated/
    :template: class.rst
 
+   inference.LinearRegression
    inference.LogisticRegression
+   inference.PoissonRegression
 
 Example
 ^^^^^^^
@@ -125,6 +127,13 @@ These learners might then infer much more exotic kernels
 3. Survival analysis
 --------------------
 .. currentmodule:: tick
+
+.. autosummary::
+   :toctree: generated/
+   :template: function.rst
+
+   inference.nelson_aalen
+   inference.kaplan_meier
 
 .. autosummary::
    :toctree: generated/

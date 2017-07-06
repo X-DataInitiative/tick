@@ -47,7 +47,7 @@
     <link rel="shortcut icon" href="../../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="tick.inference.CoxRegression" href="tick.inference.CoxRegression.html" />
+    <link rel="next" title="tick.inference.nelson_aalen" href="tick.inference.nelson_aalen.html" />
     <link rel="prev" title="tick.inference.HawkesBasisKernels" href="tick.inference.HawkesBasisKernels.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
@@ -112,6 +112,8 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="tick.preprocessing.FeaturesBinarizer.html">tick.preprocessing.FeaturesBinarizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tick.preprocessing.LongitudinalFeaturesProduct.html">tick.preprocessing.LongitudinalFeaturesProduct</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tick.preprocessing.LongitudinalFeaturesLagger.html">tick.preprocessing.LongitudinalFeaturesLagger</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code>: simulation toolbox</a><ul>
@@ -323,11 +325,14 @@ non-parametric estimation. <a class="reference external" href="https://arxiv.org
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>events: list of `np.ndarray`, shape=(N)`,</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>events</strong> : <code class="xref py py-obj docutils literal"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code></p>
 <blockquote>
-<div><p>The events of each component of the Hawkes. Namely <code class="xref py py-obj docutils literal"><span class="pre">events[j]</span></code>
-contains a one-dimensional <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code> of the events&#8217;
-timestamps of component j</p>
+<div><p>List of Hawkes processes realizations.
+Each realization of the Hawkes process is a list of n_node for
+each component of the Hawkes. Namely <code class="xref py py-obj docutils literal"><span class="pre">events[i][j]</span></code> contains a
+one-dimensional <code class="xref py py-obj docutils literal"><span class="pre">numpy.array</span></code> of the events&#8217; timestamps of
+component j of realization i.
+If only one realization is given, it will be wrapped into a list</p>
 </div></blockquote>
 </td>
 </tr>
@@ -491,7 +496,11 @@ first realization only</p>
 
 <div class="section" id="examples-using-tick-inference-hawkesconditionallaw">
 <h2>Examples using <code class="docutils literal"><span class="pre">tick.inference.HawkesConditionalLaw</span></code><a class="headerlink" href="#examples-using-tick-inference-hawkesconditionallaw" title="Permalink to this headline">¶</a></h2>
-<div class="thumbnailContainer" tooltip="This Hawkes learner based on conditional laws (`tick.inference.HawkesConditionalLaw`) is able t..."><div class="figure" id="id1">
+<div class="thumbnailContainer" tooltip="This example fit hawkes kernels on finance data provided by `tick-datasets`_. repository."><div class="figure" id="id1">
+<a class="reference external image-reference" href="./../../auto_examples/./plot_hawkes_finance_data.html"><img alt="../../_images/plot_hawkes_finance_data1.png" src="../../_images/plot_hawkes_finance_data1.png" /></a>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="../../auto_examples/plot_hawkes_finance_data.html#example-plot-hawkes-finance-data-py"><span class="std std-ref">Fit Hawkes on finance data</span></a></span></p>
+</div>
+</div><div class="thumbnailContainer" tooltip="This Hawkes learner based on conditional laws (`tick.inference.HawkesConditionalLaw`) is able t..."><div class="figure" id="id2">
 <a class="reference external image-reference" href="./../../auto_examples/./plot_hawkes_conditional_law.html"><img alt="../../_images/plot_hawkes_conditional_law1.png" src="../../_images/plot_hawkes_conditional_law1.png" /></a>
 <p class="caption"><span class="caption-text"><a class="reference internal" href="../../auto_examples/plot_hawkes_conditional_law.html#example-plot-hawkes-conditional-law-py"><span class="std std-ref">Fit Hawkes power law kernels</span></a></span></p>
 </div>
@@ -507,7 +516,7 @@ first realization only</p>
       
     </p>
     <p>
-        &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Poulsen.<br/>
+        &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Vinther Poulsen.<br/>
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.<br/>
     </p>
   </div>

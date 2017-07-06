@@ -1,0 +1,9 @@
+tick.inference.nelson_aalen
+===========================
+
+.. currentmodule:: tick.inference
+
+.. autofunction:: nelson_aalen
+
+.. include:: tick.inference.nelson_aalen.examples
+    :allowmissing:

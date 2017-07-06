@@ -110,6 +110,8 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../modules/preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../modules/generated/tick.preprocessing.FeaturesBinarizer.html">tick.preprocessing.FeaturesBinarizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/generated/tick.preprocessing.LongitudinalFeaturesProduct.html">tick.preprocessing.LongitudinalFeaturesProduct</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/generated/tick.preprocessing.LongitudinalFeaturesLagger.html">tick.preprocessing.LongitudinalFeaturesLagger</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../modules/simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code>: simulation toolbox</a><ul>
@@ -164,23 +166,23 @@
 <img alt="../../_images/plot_poisson_constant_intensity_001.png" class="align-center" src="../../_images/plot_poisson_constant_intensity_001.png" />
 <p><strong>Script output</strong>:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">------------------------------------------------</span>
-<span class="n">Launching</span> <span class="n">simulation</span> <span class="n">using</span> <a href="../../modules/generated/tick.simulation.SimuPoissonProcess.html#tick.simulation.SimuPoissonProcess"><span class="n">SimuPoissonProcess</span></a><span class="o">...</span>
-<span class="n">Done</span> <span class="n">simulating</span> <span class="n">using</span> <a href="../../modules/generated/tick.simulation.SimuPoissonProcess.html#tick.simulation.SimuPoissonProcess"><span class="n">SimuPoissonProcess</span></a> <span class="ow">in</span> <span class="mf">1.03e-04</span> <span class="n">seconds</span><span class="o">.</span>
+<span class="n">Launching</span> <span class="n">simulation</span> <span class="n">using</span> <span class="n">SimuPoissonProcess</span><span class="o">...</span>
+<span class="n">Done</span> <span class="n">simulating</span> <span class="n">using</span> <span class="n">SimuPoissonProcess</span> <span class="ow">in</span> <span class="mf">1.84e-04</span> <span class="n">seconds</span><span class="o">.</span>
 </pre></div>
 </div>
 <p><strong>Python source code:</strong> <a class="reference download internal" href="../../_downloads/plot_poisson_constant_intensity.py" download=""><code class="xref download docutils literal"><span class="pre">plot_poisson_constant_intensity.py</span></code></a></p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tick.plot</span> <span class="k">import</span> <span class="n">plot_point_process</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tick.plot</span> <span class="k">import</span> <a href="../../modules/generated/tick.plot.plot_point_process.html#tick.plot.plot_point_process"><span class="n">plot_point_process</span></a>
 
 <span class="n">run_time</span> <span class="o">=</span> <span class="mi">10</span>
 <span class="n">intensity</span> <span class="o">=</span> <span class="mi">5</span>
 
-<span class="n">poi</span> <span class="o">=</span> <a href="../../modules/generated/tick.simulation.SimuPoissonProcess.html#tick.simulation.SimuPoissonProcess"><span class="n">SimuPoissonProcess</span></a><span class="p">(</span><span class="n">intensity</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">run_time</span><span class="p">)</span>
+<span class="n">poi</span> <span class="o">=</span> <span class="n">SimuPoissonProcess</span><span class="p">(</span><span class="n">intensity</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">run_time</span><span class="p">)</span>
 <span class="n">poi</span><span class="o">.</span><span class="n">simulate</span><span class="p">()</span>
-<span class="n">plot_point_process</span><span class="p">(</span><span class="n">poi</span><span class="p">)</span>
+<a href="../../modules/generated/tick.plot.plot_point_process.html#tick.plot.plot_point_process"><span class="n">plot_point_process</span></a><span class="p">(</span><span class="n">poi</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><strong>Total running time of the example:</strong>  0.09 seconds
-( 0 minutes  0.09 seconds)</p>
+<p><strong>Total running time of the example:</strong>  0.17 seconds
+( 0 minutes  0.17 seconds)</p>
 <dl class="docutils">
 <dt>Mentioned <em>tick</em> classes:</dt>
 <dd><ul class="first last simple">
@@ -200,7 +202,7 @@
       
     </p>
     <p>
-        &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Poulsen.<br/>
+        &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Vinther Poulsen.<br/>
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.<br/>
     </p>
   </div>

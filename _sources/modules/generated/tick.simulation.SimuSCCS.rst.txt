@@ -1,0 +1,12 @@
+
+.. _SimuSCCS:
+
+tick.simulation.SimuSCCS
+========================
+
+.. currentmodule:: tick.simulation
+
+.. autoclass:: SimuSCCS
+
+.. include:: tick.simulation.SimuSCCS.examples
+    :allowmissing:

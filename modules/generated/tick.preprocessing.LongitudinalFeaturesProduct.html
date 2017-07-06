@@ -1,0 +1,355 @@
+
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-97947441-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+    <title>tick.preprocessing.LongitudinalFeaturesProduct &#8212; tick 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/bootstrap-3.3.4/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/bootstrap-3.3.4/css/bootstrap-theme.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../_static/bootstrap-sphinx.js"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="tick.preprocessing.LongitudinalFeaturesLagger" href="tick.preprocessing.LongitudinalFeaturesLagger.html" />
+    <link rel="prev" title="tick.preprocessing.FeaturesBinarizer" href="tick.preprocessing.FeaturesBinarizer.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body role="document">
+
+  <div id="navbar" class="None navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../index.html">
+          tick</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.1</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../../index.html">Home</a></li>
+                <li><a href="../../auto_examples/index.html">Examples</a></li>
+                <li><a href="../api.html">API</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../index.html">Browse <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../inference.html"><code class="docutils literal"><span class="pre">tick.inference</span></code>: user-friendly inference tools</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../inference.html#generalized-linear-models">1. Generalized linear models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../inference.html#hawkes">2. Hawkes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../inference.html#survival-analysis">3. Survival analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../optim.html"><code class="docutils literal"><span class="pre">tick.optim</span></code>: optimization toolbox</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../optim.html#contents">Contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../optim.html#a-first-example">A First example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../optim.html#tick-optim-model-model-classes">1. <code class="docutils literal"><span class="pre">tick.optim.model</span></code>: model classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../optim.html#tick-optim-prox-proximal-operators">2. <code class="docutils literal"><span class="pre">tick.optim.prox</span></code>: proximal operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../optim.html#tick-optim-solver-solvers">3. <code class="docutils literal"><span class="pre">tick.optim.solver</span></code>: solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../optim.html#what-s-under-the-hood">4. What&#8217;s under the hood?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../plot.html"><code class="docutils literal"><span class="pre">tick.plot</span></code>: plotting utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../plot.html#optimization">Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plot.html#hawkes-estimation">Hawkes estimation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plot.html#point-process-simulation">Point process simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plot.html#others">Others</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="tick.preprocessing.FeaturesBinarizer.html">tick.preprocessing.FeaturesBinarizer</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">tick.preprocessing.LongitudinalFeaturesProduct</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tick.preprocessing.LongitudinalFeaturesLagger.html">tick.preprocessing.LongitudinalFeaturesLagger</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code>: simulation toolbox</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../simulation.html#simulation-tools">1. Simulation tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../simulation.html#linear-model-simulation">2. Linear model simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../simulation.html#survival-analysis-simulation">3. Survival analysis simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../simulation.html#point-process-simulation">4. Point process simulation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../dataset.html"><code class="docutils literal"><span class="pre">tick.dataset</span></code>: real world datasets</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../dataset.html#functions">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dataset.html#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../dev.html">Developer documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../dev.html#main-highlights">Main highlights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dev.html#base-class">Base class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dev.html#how-to-add-a-new-model-solver-or-prox">How to add a new model, solver or prox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dev.html#enable-python-pickling-of-c-objects">Enable Python-pickling of C++ objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dev.html#tips-for-debugging-c-classes-in-tick">Tips for debugging C++ classes in tick</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container content-container">
+  
+  <div class="section" id="tick-preprocessing-longitudinalfeaturesproduct">
+<span id="longitudinalfeaturesproduct"></span><h1>tick.preprocessing.LongitudinalFeaturesProduct<a class="headerlink" href="#tick-preprocessing-longitudinalfeaturesproduct" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="tick.preprocessing.LongitudinalFeaturesProduct">
+<em class="property">class </em><code class="descclassname">tick.preprocessing.</code><code class="descname">LongitudinalFeaturesProduct</code><span class="sig-paren">(</span><em>exposure_type='infinite'</em>, <em>n_threads=-1</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/preprocessing/longitudinal_features_product.html#LongitudinalFeaturesProduct"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.preprocessing.LongitudinalFeaturesProduct" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transforms longitudinal exposure features to add the corresponding
+product features.</p>
+<p>This preprocessor transform an input list of <code class="xref py py-obj docutils literal"><span class="pre">n_samples</span></code> numpy arrays or 
+csr_matrices of shape <code class="xref py py-obj docutils literal"><span class="pre">(n_intervals,</span> <span class="pre">n_features)</span></code> so as to add columns
+representing the product of combination of two features. It outputs a list
+of <code class="xref py py-obj docutils literal"><span class="pre">n_samples</span></code> numpy arrays or  csr_matrices of shape <code class="xref py py-obj docutils literal"><span class="pre">(n_intervals,</span> 
+<span class="pre">n_features</span> <span class="pre">+</span> <span class="pre">comb(n_features,</span> <span class="pre">2))</span></code>.</p>
+<p>Exposure can take two forms:
+- short repeated exposures: in that case, each column of the numpy arrays 
+or csr matrices can contain multiple ones, each one representing an exposure
+for a particular time bucket.
+- infinite unique exposures: in that case, each column of the numpy arrays
+or csr matrices can only contain a single one, corresponding to the starting
+date of the exposure.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>exposure_type</strong> : {&#8216;infinite&#8217;, &#8216;short&#8217;}, default=&#8217;infinite&#8217;</p>
+<blockquote>
+<div><p>Either &#8216;infinite&#8217; for infinite unique exposures or &#8216;short&#8217; for short
+repeated exposures.</p>
+</div></blockquote>
+<p><strong>n_threads</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code>, default=-1</p>
+<blockquote>
+<div><p>Number of tasks to run in parallel. If set to -1, the number of tasks is 
+set to the number of cores.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Attributes:</th><td class="field-body"><p class="first"><strong>mapper</strong> : <code class="xref py py-obj docutils literal"><span class="pre">dict</span></code></p>
+<blockquote class="last">
+<div><p>Map product features to column indexes of the resulting matrices.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pprint</span> <span class="k">import</span> <span class="n">pprint</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="k">import</span> <span class="n">csr_matrix</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">tick.preprocessing.longitudinal_features_product</span> <span class="k">import</span> <span class="n">LongitudinalFeaturesProduct</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">infinite_exposures</span> <span class="o">=</span> <span class="p">[</span><span class="n">csr_matrix</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+<span class="gp">... </span>                                  <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+<span class="gp">... </span>                                  <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float64&quot;</span><span class="p">),</span>
+<span class="gp">... </span>                      <span class="n">csr_matrix</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+<span class="gp">... </span>                                  <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<span class="gp">... </span>                                  <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float64&quot;</span><span class="p">)</span>
+<span class="gp">... </span>                      <span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">lfp</span> <span class="o">=</span> <span class="n">LongitudinalFeaturesProduct</span><span class="p">(</span><span class="n">exposure_type</span><span class="o">=</span><span class="s2">&quot;infinite&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">product_features</span> <span class="o">=</span> <span class="n">lfp</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">infinite_exposures</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># output comes as a list of sparse matrices or 2D numpy arrays</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">product_features</span><span class="o">.</span><span class="vm">__class__</span>
+<span class="go">&lt;class &#39;list&#39;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pprint</span><span class="p">([</span><span class="n">x</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">product_features</span><span class="p">])</span>
+<span class="go">[array([[ 0.,  1.,  0.,  0.,  0.,  0.],</span>
+<span class="go">       [ 0.,  0.,  0.,  0.,  0.,  0.],</span>
+<span class="go">       [ 0.,  0.,  1.,  0.,  0.,  1.]]),</span>
+<span class="go"> array([[ 1.,  1.,  0.,  1.,  0.,  0.],</span>
+<span class="go">       [ 0.,  0.,  1.,  0.,  1.,  1.],</span>
+<span class="go">       [ 0.,  0.,  0.,  0.,  0.,  0.]])]</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="tick.preprocessing.LongitudinalFeaturesProduct.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>exposure_type='infinite'</em>, <em>n_threads=-1</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/preprocessing/longitudinal_features_product.html#LongitudinalFeaturesProduct.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.preprocessing.LongitudinalFeaturesProduct.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="tick.preprocessing.LongitudinalFeaturesProduct.fit">
+<code class="descname">fit</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/preprocessing/longitudinal_features_product.html#LongitudinalFeaturesProduct.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.preprocessing.LongitudinalFeaturesProduct.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit the feature product using the features matrices list.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>X</strong> : list of numpy.ndarray or list of scipy.sparse.csr_matrix,</p>
+<blockquote>
+<div><p>list of length n_samples, each element of the list of 
+shape=(n_intervals, n_features)
+The list of features matrices.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> : <a class="reference internal" href="#tick.preprocessing.LongitudinalFeaturesProduct" title="tick.preprocessing.LongitudinalFeaturesProduct"><code class="xref py py-obj docutils literal"><span class="pre">LongitudinalFeaturesProduct</span></code></a></p>
+<blockquote class="last">
+<div><p>The fitted current instance.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tick.preprocessing.LongitudinalFeaturesProduct.fit_transform">
+<code class="descname">fit_transform</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/preprocessing/longitudinal_features_product.html#LongitudinalFeaturesProduct.fit_transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.preprocessing.LongitudinalFeaturesProduct.fit_transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit and apply the product feature computation using the features 
+matrices list.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>X</strong> : list of numpy.ndarray or list of scipy.sparse.csr_matrix,</p>
+<blockquote>
+<div><p>list of length n_samples, each element of the list of 
+shape=(n_intervals, n_features)
+The list of features matrices.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> : list of numpy.ndarray or list of scipy.sparse.csr_matrix,</p>
+<blockquote class="last">
+<div><p>list of length n_samples, each element of the list of 
+shape=(n_intervals, n_new_features)
+The list of features matrices with added product features. 
+n_new_features = n_features + comb(n_features, 2)</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tick.preprocessing.LongitudinalFeaturesProduct.infinite_exposure_products">
+<code class="descname">infinite_exposure_products</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/preprocessing/longitudinal_features_product.html#LongitudinalFeaturesProduct.infinite_exposure_products"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.preprocessing.LongitudinalFeaturesProduct.infinite_exposure_products" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add product features to X in the infinite exposure case.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tick.preprocessing.LongitudinalFeaturesProduct.short_exposure_products">
+<code class="descname">short_exposure_products</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/preprocessing/longitudinal_features_product.html#LongitudinalFeaturesProduct.short_exposure_products"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.preprocessing.LongitudinalFeaturesProduct.short_exposure_products" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add product features to X in the short exposure case.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tick.preprocessing.LongitudinalFeaturesProduct.transform">
+<code class="descname">transform</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/preprocessing/longitudinal_features_product.html#LongitudinalFeaturesProduct.transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.preprocessing.LongitudinalFeaturesProduct.transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add the product features to the given features matrices list.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>X</strong> : list of numpy.ndarray or list of scipy.sparse.csr_matrix,</p>
+<blockquote>
+<div><p>list of length n_samples, each element of the list of 
+shape=(n_intervals, n_features)
+The list of features matrices.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> : list of numpy.ndarray or list of scipy.sparse.csr_matrix,</p>
+<blockquote class="last">
+<div><p>list of length n_samples, each element of the list of 
+shape=(n_intervals, n_new_features)
+The list of features matrices with added product features. 
+n_new_features = n_features + comb(n_features, 2)</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Vinther Poulsen.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

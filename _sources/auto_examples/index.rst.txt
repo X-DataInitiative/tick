@@ -28,6 +28,31 @@ How to use tick in practise?
 
 .. raw:: html
 
+    <div class="thumbnailContainer" tooltip="This example fit hawkes kernels on finance data provided by `tick-datasets`_. repository.">
+
+.. only:: html
+
+  .. figure:: ./images/thumb/plot_hawkes_finance_data.png
+    :target: ./plot_hawkes_finance_data.html
+
+    :ref:`example_plot_hawkes_finance_data.py`
+
+
+.. raw:: html
+
+    </div>
+
+
+
+.. toctree::
+   :hidden:
+
+   ./plot_hawkes_finance_data
+
+
+
+.. raw:: html
+
     <div class="thumbnailContainer" tooltip="Generates Cox Regression realization given a weight vector ">
 
 .. only:: html
@@ -128,6 +153,31 @@ How to use tick in practise?
 
 .. raw:: html
 
+    <div class="thumbnailContainer" tooltip="In this example, we explain how to try out different solvers for the Poisson regression model, ...">
+
+.. only:: html
+
+  .. figure:: ./images/thumb/plot_poisson_regression.png
+    :target: ./plot_poisson_regression.html
+
+    :ref:`example_plot_poisson_regression.py`
+
+
+.. raw:: html
+
+    </div>
+
+
+
+.. toctree::
+   :hidden:
+
+   ./plot_poisson_regression
+
+
+
+.. raw:: html
+
     <div class="thumbnailContainer" tooltip="This Hawkes (`tick.inference.HawkesSumGaussians`) algorithm assume that kernels are parametrize...">
 
 .. only:: html
@@ -198,6 +248,56 @@ How to use tick in practise?
    :hidden:
 
    ./plot_prox_example
+
+
+
+.. raw:: html
+
+    <div class="thumbnailContainer" tooltip="This example simulates and then estimates Hawkes kernels with varying baselines. In this exampl...">
+
+.. only:: html
+
+  .. figure:: ./images/thumb/plot_hawkes_varying_baseline.png
+    :target: ./plot_hawkes_varying_baseline.html
+
+    :ref:`example_plot_hawkes_varying_baseline.py`
+
+
+.. raw:: html
+
+    </div>
+
+
+
+.. toctree::
+   :hidden:
+
+   ./plot_hawkes_varying_baseline
+
+
+
+.. raw:: html
+
+    <div class="thumbnailContainer" tooltip="This example simulates a Hawkes process with a non constant, periodic baseline ">
+
+.. only:: html
+
+  .. figure:: ./images/thumb/plot_hawkes_varying_baseline_simulation.png
+    :target: ./plot_hawkes_varying_baseline_simulation.html
+
+    :ref:`example_plot_hawkes_varying_baseline_simulation.py`
+
+
+.. raw:: html
+
+    </div>
+
+
+
+.. toctree::
+   :hidden:
+
+   ./plot_hawkes_varying_baseline_simulation
 
 
 
@@ -298,6 +398,31 @@ How to use tick in practise?
    :hidden:
 
    ./plot_hawkes_basis_kernels
+
+
+
+.. raw:: html
+
+    <div class="thumbnailContainer" tooltip="In this example we give a naive comparison of ``tick`` and ``scikit-learn`` for binary classifi...">
+
+.. only:: html
+
+  .. figure:: ./images/thumb/plot_logistic_tick_vs_scikit.png
+    :target: ./plot_logistic_tick_vs_scikit.html
+
+    :ref:`example_plot_logistic_tick_vs_scikit.py`
+
+
+.. raw:: html
+
+    </div>
+
+
+
+.. toctree::
+   :hidden:
+
+   ./plot_logistic_tick_vs_scikit
 
 
 

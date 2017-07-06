@@ -112,6 +112,8 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="generated/tick.preprocessing.FeaturesBinarizer.html">tick.preprocessing.FeaturesBinarizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/tick.preprocessing.LongitudinalFeaturesProduct.html">tick.preprocessing.LongitudinalFeaturesProduct</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/tick.preprocessing.LongitudinalFeaturesLagger.html">tick.preprocessing.LongitudinalFeaturesLagger</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code>: simulation toolbox</a><ul>
@@ -413,7 +415,15 @@ using this model.</p>
 <span id="optim-model-survival"></span><h3>1.4. Survival analysis<a class="headerlink" href="#survival-analysis" title="Permalink to this headline">¶</a></h3>
 <div class="admonition-todo admonition" id="index-0">
 <p class="first admonition-title">Todo</p>
-<p class="last">Describe cox model</p>
+<p class="last">Quick survival analysis presentation here?</p>
+</div>
+<div class="admonition-todo admonition" id="index-1">
+<p class="first admonition-title">Todo</p>
+<p class="last">Describe Cox model</p>
+</div>
+<div class="admonition-todo admonition" id="index-2">
+<p class="first admonition-title">Todo</p>
+<p class="last">Describe Self Control Case Series model</p>
 </div>
 <table border="1" class="docutils">
 <colgroup>
@@ -428,6 +438,9 @@ using this model.</p>
 <tbody valign="top">
 <tr class="row-even"><td>Cox regression partial likelihood</td>
 <td><a class="reference internal" href="generated/tick.optim.model.ModelCoxRegPartialLik.html#tick.optim.model.ModelCoxRegPartialLik" title="tick.optim.model.ModelCoxRegPartialLik"><code class="xref py py-class docutils literal"><span class="pre">ModelCoxRegPartialLik</span></code></a></td>
+</tr>
+<tr class="row-odd"><td>Self Control Case Series</td>
+<td><a class="reference internal" href="generated/tick.optim.model.ModelSCCS.html#tick.optim.model.ModelSCCS" title="tick.optim.model.ModelSCCS"><code class="xref py py-class docutils literal"><span class="pre">ModelSCCS</span></code></a></td>
 </tr>
 </tbody>
 </table>
@@ -614,33 +627,37 @@ thus extra memory allocation).</p>
 <td><span class="math">\(g(w) = s \delta_C(w)\)</span> where <span class="math">\(C=\)</span> set of vectors with non-negative entries</td>
 <td><a class="reference internal" href="generated/tick.optim.prox.ProxPositive.html#tick.optim.prox.ProxPositive" title="tick.optim.prox.ProxPositive"><code class="xref py py-class docutils literal"><span class="pre">ProxPositive</span></code></a></td>
 </tr>
-<tr class="row-even"><td>L1 norm</td>
+<tr class="row-even"><td>Equality constraint</td>
+<td><span class="math">\(g(w) = s \delta_C(w)\)</span> where <span class="math">\(C=\)</span> set of vectors with identical entries</td>
+<td><code class="xref py py-class docutils literal"><span class="pre">ProxEquality</span></code></td>
+</tr>
+<tr class="row-odd"><td>L1 norm</td>
 <td><span class="math">\(g(w) = s \sum_{j=1}^d |w_j|\)</span></td>
 <td><a class="reference internal" href="generated/tick.optim.prox.ProxL1.html#tick.optim.prox.ProxL1" title="tick.optim.prox.ProxL1"><code class="xref py py-class docutils literal"><span class="pre">ProxL1</span></code></a></td>
 </tr>
-<tr class="row-odd"><td>L1 norm with weights</td>
+<tr class="row-even"><td>L1 norm with weights</td>
 <td><span class="math">\(g(w) = s \sum_{j=1}^d c_j |w_j|\)</span></td>
 <td><a class="reference internal" href="generated/tick.optim.prox.ProxL1w.html#tick.optim.prox.ProxL1w" title="tick.optim.prox.ProxL1w"><code class="xref py py-class docutils literal"><span class="pre">ProxL1w</span></code></a></td>
 </tr>
-<tr class="row-even"><td>Ridge</td>
+<tr class="row-odd"><td>Ridge</td>
 <td><span class="math">\(g(w) = s \sum_{j=1}^d \frac{w_j^2}{2}\)</span></td>
 <td><a class="reference internal" href="generated/tick.optim.prox.ProxL2Sq.html#tick.optim.prox.ProxL2Sq" title="tick.optim.prox.ProxL2Sq"><code class="xref py py-class docutils literal"><span class="pre">ProxL2Sq</span></code></a></td>
 </tr>
-<tr class="row-odd"><td>Elastic-net</td>
+<tr class="row-even"><td>Elastic-net</td>
 <td><span class="math">\(g(w) = s \Big(\sum_{j=1}^{d} \alpha |w_j| + (1 - \alpha) \frac{w_j^2}{2} \Big)\)</span></td>
 <td><a class="reference internal" href="generated/tick.optim.prox.ProxElasticNet.html#tick.optim.prox.ProxElasticNet" title="tick.optim.prox.ProxElasticNet"><code class="xref py py-class docutils literal"><span class="pre">ProxElasticNet</span></code></a></td>
 </tr>
-<tr class="row-even"><td>Total-variation</td>
+<tr class="row-odd"><td>Total-variation</td>
 <td><span class="math">\(g(w) = s \sum_{j=2}^d |w_j - w_{j-1}|\)</span></td>
 <td><a class="reference internal" href="generated/tick.optim.prox.ProxTV.html#tick.optim.prox.ProxTV" title="tick.optim.prox.ProxTV"><code class="xref py py-class docutils literal"><span class="pre">ProxTV</span></code></a></td>
 </tr>
-<tr class="row-odd"><td>Nuclear norm</td>
+<tr class="row-even"><td>Nuclear norm</td>
 <td><span class="math">\(g(w) = s \sum_{j=1}^{q} \sigma_j(w)\)</span></td>
 <td><a class="reference internal" href="generated/tick.optim.prox.ProxNuclear.html#tick.optim.prox.ProxNuclear" title="tick.optim.prox.ProxNuclear"><code class="xref py py-class docutils literal"><span class="pre">ProxNuclear</span></code></a></td>
 </tr>
-<tr class="row-even"><td>Sorted L1</td>
+<tr class="row-odd"><td>Sorted L1</td>
 <td><span class="math">\(g(w) = s \sum_{j=1}^{d} c_j |w_{(j)}|\)</span> where <span class="math">\(|w_{(j)}|\)</span> is decreasing</td>
-<td><a class="reference internal" href="generated/tick.optim.prox.ProxSortedL1.html#tick.optim.prox.ProxSortedL1" title="tick.optim.prox.ProxSortedL1"><code class="xref py py-class docutils literal"><span class="pre">ProxSortedL1</span></code></a></td>
+<td><a class="reference internal" href="generated/tick.optim.prox.ProxSlope.html#tick.optim.prox.ProxSlope" title="tick.optim.prox.ProxSlope"><code class="xref py py-class docutils literal"><span class="pre">ProxSlope</span></code></a></td>
 </tr>
 </tbody>
 </table>
@@ -700,7 +717,7 @@ applied to different parts of a vector.</p>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
 <span class="kn">from</span> <span class="nn">tick.optim.prox</span> <span class="kn">import</span> <span class="n">ProxL1</span><span class="p">,</span> <span class="n">ProxElasticNet</span><span class="p">,</span> <span class="n">ProxL2Sq</span><span class="p">,</span> \
-    <span class="n">ProxPositive</span><span class="p">,</span> <span class="n">ProxSortedL1</span><span class="p">,</span> <span class="n">ProxTV</span><span class="p">,</span> <span class="n">ProxZero</span>
+    <span class="n">ProxPositive</span><span class="p">,</span> <span class="n">ProxSlope</span><span class="p">,</span> <span class="n">ProxTV</span><span class="p">,</span> <span class="n">ProxZero</span>
 
 <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
 <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">-</span> <span class="mf">1e-1</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">+</span> <span class="mf">1e-1</span>
@@ -712,7 +729,7 @@ applied to different parts of a vector.</p>
     <span class="n">ProxL2Sq</span><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="n">s</span><span class="p">),</span>
     <span class="n">ProxL1</span><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="n">s</span><span class="p">),</span>
     <span class="n">ProxElasticNet</span><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="n">s</span><span class="p">,</span> <span class="n">ratio</span><span class="o">=</span><span class="mf">0.5</span><span class="p">),</span>
-    <span class="n">ProxSortedL1</span><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="n">s</span><span class="p">),</span>
+    <span class="n">ProxSlope</span><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="n">s</span><span class="p">),</span>
     <span class="n">ProxTV</span><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="n">s</span><span class="p">)</span>
 <span class="p">]</span>
 
@@ -854,7 +871,7 @@ in the stochastic solvers, and are available through C++ only for efficiency.</p
       
     </p>
     <p>
-        &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Poulsen.<br/>
+        &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Vinther Poulsen.<br/>
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.<br/>
     </p>
   </div>

@@ -1,0 +1,241 @@
+
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-97947441-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+    <title>Hawkes process with non constant baseline &#8212; tick 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-3.3.4/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-3.3.4/css/bootstrap-theme.min.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body role="document">
+
+  <div id="navbar" class="None navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          tick</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.1</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="index.html">Examples</a></li>
+                <li><a href="../modules/api.html">API</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Browse <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="../modules/inference.html"><code class="docutils literal"><span class="pre">tick.inference</span></code>: user-friendly inference tools</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/inference.html#generalized-linear-models">1. Generalized linear models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/inference.html#hawkes">2. Hawkes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/inference.html#survival-analysis">3. Survival analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/optim.html"><code class="docutils literal"><span class="pre">tick.optim</span></code>: optimization toolbox</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/optim.html#contents">Contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/optim.html#a-first-example">A First example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/optim.html#tick-optim-model-model-classes">1. <code class="docutils literal"><span class="pre">tick.optim.model</span></code>: model classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/optim.html#tick-optim-prox-proximal-operators">2. <code class="docutils literal"><span class="pre">tick.optim.prox</span></code>: proximal operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/optim.html#tick-optim-solver-solvers">3. <code class="docutils literal"><span class="pre">tick.optim.solver</span></code>: solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/optim.html#what-s-under-the-hood">4. What&#8217;s under the hood?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/plot.html"><code class="docutils literal"><span class="pre">tick.plot</span></code>: plotting utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/plot.html#optimization">Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/plot.html#hawkes-estimation">Hawkes estimation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/plot.html#point-process-simulation">Point process simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/plot.html#others">Others</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/generated/tick.preprocessing.FeaturesBinarizer.html">tick.preprocessing.FeaturesBinarizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/generated/tick.preprocessing.LongitudinalFeaturesProduct.html">tick.preprocessing.LongitudinalFeaturesProduct</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/generated/tick.preprocessing.LongitudinalFeaturesLagger.html">tick.preprocessing.LongitudinalFeaturesLagger</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code>: simulation toolbox</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/simulation.html#simulation-tools">1. Simulation tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/simulation.html#linear-model-simulation">2. Linear model simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/simulation.html#survival-analysis-simulation">3. Survival analysis simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/simulation.html#point-process-simulation">4. Point process simulation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/dataset.html"><code class="docutils literal"><span class="pre">tick.dataset</span></code>: real world datasets</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/dataset.html#functions">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/dataset.html#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/dev.html">Developer documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/dev.html#main-highlights">Main highlights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/dev.html#base-class">Base class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/dev.html#how-to-add-a-new-model-solver-or-prox">How to add a new model, solver or prox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/dev.html#enable-python-pickling-of-c-objects">Enable Python-pickling of C++ objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/dev.html#tips-for-debugging-c-classes-in-tick">Tips for debugging C++ classes in tick</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container content-container">
+  
+  <div class="section" id="hawkes-process-with-non-constant-baseline">
+<span id="example-plot-hawkes-varying-baseline-py"></span><h1>Hawkes process with non constant baseline<a class="headerlink" href="#hawkes-process-with-non-constant-baseline" title="Permalink to this headline">¶</a></h1>
+<p>This example simulates and then estimates Hawkes kernels with varying
+baselines. In this example the intensity is written the following way</p>
+<p><span class="math">\(\lambda_i(t) = \mu_i(t) + \sum_{j=1}^D \int \phi_{ij}(t - s)dN_j(s)\)</span></p>
+<p>Kernels are sum of exponentials and varying baseline <span class="math">\(\mu_i(t)\)</span>
+piecewise constant.</p>
+<img alt="../_images/plot_hawkes_varying_baseline_001.png" class="align-center" src="../_images/plot_hawkes_varying_baseline_001.png" />
+<p><strong>Python source code:</strong> <a class="reference download internal" href="../_downloads/plot_hawkes_varying_baseline.py" download=""><code class="xref download docutils literal"><span class="pre">plot_hawkes_varying_baseline.py</span></code></a></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="kn">from</span> <span class="nn">tick.plot</span> <span class="k">import</span> <span class="n">plot_hawkes_baseline_and_kernels</span>
+<span class="kn">from</span> <span class="nn">tick.simulation</span> <span class="k">import</span> <a href="../modules/generated/tick.simulation.SimuHawkesSumExpKernels.html#tick.simulation.SimuHawkesSumExpKernels"><span class="n">SimuHawkesSumExpKernels</span></a><span class="p">,</span> <a href="../modules/generated/tick.simulation.SimuHawkesMulti.html#tick.simulation.SimuHawkesMulti"><span class="n">SimuHawkesMulti</span></a>
+<span class="kn">from</span> <span class="nn">tick.inference</span> <span class="k">import</span> <a href="../modules/generated/tick.inference.HawkesSumExpKern.html#tick.inference.HawkesSumExpKern"><span class="n">HawkesSumExpKern</span></a>
+
+<span class="n">period_length</span> <span class="o">=</span> <span class="mi">300</span>
+<span class="n">baselines</span> <span class="o">=</span> <span class="p">[[</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+             <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">]]</span>
+<span class="n">n_baselines</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">baselines</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">decays</span> <span class="o">=</span> <span class="p">[</span><span class="o">.</span><span class="mi">5</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">6.</span><span class="p">]</span>
+<span class="n">adjacency</span> <span class="o">=</span> <span class="p">[[[</span><span class="mi">0</span><span class="p">,</span> <span class="o">.</span><span class="mi">1</span><span class="p">,</span> <span class="o">.</span><span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="o">.</span><span class="mi">2</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="o">.</span><span class="mi">2</span><span class="p">]],</span>
+             <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="o">.</span><span class="mi">6</span><span class="p">,</span> <span class="o">.</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]]</span>
+
+<span class="c1"># simulation</span>
+<span class="n">hawkes</span> <span class="o">=</span> <a href="../modules/generated/tick.simulation.SimuHawkesSumExpKernels.html#tick.simulation.SimuHawkesSumExpKernels"><span class="n">SimuHawkesSumExpKernels</span></a><span class="p">(</span><span class="n">baseline</span><span class="o">=</span><span class="n">baselines</span><span class="p">,</span>
+                                 <span class="n">period_length</span><span class="o">=</span><span class="n">period_length</span><span class="p">,</span>
+                                 <span class="n">decays</span><span class="o">=</span><span class="n">decays</span><span class="p">,</span> <span class="n">adjacency</span><span class="o">=</span><span class="n">adjacency</span><span class="p">,</span>
+                                 <span class="n">seed</span><span class="o">=</span><span class="mi">2093</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">hawkes</span><span class="o">.</span><span class="n">end_time</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="n">hawkes</span><span class="o">.</span><span class="n">adjust_spectral_radius</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+
+<span class="n">multi</span> <span class="o">=</span> <a href="../modules/generated/tick.simulation.SimuHawkesMulti.html#tick.simulation.SimuHawkesMulti"><span class="n">SimuHawkesMulti</span></a><span class="p">(</span><span class="n">hawkes</span><span class="p">,</span> <span class="n">n_simulations</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">multi</span><span class="o">.</span><span class="n">simulate</span><span class="p">()</span>
+
+<span class="c1"># estimation</span>
+<span class="n">learner</span> <span class="o">=</span> <a href="../modules/generated/tick.inference.HawkesSumExpKern.html#tick.inference.HawkesSumExpKern"><span class="n">HawkesSumExpKern</span></a><span class="p">(</span><span class="n">decays</span><span class="o">=</span><span class="n">decays</span><span class="p">,</span>
+                           <span class="n">n_baselines</span><span class="o">=</span><span class="n">n_baselines</span><span class="p">,</span>
+                           <span class="n">period_length</span><span class="o">=</span><span class="n">period_length</span><span class="p">)</span>
+
+<span class="n">learner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">multi</span><span class="o">.</span><span class="n">timestamps</span><span class="p">)</span>
+
+<span class="c1"># plot</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plot_hawkes_baseline_and_kernels</span><span class="p">(</span><span class="n">learner</span><span class="p">,</span> <span class="n">hawkes</span><span class="o">=</span><span class="n">hawkes</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><strong>Total running time of the example:</strong>  0.65 seconds
+( 0 minutes  0.65 seconds)</p>
+<dl class="docutils">
+<dt>Mentioned <em>tick</em> classes:</dt>
+<dd><ul class="first last simple">
+<li><a class="reference internal" href="../modules/generated/tick.inference.HawkesSumExpKern.html#tick.inference.HawkesSumExpKern" title="tick.inference.HawkesSumExpKern"><code class="xref py py-obj docutils literal"><span class="pre">tick.inference.HawkesSumExpKern</span></code></a></li>
+<li><code class="xref py py-obj docutils literal"><span class="pre">tick.plot.plot_hawkes_baseline_and_kernels</span></code></li>
+<li><a class="reference internal" href="../modules/generated/tick.simulation.SimuHawkesMulti.html#tick.simulation.SimuHawkesMulti" title="tick.simulation.SimuHawkesMulti"><code class="xref py py-obj docutils literal"><span class="pre">tick.simulation.SimuHawkesMulti</span></code></a></li>
+<li><a class="reference internal" href="../modules/generated/tick.simulation.SimuHawkesSumExpKernels.html#tick.simulation.SimuHawkesSumExpKernels" title="tick.simulation.SimuHawkesSumExpKernels"><code class="xref py py-obj docutils literal"><span class="pre">tick.simulation.SimuHawkesSumExpKernels</span></code></a></li>
+</ul>
+</dd>
+</dl>
+</div>
+
+
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Vinther Poulsen.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

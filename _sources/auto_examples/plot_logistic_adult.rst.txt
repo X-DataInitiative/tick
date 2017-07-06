@@ -23,8 +23,8 @@ regression learner (`tick.inference.LogisticRegression`).
 .. literalinclude:: plot_logistic_adult.py
     :lines: 9-
 
-**Total running time of the example:**  1.48 seconds
-( 0 minutes  1.48 seconds)
+**Total running time of the example:**  1.89 seconds
+( 0 minutes  1.89 seconds)
     
 Mentioned *tick* classes:
    * `tick.dataset.fetch_tick_dataset`

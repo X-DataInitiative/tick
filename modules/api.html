@@ -110,6 +110,8 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="generated/tick.preprocessing.FeaturesBinarizer.html">tick.preprocessing.FeaturesBinarizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/tick.preprocessing.LongitudinalFeaturesProduct.html">tick.preprocessing.LongitudinalFeaturesProduct</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/tick.preprocessing.LongitudinalFeaturesLagger.html">tick.preprocessing.LongitudinalFeaturesLagger</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code>: simulation toolbox</a><ul>
@@ -176,14 +178,34 @@ since direct class and function API is not enough for understanding their uses.<
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.inference.LogisticRegression.html#tick.inference.LogisticRegression" title="tick.inference.LogisticRegression"><code class="xref py py-obj docutils literal"><span class="pre">inference.LogisticRegression</span></code></a>([...])</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.inference.LinearRegression.html#tick.inference.LinearRegression" title="tick.inference.LinearRegression"><code class="xref py py-obj docutils literal"><span class="pre">inference.LinearRegression</span></code></a>([fit_intercept,&nbsp;...])</td>
+<td>Linear regression learner, with many choices of penalization and solvers.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/tick.inference.LogisticRegression.html#tick.inference.LogisticRegression" title="tick.inference.LogisticRegression"><code class="xref py py-obj docutils literal"><span class="pre">inference.LogisticRegression</span></code></a>([...])</td>
 <td>Logistic regression learner, with many choices of penalization and solvers.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.inference.PoissonRegression.html#tick.inference.PoissonRegression" title="tick.inference.PoissonRegression"><code class="xref py py-obj docutils literal"><span class="pre">inference.PoissonRegression</span></code></a>([step,&nbsp;...])</td>
+<td>Poisson regression learner, with exponential link function.</td>
 </tr>
 </tbody>
 </table>
 </div>
 <div class="section" id="survival-analysis">
 <h3>Survival Analysis<a class="headerlink" href="#survival-analysis" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.inference.nelson_aalen.html#tick.inference.nelson_aalen" title="tick.inference.nelson_aalen"><code class="xref py py-obj docutils literal"><span class="pre">inference.nelson_aalen</span></code></a>(timestamps,&nbsp;...)</td>
+<td>Computes the Nelson-Aalen cumulative hazard rate estimation</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/tick.inference.kaplan_meier.html#tick.inference.kaplan_meier" title="tick.inference.kaplan_meier"><code class="xref py py-obj docutils literal"><span class="pre">inference.kaplan_meier</span></code></a>(timestamps,&nbsp;...)</td>
+<td>Computes the Kaplan-Meier survival function estimation</td>
+</tr>
+</tbody>
+</table>
 <table border="1" class="longtable docutils">
 <colgroup>
 <col width="10%" />
@@ -260,6 +282,20 @@ in tick.</p>
 </tbody>
 </table>
 </div>
+<div class="section" id="self-control-case-series">
+<h3>Self Control Case Series<a class="headerlink" href="#self-control-case-series" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.optim.model.ModelSCCS.html#tick.optim.model.ModelSCCS" title="tick.optim.model.ModelSCCS"><code class="xref py py-obj docutils literal"><span class="pre">optim.model.ModelSCCS</span></code></a>(n_intervals:&nbsp;int,&nbsp;...)</td>
+<td>SCCS model.</td>
+</tr>
+</tbody>
+</table>
+</div>
 <div class="section" id="id2">
 <h3>Hawkes<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
 <table border="1" class="longtable docutils">
@@ -315,10 +351,13 @@ in tick.</p>
 <tr class="row-even"><td><a class="reference internal" href="generated/tick.optim.prox.ProxPositive.html#tick.optim.prox.ProxPositive" title="tick.optim.prox.ProxPositive"><code class="xref py py-obj docutils literal"><span class="pre">optim.prox.ProxPositive</span></code></a>(range:&nbsp;tuple&nbsp;=&nbsp;None,&nbsp;...)</td>
 <td>Projection operator onto the half-space of vectors with</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.optim.prox.ProxSortedL1.html#tick.optim.prox.ProxSortedL1" title="tick.optim.prox.ProxSortedL1"><code class="xref py py-obj docutils literal"><span class="pre">optim.prox.ProxSortedL1</span></code></a>(strength:&nbsp;float,&nbsp;...)</td>
-<td>Proximal operator of sorted L1 penalization</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.optim.prox.ProxEquality.html#tick.optim.prox.ProxEquality" title="tick.optim.prox.ProxEquality"><code class="xref py py-obj docutils literal"><span class="pre">optim.prox.ProxEquality</span></code></a>(strength:&nbsp;float&nbsp;=&nbsp;0,&nbsp;...)</td>
+<td>Projection operator onto the set of vector with all coordinates equal (or in the given range if given one).</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/tick.optim.prox.ProxTV.html#tick.optim.prox.ProxTV" title="tick.optim.prox.ProxTV"><code class="xref py py-obj docutils literal"><span class="pre">optim.prox.ProxTV</span></code></a>(strength:&nbsp;float,&nbsp;...)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/tick.optim.prox.ProxSlope.html#tick.optim.prox.ProxSlope" title="tick.optim.prox.ProxSlope"><code class="xref py py-obj docutils literal"><span class="pre">optim.prox.ProxSlope</span></code></a>(strength:&nbsp;float,&nbsp;...)</td>
+<td>Proximal operator of Slope penalization.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.optim.prox.ProxTV.html#tick.optim.prox.ProxTV" title="tick.optim.prox.ProxTV"><code class="xref py py-obj docutils literal"><span class="pre">optim.prox.ProxTV</span></code></a>(strength:&nbsp;float,&nbsp;...)</td>
 <td>Proximal operator of the total-variation penalization</td>
 </tr>
 </tbody>
@@ -443,6 +482,12 @@ in tick.</p>
 <tbody valign="top">
 <tr class="row-odd"><td><a class="reference internal" href="generated/tick.preprocessing.FeaturesBinarizer.html#tick.preprocessing.FeaturesBinarizer" title="tick.preprocessing.FeaturesBinarizer"><code class="xref py py-obj docutils literal"><span class="pre">preprocessing.FeaturesBinarizer</span></code></a>([method,&nbsp;...])</td>
 <td>Transforms continuous data into bucketed binary data.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/tick.preprocessing.LongitudinalFeaturesProduct.html#tick.preprocessing.LongitudinalFeaturesProduct" title="tick.preprocessing.LongitudinalFeaturesProduct"><code class="xref py py-obj docutils literal"><span class="pre">preprocessing.LongitudinalFeaturesProduct</span></code></a>([...])</td>
+<td>Transforms longitudinal exposure features to add the corresponding product features.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.preprocessing.LongitudinalFeaturesLagger.html#tick.preprocessing.LongitudinalFeaturesLagger" title="tick.preprocessing.LongitudinalFeaturesLagger"><code class="xref py py-obj docutils literal"><span class="pre">preprocessing.LongitudinalFeaturesLagger</span></code></a>([...])</td>
+<td>Transforms longitudinal exposure features to add columns representing lagged features.</td>
 </tr>
 </tbody>
 </table>
@@ -583,7 +628,7 @@ in tick.</p>
       
     </p>
     <p>
-        &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Poulsen.<br/>
+        &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Vinther Poulsen.<br/>
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.<br/>
     </p>
   </div>

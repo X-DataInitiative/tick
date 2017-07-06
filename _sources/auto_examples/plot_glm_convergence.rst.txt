@@ -32,8 +32,8 @@ with five different solvers:
 .. literalinclude:: plot_glm_convergence.py
     :lines: 18-
 
-**Total running time of the example:**  2.08 seconds
-( 0 minutes  2.08 seconds)
+**Total running time of the example:**  2.55 seconds
+( 0 minutes  2.55 seconds)
     
 Mentioned *tick* classes:
    * `tick.optim.model.ModelLinReg`

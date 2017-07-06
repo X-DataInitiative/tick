@@ -48,7 +48,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="tick.simulation.weights_sparse_exp" href="generated/tick.simulation.weights_sparse_exp.html" />
-    <link rel="prev" title="tick.preprocessing.FeaturesBinarizer" href="generated/tick.preprocessing.FeaturesBinarizer.html" />
+    <link rel="prev" title="tick.preprocessing.LongitudinalFeaturesLagger" href="generated/tick.preprocessing.LongitudinalFeaturesLagger.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -112,6 +112,8 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="generated/tick.preprocessing.FeaturesBinarizer.html">tick.preprocessing.FeaturesBinarizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/tick.preprocessing.LongitudinalFeaturesProduct.html">tick.preprocessing.LongitudinalFeaturesProduct</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/tick.preprocessing.LongitudinalFeaturesLagger.html">tick.preprocessing.LongitudinalFeaturesLagger</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#"><code class="docutils literal"><span class="pre">tick.simulation</span></code>: simulation toolbox</a><ul>
@@ -452,6 +454,8 @@ where <span class="math">\(\mathbb P\)</span> depends on the considered model.</
 </div>
 <div class="section" id="survival-analysis-simulation">
 <h2>3. Survival analysis simulation<a class="headerlink" href="#survival-analysis-simulation" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="cox-regression-simulation-proportional-hazards">
+<h3>3.1 Cox regression simulation (proportional hazards)<a class="headerlink" href="#cox-regression-simulation-proportional-hazards" title="Permalink to this headline">¶</a></h3>
 <p>We provide a class for the simulation of a Cox regression model with right-censoring.
 This generates data in the form of i.i.d triplets <span class="math">\((x_i, t_i, c_i)\)</span>
 for <span class="math">\(i=1, \ldots, n\)</span>, where <span class="math">\(x_i \in \mathbb R^d\)</span> is a features vector,
@@ -514,6 +518,22 @@ while <span class="math">\(c_i = 0\)</span> means that <span class="math">\(t_i\
 <p>(<a class="reference external" href="../../examples/plot_simulation_coxreg.py">Source code</a>, <a class="reference external" href="../../examples/plot_simulation_coxreg.png">png</a>, <a class="reference external" href="../../examples/plot_simulation_coxreg.hires.png">hires.png</a>, <a class="reference external" href="../../examples/plot_simulation_coxreg.pdf">pdf</a>)</p>
 <div class="figure">
 <img alt="../_images/plot_simulation_coxreg2.png" src="../_images/plot_simulation_coxreg2.png" />
+</div>
+</div>
+<div class="section" id="self-controlled-case-series-sccs">
+<h3>3.2 Self-controlled case series (SCCS)<a class="headerlink" href="#self-controlled-case-series-sccs" title="Permalink to this headline">¶</a></h3>
+<p>We provide a class for the simulation of a SCCS regression model with right-censoring.</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.SimuSCCS.html#tick.simulation.SimuSCCS" title="tick.simulation.SimuSCCS"><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuSCCS</span></code></a>(n_samples,&nbsp;n_intervals,&nbsp;...)</td>
+<td>Simulation of a Self Control Case Series (SCCS) model.</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 <div class="section" id="point-process-simulation">
@@ -703,7 +723,7 @@ dedicated to a type of kernel: exponential or sum of exponential kernels.</p>
       
     </p>
     <p>
-        &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Poulsen.<br/>
+        &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Vinther Poulsen.<br/>
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.<br/>
     </p>
   </div>

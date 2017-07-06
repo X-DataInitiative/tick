@@ -112,6 +112,8 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="tick.preprocessing.FeaturesBinarizer.html">tick.preprocessing.FeaturesBinarizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tick.preprocessing.LongitudinalFeaturesProduct.html">tick.preprocessing.LongitudinalFeaturesProduct</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tick.preprocessing.LongitudinalFeaturesLagger.html">tick.preprocessing.LongitudinalFeaturesLagger</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code>: simulation toolbox</a><ul>
@@ -165,18 +167,18 @@
 <span id="hawkessumexpkern"></span><h1>tick.inference.HawkesSumExpKern<a class="headerlink" href="#tick-inference-hawkessumexpkern" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="tick.inference.HawkesSumExpKern">
-<em class="property">class </em><code class="descclassname">tick.inference.</code><code class="descname">HawkesSumExpKern</code><span class="sig-paren">(</span><em>decays</em>, <em>penalty='l2'</em>, <em>C=1000.0</em>, <em>solver='agd'</em>, <em>step=None</em>, <em>tol=1e-05</em>, <em>max_iter=100</em>, <em>verbose=False</em>, <em>print_every=10</em>, <em>record_every=10</em>, <em>elastic_net_ratio=0.95</em>, <em>random_state=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/inference/hawkes_sumexpkern_fixeddecay.html#HawkesSumExpKern"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.inference.HawkesSumExpKern" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">tick.inference.</code><code class="descname">HawkesSumExpKern</code><span class="sig-paren">(</span><em>decays</em>, <em>penalty='l2'</em>, <em>C=1000.0</em>, <em>n_baselines=1</em>, <em>period_length=None</em>, <em>solver='agd'</em>, <em>step=None</em>, <em>tol=1e-05</em>, <em>max_iter=100</em>, <em>verbose=False</em>, <em>print_every=10</em>, <em>record_every=10</em>, <em>elastic_net_ratio=0.95</em>, <em>random_state=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/inference/hawkes_sumexpkern_fixeddecay.html#HawkesSumExpKern"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.inference.HawkesSumExpKern" title="Permalink to this definition">¶</a></dt>
 <dd><p>Hawkes process learner for sum-exponential kernels with fixed and given
 decays, with many choices of penalization and solvers.</p>
 <p>Hawkes processes are point processes defined by the intensity:</p>
 <div class="math">
 \[\forall i \in [1 \dots D], \quad
-\lambda_i(t) = \mu_i + \sum_{j=1}^D
+\lambda_i(t) = \mu_i(t) + \sum_{j=1}^D
 \sum_{t_k^j &lt; t} \phi_{ij}(t - t_k^j)\]</div>
 <p>where</p>
 <ul class="simple">
 <li><span class="math">\(D\)</span> is the number of nodes</li>
-<li><span class="math">\(\mu_i\)</span> are the baseline intensities</li>
+<li><span class="math">\(\mu_i(t)\)</span> are the baseline intensities</li>
 <li><span class="math">\(\phi_{ij}\)</span> are the kernels</li>
 <li><span class="math">\(t_k^j\)</span> are the timestamps of all events of node <span class="math">\(j\)</span></li>
 </ul>
@@ -202,6 +204,19 @@ parameter <code class="xref py py-obj docutils literal"><span class="pre">decays
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>decays</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code>, shape=(n_decays, )</p>
 <blockquote>
 <div><p>The decays used in the exponential kernels.</p>
+</div></blockquote>
+<p><strong>n_baselines</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code>, default=1</p>
+<blockquote>
+<div><p>In this hawkes learner baseline is supposed to be either constant or 
+piecewise constant. If <code class="xref py py-obj docutils literal"><span class="pre">n_baseline</span> <span class="pre">&gt;</span> <span class="pre">1</span></code> then piecewise constant 
+setting is  enabled. In this case <span class="math">\(\mu_i(t)\)</span> is piecewise 
+constant on  intervals of size <code class="xref py py-obj docutils literal"><span class="pre">period_length</span> <span class="pre">/</span> <span class="pre">n_baselines</span></code> and 
+periodic.</p>
+</div></blockquote>
+<p><strong>period_length</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default=None</p>
+<blockquote>
+<div><p>In piecewise constant setting this denotes the period of the 
+piecewise constant baseline function.</p>
 </div></blockquote>
 <p><strong>C</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default=1e3</p>
 <blockquote>
@@ -287,7 +302,7 @@ Used in &#8216;sgd&#8217;, and &#8216;svrg&#8217; solvers</p>
 </table>
 <dl class="method">
 <dt id="tick.inference.HawkesSumExpKern.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>decays</em>, <em>penalty='l2'</em>, <em>C=1000.0</em>, <em>solver='agd'</em>, <em>step=None</em>, <em>tol=1e-05</em>, <em>max_iter=100</em>, <em>verbose=False</em>, <em>print_every=10</em>, <em>record_every=10</em>, <em>elastic_net_ratio=0.95</em>, <em>random_state=None</em><span class="sig-paren">)</span><a class="headerlink" href="#tick.inference.HawkesSumExpKern.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>decays</em>, <em>penalty='l2'</em>, <em>C=1000.0</em>, <em>n_baselines=1</em>, <em>period_length=None</em>, <em>solver='agd'</em>, <em>step=None</em>, <em>tol=1e-05</em>, <em>max_iter=100</em>, <em>verbose=False</em>, <em>print_every=10</em>, <em>record_every=10</em>, <em>elastic_net_ratio=0.95</em>, <em>random_state=None</em><span class="sig-paren">)</span><a class="headerlink" href="#tick.inference.HawkesSumExpKern.__init__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -403,7 +418,11 @@ given times.</p>
 
 <div class="section" id="examples-using-tick-inference-hawkessumexpkern">
 <h2>Examples using <code class="docutils literal"><span class="pre">tick.inference.HawkesSumExpKern</span></code><a class="headerlink" href="#examples-using-tick-inference-hawkessumexpkern" title="Permalink to this headline">¶</a></h2>
-<div class="thumbnailContainer" tooltip=""><div class="figure" id="id1">
+<div class="thumbnailContainer" tooltip="This example simulates and then estimates Hawkes kernels with varying baselines. In this exampl..."><div class="figure" id="id1">
+<a class="reference external image-reference" href="./../../auto_examples/./plot_hawkes_varying_baseline.html"><img alt="../../_images/plot_hawkes_varying_baseline1.png" src="../../_images/plot_hawkes_varying_baseline1.png" /></a>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="../../auto_examples/plot_hawkes_varying_baseline.html#example-plot-hawkes-varying-baseline-py"><span class="std std-ref">Hawkes process with non constant baseline</span></a></span></p>
+</div>
+</div><div class="thumbnailContainer" tooltip=""><div class="figure" id="id2">
 <a class="reference external image-reference" href="./../../auto_examples/inference/plot_hawkes_sum_exp_kernels.html"><img alt="../../_images/plot_hawkes_sum_exp_kernels.png" src="../../_images/plot_hawkes_sum_exp_kernels.png" /></a>
 <p class="caption"><span class="caption-text"><a class="reference internal" href="../../auto_examples/inference/plot_hawkes_sum_exp_kernels.html#example-inference-plot-hawkes-sum-exp-kernels-py"><span class="std std-ref">plot_hawkes_sum_exp_kernels.py</span></a></span></p>
 </div>
@@ -419,7 +438,7 @@ given times.</p>
       
     </p>
     <p>
-        &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Poulsen.<br/>
+        &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Vinther Poulsen.<br/>
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.<br/>
     </p>
   </div>
