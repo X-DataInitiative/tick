@@ -34,7 +34,7 @@ class ModelHawkesFixedSumExpKernLeastSq : public ModelHawkesSingle {
 
   //! @brief Constructor
   //! \param timestamps : a list of arrays representing the realization
-  //! \param decays : the 2d array of the decays
+  //! \param decays : the array of the decays
   //! \param end_time : The time until which this process has been observed
   //! \param max_n_threads : maximum number of threads to be used for multithreading
   //! \param optimization_level : 0 corresponds to no optimization and 1 to use of faster

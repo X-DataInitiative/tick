@@ -1,25 +1,44 @@
 cmake_minimum_required(VERSION 2.8)
 project(tick)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread")
+set(CMAKE_BUILD_TYPE Release)
 
-find_package(BLAS)
+option(USE_MKL "Force tick to use MKL" OFF)
+option(USE_OPENMP "Force tick to use OpenMP" OFF)
+option(USE_BLAS "Force tick to use BLAS" OFF)
 
-if (${BLAS_FOUND})
-    add_definitions(-DTICK_CBLAS_AVAILABLE)
+if (${USE_MKL})
+    set(MKLROOT $ENV{MKLROOT})
+    include_directories(${MKLROOT}/include)
 
-    set(EXTRA_TEST_LIBS ${BLAS_LIBRARIES})
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${BLAS_LINKER_FLAGS}")
+    set(EXTRA_TEST_LIBS mkl_intel_lp64 mkl_gnu_thread mkl_core gomp pthread m dl)
 
-    message(STATUS "BLAS Libraries: " ${BLAS_LIBRARIES})
-    message(STATUS "BLAS Linker flags: " ${BLAS_LINKER_FLAGS})
+    add_definitions(-DTICK_USE_MKL)
+elseif(${USE_BLAS})
+    find_package(BLAS)
+
+    if (${BLAS_FOUND})
+        add_definitions(-DTICK_CBLAS_AVAILABLE)
+
+        set(EXTRA_TEST_LIBS ${BLAS_LIBRARIES})
+        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${BLAS_LINKER_FLAGS}")
+
+        message(STATUS "BLAS Libraries: " ${BLAS_LIBRARIES})
+        message(STATUS "BLAS Linker flags: " ${BLAS_LINKER_FLAGS})
+    endif()
+else()
 endif()
 
-find_package(OpenMP)
+if (${USE_OPENMP})
+    find_package(OpenMP)
 
-if (${OPENMP_FOUND})
-    set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+    if (${OPENMP_FOUND})
+        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+
+        add_definitions(-DTICK_USE_OPENMP)
+    endif()
 endif()
 
 include_directories(
@@ -86,3 +105,5 @@ else()
             echo "Could not run C++ checks - gtest framework not found"
             )
 endif()
+
+add_subdirectory(benchmark)
