@@ -48,12 +48,22 @@ class Test(InferenceTest):
                 if solver == 'bfgs' and (penalty not in ['zero', 'l2']):
                     continue
 
-                learner = PoissonRegression(verbose=False,
-                                            fit_intercept=fit_intercept,
-                                            solver=solver,
-                                            penalty=penalty,
-                                            max_iter=1,
-                                            step=1e-5)
+                if penalty == 'binarsity':
+                    learner = PoissonRegression(verbose=False,
+                                                fit_intercept=fit_intercept,
+                                                solver=solver,
+                                                penalty=penalty,
+                                                max_iter=1,
+                                                step=1e-5,
+                                                blocks_start=[0],
+                                                blocks_length=[1])
+                else:
+                    learner = PoissonRegression(verbose=False,
+                                                fit_intercept=fit_intercept,
+                                                solver=solver,
+                                                penalty=penalty,
+                                                max_iter=1,
+                                                step=1e-5)
 
                 learner.fit(X, y)
                 self.assertTrue(np.isfinite(learner.weights).all())
@@ -98,12 +108,16 @@ class Test(InferenceTest):
 
         prox_class_map = PoissonRegression._penalties
         for penalty in PoissonRegression._penalties.keys():
-            learner = PoissonRegression(penalty=penalty)
+            if penalty == 'binarsity':
+                learner = PoissonRegression(penalty=penalty, blocks_start=[0],
+                                            blocks_length=[1])
+            else:
+                learner = PoissonRegression(penalty=penalty)
             prox_class = prox_class_map[penalty]
             self.assertTrue(isinstance(learner._prox_obj, prox_class))
 
-        msg = '^``penalty`` must be one of elasticnet, l1, l2, none, tv, ' \
-              'got wrong_name$'
+        msg = '^``penalty`` must be one of binarsity, elasticnet, l1, l2, ' \
+              'none, tv, got wrong_name$'
         with self.assertRaisesRegex(ValueError, msg):
             PoissonRegression(penalty='wrong_name')
 
@@ -130,7 +144,12 @@ class Test(InferenceTest):
         """
         for penalty in PoissonRegression._penalties.keys():
             if penalty != 'none':
-                learner = PoissonRegression(penalty=penalty, C=self.float_1)
+                if penalty == 'binarsity':
+                    learner = PoissonRegression(penalty=penalty, C=self.float_1,
+                                                blocks_start=[0],
+                                                blocks_length=[1])
+                else:
+                    learner = PoissonRegression(penalty=penalty, C=self.float_1)
                 self.assertEqual(learner.C, self.float_1)
                 self.assertEqual(learner._prox_obj.strength, 1. / self.float_1)
                 learner.C = self.float_2
@@ -139,7 +158,12 @@ class Test(InferenceTest):
 
                 msg = '^``C`` must be positive, got -1$'
                 with self.assertRaisesRegex(ValueError, msg):
-                    PoissonRegression(penalty=penalty, C=-1)
+                    if penalty == 'binarsity':
+                        PoissonRegression(penalty=penalty, C=-1,
+                                          blocks_start=[0],
+                                          blocks_length=[1])
+                    else:
+                        PoissonRegression(penalty=penalty, C=-1)
             else:
                 msg = '^You cannot set C for penalty "%s"$' % penalty
                 with self.assertWarnsRegex(RuntimeWarning, msg):
@@ -176,9 +200,21 @@ class Test(InferenceTest):
                 msg = '^Penalty "%s" has no elastic_net_ratio attribute$$' % \
                       penalty
                 with self.assertWarnsRegex(RuntimeWarning, msg):
-                    PoissonRegression(penalty=penalty, elastic_net_ratio=0.8)
+                    if penalty == 'binarsity':
+                        PoissonRegression(penalty=penalty,
+                                          elastic_net_ratio=0.8,
+                                          blocks_start=[0], blocks_length=[1])
+                    else:
+                        PoissonRegression(penalty=penalty,
+                                          elastic_net_ratio=0.8)
 
-                learner = PoissonRegression(penalty=penalty)
+                if penalty == 'binarsity':
+                    learner = PoissonRegression(penalty=penalty,
+                                                blocks_start=[0],
+                                                blocks_length=[1])
+                else:
+                    learner = PoissonRegression(penalty=penalty)
+
                 with self.assertWarnsRegex(RuntimeWarning, msg):
                     learner.elastic_net_ratio = ratio_1
 

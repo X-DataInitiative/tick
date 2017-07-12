@@ -19,7 +19,7 @@ class CoxRegression(LearnerOptim):
     C : `float`, default=1e3
         Level of penalization
 
-    penalty : {'none', 'l1', 'l2', 'elasticnet', 'tv'}, default='l2'
+    penalty : {'none', 'l1', 'l2', 'elasticnet', 'tv', 'binarsity'}, default='l2'
         The penalization to use. Default is 'l2', namely Ridge penalization
 
     solver : {'gd', 'agd'}, default='agd'
@@ -52,6 +52,8 @@ class CoxRegression(LearnerOptim):
         Record history information when ``n_iter`` (iteration number) is
         a multiple of ``record_every``
 
+    Other Parameters
+    ----------------
     elastic_net_ratio : `float`, default=0.95
         Ratio of elastic net mixing parameter with 0 <= ratio <= 1.
         For ratio = 0 this is ridge (L2 squared) regularization
@@ -63,6 +65,17 @@ class CoxRegression(LearnerOptim):
     random_state : int seed, RandomState instance, or None (default)
         The seed that will be used by stochastic solvers. Used in 'sgd',
         'svrg', and 'sdca' solvers
+
+    blocks_start : `numpy.array`, shape=(n_features,), default=None
+        The indices of the first column of each binarized feature blocks. It
+        corresponds to the ``feature_indices`` property of the
+        ``FeaturesBinarizer`` preprocessing.
+        Used in 'binarsity' penalty
+
+    blocks_length : `numpy.array`, shape=(n_features,), default=None
+        The length of each binarized feature blocks. It corresponds to the
+        ``n_values`` property of the ``FeaturesBinarizer`` preprocessing.
+        Used in 'binarsity' penalty
 
     Attributes
     ----------
@@ -84,7 +97,8 @@ class CoxRegression(LearnerOptim):
                  solver='agd', step=None, tol=1e-5, max_iter=100,
                  verbose=False, warm_start=False,
                  print_every=10, record_every=10,
-                 elastic_net_ratio=0.95, random_state=None):
+                 elastic_net_ratio=0.95, random_state=None, blocks_start=None,
+                 blocks_length=None):
 
         self._actual_kwargs = CoxRegression.__init__.actual_kwargs
         LearnerOptim.__init__(self, penalty=penalty, C=C, solver=solver,
@@ -93,7 +107,9 @@ class CoxRegression(LearnerOptim):
                               print_every=print_every,
                               record_every=record_every, sdca_ridge_strength=0,
                               elastic_net_ratio=elastic_net_ratio,
-                              random_state=random_state)
+                              random_state=random_state,
+                              blocks_start=blocks_start,
+                              blocks_length=blocks_length)
         self.coeffs = None
 
     def _construct_model_obj(self):
@@ -208,7 +224,8 @@ class CoxRegression(LearnerOptim):
                 else:
                     features, times, censoring = self._all_safe(features, times,
                                                                 censoring)
-                    model = ModelCoxRegPartialLik().fit(features, times, censoring)
+                    model = ModelCoxRegPartialLik().fit(features, times,
+                                                        censoring)
                     return model.loss(self.coeffs)
         else:
             raise RuntimeError('You must fit the model first')

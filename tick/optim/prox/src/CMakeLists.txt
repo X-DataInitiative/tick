@@ -12,4 +12,5 @@ add_library(prox EXCLUDE_FROM_ALL
         prox_l1w.cpp prox_l1w.h
         prox_elasticnet.cpp prox_elasticnet.h
         prox_multi.cpp prox_multi.h
-        prox_equality.cpp prox_equality.h)
+        prox_equality.cpp prox_equality.h
+        prox_binarsity.cpp prox_binarsity.h)
