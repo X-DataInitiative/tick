@@ -217,7 +217,7 @@ double ModelHawkesFixedExpKernLogLik::loss_i_k(const ulong i,
 
   for (ulong j = 0; j < n_nodes; j++) {
     double G_i_k_j = G_i_k[j];
-    if (k == (*n_jumps_per_node)[i] - 1) G_i_k_j += view_row(G[i], k + 1)[j];
+    if (k == (*n_jumps_per_node)[i] - 1) G_i_k_j += G[i](k + 1, j);
     loss += alpha[j + i * n_nodes] * G_i_k_j;
   }
   return loss;
@@ -279,7 +279,7 @@ void ModelHawkesFixedExpKernLogLik::grad_i_k(const ulong i, const ulong k,
 
   for (ulong j = 0; j < n_nodes; j++) {
     double G_i_k_j = G_i_k[j];
-    if (k == (*n_jumps_per_node)[i] - 1) G_i_k_j += view_row(G[i], k + 1)[j];
+    if (k == (*n_jumps_per_node)[i] - 1) G_i_k_j += G[i](k + 1, j);
     grad_alpha[j + i * n_nodes] += G_i_k_j - g_i_k[j] / s;
   }
 }

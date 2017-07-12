@@ -190,20 +190,20 @@ void ModelHawkesFixedExpKernLeastSq::compute_weights_i(const ulong i) {
   for (ulong j = 0; j < n_nodes; j++) {
     const SArrayDoublePtr realization_j = timestamps[j];
     const ulong N_j_size = realization_j->size();
-    const double betaij = view_row(*decays, i)[j];
+    const double betaij = (*decays)(i, j);
     ulong ij = 0;
     for (ulong k = 0; k < N_i_size; k++) {
       if (k > 0) {
         for (ulong j1 = 0; j1 < n_nodes; j1++) {
-          double beta_j1_j = view_row(*decays, j1)[j];
-          view_row(H, j1)[j] *= cexp(
+          double beta_j1_j = (*decays)(j1, j);
+          H(j1, j) *= cexp(
               -beta_j1_j * ((*timestamps_i)[k] - (*timestamps_i)[k - 1]));
         }
       }
       while ((ij < N_j_size) && ((*realization_j)[ij] < (*timestamps_i)[k])) {
         for (ulong j1 = 0; j1 < n_nodes; j1++) {
-          double beta_j1_j = view_row(*decays, j1)[j];
-          view_row(H, j1)[j] += beta_j1_j * cexp(
+          double beta_j1_j = (*decays)(j1, j);
+          H(j1, j) += beta_j1_j * cexp(
               -beta_j1_j * ((*timestamps_i)[k] - (*realization_j)[ij]));
         }
         Dg_i[j] += (1 - cexp(-betaij * (end_time - (*realization_j)[ij])));
@@ -211,17 +211,17 @@ void ModelHawkesFixedExpKernLeastSq::compute_weights_i(const ulong i) {
         ij++;
       }
 
-      C_i[j] += view_row(H, i)[j];
+      C_i[j] += H(i, j);
 
       // Here we compute E(j1,i,j)
       const ulong index = i * n_nodes + j;
       for (ulong j1 = 0; j1 < n_nodes; j1++) {
-        double beta_j1_i = view_row(*decays, j1)[i];
-        double beta_j1_j = view_row(*decays, j1)[j];
+        double beta_j1_i = (*decays)(j1, i);
+        double beta_j1_j = (*decays)(j1, j);
         ArrayDouble E_j1 = view_row(E, j1);
         double r = beta_j1_i / (beta_j1_i + beta_j1_j);
         E_j1[index] += r * (1 - cexp(-(end_time - (*timestamps_i)[k]) * (beta_j1_i + beta_j1_j)))
-            * view_row(H, j1)[j];
+            * H(j1, j);
       }
     }
 

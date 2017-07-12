@@ -53,7 +53,7 @@ double ModelHawkesFixedSumExpKernLeastSq::loss_i(const ulong i,
 
     for (ulong u = 0; u < n_decays; ++u) {
       double alpha_i_j_u = alpha_i[j * n_decays + u];
-      C_sum += alpha_i_j_u * view_row(C_i, j)[u];
+      C_sum += alpha_i_j_u * C_i(j, u);
 
       for (ulong p = 0; p < n_baselines; ++p) {
         Dg_sum += alpha_i_j_u * mu_i[p] * Dg_j[u * n_baselines + p];
@@ -61,11 +61,11 @@ double ModelHawkesFixedSumExpKernLeastSq::loss_i(const ulong i,
 
       for (ulong u1 = 0; u1 < n_decays; ++u1) {
         double alpha_i_j_u1 = alpha_i[j * n_decays + u1];
-        Dgg_sum += alpha_i_j_u * alpha_i_j_u1 * view_row(Dgg_j, u)[u1];
+        Dgg_sum += alpha_i_j_u * alpha_i_j_u1 * Dgg_j(u, u1);
 
         for (ulong j1 = 0; j1 < n_nodes; ++j1) {
           double alpha_i_j1_u1 = alpha_i[j1 * n_decays + u1];
-          E_sum += alpha_i_j_u * alpha_i_j1_u1 * view_row(E_j, j1)[u * n_decays + u1];
+          E_sum += alpha_i_j_u * alpha_i_j1_u1 * E_j(j1, u * n_decays + u1);
         }
       }
     }
@@ -135,7 +135,7 @@ void ModelHawkesFixedSumExpKernLeastSq::grad_i(const ulong i,
       double alpha_i_j_u = alpha_i[j * n_decays + u];
       double &grad_alpha_i_j_u = grad_alpha_i[j * n_decays + u];
 
-      grad_alpha_i_j_u -= 2 * view_row(C_i, j)[u];
+      grad_alpha_i_j_u -= 2 * C_i(j, u);
 
       for (ulong p = 0; p < n_baselines; ++p) {
         grad_mu_i[p] += 2 * alpha_i_j_u * Dg_j[u * n_baselines + p];
@@ -145,12 +145,12 @@ void ModelHawkesFixedSumExpKernLeastSq::grad_i(const ulong i,
       for (ulong u1 = 0; u1 < n_decays; ++u1) {
         double alpha_i_j_u1 = alpha_i[j * n_decays + u1];
 
-        grad_alpha_i_j_u += 2 * alpha_i_j_u1 * view_row(Dgg_j, u)[u1];
+        grad_alpha_i_j_u += 2 * alpha_i_j_u1 * Dgg_j(u , u1);
 
         for (ulong j1 = 0; j1 < n_nodes; ++j1) {
           double alpha_i_j1_u1 = alpha_i[j1 * n_decays + u1];
           double &grad_alpha_i_j1_u1 = grad_alpha_i[j1 * n_decays + u1];
-          double E_j_j1_u_u1 = view_row(E_j, j1)[u * n_decays + u1];
+          double E_j_j1_u_u1 = E_j(j1, u * n_decays + u1);
 
           grad_alpha_i_j_u += 2 * alpha_i_j1_u1 * E_j_j1_u_u1;
           grad_alpha_i_j1_u1 += 2 * alpha_i_j_u * E_j_j1_u_u1;
@@ -207,7 +207,7 @@ void ModelHawkesFixedSumExpKernLeastSq::compute_weights_i(const ulong i) {
 
         for (ulong u = 0; u < n_decays; ++u) {
           double decay_u = decays[u];
-          view_row(H, j)[u] *= cexp(-decay_u * (t_k_i - t_k_minus_one_i));
+          H(j, u) *= cexp(-decay_u * (t_k_i - t_k_minus_one_i));
         }
       }
 
@@ -216,7 +216,7 @@ void ModelHawkesFixedSumExpKernLeastSq::compute_weights_i(const ulong i) {
 
         for (ulong u = 0; u < n_decays; ++u) {
           double decay_u = decays[u];
-          view_row(H, j)[u] += decay_u * cexp(-decay_u * (t_k_i - t_l_j));
+          H(j, u) += decay_u * cexp(-decay_u * (t_k_i - t_l_j));
         }
 
         l[j] += 1;
@@ -224,7 +224,7 @@ void ModelHawkesFixedSumExpKernLeastSq::compute_weights_i(const ulong i) {
 
       for (ulong u = 0; u < n_decays; ++u) {
         double decay_u = decays[u];
-        view_row(C_i, j)[u] += view_row(H, j)[u];
+        C_i(j, u) += H(j, u);
 
         for (ulong u1 = 0; u1 < n_decays; ++u1) {
           double decay_u1 = decays[u1];
@@ -232,7 +232,7 @@ void ModelHawkesFixedSumExpKernLeastSq::compute_weights_i(const ulong i) {
           // we fill E_i,j,u',u
           double ratio = decay_u1 / (decay_u1 + decay_u);
           double tmp = 1 - cexp(-(decay_u1 + decay_u) * (end_time - t_k_i));
-          view_row(E_i, j)[u1 * n_decays + u] += ratio * tmp * view_row(H, j)[u];
+          E_i(j, u1 * n_decays + u) += ratio * tmp * H(j, u);
         }
       }
     }
@@ -255,7 +255,7 @@ void ModelHawkesFixedSumExpKernLeastSq::compute_weights_i(const ulong i) {
         double decay_u1 = decays[u1];
 
         double ratio = decay_u * decay_u1 / (decay_u + decay_u1);
-        view_row(Dgg_i, u)[u1] += ratio * (1 - cexp(-(decay_u + decay_u1) * (end_time - t_k_i)));
+        Dgg_i(u, u1) += ratio * (1 - cexp(-(decay_u + decay_u1) * (end_time - t_k_i)));
       }
     }
   }

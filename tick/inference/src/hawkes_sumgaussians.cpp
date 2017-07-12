@@ -148,7 +148,7 @@ void HawkesSumGaussians::estimate_ru(const ulong r_u,
   double mu_u = mu[node_u];
 
   // initialize next data
-  double &next_mu_ur = view_row(next_mu, r)[node_u];
+  double &next_mu_ur = next_mu(r, node_u);
   ArrayDouble next_C_ru = view_row(next_C, r * n_nodes + node_u);
   ArrayDouble unnormalized_next_C_ru = view_row(unnormalized_next_C, r * n_nodes + node_u);
 
@@ -197,7 +197,7 @@ void HawkesSumGaussians::update_amplitudes_u(const ulong u, ArrayDouble &amplitu
       double B = kernel_integral[v * n_gaussians + m] + strength_lasso;
       double C = 0;
       for (ulong r = 0; r < n_realizations; r++) {
-        C -= view_row(next_C, r * n_nodes + u)[v * n_gaussians + m];
+        C -= next_C(r * n_nodes + u, v * n_gaussians + m);
       }
       // computation of updated value
       double sol = 0.;
@@ -227,7 +227,7 @@ void HawkesSumGaussians::prox_amplitudes_u(const ulong u,
       // computation of the constant C
       double C = 0;
       for (ulong r = 0; r < n_realizations; r++) {
-        C -= view_row(next_C, r * n_nodes + u)[v * n_gaussians + m];
+        C -= next_C(r * n_nodes + u, v * n_gaussians + m);
       }
       // computation of the gradient at (u,v)
       grad_Q[m] +=
@@ -264,7 +264,7 @@ void HawkesSumGaussians::prox_amplitudes_u(const ulong u,
 void HawkesSumGaussians::update_baseline_u(const ulong u, ArrayDouble &mu) {
   mu[u] = 0;
   for (ulong r = 0; r < n_realizations; r++) {
-    mu[u] += view_row(next_mu, r)[u] / end_times->sum();
+    mu[u] += next_mu(r, u) / end_times->sum();
   }
 }
 

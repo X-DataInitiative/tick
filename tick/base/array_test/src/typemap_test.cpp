@@ -286,7 +286,7 @@
         SARRAY2DPTR_TYPE result = SARRAY2D_TYPE::new_ptr(row_size, col_size); \
         for (ulong i = 0; i < row_size; ++i) { \
             for (ulong j = 0; j < col_size; ++j) { \
-              view_row(*result, i)[j] = i * col_size + j;\
+              (*result)(i, j) = i * col_size + j;\
           } \
         } \
         return result; \
