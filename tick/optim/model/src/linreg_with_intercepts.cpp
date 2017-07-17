@@ -1,31 +1,17 @@
 // License: BSD 3 clause
 
-//
-// Created by Stéphane GAIFFAS on 12/12/2015.
-//
-
 #include "linreg_with_intercepts.h"
 
 ModelLinRegWithIntercepts::ModelLinRegWithIntercepts(const SBaseArrayDouble2dPtr features,
                                                      const SArrayDoublePtr labels,
+                                                     const bool fit_intercept,
                                                      const int n_threads)
-    : ModelGeneralizedLinearWithIntercepts(features, labels, n_threads),
-      ModelLipschitz() {}
+    : ModelGeneralizedLinear(features, labels, fit_intercept, n_threads),
+      ModelGeneralizedLinearWithIntercepts(features, labels, fit_intercept, n_threads),
+      ModelLinReg(features, labels, fit_intercept, n_threads) {}
 
 const char *ModelLinRegWithIntercepts::get_class_name() const {
   return "ModelLinRegWithIntercepts";
-}
-
-double ModelLinRegWithIntercepts::loss_i(const ulong i, const ArrayDouble &coeffs) {
-  // Compute x_i^T \beta + b_i
-  const double z = get_inner_prod(i, coeffs);
-  const double d = get_label(i) - z;
-  return d * d / 2;
-}
-
-double ModelLinRegWithIntercepts::grad_i_factor(const ulong i, const ArrayDouble &coeffs) {
-  const double z = get_inner_prod(i, coeffs);
-  return z - get_label(i);
 }
 
 void ModelLinRegWithIntercepts::compute_lip_consts() {
@@ -34,8 +20,12 @@ void ModelLinRegWithIntercepts::compute_lip_consts() {
   } else {
     compute_features_norm_sq();
     lip_consts = ArrayDouble(n_samples);
+    double c = 1;
+    if (fit_intercept) {
+      c = 2;
+    }
     for (ulong i = 0; i < n_samples; ++i) {
-      lip_consts[i] = features_norm_sq[i] + 1;
+      lip_consts[i] = features_norm_sq[i] + c;
     }
   }
 }

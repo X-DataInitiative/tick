@@ -9,7 +9,7 @@
 #include "model_generalized_linear.h"
 #include "model_labels_features.h"
 
-class ModelGeneralizedLinearWithIntercepts : public ModelGeneralizedLinear {
+class ModelGeneralizedLinearWithIntercepts : public virtual ModelGeneralizedLinear {
  protected:
   /**
    * Computes gradient fo ith observation
@@ -25,6 +25,7 @@ class ModelGeneralizedLinearWithIntercepts : public ModelGeneralizedLinear {
  public:
   ModelGeneralizedLinearWithIntercepts(const SBaseArrayDouble2dPtr features,
                                        const SArrayDoublePtr labels,
+                                       const bool fit_intercept,
                                        const int n_threads = 1);
 
   const char *get_class_name() const override;
@@ -36,7 +37,7 @@ class ModelGeneralizedLinearWithIntercepts : public ModelGeneralizedLinear {
   double get_inner_prod(const ulong i, const ArrayDouble &coeffs) const override;
 
   ulong get_n_coeffs() const override {
-    return n_features + n_samples;
+    return n_features + n_samples + static_cast<int>(fit_intercept);
   }
 };
 

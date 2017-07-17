@@ -16,6 +16,11 @@ class ModelLinRegWithIntercepts(ModelFirstOrder,
     """Linear regression model with individual intercepts.
     This class gives first order information (gradient and loss) for this model
 
+    Parameters
+    ----------
+    fit_intercept : `bool`, default=`True`
+        If `True`, the model uses an intercept
+
     Attributes
     ----------
     features : `numpy.ndarray`, shape=(n_samples, n_features) (read-only)
@@ -41,9 +46,10 @@ class ModelLinRegWithIntercepts(ModelFirstOrder,
         * otherwise the desired number of threads
     """
 
-    def __init__(self, n_threads: int = 1):
+    def __init__(self, fit_intercept: bool = True, n_threads: int = 1):
         ModelFirstOrder.__init__(self)
-        ModelGeneralizedLinearWithIntercepts.__init__(self)
+        ModelGeneralizedLinearWithIntercepts.__init__(self,
+                                                      fit_intercept)
         ModelLipschitz.__init__(self)
         self.n_threads = n_threads
 
@@ -69,6 +75,7 @@ class ModelLinRegWithIntercepts(ModelFirstOrder,
         ModelLipschitz.fit(self, features, labels)
         self._set("_model", _ModelLinRegWithIntercepts(self.features,
                                                        self.labels,
+                                                       self.fit_intercept,
                                                        self.n_threads))
         return self
 
@@ -81,5 +88,7 @@ class ModelLinRegWithIntercepts(ModelFirstOrder,
     def _get_lip_best(self):
         s = svd(self.features, full_matrices=False,
                 compute_uv=False)[0] ** 2
-
-        return (s + 1) / self.n_samples
+        if self.fit_intercept:
+            return (s + 2) / self.n_samples
+        else:
+            return (s + 1) / self.n_samples

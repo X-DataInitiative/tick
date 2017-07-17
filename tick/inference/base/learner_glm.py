@@ -20,7 +20,7 @@ class LearnerGLM(LearnerOptim):
         Level of penalization
 
     penalty : 'none', 'l1', 'l2', 'elasticnet', 'tv', 'binarsity', default='l2'
-        The penalization to use. Default 'l2', namely is ridge penalization.
+        The penalization to use. Default 'l2', namely ridge penalization.
 
     solver : 'gd', 'agd', 'bfgs', 'svrg', 'sdca'
         The name of the solver to use
@@ -165,7 +165,6 @@ class LearnerGLM(LearnerOptim):
         model_obj.fit(X, y)
 
         if self.step is None and self.solver in self._solvers_with_step:
-
             if self.solver in self._solvers_with_linesearch:
                 self._solver_obj.linesearch = True
             elif self.solver == 'svrg':

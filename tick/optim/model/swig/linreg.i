@@ -5,7 +5,7 @@
 %}
 
 
-class ModelLinReg : public ModelGeneralizedLinear,
+class ModelLinReg : public virtual ModelGeneralizedLinear,
                     public ModelLipschitz {
  public:
 
@@ -13,5 +13,4 @@ class ModelLinReg : public ModelGeneralizedLinear,
               const SArrayDoublePtr labels,
               const bool fit_intercept,
               const int n_threads);
-
 };

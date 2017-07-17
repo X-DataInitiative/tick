@@ -140,3 +140,20 @@ These learners might then infer much more exotic kernels
    :template: class.rst
 
    inference.CoxRegression
+
+4. Robust Analysis
+------------------
+.. currentmodule:: tick
+
+.. autosummary::
+   :toctree: generated/
+   :template: function.rst
+
+   inference.std_mad
+   inference.std_iqr
+
+.. autosummary::
+   :toctree: generated/
+   :template: class.rst
+
+   inference.RobustLinearRegression

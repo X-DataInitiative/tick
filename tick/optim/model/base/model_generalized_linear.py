@@ -50,7 +50,4 @@ class ModelGeneralizedLinear(ModelLabelsFeatures):
         self.fit_intercept = fit_intercept
 
     def _get_n_coeffs(self):
-        if self.fit_intercept:
-            return self.n_features + 1
-        else:
-            return self.n_features
+        return self._model.get_n_coeffs()
