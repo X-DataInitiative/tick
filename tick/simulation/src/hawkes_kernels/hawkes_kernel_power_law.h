@@ -7,8 +7,9 @@
 
 // License: BSD 3 clause
 
-#include <math.h>
 #include "hawkes_kernel.h"
+
+#include <cmath>
 
 //
 //

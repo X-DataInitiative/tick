@@ -1,4 +1,4 @@
-add_library(solver EXCLUDE_FROM_ALL
+add_library(tick_solver EXCLUDE_FROM_ALL
         sgd.h sgd.cpp
         svrg.h svrg.cpp
         sdca.h sdca.cpp

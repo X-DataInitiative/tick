@@ -3,12 +3,16 @@
 
 // License: BSD 3 clause
 
+#include "defs.h"
+
+#include <cmath>
+#include <ctime>
+
 #include <mutex>
-#include <math.h>
-#include <time.h>
 #include <iostream>
 #include <random>
-#include <array.h>
+
+#include "array.h"
 
 /**
  * @class Rand

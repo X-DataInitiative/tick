@@ -1,4 +1,4 @@
-add_library(array_test EXCLUDE_FROM_ALL
+add_library(tick_array_test EXCLUDE_FROM_ALL
         array_test.cpp array_test.h
         varraycontainer.cpp varraycontainer.h
         sbasearray_container.h sbasearray_container.cpp

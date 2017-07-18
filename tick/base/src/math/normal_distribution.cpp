@@ -4,6 +4,8 @@
 // Created by Martin Bompaire on 11/04/16.
 //
 
+#include "defs.h"
+
 #include <cmath>
 #include "normal_distribution.h"
 

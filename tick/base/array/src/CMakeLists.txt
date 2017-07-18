@@ -1,4 +1,4 @@
-add_library(array EXCLUDE_FROM_ALL
+add_library(tick_array EXCLUDE_FROM_ALL
         abstractarray1d2d.h
         array.h
         array2d.h

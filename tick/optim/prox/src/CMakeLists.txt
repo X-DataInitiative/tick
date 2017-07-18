@@ -1,4 +1,4 @@
-add_library(prox EXCLUDE_FROM_ALL
+add_library(tick_prox EXCLUDE_FROM_ALL
         prox.cpp prox.h
         prox_separable.cpp prox_separable.h
         prox_l2sq.cpp prox_l2sq.h
