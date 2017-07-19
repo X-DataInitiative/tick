@@ -47,7 +47,7 @@ void HawkesEM::solve(ArrayDouble &mu, ArrayDouble2d &kernels) {
   kernels.init_to_zero();
   for (ulong r = 0; r < n_realizations; r++) {
     for (ulong node_u = 0; node_u < n_nodes; ++node_u) {
-      mu[node_u] += view_row(next_mu, r)[node_u];
+      mu[node_u] += next_mu(r, node_u);
 
       ArrayDouble2d next_kernel_u_r(n_nodes, kernel_size,
                                     view_row(next_kernels, r * n_nodes + node_u).data());
@@ -74,7 +74,7 @@ void HawkesEM::solve_u_r(const ulong r_u, const ArrayDouble &mu,
   ArrayDouble2d unnormalized_kernel_ru(n_nodes, kernel_size,
                                        view_row(unnormalized_kernels,
                                                 r * n_nodes + node_u).data());
-  double &next_mu_ru = view_row(next_mu, r)[node_u];
+  double &next_mu_ru = next_mu(r, node_u);
 
   ArrayDouble timestamps_u = view(*realization[node_u]);
 

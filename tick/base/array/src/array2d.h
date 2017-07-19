@@ -112,28 +112,70 @@ class Array2d : public BaseArray2d<T> {
     void mult_add_mult_incr(const Array2d<T>& x, const T a, const Array2d<T>& y, const T b);
 
     /**
-     * @brief Bracket notation for extraction and assignements. We use 1d index.
+     * @brief Bracket notation for extraction and assignments. We use 1d index.
      *
      * \param i Index in the array (i = r*n_cols+c, where r (c) is the row (column) number
      * \return A reference to the element number \a i
      */
-    inline T &operator[](const ulong i) {
-#ifdef DEBUG_COSTLY_THROW
-        if (i >= _size) TICK_BAD_INDEX(0, _size, i);
-#endif
+    T &operator[](const ulong i) {
+        #ifdef DEBUG_COSTLY_THROW
+            if (i >= _size) TICK_BAD_INDEX(0, _size, i);
+        #endif
+
         return _data[i];
     }
 
-    //! @brief Get a reference to a value
-    //! \param row The row number
-    //! \param col The column number
-    //! \return A reference to the corresponding
-    inline T &value(ulong row, ulong col) {
-#ifdef DEBUG_COSTLY_THROW
-        if (row >= _n_rows) TICK_BAD_INDEX(0, row, _n_rows);
-        if (col >= _n_cols) TICK_BAD_INDEX(0, col, _n_cols);
-#endif
-        return _data[row * _n_cols + col];
+
+    /**
+   * @brief Bracket notation for extraction and assignments. We use 1d index.
+   *
+   * Const version
+   *
+   * \param i Index in the array (i = r*n_cols+c, where r (c) is the row (column) number
+   * \return A reference to the element number \a i
+   */
+    const T &operator[](const ulong i) const {
+        #ifdef DEBUG_COSTLY_THROW
+            if (i >= _size) TICK_BAD_INDEX(0, _size, i);
+        #endif
+
+        return _data[i];
+    }
+
+    /**
+     * Operator to get value at position (i, j)
+     *
+     * @param i Row index
+     * @param j Column index
+     * @return Value at position (i, j)
+     */
+    T &operator()(const ulong i, const ulong j) {
+        const ulong idx = i * this->n_cols() + j;
+
+        #ifdef DEBUG_COSTLY_THROW
+            if (i >= this->n_rows() || j >= this->n_cols()) TICK_BAD_INDEX(0, _size, idx);
+        #endif
+
+        return _data[idx];
+    }
+
+      /**
+     * Operator to get value at position (i, j)
+     *
+     * Const version
+     *
+     * @param i Row index
+     * @param j Column index
+     * @return Value at position (i, j)
+     */
+    const T& operator()(const ulong i, const ulong j) const {
+        const ulong idx = i * this->n_cols() + j;
+
+        #ifdef DEBUG_COSTLY_THROW
+            if (i >= this->n_rows() || j >= this->n_cols()) TICK_BAD_INDEX(0, _size, idx);
+        #endif
+
+        return _data[idx];
     }
 
     //! @brief Returns a shared pointer to a SArray2d encapsulating the array

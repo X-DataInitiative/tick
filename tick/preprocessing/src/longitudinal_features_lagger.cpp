@@ -39,7 +39,7 @@ void LongitudinalFeaturesLagger::dense_lag_preprocessor(
       row = j;
       sample = row / n_intervals;
       col = feature * (n_lags + 1);
-      value = features.value(row, feature);
+      value = features(row, feature);
       if (value != 0) {
         while (row < censoring &&
             row / n_intervals == sample &&

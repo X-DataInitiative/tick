@@ -98,11 +98,11 @@ double test_IndexError_ArrayDouble(ArrayDouble &array) {
 }
 
 double test_IndexError_rows_ArrayDouble2d(ArrayDouble2d &array) {
-    return view_row(array, array.n_rows() + 1)[0];
+    return array(array.n_rows() + 1, 0);
 }
 
 double test_IndexError_cols_ArrayDouble2d(ArrayDouble2d &array) {
-    return view_row(array, 0)[array.n_cols()];
+    return array(0, array.n_cols());
 }
 
 
