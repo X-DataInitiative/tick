@@ -121,7 +121,8 @@ class Test(unittest.TestCase):
                 if (isinstance(test_array, np.ndarray)):
                     Test.compare_arrays(test_array, np.zeros_like(test_array))
                 else:
-                    Test.compare_arrays(test_array.data, np.zeros_like(test_array.data))
+                    Test.compare_arrays(test_array.data,
+                                        np.zeros_like(test_array.data))
 
     def test_copy(self):
         """...Test behavior of copy constructor and assignment on arrays"""
@@ -201,8 +202,8 @@ class Test(unittest.TestCase):
         test_arrays = self._test_arrays('BaseArrayDouble')
         original_arrays = self._test_arrays('BaseArrayDouble')
         for test_array, original_array in zip(test_arrays, original_arrays):
-            self.assertEqual(test_array.sum(),
-                             test.test_as_array(test_array))
+            self.assertAlmostEqual(test_array.sum(),
+                                   test.test_as_array(test_array))
             # If it sparse data has been copied and original array not affected
             if hasattr(test_array, "toarray"):
                 self.compare_arrays(test_array, original_array)
@@ -235,8 +236,8 @@ class Test(unittest.TestCase):
             test_arrays = self._test_arrays(array_type)
             original_arrays = self._test_arrays(array_type)
             for test_array, original_array in zip(test_arrays, original_arrays):
-                self.assertEqual(original_array.sum(),
-                                 test_func(test_array))
+                self.assertAlmostEqual(original_array.sum(),
+                                       test_func(test_array))
                 # Data has been copied and original array should not be affected
                 self.compare_arrays(test_array, original_array)
 
@@ -256,7 +257,7 @@ class Test(unittest.TestCase):
                     expected = np.array([test_array1.sum(), test_array2.sum(),
                                          test_array3.sum()])
                     results = test_func(test_array1, test_array2, test_array3)
-                    np.testing.assert_equal(results, expected)
+                    np.testing.assert_array_almost_equal(results, expected)
 
                     Test.compare_arrays(test_array1, test_array)
                     Test.compare_arrays(test_array2, np.zeros_like(test_array2))
@@ -355,7 +356,7 @@ class Test(unittest.TestCase):
             test_arrays = self._test_arrays(array_type)
             for test_array in test_arrays:
                 # Then we compare that the sum value is correct
-                self.assertEqual(test_func(test_array), test_array.sum())
+                self.assertAlmostEqual(test_func(test_array), test_array.sum())
 
     def test_min(self):
         """...Test min method of arrays"""
@@ -529,7 +530,7 @@ class Test(unittest.TestCase):
         index
         """
         a = np.array([-0.45, -0.58, -1.31, -0.89, 0.31, -1.29, 1.77, -0.39,
-                     -1.2, -0.86])
+                      -1.2, -0.86])
         sorted_index = np.array([4, 7, 0, 1, 9, 3, 8, 5, 2, 6])
         sorted_a = np.array([0.31, -0.39, -0.45, -0.58, -0.86, -0.89, -1.2,
                              -1.29, -1.31, 1.77])
@@ -582,8 +583,9 @@ class Test(unittest.TestCase):
             array = self.python_array_1.copy()
             test.test_mult_add_mult_incr_ArrayDouble(array, x, a, y, b)
             python_result = Test.cast_1d_array_to_1d_dense(
-                self.python_array_1 + a*x + b*y)
+                self.python_array_1 + a * x + b * y)
             np.testing.assert_almost_equal(array, python_result)
+
 
 if __name__ == "__main__":
     unittest.main()

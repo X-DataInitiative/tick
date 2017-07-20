@@ -40,15 +40,17 @@ class Test(unittest.TestCase):
                                 n_threads=2, max_iter=4,
                                 ode_max_iter=100)
 
-        em.fit(ticks, baseline_start=mu, amplitudes_start=auvd, basis_kernels_start=gdm)
+        em.fit(ticks, baseline_start=mu, amplitudes_start=auvd,
+               basis_kernels_start=gdm)
 
-        np.testing.assert_array_almost_equal(em.baseline, [0.153022, 0.179124])
+        np.testing.assert_array_almost_equal(em.baseline, [0.153022, 0.179124],
+                                             decimal=4)
 
         np.testing.assert_array_almost_equal(
-            em.amplitudes, [[[1.21826442e-05, 1.78735203e-03],
-                             [2.26547627e-05, 3.36176641e-03]],
+            em.amplitudes, [[[1.21125e-05, 1.744123e-03],
+                             [2.267314e-05, 3.287014e-03]],
                             [[1.48773260e-05, 2.06898364e-03],
-                             [6.60131078e-06, 7.28397551e-04]]])
+                             [6.60131078e-06, 7.28397551e-04]]], decimal=4)
 
         basis_kernels = np.array(
             [[0.0001699, 0.00031211, 0.00043944, 0.0005521, 0.00066688,
@@ -69,7 +71,7 @@ class Test(unittest.TestCase):
               0.01154156, 0.0096817, 0.00779345, 0.00543011, 0.00279355]])
 
         np.testing.assert_array_almost_equal(em.basis_kernels,
-                                             basis_kernels, decimal=6)
+                                             basis_kernels, decimal=3)
 
 
 if __name__ == "__main__":

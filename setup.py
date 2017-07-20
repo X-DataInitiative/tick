@@ -52,6 +52,10 @@ from scipy.sparse import csr_matrix
 
 debug_flags = ['DEBUG_COSTLY_THROW']
 
+# If true, add compilation flags to use fast (but maybe inaccurate) math
+# See https://gcc.gnu.org/wiki/FloatingPointMath
+use_fast_math = True
+
 version_info = sys.version_info
 
 python_min_ver = (3, 4, 0)
@@ -244,7 +248,11 @@ def create_extension(extension_name, module_dir,
                               '-I./tick/base/src/',
                               sparse_indices_flag,
                               '-std=c++11',
+                              '-O3',
                               ]
+
+    if use_fast_math:
+        min_extra_compile_args.append('-ffast-math')
 
     if extra_compile_args is None:
         extra_compile_args = min_extra_compile_args
