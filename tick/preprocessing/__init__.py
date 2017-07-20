@@ -7,6 +7,6 @@ from .utils import safe_array, check_censoring_consistency,\
     check_longitudinal_features_consistency
 
 __all__ = ["FeaturesBinarizer", "LongitudinalFeaturesProduct",
-           "LongitudinalFeaturesLaggers", "safe_array",
+           "LongitudinalFeaturesLagger", "safe_array",
            "check_censoring_consistency",
            "check_longitudinal_features_consistency"]

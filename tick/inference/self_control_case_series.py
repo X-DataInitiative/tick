@@ -16,9 +16,6 @@ from tick.simulation import SimuSCCS
 
 class LearnerSCCS(ABC, Base):
     _attrinfos = {
-        "solver": {
-            "writable": False
-        },
         "penalty": {
             "writable": False
         },
@@ -119,6 +116,13 @@ class LearnerSCCS(ABC, Base):
         self._solver_obj = self._construct_solver_obj(step, max_iter, tol,
                                                       print_every, record_every,
                                                       verbose, random_state)
+        self.step = step,
+        self.max_iter = max_iter,
+        self.tol = tol,
+        self.print_every = print_every,
+        self.record_every = record_every
+        self.verbose = verbose,
+        self.random_state = random_state,
         np.random.seed(random_state)
         self.refit_coeffs = None
         self.bootstrap_CI = None
