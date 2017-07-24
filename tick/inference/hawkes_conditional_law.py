@@ -164,7 +164,7 @@ class HawkesConditionalLaw(Base):
         '_mark_probabilities_N': {},
         '_mark_min': {}, '_mark_max': {},
         '_lam_N': {}, '_lam_T': {},
-        '_claw': {}, '_claw1': {}, '_claw_X': {},
+        '_claw': {}, '_claw1': {}, '_claw_X': {}, '_n_events': {},
         '_int_claw': {}, '_IG': {}, '_IG2': {},
         '_quad_x': {}, '_quad_w': {}
     }
@@ -234,7 +234,7 @@ class HawkesConditionalLaw(Base):
         if model:
             self.set_model(model)
 
-    def fit(self, events: list):
+    def fit(self, events: list, T=None):
         """Fit the model according to the given training data.
 
         Parameters
@@ -247,6 +247,10 @@ class HawkesConditionalLaw(Base):
             component j of realization i.
             If only one realization is given, it will be wrapped into a list
 
+        T : `double`, default=None
+            The duration (in physical time) of the realization. If it is None then
+            T is considered to be the time of the last event (of any component).
+
         Returns
         -------
         output : `HawkesConditionalLaw`
@@ -256,7 +260,7 @@ class HawkesConditionalLaw(Base):
             events = [events]
 
         for timestamps in events:
-            self.incremental_fit(timestamps, compute=False)
+            self.incremental_fit(timestamps, compute=False, T=T)
         self.compute()
 
         return self
@@ -306,7 +310,7 @@ class HawkesConditionalLaw(Base):
     def _init_marked_components(self):
         """Init marked components
 
-        This builds the field self._marked_components so that it is set to
+        This builds the field self.marked_components so that it is set to
            [component1_mark_intervals, ..., componentN_mark_intervals]
         where each componentj_mark_intervals is of the form
            [[min1, max1], [min2, max2], ..., [mink, maxk]]
@@ -369,6 +373,17 @@ class HawkesConditionalLaw(Base):
         self.mean_intensity = [0] * self.n_nodes
         self._lam_N = [0] * self.n_nodes
         self._lam_T = [0] * self.n_nodes
+        # Used to store the number of events of each component that
+        # have been used to perform estimation on all the lags
+        # versus the number of events that could not be used for all the lags
+        # Warning : we don't take care of marks for this computation
+        # normally we should do this computation independantly for each mark
+        self._n_events = np.zeros((2, self.n_nodes))
+
+    def _init_claws(self):
+        """Init the claw storage
+        """
+        self._claw = [0] * len(self._index2ijl)
 
     def _index_to_lexical(self, index):
         """Convert index to lexical order (i,j,l)
@@ -432,7 +447,7 @@ class HawkesConditionalLaw(Base):
         """
         return self._ijl2index[i][j][l]
 
-    def incremental_fit(self, realization, compute=True):
+    def incremental_fit(self, realization, T=None, compute=True):
         """Allows to add some more realizations before estimation is performed.
 
         It updates the conditional laws (stored in `self._claw` and
@@ -447,7 +462,11 @@ class HawkesConditionalLaw(Base):
             * list of pairs (t,m) np.arrays representing the arrival times of
               each component (x) and the cumulative marks signal (m)
 
-        compute : `bool`, default=`True`
+        T : `double`, default=None
+            The duration (in physical time) of the realization. If it is -1 then
+            T is considered to be the time of the last event (of any component).
+
+        compute : `bool`, default=`False`
             Computes kernel estimation. If set to `False`, you will have to
             manually call `compute` method afterwards.
             This is useful to add multiple realizations and compute only once
@@ -460,6 +479,12 @@ class HawkesConditionalLaw(Base):
             self._init_index()
             self._init_mark_stats()
             self._init_lambdas()
+            self._init_claws()
+
+        else:
+            if compute and self._has_been_computed_once():
+                warnings.warn(("compute() method was already called, "
+                               "computed kernels will be updated."))
 
         # We perform some checks
         if self.n_nodes != len(realization):
@@ -469,7 +494,7 @@ class HawkesConditionalLaw(Base):
 
         # Realization normalization
         if not isinstance(realization[0], (list, tuple)):
-            realization = [(r, np.arange(len(r), dtype=np.double))
+            realization = [(r, np.arange(len(r), dtype=np.double) + 1)
                            for r in realization]
 
         # Do we need to delay the realization ?
@@ -478,14 +503,41 @@ class HawkesConditionalLaw(Base):
             realization = []
             for i in range(0, self.n_nodes):
                 if any(self.delayed_component == i):
-                    realization.append((old_realization[i][0] + self.delay,
-                                        old_realization[i][1]))
+                    if len(old_realization[i][0]) == 0:
+                        realization.append(old_realization[i])
+                    else:
+                        realization.append((old_realization[i][0] + self.delay,
+                                            old_realization[i][1]))
                 else:
                     realization.append(old_realization[i])
 
+        # We compute last event time
+        last_event_time = -1
+        for i in range(0, self.n_nodes):
+            if len(realization[i][0]) > 0:
+                last_event_time = max(realization[i][0][-1], last_event_time)
+
+        # If realization empty --> return
+        if last_event_time < 0:
+            warnings.warn(
+                "An empty realization was passed. No computation was performed.")
+            return
+
+        # We set T if needed
+        if T is None:
+            T = last_event_time
+        elif T < last_event_time:
+            raise ValueError("Argument T (%g) specified is too small, "
+                             "you should use default value or a value "
+                             "greater or equal to %g."
+                             % (T, last_event_time))
+
         # We update the mark probabilities and min-max
         for i in range(0, self.n_nodes):
-            der = np.diff(realization[i][1])
+            if len(realization[i][0]) == 0:
+                continue
+            # We have to take into account the first mark
+            der = np.hstack([realization[i][1][0], np.diff(realization[i][1])])
             total = 0
             self._mark_min[i] = min(self._mark_min[i], np.min(der))
             self._mark_max[i] = max(self._mark_max[i], np.max(der))
@@ -502,14 +554,20 @@ class HawkesConditionalLaw(Base):
 
         # We update the Lambda
         for i in range(0, self.n_nodes):
+            if len(realization[i][0]) <= 0:
+                continue
             self._lam_N[i] += len(realization[i][0])
-            self._lam_T[i] += realization[i][0][-1] - realization[i][0][0]
+            self._lam_T[i] += T
             self.mean_intensity[i] = self._lam_N[i] / self._lam_T[i]
 
-        # Now we compute the conditional laws G^ij_l where l are the intervals
-        # of the j mark
-        if self.n_realizations == 0:
-            self._claw = [0] * len(self._index2ijl)
+        # We update the _n_events of component i
+        # Warning : we don't take care of marks for this computation
+        # normally we should do this computation independantly for each mark
+        for i in range(0, self.n_nodes):
+            good = np.sum(realization[i][0] <= T - self._lags[-1])
+            bad = len(realization[i][0]) - good
+            self._n_events[0, i] += good
+            self._n_events[1, i] += bad
 
         # We might want to use threads, since this is the time consuming part
         with_multi_processing = self.n_threads > 1
@@ -518,14 +576,11 @@ class HawkesConditionalLaw(Base):
             self._set('_lock', pool.lock)
 
         for index, (i, j, l) in enumerate(self._index2ijl):
-            if len(realization[i][0]) == 0 or len(realization[j][0]) == 0:
-                msg = "Some realizations are empty, it is not allowed"
-                raise ValueError(msg)
             if with_multi_processing:
                 pool.add_work(self._PointProcessCondLaw, realization,
-                              index, i, j, l)
+                              index, i, j, l, T)
             else:
-                self._PointProcessCondLaw(realization, index, i, j, l)
+                self._PointProcessCondLaw(realization, index, i, j, l, T)
 
         if with_multi_processing:
             pool.start()
@@ -592,29 +647,36 @@ class HawkesConditionalLaw(Base):
         if compute:
             self.compute()
 
-    def _PointProcessCondLaw(self, realization, index, i, j, l):
-
-        realization_no_mark_i = (realization[i][0],
-                                 np.arange(0., len(realization[i][0])))
+    def _PointProcessCondLaw(self, realization, index, i, j, l, T):
 
         claw_X = np.zeros(len(self._lags) - 1)
         claw_Y = np.zeros(len(self._lags) - 1)
 
-        PointProcessCondLaw(realization_no_mark_i[0], realization_no_mark_i[1],
+        lambda_i = len(realization[i][0]) / T
+
+        PointProcessCondLaw(realization[i][0],
                             realization[j][0], realization[j][1], self._lags,
                             self.marked_components[j][l][0],
-                            self.marked_components[j][l][1], claw_X, claw_Y)
+                            self.marked_components[j][l][1],
+                            T,
+                            lambda_i,
+                            claw_X, claw_Y)
 
         self._claw_X = claw_X
+
         # TODO: this lock acquire is very expensive here
         if self.n_threads > 1:
             self._lock.acquire()
+
+        # Update claw
         if self.n_realizations == 0:
             self._claw[index] = claw_Y
         else:
             self._claw[index] *= self.n_realizations
             self._claw[index] += claw_Y
             self._claw[index] /= self.n_realizations + 1
+
+        # Unlock
         if self.n_threads > 1:
             self._lock.release()
 
@@ -738,6 +800,14 @@ class HawkesConditionalLaw(Base):
     def compute(self):
         """Computes kernel estimation by solving a Fredholm system.
         """
+
+        # We raise an exception if a claw component had no input to be computed
+        if any(self._n_events[0, :] == 0):
+            k = np.where(self._n_events[0, :] == 0)[0]
+            msg = "Cannot run estimation : not enough events for components {}"\
+                  .format(k)
+            raise ValueError(msg)
+
         # Here we compute the quadrature points and the corresponding weights
         # self.quad_x and self.quad_w
         if self.quad_method in {'gauss', 'gauss-'}:
@@ -1093,3 +1163,6 @@ class HawkesConditionalLaw(Base):
         """
         # we need to convert it to a numpy array
         return np.array(self.kernels_norms)
+
+    def _has_been_computed_once(self):
+        return self.mark_functions is not None
