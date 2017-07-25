@@ -18,7 +18,6 @@ import sysconfig
 import time
 import unittest
 import warnings
-import numpy as np
 
 from abc import ABC
 
@@ -31,9 +30,6 @@ from distutils.command.clean import clean
 from setuptools import find_packages, setup, Command
 from setuptools.command.install import install
 from setuptools.extension import Extension
-
-from numpy.distutils.system_info import get_info
-from scipy.sparse import csr_matrix
 
 # Available debug flags
 #
@@ -75,18 +71,54 @@ if sys.platform == 'darwin':
     vars = sysconfig.get_config_vars()
     vars['LDSHARED'] = vars['LDSHARED'].replace('-bundle', '-dynamiclib')
 
-# We need to understand what kind of ints are used by the sparse matrices of
-# scipy
-sparsearray = csr_matrix(
-    (np.array([1.8, 2, 3, 4]),
-     np.array([3, 5, 7, 4]),
-     np.array([0, 3, 4])))
+# If we're installing via a wheel or not
+is_building_tick = any(arg in ("build",
+                               "build_ext",
+                               "bdist",
+                               "bdist_wheel",
+                               "develop",) for arg in sys.argv)
 
-sparsearray_type = sparsearray.indices.dtype
-if sparsearray_type == np.int32:
-    sparse_indices_flag = "-D_SPARSE_INDICES_INT32"
-elif sparsearray_type == np.int64:
-    sparse_indices_flag = "-D_SPARSE_INDICES_INT64"
+# Obtain the numpy include directory.
+# This logic works across numpy versions.
+numpy_available = False
+numpy_include = ""
+blas_info = {}
+try:
+    import numpy as np
+    from numpy.distutils.system_info import get_info
+
+    try:
+        numpy_include = np.get_include()
+    except AttributeError:
+        numpy_include = np.get_numpy_include()
+
+    # Determine if we have an available BLAS implementation
+    blas_info = get_info("blas_opt", 0)
+    numpy_available = True
+except ImportError as e:
+    if is_building_tick:
+        print(e)
+        warnings.warn("numpy is not installed:\n"
+                      " - Include directory for numpy integration may not be "
+                      "correct\n "
+                      " - BLAS will not be used for this build\n")
+
+# By default, we assume that scipy uses 32 bit integers for indices in sparse
+# arrays
+sparse_indices_flag = "-DTICK_SPARSE_INDICES_INT32"
+try:
+    import numpy as np
+    from scipy.sparse import sputils
+
+    sparsearray_type = sputils.get_index_dtype()
+
+    if sparsearray_type == np.int64:
+        sparse_indices_flag = "-DTICK_SPARSE_INDICES_INT64"
+except ImportError as e:
+    if is_building_tick and numpy_available:
+        print(e)
+        warnings.warn("scipy is not installed, unable to determine "
+                      "sparse array integer type (assuming 32 bits)\n")
 
 if os.name == 'posix':
     if platform.system() == 'Darwin':
@@ -101,16 +133,6 @@ if os.name == 'posix':
         # We set this variable manually because anaconda set it to a deprecated
         # one
         os.environ['MACOSX_DEPLOYMENT_TARGET'] = os_version
-
-# Obtain the numpy include directory.
-# This logic works across numpy versions.
-try:
-    numpy_include = np.get_include()
-except AttributeError:
-    numpy_include = np.get_numpy_include()
-
-# Determine if we have an available BLAS implementation
-blas_info = get_info("blas_opt", 0)
 
 # Directory containing built .so files before they are moved either
 # in source (with build flag --inplace) or to site-packages (by install)
@@ -224,8 +246,10 @@ def create_extension(extension_name, module_dir,
                 elif ext == '.cpp':
                     cpp_files += [os.path.join(folder_path, file)]
                 else:
-                    print('WARNING: included file %s in folder %s has an '
-                          'unknown extension "%s"' % (file, folder, ext))
+                    warnings.warn('Included file %s in folder %s has an '
+                                  'unknown extension "%s"' % (file,
+                                                              folder,
+                                                              ext))
 
     min_swig_opts = ['-py3',
                      '-c++',
@@ -313,7 +337,7 @@ def create_extension(extension_name, module_dir,
             # $ORIGIN refers to the location of the current shared object file
             # at runtime
             runtime_library_dirs.append("\$ORIGIN/%s" % rel_path)
-        else: # Assuming non-Windows builds for now
+        else:  # Assuming non-Windows builds for now
             # For OSX builds we use @loader_path instead
             extra_link_args.append(
                 "-Wl,-rpath,%s" % '@loader_path/%s' % rel_path
@@ -341,21 +365,22 @@ def create_extension(extension_name, module_dir,
     extra_include_dirs.append("tick/third_party/cereal/include")
 
     # Adding numpy include directory
-    extra_include_dirs.append(numpy_include)
+    if numpy_include:
+        extra_include_dirs.append(numpy_include)
 
     core_module = SwigExtension(extension_path, module_ref=swig_path,
-                                    sources=swig_files + cpp_files,
-                                    extra_compile_args=extra_compile_args,
-                                    extra_link_args=extra_link_args,
-                                    define_macros=define_macros,
-                                    swig_opts=swig_opts,
-                                    libraries=libraries,
-                                    include_dirs=extra_include_dirs,
-                                    library_dirs=library_dirs,
-                                    runtime_library_dirs=runtime_library_dirs,
-                                    depends=h_files,
-                                    language="c++",
-                                    ext_name=extension_name)
+                                sources=swig_files + cpp_files,
+                                extra_compile_args=extra_compile_args,
+                                extra_link_args=extra_link_args,
+                                define_macros=define_macros,
+                                swig_opts=swig_opts,
+                                libraries=libraries,
+                                include_dirs=extra_include_dirs,
+                                library_dirs=library_dirs,
+                                runtime_library_dirs=runtime_library_dirs,
+                                depends=h_files,
+                                language="c++",
+                                ext_name=extension_name)
 
     return core_module
 
@@ -830,8 +855,8 @@ setup(name="tick",
                   "on time-dependent modelling",
       ext_modules=tick_modules,
       install_requires=['numpy',
-                        'numpydoc',
                         'scipy',
+                        'numpydoc',
                         'matplotlib',
                         'sphinx',
                         'pandas',
@@ -862,5 +887,3 @@ setup(name="tick",
                    'Programming Language :: Python :: 3.6',
                    'License :: OSI Approved :: BSD License'],
       )
-
-
