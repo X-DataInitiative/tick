@@ -6,20 +6,12 @@
 %}
 
 
-class ModelHawkesFixedExpKernLogLikList : public ModelHawkesList {
+class ModelHawkesFixedExpKernLogLikList : public ModelHawkesFixedKernLogLikList {
     
 public:
     
   ModelHawkesFixedExpKernLogLikList(const double decay,
                                     const int max_n_threads = 1);
 
-  double loss_and_grad(const ArrayDouble &coeffs, ArrayDouble &out);
-  double hessian_norm(const ArrayDouble &coeffs, const ArrayDouble &vector);
-  void hessian(const ArrayDouble &coeffs, ArrayDouble &out);
-
   void set_decay(const double decay);
-
-  void incremental_set_data(const SArrayDoublePtrList1D &timestamps, double end_time);
-
-  void compute_weights();
 };

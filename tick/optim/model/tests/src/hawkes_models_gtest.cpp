@@ -7,6 +7,7 @@
 #define DEBUG_COSTLY_THROW 1
 
 #include <gtest/gtest.h>
+#include <hawkes_fixed_sumexpkern_loglik.h>
 
 #include <cereal/types/unordered_map.hpp>
 #include <cereal/types/memory.hpp>
@@ -16,12 +17,14 @@
 
 #include "array.h"
 #include "hawkes_fixed_expkern_loglik.h"
+#include "hawkes_fixed_sumexpkern_loglik.h"
 #include "hawkes_fixed_expkern_leastsq.h"
 #include "hawkes_fixed_sumexpkern_leastsq.h"
 
 #include "variants/hawkes_fixed_expkern_leastsq_list.h"
 #include "variants/hawkes_fixed_sumexpkern_leastsq_list.h"
 #include "variants/hawkes_fixed_expkern_loglik_list.h"
+#include "variants/hawkes_fixed_sumexpkern_loglik_list.h"
 
 
 class HawkesModelTest : public ::testing::Test {
@@ -85,6 +88,24 @@ TEST_F(HawkesModelTest, check_sto_loglikelihood){
     SCOPED_TRACE(i);
     EXPECT_DOUBLE_EQ(grad[i], sto_grad[i]);
   }
+}
+
+TEST_F(HawkesModelTest, compute_loss_loglikelihood_sum_exp_kern){
+  ArrayDouble decays {1., 2., 3.};
+
+  const double end_time = 5.65;
+  ModelHawkesFixedSumExpKernLogLik model(decays, 1);
+  model.set_data(timestamps, end_time);
+  model.compute_weights();
+
+  ArrayDouble coeffs = ArrayDouble {1., 3., 2., 3., 4., 1., 5., 3., 2., 4., 2., 3., 4., 5.};
+
+  EXPECT_DOUBLE_EQ(model.loss_i(0, coeffs), 0.74573314143220193);
+  EXPECT_DOUBLE_EQ(model.loss_i(1, coeffs), 9.111996931266539);
+
+  EXPECT_DOUBLE_EQ(model.loss(coeffs), 18.230198548394196);
+
+  EXPECT_DOUBLE_EQ(model.get_n_coeffs(), 14);
 }
 
 TEST_F(HawkesModelTest, compute_loss_least_squares){
@@ -402,4 +423,65 @@ TEST_F(HawkesModelTest, check_sto_loglikelihood_list){
     SCOPED_TRACE(i);
     EXPECT_DOUBLE_EQ(grad[i], sto_grad[i]);
   }
+}
+
+
+TEST_F(HawkesModelTest, compute_loss_loglikelihood_list_sum_exp_kern){
+  ArrayDouble decays {1., 2., 3.};
+
+  ModelHawkesFixedSumExpKernLogLikList model(decays, 1);
+
+  model.incremental_set_data(timestamps, 5.65);
+  model.incremental_set_data(timestamps, 5.87);
+
+  ArrayDouble coeffs = ArrayDouble {1., 3., 2., 3., 4., 1., 5., 3., 2., 4., 2., 3., 4., 5.};
+
+  EXPECT_DOUBLE_EQ(model.loss_i(0, coeffs), 0.74573314143220193);
+  EXPECT_DOUBLE_EQ(model.loss_i(1, coeffs), 9.111996931266539);
+
+  EXPECT_DOUBLE_EQ(model.loss(coeffs), 18.317994281657434);
+
+  EXPECT_DOUBLE_EQ(model.get_n_coeffs(), 14);
+}
+
+TEST_F(HawkesModelTest, compute_hessian_loglikelihood){
+  ModelHawkesFixedExpKernLogLik model(2);
+  model.set_data(timestamps, 4.25);
+  model.compute_weights();
+
+  ArrayDouble coeffs = ArrayDouble {1., 3., 2., 3., 4., 1};
+  const int n_nodes = 2;
+  ArrayDouble out((1 + n_nodes) * (n_nodes + n_nodes * n_nodes));
+  out.init_to_zero();
+
+  model.hessian(coeffs, out);
+
+  // test some random indexes...
+  EXPECT_DOUBLE_EQ(out[0], 0.01631907612617749);
+  EXPECT_DOUBLE_EQ(out[4], 0.0060622624486514612);
+  EXPECT_DOUBLE_EQ(out[6], 0.0070643083720372474);
+  EXPECT_DOUBLE_EQ(out[8], 0.0059903489344126197);
+  EXPECT_DOUBLE_EQ(out[9], 0.01668440042028695);
+}
+
+TEST_F(HawkesModelTest, compute_hessian_sumexp_loglikelihood){
+  ArrayDouble decays {1., 2.};
+
+  ModelHawkesFixedSumExpKernLogLik model(decays, 1);
+  model.set_data(timestamps, 4.25);
+  model.compute_weights();
+
+  ArrayDouble coeffs = ArrayDouble {1., 3., 2., 3., 4., 1., 5., 3., 2., 4., 2., 3., 4., 5.};
+  const ulong n_nodes = 2;
+  const ulong n_alpha_i = n_nodes * decays.size();
+  ArrayDouble out((1 + n_alpha_i) * (n_nodes + n_alpha_i * n_nodes));
+  out.init_to_zero();
+
+  model.hessian(coeffs, out);
+
+  EXPECT_DOUBLE_EQ(out[0], 0.0074914657915579903);
+  EXPECT_DOUBLE_EQ(out[4], 0.0088873654563159724);
+  EXPECT_DOUBLE_EQ(out[6], 0.0021770298651935666);
+  EXPECT_DOUBLE_EQ(out[8], 0.0024676761791649136);
+  EXPECT_DOUBLE_EQ(out[9], 0.001582373650788027);
 }

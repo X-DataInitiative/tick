@@ -20,14 +20,17 @@
 
 %shared_ptr(ModelHawkesSingle);
 %shared_ptr(ModelHawkesFixedExpKernLogLik);
+%shared_ptr(ModelHawkesFixedSumExpKernLogLik);
 %shared_ptr(ModelHawkesFixedExpKernLeastSq);
 %shared_ptr(ModelHawkesFixedSumExpKernLeastSq);
 
 %shared_ptr(ModelHawkesList);
 %shared_ptr(ModelHawkesLeastSqList);
+%shared_ptr(ModelHawkesFixedKernLogLikList);
 %shared_ptr(ModelHawkesFixedExpKernLeastSqList);
 %shared_ptr(ModelHawkesFixedSumExpKernLeastSqList);
 %shared_ptr(ModelHawkesFixedExpKernLogLikList);
+%shared_ptr(ModelHawkesFixedSumExpKernLogLikList);
 
 %shared_ptr(ModelCoxRegPartialLik);
 %shared_ptr(ModelSCCS);

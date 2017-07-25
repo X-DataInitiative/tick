@@ -265,13 +265,14 @@ In *tick*, three exponential models are implemented. They differ by the
 parametrization of the kernel (exponential or sum-exponential) or by the loss
 function used (least squares or log-likelihood).
 
-==============================================================  ===============================
-Model                                                           Class
-==============================================================  ===============================
-Least-squares for Hawkes model with exponential kernels         :class:`ModelHawkesFixedExpKernLeastSq <tick.optim.model.ModelHawkesFixedExpKernLeastSq>`
-Log-likelihood for Hawkes model with exponential kernels        :class:`ModelHawkesFixedExpKernLogLik <tick.optim.model.ModelHawkesFixedExpKernLogLik>`
-Least-squares for Hawkes model with sum of exponential kernels  :class:`ModelHawkesFixedSumExpKernLeastSq <tick.optim.model.ModelHawkesFixedSumExpKernLeastSq>`
-==============================================================  ===============================
+===============================================================  ===============================
+Model                                                            Class
+===============================================================  ===============================
+Least-squares for Hawkes model with exponential kernels          :class:`ModelHawkesFixedExpKernLeastSq <tick.optim.model.ModelHawkesFixedExpKernLeastSq>`
+Log-likelihood for Hawkes model with exponential kernels         :class:`ModelHawkesFixedExpKernLogLik <tick.optim.model.ModelHawkesFixedExpKernLogLik>`
+Least-squares for Hawkes model with sum of exponential kernels   :class:`ModelHawkesFixedSumExpKernLeastSq <tick.optim.model.ModelHawkesFixedSumExpKernLeastSq>`
+Log-likelihood for Hawkes model with sum of exponential kernels  :class:`ModelHawkesFixedSumExpKernLogLik <tick.optim.model.ModelHawkesFixedSumExpKernLogLik>`
+===============================================================  ===============================
 
 
 .. _optim-prox:
