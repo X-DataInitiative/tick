@@ -49,7 +49,7 @@ install:
 
 script:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then source tools/travis/osx_run.sh; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then docker run -v `pwd`:/io "$DOCKER_IMAGE" /io/tools/travis/docker_run.sh; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then docker run -v `pwd`:/io -e PYVER=${PYVER} "$DOCKER_IMAGE" /io/tools/travis/docker_run.sh; fi
 
 notifications:
   slack:

@@ -9,6 +9,7 @@ cd src
 eval "$(pyenv init -)"
 
 pyenv global ${PYVER}
+pyenv local ${PYVER}
 
 python setup.py cpplint build_ext --inplace cpptest pytest
 
