@@ -30,8 +30,8 @@ class ModelHawkesFixedExpKernLeastSqList : public ModelHawkesLeastSqList {
                                      const unsigned int optimization_level = 0);
 
   /**
-   * @brief Compute gradient
-   * \param coeffs : Point in which gradient is computed
+   * @brief Compute hessian
+   * \param coeffs : Point in which hessian is computed
    * \param out : Array in which the value of the hessian is stored
    * \note : We only fill data, python code takes care of creating index and indexptr
    */

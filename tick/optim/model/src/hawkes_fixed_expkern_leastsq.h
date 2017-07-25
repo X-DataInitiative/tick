@@ -76,8 +76,8 @@ class ModelHawkesFixedExpKernLeastSq : public ModelHawkesSingle {
   void grad_i(const ulong i, const ArrayDouble &coeffs, ArrayDouble &out) override;
 
   /**
-   * @brief Compute gradient
-   * \param coeffs : Point in which gradient is computed
+   * @brief Compute hessian
+   * \param coeffs : Point in which hessian is computed
    * \param out : Array in which the value of the hessian is stored
    * \note : We only fill data, python code takes care of creating index and indexptr
    */
@@ -100,10 +100,11 @@ class ModelHawkesFixedExpKernLeastSq : public ModelHawkesSingle {
 
  private:
   /**
-   * @brief Compute gradient corresponding to sample i (between 0 and rand_max = dim)
+   * @brief Compute hessian corresponding to sample i (between 0 and rand_max = dim)
    * \param i : selected dimension
-   * \param coeffs : Point in which gradient is computed
-   * \param out : Array in which the values of the hessian are stored
+   * \param coeffs : Point in which hessian is computed
+   * \param out : Array in which the value of the hessian is stored
+   * \note : We only fill data, python code takes care of creating index and indexptr
    */
   void hessian_i(const ulong i, ArrayDouble &out);
 

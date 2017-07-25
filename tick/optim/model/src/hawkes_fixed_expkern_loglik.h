@@ -97,6 +97,14 @@ class ModelHawkesFixedExpKernLogLik : public ModelHawkesSingle {
    */
   double hessian_norm(const ArrayDouble &coeffs, const ArrayDouble &vector);
 
+  /**
+   * @brief Compute hessian
+   * \param coeffs : Point in which hessian is computed
+   * \param out : Array in which the value of the hessian is stored
+   * \note : We only fill data, python code takes care of creating index and indexptr
+   */
+  void hessian(const ArrayDouble &coeffs, ArrayDouble &out);
+
  private:
   void allocate_weights();
   /**
@@ -169,6 +177,15 @@ class ModelHawkesFixedExpKernLogLik : public ModelHawkesSingle {
    * \param vector : Point of which the norm is computed (\f$ d \f$)
    */
   double hessian_norm_dim_i(const ulong i, const ArrayDouble &coeffs, const ArrayDouble &vector);
+
+  /**
+   * @brief Compute hessian corresponding to sample i (between 0 and rand_max = n_total_jumps)
+   * \param i : selected dimension
+   * \param coeffs : Point in which hessian is computed
+   * \param out : Array in which the value of the hessian is stored
+   * \note : We only fill data, python code takes care of creating index and indexptr
+   */
+  void hessian_i(const ulong i, const ArrayDouble &coeffs, ArrayDouble &out);
 
  public:
   ulong get_n_coeffs() const override;

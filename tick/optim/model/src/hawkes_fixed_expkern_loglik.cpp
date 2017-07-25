@@ -140,6 +140,17 @@ double ModelHawkesFixedExpKernLogLik::hessian_norm(const ArrayDouble &coeffs,
 }
 
 
+void ModelHawkesFixedExpKernLogLik::hessian(const ArrayDouble &coeffs, ArrayDouble &out) {
+  if (!weights_computed) compute_weights();
+
+  // This allows to run in a multithreaded environment the computation of each component
+  parallel_run(get_n_threads(), n_nodes, &ModelHawkesFixedExpKernLogLik::hessian_i,
+               this, coeffs, out);
+  out /= n_total_jumps;
+}
+
+
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                    PRIVATE METHODS
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -349,6 +360,44 @@ double ModelHawkesFixedExpKernLogLik::hessian_norm_dim_i(const ulong i,
     hess_norm += tmp * tmp;
   }
   return hess_norm;
+}
+
+void ModelHawkesFixedExpKernLogLik::hessian_i(const ulong i,
+                                              const ArrayDouble &coeffs,
+                                              ArrayDouble &out) {
+  if (!weights_computed) TICK_ERROR("Please compute weights before calling hessian_i");
+
+  const double mu_i = coeffs[i];
+  const ulong start_alpha_i = n_nodes + n_nodes * i;
+  const ArrayDouble alpha_i = view(coeffs, start_alpha_i, start_alpha_i + n_nodes);
+
+  const ulong start_mu_line = i * (n_nodes + 1);
+  const ulong block_start = (i + 1) * n_nodes * (n_nodes + 1);
+
+  for (ulong k = 0; k < (*n_jumps_per_node)[i]; ++k) {
+    const ArrayDouble g_i_k = view_row(g[i], k);
+
+    double s = mu_i;
+    s += alpha_i.dot(g_i_k);
+    const double s_2 = s * s;
+
+    // fill mu mu
+    out[start_mu_line] += 1. / s_2;
+    // fill mu alpha
+    for (ulong j = 0; j < n_nodes; ++j) {
+      out[start_mu_line + j + 1] += g_i_k[j] / s_2;
+    }
+
+    for (ulong l = 0; l < n_nodes; ++l) {
+      const ulong start_alpha_line = block_start + l * (n_nodes + 1);
+      // fill alpha mu
+      out[start_alpha_line] += g_i_k[l] / s_2;
+      // fill alpha square
+      for (ulong m = 0; m < n_nodes; ++m) {
+        out[start_alpha_line + m + 1] += g_i_k[l] * g_i_k[m] / s_2;
+      }
+    }
+  }
 }
 
 ulong ModelHawkesFixedExpKernLogLik::get_n_coeffs() const {

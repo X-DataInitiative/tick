@@ -19,6 +19,7 @@ class ModelHawkesFixedExpKernLogLik : public Model {
 
   double loss_and_grad(const ArrayDouble &coeffs, ArrayDouble &out_grad);
   double hessian_norm(const ArrayDouble &coeffs, const ArrayDouble &vector);
+  void hessian(const ArrayDouble &coeffs, ArrayDouble &out);
 
   double get_decay() const;
   void set_decay(double decay);

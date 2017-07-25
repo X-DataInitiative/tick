@@ -116,13 +116,18 @@ class Test(unittest.TestCase):
         hessian_point = np.random.rand(self.model.n_coeffs)
         vector = np.random.rand(self.model.n_coeffs)
 
+        hessian_norm = self.model.hessian_norm(hessian_point, vector)
+
         delta = 1e-7
         grad_point_minus = self.model.grad(hessian_point + delta * vector)
         grad_point_plus = self.model.grad(hessian_point - delta * vector)
         finite_diff_result = vector.dot(grad_point_minus - grad_point_plus)
         finite_diff_result /= (2 * delta)
-        self.assertAlmostEqual(finite_diff_result,
-                               self.model.hessian_norm(hessian_point, vector))
+        self.assertAlmostEqual(finite_diff_result, hessian_norm)
+
+        hessian_result = vector.T.dot(
+            self.model.hessian(hessian_point).dot(vector))
+        self.assertAlmostEqual(hessian_result, hessian_norm)
 
     def test_model_hawkes_loglik_change_decays(self):
         """...Test that loss is still consistent after decays modification in
@@ -169,6 +174,27 @@ class Test(unittest.TestCase):
         model_list.n_threads = 1
         self.assertEqual(model_list._model.get_n_threads(), 1)
 
+    def test_ModelHawkesFixedExpKernLogLik_hessian(self):
+        """...Numerical consistency check of hessian for Hawkes loglik
+        """
+        for model in [self.model]:
+            hessian = model.hessian(self.coeffs).todense()
+            # Check that hessian is equal to its transpose
+            np.testing.assert_array_equal(hessian, hessian.T)
+
+            np.set_printoptions(precision=3, linewidth=200)
+
+            # Check that for all dimension hessian row is consistent
+            # with its corresponding gradient coordinate.
+            for i in range(model.n_coeffs):
+                def g_i(x):
+                    return model.grad(x)[i]
+
+                def h_i(x):
+                    h = model.hessian(x).todense()
+                    return np.asarray(h)[i, :]
+
+                self.assertLess(check_grad(g_i, h_i, self.coeffs), 1e-5)
 
 if __name__ == '__main__':
     unittest.main()

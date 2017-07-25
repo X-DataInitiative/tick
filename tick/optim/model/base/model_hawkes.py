@@ -1,7 +1,10 @@
 # License: BSD 3 clause
 
 import numpy as np
+from scipy.sparse import sputils, csr_matrix
 
+from tick.optim.model.build.model import (ModelHawkesFixedSumExpKernLeastSqList,
+                                          ModelHawkesFixedExpKernLeastSqList)
 from .model_first_order import ModelFirstOrder
 from tick.optim.model.base.model import N_CALLS_LOSS, PASS_OVER_DATA
 
@@ -124,6 +127,64 @@ class ModelHawkes(ModelFirstOrder):
     def _grad(self, coeffs: np.ndarray, out: np.ndarray) -> np.ndarray:
         self._model.grad(coeffs, out)
         return out
+
+    def hessian(self, x):
+        """Return model's hessian
+
+        Parameters
+        ----------
+        x: `np.ndarray`, shape=(n_coeffs,)
+            Value at which the hessian is computed
+
+        Notes
+        -----
+        For `ModelHawkesFixedExpKernLeastSq` the value of the hessian
+        does not depend on the value at which it is computed.
+        """
+        if not hasattr(self._model, "hessian"):
+            raise NotImplementedError('hessian is not implemented yet for '
+                                      'this model')
+
+        if not self._fitted:
+            raise ValueError("call ``fit`` before using ``hessian``")
+
+        # What kind of integers does scipy use fr sparse indices?
+        sparse_dtype = sputils.get_index_dtype()
+
+        dim = self.n_nodes
+        row_indices_size = dim * (dim + 1) + 1
+        data_size = dim * (dim + 1) * (dim + 1)
+
+        # looks like [0  3  6  9 12 15 18] in dimension 2
+        row_indices = np.arange(row_indices_size,
+                                dtype=sparse_dtype) * (dim + 1)
+
+        # looks like [0 2 3 1 4 5 0 2 3 0 2 3 1 4 5 1 4 5] in dimension 2
+        # We first create the recurrent pattern for each dim
+        block_dim = {}
+        for d in range(dim):
+            mu_array = np.array(d)
+            alpha_array = dim + d * dim + np.arange(dim)
+            block_dim[d] = np.hstack((mu_array, alpha_array))
+
+        # and then fill the indices array
+        indices = np.zeros(data_size, dtype=sparse_dtype)
+        for d in range(dim):
+            indices[d * (dim + 1): (d + 1) * (dim + 1)] = block_dim[d]
+            indices[(d + 1) * (dim * dim + dim): (d + 2) * (dim * dim + dim)] = \
+                np.tile(block_dim[d], (dim,))
+
+        data = np.zeros(data_size, dtype=float)
+
+        # In these two models, hessian does not depend on x
+        if isinstance(self._model, (ModelHawkesFixedSumExpKernLeastSqList,
+                                    ModelHawkesFixedExpKernLeastSqList)):
+            self._model.hessian(data)
+        else:
+            self._model.hessian(x, data)
+
+        hessian = csr_matrix((data, indices, row_indices))
+        return hessian
 
     @property
     def n_jumps(self):

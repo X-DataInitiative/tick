@@ -82,6 +82,14 @@ class ModelHawkesFixedExpKernLogLikList : public ModelHawkesList {
   double hessian_norm(const ArrayDouble &coeffs, const ArrayDouble &vector);
 
   /**
+   * @brief Compute hessian
+   * \param coeffs : Point in which hessian is computed
+   * \param out : Array in which the value of the hessian is stored
+   * \note : We only fill data, python code takes care of creating index and indexptr
+   */
+  void hessian(const ArrayDouble &coeffs, ArrayDouble &out);
+
+  /**
    * @brief Set decays and reset weights computing
    * @param decays : new decays to be set
    */
@@ -134,6 +142,15 @@ class ModelHawkesFixedExpKernLogLikList : public ModelHawkesList {
    */
   double hessian_norm_i_r(const ulong i_r, const ArrayDouble &coeffs,
                           const ArrayDouble &vector);
+
+  /**
+   * @brief Compute hessian for one index between 0 and n_realizations * n_nodes
+   * \param i_r : r * n_realizations + i, tells which realization and which node
+   * \param coeffs : Point in which hessian is computed
+   * \param out : Array in which the value of the hessian is stored
+   * \note : We only fill data, python code takes care of creating index and indexptr
+   */
+  void hessian_i_r(const ulong i_r, const ArrayDouble &coeffs, ArrayDouble &out);
 
   std::pair<ulong, ulong> sampled_i_to_realization(const ulong sampled_i);
 };
