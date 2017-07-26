@@ -1,38 +1,35 @@
 # License: BSD 3 clause
 
-# -*- coding: utf8 -*-
-
-
 import numpy as np
 from .base import Prox
-from .build.prox import ProxTV as _ProxTV
+from .build.prox import ProxL2 as _ProxL2
 
 
 __author__ = 'Stephane Gaiffas'
 
 
-class ProxTV(Prox):
-    """Proximal operator of the total-variation penalization
+class ProxL2(Prox):
+    """Proximal operator of the L2 penalization. Do not mix up with ProxL2sq,
+    which is regular ridge (squared L2) penalization. ProxL2 induces sparsity
+    on the full vector, whenever the norm of it is small enough.
+    This is mostly used in the ProxGroupL1 for group-lasso penalization.
 
     Parameters
     ----------
     strength : `float`
-        Level of total-variation penalization
+        Level of penalization. Note that in this proximal operator, ``strength``
+        is automatically multiplied by the square-root of ``end`` - ``start``,
+        when a range is used, or ``n_coeffs``, when no range is used
+        (size of the passed vector). This allows to consider strengths that have
+        the same order as with `ProxL1` or other separable proximal operators.
 
     range : `tuple` of two `int`, default=`None`
         Range on which the prox is applied. If `None` then the prox is
         applied on the whole vector
 
     positive : `bool`, default=`False`
-        If True, apply L1 penalization together with a projection
+        If True, apply L2 penalization together with a projection
         onto the set of vectors with non-negative entries
-
-    Notes
-    -----
-    Uses the fast-TV algorithm described in:
-
-    * "A Direct Algorithm for 1D Total Variation Denoising"
-      by Laurent Condat, *Ieee Signal Proc. Letters*
     """
 
     _attrinfos = {
@@ -50,9 +47,9 @@ class ProxTV(Prox):
                  positive: bool=False):
         Prox.__init__(self, range)
         if range is None:
-            self._prox = _ProxTV(strength, positive)
+            self._prox = _ProxL2(strength, positive)
         else:
-            self._prox = _ProxTV(strength, range[0], range[1], positive)
+            self._prox = _ProxL2(strength, range[0], range[1], positive)
         self.positive = positive
         self.strength = strength
 

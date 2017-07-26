@@ -2,6 +2,7 @@ add_library(tick_prox EXCLUDE_FROM_ALL
         prox.cpp prox.h
         prox_separable.cpp prox_separable.h
         prox_l2sq.cpp prox_l2sq.h
+        prox_l2.cpp prox_l2.h
         prox_l1.cpp prox_l1.h
         prox_l1w.cpp prox_l1w.h
         prox_positive.cpp prox_positive.h
@@ -13,4 +14,6 @@ add_library(tick_prox EXCLUDE_FROM_ALL
         prox_elasticnet.cpp prox_elasticnet.h
         prox_multi.cpp prox_multi.h
         prox_equality.cpp prox_equality.h
-        prox_binarsity.cpp prox_binarsity.h)
+        prox_with_groups.cpp prox_with_groups.h
+        prox_binarsity.cpp prox_binarsity.h
+        prox_group_l1.cpp prox_group_l1.h)

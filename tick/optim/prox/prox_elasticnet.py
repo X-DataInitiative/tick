@@ -15,7 +15,7 @@ class ProxElasticNet(Prox):
 
     Parameters
     ----------
-    strength : `float`, default=0.
+    strength : `float`
         Level of ElasticNet regularization
 
     range : `tuple` of two `int`, default=`None`

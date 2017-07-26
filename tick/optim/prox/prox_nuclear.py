@@ -20,7 +20,7 @@ class ProxNuclear(Prox):
 
     Parameters
     ----------
-    strength : `float`, default=0.
+    strength : `float`
         Level of penalization
 
     n_rows : `int`
