@@ -4,8 +4,9 @@
 
 // License: BSD 3 clause
 
-#include <cereal/types/polymorphic.hpp>
 #include "baseline.h"
+
+#include <cereal/types/polymorphic.hpp>
 
 /*! \class HawkesConstantBaseline
  * \brief A basic wrapper of double to represent \f$ \mu \f$ of Hawkes processes
