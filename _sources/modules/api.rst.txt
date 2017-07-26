@@ -147,6 +147,7 @@ This module contains all the proximal operators available in tick.
    optim.prox.ProxEquality
    optim.prox.ProxSlope
    optim.prox.ProxTV
+   optim.prox.ProxBinarsity
 
 
 .. _api-optim-solver:

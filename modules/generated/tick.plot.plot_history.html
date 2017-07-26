@@ -1,11 +1,9 @@
 
 <!DOCTYPE html>
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <script type="text/javascript">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
 
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-97947441-1']);
@@ -17,19 +15,17 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.plot.plot_history &#8212; tick 0.1 documentation</title>
-    
+    <title>tick.plot.plot_history &#8212; tick 0.2.1 documentation</title>
     <link rel="stylesheet" href="../../_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/bootstrap-3.3.4/css/bootstrap.min.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/bootstrap-3.3.4/css/bootstrap-theme.min.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.1',
+        VERSION:     '0.2.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -39,7 +35,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="../../_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="../../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
@@ -55,7 +51,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 
   </head>
-  <body role="document">
+  <body>
 
   <div id="navbar" class="None navbar-default navbar-fixed-top">
     <div class="container">
@@ -68,7 +64,7 @@
         </button>
         <a class="navbar-brand" href="../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.1</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.2</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -100,7 +96,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../optim.html#tick-optim-model-model-classes">1. <code class="docutils literal"><span class="pre">tick.optim.model</span></code>: model classes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../optim.html#tick-optim-prox-proximal-operators">2. <code class="docutils literal"><span class="pre">tick.optim.prox</span></code>: proximal operators</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../optim.html#tick-optim-solver-solvers">3. <code class="docutils literal"><span class="pre">tick.optim.solver</span></code>: solvers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../optim.html#what-s-under-the-hood">4. What&#8217;s under the hood?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../optim.html#what-s-under-the-hood">4. What’s under the hood?</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="reference internal" href="../plot.html"><code class="docutils literal"><span class="pre">tick.plot</span></code>: plotting utilities</a><ul class="current">
@@ -179,18 +175,18 @@
 <div><p>(children of <code class="xref py py-obj docutils literal"><span class="pre">tick.optim.solver.base.Solver</span></code>) or learners (children of
 <code class="xref py py-obj docutils literal"><span class="pre">tick.inference.base.LearnerOptim</span></code>)</p>
 </div></blockquote>
-<p><strong>x</strong> : <code class="xref py py-obj docutils literal"><span class="pre">str</span></code>, default=&#8217;n_iter&#8217;</p>
+<p><strong>x</strong> : <code class="xref py py-obj docutils literal"><span class="pre">str</span></code>, default=’n_iter’</p>
 <blockquote>
 <div><ul class="simple">
-<li>if &#8216;n_iter&#8217; : iteration number</li>
-<li>if &#8216;time&#8217; : computation time</li>
+<li>if ‘n_iter’ : iteration number</li>
+<li>if ‘time’ : computation time</li>
 </ul>
 </div></blockquote>
-<p><strong>y</strong> : <code class="xref py py-obj docutils literal"><span class="pre">str</span></code>, default=&#8217;obj&#8217;</p>
+<p><strong>y</strong> : <code class="xref py py-obj docutils literal"><span class="pre">str</span></code>, default=’obj’</p>
 <blockquote>
 <div><ul class="simple">
 <li><dl class="first docutils">
-<dt>if &#8216;obj&#8217; <span class="classifier-delimiter">:</span> <span class="classifier">the objective (value of the function minimized).</span></dt>
+<dt>if ‘obj’ <span class="classifier-delimiter">:</span> <span class="classifier">the objective (value of the function minimized).</span></dt>
 <dd>Other choices are possible, any of those present in the
 history</dd>
 </dl>
@@ -217,9 +213,9 @@ function is necessary. Useful when superposing several plots.</p>
 minimal <code class="xref py py-obj docutils literal"><span class="pre">y</span></code> of all solvers. This is useful when comparing solvers on
 a logarithmic scale, to illustrate linear convergence of algorithms</p>
 </div></blockquote>
-<p><strong>rendering</strong> : {&#8216;matplotlib&#8217;, &#8216;bokeh&#8217;}, default=&#8217;matplotlib&#8217;</p>
+<p><strong>rendering</strong> : {‘matplotlib’, ‘bokeh’}, default=’matplotlib’</p>
 <blockquote>
-<div><p>Rendering library. &#8216;bokeh&#8217; might fail if the module is not installed.</p>
+<div><p>Rendering library. ‘bokeh’ might fail if the module is not installed.</p>
 </div></blockquote>
 <p><strong>ax</strong> : <code class="xref py py-obj docutils literal"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal"><span class="pre">matplotlib.axes</span></code>, default=None</p>
 <blockquote class="last">
@@ -259,7 +255,7 @@ set to False. Used only with matplotlib</p>
     </p>
     <p>
         &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Vinther Poulsen.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.<br/>
     </p>
   </div>
 </footer>

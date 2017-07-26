@@ -1,11 +1,9 @@
 
 <!DOCTYPE html>
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <script type="text/javascript">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
 
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-97947441-1']);
@@ -17,19 +15,17 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.inference.HawkesSumExpKern &#8212; tick 0.1 documentation</title>
-    
+    <title>tick.inference.HawkesSumExpKern &#8212; tick 0.2.1 documentation</title>
     <link rel="stylesheet" href="../../_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/bootstrap-3.3.4/css/bootstrap.min.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/bootstrap-3.3.4/css/bootstrap-theme.min.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.1',
+        VERSION:     '0.2.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -39,7 +35,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="../../_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="../../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
@@ -55,7 +51,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 
   </head>
-  <body role="document">
+  <body>
 
   <div id="navbar" class="None navbar-default navbar-fixed-top">
     <div class="container">
@@ -68,7 +64,7 @@
         </button>
         <a class="navbar-brand" href="../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.1</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.2</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -100,7 +96,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../optim.html#tick-optim-model-model-classes">1. <code class="docutils literal"><span class="pre">tick.optim.model</span></code>: model classes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../optim.html#tick-optim-prox-proximal-operators">2. <code class="docutils literal"><span class="pre">tick.optim.prox</span></code>: proximal operators</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../optim.html#tick-optim-solver-solvers">3. <code class="docutils literal"><span class="pre">tick.optim.solver</span></code>: solvers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../optim.html#what-s-under-the-hood">4. What&#8217;s under the hood?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../optim.html#what-s-under-the-hood">4. What’s under the hood?</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../plot.html"><code class="docutils literal"><span class="pre">tick.plot</span></code>: plotting utilities</a><ul>
@@ -222,18 +218,18 @@ piecewise constant baseline function.</p>
 <blockquote>
 <div><p>Level of penalization</p>
 </div></blockquote>
-<p><strong>penalty</strong> : {&#8216;l1&#8217;, &#8216;l2&#8217;, &#8216;elasticnet&#8217;, &#8216;none&#8217;} default=&#8217;l2&#8217;</p>
+<p><strong>penalty</strong> : {‘l1’, ‘l2’, ‘elasticnet’, ‘none’} default=’l2’</p>
 <blockquote>
 <div><p>The penalization to use. Default is ridge penalization.</p>
 </div></blockquote>
-<p><strong>solver</strong> : {&#8216;gd&#8217;, &#8216;agd&#8217;, &#8216;bfgs&#8217;, &#8216;svrg&#8217;}, default=&#8217;agd&#8217;</p>
+<p><strong>solver</strong> : {‘gd’, ‘agd’, ‘bfgs’, ‘svrg’}, default=’agd’</p>
 <blockquote>
 <div><p>The name of the solver to use</p>
 </div></blockquote>
 <p><strong>step</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default=None</p>
 <blockquote>
-<div><p>Initial step size used for learning. Used in &#8216;gd&#8217;, &#8216;agd&#8217;, &#8216;sgd&#8217;
-and &#8216;svrg&#8217; solvers</p>
+<div><p>Initial step size used for learning. Used in ‘gd’, ‘agd’, ‘sgd’
+and ‘svrg’ solvers</p>
 </div></blockquote>
 <p><strong>tol</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default=1e-5</p>
 <blockquote>
@@ -269,13 +265,13 @@ a multiple of <code class="docutils literal"><span class="pre">record_every</spa
 <li>For 0 &lt; ratio &lt; 1, the regularization is a linear combination
 of L1 and L2.</li>
 </ul>
-<p>Used in &#8216;elasticnet&#8217; penalty</p>
+<p>Used in ‘elasticnet’ penalty</p>
 </div></blockquote>
 <p><strong>random_state</strong> : int seed, or None (default)</p>
 <blockquote>
 <div><p>The seed that will be used by stochastic solvers. If <code class="xref py py-obj docutils literal"><span class="pre">None</span></code>, a random
 seed will be used (based on timestamp and other physical metrics).
-Used in &#8216;sgd&#8217;, and &#8216;svrg&#8217; solvers</p>
+Used in ‘sgd’, and ‘svrg’ solvers</p>
 </div></blockquote>
 </td>
 </tr>
@@ -285,7 +281,7 @@ Used in &#8216;sgd&#8217;, and &#8216;svrg&#8217; solvers</p>
 </div></blockquote>
 <p><strong>baseline</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.array</span></code>, shape=(n_nodes,)</p>
 <blockquote>
-<div><p>Inferred baseline of each component&#8217;s intensity</p>
+<div><p>Inferred baseline of each component’s intensity</p>
 </div></blockquote>
 <p><strong>adjacency</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code>, shape=(n_nodes, n_nodes, n_decays)</p>
 <blockquote>
@@ -317,7 +313,7 @@ Used in &#8216;sgd&#8217;, and &#8216;svrg&#8217; solvers</p>
 <blockquote>
 <div><p>The events of each component of the Hawkes. Namely
 <code class="xref py py-obj docutils literal"><span class="pre">events[j]</span></code> contains a one-dimensional <code class="xref py py-obj docutils literal"><span class="pre">numpy.array</span></code> of
-the events&#8217; timestamps of component j</p>
+the events’ timestamps of component j</p>
 </div></blockquote>
 <p><strong>start</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.array</span></code> or <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default=None</p>
 <blockquote>
@@ -439,7 +435,7 @@ given times.</p>
     </p>
     <p>
         &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Vinther Poulsen.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.<br/>
     </p>
   </div>
 </footer>

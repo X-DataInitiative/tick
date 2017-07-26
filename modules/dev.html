@@ -1,11 +1,9 @@
 
 <!DOCTYPE html>
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <script type="text/javascript">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
 
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-97947441-1']);
@@ -17,19 +15,17 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>Developer documentation &#8212; tick 0.1 documentation</title>
-    
+    <title>Developer documentation &#8212; tick 0.2.1 documentation</title>
     <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
     <link rel="stylesheet" href="../_static/bootstrap-3.3.4/css/bootstrap.min.css" type="text/css" />
     <link rel="stylesheet" href="../_static/bootstrap-3.3.4/css/bootstrap-theme.min.css" type="text/css" />
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.1',
+        VERSION:     '0.2.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -39,7 +35,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
@@ -54,7 +50,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 
   </head>
-  <body role="document">
+  <body>
 
   <div id="navbar" class="None navbar-default navbar-fixed-top">
     <div class="container">
@@ -67,7 +63,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.1</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.2</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -99,7 +95,7 @@
 <li class="toctree-l2"><a class="reference internal" href="optim.html#tick-optim-model-model-classes">1. <code class="docutils literal"><span class="pre">tick.optim.model</span></code>: model classes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="optim.html#tick-optim-prox-proximal-operators">2. <code class="docutils literal"><span class="pre">tick.optim.prox</span></code>: proximal operators</a></li>
 <li class="toctree-l2"><a class="reference internal" href="optim.html#tick-optim-solver-solvers">3. <code class="docutils literal"><span class="pre">tick.optim.solver</span></code>: solvers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="optim.html#what-s-under-the-hood">4. What&#8217;s under the hood?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="optim.html#what-s-under-the-hood">4. What’s under the hood?</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="plot.html"><code class="docutils literal"><span class="pre">tick.plot</span></code>: plotting utilities</a><ul>
@@ -328,11 +324,11 @@ object used for intense computations. Find more details in the SWIG part
 of this documentation. In this setting we might want to update our C++ object
 each time our Python object is. We can do so by specifying which setter to
 call when an attribute is modified in Python.</p>
-<p>For this example, let&#8217;s suppose we have a C++ class (named <code class="xref py py-obj docutils literal"><span class="pre">_A</span></code>) that has a int
+<p>For this example, let’s suppose we have a C++ class (named <code class="xref py py-obj docutils literal"><span class="pre">_A</span></code>) that has a int
 attribute associated to a setter (<code class="xref py py-obj docutils literal"><span class="pre">set_cpp_int</span></code>) and a getter (<code class="xref py py-obj docutils literal"><span class="pre">get_cpp_int</span></code>).
 In order to enable the linking we must specify:</p>
 <ul class="simple">
-<li>What is the C++ object&#8217;s name, through <code class="xref py py-obj docutils literal"><span class="pre">_cpp_obj_name</span></code> attribute of the class</li>
+<li>What is the C++ object’s name, through <code class="xref py py-obj docutils literal"><span class="pre">_cpp_obj_name</span></code> attribute of the class</li>
 <li>What is the C++ method that sets attribute <code class="xref py py-obj docutils literal"><span class="pre">cpp_int</span></code>, through <code class="xref py py-obj docutils literal"><span class="pre">cpp_setter</span></code>
 in <code class="xref py py-obj docutils literal"><span class="pre">_attrinfos</span></code> dictionary</li>
 </ul>
@@ -398,7 +394,7 @@ double underscore before</p>
 <p>Many of our models, prox and solvers are Python classes that wraps a C++ class
 which handles the heavy computations. This allows us to have a code that runs
 fast.</p>
-<p>Let&#8217;s see what we should do if we want to add prox L2. Adding a model or a
+<p>Let’s see what we should do if we want to add prox L2. Adding a model or a
 solver is basically identical.</p>
 <div class="section" id="create-c-class">
 <h3>Create C++ class<a class="headerlink" href="#create-c-class" title="Permalink to this headline">¶</a></h3>
@@ -499,7 +495,7 @@ script that builds the extension : <code class="xref py py-obj docutils literal"
 <p>Most of the time, we add a file that belongs to a module that has already
 been created. In this case we only need to add its source files at the right
 place in <code class="xref py py-obj docutils literal"><span class="pre">setup.py</span></code>.</p>
-<p>Let&#8217;s supposed we already had two prox in our module (abstract class Prox and
+<p>Let’s supposed we already had two prox in our module (abstract class Prox and
 prox L1), we need to add <code class="xref py py-obj docutils literal"><span class="pre">prox_l2sq.cpp</span></code> and <code class="xref py py-obj docutils literal"><span class="pre">prox_l2sq.h</span></code> that we have just
 created at the following place.</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">prox_core_info</span> <span class="o">=</span> <span class="p">{</span>
@@ -633,14 +629,14 @@ given to the constructor.</p>
 serialized copy of the object, and a <code class="xref py py-obj docutils literal"><span class="pre">__setstate__</span></code> method to reconstruct the
 object from a string value (this is where the initialization/constructor
 parameters play in).</p>
-<p>It&#8217;s important to consider the initialization of the Python object. In some
+<p>It’s important to consider the initialization of the Python object. In some
 cases it might be convenient to add a parameter-less C++ constructor that
 initializes an empty object. Otherwise existing constructors should be used.</p>
 <p>Now that the Python class has methods to get/set the object state, the pickle
 module may work on the class.</p>
 <div class="section" id="splitting-serialization-and-deserialization-methods">
 <h3>Splitting serialization and deserialization methods<a class="headerlink" href="#splitting-serialization-and-deserialization-methods" title="Permalink to this headline">¶</a></h3>
-<p>In some cases it&#8217;s convenient to split the serialization method into two; one
+<p>In some cases it’s convenient to split the serialization method into two; one
 for loading (deserializing) and saving (serializing) an object. For example, if
 an archive member needs complex initialization during loading, it may be easier
 to have this done in a separate method.</p>
@@ -669,7 +665,7 @@ for more details.</p>
 </div>
 <div class="section" id="serializing-class-hierarchies">
 <h3>Serializing class hierarchies<a class="headerlink" href="#serializing-class-hierarchies" title="Permalink to this headline">¶</a></h3>
-<p>When serializing a class that is part of a hierarchy, it&#8217;s usually sufficient to
+<p>When serializing a class that is part of a hierarchy, it’s usually sufficient to
 add the base class as one of the archive members, as shown in the example:</p>
 <div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="k">template</span> <span class="o">&lt;</span><span class="k">class</span> <span class="nc">Archive</span><span class="o">&gt;</span>
 <span class="kt">void</span> <span class="n">serialize</span><span class="p">(</span><span class="n">Archive</span> <span class="o">&amp;</span> <span class="n">ar</span><span class="p">)</span> <span class="p">{</span>
@@ -768,7 +764,7 @@ use. Code will still compile and link, but warnings will be generated:</p>
     </p>
     <p>
         &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Vinther Poulsen.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.<br/>
     </p>
   </div>
 </footer>

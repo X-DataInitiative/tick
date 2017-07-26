@@ -22,8 +22,8 @@ Plot examples of proximal operators available in `tick.optim.prox`
 .. literalinclude:: plot_prox_example.py
     :lines: 8-
 
-**Total running time of the example:**  1.14 seconds
-( 0 minutes  1.14 seconds)
+**Total running time of the example:**  1.48 seconds
+( 0 minutes  1.48 seconds)
     
 Mentioned *tick* classes:
    * `tick.optim.prox.ProxElasticNet`

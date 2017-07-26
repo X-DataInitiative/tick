@@ -1,11 +1,9 @@
 
 <!DOCTYPE html>
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <script type="text/javascript">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
 
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-97947441-1']);
@@ -17,19 +15,17 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.inference.HawkesConditionalLaw &#8212; tick 0.1 documentation</title>
-    
+    <title>tick.inference.HawkesConditionalLaw &#8212; tick 0.2.1 documentation</title>
     <link rel="stylesheet" href="../../_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/bootstrap-3.3.4/css/bootstrap.min.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/bootstrap-3.3.4/css/bootstrap-theme.min.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.1',
+        VERSION:     '0.2.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -39,7 +35,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="../../_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="../../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
@@ -55,7 +51,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 
   </head>
-  <body role="document">
+  <body>
 
   <div id="navbar" class="None navbar-default navbar-fixed-top">
     <div class="container">
@@ -68,7 +64,7 @@
         </button>
         <a class="navbar-brand" href="../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.1</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.2</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -100,7 +96,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../optim.html#tick-optim-model-model-classes">1. <code class="docutils literal"><span class="pre">tick.optim.model</span></code>: model classes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../optim.html#tick-optim-prox-proximal-operators">2. <code class="docutils literal"><span class="pre">tick.optim.prox</span></code>: proximal operators</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../optim.html#tick-optim-solver-solvers">3. <code class="docutils literal"><span class="pre">tick.optim.solver</span></code>: solvers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../optim.html#what-s-under-the-hood">4. What&#8217;s under the hood?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../optim.html#what-s-under-the-hood">4. What’s under the hood?</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../plot.html"><code class="docutils literal"><span class="pre">tick.plot</span></code>: plotting utilities</a><ul>
@@ -198,13 +194,13 @@ The <span class="math">\(lag\)</span> is sampled on a uniform grid defined by
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>claw_method</strong> : {&#8216;lin&#8217;, &#8216;log&#8217;}, default=&#8217;lin&#8217;</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>claw_method</strong> : {‘lin’, ‘log’}, default=’lin’</p>
 <blockquote>
 <div><p>Specifies the way the conditional laws are sampled. It can be either:</p>
 <ul class="simple">
-<li>&#8216;lin&#8217; : sampling is linear on [0, max_lag] using sampling period
+<li>‘lin’ : sampling is linear on [0, max_lag] using sampling period
 delta_lag</li>
-<li>&#8216;log&#8217; : sampling is semi-log. It uses linear sampling on [0, min_lag]
+<li>‘log’ : sampling is semi-log. It uses linear sampling on [0, min_lag]
 with sampling period delta_lag and log sampling on [min_lag, max_lag]
 using <span class="math">\(\exp(\delta)\)</span> sampling period.</li>
 </ul>
@@ -221,18 +217,18 @@ using <span class="math">\(\exp(\delta)\)</span> sampling period.</li>
 <blockquote>
 <div><p>See claw_methods</p>
 </div></blockquote>
-<p><strong>quad_method</strong> : {&#8216;gauss&#8217;, &#8216;lin&#8217;, &#8216;log&#8217;}, default=gauss</p>
+<p><strong>quad_method</strong> : {‘gauss’, ‘lin’, ‘log’}, default=gauss</p>
 <blockquote>
 <div><p>Sampling used for quadrature</p>
 <ul class="simple">
-<li>&#8216;gauss&#8217; for gaussian quadrature</li>
-<li>&#8216;lin&#8217; for linear quadrature</li>
-<li>&#8216;log&#8217; for log quadrature</li>
+<li>‘gauss’ for gaussian quadrature</li>
+<li>‘lin’ for linear quadrature</li>
+<li>‘log’ for log quadrature</li>
 </ul>
 </div></blockquote>
 <p><strong>min_support</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default=1e-4</p>
 <blockquote>
-<div><p>Start value of kernel estimation. It is used for &#8216;log&#8217; quadrature
+<div><p>Start value of kernel estimation. It is used for ‘log’ quadrature
 method only, otherwise it is set to 0.</p>
 </div></blockquote>
 <p><strong>max_support</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default=40</p>
@@ -273,7 +269,7 @@ Be aware that the complexity increase as this number squared.</p>
 </div></blockquote>
 <p><strong>kernels</strong> : list of list</p>
 <blockquote>
-<div><p>Kernel&#8217;s estimation on the quadrature points</p>
+<div><p>Kernel’s estimation on the quadrature points</p>
 </div></blockquote>
 <p><strong>mean_intensity</strong> : list of <code class="xref py py-obj docutils literal"><span class="pre">float</span></code></p>
 <blockquote>
@@ -319,7 +315,7 @@ non-parametric estimation. <a class="reference external" href="https://arxiv.org
 
 <dl class="method">
 <dt id="tick.inference.HawkesConditionalLaw.fit">
-<code class="descname">fit</code><span class="sig-paren">(</span><em>events: list</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/inference/hawkes_conditional_law.html#HawkesConditionalLaw.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.inference.HawkesConditionalLaw.fit" title="Permalink to this definition">¶</a></dt>
+<code class="descname">fit</code><span class="sig-paren">(</span><em>events: list</em>, <em>T=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/inference/hawkes_conditional_law.html#HawkesConditionalLaw.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.inference.HawkesConditionalLaw.fit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fit the model according to the given training data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -330,9 +326,14 @@ non-parametric estimation. <a class="reference external" href="https://arxiv.org
 <div><p>List of Hawkes processes realizations.
 Each realization of the Hawkes process is a list of n_node for
 each component of the Hawkes. Namely <code class="xref py py-obj docutils literal"><span class="pre">events[i][j]</span></code> contains a
-one-dimensional <code class="xref py py-obj docutils literal"><span class="pre">numpy.array</span></code> of the events&#8217; timestamps of
+one-dimensional <code class="xref py py-obj docutils literal"><span class="pre">numpy.array</span></code> of the events’ timestamps of
 component j of realization i.
 If only one realization is given, it will be wrapped into a list</p>
+</div></blockquote>
+<p><strong>T</strong> : <code class="xref py py-obj docutils literal"><span class="pre">double</span></code>, default=None</p>
+<blockquote>
+<div><p>The duration (in physical time) of the realization. If it is None then
+T is considered to be the time of the last event (of any component).</p>
 </div></blockquote>
 </td>
 </tr>
@@ -423,7 +424,7 @@ given times.</p>
 
 <dl class="method">
 <dt id="tick.inference.HawkesConditionalLaw.incremental_fit">
-<code class="descname">incremental_fit</code><span class="sig-paren">(</span><em>realization</em>, <em>compute=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/inference/hawkes_conditional_law.html#HawkesConditionalLaw.incremental_fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.inference.HawkesConditionalLaw.incremental_fit" title="Permalink to this definition">¶</a></dt>
+<code class="descname">incremental_fit</code><span class="sig-paren">(</span><em>realization</em>, <em>T=None</em>, <em>compute=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/inference/hawkes_conditional_law.html#HawkesConditionalLaw.incremental_fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.inference.HawkesConditionalLaw.incremental_fit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Allows to add some more realizations before estimation is performed.</p>
 <p>It updates the conditional laws (stored in <code class="xref py py-obj docutils literal"><span class="pre">self._claw</span></code> and
 <code class="xref py py-obj docutils literal"><span class="pre">self._claw1</span></code>) and of the mean intensity (in <code class="xref py py-obj docutils literal"><span class="pre">self._mean_intensity</span></code>).</p>
@@ -440,7 +441,12 @@ of each component</li>
 each component (x) and the cumulative marks signal (m)</li>
 </ul>
 </div></blockquote>
-<p><strong>compute</strong> : <code class="xref py py-obj docutils literal"><span class="pre">bool</span></code>, default=`True`</p>
+<p><strong>T</strong> : <code class="xref py py-obj docutils literal"><span class="pre">double</span></code>, default=None</p>
+<blockquote>
+<div><p>The duration (in physical time) of the realization. If it is -1 then
+T is considered to be the time of the last event (of any component).</p>
+</div></blockquote>
+<p><strong>compute</strong> : <code class="xref py py-obj docutils literal"><span class="pre">bool</span></code>, default=`False`</p>
 <blockquote class="last">
 <div><p>Computes kernel estimation. If set to <code class="xref py py-obj docutils literal"><span class="pre">False</span></code>, you will have to
 manually call <a class="reference internal" href="#tick.inference.HawkesConditionalLaw.compute" title="tick.inference.HawkesConditionalLaw.compute"><code class="xref py py-obj docutils literal"><span class="pre">compute</span></code></a> method afterwards.
@@ -517,7 +523,7 @@ first realization only</p>
     </p>
     <p>
         &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Vinther Poulsen.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.<br/>
     </p>
   </div>
 </footer>

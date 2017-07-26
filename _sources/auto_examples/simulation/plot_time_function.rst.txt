@@ -18,8 +18,8 @@ plot_time_function.py
 .. literalinclude:: plot_time_function.py
     :lines: 2-
 
-**Total running time of the example:**  0.30 seconds
-( 0 minutes  0.30 seconds)
+**Total running time of the example:**  0.18 seconds
+( 0 minutes  0.18 seconds)
     
 Mentioned *tick* classes:
    * `tick.base.TimeFunction`

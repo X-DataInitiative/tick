@@ -1,11 +1,9 @@
 
 <!DOCTYPE html>
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <script type="text/javascript">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
 
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-97947441-1']);
@@ -17,19 +15,17 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.inference: user-friendly inference tools &#8212; tick 0.1 documentation</title>
-    
+    <title>tick.inference: user-friendly inference tools &#8212; tick 0.2.1 documentation</title>
     <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
     <link rel="stylesheet" href="../_static/bootstrap-3.3.4/css/bootstrap.min.css" type="text/css" />
     <link rel="stylesheet" href="../_static/bootstrap-3.3.4/css/bootstrap-theme.min.css" type="text/css" />
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.1',
+        VERSION:     '0.2.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -39,7 +35,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
@@ -55,7 +51,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 
   </head>
-  <body role="document">
+  <body>
 
   <div id="navbar" class="None navbar-default navbar-fixed-top">
     <div class="container">
@@ -68,7 +64,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.1</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.2</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -100,7 +96,7 @@
 <li class="toctree-l2"><a class="reference internal" href="optim.html#tick-optim-model-model-classes">1. <code class="docutils literal"><span class="pre">tick.optim.model</span></code>: model classes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="optim.html#tick-optim-prox-proximal-operators">2. <code class="docutils literal"><span class="pre">tick.optim.prox</span></code>: proximal operators</a></li>
 <li class="toctree-l2"><a class="reference internal" href="optim.html#tick-optim-solver-solvers">3. <code class="docutils literal"><span class="pre">tick.optim.solver</span></code>: solvers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="optim.html#what-s-under-the-hood">4. What&#8217;s under the hood?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="optim.html#what-s-under-the-hood">4. What’s under the hood?</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="plot.html"><code class="docutils literal"><span class="pre">tick.plot</span></code>: plotting utilities</a><ul>
@@ -207,13 +203,13 @@ method.</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.inference.LinearRegression.html#tick.inference.LinearRegression" title="tick.inference.LinearRegression"><code class="xref py py-obj docutils literal"><span class="pre">inference.LinearRegression</span></code></a>([fit_intercept,&nbsp;...])</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.inference.LinearRegression.html#tick.inference.LinearRegression" title="tick.inference.LinearRegression"><code class="xref py py-obj docutils literal"><span class="pre">inference.LinearRegression</span></code></a>([fit_intercept,&nbsp;…])</td>
 <td>Linear regression learner, with many choices of penalization and solvers.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/tick.inference.LogisticRegression.html#tick.inference.LogisticRegression" title="tick.inference.LogisticRegression"><code class="xref py py-obj docutils literal"><span class="pre">inference.LogisticRegression</span></code></a>([...])</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/tick.inference.LogisticRegression.html#tick.inference.LogisticRegression" title="tick.inference.LogisticRegression"><code class="xref py py-obj docutils literal"><span class="pre">inference.LogisticRegression</span></code></a>([…])</td>
 <td>Logistic regression learner, with many choices of penalization and solvers.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.inference.PoissonRegression.html#tick.inference.PoissonRegression" title="tick.inference.PoissonRegression"><code class="xref py py-obj docutils literal"><span class="pre">inference.PoissonRegression</span></code></a>([step,&nbsp;...])</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.inference.PoissonRegression.html#tick.inference.PoissonRegression" title="tick.inference.PoissonRegression"><code class="xref py py-obj docutils literal"><span class="pre">inference.PoissonRegression</span></code></a>([step,&nbsp;…])</td>
 <td>Poisson regression learner, with exponential link function.</td>
 </tr>
 </tbody>
@@ -290,13 +286,13 @@ presented in</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.inference.HawkesExpKern.html#tick.inference.HawkesExpKern" title="tick.inference.HawkesExpKern"><code class="xref py py-obj docutils literal"><span class="pre">inference.HawkesExpKern</span></code></a>(decays[,&nbsp;gofit,&nbsp;...])</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.inference.HawkesExpKern.html#tick.inference.HawkesExpKern" title="tick.inference.HawkesExpKern"><code class="xref py py-obj docutils literal"><span class="pre">inference.HawkesExpKern</span></code></a>(decays[,&nbsp;gofit,&nbsp;…])</td>
 <td>Hawkes process learner for exponential kernels with fixed and given decays, with many choices of penalization and solvers.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/tick.inference.HawkesSumExpKern.html#tick.inference.HawkesSumExpKern" title="tick.inference.HawkesSumExpKern"><code class="xref py py-obj docutils literal"><span class="pre">inference.HawkesSumExpKern</span></code></a>(decays[,&nbsp;...])</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/tick.inference.HawkesSumExpKern.html#tick.inference.HawkesSumExpKern" title="tick.inference.HawkesSumExpKern"><code class="xref py py-obj docutils literal"><span class="pre">inference.HawkesSumExpKern</span></code></a>(decays[,&nbsp;…])</td>
 <td>Hawkes process learner for sum-exponential kernels with fixed and given decays, with many choices of penalization and solvers.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.inference.HawkesADM4.html#tick.inference.HawkesADM4" title="tick.inference.HawkesADM4"><code class="xref py py-obj docutils literal"><span class="pre">inference.HawkesADM4</span></code></a>(decay[,&nbsp;C,&nbsp;...])</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.inference.HawkesADM4.html#tick.inference.HawkesADM4" title="tick.inference.HawkesADM4"><code class="xref py py-obj docutils literal"><span class="pre">inference.HawkesADM4</span></code></a>(decay[,&nbsp;C,&nbsp;…])</td>
 <td>A class that implements parametric inference for Hawkes processes</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="generated/tick.inference.HawkesSumGaussians.html#tick.inference.HawkesSumGaussians" title="tick.inference.HawkesSumGaussians"><code class="xref py py-obj docutils literal"><span class="pre">inference.HawkesSumGaussians</span></code></a>(max_mean_gaussian)</td>
@@ -347,20 +343,20 @@ presented in</p>
 <div class="section" id="non-parametric-hawkes-learners">
 <h3>Non-parametric Hawkes learners<a class="headerlink" href="#non-parametric-hawkes-learners" title="Permalink to this headline">¶</a></h3>
 <p>Some other Hawkes learners perform non parametric evaluation of the kernels
-and hence don&#8217;t rely the previous exponential parametrization.</p>
+and hence don’t rely the previous exponential parametrization.</p>
 <table border="1" class="longtable docutils">
 <colgroup>
 <col width="10%" />
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.inference.HawkesEM.html#tick.inference.HawkesEM" title="tick.inference.HawkesEM"><code class="xref py py-obj docutils literal"><span class="pre">inference.HawkesEM</span></code></a>([kernel_support,&nbsp;...])</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.inference.HawkesEM.html#tick.inference.HawkesEM" title="tick.inference.HawkesEM"><code class="xref py py-obj docutils literal"><span class="pre">inference.HawkesEM</span></code></a>([kernel_support,&nbsp;…])</td>
 <td>This class is used for performing non parametric estimation of multi-dimensional Hawkes processes based on expectation maximization algorithm.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="generated/tick.inference.HawkesBasisKernels.html#tick.inference.HawkesBasisKernels" title="tick.inference.HawkesBasisKernels"><code class="xref py py-obj docutils literal"><span class="pre">inference.HawkesBasisKernels</span></code></a>(kernel_support)</td>
 <td>This class is used for performing non parametric estimation of multi-dimensional Hawkes processes based on expectation maximization algorithm and the hypothesis that kernels are linear combinations of some basis kernels.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.inference.HawkesConditionalLaw.html#tick.inference.HawkesConditionalLaw" title="tick.inference.HawkesConditionalLaw"><code class="xref py py-obj docutils literal"><span class="pre">inference.HawkesConditionalLaw</span></code></a>([delta_lag,&nbsp;...])</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.inference.HawkesConditionalLaw.html#tick.inference.HawkesConditionalLaw" title="tick.inference.HawkesConditionalLaw"><code class="xref py py-obj docutils literal"><span class="pre">inference.HawkesConditionalLaw</span></code></a>([delta_lag,&nbsp;…])</td>
 <td>This class is used for performing non parametric estimation of multi-dimensional marked Hawkes processes based on conditional laws.</td>
 </tr>
 </tbody>
@@ -440,10 +436,10 @@ and hence don&#8217;t rely the previous exponential parametrization.</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.inference.nelson_aalen.html#tick.inference.nelson_aalen" title="tick.inference.nelson_aalen"><code class="xref py py-obj docutils literal"><span class="pre">inference.nelson_aalen</span></code></a>(timestamps,&nbsp;...)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.inference.nelson_aalen.html#tick.inference.nelson_aalen" title="tick.inference.nelson_aalen"><code class="xref py py-obj docutils literal"><span class="pre">inference.nelson_aalen</span></code></a>(timestamps,&nbsp;…)</td>
 <td>Computes the Nelson-Aalen cumulative hazard rate estimation</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/tick.inference.kaplan_meier.html#tick.inference.kaplan_meier" title="tick.inference.kaplan_meier"><code class="xref py py-obj docutils literal"><span class="pre">inference.kaplan_meier</span></code></a>(timestamps,&nbsp;...)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/tick.inference.kaplan_meier.html#tick.inference.kaplan_meier" title="tick.inference.kaplan_meier"><code class="xref py py-obj docutils literal"><span class="pre">inference.kaplan_meier</span></code></a>(timestamps,&nbsp;…)</td>
 <td>Computes the Kaplan-Meier survival function estimation</td>
 </tr>
 </tbody>
@@ -454,7 +450,7 @@ and hence don&#8217;t rely the previous exponential parametrization.</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.inference.CoxRegression.html#tick.inference.CoxRegression" title="tick.inference.CoxRegression"><code class="xref py py-obj docutils literal"><span class="pre">inference.CoxRegression</span></code></a>([penalty,&nbsp;C,&nbsp;...])</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.inference.CoxRegression.html#tick.inference.CoxRegression" title="tick.inference.CoxRegression"><code class="xref py py-obj docutils literal"><span class="pre">inference.CoxRegression</span></code></a>([penalty,&nbsp;C,&nbsp;…])</td>
 <td>Cox regression learner, using the partial Cox likelihood for proportional risks, with many choices of penalization.</td>
 </tr>
 </tbody>
@@ -472,7 +468,7 @@ and hence don&#8217;t rely the previous exponential parametrization.</p>
     </p>
     <p>
         &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Vinther Poulsen.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.<br/>
     </p>
   </div>
 </footer>

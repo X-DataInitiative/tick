@@ -18,8 +18,8 @@ plot_hawkes_matrix_exp_kernels.py
 .. literalinclude:: plot_hawkes_matrix_exp_kernels.py
     :lines: 2-
 
-**Total running time of the example:**  0.54 seconds
-( 0 minutes  0.54 seconds)
+**Total running time of the example:**  0.32 seconds
+( 0 minutes  0.32 seconds)
     
 Mentioned *tick* classes:
    * `tick.inference.HawkesExpKern`

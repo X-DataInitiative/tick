@@ -38,8 +38,8 @@ Some remarks are the following:
 .. literalinclude:: plot_logistic_tick_vs_scikit.py
     :lines: 24-
 
-**Total running time of the example:**  11.91 seconds
-( 0 minutes  11.91 seconds)
+**Total running time of the example:**  12.09 seconds
+( 0 minutes  12.09 seconds)
     
 Mentioned *tick* classes:
    * `tick.dataset.fetch_tick_dataset`

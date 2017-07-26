@@ -1,11 +1,9 @@
 
 <!DOCTYPE html>
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <script type="text/javascript">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
 
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-97947441-1']);
@@ -17,19 +15,17 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.inference.PoissonRegression &#8212; tick 0.1 documentation</title>
-    
+    <title>tick.inference.PoissonRegression &#8212; tick 0.2.1 documentation</title>
     <link rel="stylesheet" href="../../_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/bootstrap-3.3.4/css/bootstrap.min.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/bootstrap-3.3.4/css/bootstrap-theme.min.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.1',
+        VERSION:     '0.2.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -39,7 +35,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="../../_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="../../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
@@ -55,7 +51,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 
   </head>
-  <body role="document">
+  <body>
 
   <div id="navbar" class="None navbar-default navbar-fixed-top">
     <div class="container">
@@ -68,7 +64,7 @@
         </button>
         <a class="navbar-brand" href="../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.1</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.2</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -100,7 +96,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../optim.html#tick-optim-model-model-classes">1. <code class="docutils literal"><span class="pre">tick.optim.model</span></code>: model classes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../optim.html#tick-optim-prox-proximal-operators">2. <code class="docutils literal"><span class="pre">tick.optim.prox</span></code>: proximal operators</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../optim.html#tick-optim-solver-solvers">3. <code class="docutils literal"><span class="pre">tick.optim.solver</span></code>: solvers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../optim.html#what-s-under-the-hood">4. What&#8217;s under the hood?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../optim.html#what-s-under-the-hood">4. What’s under the hood?</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../plot.html"><code class="docutils literal"><span class="pre">tick.plot</span></code>: plotting utilities</a><ul>
@@ -167,7 +163,7 @@
 <span id="poissonregression"></span><h1>tick.inference.PoissonRegression<a class="headerlink" href="#tick-inference-poissonregression" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="tick.inference.PoissonRegression">
-<em class="property">class </em><code class="descclassname">tick.inference.</code><code class="descname">PoissonRegression</code><span class="sig-paren">(</span><em>step=0.001</em>, <em>fit_intercept=True</em>, <em>penalty='l2'</em>, <em>C=1000.0</em>, <em>tol=1e-05</em>, <em>max_iter=100</em>, <em>solver='svrg'</em>, <em>verbose=False</em>, <em>warm_start=False</em>, <em>print_every=10</em>, <em>record_every=1</em>, <em>elastic_net_ratio=0.95</em>, <em>random_state=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/inference/poisson_regression.html#PoissonRegression"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.inference.PoissonRegression" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">tick.inference.</code><code class="descname">PoissonRegression</code><span class="sig-paren">(</span><em>step=0.001</em>, <em>fit_intercept=True</em>, <em>penalty='l2'</em>, <em>C=1000.0</em>, <em>tol=1e-05</em>, <em>max_iter=100</em>, <em>solver='svrg'</em>, <em>verbose=False</em>, <em>warm_start=False</em>, <em>print_every=10</em>, <em>record_every=1</em>, <em>elastic_net_ratio=0.95</em>, <em>random_state=None</em>, <em>blocks_start=None</em>, <em>blocks_length=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/inference/poisson_regression.html#PoissonRegression"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.inference.PoissonRegression" title="Permalink to this definition">¶</a></dt>
 <dd><p>Poisson regression learner, with exponential link function.
 It supports several solvers and several penalizations.
 Note that for this model, there is no way to tune
@@ -180,17 +176,17 @@ might work, or not, so that several values should be tried out.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>step</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default=1e-3</p>
 <blockquote>
 <div><p>Step-size to be used for the solver. For Poisson regression there is no
-way to tune it automatically. The default tuning might work, or not...</p>
+way to tune it automatically. The default tuning might work, or not…</p>
 </div></blockquote>
 <p><strong>C</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default=1e3</p>
 <blockquote>
 <div><p>Level of penalization</p>
 </div></blockquote>
-<p><strong>penalty</strong> : {&#8216;l1&#8217;, &#8216;l2&#8217;, &#8216;elasticnet&#8217;, &#8216;tv&#8217;}, default=&#8217;l2&#8217;</p>
+<p><strong>penalty</strong> : {‘l1’, ‘l2’, ‘elasticnet’, ‘tv’}, default=’l2’</p>
 <blockquote>
 <div><p>The penalization to use. Default is ridge penalization</p>
 </div></blockquote>
-<p><strong>solver</strong> : {&#8216;gd&#8217;, &#8216;agd&#8217;, &#8216;bfgs&#8217;, &#8216;svrg&#8217;, &#8216;sgd&#8217;}, default=&#8217;svrg&#8217;</p>
+<p><strong>solver</strong> : {‘gd’, ‘agd’, ‘bfgs’, ‘svrg’, ‘sgd’}, default=’svrg’</p>
 <blockquote>
 <div><p>The name of the solver to use</p>
 </div></blockquote>
@@ -227,20 +223,6 @@ a multiple of <code class="docutils literal"><span class="pre">print_every</span
 <div><p>Record history information when <code class="docutils literal"><span class="pre">n_iter</span></code> (iteration number) is
 a multiple of <code class="docutils literal"><span class="pre">record_every</span></code></p>
 </div></blockquote>
-<p><strong>elastic_net_ratio</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default=0.95</p>
-<blockquote>
-<div><p>Ratio of elastic net mixing parameter with 0 &lt;= ratio &lt;= 1.
-For ratio = 0 this is ridge (L2 squared) regularization
-For ratio = 1 this is lasso (L1) regularization
-For 0 &lt; ratio &lt; 1, the regularization is a linear combination
-of L1 and L2.
-Used in &#8216;elasticnet&#8217; penalty</p>
-</div></blockquote>
-<p><strong>random_state</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code> seed, RandomState instance, or None (default)</p>
-<blockquote>
-<div><p>The seed that will be used by stochastic solvers. Used in &#8216;sgd&#8217;,
-&#8216;svrg&#8217;, and &#8216;sdca&#8217; solvers</p>
-</div></blockquote>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Attributes:</th><td class="field-body"><p class="first"><strong>weights</strong> : <code class="xref py py-obj docutils literal"><span class="pre">numpy.array</span></code>, shape=(n_features,)</p>
@@ -257,7 +239,7 @@ Used in &#8216;elasticnet&#8217; penalty</p>
 </table>
 <dl class="method">
 <dt id="tick.inference.PoissonRegression.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>step=0.001</em>, <em>fit_intercept=True</em>, <em>penalty='l2'</em>, <em>C=1000.0</em>, <em>tol=1e-05</em>, <em>max_iter=100</em>, <em>solver='svrg'</em>, <em>verbose=False</em>, <em>warm_start=False</em>, <em>print_every=10</em>, <em>record_every=1</em>, <em>elastic_net_ratio=0.95</em>, <em>random_state=None</em><span class="sig-paren">)</span><a class="headerlink" href="#tick.inference.PoissonRegression.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>step=0.001</em>, <em>fit_intercept=True</em>, <em>penalty='l2'</em>, <em>C=1000.0</em>, <em>tol=1e-05</em>, <em>max_iter=100</em>, <em>solver='svrg'</em>, <em>verbose=False</em>, <em>warm_start=False</em>, <em>print_every=10</em>, <em>record_every=1</em>, <em>elastic_net_ratio=0.95</em>, <em>random_state=None</em>, <em>blocks_start=None</em>, <em>blocks_length=None</em><span class="sig-paren">)</span><a class="headerlink" href="#tick.inference.PoissonRegression.__init__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -434,7 +416,7 @@ Minus log-likelihood is computed, so that smaller is better.</p>
     </p>
     <p>
         &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Vinther Poulsen.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.<br/>
     </p>
   </div>
 </footer>

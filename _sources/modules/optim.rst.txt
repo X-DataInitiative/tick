@@ -383,20 +383,21 @@ which corresponds to the sum of integers between 5 and 9 included.
 
 The list of available operators in ``tick`` given in the next table.
 
-=======================  ========================================================================================  ==============
-Penalization             Function                                                                                  Class
-=======================  ========================================================================================  ==============
-Identity                 :math:`g(w) = 0`                                                                          :class:`ProxZero <tick.optim.prox.ProxZero>`
-Non-negative constraint  :math:`g(w) = s \delta_C(w)` where :math:`C=` set of vectors with non-negative entries    :class:`ProxPositive <tick.optim.prox.ProxPositive>`
-Equality constraint      :math:`g(w) = s \delta_C(w)` where :math:`C=` set of vectors with identical entries       :class:`ProxEquality <tick.optim.prox.Equality>`
-L1 norm                  :math:`g(w) = s \sum_{j=1}^d |w_j|`                                                       :class:`ProxL1 <tick.optim.prox.ProxL1>`
-L1 norm with weights     :math:`g(w) = s \sum_{j=1}^d c_j |w_j|`                                                   :class:`ProxL1w <tick.optim.prox.ProxL1w>`
-Ridge                    :math:`g(w) = s \sum_{j=1}^d \frac{w_j^2}{2}`                                             :class:`ProxL2Sq <tick.optim.prox.ProxL2Sq>`
-Elastic-net              :math:`g(w) = s \Big(\sum_{j=1}^{d} \alpha |w_j| + (1 - \alpha) \frac{w_j^2}{2} \Big)`    :class:`ProxElasticNet <tick.optim.prox.ProxElasticNet>`
-Total-variation          :math:`g(w) = s \sum_{j=2}^d |w_j - w_{j-1}|`                                             :class:`ProxTV <tick.optim.prox.ProxTV>`
-Nuclear norm             :math:`g(w) = s \sum_{j=1}^{q} \sigma_j(w)`                                               :class:`ProxNuclear <tick.optim.prox.ProxNuclear>`
-Sorted L1                :math:`g(w) = s \sum_{j=1}^{d} c_j |w_{(j)}|` where :math:`|w_{(j)}|` is decreasing       :class:`ProxSlope <tick.optim.prox.ProxSlope>`
-=======================  ========================================================================================  ==============
+=======================  ===========================================================================================================  ==============
+Penalization             Function                                                                                                     Class
+=======================  ===========================================================================================================  ==============
+Identity                 :math:`g(w) = 0`                                                                                             :class:`ProxZero <tick.optim.prox.ProxZero>`
+Non-negative constraint  :math:`g(w) = s \delta_C(w)` where :math:`C=` set of vectors with non-negative entries                       :class:`ProxPositive <tick.optim.prox.ProxPositive>`
+Equality constraint      :math:`g(w) = s \delta_C(w)` where :math:`C=` set of vectors with identical entries                          :class:`ProxEquality <tick.optim.prox.Equality>`
+L1 norm                  :math:`g(w) = s \sum_{j=1}^d |w_j|`                                                                          :class:`ProxL1 <tick.optim.prox.ProxL1>`
+L1 norm with weights     :math:`g(w) = s \sum_{j=1}^d c_j |w_j|`                                                                      :class:`ProxL1w <tick.optim.prox.ProxL1w>`
+Ridge                    :math:`g(w) = s \sum_{j=1}^d \frac{w_j^2}{2}`                                                                :class:`ProxL2Sq <tick.optim.prox.ProxL2Sq>`
+Elastic-net              :math:`g(w) = s \Big(\sum_{j=1}^{d} \alpha |w_j| + (1 - \alpha) \frac{w_j^2}{2} \Big)`                       :class:`ProxElasticNet <tick.optim.prox.ProxElasticNet>`
+Total-variation          :math:`g(w) = s \sum_{j=2}^d |w_j - w_{j-1}|`                                                                :class:`ProxTV <tick.optim.prox.ProxTV>`
+Nuclear norm             :math:`g(w) = s \sum_{j=1}^{q} \sigma_j(w)`                                                                  :class:`ProxNuclear <tick.optim.prox.ProxNuclear>`
+Sorted L1                :math:`g(w) = s \sum_{j=1}^{d} c_j |w_{(j)}|` where :math:`|w_{(j)}|` is decreasing                          :class:`ProxSlope <tick.optim.prox.ProxSlope>`
+Binarsity                :math:`g(w) = s \sum_{j=1}^d \big( \sum_{k=2}^{d_j} |w_{j,k} - w_{j,k-1} | + \delta_C(w_{j,\bullet}) \big)`  :class:`ProxBinarsity <tick.optim.prox.ProxBinarsity>`
+=======================  ===========================================================================================================  ==============
 
 Another ``prox`` class is the :class:`ProxMulti <tick.optim.prox.ProxMulti>` that allows
 to combine any proximal operators together.

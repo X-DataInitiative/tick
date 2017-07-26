@@ -1,11 +1,9 @@
 
 <!DOCTYPE html>
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <script type="text/javascript">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
 
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-97947441-1']);
@@ -17,19 +15,17 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.simulation: simulation toolbox &#8212; tick 0.1 documentation</title>
-    
+    <title>tick.simulation: simulation toolbox &#8212; tick 0.2.1 documentation</title>
     <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
     <link rel="stylesheet" href="../_static/bootstrap-3.3.4/css/bootstrap.min.css" type="text/css" />
     <link rel="stylesheet" href="../_static/bootstrap-3.3.4/css/bootstrap-theme.min.css" type="text/css" />
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.1',
+        VERSION:     '0.2.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -39,7 +35,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
@@ -55,7 +51,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 
   </head>
-  <body role="document">
+  <body>
 
   <div id="navbar" class="None navbar-default navbar-fixed-top">
     <div class="container">
@@ -68,7 +64,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.1</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.2</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -100,7 +96,7 @@
 <li class="toctree-l2"><a class="reference internal" href="optim.html#tick-optim-model-model-classes">1. <code class="docutils literal"><span class="pre">tick.optim.model</span></code>: model classes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="optim.html#tick-optim-prox-proximal-operators">2. <code class="docutils literal"><span class="pre">tick.optim.prox</span></code>: proximal operators</a></li>
 <li class="toctree-l2"><a class="reference internal" href="optim.html#tick-optim-solver-solvers">3. <code class="docutils literal"><span class="pre">tick.optim.solver</span></code>: solvers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="optim.html#what-s-under-the-hood">4. What&#8217;s under the hood?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="optim.html#what-s-under-the-hood">4. What’s under the hood?</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="plot.html"><code class="docutils literal"><span class="pre">tick.plot</span></code>: plotting utilities</a><ul>
@@ -199,10 +195,10 @@ Hawkes processes and time functions for the simulation of Poisson processes.</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.weights_sparse_exp.html#tick.simulation.weights_sparse_exp" title="tick.simulation.weights_sparse_exp"><code class="xref py py-obj docutils literal"><span class="pre">simulation.weights_sparse_exp</span></code></a>(...)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.weights_sparse_exp.html#tick.simulation.weights_sparse_exp" title="tick.simulation.weights_sparse_exp"><code class="xref py py-obj docutils literal"><span class="pre">simulation.weights_sparse_exp</span></code></a>(…)</td>
 <td>Sparse and exponential model weights generator</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/tick.simulation.weights_sparse_gauss.html#tick.simulation.weights_sparse_gauss" title="tick.simulation.weights_sparse_gauss"><code class="xref py py-obj docutils literal"><span class="pre">simulation.weights_sparse_gauss</span></code></a>(...)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/tick.simulation.weights_sparse_gauss.html#tick.simulation.weights_sparse_gauss" title="tick.simulation.weights_sparse_gauss"><code class="xref py py-obj docutils literal"><span class="pre">simulation.weights_sparse_gauss</span></code></a>(…)</td>
 <td>Sparse and gaussian model weights generator</td>
 </tr>
 </tbody>
@@ -240,10 +236,10 @@ a particular covariance matrix (uniform symmetrized or toeplitz).</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.features_normal_cov_uniform.html#tick.simulation.features_normal_cov_uniform" title="tick.simulation.features_normal_cov_uniform"><code class="xref py py-obj docutils literal"><span class="pre">simulation.features_normal_cov_uniform</span></code></a>(...)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.features_normal_cov_uniform.html#tick.simulation.features_normal_cov_uniform" title="tick.simulation.features_normal_cov_uniform"><code class="xref py py-obj docutils literal"><span class="pre">simulation.features_normal_cov_uniform</span></code></a>(…)</td>
 <td>Normal features generator with uniform covariance</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/tick.simulation.features_normal_cov_toeplitz.html#tick.simulation.features_normal_cov_toeplitz" title="tick.simulation.features_normal_cov_toeplitz"><code class="xref py py-obj docutils literal"><span class="pre">simulation.features_normal_cov_toeplitz</span></code></a>(...)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/tick.simulation.features_normal_cov_toeplitz.html#tick.simulation.features_normal_cov_toeplitz" title="tick.simulation.features_normal_cov_toeplitz"><code class="xref py py-obj docutils literal"><span class="pre">simulation.features_normal_cov_toeplitz</span></code></a>(…)</td>
 <td>Normal features generator with toeplitz covariance</td>
 </tr>
 </tbody>
@@ -340,13 +336,13 @@ Hawkes processes.</p>
 <tr class="row-even"><td><a class="reference internal" href="generated/tick.simulation.HawkesKernelExp.html#tick.simulation.HawkesKernelExp" title="tick.simulation.HawkesKernelExp"><code class="xref py py-obj docutils literal"><span class="pre">simulation.HawkesKernelExp</span></code></a>(intensity,&nbsp;decay)</td>
 <td>Hawkes kernel with exponential decay</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.HawkesKernelSumExp.html#tick.simulation.HawkesKernelSumExp" title="tick.simulation.HawkesKernelSumExp"><code class="xref py py-obj docutils literal"><span class="pre">simulation.HawkesKernelSumExp</span></code></a>(intensities,&nbsp;...)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.HawkesKernelSumExp.html#tick.simulation.HawkesKernelSumExp" title="tick.simulation.HawkesKernelSumExp"><code class="xref py py-obj docutils literal"><span class="pre">simulation.HawkesKernelSumExp</span></code></a>(intensities,&nbsp;…)</td>
 <td>Hawkes kernel with sum exponential decays</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/tick.simulation.HawkesKernelPowerLaw.html#tick.simulation.HawkesKernelPowerLaw" title="tick.simulation.HawkesKernelPowerLaw"><code class="xref py py-obj docutils literal"><span class="pre">simulation.HawkesKernelPowerLaw</span></code></a>(multiplier,&nbsp;...)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/tick.simulation.HawkesKernelPowerLaw.html#tick.simulation.HawkesKernelPowerLaw" title="tick.simulation.HawkesKernelPowerLaw"><code class="xref py py-obj docutils literal"><span class="pre">simulation.HawkesKernelPowerLaw</span></code></a>(multiplier,&nbsp;…)</td>
 <td>Hawkes kernel for power law</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.HawkesKernelTimeFunc.html#tick.simulation.HawkesKernelTimeFunc" title="tick.simulation.HawkesKernelTimeFunc"><code class="xref py py-obj docutils literal"><span class="pre">simulation.HawkesKernelTimeFunc</span></code></a>([...])</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.HawkesKernelTimeFunc.html#tick.simulation.HawkesKernelTimeFunc" title="tick.simulation.HawkesKernelTimeFunc"><code class="xref py py-obj docutils literal"><span class="pre">simulation.HawkesKernelTimeFunc</span></code></a>([…])</td>
 <td>Hawkes kernel defined by an arbitrary time function.</td>
 </tr>
 </tbody>
@@ -529,7 +525,7 @@ while <span class="math">\(c_i = 0\)</span> means that <span class="math">\(t_i\
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.SimuSCCS.html#tick.simulation.SimuSCCS" title="tick.simulation.SimuSCCS"><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuSCCS</span></code></a>(n_samples,&nbsp;n_intervals,&nbsp;...)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.SimuSCCS.html#tick.simulation.SimuSCCS" title="tick.simulation.SimuSCCS"><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuSCCS</span></code></a>(n_samples,&nbsp;n_intervals,&nbsp;…)</td>
 <td>Simulation of a Self Control Case Series (SCCS) model.</td>
 </tr>
 </tbody>
@@ -551,10 +547,10 @@ thanks to the following classes.</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.SimuPoissonProcess.html#tick.simulation.SimuPoissonProcess" title="tick.simulation.SimuPoissonProcess"><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuPoissonProcess</span></code></a>(intensities[,&nbsp;...])</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.SimuPoissonProcess.html#tick.simulation.SimuPoissonProcess" title="tick.simulation.SimuPoissonProcess"><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuPoissonProcess</span></code></a>(intensities[,&nbsp;…])</td>
 <td>Homogeneous Poisson process simulation</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/tick.simulation.SimuInhomogeneousPoisson.html#tick.simulation.SimuInhomogeneousPoisson" title="tick.simulation.SimuInhomogeneousPoisson"><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuInhomogeneousPoisson</span></code></a>(...[,&nbsp;...])</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/tick.simulation.SimuInhomogeneousPoisson.html#tick.simulation.SimuInhomogeneousPoisson" title="tick.simulation.SimuInhomogeneousPoisson"><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuInhomogeneousPoisson</span></code></a>(…[,&nbsp;…])</td>
 <td>Inhomogeneous Poisson process simulation</td>
 </tr>
 </tbody>
@@ -631,13 +627,13 @@ dedicated to a type of kernel: exponential or sum of exponential kernels.</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.SimuHawkes.html#tick.simulation.SimuHawkes" title="tick.simulation.SimuHawkes"><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuHawkes</span></code></a>([kernels,&nbsp;baseline,&nbsp;...])</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.SimuHawkes.html#tick.simulation.SimuHawkes" title="tick.simulation.SimuHawkes"><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuHawkes</span></code></a>([kernels,&nbsp;baseline,&nbsp;…])</td>
 <td>Hawkes process simulation</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/tick.simulation.SimuHawkesExpKernels.html#tick.simulation.SimuHawkesExpKernels" title="tick.simulation.SimuHawkesExpKernels"><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuHawkesExpKernels</span></code></a>(adjacency,&nbsp;...)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/tick.simulation.SimuHawkesExpKernels.html#tick.simulation.SimuHawkesExpKernels" title="tick.simulation.SimuHawkesExpKernels"><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuHawkesExpKernels</span></code></a>(adjacency,&nbsp;…)</td>
 <td>Hawkes process with exponential kernels simulation</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.SimuHawkesSumExpKernels.html#tick.simulation.SimuHawkesSumExpKernels" title="tick.simulation.SimuHawkesSumExpKernels"><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuHawkesSumExpKernels</span></code></a>(...[,&nbsp;...])</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.SimuHawkesSumExpKernels.html#tick.simulation.SimuHawkesSumExpKernels" title="tick.simulation.SimuHawkesSumExpKernels"><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuHawkesSumExpKernels</span></code></a>(…[,&nbsp;…])</td>
 <td>Hawkes process with sum-exponential kernels simulation</td>
 </tr>
 </tbody>
@@ -724,7 +720,7 @@ dedicated to a type of kernel: exponential or sum of exponential kernels.</p>
     </p>
     <p>
         &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Vinther Poulsen.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.<br/>
     </p>
   </div>
 </footer>
