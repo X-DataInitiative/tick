@@ -32,6 +32,10 @@ The paper associated to this library has been published at
 
 If you use _tick_ in a scientific publication, we would appreciate citations.
 
+<img align="right" src="https://raw.githubusercontent.com/X-DataInitiative/tick/master/doc/images/intel_logo.png" width="200" alt="intel logo" />
+The <i>tick</i> library is released with the support of Intel®. It uses the Intel® Math Kernel Library (MKL) optimized for Intel® Xeon Phi™ and Intel® Xeon™ processors. <i>tick</i> runs efficiently on everything from desktop computers to powerful high-performance servers.
+
+
 ## Use cases
 
 _tick_ is used for many industrial applications including:
