@@ -7,6 +7,8 @@
 
 // License: BSD 3 clause
 
+#include "defs.h"
+
 #include <memory>
 
 #include <cfloat>

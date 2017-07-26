@@ -4,9 +4,10 @@
 
 // License: BSD 3 clause
 
-#include <cereal/types/polymorphic.hpp>
 #include "base.h"
 #include "baseline.h"
+
+#include <cereal/types/polymorphic.hpp>
 
 /*! \class HawkesBaseline
  * \brief Class of time varying baselines modeled by TimeFunction

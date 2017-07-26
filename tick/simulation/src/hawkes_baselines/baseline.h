@@ -4,8 +4,9 @@
 
 // License: BSD 3 clause
 
-#include <memory>
 #include "base.h"
+
+#include <memory>
 
 /*! \class HawkesBaseline
  * \brief A abstract class for Hawkes baselines

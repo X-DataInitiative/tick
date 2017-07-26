@@ -93,7 +93,9 @@ try:
         numpy_include = np.get_numpy_include()
 
     # Determine if we have an available BLAS implementation
-    blas_info = get_info("blas_opt", 0)
+    if 'bdist_wheel' not in sys.argv:
+        blas_info = get_info("blas_opt", 0)
+
     numpy_available = True
 except ImportError as e:
     if is_building_tick:
