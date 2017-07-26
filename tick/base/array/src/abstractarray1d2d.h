@@ -20,14 +20,11 @@
 #include <cereal/cereal.hpp>
 
 // This macro defines the type to be used for indices of sparse arrays.
-// In python the scipy csr_matrix uses NPY_INT32 to code them
-// Must correspond to NPY_INT32
-#ifdef _SPARSE_INDICES_INT32
-#define INDICE_TYPE std::uint32_t
-#elif _SPARSE_INDICES_INT64
+// In python the scipy csr_matrix uses NPY_INT32 to encode them
+#ifdef TICK_SPARSE_INDICES_INT64
 #define INDICE_TYPE ulong
 #else
-#define INDICE_TYPE ulong
+#define INDICE_TYPE std::uint32_t
 #endif
 
 /*! \class AbstractArray1d2d
