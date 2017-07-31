@@ -6,7 +6,7 @@ from operator import itemgetter
 from scipy.misc import comb
 from itertools import chain
 from tick.base import Base
-from tick.optim.prox import ProxTV, ProxMulti, ProxZero, ProxEquality, ProxL1
+from tick.optim.prox import ProxTV, ProxMulti, ProxZero, ProxEquality, ProxL1, ProxL2Sq
 from tick.optim.solver import SVRG
 from tick.optim.model import ModelSCCS
 from tick.preprocessing import LongitudinalFeaturesProduct,\
@@ -72,14 +72,14 @@ class LearnerSCCS(ABC, Base):
         },
     }
 
-    # TODO: This is not that useful in its current form
+    # TODO: This is not useful in its current form
     _penalties = {
         'None': ProxZero,
         'TV': ProxTV,
         'Equality': ProxEquality,
         'L1-first-TV': [ProxL1, ProxTV],
         'L1-TV': [ProxL1, ProxTV],
-        'TV-L1': [ProxTV, ProxL1]
+        'TV-L1': [ProxTV, ProxL1],
     }
 
     def __init__(self, n_lags: int=0, feature_products=False,
@@ -388,13 +388,20 @@ class LearnerSCCS(ABC, Base):
         self._set('n_intervals', n_intervals)
 
         # Filter patients without event
-        # TODO: create an independent preprocessor
+        # TODO: create independent preprocessor
+        mask = [i for i, f in enumerate(features) if f.sum() > 0]
+        features_filter = itemgetter(*mask)
+        features = features_filter(features)
+        labels = features_filter(labels)
+        censoring = censoring[mask]
+
+        # TODO: create independent preprocessor
         features, labels, censoring, _ = SimuSCCS\
             ._filter_non_positive_samples(features, labels, censoring)
 
         # Feature products
         # TODO: fix feature products
-        # features = preprocessors[0].fit_transform(features)
+        features = preprocessors[0].fit_transform(features)
 
         # Lagger
         features = preprocessors[1].fit_transform(features, censoring)

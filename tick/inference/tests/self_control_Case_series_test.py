@@ -39,15 +39,20 @@ class Test(InferenceTest):
         self.assertEqual(expected_tv_groups, l1_tv_groups)
 
     def test_LearnerSCCS_preprocess(self):
+        sim = SimuSCCS(n_samples=500, n_intervals=100, n_features=3, n_lags=4,
+                       verbose=True, seed=42)
+        features, labels, censoring, coeffs = sim.simulate()
         # Just check that the preprocessing is running quickly
-        lrn = LearnerSCCS(n_lags=self.n_lags, verbose=False)
-        X, y, c = lrn._preprocess(self.features, self.labels, self.censoring)
+        lrn = LearnerSCCS(n_lags=4, strength_TV=1e-3, strength_L1=1e-5,
+                          verbose=True, penalty="L1-first-TV",
+                          feature_products=True)
+        X, y, c = lrn._preprocess(features, labels, censoring)
         # TODO: Check on small dummy data that preprocessing is working
-        # TODO: fix feature products
+        # TODO: fix feature products test
         pass
 
     def test_LearnerSCCS_fit(self):
-        # TODO: correct this test
+        # TODO: correct this test (i.e. find a good seed)
         lrn = LearnerSCCS(n_lags=self.n_lags, penalty="None", tol=0,
                           max_iter=20, verbose=False)
         coeffs, _ = lrn.fit(self.features, self.labels, self.censoring)
