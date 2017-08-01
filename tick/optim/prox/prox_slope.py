@@ -25,12 +25,9 @@ class ProxSlope(Prox):
         Range on which the prox is applied. If `None` then the prox is
         applied on the whole vector
 
-    Attributes
-    ----------
-    weights : `np.array`, shape=(n_coeffs,)
-        The weights used in the penalization. They are automatically
-        setted, depending on the ``weights_type`` and ``fdr``
-        parameters.
+    positive : `bool`, default=`False`
+        If True, apply an extra projection onto the set of vectors with
+        non-negative entries
 
     Notes
     -----
@@ -53,9 +50,6 @@ class ProxSlope(Prox):
         "positive": {
             "writable": True,
             "cpp_setter": "set_positive"
-        },
-        "weights": {
-            "writable": False,
         }
     }
 
@@ -65,7 +59,6 @@ class ProxSlope(Prox):
         self.strength = strength
         self.fdr = fdr
         self.positive = positive
-        self.weights = None
         if range is None:
             self._prox = _ProxSlope(self.strength, self.fdr, self.positive)
         else:
@@ -91,8 +84,3 @@ class ProxSlope(Prox):
             Value of the penalization at ``coeffs``
         """
         return self._prox.value(coeffs)
-
-    def _as_dict(self):
-        dd = Prox._as_dict(self)
-        del dd["weights"]
-        return dd

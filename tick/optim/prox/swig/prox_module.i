@@ -15,6 +15,7 @@
 %shared_ptr(ProxTV);
 %shared_ptr(ProxElasticNet);
 %shared_ptr(ProxSlope);
+%shared_ptr(ProxOscar);
 %shared_ptr(ProxMulti);
 %shared_ptr(ProxEquality);
 %shared_ptr(ProxBinarsity);
@@ -44,6 +45,8 @@
 %include prox_elasticnet.i
 
 %include prox_slope.i
+
+%include prox_oscar.i
 
 %include prox_multi.i
 
