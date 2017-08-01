@@ -8,6 +8,7 @@ add_library(tick_prox EXCLUDE_FROM_ALL
         prox_zero.cpp prox_zero.h
         prox_sorted_l1.cpp prox_sorted_l1.h
         prox_slope.cpp prox_slope.h
+        prox_oscar.cpp prox_oscar.h
         prox_tv.cpp prox_tv.h
         prox_l1w.cpp prox_l1w.h
         prox_elasticnet.cpp prox_elasticnet.h

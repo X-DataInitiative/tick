@@ -5,7 +5,7 @@
 ProxSlope::ProxSlope(double strength,
                      double false_discovery_rate,
                      bool positive)
-  : ProxSortedL1(strength, WeightsType::bh, positive) {
+    : ProxSortedL1(strength, positive) {
   this->false_discovery_rate = false_discovery_rate;
 }
 
@@ -14,7 +14,7 @@ ProxSlope::ProxSlope(double strength,
                      ulong start,
                      ulong end,
                      bool positive)
-  : ProxSortedL1(strength, WeightsType::bh, start, end, positive) {
+    : ProxSortedL1(strength, start, end, positive) {
   this->false_discovery_rate = false_discovery_rate;
 }
 

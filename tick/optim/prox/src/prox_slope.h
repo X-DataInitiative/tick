@@ -29,7 +29,7 @@ class ProxSlope : public ProxSortedL1 {
   inline void set_false_discovery_rate(double false_discovery_rate) {
     if (false_discovery_rate <= 0 || false_discovery_rate >= 1) {
       TICK_ERROR("False discovery rate must be in (0, 1) but received "
-                   << false_discovery_rate)
+                     << false_discovery_rate)
     }
     if (false_discovery_rate != this->false_discovery_rate) {
       weights_ready = false;

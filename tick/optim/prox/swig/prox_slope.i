@@ -14,5 +14,5 @@ class ProxSlope : public Prox {
 
    inline void set_false_discovery_rate(double fdr);
 
-   inline double get_weight_i(unsigned long i);
+   inline double get_weight_i(unsigned long i) const;
 };

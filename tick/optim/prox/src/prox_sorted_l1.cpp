@@ -3,20 +3,16 @@
 #include "prox_sorted_l1.h"
 
 ProxSortedL1::ProxSortedL1(double strength,
-                           WeightsType weights_type,
                            bool positive)
-  : Prox(strength, positive) {
-  this->weights_type = weights_type;
+    : Prox(strength, positive) {
   weights_ready = false;
 }
 
 ProxSortedL1::ProxSortedL1(double strength,
-                           WeightsType weights_type,
                            ulong start,
                            ulong end,
                            bool positive)
-  : Prox(strength, start, end, positive) {
-  this->weights_type = weights_type;
+    : Prox(strength, start, end, positive) {
   weights_ready = false;
 }
 

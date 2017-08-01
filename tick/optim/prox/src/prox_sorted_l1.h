@@ -5,14 +5,8 @@
 
 #include "prox.h"
 
-enum class WeightsType {
-  bh = 0,
-  oscar
-};
-
 class ProxSortedL1 : public Prox {
  protected:
-  WeightsType weights_type;
   ArrayDouble weights;
   bool weights_ready;
 
@@ -22,11 +16,9 @@ class ProxSortedL1 : public Prox {
                       ArrayDouble &x) const;
 
  public:
-  ProxSortedL1(double strength, WeightsType weights_type,
-               bool positive);
+  ProxSortedL1(double strength, bool positive);
 
-  ProxSortedL1(double strength, WeightsType weights_type, ulong start,
-               ulong end, bool positive);
+  ProxSortedL1(double strength, ulong start, ulong end, bool positive);
 
   const std::string get_class_name() const override;
 
@@ -35,16 +27,7 @@ class ProxSortedL1 : public Prox {
   void call(const ArrayDouble &coeffs, double t, ArrayDouble &out, ulong start,
             ulong end) override;
 
-  inline WeightsType get_weights_type() const {
-    return weights_type;
-  }
-
-  inline void set_weights_type(WeightsType weights_type) {
-    this->weights_type = weights_type;
-    weights_ready = false;
-  }
-
-  inline double get_weight_i(ulong i) {
+  inline double get_weight_i(ulong i) const {
     return weights[i];
   }
 

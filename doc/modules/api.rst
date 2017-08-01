@@ -146,6 +146,7 @@ This module contains all the proximal operators available in tick.
    optim.prox.ProxPositive
    optim.prox.ProxEquality
    optim.prox.ProxSlope
+   optim.prox.ProxOscar
    optim.prox.ProxTV
    optim.prox.ProxBinarsity
 
