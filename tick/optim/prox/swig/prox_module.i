@@ -18,6 +18,8 @@
 %shared_ptr(ProxMulti);
 %shared_ptr(ProxEquality);
 %shared_ptr(ProxBinarsity);
+%shared_ptr(ProxL2);
+%shared_ptr(ProxGroupL1);
 
 %{
 #include "tick_python.h"
@@ -35,6 +37,8 @@
 
 %include prox_l2sq.i
 
+%include prox_l2.i
+
 %include prox_l1.i
 
 %include prox_l1w.i
@@ -50,3 +54,5 @@
 %include prox_equality.i
 
 %include prox_binarsity.i
+
+%include prox_group_l1.i

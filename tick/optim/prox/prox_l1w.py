@@ -18,7 +18,7 @@ class ProxL1w(Prox):
 
     Parameters
     ----------
-    strength : `float`, default=0.
+    strength : `float`
         Level of L1 penalization
 
     weights : `numpy.ndarray`, shape=(n_coeffs,)

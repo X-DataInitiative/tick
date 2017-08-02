@@ -14,7 +14,7 @@ class ProxL1(Prox):
 
     Parameters
     ----------
-    strength : `float`, default=0.
+    strength : `float`
         Level of L1 penalization
 
     range : `tuple` of two `int`, default=`None`
