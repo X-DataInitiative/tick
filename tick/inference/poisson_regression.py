@@ -170,8 +170,6 @@ class PoissonRegression(LearnerGLM):
         if not self._fitted:
             raise ValueError("You must call ``fit`` before")
         else:
-            X = self._safe_array(X)
-            y = self._safe_array(y)
             fit_intercept = self.fit_intercept
             model = self._construct_model_obj(fit_intercept)
             coeffs = self.weights

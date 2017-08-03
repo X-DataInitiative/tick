@@ -3,8 +3,7 @@
 import numpy as np
 
 from . import Model
-
-__author__ = 'Stephane Gaiffas'
+from ....preprocessing.utils import safe_array
 
 
 class ModelLabelsFeatures(Model):
@@ -79,6 +78,10 @@ class ModelLabelsFeatures(Model):
         if n_samples != labels.shape[0]:
             raise ValueError(("Features has %i samples while labels "
                               "have %i" % (n_samples, labels.shape[0])))
+
+        features = safe_array(features)
+        labels = safe_array(labels)
+
         self._set("features", features)
         self._set("labels", labels)
         self._set("n_features", n_features)
