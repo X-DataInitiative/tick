@@ -10,6 +10,7 @@ from .prox_l1w import ProxL1w
 from .prox_tv import ProxTV
 from .prox_nuclear import ProxNuclear
 from .prox_slope import ProxSlope
+from .prox_oscar import ProxOscar
 from .prox_elasticnet import ProxElasticNet
 from .prox_multi import ProxMulti
 from .prox_equality import ProxEquality
@@ -24,6 +25,7 @@ __all__ = ["ProxZero",
            "ProxTV",
            "ProxNuclear",
            "ProxSlope",
+           "ProxOscar",
            "ProxElasticNet",
            "ProxMulti",
            "ProxEquality",

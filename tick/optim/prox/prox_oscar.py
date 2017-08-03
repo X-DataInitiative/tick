@@ -65,12 +65,11 @@ class ProxOscar(Prox):
         self.strength = strength
         self.ratio = ratio
         self.positive = positive
-        self.weights = None
         if range is None:
-            self._prox = _ProxOscar(self.strength, self.positive)
+            self._prox = _ProxOscar(self.strength, self.ratio, self.positive)
         else:
-            self._prox = _ProxOscar(self.strength, self.range[0], self.range[1],
-                                    self.positive)
+            self._prox = _ProxOscar(self.strength, self.ratio,
+                                    self.range[0], self.range[1], self.positive)
 
     def _call(self, coeffs: np.ndarray, t: float, out: np.ndarray):
         self._prox.call(coeffs, t, out)
