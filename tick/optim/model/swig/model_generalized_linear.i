@@ -15,4 +15,8 @@ class ModelGeneralizedLinear : public ModelLabelsFeatures {
   unsigned long get_n_coeffs() const override;
 
   virtual void set_fit_intercept(bool fit_intercept);
+
+  void sdca_primal_dual_relation(const double l_l2sq,
+                                 const ArrayDouble &dual_vector,
+                                 ArrayDouble &out_primal_vector);
 };

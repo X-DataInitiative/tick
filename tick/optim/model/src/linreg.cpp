@@ -22,19 +22,18 @@ const char *ModelLinReg::get_class_name() const {
 }
 
 double ModelLinReg::sdca_dual_min_i(const ulong i,
-                                    const ArrayDouble &dual_vector,
+                                    const double dual_i,
                                     const ArrayDouble &primal_vector,
-                                    const ArrayDouble &previous_delta_dual,
-                                    const double l_l2sq) {
+                                    const double previous_delta_dual_i,
+                                    double l_l2sq) {
   compute_features_norm_sq();
   double normalized_features_norm = features_norm_sq[i] / (l_l2sq * n_samples);
   if (use_intercept()) {
     normalized_features_norm += 1. / (l_l2sq * n_samples);
   }
   const double primal_dot_features = get_inner_prod(i, primal_vector);
-  const double dual = dual_vector[i];
   const double label = get_label(i);
-  const double delta_dual = -(dual + primal_dot_features - label) / (1 + normalized_features_norm);
+  const double delta_dual = -(dual_i + primal_dot_features - label) / (1 + normalized_features_norm);
   return delta_dual;
 }
 

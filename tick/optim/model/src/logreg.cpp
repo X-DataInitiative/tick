@@ -45,10 +45,10 @@ double ModelLogReg::grad_i_factor(const ulong i, const ArrayDouble &coeffs) {
 }
 
 double ModelLogReg::sdca_dual_min_i(const ulong i,
-                                    const ArrayDouble &dual_vector,
+                                    const double dual_i,
                                     const ArrayDouble &primal_vector,
-                                    const ArrayDouble &previous_delta_dual,
-                                    const double l_l2sq) {
+                                    const double previous_delta_dual_i,
+                                    double l_l2sq) {
   compute_features_norm_sq();
   double epsilon = 1e-1;
   double normalized_features_norm = features_norm_sq[i] / (l_l2sq * n_samples);
@@ -56,28 +56,27 @@ double ModelLogReg::sdca_dual_min_i(const ulong i,
     normalized_features_norm += 1. / (l_l2sq * n_samples);
   }
   const double primal_dot_features = get_inner_prod(i, primal_vector);
-  const double dual = dual_vector[i];
   const double label = get_label(i);
   double new_dual_times_label{0.};
 
   // initial delta dual as suggested in original paper
   // http://www.jmlr.org/papers/volume14/shalev-shwartz13a/shalev-shwartz13a.pdf 6.2
-  double delta_dual = label / (1. + exp(primal_dot_features * label)) - dual;
+  double delta_dual = label / (1. + exp(primal_dot_features * label)) - dual_i;
   delta_dual /= std::max(1., 0.25 + normalized_features_norm);
 
   for (int j = 0; j < 10; ++j) {
-    double new_dual = dual + delta_dual;
+    double new_dual = dual_i + delta_dual;
     new_dual_times_label = new_dual * label;
     // Check we are in the correct bounds
     if (new_dual_times_label <= 0) {
       new_dual = epsilon / label;
-      delta_dual = new_dual - dual;
+      delta_dual = new_dual - dual_i;
       new_dual_times_label = new_dual * label;
       epsilon *= 1e-1;
     }
     if (new_dual_times_label >= 1) {
       new_dual = (1 - epsilon) / label;
-      delta_dual = new_dual - dual;
+      delta_dual = new_dual - dual_i;
       new_dual_times_label = new_dual * label;
       epsilon *= 1e-1;
     }
@@ -92,7 +91,7 @@ double ModelLogReg::sdca_dual_min_i(const ulong i,
     f_second += normalized_features_norm;
 
     delta_dual -= f_prime / f_second;
-    new_dual = dual + delta_dual;
+    new_dual = dual_i + delta_dual;
     new_dual_times_label = new_dual * label;
 
     if (std::abs(f_prime / f_second) < 1e-10) {
@@ -102,12 +101,12 @@ double ModelLogReg::sdca_dual_min_i(const ulong i,
   // Check we are in the correct bounds
   if (new_dual_times_label <= 0) {
     double new_dual = epsilon / label;
-    delta_dual = new_dual - dual;
+    delta_dual = new_dual - dual_i;
     new_dual_times_label = new_dual * label;
   }
   if (new_dual_times_label >= 1) {
     double new_dual = (1 - epsilon) / label;
-    delta_dual = new_dual - dual;
+    delta_dual = new_dual - dual_i;
   }
 
   return delta_dual;

@@ -162,12 +162,22 @@ class SolverFirstOrderSto(SolverFirstOrder, SolverSto):
         output : np.array, shape=(n_coeffs,)
             Obtained minimizer
         """
-        if step is not None:
-            self.step = step
+        from tick.optim.solver import SDCA
+        if not isinstance(self, SDCA):
+            if step is not None:
+                self.step = step
 
-        step, obj, minimizer, prev_minimizer = self._initialize_values(x0, step,
-                                                                   n_empty_vectors=1)
-        self._solver.set_starting_iterate(minimizer)
+            step, obj, minimizer, prev_minimizer = \
+                self._initialize_values(x0, step, n_empty_vectors=1)
+            self._solver.set_starting_iterate(minimizer)
+
+        else:
+            # In sdca case x0 is a dual vector
+            step, obj, minimizer, prev_minimizer = \
+                self._initialize_values(None, step, n_empty_vectors=1)
+            if x0 is not None:
+                self._solver.set_starting_iterate(x0)
+
         # At each iteration we call self._solver.solve that does a full
         # epoch
         for n_iter in range(self.max_iter + 1):

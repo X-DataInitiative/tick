@@ -22,10 +22,10 @@ class ModelLinReg : public ModelGeneralizedLinear, public ModelLipschitz {
   const char *get_class_name() const override;
 
   double sdca_dual_min_i(const ulong i,
-                         const ArrayDouble &dual_vector,
+                         const double dual_i,
                          const ArrayDouble &primal_vector,
-                         const ArrayDouble &previous_delta_dual,
-                         const double l_l2sq) override;
+                         const double previous_delta_dual_i,
+                         double l_l2sq) override;
 
   double loss_i(const ulong i, const ArrayDouble &coeffs) override;
 

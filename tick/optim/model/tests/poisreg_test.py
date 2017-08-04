@@ -58,6 +58,21 @@ class Test(TestGLM):
         self.assertAlmostEqual(model._sc_constant, 2.)
         self.assertAlmostEqual(model_sparse._sc_constant, 2.)
 
+    def test_poisreg_sdca_rand_max(self):
+        """...Test that SDCA's rand_max is worrect depending on link type
+        """
+        labels = np.array([0, 1, 2, 0, 4], dtype=float)
+        features = np.random.rand(len(labels), 3)
+
+        model = ModelPoisReg(link='exponential').fit(features, labels)
+        with self.assertRaises(NotImplementedError):
+            model._sdca_rand_max
+        self.assertEqual(model._rand_max, 5)
+
+        model = ModelPoisReg(link='identity').fit(features, labels)
+        self.assertEqual(model._sdca_rand_max, 3)
+        self.assertEqual(model._rand_max, 5)
+
 
 if __name__ == '__main__':
     unittest.main()
