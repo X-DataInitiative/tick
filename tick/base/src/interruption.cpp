@@ -5,8 +5,6 @@
 #include <iostream>
 #include <csignal>
 
-std::atomic<bool> Interruption::flag_interrupt(false);
-
 const char *Interruption::what() const noexcept {
     return "Process was interrupted with signal SIGINT";
 }

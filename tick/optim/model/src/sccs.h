@@ -10,7 +10,7 @@
 #include "base.h"
 #include "model_lipschitz.h"
 
-class ModelSCCS : public ModelLipschitz  {
+class DLL_PUBLIC ModelSCCS : public ModelLipschitz  {
  protected:
   ulong n_intervals;
   ulong n_lags;

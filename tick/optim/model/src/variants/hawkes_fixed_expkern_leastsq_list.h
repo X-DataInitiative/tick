@@ -12,7 +12,7 @@
  * exponential kernels with fixed exponent (i.e., alpha*beta*e^{-beta t}, with fixed beta)
  * on a list of realizations
  */
-class ModelHawkesFixedExpKernLeastSqList : public ModelHawkesLeastSqList {
+class DLL_PUBLIC ModelHawkesFixedExpKernLeastSqList : public ModelHawkesLeastSqList {
   //! @brief Some arrays used for intermediate computings. They are initialized in init()
   ArrayDouble2d E, Dg, Dg2, C;
 

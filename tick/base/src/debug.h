@@ -22,8 +22,12 @@
 
 #include "defs.h"
 
+#ifndef _WIN32
+
 #include <execinfo.h>
 #include <unistd.h>
+
+#endif  // _WIN32
 
 #include <string>
 #include <iostream>
@@ -56,6 +60,7 @@ class TemporaryLog {
   }
 
   TemporaryLog &insert_backtrace() {
+#ifndef _WIN32
     std::array<void *, 100> stack_addresses;
 
     const int num_addresses = backtrace(stack_addresses.data(), stack_addresses.size());
@@ -65,7 +70,7 @@ class TemporaryLog {
 
     for (int j = 0; j < std::min(num_addresses, 10); ++j)
       (*this) << strings[j] << '\n';
-
+#endif
     return *this;
   }
 
@@ -105,7 +110,11 @@ struct LogExitCout {
 /**
  * Inserts filename, linenumber and function name into stream
  */
+#ifdef _WIN32
+#define TICK_LOG_PREFIX __FILE__ ":"  << __LINE__ << " in " << __FUNCTION__ << ": "
+#else
 #define TICK_LOG_PREFIX __FILE__ ":"  << __LINE__ << " in " << __PRETTY_FUNCTION__ << ": "
+#endif
 
 /**
  * \defgroup error_mod Error management
