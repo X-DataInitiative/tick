@@ -3,6 +3,7 @@
 import numpy as np
 
 from tick.base import actual_kwargs
+from tick.preprocessing.utils import safe_array
 from tick.optim.model import ModelCoxRegPartialLik
 from tick.optim.solver import GD, AGD
 from tick.inference.base import LearnerOptim
@@ -117,16 +118,15 @@ class CoxRegression(LearnerOptim):
 
     def _all_safe(self, features: np.ndarray, times: np.array,
                   censoring: np.array):
-        features = LearnerOptim._safe_array(features)
-        times = LearnerOptim._safe_array(times)
-        censoring = LearnerOptim._safe_array(censoring, np.ushort)
-        # censoring vector must contain only 0 and 1
         if not np.array_equal(np.unique(censoring), [0, 1]):
             raise ValueError('``censoring`` must only have values in {0, 1}')
         # All times must be positive
         if not np.all(times >= 0):
             raise ValueError('``times`` array must contain only non-negative '
                              'entries')
+        features = safe_array(features)
+        times = safe_array(times)
+        censoring = safe_array(censoring, np.ushort)
         return features, times, censoring
 
     def fit(self, features: np.ndarray, times: np.array, censoring: np.array):

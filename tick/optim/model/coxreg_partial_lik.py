@@ -1,9 +1,9 @@
 # License: BSD 3 clause
 
 import numpy as np
-from warnings import warn
 
 from tick.optim.model.base import Model, ModelFirstOrder
+from tick.preprocessing.utils import safe_array
 from tick.optim.model.build.model import ModelCoxRegPartialLik \
     as _ModelCoxRegPartialLik
 
@@ -116,9 +116,11 @@ class ModelCoxRegPartialLik(ModelFirstOrder):
             raise ValueError(("Features has %i samples while censoring "
                               "have %i" % (n_samples,
                                            censoring.shape[0])))
-        if censoring.dtype != np.ushort:
-            censoring = censoring.astype(np.ushort)
-            warn("converted ``censoring`` to ushort dtype")
+
+        features = safe_array(features)
+        times = safe_array(times)
+        censoring = safe_array(censoring, np.ushort)
+
         self._set("features", features)
         self._set("times", times)
         self._set("censoring", censoring)

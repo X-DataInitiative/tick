@@ -161,9 +161,6 @@ class LearnerGLM(LearnerOptim):
         prox_obj = self._prox_obj
         fit_intercept = self.fit_intercept
 
-        X = LearnerOptim._safe_array(X)
-        y = LearnerOptim._safe_array(y)
-
         # Pass the data to the model
         model_obj.fit(X, y)
 
