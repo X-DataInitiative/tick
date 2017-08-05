@@ -15,6 +15,7 @@ public:
 
   double loss_and_grad(const ArrayDouble &coeffs, ArrayDouble &out);
   double hessian_norm(const ArrayDouble &coeffs, const ArrayDouble &vector);
+  void hessian(const ArrayDouble &coeffs, ArrayDouble &out);
 
   void set_decay(const double decay);
 

@@ -150,6 +150,25 @@ double ModelHawkesFixedExpKernLogLikList::hessian_norm(const ArrayDouble &coeffs
       / get_n_total_jumps();
 }
 
+
+void ModelHawkesFixedExpKernLogLikList::hessian_i_r(const ulong i_r,
+                                                    const ArrayDouble &coeffs,
+                                                    ArrayDouble &out) {
+  ulong r, i;
+  std::tie(r, i) = get_realization_node(i_r);
+
+  model_list[r].hessian_i(i, coeffs, out);
+}
+
+void ModelHawkesFixedExpKernLogLikList::hessian(const ArrayDouble &coeffs,
+                                                ArrayDouble &out) {
+  if (!weights_computed) compute_weights();
+  parallel_run(
+    get_n_threads(), n_realizations * n_nodes,
+    &ModelHawkesFixedExpKernLogLikList::hessian_i_r, this, coeffs, out);
+  out /= get_n_total_jumps();
+}
+
 std::pair<ulong, ulong> ModelHawkesFixedExpKernLogLikList::sampled_i_to_realization(
     const ulong sampled_i) {
   ulong cum_n_jumps = 0;
