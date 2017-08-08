@@ -90,6 +90,10 @@
      </div>
   </div>
 
+  <a href="https://github.com/X-DataInitiative/tick">
+    <img style="position: absolute; top: 50px; right: 0; border: 0;"
+      src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png">
+  </a>
 
 .. toctree::
     :maxdepth: 2
