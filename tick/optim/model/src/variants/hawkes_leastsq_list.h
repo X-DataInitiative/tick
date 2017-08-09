@@ -11,7 +11,7 @@
 /** \class ModelHawkesLeastSqList
  * \brief Base class of Hawkes models handling several realizations
  */
-class ModelHawkesLeastSqList : public ModelHawkesList {
+class DLL_PUBLIC ModelHawkesLeastSqList : public ModelHawkesList {
  protected:
   //! @brief Flag telling if precompations arrays have been allocated or not
   bool weights_allocated;

@@ -9,8 +9,7 @@
 
 #include "model.h"
 
-
-class ModelCoxRegPartialLik : public Model {
+class DLL_PUBLIC ModelCoxRegPartialLik : public Model {
  private:
     ArrayDouble inner_prods;
     ArrayDouble s1;

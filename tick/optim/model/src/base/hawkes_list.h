@@ -11,7 +11,7 @@
 /** \class ModelHawkesList
  * \brief Base class of Hawkes models handling several realizations
  */
-class ModelHawkesList : public ModelHawkes {
+class DLL_PUBLIC ModelHawkesList : public ModelHawkes {
  protected:
   //! @brief number of given realization (size of timestamps_list)
   ulong n_realizations;

@@ -11,7 +11,7 @@
 
 extern double standard_normal_cdf(double x);
 
-extern double standard_normal_inv_cdf(const double q);
+extern DLL_PUBLIC double standard_normal_inv_cdf(const double q);
 
 extern void standard_normal_inv_cdf(ArrayDouble &q, ArrayDouble &out);
 

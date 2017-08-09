@@ -21,7 +21,7 @@
  * Each instance wraps a Mersenne Twister random number generator and generate random probability
  * distributions from it.
  */
-class Rand {
+class DLL_PUBLIC Rand {
  private:
     int seed;
     std::mt19937_64 generator;

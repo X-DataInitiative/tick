@@ -10,7 +10,7 @@
 #include "model_generalized_linear_with_intercepts.h"
 #include "model_lipschitz.h"
 
-class ModelLinRegWithIntercepts : public ModelGeneralizedLinearWithIntercepts,
+class DLL_PUBLIC ModelLinRegWithIntercepts : public ModelGeneralizedLinearWithIntercepts,
                                   public ModelLipschitz {
  public:
   ModelLinRegWithIntercepts(const SBaseArrayDouble2dPtr features,

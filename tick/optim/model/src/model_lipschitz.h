@@ -13,7 +13,7 @@
  * \class ModelLipschitz
  * \brief An interface for a Model with the ability to compute Lipschitz constants
  */
-class ModelLipschitz : public virtual Model {
+class DLL_PUBLIC ModelLipschitz : public virtual Model {
  protected:
   //! True if all lipschitz constants are already computed
   bool ready_lip_consts;

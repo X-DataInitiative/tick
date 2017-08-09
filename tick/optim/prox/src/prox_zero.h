@@ -5,7 +5,7 @@
 
 #include "prox_separable.h"
 
-class ProxZero : public ProxSeparable {
+class DLL_PUBLIC ProxZero : public ProxSeparable {
  public:
   explicit ProxZero(double strength);
 
