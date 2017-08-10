@@ -94,6 +94,18 @@
      </div>
   </div>
 
+  <div class="row" style="margin-bottom:40px">
+     <div class="col-sm-4 col-sm-offset-1">
+        <a class="reference internal" href="modules/R.html">
+           <h2>Use tick in R</h2>
+        </a>
+        <p>
+           How to use tick from the R software
+        </p>
+     </div>
+ </div>
+
+
 
 .. toctree::
     :maxdepth: 2
@@ -106,3 +118,4 @@
     modules/simulation
     modules/dataset
     modules/dev
+    modules/R
