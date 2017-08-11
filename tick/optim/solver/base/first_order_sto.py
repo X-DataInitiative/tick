@@ -116,19 +116,23 @@ class SolverFirstOrderSto(SolverFirstOrder, SolverSto):
         return self
 
     def set_prox(self, prox: Prox):
-        """Set prox in the solver
+        """Set proximal operator in the solver
 
         Parameters
         ----------
         prox : `Prox`
-            Sets the prox in the solver
+            The proximal operator of the penalization function
 
         Returns
         -------
         output : `Solver`
-            The `Solver` with given prox
-        """
+            The solver with given prox
 
+        Notes
+        -----
+        In some solvers, ``set_model`` must be called before
+        ``set_prox``, otherwise and error might be raised
+        """
         SolverFirstOrder.set_prox(self, prox)
         SolverSto.set_prox(self, prox)
         return self

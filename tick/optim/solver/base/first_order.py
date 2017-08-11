@@ -166,7 +166,7 @@ class SolverFirstOrder(Solver):
         return tuple(result)
 
     def set_prox(self, prox: Prox):
-        """Set proximal operator in the solver.
+        """Set proximal operator in the solver
 
         Parameters
         ----------
@@ -181,7 +181,7 @@ class SolverFirstOrder(Solver):
         Notes
         -----
         In some solvers, ``set_model`` must be called before
-        ``set_prox``, otherwise and error might be raised.
+        ``set_prox``, otherwise and error might be raised
         """
         if not isinstance(prox, Prox):
             raise ValueError('Passed object of class %s is not a '
@@ -198,12 +198,12 @@ class SolverFirstOrder(Solver):
         return dd
 
     def objective(self, coeffs, loss: float=None):
-        """Compute the objective minimized by the solver at ``coeffs``
+        """Compute the objective function
 
         Parameters
         ----------
-        coeffs : `numpy.ndarray`, shape=(n_coeffs,)
-            The objective is computed at this point
+        coeffs : `np.array`, shape=(n_coeffs,)
+            Point where the objective is computed
 
         loss : `float`, default=`None`
             Gives the value of the loss if already known (allows to
@@ -234,12 +234,13 @@ class SolverFirstOrder(Solver):
             Starting point of the solver
 
         step : `float`, default=`None`
-            Step-size or learning rate for the solver
+            Step-size or learning rate for the solver. This can be tuned also
+            using the ``step`` attribute
 
         Returns
         -------
         output : `np.array`, shape=(n_coeffs,)
-            Obtained minimizer for the problem
+            Obtained minimizer for the problem, same as ``solution`` attribute
         """
         if self.model is None:
             raise ValueError('You must first set the model using '

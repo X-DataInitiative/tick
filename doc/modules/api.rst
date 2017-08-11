@@ -235,6 +235,7 @@ Batch solvers
    optim.solver.AGD
    optim.solver.BFGS
    optim.solver.GFB
+   optim.solver.SCPG
 
 Stochastic solvers
 ------------------
@@ -245,9 +246,10 @@ Stochastic solvers
    :template: class.rst
 
    optim.solver.SGD
-   optim.solver.SVRG
-   optim.solver.SDCA
    optim.solver.AdaGrad
+   optim.solver.SVRG
+   optim.solver.SAGA
+   optim.solver.SDCA
 
 History
 -------
