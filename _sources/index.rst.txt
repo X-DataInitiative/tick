@@ -4,7 +4,7 @@
 
   <div
     class="jumbotron"
-    style="padding-top: 10px; padding-bottom: 30px;"
+    style="padding-top: 10px; padding-bottom: 30px; position: relative"
   >
      <div class="container">
         <h1 style="font-size:40px">tick</h1>
@@ -25,6 +25,10 @@
            Show me »
         </a>
      </div>
+     <a href="https://github.com/X-DataInitiative/tick">
+       <img style="position: absolute; top: 0; right: 0"
+         src="_static/images/fork_me_on_github.png">
+     </a>
   </div>
 
   <div class="row">

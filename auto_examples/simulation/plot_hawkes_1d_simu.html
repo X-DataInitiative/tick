@@ -104,10 +104,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../modules/plot.html#others">Others</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../modules/preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../modules/generated/tick.preprocessing.FeaturesBinarizer.html">tick.preprocessing.FeaturesBinarizer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../modules/generated/tick.preprocessing.LongitudinalFeaturesProduct.html">tick.preprocessing.LongitudinalFeaturesProduct</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../modules/generated/tick.preprocessing.LongitudinalFeaturesLagger.html">tick.preprocessing.LongitudinalFeaturesLagger</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul class="simple">
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../modules/simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code>: simulation toolbox</a><ul>
@@ -159,17 +156,16 @@
   
   <div class="section" id="dimensional-hawkes-process-simulation">
 <span id="example-simulation-plot-hawkes-1d-simu-py"></span><h1>1 dimensional Hawkes process simulation<a class="headerlink" href="#dimensional-hawkes-process-simulation" title="Permalink to this headline">¶</a></h1>
-<img alt="../../_images/plot_hawkes_1d_simu_001.png" class="align-center" src="../../_images/plot_hawkes_1d_simu_001.png" />
-<p><strong>Python source code:</strong> <a class="reference download internal" href="../../_downloads/plot_hawkes_1d_simu.py" download=""><code class="xref download docutils literal"><span class="pre">plot_hawkes_1d_simu.py</span></code></a></p>
+<p class="horizontal"><strong>Python source code:</strong> <a class="reference download internal" href="../../_downloads/plot_hawkes_1d_simu.py" download=""><code class="xref download docutils literal"><span class="pre">plot_hawkes_1d_simu.py</span></code></a></p>
 <div class="highlight-default"><div class="highlight"><pre><span></span>
-<span class="kn">from</span> <span class="nn">tick.plot</span> <span class="k">import</span> <a href="../../modules/generated/tick.plot.plot_point_process.html#tick.plot.plot_point_process"><span class="n">plot_point_process</span></a>
-<span class="kn">from</span> <span class="nn">tick.simulation</span> <span class="k">import</span> <a href="../../modules/generated/tick.simulation.SimuHawkes.html#tick.simulation.SimuHawkes"><span class="n">SimuHawkes</span></a><span class="p">,</span> <a href="../../modules/generated/tick.simulation.HawkesKernelSumExp.html#tick.simulation.HawkesKernelSumExp"><span class="n">HawkesKernelSumExp</span></a>
+<span class="kn">from</span> <span class="nn">tick.plot</span> <span class="k">import</span> <span class="n">plot_point_process</span>
+<span class="kn">from</span> <span class="nn">tick.simulation</span> <span class="k">import</span> <span class="n">SimuHawkes</span><span class="p">,</span> <span class="n">HawkesKernelSumExp</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
 <span class="n">run_time</span> <span class="o">=</span> <span class="mi">40</span>
 
-<span class="n">hawkes</span> <span class="o">=</span> <a href="../../modules/generated/tick.simulation.SimuHawkes.html#tick.simulation.SimuHawkes"><span class="n">SimuHawkes</span></a><span class="p">(</span><span class="n">n_nodes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">run_time</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">1398</span><span class="p">)</span>
-<span class="n">kernel</span> <span class="o">=</span> <a href="../../modules/generated/tick.simulation.HawkesKernelSumExp.html#tick.simulation.HawkesKernelSumExp"><span class="n">HawkesKernelSumExp</span></a><span class="p">([</span><span class="o">.</span><span class="mi">1</span><span class="p">,</span> <span class="o">.</span><span class="mi">2</span><span class="p">,</span> <span class="o">.</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">,</span> <span class="mf">7.</span><span class="p">])</span>
+<span class="n">hawkes</span> <span class="o">=</span> <span class="n">SimuHawkes</span><span class="p">(</span><span class="n">n_nodes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">run_time</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">1398</span><span class="p">)</span>
+<span class="n">kernel</span> <span class="o">=</span> <span class="n">HawkesKernelSumExp</span><span class="p">([</span><span class="o">.</span><span class="mi">1</span><span class="p">,</span> <span class="o">.</span><span class="mi">2</span><span class="p">,</span> <span class="o">.</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">,</span> <span class="mf">7.</span><span class="p">])</span>
 <span class="n">hawkes</span><span class="o">.</span><span class="n">set_kernel</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">kernel</span><span class="p">)</span>
 <span class="n">hawkes</span><span class="o">.</span><span class="n">set_baseline</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1.</span><span class="p">)</span>
 
@@ -181,20 +177,20 @@
 <span class="n">intensity_times</span> <span class="o">=</span> <span class="n">hawkes</span><span class="o">.</span><span class="n">intensity_tracked_times</span>
 
 <span class="n">_</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
-<a href="../../modules/generated/tick.plot.plot_point_process.html#tick.plot.plot_point_process"><span class="n">plot_point_process</span></a><span class="p">(</span><span class="n">hawkes</span><span class="p">,</span> <span class="n">n_points</span><span class="o">=</span><span class="mi">50000</span><span class="p">,</span> <span class="n">t_min</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">max_jumps</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-<a href="../../modules/generated/tick.plot.plot_point_process.html#tick.plot.plot_point_process"><span class="n">plot_point_process</span></a><span class="p">(</span><span class="n">hawkes</span><span class="p">,</span> <span class="n">n_points</span><span class="o">=</span><span class="mi">50000</span><span class="p">,</span> <span class="n">t_min</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">t_max</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">plot_point_process</span><span class="p">(</span><span class="n">hawkes</span><span class="p">,</span> <span class="n">n_points</span><span class="o">=</span><span class="mi">50000</span><span class="p">,</span> <span class="n">t_min</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">max_jumps</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">plot_point_process</span><span class="p">(</span><span class="n">hawkes</span><span class="p">,</span> <span class="n">n_points</span><span class="o">=</span><span class="mi">50000</span><span class="p">,</span> <span class="n">t_min</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">t_max</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 
 <a href="http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.show"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
 </pre></div>
 </div>
-<p><strong>Total running time of the example:</strong>  0.11 seconds
-( 0 minutes  0.11 seconds)</p>
+<p><strong>Total running time of the example:</strong>  0.00 seconds
+( 0 minutes  0.00 seconds)</p>
 <dl class="docutils">
 <dt>Mentioned <em>tick</em> classes:</dt>
 <dd><ul class="first last simple">
-<li><a class="reference internal" href="../../modules/generated/tick.plot.plot_point_process.html#tick.plot.plot_point_process" title="tick.plot.plot_point_process"><code class="xref py py-obj docutils literal"><span class="pre">tick.plot.plot_point_process</span></code></a></li>
-<li><a class="reference internal" href="../../modules/generated/tick.simulation.HawkesKernelSumExp.html#tick.simulation.HawkesKernelSumExp" title="tick.simulation.HawkesKernelSumExp"><code class="xref py py-obj docutils literal"><span class="pre">tick.simulation.HawkesKernelSumExp</span></code></a></li>
-<li><a class="reference internal" href="../../modules/generated/tick.simulation.SimuHawkes.html#tick.simulation.SimuHawkes" title="tick.simulation.SimuHawkes"><code class="xref py py-obj docutils literal"><span class="pre">tick.simulation.SimuHawkes</span></code></a></li>
+<li><code class="xref py py-obj docutils literal"><span class="pre">tick.plot.plot_point_process</span></code></li>
+<li><code class="xref py py-obj docutils literal"><span class="pre">tick.simulation.HawkesKernelSumExp</span></code></li>
+<li><code class="xref py py-obj docutils literal"><span class="pre">tick.simulation.SimuHawkes</span></code></li>
 </ul>
 </dd>
 </dl>

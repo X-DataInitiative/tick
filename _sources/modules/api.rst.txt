@@ -141,6 +141,7 @@ This module contains all the proximal operators available in tick.
    optim.prox.ProxL1w
    optim.prox.ProxElasticNet
    optim.prox.ProxL2Sq
+   optim.prox.ProxL2
    optim.prox.ProxMulti
    optim.prox.ProxNuclear
    optim.prox.ProxPositive
@@ -148,7 +149,7 @@ This module contains all the proximal operators available in tick.
    optim.prox.ProxSlope
    optim.prox.ProxTV
    optim.prox.ProxBinarsity
-
+   optim.prox.ProxGroupL1
 
 .. _api-optim-solver:
 

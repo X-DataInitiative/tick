@@ -7,8 +7,8 @@ plot_time_function.py
 
 
 
-.. image:: images/plot_time_function_001.png
-    :align: center
+.. rst-class:: horizontal
+
 
 
 
@@ -18,8 +18,8 @@ plot_time_function.py
 .. literalinclude:: plot_time_function.py
     :lines: 2-
 
-**Total running time of the example:**  0.18 seconds
-( 0 minutes  0.18 seconds)
+**Total running time of the example:**  0.00 seconds
+( 0 minutes  0.00 seconds)
     
 Mentioned *tick* classes:
    * `tick.base.TimeFunction`

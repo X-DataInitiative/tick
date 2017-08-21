@@ -104,10 +104,7 @@
 <li class="toctree-l2"><a class="reference internal" href="plot.html#others">Others</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="generated/tick.preprocessing.FeaturesBinarizer.html">tick.preprocessing.FeaturesBinarizer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="generated/tick.preprocessing.LongitudinalFeaturesProduct.html">tick.preprocessing.LongitudinalFeaturesProduct</a></li>
-<li class="toctree-l2"><a class="reference internal" href="generated/tick.preprocessing.LongitudinalFeaturesLagger.html">tick.preprocessing.LongitudinalFeaturesLagger</a></li>
+<li class="toctree-l1"><a class="reference internal" href="preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul class="simple">
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code>: simulation toolbox</a><ul>
@@ -163,265 +160,649 @@
 the modules documentation cited below for more examples and use cases,
 since direct class and function API is not enough for understanding their uses.</p>
 <div class="section" id="tick-inference-inference-classes">
-<span id="api-inference"></span><h2><a class="reference internal" href="#module-tick.inference" title="tick.inference"><code class="xref py py-mod docutils literal"><span class="pre">tick.inference</span></code></a>: Inference classes<a class="headerlink" href="#tick-inference-inference-classes" title="Permalink to this headline">¶</a></h2>
+<span id="api-inference"></span><h2><code class="xref py py-mod docutils literal"><span class="pre">tick.inference</span></code>: Inference classes<a class="headerlink" href="#tick-inference-inference-classes" title="Permalink to this headline">¶</a></h2>
 <p>This module contains all classes giving inference tools, intended for end-users.</p>
 <p><strong>User guide:</strong> See the <a class="reference internal" href="inference.html#inference"><span class="std std-ref">tick.inference: user-friendly inference tools</span></a> section for further details.</p>
-<span class="target" id="module-tick.inference"></span><div class="section" id="generalized-linear-models">
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 22)</p>
+autodoc: failed to import module ‘tick.inference’; the following exception was raised:
+Traceback (most recent call last):
+  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/build/array.py”, line 18, in swig_import_helper
+    fp, pathname, description = imp.find_module(‘_array’, [dirname(__file__)])
+  File “/opt/local/Library/Frameworks/Python.framework/Versions/3.4/lib/python3.4/imp.py”, line 297, in find_module
+    raise ImportError(_ERR_MSG.format(name), name=name)
+ImportError: No module named ‘_array’
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File “/opt/local/Library/Frameworks/Python.framework/Versions/3.4/lib/python3.4/site-packages/sphinx/ext/autodoc.py”, line 657, in import_object
+    __import__(self.modname)
+  File “/Users/martin/Projects/tick_ghpages/tick/tick/__init__.py”, line 3, in &lt;module&gt;
+    import tick.base
+  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/__init__.py”, line 21, in &lt;module&gt;
+    from .array import *
+  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/__init__.py”, line 3, in &lt;module&gt;
+    from .build import array
+  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/build/array.py”, line 28, in &lt;module&gt;
+    _array = swig_import_helper()
+  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/build/array.py”, line 20, in swig_import_helper
+    import _array
+ImportError: No module named ‘_array’
+</div>
+<div class="section" id="generalized-linear-models">
 <h3>Generalized linear models<a class="headerlink" href="#generalized-linear-models" title="Permalink to this headline">¶</a></h3>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 30)</p>
+failed to import inference.LinearRegression</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 30)</p>
+failed to import inference.LogisticRegression</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 30)</p>
+failed to import inference.PoissonRegression</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 30)</p>
+toctree references unknown document ‘modules/generated/inference.LinearRegression’</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 30)</p>
+toctree references unknown document ‘modules/generated/inference.LogisticRegression’</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 30)</p>
+toctree references unknown document ‘modules/generated/inference.PoissonRegression’</div>
 <table border="1" class="longtable docutils">
 <colgroup>
 <col width="10%" />
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.inference.LinearRegression.html#tick.inference.LinearRegression" title="tick.inference.LinearRegression"><code class="xref py py-obj docutils literal"><span class="pre">inference.LinearRegression</span></code></a>([fit_intercept,&nbsp;…])</td>
-<td>Linear regression learner, with many choices of penalization and solvers.</td>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">inference.LinearRegression</span></code></td>
+<td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/tick.inference.LogisticRegression.html#tick.inference.LogisticRegression" title="tick.inference.LogisticRegression"><code class="xref py py-obj docutils literal"><span class="pre">inference.LogisticRegression</span></code></a>([…])</td>
-<td>Logistic regression learner, with many choices of penalization and solvers.</td>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">inference.LogisticRegression</span></code></td>
+<td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.inference.PoissonRegression.html#tick.inference.PoissonRegression" title="tick.inference.PoissonRegression"><code class="xref py py-obj docutils literal"><span class="pre">inference.PoissonRegression</span></code></a>([step,&nbsp;…])</td>
-<td>Poisson regression learner, with exponential link function.</td>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">inference.PoissonRegression</span></code></td>
+<td></td>
 </tr>
 </tbody>
 </table>
 </div>
 <div class="section" id="survival-analysis">
 <h3>Survival Analysis<a class="headerlink" href="#survival-analysis" title="Permalink to this headline">¶</a></h3>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 42)</p>
+failed to import inference.nelson_aalen</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 42)</p>
+failed to import inference.kaplan_meier</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 42)</p>
+toctree references unknown document ‘modules/generated/inference.nelson_aalen’</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 42)</p>
+toctree references unknown document ‘modules/generated/inference.kaplan_meier’</div>
 <table border="1" class="longtable docutils">
 <colgroup>
 <col width="10%" />
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.inference.nelson_aalen.html#tick.inference.nelson_aalen" title="tick.inference.nelson_aalen"><code class="xref py py-obj docutils literal"><span class="pre">inference.nelson_aalen</span></code></a>(timestamps,&nbsp;…)</td>
-<td>Computes the Nelson-Aalen cumulative hazard rate estimation</td>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">inference.nelson_aalen</span></code></td>
+<td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/tick.inference.kaplan_meier.html#tick.inference.kaplan_meier" title="tick.inference.kaplan_meier"><code class="xref py py-obj docutils literal"><span class="pre">inference.kaplan_meier</span></code></a>(timestamps,&nbsp;…)</td>
-<td>Computes the Kaplan-Meier survival function estimation</td>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">inference.kaplan_meier</span></code></td>
+<td></td>
 </tr>
 </tbody>
 </table>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 49)</p>
+failed to import inference.CoxRegression</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 49)</p>
+toctree references unknown document ‘modules/generated/inference.CoxRegression’</div>
 <table border="1" class="longtable docutils">
 <colgroup>
 <col width="10%" />
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.inference.CoxRegression.html#tick.inference.CoxRegression" title="tick.inference.CoxRegression"><code class="xref py py-obj docutils literal"><span class="pre">inference.CoxRegression</span></code></a>([penalty,&nbsp;C,&nbsp;…])</td>
-<td>Cox regression learner, using the partial Cox likelihood for proportional risks, with many choices of penalization.</td>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">inference.CoxRegression</span></code></td>
+<td></td>
 </tr>
 </tbody>
 </table>
 </div>
 <div class="section" id="hawkes">
 <h3>Hawkes<a class="headerlink" href="#hawkes" title="Permalink to this headline">¶</a></h3>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 59)</p>
+failed to import inference.HawkesExpKern</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 59)</p>
+failed to import inference.HawkesSumExpKern</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 59)</p>
+failed to import inference.HawkesEM</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 59)</p>
+failed to import inference.HawkesADM4</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 59)</p>
+failed to import inference.HawkesBasisKernels</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 59)</p>
+failed to import inference.HawkesSumGaussians</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 59)</p>
+failed to import inference.HawkesConditionalLaw</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 59)</p>
+toctree references unknown document ‘modules/generated/inference.HawkesExpKern’</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 59)</p>
+toctree references unknown document ‘modules/generated/inference.HawkesSumExpKern’</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 59)</p>
+toctree references unknown document ‘modules/generated/inference.HawkesEM’</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 59)</p>
+toctree references unknown document ‘modules/generated/inference.HawkesADM4’</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 59)</p>
+toctree references unknown document ‘modules/generated/inference.HawkesBasisKernels’</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 59)</p>
+toctree references unknown document ‘modules/generated/inference.HawkesSumGaussians’</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 59)</p>
+toctree references unknown document ‘modules/generated/inference.HawkesConditionalLaw’</div>
 <table border="1" class="longtable docutils">
 <colgroup>
 <col width="10%" />
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.inference.HawkesExpKern.html#tick.inference.HawkesExpKern" title="tick.inference.HawkesExpKern"><code class="xref py py-obj docutils literal"><span class="pre">inference.HawkesExpKern</span></code></a>(decays[,&nbsp;gofit,&nbsp;…])</td>
-<td>Hawkes process learner for exponential kernels with fixed and given decays, with many choices of penalization and solvers.</td>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">inference.HawkesExpKern</span></code></td>
+<td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/tick.inference.HawkesSumExpKern.html#tick.inference.HawkesSumExpKern" title="tick.inference.HawkesSumExpKern"><code class="xref py py-obj docutils literal"><span class="pre">inference.HawkesSumExpKern</span></code></a>(decays[,&nbsp;…])</td>
-<td>Hawkes process learner for sum-exponential kernels with fixed and given decays, with many choices of penalization and solvers.</td>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">inference.HawkesSumExpKern</span></code></td>
+<td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.inference.HawkesEM.html#tick.inference.HawkesEM" title="tick.inference.HawkesEM"><code class="xref py py-obj docutils literal"><span class="pre">inference.HawkesEM</span></code></a>([kernel_support,&nbsp;…])</td>
-<td>This class is used for performing non parametric estimation of multi-dimensional Hawkes processes based on expectation maximization algorithm.</td>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">inference.HawkesEM</span></code></td>
+<td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/tick.inference.HawkesADM4.html#tick.inference.HawkesADM4" title="tick.inference.HawkesADM4"><code class="xref py py-obj docutils literal"><span class="pre">inference.HawkesADM4</span></code></a>(decay[,&nbsp;C,&nbsp;…])</td>
-<td>A class that implements parametric inference for Hawkes processes</td>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">inference.HawkesADM4</span></code></td>
+<td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.inference.HawkesBasisKernels.html#tick.inference.HawkesBasisKernels" title="tick.inference.HawkesBasisKernels"><code class="xref py py-obj docutils literal"><span class="pre">inference.HawkesBasisKernels</span></code></a>(kernel_support)</td>
-<td>This class is used for performing non parametric estimation of multi-dimensional Hawkes processes based on expectation maximization algorithm and the hypothesis that kernels are linear combinations of some basis kernels.</td>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">inference.HawkesBasisKernels</span></code></td>
+<td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/tick.inference.HawkesSumGaussians.html#tick.inference.HawkesSumGaussians" title="tick.inference.HawkesSumGaussians"><code class="xref py py-obj docutils literal"><span class="pre">inference.HawkesSumGaussians</span></code></a>(max_mean_gaussian)</td>
-<td>A class that implements parametric inference for Hawkes processes</td>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">inference.HawkesSumGaussians</span></code></td>
+<td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.inference.HawkesConditionalLaw.html#tick.inference.HawkesConditionalLaw" title="tick.inference.HawkesConditionalLaw"><code class="xref py py-obj docutils literal"><span class="pre">inference.HawkesConditionalLaw</span></code></a>([delta_lag,&nbsp;…])</td>
-<td>This class is used for performing non parametric estimation of multi-dimensional marked Hawkes processes based on conditional laws.</td>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">inference.HawkesConditionalLaw</span></code></td>
+<td></td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
 <div class="section" id="tick-optim-model-models-classes">
-<span id="api-optim-model"></span><h2><a class="reference internal" href="#module-tick.optim.model" title="tick.optim.model"><code class="xref py py-mod docutils literal"><span class="pre">tick.optim.model</span></code></a>: Models classes<a class="headerlink" href="#tick-optim-model-models-classes" title="Permalink to this headline">¶</a></h2>
+<span id="api-optim-model"></span><h2><code class="xref py py-mod docutils literal"><span class="pre">tick.optim.model</span></code>: Models classes<a class="headerlink" href="#tick-optim-model-models-classes" title="Permalink to this headline">¶</a></h2>
 <p>This module contains classes giving computational informations about the models available
 in tick.</p>
 <p><strong>User guide:</strong> See the <a class="reference internal" href="optim.html#optim-model"><span class="std std-ref">1. tick.optim.model: model classes</span></a> section for further details.</p>
-<span class="target" id="module-tick.optim.model"></span><div class="section" id="id1">
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 81)</p>
+autodoc: failed to import module ‘tick.optim.model’; the following exception was raised:
+Traceback (most recent call last):
+  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/build/array.py”, line 18, in swig_import_helper
+    fp, pathname, description = imp.find_module(‘_array’, [dirname(__file__)])
+  File “/opt/local/Library/Frameworks/Python.framework/Versions/3.4/lib/python3.4/imp.py”, line 297, in find_module
+    raise ImportError(_ERR_MSG.format(name), name=name)
+ImportError: No module named ‘_array’
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File “/opt/local/Library/Frameworks/Python.framework/Versions/3.4/lib/python3.4/site-packages/sphinx/ext/autodoc.py”, line 657, in import_object
+    __import__(self.modname)
+  File “/Users/martin/Projects/tick_ghpages/tick/tick/__init__.py”, line 3, in &lt;module&gt;
+    import tick.base
+  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/__init__.py”, line 21, in &lt;module&gt;
+    from .array import *
+  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/__init__.py”, line 3, in &lt;module&gt;
+    from .build import array
+  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/build/array.py”, line 28, in &lt;module&gt;
+    _array = swig_import_helper()
+  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/build/array.py”, line 20, in swig_import_helper
+    import _array
+ImportError: No module named ‘_array’
+</div>
+<div class="section" id="id1">
 <h3>Generalized Linear Models<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 89)</p>
+failed to import optim.model.ModelLinReg</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 89)</p>
+failed to import optim.model.ModelLinRegWithIntercepts</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 89)</p>
+failed to import optim.model.ModelLogReg</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 89)</p>
+failed to import optim.model.ModelPoisReg</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 89)</p>
+failed to import optim.model.ModelCoxRegPartialLik</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 89)</p>
+toctree references unknown document ‘modules/generated/optim.model.ModelLinReg’</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 89)</p>
+toctree references unknown document ‘modules/generated/optim.model.ModelLinRegWithIntercepts’</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 89)</p>
+toctree references unknown document ‘modules/generated/optim.model.ModelLogReg’</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 89)</p>
+toctree references unknown document ‘modules/generated/optim.model.ModelPoisReg’</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 89)</p>
+toctree references unknown document ‘modules/generated/optim.model.ModelCoxRegPartialLik’</div>
 <table border="1" class="longtable docutils">
 <colgroup>
 <col width="10%" />
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.optim.model.ModelLinReg.html#tick.optim.model.ModelLinReg" title="tick.optim.model.ModelLinReg"><code class="xref py py-obj docutils literal"><span class="pre">optim.model.ModelLinReg</span></code></a>(…)</td>
-<td>Linear regression model.</td>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">optim.model.ModelLinReg</span></code></td>
+<td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/tick.optim.model.ModelLinRegWithIntercepts.html#tick.optim.model.ModelLinRegWithIntercepts" title="tick.optim.model.ModelLinRegWithIntercepts"><code class="xref py py-obj docutils literal"><span class="pre">optim.model.ModelLinRegWithIntercepts</span></code></a>(…)</td>
-<td>Linear regression model with individual intercepts.</td>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">optim.model.ModelLinRegWithIntercepts</span></code></td>
+<td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.optim.model.ModelLogReg.html#tick.optim.model.ModelLogReg" title="tick.optim.model.ModelLogReg"><code class="xref py py-obj docutils literal"><span class="pre">optim.model.ModelLogReg</span></code></a>(…)</td>
-<td>Logistic regression model.</td>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">optim.model.ModelLogReg</span></code></td>
+<td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/tick.optim.model.ModelPoisReg.html#tick.optim.model.ModelPoisReg" title="tick.optim.model.ModelPoisReg"><code class="xref py py-obj docutils literal"><span class="pre">optim.model.ModelPoisReg</span></code></a>(…)</td>
-<td>Poisson regression model with identity or exponential link.</td>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">optim.model.ModelPoisReg</span></code></td>
+<td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.optim.model.ModelCoxRegPartialLik.html#tick.optim.model.ModelCoxRegPartialLik" title="tick.optim.model.ModelCoxRegPartialLik"><code class="xref py py-obj docutils literal"><span class="pre">optim.model.ModelCoxRegPartialLik</span></code></a>()</td>
-<td>Partial likelihood of the Cox regression model (proportional hazards).</td>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">optim.model.ModelCoxRegPartialLik</span></code></td>
+<td></td>
 </tr>
 </tbody>
 </table>
 </div>
 <div class="section" id="self-control-case-series">
 <h3>Self Control Case Series<a class="headerlink" href="#self-control-case-series" title="Permalink to this headline">¶</a></h3>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 103)</p>
+failed to import optim.model.ModelSCCS</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 103)</p>
+toctree references unknown document ‘modules/generated/optim.model.ModelSCCS’</div>
 <table border="1" class="longtable docutils">
 <colgroup>
 <col width="10%" />
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.optim.model.ModelSCCS.html#tick.optim.model.ModelSCCS" title="tick.optim.model.ModelSCCS"><code class="xref py py-obj docutils literal"><span class="pre">optim.model.ModelSCCS</span></code></a>(n_intervals:&nbsp;int,&nbsp;…)</td>
-<td>SCCS model.</td>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">optim.model.ModelSCCS</span></code></td>
+<td></td>
 </tr>
 </tbody>
 </table>
 </div>
 <div class="section" id="id2">
 <h3>Hawkes<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 113)</p>
+failed to import optim.model.ModelHawkesFixedExpKernLogLik</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 113)</p>
+failed to import optim.model.ModelHawkesFixedExpKernLeastSq</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 113)</p>
+failed to import optim.model.ModelHawkesFixedSumExpKernLeastSq</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 113)</p>
+toctree references unknown document ‘modules/generated/optim.model.ModelHawkesFixedExpKernLogLik’</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 113)</p>
+toctree references unknown document ‘modules/generated/optim.model.ModelHawkesFixedExpKernLeastSq’</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 113)</p>
+toctree references unknown document ‘modules/generated/optim.model.ModelHawkesFixedSumExpKernLeastSq’</div>
 <table border="1" class="longtable docutils">
 <colgroup>
 <col width="10%" />
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.optim.model.ModelHawkesFixedExpKernLogLik.html#tick.optim.model.ModelHawkesFixedExpKernLogLik" title="tick.optim.model.ModelHawkesFixedExpKernLogLik"><code class="xref py py-obj docutils literal"><span class="pre">optim.model.ModelHawkesFixedExpKernLogLik</span></code></a>(…)</td>
-<td>Hawkes process model exponential kernels with fixed and given decay.</td>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">optim.model.ModelHawkesFixedExpKernLogLik</span></code></td>
+<td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/tick.optim.model.ModelHawkesFixedExpKernLeastSq.html#tick.optim.model.ModelHawkesFixedExpKernLeastSq" title="tick.optim.model.ModelHawkesFixedExpKernLeastSq"><code class="xref py py-obj docutils literal"><span class="pre">optim.model.ModelHawkesFixedExpKernLeastSq</span></code></a>(…)</td>
-<td>Hawkes process model exponential kernels with fixed and given decays.</td>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">optim.model.ModelHawkesFixedExpKernLeastSq</span></code></td>
+<td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.optim.model.ModelHawkesFixedSumExpKernLeastSq.html#tick.optim.model.ModelHawkesFixedSumExpKernLeastSq" title="tick.optim.model.ModelHawkesFixedSumExpKernLeastSq"><code class="xref py py-obj docutils literal"><span class="pre">optim.model.ModelHawkesFixedSumExpKernLeastSq</span></code></a>(…)</td>
-<td>Hawkes process learner for sum-exponential kernels with fixed and given</td>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">optim.model.ModelHawkesFixedSumExpKernLeastSq</span></code></td>
+<td></td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
 <div class="section" id="tick-optim-prox-proximal-operators-classes">
-<h2><a class="reference internal" href="#module-tick.optim.prox" title="tick.optim.prox"><code class="xref py py-mod docutils literal"><span class="pre">tick.optim.prox</span></code></a>: Proximal operators classes<a class="headerlink" href="#tick-optim-prox-proximal-operators-classes" title="Permalink to this headline">¶</a></h2>
+<h2><code class="xref py py-mod docutils literal"><span class="pre">tick.optim.prox</span></code>: Proximal operators classes<a class="headerlink" href="#tick-optim-prox-proximal-operators-classes" title="Permalink to this headline">¶</a></h2>
 <p>This module contains all the proximal operators available in tick.</p>
 <p><strong>User guide:</strong> See the <a class="reference internal" href="optim.html#optim-prox"><span class="std std-ref">2. tick.optim.prox: proximal operators</span></a> section for further details.</p>
-<span class="target" id="module-tick.optim.prox"></span><table border="1" class="longtable docutils">
-<colgroup>
-<col width="10%" />
-<col width="90%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.optim.prox.ProxZero.html#tick.optim.prox.ProxZero" title="tick.optim.prox.ProxZero"><code class="xref py py-obj docutils literal"><span class="pre">optim.prox.ProxZero</span></code></a>(range:&nbsp;tuple&nbsp;=&nbsp;None)</td>
-<td>Proximal operator of the null function (identity)</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/tick.optim.prox.ProxL1.html#tick.optim.prox.ProxL1" title="tick.optim.prox.ProxL1"><code class="xref py py-obj docutils literal"><span class="pre">optim.prox.ProxL1</span></code></a>(strength:&nbsp;float,&nbsp;…)</td>
-<td>Proximal operator of the L1 norm (soft-thresholding)</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.optim.prox.ProxL1w.html#tick.optim.prox.ProxL1w" title="tick.optim.prox.ProxL1w"><code class="xref py py-obj docutils literal"><span class="pre">optim.prox.ProxL1w</span></code></a>(strength:&nbsp;float,&nbsp;…)</td>
-<td>Proximal operator of the weighted L1 norm (weighted</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/tick.optim.prox.ProxElasticNet.html#tick.optim.prox.ProxElasticNet" title="tick.optim.prox.ProxElasticNet"><code class="xref py py-obj docutils literal"><span class="pre">optim.prox.ProxElasticNet</span></code></a>(strength:&nbsp;float,&nbsp;…)</td>
-<td>Proximal operator of the ElasticNet regularization.</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.optim.prox.ProxL2Sq.html#tick.optim.prox.ProxL2Sq" title="tick.optim.prox.ProxL2Sq"><code class="xref py py-obj docutils literal"><span class="pre">optim.prox.ProxL2Sq</span></code></a>(strength:&nbsp;float,&nbsp;…)</td>
-<td>Proximal operator of the squared L2 norm (ridge penalization)</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/tick.optim.prox.ProxMulti.html#tick.optim.prox.ProxMulti" title="tick.optim.prox.ProxMulti"><code class="xref py py-obj docutils literal"><span class="pre">optim.prox.ProxMulti</span></code></a>(proxs:&nbsp;tuple)</td>
-<td>Multiple proximal operator.</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.optim.prox.ProxNuclear.html#tick.optim.prox.ProxNuclear" title="tick.optim.prox.ProxNuclear"><code class="xref py py-obj docutils literal"><span class="pre">optim.prox.ProxNuclear</span></code></a>(strength:&nbsp;float,&nbsp;…)</td>
-<td>Proximal operator of the nuclear norm, aka trace norm</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/tick.optim.prox.ProxPositive.html#tick.optim.prox.ProxPositive" title="tick.optim.prox.ProxPositive"><code class="xref py py-obj docutils literal"><span class="pre">optim.prox.ProxPositive</span></code></a>(range:&nbsp;tuple&nbsp;=&nbsp;None,&nbsp;…)</td>
-<td>Projection operator onto the half-space of vectors with</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.optim.prox.ProxEquality.html#tick.optim.prox.ProxEquality" title="tick.optim.prox.ProxEquality"><code class="xref py py-obj docutils literal"><span class="pre">optim.prox.ProxEquality</span></code></a>(strength:&nbsp;float&nbsp;=&nbsp;0,&nbsp;…)</td>
-<td>Projection operator onto the set of vector with all coordinates equal (or in the given range if given one).</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/tick.optim.prox.ProxSlope.html#tick.optim.prox.ProxSlope" title="tick.optim.prox.ProxSlope"><code class="xref py py-obj docutils literal"><span class="pre">optim.prox.ProxSlope</span></code></a>(strength:&nbsp;float,&nbsp;…)</td>
-<td>Proximal operator of Slope penalization.</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.optim.prox.ProxTV.html#tick.optim.prox.ProxTV" title="tick.optim.prox.ProxTV"><code class="xref py py-obj docutils literal"><span class="pre">optim.prox.ProxTV</span></code></a>(strength:&nbsp;float,&nbsp;…)</td>
-<td>Proximal operator of the total-variation penalization</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/tick.optim.prox.ProxBinarsity.html#tick.optim.prox.ProxBinarsity" title="tick.optim.prox.ProxBinarsity"><code class="xref py py-obj docutils literal"><span class="pre">optim.prox.ProxBinarsity</span></code></a>(strength:&nbsp;float,&nbsp;…)</td>
-<td>Proximal operator of binarsity.</td>
-</tr>
-</tbody>
-</table>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 129)</p>
+autodoc: failed to import module ‘tick.optim.prox’; the following exception was raised:
+Traceback (most recent call last):
+  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/build/array.py”, line 18, in swig_import_helper
+    fp, pathname, description = imp.find_module(‘_array’, [dirname(__file__)])
+  File “/opt/local/Library/Frameworks/Python.framework/Versions/3.4/lib/python3.4/imp.py”, line 297, in find_module
+    raise ImportError(_ERR_MSG.format(name), name=name)
+ImportError: No module named ‘_array’
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File “/opt/local/Library/Frameworks/Python.framework/Versions/3.4/lib/python3.4/site-packages/sphinx/ext/autodoc.py”, line 657, in import_object
+    __import__(self.modname)
+  File “/Users/martin/Projects/tick_ghpages/tick/tick/__init__.py”, line 3, in &lt;module&gt;
+    import tick.base
+  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/__init__.py”, line 21, in &lt;module&gt;
+    from .array import *
+  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/__init__.py”, line 3, in &lt;module&gt;
+    from .build import array
+  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/build/array.py”, line 28, in &lt;module&gt;
+    _array = swig_import_helper()
+  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/build/array.py”, line 20, in swig_import_helper
+    import _array
+ImportError: No module named ‘_array’
 </div>
-<div class="section" id="tick-optim-solver-solver-classes">
-<span id="api-optim-solver"></span><h2><a class="reference internal" href="#module-tick.optim.solver" title="tick.optim.solver"><code class="xref py py-mod docutils literal"><span class="pre">tick.optim.solver</span></code></a>: Solver classes<a class="headerlink" href="#tick-optim-solver-solver-classes" title="Permalink to this headline">¶</a></h2>
-<p>This module contains all the solvers available in tick.</p>
-<p><strong>User guide:</strong> See the <a class="reference internal" href="optim.html#optim-solver"><span class="std std-ref">3. tick.optim.solver: solvers</span></a> section for further details.</p>
-<span class="target" id="module-tick.optim.solver"></span><div class="section" id="batch-solvers">
-<h3>Batch solvers<a class="headerlink" href="#batch-solvers" title="Permalink to this headline">¶</a></h3>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 135)</p>
+failed to import optim.prox.ProxZero</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 135)</p>
+failed to import optim.prox.ProxL1</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 135)</p>
+failed to import optim.prox.ProxL1w</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 135)</p>
+failed to import optim.prox.ProxElasticNet</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 135)</p>
+failed to import optim.prox.ProxL2Sq</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 135)</p>
+failed to import optim.prox.ProxL2</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 135)</p>
+failed to import optim.prox.ProxMulti</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 135)</p>
+failed to import optim.prox.ProxNuclear</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 135)</p>
+failed to import optim.prox.ProxPositive</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 135)</p>
+failed to import optim.prox.ProxEquality</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 135)</p>
+failed to import optim.prox.ProxSlope</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 135)</p>
+failed to import optim.prox.ProxTV</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 135)</p>
+failed to import optim.prox.ProxBinarsity</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 135)</p>
+failed to import optim.prox.ProxGroupL1</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 135)</p>
+toctree references unknown document ‘modules/generated/optim.prox.ProxZero’</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 135)</p>
+toctree references unknown document ‘modules/generated/optim.prox.ProxL1’</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 135)</p>
+toctree references unknown document ‘modules/generated/optim.prox.ProxL1w’</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 135)</p>
+toctree references unknown document ‘modules/generated/optim.prox.ProxElasticNet’</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 135)</p>
+toctree references unknown document ‘modules/generated/optim.prox.ProxL2Sq’</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 135)</p>
+toctree references unknown document ‘modules/generated/optim.prox.ProxL2’</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 135)</p>
+toctree references unknown document ‘modules/generated/optim.prox.ProxMulti’</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 135)</p>
+toctree references unknown document ‘modules/generated/optim.prox.ProxNuclear’</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 135)</p>
+toctree references unknown document ‘modules/generated/optim.prox.ProxPositive’</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 135)</p>
+toctree references unknown document ‘modules/generated/optim.prox.ProxEquality’</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 135)</p>
+toctree references unknown document ‘modules/generated/optim.prox.ProxSlope’</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 135)</p>
+toctree references unknown document ‘modules/generated/optim.prox.ProxTV’</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 135)</p>
+toctree references unknown document ‘modules/generated/optim.prox.ProxBinarsity’</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 135)</p>
+toctree references unknown document ‘modules/generated/optim.prox.ProxGroupL1’</div>
 <table border="1" class="longtable docutils">
 <colgroup>
 <col width="10%" />
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.optim.solver.GD.html#tick.optim.solver.GD" title="tick.optim.solver.GD"><code class="xref py py-obj docutils literal"><span class="pre">optim.solver.GD</span></code></a>(step:&nbsp;float&nbsp;=&nbsp;None,&nbsp;…)</td>
-<td>GD (proximal gradient descent) algorithm.</td>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">optim.prox.ProxZero</span></code></td>
+<td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/tick.optim.solver.AGD.html#tick.optim.solver.AGD" title="tick.optim.solver.AGD"><code class="xref py py-obj docutils literal"><span class="pre">optim.solver.AGD</span></code></a>(step:&nbsp;float&nbsp;=&nbsp;None,&nbsp;…)</td>
-<td>AGD (accelerated proximal gradient descent) algorithm.</td>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">optim.prox.ProxL1</span></code></td>
+<td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.optim.solver.BFGS.html#tick.optim.solver.BFGS" title="tick.optim.solver.BFGS"><code class="xref py py-obj docutils literal"><span class="pre">optim.solver.BFGS</span></code></a>(tol:&nbsp;float&nbsp;=&nbsp;0.0,&nbsp;…)</td>
-<td>BFGS (Broyden, Fletcher, Goldfarb, and Shanno ) algorithm.</td>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">optim.prox.ProxL1w</span></code></td>
+<td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/tick.optim.solver.GFB.html#tick.optim.solver.GFB" title="tick.optim.solver.GFB"><code class="xref py py-obj docutils literal"><span class="pre">optim.solver.GFB</span></code></a>(step:&nbsp;float&nbsp;=&nbsp;None,&nbsp;…[,&nbsp;…])</td>
-<td>Generalized Forward-Backward algorithm</td>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">optim.prox.ProxElasticNet</span></code></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">optim.prox.ProxL2Sq</span></code></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">optim.prox.ProxL2</span></code></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">optim.prox.ProxMulti</span></code></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">optim.prox.ProxNuclear</span></code></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">optim.prox.ProxPositive</span></code></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">optim.prox.ProxEquality</span></code></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">optim.prox.ProxSlope</span></code></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">optim.prox.ProxTV</span></code></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">optim.prox.ProxBinarsity</span></code></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">optim.prox.ProxGroupL1</span></code></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="tick-optim-solver-solver-classes">
+<span id="api-optim-solver"></span><h2><code class="xref py py-mod docutils literal"><span class="pre">tick.optim.solver</span></code>: Solver classes<a class="headerlink" href="#tick-optim-solver-solver-classes" title="Permalink to this headline">¶</a></h2>
+<p>This module contains all the solvers available in tick.</p>
+<p><strong>User guide:</strong> See the <a class="reference internal" href="optim.html#optim-solver"><span class="std std-ref">3. tick.optim.solver: solvers</span></a> section for further details.</p>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 163)</p>
+autodoc: failed to import module ‘tick.optim.solver’; the following exception was raised:
+Traceback (most recent call last):
+  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/build/array.py”, line 18, in swig_import_helper
+    fp, pathname, description = imp.find_module(‘_array’, [dirname(__file__)])
+  File “/opt/local/Library/Frameworks/Python.framework/Versions/3.4/lib/python3.4/imp.py”, line 297, in find_module
+    raise ImportError(_ERR_MSG.format(name), name=name)
+ImportError: No module named ‘_array’
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File “/opt/local/Library/Frameworks/Python.framework/Versions/3.4/lib/python3.4/site-packages/sphinx/ext/autodoc.py”, line 657, in import_object
+    __import__(self.modname)
+  File “/Users/martin/Projects/tick_ghpages/tick/tick/__init__.py”, line 3, in &lt;module&gt;
+    import tick.base
+  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/__init__.py”, line 21, in &lt;module&gt;
+    from .array import *
+  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/__init__.py”, line 3, in &lt;module&gt;
+    from .build import array
+  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/build/array.py”, line 28, in &lt;module&gt;
+    _array = swig_import_helper()
+  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/build/array.py”, line 20, in swig_import_helper
+    import _array
+ImportError: No module named ‘_array’
+</div>
+<div class="section" id="batch-solvers">
+<h3>Batch solvers<a class="headerlink" href="#batch-solvers" title="Permalink to this headline">¶</a></h3>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 171)</p>
+failed to import optim.solver.GD</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 171)</p>
+failed to import optim.solver.AGD</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 171)</p>
+failed to import optim.solver.BFGS</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 171)</p>
+failed to import optim.solver.GFB</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 171)</p>
+toctree references unknown document ‘modules/generated/optim.solver.GD’</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 171)</p>
+toctree references unknown document ‘modules/generated/optim.solver.AGD’</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 171)</p>
+toctree references unknown document ‘modules/generated/optim.solver.BFGS’</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 171)</p>
+toctree references unknown document ‘modules/generated/optim.solver.GFB’</div>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">optim.solver.GD</span></code></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">optim.solver.AGD</span></code></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">optim.solver.BFGS</span></code></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">optim.solver.GFB</span></code></td>
+<td></td>
 </tr>
 </tbody>
 </table>
 </div>
 <div class="section" id="stochastic-solvers">
 <h3>Stochastic solvers<a class="headerlink" href="#stochastic-solvers" title="Permalink to this headline">¶</a></h3>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 184)</p>
+failed to import optim.solver.SGD</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 184)</p>
+failed to import optim.solver.SVRG</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 184)</p>
+failed to import optim.solver.SDCA</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 184)</p>
+failed to import optim.solver.AdaGrad</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 184)</p>
+toctree references unknown document ‘modules/generated/optim.solver.SGD’</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 184)</p>
+toctree references unknown document ‘modules/generated/optim.solver.SVRG’</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 184)</p>
+toctree references unknown document ‘modules/generated/optim.solver.SDCA’</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 184)</p>
+toctree references unknown document ‘modules/generated/optim.solver.AdaGrad’</div>
 <table border="1" class="longtable docutils">
 <colgroup>
 <col width="10%" />
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.optim.solver.SGD.html#tick.optim.solver.SGD" title="tick.optim.solver.SGD"><code class="xref py py-obj docutils literal"><span class="pre">optim.solver.SGD</span></code></a>(step:&nbsp;float&nbsp;=&nbsp;None,&nbsp;…)</td>
-<td>Stochastic Gradient Descent solver</td>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">optim.solver.SGD</span></code></td>
+<td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/tick.optim.solver.SVRG.html#tick.optim.solver.SVRG" title="tick.optim.solver.SVRG"><code class="xref py py-obj docutils literal"><span class="pre">optim.solver.SVRG</span></code></a>(step:&nbsp;float&nbsp;=&nbsp;None,&nbsp;…)</td>
-<td>Stochastic variance reduced gradient</td>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">optim.solver.SVRG</span></code></td>
+<td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.optim.solver.SDCA.html#tick.optim.solver.SDCA" title="tick.optim.solver.SDCA"><code class="xref py py-obj docutils literal"><span class="pre">optim.solver.SDCA</span></code></a>(l_l2sq:&nbsp;float,&nbsp;…)</td>
-<td>Stochastic Dual Coordinate Ascent solver</td>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">optim.solver.SDCA</span></code></td>
+<td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/tick.optim.solver.AdaGrad.html#tick.optim.solver.AdaGrad" title="tick.optim.solver.AdaGrad"><code class="xref py py-obj docutils literal"><span class="pre">optim.solver.AdaGrad</span></code></a>(step:&nbsp;float&nbsp;=&nbsp;0.01,&nbsp;…)</td>
-<td>Adaptive Gradient Descent solver</td>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">optim.solver.AdaGrad</span></code></td>
+<td></td>
 </tr>
 </tbody>
 </table>
 </div>
 <div class="section" id="history">
 <h3>History<a class="headerlink" href="#history" title="Permalink to this headline">¶</a></h3>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 197)</p>
+failed to import optim.history.History</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 197)</p>
+toctree references unknown document ‘modules/generated/optim.history.History’</div>
 <table border="1" class="longtable docutils">
 <colgroup>
 <col width="10%" />
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.optim.history.History.html#tick.optim.history.History" title="tick.optim.history.History"><code class="xref py py-obj docutils literal"><span class="pre">optim.history.History</span></code></a>()</td>
-<td>A class to manage the history along iterations of a solver</td>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">optim.history.History</span></code></td>
+<td></td>
 </tr>
 </tbody>
 </table>
@@ -433,35 +814,83 @@ in tick.</p>
 <p><strong>User guide:</strong> See the <a class="reference internal" href="plot.html#plot"><span class="std std-ref">tick.plot: plotting utilities</span></a> section for further details.</p>
 <div class="section" id="functions">
 <h3>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h3>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 217)</p>
+failed to import plot.plot_history</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 217)</p>
+failed to import plot.plot_hawkes_kernels</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 217)</p>
+failed to import plot.plot_hawkes_kernel_norms</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 217)</p>
+failed to import plot.plot_basis_kernels</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 217)</p>
+failed to import plot.plot_timefunction</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 217)</p>
+failed to import plot.plot_point_process</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 217)</p>
+failed to import plot.stem</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 217)</p>
+failed to import plot.stems</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 217)</p>
+toctree references unknown document ‘modules/generated/plot.plot_history’</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 217)</p>
+toctree references unknown document ‘modules/generated/plot.plot_hawkes_kernels’</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 217)</p>
+toctree references unknown document ‘modules/generated/plot.plot_hawkes_kernel_norms’</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 217)</p>
+toctree references unknown document ‘modules/generated/plot.plot_basis_kernels’</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 217)</p>
+toctree references unknown document ‘modules/generated/plot.plot_timefunction’</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 217)</p>
+toctree references unknown document ‘modules/generated/plot.plot_point_process’</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 217)</p>
+toctree references unknown document ‘modules/generated/plot.stem’</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 217)</p>
+toctree references unknown document ‘modules/generated/plot.stems’</div>
 <table border="1" class="longtable docutils">
 <colgroup>
 <col width="10%" />
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.plot.plot_history.html#tick.plot.plot_history" title="tick.plot.plot_history"><code class="xref py py-obj docutils literal"><span class="pre">plot.plot_history</span></code></a>(solvers[,&nbsp;x,&nbsp;y,&nbsp;labels,&nbsp;…])</td>
-<td>Plot the history of convergence of learners or solvers.</td>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">plot.plot_history</span></code></td>
+<td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/tick.plot.plot_hawkes_kernels.html#tick.plot.plot_hawkes_kernels" title="tick.plot.plot_hawkes_kernels"><code class="xref py py-obj docutils literal"><span class="pre">plot.plot_hawkes_kernels</span></code></a>(kernel_object[,&nbsp;…])</td>
-<td>Generic function to plot Hawkes kernels.</td>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">plot.plot_hawkes_kernels</span></code></td>
+<td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.plot.plot_hawkes_kernel_norms.html#tick.plot.plot_hawkes_kernel_norms" title="tick.plot.plot_hawkes_kernel_norms"><code class="xref py py-obj docutils literal"><span class="pre">plot.plot_hawkes_kernel_norms</span></code></a>(kernel_object)</td>
-<td>Generic function to plot Hawkes kernel norms.</td>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">plot.plot_hawkes_kernel_norms</span></code></td>
+<td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/tick.plot.plot_basis_kernels.html#tick.plot.plot_basis_kernels" title="tick.plot.plot_basis_kernels"><code class="xref py py-obj docutils literal"><span class="pre">plot.plot_basis_kernels</span></code></a>(learner[,&nbsp;support,&nbsp;…])</td>
-<td>Function used to plot basis of kernels</td>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">plot.plot_basis_kernels</span></code></td>
+<td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.plot.plot_timefunction.html#tick.plot.plot_timefunction" title="tick.plot.plot_timefunction"><code class="xref py py-obj docutils literal"><span class="pre">plot.plot_timefunction</span></code></a>(time_function[,&nbsp;…])</td>
-<td>Quick plot of a <a class="reference internal" href="generated/tick.base.TimeFunction.html#tick.base.TimeFunction" title="tick.base.TimeFunction"><code class="xref py py-obj docutils literal"><span class="pre">tick.base.TimeFunction</span></code></a></td>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">plot.plot_timefunction</span></code></td>
+<td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/tick.plot.plot_point_process.html#tick.plot.plot_point_process" title="tick.plot.plot_point_process"><code class="xref py py-obj docutils literal"><span class="pre">plot.plot_point_process</span></code></a>(point_process[,&nbsp;…])</td>
-<td>Plot point process realization</td>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">plot.plot_point_process</span></code></td>
+<td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.plot.stem.html#tick.plot.stem" title="tick.plot.stem"><code class="xref py py-obj docutils literal"><span class="pre">plot.stem</span></code></a>(y:&nbsp;numpy.ndarray[,&nbsp;show,&nbsp;title,&nbsp;…])</td>
-<td>Stem plot using bokeh</td>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">plot.stem</span></code></td>
+<td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/tick.plot.stems.html#tick.plot.stems" title="tick.plot.stems"><code class="xref py py-obj docutils literal"><span class="pre">plot.stems</span></code></a>(ys:&nbsp;list,&nbsp;titles:&nbsp;list&nbsp;=&nbsp;None[,&nbsp;…])</td>
-<td>Several stem plots with synchronized axes</td>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">plot.stems</span></code></td>
+<td></td>
 </tr>
 </tbody>
 </table>
@@ -473,20 +902,38 @@ in tick.</p>
 <p><strong>User guide:</strong> See the <a class="reference internal" href="preprocessing.html#preprocessing"><span class="std std-ref">tick.preprocessing: preprocessing utilities</span></a> section for further details.</p>
 <div class="section" id="classes">
 <h3>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h3>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 244)</p>
+failed to import preprocessing.FeaturesBinarizer</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 244)</p>
+failed to import preprocessing.LongitudinalFeaturesProduct</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 244)</p>
+failed to import preprocessing.LongitudinalFeaturesLagger</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 244)</p>
+toctree references unknown document ‘modules/generated/preprocessing.FeaturesBinarizer’</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 244)</p>
+toctree references unknown document ‘modules/generated/preprocessing.LongitudinalFeaturesProduct’</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 244)</p>
+toctree references unknown document ‘modules/generated/preprocessing.LongitudinalFeaturesLagger’</div>
 <table border="1" class="longtable docutils">
 <colgroup>
 <col width="10%" />
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.preprocessing.FeaturesBinarizer.html#tick.preprocessing.FeaturesBinarizer" title="tick.preprocessing.FeaturesBinarizer"><code class="xref py py-obj docutils literal"><span class="pre">preprocessing.FeaturesBinarizer</span></code></a>([method,&nbsp;…])</td>
-<td>Transforms continuous data into bucketed binary data.</td>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">preprocessing.FeaturesBinarizer</span></code></td>
+<td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/tick.preprocessing.LongitudinalFeaturesProduct.html#tick.preprocessing.LongitudinalFeaturesProduct" title="tick.preprocessing.LongitudinalFeaturesProduct"><code class="xref py py-obj docutils literal"><span class="pre">preprocessing.LongitudinalFeaturesProduct</span></code></a>([…])</td>
-<td>Transforms longitudinal exposure features to add the corresponding product features.</td>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">preprocessing.LongitudinalFeaturesProduct</span></code></td>
+<td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.preprocessing.LongitudinalFeaturesLagger.html#tick.preprocessing.LongitudinalFeaturesLagger" title="tick.preprocessing.LongitudinalFeaturesLagger"><code class="xref py py-obj docutils literal"><span class="pre">preprocessing.LongitudinalFeaturesLagger</span></code></a>([…])</td>
-<td>Transforms longitudinal exposure features to add columns representing lagged features.</td>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">preprocessing.LongitudinalFeaturesLagger</span></code></td>
+<td></td>
 </tr>
 </tbody>
 </table>
@@ -498,101 +945,215 @@ in tick.</p>
 <p><strong>User guide:</strong> See the <a class="reference internal" href="simulation.html#simulation"><span class="std std-ref">tick.simulation: simulation toolbox</span></a> section for further details.</p>
 <div class="section" id="id3">
 <h3>Generalized linear models<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 266)</p>
+failed to import simulation.SimuLinReg</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 266)</p>
+failed to import simulation.SimuLogReg</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 266)</p>
+failed to import simulation.SimuPoisReg</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 266)</p>
+toctree references unknown document ‘modules/generated/simulation.SimuLinReg’</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 266)</p>
+toctree references unknown document ‘modules/generated/simulation.SimuLogReg’</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 266)</p>
+toctree references unknown document ‘modules/generated/simulation.SimuPoisReg’</div>
 <table border="1" class="longtable docutils">
 <colgroup>
 <col width="10%" />
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.SimuLinReg.html#tick.simulation.SimuLinReg" title="tick.simulation.SimuLinReg"><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuLinReg</span></code></a>(…)</td>
-<td>Simulation of a Linear regression model</td>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuLinReg</span></code></td>
+<td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/tick.simulation.SimuLogReg.html#tick.simulation.SimuLogReg" title="tick.simulation.SimuLogReg"><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuLogReg</span></code></a>(…)</td>
-<td>Simulation of a Logistic regression model</td>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuLogReg</span></code></td>
+<td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.SimuPoisReg.html#tick.simulation.SimuPoisReg" title="tick.simulation.SimuPoisReg"><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuPoisReg</span></code></a>(…)</td>
-<td>Simulation of a Poisson regression model, with identity or exponential link.</td>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuPoisReg</span></code></td>
+<td></td>
 </tr>
 </tbody>
 </table>
 </div>
 <div class="section" id="point-processes">
 <h3>Point processes<a class="headerlink" href="#point-processes" title="Permalink to this headline">¶</a></h3>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 278)</p>
+failed to import simulation.SimuCoxReg</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 278)</p>
+failed to import simulation.SimuPoissonProcess</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 278)</p>
+failed to import simulation.SimuInhomogeneousPoisson</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 278)</p>
+failed to import simulation.SimuHawkes</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 278)</p>
+failed to import simulation.SimuHawkesExpKernels</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 278)</p>
+failed to import simulation.SimuHawkesSumExpKernels</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 278)</p>
+failed to import simulation.SimuHawkesMulti</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 278)</p>
+toctree references unknown document ‘modules/generated/simulation.SimuCoxReg’</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 278)</p>
+toctree references unknown document ‘modules/generated/simulation.SimuPoissonProcess’</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 278)</p>
+toctree references unknown document ‘modules/generated/simulation.SimuInhomogeneousPoisson’</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 278)</p>
+toctree references unknown document ‘modules/generated/simulation.SimuHawkes’</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 278)</p>
+toctree references unknown document ‘modules/generated/simulation.SimuHawkesExpKernels’</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 278)</p>
+toctree references unknown document ‘modules/generated/simulation.SimuHawkesSumExpKernels’</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 278)</p>
+toctree references unknown document ‘modules/generated/simulation.SimuHawkesMulti’</div>
 <table border="1" class="longtable docutils">
 <colgroup>
 <col width="10%" />
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.SimuCoxReg.html#tick.simulation.SimuCoxReg" title="tick.simulation.SimuCoxReg"><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuCoxReg</span></code></a>(coeffs:&nbsp;numpy.ndarray,&nbsp;…)</td>
-<td>Simulation of a Cox regression for proportional hazards</td>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuCoxReg</span></code></td>
+<td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/tick.simulation.SimuPoissonProcess.html#tick.simulation.SimuPoissonProcess" title="tick.simulation.SimuPoissonProcess"><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuPoissonProcess</span></code></a>(intensities[,&nbsp;…])</td>
-<td>Homogeneous Poisson process simulation</td>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuPoissonProcess</span></code></td>
+<td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.SimuInhomogeneousPoisson.html#tick.simulation.SimuInhomogeneousPoisson" title="tick.simulation.SimuInhomogeneousPoisson"><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuInhomogeneousPoisson</span></code></a>(…[,&nbsp;…])</td>
-<td>Inhomogeneous Poisson process simulation</td>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuInhomogeneousPoisson</span></code></td>
+<td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/tick.simulation.SimuHawkes.html#tick.simulation.SimuHawkes" title="tick.simulation.SimuHawkes"><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuHawkes</span></code></a>([kernels,&nbsp;baseline,&nbsp;…])</td>
-<td>Hawkes process simulation</td>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuHawkes</span></code></td>
+<td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.SimuHawkesExpKernels.html#tick.simulation.SimuHawkesExpKernels" title="tick.simulation.SimuHawkesExpKernels"><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuHawkesExpKernels</span></code></a>(adjacency,&nbsp;…)</td>
-<td>Hawkes process with exponential kernels simulation</td>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuHawkesExpKernels</span></code></td>
+<td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/tick.simulation.SimuHawkesSumExpKernels.html#tick.simulation.SimuHawkesSumExpKernels" title="tick.simulation.SimuHawkesSumExpKernels"><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuHawkesSumExpKernels</span></code></a>(…[,&nbsp;…])</td>
-<td>Hawkes process with sum-exponential kernels simulation</td>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuHawkesSumExpKernels</span></code></td>
+<td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.SimuHawkesMulti.html#tick.simulation.SimuHawkesMulti" title="tick.simulation.SimuHawkesMulti"><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuHawkesMulti</span></code></a>(hawkes_simu,&nbsp;…)</td>
-<td>Parallel simulations of a single Hawkes simulation</td>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuHawkesMulti</span></code></td>
+<td></td>
 </tr>
 </tbody>
 </table>
 </div>
 <div class="section" id="hawkes-kernels">
 <h3>Hawkes kernels<a class="headerlink" href="#hawkes-kernels" title="Permalink to this headline">¶</a></h3>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 294)</p>
+failed to import simulation.HawkesKernelExp</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 294)</p>
+failed to import simulation.HawkesKernelSumExp</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 294)</p>
+failed to import simulation.HawkesKernelPowerLaw</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 294)</p>
+failed to import simulation.HawkesKernelTimeFunc</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 294)</p>
+failed to import base.TimeFunction</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 294)</p>
+toctree references unknown document ‘modules/generated/simulation.HawkesKernelExp’</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 294)</p>
+toctree references unknown document ‘modules/generated/simulation.HawkesKernelSumExp’</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 294)</p>
+toctree references unknown document ‘modules/generated/simulation.HawkesKernelPowerLaw’</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 294)</p>
+toctree references unknown document ‘modules/generated/simulation.HawkesKernelTimeFunc’</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 294)</p>
+toctree references unknown document ‘modules/generated/base.TimeFunction’</div>
 <table border="1" class="longtable docutils">
 <colgroup>
 <col width="10%" />
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.HawkesKernelExp.html#tick.simulation.HawkesKernelExp" title="tick.simulation.HawkesKernelExp"><code class="xref py py-obj docutils literal"><span class="pre">simulation.HawkesKernelExp</span></code></a>(intensity,&nbsp;decay)</td>
-<td>Hawkes kernel with exponential decay</td>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">simulation.HawkesKernelExp</span></code></td>
+<td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/tick.simulation.HawkesKernelSumExp.html#tick.simulation.HawkesKernelSumExp" title="tick.simulation.HawkesKernelSumExp"><code class="xref py py-obj docutils literal"><span class="pre">simulation.HawkesKernelSumExp</span></code></a>(intensities,&nbsp;…)</td>
-<td>Hawkes kernel with sum exponential decays</td>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">simulation.HawkesKernelSumExp</span></code></td>
+<td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.HawkesKernelPowerLaw.html#tick.simulation.HawkesKernelPowerLaw" title="tick.simulation.HawkesKernelPowerLaw"><code class="xref py py-obj docutils literal"><span class="pre">simulation.HawkesKernelPowerLaw</span></code></a>(multiplier,&nbsp;…)</td>
-<td>Hawkes kernel for power law</td>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">simulation.HawkesKernelPowerLaw</span></code></td>
+<td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/tick.simulation.HawkesKernelTimeFunc.html#tick.simulation.HawkesKernelTimeFunc" title="tick.simulation.HawkesKernelTimeFunc"><code class="xref py py-obj docutils literal"><span class="pre">simulation.HawkesKernelTimeFunc</span></code></a>([…])</td>
-<td>Hawkes kernel defined by an arbitrary time function.</td>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">simulation.HawkesKernelTimeFunc</span></code></td>
+<td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.base.TimeFunction.html#tick.base.TimeFunction" title="tick.base.TimeFunction"><code class="xref py py-obj docutils literal"><span class="pre">base.TimeFunction</span></code></a>(values,&nbsp;…)</td>
-<td>A function depending on time.</td>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">base.TimeFunction</span></code></td>
+<td></td>
 </tr>
 </tbody>
 </table>
 </div>
 <div class="section" id="features-generators">
 <h3>Features generators<a class="headerlink" href="#features-generators" title="Permalink to this headline">¶</a></h3>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 308)</p>
+failed to import simulation.features_normal_cov_uniform</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 308)</p>
+failed to import simulation.features_normal_cov_toeplitz</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 308)</p>
+failed to import simulation.weights_sparse_exp</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 308)</p>
+failed to import simulation.weights_sparse_gauss</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 308)</p>
+toctree references unknown document ‘modules/generated/simulation.features_normal_cov_uniform’</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 308)</p>
+toctree references unknown document ‘modules/generated/simulation.features_normal_cov_toeplitz’</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 308)</p>
+toctree references unknown document ‘modules/generated/simulation.weights_sparse_exp’</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 308)</p>
+toctree references unknown document ‘modules/generated/simulation.weights_sparse_gauss’</div>
 <table border="1" class="longtable docutils">
 <colgroup>
 <col width="10%" />
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.features_normal_cov_uniform.html#tick.simulation.features_normal_cov_uniform" title="tick.simulation.features_normal_cov_uniform"><code class="xref py py-obj docutils literal"><span class="pre">simulation.features_normal_cov_uniform</span></code></a>(…)</td>
-<td>Normal features generator with uniform covariance</td>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">simulation.features_normal_cov_uniform</span></code></td>
+<td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/tick.simulation.features_normal_cov_toeplitz.html#tick.simulation.features_normal_cov_toeplitz" title="tick.simulation.features_normal_cov_toeplitz"><code class="xref py py-obj docutils literal"><span class="pre">simulation.features_normal_cov_toeplitz</span></code></a>(…)</td>
-<td>Normal features generator with toeplitz covariance</td>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">simulation.features_normal_cov_toeplitz</span></code></td>
+<td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.weights_sparse_exp.html#tick.simulation.weights_sparse_exp" title="tick.simulation.weights_sparse_exp"><code class="xref py py-obj docutils literal"><span class="pre">simulation.weights_sparse_exp</span></code></a>(…)</td>
-<td>Sparse and exponential model weights generator</td>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">simulation.weights_sparse_exp</span></code></td>
+<td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/tick.simulation.weights_sparse_gauss.html#tick.simulation.weights_sparse_gauss" title="tick.simulation.weights_sparse_gauss"><code class="xref py py-obj docutils literal"><span class="pre">simulation.weights_sparse_gauss</span></code></a>(…)</td>
-<td>Sparse and gaussian model weights generator</td>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">simulation.weights_sparse_gauss</span></code></td>
+<td></td>
 </tr>
 </tbody>
 </table>
@@ -601,17 +1162,29 @@ in tick.</p>
 <div class="section" id="tick-dataset-real-world-dataset">
 <span id="api-datasets"></span><h2><code class="xref py py-mod docutils literal"><span class="pre">tick.dataset</span></code>: Real world dataset<a class="headerlink" href="#tick-dataset-real-world-dataset" title="Permalink to this headline">¶</a></h2>
 <p><strong>User guide:</strong> See the <a class="reference internal" href="dataset.html#dataset"><span class="std std-ref">tick.dataset: real world datasets</span></a> section for further details.</p>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 327)</p>
+failed to import dataset.fetch_tick_dataset</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 327)</p>
+failed to import dataset.fetch_hawkes_bund_data</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 327)</p>
+toctree references unknown document ‘modules/generated/dataset.fetch_tick_dataset’</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/api.rst</tt>, line 327)</p>
+toctree references unknown document ‘modules/generated/dataset.fetch_hawkes_bund_data’</div>
 <table border="1" class="longtable docutils">
 <colgroup>
 <col width="10%" />
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.dataset.fetch_tick_dataset.html#tick.dataset.fetch_tick_dataset" title="tick.dataset.fetch_tick_dataset"><code class="xref py py-obj docutils literal"><span class="pre">dataset.fetch_tick_dataset</span></code></a>(dataset_path[,&nbsp;…])</td>
-<td>Fetch dataset from tick_datasets github repository.</td>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">dataset.fetch_tick_dataset</span></code></td>
+<td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/tick.dataset.fetch_hawkes_bund_data.html#tick.dataset.fetch_hawkes_bund_data" title="tick.dataset.fetch_hawkes_bund_data"><code class="xref py py-obj docutils literal"><span class="pre">dataset.fetch_hawkes_bund_data</span></code></a>()</td>
-<td>Load Hawkes formatted bund data from</td>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">dataset.fetch_hawkes_bund_data</span></code></td>
+<td></td>
 </tr>
 </tbody>
 </table>

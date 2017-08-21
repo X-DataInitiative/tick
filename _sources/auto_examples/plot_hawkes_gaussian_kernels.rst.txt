@@ -22,8 +22,8 @@ Xu, Farajtabar, and Zha (2016, June) in ICML,
 
 
 
-.. image:: images/plot_hawkes_gaussian_kernels_001.png
-    :align: center
+.. rst-class:: horizontal
+
 
 
 
@@ -33,8 +33,8 @@ Xu, Farajtabar, and Zha (2016, June) in ICML,
 .. literalinclude:: plot_hawkes_gaussian_kernels.py
     :lines: 19-
 
-**Total running time of the example:**  2.38 seconds
-( 0 minutes  2.38 seconds)
+**Total running time of the example:**  0.00 seconds
+( 0 minutes  0.00 seconds)
     
 Mentioned *tick* classes:
    * `tick.inference.HawkesSumGaussians`

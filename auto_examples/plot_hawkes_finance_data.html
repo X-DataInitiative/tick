@@ -104,10 +104,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../modules/plot.html#others">Others</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../modules/preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../modules/generated/tick.preprocessing.FeaturesBinarizer.html">tick.preprocessing.FeaturesBinarizer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/generated/tick.preprocessing.LongitudinalFeaturesProduct.html">tick.preprocessing.LongitudinalFeaturesProduct</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/generated/tick.preprocessing.LongitudinalFeaturesLagger.html">tick.preprocessing.LongitudinalFeaturesLagger</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul class="simple">
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../modules/simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code>: simulation toolbox</a><ul>
@@ -171,36 +168,35 @@ downward) mid-price moves and <span class="math">\(T_A\)</span> (resp. <span cla
 number of market  orders at the ask (resp. bid) that do not move the price.
 We observe expected  behavior with for example mid-price moving downward
 triggering (resp. preventing) market orders at the ask (resp. at the bid).</p>
-<img alt="../_images/plot_hawkes_finance_data_001.png" class="align-center" src="../_images/plot_hawkes_finance_data_001.png" />
-<p><strong>Python source code:</strong> <a class="reference download internal" href="../_downloads/plot_hawkes_finance_data.py" download=""><code class="xref download docutils literal"><span class="pre">plot_hawkes_finance_data.py</span></code></a></p>
+<p class="horizontal"><strong>Python source code:</strong> <a class="reference download internal" href="../_downloads/plot_hawkes_finance_data.py" download=""><code class="xref download docutils literal"><span class="pre">plot_hawkes_finance_data.py</span></code></a></p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">tick.dataset</span> <span class="k">import</span> <a href="../modules/generated/tick.dataset.fetch_hawkes_bund_data.html#tick.dataset.fetch_hawkes_bund_data"><span class="n">fetch_hawkes_bund_data</span></a>
-<span class="kn">from</span> <span class="nn">tick.inference</span> <span class="k">import</span> <a href="../modules/generated/tick.inference.HawkesConditionalLaw.html#tick.inference.HawkesConditionalLaw"><span class="n">HawkesConditionalLaw</span></a>
-<span class="kn">from</span> <span class="nn">tick.plot</span> <span class="k">import</span> <a href="../modules/generated/tick.plot.plot_hawkes_kernel_norms.html#tick.plot.plot_hawkes_kernel_norms"><span class="n">plot_hawkes_kernel_norms</span></a>
+<span class="kn">from</span> <span class="nn">tick.dataset</span> <span class="k">import</span> <span class="n">fetch_hawkes_bund_data</span>
+<span class="kn">from</span> <span class="nn">tick.inference</span> <span class="k">import</span> <span class="n">HawkesConditionalLaw</span>
+<span class="kn">from</span> <span class="nn">tick.plot</span> <span class="k">import</span> <span class="n">plot_hawkes_kernel_norms</span>
 
-<span class="n">timestamps_list</span> <span class="o">=</span> <a href="../modules/generated/tick.dataset.fetch_hawkes_bund_data.html#tick.dataset.fetch_hawkes_bund_data"><span class="n">fetch_hawkes_bund_data</span></a><span class="p">()</span>
+<span class="n">timestamps_list</span> <span class="o">=</span> <span class="n">fetch_hawkes_bund_data</span><span class="p">()</span>
 
 <span class="n">kernel_discretization</span> <span class="o">=</span> <a href="http://docs.scipy.org/doc/numpy-1.6.0/reference/generated/numpy.hstack.html#numpy.hstack"><span class="n">np</span><span class="o">.</span><span class="n">hstack</span></a><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">50</span><span class="p">)))</span>
-<span class="n">hawkes_learner</span> <span class="o">=</span> <a href="../modules/generated/tick.inference.HawkesConditionalLaw.html#tick.inference.HawkesConditionalLaw"><span class="n">HawkesConditionalLaw</span></a><span class="p">(</span>
+<span class="n">hawkes_learner</span> <span class="o">=</span> <span class="n">HawkesConditionalLaw</span><span class="p">(</span>
     <span class="n">claw_method</span><span class="o">=</span><span class="s2">&quot;log&quot;</span><span class="p">,</span> <span class="n">delta_lag</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">min_lag</span><span class="o">=</span><span class="mf">5e-4</span><span class="p">,</span> <span class="n">max_lag</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
     <span class="n">quad_method</span><span class="o">=</span><span class="s2">&quot;log&quot;</span><span class="p">,</span> <span class="n">n_quad</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">min_support</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">max_support</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
     <span class="n">n_threads</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
 
 <span class="n">hawkes_learner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">timestamps_list</span><span class="p">)</span>
 
-<a href="../modules/generated/tick.plot.plot_hawkes_kernel_norms.html#tick.plot.plot_hawkes_kernel_norms"><span class="n">plot_hawkes_kernel_norms</span></a><span class="p">(</span><span class="n">hawkes_learner</span><span class="p">,</span>
+<span class="n">plot_hawkes_kernel_norms</span><span class="p">(</span><span class="n">hawkes_learner</span><span class="p">,</span>
                          <span class="n">node_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;P_u&quot;</span><span class="p">,</span> <span class="s2">&quot;P_d&quot;</span><span class="p">,</span> <span class="s2">&quot;T_a&quot;</span><span class="p">,</span> <span class="s2">&quot;T_b&quot;</span><span class="p">])</span>
 </pre></div>
 </div>
-<p><strong>Total running time of the example:</strong>  5.58 seconds
-( 0 minutes  5.58 seconds)</p>
+<p><strong>Total running time of the example:</strong>  0.00 seconds
+( 0 minutes  0.00 seconds)</p>
 <dl class="docutils">
 <dt>Mentioned <em>tick</em> classes:</dt>
 <dd><ul class="first last simple">
-<li><a class="reference internal" href="../modules/generated/tick.dataset.fetch_hawkes_bund_data.html#tick.dataset.fetch_hawkes_bund_data" title="tick.dataset.fetch_hawkes_bund_data"><code class="xref py py-obj docutils literal"><span class="pre">tick.dataset.fetch_hawkes_bund_data</span></code></a></li>
-<li><a class="reference internal" href="../modules/generated/tick.inference.HawkesConditionalLaw.html#tick.inference.HawkesConditionalLaw" title="tick.inference.HawkesConditionalLaw"><code class="xref py py-obj docutils literal"><span class="pre">tick.inference.HawkesConditionalLaw</span></code></a></li>
-<li><a class="reference internal" href="../modules/generated/tick.plot.plot_hawkes_kernel_norms.html#tick.plot.plot_hawkes_kernel_norms" title="tick.plot.plot_hawkes_kernel_norms"><code class="xref py py-obj docutils literal"><span class="pre">tick.plot.plot_hawkes_kernel_norms</span></code></a></li>
+<li><code class="xref py py-obj docutils literal"><span class="pre">tick.dataset.fetch_hawkes_bund_data</span></code></li>
+<li><code class="xref py py-obj docutils literal"><span class="pre">tick.inference.HawkesConditionalLaw</span></code></li>
+<li><code class="xref py py-obj docutils literal"><span class="pre">tick.plot.plot_hawkes_kernel_norms</span></code></li>
 </ul>
 </dd>
 </dl>

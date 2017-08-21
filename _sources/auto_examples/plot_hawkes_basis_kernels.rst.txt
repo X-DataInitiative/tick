@@ -24,16 +24,6 @@ It could have been more precise if end_time or kernel_size was increased.
 .. rst-class:: horizontal
 
 
-    *
-
-      .. image:: images/plot_hawkes_basis_kernels_001.png
-            :scale: 47
-
-    *
-
-      .. image:: images/plot_hawkes_basis_kernels_002.png
-            :scale: 47
-
 
 
 
@@ -42,8 +32,8 @@ It could have been more precise if end_time or kernel_size was increased.
 .. literalinclude:: plot_hawkes_basis_kernels.py
     :lines: 18-
 
-**Total running time of the example:**  2.55 seconds
-( 0 minutes  2.55 seconds)
+**Total running time of the example:**  0.00 seconds
+( 0 minutes  0.00 seconds)
     
 Mentioned *tick* classes:
    * `tick.inference.HawkesBasisKernels`

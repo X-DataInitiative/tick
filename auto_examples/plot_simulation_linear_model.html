@@ -104,10 +104,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../modules/plot.html#others">Others</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../modules/preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../modules/generated/tick.preprocessing.FeaturesBinarizer.html">tick.preprocessing.FeaturesBinarizer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/generated/tick.preprocessing.LongitudinalFeaturesProduct.html">tick.preprocessing.LongitudinalFeaturesProduct</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/generated/tick.preprocessing.LongitudinalFeaturesLagger.html">tick.preprocessing.LongitudinalFeaturesLagger</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul class="simple">
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../modules/simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code>: simulation toolbox</a><ul>
@@ -161,37 +158,24 @@
 <span id="example-plot-simulation-linear-model-py"></span><h1>Linear models data simulation<a class="headerlink" href="#linear-models-data-simulation" title="Permalink to this headline">¶</a></h1>
 <p>Generates Linear, Logistic and Poisson regression realizations given a
 weight vector.</p>
-<img alt="../_images/plot_simulation_linear_model_001.png" class="align-center" src="../_images/plot_simulation_linear_model_001.png" />
-<p><strong>Script output</strong>:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">----------------------------------------</span>
-<span class="n">Launching</span> <span class="n">simulation</span> <span class="n">using</span> <a href="../modules/generated/tick.simulation.SimuLinReg.html#tick.simulation.SimuLinReg"><span class="n">SimuLinReg</span></a><span class="o">...</span>
-<span class="n">Done</span> <span class="n">simulating</span> <span class="n">using</span> <a href="../modules/generated/tick.simulation.SimuLinReg.html#tick.simulation.SimuLinReg"><span class="n">SimuLinReg</span></a> <span class="ow">in</span> <span class="mf">7.72e-04</span> <span class="n">seconds</span><span class="o">.</span>
-<span class="o">----------------------------------------</span>
-<span class="n">Launching</span> <span class="n">simulation</span> <span class="n">using</span> <a href="../modules/generated/tick.simulation.SimuLogReg.html#tick.simulation.SimuLogReg"><span class="n">SimuLogReg</span></a><span class="o">...</span>
-<span class="n">Done</span> <span class="n">simulating</span> <span class="n">using</span> <a href="../modules/generated/tick.simulation.SimuLogReg.html#tick.simulation.SimuLogReg"><span class="n">SimuLogReg</span></a> <span class="ow">in</span> <span class="mf">4.92e-04</span> <span class="n">seconds</span><span class="o">.</span>
-<span class="o">-----------------------------------------</span>
-<span class="n">Launching</span> <span class="n">simulation</span> <span class="n">using</span> <a href="../modules/generated/tick.simulation.SimuPoisReg.html#tick.simulation.SimuPoisReg"><span class="n">SimuPoisReg</span></a><span class="o">...</span>
-<span class="n">Done</span> <span class="n">simulating</span> <span class="n">using</span> <a href="../modules/generated/tick.simulation.SimuPoisReg.html#tick.simulation.SimuPoisReg"><span class="n">SimuPoisReg</span></a> <span class="ow">in</span> <span class="mf">3.77e-04</span> <span class="n">seconds</span><span class="o">.</span>
-</pre></div>
-</div>
-<p><strong>Python source code:</strong> <a class="reference download internal" href="../_downloads/plot_simulation_linear_model.py" download=""><code class="xref download docutils literal"><span class="pre">plot_simulation_linear_model.py</span></code></a></p>
+<p class="horizontal"><strong>Python source code:</strong> <a class="reference download internal" href="../_downloads/plot_simulation_linear_model.py" download=""><code class="xref download docutils literal"><span class="pre">plot_simulation_linear_model.py</span></code></a></p>
 <div class="highlight-default"><div class="highlight"><pre><span></span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">tick.simulation</span> <span class="k">import</span> <a href="../modules/generated/tick.simulation.SimuLinReg.html#tick.simulation.SimuLinReg"><span class="n">SimuLinReg</span></a><span class="p">,</span> <a href="../modules/generated/tick.simulation.SimuLogReg.html#tick.simulation.SimuLogReg"><span class="n">SimuLogReg</span></a><span class="p">,</span> <a href="../modules/generated/tick.simulation.SimuPoisReg.html#tick.simulation.SimuPoisReg"><span class="n">SimuPoisReg</span></a>
+<span class="kn">from</span> <span class="nn">tick.simulation</span> <span class="k">import</span> <span class="n">SimuLinReg</span><span class="p">,</span> <span class="n">SimuLogReg</span><span class="p">,</span> <span class="n">SimuPoisReg</span>
 
 <span class="n">n_samples</span><span class="p">,</span> <span class="n">n_features</span> <span class="o">=</span> <span class="mi">150</span><span class="p">,</span> <span class="mi">2</span>
 
 <span class="n">weights0</span> <span class="o">=</span> <a href="http://docs.scipy.org/doc/numpy-1.6.0/reference/generated/numpy.array.html#numpy.array"><span class="n">np</span><span class="o">.</span><span class="n">array</span></a><span class="p">([</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">])</span>
 <span class="n">intercept0</span> <span class="o">=</span> <span class="mf">0.5</span>
 
-<span class="n">simu_linreg</span> <span class="o">=</span> <a href="../modules/generated/tick.simulation.SimuLinReg.html#tick.simulation.SimuLinReg"><span class="n">SimuLinReg</span></a><span class="p">(</span><span class="n">weights0</span><span class="p">,</span> <span class="n">intercept0</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">123</span><span class="p">)</span>
+<span class="n">simu_linreg</span> <span class="o">=</span> <span class="n">SimuLinReg</span><span class="p">(</span><span class="n">weights0</span><span class="p">,</span> <span class="n">intercept0</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">123</span><span class="p">)</span>
 <span class="n">X_linreg</span><span class="p">,</span> <span class="n">y_linreg</span> <span class="o">=</span> <span class="n">simu_linreg</span><span class="o">.</span><span class="n">simulate</span><span class="p">()</span>
 
-<span class="n">simu_logreg</span> <span class="o">=</span> <a href="../modules/generated/tick.simulation.SimuLogReg.html#tick.simulation.SimuLogReg"><span class="n">SimuLogReg</span></a><span class="p">(</span><span class="n">weights0</span><span class="p">,</span> <span class="n">intercept0</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">123</span><span class="p">)</span>
+<span class="n">simu_logreg</span> <span class="o">=</span> <span class="n">SimuLogReg</span><span class="p">(</span><span class="n">weights0</span><span class="p">,</span> <span class="n">intercept0</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">123</span><span class="p">)</span>
 <span class="n">X_logreg</span><span class="p">,</span> <span class="n">y_logreg</span> <span class="o">=</span> <span class="n">simu_logreg</span><span class="o">.</span><span class="n">simulate</span><span class="p">()</span>
 
-<span class="n">simu_poisreg</span> <span class="o">=</span> <a href="../modules/generated/tick.simulation.SimuPoisReg.html#tick.simulation.SimuPoisReg"><span class="n">SimuPoisReg</span></a><span class="p">(</span><span class="n">weights0</span><span class="p">,</span> <span class="n">intercept0</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span>
+<span class="n">simu_poisreg</span> <span class="o">=</span> <span class="n">SimuPoisReg</span><span class="p">(</span><span class="n">weights0</span><span class="p">,</span> <span class="n">intercept0</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span>
                            <span class="n">link</span><span class="o">=</span><span class="s1">&#39;exponential&#39;</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">123</span><span class="p">)</span>
 <span class="n">X_poisreg</span><span class="p">,</span> <span class="n">y_poisreg</span> <span class="o">=</span> <span class="n">simu_poisreg</span><span class="o">.</span><span class="n">simulate</span><span class="p">()</span>
 
@@ -217,14 +201,14 @@ weight vector.</p>
 <a href="http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.show"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
 </pre></div>
 </div>
-<p><strong>Total running time of the example:</strong>  0.41 seconds
-( 0 minutes  0.41 seconds)</p>
+<p><strong>Total running time of the example:</strong>  0.00 seconds
+( 0 minutes  0.00 seconds)</p>
 <dl class="docutils">
 <dt>Mentioned <em>tick</em> classes:</dt>
 <dd><ul class="first last simple">
-<li><a class="reference internal" href="../modules/generated/tick.simulation.SimuLinReg.html#tick.simulation.SimuLinReg" title="tick.simulation.SimuLinReg"><code class="xref py py-obj docutils literal"><span class="pre">tick.simulation.SimuLinReg</span></code></a></li>
-<li><a class="reference internal" href="../modules/generated/tick.simulation.SimuLogReg.html#tick.simulation.SimuLogReg" title="tick.simulation.SimuLogReg"><code class="xref py py-obj docutils literal"><span class="pre">tick.simulation.SimuLogReg</span></code></a></li>
-<li><a class="reference internal" href="../modules/generated/tick.simulation.SimuPoisReg.html#tick.simulation.SimuPoisReg" title="tick.simulation.SimuPoisReg"><code class="xref py py-obj docutils literal"><span class="pre">tick.simulation.SimuPoisReg</span></code></a></li>
+<li><code class="xref py py-obj docutils literal"><span class="pre">tick.simulation.SimuLinReg</span></code></li>
+<li><code class="xref py py-obj docutils literal"><span class="pre">tick.simulation.SimuLogReg</span></code></li>
+<li><code class="xref py py-obj docutils literal"><span class="pre">tick.simulation.SimuPoisReg</span></code></li>
 </ul>
 </dd>
 </dl>

@@ -43,8 +43,6 @@
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="tick.dataset.fetch_tick_dataset" href="generated/tick.dataset.fetch_tick_dataset.html" />
-    <link rel="prev" title="tick.simulation.SimuHawkesSumExpKernels" href="generated/tick.simulation.SimuHawkesSumExpKernels.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -106,10 +104,7 @@
 <li class="toctree-l2"><a class="reference internal" href="plot.html#others">Others</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="generated/tick.preprocessing.FeaturesBinarizer.html">tick.preprocessing.FeaturesBinarizer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="generated/tick.preprocessing.LongitudinalFeaturesProduct.html">tick.preprocessing.LongitudinalFeaturesProduct</a></li>
-<li class="toctree-l2"><a class="reference internal" href="generated/tick.preprocessing.LongitudinalFeaturesLagger.html">tick.preprocessing.LongitudinalFeaturesLagger</a></li>
+<li class="toctree-l1"><a class="reference internal" href="preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul class="simple">
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code>: simulation toolbox</a><ul>
@@ -167,33 +162,74 @@
 <a class="reference external" href="https://github.com/X-DataInitiative/tick-datasets">https://github.com/X-DataInitiative/tick-datasets</a> .</p>
 <p>These datasets might be every easily downloaded and cached using the
 following utility function.</p>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/dataset.rst</tt>, line 19)</p>
+failed to import dataset.fetch_tick_dataset</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/dataset.rst</tt>, line 19)</p>
+toctree references unknown document ‘modules/generated/dataset.fetch_tick_dataset’</div>
 <table border="1" class="longtable docutils">
 <colgroup>
 <col width="10%" />
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.dataset.fetch_tick_dataset.html#tick.dataset.fetch_tick_dataset" title="tick.dataset.fetch_tick_dataset"><code class="xref py py-obj docutils literal"><span class="pre">dataset.fetch_tick_dataset</span></code></a>(dataset_path[,&nbsp;…])</td>
-<td>Fetch dataset from tick_datasets github repository.</td>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">dataset.fetch_tick_dataset</span></code></td>
+<td></td>
 </tr>
 </tbody>
 </table>
 <p>Some datasets might also have a dedicated function handler if they need a
 dedicated treatment.</p>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/dataset.rst</tt>, line 30)</p>
+failed to import dataset.fetch_hawkes_bund_data</div>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/dataset.rst</tt>, line 30)</p>
+toctree references unknown document ‘modules/generated/dataset.fetch_hawkes_bund_data’</div>
 <table border="1" class="longtable docutils">
 <colgroup>
 <col width="10%" />
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.dataset.fetch_hawkes_bund_data.html#tick.dataset.fetch_hawkes_bund_data" title="tick.dataset.fetch_hawkes_bund_data"><code class="xref py py-obj docutils literal"><span class="pre">dataset.fetch_hawkes_bund_data</span></code></a>()</td>
-<td>Load Hawkes formatted bund data from</td>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">dataset.fetch_hawkes_bund_data</span></code></td>
+<td></td>
 </tr>
 </tbody>
 </table>
 </div>
 <div class="section" id="example">
 <h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/dataset.rst</tt>, line 39)</p>
+Exception occurred in plotting plot_logistic_adult
+ from /Users/martin/Projects/tick_ghpages/tick/DOC/../examples/plot_logistic_adult.py:
+Traceback (most recent call last):
+  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/build/array.py”, line 18, in swig_import_helper
+    fp, pathname, description = imp.find_module(‘_array’, [dirname(__file__)])
+  File “/opt/local/Library/Frameworks/Python.framework/Versions/3.4/lib/python3.4/imp.py”, line 297, in find_module
+    raise ImportError(_ERR_MSG.format(name), name=name)
+ImportError: No module named ‘_array’
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File “/opt/local/Library/Frameworks/Python.framework/Versions/3.4/lib/python3.4/site-packages/matplotlib/sphinxext/plot_directive.py”, line 520, in run_code
+    six.exec_(code, ns)
+  File “&lt;string&gt;”, line 13, in &lt;module&gt;
+  File “/Users/martin/Projects/tick_ghpages/tick/tick/__init__.py”, line 3, in &lt;module&gt;
+    import tick.base
+  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/__init__.py”, line 21, in &lt;module&gt;
+    from .array import *
+  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/__init__.py”, line 3, in &lt;module&gt;
+    from .build import array
+  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/build/array.py”, line 28, in &lt;module&gt;
+    _array = swig_import_helper()
+  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/build/array.py”, line 20, in swig_import_helper
+    import _array
+ImportError: No module named ‘_array’
+</div>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">==============================================</span>
 <span class="sd">Binary classification with logistic regression</span>
@@ -227,10 +263,7 @@ dedicated treatment.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>(<a class="reference external" href="../../examples/plot_logistic_adult.py">Source code</a>, <a class="reference external" href="../../examples/plot_logistic_adult.png">png</a>, <a class="reference external" href="../../examples/plot_logistic_adult.hires.png">hires.png</a>, <a class="reference external" href="../../examples/plot_logistic_adult.pdf">pdf</a>)</p>
-<div class="figure">
-<img alt="../_images/plot_logistic_adult1.png" src="../_images/plot_logistic_adult1.png" />
-</div>
+<p>(<a class="reference external" href="../../examples/plot_logistic_adult.py">Source code</a>)</p>
 </div>
 </div>
 

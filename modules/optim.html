@@ -44,7 +44,6 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="tick.plot: plotting utilities" href="plot.html" />
-    <link rel="prev" title="tick.inference.CoxRegression" href="generated/tick.inference.CoxRegression.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -106,10 +105,7 @@
 <li class="toctree-l2"><a class="reference internal" href="plot.html#others">Others</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="generated/tick.preprocessing.FeaturesBinarizer.html">tick.preprocessing.FeaturesBinarizer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="generated/tick.preprocessing.LongitudinalFeaturesProduct.html">tick.preprocessing.LongitudinalFeaturesProduct</a></li>
-<li class="toctree-l2"><a class="reference internal" href="generated/tick.preprocessing.LongitudinalFeaturesLagger.html">tick.preprocessing.LongitudinalFeaturesLagger</a></li>
+<li class="toctree-l1"><a class="reference internal" href="preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul class="simple">
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code>: simulation toolbox</a><ul>
@@ -186,15 +182,15 @@ This optimization module is therefore organized in the following three main subm
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td><a class="reference internal" href="api.html#module-tick.optim.model" title="tick.optim.model"><code class="xref py py-mod docutils literal"><span class="pre">tick.optim.model</span></code></a></td>
+<tr class="row-even"><td><code class="xref py py-mod docutils literal"><span class="pre">tick.optim.model</span></code></td>
 <td><a class="reference internal" href="#optim-model"><span class="std std-ref">Model classes</span></a></td>
 <td>Gives information about <span class="math">\(f\)</span>: value, gradient, hessian</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="api.html#module-tick.optim.prox" title="tick.optim.prox"><code class="xref py py-mod docutils literal"><span class="pre">tick.optim.prox</span></code></a></td>
+<tr class="row-odd"><td><code class="xref py py-mod docutils literal"><span class="pre">tick.optim.prox</span></code></td>
 <td><a class="reference internal" href="#optim-prox"><span class="std std-ref">Prox classes</span></a></td>
 <td>Gives information about <span class="math">\(g\)</span>: value and proximal operator</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="api.html#module-tick.optim.solver" title="tick.optim.solver"><code class="xref py py-mod docutils literal"><span class="pre">tick.optim.solver</span></code></a></td>
+<tr class="row-even"><td><code class="xref py py-mod docutils literal"><span class="pre">tick.optim.solver</span></code></td>
 <td><a class="reference internal" href="#optim-solver"><span class="std std-ref">Solver classes</span></a></td>
 <td>Given a model and a prox, minimizes <span class="math">\(f + g\)</span></td>
 </tr>
@@ -208,6 +204,35 @@ compare the training time of several solvers for logistic regression with the
 elastic-net penalization.
 Note that, we specify a <code class="docutils literal"><span class="pre">range=(0,</span> <span class="pre">n_features)</span></code> so that the intercept is not penalized
 (see <a class="reference internal" href="#optim-prox"><span class="std std-ref">Prox classes</span></a> below for more details).</p>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/optim.rst</tt>, line 44)</p>
+Exception occurred in plotting plot_optim_comparison
+ from /Users/martin/Projects/tick_ghpages/tick/DOC/modules/code_samples/optim/plot_optim_comparison.py:
+Traceback (most recent call last):
+  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/build/array.py”, line 18, in swig_import_helper
+    fp, pathname, description = imp.find_module(‘_array’, [dirname(__file__)])
+  File “/opt/local/Library/Frameworks/Python.framework/Versions/3.4/lib/python3.4/imp.py”, line 297, in find_module
+    raise ImportError(_ERR_MSG.format(name), name=name)
+ImportError: No module named ‘_array’
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File “/opt/local/Library/Frameworks/Python.framework/Versions/3.4/lib/python3.4/site-packages/matplotlib/sphinxext/plot_directive.py”, line 520, in run_code
+    six.exec_(code, ns)
+  File “&lt;string&gt;”, line 2, in &lt;module&gt;
+  File “/Users/martin/Projects/tick_ghpages/tick/tick/__init__.py”, line 3, in &lt;module&gt;
+    import tick.base
+  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/__init__.py”, line 21, in &lt;module&gt;
+    from .array import *
+  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/__init__.py”, line 3, in &lt;module&gt;
+    from .build import array
+  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/build/array.py”, line 28, in &lt;module&gt;
+    _array = swig_import_helper()
+  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/build/array.py”, line 20, in swig_import_helper
+    import _array
+ImportError: No module named ‘_array’
+</div>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">tick.simulation</span> <span class="kn">import</span> <span class="n">SimuLogReg</span><span class="p">,</span> <span class="n">weights_sparse_gauss</span>
 <span class="kn">from</span> <span class="nn">tick.optim.solver</span> <span class="kn">import</span> <span class="n">GD</span><span class="p">,</span> <span class="n">AGD</span><span class="p">,</span> <span class="n">SGD</span><span class="p">,</span> <span class="n">SVRG</span><span class="p">,</span> <span class="n">SDCA</span>
@@ -242,13 +267,10 @@ Note that, we specify a <code class="docutils literal"><span class="pre">range=(
 <span class="n">plot_history</span><span class="p">([</span><span class="n">gd</span><span class="p">,</span> <span class="n">agd</span><span class="p">,</span> <span class="n">sgd</span><span class="p">,</span> <span class="n">svrg</span><span class="p">],</span> <span class="n">log_scale</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">dist_min</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>(<a class="reference external" href="../modules/code_samples/optim/plot_optim_comparison.py">Source code</a>, <a class="reference external" href="../modules/code_samples/optim/plot_optim_comparison.png">png</a>, <a class="reference external" href="../modules/code_samples/optim/plot_optim_comparison.hires.png">hires.png</a>, <a class="reference external" href="../modules/code_samples/optim/plot_optim_comparison.pdf">pdf</a>)</p>
-<div class="figure">
-<img alt="../_images/plot_optim_comparison1.png" src="../_images/plot_optim_comparison1.png" />
-</div>
+<p>(<a class="reference external" href="../modules/code_samples/optim/plot_optim_comparison.py">Source code</a>)</p>
 </div>
 <div class="section" id="tick-optim-model-model-classes">
-<span id="optim-model"></span><h2>1. <a class="reference internal" href="api.html#module-tick.optim.model" title="tick.optim.model"><code class="xref py py-mod docutils literal"><span class="pre">tick.optim.model</span></code></a>: model classes<a class="headerlink" href="#tick-optim-model-model-classes" title="Permalink to this headline">¶</a></h2>
+<span id="optim-model"></span><h2>1. <code class="xref py py-mod docutils literal"><span class="pre">tick.optim.model</span></code>: model classes<a class="headerlink" href="#tick-optim-model-model-classes" title="Permalink to this headline">¶</a></h2>
 <p>In <code class="docutils literal"><span class="pre">tick</span></code> a <code class="docutils literal"><span class="pre">model</span></code> class gives information about a statistical model.
 Depending on the case, it gives first order information (loss, gradient) or
 second order information (hessian norm evaluation).</p>
@@ -321,10 +343,36 @@ The gradient of the model can be computed using the <code class="docutils litera
 </pre></div>
 </div>
 <p>which plots</p>
-<p>(<a class="reference external" href="../modules/code_samples/optim/plot_grad_coeff0.py">Source code</a>, <a class="reference external" href="../modules/code_samples/optim/plot_grad_coeff0.png">png</a>, <a class="reference external" href="../modules/code_samples/optim/plot_grad_coeff0.hires.png">hires.png</a>, <a class="reference external" href="../modules/code_samples/optim/plot_grad_coeff0.pdf">pdf</a>)</p>
-<div class="figure">
-<img alt="../_images/plot_grad_coeff01.png" src="../_images/plot_grad_coeff01.png" />
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/optim.rst</tt>, line 156)</p>
+Exception occurred in plotting plot_grad_coeff0
+ from /Users/martin/Projects/tick_ghpages/tick/DOC/modules/code_samples/optim/plot_grad_coeff0.py:
+Traceback (most recent call last):
+  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/build/array.py”, line 18, in swig_import_helper
+    fp, pathname, description = imp.find_module(‘_array’, [dirname(__file__)])
+  File “/opt/local/Library/Frameworks/Python.framework/Versions/3.4/lib/python3.4/imp.py”, line 297, in find_module
+    raise ImportError(_ERR_MSG.format(name), name=name)
+ImportError: No module named ‘_array’
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File “/opt/local/Library/Frameworks/Python.framework/Versions/3.4/lib/python3.4/site-packages/matplotlib/sphinxext/plot_directive.py”, line 520, in run_code
+    six.exec_(code, ns)
+  File “&lt;string&gt;”, line 4, in &lt;module&gt;
+  File “/Users/martin/Projects/tick_ghpages/tick/tick/__init__.py”, line 3, in &lt;module&gt;
+    import tick.base
+  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/__init__.py”, line 21, in &lt;module&gt;
+    from .array import *
+  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/__init__.py”, line 3, in &lt;module&gt;
+    from .build import array
+  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/build/array.py”, line 28, in &lt;module&gt;
+    _array = swig_import_helper()
+  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/build/array.py”, line 20, in swig_import_helper
+    import _array
+ImportError: No module named ‘_array’
 </div>
+<p>(<a class="reference external" href="../modules/code_samples/optim/plot_grad_coeff0.py">Source code</a>)</p>
 <p>We observe that the gradient near the optimum is much smaller than far from it.</p>
 <p>Model classes can be used with any solver class, by simply passing them using the
 solver’s <code class="docutils literal"><span class="pre">set_model</span></code> method, see the <a class="reference internal" href="#optim-first-example"><span class="std std-ref">example given above</span></a>.</p>
@@ -357,19 +405,19 @@ different losses implemented for now in tick and its associated class.</p>
 <tbody valign="top">
 <tr class="row-even"><td>Linear regression</td>
 <td><span class="math">\(\ell(y, y') = \frac 12 (y - y')^2\)</span></td>
-<td><a class="reference internal" href="generated/tick.optim.model.ModelLinReg.html#tick.optim.model.ModelLinReg" title="tick.optim.model.ModelLinReg"><code class="xref py py-class docutils literal"><span class="pre">ModelLinReg</span></code></a></td>
+<td><code class="xref py py-class docutils literal"><span class="pre">ModelLinReg</span></code></td>
 </tr>
 <tr class="row-odd"><td>Logistic regression</td>
 <td><span class="math">\(\ell(y, y') = \log(1 + \exp(-y y'))\)</span></td>
-<td><a class="reference internal" href="generated/tick.optim.model.ModelLogReg.html#tick.optim.model.ModelLogReg" title="tick.optim.model.ModelLogReg"><code class="xref py py-class docutils literal"><span class="pre">ModelLogReg</span></code></a></td>
+<td><code class="xref py py-class docutils literal"><span class="pre">ModelLogReg</span></code></td>
 </tr>
 <tr class="row-even"><td>Poisson regression with exponential link</td>
 <td><span class="math">\(\ell(y, y') = y' - y \log(y')\)</span></td>
-<td><a class="reference internal" href="generated/tick.optim.model.ModelPoisReg.html#tick.optim.model.ModelPoisReg" title="tick.optim.model.ModelPoisReg"><code class="xref py py-class docutils literal"><span class="pre">ModelPoisReg</span></code></a> with <code class="docutils literal"><span class="pre">link=&quot;exponential&quot;</span></code></td>
+<td><code class="xref py py-class docutils literal"><span class="pre">ModelPoisReg</span></code> with <code class="docutils literal"><span class="pre">link=&quot;exponential&quot;</span></code></td>
 </tr>
 <tr class="row-odd"><td>Poisson regression with identity link</td>
 <td><span class="math">\(\ell(y, y') = e^{y'} - y y'\)</span></td>
-<td><a class="reference internal" href="generated/tick.optim.model.ModelPoisReg.html#tick.optim.model.ModelPoisReg" title="tick.optim.model.ModelPoisReg"><code class="xref py py-class docutils literal"><span class="pre">ModelPoisReg</span></code></a> with <code class="docutils literal"><span class="pre">link=&quot;identity&quot;</span></code></td>
+<td><code class="xref py py-class docutils literal"><span class="pre">ModelPoisReg</span></code> with <code class="docutils literal"><span class="pre">link=&quot;identity&quot;</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -402,7 +450,7 @@ using this model.</p>
 <tbody valign="top">
 <tr class="row-even"><td>Linear regression with intercepts</td>
 <td><span class="math">\(\ell(y, y') = \frac 12 (y - y')^2\)</span></td>
-<td><a class="reference internal" href="generated/tick.optim.model.ModelLinRegWithIntercepts.html#tick.optim.model.ModelLinRegWithIntercepts" title="tick.optim.model.ModelLinRegWithIntercepts"><code class="xref py py-class docutils literal"><span class="pre">ModelLinRegWithIntercepts</span></code></a></td>
+<td><code class="xref py py-class docutils literal"><span class="pre">ModelLinRegWithIntercepts</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -433,10 +481,10 @@ using this model.</p>
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>Cox regression partial likelihood</td>
-<td><a class="reference internal" href="generated/tick.optim.model.ModelCoxRegPartialLik.html#tick.optim.model.ModelCoxRegPartialLik" title="tick.optim.model.ModelCoxRegPartialLik"><code class="xref py py-class docutils literal"><span class="pre">ModelCoxRegPartialLik</span></code></a></td>
+<td><code class="xref py py-class docutils literal"><span class="pre">ModelCoxRegPartialLik</span></code></td>
 </tr>
 <tr class="row-odd"><td>Self Control Case Series</td>
-<td><a class="reference internal" href="generated/tick.optim.model.ModelSCCS.html#tick.optim.model.ModelSCCS" title="tick.optim.model.ModelSCCS"><code class="xref py py-class docutils literal"><span class="pre">ModelSCCS</span></code></a></td>
+<td><code class="xref py py-class docutils literal"><span class="pre">ModelSCCS</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -472,20 +520,20 @@ function used (least squares or log-likelihood).</p>
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>Least-squares for Hawkes model with exponential kernels</td>
-<td><a class="reference internal" href="generated/tick.optim.model.ModelHawkesFixedExpKernLeastSq.html#tick.optim.model.ModelHawkesFixedExpKernLeastSq" title="tick.optim.model.ModelHawkesFixedExpKernLeastSq"><code class="xref py py-class docutils literal"><span class="pre">ModelHawkesFixedExpKernLeastSq</span></code></a></td>
+<td><code class="xref py py-class docutils literal"><span class="pre">ModelHawkesFixedExpKernLeastSq</span></code></td>
 </tr>
 <tr class="row-odd"><td>Log-likelihood for Hawkes model with exponential kernels</td>
-<td><a class="reference internal" href="generated/tick.optim.model.ModelHawkesFixedExpKernLogLik.html#tick.optim.model.ModelHawkesFixedExpKernLogLik" title="tick.optim.model.ModelHawkesFixedExpKernLogLik"><code class="xref py py-class docutils literal"><span class="pre">ModelHawkesFixedExpKernLogLik</span></code></a></td>
+<td><code class="xref py py-class docutils literal"><span class="pre">ModelHawkesFixedExpKernLogLik</span></code></td>
 </tr>
 <tr class="row-even"><td>Least-squares for Hawkes model with sum of exponential kernels</td>
-<td><a class="reference internal" href="generated/tick.optim.model.ModelHawkesFixedSumExpKernLeastSq.html#tick.optim.model.ModelHawkesFixedSumExpKernLeastSq" title="tick.optim.model.ModelHawkesFixedSumExpKernLeastSq"><code class="xref py py-class docutils literal"><span class="pre">ModelHawkesFixedSumExpKernLeastSq</span></code></a></td>
+<td><code class="xref py py-class docutils literal"><span class="pre">ModelHawkesFixedSumExpKernLeastSq</span></code></td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
 <div class="section" id="tick-optim-prox-proximal-operators">
-<span id="optim-prox"></span><h2>2. <a class="reference internal" href="api.html#module-tick.optim.prox" title="tick.optim.prox"><code class="xref py py-mod docutils literal"><span class="pre">tick.optim.prox</span></code></a>: proximal operators<a class="headerlink" href="#tick-optim-prox-proximal-operators" title="Permalink to this headline">¶</a></h2>
+<span id="optim-prox"></span><h2>2. <code class="xref py py-mod docutils literal"><span class="pre">tick.optim.prox</span></code>: proximal operators<a class="headerlink" href="#tick-optim-prox-proximal-operators" title="Permalink to this headline">¶</a></h2>
 <p>This module provides several proximal operators for the regularization of the weights
 of a model. The proximal operator of a convex function <span class="math">\(g\)</span>
 at some point <span class="math">\(w\)</span> is defined as the unique minimizer of the problem</p>
@@ -504,7 +552,7 @@ Indeed, in all <code class="docutils literal"><span class="pre">prox</span></cod
 the regularization only to a subset of entries of <span class="math">\(w\)</span>.</p>
 <div class="section" id="the-prox-class-api">
 <h3>2.1 The <code class="docutils literal"><span class="pre">prox</span></code> class API<a class="headerlink" href="#the-prox-class-api" title="Permalink to this headline">¶</a></h3>
-<p>Let us describe the <code class="docutils literal"><span class="pre">prox</span></code> API with the <a class="reference internal" href="generated/tick.optim.prox.ProxL1.html#tick.optim.prox.ProxL1" title="tick.optim.prox.ProxL1"><code class="xref py py-class docutils literal"><span class="pre">ProxL1</span></code></a>
+<p>Let us describe the <code class="docutils literal"><span class="pre">prox</span></code> API with the <code class="xref py py-class docutils literal"><span class="pre">ProxL1</span></code>
 class, that provides the proximal operator of the function <span class="math">\(g(w) = s \|w\|_1 = s \sum_{j=1}^d |w_j|\)</span>.</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">tick.optim.prox</span> <span class="k">import</span> <span class="n">ProxL1</span>
@@ -548,6 +596,35 @@ the <code class="docutils literal"><span class="pre">strength</span></code> para
 where <span class="math">\(t\)</span> is a parameter passed using the <code class="docutils literal"><span class="pre">step</span></code> argument.
 The output of <code class="docutils literal"><span class="pre">call</span></code> can optionally be passed using the <code class="docutils literal"><span class="pre">out</span></code> argument (this avoid unnecessary copies, and
 thus extra memory allocation).</p>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/optim.rst</tt>, line 361)</p>
+Exception occurred in plotting plot_prox_api
+ from /Users/martin/Projects/tick_ghpages/tick/DOC/modules/code_samples/optim/plot_prox_api.py:
+Traceback (most recent call last):
+  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/build/array.py”, line 18, in swig_import_helper
+    fp, pathname, description = imp.find_module(‘_array’, [dirname(__file__)])
+  File “/opt/local/Library/Frameworks/Python.framework/Versions/3.4/lib/python3.4/imp.py”, line 297, in find_module
+    raise ImportError(_ERR_MSG.format(name), name=name)
+ImportError: No module named ‘_array’
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File “/opt/local/Library/Frameworks/Python.framework/Versions/3.4/lib/python3.4/site-packages/matplotlib/sphinxext/plot_directive.py”, line 520, in run_code
+    six.exec_(code, ns)
+  File “&lt;string&gt;”, line 3, in &lt;module&gt;
+  File “/Users/martin/Projects/tick_ghpages/tick/tick/__init__.py”, line 3, in &lt;module&gt;
+    import tick.base
+  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/__init__.py”, line 21, in &lt;module&gt;
+    from .array import *
+  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/__init__.py”, line 3, in &lt;module&gt;
+    from .build import array
+  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/build/array.py”, line 28, in &lt;module&gt;
+    _array = swig_import_helper()
+  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/build/array.py”, line 20, in swig_import_helper
+    import _array
+ImportError: No module named ‘_array’
+</div>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
 <span class="kn">from</span> <span class="nn">tick.optim.prox</span> <span class="kn">import</span> <span class="n">ProxL1</span>
@@ -583,10 +660,7 @@ thus extra memory allocation).</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>(<a class="reference external" href="../modules/code_samples/optim/plot_prox_api.py">Source code</a>, <a class="reference external" href="../modules/code_samples/optim/plot_prox_api.png">png</a>, <a class="reference external" href="../modules/code_samples/optim/plot_prox_api.hires.png">hires.png</a>, <a class="reference external" href="../modules/code_samples/optim/plot_prox_api.pdf">pdf</a>)</p>
-<div class="figure">
-<img alt="../_images/plot_prox_api1.png" src="../_images/plot_prox_api1.png" />
-</div>
+<p>(<a class="reference external" href="../modules/code_samples/optim/plot_prox_api.py">Source code</a>)</p>
 <p>The value of <span class="math">\(g\)</span> is simply obtained using the <code class="docutils literal"><span class="pre">value</span></code> method</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">prox</span> <span class="o">=</span> <span class="n">ProxL1</span><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
 <span class="n">val</span> <span class="o">=</span> <span class="n">prox</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">double</span><span class="p">))</span>
@@ -617,11 +691,11 @@ thus extra memory allocation).</p>
 <tbody valign="top">
 <tr class="row-even"><td>Identity</td>
 <td><span class="math">\(g(w) = 0\)</span></td>
-<td><a class="reference internal" href="generated/tick.optim.prox.ProxZero.html#tick.optim.prox.ProxZero" title="tick.optim.prox.ProxZero"><code class="xref py py-class docutils literal"><span class="pre">ProxZero</span></code></a></td>
+<td><code class="xref py py-class docutils literal"><span class="pre">ProxZero</span></code></td>
 </tr>
 <tr class="row-odd"><td>Non-negative constraint</td>
 <td><span class="math">\(g(w) = s \delta_C(w)\)</span> where <span class="math">\(C=\)</span> set of vectors with non-negative entries</td>
-<td><a class="reference internal" href="generated/tick.optim.prox.ProxPositive.html#tick.optim.prox.ProxPositive" title="tick.optim.prox.ProxPositive"><code class="xref py py-class docutils literal"><span class="pre">ProxPositive</span></code></a></td>
+<td><code class="xref py py-class docutils literal"><span class="pre">ProxPositive</span></code></td>
 </tr>
 <tr class="row-even"><td>Equality constraint</td>
 <td><span class="math">\(g(w) = s \delta_C(w)\)</span> where <span class="math">\(C=\)</span> set of vectors with identical entries</td>
@@ -629,43 +703,80 @@ thus extra memory allocation).</p>
 </tr>
 <tr class="row-odd"><td>L1 norm</td>
 <td><span class="math">\(g(w) = s \sum_{j=1}^d |w_j|\)</span></td>
-<td><a class="reference internal" href="generated/tick.optim.prox.ProxL1.html#tick.optim.prox.ProxL1" title="tick.optim.prox.ProxL1"><code class="xref py py-class docutils literal"><span class="pre">ProxL1</span></code></a></td>
+<td><code class="xref py py-class docutils literal"><span class="pre">ProxL1</span></code></td>
 </tr>
 <tr class="row-even"><td>L1 norm with weights</td>
 <td><span class="math">\(g(w) = s \sum_{j=1}^d c_j |w_j|\)</span></td>
-<td><a class="reference internal" href="generated/tick.optim.prox.ProxL1w.html#tick.optim.prox.ProxL1w" title="tick.optim.prox.ProxL1w"><code class="xref py py-class docutils literal"><span class="pre">ProxL1w</span></code></a></td>
+<td><code class="xref py py-class docutils literal"><span class="pre">ProxL1w</span></code></td>
 </tr>
 <tr class="row-odd"><td>Ridge</td>
 <td><span class="math">\(g(w) = s \sum_{j=1}^d \frac{w_j^2}{2}\)</span></td>
-<td><a class="reference internal" href="generated/tick.optim.prox.ProxL2Sq.html#tick.optim.prox.ProxL2Sq" title="tick.optim.prox.ProxL2Sq"><code class="xref py py-class docutils literal"><span class="pre">ProxL2Sq</span></code></a></td>
+<td><code class="xref py py-class docutils literal"><span class="pre">ProxL2Sq</span></code></td>
 </tr>
-<tr class="row-even"><td>Elastic-net</td>
+<tr class="row-even"><td>L2 norm</td>
+<td><span class="math">\(g(w) = s \sqrt{d \sum_{j=1}^d w_j^2}\)</span></td>
+<td><code class="xref py py-class docutils literal"><span class="pre">ProxL2</span></code></td>
+</tr>
+<tr class="row-odd"><td>Elastic-net</td>
 <td><span class="math">\(g(w) = s \Big(\sum_{j=1}^{d} \alpha |w_j| + (1 - \alpha) \frac{w_j^2}{2} \Big)\)</span></td>
-<td><a class="reference internal" href="generated/tick.optim.prox.ProxElasticNet.html#tick.optim.prox.ProxElasticNet" title="tick.optim.prox.ProxElasticNet"><code class="xref py py-class docutils literal"><span class="pre">ProxElasticNet</span></code></a></td>
+<td><code class="xref py py-class docutils literal"><span class="pre">ProxElasticNet</span></code></td>
 </tr>
-<tr class="row-odd"><td>Total-variation</td>
+<tr class="row-even"><td>Total-variation</td>
 <td><span class="math">\(g(w) = s \sum_{j=2}^d |w_j - w_{j-1}|\)</span></td>
-<td><a class="reference internal" href="generated/tick.optim.prox.ProxTV.html#tick.optim.prox.ProxTV" title="tick.optim.prox.ProxTV"><code class="xref py py-class docutils literal"><span class="pre">ProxTV</span></code></a></td>
+<td><code class="xref py py-class docutils literal"><span class="pre">ProxTV</span></code></td>
 </tr>
-<tr class="row-even"><td>Nuclear norm</td>
+<tr class="row-odd"><td>Nuclear norm</td>
 <td><span class="math">\(g(w) = s \sum_{j=1}^{q} \sigma_j(w)\)</span></td>
-<td><a class="reference internal" href="generated/tick.optim.prox.ProxNuclear.html#tick.optim.prox.ProxNuclear" title="tick.optim.prox.ProxNuclear"><code class="xref py py-class docutils literal"><span class="pre">ProxNuclear</span></code></a></td>
+<td><code class="xref py py-class docutils literal"><span class="pre">ProxNuclear</span></code></td>
 </tr>
-<tr class="row-odd"><td>Sorted L1</td>
+<tr class="row-even"><td>Sorted L1</td>
 <td><span class="math">\(g(w) = s \sum_{j=1}^{d} c_j |w_{(j)}|\)</span> where <span class="math">\(|w_{(j)}|\)</span> is decreasing</td>
-<td><a class="reference internal" href="generated/tick.optim.prox.ProxSlope.html#tick.optim.prox.ProxSlope" title="tick.optim.prox.ProxSlope"><code class="xref py py-class docutils literal"><span class="pre">ProxSlope</span></code></a></td>
+<td><code class="xref py py-class docutils literal"><span class="pre">ProxSlope</span></code></td>
 </tr>
-<tr class="row-even"><td>Binarsity</td>
+<tr class="row-odd"><td>Binarsity</td>
 <td><span class="math">\(g(w) = s \sum_{j=1}^d \big( \sum_{k=2}^{d_j} |w_{j,k} - w_{j,k-1} | + \delta_C(w_{j,\bullet}) \big)\)</span></td>
-<td><a class="reference internal" href="generated/tick.optim.prox.ProxBinarsity.html#tick.optim.prox.ProxBinarsity" title="tick.optim.prox.ProxBinarsity"><code class="xref py py-class docutils literal"><span class="pre">ProxBinarsity</span></code></a></td>
+<td><code class="xref py py-class docutils literal"><span class="pre">ProxBinarsity</span></code></td>
+</tr>
+<tr class="row-even"><td>Group L1</td>
+<td><span class="math">\(g(w) = s \sum_{j=1}^d \sqrt{d_j} \| w^{(j)}\|_2\)</span></td>
+<td><code class="xref py py-class docutils literal"><span class="pre">ProxGroupL1</span></code></td>
 </tr>
 </tbody>
 </table>
-<p>Another <code class="docutils literal"><span class="pre">prox</span></code> class is the <a class="reference internal" href="generated/tick.optim.prox.ProxMulti.html#tick.optim.prox.ProxMulti" title="tick.optim.prox.ProxMulti"><code class="xref py py-class docutils literal"><span class="pre">ProxMulti</span></code></a> that allows
+<p>Another <code class="docutils literal"><span class="pre">prox</span></code> class is the <code class="xref py py-class docutils literal"><span class="pre">ProxMulti</span></code> that allows
 to combine any proximal operators together.
-It simply applies sequentially each operator passed to <a class="reference internal" href="generated/tick.optim.prox.ProxMulti.html#tick.optim.prox.ProxMulti" title="tick.optim.prox.ProxMulti"><code class="xref py py-class docutils literal"><span class="pre">ProxMulti</span></code></a>,
+It simply applies sequentially each operator passed to <code class="xref py py-class docutils literal"><span class="pre">ProxMulti</span></code>,
 one after the other. Here is an example of combination of a total-variation penalization and L1 penalization
 applied to different parts of a vector.</p>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/optim.rst</tt>, line 410)</p>
+Exception occurred in plotting plot_prox_multi
+ from /Users/martin/Projects/tick_ghpages/tick/DOC/modules/code_samples/optim/plot_prox_multi.py:
+Traceback (most recent call last):
+  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/build/array.py”, line 18, in swig_import_helper
+    fp, pathname, description = imp.find_module(‘_array’, [dirname(__file__)])
+  File “/opt/local/Library/Frameworks/Python.framework/Versions/3.4/lib/python3.4/imp.py”, line 297, in find_module
+    raise ImportError(_ERR_MSG.format(name), name=name)
+ImportError: No module named ‘_array’
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File “/opt/local/Library/Frameworks/Python.framework/Versions/3.4/lib/python3.4/site-packages/matplotlib/sphinxext/plot_directive.py”, line 520, in run_code
+    six.exec_(code, ns)
+  File “&lt;string&gt;”, line 3, in &lt;module&gt;
+  File “/Users/martin/Projects/tick_ghpages/tick/tick/__init__.py”, line 3, in &lt;module&gt;
+    import tick.base
+  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/__init__.py”, line 21, in &lt;module&gt;
+    from .array import *
+  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/__init__.py”, line 3, in &lt;module&gt;
+    from .build import array
+  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/build/array.py”, line 28, in &lt;module&gt;
+    _array = swig_import_helper()
+  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/build/array.py”, line 20, in swig_import_helper
+    import _array
+ImportError: No module named ‘_array’
+</div>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
 <span class="kn">from</span> <span class="nn">tick.optim.prox</span> <span class="kn">import</span> <span class="n">ProxL1</span><span class="p">,</span> <span class="n">ProxTV</span><span class="p">,</span> <span class="n">ProxMulti</span>
@@ -698,14 +809,40 @@ applied to different parts of a vector.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>(<a class="reference external" href="../modules/code_samples/optim/plot_prox_multi.py">Source code</a>, <a class="reference external" href="../modules/code_samples/optim/plot_prox_multi.png">png</a>, <a class="reference external" href="../modules/code_samples/optim/plot_prox_multi.hires.png">hires.png</a>, <a class="reference external" href="../modules/code_samples/optim/plot_prox_multi.pdf">pdf</a>)</p>
-<div class="figure">
-<img alt="../_images/plot_prox_multi1.png" src="../_images/plot_prox_multi1.png" />
-</div>
+<p>(<a class="reference external" href="../modules/code_samples/optim/plot_prox_multi.py">Source code</a>)</p>
 </div>
 <div class="section" id="example">
 <h3>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h3>
 <p>Here is an illustration of the effect of these proximal operators on an example.</p>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/optim.rst</tt>, line 417)</p>
+Exception occurred in plotting plot_prox_example
+ from /Users/martin/Projects/tick_ghpages/tick/DOC/../examples/plot_prox_example.py:
+Traceback (most recent call last):
+  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/build/array.py”, line 18, in swig_import_helper
+    fp, pathname, description = imp.find_module(‘_array’, [dirname(__file__)])
+  File “/opt/local/Library/Frameworks/Python.framework/Versions/3.4/lib/python3.4/imp.py”, line 297, in find_module
+    raise ImportError(_ERR_MSG.format(name), name=name)
+ImportError: No module named ‘_array’
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File “/opt/local/Library/Frameworks/Python.framework/Versions/3.4/lib/python3.4/site-packages/matplotlib/sphinxext/plot_directive.py”, line 520, in run_code
+    six.exec_(code, ns)
+  File “&lt;string&gt;”, line 11, in &lt;module&gt;
+  File “/Users/martin/Projects/tick_ghpages/tick/tick/__init__.py”, line 3, in &lt;module&gt;
+    import tick.base
+  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/__init__.py”, line 21, in &lt;module&gt;
+    from .array import *
+  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/__init__.py”, line 3, in &lt;module&gt;
+    from .build import array
+  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/build/array.py”, line 28, in &lt;module&gt;
+    _array = swig_import_helper()
+  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/build/array.py”, line 20, in swig_import_helper
+    import _array
+ImportError: No module named ‘_array’
+</div>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">==============================</span>
 <span class="sd">Examples of proximal operators</span>
@@ -749,14 +886,11 @@ applied to different parts of a vector.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>(<a class="reference external" href="../../examples/plot_prox_example.py">Source code</a>, <a class="reference external" href="../../examples/plot_prox_example.png">png</a>, <a class="reference external" href="../../examples/plot_prox_example.hires.png">hires.png</a>, <a class="reference external" href="../../examples/plot_prox_example.pdf">pdf</a>)</p>
-<div class="figure">
-<img alt="../_images/plot_prox_example2.png" src="../_images/plot_prox_example2.png" />
-</div>
+<p>(<a class="reference external" href="../../examples/plot_prox_example.py">Source code</a>)</p>
 </div>
 </div>
 <div class="section" id="tick-optim-solver-solvers">
-<span id="optim-solver"></span><h2>3. <a class="reference internal" href="api.html#module-tick.optim.solver" title="tick.optim.solver"><code class="xref py py-mod docutils literal"><span class="pre">tick.optim.solver</span></code></a>: solvers<a class="headerlink" href="#tick-optim-solver-solvers" title="Permalink to this headline">¶</a></h2>
+<span id="optim-solver"></span><h2>3. <code class="xref py py-mod docutils literal"><span class="pre">tick.optim.solver</span></code>: solvers<a class="headerlink" href="#tick-optim-solver-solvers" title="Permalink to this headline">¶</a></h2>
 <p>This module contains all the solvers available in <code class="docutils literal"><span class="pre">tick</span></code>.
 It features two types of solvers: deterministic and stochastic.
 Deterministic solvers use a full pass over
@@ -824,28 +958,28 @@ an automatic tuning of the step size.</p>
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>Proximal gradient descent</td>
-<td><a class="reference internal" href="generated/tick.optim.solver.GD.html#tick.optim.solver.GD" title="tick.optim.solver.GD"><code class="xref py py-class docutils literal"><span class="pre">GD</span></code></a></td>
+<td><code class="xref py py-class docutils literal"><span class="pre">GD</span></code></td>
 </tr>
 <tr class="row-odd"><td>Accelerated proximal gradient descent</td>
-<td><a class="reference internal" href="generated/tick.optim.solver.AGD.html#tick.optim.solver.AGD" title="tick.optim.solver.AGD"><code class="xref py py-class docutils literal"><span class="pre">AGD</span></code></a></td>
+<td><code class="xref py py-class docutils literal"><span class="pre">AGD</span></code></td>
 </tr>
 <tr class="row-even"><td>Broyden, Fletcher, Goldfarb, and Shannon (quasi-newton)</td>
-<td><a class="reference internal" href="generated/tick.optim.solver.BFGS.html#tick.optim.solver.BFGS" title="tick.optim.solver.BFGS"><code class="xref py py-class docutils literal"><span class="pre">BFGS</span></code></a></td>
+<td><code class="xref py py-class docutils literal"><span class="pre">BFGS</span></code></td>
 </tr>
 <tr class="row-odd"><td>Self-Concordant Proximal Gradient Descent</td>
 <td><code class="xref py py-class docutils literal"><span class="pre">SCPG</span></code></td>
 </tr>
 <tr class="row-even"><td>Stochastic Gradient Descent</td>
-<td><a class="reference internal" href="generated/tick.optim.solver.SGD.html#tick.optim.solver.SGD" title="tick.optim.solver.SGD"><code class="xref py py-class docutils literal"><span class="pre">SGD</span></code></a></td>
+<td><code class="xref py py-class docutils literal"><span class="pre">SGD</span></code></td>
 </tr>
 <tr class="row-odd"><td>Adaptive Gradient Descent solver</td>
-<td><a class="reference internal" href="generated/tick.optim.solver.AdaGrad.html#tick.optim.solver.AdaGrad" title="tick.optim.solver.AdaGrad"><code class="xref py py-class docutils literal"><span class="pre">AdaGrad</span></code></a></td>
+<td><code class="xref py py-class docutils literal"><span class="pre">AdaGrad</span></code></td>
 </tr>
 <tr class="row-even"><td>Stochastic Variance Reduced Descent</td>
-<td><a class="reference internal" href="generated/tick.optim.solver.SVRG.html#tick.optim.solver.SVRG" title="tick.optim.solver.SVRG"><code class="xref py py-class docutils literal"><span class="pre">SVRG</span></code></a></td>
+<td><code class="xref py py-class docutils literal"><span class="pre">SVRG</span></code></td>
 </tr>
 <tr class="row-odd"><td>Stochastic Dual Coordinate Ascent</td>
-<td><a class="reference internal" href="generated/tick.optim.solver.SDCA.html#tick.optim.solver.SDCA" title="tick.optim.solver.SDCA"><code class="xref py py-class docutils literal"><span class="pre">SDCA</span></code></a></td>
+<td><code class="xref py py-class docutils literal"><span class="pre">SDCA</span></code></td>
 </tr>
 </tbody>
 </table>

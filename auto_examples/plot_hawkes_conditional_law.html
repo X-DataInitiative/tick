@@ -104,10 +104,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../modules/plot.html#others">Others</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../modules/preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../modules/generated/tick.preprocessing.FeaturesBinarizer.html">tick.preprocessing.FeaturesBinarizer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/generated/tick.preprocessing.LongitudinalFeaturesProduct.html">tick.preprocessing.LongitudinalFeaturesProduct</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/generated/tick.preprocessing.LongitudinalFeaturesLagger.html">tick.preprocessing.LongitudinalFeaturesLagger</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul class="simple">
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../modules/simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code>: simulation toolbox</a><ul>
@@ -160,21 +157,20 @@
   <div class="section" id="fit-hawkes-power-law-kernels">
 <span id="example-plot-hawkes-conditional-law-py"></span><h1>Fit Hawkes power law kernels<a class="headerlink" href="#fit-hawkes-power-law-kernels" title="Permalink to this headline">¶</a></h1>
 <p>This Hawkes learner based on conditional laws
-(<a class="reference internal" href="../modules/generated/tick.inference.HawkesConditionalLaw.html#tick.inference.HawkesConditionalLaw" title="tick.inference.HawkesConditionalLaw"><code class="xref py py-obj docutils literal"><span class="pre">tick.inference.HawkesConditionalLaw</span></code></a>) is able to fit Hawkes power law
+(<code class="xref py py-obj docutils literal"><span class="pre">tick.inference.HawkesConditionalLaw</span></code>) is able to fit Hawkes power law
 kernels commonly found in finance applications.</p>
 <p>It has been introduced in the following paper:</p>
 <p>Bacry, E., &amp; Muzy, J. F. (2014).
 Second order statistics characterization of Hawkes processes and
 non-parametric estimation. <a class="reference external" href="https://arxiv.org/pdf/1401.0903.pdf">arXiv preprint arXiv:1401.0903</a>.</p>
-<img alt="../_images/plot_hawkes_conditional_law_001.png" class="align-center" src="../_images/plot_hawkes_conditional_law_001.png" />
-<p><strong>Python source code:</strong> <a class="reference download internal" href="../_downloads/plot_hawkes_conditional_law.py" download=""><code class="xref download docutils literal"><span class="pre">plot_hawkes_conditional_law.py</span></code></a></p>
+<p class="horizontal"><strong>Python source code:</strong> <a class="reference download internal" href="../_downloads/plot_hawkes_conditional_law.py" download=""><code class="xref download docutils literal"><span class="pre">plot_hawkes_conditional_law.py</span></code></a></p>
 <div class="highlight-default"><div class="highlight"><pre><span></span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
-<span class="kn">from</span> <span class="nn">tick.inference</span> <span class="k">import</span> <a href="../modules/generated/tick.inference.HawkesConditionalLaw.html#tick.inference.HawkesConditionalLaw"><span class="n">HawkesConditionalLaw</span></a>
-<span class="kn">from</span> <span class="nn">tick.plot</span> <span class="k">import</span> <a href="../modules/generated/tick.plot.plot_hawkes_kernels.html#tick.plot.plot_hawkes_kernels"><span class="n">plot_hawkes_kernels</span></a>
-<span class="kn">from</span> <span class="nn">tick.simulation</span> <span class="k">import</span> <a href="../modules/generated/tick.simulation.SimuHawkes.html#tick.simulation.SimuHawkes"><span class="n">SimuHawkes</span></a><span class="p">,</span> <a href="../modules/generated/tick.simulation.HawkesKernelPowerLaw.html#tick.simulation.HawkesKernelPowerLaw"><span class="n">HawkesKernelPowerLaw</span></a>
+<span class="kn">from</span> <span class="nn">tick.inference</span> <span class="k">import</span> <span class="n">HawkesConditionalLaw</span>
+<span class="kn">from</span> <span class="nn">tick.plot</span> <span class="k">import</span> <span class="n">plot_hawkes_kernels</span>
+<span class="kn">from</span> <span class="nn">tick.simulation</span> <span class="k">import</span> <span class="n">SimuHawkes</span><span class="p">,</span> <span class="n">HawkesKernelPowerLaw</span>
 
 <span class="n">multiplier</span> <span class="o">=</span> <a href="http://docs.scipy.org/doc/numpy-1.6.0/reference/generated/numpy.array.html#numpy.array"><span class="n">np</span><span class="o">.</span><span class="n">array</span></a><span class="p">([</span><span class="mf">0.012</span><span class="p">,</span> <span class="mf">0.008</span><span class="p">,</span> <span class="mf">0.004</span><span class="p">,</span> <span class="mf">0.005</span><span class="p">])</span>
 <span class="n">cutoff</span> <span class="o">=</span> <span class="mf">0.0005</span>
@@ -182,16 +178,16 @@ non-parametric estimation. <a class="reference external" href="https://arxiv.org
 
 <span class="n">support</span> <span class="o">=</span> <span class="mi">2000</span>
 
-<span class="n">hawkes</span> <span class="o">=</span> <a href="../modules/generated/tick.simulation.SimuHawkes.html#tick.simulation.SimuHawkes"><span class="n">SimuHawkes</span></a><span class="p">(</span>
-    <span class="n">kernels</span><span class="o">=</span><span class="p">[[</span><a href="../modules/generated/tick.simulation.HawkesKernelPowerLaw.html#tick.simulation.HawkesKernelPowerLaw"><span class="n">HawkesKernelPowerLaw</span></a><span class="p">(</span><span class="n">multiplier</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">cutoff</span><span class="p">,</span> <span class="n">exponent</span><span class="p">,</span> <span class="n">support</span><span class="p">),</span>
-              <a href="../modules/generated/tick.simulation.HawkesKernelPowerLaw.html#tick.simulation.HawkesKernelPowerLaw"><span class="n">HawkesKernelPowerLaw</span></a><span class="p">(</span><span class="n">multiplier</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">cutoff</span><span class="p">,</span> <span class="n">exponent</span><span class="p">,</span> <span class="n">support</span><span class="p">)],</span>
-             <span class="p">[</span><a href="../modules/generated/tick.simulation.HawkesKernelPowerLaw.html#tick.simulation.HawkesKernelPowerLaw"><span class="n">HawkesKernelPowerLaw</span></a><span class="p">(</span><span class="n">multiplier</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">cutoff</span><span class="p">,</span> <span class="n">exponent</span><span class="p">,</span> <span class="n">support</span><span class="p">),</span>
-              <a href="../modules/generated/tick.simulation.HawkesKernelPowerLaw.html#tick.simulation.HawkesKernelPowerLaw"><span class="n">HawkesKernelPowerLaw</span></a><span class="p">(</span><span class="n">multiplier</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">cutoff</span><span class="p">,</span> <span class="n">exponent</span><span class="p">,</span> <span class="n">support</span><span class="p">)]],</span>
+<span class="n">hawkes</span> <span class="o">=</span> <span class="n">SimuHawkes</span><span class="p">(</span>
+    <span class="n">kernels</span><span class="o">=</span><span class="p">[[</span><span class="n">HawkesKernelPowerLaw</span><span class="p">(</span><span class="n">multiplier</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">cutoff</span><span class="p">,</span> <span class="n">exponent</span><span class="p">,</span> <span class="n">support</span><span class="p">),</span>
+              <span class="n">HawkesKernelPowerLaw</span><span class="p">(</span><span class="n">multiplier</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">cutoff</span><span class="p">,</span> <span class="n">exponent</span><span class="p">,</span> <span class="n">support</span><span class="p">)],</span>
+             <span class="p">[</span><span class="n">HawkesKernelPowerLaw</span><span class="p">(</span><span class="n">multiplier</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">cutoff</span><span class="p">,</span> <span class="n">exponent</span><span class="p">,</span> <span class="n">support</span><span class="p">),</span>
+              <span class="n">HawkesKernelPowerLaw</span><span class="p">(</span><span class="n">multiplier</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">cutoff</span><span class="p">,</span> <span class="n">exponent</span><span class="p">,</span> <span class="n">support</span><span class="p">)]],</span>
     <span class="n">baseline</span><span class="o">=</span><span class="p">[</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">],</span> <span class="n">seed</span><span class="o">=</span><span class="mi">382</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">hawkes</span><span class="o">.</span><span class="n">end_time</span> <span class="o">=</span> <span class="mi">50000</span>
 <span class="n">hawkes</span><span class="o">.</span><span class="n">simulate</span><span class="p">()</span>
 
-<span class="n">e</span> <span class="o">=</span> <a href="../modules/generated/tick.inference.HawkesConditionalLaw.html#tick.inference.HawkesConditionalLaw"><span class="n">HawkesConditionalLaw</span></a><span class="p">(</span><span class="n">claw_method</span><span class="o">=</span><span class="s2">&quot;log&quot;</span><span class="p">,</span>
+<span class="n">e</span> <span class="o">=</span> <span class="n">HawkesConditionalLaw</span><span class="p">(</span><span class="n">claw_method</span><span class="o">=</span><span class="s2">&quot;log&quot;</span><span class="p">,</span>
                          <span class="n">delta_lag</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">min_lag</span><span class="o">=</span><span class="mf">0.002</span><span class="p">,</span> <span class="n">max_lag</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
                          <span class="n">quad_method</span><span class="o">=</span><span class="s2">&quot;log&quot;</span><span class="p">,</span>
                          <span class="n">n_quad</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">min_support</span><span class="o">=</span><span class="mf">0.002</span><span class="p">,</span> <span class="n">max_support</span><span class="o">=</span><span class="n">support</span><span class="p">,</span>
@@ -200,7 +196,7 @@ non-parametric estimation. <a class="reference external" href="https://arxiv.org
 <span class="n">e</span><span class="o">.</span><span class="n">incremental_fit</span><span class="p">(</span><span class="n">hawkes</span><span class="o">.</span><span class="n">timestamps</span><span class="p">)</span>
 <span class="n">e</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
 
-<span class="n">fig</span> <span class="o">=</span> <a href="../modules/generated/tick.plot.plot_hawkes_kernels.html#tick.plot.plot_hawkes_kernels"><span class="n">plot_hawkes_kernels</span></a><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">log_scale</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">hawkes</span><span class="o">=</span><span class="n">hawkes</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plot_hawkes_kernels</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">log_scale</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">hawkes</span><span class="o">=</span><span class="n">hawkes</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                           <span class="n">min_support</span><span class="o">=</span><span class="mf">0.002</span><span class="p">,</span> <span class="n">support</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="n">fig</span><span class="o">.</span><span class="n">axes</span><span class="p">:</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
@@ -209,15 +205,15 @@ non-parametric estimation. <a class="reference external" href="https://arxiv.org
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<p><strong>Total running time of the example:</strong>  7.27 seconds
-( 0 minutes  7.27 seconds)</p>
+<p><strong>Total running time of the example:</strong>  0.00 seconds
+( 0 minutes  0.00 seconds)</p>
 <dl class="docutils">
 <dt>Mentioned <em>tick</em> classes:</dt>
 <dd><ul class="first last simple">
-<li><a class="reference internal" href="../modules/generated/tick.inference.HawkesConditionalLaw.html#tick.inference.HawkesConditionalLaw" title="tick.inference.HawkesConditionalLaw"><code class="xref py py-obj docutils literal"><span class="pre">tick.inference.HawkesConditionalLaw</span></code></a></li>
-<li><a class="reference internal" href="../modules/generated/tick.plot.plot_hawkes_kernels.html#tick.plot.plot_hawkes_kernels" title="tick.plot.plot_hawkes_kernels"><code class="xref py py-obj docutils literal"><span class="pre">tick.plot.plot_hawkes_kernels</span></code></a></li>
-<li><a class="reference internal" href="../modules/generated/tick.simulation.HawkesKernelPowerLaw.html#tick.simulation.HawkesKernelPowerLaw" title="tick.simulation.HawkesKernelPowerLaw"><code class="xref py py-obj docutils literal"><span class="pre">tick.simulation.HawkesKernelPowerLaw</span></code></a></li>
-<li><a class="reference internal" href="../modules/generated/tick.simulation.SimuHawkes.html#tick.simulation.SimuHawkes" title="tick.simulation.SimuHawkes"><code class="xref py py-obj docutils literal"><span class="pre">tick.simulation.SimuHawkes</span></code></a></li>
+<li><code class="xref py py-obj docutils literal"><span class="pre">tick.inference.HawkesConditionalLaw</span></code></li>
+<li><code class="xref py py-obj docutils literal"><span class="pre">tick.plot.plot_hawkes_kernels</span></code></li>
+<li><code class="xref py py-obj docutils literal"><span class="pre">tick.simulation.HawkesKernelPowerLaw</span></code></li>
+<li><code class="xref py py-obj docutils literal"><span class="pre">tick.simulation.SimuHawkes</span></code></li>
 </ul>
 </dd>
 </dl>

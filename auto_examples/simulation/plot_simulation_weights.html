@@ -104,10 +104,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../modules/plot.html#others">Others</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../modules/preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../modules/generated/tick.preprocessing.FeaturesBinarizer.html">tick.preprocessing.FeaturesBinarizer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../modules/generated/tick.preprocessing.LongitudinalFeaturesProduct.html">tick.preprocessing.LongitudinalFeaturesProduct</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../modules/generated/tick.preprocessing.LongitudinalFeaturesLagger.html">tick.preprocessing.LongitudinalFeaturesLagger</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul class="simple">
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../modules/simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code>: simulation toolbox</a><ul>
@@ -159,13 +156,12 @@
   
   <div class="section" id="plot-simulation-weights-py">
 <span id="example-simulation-plot-simulation-weights-py"></span><h1>plot_simulation_weights.py<a class="headerlink" href="#plot-simulation-weights-py" title="Permalink to this headline">¶</a></h1>
-<img alt="../../_images/plot_simulation_weights_001.png" class="align-center" src="../../_images/plot_simulation_weights_001.png" />
-<p><strong>Python source code:</strong> <a class="reference download internal" href="../../_downloads/plot_simulation_weights.py" download=""><code class="xref download docutils literal"><span class="pre">plot_simulation_weights.py</span></code></a></p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tick.simulation</span> <span class="k">import</span> <a href="../../modules/generated/tick.simulation.weights_sparse_exp.html#tick.simulation.weights_sparse_exp"><span class="n">weights_sparse_exp</span></a><span class="p">,</span> <a href="../../modules/generated/tick.simulation.weights_sparse_gauss.html#tick.simulation.weights_sparse_gauss"><span class="n">weights_sparse_gauss</span></a>
+<p class="horizontal"><strong>Python source code:</strong> <a class="reference download internal" href="../../_downloads/plot_simulation_weights.py" download=""><code class="xref download docutils literal"><span class="pre">plot_simulation_weights.py</span></code></a></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tick.simulation</span> <span class="k">import</span> <span class="n">weights_sparse_exp</span><span class="p">,</span> <span class="n">weights_sparse_gauss</span>
 
 <span class="n">n_features</span> <span class="o">=</span> <span class="mi">100</span>
-<span class="n">weights1</span> <span class="o">=</span> <a href="../../modules/generated/tick.simulation.weights_sparse_exp.html#tick.simulation.weights_sparse_exp"><span class="n">weights_sparse_exp</span></a><span class="p">(</span><span class="n">n_features</span><span class="p">,</span> <span class="n">nnz</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
-<span class="n">weights2</span> <span class="o">=</span> <a href="../../modules/generated/tick.simulation.weights_sparse_gauss.html#tick.simulation.weights_sparse_gauss"><span class="n">weights_sparse_gauss</span></a><span class="p">(</span><span class="n">n_features</span><span class="p">,</span> <span class="n">nnz</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">weights1</span> <span class="o">=</span> <span class="n">weights_sparse_exp</span><span class="p">(</span><span class="n">n_features</span><span class="p">,</span> <span class="n">nnz</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">weights2</span> <span class="o">=</span> <span class="n">weights_sparse_gauss</span><span class="p">(</span><span class="n">n_features</span><span class="p">,</span> <span class="n">nnz</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 
 <a href="http://matplotlib.org/api/figure_api.html#matplotlib.figure"><span class="n">plt</span><span class="o">.</span><span class="n">figure</span></a><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
 <a href="http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.subplot"><span class="n">plt</span><span class="o">.</span><span class="n">subplot</span></a><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
@@ -176,13 +172,13 @@
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
 </div>
-<p><strong>Total running time of the example:</strong>  0.64 seconds
-( 0 minutes  0.64 seconds)</p>
+<p><strong>Total running time of the example:</strong>  0.00 seconds
+( 0 minutes  0.00 seconds)</p>
 <dl class="docutils">
 <dt>Mentioned <em>tick</em> classes:</dt>
 <dd><ul class="first last simple">
-<li><a class="reference internal" href="../../modules/generated/tick.simulation.weights_sparse_exp.html#tick.simulation.weights_sparse_exp" title="tick.simulation.weights_sparse_exp"><code class="xref py py-obj docutils literal"><span class="pre">tick.simulation.weights_sparse_exp</span></code></a></li>
-<li><a class="reference internal" href="../../modules/generated/tick.simulation.weights_sparse_gauss.html#tick.simulation.weights_sparse_gauss" title="tick.simulation.weights_sparse_gauss"><code class="xref py py-obj docutils literal"><span class="pre">tick.simulation.weights_sparse_gauss</span></code></a></li>
+<li><code class="xref py py-obj docutils literal"><span class="pre">tick.simulation.weights_sparse_exp</span></code></li>
+<li><code class="xref py py-obj docutils literal"><span class="pre">tick.simulation.weights_sparse_gauss</span></code></li>
 </ul>
 </dd>
 </dl>

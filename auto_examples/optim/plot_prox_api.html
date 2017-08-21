@@ -104,10 +104,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../modules/plot.html#others">Others</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../modules/preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../modules/generated/tick.preprocessing.FeaturesBinarizer.html">tick.preprocessing.FeaturesBinarizer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../modules/generated/tick.preprocessing.LongitudinalFeaturesProduct.html">tick.preprocessing.LongitudinalFeaturesProduct</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../modules/generated/tick.preprocessing.LongitudinalFeaturesLagger.html">tick.preprocessing.LongitudinalFeaturesLagger</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul class="simple">
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../modules/simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code>: simulation toolbox</a><ul>
@@ -159,20 +156,19 @@
   
   <div class="section" id="plot-prox-api-py">
 <span id="example-optim-plot-prox-api-py"></span><h1>plot_prox_api.py<a class="headerlink" href="#plot-prox-api-py" title="Permalink to this headline">¶</a></h1>
-<img alt="../../_images/plot_prox_api_001.png" class="align-center" src="../../_images/plot_prox_api_001.png" />
-<p><strong>Python source code:</strong> <a class="reference download internal" href="../../_downloads/plot_prox_api.py" download=""><code class="xref download docutils literal"><span class="pre">plot_prox_api.py</span></code></a></p>
+<p class="horizontal"><strong>Python source code:</strong> <a class="reference download internal" href="../../_downloads/plot_prox_api.py" download=""><code class="xref download docutils literal"><span class="pre">plot_prox_api.py</span></code></a></p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">from</span> <span class="nn">tick.optim.prox</span> <span class="k">import</span> <a href="../../modules/generated/tick.optim.prox.ProxL1.html#tick.optim.prox.ProxL1"><span class="n">ProxL1</span></a>
+<span class="kn">from</span> <span class="nn">tick.optim.prox</span> <span class="k">import</span> <span class="n">ProxL1</span>
 
 <span class="n">x</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
 <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">-</span> <span class="mf">1e-1</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">+</span> <span class="mf">1e-1</span>
 
 <span class="n">proxs</span> <span class="o">=</span> <span class="p">[</span>
-    <a href="../../modules/generated/tick.optim.prox.ProxL1.html#tick.optim.prox.ProxL1"><span class="n">ProxL1</span></a><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="mf">0.</span><span class="p">),</span>
-    <a href="../../modules/generated/tick.optim.prox.ProxL1.html#tick.optim.prox.ProxL1"><span class="n">ProxL1</span></a><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="mf">3e-1</span><span class="p">),</span>
-    <a href="../../modules/generated/tick.optim.prox.ProxL1.html#tick.optim.prox.ProxL1"><span class="n">ProxL1</span></a><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="mf">3e-1</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">40</span><span class="p">)),</span>
-    <a href="../../modules/generated/tick.optim.prox.ProxL1.html#tick.optim.prox.ProxL1"><span class="n">ProxL1</span></a><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="mf">3e-1</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
-    <a href="../../modules/generated/tick.optim.prox.ProxL1.html#tick.optim.prox.ProxL1"><span class="n">ProxL1</span></a><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="mf">3e-1</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">40</span><span class="p">),</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+    <span class="n">ProxL1</span><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="mf">0.</span><span class="p">),</span>
+    <span class="n">ProxL1</span><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="mf">3e-1</span><span class="p">),</span>
+    <span class="n">ProxL1</span><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="mf">3e-1</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">40</span><span class="p">)),</span>
+    <span class="n">ProxL1</span><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="mf">3e-1</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+    <span class="n">ProxL1</span><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="mf">3e-1</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">40</span><span class="p">),</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
 <span class="p">]</span>
 
 <span class="n">names</span> <span class="o">=</span> <span class="p">[</span>
@@ -195,12 +191,12 @@
 <a href="http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.show"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
 </pre></div>
 </div>
-<p><strong>Total running time of the example:</strong>  0.84 seconds
-( 0 minutes  0.84 seconds)</p>
+<p><strong>Total running time of the example:</strong>  0.00 seconds
+( 0 minutes  0.00 seconds)</p>
 <dl class="docutils">
 <dt>Mentioned <em>tick</em> classes:</dt>
 <dd><ul class="first last simple">
-<li><a class="reference internal" href="../../modules/generated/tick.optim.prox.ProxL1.html#tick.optim.prox.ProxL1" title="tick.optim.prox.ProxL1"><code class="xref py py-obj docutils literal"><span class="pre">tick.optim.prox.ProxL1</span></code></a></li>
+<li><code class="xref py py-obj docutils literal"><span class="pre">tick.optim.prox.ProxL1</span></code></li>
 </ul>
 </dd>
 </dl>

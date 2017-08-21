@@ -7,8 +7,8 @@ plot_simulation_weights.py
 
 
 
-.. image:: images/plot_simulation_weights_001.png
-    :align: center
+.. rst-class:: horizontal
+
 
 
 
@@ -18,8 +18,8 @@ plot_simulation_weights.py
 .. literalinclude:: plot_simulation_weights.py
     :lines: 2-
 
-**Total running time of the example:**  0.64 seconds
-( 0 minutes  0.64 seconds)
+**Total running time of the example:**  0.00 seconds
+( 0 minutes  0.00 seconds)
     
 Mentioned *tick* classes:
    * `tick.simulation.weights_sparse_exp`
