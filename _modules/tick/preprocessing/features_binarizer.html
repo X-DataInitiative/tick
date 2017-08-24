@@ -1,0 +1,690 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-97947441-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+    <title>tick.preprocessing.features_binarizer &#8212; tick 0.2.1 documentation</title>
+    <link rel="stylesheet" href="../../../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootstrap-3.3.4/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootstrap-3.3.4/css/bootstrap-theme.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.2.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../../../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../../../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../../_static/bootstrap-sphinx.js"></script>
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+
+  <div id="navbar" class="None navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../../index.html">
+          tick</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.2</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../../../index.html">Home</a></li>
+                <li><a href="../../../auto_examples/index.html">Examples</a></li>
+                <li><a href="../../../modules/api.html">API</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../../index.html">Browse <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/inference.html"><code class="docutils literal"><span class="pre">tick.inference</span></code>: user-friendly inference tools</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/inference.html#generalized-linear-models">1. Generalized linear models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/inference.html#hawkes">2. Hawkes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/inference.html#survival-analysis">3. Survival analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/optim.html"><code class="docutils literal"><span class="pre">tick.optim</span></code>: optimization toolbox</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/optim.html#contents">Contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/optim.html#a-first-example">A First example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/optim.html#tick-optim-model-model-classes">1. <code class="docutils literal"><span class="pre">tick.optim.model</span></code>: model classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/optim.html#tick-optim-prox-proximal-operators">2. <code class="docutils literal"><span class="pre">tick.optim.prox</span></code>: proximal operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/optim.html#tick-optim-solver-solvers">3. <code class="docutils literal"><span class="pre">tick.optim.solver</span></code>: solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/optim.html#what-s-under-the-hood">4. What’s under the hood?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/plot.html"><code class="docutils literal"><span class="pre">tick.plot</span></code>: plotting utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/plot.html#optimization">Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/plot.html#hawkes-estimation">Hawkes estimation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/plot.html#point-process-simulation">Point process simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/plot.html#others">Others</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/generated/tick.preprocessing.FeaturesBinarizer.html">tick.preprocessing.FeaturesBinarizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/generated/tick.preprocessing.LongitudinalFeaturesProduct.html">tick.preprocessing.LongitudinalFeaturesProduct</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/generated/tick.preprocessing.LongitudinalFeaturesLagger.html">tick.preprocessing.LongitudinalFeaturesLagger</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code>: simulation toolbox</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/simulation.html#simulation-tools">1. Simulation tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/simulation.html#linear-model-simulation">2. Linear model simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/simulation.html#survival-analysis-simulation">3. Survival analysis simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/simulation.html#point-process-simulation">4. Point process simulation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/dataset.html"><code class="docutils literal"><span class="pre">tick.dataset</span></code>: real world datasets</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/dataset.html#functions">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/dataset.html#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/dev.html">Developer documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/dev.html#main-highlights">Main highlights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/dev.html#base-class">Base class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/dev.html#how-to-add-a-new-model-solver-or-prox">How to add a new model, solver or prox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/dev.html#enable-python-pickling-of-c-objects">Enable Python-pickling of C++ objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/dev.html#tips-for-debugging-c-classes-in-tick">Tips for debugging C++ classes in tick</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container content-container">
+  
+  <h1>Source code for tick.preprocessing.features_binarizer</h1><div class="highlight"><pre>
+<span></span><span class="c1"># License: BSD 3 clause</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="kn">from</span> <span class="nn">sklearn.base</span> <span class="k">import</span> <span class="n">BaseEstimator</span><span class="p">,</span> <span class="n">TransformerMixin</span>
+<span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="k">import</span> <span class="n">OneHotEncoder</span>
+
+<span class="kn">from</span> <span class="nn">tick.base</span> <span class="k">import</span> <span class="n">Base</span>
+
+
+<div class="viewcode-block" id="FeaturesBinarizer"><a class="viewcode-back" href="../../../modules/generated/tick.preprocessing.FeaturesBinarizer.html#tick.preprocessing.FeaturesBinarizer">[docs]</a><span class="k">class</span> <span class="nc">FeaturesBinarizer</span><span class="p">(</span><span class="n">Base</span><span class="p">,</span> <span class="n">BaseEstimator</span><span class="p">,</span> <span class="n">TransformerMixin</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Transforms continuous data into bucketed binary data. </span>
+<span class="sd">    </span>
+<span class="sd">    This is a scikit-learn transformer that transform an input</span>
+<span class="sd">    pandas DataFrame X of shape (n_samples, n_features) into a binary</span>
+<span class="sd">    matrix of size (n_samples, n_new_features).</span>
+<span class="sd">    Continous features are modified and extended into binary features, using</span>
+<span class="sd">    linearly or inter-quantiles spaced bins. </span>
+<span class="sd">    Discrete features are binary encoded with K columns, where K is the number</span>
+<span class="sd">    of modalities.</span>
+<span class="sd">    Other features (none of the above) are left unchanged.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n_cuts : `int`, default=10</span>
+<span class="sd">        Number of cut points for continuous features.</span>
+
+<span class="sd">    method : &quot;quantile&quot; or &quot;linspace&quot;, default=&quot;quantile&quot;</span>
+<span class="sd">        * If ``&quot;quantile&quot;`` quantile-based cuts are used.</span>
+<span class="sd">        * If ``&quot;linspace&quot;`` linearly spaced cuts are used.</span>
+
+<span class="sd">    detect_column_type : &quot;auto&quot; or &quot;column_names&quot;, default=&quot;auto&quot;</span>
+<span class="sd">        * If ``&quot;auto&quot;`` feature type detection done automatically.</span>
+<span class="sd">        * If ``&quot;column_names&quot;`` feature type detection done using column names.</span>
+<span class="sd">          In this case names ending by &quot;:continuous&quot; means continuous</span>
+<span class="sd">          while &quot;:discrete&quot; means a discrete feature</span>
+
+<span class="sd">    remove_first : `bool`</span>
+<span class="sd">        If `True`, first column of each binarized continuous feature block is</span>
+<span class="sd">        removed.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    one_hot_encoder : `OneHotEncoder`</span>
+<span class="sd">        OneHotEncoders for continuous and discrete features.</span>
+
+<span class="sd">    bins_boundaries : `list`</span>
+<span class="sd">        Bins boundaries for continuous features.</span>
+
+<span class="sd">    mapper : `dict`</span>
+<span class="sd">        Map modalities to column indexes for categorical features.</span>
+
+<span class="sd">    feature_type : `dict`</span>
+<span class="sd">        Features type.</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    http://scikit-learn.org/stable/modules/preprocessing.html#preprocessing</span>
+<span class="sd">    </span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; from tick.preprocessing import FeaturesBinarizer</span>
+<span class="sd">    &gt;&gt;&gt; features = np.array([[0.00902084, 0., &#39;z&#39;],</span>
+<span class="sd">    ...                      [0.46599565, 0., 2.],</span>
+<span class="sd">    ...                      [0.52091721, 1., 2.],</span>
+<span class="sd">    ...                      [0.47315496, 1., 1.],</span>
+<span class="sd">    ...                      [0.08180209, 0., 0.],</span>
+<span class="sd">    ...                      [0.45011727, 0., 0.],</span>
+<span class="sd">    ...                      [2.04347947, 1., 20.],</span>
+<span class="sd">    ...                      [-0.9890938, 0., 0.],</span>
+<span class="sd">    ...                      [-0.3063761, 1., 1.],</span>
+<span class="sd">    ...                      [0.27110903, 0., 0.]])</span>
+<span class="sd">    &gt;&gt;&gt; binarizer = FeaturesBinarizer(n_cuts=3)</span>
+<span class="sd">    &gt;&gt;&gt; binarized_features = binarizer.fit_transform(features)</span>
+<span class="sd">    &gt;&gt;&gt; # output comes as a sparse matrix</span>
+<span class="sd">    &gt;&gt;&gt; binarized_features.__class__</span>
+<span class="sd">    &lt;class &#39;scipy.sparse.csr.csr_matrix&#39;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; # column type is automatically detected</span>
+<span class="sd">    &gt;&gt;&gt; sorted(binarizer.feature_type.items())</span>
+<span class="sd">    [(&#39;0&#39;, &#39;continuous&#39;), (&#39;1&#39;, &#39;discrete&#39;), (&#39;2&#39;, &#39;discrete&#39;)]</span>
+<span class="sd">    &gt;&gt;&gt; # features is binarized (first column is removed to avoid colinearity)</span>
+<span class="sd">    &gt;&gt;&gt; binarized_features.toarray()</span>
+<span class="sd">    array([[ 1.,  0.,  0.,  0.,  1.,  0.,  0.,  0.,  0.,  0.,  1.],</span>
+<span class="sd">           [ 0.,  0.,  1.,  0.,  1.,  0.,  0.,  0.,  1.,  0.,  0.],</span>
+<span class="sd">           [ 0.,  0.,  0.,  1.,  0.,  1.,  0.,  0.,  1.,  0.,  0.],</span>
+<span class="sd">           [ 0.,  0.,  1.,  0.,  0.,  1.,  0.,  1.,  0.,  0.,  0.],</span>
+<span class="sd">           [ 0.,  1.,  0.,  0.,  1.,  0.,  1.,  0.,  0.,  0.,  0.],</span>
+<span class="sd">           [ 0.,  0.,  1.,  0.,  1.,  0.,  1.,  0.,  0.,  0.,  0.],</span>
+<span class="sd">           [ 0.,  0.,  0.,  1.,  0.,  1.,  0.,  0.,  0.,  1.,  0.],</span>
+<span class="sd">           [ 1.,  0.,  0.,  0.,  1.,  0.,  1.,  0.,  0.,  0.,  0.],</span>
+<span class="sd">           [ 1.,  0.,  0.,  0.,  0.,  1.,  0.,  1.,  0.,  0.,  0.],</span>
+<span class="sd">           [ 0.,  1.,  0.,  0.,  1.,  0.,  1.,  0.,  0.,  0.,  0.]])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_attrinfos</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;one_hot_encoder&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+        <span class="s2">&quot;bins_boundaries&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+        <span class="s2">&quot;mapper&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+        <span class="s2">&quot;feature_type&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+        <span class="s2">&quot;_fitted&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
+    <span class="p">}</span>
+
+<div class="viewcode-block" id="FeaturesBinarizer.__init__"><a class="viewcode-back" href="../../../modules/generated/tick.preprocessing.FeaturesBinarizer.html#tick.preprocessing.FeaturesBinarizer.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;quantile&quot;</span><span class="p">,</span> <span class="n">n_cuts</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">detect_column_type</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span>
+                 <span class="n">remove_first</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="n">Base</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">=</span> <span class="n">method</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_cuts</span> <span class="o">=</span> <span class="n">n_cuts</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">detect_column_type</span> <span class="o">=</span> <span class="n">detect_column_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">remove_first</span> <span class="o">=</span> <span class="n">remove_first</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;one_hot_encoder&quot;</span><span class="p">,</span> <span class="n">OneHotEncoder</span><span class="p">(</span><span class="n">sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;bins_boundaries&quot;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;mapper&quot;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;feature_type&quot;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;_fitted&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">feature_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the first column indices of each binarized feature blocks.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        output : `np.ndarray`</span>
+<span class="sd">            The indices of the first column of each binarized feature blocks.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fitted</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cannot get feature_indices if object has not &quot;</span>
+                             <span class="s2">&quot;been fitted&quot;</span><span class="p">)</span>
+        <span class="c1"># construct from encoder</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">one_hot_encoder</span><span class="o">.</span><span class="n">feature_indices_</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">n_values</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the length of each binarized feature blocks.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        output : `np.ndarray`</span>
+<span class="sd">            The length of each binarized feature blocks.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fitted</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cannot get n_values if object has not been &quot;</span>
+                             <span class="s2">&quot;fitted&quot;</span><span class="p">)</span>
+        <span class="c1"># construct from encoder</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">one_hot_encoder</span><span class="o">.</span><span class="n">n_values_</span>
+
+<div class="viewcode-block" id="FeaturesBinarizer.cast_to_array"><a class="viewcode-back" href="../../../modules/generated/tick.preprocessing.FeaturesBinarizer.html#tick.preprocessing.FeaturesBinarizer.cast_to_array">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">cast_to_array</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Cast input matrix to `np.ndarray`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        output : `np.ndarray`, `np.ndarray`</span>
+<span class="sd">            The input matrix and the corresponding column names.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">X</span><span class="o">.</span><span class="vm">__class__</span> <span class="o">==</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+            <span class="n">columns</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">columns</span>
+            <span class="n">X</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">values</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])]</span>
+
+        <span class="k">return</span> <span class="n">X</span><span class="p">,</span> <span class="n">columns</span></div>
+
+<div class="viewcode-block" id="FeaturesBinarizer.fit"><a class="viewcode-back" href="../../../modules/generated/tick.preprocessing.FeaturesBinarizer.html#tick.preprocessing.FeaturesBinarizer.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Fit the binarization using the features matrix.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X : `pd.DataFrame`  or `np.ndarray`, shape=(n_samples, n_features)</span>
+<span class="sd">            The features matrix.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        output : `FeaturesBinarizer`</span>
+<span class="sd">            The fitted current instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+        <span class="n">X</span><span class="p">,</span> <span class="n">columns</span> <span class="o">=</span> <span class="n">FeaturesBinarizer</span><span class="o">.</span><span class="n">cast_to_array</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+
+        <span class="n">categorical_X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">column</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">columns</span><span class="p">):</span>
+            <span class="n">feature</span> <span class="o">=</span> <span class="n">X</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span>
+            <span class="n">binarized_feat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_assign_interval</span><span class="p">(</span><span class="n">column</span><span class="p">,</span> <span class="n">feature</span><span class="p">,</span> <span class="n">fit</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">categorical_X</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">binarized_feat</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">one_hot_encoder</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">categorical_X</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;_fitted&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="FeaturesBinarizer.transform"><a class="viewcode-back" href="../../../modules/generated/tick.preprocessing.FeaturesBinarizer.html#tick.preprocessing.FeaturesBinarizer.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Apply the binarization to the given features matrix.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X : `pd.DataFrame` or `np.ndarray`, shape=(n_samples, n_features)</span>
+<span class="sd">            The features matrix.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        output : `pd.DataFrame`</span>
+<span class="sd">            The binarized features matrix. The number of columns is</span>
+<span class="sd">            larger than n_features, smaller than n_cuts * n_features,</span>
+<span class="sd">            depending on the actual number of columns that have been</span>
+<span class="sd">            binarized.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">X</span><span class="p">,</span> <span class="n">columns</span> <span class="o">=</span> <span class="n">FeaturesBinarizer</span><span class="o">.</span><span class="n">cast_to_array</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+
+        <span class="n">categorical_X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">column</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">columns</span><span class="p">):</span>
+            <span class="n">feature</span> <span class="o">=</span> <span class="n">X</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span>
+            <span class="n">binarized_feat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_assign_interval</span><span class="p">(</span><span class="n">columns</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">feature</span><span class="p">,</span>
+                                                   <span class="n">fit</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">categorical_X</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">binarized_feat</span>
+
+        <span class="n">binarized_X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">one_hot_encoder</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">categorical_X</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">remove_first</span><span class="p">:</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">binarized_X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+            <span class="n">mask</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">feature_indices</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">binarized_X</span> <span class="o">=</span> <span class="n">binarized_X</span><span class="p">[:,</span> <span class="n">mask</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">binarized_X</span></div>
+
+<div class="viewcode-block" id="FeaturesBinarizer.fit_transform"><a class="viewcode-back" href="../../../modules/generated/tick.preprocessing.FeaturesBinarizer.html#tick.preprocessing.FeaturesBinarizer.fit_transform">[docs]</a>    <span class="k">def</span> <span class="nf">fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Fit and apply the binarization using the features matrix.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X : `pd.DataFrame` or `np.ndarray`, shape=(n_samples, n_features)</span>
+<span class="sd">            The features matrix.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        output : `pd.DataFrame`</span>
+<span class="sd">            The binarized features matrix. The number of columns is</span>
+<span class="sd">            larger than n_features, smaller than n_cuts * n_features,</span>
+<span class="sd">            depending on the actual number of columns that have been</span>
+<span class="sd">            binarized.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="n">binarized_X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">binarized_X</span></div>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_detect_feature_type</span><span class="p">(</span><span class="n">feature</span><span class="p">,</span> <span class="n">detect_column_type</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span>
+                             <span class="n">feature_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">continuous_threshold</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Detect the type of a single feature.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        feature : `np.ndarray`, shape=(n_samples,)</span>
+<span class="sd">            The column containing the feature</span>
+
+<span class="sd">        detect_column_type : &quot;auto&quot; or &quot;column_names&quot;, default=&quot;auto&quot;</span>
+<span class="sd">            * If ``&quot;auto&quot;`` an automatic type detection procedure is followed.</span>
+<span class="sd">            * If ``&quot;column_names&quot;`` columns with name ending with</span>
+<span class="sd">            &quot;:continuous&quot; means continuous features and columns with name ending</span>
+<span class="sd">            with &quot;:discrete&quot; means discrete features</span>
+
+<span class="sd">        feature_name : `str`</span>
+<span class="sd">            The name of the feature</span>
+
+<span class="sd">        continuous_threshold : `int` or `str`, default &quot;auto&quot;</span>
+<span class="sd">            If &quot;auto&quot;, we consider the feature as &quot;discrete&quot; if the feature</span>
+<span class="sd">            gets more than `threshold`=15 distinct values (if there are more</span>
+<span class="sd">            than 30 examples, else `threshold` is set to half the number of</span>
+<span class="sd">            examples).</span>
+<span class="sd">            If a number is given, then we consider the feature as &quot;discrete&quot; if</span>
+<span class="sd">            the feature has more distinct values than this number</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        output : `str`</span>
+<span class="sd">            The type of the feature (either `continuous` or `discrete`).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">detect_column_type</span> <span class="o">==</span> <span class="s2">&quot;column_names&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">feature_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;feature_name must be set in order to use&quot;</span>
+                                 <span class="s2">&quot;&#39;column_names&#39; detection type&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">feature_name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;:continuous&quot;</span><span class="p">):</span>
+                <span class="n">feature_type</span> <span class="o">=</span> <span class="s2">&quot;continuous&quot;</span>
+            <span class="k">elif</span> <span class="n">feature_name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;:discrete&quot;</span><span class="p">):</span>
+                <span class="n">feature_type</span> <span class="o">=</span> <span class="s2">&quot;discrete&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;feature name &#39;</span><span class="si">%s</span><span class="s2">&#39; should end with &quot;</span>
+                                 <span class="s2">&quot;&#39;:continuous&#39; or &#39;:discrete&#39;&quot;</span>
+                                 <span class="o">%</span> <span class="n">feature_name</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">detect_column_type</span> <span class="o">==</span> <span class="s2">&quot;auto&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">continuous_threshold</span> <span class="o">==</span> <span class="s2">&quot;auto&quot;</span><span class="p">:</span>
+                <span class="c1"># threshold choice depending on whether one has more than 30</span>
+                <span class="c1"># examples or not</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">30</span><span class="p">:</span>
+                    <span class="n">threshold</span> <span class="o">=</span> <span class="mi">15</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">threshold</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">threshold</span> <span class="o">=</span> <span class="n">continuous_threshold</span>
+
+            <span class="c1"># count distinct realizations and compare to threshold</span>
+            <span class="n">uniques</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span>
+            <span class="n">n_uniques</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">uniques</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">n_uniques</span> <span class="o">&gt;</span> <span class="n">threshold</span><span class="p">:</span>
+                <span class="c1"># feature_type is `continuous` only is all feature values are</span>
+                <span class="c1"># convertible to float</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">uniques</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+                    <span class="n">feature_type</span> <span class="o">=</span> <span class="s2">&quot;continuous&quot;</span>
+                <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                    <span class="n">feature_type</span> <span class="o">=</span> <span class="s2">&quot;discrete&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">feature_type</span> <span class="o">=</span> <span class="s2">&quot;discrete&quot;</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;detect_type should be one of &#39;column_names&#39; or &quot;</span>
+                             <span class="s2">&quot;&#39;auto&#39;&quot;</span> <span class="o">%</span> <span class="n">detect_column_type</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">feature_type</span>
+
+    <span class="k">def</span> <span class="nf">_get_feature_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature_name</span><span class="p">,</span> <span class="n">feature</span><span class="p">,</span> <span class="n">fit</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the type of a single feature.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        feature_name : `str`</span>
+<span class="sd">            The feature name</span>
+
+<span class="sd">        feature : `np.ndarray`, shape=(n_samples,)</span>
+<span class="sd">            The column containing the feature</span>
+
+<span class="sd">        fit : `bool`</span>
+<span class="sd">            If `True`, we save the feature type.</span>
+<span class="sd">            If `False`, we take the corresponding saved feature type.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        output : `str`</span>
+<span class="sd">            The type of the feature (either `continuous` or `discrete`).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">fit</span><span class="p">:</span>
+            <span class="n">feature_type</span> <span class="o">=</span> <span class="n">FeaturesBinarizer</span><span class="o">.</span><span class="n">_detect_feature_type</span><span class="p">(</span>
+                <span class="n">feature</span><span class="p">,</span> <span class="n">feature_name</span><span class="o">=</span><span class="n">feature_name</span><span class="p">,</span>
+                <span class="n">detect_column_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">detect_column_type</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">feature_type</span><span class="p">[</span><span class="n">feature_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">feature_type</span>
+
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fitted</span><span class="p">:</span>
+            <span class="n">feature_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature_type</span><span class="p">[</span><span class="n">feature_name</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cannot call method with fit=True if object &quot;</span>
+                             <span class="s2">&quot;has not been fitted&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">feature_type</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_detect_boundaries</span><span class="p">(</span><span class="n">feature</span><span class="p">,</span> <span class="n">n_cuts</span><span class="p">,</span> <span class="n">method</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Boundaries detection of a single feature.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        feature : `np.ndarray`, shape=(n_samples,)</span>
+<span class="sd">            The column containing the feature</span>
+
+<span class="sd">        n_cuts : `int`</span>
+<span class="sd">            Number of cut points</span>
+
+<span class="sd">        method : `str`</span>
+<span class="sd">            If `quantile`, we use quantiles to construct the intervals.</span>
+<span class="sd">            If `linspace`, we construct linearly spaced intervals</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        output : `np.ndarray`</span>
+<span class="sd">           The intervals boundaries for the feature.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
+            <span class="n">feature</span> <span class="o">=</span> <span class="n">feature</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;quantile&#39;</span><span class="p">:</span>
+            <span class="n">quantile_cuts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="n">n_cuts</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">boundaries</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">feature</span><span class="p">,</span> <span class="n">quantile_cuts</span><span class="p">,</span>
+                                       <span class="n">interpolation</span><span class="o">=</span><span class="s2">&quot;nearest&quot;</span><span class="p">)</span>
+            <span class="c1"># Only keep distinct bins boundaries</span>
+            <span class="n">boundaries</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">boundaries</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;linspace&#39;</span><span class="p">:</span>
+            <span class="c1"># Maximum and minimum of the feature</span>
+            <span class="n">feat_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span>
+            <span class="n">feat_min</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span>
+            <span class="c1"># Compute the cuts</span>
+            <span class="n">boundaries</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">feat_min</span><span class="p">,</span> <span class="n">feat_max</span><span class="p">,</span> <span class="n">n_cuts</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Method &#39;</span><span class="si">%s</span><span class="s2">&#39; should be &#39;quantile&#39; or &#39;linspace&#39;&quot;</span>
+                             <span class="o">%</span> <span class="n">method</span><span class="p">)</span>
+        <span class="n">boundaries</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+        <span class="n">boundaries</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+
+        <span class="k">return</span> <span class="n">boundaries</span>
+
+    <span class="k">def</span> <span class="nf">_get_boundaries</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature_name</span><span class="p">,</span> <span class="n">feature</span><span class="p">,</span> <span class="n">fit</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get bins boundaries of a single continuous feature.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        feature_name : `str`</span>
+<span class="sd">            The feature name</span>
+
+<span class="sd">        feature : `np.ndarray`, shape=(n_samples,)</span>
+<span class="sd">            The column containing the feature to be binarized</span>
+
+<span class="sd">        fit : `bool`</span>
+<span class="sd">            If `True`, we need to fit (compute boundaries) for this feature</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        output : `np.ndarray`, shape=(?,)</span>
+<span class="sd">            The bins boundaries. The number of lines is smaller or</span>
+<span class="sd">            equal to ``n_cuts``, depending on the ``method`` and/or on</span>
+<span class="sd">            the actual number of distinct boundaries for this feature.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">fit</span><span class="p">:</span>
+            <span class="n">boundaries</span> <span class="o">=</span> <span class="n">FeaturesBinarizer</span><span class="o">.</span><span class="n">_detect_boundaries</span><span class="p">(</span>
+                <span class="n">feature</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_cuts</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bins_boundaries</span><span class="p">[</span><span class="n">feature_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">boundaries</span>
+
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fitted</span><span class="p">:</span>
+            <span class="n">boundaries</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bins_boundaries</span><span class="p">[</span><span class="n">feature_name</span><span class="p">]</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cannot call method with fit=True as object has &quot;</span>
+                             <span class="s2">&quot;not been fit&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">boundaries</span>
+
+    <span class="k">def</span> <span class="nf">_categorical_to_interval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">,</span> <span class="n">feature_name</span><span class="p">,</span> <span class="n">fit</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Assign intervals to a single feature considered as `discrete`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        feature_name : `str`</span>
+<span class="sd">            The feature name</span>
+
+<span class="sd">        feature : `np.ndarray`, shape=(n_samples,)</span>
+<span class="sd">            The column containing the feature. Could contain `str` values</span>
+
+<span class="sd">        fit : `bool`</span>
+<span class="sd">            If `True`, we need to fit (compute indexes) for this feature</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        output : `np.ndarray`, shape=(n_samples,)</span>
+<span class="sd">            The discretized feature.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">fit</span><span class="p">:</span>
+            <span class="n">uniques</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span>
+            <span class="n">uniques</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+
+            <span class="n">mapper</span> <span class="o">=</span> <span class="p">{</span><span class="n">category</span><span class="p">:</span> <span class="n">interval</span>
+                      <span class="k">for</span> <span class="n">interval</span><span class="p">,</span> <span class="n">category</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">uniques</span><span class="p">)}</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">mapper</span><span class="p">[</span><span class="n">feature_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapper</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">mapper</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapper</span><span class="p">[</span><span class="n">feature_name</span><span class="p">]</span>
+
+        <span class="k">def</span> <span class="nf">category_to_interval</span><span class="p">(</span><span class="n">category</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">category</span> <span class="ow">in</span> <span class="n">mapper</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">mapper</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">category</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">mapper</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span> <span class="o">+</span> <span class="mi">1</span>
+
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">category_to_interval</span><span class="p">)(</span><span class="n">feature</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_assign_interval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature_name</span><span class="p">,</span> <span class="n">feature</span><span class="p">,</span> <span class="n">fit</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Assign intervals to a single feature.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        feature_name : `str`</span>
+<span class="sd">            The feature name</span>
+
+<span class="sd">        feature : `np.ndarray`, shape=(n_samples,)</span>
+<span class="sd">            The column containing the feature to be binarized</span>
+
+<span class="sd">        fit : `bool`</span>
+<span class="sd">            If `True`, we need to fit (compute boundaries) for this feature</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        output : `np.ndarray`, shape=(n_samples,)</span>
+<span class="sd">            The discretized feature.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">feature_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_feature_type</span><span class="p">(</span><span class="n">feature_name</span><span class="p">,</span> <span class="n">feature</span><span class="p">,</span> <span class="n">fit</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">feature_type</span> <span class="o">==</span> <span class="s2">&quot;continuous&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">feature</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="nb">float</span><span class="p">:</span>
+                <span class="n">feature</span> <span class="o">=</span> <span class="n">feature</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+
+            <span class="c1"># Compute bins boundaries for the feature</span>
+            <span class="n">boundaries</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_boundaries</span><span class="p">(</span><span class="n">feature_name</span><span class="p">,</span> <span class="n">feature</span><span class="p">,</span> <span class="n">fit</span><span class="p">)</span>
+
+            <span class="c1"># Discretize feature</span>
+            <span class="n">feature</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">feature</span><span class="p">,</span> <span class="n">boundaries</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">feature</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_categorical_to_interval</span><span class="p">(</span><span class="n">feature</span><span class="p">,</span> <span class="n">feature_name</span><span class="p">,</span>
+                                                    <span class="n">fit</span><span class="o">=</span><span class="n">fit</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">feature</span></div>
+</pre></div>
+
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Vinther Poulsen.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

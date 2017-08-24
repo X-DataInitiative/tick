@@ -1,0 +1,348 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-97947441-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+    <title>tick.plot.plot_history &#8212; tick 0.2.1 documentation</title>
+    <link rel="stylesheet" href="../../../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootstrap-3.3.4/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootstrap-3.3.4/css/bootstrap-theme.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.2.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../../../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../../../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../../_static/bootstrap-sphinx.js"></script>
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+
+  <div id="navbar" class="None navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../../index.html">
+          tick</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.2</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../../../index.html">Home</a></li>
+                <li><a href="../../../auto_examples/index.html">Examples</a></li>
+                <li><a href="../../../modules/api.html">API</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../../index.html">Browse <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/inference.html"><code class="docutils literal"><span class="pre">tick.inference</span></code>: user-friendly inference tools</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/inference.html#generalized-linear-models">1. Generalized linear models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/inference.html#hawkes">2. Hawkes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/inference.html#survival-analysis">3. Survival analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/optim.html"><code class="docutils literal"><span class="pre">tick.optim</span></code>: optimization toolbox</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/optim.html#contents">Contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/optim.html#a-first-example">A First example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/optim.html#tick-optim-model-model-classes">1. <code class="docutils literal"><span class="pre">tick.optim.model</span></code>: model classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/optim.html#tick-optim-prox-proximal-operators">2. <code class="docutils literal"><span class="pre">tick.optim.prox</span></code>: proximal operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/optim.html#tick-optim-solver-solvers">3. <code class="docutils literal"><span class="pre">tick.optim.solver</span></code>: solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/optim.html#what-s-under-the-hood">4. What’s under the hood?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/plot.html"><code class="docutils literal"><span class="pre">tick.plot</span></code>: plotting utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/plot.html#optimization">Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/plot.html#hawkes-estimation">Hawkes estimation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/plot.html#point-process-simulation">Point process simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/plot.html#others">Others</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/generated/tick.preprocessing.FeaturesBinarizer.html">tick.preprocessing.FeaturesBinarizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/generated/tick.preprocessing.LongitudinalFeaturesProduct.html">tick.preprocessing.LongitudinalFeaturesProduct</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/generated/tick.preprocessing.LongitudinalFeaturesLagger.html">tick.preprocessing.LongitudinalFeaturesLagger</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code>: simulation toolbox</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/simulation.html#simulation-tools">1. Simulation tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/simulation.html#linear-model-simulation">2. Linear model simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/simulation.html#survival-analysis-simulation">3. Survival analysis simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/simulation.html#point-process-simulation">4. Point process simulation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/dataset.html"><code class="docutils literal"><span class="pre">tick.dataset</span></code>: real world datasets</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/dataset.html#functions">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/dataset.html#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/dev.html">Developer documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/dev.html#main-highlights">Main highlights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/dev.html#base-class">Base class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/dev.html#how-to-add-a-new-model-solver-or-prox">How to add a new model, solver or prox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/dev.html#enable-python-pickling-of-c-objects">Enable Python-pickling of C++ objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/dev.html#tips-for-debugging-c-classes-in-tick">Tips for debugging C++ classes in tick</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container content-container">
+  
+  <h1>Source code for tick.plot.plot_history</h1><div class="highlight"><pre>
+<span></span><span class="c1"># License: BSD 3 clause</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="kn">from</span> <span class="nn">tick.inference.base.learner_glm</span> <span class="k">import</span> <span class="n">LearnerOptim</span>
+<span class="kn">from</span> <span class="nn">tick.optim.solver.base.solver</span> <span class="k">import</span> <span class="n">Solver</span>
+<span class="kn">from</span> <span class="nn">tick.plot.plot_utilities</span> <span class="k">import</span> <span class="n">get_plot_color</span>
+
+
+<span class="k">def</span> <span class="nf">extract_history</span><span class="p">(</span><span class="n">solvers</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">given_labels</span><span class="p">):</span>
+    <span class="n">x_arrays</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">y_arrays</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">labels</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">solver</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">solvers</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">solver</span><span class="p">,</span> <span class="n">LearnerOptim</span><span class="p">):</span>
+            <span class="n">history</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">_solver_obj</span><span class="o">.</span><span class="n">history</span>
+            <span class="n">label</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">_solver_obj</span><span class="o">.</span><span class="n">name</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">solver</span><span class="p">,</span> <span class="n">Solver</span><span class="p">):</span>
+            <span class="n">history</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">history</span>
+            <span class="n">label</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">name</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> has no history&#39;</span> <span class="o">%</span> <span class="n">solver</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+
+        <span class="c1"># if label was given we override it</span>
+        <span class="k">if</span> <span class="n">given_labels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">given_labels</span><span class="p">):</span>
+            <span class="n">label</span> <span class="o">=</span> <span class="n">given_labels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">x</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">history</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> has no history for </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span>
+
+        <span class="k">elif</span> <span class="n">y</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">history</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> has no history for </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">x_arrays</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">history</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">x</span><span class="p">]))</span>
+            <span class="n">y_arrays</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">history</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">y</span><span class="p">]))</span>
+            <span class="n">labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">x_arrays</span><span class="p">,</span> <span class="n">y_arrays</span><span class="p">,</span> <span class="n">labels</span>
+
+
+<div class="viewcode-block" id="plot_history"><a class="viewcode-back" href="../../../modules/generated/tick.plot.plot_history.html#tick.plot.plot_history">[docs]</a><span class="k">def</span> <span class="nf">plot_history</span><span class="p">(</span><span class="n">solvers</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;n_iter&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;obj&#39;</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                 <span class="n">log_scale</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">dist_min</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                 <span class="n">rendering</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;matplotlib&#39;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Plot the history of convergence of learners or solvers.</span>
+<span class="sd">    </span>
+<span class="sd">    It is used to compare easily their convergence performance.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    solvers : `list` of `object` with and history to plot, namely solvers</span>
+<span class="sd">        (children of `tick.optim.solver.base.Solver`) or learners (children of</span>
+<span class="sd">        `tick.inference.base.LearnerOptim`)</span>
+
+<span class="sd">    x : `str`, default=&#39;n_iter&#39;</span>
+<span class="sd">        - if &#39;n_iter&#39; : iteration number</span>
+<span class="sd">        - if &#39;time&#39; : computation time</span>
+
+<span class="sd">    y : `str`, default=&#39;obj&#39;</span>
+<span class="sd">        - if &#39;obj&#39; : the objective (value of the function minimized).</span>
+<span class="sd">            Other choices are possible, any of those present in the</span>
+<span class="sd">            history</span>
+
+<span class="sd">    labels : `list` of `str`, default=None</span>
+<span class="sd">        Label of each solver in the legend. If set to None then the class</span>
+<span class="sd">        name of each solver will be used.</span>
+
+<span class="sd">    show : `bool`, default=`True`</span>
+<span class="sd">        if `True`, show the plot. Otherwise an explicit call to the show</span>
+<span class="sd">        function is necessary. Useful when superposing several plots.</span>
+
+<span class="sd">    log_scale : `bool`, default=`False`</span>
+<span class="sd">        If `True`, then y-axis is on a log-scale</span>
+
+<span class="sd">    dist_min : `bool`, default=`False`</span>
+<span class="sd">        If `True`, plot the difference between `y` of each solver and the</span>
+<span class="sd">        minimal `y` of all solvers. This is useful when comparing solvers on</span>
+<span class="sd">        a logarithmic scale, to illustrate linear convergence of algorithms</span>
+
+<span class="sd">    rendering : {&#39;matplotlib&#39;, &#39;bokeh&#39;}, default=&#39;matplotlib&#39;</span>
+<span class="sd">        Rendering library. &#39;bokeh&#39; might fail if the module is not installed.</span>
+
+<span class="sd">    ax : `list` of `matplotlib.axes`, default=None</span>
+<span class="sd">        If not None, the figure will be plot on this axis and show will be</span>
+<span class="sd">        set to False. Used only with matplotlib</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">x_arrays</span><span class="p">,</span> <span class="n">y_arrays</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="n">extract_history</span><span class="p">(</span><span class="n">solvers</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">dist_min</span><span class="p">:</span>
+        <span class="n">min_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(</span><span class="n">y_arrays</span><span class="p">))</span>
+        <span class="n">y_arrays</span> <span class="o">=</span> <span class="p">[</span><span class="n">y_array</span> <span class="o">-</span> <span class="n">min_y</span> <span class="k">for</span> <span class="n">y_array</span> <span class="ow">in</span> <span class="n">y_arrays</span><span class="p">]</span>
+
+    <span class="n">min_x</span><span class="p">,</span> <span class="n">max_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(</span><span class="n">x_arrays</span><span class="p">)),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(</span><span class="n">x_arrays</span><span class="p">))</span>
+    <span class="n">min_y</span><span class="p">,</span> <span class="n">max_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(</span><span class="n">y_arrays</span><span class="p">)),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(</span><span class="n">y_arrays</span><span class="p">))</span>
+
+    <span class="c1"># We want to ensure theses plots starts at 0</span>
+    <span class="k">if</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;n_iter&#39;</span><span class="p">]:</span>
+        <span class="n">min_x</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">if</span> <span class="n">rendering</span> <span class="o">==</span> <span class="s1">&#39;matplotlib&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">show</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">solver</span><span class="p">,</span> <span class="n">x_array</span><span class="p">,</span>
+                <span class="n">y_array</span><span class="p">,</span> <span class="n">label</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">solvers</span><span class="p">,</span> <span class="n">x_arrays</span><span class="p">,</span>
+                                                 <span class="n">y_arrays</span><span class="p">,</span> <span class="n">labels</span><span class="p">)):</span>
+            <span class="n">color</span> <span class="o">=</span> <span class="n">get_plot_color</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x_array</span><span class="p">,</span> <span class="n">y_array</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">log_scale</span><span class="p">:</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">([</span><span class="n">min_x</span><span class="p">,</span> <span class="n">max_x</span><span class="p">])</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">([</span><span class="n">min_y</span><span class="p">,</span> <span class="n">max_y</span><span class="p">])</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s1">&#39;major&#39;</span><span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">show</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">ax</span><span class="o">.</span><span class="n">figure</span>
+
+    <span class="k">elif</span> <span class="n">rendering</span> <span class="o">==</span> <span class="s1">&#39;bokeh&#39;</span><span class="p">:</span>
+        <span class="n">mins</span> <span class="o">=</span> <span class="p">(</span><span class="n">min_x</span><span class="p">,</span> <span class="n">max_x</span><span class="p">,</span> <span class="n">min_y</span><span class="p">,</span> <span class="n">max_y</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">plot_bokeh_history</span><span class="p">(</span><span class="n">solvers</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">x_arrays</span><span class="p">,</span> <span class="n">y_arrays</span><span class="p">,</span> <span class="n">mins</span><span class="p">,</span>
+                                  <span class="n">labels</span><span class="p">,</span> <span class="n">log_scale</span><span class="p">,</span> <span class="n">show</span><span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unknown rendering type. Expected &#39;matplotlib&#39; or &quot;</span>
+                         <span class="s2">&quot;&#39;bokeh&#39;, received </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">rendering</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">plot_bokeh_history</span><span class="p">(</span><span class="n">solvers</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">x_arrays</span><span class="p">,</span> <span class="n">y_arrays</span><span class="p">,</span> <span class="n">mins</span><span class="p">,</span> <span class="n">legends</span><span class="p">,</span>
+                       <span class="n">log_scale</span><span class="p">,</span> <span class="n">show</span><span class="p">):</span>
+    <span class="kn">import</span> <span class="nn">bokeh.plotting</span> <span class="k">as</span> <span class="nn">bk</span>
+
+    <span class="n">min_x</span><span class="p">,</span> <span class="n">max_x</span><span class="p">,</span> <span class="n">min_y</span><span class="p">,</span> <span class="n">max_y</span> <span class="o">=</span> <span class="n">mins</span>
+    <span class="k">if</span> <span class="n">log_scale</span><span class="p">:</span>
+        <span class="c1"># Bokeh has a weird behaviour when using logscale with 0 entries...</span>
+        <span class="c1"># We use the difference between smallest value of second small</span>
+        <span class="c1"># to set the range of y</span>
+        <span class="n">all_ys</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(</span><span class="n">y_arrays</span><span class="p">)</span>
+        <span class="n">y_range_min</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">all_ys</span><span class="p">[</span><span class="n">all_ys</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">y_range_min</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot plot negative values on a log scale&quot;</span><span class="p">)</span>
+
+        <span class="n">fig</span> <span class="o">=</span> <span class="n">bk</span><span class="o">.</span><span class="n">Figure</span><span class="p">(</span><span class="n">plot_height</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">y_axis_type</span><span class="o">=</span><span class="s2">&quot;log&quot;</span><span class="p">,</span>
+                        <span class="n">y_range</span><span class="o">=</span><span class="p">[</span><span class="n">y_range_min</span><span class="p">,</span> <span class="n">max_y</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">fig</span> <span class="o">=</span> <span class="n">bk</span><span class="o">.</span><span class="n">Figure</span><span class="p">(</span><span class="n">plot_height</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">x_range</span><span class="o">=</span><span class="p">[</span><span class="n">min_x</span><span class="p">,</span> <span class="n">max_x</span><span class="p">],</span>
+                        <span class="n">y_range</span><span class="o">=</span><span class="p">[</span><span class="n">min_y</span><span class="p">,</span> <span class="n">max_y</span><span class="p">])</span>
+
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">solver</span><span class="p">,</span> <span class="n">x_array</span><span class="p">,</span>
+            <span class="n">y_array</span><span class="p">,</span> <span class="n">legend</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">solvers</span><span class="p">,</span> <span class="n">x_arrays</span><span class="p">,</span>
+                                              <span class="n">y_arrays</span><span class="p">,</span> <span class="n">legends</span><span class="p">)):</span>
+        <span class="n">color</span> <span class="o">=</span> <span class="n">get_plot_color</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">x_array</span><span class="p">,</span> <span class="n">y_array</span><span class="p">,</span> <span class="n">line_width</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="n">legend</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">axis_label</span> <span class="o">=</span> <span class="n">x</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">axis_label</span> <span class="o">=</span> <span class="n">y</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">axis_label_text_font_size</span> <span class="o">=</span> <span class="s2">&quot;12pt&quot;</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">axis_label_text_font_size</span> <span class="o">=</span> <span class="s2">&quot;12pt&quot;</span>
+    <span class="k">if</span> <span class="n">show</span><span class="p">:</span>
+        <span class="n">bk</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">fig</span>
+</pre></div>
+
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Vinther Poulsen.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

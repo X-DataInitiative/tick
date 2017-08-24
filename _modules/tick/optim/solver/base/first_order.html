@@ -1,0 +1,467 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-97947441-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+    <title>tick.optim.solver.base.first_order &#8212; tick 0.2.1 documentation</title>
+    <link rel="stylesheet" href="../../../../../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../../_static/css/custom.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../../_static/bootstrap-3.3.4/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../../_static/bootstrap-3.3.4/css/bootstrap-theme.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../../_static/bootstrap-sphinx.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../../',
+        VERSION:     '0.2.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../../../../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../../../../../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../../../../../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../../../../_static/bootstrap-sphinx.js"></script>
+    <link rel="shortcut icon" href="../../../../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+
+  <div id="navbar" class="None navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../../../../index.html">
+          tick</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.2</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../../../../../index.html">Home</a></li>
+                <li><a href="../../../../../auto_examples/index.html">Examples</a></li>
+                <li><a href="../../../../../modules/api.html">API</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../../../../index.html">Browse <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modules/inference.html"><code class="docutils literal"><span class="pre">tick.inference</span></code>: user-friendly inference tools</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../modules/inference.html#generalized-linear-models">1. Generalized linear models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../modules/inference.html#hawkes">2. Hawkes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../modules/inference.html#survival-analysis">3. Survival analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modules/optim.html"><code class="docutils literal"><span class="pre">tick.optim</span></code>: optimization toolbox</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../modules/optim.html#contents">Contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../modules/optim.html#a-first-example">A First example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../modules/optim.html#tick-optim-model-model-classes">1. <code class="docutils literal"><span class="pre">tick.optim.model</span></code>: model classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../modules/optim.html#tick-optim-prox-proximal-operators">2. <code class="docutils literal"><span class="pre">tick.optim.prox</span></code>: proximal operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../modules/optim.html#tick-optim-solver-solvers">3. <code class="docutils literal"><span class="pre">tick.optim.solver</span></code>: solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../modules/optim.html#what-s-under-the-hood">4. What’s under the hood?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modules/plot.html"><code class="docutils literal"><span class="pre">tick.plot</span></code>: plotting utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../modules/plot.html#optimization">Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../modules/plot.html#hawkes-estimation">Hawkes estimation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../modules/plot.html#point-process-simulation">Point process simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../modules/plot.html#others">Others</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modules/preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../modules/generated/tick.preprocessing.FeaturesBinarizer.html">tick.preprocessing.FeaturesBinarizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../modules/generated/tick.preprocessing.LongitudinalFeaturesProduct.html">tick.preprocessing.LongitudinalFeaturesProduct</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../modules/generated/tick.preprocessing.LongitudinalFeaturesLagger.html">tick.preprocessing.LongitudinalFeaturesLagger</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modules/simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code>: simulation toolbox</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../modules/simulation.html#simulation-tools">1. Simulation tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../modules/simulation.html#linear-model-simulation">2. Linear model simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../modules/simulation.html#survival-analysis-simulation">3. Survival analysis simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../modules/simulation.html#point-process-simulation">4. Point process simulation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modules/dataset.html"><code class="docutils literal"><span class="pre">tick.dataset</span></code>: real world datasets</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../modules/dataset.html#functions">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../modules/dataset.html#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modules/dev.html">Developer documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../modules/dev.html#main-highlights">Main highlights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../modules/dev.html#base-class">Base class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../modules/dev.html#how-to-add-a-new-model-solver-or-prox">How to add a new model, solver or prox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../modules/dev.html#enable-python-pickling-of-c-objects">Enable Python-pickling of C++ objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../modules/dev.html#tips-for-debugging-c-classes-in-tick">Tips for debugging C++ classes in tick</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../../../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container content-container">
+  
+  <h1>Source code for tick.optim.solver.base.first_order</h1><div class="highlight"><pre>
+<span></span><span class="c1"># License: BSD 3 clause</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">tick.optim.solver.base</span> <span class="k">import</span> <span class="n">Solver</span>
+<span class="kn">from</span> <span class="nn">tick.optim.model.base</span> <span class="k">import</span> <span class="n">Model</span>
+<span class="kn">from</span> <span class="nn">tick.optim.prox.base</span> <span class="k">import</span> <span class="n">Prox</span>
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;Stephane Gaiffas&#39;</span>
+
+
+<span class="k">class</span> <span class="nc">SolverFirstOrder</span><span class="p">(</span><span class="n">Solver</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;The base class for a first order solver. It defines methods for</span>
+<span class="sd">    setting a model (giving first order information) and a proximal</span>
+<span class="sd">    operator</span>
+
+<span class="sd">    In only deals with verbosing information, and setting parameters</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    step : `float` default=None</span>
+<span class="sd">        Step-size of the algorithm</span>
+
+<span class="sd">    tol : `float`, default=0</span>
+<span class="sd">        The tolerance of the solver (iterations stop when the stopping</span>
+<span class="sd">        criterion is below it). By default the solver does ``max_iter``</span>
+<span class="sd">        iterations</span>
+
+<span class="sd">    max_iter : `int`</span>
+<span class="sd">        Maximum number of iterations of the solver</span>
+
+<span class="sd">    verbose : `bool`, default=True</span>
+<span class="sd">        If `True`, we verbose things, otherwise the solver does not</span>
+<span class="sd">        print anything (but records information in history anyway)</span>
+
+<span class="sd">    print_every : `int`, default = 10</span>
+<span class="sd">        Print history information every time the iteration number is a</span>
+<span class="sd">        multiple of ``print_every``</span>
+
+<span class="sd">    record_every : `int`, default = 1</span>
+<span class="sd">        Information along iteration is recorded in history each time the</span>
+<span class="sd">        iteration number of a multiple of ``record_every``</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    model : `Model`</span>
+<span class="sd">        The model to solve</span>
+
+<span class="sd">    prox : `Prox`</span>
+<span class="sd">        Proximal operator to solve</span>
+
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    This class should not be used by end-users</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_attrinfos</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;model&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;prox&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;_initial_n_calls_loss_and_grad&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;_initial_n_calls_loss&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;_initial_n_calls_grad&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;_initial_n_passes_over_data&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">},</span>
+    <span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">:</span> <span class="nb">float</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span><span class="mf">0.</span><span class="p">,</span>
+                 <span class="n">max_iter</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                 <span class="n">print_every</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">record_every</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">Solver</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tol</span><span class="p">,</span> <span class="n">max_iter</span><span class="p">,</span> <span class="n">verbose</span><span class="p">,</span> <span class="n">print_every</span><span class="p">,</span>
+                        <span class="n">record_every</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prox</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="n">step</span>
+        <span class="c1"># Martin&#39;s complicated and useless stuff :)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_initial_n_calls_loss_and_grad</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_initial_n_calls_loss</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_initial_n_calls_grad</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_initial_n_passes_over_data</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">def</span> <span class="nf">set_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set model in the solver</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        model : `Model`</span>
+<span class="sd">            Sets the model in the solver. The model gives the first</span>
+<span class="sd">            order information about the model (loss, gradient, among</span>
+<span class="sd">            other things)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        output : `Solver`</span>
+<span class="sd">            The same instance with given model</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">Model</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Passed object of class </span><span class="si">%s</span><span class="s1"> is not a &#39;</span>
+                             <span class="s1">&#39;Model class&#39;</span> <span class="o">%</span> <span class="n">model</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">model</span><span class="o">.</span><span class="n">_fitted</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Passed object </span><span class="si">%s</span><span class="s1"> has not been fitted. You must &#39;</span>
+                             <span class="s1">&#39;call ``fit`` on it before passing it to &#39;</span>
+                             <span class="s1">&#39;``set_model``&#39;</span> <span class="o">%</span> <span class="n">model</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;model&quot;</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="nf">_initialize_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x0</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                           <span class="n">n_empty_vectors</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize values</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x0 : `numpy.ndarray`</span>
+<span class="sd">            Starting point</span>
+
+<span class="sd">        step : `float`</span>
+<span class="sd">            Initial step</span>
+
+<span class="sd">        n_empty_vectors : `int`</span>
+<span class="sd">            Number of empty vector of like x0 needed</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        step : `float`</span>
+<span class="sd">            Initial step</span>
+
+<span class="sd">        obj : `float`</span>
+<span class="sd">            Initial value of objective function</span>
+
+<span class="sd">        iterate : `numpy.ndarray`</span>
+<span class="sd">            copy of starting point</span>
+
+<span class="sd">        empty vectors : `numpy.ndarray`</span>
+<span class="sd">            n_empty_vectors empty vectors shaped as x0. For example, those</span>
+<span class="sd">            vectors can be used to store previous iterate values during</span>
+<span class="sd">            a solver execution.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Initialization</span>
+        <span class="k">if</span> <span class="n">step</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No step specified.&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="n">step</span>
+        <span class="k">if</span> <span class="n">x0</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">x0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">n_coeffs</span><span class="p">)</span>
+        <span class="n">iterate</span> <span class="o">=</span> <span class="n">x0</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">objective</span><span class="p">(</span><span class="n">iterate</span><span class="p">)</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="p">[</span><span class="n">step</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">iterate</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_empty_vectors</span><span class="p">):</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x0</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">set_prox</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prox</span><span class="p">:</span> <span class="n">Prox</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set proximal operator in the solver.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        prox : `Prox`</span>
+<span class="sd">            The proximal operator of the penalization function</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        output : `Solver`</span>
+<span class="sd">            The solver with given prox</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        In some solvers, ``set_model`` must be called before</span>
+<span class="sd">        ``set_prox``, otherwise and error might be raised.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">prox</span><span class="p">,</span> <span class="n">Prox</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Passed object of class </span><span class="si">%s</span><span class="s1"> is not a &#39;</span>
+                             <span class="s1">&#39;Prox class&#39;</span> <span class="o">%</span> <span class="n">prox</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;prox&quot;</span><span class="p">,</span> <span class="n">prox</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="nf">_as_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">dd</span> <span class="o">=</span> <span class="n">Solver</span><span class="o">.</span><span class="n">_as_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">dd</span><span class="p">[</span><span class="s2">&quot;model&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">_as_dict</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">prox</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">dd</span><span class="p">[</span><span class="s2">&quot;prox&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prox</span><span class="o">.</span><span class="n">_as_dict</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">dd</span>
+
+    <span class="k">def</span> <span class="nf">objective</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coeffs</span><span class="p">,</span> <span class="n">loss</span><span class="p">:</span> <span class="nb">float</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Compute the objective minimized by the solver at ``coeffs``</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        coeffs : `numpy.ndarray`, shape=(n_coeffs,)</span>
+<span class="sd">            The objective is computed at this point</span>
+
+<span class="sd">        loss : `float`, default=`None`</span>
+<span class="sd">            Gives the value of the loss if already known (allows to</span>
+<span class="sd">            avoid its computation in some cases)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        output : `float`</span>
+<span class="sd">            Value of the objective at given ``coeffs``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">prox</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">prox_value</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">prox_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prox</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">coeffs</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">loss</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">loss</span><span class="p">(</span><span class="n">coeffs</span><span class="p">)</span> <span class="o">+</span> <span class="n">prox_value</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">loss</span> <span class="o">+</span> <span class="n">prox_value</span>
+
+    <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Launch the solver</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x0 : `np.array`, shape=(n_coeffs,), default=`None`</span>
+<span class="sd">            Starting point of the solver</span>
+
+<span class="sd">        step : `float`, default=`None`</span>
+<span class="sd">            Step-size or learning rate for the solver</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        output : `np.array`, shape=(n_coeffs,)</span>
+<span class="sd">            Obtained minimizer for the problem</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;You must first set the model using &#39;</span>
+                             <span class="s1">&#39;``set_model``.&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">prox</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;You must first set the prox using &#39;</span>
+                             <span class="s1">&#39;``set_prox``.&#39;</span><span class="p">)</span>
+        <span class="n">solution</span> <span class="o">=</span> <span class="n">Solver</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">solution</span>
+
+    <span class="k">def</span> <span class="nf">_handle_history</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_iter</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Updates the history of the solver.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        This should not be used by end-users.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># self.model.n_calls_loss_and_grad is shared by all</span>
+        <span class="c1"># solvers using this model</span>
+        <span class="c1"># hence it might not be at 0 while starting</span>
+        <span class="c1"># /!\ beware if parallel computing...</span>
+        <span class="k">if</span> <span class="n">n_iter</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;_initial_n_calls_loss_and_grad&quot;</span><span class="p">,</span>
+                      <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">n_calls_loss_and_grad</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;_initial_n_calls_loss&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">n_calls_loss</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;_initial_n_calls_grad&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">n_calls_grad</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;_initial_n_passes_over_data&quot;</span><span class="p">,</span>
+                      <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">n_passes_over_data</span><span class="p">)</span>
+        <span class="n">n_calls_loss_and_grad</span> <span class="o">=</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">n_calls_loss_and_grad</span> <span class="o">-</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">_initial_n_calls_loss_and_grad</span>
+        <span class="n">n_calls_loss</span> <span class="o">=</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">n_calls_loss</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_initial_n_calls_loss</span>
+        <span class="n">n_calls_grad</span> <span class="o">=</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">n_calls_grad</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_initial_n_calls_grad</span>
+        <span class="n">n_passes_over_data</span> <span class="o">=</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">n_passes_over_data</span> <span class="o">-</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">_initial_n_passes_over_data</span>
+        <span class="n">Solver</span><span class="o">.</span>\
+            <span class="n">_handle_history</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_iter</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">,</span>
+                            <span class="n">n_calls_loss_and_grad</span><span class="o">=</span><span class="n">n_calls_loss_and_grad</span><span class="p">,</span>
+                            <span class="n">n_calls_loss</span><span class="o">=</span><span class="n">n_calls_loss</span><span class="p">,</span>
+                            <span class="n">n_calls_grad</span><span class="o">=</span><span class="n">n_calls_grad</span><span class="p">,</span>
+                            <span class="n">n_passes_over_data</span><span class="o">=</span><span class="n">n_passes_over_data</span><span class="p">,</span>
+                            <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</pre></div>
+
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Vinther Poulsen.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

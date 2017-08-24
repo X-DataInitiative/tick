@@ -1,0 +1,412 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-97947441-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+    <title>tick.dataset.download_helper &#8212; tick 0.2.1 documentation</title>
+    <link rel="stylesheet" href="../../../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootstrap-3.3.4/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootstrap-3.3.4/css/bootstrap-theme.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.2.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../../../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../../../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../../_static/bootstrap-sphinx.js"></script>
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+
+  <div id="navbar" class="None navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../../index.html">
+          tick</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.2</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../../../index.html">Home</a></li>
+                <li><a href="../../../auto_examples/index.html">Examples</a></li>
+                <li><a href="../../../modules/api.html">API</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../../index.html">Browse <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/inference.html"><code class="docutils literal"><span class="pre">tick.inference</span></code>: user-friendly inference tools</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/inference.html#generalized-linear-models">1. Generalized linear models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/inference.html#hawkes">2. Hawkes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/inference.html#survival-analysis">3. Survival analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/optim.html"><code class="docutils literal"><span class="pre">tick.optim</span></code>: optimization toolbox</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/optim.html#contents">Contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/optim.html#a-first-example">A First example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/optim.html#tick-optim-model-model-classes">1. <code class="docutils literal"><span class="pre">tick.optim.model</span></code>: model classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/optim.html#tick-optim-prox-proximal-operators">2. <code class="docutils literal"><span class="pre">tick.optim.prox</span></code>: proximal operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/optim.html#tick-optim-solver-solvers">3. <code class="docutils literal"><span class="pre">tick.optim.solver</span></code>: solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/optim.html#what-s-under-the-hood">4. What’s under the hood?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/plot.html"><code class="docutils literal"><span class="pre">tick.plot</span></code>: plotting utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/plot.html#optimization">Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/plot.html#hawkes-estimation">Hawkes estimation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/plot.html#point-process-simulation">Point process simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/plot.html#others">Others</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/generated/tick.preprocessing.FeaturesBinarizer.html">tick.preprocessing.FeaturesBinarizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/generated/tick.preprocessing.LongitudinalFeaturesProduct.html">tick.preprocessing.LongitudinalFeaturesProduct</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/generated/tick.preprocessing.LongitudinalFeaturesLagger.html">tick.preprocessing.LongitudinalFeaturesLagger</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code>: simulation toolbox</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/simulation.html#simulation-tools">1. Simulation tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/simulation.html#linear-model-simulation">2. Linear model simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/simulation.html#survival-analysis-simulation">3. Survival analysis simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/simulation.html#point-process-simulation">4. Point process simulation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/dataset.html"><code class="docutils literal"><span class="pre">tick.dataset</span></code>: real world datasets</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/dataset.html#functions">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/dataset.html#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/dev.html">Developer documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/dev.html#main-highlights">Main highlights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/dev.html#base-class">Base class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/dev.html#how-to-add-a-new-model-solver-or-prox">How to add a new model, solver or prox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/dev.html#enable-python-pickling-of-c-objects">Enable Python-pickling of C++ objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/dev.html#tips-for-debugging-c-classes-in-tick">Tips for debugging C++ classes in tick</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container content-container">
+  
+  <h1>Source code for tick.dataset.download_helper</h1><div class="highlight"><pre>
+<span></span><span class="c1"># License: BSD 3 clause</span>
+
+<span class="sd">&quot;&quot;&quot;Helper to download and cache datasets from the tick_datasets github</span>
+<span class="sd">repository</span>
+
+<span class="sd">Inspired from</span>
+<span class="sd">https://github.com/scikit-learn/scikit-learn/blob/14031f6/sklearn/datasets/twenty_newsgroups.py</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">urllib.request</span> <span class="k">import</span> <span class="n">urlopen</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">import</span> <span class="nn">shutil</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">sklearn.datasets</span> <span class="k">import</span> <span class="n">load_svmlight_file</span>
+<span class="kn">import</span> <span class="nn">math</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">BASE_URL</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;https://raw.githubusercontent.com/X-DataInitiative/tick-datasets&quot;</span>
+            <span class="s2">&quot;/master/</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">download_tick_dataset</span><span class="p">(</span><span class="n">dataset_path</span><span class="p">,</span> <span class="n">data_home</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Downloads dataset from tick_datasets github repository and store it</span>
+<span class="sd">    locally</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dataset_path : `str`</span>
+<span class="sd">        Dataset path on tick_datasets github repository. For example</span>
+<span class="sd">        &quot;binary/adult/adult.trn.bz2&quot; for adult train dataset</span>
+
+<span class="sd">    data_home : `str`, optional, default=None</span>
+<span class="sd">        Specify a download and cache folder for the datasets. If None,</span>
+<span class="sd">        all tick datasets are stored in &#39;~/tick_datasets&#39; subfolders.</span>
+
+<span class="sd">    verbose : `bool`, default=True</span>
+<span class="sd">        If True, download progress bar will be printed</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    cache_path : `str`</span>
+<span class="sd">        File path of the downloaded data</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">data_home</span> <span class="o">=</span> <span class="n">get_data_home</span><span class="p">(</span><span class="n">data_home</span><span class="p">)</span>
+    <span class="n">cache_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_home</span><span class="p">,</span> <span class="n">dataset_path</span><span class="p">)</span>
+    <span class="n">cache_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">cache_path</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">cache_dir</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">cache_dir</span><span class="p">)</span>
+
+    <span class="n">file_url</span> <span class="o">=</span> <span class="n">BASE_URL</span> <span class="o">%</span> <span class="n">dataset_path</span>
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Downloading dataset from </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">file_url</span><span class="p">)</span>
+    <span class="n">opener</span> <span class="o">=</span> <span class="n">urlopen</span><span class="p">(</span><span class="n">file_url</span><span class="p">)</span>
+    <span class="n">chunk_size</span> <span class="o">=</span> <span class="mi">4096</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">cache_path</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">n_chunks</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">file_size</span> <span class="o">=</span> <span class="n">opener</span><span class="o">.</span><span class="n">length</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">opener</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">chunk_size</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">data</span><span class="p">:</span>
+                <span class="n">percent</span> <span class="o">=</span> <span class="n">chunk_size</span> <span class="o">*</span> <span class="n">n_chunks</span> <span class="o">/</span> <span class="n">file_size</span>
+                <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                    <span class="n">progress_bar</span><span class="p">(</span><span class="n">percent</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="n">file_size</span><span class="p">)</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+                <span class="n">n_chunks</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                    <span class="n">progress_bar</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="n">file_size</span><span class="p">)</span>
+                <span class="k">break</span>
+
+    <span class="k">return</span> <span class="n">cache_path</span>
+
+
+<div class="viewcode-block" id="fetch_tick_dataset"><a class="viewcode-back" href="../../../modules/generated/tick.dataset.fetch_tick_dataset.html#tick.dataset.fetch_tick_dataset">[docs]</a><span class="k">def</span> <span class="nf">fetch_tick_dataset</span><span class="p">(</span><span class="n">dataset_path</span><span class="p">,</span> <span class="n">data_home</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Fetch dataset from tick_datasets github repository.</span>
+<span class="sd">     </span>
+<span class="sd">    Uses cache if this dataset has already been downloaded.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dataset_path : `str`</span>
+<span class="sd">        Dataset path on tick_datasets github repository. For example</span>
+<span class="sd">        &quot;binary/adult/adult.trn.bz2&quot; for adult train dataset</span>
+
+<span class="sd">    data_home : `str`, optional, default=None</span>
+<span class="sd">        Specify a download and cache folder for the datasets. If None,</span>
+<span class="sd">        all tick datasets are stored in &#39;~/tick_datasets&#39; subfolders.</span>
+
+<span class="sd">    verbose : `bool`, default=True</span>
+<span class="sd">        If True, download progress bar will be printed</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    output : `np.ndarray` or `dict` or `tuple`</span>
+<span class="sd">        Dataset. Its format will depend on queried dataset.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">data_home</span> <span class="o">=</span> <span class="n">get_data_home</span><span class="p">(</span><span class="n">data_home</span><span class="p">)</span>
+    <span class="n">cache_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_home</span><span class="p">,</span> <span class="n">dataset_path</span><span class="p">)</span>
+
+    <span class="n">dataset</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">cache_path</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">dataset</span> <span class="o">=</span> <span class="n">load_dataset</span><span class="p">(</span><span class="n">dataset_path</span><span class="p">,</span> <span class="n">data_home</span><span class="o">=</span><span class="n">data_home</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="mi">80</span> <span class="o">*</span> <span class="s1">&#39;_&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Cache loading failed&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="mi">80</span> <span class="o">*</span> <span class="s1">&#39;_&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">dataset</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">download_tick_dataset</span><span class="p">(</span><span class="n">dataset_path</span><span class="p">,</span> <span class="n">data_home</span><span class="o">=</span><span class="n">data_home</span><span class="p">,</span>
+                              <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="n">dataset</span> <span class="o">=</span> <span class="n">load_dataset</span><span class="p">(</span><span class="n">dataset_path</span><span class="p">,</span> <span class="n">data_home</span><span class="o">=</span><span class="n">data_home</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">dataset</span></div>
+
+
+<span class="k">def</span> <span class="nf">load_dataset</span><span class="p">(</span><span class="n">dataset_path</span><span class="p">,</span> <span class="n">data_home</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Load dataset from given path</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dataset_path : `str`</span>
+<span class="sd">        Dataset relative path</span>
+
+<span class="sd">    data_home : `str`, optional, default=None</span>
+<span class="sd">        Specify a download and cache folder for the datasets. If None,</span>
+<span class="sd">        all tick datasets are stored in &#39;~/tick_datasets&#39; subfolders.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    output : `np.ndarray` or `dict` or `tuple`</span>
+<span class="sd">        Dataset. Its format will depend on queried dataset.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">data_home</span> <span class="o">=</span> <span class="n">get_data_home</span><span class="p">(</span><span class="n">data_home</span><span class="p">)</span>
+    <span class="n">cache_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_home</span><span class="p">,</span> <span class="n">dataset_path</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">cache_path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.npz&quot;</span><span class="p">):</span>
+        <span class="n">dataset</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">cache_path</span><span class="p">)</span>
+        <span class="c1"># If we have only one numpy array we return it directly otherwise</span>
+        <span class="c1"># we return the row dictionary</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">key_0</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">keys</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">dataset</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[</span><span class="n">key_0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">dataset</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">dataset</span> <span class="o">=</span> <span class="n">load_svmlight_file</span><span class="p">(</span><span class="n">cache_path</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">dataset</span>
+
+
+<span class="k">def</span> <span class="nf">get_data_home</span><span class="p">(</span><span class="n">data_home</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return the path of the tick data dir.</span>
+
+<span class="sd">    This folder is used by some large dataset loaders to avoid</span>
+<span class="sd">    downloading the data several times.</span>
+<span class="sd">    By default the data dir is set to a folder named &#39;tick_datasets&#39;</span>
+<span class="sd">    in the user home folder.</span>
+<span class="sd">    Alternatively, it can be set by the &#39;TICK_DATASETS&#39; environment</span>
+<span class="sd">    variable or programmatically by giving an explicit folder path. The</span>
+<span class="sd">    &#39;~&#39; symbol is expanded to the user home folder.</span>
+<span class="sd">    If the folder does not already exist, it is automatically created.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">data_home</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">data_home</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;TICK_DATASETS&#39;</span><span class="p">,</span>
+                                   <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;~&#39;</span><span class="p">,</span> <span class="s1">&#39;tick_datasets&#39;</span><span class="p">))</span>
+    <span class="n">data_home</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="n">data_home</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">data_home</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">data_home</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">data_home</span>
+
+
+<span class="k">def</span> <span class="nf">clear_dataset</span><span class="p">(</span><span class="n">dataset_path</span><span class="p">,</span> <span class="n">data_home</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Clear dataset from cache folder</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">data_home</span> <span class="o">=</span> <span class="n">get_data_home</span><span class="p">(</span><span class="n">data_home</span><span class="p">)</span>
+    <span class="n">cache_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_home</span><span class="p">,</span> <span class="n">dataset_path</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">cache_path</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">cache_path</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">clear_data_home</span><span class="p">(</span><span class="n">data_home</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Delete all the content of the data home cache.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">data_home</span> <span class="o">=</span> <span class="n">get_data_home</span><span class="p">(</span><span class="n">data_home</span><span class="p">)</span>
+    <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">data_home</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">convert_size</span><span class="p">(</span><span class="n">size_bytes</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Convert raw bytes into human readable size</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    http://stackoverflow.com/questions/5194057/better-way-to-convert-file-sizes-in-python</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">size_bytes</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;0B&#39;</span>
+    <span class="n">size_name</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;KB&quot;</span><span class="p">,</span> <span class="s2">&quot;MB&quot;</span><span class="p">,</span> <span class="s2">&quot;GB&quot;</span><span class="p">,</span> <span class="s2">&quot;TB&quot;</span><span class="p">,</span> <span class="s2">&quot;PB&quot;</span><span class="p">,</span> <span class="s2">&quot;EB&quot;</span><span class="p">,</span> <span class="s2">&quot;ZB&quot;</span><span class="p">,</span> <span class="s2">&quot;YB&quot;</span><span class="p">)</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">size_bytes</span><span class="p">,</span> <span class="mi">1024</span><span class="p">)))</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="mi">1024</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">size_bytes</span> <span class="o">/</span> <span class="n">p</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">size_name</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+
+<span class="k">def</span> <span class="nf">progress_bar</span><span class="p">(</span><span class="n">progress</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Print progress bar to sys.stdout</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    progress : `float`</span>
+<span class="sd">        Reached progress between 0 (just started) and 1 (finished)</span>
+
+<span class="sd">    width : `int`</span>
+<span class="sd">        Total width of the progress bar</span>
+
+<span class="sd">    length : `int`</span>
+<span class="sd">        Size in bytes of the downloaded file</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">length</span><span class="p">:</span>
+        <span class="n">size</span> <span class="o">=</span> <span class="s2">&quot;(</span><span class="si">%s</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="n">convert_size</span><span class="p">(</span><span class="n">length</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">size</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+    <span class="n">n_bars</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">progress</span> <span class="o">*</span> <span class="n">width</span><span class="p">)</span>
+    <span class="n">bar</span> <span class="o">=</span> <span class="s2">&quot;[</span><span class="si">%s%s</span><span class="s2">]&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="n">n_bars</span><span class="p">,</span> <span class="s2">&quot; &quot;</span> <span class="o">*</span> <span class="p">(</span><span class="n">width</span> <span class="o">-</span> <span class="n">n_bars</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\r</span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2"> </span><span class="si">%2d%%</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">bar</span><span class="p">,</span> <span class="n">progress</span> <span class="o">*</span> <span class="mi">100</span><span class="p">),</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">progress</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">()</span>
+</pre></div>
+
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Vinther Poulsen.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

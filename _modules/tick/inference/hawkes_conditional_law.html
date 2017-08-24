@@ -1,0 +1,1345 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-97947441-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+    <title>tick.inference.hawkes_conditional_law &#8212; tick 0.2.1 documentation</title>
+    <link rel="stylesheet" href="../../../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootstrap-3.3.4/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootstrap-3.3.4/css/bootstrap-theme.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.2.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../../../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../../../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../../_static/bootstrap-sphinx.js"></script>
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+
+  <div id="navbar" class="None navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../../index.html">
+          tick</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.2</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../../../index.html">Home</a></li>
+                <li><a href="../../../auto_examples/index.html">Examples</a></li>
+                <li><a href="../../../modules/api.html">API</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../../index.html">Browse <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/inference.html"><code class="docutils literal"><span class="pre">tick.inference</span></code>: user-friendly inference tools</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/inference.html#generalized-linear-models">1. Generalized linear models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/inference.html#hawkes">2. Hawkes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/inference.html#survival-analysis">3. Survival analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/optim.html"><code class="docutils literal"><span class="pre">tick.optim</span></code>: optimization toolbox</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/optim.html#contents">Contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/optim.html#a-first-example">A First example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/optim.html#tick-optim-model-model-classes">1. <code class="docutils literal"><span class="pre">tick.optim.model</span></code>: model classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/optim.html#tick-optim-prox-proximal-operators">2. <code class="docutils literal"><span class="pre">tick.optim.prox</span></code>: proximal operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/optim.html#tick-optim-solver-solvers">3. <code class="docutils literal"><span class="pre">tick.optim.solver</span></code>: solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/optim.html#what-s-under-the-hood">4. What’s under the hood?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/plot.html"><code class="docutils literal"><span class="pre">tick.plot</span></code>: plotting utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/plot.html#optimization">Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/plot.html#hawkes-estimation">Hawkes estimation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/plot.html#point-process-simulation">Point process simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/plot.html#others">Others</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/generated/tick.preprocessing.FeaturesBinarizer.html">tick.preprocessing.FeaturesBinarizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/generated/tick.preprocessing.LongitudinalFeaturesProduct.html">tick.preprocessing.LongitudinalFeaturesProduct</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/generated/tick.preprocessing.LongitudinalFeaturesLagger.html">tick.preprocessing.LongitudinalFeaturesLagger</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code>: simulation toolbox</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/simulation.html#simulation-tools">1. Simulation tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/simulation.html#linear-model-simulation">2. Linear model simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/simulation.html#survival-analysis-simulation">3. Survival analysis simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/simulation.html#point-process-simulation">4. Point process simulation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/dataset.html"><code class="docutils literal"><span class="pre">tick.dataset</span></code>: real world datasets</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/dataset.html#functions">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/dataset.html#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/dev.html">Developer documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/dev.html#main-highlights">Main highlights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/dev.html#base-class">Base class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/dev.html#how-to-add-a-new-model-solver-or-prox">How to add a new model, solver or prox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/dev.html#enable-python-pickling-of-c-objects">Enable Python-pickling of C++ objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/dev.html#tips-for-debugging-c-classes-in-tick">Tips for debugging C++ classes in tick</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container content-container">
+  
+  <h1>Source code for tick.inference.hawkes_conditional_law</h1><div class="highlight"><pre>
+<span></span><span class="c1"># License: BSD 3 clause</span>
+
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">tick.base</span> <span class="k">import</span> <span class="n">Base</span><span class="p">,</span> <span class="n">ThreadPool</span>
+<span class="kn">from</span> <span class="nn">numpy.polynomial.legendre</span> <span class="k">import</span> <span class="n">leggauss</span>
+<span class="kn">from</span> <span class="nn">scipy.linalg</span> <span class="k">import</span> <span class="n">solve</span>
+
+<span class="kn">from</span> <span class="nn">.build.inference</span> <span class="k">import</span> <span class="n">PointProcessCondLaw</span>
+
+
+<span class="c1"># noinspection PyPep8Naming</span>
+<div class="viewcode-block" id="HawkesConditionalLaw"><a class="viewcode-back" href="../../../modules/generated/tick.inference.HawkesConditionalLaw.html#tick.inference.HawkesConditionalLaw">[docs]</a><span class="k">class</span> <span class="nc">HawkesConditionalLaw</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This class is used for performing non parametric estimation of</span>
+<span class="sd">    multi-dimensional marked Hawkes processes based on conditional laws.</span>
+
+<span class="sd">    Marked Hawkes processes are point processes defined by the intensity:</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        \\forall i \\in [1 \\dots D], \\quad</span>
+<span class="sd">        \\lambda_i = \\mu_i + \\sum_{j=1}^D \\int \\phi_{ij} * f_{ij}(v_j) dN_j</span>
+
+<span class="sd">    where</span>
+
+<span class="sd">    * :math:`D` is the number of nodes</span>
+<span class="sd">    * :math:`\mu_i` are the baseline intensities</span>
+<span class="sd">    * :math:`\phi_{ij}` are the kernels</span>
+<span class="sd">    * :math:`v_j` are the marks (considered iid) of the process :math:`N_j`</span>
+<span class="sd">    * :math:`f_{ij}` the mark functions supposed to be piece-wise constant</span>
+<span class="sd">      on intervals :math:`I^j(l)`</span>
+
+<span class="sd">    The estimation is made from empirical computations of</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        \\lim_{\\epsilon \\rightarrow 0}</span>
+<span class="sd">        E [ (N_i[t + lag + \\delta + \\epsilon] -</span>
+<span class="sd">             \Lambda[t + lag + \\epsilon]) | N_j[t]=1</span>
+<span class="sd">        \quad \&amp; \quad</span>
+<span class="sd">        v_j(t) \in I^j(l) ]</span>
+
+<span class="sd">    For all the possible values of :math:`i`, :math:`i` and :math:`l`.</span>
+<span class="sd">    The :math:`lag` is sampled on a uniform grid defined by</span>
+<span class="sd">    :math:`\\delta`: :math:`lag = n * \\delta`.</span>
+
+<span class="sd">    Estimation can be performed using several realizations.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    claw_method : {&#39;lin&#39;, &#39;log&#39;}, default=&#39;lin&#39;</span>
+<span class="sd">        Specifies the way the conditional laws are sampled. It can be either:</span>
+
+<span class="sd">        * &#39;lin&#39; : sampling is linear on [0, max_lag] using sampling period</span>
+<span class="sd">          delta_lag</span>
+<span class="sd">        * &#39;log&#39; : sampling is semi-log. It uses linear sampling on [0, min_lag]</span>
+<span class="sd">          with sampling period delta_lag and log sampling on [min_lag, max_lag]</span>
+<span class="sd">          using :math:`\\exp(\\delta)` sampling period.</span>
+
+<span class="sd">    delta_lag : `float`, default=0.1</span>
+<span class="sd">        See claw_methods</span>
+
+<span class="sd">    min_lag : `float`, default=1e-4</span>
+<span class="sd">        See claw_methods</span>
+
+<span class="sd">    max_lag : `float`, default=40</span>
+<span class="sd">        See claw_methods</span>
+
+<span class="sd">    quad_method : {&#39;gauss&#39;, &#39;lin&#39;, &#39;log&#39;}, default=gauss</span>
+<span class="sd">        Sampling used for quadrature</span>
+
+<span class="sd">        * &#39;gauss&#39; for gaussian quadrature</span>
+<span class="sd">        * &#39;lin&#39; for linear quadrature</span>
+<span class="sd">        * &#39;log&#39; for log quadrature</span>
+
+<span class="sd">    min_support : `float`, default=1e-4</span>
+<span class="sd">        Start value of kernel estimation. It is used for &#39;log&#39; quadrature</span>
+<span class="sd">        method only, otherwise it is set to 0.</span>
+
+<span class="sd">    max_support : `float`, default=40</span>
+<span class="sd">        End value of kernel estimation</span>
+
+<span class="sd">    n_quad : `int` : default=50</span>
+<span class="sd">        The number of quadrature points between [min_support, max_support]</span>
+<span class="sd">        used for solving the system.</span>
+<span class="sd">        Be aware that the complexity increase as this number squared.</span>
+
+<span class="sd">    n_threads : `int`, default=1</span>
+<span class="sd">        Number of threads used for parallel computation.</span>
+
+<span class="sd">        * if `int &lt;= 0`: the number of physical cores available on the CPU</span>
+<span class="sd">        * otherwise the desired number of threads</span>
+
+<span class="sd">    Other Parameters</span>
+<span class="sd">    ----------------</span>
+<span class="sd">    delayed_component : list of `int`, shape=(n_nodes, ), default=None</span>
+<span class="sd">        list of node indices corresponding to node that should be delayed</span>
+<span class="sd">        (to avoid simultaneous jumps of different components which can be a</span>
+<span class="sd">        problem in the estimation)</span>
+
+<span class="sd">    delay : `float`</span>
+<span class="sd">        The delayed used for `delayed_component`. Selected components are</span>
+<span class="sd">        all delayed with the same value</span>
+
+<span class="sd">    marked_components : `dict`</span>
+<span class="sd">        A dictionary that indicates which component is considered as marked</span>
+<span class="sd">        and what are the corresponding intervals ``I_j(l)``</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n_nodes : `int`</span>
+<span class="sd">        Number of nodes of the estimated Hawkes process</span>
+
+<span class="sd">    n_realizations : `int`</span>
+<span class="sd">        Number of given realizations</span>
+
+<span class="sd">    baseline : np.ndarray, shape=(n_nodes,)</span>
+<span class="sd">        Estimation of the baseline</span>
+
+<span class="sd">    kernels_norms : np.ndarray, shape=(n_nodes, n_nodes)</span>
+<span class="sd">        L1 norm matrix of the kernel norms</span>
+
+<span class="sd">    kernels : list of list</span>
+<span class="sd">        Kernel&#39;s estimation on the quadrature points</span>
+
+<span class="sd">    mean_intensity : list of `float`</span>
+<span class="sd">        The estimated mean intensity</span>
+
+<span class="sd">    symmetries1d : list of 2-tuple</span>
+<span class="sd">        List of component index pairs for imposing symmetries on the mean</span>
+<span class="sd">        intensity (e.g, ``[(0,1),(2,3)]`` means that the mean intensity of</span>
+<span class="sd">        the components 0 and 1 must be the same and the mean intensity of the</span>
+<span class="sd">        components 2 and 3 also</span>
+<span class="sd">        Can be set using can be set using the `set_model` method.</span>
+
+<span class="sd">    symmetries2d : list of 2-tuple of 2-tuple</span>
+<span class="sd">        List of kernel coordinates pairs to impose symmetries on the kernel</span>
+<span class="sd">        matrix (e.g., ``[[(0,0),(1,1)],[(1,0),(0,1)]]`` for a bidiagonal</span>
+<span class="sd">        kernel in dimension 2)</span>
+<span class="sd">        Can be set using can be set using the `set_model` method.</span>
+
+<span class="sd">    mark_functions : list of 2-tuple</span>
+<span class="sd">        The mark functions as a list (lexical order on i,j and l, see below)</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    Bacry, E., &amp; Muzy, J. F. (2014).</span>
+<span class="sd">    Second order statistics characterization of Hawkes processes and</span>
+<span class="sd">    non-parametric estimation. `arXiv preprint arXiv:1401.0903`_.</span>
+
+<span class="sd">    .. _arXiv preprint arXiv:1401.0903: https://arxiv.org/pdf/1401.0903.pdf</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_attrinfos</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;_hawkes_object&#39;</span><span class="p">:</span> <span class="p">{},</span>
+        <span class="s1">&#39;_lags&#39;</span><span class="p">:</span> <span class="p">{},</span>
+        <span class="s1">&#39;_lock&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;writable&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+        <span class="s1">&#39;_phi_ijl&#39;</span><span class="p">:</span> <span class="p">{},</span> <span class="s1">&#39;_norm_ijl&#39;</span><span class="p">:</span> <span class="p">{},</span>
+        <span class="s1">&#39;_ijl2index&#39;</span><span class="p">:</span> <span class="p">{},</span>
+        <span class="s1">&#39;_index2ijl&#39;</span><span class="p">:</span> <span class="p">{},</span>
+        <span class="s1">&#39;_n_index&#39;</span><span class="p">:</span> <span class="p">{},</span>
+        <span class="s1">&#39;_mark_probabilities&#39;</span><span class="p">:</span> <span class="p">{},</span>
+        <span class="s1">&#39;_mark_probabilities_N&#39;</span><span class="p">:</span> <span class="p">{},</span>
+        <span class="s1">&#39;_mark_min&#39;</span><span class="p">:</span> <span class="p">{},</span> <span class="s1">&#39;_mark_max&#39;</span><span class="p">:</span> <span class="p">{},</span>
+        <span class="s1">&#39;_lam_N&#39;</span><span class="p">:</span> <span class="p">{},</span> <span class="s1">&#39;_lam_T&#39;</span><span class="p">:</span> <span class="p">{},</span>
+        <span class="s1">&#39;_claw&#39;</span><span class="p">:</span> <span class="p">{},</span> <span class="s1">&#39;_claw1&#39;</span><span class="p">:</span> <span class="p">{},</span> <span class="s1">&#39;_claw_X&#39;</span><span class="p">:</span> <span class="p">{},</span> <span class="s1">&#39;_n_events&#39;</span><span class="p">:</span> <span class="p">{},</span>
+        <span class="s1">&#39;_int_claw&#39;</span><span class="p">:</span> <span class="p">{},</span> <span class="s1">&#39;_IG&#39;</span><span class="p">:</span> <span class="p">{},</span> <span class="s1">&#39;_IG2&#39;</span><span class="p">:</span> <span class="p">{},</span>
+        <span class="s1">&#39;_quad_x&#39;</span><span class="p">:</span> <span class="p">{},</span> <span class="s1">&#39;_quad_w&#39;</span><span class="p">:</span> <span class="p">{}</span>
+    <span class="p">}</span>
+
+<div class="viewcode-block" id="HawkesConditionalLaw.__init__"><a class="viewcode-back" href="../../../modules/generated/tick.inference.HawkesConditionalLaw.html#tick.inference.HawkesConditionalLaw.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">delta_lag</span><span class="o">=.</span><span class="mi">1</span><span class="p">,</span> <span class="n">min_lag</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">max_lag</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">n_quad</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+                 <span class="n">max_support</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">min_support</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">quad_method</span><span class="o">=</span><span class="s1">&#39;gauss&#39;</span><span class="p">,</span>
+                 <span class="n">marked_components</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">delayed_component</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">delay</span><span class="o">=</span><span class="mf">0.00001</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_threads</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">claw_method</span><span class="o">=</span><span class="s1">&#39;lin&#39;</span><span class="p">):</span>
+
+        <span class="n">Base</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="c1"># Init the claw sampling parameters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">delta_lag</span> <span class="o">=</span> <span class="n">delta_lag</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_lag</span> <span class="o">=</span> <span class="n">max_lag</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">min_lag</span> <span class="o">=</span> <span class="n">min_lag</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">claw_method</span> <span class="o">=</span> <span class="n">claw_method</span>
+
+        <span class="c1"># Init quadrature method</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">quad_method</span> <span class="o">=</span> <span class="n">quad_method</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_quad</span> <span class="o">=</span> <span class="n">n_quad</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">min_support</span> <span class="o">=</span> <span class="n">min_support</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_support</span> <span class="o">=</span> <span class="n">max_support</span>
+
+        <span class="c1"># Init marked components</span>
+        <span class="k">if</span> <span class="n">marked_components</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">marked_components</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">marked_components</span> <span class="o">=</span> <span class="n">marked_components</span>
+
+        <span class="c1"># Init attributes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_realizations</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lags</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_compute_lags</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">symmetries1d</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">symmetries2d</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">delayed_component</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">delayed_component</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">delay</span> <span class="o">=</span> <span class="n">delay</span>
+
+        <span class="c1"># _claw : list of 2-tuple</span>
+        <span class="c1"># Represents the conditional laws written above (lexical order on i,</span>
+        <span class="c1"># j and l, see below). Each conditional law is represented by a</span>
+        <span class="c1"># pair (x, c) where x are the abscissa</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_claw</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="c1"># _claw1 : list of list</span>
+        <span class="c1"># Represents the conditional laws written above without conditioning by</span>
+        <span class="c1"># the mark (so a i,j list)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_claw1</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># quad_x : `np.ndarray`, shape=(n_quad, )</span>
+        <span class="c1"># The abscissa of the quadrature points used for the Fredholm system</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_quad_x</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># quad_w : `np.ndarray`, shape=(n_quad, )</span>
+        <span class="c1"># The weights the quadrature points used for the Fredholm system</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_quad_w</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_phi_ijl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_norm_ijl</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kernels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">kernels_norms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">baseline</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mark_functions</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="n">n_threads</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="kn">import</span> <span class="nn">multiprocessing</span>
+            <span class="n">n_threads</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_threads</span> <span class="o">=</span> <span class="n">n_threads</span>
+        <span class="k">if</span> <span class="n">model</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_model</span><span class="p">(</span><span class="n">model</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="HawkesConditionalLaw.fit"><a class="viewcode-back" href="../../../modules/generated/tick.inference.HawkesConditionalLaw.html#tick.inference.HawkesConditionalLaw.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">events</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">T</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Fit the model according to the given training data.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        events : `list` of `list` of `np.ndarray`</span>
+<span class="sd">            List of Hawkes processes realizations.</span>
+<span class="sd">            Each realization of the Hawkes process is a list of n_node for</span>
+<span class="sd">            each component of the Hawkes. Namely `events[i][j]` contains a</span>
+<span class="sd">            one-dimensional `numpy.array` of the events&#39; timestamps of</span>
+<span class="sd">            component j of realization i.</span>
+<span class="sd">            If only one realization is given, it will be wrapped into a list</span>
+
+<span class="sd">        T : `double`, default=None</span>
+<span class="sd">            The duration (in physical time) of the realization. If it is None then</span>
+<span class="sd">            T is considered to be the time of the last event (of any component).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        output : `HawkesConditionalLaw`</span>
+<span class="sd">            The current instance of the Learner</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">events</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="n">events</span> <span class="o">=</span> <span class="p">[</span><span class="n">events</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">timestamps</span> <span class="ow">in</span> <span class="n">events</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">incremental_fit</span><span class="p">(</span><span class="n">timestamps</span><span class="p">,</span> <span class="n">compute</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">T</span><span class="o">=</span><span class="n">T</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="HawkesConditionalLaw.set_model"><a class="viewcode-back" href="../../../modules/generated/tick.inference.HawkesConditionalLaw.html#tick.inference.HawkesConditionalLaw.set_model">[docs]</a>    <span class="k">def</span> <span class="nf">set_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">symmetries1d</span><span class="o">=</span><span class="nb">list</span><span class="p">(),</span> <span class="n">symmetries2d</span><span class="o">=</span><span class="nb">list</span><span class="p">(),</span>
+                  <span class="n">delayed_component</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the model to be used.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        symmetries1d : list of 2-tuple</span>
+<span class="sd">            List of component index pairs for imposing symmetries on the mean</span>
+<span class="sd">            intensity (e.g, ``[(0,1),(2,3)]`` means that the mean intensity of</span>
+<span class="sd">            the components 0 and 1 must be the same and the mean intensity of</span>
+<span class="sd">            the components 2 and 3 also.</span>
+<span class="sd">            Can be set using can be set using the `set_model` method.</span>
+
+<span class="sd">        symmetries2d : list of 2-tuple of 2-tuple</span>
+<span class="sd">            List of kernel coordinates pairs to impose symmetries on the kernel</span>
+<span class="sd">            matrix (e.g., ``[[(0,0),(1,1)],[(1,0),(0,1)]]`` for a bidiagonal</span>
+<span class="sd">            kernel in dimension 2)</span>
+<span class="sd">            Can be set using can be set using the `set_model` method.</span>
+
+<span class="sd">        delayed_component : list of `int`, shape=(N, ), default=`None`</span>
+<span class="sd">            list of node indices corresponding to node that should be delayed</span>
+<span class="sd">            (to avoid simultaneous jumps of different components which can be a</span>
+<span class="sd">            problem in the estimation)</span>
+
+<span class="sd">        If no model is specified then default values for these fields are used</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        We set the symmetries, the kernel names and delayed components for</span>
+<span class="sd">        first realization only</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">symmetries1d</span> <span class="o">=</span> <span class="n">symmetries1d</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">symmetries2d</span> <span class="o">=</span> <span class="n">symmetries2d</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">delayed_component</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">delayed_component</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_init_basics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">realization</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Init the dimension</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">realization</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">realization</span>
+
+    <span class="k">def</span> <span class="nf">_init_marked_components</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Init marked components</span>
+
+<span class="sd">        This builds the field self.marked_components so that it is set to</span>
+<span class="sd">           [component1_mark_intervals, ..., componentN_mark_intervals]</span>
+<span class="sd">        where each componentj_mark_intervals is of the form</span>
+<span class="sd">           [[min1, max1], [min2, max2], ..., [mink, maxk]]</span>
+<span class="sd">        It describes the intervals the function f^ij are constants on.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">marked_components</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">marked_components</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">marked_components</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">marked_components</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">marked_components</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">marked_components</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="p">[</span><span class="o">-</span><span class="n">sys</span><span class="o">.</span><span class="n">float_info</span><span class="o">.</span><span class="n">max</span><span class="p">,</span> <span class="n">marked_components</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]])</span>
+                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">marked_components</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">marked_components</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="n">marked_components</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">:</span><span class="n">j</span> <span class="o">+</span> <span class="mi">2</span><span class="p">])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">marked_components</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="p">[</span><span class="n">marked_components</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">sys</span><span class="o">.</span><span class="n">float_info</span><span class="o">.</span><span class="n">max</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">marked_components</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="p">[</span><span class="o">-</span><span class="n">sys</span><span class="o">.</span><span class="n">float_info</span><span class="o">.</span><span class="n">max</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">float_info</span><span class="o">.</span><span class="n">max</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">_init_index</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Init for indexing</span>
+
+<span class="sd">        Given i,j,l --&gt; index and vice versa (i and j are components of the</span>
+<span class="sd">        Hawkes and l is the marked interval index of the component j)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ijl2index</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_index2ijl</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ijl2index</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_ijl2index</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
+                <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">marked_components</span><span class="p">[</span><span class="n">j</span><span class="p">])):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_ijl2index</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_index2ijl</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">l</span><span class="p">))</span>
+                    <span class="n">index</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_n_index</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_index2ijl</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_init_mark_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;We initialize the mark probabilities and min-max of the marks</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Proba for the mark</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mark_probabilities</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># In order to compute the probability we need to store the number of</span>
+        <span class="c1"># events</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mark_probabilities_N</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mark_min</span> <span class="o">=</span> <span class="p">[</span><span class="n">sys</span><span class="o">.</span><span class="n">float_info</span><span class="o">.</span><span class="n">max</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mark_max</span> <span class="o">=</span> <span class="p">[</span><span class="n">sys</span><span class="o">.</span><span class="n">float_info</span><span class="o">.</span><span class="n">min</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_mark_probabilities_N</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">marked_components</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_mark_probabilities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">marked_components</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+
+    <span class="k">def</span> <span class="nf">_init_lambdas</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Init the lambda&#39;s</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mean_intensity</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lam_N</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lam_T</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span>
+        <span class="c1"># Used to store the number of events of each component that</span>
+        <span class="c1"># have been used to perform estimation on all the lags</span>
+        <span class="c1"># versus the number of events that could not be used for all the lags</span>
+        <span class="c1"># Warning : we don&#39;t take care of marks for this computation</span>
+        <span class="c1"># normally we should do this computation independantly for each mark</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_n_events</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_init_claws</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Init the claw storage</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_claw</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_index2ijl</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_index_to_lexical</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Convert index to lexical order (i,j,l)</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        index : `int`</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        i : `int`</span>
+<span class="sd">            First node of the Hawkes</span>
+
+<span class="sd">        j : `int`</span>
+<span class="sd">            Second node of the Hawkes</span>
+
+<span class="sd">        l : `int`</span>
+<span class="sd">            Marked interval index of the component j</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; from tick.inference import HawkesConditionalLaw</span>
+<span class="sd">        &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">        &gt;&gt;&gt; learner = HawkesConditionalLaw()</span>
+<span class="sd">        &gt;&gt;&gt; learner.incremental_fit([np.array([2.1, 3, 4]),</span>
+<span class="sd">        ...                          np.array([2., 2.01, 8])],</span>
+<span class="sd">        ...                         compute=False)</span>
+<span class="sd">        &gt;&gt;&gt; learner._index_to_lexical(2)</span>
+<span class="sd">        (1, 0, 0)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_index2ijl</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_lexical_to_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">l</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Convert lexical order (i,j,l) to index</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        i : `int`</span>
+<span class="sd">            First node of the Hawkes</span>
+
+<span class="sd">        j : `int`</span>
+<span class="sd">            Second node of the Hawkes</span>
+
+<span class="sd">        l : `int`</span>
+<span class="sd">            Marked interval index of the component j</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        index : `int`</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; from tick.inference import HawkesConditionalLaw</span>
+<span class="sd">        &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">        &gt;&gt;&gt; learner = HawkesConditionalLaw()</span>
+<span class="sd">        &gt;&gt;&gt; learner.incremental_fit([np.array([2.1, 3, 4]),</span>
+<span class="sd">        ...                          np.array([2., 2.01, 8])],</span>
+<span class="sd">        ...                         compute=False)</span>
+<span class="sd">        &gt;&gt;&gt; learner._lexical_to_index(1, 0, 0)</span>
+<span class="sd">        2</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ijl2index</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">][</span><span class="n">l</span><span class="p">]</span>
+
+<div class="viewcode-block" id="HawkesConditionalLaw.incremental_fit"><a class="viewcode-back" href="../../../modules/generated/tick.inference.HawkesConditionalLaw.html#tick.inference.HawkesConditionalLaw.incremental_fit">[docs]</a>    <span class="k">def</span> <span class="nf">incremental_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">realization</span><span class="p">,</span> <span class="n">T</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">compute</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Allows to add some more realizations before estimation is performed.</span>
+
+<span class="sd">        It updates the conditional laws (stored in `self._claw` and</span>
+<span class="sd">        `self._claw1`) and of the mean intensity (in `self._mean_intensity`).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        realization : list of `np.narrays` or list of 2-tuple of `np.arrays`</span>
+
+<span class="sd">            * list of `np.narrays`, shape=(N) , representing the arrival times</span>
+<span class="sd">              of each component</span>
+<span class="sd">            * list of pairs (t,m) np.arrays representing the arrival times of</span>
+<span class="sd">              each component (x) and the cumulative marks signal (m)</span>
+
+<span class="sd">        T : `double`, default=None</span>
+<span class="sd">            The duration (in physical time) of the realization. If it is -1 then</span>
+<span class="sd">            T is considered to be the time of the last event (of any component).</span>
+
+<span class="sd">        compute : `bool`, default=`False`</span>
+<span class="sd">            Computes kernel estimation. If set to `False`, you will have to</span>
+<span class="sd">            manually call `compute` method afterwards.</span>
+<span class="sd">            This is useful to add multiple realizations and compute only once</span>
+<span class="sd">            all conditional laws have been updated.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># If first realization we perform some init</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_realizations</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">realization</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_init_basics</span><span class="p">(</span><span class="n">realization</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_init_marked_components</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_init_index</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_init_mark_stats</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_init_lambdas</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_init_claws</span><span class="p">()</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">compute</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_been_computed_once</span><span class="p">():</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">((</span><span class="s2">&quot;compute() method was already called, &quot;</span>
+                               <span class="s2">&quot;computed kernels will be updated.&quot;</span><span class="p">))</span>
+
+        <span class="c1"># We perform some checks</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">realization</span><span class="p">):</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;Bad dimension for realization, should be </span><span class="si">%d</span><span class="s1"> instead of </span><span class="si">%d</span><span class="s1">&#39;</span> \
+                  <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">realization</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="c1"># Realization normalization</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">realization</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+            <span class="n">realization</span> <span class="o">=</span> <span class="p">[(</span><span class="n">r</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">double</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                           <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">realization</span><span class="p">]</span>
+
+        <span class="c1"># Do we need to delay the realization ?</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">delayed_component</span><span class="p">:</span>
+            <span class="n">old_realization</span> <span class="o">=</span> <span class="n">realization</span>
+            <span class="n">realization</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">delayed_component</span> <span class="o">==</span> <span class="n">i</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">old_realization</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">realization</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">old_realization</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">realization</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">old_realization</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">delay</span><span class="p">,</span>
+                                            <span class="n">old_realization</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">realization</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">old_realization</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+        <span class="c1"># We compute last event time</span>
+        <span class="n">last_event_time</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">realization</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">last_event_time</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">realization</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">last_event_time</span><span class="p">)</span>
+
+        <span class="c1"># If realization empty --&gt; return</span>
+        <span class="k">if</span> <span class="n">last_event_time</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s2">&quot;An empty realization was passed. No computation was performed.&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="c1"># We set T if needed</span>
+        <span class="k">if</span> <span class="n">T</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">T</span> <span class="o">=</span> <span class="n">last_event_time</span>
+        <span class="k">elif</span> <span class="n">T</span> <span class="o">&lt;</span> <span class="n">last_event_time</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Argument T (</span><span class="si">%g</span><span class="s2">) specified is too small, &quot;</span>
+                             <span class="s2">&quot;you should use default value or a value &quot;</span>
+                             <span class="s2">&quot;greater or equal to </span><span class="si">%g</span><span class="s2">.&quot;</span>
+                             <span class="o">%</span> <span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">last_event_time</span><span class="p">))</span>
+
+        <span class="c1"># We update the mark probabilities and min-max</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">realization</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="c1"># We have to take into account the first mark</span>
+            <span class="n">der</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="n">realization</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">realization</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">])])</span>
+            <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_mark_min</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mark_min</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">der</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_mark_max</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mark_max</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">der</span><span class="p">))</span>
+
+            <span class="k">for</span> <span class="n">l</span><span class="p">,</span> <span class="n">interval</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">marked_components</span><span class="p">[</span><span class="n">i</span><span class="p">]):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_mark_probabilities_N</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">l</span><span class="p">]</span> <span class="o">+=</span> \
+                    <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">der</span> <span class="o">&gt;=</span> <span class="n">interval</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">der</span> <span class="o">&lt;</span> <span class="n">interval</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+                <span class="n">total</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mark_probabilities_N</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">l</span><span class="p">]</span>
+
+            <span class="k">for</span> <span class="n">l</span><span class="p">,</span> <span class="n">interval</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">marked_components</span><span class="p">[</span><span class="n">i</span><span class="p">]):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_mark_probabilities</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">l</span><span class="p">]</span> <span class="o">=</span> \
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_mark_probabilities_N</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">l</span><span class="p">]</span> <span class="o">/</span> <span class="n">total</span>
+            <span class="n">der</span><span class="p">[:]</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="c1"># We update the Lambda</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">realization</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_lam_N</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">realization</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_lam_T</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">T</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mean_intensity</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lam_N</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lam_T</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+        <span class="c1"># We update the _n_events of component i</span>
+        <span class="c1"># Warning : we don&#39;t take care of marks for this computation</span>
+        <span class="c1"># normally we should do this computation independantly for each mark</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span><span class="p">):</span>
+            <span class="n">good</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">realization</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">T</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lags</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">bad</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">realization</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span> <span class="o">-</span> <span class="n">good</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_n_events</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">good</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_n_events</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">bad</span>
+
+        <span class="c1"># We might want to use threads, since this is the time consuming part</span>
+        <span class="n">with_multi_processing</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_threads</span> <span class="o">&gt;</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">with_multi_processing</span><span class="p">:</span>
+            <span class="n">pool</span> <span class="o">=</span> <span class="n">ThreadPool</span><span class="p">(</span><span class="n">with_lock</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">max_threads</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_threads</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s1">&#39;_lock&#39;</span><span class="p">,</span> <span class="n">pool</span><span class="o">.</span><span class="n">lock</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">l</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_index2ijl</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">with_multi_processing</span><span class="p">:</span>
+                <span class="n">pool</span><span class="o">.</span><span class="n">add_work</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_PointProcessCondLaw</span><span class="p">,</span> <span class="n">realization</span><span class="p">,</span>
+                              <span class="n">index</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_PointProcessCondLaw</span><span class="p">(</span><span class="n">realization</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">with_multi_processing</span><span class="p">:</span>
+            <span class="n">pool</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+        <span class="c1"># Here we compute the G^ij (not conditioned to l)</span>
+        <span class="c1"># It is recomputed each time</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_claw1</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_claw1</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span><span class="p">):</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ijl2index</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_claw1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_claw</span><span class="p">[</span><span class="n">index</span><span class="p">]))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_claw1</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mark_probabilities</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ijl2index</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">])):</span>
+                    <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ijl2index</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">][</span><span class="n">l</span><span class="p">]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_claw1</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_claw</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">*</span> \
+                                         <span class="bp">self</span><span class="o">.</span><span class="n">_mark_probabilities</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">l</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_realizations</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="c1"># Deal with symmetrization</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">symmetries1d</span><span class="p">:</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mean_intensity</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean_intensity</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="o">/</span> <span class="mi">2</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mean_intensity</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mean_intensity</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span>
+
+            <span class="n">t</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mark_min</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mark_min</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="o">/</span> <span class="mi">2</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_mark_min</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_mark_min</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span>
+
+            <span class="n">t</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mark_max</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mark_max</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="o">/</span> <span class="mi">2</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_mark_max</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_mark_max</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">marked_components</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">marked_components</span><span class="p">[</span><span class="n">j</span><span class="p">]:</span>
+                <span class="k">continue</span>
+            <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">marked_components</span><span class="p">[</span><span class="n">i</span><span class="p">])):</span>
+                <span class="n">t</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mark_probabilities_N</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">l</span><span class="p">]</span> <span class="o">+</span>
+                     <span class="bp">self</span><span class="o">.</span><span class="n">_mark_probabilities_N</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">l</span><span class="p">])</span> <span class="o">/</span> <span class="mi">2</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_mark_probabilities_N</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">l</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_mark_probabilities_N</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">l</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span>
+
+                <span class="n">t</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mark_probabilities</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">l</span><span class="p">]</span> <span class="o">+</span>
+                     <span class="bp">self</span><span class="o">.</span><span class="n">_mark_probabilities</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">l</span><span class="p">])</span> <span class="o">/</span> <span class="mi">2</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_mark_probabilities</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">l</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_mark_probabilities</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">l</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span>
+
+        <span class="k">for</span> <span class="p">((</span><span class="n">i1</span><span class="p">,</span> <span class="n">j1</span><span class="p">),</span> <span class="p">(</span><span class="n">i2</span><span class="p">,</span> <span class="n">j2</span><span class="p">))</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">symmetries2d</span><span class="p">:</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_claw1</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="n">j1</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_claw1</span><span class="p">[</span><span class="n">i2</span><span class="p">][</span><span class="n">j2</span><span class="p">])</span> <span class="o">/</span> <span class="mi">2</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_claw1</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="n">j1</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_claw1</span><span class="p">[</span><span class="n">i2</span><span class="p">][</span><span class="n">j2</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">marked_components</span><span class="p">[</span><span class="n">j1</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">marked_components</span><span class="p">[</span><span class="n">j2</span><span class="p">]:</span>
+                <span class="k">continue</span>
+            <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">marked_components</span><span class="p">[</span><span class="n">j1</span><span class="p">])):</span>
+                <span class="n">index1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ijl2index</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="n">j1</span><span class="p">][</span><span class="n">l</span><span class="p">]</span>
+                <span class="n">index2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ijl2index</span><span class="p">[</span><span class="n">i2</span><span class="p">][</span><span class="n">j2</span><span class="p">][</span><span class="n">l</span><span class="p">]</span>
+                <span class="n">t</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_claw</span><span class="p">[</span><span class="n">index1</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_claw</span><span class="p">[</span><span class="n">index2</span><span class="p">])</span> <span class="o">/</span> <span class="mi">2</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_claw</span><span class="p">[</span><span class="n">index1</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_claw</span><span class="p">[</span><span class="n">index2</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span>
+
+        <span class="c1"># We can remove the thread lock (lock disallows pickling)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s1">&#39;_lock&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">compute</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="nf">_PointProcessCondLaw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">realization</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
+
+        <span class="n">claw_X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lags</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">claw_Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lags</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">lambda_i</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">realization</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="n">T</span>
+
+        <span class="n">PointProcessCondLaw</span><span class="p">(</span><span class="n">realization</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+                            <span class="n">realization</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">realization</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lags</span><span class="p">,</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">marked_components</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">l</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">marked_components</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">l</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
+                            <span class="n">T</span><span class="p">,</span>
+                            <span class="n">lambda_i</span><span class="p">,</span>
+                            <span class="n">claw_X</span><span class="p">,</span> <span class="n">claw_Y</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_claw_X</span> <span class="o">=</span> <span class="n">claw_X</span>
+
+        <span class="c1"># TODO: this lock acquire is very expensive here</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_threads</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span>
+
+        <span class="c1"># Update claw</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_realizations</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_claw</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">claw_Y</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_claw</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_realizations</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_claw</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">+=</span> <span class="n">claw_Y</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_claw</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">/=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_realizations</span> <span class="o">+</span> <span class="mi">1</span>
+
+        <span class="c1"># Unlock</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_threads</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_compute_lags</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Computes the lags at which the claw will be computed</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">claw_method</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">claw_method</span>
+
+        <span class="c1"># computes the claw either on a uniform grid (lin) or a semi log</span>
+        <span class="c1"># uniform grid (log)</span>
+        <span class="k">if</span> <span class="n">claw_method</span> <span class="o">==</span> <span class="s2">&quot;log&quot;</span><span class="p">:</span>
+            <span class="n">y1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_lag</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_lag</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">delta_lag</span><span class="p">)</span>
+            <span class="n">y2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">min_lag</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_lag</span><span class="p">),</span>
+                                  <span class="bp">self</span><span class="o">.</span><span class="n">delta_lag</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_lags</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y1</span><span class="p">,</span> <span class="n">y2</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">claw_method</span> <span class="o">==</span> <span class="s2">&quot;lin&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_lags</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_lag</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">delta_lag</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_compute_ints_claw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Computes the claw and its integrals at the difference of</span>
+<span class="sd">        quadrature points using a linear interpolation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_int_claw</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_index</span>
+        <span class="c1"># Builds a linear interpolation of the claws at the difference of</span>
+        <span class="c1"># quadrature (only positive abscissa are kept)</span>
+        <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_index</span><span class="p">):</span>
+            <span class="n">xe</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_claw_X</span>
+            <span class="n">ye</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_claw</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+            <span class="n">xs2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([(</span><span class="n">a</span> <span class="o">-</span> <span class="n">b</span><span class="p">)</span> <span class="k">for</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="ow">in</span>
+                            <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_quad_x</span><span class="p">,</span> <span class="n">repeat</span><span class="o">=</span><span class="mi">2</span><span class="p">)])</span>
+            <span class="n">xs2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">xe</span><span class="p">,</span> <span class="n">xs2</span><span class="p">)</span>
+            <span class="n">xs2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_quad_x</span><span class="p">,</span> <span class="n">xs2</span><span class="p">)</span>
+            <span class="n">xs2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">lib</span><span class="o">.</span><span class="n">arraysetops</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">xs2</span><span class="p">))</span>
+            <span class="n">xs2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">fromnumeric</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">xs2</span><span class="p">))</span>
+            <span class="n">xs2</span> <span class="o">=</span> <span class="n">xs2</span><span class="p">[</span><span class="n">xs2</span> <span class="o">&gt;=</span> <span class="mf">0.</span><span class="p">]</span>
+            <span class="n">ys2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">xs2</span><span class="p">))</span>
+            <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">xe</span><span class="p">)):</span>
+                <span class="k">while</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">xs2</span><span class="p">)</span> <span class="ow">and</span> <span class="n">xs2</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">xe</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                    <span class="n">ys2</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">ye</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="p">((</span><span class="n">ye</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">-</span> <span class="p">(</span><span class="n">ye</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]))</span> <span class="o">*</span> <span class="p">(</span>
+                        <span class="n">xs2</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">-</span> <span class="n">xe</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="p">(</span><span class="n">xe</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">xe</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
+                    <span class="n">j</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">sc</span> <span class="o">=</span> <span class="p">(</span><span class="n">xs2</span><span class="p">,</span> <span class="n">ys2</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_int_claw</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">sc</span>
+
+        <span class="c1"># Computes the integrals of the claws (IG) and the integrals of x</span>
+        <span class="c1"># times the claws from 0 to the abscissa we have just computed</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_IG</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_IG2</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_index</span><span class="p">):</span>
+            <span class="n">xc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_int_claw</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">yc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_int_claw</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+
+            <span class="n">iyc_IG</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mf">0.</span><span class="p">),</span>
+                               <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">xc</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">yc</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">yc</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_IG</span> <span class="o">+=</span> <span class="p">[(</span><span class="n">xc</span><span class="p">,</span> <span class="n">iyc_IG</span><span class="p">)]</span>
+
+            <span class="n">iyc_IG2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mf">0.</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span>
+                <span class="p">(</span><span class="n">yc</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">yc</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">/</span> <span class="mf">2.</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">xc</span><span class="p">)</span> <span class="o">*</span> <span class="n">xc</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">xc</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">xc</span><span class="p">)</span> <span class="o">/</span> <span class="mf">3.</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">yc</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">xc</span><span class="p">)</span> <span class="o">*</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">xc</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.</span> <span class="o">*</span> <span class="n">yc</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_IG2</span> <span class="o">+=</span> <span class="p">[(</span><span class="n">xc</span><span class="p">,</span> <span class="n">iyc_IG2</span><span class="p">)]</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_lin0</span><span class="p">(</span><span class="n">sig</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Find closest value of a signal, zero value border</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">sig</span>
+        <span class="k">if</span> <span class="n">t</span> <span class="o">&gt;=</span> <span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">searchsorted</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">y</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">-</span> <span class="n">t</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">t</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">y</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">y</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_linc</span><span class="p">(</span><span class="n">sig</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Find closest value of a signal, continuous border</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">sig</span>
+        <span class="k">if</span> <span class="n">t</span> <span class="o">&gt;=</span> <span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="n">y</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">searchsorted</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">-</span> <span class="n">t</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">t</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">y</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">y</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_G</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns the value of a claw at a point</span>
+<span class="sd">        Used to fill V and M with &#39;gauss&#39; method</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">t</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;G(): should not be called for t &lt; 0&quot;</span><span class="p">)</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ijl2index</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">][</span><span class="n">l</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">HawkesConditionalLaw</span><span class="o">.</span><span class="n">_lin0</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_int_claw</span><span class="p">[</span><span class="n">index</span><span class="p">],</span> <span class="n">t</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_DIG</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns the integral of a claw between t1 and t2</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">t1</span> <span class="o">&gt;=</span> <span class="n">t2</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;t2&gt;t1 wrong in DIG&quot;</span><span class="p">)</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ijl2index</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">][</span><span class="n">l</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">HawkesConditionalLaw</span><span class="o">.</span><span class="n">_linc</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_IG</span><span class="p">[</span><span class="n">index</span><span class="p">],</span> <span class="n">t2</span><span class="p">)</span> <span class="o">-</span> \
+               <span class="n">HawkesConditionalLaw</span><span class="o">.</span><span class="n">_linc</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_IG</span><span class="p">[</span><span class="n">index</span><span class="p">],</span> <span class="n">t1</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_DIG2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns the integral of x times a claw between t1 and t2</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">t1</span> <span class="o">&gt;=</span> <span class="n">t2</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;t2&gt;t1 wrong in DIG2&quot;</span><span class="p">)</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ijl2index</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">][</span><span class="n">l</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">HawkesConditionalLaw</span><span class="o">.</span><span class="n">_linc</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_IG2</span><span class="p">[</span><span class="n">index</span><span class="p">],</span> <span class="n">t2</span><span class="p">)</span> <span class="o">-</span> \
+               <span class="n">HawkesConditionalLaw</span><span class="o">.</span><span class="n">_linc</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_IG2</span><span class="p">[</span><span class="n">index</span><span class="p">],</span> <span class="n">t1</span><span class="p">)</span>
+
+<div class="viewcode-block" id="HawkesConditionalLaw.compute"><a class="viewcode-back" href="../../../modules/generated/tick.inference.HawkesConditionalLaw.html#tick.inference.HawkesConditionalLaw.compute">[docs]</a>    <span class="k">def</span> <span class="nf">compute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Computes kernel estimation by solving a Fredholm system.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># We raise an exception if a claw component had no input to be computed</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_events</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_events</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Cannot run estimation : not enough events for components </span><span class="si">{}</span><span class="s2">&quot;</span>\
+                  <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="c1"># Here we compute the quadrature points and the corresponding weights</span>
+        <span class="c1"># self.quad_x and self.quad_w</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">quad_method</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;gauss&#39;</span><span class="p">,</span> <span class="s1">&#39;gauss-&#39;</span><span class="p">}:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_quad_x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_quad_w</span> <span class="o">=</span> <span class="n">leggauss</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_quad</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_quad_x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_support</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_quad_x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_quad_w</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_support</span> <span class="o">/</span> <span class="mi">2</span>
+
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">quad_method</span> <span class="o">==</span> <span class="s1">&#39;log&#39;</span><span class="p">:</span>
+            <span class="n">logstep</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_support</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">min_support</span><span class="p">)</span> <span class="o">+</span> <span class="mf">1.</span><span class="p">)</span> <span class="o">/</span> \
+                      <span class="bp">self</span><span class="o">.</span><span class="n">n_quad</span>
+            <span class="n">x1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_support</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_support</span> <span class="o">*</span> <span class="n">logstep</span><span class="p">)</span>
+            <span class="n">x2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">min_support</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_support</span><span class="p">),</span>
+                          <span class="n">logstep</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_quad_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_quad_w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_quad_x</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_quad_x</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_quad_w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_quad_w</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_quad_w</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">n_quad</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_quad_x</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_quad_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_quad_x</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_quad_w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_quad_w</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">quad_method</span> <span class="o">==</span> <span class="s1">&#39;lin&#39;</span><span class="p">:</span>
+            <span class="n">x1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_support</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_support</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_quad</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_quad_x</span> <span class="o">=</span> <span class="n">x1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_quad_w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_quad_x</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_quad_x</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_quad_w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_quad_w</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_quad_w</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">n_quad</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_quad_x</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_quad_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_quad_x</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_quad_w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_quad_w</span><span class="p">)</span>
+
+        <span class="c1"># Computes the claw and its integrals at the difference of</span>
+        <span class="c1"># quadrature points using a linear interpolation</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_compute_ints_claw</span><span class="p">()</span>
+
+        <span class="c1"># For each i we write and solve the system V =  M PHI</span>
+        <span class="n">index_first</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_phi_ijl</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_norm_ijl</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kernels</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kernels_norms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mat</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span><span class="p">)))</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span><span class="p">):</span>
+
+            <span class="c1"># We must compute the last valid index which corresponds to i</span>
+            <span class="n">index_last</span> <span class="o">=</span> <span class="n">index_first</span>
+            <span class="k">for</span> <span class="n">index_last</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">index_first</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_index</span><span class="p">):</span>
+                <span class="p">(</span><span class="n">i1</span><span class="p">,</span> <span class="n">j1</span><span class="p">,</span> <span class="n">l1</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_index2ijl</span><span class="p">[</span><span class="n">index_last</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">i1</span> <span class="o">!=</span> <span class="n">i</span><span class="p">:</span>
+                    <span class="n">index_last</span> <span class="o">-=</span> <span class="mi">1</span>
+                    <span class="k">break</span>
+
+            <span class="c1"># Number of indices corresponding to i</span>
+            <span class="n">n_index</span> <span class="o">=</span> <span class="n">index_last</span> <span class="o">-</span> <span class="n">index_first</span> <span class="o">+</span> <span class="mi">1</span>
+
+            <span class="c1"># Compute V and M</span>
+            <span class="n">V</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_V</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">n_index</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_quad</span><span class="p">,</span> <span class="n">index_first</span><span class="p">,</span>
+                                <span class="n">index_last</span><span class="p">)</span>
+            <span class="n">M</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_M</span><span class="p">(</span><span class="n">n_index</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_quad</span><span class="p">,</span> <span class="n">index_first</span><span class="p">,</span> <span class="n">index_last</span><span class="p">,</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">quad_method</span><span class="p">)</span>
+            <span class="c1"># Then we solve it</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="n">solve</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">V</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_estimate_kernels_and_norms</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">index_first</span><span class="p">,</span> <span class="n">index_last</span><span class="p">,</span> <span class="n">res</span><span class="p">,</span>
+                                             <span class="bp">self</span><span class="o">.</span><span class="n">n_quad</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">quad_method</span><span class="p">)</span>
+
+            <span class="n">index_first</span> <span class="o">=</span> <span class="n">index_last</span> <span class="o">+</span> <span class="mi">1</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_estimate_baseline</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_estimate_mark_functions</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="nf">_compute_V</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">n_index</span><span class="p">,</span> <span class="n">n_quad</span><span class="p">,</span> <span class="n">index_first</span><span class="p">,</span> <span class="n">index_last</span><span class="p">):</span>
+        <span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_index</span> <span class="o">*</span> <span class="n">n_quad</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">index_first</span><span class="p">,</span> <span class="n">index_last</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">l</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_index2ijl</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_quad</span><span class="p">):</span>
+                <span class="n">index_i_quad</span> <span class="o">=</span> <span class="p">(</span><span class="n">index</span> <span class="o">-</span> <span class="n">index_first</span><span class="p">)</span> <span class="o">*</span> <span class="n">n_quad</span> <span class="o">+</span> <span class="n">n</span>
+                <span class="n">V</span><span class="p">[</span><span class="n">index_i_quad</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_G</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_quad_x</span><span class="p">[</span><span class="n">n</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">V</span>
+
+    <span class="k">def</span> <span class="nf">_compute_M</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_index</span><span class="p">,</span> <span class="n">n_quad</span><span class="p">,</span> <span class="n">index_first</span><span class="p">,</span> <span class="n">index_last</span><span class="p">,</span> <span class="n">method</span><span class="p">):</span>
+        <span class="n">M</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mat</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_index</span> <span class="o">*</span> <span class="n">n_quad</span><span class="p">,</span> <span class="n">n_index</span> <span class="o">*</span> <span class="n">n_quad</span><span class="p">)))</span>
+        <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">index_first</span><span class="p">,</span> <span class="n">index_last</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">l</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_index2ijl</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">index1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">index_first</span><span class="p">,</span> <span class="n">index_last</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="p">(</span><span class="n">i1</span><span class="p">,</span> <span class="n">j1</span><span class="p">,</span> <span class="n">l1</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_index2ijl</span><span class="p">[</span><span class="n">index1</span><span class="p">]</span>
+                <span class="n">fact</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean_intensity</span><span class="p">[</span><span class="n">j1</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean_intensity</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_quad</span><span class="p">):</span>
+                    <span class="k">for</span> <span class="n">n1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_quad</span><span class="p">):</span>
+                        <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;gauss&#39;</span> <span class="ow">or</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;gauss-&#39;</span><span class="p">:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_fill_M_for_gauss</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">n_quad</span><span class="p">,</span>
+                                                   <span class="n">index_first</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">index1</span><span class="p">,</span>
+                                                   <span class="n">j</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">j1</span><span class="p">,</span> <span class="n">l1</span><span class="p">,</span> <span class="n">fact</span><span class="p">,</span>
+                                                   <span class="n">n</span><span class="p">,</span> <span class="n">n1</span><span class="p">)</span>
+
+                        <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;log&#39;</span> <span class="ow">or</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;lin&#39;</span><span class="p">:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_fill_M_for_log_lin</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">n_quad</span><span class="p">,</span>
+                                                     <span class="n">index_first</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">index1</span><span class="p">,</span>
+                                                     <span class="n">j</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">j1</span><span class="p">,</span> <span class="n">l1</span><span class="p">,</span> <span class="n">fact</span><span class="p">,</span>
+                                                     <span class="n">n</span><span class="p">,</span> <span class="n">n1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">M</span>
+
+    <span class="k">def</span> <span class="nf">_fill_M_for_gauss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">n_quad</span><span class="p">,</span>
+                          <span class="n">index_first</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">index1</span><span class="p">,</span>
+                          <span class="n">j</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">j1</span><span class="p">,</span> <span class="n">l1</span><span class="p">,</span> <span class="n">fact</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">n1</span><span class="p">):</span>
+
+        <span class="k">def</span> <span class="nf">x_value</span><span class="p">(</span><span class="n">n_lower</span><span class="p">,</span> <span class="n">n_greater</span><span class="p">,</span> <span class="n">j_lower</span><span class="p">,</span> <span class="n">j_greater</span><span class="p">,</span> <span class="n">l_greater</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mark_probabilities</span><span class="p">[</span><span class="n">j1</span><span class="p">][</span><span class="n">l1</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_quad_w</span><span class="p">[</span><span class="n">n1</span><span class="p">]</span> <span class="o">*</span> \
+                   <span class="bp">self</span><span class="o">.</span><span class="n">_G</span><span class="p">(</span><span class="n">j_lower</span><span class="p">,</span> <span class="n">j_greater</span><span class="p">,</span> <span class="n">l_greater</span><span class="p">,</span>
+                           <span class="bp">self</span><span class="o">.</span><span class="n">_quad_x</span><span class="p">[</span><span class="n">n_greater</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_quad_x</span><span class="p">[</span><span class="n">n_lower</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="n">n1</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">x_value</span><span class="p">(</span><span class="n">n1</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">j1</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">l</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="n">n1</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">fact</span> <span class="o">*</span> <span class="n">x_value</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">n1</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">j1</span><span class="p">,</span> <span class="n">l1</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;gauss-&#39;</span><span class="p">:</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">x1</span> <span class="o">=</span> <span class="n">x_value</span><span class="p">(</span><span class="n">n1</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">j1</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">l</span><span class="p">)</span>
+                <span class="n">x2</span> <span class="o">=</span> <span class="n">fact</span> <span class="o">*</span> <span class="n">x_value</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">n1</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">j1</span><span class="p">,</span> <span class="n">l1</span><span class="p">)</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="n">x1</span> <span class="o">+</span> <span class="n">x2</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+
+        <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;gauss-&#39;</span><span class="p">:</span>
+            <span class="n">row</span> <span class="o">=</span> <span class="p">(</span><span class="n">index</span> <span class="o">-</span> <span class="n">index_first</span><span class="p">)</span> <span class="o">*</span> <span class="n">n_quad</span> <span class="o">+</span> <span class="n">n</span>
+            <span class="n">col</span> <span class="o">=</span> <span class="p">(</span><span class="n">index1</span> <span class="o">-</span> <span class="n">index_first</span><span class="p">)</span> <span class="o">*</span> <span class="n">n_quad</span> <span class="o">+</span> <span class="n">n</span>
+            <span class="n">M</span><span class="p">[</span><span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">]</span> <span class="o">-=</span> <span class="n">x</span>
+
+        <span class="k">if</span> <span class="n">l</span> <span class="o">==</span> <span class="n">l1</span> <span class="ow">and</span> <span class="n">j</span> <span class="o">==</span> <span class="n">j1</span> <span class="ow">and</span> <span class="n">n</span> <span class="o">==</span> <span class="n">n1</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="n">row</span> <span class="o">=</span> <span class="p">(</span><span class="n">index</span> <span class="o">-</span> <span class="n">index_first</span><span class="p">)</span> <span class="o">*</span> <span class="n">n_quad</span> <span class="o">+</span> <span class="n">n</span>
+        <span class="n">col</span> <span class="o">=</span> <span class="p">(</span><span class="n">index1</span> <span class="o">-</span> <span class="n">index_first</span><span class="p">)</span> <span class="o">*</span> <span class="n">n_quad</span> <span class="o">+</span> <span class="n">n1</span>
+        <span class="n">M</span><span class="p">[</span><span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">]</span> <span class="o">+=</span> <span class="n">x</span>
+
+    <span class="k">def</span> <span class="nf">_fill_M_for_log_lin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">n_quad</span><span class="p">,</span>
+                            <span class="n">index_first</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">index1</span><span class="p">,</span>
+                            <span class="n">j</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">j1</span><span class="p">,</span> <span class="n">l1</span><span class="p">,</span> <span class="n">fact</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">n1</span><span class="p">):</span>
+
+        <span class="n">mark_probability</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mark_probabilities</span><span class="p">[</span><span class="n">j1</span><span class="p">][</span><span class="n">l1</span><span class="p">]</span>
+
+        <span class="n">ratio_dig</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">n_q</span><span class="p">:</span> <span class="p">(</span>
+            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_quad_x</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_quad_x</span><span class="p">[</span><span class="n">n_q</span><span class="p">])</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_quad_w</span><span class="p">[</span><span class="n">n_q</span><span class="p">]</span>
+        <span class="p">)</span>
+
+        <span class="n">ratio_dig2</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">n_q</span><span class="p">:</span> <span class="mf">1.</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_quad_w</span><span class="p">[</span><span class="n">n_q</span><span class="p">]</span>
+
+        <span class="n">dig_arg_greater</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">n_q</span><span class="p">:</span> <span class="p">(</span>
+            <span class="n">j1</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_quad_x</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_quad_x</span><span class="p">[</span><span class="n">n_q</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_quad_w</span><span class="p">[</span><span class="n">n_q</span><span class="p">],</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_quad_x</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_quad_x</span><span class="p">[</span><span class="n">n_q</span><span class="p">])</span>
+
+        <span class="n">dig_arg_lower</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">n_q</span><span class="p">:</span> <span class="p">(</span>
+            <span class="n">j</span><span class="p">,</span> <span class="n">j1</span><span class="p">,</span> <span class="n">l1</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_quad_x</span><span class="p">[</span><span class="n">n_q</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_quad_x</span><span class="p">[</span><span class="n">n</span><span class="p">],</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_quad_x</span><span class="p">[</span><span class="n">n_q</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_quad_x</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_quad_w</span><span class="p">[</span><span class="n">n_q</span><span class="p">])</span>
+
+        <span class="n">x</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="n">n1</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">+=</span> <span class="n">mark_probability</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_DIG</span><span class="p">(</span><span class="o">*</span><span class="n">dig_arg_greater</span><span class="p">(</span><span class="n">n1</span><span class="p">))</span>
+
+            <span class="k">if</span> <span class="n">n1</span> <span class="o">&lt;</span> <span class="n">n_quad</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">x</span> <span class="o">-=</span> <span class="n">ratio_dig</span><span class="p">(</span><span class="n">n1</span><span class="p">)</span> <span class="o">*</span> <span class="n">mark_probability</span> <span class="o">*</span> \
+                     <span class="bp">self</span><span class="o">.</span><span class="n">_DIG</span><span class="p">(</span><span class="o">*</span><span class="n">dig_arg_greater</span><span class="p">(</span><span class="n">n1</span><span class="p">))</span>
+
+                <span class="n">x</span> <span class="o">+=</span> <span class="n">ratio_dig2</span><span class="p">(</span><span class="n">n1</span><span class="p">)</span> <span class="o">*</span> <span class="n">mark_probability</span> <span class="o">*</span> \
+                     <span class="bp">self</span><span class="o">.</span><span class="n">_DIG2</span><span class="p">(</span><span class="o">*</span><span class="n">dig_arg_greater</span><span class="p">(</span><span class="n">n1</span><span class="p">))</span>
+
+            <span class="k">if</span> <span class="n">n1</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">x</span> <span class="o">+=</span> <span class="n">ratio_dig</span><span class="p">(</span><span class="n">n1</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">mark_probability</span> <span class="o">*</span> \
+                     <span class="bp">self</span><span class="o">.</span><span class="n">_DIG</span><span class="p">(</span><span class="o">*</span><span class="n">dig_arg_greater</span><span class="p">(</span><span class="n">n1</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+
+                <span class="n">x</span> <span class="o">-=</span> <span class="n">ratio_dig2</span><span class="p">(</span><span class="n">n1</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">mark_probability</span> <span class="o">*</span> \
+                     <span class="bp">self</span><span class="o">.</span><span class="n">_DIG2</span><span class="p">(</span><span class="o">*</span><span class="n">dig_arg_greater</span><span class="p">(</span><span class="n">n1</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+
+        <span class="k">elif</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="n">n1</span><span class="p">:</span>
+
+            <span class="n">x</span> <span class="o">+=</span> <span class="n">fact</span> <span class="o">*</span> <span class="n">mark_probability</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_DIG</span><span class="p">(</span><span class="o">*</span><span class="n">dig_arg_lower</span><span class="p">(</span><span class="n">n1</span><span class="p">))</span>
+
+            <span class="k">if</span> <span class="n">n1</span> <span class="o">&lt;</span> <span class="n">n_quad</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">x</span> <span class="o">-=</span> <span class="n">fact</span> <span class="o">*</span> <span class="n">ratio_dig</span><span class="p">(</span><span class="n">n1</span><span class="p">)</span> <span class="o">*</span> <span class="n">mark_probability</span> <span class="o">*</span> \
+                     <span class="bp">self</span><span class="o">.</span><span class="n">_DIG</span><span class="p">(</span><span class="o">*</span><span class="n">dig_arg_lower</span><span class="p">(</span><span class="n">n1</span><span class="p">))</span>
+
+                <span class="n">x</span> <span class="o">-=</span> <span class="n">fact</span> <span class="o">*</span> <span class="n">ratio_dig2</span><span class="p">(</span><span class="n">n1</span><span class="p">)</span> <span class="o">*</span> <span class="n">mark_probability</span> <span class="o">*</span> \
+                     <span class="bp">self</span><span class="o">.</span><span class="n">_DIG2</span><span class="p">(</span><span class="o">*</span><span class="n">dig_arg_lower</span><span class="p">(</span><span class="n">n1</span><span class="p">))</span>
+
+            <span class="k">if</span> <span class="n">n1</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">x</span> <span class="o">+=</span> <span class="n">fact</span> <span class="o">*</span> <span class="n">ratio_dig</span><span class="p">(</span><span class="n">n1</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">mark_probability</span> <span class="o">*</span> \
+                     <span class="bp">self</span><span class="o">.</span><span class="n">_DIG</span><span class="p">(</span><span class="o">*</span><span class="n">dig_arg_lower</span><span class="p">(</span><span class="n">n1</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+
+                <span class="n">x</span> <span class="o">+=</span> <span class="n">fact</span> <span class="o">*</span> <span class="n">ratio_dig2</span><span class="p">(</span><span class="n">n1</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">mark_probability</span> <span class="o">*</span> \
+                     <span class="bp">self</span><span class="o">.</span><span class="n">_DIG2</span><span class="p">(</span><span class="o">*</span><span class="n">dig_arg_lower</span><span class="p">(</span><span class="n">n1</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+
+        <span class="k">elif</span> <span class="n">n</span> <span class="o">==</span> <span class="n">n1</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">+=</span> <span class="n">fact</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mark_probabilities</span><span class="p">[</span><span class="n">j1</span><span class="p">][</span><span class="n">l1</span><span class="p">]</span> <span class="o">*</span> \
+                 <span class="bp">self</span><span class="o">.</span><span class="n">_DIG</span><span class="p">(</span><span class="o">*</span><span class="n">dig_arg_lower</span><span class="p">(</span><span class="n">n1</span><span class="p">))</span>
+
+            <span class="k">if</span> <span class="n">n1</span> <span class="o">&lt;</span> <span class="n">n_quad</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">x</span> <span class="o">-=</span> <span class="n">fact</span> <span class="o">*</span> <span class="n">ratio_dig</span><span class="p">(</span><span class="n">n1</span><span class="p">)</span> <span class="o">*</span> <span class="n">mark_probability</span> <span class="o">*</span> \
+                     <span class="bp">self</span><span class="o">.</span><span class="n">_DIG</span><span class="p">(</span><span class="o">*</span><span class="n">dig_arg_lower</span><span class="p">(</span><span class="n">n1</span><span class="p">))</span>
+
+                <span class="n">x</span> <span class="o">-=</span> <span class="n">fact</span> <span class="o">*</span> <span class="n">ratio_dig2</span><span class="p">(</span><span class="n">n1</span><span class="p">)</span> <span class="o">*</span> <span class="n">mark_probability</span> <span class="o">*</span> \
+                     <span class="bp">self</span><span class="o">.</span><span class="n">_DIG2</span><span class="p">(</span><span class="o">*</span><span class="n">dig_arg_lower</span><span class="p">(</span><span class="n">n1</span><span class="p">))</span>
+
+            <span class="k">if</span> <span class="n">n1</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">x</span> <span class="o">+=</span> <span class="n">ratio_dig</span><span class="p">(</span><span class="n">n1</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">mark_probability</span> <span class="o">*</span> \
+                     <span class="bp">self</span><span class="o">.</span><span class="n">_DIG</span><span class="p">(</span><span class="o">*</span><span class="n">dig_arg_greater</span><span class="p">(</span><span class="n">n1</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+
+                <span class="n">x</span> <span class="o">-=</span> <span class="n">ratio_dig2</span><span class="p">(</span><span class="n">n1</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">mark_probability</span> <span class="o">*</span> \
+                     <span class="bp">self</span><span class="o">.</span><span class="n">_DIG2</span><span class="p">(</span><span class="o">*</span><span class="n">dig_arg_greater</span><span class="p">(</span><span class="n">n1</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">l</span> <span class="o">==</span> <span class="n">l1</span> <span class="ow">and</span> <span class="n">j</span> <span class="o">==</span> <span class="n">j1</span> <span class="ow">and</span> <span class="n">n</span> <span class="o">==</span> <span class="n">n1</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="n">row</span> <span class="o">=</span> <span class="p">(</span><span class="n">index</span> <span class="o">-</span> <span class="n">index_first</span><span class="p">)</span> <span class="o">*</span> <span class="n">n_quad</span> <span class="o">+</span> <span class="n">n</span>
+        <span class="n">col</span> <span class="o">=</span> <span class="p">(</span><span class="n">index1</span> <span class="o">-</span> <span class="n">index_first</span><span class="p">)</span> <span class="o">*</span> <span class="n">n_quad</span> <span class="o">+</span> <span class="n">n1</span>
+        <span class="n">M</span><span class="p">[</span><span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">]</span> <span class="o">+=</span> <span class="n">x</span>
+
+    <span class="k">def</span> <span class="nf">_estimate_kernels_and_norms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">index_first</span><span class="p">,</span> <span class="n">index_last</span><span class="p">,</span>
+                                    <span class="n">res</span><span class="p">,</span> <span class="n">n_quad</span><span class="p">,</span> <span class="n">method</span><span class="p">):</span>
+        <span class="c1"># We rearrange the solution vector and compute the norms</span>
+        <span class="c1"># Here we get phi^ij_l and the corresponding norms</span>
+        <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">index_first</span><span class="p">,</span> <span class="n">index_last</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">res</span><span class="p">[(</span><span class="n">index</span> <span class="o">-</span> <span class="n">index_first</span><span class="p">)</span> <span class="o">*</span> <span class="n">n_quad</span><span class="p">:</span>
+            <span class="p">(</span><span class="n">index</span> <span class="o">-</span> <span class="n">index_first</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">n_quad</span><span class="p">][:,</span> <span class="mi">0</span><span class="p">]</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_phi_ijl</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_quad_x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+
+            <span class="k">if</span> <span class="n">method</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;gauss&#39;</span><span class="p">,</span> <span class="s1">&#39;gauss-&#39;</span><span class="p">}:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_norm_ijl</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">y</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_quad_w</span><span class="p">))</span>
+
+            <span class="k">elif</span> <span class="n">method</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;log&#39;</span><span class="p">,</span> <span class="s1">&#39;lin&#39;</span><span class="p">}:</span>
+                <span class="c1"># interpolation (the one we used in the scheme) norm</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_norm_ijl</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">y</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">/</span> <span class="mf">2.</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_quad_w</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+
+        <span class="c1"># Now we compute phi^ij and the corresponding norms</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kernels</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span><span class="p">):</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ijl2index</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">kernels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_phi_ijl</span><span class="p">[</span><span class="n">index</span><span class="p">])</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mark_probabilities</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">kernels_norms</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_norm_ijl</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">*</span> \
+                                       <span class="bp">self</span><span class="o">.</span><span class="n">_mark_probabilities</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">index</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">marked_components</span><span class="p">[</span><span class="n">j</span><span class="p">])):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">kernels</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_phi_ijl</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">*</span> \
+                                      <span class="bp">self</span><span class="o">.</span><span class="n">_mark_probabilities</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">l</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">kernels_norms</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_norm_ijl</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">*</span> \
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">_mark_probabilities</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">l</span><span class="p">]</span>
+                <span class="n">index</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">def</span> <span class="nf">_estimate_baseline</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">M</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mat</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span><span class="p">))</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">kernels_norms</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">baseline</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean_intensity</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">baseline</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">baseline</span><span class="p">)[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:])</span>
+
+    <span class="k">def</span> <span class="nf">_estimate_mark_functions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mark_functions</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mark_functions</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">marked_components</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">mark_functions</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">])))</span>
+                    <span class="k">continue</span>
+                <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">n</span> <span class="o">=</span> <span class="mi">100</span>
+                <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">marked_components</span><span class="p">[</span><span class="n">j</span><span class="p">])):</span>
+                    <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ijl2index</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">][</span><span class="n">l</span><span class="p">]</span>
+                    <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">+</span>
+                                  <span class="bp">self</span><span class="o">.</span><span class="n">_norm_ijl</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">/</span>
+                                  <span class="bp">self</span><span class="o">.</span><span class="n">kernels_norms</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">])</span>
+                    <span class="n">xmin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">marked_components</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">l</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">xmax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">marked_components</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">l</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">l</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">xmin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mark_min</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">l</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">marked_components</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="n">xmax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mark_max</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+                    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">,</span>
+                                  <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">xmax</span> <span class="o">-</span> <span class="n">xmin</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">xmin</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">mark_functions</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+
+<div class="viewcode-block" id="HawkesConditionalLaw.get_kernel_supports"><a class="viewcode-back" href="../../../modules/generated/tick.inference.HawkesConditionalLaw.html#tick.inference.HawkesConditionalLaw.get_kernel_supports">[docs]</a>    <span class="k">def</span> <span class="nf">get_kernel_supports</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Computes kernel support. This makes our learner compliant with</span>
+<span class="sd">        `tick.plot.plot_hawkes_kernels` API</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        output : `np.ndarray`, shape=(n_nodes, n_nodes)</span>
+<span class="sd">            2d array in which each entry i, j corresponds to the support of</span>
+<span class="sd">            kernel i, j</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">supports</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span><span class="p">),</span> <span class="n">repeat</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+            <span class="n">supports</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kernels</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">supports</span></div>
+
+<div class="viewcode-block" id="HawkesConditionalLaw.get_kernel_values"><a class="viewcode-back" href="../../../modules/generated/tick.inference.HawkesConditionalLaw.html#tick.inference.HawkesConditionalLaw.get_kernel_values">[docs]</a>    <span class="k">def</span> <span class="nf">get_kernel_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">abscissa_array</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Computes value of the specified kernel on given time values. This</span>
+<span class="sd">        makes our learner compliant with `tick.plot.plot_hawkes_kernels` API</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        i : `int`</span>
+<span class="sd">            First index of the kernel</span>
+
+<span class="sd">        j : `int`</span>
+<span class="sd">            Second index of the kernel</span>
+
+<span class="sd">        abscissa_array : `np.ndarray`, shape=(n_points, )</span>
+<span class="sd">            1d array containing all the times at which this kernel will</span>
+<span class="sd">            computes it value</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        output : `np.ndarray`, shape=(n_points, )</span>
+<span class="sd">            1d array containing the values of the specified kernels at the</span>
+<span class="sd">            given times.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">t_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kernels</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">y_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kernels</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">quad_method</span> <span class="o">==</span> <span class="s1">&#39;log&#39;</span><span class="p">:</span>
+            <span class="n">log_t_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">t_values</span><span class="p">)</span>
+            <span class="n">log_y_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">y_values</span><span class="p">)</span>
+            <span class="n">log_abscissa_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">abscissa_array</span><span class="p">)</span>
+            <span class="n">min_value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="n">log_abscissa_array</span><span class="p">)</span>
+            <span class="n">log_interpolation</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">log_abscissa_array</span><span class="p">,</span>
+                                          <span class="n">log_t_values</span><span class="p">,</span> <span class="n">log_y_values</span><span class="p">,</span>
+                                          <span class="n">left</span><span class="o">=</span><span class="n">min_value</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="n">min_value</span><span class="p">)</span>
+            <span class="n">kernel_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">log_interpolation</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">kernel_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">abscissa_array</span><span class="p">,</span>
+                                      <span class="n">t_values</span><span class="p">,</span> <span class="n">y_values</span><span class="p">,</span>
+                                      <span class="n">left</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">kernel_values</span></div>
+
+<div class="viewcode-block" id="HawkesConditionalLaw.get_kernel_norms"><a class="viewcode-back" href="../../../modules/generated/tick.inference.HawkesConditionalLaw.html#tick.inference.HawkesConditionalLaw.get_kernel_norms">[docs]</a>    <span class="k">def</span> <span class="nf">get_kernel_norms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Computes kernel norms. This makes our learner compliant with</span>
+<span class="sd">        `tick.plot.plot_hawkes_kernel_norms` API</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        norms : `np.ndarray`, shape=(n_nodes, n_nodes)</span>
+<span class="sd">            2d array in which each entry i, j corresponds to the norm of</span>
+<span class="sd">            kernel i, j</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># we need to convert it to a numpy array</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kernels_norms</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_has_been_computed_once</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mark_functions</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span></div>
+</pre></div>
+
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Vinther Poulsen.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>
