@@ -284,7 +284,7 @@ AbstractArray1d2d<T> &AbstractArray1d2d<T>::operator=(AbstractArray1d2d<T> &&oth
 // @brief Returns the sum of all the elements of the array
 template<typename T>
 tick::promote_t<T> AbstractArray1d2d<T>::sum() const {
-    if (_size == 0) TICK_ERROR("Cannot take the sum of an empty array");
+    if (_size == 0) return 0;
     if (size_data() == 0) return 0;
 
     return tick::vector_operations<T>{}.sum(size_data(), _data);;

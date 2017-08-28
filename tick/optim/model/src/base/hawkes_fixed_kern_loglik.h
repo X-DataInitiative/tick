@@ -10,6 +10,7 @@
 #include "base/hawkes_single.h"
 
 class ModelHawkesFixedKernLogLikList;
+class HawkesSDCALoglikKern;
 
 /**
  * \class ModelHawkesFixedKernLogLik
@@ -205,6 +206,7 @@ class DLL_PUBLIC ModelHawkesFixedKernLogLik : public ModelHawkesSingle {
   }
 
   friend ModelHawkesFixedKernLogLikList;
+  friend HawkesSDCALoglikKern;
 };
 
 #endif  // TICK_OPTIM_MODEL_SRC_BASE_HAWKES_FIXED_KERN_LOGLIK_H_

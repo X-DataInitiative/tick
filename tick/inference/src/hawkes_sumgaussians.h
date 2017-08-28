@@ -24,9 +24,9 @@ class HawkesSumGaussians : public ModelHawkesList {
   double std_gaussian;
 
   //! @brief Useful constants that appear in weights computation.
-  double std_gaussian_sq = std_gaussian*std_gaussian;
-  double norm_constant_gauss = std_gaussian * std::sqrt(2.*M_PI);
-  double norm_constant_erf = std_gaussian * std::sqrt(2);
+  double std_gaussian_sq;
+  double norm_constant_gauss;
+  double norm_constant_erf;
 
   //! @brief Step size used in update formulas (7) and (8)
   double step_size;
