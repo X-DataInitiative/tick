@@ -16,12 +16,9 @@
       })();
     </script>
     <title>tick.inference.cox_regression &#8212; tick 0.2.1 documentation</title>
-    <link rel="stylesheet" href="../../../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
-    <link rel="stylesheet" href="../../../_static/bootstrap-3.3.4/css/bootstrap.min.css" type="text/css" />
-    <link rel="stylesheet" href="../../../_static/bootstrap-3.3.4/css/bootstrap-theme.min.css" type="text/css" />
-    <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
@@ -38,7 +35,7 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="../../../_static/js/jquery-fix.js"></script>
-    <script type="text/javascript" src="../../../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../../../_static/bootstrap-sphinx.js"></script>
     <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../../../genindex.html" />
@@ -163,6 +160,7 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">tick.base</span> <span class="k">import</span> <span class="n">actual_kwargs</span>
+<span class="kn">from</span> <span class="nn">tick.preprocessing.utils</span> <span class="k">import</span> <span class="n">safe_array</span>
 <span class="kn">from</span> <span class="nn">tick.optim.model</span> <span class="k">import</span> <span class="n">ModelCoxRegPartialLik</span>
 <span class="kn">from</span> <span class="nn">tick.optim.solver</span> <span class="k">import</span> <span class="n">GD</span><span class="p">,</span> <span class="n">AGD</span>
 <span class="kn">from</span> <span class="nn">tick.inference.base</span> <span class="k">import</span> <span class="n">LearnerOptim</span>
@@ -277,16 +275,15 @@
 
     <span class="k">def</span> <span class="nf">_all_safe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">features</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">times</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">,</span>
                   <span class="n">censoring</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">):</span>
-        <span class="n">features</span> <span class="o">=</span> <span class="n">LearnerOptim</span><span class="o">.</span><span class="n">_safe_array</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
-        <span class="n">times</span> <span class="o">=</span> <span class="n">LearnerOptim</span><span class="o">.</span><span class="n">_safe_array</span><span class="p">(</span><span class="n">times</span><span class="p">)</span>
-        <span class="n">censoring</span> <span class="o">=</span> <span class="n">LearnerOptim</span><span class="o">.</span><span class="n">_safe_array</span><span class="p">(</span><span class="n">censoring</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ushort</span><span class="p">)</span>
-        <span class="c1"># censoring vector must contain only 0 and 1</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">censoring</span><span class="p">),</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;``censoring`` must only have values in {0, 1}&#39;</span><span class="p">)</span>
         <span class="c1"># All times must be positive</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">times</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;``times`` array must contain only non-negative &#39;</span>
                              <span class="s1">&#39;entries&#39;</span><span class="p">)</span>
+        <span class="n">features</span> <span class="o">=</span> <span class="n">safe_array</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
+        <span class="n">times</span> <span class="o">=</span> <span class="n">safe_array</span><span class="p">(</span><span class="n">times</span><span class="p">)</span>
+        <span class="n">censoring</span> <span class="o">=</span> <span class="n">safe_array</span><span class="p">(</span><span class="n">censoring</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ushort</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">features</span><span class="p">,</span> <span class="n">times</span><span class="p">,</span> <span class="n">censoring</span>
 
 <div class="viewcode-block" id="CoxRegression.fit"><a class="viewcode-back" href="../../../modules/generated/tick.inference.CoxRegression.html#tick.inference.CoxRegression.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">features</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">times</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">,</span> <span class="n">censoring</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">):</span>

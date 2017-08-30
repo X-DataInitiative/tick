@@ -16,12 +16,9 @@
       })();
     </script>
     <title>tick.simulation: simulation toolbox &#8212; tick 0.2.1 documentation</title>
-    <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/bootstrap-3.3.4/css/bootstrap.min.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/bootstrap-3.3.4/css/bootstrap-theme.min.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
@@ -38,11 +35,13 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
-    <script type="text/javascript" src="../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="tick.simulation.weights_sparse_exp" href="generated/tick.simulation.weights_sparse_exp.html" />
+    <link rel="prev" title="tick.preprocessing.LongitudinalFeaturesLagger" href="generated/tick.preprocessing.LongitudinalFeaturesLagger.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -104,7 +103,10 @@
 <li class="toctree-l2"><a class="reference internal" href="plot.html#others">Others</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul class="simple">
+<li class="toctree-l1"><a class="reference internal" href="preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="generated/tick.preprocessing.FeaturesBinarizer.html">tick.preprocessing.FeaturesBinarizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/tick.preprocessing.LongitudinalFeaturesProduct.html">tick.preprocessing.LongitudinalFeaturesProduct</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/tick.preprocessing.LongitudinalFeaturesLagger.html">tick.preprocessing.LongitudinalFeaturesLagger</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#"><code class="docutils literal"><span class="pre">tick.simulation</span></code>: simulation toolbox</a><ul>
@@ -184,62 +186,21 @@ Hawkes processes and time functions for the simulation of Poisson processes.</p>
 <div class="section" id="simulation-of-model-weights">
 <h3>1.1 Simulation of model weights<a class="headerlink" href="#simulation-of-model-weights" title="Permalink to this headline">¶</a></h3>
 <p>Here are functions for the simulation of model weights.</p>
-<div class="system-message">
-<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/simulation.rst</tt>, line 37)</p>
-failed to import simulation.weights_sparse_exp</div>
-<div class="system-message">
-<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/simulation.rst</tt>, line 37)</p>
-failed to import simulation.weights_sparse_gauss</div>
-<div class="system-message">
-<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/simulation.rst</tt>, line 37)</p>
-toctree references unknown document ‘modules/generated/simulation.weights_sparse_exp’</div>
-<div class="system-message">
-<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/simulation.rst</tt>, line 37)</p>
-toctree references unknown document ‘modules/generated/simulation.weights_sparse_gauss’</div>
 <table border="1" class="longtable docutils">
 <colgroup>
 <col width="10%" />
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">simulation.weights_sparse_exp</span></code></td>
-<td></td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.weights_sparse_exp.html#tick.simulation.weights_sparse_exp" title="tick.simulation.weights_sparse_exp"><code class="xref py py-obj docutils literal"><span class="pre">simulation.weights_sparse_exp</span></code></a>(…)</td>
+<td>Sparse and exponential model weights generator</td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">simulation.weights_sparse_gauss</span></code></td>
-<td></td>
+<tr class="row-even"><td><a class="reference internal" href="generated/tick.simulation.weights_sparse_gauss.html#tick.simulation.weights_sparse_gauss" title="tick.simulation.weights_sparse_gauss"><code class="xref py py-obj docutils literal"><span class="pre">simulation.weights_sparse_gauss</span></code></a>(…)</td>
+<td>Sparse and gaussian model weights generator</td>
 </tr>
 </tbody>
 </table>
 <p><strong>Example</strong></p>
-<div class="system-message">
-<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/simulation.rst</tt>, line 46)</p>
-Exception occurred in plotting plot_simulation_weights
- from /Users/martin/Projects/tick_ghpages/tick/DOC/modules/code_samples/simulation/plot_simulation_weights.py:
-Traceback (most recent call last):
-  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/build/array.py”, line 18, in swig_import_helper
-    fp, pathname, description = imp.find_module(‘_array’, [dirname(__file__)])
-  File “/opt/local/Library/Frameworks/Python.framework/Versions/3.4/lib/python3.4/imp.py”, line 297, in find_module
-    raise ImportError(_ERR_MSG.format(name), name=name)
-ImportError: No module named ‘_array’
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File “/opt/local/Library/Frameworks/Python.framework/Versions/3.4/lib/python3.4/site-packages/matplotlib/sphinxext/plot_directive.py”, line 520, in run_code
-    six.exec_(code, ns)
-  File “&lt;string&gt;”, line 2, in &lt;module&gt;
-  File “/Users/martin/Projects/tick_ghpages/tick/tick/__init__.py”, line 3, in &lt;module&gt;
-    import tick.base
-  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/__init__.py”, line 21, in &lt;module&gt;
-    from .array import *
-  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/__init__.py”, line 3, in &lt;module&gt;
-    from .build import array
-  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/build/array.py”, line 28, in &lt;module&gt;
-    _array = swig_import_helper()
-  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/build/array.py”, line 20, in swig_import_helper
-    import _array
-ImportError: No module named ‘_array’
-</div>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
 <span class="kn">from</span> <span class="nn">tick.simulation</span> <span class="kn">import</span> <span class="n">weights_sparse_exp</span><span class="p">,</span> <span class="n">weights_sparse_gauss</span>
 
@@ -256,36 +217,27 @@ ImportError: No module named ‘_array’
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>(<a class="reference external" href="../modules/code_samples/simulation/plot_simulation_weights.py">Source code</a>)</p>
+<p>(<a class="reference external" href="../modules/code_samples/simulation/plot_simulation_weights.py">Source code</a>, <a class="reference external" href="../modules/code_samples/simulation/plot_simulation_weights.png">png</a>, <a class="reference external" href="../modules/code_samples/simulation/plot_simulation_weights.hires.png">hires.png</a>, <a class="reference external" href="../modules/code_samples/simulation/plot_simulation_weights.pdf">pdf</a>)</p>
+<div class="figure">
+<img alt="../_images/plot_simulation_weights1.png" src="../_images/plot_simulation_weights1.png" />
+</div>
 </div>
 <div class="section" id="simulation-of-a-features-matrix">
 <h3>1.2 Simulation of a features matrix<a class="headerlink" href="#simulation-of-a-features-matrix" title="Permalink to this headline">¶</a></h3>
 <p>Here are functions for the simulation of a features matrix: each simulated
 vector or features is distributed as a centered Gaussian vector with
 a particular covariance matrix (uniform symmetrized or toeplitz).</p>
-<div class="system-message">
-<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/simulation.rst</tt>, line 58)</p>
-failed to import simulation.features_normal_cov_uniform</div>
-<div class="system-message">
-<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/simulation.rst</tt>, line 58)</p>
-failed to import simulation.features_normal_cov_toeplitz</div>
-<div class="system-message">
-<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/simulation.rst</tt>, line 58)</p>
-toctree references unknown document ‘modules/generated/simulation.features_normal_cov_uniform’</div>
-<div class="system-message">
-<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/simulation.rst</tt>, line 58)</p>
-toctree references unknown document ‘modules/generated/simulation.features_normal_cov_toeplitz’</div>
 <table border="1" class="longtable docutils">
 <colgroup>
 <col width="10%" />
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">simulation.features_normal_cov_uniform</span></code></td>
-<td></td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.features_normal_cov_uniform.html#tick.simulation.features_normal_cov_uniform" title="tick.simulation.features_normal_cov_uniform"><code class="xref py py-obj docutils literal"><span class="pre">simulation.features_normal_cov_uniform</span></code></a>(…)</td>
+<td>Normal features generator with uniform covariance</td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">simulation.features_normal_cov_toeplitz</span></code></td>
-<td></td>
+<tr class="row-even"><td><a class="reference internal" href="generated/tick.simulation.features_normal_cov_toeplitz.html#tick.simulation.features_normal_cov_toeplitz" title="tick.simulation.features_normal_cov_toeplitz"><code class="xref py py-obj docutils literal"><span class="pre">simulation.features_normal_cov_toeplitz</span></code></a>(…)</td>
+<td>Normal features generator with toeplitz covariance</td>
 </tr>
 </tbody>
 </table>
@@ -303,35 +255,6 @@ between two points.
 It is used for the simulation of an inhomogeneous Poisson process and some
 Hawkes processes.</p>
 <p><strong>Example</strong></p>
-<div class="system-message">
-<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/simulation.rst</tt>, line 82)</p>
-Exception occurred in plotting plot_time_function
- from /Users/martin/Projects/tick_ghpages/tick/DOC/modules/code_samples/simulation/plot_time_function.py:
-Traceback (most recent call last):
-  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/build/array.py”, line 18, in swig_import_helper
-    fp, pathname, description = imp.find_module(‘_array’, [dirname(__file__)])
-  File “/opt/local/Library/Frameworks/Python.framework/Versions/3.4/lib/python3.4/imp.py”, line 297, in find_module
-    raise ImportError(_ERR_MSG.format(name), name=name)
-ImportError: No module named ‘_array’
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File “/opt/local/Library/Frameworks/Python.framework/Versions/3.4/lib/python3.4/site-packages/matplotlib/sphinxext/plot_directive.py”, line 520, in run_code
-    six.exec_(code, ns)
-  File “&lt;string&gt;”, line 3, in &lt;module&gt;
-  File “/Users/martin/Projects/tick_ghpages/tick/tick/__init__.py”, line 3, in &lt;module&gt;
-    import tick.base
-  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/__init__.py”, line 21, in &lt;module&gt;
-    from .array import *
-  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/__init__.py”, line 3, in &lt;module&gt;
-    from .build import array
-  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/build/array.py”, line 28, in &lt;module&gt;
-    _array = swig_import_helper()
-  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/build/array.py”, line 20, in swig_import_helper
-    import _array
-ImportError: No module named ‘_array’
-</div>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">tick.base</span> <span class="kn">import</span> <span class="n">TimeFunction</span>
@@ -357,41 +280,15 @@ ImportError: No module named ‘_array’
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>(<a class="reference external" href="../modules/code_samples/simulation/plot_time_function.py">Source code</a>)</p>
+<p>(<a class="reference external" href="../modules/code_samples/simulation/plot_time_function.py">Source code</a>, <a class="reference external" href="../modules/code_samples/simulation/plot_time_function.png">png</a>, <a class="reference external" href="../modules/code_samples/simulation/plot_time_function.hires.png">hires.png</a>, <a class="reference external" href="../modules/code_samples/simulation/plot_time_function.pdf">pdf</a>)</p>
+<div class="figure">
+<img alt="../_images/plot_time_function1.png" src="../_images/plot_time_function1.png" />
+</div>
 </div>
 <div class="section" id="kernels-for-hawkes-process-simulation">
 <h3>1.4 Kernels for Hawkes process simulation<a class="headerlink" href="#kernels-for-hawkes-process-simulation" title="Permalink to this headline">¶</a></h3>
 <p>A Hawkes process is defined through its kernels which are functions defined on
 <span class="math">\([0, \infty)\)</span>.</p>
-<div class="system-message">
-<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/simulation.rst</tt>, line 91)</p>
-Exception occurred in plotting plot_hawkes_kernels
- from /Users/martin/Projects/tick_ghpages/tick/DOC/modules/code_samples/simulation/plot_hawkes_kernels.py:
-Traceback (most recent call last):
-  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/build/array.py”, line 18, in swig_import_helper
-    fp, pathname, description = imp.find_module(‘_array’, [dirname(__file__)])
-  File “/opt/local/Library/Frameworks/Python.framework/Versions/3.4/lib/python3.4/imp.py”, line 297, in find_module
-    raise ImportError(_ERR_MSG.format(name), name=name)
-ImportError: No module named ‘_array’
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File “/opt/local/Library/Frameworks/Python.framework/Versions/3.4/lib/python3.4/site-packages/matplotlib/sphinxext/plot_directive.py”, line 520, in run_code
-    six.exec_(code, ns)
-  File “&lt;string&gt;”, line 4, in &lt;module&gt;
-  File “/Users/martin/Projects/tick_ghpages/tick/tick/__init__.py”, line 3, in &lt;module&gt;
-    import tick.base
-  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/__init__.py”, line 21, in &lt;module&gt;
-    from .array import *
-  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/__init__.py”, line 3, in &lt;module&gt;
-    from .build import array
-  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/build/array.py”, line 28, in &lt;module&gt;
-    _array = swig_import_helper()
-  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/build/array.py”, line 20, in swig_import_helper
-    import _array
-ImportError: No module named ‘_array’
-</div>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
 
@@ -420,57 +317,30 @@ ImportError: No module named ‘_array’
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>(<a class="reference external" href="../modules/code_samples/simulation/plot_hawkes_kernels.py">Source code</a>)</p>
-<div class="system-message">
-<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/simulation.rst</tt>, line 96)</p>
-failed to import simulation.HawkesKernel0</div>
-<div class="system-message">
-<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/simulation.rst</tt>, line 96)</p>
-failed to import simulation.HawkesKernelExp</div>
-<div class="system-message">
-<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/simulation.rst</tt>, line 96)</p>
-failed to import simulation.HawkesKernelSumExp</div>
-<div class="system-message">
-<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/simulation.rst</tt>, line 96)</p>
-failed to import simulation.HawkesKernelPowerLaw</div>
-<div class="system-message">
-<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/simulation.rst</tt>, line 96)</p>
-failed to import simulation.HawkesKernelTimeFunc</div>
-<div class="system-message">
-<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/simulation.rst</tt>, line 96)</p>
-toctree references unknown document ‘modules/generated/simulation.HawkesKernel0’</div>
-<div class="system-message">
-<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/simulation.rst</tt>, line 96)</p>
-toctree references unknown document ‘modules/generated/simulation.HawkesKernelExp’</div>
-<div class="system-message">
-<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/simulation.rst</tt>, line 96)</p>
-toctree references unknown document ‘modules/generated/simulation.HawkesKernelSumExp’</div>
-<div class="system-message">
-<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/simulation.rst</tt>, line 96)</p>
-toctree references unknown document ‘modules/generated/simulation.HawkesKernelPowerLaw’</div>
-<div class="system-message">
-<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/simulation.rst</tt>, line 96)</p>
-toctree references unknown document ‘modules/generated/simulation.HawkesKernelTimeFunc’</div>
+<p>(<a class="reference external" href="../modules/code_samples/simulation/plot_hawkes_kernels.py">Source code</a>, <a class="reference external" href="../modules/code_samples/simulation/plot_hawkes_kernels.png">png</a>, <a class="reference external" href="../modules/code_samples/simulation/plot_hawkes_kernels.hires.png">hires.png</a>, <a class="reference external" href="../modules/code_samples/simulation/plot_hawkes_kernels.pdf">pdf</a>)</p>
+<div class="figure">
+<img alt="../_images/plot_hawkes_kernels1.png" src="../_images/plot_hawkes_kernels1.png" />
+</div>
 <table border="1" class="longtable docutils">
 <colgroup>
 <col width="10%" />
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">simulation.HawkesKernel0</span></code></td>
-<td></td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.HawkesKernel0.html#tick.simulation.HawkesKernel0" title="tick.simulation.HawkesKernel0"><code class="xref py py-obj docutils literal"><span class="pre">simulation.HawkesKernel0</span></code></a>()</td>
+<td>Hawkes zero kernel</td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">simulation.HawkesKernelExp</span></code></td>
-<td></td>
+<tr class="row-even"><td><a class="reference internal" href="generated/tick.simulation.HawkesKernelExp.html#tick.simulation.HawkesKernelExp" title="tick.simulation.HawkesKernelExp"><code class="xref py py-obj docutils literal"><span class="pre">simulation.HawkesKernelExp</span></code></a>(intensity,&nbsp;decay)</td>
+<td>Hawkes kernel with exponential decay</td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">simulation.HawkesKernelSumExp</span></code></td>
-<td></td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.HawkesKernelSumExp.html#tick.simulation.HawkesKernelSumExp" title="tick.simulation.HawkesKernelSumExp"><code class="xref py py-obj docutils literal"><span class="pre">simulation.HawkesKernelSumExp</span></code></a>(intensities,&nbsp;…)</td>
+<td>Hawkes kernel with sum exponential decays</td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">simulation.HawkesKernelPowerLaw</span></code></td>
-<td></td>
+<tr class="row-even"><td><a class="reference internal" href="generated/tick.simulation.HawkesKernelPowerLaw.html#tick.simulation.HawkesKernelPowerLaw" title="tick.simulation.HawkesKernelPowerLaw"><code class="xref py py-obj docutils literal"><span class="pre">simulation.HawkesKernelPowerLaw</span></code></a>(multiplier,&nbsp;…)</td>
+<td>Hawkes kernel for power law</td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">simulation.HawkesKernelTimeFunc</span></code></td>
-<td></td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.HawkesKernelTimeFunc.html#tick.simulation.HawkesKernelTimeFunc" title="tick.simulation.HawkesKernelTimeFunc"><code class="xref py py-obj docutils literal"><span class="pre">simulation.HawkesKernelTimeFunc</span></code></a>([…])</td>
+<td>Hawkes kernel defined by an arbitrary time function.</td>
 </tr>
 </tbody>
 </table>
@@ -499,52 +369,23 @@ where <span class="math">\(\mathbb P\)</span> depends on the considered model.</
 <tbody valign="top">
 <tr class="row-even"><td>Linear regression</td>
 <td><span class="math">\(\text{Normal}(w^\top x + b, \sigma^2)\)</span></td>
-<td><code class="xref py py-class docutils literal"><span class="pre">tick.simulation.SimuLinReg</span></code></td>
+<td><a class="reference internal" href="generated/tick.simulation.SimuLinReg.html#tick.simulation.SimuLinReg" title="tick.simulation.SimuLinReg"><code class="xref py py-class docutils literal"><span class="pre">tick.simulation.SimuLinReg</span></code></a></td>
 </tr>
 <tr class="row-odd"><td>Logistic regression</td>
 <td><span class="math">\(\text{Binomial}(w^\top x + b)\)</span></td>
-<td><code class="xref py py-class docutils literal"><span class="pre">tick.simulation.SimuLogReg</span></code></td>
+<td><a class="reference internal" href="generated/tick.simulation.SimuLogReg.html#tick.simulation.SimuLogReg" title="tick.simulation.SimuLogReg"><code class="xref py py-class docutils literal"><span class="pre">tick.simulation.SimuLogReg</span></code></a></td>
 </tr>
 <tr class="row-even"><td>Poisson regression (identity link)</td>
 <td><span class="math">\(\text{Poisson}(w^\top x + b)\)</span></td>
-<td><code class="xref py py-class docutils literal"><span class="pre">tick.simulation.SimuPoisReg</span></code> with <code class="docutils literal"><span class="pre">link=&quot;identity&quot;</span></code></td>
+<td><a class="reference internal" href="generated/tick.simulation.SimuPoisReg.html#tick.simulation.SimuPoisReg" title="tick.simulation.SimuPoisReg"><code class="xref py py-class docutils literal"><span class="pre">tick.simulation.SimuPoisReg</span></code></a> with <code class="docutils literal"><span class="pre">link=&quot;identity&quot;</span></code></td>
 </tr>
 <tr class="row-odd"><td>Poisson regression (exponential link)</td>
 <td><span class="math">\(\text{Poisson}(e^{w^\top x + b})\)</span></td>
-<td><code class="xref py py-class docutils literal"><span class="pre">tick.simulation.SimuPoisReg</span></code> with <code class="docutils literal"><span class="pre">link=&quot;exponential&quot;</span></code></td>
+<td><a class="reference internal" href="generated/tick.simulation.SimuPoisReg.html#tick.simulation.SimuPoisReg" title="tick.simulation.SimuPoisReg"><code class="xref py py-class docutils literal"><span class="pre">tick.simulation.SimuPoisReg</span></code></a> with <code class="docutils literal"><span class="pre">link=&quot;exponential&quot;</span></code></td>
 </tr>
 </tbody>
 </table>
 <p><strong>Example</strong></p>
-<div class="system-message">
-<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/simulation.rst</tt>, line 130)</p>
-Exception occurred in plotting plot_simulation_linear_model
- from /Users/martin/Projects/tick_ghpages/tick/DOC/../examples/plot_simulation_linear_model.py:
-Traceback (most recent call last):
-  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/build/array.py”, line 18, in swig_import_helper
-    fp, pathname, description = imp.find_module(‘_array’, [dirname(__file__)])
-  File “/opt/local/Library/Frameworks/Python.framework/Versions/3.4/lib/python3.4/imp.py”, line 297, in find_module
-    raise ImportError(_ERR_MSG.format(name), name=name)
-ImportError: No module named ‘_array’
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File “/opt/local/Library/Frameworks/Python.framework/Versions/3.4/lib/python3.4/site-packages/matplotlib/sphinxext/plot_directive.py”, line 520, in run_code
-    six.exec_(code, ns)
-  File “&lt;string&gt;”, line 12, in &lt;module&gt;
-  File “/Users/martin/Projects/tick_ghpages/tick/tick/__init__.py”, line 3, in &lt;module&gt;
-    import tick.base
-  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/__init__.py”, line 21, in &lt;module&gt;
-    from .array import *
-  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/__init__.py”, line 3, in &lt;module&gt;
-    from .build import array
-  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/build/array.py”, line 28, in &lt;module&gt;
-    _array = swig_import_helper()
-  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/build/array.py”, line 20, in swig_import_helper
-    import _array
-ImportError: No module named ‘_array’
-</div>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">=============================</span>
 <span class="sd">Linear models data simulation</span>
@@ -595,7 +436,10 @@ ImportError: No module named ‘_array’
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>(<a class="reference external" href="../../examples/plot_simulation_linear_model.py">Source code</a>)</p>
+<p>(<a class="reference external" href="../../examples/plot_simulation_linear_model.py">Source code</a>, <a class="reference external" href="../../examples/plot_simulation_linear_model.png">png</a>, <a class="reference external" href="../../examples/plot_simulation_linear_model.hires.png">hires.png</a>, <a class="reference external" href="../../examples/plot_simulation_linear_model.pdf">pdf</a>)</p>
+<div class="figure">
+<img alt="../_images/plot_simulation_linear_model2.png" src="../_images/plot_simulation_linear_model2.png" />
+</div>
 <div class="admonition-todo admonition" id="index-1">
 <p class="first admonition-title">Todo</p>
 <p class="last">Give more details on these classes abilities</p>
@@ -629,40 +473,11 @@ while <span class="math">\(c_i = 0\)</span> means that <span class="math">\(t_i\
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>Cox regression with right-censoring</td>
-<td><code class="xref py py-class docutils literal"><span class="pre">tick.simulation.SimuCoxReg</span></code></td>
+<td><a class="reference internal" href="generated/tick.simulation.SimuCoxReg.html#tick.simulation.SimuCoxReg" title="tick.simulation.SimuCoxReg"><code class="xref py py-class docutils literal"><span class="pre">tick.simulation.SimuCoxReg</span></code></a></td>
 </tr>
 </tbody>
 </table>
 <p><strong>Examples</strong></p>
-<div class="system-message">
-<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/simulation.rst</tt>, line 167)</p>
-Exception occurred in plotting plot_simulation_coxreg
- from /Users/martin/Projects/tick_ghpages/tick/DOC/../examples/plot_simulation_coxreg.py:
-Traceback (most recent call last):
-  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/build/array.py”, line 18, in swig_import_helper
-    fp, pathname, description = imp.find_module(‘_array’, [dirname(__file__)])
-  File “/opt/local/Library/Frameworks/Python.framework/Versions/3.4/lib/python3.4/imp.py”, line 297, in find_module
-    raise ImportError(_ERR_MSG.format(name), name=name)
-ImportError: No module named ‘_array’
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File “/opt/local/Library/Frameworks/Python.framework/Versions/3.4/lib/python3.4/site-packages/matplotlib/sphinxext/plot_directive.py”, line 520, in run_code
-    six.exec_(code, ns)
-  File “&lt;string&gt;”, line 11, in &lt;module&gt;
-  File “/Users/martin/Projects/tick_ghpages/tick/tick/__init__.py”, line 3, in &lt;module&gt;
-    import tick.base
-  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/__init__.py”, line 21, in &lt;module&gt;
-    from .array import *
-  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/__init__.py”, line 3, in &lt;module&gt;
-    from .build import array
-  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/build/array.py”, line 28, in &lt;module&gt;
-    _array = swig_import_helper()
-  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/build/array.py”, line 20, in swig_import_helper
-    import _array
-ImportError: No module named ‘_array’
-</div>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">==============================</span>
 <span class="sd">Cox regression data simulation</span>
@@ -693,25 +508,22 @@ ImportError: No module named ‘_array’
 <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Cox regression&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>(<a class="reference external" href="../../examples/plot_simulation_coxreg.py">Source code</a>)</p>
+<p>(<a class="reference external" href="../../examples/plot_simulation_coxreg.py">Source code</a>, <a class="reference external" href="../../examples/plot_simulation_coxreg.png">png</a>, <a class="reference external" href="../../examples/plot_simulation_coxreg.hires.png">hires.png</a>, <a class="reference external" href="../../examples/plot_simulation_coxreg.pdf">pdf</a>)</p>
+<div class="figure">
+<img alt="../_images/plot_simulation_coxreg2.png" src="../_images/plot_simulation_coxreg2.png" />
+</div>
 </div>
 <div class="section" id="self-controlled-case-series-sccs">
 <h3>3.2 Self-controlled case series (SCCS)<a class="headerlink" href="#self-controlled-case-series-sccs" title="Permalink to this headline">¶</a></h3>
 <p>We provide a class for the simulation of a SCCS regression model with right-censoring.</p>
-<div class="system-message">
-<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/simulation.rst</tt>, line 175)</p>
-failed to import simulation.SimuSCCS</div>
-<div class="system-message">
-<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/simulation.rst</tt>, line 175)</p>
-toctree references unknown document ‘modules/generated/simulation.SimuSCCS’</div>
 <table border="1" class="longtable docutils">
 <colgroup>
 <col width="10%" />
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuSCCS</span></code></td>
-<td></td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.SimuSCCS.html#tick.simulation.SimuSCCS" title="tick.simulation.SimuSCCS"><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuSCCS</span></code></a>(n_samples,&nbsp;n_intervals,&nbsp;…)</td>
+<td>Simulation of a Self Control Case Series (SCCS) model.</td>
 </tr>
 </tbody>
 </table>
@@ -726,63 +538,22 @@ Poisson processes and Hawkes processes.</p>
 <h3>4.1 Poisson processes<a class="headerlink" href="#poisson-processes" title="Permalink to this headline">¶</a></h3>
 <p>Both homogeneous and inhomogeneous Poisson process might be simulated with tick
 thanks to the following classes.</p>
-<div class="system-message">
-<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/simulation.rst</tt>, line 198)</p>
-failed to import simulation.SimuPoissonProcess</div>
-<div class="system-message">
-<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/simulation.rst</tt>, line 198)</p>
-failed to import simulation.SimuInhomogeneousPoisson</div>
-<div class="system-message">
-<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/simulation.rst</tt>, line 198)</p>
-toctree references unknown document ‘modules/generated/simulation.SimuPoissonProcess’</div>
-<div class="system-message">
-<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/simulation.rst</tt>, line 198)</p>
-toctree references unknown document ‘modules/generated/simulation.SimuInhomogeneousPoisson’</div>
 <table border="1" class="longtable docutils">
 <colgroup>
 <col width="10%" />
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuPoissonProcess</span></code></td>
-<td></td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.SimuPoissonProcess.html#tick.simulation.SimuPoissonProcess" title="tick.simulation.SimuPoissonProcess"><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuPoissonProcess</span></code></a>(intensities[,&nbsp;…])</td>
+<td>Homogeneous Poisson process simulation</td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuInhomogeneousPoisson</span></code></td>
-<td></td>
+<tr class="row-even"><td><a class="reference internal" href="generated/tick.simulation.SimuInhomogeneousPoisson.html#tick.simulation.SimuInhomogeneousPoisson" title="tick.simulation.SimuInhomogeneousPoisson"><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuInhomogeneousPoisson</span></code></a>(…[,&nbsp;…])</td>
+<td>Inhomogeneous Poisson process simulation</td>
 </tr>
 </tbody>
 </table>
 <p><strong>Examples</strong></p>
 <p>A Poisson process with constant intensity</p>
-<div class="system-message">
-<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/simulation.rst</tt>, line 209)</p>
-Exception occurred in plotting plot_poisson_constant_intensity
- from /Users/martin/Projects/tick_ghpages/tick/DOC/modules/code_samples/simulation/plot_poisson_constant_intensity.py:
-Traceback (most recent call last):
-  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/build/array.py”, line 18, in swig_import_helper
-    fp, pathname, description = imp.find_module(‘_array’, [dirname(__file__)])
-  File “/opt/local/Library/Frameworks/Python.framework/Versions/3.4/lib/python3.4/imp.py”, line 297, in find_module
-    raise ImportError(_ERR_MSG.format(name), name=name)
-ImportError: No module named ‘_array’
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File “/opt/local/Library/Frameworks/Python.framework/Versions/3.4/lib/python3.4/site-packages/matplotlib/sphinxext/plot_directive.py”, line 520, in run_code
-    six.exec_(code, ns)
-  File “&lt;string&gt;”, line 1, in &lt;module&gt;
-  File “/Users/martin/Projects/tick_ghpages/tick/tick/__init__.py”, line 3, in &lt;module&gt;
-    import tick.base
-  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/__init__.py”, line 21, in &lt;module&gt;
-    from .array import *
-  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/__init__.py”, line 3, in &lt;module&gt;
-    from .build import array
-  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/build/array.py”, line 28, in &lt;module&gt;
-    _array = swig_import_helper()
-  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/build/array.py”, line 20, in swig_import_helper
-    import _array
-ImportError: No module named ‘_array’
-</div>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tick.simulation</span> <span class="kn">import</span> <span class="n">SimuPoissonProcess</span>
 <span class="kn">from</span> <span class="nn">tick.plot</span> <span class="kn">import</span> <span class="n">plot_point_process</span>
 
@@ -794,38 +565,12 @@ ImportError: No module named ‘_array’
 <span class="n">plot_point_process</span><span class="p">(</span><span class="n">poi</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>(<a class="reference external" href="../modules/code_samples/simulation/plot_poisson_constant_intensity.py">Source code</a>)</p>
-<p>A Poisson process with variable intensity. In this case, the intensity is
-defined through a <code class="xref py py-obj docutils literal"><span class="pre">tick.base.TimeFunction</span></code></p>
-<div class="system-message">
-<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/simulation.rst</tt>, line 215)</p>
-Exception occurred in plotting plot_poisson_inhomogeneous
- from /Users/martin/Projects/tick_ghpages/tick/DOC/../examples/plot_poisson_inhomogeneous.py:
-Traceback (most recent call last):
-  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/build/array.py”, line 18, in swig_import_helper
-    fp, pathname, description = imp.find_module(‘_array’, [dirname(__file__)])
-  File “/opt/local/Library/Frameworks/Python.framework/Versions/3.4/lib/python3.4/imp.py”, line 297, in find_module
-    raise ImportError(_ERR_MSG.format(name), name=name)
-ImportError: No module named ‘_array’
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File “/opt/local/Library/Frameworks/Python.framework/Versions/3.4/lib/python3.4/site-packages/matplotlib/sphinxext/plot_directive.py”, line 520, in run_code
-    six.exec_(code, ns)
-  File “&lt;string&gt;”, line 11, in &lt;module&gt;
-  File “/Users/martin/Projects/tick_ghpages/tick/tick/__init__.py”, line 3, in &lt;module&gt;
-    import tick.base
-  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/__init__.py”, line 21, in &lt;module&gt;
-    from .array import *
-  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/__init__.py”, line 3, in &lt;module&gt;
-    from .build import array
-  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/build/array.py”, line 28, in &lt;module&gt;
-    _array = swig_import_helper()
-  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/build/array.py”, line 20, in swig_import_helper
-    import _array
-ImportError: No module named ‘_array’
+<p>(<a class="reference external" href="../modules/code_samples/simulation/plot_poisson_constant_intensity.py">Source code</a>, <a class="reference external" href="../modules/code_samples/simulation/plot_poisson_constant_intensity.png">png</a>, <a class="reference external" href="../modules/code_samples/simulation/plot_poisson_constant_intensity.hires.png">hires.png</a>, <a class="reference external" href="../modules/code_samples/simulation/plot_poisson_constant_intensity.pdf">pdf</a>)</p>
+<div class="figure">
+<img alt="../_images/plot_poisson_constant_intensity1.png" src="../_images/plot_poisson_constant_intensity1.png" />
 </div>
+<p>A Poisson process with variable intensity. In this case, the intensity is
+defined through a <a class="reference internal" href="generated/tick.base.TimeFunction.html#tick.base.TimeFunction" title="tick.base.TimeFunction"><code class="xref py py-obj docutils literal"><span class="pre">tick.base.TimeFunction</span></code></a></p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">========================================</span>
 <span class="sd">Inhomogeneous Poisson process simulation</span>
@@ -862,78 +607,34 @@ ImportError: No module named ‘_array’
 <span class="n">plot_point_process</span><span class="p">(</span><span class="n">in_poi</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>(<a class="reference external" href="../../examples/plot_poisson_inhomogeneous.py">Source code</a>)</p>
+<p>(<a class="reference external" href="../../examples/plot_poisson_inhomogeneous.py">Source code</a>, <a class="reference external" href="../../examples/plot_poisson_inhomogeneous.png">png</a>, <a class="reference external" href="../../examples/plot_poisson_inhomogeneous.hires.png">hires.png</a>, <a class="reference external" href="../../examples/plot_poisson_inhomogeneous.pdf">pdf</a>)</p>
+<div class="figure">
+<img alt="../_images/plot_poisson_inhomogeneous2.png" src="../_images/plot_poisson_inhomogeneous2.png" />
+</div>
 </div>
 <div class="section" id="hawkes-processes">
 <h3>4.2 Hawkes processes<a class="headerlink" href="#hawkes-processes" title="Permalink to this headline">¶</a></h3>
 <p>Simulation of Hawkes processes can be done using the following classes. The
-main class <code class="xref py py-obj docutils literal"><span class="pre">tick.simulation.SimuHawkes</span></code> might use any type of kernels and
+main class <a class="reference internal" href="generated/tick.simulation.SimuHawkes.html#tick.simulation.SimuHawkes" title="tick.simulation.SimuHawkes"><code class="xref py py-obj docutils literal"><span class="pre">tick.simulation.SimuHawkes</span></code></a> might use any type of kernels and
 will perform simulation. For some specific cases there are some classes
 dedicated to a type of kernel: exponential or sum of exponential kernels.</p>
-<div class="system-message">
-<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/simulation.rst</tt>, line 228)</p>
-failed to import simulation.SimuHawkes</div>
-<div class="system-message">
-<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/simulation.rst</tt>, line 228)</p>
-failed to import simulation.SimuHawkesExpKernels</div>
-<div class="system-message">
-<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/simulation.rst</tt>, line 228)</p>
-failed to import simulation.SimuHawkesSumExpKernels</div>
-<div class="system-message">
-<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/simulation.rst</tt>, line 228)</p>
-toctree references unknown document ‘modules/generated/simulation.SimuHawkes’</div>
-<div class="system-message">
-<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/simulation.rst</tt>, line 228)</p>
-toctree references unknown document ‘modules/generated/simulation.SimuHawkesExpKernels’</div>
-<div class="system-message">
-<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/simulation.rst</tt>, line 228)</p>
-toctree references unknown document ‘modules/generated/simulation.SimuHawkesSumExpKernels’</div>
 <table border="1" class="longtable docutils">
 <colgroup>
 <col width="10%" />
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuHawkes</span></code></td>
-<td></td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.SimuHawkes.html#tick.simulation.SimuHawkes" title="tick.simulation.SimuHawkes"><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuHawkes</span></code></a>([kernels,&nbsp;baseline,&nbsp;…])</td>
+<td>Hawkes process simulation</td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuHawkesExpKernels</span></code></td>
-<td></td>
+<tr class="row-even"><td><a class="reference internal" href="generated/tick.simulation.SimuHawkesExpKernels.html#tick.simulation.SimuHawkesExpKernels" title="tick.simulation.SimuHawkesExpKernels"><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuHawkesExpKernels</span></code></a>(adjacency,&nbsp;…)</td>
+<td>Hawkes process with exponential kernels simulation</td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuHawkesSumExpKernels</span></code></td>
-<td></td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.SimuHawkesSumExpKernels.html#tick.simulation.SimuHawkesSumExpKernels" title="tick.simulation.SimuHawkesSumExpKernels"><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuHawkesSumExpKernels</span></code></a>(…[,&nbsp;…])</td>
+<td>Hawkes process with sum-exponential kernels simulation</td>
 </tr>
 </tbody>
 </table>
-<div class="system-message">
-<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/simulation.rst</tt>, line 236)</p>
-Exception occurred in plotting plot_hawkes_1d_simu
- from /Users/martin/Projects/tick_ghpages/tick/DOC/modules/code_samples/simulation/plot_hawkes_1d_simu.py:
-Traceback (most recent call last):
-  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/build/array.py”, line 18, in swig_import_helper
-    fp, pathname, description = imp.find_module(‘_array’, [dirname(__file__)])
-  File “/opt/local/Library/Frameworks/Python.framework/Versions/3.4/lib/python3.4/imp.py”, line 297, in find_module
-    raise ImportError(_ERR_MSG.format(name), name=name)
-ImportError: No module named ‘_array’
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File “/opt/local/Library/Frameworks/Python.framework/Versions/3.4/lib/python3.4/site-packages/matplotlib/sphinxext/plot_directive.py”, line 520, in run_code
-    six.exec_(code, ns)
-  File “&lt;string&gt;”, line 6, in &lt;module&gt;
-  File “/Users/martin/Projects/tick_ghpages/tick/tick/__init__.py”, line 3, in &lt;module&gt;
-    import tick.base
-  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/__init__.py”, line 21, in &lt;module&gt;
-    from .array import *
-  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/__init__.py”, line 3, in &lt;module&gt;
-    from .build import array
-  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/build/array.py”, line 28, in &lt;module&gt;
-    _array = swig_import_helper()
-  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/build/array.py”, line 20, in swig_import_helper
-    import _array
-ImportError: No module named ‘_array’
-</div>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">1 dimensional Hawkes process simulation</span>
 <span class="sd">=======================================</span>
@@ -964,35 +665,9 @@ ImportError: No module named ‘_array’
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>(<a class="reference external" href="../modules/code_samples/simulation/plot_hawkes_1d_simu.py">Source code</a>)</p>
-<div class="system-message">
-<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">/Users/martin/Projects/tick_ghpages/tick/DOC/modules/simulation.rst</tt>, line 239)</p>
-Exception occurred in plotting plot_hawkes_multidim_simu
- from /Users/martin/Projects/tick_ghpages/tick/DOC/modules/code_samples/simulation/plot_hawkes_multidim_simu.py:
-Traceback (most recent call last):
-  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/build/array.py”, line 18, in swig_import_helper
-    fp, pathname, description = imp.find_module(‘_array’, [dirname(__file__)])
-  File “/opt/local/Library/Frameworks/Python.framework/Versions/3.4/lib/python3.4/imp.py”, line 297, in find_module
-    raise ImportError(_ERR_MSG.format(name), name=name)
-ImportError: No module named ‘_array’
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File “/opt/local/Library/Frameworks/Python.framework/Versions/3.4/lib/python3.4/site-packages/matplotlib/sphinxext/plot_directive.py”, line 520, in run_code
-    six.exec_(code, ns)
-  File “&lt;string&gt;”, line 8, in &lt;module&gt;
-  File “/Users/martin/Projects/tick_ghpages/tick/tick/__init__.py”, line 3, in &lt;module&gt;
-    import tick.base
-  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/__init__.py”, line 21, in &lt;module&gt;
-    from .array import *
-  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/__init__.py”, line 3, in &lt;module&gt;
-    from .build import array
-  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/build/array.py”, line 28, in &lt;module&gt;
-    _array = swig_import_helper()
-  File “/Users/martin/Projects/tick_ghpages/tick/tick/base/array/build/array.py”, line 20, in swig_import_helper
-    import _array
-ImportError: No module named ‘_array’
+<p>(<a class="reference external" href="../modules/code_samples/simulation/plot_hawkes_1d_simu.py">Source code</a>, <a class="reference external" href="../modules/code_samples/simulation/plot_hawkes_1d_simu.png">png</a>, <a class="reference external" href="../modules/code_samples/simulation/plot_hawkes_1d_simu.hires.png">hires.png</a>, <a class="reference external" href="../modules/code_samples/simulation/plot_hawkes_1d_simu.pdf">pdf</a>)</p>
+<div class="figure">
+<img alt="../_images/plot_hawkes_1d_simu1.png" src="../_images/plot_hawkes_1d_simu1.png" />
 </div>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Simulation of 3-dimensional hawkes process</span>
@@ -1024,7 +699,10 @@ ImportError: No module named ‘_array’
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>(<a class="reference external" href="../modules/code_samples/simulation/plot_hawkes_multidim_simu.py">Source code</a>)</p>
+<p>(<a class="reference external" href="../modules/code_samples/simulation/plot_hawkes_multidim_simu.py">Source code</a>, <a class="reference external" href="../modules/code_samples/simulation/plot_hawkes_multidim_simu.png">png</a>, <a class="reference external" href="../modules/code_samples/simulation/plot_hawkes_multidim_simu.hires.png">hires.png</a>, <a class="reference external" href="../modules/code_samples/simulation/plot_hawkes_multidim_simu.pdf">pdf</a>)</p>
+<div class="figure">
+<img alt="../_images/plot_hawkes_multidim_simu1.png" src="../_images/plot_hawkes_multidim_simu1.png" />
+</div>
 </div>
 </div>
 </div>

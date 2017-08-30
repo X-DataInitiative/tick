@@ -35,8 +35,8 @@ iterations, on a logarithmic scale.
 
 
 
-.. rst-class:: horizontal
-
+.. image:: images/plot_poisson_regression_001.png
+    :align: center
 
 
 
@@ -46,8 +46,8 @@ iterations, on a logarithmic scale.
 .. literalinclude:: plot_poisson_regression.py
     :lines: 32-
 
-**Total running time of the example:**  0.00 seconds
-( 0 minutes  0.00 seconds)
+**Total running time of the example:**  4.40 seconds
+( 0 minutes  4.40 seconds)
     
 Mentioned *tick* classes:
    * `tick.inference.PoissonRegression`

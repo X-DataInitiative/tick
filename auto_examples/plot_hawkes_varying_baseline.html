@@ -16,12 +16,9 @@
       })();
     </script>
     <title>Hawkes process with non constant baseline &#8212; tick 0.2.1 documentation</title>
-    <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/bootstrap-3.3.4/css/bootstrap.min.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/bootstrap-3.3.4/css/bootstrap-theme.min.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
@@ -38,7 +35,7 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
-    <script type="text/javascript" src="../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -104,7 +101,10 @@
 <li class="toctree-l2"><a class="reference internal" href="../modules/plot.html#others">Others</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../modules/preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul class="simple">
+<li class="toctree-l1"><a class="reference internal" href="../modules/preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/generated/tick.preprocessing.FeaturesBinarizer.html">tick.preprocessing.FeaturesBinarizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/generated/tick.preprocessing.LongitudinalFeaturesProduct.html">tick.preprocessing.LongitudinalFeaturesProduct</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/generated/tick.preprocessing.LongitudinalFeaturesLagger.html">tick.preprocessing.LongitudinalFeaturesLagger</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../modules/simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code>: simulation toolbox</a><ul>
@@ -161,12 +161,13 @@ baselines. In this example the intensity is written the following way</p>
 <p><span class="math">\(\lambda_i(t) = \mu_i(t) + \sum_{j=1}^D \int \phi_{ij}(t - s)dN_j(s)\)</span></p>
 <p>Kernels are sum of exponentials and varying baseline <span class="math">\(\mu_i(t)\)</span>
 piecewise constant.</p>
-<p class="horizontal"><strong>Python source code:</strong> <a class="reference download internal" href="../_downloads/plot_hawkes_varying_baseline.py" download=""><code class="xref download docutils literal"><span class="pre">plot_hawkes_varying_baseline.py</span></code></a></p>
+<img alt="../_images/plot_hawkes_varying_baseline_001.png" class="align-center" src="../_images/plot_hawkes_varying_baseline_001.png" />
+<p><strong>Python source code:</strong> <a class="reference download internal" href="../_downloads/plot_hawkes_varying_baseline.py" download=""><code class="xref download docutils literal"><span class="pre">plot_hawkes_varying_baseline.py</span></code></a></p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
 <span class="kn">from</span> <span class="nn">tick.plot</span> <span class="k">import</span> <span class="n">plot_hawkes_baseline_and_kernels</span>
-<span class="kn">from</span> <span class="nn">tick.simulation</span> <span class="k">import</span> <span class="n">SimuHawkesSumExpKernels</span><span class="p">,</span> <span class="n">SimuHawkesMulti</span>
-<span class="kn">from</span> <span class="nn">tick.inference</span> <span class="k">import</span> <span class="n">HawkesSumExpKern</span>
+<span class="kn">from</span> <span class="nn">tick.simulation</span> <span class="k">import</span> <span class="n">SimuHawkesSumExpKernels</span><span class="p">,</span> <a href="../modules/generated/tick.simulation.SimuHawkesMulti.html#tick.simulation.SimuHawkesMulti"><span class="n">SimuHawkesMulti</span></a>
+<span class="kn">from</span> <span class="nn">tick.inference</span> <span class="k">import</span> <a href="../modules/generated/tick.inference.HawkesSumExpKern.html#tick.inference.HawkesSumExpKern"><span class="n">HawkesSumExpKern</span></a>
 
 <span class="n">period_length</span> <span class="o">=</span> <span class="mi">300</span>
 <span class="n">baselines</span> <span class="o">=</span> <span class="p">[[</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
@@ -184,11 +185,11 @@ piecewise constant.</p>
 <span class="n">hawkes</span><span class="o">.</span><span class="n">end_time</span> <span class="o">=</span> <span class="mi">1000</span>
 <span class="n">hawkes</span><span class="o">.</span><span class="n">adjust_spectral_radius</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
 
-<span class="n">multi</span> <span class="o">=</span> <span class="n">SimuHawkesMulti</span><span class="p">(</span><span class="n">hawkes</span><span class="p">,</span> <span class="n">n_simulations</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">multi</span> <span class="o">=</span> <a href="../modules/generated/tick.simulation.SimuHawkesMulti.html#tick.simulation.SimuHawkesMulti"><span class="n">SimuHawkesMulti</span></a><span class="p">(</span><span class="n">hawkes</span><span class="p">,</span> <span class="n">n_simulations</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
 <span class="n">multi</span><span class="o">.</span><span class="n">simulate</span><span class="p">()</span>
 
 <span class="c1"># estimation</span>
-<span class="n">learner</span> <span class="o">=</span> <span class="n">HawkesSumExpKern</span><span class="p">(</span><span class="n">decays</span><span class="o">=</span><span class="n">decays</span><span class="p">,</span>
+<span class="n">learner</span> <span class="o">=</span> <a href="../modules/generated/tick.inference.HawkesSumExpKern.html#tick.inference.HawkesSumExpKern"><span class="n">HawkesSumExpKern</span></a><span class="p">(</span><span class="n">decays</span><span class="o">=</span><span class="n">decays</span><span class="p">,</span>
                            <span class="n">n_baselines</span><span class="o">=</span><span class="n">n_baselines</span><span class="p">,</span>
                            <span class="n">period_length</span><span class="o">=</span><span class="n">period_length</span><span class="p">)</span>
 
@@ -201,15 +202,15 @@ piecewise constant.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<p><strong>Total running time of the example:</strong>  0.00 seconds
-( 0 minutes  0.00 seconds)</p>
+<p><strong>Total running time of the example:</strong>  0.57 seconds
+( 0 minutes  0.57 seconds)</p>
 <dl class="docutils">
 <dt>Mentioned <em>tick</em> classes:</dt>
 <dd><ul class="first last simple">
-<li><code class="xref py py-obj docutils literal"><span class="pre">tick.inference.HawkesSumExpKern</span></code></li>
+<li><a class="reference internal" href="../modules/generated/tick.inference.HawkesSumExpKern.html#tick.inference.HawkesSumExpKern" title="tick.inference.HawkesSumExpKern"><code class="xref py py-obj docutils literal"><span class="pre">tick.inference.HawkesSumExpKern</span></code></a></li>
 <li><code class="xref py py-obj docutils literal"><span class="pre">tick.plot.plot_hawkes_baseline_and_kernels</span></code></li>
-<li><code class="xref py py-obj docutils literal"><span class="pre">tick.simulation.SimuHawkesMulti</span></code></li>
-<li><code class="xref py py-obj docutils literal"><span class="pre">tick.simulation.SimuHawkesSumExpKernels</span></code></li>
+<li><a class="reference internal" href="../modules/generated/tick.simulation.SimuHawkesMulti.html#tick.simulation.SimuHawkesMulti" title="tick.simulation.SimuHawkesMulti"><code class="xref py py-obj docutils literal"><span class="pre">tick.simulation.SimuHawkesMulti</span></code></a></li>
+<li><a class="reference internal" href="../modules/generated/tick.simulation.SimuHawkesSumExpKernels.html#tick.simulation.SimuHawkesSumExpKernels" title="tick.simulation.SimuHawkesSumExpKernels"><code class="xref py py-obj docutils literal"><span class="pre">tick.simulation.SimuHawkesSumExpKernels</span></code></a></li>
 </ul>
 </dd>
 </dl>

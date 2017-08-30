@@ -16,12 +16,9 @@
       })();
     </script>
     <title>tick.inference.base.learner_glm &#8212; tick 0.2.1 documentation</title>
-    <link rel="stylesheet" href="../../../../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/css/custom.css" type="text/css" />
-    <link rel="stylesheet" href="../../../../_static/bootstrap-3.3.4/css/bootstrap.min.css" type="text/css" />
-    <link rel="stylesheet" href="../../../../_static/bootstrap-3.3.4/css/bootstrap-theme.min.css" type="text/css" />
-    <link rel="stylesheet" href="../../../../_static/bootstrap-sphinx.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
@@ -38,7 +35,7 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../../_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="../../../../_static/js/jquery-fix.js"></script>
-    <script type="text/javascript" src="../../../../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../../../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../../../../_static/bootstrap-sphinx.js"></script>
     <link rel="shortcut icon" href="../../../../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../../../../genindex.html" />
@@ -320,9 +317,6 @@
         <span class="n">model_obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model_obj</span>
         <span class="n">prox_obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prox_obj</span>
         <span class="n">fit_intercept</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fit_intercept</span>
-
-        <span class="n">X</span> <span class="o">=</span> <span class="n">LearnerOptim</span><span class="o">.</span><span class="n">_safe_array</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-        <span class="n">y</span> <span class="o">=</span> <span class="n">LearnerOptim</span><span class="o">.</span><span class="n">_safe_array</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
 
         <span class="c1"># Pass the data to the model</span>
         <span class="n">model_obj</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>

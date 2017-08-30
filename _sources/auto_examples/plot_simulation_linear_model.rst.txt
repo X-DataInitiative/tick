@@ -12,9 +12,21 @@ weight vector.
 
 
 
-.. rst-class:: horizontal
+.. image:: images/plot_simulation_linear_model_001.png
+    :align: center
 
 
+**Script output**::
+
+  ----------------------------------------
+  Launching simulation using SimuLinReg...
+  Done simulating using SimuLinReg in 8.04e-04 seconds.
+  ----------------------------------------
+  Launching simulation using SimuLogReg...
+  Done simulating using SimuLogReg in 5.16e-04 seconds.
+  -----------------------------------------
+  Launching simulation using SimuPoisReg...
+  Done simulating using SimuPoisReg in 3.66e-04 seconds.
 
 
 
@@ -23,8 +35,8 @@ weight vector.
 .. literalinclude:: plot_simulation_linear_model.py
     :lines: 9-
 
-**Total running time of the example:**  0.00 seconds
-( 0 minutes  0.00 seconds)
+**Total running time of the example:**  0.32 seconds
+( 0 minutes  0.32 seconds)
     
 Mentioned *tick* classes:
    * `tick.simulation.SimuLinReg`

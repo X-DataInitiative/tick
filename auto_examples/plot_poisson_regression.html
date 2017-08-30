@@ -16,12 +16,9 @@
       })();
     </script>
     <title>Comparison of solvers for Poisson regression &#8212; tick 0.2.1 documentation</title>
-    <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/bootstrap-3.3.4/css/bootstrap.min.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/bootstrap-3.3.4/css/bootstrap-theme.min.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
@@ -38,7 +35,7 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
-    <script type="text/javascript" src="../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -104,7 +101,10 @@
 <li class="toctree-l2"><a class="reference internal" href="../modules/plot.html#others">Others</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../modules/preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul class="simple">
+<li class="toctree-l1"><a class="reference internal" href="../modules/preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/generated/tick.preprocessing.FeaturesBinarizer.html">tick.preprocessing.FeaturesBinarizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/generated/tick.preprocessing.LongitudinalFeaturesProduct.html">tick.preprocessing.LongitudinalFeaturesProduct</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/generated/tick.preprocessing.LongitudinalFeaturesLagger.html">tick.preprocessing.LongitudinalFeaturesLagger</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../modules/simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code>: simulation toolbox</a><ul>
@@ -159,12 +159,12 @@
 <p>In this example, we explain how to try out different solvers for the Poisson
 regression model, using <span class="math">\(\ell_2^2\)</span> penalization, namely ridge (which is
 the default value for the <code class="docutils literal"><span class="pre">penalty</span></code> parameter in
-<code class="xref py py-obj docutils literal"><span class="pre">tick.inference.PoissonRegression</span></code>).</p>
+<a class="reference internal" href="../modules/generated/tick.inference.PoissonRegression.html#tick.inference.PoissonRegression" title="tick.inference.PoissonRegression"><code class="xref py py-obj docutils literal"><span class="pre">tick.inference.PoissonRegression</span></code></a>).</p>
 <p>Note that for this learner, the <code class="docutils literal"><span class="pre">step</span></code> of the solver cannot be tuned
 automatically. So, the default value might work, or not.
 We therefore urge users to try out different values of the <code class="docutils literal"><span class="pre">step</span></code> parameter
 until getting good concergence properties.</p>
-<p>Other penalizations are available in <code class="xref py py-obj docutils literal"><span class="pre">tick.inference.PoissonRegression</span></code>:</p>
+<p>Other penalizations are available in <a class="reference internal" href="../modules/generated/tick.inference.PoissonRegression.html#tick.inference.PoissonRegression" title="tick.inference.PoissonRegression"><code class="xref py py-obj docutils literal"><span class="pre">tick.inference.PoissonRegression</span></code></a>:</p>
 <ul class="simple">
 <li>no penalization, using <code class="docutils literal"><span class="pre">penalty='none'</span></code></li>
 <li><span class="math">\(\ell_1\)</span> penalization, using <code class="docutils literal"><span class="pre">penalty='l1'</span></code></li>
@@ -174,18 +174,19 @@ parameter should be used as well</li>
 <li>total-variation penalization, using <code class="docutils literal"><span class="pre">penalty='tv'</span></code></li>
 </ul>
 <p><strong>Remark</strong>: we don’t use in this example <code class="docutils literal"><span class="pre">solver='sgd'</span></code> (namely vanilla
-stochastic gradient descent, see <code class="xref py py-obj docutils literal"><span class="pre">tick.optim.solver.SGD</span></code>) since it performs
+stochastic gradient descent, see <a class="reference internal" href="../modules/generated/tick.optim.solver.SGD.html#tick.optim.solver.SGD" title="tick.optim.solver.SGD"><code class="xref py py-obj docutils literal"><span class="pre">tick.optim.solver.SGD</span></code></a>) since it performs
 too poorly.</p>
 <p>The plot given below compares the distance to the minimum of each solver along
 iterations, on a logarithmic scale.</p>
-<p class="horizontal"><strong>Python source code:</strong> <a class="reference download internal" href="../_downloads/plot_poisson_regression.py" download=""><code class="xref download docutils literal"><span class="pre">plot_poisson_regression.py</span></code></a></p>
+<img alt="../_images/plot_poisson_regression_001.png" class="align-center" src="../_images/plot_poisson_regression_001.png" />
+<p><strong>Python source code:</strong> <a class="reference download internal" href="../_downloads/plot_poisson_regression.py" download=""><code class="xref download docutils literal"><span class="pre">plot_poisson_regression.py</span></code></a></p>
 <div class="highlight-default"><div class="highlight"><pre><span></span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
-<span class="kn">from</span> <span class="nn">tick.simulation</span> <span class="k">import</span> <span class="n">SimuPoisReg</span><span class="p">,</span> <span class="n">weights_sparse_gauss</span>
-<span class="kn">from</span> <span class="nn">tick.inference</span> <span class="k">import</span> <span class="n">PoissonRegression</span>
-<span class="kn">from</span> <span class="nn">tick.plot</span> <span class="k">import</span> <span class="n">plot_history</span>
+<span class="kn">from</span> <span class="nn">tick.simulation</span> <span class="k">import</span> <a href="../modules/generated/tick.simulation.SimuPoisReg.html#tick.simulation.SimuPoisReg"><span class="n">SimuPoisReg</span></a><span class="p">,</span> <span class="n">weights_sparse_gauss</span>
+<span class="kn">from</span> <span class="nn">tick.inference</span> <span class="k">import</span> <a href="../modules/generated/tick.inference.PoissonRegression.html#tick.inference.PoissonRegression"><span class="n">PoissonRegression</span></a>
+<span class="kn">from</span> <span class="nn">tick.plot</span> <span class="k">import</span> <a href="../modules/generated/tick.plot.plot_history.html#tick.plot.plot_history"><span class="n">plot_history</span></a>
 
 
 <span class="n">n_samples</span> <span class="o">=</span> <span class="mi">50000</span>
@@ -193,35 +194,35 @@ iterations, on a logarithmic scale.</p>
 <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">123</span><span class="p">)</span>
 <span class="n">weight0</span> <span class="o">=</span> <span class="n">weights_sparse_gauss</span><span class="p">(</span><span class="n">n_features</span><span class="p">,</span> <span class="n">nnz</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">n_features</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span> <span class="o">/</span> <span class="mf">20.</span>
 <span class="n">intercept0</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.1</span>
-<span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">SimuPoisReg</span><span class="p">(</span><span class="n">weight0</span><span class="p">,</span> <span class="n">intercept0</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <a href="../modules/generated/tick.simulation.SimuPoisReg.html#tick.simulation.SimuPoisReg"><span class="n">SimuPoisReg</span></a><span class="p">(</span><span class="n">weight0</span><span class="p">,</span> <span class="n">intercept0</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span>
                    <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">123</span><span class="p">)</span><span class="o">.</span><span class="n">simulate</span><span class="p">()</span>
 
 <span class="n">opts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;verbose&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;record_every&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;tol&#39;</span><span class="p">:</span> <span class="mf">1e-8</span><span class="p">,</span> <span class="s1">&#39;max_iter&#39;</span><span class="p">:</span> <span class="mi">40</span><span class="p">}</span>
 
 <span class="n">poisson_regressions</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="n">PoissonRegression</span><span class="p">(</span><span class="n">solver</span><span class="o">=</span><span class="s1">&#39;gd&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">opts</span><span class="p">),</span>
-    <span class="n">PoissonRegression</span><span class="p">(</span><span class="n">solver</span><span class="o">=</span><span class="s1">&#39;agd&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">opts</span><span class="p">),</span>
-    <span class="n">PoissonRegression</span><span class="p">(</span><span class="n">solver</span><span class="o">=</span><span class="s1">&#39;svrg&#39;</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">1234</span><span class="p">,</span> <span class="o">**</span><span class="n">opts</span><span class="p">),</span>
-    <span class="n">PoissonRegression</span><span class="p">(</span><span class="n">solver</span><span class="o">=</span><span class="s1">&#39;bfgs&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">opts</span><span class="p">)</span>
+    <a href="../modules/generated/tick.inference.PoissonRegression.html#tick.inference.PoissonRegression"><span class="n">PoissonRegression</span></a><span class="p">(</span><span class="n">solver</span><span class="o">=</span><span class="s1">&#39;gd&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">opts</span><span class="p">),</span>
+    <a href="../modules/generated/tick.inference.PoissonRegression.html#tick.inference.PoissonRegression"><span class="n">PoissonRegression</span></a><span class="p">(</span><span class="n">solver</span><span class="o">=</span><span class="s1">&#39;agd&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">opts</span><span class="p">),</span>
+    <a href="../modules/generated/tick.inference.PoissonRegression.html#tick.inference.PoissonRegression"><span class="n">PoissonRegression</span></a><span class="p">(</span><span class="n">solver</span><span class="o">=</span><span class="s1">&#39;svrg&#39;</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">1234</span><span class="p">,</span> <span class="o">**</span><span class="n">opts</span><span class="p">),</span>
+    <a href="../modules/generated/tick.inference.PoissonRegression.html#tick.inference.PoissonRegression"><span class="n">PoissonRegression</span></a><span class="p">(</span><span class="n">solver</span><span class="o">=</span><span class="s1">&#39;bfgs&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">opts</span><span class="p">)</span>
 <span class="p">]</span>
 
 <span class="k">for</span> <span class="n">poisson_regression</span> <span class="ow">in</span> <span class="n">poisson_regressions</span><span class="p">:</span>
     <span class="n">poisson_regression</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 
-<span class="n">plot_history</span><span class="p">(</span><span class="n">poisson_regressions</span><span class="p">,</span> <span class="n">log_scale</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">dist_min</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<a href="http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.title"><span class="n">plt</span><span class="o">.</span><span class="n">title</span></a><span class="p">(</span><span class="s1">&#39;Solvers comparison for Poisson regression&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
-<a href="http://matplotlib.org/api/tight_layout_api.html#matplotlib.tight_layout"><span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span></a><span class="p">()</span>
+<a href="../modules/generated/tick.plot.plot_history.html#tick.plot.plot_history"><span class="n">plot_history</span></a><span class="p">(</span><span class="n">poisson_regressions</span><span class="p">,</span> <span class="n">log_scale</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">dist_min</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Solvers comparison for Poisson regression&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
 </div>
-<p><strong>Total running time of the example:</strong>  0.00 seconds
-( 0 minutes  0.00 seconds)</p>
+<p><strong>Total running time of the example:</strong>  4.40 seconds
+( 0 minutes  4.40 seconds)</p>
 <dl class="docutils">
 <dt>Mentioned <em>tick</em> classes:</dt>
 <dd><ul class="first last simple">
-<li><code class="xref py py-obj docutils literal"><span class="pre">tick.inference.PoissonRegression</span></code></li>
-<li><code class="xref py py-obj docutils literal"><span class="pre">tick.plot.plot_history</span></code></li>
-<li><code class="xref py py-obj docutils literal"><span class="pre">tick.simulation.SimuPoisReg</span></code></li>
-<li><code class="xref py py-obj docutils literal"><span class="pre">tick.simulation.weights_sparse_gauss</span></code></li>
+<li><a class="reference internal" href="../modules/generated/tick.inference.PoissonRegression.html#tick.inference.PoissonRegression" title="tick.inference.PoissonRegression"><code class="xref py py-obj docutils literal"><span class="pre">tick.inference.PoissonRegression</span></code></a></li>
+<li><a class="reference internal" href="../modules/generated/tick.plot.plot_history.html#tick.plot.plot_history" title="tick.plot.plot_history"><code class="xref py py-obj docutils literal"><span class="pre">tick.plot.plot_history</span></code></a></li>
+<li><a class="reference internal" href="../modules/generated/tick.simulation.SimuPoisReg.html#tick.simulation.SimuPoisReg" title="tick.simulation.SimuPoisReg"><code class="xref py py-obj docutils literal"><span class="pre">tick.simulation.SimuPoisReg</span></code></a></li>
+<li><a class="reference internal" href="../modules/generated/tick.simulation.weights_sparse_gauss.html#tick.simulation.weights_sparse_gauss" title="tick.simulation.weights_sparse_gauss"><code class="xref py py-obj docutils literal"><span class="pre">tick.simulation.weights_sparse_gauss</span></code></a></li>
 </ul>
 </dd>
 </dl>

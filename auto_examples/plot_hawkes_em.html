@@ -16,12 +16,9 @@
       })();
     </script>
     <title>Fit Hawkes random kernels &#8212; tick 0.2.1 documentation</title>
-    <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/bootstrap-3.3.4/css/bootstrap.min.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/bootstrap-3.3.4/css/bootstrap-theme.min.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
@@ -38,7 +35,7 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
-    <script type="text/javascript" src="../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -104,7 +101,10 @@
 <li class="toctree-l2"><a class="reference internal" href="../modules/plot.html#others">Others</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../modules/preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul class="simple">
+<li class="toctree-l1"><a class="reference internal" href="../modules/preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/generated/tick.preprocessing.FeaturesBinarizer.html">tick.preprocessing.FeaturesBinarizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/generated/tick.preprocessing.LongitudinalFeaturesProduct.html">tick.preprocessing.LongitudinalFeaturesProduct</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/generated/tick.preprocessing.LongitudinalFeaturesLagger.html">tick.preprocessing.LongitudinalFeaturesLagger</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../modules/simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code>: simulation toolbox</a><ul>
@@ -156,69 +156,82 @@
   
   <div class="section" id="fit-hawkes-random-kernels">
 <span id="example-plot-hawkes-em-py"></span><h1>Fit Hawkes random kernels<a class="headerlink" href="#fit-hawkes-random-kernels" title="Permalink to this headline">¶</a></h1>
-<p>This Hawkes EM (<code class="xref py py-obj docutils literal"><span class="pre">tick.inference.HawkesEM</span></code>) algorithm assume that kernels are
+<p>This Hawkes EM (<a class="reference internal" href="../modules/generated/tick.inference.HawkesEM.html#tick.inference.HawkesEM" title="tick.inference.HawkesEM"><code class="xref py py-obj docutils literal"><span class="pre">tick.inference.HawkesEM</span></code></a>) algorithm assume that kernels are
 piecewise constant. Hence it can fit basically any kernel form. However it
 doesn’t scale very well.</p>
 <p>I has been originally described in this paper:</p>
 <p>Lewis, E., &amp; Mohler, G. (2011).
 A nonparametric EM algorithm for multiscale Hawkes processes.
 <a class="reference external" href="http://paleo.sscnet.ucla.edu/Lewis-Molher-EM_Preprint.pdf">preprint, 1-16</a>.</p>
-<p class="horizontal"><strong>Python source code:</strong> <a class="reference download internal" href="../_downloads/plot_hawkes_em.py" download=""><code class="xref download docutils literal"><span class="pre">plot_hawkes_em.py</span></code></a></p>
+<img alt="../_images/plot_hawkes_em_001.png" class="align-center" src="../_images/plot_hawkes_em_001.png" />
+<p><strong>Script output</strong>:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Launching</span> <span class="n">the</span> <span class="n">solver</span> <a href="../modules/generated/tick.inference.HawkesEM.html#tick.inference.HawkesEM"><span class="n">HawkesEM</span></a><span class="o">...</span>
+  <span class="n">n_iter</span>  <span class="o">|</span> <span class="n">rel_baseline</span> <span class="o">|</span> <span class="n">rel_kernel</span>
+        <span class="mi">0</span> <span class="o">|</span>     <span class="mf">5.50e-01</span> <span class="o">|</span>   <span class="mf">4.26e-01</span>
+       <span class="mi">10</span> <span class="o">|</span>     <span class="mf">4.10e-02</span> <span class="o">|</span>   <span class="mf">5.55e-02</span>
+       <span class="mi">20</span> <span class="o">|</span>     <span class="mf">5.12e-03</span> <span class="o">|</span>   <span class="mf">9.39e-03</span>
+       <span class="mi">30</span> <span class="o">|</span>     <span class="mf">1.02e-03</span> <span class="o">|</span>   <span class="mf">2.48e-03</span>
+       <span class="mi">40</span> <span class="o">|</span>     <span class="mf">5.59e-04</span> <span class="o">|</span>   <span class="mf">1.30e-03</span>
+       <span class="mi">47</span> <span class="o">|</span>     <span class="mf">4.03e-04</span> <span class="o">|</span>   <span class="mf">9.72e-04</span>
+<span class="n">Done</span> <span class="n">solving</span> <span class="n">using</span> <a href="../modules/generated/tick.inference.HawkesEM.html#tick.inference.HawkesEM"><span class="n">HawkesEM</span></a> <span class="ow">in</span> <span class="mf">0.6716442108154297</span> <span class="n">seconds</span>
+</pre></div>
+</div>
+<p><strong>Python source code:</strong> <a class="reference download internal" href="../_downloads/plot_hawkes_em.py" download=""><code class="xref download docutils literal"><span class="pre">plot_hawkes_em.py</span></code></a></p>
 <div class="highlight-default"><div class="highlight"><pre><span></span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
-<span class="kn">from</span> <span class="nn">tick.inference</span> <span class="k">import</span> <span class="n">HawkesEM</span>
-<span class="kn">from</span> <span class="nn">tick.simulation</span> <span class="k">import</span> <span class="n">SimuHawkes</span><span class="p">,</span> <span class="n">HawkesKernelTimeFunc</span><span class="p">,</span> <span class="n">HawkesKernelExp</span>
-<span class="kn">from</span> <span class="nn">tick.base</span> <span class="k">import</span> <span class="n">TimeFunction</span>
-<span class="kn">from</span> <span class="nn">tick.plot</span> <span class="k">import</span> <span class="n">plot_hawkes_kernels</span>
+<span class="kn">from</span> <span class="nn">tick.inference</span> <span class="k">import</span> <a href="../modules/generated/tick.inference.HawkesEM.html#tick.inference.HawkesEM"><span class="n">HawkesEM</span></a>
+<span class="kn">from</span> <span class="nn">tick.simulation</span> <span class="k">import</span> <a href="../modules/generated/tick.simulation.SimuHawkes.html#tick.simulation.SimuHawkes"><span class="n">SimuHawkes</span></a><span class="p">,</span> <span class="n">HawkesKernelTimeFunc</span><span class="p">,</span> <a href="../modules/generated/tick.simulation.HawkesKernelExp.html#tick.simulation.HawkesKernelExp"><span class="n">HawkesKernelExp</span></a>
+<span class="kn">from</span> <span class="nn">tick.base</span> <span class="k">import</span> <a href="../modules/generated/tick.base.TimeFunction.html#tick.base.TimeFunction"><span class="n">TimeFunction</span></a>
+<span class="kn">from</span> <span class="nn">tick.plot</span> <span class="k">import</span> <a href="../modules/generated/tick.plot.plot_hawkes_kernels.html#tick.plot.plot_hawkes_kernels"><span class="n">plot_hawkes_kernels</span></a>
 
 <span class="n">run_time</span> <span class="o">=</span> <span class="mi">30000</span>
 
-<span class="n">t_values1</span> <span class="o">=</span> <a href="http://docs.scipy.org/doc/numpy-1.6.0/reference/generated/numpy.array.html#numpy.array"><span class="n">np</span><span class="o">.</span><span class="n">array</span></a><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
-<span class="n">y_values1</span> <span class="o">=</span> <a href="http://docs.scipy.org/doc/numpy-1.6.0/reference/generated/numpy.array.html#numpy.array"><span class="n">np</span><span class="o">.</span><span class="n">array</span></a><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
-<span class="n">tf1</span> <span class="o">=</span> <span class="n">TimeFunction</span><span class="p">([</span><span class="n">t_values1</span><span class="p">,</span> <span class="n">y_values1</span><span class="p">],</span>
-                   <span class="n">inter_mode</span><span class="o">=</span><span class="n">TimeFunction</span><span class="o">.</span><span class="n">InterConstRight</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="n">t_values1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+<span class="n">y_values1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+<span class="n">tf1</span> <span class="o">=</span> <a href="../modules/generated/tick.base.TimeFunction.html#tick.base.TimeFunction"><span class="n">TimeFunction</span></a><span class="p">([</span><span class="n">t_values1</span><span class="p">,</span> <span class="n">y_values1</span><span class="p">],</span>
+                   <span class="n">inter_mode</span><span class="o">=</span><a href="../modules/generated/tick.base.TimeFunction.html#tick.base.TimeFunction"><span class="n">TimeFunction</span></a><span class="o">.</span><span class="n">InterConstRight</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
 <span class="n">kernel1</span> <span class="o">=</span> <span class="n">HawkesKernelTimeFunc</span><span class="p">(</span><span class="n">tf1</span><span class="p">)</span>
 
 <span class="n">t_values2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
-<span class="n">y_values2</span> <span class="o">=</span> <a href="http://docs.scipy.org/doc/numpy-1.6.0/reference/generated/numpy.maximum.html#numpy.maximum"><span class="n">np</span><span class="o">.</span><span class="n">maximum</span></a><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <a href="http://docs.scipy.org/doc/numpy-1.6.0/reference/generated/numpy.sin.html#numpy.sin"><span class="n">np</span><span class="o">.</span><span class="n">sin</span></a><span class="p">(</span><span class="n">t_values2</span><span class="p">)</span> <span class="o">/</span> <span class="mi">4</span><span class="p">)</span>
-<span class="n">tf2</span> <span class="o">=</span> <span class="n">TimeFunction</span><span class="p">([</span><span class="n">t_values2</span><span class="p">,</span> <span class="n">y_values2</span><span class="p">])</span>
+<span class="n">y_values2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">t_values2</span><span class="p">)</span> <span class="o">/</span> <span class="mi">4</span><span class="p">)</span>
+<span class="n">tf2</span> <span class="o">=</span> <a href="../modules/generated/tick.base.TimeFunction.html#tick.base.TimeFunction"><span class="n">TimeFunction</span></a><span class="p">([</span><span class="n">t_values2</span><span class="p">,</span> <span class="n">y_values2</span><span class="p">])</span>
 <span class="n">kernel2</span> <span class="o">=</span> <span class="n">HawkesKernelTimeFunc</span><span class="p">(</span><span class="n">tf2</span><span class="p">)</span>
 
-<span class="n">baseline</span> <span class="o">=</span> <a href="http://docs.scipy.org/doc/numpy-1.6.0/reference/generated/numpy.array.html#numpy.array"><span class="n">np</span><span class="o">.</span><span class="n">array</span></a><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">])</span>
+<span class="n">baseline</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">])</span>
 
-<span class="n">hawkes</span> <span class="o">=</span> <span class="n">SimuHawkes</span><span class="p">(</span><span class="n">baseline</span><span class="o">=</span><span class="n">baseline</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">run_time</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="n">hawkes</span> <span class="o">=</span> <a href="../modules/generated/tick.simulation.SimuHawkes.html#tick.simulation.SimuHawkes"><span class="n">SimuHawkes</span></a><span class="p">(</span><span class="n">baseline</span><span class="o">=</span><span class="n">baseline</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">run_time</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                     <span class="n">seed</span><span class="o">=</span><span class="mi">2334</span><span class="p">)</span>
 
 <span class="n">hawkes</span><span class="o">.</span><span class="n">set_kernel</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">kernel1</span><span class="p">)</span>
-<span class="n">hawkes</span><span class="o">.</span><span class="n">set_kernel</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">HawkesKernelExp</span><span class="p">(</span><span class="o">.</span><span class="mi">5</span><span class="p">,</span> <span class="o">.</span><span class="mi">7</span><span class="p">))</span>
+<span class="n">hawkes</span><span class="o">.</span><span class="n">set_kernel</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <a href="../modules/generated/tick.simulation.HawkesKernelExp.html#tick.simulation.HawkesKernelExp"><span class="n">HawkesKernelExp</span></a><span class="p">(</span><span class="o">.</span><span class="mi">5</span><span class="p">,</span> <span class="o">.</span><span class="mi">7</span><span class="p">))</span>
 <span class="n">hawkes</span><span class="o">.</span><span class="n">set_kernel</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">kernel2</span><span class="p">)</span>
 
 <span class="n">hawkes</span><span class="o">.</span><span class="n">simulate</span><span class="p">()</span>
 
-<span class="n">em</span> <span class="o">=</span> <span class="n">HawkesEM</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">n_threads</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">)</span>
+<span class="n">em</span> <span class="o">=</span> <a href="../modules/generated/tick.inference.HawkesEM.html#tick.inference.HawkesEM"><span class="n">HawkesEM</span></a><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">n_threads</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">)</span>
 <span class="n">em</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">hawkes</span><span class="o">.</span><span class="n">timestamps</span><span class="p">)</span>
 
-<span class="n">fig</span> <span class="o">=</span> <span class="n">plot_hawkes_kernels</span><span class="p">(</span><span class="n">em</span><span class="p">,</span> <span class="n">hawkes</span><span class="o">=</span><span class="n">hawkes</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">fig</span> <span class="o">=</span> <a href="../modules/generated/tick.plot.plot_hawkes_kernels.html#tick.plot.plot_hawkes_kernels"><span class="n">plot_hawkes_kernels</span></a><span class="p">(</span><span class="n">em</span><span class="p">,</span> <span class="n">hawkes</span><span class="o">=</span><span class="n">hawkes</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 <span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="n">fig</span><span class="o">.</span><span class="n">axes</span><span class="p">:</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
-<a href="http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.show"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<p><strong>Total running time of the example:</strong>  0.00 seconds
-( 0 minutes  0.00 seconds)</p>
+<p><strong>Total running time of the example:</strong>  0.93 seconds
+( 0 minutes  0.93 seconds)</p>
 <dl class="docutils">
 <dt>Mentioned <em>tick</em> classes:</dt>
 <dd><ul class="first last simple">
-<li><code class="xref py py-obj docutils literal"><span class="pre">tick.base.TimeFunction</span></code></li>
+<li><a class="reference internal" href="../modules/generated/tick.base.TimeFunction.html#tick.base.TimeFunction" title="tick.base.TimeFunction"><code class="xref py py-obj docutils literal"><span class="pre">tick.base.TimeFunction</span></code></a></li>
 <li><code class="xref py py-obj docutils literal"><span class="pre">tick.base.TimeFunction.InterConstRight</span></code></li>
-<li><code class="xref py py-obj docutils literal"><span class="pre">tick.inference.HawkesEM</span></code></li>
-<li><code class="xref py py-obj docutils literal"><span class="pre">tick.plot.plot_hawkes_kernels</span></code></li>
-<li><code class="xref py py-obj docutils literal"><span class="pre">tick.simulation.HawkesKernelExp</span></code></li>
-<li><code class="xref py py-obj docutils literal"><span class="pre">tick.simulation.HawkesKernelTimeFunc</span></code></li>
-<li><code class="xref py py-obj docutils literal"><span class="pre">tick.simulation.SimuHawkes</span></code></li>
+<li><a class="reference internal" href="../modules/generated/tick.inference.HawkesEM.html#tick.inference.HawkesEM" title="tick.inference.HawkesEM"><code class="xref py py-obj docutils literal"><span class="pre">tick.inference.HawkesEM</span></code></a></li>
+<li><a class="reference internal" href="../modules/generated/tick.plot.plot_hawkes_kernels.html#tick.plot.plot_hawkes_kernels" title="tick.plot.plot_hawkes_kernels"><code class="xref py py-obj docutils literal"><span class="pre">tick.plot.plot_hawkes_kernels</span></code></a></li>
+<li><a class="reference internal" href="../modules/generated/tick.simulation.HawkesKernelExp.html#tick.simulation.HawkesKernelExp" title="tick.simulation.HawkesKernelExp"><code class="xref py py-obj docutils literal"><span class="pre">tick.simulation.HawkesKernelExp</span></code></a></li>
+<li><a class="reference internal" href="../modules/generated/tick.simulation.HawkesKernelTimeFunc.html#tick.simulation.HawkesKernelTimeFunc" title="tick.simulation.HawkesKernelTimeFunc"><code class="xref py py-obj docutils literal"><span class="pre">tick.simulation.HawkesKernelTimeFunc</span></code></a></li>
+<li><a class="reference internal" href="../modules/generated/tick.simulation.SimuHawkes.html#tick.simulation.SimuHawkes" title="tick.simulation.SimuHawkes"><code class="xref py py-obj docutils literal"><span class="pre">tick.simulation.SimuHawkes</span></code></a></li>
 </ul>
 </dd>
 </dl>

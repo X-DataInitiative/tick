@@ -7,8 +7,8 @@ plot_grad_coeff0.py
 
 
 
-.. rst-class:: horizontal
-
+.. image:: images/plot_grad_coeff0_001.png
+    :align: center
 
 
 
@@ -18,8 +18,8 @@ plot_grad_coeff0.py
 .. literalinclude:: plot_grad_coeff0.py
     :lines: 2-
 
-**Total running time of the example:**  0.00 seconds
-( 0 minutes  0.00 seconds)
+**Total running time of the example:**  0.25 seconds
+( 0 minutes  0.25 seconds)
     
 Mentioned *tick* classes:
    * `tick.optim.model.ModelLogReg`

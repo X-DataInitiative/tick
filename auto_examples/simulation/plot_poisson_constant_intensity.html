@@ -16,12 +16,9 @@
       })();
     </script>
     <title>plot_poisson_constant_intensity.py &#8212; tick 0.2.1 documentation</title>
-    <link rel="stylesheet" href="../../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
-    <link rel="stylesheet" href="../../_static/bootstrap-3.3.4/css/bootstrap.min.css" type="text/css" />
-    <link rel="stylesheet" href="../../_static/bootstrap-3.3.4/css/bootstrap-theme.min.css" type="text/css" />
-    <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
@@ -38,7 +35,7 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="../../_static/js/jquery-fix.js"></script>
-    <script type="text/javascript" src="../../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../../_static/bootstrap-sphinx.js"></script>
     <link rel="shortcut icon" href="../../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -104,7 +101,10 @@
 <li class="toctree-l2"><a class="reference internal" href="../../modules/plot.html#others">Others</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../modules/preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul class="simple">
+<li class="toctree-l1"><a class="reference internal" href="../../modules/preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/generated/tick.preprocessing.FeaturesBinarizer.html">tick.preprocessing.FeaturesBinarizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/generated/tick.preprocessing.LongitudinalFeaturesProduct.html">tick.preprocessing.LongitudinalFeaturesProduct</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/generated/tick.preprocessing.LongitudinalFeaturesLagger.html">tick.preprocessing.LongitudinalFeaturesLagger</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../modules/simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code>: simulation toolbox</a><ul>
@@ -156,24 +156,31 @@
   
   <div class="section" id="plot-poisson-constant-intensity-py">
 <span id="example-simulation-plot-poisson-constant-intensity-py"></span><h1>plot_poisson_constant_intensity.py<a class="headerlink" href="#plot-poisson-constant-intensity-py" title="Permalink to this headline">¶</a></h1>
-<p class="horizontal"><strong>Python source code:</strong> <a class="reference download internal" href="../../_downloads/plot_poisson_constant_intensity.py" download=""><code class="xref download docutils literal"><span class="pre">plot_poisson_constant_intensity.py</span></code></a></p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tick.plot</span> <span class="k">import</span> <span class="n">plot_point_process</span>
+<img alt="../../_images/plot_poisson_constant_intensity_001.png" class="align-center" src="../../_images/plot_poisson_constant_intensity_001.png" />
+<p><strong>Script output</strong>:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">------------------------------------------------</span>
+<span class="n">Launching</span> <span class="n">simulation</span> <span class="n">using</span> <span class="n">SimuPoissonProcess</span><span class="o">...</span>
+<span class="n">Done</span> <span class="n">simulating</span> <span class="n">using</span> <span class="n">SimuPoissonProcess</span> <span class="ow">in</span> <span class="mf">9.58e-05</span> <span class="n">seconds</span><span class="o">.</span>
+</pre></div>
+</div>
+<p><strong>Python source code:</strong> <a class="reference download internal" href="../../_downloads/plot_poisson_constant_intensity.py" download=""><code class="xref download docutils literal"><span class="pre">plot_poisson_constant_intensity.py</span></code></a></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tick.plot</span> <span class="k">import</span> <a href="../../modules/generated/tick.plot.plot_point_process.html#tick.plot.plot_point_process"><span class="n">plot_point_process</span></a>
 
 <span class="n">run_time</span> <span class="o">=</span> <span class="mi">10</span>
 <span class="n">intensity</span> <span class="o">=</span> <span class="mi">5</span>
 
 <span class="n">poi</span> <span class="o">=</span> <span class="n">SimuPoissonProcess</span><span class="p">(</span><span class="n">intensity</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">run_time</span><span class="p">)</span>
 <span class="n">poi</span><span class="o">.</span><span class="n">simulate</span><span class="p">()</span>
-<span class="n">plot_point_process</span><span class="p">(</span><span class="n">poi</span><span class="p">)</span>
+<a href="../../modules/generated/tick.plot.plot_point_process.html#tick.plot.plot_point_process"><span class="n">plot_point_process</span></a><span class="p">(</span><span class="n">poi</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><strong>Total running time of the example:</strong>  0.00 seconds
-( 0 minutes  0.00 seconds)</p>
+<p><strong>Total running time of the example:</strong>  0.09 seconds
+( 0 minutes  0.09 seconds)</p>
 <dl class="docutils">
 <dt>Mentioned <em>tick</em> classes:</dt>
 <dd><ul class="first last simple">
-<li><code class="xref py py-obj docutils literal"><span class="pre">tick.plot.plot_point_process</span></code></li>
-<li><code class="xref py py-obj docutils literal"><span class="pre">tick.simulation.SimuPoissonProcess</span></code></li>
+<li><a class="reference internal" href="../../modules/generated/tick.plot.plot_point_process.html#tick.plot.plot_point_process" title="tick.plot.plot_point_process"><code class="xref py py-obj docutils literal"><span class="pre">tick.plot.plot_point_process</span></code></a></li>
+<li><a class="reference internal" href="../../modules/generated/tick.simulation.SimuPoissonProcess.html#tick.simulation.SimuPoissonProcess" title="tick.simulation.SimuPoissonProcess"><code class="xref py py-obj docutils literal"><span class="pre">tick.simulation.SimuPoissonProcess</span></code></a></li>
 </ul>
 </dd>
 </dl>

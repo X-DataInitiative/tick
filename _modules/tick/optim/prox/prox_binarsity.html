@@ -16,12 +16,9 @@
       })();
     </script>
     <title>tick.optim.prox.prox_binarsity &#8212; tick 0.2.1 documentation</title>
-    <link rel="stylesheet" href="../../../../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/css/custom.css" type="text/css" />
-    <link rel="stylesheet" href="../../../../_static/bootstrap-3.3.4/css/bootstrap.min.css" type="text/css" />
-    <link rel="stylesheet" href="../../../../_static/bootstrap-3.3.4/css/bootstrap-theme.min.css" type="text/css" />
-    <link rel="stylesheet" href="../../../../_static/bootstrap-sphinx.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
@@ -38,7 +35,7 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../../_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="../../../../_static/js/jquery-fix.js"></script>
-    <script type="text/javascript" src="../../../../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../../../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../../../../_static/bootstrap-sphinx.js"></script>
     <link rel="shortcut icon" href="../../../../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../../../../genindex.html" />
@@ -160,12 +157,12 @@
   <h1>Source code for tick.optim.prox.prox_binarsity</h1><div class="highlight"><pre>
 <span></span><span class="c1"># License: BSD 3 clause</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">.base</span> <span class="k">import</span> <span class="n">Prox</span>
+
+<span class="kn">from</span> <span class="nn">.base</span> <span class="k">import</span> <span class="n">ProxWithGroups</span>
 <span class="kn">from</span> <span class="nn">.build.prox</span> <span class="k">import</span> <span class="n">ProxBinarsity</span> <span class="k">as</span> <span class="n">_ProxBinarsity</span>
 
 
-<div class="viewcode-block" id="ProxBinarsity"><a class="viewcode-back" href="../../../../modules/generated/tick.optim.prox.ProxBinarsity.html#tick.optim.prox.ProxBinarsity">[docs]</a><span class="k">class</span> <span class="nc">ProxBinarsity</span><span class="p">(</span><span class="n">Prox</span><span class="p">):</span>
+<div class="viewcode-block" id="ProxBinarsity"><a class="viewcode-back" href="../../../../modules/generated/tick.optim.prox.ProxBinarsity.html#tick.optim.prox.ProxBinarsity">[docs]</a><span class="k">class</span> <span class="nc">ProxBinarsity</span><span class="p">(</span><span class="n">ProxWithGroups</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Proximal operator of binarsity. It is simply a succession of two steps on</span>
 <span class="sd">    different intervals: ``ProxTV`` plus a centering translation. More</span>
 <span class="sd">    precisely, total-variation regularization is applied on a coefficient vector</span>
@@ -175,7 +172,7 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    strength : `float`, default=0.</span>
+<span class="sd">    strength : `float`</span>
 <span class="sd">        Level of total-variation penalization</span>
 
 <span class="sd">    blocks_start : `np.array`, shape=(n_blocks,)</span>
@@ -189,8 +186,8 @@
 <span class="sd">        applied on the whole vector</span>
 
 <span class="sd">    positive : `bool`, default=`False`</span>
-<span class="sd">        If True, apply L1 penalization together with a projection</span>
-<span class="sd">        onto the set of vectors with non-negative entries</span>
+<span class="sd">        If True, apply in the end a projection onto the set of vectors with</span>
+<span class="sd">        non-negative entries</span>
 
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
@@ -206,100 +203,13 @@
 
 <span class="sd">    .. _A Direct Algorithm for 1D Total Variation Denoising: https://hal.archives-ouvertes.fr/hal-00675043v2/document</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="ProxBinarsity.__init__"><a class="viewcode-back" href="../../../../modules/generated/tick.optim.prox.ProxBinarsity.html#tick.optim.prox.ProxBinarsity.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">strength</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">blocks_start</span><span class="p">,</span> <span class="n">blocks_length</span><span class="p">,</span>
+                 <span class="nb">range</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">positive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="n">ProxWithGroups</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">strength</span><span class="p">,</span> <span class="n">blocks_start</span><span class="p">,</span> <span class="n">blocks_length</span><span class="p">,</span>
+                                <span class="nb">range</span><span class="p">,</span> <span class="n">positive</span><span class="p">)</span></div>
 
-    <span class="n">_attrinfos</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;strength&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-            <span class="s2">&quot;cpp_setter&quot;</span><span class="p">:</span> <span class="s2">&quot;set_strength&quot;</span>
-        <span class="p">},</span>
-        <span class="s2">&quot;positive&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-            <span class="s2">&quot;cpp_setter&quot;</span><span class="p">:</span> <span class="s2">&quot;set_positive&quot;</span>
-        <span class="p">},</span>
-        <span class="s2">&quot;blocks_start&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-            <span class="s2">&quot;cpp_setter&quot;</span><span class="p">:</span> <span class="s2">&quot;set_blocks_start&quot;</span>
-        <span class="p">},</span>
-        <span class="s2">&quot;blocks_length&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-            <span class="s2">&quot;cpp_setter&quot;</span><span class="p">:</span> <span class="s2">&quot;set_blocks_length&quot;</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-
-<div class="viewcode-block" id="ProxBinarsity.__init__"><a class="viewcode-back" href="../../../../modules/generated/tick.optim.prox.ProxBinarsity.html#tick.optim.prox.ProxBinarsity.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">strength</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">blocks_start</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">,</span>
-                 <span class="n">blocks_length</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">,</span> <span class="nb">range</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                 <span class="n">positive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
-        <span class="n">Prox</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">range</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">length</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">length</span> <span class="ow">in</span> <span class="n">blocks_length</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;all blocks must be of positive size&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">start</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">start</span> <span class="ow">in</span> <span class="n">blocks_start</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;all blocks must have positive starting indices&quot;</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">blocks_start</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">:</span>
-            <span class="n">blocks_start</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">blocks_start</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint64</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">blocks_length</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">:</span>
-            <span class="n">blocks_length</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">blocks_length</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint64</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">blocks_start</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">uint64</span><span class="p">:</span>
-            <span class="n">blocks_start</span> <span class="o">=</span> <span class="n">blocks_start</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint64</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">blocks_length</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">uint64</span><span class="p">:</span>
-            <span class="n">blocks_length</span> <span class="o">=</span> <span class="n">blocks_length</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint64</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">blocks_start</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">blocks_length</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;``blocks_start`` and ``blocks_length`` &quot;</span>
-                             <span class="s2">&quot;must have the same size&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">blocks_start</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">&lt;</span> <span class="n">blocks_start</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;``block_start`` must be sorted&#39;</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">blocks_start</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">&lt;</span> <span class="n">blocks_start</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">blocks_length</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;blocks must not overlap&quot;</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">strength</span> <span class="o">=</span> <span class="n">strength</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">positive</span> <span class="o">=</span> <span class="n">positive</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">blocks_start</span> <span class="o">=</span> <span class="n">blocks_start</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">blocks_length</span> <span class="o">=</span> <span class="n">blocks_length</span>
-
-        <span class="k">if</span> <span class="nb">range</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_prox</span> <span class="o">=</span> <span class="n">_ProxBinarsity</span><span class="p">(</span><span class="n">strength</span><span class="p">,</span> <span class="n">blocks_start</span><span class="p">,</span>
-                                        <span class="n">blocks_length</span><span class="p">,</span> <span class="n">positive</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">range</span>
-            <span class="n">i_max</span> <span class="o">=</span> <span class="n">blocks_start</span><span class="o">.</span><span class="n">argmax</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">end</span> <span class="o">-</span> <span class="n">start</span> <span class="o">&lt;</span> <span class="n">blocks_start</span><span class="p">[</span><span class="n">i_max</span><span class="p">]</span> <span class="o">+</span> <span class="n">blocks_length</span><span class="p">[</span><span class="n">i_max</span><span class="p">]:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;last block is not within the range &quot;</span>
-                                 <span class="s2">&quot;[0, end-start)&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_prox</span> <span class="o">=</span> <span class="n">_ProxBinarsity</span><span class="p">(</span><span class="n">strength</span><span class="p">,</span> <span class="n">blocks_start</span><span class="p">,</span>
-                                        <span class="n">blocks_length</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span>
-                                        <span class="n">positive</span><span class="p">)</span></div>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">n_blocks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">blocks_start</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-
-    <span class="k">def</span> <span class="nf">_call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coeffs</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_prox</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">coeffs</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
-
-<div class="viewcode-block" id="ProxBinarsity.value"><a class="viewcode-back" href="../../../../modules/generated/tick.optim.prox.ProxBinarsity.html#tick.optim.prox.ProxBinarsity.value">[docs]</a>    <span class="k">def</span> <span class="nf">value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coeffs</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Returns the value of the penalization at ``coeffs``</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        coeffs : `numpy.array`, shape=(n_coeffs,)</span>
-<span class="sd">            The value of the penalization is computed at this point</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        output : `float`</span>
-<span class="sd">            Value of the penalization at ``coeffs``</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prox</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">coeffs</span><span class="p">)</span></div>
-
-    <span class="k">def</span> <span class="nf">_as_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">dd</span> <span class="o">=</span> <span class="n">Prox</span><span class="o">.</span><span class="n">_as_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="k">del</span> <span class="n">dd</span><span class="p">[</span><span class="s2">&quot;blocks_start&quot;</span><span class="p">]</span>
-        <span class="k">del</span> <span class="n">dd</span><span class="p">[</span><span class="s2">&quot;blocks_length&quot;</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">dd</span></div>
+    <span class="k">def</span> <span class="nf">_get_prox_class</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_ProxBinarsity</span></div>
 </pre></div>
 
 </div>

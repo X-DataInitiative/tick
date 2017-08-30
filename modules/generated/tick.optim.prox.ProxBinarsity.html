@@ -16,12 +16,9 @@
       })();
     </script>
     <title>tick.optim.prox.ProxBinarsity &#8212; tick 0.2.1 documentation</title>
-    <link rel="stylesheet" href="../../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
-    <link rel="stylesheet" href="../../_static/bootstrap-3.3.4/css/bootstrap.min.css" type="text/css" />
-    <link rel="stylesheet" href="../../_static/bootstrap-3.3.4/css/bootstrap-theme.min.css" type="text/css" />
-    <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
@@ -38,7 +35,7 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="../../_static/js/jquery-fix.js"></script>
-    <script type="text/javascript" src="../../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../../_static/bootstrap-sphinx.js"></script>
     <link rel="shortcut icon" href="../../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -161,7 +158,7 @@
 <span id="proxbinarsity"></span><h1>tick.optim.prox.ProxBinarsity<a class="headerlink" href="#tick-optim-prox-proxbinarsity" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="tick.optim.prox.ProxBinarsity">
-<em class="property">class </em><code class="descclassname">tick.optim.prox.</code><code class="descname">ProxBinarsity</code><span class="sig-paren">(</span><em>strength: float</em>, <em>blocks_start: &lt;built-in function array&gt;</em>, <em>blocks_length: &lt;built-in function array&gt;</em>, <em>range: tuple = None</em>, <em>positive: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/optim/prox/prox_binarsity.html#ProxBinarsity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.optim.prox.ProxBinarsity" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">tick.optim.prox.</code><code class="descname">ProxBinarsity</code><span class="sig-paren">(</span><em>strength: float</em>, <em>blocks_start</em>, <em>blocks_length</em>, <em>range: tuple = None</em>, <em>positive: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/optim/prox/prox_binarsity.html#ProxBinarsity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.optim.prox.ProxBinarsity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Proximal operator of binarsity. It is simply a succession of two steps on
 different intervals: <code class="docutils literal"><span class="pre">ProxTV</span></code> plus a centering translation. More
 precisely, total-variation regularization is applied on a coefficient vector
@@ -172,7 +169,7 @@ are specified by the <code class="docutils literal"><span class="pre">blocks_sta
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>strength</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default=0.</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>strength</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code></p>
 <blockquote>
 <div><p>Level of total-variation penalization</p>
 </div></blockquote>
@@ -191,8 +188,8 @@ applied on the whole vector</p>
 </div></blockquote>
 <p><strong>positive</strong> : <code class="xref py py-obj docutils literal"><span class="pre">bool</span></code>, default=`False`</p>
 <blockquote>
-<div><p>If True, apply L1 penalization together with a projection
-onto the set of vectors with non-negative entries</p>
+<div><p>If True, apply in the end a projection onto the set of vectors with
+non-negative entries</p>
 </div></blockquote>
 </td>
 </tr>
@@ -210,7 +207,7 @@ onto the set of vectors with non-negative entries</p>
 <a class="reference external" href="https://hal.archives-ouvertes.fr/hal-00675043v2/document">A Direct Algorithm for 1D Total Variation Denoising</a>.</p>
 <dl class="method">
 <dt id="tick.optim.prox.ProxBinarsity.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>strength: float</em>, <em>blocks_start: &lt;built-in function array&gt;</em>, <em>blocks_length: &lt;built-in function array&gt;</em>, <em>range: tuple = None</em>, <em>positive: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/optim/prox/prox_binarsity.html#ProxBinarsity.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.optim.prox.ProxBinarsity.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>strength: float</em>, <em>blocks_start</em>, <em>blocks_length</em>, <em>range: tuple = None</em>, <em>positive: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/optim/prox/prox_binarsity.html#ProxBinarsity.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.optim.prox.ProxBinarsity.__init__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -262,7 +259,7 @@ otherwise</p>
 
 <dl class="method">
 <dt id="tick.optim.prox.ProxBinarsity.value">
-<code class="descname">value</code><span class="sig-paren">(</span><em>coeffs: numpy.ndarray</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/optim/prox/prox_binarsity.html#ProxBinarsity.value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.optim.prox.ProxBinarsity.value" title="Permalink to this definition">¶</a></dt>
+<code class="descname">value</code><span class="sig-paren">(</span><em>coeffs: numpy.ndarray</em><span class="sig-paren">)</span><a class="headerlink" href="#tick.optim.prox.ProxBinarsity.value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the value of the penalization at <code class="docutils literal"><span class="pre">coeffs</span></code></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />

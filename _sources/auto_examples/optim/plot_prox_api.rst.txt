@@ -7,8 +7,8 @@ plot_prox_api.py
 
 
 
-.. rst-class:: horizontal
-
+.. image:: images/plot_prox_api_001.png
+    :align: center
 
 
 
@@ -18,8 +18,8 @@ plot_prox_api.py
 .. literalinclude:: plot_prox_api.py
     :lines: 2-
 
-**Total running time of the example:**  0.00 seconds
-( 0 minutes  0.00 seconds)
+**Total running time of the example:**  0.72 seconds
+( 0 minutes  0.72 seconds)
     
 Mentioned *tick* classes:
    * `tick.optim.prox.ProxL1`

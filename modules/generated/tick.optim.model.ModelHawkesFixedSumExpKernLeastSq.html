@@ -16,12 +16,9 @@
       })();
     </script>
     <title>tick.optim.model.ModelHawkesFixedSumExpKernLeastSq &#8212; tick 0.2.1 documentation</title>
-    <link rel="stylesheet" href="../../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
-    <link rel="stylesheet" href="../../_static/bootstrap-3.3.4/css/bootstrap.min.css" type="text/css" />
-    <link rel="stylesheet" href="../../_static/bootstrap-3.3.4/css/bootstrap-theme.min.css" type="text/css" />
-    <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
@@ -38,7 +35,7 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="../../_static/js/jquery-fix.js"></script>
-    <script type="text/javascript" src="../../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../../_static/bootstrap-sphinx.js"></script>
     <link rel="shortcut icon" href="../../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -312,6 +309,27 @@ otherwise, the result is saved in <code class="docutils literal"><span class="pr
 <p class="rubric">Notes</p>
 <p>The <code class="docutils literal"><span class="pre">fit</span></code> method must be called to give data to the model,
 before using <code class="docutils literal"><span class="pre">grad</span></code>. An error is raised otherwise.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tick.optim.model.ModelHawkesFixedSumExpKernLeastSq.hessian">
+<code class="descname">hessian</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#tick.optim.model.ModelHawkesFixedSumExpKernLeastSq.hessian" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return model’s hessian</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>x: `np.ndarray`, shape=(n_coeffs,)</strong> :</p>
+<blockquote class="last">
+<div><p>Value at which the hessian is computed</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>For <a class="reference internal" href="tick.optim.model.ModelHawkesFixedExpKernLeastSq.html#tick.optim.model.ModelHawkesFixedExpKernLeastSq" title="tick.optim.model.ModelHawkesFixedExpKernLeastSq"><code class="xref py py-obj docutils literal"><span class="pre">ModelHawkesFixedExpKernLeastSq</span></code></a> the value of the hessian
+does not depend on the value at which it is computed.</p>
 </dd></dl>
 
 <dl class="method">

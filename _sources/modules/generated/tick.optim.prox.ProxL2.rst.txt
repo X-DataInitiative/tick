@@ -1,0 +1,12 @@
+
+.. _ProxL2:
+
+tick.optim.prox.ProxL2
+======================
+
+.. currentmodule:: tick.optim.prox
+
+.. autoclass:: ProxL2
+
+.. include:: tick.optim.prox.ProxL2.examples
+    :allowmissing:

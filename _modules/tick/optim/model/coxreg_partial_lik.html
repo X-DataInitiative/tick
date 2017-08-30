@@ -16,12 +16,9 @@
       })();
     </script>
     <title>tick.optim.model.coxreg_partial_lik &#8212; tick 0.2.1 documentation</title>
-    <link rel="stylesheet" href="../../../../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/css/custom.css" type="text/css" />
-    <link rel="stylesheet" href="../../../../_static/bootstrap-3.3.4/css/bootstrap.min.css" type="text/css" />
-    <link rel="stylesheet" href="../../../../_static/bootstrap-3.3.4/css/bootstrap-theme.min.css" type="text/css" />
-    <link rel="stylesheet" href="../../../../_static/bootstrap-sphinx.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
@@ -38,7 +35,7 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../../_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="../../../../_static/js/jquery-fix.js"></script>
-    <script type="text/javascript" src="../../../../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../../../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../../../../_static/bootstrap-sphinx.js"></script>
     <link rel="shortcut icon" href="../../../../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../../../../genindex.html" />
@@ -161,9 +158,9 @@
 <span></span><span class="c1"># License: BSD 3 clause</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">warnings</span> <span class="k">import</span> <span class="n">warn</span>
 
 <span class="kn">from</span> <span class="nn">tick.optim.model.base</span> <span class="k">import</span> <span class="n">Model</span><span class="p">,</span> <span class="n">ModelFirstOrder</span>
+<span class="kn">from</span> <span class="nn">tick.preprocessing.utils</span> <span class="k">import</span> <span class="n">safe_array</span>
 <span class="kn">from</span> <span class="nn">tick.optim.model.build.model</span> <span class="k">import</span> <span class="n">ModelCoxRegPartialLik</span> \
     <span class="k">as</span> <span class="n">_ModelCoxRegPartialLik</span>
 
@@ -276,9 +273,11 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s2">&quot;Features has </span><span class="si">%i</span><span class="s2"> samples while censoring &quot;</span>
                               <span class="s2">&quot;have </span><span class="si">%i</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">n_samples</span><span class="p">,</span>
                                            <span class="n">censoring</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])))</span>
-        <span class="k">if</span> <span class="n">censoring</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">np</span><span class="o">.</span><span class="n">ushort</span><span class="p">:</span>
-            <span class="n">censoring</span> <span class="o">=</span> <span class="n">censoring</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ushort</span><span class="p">)</span>
-            <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;converted ``censoring`` to ushort dtype&quot;</span><span class="p">)</span>
+
+        <span class="n">features</span> <span class="o">=</span> <span class="n">safe_array</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
+        <span class="n">times</span> <span class="o">=</span> <span class="n">safe_array</span><span class="p">(</span><span class="n">times</span><span class="p">)</span>
+        <span class="n">censoring</span> <span class="o">=</span> <span class="n">safe_array</span><span class="p">(</span><span class="n">censoring</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ushort</span><span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;features&quot;</span><span class="p">,</span> <span class="n">features</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;times&quot;</span><span class="p">,</span> <span class="n">times</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;censoring&quot;</span><span class="p">,</span> <span class="n">censoring</span><span class="p">)</span>
