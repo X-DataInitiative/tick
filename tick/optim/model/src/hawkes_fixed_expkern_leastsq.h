@@ -13,13 +13,6 @@ class ModelHawkesFixedExpKernLeastSqList;
  * exponential kernels with fixed exponent (i.e., alpha*beta*e^{-beta t}, with fixed beta)
  */
 class ModelHawkesFixedExpKernLeastSq : public ModelHawkesSingle {
-  void allocate_weights();
-  /**
-   * @brief Precomputations of intermediate values for dimension i
-   * \param i : selected dimension
-   */
-  void compute_weights_i(const ulong i);
-
   //! @brief Some arrays used for intermediate computings. They are initialized in init()
   ArrayDouble2d E, Dg, Dg2, C;
 
@@ -99,6 +92,13 @@ class ModelHawkesFixedExpKernLeastSq : public ModelHawkesSingle {
   ulong get_n_coeffs() const override;
 
  private:
+  void allocate_weights();
+  /**
+   * @brief Precomputations of intermediate values for dimension i
+   * \param i : selected dimension
+   */
+  void compute_weights_i(const ulong i);
+
   /**
    * @brief Compute hessian corresponding to sample i (between 0 and rand_max = dim)
    * \param i : selected dimension
@@ -109,6 +109,20 @@ class ModelHawkesFixedExpKernLeastSq : public ModelHawkesSingle {
   void hessian_i(const ulong i, ArrayDouble &out);
 
   friend class ModelHawkesFixedExpKernLeastSqList;
+
+ public:
+  template<class Archive>
+  void serialize(Archive &ar) {
+    ar(cereal::make_nvp("ModelHawkesSingle", cereal::base_class<ModelHawkesSingle>(this)));
+
+    ar(CEREAL_NVP(E));
+    ar(CEREAL_NVP(Dg));
+    ar(CEREAL_NVP(Dg2));
+    ar(CEREAL_NVP(C));
+    ar(CEREAL_NVP(decays));
+  }
 };
+
+CEREAL_REGISTER_TYPE(ModelHawkesFixedExpKernLeastSq);
 
 #endif  // TICK_OPTIM_MODEL_SRC_HAWKES_FIXED_EXPKERN_LEASTSQ_H_

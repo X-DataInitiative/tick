@@ -3,6 +3,7 @@
 import unittest
 import numpy as np
 from numpy.linalg import norm
+import pickle
 
 from scipy.optimize import check_grad, fmin_bfgs
 
@@ -253,6 +254,35 @@ class Test(InferenceTest):
 
             self.assertAlmostEqual(norm(model.grad(coeffs_min)),
                                    .0, delta=1e-4)
+
+    def test_model_hawkes_sum_exp_least_sq_serialization(self):
+        """...Test that ModelHawkesFixedExpKernLeastSq can be serialized
+        """
+        import os
+        file_name = 'model.pickle'
+
+        for model in [self.model, self.model_list]:
+            model.period_length = 1.
+            model.n_baselines = 3
+            model._model.compute_weights()
+
+            with open(file_name, 'wb') as write_file:
+                pickle.dump(model, write_file)
+
+            with open(file_name, 'rb') as read_file:
+                pickled = pickle.load(read_file)
+    
+            self.assertEqual(model.n_nodes, pickled.n_nodes)
+            np.testing.assert_equal(model.decays, pickled.decays)
+            self.assertEqual(model.n_jumps, pickled.n_jumps)
+    
+            self.assertEqual(model.n_coeffs, pickled.n_coeffs)
+            self.assertEqual(model.n_threads, pickled.n_threads)
+            np.testing.assert_equal(model.data, pickled.data)
+            coeffs = np.random.rand(model.n_coeffs)
+            self.assertEqual(model.loss(coeffs), pickled.loss(coeffs))
+
+        os.remove(file_name)
 
 
 if __name__ == "__main__":

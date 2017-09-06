@@ -45,6 +45,17 @@ class ModelHawkesList : public ModelHawkes {
   }
 
   virtual unsigned int get_n_threads() const;
+
+ public:
+  template<class Archive>
+  void serialize(Archive &ar) {
+    ar(cereal::make_nvp("ModelHawkes", cereal::base_class<ModelHawkes>(this)));
+
+    ar(CEREAL_NVP(n_realizations));
+    ar(CEREAL_NVP(timestamps_list));
+    ar(CEREAL_NVP(end_times));
+    ar(CEREAL_NVP(n_jumps_per_realization));
+  }
 };
 
 #endif  // TICK_OPTIM_MODEL_SRC_BASE_HAWKES_LIST_H_

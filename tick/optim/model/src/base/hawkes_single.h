@@ -4,6 +4,10 @@
 
 // License: BSD 3 clause
 
+#include <cereal/types/vector.hpp>
+#include <cereal/types/polymorphic.hpp>
+#include <cereal/types/base_class.hpp>
+
 #include "hawkes_model.h"
 
 /** \class ModelHawkesSingle
@@ -32,7 +36,23 @@ class ModelHawkesSingle : public ModelHawkes {
 
   unsigned int get_n_threads() const;
 
+  double get_end_time() const {
+    return end_time;
+  }
+
   friend class ModelHawkesList;
+
+ public:
+  template<class Archive>
+  void serialize(Archive &ar) {
+    ar(cereal::make_nvp("ModelHawkes", cereal::base_class<ModelHawkes>(this)));
+
+    ar(CEREAL_NVP(timestamps));
+    ar(CEREAL_NVP(end_time));
+    ar(CEREAL_NVP(n_total_jumps));
+  }
 };
+
+CEREAL_REGISTER_TYPE(ModelHawkesSingle);
 
 #endif  // TICK_OPTIM_MODEL_SRC_BASE_HAWKES_SINGLE_H_

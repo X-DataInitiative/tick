@@ -58,6 +58,16 @@ class ModelHawkes : public Model {
   }
 
   friend class ModelHawkesList;
+
+ public:
+  template<class Archive>
+  void serialize(Archive &ar) {
+    ar(CEREAL_NVP(max_n_threads));
+    ar(CEREAL_NVP(optimization_level));
+    ar(CEREAL_NVP(weights_computed));
+    ar(CEREAL_NVP(n_nodes));
+    ar(CEREAL_NVP(n_jumps_per_node));
+  }
 };
 
 #endif  // TICK_OPTIM_MODEL_SRC_BASE_HAWKES_MODEL_H_
