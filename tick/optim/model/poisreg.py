@@ -6,9 +6,10 @@ from .build.model import LinkType_identity as identity
 from .build.model import LinkType_exponential as exponential
 
 import numpy as np
+from scipy.special import gammaln
+
 from .base import ModelGeneralizedLinear, ModelFirstOrder, ModelSecondOrder, \
     ModelSelfConcordant
-
 
 __author__ = 'Stephane Gaiffas'
 
@@ -98,10 +99,10 @@ class ModelPoisReg(ModelGeneralizedLinear,
 
         Parameters
         ----------
-        features : `numpy.ndarray`, shape=(n_samples, n_features)
+        features : `np.ndarray`, shape=(n_samples, n_features)
             The features matrix
 
-        labels : `numpy.ndarray`, shape=(n_samples,)
+        labels : `np.ndarray`, shape=(n_samples,)
             The labels vector
 
         Returns
@@ -169,3 +170,48 @@ class ModelPoisReg(ModelGeneralizedLinear,
             raise ValueError("``link`` must be either 'exponential' or "
                              "'linear'.")
 
+    def _sdca_primal_dual_relation(self, l_l2sq, dual_vector):
+        # In order to solve the same problem than other solvers, we need to
+        # rescale the penalty parameter if some observations are not
+        # considered in SDCA. This is useful for Poisson regression with
+        # identity link
+        if self.link == "identity":
+            scaled_l_l2sq = l_l2sq * self.n_samples / self._sdca_rand_max
+        else:
+            scaled_l_l2sq = l_l2sq
+
+        primal_vector = np.empty(self.n_coeffs)
+        self._model.sdca_primal_dual_relation(scaled_l_l2sq, dual_vector,
+                                              primal_vector)
+        return primal_vector
+
+    @property
+    def _sdca_rand_max(self):
+        if self.link == "identity":
+            non_zero_labels = self.labels != 0
+            return non_zero_labels.sum().item()
+        else:
+            raise NotImplementedError()
+
+    def dual_loss(self, dual_coeffs):
+        """Computes the dual loss at the given dual coefficients
+
+        Parameters
+        ----------
+        dual_coeffs : `np.ndarray`
+            Dual coefficients
+
+        Returns
+        -------
+        dual_loss : `float`
+            The value of the dual loss
+        """
+        if self.link != "identity":
+            raise (NotImplementedError())
+
+        non_zero_labels = self.labels != 0
+        dual_loss = self.labels[non_zero_labels] * (
+            1 + np.log(dual_coeffs / self.labels[non_zero_labels]))
+        dual_loss += np.mean(gammaln(self.labels[non_zero_labels] + 1))
+
+        return np.mean(dual_loss) * self._sdca_rand_max / self.n_samples

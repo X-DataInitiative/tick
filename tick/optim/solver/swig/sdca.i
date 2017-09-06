@@ -23,7 +23,8 @@ public:
 
     void reset();
 
-    void init_stored_variables();
+    void set_starting_iterate();
+    void set_starting_iterate(ArrayDouble &dual_vector);
 
     void solve();
 
@@ -31,4 +32,6 @@ public:
 
     void set_l_l2sq(double l_l2sq);
 
+    SArrayDoublePtr get_primal_vector();
+    SArrayDoublePtr get_dual_vector();
 };

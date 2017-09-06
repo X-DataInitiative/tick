@@ -55,6 +55,10 @@ class ModelGeneralizedLinear : public ModelLabelsFeatures {
 
   double loss(const ArrayDouble &coeffs) override;
 
+  void sdca_primal_dual_relation(const double l_l2sq,
+                                 const ArrayDouble &dual_vector,
+                                 ArrayDouble &out_primal_vector) override;
+
   bool use_intercept() const override {
     return fit_intercept;
   }

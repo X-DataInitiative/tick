@@ -9,7 +9,7 @@ enum class LinkType {
     exponential
 };
 
-class ModelPoisReg : public Model {
+class ModelPoisReg : public ModelGeneralizedLinear {
  public:
 
   ModelPoisReg(const SBaseArrayDouble2dPtr features,
@@ -19,5 +19,4 @@ class ModelPoisReg : public Model {
                const int n_threads);
 
   inline void set_link_type(LinkType link_type);
-
 };

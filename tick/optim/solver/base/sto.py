@@ -82,8 +82,7 @@ class SolverSto(Base):
         if self.epoch_size is None:
             self.epoch_size = model._epoch_size
         # We always use the _rand_max given by the model
-        model_rand_max = model._rand_max
-        self._set("_rand_max", model_rand_max)
+        self._set_rand_max(model)
         return self
 
     def set_prox(self, prox: Prox):
@@ -115,3 +114,7 @@ class SolverSto(Base):
             if val == "perm":
                 enum_val = perm
             self._set("_rand_type", enum_val)
+
+    def _set_rand_max(self, model):
+        model_rand_max = model._rand_max
+        self._set("_rand_max", model_rand_max)

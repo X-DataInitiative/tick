@@ -53,6 +53,8 @@ class SDCA(SolverFirstOrderSto):
     prox : `Prox`
         Proximal operator to solve
 
+    dual_solution : `np.ndarray`
+        Dual vector to which the solver has converged
     """
 
     _attrinfos = {
@@ -97,6 +99,22 @@ class SDCA(SolverFirstOrderSto):
         """
         prox_l2_value = 0.5 * self.l_l2sq * np.linalg.norm(coeffs) ** 2
         return SolverFirstOrderSto.objective(self, coeffs, loss) + prox_l2_value
-        
 
+    def dual_objective(self, dual_coeffs):
+        primal = self.model._sdca_primal_dual_relation(self.l_l2sq, dual_coeffs)
+        prox_l2_value = 0.5 * self.l_l2sq * np.linalg.norm(primal) ** 2
+        return self.model.dual_loss(dual_coeffs) - prox_l2_value
 
+    def _set_rand_max(self, model):
+        try:
+            # Some model, like Poisreg with linear link, have a special
+            # rand_max for SDCA
+            model_rand_max = model._sdca_rand_max
+        except (AttributeError, NotImplementedError):
+            model_rand_max = model._rand_max
+
+        self._set("_rand_max", model_rand_max)
+
+    @property
+    def dual_solution(self):
+        return self._solver.get_dual_vector()

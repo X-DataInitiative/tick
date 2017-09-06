@@ -97,6 +97,7 @@ class SimuWithFeatures(Simu):
             if n_samples != features.shape[0]:
                 raise ValueError("``n_samples`` does not match size of"
                                  "``features``")
+            features_type = 'given'
 
             self.features = features
             n_samples, n_features = features.shape
