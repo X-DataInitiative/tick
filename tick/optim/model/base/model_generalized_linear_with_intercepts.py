@@ -1,14 +1,19 @@
 # License: BSD 3 clause
 
 
-from . import ModelLabelsFeatures
+from . import ModelGeneralizedLinear
 
 __author__ = 'Stephane Gaiffas'
 
 
-class ModelGeneralizedLinearWithIntercepts(ModelLabelsFeatures):
+class ModelGeneralizedLinearWithIntercepts(ModelGeneralizedLinear):
     """An abstract base class for a generalized linear model (one-class
     supervised learning) with individual intercepts
+
+    Parameters
+    ----------
+    fit_intercept : `bool`, default=`True`
+        If `True`, the model uses an intercept
 
     Attributes
     ----------
@@ -33,8 +38,5 @@ class ModelGeneralizedLinearWithIntercepts(ModelLabelsFeatures):
     development only.
     """
 
-    def __init__(self):
-        ModelLabelsFeatures.__init__(self)
-
-    def _get_n_coeffs(self):
-        return self.n_features + self.n_samples
+    def __init__(self, fit_intercept: bool = True):
+        ModelGeneralizedLinear.__init__(self, fit_intercept)

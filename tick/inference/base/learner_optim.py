@@ -361,7 +361,6 @@ class LearnerOptim(ABC, Base):
 
     @C.setter
     def C(self, val):
-
         if val is None:
             strength = 0.
         elif val <= 0:

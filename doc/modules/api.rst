@@ -35,6 +35,24 @@ Generalized linear models
    inference.LogisticRegression
    inference.PoissonRegression
 
+Robust Analysis
+---------------
+.. currentmodule:: tick
+
+.. autosummary::
+   :toctree: generated/
+   :template: function.rst
+
+   inference.std_mad
+   inference.std_iqr
+
+.. autosummary::
+   :toctree: generated/
+   :template: class.rst
+
+   inference.RobustLinearRegression
+
+
 Survival Analysis
 -----------------
 .. currentmodule:: tick
@@ -97,7 +115,7 @@ Generalized Linear Models
    optim.model.ModelCoxRegPartialLik
 
 Self Control Case Series
--------------------------
+------------------------
 .. currentmodule:: tick
 
 .. autosummary::
@@ -248,6 +266,25 @@ Classes
    preprocessing.FeaturesBinarizer
    preprocessing.LongitudinalFeaturesProduct
    preprocessing.LongitudinalFeaturesLagger
+
+
+.. _api-metrics:
+
+:mod:`tick.metrics`: Metrics utilities
+======================================
+
+This module contains some functions to compute some metrics that help evaluate
+the performance of learning techniques.
+
+Functions
+---------
+
+.. autosummary::
+   :toctree: generated/
+   :template: function.rst
+
+   metrics.fdp
+   metrics.recall
 
 
 .. _api-simulation:

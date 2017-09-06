@@ -1,9 +1,5 @@
 // License: BSD 3 clause
 
-//
-// Created by Stéphane GAIFFAS on 06/12/2015.
-//
-
 #include "model_generalized_linear.h"
 
 ModelGeneralizedLinear::ModelGeneralizedLinear(const SBaseArrayDouble2dPtr features,
@@ -30,6 +26,7 @@ const char *ModelGeneralizedLinear::get_class_name() const {
   return "ModelGeneralizedLinear";
 }
 
+
 double ModelGeneralizedLinear::grad_i_factor(const ulong i,
                                              const ArrayDouble &coeffs) {
   std::stringstream ss;
@@ -41,19 +38,16 @@ void ModelGeneralizedLinear::compute_grad_i(const ulong i, const ArrayDouble &co
                                             ArrayDouble &out, const bool fill) {
   const BaseArrayDouble x_i = get_features(i);
   const double alpha_i = grad_i_factor(i, coeffs);
-
   if (fit_intercept) {
     ArrayDouble out_no_interc = view(out, 0, n_features);
 
     if (fill) {
       out_no_interc.mult_fill(x_i, alpha_i);
-      // The last coefficient of coeffs is the intercept
       out[n_features] = alpha_i;
     } else {
       out_no_interc.mult_incr(x_i, alpha_i);
       out[n_features] += alpha_i;
     }
-
   } else {
     if (fill)
       out.mult_fill(x_i, alpha_i);

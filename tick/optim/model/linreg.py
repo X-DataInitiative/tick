@@ -49,7 +49,6 @@ class ModelLinReg(ModelFirstOrder,
         ModelFirstOrder.__init__(self)
         ModelGeneralizedLinear.__init__(self, fit_intercept)
         ModelLipschitz.__init__(self)
-
         self.n_threads = n_threads
 
     # TODO: implement _set_data and not fit
