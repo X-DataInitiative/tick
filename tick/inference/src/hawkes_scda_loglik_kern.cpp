@@ -30,57 +30,24 @@ void HawkesSDCALoglikKern::compute_weights() {
     G[i].init_to_zero();
   }
 
-  std::cout << "before" << std::endl;
-  (*G_buffer)[0].print();
 //  parallel_run(get_n_threads(), n_nodes * n_realizations,
 //               &HawkesSDCALoglikKern::compute_weights_dim_i, this, G_buffer);
 
   for (ulong i_r = 0; i_r < n_nodes * n_realizations; ++i_r) {
-//    compute_weights_dim_i(i_r, G_buffer);
-    const auto r = static_cast<const ulong>(i_r / n_nodes);
-    const ulong i = i_r % n_nodes;
-
-    const ArrayDouble t_i = view(*timestamps_list[r][i]);
-    ArrayDouble2d g_i = view(g[i]);
-//  ArrayDouble G_i_r = view_row((*G_buffer)[i], r);
-//  G_i_r.print();
-
-    const ulong n_jumps_i = (*n_jumps_per_node)[i];
-    const ulong start_index = view(*get_n_jumps_per_realization(), 0, r).sum();
-
-    auto get_index_g = [=](ulong k, ulong j) {
-      return 1 + start_index + (1 + n_nodes) * k + j;
-    };
-
-    for (ulong j = 0; j < n_nodes; j++) {
-      for (ulong k = 0; k < n_jumps_i + 1; k++) {
-        std::cout << "1 + start_index + (1 + n_nodes) * k = " << 1 + start_index + (1 + n_nodes) * k
-                                                              << ", size=" << g_i.size() << std::endl;
-        g_i[1 + start_index + (1 + n_nodes) * k] = 1.;
-      }
-    }
+    compute_weights_dim_i(i_r, G_buffer);
   }
 
-  std::cout << "will print" << std::endl;
-  G[0].print();
-  (*G_buffer)[0].print();
-
-  for (ulong i = 0; i < n_nodes; ++i) {
+  for (int i = 0; i < n_nodes; ++i) {
     for (ulong r = 0; r < n_realizations; ++r) {
-      (*G_buffer)[i].print();
-      G[i].print();
       G[i].mult_incr(view_row((*G_buffer)[i], r), 1);
     }
-    G[i][0] = (*end_times)[i];
   }
 
-  for (ulong i = 0; i < n_nodes; ++i) {
-    auto model_i_ptr = std::make_shared<ModelHawkesSDCAOneNode>(g[i], G[i]);
-
-    const ulong epoch_size = g[i].n_rows();
-    sdca_list.emplace_back(SDCA(l_l2sq, epoch_size, tol, rand_type, seed));
-    sdca_list[i].set_model(model_i_ptr);
+  for (ulong i = 0; i < n_nodes; i++) {
+    g[i].print();
+    G[i].print();
   }
+
   weights_computed = true;
 }
 
@@ -103,40 +70,46 @@ void HawkesSDCALoglikKern::compute_weights_dim_i(const ulong i_r, std::shared_pt
 
   const ArrayDouble t_i = view(*timestamps_list[r][i]);
   ArrayDouble2d g_i = view(g[i]);
-//  ArrayDouble G_i_r = view_row((*G_buffer)[i], r);
-//  G_i_r.print();
+  ArrayDouble G_i_r = view_row((*G_buffer)[i], r);
 
-  const ulong n_jumps_i = (*n_jumps_per_node)[i];
-  const ulong start_index = view(*get_n_jumps_per_realization(), 0, r).sum();
-
-  auto get_index_g = [=](ulong k, ulong j) {
-    return 1 + start_index + (1 + n_nodes) * k + j;
-  };
+  const double end_time = (*end_times)[r];
+  const ulong n_jumps_i = t_i.size();
+  ulong start_row = 0;
+  for (int smaller_r = 0; smaller_r < r; ++smaller_r) {
+    start_row += timestamps_list[r][i]->size();
+  }
 
   for (ulong j = 0; j < n_nodes; j++) {
+    const ulong col_j = 1 + j;
     const ArrayDouble t_j = view(*timestamps_list[r][j]);
     ulong ij = 0;
     for (ulong k = 0; k < n_jumps_i + 1; k++) {
-      const double t_i_k = k < n_jumps_i ? t_i[k] : (*end_times)[r];
+      const ulong row_k = start_row + k;
+
+      const double t_i_k = k < n_jumps_i ? t_i[k] : end_time;
       if (k > 0) {
         const double ebt = std::exp(-decay * (t_i_k - t_i[k - 1]));
-
-        if (k < n_jumps_i) g_i[get_index_g(k, j)] = g_i[get_index_g(k - 1, j)] * ebt;
-//        G_i_r[1 + j] += g_i[get_index_g(k - 1, j)] * (1 - ebt) / decay;
+        if (k < n_jumps_i) {
+          g_i(row_k, col_j) = g_i(row_k - 1, col_j) * ebt;
+        }
+        G_i_r[col_j] += g_i(row_k - 1, col_j) * (1 - ebt) / decay;
       } else {
-        g_i[get_index_g(k, j)] = 0;
-//        G_i_r[1 + j] = 0;
+        g_i(row_k, col_j) = 0;
+        G_i_r[col_j] = 0;
       }
 
-      while ((ij < (*n_jumps_per_node)[j]) && (t_j[ij] < t_i_k)) {
+      while ((ij < t_j.size()) && (t_j[ij] < t_i_k)) {
         const double ebt = std::exp(-decay * (t_i_k - t_j[ij]));
-        if (k < n_jumps_i) g_i[get_index_g(k, j)] += decay * ebt;
-//        G_i_r[1 + j] += 1 - ebt;
+        if (k < n_jumps_i) g_i(row_k, col_j) += decay * ebt;
+        G_i_r[col_j] += 1 - ebt;
         ij++;
       }
-      g_i[get_index_g(k, 0)] = 1.;
+      // fill mu part
+      if (k < n_jumps_i) g_i(row_k, 0) = 1.;
     }
   }
+  G_i_r[0] = end_time;
+//  g_i.print();
 //  (*G_buffer)[i].print();
 }
 

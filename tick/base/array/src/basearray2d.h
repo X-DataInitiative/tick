@@ -151,7 +151,7 @@ BaseArray2d<T>::BaseArray2d(const BaseArray2d<T> &other) : AbstractArray1d2d<T>(
 template<typename T>
 void BaseArray2d<T>::_print_dense() const {
     std::cout << "Array2d[nrows=" << _n_rows << ",ncols=" << _n_cols << "," << std::endl;
-    if (_n_rows < 6) {
+    if (_n_rows < 20) {
         for (ulong r = 0; r < _n_rows; r++) {
             if (_n_cols < 8) {
                 for (ulong c = 0; c < _n_cols; c++) {

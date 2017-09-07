@@ -152,9 +152,9 @@ class Array2d : public BaseArray2d<T> {
     T &operator()(const ulong i, const ulong j) {
         const ulong idx = i * this->n_cols() + j;
 
-        #ifdef DEBUG_COSTLY_THROW
+//        #ifdef DEBUG_COSTLY_THROW
             if (i >= this->n_rows() || j >= this->n_cols()) TICK_BAD_INDEX(0, _size, idx);
-        #endif
+//        #endif
 
         return _data[idx];
     }
@@ -171,9 +171,9 @@ class Array2d : public BaseArray2d<T> {
     const T& operator()(const ulong i, const ulong j) const {
         const ulong idx = i * this->n_cols() + j;
 
-        #ifdef DEBUG_COSTLY_THROW
+//        #ifdef DEBUG_COSTLY_THROW
             if (i >= this->n_rows() || j >= this->n_cols()) TICK_BAD_INDEX(0, _size, idx);
-        #endif
+//        #endif
 
         return _data[idx];
     }
