@@ -34,6 +34,15 @@ Array<T> view(Array<T> &a) {
     return Array<T>(a.size(), a.data());
 }
 
+//! @brief Returns a full view on an Array
+//! Const version
+//! \warning A view does not own its allocations
+template<typename T>
+Array<T> view(const Array<T> &a) {
+    return Array<T>(a.size(), a.data());
+}
+
+
 //! @brief Returns a partial view on an Array
 //! \param a The array the view is built on
 //! \param first The first index of the view
@@ -45,12 +54,37 @@ Array<T> view(Array<T> &a, ulong first) {
 }
 
 //! @brief Returns a partial view on an Array
+//! Const version
+//! \param a The array the view is built on
+//! \param first The first index of the view
+//! \warning by definition a view does not own its allocations
+template<typename T>
+Array<T> view(const Array<T> &a, const ulong first) {
+    if (first >= a.size()) TICK_BAD_INDEX(0, a.size(), first);
+    return Array<T>(a.size() - first, a.data() + first);
+}
+
+//! @brief Returns a partial view on an Array
 //! \param a The array the view is built on
 //! \param first The fist index of the view
 //! \param last The last index (excluded) of the view
 //! \warning by definition a view does not own its allocations
 template<typename T>
-Array<T> view(const Array<T> &a, ulong first, ulong last) {
+Array<T> view(Array<T> &a, ulong first, ulong last) {
+    if (first >= a.size()) TICK_BAD_INDEX(0, a.size(), first);
+    if (last > a.size()) TICK_BAD_INDEX(0, a.size(), last);
+    if (first >= last) return Array<T>();
+    return Array<T>(last - first, a.data() + first);
+}
+
+//! @brief Returns a partial view on an Array
+//! Const version
+//! \param a The array the view is built on
+//! \param first The fist index of the view
+//! \param last The last index (excluded) of the view
+//! \warning by definition a view does not own its allocations
+template<typename T>
+Array<T> view(const Array<T> &a, const ulong first, const ulong last) {
     if (first >= a.size()) TICK_BAD_INDEX(0, a.size(), first);
     if (last > a.size()) TICK_BAD_INDEX(0, a.size(), last);
     if (first >= last) return Array<T>();
@@ -68,6 +102,16 @@ SparseArray<T> view(SparseArray<T> &a) {
     return SparseArray<T>(a.size(), a.size_sparse(), a.indices(), a.data());
 }
 
+
+//! @brief Returns a full view on an SparseArray
+//! Const version
+//! \warning A view does not own its allocations
+template<typename T>
+SparseArray<T> view(const SparseArray<T> &a) {
+    return SparseArray<T>(a.size(), a.size_sparse(), a.indices(), a.data());
+}
+
+
 //
 // BaseArray
 //
@@ -80,6 +124,17 @@ BaseArray<T> view(BaseArray<T> &a) {
         return view(static_cast<Array<T> &>(a));
     else
         return view(static_cast<SparseArray<T> &>(a));
+}
+
+//! @brief Returns a full view on an BaseArray
+//! Const version
+//! \warning A view does not own its allocations
+template<typename T>
+BaseArray<T> view(const BaseArray<T> &a) {
+    if (a.is_dense())
+        return view(static_cast<const Array<T> &>(a));
+    else
+        return view(static_cast<const SparseArray<T> &>(a));
 }
 
 //! @brief Returns a partial view on an BaseArray
@@ -95,6 +150,19 @@ BaseArray<T> view(BaseArray<T> &a, ulong first, ulong last) {
     return view(static_cast<Array<T> &>(a), first, last);
 }
 
+//! @brief Returns a partial view on an BaseArray
+//! Const version
+//! \param a The array the view is built on
+//! \param first The fist index of the view
+//! \param first The last index of the view
+//! \warning by definition a view does not own its allocations
+template<typename T>
+BaseArray<T> view(const BaseArray<T> &a, const ulong first, const ulong last) {
+    if (a.is_sparse())
+    TICK_ERROR("Cannot make a partial view of a SparseArray");
+
+    return view(static_cast<const Array<T> &>(a), first, last);
+}
 //! @}
 
 #endif  // TICK_BASE_ARRAY_SRC_VIEW_H_

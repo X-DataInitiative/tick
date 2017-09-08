@@ -58,9 +58,6 @@ void ModelHawkesFixedExpKernLogLik::compute_weights_dim_i(const ulong i) {
       sum_G_i[j] += G_i[k * n_nodes + j];
     }
   }
-
-  g_i.print();
-  sum_G_i.print();
 }
 
 ulong ModelHawkesFixedExpKernLogLik::get_n_coeffs() const {

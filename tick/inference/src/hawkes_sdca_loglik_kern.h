@@ -40,8 +40,7 @@ class HawkesSDCALoglikKern : public ModelHawkesList {
   void compute_weights();
 
   //! @brief Perform one iteration of the algorithm
-  void solve(ArrayDouble &mu, ArrayDouble2d &adjacency, ArrayDouble2d &z1, ArrayDouble2d &z2,
-             ArrayDouble2d &u1, ArrayDouble2d &u2);
+  void solve();
 
   double get_decay() const;
   void set_decay(double decay);
@@ -49,6 +48,8 @@ class HawkesSDCALoglikKern : public ModelHawkesList {
  private:
   void allocate_weights();
   void compute_weights_dim_i(ulong i_r, std::shared_ptr<ArrayDouble2dList1D> G_buffer);
+
+  void synchronize_sdca();
 };
 
 class ModelHawkesSDCAOneNode : public Model {
@@ -58,15 +59,16 @@ class ModelHawkesSDCAOneNode : public Model {
 
  public:
   explicit ModelHawkesSDCAOneNode(ArrayDouble2d &g_i, ArrayDouble &G_i) {
-    // TODO: would it cost less to store it in this class?
-    // It would neccessit smaller chunks of contiguous data
+    if (g_i.n_cols() != G_i.size()) {
+      TICK_ERROR("g_i and G_i must have the same number of columns");
+    }
+
     this->features = view(g_i);
     this->n_times_psi = view(G_i);
   }
 
   BaseArrayDouble get_features(const ulong i) const override {
-//    return view_row(features, i);
-    return BaseArrayDouble(0);
+    return view_row(features, i);
   }
 
   ulong get_n_features() const override {
@@ -89,14 +91,14 @@ class ModelHawkesSDCAOneNode : public Model {
 
       out_primal_vector.mult_incr(feature_i, dual_vector[i] * _1_over_lbda_n);
     }
-    out_primal_vector.mult_incr(n_times_psi, - _1_over_lbda_n);
+    out_primal_vector.mult_incr(n_times_psi, -_1_over_lbda_n);
   }
 
   double sdca_dual_min_i(const ulong i,
-                  const double dual_i,
-                  const ArrayDouble &primal_vector,
-                  const double previous_delta_dual_i,
-                  double l_l2sq) override {
+                         const double dual_i,
+                         const ArrayDouble &primal_vector,
+                         const double previous_delta_dual_i,
+                         double l_l2sq) override {
     BaseArrayDouble feature_i = get_features(i);
 
     double normalized_features_norm = feature_i.norm_sq() / (l_l2sq * get_n_features());
@@ -107,6 +109,10 @@ class ModelHawkesSDCAOneNode : public Model {
     new_dual /= 2 * normalized_features_norm;
 
     return new_dual - dual_i;
+  }
+
+  ulong get_n_coeffs() const override {
+    return features.n_cols();
   }
 };
 

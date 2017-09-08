@@ -37,15 +37,6 @@ class HawkesInferenceTest : public ::testing::Test {
   }
 };
 
-
-TEST_F(HawkesInferenceTest, constructor) {
-  const double decay = 3.;
-  const double l_l2sq = 1e-3;
-
-  HawkesSDCALoglikKern hawkes(decay, l_l2sq);
-  hawkes.set_data(timestamps_list, end_times);
-}
-
 TEST_F(HawkesInferenceTest, compute_weights) {
   const double decay = 3.;
   const double l_l2sq = 1e-3;
@@ -53,9 +44,13 @@ TEST_F(HawkesInferenceTest, compute_weights) {
   HawkesSDCALoglikKern hawkes(decay, l_l2sq);
   hawkes.set_data(timestamps_list, end_times);
   hawkes.compute_weights();
+}
 
+TEST_F(HawkesInferenceTest, solve) {
+  const double decay = 3.;
+  const double l_l2sq = 1e-3;
 
-  ModelHawkesFixedExpKernLogLikList check_model(3.);
-  check_model.set_data(timestamps_list, end_times);
-  check_model.compute_weights();
+  HawkesSDCALoglikKern hawkes(decay, l_l2sq);
+  hawkes.set_data(timestamps_list, end_times);
+  hawkes.solve();
 }

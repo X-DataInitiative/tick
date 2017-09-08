@@ -4,7 +4,6 @@
 #include "hawkes_fixed_expkern_loglik.h"
 #include "hawkes_sdca_loglik_kern.h"
 
-
 HawkesSDCALoglikKern::HawkesSDCALoglikKern(double decay, double l_l2sq,
                                            int max_n_threads, double tol,
                                            RandType rand_type, int seed)
@@ -13,45 +12,8 @@ HawkesSDCALoglikKern::HawkesSDCALoglikKern(double decay, double l_l2sq,
   set_decay(decay);
 }
 
-void HawkesSDCALoglikKern::compute_weights() {
-  if (!weights_allocated) allocate_weights();
 
-  auto G_buffer = std::make_shared<ArrayDouble2dList1D>(n_nodes);
-  for (ulong i = 0; i < n_nodes; ++i) {
-    for (ulong r = 0; r < n_realizations; ++r) {
-      std::cout << "initialize" << i << " " << r << std::endl;
-      (*G_buffer)[i] = ArrayDouble2d(n_realizations, 1ul + n_nodes, nullptr);
-      (*G_buffer)[i].init_to_zero();
-    }
-  }
-
-  for (ulong i = 0; i < n_nodes; i++) {
-    g[i].init_to_zero();
-    G[i].init_to_zero();
-  }
-
-//  parallel_run(get_n_threads(), n_nodes * n_realizations,
-//               &HawkesSDCALoglikKern::compute_weights_dim_i, this, G_buffer);
-
-  for (ulong i_r = 0; i_r < n_nodes * n_realizations; ++i_r) {
-    compute_weights_dim_i(i_r, G_buffer);
-  }
-
-  for (int i = 0; i < n_nodes; ++i) {
-    for (ulong r = 0; r < n_realizations; ++r) {
-      G[i].mult_incr(view_row((*G_buffer)[i], r), 1);
-    }
-  }
-
-  for (ulong i = 0; i < n_nodes; i++) {
-    g[i].print();
-    G[i].print();
-  }
-
-  weights_computed = true;
-}
-
-void HawkesSDCALoglikKern::allocate_weights(){
+void HawkesSDCALoglikKern::allocate_weights() {
   g = ArrayDouble2dList1D(n_nodes);
   G = ArrayDoubleList1D(n_nodes);
 
@@ -64,7 +26,55 @@ void HawkesSDCALoglikKern::allocate_weights(){
   weights_allocated = true;
 }
 
-void HawkesSDCALoglikKern::compute_weights_dim_i(const ulong i_r, std::shared_ptr<ArrayDouble2dList1D> G_buffer) {
+void HawkesSDCALoglikKern::compute_weights() {
+  if (!weights_allocated) allocate_weights();
+
+  // We will need each thread to store its value of G in buffers that we will merge afterwards
+  auto G_buffer = std::make_shared<ArrayDouble2dList1D>(n_nodes);
+  for (ulong i = 0; i < n_nodes; ++i) {
+    for (ulong r = 0; r < n_realizations; ++r) {
+      (*G_buffer)[i] = ArrayDouble2d(n_realizations, 1ul + n_nodes, nullptr);
+      (*G_buffer)[i].init_to_zero();
+    }
+  }
+
+  for (ulong i = 0; i < n_nodes; i++) {
+    g[i].init_to_zero();
+    G[i].init_to_zero();
+  }
+
+  parallel_run(get_n_threads(), n_nodes * n_realizations,
+               &HawkesSDCALoglikKern::compute_weights_dim_i, this, G_buffer);
+
+  for (int i = 0; i < n_nodes; ++i) {
+    for (ulong r = 0; r < n_realizations; ++r) {
+      G[i].mult_incr(view_row((*G_buffer)[i], r), 1);
+    }
+  }
+
+  weights_computed = true;
+
+  synchronize_sdca();
+}
+
+void HawkesSDCALoglikKern::synchronize_sdca() {
+  if (!weights_computed) compute_weights();
+  sdca_list = std::vector<SDCA>();
+  for (ulong i = 0; i < n_nodes; ++i) {
+    auto model = std::make_shared<ModelHawkesSDCAOneNode>(g[i], G[i]);
+
+    const ulong epoch_size = (*n_jumps_per_node)[i];
+    SDCA sdca(l_l2sq, epoch_size, tol, rand_type, seed);
+
+    sdca.set_model(model);
+    sdca.set_rand_max(epoch_size);
+
+    sdca_list.push_back(sdca);
+  }
+}
+
+void HawkesSDCALoglikKern::compute_weights_dim_i(const ulong i_r,
+                                                 std::shared_ptr<ArrayDouble2dList1D> G_buffer) {
   const auto r = static_cast<const ulong>(i_r / n_nodes);
   const ulong i = i_r % n_nodes;
 
@@ -109,17 +119,18 @@ void HawkesSDCALoglikKern::compute_weights_dim_i(const ulong i_r, std::shared_pt
     }
   }
   G_i_r[0] = end_time;
-//  g_i.print();
-//  (*G_buffer)[i].print();
 }
 
 // The main method for performing one iteration
-void HawkesSDCALoglikKern::solve(ArrayDouble &mu, ArrayDouble2d &adjacency,
-                                 ArrayDouble2d &z1, ArrayDouble2d &z2,
-                                 ArrayDouble2d &u1, ArrayDouble2d &u2) {
+void HawkesSDCALoglikKern::solve() {
   if (!weights_computed) compute_weights();
+  for (auto sdca: sdca_list) {
+    sdca.solve();
 
-
+    ArrayDouble out_iterate(n_nodes + 1);
+    sdca.get_iterate(out_iterate);
+    out_iterate.print();
+  }
 }
 
 double HawkesSDCALoglikKern::get_decay() const {

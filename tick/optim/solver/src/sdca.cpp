@@ -4,6 +4,7 @@
 // Created by Martin Bompaire on 22/10/15.
 //
 
+#include "hawkes_sdca_loglik_kern.h"
 #include "prox_zero.h"
 #include "poisreg.h"
 #include "sdca.h"
@@ -85,6 +86,9 @@ void SDCA::set_starting_iterate() {
     if (casted_model->get_link_type() == LinkType::identity) {
       can_initialize_primal_to_zero = false;
     }
+  }
+  if (dynamic_cast<ModelHawkesSDCAOneNode *>(model.get())) {
+    can_initialize_primal_to_zero = false;
   }
 
   if (can_initialize_primal_to_zero) {
