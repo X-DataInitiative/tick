@@ -1,6 +1,6 @@
 // License: BSD 3 clause
 
-
+#include "variants/hawkes_sdca_one_node.h"
 #include "hawkes_fixed_expkern_loglik.h"
 #include "hawkes_sdca_loglik_kern.h"
 
@@ -11,7 +11,6 @@ HawkesSDCALoglikKern::HawkesSDCALoglikKern(double decay, double l_l2sq,
     weights_allocated(false), l_l2sq(l_l2sq), tol(tol), rand_type(rand_type), seed(seed) {
   set_decay(decay);
 }
-
 
 void HawkesSDCALoglikKern::allocate_weights() {
   g = ArrayDouble2dList1D(n_nodes);
@@ -46,7 +45,7 @@ void HawkesSDCALoglikKern::compute_weights() {
   parallel_run(get_n_threads(), n_nodes * n_realizations,
                &HawkesSDCALoglikKern::compute_weights_dim_i, this, G_buffer);
 
-  for (int i = 0; i < n_nodes; ++i) {
+  for (ulong i = 0; i < n_nodes; ++i) {
     for (ulong r = 0; r < n_realizations; ++r) {
       G[i].mult_incr(view_row((*G_buffer)[i], r), 1);
     }
@@ -85,7 +84,7 @@ void HawkesSDCALoglikKern::compute_weights_dim_i(const ulong i_r,
   const double end_time = (*end_times)[r];
   const ulong n_jumps_i = t_i.size();
   ulong start_row = 0;
-  for (int smaller_r = 0; smaller_r < r; ++smaller_r) {
+  for (ulong smaller_r = 0; smaller_r < r; ++smaller_r) {
     start_row += timestamps_list[r][i]->size();
   }
 
@@ -124,7 +123,7 @@ void HawkesSDCALoglikKern::compute_weights_dim_i(const ulong i_r,
 // The main method for performing one iteration
 void HawkesSDCALoglikKern::solve() {
   if (!weights_computed) compute_weights();
-  for (int i = 0; i < sdca_list.size(); ++i) {
+  for (ulong i = 0; i < sdca_list.size(); ++i) {
     sdca_list[i].solve();
   }
 }
@@ -139,4 +138,25 @@ void HawkesSDCALoglikKern::set_decay(const double decay) {
   }
   this->decay = decay;
   weights_computed = false;
+}
+
+SArrayDoublePtr HawkesSDCALoglikKern::get_iterate()  {
+  ulong n_coeffs_per_subproblem = G[0].size();
+
+  if (sdca_list.size() != n_nodes){
+    SArrayDoublePtr zero_iterate = SArrayDouble::new_ptr(n_coeffs_per_subproblem * n_nodes);
+    zero_iterate->init_to_zero();
+    return zero_iterate;
+  }
+
+  ArrayDouble iterate(n_nodes * n_coeffs_per_subproblem);
+  for (ulong i = 0; i < n_nodes; ++i) {
+    ArrayDouble sdca_iterate(n_coeffs_per_subproblem);
+    sdca_list[i].get_iterate(sdca_iterate);
+    iterate[i] = sdca_iterate[0];
+    for (ulong j = 0; j < n_nodes; ++j) {
+      iterate[n_nodes + n_nodes * i + j] = sdca_iterate[1 + j];
+    }
+  }
+  return iterate.as_sarray_ptr();
 }

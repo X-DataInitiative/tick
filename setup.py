@@ -655,20 +655,20 @@ preprocessing_core = create_extension(**preprocessing_core_info)
 inference_extension_info = {
     "cpp_files": ["hawkes_conditional_law.cpp", "hawkes_em.cpp",
                   "hawkes_adm4.cpp", "hawkes_basis_kernels.cpp",
-                  "hawkes_sumgaussians.cpp", "hawkes_sdca_loglik.cpp"],
+                  "hawkes_sumgaussians.cpp", "hawkes_sdca_loglik_kern.cpp"],
     "h_files": ["hawkes_conditional_law.h", "hawkes_em.h",
                 "hawkes_adm4.h", "hawkes_basis_kernels.h",
-                "hawkes_sumgaussians.h", "hawkes_sdca_loglik.h"],
+                "hawkes_sumgaussians.h", "hawkes_sdca_loglik_kern.h"],
     "swig_files": ["inference_module.i"],
     "module_dir": "./tick/inference/",
     "extension_name": "inference",
-    "include_modules": base_array_modules + [model_core.module_ref]
+    "include_modules": base_array_modules + [model_core.module_ref,
+                                             solver_core.module_ref,
+                                             random_extension.module_ref,
+                                             prox_core.module_ref]
 }
 
 inference_extension = create_extension(**inference_extension_info)
-
-solver_core_info["include_modules"] += [inference_extension.module_ref]
-solver_core = create_extension(**solver_core_info)
 
 tick_modules = [array_extension, base_extension,
                 test_extension, random_extension, simulation_extension,

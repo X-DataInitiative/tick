@@ -4,7 +4,7 @@
 // Created by Martin Bompaire on 22/10/15.
 //
 
-#include "hawkes_sdca_loglik_kern.h"
+#include "variants/hawkes_sdca_one_node.h"
 #include "prox_zero.h"
 #include "poisreg.h"
 #include "sdca.h"

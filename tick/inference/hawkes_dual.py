@@ -11,7 +11,7 @@ from tick.simulation import SimuHawkesExpKernels
 from .build.inference import HawkesSDCALoglikKern as _HawkesSDCALoglikKern
 
 
-class HawkesADM4(LearnerHawkesParametric):
+class HawkesDual(LearnerHawkesNoParam):
     """A class that implements parametric inference for Hawkes processes
     with an exponential parametrisation of the kernels and a mix of Lasso
     and nuclear regularization
@@ -53,15 +53,6 @@ class HawkesADM4(LearnerHawkesParametric):
     C : `float`, default=1e3
         Level of penalization
 
-    lasso_nuclear_ratio : `float`, default=0.5
-        Ratio of Lasso-Nuclear regularization mixing parameter with
-        0 <= ratio <= 1.
-
-        * For ratio = 0 this is nuclear regularization
-        * For ratio = 1 this is lasso (L1) regularization
-        * For 0 < ratio < 1, the regularization is a linear combination
-          of Lasso and nuclear.
-
     max_iter : `int`, default=50
         Maximum number of iterations of the solving algorithm
 
@@ -87,29 +78,6 @@ class HawkesADM4(LearnerHawkesParametric):
         Record history information when ``n_iter`` (iteration number) is
         a multiple of ``record_every``
 
-    Other Parameters
-    ----------------
-    rho : `float`, default=0.1
-        Positive parameter of the augmented Lagrangian. Called penalty
-        parameter, the higher it is, the more strict will be the
-        penalization.
-
-    approx : `int`, default=0 (read-only)
-        Level of approximation used for computing exponential functions
-
-        * if 0: no approximation
-        * if 1: a fast approximated exponential function is used
-
-    em_max_iter : `int`, default=30
-        Maximum number of loop for inner em algorithm.
-
-    em_tol : `float`, default=None
-        Tolerance of loop for inner em algorithm. If relative difference of
-        baseline and adjacency goes bellow this tolerance, em inner loop
-        will stop.
-        If None, it will be set given a heuristic which look at last
-        relative difference obtained in the main loop.
-
     Attributes
     ----------
     n_nodes : `int`
@@ -120,13 +88,6 @@ class HawkesADM4(LearnerHawkesParametric):
 
     adjacency : `np.ndarray`, shape=(n_nodes, n_nodes)
         Inferred adjacency matrix
-
-    References
-    ----------
-    Zhou, K., Zha, H., & Song, L. (2013, May).
-    Learning Social Infectivity in Sparse Low-rank Networks Using
-    Multi-dimensional Hawkes Processes. In `AISTATS (Vol. 31, pp. 641-649)
-    <http://www.jmlr.org/proceedings/papers/v31/zhou13a.pdf>`_.
     """
 
     _attrinfos = {
@@ -135,46 +96,24 @@ class HawkesADM4(LearnerHawkesParametric):
         "decay": {
             "cpp_setter": "set_decay"
         },
-        "rho": {
-            "cpp_setter": "set_rho"
-        },
         "_C": {"writable": False},
         "baseline": {"writable": False},
         "adjacency": {"writable": False},
-        "_prox_l1": {"writable": False},
-        "_prox_nuclear": {"writable": False},
-        "_lasso_nuclear_ratio": {"writable": False},
         "approx": {"writable": False}
     }
 
-    def __init__(self, decay, C=1e3, lasso_nuclear_ratio=0.5, max_iter=50,
-                 tol=1e-5, n_threads=1, verbose=False, print_every=10,
-                 record_every=10, rho=.1, approx=0, em_max_iter=30,
-                 em_tol=None):
+    def __init__(self, decay, l_l2sq, max_iter=50, tol=1e-5, n_threads=1,
+                 verbose=False, print_every=10, record_every=10):
 
         LearnerHawkesNoParam.__init__(self, verbose=verbose, max_iter=max_iter,
                                       print_every=print_every, tol=tol,
                                       n_threads=n_threads,
                                       record_every=record_every)
-        self.baseline = None
-        self.adjacency = None
-        self._C = 0
-        self._lasso_nuclear_ratio = 0
-
         self.decay = decay
-        self.rho = rho
-
-        self._prox_l1 = ProxL1(1.)
-        self._prox_nuclear = ProxNuclear(1.)
-
-        self.C = C
-        self.lasso_nuclear_ratio = lasso_nuclear_ratio
+        self.l_l2sq = l_l2sq
         self.verbose = verbose
 
-        self.em_max_iter = em_max_iter
-        self.em_tol = em_tol
-
-        self._learner = _HawkesADM4(decay, rho, n_threads, approx)
+        self._learner = _HawkesSDCALoglikKern(decay, l_l2sq, n_threads, tol)
 
         # TODO add approx to model
         self._model = ModelHawkesFixedExpKernLogLik(self.decay,
@@ -234,7 +173,6 @@ class HawkesADM4(LearnerHawkesParametric):
         events, end_times = self._clean_events_and_endtimes(events)
 
         self._model.fit(events, end_times=end_times)
-        self._prox_nuclear.n_rows = self.n_nodes
 
     def _solve(self, baseline_start=None, adjacency_start=None):
         """Perform one iteration of the algorithm
@@ -251,60 +189,13 @@ class HawkesADM4(LearnerHawkesParametric):
             and 0.9
         """
 
-        if baseline_start is None:
-            baseline_start = np.ones(self.n_nodes)
-
-        self._set('baseline', baseline_start.copy())
-
-        if adjacency_start is None:
-            adjacency_start = np.random.uniform(0.5, 0.9,
-                                                (self.n_nodes, self.n_nodes))
-        self._set('adjacency', adjacency_start.copy())
-
-        z1 = np.zeros_like(self.adjacency)
-        z2 = np.zeros_like(self.adjacency)
-        u1 = np.zeros_like(self.adjacency)
-        u2 = np.zeros_like(self.adjacency)
-
-        if self.rho <= 0:
-            raise ValueError("The parameter rho equals {}, while it should "
-                             "be strictly positive.".format(self.rho))
-
         objective = self.objective(self.coeffs)
-
-        max_relative_distance = 1e-1
         for i in range(self.max_iter + 1):
             prev_objective = objective
             prev_baseline = self.baseline.copy()
             prev_adjacency = self.adjacency.copy()
 
-            for _ in range(self.em_max_iter):
-                inner_prev_baseline = self.baseline.copy()
-                inner_prev_adjacency = self.adjacency.copy()
-                self._learner.solve(self.baseline, self.adjacency,
-                                    z1, z2, u1, u2)
-                inner_rel_baseline = relative_distance(self.baseline,
-                                                       inner_prev_baseline)
-                inner_rel_adjacency = relative_distance(self.adjacency,
-                                                        inner_prev_adjacency)
-
-                if self.em_tol is None:
-                    inner_tol = max_relative_distance * 1e-2
-                else:
-                    inner_tol = self.em_tol
-
-                if max(inner_rel_baseline, inner_rel_adjacency) < inner_tol:
-                    break
-
-            z1 = self._prox_nuclear.call(np.ravel(self.adjacency + u1),
-                                         step=1. / self.rho) \
-                .reshape(self.n_nodes, self.n_nodes)
-            z2 = self._prox_l1.call(np.ravel(self.adjacency + u2),
-                                    step=1. / self.rho) \
-                .reshape(self.n_nodes, self.n_nodes)
-
-            u1 += self.adjacency - z1
-            u2 += self.adjacency - z2
+            self._learner.solve()
 
             objective = self.objective(self.coeffs)
 
@@ -312,10 +203,9 @@ class HawkesADM4(LearnerHawkesParametric):
             rel_baseline = relative_distance(self.baseline, prev_baseline)
             rel_adjacency = relative_distance(self.adjacency, prev_adjacency)
 
-            max_relative_distance = max(rel_baseline, rel_adjacency)
             # We perform at least 5 iterations as at start we sometimes reach a
             # low tolerance if inner_tol is too low
-            converged = max_relative_distance <= self.tol and i > 5
+            converged = rel_obj <= self.tol
             force_print = (i == self.max_iter) or converged
 
             self._handle_history(i, obj=objective, rel_obj=rel_obj,
@@ -352,49 +242,24 @@ class HawkesADM4(LearnerHawkesParametric):
         """
         if loss is None:
             loss = self._model.loss(coeffs)
+        prox_l2_value = 0.5 * self.l_l2sq * np.linalg.norm(coeffs) ** 2
 
-        return loss + \
-               self._prox_l1.value(self.adjacency.ravel()) + \
-               self._prox_nuclear.value(self.adjacency.ravel())
+        return loss + prox_l2_value
 
     @property
     def coeffs(self):
-        return np.hstack((self.baseline, self.adjacency.ravel()))
+        return self._learner.get_iterate()
 
-    @property
-    def C(self):
-        return self._C
-
-    @C.setter
-    def C(self, val):
-        if val < 0 or val is None:
-            raise ValueError("`C` must be positive, got %s" % str(val))
-        else:
-            self._set("_C", val)
-            self._prox_l1.strength = self.strength_lasso
-            self._prox_nuclear.strength = self.strength_nuclear
-
-    @property
-    def lasso_nuclear_ratio(self):
-        return self._lasso_nuclear_ratio
-
-    @lasso_nuclear_ratio.setter
-    def lasso_nuclear_ratio(self, val):
-        if val < 0 or val > 1:
-            raise ValueError("`lasso_nuclear_ratio` must be between 0 and 1, "
-                             "got %s" % str(val))
-        else:
-            self._set("_lasso_nuclear_ratio", val)
-            self._prox_l1.strength = self.strength_lasso
-            self._prox_nuclear.strength = self.strength_nuclear
-
-    @property
-    def strength_lasso(self):
-        return self.lasso_nuclear_ratio / self.C
-
-    @property
-    def strength_nuclear(self):
-        return (1 - self.lasso_nuclear_ratio) / self.C
+    # @property
+    # def l_l2sq(self):
+    #     return self._learner.get_l_l2sq()
+    #
+    # @l_l2sq.setter
+    # def l_l2sq(self, val):
+    #     if val < 0 or val is None:
+    #         raise ValueError("`l_l2sq` must be positive, got %s" % str(val))
+    #     else:
+    #         self._learner.set_l_l2sq(val)
 
     def _corresponding_simu(self):
         """Create simulation object corresponding to the obtained coefficients
@@ -402,6 +267,18 @@ class HawkesADM4(LearnerHawkesParametric):
         return SimuHawkesExpKernels(adjacency=self.adjacency,
                                     decays=self.decay,
                                     baseline=self.baseline)
+
+    @property
+    def baseline(self):
+        if not self._fitted:
+            raise ValueError('You must fit data before getting estimated '
+                             'baseline')
+        else:
+            return self.coeffs[:self.n_nodes]
+
+    @property
+    def n_nodes(self):
+        return self._model.n_nodes
 
     def get_kernel_supports(self):
         """Computes kernel support. This makes our learner compliant with
