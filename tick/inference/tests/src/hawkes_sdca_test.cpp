@@ -46,11 +46,23 @@ TEST_F(HawkesInferenceTest, compute_weights) {
   hawkes.compute_weights();
 }
 
-TEST_F(HawkesInferenceTest, solve) {
+TEST_F(HawkesInferenceTest, convergence) {
   const double decay = 3.;
-  const double l_l2sq = 1e-3;
+  const double l_l2sq = 0.7;
 
   HawkesSDCALoglikKern hawkes(decay, l_l2sq);
   hawkes.set_data(timestamps_list, end_times);
-  hawkes.solve();
+
+  for (int j = 0; j < 30; ++j) {
+    hawkes.solve();
+  }
+  auto out_iterate30 = hawkes.get_iterate();
+
+  for (int j = 0; j < 20; ++j) {
+    hawkes.solve();
+  }
+  auto out_iterate50 = hawkes.get_iterate();
+
+  out_iterate50->mult_incr(*out_iterate30, -1);
+  EXPECT_LE(out_iterate50->norm_sq(), 0.1);
 }

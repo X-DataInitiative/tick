@@ -67,6 +67,11 @@ class SDCA : public StoSolver {
     return copy.as_sarray_ptr();
   }
 
+  SArrayDoublePtr get_iterate() const {
+    ArrayDouble copy = iterate;
+    return copy.as_sarray_ptr();
+  }
+
   void set_starting_iterate();
   void set_starting_iterate(ArrayDouble &dual_vector) override;
 

@@ -124,12 +124,8 @@ void HawkesSDCALoglikKern::compute_weights_dim_i(const ulong i_r,
 // The main method for performing one iteration
 void HawkesSDCALoglikKern::solve() {
   if (!weights_computed) compute_weights();
-  for (auto sdca: sdca_list) {
-    sdca.solve();
-
-    ArrayDouble out_iterate(n_nodes + 1);
-    sdca.get_iterate(out_iterate);
-    out_iterate.print();
+  for (int i = 0; i < sdca_list.size(); ++i) {
+    sdca_list[i].solve();
   }
 }
 

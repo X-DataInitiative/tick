@@ -45,6 +45,22 @@ class HawkesSDCALoglikKern : public ModelHawkesList {
   double get_decay() const;
   void set_decay(double decay);
 
+  SArrayDoublePtr get_iterate() {
+    if (sdca_list.size() != n_nodes){
+      TICK_ERROR("Solver has not been launched yet");
+    }
+
+    ArrayDouble iterate(n_nodes * G[0].size());
+    for (ulong i = 0; i < n_nodes; ++i) {
+      ArrayDouble sdca_iterate = *(sdca_list[i].get_iterate());
+      iterate[i] = sdca_iterate[0];
+      for (ulong j = 0; j < n_nodes; ++j) {
+        iterate[n_nodes + n_nodes * i + j] = sdca_iterate[1 + j];
+      }
+    }
+    return iterate.as_sarray_ptr();
+  }
+
  private:
   void allocate_weights();
   void compute_weights_dim_i(ulong i_r, std::shared_ptr<ArrayDouble2dList1D> G_buffer);
