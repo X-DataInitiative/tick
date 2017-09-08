@@ -50,9 +50,11 @@ class HawkesSDCALoglikKern : public ModelHawkesList {
       TICK_ERROR("Solver has not been launched yet");
     }
 
-    ArrayDouble iterate(n_nodes * G[0].size());
+    ulong n_coeffs_per_subproblem = G[0].size();
+    ArrayDouble iterate(n_nodes * n_coeffs_per_subproblem);
     for (ulong i = 0; i < n_nodes; ++i) {
-      ArrayDouble sdca_iterate = *(sdca_list[i].get_iterate());
+      ArrayDouble sdca_iterate(n_coeffs_per_subproblem);
+      sdca_list[i].get_iterate(sdca_iterate);
       iterate[i] = sdca_iterate[0];
       for (ulong j = 0; j < n_nodes; ++j) {
         iterate[n_nodes + n_nodes * i + j] = sdca_iterate[1 + j];
@@ -101,10 +103,8 @@ class ModelHawkesSDCAOneNode : public Model {
     const double _1_over_lbda_n = 1 / (l_l2sq * get_n_samples());
     out_primal_vector.init_to_zero();
 
-    ulong n_non_zero_labels_seen = 0;
     for (ulong i = 0; i < get_n_samples(); ++i) {
       const BaseArrayDouble feature_i = get_features(i);
-
       out_primal_vector.mult_incr(feature_i, dual_vector[i] * _1_over_lbda_n);
     }
     out_primal_vector.mult_incr(n_times_psi, -_1_over_lbda_n);

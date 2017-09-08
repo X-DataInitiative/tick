@@ -23,3 +23,4 @@
 %include hawkes_adm4.i
 %include hawkes_basis_kernels.i
 %include hawkes_sumgaussians.i
+%include hawkes_sdca_loglik.i
