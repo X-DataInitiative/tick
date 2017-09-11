@@ -141,14 +141,14 @@ void HawkesSDCALoglikKern::set_decay(const double decay) {
 }
 
 SArrayDoublePtr HawkesSDCALoglikKern::get_iterate()  {
-  ulong n_coeffs_per_subproblem = G[0].size();
 
   if (sdca_list.size() != n_nodes){
-    SArrayDoublePtr zero_iterate = SArrayDouble::new_ptr(n_coeffs_per_subproblem * n_nodes);
+    SArrayDoublePtr zero_iterate = SArrayDouble::new_ptr((1 + n_nodes) * n_nodes);
     zero_iterate->init_to_zero();
     return zero_iterate;
   }
 
+  ulong n_coeffs_per_subproblem = G[0].size();
   ArrayDouble iterate(n_nodes * n_coeffs_per_subproblem);
   for (ulong i = 0; i < n_nodes; ++i) {
     ArrayDouble sdca_iterate(n_coeffs_per_subproblem);

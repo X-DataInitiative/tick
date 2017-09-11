@@ -164,6 +164,7 @@ class Solver(Base):
         output : `float`
             Value of the objective at given ``coeffs``
         """
+        pass
 
     def get_history(self, key=None):
         """Returns history of the solver

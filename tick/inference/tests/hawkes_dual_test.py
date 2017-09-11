@@ -26,14 +26,14 @@ class Test(unittest.TestCase):
     @staticmethod
     def get_train_data(n_nodes=3, decay=1.):
         np.random.seed(130947)
-        baseline = np.random.rand(n_nodes)
+        baseline = np.random.rand(n_nodes) / 4
         adjacency = np.random.rand(n_nodes, n_nodes)
         if isinstance(decay, (int, float)):
             decay = np.ones((n_nodes, n_nodes)) * decay
 
         sim = SimuHawkesExpKernels(adjacency=adjacency, decays=decay,
                                    baseline=baseline, verbose=False,
-                                   seed=13487, end_time=3000)
+                                   seed=13487, end_time=300000)
         sim.adjust_spectral_radius(0.8)
         adjacency = sim.adjacency
         sim.simulate()
@@ -51,12 +51,16 @@ class Test(unittest.TestCase):
         timestamps, baseline, adjacency = Test.get_train_data(n_nodes=n_nodes,
                                                               decay=decay)
 
-        l_l2sq = 0.1
-        hawkes = HawkesDual(decay, l_l2sq)
+        l_l2sq = 0.01
+        hawkes = HawkesDual(decay, l_l2sq, verbose=True, max_iter=150)
 
         hawkes.fit(timestamps)
 
-        print(hawkes.coeffs)
+        print(hawkes.baseline)
+        print(baseline)
+
+        print(hawkes.adjacency)
+        print(adjacency)
 
     # def test_hawkes_adm4_solution(self):
     #     """...Test solution obtained by HawkesADM4 on toy timestamps

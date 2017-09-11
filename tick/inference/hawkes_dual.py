@@ -1,6 +1,7 @@
 # License: BSD 3 clause
 
 import numpy as np
+from tick.optim.prox import ProxPositive
 
 from tick.inference.base import LearnerHawkesNoParam
 from tick.optim.model import ModelHawkesFixedExpKernLogLik
@@ -240,9 +241,11 @@ class HawkesDual(LearnerHawkesNoParam):
         value might not reach its exact minimum especially for high
         penalization levels.
         """
+        pp = ProxPositive()
+        pos_coeffs = pp.call(coeffs) + 1e-10
         if loss is None:
-            loss = self._model.loss(coeffs)
-        prox_l2_value = 0.5 * self.l_l2sq * np.linalg.norm(coeffs) ** 2
+            loss = self._model.loss(pos_coeffs)
+        prox_l2_value = 0.5 * self.l_l2sq * np.linalg.norm(pos_coeffs) ** 2
 
         return loss + prox_l2_value
 
@@ -275,6 +278,15 @@ class HawkesDual(LearnerHawkesNoParam):
                              'baseline')
         else:
             return self.coeffs[:self.n_nodes]
+
+    @property
+    def adjacency(self):
+        if not self._fitted:
+            raise ValueError('You must fit data before getting estimated '
+                             'baseline')
+        else:
+            return self.coeffs[self.n_nodes:].reshape((self.n_nodes,
+                                                       self.n_nodes))
 
     @property
     def n_nodes(self):
