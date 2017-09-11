@@ -60,7 +60,7 @@ void HawkesSDCALoglikKern::synchronize_sdca() {
   if (!weights_computed) compute_weights();
   sdca_list = std::vector<SDCA>();
   for (ulong i = 0; i < n_nodes; ++i) {
-    auto model = std::make_shared<ModelHawkesSDCAOneNode>(g[i], G[i]);
+    auto model = std::make_shared<ModelHawkesSDCAOneNode>(g[i], G[i], get_n_samples());
 
     const ulong epoch_size = (*n_jumps_per_node)[i];
     SDCA sdca(l_l2sq, epoch_size, tol, rand_type, seed);
@@ -126,6 +126,75 @@ void HawkesSDCALoglikKern::solve() {
   for (ulong i = 0; i < sdca_list.size(); ++i) {
     sdca_list[i].solve();
   }
+}
+
+double HawkesSDCALoglikKern::dual_objective() const {
+
+  return parallel_map_additive_reduce(get_n_threads(), n_nodes,
+                               &HawkesSDCALoglikKern::dual_objective_dim_i, this);
+//  return dual_objective;
+}
+
+
+double HawkesSDCALoglikKern::dual_objective2() const {
+  const double _1_over_lbda_n = 1 / (l_l2sq * get_n_samples());
+  double dual_objective = 0;
+  ArrayDouble buffer(n_nodes * (1 + n_nodes));
+  buffer.init_to_zero();
+
+  for (ulong i = 0; i < n_nodes; ++i) {
+    ArrayDouble local_dual = sdca_list[i].get_dual_vector_view();
+    ArrayDouble2d g_i = g[i];
+    ArrayDouble G_i = G[i];
+
+    for (ulong k = 0; k < (*n_jumps_per_node)[i]; ++k) {
+      dual_objective += (1 + log(local_dual[k])) / get_n_samples();
+
+      buffer[i] += local_dual[k] * _1_over_lbda_n * g_i(k, 0);
+      for (ulong j = 0; j < n_nodes; ++j) {
+        buffer[n_nodes + n_nodes*i + j] += local_dual[k] * _1_over_lbda_n * g_i(k, 1 + j);
+      }
+    }
+    buffer[i] -= _1_over_lbda_n * G_i[0];
+    for (ulong j = 0; j < n_nodes; ++j) {
+      buffer[n_nodes + n_nodes*i + j] -= _1_over_lbda_n * G_i[1 + j];
+    }
+
+    auto model_ptr = sdca_list[i].get_model();
+
+//    ArrayDouble out(n_nodes + 1);
+//    model_ptr->sdca_primal_dual_relation(l_l2sq, *sdca_list[i].get_dual_vector(), out);
+//    out.print();
+  }
+
+//  buffer.print();
+
+  dual_objective -= 0.5 * l_l2sq * buffer.norm_sq();
+  return dual_objective;
+}
+
+
+double HawkesSDCALoglikKern::loss(ArrayDouble &coeffs) const {
+  double loss = 0;
+  for (ulong i = 0; i < n_nodes; ++i) {
+    loss += loss_dim_i(i, coeffs);
+  }
+  return loss;
+}
+
+double HawkesSDCALoglikKern::dual_objective_dim_i(const ulong i) const {
+  ArrayDouble dual_vector = sdca_list[i].get_dual_vector_view();
+  auto model_ptr = sdca_list[i].get_model();
+  return model_ptr->dual_objective(l_l2sq, dual_vector);
+}
+
+double HawkesSDCALoglikKern::loss_dim_i(const ulong i, ArrayDouble &coeffs) const {
+  auto model_ptr = sdca_list[i].get_model();
+
+  ArrayDouble local_coeffs(1 + n_nodes);
+  local_coeffs[0] = coeffs[i];
+  view(local_coeffs, 1).mult_fill(view(coeffs, n_nodes + i * n_nodes, n_nodes + (i + 1) *n_nodes), 1);
+  return model_ptr->loss(local_coeffs);
 }
 
 double HawkesSDCALoglikKern::get_decay() const {

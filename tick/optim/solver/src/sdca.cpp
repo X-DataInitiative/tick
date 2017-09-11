@@ -70,6 +70,14 @@ void SDCA::solve() {
     }
     // Call prox on the primal variable
     prox->call(tmp_primal_vector, 1. / scaled_l_l2sq, iterate);
+
+//    iterate.print();
+
+//    ArrayDouble out(model->get_n_coeffs());
+//    model->sdca_primal_dual_relation(scaled_l_l2sq, dual_vector, out);
+//    out.print();
+//
+//    std::cout << "---" << std::endl;
   }
 }
 

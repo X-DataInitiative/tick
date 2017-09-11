@@ -67,8 +67,16 @@ class SDCA : public StoSolver {
     return copy.as_sarray_ptr();
   }
 
+  ArrayDouble get_dual_vector_view() const {
+    return view(dual_vector);
+  }
+
   void set_starting_iterate();
   void set_starting_iterate(ArrayDouble &dual_vector) override;
+
+  ModelPtr get_model() const {
+    return model;
+  }
 
  private:
   double get_scaled_l_l2sq() const {

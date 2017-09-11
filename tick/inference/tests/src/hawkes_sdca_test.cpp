@@ -66,3 +66,46 @@ TEST_F(HawkesInferenceTest, convergence) {
   out_iterate50->mult_incr(*out_iterate30, -1);
   EXPECT_LE(out_iterate50->norm_sq(), 0.1);
 }
+
+
+TEST_F(HawkesInferenceTest, loss) {
+  const double decay = 3.;
+  const double l_l2sq = 0.7;
+
+  HawkesSDCALoglikKern hawkes(decay, l_l2sq);
+  hawkes.set_data(timestamps_list, end_times);
+  hawkes.solve();
+
+  ModelHawkesFixedExpKernLogLikList hawkes_model(decay);
+  hawkes_model.set_data(timestamps_list, end_times);
+
+  ArrayDouble coeffs {1., 0.1, 0.7, 1.2, 2., 0.8};
+  EXPECT_DOUBLE_EQ(hawkes.loss(coeffs), hawkes_model.loss(coeffs));
+}
+
+TEST_F(HawkesInferenceTest, duality_gap) {
+  const double decay = 3.;
+  const double l_l2sq = 0.7;
+
+  HawkesSDCALoglikKern hawkes(decay, l_l2sq);
+  hawkes.set_data(timestamps_list, end_times);
+
+  for (int j = 0; j < 100; ++j) {
+    hawkes.solve();
+
+    if (j % 5 == 0) {
+      ArrayDouble primal = *hawkes.get_iterate();
+
+//      primal.print();
+
+
+      double objective = hawkes.loss(primal) + 0.5 * l_l2sq * primal.norm_sq();
+      std::cout << "dual \t" << hawkes.dual_objective()
+                << "  \tdual2 \t" << hawkes.dual_objective2()
+                << "  \tprimal\t" << objective << std::endl;
+//      hawkes.dual_objective2();
+//      std::cout << "----------" << std::endl;
+    }
+  }
+}
+

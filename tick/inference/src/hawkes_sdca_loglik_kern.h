@@ -47,9 +47,20 @@ class HawkesSDCALoglikKern : public ModelHawkesList {
 
   SArrayDoublePtr get_iterate();
 
+  double loss(ArrayDouble &coeffs) const;
+  double dual_objective() const;
+  double dual_objective2() const;
+
+  ulong get_n_samples() const override {
+    return n_jumps_per_node->sum();
+  }
+
  private:
   void allocate_weights();
   void compute_weights_dim_i(ulong i_r, std::shared_ptr<ArrayDouble2dList1D> G_buffer);
+
+  double loss_dim_i(const ulong i, ArrayDouble &coeffs) const;
+  double dual_objective_dim_i(const ulong i) const;
 
   void synchronize_sdca();
 };

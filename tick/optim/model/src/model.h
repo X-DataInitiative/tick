@@ -72,6 +72,10 @@ class Model {
     TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
   }
 
+  virtual double dual_objective(const double l_l2sq, const ArrayDouble &dual) {
+    TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
+  };
+
   /**
    * For SDCA, sometimes observations might be discarded (Poisson regression). In this case
    * this returns a mapping from the sampled observation (in [0, rand_max)) to the observation
