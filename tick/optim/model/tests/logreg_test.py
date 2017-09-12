@@ -28,6 +28,7 @@ class Test(TestGLM):
         model = ModelLogReg(fit_intercept=True).fit(X, y)
         model_spars = ModelLogReg(fit_intercept=True).fit(X_spars, y)
         self.run_test_for_glm(model, model_spars, 1e-5, 1e-4)
+        self._test_glm_intercept_vs_hardcoded_intercept(model)
 
         # Then check without intercept
         X, y = SimuLogReg(w0, None, n_samples=n_samples,
@@ -37,6 +38,7 @@ class Test(TestGLM):
 
         model_spars = ModelLogReg(fit_intercept=False).fit(X_spars, y)
         self.run_test_for_glm(model, model_spars, 1e-5, 1e-4)
+        self._test_glm_intercept_vs_hardcoded_intercept(model)
 
         # Test for the Lipschitz constants without intercept
         self.assertAlmostEqual(model.get_lip_best(), 0.67184209642814952)

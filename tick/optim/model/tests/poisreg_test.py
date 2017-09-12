@@ -31,6 +31,7 @@ class Test(TestGLM):
         model = ModelPoisReg(fit_intercept=True).fit(X, y)
         model_sparse = ModelPoisReg(fit_intercept=True).fit(X_spars, y)
         self.run_test_for_glm(model, model_sparse, 1e-3, 1e-4)
+        self._test_glm_intercept_vs_hardcoded_intercept(model)
 
         # Then check without intercept
         X, y = SimuPoisReg(w0, None, n_samples=n_samples,
@@ -40,6 +41,7 @@ class Test(TestGLM):
         model = ModelPoisReg(fit_intercept=False).fit(X, y)
         model_sparse = ModelPoisReg(fit_intercept=False).fit(X_spars, y)
         self.run_test_for_glm(model, model_sparse, 1e-3, 1e-4)
+        self._test_glm_intercept_vs_hardcoded_intercept(model)
 
         # Test the self-concordance constant
         n_samples, n_features = 5, 2
