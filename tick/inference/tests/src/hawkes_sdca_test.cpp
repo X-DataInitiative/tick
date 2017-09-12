@@ -92,20 +92,10 @@ TEST_F(HawkesInferenceTest, duality_gap) {
 
   for (int j = 0; j < 100; ++j) {
     hawkes.solve();
-
-    if (j % 5 == 0) {
-      ArrayDouble primal = *hawkes.get_iterate();
-
-//      primal.print();
-
-
-      double objective = hawkes.loss(primal) + 0.5 * l_l2sq * primal.norm_sq();
-      std::cout << "dual \t" << hawkes.dual_objective()
-                << "  \tdual2 \t" << hawkes.dual_objective2()
-                << "  \tprimal\t" << objective << std::endl;
-//      hawkes.dual_objective2();
-//      std::cout << "----------" << std::endl;
-    }
   }
+  ArrayDouble primal = *hawkes.get_iterate();
+  double objective = hawkes.loss(primal) + 0.5 * l_l2sq * primal.norm_sq();
+
+  EXPECT_DOUBLE_EQ(hawkes.current_dual_objective(), objective);
 }
 

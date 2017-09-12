@@ -120,7 +120,7 @@ class HawkesDual(LearnerHawkesNoParam):
         self._model = ModelHawkesFixedExpKernLogLik(self.decay,
                                                     n_threads=self.n_threads)
 
-        self.history.print_order += ["rel_baseline", "rel_adjacency"]
+        self.history.print_order += ["dual_objective", "duality_gap"]
 
     def fit(self, events, end_times=None, baseline_start=None,
             adjacency_start=None):
@@ -191,27 +191,27 @@ class HawkesDual(LearnerHawkesNoParam):
         """
 
         objective = self.objective(self.coeffs)
+        # dual_objective = self._learner.current_dual_objective()
         for i in range(self.max_iter + 1):
             prev_objective = objective
-            prev_baseline = self.baseline.copy()
-            prev_adjacency = self.adjacency.copy()
+            # prev_dual_objective = dual_objective
 
             self._learner.solve()
 
             objective = self.objective(self.coeffs)
+            dual_objective = self._learner.current_dual_objective()
 
             rel_obj = abs(objective - prev_objective) / abs(prev_objective)
-            rel_baseline = relative_distance(self.baseline, prev_baseline)
-            rel_adjacency = relative_distance(self.adjacency, prev_adjacency)
 
             # We perform at least 5 iterations as at start we sometimes reach a
             # low tolerance if inner_tol is too low
-            converged = rel_obj <= self.tol
+            duality_gap = objective - dual_objective
+            converged = np.isfinite(duality_gap) and duality_gap <= self.tol
             force_print = (i == self.max_iter) or converged
 
             self._handle_history(i, obj=objective, rel_obj=rel_obj,
-                                 rel_baseline=rel_baseline,
-                                 rel_adjacency=rel_adjacency,
+                                 dual_objective=dual_objective,
+                                 duality_gap=duality_gap,
                                  force=force_print)
 
             if converged:
