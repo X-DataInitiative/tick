@@ -10,6 +10,7 @@ class ModelHawkesSDCAOneNode : public Model {
   BaseArrayDouble2d features;
   ArrayDouble n_times_psi;
   ulong n_samples;
+  ArrayDouble features_norm_sq;
 
  public:
   ModelHawkesSDCAOneNode(ArrayDouble2d &g_i, ArrayDouble &G_i, ulong n_samples);

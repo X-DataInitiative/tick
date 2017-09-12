@@ -123,9 +123,12 @@ void HawkesSDCALoglikKern::compute_weights_dim_i(const ulong i_r,
 // The main method for performing one iteration
 void HawkesSDCALoglikKern::solve() {
   if (!weights_computed) compute_weights();
-  for (ulong i = 0; i < sdca_list.size(); ++i) {
-    sdca_list[i].solve();
-  }
+  return parallel_run(get_n_threads(), n_nodes,
+                      &HawkesSDCALoglikKern::solve_dim_i, this);
+}
+
+void HawkesSDCALoglikKern::solve_dim_i(const ulong i) {
+  sdca_list[i].solve();
 }
 
 double HawkesSDCALoglikKern::current_dual_objective() {

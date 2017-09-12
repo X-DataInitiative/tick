@@ -58,6 +58,7 @@ class HawkesSDCALoglikKern : public ModelHawkesList {
   void allocate_weights();
   void compute_weights_dim_i(ulong i_r, std::shared_ptr<ArrayDouble2dList1D> G_buffer);
 
+  void solve_dim_i(const ulong i);
   double loss_dim_i(const ulong i, const ArrayDouble &coeffs) const;
   double current_dual_objective_dim_i(const ulong i) const;
 

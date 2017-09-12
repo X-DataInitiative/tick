@@ -11,6 +11,11 @@ ModelHawkesSDCAOneNode::ModelHawkesSDCAOneNode(ArrayDouble2d &g_i, ArrayDouble &
 
   this->features = view(g_i);
   this->n_times_psi = view(G_i);
+  features_norm_sq = ArrayDouble(features.n_rows());
+
+  for (ulong i = 0; i < features_norm_sq.size(); ++i) {
+    features_norm_sq[i] = get_features(i).norm_sq();
+  }
 }
 
 BaseArrayDouble ModelHawkesSDCAOneNode::get_features(const ulong i) const {
@@ -83,7 +88,7 @@ double ModelHawkesSDCAOneNode::sdca_dual_min_i(const ulong i,
                                                double l_l2sq) {
   BaseArrayDouble feature_i = get_features(i);
 
-  double normalized_features_norm = feature_i.norm_sq() / (l_l2sq * get_n_features());
+  double normalized_features_norm = features_norm_sq[i] / (l_l2sq * get_n_features());
   const double primal_dot_features = primal_vector.dot(feature_i);
 
   const double tmp = dual_i * normalized_features_norm - primal_dot_features;
