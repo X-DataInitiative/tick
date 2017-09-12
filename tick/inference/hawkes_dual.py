@@ -194,28 +194,28 @@ class HawkesDual(LearnerHawkesNoParam):
         # dual_objective = self._learner.current_dual_objective()
         for i in range(self.max_iter + 1):
             prev_objective = objective
-            # prev_dual_objective = dual_objective
 
             self._learner.solve()
 
-            objective = self.objective(self.coeffs)
-            dual_objective = self._learner.current_dual_objective()
+            if (i == self.max_iter) or i % self.record_every == 0 or i % self.print_every == 0:
+                objective = self.objective(self.coeffs)
+                dual_objective = self._learner.current_dual_objective()
 
-            rel_obj = abs(objective - prev_objective) / abs(prev_objective)
+                rel_obj = abs(objective - prev_objective) / abs(prev_objective)
 
-            # We perform at least 5 iterations as at start we sometimes reach a
-            # low tolerance if inner_tol is too low
-            duality_gap = objective - dual_objective
-            converged = np.isfinite(duality_gap) and duality_gap <= self.tol
-            force_print = (i == self.max_iter) or converged
+                # We perform at least 5 iterations as at start we sometimes reach a
+                # low tolerance if inner_tol is too low
+                duality_gap = objective - dual_objective
+                converged = np.isfinite(duality_gap) and duality_gap <= self.tol
+                force_print = (i == self.max_iter) or converged
 
-            self._handle_history(i, obj=objective, rel_obj=rel_obj,
-                                 dual_objective=dual_objective,
-                                 duality_gap=duality_gap,
-                                 force=force_print)
+                self._handle_history(i, obj=objective, rel_obj=rel_obj,
+                                     dual_objective=dual_objective,
+                                     duality_gap=duality_gap,
+                                     force=force_print)
 
-            if converged:
-                break
+                if converged:
+                    break
 
     def objective(self, coeffs, loss: float = None):
         """Compute the objective minimized by the learner at `coeffs`
