@@ -12,7 +12,7 @@ def estimation_error(estimated, original):
 
 simulate = False
 
-end_time = 50000
+end_time = 20000
 n_realizations = 5
 decay = 3.
 
@@ -33,12 +33,12 @@ if simulate:
                       for i in range(n_realizations)]
     multi.simulate()
 
-    timestamps = multi.timestamps[-1]
+    timestamps = multi.timestamps
     np.save('timestamps_speedup.npy', timestamps)
 
 else:
     timestamps = np.load('timestamps_speedup.npy')
-    timestamps = [timestamp for timestamp in timestamps]
+    timestamps = [[t for t in timestamp] for timestamp in timestamps]
 
 l_l2sq = 0.1
 
