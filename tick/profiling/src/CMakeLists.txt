@@ -23,3 +23,18 @@ target_link_libraries(tick_profile_hawkes_sdca
         ${TICK_BLAS_LIBRARIES}
         ${TICK_LIB_SIMULATION}
         )
+
+
+add_executable(tick_profile_hawkes_sdca_sum_exp hawkes_sdca_sum_exp.cpp)
+
+target_link_libraries(tick_profile_hawkes_sdca_sum_exp
+        ${TICK_LIB_BASE}
+        ${TICK_LIB_ARRAY}
+        ${TICK_LIB_MODEL}
+        ${TICK_LIB_SOLVER}
+        ${TICK_LIB_PROX}
+        ${TICK_LIB_CRANDOM}
+        ${TICK_LIB_INFERENCE}
+        ${TICK_BLAS_LIBRARIES}
+        ${TICK_LIB_SIMULATION}
+        )

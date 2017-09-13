@@ -46,7 +46,9 @@ int main() {
 
   double l_l2sq = 0.1;
 
-  HawkesSDCALoglikKern hawkes_dual(decay, l_l2sq, 4);
+  ArrayDouble decays {decay};
+
+  HawkesSDCALoglikKern hawkes_dual(decays, l_l2sq, 4);
   hawkes_dual.set_data(timestamps_list, end_times);
   for (int t = 0; t < 50; ++t) {
     hawkes_dual.solve();
