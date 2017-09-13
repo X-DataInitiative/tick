@@ -7,7 +7,7 @@ import numpy as np
 from tick.base import Base
 from tick.optim.prox import ProxZero, ProxL1, ProxL2Sq, ProxElasticNet, \
     ProxTV, ProxBinarsity
-from tick.optim.solver import AGD, GD, BFGS, SGD, SVRG, SDCA
+from tick.optim.solver import AGD, GD, BFGS, SGD, SVRG, SDCA, LBFGSB
 from tick.preprocessing.utils import safe_array
 
 
@@ -124,7 +124,8 @@ class LearnerOptim(ABC, Base):
         'sgd': SGD,
         'svrg': SVRG,
         'bfgs': BFGS,
-        'sdca': SDCA
+        'sdca': SDCA,
+        "l-bfgs-b": LBFGSB,
     }
     _solvers_with_linesearch = ['gd', 'agd']
     _solvers_with_step = ['gd', 'agd', 'svrg', 'sgd']
@@ -213,7 +214,7 @@ class LearnerOptim(ABC, Base):
         allowed_solvers = list(self._solvers.keys())
         allowed_solvers.sort()
         if solver not in self._solvers:
-            raise ValueError("``solver`` must be one of %s, got %s" %
+            raise ValueError("``solver`` must be one of %s, got '%s'" %
                              (', '.join(allowed_solvers), solver))
         else:
             if solver in self._solvers_with_step:

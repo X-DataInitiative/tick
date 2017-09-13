@@ -8,7 +8,7 @@ from tick.base import actual_kwargs
 from tick.inference.base import LearnerOptim
 from tick.optim.model.base import ModelLipschitz
 from tick.optim.prox import ProxElasticNet, ProxL1, ProxL2Sq, ProxPositive
-from tick.optim.solver import AGD, GD, SGD, SVRG, BFGS
+from tick.optim.solver import AGD, GD, SGD, SVRG, BFGS, LBFGSB
 from tick.simulation import SimuHawkes
 
 
@@ -109,6 +109,7 @@ class LearnerHawkesParametric(LearnerOptim):
         "sgd": SGD,
         "svrg": SVRG,
         "bfgs": BFGS,
+        "l-bfgs-b": LBFGSB
     }
 
     _penalties = {

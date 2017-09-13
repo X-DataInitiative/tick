@@ -62,7 +62,7 @@ class HawkesExpKern(LearnerHawkesParametric):
         The penalization to use. Default is ridge penalization.
         If nuclear is chosen, it is applied on the adjacency matrix.
 
-    solver : {'gd', 'agd', 'bfgs', 'svrg'}, default='agd'
+    solver : {'gd', 'agd', 'bfgs', 'svrg', 'l-bgfs-b'}, default='agd'
         The name of the solver to use
 
     step : `float`, default=None
