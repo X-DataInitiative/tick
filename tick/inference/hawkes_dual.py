@@ -27,29 +27,31 @@ class HawkesDual(LearnerHawkesNoParam):
     where
 
     * :math:`D` is the number of nodes
-    * :math:`\mu_i` are the baseline intensities
+    * :math:`\mu_i` is the baseline intensities
     * :math:`\phi_{ij}` are the kernels
     * :math:`t_k^j` are the timestamps of all events of node :math:`j`
 
-    and with an exponential parametrisation of the kernels
+    and with an sum-exponential parametrisation of the kernels
 
     .. math::
-        \phi_{ij}(t) = \\alpha^{ij} \\beta \exp (- \\beta t) 1_{t > 0}
+        \phi_{ij}(t) = \sum_{u=1}^{U} \\alpha^u_{ij} \\beta^u
+                       \exp (- \\beta^u t) 1_{t > 0}
 
     In our implementation we denote:
 
     * Integer :math:`D` by the attribute `n_nodes`
+    * Integer :math:`U` by the attribute `n_decays`
     * Vector :math:`\mu \in \mathbb{R}^{D}` by the attribute
       `baseline`
-    * Matrix :math:`A = (\\alpha^{ij})_{ij} \in \mathbb{R}^{D \\times D}`
-      by the attribute `adjacency`
-    * Number :math:`\\beta \in \mathbb{R}` by the parameter `decay`. This
-      parameter is given to the model
+    * Matrix :math:`A = (\\alpha^u_{ij})_{ij} \in \mathbb{R}^{D \\times D
+      \\times U}` by the attribute `adjacency`
+    * Vector :math:`\\beta \in \mathbb{R}^{U}` by the
+      parameter `decays`. This parameter is given to the model
 
     Parameters
     ----------
-    decay : `float`
-        The decay used in the exponential kernel
+    decays : `np.ndarray` or `float`
+        The decays used in the sum exponential kernel
 
     C : `float`, default=1e3
         Level of penalization
@@ -93,9 +95,8 @@ class HawkesDual(LearnerHawkesNoParam):
 
     _attrinfos = {
         "_learner": {"writable": False},
-        "_model": {"writable": False},
-        "decay": {
-            "cpp_setter": "set_decay"
+        "decays": {
+            "cpp_setter": "set_decays"
         },
         "_C": {"writable": False},
         "baseline": {"writable": False},
@@ -103,22 +104,21 @@ class HawkesDual(LearnerHawkesNoParam):
         "approx": {"writable": False}
     }
 
-    def __init__(self, decay, l_l2sq, max_iter=50, tol=1e-5, n_threads=1,
+    def __init__(self, decays, l_l2sq, max_iter=50, tol=1e-5, n_threads=1,
                  verbose=False, print_every=10, record_every=10):
 
         LearnerHawkesNoParam.__init__(self, verbose=verbose, max_iter=max_iter,
                                       print_every=print_every, tol=tol,
                                       n_threads=n_threads,
                                       record_every=record_every)
-        self.decay = decay
+        if isinstance(decays, list):
+            decays = np.array(decays)
+
+        self.decays = decays
         self.l_l2sq = l_l2sq
         self.verbose = verbose
 
-        self._learner = _HawkesSDCALoglikKern(decay, l_l2sq, n_threads, tol)
-
-        # TODO add approx to model
-        self._model = ModelHawkesFixedExpKernLogLik(self.decay,
-                                                    n_threads=self.n_threads)
+        self._learner = _HawkesSDCALoglikKern(decays, l_l2sq, n_threads, tol)
 
         self.history.print_order += ["dual_objective", "duality_gap"]
 
@@ -156,25 +156,6 @@ class HawkesDual(LearnerHawkesNoParam):
                    adjacency_start=adjacency_start)
         return self
 
-    def _set_data(self, events: list):
-        """Set the corresponding realization(s) of the process.
-
-        Parameters
-        ----------
-        events : `list` of `list` of `np.ndarray`
-            List of Hawkes processes realizations.
-            Each realization of the Hawkes process is a list of n_node for
-            each component of the Hawkes. Namely `events[i][j]` contains a
-            one-dimensional `numpy.array` of the events' timestamps of
-            component j of realization i.
-            If only one realization is given, it will be wrapped into a list
-        """
-        LearnerHawkesNoParam._set_data(self, events)
-
-        events, end_times = self._clean_events_and_endtimes(events)
-
-        self._model.fit(events, end_times=end_times)
-
     def _solve(self, baseline_start=None, adjacency_start=None):
         """Perform one iteration of the algorithm
 
@@ -191,7 +172,6 @@ class HawkesDual(LearnerHawkesNoParam):
         """
 
         objective = self.objective(self.coeffs)
-        # dual_objective = self._learner.current_dual_objective()
         for i in range(self.max_iter + 1):
             prev_objective = objective
 
@@ -203,8 +183,6 @@ class HawkesDual(LearnerHawkesNoParam):
 
                 rel_obj = abs(objective - prev_objective) / abs(prev_objective)
 
-                # We perform at least 5 iterations as at start we sometimes reach a
-                # low tolerance if inner_tol is too low
                 duality_gap = objective - dual_objective
                 converged = np.isfinite(duality_gap) and duality_gap <= self.tol
                 force_print = (i == self.max_iter) or converged
@@ -244,7 +222,7 @@ class HawkesDual(LearnerHawkesNoParam):
         pp = ProxPositive()
         pos_coeffs = pp.call(coeffs) + 1e-10
         if loss is None:
-            loss = self._model.loss(pos_coeffs)
+            loss = self._learner.loss(pos_coeffs)
         prox_l2_value = 0.5 * self.l_l2sq * np.linalg.norm(pos_coeffs) ** 2
 
         return loss + prox_l2_value
@@ -268,7 +246,7 @@ class HawkesDual(LearnerHawkesNoParam):
         """Create simulation object corresponding to the obtained coefficients
         """
         return SimuHawkesExpKernels(adjacency=self.adjacency,
-                                    decays=self.decay,
+                                    decays=self.decays,
                                     baseline=self.baseline)
 
     @property
@@ -286,11 +264,16 @@ class HawkesDual(LearnerHawkesNoParam):
                              'baseline')
         else:
             return self.coeffs[self.n_nodes:].reshape((self.n_nodes,
-                                                       self.n_nodes))
+                                                       self.n_nodes,
+                                                       self.n_decays))
 
     @property
     def n_nodes(self):
-        return self._model.n_nodes
+        return self._learner.get_n_nodes()
+
+    @property
+    def n_decays(self):
+        return len(self.decays)
 
     def get_kernel_supports(self):
         """Computes kernel support. This makes our learner compliant with

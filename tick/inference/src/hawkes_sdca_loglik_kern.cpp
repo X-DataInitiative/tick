@@ -4,25 +4,20 @@
 #include "hawkes_fixed_expkern_loglik.h"
 #include "hawkes_sdca_loglik_kern.h"
 
-HawkesSDCALoglikKern::HawkesSDCALoglikKern(double decay, double l_l2sq,
-                                           int max_n_threads, double tol,
-                                           RandType rand_type, int seed)
-  : ModelHawkesList(max_n_threads, optimization_level),
-    weights_allocated(false), l_l2sq(l_l2sq), tol(tol), rand_type(rand_type), seed(seed) {
-  // decays.size() = 0 means we are using exponential kernels
-  decays = ArrayDouble(0);
-  this->decay = decay;
-  set_decay(decay);
-}
-
 HawkesSDCALoglikKern::HawkesSDCALoglikKern(const ArrayDouble &decays, double l_l2sq,
                                            int max_n_threads, double tol,
                                            RandType rand_type, int seed)
   : ModelHawkesList(max_n_threads, optimization_level),
     weights_allocated(false), l_l2sq(l_l2sq), tol(tol), rand_type(rand_type), seed(seed) {
-  // decay = -1 means we are using sum exponential kernels
-  decay = -1;
-  this->decays = decays;
+  set_decays(decays);
+}
+
+HawkesSDCALoglikKern::HawkesSDCALoglikKern(const double decay, double l_l2sq,
+                                           int max_n_threads, double tol,
+                                           RandType rand_type, int seed)
+  : ModelHawkesList(max_n_threads, optimization_level),
+    weights_allocated(false), l_l2sq(l_l2sq), tol(tol), rand_type(rand_type), seed(seed) {
+  ArrayDouble decays {decay};
   set_decays(decays);
 }
 
@@ -56,13 +51,8 @@ void HawkesSDCALoglikKern::compute_weights() {
     G[i].init_to_zero();
   }
 
-  if (use_sumexp_kernel()) {
-    parallel_run(get_n_threads(), n_nodes * n_realizations,
-                 &HawkesSDCALoglikKern::compute_weights_dim_i2, this, G_buffer);
-  } else {
-    parallel_run(get_n_threads(), n_nodes * n_realizations,
-                 &HawkesSDCALoglikKern::compute_weights_dim_i, this, G_buffer);
-  }
+  parallel_run(get_n_threads(), n_nodes * n_realizations,
+               &HawkesSDCALoglikKern::compute_weights_dim_i, this, G_buffer);
 
   for (ulong i = 0; i < n_nodes; ++i) {
     for (ulong r = 0; r < n_realizations; ++r) {
@@ -92,56 +82,6 @@ void HawkesSDCALoglikKern::synchronize_sdca() {
 }
 
 void HawkesSDCALoglikKern::compute_weights_dim_i(const ulong i_r,
-                                                 std::shared_ptr<ArrayDouble2dList1D> G_buffer) {
-  const auto r = static_cast<const ulong>(i_r / n_nodes);
-  const ulong i = i_r % n_nodes;
-
-  const ArrayDouble t_i = view(*timestamps_list[r][i]);
-  ArrayDouble2d g_i = view(g[i]);
-  ArrayDouble G_i_r = view_row((*G_buffer)[i], r);
-
-  const double end_time = (*end_times)[r];
-  const ulong n_jumps_i = t_i.size();
-  ulong start_row = 0;
-  for (ulong smaller_r = 0; smaller_r < r; ++smaller_r) {
-    start_row += timestamps_list[smaller_r][i]->size();
-  }
-
-  for (ulong j = 0; j < n_nodes; j++) {
-    const ulong col_j = 1 + j;
-    const ArrayDouble t_j = view(*timestamps_list[r][j]);
-    ulong ij = 0;
-    for (ulong k = 0; k < n_jumps_i + 1; k++) {
-      const ulong row_k = start_row + k;
-
-      const double t_i_k = k < n_jumps_i ? t_i[k] : end_time;
-      if (k > 0) {
-        const double ebt = std::exp(-decay * (t_i_k - t_i[k - 1]));
-        if (k < n_jumps_i) {
-          g_i(row_k, col_j) = g_i(row_k - 1, col_j) * ebt;
-        }
-        G_i_r[col_j] += g_i(row_k - 1, col_j) * (1 - ebt) / decay;
-      } else {
-        g_i(row_k, col_j) = 0;
-        G_i_r[col_j] = 0;
-      }
-
-      while ((ij < t_j.size()) && (t_j[ij] < t_i_k)) {
-        const double ebt = std::exp(-decay * (t_i_k - t_j[ij]));
-        if (k < n_jumps_i) g_i(row_k, col_j) += decay * ebt;
-        G_i_r[col_j] += 1 - ebt;
-        ij++;
-      }
-      // fill mu part
-      if (k < n_jumps_i) g_i(row_k, 0) = 1.;
-    }
-  }
-  G_i_r[0] = end_time;
-}
-
-
-
-void HawkesSDCALoglikKern::compute_weights_dim_i2(const ulong i_r,
                                                  std::shared_ptr<ArrayDouble2dList1D> G_buffer) {
   const auto r = static_cast<const ulong>(i_r / n_nodes);
   const ulong i = i_r % n_nodes;
@@ -208,10 +148,12 @@ void HawkesSDCALoglikKern::solve_dim_i(const ulong i) {
 }
 
 double HawkesSDCALoglikKern::current_dual_objective() {
+  if (!weights_computed) compute_weights();
   return parallel_map_additive_reduce(get_n_threads(), n_nodes,
                                       &HawkesSDCALoglikKern::current_dual_objective_dim_i, this);
 }
 double HawkesSDCALoglikKern::loss(const ArrayDouble &coeffs) {
+  if (!weights_computed) compute_weights();
   return parallel_map_additive_reduce(get_n_threads(), n_nodes,
                                       &HawkesSDCALoglikKern::loss_dim_i, this,
                                       coeffs);
@@ -236,38 +178,14 @@ double HawkesSDCALoglikKern::loss_dim_i(const ulong i, const ArrayDouble &coeffs
   return model_ptr->loss(local_coeffs);
 }
 
-bool HawkesSDCALoglikKern::use_sumexp_kernel() const {
-  if (decay == -1 && decays.size() > 0)
-    return true;
-  if (decay > 0 && decays.size() == 0)
-    return false;
-  TICK_ERROR("Cannot identify decay type, decay=" << decay << " and decays=" << decays);
-}
-
-double HawkesSDCALoglikKern::get_decay() const {
-  if (use_sumexp_kernel()) TICK_ERROR("For sum exponential kernels decays use get_decays")
-  return decay;
-}
-
-void HawkesSDCALoglikKern::set_decay(const double decay) {
-  if (use_sumexp_kernel()) TICK_ERROR("For sum exponential kernels decays use set_decays")
-  if (decay <= 0) {
-    TICK_ERROR("decay must be positive, received " << decay);
-  }
-  this->decay = decay;
-  weights_computed = false;
-}
-
 SArrayDoublePtr HawkesSDCALoglikKern::get_decays() const {
-  if (!use_sumexp_kernel()) TICK_ERROR("For single exponential kernels decays use get_decay")
   ArrayDouble copy = decays;
   return copy.as_sarray_ptr();
 }
 
 void HawkesSDCALoglikKern::set_decays(const ArrayDouble &decays) {
-  if (!use_sumexp_kernel()) TICK_ERROR("For single exponential kernels decays use set_decay")
   if (decays.min() <= 0) {
-    TICK_ERROR("all decays must be positive, received " << decay);
+    TICK_ERROR("all decays must be positive, received " << decays);
   }
   this->decays = decays;
   weights_computed = false;
