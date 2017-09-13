@@ -24,7 +24,7 @@ class Test(unittest.TestCase):
         self.decays = 3.
 
     @staticmethod
-    def get_train_data(n_nodes=3, decay=1.):
+    def get_train_data(n_nodes=3, decay=1., hawkes_seed=13487):
         np.random.seed(130947)
         baseline = np.random.rand(n_nodes) / 4
         adjacency = np.random.rand(n_nodes, n_nodes)
@@ -33,7 +33,7 @@ class Test(unittest.TestCase):
 
         sim = SimuHawkesExpKernels(adjacency=adjacency, decays=decay,
                                    baseline=baseline, verbose=False,
-                                   seed=13487, end_time=3000)
+                                   seed=hawkes_seed, end_time=3000)
         sim.adjust_spectral_radius(0.8)
         adjacency = sim.adjacency
         sim.simulate()
@@ -55,6 +55,23 @@ class Test(unittest.TestCase):
         hawkes = HawkesDual(decay, l_l2sq, max_iter=150)
 
         hawkes.fit(timestamps)
+
+        self.assertLess(Test.estimation_error(hawkes.baseline, baseline), 0.1)
+        self.assertLess(Test.estimation_error(hawkes.adjacency, adjacency), 0.1)
+
+    def test_hawkes_dual_solution_list_realization(self):
+        n_nodes = 3
+        decay = 2.4
+        timestamps, baseline, adjacency = Test.get_train_data(n_nodes=n_nodes,
+                                                              decay=decay)
+        timestamps_2, _, _ = Test.get_train_data(n_nodes=n_nodes, decay=decay,
+                                                 hawkes_seed=2039)
+        timestamps_list = [timestamps, timestamps_2]
+
+        l_l2sq = 0.1
+        hawkes = HawkesDual(decay, l_l2sq, max_iter=150)
+
+        hawkes.fit(timestamps_list)
 
         self.assertLess(Test.estimation_error(hawkes.baseline, baseline), 0.1)
         self.assertLess(Test.estimation_error(hawkes.adjacency, adjacency), 0.1)

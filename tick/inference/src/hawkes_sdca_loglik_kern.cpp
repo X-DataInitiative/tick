@@ -85,7 +85,7 @@ void HawkesSDCALoglikKern::compute_weights_dim_i(const ulong i_r,
   const ulong n_jumps_i = t_i.size();
   ulong start_row = 0;
   for (ulong smaller_r = 0; smaller_r < r; ++smaller_r) {
-    start_row += timestamps_list[r][i]->size();
+    start_row += timestamps_list[smaller_r][i]->size();
   }
 
   for (ulong j = 0; j < n_nodes; j++) {

@@ -153,7 +153,8 @@ class Array2d : public BaseArray2d<T> {
         const ulong idx = i * this->n_cols() + j;
 
 //        #ifdef DEBUG_COSTLY_THROW
-            if (i >= this->n_rows() || j >= this->n_cols()) TICK_BAD_INDEX(0, _size, idx);
+            if (i >= this->n_rows()) TICK_BAD_INDEX(0, this->n_rows(), i);
+            if (j >= this->n_cols()) TICK_BAD_INDEX(0, this->n_cols(), j);
 //        #endif
 
         return _data[idx];

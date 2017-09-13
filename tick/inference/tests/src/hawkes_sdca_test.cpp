@@ -23,7 +23,7 @@ class HawkesInferenceTest : public ::testing::Test {
     timestamps.push_back(timestamps_1.as_sarray_ptr());
 
     auto timestamps_add = SArrayDoublePtrList1D(0);
-    ArrayDouble timestamps_2= ArrayDouble {0.21, 0.43, 1.21, 1.35, 2.25};
+    ArrayDouble timestamps_2= ArrayDouble {0.21, 0.43, 1.21, 1.35, 2.25, 3.2};
     timestamps_add.push_back(timestamps_2.as_sarray_ptr());
     ArrayDouble timestamps_3 = ArrayDouble {0.93, 1.83, 2.33, 2.41, 3.35, 5.71};
     timestamps_add.push_back(timestamps_3.as_sarray_ptr());
