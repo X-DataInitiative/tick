@@ -2,8 +2,9 @@
 #define DEBUG_COSTLY_THROW 1
 
 #include <gtest/gtest.h>
-#include <variants/hawkes_fixed_expkern_leastsq_list.h>
-#include <variants/hawkes_fixed_expkern_loglik_list.h>
+#include "variants/hawkes_fixed_expkern_leastsq_list.h"
+#include "variants/hawkes_fixed_expkern_loglik_list.h"
+#include "variants/hawkes_fixed_sumexpkern_loglik_list.h"
 #include "hawkes_sdca_loglik_kern.h"
 
 
@@ -99,3 +100,32 @@ TEST_F(HawkesInferenceTest, duality_gap) {
   EXPECT_DOUBLE_EQ(hawkes.current_dual_objective(), objective);
 }
 
+TEST_F(HawkesInferenceTest, loss_fake_sum_exp_kernel) {
+  const ArrayDouble decays {3.};
+  const double l_l2sq = 0.7;
+
+  HawkesSDCALoglikKern hawkes(decays, l_l2sq);
+  hawkes.set_data(timestamps_list, end_times);
+  hawkes.solve();
+
+  ModelHawkesFixedSumExpKernLogLikList hawkes_model(decays);
+  hawkes_model.set_data(timestamps_list, end_times);
+
+  ArrayDouble coeffs {1., 0.1, 0.7, 1.2, 2., 0.8};
+  EXPECT_DOUBLE_EQ(hawkes.loss(coeffs), hawkes_model.loss(coeffs));
+}
+
+TEST_F(HawkesInferenceTest, loss_sum_exp_kernel) {
+  const ArrayDouble decays {3., 4., 6.};
+  const double l_l2sq = 0.7;
+
+  HawkesSDCALoglikKern hawkes(decays, l_l2sq);
+  hawkes.set_data(timestamps_list, end_times);
+  hawkes.solve();
+
+  ModelHawkesFixedSumExpKernLogLikList hawkes_model(decays);
+  hawkes_model.set_data(timestamps_list, end_times);
+
+  ArrayDouble coeffs {1., 0.1, 0.7, 1.2, 2., 0.8, 0.3, 0.8, 0.5, 0., 0.9, 1.3, 3.2, 2.1};
+  EXPECT_DOUBLE_EQ(hawkes.loss(coeffs), hawkes_model.loss(coeffs));
+}
