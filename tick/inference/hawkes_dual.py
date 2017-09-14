@@ -4,11 +4,7 @@ import numpy as np
 from tick.optim.prox import ProxPositive
 
 from tick.inference.base import LearnerHawkesNoParam
-from tick.optim.model import ModelHawkesFixedExpKernLogLik
-from tick.optim.prox.prox_l1 import ProxL1
-from tick.optim.prox.prox_nuclear import ProxNuclear
-from tick.optim.solver.base.utils import relative_distance
-from tick.simulation import SimuHawkesExpKernels
+from tick.simulation import SimuHawkesSumExpKernels
 from .build.inference import HawkesSDCALoglikKern as _HawkesSDCALoglikKern
 
 
@@ -245,9 +241,9 @@ class HawkesDual(LearnerHawkesNoParam):
     def _corresponding_simu(self):
         """Create simulation object corresponding to the obtained coefficients
         """
-        return SimuHawkesExpKernels(adjacency=self.adjacency,
-                                    decays=self.decays,
-                                    baseline=self.baseline)
+        return SimuHawkesSumExpKernels(adjacency=self.adjacency,
+                                       decays=self.decays,
+                                       baseline=self.baseline)
 
     @property
     def baseline(self):

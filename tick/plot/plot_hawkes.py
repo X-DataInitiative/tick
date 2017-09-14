@@ -8,7 +8,7 @@ from tick.plot.plot_utilities import share_x, share_y
 
 
 def plot_hawkes_kernel_norms(kernel_object, show=True, pcolor_kwargs=None,
-                             node_names=None):
+                             node_names=None, ax=None):
     """Generic function to plot Hawkes kernel norms.
 
     Parameters
@@ -33,6 +33,10 @@ def plot_hawkes_kernel_norms(kernel_object, show=True, pcolor_kwargs=None,
         node names that will be displayed on axis.
         If `None`, node index will be used.
 
+    ax : `np.ndarray` of `matplotlib.axes`, default=None
+        If not None, the figure will be plot on these axes and show will be
+        set to False.
+
     Notes
     -----
     Kernels are displayed such that it shows norm of column influence's
@@ -50,7 +54,13 @@ def plot_hawkes_kernel_norms(kernel_object, show=True, pcolor_kwargs=None,
     column_labels = ['$\\rightarrow {}$'.format(i) for i in node_names]
 
     norms = kernel_object.get_kernel_norms()
-    fig, ax = plt.subplots()
+
+    if ax is None:
+        fig, ax = plt.subplots()
+    else:
+        ax = ax
+        fig = ax.get_figure()
+        show = False
 
     if pcolor_kwargs is None:
         pcolor_kwargs = {}
