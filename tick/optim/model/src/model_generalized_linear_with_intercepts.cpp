@@ -16,13 +16,11 @@ const char *ModelGeneralizedLinearWithIntercepts::get_class_name() const {
 double ModelGeneralizedLinearWithIntercepts::get_inner_prod(const ulong i,
                                                             const ArrayDouble &coeffs) const {
   const BaseArrayDouble x_i = get_features(i);
-  const ArrayDouble coeffs_no_interc = view(coeffs, 0, n_features);
-  const ArrayDouble coeffs_interc = view(coeffs, n_features, n_samples + n_features);
-
+  const ArrayDouble weights = view(coeffs, 0, n_features);
   if (fit_intercept) {
-    return x_i.dot(coeffs_no_interc) + coeffs_interc[i] + coeffs[coeffs.size() - 1];
+    return x_i.dot(weights) + coeffs[n_features] + coeffs[n_features + 1 + i];
   } else {
-    return x_i.dot(coeffs_no_interc) + coeffs_interc[i];
+    return x_i.dot(weights) + coeffs[n_features + i];
   }
 }
 
@@ -30,23 +28,29 @@ void ModelGeneralizedLinearWithIntercepts::compute_grad_i(const ulong i, const A
                                                           ArrayDouble &out, const bool fill) {
   const BaseArrayDouble x_i = get_features(i);
   const double alpha_i = grad_i_factor(i, coeffs);
-  ArrayDouble out_no_interc = view(out, 0, n_features);
-  ArrayDouble out_interc = view(out, n_features, n_samples + n_features);
+  ArrayDouble out_weights = view(out, 0, n_features);
 
-  if (fill) {
-    out_no_interc.mult_fill(x_i, alpha_i);
-    out_interc.fill(0);
-    out_interc[i] = alpha_i;
-    if (fit_intercept) {
-      out[coeffs.size() - 1] = alpha_i;
+  if (fit_intercept) {
+    ArrayDouble out_intercepts = view(out, n_features + 1, n_samples + n_features + 1);
+    if (fill) {
+      out_weights.mult_fill(x_i, alpha_i);
+      out_intercepts.fill(0);
+      out_intercepts[i] = alpha_i;
+      out[n_features] = alpha_i;
+    } else {
+      out_weights.mult_incr(x_i, alpha_i);
+      out_intercepts[i] += alpha_i;
+      out[n_features] += alpha_i;
     }
   } else {
-    out_no_interc.mult_incr(x_i, alpha_i);
-    out_interc[i] = alpha_i;
-    if (fit_intercept) {
-      // Partial derivative wrt to the ith individual intercept... really,
-      // it's not a += but a = :)))
-      out[coeffs.size() - 1] = alpha_i;
+    ArrayDouble out_intercepts = view(out, n_features, n_samples + n_features);
+    if (fill) {
+      out_weights.mult_fill(x_i, alpha_i);
+      out_intercepts.fill(0);
+      out_intercepts[i] = alpha_i;
+    } else {
+      out_weights.mult_incr(x_i, alpha_i);
+      out_intercepts[i] += alpha_i;
     }
   }
 }
@@ -56,8 +60,10 @@ void ModelGeneralizedLinearWithIntercepts::grad(const ArrayDouble &coeffs,
   out.fill(0.0);
   parallel_map_array<ArrayDouble>(n_threads,
                                   n_samples,
-                                  [](ArrayDouble &r, const ArrayDouble &s) { r.mult_incr(s,
-                                                                                         1.0); },
+                                  [](ArrayDouble &r, const ArrayDouble &s) {
+                                    r.mult_incr(s,
+                                                1.0);
+                                  },
                                   &ModelGeneralizedLinearWithIntercepts::inc_grad_i,
                                   this,
                                   out,

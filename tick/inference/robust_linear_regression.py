@@ -113,7 +113,7 @@ class RobustLinearRegression(LearnerRobustGLM):
     def __init__(self, C_sample_intercepts, C=1e3, fdr=0.05,
                  penalty='l2', fit_intercept=True, refit=False,
                  solver='agd', warm_start=False, step=None,
-                 tol=1e-5, max_iter=100,
+                 tol=1e-7, max_iter=200,
                  verbose=True, print_every=10,
                  record_every=10,
                  elastic_net_ratio=0.95, slope_fdr=0.05):

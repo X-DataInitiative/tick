@@ -1,9 +1,7 @@
 # License: BSD 3 clause
 
 import unittest
-
 import itertools
-from itertools import product
 import numpy as np
 
 from tick.inference.tests.inference import InferenceTest
@@ -13,10 +11,10 @@ from tick.metrics import support_fdp, support_recall
 
 
 class Test(InferenceTest):
-    n_samples = 1000
+    n_samples = 300
     n_features = 5
     noise_level = 1.
-    nnz_outliers = 50
+    nnz_outliers = 10
     outliers_intensity = 5.
     interc0 = -3.
     target_fdr = 0.2
@@ -30,7 +28,7 @@ class Test(InferenceTest):
 
     @staticmethod
     def get_train_data(fit_intercept=True):
-        np.random.seed(1)
+        np.random.seed(12)
         n_samples = Test.n_samples
         n_features = Test.n_features
         noise_level = Test.noise_level
@@ -51,7 +49,6 @@ class Test(InferenceTest):
               * np.sign(sample_intercepts0[sample_intercepts0 != 0])
 
         X = features_normal_cov_toeplitz(n_samples, n_features, 0.5)
-        X /= np.linalg.norm(X, axis=0)
         y = X.dot(weights0) + noise_level * np.random.randn(n_samples) + interc0
         y += sample_intercepts0
         return X, y, weights0, interc0, sample_intercepts0
@@ -60,53 +57,48 @@ class Test(InferenceTest):
         """...Test RobustLinearRegression fit with different solvers and penalties
         """
         X, y, weights0, interc0, sample_intercepts0 = self.get_train_data(True)
-        for i, (solver, penalty) \
-                in enumerate(product(RobustLinearRegression._solvers.keys(),
-                                     RobustLinearRegression._penalties.keys())):
+
+        solvers = RobustLinearRegression._solvers.keys()
+        for i, solver in enumerate(solvers):
             learner_keywords = {
                 'C_sample_intercepts': Test.n_samples / Test.noise_level,
                 'fit_intercept': True, 'fdr': Test.target_fdr,
-                'max_iter': 100, 'tol': 1e-10, 'solver': solver,
-                'penalty': penalty, 'verbose': False
+                'max_iter': 3000, 'tol': 1e-7, 'solver': solver,
+                'penalty': 'none', 'verbose': False
             }
-            if penalty != 'none':
-                learner_keywords['C'] = 1e8
+
             learner = RobustLinearRegression(**learner_keywords)
             learner.fit(X, y)
 
-            weights = [1.70872603, 1.68487097, 1.92782337, 2.55855144,
-                       3.5299368]
-            interc = -2.77864308544
-            fdp_ = 0.206349206349
+            weights = [1.82145051, 2.32011366, 2.6886905, 2.53289584,
+                       2.86991904]
+            interc = -2.9877245464563931
+            fdp_ = 0.23076923076923078
             power = 1.0
 
             np.testing.assert_array_almost_equal(weights, learner.weights, 2)
-            self.assertAlmostEqual(interc, learner.intercept, 3)
+            self.assertAlmostEqual(interc, learner.intercept, 2)
             self.assertAlmostEqual(fdp_, support_fdp(sample_intercepts0,
-                                                     learner.sample_intercepts), 4)
+                                                     learner.sample_intercepts),
+                                   4)
             self.assertAlmostEqual(power,
                                    support_recall(sample_intercepts0,
                                                   learner.sample_intercepts), 4)
 
         X, y, weights0, interc0, sample_intercepts0 = self.get_train_data(False)
-        for i, (solver, penalty) \
-                in enumerate(product(RobustLinearRegression._solvers.keys(),
-                                     RobustLinearRegression._penalties.keys())):
+        for i, solver in enumerate(solvers):
             learner_keywords = {
                 'C_sample_intercepts': Test.n_samples / Test.noise_level,
                 'fit_intercept': False, 'fdr': Test.target_fdr,
-                'max_iter': 100, 'tol': 1e-10, 'solver': solver,
-                'penalty': penalty, 'verbose': False
+                'max_iter': 3000, 'tol': 1e-7, 'solver': solver,
+                'verbose': False
             }
-            if penalty != 'none':
-                learner_keywords['C'] = 1e8
             learner = RobustLinearRegression(**learner_keywords)
             learner.fit(X, y)
-
-            weights = [1.77602648, 1.26673796, 1.86777581, 2.60107128,
-                       3.35693589]
+            weights = [1.82341444, 2.3226882, 2.68081823, 2.53942366,
+                       2.86439685]
             interc = None
-            fdp_ = 0.180327868852
+            fdp_ = 0.23076923076923078
             power = 1.0
 
             np.testing.assert_array_almost_equal(weights, learner.weights,
@@ -481,6 +473,7 @@ class Test(InferenceTest):
         np.testing.assert_array_equal(self.X,
                                       RobustLinearRegression._safe_array(
                                           self.X))
+
 
 if __name__ == "__main__":
     unittest.main()

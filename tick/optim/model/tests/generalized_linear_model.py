@@ -19,7 +19,7 @@ class TestGLM(unittest.TestCase):
                                           coeffs),
                                0.,
                                delta=delta_check_grad)
-        # Check that minimum iss achievable with a small gradient
+        # Check that minimum is achievable with a small gradient
         coeffs_min = fmin_bfgs(model.loss, coeffs,
                                fprime=model.grad, disp=False)
         self.assertAlmostEqual(norm(model.grad(coeffs_min)),
@@ -28,10 +28,7 @@ class TestGLM(unittest.TestCase):
     def run_test_for_glm(self, model, model_spars=None,
                          delta_check_grad=1e-5,
                          delta_model_grad=1e-4):
-        """A generic test for generalized linear models (called by others)
-        """
         coeffs = np.random.randn(model.n_coeffs)
-
         # dense case
         self._test_grad(model, coeffs,
                         delta_check_grad=delta_check_grad,
@@ -41,7 +38,6 @@ class TestGLM(unittest.TestCase):
             self._test_grad(model_spars, coeffs,
                             delta_check_grad=delta_check_grad,
                             delta_model_grad=delta_model_grad)
-
             # Check that loss computed in the dense and sparse case are
             # the same
             self.assertAlmostEqual(model.loss(coeffs),
@@ -51,3 +47,24 @@ class TestGLM(unittest.TestCase):
             np.testing.assert_almost_equal(model.grad(coeffs),
                                            model_spars.grad(coeffs),
                                            decimal=10)
+
+    def _test_glm_intercept_vs_hardcoded_intercept(self, model):
+        # If the model has an intercept (ModelCoxReg does not for instance)
+        if hasattr(model, 'fit_intercept'):
+            # For the model with intercept only, test that
+            if model.fit_intercept:
+                X = model.features
+                y = model.labels
+                coeffs = np.random.randn(model.n_coeffs)
+                grad1 = model.grad(coeffs)
+
+                X_with_ones = np.hstack((X, np.ones((model.n_samples, 1))))
+                model.fit_intercept = False
+                model.fit(X_with_ones, y)
+                grad2 = model.grad(coeffs)
+
+                np.testing.assert_almost_equal(grad1, grad2, decimal=10)
+
+                # Put back model to its previous status
+                model.fit_intercept = True
+                model.fit(X, y)

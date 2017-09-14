@@ -205,8 +205,11 @@ class LearnerRobustGLM(LearnerGLM):
             self.step = 1. / model_obj.get_lip_best()
 
         # Range of the sample intercepts prox is always the same
-        prox_intercepts_obj.range = (n_features, n_features + n_samples)
-
+        if fit_intercept:
+            prox_intercepts_obj.range = (n_features + 1,
+                                         n_features + n_samples + 1)
+        else:
+            prox_intercepts_obj.range = (n_features, n_features + n_samples)
         prox_obj.range = (0, n_features)
 
         if self.penalty == 'none':
@@ -234,13 +237,14 @@ class LearnerRobustGLM(LearnerGLM):
 
         self._set("coeffs", coeffs)
         self._set("weights", coeffs[:n_features])
-        self._set("sample_intercepts",
-                  coeffs[n_features:(n_features + n_samples)])
         if fit_intercept:
-            self._set("intercept", coeffs[-1])
+            self._set("intercept", coeffs[n_features])
+            self._set("sample_intercepts",
+                      coeffs[(n_features + 1):(n_features + n_samples + 1)])
         else:
             self._set("intercept", None)
-
+            self._set("sample_intercepts",
+                      coeffs[n_features:(n_features + n_samples)])
         self._set("_fitted", True)
         return self
 
