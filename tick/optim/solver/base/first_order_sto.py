@@ -149,6 +149,9 @@ class SolverFirstOrderSto(SolverFirstOrder, SolverSto):
         if self._solver is not None:
             self._solver.set_step(val)
 
+    def extra_history(self, minimizer):
+        return {}
+
     def _solve(self, x0: np.array = None, step: float = None):
         """
         Launch the solver
@@ -198,9 +201,10 @@ class SolverFirstOrderSto(SolverFirstOrder, SolverSto):
             converged = rel_obj < self.tol
             # If converged, we stop the loop and record the last step
             # in history
+            extra_history = self.extra_history(minimizer)
             self._handle_history(n_iter, force=converged, obj=obj,
                                  x=minimizer.copy(), rel_delta=rel_delta,
-                                 rel_obj=rel_obj)
+                                 rel_obj=rel_obj, **extra_history)
             if converged:
                 break
         self._set("solution", minimizer)

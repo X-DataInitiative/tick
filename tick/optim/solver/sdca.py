@@ -170,6 +170,17 @@ class SDCA(SolverFirstOrderSto):
         self._solver = _SDCA(self.l_l2sq, epoch_size,
                              self.tol, self._rand_type, self.seed)
 
+        self.history.print_order.append('dual_objective')
+
+    def extra_history(self, minimizer):
+        try:
+            dual = self.dual_objective(self._solver.get_dual_vector())
+        except:
+            dual = np.nan
+        return {
+            'dual_objective': dual
+        }
+
     def objective(self, coeffs, loss: float = None):
         """Compute the objective minimized by the solver at ``coeffs``
 
