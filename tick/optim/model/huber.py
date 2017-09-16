@@ -3,16 +3,16 @@
 import numpy as np
 from numpy.linalg import svd
 from .base import ModelGeneralizedLinear, ModelFirstOrder, ModelLipschitz
-from .build.model import ModelLinReg as _ModelLinReg
-
+from .build.model import ModelHuber as _ModelHuber
 
 __author__ = 'Stephane Gaiffas'
 
 
-class ModelLinReg(ModelFirstOrder,
-                  ModelGeneralizedLinear,
-                  ModelLipschitz):
-    """Least-squares loss for linear regression. This class gives first
+class ModelHuber(ModelFirstOrder,
+                 ModelGeneralizedLinear,
+                 ModelLipschitz):
+    """Huber loss for robust regression. This model is particularly relevant
+    to deal with datasets with outliers. The class gives first
     order information (gradient and loss) for this model and can be passed
     to any solver through the solver's ``set_model`` method.
 
@@ -28,9 +28,14 @@ class ModelLinReg(ModelFirstOrder,
     :math:`\\ell : \\mathbb R^2 \\rightarrow \\mathbb R` is the loss given by
 
     .. math::
-        \\ell(y, y') = \\frac 12 (y - y')^2
+        \\ell(y, y') =
+        \\begin{cases}
+        \\frac 12 (y' - y)^2 &\\text{ if } |y' - y| \\leq \\delta \\\\
+        \\delta (|y' - y| - \\frac 12 \\delta) &\\text{ if } |y' - y| > \\delta
+        \\end{cases}
 
-    for :math:`y, y' \in \mathbb R`. Data is passed to this model through the
+    for :math:`y, y' \\in \\mathbb R`, where :math:`\\delta > 0` can be tuned
+    using the ``threshold`` argument. Data is passed to this model through the
     ``fit(X, y)`` method where X is the features matrix (dense or sparse) and
     y is the vector of labels.
 
@@ -38,6 +43,9 @@ class ModelLinReg(ModelFirstOrder,
     ----------
     fit_intercept : `bool`
         If `True`, the model uses an intercept
+
+    threshold : `float`, default=1.
+        Positive threshold of the loss, see above for details.
 
     Attributes
     ----------
@@ -64,14 +72,22 @@ class ModelLinReg(ModelFirstOrder,
         * otherwise the desired number of threads
     """
 
-    def __init__(self, fit_intercept: bool = True, n_threads: int = 1):
+    _attrinfos = {
+        "threshold": {
+            "writable": True,
+            "cpp_setter": "set_threshold"
+        }
+    }
+
+    def __init__(self, fit_intercept: bool = True, threshold: float = 1,
+                 n_threads: int = 1):
         ModelFirstOrder.__init__(self)
         ModelGeneralizedLinear.__init__(self, fit_intercept)
         ModelLipschitz.__init__(self)
         self.n_threads = n_threads
+        self.threshold = threshold
 
-        # TODO: implement _set_data and not fit
-
+    # TODO: implement _set_data and not fit
     def fit(self, features, labels):
         """Set the data into the model object
 
@@ -85,16 +101,17 @@ class ModelLinReg(ModelFirstOrder,
 
         Returns
         -------
-        output : `ModelLinReg`
+        output : `ModelHuber`
             The current instance with given data
         """
         ModelFirstOrder.fit(self, features, labels)
         ModelGeneralizedLinear.fit(self, features, labels)
         ModelLipschitz.fit(self, features, labels)
-        self._set("_model", _ModelLinReg(self.features,
-                                         self.labels,
-                                         self.fit_intercept,
-                                         self.n_threads))
+        self._set("_model", _ModelHuber(self.features,
+                                        self.labels,
+                                        self.fit_intercept,
+                                        self.threshold,
+                                        self.n_threads))
         return self
 
     def _grad(self, coeffs: np.ndarray, out: np.ndarray) -> None:

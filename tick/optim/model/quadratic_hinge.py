@@ -3,20 +3,19 @@
 import numpy as np
 from numpy.linalg import svd
 from .base import ModelGeneralizedLinear, ModelFirstOrder, ModelLipschitz
-from .build.model import ModelLinReg as _ModelLinReg
-
+from .build.model import ModelQuadraticHinge as _ModelModelQuadraticHinge
 
 __author__ = 'Stephane Gaiffas'
 
 
-class ModelLinReg(ModelFirstOrder,
-                  ModelGeneralizedLinear,
-                  ModelLipschitz):
-    """Least-squares loss for linear regression. This class gives first
-    order information (gradient and loss) for this model and can be passed
+class ModelQuadraticHinge(ModelFirstOrder,
+                          ModelGeneralizedLinear,
+                          ModelLipschitz):
+    """Quadratic hinge loss model for binary classification. This class gives
+    first order information (gradient and loss) for this model and can be passed
     to any solver through the solver's ``set_model`` method.
 
-    Given training data :math:`(x_i, y_i) \\in \\mathbb R^d \\times \\mathbb R`
+    Given training data :math:`(x_i, y_i) \\in \\mathbb R^d \\times \\{ -1, 1 \\}`
     for :math:`i=1, \\ldots, n`, this model considers a goodness-of-fit
 
     .. math::
@@ -28,11 +27,15 @@ class ModelLinReg(ModelFirstOrder,
     :math:`\\ell : \\mathbb R^2 \\rightarrow \\mathbb R` is the loss given by
 
     .. math::
-        \\ell(y, y') = \\frac 12 (y - y')^2
+        \\ell(y, y') =
+        \\begin{cases}
+        \\frac 12 (1 - y y')^2 &\\text{ if } y y' < 1 \\\\
+        0 &\\text{ if } y y' \\geq 1
+        \\end{cases}
 
-    for :math:`y, y' \in \mathbb R`. Data is passed to this model through the
-    ``fit(X, y)`` method where X is the features matrix (dense or sparse) and
-    y is the vector of labels.
+    for :math:`y \in \{ -1, 1\}` and :math:`y' \in \mathbb R`. Data is passed
+    to this model through the ``fit(X, y)`` method where X is the features
+    matrix (dense or sparse) and y is the vector of labels.
 
     Parameters
     ----------
@@ -70,8 +73,7 @@ class ModelLinReg(ModelFirstOrder,
         ModelLipschitz.__init__(self)
         self.n_threads = n_threads
 
-        # TODO: implement _set_data and not fit
-
+    # TODO: implement _set_data and not fit
     def fit(self, features, labels):
         """Set the data into the model object
 
@@ -85,16 +87,16 @@ class ModelLinReg(ModelFirstOrder,
 
         Returns
         -------
-        output : `ModelLinReg`
+        output : `ModelQuadraticHinge`
             The current instance with given data
         """
         ModelFirstOrder.fit(self, features, labels)
         ModelGeneralizedLinear.fit(self, features, labels)
         ModelLipschitz.fit(self, features, labels)
-        self._set("_model", _ModelLinReg(self.features,
-                                         self.labels,
-                                         self.fit_intercept,
-                                         self.n_threads))
+        self._set("_model", _ModelModelQuadraticHinge(self.features,
+                                                      self.labels,
+                                                      self.fit_intercept,
+                                                      self.n_threads))
         return self
 
     def _grad(self, coeffs: np.ndarray, out: np.ndarray) -> None:

@@ -7,6 +7,13 @@ add_library(tick_model EXCLUDE_FROM_ALL
         linreg_with_intercepts.cpp linreg_with_intercepts.h
         logreg.h logreg.cpp
         poisreg.cpp poisreg.h
+		model_absolute_regression.cpp model_absolute_regression.h
+		model_epsilon_insensitive.cpp model_epsilon_insensitive.h
+		model_hinge.cpp model_hinge.h
+		model_quadratic_hinge.cpp model_quadratic_hinge.h
+		model_smoothed_hinge.cpp model_smoothed_hinge.h
+		model_huber.cpp model_huber.h
+		model_modified_huber.cpp model_modified_huber.h
 		base/hawkes_model.cpp base/hawkes_model.h
 		base/hawkes_fixed_kern_loglik.cpp base/hawkes_fixed_kern_loglik.h
         hawkes_fixed_expkern_loglik.h hawkes_fixed_expkern_loglik.cpp

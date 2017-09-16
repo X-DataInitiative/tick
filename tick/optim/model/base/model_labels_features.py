@@ -59,8 +59,8 @@ class ModelLabelsFeatures(Model):
 
         Parameters
         ----------
-        features : `numpy.ndarray`, shape=(n_samples, n_features)
-            The features matrix
+        features : {`numpy.ndarray`, 'scipy.sparse.csr_matrix'}, shape=(n_samples, n_features)
+            The features matrix, either dense or sparse
 
         labels : `numpy.ndarray`, shape=(n_samples,)
             The labels vector
