@@ -54,6 +54,12 @@ class FeaturesBinarizer(Base, BaseEstimator, TransformerMixin):
     feature_type : `dict`
         Features type.
 
+    blocks_start : `list`
+        List of indices of the beginning of each block of binarized features
+
+    blocks_length : `list`
+        Length of each block of binarized features
+
     References
     ----------
     http://scikit-learn.org/stable/modules/preprocessing.html#preprocessing
@@ -120,7 +126,7 @@ class FeaturesBinarizer(Base, BaseEstimator, TransformerMixin):
         self._set("_fitted", False)
 
     @property
-    def feature_indices(self):
+    def blocks_start(self):
         """Get the first column indices of each binarized feature blocks.
 
         Returns
@@ -129,13 +135,13 @@ class FeaturesBinarizer(Base, BaseEstimator, TransformerMixin):
             The indices of the first column of each binarized feature blocks.
         """
         if not self._fitted:
-            raise ValueError("cannot get feature_indices if object has not "
+            raise ValueError("cannot get blocks_start if object has not "
                              "been fitted")
         # construct from encoder
-        return self.one_hot_encoder.feature_indices_
+        return self.one_hot_encoder.feature_indices_[:-1, ]
 
     @property
-    def n_values(self):
+    def blocks_length(self):
         """Get the length of each binarized feature blocks.
 
         Returns
@@ -144,7 +150,7 @@ class FeaturesBinarizer(Base, BaseEstimator, TransformerMixin):
             The length of each binarized feature blocks.
         """
         if not self._fitted:
-            raise ValueError("cannot get n_values if object has not been "
+            raise ValueError("cannot get blocks_length if object has not been "
                              "fitted")
         # construct from encoder
         return self.one_hot_encoder.n_values_

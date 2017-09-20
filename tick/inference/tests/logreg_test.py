@@ -65,9 +65,8 @@ class Test(InferenceTest):
                         solver_kwargs['C'] = 100
 
                     if penalty == 'binarsity':
-                        solver_kwargs[
-                            'blocks_start'] = binarizer.feature_indices[:-1, ]
-                        solver_kwargs['blocks_length'] = binarizer.n_values
+                        solver_kwargs['blocks_start'] = binarizer.blocks_start
+                        solver_kwargs['blocks_length'] = binarizer.blocks_length
 
                     if solver == 'sdca':
                         solver_kwargs['sdca_ridge_strength'] = 2e-2
