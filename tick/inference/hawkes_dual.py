@@ -110,13 +110,13 @@ class HawkesDual(LearnerHawkesNoParam):
         if isinstance(decays, list):
             decays = np.array(decays)
 
-        self.decays = decays
         self.l_l2sq = l_l2sq
         self.verbose = verbose
 
         self._learner = _HawkesSDCALoglikKern(decays, l_l2sq, n_threads, tol)
 
-        self.history.print_order += ["dual_objective", "duality_gap"]
+        self.history.print_order += ["dual_objective", "duality_gap",
+                                     "max_dual"]
 
     def fit(self, events, end_times=None, baseline_start=None,
             adjacency_start=None):
@@ -183,10 +183,11 @@ class HawkesDual(LearnerHawkesNoParam):
                 converged = np.isfinite(duality_gap) and duality_gap <= self.tol
                 force_print = (i == self.max_iter) or converged
 
+                dual = self._learner.get_dual_iterate()
                 self._handle_history(i, obj=objective, rel_obj=rel_obj,
                                      dual_objective=dual_objective,
                                      duality_gap=duality_gap,
-                                     force=force_print)
+                                     force=force_print, max_dual=dual.max())
 
                 if converged:
                     break
@@ -266,6 +267,10 @@ class HawkesDual(LearnerHawkesNoParam):
     @property
     def n_nodes(self):
         return self._learner.get_n_nodes()
+
+    @property
+    def decays(self):
+        return self._learner.get_decays()
 
     @property
     def n_decays(self):
