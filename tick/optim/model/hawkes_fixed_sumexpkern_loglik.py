@@ -88,7 +88,8 @@ class ModelHawkesFixedSumExpKernLogLik(ModelHawkes,
         ModelHawkes.__init__(self, n_threads=1, approx=0)
         ModelSecondOrder.__init__(self)
         ModelSelfConcordant.__init__(self)
-        self.decays = decays
+        if isinstance(decays, list):
+            decays = np.array(decays)
         self._model = _ModelHawkesFixedSumExpKernLogLik(decays, n_threads)
 
     def fit(self, events, end_times=None):
@@ -123,6 +124,14 @@ class ModelHawkesFixedSumExpKernLogLik(ModelHawkes,
 
     def _get_sc_constant(self) -> float:
         return 2.0
+
+    @property
+    def decays(self):
+        return self._model.get_decays()
+
+    @property
+    def n_decays(self):
+        return len(self.decays)
 
     @property
     def _epoch_size(self):

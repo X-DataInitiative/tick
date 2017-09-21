@@ -4,7 +4,8 @@ import numpy as np
 
 from tick.base import actual_kwargs
 from tick.inference.base import LearnerHawkesParametric
-from tick.optim.model import ModelHawkesFixedSumExpKernLeastSq
+from tick.optim.model import ModelHawkesFixedSumExpKernLeastSq, \
+    ModelHawkesFixedSumExpKernLogLik
 from tick.optim.prox import ProxElasticNet, ProxL1, ProxL2Sq, ProxPositive
 from tick.simulation.hawkes_sumexp_kernels import SimuHawkesSumExpKernels
 
@@ -48,6 +49,9 @@ class HawkesSumExpKern(LearnerHawkesParametric):
     ----------
     decays : `np.ndarray`, shape=(n_decays, )
         The decays used in the exponential kernels.
+
+    gofit : {'least-squares', 'likelihood'}, default='least-squares'
+        Goodness-of-fit used for model's fitting
             
     n_baselines : `int`, default=1
         In this hawkes learner baseline is supposed to be either constant or 
@@ -55,6 +59,7 @@ class HawkesSumExpKern(LearnerHawkesParametric):
         setting is  enabled. In this case :math:`\\mu_i(t)` is piecewise 
         constant on  intervals of size `period_length / n_baselines` and 
         periodic.
+        Only compatible with 'least-squares' gofit.
         
     period_length : `float`, default=None
         In piecewise constant setting this denotes the period of the 
@@ -125,6 +130,7 @@ class HawkesSumExpKern(LearnerHawkesParametric):
     """
 
     _attrinfos = {
+        "gofit": {"writable": False},
         "n_decays": {"writable": False},
         "decays": {"writable": False},
         "n_baselines": {"writable": False},
@@ -139,10 +145,10 @@ class HawkesSumExpKern(LearnerHawkesParametric):
     }
 
     @actual_kwargs
-    def __init__(self, decays, penalty="l2", C=1e3, n_baselines=1,
-                 period_length=None, solver="agd", step=None, tol=1e-5,
-                 max_iter=100, verbose=False, print_every=10, record_every=10,
-                 elastic_net_ratio=0.95, random_state=None):
+    def __init__(self, decays, gofit="least-squares", penalty="l2", C=1e3,
+                 n_baselines=1, period_length=None, solver="agd", step=None,
+                 tol=1e-5, max_iter=100, verbose=False, print_every=10,
+                 record_every=10, elastic_net_ratio=0.95, random_state=None):
 
         self._actual_kwargs = \
             HawkesSumExpKern.__init__.actual_kwargs
@@ -150,6 +156,7 @@ class HawkesSumExpKern(LearnerHawkesParametric):
         self.decays = decays
         self.n_baselines = n_baselines
         self.period_length = period_length
+        self.gofit = gofit
 
         LearnerHawkesParametric.__init__(self, penalty=penalty, C=C,
                                          solver=solver, step=step, tol=tol,
@@ -160,9 +167,12 @@ class HawkesSumExpKern(LearnerHawkesParametric):
                                          random_state=random_state)
 
     def _construct_model_obj(self):
-        model = ModelHawkesFixedSumExpKernLeastSq(
-            self.decays, n_baselines=self.n_baselines,
-            period_length=self.period_length)
+        if self.gofit == "least-squares":
+            model = ModelHawkesFixedSumExpKernLeastSq(
+                self.decays, n_baselines=self.n_baselines,
+                period_length=self.period_length)
+        elif self.gofit == "likelihood":
+            model = ModelHawkesFixedSumExpKernLogLik(self.decays)
         return model
 
     @property
@@ -175,12 +185,16 @@ class HawkesSumExpKern(LearnerHawkesParametric):
             raise ValueError('You must fit data before getting estimated '
                              'baseline')
         else:
-            baseline = self.coeffs[:self.n_nodes * self._model_obj.n_baselines]
-            if self._model_obj.n_baselines == 1:
+            if self.gofit == 'least-squares':
+                n_baselines = self._model_obj.n_baselines
+            else:
+                n_baselines = 1
+
+            baseline = self.coeffs[:self.n_nodes * n_baselines]
+            if n_baselines == 1:
                 return baseline
             else:
-                return baseline.reshape((self.n_nodes,
-                                         self._model_obj.n_baselines))
+                return baseline.reshape((self.n_nodes, n_baselines))
 
     @property
     def adjacency(self):
@@ -188,13 +202,22 @@ class HawkesSumExpKern(LearnerHawkesParametric):
             raise ValueError('You must fit data before getting estimated '
                              'adjacency')
         else:
-            return self.coeffs[self.n_nodes * self._model_obj.n_baselines:] \
+            if self.gofit == 'least-squares':
+                n_baselines = self._model_obj.n_baselines
+            else:
+                n_baselines = 1
+
+            return self.coeffs[self.n_nodes * n_baselines:] \
                 .reshape((self.n_nodes, self.n_nodes, self.n_decays))
 
     def _corresponding_simu(self):
+        if self.gofit == "least-squares":
+            period_length = self._model_obj.period_length
+        else:
+            period_length = None
         return SimuHawkesSumExpKernels(
             adjacency=self.adjacency, decays=self.decays,
-            baseline=self.baseline, period_length=self._model_obj.period_length)
+            baseline=self.baseline, period_length=period_length)
 
     def get_baseline_values(self, i, abscissa_array):
         return self._corresponding_simu().get_baseline_values(i, abscissa_array)
