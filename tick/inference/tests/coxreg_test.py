@@ -88,9 +88,8 @@ class Test(InferenceTest):
                     solver_kwargs['C'] = 50
 
                 if penalty == 'binarsity':
-                    solver_kwargs['blocks_start'] = \
-                        binarizer.feature_indices[:-1, ]
-                    solver_kwargs['blocks_length'] = binarizer.n_values
+                    solver_kwargs['blocks_start'] = binarizer.blocks_start
+                    solver_kwargs['blocks_length'] = binarizer.blocks_length
 
                 learner = CoxRegression(**solver_kwargs)
                 learner.fit(features, times, censoring)
