@@ -212,3 +212,22 @@ SArrayDoublePtr HawkesSDCALoglikKern::get_iterate()  {
   }
   return iterate.as_sarray_ptr();
 }
+
+SArrayDoublePtr HawkesSDCALoglikKern::get_dual_iterate() {
+  if (sdca_list.size() != n_nodes){
+    SArrayDoublePtr zero_iterate = SArrayDouble::new_ptr(get_n_total_jumps());
+    zero_iterate->init_to_zero();
+    return zero_iterate;
+  }
+
+  ArrayDouble dual_iterate(get_n_total_jumps());
+  ulong position = 0;
+  for (ulong i = 0; i < n_nodes; ++i) {
+    ulong n_jumps_node_i = (*get_n_jumps_per_node())[i];
+    ArrayDouble sdca_dual_iterate = sdca_list[i].get_dual_vector_view();
+    ArrayDouble dual_iterate_view = view(dual_iterate, position, position + n_jumps_node_i);
+    dual_iterate_view.mult_fill(sdca_dual_iterate, 1);
+    position += n_jumps_node_i;
+  }
+  return dual_iterate.as_sarray_ptr();
+}

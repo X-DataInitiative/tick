@@ -27,6 +27,7 @@ class HawkesSDCALoglikKern : public ModelHawkesList {
   void set_decays(const ArrayDouble &decays);
 
   SArrayDoublePtr get_iterate();
+  SArrayDoublePtr get_dual_iterate();
 
   double loss(const ArrayDouble &coeffs) override;
   double current_dual_objective();
