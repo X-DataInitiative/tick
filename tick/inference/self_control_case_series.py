@@ -78,6 +78,9 @@ class LearnerSCCS(ABC, Base):
         },
         "intercept": {
             "writable": False
+        },
+        "under_penalize": {
+            "writable": False
         }
     }
 
@@ -95,7 +98,7 @@ class LearnerSCCS(ABC, Base):
                  feature_type="infinite", penalty='TV', strength_TV: float=0,
                  strength_L1: float=0, step=None, tol=1e-5, max_iter=100,
                  verbose=True, print_every=10, record_every=10,
-                 random_state=None, intercept=False):
+                 random_state=None, intercept=False, under_penalize=False):
         Base.__init__(self)
 
         # Check args
@@ -141,6 +144,7 @@ class LearnerSCCS(ABC, Base):
         self._prox_obj = None
         self.step = step
         self.intercept = intercept
+        self.under_penalize = under_penalize
 
     def fit(self, features: np.ndarray, labels: np.array,
             censoring: np.array, bootstrap=False, bootstrap_rep=200,
@@ -313,10 +317,6 @@ class LearnerSCCS(ABC, Base):
                 self._model_obj.fit(X_train, y_train, censoring_train)
                 self._fit(prox_obj)
 
-                # print(X_train[0].shape)
-                # print(X_test[0].shape)
-                # print(self.coeffs.shape)
-
                 kfold_scores_train.append(self.score())
                 kfold_scores_test.append(self.score(X_test, y_test,
                                                     censoring_test,
@@ -346,7 +346,14 @@ class LearnerSCCS(ABC, Base):
 
         # Find best parameters and refit on full data
         best_idx = np.argmin([s["test"]["mean"] for s in scores])
-        # TODO : get min with smaller penalization
+        if self.under_penalize:
+            # Get min with slightly smaller penalization
+            best_sd = scores[best_idx]["test"]["sd"]
+            best_mean = scores[best_idx]["test"]["mean"]
+            best_score = best_mean + best_sd
+            best_idx = np.argmin([s["test"]["mean"]
+                                  for s in scores
+                                  if s["test"]["mean"] >= best_score])
         best_parameters = scores[best_idx]
         best_strength_L1 = best_parameters["strength_L1"]
         best_strength_TV = best_parameters["strength_TV"]
