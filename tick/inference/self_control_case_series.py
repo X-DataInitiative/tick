@@ -46,6 +46,9 @@ class LearnerSCCS(ABC, Base):
         "refit_coeffs": {
             "writable": False
         },
+        "median_coeffs": {
+            "writable": False
+        },
         "bootstrap_CI": {
             "writable": False
         },
@@ -131,6 +134,7 @@ class LearnerSCCS(ABC, Base):
         self.random_state = random_state,
         np.random.seed(random_state)
         self.refit_coeffs = None
+        self.median_coeffs = None
         self.bootstrap_CI = None
         self.coeffs = None
         self._fitted = False
@@ -187,13 +191,14 @@ class LearnerSCCS(ABC, Base):
 
         coeffs = self._fit(prox_obj)
 
-        refit_coeffs, lower_bound, upper_bound = (None, None, None)
+        refit_coeffs, median_coeffs, lower_bound, upper_bound = [None] * 4
         if bootstrap:
-            refit_coeffs, lower_bound, upper_bound = \
+            refit_coeffs, median, lower_bound, upper_bound = \
                 self._bootstrap(features, labels, censoring, bootstrap_rep,
                                 bootstrap_confidence)
             self._set('refit_coeffs', refit_coeffs)
             self._set('bootstrap_CI', (lower_bound, upper_bound))
+            self._set('median_coeffs', median_coeffs)
 
         return coeffs, (refit_coeffs, (lower_bound, upper_bound))
 
@@ -357,13 +362,14 @@ class LearnerSCCS(ABC, Base):
         self._set("coeffs", coeffs)
         self._set("_fitted", True)
 
-        refit_coeffs, lower_bound, upper_bound = (None, None, None)
+        refit_coeffs, median_coeffs, lower_bound, upper_bound = [None] * 4
         if bootstrap:
-            refit_coeffs, lower_bound, upper_bound = \
+            refit_coeffs, median, lower_bound, upper_bound = \
                 self._bootstrap(features, labels, censoring, bootstrap_rep,
                                 bootstrap_confidence)
             self._set('refit_coeffs', refit_coeffs)
             self._set('bootstrap_CI', (lower_bound, upper_bound))
+            self._set('median_coeffs', median_coeffs)
 
         best_model = {
             "n_intervals": self.n_intervals,
@@ -378,7 +384,8 @@ class LearnerSCCS(ABC, Base):
             "refit_coeffs": self.refit_coeffs,
             "boostrap_CI": self.bootstrap_CI,
             "boostrap_confidence": bootstrap_confidence,
-            "boostrap_rep": bootstrap_rep
+            "boostrap_rep": bootstrap_rep,
+            "bootstrap_median": median_coeffs
         }
 
         return coeffs, scores, best_model
@@ -482,7 +489,8 @@ class LearnerSCCS(ABC, Base):
         bootstrap_coeffs.sort(axis=0)
         lower_bound = bootstrap_coeffs[int(np.ceil(rep * confidence / 2))]
         upper_bound = bootstrap_coeffs[int(np.ceil(rep * (1 - confidence / 2)))]
-        return refit_coeffs, lower_bound, upper_bound
+        median_coeffs = bootstrap_coeffs[int(np.ceil(rep * .5))]
+        return refit_coeffs, median_coeffs, lower_bound, upper_bound
 
     def _compute_step(self, features, labels, censoring):
         self._model_obj.fit(features, labels, censoring)
