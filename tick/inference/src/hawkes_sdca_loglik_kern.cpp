@@ -8,7 +8,8 @@ HawkesSDCALoglikKern::HawkesSDCALoglikKern(const ArrayDouble &decays, double l_l
                                            int max_n_threads, double tol,
                                            RandType rand_type, int seed)
   : ModelHawkesList(max_n_threads, optimization_level),
-    weights_allocated(false), l_l2sq(l_l2sq), tol(tol), rand_type(rand_type), seed(seed) {
+    weights_allocated(false), l_l2sq(l_l2sq), tol(tol), rand_type(rand_type), seed(seed),
+    max_dual(std::numeric_limits<double>::infinity()) {
   set_decays(decays);
 }
 
@@ -16,7 +17,8 @@ HawkesSDCALoglikKern::HawkesSDCALoglikKern(const double decay, double l_l2sq,
                                            int max_n_threads, double tol,
                                            RandType rand_type, int seed)
   : ModelHawkesList(max_n_threads, optimization_level),
-    weights_allocated(false), l_l2sq(l_l2sq), tol(tol), rand_type(rand_type), seed(seed) {
+    weights_allocated(false), l_l2sq(l_l2sq), tol(tol), rand_type(rand_type), seed(seed),
+    max_dual(std::numeric_limits<double>::infinity()) {
   ArrayDouble decays {decay};
   set_decays(decays);
 }
@@ -70,6 +72,7 @@ void HawkesSDCALoglikKern::synchronize_sdca() {
   sdca_list = std::vector<SDCA>();
   for (ulong i = 0; i < n_nodes; ++i) {
     auto model = std::make_shared<ModelHawkesSDCAOneNode>(g[i], G[i], get_n_samples());
+    model->set_max_dual(max_dual);
 
     const ulong epoch_size = (*n_jumps_per_node)[i];
     SDCA sdca(l_l2sq, epoch_size, tol, rand_type, seed);
@@ -230,4 +233,33 @@ SArrayDoublePtr HawkesSDCALoglikKern::get_dual_iterate() {
     position += n_jumps_node_i;
   }
   return dual_iterate.as_sarray_ptr();
+}
+
+
+double HawkesSDCALoglikKern::get_l_l2sq() const{
+  return l_l2sq;
+}
+
+void HawkesSDCALoglikKern::set_l_l2sq(const double l_l2sq){
+  this->l_l2sq = l_l2sq;
+  if (!sdca_list.empty()) {
+    for (ulong i = 0; i < sdca_list.size(); ++i) {
+      sdca_list[i].set_l_l2sq(l_l2sq);
+    }
+  }
+}
+
+double HawkesSDCALoglikKern::get_max_dual() const{
+  return max_dual;
+}
+
+void HawkesSDCALoglikKern::set_max_dual(const double max_dual){
+  this->max_dual = max_dual;
+  if (!sdca_list.empty()) {
+    for (ulong i = 0; i < sdca_list.size(); ++i) {
+      std::shared_ptr<ModelHawkesSDCAOneNode> casted_model =
+        std::dynamic_pointer_cast<ModelHawkesSDCAOneNode>(sdca_list[i].get_model());
+      casted_model->set_max_dual(max_dual);
+    }
+  }
 }

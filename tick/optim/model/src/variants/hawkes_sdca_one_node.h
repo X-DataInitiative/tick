@@ -11,6 +11,7 @@ class ModelHawkesSDCAOneNode : public Model {
   ArrayDouble n_times_psi;
   ulong n_samples;
   ArrayDouble features_norm_sq;
+  double max_dual;
 
  public:
   ModelHawkesSDCAOneNode(ArrayDouble2d &g_i, ArrayDouble &G_i, ulong n_samples);
@@ -36,6 +37,7 @@ class ModelHawkesSDCAOneNode : public Model {
   double loss(const ArrayDouble &coeffs) override;
 
   ulong get_n_coeffs() const override;
+  void set_max_dual(const double max_dual);
 };
 
 #endif //TICK_HAWKES_SDCA_ONE_NODE_H

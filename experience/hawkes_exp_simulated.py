@@ -26,7 +26,8 @@ hawkes_exp_kernels.adjust_spectral_radius(0.8)
 
 
 if simulate:
-    multi = SimuHawkesMulti(hawkes_exp_kernels, n_simulations=n_realizations)
+    multi = SimuHawkesMulti(hawkes_exp_kernels, n_simulations=n_realizations,
+                            n_threads=4)
 
     multi.end_time = [(i + 1) / n_realizations * end_time
                       for i in range(n_realizations)]
@@ -75,4 +76,4 @@ labels = ["dual"] + ['SVRG {:.2g}'.format(step) for step in steps] + \
 plot_history(all_learners, dist_min=True, log_scale=True,
              labels=labels)
 
-# plot_hawkes_kernel_norms(hawkes_dual)
+# plot_hawkes_kernel_norms(hawkes_dual)🚫

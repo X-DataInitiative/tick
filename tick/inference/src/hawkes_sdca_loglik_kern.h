@@ -30,6 +30,7 @@ class HawkesSDCALoglikKern : public ModelHawkesList {
   double tol;
   RandType rand_type;
   int seed;
+  double max_dual;
 
  public:
   HawkesSDCALoglikKern(const ArrayDouble &decays, double l_l2sq,
@@ -66,6 +67,11 @@ class HawkesSDCALoglikKern : public ModelHawkesList {
   ulong get_n_decays() const {
     return decays.size();
   }
+
+  double get_l_l2sq() const;
+  void set_l_l2sq(const double l_l2sq);
+  double get_max_dual() const;
+  void set_max_dual(const double l_l2sq);
 
  private:
 

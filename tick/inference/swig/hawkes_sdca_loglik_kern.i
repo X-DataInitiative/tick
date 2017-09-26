@@ -28,6 +28,10 @@ class HawkesSDCALoglikKern : public ModelHawkesList {
 
   SArrayDoublePtr get_iterate();
   SArrayDoublePtr get_dual_iterate();
+  double get_l_l2sq() const;
+  void set_l_l2sq(const double l_l2sq);
+  double get_max_dual() const;
+  void set_max_dual(const double l_l2sq);
 
   double loss(const ArrayDouble &coeffs) override;
   double current_dual_objective();

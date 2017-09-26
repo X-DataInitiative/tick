@@ -97,7 +97,8 @@ class HawkesDual(LearnerHawkesNoParam):
         "_C": {"writable": False},
         "baseline": {"writable": False},
         "adjacency": {"writable": False},
-        "approx": {"writable": False}
+        "approx": {"writable": False},
+        "_n_iter": {}
     }
 
     def __init__(self, decays, l_l2sq, max_iter=50, tol=1e-5, n_threads=1,
@@ -110,7 +111,6 @@ class HawkesDual(LearnerHawkesNoParam):
         if isinstance(decays, list):
             decays = np.array(decays)
 
-        self.l_l2sq = l_l2sq
         self.verbose = verbose
 
         self._learner = _HawkesSDCALoglikKern(decays, l_l2sq, n_threads, tol)
@@ -118,8 +118,7 @@ class HawkesDual(LearnerHawkesNoParam):
         self.history.print_order += ["dual_objective", "duality_gap",
                                      "max_dual"]
 
-    def fit(self, events, end_times=None, baseline_start=None,
-            adjacency_start=None):
+    def fit(self, events, end_times=None):
         """Fit the model according to the given training data.
 
         Parameters
@@ -137,34 +136,14 @@ class HawkesDual(LearnerHawkesNoParam):
             List of end time of all hawkes processes that will be given to the
             model. If None, it will be set to each realization's latest time.
             If only one realization is provided, then a float can be given.
-
-        baseline_start : `None` or `np.ndarray`, shape=(n_nodes)
-            Set initial value of baseline parameter
-            If `None` starts with uniform 1 values
-
-        adjacency_start : `None` or `np.ndarray`, shape=(n_nodes, n_nodes)
-            Set initial value of adjacency parameter
-            If `None` starts with random values uniformly sampled between 0.5
-            and 0.9`
         """
         LearnerHawkesNoParam.fit(self, events, end_times=end_times)
-        self.solve(baseline_start=baseline_start,
-                   adjacency_start=adjacency_start)
+        self._n_iter = 0
+        self.solve()
         return self
 
-    def _solve(self, baseline_start=None, adjacency_start=None):
+    def _solve(self):
         """Perform one iteration of the algorithm
-
-        Parameters
-        ----------
-        baseline_start : `None` or `np.ndarray`, shape=(n_nodes)
-            Set initial value of baseline parameter
-            If `None` starts with uniform 1 values
-
-        adjacency_start : `None` or `np.ndarray', shape=(n_nodes, n_nodes)
-            Set initial value of adjacency parameter
-            If `None` starts with random values uniformly sampled between 0.5
-            and 0.9
         """
 
         objective = self.objective(self.coeffs)
@@ -184,7 +163,7 @@ class HawkesDual(LearnerHawkesNoParam):
                 force_print = (i == self.max_iter) or converged
 
                 dual = self._learner.get_dual_iterate()
-                self._handle_history(i, obj=objective, rel_obj=rel_obj,
+                self._handle_history(i + self._n_iter, obj=objective, rel_obj=rel_obj,
                                      dual_objective=dual_objective,
                                      duality_gap=duality_gap,
                                      force=force_print, max_dual=dual.max())
@@ -192,7 +171,9 @@ class HawkesDual(LearnerHawkesNoParam):
                 if converged:
                     break
 
-    def objective(self, coeffs, loss: float = None):
+        self._n_iter += i
+
+    def objective(self, coeffs, loss=None):
         """Compute the objective minimized by the learner at `coeffs`
 
         Parameters
@@ -200,27 +181,19 @@ class HawkesDual(LearnerHawkesNoParam):
         coeffs : `numpy.ndarray`, shape=(n_coeffs,)
             The objective is computed at this point
 
-        loss : `float`, default=`None`
-            Gives the value of the loss if already known (allows to
-            avoid its computation in some cases)
-
         Returns
         -------
         output : `float`
             Value of the objective at given `coeffs`
-
-        Notes
-        -----
-        Because of the auxiliary variables, the expression of the
-        truly optimized objective is a bit modified. Hence this objective
-        value might not reach its exact minimum especially for high
-        penalization levels.
         """
-        pp = ProxPositive()
-        pos_coeffs = pp.call(coeffs) + 1e-10
-        if loss is None:
-            loss = self._learner.loss(pos_coeffs)
-        prox_l2_value = 0.5 * self.l_l2sq * np.linalg.norm(pos_coeffs) ** 2
+        loss = self._learner.loss(coeffs)
+        if np.isnan(loss) or not np.isfinite(loss):
+            pp = ProxPositive()
+            pos_coeffs = pp.call(coeffs) + 1e-10
+            coeffs = pos_coeffs
+            loss = self._learner.loss(coeffs)
+
+        prox_l2_value = 0.5 * self.l_l2sq * np.linalg.norm(coeffs) ** 2
 
         return loss + prox_l2_value
 
@@ -228,16 +201,16 @@ class HawkesDual(LearnerHawkesNoParam):
     def coeffs(self):
         return self._learner.get_iterate()
 
-    # @property
-    # def l_l2sq(self):
-    #     return self._learner.get_l_l2sq()
-    #
-    # @l_l2sq.setter
-    # def l_l2sq(self, val):
-    #     if val < 0 or val is None:
-    #         raise ValueError("`l_l2sq` must be positive, got %s" % str(val))
-    #     else:
-    #         self._learner.set_l_l2sq(val)
+    @property
+    def l_l2sq(self):
+        return self._learner.get_l_l2sq()
+
+    @l_l2sq.setter
+    def l_l2sq(self, val):
+        if val <= 0 or val is None:
+            raise ValueError("`l_l2sq` must be positive, got %s" % str(val))
+        else:
+            self._learner.set_l_l2sq(val)
 
     def _corresponding_simu(self):
         """Create simulation object corresponding to the obtained coefficients
@@ -275,6 +248,14 @@ class HawkesDual(LearnerHawkesNoParam):
     @property
     def n_decays(self):
         return len(self.decays)
+
+    @property
+    def max_dual(self):
+        return self._learner.get_max_dual()
+
+    @max_dual.setter
+    def max_dual(self, val):
+        self._learner.set_max_dual(val)
 
     def get_kernel_supports(self):
         """Computes kernel support. This makes our learner compliant with

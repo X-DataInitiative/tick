@@ -4,7 +4,8 @@
 #include "hawkes_sdca_one_node.h"
 
 ModelHawkesSDCAOneNode::ModelHawkesSDCAOneNode(ArrayDouble2d &g_i, ArrayDouble &G_i,
-                                               ulong n_samples): n_samples(n_samples) {
+                                               ulong n_samples):
+  n_samples(n_samples), max_dual(std::numeric_limits<double>::infinity()) {
   if (g_i.n_cols() != G_i.size()) {
     TICK_ERROR("g_i and G_i must have the same number of columns");
   }
@@ -95,9 +96,17 @@ double ModelHawkesSDCAOneNode::sdca_dual_min_i(const ulong i,
   double new_dual = (std::sqrt(tmp * tmp + 4 * normalized_features_norm) + tmp);
   new_dual /= 2 * normalized_features_norm;
 
+  if (new_dual > max_dual) {
+    new_dual = max_dual;
+  }
+
   return new_dual - dual_i;
 }
 
 ulong ModelHawkesSDCAOneNode::get_n_coeffs() const {
   return features.n_cols();
+}
+
+void ModelHawkesSDCAOneNode::set_max_dual(const double max_dual){
+  this->max_dual = max_dual;
 }
