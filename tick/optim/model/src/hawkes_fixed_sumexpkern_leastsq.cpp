@@ -33,7 +33,7 @@ double ModelHawkesFixedSumExpKernLeastSq::loss(const ArrayDouble &coeffs) {
 // Performs the computation of the contribution of the i component to the value
 double ModelHawkesFixedSumExpKernLeastSq::loss_i(const ulong i,
                                                  const ArrayDouble &coeffs) {
-  if (!weights_computed) TICK_ERROR("Please compute weights before calling hessian_i");
+  if (!weights_computed) TICK_ERROR("Please compute weights before calling loss_i");
 
   ArrayDouble mu_i = view(coeffs, i * n_baselines, (i + 1) * n_baselines);
   ulong start_alpha_i = n_nodes * n_baselines + i * n_nodes * n_decays;

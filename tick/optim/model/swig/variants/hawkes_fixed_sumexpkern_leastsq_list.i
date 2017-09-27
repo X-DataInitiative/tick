@@ -9,7 +9,7 @@
 class ModelHawkesFixedSumExpKernLeastSqList : public ModelHawkesLeastSqList {
     
 public:
-    
+  ModelHawkesFixedSumExpKernLeastSqList();
   ModelHawkesFixedSumExpKernLeastSqList(const ArrayDouble &decays,
                                         const ulong n_baselines,
                                         const double period_length,
@@ -26,3 +26,5 @@ public:
   void set_n_baselines(ulong n_baselines);
   void set_period_length(double period_length);
 };
+
+TICK_MAKE_PICKLABLE(ModelHawkesFixedSumExpKernLeastSqList);

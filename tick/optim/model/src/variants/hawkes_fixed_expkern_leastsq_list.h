@@ -20,6 +20,10 @@ class ModelHawkesFixedExpKernLeastSqList : public ModelHawkesLeastSqList {
   SArrayDouble2dPtr decays;
 
  public:
+  //! @brief Empty constructor
+  //! This constructor should only be used for serialization
+  ModelHawkesFixedExpKernLeastSqList(): ModelHawkesLeastSqList(0, 0) {}
+
   //! @brief Constructor
   //! \param decays : the 2d array of the decays
   //! \param max_n_threads : number of cores to be used for multithreading. If negative,
@@ -72,6 +76,18 @@ class ModelHawkesFixedExpKernLeastSqList : public ModelHawkesLeastSqList {
   void compute_weights_timestamps_list() override;
   void compute_weights_timestamps(const SArrayDoublePtrList1D &timestamps,
                                   double end_time) override;
+
+ public:
+  template<class Archive>
+  void serialize(Archive &ar) {
+    ar(cereal::make_nvp("ModelHawkesLeastSqList", cereal::base_class<ModelHawkesLeastSqList>(this)));
+
+    ar(CEREAL_NVP(E));
+    ar(CEREAL_NVP(Dg));
+    ar(CEREAL_NVP(Dg2));
+    ar(CEREAL_NVP(C));
+    ar(CEREAL_NVP(decays));
+  }
 };
 
 #endif  // TICK_OPTIM_MODEL_SRC_VARIANTS_HAWKES_FIXED_EXPKERN_LEASTSQ_LIST_H_

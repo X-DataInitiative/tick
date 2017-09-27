@@ -31,7 +31,7 @@ class ModelHawkesFixedSumExpKernLeastSq : public ModelHawkesSingle {
 
  public:
   //! @brief Default constructor
-  //! @note This constructor is only used to create vectors of ModelHawkesFixedExpKernLeastSq
+  //! @note This constructor is only used to create vectors of ModelHawkesFixedExpKernLeastSq and serialization
   ModelHawkesFixedSumExpKernLeastSq() {}
 
   //! @brief Constructor
@@ -114,6 +114,25 @@ class ModelHawkesFixedSumExpKernLeastSq : public ModelHawkesSingle {
   double get_baseline_interval_length(const ulong interval_p);
 
   friend class ModelHawkesFixedSumExpKernLeastSqList;
+
+ public:
+  template<class Archive>
+  void serialize(Archive &ar) {
+    ar(cereal::make_nvp("ModelHawkesSingle", cereal::base_class<ModelHawkesSingle>(this)));
+
+    ar(CEREAL_NVP(E));
+    ar(CEREAL_NVP(Dgg));
+    ar(CEREAL_NVP(C));
+    ar(CEREAL_NVP(L));
+    ar(CEREAL_NVP(K));
+    ar(CEREAL_NVP(Dg));
+    ar(CEREAL_NVP(n_baselines));
+    ar(CEREAL_NVP(period_length));
+    ar(CEREAL_NVP(decays));
+    ar(CEREAL_NVP(n_decays));
+  }
 };
+
+CEREAL_REGISTER_TYPE(ModelHawkesFixedSumExpKernLeastSq);
 
 #endif  // TICK_OPTIM_MODEL_SRC_HAWKES_FIXED_SUMEXPKERN_LEASTSQ_H_

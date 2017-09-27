@@ -75,6 +75,15 @@ class ModelHawkesLeastSqList : public ModelHawkesList {
   virtual void compute_weights_timestamps_list() {}
   virtual void compute_weights_timestamps(const SArrayDoublePtrList1D &timestamps,
                                           double end_time) {}
+
+ public:
+  template<class Archive>
+  void serialize(Archive &ar) {
+    ar(cereal::make_nvp("ModelHawkesList", cereal::base_class<ModelHawkesList>(this)));
+
+    ar(CEREAL_NVP(weights_allocated));
+    ar(CEREAL_NVP(aggregated_model));
+  }
 };
 
 #endif  // TICK_OPTIM_MODEL_SRC_VARIANTS_HAWKES_LEASTSQ_LIST_H_

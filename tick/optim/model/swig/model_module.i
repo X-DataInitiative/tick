@@ -3,6 +3,7 @@
 %module model
 
 %include defs.i
+%include serialization.i
 %include std_shared_ptr.i
 
 %shared_ptr(Model);

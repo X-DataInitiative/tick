@@ -31,6 +31,10 @@ class ModelHawkesFixedSumExpKernLeastSqList : public ModelHawkesLeastSqList {
   ulong n_decays;
 
  public:
+  //! @brief Empty constructor
+  //! This constructor should only be used for serialization
+  ModelHawkesFixedSumExpKernLeastSqList(): ModelHawkesLeastSqList(0, 0) {}
+
   //! @brief Constructor
   //! \param timestamps : a list of arrays representing the realization
   //! \param decays : the 2d array of the decays
@@ -79,6 +83,23 @@ class ModelHawkesFixedSumExpKernLeastSqList : public ModelHawkesLeastSqList {
   void compute_weights_timestamps_list() override;
   void compute_weights_timestamps(const SArrayDoublePtrList1D &timestamps,
                                   double end_time) override;
+
+ public:
+  template<class Archive>
+  void serialize(Archive &ar) {
+    ar(cereal::make_nvp("ModelHawkesLeastSqList", cereal::base_class<ModelHawkesLeastSqList>(this)));
+
+    ar(CEREAL_NVP(E));
+    ar(CEREAL_NVP(Dgg));
+    ar(CEREAL_NVP(C));
+    ar(CEREAL_NVP(Dg));
+    ar(CEREAL_NVP(L));
+    ar(CEREAL_NVP(K));
+    ar(CEREAL_NVP(n_baselines));
+    ar(CEREAL_NVP(period_length));
+    ar(CEREAL_NVP(decays));
+    ar(CEREAL_NVP(n_decays));
+  }
 };
 
 #endif  // TICK_OPTIM_MODEL_SRC_VARIANTS_HAWKES_FIXED_SUMEXPKERN_LEASTSQ_LIST_H_
