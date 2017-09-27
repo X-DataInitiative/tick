@@ -3,6 +3,7 @@
 import unittest
 import numpy as np
 from scipy.optimize import check_grad
+import pickle
 
 from tick.optim.model import ModelHawkesFixedExpKernLeastSq
 
@@ -220,6 +221,23 @@ class Test(unittest.TestCase):
         loss = model._loss_and_grad(coeffs, grad)
         np.testing.assert_almost_equal(grad, test, decimal=4)
         self.assertAlmostEqual(loss, 1.05752053, delta=1e-4)
+
+    def test_model_hawkes_least_sq_serialization(self):
+        """...Test that ModelHawkesFixedExpKernLeastSq can be serialized
+        """
+        for model in [self.model, self.model_list]:
+            
+            pickled = pickle.loads(pickle.dumps(model))
+    
+            self.assertEqual(model.n_nodes, pickled.n_nodes)
+            np.testing.assert_equal(model.decays, pickled.decays)
+            self.assertEqual(model.n_jumps, pickled.n_jumps)
+    
+            self.assertEqual(model.n_coeffs, pickled.n_coeffs)
+            self.assertEqual(model.n_threads, pickled.n_threads)
+            np.testing.assert_equal(model.data, pickled.data)
+            coeffs = np.random.rand(model.n_coeffs)
+            self.assertEqual(model.loss(coeffs), pickled.loss(coeffs))
 
 
 if __name__ == '__main__':

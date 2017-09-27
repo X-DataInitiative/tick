@@ -3,6 +3,7 @@
 %module inference
 
 %include defs.i
+%include serialization.i
 
 %{
   #include "tick_python.h"
