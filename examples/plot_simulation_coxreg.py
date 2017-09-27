@@ -14,7 +14,7 @@ n_samples = 150
 weights = np.array([0.3, 1.2])
 
 seed = 123
-simu_coxreg = SimuCoxReg(weights, n_samples=n_samples, seed=123)
+simu_coxreg = SimuCoxReg(weights, n_samples=n_samples, seed=123, verbose=False)
 X, T, C = simu_coxreg.simulate()
 
 plt.figure(figsize=(6, 4))

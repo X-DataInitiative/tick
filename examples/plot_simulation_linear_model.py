@@ -16,14 +16,16 @@ n_samples, n_features = 150, 2
 weights0 = np.array([0.3, 1.2])
 intercept0 = 0.5
 
-simu_linreg = SimuLinReg(weights0, intercept0, n_samples=n_samples, seed=123)
+simu_linreg = SimuLinReg(weights0, intercept0, n_samples=n_samples, seed=123,
+                         verbose=False)
 X_linreg, y_linreg = simu_linreg.simulate()
 
-simu_logreg = SimuLogReg(weights0, intercept0, n_samples=n_samples, seed=123)
+simu_logreg = SimuLogReg(weights0, intercept0, n_samples=n_samples, seed=123,
+                         verbose=False)
 X_logreg, y_logreg = simu_logreg.simulate()
 
 simu_poisreg = SimuPoisReg(weights0, intercept0, n_samples=n_samples,
-                           link='exponential', seed=123)
+                           link='exponential', seed=123, verbose=False)
 X_poisreg, y_poisreg = simu_poisreg.simulate()
 
 plt.figure(figsize=(12, 3))

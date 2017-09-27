@@ -242,7 +242,6 @@ Functions
    plot.plot_basis_kernels
    plot.plot_timefunction
    plot.plot_point_process
-   plot.stem
    plot.stems
 
 
@@ -283,8 +282,8 @@ Functions
    :toctree: generated/
    :template: function.rst
 
-   metrics.fdp
-   metrics.recall
+   metrics.support_fdp
+   metrics.support_recall
 
 
 .. _api-simulation:
