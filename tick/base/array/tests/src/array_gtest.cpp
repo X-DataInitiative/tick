@@ -520,6 +520,28 @@ TYPED_TEST(ArrayTest, SortAbsTrackDecreasing) {
 namespace {
 
 template <typename ArchiveIn, typename ArchiveOut, typename TypeParam>
+void TestEmptySerialization() {
+  TypeParam arrA;
+
+  std::stringstream os;
+  {
+    ArchiveOut archive_out(os);
+
+    archive_out(arrA);
+  }
+
+  {
+    ArchiveIn archive_in(os);
+
+    TypeParam arrB;
+    archive_in(arrB);
+
+    ASSERT_EQ(arrA.size(), arrB.size());
+    ASSERT_EQ(arrA.size(), 0);
+  }
+}
+
+template <typename ArchiveIn, typename ArchiveOut, typename TypeParam>
 void TestSerialization() {
   TypeParam arrA = ::GenerateRandomArray<TypeParam>();
 
@@ -538,6 +560,32 @@ void TestSerialization() {
 
     ASSERT_EQ(arrA.size(), arrB.size());
     for (ulong j = 0; j < arrA.size(); ++j) ASSERT_DOUBLE_EQ(arrA[j], arrB[j]);
+  }
+}
+
+template <typename ArchiveIn, typename ArchiveOut, typename Arr2DType>
+void TestEmptySerialization2D() {
+  Arr2DType arrA;
+
+  std::stringstream os;
+  {
+    ArchiveOut archive_out(os);
+
+    archive_out(arrA);
+  }
+
+  {
+    ArchiveIn archive_in(os);
+
+    Arr2DType arrB;
+    archive_in(arrB);
+
+    ASSERT_EQ(arrA.size(), arrB.size());
+    ASSERT_EQ(arrA.size(), 0);
+    ASSERT_EQ(arrA.n_rows(), arrB.n_rows());
+    ASSERT_EQ(arrA.n_rows(), 0);
+    ASSERT_EQ(arrA.n_cols(), arrB.n_cols());
+    ASSERT_EQ(arrA.n_cols(), 0);
   }
 }
 
@@ -566,6 +614,26 @@ void TestSerialization2D() {
 }
 
 }  // namespace
+
+TYPED_TEST(ArrayTest, EmptySerializationJSON) {
+  SCOPED_TRACE("");
+  ::TestEmptySerialization<cereal::JSONInputArchive, cereal::JSONOutputArchive, TypeParam>();
+}
+
+TYPED_TEST(ArrayTest, EmptySerializationBinary) {
+  SCOPED_TRACE("");
+  ::TestEmptySerialization<cereal::BinaryInputArchive, cereal::BinaryOutputArchive, TypeParam>();
+}
+
+TYPED_TEST(Array2dTest, EmptySerializationJSON) {
+  SCOPED_TRACE("");
+  ::TestEmptySerialization2D<cereal::JSONInputArchive, cereal::JSONOutputArchive, TypeParam>();
+}
+
+TYPED_TEST(Array2dTest, EmptySerializationBinary) {
+  SCOPED_TRACE("");
+  ::TestEmptySerialization2D<cereal::BinaryInputArchive, cereal::BinaryOutputArchive, TypeParam>();
+}
 
 TYPED_TEST(ArrayTest, SerializationJSON) {
   SCOPED_TRACE("");

@@ -54,6 +54,8 @@ class BaseArray2d : public AbstractArray1d2d<T> {
     explicit BaseArray2d(bool flag_dense = true) : AbstractArray1d2d<T>(flag_dense) {
         _row_indices = nullptr;
         is_row_indices_allocation_owned = true;
+        _n_cols = 0;
+        _n_rows = 0;
     }
 
     //! &brief Copy constructor.
