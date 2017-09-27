@@ -50,7 +50,6 @@ ulong StoSolver::get_next_i() {
         if (!permutation_ready) {
             shuffle();
         }
-
         i = permutation[i_perm];
         i_perm++;
         if (i_perm >= rand_max) {
