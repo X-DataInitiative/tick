@@ -23,7 +23,7 @@ tf = TimeFunction((T, Y), dt=0.01)
 
 # We define a 1 dimensional inhomogeneous Poisson process with the
 # intensity function seen above
-in_poi = SimuInhomogeneousPoisson([tf], end_time=run_time)
+in_poi = SimuInhomogeneousPoisson([tf], end_time=run_time, verbose=False)
 
 # We activate intensity tracking and launch simulation
 in_poi.track_intensity(0.1)

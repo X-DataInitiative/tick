@@ -48,14 +48,14 @@ sample_intercepts0[idx_nnz] = outliers_intensity * np.sqrt(2 * log_linspace) \
     * np.sign(sample_intercepts0[idx_nnz])
 
 X = features_normal_cov_toeplitz(n_samples, n_features, 0.5)
-X /= np.linalg.norm(X, axis=0)
+
 y = X.dot(weights0) + noise_level * np.random.randn(n_samples) \
     + intercept0 + sample_intercepts0
 
 target_fdr = 0.1
 noise_level = std_iqr(y)
-learner = RobustLinearRegression(C_sample_intercepts=n_samples / noise_level,
-                                 penalty='none', fdr=target_fdr)
+learner = RobustLinearRegression(C_sample_intercepts=2 * n_samples / noise_level,
+                                 penalty='none', fdr=target_fdr, verbose=False)
 learner.fit(X, y)
 
 fdp_ = support_fdp(sample_intercepts0, learner.sample_intercepts)
