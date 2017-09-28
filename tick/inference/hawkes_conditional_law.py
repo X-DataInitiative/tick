@@ -1136,8 +1136,9 @@ class HawkesConditionalLaw(Base):
         y_values = self.kernels[i][j][1]
 
         if self.quad_method == 'log':
-            log_t_values = np.log10(t_values)
-            log_y_values = np.log10(y_values)
+            with warnings.catch_warnings(record=True):
+                log_t_values = np.log10(t_values)
+                log_y_values = np.log10(y_values)
             log_abscissa_array = np.log10(abscissa_array)
             min_value = np.nanmin(log_abscissa_array)
             log_interpolation = np.interp(log_abscissa_array,

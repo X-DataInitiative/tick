@@ -40,8 +40,8 @@ doc/tex/**/*.blg
 
 
 # Doxygen generated files
-DOC_C/*
-!DOC_C/mainpage.dox
+doc_cpp/
+!doc_cpp/mainpage.dox
 
 # XCode Project
 XCode/
