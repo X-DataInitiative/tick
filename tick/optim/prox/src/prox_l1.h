@@ -13,6 +13,7 @@ class ProxL1 : public ProxSeparable {
 
   const std::string get_class_name() const override;
 
+ private:
   double call_single(double x, double step) const override;
 
   // Repeat n_times the prox on coordinate i

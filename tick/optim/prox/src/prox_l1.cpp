@@ -4,13 +4,13 @@
 
 ProxL1::ProxL1(double strength,
                bool positive)
-  : ProxSeparable(strength, positive) {}
+    : ProxSeparable(strength, positive) {}
 
 ProxL1::ProxL1(double strength,
                ulong start,
                ulong end,
                bool positive)
-  : ProxSeparable(strength, start, end, positive) {}
+    : ProxSeparable(strength, start, end, positive) {}
 
 const std::string ProxL1::get_class_name() const {
   return "ProxL1";

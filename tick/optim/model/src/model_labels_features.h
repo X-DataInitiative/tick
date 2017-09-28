@@ -1,7 +1,3 @@
-//
-// Created by Stéphane GAIFFAS on 06/12/2015.
-//
-
 #ifndef TICK_OPTIM_MODEL_SRC_MODEL_LABELS_FEATURES_H_
 #define TICK_OPTIM_MODEL_SRC_MODEL_LABELS_FEATURES_H_
 
@@ -20,6 +16,9 @@ class ModelLabelsFeatures : public virtual Model {
 
   //! Features matrix (either sparse or not)
   SBaseArrayDouble2dPtr features;
+
+  bool ready_columns_sparsity;
+  ArrayDouble column_sparsity;
 
  public:
   ModelLabelsFeatures(SBaseArrayDouble2dPtr features,
@@ -54,9 +53,20 @@ class ModelLabelsFeatures : public virtual Model {
     return n_samples;
   }
 
+  bool is_ready_columns_sparsity() const {
+    return ready_columns_sparsity;
+  }
+
+  ArrayDouble get_column_sparsity_view() {
+    if (!is_ready_columns_sparsity()) compute_columns_sparsity();
+    return view(column_sparsity);
+  }
+
+  void compute_columns_sparsity();
+
   template<class Archive>
-  void load(Archive & ar) {
-    ar(CEREAL_NVP(n_samples) );
+  void load(Archive &ar) {
+    ar(CEREAL_NVP(n_samples));
 
     ArrayDouble temp_labels;
     ArrayDouble2d temp_features;
@@ -68,7 +78,7 @@ class ModelLabelsFeatures : public virtual Model {
   }
 
   template<class Archive>
-  void save(Archive & ar) const {
+  void save(Archive &ar) const {
     ar(CEREAL_NVP(n_samples));
     ar(cereal::make_nvp("labels", *labels));
     ar(cereal::make_nvp("features", *features));

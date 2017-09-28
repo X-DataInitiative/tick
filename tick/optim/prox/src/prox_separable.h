@@ -30,12 +30,6 @@ class ProxSeparable : public Prox {
   virtual void call(const ArrayDouble &coeffs, const ArrayDouble &step, ArrayDouble &out,
                     ulong start, ulong end);
 
-  //! @brief apply prox on a single value
-  virtual double call_single(double x, double step) const;
-
-  //! @brief apply prox on a single value several times
-  virtual double call_single(double x, double step, ulong n_times) const;
-
   //! @brief apply prox on a single value defined by coordinate i
   virtual void call_single(ulong i, const ArrayDouble &coeffs, double step,
                            ArrayDouble &out) const;
@@ -46,9 +40,12 @@ class ProxSeparable : public Prox {
 
   double value(const ArrayDouble &coeffs, ulong start, ulong end) override;
 
-  //! @brief get penalization value of the prox on a single value defined by coordinate i
-  //! @warning This does not take strength into account
-  virtual double value_single(ulong i, const ArrayDouble &coeffs) const;
+ private:
+  //! @brief apply prox on a single value
+  virtual double call_single(double x, double step) const;
+
+  //! @brief apply prox on a single value several times
+  virtual double call_single(double x, double step, ulong n_times) const;
 
   //! @brief get penalization value of the prox on a single value
   //! @warning This does not take strength into account

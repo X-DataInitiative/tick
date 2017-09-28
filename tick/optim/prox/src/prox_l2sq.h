@@ -13,6 +13,7 @@ class ProxL2Sq : public ProxSeparable {
 
   const std::string get_class_name() const override;
 
+ private:
   double value_single(double x) const override;
 
   double call_single(double x, double step) const override;

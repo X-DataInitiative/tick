@@ -49,8 +49,6 @@ class Test(TestProx):
         out = coeffs.copy()
         t = np.linspace(1, 10, 5)
         out[3:8] *= 1. / (1. + t * l_l2sq)
-        # idx = out[3:8] < 0
-        # out[3:8][idx] = 0
         self.assertAlmostEqual(prox.value(coeffs),
                                0.5 * l_l2sq * norm(coeffs[3:8]) ** 2.,
                                delta=1e-15)

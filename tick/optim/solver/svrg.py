@@ -1,5 +1,7 @@
 # License: BSD 3 clause
 
+from warnings import warn
+from tick.optim.model.base import Model
 from tick.optim.solver.base import SolverFirstOrderSto
 from tick.optim.solver.build.solver import SVRG as _SVRG
 
@@ -26,8 +28,8 @@ class SVRG(SolverFirstOrderSto):
     rand_type : `str`
         Type of random sampling
 
-        * if ``"unif"`` samples are uniformly drawn among all possibilities
-        * if ``"perm"`` a random permutation of all possibilities is
+        * if ``'unif'`` samples are uniformly drawn among all possibilities
+        * if ``'perm'`` a random permutation of all possibilities is
           generated and samples are sequentially taken from it. Once all of
           them have been taken, a new random permutation is generated
 
@@ -51,12 +53,15 @@ class SVRG(SolverFirstOrderSto):
         Information along iteration is recorded in history each time the
         iteration number of a multiple of ``record_every``
 
-    variance_reduction : {'last', 'avg', 'rand'}, default = last
+    Other Parameters
+    ----------------
+    variance_reduction : {'last', 'avg', 'rand'}, default='last'
         Determine what is used as phase iterate for variance reduction.
 
         * 'last' : the phase iterate is the last iterate of the previous epoch
         * 'avg' : the phase iterate is the average over the iterates in the past
-          epoch
+          epoch. This is really a bad idea when using sparse datasets, a
+          warning will be raised in this case
         * 'rand': the phase iterate is a random iterate of the previous epoch
 
     Attributes
@@ -69,10 +74,10 @@ class SVRG(SolverFirstOrderSto):
     """
 
     def __init__(self, step: float = None, epoch_size: int = None,
-                 rand_type: str = "unif", tol: float = 0.,
+                 rand_type: str = 'unif', tol: float = 0.,
                  max_iter: int = 100, verbose: bool = True,
                  print_every: int = 10, record_every: int = 1,
-                 seed: int = -1, variance_reduction: str = "last"):
+                 seed: int = -1, variance_reduction: str = 'last'):
 
         SolverFirstOrderSto.__init__(self, step, epoch_size, rand_type,
                                      tol, max_iter, verbose,
@@ -98,12 +103,38 @@ class SVRG(SolverFirstOrderSto):
 
     @variance_reduction.setter
     def variance_reduction(self, val: str):
-
         if val not in variance_reduction_methods_mapper:
             raise ValueError(
-                'variance_reduction should be one of "{}", got "{}".'.format(
-                    ', '.join(variance_reduction_methods_mapper.keys()),
+                'variance_reduction should be one of "{}", got "{}"'.format(
+                    ', '.join(sorted(variance_reduction_methods_mapper.keys())),
                     val))
-
+        if self.model is not None:
+            if val == 'avg' and self.model._model.is_sparse():
+                warn("'avg' variance reduction cannot be used "
+                     "with sparse datasets", UserWarning)
         self._solver.set_variance_reduction(
             variance_reduction_methods_mapper[val])
+
+    def set_model(self, model: Model):
+        """Set model in the solver
+
+        Parameters
+        ----------
+        model : `Model`
+            Sets the model in the solver. The model gives the first
+            order information about the model (loss, gradient, among
+            other things)
+
+        Returns
+        -------
+        output : `Solver`
+            The `Solver` with given model
+        """
+        # We need to check that the setted model is not sparse when the
+        # variance reduction method is 'avg'
+        if self.variance_reduction == 'avg' and model._model.is_sparse():
+            warn("'avg' variance reduction cannot be used with sparse "
+                 "datasets. Please change `variance_reduction` before "
+                 "passing sparse data.", UserWarning)
+        SolverFirstOrderSto.set_model(self, model)
+        return self

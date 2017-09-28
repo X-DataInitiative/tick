@@ -8,8 +8,7 @@
 %}
 
 class SVRG : public StoSolver {
-
-public:
+  public:
     enum class VarianceReductionMethod {
         Last    = 1,
         Average = 2,

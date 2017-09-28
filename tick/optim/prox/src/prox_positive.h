@@ -13,13 +13,14 @@ class ProxPositive : public ProxSeparable {
 
   const std::string get_class_name() const override;
 
+  // Override value, only this value method should be called
+  double value(const ArrayDouble &coeffs, ulong start, ulong end) override;
+
+ private:
   double call_single(double x, double step) const override;
 
   // Repeat n_times the prox on coordinate i
   double call_single(double x, double step, ulong n_times) const override;
-
-  // Override value, only this value method should be called
-  double value(const ArrayDouble &coeffs, ulong start, ulong end) override;
 };
 
 #endif  // TICK_OPTIM_PROX_SRC_PROX_POSITIVE_H_
