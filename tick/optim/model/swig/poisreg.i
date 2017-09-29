@@ -19,4 +19,6 @@ class ModelPoisReg : public ModelGeneralizedLinear {
                const int n_threads);
 
   inline void set_link_type(LinkType link_type);
+
+  SArrayDouble2dPtr hessian(ArrayDouble &coeffs);
 };

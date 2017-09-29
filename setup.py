@@ -615,6 +615,17 @@ prox_core_info = {
 
 prox_core = create_extension(**prox_core_info)
 
+proj_core_info = {
+    "cpp_files": ["proj.cpp"],
+    "h_files": ["proj.h"],
+    "swig_files": ["proj_module.i"],
+    "module_dir": "./tick/optim/proj/",
+    "extension_name": "proj",
+    "include_modules": base_array_modules
+}
+
+proj_core = create_extension(**proj_core_info)
+
 solver_core_info = {
     "cpp_files": ["sto_solver.cpp",
                   "sgd.cpp",
@@ -672,7 +683,7 @@ inference_extension = create_extension(**inference_extension_info)
 
 tick_modules = [array_extension, base_extension,
                 test_extension, random_extension, simulation_extension,
-                model_core, prox_core, solver_core,
+                model_core, prox_core, proj_core, solver_core,
                 inference_extension, preprocessing_core]
 
 

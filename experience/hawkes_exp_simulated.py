@@ -20,10 +20,6 @@ decays = [1., 5., 12.]
 n_decays = len(decays)
 baseline = np.abs(np.random.normal(scale=1 / n_nodes, size=n_nodes))
 adjacency = np.abs(np.random.normal(size=(n_nodes, n_nodes, n_decays)))
-baseline[0] = 0.5
-adjacency[0, 0, 0] = 3
-adjacency[0, 0, 1] = -3
-adjacency[0, 0, 0] = 3
 
 hawkes_exp_kernels = SimuHawkesSumExpKernels(
     adjacency=adjacency, decays=decays, baseline=baseline,

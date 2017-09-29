@@ -1,6 +1,5 @@
 # License: BSD 3 clause
-
-
+from tick.optim.proj import ProjHalfSpace
 from tick.optim.solver.base import SolverFirstOrderSto
 from .build.solver import SDCA as _SDCA
 import numpy as np
@@ -148,7 +147,8 @@ class SDCA(SolverFirstOrderSto):
     """
 
     _attrinfos = {
-        'l_l2sq': {'cpp_setter': 'set_l_l2sq'}
+        'l_l2sq': {'cpp_setter': 'set_l_l2sq'},
+        '_proj': {'writable': False}
     }
 
     def __init__(self, l_l2sq: float, epoch_size: int = None,
@@ -164,6 +164,7 @@ class SDCA(SolverFirstOrderSto):
                                      record_every=record_every, seed=seed)
         self.l_l2sq = l_l2sq
         epoch_size = self.epoch_size
+        self._proj = None
         if epoch_size is None:
             epoch_size = 0
         # Construct the wrapped C++ SDCA solver
@@ -171,6 +172,14 @@ class SDCA(SolverFirstOrderSto):
                              self.tol, self._rand_type, self.seed)
 
         self.history.print_order.append('dual_objective')
+
+    def set_model(self, model):
+        A = model.features
+        # mask = model.labels > 0
+        A = A[model.labels > 0, :]
+        b = 1e-8 + np.zeros(A.shape[0])
+        self._set('_proj', ProjHalfSpace(max_iter=1000).fit(A, b))
+        return SolverFirstOrderSto.set_model(self, model)
 
     def extra_history(self, minimizer):
         try:
@@ -198,8 +207,11 @@ class SDCA(SolverFirstOrderSto):
         output : `float`
             Value of the objective at given ``coeffs``
         """
-        prox_l2_value = 0.5 * self.l_l2sq * np.linalg.norm(coeffs) ** 2
-        return SolverFirstOrderSto.objective(self, coeffs, loss) + prox_l2_value
+        projected_coeffs = self._proj.call(coeffs)
+        prox_l2_value = 0.5 * self.l_l2sq * np.linalg.norm(
+            projected_coeffs) ** 2
+        return SolverFirstOrderSto.objective(self, projected_coeffs, None) +\
+               prox_l2_value
 
     def dual_objective(self, dual_coeffs):
         """Compute the dual objective at ``dual_coeffs``

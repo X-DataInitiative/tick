@@ -1,8 +1,11 @@
 # License: BSD 3 clause
+import numpy as np
 
+from tick.optim.proj import ProjHalfSpace
 from warnings import warn
 from tick.optim.model.base import Model
 from tick.optim.solver.base import SolverFirstOrderSto
+from tick.optim.solver.base.utils import relative_distance
 from tick.optim.solver.build.solver import SVRG as _SVRG
 
 __author__ = "Stephane Gaiffas"
@@ -169,6 +172,10 @@ class SVRG(SolverFirstOrderSto):
       *Advances in Neural Information Processing Systems* (2016)
     """
 
+    _attrinfos = {
+        '_proj': {}
+    }
+
     def __init__(self, step: float = None, epoch_size: int = None,
                  rand_type: str = 'unif', tol: float = 1e-10,
                  max_iter: int = 10, verbose: bool = True,
@@ -194,6 +201,40 @@ class SVRG(SolverFirstOrderSto):
 
         self.variance_reduction = variance_reduction
         self.step_type = step_type
+
+    def set_model(self, model: Model):
+        """Set model in the solver
+            
+            Parameters
+            ----------
+            model : `Model`
+            Sets the model in the solver. The model gives the first
+            order information about the model (loss, gradient, among
+            other things)
+            
+            Returns
+            -------
+            output : `Solver`
+            The `Solver` with given model
+            """
+        # We need to check that the setted model is not sparse when the
+        # variance reduction method is 'avg'
+        if self.variance_reduction == 'avg' and model._model.is_sparse():
+            warn("'avg' variance reduction cannot be used with sparse "
+                 "datasets. Please change `variance_reduction` before "
+                 "passing sparse data.", UserWarning)
+        SolverFirstOrderSto.set_model(self, model)
+        A = model.features
+        # mask = model.labels > 0
+        A = A[model.labels > 0, :]
+        b = 1e-8 + np.zeros(A.shape[0])
+        self._set('_proj', ProjHalfSpace(max_iter=1000).fit(A, b))
+        return self
+
+    def objective(self, coeffs, loss: float = None):
+        projected_coeffs = self._proj.call(coeffs)
+        return self.model.loss(projected_coeffs) + \
+               self.prox.value(projected_coeffs)
 
     @property
     def variance_reduction(self):
@@ -228,26 +269,61 @@ class SVRG(SolverFirstOrderSto):
                     val))
         self._solver.set_step_type(step_types_mapper[val])
 
-    def set_model(self, model: Model):
-        """Set model in the solver
+    def _solve(self, x0: np.array = None, step: float = None):
+        """
+        Launch the solver
 
         Parameters
         ----------
-        model : `Model`
-            Sets the model in the solver. The model gives the first
-            order information about the model (loss, gradient, among
-            other things)
+        x0 : np.array, shape=(n_coeffs,)
+            Starting iterate for the solver
+
+        step : float
+            Step-size or learning rate for the solver
 
         Returns
         -------
-        output : `Solver`
-            The `Solver` with given model
+        output : np.array, shape=(n_coeffs,)
+            Obtained minimizer
         """
-        # We need to check that the setted model is not sparse when the
-        # variance reduction method is 'avg'
-        if self.variance_reduction == 'avg' and model._model.is_sparse():
-            warn("'avg' variance reduction cannot be used with sparse "
-                 "datasets. Please change `variance_reduction` before "
-                 "passing sparse data.", UserWarning)
-        SolverFirstOrderSto.set_model(self, model)
-        return self
+        from tick.optim.solver import SDCA
+        if not isinstance(self, SDCA):
+            if step is not None:
+                self.step = step
+
+            step, obj, minimizer, prev_minimizer = \
+                self._initialize_values(x0, step, n_empty_vectors=1)
+            self._solver.set_starting_iterate(minimizer)
+
+        else:
+            # In sdca case x0 is a dual vector
+            step, obj, minimizer, prev_minimizer = \
+                self._initialize_values(None, step, n_empty_vectors=1)
+            if x0 is not None:
+                self._solver.set_starting_iterate(x0)
+
+        # At each iteration we call self._solver.solve that does a full
+        # epoch
+        for n_iter in range(self.max_iter + 1):
+            prev_minimizer[:] = minimizer
+            prev_obj = obj
+            # Launch one epoch using the wrapped C++ solver
+            self._solver.solve()
+            self._solver.get_minimizer(minimizer)
+            minimizer = self._proj.call(minimizer)
+            # The step might be modified by the C++ solver
+            # step = self._solver.get_step()
+            obj = self.objective(minimizer)
+            rel_delta = relative_distance(minimizer, prev_minimizer)
+            rel_obj = abs(obj - prev_obj) / abs(prev_obj)
+            converged = rel_obj < self.tol
+            # If converged, we stop the loop and record the last step
+            # in history
+            extra_history = self.extra_history(minimizer)
+            self._handle_history(n_iter, force=converged, obj=obj,
+                                 x=minimizer.copy(), rel_delta=rel_delta,
+                                 rel_obj=rel_obj, **extra_history)
+            if converged:
+                break
+        self._set("solution", minimizer)
+        return minimizer

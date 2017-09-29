@@ -1,6 +1,7 @@
 import numpy as np
 from scipy.optimize import fmin_l_bfgs_b
 
+from tick.optim.proj import ProjHalfSpace
 from tick.optim.prox.base import Prox
 from tick.optim.prox import ProxZero, ProxL2Sq
 from tick.optim.solver.base import SolverFirstOrder
@@ -61,7 +62,8 @@ class LBFGSB(SolverFirstOrder):
         "_prox_grad": {
             "writable": False
         },
-        "_positive_bound" : {}
+        "_positive_bound" : {},
+        '_proj': {}
     }
 
     def __init__(self, tol: float = 0.,
@@ -73,6 +75,14 @@ class LBFGSB(SolverFirstOrder):
                                   record_every=record_every)
         self._prox_grad = None
         self._positive_bound = False
+
+    def set_model(self, model):
+        A = model.features
+        # mask = model.labels > 0
+        A = A[model.labels > 0, :]
+        b = 1e-8 + np.zeros(A.shape[0])
+        self._set('_proj', ProjHalfSpace(max_iter=1000).fit(A, b))
+        return SolverFirstOrder.set_model(self, model)
 
     def set_prox(self, prox: Prox):
         """Set proximal operator in the solver.
@@ -143,7 +153,8 @@ class LBFGSB(SolverFirstOrder):
             x = xk
             rel_delta = relative_distance(x, prev_x)
             prev_x[:] = x
-            obj = self.objective(x)
+            projected_coeffs = self._proj.call(x)
+            obj = self.objective(projected_coeffs)
             rel_obj = abs(obj - prev_obj[0]) / abs(prev_obj[0])
             prev_obj[0] = obj
             self._handle_history(n_iter[0], force=False, obj=obj,

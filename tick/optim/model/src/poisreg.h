@@ -38,6 +38,8 @@ class DLL_PUBLIC ModelPoisReg : public ModelGeneralizedLinear {
 
   double grad_i_factor(const ulong i, const ArrayDouble &coeffs) override;
 
+  SArrayDouble2dPtr hessian(ArrayDouble &coeffs);
+
   double sdca_dual_min_i(const ulong i,
                          const double dual_i,
                          const ArrayDouble &primal_vector,

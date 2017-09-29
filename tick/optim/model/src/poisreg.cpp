@@ -172,7 +172,9 @@ double ModelPoisReg::loss_i(const ulong i, const ArrayDouble &coeffs) {
     }
     case LinkType::identity: {
       double y_i = get_label(i);
-      return z - y_i * log(z) + std::lgamma(y_i + 1);
+      double loss = z + std::lgamma(y_i + 1);
+      if (y_i != 0) loss -= y_i * log(z);
+      return loss;
     }
     default:throw std::runtime_error("Undefined link type");
   }
@@ -189,4 +191,24 @@ double ModelPoisReg::grad_i_factor(const ulong i, const ArrayDouble &coeffs) {
     }
     default:throw std::runtime_error("Undefined link type");
   }
+}
+
+SArrayDouble2dPtr ModelPoisReg::hessian(ArrayDouble &coeffs) {
+  ArrayDouble2d hess(n_features, n_features);
+  hess.init_to_zero();
+
+  for (ulong i = 0; i < n_samples; ++i) {
+    BaseArrayDouble feature_i = get_features(i);
+    if (feature_i.is_sparse()) TICK_ERROR("hessian is not implemented for sparse data");
+    double inner_prod = get_inner_prod(i, coeffs);
+    double coeff = (*labels)[i] / (inner_prod * inner_prod);
+    for (ulong row = 0; row < n_features; ++row) {
+      for (ulong col = 0; col < n_features; ++col) {
+        hess(row, col) += coeff * feature_i.value(row) * feature_i.value(col);
+      }
+    }
+  }
+
+  hess /= n_samples;
+  return hess.as_sarray2d_ptr();
 }
