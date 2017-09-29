@@ -134,6 +134,7 @@ Hawkes
 
    optim.model.ModelHawkesFixedExpKernLogLik
    optim.model.ModelHawkesFixedExpKernLeastSq
+   optim.model.ModelHawkesFixedSumExpKernLogLik
    optim.model.ModelHawkesFixedSumExpKernLeastSq
 
 

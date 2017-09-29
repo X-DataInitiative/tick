@@ -10,7 +10,8 @@ from .build.model import ModelHawkesFixedSumExpKernLeastSqList as \
 
 
 class ModelHawkesFixedSumExpKernLeastSq(ModelHawkes):
-    """Hawkes process learner for sum-exponential kernels with fixed and given
+    """Hawkes process model for sum-exponential kernels with fixed and
+    given decays.
     It is modeled with least square loss:
 
     .. math::
@@ -33,7 +34,7 @@ class ModelHawkesFixedSumExpKernLeastSq(ModelHawkes):
     * :math:`\phi_{ij}` are the kernels
     * :math:`t_k^j` are the timestamps of all events of node :math:`j`
 
-    and with an sum-exponential parametrisation of the kernels
+    and with a sum-exponential parametrisation of the kernels
 
     .. math::
         \phi_{ij}(t) = \sum_{u=1}^{U} \\alpha^u_{ij} \\beta^u
@@ -78,6 +79,9 @@ class ModelHawkesFixedSumExpKernLeastSq(ModelHawkes):
     ----------
     n_nodes : `int` (read-only)
         Number of components, or dimension of the Hawkes model
+
+    n_decays : `int` (read-only)
+        Number of decays used in the sum-exponential kernel
         
     baseline_intervals : `np.ndarray`, shape=(n_baselines)
         Start time of each interval on which baseline is piecewise constant.

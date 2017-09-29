@@ -4,7 +4,9 @@ import numpy as np
 from scipy.sparse import sputils, csr_matrix
 
 from tick.optim.model.build.model import (ModelHawkesFixedSumExpKernLeastSqList,
-                                          ModelHawkesFixedExpKernLeastSqList)
+                                          ModelHawkesFixedExpKernLeastSqList,
+                                          ModelHawkesFixedSumExpKernLogLik,
+                                          ModelHawkesFixedSumExpKernLogLikList)
 from .model_first_order import ModelFirstOrder
 from tick.optim.model.base.model import N_CALLS_LOSS, PASS_OVER_DATA
 
@@ -133,7 +135,7 @@ class ModelHawkes(ModelFirstOrder):
 
         Parameters
         ----------
-        x: `np.ndarray`, shape=(n_coeffs,)
+        x : `np.ndarray`, shape=(n_coeffs,)
             Value at which the hessian is computed
 
         Notes
@@ -151,28 +153,40 @@ class ModelHawkes(ModelFirstOrder):
         # What kind of integers does scipy use fr sparse indices?
         sparse_dtype = sputils.get_index_dtype()
 
+        n_baselines = self.n_nodes
+        # number of alphas per dimension
+        if isinstance(self._model, (ModelHawkesFixedSumExpKernLeastSqList,
+                                    ModelHawkesFixedSumExpKernLogLikList)):
+            n_alphas_i = self.n_nodes * len(self.decays)
+        else:
+            n_alphas_i = self.n_nodes
+
         dim = self.n_nodes
-        row_indices_size = dim * (dim + 1) + 1
-        data_size = dim * (dim + 1) * (dim + 1)
+        row_indices_size = n_baselines + dim * n_alphas_i + 1
+        data_size = (n_baselines + dim * n_alphas_i) * (1 + n_alphas_i)
 
         # looks like [0  3  6  9 12 15 18] in dimension 2
         row_indices = np.arange(row_indices_size,
-                                dtype=sparse_dtype) * (dim + 1)
+                                dtype=sparse_dtype) * (1 + n_alphas_i)
 
         # looks like [0 2 3 1 4 5 0 2 3 0 2 3 1 4 5 1 4 5] in dimension 2
         # We first create the recurrent pattern for each dim
         block_dim = {}
         for d in range(dim):
             mu_array = np.array(d)
-            alpha_array = dim + d * dim + np.arange(dim)
+            alpha_array = n_baselines + d * n_alphas_i + np.arange(n_alphas_i)
             block_dim[d] = np.hstack((mu_array, alpha_array))
 
         # and then fill the indices array
         indices = np.zeros(data_size, dtype=sparse_dtype)
         for d in range(dim):
-            indices[d * (dim + 1): (d + 1) * (dim + 1)] = block_dim[d]
-            indices[(d + 1) * (dim * dim + dim): (d + 2) * (dim * dim + dim)] = \
-                np.tile(block_dim[d], (dim,))
+            indices[d * (n_alphas_i + 1): (d + 1) * (n_alphas_i + 1)] = \
+                block_dim[d]
+            alpha_shift = n_baselines * (n_alphas_i + 1)
+            alpha_d_start = alpha_shift + d * n_alphas_i * (n_alphas_i + 1)
+            alpha_d_end = alpha_shift + (d + 1) * n_alphas_i * (n_alphas_i + 1)
+            indices[alpha_d_start: alpha_d_end] = \
+                np.tile(block_dim[d], (n_alphas_i,))
 
         data = np.zeros(data_size, dtype=float)
 
