@@ -44,3 +44,11 @@ TEST_F(HawkesKernelTimeFuncTest, get_norm) {
 TEST_F(HawkesKernelTimeFuncTest, get_support) {
   EXPECT_GE(hawkes_kernel_time_func->get_support(), 4);
 }
+
+
+#ifdef ADD_MAIN
+int main(int argc, char** argv) {
+  ::testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
+}
+#endif  // ADD_MAIN

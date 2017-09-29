@@ -44,3 +44,10 @@ TEST(VArray, Append) {
 
     for (ulong j = 0; j < arr.size(); ++j) ASSERT_DOUBLE_EQ(arr[j], j);
 }
+
+#ifdef ADD_MAIN
+int main(int argc, char** argv) {
+  ::testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
+}
+#endif  // ADD_MAIN

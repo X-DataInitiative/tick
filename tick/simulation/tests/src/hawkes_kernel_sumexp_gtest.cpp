@@ -256,3 +256,11 @@ TEST_F(HawkesKernelSumExpTest, get_convolution_after_duplicate_if_necessary2) {
                      compute_sumexpkernel_convolution(decays, intensities, timestamps, test_time));
   }
 }
+
+
+#ifdef ADD_MAIN
+int main(int argc, char** argv) {
+  ::testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
+}
+#endif  // ADD_MAIN

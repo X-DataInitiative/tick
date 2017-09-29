@@ -49,3 +49,11 @@ TEST_F(HawkesKernelPowerLawTest, invalid_constructor_parameters) {
   EXPECT_THROW(HawkesKernelPowerLaw(multiplier, cutoff, exponent, 0, -1), std::invalid_argument);
   EXPECT_THROW(HawkesKernelPowerLaw(multiplier, cutoff, exponent, 0, 0), std::invalid_argument);
 }
+
+
+#ifdef ADD_MAIN
+int main(int argc, char** argv) {
+  ::testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
+}
+#endif  // ADD_MAIN
