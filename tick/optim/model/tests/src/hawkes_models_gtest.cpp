@@ -485,3 +485,12 @@ TEST_F(HawkesModelTest, compute_hessian_sumexp_loglikelihood){
   EXPECT_DOUBLE_EQ(out[8], 0.0024676761791649136);
   EXPECT_DOUBLE_EQ(out[9], 0.001582373650788027);
 }
+
+#ifdef ADD_MAIN
+int main(int argc, char** argv) {
+  ::testing::InitGoogleTest(&argc, argv);
+  ::testing::FLAGS_gtest_death_test_style = "fast";
+  return RUN_ALL_TESTS();
+}
+#endif  // ADD_MAIN
+

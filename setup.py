@@ -462,7 +462,7 @@ test_extension = create_extension(**array_test_extension_info)
 random_extension_info = {
     "cpp_files": ["rand.cpp", "test_rand.cpp"],
     "h_files": ["rand.h", "test_rand.h"],
-    "swig_files": ["crandom.i"],
+    "swig_files": ["crandom_module.i"],
     "module_dir": "./tick/random/",
     "extension_name": "crandom",
     "include_modules": base_array_modules

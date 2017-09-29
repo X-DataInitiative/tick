@@ -38,3 +38,10 @@ TEST_F(HawkesKernel0Test, get_future_max) {
 TEST_F(HawkesKernel0Test, get_norm) {
   EXPECT_DOUBLE_EQ(hawkes_kernel_time_func.get_norm(), 0);
 }
+
+#ifdef ADD_MAIN
+int main(int argc, char** argv) {
+  ::testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
+}
+#endif  // ADD_MAIN

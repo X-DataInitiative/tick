@@ -107,6 +107,20 @@ This will build all extensions, and install them directly in the source director
 Note also that special scripts, intended for developers, are available. `./clean_build_test.sh` removes all compiled binaries and runs the full compilation process, with all `C++` and `Python` unit-tests. This can take some time.
 Similarly, `./build_test.sh` runs the full compilation process, without removing first binaries, while `full_clean.sh` only removes them.
 
+### Alternative installation method
+
+Also supported is the build tool [maiken](https://github.com/dekken/maiken) which works with various compilers on major platforms.
+
+To use maiken, either download a provided [binary](https://github.com/dekken/maiken/tree/binaries) or compile the source following the instructions in the maiken README @ [Part 3: How to build Maiken]( )
+
+Once "mkn" is installed on your system, you should execture the shell script "./mkn.sh" to compile tick.
+
+As with tick in general, this requires python3 and all python pre-requisites. numpy/scipy/etc
+
+This method is provided mainly for developers to decrease compilation times. On windows this requires either [CYGWIN](https://www.cygwin.com/)/[MSYS](http://www.msys2.org/)
+
+To use [ccache](https://ccache.samba.org/) (or similar) with mkn, edit your ~/.maiken/settings.yaml file so it looks like one [here](https://github.com/Dekken/maiken/wiki/Alternative-configs) - this can greatly decrease repeated compilation times. ccache is a third party tool which may have to be installed manually on your system.
+
 ## Help and Support
 
 ### Documentation

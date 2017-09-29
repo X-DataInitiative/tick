@@ -654,3 +654,13 @@ TYPED_TEST(Array2dTest, SerializationBinary) {
   SCOPED_TRACE("");
   ::TestSerialization2D<cereal::BinaryInputArchive, cereal::BinaryOutputArchive, TypeParam>();
 }
+
+
+#ifdef ADD_MAIN
+int main(int argc, char** argv) {
+  ::testing::InitGoogleTest(&argc, argv);
+  ::testing::FLAGS_gtest_death_test_style = "fast";
+  return RUN_ALL_TESTS();
+}
+#endif  // ADD_MAIN
+

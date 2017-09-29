@@ -123,3 +123,11 @@ TEST(Model, SerializationBinary) {
   SCOPED_TRACE("");
   ::TestModelLinRegSerialization<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
 }
+
+
+#ifdef ADD_MAIN
+int main(int argc, char** argv) {
+  ::testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
+}
+#endif  // ADD_MAIN

@@ -346,3 +346,10 @@ TEST(DebugTest, PrintSparseArray) {
   const std::string msg = testing::internal::GetCapturedStdout();
   EXPECT_PRED_FORMAT2(testing::IsSubstring, "SparseArray", msg);
 }
+
+#ifdef ADD_MAIN
+int main(int argc, char** argv) {
+  ::testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
+}
+#endif  // ADD_MAIN
