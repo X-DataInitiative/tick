@@ -88,7 +88,7 @@ profile:
 
   - name: inference
     parent: arg
-    self: optim/model
+    self: optim/model optim/solver
     inc: ./tick/inference/src
     src:
       ./tick/inference/src
@@ -125,6 +125,16 @@ profile:
       ./tick/optim/solver/swig
     install: ${lib_path}/optim/solver/build
     out: _solver${lib_name}
+
+  - name: optim/proj
+    parent: arg
+    self: base
+    inc: ./tick/optim/proj/src
+    src:
+      ./tick/optim/proj/src
+      ./tick/optim/proj/swig
+    install: ${lib_path}/optim/proj/build
+    out: proj${lib_name}
 
   - name: preprocessing
     parent: arg

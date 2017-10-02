@@ -211,6 +211,7 @@ PROFILES=(
     optim/model
     optim/prox
     optim/solver
+    optim/proj
     simulation
     inference
     preprocessing
@@ -224,10 +225,11 @@ function hash_index() {
         'optim/model')   echo 3;;
         'optim/prox')    echo 4;;
         'optim/solver')  echo 5;;
-        'simulation')    echo 6;;
-        'inference')     echo 7;;
-        'preprocessing') echo 8;;
-        'array_test')    echo 9;;
+        'optim/proj')    echo 6;;
+        'simulation')    echo 7;;
+        'inference')     echo 8;;
+        'preprocessing') echo 9;;
+        'array_test')    echo 10;;
     esac
 }
 LIBRARIES=(
@@ -237,6 +239,7 @@ LIBRARIES=(
     "tick/optim/model/build/_model$LIB_POSTFIX"
     "tick/optim/prox/build/_prox$LIB_POSTFIX"
     "tick/optim/solver/build/_solver$LIB_POSTFIX"
+    "tick/optim/proj/build/_proj$LIB_POSTFIX"
     "tick/simulation/build/_simulation$LIB_POSTFIX"
     "tick/inference/build/_inference$LIB_POSTFIX"
     "tick/preprocessing/build/_preprocessing$LIB_POSTFIX"

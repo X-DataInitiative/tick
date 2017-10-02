@@ -184,8 +184,7 @@ class Test(unittest.TestCase):
         for model in [self.model]:
             hessian = model.hessian(self.coeffs).todense()
             # Check that hessian is equal to its transpose
-            np.testing.assert_array_almost_equal(hessian, hessian.T,
-                                                 decimal=10)
+            np.testing.assert_array_almost_equal(hessian, hessian.T, decimal=9)
 
             np.set_printoptions(precision=3, linewidth=200)
 
