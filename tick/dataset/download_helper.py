@@ -23,7 +23,8 @@ BASE_URL = ("https://raw.githubusercontent.com/X-DataInitiative/tick-datasets"
             "/master/%s")
 
 
-def download_tick_dataset(dataset_path, data_home=None, verbose=True):
+def download_tick_dataset(dataset_path, data_home=None, verbose=True,
+                          base_url=BASE_URL):
     """Downloads dataset from tick_datasets github repository and store it
     locally
 
@@ -52,7 +53,7 @@ def download_tick_dataset(dataset_path, data_home=None, verbose=True):
     if not os.path.exists(cache_dir):
         os.makedirs(cache_dir)
 
-    file_url = BASE_URL % dataset_path
+    file_url = base_url % dataset_path
     if verbose:
         logger.warning("Downloading dataset from %s", file_url)
     opener = urlopen(file_url)

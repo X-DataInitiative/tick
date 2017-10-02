@@ -187,7 +187,8 @@ double ModelPoisReg::grad_i_factor(const ulong i, const ArrayDouble &coeffs) {
       return exp(z) - get_label(i);
     }
     case LinkType::identity: {
-      return 1 - get_label(i) / z;
+      double y_i = get_label(i);
+      return y_i != 0? 1 - get_label(i) / z: 1;
     }
     default:throw std::runtime_error("Undefined link type");
   }

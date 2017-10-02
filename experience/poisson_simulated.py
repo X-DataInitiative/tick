@@ -1,11 +1,13 @@
 import numpy as np
+import matplotlib.pyplot as plt
+
 from tick.plot import stems, plot_history
 
 from tick.optim.prox import ProxZero, ProxL2Sq
 
 from tick.simulation import SimuPoisReg
 from tick.optim.model import ModelPoisReg
-from tick.optim.solver import LBFGSB, SDCA
+from tick.optim.solver import LBFGSB, SDCA, Newton
 
 n_samples = 10000
 n_features = 40
@@ -50,6 +52,11 @@ lbfgsb = LBFGSB()
 lbfgsb.set_model(model).set_prox(ProxL2Sq(l_l2sq, positive=True))
 lbfgsb.solve(0.2 * np.ones(model.n_coeffs))
 
-stems([weights, sdca.solution, lbfgsb.solution],
-      titles=["Weights", 'SDCA', 'L-BFGS-B'])
+newton = Newton()
+newton.set_model(model).set_prox(ProxL2Sq(l_l2sq))
+newton.solve(0.2 * np.ones(model.n_coeffs))
 
+stems([weights, sdca.solution, lbfgsb.solution, newton.solution],
+      titles=["Weights", 'SDCA', 'L-BFGS-B', 'Newtom'])
+
+plt.show()
