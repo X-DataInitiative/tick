@@ -118,7 +118,7 @@ class BFGS(SolverFirstOrder):
         """
         if type(prox) is ProxZero:
             SolverFirstOrder.set_prox(self, prox)
-            self._set("_prox_grad", lambda x: x)
+            self._set("_prox_grad", lambda x: np.zeros_like(x))
         elif type(prox) is ProxL2Sq:
             SolverFirstOrder.set_prox(self, prox)
             self._set("_prox_grad", lambda x: prox.strength * x)

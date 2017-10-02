@@ -1,5 +1,4 @@
 import numpy as np
-from scipy.optimize import fmin_l_bfgs_b
 
 from tick.optim.proj import ProjHalfSpace
 from tick.optim.prox.base import Prox
@@ -8,9 +7,8 @@ from tick.optim.solver.base import SolverFirstOrder
 from tick.optim.solver.base.utils import relative_distance
 
 
-class LBFGSB(SolverFirstOrder):
-    """
-    This is a simple wrapping of `scipy.optimize.fmin_l_bfgs_b`
+class Newton(SolverFirstOrder):
+    """Newton descent
 
     Parameters
     ----------
@@ -62,11 +60,13 @@ class LBFGSB(SolverFirstOrder):
         "_prox_grad": {
             "writable": False
         },
-        "_positive_bound" : {},
+        "_prox_hess": {
+            "writable": False
+        },
         '_proj': {}
     }
 
-    def __init__(self, tol: float = 0.,
+    def __init__(self, tol: float = 1e-10,
                  max_iter: int = 100, verbose: bool = True,
                  print_every: int = 10, record_every: int = 1):
         SolverFirstOrder.__init__(self, step=None, tol=tol,
@@ -74,7 +74,6 @@ class LBFGSB(SolverFirstOrder):
                                   print_every=print_every,
                                   record_every=record_every)
         self._prox_grad = None
-        self._positive_bound = False
 
     def set_model(self, model):
         A = model.features
@@ -104,18 +103,16 @@ class LBFGSB(SolverFirstOrder):
         """
         if type(prox) is ProxZero:
             SolverFirstOrder.set_prox(self, prox)
-            self._set("_prox_grad", lambda x: 0)
+            self._set("_prox_grad", lambda x: np.zeros_like(x))
+            self._set("_prox_hess", lambda x: np.zeros(len(x), len(x)))
         elif type(prox) is ProxL2Sq:
             SolverFirstOrder.set_prox(self, prox)
             self._set("_prox_grad", lambda x: prox.strength * x)
+            self._set("_prox_hess", lambda x: prox.strength *
+                                              np.identity(len(x)))
         else:
-            raise ValueError("LBFGSB only accepts ProxZero and ProxL2sq "
+            raise ValueError("Newton only accepts ProxZero and ProxL2sq "
                              "for now")
-
-        if prox.positive:
-            self._positive_bound = True
-        else:
-            self._positive_bound = False
 
         return self
 
@@ -140,45 +137,51 @@ class LBFGSB(SolverFirstOrder):
         return self.solution
 
     def _solve(self, x0: np.ndarray = None):
-        if x0 is None:
-            x0 = np.zeros(self.model.n_coeffs)
-        obj = self.objective(x0)
 
-        # A closure to maintain history along internal BFGS's iterations
-        n_iter = [0]
-        prev_x = x0.copy()
-        prev_obj = [obj]
-
-        def insp(xk):
-            x = xk
-            rel_delta = relative_distance(x, prev_x)
-            prev_x[:] = x
-            projected_coeffs = self._proj.call(x)
-            obj = self.objective(projected_coeffs)
-            rel_obj = abs(obj - prev_obj[0]) / abs(prev_obj[0])
-            prev_obj[0] = obj
-            self._handle_history(n_iter[0], force=False, obj=obj,
-                                 x=xk.copy(),
-                                 rel_delta=rel_delta,
-                                 rel_obj=rel_obj)
-            n_iter[0] += 1
-
-        insp.n_iter = n_iter
-        insp.self = self
-        insp.prev_x = prev_x
-        insp.prev_obj = prev_obj
-
-        if self._positive_bound:
-            bounds = [(1e-10, None) for _ in range(self.model.n_coeffs)]
+        if x0 is not None:
+            x = x0.copy()
         else:
-            bounds = None
+            x = np.zeros(self.model.n_coeffs)
 
-        # We simply call the scipy.optimize.fmin_bfgs routine
-        res = \
-            fmin_l_bfgs_b(lambda x: self.model.loss(x) + self.prox.value(x),
-                          x0,
-                          lambda x: self.model.grad(x) + self._prox_grad(x),
-                          maxiter=self.max_iter, pgtol=self.tol,
-                          callback=insp, disp=False, bounds=bounds)
-        x_min = res[0]
-        return x_min
+        x = self._proj.call(x)
+        obj = self.objective(x)
+
+
+        assert self.model.features[self.model.labels > 0, :].dot(x).min() > 0
+
+        prev_x = np.empty_like(x)
+        for n_iter in range(self.max_iter + 1):
+            prev_x[:] = x
+            prev_obj = obj
+
+            hessian = self.model.hessian(x) + self._prox_hess(x)
+            grad = self.model.grad(x) + self._prox_grad(x)
+
+            step = 1
+            beta = 0.7
+            direction = np.linalg.inv(hessian).dot(grad)
+            while True:
+                next_x = x - step * direction
+                next_objective = self.objective(next_x)
+                if np.isnan(next_objective) or (next_objective > prev_obj):
+                    step *= beta
+                else:
+                    x = next_x
+                    break
+
+
+            rel_delta = relative_distance(x, prev_x)
+
+            obj = self.objective(x)
+            rel_obj = abs(obj - prev_obj) / abs(prev_obj)
+            converged = rel_obj < self.tol
+
+            # If converged, we stop the loop and record the last step
+            # in history
+            self._handle_history(n_iter, force=converged, obj=obj,
+                                 x=x.copy(), rel_delta=rel_delta,
+                                 rel_obj=rel_obj)
+            if converged:
+                break
+        self._set("solution", x)
+        return x
