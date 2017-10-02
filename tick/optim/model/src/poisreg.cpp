@@ -194,7 +194,11 @@ double ModelPoisReg::grad_i_factor(const ulong i, const ArrayDouble &coeffs) {
 }
 
 SArrayDouble2dPtr ModelPoisReg::hessian(ArrayDouble &coeffs) {
-  ArrayDouble2d hess(n_features, n_features);
+  if (link_type == LinkType::exponential) {
+    TICK_ERROR("Hessian is not implemented for exponential link")
+  }
+
+  ArrayDouble2d hess(get_n_coeffs(), get_n_coeffs());
   hess.init_to_zero();
 
   for (ulong i = 0; i < n_samples; ++i) {
@@ -206,6 +210,15 @@ SArrayDouble2dPtr ModelPoisReg::hessian(ArrayDouble &coeffs) {
       for (ulong col = 0; col < n_features; ++col) {
         hess(row, col) += coeff * feature_i.value(row) * feature_i.value(col);
       }
+      if (fit_intercept) {
+        hess(row, n_features) += coeff * feature_i.value(row);
+      }
+    }
+    if (fit_intercept) {
+    for (ulong col = 0; col < n_features; ++col) {
+        hess(n_features, col) += coeff * feature_i.value(col);
+      }
+      hess(n_features, n_features) += coeff;
     }
   }
 

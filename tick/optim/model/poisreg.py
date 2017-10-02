@@ -241,3 +241,13 @@ class ModelPoisReg(ModelGeneralizedLinear,
         dual_loss += np.mean(gammaln(self.labels[non_zero_labels] + 1))
 
         return np.mean(dual_loss) * self._sdca_rand_max / self.n_samples
+
+    def hessian(self, x):
+        """Return model's hessian
+
+        Parameters
+        ----------
+        x : `np.ndarray`, shape=(n_coeffs,)
+            Value at which the hessian is computed
+        """
+        return self._model.hessian(x)

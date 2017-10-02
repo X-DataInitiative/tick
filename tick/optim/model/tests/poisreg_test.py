@@ -3,6 +3,7 @@
 import unittest
 
 import numpy as np
+from scipy.optimize import check_grad
 from scipy.sparse import csr_matrix
 
 from tick.optim.model import ModelPoisReg
@@ -74,6 +75,38 @@ class Test(TestGLM):
         model = ModelPoisReg(link='identity').fit(features, labels)
         self.assertEqual(model._sdca_rand_max, 3)
         self.assertEqual(model._rand_max, 5)
+
+    def test_poisreg_hessian(self):
+        """...Numerical consistency check of hessian for Poisson regression
+        """
+        np.random.seed(19)
+        n_samples, n_features = 100, 3
+        w0 = np.random.randn(n_features) / n_features
+        c0 = np.random.randn() / n_features
+        X, y = SimuPoisReg(w0, c0, n_samples=n_samples,
+                           verbose=False, seed=1234).simulate()
+
+        for fit_intercept in [True, False]:
+            model = ModelPoisReg(link='identity', fit_intercept=fit_intercept)
+            model.fit(X, y)
+            coeffs = np.random.rand(model.n_coeffs)
+            hessian = model.hessian(coeffs)
+            # Check that hessian is equal to its transpose
+            np.testing.assert_array_almost_equal(hessian, hessian.T, decimal=9)
+
+            np.set_printoptions(precision=3, linewidth=200)
+
+            # Check that for all dimension hessian row is consistent
+            # with its corresponding gradient coordinate.
+            for i in range(model.n_coeffs):
+                def g_i(x):
+                    return model.grad(x)[i]
+
+                def h_i(x):
+                    h = model.hessian(x)
+                    return np.asarray(h)[i, :]
+
+                self.assertLess(check_grad(g_i, h_i, coeffs), 1e-3)
 
 
 if __name__ == '__main__':
