@@ -16,8 +16,8 @@ nn_z = 1.
 mask_zeros = np.random.choice(range(n_features), int((1 - nn_z) * n_features),
                               replace=True)
 
-positive_weights = True
-positive_features = True
+positive_weights = False
+positive_features = False
 
 weights = np.random.normal(size=n_features)
 weights[mask_zeros] = 0
@@ -56,7 +56,9 @@ newton = Newton()
 newton.set_model(model).set_prox(ProxL2Sq(l_l2sq))
 newton.solve(0.2 * np.ones(model.n_coeffs))
 
-stems([weights, sdca.solution, lbfgsb.solution, newton.solution],
-      titles=["Weights", 'SDCA', 'L-BFGS-B', 'Newtom'])
+# stems([weights, sdca.solution, lbfgsb.solution, newton.solution],
+#       titles=["Weights", 'SDCA', 'L-BFGS-B', 'Newtom'])
+#
+# plt.show()
 
-plt.show()
+plot_history([sdca, newton], log_scale=True, dist_min=True, x='time')

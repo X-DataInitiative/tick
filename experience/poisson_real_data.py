@@ -35,7 +35,7 @@ labels = data[:, -1]
 features = np.ascontiguousarray(features)
 labels = np.ascontiguousarray(labels)
 
-l_l2sq = 1e2
+l_l2sq = 1e4
 model = ModelPoisReg(fit_intercept=False, link='identity')
 model.fit(features, labels)
 
@@ -62,3 +62,4 @@ scpg.set_model(model).set_prox(ProxL2Sq(l_l2sq, positive=False))
 scpg.solve(np.abs(sdca.solution))
 
 plot_history([sdca, newton], dist_min=True, log_scale=True, x='time')
+print(np.abs(sdca.solution).max())
