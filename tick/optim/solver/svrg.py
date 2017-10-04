@@ -1,6 +1,7 @@
 # License: BSD 3 clause
 import numpy as np
 
+from tick.optim.model import ModelPoisReg
 from tick.optim.proj import ProjHalfSpace
 from warnings import warn
 from tick.optim.model.base import Model
@@ -224,17 +225,16 @@ class SVRG(SolverFirstOrderSto):
                  "datasets. Please change `variance_reduction` before "
                  "passing sparse data.", UserWarning)
         SolverFirstOrderSto.set_model(self, model)
-        A = model.features
-        # mask = model.labels > 0
-        A = A[model.labels > 0, :]
-        b = 1e-8 + np.zeros(A.shape[0])
-        self._set('_proj', ProjHalfSpace(max_iter=1000).fit(A, b))
+        if isinstance(model, ModelPoisReg):
+            A = model.features
+            # mask = model.labels > 0
+            A = A[model.labels > 0, :]
+            b = 1e-8 + np.zeros(A.shape[0])
+            self._set('_proj', ProjHalfSpace(max_iter=1000).fit(A, b))
         return self
 
-    def objective(self, coeffs, loss: float = None):
-        projected_coeffs = self._proj.call(coeffs)
-        return self.model.loss(projected_coeffs) + \
-               self.prox.value(projected_coeffs)
+    def objective(self, coeffs, loss: float=None):
+        return self.model.loss(coeffs) + self.prox.value(coeffs)
 
     @property
     def variance_reduction(self):
@@ -302,18 +302,29 @@ class SVRG(SolverFirstOrderSto):
             if x0 is not None:
                 self._solver.set_starting_iterate(x0)
 
+        if isinstance(self.model, ModelPoisReg) and x0 is not None:
+            x0 = self._proj.call(x0)
+            self._solver.set_starting_iterate(x0)
+
         # At each iteration we call self._solver.solve that does a full
         # epoch
+        # print(x0)
+        self._handle_history(0, obj=obj, x=x0)
         for n_iter in range(self.max_iter + 1):
             prev_minimizer[:] = minimizer
             prev_obj = obj
             # Launch one epoch using the wrapped C++ solver
             self._solver.solve()
             self._solver.get_minimizer(minimizer)
-            minimizer = self._proj.call(minimizer)
+            # print(minimizer)
             # The step might be modified by the C++ solver
             # step = self._solver.get_step()
-            obj = self.objective(minimizer)
+            if isinstance(self.model, ModelPoisReg):
+                projected_coeffs = self._proj.call(minimizer)
+                minimizer[:] = projected_coeffs
+                obj = self.objective(projected_coeffs)
+            else:
+                obj = self.objective(minimizer)
             rel_delta = relative_distance(minimizer, prev_minimizer)
             rel_obj = abs(obj - prev_obj) / abs(prev_obj)
             converged = rel_obj < self.tol

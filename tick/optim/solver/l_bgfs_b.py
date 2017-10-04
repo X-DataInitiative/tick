@@ -1,6 +1,7 @@
 import numpy as np
 from scipy.optimize import fmin_l_bfgs_b
 
+from tick.optim.model import ModelPoisReg
 from tick.optim.proj import ProjHalfSpace
 from tick.optim.prox.base import Prox
 from tick.optim.prox import ProxZero, ProxL2Sq
@@ -77,11 +78,11 @@ class LBFGSB(SolverFirstOrder):
         self._positive_bound = False
 
     def set_model(self, model):
-        A = model.features
-        # mask = model.labels > 0
-        A = A[model.labels > 0, :]
-        b = 1e-8 + np.zeros(A.shape[0])
-        self._set('_proj', ProjHalfSpace(max_iter=1000).fit(A, b))
+        if isinstance(model, ModelPoisReg):
+            A = model.features
+            A = A[model.labels > 0, :]
+            b = 1e-8 + np.zeros(A.shape[0])
+            self._set('_proj', ProjHalfSpace(max_iter=1000).fit(A, b))
         return SolverFirstOrder.set_model(self, model)
 
     def set_prox(self, prox: Prox):
@@ -149,12 +150,18 @@ class LBFGSB(SolverFirstOrder):
         prev_x = x0.copy()
         prev_obj = [obj]
 
+        if isinstance(self.model, ModelPoisReg) and x0 is not None:
+            x0 = self._proj.call(x0)
+
         def insp(xk):
             x = xk
             rel_delta = relative_distance(x, prev_x)
             prev_x[:] = x
-            projected_coeffs = self._proj.call(x)
-            obj = self.objective(projected_coeffs)
+            if isinstance(self.model, ModelPoisReg):
+                projected_coeffs = self._proj.call(x)
+                obj = self.objective(projected_coeffs)
+            else:
+                obj = self.objective(x)
             rel_obj = abs(obj - prev_obj[0]) / abs(prev_obj[0])
             prev_obj[0] = obj
             self._handle_history(n_iter[0], force=False, obj=obj,
@@ -173,6 +180,7 @@ class LBFGSB(SolverFirstOrder):
         else:
             bounds = None
 
+        insp(x0)
         # We simply call the scipy.optimize.fmin_bfgs routine
         res = \
             fmin_l_bfgs_b(lambda x: self.model.loss(x) + self.prox.value(x),
