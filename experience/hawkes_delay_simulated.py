@@ -8,7 +8,7 @@ from tick.inference import HawkesDual, HawkesSumExpKern
 from tick.plot import plot_history, plot_hawkes_kernel_norms, \
     plot_hawkes_kernels
 
-simulate = True
+simulate = False
 
 def estimation_error(estimated, original):
     return np.linalg.norm(original - estimated) ** 2 / \
@@ -59,6 +59,7 @@ for step in steps:
 hawkes_lbgfsb = HawkesSumExpKern(decays, gofit='likelihood', verbose=True,
                                  C=1 / l_l2sq, penalty='l2', solver='l-bfgs-b',
                                  record_every=1, max_iter=100, tol=0)
+# hawkes_lbgfsb._prox_obj.positive = False
 hawkes_lbgfsb._model_obj.n_threads = 4
 hawkes_lbgfsb.fit(timestamps)
 
@@ -98,9 +99,14 @@ print(loss_bfgs_dual_coeffs, loss_dual_dual_coeffs)
 print(loss_bfgs_dual_coeffs, loss_dual_dual_coeffs)
 print(hawkes_lbgfsb._solver_obj.objective(dual_coeffs), hawkes_dual.objective(dual_coeffs))
 
-fig = plot_history(all_learners, dist_min=True, log_scale=True,
-                   labels=labels, show=False)
+# fig = plot_history(all_learners, dist_min=True, log_scale=True,
+#                    labels=labels, show=False)
+#
+# fig.gca().set_ylim([None, 1])
+#
+# plt.show()
 
-fig.gca().set_ylim([None, 1])
-
-plt.show()
+plot_hawkes_kernels(hawkes_dual, hawkes=hawkes_delay, show=False)
+plt.savefig("hawkes_dual_delay_kernel.png")
+plot_hawkes_kernels(hawkes_lbgfsb, hawkes=hawkes_delay, show=False)
+plt.savefig("hawkes_bfgs_delay_kernel.png")

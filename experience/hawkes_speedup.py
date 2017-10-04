@@ -10,7 +10,7 @@ def estimation_error(estimated, original):
     return np.linalg.norm(original - estimated) ** 2 / \
            np.linalg.norm(original) ** 2
 
-simulate = False
+simulate = True
 
 end_time = 20000
 n_realizations = 5
