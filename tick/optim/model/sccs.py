@@ -29,10 +29,10 @@ class ModelSCCS(ModelFirstOrder, ModelLipschitz):
         The list of features matrices.
 
     labels : `list` of `numpy.ndarray`,
-        list of length n_samples, each element of the list of 
+        list of length n_samples, each element of the list of
         shape=(n_intervals,)
         The labels vector
-        
+
     censoring : `numpy.ndarray`, shape=(n_samples,), dtype="uint64"
         The censoring data. This array should contain integers in
         [1, n_intervals]. If the value i is equal to n_intervals, then there
@@ -100,7 +100,7 @@ class ModelSCCS(ModelFirstOrder, ModelLipschitz):
 
         labels : List[{1d array, csr matrix of shape (n_intervals,)]
             The labels vector
-            
+
         censoring : 1d array of shape (n_samples,)
             The censoring vector
 
@@ -131,10 +131,10 @@ class ModelSCCS(ModelFirstOrder, ModelLipschitz):
             The list of features matrices.
 
         labels : `list` of `numpy.ndarray`,
-            list of length n_samples, each element of the list of 
+            list of length n_samples, each element of the list of
             shape=(n_intervals,)
             The labels vector
-        
+
         censoring : `numpy.ndarray`, shape=(n_samples,), dtype="uint64"
             The censoring data. This array should contain integers in
             [1, n_intervals]. If the value i is equal to n_intervals, then there
