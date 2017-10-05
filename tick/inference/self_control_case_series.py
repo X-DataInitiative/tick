@@ -6,7 +6,7 @@ from operator import itemgetter
 from scipy.misc import comb
 from itertools import chain
 from tick.base import Base
-from tick.optim.prox import ProxTV, ProxMulti, ProxZero, ProxEquality, ProxL1, ProxL2Sq
+from tick.optim.prox import ProxTV, ProxMulti, ProxZero, ProxEquality, ProxL1, ProxL1L2
 from tick.optim.solver import SVRG
 from tick.optim.model import ModelSCCS
 from tick.preprocessing import LongitudinalFeaturesProduct,\
@@ -70,6 +70,12 @@ class LearnerSCCS(ABC, Base):
         "step": {
             "writable": False
         },
+        "allowed_penalties": {
+            "writable": False
+        },
+        "intercept": {
+            "writable": False
+        }
     }
 
     # TODO: This is not useful in its current form
@@ -79,25 +85,25 @@ class LearnerSCCS(ABC, Base):
         'Equality': ProxEquality,
         'L1-first-TV': [ProxL1, ProxTV],
         'L1-TV': [ProxL1, ProxTV],
-        'TV-L1': [ProxTV, ProxL1],
+        'TV-L1L2': [ProxTV, ProxL1L2]
     }
 
     def __init__(self, n_lags: int=0, feature_products=False,
                  feature_type="infinite", penalty='TV', strength_TV: float=0,
                  strength_L1: float=0, step=None, tol=1e-5, max_iter=100,
                  verbose=True, print_every=10, record_every=10,
-                 random_state=None):
+                 random_state=None, intercept=False):
         Base.__init__(self)
 
         # Check args
         if feature_type not in ["infinite", "short"]:
             raise ValueError("``feature_type`` should be either ``infinite`` or\
                          ``short``.")
-        allowed_penalties = list(self._penalties.keys())
-        allowed_penalties.sort()
-        if penalty not in allowed_penalties:
+        self.allowed_penalties = list(self._penalties.keys())
+        self.allowed_penalties.sort()
+        if penalty not in self.allowed_penalties:
             raise ValueError("``penalty`` must be one of %s, got %s" %
-                             (', '.join(allowed_penalties), penalty))
+                             (', '.join(self.allowed_penalties), penalty))
 
         self.n_intervals = None
         self.n_features = None
@@ -130,6 +136,7 @@ class LearnerSCCS(ABC, Base):
         self._fitted = False
         self._prox_obj = None
         self.step = step
+        self.intercept = intercept
 
     def fit(self, features: np.ndarray, labels: np.array,
             censoring: np.array, bootstrap=False, bootstrap_rep=200,
@@ -380,31 +387,40 @@ class LearnerSCCS(ABC, Base):
         preprocessors = self._preprocessor_obj
 
         n_intervals, n_features = features[0].shape
-        n_features = int(comb(n_features, 2) + n_features
-                         if self.feature_products else n_features)
-        n_coeffs = n_features * (self.n_lags + 1)
-        self._set('n_features', n_features)
-        self._set('n_coeffs', n_coeffs)
-        self._set('n_intervals', n_intervals)
-
-        # Filter patients without event
+        n_patients = len(features)
+        # Filter patients without exposures
         # TODO: create independent preprocessor
         mask = [i for i, f in enumerate(features) if f.sum() > 0]
-        features_filter = itemgetter(*mask)
-        features = features_filter(features)
-        labels = features_filter(labels)
-        censoring = censoring[mask]
+        n_active_patients = len(mask)
+        if n_active_patients < n_patients:
+            # TODO: raise warning
+            features_filter = itemgetter(*mask)
+            features = features_filter(features)
+            labels = features_filter(labels)
+            censoring = censoring[mask]
 
         # TODO: create independent preprocessor
         features, labels, censoring, _ = SimuSCCS\
             ._filter_non_positive_samples(features, labels, censoring)
 
         # Feature products
-        # TODO: fix feature products
-        features = preprocessors[0].fit_transform(features)
+        if self.feature_products:
+            features = preprocessors[0].fit_transform(features)
+            n_features = int(comb(n_features, 2) + n_features)
+
+        # TODO: create independent preprocessor
+        if self.intercept:
+            features = [self._add_intercept(f) for f in features]
+            # intercept should not be counted as a feature
+            # to avoid penalizing it
 
         # Lagger
         features = preprocessors[1].fit_transform(features, censoring)
+
+        n_coeffs = n_features * (self.n_lags + 1)
+        self._set('n_features', n_features)
+        self._set('n_coeffs', n_coeffs)
+        self._set('n_intervals', n_intervals)
 
         self._set("_model_obj", self._construct_model_obj())
 
@@ -457,7 +473,7 @@ class LearnerSCCS(ABC, Base):
         refit_coeffs = self._refit(p_features, p_labels, p_censoring)
 
         bootstrap_coeffs = []
-        # TODO: parallelize bootstrap
+        # TODO: (later) parallelize bootstrap
         for k in range(rep):
             y = SimuSCCS._simulate_outcome_from_multi(p_features, refit_coeffs)
             bootstrap_coeffs.append(self._refit(p_features, y, p_censoring))
@@ -477,7 +493,10 @@ class LearnerSCCS(ABC, Base):
         return self.step
 
     def _coefficient_groups(self, penalty, coeffs):
-        if penalty in ["TV", "L1-first-TV", "L1-TV", "TV-L1"]:
+        if penalty not in self.allowed_penalties:
+            raise ValueError("``penalty`` must be one of %s, got %s" %
+                             (', '.join(self.allowed_penalties), penalty))
+        if penalty in ["TV", "L1-first-TV", "L1-TV", "TV-L1L2"]:
             n_grouped_cols = self.n_lags + 1
             groups = [(int(n_grouped_cols * i), int(n_grouped_cols * (i + 1)))
                       for i in range(self.n_features)]
@@ -485,15 +504,13 @@ class LearnerSCCS(ABC, Base):
             groups = self._detect_change_points(coeffs)
         elif penalty == "None":
             groups = (0, self.n_coeffs)
-        else:
-            raise ValueError("`penalty` should be either `TV`, 'L1-first-TV'\
-            `L1-TV`, `TV-L1`, `Equality` or `None`")
 
         return groups
 
     def _detect_change_points(self, coeffs):
         n_cols = self.n_lags + 1
-        coeffs = coeffs.reshape((self.n_features, n_cols))
+        # get coeffs without intercept
+        coeffs = coeffs[:self.n_features*n_cols].reshape((self.n_features, n_cols))
         kernel = np.array([1, -1])
         groups = []
         for l in range(self.n_features):
@@ -511,9 +528,8 @@ class LearnerSCCS(ABC, Base):
 
     def _construct_preprocessor_obj(self):
         # TODO: add a filter for useless cases here ?
-        # TODO: WARNING, TWO PP OBJECTS, should be used in the right order
-        # TODO: multiprocessing does not work for some reason
-        # TODO: use a dict
+        # TODO: WARNING, two PP objects, should be used in the right order
+        # TODO: -> use a dict instead of a list
         features_product = LongitudinalFeaturesProduct(self.feature_type,
                                                        n_threads=1)
         lagger = LongitudinalFeaturesLagger(self.n_lags)
@@ -523,6 +539,9 @@ class LearnerSCCS(ABC, Base):
         return ModelSCCS(self.n_intervals, self.n_lags)
 
     def _construct_prox_obj(self, penalty, groups):
+        if penalty not in self.allowed_penalties:
+            raise ValueError("``penalty`` must be one of %s, got %s" %
+                             (', '.join(self.allowed_penalties), penalty))
         if penalty == "None":
             proxs = [ProxZero()]
         elif penalty == "TV":
@@ -539,16 +558,13 @@ class LearnerSCCS(ABC, Base):
                 self._prox_L1_TV(self.strength_L1, self.strength_TV, group,
                                  L1_first_only=False)
                 for group in groups)
-        elif penalty == "TV-L1":
+        elif penalty == "TV-L1L2":
             # This is a flatmap
             proxs = chain.from_iterable(
-                self._prox_TV_L1(self.strength_L1, self.strength_TV, group)
+                self._prox_TV_L1L2(self.strength_L1, self.strength_TV, group)
                 for group in groups)
         elif penalty == "Equality":
             proxs = (ProxEquality(0, range=group) for group in groups)
-        else:
-            raise ValueError("`penalty` should be either `TV`, 'L1-first-TV'\
-            `L1-TV`, `TV-L1`, `Equality` or `None`")
 
         prox_obj = ProxMulti(tuple(proxs))
 
@@ -577,12 +593,22 @@ class LearnerSCCS(ABC, Base):
         return proxL1, proxTV
 
     @staticmethod
-    def _prox_TV_L1(strength_L1, strength_TV, range):
+    def _prox_TV_L1L2(strength_L1, strength_TV, range):
         # TODO: useless check ?
         if range[1] < (range[0] + 1):
             raise ValueError("range[1] should be > range[0]")
 
         proxTV = ProxTV(strength_TV, range=range)
-        proxL1 = ProxL1(strength_L1, range=range)
+        proxL1L2 = ProxL1L2(strength_L1, range=range)
 
-        return proxL1, proxTV
+        return proxTV, proxL1L2
+
+    @staticmethod
+    def _add_intercept(arr):
+        n_row, n_col = arr.shape
+        arr = arr.tocoo()
+        arr.row = np.hstack([arr.row, 0])
+        arr.col = np.hstack([arr.col, np.array(n_col)])
+        arr.data = np.hstack([arr.data, 1])
+        arr._shape = (n_row, n_col + 1)
+        return arr.tocsr()

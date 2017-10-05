@@ -20,6 +20,7 @@
 %shared_ptr(ProxBinarsity);
 %shared_ptr(ProxL2);
 %shared_ptr(ProxGroupL1);
+%shared_ptr(ProxL1L2);
 
 %{
 #include "tick_python.h"
@@ -56,3 +57,5 @@
 %include prox_binarsity.i
 
 %include prox_group_l1.i
+
+%include prox_l1l2.i

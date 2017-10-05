@@ -16,6 +16,7 @@ from .prox_multi import ProxMulti
 from .prox_equality import ProxEquality
 from .prox_binarsity import ProxBinarsity
 from .prox_group_l1 import ProxGroupL1
+from .prox_l1l2 import ProxL1L2
 
 
 __all__ = ["ProxZero",
@@ -31,4 +32,5 @@ __all__ = ["ProxZero",
            "ProxMulti",
            "ProxEquality",
            "ProxBinarsity",
-           "ProxGroupL1"]
+           "ProxGroupL1",
+           "ProxL1L2"]

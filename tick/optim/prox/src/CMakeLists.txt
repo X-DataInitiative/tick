@@ -16,4 +16,5 @@ add_library(tick_prox EXCLUDE_FROM_ALL
         prox_equality.cpp prox_equality.h
         prox_with_groups.cpp prox_with_groups.h
         prox_binarsity.cpp prox_binarsity.h
-        prox_group_l1.cpp prox_group_l1.h)
+        prox_group_l1.cpp prox_group_l1.h
+        prox_l1l2.cpp prox_l1l2.h)
