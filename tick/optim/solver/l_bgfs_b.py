@@ -4,7 +4,7 @@ from scipy.optimize import fmin_l_bfgs_b
 from tick.optim.model import ModelPoisReg
 from tick.optim.proj import ProjHalfSpace
 from tick.optim.prox.base import Prox
-from tick.optim.prox import ProxZero, ProxL2Sq
+from tick.optim.prox import ProxZero, ProxL2Sq, ProxPositive
 from tick.optim.solver.base import SolverFirstOrder
 from tick.optim.solver.base.utils import relative_distance
 
@@ -103,7 +103,7 @@ class LBFGSB(SolverFirstOrder):
         In some solvers, ``set_model`` must be called before
         ``set_prox``, otherwise and error might be raised.
         """
-        if type(prox) is ProxZero:
+        if isinstance(prox, (ProxZero, ProxPositive)):
             SolverFirstOrder.set_prox(self, prox)
             self._set("_prox_grad", lambda x: 0)
         elif type(prox) is ProxL2Sq:
