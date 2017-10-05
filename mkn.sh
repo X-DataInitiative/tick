@@ -36,9 +36,10 @@ if (( $CLI_ARGS_LEN > 0 )); then
     done
 fi
 
-MKN_C_FLAGS=${CXXFLAGS}
+TICK_INDICES=$($PY $ROOT/tools/python/numpy/check_sparse_indices.py)
+MKN_C_FLAGS=" $TICK_INDICES "
 
-[ -z "$CXXFLAGS" ]  && MKN_C_FLAGS="-march=native"
+[ -n "$CXXFLAGS" ] && MKN_C_FLAGS+=" ${CXXFLAGS} "
 [ "$DEBUG" == "1" ] && MKN_C_FLAGS+=" -DDEBUG_COSTLY_THROW"
 
 source $ROOT/sh/swig.sh
@@ -48,29 +49,15 @@ for P in "${PROFILES[@]}"; do
 done
 
 for P in "${PROFILES[@]}"; do
-    LIBS=""
-    IFS=$'\n'
-    for j in $(mkn tree -p $P); do
-        set +e
-        echo "$j" | grep "+" | grep "tick" 2>&1 > /dev/null
-        WIN=$?
-        set -e
-        if [ "$WIN" == "0" ]; then        
-            D=$(echo $j | cut -d "[" -f2 | cut -d "]" -f1)
-            EX=$(hash_index $D)
-            ADD_LIB=${LIBRARIES[$EX]}
-            LIBS="$LIBS ${ADD_LIB}.${LIB_POSTEXT}"
-        fi
-    done
-
-    mkn link -p $P -l "$LIBS ${LDARGS}" \
-        -B "$B_PATH" \
-        -P lib_name=$LIB_POSTFIX
-
     EX=$(hash_index $P)
+    LIBLD=${LIB_LD_PER_LIB[$EX]}
+
+    mkn link -p $P -l "${LDARGS} $LIBLD" \
+       -P lib_name=$LIB_POSTFIX \
+       -B $B_PATH
+
     PUSHD=${LIBRARIES[$EX]}
     pushd $(dirname ${PUSHD}) 2>&1 > /dev/null
-
       if [[ "$unameOut" == "CYGWIN"* ]] || [[ "$unameOut" == "MINGW"* ]]; then
         for f in $(find . -maxdepth 1 -type f -name "*.dll" ); do    
           DLL="${f%.*}"

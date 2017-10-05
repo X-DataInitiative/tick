@@ -38,7 +38,6 @@ PYVER_MIN=$($PY -c "import sys; print(sys.version_info[1])")
 
 # We get the filename expected for C++ shared libraries
 LIB_POSTFIX=$($PY -c "import distutils; from distutils import sysconfig; print(sysconfig.get_config_var('SO'))")
-LIB_POSTFIX="${LIB_POSTFIX%.*}"
 
 unameOut="$(uname -s)"
 
@@ -65,7 +64,7 @@ if [[ "$unameOut" == "CYGWIN"* ]] || [[ "$unameOut" == "MINGW"* ]]; then
 
   PY_INCS="${PINC};${PNIC}"
 
-  B_PATH="$PYDIR"/libs
+  B_PATH="$PYDIR/libs"
   [ -z "$LIB_POSTEXT" ] && LIB_POSTEXT="lib"
 
 else
@@ -85,9 +84,10 @@ else
   PY_INCS="${PINC}:${PNIC}"
 
   LDARGS="$($PCONF --ldflags)"
-  B_PATH=""
+  B_PATH="."
   [ -z "$LIB_POSTEXT" ] && LIB_POSTEXT="${LIB_POSTFIX##*.}"
 fi
+LIB_POSTFIX="${LIB_POSTFIX%.*}"
 
 # Finding the installed version of "swig" to later find 
 # To override export SWIG variable with full path to swig binary
@@ -100,6 +100,7 @@ fi
 LDARGS=$(echo "$LDARGS" | sed -e "s/ -lintl//g")
 LDARGS=$(echo "$LDARGS" | sed -e "s/ -ldl//g")
 LDARGS=$(echo "$LDARGS" | sed -e "s/ -framework//g")
+LDARGS=$(echo "$LDARGS" | sed -e "s/ -Wl,-stack_size,1000000//g")
 LDARGS=$(echo "$LDARGS" | sed -e "s/ CoreFoundation//g")
 
 [ ! -z "$LDFLAGS" ] && LDARGS="${LDARGS} ${LDFLAGS}"
@@ -107,6 +108,9 @@ LDARGS=$(echo "$LDARGS" | sed -e "s/ CoreFoundation//g")
 # IFS = Internal Field Separator - allows looping over lines with spaces
 IFS=$'\n'
 
+function relpath(){
+  echo $($PY -c "import os.path; print(os.path.relpath('$1', '$2'))")
+}
 function linkread(){
 if [[ "$unameOut" == "CYGWIN"* ]] || [[ "$unameOut" == "MINGW"* ]]; then
   echo $(readlink -f $1)
@@ -148,6 +152,15 @@ else
 fi
 #################
 
+# Add library path if using anaconda python
+PYVER=$($PY --version 2>&1 )
+if [[ "$PYVER" == *"Anaconda"* ]]; then
+  ANACONDA_LIB_PATH=$(linkread $(dirname $(which $PY))/../lib)
+  LDARGS="-L${ANACONDA_LIB_PATH} -Wl,-rpath,${ANACONDA_LIB_PATH} $LDARGS -lmkl_rt -lpthread"
+  LDARGS="-dynamiclib -undefined dynamic_lookup -Wl,-headerpad_max_install_names"
+  CXXFLAGS="-DSCIPY_MKL_H -DHAVE_CBLAS -DTICK_CBLAS_AVAILABLE $CXXFLAGS"
+fi
+
 PROFILES=(
     array
     base
@@ -187,3 +200,39 @@ LIBRARIES=(
     "tick/base/array_test/build/array_test${LIB_POSTFIX}"
 )
 
+LIB_LD_PER_LIB=()
+ITER=0
+for PROFILE in "${PROFILES[@]}"; do
+  LIBS=
+  TREE=($(mkn tree -p $PROFILE))
+  TREE_LEN=${#TREE[@]}
+  for idx in $(seq $TREE_LEN -1 0); do
+    LINE="${TREE[idx]}"
+    set +e  
+    echo "$LINE" | grep "+" | grep "tick" 2>&1 > /dev/null
+    WIN=$?
+    set -e
+    if [[ "$WIN" == "0" ]]; then
+      INDEX=$(echo "$LINE" | cut -d '[' -f2 | cut -d ']' -f1)
+      EX=$(hash_index $INDEX)
+      ADD_LIB=${LIBRARIES[$EX]}
+      if [ -n "$ADD_LIB" ]; then
+         if [[ "$unameOut" == "Darwin"* ]]; then
+           LIBS="$LIBS $(linkread ${ADD_LIB}.${LIB_POSTEXT})"
+           REL=$(dirname ${LIBRARIES[$ITER]}) 
+           RPATH=$(dirname $ADD_LIB)
+           [ "$REL" != "$PATH" ] && \
+               LIBS="$LIBS -Wl,-rpath,@loader_path/$(relpath $RPATH $REL)"
+         else
+           LIBS="$LIBS ${ADD_LIB}.${LIB_POSTEXT}"
+         fi
+      fi
+    fi
+  done
+  if [[ "$unameOut" == "Darwin"* ]]; then
+    FIL=$(basename ${LIBRARIES[$ITER]})
+    LIBS="$LIBS -Wl,-install_name,@rpath/${FIL}.${LIB_POSTEXT}"
+  fi 
+  LIB_LD_PER_LIB+=("$LIBS")
+  ITER=$(($ITER + 1))
+done

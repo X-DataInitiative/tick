@@ -42,8 +42,6 @@ cd $CWD/..
 ROOT=$PWD
 source $ROOT/sh/configure_env.sh
 
-cd $CWD
-
 [ ! -z "$CXXFLAGS" ] && CARGS="$CXXFLAGS $CARGS"
 
 case "${unameOut}" in
@@ -59,16 +57,15 @@ cd $CWD/..
 export PYTHONPATH=$PWD
 
 mkn build -p gtest -tSa "-fPIC -O2 -DNDEBUG -DGTEST_CREATE_SHARED_LIBRARY" \
-	-d google.test,+
+    -d google.test,+
 
 for FILE in "${FILES[@]}"; do
 
     echo FILE $FILE
 
-    mkn clean build -p gtest -a "${CARGS}" \
-    	-tl "${LDARGS}" -b "$PY_INCS" \
-    	-B "$B_PATH" \
-    	-M "${FILE}" -P lib_name=$LIB_POSTFIX \
-    	run
+    mkn clean build run -p gtest -a "${CARGS}" \
+        -tl "${LDARGS}" -b "$PY_INCS" \
+        -M "${FILE}" -P lib_name=$LIB_POSTFIX \
+        -B $B_PATH
+        
 done
-
