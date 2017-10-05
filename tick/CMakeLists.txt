@@ -43,6 +43,7 @@ include_directories(
         ${CMAKE_CURRENT_SOURCE_DIR}/optim/solver/src
         ${CMAKE_CURRENT_SOURCE_DIR}/inference/src
         ${CMAKE_CURRENT_SOURCE_DIR}/preprocessing/src
+        benchmarks/src
 )
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/third_party/cereal/include)
@@ -74,6 +75,7 @@ add_subdirectory(optim/prox/src)
 add_subdirectory(optim/solver/src)
 add_subdirectory(inference/src)
 add_subdirectory(preprocessing/src)
+add_subdirectory(benchmarks/src)
 
 find_package(GTest)
 
