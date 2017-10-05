@@ -109,7 +109,7 @@ class LearnerSCCS(ABC, Base):
         self.strength_TV = strength_TV
         self.strength_L1 = strength_L1
         self._preprocessor_obj = self._construct_preprocessor_obj()
-        self._model_obj = self._construct_model_obj()
+        self._model_obj = None
         self._solver_obj = self._construct_solver_obj(step, max_iter, tol,
                                                       print_every, record_every,
                                                       verbose, random_state)
@@ -365,6 +365,8 @@ class LearnerSCCS(ABC, Base):
         # Lagger
         features = preprocessors[1].transform(features, censoring)
 
+        self.set("_model_obj", self._construct_model_obj())
+
         return features, labels, censoring
 
     def _compute_step(self, features, labels, censoring):
@@ -455,14 +457,10 @@ class LearnerSCCS(ABC, Base):
     def _construct_solver_obj(self, step, max_iter, tol, print_every,
                               record_every, verbose, seed):
         # Parameters of the solver
-        solver_args = []
-        solver_kwargs = {'max_iter': max_iter, 'tol': tol,
-                         'print_every': print_every,
-                         'record_every': record_every,
-                         'verbose': verbose, 'step': step,
-                         'seed': seed}
-
-        solver_obj = SVRG(*solver_args, **solver_kwargs)
+        seed = -1 if seed is None else int(step) # TODO creepy fix
+        solver_obj = SVRG(step=step, max_iter=max_iter, tol=tol,
+                          print_every=print_every, record_every=record_every,
+                          verbose=verbose, seed=seed)
 
         return solver_obj
 

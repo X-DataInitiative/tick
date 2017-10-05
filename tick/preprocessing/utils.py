@@ -63,7 +63,7 @@ def check_longitudinal_features_consistency(X, shape, dtype):
         shape=(n_intervals, n_features)
         The list of features matrices with corrected shapes and dtypes.
     """
-    if not all([x.shape == shape for x in X]):
+    if any([x.shape != shape for x in X]):
         raise ValueError("All the elements of X should have the same\
          shape.")
     return [safe_array(x, dtype) for x in X]
