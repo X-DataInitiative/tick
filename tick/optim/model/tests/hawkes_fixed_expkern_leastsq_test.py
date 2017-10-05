@@ -113,7 +113,8 @@ class Test(unittest.TestCase):
             hessian = model.hessian(self.coeffs).todense()
 
             # Check that hessian is equal to its transpose
-            np.testing.assert_array_equal(hessian, hessian.T)
+            np.testing.assert_array_almost_equal(hessian, hessian.T,
+                                                 decimal=10)
 
             # Check that for all dimension hessian row is consistent
             # with its corresponding gradient coordinate.
