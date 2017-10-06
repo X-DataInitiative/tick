@@ -183,11 +183,13 @@ class SDCA(SolverFirstOrderSto):
 
     def extra_history(self, minimizer):
         try:
-            dual = self.dual_objective(self._solver.get_dual_vector())
+            dual_vector = self._solver.get_dual_vector()
+            dual = self.dual_objective(dual_vector)
         except:
             dual = np.nan
         return {
-            'dual_objective': dual
+            'dual_objective': dual,
+            'dual_vector': dual_vector
         }
 
     def objective(self, coeffs, loss: float = None):

@@ -25,16 +25,6 @@ def dual_objective(u, v):
 
 def dual_grad_vector(u, v):
     dual_vector = np.array([u, v])
-    # n_samples = len(labels)
-    # non_zero_features = features[labels != 0]
-    #
-    # alpha_x = np.sum(np.diag(dual_vector).dot(non_zero_features), axis=0)
-    # psi_x = np.sum(features, axis=0).dot(non_zero_features.T)
-    #
-    # grad = 1. / n_samples * labels[labels != 0] / dual_vector
-    # grad -= 1. / (l_l2sq * n_samples**2) * alpha_x.dot(non_zero_features.T)
-    # grad += 1. / (l_l2sq * n_samples**2) * psi_x
-    # return - grad
     return model_sdca.grad(dual_vector)
 
 
@@ -149,12 +139,11 @@ l_l2sq = 0.5
 model_sdca = ModelPoisRegSDCA(l_l2sq, fit_intercept=False)
 model_sdca.fit(features, labels)
 
-
 newton = Newton()
 newton.set_model(model).set_prox(ProxL2Sq(l_l2sq))
 newton.solve(0.2 * np.ones(model.n_coeffs))
 
-sdca = SDCA(l_l2sq)
+sdca = SDCA(l_l2sq, epoch_size=1)
 sdca.set_model(model).set_prox(ProxZero())
 sdca.solve()
 
@@ -198,7 +187,7 @@ fig, ax_list_list = plt.subplots(2, 3, figsize=(10.5, 7))
 cst = 4
 limits = (-cst, cst, cst, -cst)
 
-resolution = 150
+resolution = 50
 
 ax_list = ax_list_list[0]
 plot_obj(limits, ax_list[0], nx=resolution, ny=resolution, fun=objective)
@@ -210,11 +199,17 @@ plot_obj(limits, ax_list[1], nx=30, ny=30, fun=grad_vector)
 
 plot_obj(limits, ax_list[2], nx=resolution, ny=resolution, fun=log_grad_norm)
 plot_solver_steps(lbfgsb_list, ax_list[2])
+plot_steps(sdca.history.values['x'], ax_list[2], color='black',
+           label='SDCA')
 
 ax_list[2].legend(fontsize=8)
 
 ax_list[0].set_title('Original datapoints and log-distance to\n'
                      'optimal objective on the feasible set',
+                     fontsize=10)
+
+ax_list[1].set_title('Gradient field and log value of the\n'
+                     'norm the of gradients',
                      fontsize=10)
 
 ax_list[2].set_title('Paths taken by three L-BFGS-B solvers\n'
@@ -234,6 +229,9 @@ plot_obj(limits, ax_list[2], nx=resolution, ny=resolution, fun=dual_objective)
 for i, this_dual_steps in enumerate(dual_steps):
     plot_steps(this_dual_steps, ax_list[2], color=COLORS[i],
                label='L-BFGS-B {}'.format(i + 1))
+
+plot_steps(sdca.history.values['dual_vector'], ax_list[2], color='black',
+           label='SDCA')
 
 ax_list[0].set_title('log-distance to optimal dual objective\n'
                      'on the feasible set',

@@ -36,6 +36,8 @@ labels = data[:, -1]
 features = np.ascontiguousarray(features)
 labels = np.ascontiguousarray(labels)
 
+
+
 l_l2sq = 1e1
 model = ModelPoisReg(fit_intercept=False, link='identity')
 model.fit(features, labels)
@@ -62,6 +64,14 @@ newton = Newton(max_iter=100, print_every=10)
 newton.set_model(model).set_prox(ProxL2Sq(l_l2sq))
 newton.solve(np.ones(model.n_coeffs))
 
+bfgs_hot = LBFGSB(max_iter=100, print_every=10)
+bfgs_hot.set_model(model).set_prox(ProxL2Sq(l_l2sq))
+bfgs_hot.solve(sdca.solution)
+
+newton_hot = Newton(max_iter=100, print_every=10)
+newton_hot.set_model(model).set_prox(ProxL2Sq(l_l2sq))
+newton_hot.solve(sdca.solution)
+
 lbfgsb = LBFGSB(max_iter=100, print_every=10, tol=1e-10)
 lbfgsb.set_model(model).set_prox(ProxL2Sq(l_l2sq))
 lbfgsb.solve(0.1 * np.ones(model.n_coeffs))
@@ -78,6 +88,6 @@ for i, x in enumerate(lbfgsb_dual.history.values['x']):
     primal = lbfgsb._proj.call(model_dual.get_primal(x))
     lbfgsb_dual.history.values['obj'][i] = lbfgsb.objective(primal)
 
-plot_history([sdca, lbfgsb_dual, newton], dist_min=True, log_scale=True,
+plot_history([sdca, lbfgsb_dual, bfgs_hot, newton, newton_hot], dist_min=True, log_scale=True,
              x='time')
 print(np.abs(sdca.solution).max())
