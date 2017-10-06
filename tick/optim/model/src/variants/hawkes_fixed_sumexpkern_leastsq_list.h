@@ -12,7 +12,7 @@
  * \brief Class for computing L2 Contrast function and gradient for Hawkes processes with
  * exponential kernels with fixed exponent (i.e., alpha*beta*e^{-beta t}, with fixed beta)
  */
-class ModelHawkesFixedSumExpKernLeastSqList : public ModelHawkesLeastSqList {
+class DLL_PUBLIC ModelHawkesFixedSumExpKernLeastSqList : public ModelHawkesLeastSqList {
   //! @brief Some arrays used for intermediate computings.
   std::vector<ArrayDouble2d> E, Dgg, C;
   ArrayDouble2dList1D Dg;

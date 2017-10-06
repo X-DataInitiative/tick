@@ -16,7 +16,7 @@ enum class LinkType {
   exponential
 };
 
-class ModelPoisReg : public ModelGeneralizedLinear {
+class DLL_PUBLIC ModelPoisReg : public ModelGeneralizedLinear {
  private:
   LinkType link_type;
   bool ready_non_zero_label_map;

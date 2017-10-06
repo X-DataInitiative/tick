@@ -13,7 +13,7 @@
 /** \class ModelHawkesSingle
  * \brief Base class of Hawkes models handling only one realization
  */
-class ModelHawkesSingle : public ModelHawkes {
+class DLL_PUBLIC ModelHawkesSingle : public ModelHawkes {
  protected:
   //! @brief The process timestamps (a list of arrays)
   SArrayDoublePtrList1D timestamps;

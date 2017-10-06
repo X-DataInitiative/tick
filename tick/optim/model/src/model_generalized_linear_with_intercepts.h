@@ -9,7 +9,7 @@
 #include "model_generalized_linear.h"
 #include "model_labels_features.h"
 
-class ModelGeneralizedLinearWithIntercepts : public virtual ModelGeneralizedLinear {
+class DLL_PUBLIC ModelGeneralizedLinearWithIntercepts : public virtual ModelGeneralizedLinear {
  protected:
   /**
    * Computes gradient fo ith observation

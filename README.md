@@ -51,7 +51,7 @@ _tick_ is used for many industrial applications including:
 
 ### Requirements
 
-_tick_ currently works only on Linux/OSX systems and requires Python 3.4 or newer. Please have the required Python dependencies in your Python environment:
+_tick_ currently works on Linux/OSX (Windows is experimental) systems and requires Python 3.4 or newer. Please have the required Python dependencies in your Python environment:
 
 - numpy
 - scipy
@@ -78,7 +78,7 @@ _tick_ is available via _pip_. In your local Python environment (or global, with
 
 Installation may take a few minutes to build and link C++ extensions. At this point _tick_ should be ready to use available (if necessary, you can add _tick_ to the `PYTHONPATH` as explained below).
 
-### Manual Install
+### Manual Install - Linux -OSX
 
 First you need to clone the repository with 
 
@@ -93,6 +93,56 @@ It's possible to manually build and install tick via the setup.py script. To do 
     python setup.py build install
 
 This will build all required C++ extensions, and install the extensions in your current site-packages directory.
+
+### Manual Install on Windows (Experimental)
+
+  Download and install Microsoft Windows Visual Build Tools
+
+    https://www.visualstudio.com/downloads/#build-tools-for-visual-studio-2017
+
+  Download, install and add respective bin directories to PATH environment variable
+
+    python  3.6  - https://www.python.org/downloads/windows/
+    swigwin 3.6  - http://www.swig.org/download.html
+
+  Download wheel files from http://www.lfd.uci.edu/~gohlke/pythonlibs
+
+    numpy-1.13.*+mkl-cp36-cp36m-win_amd64.whl
+    numpydoc-0.7.0-py2.py3-none-any.whl
+    scipy-0.19.*-cp36-cp36m-win_amd64.whl
+
+  Note:
+    To ascertain which version of the wheel files to download you can run 
+      python3 -c "import distutils; from distutils import sysconfig; print(sysconfig.get_config_var('SO'))"
+ 
+  
+  Install the wheel files with pip
+
+    pip install wheel
+    pip install numpy-1.13.*+mkl-cp36-cp36m-win_amd64.whl
+    pip install numpydoc-0.7.0-py2.py3-none-any.whl
+    pip install scipy-0.19.*-cp36-cp36m-win_amd64.whl
+
+  Export Visual Studio environment variables
+
+    /path/to/VS/VC/Auxiliary/Build/vcvarsall.bat amd64
+
+  Build Tick C++ sources
+
+    python setup.py build_ext --inplace
+
+  Test your build
+
+    SET PYTHONPATH=%cd%
+    python setup.py pytest
+
+####  Automated windows installation process (Requires CYGWIN or MSYS)
+
+  Some scripts have been put together to facilitate in the system setup for Windows
+  This does also require manually downloading the wheel files.
+  This can be used but executing the following file:
+
+    ./tools/windows/install.sh
 
 #### In-place installation (for developers)
 
@@ -117,9 +167,12 @@ Once "mkn" is installed on your system, you should execture the shell script "./
 
 As with tick in general, this requires python3 and all python pre-requisites. numpy/scipy/etc
 
-This method is provided mainly for developers to decrease compilation times. On windows this requires either [CYGWIN](https://www.cygwin.com/)/[MSYS](http://www.msys2.org/)
+This method is provided mainly for developers to decrease compilation times. 
 
 To use [ccache](https://ccache.samba.org/) (or similar) with mkn, edit your ~/.maiken/settings.yaml file so it looks like one [here](https://github.com/Dekken/maiken/wiki/Alternative-configs) - this can greatly decrease repeated compilation times. ccache is a third party tool which may have to be installed manually on your system.
+
+Notes:
+  mkn is not yet supported for building Tick C++ libraries.
 
 ## Help and Support
 

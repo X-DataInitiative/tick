@@ -12,7 +12,7 @@
  * exponential kernels with fixed exponent (i.e., alpha*beta*e^{-beta t}, with fixed beta)
  * on a list of realizations
  */
-class ModelHawkesFixedKernLogLikList : public ModelHawkesList {
+class DLL_PUBLIC ModelHawkesFixedKernLogLikList : public ModelHawkesList {
   //! @brief Value of decay for this model. Shared by all kernels
 
   std::vector<std::unique_ptr<ModelHawkesFixedKernLogLik> > model_list;
@@ -25,6 +25,15 @@ class ModelHawkesFixedKernLogLikList : public ModelHawkesList {
    * the number of physical cores will be used
    */
   explicit ModelHawkesFixedKernLogLikList(const int max_n_threads = 1);
+
+  /**
+   * These lines are required for visual studio but are suggested in general
+   *   for a class that should never be copied
+   *  Visual studio seems to get confused and tries to copy this class, and it 
+   *   errors as unique_ptrs are not copy-able
+   */
+  ModelHawkesFixedKernLogLikList(const ModelHawkesFixedKernLogLikList& model) = delete;
+  ModelHawkesFixedKernLogLikList& operator=(const ModelHawkesFixedKernLogLikList& model) = delete;
 
   void incremental_set_data(const SArrayDoublePtrList1D &timestamps, double end_time);
 

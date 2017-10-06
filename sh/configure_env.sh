@@ -1,4 +1,4 @@
-#
+ #
 # Author: Philip Deegan
 # Email : philip.deegan@polytechnique.edu 
 # Date  : 21 - September - 2017
@@ -35,65 +35,118 @@ if (( $PYVER < 3)); then
 fi
 
 PYVER_MIN=$($PY -c "import sys; print(sys.version_info[1])")
-        
-# Finding the installed version of "python-config" to later find 
-#  include paths and linker flags
-# To override export PCONF variable with full path to python-config binary
-[ -z "$PCONF"  ] && which python3-config &> /dev/null && PCONF="python3-config"
-[ -z "$PCONF"  ] && which python3.${PYVER_MIN}-config &> /dev/null && PCONF="python3.${PYVER_MIN}-config"
-[ -z "$PCONF"  ] && which python-config &> /dev/null && PCONF="python-config" \
-       && echo "WARNING: python-config may be the incorrect version!"
-[ -z "$PCONF"  ] && echo "python-config or python3-config not found on PATH, exiting with error" && exit 1;
 
-# Deducing include paths for python and numpy
-[ -z "$PINC" ] && for i in $($PCONF --includes); do PINC="${PINC}${i:2}:"; done
-[ -z "$PNIC" ] && PNIC=$($PY -c "import numpy as np; print(np.get_include())");
+# We get the filename expected for C++ shared libraries
+LIB_POSTFIX=$($PY -c "import distutils; from distutils import sysconfig; print(sysconfig.get_config_var('SO'))")
+LIB_POSTFIX="${LIB_POSTFIX%.*}"
+
+unameOut="$(uname -s)"
+
+# if windows - python-config does not exist
+if [[ "$unameOut" == "CYGWIN"* ]] || [[ "$unameOut" == "MINGW"* ]]; then
+  echo "Windows detected"
+
+  PYDIR=$(dirname $(which $PY))
+  PYINC="$PYDIR/include"
+  [ ! -d "$PYINC" ] && \
+      echo "$PYNUMINC does not exist - python in inconsistent state - reinstall"
+
+  PYNUMINC="$PYDIR/Lib/site-packages/numpy/core/include"
+  [ ! -d "$PYNUMINC" ] &&  \
+      echo "$PYNUMINC does not exist - install numpy"
+  
+  # Deducing include paths for python and numpy
+  [ -z "$PINC" ] && PINC="$PYINC"
+  [ -z "$PNIC" ] && PNIC="$PYNUMINC";
+
+  PINC_DRIVE=$(echo "$PINC" | cut -d'/' -f2)
+  PINC="${PINC_DRIVE}:/${PINC:3}"
+  PNIC="${PINC_DRIVE}:/${PNIC:3}"
+
+  PY_INCS="${PINC};${PNIC}"
+
+  B_PATH="$PYDIR"/libs
+  [ -z "$LIB_POSTEXT" ] && LIB_POSTEXT="lib"
+
+else
+  # Finding the installed version of "python-config" to later find 
+  #  include paths and linker flags
+  # To override export PCONF variable with full path to python-config binary
+  [ -z "$PCONF"  ] && which python3-config &> /dev/null && PCONF="python3-config"
+  [ -z "$PCONF"  ] && which python3.${PYVER_MIN}-config &> /dev/null && PCONF="python3.${PYVER_MIN}-config"
+  [ -z "$PCONF"  ] && which python-config &> /dev/null && PCONF="python-config" \
+         && echo "WARNING: python-config may be the incorrect version!"
+  [ -z "$PCONF"  ] && echo "python-config or python3-config not found on PATH, exiting with error" && exit 1;
+
+  # Deducing include paths for python and numpy
+  [ -z "$PINC" ] && for i in $($PCONF --includes); do PINC="${PINC}${i:2}:"; done
+  [ -z "$PNIC" ] && PNIC=$($PY -c "import numpy as np; print(np.get_include())");
+
+  PY_INCS="${PINC}:${PNIC}"
+
+  LDARGS="$($PCONF --ldflags)"
+  B_PATH=""
+  [ -z "$LIB_POSTEXT" ] && LIB_POSTEXT="${LIB_POSTFIX##*.}"
+fi
 
 # Finding the installed version of "swig" to later find 
 # To override export SWIG variable with full path to swig binary
 [ -z "$SWIG"  ] && which swig &> /dev/null && SWIG="swig"
 [ -z "$SWIG"  ] && echo "swig not found on PATH, exiting with error" && exit 1;
-
 [ -z "$SWIG_C_FLAGS" ] && SWIG_C_FLAGS="-DDEBUG_COSTLY_THROW"
-
 
 # Here: "sed" is used to remove unnecessary parts of the link flags 
 #  given to us by python-config
-LDARGS="$($PCONF --ldflags)"
 LDARGS=$(echo "$LDARGS" | sed -e "s/ -lintl//g")
 LDARGS=$(echo "$LDARGS" | sed -e "s/ -ldl//g")
 LDARGS=$(echo "$LDARGS" | sed -e "s/ -framework//g")
 LDARGS=$(echo "$LDARGS" | sed -e "s/ CoreFoundation//g")
 
-unameOut="$(uname -s)"
-case "${unameOut}" in
-    Linux*)     LDARGS="${LDARGS} $(mkn -G nix_largs)";;
-    Darwin*)    LDARGS="${LDARGS} $(mkn -G bsd_largs)";;
-    CYGWIN*)    LDARGS="${LDARGS}";;
-    MINGW*)     LDARGS="${LDARGS}";;
-    *)          LDARGS="${LDARGS}";;
-esac
 [ ! -z "$LDFLAGS" ] && LDARGS="${LDARGS} ${LDFLAGS}"
 
 # IFS = Internal Field Separator - allows looping over lines with spaces
 IFS=$'\n'
 
-LIB_POSTFIX=$($PY -c "import distutils; from distutils import sysconfig; print(sysconfig.get_config_var('SO'))")
-LIB_POSTEXT="${LIB_POSTFIX##*.}"
-LIB_POSTFIX="${LIB_POSTFIX%.*}"
-
 function linkread(){
-    echo $($PY -c "import os; print(os.path.realpath(\"$1\"))")
+if [[ "$unameOut" == "CYGWIN"* ]] || [[ "$unameOut" == "MINGW"* ]]; then
+  echo $(readlink -f $1)
+else
+  echo $($PY -c "import os; print(os.path.realpath(\"$1\"))")
+fi
 }
-function pathreal(){
-    if [[ $1 == *"$CWD"* ]]; then
+
+#################
+if [[ "$unameOut" == "CYGWIN"* ]] || [[ "$unameOut" == "MINGW"* ]]; then
+  function pathreal(){
+    P=$1
+    which cygpath.exe 2>&1 > /dev/null
+    CYGPATH=$?
+    (( $CYGPATH == 0 )) && P=$(cygpath $P)
+    if [[ $P == "$PWD"* ]]; then
+        LEN=${#PWD}
+        P="${P:$LEN}"
+        P="${P:1}"
+    fi
+    echo $P
+  }
+  function libpath(){
+    echo $1 | sed -e "s/\//\\\\\\\\/g"
+  }
+else
+  function pathreal(){
+    if [[ $1 == "$PWD"* ]]; then
         IN=$1
-        LEN=${#CWD}
+        LEN=${#PWD}
         echo \.${IN:$LEN}
     else
         echo $1
     fi
-}
+  }
+  function libpath(){
+    echo $? 
+  }
+fi
+#################
 
 PROFILES=(
     array

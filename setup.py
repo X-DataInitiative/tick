@@ -285,15 +285,16 @@ def create_extension(extension_name, module_dir,
     else:
         extra_compile_args.extend(min_extra_compile_args)
 
-    # Added -Wall to get all warnings and -Werror to treat them as errors
     extra_compile_args.append("-Wall")
-    # GITHUB ISSUE: 82 - temporary fix to avoid compile errors from
-    #  warnings given in CEREAL files
-    #extra_compile_args.append("-Werror")
 
-    # This warning is turned off because SWIG generates files that triggers the
-    # warning
-    extra_compile_args.append("-Wno-uninitialized")
+    if platform.system() == 'Windows':
+        extra_compile_args.append("-DBUILDING_DLL")
+    else:
+        # Added -Wall to get all warnings and -Werror to treat them as errors
+        extra_compile_args.append("-Werror")
+        # This warning is turned off because SWIG generates files that triggers the
+        # warning
+        extra_compile_args.append("-Wno-uninitialized")
 
     # Include directory of module
     mod = SwigPath(module_dir, extension_name)
@@ -330,9 +331,16 @@ def create_extension(extension_name, module_dir,
             opts.extend(["-I%s/" % mod.src, "-I%s/" % mod.swig])
 
         # Because setuptools produces shared object files with non-standard
+        # On windows we need to use ".lib" rather than ".pyd"
+        # when linking libs to other libs
+        if platform.system() == 'Windows':
+            lib = os.path.join(build_dir, mod.build, "_"+mod.extension_name)
+            lib += os.path.splitext(sysconfig.get_config_var("SO"))[0]
+            libraries.append(lib)
         # names (i.e. not lib<name>.so) we specify the full library path
-        extra_link_args.append(os.path.abspath(
-            os.path.join(build_dir, mod.build, mod.lib_filename)))
+        else:
+            extra_link_args.append(os.path.abspath(
+                os.path.join(build_dir, mod.build, mod.lib_filename)))
 
         # Make sure that the runtime linker can find shared object
         # dependencies by using the relative path to the dependency library.
@@ -341,6 +349,8 @@ def create_extension(extension_name, module_dir,
             # $ORIGIN refers to the location of the current shared object file
             # at runtime
             runtime_library_dirs.append("\$ORIGIN/%s" % rel_path)
+        elif platform.system() == 'Windows':
+            pass
         else:  # Assuming non-Windows builds for now
             # For OSX builds we use @loader_path instead
             extra_link_args.append(
@@ -353,6 +363,8 @@ def create_extension(extension_name, module_dir,
     filename = swig_path.lib_filename
     if platform.system() == 'Linux':
         extra_link_args.append('-Wl,-soname,%s' % filename)
+    elif platform.system() == 'Windows':
+        pass
     else:
         # For OSX the install_name needs to be prefixed with @rpath
         extra_link_args.append('-Wl,-install_name,@rpath/%s' % filename)
@@ -371,6 +383,15 @@ def create_extension(extension_name, module_dir,
     # Adding numpy include directory
     if numpy_include:
         extra_include_dirs.append(numpy_include)
+
+    # This is to override the use of IMPLIB in distutils
+    # which puts the lib/exp files in the wrong directory
+    # see: https://github.com/python/cpython/blob/08bb8a41cc976343795bd0e241cd7388e9f44ad5/Lib/distutils/_msvccompiler.py#L467
+    if platform.system() == 'Windows':
+        implib = "/IMPLIB:" + os.path.abspath(
+            os.path.join(build_dir, swig_path.build, "_"+extension_name))
+        implib += os.path.splitext(sysconfig.get_config_var("SO"))[0]
+        extra_link_args.append(implib + ".lib")
 
     core_module = SwigExtension(extension_path, module_ref=swig_path,
                                 sources=swig_files + cpp_files,
@@ -490,9 +511,9 @@ model_core_info = {
                   "model_generalized_linear_with_intercepts.cpp",
                   "model_lipschitz.cpp",
                   "hawkes_fixed_expkern_loglik.cpp",
-                  "hawkes_fixed_sumexpkern_loglik.cpp",
                   "hawkes_fixed_expkern_leastsq.cpp",
                   "hawkes_fixed_sumexpkern_leastsq.cpp",
+                  "hawkes_fixed_sumexpkern_loglik.cpp",
                   "hawkes_utils.cpp",
                   "linreg.cpp",
                   "linreg_with_intercepts.cpp",
@@ -506,9 +527,9 @@ model_core_info = {
                 "model_generalized_linear_with_intercepts.h",
                 "model_lipschitz.h",
                 "hawkes_fixed_expkern_loglik.h",
-                "hawkes_fixed_sumexpkern_loglik.h",
                 "hawkes_fixed_expkern_leastsq.h",
                 "hawkes_fixed_sumexpkern_leastsq.h",
+                "hawkes_fixed_sumexpkern_loglik.h",
                 "hawkes_utils.h",
                 "linreg.h",
                 "linreg_with_intercepts.h",

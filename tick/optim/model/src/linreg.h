@@ -12,7 +12,7 @@
 
 #include <cereal/types/base_class.hpp>
 
-class ModelLinReg : public virtual ModelGeneralizedLinear, public ModelLipschitz {
+class DLL_PUBLIC ModelLinReg : public virtual ModelGeneralizedLinear, public ModelLipschitz {
  public:
   ModelLinReg(const SBaseArrayDouble2dPtr features,
               const SArrayDoublePtr labels,

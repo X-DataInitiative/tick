@@ -11,7 +11,7 @@
  * sum exponential kernels with fixed exponent (i.e., \sum_u alpha_u*beta_u*e^{-beta_u t},
  * with fixed beta)
  */
-class ModelHawkesFixedSumExpKernLeastSq : public ModelHawkesSingle {
+class DLL_PUBLIC ModelHawkesFixedSumExpKernLeastSq : public ModelHawkesSingle {
   //! @brief Some arrays used for intermediate computings.
   ArrayDouble2dList1D E, Dgg, C;
 

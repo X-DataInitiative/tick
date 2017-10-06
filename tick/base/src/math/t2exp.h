@@ -17,6 +17,8 @@
     WILL NOT BE LIABLE FOR DATA LOSS, DAMAGES, LOSS OF PROFITS OR
     ANY OTHER KIND OF LOSS WHILE USING OR MISUSING THIS SOFTWARE.
 -------------------------------------------------------------- */
+#include "defs.h"
+
 #include <cmath>
 
 #ifndef TICK_BASE_SRC_MATH_T2EXP_H_
@@ -42,7 +44,7 @@ extern "C" {
                 exp() function - that is either 0 or INF.
 -------------------------------------------------------------- */
 
-extern double t2exp(double arg);
+extern double DLL_PUBLIC t2exp(double arg);
 
 /* --------------------------------------------------------------
     Name:       t2expini

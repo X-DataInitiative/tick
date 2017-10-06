@@ -13,7 +13,7 @@
 
 // TODO: labels should be a ArrayInt
 
-class ModelLogReg : public ModelGeneralizedLinear, public ModelLipschitz {
+class DLL_PUBLIC ModelLogReg : public ModelGeneralizedLinear, public ModelLipschitz {
  public:
   ModelLogReg(const SBaseArrayDouble2dPtr features,
               const SArrayDoublePtr labels,

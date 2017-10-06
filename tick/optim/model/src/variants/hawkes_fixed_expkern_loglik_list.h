@@ -12,7 +12,7 @@
  * exponential kernels with fixed exponent (i.e., alpha*beta*e^{-beta t}, with fixed beta)
  * on a list of realizations
  */
-class ModelHawkesFixedExpKernLogLikList : public ModelHawkesFixedKernLogLikList {
+class DLL_PUBLIC ModelHawkesFixedExpKernLogLikList : public ModelHawkesFixedKernLogLikList {
   //! @brief Value of decay for this model. Shared by all kernels
   double decay;
 

@@ -17,7 +17,7 @@ class ModelHawkesFixedKernLogLikList;
  * exponential kernels with fixed exponent (i.e., \f$ \alpha \beta e^{-\beta t} \f$, with fixed
  * decay)
  */
-class ModelHawkesFixedKernLogLik : public ModelHawkesSingle {
+class DLL_PUBLIC ModelHawkesFixedKernLogLik : public ModelHawkesSingle {
  protected:
   // Some arrays used for intermediate computings. They are initialized in init()
   //! @brief kernel intensity of node j on node i at time t_i_k

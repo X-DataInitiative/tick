@@ -12,7 +12,7 @@ class ModelHawkesFixedExpKernLeastSqList;
  * \brief Class for computing L2 Contrast function and gradient for Hawkes processes with
  * exponential kernels with fixed exponent (i.e., alpha*beta*e^{-beta t}, with fixed beta)
  */
-class ModelHawkesFixedExpKernLeastSq : public ModelHawkesSingle {
+class DLL_PUBLIC ModelHawkesFixedExpKernLeastSq : public ModelHawkesSingle {
   //! @brief Some arrays used for intermediate computings. They are initialized in init()
   ArrayDouble2d E, Dg, Dg2, C;
 
