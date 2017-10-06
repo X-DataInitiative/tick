@@ -20,7 +20,7 @@ property:
            -D_FILE_OFFSET_BITS=64 -DPYTHON_LINK
            -DNDEBUG
     win_cargs:
-      -GL -MD -EHsc -Zc:inline -DBUILDING_DLL -O2
+      -Ox -GL -DNDEBUG -MT -EHsc -DBUILDING_DLL
     nixish_cargs: -fwrapv -O2 -Wall
                   -fstack-protector-strong 
                   -Wformat -Werror=format-security -Wdate-time 
@@ -31,11 +31,10 @@ property:
 
     bsd_cargs: ${nixish_cargs}
 
-    nixish_largs: -pthread -shared
-                  -fstack-protector-strong -Wformat 
+    nixish_largs: -fstack-protector-strong -Wformat 
                   -Werror=format-security -Wdate-time 
                   -D_FORTIFY_SOURCE=2 
-    nix_largs: ${nixish_largs} 
+    nix_largs: ${nixish_largs} -pthread
                -Wl,-O1 -Wl,-Bsymbolic-functions
                -Wl,-z,relro -Wl,-z,relro
     bsd_largs: ${nixish_largs} 
@@ -53,7 +52,7 @@ profile:
     if_link:
       nix_lib: ${nix_largs}
       bsd_lib: ${bsd_largs}
-      win: -LTCG 
+      win: -nodefaultlib:libucrt.lib ucrt.lib -MANIFEST:EMBED,ID=2 -MANIFESTUAC:NO -LTCG 
 
   - name: base
     parent: arg

@@ -290,12 +290,12 @@ def create_extension(extension_name, module_dir,
     if platform.system() == 'Windows':
         extra_compile_args.append("-DBUILDING_DLL")
     else:
-        # Added -Wall to get all warnings and -Werror to treat them as errors
-        # GITHUB ISSUE: 82 - temporary fix to avoid compile errors from
-        #  warnings given in CEREAL files
-        #extra_compile_args.append("-Werror")
-        # This warning is turned off because SWIG generates files that triggers the
-        # warning
+        ## Added -Wall to get all warnings and -Werror to treat them as errors
+        ## GITHUB ISSUE: 82 - temporary fix to avoid compile errors from
+        ##  warnings given in CEREAL files
+        # extra_compile_args.append("-Werror")
+        ## This warning is turned off because SWIG generates files that triggers the
+        ## warning
         extra_compile_args.append("-Wno-uninitialized")
 
     # Include directory of module

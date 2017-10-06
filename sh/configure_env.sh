@@ -41,9 +41,62 @@ LIB_POSTFIX=$($PY -c "import distutils; from distutils import sysconfig; print(s
 
 unameOut="$(uname -s)"
 
+function relpath(){
+  echo $($PY -c "import os.path; print(os.path.relpath('$1', '$2'))")
+}
+function linkread(){
+if [[ "$unameOut" == "CYGWIN"* ]] || [[ "$unameOut" == "MINGW"* ]]; then
+  echo $(readlink -f $1)
+else
+  echo $($PY -c "import os; print(os.path.realpath(\"$1\"))")
+fi
+}
+
+#################
+if [[ "$unameOut" == "CYGWIN"* ]] || [[ "$unameOut" == "MINGW"* ]]; then
+  function pathreal(){
+    P=$1
+    which cygpath.exe 2>&1 > /dev/null
+    CYGPATH=$?
+    (( $CYGPATH == 0 )) && P=$(cygpath $P)
+    if [[ $P == "$PWD"* ]]; then
+        LEN=${#PWD}
+        P="${P:$LEN}"
+        P="${P:1}"
+    fi
+    echo $P
+  }
+else
+  function pathreal(){
+    if [[ $1 == "$PWD"* ]]; then
+        IN=$1
+        LEN=${#PWD}
+        echo \.${IN:$LEN}
+    else
+        echo $1
+    fi
+  }
+fi
+#################
+
 # if windows - python-config does not exist
 if [[ "$unameOut" == "CYGWIN"* ]] || [[ "$unameOut" == "MINGW"* ]]; then
   echo "Windows detected"
+  
+  CL_PATH=0
+  GCC_PATH=0
+  which cl.exe &> /dev/null && CL_PATH=$(which cl.exe)
+  which gcc.exe &> /dev/null && GCC_PATH=$(which gcc.exe)
+  if [ $CL_PATH == 0 ] && [ $GCC_PATH == 0 ] ; then
+    echo "Neither cl.exe or gcc.exe on path: Error"
+    exit 1
+  fi
+
+  if [ -n "$CL_PATH" ]; then
+    # Msys and cygwin can have their own "link.exe"
+    # which interferes with MSVC link.exe
+    PATH="$(dirname $CL_PATH):$PATH"
+  fi
 
   PYDIR=$(dirname $(which $PY))
   PYINC="$PYDIR/include"
@@ -108,49 +161,6 @@ LDARGS=$(echo "$LDARGS" | sed -e "s/ CoreFoundation//g")
 # IFS = Internal Field Separator - allows looping over lines with spaces
 IFS=$'\n'
 
-function relpath(){
-  echo $($PY -c "import os.path; print(os.path.relpath('$1', '$2'))")
-}
-function linkread(){
-if [[ "$unameOut" == "CYGWIN"* ]] || [[ "$unameOut" == "MINGW"* ]]; then
-  echo $(readlink -f $1)
-else
-  echo $($PY -c "import os; print(os.path.realpath(\"$1\"))")
-fi
-}
-
-#################
-if [[ "$unameOut" == "CYGWIN"* ]] || [[ "$unameOut" == "MINGW"* ]]; then
-  function pathreal(){
-    P=$1
-    which cygpath.exe 2>&1 > /dev/null
-    CYGPATH=$?
-    (( $CYGPATH == 0 )) && P=$(cygpath $P)
-    if [[ $P == "$PWD"* ]]; then
-        LEN=${#PWD}
-        P="${P:$LEN}"
-        P="${P:1}"
-    fi
-    echo $P
-  }
-  function libpath(){
-    echo $1 | sed -e "s/\//\\\\\\\\/g"
-  }
-else
-  function pathreal(){
-    if [[ $1 == "$PWD"* ]]; then
-        IN=$1
-        LEN=${#PWD}
-        echo \.${IN:$LEN}
-    else
-        echo $1
-    fi
-  }
-  function libpath(){
-    echo $? 
-  }
-fi
-#################
 
 # Add library path if using anaconda python
 PYVER=$($PY --version 2>&1 )
