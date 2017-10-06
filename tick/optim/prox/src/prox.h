@@ -12,7 +12,7 @@
 #include <memory>
 #include <string>
 
-class Prox {
+class DLL_PUBLIC Prox {
  protected:
   //! @brief Weight of the proximal operator
   double strength;

@@ -15,7 +15,7 @@ class ModelHawkesFixedSumExpKernLogLikList;
  * sum exponential kernels with fixed exponent
  * (i.e., \f$ \sum_u \alpha_u \beta_u e^{-\beta_u t} \f$, with fixed decays)
  */
-class ModelHawkesFixedSumExpKernLogLik : public ModelHawkesFixedKernLogLik {
+class DLL_PUBLIC ModelHawkesFixedSumExpKernLogLik : public ModelHawkesFixedKernLogLik {
  private:
   //! @brief Value of decays array for this model
   ArrayDouble decays;

@@ -2,6 +2,9 @@
 
 %module base
 
+// see: http://www.swig.org/Doc3.0/Windows.html
+#define DLL_PUBLIC
+
 %include defs.i
 %include serialization.i
 

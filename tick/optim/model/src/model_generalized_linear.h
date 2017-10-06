@@ -8,7 +8,7 @@
 
 #include "model_labels_features.h"
 
-class ModelGeneralizedLinear : public ModelLabelsFeatures {
+class DLL_PUBLIC ModelGeneralizedLinear : public ModelLabelsFeatures {
  protected:
   ArrayDouble features_norm_sq;
 

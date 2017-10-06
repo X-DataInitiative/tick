@@ -44,20 +44,21 @@ source $ROOT/sh/configure_env.sh
 
 cd $CWD
 
-CARGS="-march=native"
 [ ! -z "$CXXFLAGS" ] && CARGS="$CXXFLAGS $CARGS"
 
-LDARGS="$($PCONF --ldflags)"
-LDARGS=$(echo "$LDARGS" | sed -e "s/ -lintl//g")
-LDARGS=$(echo "$LDARGS" | sed -e "s/ -ldl//g")
-LDARGS=$(echo "$LDARGS" | sed -e "s/ -framework//g")
-LDARGS=$(echo "$LDARGS" | sed -e "s/ CoreFoundation//g")
+case "${unameOut}" in
+    Linux*)     LDARGS="${LDARGS} $(mkn -G nix_largs)";;
+    Darwin*)    LDARGS="${LDARGS} $(mkn -G bsd_largs)";;
+    CYGWIN*)    LDARGS="${LDARGS}";;
+    MINGW*)     LDARGS="${LDARGS}";;
+    *)          LDARGS="${LDARGS}";;
+esac
 [ ! -z "$LDFLAGS" ] && LDARGS="${LDARGS} ${LDFLAGS}"
 
 cd $CWD/..
 export PYTHONPATH=$PWD
 
-mkn build -p gtest -tSa "-fPIC -O2 -DNDEBUG -march=native" \
+mkn build -p gtest -tSa "-fPIC -O2 -DNDEBUG -DGTEST_CREATE_SHARED_LIBRARY" \
 	-d google.test,+
 
 for FILE in "${FILES[@]}"; do
@@ -65,7 +66,8 @@ for FILE in "${FILES[@]}"; do
     echo FILE $FILE
 
     mkn clean build -p gtest -a "${CARGS}" \
-    	-tSl "${LDARGS}" -b "$PINC:$PNIC" \
+    	-tl "${LDARGS}" -b "$PY_INCS" \
+    	-B "$B_PATH" \
     	-M "${FILE}" -P lib_name=$LIB_POSTFIX \
     	run
 done

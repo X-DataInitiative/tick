@@ -7,7 +7,7 @@
 
 #include <iostream>
 
-class ModelLabelsFeatures : public virtual Model {
+class DLL_PUBLIC ModelLabelsFeatures : public virtual Model {
  protected:
   ulong n_samples, n_features;
 

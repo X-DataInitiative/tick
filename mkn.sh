@@ -44,7 +44,7 @@ MKN_C_FLAGS=${CXXFLAGS}
 source $ROOT/sh/swig.sh
 
 for P in "${PROFILES[@]}"; do 
-    mkn compile -ta "${MKN_C_FLAGS[@]}" -b $PINC:$PNIC -p ${P} 
+    mkn compile -ta "${MKN_C_FLAGS[@]}" -b "$PY_INCS" -p ${P} 
 done
 
 for P in "${PROFILES[@]}"; do
@@ -62,13 +62,25 @@ for P in "${PROFILES[@]}"; do
             LIBS="$LIBS ${ADD_LIB}.${LIB_POSTEXT}"
         fi
     done
-    mkn link -p $P -l "$LIBS ${LDARGS}" -P lib_name=$LIB_POSTFIX
+
+    mkn link -p $P -l "$LIBS ${LDARGS}" \
+        -B "$B_PATH" \
+        -P lib_name=$LIB_POSTFIX
+
     EX=$(hash_index $P)
     PUSHD=${LIBRARIES[$EX]}
     pushd $(dirname ${PUSHD}) 2>&1 > /dev/null
-        for f in $(find . -maxdepth 1 -type f ! -name "*.py" ! -name "__*" ); do
-            SUB=${f:2:3}
-            [ "$SUB" == "lib" ] && cp "$f" "_${f:5}"
+
+      if [[ "$unameOut" == "CYGWIN"* ]] || [[ "$unameOut" == "MINGW"* ]]; then
+        for f in $(find . -maxdepth 1 -type f -name "*.dll" ); do    
+          DLL="${f%.*}"
+          cp ${f:2} ${DLL}.pyd
         done
+      else
+        for f in $(find . -maxdepth 1 -type f ! -name "*.py" ! -name "__*" ); do
+          SUB=${f:2:3}
+          [ "$SUB" == "lib" ] && cp "$f" "${f:5}"
+        done
+      fi      
     popd 2>&1 > /dev/null
 done

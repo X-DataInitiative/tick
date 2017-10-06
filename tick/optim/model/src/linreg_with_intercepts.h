@@ -7,7 +7,7 @@
 #include "model_generalized_linear_with_intercepts.h"
 #include "linreg.h"
 
-class ModelLinRegWithIntercepts : public ModelGeneralizedLinearWithIntercepts,
+class DLL_PUBLIC ModelLinRegWithIntercepts : public ModelGeneralizedLinearWithIntercepts,
                                   public ModelLinReg {
  public:
   ModelLinRegWithIntercepts(const SBaseArrayDouble2dPtr features,

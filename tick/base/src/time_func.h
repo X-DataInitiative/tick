@@ -18,7 +18,7 @@
 // TODO: Do an abstract class... then small classes for constant TF, interpolated, dichotomic...
 
 //! @brief this class allows us to extrapolate points samples into continuous temporal function
-class TimeFunction {
+class DLL_PUBLIC TimeFunction {
  public:
     //! @brief The different interpolation mode
     enum class InterMode {

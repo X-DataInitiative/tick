@@ -5,7 +5,7 @@
 
 #include "prox.h"
 
-class ProxSeparable : public Prox {
+class DLL_PUBLIC ProxSeparable : public Prox {
  public:
   ProxSeparable(double strength, bool positive);
 

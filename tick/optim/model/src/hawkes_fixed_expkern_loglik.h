@@ -19,7 +19,7 @@ class ModelHawkesFixedExpKernLogLikList;
  * exponential kernels with fixed exponent (i.e., \f$ \alpha \beta e^{-\beta t} \f$, with fixed
  * decay)
  */
-class ModelHawkesFixedExpKernLogLik : public ModelHawkesFixedKernLogLik {
+class DLL_PUBLIC ModelHawkesFixedExpKernLogLik : public ModelHawkesFixedKernLogLik {
  private:
   //! @brief Value of decay for this model
   double decay;
