@@ -48,14 +48,25 @@ for P in "${PROFILES[@]}"; do
     mkn compile -ta "${MKN_C_FLAGS[@]}" -b "$PY_INCS" -p ${P} 
 done
 
+TKLOG=$KLOG
 for P in "${PROFILES[@]}"; do
     EX=$(hash_index $P)
     LIBLD=${LIB_LD_PER_LIB[$EX]}
-
-    mkn link -p $P -l "${LDARGS} $LIBLD" \
-       -P lib_name=$LIB_POSTFIX \
-       -B $B_PATH
-
+    if [[ "$unameOut" == "CYGWIN"* ]] || [[ "$unameOut" == "MINGW"* ]]; then
+      # Here we intercept the command for linking on windows and change 
+      # the output from ".dll" to ".pyd"
+      KLOG=0 
+      OUT=$(mkn link -p $P -l "${LDARGS} $LIBLD" \
+            -P lib_name=$LIB_POSTFIX \
+            -RB $B_PATH |  head -1)
+      OUT=$(echo $OUT | sed -e "s/.dll/.pyd/g")
+      (( TKLOG > 0 )) && echo $OUT
+      cmd /c "${OUT[@]}"
+    else
+      mkn link -p $P -l "${LDARGS} $LIBLD" \
+         -P lib_name=$LIB_POSTFIX \
+         -B $B_PATH
+    fi
     PUSHD=${LIBRARIES[$EX]}
     pushd $(dirname ${PUSHD}) 2>&1 > /dev/null
       if [[ "$unameOut" == "CYGWIN"* ]] || [[ "$unameOut" == "MINGW"* ]]; then
