@@ -172,7 +172,10 @@ This method is provided mainly for developers to decrease compilation times.
 To use [ccache](https://ccache.samba.org/) (or similar) with mkn, edit your ~/.maiken/settings.yaml file so it looks like one [here](https://github.com/Dekken/maiken/wiki/Alternative-configs) - this can greatly decrease repeated compilation times. ccache is a third party tool which may have to be installed manually on your system.
 
 Notes:
-  mkn is not yet supported for building Tick C++ libraries.
+  mkn is not yet supported for building Tick C++ libraries on Windows.
+  For Anaconda on MacOS - add the following line to ~/.bash_profile
+    export KLOG=2
+  This enables error level logging
 
 ## Help and Support
 

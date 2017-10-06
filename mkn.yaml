@@ -21,7 +21,6 @@ property:
            -DNDEBUG
     win_cargs:
       -GL -MD -EHsc -Zc:inline -DBUILDING_DLL -O2
-      -DTICK_SPARSE_INDICES_INT32
     nixish_cargs: -fwrapv -O2 -Wall
                   -fstack-protector-strong 
                   -Wformat -Werror=format-security -Wdate-time 
@@ -29,9 +28,9 @@ property:
                   -ffast-math -Wno-uninitialized
                   
     nix_cargs: ${nixish_cargs}
-               -DTICK_SPARSE_INDICES_INT64
+
     bsd_cargs: ${nixish_cargs}
-               -DTICK_SPARSE_INDICES_INT32
+
     nixish_largs: -pthread -shared
                   -fstack-protector-strong -Wformat 
                   -Werror=format-security -Wdate-time 
