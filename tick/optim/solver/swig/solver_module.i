@@ -17,5 +17,6 @@
 %include sto_solver.i
 %include sgd.i
 %include svrg.i
+%include saga.i
 %include sdca.i
 %include adagrad.i
