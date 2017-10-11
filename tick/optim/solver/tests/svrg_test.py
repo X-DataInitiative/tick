@@ -192,5 +192,15 @@ class Test(TestSolver):
                                                      solver_dense.solution, 7)
 
 
+
+    def test_asvrg_sparse_and_dense_consistency(self):
+        """...Test ASVRG can run all glm models and is consistent with sparsity
+        """
+
+        def create_solver():
+            return SVRG(max_iter=1, verbose=False, step=1e-5,
+                        seed=TestSolver.sto_seed, n_threads=2)
+
+
 if __name__ == '__main__':
     unittest.main()

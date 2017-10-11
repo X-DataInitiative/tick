@@ -1,4 +1,4 @@
-add_executable(tick_test_solver test_svrg.cpp)
+add_executable(tick_test_solver svrg_gtest.cpp)
 
 target_link_libraries(tick_test_solver
     ${TICK_LIB_ARRAY}

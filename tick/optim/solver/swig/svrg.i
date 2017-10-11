@@ -20,6 +20,7 @@ class SVRG : public StoSolver {
          RandType rand_type,
          double step,
          int seed,
+         int threads = 1,
          VarianceReductionMethod variance_reduction = VarianceReductionMethod::Last);
 
     void solve();

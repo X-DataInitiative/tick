@@ -17,6 +17,7 @@ class SVRG : public StoSolver {
   };
 
  private:
+  int n_threads = 1;
   double step;
   // Probabilistic correction of the step-sizes of all model weights,
   // given by the inverse proportion of non-zero entries in each feature column
@@ -41,12 +42,25 @@ class SVRG : public StoSolver {
 
   void compute_step_corrections();
 
+  void dense_single_thread_solver(const ulong& next_i);
+
+  // ProxSeparable* is a raw pointer here as the
+  //  ownership of the pointer is handled by
+  //  a shared_ptr which is above it in the same
+  //  scope so a shared_ptr is not needed
+  void sparse_single_thread_solver(
+      const ulong& next_i,
+      const ulong& n_features,
+      const bool use_intercept,
+      ProxSeparable*& casted_prox);
+
  public:
   SVRG(ulong epoch_size,
        double tol,
        RandType rand_type,
        double step,
        int seed = -1,
+       int n_threads = 1,
        VarianceReductionMethod variance_reduction = VarianceReductionMethod::Last);
 
   void solve() override;

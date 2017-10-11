@@ -74,3 +74,10 @@ TEST(SVRG, test_convergence) {
   out_iterate60.mult_incr(out_iterate30, -1);
   EXPECT_LE(out_iterate60.norm_sq() / n_features, 0.1);
 }
+
+#ifdef ADD_MAIN
+int main(int argc, char** argv) {
+  ::testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
+}
+#endif  // ADD_MAIN

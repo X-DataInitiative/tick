@@ -77,7 +77,10 @@ class SVRG(SolverFirstOrderSto):
                  rand_type: str = 'unif', tol: float = 0.,
                  max_iter: int = 100, verbose: bool = True,
                  print_every: int = 10, record_every: int = 1,
-                 seed: int = -1, variance_reduction: str = 'last'):
+                 seed: int = -1, variance_reduction: str = 'last',
+                 n_threads: int = 1):
+
+        self.n_threads = n_threads
 
         SolverFirstOrderSto.__init__(self, step, epoch_size, rand_type,
                                      tol, max_iter, verbose,
@@ -92,7 +95,8 @@ class SVRG(SolverFirstOrderSto):
 
         # Construct the wrapped C++ SGD solver
         self._solver = _SVRG(epoch_size, self.tol,
-                             self._rand_type, step, self.seed)
+                             self._rand_type, step, self.seed,
+                             self.n_threads)
 
         self.variance_reduction = variance_reduction
 
