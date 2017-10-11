@@ -3,19 +3,19 @@
 #include "online_forest.h"
 
 OnlineForest::OnlineForest(uint32_t n_trees, uint32_t n_min_samples,
-                           uint8_t n_splits, CycleType cycle_type)
+                           uint8_t n_splits)
     : n_trees(n_trees), n_min_samples(n_min_samples),
-      n_splits(n_splits), cycle_type(cycle_type) {
+      n_splits(n_splits) {
   has_data = false;
   // No iteration so far
   t = 0;
   //
   permutation_ready = false;
   // rand = Rand(123);
+  cycle_type = CycleType::sequential;
   i_perm = 0;
   for (uint32_t i = 0; i < n_trees; ++i) {
-    // ICICICI
-    trees.emplace_back(this);
+    trees.emplace_back(std::unique_ptr<Tree>(new Tree(*this)));
   }
 }
 
@@ -25,6 +25,9 @@ void OnlineForest::fit(ulong n_iter) {
     TICK_ERROR("OnlineForest::fit: the forest has no data yet.")
   }
   // Could be parallelized
+  if (n_iter == 0) {
+    n_iter = get_n_samples();
+  }
   for (ulong it = 0; it < n_iter; ++it) {
     std::cout << "------------------" << std::endl;
     std::cout << "iteration=" << it << std::endl;
@@ -32,13 +35,15 @@ void OnlineForest::fit(ulong n_iter) {
     std::cout << "sample_index=" << sample_index << std::endl;
     for (auto &tree : trees) {
       // Fit the tree online using the new data point
-      tree.fit(sample_index);
+      tree->fit(sample_index);
     }
     t++;
   }
 }
 
 void OnlineForest::init_permutation() {}
+
+void OnlineForest::shuffle() {}
 
 //// Simulation of a random permutation using Knuth's algorithm
 //void OnlineForest::shuffle() {

@@ -5,6 +5,7 @@
 
 #include "base.h"
 
+// Forward declaration of a Tree
 class Tree;
 
 class Node {
@@ -43,7 +44,7 @@ class Node {
   bool is_leaf;
 
  public:
-  Node(const Tree &tree);
+  Node(Tree &tree);
   Node(const Node &node) = delete;
 
   inline uint32_t get_left_child() const;

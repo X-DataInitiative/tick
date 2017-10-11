@@ -2,7 +2,7 @@
 
 #include "node.h"
 
-Node::Node(const Tree &tree) : tree(tree) {
+Node::Node(Tree &tree) : tree(tree) {
   // At its creation, a node is a leaf
   is_leaf = true;
 }

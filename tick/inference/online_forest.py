@@ -41,9 +41,12 @@ class OnlineForest(ABC, Base):
         self.n_splits = n_splits
         self._forest = _OnlineForest(n_trees, n_min_samples, n_splits)
 
-    def fit_online(self, X, y):
+    def set_data(self, X, y):
+        self._forest.set_data(X, y)
+
+    def fit(self, n_iter=0):
         self._set("_fitted", True)
-        self._forest.fit(X, y)
+        self._forest.fit(n_iter)
         return self
 
     def predict(self, X):

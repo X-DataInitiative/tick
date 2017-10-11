@@ -22,13 +22,13 @@ class Tree {
   uint8_t n_splits;
 
   // The list of nodes in the tree
-  std::vector<Node> nodes;
+  std::vector<std::unique_ptr<Node>> nodes;
 
   // The forest of the tree
   const OnlineForest &forest;
 
  public:
-  Tree(const OnlineForest &forest);
+  Tree(OnlineForest &forest);
 
   // Launch a pass on the given data
   void fit(ulong n_iter = 0);

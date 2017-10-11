@@ -15,7 +15,9 @@ enum class CycleType {
 
 class OnlineForest {
  public:
-  OnlineForest(uint32_t n_trees, uint32_t n_min_samples, uint8_t n_splits, CycleType cycle_type);
+  OnlineForest(uint32_t n_trees,
+               uint32_t n_min_samples,
+               uint8_t n_splits);
 
   void fit(ulong n_iter = 0);
 

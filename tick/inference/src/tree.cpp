@@ -2,9 +2,8 @@
 
 #include "tree.h"
 
-Tree::Tree(const OnlineForest &forest) : forest(forest) {
-  // At creation of the tree, we create the first root node
-  nodes.emplace_back(this);
+Tree::Tree(OnlineForest &forest) : forest(forest) {
+  nodes.emplace_back(std::unique_ptr<Node>(new Node(*this)));
 }
 
 void Tree::fit(ulong sample_index) {

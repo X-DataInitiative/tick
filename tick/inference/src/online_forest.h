@@ -30,8 +30,10 @@ class OnlineForest {
   SBaseArrayDouble2dPtr features;
   // The vector of labels
   SArrayDoublePtr labels;
+
   // The list of trees in the forest
-  std::vector<Tree> trees;
+  std::vector<std::unique_ptr<Tree>> trees;
+
   // Do the forest received data
   bool has_data;
 
@@ -61,9 +63,10 @@ class OnlineForest {
 //    return rand.uniform_int(ulong{0}, m);
 //  }
 
-
  public:
-  OnlineForest(uint32_t n_trees, uint32_t n_min_samples, uint8_t n_splits, CycleType cycle_type=CycleType::sequential);
+  OnlineForest(uint32_t n_trees,
+               uint32_t n_min_samples,
+               uint8_t n_splits);
 
   // Fit the forest by doing a certain number number of iterations
   void fit(ulong n_iter = 0);
