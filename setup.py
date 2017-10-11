@@ -833,8 +833,8 @@ class RunPyTests(TickCommand):
     def run(self):
         loader = unittest.TestLoader()
         alltests = loader.discover(self.start_dir, pattern="*_test.py")
-
-        unittest.TextTestRunner(verbosity=2).run(alltests)
+        result = unittest.TextTestRunner(verbosity=2).run(alltests)
+        sys.exit(not result.wasSuccessful())
 
 
 class RunTestSuites(TickCommand):
