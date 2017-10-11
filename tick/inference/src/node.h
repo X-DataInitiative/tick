@@ -4,8 +4,8 @@
 // License: BSD 3 clause
 
 #include "base.h"
-#include "tree.h"
-#include "online_forest.h"
+
+class Tree;
 
 class Node {
  private:
@@ -36,7 +36,7 @@ class Node {
   // Maximum value of each feature (maximum range)
   ArrayDouble features_max;
   // The indexes (row numbers) of the samples currently in the node
-  std::vector samples;
+  std::vector<ulong> samples;
   // The tree of the node
   const Tree &tree;
   // true if the node is a leaf
@@ -44,6 +44,7 @@ class Node {
 
  public:
   Node(const Tree &tree);
+  Node(const Node &node) = delete;
 
   inline uint32_t get_left_child() const;
   inline uint32_t get_right_child() const;

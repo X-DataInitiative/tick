@@ -13,7 +13,7 @@ OnlineForest::OnlineForest(uint32_t n_trees, uint32_t n_min_samples,
   permutation_ready = false;
   // rand = Rand(123);
   i_perm = 0;
-  for (auto i = 0; i < n_trees; ++i) {
+  for (uint32_t i = 0; i < n_trees; ++i) {
     // ICICICI
     trees.emplace_back(this);
   }

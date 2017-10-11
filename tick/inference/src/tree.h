@@ -7,6 +7,8 @@
 #include "node.h"
 #include "online_forest.h"
 
+class OnlineForest;
+
 class Tree {
  private:
   bool already_fitted;
