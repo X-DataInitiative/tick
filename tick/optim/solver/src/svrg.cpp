@@ -8,9 +8,11 @@ SVRG::SVRG(ulong epoch_size,
            RandType rand_type,
            double step,
            int seed,
+           int n_threads,
            VarianceReductionMethod variance_reduction)
     : StoSolver(epoch_size, tol, rand_type, seed),
-      step(step), variance_reduction(variance_reduction),
+      n_threads(n_threads), step(step),
+      variance_reduction(variance_reduction),
       ready_step_corrections(false) {}
 
 void SVRG::set_model(ModelPtr model) {
@@ -68,19 +70,24 @@ void SVRG::compute_step_corrections() {
 }
 
 void SVRG::solve_dense() {
-  for (ulong t = 0; t < epoch_size; ++t) {
-    ulong i = get_next_i();
-    model->grad_i(i, iterate, grad_i);
-    model->grad_i(i, fixed_w, grad_i_fixed_w);
-    for (ulong j = 0; j < iterate.size(); ++j) {
-      iterate[j] = iterate[j] - step * (grad_i[j] - grad_i_fixed_w[j] + full_gradient[j]);
-    }
-    prox->call(iterate, step, iterate);
-    if (variance_reduction == VarianceReductionMethod::Random && t == rand_index) {
-      next_iterate = iterate;
-    }
-    if (variance_reduction == VarianceReductionMethod::Average) {
-      next_iterate.mult_incr(iterate, 1.0 / epoch_size);
+  if (n_threads > 1) {
+      std::vector<std::thread> threadsV;
+      for (int i = 0; i < n_threads; i++) {
+        threadsV.emplace_back([=]() mutable -> void {
+          for (ulong t = 0; t < (epoch_size / n_threads); ++t) {
+            ulong next_i(get_next_i());
+            dense_single_thread_solver(next_i);
+          }
+        });
+      }
+      for (int i = 0; i < n_threads; i++) {
+        threadsV[i].join();
+      }
+
+  } else {
+    for (ulong t = 0; t < epoch_size; ++t) {
+      ulong next_i = get_next_i();
+      dense_single_thread_solver(next_i);
     }
   }
   if (variance_reduction == VarianceReductionMethod::Last) {
@@ -102,9 +109,59 @@ void SVRG::solve_sparse_proba_updates(bool use_intercept, ulong n_features) {
   } else {
     TICK_ERROR("SVRG::solve_sparse_proba_updates can be used with a separable prox only.")
   }
-  for (t = 0; t < epoch_size; ++t) {
-    // Get next sample index
-    ulong i = get_next_i();
+  ProxSeparable* p_casted_prox = casted_prox.get();
+  if (n_threads > 1) {
+      std::vector<std::thread> threadsV;
+      for (int i = 0; i < n_threads; i++) {
+        threadsV.emplace_back([=]() mutable -> void {
+          for (ulong t = 0; t < (epoch_size / n_threads); ++t) {
+            ulong next_i(get_next_i());
+            sparse_single_thread_solver(next_i, n_features, use_intercept, p_casted_prox);
+          }
+        });
+      }
+      for (int i = 0; i < n_threads; i++) {
+        threadsV[i].join();
+      }
+  } else {
+    for (t = 0; t < epoch_size; ++t) {
+      ulong next_i = get_next_i();
+      sparse_single_thread_solver(next_i, n_features, use_intercept, p_casted_prox);
+    }
+  }
+
+  if (variance_reduction == VarianceReductionMethod::Last) {
+    next_iterate = iterate;
+  }
+  t += epoch_size;
+}
+
+void SVRG::set_starting_iterate(ArrayDouble &new_iterate) {
+  StoSolver::set_starting_iterate(new_iterate);
+  next_iterate = iterate;
+}
+
+void SVRG::dense_single_thread_solver(const ulong& next_i) {
+    const ulong& i = next_i;
+    model->grad_i(i, iterate, grad_i);
+    model->grad_i(i, fixed_w, grad_i_fixed_w);
+    for (ulong j = 0; j < iterate.size(); ++j) {
+      iterate[j] = iterate[j] - step * (grad_i[j] - grad_i_fixed_w[j] + full_gradient[j]);
+    }
+    prox->call(iterate, step, iterate);
+    if (variance_reduction == VarianceReductionMethod::Random && t == rand_index) {
+      next_iterate = iterate;
+    }
+    if (variance_reduction == VarianceReductionMethod::Average) {
+      next_iterate.mult_incr(iterate, 1.0 / epoch_size);
+    }
+}
+
+void SVRG::sparse_single_thread_solver(const ulong& next_i,
+                          const ulong& n_features,
+                          const bool use_intercept,
+                          ProxSeparable*& casted_prox) {
+    const ulong& i = next_i;
     // Sparse features vector
     BaseArrayDouble x_i = model->get_features(i);
     // Gradients factors (model is a GLM)
@@ -138,14 +195,4 @@ void SVRG::solve_sparse_proba_updates(bool use_intercept, ulong n_features) {
     if (variance_reduction == VarianceReductionMethod::Average) {
       next_iterate.mult_incr(iterate, 1.0 / epoch_size);
     }
-  }
-  t += epoch_size;
-  if (variance_reduction == VarianceReductionMethod::Last) {
-    next_iterate = iterate;
-  }
-}
-
-void SVRG::set_starting_iterate(ArrayDouble &new_iterate) {
-  StoSolver::set_starting_iterate(new_iterate);
-  next_iterate = iterate;
 }
