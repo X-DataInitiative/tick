@@ -59,13 +59,20 @@ export PYTHONPATH=$PWD
 mkn build -p gtest -tSa "-fPIC -O2 -DNDEBUG -DGTEST_CREATE_SHARED_LIBRARY" \
     -d google.test,+
 
+LIB=""
+if [[ "$unameOut" == "Darwin"* ]]; then
+  for P in "${PROFILES[@]}"; do
+    LIB="${LIB} -Wl,-rpath,@loader_path/../../$(dirname ${LIBRARIES[$(hash_index $P)]})"
+  done
+fi
+
 for FILE in "${FILES[@]}"; do
 
     echo FILE $FILE
 
     mkn clean build run -p gtest -a "${CARGS}" \
-        -tl "${LDARGS}" -b "$PY_INCS" \
-        -M "${FILE}" -P lib_name=$LIB_POSTFIX \
+        -tl "${LDARGS} ${LIB}" -b "$PY_INCS" \
+        -M "${FILE}" -P "${MKN_P}" \
         -B $B_PATH
         
 done

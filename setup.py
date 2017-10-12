@@ -93,7 +93,17 @@ try:
         numpy_include = np.get_numpy_include()
 
     # Determine if we have an available BLAS implementation
-    if 'bdist_wheel' not in sys.argv:
+    if platform.system() == 'Windows':
+        try:
+            with open(os.devnull, 'w') as devnull:
+                exitCode = subprocess.check_output(
+                    "python tools/python/blas/check_cblas.py build_ext",
+                    stderr=devnull,
+                    shell=True)
+                blas_info = get_info("blas_opt", 0)
+        except subprocess.CalledProcessError as subError:
+            print("Error executing check_cblas.py - cblas not found")
+    elif 'bdist_wheel' not in sys.argv:
         blas_info = get_info("blas_opt", 0)
 
     numpy_available = True
