@@ -56,18 +56,18 @@ def hawkes_least_square_error(intensities, timestamps, end_time, precision=3):
 def hawkes_log_likelihood(intensities, timestamps, end_time, precision=3):
     dim = len(timestamps)
 
-    log_intensity = sum(
+    compensator = sum(
         [quad(lambda x, i=i: intensities[i](x), 0, end_time,
               epsabs=np.power(10., -precision), limit=1000)[0]
          for i in range(dim)]
     )
 
-    intensity_integral = sum(
+    log_intensity = sum(
         [sum([np.log(intensities[i](t)) for t in timestamps[i]])
          for i in range(dim)]
     )
 
-    return log_intensity - intensity_integral
+    return dim * end_time - compensator + log_intensity
 
 
 def hawkes_exp_kernel_intensities(baseline, decays, adjacency, timestamps):

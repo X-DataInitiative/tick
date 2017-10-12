@@ -52,7 +52,7 @@ class Test(unittest.TestCase):
             intensities, timestamps, self.end_time, precision=precision)
         integral_approx /= self.model.n_jumps
 
-        self.assertAlmostEqual(integral_approx, self.model.loss(self.coeffs),
+        self.assertAlmostEqual(integral_approx, - self.model.loss(self.coeffs),
                                places=precision)
 
     def test_model_hawkes_loglik_multiple_events(self):
@@ -79,7 +79,7 @@ class Test(unittest.TestCase):
 
         integral_approx /= self.model_list.n_jumps
         self.assertAlmostEqual(integral_approx,
-                               self.model_list.loss(self.coeffs),
+                               - self.model_list.loss(self.coeffs),
                                places=2)
 
     def test_model_hawkes_loglik_incremental_fit(self):
