@@ -3,6 +3,9 @@
 import unittest
 import numpy as np
 from tick.inference import HawkesEM
+from tick.optim.model.tests.hawkes_utils import hawkes_intensities, \
+    hawkes_log_likelihood
+from tick.plot import plot_hawkes_kernels
 
 
 class Test(unittest.TestCase):
@@ -35,7 +38,9 @@ class Test(unittest.TestCase):
                       n_threads=2, max_iter=10, verbose=False)
         em.fit(self.events, baseline_start=baseline, kernel_start=kernel)
 
-        np.set_printoptions(precision=4)
+        np.testing.assert_array_almost_equal(
+            em.baseline, [1.2264, 0.2164, 1.6782], decimal=4)
+
         expected_kernel = [[[2.4569e-02, 2.5128e-06, 0.0000e+00],
                             [1.8072e-02, 5.4332e-11, 0.0000e+00],
                             [2.7286e-03, 4.0941e-08, 3.5705e-15]],
@@ -70,6 +75,74 @@ class Test(unittest.TestCase):
 
         np.testing.assert_array_equal(em.get_kernel_supports(),
                                       np.ones((self.n_nodes, self.n_nodes)) * 3)
+
+    def test_hawkes_em_score(self):
+        """...Test score (ie. likelihood) function of Hawkes EM
+        """
+
+        def approximate_likelihood(em, events, end_times, precision=2):
+            n_total_jumps = sum(map(len, events))
+            kernels_func = [[
+                lambda t, i=i, j=j: em.get_kernel_values(i, j, np.array([t]))[0]
+                for j in range(n_nodes)] for i in range(n_nodes)
+            ]
+            intensities = hawkes_intensities(events, em.baseline, kernels_func)
+            return hawkes_log_likelihood(intensities, events, end_times,
+                                         precision=precision) / n_total_jumps
+
+        # We use only 2 nodes otherwise integral approximation might be very
+        # slow
+        n_nodes = 2
+        kernel_support = 1
+        kernel_size = 3
+        baseline = np.random.rand(n_nodes) + .2
+        kernel = np.random.rand(n_nodes, n_nodes, kernel_size) + .4
+
+        train_events = \
+            [np.cumsum(np.random.rand(2 + i)) for i in range(n_nodes)]
+
+        test_events = \
+            [2 + np.cumsum(np.random.rand(2 + i)) for i in range(n_nodes)]
+
+        # Test for 2 kind of discretization
+        train_kwargs = [{'kernel_support': 1, 'kernel_size': 3},
+                        {'kernel_discretization': np.array([0., 1., 1.5, 3.])}]
+
+        # Test with and without fitting
+        fits = [True, False]
+
+        for kwargs, fit in zip(train_kwargs, fits):
+            em = HawkesEM(**kwargs)
+            end_times = max(map(max, train_events)) + 0.2 * kernel_support
+
+            msg = '^You must either call `fit` before `score` or provide events'
+            with self.assertRaisesRegex(ValueError, msg):
+                em.score()
+
+            if fit:
+                em.fit(train_events, end_times=end_times,
+                       baseline_start=baseline, kernel_start=kernel)
+            else:
+                em.baseline = baseline
+                em.kernel = kernel
+
+            # Score on em train data
+            if fit:
+                em_train_score = em.score()
+            else:
+                em_train_score = em.score(train_events, end_times=end_times)
+            self.assertAlmostEqual(
+                em_train_score,
+                approximate_likelihood(em, train_events, end_times, 2),
+                delta=1e-1, msg='Failed on train for {}'.format(kwargs))
+
+            # Score on test data
+            em_test_score = em.score(events=test_events)
+            test_end_times = max(map(max, test_events))
+            self.assertAlmostEqual(
+                em_test_score,
+                approximate_likelihood(em, test_events, test_end_times, 4),
+                delta=1e-3, msg='Failed on test for {}'.format(kwargs))
 
     def test_hawkes_em_kernel_support(self):
         """...Test that Hawkes em kernel support parameter is correctly

@@ -45,39 +45,18 @@ class HawkesEM : public ModelHawkesList {
   //! @brief The main method to perform one iteration
   void solve(ArrayDouble &mu, ArrayDouble2d &kernels);
 
- private:
-  //! @brief A method called in parallel by the method 'solve'
-  //! @param r_u : r * n_realizations + u, tells which realization and which node
-  void solve_u_r(const ulong r_u, const ArrayDouble &mu, ArrayDouble2d &kernel);
+  //! @brief Compute loglikelihood of a given kernel and baseline
+  double loglikelihood(const ArrayDouble &mu, ArrayDouble2d &kernels);
 
-  //! @brief Discretization parameter of the kernel
-  //! If kernel_discretization is a nullptr then it is equal to kernel_support / kernel_size
-  //! otherwise it is equal to the difference of
-  //! kernel_discretization[m+1] - kernel_discretization[m]
-  inline double get_kernel_dt(const ulong m = 0) const {
-    if (kernel_discretization == nullptr) {
-      return kernel_support / kernel_size;
-    } else {
-      return (*kernel_discretization)[m + 1] - (*kernel_discretization)[m];
-    }
-  }
+  SArrayDouble2dPtr get_kernel_norms(ArrayDouble2d &kernels) const;
 
- public:
   double get_kernel_support() const { return kernel_support; }
 
   ulong get_kernel_size() const { return kernel_size; }
 
   double get_kernel_fixed_dt() const;
 
-  SArrayDoublePtr get_kernel_discretization() const {
-    if (kernel_discretization == nullptr) {
-      ArrayDouble kernel_discretization_tmp = arange<double>(0, kernel_size + 1);
-      kernel_discretization_tmp.mult_fill(kernel_discretization_tmp, get_kernel_fixed_dt());
-      return kernel_discretization_tmp.as_sarray_ptr();
-    } else {
-      return kernel_discretization;
-    }
-  }
+  SArrayDoublePtr get_kernel_discretization() const;
 
   //! @brief set kernel support
   void set_kernel_support(const double kernel_support);
@@ -90,6 +69,37 @@ class HawkesEM : public ModelHawkesList {
   void set_kernel_dt(const double kernel_dt);
 
   void set_kernel_discretization(const SArrayDoublePtr kernel_discretization);
+
+ private:
+  //! @brief A method called in parallel by the method 'solve'
+  //! @param r_u : r * n_realizations + u, tells which realization and which node
+  void solve_ur(const ulong r_u, const ArrayDouble &mu, ArrayDouble2d &kernel);
+
+  //! @brief A method called in parallel by the method 'loglikelihood'
+  //! @param r_u : r * n_realizations + u, tells which realization and which node
+  double loglikelihood_ur(const ulong r_u, const ArrayDouble &mu, ArrayDouble2d &kernels);
+
+
+  //! @brief A method called by solve_ur and logliklihood_ur to compute all intensities at
+  //! all timestamps occuring in node u of realization r
+  //! @param r_u : r * n_realizations + u, tells which realization and which node
+  //! @param intensity_func : function that will be called for all timestamps with the intensity at
+  //! this timestamp as argument
+  //! @param store_unnormalized_kernel : solve_ur method needs to store an unnormalized version
+  //! of the kernels in the class variable unnormalized_kernels
+  void compute_intensities_ur(const ulong r_u, const ArrayDouble &mu, ArrayDouble2d &kernels,
+                              std::function<void(double)> intensity_func,
+                              bool store_unnormalized_kernel);
+
+  double compute_compensator_ur(const ulong r_u, const ArrayDouble &mu, ArrayDouble2d &kernels);
+
+  void check_baseline_and_kernels(const ArrayDouble &mu, ArrayDouble2d &kernels) const;
+
+  //! @brief Discretization parameter of the kernel
+  //! If kernel_discretization is a nullptr then it is equal to kernel_support / kernel_size
+  //! otherwise it is equal to the difference of
+  //! kernel_discretization[m+1] - kernel_discretization[m]
+  double get_kernel_dt(const ulong m = 0) const;
 };
 
 #endif  // TICK_INFERENCE_SRC_HAWKES_EM_H_
