@@ -11,4 +11,4 @@ The _tick_ package was initially implemented by researchers at [CMAP](http://www
 - Massil Achab
 - Maryan Morel
 - Simon Bussy
-
+- Philip Deegan
