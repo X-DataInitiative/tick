@@ -169,6 +169,7 @@ void HawkesEM::compute_intensities_ur(const ulong r_u,
   }
 
   for (ulong i = timestamps_u.size() - 1; i != static_cast<ulong>(-1); i--) {
+
     const double t_i = timestamps_u[i];
     unnormalized_kernel_ru.init_to_zero();
 
