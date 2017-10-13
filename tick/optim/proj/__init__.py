@@ -1,5 +1,5 @@
 import tick.base
 
-from .proj import ProjSimplex, ProjHalfSpace
+from tick.optim.proj.proj import ProjSimplex, ProjHalfSpace
 
 __all__ = ["ProjSimplex", "ProjHalfSpace"]

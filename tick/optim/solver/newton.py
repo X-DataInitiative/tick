@@ -1,5 +1,6 @@
 import numpy as np
 
+from tick.optim.model import ModelPoisReg
 from tick.optim.proj import ProjHalfSpace
 from tick.optim.prox.base import Prox
 from tick.optim.prox import ProxZero, ProxL2Sq
@@ -76,11 +77,12 @@ class Newton(SolverFirstOrder):
         self._prox_grad = None
 
     def set_model(self, model):
-        A = model.features
-        # mask = model.labels > 0
-        A = A[model.labels > 0, :]
-        b = 1e-8 + np.zeros(A.shape[0])
-        self._set('_proj', ProjHalfSpace(max_iter=1000).fit(A, b))
+        if isinstance(model, ModelPoisReg):
+            A = model.features
+            # mask = model.labels > 0
+            A = A[model.labels > 0, :]
+            b = 1e-8 + np.zeros(A.shape[0])
+            self._set('_proj', ProjHalfSpace(max_iter=1000).fit(A, b))
         return SolverFirstOrder.set_model(self, model)
 
     def set_prox(self, prox: Prox):
@@ -143,11 +145,14 @@ class Newton(SolverFirstOrder):
         else:
             x = np.zeros(self.model.n_coeffs)
 
-        x = self._proj.call(x)
-        obj = self.objective(x)
+        if isinstance(self.model, ModelPoisReg):
+            x = self._proj.call(x)
+            assert self.model.features[self.model.labels > 0, :].dot(
+                x).min() > 0
 
-
-        assert self.model.features[self.model.labels > 0, :].dot(x).min() > 0
+            obj = self.objective(x)
+        else:
+            obj = 0
 
         prev_x = np.empty_like(x)
         for n_iter in range(self.max_iter + 1):
@@ -162,6 +167,8 @@ class Newton(SolverFirstOrder):
             direction = np.linalg.inv(hessian).dot(grad)
             while True:
                 next_x = x - step * direction
+                next_x = np.array(next_x).ravel()
+
                 next_objective = self.objective(next_x)
                 if np.isnan(next_objective) or (next_objective > prev_obj):
                     step *= beta
