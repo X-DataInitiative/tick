@@ -12,7 +12,7 @@ void throw_out_of_range() {
 }
 
 void throw_system_error() {
-    throw std::system_error(EACCES, std::system_category());
+    throw std::system_error(EACCES, std::generic_category());
 }
 
 void throw_invalid_argument() {

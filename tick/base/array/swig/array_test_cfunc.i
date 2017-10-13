@@ -120,14 +120,14 @@
         *n_rows = PyLong_AsLong(obj_nrows);
         *n_cols = PyLong_AsLong(obj_ncols);
 
-#ifndef _WIN32
+
         if (PyArray_TYPE(obj_data) != NP_TYPE || PyArray_ITEMSIZE(obj_data) != sizeof(C_TYPE))
         {
             PyErr_SetString(PyExc_ValueError,"Expecting a " #C_TYPE " numpy array for data field of sparse matrix");
             Py_DECREF(obj_indptr);Py_DECREF(obj_indices);Py_DECREF(obj_data);Py_DECREF(obj_shape);
             return(false);
         }
-#endif        
+
         *data = (C_TYPE *) PyArray_DATA(obj_data);
 
 #ifndef _WIN32

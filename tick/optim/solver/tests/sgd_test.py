@@ -14,7 +14,7 @@ class Test(TestSolver):
         solver = SGD(max_iter=100, verbose=False, seed=Test.sto_seed,
                      step=200)
         self.check_solver(solver, fit_intercept=True, model="logreg",
-                          decimal=1)
+                          decimal=0)
 
     def test_sgd_sparse_and_dense_consistency(self):
         """...Test SGD can run all glm models and is consistent with sparsity
