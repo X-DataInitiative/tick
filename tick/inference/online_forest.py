@@ -30,7 +30,7 @@ class OnlineForest(ABC, Base):
     }
 
     @actual_kwargs
-    def __init__(self, n_trees: int = 100, n_min_samples: int = 30,
+    def __init__(self, n_trees: int = 100, n_min_samples: int = 20,
                  n_splits: int=10):
         Base.__init__(self)
         if not hasattr(self, "_actual_kwargs"):
@@ -69,3 +69,6 @@ class OnlineForest(ABC, Base):
 
     def score(self, X, y):
         from sklearn.metrics import r2_score
+
+    def print(self):
+        self._forest._print()

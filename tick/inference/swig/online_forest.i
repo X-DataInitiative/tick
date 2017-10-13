@@ -21,5 +21,7 @@ class OnlineForest {
 
   void fit(ulong n_iter = 0);
 
-  void set_data(const SBaseArrayDouble2dPtr features, const SArrayDoublePtr labels);
+  void set_data(const SArrayDouble2dPtr features, const SArrayDoublePtr labels);
+
+  void print();
 };
