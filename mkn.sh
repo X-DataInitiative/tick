@@ -63,9 +63,9 @@ for P in "${PROFILES[@]}"; do
       (( TKLOG > 0 )) && echo $OUT
       cmd /c "${OUT[@]}"
     else
-      mkn link -p $P -l "${LDARGS} $LIBLD" \
-         -P lib_name=$LIB_POSTFIX \
-         -B $B_PATH
+      mkn link -p $P -l "${LIBLDARGS} ${LDARGS} $LIBLD" \
+         -P "${MKN_P}" \
+         -B "$B_PATH"
     fi
     PUSHD=${LIBRARIES[$EX]}
     pushd $(dirname ${PUSHD}) 2>&1 > /dev/null

@@ -161,15 +161,48 @@ LDARGS=$(echo "$LDARGS" | sed -e "s/ CoreFoundation//g")
 # IFS = Internal Field Separator - allows looping over lines with spaces
 IFS=$'\n'
 
-
+ANACONDA=0
+LIBLDARGS=""
 # Add library path if using anaconda python
 PYVER=$($PY --version 2>&1 )
 if [[ "$PYVER" == *"Anaconda"* ]]; then
+  ANACONDA=1
   ANACONDA_LIB_PATH=$(linkread $(dirname $(which $PY))/../lib)
-  LDARGS="-L${ANACONDA_LIB_PATH} -Wl,-rpath,${ANACONDA_LIB_PATH} $LDARGS -lmkl_rt -lpthread"
-  LDARGS="-dynamiclib -undefined dynamic_lookup -Wl,-headerpad_max_install_names"
-  CXXFLAGS="-DSCIPY_MKL_H -DHAVE_CBLAS -DTICK_CBLAS_AVAILABLE $CXXFLAGS"
+  if [[ "$unameOut" == "Darwin"* ]]; then
+    # Unknown reason why these are not required for Anaconda -
+    #  Not just that but neither is the -lpython
+    #  The line below is left intentionally commented as a reference of what should be linked
+    LDARGS="" #-L${ANACONDA_LIB_PATH} -Wl,-rpath,${ANACONDA_LIB_PATH} $LDARGS -lmkl_rt -lpthread"
+    LIBLDARGS="-dynamiclib -undefined dynamic_lookup -Wl,-headerpad_max_install_names"
+    CXXFLAGS="-DSCIPY_MKL_H -DHAVE_CBLAS -DTICK_CBLAS_AVAILABLE $CXXFLAGS"
+  fi
 fi
+
+
+##
+# MKN_P_ARRAY exists to allow platfrom 
+#  specific properties to be passed to mkn if required
+MKN_P_ARRAY=(lib_name=$LIB_POSTFIX)
+case "${unameOut}" in
+    Linux*)     LDARGS="${LDARGS}";;
+    Darwin*)    LDARGS="${LDARGS}";;
+    CYGWIN*)    LDARGS="${LDARGS}";;
+    MINGW*)     LDARGS="${LDARGS}";;
+    *)          LDARGS="${LDARGS}";;
+esac
+MKN_P=""
+for PROP in "${MKN_P_ARRAY[@]}"; do
+  MKN_P+="${PROP},"
+done
+MKN_P_SIZE=${#MKN_P}
+MKN_P_SIZE=$((MKN_P_SIZE - 1))
+MKN_P=${MKN_P:0:${MKN_P_SIZE}}
+# The argument passed to "mkn -P" is "MKN_P"
+#  such that all entries in the MKN_P_ARRAY 
+#  become CSV values in MKN_P
+#  Any commas (,) in array entries must
+#  be escaped with a single backslash (\)
+##
 
 PROFILES=(
     array
