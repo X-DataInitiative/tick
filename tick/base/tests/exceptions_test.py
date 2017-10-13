@@ -2,6 +2,7 @@
 
 import errno
 import os
+import platform
 import unittest
 
 from tick.base.build.base import throw_out_of_range, \
@@ -19,8 +20,13 @@ class Test(unittest.TestCase):
     def test_throw_system_error(self):
         """...Test C++ system errors are correctly caught
         """
-        with self.assertRaisesRegex(RuntimeError, os.strerror(errno.EACCES)):
-            throw_system_error()
+        ## Windows returns "permission denied" rather than "Permission denied"
+        if platform.system() == 'Windows':
+            with self.assertRaisesRegex(RuntimeError, os.strerror(errno.EACCES).lower()):
+                throw_system_error()
+        else:
+            with self.assertRaisesRegex(RuntimeError, os.strerror(errno.EACCES)):
+                throw_system_error()
 
     def test_throw_invalid_argument(self):
         """...Test C++ invalid argument errors are correctly caught
