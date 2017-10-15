@@ -20,7 +20,9 @@
 // Type of randomness used when sampling at random data points
 enum class RandType {
     unif = 0,
-    perm
+    perm,
+    seq,
+    close_unif,
 };
 
 // Base abstract for a stochastic solver
@@ -67,6 +69,10 @@ class StoSolver {
 
     // Seed of the random sampling
     int seed;
+
+    ulong max_forward = 0;
+    ulong max_backward = 0;
+    ulong jump_seq = 1;
 
  public:
     explicit StoSolver(int seed = -1);
@@ -149,6 +155,15 @@ class StoSolver {
         this->rand_max = rand_max;
         permutation_ready = false;
     }
+
+    void set_max_forward_backward(ulong max_forward, ulong max_backward){
+        this->max_forward = max_forward;
+        this->max_backward = max_backward;
+    }
+
+  void set_jump_sec(ulong jump_sec){
+      this->jump_seq = jump_sec;
+  }
 };
 
 #endif  // TICK_OPTIM_SOLVER_SRC_STO_SOLVER_H_

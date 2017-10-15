@@ -10,3 +10,16 @@ target_link_libraries(tick_poisson_sdca
         ${TICK_LIB_CRANDOM}
         ${TICK_BLAS_LIBRARIES}
         )
+
+add_executable(tick_sgd_random_order sgd_random_order.cpp)
+
+target_link_libraries(tick_sgd_random_order
+
+        ${TICK_LIB_BASE}
+        ${TICK_LIB_ARRAY}
+        ${TICK_LIB_MODEL}
+        ${TICK_LIB_SOLVER}
+        ${TICK_LIB_PROX}
+        ${TICK_LIB_CRANDOM}
+        ${TICK_BLAS_LIBRARIES}
+        )

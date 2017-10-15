@@ -36,8 +36,8 @@ void StoSolver::init_permutation() {
 
 void StoSolver::reset() {
     t = 1;
+    i_perm = 0;
     if (rand_type == RandType::perm) {
-        i_perm = 0;
         shuffle();
     }
 }
@@ -55,6 +55,14 @@ ulong StoSolver::get_next_i() {
         if (i_perm >= rand_max) {
             shuffle();
         }
+    } else if (rand_type == RandType::seq) {
+        i_perm += jump_seq;
+        return i_perm % rand_max;
+    } else if (rand_type == RandType::close_unif) {
+        // i_perm is here last i
+        i = i_perm + rand_unif(max_forward + max_backward) - max_backward;
+        i %= rand_max;
+        i_perm = i;
     }
     return i;
 }
