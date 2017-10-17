@@ -192,6 +192,10 @@ void ModelHawkesFixedSumExpKernLeastSq::compute_weights_i(const ulong i) {
   ArrayDouble &K_i = K[i];
 
   ulong N_i = timestamps_i.size();
+
+  ArrayDouble2d E_i_transpose(n_nodes, n_decays * n_decays);
+  E_i_transpose.init_to_zero();
+
   for (ulong k = 0; k < N_i; ++k) {
     double t_k_i = timestamps_i[k];
 
@@ -223,16 +227,16 @@ void ModelHawkesFixedSumExpKernLeastSq::compute_weights_i(const ulong i) {
       }
 
       for (ulong u = 0; u < n_decays; ++u) {
-        double decay_u = decays[u];
+        const double decay_u = decays[u];
         C_i(j, u) += H(j, u);
 
         for (ulong u1 = 0; u1 < n_decays; ++u1) {
-          double decay_u1 = decays[u1];
+          const double decay_u1 = decays[u1];
 
           // we fill E_i,j,u',u
           double ratio = decay_u1 / (decay_u1 + decay_u);
           double tmp = 1 - cexp(-(decay_u1 + decay_u) * (end_time - t_k_i));
-          E_i(j, u1 * n_decays + u) += ratio * tmp * H(j, u);
+          E_i_transpose(j, u * n_decays + u1) += ratio * tmp * H(j, u);
         }
       }
     }
@@ -256,6 +260,14 @@ void ModelHawkesFixedSumExpKernLeastSq::compute_weights_i(const ulong i) {
 
         double ratio = decay_u * decay_u1 / (decay_u + decay_u1);
         Dgg_i(u, u1) += ratio * (1 - cexp(-(decay_u + decay_u1) * (end_time - t_k_i)));
+      }
+    }
+  }
+
+  for (ulong j = 0; j < n_nodes; ++j) {
+    for (ulong u = 0; u < n_decays; ++u) {
+      for (ulong u1 = 0; u1 < n_decays; ++u1) {
+        E_i(j, u1 * n_decays + u) = E_i_transpose(j, u1 * n_decays + u);
       }
     }
   }

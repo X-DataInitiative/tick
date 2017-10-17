@@ -70,8 +70,8 @@ extern void t2expini(void);
 
 extern void t2expinl(void);
 
-inline extern double optimized_exp(double x,
-                                   int optimization_level) {
+inline double optimized_exp(double x,
+                            int optimization_level) {
   switch (optimization_level) {
     case 0:return exp(x);
     default:return t2exp(x);
