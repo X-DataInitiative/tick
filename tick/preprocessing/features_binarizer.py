@@ -228,7 +228,7 @@ class FeaturesBinarizer(Base, BaseEstimator, TransformerMixin):
 
         if self.remove_first:
             mask = np.ones(binarized_X.shape[1], dtype=bool)
-            mask[self.feature_indices[:-1]] = False
+            mask[self.one_hot_encoder.feature_indices_[:-1]] = False
             binarized_X = binarized_X[:, mask]
 
         return binarized_X
