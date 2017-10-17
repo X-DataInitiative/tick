@@ -56,7 +56,7 @@ TEST_F(HawkesModelTest, compute_loss_loglikelihood){
   ArrayDouble grad(model.get_n_coeffs());
   model.grad(coeffs, grad);
 
-  EXPECT_DOUBLE_EQ(loss, 3.7161782458519013);
+  EXPECT_DOUBLE_EQ(loss, 2.9434509731246283);
 
   EXPECT_DOUBLE_EQ(model.get_n_coeffs(), 6);
 }
@@ -100,10 +100,10 @@ TEST_F(HawkesModelTest, compute_loss_loglikelihood_sum_exp_kern){
 
   ArrayDouble coeffs = ArrayDouble {1., 3., 2., 3., 4., 1., 5., 3., 2., 4., 2., 3., 4., 5.};
 
-  EXPECT_DOUBLE_EQ(model.loss_i(0, coeffs), 0.74573314143220193);
-  EXPECT_DOUBLE_EQ(model.loss_i(1, coeffs), 9.111996931266539);
+  EXPECT_DOUBLE_EQ(model.loss_i(0, coeffs), 0.43573314143220188);
+  EXPECT_DOUBLE_EQ(model.loss_i(1, coeffs), 8.4919969312665398);
 
-  EXPECT_DOUBLE_EQ(model.loss(coeffs), 18.230198548394196);
+  EXPECT_DOUBLE_EQ(model.loss(coeffs), 17.202925821121468);
 
   EXPECT_DOUBLE_EQ(model.get_n_coeffs(), 14);
 }
@@ -382,10 +382,10 @@ TEST_F(HawkesModelTest, compute_loss_loglik_list){
 
   ArrayDouble coeffs = ArrayDouble {1., 3., 2., 3., 4., 1};
 
-  EXPECT_DOUBLE_EQ(model.loss_i(0, coeffs), -0.37144584020170712);
-  EXPECT_DOUBLE_EQ(model.loss_i(1, coeffs), 2.2916742070547551);
+  EXPECT_DOUBLE_EQ(model.loss_i(0, coeffs), -0.68144584020170718);
+  EXPECT_DOUBLE_EQ(model.loss_i(1, coeffs), 1.671674207054755);
 
-  EXPECT_DOUBLE_EQ(model.loss(coeffs), 5.1870841717614731);
+  EXPECT_DOUBLE_EQ(model.loss(coeffs), 4.1398114444887462);
 
   ArrayDouble vector = ArrayDouble {1, 3., 3., 7., 8., 1};
   EXPECT_DOUBLE_EQ(model.hessian_norm(coeffs, vector), 2.7963385385715074);
@@ -436,10 +436,10 @@ TEST_F(HawkesModelTest, compute_loss_loglikelihood_list_sum_exp_kern){
 
   ArrayDouble coeffs = ArrayDouble {1., 3., 2., 3., 4., 1., 5., 3., 2., 4., 2., 3., 4., 5.};
 
-  EXPECT_DOUBLE_EQ(model.loss_i(0, coeffs), 0.74573314143220193);
-  EXPECT_DOUBLE_EQ(model.loss_i(1, coeffs), 9.111996931266539);
+  EXPECT_DOUBLE_EQ(model.loss_i(0, coeffs), 0.43573314143220188);
+  EXPECT_DOUBLE_EQ(model.loss_i(1, coeffs), 8.4919969312665398);
 
-  EXPECT_DOUBLE_EQ(model.loss(coeffs), 18.317994281657434);
+  EXPECT_DOUBLE_EQ(model.loss(coeffs), 17.270721554384703);
 
   EXPECT_DOUBLE_EQ(model.get_n_coeffs(), 14);
 }
