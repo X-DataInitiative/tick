@@ -49,7 +49,7 @@ struct vector_operations_unoptimized {
 }  // namespace detail
 }  // namespace tick
 
-#if !defined(TICK_CBLAS_AVAILABLE)
+#if !defined(TICK_CBLAS_AVAILABLE) && !defined(TICK_MKL_AVAILABLE)
 
 namespace tick {
 
@@ -58,9 +58,13 @@ using vector_operations = detail::vector_operations_unoptimized<T>;
 
 }  // namespace tick
 
-#else  // if defined(TICK_CBLAS_AVAILABLE)
+#else
 
-#if defined(__APPLE__)
+#if defined(TICK_MKL_AVAILABLE)
+
+#include <mkl.h>
+
+#elif defined(__APPLE__)
 
 #include <Accelerate/Accelerate.h>
 
