@@ -15,7 +15,9 @@ ModelLinReg::ModelLinReg(const SBaseArrayDouble2dPtr features,
                              labels,
                              fit_intercept,
                              n_threads),
-      ModelLipschitz() {}
+      ModelLipschitz() {
+  out = ArrayDouble(get_n_samples());
+}
 
 const char *ModelLinReg::get_class_name() const {
   return "ModelLinReg";
@@ -43,6 +45,29 @@ double ModelLinReg::loss_i(const ulong i,
   const double z = get_inner_prod(i, coeffs);
   const double d = get_label(i) - z;
   return d * d / 2;
+}
+
+double ModelLinReg::loss2(const ArrayDouble &coeffs) {
+//  out = *labels;
+//  features->dot_incr(coeffs, -1., out);
+//  return 0.5 * out.norm_sq() / n_samples;
+  return parallel_map_additive_reduce(n_threads, n_threads, &ModelLinReg::loss2_split_i,
+                                      this, coeffs);
+}
+
+double ModelLinReg::loss2_split_i(ulong i, const ArrayDouble &coeffs) {
+  const ulong start = i == 0? 0 : i * n_samples / n_threads;
+  const ulong end = i == n_threads - 1? n_samples - 1: (i + 1) * n_samples / n_threads;
+  BaseArrayDouble2d features_rows = view_rows(*features, start, end);
+  ArrayDouble out_rows = view(out, start, end);
+  ArrayDouble labels_rows = view(*labels, start, end);
+  out_rows.mult_fill(labels_rows, 1.);
+  features_rows.dot_incr(coeffs, -1., out_rows);
+  return 0.5 * out_rows.norm_sq() / n_samples;
+}
+
+void ModelLinReg::grad2(const ArrayDouble &coeffs, ArrayDouble &out) {
+  features->dot_incr(coeffs, -1., out);
 }
 
 double ModelLinReg::grad_i_factor(const ulong i,

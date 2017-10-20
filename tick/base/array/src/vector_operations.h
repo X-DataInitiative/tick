@@ -44,6 +44,16 @@ struct vector_operations_unoptimized {
       y[i] += alpha * x[i];
     }
   }
+
+  void dot_matrix_vector_incr(const ulong m, const ulong n, const T alpha, const T* a, const T* x,
+                              const T beta, T* y) const {
+    for (ulong i = 0; i < m; ++i) {
+      y[i] = beta * y[i];
+      for (ulong j = 0; j < n; ++j) {
+        y[i] += alpha * a[i * n + j] * x[j];
+      }
+    }
+  }
 };
 
 }  // namespace detail
@@ -95,6 +105,15 @@ struct vector_operations_cblas_base {
   void set(const ulong n, const T alpha, T *x) const {
     return vector_operations_unoptimized<T>{}.set(n, alpha, x);
   }
+
+  void dot_matrix_vector(const ulong m, const ulong n, const T alpha, const T* a, const T* x, T* y) const {
+    for (ulong i = 0; i < m; ++i) {
+      y[i] = 0;
+      for (ulong j = 0; j < n; ++j) {
+        y[i] += alpha * a[i * n + j] * x[j];
+      }
+    }
+  }
 };
 
 template<>
@@ -145,6 +164,18 @@ struct vector_operations_cblas<double> final : public vector_operations_cblas_ba
     catlas_dset(n, alpha, x, 1);
   }
 #endif
+
+  void dot_matrix_vector_incr(const ulong m, const ulong n, const double alpha, const double* a, const double* x,
+                              const double beta, double* y) const {
+    cblas_dgemv(
+      CBLAS_ORDER::CblasRowMajor, CBLAS_TRANSPOSE::CblasNoTrans, m, n, alpha, a, n, x, 1, beta, y, 1);
+//    for (ulong i = 0; i < m; ++i) {
+//      y[i] = beta * z[i];
+//      for (ulong j = 0; j < n; ++j) {
+//        y[i] += alpha * a[i * n + j] * x[j];
+//      }
+//    }
+  }
 };
 
 }  // namespace detail

@@ -13,6 +13,9 @@
 #include <cereal/types/base_class.hpp>
 
 class DLL_PUBLIC ModelLinReg : public virtual ModelGeneralizedLinear, public ModelLipschitz {
+
+  ArrayDouble out;
+
  public:
   ModelLinReg(const SBaseArrayDouble2dPtr features,
               const SArrayDoublePtr labels,
@@ -30,6 +33,10 @@ class DLL_PUBLIC ModelLinReg : public virtual ModelGeneralizedLinear, public Mod
   double loss_i(const ulong i, const ArrayDouble &coeffs) override;
 
   double grad_i_factor(const ulong i, const ArrayDouble &coeffs) override;
+
+  double loss2(const ArrayDouble &coeffs);
+  double loss2_split_i(ulong i, const ArrayDouble &coeffs);
+  void grad2(const ArrayDouble &coeffs, ArrayDouble &out);
 
   void compute_lip_consts() override;
 

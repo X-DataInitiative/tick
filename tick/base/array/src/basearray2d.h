@@ -113,6 +113,12 @@ class BaseArray2d : public AbstractArray1d2d<T> {
         if (is_row_indices_allocation_owned && _row_indices != nullptr) TICK_PYTHON_FREE(_row_indices);
     }
 
+    //! @brief Returns the scalar product of the matrix with `array`
+    // defined in file dot.h
+    void dot(const Array<T> &array, Array<T> &out) const;
+
+    void dot_incr(const Array<T> &array, const T a, Array<T> &out) const;
+
  private:
     // Method for printing (called by print() AbstractArray1d2d method
     virtual void _print_dense() const;

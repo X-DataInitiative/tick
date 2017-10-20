@@ -1,11 +1,12 @@
 #include <chrono>
 
 #include "test_rand.h"
+#include "linreg.h"
 #include "logreg.h"
 
 int main(int argc, char *argv[]) {
 
-  ulong n_samples = 5000;
+  ulong n_samples = 20000;
 
   if (argc == 2) {
     std::istringstream ss(argv[1]);
@@ -15,7 +16,7 @@ int main(int argc, char *argv[]) {
 
   const int seed = 1933;
   const ulong n_features = 1000;
-  const int n_iter = 1000;
+  const int n_iter = 200;
 
   // generate random data
   const auto sample = test_uniform(n_samples * n_features, seed);
@@ -30,19 +31,26 @@ int main(int argc, char *argv[]) {
     (*labels)[i] = (*int_sample)[i] - 1;
   }
 
-  auto model = std::make_shared<ModelLogReg>(features, labels, false);
+  int n_threads = 4;
+//  mkl_set_num_threads_local(4);
+  auto model = std::make_shared<ModelLinReg>(features, labels, false, n_threads);
 
   // run solver
   using milli = std::chrono::microseconds;
   auto start = std::chrono::high_resolution_clock::now();
 
   ArrayDouble coeffs = view_row(*features, 0);
-  ArrayDouble out(n_features);
+//  ArrayDouble out(n_samples);
 
+  volatile double loss = 0;
   for (int j = 0; j < n_iter; ++j) {
-    model->grad(coeffs, out);
+//    model->grad2(coeffs, out);
+    loss = model->loss2(coeffs);
   }
 
+  std::cout << "loss = " << loss << std::endl;
+
+//  out.print();
   auto finish = std::chrono::high_resolution_clock::now();
 
   const char *filename = argv[0];
