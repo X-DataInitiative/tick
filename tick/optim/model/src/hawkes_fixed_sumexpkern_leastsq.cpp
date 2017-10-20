@@ -211,7 +211,7 @@ void ModelHawkesFixedSumExpKernLeastSq::compute_weights_i(const ulong i) {
 
         for (ulong u = 0; u < n_decays; ++u) {
           double decay_u = decays[u];
-          H(j, u) *= cexp(-decay_u * (t_k_i - t_k_minus_one_i));
+          H(j, u) *= exp(-decay_u * (t_k_i - t_k_minus_one_i));
         }
       }
 
@@ -220,7 +220,7 @@ void ModelHawkesFixedSumExpKernLeastSq::compute_weights_i(const ulong i) {
 
         for (ulong u = 0; u < n_decays; ++u) {
           double decay_u = decays[u];
-          H(j, u) += decay_u * cexp(-decay_u * (t_k_i - t_l_j));
+          H(j, u) += decay_u * exp(-decay_u * (t_k_i - t_l_j));
         }
 
         l[j] += 1;
@@ -234,9 +234,9 @@ void ModelHawkesFixedSumExpKernLeastSq::compute_weights_i(const ulong i) {
           const double decay_u1 = decays[u1];
 
           // we fill E_i,j,u',u
-          double ratio = decay_u1 / (decay_u1 + decay_u);
-          double tmp = 1 - cexp(-(decay_u1 + decay_u) * (end_time - t_k_i));
-          E_i_transpose(j, u * n_decays + u1) += ratio * tmp * H(j, u);
+//          double ratio = decay_u1 / (decay_u1 + decay_u);
+          double tmp = 1 - exp(-(decay_u1 + decay_u) * (end_time - t_k_i));
+          E_i_transpose(j, u * n_decays + u1) += tmp * H(j, u);
         }
       }
     }
@@ -251,7 +251,7 @@ void ModelHawkesFixedSumExpKernLeastSq::compute_weights_i(const ulong i) {
           const double shift_lower = std::max(t_k_i, lower);
           const double upper = std::min(lower + period_length / n_baselines, end_time);
           if (shift_lower < upper)
-            Dg_i_u[p] += cexp(-decay_u * (shift_lower - t_k_i)) - cexp(-decay_u * (upper - t_k_i));
+            Dg_i_u[p] += exp(-decay_u * (shift_lower - t_k_i)) - exp(-decay_u * (upper - t_k_i));
           lower += period_length;
         }
       }
@@ -259,15 +259,18 @@ void ModelHawkesFixedSumExpKernLeastSq::compute_weights_i(const ulong i) {
         double decay_u1 = decays[u1];
 
         double ratio = decay_u * decay_u1 / (decay_u + decay_u1);
-        Dgg_i(u, u1) += ratio * (1 - cexp(-(decay_u + decay_u1) * (end_time - t_k_i)));
+        Dgg_i(u, u1) += ratio * (1 - exp(-(decay_u + decay_u1) * (end_time - t_k_i)));
       }
     }
   }
 
   for (ulong j = 0; j < n_nodes; ++j) {
     for (ulong u = 0; u < n_decays; ++u) {
+      const double decay_u = decays[u];
       for (ulong u1 = 0; u1 < n_decays; ++u1) {
-        E_i(j, u1 * n_decays + u) = E_i_transpose(j, u1 * n_decays + u);
+        const double decay_u1 = decays[u1];
+        double ratio = decay_u1 / (decay_u1 + decay_u);
+        E_i(j, u1 * n_decays + u) = E_i_transpose(j, u1 * n_decays + u) * ratio;
       }
     }
   }
