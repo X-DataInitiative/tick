@@ -55,7 +55,7 @@ class ModelHawkesFixedExpKernLogLik(ModelHawkes,
     n_threads : `int`, default=1
         Number of threads used for parallel computation.
 
-        * if ``int <= 0``: the number of physical cores available on
+        * if ``int <= 0``: the number of threads available on
           the CPU
         * otherwise the desired number of threads
 

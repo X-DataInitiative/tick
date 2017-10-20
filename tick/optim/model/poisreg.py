@@ -17,9 +17,35 @@ __author__ = 'Stephane Gaiffas'
 class ModelPoisReg(ModelGeneralizedLinear,
                    ModelSecondOrder,
                    ModelSelfConcordant):
-    """Poisson regression model with identity or exponential link.
-    This class gives first order and second order information for this
-    model (gradient, loss and hessian norm).
+    """Poisson regression model with identity or exponential link for data with
+    a count label. This class gives first order and second order information for
+    this model (gradient, loss and hessian norm)  and can be passed
+    to any solver through the solver's ``set_model`` method.
+    Can lead to overflows with some solvers (see the note below).
+
+    Given training data :math:`(x_i, y_i) \\in \\mathbb R^d \\times \\mathbb N`
+    for :math:`i=1, \\ldots, n`, this model considers a goodness-of-fit
+
+    .. math::
+        f(w, b) = \\frac 1n \\sum_{i=1}^n \\ell(y_i, b + x_i^\\top w),
+
+    where :math:`w \\in \\mathbb R^d` is a vector containing the model-weights,
+    :math:`b \\in \\mathbb R` is the intercept (used only whenever
+    ``fit_intercept=True``) and
+    :math:`\\ell : \\mathbb R^2 \\rightarrow \\mathbb R` is the loss given by
+
+    .. math::
+        \\ell(y, y') = e^{y'} - y y'
+
+    whenever ``link='exponential'`` and
+
+    .. math::
+        \\ell(y, y') = y' - y \\log(y')
+
+    whenever ``link='identity'``,  for :math:`y \in \mathbb N` and
+    :math:`y' \in \mathbb R`. Data is passed
+    to this model through the ``fit(X, y)`` method where X is the features
+    matrix (dense or sparse) and y is the vector of labels.
 
     Parameters
     ----------
@@ -41,8 +67,8 @@ class ModelPoisReg(ModelGeneralizedLinear,
 
     Attributes
     ----------
-    features : `numpy.ndarray`, shape=(n_samples, n_features) (read-only)
-        The features matrix
+    features : {`numpy.ndarray`, `scipy.sparse.csr_matrix`}, shape=(n_samples, n_features)
+        The features matrix, either dense or sparse
 
     labels : `numpy.ndarray`, shape=(n_samples,) (read-only)
         The labels vector
@@ -59,7 +85,7 @@ class ModelPoisReg(ModelGeneralizedLinear,
     n_threads : `int`, default=1 (read-only)
         Number of threads used for parallel computation.
 
-        * if ``int <= 0``: the number of physical cores available on
+        * if ``int <= 0``: the number of threads available on
           the CPU
         * otherwise the desired number of threads
 
@@ -99,10 +125,10 @@ class ModelPoisReg(ModelGeneralizedLinear,
 
         Parameters
         ----------
-        features : `np.ndarray`, shape=(n_samples, n_features)
-            The features matrix
+        features : {`numpy.ndarray`, `scipy.sparse.csr_matrix`}, shape=(n_samples, n_features)
+            The features matrix, either dense or sparse
 
-        labels : `np.ndarray`, shape=(n_samples,)
+        labels : `numpy.ndarray`, shape=(n_samples,)
             The labels vector
 
         Returns

@@ -23,7 +23,7 @@ method.
 
 The first learner types concern linear models presented in
 
-:ref:`optim-model-glm`
+:ref:`linear-models`
 
 Theses learners are essentially a combination of
 

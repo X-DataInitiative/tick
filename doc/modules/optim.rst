@@ -161,15 +161,14 @@ Model classes can be used with any solver class, by simply passing them using th
 solver's ``set_model`` method, see the :ref:`example given above <optim-first-example>`.
 
 
-.. _optim-model-glm:
+.. _linear-models:
 
-1.2. Generalized linear models
-------------------------------
+1.2. Linear models
+------------------
 
-We describe here generalized linear models for supervised learning.
+We describe here (generalized) linear methods for supervised learning.
 Given training data :math:`(x_i, y_i) \in \mathbb R^d \times \mathbb R`
-for :math:`i=1, \ldots, n`, we consider models with a goodness-of-fit that
-writes
+for :math:`i=1, \ldots, n`, we consider goodness-of-fit that writes
 
 .. math::
 	f(w, b) = \frac 1n \sum_{i=1}^n \ell(y_i, b + x_i^\top w),
@@ -177,17 +176,209 @@ writes
 where :math:`w \in \mathbb R^d` is a vector containing the model weights,
 :math:`b \in \mathbb R` is the intercept and
 :math:`\ell : \mathbb R^2 \rightarrow \mathbb R` is a loss function.
-The loss function depends on the model. The following table describes the
-different losses implemented for now in tick and its associated class.
+Note that for binary regression we have actually binary labels :math:`y_i \in \{ -1, 1 \}`
+while for counts data (Poisson models, see below) we have natural integer :math:`y_i \in \mathbb N`.
 
-========================================  ===========================================  ==========================================
-Model                                      Loss formula                                Class
-========================================  ===========================================  ==========================================
-Linear regression                         :math:`\ell(y, y') = \frac 12 (y - y')^2`    :class:`ModelLinReg <tick.optim.model.ModelLinReg>`
-Logistic regression                       :math:`\ell(y, y') = \log(1 + \exp(-y y'))`  :class:`ModelLogReg <tick.optim.model.ModelLogReg>`
-Poisson regression with exponential link  :math:`\ell(y, y') = y' - y \log(y')`        :class:`ModelPoisReg <tick.optim.model.ModelPoisReg>` with ``link="exponential"``
-Poisson regression with identity link     :math:`\ell(y, y') = e^{y'} - y y'`          :class:`ModelPoisReg <tick.optim.model.ModelPoisReg>` with ``link="identity"``
-========================================  ===========================================  ==========================================
+The loss function depends on the model. The advantages of using one or another
+are explained in the documentation of the classes themselves.
+The following table lists the different losses implemented for now in `tick`,
+its associated class and label type.
+
+========================================  ==============  ==========  ==========================================
+Model                                     Type            Label type  Class
+========================================  ==============  ==========  ==========================================
+Linear regression                         Regression      Continuous  :class:`ModelLinReg <tick.optim.model.ModelLinReg>`
+Huber regression                          Regression      Continuous  :class:`ModelHuber <tick.optim.model.ModelHuber>`
+Epsilon-insensitive regression            Regression      Continuous  :class:`ModelEpsilonInsensitive <tick.optim.model.ModelEpsilonInsensitive>`
+Absolute regression                       Regression      Continuous  :class:`ModelAbsoluteRegression <tick.optim.model.ModelAbsoluteRegression>`
+Logistic regression                       Classification  Binary      :class:`ModelLogReg <tick.optim.model.ModelLogReg>`
+Hinge loss                                Classification  Binary      :class:`ModelHinge <tick.optim.model.ModelHinge>`
+Quadratic hinge loss                      Classification  Binary      :class:`ModelQuadraticHinge <tick.optim.model.ModelQuadraticHinge>`
+Smoothed hinge loss                       Classification  Binary      :class:`ModelSmoothedHinge <tick.optim.model.ModelSmoothedHinge>`
+Modified Huber loss                       Classification  Binary      :class:`ModelModifiedHuber <tick.optim.model.ModelModifiedHuber>`
+Poisson regression (identity link)        Count data      Integer     :class:`ModelPoisReg <tick.optim.model.ModelPoisReg>`
+Poisson regression (exponential link)     Count data      Integer     :class:`ModelPoisReg <tick.optim.model.ModelPoisReg>`
+========================================  ==============  ==========  ==========================================
+
+
+Regression models
+-----------------
+
+.. plot:: modules/code_samples/optim/plot_losses_regression.py
+
+
+:class:`ModelLinReg <tick.optim.model.ModelLinReg>`
+***************************************************
+This is least-squares regression with loss
+
+.. math::
+    \ell(y, y') = \frac 12 (y - y')^2
+
+for :math:`y, y' \in \mathbb R`
+
+----------------------------------------
+
+:class:`ModelHuber <tick.optim.model.ModelHuber>`
+*************************************************
+
+The Huber loss for robust regression (less sensitive to
+outliers) is given by
+
+.. math::
+    \ell(y, y') =
+    \begin{cases}
+    \frac 12 (y' - y)^2 &\text{ if } |y' - y| \leq \delta \\
+    \delta (|y' - y| - \frac 12 \delta) &\text{ if } |y' - y| > \delta
+    \end{cases}
+
+for :math:`y, y' \in \mathbb R`, where :math:`\delta > 0` can be tuned
+using the ``threshold`` argument.
+
+----------------------------------------
+
+:class:`ModelEpsilonInsensitive <tick.optim.model.ModelEpsilonInsensitive>`
+***************************************************************************
+
+Epsilon-insensitive loss, given by
+
+.. math::
+    \ell(y, y') =
+    \begin{cases}
+    |y' - y| - \epsilon &\text{ if } |y' - y| > \epsilon \\
+    0 &\text{ if } |y' - y| \leq \epsilon
+    \end{cases}
+
+for :math:`y, y' \in \mathbb R`, where :math:`\epsilon > 0` can be tuned using
+the ``threshold`` argument.
+
+----------------------------------------
+
+:class:`ModelAbsoluteRegression <tick.optim.model.ModelAbsoluteRegression>`
+***************************************************************************
+
+The L1 loss given by
+
+.. math::
+    \ell(y, y') = |y' - y|
+
+for :math:`y, y' \in \mathbb R`
+
+----------------------------------------
+
+
+Classification models
+---------------------
+
+.. plot:: modules/code_samples/optim/plot_losses_classification.py
+
+
+:class:`ModelLogReg <tick.optim.model.ModelLogReg>`
+***************************************************
+Logistic regression for binary classification with loss
+
+.. math::
+    \ell(y, y') = \log(1 + \exp(-y y'))
+
+for :math:`y \in \{ -1, 1\}` and :math:`y' \in \mathbb R`
+
+----------------------------------------
+
+:class:`ModelHinge <tick.optim.model.ModelHinge>`
+*************************************************
+
+This is the hinge loss given by
+
+.. math::
+    \ell(y, y') =
+    \begin{cases}
+    1 - y y' &\text{ if } y y' < 1 \\
+    0 &\text{ if } y y' \geq 1
+    \end{cases}
+
+for :math:`y \in \{ -1, 1\}` and :math:`y' \in \mathbb R`
+
+----------------------------------------
+
+
+:class:`ModelQuadraticHinge <tick.optim.model.ModelQuadraticHinge>`
+*******************************************************************
+
+This is the quadratic hinge loss given by
+
+.. math::
+    \ell(y, y') =
+    \begin{cases}
+    \frac 12 (1 - y y')^2 &\text{ if } y y' < 1 \\
+    0 &\text{ if } y y' \geq 1
+    \end{cases}
+
+for :math:`y \in \{ -1, 1\}` and :math:`y' \in \mathbb R`
+
+----------------------------------------
+
+
+:class:`ModelSmoothedHinge <tick.optim.model.ModelSmoothedHinge>`
+*****************************************************************
+
+This is the smoothed hinge loss given by
+
+.. math::
+    \ell(y, y') =
+    \begin{cases}
+    1 - y y' - \frac \delta 2 &\text{ if } y y' \leq 1 - \delta \\
+    \frac{(1 - y y')^2}{2 \delta} &\text{ if } 1 - \delta < y y' < 1 \\
+    0 &\text{ if } y y' \geq 1
+    \end{cases}
+
+for :math:`y \in \{ -1, 1\}` and :math:`y' \in \mathbb R`,
+where :math:`\delta \in (0, 1)` can be tuned using the ``smoothness`` parameter.
+Note that :math:`\delta = 0` corresponds to the hinge loss.
+
+----------------------------------------
+
+:class:`ModelModifiedHuber <tick.optim.model.ModelModifiedHuber>`
+*****************************************************************
+
+The modified Huber loss, used for robust classification (less sensitive to
+outliers). The loss is given by
+
+.. math::
+    \ell(y, y') =
+    \begin{cases}
+    - 4 y y' &\text{ if } y y' \leq -1 \\
+    (1 - y y')^2 &\text{ if } -1 < y y' < 1 \\
+    0 &\text{ if } y y' \geq 1
+    \end{cases}
+
+for :math:`y \in \{ -1, 1\}` and :math:`y' \in \mathbb R`
+
+----------------------------------------
+
+Count data models
+-----------------
+
+.. plot:: modules/code_samples/optim/plot_losses_count_data.py
+
+:class:`ModelPoisReg <tick.optim.model.ModelPoisReg>`
+*****************************************************
+
+Poisson regression with exponential link with loss corresponds to the loss
+
+.. math::
+    \ell(y, y') = e^{y'} - y y'
+
+for :math:`y \in \mathbb N` and :math:`y' \in \mathbb R` and is obtained
+using ``link='exponential'``.
+
+Poisson regression with identity link, namely with loss
+
+.. math::
+    \ell(y, y') = y' - y \log(y')
+
+for :math:`y \in \mathbb N` and :math:`y' > 0` is obtained using
+``link='identity'``.
+
+----------------------------------------
 
 
 1.3 Generalized linear models with individual intercepts

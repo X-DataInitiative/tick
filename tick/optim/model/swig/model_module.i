@@ -16,6 +16,14 @@
 %shared_ptr(ModelLogReg);
 %shared_ptr(ModelPoisReg);
 
+%shared_ptr(ModelHinge);
+%shared_ptr(ModelSmoothedHinge);
+%shared_ptr(ModelQuadraticHinge);
+%shared_ptr(ModelHuber);
+%shared_ptr(ModelModifiedHuber);
+%shared_ptr(ModelEpsilonInsensitive);
+%shared_ptr(ModelAbsoluteRegression);
+
 %shared_ptr(ModelHawkes);
 
 %shared_ptr(ModelHawkesSingle);
@@ -52,6 +60,20 @@
 %include model_generalized_linear_with_intercepts.i
 
 %include hawkes.i
+
+%include model_epsilon_insensitive.i
+
+%include model_hinge.i
+
+%include model_huber.i
+
+%include model_modified_huber.i
+
+%include model_quadratic_hinge.i
+
+%include model_smoothed_hinge.i
+
+%include model_absolute_regression.i
 
 %include linreg.i
 

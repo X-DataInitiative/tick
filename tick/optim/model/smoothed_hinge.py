@@ -3,20 +3,19 @@
 import numpy as np
 from numpy.linalg import svd
 from .base import ModelGeneralizedLinear, ModelFirstOrder, ModelLipschitz
-from .build.model import ModelLinReg as _ModelLinReg
-
+from .build.model import ModelSmoothedHinge as _ModelSmoothedHinge
 
 __author__ = 'Stephane Gaiffas'
 
 
-class ModelLinReg(ModelFirstOrder,
-                  ModelGeneralizedLinear,
-                  ModelLipschitz):
-    """Least-squares loss for linear regression. This class gives first
-    order information (gradient and loss) for this model and can be passed
+class ModelSmoothedHinge(ModelFirstOrder,
+                         ModelGeneralizedLinear,
+                         ModelLipschitz):
+    """Smoothed hinge loss model for binary classification. This class gives
+    first order information (gradient and loss) for this model and can be passed
     to any solver through the solver's ``set_model`` method.
 
-    Given training data :math:`(x_i, y_i) \\in \\mathbb R^d \\times \\mathbb R`
+    Given training data :math:`(x_i, y_i) \\in \\mathbb R^d \\times \\{ -1, 1 \\}`
     for :math:`i=1, \\ldots, n`, this model considers a goodness-of-fit
 
     .. math::
@@ -28,16 +27,27 @@ class ModelLinReg(ModelFirstOrder,
     :math:`\\ell : \\mathbb R^2 \\rightarrow \\mathbb R` is the loss given by
 
     .. math::
-        \\ell(y, y') = \\frac 12 (y - y')^2
+        \\ell(y, y') =
+        \\begin{cases}
+        1 - y y' - \\frac \\delta 2 &\\text{ if } y y' \\leq 1 - \\delta \\\\
+        \\frac{(1 - y y')^2}{2 \\delta} &\\text{ if } 1 - \\delta < y y' < 1 \\\\
+        0 &\\text{ if } y y' \\geq 1
+        \\end{cases}
 
-    for :math:`y, y' \in \mathbb R`. Data is passed to this model through the
-    ``fit(X, y)`` method where X is the features matrix (dense or sparse) and
-    y is the vector of labels.
+    for :math:`y \in \{ -1, 1\}` and :math:`y' \in \mathbb R`,
+    where :math:`\delta \in (0, 1)` can be tuned using the ``smoothness`` parameter.
+    Note that :math:`\delta = 0` corresponds to the hinge loss. Data is passed
+    to this model through the ``fit(X, y)`` method where X is the features
+    matrix (dense or sparse) and y is the vector of labels.
 
     Parameters
     ----------
     fit_intercept : `bool`
         If `True`, the model uses an intercept
+
+    smoothness : `double`, default=1.
+        The smoothness parameter used in the loss. It should be > 0 and <= 1
+        Note that smoothness=0 corresponds to the Hinge loss.
 
     Attributes
     ----------
@@ -64,14 +74,22 @@ class ModelLinReg(ModelFirstOrder,
         * otherwise the desired number of threads
     """
 
-    def __init__(self, fit_intercept: bool = True, n_threads: int = 1):
+    _attrinfos = {
+        "smoothness": {
+            "writable": True,
+            "cpp_setter": "set_smoothness"
+        }
+    }
+
+    def __init__(self, fit_intercept: bool = True, smoothness: float = 1.,
+                 n_threads: int = 1):
         ModelFirstOrder.__init__(self)
         ModelGeneralizedLinear.__init__(self, fit_intercept)
         ModelLipschitz.__init__(self)
         self.n_threads = n_threads
+        self.smoothness = smoothness
 
-        # TODO: implement _set_data and not fit
-
+    # TODO: implement _set_data and not fit
     def fit(self, features, labels):
         """Set the data into the model object
 
@@ -85,16 +103,17 @@ class ModelLinReg(ModelFirstOrder,
 
         Returns
         -------
-        output : `ModelLinReg`
+        output : `ModelSmoothedHinge`
             The current instance with given data
         """
         ModelFirstOrder.fit(self, features, labels)
         ModelGeneralizedLinear.fit(self, features, labels)
         ModelLipschitz.fit(self, features, labels)
-        self._set("_model", _ModelLinReg(self.features,
-                                         self.labels,
-                                         self.fit_intercept,
-                                         self.n_threads))
+        self._set("_model", _ModelSmoothedHinge(self.features,
+                                                self.labels,
+                                                self.fit_intercept,
+                                                self.smoothness,
+                                                self.n_threads))
         return self
 
     def _grad(self, coeffs: np.ndarray, out: np.ndarray) -> None:
@@ -108,6 +127,6 @@ class ModelLinReg(ModelFirstOrder,
         s = svd(self.features, full_matrices=False,
                 compute_uv=False)[0] ** 2
         if self.fit_intercept:
-            return (s + 1) / self.n_samples
+            return (s + 1) / (self.smoothness * self.n_samples)
         else:
-            return s / self.n_samples
+            return s / (self.smoothness * self.n_samples)

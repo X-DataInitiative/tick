@@ -100,8 +100,9 @@ in tick.
    :no-members:
    :no-inherited-members:
 
-Generalized Linear Models
--------------------------
+
+Linear models for regression
+----------------------------
 .. currentmodule:: tick
 
 .. autosummary::
@@ -109,20 +110,59 @@ Generalized Linear Models
    :template: class.rst
 
    optim.model.ModelLinReg
-   optim.model.ModelLinRegWithIntercepts
-   optim.model.ModelLogReg
-   optim.model.ModelPoisReg
-   optim.model.ModelCoxRegPartialLik
+   optim.model.ModelHuber
+   optim.model.ModelAbsoluteRegression
+   optim.model.ModelEpsilonInsensitive
 
-Self Control Case Series
-------------------------
+
+Linear models for binary classification
+---------------------------------------
 .. currentmodule:: tick
 
 .. autosummary::
    :toctree: generated/
    :template: class.rst
 
+   optim.model.ModelLogReg
+   optim.model.ModelHinge
+   optim.model.ModelSmoothedHinge
+   optim.model.ModelQuadraticHinge
+   optim.model.ModelModifiedHuber
+
+
+Linear models for count data
+----------------------------
+.. currentmodule:: tick
+
+.. autosummary::
+   :toctree: generated/
+   :template: class.rst
+
+   optim.model.ModelPoisReg
+
+
+Linear models with individual intercepts (outliers detection)
+-------------------------------------------------------------
+.. currentmodule:: tick
+
+.. autosummary::
+   :toctree: generated/
+   :template: class.rst
+
+   optim.model.ModelLinRegWithIntercepts
+
+
+Survival analysis
+-----------------
+.. currentmodule:: tick
+
+.. autosummary::
+   :toctree: generated/
+   :template: class.rst
+
+   optim.model.ModelCoxRegPartialLik
    optim.model.ModelSCCS
+
 
 Hawkes
 ------
