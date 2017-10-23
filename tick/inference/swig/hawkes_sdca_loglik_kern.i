@@ -13,11 +13,11 @@ class HawkesSDCALoglikKern : public ModelHawkesList {
  public:
   HawkesSDCALoglikKern(ArrayDouble &decay, double l_l2sq,
                          int max_n_threads = 1, double tol = 0.,
-                         RandType rand_type = RandType::unif, int seed = -1);
+                         int seed = -1, RandType rand_type = RandType::unif);
 
   HawkesSDCALoglikKern(double decay, double l_l2sq,
                        int max_n_threads = 1, double tol = 0.,
-                       RandType rand_type = RandType::unif, int seed = -1);
+                       int seed = -1, RandType rand_type = RandType::unif);
 
   void compute_weights();
 

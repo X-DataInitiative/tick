@@ -39,7 +39,7 @@ print(photons)
 l_l2sq = 1e-5
 model = ModelPoisReg(fit_intercept=False, link='identity')
 model.fit(filters, photons)
-solver = SDCA(l_l2sq, tol=1e-10)
+solver = SDCA(l_l2sq, tol=1e-10, seed=2309)
 solver.set_model(model).set_prox(ProxZero())
 
 solver.solve()

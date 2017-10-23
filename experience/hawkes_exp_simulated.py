@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 from tick.simulation import SimuHawkesSumExpKernels, SimuHawkesMulti
 from tick.inference import HawkesDual, HawkesSumExpKern
@@ -8,8 +9,8 @@ from tick.plot import plot_history, plot_hawkes_kernel_norms, \
 simulate = True
 
 def estimation_error(estimated, original):
-    return np.linalg.norm(original - estimated) ** 2 / \
-           np.linalg.norm(original) ** 2
+    return np.linalg.norm(original.ravel() - estimated.ravel()) ** 2 / \
+           np.linalg.norm(original.ravel()) ** 2
 
 
 end_time = 10000
@@ -19,13 +20,14 @@ n_nodes = 10
 decays = [1., 5., 12.]
 n_decays = len(decays)
 baseline = np.abs(np.random.normal(scale=1 / n_nodes, size=n_nodes))
-adjacency = np.abs(np.random.normal(size=(n_nodes, n_nodes, n_decays)))
+adjacency = 0.5 + np.random.normal(size=(n_nodes, n_nodes, n_decays))
 
 hawkes_exp_kernels = SimuHawkesSumExpKernels(
     adjacency=adjacency, decays=decays, baseline=baseline,
     end_time=end_time, verbose=False, seed=1039)
 
 hawkes_exp_kernels.adjust_spectral_radius(0.7)
+hawkes_exp_kernels.threshold_negative_intensity()
 
 if simulate:
     multi = SimuHawkesMulti(hawkes_exp_kernels, n_simulations=n_realizations,
@@ -59,12 +61,20 @@ hawkes_lbgfsb = HawkesSumExpKern(decays, gofit='likelihood', verbose=True,
                                  C=1 / l_l2sq, penalty='l2', solver='l-bfgs-b',
                                  record_every=1, max_iter=30)
 hawkes_lbgfsb._model_obj.n_threads = 4
+
+hawkes_lbgfsb._solver_obj.history._history_func['estimation err'] = \
+    lambda x, **kwargs: estimation_error(x[n_nodes:], hawkes_exp_kernels.adjacency)
+
 hawkes_lbgfsb.fit(timestamps)
+
 
 print(hawkes_lbgfsb._model_obj.n_jumps)
 
 hawkes_dual = HawkesDual(decays, l_l2sq, verbose=True, record_every=1,
                          n_threads=4, max_iter=30, tol=1e-13)
+
+hawkes_dual.history._history_func['estimation err'] = \
+    lambda x, **kwargs: estimation_error(x[n_nodes:], hawkes_exp_kernels.adjacency)
 
 hawkes_dual.fit(timestamps)
 
@@ -72,18 +82,43 @@ hawkes_dual.fit(timestamps)
 print('ESTIMATION ERROR',
       estimation_error(hawkes_dual.adjacency, hawkes_exp_kernels.adjacency))
 
-print(hawkes_exp_kernels.adjacency[0, 0])
-print(hawkes_dual.adjacency[0, 0])
-print(hawkes_lbgfsb.adjacency[0, 0])
+print('ESTIMATION ERROR hawkes_lbgfsb',
+      estimation_error(hawkes_lbgfsb.adjacency, hawkes_exp_kernels.adjacency))
 
+fig, ax_list = plt.subplots(1, 3, figsize=(16, 4))
 
-all_learners = [hawkes_dual] + hawkes_svrg_learners + [hawkes_lbgfsb]
-labels = ["dual"] + ['SVRG {:.2g}'.format(step) for step in steps] + \
-         ['L-BFGS-B']
+plot_hawkes_kernel_norms(hawkes_exp_kernels,
+                         ax=ax_list[0])
+ax_list[0].set_xlabel('Original', fontsize=20)
 
-plot_history(all_learners, dist_min=True, log_scale=True,
-             labels=labels)
+plot_hawkes_kernel_norms(hawkes_dual,
+                         ax=ax_list[1])
+ax_list[1].set_xlabel('Dual', fontsize=20)
 
-# plot_hawkes_kernel_norms(hawkes_dual)
+plot_hawkes_kernel_norms(hawkes_lbgfsb,
+                         ax=ax_list[2])
+ax_list[2].set_xlabel('L-BFGS-B', fontsize=20)
 
-# plot_hawkes_kernels(hawkes_dual, hawkes=hawkes_exp_kernels)
+fig.tight_layout()
+
+plt.show()
+
+plot_history([hawkes_dual, hawkes_lbgfsb], y='estimation err', dist_min=True,
+             log_scale=True)
+
+#
+# print(hawkes_exp_kernels.adjacency[0, 0])
+# print(hawkes_dual.adjacency[0, 0])
+# print(hawkes_lbgfsb.adjacency[0, 0])
+#
+#
+# all_learners = [hawkes_dual] + hawkes_svrg_learners + [hawkes_lbgfsb]
+# labels = ["dual"] + ['SVRG {:.2g}'.format(step) for step in steps] + \
+#          ['L-BFGS-B']
+#
+# plot_history(all_learners, dist_min=True, log_scale=True,
+#              labels=labels)
+#
+# # plot_hawkes_kernel_norms(hawkes_dual)
+#
+# # plot_hawkes_kernels(hawkes_dual, hawkes=hawkes_exp_kernels)

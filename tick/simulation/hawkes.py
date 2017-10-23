@@ -290,3 +290,16 @@ class SimuHawkes(SimuPointProcess):
         get_norm = np.vectorize(lambda kernel: kernel.get_norm())
         norms = get_norm(self.kernels)
         return inv(np.eye(self.n_nodes) - norms).dot(self.baseline)
+
+    def get_kernel_norms(self):
+        """Computes kernel norms. This makes our learner compliant with
+        `tick.plot.plot_hawkes_kernel_norms` API
+
+        Returns
+        -------
+        norms : `np.ndarray`, shape=(n_nodes, n_nodes)
+            2d array in which each entry i, j corresponds to the norm of
+            kernel i, j
+        """
+        get_norm = np.vectorize(lambda kernel: kernel.get_norm())
+        return get_norm(self.kernels)

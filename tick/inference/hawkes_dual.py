@@ -9,6 +9,12 @@ from tick.inference.base import LearnerHawkesNoParam
 from tick.simulation import SimuHawkesSumExpKernels
 from .build.inference import HawkesSDCALoglikKern as _HawkesSDCALoglikKern
 
+from tick.optim.solver.build.solver import RandType_perm as perm
+from tick.optim.solver.build.solver import RandType_unif as unif
+rand_types = {
+    'unif': unif,
+    'perm': perm
+}
 
 class HawkesDual(LearnerHawkesNoParam):
     """A class that implements parametric inference for Hawkes processes
@@ -104,7 +110,8 @@ class HawkesDual(LearnerHawkesNoParam):
     }
 
     def __init__(self, decays, l_l2sq, max_iter=50, tol=1e-5, n_threads=1,
-                 verbose=False, print_every=10, record_every=10):
+                 verbose=False, print_every=10, record_every=10,
+                 rand_type='unif', seed=-1):
 
         LearnerHawkesNoParam.__init__(self, verbose=verbose, max_iter=max_iter,
                                       print_every=print_every, tol=tol,
@@ -115,7 +122,8 @@ class HawkesDual(LearnerHawkesNoParam):
 
         self.verbose = verbose
 
-        self._learner = _HawkesSDCALoglikKern(decays, l_l2sq, n_threads, tol)
+        self._learner = _HawkesSDCALoglikKern(decays, l_l2sq, n_threads, tol,
+                                              seed)
 
         self.history.print_order += ["dual_objective", "duality_gap",
                                      "max_dual"]
@@ -165,7 +173,9 @@ class HawkesDual(LearnerHawkesNoParam):
                 force_print = (i == self.max_iter) or converged
 
                 dual = self._learner.get_dual_iterate()
-                self._handle_history(i + self._n_iter, obj=objective, rel_obj=rel_obj,
+                primal = self._learner.get_iterate()
+                self._handle_history(i + self._n_iter, x=primal,
+                                     obj=objective, rel_obj=rel_obj,
                                      dual_objective=dual_objective,
                                      duality_gap=duality_gap,
                                      force=force_print, max_dual=dual.max())

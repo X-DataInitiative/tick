@@ -6,7 +6,7 @@
 
 HawkesSDCALoglikKern::HawkesSDCALoglikKern(const ArrayDouble &decays, double l_l2sq,
                                            int max_n_threads, double tol,
-                                           RandType rand_type, int seed)
+                                           int seed, RandType rand_type)
   : ModelHawkesList(max_n_threads, optimization_level),
     weights_allocated(false), l_l2sq(l_l2sq), tol(tol), rand_type(rand_type), seed(seed),
     max_dual(std::numeric_limits<double>::infinity()) {
@@ -15,7 +15,7 @@ HawkesSDCALoglikKern::HawkesSDCALoglikKern(const ArrayDouble &decays, double l_l
 
 HawkesSDCALoglikKern::HawkesSDCALoglikKern(const double decay, double l_l2sq,
                                            int max_n_threads, double tol,
-                                           RandType rand_type, int seed)
+                                           int seed, RandType rand_type)
   : ModelHawkesList(max_n_threads, optimization_level),
     weights_allocated(false), l_l2sq(l_l2sq), tol(tol), rand_type(rand_type), seed(seed),
     max_dual(std::numeric_limits<double>::infinity()) {
