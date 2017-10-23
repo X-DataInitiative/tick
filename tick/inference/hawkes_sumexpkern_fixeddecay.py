@@ -188,7 +188,7 @@ class HawkesSumExpKern(LearnerHawkesParametric):
             raise ValueError('You must fit data before getting estimated '
                              'adjacency')
         else:
-            return self.coeffs[self.n_nodes * self._model_obj.n_baselines:]\
+            return self.coeffs[self.n_nodes * self._model_obj.n_baselines:] \
                 .reshape((self.n_nodes, self.n_nodes, self.n_decays))
 
     def _corresponding_simu(self):
@@ -198,3 +198,49 @@ class HawkesSumExpKern(LearnerHawkesParametric):
 
     def get_baseline_values(self, i, abscissa_array):
         return self._corresponding_simu().get_baseline_values(i, abscissa_array)
+
+    def score(self, events=None, end_times=None, baseline=None, adjacency=None):
+        """Compute score metric
+        Score metric is log likelihood (the higher the better)
+
+        Parameters
+        ----------
+        events : `list` of `list` of `np.ndarray`, default = None
+            List of Hawkes processes realizations used to measure score.
+            Each realization of the Hawkes process is a list of n_node for
+            each component of the Hawkes. Namely `events[i][j]` contains a
+            one-dimensional `numpy.array` of the events' timestamps of
+            component j of realization i.
+            If only one realization is given, it will be wrapped into a list
+            If None, events given while fitting model will be used
+
+        end_times : `np.ndarray` or `float`, default = None
+            List of end time of all hawkes processes used to measure score.
+            If None, it will be set to each realization's latest time.
+            If only one realization is provided, then a float can be given.
+
+        baseline : `np.ndarray`, shape=(n_nodes, ), default = None
+            Baseline vector for which the score is measured
+            If `None` baseline obtained during fitting is used
+
+        adjacency : `np.ndarray`, shape=(n_nodes, n_nodes, n_decays), default = None
+            Adjacency matrix for which the score is measured
+            If `None` adjacency obtained during fitting is used
+
+        Returns
+        -------
+        likelihood : `double`
+            Computed log likelihood value
+        """
+        if baseline is not None or adjacency is not None:
+            if baseline is None:
+                baseline = self.baseline
+            if adjacency is None:
+                adjacency = self.adjacency
+            coeffs = np.hstack((baseline, adjacency.ravel()))
+        else:
+            coeffs = None
+
+        return LearnerHawkesParametric.score(
+            self, events=events, end_times=end_times,
+            coeffs=coeffs)

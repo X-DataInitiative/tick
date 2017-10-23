@@ -136,6 +136,45 @@ class Test(InferenceTest):
         learner.fit(self.events, start=random_coeffs)
         np.testing.assert_array_equal(learner.coeffs, random_coeffs)
 
+    def test_HawkesExpKern_score(self):
+        """...Test HawkesExpKern score method
+        """
+        n_nodes = 2
+        n_realizations = 3
+
+        train_events = [[
+            np.cumsum(np.random.rand(4 + i)) for i in range(n_nodes)]
+            for _ in range(n_realizations)]
+
+        test_events = [[
+            np.cumsum(np.random.rand(4 + i)) for i in range(n_nodes)]
+            for _ in range(n_realizations)]
+
+        learner = HawkesExpKern(self.decays)
+
+        msg = '^You must either call `fit` before `score` or provide events$'
+        with self.assertRaisesRegex(ValueError, msg):
+            learner.score()
+
+        given_baseline = np.random.rand(n_nodes)
+        given_adjacency = np.random.rand(n_nodes, n_nodes)
+
+        learner.fit(train_events)
+
+        train_score_current_coeffs = learner.score()
+        self.assertAlmostEqual(train_score_current_coeffs, 2.0855840)
+
+        train_score_given_coeffs = learner.score(
+            baseline=given_baseline, adjacency=given_adjacency)
+        self.assertAlmostEqual(train_score_given_coeffs, 0.59502417)
+
+        test_score_current_coeffs = learner.score(test_events)
+        self.assertAlmostEqual(test_score_current_coeffs, 1.6001762)
+
+        test_score_given_coeffs = learner.score(
+            test_events, baseline=given_baseline, adjacency=given_adjacency)
+        self.assertAlmostEqual(test_score_given_coeffs, 0.89322199)
+
     @staticmethod
     def specific_solver_kwargs(solver):
         """...A simple method to as systematically some kwargs to our tests

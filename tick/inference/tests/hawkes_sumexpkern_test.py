@@ -103,6 +103,45 @@ class Test(InferenceTest):
                                 "reached too high baseline error" %
                                 (solver, penalty))
 
+    def test_HawkesSumExpKern_score(self):
+        """...Test HawkesSumExpKern score method
+        """
+        n_nodes = 2
+        n_realizations = 3
+
+        train_events = [[
+            np.cumsum(np.random.rand(4 + i)) for i in range(n_nodes)]
+            for _ in range(n_realizations)]
+
+        test_events = [[
+            np.cumsum(np.random.rand(4 + i)) for i in range(n_nodes)]
+            for _ in range(n_realizations)]
+
+        learner = HawkesSumExpKern(self.decays)
+
+        msg = '^You must either call `fit` before `score` or provide events$'
+        with self.assertRaisesRegex(ValueError, msg):
+            learner.score()
+
+        given_baseline = np.random.rand(n_nodes)
+        given_adjacency = np.random.rand(n_nodes, n_nodes, self.n_decays)
+
+        learner.fit(train_events)
+
+        train_score_current_coeffs = learner.score()
+        self.assertAlmostEqual(train_score_current_coeffs, 1.684827141)
+
+        train_score_given_coeffs = learner.score(
+            baseline=given_baseline, adjacency=given_adjacency)
+        self.assertAlmostEqual(train_score_given_coeffs, 1.16247892)
+
+        test_score_current_coeffs = learner.score(test_events)
+        self.assertAlmostEqual(test_score_current_coeffs, 1.66494295)
+
+        test_score_given_coeffs = learner.score(
+            test_events, baseline=given_baseline, adjacency=given_adjacency)
+        self.assertAlmostEqual(test_score_given_coeffs, 1.1081362)
+
     def test_HawkesSumExpKern_fit_start(self):
         """...Test HawkesSumExpKern starting point of fit method
         """

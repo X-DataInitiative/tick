@@ -7,6 +7,8 @@ from tick.inference import HawkesADM4
 
 class Test(unittest.TestCase):
     def setUp(self):
+        np.random.seed(329832)
+        self.decay = 0.7
         self.float_1 = 5.23e-4
         self.float_2 = 3.86e-2
 
@@ -21,7 +23,6 @@ class Test(unittest.TestCase):
         ]
 
         n_nodes = len(events[0])
-        decay = 0.7
         rho = 0.5
         C = 10
         lasso_nuclear_ratio = 0.7
@@ -29,7 +30,7 @@ class Test(unittest.TestCase):
         baseline_start = np.zeros(n_nodes) + .2
         adjacency_start = np.zeros((n_nodes, n_nodes)) + .2
 
-        learner = HawkesADM4(decay, rho=rho, C=C,
+        learner = HawkesADM4(self.decay, rho=rho, C=C,
                              lasso_nuclear_ratio=lasso_nuclear_ratio,
                              n_threads=3, max_iter=10, verbose=False,
                              em_max_iter=3)
@@ -45,6 +46,45 @@ class Test(unittest.TestCase):
                                              decimal=6)
         np.testing.assert_array_almost_equal(learner.adjacency, adjacency,
                                              decimal=6)
+
+    def test_hawkes_adm4_score(self):
+        """...Test HawkesADM4 score method
+        """
+        n_nodes = 2
+        n_realizations = 3
+
+        train_events = [[
+            np.cumsum(np.random.rand(4 + i)) for i in range(n_nodes)]
+            for _ in range(n_realizations)]
+
+        test_events = [[
+            np.cumsum(np.random.rand(4 + i)) for i in range(n_nodes)]
+            for _ in range(n_realizations)]
+
+        learner = HawkesADM4(self.decay)
+
+        msg = '^You must either call `fit` before `score` or provide events$'
+        with self.assertRaisesRegex(ValueError, msg):
+            learner.score()
+
+        given_baseline = np.random.rand(n_nodes)
+        given_adjacency = np.random.rand(n_nodes, n_nodes)
+
+        learner.fit(train_events)
+
+        train_score_current_coeffs = learner.score()
+        self.assertAlmostEqual(train_score_current_coeffs, 0.12029826)
+
+        train_score_given_coeffs = learner.score(
+            baseline=given_baseline, adjacency=given_adjacency)
+        self.assertAlmostEqual(train_score_given_coeffs, -0.15247511)
+
+        test_score_current_coeffs = learner.score(test_events)
+        self.assertAlmostEqual(test_score_current_coeffs, 0.17640007)
+
+        test_score_given_coeffs = learner.score(
+            test_events, baseline=given_baseline, adjacency=given_adjacency)
+        self.assertAlmostEqual(test_score_given_coeffs, -0.07973875)
 
     def test_hawkes_adm4_set_data(self):
         """...Test set_data method of Hawkes ADM4

@@ -176,14 +176,11 @@ class HawkesEM(LearnerHawkesNoParam):
         else:
             self.baseline = baseline_start.copy()
 
-        _kernel_uvm_2d = self.kernel.reshape((self.n_nodes,
-                                              self.n_nodes * self.kernel_size))
-
         for i in range(self.max_iter + 1):
             prev_baseline = self.baseline.copy()
             prev_kernel = self.kernel.copy()
 
-            self._learner.solve(self.baseline, _kernel_uvm_2d)
+            self._learner.solve(self.baseline, self._flat_kernels)
 
             rel_baseline = relative_distance(self.baseline, prev_baseline)
             rel_kernel = relative_distance(self.kernel, prev_kernel)
@@ -250,12 +247,85 @@ class HawkesEM(LearnerHawkesNoParam):
             2d array in which each entry i, j corresponds to the norm of
             kernel i, j
         """
-        kernel_intervals = self.kernel_discretization[1:] - \
-                           self.kernel_discretization[:-1]
-        return self.kernel.dot(kernel_intervals)
+        return self._learner.get_kernel_norms(self._flat_kernels)
 
     def objective(self, coeffs, loss: float = None):
         raise NotImplementedError()
+
+    def score(self, events=None, end_times=None, baseline=None, kernel=None):
+        """Compute score metric
+        Score metric is log likelihood (the higher the better)
+
+        Parameters
+        ----------
+        events : `list` of `list` of `np.ndarray`, default = None
+            List of Hawkes processes realizations used to measure score.
+            Each realization of the Hawkes process is a list of n_node for
+            each component of the Hawkes. Namely `events[i][j]` contains a
+            one-dimensional `numpy.array` of the events' timestamps of
+            component j of realization i.
+            If only one realization is given, it will be wrapped into a list
+            If None, events given while fitting model will be used
+
+        end_times : `np.ndarray` or `float`, default = None
+            List of end time of all hawkes processes used to measure score.
+            If None, it will be set to each realization's latest time.
+            If only one realization is provided, then a float can be given.
+
+        baseline : `np.ndarray`, shape=(n_nodes, ), default = None
+            Baseline vector for which the score is measured
+            If `None` baseline obtained during fitting is used
+
+        kernel : `None` or `np.ndarray', shape=(n_nodes, n_nodes, kernel_size), default=None
+            Used to force start values for kernel parameter
+            If `None` kernel obtained during fitting is used
+
+        Returns
+        -------
+        likelihood : `double`
+            Computed log likelihood value
+        """
+        if events is None and not self._fitted:
+            raise ValueError('You must either call `fit` before `score` or '
+                             'provide events')
+
+        if events is None and end_times is None:
+            learner = self
+        else:
+            learner = HawkesEM(**self.get_params())
+            learner._set('_end_times', end_times)
+            learner._set_data(events)
+
+        n_nodes = learner.n_nodes
+        kernel_size = learner.kernel_size
+
+        if baseline is None:
+            baseline = self.baseline
+
+        if kernel is None:
+            kernel = self.kernel
+
+        flat_kernels = kernel.reshape((n_nodes, n_nodes * kernel_size))
+
+        return learner._learner.loglikelihood(baseline, flat_kernels)
+
+    def get_params(self):
+        return {
+            'kernel_support': self.kernel_support,
+            'kernel_size': self.kernel_size,
+            'kernel_discretization': self.kernel_discretization,
+            'tol': self.tol,
+            'max_iter': self.max_iter,
+            'print_every': self.print_every,
+            'record_every': self.record_every,
+            'verbose': self.verbose,
+            'n_threads': self.n_threads
+        }
+
+    @property
+    def _flat_kernels(self):
+        return self.kernel.reshape((self.n_nodes,
+                                    self.n_nodes * self.kernel_size))
 
     @property
     def kernel_support(self):

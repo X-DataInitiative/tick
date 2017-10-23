@@ -278,3 +278,46 @@ class LearnerHawkesParametric(LearnerOptim):
         corresponding_simu = self._corresponding_simu()
         get_norm = np.vectorize(lambda kernel: kernel.get_norm())
         return get_norm(corresponding_simu.kernels)
+
+    def score(self, events=None, end_times=None, coeffs=None):
+        """Compute score metric
+        Score metric is log likelihood (the higher the better)
+
+        Parameters
+        ----------
+        events : `list` of `list` of `np.ndarray`, default = None
+            List of Hawkes processes realizations used to measure score.
+            Each realization of the Hawkes process is a list of n_node for
+            each component of the Hawkes. Namely `events[i][j]` contains a
+            one-dimensional `numpy.array` of the events' timestamps of
+            component j of realization i.
+            If only one realization is given, it will be wrapped into a list
+            If None, events given while fitting model will be used
+
+        end_times : `np.ndarray` or `float`, default = None
+            List of end time of all hawkes processes used to measure score.
+            If None, it will be set to each realization's latest time.
+            If only one realization is provided, then a float can be given.
+
+        coeffs : `np.ndarray`
+            Coefficients at which the score is measured
+
+        Returns
+        -------
+        likelihood : `double`
+            Computed log likelihood value
+        """
+        if events is None and not self._fitted:
+            raise ValueError('You must either call `fit` before `score` or '
+                             'provide events')
+
+        if coeffs is None:
+            coeffs = self.coeffs
+
+        if events is None and end_times is None:
+            model = self._model_obj
+        else:
+            model = self._construct_model_obj()
+            model.fit(events, end_times)
+
+        return - model.loss(coeffs)
