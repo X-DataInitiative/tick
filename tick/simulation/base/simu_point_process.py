@@ -183,3 +183,14 @@ class SimuPointProcess(Simu):
         """Reset the process, so that is is ready for a brand new simulation
         """
         self._pp.reset()
+
+    def threshold_negative_intensity(self, allow=True):
+        """Threshold intensity to 0 if it becomes negative.
+        This allows simulation with negative kernels
+
+        Parameters
+        ----------
+        allow : `bool`
+            Flag to allow negative intensity thresholding
+        """
+        self._pp.set_threshold_negative_intensity(allow)

@@ -70,17 +70,6 @@ TEST_F(HawkesKernelSumExpTest, is_zero) {
   EXPECT_FALSE(hawkes_kernel_sum_exp->is_zero());
 }
 
-TEST_F(HawkesKernelSumExpTest, constructor_negative_intensities_error) {
-  intensities[1] = -1;
-  auto kernel_1 = HawkesKernelSumExp(intensities, decays);
-  // this should work as we don't ask for the bound
-  kernel_1.get_convolution(1., timestamps, nullptr);
-  // this should throw an error as we ask to compute the future bound
-  auto kernel_2 = HawkesKernelSumExp(intensities, decays);
-  double bound;
-  ASSERT_THROW(kernel_2.get_convolution(1., timestamps, &bound), std::runtime_error);
-}
-
 TEST_F(HawkesKernelSumExpTest, constructor_negative_decays_error) {
   decays[1] = -1;
   ASSERT_THROW(HawkesKernelSumExp(intensities, decays), std::invalid_argument);

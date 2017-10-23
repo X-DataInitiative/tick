@@ -60,9 +60,9 @@ class PP {
   // Keeps track of maximum total intensity bound
   double max_total_intensity_bound;
 
- public:
+ protected:
   /// @brief If set then it thresholds negative intensities
-  bool flag_threshold_negative_intensity;
+  bool threshold_negative_intensity = false;
 
 // Fields to deal with intensity track recording (itr)
  private :
@@ -233,6 +233,14 @@ class PP {
   /// @brief Gets Maximimum Total intensity bound that wwas encountered during realization
   inline double get_max_total_intensity_bound() { return max_total_intensity_bound; }
 
+  bool get_threshold_negative_intensity() const {
+    return threshold_negative_intensity;
+  }
+
+  void set_threshold_negative_intensity(const bool threshold_negative_intensity) {
+    this->threshold_negative_intensity = threshold_negative_intensity;
+  }
+
 ////////////////////////////////////////////////////////////////////////////////
 //                            Serialization
 ////////////////////////////////////////////////////////////////////////////////
@@ -248,7 +256,7 @@ class PP {
     ar(CEREAL_NVP(intensity));
     ar(CEREAL_NVP(flag_negative_intensity));
     ar(CEREAL_NVP(max_total_intensity_bound));
-    ar(CEREAL_NVP(flag_threshold_negative_intensity));
+    ar(CEREAL_NVP(threshold_negative_intensity));
     ar(CEREAL_NVP(itr_time));
     ar(CEREAL_NVP(itr_time_step));
     ar(CEREAL_NVP(itr));
@@ -271,7 +279,7 @@ class PP {
     ar(CEREAL_NVP(intensity));
     ar(CEREAL_NVP(flag_negative_intensity));
     ar(CEREAL_NVP(max_total_intensity_bound));
-    ar(CEREAL_NVP(flag_threshold_negative_intensity));
+    ar(CEREAL_NVP(threshold_negative_intensity));
     ar(CEREAL_NVP(itr_time));
     ar(CEREAL_NVP(itr_time_step));
     ar(CEREAL_NVP(itr));
