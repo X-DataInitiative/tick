@@ -51,6 +51,11 @@ void Node::update(ulong sample_index, bool update_range) {
       }
     }
   }
+  std::cout << "features_min= " << std::endl;
+  features_min.print();
+  std::cout << "features_max= " << std::endl;
+  features_max.print();
+
   // Save the sample in the node
   samples.push_back(sample_index);
 }
@@ -58,11 +63,13 @@ void Node::update(ulong sample_index, bool update_range) {
 
 void Node::split(ulong node_index, uint32_t n_splits) {
   // Choose at random the feature used to cut
-  ulong splitting_feature = get_tree().get_forest().rand_unif(get_n_features());
+
+  std::cout << "get_n_features()=" << get_n_features() << std::endl;
+  ulong splitting_feature = get_tree().get_forest().rand_unif(get_n_features() - 1);
 
   std::cout << "splitting_feature= " << splitting_feature << std::endl;
   // Choose at random the threshold in the range of the feature
-  ulong cut_index = get_tree().get_forest().rand_unif(get_n_features());
+  ulong cut_index = get_tree().get_forest().rand_unif(get_n_features() - 1);
   // Note that cut_index is in {0, ..., n_splits-1}
   double feature_min = features_min[splitting_feature];
   double feature_max = features_max[splitting_feature];
