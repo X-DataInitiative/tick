@@ -32,7 +32,7 @@ class ModelSCCSTest(unittest.TestCase):
             .fit(X, self.y)
         loss = model.loss(coeffs=np.array([0.0, 0.0, 1.0, 0.0]))
         expected_loss = - np.log((np.e / (2*np.e) * 1 / (1 + np.e))) / 2
-        self.assertAlmostEquals(loss, expected_loss)
+        self.assertAlmostEqual(loss, expected_loss)
 
     def test_grad(self):
         """Test longitudinal multinomial model gradient value."""
@@ -85,7 +85,7 @@ class ModelSCCSTest(unittest.TestCase):
             X, y)
         lip_constant = model.get_lip_max()
         expected_lip_constant = .5
-        self.assertEquals(lip_constant, expected_lip_constant)
+        self.assertEqual(lip_constant, expected_lip_constant)
 
     def test_convergence_with_lags(self):
         """Test longitudinal multinomial model convergence."""

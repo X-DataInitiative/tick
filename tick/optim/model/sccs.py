@@ -29,10 +29,10 @@ class ModelSCCS(ModelFirstOrder, ModelLipschitz):
         The list of features matrices.
 
     labels : `list` of `numpy.ndarray`,
-        list of length n_samples, each element of the list of 
+        list of length n_samples, each element of the list of
         shape=(n_intervals,)
         The labels vector
-        
+
     censoring : `numpy.ndarray`, shape=(n_samples,), dtype="uint64"
         The censoring data. This array should contain integers in
         [1, n_intervals]. If the value i is equal to n_intervals, then there
@@ -100,7 +100,7 @@ class ModelSCCS(ModelFirstOrder, ModelLipschitz):
 
         labels : List[{1d array, csr matrix of shape (n_intervals,)]
             The labels vector
-            
+
         censoring : 1d array of shape (n_samples,)
             The censoring vector
 
@@ -131,10 +131,10 @@ class ModelSCCS(ModelFirstOrder, ModelLipschitz):
             The list of features matrices.
 
         labels : `list` of `numpy.ndarray`,
-            list of length n_samples, each element of the list of 
+            list of length n_samples, each element of the list of
             shape=(n_intervals,)
             The labels vector
-        
+
         censoring : `numpy.ndarray`, shape=(n_samples,), dtype="uint64"
             The censoring data. This array should contain integers in
             [1, n_intervals]. If the value i is equal to n_intervals, then there
@@ -143,9 +143,14 @@ class ModelSCCS(ModelFirstOrder, ModelLipschitz):
             row c - 1 of the correponding matrix. The last n_intervals - c rows
             are then set to 0.
         """
-        n_intervals, n_features = features[0].shape
+        n_intervals, n_coeffs = features[0].shape
+        n_lags = self.n_lags
         self._set("n_intervals", n_intervals)
-        self._set("n_features", n_features)
+        self._set("n_coeffs", n_coeffs)
+        if n_lags > 0 and n_coeffs % (n_lags + 1) != 0:
+            raise ValueError("(n_lags + 1) should be a divisor of n_coeffs")
+        else:
+            self._set("n_features", int(n_coeffs / (n_lags + 1)))
         self._set("n_samples", len(features))
         if len(labels) != self.n_samples:
             raise ValueError("Features and labels lists should have the same\
@@ -156,7 +161,7 @@ class ModelSCCS(ModelFirstOrder, ModelLipschitz):
         censoring = check_censoring_consistency(censoring, self.n_samples)
         features = check_longitudinal_features_consistency(features,
                                                            (n_intervals,
-                                                            n_features),
+                                                            n_coeffs),
                                                            "float64")
         labels = check_longitudinal_features_consistency(labels,
                                                          (self.n_intervals,),
