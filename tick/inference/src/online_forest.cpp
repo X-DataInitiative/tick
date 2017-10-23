@@ -60,11 +60,16 @@ void Node::split(ulong node_index, uint32_t n_splits) {
   // Choose at random the feature used to cut
   ulong splitting_feature = get_tree().get_forest().rand_unif(get_n_features());
 
+  std::cout << "splitting_feature= " << splitting_feature << std::endl;
   // Choose at random the threshold in the range of the feature
   ulong cut_index = get_tree().get_forest().rand_unif(get_n_features());
   // Note that cut_index is in {0, ..., n_splits-1}
-  double feature_min = features_min[cut_index];
-  double feature_max = features_max[cut_index];
+  double feature_min = features_min[splitting_feature];
+  double feature_max = features_max[splitting_feature];
+
+  std::cout << "feature_min= " << feature_min << std::endl;
+  std::cout << "feature_max= " << feature_max << std::endl;
+  std::cout << "cut_index= " << cut_index << std::endl;
 
   double threshold = feature_min + (double)(cut_index + 1) / (n_splits + 1) * (feature_max - feature_min);
 
@@ -74,7 +79,7 @@ void Node::split(ulong node_index, uint32_t n_splits) {
   std::cout << "t=" << t << ", threshold=" << threshold << ", feature_min="
             << feature_min << ", feature_max=" << feature_max <<  ", cut_index="
             << cut_index << ", splitting_feature=" << splitting_feature
-            << ", n_splits=" << n_splits << std::endl;
+            << ", n_splits=" << n_splits << "node_index= " << node_index << std::endl;
 
   // Create the childs
   // Add a left-child node, whose parent is the current node, created at iteration t
