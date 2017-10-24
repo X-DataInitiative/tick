@@ -109,6 +109,14 @@ class Node {
     return features_max;
   }
 
+  inline void set_features_min(const ArrayDouble &features_min) {
+    this->features_min = features_min;
+  }
+
+  inline void set_features_max(const ArrayDouble &features_max) {
+    this->features_max = features_max;
+  }
+
   inline const bool get_is_leaf() const {
     return is_leaf;
   }

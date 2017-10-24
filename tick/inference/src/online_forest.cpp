@@ -102,15 +102,27 @@ void Node::split(ulong node_index, uint32_t n_splits) {
   // This node is no more a leaf;
   this->is_leaf = false;
 
-  // Make a copy of the features range in the child and just update the feature selected for the split
-  get_tree().get_node(left_child).features_min = features_min;
-  get_tree().get_node(left_child).features_max = features_max;
-  get_tree().get_node(right_child).features_min = features_min;
-  get_tree().get_node(right_child).features_max = features_max;
+  std::cout << "left_child=" << left_child << ", right_child=" << right_child << std::endl;
+
+
+  std::cout << "blabla= "  << std::endl;
+
+  std::cout << "get_tree().get_node(left_child).features_min.print()= "  << std::endl;
+
+  get_tree().get_node(left_child).get_features_min().print();
+
+  get_tree().get_node(left_child).set_features_min(features_min);
+  get_tree().get_node(left_child).set_features_max(features_max);
+  get_tree().get_node(right_child).set_features_min(features_min);
+  get_tree().get_node(right_child).set_features_max(features_max);
+
+  get_tree().get_node(left_child).get_features_min().print();
+
+  std::cout << "blabla= " << cut_index << std::endl;
 
   // TODO: free the memory of this node's features_min and features_max
-  get_tree().get_node(right_child).features_min[splitting_feature] = threshold;
-  get_tree().get_node(left_child).features_max[splitting_feature] = threshold;
+  // get_tree().get_node(right_child).features_min[splitting_feature] = threshold;
+  // get_tree().get_node(left_child).features_max[splitting_feature] = threshold;
 
   // Put the samples from this node into the left and right childs
   for(ulong i: samples) {
@@ -123,6 +135,8 @@ void Node::split(ulong node_index, uint32_t n_splits) {
       get_tree().get_node(right_child).n_samples++;
     }
   }
+  std::cout << "blabla= " << cut_index << std::endl;
+
 }
 
 
@@ -199,12 +213,12 @@ void Tree::fit(ulong sample_index) {
 
 ulong Tree::add_node() {
   nodes.emplace_back(*this);
-  return nodes.size();
+  return nodes.size() - 1;
 }
 
 ulong Tree::add_node(uint32_t parent, ulong creation_time) {
   nodes.emplace_back(*this, parent, creation_time);
-  return nodes.size();
+  return nodes.size() - 1;
 }
 
 OnlineForest::OnlineForest(uint32_t n_trees, uint32_t n_min_samples,
