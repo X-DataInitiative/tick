@@ -2,10 +2,12 @@
 
 #include "online_forest.h"
 
-
 Node::Node(Tree &tree) : samples(), tree(tree) {
-  std::cout << "Node::Node(Tree &tree)\n";
+  // std::cout << "Node::Node(Tree &tree)\n";
+  // std::cout << "tree.get_forest().get_n_features()" << std::endl;
   features_min = ArrayDouble(tree.get_forest().get_n_features());
+  // std::cout << "features_min.print();" << std::endl;
+  features_min.print();
   features_max = ArrayDouble(tree.get_forest().get_n_features());
   // At its creation, a node is a leaf
   is_leaf = true;
@@ -16,6 +18,21 @@ Node::Node(Tree &tree) : samples(), tree(tree) {
   // Initialized to one since it will receive multiplicative updates
   aggregation_weight = 1;
   aggregation_weight_ctw = 1;
+}
+
+Node::Node(Tree &tree, uint32_t parent, ulong creation_time) : Node(tree) {
+  this->parent = parent;
+  this->creation_time = creation_time;
+}
+
+Node::Node(const Node &node)
+    : left_child(left_child), right_child(right_child), parent(parent),
+      creation_time(creation_time), feature(feature), threshold(threshold),
+      impurity(impurity), n_samples(n_samples), labels_average(labels_average),
+      aggregation_weight(aggregation_weight), aggregation_weight_ctw(aggregation_weight_ctw),
+      features_min(features_min), features_max(features_max), samples(samples),
+      tree(tree), is_leaf(is_leaf) {
+  std::cout << "Node::Node(const Node & node)" << std::endl;
 }
 
 void Node::update(ulong sample_index, bool update_range) {
@@ -33,14 +50,16 @@ void Node::update(ulong sample_index, bool update_range) {
   // TODO: update aggregation_weight_ctw;
 
   if (update_range) {
-    if (n_samples==1) {
+    if (n_samples == 1) {
       // This is the first sample, we build copies of the sample point
       std::cout << "creation of features_min\n";
-      features_min = ArrayDouble(x_t);
+      // features_min = ArrayDouble(x_t);
+      features_min = x_t;
       std::cout << "features_min.size()=" << features_min.size() << std::endl;
-      features_max = ArrayDouble(x_t);
+      // features_max = ArrayDouble(x_t);
+      features_max = x_t;
     } else {
-      for (ulong j=0; j < x_t.size(); ++j) {
+      for (ulong j = 0; j < x_t.size(); ++j) {
         double x_tj = x_t[j];
         if (features_min[j] > x_tj) {
           features_min[j] = x_tj;
@@ -60,37 +79,38 @@ void Node::update(ulong sample_index, bool update_range) {
   samples.push_back(sample_index);
 }
 
-
 void Node::split(ulong node_index, uint32_t n_splits) {
   // Choose at random the feature used to cut
 
-  std::cout << "get_n_features()=" << get_n_features() << std::endl;
+  // std::cout << "get_n_features()=" << get_n_features() << std::endl;
   ulong splitting_feature = get_tree().get_forest().rand_unif(get_n_features() - 1);
 
-  std::cout << "splitting_feature= " << splitting_feature << std::endl;
+  // std::cout << "splitting_feature= " << splitting_feature << std::endl;
   // Choose at random the threshold in the range of the feature
   ulong cut_index = get_tree().get_forest().rand_unif(get_n_features() - 1);
   // Note that cut_index is in {0, ..., n_splits-1}
   double feature_min = features_min[splitting_feature];
   double feature_max = features_max[splitting_feature];
 
-  std::cout << "feature_min= " << feature_min << std::endl;
-  std::cout << "feature_max= " << feature_max << std::endl;
-  std::cout << "cut_index= " << cut_index << std::endl;
+  // std::cout << "feature_min= " << feature_min << std::endl;
+  // std::cout << "feature_max= " << feature_max << std::endl;
+  // std::cout << "cut_index= " << cut_index << std::endl;
 
-  double threshold = feature_min + (double)(cut_index + 1) / (n_splits + 1) * (feature_max - feature_min);
+  double threshold = feature_min + (double) (cut_index + 1) / (n_splits + 1) * (feature_max - feature_min);
 
   // Get the current iteration counter
   ulong t = get_tree().get_forest().get_t();
 
-  std::cout << "t=" << t << ", threshold=" << threshold << ", feature_min="
-            << feature_min << ", feature_max=" << feature_max <<  ", cut_index="
-            << cut_index << ", splitting_feature=" << splitting_feature
-            << ", n_splits=" << n_splits << "node_index= " << node_index << std::endl;
+//  std::cout << "t=" << t << ", threshold=" << threshold << ", feature_min="
+//            << feature_min << ", feature_max=" << feature_max << ", cut_index="
+//            << cut_index << ", splitting_feature=" << splitting_feature
+//            << ", n_splits=" << n_splits << ", node_index= " << node_index << std::endl;
 
   // Create the childs
   // Add a left-child node, whose parent is the current node, created at iteration t
+
   ulong left_child = get_tree().add_node(node_index, t);
+
   // Add a right-child node, whose parent is the current node, created at iteration t
   ulong right_child = get_tree().add_node(node_index, t);
 
@@ -104,14 +124,17 @@ void Node::split(ulong node_index, uint32_t n_splits) {
 
   std::cout << "left_child=" << left_child << ", right_child=" << right_child << std::endl;
 
+  std::cout << "blabla= " << std::endl;
 
-  std::cout << "blabla= "  << std::endl;
+  std::cout << "Left node= " << std::endl;
+  get_tree().get_node(left_child).print();
 
-  std::cout << "get_tree().get_node(left_child).features_min.print()= "  << std::endl;
+  std::cout << "Right node= " << std::endl;
+  get_tree().get_node(right_child).print();
 
-  get_tree().get_node(left_child).get_features_min().print();
+  std::cout << "Current node= " << std::endl;
+  print();
 
-  get_tree().get_node(left_child).set_features_min(features_min);
   get_tree().get_node(left_child).set_features_max(features_max);
   get_tree().get_node(right_child).set_features_min(features_min);
   get_tree().get_node(right_child).set_features_max(features_max);
@@ -125,7 +148,7 @@ void Node::split(ulong node_index, uint32_t n_splits) {
   // get_tree().get_node(left_child).features_max[splitting_feature] = threshold;
 
   // Put the samples from this node into the left and right childs
-  for(ulong i: samples) {
+  for (ulong i: samples) {
     double x_ij = get_features(i)[splitting_feature];
     if (x_ij < threshold) {
       get_tree().get_node(left_child).samples.push_back(i);
@@ -139,15 +162,18 @@ void Node::split(ulong node_index, uint32_t n_splits) {
 
 }
 
-
-Node& Tree::get_node(ulong node_index) {
+Node &Tree::get_node(ulong node_index) {
   return nodes[node_index];
+}
+
+Tree::Tree(const Tree & tree)
+  : nodes(nodes), forest(forest), already_fitted(already_fitted) {
+  std::cout << "Tree::Tree(const &Tree tree)" << std::endl;
 }
 
 OnlineForest &Tree::get_forest() const {
   return forest;
 }
-
 
 double Node::get_label(ulong sample_index) const {
   return tree.get_label(sample_index);
@@ -157,19 +183,15 @@ ulong Node::get_n_features() const {
   return tree.get_n_features();
 }
 
-
 ArrayDouble Node::get_features(ulong sample_index) const {
   return tree.get_features(sample_index);
 }
-
-
 
 Tree::Tree(OnlineForest &forest) : nodes(), forest(forest) {
   std::cout << "Tree::Tree(OnlineForest &forest)\n";
   // Add the root of the Tree (first node)
   add_node();
 }
-
 
 void Tree::fit(ulong sample_index) {
   // TODO: Test that the size does not change within successive calls to fit
@@ -181,14 +203,15 @@ void Tree::fit(ulong sample_index) {
   // Let's go find the leaf that contains the sample
   while (true) {
     // Get the current node
-    Node& current_node = get_node(current_node_index);
+    Node &current_node = get_node(current_node_index);
     // If the node a leaf ?
     bool is_leaf = current_node.get_is_leaf();
     // Update the node. If the node is a leaf, we update the range of the data in the node
     current_node.update(sample_index, is_leaf);
     if (is_leaf) {
       // If it's a leaf and if n_samples is large enough, split the node
-      std::cout << "current_node.get_n_samples() >= n_min_samples:" << current_node.get_n_samples() << ">=" << forest.get_n_min_samples() << std::endl;
+      std::cout << "current_node.get_n_samples() >= n_min_samples:" << current_node.get_n_samples() << ">="
+                << forest.get_n_min_samples() << std::endl;
       if (current_node.get_n_samples() >= forest.get_n_min_samples()) {
         std::cout << "Splitting the node\n";
         current_node.split(current_node_index, forest.get_n_splits());
@@ -209,7 +232,6 @@ void Tree::fit(ulong sample_index) {
     }
   }
 }
-
 
 ulong Tree::add_node() {
   nodes.emplace_back(*this);
@@ -238,6 +260,15 @@ OnlineForest::OnlineForest(uint32_t n_trees, uint32_t n_min_samples,
   trees.reserve(n_trees);
 }
 
+OnlineForest::OnlineForest(const OnlineForest & forest)
+    : n_trees(n_trees), n_min_samples(n_min_samples), n_splits(n_splits),
+      t(t), features(features), labels(labels), trees(trees), n_features(n_features),
+      has_data(has_data), cycle_type(cycle_type), permutation(permutation),
+      i_perm(i_perm), permutation_ready(permutation_ready), rand(rand) {
+  std::cout << "OnlineForest::OnlineForest(const OnlineForest & forest)" << n_splits << std::endl;
+
+}
+
 // Do n_iter iterations
 void OnlineForest::fit(ulong n_iter) {
   if (!has_data) {
@@ -253,7 +284,7 @@ void OnlineForest::fit(ulong n_iter) {
     std::cout << "iteration=" << it << std::endl;
     ulong sample_index = get_next_sample();
     std::cout << "sample_index=" << sample_index << std::endl;
-    for (Tree& tree : trees) {
+    for (Tree &tree : trees) {
       // Fit the tree online using the new data point
       tree.fit(sample_index);
     }
@@ -262,13 +293,12 @@ void OnlineForest::fit(ulong n_iter) {
 }
 
 void OnlineForest::init_permutation() {
-  if ((cycle_type== CycleType::permutation) && (get_n_samples() > 0)) {
+  if ((cycle_type == CycleType::permutation) && (get_n_samples() > 0)) {
     permutation = ArrayULong(get_n_samples());
     for (ulong i = 0; i < get_n_samples(); ++i)
       permutation[i] = i;
   }
 }
-
 
 //// Simulation of a random permutation using Knuth's algorithm
 void OnlineForest::shuffle() {
@@ -329,11 +359,9 @@ void OnlineForest::set_data(const SArrayDouble2dPtr features,
   }
 }
 
-
 inline ArrayDouble Tree::get_features(ulong sample_index) const {
   return forest.get_features(sample_index);
 }
-
 
 inline ulong Tree::get_n_features() const {
   return forest.get_n_features();

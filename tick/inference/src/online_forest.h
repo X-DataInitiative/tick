@@ -48,10 +48,9 @@ class Node {
  public:
   Node(Tree &tree);
 
-  Node(Tree &tree, uint32_t parent, ulong creation_time) : Node(tree) {
-    this->parent = parent;
-    this->creation_time = creation_time;
-  }
+  Node(Tree &tree, uint32_t parent, ulong creation_time);
+
+  Node(const Node &node);
 
   ~Node() {
     std::cout << "~Node()\n";
@@ -110,6 +109,9 @@ class Node {
   }
 
   inline void set_features_min(const ArrayDouble &features_min) {
+    std::cout << "in set_features_min(const ArrayDouble &features_min)" << std::endl;
+    this->features_min.print();
+    features_min.print();
     this->features_min = features_min;
   }
 
@@ -166,6 +168,8 @@ class Tree {
  public:
   Tree(OnlineForest &forest);
 
+  Tree(const Tree & tree);
+
   // Launch a pass on the given data
   void fit(ulong n_iter = 0);
 
@@ -190,6 +194,7 @@ class Tree {
   ~Tree() {
     std::cout << "~Tree()\n";
   }
+
 
   void print() {
     std::cout << "Tree" << std::endl;
@@ -260,6 +265,8 @@ class OnlineForest {
   ~OnlineForest() {
     std::cout << "~OnlineForest()\n";
   }
+
+  OnlineForest(const OnlineForest & forest);
 
   // Returns a uniform integer in the set {0, ..., m - 1}
   inline ulong rand_unif(ulong m) {
