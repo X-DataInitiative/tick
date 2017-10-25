@@ -54,7 +54,7 @@ double ModelHawkesSDCAOneNode::loss(const ArrayDouble &coeffs) {
     if (inner_product <= 0) {
       return std::numeric_limits<double>::infinity();
     }
-    loss -= log(get_features(i).dot(coeffs)) / n_samples;
+    loss -= log(inner_product) / n_samples;
   }
   return loss;
 }
