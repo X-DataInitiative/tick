@@ -10,38 +10,64 @@ from tick.optim.prox.base import Prox
 from tick.optim.solver.base import SolverFirstOrder
 from tick.optim.solver.base.utils import relative_distance
 
-__author__ = 'MartinBompaire'
-
 
 class SCPG(SolverFirstOrder):
-    """
-    Minimize the objective
+    """Self-Concordant Proximal Gradient descent
 
-    .. math:: f(x) + g(x)
+    For the minimization of objectives of the form
 
-    using the Proximal Gradient algorithm
-    This algorithm assumes that f and g are both convex, that
-    f is standard self-concordant and that g is prox-capable.
+    .. math::
+        f(w) + g(w),
+
+    where :math:`f` is self-concordant and :math:`g` is prox-capable.
+    Function :math:`f` corresponds to the ``model.loss`` method of the model
+    (passed with ``set_model`` to the solver) and :math:`g` corresponds to
+    the ``prox.value`` method of the prox (passed with the ``set_prox`` method).
+    One iteration of :class:`SCPG <tick.optim.solver.SCPG>` is as follows:
+
+    .. math::
+        y^k &\\gets \\mathrm{prox}_{g / L_k} \\big( w^k - \\tfrac{1}{L_k}
+        \\nabla f(w^k) \\big) \\\\
+        d^k &\\gets y^k - w^k \\\\
+        \\beta_k &\\gets \\sqrt{L_k} \| d^k \|_2 \\\\
+        \\lambda_k &\\gets \\sqrt{{d^k}^\\top \\nabla^2 f(w^k) d^k} \\\\
+        \\alpha_k &\\gets \\frac{\\beta_k}{\\lambda_k (\\lambda_k +
+        \\beta_k^2)} \\\\
+        w^{k + 1} &\\gets w^{k} + \\alpha_k d^k \\\\
+
+    where :math:`\\nabla f(w)` is the gradient of :math:`f` given by the
+    ``model.grad`` method and :math:`\\mathrm{prox}_{g / L_k}` is given by the
+    ``prox.call`` method. The first step size :math:`1 / L_k` can be tuned with
+    ``step`` it will then be updated with Barzilai-Borwein steps and linesearch.
+    The iterations stop whenever tolerance ``tol`` is achieved, or after
+    ``max_iter`` iterations. The obtained solution :math:`w` is returned
+    by the ``solve`` method, and is also stored in the ``solution`` attribute
+    of the solver.
 
     Parameters
     ----------
+    step : `float`, default=None
+        Step-size parameter that will be used at the first iteration. Then
+        the linesearch algorithm will compute the next steps.
 
-    modified : `bool` (default False)
-        Weather or not using the modified version fo the algorithm.
-
-    step : `float` default=None
-        Step-size of the algorithm. If ``linesearch=True``, this is the
-        first step-size to be used in the linesearch
-        (typically taken too large). Otherwise, it's the constant step
-        to be used along iterations.
-
-    tol : `float`, default=0.
+    tol : `float`, default=1e-10
         The tolerance of the solver (iterations stop when the stopping
-        criterion is below it). By default the solver does ``max_iter``
-        iterations
+        criterion is below it)
 
     max_iter : `int`, default=100
-        Maximum number of iterations of the solver
+        Maximum number of iterations of the solver.
+
+    verbose : `bool`, default=True
+        If `True`, solver verboses history, otherwise nothing is displayed,
+        but history is recorded anyway
+
+    print_every : `int`, default=10
+        Print history information every time the iteration number is a
+        multiple of ``print_every``. Used only is ``verbose`` is True
+
+    record_every : `int`, default=1
+        Save history information every time the iteration number is a
+        multiple of ``record_every``
 
     linesearch_step_increase : `float`, default=2.
         Factor of step increase when using linesearch
@@ -49,25 +75,26 @@ class SCPG(SolverFirstOrder):
     linesearch_step_decrease : `float`, default=0.5
         Factor of step decrease when using linesearch
 
-    verbose : `bool`, default=True
-        If `True`, we verbose things, otherwise the solver does not
-        print anything (but records information in history anyway)
-
-    print_every : `int`, default=10
-        Print history information when ``n_iter`` (iteration number) is
-        a multiple of ``print_every``
-
-    record_every : `int`, default=1
-        Record history information when ``n_iter`` (iteration number) is
-        a multiple of ``record_every``
+    modified : `bool`, default=False
+        Enables modified verison. The modified version of this algorithm
+        consists in evaluating :math:`f` at :math:`y_k` and :math:`w^{k+1}`
+        and keeping the iterate that minimizes the best :math:`f`.
 
     Attributes
     ----------
     model : `Model`
-        The model to solve
+        The model used by the solver, passed with the ``set_model`` method
 
     prox : `Prox`
-        Proximal operator to solve
+        Proximal operator used by the solver, passed with the ``set_prox``
+        method
+
+    solution : `numpy.array`, shape=(n_coeffs,)
+        Minimizer found by the solver
+
+    history : `dict`-like
+        A dict-type of object that contains history of the solver along
+        iterations. It should be accessed using the ``get_history`` method
 
     time_start : `str`
         Start date of the call to ``solve()``
@@ -77,6 +104,18 @@ class SCPG(SolverFirstOrder):
 
     time_end : `str`
         End date of the call to ``solve()``
+
+    Notes
+    -----
+    This algorithm is designed to work properly with self-concordant losses
+    such as Poisson regression with linear link
+    `ModelPoisReg <tick.optim.model.ModelPoisReg>` or Hawkes processes likelihood
+    `ModelHawkesFixedSumExpKernLogLik <tick.optim.model.ModelHawkesFixedSumExpKernLogLik>`
+
+    References
+    ----------
+    Tran-Dinh Q, Kyrillidis A, Cevher V. Composite self-concordant
+    minimization. *The Journal of Machine Learning Research* (2015)
     """
 
     _attrinfos = {
@@ -155,9 +194,10 @@ class SCPG(SolverFirstOrder):
             return self.original_prox.value(coeffs) * self.sc_corr
 
     def __init__(self, step: float = None, tol: float = 0.,
-                 max_iter: int = 100, linesearch_step_increase: float = 2.,
-                 linesearch_step_decrease: float = 0.5, verbose: bool = True,
+                 max_iter: int = 100, verbose: bool = True,
                  print_every: int = 10, record_every: int = 1,
+                 linesearch_step_increase: float = 2.,
+                 linesearch_step_decrease: float = 0.5,
                  modified=False):
         SolverFirstOrder.__init__(self, step=step, tol=tol, max_iter=max_iter,
                                   verbose=verbose, print_every=print_every,
@@ -296,7 +336,7 @@ class SCPG(SolverFirstOrder):
         # during function's run
         return x_new, y_k, alpha_k, beta_k, lambda_k, l_k
 
-    def _solve(self, x0: np.ndarray = None, step: float = 1e5):
+    def _solve(self, x0: np.ndarray = None, step: float = None):
 
         step, obj, x, prev_x, prev_grad_x_ssc, grad_x_ssc = \
             self._initialize_values(x0, step=step)

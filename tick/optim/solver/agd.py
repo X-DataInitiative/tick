@@ -8,27 +8,63 @@ from tick.optim.solver.base.utils import relative_distance
 
 
 class AGD(SolverFirstOrder):
-    """
-    AGD (accelerated proximal gradient descent) algorithm.
+    """Accelerated proximal gradient descent
+
+    For the minimization of objectives of the form
+
+    .. math::
+        f(w) + g(w),
+
+    where :math:`f` has a smooth gradient and :math:`g` is prox-capable.
+    Function :math:`f` corresponds to the ``model.loss`` method of the model
+    (passed with ``set_model`` to the solver) and :math:`g` corresponds to
+    the ``prox.value`` method of the prox (passed with the ``set_prox`` method).
+    One iteration of :class:`AGD <tick.optim.solver.AGD>` is as follows:
+
+    .. math::
+        w^{k} &\\gets \\mathrm{prox}_{\\eta g} \\big(z^k - \\eta \\nabla f(z^k)
+        \\big) \\\\
+        t_{k+1} &\\gets \\frac{1 + \sqrt{1 + 4 t_k^2}}{2} \\\\
+        z^{k+1} &\\gets w^k + \\frac{t_k - 1}{t_{k+1}} (w^k - w^{k-1})
+
+    where :math:`\\nabla f(w)` is the gradient of :math:`f` given by the
+    ``model.grad`` method and :math:`\\mathrm{prox}_{\\eta g}` is given by the
+    ``prox.call`` method. The step-size :math:`\\eta` can be tuned with
+    ``step``. The iterations stop whenever tolerance ``tol`` is achieved, or
+    after ``max_iter`` iterations. The obtained solution :math:`w` is returned
+    by the ``solve`` method, and is also stored in the ``solution`` attribute
+    of the solver.
 
     Parameters
     ----------
-    step : `float` default=None
-        Step-size of the algorithm. If ``linesearch=True``, this is the
-        first step-size to be used in the linesearch
-        (typically taken too large). Otherwise, it's the constant step
-        to be used along iterations.
+    step : `float`, default=None
+        Step-size parameter, the most important parameter of the solver.
+        Whenever possible, this can be automatically tuned as
+        ``step = 1 / model.get_lip_best()``. If ``linesearch=True``, this is
+        the first step-size to be used in the linesearch (that should be taken
+        as too large).
 
-    tol : `float`, default=0.
+    tol : `float`, default=1e-10
         The tolerance of the solver (iterations stop when the stopping
-        criterion is below it). By default the solver does ``max_iter``
-        iterations
+        criterion is below it)
 
     max_iter : `int`, default=100
-        Maximum number of iterations of the solver
+        Maximum number of iterations of the solver.
 
     linesearch : `bool`, default=True
-        Use backtracking linesearch
+        If `True`, use backtracking linesearch to tune the step automatically.
+
+    verbose : `bool`, default=True
+        If `True`, solver verboses history, otherwise nothing is displayed,
+        but history is recorded anyway
+
+    print_every : `int`, default=10
+        Print history information every time the iteration number is a
+        multiple of ``print_every``. Used only is ``verbose`` is True
+
+    record_every : `int`, default=1
+        Save history information every time the iteration number is a
+        multiple of ``record_every``
 
     linesearch_step_increase : `float`, default=2.
         Factor of step increase when using linesearch
@@ -36,25 +72,21 @@ class AGD(SolverFirstOrder):
     linesearch_step_decrease : `float`, default=0.5
         Factor of step decrease when using linesearch
 
-    verbose : `bool`, default=True
-        If `True`, we verbose things, otherwise the solver does not
-        print anything (but records information in history anyway)
-
-    print_every : `int`, default=10
-        Print history information when ``n_iter`` (iteration number) is
-        a multiple of ``print_every``
-
-    record_every : `int`, default=1
-        Record history information when ``n_iter`` (iteration number) is
-        a multiple of ``record_every``
-
     Attributes
     ----------
     model : `Model`
-        The model to solve
+        The model used by the solver, passed with the ``set_model`` method
 
     prox : `Prox`
-        Proximal operator to solve
+        Proximal operator used by the solver, passed with the ``set_prox``
+        method
+
+    solution : `numpy.array`, shape=(n_coeffs,)
+        Minimizer found by the solver
+
+    history : `dict`-like
+        A dict-type of object that contains history of the solver along
+        iterations. It should be accessed using the ``get_history`` method
 
     time_start : `str`
         Start date of the call to ``solve()``
@@ -64,9 +96,15 @@ class AGD(SolverFirstOrder):
 
     time_end : `str`
         End date of the call to ``solve()``
+
+    References
+    ----------
+    * A. Beck and M. Teboulle, A fast iterative shrinkage-thresholding
+      algorithm for linear inverse problems,
+      *SIAM journal on imaging sciences*, 2009
     """
 
-    def __init__(self, step: float = None, tol: float = 0.,
+    def __init__(self, step: float = None, tol: float = 1e-10,
                  max_iter: int = 100, linesearch: bool = True,
                  linesearch_step_increase: float = 2.,
                  linesearch_step_decrease: float = 0.5,

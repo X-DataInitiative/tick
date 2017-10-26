@@ -487,7 +487,7 @@ and :math:`+\infty` otherwise).
 Note that depending on the problem, :math:`g` might actually be used only a subset of
 entries of :math:`w`.
 For instance, for generalized linear models, :math:`w` contains the model weights and
-an intercept, which is not penalized, see :ref:`generalized linear models <optim-model-glm>`.
+an intercept, which is not penalized, see :ref:`generalized linear models <linear-models>`.
 Indeed, in all ``prox`` classes, an optional ``range`` parameter is available, to apply
 the regularization only to a subset of entries of :math:`w`.
 
@@ -703,9 +703,11 @@ Proximal gradient descent                                :class:`GD <tick.optim.
 Accelerated proximal gradient descent                    :class:`AGD <tick.optim.solver.AGD>`
 Broyden, Fletcher, Goldfarb, and Shannon (quasi-newton)  :class:`BFGS <tick.optim.solver.BFGS>`
 Self-Concordant Proximal Gradient Descent                :class:`SCPG <tick.optim.solver.SCPG>`
+Generalized Forward-Backward                             :class:`GFB <tick.optim.solver.GFB>`
 Stochastic Gradient Descent                              :class:`SGD <tick.optim.solver.SGD>`
 Adaptive Gradient Descent solver                         :class:`AdaGrad <tick.optim.solver.AdaGrad>`
 Stochastic Variance Reduced Descent                      :class:`SVRG <tick.optim.solver.SVRG>`
+Stochastic Averaged Gradient Descent                     :class:`SAGA <tick.optim.solver.SAGA>`
 Stochastic Dual Coordinate Ascent                        :class:`SDCA <tick.optim.solver.SDCA>`
 =======================================================  ========================================
 

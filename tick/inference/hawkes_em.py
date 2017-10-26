@@ -276,7 +276,7 @@ class HawkesEM(LearnerHawkesNoParam):
             Baseline vector for which the score is measured
             If `None` baseline obtained during fitting is used
 
-        kernel : `None` or `np.ndarray', shape=(n_nodes, n_nodes, kernel_size), default=None
+        kernel : `None` or `np.ndarray`, shape=(n_nodes, n_nodes, kernel_size), default=None
             Used to force start values for kernel parameter
             If `None` kernel obtained during fitting is used
 

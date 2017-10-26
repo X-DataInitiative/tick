@@ -7,8 +7,6 @@ from tick.optim.solver.build.solver import SVRG as _SVRG
 
 __author__ = "Stephane Gaiffas"
 
-# TODO: preparer methodes pour set et get attributes
-
 variance_reduction_methods_mapper = {
     'last': _SVRG.VarianceReductionMethod_Last,
     'avg': _SVRG.VarianceReductionMethod_Average,
@@ -17,74 +15,151 @@ variance_reduction_methods_mapper = {
 
 
 class SVRG(SolverFirstOrderSto):
-    """
-    Stochastic variance reduced gradient
+    """Stochastic Variance Reduced Gradient solver
+
+    For the minimization of objectives of the form
+
+    .. math::
+        \\frac 1n \\sum_{i=1}^n f_i(w) + g(w),
+
+    where the functions :math:`f_i` have smooth gradients and :math:`g` is
+    prox-capable. Function :math:`f = \\frac 1n \\sum_{i=1}^n f_i` corresponds
+    to the ``model.loss`` method of the model (passed with ``set_model`` to the
+    solver) and :math:`g` corresponds to the ``prox.value`` method of the
+    prox (passed with the ``set_prox`` method).
+    One iteration of :class:`SVRG <tick.optim.solver.SVRG>` corresponds to the
+    following iteration applied ``epoch_size`` times:
+
+    .. math::
+        w \\gets \\mathrm{prox}_{\\eta g} \\big(w - \\eta (\\nabla f_i(w) -
+        \\nabla f_i(\\bar{w}) + \\nabla f(\\bar{w}) \\big),
+
+    where :math:`i` is sampled at random (strategy depends on ``rand_type``) at
+    each iteration, and where :math:`\\bar w` and :math:`\\nabla f(\\bar w)`
+    are updated at the beginning of each epoch, with a strategy that depend on
+    the ``variance_reduction`` parameter. The step-size :math:`\\eta` can be
+    tuned with ``step``, the seed of the random number generator for generation
+    of samples :math:`i` can be seeded with ``seed``. The iterations stop
+    whenever tolerance ``tol`` is achieved, or after ``max_iter`` epochs
+    (namely ``max_iter`` :math:`\\times` ``epoch_size`` iterates).
+    The obtained solution :math:`w` is returned by the ``solve`` method, and is
+    also stored in the ``solution`` attribute of the solver.
+
+    Internally, :class:`SVRG <tick.optim.solver.SVRG>` has dedicated code when
+    the model is a generalized linear model with sparse features, and a
+    separable proximal operator: in this case, each iteration works only in the
+    set of non-zero features, leading to much faster iterates.
+
+    Moreover, when ``n_threads`` > 1, this class actually implements parallel
+    and asynchronous updates of :math:`w`, which is likely to accelerate
+    optimization, depending on the sparsity of the dataset, and the number of
+    available cores.
 
     Parameters
     ----------
-    epoch_size : `int`
-        Epoch size
+    step : `float`
+        Step-size parameter, the most important parameter of the solver.
+        Whenever possible, this can be automatically tuned as
+        ``step = 1 / model.get_lip_max()``. Otherwise, use a try-an-improve
+        approach
 
-    rand_type : `str`
-        Type of random sampling
+    tol : `float`, default=1e-10
+        The tolerance of the solver (iterations stop when the stopping
+        criterion is below it)
+
+    max_iter : `int`, default=10
+        Maximum number of iterations of the solver, namely maximum number of
+        epochs (by default full pass over the data, unless ``epoch_size`` has
+        been modified from default)
+
+    verbose : `bool`, default=True
+        If `True`, solver verboses history, otherwise nothing is displayed,
+        but history is recorded anyway
+
+    seed : `int`, default=-1
+        The seed of the random sampling. If it is negative then a random seed
+        (different at each run) will be chosen.
+
+    n_threads : `int`, default=1
+        Number of threads to use for parallel optimization. The strategy used
+        for this is asynchronous updates of the iterates.
+
+    epoch_size : `int`, default given by model
+        Epoch size, namely how many iterations are made before updating the
+        variance reducing term. By default, this is automatically tuned using
+        information from the model object passed through ``set_model``.
+
+    variance_reduction : {'last', 'avg', 'rand'}, default='last'
+        Strategy used for the computation of the iterate used in
+        variance reduction (also called phase iterate). A warning will be
+        raised if the ``'avg'`` strategy is used when the model is a
+        generalized linear model with sparse features, since it is strongly
+        sub-optimal in this case
+
+        * ``'last'`` : the phase iterate is the last iterate of the previous
+          epoch
+        * ``'avg``' : the phase iterate is the average over the iterates in the
+          past epoch
+        * ``'rand'``: the phase iterate is a random iterate of the previous
+          epoch
+
+    rand_type : {'unif', 'perm'}, default='unif'
+        How samples are randomly selected from the data
 
         * if ``'unif'`` samples are uniformly drawn among all possibilities
         * if ``'perm'`` a random permutation of all possibilities is
           generated and samples are sequentially taken from it. Once all of
           them have been taken, a new random permutation is generated
 
-    tol : `float`, default=0
-        The tolerance of the solver (iterations stop when the stopping
-        criterion is below it). By default the solver does ``max_iter``
-        iterations
-
-    max_iter : `int`
-        Maximum number of iterations of the solver
-
-    verbose : `bool`, default=True
-        If `True`, we verbose things, otherwise the solver does not
-        print anything (but records information in history anyway)
-
-    print_every : `int`, default = 10
+    print_every : `int`, default=1
         Print history information every time the iteration number is a
-        multiple of ``print_every``
+        multiple of ``print_every``. Used only is ``verbose`` is True
 
-    record_every : `int`, default = 1
-        Information along iteration is recorded in history each time the
-        iteration number of a multiple of ``record_every``
-
-    Other Parameters
-    ----------------
-    variance_reduction : {'last', 'avg', 'rand'}, default='last'
-        Determine what is used as phase iterate for variance reduction.
-
-        * 'last' : the phase iterate is the last iterate of the previous epoch
-        * 'avg' : the phase iterate is the average over the iterates in the past
-          epoch. This is really a bad idea when using sparse datasets, a
-          warning will be raised in this case
-        * 'rand': the phase iterate is a random iterate of the previous epoch
+    record_every : `int`, default=1
+        Save history information every time the iteration number is a
+        multiple of ``record_every``
 
     Attributes
     ----------
-    model : `Solver`
-        The model to solve
+    model : `Model`
+        The model used by the solver, passed with the ``set_model`` method
 
     prox : `Prox`
-        Proximal operator to solve
+        Proximal operator used by the solver, passed with the ``set_prox``
+        method
+
+    solution : `numpy.array`, shape=(n_coeffs,)
+        Minimizer found by the solver
+
+    history : `dict`-like
+        A dict-type of object that contains history of the solver along
+        iterations. It should be accessed using the ``get_history`` method
+
+    time_start : `str`
+        Start date of the call to ``solve()``
+
+    time_elapsed : `float`
+        Duration of the call to ``solve()``, in seconds
+
+    time_end : `str`
+        End date of the call to ``solve()``
+
+    References
+    ----------
+    * L. Xiao and T. Zhang, A proximal stochastic gradient method with
+      progressive variance reduction, *SIAM Journal on Optimization* (2014)
     """
 
     def __init__(self, step: float = None, epoch_size: int = None,
-                 rand_type: str = 'unif', tol: float = 0.,
-                 max_iter: int = 100, verbose: bool = True,
-                 print_every: int = 10, record_every: int = 1,
+                 rand_type: str = 'unif', tol: float = 1e-10,
+                 max_iter: int = 10, verbose: bool = True,
+                 print_every: int = 1, record_every: int = 1,
                  seed: int = -1, variance_reduction: str = 'last',
                  n_threads: int = 1):
-
-        self.n_threads = n_threads
-
         SolverFirstOrderSto.__init__(self, step, epoch_size, rand_type,
                                      tol, max_iter, verbose,
                                      print_every, record_every, seed=seed)
+        self.n_threads = n_threads
         step = self.step
         if step is None:
             step = 0.

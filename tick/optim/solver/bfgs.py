@@ -10,40 +10,63 @@ from tick.optim.solver.base.utils import relative_distance
 
 
 class BFGS(SolverFirstOrder):
-    """
-    BFGS (Broyden, Fletcher, Goldfarb, and Shanno ) algorithm.
+    """Broyden, Fletcher, Goldfarb, and Shanno algorithm
 
-    This is a simple wrapping of `scipy.optimize.fmin_bfgs`
+    This solver is actually a simple wrapping of `scipy.optimize.fmin_bfgs`
+    BFGS (Broyden, Fletcher, Goldfarb, and Shanno) algorithm. This is a
+    quasi-newton algotithm that builds iteratively approximations of the inverse
+    Hessian. This solver can be used to minimize objectives of the form
+
+    .. math::
+        f(w) + g(w),
+
+    for :math:`f` with a smooth gradient and only :math:`g` corresponding to
+    the zero penalization (namely :class:`ProxZero <tick.optim.prox.ProxZero>`)
+    or ridge penalization (namely :class:`ProxL2sq <tick.optim.prox.ProxL2sq>`).
+    Function :math:`f` corresponds to the ``model.loss`` method of the model
+    (passed with ``set_model`` to the solver) and :math:`g` corresponds to
+    the ``prox.value`` method of the prox (passed with the ``set_prox`` method).
+    The iterations stop whenever tolerance ``tol`` is achieved, or
+    after ``max_iter`` iterations. The obtained solution :math:`w` is returned
+    by the ``solve`` method, and is also stored in the ``solution`` attribute
+    of the solver.
 
     Parameters
     ----------
-    tol : `float`, default=0.
+    tol : `float`, default=1e-10
         The tolerance of the solver (iterations stop when the stopping
-        criterion is below it). By default the solver does ``max_iter``
-        iterations
+        criterion is below it)
 
-    max_iter : `int`, default=100
+    max_iter : `int`, default=10
         Maximum number of iterations of the solver
 
     verbose : `bool`, default=True
-        If `True`, we verbose things, otherwise the solver does not
-        print anything (but records information in history anyway)
+        If `True`, solver verboses history, otherwise nothing is displayed,
+        but history is recorded anyway
 
     print_every : `int`, default=10
-        Print history information when ``n_iter`` (iteration number) is
-        a multiple of ``print_every``
+        Print history information every time the iteration number is a
+        multiple of ``print_every``. Used only is ``verbose`` is True
 
     record_every : `int`, default=1
-        Record history information when ``n_iter`` (iteration number) is
-        a multiple of ``record_every``
+        Save history information every time the iteration number is a
+        multiple of ``record_every``
 
     Attributes
     ----------
     model : `Model`
-        The model to solve
+        The model used by the solver, passed with the ``set_model`` method
 
     prox : `Prox`
-        Proximal operator to solve
+        Proximal operator used by the solver, passed with the ``set_prox``
+        method
+
+    solution : `numpy.array`, shape=(n_coeffs,)
+        Minimizer found by the solver
+
+    history : `dict`-like
+        A dict-type of object that contains history of the solver along
+        iterations. It should be accessed using the ``get_history`` method
 
     time_start : `str`
         Start date of the call to ``solve()``
@@ -56,9 +79,8 @@ class BFGS(SolverFirstOrder):
 
     References
     ----------
-    Quasi-Newton method of Broyden, Fletcher, Goldfarb,
-    and Shanno (BFGS), see
-    Wright, and Nocedal 'Numerical Optimization', 1999, pg. 198.
+    * Quasi-Newton method of Broyden, Fletcher, Goldfarb and Shanno (BFGS),
+      see Wright, and Nocedal 'Numerical Optimization', 1999, pg. 198.
     """
 
     _attrinfos = {
@@ -67,9 +89,9 @@ class BFGS(SolverFirstOrder):
         }
     }
 
-    def __init__(self, tol: float = 0.,
-                 max_iter: int = 100, verbose: bool = True,
-                 print_every: int = 10, record_every: int = 1):
+    def __init__(self, tol: float = 1e-10,
+                 max_iter: int = 10, verbose: bool = True,
+                 print_every: int = 1, record_every: int = 1):
         SolverFirstOrder.__init__(self, step=None, tol=tol,
                                   max_iter=max_iter, verbose=verbose,
                                   print_every=print_every,

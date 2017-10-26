@@ -12,7 +12,7 @@ class CompositeProx(Prox):
 
     Parameters
     ----------
-    prox_list : List[Prox]
+    prox_list : `list` of `Prox`
         List of prox that are wrapped
 
     Attributes
@@ -61,46 +61,99 @@ class CompositeProx(Prox):
 
 class GFB(SolverFirstOrder):
     """Generalized Forward-Backward algorithm
-    
-    Minimize the objective
 
-    .. math:: f(x) + sum_i g_i(x)
+    For the minimization of objectives of the form
 
-    using generalized forward-backward. This algorithm assumes that f and all
-    g_i are convex, that f has a Lipschitz gradient and that all g_i are
-    prox-capable.
+    .. math::
+        f(x) + \\sum_{p=1}^P g_p(x)
+
+    where :math:`f` has a smooth gradient and :math:`g_1, \ldots, g_P` are
+    prox-capable. Function :math:`f` corresponds to the ``model.loss`` method
+    of the model (passed with ``set_model`` to the solver) and
+    :math:`g_1, \ldots, g_P` correspond to the list of prox passed with the
+    ``set_prox`` method.
+    One iteration of :class:`GFB <tick.optim.solver.GFB>` is as follows:
+
+    .. math::
+        \\begin{align*}
+        &\\text{for } p=1, \\ldots, P \\; \\text{ do the following:} \\\\
+        & \\quad z_p \\gets \\mathrm{prox}_{P \\eta g_p} \\Big(2 w - z_p^{\\text{old}}
+        - \\eta \\nabla f(w) \\Big) \\\\
+        & \\quad z_p \\gets z_p^{\\text{old}} + \\beta (z_p - w) \\\\
+        &w \\gets \\frac 1P \\sum_{p=1}^P z_p
+        \\end{align*}
+
+    where :math:`\\nabla f(w)` is the gradient of :math:`f` given by the
+    ``model.grad`` method and :math:`\\mathrm{prox}_{\\eta g_p}` is given by the
+    ``prox[p].call`` method. The step-size :math:`\\eta` can be tuned with
+    ``step``. The iterations stop whenever tolerance ``tol`` is achieved, or
+    after ``max_iter`` iterations. The obtained solution :math:`w` is returned
+    by the ``solve`` method, and is also stored in the ``solution`` attribute
+    of the solver. The level of sur-relaxation :math:`\\beta` can be tuned
+    using the ``surrelax`` attribute.
 
     Parameters
     ----------
-    step : `float` default=None
-        Step-size of the algorithm.
+    step : `float`, default=None
+        Step-size parameter, the most important parameter of the solver.
+        Whenever possible, this can be tuned as
+        ``step = 1 / model.get_lip_best()``
 
-    tol : `float`, default=0.
+    tol : `float`, default=1e-10
         The tolerance of the solver (iterations stop when the stopping
-        criterion is below it). By default the solver does ``max_iter``
-        iterations
+        criterion is below it)
 
-    max_iter : `int`, default=1000
-        Maximum number of iterations of the solver
-
-    verbose : `bool`, default=True
-        If `True`, we verbose things, otherwise the solver does not
-        print anything (but records information in history anyway)
-
-    print_every : `int`, default=10
-        Print history information when ``n_iter`` (iteration number) is
-        a multiple of ``print_every``
-
-    record_every : `int`, default=1
-        Record history information when ``n_iter`` (iteration number) is
-        a multiple of ``record_every``
+    max_iter : `int`, default=500
+        Maximum number of iterations of the solver.
 
     surrelax : `float`, default=1
-        Relaxation parameter
+        Level of sur-relaxation to use in the algorithm.
+
+    verbose : `bool`, default=True
+        If `True`, solver verboses history, otherwise nothing is displayed,
+        but history is recorded anyway
+
+    print_every : `int`, default=10
+        Print history information every time the iteration number is a
+        multiple of ``print_every``. Used only is ``verbose`` is True
+
+    record_every : `int`, default=1
+        Save history information every time the iteration number is a
+        multiple of ``record_every``
+
+    Attributes
+    ----------
+    model : `Model`
+        The model used by the solver, passed with the ``set_model`` method
+
+    prox : `list` of `Prox`
+        List of proximal operators used by the solver, passed with the
+        ``set_prox`` method
+
+    solution : `numpy.array`, shape=(n_coeffs,)
+        Minimizer found by the solver
+
+    history : `dict`-like
+        A dict-type of object that contains history of the solver along
+        iterations. It should be accessed using the ``get_history`` method
+
+    time_start : `str`
+        Start date of the call to ``solve()``
+
+    time_elapsed : `float`
+        Duration of the call to ``solve()``, in seconds
+
+    time_end : `str`
+        End date of the call to ``solve()``
+
+    References
+    ----------
+    * H. Raguet, J. Fadili, G. Peyré, A generalized forward-backward splitting,
+      *SIAM Journal on Imaging Sciences* (2013)
     """
 
-    def __init__(self, step: float = None, tol: float = 0.,
-                 max_iter: int = 1000, surrelax=1., verbose: bool = True,
+    def __init__(self, step: float = None, tol: float = 1e-10,
+                 max_iter: int = 500, surrelax=1., verbose: bool = True,
                  print_every: int = 10, record_every: int = 1):
         SolverFirstOrder.__init__(self, step=step, tol=tol,
                                   max_iter=max_iter, verbose=verbose,
@@ -112,7 +165,7 @@ class GFB(SolverFirstOrder):
         """
         Parameters
         ----------
-        prox : list[Prox]
+        prox : `list` of `Prox`
             List of all proximal operators of the model
         """
         prox = CompositeProx(prox)
@@ -143,7 +196,7 @@ class GFB(SolverFirstOrder):
                 # Relaxation step
                 z[:] = z_old + self.surrelax * (z - x_old)
 
-            x[:] = 1./n_prox * sum(z_list)
+            x[:] = 1. / n_prox * sum(z_list)
             rel_delta = relative_distance(x, x_old)
             obj = self.objective(x)
             rel_obj = abs(obj - obj_old) / abs(obj_old)
