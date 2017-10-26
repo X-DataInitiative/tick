@@ -1,4 +1,4 @@
-/*
+
 #ifndef TICK_ONLINEFOREST_H
 #define TICK_ONLINEFOREST_H
 
@@ -13,12 +13,15 @@ class Tree;
 
 class Node {
  private:
+  // The tree of the node
+  Tree &tree;
+
   // Index of the left child
-  ulong left_child;
+  ulong index_left = 0;
   // Index of the right child
-  ulong right_child;
+  ulong index_right = 0;
   // Index of the parent
-  ulong parent;
+  ulong index_parent = 0;
   // Creation time of the node (iteration index)
   ulong creation_time;
   // Index of the feature used for the split
@@ -41,10 +44,10 @@ class Node {
   ArrayDouble features_max;
   // The indexes (row numbers) of the samples currently in the node
   std::vector<ulong> samples;
-  // The tree of the node
-  Tree &tree;
   // true if the node is a leaf
   bool is_leaf;
+
+  ulong _index;
 
  public:
   Node(Tree &tree);
@@ -53,20 +56,25 @@ class Node {
 
   Node(const Node &node);
 
+  Node(const Node &&node);
+
   ~Node() {
     std::cout << "~Node()\n";
   }
 
-  inline uint32_t get_left_child() const {
-    return left_child;
+  Node &operator=(const Node &) = delete;
+  Node &operator=(const Node &&) = delete;
+
+  inline uint32_t left() const {
+    return index_left;
   }
 
-  inline uint32_t get_right_child() const {
-    return right_child;
+  inline uint32_t right() const {
+    return index_right;
   }
 
-  inline uint32_t get_parent() const {
-    return parent;
+  inline uint32_t parent() const {
+    return index_parent;
   }
 
   inline ulong get_creation_time() const {
@@ -142,9 +150,9 @@ class Node {
 
   void print() {
 
-    std::cout << "Node(parent: " << parent
-              << ", left_child: " << left_child
-              << ", right_child: " << right_child
+    std::cout << "Node(index_parent: " << index_parent
+              << ", index_left: " << index_left
+              << ", index_right: " << index_right
               << ", n_samples=" << n_samples
               << ", feat_min=[" << std::setprecision(3) << features_min[0] << ", " << std::setprecision(3)
               << features_min[1] << "]"
@@ -157,6 +165,8 @@ class Node {
 class OnlineForest;
 
 class Tree {
+  friend class Node;
+
  private:
   bool already_fitted;
 
@@ -169,7 +179,7 @@ class Tree {
  public:
   Tree(OnlineForest &forest);
 
-  Tree(const Tree & tree);
+  Tree(const Tree &tree);
 
   // Launch a pass on the given data
   void fit(ulong n_iter = 0);
@@ -195,7 +205,6 @@ class Tree {
   ~Tree() {
     std::cout << "~Tree()\n";
   }
-
 
   void print() {
     std::cout << "Tree" << std::endl;
@@ -267,7 +276,7 @@ class OnlineForest {
     std::cout << "~OnlineForest()\n";
   }
 
-  OnlineForest(const OnlineForest & forest);
+  OnlineForest(const OnlineForest &forest);
 
   // Returns a uniform integer in the set {0, ..., m - 1}
   inline ulong rand_unif(ulong m) {
@@ -325,130 +334,3 @@ class OnlineForest {
 };
 
 #endif //TICK_ONLINEFOREST_H
-*/
-
-
-#include <memory>
-#include <vector>
-
-class Node;
-
-class Tree {
-  friend class Node;
-
- private:
-
-  size_t m_count = 0;
-  std::vector<Node> nodes;
-
-  Tree(const Tree &o) = delete;
-  Tree(const Tree &&o) = delete;
-  Tree &operator=(const Tree &) = delete;
-  Tree &operator=(const Tree &&) = delete;
-
- public:
-  Tree();
-
-  size_t insert(const uint32_t &_v);
-
-  // Returns the root of the tree
-  Node &root() {
-    return nodes[0];
-  }
-
-  // Returns the node at given index in the tree
-  Node &node(size_t index) {
-    return nodes[index];
-  }
-
-  size_t get_next() {
-    return m_count++;
-  }
-
-  // Number of nodes in the tree
-  size_t size() {
-    return nodes.size();
-  }
-};
-
-class Node {
- private:
-  Tree &m_tree;
-  size_t m_value = 0;
-  size_t i_index = 0, i_left = 0, i_right = 0, i_parent;
-
- public:
-  Node(Tree &tree) : m_tree(tree) {}
-
-  Node(Tree &tree, size_t _value, size_t _i)
-      : m_tree(tree), m_value(_value), i_index(_i) {
-  }
-
-  Node(const Node &o) : m_tree(o.m_tree) {
-    m_value = o.m_value;
-    i_left = o.i_left;
-    i_right = o.i_right;
-    i_index = o.i_index;
-  }
-  Node(const Node &&o) : m_tree(o.m_tree) {
-    m_value = o.m_value;
-    i_left = o.i_left;
-    i_right = o.i_right;
-    i_index = o.i_index;
-  }
-  ~Node() {}
-  Node &operator=(const Node &) = delete;
-  Node &operator=(const Node &&) = delete;
-
-  void fill() {
-    size_t index = i_index;
-    Tree *tree = &m_tree;
-    tree->insert(1);
-    tree->nodes[tree->m_count].i_parent = index;
-
-    tree->insert(1);
-    tree->nodes[tree->m_count].i_parent = index;
-
-    tree->nodes[index].m_value = 0;
-  }
-
-  bool has_parent() { return i_index; }
-  size_t left() { return i_left; }
-  size_t right() { return i_right; }
-  size_t value() { return m_value; }
-  size_t parent() { return i_parent; }
-};
-
-Tree::Tree() {
-  nodes.emplace_back(*this, 1, m_count++);
-}
-
-size_t Tree::insert(const uint32_t &_v) {
-  nodes.emplace_back(*this, _v, m_count);
-  return m_count++;
-}
-
-int main(int argc, char *argv[]) {
-
-  // auto now = kul::Now::NANOS();
-
-  Tree tree;
-  Node &root(tree.root());
-  root.fill();
-
-  size_t i_left = root.left(), i_right = root.right();
-  for (size_t i = 0; i < 654321; i++) {
-    tree.node(i_left).fill();
-    i_left = tree.node(i_left).left();
-    tree.node(i_right).fill();
-    i_right = tree.node(i_right).left();
-
-  }
-  while (tree.node(i_left).has_parent()) i_left = tree.node(i_left).parent();
-  while (tree.node(i_right).has_parent()) i_right = tree.node(i_right).parent();
-
-//   KLOG(INF) << "time in millis : " << (kul::Now::NANOS() - now) / 1e6;
-  //KLOG(INF) << tree.size();
-
-  return 0;
-}
