@@ -178,6 +178,43 @@ class Test(unittest.TestCase):
             hawkes.force_simulation = True
             hawkes.simulate()
 
+    def test_hawkes_negative_intensity_fail(self):
+        """...Test simulation with negative kernel without threshold_negative_intensity
+        """
+        run_time = 40
+
+        hawkes = SimuHawkes(n_nodes=1, end_time=run_time, verbose=False,
+                            seed=1398)
+        kernel = HawkesKernelExp(-1.3, .8)
+        hawkes.set_kernel(0, 0, kernel)
+        hawkes.set_baseline(0, 0.3)
+
+        msg = 'Simulation stopped because intensity went negative ' \
+              '\(you could call ``threshold_negative_intensity`` to allow it\)'
+        with self.assertRaisesRegex(RuntimeError, msg):
+            hawkes.simulate()
+
+    def test_hawkes_negative_intensity(self):
+        """...Test simulation with negative kernel
+        """
+        run_time = 40
+
+        hawkes = SimuHawkes(n_nodes=1, end_time=run_time, verbose=False,
+                            seed=1398)
+        kernel = HawkesKernelExp(-1.3, .8)
+        hawkes.set_kernel(0, 0, kernel)
+        hawkes.set_baseline(0, 0.3)
+        hawkes.threshold_negative_intensity()
+
+        dt = 0.1
+        hawkes.track_intensity(dt)
+        hawkes.simulate()
+
+        self.assertAlmostEqual(hawkes.tracked_intensity[0].min(), 0)
+        self.assertAlmostEqual(hawkes.tracked_intensity[0].max(),
+                               hawkes.baseline[0])
+        self.assertGreater(hawkes.n_total_jumps, 1)
+
 
 if __name__ == "__main__":
     unittest.main()

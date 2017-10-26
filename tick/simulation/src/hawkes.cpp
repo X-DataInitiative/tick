@@ -45,7 +45,10 @@ bool Hawkes::update_time_shift_(double delay,
       if (total_intensity_bound1) {
         *total_intensity_bound1 += bound;
       }
-      if (intensity[i] < 0) flag_negative_intensity1 = true;
+      if (intensity[i] < 0) {
+        if (threshold_negative_intensity) intensity[i] = 0;
+        flag_negative_intensity1 = true;
+      }
     }
   }
   return flag_negative_intensity1;

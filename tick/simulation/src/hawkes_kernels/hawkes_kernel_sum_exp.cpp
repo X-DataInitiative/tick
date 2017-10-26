@@ -106,10 +106,13 @@ double HawkesKernelSumExp::get_convolution(const double time, const ArrayDouble 
 
   if (bound) {
     if (!intensities_all_positive) {
-      TICK_ERROR("All intensities of HawkesKernelSumExp must be positive "
-                     "to compute kernel bound");
+      *bound = 0;
+      for (ulong u = 0; u < n_decays; ++u) {
+        if (intensities[u] > 0) *bound += last_convolution_values[u];
+      }
+    } else {
+      *bound = value;
     }
-    *bound = value;
   }
 
   return value;

@@ -116,22 +116,23 @@ void PP::simulate(double end_time, ulong n_points) {
   }
 
   // We loop till we reach the endTime
-  while (time < end_time && n_total_jumps < n_points && !flag_negative_intensity) {
+  while (time < end_time && n_total_jumps < n_points &&
+    (!flag_negative_intensity || threshold_negative_intensity) ) {
     // We compute the time of the potential next random jump
-    const double timeOfNextJump = time + rand.exponential(total_intensity_bound);
+    const double time_of_next_jump = time + rand.exponential(total_intensity_bound);
 
     // If we must track record the intensities we perform a loop
     if (itr_on()) {
-      while (itr_time + itr_time_step < std::min(timeOfNextJump, end_time)) {
+      while (itr_time + itr_time_step < std::min(time_of_next_jump, end_time)) {
         update_time_shift(itr_time_step + itr_time - time, false, true);
-        if (flag_negative_intensity) break;
+        if (flag_negative_intensity && !threshold_negative_intensity) break;
         itr_time = itr_time + itr_time_step;
       }
-      if (flag_negative_intensity) break;
+      if (flag_negative_intensity && !threshold_negative_intensity) break;
     }
 
     // Are we done ?
-    if (timeOfNextJump >= end_time) {
+    if (time_of_next_jump >= end_time) {
       time = end_time;
       break;
     }
@@ -139,8 +140,8 @@ void PP::simulate(double end_time, ulong n_points) {
     // We go to timeOfNextJump
     // Do not compute intensity bound here as we want new intensities but old bound that we
     // have used for the exponential law
-    update_time_shift(timeOfNextJump - time, false, false);
-    if (flag_negative_intensity) break;
+    update_time_shift(time_of_next_jump - time, false, false);
+    if (flag_negative_intensity && !threshold_negative_intensity) break;
 
     // We need to understand which component jumps
     double temp = rand.uniform() * total_intensity_bound;
@@ -154,7 +155,7 @@ void PP::simulate(double end_time, ulong n_points) {
     // Case we discard the jump, we should recompute max intensity ?????????  !
     if (i == n_nodes) {
       update_time_shift(0, true, false);
-      if (flag_negative_intensity) break;
+      if (flag_negative_intensity && !threshold_negative_intensity) break;
       continue;
     }
 
@@ -164,7 +165,7 @@ void PP::simulate(double end_time, ulong n_points) {
     // We compute the new intensities (taking into account eventually the new jump)
     update_time_shift(0, true, true);
 
-    if (flag_negative_intensity) break;
+    if (flag_negative_intensity && !threshold_negative_intensity) break;
   }
 
   // This causes deadlock, see MLPP-334 - Investigate deadlock in PP
@@ -172,8 +173,9 @@ void PP::simulate(double end_time, ulong n_points) {
   //    Py_END_ALLOW_THREADS;
   // #endif
 
-  if (flag_negative_intensity) TICK_ERROR(
-      "Stopped because intensity went negative (you could set the field ``thresholdNegativeIntensity`` to True)");
+  if (flag_negative_intensity && !threshold_negative_intensity) TICK_ERROR(
+      "Simulation stopped because intensity went negative (you could call "
+        "``threshold_negative_intensity`` to allow it)");
 }
 
 // Update the process component 'index' with current time
