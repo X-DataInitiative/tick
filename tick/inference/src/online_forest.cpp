@@ -1,7 +1,10 @@
+
 // License: BSD 3 clause
 
 #include "online_forest.h"
 
+/*
+ *
 Node::Node(Tree &tree) : samples(), tree(tree) {
   // std::cout << "Node::Node(Tree &tree)\n";
   // std::cout << "tree.get_forest().get_n_features()" << std::endl;
@@ -370,3 +373,5 @@ inline ulong Tree::get_n_features() const {
 inline double Tree::get_label(ulong sample_index) const {
   return forest.get_label(sample_index);
 }
+*/
+
