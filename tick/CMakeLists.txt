@@ -2,21 +2,41 @@ cmake_minimum_required(VERSION 2.8)
 project(tick)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -ffast-math")
-set(CMAKE_BUILD_TYPE RelWithDebInfo)
 
-find_package(BLAS)
+set(EXTRA_RPATH "")
 
-set(TICK_BLAS_LIBRARIES "")
+set(CMAKE_BUILD_TYPE Release)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/cmake-lib)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/cmake-lib)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/cmake-bin)
 
-if (${BLAS_FOUND})
-    message(STATUS "Using BLAS")
+set(CMAKE_VERBOSE_MAKEFILE ON)
+
+list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/Modules)
+find_package(MKL)
+
+if (${MKL_FOUND})
+    message(STATUS "Using MKL")
+    add_definitions(-DTICK_MKL_AVAILABLE)
+
+    set(EXTRA_RPATH "${EXTRA_RPATH};${INTEL_LIB};${MKL_LIB}")
+    include_directories(${MKL_INCLUDE_DIRECTORIES})
+    set(TICK_BLAS_LIBRARIES ${MKL_LIBRARIES} ${INTEL_LIBRARIES})
+else()
+    find_package(BLAS)
     add_definitions(-DTICK_CBLAS_AVAILABLE)
+    set(TICK_BLAS_LIBRARIES "")
 
-    set(TICK_BLAS_LIBRARIES ${BLAS_LIBRARIES})
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${BLAS_LINKER_FLAGS}")
+    if (${BLAS_FOUND})
+        message(STATUS "Using BLAS")
+        add_definitions(-DTICK_CBLAS_AVAILABLE)
 
-    message(STATUS "BLAS Libraries: " ${BLAS_LIBRARIES})
-    message(STATUS "BLAS Linker flags: " ${BLAS_LINKER_FLAGS})
+        set(TICK_BLAS_LIBRARIES ${BLAS_LIBRARIES})
+        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${BLAS_LINKER_FLAGS}")
+
+        message(STATUS "BLAS Libraries: " ${BLAS_LIBRARIES})
+        message(STATUS "BLAS Linker flags: " ${BLAS_LINKER_FLAGS})
+    endif()
 endif()
 
 include_directories(
@@ -30,6 +50,7 @@ include_directories(
         ${CMAKE_CURRENT_SOURCE_DIR}/optim/solver/src
         ${CMAKE_CURRENT_SOURCE_DIR}/inference/src
         ${CMAKE_CURRENT_SOURCE_DIR}/preprocessing/src
+        benchmarks/src
 )
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/third_party/cereal/include)
@@ -61,6 +82,7 @@ add_subdirectory(optim/prox/src)
 add_subdirectory(optim/solver/src)
 add_subdirectory(inference/src)
 add_subdirectory(preprocessing/src)
+add_subdirectory(benchmarks/src)
 
 find_package(GTest)
 
@@ -75,20 +97,24 @@ if (${GTEST_FOUND})
     include_directories(${GTEST_INCLUDE_DIRS})
 
     set(TICK_TEST_LIBS
-        ${PYTHON_LIBRARIES}
-        ${GTEST_BOTH_LIBRARIES}
-        ${CMAKE_THREAD_LIBS_INIT}
-        ${TICK_BLAS_LIBRARIES})
+            ${PYTHON_LIBRARIES}
+            ${GTEST_BOTH_LIBRARIES}
+            ${CMAKE_THREAD_LIBS_INIT}
+            ${TICK_BLAS_LIBRARIES})
 
     if(APPLE)
-        set(TICK_INSTALL_RPATH "${CMAKE_CURRENT_SOURCE_DIR}/base/build;${CMAKE_CURRENT_SOURCE_DIR}/base/array/build;${CMAKE_CURRENT_SOURCE_DIR}/optim/model/build;${CMAKE_CURRENT_SOURCE_DIR}/random/build;${CMAKE_CURRENT_SOURCE_DIR}/optim/prox/build;${CMAKE_CURRENT_SOURCE_DIR}/optim/solver/build;${CMAKE_CURRENT_SOURCE_DIR}/simulation/build")
+        set(TICK_INSTALL_RPATH "${CMAKE_CURRENT_SOURCE_DIR}/base/build;${CMAKE_CURRENT_SOURCE_DIR}/base/array/build;${CMAKE_CURRENT_SOURCE_DIR}/optim/model/build;${CMAKE_CURRENT_SOURCE_DIR}/random/build;${CMAKE_CURRENT_SOURCE_DIR}/optim/prox/build;${CMAKE_CURRENT_SOURCE_DIR}/optim/solver/build;${CMAKE_CURRENT_SOURCE_DIR}/simulation/build;${EXTRA_RPATH}")
+
 
         set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
         set(CMAKE_INSTALL_RPATH "${TICK_INSTALL_RPATH}")
 
-        find_library(ACCELERATE_LIBRARY Accelerate)
-        mark_as_advanced(ACCELERATE_LIBRARY)
-        set(TICK_TEST_LIBS ${TICK_TEST_LIBS} ${ACCELERATE_LIBRARY})
+        if (BLAS_FOUND)
+            find_library(ACCELERATE_LIBRARY Accelerate)
+            mark_as_advanced(ACCELERATE_LIBRARY)
+            set(TICK_TEST_LIBS ${TICK_TEST_LIBS} ${ACCELERATE_LIBRARY})
+        endif()
+
     else(APPLE)
         set(TICK_TEST_LIBS ${TICK_TEST_LIBS} -lrt -ldl -lutil)
     endif(APPLE)

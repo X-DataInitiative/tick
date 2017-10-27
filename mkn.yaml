@@ -156,6 +156,15 @@ profile:
     install: ${lib_path}/random/build
     out: _crandom${lib_name}
 
+  - name: benchmarks
+    parent: arg
+    main: tick/benchmarks/src/poisson_sdca.cpp
+    self: base optim/model optim/prox optim/solver random
+    src:
+      ./tick/benchmarks/src
+    mode: none
+    out: tick_poisson_sdca
+
 ### See file ./sh/gtest/sh 
   - name: gtest
     parent: arg

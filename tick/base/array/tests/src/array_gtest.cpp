@@ -353,6 +353,31 @@ TYPED_TEST(Array2dTest, MultIncr) {
   }
 }
 
+TYPED_TEST(Array2dTest, DotMatrixVector) {
+  ArrayDouble y({-2, 3});
+  ArrayDouble2d x(5, 2);
+  x[0] = -2;
+  x[1] = 5.2;
+  x[2] = 1.8;
+  x[3] = 1;
+  x[4] = 2.2;
+  x[5] = 1.9;
+  x[6] = 1;
+  x[7] = 2.2;
+  x[8] = 1.9;
+  x[9] = 1.9;
+
+//  x.print();
+
+  ArrayDouble out(5);
+  x.dot(y, out);
+  out.print();
+
+  ArrayDouble z {1, 1, 1, 1, 1};
+  x.dot_incr(y, 1., z, out);
+  out.print();
+}
+
 TYPED_TEST(ArrayTest, MultAddMultIncr) {
   using VT = typename TypeParam::value_type;
   for (VT factor : {1.0, 1.5, 2.0}) {

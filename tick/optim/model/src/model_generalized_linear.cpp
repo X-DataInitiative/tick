@@ -70,13 +70,17 @@ void ModelGeneralizedLinear::grad(const ArrayDouble &coeffs,
                                   ArrayDouble &out) {
   out.fill(0.0);
 
-  parallel_map_array<ArrayDouble>(n_threads,
-                                  n_samples,
-                                  [](ArrayDouble &r, const ArrayDouble &s) { r.mult_incr(s, 1.0); },
-                                  &ModelGeneralizedLinear::inc_grad_i,
-                                  this,
-                                  out,
-                                  coeffs);
+//  parallel_map_array<ArrayDouble>(n_threads,
+//                                  n_samples,
+//                                  [](ArrayDouble &r, const ArrayDouble &s) { r.mult_incr(s, 1.0); },
+//                                  &ModelGeneralizedLinear::inc_grad_i,
+//                                  this,
+//                                  out,
+//                                  coeffs);
+
+  for (ulong i = 0; i < n_samples; ++i) {
+    inc_grad_i(i, out, coeffs);
+  }
 
   double one_over_n_samples = 1.0 / n_samples;
 
