@@ -1,0 +1,12 @@
+
+.. _ModelAbsoluteRegression:
+
+tick.optim.model.ModelAbsoluteRegression
+========================================
+
+.. currentmodule:: tick.optim.model
+
+.. autoclass:: ModelAbsoluteRegression
+
+.. include:: tick.optim.model.ModelAbsoluteRegression.examples
+    :allowmissing:

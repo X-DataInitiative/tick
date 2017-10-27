@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.optim.model.linreg &#8212; tick 0.2.1 documentation</title>
+    <title>tick.optim.model.linreg &#8212; tick 0.3.0 documentation</title>
     <link rel="stylesheet" href="../../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '0.2.1',
+        VERSION:     '0.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../../../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.2</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.3</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -83,6 +83,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../modules/inference.html#generalized-linear-models">1. Generalized linear models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../modules/inference.html#hawkes">2. Hawkes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../modules/inference.html#survival-analysis">3. Survival analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/inference.html#robust-analysis">4. Robust Analysis</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../modules/optim.html"><code class="docutils literal"><span class="pre">tick.optim</span></code>: optimization toolbox</a><ul>
@@ -127,6 +128,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../modules/dev.html#tips-for-debugging-c-classes-in-tick">Tips for debugging C++ classes in tick</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/R.html">How to use <code class="docutils literal"><span class="pre">tick</span></code> from the R statistical software</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/R.html#training-a-logistic-regression-model">1. Training a logistic regression model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/R.html#simulation-of-a-hawkes-process">2. Simulation of a Hawkes process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/R.html#using-tick-optim-from-r">3. Using <code class="docutils literal"><span class="pre">tick.optim</span></code> from R</a></li>
+</ul>
+</li>
 </ul>
 </ul>
 </li>
@@ -169,8 +176,27 @@
 <div class="viewcode-block" id="ModelLinReg"><a class="viewcode-back" href="../../../../modules/generated/tick.optim.model.ModelLinReg.html#tick.optim.model.ModelLinReg">[docs]</a><span class="k">class</span> <span class="nc">ModelLinReg</span><span class="p">(</span><span class="n">ModelFirstOrder</span><span class="p">,</span>
                   <span class="n">ModelGeneralizedLinear</span><span class="p">,</span>
                   <span class="n">ModelLipschitz</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Linear regression model. This class gives first order</span>
-<span class="sd">    information (gradient and loss) for this model</span>
+    <span class="sd">&quot;&quot;&quot;Least-squares loss for linear regression. This class gives first</span>
+<span class="sd">    order information (gradient and loss) for this model and can be passed</span>
+<span class="sd">    to any solver through the solver&#39;s ``set_model`` method.</span>
+
+<span class="sd">    Given training data :math:`(x_i, y_i) \\in \\mathbb R^d \\times \\mathbb R`</span>
+<span class="sd">    for :math:`i=1, \\ldots, n`, this model considers a goodness-of-fit</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        f(w, b) = \\frac 1n \\sum_{i=1}^n \\ell(y_i, b + x_i^\\top w),</span>
+
+<span class="sd">    where :math:`w \\in \\mathbb R^d` is a vector containing the model-weights,</span>
+<span class="sd">    :math:`b \\in \\mathbb R` is the intercept (used only whenever</span>
+<span class="sd">    ``fit_intercept=True``) and</span>
+<span class="sd">    :math:`\\ell : \\mathbb R^2 \\rightarrow \\mathbb R` is the loss given by</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        \\ell(y, y&#39;) = \\frac 12 (y - y&#39;)^2</span>
+
+<span class="sd">    for :math:`y, y&#39; \in \mathbb R`. Data is passed to this model through the</span>
+<span class="sd">    ``fit(X, y)`` method where X is the features matrix (dense or sparse) and</span>
+<span class="sd">    y is the vector of labels.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -179,8 +205,8 @@
 
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
-<span class="sd">    features : `numpy.ndarray`, shape=(n_samples, n_features) (read-only)</span>
-<span class="sd">        The features matrix</span>
+<span class="sd">    features : {`numpy.ndarray`, `scipy.sparse.csr_matrix`}, shape=(n_samples, n_features)</span>
+<span class="sd">        The features matrix, either dense or sparse</span>
 
 <span class="sd">    labels : `numpy.ndarray`, shape=(n_samples,) (read-only)</span>
 <span class="sd">        The labels vector</span>
@@ -197,7 +223,7 @@
 <span class="sd">    n_threads : `int`, default=1 (read-only)</span>
 <span class="sd">        Number of threads used for parallel computation.</span>
 
-<span class="sd">        * if ``int &lt;= 0``: the number of physical cores available on</span>
+<span class="sd">        * if ``int &lt;= 0``: the number of threads available on</span>
 <span class="sd">          the CPU</span>
 <span class="sd">        * otherwise the desired number of threads</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -206,24 +232,24 @@
         <span class="n">ModelFirstOrder</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="n">ModelGeneralizedLinear</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fit_intercept</span><span class="p">)</span>
         <span class="n">ModelLipschitz</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">n_threads</span> <span class="o">=</span> <span class="n">n_threads</span></div>
 
-    <span class="c1"># TODO: implement _set_data and not fit</span>
+        <span class="c1"># TODO: implement _set_data and not fit</span>
+
 <div class="viewcode-block" id="ModelLinReg.fit"><a class="viewcode-back" href="../../../../modules/generated/tick.optim.model.ModelLinReg.html#tick.optim.model.ModelLinReg.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">labels</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set the data into the model object</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        features : `numpy.ndarray`, shape=(n_samples, n_features)</span>
-<span class="sd">            The features matrix</span>
+<span class="sd">        features : {`numpy.ndarray`, `scipy.sparse.csr_matrix`}, shape=(n_samples, n_features)</span>
+<span class="sd">            The features matrix, either dense or sparse</span>
 
 <span class="sd">        labels : `numpy.ndarray`, shape=(n_samples,)</span>
 <span class="sd">            The labels vector</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        output : `ModelLogReg`</span>
+<span class="sd">        output : `ModelLinReg`</span>
 <span class="sd">            The current instance with given data</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">ModelFirstOrder</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>

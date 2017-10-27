@@ -1,0 +1,12 @@
+
+.. _ModelHuber:
+
+tick.optim.model.ModelHuber
+===========================
+
+.. currentmodule:: tick.optim.model
+
+.. autoclass:: ModelHuber
+
+.. include:: tick.optim.model.ModelHuber.examples
+    :allowmissing:

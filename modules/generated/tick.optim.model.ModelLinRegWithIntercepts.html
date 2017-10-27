@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.optim.model.ModelLinRegWithIntercepts &#8212; tick 0.2.1 documentation</title>
+    <title>tick.optim.model.ModelLinRegWithIntercepts &#8212; tick 0.3.0 documentation</title>
     <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.2.1',
+        VERSION:     '0.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.2</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.3</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -83,6 +83,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../inference.html#generalized-linear-models">1. Generalized linear models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../inference.html#hawkes">2. Hawkes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../inference.html#survival-analysis">3. Survival analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../inference.html#robust-analysis">4. Robust Analysis</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../optim.html"><code class="docutils literal"><span class="pre">tick.optim</span></code>: optimization toolbox</a><ul>
@@ -127,6 +128,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../dev.html#tips-for-debugging-c-classes-in-tick">Tips for debugging C++ classes in tick</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../R.html">How to use <code class="docutils literal"><span class="pre">tick</span></code> from the R statistical software</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../R.html#training-a-logistic-regression-model">1. Training a logistic regression model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../R.html#simulation-of-a-hawkes-process">2. Simulation of a Hawkes process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../R.html#using-tick-optim-from-r">3. Using <code class="docutils literal"><span class="pre">tick.optim</span></code> from R</a></li>
+</ul>
+</li>
 </ul>
 </ul>
 </li>
@@ -158,14 +165,20 @@
 <span id="modellinregwithintercepts"></span><h1>tick.optim.model.ModelLinRegWithIntercepts<a class="headerlink" href="#tick-optim-model-modellinregwithintercepts" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="tick.optim.model.ModelLinRegWithIntercepts">
-<em class="property">class </em><code class="descclassname">tick.optim.model.</code><code class="descname">ModelLinRegWithIntercepts</code><span class="sig-paren">(</span><em>n_threads: int = 1</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/optim/model/linreg_with_intercepts.html#ModelLinRegWithIntercepts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.optim.model.ModelLinRegWithIntercepts" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">tick.optim.model.</code><code class="descname">ModelLinRegWithIntercepts</code><span class="sig-paren">(</span><em>fit_intercept: bool = True</em>, <em>n_threads: int = 1</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/optim/model/linreg_with_intercepts.html#ModelLinRegWithIntercepts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.optim.model.ModelLinRegWithIntercepts" title="Permalink to this definition">¶</a></dt>
 <dd><p>Linear regression model with individual intercepts.
 This class gives first order information (gradient and loss) for this model</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Attributes:</th><td class="field-body"><p class="first"><strong>features</strong> : <code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code>, shape=(n_samples, n_features) (read-only)</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>fit_intercept</strong> : <code class="xref py py-obj docutils literal"><span class="pre">bool</span></code>, default=`True`</p>
+<blockquote>
+<div><p>If <code class="xref py py-obj docutils literal"><span class="pre">True</span></code>, the model uses an intercept</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Attributes:</th><td class="field-body"><p class="first"><strong>features</strong> : <code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code>, shape=(n_samples, n_features) (read-only)</p>
 <blockquote>
 <div><p>The features matrix</p>
 </div></blockquote>
@@ -189,7 +202,7 @@ This class gives first order information (gradient and loss) for this model</p>
 <blockquote class="last">
 <div><p>Number of threads used for parallel computation.</p>
 <ul class="simple">
-<li>if <code class="docutils literal"><span class="pre">int</span> <span class="pre">&lt;=</span> <span class="pre">0</span></code>: the number of physical cores available on
+<li>if <code class="docutils literal"><span class="pre">int</span> <span class="pre">&lt;=</span> <span class="pre">0</span></code>: the number of threads available on
 the CPU</li>
 <li>otherwise the desired number of threads</li>
 </ul>
@@ -200,7 +213,7 @@ the CPU</li>
 </table>
 <dl class="method">
 <dt id="tick.optim.model.ModelLinRegWithIntercepts.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>n_threads: int = 1</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/optim/model/linreg_with_intercepts.html#ModelLinRegWithIntercepts.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.optim.model.ModelLinRegWithIntercepts.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>fit_intercept: bool = True</em>, <em>n_threads: int = 1</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/optim/model/linreg_with_intercepts.html#ModelLinRegWithIntercepts.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.optim.model.ModelLinRegWithIntercepts.__init__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">

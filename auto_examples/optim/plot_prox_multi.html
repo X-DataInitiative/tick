@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>plot_prox_multi.py &#8212; tick 0.2.1 documentation</title>
+    <title>plot_prox_multi.py &#8212; tick 0.3.0 documentation</title>
     <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.2.1',
+        VERSION:     '0.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.2</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.3</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -83,6 +83,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../modules/inference.html#generalized-linear-models">1. Generalized linear models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../modules/inference.html#hawkes">2. Hawkes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../modules/inference.html#survival-analysis">3. Survival analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/inference.html#robust-analysis">4. Robust Analysis</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../modules/optim.html"><code class="docutils literal"><span class="pre">tick.optim</span></code>: optimization toolbox</a><ul>
@@ -127,6 +128,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../../modules/dev.html#tips-for-debugging-c-classes-in-tick">Tips for debugging C++ classes in tick</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/R.html">How to use <code class="docutils literal"><span class="pre">tick</span></code> from the R statistical software</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/R.html#training-a-logistic-regression-model">1. Training a logistic regression model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/R.html#simulation-of-a-hawkes-process">2. Simulation of a Hawkes process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/R.html#using-tick-optim-from-r">3. Using <code class="docutils literal"><span class="pre">tick.optim</span></code> from R</a></li>
+</ul>
+</li>
 </ul>
 </ul>
 </li>
@@ -159,14 +166,14 @@
 <img alt="../../_images/plot_prox_multi_001.png" class="align-center" src="../../_images/plot_prox_multi_001.png" />
 <p><strong>Python source code:</strong> <a class="reference download internal" href="../../_downloads/plot_prox_multi.py" download=""><code class="xref download docutils literal"><span class="pre">plot_prox_multi.py</span></code></a></p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">from</span> <span class="nn">tick.optim.prox</span> <span class="k">import</span> <a href="../../modules/generated/tick.optim.prox.ProxL1.html#tick.optim.prox.ProxL1"><span class="n">ProxL1</span></a><span class="p">,</span> <a href="../../modules/generated/tick.optim.prox.ProxTV.html#tick.optim.prox.ProxTV"><span class="n">ProxTV</span></a><span class="p">,</span> <span class="n">ProxMulti</span>
+<span class="kn">from</span> <span class="nn">tick.optim.prox</span> <span class="k">import</span> <span class="n">ProxL1</span><span class="p">,</span> <span class="n">ProxTV</span><span class="p">,</span> <span class="n">ProxMulti</span>
 
 <span class="n">s</span> <span class="o">=</span> <span class="mf">0.4</span>
 
 <span class="n">prox</span> <span class="o">=</span> <span class="n">ProxMulti</span><span class="p">(</span>
     <span class="n">proxs</span><span class="o">=</span><span class="p">(</span>
-        <a href="../../modules/generated/tick.optim.prox.ProxTV.html#tick.optim.prox.ProxTV"><span class="n">ProxTV</span></a><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="n">s</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">)),</span>
-        <a href="../../modules/generated/tick.optim.prox.ProxL1.html#tick.optim.prox.ProxL1"><span class="n">ProxL1</span></a><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="mi">2</span> <span class="o">*</span> <span class="n">s</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">50</span><span class="p">))</span>
+        <span class="n">ProxTV</span><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="n">s</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">)),</span>
+        <span class="n">ProxL1</span><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="mi">2</span> <span class="o">*</span> <span class="n">s</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">50</span><span class="p">))</span>
     <span class="p">)</span>
 <span class="p">)</span>
 
@@ -189,8 +196,8 @@
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<p><strong>Total running time of the example:</strong>  0.53 seconds
-( 0 minutes  0.53 seconds)</p>
+<p><strong>Total running time of the example:</strong>  0.28 seconds
+( 0 minutes  0.28 seconds)</p>
 <dl class="docutils">
 <dt>Mentioned <em>tick</em> classes:</dt>
 <dd><ul class="first last simple">

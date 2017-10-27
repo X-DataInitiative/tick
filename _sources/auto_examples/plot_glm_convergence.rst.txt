@@ -7,7 +7,7 @@
 Generalized linear models solver convergence
 ============================================
 
-This example illustrates the opimization of three linear models:
+This example illustrates the optimization of three linear models:
     * Linear regression (`tick.optim.model.ModelLinReg`)
     * Logistic regression (`tick.optim.model.ModelLogReg`)
     * Poisson regression (`tick.optim.model.ModelPoisReg`)
@@ -32,8 +32,8 @@ with five different solvers:
 .. literalinclude:: plot_glm_convergence.py
     :lines: 18-
 
-**Total running time of the example:**  2.21 seconds
-( 0 minutes  2.21 seconds)
+**Total running time of the example:**  1.71 seconds
+( 0 minutes  1.71 seconds)
     
 Mentioned *tick* classes:
    * `tick.optim.model.ModelLinReg`

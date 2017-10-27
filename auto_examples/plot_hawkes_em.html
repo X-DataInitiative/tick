@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>Fit Hawkes random kernels &#8212; tick 0.2.1 documentation</title>
+    <title>Fit Hawkes random kernels &#8212; tick 0.3.0 documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.2.1',
+        VERSION:     '0.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.2</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.3</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -83,6 +83,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../modules/inference.html#generalized-linear-models">1. Generalized linear models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../modules/inference.html#hawkes">2. Hawkes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../modules/inference.html#survival-analysis">3. Survival analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/inference.html#robust-analysis">4. Robust Analysis</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../modules/optim.html"><code class="docutils literal"><span class="pre">tick.optim</span></code>: optimization toolbox</a><ul>
@@ -127,6 +128,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../modules/dev.html#tips-for-debugging-c-classes-in-tick">Tips for debugging C++ classes in tick</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/R.html">How to use <code class="docutils literal"><span class="pre">tick</span></code> from the R statistical software</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/R.html#training-a-logistic-regression-model">1. Training a logistic regression model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/R.html#simulation-of-a-hawkes-process">2. Simulation of a Hawkes process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/R.html#using-tick-optim-from-r">3. Using <code class="docutils literal"><span class="pre">tick.optim</span></code> from R</a></li>
+</ul>
+</li>
 </ul>
 </ul>
 </li>
@@ -164,42 +171,30 @@ doesn’t scale very well.</p>
 A nonparametric EM algorithm for multiscale Hawkes processes.
 <a class="reference external" href="http://paleo.sscnet.ucla.edu/Lewis-Molher-EM_Preprint.pdf">preprint, 1-16</a>.</p>
 <img alt="../_images/plot_hawkes_em_001.png" class="align-center" src="../_images/plot_hawkes_em_001.png" />
-<p><strong>Script output</strong>:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Launching</span> <span class="n">the</span> <span class="n">solver</span> <a href="../modules/generated/tick.inference.HawkesEM.html#tick.inference.HawkesEM"><span class="n">HawkesEM</span></a><span class="o">...</span>
-  <span class="n">n_iter</span>  <span class="o">|</span> <span class="n">rel_baseline</span> <span class="o">|</span> <span class="n">rel_kernel</span>
-        <span class="mi">0</span> <span class="o">|</span>     <span class="mf">5.50e-01</span> <span class="o">|</span>   <span class="mf">4.26e-01</span>
-       <span class="mi">10</span> <span class="o">|</span>     <span class="mf">4.10e-02</span> <span class="o">|</span>   <span class="mf">5.55e-02</span>
-       <span class="mi">20</span> <span class="o">|</span>     <span class="mf">5.12e-03</span> <span class="o">|</span>   <span class="mf">9.39e-03</span>
-       <span class="mi">30</span> <span class="o">|</span>     <span class="mf">1.02e-03</span> <span class="o">|</span>   <span class="mf">2.48e-03</span>
-       <span class="mi">40</span> <span class="o">|</span>     <span class="mf">5.59e-04</span> <span class="o">|</span>   <span class="mf">1.30e-03</span>
-       <span class="mi">47</span> <span class="o">|</span>     <span class="mf">4.03e-04</span> <span class="o">|</span>   <span class="mf">9.72e-04</span>
-<span class="n">Done</span> <span class="n">solving</span> <span class="n">using</span> <a href="../modules/generated/tick.inference.HawkesEM.html#tick.inference.HawkesEM"><span class="n">HawkesEM</span></a> <span class="ow">in</span> <span class="mf">0.6716442108154297</span> <span class="n">seconds</span>
-</pre></div>
-</div>
 <p><strong>Python source code:</strong> <a class="reference download internal" href="../_downloads/plot_hawkes_em.py" download=""><code class="xref download docutils literal"><span class="pre">plot_hawkes_em.py</span></code></a></p>
 <div class="highlight-default"><div class="highlight"><pre><span></span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
 <span class="kn">from</span> <span class="nn">tick.inference</span> <span class="k">import</span> <a href="../modules/generated/tick.inference.HawkesEM.html#tick.inference.HawkesEM"><span class="n">HawkesEM</span></a>
-<span class="kn">from</span> <span class="nn">tick.simulation</span> <span class="k">import</span> <a href="../modules/generated/tick.simulation.SimuHawkes.html#tick.simulation.SimuHawkes"><span class="n">SimuHawkes</span></a><span class="p">,</span> <span class="n">HawkesKernelTimeFunc</span><span class="p">,</span> <a href="../modules/generated/tick.simulation.HawkesKernelExp.html#tick.simulation.HawkesKernelExp"><span class="n">HawkesKernelExp</span></a>
+<span class="kn">from</span> <span class="nn">tick.simulation</span> <span class="k">import</span> <a href="../modules/generated/tick.simulation.SimuHawkes.html#tick.simulation.SimuHawkes"><span class="n">SimuHawkes</span></a><span class="p">,</span> <a href="../modules/generated/tick.simulation.HawkesKernelTimeFunc.html#tick.simulation.HawkesKernelTimeFunc"><span class="n">HawkesKernelTimeFunc</span></a><span class="p">,</span> <a href="../modules/generated/tick.simulation.HawkesKernelExp.html#tick.simulation.HawkesKernelExp"><span class="n">HawkesKernelExp</span></a>
 <span class="kn">from</span> <span class="nn">tick.base</span> <span class="k">import</span> <a href="../modules/generated/tick.base.TimeFunction.html#tick.base.TimeFunction"><span class="n">TimeFunction</span></a>
 <span class="kn">from</span> <span class="nn">tick.plot</span> <span class="k">import</span> <a href="../modules/generated/tick.plot.plot_hawkes_kernels.html#tick.plot.plot_hawkes_kernels"><span class="n">plot_hawkes_kernels</span></a>
 
 <span class="n">run_time</span> <span class="o">=</span> <span class="mi">30000</span>
 
-<span class="n">t_values1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
-<span class="n">y_values1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+<span class="n">t_values1</span> <span class="o">=</span> <a href="http://docs.scipy.org/doc/numpy-1.6.0/reference/generated/numpy.array.html#numpy.array"><span class="n">np</span><span class="o">.</span><span class="n">array</span></a><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+<span class="n">y_values1</span> <span class="o">=</span> <a href="http://docs.scipy.org/doc/numpy-1.6.0/reference/generated/numpy.array.html#numpy.array"><span class="n">np</span><span class="o">.</span><span class="n">array</span></a><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
 <span class="n">tf1</span> <span class="o">=</span> <a href="../modules/generated/tick.base.TimeFunction.html#tick.base.TimeFunction"><span class="n">TimeFunction</span></a><span class="p">([</span><span class="n">t_values1</span><span class="p">,</span> <span class="n">y_values1</span><span class="p">],</span>
                    <span class="n">inter_mode</span><span class="o">=</span><a href="../modules/generated/tick.base.TimeFunction.html#tick.base.TimeFunction"><span class="n">TimeFunction</span></a><span class="o">.</span><span class="n">InterConstRight</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
-<span class="n">kernel1</span> <span class="o">=</span> <span class="n">HawkesKernelTimeFunc</span><span class="p">(</span><span class="n">tf1</span><span class="p">)</span>
+<span class="n">kernel1</span> <span class="o">=</span> <a href="../modules/generated/tick.simulation.HawkesKernelTimeFunc.html#tick.simulation.HawkesKernelTimeFunc"><span class="n">HawkesKernelTimeFunc</span></a><span class="p">(</span><span class="n">tf1</span><span class="p">)</span>
 
 <span class="n">t_values2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
-<span class="n">y_values2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">t_values2</span><span class="p">)</span> <span class="o">/</span> <span class="mi">4</span><span class="p">)</span>
+<span class="n">y_values2</span> <span class="o">=</span> <a href="http://docs.scipy.org/doc/numpy-1.6.0/reference/generated/numpy.maximum.html#numpy.maximum"><span class="n">np</span><span class="o">.</span><span class="n">maximum</span></a><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <a href="http://docs.scipy.org/doc/numpy-1.6.0/reference/generated/numpy.sin.html#numpy.sin"><span class="n">np</span><span class="o">.</span><span class="n">sin</span></a><span class="p">(</span><span class="n">t_values2</span><span class="p">)</span> <span class="o">/</span> <span class="mi">4</span><span class="p">)</span>
 <span class="n">tf2</span> <span class="o">=</span> <a href="../modules/generated/tick.base.TimeFunction.html#tick.base.TimeFunction"><span class="n">TimeFunction</span></a><span class="p">([</span><span class="n">t_values2</span><span class="p">,</span> <span class="n">y_values2</span><span class="p">])</span>
-<span class="n">kernel2</span> <span class="o">=</span> <span class="n">HawkesKernelTimeFunc</span><span class="p">(</span><span class="n">tf2</span><span class="p">)</span>
+<span class="n">kernel2</span> <span class="o">=</span> <a href="../modules/generated/tick.simulation.HawkesKernelTimeFunc.html#tick.simulation.HawkesKernelTimeFunc"><span class="n">HawkesKernelTimeFunc</span></a><span class="p">(</span><span class="n">tf2</span><span class="p">)</span>
 
-<span class="n">baseline</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">])</span>
+<span class="n">baseline</span> <span class="o">=</span> <a href="http://docs.scipy.org/doc/numpy-1.6.0/reference/generated/numpy.array.html#numpy.array"><span class="n">np</span><span class="o">.</span><span class="n">array</span></a><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">])</span>
 
 <span class="n">hawkes</span> <span class="o">=</span> <a href="../modules/generated/tick.simulation.SimuHawkes.html#tick.simulation.SimuHawkes"><span class="n">SimuHawkes</span></a><span class="p">(</span><span class="n">baseline</span><span class="o">=</span><span class="n">baseline</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">run_time</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                     <span class="n">seed</span><span class="o">=</span><span class="mi">2334</span><span class="p">)</span>
@@ -210,18 +205,18 @@ A nonparametric EM algorithm for multiscale Hawkes processes.
 
 <span class="n">hawkes</span><span class="o">.</span><span class="n">simulate</span><span class="p">()</span>
 
-<span class="n">em</span> <span class="o">=</span> <a href="../modules/generated/tick.inference.HawkesEM.html#tick.inference.HawkesEM"><span class="n">HawkesEM</span></a><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">n_threads</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">)</span>
+<span class="n">em</span> <span class="o">=</span> <a href="../modules/generated/tick.inference.HawkesEM.html#tick.inference.HawkesEM"><span class="n">HawkesEM</span></a><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">n_threads</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">)</span>
 <span class="n">em</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">hawkes</span><span class="o">.</span><span class="n">timestamps</span><span class="p">)</span>
 
 <span class="n">fig</span> <span class="o">=</span> <a href="../modules/generated/tick.plot.plot_hawkes_kernels.html#tick.plot.plot_hawkes_kernels"><span class="n">plot_hawkes_kernels</span></a><span class="p">(</span><span class="n">em</span><span class="p">,</span> <span class="n">hawkes</span><span class="o">=</span><span class="n">hawkes</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 <span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="n">fig</span><span class="o">.</span><span class="n">axes</span><span class="p">:</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<a href="http://matplotlib.org/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
 </pre></div>
 </div>
-<p><strong>Total running time of the example:</strong>  0.93 seconds
-( 0 minutes  0.93 seconds)</p>
+<p><strong>Total running time of the example:</strong>  1.17 seconds
+( 0 minutes  1.17 seconds)</p>
 <dl class="docutils">
 <dt>Mentioned <em>tick</em> classes:</dt>
 <dd><ul class="first last simple">

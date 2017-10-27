@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.optim.model.ModelPoisReg &#8212; tick 0.2.1 documentation</title>
+    <title>tick.optim.model.ModelPoisReg &#8212; tick 0.3.0 documentation</title>
     <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.2.1',
+        VERSION:     '0.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.2</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.3</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -83,6 +83,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../inference.html#generalized-linear-models">1. Generalized linear models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../inference.html#hawkes">2. Hawkes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../inference.html#survival-analysis">3. Survival analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../inference.html#robust-analysis">4. Robust Analysis</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../optim.html"><code class="docutils literal"><span class="pre">tick.optim</span></code>: optimization toolbox</a><ul>
@@ -127,6 +128,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../dev.html#tips-for-debugging-c-classes-in-tick">Tips for debugging C++ classes in tick</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../R.html">How to use <code class="docutils literal"><span class="pre">tick</span></code> from the R statistical software</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../R.html#training-a-logistic-regression-model">1. Training a logistic regression model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../R.html#simulation-of-a-hawkes-process">2. Simulation of a Hawkes process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../R.html#using-tick-optim-from-r">3. Using <code class="docutils literal"><span class="pre">tick.optim</span></code> from R</a></li>
+</ul>
+</li>
 </ul>
 </ul>
 </li>
@@ -159,9 +166,28 @@
 <dl class="class">
 <dt id="tick.optim.model.ModelPoisReg">
 <em class="property">class </em><code class="descclassname">tick.optim.model.</code><code class="descname">ModelPoisReg</code><span class="sig-paren">(</span><em>fit_intercept: bool = True</em>, <em>link: str = 'exponential'</em>, <em>n_threads: int = 1</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/optim/model/poisreg.html#ModelPoisReg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.optim.model.ModelPoisReg" title="Permalink to this definition">¶</a></dt>
-<dd><p>Poisson regression model with identity or exponential link.
-This class gives first order and second order information for this
-model (gradient, loss and hessian norm).</p>
+<dd><p>Poisson regression model with identity or exponential link for data with
+a count label. This class gives first order and second order information for
+this model (gradient, loss and hessian norm)  and can be passed
+to any solver through the solver’s <code class="docutils literal"><span class="pre">set_model</span></code> method.
+Can lead to overflows with some solvers (see the note below).</p>
+<p>Given training data <span class="math">\((x_i, y_i) \in \mathbb R^d \times \mathbb N\)</span>
+for <span class="math">\(i=1, \ldots, n\)</span>, this model considers a goodness-of-fit</p>
+<div class="math">
+\[f(w, b) = \frac 1n \sum_{i=1}^n \ell(y_i, b + x_i^\top w),\]</div>
+<p>where <span class="math">\(w \in \mathbb R^d\)</span> is a vector containing the model-weights,
+<span class="math">\(b \in \mathbb R\)</span> is the intercept (used only whenever
+<code class="docutils literal"><span class="pre">fit_intercept=True</span></code>) and
+<span class="math">\(\ell : \mathbb R^2 \rightarrow \mathbb R\)</span> is the loss given by</p>
+<div class="math">
+\[\ell(y, y') = e^{y'} - y y'\]</div>
+<p>whenever <code class="docutils literal"><span class="pre">link='exponential'</span></code> and</p>
+<div class="math">
+\[\ell(y, y') = y' - y \log(y')\]</div>
+<p>whenever <code class="docutils literal"><span class="pre">link='identity'</span></code>,  for <span class="math">\(y \in \mathbb N\)</span> and
+<span class="math">\(y' \in \mathbb R\)</span>. Data is passed
+to this model through the <code class="docutils literal"><span class="pre">fit(X,</span> <span class="pre">y)</span></code> method where X is the features
+matrix (dense or sparse) and y is the vector of labels.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -185,9 +211,9 @@ inner product of the model’s coeffs with the features.</li>
 </div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Attributes:</th><td class="field-body"><p class="first"><strong>features</strong> : <code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code>, shape=(n_samples, n_features) (read-only)</p>
+<tr class="field-even field"><th class="field-name">Attributes:</th><td class="field-body"><p class="first"><strong>features</strong> : {<code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code>, <code class="xref py py-obj docutils literal"><span class="pre">scipy.sparse.csr_matrix</span></code>}, shape=(n_samples, n_features)</p>
 <blockquote>
-<div><p>The features matrix</p>
+<div><p>The features matrix, either dense or sparse</p>
 </div></blockquote>
 <p><strong>labels</strong> : <code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code>, shape=(n_samples,) (read-only)</p>
 <blockquote>
@@ -209,7 +235,7 @@ inner product of the model’s coeffs with the features.</li>
 <blockquote class="last">
 <div><p>Number of threads used for parallel computation.</p>
 <ul class="simple">
-<li>if <code class="docutils literal"><span class="pre">int</span> <span class="pre">&lt;=</span> <span class="pre">0</span></code>: the number of physical cores available on
+<li>if <code class="docutils literal"><span class="pre">int</span> <span class="pre">&lt;=</span> <span class="pre">0</span></code>: the number of threads available on
 the CPU</li>
 <li>otherwise the desired number of threads</li>
 </ul>
@@ -230,6 +256,30 @@ overflow proof. In this case, only a solver working in the dual
 <dd></dd></dl>
 
 <dl class="method">
+<dt id="tick.optim.model.ModelPoisReg.dual_loss">
+<code class="descname">dual_loss</code><span class="sig-paren">(</span><em>dual_coeffs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/optim/model/poisreg.html#ModelPoisReg.dual_loss"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.optim.model.ModelPoisReg.dual_loss" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the dual loss at the given dual coefficients</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>dual_coeffs</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code></p>
+<blockquote>
+<div><p>Dual coefficients</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>dual_loss</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code></p>
+<blockquote class="last">
+<div><p>The value of the dual loss</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="tick.optim.model.ModelPoisReg.fit">
 <code class="descname">fit</code><span class="sig-paren">(</span><em>features</em>, <em>labels</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/optim/model/poisreg.html#ModelPoisReg.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.optim.model.ModelPoisReg.fit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the data into the model object</p>
@@ -237,9 +287,9 @@ overflow proof. In this case, only a solver working in the dual
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>features</strong> : <code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code>, shape=(n_samples, n_features)</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>features</strong> : {<code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code>, <code class="xref py py-obj docutils literal"><span class="pre">scipy.sparse.csr_matrix</span></code>}, shape=(n_samples, n_features)</p>
 <blockquote>
-<div><p>The features matrix</p>
+<div><p>The features matrix, either dense or sparse</p>
 </div></blockquote>
 <p><strong>labels</strong> : <code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code>, shape=(n_samples,)</p>
 <blockquote>
@@ -386,9 +436,13 @@ before using <code class="docutils literal"><span class="pre">loss_and_grad</spa
 
 <div class="section" id="examples-using-tick-optim-model-modelpoisreg">
 <h2>Examples using <code class="docutils literal"><span class="pre">tick.optim.model.ModelPoisReg</span></code><a class="headerlink" href="#examples-using-tick-optim-model-modelpoisreg" title="Permalink to this headline">¶</a></h2>
-<div class="thumbnailContainer" tooltip="This example illustrates the opimization of three linear models:     * Linear regression (`tick..."><div class="figure" id="id1">
+<div class="thumbnailContainer" tooltip="This example illustrates the optimization of three linear models:     * Linear regression (`tic..."><div class="figure" id="id1">
 <a class="reference external image-reference" href="./../../auto_examples/./plot_glm_convergence.html"><img alt="../../_images/plot_glm_convergence1.png" src="../../_images/plot_glm_convergence1.png" /></a>
 <p class="caption"><span class="caption-text"><a class="reference internal" href="../../auto_examples/plot_glm_convergence.html#example-plot-glm-convergence-py"><span class="std std-ref">Generalized linear models solver convergence</span></a></span></p>
+</div>
+</div><div class="thumbnailContainer" tooltip=""><div class="figure" id="id2">
+<a class="reference external image-reference" href="./../../auto_examples/optim/plot_losses_count_data.html"><img alt="../../_images/plot_losses_count_data.png" src="../../_images/plot_losses_count_data.png" /></a>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="../../auto_examples/optim/plot_losses_count_data.html#example-optim-plot-losses-count-data-py"><span class="std std-ref">plot_losses_count_data.py</span></a></span></p>
 </div>
 </div></div>
 </div>

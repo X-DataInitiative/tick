@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.optim.solver.base.first_order_sto &#8212; tick 0.2.1 documentation</title>
+    <title>tick.optim.solver.base.first_order_sto &#8212; tick 0.3.0 documentation</title>
     <link rel="stylesheet" href="../../../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../../',
-        VERSION:     '0.2.1',
+        VERSION:     '0.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../../../../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.2</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.3</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -83,6 +83,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../../modules/inference.html#generalized-linear-models">1. Generalized linear models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../modules/inference.html#hawkes">2. Hawkes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../modules/inference.html#survival-analysis">3. Survival analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../modules/inference.html#robust-analysis">4. Robust Analysis</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../modules/optim.html"><code class="docutils literal"><span class="pre">tick.optim</span></code>: optimization toolbox</a><ul>
@@ -125,6 +126,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../../modules/dev.html#how-to-add-a-new-model-solver-or-prox">How to add a new model, solver or prox</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../modules/dev.html#enable-python-pickling-of-c-objects">Enable Python-pickling of C++ objects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../modules/dev.html#tips-for-debugging-c-classes-in-tick">Tips for debugging C++ classes in tick</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modules/R.html">How to use <code class="docutils literal"><span class="pre">tick</span></code> from the R statistical software</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../modules/R.html#training-a-logistic-regression-model">1. Training a logistic regression model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../modules/R.html#simulation-of-a-hawkes-process">2. Simulation of a Hawkes process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../modules/R.html#using-tick-optim-from-r">3. Using <code class="docutils literal"><span class="pre">tick.optim</span></code> from R</a></li>
 </ul>
 </li>
 </ul>
@@ -273,19 +280,23 @@
         <span class="k">return</span> <span class="bp">self</span>
 
     <span class="k">def</span> <span class="nf">set_prox</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prox</span><span class="p">:</span> <span class="n">Prox</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set prox in the solver</span>
+        <span class="sd">&quot;&quot;&quot;Set proximal operator in the solver</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        prox : `Prox`</span>
-<span class="sd">            Sets the prox in the solver</span>
+<span class="sd">            The proximal operator of the penalization function</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        output : `Solver`</span>
-<span class="sd">            The `Solver` with given prox</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">            The solver with given prox</span>
 
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        In some solvers, ``set_model`` must be called before</span>
+<span class="sd">        ``set_prox``, otherwise and error might be raised</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">SolverFirstOrder</span><span class="o">.</span><span class="n">set_prox</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prox</span><span class="p">)</span>
         <span class="n">SolverSto</span><span class="o">.</span><span class="n">set_prox</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prox</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span>
@@ -319,12 +330,22 @@
 <span class="sd">        output : np.array, shape=(n_coeffs,)</span>
 <span class="sd">            Obtained minimizer</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">step</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="n">step</span>
+        <span class="kn">from</span> <span class="nn">tick.optim.solver</span> <span class="k">import</span> <span class="n">SDCA</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">SDCA</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">step</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="n">step</span>
 
-        <span class="n">step</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">minimizer</span><span class="p">,</span> <span class="n">prev_minimizer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_initialize_values</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span>
-                                                                   <span class="n">n_empty_vectors</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_solver</span><span class="o">.</span><span class="n">set_starting_iterate</span><span class="p">(</span><span class="n">minimizer</span><span class="p">)</span>
+            <span class="n">step</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">minimizer</span><span class="p">,</span> <span class="n">prev_minimizer</span> <span class="o">=</span> \
+                <span class="bp">self</span><span class="o">.</span><span class="n">_initialize_values</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">n_empty_vectors</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_solver</span><span class="o">.</span><span class="n">set_starting_iterate</span><span class="p">(</span><span class="n">minimizer</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># In sdca case x0 is a dual vector</span>
+            <span class="n">step</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">minimizer</span><span class="p">,</span> <span class="n">prev_minimizer</span> <span class="o">=</span> \
+                <span class="bp">self</span><span class="o">.</span><span class="n">_initialize_values</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">n_empty_vectors</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">x0</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_solver</span><span class="o">.</span><span class="n">set_starting_iterate</span><span class="p">(</span><span class="n">x0</span><span class="p">)</span>
+
         <span class="c1"># At each iteration we call self._solver.solve that does a full</span>
         <span class="c1"># epoch</span>
         <span class="k">for</span> <span class="n">n_iter</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_iter</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>

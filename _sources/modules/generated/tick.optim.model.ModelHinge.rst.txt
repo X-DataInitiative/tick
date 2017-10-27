@@ -1,0 +1,12 @@
+
+.. _ModelHinge:
+
+tick.optim.model.ModelHinge
+===========================
+
+.. currentmodule:: tick.optim.model
+
+.. autoclass:: ModelHinge
+
+.. include:: tick.optim.model.ModelHinge.examples
+    :allowmissing:

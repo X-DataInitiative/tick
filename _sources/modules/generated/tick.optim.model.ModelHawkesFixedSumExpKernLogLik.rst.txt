@@ -1,0 +1,12 @@
+
+.. _ModelHawkesFixedSumExpKernLogLik:
+
+tick.optim.model.ModelHawkesFixedSumExpKernLogLik
+=================================================
+
+.. currentmodule:: tick.optim.model
+
+.. autoclass:: ModelHawkesFixedSumExpKernLogLik
+
+.. include:: tick.optim.model.ModelHawkesFixedSumExpKernLogLik.examples
+    :allowmissing:

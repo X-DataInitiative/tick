@@ -1,0 +1,12 @@
+
+.. _ModelEpsilonInsensitive:
+
+tick.optim.model.ModelEpsilonInsensitive
+========================================
+
+.. currentmodule:: tick.optim.model
+
+.. autoclass:: ModelEpsilonInsensitive
+
+.. include:: tick.optim.model.ModelEpsilonInsensitive.examples
+    :allowmissing:

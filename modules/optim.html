@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.optim: optimization toolbox &#8212; tick 0.2.1 documentation</title>
+    <title>tick.optim: optimization toolbox &#8212; tick 0.3.0 documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.2.1',
+        VERSION:     '0.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -41,7 +41,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="tick.plot: plotting utilities" href="plot.html" />
-    <link rel="prev" title="tick.inference.CoxRegression" href="generated/tick.inference.CoxRegression.html" />
+    <link rel="prev" title="tick.inference.RobustLinearRegression" href="generated/tick.inference.RobustLinearRegression.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -61,7 +61,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.2</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.3</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -85,6 +85,7 @@
 <li class="toctree-l2"><a class="reference internal" href="inference.html#generalized-linear-models">1. Generalized linear models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="inference.html#hawkes">2. Hawkes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="inference.html#survival-analysis">3. Survival analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inference.html#robust-analysis">4. Robust Analysis</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#"><code class="docutils literal"><span class="pre">tick.optim</span></code>: optimization toolbox</a><ul>
@@ -127,6 +128,12 @@
 <li class="toctree-l2"><a class="reference internal" href="dev.html#how-to-add-a-new-model-solver-or-prox">How to add a new model, solver or prox</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dev.html#enable-python-pickling-of-c-objects">Enable Python-pickling of C++ objects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dev.html#tips-for-debugging-c-classes-in-tick">Tips for debugging C++ classes in tick</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="R.html">How to use <code class="docutils literal"><span class="pre">tick</span></code> from the R statistical software</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="R.html#training-a-logistic-regression-model">1. Training a logistic regression model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="R.html#simulation-of-a-hawkes-process">2. Simulation of a Hawkes process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="R.html#using-tick-optim-from-r">3. Using <code class="docutils literal"><span class="pre">tick.optim</span></code> from R</a></li>
 </ul>
 </li>
 </ul>
@@ -216,12 +223,12 @@ Note that, we specify a <code class="docutils literal"><span class="pre">range=(
 <span class="n">weights0</span> <span class="o">=</span> <span class="n">weights_sparse_gauss</span><span class="p">(</span><span class="n">n_features</span><span class="p">,</span> <span class="n">nnz</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 <span class="n">intercept0</span> <span class="o">=</span> <span class="mf">0.2</span>
 <span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">SimuLogReg</span><span class="p">(</span><span class="n">weights</span><span class="o">=</span><span class="n">weights0</span><span class="p">,</span> <span class="n">intercept</span><span class="o">=</span><span class="n">intercept0</span><span class="p">,</span>
-                  <span class="n">n_samples</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">123</span><span class="p">)</span><span class="o">.</span><span class="n">simulate</span><span class="p">()</span>
+                  <span class="n">n_samples</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">123</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span><span class="o">.</span><span class="n">simulate</span><span class="p">()</span>
 
 <span class="n">model</span> <span class="o">=</span> <span class="n">ModelLogReg</span><span class="p">(</span><span class="n">fit_intercept</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 <span class="n">prox</span> <span class="o">=</span> <span class="n">ProxElasticNet</span><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span> <span class="n">ratio</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_features</span><span class="p">))</span>
 
-<span class="n">solver_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;max_iter&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;tol&#39;</span><span class="p">:</span> <span class="mf">0.</span><span class="p">}</span>
+<span class="n">solver_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;max_iter&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;tol&#39;</span><span class="p">:</span> <span class="mf">0.</span><span class="p">,</span> <span class="s1">&#39;verbose&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">}</span>
 <span class="n">x0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">n_coeffs</span><span class="p">)</span>
 
 <span class="n">gd</span> <span class="o">=</span> <span class="n">GD</span><span class="p">(</span><span class="n">linesearch</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="o">**</span><span class="n">solver_params</span><span class="p">)</span><span class="o">.</span><span class="n">set_model</span><span class="p">(</span><span class="n">model</span><span class="p">)</span><span class="o">.</span><span class="n">set_prox</span><span class="p">(</span><span class="n">prox</span><span class="p">)</span>
@@ -326,51 +333,234 @@ The gradient of the model can be computed using the <code class="docutils litera
 <p>Model classes can be used with any solver class, by simply passing them using the
 solver’s <code class="docutils literal"><span class="pre">set_model</span></code> method, see the <a class="reference internal" href="#optim-first-example"><span class="std std-ref">example given above</span></a>.</p>
 </div>
-<div class="section" id="generalized-linear-models">
-<span id="optim-model-glm"></span><h3>1.2. Generalized linear models<a class="headerlink" href="#generalized-linear-models" title="Permalink to this headline">¶</a></h3>
-<p>We describe here generalized linear models for supervised learning.
+<div class="section" id="linear-models">
+<span id="id1"></span><h3>1.2. Linear models<a class="headerlink" href="#linear-models" title="Permalink to this headline">¶</a></h3>
+<p>We describe here (generalized) linear methods for supervised learning.
 Given training data <span class="math">\((x_i, y_i) \in \mathbb R^d \times \mathbb R\)</span>
-for <span class="math">\(i=1, \ldots, n\)</span>, we consider models with a goodness-of-fit that
-writes</p>
+for <span class="math">\(i=1, \ldots, n\)</span>, we consider goodness-of-fit that writes</p>
 <div class="math">
 \[f(w, b) = \frac 1n \sum_{i=1}^n \ell(y_i, b + x_i^\top w),\]</div>
 <p>where <span class="math">\(w \in \mathbb R^d\)</span> is a vector containing the model weights,
 <span class="math">\(b \in \mathbb R\)</span> is the intercept and
 <span class="math">\(\ell : \mathbb R^2 \rightarrow \mathbb R\)</span> is a loss function.
-The loss function depends on the model. The following table describes the
-different losses implemented for now in tick and its associated class.</p>
+Note that for binary regression we have actually binary labels <span class="math">\(y_i \in \{ -1, 1 \}\)</span>
+while for counts data (Poisson models, see below) we have natural integer <span class="math">\(y_i \in \mathbb N\)</span>.</p>
+<p>The loss function depends on the model. The advantages of using one or another
+are explained in the documentation of the classes themselves.
+The following table lists the different losses implemented for now in <code class="xref py py-obj docutils literal"><span class="pre">tick</span></code>,
+its associated class and label type.</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="24%" />
-<col width="26%" />
-<col width="49%" />
+<col width="29%" />
+<col width="10%" />
+<col width="7%" />
+<col width="54%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Model</th>
-<th class="head">Loss formula</th>
+<th class="head">Type</th>
+<th class="head">Label type</th>
 <th class="head">Class</th>
 </tr>
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>Linear regression</td>
-<td><span class="math">\(\ell(y, y') = \frac 12 (y - y')^2\)</span></td>
+<td>Regression</td>
+<td>Continuous</td>
 <td><a class="reference internal" href="generated/tick.optim.model.ModelLinReg.html#tick.optim.model.ModelLinReg" title="tick.optim.model.ModelLinReg"><code class="xref py py-class docutils literal"><span class="pre">ModelLinReg</span></code></a></td>
 </tr>
-<tr class="row-odd"><td>Logistic regression</td>
-<td><span class="math">\(\ell(y, y') = \log(1 + \exp(-y y'))\)</span></td>
+<tr class="row-odd"><td>Huber regression</td>
+<td>Regression</td>
+<td>Continuous</td>
+<td><a class="reference internal" href="generated/tick.optim.model.ModelHuber.html#tick.optim.model.ModelHuber" title="tick.optim.model.ModelHuber"><code class="xref py py-class docutils literal"><span class="pre">ModelHuber</span></code></a></td>
+</tr>
+<tr class="row-even"><td>Epsilon-insensitive regression</td>
+<td>Regression</td>
+<td>Continuous</td>
+<td><a class="reference internal" href="generated/tick.optim.model.ModelEpsilonInsensitive.html#tick.optim.model.ModelEpsilonInsensitive" title="tick.optim.model.ModelEpsilonInsensitive"><code class="xref py py-class docutils literal"><span class="pre">ModelEpsilonInsensitive</span></code></a></td>
+</tr>
+<tr class="row-odd"><td>Absolute regression</td>
+<td>Regression</td>
+<td>Continuous</td>
+<td><a class="reference internal" href="generated/tick.optim.model.ModelAbsoluteRegression.html#tick.optim.model.ModelAbsoluteRegression" title="tick.optim.model.ModelAbsoluteRegression"><code class="xref py py-class docutils literal"><span class="pre">ModelAbsoluteRegression</span></code></a></td>
+</tr>
+<tr class="row-even"><td>Logistic regression</td>
+<td>Classification</td>
+<td>Binary</td>
 <td><a class="reference internal" href="generated/tick.optim.model.ModelLogReg.html#tick.optim.model.ModelLogReg" title="tick.optim.model.ModelLogReg"><code class="xref py py-class docutils literal"><span class="pre">ModelLogReg</span></code></a></td>
 </tr>
-<tr class="row-even"><td>Poisson regression with exponential link</td>
-<td><span class="math">\(\ell(y, y') = y' - y \log(y')\)</span></td>
-<td><a class="reference internal" href="generated/tick.optim.model.ModelPoisReg.html#tick.optim.model.ModelPoisReg" title="tick.optim.model.ModelPoisReg"><code class="xref py py-class docutils literal"><span class="pre">ModelPoisReg</span></code></a> with <code class="docutils literal"><span class="pre">link=&quot;exponential&quot;</span></code></td>
+<tr class="row-odd"><td>Hinge loss</td>
+<td>Classification</td>
+<td>Binary</td>
+<td><a class="reference internal" href="generated/tick.optim.model.ModelHinge.html#tick.optim.model.ModelHinge" title="tick.optim.model.ModelHinge"><code class="xref py py-class docutils literal"><span class="pre">ModelHinge</span></code></a></td>
 </tr>
-<tr class="row-odd"><td>Poisson regression with identity link</td>
-<td><span class="math">\(\ell(y, y') = e^{y'} - y y'\)</span></td>
-<td><a class="reference internal" href="generated/tick.optim.model.ModelPoisReg.html#tick.optim.model.ModelPoisReg" title="tick.optim.model.ModelPoisReg"><code class="xref py py-class docutils literal"><span class="pre">ModelPoisReg</span></code></a> with <code class="docutils literal"><span class="pre">link=&quot;identity&quot;</span></code></td>
+<tr class="row-even"><td>Quadratic hinge loss</td>
+<td>Classification</td>
+<td>Binary</td>
+<td><a class="reference internal" href="generated/tick.optim.model.ModelQuadraticHinge.html#tick.optim.model.ModelQuadraticHinge" title="tick.optim.model.ModelQuadraticHinge"><code class="xref py py-class docutils literal"><span class="pre">ModelQuadraticHinge</span></code></a></td>
+</tr>
+<tr class="row-odd"><td>Smoothed hinge loss</td>
+<td>Classification</td>
+<td>Binary</td>
+<td><a class="reference internal" href="generated/tick.optim.model.ModelSmoothedHinge.html#tick.optim.model.ModelSmoothedHinge" title="tick.optim.model.ModelSmoothedHinge"><code class="xref py py-class docutils literal"><span class="pre">ModelSmoothedHinge</span></code></a></td>
+</tr>
+<tr class="row-even"><td>Modified Huber loss</td>
+<td>Classification</td>
+<td>Binary</td>
+<td><a class="reference internal" href="generated/tick.optim.model.ModelModifiedHuber.html#tick.optim.model.ModelModifiedHuber" title="tick.optim.model.ModelModifiedHuber"><code class="xref py py-class docutils literal"><span class="pre">ModelModifiedHuber</span></code></a></td>
+</tr>
+<tr class="row-odd"><td>Poisson regression (identity link)</td>
+<td>Count data</td>
+<td>Integer</td>
+<td><a class="reference internal" href="generated/tick.optim.model.ModelPoisReg.html#tick.optim.model.ModelPoisReg" title="tick.optim.model.ModelPoisReg"><code class="xref py py-class docutils literal"><span class="pre">ModelPoisReg</span></code></a></td>
+</tr>
+<tr class="row-even"><td>Poisson regression (exponential link)</td>
+<td>Count data</td>
+<td>Integer</td>
+<td><a class="reference internal" href="generated/tick.optim.model.ModelPoisReg.html#tick.optim.model.ModelPoisReg" title="tick.optim.model.ModelPoisReg"><code class="xref py py-class docutils literal"><span class="pre">ModelPoisReg</span></code></a></td>
 </tr>
 </tbody>
 </table>
 </div>
+<div class="section" id="regression-models">
+<h3>Regression models<a class="headerlink" href="#regression-models" title="Permalink to this headline">¶</a></h3>
+<p>(<a class="reference external" href="../modules/code_samples/optim/plot_losses_regression.py">Source code</a>, <a class="reference external" href="../modules/code_samples/optim/plot_losses_regression.png">png</a>, <a class="reference external" href="../modules/code_samples/optim/plot_losses_regression.hires.png">hires.png</a>, <a class="reference external" href="../modules/code_samples/optim/plot_losses_regression.pdf">pdf</a>)</p>
+<div class="figure">
+<img alt="../_images/plot_losses_regression1.png" src="../_images/plot_losses_regression1.png" />
+</div>
+<div class="section" id="modellinreg">
+<h4><a class="reference internal" href="generated/tick.optim.model.ModelLinReg.html#tick.optim.model.ModelLinReg" title="tick.optim.model.ModelLinReg"><code class="xref py py-class docutils literal"><span class="pre">ModelLinReg</span></code></a><a class="headerlink" href="#modellinreg" title="Permalink to this headline">¶</a></h4>
+<p>This is least-squares regression with loss</p>
+<div class="math">
+\[\ell(y, y') = \frac 12 (y - y')^2\]</div>
+<p>for <span class="math">\(y, y' \in \mathbb R\)</span></p>
+</div>
+<hr class="docutils" />
+<div class="section" id="modelhuber">
+<h4><a class="reference internal" href="generated/tick.optim.model.ModelHuber.html#tick.optim.model.ModelHuber" title="tick.optim.model.ModelHuber"><code class="xref py py-class docutils literal"><span class="pre">ModelHuber</span></code></a><a class="headerlink" href="#modelhuber" title="Permalink to this headline">¶</a></h4>
+<p>The Huber loss for robust regression (less sensitive to
+outliers) is given by</p>
+<div class="math">
+\[\begin{split}\ell(y, y') =
+\begin{cases}
+\frac 12 (y' - y)^2 &amp;\text{ if } |y' - y| \leq \delta \\
+\delta (|y' - y| - \frac 12 \delta) &amp;\text{ if } |y' - y| &gt; \delta
+\end{cases}\end{split}\]</div>
+<p>for <span class="math">\(y, y' \in \mathbb R\)</span>, where <span class="math">\(\delta &gt; 0\)</span> can be tuned
+using the <code class="docutils literal"><span class="pre">threshold</span></code> argument.</p>
+</div>
+<hr class="docutils" />
+<div class="section" id="modelepsiloninsensitive">
+<h4><a class="reference internal" href="generated/tick.optim.model.ModelEpsilonInsensitive.html#tick.optim.model.ModelEpsilonInsensitive" title="tick.optim.model.ModelEpsilonInsensitive"><code class="xref py py-class docutils literal"><span class="pre">ModelEpsilonInsensitive</span></code></a><a class="headerlink" href="#modelepsiloninsensitive" title="Permalink to this headline">¶</a></h4>
+<p>Epsilon-insensitive loss, given by</p>
+<div class="math">
+\[\begin{split}\ell(y, y') =
+\begin{cases}
+|y' - y| - \epsilon &amp;\text{ if } |y' - y| &gt; \epsilon \\
+0 &amp;\text{ if } |y' - y| \leq \epsilon
+\end{cases}\end{split}\]</div>
+<p>for <span class="math">\(y, y' \in \mathbb R\)</span>, where <span class="math">\(\epsilon &gt; 0\)</span> can be tuned using
+the <code class="docutils literal"><span class="pre">threshold</span></code> argument.</p>
+</div>
+<hr class="docutils" />
+<div class="section" id="modelabsoluteregression">
+<h4><a class="reference internal" href="generated/tick.optim.model.ModelAbsoluteRegression.html#tick.optim.model.ModelAbsoluteRegression" title="tick.optim.model.ModelAbsoluteRegression"><code class="xref py py-class docutils literal"><span class="pre">ModelAbsoluteRegression</span></code></a><a class="headerlink" href="#modelabsoluteregression" title="Permalink to this headline">¶</a></h4>
+<p>The L1 loss given by</p>
+<div class="math">
+\[\ell(y, y') = |y' - y|\]</div>
+<p>for <span class="math">\(y, y' \in \mathbb R\)</span></p>
+</div>
+</div>
+<hr class="docutils" />
+<div class="section" id="classification-models">
+<h3>Classification models<a class="headerlink" href="#classification-models" title="Permalink to this headline">¶</a></h3>
+<p>(<a class="reference external" href="../modules/code_samples/optim/plot_losses_classification.py">Source code</a>, <a class="reference external" href="../modules/code_samples/optim/plot_losses_classification.png">png</a>, <a class="reference external" href="../modules/code_samples/optim/plot_losses_classification.hires.png">hires.png</a>, <a class="reference external" href="../modules/code_samples/optim/plot_losses_classification.pdf">pdf</a>)</p>
+<div class="figure">
+<img alt="../_images/plot_losses_classification1.png" src="../_images/plot_losses_classification1.png" />
+</div>
+<div class="section" id="modellogreg">
+<h4><a class="reference internal" href="generated/tick.optim.model.ModelLogReg.html#tick.optim.model.ModelLogReg" title="tick.optim.model.ModelLogReg"><code class="xref py py-class docutils literal"><span class="pre">ModelLogReg</span></code></a><a class="headerlink" href="#modellogreg" title="Permalink to this headline">¶</a></h4>
+<p>Logistic regression for binary classification with loss</p>
+<div class="math">
+\[\ell(y, y') = \log(1 + \exp(-y y'))\]</div>
+<p>for <span class="math">\(y \in \{ -1, 1\}\)</span> and <span class="math">\(y' \in \mathbb R\)</span></p>
+</div>
+<hr class="docutils" />
+<div class="section" id="modelhinge">
+<h4><a class="reference internal" href="generated/tick.optim.model.ModelHinge.html#tick.optim.model.ModelHinge" title="tick.optim.model.ModelHinge"><code class="xref py py-class docutils literal"><span class="pre">ModelHinge</span></code></a><a class="headerlink" href="#modelhinge" title="Permalink to this headline">¶</a></h4>
+<p>This is the hinge loss given by</p>
+<div class="math">
+\[\begin{split}\ell(y, y') =
+\begin{cases}
+1 - y y' &amp;\text{ if } y y' &lt; 1 \\
+0 &amp;\text{ if } y y' \geq 1
+\end{cases}\end{split}\]</div>
+<p>for <span class="math">\(y \in \{ -1, 1\}\)</span> and <span class="math">\(y' \in \mathbb R\)</span></p>
+</div>
+<hr class="docutils" />
+<div class="section" id="modelquadratichinge">
+<h4><a class="reference internal" href="generated/tick.optim.model.ModelQuadraticHinge.html#tick.optim.model.ModelQuadraticHinge" title="tick.optim.model.ModelQuadraticHinge"><code class="xref py py-class docutils literal"><span class="pre">ModelQuadraticHinge</span></code></a><a class="headerlink" href="#modelquadratichinge" title="Permalink to this headline">¶</a></h4>
+<p>This is the quadratic hinge loss given by</p>
+<div class="math">
+\[\begin{split}\ell(y, y') =
+\begin{cases}
+\frac 12 (1 - y y')^2 &amp;\text{ if } y y' &lt; 1 \\
+0 &amp;\text{ if } y y' \geq 1
+\end{cases}\end{split}\]</div>
+<p>for <span class="math">\(y \in \{ -1, 1\}\)</span> and <span class="math">\(y' \in \mathbb R\)</span></p>
+</div>
+<hr class="docutils" />
+<div class="section" id="modelsmoothedhinge">
+<h4><a class="reference internal" href="generated/tick.optim.model.ModelSmoothedHinge.html#tick.optim.model.ModelSmoothedHinge" title="tick.optim.model.ModelSmoothedHinge"><code class="xref py py-class docutils literal"><span class="pre">ModelSmoothedHinge</span></code></a><a class="headerlink" href="#modelsmoothedhinge" title="Permalink to this headline">¶</a></h4>
+<p>This is the smoothed hinge loss given by</p>
+<div class="math">
+\[\begin{split}\ell(y, y') =
+\begin{cases}
+1 - y y' - \frac \delta 2 &amp;\text{ if } y y' \leq 1 - \delta \\
+\frac{(1 - y y')^2}{2 \delta} &amp;\text{ if } 1 - \delta &lt; y y' &lt; 1 \\
+0 &amp;\text{ if } y y' \geq 1
+\end{cases}\end{split}\]</div>
+<p>for <span class="math">\(y \in \{ -1, 1\}\)</span> and <span class="math">\(y' \in \mathbb R\)</span>,
+where <span class="math">\(\delta \in (0, 1)\)</span> can be tuned using the <code class="docutils literal"><span class="pre">smoothness</span></code> parameter.
+Note that <span class="math">\(\delta = 0\)</span> corresponds to the hinge loss.</p>
+</div>
+<hr class="docutils" />
+<div class="section" id="modelmodifiedhuber">
+<h4><a class="reference internal" href="generated/tick.optim.model.ModelModifiedHuber.html#tick.optim.model.ModelModifiedHuber" title="tick.optim.model.ModelModifiedHuber"><code class="xref py py-class docutils literal"><span class="pre">ModelModifiedHuber</span></code></a><a class="headerlink" href="#modelmodifiedhuber" title="Permalink to this headline">¶</a></h4>
+<p>The modified Huber loss, used for robust classification (less sensitive to
+outliers). The loss is given by</p>
+<div class="math">
+\[\begin{split}\ell(y, y') =
+\begin{cases}
+- 4 y y' &amp;\text{ if } y y' \leq -1 \\
+(1 - y y')^2 &amp;\text{ if } -1 &lt; y y' &lt; 1 \\
+0 &amp;\text{ if } y y' \geq 1
+\end{cases}\end{split}\]</div>
+<p>for <span class="math">\(y \in \{ -1, 1\}\)</span> and <span class="math">\(y' \in \mathbb R\)</span></p>
+</div>
+</div>
+<hr class="docutils" />
+<div class="section" id="count-data-models">
+<h3>Count data models<a class="headerlink" href="#count-data-models" title="Permalink to this headline">¶</a></h3>
+<p>(<a class="reference external" href="../modules/code_samples/optim/plot_losses_count_data.py">Source code</a>, <a class="reference external" href="../modules/code_samples/optim/plot_losses_count_data.png">png</a>, <a class="reference external" href="../modules/code_samples/optim/plot_losses_count_data.hires.png">hires.png</a>, <a class="reference external" href="../modules/code_samples/optim/plot_losses_count_data.pdf">pdf</a>)</p>
+<div class="figure">
+<img alt="../_images/plot_losses_count_data1.png" src="../_images/plot_losses_count_data1.png" />
+</div>
+<div class="section" id="modelpoisreg">
+<h4><a class="reference internal" href="generated/tick.optim.model.ModelPoisReg.html#tick.optim.model.ModelPoisReg" title="tick.optim.model.ModelPoisReg"><code class="xref py py-class docutils literal"><span class="pre">ModelPoisReg</span></code></a><a class="headerlink" href="#modelpoisreg" title="Permalink to this headline">¶</a></h4>
+<p>Poisson regression with exponential link with loss corresponds to the loss</p>
+<div class="math">
+\[\ell(y, y') = e^{y'} - y y'\]</div>
+<p>for <span class="math">\(y \in \mathbb N\)</span> and <span class="math">\(y' \in \mathbb R\)</span> and is obtained
+using <code class="docutils literal"><span class="pre">link='exponential'</span></code>.</p>
+<p>Poisson regression with identity link, namely with loss</p>
+<div class="math">
+\[\ell(y, y') = y' - y \log(y')\]</div>
+<p>for <span class="math">\(y \in \mathbb N\)</span> and <span class="math">\(y' &gt; 0\)</span> is obtained using
+<code class="docutils literal"><span class="pre">link='identity'</span></code>.</p>
+</div>
+</div>
+<hr class="docutils" />
 <div class="section" id="generalized-linear-models-with-individual-intercepts">
 <h3>1.3 Generalized linear models with individual intercepts<a class="headerlink" href="#generalized-linear-models-with-individual-intercepts" title="Permalink to this headline">¶</a></h3>
 <p>The setting is the same as with generalized linear models, but where we used an
@@ -459,8 +649,8 @@ parametrization of the kernel (exponential or sum-exponential) or by the loss
 function used (least squares or log-likelihood).</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="39%" />
-<col width="61%" />
+<col width="40%" />
+<col width="60%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Model</th>
@@ -476,6 +666,9 @@ function used (least squares or log-likelihood).</p>
 </tr>
 <tr class="row-even"><td>Least-squares for Hawkes model with sum of exponential kernels</td>
 <td><a class="reference internal" href="generated/tick.optim.model.ModelHawkesFixedSumExpKernLeastSq.html#tick.optim.model.ModelHawkesFixedSumExpKernLeastSq" title="tick.optim.model.ModelHawkesFixedSumExpKernLeastSq"><code class="xref py py-class docutils literal"><span class="pre">ModelHawkesFixedSumExpKernLeastSq</span></code></a></td>
+</tr>
+<tr class="row-odd"><td>Log-likelihood for Hawkes model with sum of exponential kernels</td>
+<td><a class="reference internal" href="generated/tick.optim.model.ModelHawkesFixedSumExpKernLogLik.html#tick.optim.model.ModelHawkesFixedSumExpKernLogLik" title="tick.optim.model.ModelHawkesFixedSumExpKernLogLik"><code class="xref py py-class docutils literal"><span class="pre">ModelHawkesFixedSumExpKernLogLik</span></code></a></td>
 </tr>
 </tbody>
 </table>
@@ -496,7 +689,7 @@ and <span class="math">\(+\infty\)</span> otherwise).</p>
 <p>Note that depending on the problem, <span class="math">\(g\)</span> might actually be used only a subset of
 entries of <span class="math">\(w\)</span>.
 For instance, for generalized linear models, <span class="math">\(w\)</span> contains the model weights and
-an intercept, which is not penalized, see <a class="reference internal" href="#optim-model-glm"><span class="std std-ref">generalized linear models</span></a>.
+an intercept, which is not penalized, see <a class="reference internal" href="#linear-models"><span class="std std-ref">generalized linear models</span></a>.
 Indeed, in all <code class="docutils literal"><span class="pre">prox</span></code> classes, an optional <code class="docutils literal"><span class="pre">range</span></code> parameter is available, to apply
 the regularization only to a subset of entries of <span class="math">\(w\)</span>.</p>
 <div class="section" id="the-prox-class-api">
@@ -838,16 +1031,22 @@ an automatic tuning of the step size.</p>
 <td><a class="reference internal" href="generated/tick.optim.solver.BFGS.html#tick.optim.solver.BFGS" title="tick.optim.solver.BFGS"><code class="xref py py-class docutils literal"><span class="pre">BFGS</span></code></a></td>
 </tr>
 <tr class="row-odd"><td>Self-Concordant Proximal Gradient Descent</td>
-<td><code class="xref py py-class docutils literal"><span class="pre">SCPG</span></code></td>
+<td><a class="reference internal" href="generated/tick.optim.solver.SCPG.html#tick.optim.solver.SCPG" title="tick.optim.solver.SCPG"><code class="xref py py-class docutils literal"><span class="pre">SCPG</span></code></a></td>
 </tr>
-<tr class="row-even"><td>Stochastic Gradient Descent</td>
+<tr class="row-even"><td>Generalized Forward-Backward</td>
+<td><a class="reference internal" href="generated/tick.optim.solver.GFB.html#tick.optim.solver.GFB" title="tick.optim.solver.GFB"><code class="xref py py-class docutils literal"><span class="pre">GFB</span></code></a></td>
+</tr>
+<tr class="row-odd"><td>Stochastic Gradient Descent</td>
 <td><a class="reference internal" href="generated/tick.optim.solver.SGD.html#tick.optim.solver.SGD" title="tick.optim.solver.SGD"><code class="xref py py-class docutils literal"><span class="pre">SGD</span></code></a></td>
 </tr>
-<tr class="row-odd"><td>Adaptive Gradient Descent solver</td>
+<tr class="row-even"><td>Adaptive Gradient Descent solver</td>
 <td><a class="reference internal" href="generated/tick.optim.solver.AdaGrad.html#tick.optim.solver.AdaGrad" title="tick.optim.solver.AdaGrad"><code class="xref py py-class docutils literal"><span class="pre">AdaGrad</span></code></a></td>
 </tr>
-<tr class="row-even"><td>Stochastic Variance Reduced Descent</td>
+<tr class="row-odd"><td>Stochastic Variance Reduced Descent</td>
 <td><a class="reference internal" href="generated/tick.optim.solver.SVRG.html#tick.optim.solver.SVRG" title="tick.optim.solver.SVRG"><code class="xref py py-class docutils literal"><span class="pre">SVRG</span></code></a></td>
+</tr>
+<tr class="row-even"><td>Stochastic Averaged Gradient Descent</td>
+<td><a class="reference internal" href="generated/tick.optim.solver.SAGA.html#tick.optim.solver.SAGA" title="tick.optim.solver.SAGA"><code class="xref py py-class docutils literal"><span class="pre">SAGA</span></code></a></td>
 </tr>
 <tr class="row-odd"><td>Stochastic Dual Coordinate Ascent</td>
 <td><a class="reference internal" href="generated/tick.optim.solver.SDCA.html#tick.optim.solver.SDCA" title="tick.optim.solver.SDCA"><code class="xref py py-class docutils literal"><span class="pre">SDCA</span></code></a></td>

@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>Fit Hawkes on finance data &#8212; tick 0.2.1 documentation</title>
+    <title>Fit Hawkes on finance data &#8212; tick 0.3.0 documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.2.1',
+        VERSION:     '0.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.2</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.3</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -83,6 +83,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../modules/inference.html#generalized-linear-models">1. Generalized linear models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../modules/inference.html#hawkes">2. Hawkes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../modules/inference.html#survival-analysis">3. Survival analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/inference.html#robust-analysis">4. Robust Analysis</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../modules/optim.html"><code class="docutils literal"><span class="pre">tick.optim</span></code>: optimization toolbox</a><ul>
@@ -125,6 +126,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../modules/dev.html#how-to-add-a-new-model-solver-or-prox">How to add a new model, solver or prox</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../modules/dev.html#enable-python-pickling-of-c-objects">Enable Python-pickling of C++ objects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../modules/dev.html#tips-for-debugging-c-classes-in-tick">Tips for debugging C++ classes in tick</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/R.html">How to use <code class="docutils literal"><span class="pre">tick</span></code> from the R statistical software</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/R.html#training-a-logistic-regression-model">1. Training a logistic regression model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/R.html#simulation-of-a-hawkes-process">2. Simulation of a Hawkes process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/R.html#using-tick-optim-from-r">3. Using <code class="docutils literal"><span class="pre">tick.optim</span></code> from R</a></li>
 </ul>
 </li>
 </ul>
@@ -174,11 +181,11 @@ triggering (resp. preventing) market orders at the ask (resp. at the bid).</p>
 
 <span class="kn">from</span> <span class="nn">tick.dataset</span> <span class="k">import</span> <a href="../modules/generated/tick.dataset.fetch_hawkes_bund_data.html#tick.dataset.fetch_hawkes_bund_data"><span class="n">fetch_hawkes_bund_data</span></a>
 <span class="kn">from</span> <span class="nn">tick.inference</span> <span class="k">import</span> <a href="../modules/generated/tick.inference.HawkesConditionalLaw.html#tick.inference.HawkesConditionalLaw"><span class="n">HawkesConditionalLaw</span></a>
-<span class="kn">from</span> <span class="nn">tick.plot</span> <span class="k">import</span> <span class="n">plot_hawkes_kernel_norms</span>
+<span class="kn">from</span> <span class="nn">tick.plot</span> <span class="k">import</span> <a href="../modules/generated/tick.plot.plot_hawkes_kernel_norms.html#tick.plot.plot_hawkes_kernel_norms"><span class="n">plot_hawkes_kernel_norms</span></a>
 
 <span class="n">timestamps_list</span> <span class="o">=</span> <a href="../modules/generated/tick.dataset.fetch_hawkes_bund_data.html#tick.dataset.fetch_hawkes_bund_data"><span class="n">fetch_hawkes_bund_data</span></a><span class="p">()</span>
 
-<span class="n">kernel_discretization</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">50</span><span class="p">)))</span>
+<span class="n">kernel_discretization</span> <span class="o">=</span> <a href="http://docs.scipy.org/doc/numpy-1.6.0/reference/generated/numpy.hstack.html#numpy.hstack"><span class="n">np</span><span class="o">.</span><span class="n">hstack</span></a><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">50</span><span class="p">)))</span>
 <span class="n">hawkes_learner</span> <span class="o">=</span> <a href="../modules/generated/tick.inference.HawkesConditionalLaw.html#tick.inference.HawkesConditionalLaw"><span class="n">HawkesConditionalLaw</span></a><span class="p">(</span>
     <span class="n">claw_method</span><span class="o">=</span><span class="s2">&quot;log&quot;</span><span class="p">,</span> <span class="n">delta_lag</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">min_lag</span><span class="o">=</span><span class="mf">5e-4</span><span class="p">,</span> <span class="n">max_lag</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
     <span class="n">quad_method</span><span class="o">=</span><span class="s2">&quot;log&quot;</span><span class="p">,</span> <span class="n">n_quad</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">min_support</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">max_support</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
@@ -186,12 +193,12 @@ triggering (resp. preventing) market orders at the ask (resp. at the bid).</p>
 
 <span class="n">hawkes_learner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">timestamps_list</span><span class="p">)</span>
 
-<span class="n">plot_hawkes_kernel_norms</span><span class="p">(</span><span class="n">hawkes_learner</span><span class="p">,</span>
+<a href="../modules/generated/tick.plot.plot_hawkes_kernel_norms.html#tick.plot.plot_hawkes_kernel_norms"><span class="n">plot_hawkes_kernel_norms</span></a><span class="p">(</span><span class="n">hawkes_learner</span><span class="p">,</span>
                          <span class="n">node_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;P_u&quot;</span><span class="p">,</span> <span class="s2">&quot;P_d&quot;</span><span class="p">,</span> <span class="s2">&quot;T_a&quot;</span><span class="p">,</span> <span class="s2">&quot;T_b&quot;</span><span class="p">])</span>
 </pre></div>
 </div>
-<p><strong>Total running time of the example:</strong>  4.59 seconds
-( 0 minutes  4.59 seconds)</p>
+<p><strong>Total running time of the example:</strong>  5.83 seconds
+( 0 minutes  5.83 seconds)</p>
 <dl class="docutils">
 <dt>Mentioned <em>tick</em> classes:</dt>
 <dd><ul class="first last simple">

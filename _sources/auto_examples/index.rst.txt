@@ -328,6 +328,31 @@ How to use tick in practise?
 
 .. raw:: html
 
+    <div class="thumbnailContainer" tooltip="This Hawkes EM (`tick.inference.HawkesEM`) algorithm assume that kernels are piecewise constant...">
+
+.. only:: html
+
+  .. figure:: ./images/thumb/plot_hawkes_em.png
+    :target: ./plot_hawkes_em.html
+
+    :ref:`example_plot_hawkes_em.py`
+
+
+.. raw:: html
+
+    </div>
+
+
+
+.. toctree::
+   :hidden:
+
+   ./plot_hawkes_em
+
+
+
+.. raw:: html
+
     <div class="thumbnailContainer" tooltip="Generates Linear, Logistic and Poisson regression realizations given a weight vector. ">
 
 .. only:: html
@@ -353,14 +378,14 @@ How to use tick in practise?
 
 .. raw:: html
 
-    <div class="thumbnailContainer" tooltip="This Hawkes EM (`tick.inference.HawkesEM`) algorithm assume that kernels are piecewise constant...">
+    <div class="thumbnailContainer" tooltip="In this example with simulate a linear regression model with 1000 samples and 5 features. The s...">
 
 .. only:: html
 
-  .. figure:: ./images/thumb/plot_hawkes_em.png
-    :target: ./plot_hawkes_em.html
+  .. figure:: ./images/thumb/plot_robust_linear_regression.png
+    :target: ./plot_robust_linear_regression.html
 
-    :ref:`example_plot_hawkes_em.py`
+    :ref:`example_plot_robust_linear_regression.py`
 
 
 .. raw:: html
@@ -372,7 +397,32 @@ How to use tick in practise?
 .. toctree::
    :hidden:
 
-   ./plot_hawkes_em
+   ./plot_robust_linear_regression
+
+
+
+.. raw:: html
+
+    <div class="thumbnailContainer" tooltip="This example illustrates the convergence speed of the asynchronous version of SVRG solver. This...">
+
+.. only:: html
+
+  .. figure:: ./images/thumb/plot_asynchronous_stochastic_solver.png
+    :target: ./plot_asynchronous_stochastic_solver.html
+
+    :ref:`example_plot_asynchronous_stochastic_solver.py`
+
+
+.. raw:: html
+
+    </div>
+
+
+
+.. toctree::
+   :hidden:
+
+   ./plot_asynchronous_stochastic_solver
 
 
 
@@ -428,7 +478,7 @@ How to use tick in practise?
 
 .. raw:: html
 
-    <div class="thumbnailContainer" tooltip="This example illustrates the opimization of three linear models:     * Linear regression (`tick...">
+    <div class="thumbnailContainer" tooltip="This example illustrates the optimization of three linear models:     * Linear regression (`tic...">
 
 .. only:: html
 
@@ -472,6 +522,20 @@ How to use tick in practise?
 .. toctree::
    :hidden:
 
+   optim/plot_losses_classification
+
+
+
+.. toctree::
+   :hidden:
+
+   optim/plot_losses_regression
+
+
+
+.. toctree::
+   :hidden:
+
    optim/plot_prox_multi
 
 
@@ -487,6 +551,13 @@ How to use tick in practise?
    :hidden:
 
    optim/plot_prox_api
+
+
+
+.. toctree::
+   :hidden:
+
+   optim/plot_losses_count_data
 
 
 

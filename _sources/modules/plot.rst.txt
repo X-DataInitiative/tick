@@ -76,7 +76,6 @@ Some other plot utilities.
    :template: function.rst
 
    plot.plot_timefunction
-   plot.stem
    plot.stems
 
 .. plot:: modules/code_samples/simulation/plot_time_function.py

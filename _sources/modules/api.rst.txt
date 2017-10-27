@@ -35,6 +35,24 @@ Generalized linear models
    inference.LogisticRegression
    inference.PoissonRegression
 
+Robust Analysis
+---------------
+.. currentmodule:: tick
+
+.. autosummary::
+   :toctree: generated/
+   :template: function.rst
+
+   inference.std_mad
+   inference.std_iqr
+
+.. autosummary::
+   :toctree: generated/
+   :template: class.rst
+
+   inference.RobustLinearRegression
+
+
 Survival Analysis
 -----------------
 .. currentmodule:: tick
@@ -82,8 +100,9 @@ in tick.
    :no-members:
    :no-inherited-members:
 
-Generalized Linear Models
--------------------------
+
+Linear models for regression
+----------------------------
 .. currentmodule:: tick
 
 .. autosummary::
@@ -91,20 +110,59 @@ Generalized Linear Models
    :template: class.rst
 
    optim.model.ModelLinReg
-   optim.model.ModelLinRegWithIntercepts
-   optim.model.ModelLogReg
-   optim.model.ModelPoisReg
-   optim.model.ModelCoxRegPartialLik
+   optim.model.ModelHuber
+   optim.model.ModelAbsoluteRegression
+   optim.model.ModelEpsilonInsensitive
 
-Self Control Case Series
--------------------------
+
+Linear models for binary classification
+---------------------------------------
 .. currentmodule:: tick
 
 .. autosummary::
    :toctree: generated/
    :template: class.rst
 
+   optim.model.ModelLogReg
+   optim.model.ModelHinge
+   optim.model.ModelSmoothedHinge
+   optim.model.ModelQuadraticHinge
+   optim.model.ModelModifiedHuber
+
+
+Linear models for count data
+----------------------------
+.. currentmodule:: tick
+
+.. autosummary::
+   :toctree: generated/
+   :template: class.rst
+
+   optim.model.ModelPoisReg
+
+
+Linear models with individual intercepts (outliers detection)
+-------------------------------------------------------------
+.. currentmodule:: tick
+
+.. autosummary::
+   :toctree: generated/
+   :template: class.rst
+
+   optim.model.ModelLinRegWithIntercepts
+
+
+Survival analysis
+-----------------
+.. currentmodule:: tick
+
+.. autosummary::
+   :toctree: generated/
+   :template: class.rst
+
+   optim.model.ModelCoxRegPartialLik
    optim.model.ModelSCCS
+
 
 Hawkes
 ------
@@ -116,6 +174,7 @@ Hawkes
 
    optim.model.ModelHawkesFixedExpKernLogLik
    optim.model.ModelHawkesFixedExpKernLeastSq
+   optim.model.ModelHawkesFixedSumExpKernLogLik
    optim.model.ModelHawkesFixedSumExpKernLeastSq
 
 
@@ -176,6 +235,7 @@ Batch solvers
    optim.solver.AGD
    optim.solver.BFGS
    optim.solver.GFB
+   optim.solver.SCPG
 
 Stochastic solvers
 ------------------
@@ -186,9 +246,10 @@ Stochastic solvers
    :template: class.rst
 
    optim.solver.SGD
-   optim.solver.SVRG
-   optim.solver.SDCA
    optim.solver.AdaGrad
+   optim.solver.SVRG
+   optim.solver.SAGA
+   optim.solver.SDCA
 
 History
 -------
@@ -224,7 +285,6 @@ Functions
    plot.plot_basis_kernels
    plot.plot_timefunction
    plot.plot_point_process
-   plot.stem
    plot.stems
 
 
@@ -248,6 +308,25 @@ Classes
    preprocessing.FeaturesBinarizer
    preprocessing.LongitudinalFeaturesProduct
    preprocessing.LongitudinalFeaturesLagger
+
+
+.. _api-metrics:
+
+:mod:`tick.metrics`: Metrics utilities
+======================================
+
+This module contains some functions to compute some metrics that help evaluate
+the performance of learning techniques.
+
+Functions
+---------
+
+.. autosummary::
+   :toctree: generated/
+   :template: function.rst
+
+   metrics.support_fdp
+   metrics.support_recall
 
 
 .. _api-simulation:

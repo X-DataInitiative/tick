@@ -1,0 +1,12 @@
+
+.. _ModelSmoothedHinge:
+
+tick.optim.model.ModelSmoothedHinge
+===================================
+
+.. currentmodule:: tick.optim.model
+
+.. autoclass:: ModelSmoothedHinge
+
+.. include:: tick.optim.model.ModelSmoothedHinge.examples
+    :allowmissing:

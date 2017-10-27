@@ -1,0 +1,302 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-97947441-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+    <title>How to use tick from the R statistical software &#8212; tick 0.3.0 documentation</title>
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.3.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Developer documentation" href="dev.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+
+  <div id="navbar" class="None navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          tick</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.3</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="../auto_examples/index.html">Examples</a></li>
+                <li><a href="api.html">API</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Browse <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="inference.html"><code class="docutils literal"><span class="pre">tick.inference</span></code>: user-friendly inference tools</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="inference.html#generalized-linear-models">1. Generalized linear models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inference.html#hawkes">2. Hawkes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inference.html#survival-analysis">3. Survival analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inference.html#robust-analysis">4. Robust Analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="optim.html"><code class="docutils literal"><span class="pre">tick.optim</span></code>: optimization toolbox</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="optim.html#contents">Contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="optim.html#a-first-example">A First example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="optim.html#tick-optim-model-model-classes">1. <code class="docutils literal"><span class="pre">tick.optim.model</span></code>: model classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="optim.html#tick-optim-prox-proximal-operators">2. <code class="docutils literal"><span class="pre">tick.optim.prox</span></code>: proximal operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="optim.html#tick-optim-solver-solvers">3. <code class="docutils literal"><span class="pre">tick.optim.solver</span></code>: solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="optim.html#what-s-under-the-hood">4. What’s under the hood?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="plot.html"><code class="docutils literal"><span class="pre">tick.plot</span></code>: plotting utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="plot.html#optimization">Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot.html#hawkes-estimation">Hawkes estimation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot.html#point-process-simulation">Point process simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot.html#others">Others</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="generated/tick.preprocessing.FeaturesBinarizer.html">tick.preprocessing.FeaturesBinarizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/tick.preprocessing.LongitudinalFeaturesProduct.html">tick.preprocessing.LongitudinalFeaturesProduct</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/tick.preprocessing.LongitudinalFeaturesLagger.html">tick.preprocessing.LongitudinalFeaturesLagger</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code>: simulation toolbox</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="simulation.html#simulation-tools">1. Simulation tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="simulation.html#linear-model-simulation">2. Linear model simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="simulation.html#survival-analysis-simulation">3. Survival analysis simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="simulation.html#point-process-simulation">4. Point process simulation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="dataset.html"><code class="docutils literal"><span class="pre">tick.dataset</span></code>: real world datasets</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dataset.html#functions">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dataset.html#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="dev.html">Developer documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dev.html#main-highlights">Main highlights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev.html#base-class">Base class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev.html#how-to-add-a-new-model-solver-or-prox">How to add a new model, solver or prox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev.html#enable-python-pickling-of-c-objects">Enable Python-pickling of C++ objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev.html#tips-for-debugging-c-classes-in-tick">Tips for debugging C++ classes in tick</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">How to use <code class="docutils literal"><span class="pre">tick</span></code> from the R statistical software</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#training-a-logistic-regression-model">1. Training a logistic regression model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#simulation-of-a-hawkes-process">2. Simulation of a Hawkes process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#using-tick-optim-from-r">3. Using <code class="docutils literal"><span class="pre">tick.optim</span></code> from R</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container content-container">
+  
+  <div class="section" id="how-to-use-tick-from-the-r-statistical-software">
+<span id="r-usage"></span><h1>How to use <code class="docutils literal"><span class="pre">tick</span></code> from the R statistical software<a class="headerlink" href="#how-to-use-tick-from-the-r-statistical-software" title="Permalink to this headline">¶</a></h1>
+<p><code class="docutils literal"><span class="pre">tick</span></code> really is a Python library. However, you can use it quite easily
+from the <code class="docutils literal"><span class="pre">R</span></code> statistical software using the <code class="docutils literal"><span class="pre">reticulate</span></code> library, that
+builds automatically wrappers around Python code.</p>
+<p>Note that the best experience and performance for using <code class="docutils literal"><span class="pre">tick</span></code> is
+obviously from Python, the main problem being the fact that all two-dimensional
+arrays will be duplicated, since <code class="docutils literal"><span class="pre">R</span></code> supports only the column-major format.
+This copy is transparent for the end-user.</p>
+<p>Before starting, you need to install the <code class="docutils literal"><span class="pre">reticulate</span></code> library in your <code class="docutils literal"><span class="pre">R</span></code>
+system, and have a working version of <code class="docutils literal"><span class="pre">tick</span></code> on your version of Python 3.
+Your <code class="docutils literal"><span class="pre">R</span></code> code should begin with</p>
+<div class="highlight-r"><div class="highlight"><pre><span></span><span class="kn">library</span><span class="p">(</span><span class="s">&#39;reticulate&#39;</span><span class="p">)</span>
+reticulate<span class="o">::</span>use_python<span class="p">(</span><span class="s">&#39;SOMEPATH1/python3&#39;</span><span class="p">)</span>
+tick <span class="o">=</span> import_from_path<span class="p">(</span><span class="s">&#39;tick&#39;</span><span class="p">,</span> <span class="s">&#39;SOMEPATH2/tick/&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>where <code class="docutils literal"><span class="pre">SOMEPATH1</span></code> is the path to the Python 3 binary used on your system
+and <code class="docutils literal"><span class="pre">SOMEPATH2</span></code> is the path to the installation of <code class="docutils literal"><span class="pre">tick</span></code> on your system
+(path to the source code if you git cloned and compiled directly <code class="docutils literal"><span class="pre">tick</span></code>).</p>
+<div class="section" id="training-a-logistic-regression-model">
+<span id="r-usage-logistic-regression"></span><h2>1. Training a logistic regression model<a class="headerlink" href="#training-a-logistic-regression-model" title="Permalink to this headline">¶</a></h2>
+<p>The example given below downloads a dataset for binary classification and
+trains a logistic regression with elastic-net penalization.
+Then it displays the ROC curve on testing data using some tools from
+<code class="docutils literal"><span class="pre">sklearn.metric</span></code> (that needs to be installed in your python distribution
+as well).</p>
+<div class="highlight-r"><div class="highlight"><pre><span></span><span class="c1"># Fetch data</span>
+fetch_tick_dataset <span class="o">=</span> tick<span class="o">$</span>dataset<span class="o">$</span>fetch_tick_dataset
+train_set <span class="o">=</span> fetch_tick_dataset<span class="p">(</span><span class="s">&#39;binary/adult/adult.trn.bz2&#39;</span><span class="p">)</span>
+test_set <span class="o">=</span> fetch_tick_dataset<span class="p">(</span><span class="s">&#39;binary/adult/adult.tst.bz2&#39;</span><span class="p">)</span>
+
+<span class="c1"># Logistic regression training</span>
+LogisticRegression <span class="o">=</span> tick<span class="o">$</span>inference<span class="o">$</span>LogisticRegression
+clf <span class="o">=</span> LogisticRegression<span class="p">(</span>penalty<span class="o">=</span><span class="s">&#39;elasticnet&#39;</span><span class="p">)</span>
+clf<span class="o">$</span>fit<span class="p">(</span>train_set<span class="p">[[</span><span class="m">1</span><span class="p">]],</span> train_set<span class="p">[[</span><span class="m">2</span><span class="p">]])</span>
+
+<span class="c1"># Plot of the ROC curve on the testing set using scikit-learn</span>
+metrics <span class="o">=</span> import<span class="p">(</span><span class="s">&#39;sklearn.metrics&#39;</span><span class="p">)</span>
+predictions <span class="o">=</span> clf<span class="o">$</span>predict_proba<span class="p">(</span>test_set<span class="p">[[</span><span class="m">1</span><span class="p">]])</span>
+res <span class="o">=</span> metrics<span class="o">$</span>roc_curve<span class="p">(</span>test_set<span class="p">[[</span><span class="m">2</span><span class="p">]],</span> predictions<span class="p">[,</span> <span class="m">2</span><span class="p">])</span>
+fpr <span class="o">=</span> res<span class="p">[[</span><span class="m">1</span><span class="p">]]</span>
+tpr <span class="o">=</span> res<span class="p">[[</span><span class="m">2</span><span class="p">]]</span>
+plot<span class="p">(</span>fpr<span class="p">,</span> tpr<span class="p">,</span> type<span class="o">=</span><span class="s">&#39;l&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This is very close to the equivalent <code class="docutils literal"><span class="pre">Python</span></code> code. To produce this <code class="docutils literal"><span class="pre">R</span></code>
+code from the <code class="docutils literal"><span class="pre">Python</span></code> equivalent, we simply replaced <code class="docutils literal"><span class="pre">.</span></code> by <code class="docutils literal"><span class="pre">$</span></code>
+when accessing modules and classes, and when a function returns more than
+one argument (such as <code class="docutils literal"><span class="pre">metrics$roc_curve</span></code> in the previous example), we access
+the returned arguments through the <code class="docutils literal"><span class="pre">res[[1]]</span></code> syntax.</p>
+</div>
+<div class="section" id="simulation-of-a-hawkes-process">
+<span id="r-usage-hawkes-simulation"></span><h2>2. Simulation of a Hawkes process<a class="headerlink" href="#simulation-of-a-hawkes-process" title="Permalink to this headline">¶</a></h2>
+<p>This example simulates a unidimensional Hawkes process with sum of exponentials
+kernel, and plots the simulated intensity.
+Note that integer 0 must be coded as <code class="docutils literal"><span class="pre">0L</span></code>, otherwise it is interpreted as
+floating point and results in errors.</p>
+<div class="highlight-r"><div class="highlight"><pre><span></span>SimuHawkes <span class="o">=</span> tick<span class="o">$</span>simulation<span class="o">$</span>SimuHawkes
+HawkesKernelSumExp <span class="o">=</span> tick<span class="o">$</span>simulation<span class="o">$</span>HawkesKernelSumExp
+end_time <span class="o">=</span> <span class="m">40L</span>
+
+hawkes <span class="o">=</span> SimuHawkes<span class="p">(</span>n_nodes<span class="o">=</span><span class="m">1L</span><span class="p">,</span> end_time<span class="o">=</span>end_time<span class="p">,</span> verbose<span class="o">=</span><span class="kc">FALSE</span><span class="p">,</span> seed<span class="o">=</span><span class="m">1398L</span><span class="p">)</span>
+kernel <span class="o">=</span> HawkesKernelSumExp<span class="p">(</span><span class="kt">c</span><span class="p">(</span><span class="m">.1</span><span class="p">,</span> <span class="m">.2</span><span class="p">,</span> <span class="m">.1</span><span class="p">),</span> <span class="kt">c</span><span class="p">(</span><span class="m">1.</span><span class="p">,</span> <span class="m">3.</span><span class="p">,</span> <span class="m">7.</span><span class="p">))</span>
+hawkes<span class="o">$</span>set_kernel<span class="p">(</span><span class="m">0L</span><span class="p">,</span> <span class="m">0L</span><span class="p">,</span> kernel<span class="p">)</span>
+hawkes<span class="o">$</span>set_baseline<span class="p">(</span><span class="m">0L</span><span class="p">,</span> <span class="m">1.</span><span class="p">)</span>
+
+dt <span class="o">=</span> <span class="m">0.01</span>
+hawkes<span class="o">$</span>track_intensity<span class="p">(</span>dt<span class="p">)</span>
+hawkes<span class="o">$</span>simulate<span class="p">()</span>
+timestamps <span class="o">=</span> hawkes<span class="o">$</span>timestamps
+intensity <span class="o">=</span> hawkes<span class="o">$</span>tracked_intensity
+intensity_times <span class="o">=</span> hawkes<span class="o">$</span>intensity_tracked_times
+
+plot<span class="p">(</span>intensity<span class="p">[[</span><span class="m">1</span><span class="p">]],</span> type<span class="o">=</span><span class="s">&#39;l&#39;</span><span class="p">,</span> xlab<span class="o">=</span><span class="s">&#39;Time&#39;</span><span class="p">,</span> ylab<span class="o">=</span><span class="s">&#39;Hawkes intensity&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="using-tick-optim-from-r">
+<span id="r-usage-tick-optim"></span><h2>3. Using <code class="docutils literal"><span class="pre">tick.optim</span></code> from R<a class="headerlink" href="#using-tick-optim-from-r" title="Permalink to this headline">¶</a></h2>
+<p>In the following example we use <code class="docutils literal"><span class="pre">tick.simulation</span></code> to simulate a linear
+regression model with sparse weights and <code class="docutils literal"><span class="pre">tick.optim</span></code> to estimate these
+weights, by combining a <code class="docutils literal"><span class="pre">ModelLinReg</span></code> object for linear regression, and a
+<code class="docutils literal"><span class="pre">ProxSlope</span></code> object for SLOPE penalization (Sorted-L1 norm) in a <code class="docutils literal"><span class="pre">AGD</span></code>
+solver, namely accelerated gradient descent.
+We then plot the true weights and estimated ones, together with the solver’s
+history. Note that the estimation of the weights can be achieved more easily
+through the <code class="docutils literal"><span class="pre">tick.inference.LinearRegression</span></code> class as well.</p>
+<div class="highlight-r"><div class="highlight"><pre><span></span><span class="c1"># Simulation of a linear regression model with sparse weights</span>
+weights_sparse_gauss <span class="o">=</span> tick<span class="o">$</span>simulation<span class="o">$</span>weights_sparse_gauss
+weights <span class="o">=</span> weights_sparse_gauss<span class="p">(</span>n_weights<span class="o">=</span><span class="m">50L</span><span class="p">)</span>
+SimuLinReg <span class="o">=</span> tick<span class="o">$</span>simulation<span class="o">$</span>SimuLinReg
+simu <span class="o">=</span> SimuLinReg<span class="p">(</span>weights<span class="o">=</span>weights<span class="p">,</span> n_samples<span class="o">=</span><span class="m">5000L</span><span class="p">)</span>
+res <span class="o">=</span> simu<span class="o">$</span>simulate<span class="p">()</span>
+X <span class="o">=</span> res<span class="p">[[</span><span class="m">1</span><span class="p">]]</span>
+y <span class="o">=</span> res<span class="p">[[</span><span class="m">2</span><span class="p">]]</span>
+
+<span class="c1"># Use tick.optim to train a linear regression model with SLOPE penalization</span>
+optim <span class="o">=</span> tick<span class="o">$</span>optim
+ModelLinReg <span class="o">=</span> optim<span class="o">$</span>model<span class="o">$</span>ModelLinReg
+ProxSlope <span class="o">=</span> optim<span class="o">$</span>prox<span class="o">$</span>ProxSlope
+AGD <span class="o">=</span> optim<span class="o">$</span>solver<span class="o">$</span>AGD
+
+model <span class="o">=</span> ModelLinReg<span class="p">(</span>fit_intercept<span class="o">=</span><span class="kc">FALSE</span><span class="p">)</span><span class="o">$</span>fit<span class="p">(</span>X<span class="p">,</span> y<span class="p">)</span>
+prox <span class="o">=</span> ProxSlope<span class="p">(</span>strength<span class="o">=</span><span class="m">1e-2</span><span class="p">,</span> fdr<span class="o">=</span><span class="m">0.05</span><span class="p">)</span>
+step <span class="o">=</span> <span class="m">1</span> <span class="o">/</span> model<span class="o">$</span>get_lip_best<span class="p">()</span>
+solver <span class="o">=</span> AGD<span class="p">(</span>step<span class="o">=</span>step<span class="p">)</span><span class="o">$</span>set_model<span class="p">(</span>model<span class="p">)</span><span class="o">$</span>set_prox<span class="p">(</span>prox<span class="p">)</span>
+x_min <span class="o">=</span> solver<span class="o">$</span><span class="kp">solve</span><span class="p">()</span>
+
+<span class="c1"># Plot the true weights, estimated ones and solver&#39;s history</span>
+par<span class="p">(</span>mfrow<span class="o">=</span><span class="kt">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span> <span class="m">3</span><span class="p">))</span>
+plot<span class="p">(</span>weights<span class="p">,</span> type<span class="o">=</span><span class="s">&#39;h&#39;</span><span class="p">,</span> ylab<span class="o">=</span><span class="s">&#39;Weights&#39;</span><span class="p">)</span>
+title<span class="p">(</span><span class="s">&#39;Ground truth weights&#39;</span><span class="p">)</span>
+plot<span class="p">(</span>x_min<span class="p">,</span> type<span class="o">=</span><span class="s">&#39;h&#39;</span><span class="p">,</span> ylab<span class="o">=</span><span class="s">&#39;Weights&#39;</span><span class="p">)</span>
+title<span class="p">(</span><span class="s">&#39;Learned weights&#39;</span><span class="p">)</span>
+plot<span class="p">(</span>solver<span class="o">$</span>get_history<span class="p">(</span><span class="s">&#39;n_iter&#39;</span><span class="p">),</span> solver<span class="o">$</span>get_history<span class="p">(</span><span class="s">&#39;obj&#39;</span><span class="p">),</span> type<span class="o">=</span><span class="s">&#39;l&#39;</span><span class="p">)</span>
+title<span class="p">(</span><span class="s">&#39;Solver history&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Vinther Poulsen.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

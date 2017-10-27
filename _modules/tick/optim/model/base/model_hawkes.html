@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.optim.model.base.model_hawkes &#8212; tick 0.2.1 documentation</title>
+    <title>tick.optim.model.base.model_hawkes &#8212; tick 0.3.0 documentation</title>
     <link rel="stylesheet" href="../../../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../../',
-        VERSION:     '0.2.1',
+        VERSION:     '0.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../../../../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.2</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.3</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -83,6 +83,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../../modules/inference.html#generalized-linear-models">1. Generalized linear models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../modules/inference.html#hawkes">2. Hawkes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../modules/inference.html#survival-analysis">3. Survival analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../modules/inference.html#robust-analysis">4. Robust Analysis</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../modules/optim.html"><code class="docutils literal"><span class="pre">tick.optim</span></code>: optimization toolbox</a><ul>
@@ -127,6 +128,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../../modules/dev.html#tips-for-debugging-c-classes-in-tick">Tips for debugging C++ classes in tick</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modules/R.html">How to use <code class="docutils literal"><span class="pre">tick</span></code> from the R statistical software</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../modules/R.html#training-a-logistic-regression-model">1. Training a logistic regression model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../modules/R.html#simulation-of-a-hawkes-process">2. Simulation of a Hawkes process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../modules/R.html#using-tick-optim-from-r">3. Using <code class="docutils literal"><span class="pre">tick.optim</span></code> from R</a></li>
+</ul>
+</li>
 </ul>
 </ul>
 </li>
@@ -161,7 +168,9 @@
 <span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="k">import</span> <span class="n">sputils</span><span class="p">,</span> <span class="n">csr_matrix</span>
 
 <span class="kn">from</span> <span class="nn">tick.optim.model.build.model</span> <span class="k">import</span> <span class="p">(</span><span class="n">ModelHawkesFixedSumExpKernLeastSqList</span><span class="p">,</span>
-                                          <span class="n">ModelHawkesFixedExpKernLeastSqList</span><span class="p">)</span>
+                                          <span class="n">ModelHawkesFixedExpKernLeastSqList</span><span class="p">,</span>
+                                          <span class="n">ModelHawkesFixedSumExpKernLogLik</span><span class="p">,</span>
+                                          <span class="n">ModelHawkesFixedSumExpKernLogLikList</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">.model_first_order</span> <span class="k">import</span> <span class="n">ModelFirstOrder</span>
 <span class="kn">from</span> <span class="nn">tick.optim.model.base.model</span> <span class="k">import</span> <span class="n">N_CALLS_LOSS</span><span class="p">,</span> <span class="n">PASS_OVER_DATA</span>
 
@@ -290,7 +299,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        x: `np.ndarray`, shape=(n_coeffs,)</span>
+<span class="sd">        x : `np.ndarray`, shape=(n_coeffs,)</span>
 <span class="sd">            Value at which the hessian is computed</span>
 
 <span class="sd">        Notes</span>
@@ -308,28 +317,40 @@
         <span class="c1"># What kind of integers does scipy use fr sparse indices?</span>
         <span class="n">sparse_dtype</span> <span class="o">=</span> <span class="n">sputils</span><span class="o">.</span><span class="n">get_index_dtype</span><span class="p">()</span>
 
+        <span class="n">n_baselines</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span>
+        <span class="c1"># number of alphas per dimension</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="p">,</span> <span class="p">(</span><span class="n">ModelHawkesFixedSumExpKernLeastSqList</span><span class="p">,</span>
+                                    <span class="n">ModelHawkesFixedSumExpKernLogLikList</span><span class="p">)):</span>
+            <span class="n">n_alphas_i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">decays</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">n_alphas_i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span>
+
         <span class="n">dim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span>
-        <span class="n">row_indices_size</span> <span class="o">=</span> <span class="n">dim</span> <span class="o">*</span> <span class="p">(</span><span class="n">dim</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
-        <span class="n">data_size</span> <span class="o">=</span> <span class="n">dim</span> <span class="o">*</span> <span class="p">(</span><span class="n">dim</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">dim</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">row_indices_size</span> <span class="o">=</span> <span class="n">n_baselines</span> <span class="o">+</span> <span class="n">dim</span> <span class="o">*</span> <span class="n">n_alphas_i</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">data_size</span> <span class="o">=</span> <span class="p">(</span><span class="n">n_baselines</span> <span class="o">+</span> <span class="n">dim</span> <span class="o">*</span> <span class="n">n_alphas_i</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">n_alphas_i</span><span class="p">)</span>
 
         <span class="c1"># looks like [0  3  6  9 12 15 18] in dimension 2</span>
         <span class="n">row_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">row_indices_size</span><span class="p">,</span>
-                                <span class="n">dtype</span><span class="o">=</span><span class="n">sparse_dtype</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">dim</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                                <span class="n">dtype</span><span class="o">=</span><span class="n">sparse_dtype</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">n_alphas_i</span><span class="p">)</span>
 
         <span class="c1"># looks like [0 2 3 1 4 5 0 2 3 0 2 3 1 4 5 1 4 5] in dimension 2</span>
         <span class="c1"># We first create the recurrent pattern for each dim</span>
         <span class="n">block_dim</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dim</span><span class="p">):</span>
             <span class="n">mu_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
-            <span class="n">alpha_array</span> <span class="o">=</span> <span class="n">dim</span> <span class="o">+</span> <span class="n">d</span> <span class="o">*</span> <span class="n">dim</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span>
+            <span class="n">alpha_array</span> <span class="o">=</span> <span class="n">n_baselines</span> <span class="o">+</span> <span class="n">d</span> <span class="o">*</span> <span class="n">n_alphas_i</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n_alphas_i</span><span class="p">)</span>
             <span class="n">block_dim</span><span class="p">[</span><span class="n">d</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">mu_array</span><span class="p">,</span> <span class="n">alpha_array</span><span class="p">))</span>
 
         <span class="c1"># and then fill the indices array</span>
         <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">data_size</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">sparse_dtype</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dim</span><span class="p">):</span>
-            <span class="n">indices</span><span class="p">[</span><span class="n">d</span> <span class="o">*</span> <span class="p">(</span><span class="n">dim</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span> <span class="p">(</span><span class="n">d</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">dim</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span> <span class="o">=</span> <span class="n">block_dim</span><span class="p">[</span><span class="n">d</span><span class="p">]</span>
-            <span class="n">indices</span><span class="p">[(</span><span class="n">d</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">dim</span> <span class="o">*</span> <span class="n">dim</span> <span class="o">+</span> <span class="n">dim</span><span class="p">):</span> <span class="p">(</span><span class="n">d</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">dim</span> <span class="o">*</span> <span class="n">dim</span> <span class="o">+</span> <span class="n">dim</span><span class="p">)]</span> <span class="o">=</span> \
-                <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">block_dim</span><span class="p">[</span><span class="n">d</span><span class="p">],</span> <span class="p">(</span><span class="n">dim</span><span class="p">,))</span>
+            <span class="n">indices</span><span class="p">[</span><span class="n">d</span> <span class="o">*</span> <span class="p">(</span><span class="n">n_alphas_i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span> <span class="p">(</span><span class="n">d</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">n_alphas_i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span> <span class="o">=</span> \
+                <span class="n">block_dim</span><span class="p">[</span><span class="n">d</span><span class="p">]</span>
+            <span class="n">alpha_shift</span> <span class="o">=</span> <span class="n">n_baselines</span> <span class="o">*</span> <span class="p">(</span><span class="n">n_alphas_i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">alpha_d_start</span> <span class="o">=</span> <span class="n">alpha_shift</span> <span class="o">+</span> <span class="n">d</span> <span class="o">*</span> <span class="n">n_alphas_i</span> <span class="o">*</span> <span class="p">(</span><span class="n">n_alphas_i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">alpha_d_end</span> <span class="o">=</span> <span class="n">alpha_shift</span> <span class="o">+</span> <span class="p">(</span><span class="n">d</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">n_alphas_i</span> <span class="o">*</span> <span class="p">(</span><span class="n">n_alphas_i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">indices</span><span class="p">[</span><span class="n">alpha_d_start</span><span class="p">:</span> <span class="n">alpha_d_end</span><span class="p">]</span> <span class="o">=</span> \
+                <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">block_dim</span><span class="p">[</span><span class="n">d</span><span class="p">],</span> <span class="p">(</span><span class="n">n_alphas_i</span><span class="p">,))</span>
 
         <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">data_size</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
 

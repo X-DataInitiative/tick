@@ -16,18 +16,6 @@ weight vector.
     :align: center
 
 
-**Script output**::
-
-  ----------------------------------------
-  Launching simulation using SimuLinReg...
-  Done simulating using SimuLinReg in 8.04e-04 seconds.
-  ----------------------------------------
-  Launching simulation using SimuLogReg...
-  Done simulating using SimuLogReg in 5.16e-04 seconds.
-  -----------------------------------------
-  Launching simulation using SimuPoisReg...
-  Done simulating using SimuPoisReg in 3.66e-04 seconds.
-
 
 
 **Python source code:** :download:`plot_simulation_linear_model.py <plot_simulation_linear_model.py>`
@@ -35,8 +23,8 @@ weight vector.
 .. literalinclude:: plot_simulation_linear_model.py
     :lines: 9-
 
-**Total running time of the example:**  0.32 seconds
-( 0 minutes  0.32 seconds)
+**Total running time of the example:**  0.31 seconds
+( 0 minutes  0.31 seconds)
     
 Mentioned *tick* classes:
    * `tick.simulation.SimuLinReg`

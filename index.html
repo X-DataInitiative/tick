@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>Tick &#8212; tick 0.2.1 documentation</title>
+    <title>Tick &#8212; tick 0.3.0 documentation</title>
     <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.2.1',
+        VERSION:     '0.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -60,7 +60,7 @@
         </button>
         <a class="navbar-brand" href="#">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.2</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.3</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -84,6 +84,7 @@
 <li class="toctree-l2"><a class="reference internal" href="modules/inference.html#generalized-linear-models">1. Generalized linear models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="modules/inference.html#hawkes">2. Hawkes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="modules/inference.html#survival-analysis">3. Survival analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/inference.html#robust-analysis">4. Robust Analysis</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="modules/optim.html"><code class="docutils literal"><span class="pre">tick.optim</span></code>: optimization toolbox</a><ul>
@@ -128,6 +129,12 @@
 <li class="toctree-l2"><a class="reference internal" href="modules/dev.html#tips-for-debugging-c-classes-in-tick">Tips for debugging C++ classes in tick</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="modules/R.html">How to use <code class="docutils literal"><span class="pre">tick</span></code> from the R statistical software</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/R.html#training-a-logistic-regression-model">1. Training a logistic regression model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/R.html#simulation-of-a-hawkes-process">2. Simulation of a Hawkes process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/R.html#using-tick-optim-from-r">3. Using <code class="docutils literal"><span class="pre">tick.optim</span></code> from R</a></li>
+</ul>
+</li>
 </ul>
 </ul>
 </li>
@@ -155,96 +162,107 @@
 
 <div class="container content-container">
   
-  <div
-  class="jumbotron"
-  style="padding-top: 10px; padding-bottom: 30px; position: relative"
->
-   <div class="container">
-      <h1 style="font-size:40px">tick</h1>
-      <p style="font-size:18px">
-         tick a machine learning library for Python 3.
-         The focus is on statistical learning for time dependent systems,
-         such as point processes. Tick features also tools for generalized
-         linear models, and a generic optimization toolbox.
-      </p>
-      <p style="font-size:18px">
-         The core of the library is an optimization module providing model
-         computational classes, solvers and proximal operators for regularization.
+   <div
+   class="jumbotron"
+   style="padding-top: 10px; padding-bottom: 30px; position: relative"
+ >
+    <div class="container">
+       <h1 style="font-size:40px">tick</h1>
+       <p style="font-size:18px">
+          tick a machine learning library for Python 3.
+          The focus is on statistical learning for time dependent systems,
+          such as point processes. Tick features also tools for generalized
+          linear models, and a generic optimization toolbox.
+       </p>
+       <p style="font-size:18px">
+          The core of the library is an optimization module providing model
+          computational classes, solvers and proximal operators for regularization.
 
-         It comes also with inference and simulation tools intended for end-users.
-      </p>
-      <a class="btn btn-primary btn-lg" href="auto_examples/index.html"
-      role="button">
-         Show me »
-      </a>
-   </div>
-   <a href="https://github.com/X-DataInitiative/tick">
-     <img style="position: absolute; top: 0; right: 0"
-       src="_static/images/fork_me_on_github.png">
-   </a>
-</div>
+          It comes also with inference and simulation tools intended for end-users.
+       </p>
+       <a class="btn btn-primary btn-lg" href="auto_examples/index.html"
+       role="button">
+          Show me »
+       </a>
+    </div>
+    <a href="https://github.com/X-DataInitiative/tick">
+      <img style="position: absolute; top: 0; right: 0"
+        src="_static/images/fork_me_on_github.png">
+    </a>
+ </div>
 
-<div class="row">
-   <div class="col-sm-4 col-sm-offset-1">
-      <a class="reference internal" href="auto_examples/index.html">
-         <h2>Examples</h2>
-      </a>
-      <p>
-         Examples of how to simulate models, use the optimization toolbox, or
-         use user-friendly inference tools.
-      </p>
-   </div>
+ <div class="row">
+    <div class="col-sm-4 col-sm-offset-1">
+       <a class="reference internal" href="auto_examples/index.html">
+          <h2>Examples</h2>
+       </a>
+       <p>
+          Examples of how to simulate models, use the optimization toolbox, or
+          use user-friendly inference tools.
+       </p>
+    </div>
 
-   <div class="col-sm-4 col-sm-offset-1">
-      <a class="reference internal" href="modules/inference.html">
-         <h2>Inference</h2>
-      </a>
-      <p>
-         User-friendly classes for inference of models
-      </p>
-   </div>
-</div>
+    <div class="col-sm-4 col-sm-offset-1">
+       <a class="reference internal" href="modules/inference.html">
+          <h2>Inference</h2>
+       </a>
+       <p>
+          User-friendly classes for inference of models
+       </p>
+    </div>
+ </div>
 
-<div class="row">
-   <div class="col-sm-4 col-sm-offset-1">
-      <a class="reference internal" href="modules/simulation.html">
-         <h2>Simulation</h2>
-      </a>
-      <p>
-          User-friendly classes for simulation of data
-      </p>
-   </div>
+ <div class="row">
+    <div class="col-sm-4 col-sm-offset-1">
+       <a class="reference internal" href="modules/simulation.html">
+          <h2>Simulation</h2>
+       </a>
+       <p>
+           User-friendly classes for simulation of data
+       </p>
+    </div>
 
-   <div class="col-sm-4 col-sm-offset-1">
-      <a class="reference internal" href="modules/optim.html">
-         <h2>Optimization</h2>
-      </a>
-      <p>
-         The core module of the library: an optimization toolbox
-         consisting of models, solvers and prox (penalization) classes.
-         Almost all of them can be combined together.
-      </p>
-   </div>
-</div>
+    <div class="col-sm-4 col-sm-offset-1">
+       <a class="reference internal" href="modules/optim.html">
+          <h2>Optimization</h2>
+       </a>
+       <p>
+          The core module of the library: an optimization toolbox
+          consisting of models, solvers and prox (penalization) classes.
+          Almost all of them can be combined together.
+       </p>
+    </div>
+ </div>
 
-<div class="row" style="margin-bottom:40px">
-   <div class="col-sm-4 col-sm-offset-1">
-      <a class="reference internal" href="modules/api.html">
-         <h2>API reference</h2>
-      </a>
-      <p>
-         The full tick API
-      </p>
-   </div>
+ <div class="row" style="margin-bottom:40px">
+    <div class="col-sm-4 col-sm-offset-1">
+       <a class="reference internal" href="modules/api.html">
+          <h2>API reference</h2>
+       </a>
+       <p>
+          The full tick API
+       </p>
+    </div>
 
-   <div class="col-sm-4 col-sm-offset-1">
-      <a class="reference internal" href="modules/dev.html">
-         <h2>Development</h2>
-      </a>
-      <p>
-         You would like to contribute? Here you will find many tips.
-      </p>
-   </div>
+    <div class="col-sm-4 col-sm-offset-1">
+       <a class="reference internal" href="modules/dev.html">
+          <h2>Development</h2>
+       </a>
+       <p>
+          You would like to contribute? Here you will find many tips.
+       </p>
+    </div>
+ </div>
+
+ <div class="row" style="margin-bottom:40px">
+    <div class="col-sm-4 col-sm-offset-1">
+       <a class="reference internal" href="modules/R.html">
+          <h2>Use tick in R</h2>
+       </a>
+       <p>
+          How to use tick from the R software
+       </p>
+    </div>
 </div><div class="toctree-wrapper compound">
 </div>
 

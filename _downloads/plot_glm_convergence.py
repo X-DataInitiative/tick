@@ -3,7 +3,7 @@
 Generalized linear models solver convergence
 ============================================
 
-This example illustrates the opimization of three linear models:
+This example illustrates the optimization of three linear models:
     * Linear regression (`tick.optim.model.ModelLinReg`)
     * Logistic regression (`tick.optim.model.ModelLogReg`)
     * Poisson regression (`tick.optim.model.ModelPoisReg`)

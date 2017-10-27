@@ -1,0 +1,12 @@
+
+.. _ModelQuadraticHinge:
+
+tick.optim.model.ModelQuadraticHinge
+====================================
+
+.. currentmodule:: tick.optim.model
+
+.. autoclass:: ModelQuadraticHinge
+
+.. include:: tick.optim.model.ModelQuadraticHinge.examples
+    :allowmissing:

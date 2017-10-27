@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.optim.solver.gfb &#8212; tick 0.2.1 documentation</title>
+    <title>tick.optim.solver.gfb &#8212; tick 0.3.0 documentation</title>
     <link rel="stylesheet" href="../../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '0.2.1',
+        VERSION:     '0.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../../../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.2</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.3</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -83,6 +83,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../modules/inference.html#generalized-linear-models">1. Generalized linear models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../modules/inference.html#hawkes">2. Hawkes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../modules/inference.html#survival-analysis">3. Survival analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/inference.html#robust-analysis">4. Robust Analysis</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../modules/optim.html"><code class="docutils literal"><span class="pre">tick.optim</span></code>: optimization toolbox</a><ul>
@@ -127,6 +128,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../modules/dev.html#tips-for-debugging-c-classes-in-tick">Tips for debugging C++ classes in tick</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/R.html">How to use <code class="docutils literal"><span class="pre">tick</span></code> from the R statistical software</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/R.html#training-a-logistic-regression-model">1. Training a logistic regression model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/R.html#simulation-of-a-hawkes-process">2. Simulation of a Hawkes process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/R.html#using-tick-optim-from-r">3. Using <code class="docutils literal"><span class="pre">tick.optim</span></code> from R</a></li>
+</ul>
+</li>
 </ul>
 </ul>
 </li>
@@ -169,7 +176,7 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    prox_list : List[Prox]</span>
+<span class="sd">    prox_list : `list` of `Prox`</span>
 <span class="sd">        List of prox that are wrapped</span>
 
 <span class="sd">    Attributes</span>
@@ -218,46 +225,99 @@
 
 <div class="viewcode-block" id="GFB"><a class="viewcode-back" href="../../../../modules/generated/tick.optim.solver.GFB.html#tick.optim.solver.GFB">[docs]</a><span class="k">class</span> <span class="nc">GFB</span><span class="p">(</span><span class="n">SolverFirstOrder</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Generalized Forward-Backward algorithm</span>
-<span class="sd">    </span>
-<span class="sd">    Minimize the objective</span>
 
-<span class="sd">    .. math:: f(x) + sum_i g_i(x)</span>
+<span class="sd">    For the minimization of objectives of the form</span>
 
-<span class="sd">    using generalized forward-backward. This algorithm assumes that f and all</span>
-<span class="sd">    g_i are convex, that f has a Lipschitz gradient and that all g_i are</span>
-<span class="sd">    prox-capable.</span>
+<span class="sd">    .. math::</span>
+<span class="sd">        f(x) + \\sum_{p=1}^P g_p(x)</span>
+
+<span class="sd">    where :math:`f` has a smooth gradient and :math:`g_1, \ldots, g_P` are</span>
+<span class="sd">    prox-capable. Function :math:`f` corresponds to the ``model.loss`` method</span>
+<span class="sd">    of the model (passed with ``set_model`` to the solver) and</span>
+<span class="sd">    :math:`g_1, \ldots, g_P` correspond to the list of prox passed with the</span>
+<span class="sd">    ``set_prox`` method.</span>
+<span class="sd">    One iteration of :class:`GFB &lt;tick.optim.solver.GFB&gt;` is as follows:</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        \\begin{align*}</span>
+<span class="sd">        &amp;\\text{for } p=1, \\ldots, P \\; \\text{ do the following:} \\\\</span>
+<span class="sd">        &amp; \\quad z_p \\gets \\mathrm{prox}_{P \\eta g_p} \\Big(2 w - z_p^{\\text{old}}</span>
+<span class="sd">        - \\eta \\nabla f(w) \\Big) \\\\</span>
+<span class="sd">        &amp; \\quad z_p \\gets z_p^{\\text{old}} + \\beta (z_p - w) \\\\</span>
+<span class="sd">        &amp;w \\gets \\frac 1P \\sum_{p=1}^P z_p</span>
+<span class="sd">        \\end{align*}</span>
+
+<span class="sd">    where :math:`\\nabla f(w)` is the gradient of :math:`f` given by the</span>
+<span class="sd">    ``model.grad`` method and :math:`\\mathrm{prox}_{\\eta g_p}` is given by the</span>
+<span class="sd">    ``prox[p].call`` method. The step-size :math:`\\eta` can be tuned with</span>
+<span class="sd">    ``step``. The iterations stop whenever tolerance ``tol`` is achieved, or</span>
+<span class="sd">    after ``max_iter`` iterations. The obtained solution :math:`w` is returned</span>
+<span class="sd">    by the ``solve`` method, and is also stored in the ``solution`` attribute</span>
+<span class="sd">    of the solver. The level of sur-relaxation :math:`\\beta` can be tuned</span>
+<span class="sd">    using the ``surrelax`` attribute.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    step : `float` default=None</span>
-<span class="sd">        Step-size of the algorithm.</span>
+<span class="sd">    step : `float`, default=None</span>
+<span class="sd">        Step-size parameter, the most important parameter of the solver.</span>
+<span class="sd">        Whenever possible, this can be tuned as</span>
+<span class="sd">        ``step = 1 / model.get_lip_best()``</span>
 
-<span class="sd">    tol : `float`, default=0.</span>
+<span class="sd">    tol : `float`, default=1e-10</span>
 <span class="sd">        The tolerance of the solver (iterations stop when the stopping</span>
-<span class="sd">        criterion is below it). By default the solver does ``max_iter``</span>
-<span class="sd">        iterations</span>
+<span class="sd">        criterion is below it)</span>
 
-<span class="sd">    max_iter : `int`, default=1000</span>
-<span class="sd">        Maximum number of iterations of the solver</span>
-
-<span class="sd">    verbose : `bool`, default=True</span>
-<span class="sd">        If `True`, we verbose things, otherwise the solver does not</span>
-<span class="sd">        print anything (but records information in history anyway)</span>
-
-<span class="sd">    print_every : `int`, default=10</span>
-<span class="sd">        Print history information when ``n_iter`` (iteration number) is</span>
-<span class="sd">        a multiple of ``print_every``</span>
-
-<span class="sd">    record_every : `int`, default=1</span>
-<span class="sd">        Record history information when ``n_iter`` (iteration number) is</span>
-<span class="sd">        a multiple of ``record_every``</span>
+<span class="sd">    max_iter : `int`, default=500</span>
+<span class="sd">        Maximum number of iterations of the solver.</span>
 
 <span class="sd">    surrelax : `float`, default=1</span>
-<span class="sd">        Relaxation parameter</span>
+<span class="sd">        Level of sur-relaxation to use in the algorithm.</span>
+
+<span class="sd">    verbose : `bool`, default=True</span>
+<span class="sd">        If `True`, solver verboses history, otherwise nothing is displayed,</span>
+<span class="sd">        but history is recorded anyway</span>
+
+<span class="sd">    print_every : `int`, default=10</span>
+<span class="sd">        Print history information every time the iteration number is a</span>
+<span class="sd">        multiple of ``print_every``. Used only is ``verbose`` is True</span>
+
+<span class="sd">    record_every : `int`, default=1</span>
+<span class="sd">        Save history information every time the iteration number is a</span>
+<span class="sd">        multiple of ``record_every``</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    model : `Model`</span>
+<span class="sd">        The model used by the solver, passed with the ``set_model`` method</span>
+
+<span class="sd">    prox : `list` of `Prox`</span>
+<span class="sd">        List of proximal operators used by the solver, passed with the</span>
+<span class="sd">        ``set_prox`` method</span>
+
+<span class="sd">    solution : `numpy.array`, shape=(n_coeffs,)</span>
+<span class="sd">        Minimizer found by the solver</span>
+
+<span class="sd">    history : `dict`-like</span>
+<span class="sd">        A dict-type of object that contains history of the solver along</span>
+<span class="sd">        iterations. It should be accessed using the ``get_history`` method</span>
+
+<span class="sd">    time_start : `str`</span>
+<span class="sd">        Start date of the call to ``solve()``</span>
+
+<span class="sd">    time_elapsed : `float`</span>
+<span class="sd">        Duration of the call to ``solve()``, in seconds</span>
+
+<span class="sd">    time_end : `str`</span>
+<span class="sd">        End date of the call to ``solve()``</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    * H. Raguet, J. Fadili, G. Peyré, A generalized forward-backward splitting,</span>
+<span class="sd">      *SIAM Journal on Imaging Sciences* (2013)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="GFB.__init__"><a class="viewcode-back" href="../../../../modules/generated/tick.optim.solver.GFB.html#tick.optim.solver.GFB.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.</span><span class="p">,</span>
-                 <span class="n">max_iter</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span> <span class="n">surrelax</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+<div class="viewcode-block" id="GFB.__init__"><a class="viewcode-back" href="../../../../modules/generated/tick.optim.solver.GFB.html#tick.optim.solver.GFB.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-10</span><span class="p">,</span>
+                 <span class="n">max_iter</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">500</span><span class="p">,</span> <span class="n">surrelax</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
                  <span class="n">print_every</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="n">record_every</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
         <span class="n">SolverFirstOrder</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">,</span>
                                   <span class="n">max_iter</span><span class="o">=</span><span class="n">max_iter</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
@@ -269,7 +329,7 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        prox : list[Prox]</span>
+<span class="sd">        prox : `list` of `Prox`</span>
 <span class="sd">            List of all proximal operators of the model</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">prox</span> <span class="o">=</span> <span class="n">CompositeProx</span><span class="p">(</span><span class="n">prox</span><span class="p">)</span>
@@ -300,7 +360,7 @@
                 <span class="c1"># Relaxation step</span>
                 <span class="n">z</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">z_old</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">surrelax</span> <span class="o">*</span> <span class="p">(</span><span class="n">z</span> <span class="o">-</span> <span class="n">x_old</span><span class="p">)</span>
 
-            <span class="n">x</span><span class="p">[:]</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="n">n_prox</span> <span class="o">*</span> <span class="nb">sum</span><span class="p">(</span><span class="n">z_list</span><span class="p">)</span>
+            <span class="n">x</span><span class="p">[:]</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">n_prox</span> <span class="o">*</span> <span class="nb">sum</span><span class="p">(</span><span class="n">z_list</span><span class="p">)</span>
             <span class="n">rel_delta</span> <span class="o">=</span> <span class="n">relative_distance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x_old</span><span class="p">)</span>
             <span class="n">obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">objective</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
             <span class="n">rel_obj</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">obj</span> <span class="o">-</span> <span class="n">obj_old</span><span class="p">)</span> <span class="o">/</span> <span class="nb">abs</span><span class="p">(</span><span class="n">obj_old</span><span class="p">)</span>

@@ -1,0 +1,25 @@
+
+
+.. _example_optim_plot_losses_count_data.py:
+
+plot_losses_count_data.py
+=========================
+
+
+
+.. image:: images/plot_losses_count_data_001.png
+    :align: center
+
+
+
+
+**Python source code:** :download:`plot_losses_count_data.py <plot_losses_count_data.py>`
+
+.. literalinclude:: plot_losses_count_data.py
+    :lines: 2-
+
+**Total running time of the example:**  0.13 seconds
+( 0 minutes  0.13 seconds)
+    
+Mentioned *tick* classes:
+   * `tick.optim.model.ModelPoisReg`

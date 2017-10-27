@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.inference: user-friendly inference tools &#8212; tick 0.2.1 documentation</title>
+    <title>tick.inference: user-friendly inference tools &#8212; tick 0.3.0 documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.2.1',
+        VERSION:     '0.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -61,7 +61,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.2</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.3</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -85,6 +85,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#generalized-linear-models">1. Generalized linear models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#hawkes">2. Hawkes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#survival-analysis">3. Survival analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#robust-analysis">4. Robust Analysis</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="optim.html"><code class="docutils literal"><span class="pre">tick.optim</span></code>: optimization toolbox</a><ul>
@@ -127,6 +128,12 @@
 <li class="toctree-l2"><a class="reference internal" href="dev.html#how-to-add-a-new-model-solver-or-prox">How to add a new model, solver or prox</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dev.html#enable-python-pickling-of-c-objects">Enable Python-pickling of C++ objects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dev.html#tips-for-debugging-c-classes-in-tick">Tips for debugging C++ classes in tick</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="R.html">How to use <code class="docutils literal"><span class="pre">tick</span></code> from the R statistical software</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="R.html#training-a-logistic-regression-model">1. Training a logistic regression model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="R.html#simulation-of-a-hawkes-process">2. Simulation of a Hawkes process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="R.html#using-tick-optim-from-r">3. Using <code class="docutils literal"><span class="pre">tick.optim</span></code> from R</a></li>
 </ul>
 </li>
 </ul>
@@ -177,6 +184,7 @@ method.</p>
 </ul>
 </li>
 <li><a class="reference internal" href="#survival-analysis" id="id8">3. Survival analysis</a></li>
+<li><a class="reference internal" href="#robust-analysis" id="id9">4. Robust Analysis</a></li>
 </ul>
 </li>
 </ul>
@@ -184,7 +192,7 @@ method.</p>
 <div class="section" id="generalized-linear-models">
 <span id="inference-glm"></span><h2>1. Generalized linear models<a class="headerlink" href="#generalized-linear-models" title="Permalink to this headline">¶</a></h2>
 <p>The first learner types concern linear models presented in</p>
-<p><a class="reference internal" href="optim.html#optim-model-glm"><span class="std std-ref">1.2. Generalized linear models</span></a></p>
+<p><a class="reference internal" href="optim.html#linear-models"><span class="std std-ref">1.2. Linear models</span></a></p>
 <p>Theses learners are essentially a combination of</p>
 <ul class="simple">
 <li><a class="reference internal" href="optim.html#optim-model"><span class="std std-ref">1. tick.optim.model: model classes</span></a></li>
@@ -409,7 +417,7 @@ and hence don’t rely the previous exponential parametrization.</p>
 
 <span class="n">hawkes</span><span class="o">.</span><span class="n">simulate</span><span class="p">()</span>
 
-<span class="n">em</span> <span class="o">=</span> <span class="n">HawkesEM</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">n_threads</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">)</span>
+<span class="n">em</span> <span class="o">=</span> <span class="n">HawkesEM</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">n_threads</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">)</span>
 <span class="n">em</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">hawkes</span><span class="o">.</span><span class="n">timestamps</span><span class="p">)</span>
 
 <span class="n">fig</span> <span class="o">=</span> <span class="n">plot_hawkes_kernels</span><span class="p">(</span><span class="n">em</span><span class="p">,</span> <span class="n">hawkes</span><span class="o">=</span><span class="n">hawkes</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
@@ -449,6 +457,34 @@ and hence don’t rely the previous exponential parametrization.</p>
 <tbody valign="top">
 <tr class="row-odd"><td><a class="reference internal" href="generated/tick.inference.CoxRegression.html#tick.inference.CoxRegression" title="tick.inference.CoxRegression"><code class="xref py py-obj docutils literal"><span class="pre">inference.CoxRegression</span></code></a>([penalty,&nbsp;C,&nbsp;…])</td>
 <td>Cox regression learner, using the partial Cox likelihood for proportional risks, with many choices of penalization.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="robust-analysis">
+<h2>4. Robust Analysis<a class="headerlink" href="#robust-analysis" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.inference.std_mad.html#tick.inference.std_mad" title="tick.inference.std_mad"><code class="xref py py-obj docutils literal"><span class="pre">inference.std_mad</span></code></a>(x)</td>
+<td>Robust estimation of the standard deviation, based on the Corrected Median Absolute Deviation (MAD) of x.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/tick.inference.std_iqr.html#tick.inference.std_iqr" title="tick.inference.std_iqr"><code class="xref py py-obj docutils literal"><span class="pre">inference.std_iqr</span></code></a>(x)</td>
+<td>Robust estimation of the standard deviation, based on the inter-quartile (IQR) distance of x.</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.inference.RobustLinearRegression.html#tick.inference.RobustLinearRegression" title="tick.inference.RobustLinearRegression"><code class="xref py py-obj docutils literal"><span class="pre">inference.RobustLinearRegression</span></code></a>(…[,&nbsp;C,&nbsp;…])</td>
+<td>Robust linear regression learner.</td>
 </tr>
 </tbody>
 </table>

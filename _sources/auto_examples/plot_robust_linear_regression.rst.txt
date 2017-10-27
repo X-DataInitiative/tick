@@ -1,0 +1,51 @@
+
+
+.. _example_plot_robust_linear_regression.py:
+
+
+===========================
+Robust linear model example
+===========================
+
+In this example with simulate a linear regression model with 1000 samples and
+5 features. The simulated data is contaminated by 20% of outliers, in the form
+of sparse sample intercepts (thus only on 20% of samples).
+
+We illustrate the estimated linear regression weights and sample intercepts
+obtained by the ``RobustLinearRegression`` learner, where we also compute the
+false discovery proportion and power of the method for the multi-test problem of
+outliers detection.
+Note that the penalization level ``C_sample_intercepts`` of the sample
+intercepts should be chosen as n_samples / noise_level, where noise_level is
+obtained by a robust estimation of the noise's standard deviation.
+We simply use here the `tick.inference.std_iqr` estimator.
+
+Note that we don't use penalization on the model weights here, while other
+penalizations are available, by changing the ``penalty`` parameter and by
+giving a ``C`` value for the level of penalization.
+Default is ``penalty='l2'``, namely ridge penalization, while ``penalty='l1'``
+or ``penalty='slope'`` can be used when the number of features is large.
+
+
+
+.. image:: images/plot_robust_linear_regression_001.png
+    :align: center
+
+
+
+
+**Python source code:** :download:`plot_robust_linear_regression.py <plot_robust_linear_regression.py>`
+
+.. literalinclude:: plot_robust_linear_regression.py
+    :lines: 25-
+
+**Total running time of the example:**  3.62 seconds
+( 0 minutes  3.62 seconds)
+    
+Mentioned *tick* classes:
+   * `tick.inference.RobustLinearRegression`
+   * `tick.inference.std_iqr`
+   * `tick.metrics.support_fdp`
+   * `tick.metrics.support_recall`
+   * `tick.simulation.features_normal_cov_toeplitz`
+   * `tick.simulation.weights_sparse_gauss`

@@ -1,0 +1,9 @@
+tick.metrics.support_fdp
+========================
+
+.. currentmodule:: tick.metrics
+
+.. autofunction:: support_fdp
+
+.. include:: tick.metrics.support_fdp.examples
+    :allowmissing:

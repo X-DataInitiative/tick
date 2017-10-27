@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.optim.solver.SDCA &#8212; tick 0.2.1 documentation</title>
+    <title>tick.optim.solver.SDCA &#8212; tick 0.3.0 documentation</title>
     <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.2.1',
+        VERSION:     '0.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.2</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.3</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -83,6 +83,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../inference.html#generalized-linear-models">1. Generalized linear models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../inference.html#hawkes">2. Hawkes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../inference.html#survival-analysis">3. Survival analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../inference.html#robust-analysis">4. Robust Analysis</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../optim.html"><code class="docutils literal"><span class="pre">tick.optim</span></code>: optimization toolbox</a><ul>
@@ -127,6 +128,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../dev.html#tips-for-debugging-c-classes-in-tick">Tips for debugging C++ classes in tick</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../R.html">How to use <code class="docutils literal"><span class="pre">tick</span></code> from the R statistical software</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../R.html#training-a-logistic-regression-model">1. Training a logistic regression model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../R.html#simulation-of-a-hawkes-process">2. Simulation of a Hawkes process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../R.html#using-tick-optim-from-r">3. Using <code class="docutils literal"><span class="pre">tick.optim</span></code> from R</a></li>
+</ul>
+</li>
 </ul>
 </ul>
 </li>
@@ -158,73 +165,187 @@
 <span id="sdca"></span><h1>tick.optim.solver.SDCA<a class="headerlink" href="#tick-optim-solver-sdca" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="tick.optim.solver.SDCA">
-<em class="property">class </em><code class="descclassname">tick.optim.solver.</code><code class="descname">SDCA</code><span class="sig-paren">(</span><em>l_l2sq: float</em>, <em>epoch_size: int = None</em>, <em>rand_type: str = 'unif'</em>, <em>tol: float = 0.0</em>, <em>max_iter: int = 100</em>, <em>verbose: bool = True</em>, <em>print_every: int = 10</em>, <em>record_every: int = 1</em>, <em>seed: int = -1</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/optim/solver/sdca.html#SDCA"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.optim.solver.SDCA" title="Permalink to this definition">¶</a></dt>
-<dd><p>Stochastic Dual Coordinate Ascent solver</p>
+<em class="property">class </em><code class="descclassname">tick.optim.solver.</code><code class="descname">SDCA</code><span class="sig-paren">(</span><em>l_l2sq: float</em>, <em>epoch_size: int = None</em>, <em>rand_type: str = 'unif'</em>, <em>tol: float = 1e-10</em>, <em>max_iter: int = 10</em>, <em>verbose: bool = True</em>, <em>print_every: int = 1</em>, <em>record_every: int = 1</em>, <em>seed: int = -1</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/optim/solver/sdca.html#SDCA"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.optim.solver.SDCA" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stochastic Dual Coordinate Ascent</p>
+<p>For the minimization of objectives of the form</p>
+<div class="math">
+\[\frac 1n \sum_{i=1}^n f_i(w^\top x_i) + g(w),\]</div>
+<p>where the functions <span class="math">\(f_i\)</span> have smooth gradients and <span class="math">\(g\)</span> is
+prox-capable. This solver actually requires more than that, since it is
+working in a Fenchel dual formulation of the primal problem given above.
+First, it requires that some ridge penalization is used, hence the mandatory
+parameter <code class="docutils literal"><span class="pre">l_l2sq</span></code> below: SDCA will actually minimize the objective</p>
+<div class="math">
+\[\frac 1n \sum_{i=1}^n f_i(x_i^\top w) + g(w) + \frac{\lambda}{2}
+\| w \|_2^2,\]</div>
+<p>where <span class="math">\(\lambda\)</span> is tuned with the <code class="docutils literal"><span class="pre">l_l2sq</span></code> (see below). Now, putting
+<span class="math">\(h(w) = g(w) + \lambda \|w\|_2^2 / 2\)</span>, SDCA maximize
+the Fenchel dual problem</p>
+<div class="math">
+\[D(\alpha) = \frac 1n \sum_{i=1}^n \Bigg[ - f_i^*(-\alpha_i) -
+\lambda h^*\Big( \frac{1}{\lambda n} \sum_{i=1}^n \alpha_i x_i)
+\Big) \Bigg],\]</div>
+<p>where <span class="math">\(f_i^*\)</span> and <span class="math">\(h^*\)</span> and the Fenchel duals of <span class="math">\(f_i\)</span>
+and <span class="math">\(h\)</span> respectively.
+Function <span class="math">\(f = \frac 1n \sum_{i=1}^n f_i\)</span> corresponds
+to the <code class="docutils literal"><span class="pre">model.loss</span></code> method of the model (passed with <code class="docutils literal"><span class="pre">set_model</span></code> to the
+solver) and <span class="math">\(g\)</span> corresponds to the <code class="docutils literal"><span class="pre">prox.value</span></code> method of the
+prox (passed with the <code class="docutils literal"><span class="pre">set_prox</span></code> method). One iteration of
+<a class="reference internal" href="#tick.optim.solver.SDCA" title="tick.optim.solver.SDCA"><code class="xref py py-class docutils literal"><span class="pre">SDCA</span></code></a> corresponds to the
+following iteration applied <code class="docutils literal"><span class="pre">epoch_size</span></code> times:</p>
+<div class="math">
+\[\begin{split}\begin{align*}
+\delta_i &amp;\gets \arg\min_{\delta} \Big[ \; f_i^*(-\alpha_i -
+\delta) + w^\top x_i \delta + \frac{1}{2 \lambda n} \| x_i\|_2^2
+\delta^2 \Big] \\
+\alpha_i &amp;\gets \alpha_i + \delta_i \\
+v &amp;\gets v + \frac{1}{\lambda n} \delta_i x_i \\
+w &amp;\gets \nabla g^*(v)
+\end{align*}\end{split}\]</div>
+<p>where <span class="math">\(i\)</span> is sampled at random (strategy depends on <code class="docutils literal"><span class="pre">rand_type</span></code>) at
+each iteration. The ridge regularization <span class="math">\(\lambda\)</span> can be tuned with
+<code class="docutils literal"><span class="pre">l_l2sq</span></code>, the seed of the random number generator for generation
+of samples <span class="math">\(i\)</span> can be seeded with <code class="docutils literal"><span class="pre">seed</span></code>. The iterations stop
+whenever tolerance <code class="docutils literal"><span class="pre">tol</span></code> is achieved, or after <code class="docutils literal"><span class="pre">max_iter</span></code> epochs
+(namely <code class="docutils literal"><span class="pre">max_iter</span></code> <span class="math">\(\times\)</span> <code class="docutils literal"><span class="pre">epoch_size</span></code> iterates).
+The obtained solution <span class="math">\(w\)</span> is returned by the <code class="docutils literal"><span class="pre">solve</span></code> method, and is
+also stored in the <code class="docutils literal"><span class="pre">solution</span></code> attribute of the solver. The dual solution
+<span class="math">\(\alpha\)</span> is stored in the <code class="docutils literal"><span class="pre">dual_solution</span></code> attribute.</p>
+<p>Internally, <a class="reference internal" href="#tick.optim.solver.SDCA" title="tick.optim.solver.SDCA"><code class="xref py py-class docutils literal"><span class="pre">SDCA</span></code></a> has dedicated code when
+the model is a generalized linear model with sparse features, and a
+separable proximal operator: in this case, each iteration works only in the
+set of non-zero features, leading to much faster iterates.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>l_l2sq</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code></p>
 <blockquote>
-<div><p>Level of L2 penalization. L2 penalization is mandatory for SDCA.</p>
+<div><p>Level of L2 penalization. L2 penalization is mandatory for SDCA.
+Convergence properties of this solver are deeply connected to this
+parameter, which should be understood as the “step” used by the
+algorithm.</p>
 </div></blockquote>
-<p><strong>epoch_size</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code></p>
+<p><strong>tol</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default=1e-10</p>
 <blockquote>
-<div><p>Epoch size</p>
+<div><p>The tolerance of the solver (iterations stop when the stopping
+criterion is below it)</p>
 </div></blockquote>
-<p><strong>rand_type</strong> : <code class="xref py py-obj docutils literal"><span class="pre">str</span></code></p>
+<p><strong>max_iter</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code>, default=10</p>
 <blockquote>
-<div><p>Type of random sampling</p>
+<div><p>Maximum number of iterations of the solver, namely maximum number of
+epochs (by default full pass over the data, unless <code class="docutils literal"><span class="pre">epoch_size</span></code> has
+been modified from default)</p>
+</div></blockquote>
+<p><strong>verbose</strong> : <code class="xref py py-obj docutils literal"><span class="pre">bool</span></code>, default=True</p>
+<blockquote>
+<div><p>If <code class="xref py py-obj docutils literal"><span class="pre">True</span></code>, solver verboses history, otherwise nothing is displayed,
+but history is recorded anyway</p>
+</div></blockquote>
+<p><strong>seed</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code>, default=-1</p>
+<blockquote>
+<div><p>The seed of the random sampling. If it is negative then a random seed
+(different at each run) will be chosen.</p>
+</div></blockquote>
+<p><strong>epoch_size</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code>, default given by model</p>
+<blockquote>
+<div><p>Epoch size, namely how many iterations are made before updating the
+variance reducing term. By default, this is automatically tuned using
+information from the model object passed through <code class="docutils literal"><span class="pre">set_model</span></code>.</p>
+</div></blockquote>
+<p><strong>rand_type</strong> : {‘unif’, ‘perm’}, default=’unif’</p>
+<blockquote>
+<div><p>How samples are randomly selected from the data</p>
 <ul class="simple">
-<li>if <code class="docutils literal"><span class="pre">&quot;unif&quot;</span></code> samples are uniformly drawn among all possibilities</li>
-<li>if <code class="docutils literal"><span class="pre">&quot;perm&quot;</span></code> a random permutation of all possibilities is
+<li>if <code class="docutils literal"><span class="pre">'unif'</span></code> samples are uniformly drawn among all possibilities</li>
+<li>if <code class="docutils literal"><span class="pre">'perm'</span></code> a random permutation of all possibilities is
 generated and samples are sequentially taken from it. Once all of
 them have been taken, a new random permutation is generated</li>
 </ul>
 </div></blockquote>
-<p><strong>tol</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default=0</p>
-<blockquote>
-<div><p>The tolerance of the solver (iterations stop when the stopping
-criterion is below it). By default the solver does <code class="docutils literal"><span class="pre">max_iter</span></code>
-iterations</p>
-</div></blockquote>
-<p><strong>max_iter</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code></p>
-<blockquote>
-<div><p>Maximum number of iterations of the solver</p>
-</div></blockquote>
-<p><strong>verbose</strong> : <code class="xref py py-obj docutils literal"><span class="pre">bool</span></code>, default=`True`</p>
-<blockquote>
-<div><p>If <code class="xref py py-obj docutils literal"><span class="pre">True</span></code>, we verbose things, otherwise the solver does not
-print anything (but records information in history anyway)</p>
-</div></blockquote>
-<p><strong>print_every</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code>, default = 10</p>
+<p><strong>print_every</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code>, default=1</p>
 <blockquote>
 <div><p>Print history information every time the iteration number is a
-multiple of <code class="docutils literal"><span class="pre">print_every</span></code></p>
+multiple of <code class="docutils literal"><span class="pre">print_every</span></code>. Used only is <code class="docutils literal"><span class="pre">verbose</span></code> is True</p>
 </div></blockquote>
-<p><strong>record_every</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code>, default = 1</p>
+<p><strong>record_every</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code>, default=1</p>
 <blockquote>
-<div><p>Information along iteration is recorded in history each time the
-iteration number of a multiple of <code class="docutils literal"><span class="pre">record_every</span></code></p>
+<div><p>Save history information every time the iteration number is a
+multiple of <code class="docutils literal"><span class="pre">record_every</span></code></p>
 </div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Attributes:</th><td class="field-body"><p class="first"><strong>model</strong> : <code class="xref py py-obj docutils literal"><span class="pre">Solver</span></code></p>
+<tr class="field-even field"><th class="field-name">Attributes:</th><td class="field-body"><p class="first"><strong>model</strong> : <code class="xref py py-obj docutils literal"><span class="pre">Model</span></code></p>
 <blockquote>
-<div><p>The model to solve</p>
+<div><p>The model used by the solver, passed with the <code class="docutils literal"><span class="pre">set_model</span></code> method</p>
 </div></blockquote>
 <p><strong>prox</strong> : <code class="xref py py-obj docutils literal"><span class="pre">Prox</span></code></p>
+<blockquote>
+<div><p>Proximal operator used by the solver, passed with the <code class="docutils literal"><span class="pre">set_prox</span></code>
+method</p>
+</div></blockquote>
+<p><strong>solution</strong> : <code class="xref py py-obj docutils literal"><span class="pre">numpy.array</span></code>, shape=(n_coeffs,)</p>
+<blockquote>
+<div><p>Minimizer found by the solver</p>
+</div></blockquote>
+<p><strong>dual_solution</strong> : <code class="xref py py-obj docutils literal"><span class="pre">numpy.array</span></code></p>
+<blockquote>
+<div><p>Dual vector corresponding to the primal solution obtained by the solver</p>
+</div></blockquote>
+<p><strong>history</strong> : <code class="xref py py-obj docutils literal"><span class="pre">dict</span></code>-like</p>
+<blockquote>
+<div><p>A dict-type of object that contains history of the solver along
+iterations. It should be accessed using the <code class="docutils literal"><span class="pre">get_history</span></code> method</p>
+</div></blockquote>
+<p><strong>time_start</strong> : <code class="xref py py-obj docutils literal"><span class="pre">str</span></code></p>
+<blockquote>
+<div><p>Start date of the call to <code class="docutils literal"><span class="pre">solve()</span></code></p>
+</div></blockquote>
+<p><strong>time_elapsed</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code></p>
+<blockquote>
+<div><p>Duration of the call to <code class="docutils literal"><span class="pre">solve()</span></code>, in seconds</p>
+</div></blockquote>
+<p><strong>time_end</strong> : <code class="xref py py-obj docutils literal"><span class="pre">str</span></code></p>
 <blockquote class="last">
-<div><p>Proximal operator to solve</p>
+<div><p>End date of the call to <code class="docutils literal"><span class="pre">solve()</span></code></p>
 </div></blockquote>
 </td>
 </tr>
 </tbody>
 </table>
+<p class="rubric">References</p>
+<ul class="simple">
+<li>S. Shalev-Shwartz and T. Zhang, Accelerated proximal stochastic dual
+coordinate ascent for regularized loss minimization, <em>ICML 2014</em></li>
+</ul>
 <dl class="method">
 <dt id="tick.optim.solver.SDCA.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>l_l2sq: float</em>, <em>epoch_size: int = None</em>, <em>rand_type: str = 'unif'</em>, <em>tol: float = 0.0</em>, <em>max_iter: int = 100</em>, <em>verbose: bool = True</em>, <em>print_every: int = 10</em>, <em>record_every: int = 1</em>, <em>seed: int = -1</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/optim/solver/sdca.html#SDCA.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.optim.solver.SDCA.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>l_l2sq: float</em>, <em>epoch_size: int = None</em>, <em>rand_type: str = 'unif'</em>, <em>tol: float = 1e-10</em>, <em>max_iter: int = 10</em>, <em>verbose: bool = True</em>, <em>print_every: int = 1</em>, <em>record_every: int = 1</em>, <em>seed: int = -1</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/optim/solver/sdca.html#SDCA.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.optim.solver.SDCA.__init__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="method">
+<dt id="tick.optim.solver.SDCA.dual_objective">
+<code class="descname">dual_objective</code><span class="sig-paren">(</span><em>dual_coeffs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/optim/solver/sdca.html#SDCA.dual_objective"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.optim.solver.SDCA.dual_objective" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the dual objective at <code class="docutils literal"><span class="pre">dual_coeffs</span></code></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>dual_coeffs</strong> : <code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code>, shape=(n_samples,)</p>
+<blockquote>
+<div><p>The dual objective objective is computed at this point</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code></p>
+<blockquote class="last">
+<div><p>Value of the dual objective at given <code class="docutils literal"><span class="pre">dual_coeffs</span></code></p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="tick.optim.solver.SDCA.get_history">
@@ -316,25 +437,28 @@ other things)</p>
 <dl class="method">
 <dt id="tick.optim.solver.SDCA.set_prox">
 <code class="descname">set_prox</code><span class="sig-paren">(</span><em>prox: tick.optim.prox.base.prox.Prox</em><span class="sig-paren">)</span><a class="headerlink" href="#tick.optim.solver.SDCA.set_prox" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set prox in the solver</p>
+<dd><p>Set proximal operator in the solver</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>prox</strong> : <code class="xref py py-obj docutils literal"><span class="pre">Prox</span></code></p>
 <blockquote>
-<div><p>Sets the prox in the solver</p>
+<div><p>The proximal operator of the penalization function</p>
 </div></blockquote>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> : <code class="xref py py-obj docutils literal"><span class="pre">Solver</span></code></p>
 <blockquote class="last">
-<div><p>The <code class="xref py py-obj docutils literal"><span class="pre">Solver</span></code> with given prox</p>
+<div><p>The solver with given prox</p>
 </div></blockquote>
 </td>
 </tr>
 </tbody>
 </table>
+<p class="rubric">Notes</p>
+<p>In some solvers, <code class="docutils literal"><span class="pre">set_model</span></code> must be called before
+<code class="docutils literal"><span class="pre">set_prox</span></code>, otherwise and error might be raised</p>
 </dd></dl>
 
 <dl class="method">
@@ -351,13 +475,14 @@ other things)</p>
 </div></blockquote>
 <p><strong>step</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default=`None`</p>
 <blockquote>
-<div><p>Step-size or learning rate for the solver</p>
+<div><p>Step-size or learning rate for the solver. This can be tuned also
+using the <code class="docutils literal"><span class="pre">step</span></code> attribute</p>
 </div></blockquote>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.array</span></code>, shape=(n_coeffs,)</p>
 <blockquote class="last">
-<div><p>Obtained minimizer for the problem</p>
+<div><p>Obtained minimizer for the problem, same as <code class="docutils literal"><span class="pre">solution</span></code> attribute</p>
 </div></blockquote>
 </td>
 </tr>
@@ -369,7 +494,7 @@ other things)</p>
 
 <div class="section" id="examples-using-tick-optim-solver-sdca">
 <h2>Examples using <code class="docutils literal"><span class="pre">tick.optim.solver.SDCA</span></code><a class="headerlink" href="#examples-using-tick-optim-solver-sdca" title="Permalink to this headline">¶</a></h2>
-<div class="thumbnailContainer" tooltip="This example illustrates the opimization of three linear models:     * Linear regression (`tick..."><div class="figure" id="id1">
+<div class="thumbnailContainer" tooltip="This example illustrates the optimization of three linear models:     * Linear regression (`tic..."><div class="figure" id="id1">
 <a class="reference external image-reference" href="./../../auto_examples/./plot_glm_convergence.html"><img alt="../../_images/plot_glm_convergence1.png" src="../../_images/plot_glm_convergence1.png" /></a>
 <p class="caption"><span class="caption-text"><a class="reference internal" href="../../auto_examples/plot_glm_convergence.html#example-plot-glm-convergence-py"><span class="std std-ref">Generalized linear models solver convergence</span></a></span></p>
 </div>

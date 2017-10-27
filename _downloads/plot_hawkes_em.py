@@ -48,7 +48,7 @@ hawkes.set_kernel(1, 1, kernel2)
 
 hawkes.simulate()
 
-em = HawkesEM(4, kernel_size=16, n_threads=8, verbose=True, tol=1e-3)
+em = HawkesEM(4, kernel_size=16, n_threads=8, verbose=False, tol=1e-3)
 em.fit(hawkes.timestamps)
 
 fig = plot_hawkes_kernels(em, hawkes=hawkes, show=False)

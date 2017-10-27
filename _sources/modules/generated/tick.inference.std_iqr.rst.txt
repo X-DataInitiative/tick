@@ -1,0 +1,9 @@
+tick.inference.std_iqr
+======================
+
+.. currentmodule:: tick.inference
+
+.. autofunction:: std_iqr
+
+.. include:: tick.inference.std_iqr.examples
+    :allowmissing:

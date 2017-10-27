@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.optim.model.hawkes_fixed_sumexpkern_leastsq &#8212; tick 0.2.1 documentation</title>
+    <title>tick.optim.model.hawkes_fixed_sumexpkern_leastsq &#8212; tick 0.3.0 documentation</title>
     <link rel="stylesheet" href="../../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '0.2.1',
+        VERSION:     '0.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../../../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.2</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.3</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -83,6 +83,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../modules/inference.html#generalized-linear-models">1. Generalized linear models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../modules/inference.html#hawkes">2. Hawkes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../modules/inference.html#survival-analysis">3. Survival analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/inference.html#robust-analysis">4. Robust Analysis</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../modules/optim.html"><code class="docutils literal"><span class="pre">tick.optim</span></code>: optimization toolbox</a><ul>
@@ -127,6 +128,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../modules/dev.html#tips-for-debugging-c-classes-in-tick">Tips for debugging C++ classes in tick</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/R.html">How to use <code class="docutils literal"><span class="pre">tick</span></code> from the R statistical software</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/R.html#training-a-logistic-regression-model">1. Training a logistic regression model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/R.html#simulation-of-a-hawkes-process">2. Simulation of a Hawkes process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/R.html#using-tick-optim-from-r">3. Using <code class="docutils literal"><span class="pre">tick.optim</span></code> from R</a></li>
+</ul>
+</li>
 </ul>
 </ul>
 </li>
@@ -167,7 +174,8 @@
 
 
 <div class="viewcode-block" id="ModelHawkesFixedSumExpKernLeastSq"><a class="viewcode-back" href="../../../../modules/generated/tick.optim.model.ModelHawkesFixedSumExpKernLeastSq.html#tick.optim.model.ModelHawkesFixedSumExpKernLeastSq">[docs]</a><span class="k">class</span> <span class="nc">ModelHawkesFixedSumExpKernLeastSq</span><span class="p">(</span><span class="n">ModelHawkes</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Hawkes process learner for sum-exponential kernels with fixed and given</span>
+    <span class="sd">&quot;&quot;&quot;Hawkes process model for sum-exponential kernels with fixed and</span>
+<span class="sd">    given decays.</span>
 <span class="sd">    It is modeled with least square loss:</span>
 
 <span class="sd">    .. math::</span>
@@ -190,7 +198,7 @@
 <span class="sd">    * :math:`\phi_{ij}` are the kernels</span>
 <span class="sd">    * :math:`t_k^j` are the timestamps of all events of node :math:`j`</span>
 
-<span class="sd">    and with an sum-exponential parametrisation of the kernels</span>
+<span class="sd">    and with a sum-exponential parametrisation of the kernels</span>
 
 <span class="sd">    .. math::</span>
 <span class="sd">        \phi_{ij}(t) = \sum_{u=1}^{U} \\alpha^u_{ij} \\beta^u</span>
@@ -227,7 +235,7 @@
 <span class="sd">    n_threads : `int`, default=-1 (read-only)</span>
 <span class="sd">        Number of threads used for parallel computation.</span>
 
-<span class="sd">        * if ``int &lt;= 0``: the number of physical cores available on</span>
+<span class="sd">        * if ``int &lt;= 0``: the number of threads available on</span>
 <span class="sd">          the CPU</span>
 <span class="sd">        * otherwise the desired number of threads</span>
 
@@ -235,6 +243,9 @@
 <span class="sd">    ----------</span>
 <span class="sd">    n_nodes : `int` (read-only)</span>
 <span class="sd">        Number of components, or dimension of the Hawkes model</span>
+
+<span class="sd">    n_decays : `int` (read-only)</span>
+<span class="sd">        Number of decays used in the sum-exponential kernel</span>
 <span class="sd">        </span>
 <span class="sd">    baseline_intervals : `np.ndarray`, shape=(n_baselines)</span>
 <span class="sd">        Start time of each interval on which baseline is piecewise constant.</span>

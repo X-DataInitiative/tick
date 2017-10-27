@@ -1,0 +1,9 @@
+tick.metrics.support_recall
+===========================
+
+.. currentmodule:: tick.metrics
+
+.. autofunction:: support_recall
+
+.. include:: tick.metrics.support_recall.examples
+    :allowmissing:

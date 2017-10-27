@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>Generalized linear models solver convergence &#8212; tick 0.2.1 documentation</title>
+    <title>Generalized linear models solver convergence &#8212; tick 0.3.0 documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.2.1',
+        VERSION:     '0.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.2</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.3</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -83,6 +83,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../modules/inference.html#generalized-linear-models">1. Generalized linear models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../modules/inference.html#hawkes">2. Hawkes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../modules/inference.html#survival-analysis">3. Survival analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/inference.html#robust-analysis">4. Robust Analysis</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../modules/optim.html"><code class="docutils literal"><span class="pre">tick.optim</span></code>: optimization toolbox</a><ul>
@@ -127,6 +128,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../modules/dev.html#tips-for-debugging-c-classes-in-tick">Tips for debugging C++ classes in tick</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/R.html">How to use <code class="docutils literal"><span class="pre">tick</span></code> from the R statistical software</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/R.html#training-a-logistic-regression-model">1. Training a logistic regression model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/R.html#simulation-of-a-hawkes-process">2. Simulation of a Hawkes process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/R.html#using-tick-optim-from-r">3. Using <code class="docutils literal"><span class="pre">tick.optim</span></code> from R</a></li>
+</ul>
+</li>
 </ul>
 </ul>
 </li>
@@ -157,7 +164,7 @@
   <div class="section" id="generalized-linear-models-solver-convergence">
 <span id="example-plot-glm-convergence-py"></span><h1>Generalized linear models solver convergence<a class="headerlink" href="#generalized-linear-models-solver-convergence" title="Permalink to this headline">¶</a></h1>
 <dl class="docutils">
-<dt>This example illustrates the opimization of three linear models:</dt>
+<dt>This example illustrates the optimization of three linear models:</dt>
 <dd><ul class="first last simple">
 <li>Linear regression (<a class="reference internal" href="../modules/generated/tick.optim.model.ModelLinReg.html#tick.optim.model.ModelLinReg" title="tick.optim.model.ModelLinReg"><code class="xref py py-obj docutils literal"><span class="pre">tick.optim.model.ModelLinReg</span></code></a>)</li>
 <li>Logistic regression (<a class="reference internal" href="../modules/generated/tick.optim.model.ModelLogReg.html#tick.optim.model.ModelLogReg" title="tick.optim.model.ModelLogReg"><code class="xref py py-obj docutils literal"><span class="pre">tick.optim.model.ModelLogReg</span></code></a>)</li>
@@ -178,7 +185,7 @@
 <p><strong>Python source code:</strong> <a class="reference download internal" href="../_downloads/plot_glm_convergence.py" download=""><code class="xref download docutils literal"><span class="pre">plot_glm_convergence.py</span></code></a></p>
 <div class="highlight-default"><div class="highlight"><pre><span></span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">from</span> <span class="nn">tick.plot</span> <span class="k">import</span> <span class="n">plot_history</span>
+<span class="kn">from</span> <span class="nn">tick.plot</span> <span class="k">import</span> <a href="../modules/generated/tick.plot.plot_history.html#tick.plot.plot_history"><span class="n">plot_history</span></a>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">product</span>
 <span class="kn">from</span> <span class="nn">tick.optim.model</span> <span class="k">import</span> <a href="../modules/generated/tick.optim.model.ModelLinReg.html#tick.optim.model.ModelLinReg"><span class="n">ModelLinReg</span></a><span class="p">,</span> <a href="../modules/generated/tick.optim.model.ModelLogReg.html#tick.optim.model.ModelLogReg"><span class="n">ModelLogReg</span></a><span class="p">,</span> <a href="../modules/generated/tick.optim.model.ModelPoisReg.html#tick.optim.model.ModelPoisReg"><span class="n">ModelPoisReg</span></a>
@@ -187,11 +194,11 @@
 <span class="kn">from</span> <span class="nn">tick.simulation</span> <span class="k">import</span> <a href="../modules/generated/tick.simulation.SimuLinReg.html#tick.simulation.SimuLinReg"><span class="n">SimuLinReg</span></a><span class="p">,</span> <a href="../modules/generated/tick.simulation.SimuLogReg.html#tick.simulation.SimuLogReg"><span class="n">SimuLogReg</span></a><span class="p">,</span> <a href="../modules/generated/tick.simulation.SimuPoisReg.html#tick.simulation.SimuPoisReg"><span class="n">SimuPoisReg</span></a>
 
 <span class="n">seed</span> <span class="o">=</span> <span class="mi">1398</span>
-<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+<a href="http://docs.scipy.org/doc/numpy-1.6.0/reference/generated/numpy.random.seed.html#numpy.random.seed"><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span></a><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">create_model</span><span class="p">(</span><span class="n">model_type</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">,</span> <span class="n">n_features</span><span class="p">,</span> <span class="n">with_intercept</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">n_features</span><span class="p">)</span>
+    <span class="n">weights</span> <span class="o">=</span> <a href="http://docs.scipy.org/doc/numpy-1.6.0/reference/generated/numpy.random.randn.html#numpy.random.randn"><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span></a><span class="p">(</span><span class="n">n_features</span><span class="p">)</span>
     <span class="n">intercept</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">if</span> <span class="n">with_intercept</span><span class="p">:</span>
         <span class="n">intercept</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">()</span>
@@ -272,7 +279,7 @@
 <span class="n">model_types</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Linear&#39;</span><span class="p">,</span> <span class="s1">&#39;Logistic&#39;</span><span class="p">,</span> <span class="s1">&#39;Poisson&#39;</span><span class="p">]</span>
 <span class="n">l_l2sqs</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1e-3</span><span class="p">,</span> <span class="mf">1e-2</span><span class="p">,</span> <span class="mf">1e-1</span><span class="p">]</span>
 
-<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">model_types</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">l_l2sqs</span><span class="p">),</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <a href="http://matplotlib.org/api/_as_gen/matplotlib.pyplot.subplots.html#matplotlib.pyplot.subplots"><span class="n">plt</span><span class="o">.</span><span class="n">subplots</span></a><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">model_types</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">l_l2sqs</span><span class="p">),</span>
                          <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">l_l2sqs</span><span class="p">),</span> <span class="mi">3</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">model_types</span><span class="p">)),</span>
                          <span class="n">sharey</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
@@ -284,7 +291,7 @@
     <span class="n">model</span> <span class="o">=</span> <span class="n">create_model</span><span class="p">(</span><span class="n">model_type</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">,</span> <span class="n">n_features</span><span class="p">)</span>
 
     <span class="n">bfgs</span><span class="p">,</span> <span class="n">svrg</span><span class="p">,</span> <span class="n">sdca</span><span class="p">,</span> <span class="n">gd</span><span class="p">,</span> <span class="n">agd</span> <span class="o">=</span> <span class="n">run_solvers</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">l_l2sq</span><span class="p">)</span>
-    <span class="n">plot_history</span><span class="p">([</span><span class="n">bfgs</span><span class="p">,</span> <span class="n">svrg</span><span class="p">,</span> <span class="n">sdca</span><span class="p">,</span> <span class="n">gd</span><span class="p">,</span> <span class="n">agd</span><span class="p">],</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+    <a href="../modules/generated/tick.plot.plot_history.html#tick.plot.plot_history"><span class="n">plot_history</span></a><span class="p">([</span><span class="n">bfgs</span><span class="p">,</span> <span class="n">svrg</span><span class="p">,</span> <span class="n">sdca</span><span class="p">,</span> <span class="n">gd</span><span class="p">,</span> <span class="n">agd</span><span class="p">],</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
                  <span class="n">dist_min</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">log_scale</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">legend_</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
@@ -300,11 +307,11 @@
     <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;epochs&#39;</span><span class="p">)</span>
 
 <span class="n">axes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.2</span><span class="p">),</span> <span class="n">ncol</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<a href="http://matplotlib.org/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
 </pre></div>
 </div>
-<p><strong>Total running time of the example:</strong>  2.21 seconds
-( 0 minutes  2.21 seconds)</p>
+<p><strong>Total running time of the example:</strong>  1.71 seconds
+( 0 minutes  1.71 seconds)</p>
 <dl class="docutils">
 <dt>Mentioned <em>tick</em> classes:</dt>
 <dd><ul class="first last simple">

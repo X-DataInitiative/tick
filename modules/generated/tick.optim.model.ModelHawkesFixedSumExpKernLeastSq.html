@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.optim.model.ModelHawkesFixedSumExpKernLeastSq &#8212; tick 0.2.1 documentation</title>
+    <title>tick.optim.model.ModelHawkesFixedSumExpKernLeastSq &#8212; tick 0.3.0 documentation</title>
     <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.2.1',
+        VERSION:     '0.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.2</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.3</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -83,6 +83,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../inference.html#generalized-linear-models">1. Generalized linear models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../inference.html#hawkes">2. Hawkes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../inference.html#survival-analysis">3. Survival analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../inference.html#robust-analysis">4. Robust Analysis</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../optim.html"><code class="docutils literal"><span class="pre">tick.optim</span></code>: optimization toolbox</a><ul>
@@ -127,6 +128,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../dev.html#tips-for-debugging-c-classes-in-tick">Tips for debugging C++ classes in tick</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../R.html">How to use <code class="docutils literal"><span class="pre">tick</span></code> from the R statistical software</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../R.html#training-a-logistic-regression-model">1. Training a logistic regression model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../R.html#simulation-of-a-hawkes-process">2. Simulation of a Hawkes process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../R.html#using-tick-optim-from-r">3. Using <code class="docutils literal"><span class="pre">tick.optim</span></code> from R</a></li>
+</ul>
+</li>
 </ul>
 </ul>
 </li>
@@ -159,7 +166,8 @@
 <dl class="class">
 <dt id="tick.optim.model.ModelHawkesFixedSumExpKernLeastSq">
 <em class="property">class </em><code class="descclassname">tick.optim.model.</code><code class="descname">ModelHawkesFixedSumExpKernLeastSq</code><span class="sig-paren">(</span><em>decays: numpy.ndarray</em>, <em>n_baselines=1</em>, <em>period_length=None</em>, <em>approx: int = 0</em>, <em>n_threads: int = 1</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/optim/model/hawkes_fixed_sumexpkern_leastsq.html#ModelHawkesFixedSumExpKernLeastSq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.optim.model.ModelHawkesFixedSumExpKernLeastSq" title="Permalink to this definition">¶</a></dt>
-<dd><p>Hawkes process learner for sum-exponential kernels with fixed and given
+<dd><p>Hawkes process model for sum-exponential kernels with fixed and
+given decays.
 It is modeled with least square loss:</p>
 <div class="math">
 \[\sum_{i=1}^{D} \left(
@@ -178,7 +186,7 @@ It is modeled with least square loss:</p>
 <li><span class="math">\(\phi_{ij}\)</span> are the kernels</li>
 <li><span class="math">\(t_k^j\)</span> are the timestamps of all events of node <span class="math">\(j\)</span></li>
 </ul>
-<p>and with an sum-exponential parametrisation of the kernels</p>
+<p>and with a sum-exponential parametrisation of the kernels</p>
 <div class="math">
 \[\phi_{ij}(t) = \sum_{u=1}^{U} \alpha^u_{ij} \beta^u
                \exp (- \beta^u t) 1_{t &gt; 0}\]</div>
@@ -221,7 +229,7 @@ piecewise constant baseline function.</p>
 <blockquote>
 <div><p>Number of threads used for parallel computation.</p>
 <ul class="simple">
-<li>if <code class="docutils literal"><span class="pre">int</span> <span class="pre">&lt;=</span> <span class="pre">0</span></code>: the number of physical cores available on
+<li>if <code class="docutils literal"><span class="pre">int</span> <span class="pre">&lt;=</span> <span class="pre">0</span></code>: the number of threads available on
 the CPU</li>
 <li>otherwise the desired number of threads</li>
 </ul>
@@ -231,6 +239,10 @@ the CPU</li>
 <tr class="field-even field"><th class="field-name">Attributes:</th><td class="field-body"><p class="first"><strong>n_nodes</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code> (read-only)</p>
 <blockquote>
 <div><p>Number of components, or dimension of the Hawkes model</p>
+</div></blockquote>
+<p><strong>n_decays</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code> (read-only)</p>
+<blockquote>
+<div><p>Number of decays used in the sum-exponential kernel</p>
 </div></blockquote>
 <p><strong>baseline_intervals</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code>, shape=(n_baselines)</p>
 <blockquote>
@@ -319,7 +331,7 @@ before using <code class="docutils literal"><span class="pre">grad</span></code>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>x: `np.ndarray`, shape=(n_coeffs,)</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>x</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code>, shape=(n_coeffs,)</p>
 <blockquote class="last">
 <div><p>Value at which the hessian is computed</p>
 </div></blockquote>

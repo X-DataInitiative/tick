@@ -15,12 +15,6 @@ Generates Cox Regression realization given a weight vector
     :align: center
 
 
-**Script output**::
-
-  ----------------------------------------
-  Launching simulation using SimuCoxReg...
-  Done simulating using SimuCoxReg in 6.82e-04 seconds.
-
 
 
 **Python source code:** :download:`plot_simulation_coxreg.py <plot_simulation_coxreg.py>`
@@ -28,8 +22,8 @@ Generates Cox Regression realization given a weight vector
 .. literalinclude:: plot_simulation_coxreg.py
     :lines: 8-
 
-**Total running time of the example:**  0.10 seconds
-( 0 minutes  0.10 seconds)
+**Total running time of the example:**  0.19 seconds
+( 0 minutes  0.19 seconds)
     
 Mentioned *tick* classes:
    * `tick.simulation.SimuCoxReg`

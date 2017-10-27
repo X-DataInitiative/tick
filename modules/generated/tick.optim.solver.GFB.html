@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.optim.solver.GFB &#8212; tick 0.2.1 documentation</title>
+    <title>tick.optim.solver.GFB &#8212; tick 0.3.0 documentation</title>
     <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.2.1',
+        VERSION:     '0.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.2</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.3</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -83,6 +83,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../inference.html#generalized-linear-models">1. Generalized linear models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../inference.html#hawkes">2. Hawkes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../inference.html#survival-analysis">3. Survival analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../inference.html#robust-analysis">4. Robust Analysis</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../optim.html"><code class="docutils literal"><span class="pre">tick.optim</span></code>: optimization toolbox</a><ul>
@@ -127,6 +128,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../dev.html#tips-for-debugging-c-classes-in-tick">Tips for debugging C++ classes in tick</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../R.html">How to use <code class="docutils literal"><span class="pre">tick</span></code> from the R statistical software</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../R.html#training-a-logistic-regression-model">1. Training a logistic regression model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../R.html#simulation-of-a-hawkes-process">2. Simulation of a Hawkes process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../R.html#using-tick-optim-from-r">3. Using <code class="docutils literal"><span class="pre">tick.optim</span></code> from R</a></li>
+</ul>
+</li>
 </ul>
 </ul>
 </li>
@@ -158,58 +165,115 @@
 <span id="gfb"></span><h1>tick.optim.solver.GFB<a class="headerlink" href="#tick-optim-solver-gfb" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="tick.optim.solver.GFB">
-<em class="property">class </em><code class="descclassname">tick.optim.solver.</code><code class="descname">GFB</code><span class="sig-paren">(</span><em>step: float = None</em>, <em>tol: float = 0.0</em>, <em>max_iter: int = 1000</em>, <em>surrelax=1.0</em>, <em>verbose: bool = True</em>, <em>print_every: int = 10</em>, <em>record_every: int = 1</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/optim/solver/gfb.html#GFB"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.optim.solver.GFB" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">tick.optim.solver.</code><code class="descname">GFB</code><span class="sig-paren">(</span><em>step: float = None</em>, <em>tol: float = 1e-10</em>, <em>max_iter: int = 500</em>, <em>surrelax=1.0</em>, <em>verbose: bool = True</em>, <em>print_every: int = 10</em>, <em>record_every: int = 1</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/optim/solver/gfb.html#GFB"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.optim.solver.GFB" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generalized Forward-Backward algorithm</p>
-<p>Minimize the objective</p>
+<p>For the minimization of objectives of the form</p>
 <div class="math">
-\[f(x) + sum_i g_i(x)\]</div>
-<p>using generalized forward-backward. This algorithm assumes that f and all
-g_i are convex, that f has a Lipschitz gradient and that all g_i are
-prox-capable.</p>
+\[f(x) + \sum_{p=1}^P g_p(x)\]</div>
+<p>where <span class="math">\(f\)</span> has a smooth gradient and <span class="math">\(g_1, \ldots, g_P\)</span> are
+prox-capable. Function <span class="math">\(f\)</span> corresponds to the <code class="docutils literal"><span class="pre">model.loss</span></code> method
+of the model (passed with <code class="docutils literal"><span class="pre">set_model</span></code> to the solver) and
+<span class="math">\(g_1, \ldots, g_P\)</span> correspond to the list of prox passed with the
+<code class="docutils literal"><span class="pre">set_prox</span></code> method.
+One iteration of <a class="reference internal" href="#tick.optim.solver.GFB" title="tick.optim.solver.GFB"><code class="xref py py-class docutils literal"><span class="pre">GFB</span></code></a> is as follows:</p>
+<div class="math">
+\[\begin{split}\begin{align*}
+&amp;\text{for } p=1, \ldots, P \; \text{ do the following:}&nbsp;\\
+&amp; \quad z_p \gets \mathrm{prox}_{P \eta g_p} \Big(2 w - z_p^{\text{old}}
+- \eta \nabla f(w) \Big) \\
+&amp; \quad z_p \gets z_p^{\text{old}} + \beta (z_p - w) \\
+&amp;w \gets \frac 1P \sum_{p=1}^P z_p
+\end{align*}\end{split}\]</div>
+<p>where <span class="math">\(\nabla f(w)\)</span> is the gradient of <span class="math">\(f\)</span> given by the
+<code class="docutils literal"><span class="pre">model.grad</span></code> method and <span class="math">\(\mathrm{prox}_{\eta g_p}\)</span> is given by the
+<code class="docutils literal"><span class="pre">prox[p].call</span></code> method. The step-size <span class="math">\(\eta\)</span> can be tuned with
+<code class="docutils literal"><span class="pre">step</span></code>. The iterations stop whenever tolerance <code class="docutils literal"><span class="pre">tol</span></code> is achieved, or
+after <code class="docutils literal"><span class="pre">max_iter</span></code> iterations. The obtained solution <span class="math">\(w\)</span> is returned
+by the <code class="docutils literal"><span class="pre">solve</span></code> method, and is also stored in the <code class="docutils literal"><span class="pre">solution</span></code> attribute
+of the solver. The level of sur-relaxation <span class="math">\(\beta\)</span> can be tuned
+using the <code class="docutils literal"><span class="pre">surrelax</span></code> attribute.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>step</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code> default=None</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>step</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default=None</p>
 <blockquote>
-<div><p>Step-size of the algorithm.</p>
+<div><p>Step-size parameter, the most important parameter of the solver.
+Whenever possible, this can be tuned as
+<code class="docutils literal"><span class="pre">step</span> <span class="pre">=</span> <span class="pre">1</span> <span class="pre">/</span> <span class="pre">model.get_lip_best()</span></code></p>
 </div></blockquote>
-<p><strong>tol</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default=0.</p>
+<p><strong>tol</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default=1e-10</p>
 <blockquote>
 <div><p>The tolerance of the solver (iterations stop when the stopping
-criterion is below it). By default the solver does <code class="docutils literal"><span class="pre">max_iter</span></code>
-iterations</p>
+criterion is below it)</p>
 </div></blockquote>
-<p><strong>max_iter</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code>, default=1000</p>
+<p><strong>max_iter</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code>, default=500</p>
 <blockquote>
-<div><p>Maximum number of iterations of the solver</p>
+<div><p>Maximum number of iterations of the solver.</p>
+</div></blockquote>
+<p><strong>surrelax</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default=1</p>
+<blockquote>
+<div><p>Level of sur-relaxation to use in the algorithm.</p>
 </div></blockquote>
 <p><strong>verbose</strong> : <code class="xref py py-obj docutils literal"><span class="pre">bool</span></code>, default=True</p>
 <blockquote>
-<div><p>If <code class="xref py py-obj docutils literal"><span class="pre">True</span></code>, we verbose things, otherwise the solver does not
-print anything (but records information in history anyway)</p>
+<div><p>If <code class="xref py py-obj docutils literal"><span class="pre">True</span></code>, solver verboses history, otherwise nothing is displayed,
+but history is recorded anyway</p>
 </div></blockquote>
 <p><strong>print_every</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code>, default=10</p>
 <blockquote>
-<div><p>Print history information when <code class="docutils literal"><span class="pre">n_iter</span></code> (iteration number) is
-a multiple of <code class="docutils literal"><span class="pre">print_every</span></code></p>
+<div><p>Print history information every time the iteration number is a
+multiple of <code class="docutils literal"><span class="pre">print_every</span></code>. Used only is <code class="docutils literal"><span class="pre">verbose</span></code> is True</p>
 </div></blockquote>
 <p><strong>record_every</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code>, default=1</p>
 <blockquote>
-<div><p>Record history information when <code class="docutils literal"><span class="pre">n_iter</span></code> (iteration number) is
-a multiple of <code class="docutils literal"><span class="pre">record_every</span></code></p>
+<div><p>Save history information every time the iteration number is a
+multiple of <code class="docutils literal"><span class="pre">record_every</span></code></p>
 </div></blockquote>
-<p><strong>surrelax</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default=1</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Attributes:</th><td class="field-body"><p class="first"><strong>model</strong> : <code class="xref py py-obj docutils literal"><span class="pre">Model</span></code></p>
+<blockquote>
+<div><p>The model used by the solver, passed with the <code class="docutils literal"><span class="pre">set_model</span></code> method</p>
+</div></blockquote>
+<p><strong>prox</strong> : <code class="xref py py-obj docutils literal"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal"><span class="pre">Prox</span></code></p>
+<blockquote>
+<div><p>List of proximal operators used by the solver, passed with the
+<code class="docutils literal"><span class="pre">set_prox</span></code> method</p>
+</div></blockquote>
+<p><strong>solution</strong> : <code class="xref py py-obj docutils literal"><span class="pre">numpy.array</span></code>, shape=(n_coeffs,)</p>
+<blockquote>
+<div><p>Minimizer found by the solver</p>
+</div></blockquote>
+<p><strong>history</strong> : <code class="xref py py-obj docutils literal"><span class="pre">dict</span></code>-like</p>
+<blockquote>
+<div><p>A dict-type of object that contains history of the solver along
+iterations. It should be accessed using the <code class="docutils literal"><span class="pre">get_history</span></code> method</p>
+</div></blockquote>
+<p><strong>time_start</strong> : <code class="xref py py-obj docutils literal"><span class="pre">str</span></code></p>
+<blockquote>
+<div><p>Start date of the call to <code class="docutils literal"><span class="pre">solve()</span></code></p>
+</div></blockquote>
+<p><strong>time_elapsed</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code></p>
+<blockquote>
+<div><p>Duration of the call to <code class="docutils literal"><span class="pre">solve()</span></code>, in seconds</p>
+</div></blockquote>
+<p><strong>time_end</strong> : <code class="xref py py-obj docutils literal"><span class="pre">str</span></code></p>
 <blockquote class="last">
-<div><p>Relaxation parameter</p>
+<div><p>End date of the call to <code class="docutils literal"><span class="pre">solve()</span></code></p>
 </div></blockquote>
 </td>
 </tr>
 </tbody>
 </table>
+<p class="rubric">References</p>
+<ul class="simple">
+<li>H. Raguet, J. Fadili, G. Peyré, A generalized forward-backward splitting,
+<em>SIAM Journal on Imaging Sciences</em> (2013)</li>
+</ul>
 <dl class="method">
 <dt id="tick.optim.solver.GFB.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>step: float = None</em>, <em>tol: float = 0.0</em>, <em>max_iter: int = 1000</em>, <em>surrelax=1.0</em>, <em>verbose: bool = True</em>, <em>print_every: int = 10</em>, <em>record_every: int = 1</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/optim/solver/gfb.html#GFB.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.optim.solver.GFB.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>step: float = None</em>, <em>tol: float = 1e-10</em>, <em>max_iter: int = 500</em>, <em>surrelax=1.0</em>, <em>verbose: bool = True</em>, <em>print_every: int = 10</em>, <em>record_every: int = 1</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/optim/solver/gfb.html#GFB.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.optim.solver.GFB.__init__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -247,14 +311,14 @@ output is a <code class="xref py py-obj docutils literal"><span class="pre">list
 <dl class="method">
 <dt id="tick.optim.solver.GFB.objective">
 <code class="descname">objective</code><span class="sig-paren">(</span><em>coeffs</em>, <em>loss: float = None</em><span class="sig-paren">)</span><a class="headerlink" href="#tick.optim.solver.GFB.objective" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute the objective minimized by the solver at <code class="docutils literal"><span class="pre">coeffs</span></code></p>
+<dd><p>Compute the objective function</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>coeffs</strong> : <code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code>, shape=(n_coeffs,)</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>coeffs</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.array</span></code>, shape=(n_coeffs,)</p>
 <blockquote>
-<div><p>The objective is computed at this point</p>
+<div><p>Point where the objective is computed</p>
 </div></blockquote>
 <p><strong>loss</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default=`None`</p>
 <blockquote>
@@ -306,7 +370,7 @@ other things)</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>prox</strong> : list[Prox]</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>prox</strong> : <code class="xref py py-obj docutils literal"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal"><span class="pre">Prox</span></code></p>
 <blockquote class="last">
 <div><p>List of all proximal operators of the model</p>
 </div></blockquote>
@@ -330,13 +394,14 @@ other things)</p>
 </div></blockquote>
 <p><strong>step</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default=`None`</p>
 <blockquote>
-<div><p>Step-size or learning rate for the solver</p>
+<div><p>Step-size or learning rate for the solver. This can be tuned also
+using the <code class="docutils literal"><span class="pre">step</span></code> attribute</p>
 </div></blockquote>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.array</span></code>, shape=(n_coeffs,)</p>
 <blockquote class="last">
-<div><p>Obtained minimizer for the problem</p>
+<div><p>Obtained minimizer for the problem, same as <code class="docutils literal"><span class="pre">solution</span></code> attribute</p>
 </div></blockquote>
 </td>
 </tr>

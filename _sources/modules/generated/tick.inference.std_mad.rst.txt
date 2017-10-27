@@ -1,0 +1,9 @@
+tick.inference.std_mad
+======================
+
+.. currentmodule:: tick.inference
+
+.. autofunction:: std_mad
+
+.. include:: tick.inference.std_mad.examples
+    :allowmissing:

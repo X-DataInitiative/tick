@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>Examples &#8212; tick 0.2.1 documentation</title>
+    <title>Examples &#8212; tick 0.3.0 documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.2.1',
+        VERSION:     '0.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.2</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.3</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -83,6 +83,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../modules/inference.html#generalized-linear-models">1. Generalized linear models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../modules/inference.html#hawkes">2. Hawkes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../modules/inference.html#survival-analysis">3. Survival analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/inference.html#robust-analysis">4. Robust Analysis</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../modules/optim.html"><code class="docutils literal"><span class="pre">tick.optim</span></code>: optimization toolbox</a><ul>
@@ -125,6 +126,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../modules/dev.html#how-to-add-a-new-model-solver-or-prox">How to add a new model, solver or prox</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../modules/dev.html#enable-python-pickling-of-c-objects">Enable Python-pickling of C++ objects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../modules/dev.html#tips-for-debugging-c-classes-in-tick">Tips for debugging C++ classes in tick</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/R.html">How to use <code class="docutils literal"><span class="pre">tick</span></code> from the R statistical software</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/R.html#training-a-logistic-regression-model">1. Training a logistic regression model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/R.html#simulation-of-a-hawkes-process">2. Simulation of a Hawkes process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/R.html#using-tick-optim-from-r">3. Using <code class="docutils literal"><span class="pre">tick.optim</span></code> from R</a></li>
 </ul>
 </li>
 </ul>
@@ -234,37 +241,55 @@ div#sidebarbutton {
 </div>
 </div><div class="toctree-wrapper compound">
 </div>
-<div class="thumbnailContainer" tooltip="Generates Linear, Logistic and Poisson regression realizations given a weight vector. "><div class="figure" id="id14">
-<a class="reference external image-reference" href="./plot_simulation_linear_model.html"><img alt="../_images/plot_simulation_linear_model.png" src="../_images/plot_simulation_linear_model.png" /></a>
-<p class="caption"><span class="caption-text"><a class="reference internal" href="plot_simulation_linear_model.html#example-plot-simulation-linear-model-py"><span class="std std-ref">Linear models data simulation</span></a></span></p>
-</div>
-</div><div class="toctree-wrapper compound">
-</div>
-<div class="thumbnailContainer" tooltip="This Hawkes EM (`tick.inference.HawkesEM`) algorithm assume that kernels are piecewise constant..."><div class="figure" id="id15">
+<div class="thumbnailContainer" tooltip="This Hawkes EM (`tick.inference.HawkesEM`) algorithm assume that kernels are piecewise constant..."><div class="figure" id="id14">
 <a class="reference external image-reference" href="./plot_hawkes_em.html"><img alt="../_images/plot_hawkes_em.png" src="../_images/plot_hawkes_em.png" /></a>
 <p class="caption"><span class="caption-text"><a class="reference internal" href="plot_hawkes_em.html#example-plot-hawkes-em-py"><span class="std std-ref">Fit Hawkes random kernels</span></a></span></p>
 </div>
 </div><div class="toctree-wrapper compound">
 </div>
-<div class="thumbnailContainer" tooltip="This learner assumes Hawkes kernels are linear combinations of a given number of kernel basis."><div class="figure" id="id16">
+<div class="thumbnailContainer" tooltip="Generates Linear, Logistic and Poisson regression realizations given a weight vector. "><div class="figure" id="id15">
+<a class="reference external image-reference" href="./plot_simulation_linear_model.html"><img alt="../_images/plot_simulation_linear_model.png" src="../_images/plot_simulation_linear_model.png" /></a>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="plot_simulation_linear_model.html#example-plot-simulation-linear-model-py"><span class="std std-ref">Linear models data simulation</span></a></span></p>
+</div>
+</div><div class="toctree-wrapper compound">
+</div>
+<div class="thumbnailContainer" tooltip="In this example with simulate a linear regression model with 1000 samples and 5 features. The s..."><div class="figure" id="id16">
+<a class="reference external image-reference" href="./plot_robust_linear_regression.html"><img alt="../_images/plot_robust_linear_regression.png" src="../_images/plot_robust_linear_regression.png" /></a>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="plot_robust_linear_regression.html#example-plot-robust-linear-regression-py"><span class="std std-ref">Robust linear model example</span></a></span></p>
+</div>
+</div><div class="toctree-wrapper compound">
+</div>
+<div class="thumbnailContainer" tooltip="This example illustrates the convergence speed of the asynchronous version of SVRG solver. This..."><div class="figure" id="id17">
+<a class="reference external image-reference" href="./plot_asynchronous_stochastic_solver.html"><img alt="../_images/plot_asynchronous_stochastic_solver.png" src="../_images/plot_asynchronous_stochastic_solver.png" /></a>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="plot_asynchronous_stochastic_solver.html#example-plot-asynchronous-stochastic-solver-py"><span class="std std-ref">Asynchronous stochastic solver</span></a></span></p>
+</div>
+</div><div class="toctree-wrapper compound">
+</div>
+<div class="thumbnailContainer" tooltip="This learner assumes Hawkes kernels are linear combinations of a given number of kernel basis."><div class="figure" id="id18">
 <a class="reference external image-reference" href="./plot_hawkes_basis_kernels.html"><img alt="../_images/plot_hawkes_basis_kernels.png" src="../_images/plot_hawkes_basis_kernels.png" /></a>
 <p class="caption"><span class="caption-text"><a class="reference internal" href="plot_hawkes_basis_kernels.html#example-plot-hawkes-basis-kernels-py"><span class="std std-ref">Fit exotic Hawkes kernels</span></a></span></p>
 </div>
 </div><div class="toctree-wrapper compound">
 </div>
-<div class="thumbnailContainer" tooltip="In this example we give a naive comparison of ``tick`` and ``scikit-learn`` for binary classifi..."><div class="figure" id="id17">
+<div class="thumbnailContainer" tooltip="In this example we give a naive comparison of ``tick`` and ``scikit-learn`` for binary classifi..."><div class="figure" id="id19">
 <a class="reference external image-reference" href="./plot_logistic_tick_vs_scikit.html"><img alt="../_images/plot_logistic_tick_vs_scikit.png" src="../_images/plot_logistic_tick_vs_scikit.png" /></a>
 <p class="caption"><span class="caption-text"><a class="reference internal" href="plot_logistic_tick_vs_scikit.html#example-plot-logistic-tick-vs-scikit-py"><span class="std std-ref">Logistic regression comparison: scikit-learn versus tick</span></a></span></p>
 </div>
 </div><div class="toctree-wrapper compound">
 </div>
-<div class="thumbnailContainer" tooltip="This example illustrates the opimization of three linear models:     * Linear regression (`tick..."><div class="figure" id="id18">
+<div class="thumbnailContainer" tooltip="This example illustrates the optimization of three linear models:     * Linear regression (`tic..."><div class="figure" id="id20">
 <a class="reference external image-reference" href="./plot_glm_convergence.html"><img alt="../_images/plot_glm_convergence.png" src="../_images/plot_glm_convergence.png" /></a>
 <p class="caption"><span class="caption-text"><a class="reference internal" href="plot_glm_convergence.html#example-plot-glm-convergence-py"><span class="std std-ref">Generalized linear models solver convergence</span></a></span></p>
 </div>
 </div><div class="toctree-wrapper compound">
 </div>
 <div class="clearer"></div><div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
 </div>
 <div class="toctree-wrapper compound">
 </div>

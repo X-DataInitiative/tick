@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>Comparison of solvers for Poisson regression &#8212; tick 0.2.1 documentation</title>
+    <title>Comparison of solvers for Poisson regression &#8212; tick 0.3.0 documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.2.1',
+        VERSION:     '0.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.2</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.3</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -83,6 +83,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../modules/inference.html#generalized-linear-models">1. Generalized linear models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../modules/inference.html#hawkes">2. Hawkes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../modules/inference.html#survival-analysis">3. Survival analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/inference.html#robust-analysis">4. Robust Analysis</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../modules/optim.html"><code class="docutils literal"><span class="pre">tick.optim</span></code>: optimization toolbox</a><ul>
@@ -125,6 +126,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../modules/dev.html#how-to-add-a-new-model-solver-or-prox">How to add a new model, solver or prox</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../modules/dev.html#enable-python-pickling-of-c-objects">Enable Python-pickling of C++ objects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../modules/dev.html#tips-for-debugging-c-classes-in-tick">Tips for debugging C++ classes in tick</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/R.html">How to use <code class="docutils literal"><span class="pre">tick</span></code> from the R statistical software</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/R.html#training-a-logistic-regression-model">1. Training a logistic regression model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/R.html#simulation-of-a-hawkes-process">2. Simulation of a Hawkes process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/R.html#using-tick-optim-from-r">3. Using <code class="docutils literal"><span class="pre">tick.optim</span></code> from R</a></li>
 </ul>
 </li>
 </ul>
@@ -184,9 +191,9 @@ iterations, on a logarithmic scale.</p>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
-<span class="kn">from</span> <span class="nn">tick.simulation</span> <span class="k">import</span> <a href="../modules/generated/tick.simulation.SimuPoisReg.html#tick.simulation.SimuPoisReg"><span class="n">SimuPoisReg</span></a><span class="p">,</span> <span class="n">weights_sparse_gauss</span>
-<span class="kn">from</span> <span class="nn">tick.inference</span> <span class="k">import</span> <a href="../modules/generated/tick.inference.PoissonRegression.html#tick.inference.PoissonRegression"><span class="n">PoissonRegression</span></a>
-<span class="kn">from</span> <span class="nn">tick.plot</span> <span class="k">import</span> <a href="../modules/generated/tick.plot.plot_history.html#tick.plot.plot_history"><span class="n">plot_history</span></a>
+<span class="kn">from</span> <span class="nn">tick.simulation</span> <span class="k">import</span> <span class="n">SimuPoisReg</span><span class="p">,</span> <span class="n">weights_sparse_gauss</span>
+<span class="kn">from</span> <span class="nn">tick.inference</span> <span class="k">import</span> <span class="n">PoissonRegression</span>
+<span class="kn">from</span> <span class="nn">tick.plot</span> <span class="k">import</span> <span class="n">plot_history</span>
 
 
 <span class="n">n_samples</span> <span class="o">=</span> <span class="mi">50000</span>
@@ -194,28 +201,28 @@ iterations, on a logarithmic scale.</p>
 <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">123</span><span class="p">)</span>
 <span class="n">weight0</span> <span class="o">=</span> <span class="n">weights_sparse_gauss</span><span class="p">(</span><span class="n">n_features</span><span class="p">,</span> <span class="n">nnz</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">n_features</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span> <span class="o">/</span> <span class="mf">20.</span>
 <span class="n">intercept0</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.1</span>
-<span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <a href="../modules/generated/tick.simulation.SimuPoisReg.html#tick.simulation.SimuPoisReg"><span class="n">SimuPoisReg</span></a><span class="p">(</span><span class="n">weight0</span><span class="p">,</span> <span class="n">intercept0</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">SimuPoisReg</span><span class="p">(</span><span class="n">weight0</span><span class="p">,</span> <span class="n">intercept0</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span>
                    <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">123</span><span class="p">)</span><span class="o">.</span><span class="n">simulate</span><span class="p">()</span>
 
 <span class="n">opts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;verbose&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;record_every&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;tol&#39;</span><span class="p">:</span> <span class="mf">1e-8</span><span class="p">,</span> <span class="s1">&#39;max_iter&#39;</span><span class="p">:</span> <span class="mi">40</span><span class="p">}</span>
 
 <span class="n">poisson_regressions</span> <span class="o">=</span> <span class="p">[</span>
-    <a href="../modules/generated/tick.inference.PoissonRegression.html#tick.inference.PoissonRegression"><span class="n">PoissonRegression</span></a><span class="p">(</span><span class="n">solver</span><span class="o">=</span><span class="s1">&#39;gd&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">opts</span><span class="p">),</span>
-    <a href="../modules/generated/tick.inference.PoissonRegression.html#tick.inference.PoissonRegression"><span class="n">PoissonRegression</span></a><span class="p">(</span><span class="n">solver</span><span class="o">=</span><span class="s1">&#39;agd&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">opts</span><span class="p">),</span>
-    <a href="../modules/generated/tick.inference.PoissonRegression.html#tick.inference.PoissonRegression"><span class="n">PoissonRegression</span></a><span class="p">(</span><span class="n">solver</span><span class="o">=</span><span class="s1">&#39;svrg&#39;</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">1234</span><span class="p">,</span> <span class="o">**</span><span class="n">opts</span><span class="p">),</span>
-    <a href="../modules/generated/tick.inference.PoissonRegression.html#tick.inference.PoissonRegression"><span class="n">PoissonRegression</span></a><span class="p">(</span><span class="n">solver</span><span class="o">=</span><span class="s1">&#39;bfgs&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">opts</span><span class="p">)</span>
+    <span class="n">PoissonRegression</span><span class="p">(</span><span class="n">solver</span><span class="o">=</span><span class="s1">&#39;gd&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">opts</span><span class="p">),</span>
+    <span class="n">PoissonRegression</span><span class="p">(</span><span class="n">solver</span><span class="o">=</span><span class="s1">&#39;agd&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">opts</span><span class="p">),</span>
+    <span class="n">PoissonRegression</span><span class="p">(</span><span class="n">solver</span><span class="o">=</span><span class="s1">&#39;svrg&#39;</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">1234</span><span class="p">,</span> <span class="o">**</span><span class="n">opts</span><span class="p">),</span>
+    <span class="n">PoissonRegression</span><span class="p">(</span><span class="n">solver</span><span class="o">=</span><span class="s1">&#39;bfgs&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">opts</span><span class="p">)</span>
 <span class="p">]</span>
 
 <span class="k">for</span> <span class="n">poisson_regression</span> <span class="ow">in</span> <span class="n">poisson_regressions</span><span class="p">:</span>
     <span class="n">poisson_regression</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 
-<a href="../modules/generated/tick.plot.plot_history.html#tick.plot.plot_history"><span class="n">plot_history</span></a><span class="p">(</span><span class="n">poisson_regressions</span><span class="p">,</span> <span class="n">log_scale</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">dist_min</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">plot_history</span><span class="p">(</span><span class="n">poisson_regressions</span><span class="p">,</span> <span class="n">log_scale</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">dist_min</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Solvers comparison for Poisson regression&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
 </div>
-<p><strong>Total running time of the example:</strong>  4.40 seconds
-( 0 minutes  4.40 seconds)</p>
+<p><strong>Total running time of the example:</strong>  6.30 seconds
+( 0 minutes  6.30 seconds)</p>
 <dl class="docutils">
 <dt>Mentioned <em>tick</em> classes:</dt>
 <dd><ul class="first last simple">

@@ -9,12 +9,12 @@ n_samples, n_features, = 5000, 50
 weights0 = weights_sparse_gauss(n_features, nnz=10)
 intercept0 = 0.2
 X, y = SimuLogReg(weights=weights0, intercept=intercept0,
-                  n_samples=n_samples, seed=123).simulate()
+                  n_samples=n_samples, seed=123, verbose=False).simulate()
 
 model = ModelLogReg(fit_intercept=True).fit(X, y)
 prox = ProxElasticNet(strength=1e-3, ratio=0.5, range=(0, n_features))
 
-solver_params = {'max_iter': 100, 'tol': 0.}
+solver_params = {'max_iter': 100, 'tol': 0., 'verbose': False}
 x0 = np.zeros(model.n_coeffs)
 
 gd = GD(linesearch=False, **solver_params).set_model(model).set_prox(prox)
