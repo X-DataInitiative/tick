@@ -14,67 +14,88 @@ class Tree;
 class Node {
  private:
   // The tree of the node
-  Tree &tree;
+  Tree &in_tree;
 
+  // Index in the list of nodes of the tree (to be removed later)
+  ulong _index;
   // Index of the left child
-  ulong index_left = 0;
+  ulong _left;
   // Index of the right child
-  ulong index_right = 0;
+  ulong _right;
   // Index of the parent
-  ulong index_parent = 0;
+  ulong _parent;
   // Creation time of the node (iteration index)
   ulong creation_time;
   // Index of the feature used for the split
-  ulong feature;
+  ulong feature = 0;
   // Threshold used for the split
-  double threshold;
+  double threshold = 0;
   // Impurity of the node
-  double impurity;
+  double impurity = 0;
   // Number of samples in the node
-  ulong n_samples;
+  ulong _n_samples;
   // Average of the labels in the node (regression only for now)
-  double labels_average;
+  double labels_average = 0;
   // Aggregation weight
-  double aggregation_weight;
+  double aggregation_weight = 1;
   // Aggregation weight for context-tree weighting
-  double aggregation_weight_ctw;
+  double aggregation_weight_ctw = 1;
   // Minimum value of each feature (minimum range)
-  ArrayDouble features_min;
+  // ArrayDouble features_min;
   // Maximum value of each feature (maximum range)
-  ArrayDouble features_max;
+  // ArrayDouble features_max;
   // The indexes (row numbers) of the samples currently in the node
-  std::vector<ulong> samples;
+  // std::vector<ulong> samples;
   // true if the node is a leaf
-  bool is_leaf;
-
-  ulong _index;
+  bool _is_leaf = true;
 
  public:
-  Node(Tree &tree);
-
-  Node(Tree &tree, uint32_t parent, ulong creation_time);
+  Node(Tree &tree, ulong index, ulong parent, ulong creation_time);
 
   Node(const Node &node);
 
   Node(const Node &&node);
 
   ~Node() {
-    std::cout << "~Node()\n";
+    // std::cout << "~Node()\n";
   }
 
   Node &operator=(const Node &) = delete;
   Node &operator=(const Node &&) = delete;
 
-  inline uint32_t left() const {
-    return index_left;
+  inline ulong index() const {
+    return _index;
   }
 
-  inline uint32_t right() const {
-    return index_right;
+  inline ulong left() const {
+    return _left;
   }
 
-  inline uint32_t parent() const {
-    return index_parent;
+  inline Node &set_left(ulong left) {
+    _left = left;
+    return *this;
+  }
+
+  inline ulong right() const {
+    return _right;
+  }
+
+  inline Node &set_right(ulong right) {
+    _right = right;
+    return *this;
+  }
+
+  inline const bool is_leaf() const {
+    return _is_leaf;
+  }
+
+  inline Node &set_is_leaf(bool is_leaf) {
+    _is_leaf = is_leaf;
+    return *this;
+  }
+
+  inline ulong parent() const {
+    return _parent;
   }
 
   inline ulong get_creation_time() const {
@@ -93,8 +114,8 @@ class Node {
     return impurity;
   }
 
-  inline ulong get_n_samples() const {
-    return n_samples;
+  inline ulong n_samples() const {
+    return _n_samples;
   }
 
   inline double get_labels_average() const {
@@ -109,38 +130,32 @@ class Node {
     return aggregation_weight_ctw;
   }
 
-  inline const ArrayDouble &get_features_min() const {
-    return features_min;
-  }
+//  inline const ArrayDouble &get_features_min() const {
+//    return features_min;
+//  }
+//
+//  inline const ArrayDouble &get_features_max() const {
+//    return features_max;
+//  }
+//
+//  inline void set_features_min(const ArrayDouble &features_min) {
+//    std::cout << "in set_features_min(const ArrayDouble &features_min)" << std::endl;
+//    this->features_min.print();
+//    features_min.print();
+//    this->features_min = features_min;
+//  }
+//
+//  inline void set_features_max(const ArrayDouble &features_max) {
+//    this->features_max = features_max;
+//  }
 
-  inline const ArrayDouble &get_features_max() const {
-    return features_max;
-  }
-
-  inline void set_features_min(const ArrayDouble &features_min) {
-    std::cout << "in set_features_min(const ArrayDouble &features_min)" << std::endl;
-    this->features_min.print();
-    features_min.print();
-    this->features_min = features_min;
-  }
-
-  inline void set_features_max(const ArrayDouble &features_max) {
-    this->features_max = features_max;
-  }
-
-  inline const bool get_is_leaf() const {
-    return is_leaf;
-  }
 
   inline Tree &get_tree() const {
-    return tree;
+    return in_tree;
   }
 
   // Update the statistics of the node using the sample
-  void update(ulong sample_index, bool update_range = false);
-
-  // Split the node
-  void split(ulong node_index, uint32_t n_splits);
+  void update(ulong sample_index);
 
   inline ArrayDouble get_features(ulong sample_index) const;
 
@@ -150,14 +165,16 @@ class Node {
 
   void print() {
 
-    std::cout << "Node(index_parent: " << index_parent
-              << ", index_left: " << index_left
-              << ", index_right: " << index_right
-              << ", n_samples=" << n_samples
-              << ", feat_min=[" << std::setprecision(3) << features_min[0] << ", " << std::setprecision(3)
-              << features_min[1] << "]"
-              << ", feat_max=[" << std::setprecision(3) << features_max[0] << ", " << std::setprecision(3)
-              << features_max[1] << "]"
+    std::cout << "Node(index: " << _index << ", index_parent: " << _parent
+              << ", index_left: " << _left
+              << ", index_right: " << _right
+              << ", n_samples: " << n_samples()
+              << ", is_leaf: " << _is_leaf
+              << ", creation_time: " << creation_time
+              // << ", feat_min=[" << std::setprecision(3) << features_min[0] << ", " << std::setprecision(3)
+              // << features_min[1] << "]"
+              // << ", feat_max=[" << std::setprecision(3) << features_max[0] << ", " << std::setprecision(3)
+              // << features_max[1] << "]"
               << ")\n";
   }
 };
@@ -168,31 +185,45 @@ class Tree {
   friend class Node;
 
  private:
-  bool already_fitted;
+  bool already_fitted = false;
 
   // The list of nodes in the tree
-  std::vector<Node> nodes;
+  std::vector<Node> nodes = std::vector<Node>();
+
+  // Number of nodes in the tree
+  ulong n_nodes = 0;
+
+  // Depth of the tree
+  // ulong depth = 0;
 
   // The forest of the tree
   OnlineForest &forest;
+
+  // Iteration counter
+  ulong iteration = 0;
+
+  // Split the node at given index
+  void split_node(ulong index);
+
+  ulong add_node(ulong parent, ulong creation_time);
 
  public:
   Tree(OnlineForest &forest);
 
   Tree(const Tree &tree);
+  Tree(const Tree &&tree);
+
+  Tree &operator=(const Tree &) = delete;
+  Tree &operator=(const Tree &&) = delete;
 
   // Launch a pass on the given data
-  void fit(ulong n_iter = 0);
+  void fit(ulong sample_index);
 
   inline OnlineForest &get_forest() const;
 
   inline Node &get_root() {
     return nodes[0];
   }
-
-  ulong add_node();
-
-  ulong add_node(uint32_t parent, ulong creation_time);
 
   inline Node &get_node(ulong node_index);
 
@@ -207,10 +238,12 @@ class Tree {
   }
 
   void print() {
-    std::cout << "Tree" << std::endl;
+    std::cout << "Tree(n_nodes: " << n_nodes << ", iteration: " << iteration << std::endl;
     for (Node &node: nodes) {
+      std::cout << "    ";
       node.print();
     }
+    std::cout << ")" << std::endl;
   }
 };
 
@@ -241,7 +274,7 @@ class OnlineForest {
   // The list of trees in the forest
   std::vector<Tree> trees;
 
-  ulong n_features;
+  // ulong n_features;
 
   // Do the forest received data
   bool has_data;
@@ -275,8 +308,6 @@ class OnlineForest {
   ~OnlineForest() {
     std::cout << "~OnlineForest()\n";
   }
-
-  OnlineForest(const OnlineForest &forest);
 
   // Returns a uniform integer in the set {0, ..., m - 1}
   inline ulong rand_unif(ulong m) {
