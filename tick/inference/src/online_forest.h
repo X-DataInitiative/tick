@@ -41,9 +41,9 @@ class Node {
   // Aggregation weight for context-tree weighting
   double aggregation_weight_ctw = 1;
   // Minimum value of each feature (minimum range)
-  // ArrayDouble features_min;
+  ArrayDouble _features_min;
   // Maximum value of each feature (maximum range)
-  // ArrayDouble features_max;
+  ArrayDouble _features_max;
   // The indexes (row numbers) of the samples currently in the node
   // std::vector<ulong> samples;
   // true if the node is a leaf
@@ -130,25 +130,21 @@ class Node {
     return aggregation_weight_ctw;
   }
 
-//  inline const ArrayDouble &get_features_min() const {
-//    return features_min;
-//  }
-//
-//  inline const ArrayDouble &get_features_max() const {
-//    return features_max;
-//  }
-//
-//  inline void set_features_min(const ArrayDouble &features_min) {
-//    std::cout << "in set_features_min(const ArrayDouble &features_min)" << std::endl;
-//    this->features_min.print();
-//    features_min.print();
-//    this->features_min = features_min;
-//  }
-//
-//  inline void set_features_max(const ArrayDouble &features_max) {
-//    this->features_max = features_max;
-//  }
+  inline const ArrayDouble &features_min() const {
+    return _features_min;
+  }
 
+  inline const ArrayDouble &features_max() const {
+    return _features_max;
+  }
+
+  inline Node &set_features_min(const ArrayDouble &features_min) {
+    _features_min = features_min;
+  }
+
+  inline Node &set_features_max(const ArrayDouble &features_max) {
+    _features_max = features_max;
+  }
 
   inline Tree &get_tree() const {
     return in_tree;
@@ -159,22 +155,22 @@ class Node {
 
   inline ArrayDouble get_features(ulong sample_index) const;
 
-  ulong get_n_features() const;
+  ulong n_features() const;
 
   inline double get_label(ulong sample_index) const;
 
   void print() {
 
-    std::cout << "Node(index: " << _index << ", index_parent: " << _parent
-              << ", index_left: " << _left
-              << ", index_right: " << _right
+    std::cout << "Node(index: " << _index << ", parent: " << _parent
+              << ", left: " << _left
+              << ", right: " << _right
               << ", n_samples: " << n_samples()
               << ", is_leaf: " << _is_leaf
               << ", creation_time: " << creation_time
-              // << ", feat_min=[" << std::setprecision(3) << features_min[0] << ", " << std::setprecision(3)
-              // << features_min[1] << "]"
-              // << ", feat_max=[" << std::setprecision(3) << features_max[0] << ", " << std::setprecision(3)
-              // << features_max[1] << "]"
+              << ", feat_min=[" << std::setprecision(3) << _features_min[0] << ", " << std::setprecision(3)
+              << _features_min[1] << "]"
+              << ", feat_max=[" << std::setprecision(3) <<_features_max[0] << ", " << std::setprecision(3)
+              << _features_max[1] << "]"
               << ")\n";
   }
 };
@@ -227,7 +223,7 @@ class Tree {
 
   inline Node &get_node(ulong node_index);
 
-  inline ulong get_n_features() const;
+  inline ulong n_features() const;
 
   inline ArrayDouble get_features(ulong sample_index) const;
 
@@ -261,15 +257,15 @@ class OnlineForest {
   // Number of samples required in a node before splitting it (this means that we wait to have
   // n_min_samples in the node before computing the candidate splits and impurities, which uses
   // the range of the samples)
-  uint32_t n_min_samples;
+  uint32_t _n_min_samples;
   // Number of candidate splits to be considered
-  uint32_t n_splits;
+  uint32_t _n_splits;
   // Iteration counter
   ulong t;
   // The vector of features
-  SArrayDouble2dPtr features;
+  SArrayDouble2dPtr _features;
   // The vector of labels
-  SArrayDoublePtr labels;
+  SArrayDoublePtr _labels;
 
   // The list of trees in the forest
   std::vector<Tree> trees;
@@ -320,36 +316,36 @@ class OnlineForest {
   // Pass the data to the forest
   void set_data(const SArrayDouble2dPtr features, const SArrayDoublePtr labels);
 
-  inline ulong get_n_features() const {
+  inline ulong n_features() const {
     if (has_data) {
-      return features->n_cols();
+      return _features->n_cols();
     } else {
       TICK_ERROR("OnlineForest::get_n_features: the forest has no data yet.")
     }
   }
 
-  inline ulong get_n_samples() const {
+  inline ulong n_samples() const {
     if (has_data) {
-      return features->n_rows();
+      return _features->n_rows();
     } else {
       TICK_ERROR("OnlineForest::get_n_samples: the forest has no data yet.")
     }
   }
 
-  inline uint32_t get_n_min_samples() const {
-    return n_min_samples;
+  inline uint32_t n_min_samples() const {
+    return _n_min_samples;
   }
 
-  inline uint32_t get_n_splits() const {
-    return n_splits;
+  inline uint32_t n_splits() const {
+    return _n_splits;
   }
 
-  inline ArrayDouble get_features(ulong sample_index) const {
-    return view_row(*features, sample_index);
+  inline ArrayDouble features(ulong sample_index) const {
+    return view_row(*_features, sample_index);
   }
 
-  inline double get_label(ulong i) const {
-    return (*labels)[i];
+  inline double label(ulong i) const {
+    return (*_labels)[i];
   }
 
   void print() {
