@@ -25,21 +25,21 @@ class Node {
   // Index of the parent
   ulong _parent;
   // Creation time of the node (iteration index)
-  ulong creation_time;
+  ulong _creation_time;
   // Index of the feature used for the split
-  ulong feature = 0;
+  ulong _feature = 0;
   // Threshold used for the split
-  double threshold = 0;
+  double _threshold = 0;
   // Impurity of the node
-  double impurity = 0;
+  double _impurity = 0;
   // Number of samples in the node
   ulong _n_samples;
   // Average of the labels in the node (regression only for now)
-  double labels_average = 0;
+  double _labels_average = 0;
   // Aggregation weight
-  double aggregation_weight = 1;
+  double _aggregation_weight = 1;
   // Aggregation weight for context-tree weighting
-  double aggregation_weight_ctw = 1;
+  double _aggregation_weight_ctw = 1;
   // Minimum value of each feature (minimum range)
   ArrayDouble _features_min;
   // Maximum value of each feature (maximum range)
@@ -98,36 +98,36 @@ class Node {
     return _parent;
   }
 
-  inline ulong get_creation_time() const {
-    return creation_time;
+  inline ulong creation_time() const {
+    return _creation_time;
   }
 
-  inline ulong get_feature() const {
-    return feature;
+  inline ulong feature() const {
+    return _feature;
   }
 
-  inline double get_threshold() const {
-    return threshold;
+  inline double threshold() const {
+    return _threshold;
   }
 
-  inline double get_impurity() const {
-    return impurity;
+  inline double impurity() const {
+    return _impurity;
   }
 
   inline ulong n_samples() const {
     return _n_samples;
   }
 
-  inline double get_labels_average() const {
-    return labels_average;
+  inline double labels_average() const {
+    return _labels_average;
   }
 
-  inline double get_aggregation_weight() const {
-    return aggregation_weight;
+  inline double aggregation_weight() const {
+    return _aggregation_weight;
   }
 
-  inline double get_aggregation_weight_ctw() const {
-    return aggregation_weight_ctw;
+  inline double aggregation_weight_ctw() const {
+    return _aggregation_weight_ctw;
   }
 
   inline const ArrayDouble &features_min() const {
@@ -140,10 +140,12 @@ class Node {
 
   inline Node &set_features_min(const ArrayDouble &features_min) {
     _features_min = features_min;
+    return *this;
   }
 
   inline Node &set_features_max(const ArrayDouble &features_max) {
     _features_max = features_max;
+    return *this;
   }
 
   inline Tree &get_tree() const {
@@ -161,15 +163,16 @@ class Node {
 
   void print() {
 
-    std::cout << "Node(index: " << _index << ", parent: " << _parent
-              << ", left: " << _left
-              << ", right: " << _right
-              << ", n_samples: " << n_samples()
-              << ", is_leaf: " << _is_leaf
-              << ", creation_time: " << creation_time
-              << ", feat_min=[" << std::setprecision(3) << _features_min[0] << ", " << std::setprecision(3)
+    std::cout << "Node(i: " << _index << ", p: " << _parent
+              << ", l: " << _left
+              << ", r: " << _right
+              << ", n: " << n_samples()
+              << ", i: " << _is_leaf
+              << ", t: " << _creation_time
+              << ", avg: " << std::setprecision(2) << _labels_average
+              << ", feat_min=[" << std::setprecision(2) << _features_min[0] << ", " << std::setprecision(2)
               << _features_min[1] << "]"
-              << ", feat_max=[" << std::setprecision(3) <<_features_max[0] << ", " << std::setprecision(3)
+              << ", feat_max=[" << std::setprecision(2) <<_features_max[0] << ", " << std::setprecision(2)
               << _features_max[1] << "]"
               << ")\n";
   }

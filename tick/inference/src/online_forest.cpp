@@ -11,17 +11,17 @@ Node::Node(Tree &tree, ulong index, ulong parent, ulong creation_time)
   _right = 0;
   this->_index = index;
   this->_parent = parent;
-  this->creation_time = creation_time;
+  this->_creation_time = creation_time;
   _features_max = ArrayDouble(n_features());
   _features_min = ArrayDouble(n_features());
 }
 
 Node::Node(const Node &node)
     : in_tree(node.in_tree), _index(node._index), _left(node._left), _right(node._right),
-      _parent(node._parent), creation_time(node.creation_time),
-      feature(node.feature), threshold(node.threshold),
-      impurity(node.impurity), _n_samples(node._n_samples), labels_average(node.labels_average),
-      aggregation_weight(node.aggregation_weight), aggregation_weight_ctw(node.aggregation_weight_ctw),
+      _parent(node._parent), _creation_time(node._creation_time),
+      _feature(node._feature), _threshold(node._threshold),
+      _impurity(node._impurity), _n_samples(node._n_samples), _labels_average(node._labels_average),
+      _aggregation_weight(node._aggregation_weight), _aggregation_weight_ctw(node._aggregation_weight_ctw),
       _features_min(node._features_min), _features_max(node._features_max),
       _is_leaf(node._is_leaf) {
   // std::cout << "Copy const of Node(index: " << _index << ")" << std::endl;
@@ -33,18 +33,19 @@ Node::Node(const Node &&node) : in_tree(in_tree) {
   _left = node._left;
   _right = node._right;
   _parent = node._parent;
-  creation_time = node.creation_time;
-  feature = node.feature;
-  threshold = node.threshold;
-  impurity = node.impurity;
+  _creation_time = node._creation_time;
+  _feature = node._feature;
+  _threshold = node._threshold;
+  _impurity = node._impurity;
   _n_samples = node._n_samples;
-  labels_average = node.labels_average;
-  aggregation_weight = node.aggregation_weight;
-  aggregation_weight_ctw = node.aggregation_weight_ctw;
+  _labels_average = node._labels_average;
+  _aggregation_weight = node._aggregation_weight;
+  _aggregation_weight_ctw = node._aggregation_weight_ctw;
   _is_leaf = node._is_leaf;
   _features_min = node._features_min;
   _features_max = node._features_max;
 }
+
 
 void Node::update(ulong sample_index) {
   _n_samples++;
@@ -55,17 +56,44 @@ void Node::update(ulong sample_index) {
   std::cout << "y_t= " << y_t << std::endl;
 
   // TODO: j'en suis ici... mettre à jour les features, et autres calculs stat
-  if (_n_samples == 1) {}
-  for(ulong j=0; j < n_features(); ++j) {
 
+  if (_is_leaf) {
+    // It's the root and the first sample point ever
+    if ((_index == 0) && (_n_samples == 1)) {
+      _features_min = x_t;
+      _features_max = x_t;
+      _labels_average = y_t;
+    } else {
+      for(ulong j=0; j < n_features(); ++j) {
+        double x_tj = x_t[j];
+        if (_features_max[j] < x_tj) {
+          _features_max[j] = x_tj;
+        }
+        if (_features_min[j] > x_tj) {
+          _features_min[j] = x_tj;
+        }
+      }
+      // Update the average of labels online
+      _labels_average = ((_n_samples - 1) * _labels_average + y_t) / _n_samples;
+    }
   }
 }
+
 
 void Tree::split_node(ulong index) {
   // Choose at random the feature used to cut
   ulong left = add_node(index, iteration);
   ulong right = add_node(index, iteration);
+  // Give back information about the childs to the parent node
   nodes[index].set_left(left).set_right(right).set_is_leaf(false);
+
+  // The ranges of the childs is contained in the range of the parent
+  nodes[left].set_features_min(nodes[index].features_min());
+  nodes[left].set_features_max(nodes[index].features_max());
+  nodes[right].set_features_min(nodes[index].features_min());
+  nodes[right].set_features_max(nodes[index].features_max());
+
+  // TODO: depending on the feature node and threshold, update the range of the childs
 }
 
 Node &Tree::get_node(ulong node_index) {
@@ -248,7 +276,7 @@ inline ArrayDouble Tree::get_features(ulong sample_index) const {
 }
 
 inline ulong Tree::n_features() const {
-  return forest.get_n_features();
+  return forest.n_features();
 }
 
 inline double Tree::get_label(ulong sample_index) const {
