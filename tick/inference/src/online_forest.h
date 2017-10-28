@@ -106,8 +106,18 @@ class Node {
     return _feature;
   }
 
+  inline Node& set_feature(ulong feature) {
+    _feature = feature;
+    return *this;
+  }
+
   inline double threshold() const {
     return _threshold;
+  }
+
+  inline Node& set_threshold(double threshold) {
+    _threshold = threshold;
+    return *this;
   }
 
   inline double impurity() const {
@@ -164,6 +174,8 @@ class Node {
   void print() {
 
     std::cout << "Node(i: " << _index << ", p: " << _parent
+              << ", f: " << _feature
+              << ", th: " << _threshold
               << ", l: " << _left
               << ", r: " << _right
               << ", n: " << n_samples()
@@ -227,6 +239,14 @@ class Tree {
   inline Node &get_node(ulong node_index);
 
   inline ulong n_features() const;
+
+  inline ulong sample_feature_uniform() {
+    return forest.sample_feature_uniform();
+  }
+
+  inline double sample_threshold_uniform(double left, double right) {
+    return forest.sample_threshold_uniform(left, right);
+  }
 
   inline ArrayDouble get_features(ulong sample_index) const;
 
@@ -295,6 +315,12 @@ class OnlineForest {
 
   Rand rand;
 
+  // Random number generator for feature sampling
+  Rand rand_feature;
+
+  // Random number generator for feature sampling
+  Rand rand_threshold;
+
   ulong get_next_sample();
 
   void shuffle();
@@ -311,6 +337,14 @@ class OnlineForest {
   // Returns a uniform integer in the set {0, ..., m - 1}
   inline ulong rand_unif(ulong m) {
     return rand.uniform_int(ulong{0}, m);
+  }
+
+  inline ulong sample_feature_uniform() {
+    return rand_feature.uniform_int(ulong{0}, n_features());
+  }
+
+  inline double sample_threshold_uniform(double left, double right) {
+    return rand_threshold.uniform(left, right);
   }
 
   // Fit the forest by doing a certain number number of iterations

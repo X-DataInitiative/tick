@@ -93,7 +93,15 @@ void Tree::split_node(ulong index) {
   nodes[right].set_features_min(nodes[index].features_min());
   nodes[right].set_features_max(nodes[index].features_max());
 
-  // TODO: depending on the feature node and threshold, update the range of the childs
+  ulong feature = sample_feature_uniform();
+  double left_boundary = nodes[index].features_min()[feature];
+  double right_boundary = nodes[index].features_max()[feature];
+  double threshold = sample_threshold_uniform(left_boundary, right_boundary);
+  nodes[index].set_feature(feature).set_threshold(threshold);
+
+  nodes[left].features_max()[feature] = threshold;
+  nodes[right].features_min()[feature] = threshold;
+
 }
 
 Node &Tree::get_node(ulong node_index) {
@@ -170,7 +178,7 @@ ulong Tree::add_node(ulong parent, ulong creation_time) {
 OnlineForest::OnlineForest(uint32_t n_trees, uint32_t n_min_samples,
                            uint32_t n_splits)
     : n_trees(n_trees), _n_min_samples(n_min_samples),
-      _n_splits(n_splits), trees() {
+      _n_splits(n_splits), trees(), rand(), rand_feature(), rand_threshold() {
   has_data = false;
   // No iteration so far
   t = 0;
