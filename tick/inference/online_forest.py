@@ -6,7 +6,7 @@ from tick.base import Base
 from tick.base import actual_kwargs
 
 from .build.inference import OnlineForest as _OnlineForest
-
+from tick.preprocessing.utils import safe_array
 
 class OnlineForest(ABC, Base):
     """Truly online random forest for regression (continuous labels).
@@ -42,6 +42,8 @@ class OnlineForest(ABC, Base):
         self._forest = _OnlineForest(n_trees, n_min_samples, n_splits)
 
     def set_data(self, X, y):
+        X = safe_array(X)
+        y = safe_array(y)
         self._forest.set_data(X, y)
 
     def fit(self, n_iter=0):
@@ -62,10 +64,14 @@ class OnlineForest(ABC, Base):
         output : `np.array`, shape=(n_samples,)
             Returns predicted values.
         """
+        import numpy as np
+        y_pred = np.empty(X.shape[0])
         if not self._fitted:
             raise ValueError("You must call ``fit`` before")
         else:
-            X = self._safe_array(X)
+            X = safe_array(X)
+        self._forest.predict(X, y_pred)
+        return y_pred
 
     def score(self, X, y):
         from sklearn.metrics import r2_score

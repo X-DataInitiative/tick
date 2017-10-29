@@ -45,7 +45,7 @@ class Node {
   // Maximum value of each feature (maximum range)
   ArrayDouble _features_max;
   // The indexes (row numbers) of the samples currently in the node
-  // std::vector<ulong> samples;
+  std::vector<ulong> _samples;
   // true if the node is a leaf
   bool _is_leaf = true;
 
@@ -128,8 +128,18 @@ class Node {
     return _n_samples;
   }
 
+  inline Node& set_n_samples(ulong n_samples) {
+    _n_samples = n_samples;
+    return *this;
+  }
+
   inline double labels_average() const {
     return _labels_average;
+  }
+
+  inline Node& set_labels_average(double avg) {
+    _labels_average = avg;
+    return *this;
   }
 
   inline double aggregation_weight() const {
@@ -168,12 +178,25 @@ class Node {
     return *this;
   }
 
+  inline const std::vector<ulong>& samples() const {
+    return _samples;
+  }
+
+  inline ulong sample(ulong index) const {
+    return _samples[index];
+  }
+
+  inline Node& add_sample(ulong index) {
+    _samples.push_back(index);
+    return *this;
+  }
+
   inline Tree &get_tree() const {
     return in_tree;
   }
 
   // Update the statistics of the node using the sample
-  void update(ulong sample_index);
+  void update(ulong sample_index, bool update_range=true);
 
   inline ArrayDouble get_features(ulong sample_index) const;
 
@@ -228,6 +251,8 @@ class Tree {
 
   ulong add_node(ulong parent, ulong creation_time);
 
+  ulong find_leaf(ulong sample_index, bool predict);
+
  public:
   Tree(OnlineForest &forest);
 
@@ -240,21 +265,27 @@ class Tree {
   // Launch a pass on the given data
   void fit(ulong sample_index);
 
+  double predict(ulong sample_index);
+
   inline OnlineForest &get_forest() const;
 
   inline Node &get_root() {
     return nodes[0];
   }
 
-  inline Node &get_node(ulong node_index);
+  inline const Node &get_node(ulong node_index) const;
 
   inline ulong n_features() const;
+
+  inline uint32_t n_min_samples() const;
 
   inline ulong sample_feature_uniform();
 
   inline double sample_threshold_uniform(double left, double right);
 
   inline ArrayDouble get_features(ulong sample_index) const;
+
+  inline ArrayDouble get_features_predict(ulong sample_index) const;
 
   inline double get_label(ulong sample_index) const;
 
@@ -291,10 +322,13 @@ class OnlineForest {
   uint32_t _n_splits;
   // Iteration counter
   ulong t;
-  // The vector of features
-  SArrayDouble2dPtr _features;
-  // The vector of labels
-  SArrayDoublePtr _labels;
+  // The matrix of features used for fitting
+  SArrayDouble2dPtr _features_fit;
+  // The vector of labels used for fitting
+  SArrayDoublePtr _labels_fit;
+
+  // The vector of features used for prediction
+  SArrayDouble2dPtr _features_predict;
 
   // The list of trees in the forest
   std::vector<Tree> trees;
@@ -359,9 +393,11 @@ class OnlineForest {
   // Pass the data to the forest
   void set_data(const SArrayDouble2dPtr features, const SArrayDoublePtr labels);
 
-  inline ulong n_features() const {
+  void predict(const SArrayDouble2dPtr features, SArrayDoublePtr predictions);
+
+    inline ulong n_features() const {
     if (has_data) {
-      return _features->n_cols();
+      return _features_fit->n_cols();
     } else {
       TICK_ERROR("OnlineForest::get_n_features: the forest has no data yet.")
     }
@@ -369,7 +405,7 @@ class OnlineForest {
 
   inline ulong n_samples() const {
     if (has_data) {
-      return _features->n_rows();
+      return _features_fit->n_rows();
     } else {
       TICK_ERROR("OnlineForest::get_n_samples: the forest has no data yet.")
     }
@@ -384,11 +420,15 @@ class OnlineForest {
   }
 
   inline ArrayDouble features(ulong sample_index) const {
-    return view_row(*_features, sample_index);
+    return view_row(*_features_fit, sample_index);
+  }
+
+  inline ArrayDouble features_predict(ulong sample_index) const {
+    return view_row(*_features_predict, sample_index);
   }
 
   inline double label(ulong i) const {
-    return (*_labels)[i];
+    return (*_labels_fit)[i];
   }
 
   void print() {

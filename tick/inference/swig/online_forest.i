@@ -23,5 +23,7 @@ class OnlineForest {
 
   void set_data(const SArrayDouble2dPtr features, const SArrayDoublePtr labels);
 
+  void predict(const SArrayDouble2dPtr features, SArrayDoublePtr predictions);
+
   void print();
 };
