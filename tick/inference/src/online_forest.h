@@ -144,12 +144,22 @@ class Node {
     return _features_min;
   }
 
+  inline Node &set_features_min(const ArrayDouble &features_min) {
+    _features_min = features_min;
+    return *this;
+  }
+
+  inline Node &set_features_min(const ulong j, const double x) {
+    _features_min[j] = x;
+    return *this;
+  }
+
   inline const ArrayDouble &features_max() const {
     return _features_max;
   }
 
-  inline Node &set_features_min(const ArrayDouble &features_min) {
-    _features_min = features_min;
+  inline Node &set_features_max(const ulong j, const double x) {
+    _features_max[j] = x;
     return *this;
   }
 
@@ -240,13 +250,9 @@ class Tree {
 
   inline ulong n_features() const;
 
-  inline ulong sample_feature_uniform() {
-    return forest.sample_feature_uniform();
-  }
+  inline ulong sample_feature_uniform();
 
-  inline double sample_threshold_uniform(double left, double right) {
-    return forest.sample_threshold_uniform(left, right);
-  }
+  inline double sample_threshold_uniform(double left, double right);
 
   inline ArrayDouble get_features(ulong sample_index) const;
 
@@ -340,7 +346,7 @@ class OnlineForest {
   }
 
   inline ulong sample_feature_uniform() {
-    return rand_feature.uniform_int(ulong{0}, n_features());
+    return rand_feature.uniform_int(ulong{0}, n_features() - 1);
   }
 
   inline double sample_threshold_uniform(double left, double right) {

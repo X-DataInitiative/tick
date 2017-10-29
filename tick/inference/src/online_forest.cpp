@@ -99,8 +99,8 @@ void Tree::split_node(ulong index) {
   double threshold = sample_threshold_uniform(left_boundary, right_boundary);
   nodes[index].set_feature(feature).set_threshold(threshold);
 
-  nodes[left].features_max()[feature] = threshold;
-  nodes[right].features_min()[feature] = threshold;
+  nodes[left].set_features_max(feature, threshold);
+  nodes[right].set_features_min(feature, threshold);
 
 }
 
@@ -148,6 +148,7 @@ void Tree::fit(ulong sample_index) {
   iteration++;
 
   bool is_leaf = false;
+  ArrayDouble x_t = get_features(sample_index);
 
   // Let's go find the leaf that contains the sample
   while (!is_leaf) {
@@ -157,7 +158,7 @@ void Tree::fit(ulong sample_index) {
     // If the node a leaf ?
     is_leaf = current_node.is_leaf();
     if (!is_leaf) {
-      if (iteration % 2 == 0) {
+      if (x_t[current_node.feature()] <= current_node.threshold()) {
         index_current_node = current_node.left();
       } else {
         index_current_node = current_node.right();
@@ -169,6 +170,7 @@ void Tree::fit(ulong sample_index) {
   }
   print();
 }
+
 
 ulong Tree::add_node(ulong parent, ulong creation_time) {
   nodes.emplace_back(*this, n_nodes, parent, creation_time);
@@ -289,4 +291,13 @@ inline ulong Tree::n_features() const {
 
 inline double Tree::get_label(ulong sample_index) const {
   return forest.label(sample_index);
+}
+
+
+inline ulong Tree::sample_feature_uniform() {
+  return forest.sample_feature_uniform();
+}
+
+inline double Tree::sample_threshold_uniform(double left, double right) {
+  return forest.sample_threshold_uniform(left, right);
 }
