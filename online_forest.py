@@ -12,24 +12,16 @@ w0 = weights_sparse_gauss(n_features, nnz=2)
 X, y = SimuLinReg(w0, -1., n_samples=n_samples).simulate()
 
 
-X_train, y_train, X_test, y_test = train_test_split(X, y)
-
+X_train, X_test, y_train, y_test = train_test_split(X, y)
 
 
 from tick.inference import OnlineForest
 
 
-forest = OnlineForest(n_trees=1, n_min_samples=50)
+forest = OnlineForest(n_trees=100, n_min_samples=50)
 
-forest.set_data(X, y)
 
-forest.fit(n_iter=5 * n_samples)
-
-forest.print()
-
-y_pred = forest.predict(X)
-
-def plot_decision_regions(clf, X_train, y_train, X_test, y_test):
+def plot_decision_regions(clf, X, y):
     from matplotlib.colors import ListedColormap
 
     cm = plt.cm.RdBu
@@ -42,6 +34,8 @@ def plot_decision_regions(clf, X_train, y_train, X_test, y_test):
     xx1, xx2 = np.meshgrid(np.arange(x1_min, x1_max, 0.02),
                            np.arange(x2_min, x2_max, 0.02))
 
+    plt.scatter(X[:, 0], X[:, 1], c=y, s=10, cmap=cm)
+
     clf.set_data(X, y)
     clf.fit(n_samples)
 
@@ -52,24 +46,12 @@ def plot_decision_regions(clf, X_train, y_train, X_test, y_test):
     plt.xlim(xx1.min(), xx1.max())
     plt.ylim(xx2.min(), xx2.max())
 
-    # for idx, cl in enumerate(np.unique(y)):
-    # plt.scatter(x=X[y == cl, 0],
-    #             y=X[y == cl, 1],
-    #             edgecolor='black',
-    #             s=100,
-    #             # c=cmap(idx),
-    #             label=cl)
-
-    # ax.text(xx1.max() - 0.5, xx2.min() + 0.5,
-    #         ('Test accuracy=%.2f' % score).lstrip('0'),
-    #         size=15, horizontalalignment='right')
-
-    plt.xlabel('petal length', fontsize=16)
-    plt.ylabel('petal width', fontsize=16)
+    plt.xlabel('x1', fontsize=16)
+    plt.ylabel('x2', fontsize=16)
     plt.legend(loc='upper left')
     plt.tight_layout()
 
 
-plot_decision_regions(forest, X_train, y_train, X_test, y_test)
+plot_decision_regions(forest, X, y)
 
 plt.show()

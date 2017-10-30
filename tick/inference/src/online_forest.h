@@ -290,7 +290,7 @@ class Tree {
   inline double get_label(ulong sample_index) const;
 
   ~Tree() {
-    std::cout << "~Tree()\n";
+    // std::cout << "~Tree()\n";
   }
 
   void print() {
@@ -371,7 +371,7 @@ class OnlineForest {
                uint32_t n_splits);
 
   ~OnlineForest() {
-    std::cout << "~OnlineForest()\n";
+    // std::cout << "~OnlineForest()\n";
   }
 
   // Returns a uniform integer in the set {0, ..., m - 1}

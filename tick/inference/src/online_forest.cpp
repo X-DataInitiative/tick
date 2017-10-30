@@ -169,7 +169,7 @@ ulong Tree::find_leaf(ulong sample_index, bool predict) {
   while (!is_leaf) {
     // Get the current node
     Node &current_node = nodes[index_current_node];
-    if (predict) {
+    if (!predict) {
       current_node.update(sample_index);
     }
     // Is the node a leaf ?
@@ -188,7 +188,7 @@ ulong Tree::find_leaf(ulong sample_index, bool predict) {
 void Tree::fit(ulong sample_index) {
   // TODO: Test that the size does not change within successive calls to fit
   iteration++;
-  ulong leaf_index = find_leaf(sample_index, true);
+  ulong leaf_index = find_leaf(sample_index, false);
   if (nodes[leaf_index].n_samples() >= n_min_samples()) {
     split_node(leaf_index);
   }
@@ -196,7 +196,7 @@ void Tree::fit(ulong sample_index) {
 }
 
 double Tree::predict(ulong sample_index) {
-  ulong leaf_index = find_leaf(sample_index, false);
+  ulong leaf_index = find_leaf(sample_index, true);
   return nodes[leaf_index].labels_average();
 }
 
@@ -320,7 +320,7 @@ void OnlineForest::predict(const SArrayDouble2dPtr features,
     for (Tree &tree : trees) {
       y_pred += tree.predict(i);
     }
-    (*predictions)[i] = y_pred / n_samples;
+    (*predictions)[i] = y_pred / n_trees;
   }
 }
 
@@ -329,7 +329,7 @@ inline ArrayDouble Tree::get_features(ulong sample_index) const {
 }
 
 inline ArrayDouble Tree::get_features_predict(ulong sample_index) const {
-  return forest.features(sample_index);
+  return forest.features_predict(sample_index);
 }
 
 inline uint32_t Tree::n_min_samples() const {
