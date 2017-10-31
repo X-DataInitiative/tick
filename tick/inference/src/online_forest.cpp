@@ -205,10 +205,17 @@ ulong Tree::add_node(ulong parent, ulong creation_time) {
   return n_nodes++;
 }
 
-OnlineForest::OnlineForest(uint32_t n_trees, uint32_t n_min_samples,
+OnlineForest::OnlineForest(uint32_t n_trees,
+                           Criterion criterion,
+                           uint32_t max_depth,
+                           uint32_t min_samples_split,
+                           uint32_t n_threads,
+                           ulong seed,
+                           bool verbose,
+                           bool warm_start,
                            uint32_t n_splits)
-    : n_trees(n_trees), _n_min_samples(n_min_samples),
-      _n_splits(n_splits), trees(), rand(), rand_feature(), rand_threshold() {
+    : _n_trees(n_trees), _criterion(criterion), _max_depth(max_depth), _min_samples_split(min_samples_split),
+      _n_threads(n_threads), _seed(seed), _verbose(verbose), _warm_start(warm_start), _n_splits(n_splits) {
   has_data = false;
   // No iteration so far
   t = 0;
@@ -304,7 +311,7 @@ void OnlineForest::set_data(const SArrayDouble2dPtr features,
   has_data = true;
   trees.clear();
   // TODO: when we set_data, we need to recreate the trees
-  for (uint32_t i = 0; i < n_trees; ++i) {
+  for (uint32_t i = 0; i < _n_trees; ++i) {
     trees.emplace_back(*this);
   }
 }
@@ -320,7 +327,7 @@ void OnlineForest::predict(const SArrayDouble2dPtr features,
     for (Tree &tree : trees) {
       y_pred += tree.predict(i);
     }
-    (*predictions)[i] = y_pred / n_trees;
+    (*predictions)[i] = y_pred / _n_trees;
   }
 }
 

@@ -8,6 +8,13 @@
 #include <iomanip>
 #include "../../random/src/rand.h"
 
+
+enum class Criterion {
+  unif = 0,
+  mse
+};
+
+
 // Forward declaration of a Tree
 class Tree;
 
@@ -313,13 +320,29 @@ enum class CycleType {
 class OnlineForest {
  private:
   // Number of Trees in the forest
-  uint32_t n_trees;
+  uint32_t _n_trees;
+
+  // Number of threads to use for parallel growing of trees
+  uint32_t _n_threads;
+
   // Number of samples required in a node before splitting it (this means that we wait to have
   // n_min_samples in the node before computing the candidate splits and impurities, which uses
   // the range of the samples)
-  uint32_t _n_min_samples;
+  uint32_t _min_samples_split;
+
   // Number of candidate splits to be considered
   uint32_t _n_splits;
+
+  Criterion _criterion;
+
+  uint32_t _max_depth;
+
+  ulong _seed;
+
+  bool _verbose;
+
+  bool _warm_start;
+
   // Iteration counter
   ulong t;
   // The matrix of features used for fitting
@@ -367,7 +390,13 @@ class OnlineForest {
 
  public:
   OnlineForest(uint32_t n_trees,
-               uint32_t n_min_samples,
+               Criterion criterion,
+               uint32_t max_depth,
+               uint32_t min_samples_split,
+               uint32_t n_threads,
+               ulong seed,
+               bool verbose,
+               bool warm_start,
                uint32_t n_splits);
 
   ~OnlineForest() {
@@ -437,6 +466,46 @@ class OnlineForest {
       tree.print();
     }
   }
+
+  inline uint32_t n_trees() const {
+    return _n_trees;
+  }
+
+  inline OnlineForest& set_n_trees(uint32_t n_trees) {
+    _n_trees = n_trees;
+    return *this;
+  }
+
+  inline uint32_t n_threads() const {
+    return _n_threads;
+  }
+
+  inline OnlineForest& set_n_threads(uint32_t n_threads) {
+    _n_threads = n_threads;
+    return *this;
+  }
+
+  inline uint32_t min_samples_split() const {
+    return _min_samples_split;
+  }
+
+  inline OnlineForest& set_min_samples_split(uint32_t min_samples_split) {
+    _min_samples_split = min_samples_split;
+    return *this;
+  }
+
+  // Number of candidate splits to be considered
+  uint32_t _n_splits;
+
+  Criterion _criterion;
+
+  uint32_t _max_depth;
+
+  ulong _seed;
+
+  bool _verbose;
+
+  bool _warm_start;
 
   ulong get_t() {
     return t;

@@ -14,11 +14,10 @@ X, y = SimuLinReg(w0, -1., n_samples=n_samples).simulate()
 
 X_train, X_test, y_train, y_test = train_test_split(X, y)
 
-
 from tick.inference import OnlineForest
 
 
-forest = OnlineForest(n_trees=100, n_min_samples=50)
+forest = OnlineForest(n_trees=100, n_min_samples=30)
 
 
 def plot_decision_regions(clf, X, y):
@@ -54,4 +53,5 @@ def plot_decision_regions(clf, X, y):
 
 plot_decision_regions(forest, X, y)
 
-plt.show()
+plt.savefig('/Users/stephane.gaiffas/Downloads/online-forest.pdf')
+

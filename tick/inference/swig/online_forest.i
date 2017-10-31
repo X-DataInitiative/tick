@@ -13,6 +13,12 @@ enum class CycleType {
   sequential
 };
 
+
+enum class Criterion {
+  unif = 0,
+  mse
+};
+
 class OnlineForest {
  public:
   OnlineForest(uint32_t n_trees,
@@ -26,4 +32,10 @@ class OnlineForest {
   void predict(const SArrayDouble2dPtr features, SArrayDoublePtr predictions);
 
   void print();
+
+  uint32_t n_trees();
+
+  uint32_t n_threads();
+
+
 };
