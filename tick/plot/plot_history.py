@@ -88,11 +88,11 @@ def plot_history(solvers, x='n_iter', y='obj', labels=None, show=True,
     x_arrays, y_arrays, labels = extract_history(solvers, x, y, labels)
 
     if dist_min:
-        min_y = np.min(np.hstack(y_arrays))
+        min_y = np.nanmin(np.hstack(y_arrays))
         y_arrays = [y_array - min_y for y_array in y_arrays]
 
     min_x, max_x = np.min(np.hstack(x_arrays)), np.max(np.hstack(x_arrays))
-    min_y, max_y = np.min(np.hstack(y_arrays)), np.max(np.hstack(y_arrays))
+    min_y, max_y = np.nanmin(np.hstack(y_arrays)), np.nanmax(np.hstack(y_arrays))
 
     # We want to ensure theses plots starts at 0
     if x in ['time', 'n_iter']:
