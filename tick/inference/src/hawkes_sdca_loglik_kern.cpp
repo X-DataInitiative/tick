@@ -153,13 +153,14 @@ void HawkesSDCALoglikKern::solve_dim_i(const ulong i) {
 double HawkesSDCALoglikKern::current_dual_objective() {
   if (!weights_computed) compute_weights();
   return parallel_map_additive_reduce(get_n_threads(), n_nodes,
-                                      &HawkesSDCALoglikKern::current_dual_objective_dim_i, this);
+                                      &HawkesSDCALoglikKern::current_dual_objective_dim_i, this)
+    - n_nodes * end_times->sum() / get_n_samples();
 }
 double HawkesSDCALoglikKern::loss(const ArrayDouble &coeffs) {
   if (!weights_computed) compute_weights();
   return parallel_map_additive_reduce(get_n_threads(), n_nodes,
                                       &HawkesSDCALoglikKern::loss_dim_i, this,
-                                      coeffs);
+                                      coeffs) - n_nodes * end_times->sum() / get_n_samples();
 }
 
 double HawkesSDCALoglikKern::current_dual_objective_dim_i(const ulong i) const {
