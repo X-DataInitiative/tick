@@ -5,6 +5,7 @@
 //
 
 #include "variants/hawkes_sdca_one_node.h"
+#include "prox_l1.h"
 #include "prox_zero.h"
 #include "poisreg.h"
 #include "sdca.h"
@@ -115,7 +116,7 @@ void SDCA::set_starting_iterate(ArrayDouble &dual_vector) {
     TICK_ERROR("Starting iterate should be dual vector and have shape (" << rand_max << ", )");
   }
 
-  if (!dynamic_cast<ProxZero *>(prox.get())) {
+  if (!(dynamic_cast<ProxZero *>(prox.get()) || dynamic_cast<ProxL1 *>(prox.get()))) {
     TICK_ERROR("set_starting_iterate in SDCA might be call only if prox is ProxZero. Otherwise "
                  "we need to implement the Fenchel conjugate of the prox gradient");
   }
@@ -127,6 +128,7 @@ void SDCA::set_starting_iterate(ArrayDouble &dual_vector) {
 
   this->dual_vector = dual_vector;
   model->sdca_primal_dual_relation(get_scaled_l_l2sq(), dual_vector, iterate);
+  prox->call(iterate, 1. / get_scaled_l_l2sq(), iterate);
   tmp_primal_vector = iterate;
 
   stored_variables_ready = true;
