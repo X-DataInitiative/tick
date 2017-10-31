@@ -23,13 +23,15 @@ hawkes_learner.fit(timestamps_list)
 
 # Dual
 hawkes_dual = HawkesDual(decays, l_l2sq, n_threads=4, verbose=True,
-                         max_iter=100)
+                         max_iter=300)
+# hawkes_dual._learner.set_max_dual(830)
 hawkes_dual.fit(timestamps_list)
 
 # LBFGS
 hawkes_lbgfsb = HawkesSumExpKern(decays, gofit='likelihood', verbose=True,
                                  C=1 / l_l2sq, penalty='l2', solver='l-bfgs-b',
                                  record_every=1)
+# hawkes_lbgfsb._prox_obj.positive = False
 hawkes_lbgfsb._model_obj.n_threads = 4
 hawkes_lbgfsb.fit(timestamps_list)
 
