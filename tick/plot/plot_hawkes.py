@@ -89,7 +89,7 @@ def plot_hawkes_kernel_norms(kernel_object, show=True, pcolor_kwargs=None,
 
     fig.subplots_adjust(right=0.8)
     divider = make_axes_locatable(ax)
-    cax = divider.append_axes("right", size="5%", pad=0.5)
+    cax = divider.append_axes("right", size="5%", pad=0.2)
     fig.colorbar(heatmap, cax=cax)
 
     if show:

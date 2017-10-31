@@ -183,6 +183,7 @@ class HawkesDual(LearnerHawkesNoParam):
                 if converged:
                     break
 
+        self._set('solution', self._learner.get_iterate())
         self._n_iter += i
 
     def objective(self, coeffs, loss=None):
