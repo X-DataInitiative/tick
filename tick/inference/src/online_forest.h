@@ -284,7 +284,7 @@ class Tree {
 
   inline ulong n_features() const;
 
-  inline uint32_t n_min_samples() const;
+  inline uint32_t min_samples_split() const;
 
   inline ulong sample_feature_uniform();
 
@@ -335,9 +335,9 @@ class OnlineForest {
 
   Criterion _criterion;
 
-  uint32_t _max_depth;
+  int _max_depth;
 
-  ulong _seed;
+  int _seed;
 
   bool _verbose;
 
@@ -391,10 +391,10 @@ class OnlineForest {
  public:
   OnlineForest(uint32_t n_trees,
                Criterion criterion,
-               uint32_t max_depth,
+               int max_depth,
                uint32_t min_samples_split,
                uint32_t n_threads,
-               ulong seed,
+               int seed,
                bool verbose,
                bool warm_start,
                uint32_t n_splits);
@@ -440,14 +440,6 @@ class OnlineForest {
     }
   }
 
-  inline uint32_t n_min_samples() const {
-    return _n_min_samples;
-  }
-
-  inline uint32_t n_splits() const {
-    return _n_splits;
-  }
-
   inline ArrayDouble features(ulong sample_index) const {
     return view_row(*_features_fit, sample_index);
   }
@@ -476,6 +468,15 @@ class OnlineForest {
     return *this;
   }
 
+  inline uint32_t n_splits() const {
+    return _n_splits;
+  }
+
+  inline OnlineForest& set_n_splits(uint32_t n_splits) {
+    _n_splits = n_splits;
+    return *this;
+  }
+
   inline uint32_t n_threads() const {
     return _n_threads;
   }
@@ -494,18 +495,53 @@ class OnlineForest {
     return *this;
   }
 
-  // Number of candidate splits to be considered
-  uint32_t _n_splits;
+  inline Criterion criterion() const {
+    return _criterion;
+  }
 
-  Criterion _criterion;
+  inline OnlineForest& set_criterion(Criterion criterion) {
+    _criterion = criterion;
+    return *this;
+  }
 
-  uint32_t _max_depth;
+  inline int max_depth() const {
+    return _max_depth;
+  }
 
-  ulong _seed;
+  inline OnlineForest& set_max_depth(int max_depth) {
+    _max_depth = max_depth;
+    return *this;
+  }
 
-  bool _verbose;
+  inline int seed() const {
+    return _seed;
+  }
 
-  bool _warm_start;
+  inline OnlineForest& set_seed(int seed) {
+    _seed = seed;
+    rand.reseed(seed);
+    rand_feature.reseed(seed);
+    rand_threshold.reseed(seed);
+    return *this;
+  }
+
+  inline bool verbose() const {
+    return _verbose;
+  }
+
+  inline OnlineForest& set_verbose(bool verbose) {
+    _verbose = verbose;
+    return *this;
+  }
+
+  inline bool warm_start() const {
+    return _warm_start;
+  }
+
+  inline OnlineForest& set_warm_start(bool warm_start) {
+    _warm_start = warm_start;
+    return *this;
+  }
 
   ulong get_t() {
     return t;

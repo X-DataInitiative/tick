@@ -8,8 +8,8 @@ from tick.base import actual_kwargs
 from .build.inference import OnlineForest as _OnlineForest
 from tick.preprocessing.utils import safe_array
 
-from .build.inference import Criterion_unif as as unif
-from .build.model import Criterion_mse as mse
+from .build.inference import Criterion_unif as unif
+from .build.inference import Criterion_mse as mse
 
 
 class OnlineForestRegressor(ABC, Base):
@@ -29,10 +29,9 @@ class OnlineForestRegressor(ABC, Base):
            is selected
         This cannot be changed after the first call to ``fit``
 
-    max_depth : `int` or `None`, default=None
-        The maximum depth of a tree. If None, nodes are splitted until expanded
-        until all leaves are pure or until all leaves contain less than
-        min_samples_split samples.
+    max_depth : `int`, default=-1
+        The maximum depth of a tree. If <= 0, nodes are splitted with no limit
+        on the depth of the tree
 
     min_samples_split : `int`, default=50
         A node waits to contain `min_samples_split` before splitting.
@@ -41,8 +40,9 @@ class OnlineForestRegressor(ABC, Base):
         The number of threads used to grow trees in parallel during training.
         If n_threads < 0, then all available cores will be used.
 
-    seed: `int` or `None`, default=None
-        If int, this is used to seed the random number generators of the forest.
+    seed : `int`, default=-1
+        If seed >= 0, this is used to seed the random number generators of the
+        forest.
 
     verbose : `bool`, default=True
         If True, then verboses things during training
@@ -51,7 +51,7 @@ class OnlineForestRegressor(ABC, Base):
         If True, then successive calls to ``fit`` will continue to grow existing
         trees. Otherwise, we start from empty trees
 
-    n_splits : `int` , default=10
+    n_splits : `int`, default=10
         Number of potential splits to consider for a feature. BLABLA ???
 
     Attributes
@@ -71,7 +71,8 @@ class OnlineForestRegressor(ABC, Base):
         'n_trees': {'writable': True, 'cpp_setter': 'set_n_trees'},
         'criterion': {'writable': True, 'cpp_setter': 'set_criterion'},
         'max_depth': {'writable': True, 'cpp_setter': 'set_max_depth'},
-        'min_samples_split': {'writable': True, 'cpp_setter': 'set_min_samples_split'},
+        'min_samples_split': {'writable': True,
+                              'cpp_setter': 'set_min_samples_split'},
         'n_threads': {'writable': True, 'cpp_setter': 'set_n_threads'},
         'seed': {'writable': True, 'cpp_setter': 'set_seed'},
         'verbose': {'writable': True, 'cpp_setter': 'set_verbose'},
@@ -83,8 +84,8 @@ class OnlineForestRegressor(ABC, Base):
 
     @actual_kwargs
     def __init__(self, n_trees: int = 10, criterion: str = 'unif',
-                 max_depth: int = None, min_samples_split: int = 50,
-                 n_threads: int = 1, seed: int = None, verbose: bool = True,
+                 max_depth: int = -1, min_samples_split: int = 50,
+                 n_threads: int = 1, seed: int = -1, verbose: bool = True,
                  warm_start: bool = True, n_splits: int = 10):
         Base.__init__(self)
         if not hasattr(self, "_actual_kwargs"):
@@ -99,7 +100,7 @@ class OnlineForestRegressor(ABC, Base):
         self.verbose = verbose
         self.warm_start = warm_start
         self.n_splits = n_splits
-        self._forest = _OnlineForest(n_trees, self._criterion, max_depth,
+        self._forest = _OnlineForest(n_trees, unif, max_depth,
                                      min_samples_split, n_threads, seed,
                                      verbose, warm_start, n_splits)
 
@@ -148,21 +149,21 @@ class OnlineForestRegressor(ABC, Base):
     def print(self):
         self._forest._print()
 
-    # TODO: property for splits
+        # TODO: property for splits
 
-    # @property
-    # def link(self):
-    #     return self._link
-    #
-    # @link.setter
-    # def link(self, value):
-    #     if self._link is not None:
-    #         raise ValueError("link is read only")
-    #     if value == "exponential":
-    #         self._set("_link_type", exponential)
-    #     elif value == "identity":
-    #         self._set("_link_type", identity)
-    #     else:
-    #         raise ValueError("``link`` must be either 'exponential' or "
-    #                          "'linear'.")
-    #     self._set("_link", value)
+        # @property
+        # def link(self):
+        #     return self._link
+        #
+        # @link.setter
+        # def link(self, value):
+        #     if self._link is not None:
+        #         raise ValueError("link is read only")
+        #     if value == "exponential":
+        #         self._set("_link_type", exponential)
+        #     elif value == "identity":
+        #         self._set("_link_type", identity)
+        #     else:
+        #         raise ValueError("``link`` must be either 'exponential' or "
+        #                          "'linear'.")
+        #     self._set("_link", value)

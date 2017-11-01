@@ -19,11 +19,18 @@ enum class Criterion {
   mse
 };
 
+
 class OnlineForest {
  public:
   OnlineForest(uint32_t n_trees,
-               uint32_t n_min_samples,
-               uint8_t n_splits);
+               Criterion criterion,
+               int max_depth,
+               uint32_t min_samples_split,
+               uint32_t n_threads,
+               int seed,
+               bool verbose,
+               bool warm_start,
+               uint32_t n_splits);
 
   void fit(ulong n_iter = 0);
 
@@ -33,9 +40,33 @@ class OnlineForest {
 
   void print();
 
-  uint32_t n_trees();
+  inline ulong n_features() const;
+  inline ulong n_samples() const;
 
-  uint32_t n_threads();
+  inline uint32_t n_trees() const;
+  inline OnlineForest& set_n_trees(uint32_t n_trees);
 
+  inline uint32_t n_splits() const;
+  inline OnlineForest& set_n_splits(uint32_t n_splits);
 
+  inline uint32_t n_threads() const;
+  inline OnlineForest& set_n_threads(uint32_t n_threads);
+
+  inline uint32_t min_samples_split() const;
+  inline OnlineForest& set_min_samples_split(uint32_t min_samples_split);
+
+  inline Criterion criterion() const;
+  inline OnlineForest& set_criterion(Criterion criterion);
+
+  inline int32 max_depth() const;
+  inline OnlineForest& set_max_depth(uint32_t max_depth);
+
+  inline int seed() const;
+  inline OnlineForest& set_seed(int seed);
+
+  inline bool verbose() const;
+  inline OnlineForest& set_verbose(bool verbose);
+
+  inline bool warm_start() const;
+  inline OnlineForest& set_warm_start(bool warm_start);
 };

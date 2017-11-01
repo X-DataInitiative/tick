@@ -189,7 +189,7 @@ void Tree::fit(ulong sample_index) {
   // TODO: Test that the size does not change within successive calls to fit
   iteration++;
   ulong leaf_index = find_leaf(sample_index, false);
-  if (nodes[leaf_index].n_samples() >= n_min_samples()) {
+  if (nodes[leaf_index].n_samples() >= min_samples_split()) {
     split_node(leaf_index);
   }
   // print();
@@ -207,24 +207,28 @@ ulong Tree::add_node(ulong parent, ulong creation_time) {
 
 OnlineForest::OnlineForest(uint32_t n_trees,
                            Criterion criterion,
-                           uint32_t max_depth,
+                           int max_depth,
                            uint32_t min_samples_split,
                            uint32_t n_threads,
-                           ulong seed,
+                           int seed,
                            bool verbose,
                            bool warm_start,
                            uint32_t n_splits)
-    : _n_trees(n_trees), _criterion(criterion), _max_depth(max_depth), _min_samples_split(min_samples_split),
-      _n_threads(n_threads), _seed(seed), _verbose(verbose), _warm_start(warm_start), _n_splits(n_splits) {
+    : _n_trees(n_trees), _criterion(criterion), _max_depth(max_depth),
+      _min_samples_split(min_samples_split), _n_threads(n_threads),
+      _verbose(verbose), _warm_start(warm_start), _n_splits(n_splits) {
   has_data = false;
   // No iteration so far
   t = 0;
-  //
+
   permutation_ready = false;
   // rand = Rand(123);
   cycle_type = CycleType::sequential;
   i_perm = 0;
   trees.reserve(n_trees);
+
+  // Seed the random number generators
+  set_seed(seed);
 }
 
 // Do n_iter iterations
@@ -339,8 +343,8 @@ inline ArrayDouble Tree::get_features_predict(ulong sample_index) const {
   return forest.features_predict(sample_index);
 }
 
-inline uint32_t Tree::n_min_samples() const {
-  return forest.n_min_samples();
+inline uint32_t Tree::min_samples_split() const {
+  return forest.min_samples_split();
 }
 
 inline ulong Tree::n_features() const {
