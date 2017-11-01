@@ -323,7 +323,7 @@ class OnlineForest {
   uint32_t _n_trees;
 
   // Number of threads to use for parallel growing of trees
-  uint32_t _n_threads;
+  int32_t _n_threads;
 
   // Number of samples required in a node before splitting it (this means that we wait to have
   // n_min_samples in the node before computing the candidate splits and impurities, which uses
@@ -393,7 +393,7 @@ class OnlineForest {
                Criterion criterion,
                int32_t max_depth,
                uint32_t min_samples_split,
-               uint32_t n_threads,
+               int32_t n_threads,
                int seed,
                bool verbose,
                bool warm_start,
@@ -477,11 +477,11 @@ class OnlineForest {
     return *this;
   }
 
-  inline uint32_t n_threads() const {
+  inline int32_t n_threads() const {
     return _n_threads;
   }
 
-  inline OnlineForest& set_n_threads(uint32_t n_threads) {
+  inline OnlineForest& set_n_threads(int32_t n_threads) {
     _n_threads = n_threads;
     return *this;
   }

@@ -26,7 +26,7 @@ class OnlineForest {
                Criterion criterion,
                int max_depth,
                uint32_t min_samples_split,
-               uint32_t n_threads,
+               int32_t n_threads,
                int seed,
                bool verbose,
                bool warm_start,
@@ -49,8 +49,8 @@ class OnlineForest {
   inline uint32_t n_splits() const;
   inline OnlineForest& set_n_splits(uint32_t n_splits);
 
-  inline uint32_t n_threads() const;
-  inline OnlineForest& set_n_threads(uint32_t n_threads);
+  inline int32_t n_threads() const;
+  inline OnlineForest& set_n_threads(int32_t n_threads);
 
   inline uint32_t min_samples_split() const;
   inline OnlineForest& set_min_samples_split(uint32_t min_samples_split);

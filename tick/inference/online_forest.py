@@ -151,19 +151,18 @@ class OnlineForestRegressor(ABC, Base):
 
         # TODO: property for splits
 
-        # @property
-        # def link(self):
-        #     return self._link
-        #
-        # @link.setter
-        # def link(self, value):
-        #     if self._link is not None:
-        #         raise ValueError("link is read only")
-        #     if value == "exponential":
-        #         self._set("_link_type", exponential)
-        #     elif value == "identity":
-        #         self._set("_link_type", identity)
-        #     else:
-        #         raise ValueError("``link`` must be either 'exponential' or "
-        #                          "'linear'.")
-        #     self._set("_link", value)
+    @property
+    def criterion(self):
+        if self._criterion == unif:
+            return 'unif'
+        else:
+            return 'mse'
+
+    @criterion.setter
+    def criterion(self, value):
+        if value == 'unif':
+            self._set('_criterion', unif)
+        elif value == 'mse':
+            self._set('_criterion', mse)
+        else:
+            raise ValueError("``criterion`` must be either 'unif' or 'mse'.")
