@@ -67,9 +67,8 @@ class OnlineForestRegressor(ABC, Base):
         '_actual_kwargs': {'writable': False},
         '_fitted': {'writable': False},
         '_forest': {'writable': False},
-        '_criterion': {'writable': False},
+        '_criterion': {'writable': False, 'cpp_setter': 'set_criterion'},
         'n_trees': {'writable': True, 'cpp_setter': 'set_n_trees'},
-        'criterion': {'writable': True, 'cpp_setter': 'set_criterion'},
         'max_depth': {'writable': True, 'cpp_setter': 'set_max_depth'},
         'min_samples_split': {'writable': True,
                               'cpp_setter': 'set_min_samples_split'},
@@ -100,7 +99,7 @@ class OnlineForestRegressor(ABC, Base):
         self.verbose = verbose
         self.warm_start = warm_start
         self.n_splits = n_splits
-        self._forest = _OnlineForest(n_trees, unif, max_depth,
+        self._forest = _OnlineForest(n_trees, self._criterion, max_depth,
                                      min_samples_split, n_threads, seed,
                                      verbose, warm_start, n_splits)
 
@@ -162,7 +161,9 @@ class OnlineForestRegressor(ABC, Base):
     def criterion(self, value):
         if value == 'unif':
             self._set('_criterion', unif)
+            # self._forest.set_criterion(unif)
         elif value == 'mse':
             self._set('_criterion', mse)
+            # self._forest.set_criterion(mse)
         else:
             raise ValueError("``criterion`` must be either 'unif' or 'mse'.")

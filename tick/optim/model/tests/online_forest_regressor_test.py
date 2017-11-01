@@ -12,6 +12,8 @@ from tick.inference.build.inference import Criterion_unif as unif
 
 class Test(unittest.TestCase):
     def test_online_forest_regression(self):
+        """...test OnlineForestRegressor
+        """
         n_samples = 500
         n_features = 3
         w0 = weights_sparse_gauss(n_features, nnz=2)
@@ -19,6 +21,8 @@ class Test(unittest.TestCase):
         X_train, X_test, y_train, y_test = train_test_split(X, y)
 
     def test_online_forest_regressor_n_threads(self):
+        """...test OnlineForestRegressor.n_threads
+        """
         forest = OnlineForestRegressor(n_threads=123)
         self.assertEqual(forest._forest.n_threads(), 123)
         forest.n_threads = -12
@@ -26,28 +30,39 @@ class Test(unittest.TestCase):
         # TODO: do it post fit
 
     def test_online_forest_regressor_n_trees(self):
+        """...test OnlineForestRegressor.n_trees
+        """
         forest = OnlineForestRegressor(n_trees=123)
         self.assertEqual(forest._forest.n_trees(), 123)
-        forest.n_trees = -12
-        self.assertEqual(forest._forest.n_trees(), -12)
+        forest.n_trees = 12
+        self.assertEqual(forest._forest.n_trees(), 12)
         # TODO: check that post-fit it cannot be changed
 
     def test_online_forest_regressor_criterion(self):
+        """...test OnlineForestRegressor.criterion
+        """
+        forest = OnlineForestRegressor(criterion='unif')
+        self.assertEqual(forest.criterion, 'unif')
+        self.assertEqual(forest._forest.criterion(), unif)
         forest = OnlineForestRegressor(criterion='mse')
         self.assertEqual(forest.criterion, 'mse')
         self.assertEqual(forest._forest.criterion(), mse)
         forest.criterion = 'unif'
         self.assertEqual(forest.criterion, 'unif')
         self.assertEqual(forest._forest.criterion(), unif)
-
-        # msg = "^``criterion`` must be either 'unif' or 'mse'.$"
-        # with self.assertRaisesRegex(RuntimeError, msg):
-        #     forest = OnlineForestRegressor(criterion='toto')
-        # with self.assertRaisesRegex(RuntimeError, msg):
-        #     forest.criterion = 123
+        forest.criterion = 'mse'
+        self.assertEqual(forest.criterion, 'mse')
+        self.assertEqual(forest._forest.criterion(), mse)
+        msg = "^``criterion`` must be either 'unif' or 'mse'.$"
+        with self.assertRaisesRegex(ValueError, msg):
+            forest = OnlineForestRegressor(criterion='toto')
+        with self.assertRaisesRegex(ValueError, msg):
+            forest.criterion = 123
         # TODO: check that post-fit it cannot be changed
 
     def test_online_forest_regressor_max_depth(self):
+        """...test OnlineForestRegressor.max_depth
+        """
         forest = OnlineForestRegressor(max_depth=123)
         self.assertEqual(forest._forest.max_depth(), 123)
         forest.max_depth = -12
@@ -55,30 +70,40 @@ class Test(unittest.TestCase):
         # TODO: check that post-fit it cannot be changed
 
     def test_online_forest_regressor_min_samples_split(self):
+        """...test OnlineForestRegressor.min_samples_split
+        """
         forest = OnlineForestRegressor(min_samples_split=123)
         self.assertEqual(forest._forest.min_samples_split(), 123)
         forest.min_samples_split = 12
         self.assertEqual(forest._forest.min_samples_split(), 12)
 
     def test_online_forest_regressor_seed(self):
+        """...test OnlineForestRegressor.seed
+        """
         forest = OnlineForestRegressor(seed=123)
         self.assertEqual(forest._forest.seed(), 123)
         forest.seed = -12
         self.assertEqual(forest._forest.seed(), -12)
 
     def test_online_forest_regressor_verbose(self):
+        """...test OnlineForestRegressor.verbose
+        """
         forest = OnlineForestRegressor(verbose=False)
         self.assertEqual(forest._forest.verbose(), False)
         forest.verbose = True
         self.assertEqual(forest._forest.verbose(), True)
 
     def test_online_forest_regressor_warm_start(self):
+        """...test OnlineForestRegressor.warm_start
+        """
         forest = OnlineForestRegressor(warm_start=False)
         self.assertEqual(forest._forest.warm_start(), False)
         forest.warm_start = True
         self.assertEqual(forest._forest.warm_start(), True)
 
     def test_online_forest_regressor_n_splits(self):
+        """...test OnlineForestRegressor.n_splits
+        """
         forest = OnlineForestRegressor(n_splits=False)
         self.assertEqual(forest._forest.n_splits(), False)
         forest.n_splits = True
