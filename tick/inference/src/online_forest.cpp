@@ -207,7 +207,7 @@ ulong Tree::add_node(ulong parent, ulong creation_time) {
 
 OnlineForest::OnlineForest(uint32_t n_trees,
                            Criterion criterion,
-                           int max_depth,
+                           int32_t max_depth,
                            uint32_t min_samples_split,
                            uint32_t n_threads,
                            int seed,

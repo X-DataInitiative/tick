@@ -335,7 +335,7 @@ class OnlineForest {
 
   Criterion _criterion;
 
-  int _max_depth;
+  int32_t _max_depth;
 
   int _seed;
 
@@ -391,7 +391,7 @@ class OnlineForest {
  public:
   OnlineForest(uint32_t n_trees,
                Criterion criterion,
-               int max_depth,
+               int32_t max_depth,
                uint32_t min_samples_split,
                uint32_t n_threads,
                int seed,
@@ -504,11 +504,11 @@ class OnlineForest {
     return *this;
   }
 
-  inline int max_depth() const {
+  inline int32_t max_depth() const {
     return _max_depth;
   }
 
-  inline OnlineForest& set_max_depth(int max_depth) {
+  inline OnlineForest& set_max_depth(int32_t max_depth) {
     _max_depth = max_depth;
     return *this;
   }

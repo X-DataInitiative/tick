@@ -58,8 +58,8 @@ class OnlineForest {
   inline Criterion criterion() const;
   inline OnlineForest& set_criterion(Criterion criterion);
 
-  inline int32 max_depth() const;
-  inline OnlineForest& set_max_depth(uint32_t max_depth);
+  inline int32_t max_depth() const;
+  inline OnlineForest& set_max_depth(int32_t max_depth);
 
   inline int seed() const;
   inline OnlineForest& set_seed(int seed);
