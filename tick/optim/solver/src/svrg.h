@@ -16,6 +16,11 @@ class SVRG : public StoSolver {
     Random = 3,
   };
 
+  enum class StepType {
+      Fixed = 1,
+      BarzilaiBorwein = 2,
+  };
+
  private:
   int n_threads = 1;
   double step;
@@ -24,6 +29,7 @@ class SVRG : public StoSolver {
   ArrayDouble steps_correction;
 
   VarianceReductionMethod variance_reduction;
+  StepType step_type;
 
   ArrayDouble full_gradient;
   ArrayDouble fixed_w;
@@ -61,7 +67,8 @@ class SVRG : public StoSolver {
        double step,
        int seed = -1,
        int n_threads = 1,
-       VarianceReductionMethod variance_reduction = VarianceReductionMethod::Last);
+       VarianceReductionMethod variance_reduction = VarianceReductionMethod::Last,
+       StepType step_method = StepType::Fixed);
 
   void solve() override;
 
@@ -81,6 +88,13 @@ class SVRG : public StoSolver {
 
   void set_variance_reduction(VarianceReductionMethod variance_reduction) {
     SVRG::variance_reduction = variance_reduction;
+  }
+
+  StepType get_step_type() {
+    return step_type;
+  }
+  void set_step_type(StepType step_type) {
+    SVRG::step_type = step_type;
   }
 
   void set_starting_iterate(ArrayDouble &new_iterate) override;

@@ -121,6 +121,29 @@ class Test(TestSolver):
             self.assertTrue(issubclass(w[0].category, UserWarning))
             self.assertEqual(str(w[0].message), msg)
 
+    def test_step_type_setting(self):
+        """...Test that SVRG step_type parameter behaves correctly
+        """
+        svrg = SVRG()
+        self.assertEqual(svrg.step_type, 'fixed')
+        self.assertEqual(svrg._solver.get_step_type(),
+                         _SVRG.StepType_Fixed)
+
+        svrg = SVRG(step_type='bb')
+        self.assertEqual(svrg.step_type, 'bb')
+        self.assertEqual(svrg._solver.get_step_type(),
+                         _SVRG.StepType_BarzilaiBorwein)
+
+        svrg.step_type = 'fixed'
+        self.assertEqual(svrg.step_type, 'fixed')
+        self.assertEqual(svrg._solver.get_step_type(),
+                         _SVRG.StepType_Fixed)
+
+        svrg.step_type = 'bb'
+        self.assertEqual(svrg.step_type, 'bb')
+        self.assertEqual(svrg._solver.get_step_type(),
+                         _SVRG.StepType_BarzilaiBorwein)
+
     def test_set_model(self):
         """...Test SVRG set_model
         """

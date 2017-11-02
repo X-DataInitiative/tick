@@ -9,11 +9,12 @@ SVRG::SVRG(ulong epoch_size,
            double step,
            int seed,
            int n_threads,
-           VarianceReductionMethod variance_reduction)
+           VarianceReductionMethod variance_reduction,
+           StepType step_method)
     : StoSolver(epoch_size, tol, rand_type, seed),
       n_threads(n_threads), step(step),
       variance_reduction(variance_reduction),
-      ready_step_corrections(false) {}
+      ready_step_corrections(false), step_type(step_method) {}
 
 void SVRG::set_model(ModelPtr model) {
   StoSolver::set_model(model);
@@ -21,6 +22,12 @@ void SVRG::set_model(ModelPtr model) {
 }
 
 void SVRG::prepare_solve() {
+  ArrayDouble previous_iterate;
+  ArrayDouble previous_full_gradient;
+  if (step_type == StepType::BarzilaiBorwein && t > 1) {
+    previous_iterate = fixed_w;
+    previous_full_gradient = full_gradient;
+  }
   // The point where we compute the full gradient for variance reduction is the
   // new iterate obtained at the previous epoch
   next_iterate = iterate;
@@ -28,6 +35,15 @@ void SVRG::prepare_solve() {
   // Allocation and computation of the full gradient
   full_gradient = ArrayDouble(iterate.size());
   model->grad(fixed_w, full_gradient);
+
+  if (step_type == StepType::BarzilaiBorwein && t > 1) {
+    ArrayDouble iterate_diff = iterate;
+    iterate_diff.mult_incr(previous_iterate, -1);
+    ArrayDouble full_gradient_diff = full_gradient;
+    full_gradient_diff.mult_incr(previous_full_gradient, -1);
+    step = 1. / epoch_size * iterate_diff.norm_sq() / iterate_diff.dot(full_gradient_diff);
+  }
+
   if ((model->is_sparse()) && (prox->is_separable())) {
     if (!ready_step_corrections) {
       compute_step_corrections();
@@ -124,7 +140,7 @@ void SVRG::solve_sparse_proba_updates(bool use_intercept, ulong n_features) {
         threadsV[i].join();
       }
   } else {
-    for (t = 0; t < epoch_size; ++t) {
+    for (ulong t = 0; t < epoch_size; ++t) {
       ulong next_i = get_next_i();
       sparse_single_thread_solver(next_i, n_features, use_intercept, p_casted_prox);
     }
