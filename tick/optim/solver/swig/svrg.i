@@ -15,19 +15,28 @@ class SVRG : public StoSolver {
         Random  = 3
     };
 
-    SVRG(unsigned long epoch_size,
+    enum class StepType {
+        Fixed = 1,
+        BarzilaiBorwein = 2,
+    };
+
+    SVRG(ulong epoch_size,
          double tol,
          RandType rand_type,
          double step,
-         int seed,
-         int threads = 1,
-         VarianceReductionMethod variance_reduction = VarianceReductionMethod::Last);
+         int seed = -1,
+         int n_threads = 1,
+         VarianceReductionMethod variance_reduction = VarianceReductionMethod::Last,
+         StepType step_method = StepType::Fixed);
 
     void solve();
 
+    double get_step();
     void set_step(double step);
 
     VarianceReductionMethod get_variance_reduction();
-
     void set_variance_reduction(VarianceReductionMethod variance_reduction);
+
+    StepType get_step_type();
+    void set_step_type(StepType step_type);
 };

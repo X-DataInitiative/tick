@@ -13,6 +13,11 @@ variance_reduction_methods_mapper = {
     'rand': _SVRG.VarianceReductionMethod_Random
 }
 
+step_types_mapper = {
+    'fixed': _SVRG.StepType_Fixed,
+    'bb': _SVRG.StepType_BarzilaiBorwein
+}
+
 
 class SVRG(SolverFirstOrderSto):
     """Stochastic Variance Reduced Gradient solver
@@ -111,6 +116,16 @@ class SVRG(SolverFirstOrderSto):
           generated and samples are sequentially taken from it. Once all of
           them have been taken, a new random permutation is generated
 
+    step_type : {'fixed', 'bb'}, default='fixed'
+        How step will evoluate over stime
+
+        * if ``'fixed'`` step will remain equal to the given step accross
+          all iterations. This is the fastest solution if the optimal step
+          is known.
+        * if ``'bb'`` step will be chosen given Barzilai Borwein rule. This
+          choice is much more adaptive and should be used if optimal step if
+          difficult to obtain.
+
     print_every : `int`, default=1
         Print history information every time the iteration number is a
         multiple of ``print_every``. Used only is ``verbose`` is True
@@ -148,6 +163,10 @@ class SVRG(SolverFirstOrderSto):
     ----------
     * L. Xiao and T. Zhang, A proximal stochastic gradient method with
       progressive variance reduction, *SIAM Journal on Optimization* (2014)
+
+    * Tan, C., Ma, S., Dai, Y. H., & Qian, Y.
+      Barzilai-Borwein step size for stochastic gradient descent.
+      *Advances in Neural Information Processing Systems* (2016)
     """
 
     def __init__(self, step: float = None, epoch_size: int = None,
@@ -155,7 +174,7 @@ class SVRG(SolverFirstOrderSto):
                  max_iter: int = 10, verbose: bool = True,
                  print_every: int = 1, record_every: int = 1,
                  seed: int = -1, variance_reduction: str = 'last',
-                 n_threads: int = 1):
+                 step_type: str = 'fixed', n_threads: int = 1):
         SolverFirstOrderSto.__init__(self, step, epoch_size, rand_type,
                                      tol, max_iter, verbose,
                                      print_every, record_every, seed=seed)
@@ -174,6 +193,7 @@ class SVRG(SolverFirstOrderSto):
                              self.n_threads)
 
         self.variance_reduction = variance_reduction
+        self.step_type = step_type
 
     @property
     def variance_reduction(self):
@@ -193,6 +213,20 @@ class SVRG(SolverFirstOrderSto):
                      "with sparse datasets", UserWarning)
         self._solver.set_variance_reduction(
             variance_reduction_methods_mapper[val])
+
+    @property
+    def step_type(self):
+        return next((k for k, v in step_types_mapper.items()
+                     if v == self._solver.get_step_type()), None)
+
+    @step_type.setter
+    def step_type(self, val: str):
+        if val not in step_types_mapper:
+            raise ValueError(
+                'step_type should be one of "{}", got "{}"'.format(
+                    ', '.join(sorted(step_types_mapper.keys())),
+                    val))
+        self._solver.set_step_type(step_types_mapper[val])
 
     def set_model(self, model: Model):
         """Set model in the solver
