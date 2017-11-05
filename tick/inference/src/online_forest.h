@@ -9,11 +9,17 @@
 #include "../../random/src/rand.h"
 
 
+// TODO: compute the depth of the tree and enable thd max_depth option
+// TODO: code the least-squares criterion
+// TODO: remove set_data and code only a fit method
+// TODO: code a classifier
+// TODO: warm-start option
+
+
 enum class Criterion {
   unif = 0,
   mse
 };
-
 
 // Forward declaration of a Tree
 class Tree;
@@ -37,6 +43,8 @@ class Node {
   ulong _feature = 0;
   // Threshold used for the split
   double _threshold = 0;
+  // Depth of the node
+  ulong _depth = 0;
   // Impurity of the node
   double _impurity = 0;
   // Number of samples in the node
@@ -113,7 +121,7 @@ class Node {
     return _feature;
   }
 
-  inline Node& set_feature(ulong feature) {
+  inline Node &set_feature(ulong feature) {
     _feature = feature;
     return *this;
   }
@@ -122,7 +130,7 @@ class Node {
     return _threshold;
   }
 
-  inline Node& set_threshold(double threshold) {
+  inline Node &set_threshold(double threshold) {
     _threshold = threshold;
     return *this;
   }
@@ -135,8 +143,17 @@ class Node {
     return _n_samples;
   }
 
-  inline Node& set_n_samples(ulong n_samples) {
+  inline Node &set_n_samples(ulong n_samples) {
     _n_samples = n_samples;
+    return *this;
+  }
+
+  inline ulong depth() const {
+    return _depth;
+  }
+
+  inline Node &set_depth(ulong depth) {
+    _depth = depth;
     return *this;
   }
 
@@ -144,7 +161,7 @@ class Node {
     return _labels_average;
   }
 
-  inline Node& set_labels_average(double avg) {
+  inline Node &set_labels_average(double avg) {
     _labels_average = avg;
     return *this;
   }
@@ -185,7 +202,7 @@ class Node {
     return *this;
   }
 
-  inline const std::vector<ulong>& samples() const {
+  inline const std::vector<ulong> &samples() const {
     return _samples;
   }
 
@@ -193,7 +210,7 @@ class Node {
     return _samples[index];
   }
 
-  inline Node& add_sample(ulong index) {
+  inline Node &add_sample(ulong index) {
     _samples.push_back(index);
     return *this;
   }
@@ -203,7 +220,7 @@ class Node {
   }
 
   // Update the statistics of the node using the sample
-  void update(ulong sample_index, bool update_range=true);
+  void update(ulong sample_index, bool update_range = true);
 
   inline ArrayDouble get_features(ulong sample_index) const;
 
@@ -214,23 +231,24 @@ class Node {
   void print() {
 
     std::cout << "Node(i: " << _index << ", p: " << _parent
-              << ", f: " << _feature
-              << ", th: " << _threshold
+              // << ", f: " << _feature
+              // << ", th: " << _threshold
               << ", l: " << _left
               << ", r: " << _right
-              << ", n: " << n_samples()
-              << ", i: " << _is_leaf
+              << ", d: " << _depth
+              // << ", n: " << n_samples()
+              // << ", i: " << _is_leaf
               << ", t: " << _creation_time
-              << ", avg: " << std::setprecision(2) << _labels_average
-              << ", feat_min=[" << std::setprecision(2) << _features_min[0] << ", " << std::setprecision(2)
-              << _features_min[1] << "]"
-              << ", feat_max=[" << std::setprecision(2) <<_features_max[0] << ", " << std::setprecision(2)
-              << _features_max[1] << "]"
+              // << ", avg: " << std::setprecision(2) << _labels_average
+              // << ", feat_min=[" << std::setprecision(2) << _features_min[0] << ", " << std::setprecision(2)
+              // << _features_min[1] << "]"
+              // << ", feat_max=[" << std::setprecision(2) << _features_max[0] << ", " << std::setprecision(2)
+              // << _features_max[1] << "]"
               << ")\n";
   }
 };
 
-class OnlineForest;
+class OnlineForestRegressor;
 
 class Tree {
   friend class Node;
@@ -242,13 +260,13 @@ class Tree {
   std::vector<Node> nodes = std::vector<Node>();
 
   // Number of nodes in the tree
-  ulong n_nodes = 0;
+  ulong _n_nodes = 0;
 
   // Depth of the tree
-  // ulong depth = 0;
+  ulong _depth = 0;
 
   // The forest of the tree
-  OnlineForest &forest;
+  OnlineForestRegressor &forest;
 
   // Iteration counter
   ulong iteration = 0;
@@ -260,8 +278,10 @@ class Tree {
 
   ulong find_leaf(ulong sample_index, bool predict);
 
+  std::pair<ulong, double> sample_feature_and_threshold(ulong index);
+
  public:
-  Tree(OnlineForest &forest);
+  Tree(OnlineForestRegressor &forest);
 
   Tree(const Tree &tree);
   Tree(const Tree &&tree);
@@ -274,21 +294,19 @@ class Tree {
 
   double predict(ulong sample_index);
 
-  inline OnlineForest &get_forest() const;
+  inline ulong n_features() const;
 
-  inline Node &get_root() {
-    return nodes[0];
+  inline ulong n_nodes() const {
+    return _n_nodes;
   }
 
-  inline const Node &get_node(ulong node_index) const;
-
-  inline ulong n_features() const;
+  inline ulong depth() const {
+    return _depth;
+  }
 
   inline uint32_t min_samples_split() const;
 
-  inline ulong sample_feature_uniform();
-
-  inline double sample_threshold_uniform(double left, double right);
+  inline Criterion criterion() const;
 
   inline ArrayDouble get_features(ulong sample_index) const;
 
@@ -301,7 +319,7 @@ class Tree {
   }
 
   void print() {
-    std::cout << "Tree(n_nodes: " << n_nodes << ", iteration: " << iteration << std::endl;
+    std::cout << "Tree(n_nodes: " << n_nodes() << ", iteration: " << iteration << std::endl;
     for (Node &node: nodes) {
       std::cout << "    ";
       node.print();
@@ -317,7 +335,7 @@ enum class CycleType {
   sequential
 };
 
-class OnlineForest {
+class OnlineForestRegressor {
  private:
   // Number of Trees in the forest
   uint32_t _n_trees;
@@ -376,44 +394,26 @@ class OnlineForest {
   // Init permutation array in case of Random is srt to permutation
   void init_permutation();
 
+  // Random number generator for feature and threshold sampling
   Rand rand;
-
-  // Random number generator for feature sampling
-  Rand rand_feature;
-
-  // Random number generator for feature sampling
-  Rand rand_threshold;
 
   ulong get_next_sample();
 
   void shuffle();
 
  public:
-  OnlineForest(uint32_t n_trees,
-               Criterion criterion,
-               int32_t max_depth,
-               uint32_t min_samples_split,
-               int32_t n_threads,
-               int seed,
-               bool verbose,
-               bool warm_start,
-               uint32_t n_splits);
+  OnlineForestRegressor(uint32_t n_trees,
+                        Criterion criterion,
+                        int32_t max_depth,
+                        uint32_t min_samples_split,
+                        int32_t n_threads,
+                        int seed,
+                        bool verbose,
+                        bool warm_start,
+                        uint32_t n_splits);
 
-  ~OnlineForest() {
+  ~OnlineForestRegressor() {
     // std::cout << "~OnlineForest()\n";
-  }
-
-  // Returns a uniform integer in the set {0, ..., m - 1}
-  inline ulong rand_unif(ulong m) {
-    return rand.uniform_int(ulong{0}, m);
-  }
-
-  inline ulong sample_feature_uniform() {
-    return rand_feature.uniform_int(ulong{0}, n_features() - 1);
-  }
-
-  inline double sample_threshold_uniform(double left, double right) {
-    return rand_threshold.uniform(left, right);
   }
 
   // Fit the forest by doing a certain number number of iterations
@@ -424,7 +424,7 @@ class OnlineForest {
 
   void predict(const SArrayDouble2dPtr features, SArrayDoublePtr predictions);
 
-    inline ulong n_features() const {
+  inline ulong n_features() const {
     if (has_data) {
       return _features_fit->n_cols();
     } else {
@@ -463,7 +463,7 @@ class OnlineForest {
     return _n_trees;
   }
 
-  inline OnlineForest& set_n_trees(uint32_t n_trees) {
+  inline OnlineForestRegressor &set_n_trees(uint32_t n_trees) {
     _n_trees = n_trees;
     return *this;
   }
@@ -472,7 +472,7 @@ class OnlineForest {
     return _n_splits;
   }
 
-  inline OnlineForest& set_n_splits(uint32_t n_splits) {
+  inline OnlineForestRegressor &set_n_splits(uint32_t n_splits) {
     _n_splits = n_splits;
     return *this;
   }
@@ -481,7 +481,7 @@ class OnlineForest {
     return _n_threads;
   }
 
-  inline OnlineForest& set_n_threads(int32_t n_threads) {
+  inline OnlineForestRegressor &set_n_threads(int32_t n_threads) {
     _n_threads = n_threads;
     return *this;
   }
@@ -490,7 +490,7 @@ class OnlineForest {
     return _min_samples_split;
   }
 
-  inline OnlineForest& set_min_samples_split(uint32_t min_samples_split) {
+  inline OnlineForestRegressor &set_min_samples_split(uint32_t min_samples_split) {
     _min_samples_split = min_samples_split;
     return *this;
   }
@@ -499,7 +499,7 @@ class OnlineForest {
     return _criterion;
   }
 
-  inline OnlineForest& set_criterion(Criterion criterion) {
+  inline OnlineForestRegressor &set_criterion(Criterion criterion) {
     _criterion = criterion;
     return *this;
   }
@@ -508,7 +508,7 @@ class OnlineForest {
     return _max_depth;
   }
 
-  inline OnlineForest& set_max_depth(int32_t max_depth) {
+  inline OnlineForestRegressor &set_max_depth(int32_t max_depth) {
     _max_depth = max_depth;
     return *this;
   }
@@ -517,11 +517,9 @@ class OnlineForest {
     return _seed;
   }
 
-  inline OnlineForest& set_seed(int seed) {
+  inline OnlineForestRegressor &set_seed(int seed) {
     _seed = seed;
     rand.reseed(seed);
-    rand_feature.reseed(seed);
-    rand_threshold.reseed(seed);
     return *this;
   }
 
@@ -529,7 +527,7 @@ class OnlineForest {
     return _verbose;
   }
 
-  inline OnlineForest& set_verbose(bool verbose) {
+  inline OnlineForestRegressor &set_verbose(bool verbose) {
     _verbose = verbose;
     return *this;
   }
@@ -538,14 +536,19 @@ class OnlineForest {
     return _warm_start;
   }
 
-  inline OnlineForest& set_warm_start(bool warm_start) {
+  inline OnlineForestRegressor &set_warm_start(bool warm_start) {
     _warm_start = warm_start;
     return *this;
   }
 
-  ulong get_t() {
-    return t;
+  inline ulong sample_feature() {
+    return rand.uniform_int(0L, n_features() - 1);
   }
+
+  inline double sample_threshold(double left, double right) {
+    return rand.uniform(left, right);
+  }
+
 };
 
 #endif //TICK_ONLINEFOREST_H

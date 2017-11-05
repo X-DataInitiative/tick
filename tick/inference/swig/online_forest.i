@@ -20,9 +20,9 @@ enum class Criterion {
 };
 
 
-class OnlineForest {
+class OnlineForestRegressor {
  public:
-  OnlineForest(uint32_t n_trees,
+  OnlineForestRegressor(uint32_t n_trees,
                Criterion criterion,
                int max_depth,
                uint32_t min_samples_split,
@@ -44,29 +44,29 @@ class OnlineForest {
   inline ulong n_samples() const;
 
   inline uint32_t n_trees() const;
-  inline OnlineForest& set_n_trees(uint32_t n_trees);
+  inline OnlineForestRegressor& set_n_trees(uint32_t n_trees);
 
   inline uint32_t n_splits() const;
-  inline OnlineForest& set_n_splits(uint32_t n_splits);
+  inline OnlineForestRegressor& set_n_splits(uint32_t n_splits);
 
   inline int32_t n_threads() const;
-  inline OnlineForest& set_n_threads(int32_t n_threads);
+  inline OnlineForestRegressor& set_n_threads(int32_t n_threads);
 
   inline uint32_t min_samples_split() const;
-  inline OnlineForest& set_min_samples_split(uint32_t min_samples_split);
+  inline OnlineForestRegressor& set_min_samples_split(uint32_t min_samples_split);
 
   inline Criterion criterion() const;
-  inline OnlineForest& set_criterion(Criterion criterion);
+  inline OnlineForestRegressor& set_criterion(Criterion criterion);
 
   inline int32_t max_depth() const;
-  inline OnlineForest& set_max_depth(int32_t max_depth);
+  inline OnlineForestRegressor& set_max_depth(int32_t max_depth);
 
   inline int seed() const;
-  inline OnlineForest& set_seed(int seed);
+  inline OnlineForestRegressor& set_seed(int seed);
 
   inline bool verbose() const;
-  inline OnlineForest& set_verbose(bool verbose);
+  inline OnlineForestRegressor& set_verbose(bool verbose);
 
   inline bool warm_start() const;
-  inline OnlineForest& set_warm_start(bool warm_start);
+  inline OnlineForestRegressor& set_warm_start(bool warm_start);
 };

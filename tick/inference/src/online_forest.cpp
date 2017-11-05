@@ -9,6 +9,7 @@ Node::Node(Tree &tree, ulong index, ulong parent, ulong creation_time)
   _is_leaf = true;
   _left = 0;
   _right = 0;
+  _depth = 0;
   this->_index = index;
   this->_parent = parent;
   this->_creation_time = creation_time;
@@ -23,7 +24,7 @@ Node::Node(const Node &node)
       _impurity(node._impurity), _n_samples(node._n_samples), _labels_average(node._labels_average),
       _aggregation_weight(node._aggregation_weight), _aggregation_weight_ctw(node._aggregation_weight_ctw),
       _features_min(node._features_min), _features_max(node._features_max),
-      _samples(node._samples), _is_leaf(node._is_leaf) {
+      _samples(node._samples), _is_leaf(node._is_leaf), _depth(node._depth) {
   // std::cout << "Copy const of Node(index: " << _index << ")" << std::endl;
 }
 
@@ -47,7 +48,6 @@ Node::Node(const Node &&node) : in_tree(in_tree) {
   _samples = node._samples;
 }
 
-
 void Node::update(ulong sample_index, bool update_range) {
   _n_samples++;
   ArrayDouble x_t = get_features(sample_index);
@@ -62,7 +62,7 @@ void Node::update(ulong sample_index, bool update_range) {
       _labels_average = y_t;
     } else {
       if (update_range) {
-        for(ulong j=0; j < n_features(); ++j) {
+        for (ulong j = 0; j < n_features(); ++j) {
           double x_tj = x_t[j];
           if (_features_max[j] < x_tj) {
             _features_max[j] = x_tj;
@@ -80,6 +80,20 @@ void Node::update(ulong sample_index, bool update_range) {
   }
 }
 
+std::pair<ulong, double> Tree::sample_feature_and_threshold(ulong index) {
+  if (criterion() == Criterion::unif) {
+    // Select the splitting feature uniformly at random
+    ulong feature = forest.sample_feature();
+    // Choose at random the feature used to cut uniformly in the
+    // range of the features
+    double left_boundary = nodes[index].features_min()[feature];
+    double right_boundary = nodes[index].features_max()[feature];
+    double threshold = forest.sample_threshold(left_boundary, right_boundary);
+    return std::pair<ulong, double>(feature, threshold);
+  } else {
+    TICK_ERROR('Criterion::mse not implemented.')
+  }
+};
 
 void Tree::split_node(ulong index) {
   // Choose at random the feature used to cut
@@ -88,12 +102,13 @@ void Tree::split_node(ulong index) {
   // Give back information about the childs to the parent node
   nodes[index].set_left(left).set_right(right).set_is_leaf(false);
 
-  // Select the splitting feature uniformly at random
-  ulong feature = sample_feature_uniform();
-  // Select the thresholding uniformly at random in the support of the current features
-  double left_boundary = nodes[index].features_min()[feature];
-  double right_boundary = nodes[index].features_max()[feature];
-  double threshold = sample_threshold_uniform(left_boundary, right_boundary);
+  // Set the depth of ther childs
+  nodes[left].set_depth(nodes[index].depth() + 1);
+  nodes[right].set_depth(nodes[index].depth() + 1);
+
+  std::pair<ulong, double> feature_threshold = sample_feature_and_threshold(index);
+  ulong feature = feature_threshold.first;
+  double threshold = feature_threshold.second;
   nodes[index].set_feature(feature).set_threshold(threshold);
 
   // The ranges of the childs is contained in the range of the parent
@@ -111,17 +126,13 @@ void Tree::split_node(ulong index) {
   for (ulong i = 0; i < nodes[index].n_samples(); ++i) {
     ulong sample_index = nodes[index].sample(i);
     double x_ij = get_features(sample_index)[feature];
-    if(x_ij <= threshold) {
+    if (x_ij <= threshold) {
       // We don't update the ranges, since we already managed them above
       nodes[left].update(sample_index, false);
     } else {
       nodes[right].update(sample_index, false);
     }
   }
-}
-
-const Node &Tree::get_node(ulong node_index) const {
-  return nodes[node_index];
 }
 
 Tree::Tree(const Tree &tree)
@@ -131,10 +142,6 @@ Tree::Tree(const Tree &tree)
 
 Tree::Tree(const Tree &&tree) : forest(tree.forest), nodes(tree.nodes) {
   already_fitted = tree.already_fitted;
-}
-
-OnlineForest &Tree::get_forest() const {
-  return forest;
 }
 
 double Node::get_label(ulong sample_index) const {
@@ -149,15 +156,17 @@ ArrayDouble Node::get_features(ulong sample_index) const {
   return in_tree.get_features(sample_index);
 }
 
-Tree::Tree(OnlineForest &forest) : forest(forest) {
+Tree::Tree(OnlineForestRegressor &forest) : forest(forest) {
   // std::cout << "Tree::Tree(OnlineForest &forest)\n";
   add_node(0, 0);
+  // TODO: pre-allocate the vector to make things faster ?
 }
-
 
 ulong Tree::find_leaf(ulong sample_index, bool predict) {
   // Find the leaf that contains the sample
   // Start at the root. Index of the root is always 0
+  // If predict == true, this call to find_leaf is for
+  // prediction only, so that no leaf update and splits can be done
   ulong index_current_node = 0;
   bool is_leaf = false;
   ArrayDouble x_t;
@@ -189,7 +198,8 @@ void Tree::fit(ulong sample_index) {
   // TODO: Test that the size does not change within successive calls to fit
   iteration++;
   ulong leaf_index = find_leaf(sample_index, false);
-  if (nodes[leaf_index].n_samples() >= min_samples_split()) {
+  // TODO: add max_depth check
+  if ( (nodes[leaf_index].n_samples() >= min_samples_split()) && (true))) {
     split_node(leaf_index);
   }
   // print();
@@ -201,11 +211,11 @@ double Tree::predict(ulong sample_index) {
 }
 
 ulong Tree::add_node(ulong parent, ulong creation_time) {
-  nodes.emplace_back(*this, n_nodes, parent, creation_time);
-  return n_nodes++;
+  nodes.emplace_back(*this, _n_nodes, parent, creation_time);
+  return _n_nodes++;
 }
 
-OnlineForest::OnlineForest(uint32_t n_trees,
+OnlineForestRegressor::OnlineForestRegressor(uint32_t n_trees,
                            Criterion criterion,
                            int32_t max_depth,
                            uint32_t min_samples_split,
@@ -226,13 +236,12 @@ OnlineForest::OnlineForest(uint32_t n_trees,
   cycle_type = CycleType::sequential;
   i_perm = 0;
   trees.reserve(n_trees);
-
   // Seed the random number generators
   set_seed(seed);
 }
 
 // Do n_iter iterations
-void OnlineForest::fit(ulong n_iter) {
+void OnlineForestRegressor::fit(ulong n_iter) {
   if (!has_data) {
     TICK_ERROR("OnlineForest::fit: the forest has no data yet.")
   }
@@ -253,7 +262,7 @@ void OnlineForest::fit(ulong n_iter) {
   }
 }
 
-void OnlineForest::init_permutation() {
+void OnlineForestRegressor::init_permutation() {
   if ((cycle_type == CycleType::permutation) && (n_samples() > 0)) {
     permutation = ArrayULong(n_samples());
     for (ulong i = 0; i < n_samples(); ++i)
@@ -262,7 +271,7 @@ void OnlineForest::init_permutation() {
 }
 
 //// Simulation of a random permutation using Knuth's algorithm
-void OnlineForest::shuffle() {
+void OnlineForestRegressor::shuffle() {
   if (cycle_type == CycleType::permutation) {
     // A secure check
     if (permutation.size() != n_samples()) {
@@ -272,7 +281,7 @@ void OnlineForest::shuffle() {
     i_perm = 0;
     for (ulong i = 1; i < n_samples(); ++i) {
       // uniform number in { 0, ..., i }
-      ulong j = rand_unif(i);
+      ulong j = rand.uniform_int(0L, i);
       // Exchange permutation[i] and permutation[j]
       ulong tmp = permutation[i];
       permutation[i] = permutation[j];
@@ -282,10 +291,10 @@ void OnlineForest::shuffle() {
   permutation_ready = true;
 }
 
-ulong OnlineForest::get_next_sample() {
+ulong OnlineForestRegressor::get_next_sample() {
   ulong i = 0;
   if (cycle_type == CycleType::uniform) {
-    i = rand_unif(n_samples() - 1);
+    i = rand.uniform_int(0L, n_samples() - 1);
   } else {
     if (cycle_type == CycleType::permutation) {
       if (!permutation_ready) {
@@ -308,7 +317,7 @@ ulong OnlineForest::get_next_sample() {
   return i;
 }
 
-void OnlineForest::set_data(const SArrayDouble2dPtr features,
+void OnlineForestRegressor::set_data(const SArrayDouble2dPtr features,
                             const SArrayDoublePtr labels) {
   this->_features_fit = features;
   this->_labels_fit = labels;
@@ -320,12 +329,12 @@ void OnlineForest::set_data(const SArrayDouble2dPtr features,
   }
 }
 
-void OnlineForest::predict(const SArrayDouble2dPtr features,
+void OnlineForestRegressor::predict(const SArrayDouble2dPtr features,
                            SArrayDoublePtr predictions) {
   // TODO: check that the forest is already trained
   this->_features_predict = features;
   ulong n_samples = features->n_rows();
-  for (ulong i=0; i < n_samples; ++i) {
+  for (ulong i = 0; i < n_samples; ++i) {
     // The prediction is simply the average of the predictions
     double y_pred = 0;
     for (Tree &tree : trees) {
@@ -355,10 +364,6 @@ inline double Tree::get_label(ulong sample_index) const {
   return forest.label(sample_index);
 }
 
-inline ulong Tree::sample_feature_uniform() {
-  return forest.sample_feature_uniform();
-}
-
-inline double Tree::sample_threshold_uniform(double left, double right) {
-  return forest.sample_threshold_uniform(left, right);
+inline Criterion Tree::criterion() const {
+  return forest.criterion();
 }
