@@ -9,7 +9,7 @@ __author__ = 'stephanegaiffas'
 from abc import ABCMeta, abstractmethod
 import numpy as np
 from tick.base import Base
-from tick.optim.proj.build.proj import proj_simplex, proj_half_spaces
+from .build.proj import proj_simplex, proj_half_spaces
 
 
 class Proj():

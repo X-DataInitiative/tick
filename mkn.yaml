@@ -134,7 +134,7 @@ profile:
       ./tick/optim/proj/src
       ./tick/optim/proj/swig
     install: ${lib_path}/optim/proj/build
-    out: proj${lib_name}
+    out: _proj${lib_name}
 
   - name: preprocessing
     parent: arg
