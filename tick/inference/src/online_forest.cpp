@@ -21,7 +21,7 @@ Node::Node(const Node &node)
     : in_tree(node.in_tree), _index(node._index), _left(node._left), _right(node._right),
       _parent(node._parent), _creation_time(node._creation_time),
       _feature(node._feature), _threshold(node._threshold),
-      _impurity(node._impurity), _n_samples(node._n_samples), _labels_average(node._labels_average),
+      _impurity(node._impurity), _n_samples(node._n_samples),
       _aggregation_weight(node._aggregation_weight), _aggregation_weight_ctw(node._aggregation_weight_ctw),
       _features_min(node._features_min), _features_max(node._features_max),
       _samples(node._samples), _is_leaf(node._is_leaf), _depth(node._depth) {
@@ -39,7 +39,6 @@ Node::Node(const Node &&node) : in_tree(in_tree) {
   _threshold = node._threshold;
   _impurity = node._impurity;
   _n_samples = node._n_samples;
-  _labels_average = node._labels_average;
   _aggregation_weight = node._aggregation_weight;
   _aggregation_weight_ctw = node._aggregation_weight_ctw;
   _is_leaf = node._is_leaf;
@@ -50,33 +49,51 @@ Node::Node(const Node &&node) : in_tree(in_tree) {
 
 void Node::update(ulong sample_index, bool update_range) {
   _n_samples++;
+  if (_is_leaf && update_range) {
+    update_range(sample_index);
+  }
+  update_label_stats(sample_index);
+  // If it's a leaf, save the sample
+  _samples.push_back(sample_index);
+}
+
+void Node::update_range(ulong sample_index) {
   ArrayDouble x_t = get_features(sample_index);
-  double y_t = get_label(sample_index);
-  if (_is_leaf) {
-    // It's the root and the first sample point ever
-    if ((_index == 0) && (_n_samples == 1)) {
-      if (update_range) {
-        _features_min = x_t;
-        _features_max = x_t;
+  // It's the root and the first sample point ever
+  if ((_index == 0) && (_n_samples == 1)) {
+    _features_min = x_t;
+    _features_max = x_t;
+  } else {
+    for (ulong j = 0; j < n_features(); ++j) {
+      double x_tj = x_t[j];
+      if (_features_max[j] < x_tj) {
+        _features_max[j] = x_tj;
       }
-      _labels_average = y_t;
-    } else {
-      if (update_range) {
-        for (ulong j = 0; j < n_features(); ++j) {
-          double x_tj = x_t[j];
-          if (_features_max[j] < x_tj) {
-            _features_max[j] = x_tj;
-          }
-          if (_features_min[j] > x_tj) {
-            _features_min[j] = x_tj;
-          }
-        }
+      if (_features_min[j] > x_tj) {
+        _features_min[j] = x_tj;
       }
-      // Update the average of labels online
-      _labels_average = ((_n_samples - 1) * _labels_average + y_t) / _n_samples;
     }
-    // If it's a leaf, save the sample
-    _samples.push_back(sample_index);
+  }
+}
+
+NodeRegressor::NodeRegressor(Tree &tree, ulong index, ulong parent, ulong creation_time)
+    : Node(tree, index, parent, creation_time) {}
+
+NodeRegressor::NodeRegressor(const NodeRegressor &node)
+    : Node(node), _labels_average(node._labels_average) {}
+
+NodeRegressor::NodeRegressor(const NodeRegressor &&node)
+    : Node(node) {
+  _labels_average = node._labels_average;
+}
+
+void NodeRegressor::update_label_stats(ulong sample_index) {
+  double y_t = get_label(sample_index);
+  if ((_index == 0) && (_n_samples == 1)) {
+    _labels_average = y_t;
+  } else {
+    // Update the average of labels online
+    _labels_average = ((_n_samples - 1) * _labels_average + y_t) / _n_samples;
   }
 }
 
@@ -86,8 +103,8 @@ std::pair<ulong, double> Tree::sample_feature_and_threshold(ulong index) {
     ulong feature = forest.sample_feature();
     // Choose at random the feature used to cut uniformly in the
     // range of the features
-    double left_boundary = nodes[index].features_min()[feature];
-    double right_boundary = nodes[index].features_max()[feature];
+    double left_boundary = node(index).features_min()[feature];
+    double right_boundary = node(index).features_max()[feature];
     double threshold = forest.sample_threshold(left_boundary, right_boundary);
     return std::pair<ulong, double>(feature, threshold);
   } else {
@@ -100,37 +117,37 @@ void Tree::split_node(ulong index) {
   ulong left = add_node(index, iteration);
   ulong right = add_node(index, iteration);
   // Give back information about the childs to the parent node
-  nodes[index].set_left(left).set_right(right).set_is_leaf(false);
+  node(index).set_left(left).set_right(right).set_is_leaf(false);
 
   // Set the depth of ther childs
-  nodes[left].set_depth(nodes[index].depth() + 1);
-  nodes[right].set_depth(nodes[index].depth() + 1);
+  node(left).set_depth(node(index).depth() + 1);
+  node(right).set_depth(node(index).depth() + 1);
 
   std::pair<ulong, double> feature_threshold = sample_feature_and_threshold(index);
   ulong feature = feature_threshold.first;
   double threshold = feature_threshold.second;
-  nodes[index].set_feature(feature).set_threshold(threshold);
+  node(index).set_feature(feature).set_threshold(threshold);
 
   // The ranges of the childs is contained in the range of the parent
   // We first simply copy the ranges, and update the feature using the selected
   // threshold
-  nodes[left].set_features_min(nodes[index].features_min());
-  nodes[left].set_features_max(nodes[index].features_max());
-  nodes[left].set_features_max(feature, threshold);
-  nodes[right].set_features_min(nodes[index].features_min());
-  nodes[right].set_features_max(nodes[index].features_max());
-  nodes[right].set_features_min(feature, threshold);
+  node(left).set_features_min(node(index).features_min());
+  node(left).set_features_max(node(index).features_max());
+  node(left).set_features_max(feature, threshold);
+  node(right).set_features_min(node(index).features_min());
+  node(right).set_features_max(node(index).features_max());
+  node(right).set_features_min(feature, threshold);
 
   // Split the samples of the parent and update the childs using them
   // This is maybe some kind of cheating...
-  for (ulong i = 0; i < nodes[index].n_samples(); ++i) {
-    ulong sample_index = nodes[index].sample(i);
+  for (ulong i = 0; i < node(index).n_samples(); ++i) {
+    ulong sample_index = node(index).sample(i);
     double x_ij = get_features(sample_index)[feature];
     if (x_ij <= threshold) {
       // We don't update the ranges, since we already managed them above
-      nodes[left].update(sample_index, false);
+      node(left).update(sample_index, false);
     } else {
-      nodes[right].update(sample_index, false);
+      node(right).update(sample_index, false);
     }
   }
 }
@@ -140,7 +157,7 @@ Tree::Tree(const Tree &tree)
   // std::cout << "Tree::Tree(const &Tree tree)" << std::endl;
 }
 
-Tree::Tree(const Tree &&tree) : forest(tree.forest), nodes(tree.nodes) {
+Tree::Tree(const Tree &&tree) : nodes(tree.nodes), forest(tree.forest) {
   already_fitted = tree.already_fitted;
 }
 
@@ -177,7 +194,7 @@ ulong Tree::find_leaf(ulong sample_index, bool predict) {
   }
   while (!is_leaf) {
     // Get the current node
-    Node &current_node = nodes[index_current_node];
+    Node &current_node = node(index_current_node);
     if (!predict) {
       current_node.update(sample_index);
     }
@@ -199,7 +216,7 @@ void Tree::fit(ulong sample_index) {
   iteration++;
   ulong leaf_index = find_leaf(sample_index, false);
   // TODO: add max_depth check
-  if ( (nodes[leaf_index].n_samples() >= min_samples_split()) && (true))) {
+  if (node(leaf_index).n_samples() >= min_samples_split()) {
     split_node(leaf_index);
   }
   // print();
@@ -207,7 +224,7 @@ void Tree::fit(ulong sample_index) {
 
 double Tree::predict(ulong sample_index) {
   ulong leaf_index = find_leaf(sample_index, true);
-  return nodes[leaf_index].labels_average();
+  return node(leaf_index).labels_average();
 }
 
 ulong Tree::add_node(ulong parent, ulong creation_time) {
@@ -215,15 +232,16 @@ ulong Tree::add_node(ulong parent, ulong creation_time) {
   return _n_nodes++;
 }
 
+
 OnlineForestRegressor::OnlineForestRegressor(uint32_t n_trees,
-                           Criterion criterion,
-                           int32_t max_depth,
-                           uint32_t min_samples_split,
-                           int32_t n_threads,
-                           int seed,
-                           bool verbose,
-                           bool warm_start,
-                           uint32_t n_splits)
+                                             Criterion criterion,
+                                             int32_t max_depth,
+                                             uint32_t min_samples_split,
+                                             int32_t n_threads,
+                                             int seed,
+                                             bool verbose,
+                                             bool warm_start,
+                                             uint32_t n_splits)
     : _n_trees(n_trees), _criterion(criterion), _max_depth(max_depth),
       _min_samples_split(min_samples_split), _n_threads(n_threads),
       _verbose(verbose), _warm_start(warm_start), _n_splits(n_splits) {
@@ -318,7 +336,7 @@ ulong OnlineForestRegressor::get_next_sample() {
 }
 
 void OnlineForestRegressor::set_data(const SArrayDouble2dPtr features,
-                            const SArrayDoublePtr labels) {
+                                     const SArrayDoublePtr labels) {
   this->_features_fit = features;
   this->_labels_fit = labels;
   has_data = true;
@@ -330,7 +348,7 @@ void OnlineForestRegressor::set_data(const SArrayDouble2dPtr features,
 }
 
 void OnlineForestRegressor::predict(const SArrayDouble2dPtr features,
-                           SArrayDoublePtr predictions) {
+                                    SArrayDoublePtr predictions) {
   // TODO: check that the forest is already trained
   this->_features_predict = features;
   ulong n_samples = features->n_rows();

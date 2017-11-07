@@ -9,12 +9,31 @@
 #include "../../random/src/rand.h"
 
 
+// TODO: faire tres attention au features binaires si le range est 0 sur toutes les coordonnées, ne rien faire
 // TODO: compute the depth of the tree and enable thd max_depth option
 // TODO: code the least-squares criterion
 // TODO: remove set_data and code only a fit method
 // TODO: code a classifier
 // TODO: warm-start option
 
+// TODO: choisir la feature proportionnellement au ratio de la longueur du cote / perimetre. Ca suppose qu'on enregistre
+//       les vraies dimensions de la cellule, et le threhsold est du coup aussi tiré là dedans
+// TODO: choisir la feature proportionnellement au ratio des range de features, mais attention au cas de features
+//       discretes
+// TODO: une option pour créer une cellule vide, enfin oublier les donnes dans la cellule quand elle a ete splitee
+
+// TODO: choix de la feature les labels
+
+// TODO: des fit_online qui prend un mini batch et qui met à jour la foret, mais dans ce cas on ne met qu'un point par
+//       cellule, du coup pas besoin d'enregistrer les sample index ou les points. Ca suppose que min_sample_split == 1
+
+// TODO: dans le cas min_sample_spit == 1, ne pas couper jusque a chaque arrivee de point, mais quand le range change
+//       (cas des features discretes ou binaires...), si il est egale, on met a jour la moyenne, ou les comptages de labels, et le nombre de sample
+
+// TODO: pour la regression, on utilise la moyenne des y
+// TODO: pour la classification, on utilise pas les frequences, on utilise des frequences regularisees, prior Dirichlet p_c = (n_c + 0.5) + (\sum n_c + C / 2). En fait une option
+
+// TODO: check that not using reserve in the forest works as well...
 
 enum class Criterion {
   unif = 0,
@@ -22,12 +41,14 @@ enum class Criterion {
 };
 
 // Forward declaration of a Tree
+template <typename NodeType>
 class Tree;
 
+template <typename NodeType>
 class Node {
- private:
+ protected:
   // The tree of the node
-  Tree &in_tree;
+  Tree<NodeType> &in_tree;
 
   // Index in the list of nodes of the tree (to be removed later)
   ulong _index;
@@ -49,8 +70,7 @@ class Node {
   double _impurity = 0;
   // Number of samples in the node
   ulong _n_samples;
-  // Average of the labels in the node (regression only for now)
-  double _labels_average = 0;
+
   // Aggregation weight
   double _aggregation_weight = 1;
   // Aggregation weight for context-tree weighting
@@ -65,18 +85,18 @@ class Node {
   bool _is_leaf = true;
 
  public:
-  Node(Tree &tree, ulong index, ulong parent, ulong creation_time);
+  Node(Tree<NodeType> &tree, ulong index, ulong parent, ulong creation_time);
 
-  Node(const Node &node);
+  Node(const Node<NodeType> &node);
 
-  Node(const Node &&node);
+  Node(const Node<NodeType> &&node);
 
-  ~Node() {
+  virtual ~Node() {
     // std::cout << "~Node()\n";
   }
 
-  Node &operator=(const Node &) = delete;
-  Node &operator=(const Node &&) = delete;
+  Node<NodeType> &operator=(const Node<NodeType> &) = delete;
+  Node<NodeType> &operator=(const Node<NodeType> &&) = delete;
 
   inline ulong index() const {
     return _index;
@@ -86,7 +106,7 @@ class Node {
     return _left;
   }
 
-  inline Node &set_left(ulong left) {
+  inline Node<NodeType> &set_left(ulong left) {
     _left = left;
     return *this;
   }
@@ -95,7 +115,7 @@ class Node {
     return _right;
   }
 
-  inline Node &set_right(ulong right) {
+  inline Node<NodeType> &set_right(ulong right) {
     _right = right;
     return *this;
   }
@@ -104,7 +124,7 @@ class Node {
     return _is_leaf;
   }
 
-  inline Node &set_is_leaf(bool is_leaf) {
+  inline Node<NodeType> &set_is_leaf(bool is_leaf) {
     _is_leaf = is_leaf;
     return *this;
   }
@@ -121,7 +141,7 @@ class Node {
     return _feature;
   }
 
-  inline Node &set_feature(ulong feature) {
+  inline Node<NodeType> &set_feature(ulong feature) {
     _feature = feature;
     return *this;
   }
@@ -130,7 +150,7 @@ class Node {
     return _threshold;
   }
 
-  inline Node &set_threshold(double threshold) {
+  inline Node<NodeType> &set_threshold(double threshold) {
     _threshold = threshold;
     return *this;
   }
@@ -143,7 +163,7 @@ class Node {
     return _n_samples;
   }
 
-  inline Node &set_n_samples(ulong n_samples) {
+  inline Node<NodeType> &set_n_samples(ulong n_samples) {
     _n_samples = n_samples;
     return *this;
   }
@@ -152,17 +172,8 @@ class Node {
     return _depth;
   }
 
-  inline Node &set_depth(ulong depth) {
+  inline Node<NodeType> &set_depth(ulong depth) {
     _depth = depth;
-    return *this;
-  }
-
-  inline double labels_average() const {
-    return _labels_average;
-  }
-
-  inline Node &set_labels_average(double avg) {
-    _labels_average = avg;
     return *this;
   }
 
@@ -178,12 +189,12 @@ class Node {
     return _features_min;
   }
 
-  inline Node &set_features_min(const ArrayDouble &features_min) {
+  inline Node<NodeType> &set_features_min(const ArrayDouble &features_min) {
     _features_min = features_min;
     return *this;
   }
 
-  inline Node &set_features_min(const ulong j, const double x) {
+  inline Node<NodeType> &set_features_min(const ulong j, const double x) {
     _features_min[j] = x;
     return *this;
   }
@@ -192,12 +203,12 @@ class Node {
     return _features_max;
   }
 
-  inline Node &set_features_max(const ulong j, const double x) {
+  inline Node<NodeType> &set_features_max(const ulong j, const double x) {
     _features_max[j] = x;
     return *this;
   }
 
-  inline Node &set_features_max(const ArrayDouble &features_max) {
+  inline Node<NodeType> &set_features_max(const ArrayDouble &features_max) {
     _features_max = features_max;
     return *this;
   }
@@ -210,17 +221,21 @@ class Node {
     return _samples[index];
   }
 
-  inline Node &add_sample(ulong index) {
+  inline Node<NodeType> &add_sample(ulong index) {
     _samples.push_back(index);
     return *this;
   }
 
-  inline Tree &get_tree() const {
+  inline Tree<NodeType> &get_tree() const {
     return in_tree;
   }
 
   // Update the statistics of the node using the sample
-  void update(ulong sample_index, bool update_range = true);
+  virtual void update(ulong sample_index, bool update_range = true);
+
+  void update_range(ulong sample_index);
+
+  virtual void update_label_stats(ulong sample_index) = 0;
 
   inline ArrayDouble get_features(ulong sample_index) const;
 
@@ -248,16 +263,51 @@ class Node {
   }
 };
 
-class OnlineForestRegressor;
 
-class Tree {
-  friend class Node;
-
+class NodeRegressor : public Node<NodeRegressor> {
  private:
-  bool already_fitted = false;
+  // Average of the labels in the node (regression only for now)
+  double _labels_average = 0;
 
-  // The list of nodes in the tree
-  std::vector<Node> nodes = std::vector<Node>();
+ public:
+  NodeRegressor(Tree &tree, ulong index, ulong parent, ulong creation_time);
+
+  NodeRegressor(const NodeRegressor &node);
+
+  NodeRegressor(const NodeRegressor &&node);
+
+  virtual ~NodeRegressor() {
+    // std::cout << "~Node()\n";
+  }
+
+  NodeRegressor &operator=(const NodeRegressor &) = delete;
+  NodeRegressor &operator=(const NodeRegressor &&) = delete;
+
+  inline double labels_average() const {
+    return _labels_average;
+  }
+
+  inline Node &set_labels_average(double avg) {
+    _labels_average = avg;
+    return *this;
+  }
+
+  virtual void update_label_stats(ulong sample_index);
+};
+
+class OnlineForest;
+class OnlineForestRegressor;
+class OnlineForestClassifier;
+
+
+template <typename NodeType>
+class Tree {
+  friend class NodeType;
+
+ protected:
+  std::vector<NodeType> nodes = std::vector<NodeType>();
+
+  bool already_fitted = false;
 
   // Number of nodes in the tree
   ulong _n_nodes = 0;
@@ -274,7 +324,7 @@ class Tree {
   // Split the node at given index
   void split_node(ulong index);
 
-  ulong add_node(ulong parent, ulong creation_time);
+  virtual ulong add_node(ulong parent, ulong creation_time);
 
   ulong find_leaf(ulong sample_index, bool predict);
 
@@ -282,12 +332,10 @@ class Tree {
 
  public:
   Tree(OnlineForestRegressor &forest);
-
-  Tree(const Tree &tree);
-  Tree(const Tree &&tree);
-
-  Tree &operator=(const Tree &) = delete;
-  Tree &operator=(const Tree &&) = delete;
+  Tree(const Tree<NodeType> &tree);
+  Tree(const Tree<NodeType> &&tree);
+  Tree &operator=(const Tree<NodeType> &) = delete;
+  Tree &operator=(const Tree<NodeType> &&) = delete;
 
   // Launch a pass on the given data
   void fit(ulong sample_index);
@@ -305,28 +353,16 @@ class Tree {
   }
 
   inline uint32_t min_samples_split() const;
-
   inline Criterion criterion() const;
-
   inline ArrayDouble get_features(ulong sample_index) const;
-
   inline ArrayDouble get_features_predict(ulong sample_index) const;
-
   inline double get_label(ulong sample_index) const;
 
-  ~Tree() {
-    // std::cout << "~Tree()\n";
-  }
+  virtual NodeType& node(ulong index);
 
-  void print() {
-    std::cout << "Tree(n_nodes: " << n_nodes() << ", iteration: " << iteration << std::endl;
-    for (Node &node: nodes) {
-      std::cout << "    ";
-      node.print();
-    }
-    std::cout << ")" << std::endl;
-  }
+  ~Tree() {}
 };
+
 
 // Type of randomness used when sampling at random data points
 enum class CycleType {
@@ -372,7 +408,7 @@ class OnlineForestRegressor {
   SArrayDouble2dPtr _features_predict;
 
   // The list of trees in the forest
-  std::vector<Tree> trees;
+  std::vector<Tree<NodeRegressor>> trees;
 
   // ulong n_features;
 
