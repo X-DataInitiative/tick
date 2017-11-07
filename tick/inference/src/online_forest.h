@@ -35,6 +35,7 @@
 
 // TODO: check that not using reserve in the forest works as well...
 
+
 enum class Criterion {
   unif = 0,
   mse
@@ -231,7 +232,7 @@ class Node {
   }
 
   // Update the statistics of the node using the sample
-  virtual void update(ulong sample_index, bool update_range = true);
+  virtual void update(ulong sample_index, bool do_update_range = true);
 
   void update_range(ulong sample_index);
 
@@ -244,7 +245,6 @@ class Node {
   inline double get_label(ulong sample_index) const;
 
   void print() {
-
     std::cout << "Node(i: " << _index << ", p: " << _parent
               // << ", f: " << _feature
               // << ", th: " << _threshold
@@ -270,7 +270,7 @@ class NodeRegressor : public Node<NodeRegressor> {
   double _labels_average = 0;
 
  public:
-  NodeRegressor(Tree &tree, ulong index, ulong parent, ulong creation_time);
+  NodeRegressor(Tree<NodeRegressor> &tree, ulong index, ulong parent, ulong creation_time);
 
   NodeRegressor(const NodeRegressor &node);
 
@@ -295,14 +295,13 @@ class NodeRegressor : public Node<NodeRegressor> {
   virtual void update_label_stats(ulong sample_index);
 };
 
-class OnlineForest;
+
 class OnlineForestRegressor;
-class OnlineForestClassifier;
 
 
 template <typename NodeType>
 class Tree {
-  friend class NodeType;
+  // friend class NodeType;
 
  protected:
   std::vector<NodeType> nodes = std::vector<NodeType>();
@@ -352,16 +351,35 @@ class Tree {
     return _depth;
   }
 
+  void print() {
+    for(NodeType& node : nodes) {
+      node.print();
+    }
+  }
+
   inline uint32_t min_samples_split() const;
   inline Criterion criterion() const;
   inline ArrayDouble get_features(ulong sample_index) const;
   inline ArrayDouble get_features_predict(ulong sample_index) const;
   inline double get_label(ulong sample_index) const;
 
-  virtual NodeType& node(ulong index);
+  NodeType& node(ulong index) {
+    return nodes[index];
+  }
 
   ~Tree() {}
 };
+
+
+class TreeRegressor : public Tree<NodeRegressor> {
+ public:
+  TreeRegressor(OnlineForestRegressor &forest);
+  TreeRegressor(const TreeRegressor &tree);
+  TreeRegressor(const TreeRegressor &&tree);
+  TreeRegressor &operator=(const TreeRegressor &) = delete;
+  TreeRegressor &operator=(const TreeRegressor &&) = delete;
+};
+
 
 
 // Type of randomness used when sampling at random data points
@@ -372,6 +390,7 @@ enum class CycleType {
 };
 
 class OnlineForestRegressor {
+
  private:
   // Number of Trees in the forest
   uint32_t _n_trees;
@@ -490,7 +509,7 @@ class OnlineForestRegressor {
 
   void print() {
     std::cout << "Forest" << std::endl;
-    for (Tree &tree: trees) {
+    for (Tree<NodeRegressor> &tree: trees) {
       tree.print();
     }
   }

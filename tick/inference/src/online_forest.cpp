@@ -3,7 +3,8 @@
 
 #include "online_forest.h"
 
-Node::Node(Tree &tree, ulong index, ulong parent, ulong creation_time)
+template <typename NodeType>
+Node<NodeType>::Node(Tree<NodeType> &tree, ulong index, ulong parent, ulong creation_time)
     : in_tree(tree), _samples() {
   _n_samples = 0;
   _is_leaf = true;
@@ -17,7 +18,8 @@ Node::Node(Tree &tree, ulong index, ulong parent, ulong creation_time)
   _features_min = ArrayDouble(n_features());
 }
 
-Node::Node(const Node &node)
+template <typename NodeType>
+Node<NodeType>::Node(const Node<NodeType> &node)
     : in_tree(node.in_tree), _index(node._index), _left(node._left), _right(node._right),
       _parent(node._parent), _creation_time(node._creation_time),
       _feature(node._feature), _threshold(node._threshold),
@@ -28,7 +30,8 @@ Node::Node(const Node &node)
   // std::cout << "Copy const of Node(index: " << _index << ")" << std::endl;
 }
 
-Node::Node(const Node &&node) : in_tree(in_tree) {
+template <typename NodeType>
+Node<NodeType>::Node(const Node<NodeType> &&node) : in_tree(in_tree) {
   // std::cout << "Node::Node(const Node && node)" << std::endl;
   _index = node._index;
   _left = node._left;
@@ -47,9 +50,10 @@ Node::Node(const Node &&node) : in_tree(in_tree) {
   _samples = node._samples;
 }
 
-void Node::update(ulong sample_index, bool update_range) {
+template <typename NodeType>
+void Node<NodeType>::update(ulong sample_index, bool do_update_range) {
   _n_samples++;
-  if (_is_leaf && update_range) {
+  if (_is_leaf && do_update_range) {
     update_range(sample_index);
   }
   update_label_stats(sample_index);
@@ -57,7 +61,8 @@ void Node::update(ulong sample_index, bool update_range) {
   _samples.push_back(sample_index);
 }
 
-void Node::update_range(ulong sample_index) {
+template <typename NodeType>
+void Node<NodeType>::update_range(ulong sample_index) {
   ArrayDouble x_t = get_features(sample_index);
   // It's the root and the first sample point ever
   if ((_index == 0) && (_n_samples == 1)) {
@@ -76,7 +81,7 @@ void Node::update_range(ulong sample_index) {
   }
 }
 
-NodeRegressor::NodeRegressor(Tree &tree, ulong index, ulong parent, ulong creation_time)
+NodeRegressor::NodeRegressor(Tree<NodeRegressor> &tree, ulong index, ulong parent, ulong creation_time)
     : Node(tree, index, parent, creation_time) {}
 
 NodeRegressor::NodeRegressor(const NodeRegressor &node)
@@ -97,7 +102,8 @@ void NodeRegressor::update_label_stats(ulong sample_index) {
   }
 }
 
-std::pair<ulong, double> Tree::sample_feature_and_threshold(ulong index) {
+template <typename NodeType>
+std::pair<ulong, double> Tree<NodeType>::sample_feature_and_threshold(ulong index) {
   if (criterion() == Criterion::unif) {
     // Select the splitting feature uniformly at random
     ulong feature = forest.sample_feature();
@@ -112,7 +118,8 @@ std::pair<ulong, double> Tree::sample_feature_and_threshold(ulong index) {
   }
 };
 
-void Tree::split_node(ulong index) {
+template <typename NodeType>
+void Tree<NodeType>::split_node(ulong index) {
   // Choose at random the feature used to cut
   ulong left = add_node(index, iteration);
   ulong right = add_node(index, iteration);
@@ -152,34 +159,41 @@ void Tree::split_node(ulong index) {
   }
 }
 
-Tree::Tree(const Tree &tree)
+template <typename NodeType>
+Tree<NodeType>::Tree(const Tree<NodeType> &tree)
     : nodes(tree.nodes), forest(tree.forest), already_fitted(tree.already_fitted) {
   // std::cout << "Tree::Tree(const &Tree tree)" << std::endl;
 }
 
-Tree::Tree(const Tree &&tree) : nodes(tree.nodes), forest(tree.forest) {
+template <typename NodeType>
+Tree<NodeType>::Tree(const Tree<NodeType> &&tree) : nodes(tree.nodes), forest(tree.forest) {
   already_fitted = tree.already_fitted;
 }
 
-double Node::get_label(ulong sample_index) const {
+template <typename NodeType>
+double Node<NodeType>::get_label(ulong sample_index) const {
   return in_tree.get_label(sample_index);
 }
 
-ulong Node::n_features() const {
+template <typename NodeType>
+ulong Node<NodeType>::n_features() const {
   return in_tree.n_features();
 }
 
-ArrayDouble Node::get_features(ulong sample_index) const {
+template <typename NodeType>
+ArrayDouble Node<NodeType>::get_features(ulong sample_index) const {
   return in_tree.get_features(sample_index);
 }
 
-Tree::Tree(OnlineForestRegressor &forest) : forest(forest) {
+template <typename NodeType>
+Tree<NodeType>::Tree(OnlineForestRegressor &forest) : forest(forest) {
   // std::cout << "Tree::Tree(OnlineForest &forest)\n";
   add_node(0, 0);
   // TODO: pre-allocate the vector to make things faster ?
 }
 
-ulong Tree::find_leaf(ulong sample_index, bool predict) {
+template <typename NodeType>
+ulong Tree<NodeType>::find_leaf(ulong sample_index, bool predict) {
   // Find the leaf that contains the sample
   // Start at the root. Index of the root is always 0
   // If predict == true, this call to find_leaf is for
@@ -194,7 +208,7 @@ ulong Tree::find_leaf(ulong sample_index, bool predict) {
   }
   while (!is_leaf) {
     // Get the current node
-    Node &current_node = node(index_current_node);
+    Node<NodeType> &current_node = node(index_current_node);
     if (!predict) {
       current_node.update(sample_index);
     }
@@ -211,7 +225,8 @@ ulong Tree::find_leaf(ulong sample_index, bool predict) {
   return index_current_node;
 }
 
-void Tree::fit(ulong sample_index) {
+template <typename NodeType>
+void Tree<NodeType>::fit(ulong sample_index) {
   // TODO: Test that the size does not change within successive calls to fit
   iteration++;
   ulong leaf_index = find_leaf(sample_index, false);
@@ -222,12 +237,14 @@ void Tree::fit(ulong sample_index) {
   // print();
 }
 
-double Tree::predict(ulong sample_index) {
+template <typename NodeType>
+double Tree<NodeType>::predict(ulong sample_index) {
   ulong leaf_index = find_leaf(sample_index, true);
   return node(leaf_index).labels_average();
 }
 
-ulong Tree::add_node(ulong parent, ulong creation_time) {
+template <typename NodeType>
+ulong Tree<NodeType>::add_node(ulong parent, ulong creation_time) {
   nodes.emplace_back(*this, _n_nodes, parent, creation_time);
   return _n_nodes++;
 }
@@ -272,7 +289,7 @@ void OnlineForestRegressor::fit(ulong n_iter) {
       // std::cout << "pass number: " << it / n_samples() << std::endl;
     }
     ulong sample_index = get_next_sample();
-    for (Tree &tree : trees) {
+    for (Tree<NodeRegressor> &tree : trees) {
       // Fit the tree online using the new data point
       tree.fit(sample_index);
     }
@@ -355,33 +372,39 @@ void OnlineForestRegressor::predict(const SArrayDouble2dPtr features,
   for (ulong i = 0; i < n_samples; ++i) {
     // The prediction is simply the average of the predictions
     double y_pred = 0;
-    for (Tree &tree : trees) {
+    for (Tree<NodeRegressor> &tree : trees) {
       y_pred += tree.predict(i);
     }
     (*predictions)[i] = y_pred / _n_trees;
   }
 }
 
-inline ArrayDouble Tree::get_features(ulong sample_index) const {
+template <typename NodeType>
+inline ArrayDouble Tree<NodeType>::get_features(ulong sample_index) const {
   return forest.features(sample_index);
 }
 
-inline ArrayDouble Tree::get_features_predict(ulong sample_index) const {
+template <typename NodeType>
+inline ArrayDouble Tree<NodeType>::get_features_predict(ulong sample_index) const {
   return forest.features_predict(sample_index);
 }
 
-inline uint32_t Tree::min_samples_split() const {
+template <typename NodeType>
+inline uint32_t Tree<NodeType>::min_samples_split() const {
   return forest.min_samples_split();
 }
 
-inline ulong Tree::n_features() const {
+template <typename NodeType>
+inline ulong Tree<NodeType>::n_features() const {
   return forest.n_features();
 }
 
-inline double Tree::get_label(ulong sample_index) const {
+template <typename NodeType>
+inline double Tree<NodeType>::get_label(ulong sample_index) const {
   return forest.label(sample_index);
 }
 
-inline Criterion Tree::criterion() const {
+template <typename NodeType>
+inline Criterion Tree<NodeType>::criterion() const {
   return forest.criterion();
 }
