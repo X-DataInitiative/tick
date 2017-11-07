@@ -902,7 +902,7 @@ class CleanTick(clean):
 
 
 setup(name="tick",
-      version='0.2.1.4',
+      version='0.3.0.0',
       author="Emmanuel Bacry, "
              "Stephane Gaiffas, "
              "Martin Bompaire, "
