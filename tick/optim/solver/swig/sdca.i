@@ -7,6 +7,11 @@
 #include "model.h"
 %}
 
+enum class BatchSize {
+  one = 0,
+  two
+};
+
 class SDCA : public StoSolver {
 
 public:
@@ -15,6 +20,7 @@ public:
          unsigned long epoch_size = 0,
          double tol = 0.,
          RandType rand_type = RandType::unif,
+         BatchSize batch_size = BatchSize::one,
          int seed = -1);
 
     void set_model(std::shared_ptr<Model> model);

@@ -46,6 +46,11 @@ class DLL_PUBLIC ModelPoisReg : public ModelGeneralizedLinear {
                          const double previous_delta_dual_i,
                          double l_l2sq) override;
 
+  std::tuple<double, double> sdca_dual_min_ij(const ulong i, const ulong j,
+                                              const double dual_i, const double dual_j,
+                                              const ArrayDouble &primal_vector,
+                                              double l_l2sq) override ;
+
   void sdca_primal_dual_relation(const double l_l2sq,
                                  const ArrayDouble &dual_vector,
                                  ArrayDouble &out_primal_vector) override;

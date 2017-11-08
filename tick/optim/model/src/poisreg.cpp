@@ -119,6 +119,113 @@ double ModelPoisReg::sdca_dual_min_i_identity(const ulong i,
   return new_dual - dual_i;
 }
 
+std::tuple<double, double> ModelPoisReg::sdca_dual_min_ij(
+  const ulong i, const ulong j, const double dual_i, const double dual_j,
+  const ArrayDouble &primal_vector, double l_l2sq) {
+  if (link_type == LinkType::exponential) {
+    TICK_ERROR("Not available for exponential link")
+  }
+
+  if (!ready_features_norm_sq) {
+    compute_features_norm_sq();
+  }
+
+  const double label_i = get_label(i);
+  const double label_j = get_label(j);
+  if (label_i * label_j == 0) {
+    TICK_ERROR("Labels 0 should not be considered in SDCA");
+  }
+
+  const double _1_lambda_n = 1 / (l_l2sq * n_non_zeros_labels);
+  double g_ii = features_norm_sq[i] * _1_lambda_n;
+  double g_jj = features_norm_sq[j] * _1_lambda_n;
+  double g_ij = get_features(i).dot(get_features(j)) * _1_lambda_n;
+
+  // if vector are colinear
+  if (g_ij * g_ij == g_ii * g_jj) {
+    return {0., 0.};
+  }
+
+  if (use_intercept()) {
+    g_ii += _1_lambda_n;
+    g_jj += _1_lambda_n;
+    g_ij += _1_lambda_n;
+  }
+
+  const double p_i = get_inner_prod(i, primal_vector);
+  const double p_j = get_inner_prod(j, primal_vector);
+
+  double delta_dual_i = dual_i == 0 ? 0.1 : 0;
+  double delta_dual_j = dual_j == 0 ? 0.1 : 0;
+  double epsilon = 1e-1;
+
+  double new_dual_i, new_dual_j;
+  double newton_descent_i, newton_descent_j;
+  for (int k = 0; k < 20; ++k) {
+    new_dual_i = dual_i + delta_dual_i;
+    new_dual_j = dual_j + delta_dual_j;
+
+    // Check we are in the correct bounds
+    if (new_dual_i <= 0) {
+      new_dual_i = epsilon;
+      delta_dual_i = new_dual_i - dual_i;
+      epsilon *= 1e-1;
+    }
+    if (new_dual_j <= 0) {
+      new_dual_j = epsilon;
+      delta_dual_j = new_dual_j - dual_j;
+      epsilon *= 1e-1;
+    }
+
+    const double n_grad_i = label_i / new_dual_i - p_i - delta_dual_i * g_ii - delta_dual_j * g_ij;
+    const double n_grad_j = label_j / new_dual_j - p_j - delta_dual_j * g_jj - delta_dual_i * g_ij;
+
+    const double n_hess_ii = -label_i / (new_dual_i * new_dual_i) - g_ii;
+    const double n_hess_jj = -label_j / (new_dual_j * new_dual_j) - g_jj;
+    const double n_hess_ij = -g_ij;
+
+    const double n2_det = n_hess_ii * n_hess_jj - n_hess_ij * n_hess_ij;
+    const double _1_over_n2_det = 1. / n2_det;
+
+    const double inverse_hess_ii_over_n = _1_over_n2_det * n_hess_jj;
+    const double inverse_hess_jj_over_n = _1_over_n2_det * n_hess_ii;
+    const double inverse_hess_ij_over_n = -_1_over_n2_det * n_hess_ij;
+
+    newton_descent_i =
+      n_grad_i * inverse_hess_ii_over_n + n_grad_j * inverse_hess_ij_over_n;
+    newton_descent_j =
+      n_grad_i * inverse_hess_ij_over_n + n_grad_j * inverse_hess_jj_over_n;
+
+    delta_dual_i -= newton_descent_i;
+    delta_dual_j -= newton_descent_j;
+
+    if (std::abs(newton_descent_i) < 1e-10 && std::abs(newton_descent_j) < 1e-10) {
+      break;
+    }
+  }
+
+  if (std::abs(newton_descent_i) > 1e-7 || std::abs(newton_descent_j) > 1e-7) {
+
+    std::cout << "did not converge newton_descent_i=" << newton_descent_i
+              << ", newton_descent_j" << newton_descent_j << "i, j = " << i << " " << j
+              << std::endl;
+
+    get_features(i).print();
+    get_features(j).print();
+  }
+
+  if (new_dual_i <= 0) {
+    new_dual_i = epsilon;
+    delta_dual_i = new_dual_i - dual_i;
+  }
+  if (new_dual_j <= 0) {
+    new_dual_j = epsilon;
+    delta_dual_j = new_dual_j - dual_j;
+  }
+
+  return {delta_dual_i, delta_dual_j};
+}
+
 void ModelPoisReg::sdca_primal_dual_relation(const double l_l2sq,
                                              const ArrayDouble &dual_vector,
                                              ArrayDouble &out_primal_vector) {
@@ -188,7 +295,7 @@ double ModelPoisReg::grad_i_factor(const ulong i, const ArrayDouble &coeffs) {
     }
     case LinkType::identity: {
       double y_i = get_label(i);
-      return y_i != 0? 1 - get_label(i) / z: 1;
+      return y_i != 0 ? 1 - get_label(i) / z : 1;
     }
     default:throw std::runtime_error("Undefined link type");
   }
@@ -216,7 +323,7 @@ SArrayDouble2dPtr ModelPoisReg::hessian(ArrayDouble &coeffs) {
       }
     }
     if (fit_intercept) {
-    for (ulong col = 0; col < n_features; ++col) {
+      for (ulong col = 0; col < n_features; ++col) {
         hess(n_features, col) += coeff * feature_i.value(col);
       }
       hess(n_features, n_features) += coeff;

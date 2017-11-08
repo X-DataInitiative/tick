@@ -197,6 +197,12 @@ def run_solvers(model, l_l2sq, ax_list):
     sdca.solve()
     solvers += [sdca]
 
+    sdca_2 = SDCA(l_l2sq, max_iter=max_iter_sdca,
+                  print_every=int(max_iter_sdca / 7), tol=1e-10, batch_size=2)
+    sdca_2.set_model(model).set_prox(ProxZero())
+    sdca_2.solve()
+    solvers += [sdca_2]
+
     lbfgsb = LBFGSB(max_iter=100, print_every=10, tol=1e-10)
     lbfgsb.set_model(model).set_prox(ProxL2Sq(l_l2sq, positive=True))
     lbfgsb.solve(coeff0)
@@ -242,7 +248,7 @@ elif dataset == 'wine':
 model = ModelPoisReg(fit_intercept=False, link='identity')
 model.fit(features, labels)
 
-l_2sq_list = [1e-2, 1e-3, 1. / np.sqrt(len(labels))]
+l_2sq_list = [1e-2, 1e-3, 1e-4, 1. / np.sqrt(len(labels))]
 fig, ax_list_list = plt.subplots(2, len(l_2sq_list))
 for i, l_2sq in enumerate(l_2sq_list):
     run_solvers(model, l_2sq, ax_list_list[:, i])

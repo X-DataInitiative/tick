@@ -72,6 +72,13 @@ class Model {
     TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
   }
 
+  virtual std::tuple<double, double> sdca_dual_min_ij(const ulong i, const ulong j,
+                                                      const double dual_i, const double dual_j,
+                                                      const ArrayDouble &primal_vector,
+                                                      double l_l2sq){
+    TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
+  };
+
   virtual double dual_objective(const double l_l2sq, const ArrayDouble &dual) {
     TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
   };

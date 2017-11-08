@@ -15,6 +15,10 @@
 
 // TODO: code accelerated SDCA
 
+enum class BatchSize {
+  one = 0,
+  two
+};
 
 class SDCA : public StoSolver {
  protected:
@@ -36,11 +40,14 @@ class SDCA : public StoSolver {
   // The dual variable
   ArrayDouble dual_vector;
 
+  BatchSize batch_size;
+
  public:
   explicit SDCA(double l_l2sq,
                 ulong epoch_size = 0,
                 double tol = 0.,
                 RandType rand_type = RandType::unif,
+                BatchSize batch_size = BatchSize::one,
                 int seed = -1);
 
   void reset() override;
@@ -85,6 +92,12 @@ class SDCA : public StoSolver {
     // Poisson regression with identity link
     return l_l2sq * model->get_n_samples() / rand_max;
   }
+
+  void solve_batch_size_one(ArrayULong &feature_index_map,
+                            double scaled_l_l2sq, double _1_over_lbda_n);
+
+  void solve_batch_size_two(ArrayULong &feature_index_map,
+                            double scaled_l_l2sq, double _1_over_lbda_n);
 };
 
 #endif  // TICK_OPTIM_SOLVER_SRC_SDCA_H_

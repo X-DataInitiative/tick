@@ -2,7 +2,7 @@
 from tick.optim.model import ModelPoisReg
 from tick.optim.proj import ProjHalfSpace
 from tick.optim.solver.base import SolverFirstOrderSto
-from .build.solver import SDCA as _SDCA
+from .build.solver import SDCA as _SDCA, BatchSize_one, BatchSize_two
 import numpy as np
 
 
@@ -156,7 +156,7 @@ class SDCA(SolverFirstOrderSto):
                  rand_type: str = 'unif', tol: float = 1e-10,
                  max_iter: int = 10, verbose: bool = True,
                  print_every: int = 1, record_every: int = 1,
-                 seed: int = -1):
+                 seed: int = -1, batch_size=1):
 
         SolverFirstOrderSto.__init__(self, step=0, epoch_size=epoch_size,
                                      rand_type=rand_type, tol=tol,
@@ -169,8 +169,16 @@ class SDCA(SolverFirstOrderSto):
         if epoch_size is None:
             epoch_size = 0
         # Construct the wrapped C++ SDCA solver
+
+        if batch_size == 1:
+            batch_size = BatchSize_one
+        elif batch_size == 2:
+            batch_size = BatchSize_two
+        else:
+            raise ValueError('Unhandled batch size')
+
         self._solver = _SDCA(self.l_l2sq, epoch_size,
-                             self.tol, self._rand_type, self.seed)
+                             self.tol, self._rand_type, batch_size, self.seed)
 
         self.history.print_order.append('dual_objective')
 

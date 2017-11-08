@@ -75,7 +75,7 @@ void HawkesSDCALoglikKern::synchronize_sdca() {
     model->set_max_dual(max_dual);
 
     const ulong epoch_size = (*n_jumps_per_node)[i];
-    SDCA sdca(l_l2sq, epoch_size, tol, rand_type, seed);
+    SDCA sdca(l_l2sq, epoch_size, tol, rand_type, BatchSize::one, seed);
 
     sdca.set_model(model);
     sdca.set_rand_max(epoch_size);
