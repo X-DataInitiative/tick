@@ -4,7 +4,7 @@ import numpy as np
 
 import matplotlib.pyplot as plt
 
-n_samples = 2000
+n_samples = 20
 n_features = 2
 
 w0 = weights_sparse_gauss(n_features, nnz=2)
@@ -47,15 +47,14 @@ from tick.inference import OnlineForestRegressor
 
 clf = OnlineForestRegressor(n_trees=100, min_samples_split=1)
 
-# clf.set_data(X, y)
-# clf.fit(20)
+clf.fit(X, y)
 
 # clf.print()
 
 # exit(0)
 # forest = OnlineForestRegressor(n_trees=100, min_samples_split=50)
 
-plot_decision_regions(clf, X, y, n_samples)
-plt.show()
+# plot_decision_regions(clf, X, y, n_samples)
+# plt.show()
 
 # plt.savefig('/Users/stephane.gaiffas/Downloads/online-forest.pdf')

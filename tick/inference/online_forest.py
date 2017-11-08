@@ -110,9 +110,11 @@ class OnlineForestRegressor(ABC, Base):
         y = safe_array(y)
         self._forest.set_data(X, y)
 
-    def fit(self, n_iter=0):
+    def fit(self, X, y):
+        X = safe_array(X)
+        y = safe_array(y)
         self._set("_fitted", True)
-        self._forest.fit(n_iter)
+        self._forest.fit(X, y)
         return self
 
     def apply(self, X):

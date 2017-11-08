@@ -24,17 +24,18 @@ class OnlineForestRegressor {
  public:
   OnlineForestRegressor(uint32_t n_trees,
                Criterion criterion,
-               int max_depth,
-               uint32_t min_samples_split,
+               // int max_depth,
+               // uint32_t min_samples_split,
                int32_t n_threads,
                int seed,
-               bool verbose,
-               bool warm_start,
-               uint32_t n_splits);
+               bool verbose
+               // bool warm_start,
+               // uint32_t n_splits
+               );
 
-  void fit(ulong n_iter = 0);
+  void fit(const SArrayDouble2dPtr features, const SArrayDoublePtr labels);
 
-  void set_data(const SArrayDouble2dPtr features, const SArrayDoublePtr labels);
+  // void set_data(const SArrayDouble2dPtr features, const SArrayDoublePtr labels);
 
   void predict(const SArrayDouble2dPtr features, SArrayDoublePtr predictions);
 
@@ -46,20 +47,11 @@ class OnlineForestRegressor {
   inline uint32_t n_trees() const;
   inline OnlineForestRegressor& set_n_trees(uint32_t n_trees);
 
-  inline uint32_t n_splits() const;
-  inline OnlineForestRegressor& set_n_splits(uint32_t n_splits);
-
   inline int32_t n_threads() const;
   inline OnlineForestRegressor& set_n_threads(int32_t n_threads);
 
-  inline uint32_t min_samples_split() const;
-  inline OnlineForestRegressor& set_min_samples_split(uint32_t min_samples_split);
-
   inline Criterion criterion() const;
   inline OnlineForestRegressor& set_criterion(Criterion criterion);
-
-  inline int32_t max_depth() const;
-  inline OnlineForestRegressor& set_max_depth(int32_t max_depth);
 
   inline int seed() const;
   inline OnlineForestRegressor& set_seed(int seed);
@@ -67,6 +59,4 @@ class OnlineForestRegressor {
   inline bool verbose() const;
   inline OnlineForestRegressor& set_verbose(bool verbose);
 
-  inline bool warm_start() const;
-  inline OnlineForestRegressor& set_warm_start(bool warm_start);
 };
