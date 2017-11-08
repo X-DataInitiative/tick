@@ -15,7 +15,7 @@ def _set_mpl_backend():
                  and (matplotlib.get_backend() == 'MacOSX'
                       or matplotlib.get_backend() == 'TkAgg')
                  )):
-        matplotlib.use('Agg')
+        matplotlib.use('TkAgg')
 
 _set_mpl_backend()
 
