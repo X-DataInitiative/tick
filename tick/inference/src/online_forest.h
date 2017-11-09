@@ -102,6 +102,18 @@ class Node {
   Node<NodeType> &operator=(const Node<NodeType> &&) = delete;
   virtual ~Node();
 
+  // Update to apply to a node when going forward in the tree (towards leaves)
+  virtual void update_forward(const ArrayDouble& x_t, double y_t);
+
+  // Update the range of the node
+  // void update_range(ulong sample_index);
+
+  virtual void update_weight(const ArrayDouble &x_t, double y_t) = 0;
+
+  // Update the statistics about the labels of the points in this node
+  virtual void update_label_stats(double y_t) = 0;
+
+
   inline Tree<NodeType> &tree() const;
   ulong n_features() const;
 
@@ -129,7 +141,10 @@ class Node {
   // inline Node<NodeType> &set_depth(ulong depth);
 
   inline double weight() const;
+  inline Node<NodeType> & set_weight(double weight);
   inline double weight_tree() const;
+  inline Node<NodeType> & set_weight_tree(double weight);
+
 
   inline ArrayDouble& sample();
   Node<NodeType> &set_sample(const ArrayDouble& x_t);
@@ -143,17 +158,6 @@ class Node {
   // inline const std::vector<ulong> &samples() const;
   // inline ulong sample(ulong index) const;
   // inline Node<NodeType> &add_sample(ulong index);
-
-
-  // Update to apply to a node when going forward in the tree (towards leaves)
-  virtual void update_forward(const ArrayDouble& x_t, double y_t);
-  // Update to apply to a node when going backward in the tree (towards the root)
-  virtual void update_backward(const ArrayDouble& x_t, double y_t);
-
-  // Update the range of the node
-  // void update_range(ulong sample_index);
-  // Update the statistics about the labels of the points in this node
-  virtual void update_label_stats(double y_t) = 0;
 
 //  inline ArrayDouble get_features(ulong sample_index) const;
 //  inline double get_label(ulong sample_index) const;
@@ -177,6 +181,8 @@ class NodeRegressor : public Node<NodeRegressor> {
   inline NodeRegressor&set_labels_average(double avg);
 
   virtual void update_label_stats(double y_t);
+
+  virtual void update_weight(const ArrayDouble &x_t, double y_t);
 
   virtual void print();
 };
@@ -211,7 +217,9 @@ class Tree {
 
   virtual ulong add_node(ulong parent, ulong creation_time);
 
-  ulong find_leaf(const ArrayDouble& x_t, double y_t, bool predict);
+  ulong go_forward(const ArrayDouble &x_t, double y_t, bool predict);
+
+  void go_backward(ulong leaf_index);
 
   std::pair<ulong, double> sample_feature_and_threshold(ulong index);
 

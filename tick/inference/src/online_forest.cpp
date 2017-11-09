@@ -60,13 +60,15 @@ Node<NodeType>::Node(const Node<NodeType> &&node) : _tree(_tree) {
 template <typename NodeType>
 void Node<NodeType>::update_forward(const ArrayDouble& x_t, double y_t) {
   _n_samples++;
+  update_weight(x_t, y_t);
+  update_label_stats(y_t);
+
 //  if (_is_leaf) {
 //    if (!_has_sample) {
 //      _sample = x_t;
 //    }
 //    // update_range(sample_index);
 //  }
-  update_label_stats(y_t);
 
   // TODO: Update aggregation weights
 
@@ -74,10 +76,6 @@ void Node<NodeType>::update_forward(const ArrayDouble& x_t, double y_t) {
   // _samples.push_back(sample_index);
 }
 
-template <typename NodeType>
-void Node<NodeType>::update_backward(const ArrayDouble& x_t, double y_t) {
-
-}
 
 //template <typename NodeType>
 //void Node<NodeType>::update_range(ulong sample_index) {
@@ -208,8 +206,20 @@ inline double Node<NodeType>::weight() const {
 }
 
 template <typename NodeType>
+inline Node<NodeType>& Node<NodeType>::set_weight(double weight) {
+  _weight = weight;
+  return *this;
+}
+
+template <typename NodeType>
 inline double Node<NodeType>::weight_tree() const {
   return _weight_tree;
+}
+
+template <typename NodeType>
+inline Node<NodeType>& Node<NodeType>::set_weight_tree(double weight_tree) {
+  _weight_tree = weight_tree;
+  return *this;
 }
 
 template <typename NodeType>
@@ -363,6 +373,12 @@ void NodeRegressor::update_label_stats(double y_t) {
   }
 }
 
+void NodeRegressor::update_weight(const ArrayDouble &x_t, double y_t) {
+  double diff = _labels_average - y_t;
+  _weight *= exp(diff * diff / 2);
+}
+
+
 template <typename NodeType>
 std::pair<ulong, double> Tree<NodeType>::sample_feature_and_threshold(ulong index) {
   if (criterion() == Criterion::unif) {
@@ -476,7 +492,7 @@ Tree<NodeType>::Tree(OnlineForestRegressor &forest) : forest(forest) {
 }
 
 template <typename NodeType>
-ulong Tree<NodeType>::find_leaf(const ArrayDouble& x_t, double y_t, bool predict) {
+ulong Tree<NodeType>::go_forward(const ArrayDouble &x_t, double y_t, bool predict) {
   // Find the leaf that contains the sample
   // Start at the root. Index of the root is always 0
   // If predict == true, this call to find_leaf is for
@@ -503,10 +519,31 @@ ulong Tree<NodeType>::find_leaf(const ArrayDouble& x_t, double y_t, bool predict
 }
 
 template <typename NodeType>
+void Tree<NodeType>::go_backward(ulong leaf_index) {
+  ulong current = leaf_index;
+  while(true) {
+    Node<NodeType> &current_node = node(current);
+    if (current_node.is_leaf()) {
+      current_node.set_weight_tree(current_node.weight());
+    } else {
+      double weight_tree_left = node(current_node.left()).weight_tree();
+      double weight_tree_right = node(current_node.right()).weight_tree();
+      current_node.set_weight_tree(0.5 * current_node.weight() + 0.5 * weight_tree_left * weight_tree_right);
+    }
+    current = node(current).parent();
+    if(current_node.index() == 0) {
+      break;
+    }
+  }
+}
+
+template <typename NodeType>
 void Tree<NodeType>::fit(const ArrayDouble& x_t, double y_t) {
   // TODO: Test that the size does not change within successive calls to fit
   iteration++;
-  ulong leaf_index = find_leaf(x_t, y_t, false);
+  ulong leaf_index = go_forward(x_t, y_t, false);
+
+  go_backward(leaf_index);
 
 //  std::cout << "iteration: " << iteration << ", x_t: [";
 //  std::cout << std::setprecision(2) << x_t[0] << ", ";
@@ -538,7 +575,8 @@ void Tree<NodeType>::fit(const ArrayDouble& x_t, double y_t) {
 
 template <typename NodeType>
 double Tree<NodeType>::predict(const ArrayDouble& x_t) {
-  ulong leaf_index = find_leaf(x_t, 0., true);
+  ulong leaf_index = go_forward(x_t, 0., true);
+
   return node(leaf_index).labels_average();
 }
 
