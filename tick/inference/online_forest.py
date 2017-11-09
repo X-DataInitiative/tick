@@ -99,11 +99,14 @@ class OnlineForestRegressor(ABC, Base):
         self.verbose = verbose
         self.warm_start = warm_start
         self.n_splits = n_splits
-        self._forest = _OnlineForestRegressor(n_trees, self._criterion,
-                                              max_depth,
-                                              min_samples_split, n_threads,
+        self._forest = _OnlineForestRegressor(n_trees,
+                                              self._criterion,
+                                              #max_depth,
+                                              # min_samples_split,
+                                              n_threads,
                                               seed,
-                                              verbose, warm_start, n_splits)
+                                              verbose)
+                                              #warm_start, n_splits)
 
     def set_data(self, X, y):
         X = safe_array(X)

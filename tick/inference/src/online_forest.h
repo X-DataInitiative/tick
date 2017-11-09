@@ -157,7 +157,7 @@ class Node {
 
 //  inline ArrayDouble get_features(ulong sample_index) const;
 //  inline double get_label(ulong sample_index) const;
-  void print();
+  virtual void print();
 
 };
 
@@ -177,6 +177,8 @@ class NodeRegressor : public Node<NodeRegressor> {
   inline NodeRegressor&set_labels_average(double avg);
 
   virtual void update_label_stats(double y_t);
+
+  virtual void print();
 };
 
 
@@ -234,9 +236,11 @@ class Tree {
 //  }
 
   void print() {
+    // std::cout << "start print" << std::endl;
     for(NodeType& node : nodes) {
       node.print();
     }
+    // std::cout << "end print" << std::endl;
   }
 
 //  inline uint32_t min_samples_split() const;
@@ -288,8 +292,8 @@ class OnlineForestRegressor {
   // uint32_t _n_splits;
 
   Criterion _criterion;
-
   ulong _n_features;
+  bool _n_features_known;
 
   // ulong _iteration;
 
@@ -361,6 +365,15 @@ class OnlineForestRegressor {
     }
   }
 
+  inline OnlineForestRegressor& set_n_features(ulong n_features) {
+    if (_iteration == 0) {
+      _n_features = n_features;
+    } else {
+      TICK_ERROR("OnlineForest::set_n_features can be called only once !")
+    }
+    return *this;
+  }
+
   inline ulong n_samples() const {
     if (_iteration > 0) {
       return _iteration;
@@ -382,7 +395,7 @@ class OnlineForestRegressor {
 //  }
 
   void print() {
-    std::cout << "Forest" << std::endl;
+    // std::cout << "Forest" << std::endl;
     for (Tree<NodeRegressor> &tree: trees) {
       tree.print();
     }

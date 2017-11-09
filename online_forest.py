@@ -4,13 +4,12 @@ import numpy as np
 
 import matplotlib.pyplot as plt
 
-n_samples = 20
+n_samples = 2000
 n_features = 2
 
 w0 = weights_sparse_gauss(n_features, nnz=2)
 X, y = SimuLinReg(w0, -1., n_samples=n_samples).simulate()
-X_train, X_test, y_train, y_test = train_test_split(X, y)
-
+# X_train, X_test, y_train, y_test = train_test_split(X, y)
 
 def plot_decision_regions(clf, X, y, n_iter=None):
     from matplotlib.colors import ListedColormap
@@ -27,9 +26,7 @@ def plot_decision_regions(clf, X, y, n_iter=None):
 
     plt.scatter(X[:, 0], X[:, 1], c=y, s=10, cmap=cm)
 
-    clf.set_data(X, y)
-    clf.fit(n_iter)
-
+    clf.fit(X, y)
     Z = clf.predict(np.array([xx1.ravel(), xx2.ravel()]).T)
     Z = Z.reshape(xx1.shape)
     ct = plt.contourf(xx1, xx2, Z, alpha=0.4, cmap=cm)
@@ -45,16 +42,18 @@ def plot_decision_regions(clf, X, y, n_iter=None):
 
 from tick.inference import OnlineForestRegressor
 
-clf = OnlineForestRegressor(n_trees=100, min_samples_split=1)
-
-clf.fit(X, y)
-
+clf = OnlineForestRegressor(n_trees=100)
+# clf.fit(X, y)
 # clf.print()
+
+plot_decision_regions(clf, X, y, n_iter=None)
+
+plt.show()
 
 # exit(0)
 # forest = OnlineForestRegressor(n_trees=100, min_samples_split=50)
 
 # plot_decision_regions(clf, X, y, n_samples)
-# plt.show()
+
 
 # plt.savefig('/Users/stephane.gaiffas/Downloads/online-forest.pdf')
