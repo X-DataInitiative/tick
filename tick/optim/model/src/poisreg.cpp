@@ -184,17 +184,26 @@ std::tuple<double, double> ModelPoisReg::sdca_dual_min_ij(
     const double n_hess_jj = -label_j / (new_dual_j * new_dual_j) - g_jj;
     const double n_hess_ij = -g_ij;
 
-    const double n2_det = n_hess_ii * n_hess_jj - n_hess_ij * n_hess_ij;
-    const double _1_over_n2_det = 1. / n2_det;
+//    const double n2_det = n_hess_ii * n_hess_jj - n_hess_ij * n_hess_ij;
+//    const double _1_over_n2_det = 1. / n2_det;
+//
+//    const double inverse_hess_ii_over_n = _1_over_n2_det * n_hess_jj;
+//    const double inverse_hess_jj_over_n = _1_over_n2_det * n_hess_ii;
+//    const double inverse_hess_ij_over_n = -_1_over_n2_det * n_hess_ij;
+//
+//    newton_descent_i =
+//      n_grad_i * inverse_hess_ii_over_n + n_grad_j * inverse_hess_ij_over_n;
+//    newton_descent_j =
+//      n_grad_i * inverse_hess_ij_over_n + n_grad_j * inverse_hess_jj_over_n;
 
-    const double inverse_hess_ii_over_n = _1_over_n2_det * n_hess_jj;
-    const double inverse_hess_jj_over_n = _1_over_n2_det * n_hess_ii;
-    const double inverse_hess_ij_over_n = -_1_over_n2_det * n_hess_ij;
+    double b[2] {n_grad_i, n_grad_j};
+    double A[4] {n_hess_ii, n_hess_ij, n_hess_ij, n_hess_jj};
 
-    newton_descent_i =
-      n_grad_i * inverse_hess_ii_over_n + n_grad_j * inverse_hess_ij_over_n;
-    newton_descent_j =
-      n_grad_i * inverse_hess_ij_over_n + n_grad_j * inverse_hess_jj_over_n;
+////    tick::vector_operations<double>{}.solve_symmetric_linear_system(2, A, b);
+    tick::vector_operations<double>{}.solve_linear_system(2, A, b);
+
+    newton_descent_i = b[0];
+    newton_descent_j = b[1];
 
     delta_dual_i -= newton_descent_i;
     delta_dual_j -= newton_descent_j;
@@ -209,9 +218,6 @@ std::tuple<double, double> ModelPoisReg::sdca_dual_min_ij(
     std::cout << "did not converge newton_descent_i=" << newton_descent_i
               << ", newton_descent_j" << newton_descent_j << "i, j = " << i << " " << j
               << std::endl;
-
-    get_features(i).print();
-    get_features(j).print();
   }
 
   if (new_dual_i <= 0) {
@@ -224,6 +230,120 @@ std::tuple<double, double> ModelPoisReg::sdca_dual_min_ij(
   }
 
   return {delta_dual_i, delta_dual_j};
+}
+
+ArrayDouble ModelPoisReg::sdca_dual_min_many(const ArrayULong indices,
+                                             const ArrayDouble duals,
+                                             const ArrayDouble &primal_vector,
+                                             double l_l2sq) {
+  if (link_type == LinkType::exponential) {
+    TICK_ERROR("Not available for exponential link")
+  }
+
+  if (!ready_features_norm_sq) {
+    compute_features_norm_sq();
+  }
+
+  const ulong n_indices = indices.size();
+
+  ArrayDouble labels(n_indices);
+  for (ulong i = 0; i < n_indices; ++i) labels[i] = get_label(indices[i]);
+  if (labels.min() == 0) {
+    indices.print();
+    labels.print();
+    TICK_ERROR("Labels 0 should not be considered in SDCA");
+  }
+
+  const double _1_lambda_n = 1 / (l_l2sq * n_non_zeros_labels);
+  ArrayDouble2d g(n_indices, n_indices);
+  for (ulong i = 0; i < n_indices; ++i) {
+    for (ulong j = 0; j < n_indices; ++j) {
+      if (j < i) g(i, j) = g(j, i);
+      else if (i == j) g(i, i) = features_norm_sq[indices[i]] * _1_lambda_n;
+      else g(i, j) = get_features(indices[i]).dot(get_features(indices[j])) * _1_lambda_n;
+      if (use_intercept()) g(i, j) += _1_lambda_n;
+    }
+  }
+
+  for (ulong i = 0; i < n_indices; ++i) {
+    for (ulong j = i + 1; j < n_indices; ++j) {
+      // if vector are colinear
+      if (g(i, j) * g(i, j) == g(i, i) * g(j, j)) {
+        ArrayDouble delta_duals(n_indices);
+        delta_duals.init_to_zero();
+        return delta_duals;
+      }
+    }
+  }
+  
+  ArrayDouble p(n_indices);
+  for (ulong i = 0; i < n_indices; ++i) p[i] = get_inner_prod(indices[i], primal_vector);
+  
+  ArrayDouble delta_duals(n_indices);
+  for (ulong i = 0; i < n_indices; ++i) delta_duals[i] = duals[i] == 0? 0.1 : 0;
+
+  double epsilon = 1e-1;
+
+  ArrayDouble new_duals(n_indices);
+  ArrayDouble newton_descents(n_indices);
+  ArrayDouble n_grad(n_indices);
+  ArrayDouble2d n_hess(n_indices, n_indices);
+  for (int k = 0; k < 20; ++k) {
+
+    for (ulong i = 0; i < n_indices; ++i) {
+      new_duals[i] = duals[i] + delta_duals[i];
+
+      // Check we are in the correct bounds
+      if (new_duals[i] <= 0) {
+        new_duals[i] = epsilon;
+        delta_duals[i] = new_duals[i] - duals[i];
+        epsilon *= 1e-1;
+      }
+    }
+
+    for (ulong i = 0; i < n_indices; ++i) {
+      n_grad[i] = labels[i] / new_duals[i] - p[i];
+
+      for (ulong j = 0; j < n_indices; ++j) {
+        n_grad[i] -=  delta_duals[j] * g(i, j);
+        n_hess(i, j) = -g(i, j);
+      }
+
+      n_hess(i, i) -= labels[i] / (new_duals[i] * new_duals[i]);
+    }
+
+    tick::vector_operations<double>{}.solve_linear_system(n_indices, n_hess.data(), n_grad.data());
+    delta_duals.mult_incr(n_grad, -1.);
+
+    bool all_converged = true;
+    for (ulong i = 0; i < n_indices; ++i) {
+      all_converged &= std::abs(n_grad[i]) < 1e-10;
+    }
+    if (all_converged) {
+      break;
+    }
+  }
+
+  bool all_converged = true;
+  for (ulong i = 0; i < n_indices; ++i) {
+    all_converged &= std::abs(n_grad[i]) < 1e-7;
+  }
+
+  if (!all_converged) {
+    std::cout << "did not converge" << std::endl;
+    indices.print();
+    n_grad.print();
+  }
+
+  for (ulong i = 0; i < n_indices; ++i) {
+    // Check we are in the correct bounds
+    if (new_duals[i] <= 0) {
+      new_duals[i] = epsilon;
+      delta_duals[i] = new_duals[i] - duals[i];
+    }
+  }
+
+  return delta_duals;
 }
 
 void ModelPoisReg::sdca_primal_dual_relation(const double l_l2sq,

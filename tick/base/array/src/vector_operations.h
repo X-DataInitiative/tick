@@ -48,6 +48,10 @@ struct vector_operations_unoptimized {
   void solve_linear_system(int n, T *A, T *b) const {
     TICK_ERROR("solve_linear_system is not implemented");
   }
+
+  void solve_symmetric_linear_system(int n, double *A, double *b) {
+   TICK_ERROR("Only implemetend for Apple");
+  }
 };
 
 }  // namespace detail
@@ -146,7 +150,21 @@ struct vector_operations_cblas<double> final : public vector_operations_cblas_ba
     int info;
     int n_cols = 1;
     dgesv_(&n, &n_cols, A, &n, &ipv, b, &n, &info);
+    if (info != 0) {
+      TICK_ERROR("Linear solver failed with info=" << info)
+    }
   }
+
+  void solve_symmetric_linear_system(int n, double *A, double *b) const {
+    int info;
+    int n_cols = 1;
+    char UPLO = 'L';
+    dposv_(&UPLO, &n, &n_cols, A, &n, b, &n, &info);
+    if (info != 0) {
+      TICK_ERROR("Linear solver failed with info=" << info)
+    }
+  }
+
 #endif
 
 #if defined(TICK_CATLAS_AVAILABLE)

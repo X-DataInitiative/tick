@@ -12,6 +12,8 @@ from tick.dataset.download_helper import download_tick_dataset, get_data_home
 from tick.preprocessing.features_binarizer import FeaturesBinarizer
 
 
+np.random.seed(43938)
+
 def fetch_uci_dataset(dataset_path, data_filename, sep=',', header=0):
     base_url = 'https://archive.ics.uci.edu/ml/machine-learning-databases/%s'
     cache_path = os.path.join(get_data_home(), dataset_path)
@@ -168,17 +170,17 @@ def fetch_facebook_dataset():
     return features, labels
 
 
-def fetch_poisson_dataset(dataset):
+def fetch_poisson_dataset(dataset, n_samples=1000):
     if dataset == 'facebook':
         features, labels = fetch_facebook_dataset()
     elif dataset == 'blog':
-        features, labels = fetch_blog_dataset(n_samples=1000)
+        features, labels = fetch_blog_dataset(n_samples=n_samples)
     elif dataset == 'news':
-        features, labels = fetch_news_popularity_dataset(n_samples=1000)
+        features, labels = fetch_news_popularity_dataset(n_samples=n_samples)
     elif dataset == 'vegas':
         features, labels = fetch_las_vegas_dataset()
     elif dataset == 'crime':
-        features, labels = fetch_crime_dataset()
+        features, labels = fetch_crime_dataset(n_samples=n_samples)
     elif dataset == 'wine':
         features, labels = fetch_wine_datase()
     return features, labels

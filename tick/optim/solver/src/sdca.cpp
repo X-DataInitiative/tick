@@ -15,8 +15,10 @@ SDCA::SDCA(double l_l2sq,
            double tol,
            RandType rand_type,
            BatchSize batch_size,
+           ulong batch_number,
            int seed
-) : StoSolver(epoch_size, tol, rand_type, seed), l_l2sq(l_l2sq), batch_size(batch_size) {
+) : StoSolver(epoch_size, tol, rand_type, seed),
+    l_l2sq(l_l2sq), batch_size(batch_size), batch_number(batch_number) {
   stored_variables_ready = false;
 }
 
@@ -53,6 +55,9 @@ void SDCA::solve() {
         break;
       case BatchSize::two :
         solve_batch_size_two(feature_index_map, scaled_l_l2sq, _1_over_lbda_n);
+        break;
+      case BatchSize::many :
+        solve_batch_size_many(feature_index_map, scaled_l_l2sq, _1_over_lbda_n);
         break;
     }
 
@@ -130,6 +135,43 @@ void SDCA::solve_batch_size_two(ArrayULong &feature_index_map,
 
   // add one step t
   t++;
+}
+
+void SDCA::solve_batch_size_many(ArrayULong &feature_index_map,
+                                 double scaled_l_l2sq, double _1_over_lbda_n) {
+  // Pick indices uniformly at random
+  ArrayULong indices(batch_number);
+  ArrayDouble duals(batch_number);
+  for (ulong i = 0; i < batch_number; ++i) {
+    indices[i] = get_next_i();
+    duals[i] = dual_vector[indices[i]];
+  }
+
+  ArrayULong feature_indices(batch_number);
+  for (ulong i = 0; i < batch_number; ++i)
+     feature_indices[i] = feature_index_map.size() != 0? feature_index_map[indices[i]]: indices[i];
+
+  // Maximize the dual coordinates
+  ArrayDouble delta_duals =
+    model->sdca_dual_min_many(feature_indices, duals, iterate, scaled_l_l2sq);
+
+  // Update the dual variable
+  for (ulong i = 0; i < batch_number; ++i) {
+    dual_vector[indices[i]] += delta_duals[i];
+
+    // Update the primal variable
+    BaseArrayDouble features_i = model->get_features(feature_indices[i]);
+    if (model->use_intercept()) {
+      ArrayDouble primal_features = view(tmp_primal_vector, 0, features_i.size());
+      primal_features.mult_incr(features_i, delta_duals[i] * _1_over_lbda_n);
+      tmp_primal_vector[model->get_n_features()] += delta_duals[i] * _1_over_lbda_n;
+    } else {
+      tmp_primal_vector.mult_incr(features_i, delta_duals[i] * _1_over_lbda_n);
+    }
+  }
+
+  // add few steps to t
+  t += batch_number - 1;
 }
 
 void SDCA::set_starting_iterate() {

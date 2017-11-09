@@ -353,27 +353,61 @@ TYPED_TEST(Array2dTest, MultIncr) {
   }
 }
 
-TEST(Array2dTest, LinearSystem) {
+#if defined(__APPLE__)
+TEST(Array2dTest, LinearColumnMajorSystem) {
   ulong size = 2;
 //  ArrayDouble b = ::GenerateRandomArray<ArrayDouble>(size);
   ArrayDouble b {2, 1};
   ArrayDouble b_copy = b;
 //  ArrayDouble2d arrA = ::GenerateRandomArray2d<ArrayDouble2d>(size, size);
   ArrayDouble2d arrA = ::GenerateRandomArray2d<ArrayDouble2d>(size, size);
-  arrA[0] = 3; arrA[1] = 5;
-  arrA[2] = 1; arrA[3] = 2;
-
-  arrA.print();
-  b.print();
-
+  arrA[2] = 3; arrA[3] = 2;
+  arrA[0] = 5; arrA[1] = 3;
+  ArrayDouble2d arrA_copy = arrA;
   arrA.solve_linear(b);
+
+  for (ulong i = 0; i < size; ++i) {
+    double b_sol_i = view_row(arrA_copy, i).dot(b);
+    ASSERT_DOUBLE_EQ(b_sol_i, b_copy[i]);
+  }
+}
+
+TEST(Array2dTest, SymmetricLinearSystem) {
+  ulong size = 2;
+//  ArrayDouble b = ::GenerateRandomArray<ArrayDouble>(size);
+  ArrayDouble b {2, 1};
+  ArrayDouble b_copy = b;
+//  ArrayDouble2d arrA = ::GenerateRandomArray2d<ArrayDouble2d>(size, size);
+  ArrayDouble arrA = ::GenerateRandomArray<ArrayDouble>(size * (size + 1) / 2);
+  arrA[0] = 5; arrA[0] = 3; arrA[0] = 2;
+  ArrayDouble2d arrA2d(size, size);
+
+  ulong c = 0;
+  for (ulong i = 0; i < size; ++i) {
+    for (ulong j = i; j < size; ++j) {
+      arrA2d(i, j) = arrA[c];
+      c++;
+    }
+  }
+  for (ulong i = 0; i < size; ++i) {
+    for (ulong j = 0; j < i; ++j) {
+      arrA2d(i, j) = arrA2d(j, i);
+    }
+  }
+  arrA.print();
+  arrA2d.print();
+
+  b_copy.print();
+
+  solve_symmetric_linear_system(size, arrA.data(), b.data());
 
   b.print();
   for (ulong i = 0; i < size; ++i) {
-    double b_sol_i = view_row(arrA, i).dot(b);
+    double b_sol_i = view_row(arrA2d, i).dot(b);
     ASSERT_DOUBLE_EQ(b_sol_i, b_copy[i]);
   }
-}<
+}
+#endif
 
 TYPED_TEST(ArrayTest, MultAddMultIncr) {
   using VT = typename TypeParam::value_type;

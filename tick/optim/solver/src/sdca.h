@@ -17,7 +17,8 @@
 
 enum class BatchSize {
   one = 0,
-  two
+  two,
+  many
 };
 
 class SDCA : public StoSolver {
@@ -41,6 +42,7 @@ class SDCA : public StoSolver {
   ArrayDouble dual_vector;
 
   BatchSize batch_size;
+  ulong batch_number;
 
  public:
   explicit SDCA(double l_l2sq,
@@ -48,6 +50,7 @@ class SDCA : public StoSolver {
                 double tol = 0.,
                 RandType rand_type = RandType::unif,
                 BatchSize batch_size = BatchSize::one,
+                ulong batch_number = 1,
                 int seed = -1);
 
   void reset() override;
@@ -98,6 +101,9 @@ class SDCA : public StoSolver {
 
   void solve_batch_size_two(ArrayULong &feature_index_map,
                             double scaled_l_l2sq, double _1_over_lbda_n);
+
+  void solve_batch_size_many(ArrayULong &feature_index_map,
+                             double scaled_l_l2sq, double _1_over_lbda_n);
 };
 
 #endif  // TICK_OPTIM_SOLVER_SRC_SDCA_H_
