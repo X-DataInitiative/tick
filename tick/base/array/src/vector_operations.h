@@ -44,6 +44,10 @@ struct vector_operations_unoptimized {
       y[i] += alpha * x[i];
     }
   }
+
+  void solve_linear_system(int n, T *A, T *b) const {
+    TICK_ERROR("solve_linear_system is not implemented");
+  }
 };
 
 }  // namespace detail
@@ -135,6 +139,15 @@ struct vector_operations_cblas<double> final : public vector_operations_cblas_ba
   void mult_incr(const ulong n, const double alpha, const double *x, double *y) const {
     cblas_daxpy(n, alpha, x, 1, y, 1);
   }
+
+#if defined(__APPLE__)
+  void solve_linear_system(int n, double *A, double *b) const {
+    int ipv;
+    int info;
+    int n_cols = 1;
+    dgesv_(&n, &n_cols, A, &n, &ipv, b, &n, &info);
+  }
+#endif
 
 #if defined(TICK_CATLAS_AVAILABLE)
   void set(const ulong n, const double alpha, double* x) const {

@@ -353,6 +353,28 @@ TYPED_TEST(Array2dTest, MultIncr) {
   }
 }
 
+TEST(Array2dTest, LinearSystem) {
+  ulong size = 2;
+//  ArrayDouble b = ::GenerateRandomArray<ArrayDouble>(size);
+  ArrayDouble b {2, 1};
+  ArrayDouble b_copy = b;
+//  ArrayDouble2d arrA = ::GenerateRandomArray2d<ArrayDouble2d>(size, size);
+  ArrayDouble2d arrA = ::GenerateRandomArray2d<ArrayDouble2d>(size, size);
+  arrA[0] = 3; arrA[1] = 5;
+  arrA[2] = 1; arrA[3] = 2;
+
+  arrA.print();
+  b.print();
+
+  arrA.solve_linear(b);
+
+  b.print();
+  for (ulong i = 0; i < size; ++i) {
+    double b_sol_i = view_row(arrA, i).dot(b);
+    ASSERT_DOUBLE_EQ(b_sol_i, b_copy[i]);
+  }
+}<
+
 TYPED_TEST(ArrayTest, MultAddMultIncr) {
   using VT = typename TypeParam::value_type;
   for (VT factor : {1.0, 1.5, 2.0}) {

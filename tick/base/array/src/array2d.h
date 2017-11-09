@@ -103,6 +103,8 @@ class Array2d : public BaseArray2d<T> {
     //! multiplication if T is an integer type
     void mult_fill(const Array2d<T>& x, const T a);
 
+    void solve_linear(Array<T>& b);
+
     //! @brief Multiply matrix x by factor c inplace and fill using this by new matrix
     //! @brief Namely, we perform the operator this += a * x + b * y
     //! \param x : an Array2d
@@ -226,6 +228,12 @@ void Array2d<T>::mult_fill(const Array2d<T>& x, const T a) {
     Array<T> this_array = Array<T>(this->size(), this->data());
     Array<T> x_array = Array<T>(x.size(), x.data());
     this_array.mult_fill(x_array, a);
+}
+
+template<typename T>
+void Array2d<T>::solve_linear(Array<T>& b) {
+    if (this->n_rows() != this->n_cols()) TICK_ERROR("n_rows should equal n_cols");
+    tick::vector_operations<T>{}.solve_linear_system(this->n_rows(), this->data(), b.data());
 }
 
 template<typename T>
