@@ -238,7 +238,8 @@ class Tree {
   Tree &operator=(const Tree<NodeType> &&) = delete;
 
   void fit(const ArrayDouble& x_t, double y_t);
-  double predict(const ArrayDouble& x_t);
+
+  // double predict(const ArrayDouble& x_t);
 
   inline ulong n_features() const;
 
@@ -279,8 +280,9 @@ class TreeRegressor : public Tree<NodeRegressor> {
   TreeRegressor(const TreeRegressor &&tree);
   TreeRegressor &operator=(const TreeRegressor &) = delete;
   TreeRegressor &operator=(const TreeRegressor &&) = delete;
-};
 
+  double predict(const ArrayDouble& x_t);
+};
 
 
 // Type of randomness used when sampling at random data points
@@ -329,7 +331,7 @@ class OnlineForestRegressor {
 //  SArrayDouble2dPtr _features_predict;
 
   // The list of trees in the forest
-  std::vector<Tree<NodeRegressor>> trees;
+  std::vector<TreeRegressor> trees;
 
   // Do the forest received data
   // bool _fitted;

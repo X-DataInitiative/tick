@@ -312,6 +312,9 @@ void NodeRegressor::print() {
   } else {
     std::cout << "null";
   }
+
+  std::cout << ", weight: " << _weight;
+  std::cout << ", weight_tree: " << _weight_tree;
   std::cout << ")\n";
             // << ", avg: " << std::setprecision(2) << _labels_average
             // << ", feat_min=[" << std::setprecision(2) << _features_min[0] << ", " << std::setprecision(2)
@@ -360,7 +363,7 @@ void NodeRegressor::update_label_stats(double y_t) {
 
 void NodeRegressor::update_weight(const ArrayDouble &x_t, double y_t) {
   double diff = _labels_average - y_t;
-  _weight *= exp(diff * diff / 2);
+  _weight *= exp(-diff * diff / 2);
 }
 
 NodeRegressor &NodeRegressor::set_sample(const ArrayDouble& x_t, double y_t) {
@@ -586,11 +589,44 @@ void Tree<NodeType>::fit(const ArrayDouble& x_t, double y_t) {
   iteration++;
 }
 
-template <typename NodeType>
-double Tree<NodeType>::predict(const ArrayDouble& x_t) {
-  ulong leaf_index = go_forward(x_t, 0., true);
 
-  return node(leaf_index).labels_average();
+TreeRegressor::TreeRegressor(OnlineForestRegressor &forest)
+  : Tree<NodeRegressor>(forest) {}
+
+TreeRegressor::TreeRegressor(const TreeRegressor &tree)
+  : Tree<NodeRegressor>(forest) {}
+
+TreeRegressor::TreeRegressor(const TreeRegressor &&tree)
+  : Tree<NodeRegressor>(forest) {}
+
+
+double TreeRegressor::predict(const ArrayDouble& x_t) {
+  ulong leaf = go_forward(x_t, 0., true);
+  ulong current = leaf;
+  // The child of the current node that does not contain the data
+  ulong other;
+  ulong parent;
+  double weight;
+  while (true) {
+    NodeRegressor &current_node = node(current);
+    if (current_node.is_leaf()) {
+      weight = current_node.weight() * current_node.labels_average();
+    } else {
+      weight = 0.5 * current_node.weight() * current_node.labels_average()
+          + 0.5 * node(other).weight_tree() * weight;
+    }
+    parent = node(current).parent();
+    if (node(parent).left() == current) {
+      other = node(parent).right();
+    } else {
+      other = node(parent).left();
+    }
+    current = parent;
+    if (current_node.index() == 0) {
+      break;
+    }
+  }
+  return weight / nodes[0].weight_tree();
 }
 
 template <typename NodeType>
@@ -651,7 +687,7 @@ void OnlineForestRegressor::fit(const SArrayDouble2dPtr features,
   set_n_features(n_features);
   for (ulong i = 0; i < n_samples; ++i) {
     // ulong sample_index = get_next_sample();
-    for (Tree<NodeRegressor> &tree : trees) {
+    for (TreeRegressor &tree : trees) {
       // Fit the tree online using the new data point
       tree.fit(view_row(*features, i), (*labels)[i]);
     }
@@ -678,7 +714,7 @@ void OnlineForestRegressor::predict(const SArrayDouble2dPtr features,
     for (ulong i = 0; i < n_samples; ++i) {
       // The prediction is simply the average of the predictions
       double y_pred = 0;
-      for (Tree<NodeRegressor> &tree : trees) {
+      for (TreeRegressor &tree : trees) {
         y_pred += tree.predict(view_row(*features, i));
       }
       (*predictions)[i] = y_pred / _n_trees;

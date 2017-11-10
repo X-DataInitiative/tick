@@ -11,6 +11,7 @@ w0 = weights_sparse_gauss(n_features, nnz=2)
 X, y = SimuLinReg(w0, -1., n_samples=n_samples).simulate()
 # X_train, X_test, y_train, y_test = train_test_split(X, y)
 
+
 def plot_decision_regions(clf, X, y, n_iter=None):
     from matplotlib.colors import ListedColormap
 
@@ -42,8 +43,11 @@ def plot_decision_regions(clf, X, y, n_iter=None):
 
 from tick.inference import OnlineForestRegressor
 
-clf = OnlineForestRegressor(n_trees=100)
+clf = OnlineForestRegressor(n_trees=5)
 # clf.fit(X, y)
+
+# print(y)
+# print(clf.predict(X))
 # clf.print()
 
 plot_decision_regions(clf, X, y, n_iter=None)
