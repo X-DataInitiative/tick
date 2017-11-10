@@ -104,7 +104,7 @@ class Node {
   virtual ~Node();
 
   // Update to apply to a node when going forward in the tree (towards leaves)
-  virtual void update_forward(const ArrayDouble& x_t, double y_t);
+  virtual void update_down(const ArrayDouble &x_t, double y_t);
 
   // Update the range of the node
   // void update_range(ulong sample_index);
@@ -220,13 +220,13 @@ class Tree {
   ulong iteration = 0;
 
   // Split the node at given index
-  ulong split_node(ulong index, const ArrayDouble& x_t, double y_t);
+  ulong split_leaf(ulong index, const ArrayDouble &x_t, double y_t);
 
   virtual ulong add_node(ulong parent, ulong creation_time);
 
-  ulong go_forward(const ArrayDouble &x_t, double y_t, bool predict);
+  ulong go_down(const ArrayDouble &x_t, double y_t, bool predict);
 
-  void go_backward(ulong leaf_index);
+  void go_up(ulong leaf_index);
 
   std::pair<ulong, double> sample_feature_and_threshold(ulong index);
 
@@ -281,7 +281,7 @@ class TreeRegressor : public Tree<NodeRegressor> {
   TreeRegressor &operator=(const TreeRegressor &) = delete;
   TreeRegressor &operator=(const TreeRegressor &&) = delete;
 
-  double predict(const ArrayDouble& x_t);
+  double predict(const ArrayDouble& x_t, bool use_aggregation);
 };
 
 
@@ -372,7 +372,7 @@ class OnlineForestRegressor {
 
   void fit(const SArrayDouble2dPtr features, const SArrayDoublePtr labels);
 
-  void predict(const SArrayDouble2dPtr features, SArrayDoublePtr predictions);
+  void predict(const SArrayDouble2dPtr features, SArrayDoublePtr predictions, bool use_aggregation);
 
   inline ulong n_features() const {
     if (_iteration > 0) {

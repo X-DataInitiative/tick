@@ -37,7 +37,7 @@ class OnlineForestRegressor {
 
   // void set_data(const SArrayDouble2dPtr features, const SArrayDoublePtr labels);
 
-  void predict(const SArrayDouble2dPtr features, SArrayDoublePtr predictions);
+  void predict(const SArrayDouble2dPtr features, SArrayDoublePtr predictions, bool use_aggregation);
 
   void print();
 

@@ -127,7 +127,7 @@ class OnlineForestRegressor(ABC, Base):
         """
         raise NotImplementedError()
 
-    def predict(self, X):
+    def predict(self, X, use_aggregation: bool=True):
         """Predict class for given samples
 
         Parameters
@@ -146,7 +146,7 @@ class OnlineForestRegressor(ABC, Base):
             raise ValueError("You must call ``fit`` before")
         else:
             X = safe_array(X)
-        self._forest.predict(X, y_pred)
+        self._forest.predict(X, y_pred, use_aggregation)
         return y_pred
 
     def score(self, X, y):
