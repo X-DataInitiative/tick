@@ -141,9 +141,13 @@ void SDCA::solve_batch_size_many(ArrayULong &feature_index_map,
                                  double scaled_l_l2sq, double _1_over_lbda_n) {
   // Pick indices uniformly at random
   ArrayULong indices(batch_number);
+  indices.fill(rand_max + 1);
+
   ArrayDouble duals(batch_number);
   for (ulong i = 0; i < batch_number; ++i) {
-    indices[i] = get_next_i();
+    ulong try_i = get_next_i();
+    while (indices.contains(try_i)) try_i = get_next_i();
+    indices[i] = try_i;
     duals[i] = dual_vector[indices[i]];
   }
 

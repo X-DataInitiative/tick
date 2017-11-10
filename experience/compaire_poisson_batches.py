@@ -55,12 +55,6 @@ def run_solvers(model, l_l2sq, ax_list):
     sdca_2.solve()
     solvers += [sdca_2]
 
-    sdca_3 = SDCA(l_l2sq, max_iter=max_iter_sdca,
-                  print_every=int(max_iter_sdca / 7), tol=1e-10, batch_size=4)
-    sdca_3.set_model(model).set_prox(ProxZero())
-    sdca_3.solve()
-    solvers += [sdca_3]
-
     sdca_7 = SDCA(l_l2sq, max_iter=max_iter_sdca,
                   print_every=int(max_iter_sdca / 7), tol=1e-10, batch_size=8)
     sdca_7.set_model(model).set_prox(ProxZero())
@@ -72,6 +66,19 @@ def run_solvers(model, l_l2sq, ax_list):
     sdca_15.set_model(model).set_prox(ProxZero())
     sdca_15.solve()
     solvers += [sdca_15]
+
+    sdca_30 = SDCA(l_l2sq, max_iter=max_iter_sdca,
+                  print_every=int(max_iter_sdca / 7), tol=1e-10, batch_size=31)
+    sdca_30.set_model(model).set_prox(ProxZero())
+    sdca_30.solve()
+    solvers += [sdca_30]
+
+    sdca_60 = SDCA(l_l2sq, max_iter=max_iter_sdca,
+                  print_every=int(max_iter_sdca / 7), tol=1e-10, batch_size=61)
+    solvers += [sdca_60]
+
+    sdca_60.set_model(model).set_prox(ProxZero())
+    sdca_60.solve()
 
     labels = []
     for solver in solvers:

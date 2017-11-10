@@ -30,7 +30,7 @@ def run_solvers(model, l_l2sq, ax_list):
 
     max_iter_sdca = 1000
     sdca = SDCA(l_l2sq, max_iter=max_iter_sdca,
-                print_every=int(max_iter_sdca / 7), tol=1e-10)
+                print_every=int(max_iter_sdca / 7), tol=1e-10, batch_size=3)
     sdca.set_model(model).set_prox(ProxZero())
     sdca.solve()
     solvers += [sdca]
@@ -68,7 +68,7 @@ def run_solvers(model, l_l2sq, ax_list):
     ax_list[1].stem(newton.solution, linefmt='b-', markerfmt='bo', basefmt='b-')
 
 
-dataset = 'crime'
+dataset = 'vegas'
 features, labels = fetch_poisson_dataset(dataset)
 
 model = ModelPoisReg(fit_intercept=False, link='identity')

@@ -217,6 +217,8 @@ class Array : public BaseArray<T> {
         }
     }
 
+    bool contains(T value);
+
     //! @brief Returns a shared pointer to a SArray encapsulating the array
     //! \warning : The ownership of the data is given to the returned structure
     //! THUS the array becomes a view.
@@ -401,6 +403,15 @@ Array<T> sort_abs(Array<T> &array, Array<ulong> &index, bool increasing = true) 
     // Sort the copy inplace keeping track of the index
     sorted_array.sort_abs(index, increasing);
     return sorted_array;
+}
+
+template<typename T>
+bool Array<T>::contains(T value){
+  bool contain = false;
+  for (int i = 0; i < _size; ++i) {
+    contain |= _data[i] == value;
+  }
+  return contain;
 }
 
 /**

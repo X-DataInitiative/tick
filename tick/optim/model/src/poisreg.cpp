@@ -271,6 +271,8 @@ ArrayDouble ModelPoisReg::sdca_dual_min_many(const ArrayULong indices,
       if (g(i, j) * g(i, j) == g(i, i) * g(j, j)) {
         ArrayDouble delta_duals(n_indices);
         delta_duals.init_to_zero();
+        std::cout << "skip colinear" << std::endl;
+        indices.print();
         return delta_duals;
       }
     }
@@ -324,12 +326,13 @@ ArrayDouble ModelPoisReg::sdca_dual_min_many(const ArrayULong indices,
     }
   }
 
-  bool all_converged = true;
+  double mean = 0;
   for (ulong i = 0; i < n_indices; ++i) {
-    all_converged &= std::abs(n_grad[i]) < 1e-7;
+    mean += std::abs(n_grad[i]);
   }
+  mean /= n_indices;
 
-  if (!all_converged) {
+  if (mean > 1e-7) {
     std::cout << "did not converge" << std::endl;
     indices.print();
     n_grad.print();
