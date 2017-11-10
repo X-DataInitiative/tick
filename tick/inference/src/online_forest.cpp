@@ -14,7 +14,6 @@ Node<NodeType>::Node(Tree<NodeType> &tree, ulong index, ulong parent, ulong crea
   _right = 0;
   _weight = 1;
   _weight_tree = 1;
-  _has_sample = false;
   // _depth = 0;
   this->_index = index;
   this->_parent = parent;
@@ -33,7 +32,7 @@ Node<NodeType>::Node(const Node<NodeType> &node)
       _n_samples(node._n_samples),
       _weight(node._weight), _weight_tree(node._weight_tree),
       _is_leaf(node._is_leaf),
-      _sample(node._sample), _has_sample(node._has_sample) {
+      _sample(node._sample) {
   // std::cout << "Copy const of Node(index: " << _index << ")" << std::endl;
 }
 
@@ -136,17 +135,6 @@ inline Node<NodeType> &Node<NodeType>::set_is_leaf(bool is_leaf) {
 }
 
 template <typename NodeType>
-inline const bool Node<NodeType>::has_sample() const {
-  return _has_sample;
-}
-
-template <typename NodeType>
-inline Node<NodeType> &Node<NodeType>::set_has_sample(bool has_sample) {
-  _has_sample = has_sample;
-  return *this;
-}
-
-template <typename NodeType>
 inline ulong Node<NodeType>::parent() const {
   return _parent;
 }
@@ -223,16 +211,10 @@ inline Node<NodeType>& Node<NodeType>::set_weight_tree(double weight_tree) {
 }
 
 template <typename NodeType>
-inline ArrayDouble& Node<NodeType>::sample() {
+inline std::pair<ArrayDouble, double>& Node<NodeType>::sample() {
   return _sample;
 }
 
-template <typename NodeType>
-Node<NodeType> &Node<NodeType>::set_sample(const ArrayDouble& x_t) {
-  _sample = ArrayDouble(x_t);
-  _has_sample = true;
-  return *this;
-}
 
 //template <typename NodeType>
 //inline const ArrayDouble &Node<NodeType>::features_min() const {
@@ -313,6 +295,7 @@ void Node<NodeType>::print() {
 
 void NodeRegressor::print() {
   std::cout << "Node(idx: " << _index << ", parent: " << _parent
+            << ", time: " << _time
             // << ", f: " << _feature
             // << ", th: " << _threshold
             << ", left: " << _left
@@ -321,11 +304,11 @@ void NodeRegressor::print() {
             // << ", n: " << n_samples()
             // << ", i: " << _is_leaf
             << ", thresh: " << _threshold
+            << ", y_hat: " << _labels_average
             << ", sample: ";
             // << ", has_sample:" << _has_sample;
-
-  if(_has_sample) {
-    std::cout << "[" << std::setprecision(2) << _sample[0] << ", " << std::setprecision(2) << _sample[1] << "]";
+  if(_is_leaf) {
+    std::cout << "[" << std::setprecision(2) << _sample.first[0] << ", " << std::setprecision(2) << _sample.first[1] << "]";
   } else {
     std::cout << "null";
   }
@@ -365,17 +348,29 @@ inline NodeRegressor& NodeRegressor::set_labels_average(double avg) {
 }
 
 void NodeRegressor::update_label_stats(double y_t) {
-  if ((_index == 0) && (_n_samples == 1)) {
-    _labels_average = y_t;
-  } else {
-    // Update the average of labels online
-    _labels_average = ((_n_samples - 1) * _labels_average + y_t) / _n_samples;
-  }
+  // When a node is updated, it necessarily contains already a sample
+  _labels_average = ((_n_samples - 1) * _labels_average + y_t) / _n_samples;
+//  if ((_index == 0) && (_n_samples == 1)) {
+//    _labels_average = y_t;
+//  } else {
+//    // Update the average of labels online
+//    _labels_average = ((_n_samples - 1) * _labels_average + y_t) / _n_samples;
+//  }
 }
 
 void NodeRegressor::update_weight(const ArrayDouble &x_t, double y_t) {
   double diff = _labels_average - y_t;
   _weight *= exp(diff * diff / 2);
+}
+
+NodeRegressor &NodeRegressor::set_sample(const ArrayDouble& x_t, double y_t) {
+  _sample = std::pair<ArrayDouble, double>(x_t, y_t);
+  _labels_average = y_t;
+  return *this;
+}
+
+NodeRegressor &NodeRegressor::set_sample(const std::pair<ArrayDouble, double> & sample) {
+  return set_sample(sample.first, sample.second);
 }
 
 
@@ -394,68 +389,6 @@ std::pair<ulong, double> Tree<NodeType>::sample_feature_and_threshold(ulong inde
     TICK_ERROR("Criterion::mse not implemented.");
   }
 };
-
-template <typename NodeType>
-void Tree<NodeType>::split_node(ulong index, const ArrayDouble& x_t, double y_t) {
-  // std::cout << "Splitting node " << index << std::endl;
-  ulong left = add_node(index, iteration);
-  ulong right = add_node(index, iteration);
-  node(index).set_left(left).set_right(right).set_is_leaf(false);
-  // std::cout << "parent ok" << index << std::endl;
-  // Set the depth of their childs
-  // node(left).set_depth(node(index).depth() + 1);
-  // node(right).set_depth(node(index).depth() + 1);
-
-  // std::pair<ulong, double> feature_threshold = sample_feature_and_threshold(index);
-
-  ulong feature = forest.sample_feature();
-
-  // Choose at random the feature used to cut uniformly in the
-  // range of the features
-  // double left_boundary = node(index).features_min()[feature];
-  // double right_boundary = node(index).features_max()[feature];
-
-  double x1_tj = x_t[feature];
-  double x2_tj = node(index).sample()[feature];
-  double threshold;
-
-  // std::cout << "x1_tj= " << x1_tj << " x2_tj= " << x2_tj << " threshold= " << threshold << std::endl;
-  // TODO: what if x1_tj == x2_tj. Must be taken care of by sample_feature()
-  if (x1_tj < x2_tj) {
-    threshold = forest.sample_threshold(x1_tj, x2_tj);
-    node(left).set_sample(x_t);
-    node(left).set_has_sample(true);
-  } else {
-    threshold = forest.sample_threshold(x2_tj, x1_tj);
-    node(right).set_sample(x_t);
-    node(right).set_has_sample(true);
-  }
-  node(index).set_feature(feature).set_threshold(threshold);
-
-  // The ranges of the childs is contained in the range of the parent
-  // We first simply copy the ranges, and update the feature using the selected
-  // threshold
-//  node(left).set_features_min(node(index).features_min());
-//  node(left).set_features_max(node(index).features_max());
-//  node(left).set_features_max(feature, threshold);
-//  node(right).set_features_min(node(index).features_min());
-//  node(right).set_features_max(node(index).features_max());
-//  node(right).set_features_min(feature, threshold);
-
-  // Split the samples of the parent and update the childs using them
-  // This is maybe some kind of cheating...
-//  for (ulong i = 0; i < node(index).n_samples(); ++i) {
-//    ulong sample_index = node(index).sample(i);
-//    double x_ij = get_features(sample_index)[feature];
-//    if (x_ij <= threshold) {
-//      // We don't update the ranges, since we already managed them above
-//      node(left).update(sample_index, false);
-//    } else {
-//      node(right).update(sample_index, false);
-//    }
-//  }
-
-}
 
 template <typename NodeType>
 Tree<NodeType>::Tree(const Tree<NodeType> &tree)
@@ -492,6 +425,85 @@ Tree<NodeType>::Tree(OnlineForestRegressor &forest) : forest(forest) {
 }
 
 template <typename NodeType>
+ulong Tree<NodeType>::split_node(ulong index, const ArrayDouble& x_t, double y_t) {
+  // std::cout << "Splitting node " << index << std::endl;
+  ulong left = add_node(index, iteration);
+  ulong right = add_node(index, iteration);
+  node(index).set_left(left).set_right(right).set_is_leaf(false);
+
+  // std::cout << "parent ok" << index << std::endl;
+  // Set the depth of their childs
+  // node(left).set_depth(node(index).depth() + 1);
+  // node(right).set_depth(node(index).depth() + 1);
+
+  // std::pair<ulong, double> feature_threshold = sample_feature_and_threshold(index);
+
+  ulong feature = forest.sample_feature();
+
+  // Choose at random the feature used to cut uniformly in the
+  // range of the features
+  // double left_boundary = node(index).features_min()[feature];
+  // double right_boundary = node(index).features_max()[feature];
+
+  double x1_tj = x_t[feature];
+  double x2_tj = node(index).sample().first[feature];
+  double threshold;
+
+  // The leaf that contains the passed sample (x_t, y_t)
+  ulong data_leaf;
+  ulong other_leaf;
+
+  // std::cout << "x1_tj= " << x1_tj << " x2_tj= " << x2_tj << " threshold= " << threshold << std::endl;
+  // TODO: what if x1_tj == x2_tj. Must be taken care of by sample_feature()
+  if (x1_tj < x2_tj) {
+    threshold = forest.sample_threshold(x1_tj, x2_tj);
+    data_leaf = left;
+    other_leaf = right;
+  } else {
+    threshold = forest.sample_threshold(x2_tj, x1_tj);
+    data_leaf = right;
+    other_leaf = left;
+  }
+  // TODO: not so sure that y_t should be passed below
+  // TODO: code a move_sample
+  node(data_leaf).set_sample(x_t, y_t);
+  node(other_leaf).set_sample(node(index).sample());
+
+  node(index).set_feature(feature).set_threshold(threshold);
+
+  node(left).update_forward(x_t, y_t);
+  node(right).update_forward(x_t, y_t);
+
+  // Update backward for the leaf that does not contain the new sample
+  node(other_leaf).set_weight_tree(node(other_leaf).weight());
+
+  return data_leaf;
+  // The ranges of the childs is contained in the range of the parent
+  // We first simply copy the ranges, and update the feature using the selected
+  // threshold
+//  node(left).set_features_min(node(index).features_min());
+//  node(left).set_features_max(node(index).features_max());
+//  node(left).set_features_max(feature, threshold);
+//  node(right).set_features_min(node(index).features_min());
+//  node(right).set_features_max(node(index).features_max());
+//  node(right).set_features_min(feature, threshold);
+
+  // Split the samples of the parent and update the childs using them
+  // This is maybe some kind of cheating...
+//  for (ulong i = 0; i < node(index).n_samples(); ++i) {
+//    ulong sample_index = node(index).sample(i);
+//    double x_ij = get_features(sample_index)[feature];
+//    if (x_ij <= threshold) {
+//      // We don't update the ranges, since we already managed them above
+//      node(left).update(sample_index, false);
+//    } else {
+//      node(right).update(sample_index, false);
+//    }
+//  }
+
+}
+
+template <typename NodeType>
 ulong Tree<NodeType>::go_forward(const ArrayDouble &x_t, double y_t, bool predict) {
   // Find the leaf that contains the sample
   // Start at the root. Index of the root is always 0
@@ -520,6 +532,7 @@ ulong Tree<NodeType>::go_forward(const ArrayDouble &x_t, double y_t, bool predic
 
 template <typename NodeType>
 void Tree<NodeType>::go_backward(ulong leaf_index) {
+  // TODO: IL FAUT BIEN UPDATED AUSSI LA RACINE ???
   ulong current = leaf_index;
   while(true) {
     Node<NodeType> &current_node = node(current);
@@ -540,37 +553,37 @@ void Tree<NodeType>::go_backward(ulong leaf_index) {
 template <typename NodeType>
 void Tree<NodeType>::fit(const ArrayDouble& x_t, double y_t) {
   // TODO: Test that the size does not change within successive calls to fit
-  iteration++;
-  ulong leaf_index = go_forward(x_t, y_t, false);
-
-  go_backward(leaf_index);
-
-//  std::cout << "iteration: " << iteration << ", x_t: [";
-//  std::cout << std::setprecision(2) << x_t[0] << ", ";
-//  std::cout << std::setprecision(2) << x_t[1] << "]";
-//  std::cout << std::setprecision(2) << ", y_t: " << y_t << std::endl;
-//  std::cout << "leaf_index= " << leaf_index << std::endl;
-
-  if (node(leaf_index).has_sample()) {
-    // compute the maximum distance between the sample in the node and x_t
-    double max = 0;
-    // std::cout << "n_features()= " << n_features() << std::endl;
-    for(ulong j=0; j < n_features(); ++j) {
-      double delta = std::abs(x_t[j] - node(leaf_index).sample()[j]);
-      if (delta > max) {
-        max = delta;
-      }
-    }
-    // std::cout << "max= " << max << std::endl;
-    if (max > 0.) {
-      split_node(leaf_index, x_t, y_t);
-    }
-  } else {
-    // std::cout << "node(leaf_index).set_sample(x_t);" << std::endl;
-    node(leaf_index).set_sample(x_t);
+  if(iteration == 0) {
+    nodes[0].set_sample(x_t, y_t);
+    iteration++;
+    return;
   }
+  ulong leaf = go_forward(x_t, y_t, false);
+  ulong new_leaf = leaf;
+  for(ulong j=0; j < n_features(); ++j) {
+    double delta = std::abs(x_t[j] - node(leaf).sample().first[j]);
+    if (delta > 0.) {
+      new_leaf = split_node(leaf, x_t, y_t);
+      break;
+    }
+  }
+  // TODO: question for Jaouad, if we don't split the node, do we need to go backwards ?
 
+  go_backward(new_leaf);
+
+  //  std::cout << "iteration: " << iteration << ", x_t: [";
+  //  std::cout << std::setprecision(2) << x_t[0] << ", ";
+  //  std::cout << std::setprecision(2) << x_t[1] << "]";
+  //  std::cout << std::setprecision(2) << ", y_t: " << y_t << std::endl;
+  //  std::cout << "leaf_index= " << leaf_index << std::endl;
+  //  if (node(leaf_index).is_leaf()) {
+  // std::cout << "n_features()= " << n_features() << std::endl;
+  // std::cout << "max= " << max << std::endl;
+  // std::cout << "node(leaf_index).set_sample(x_t);" << std::endl;
+  // node(leaf_index).set_sample(x_t);
+  // }
   // print();
+  iteration++;
 }
 
 template <typename NodeType>

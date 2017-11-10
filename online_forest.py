@@ -47,7 +47,6 @@ clf = OnlineForestRegressor(n_trees=100)
 # clf.print()
 
 plot_decision_regions(clf, X, y, n_iter=None)
-
 plt.show()
 
 # exit(0)

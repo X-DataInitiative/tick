@@ -75,7 +75,8 @@ class Node {
   ulong _n_samples;
 
   // The sample saved in the node for splitting using its range
-  ArrayDouble _sample;
+  std::pair<ArrayDouble, double> _sample;
+  // ArrayDouble _sample;
 
   // Aggregation weight for the node
   double _weight;
@@ -92,7 +93,7 @@ class Node {
   bool _is_leaf;
 
   // True whenever the node contains a sample
-  bool _has_sample;
+  // bool _has_sample;
 
  public:
   Node(Tree<NodeType> &tree, ulong index, ulong parent, ulong creation_time);
@@ -146,8 +147,11 @@ class Node {
   inline Node<NodeType> & set_weight_tree(double weight);
 
 
-  inline ArrayDouble& sample();
-  Node<NodeType> &set_sample(const ArrayDouble& x_t);
+  inline std::pair<ArrayDouble, double>& sample();
+
+  virtual Node<NodeType> &set_sample(const ArrayDouble& x_t, double y_t) = 0;
+
+  virtual Node<NodeType> &set_sample(const std::pair<ArrayDouble, double> & sample) = 0;
 
 //  inline const ArrayDouble &features_min() const;
 //  inline Node<NodeType> &set_features_min(const ArrayDouble &features_min);
@@ -184,6 +188,9 @@ class NodeRegressor : public Node<NodeRegressor> {
 
   virtual void update_weight(const ArrayDouble &x_t, double y_t);
 
+  virtual NodeRegressor &set_sample(const ArrayDouble& x_t, double y_t);
+  virtual NodeRegressor &set_sample(const std::pair<ArrayDouble, double> & sample);
+
   virtual void print();
 };
 
@@ -213,7 +220,7 @@ class Tree {
   ulong iteration = 0;
 
   // Split the node at given index
-  void split_node(ulong index, const ArrayDouble& x_t, double y_t);
+  ulong split_node(ulong index, const ArrayDouble& x_t, double y_t);
 
   virtual ulong add_node(ulong parent, ulong creation_time);
 
