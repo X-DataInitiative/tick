@@ -123,7 +123,6 @@ class OnlineForestRegressor(ABC, Base):
     def apply(self, X):
         """Make the samples from X follow the trees from the forest, and return
         the indices of the leaves
-
         """
         raise NotImplementedError()
 

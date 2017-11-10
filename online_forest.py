@@ -7,13 +7,13 @@ import matplotlib.pyplot as plt
 n_samples = 200
 n_features = 2
 
-w0 = weights_sparse_gauss(n_features, nnz=2)
-X, y = SimuLinReg(w0, -1., n_samples=n_samples).simulate()
-# X_train, X_test, y_train, y_test = train_test_split(X, y)
-
 seed = 123
 
-np.random.seed(123)
+w0 = weights_sparse_gauss(n_features, nnz=2)
+X, y = SimuLinReg(w0, -1., n_samples=n_samples, seed=seed).simulate()
+# X_train, X_test, y_train, y_test = train_test_split(X, y)
+
+
 
 def plot_decision_regions(clf, X, y, n_iter=None, use_aggregation=False):
     from matplotlib.colors import ListedColormap
@@ -47,8 +47,8 @@ def plot_decision_regions(clf, X, y, n_iter=None, use_aggregation=False):
 
 from tick.inference import OnlineForestRegressor
 
-clf = OnlineForestRegressor(n_trees=5, seed=123)
-plot_decision_regions(clf, X, y, n_iter=None, use_aggregation=False)
+clf = OnlineForestRegressor(n_trees=10, seed=123)
+plot_decision_regions(clf, X, y, use_aggregation=False)
 
 path = '/Users/stephane.gaiffas/Downloads/'
 
@@ -56,11 +56,12 @@ import os
 
 plt.savefig(os.path.join(path, 'online1.pdf'))
 
-clf = OnlineForestRegressor(n_trees=5, seed=123)
-plot_decision_regions(clf, X, y, n_iter=None, use_aggregation=True)
+clf = OnlineForestRegressor(n_trees=10, seed=123)
+plot_decision_regions(clf, X, y, use_aggregation=True)
 
 plt.savefig(os.path.join(path, 'online2.pdf'))
 
+clf.print()
 
 # plt.show()
 

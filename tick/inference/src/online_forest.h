@@ -230,12 +230,15 @@ class Tree {
 
   std::pair<ulong, double> sample_feature_and_threshold(ulong index);
 
+  void rescale();
+
  public:
   Tree(OnlineForestRegressor &forest);
   Tree(const Tree<NodeType> &tree);
   Tree(const Tree<NodeType> &&tree);
   Tree &operator=(const Tree<NodeType> &) = delete;
   Tree &operator=(const Tree<NodeType> &&) = delete;
+
 
   void fit(const ArrayDouble& x_t, double y_t);
 

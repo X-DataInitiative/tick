@@ -506,6 +506,15 @@ void Tree<NodeType>::go_up(ulong leaf_index) {
 }
 
 template<typename NodeType>
+void Tree<NodeType>::rescale() {
+  double scale = 1 / nodes[0].weight();
+  for(NodeType &node : nodes) {
+    node.set_weight(node.weight() * scale);
+    node.set_weight_tree(node.weight_tree() * scale);
+  }
+}
+
+template<typename NodeType>
 void Tree<NodeType>::fit(const ArrayDouble &x_t, double y_t) {
   // TODO: Test that the size does not change within successive calls to fit
   if (iteration == 0) {
@@ -513,6 +522,11 @@ void Tree<NodeType>::fit(const ArrayDouble &x_t, double y_t) {
     iteration++;
     return;
   }
+
+  if(nodes[0].weight() < 1e-20 || nodes[0].weight_tree() < 1e-20) {
+    // rescale();
+  }
+
   ulong leaf = go_down(x_t, y_t, false);
   // ulong new_leaf = leaf;
 
