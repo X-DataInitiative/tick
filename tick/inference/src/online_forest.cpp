@@ -345,7 +345,10 @@ void NodeRegressor::update_label_stats(double y_t) {
 
 void NodeRegressor::update_weight(const ArrayDouble &x_t, double y_t) {
   double diff = _labels_average - y_t;
-  _weight *= exp(-diff * diff / 2);
+  // _weight *= exp(-diff * diff / 2);
+  _weight -= diff * diff / 2;
+
+
 }
 
 NodeRegressor &NodeRegressor::set_sample(const ArrayDouble &x_t, double y_t) {
@@ -496,7 +499,18 @@ void Tree<NodeType>::go_up(ulong leaf_index) {
     } else {
       double weight_tree_left = node(current_node.left()).weight_tree();
       double weight_tree_right = node(current_node.right()).weight_tree();
-      current_node.set_weight_tree(0.5 * current_node.weight() + 0.5 * weight_tree_left * weight_tree_right);
+
+      double a = current_node.weight();
+      double b = weight_tree_left + weight_tree_right;
+
+      double toto;
+
+      if(a > b) {
+        toto = a + log(1 + exp(b - a)) - log(2);
+      } else {
+        toto = b + log(1 + exp(a - b)) - log(2);
+      }
+      current_node.set_weight_tree(toto);
     }
     current = node(current).parent();
     if (current_node.index() == 0) {
