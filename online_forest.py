@@ -1,18 +1,21 @@
 from tick.simulation import SimuLinReg, weights_sparse_gauss
 from sklearn.model_selection import train_test_split
 import numpy as np
+from tick.inference import OnlineForestRegressor
 
 import matplotlib.pyplot as plt
 
-n_samples = 200
+n_samples = 1000
 n_features = 2
-
 seed = 123
+
+np.set_printoptions(precision=2)
+
 
 w0 = weights_sparse_gauss(n_features, nnz=2)
 X, y = SimuLinReg(w0, -1., n_samples=n_samples, seed=seed).simulate()
-# X_train, X_test, y_train, y_test = train_test_split(X, y)
 
+X_train, X_test, y_train, y_test = train_test_split(X, y)
 
 
 def plot_decision_regions(clf, X, y, n_iter=None, use_aggregation=False):
@@ -30,7 +33,6 @@ def plot_decision_regions(clf, X, y, n_iter=None, use_aggregation=False):
 
     plt.scatter(X[:, 0], X[:, 1], c=y, s=10, cmap=cm)
 
-    clf.fit(X, y)
     Z = clf.predict(np.array([xx1.ravel(), xx2.ravel()]).T, use_aggregation)
     Z = Z.reshape(xx1.shape)
     ct = plt.contourf(xx1, xx2, Z, alpha=0.4, cmap=cm)
@@ -45,23 +47,40 @@ def plot_decision_regions(clf, X, y, n_iter=None, use_aggregation=False):
     plt.tight_layout()
 
 
-from tick.inference import OnlineForestRegressor
+# clf = OnlineForestRegressor(n_trees=1, seed=123)
+# print(clf.predict(X))
 
-clf = OnlineForestRegressor(n_trees=10, seed=123)
-plot_decision_regions(clf, X, y, use_aggregation=False)
+# plot_decision_regions(clf, X, y, use_aggregation=False)
 
 path = '/Users/stephane.gaiffas/Downloads/'
 
 import os
 
-plt.savefig(os.path.join(path, 'online1.pdf'))
+# plt.savefig(os.path.join(path, 'online1.pdf'))
 
 clf = OnlineForestRegressor(n_trees=10, seed=123)
+clf.fit(X_train, y_train)
+
+y1 = clf.predict(X_test, use_aggregation=False)
+y2 = clf.predict(X_test, use_aggregation=True)
+
+print(y_test)
+print(y1)
+print(y2)
+
+print("err 1-NN: ", np.linalg.norm(y_test - y1))
+print("err agg: ", np.linalg.norm(y_test - y2))
+
+plot_decision_regions(clf, X, y, use_aggregation=False)
+
 plot_decision_regions(clf, X, y, use_aggregation=True)
+plt.show()
 
-plt.savefig(os.path.join(path, 'online2.pdf'))
+# plot_decision_regions(clf, X, y, use_aggregation=True)
 
-clf.print()
+# plt.savefig(os.path.join(path, 'online2.pdf'))
+
+# clf.print()
 
 # plt.show()
 

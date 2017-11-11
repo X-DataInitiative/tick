@@ -345,10 +345,8 @@ void NodeRegressor::update_label_stats(double y_t) {
 
 void NodeRegressor::update_weight(const ArrayDouble &x_t, double y_t) {
   double diff = _labels_average - y_t;
-  // _weight *= exp(-diff * diff / 2);
-  _weight -= diff * diff / 2;
-
-
+  _weight *= exp(-diff * diff / 2);
+  // _weight -= diff * diff / 2;
 }
 
 NodeRegressor &NodeRegressor::set_sample(const ArrayDouble &x_t, double y_t) {
@@ -497,20 +495,18 @@ void Tree<NodeType>::go_up(ulong leaf_index) {
     if (current_node.is_leaf()) {
       current_node.set_weight_tree(current_node.weight());
     } else {
-      double weight_tree_left = node(current_node.left()).weight_tree();
-      double weight_tree_right = node(current_node.right()).weight_tree();
-
-      double a = current_node.weight();
-      double b = weight_tree_left + weight_tree_right;
-
-      double toto;
-
-      if(a > b) {
-        toto = a + log(1 + exp(b - a)) - log(2);
-      } else {
-        toto = b + log(1 + exp(a - b)) - log(2);
-      }
-      current_node.set_weight_tree(toto);
+      double w = current_node.weight();
+      double w0 = node(current_node.left()).weight_tree();
+      double w1 = node(current_node.right()).weight_tree();
+      current_node.set_weight_tree((w + w0 * w1) / 2);
+//      double a = current_node.weight();
+//      double b = weight_tree_left + weight_tree_right;
+//      double toto;
+//      if(a > b) {
+//        toto = a + log(1 + exp(b - a)) - log(2);
+//      } else {
+//        toto = b + log(1 + exp(a - b)) - log(2);
+//      }
     }
     current = node(current).parent();
     if (current_node.index() == 0) {
@@ -537,9 +533,6 @@ void Tree<NodeType>::fit(const ArrayDouble &x_t, double y_t) {
     return;
   }
 
-  if(nodes[0].weight() < 1e-20 || nodes[0].weight_tree() < 1e-20) {
-    // rescale();
-  }
 
   ulong leaf = go_down(x_t, y_t, false);
   // ulong new_leaf = leaf;
@@ -595,9 +588,12 @@ double TreeRegressor::predict(const ArrayDouble &x_t, bool use_aggregation) {
     NodeRegressor &current_node = node(current);
     if (current_node.is_leaf()) {
       weight = current_node.weight() * current_node.labels_average();
+      // weight = std::exp(current_node.weight()) * current_node.labels_average();
     } else {
       weight = 0.5 * current_node.weight() * current_node.labels_average()
-          + 0.5 * node(other).weight_tree() * weight;
+          + 0.5 * node(other).weight_tree() *  weight;
+//      weight = 0.5 * std::exp(current_node.weight()) * current_node.labels_average()
+//          + 0.5 * std::exp(node(other).weight_tree() + weight);
     }
     parent = node(current).parent();
     if (node(parent).left() == current) {
@@ -611,6 +607,7 @@ double TreeRegressor::predict(const ArrayDouble &x_t, bool use_aggregation) {
     }
   }
   return weight / nodes[0].weight_tree();
+  // return weight / std::exp(nodes[0].weight_tree());
 }
 
 template<typename NodeType>
