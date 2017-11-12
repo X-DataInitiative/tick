@@ -27,6 +27,7 @@ class OnlineForestRegressor {
   inline ulong n_features() const;
   inline OnlineForestRegressor &set_n_features(ulong n_features);
   inline uint32_t n_trees() const;
+
   inline OnlineForestRegressor &set_n_trees(uint32_t n_trees);
   inline int32_t n_threads() const;
   inline OnlineForestRegressor &set_n_threads(int32_t n_threads);
