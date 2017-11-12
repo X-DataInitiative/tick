@@ -406,15 +406,6 @@ inline ulong Tree<NodeType>::n_nodes() const {
 }
 
 template<typename NodeType>
-void Tree<NodeType>::rescale() {
-  double scale = 1 / nodes[0].weight();
-  for (NodeType &node : nodes) {
-    node.set_weight(node.weight() * scale);
-    node.set_weight_tree(node.weight_tree() * scale);
-  }
-}
-
-template<typename NodeType>
 void Tree<NodeType>::fit(const ArrayDouble &x_t, double y_t) {
   // TODO: Test that the size does not change within successive calls to fit
   if (iteration == 0) {
@@ -518,8 +509,10 @@ OnlineForestRegressor::OnlineForestRegressor(uint32_t n_trees,
                                              int32_t n_threads,
                                              int seed,
                                              bool verbose)
-    : _n_trees(n_trees), _n_threads(n_threads), _criterion(criterion), _step(step), _verbose(verbose), trees() {
+    : // _n_trees(n_trees),
+      _n_threads(n_threads), _criterion(criterion), _step(step), _verbose(verbose), trees() {
   // No iteration so far
+  _n_trees = 10;
   _iteration = 0;
   create_trees();
   // Seed the random number generators
@@ -577,83 +570,84 @@ inline double OnlineForestRegressor::sample_threshold(double left, double right)
   return rand.uniform(left, right);
 }
 
-inline double OnlineForestRegressor::step() const {
-  return _step;
-}
+//inline double OnlineForestRegressor::step() const {
+//  return _step;
+//}
+//
+//void OnlineForestRegressor::print() {
+//  for (Tree<NodeRegressor> &tree: trees) {
+//    tree.print();
+//  }
+//}
+//
+//inline ulong OnlineForestRegressor::n_samples() const {
+//  if (_iteration > 0) {
+//    return _iteration;
+//  } else {
+//    TICK_ERROR("You must call ``fit`` before asking for ``n_samples``.")
+//  }
+//}
 
-void OnlineForestRegressor::print() {
-  for (Tree<NodeRegressor> &tree: trees) {
-    tree.print();
-  }
-}
+//inline ulong OnlineForestRegressor::n_features() const {
+//  if (_iteration > 0) {
+//    return _n_features;
+//  } else {
+//    TICK_ERROR("You must call ``fit`` before asking for ``n_features``.")
+//  }
+//}
 
-inline ulong OnlineForestRegressor::n_samples() const {
-  if (_iteration > 0) {
-    return _iteration;
-  } else {
-    TICK_ERROR("You must call ``fit`` before asking for ``n_samples``.")
-  }
-}
+//inline OnlineForestRegressor &OnlineForestRegressor::set_n_features(ulong n_features) {
+//  if (_iteration == 0) {
+//    _n_features = n_features;
+//  } else {
+//    TICK_ERROR("OnlineForest::set_n_features can be called only once !")
+//  }
+//  return *this;
+//}
 
-inline ulong OnlineForestRegressor::n_features() const {
-  if (_iteration > 0) {
-    return _n_features;
-  } else {
-    TICK_ERROR("You must call ``fit`` before asking for ``n_features``.")
-  }
-}
+//inline uint32_t OnlineForestRegressor::n_trees() const {
+//  return _n_trees;
+//}
 
-inline OnlineForestRegressor &OnlineForestRegressor::set_n_features(ulong n_features) {
-  if (_iteration == 0) {
-    _n_features = n_features;
-  } else {
-    TICK_ERROR("OnlineForest::set_n_features can be called only once !")
-  }
-  return *this;
-}
 
-inline uint32_t OnlineForestRegressor::n_trees() const {
-  return _n_trees;
-}
+//inline OnlineForestRegressor &OnlineForestRegressor::set_n_trees(uint32_t n_trees) {
+//  _n_trees = n_trees;
+//  return *this;
+//}
 
-inline OnlineForestRegressor &OnlineForestRegressor::set_n_trees(uint32_t n_trees) {
-  _n_trees = n_trees;
-  return *this;
-}
+//inline int32_t OnlineForestRegressor::n_threads() const {
+//  return _n_threads;
+//}
 
-inline int32_t OnlineForestRegressor::n_threads() const {
-  return _n_threads;
-}
+//OnlineForestRegressor &OnlineForestRegressor::set_n_threads(int32_t n_threads) {
+//  _n_threads = n_threads;
+//  return *this;
+//}
 
-inline OnlineForestRegressor &OnlineForestRegressor::set_n_threads(int32_t n_threads) {
-  _n_threads = n_threads;
-  return *this;
-}
+//inline Criterion OnlineForestRegressor::criterion() const {
+//  return _criterion;
+//}
 
-inline Criterion OnlineForestRegressor::criterion() const {
-  return _criterion;
-}
+//inline OnlineForestRegressor &OnlineForestRegressor::set_criterion(Criterion criterion) {
+//  _criterion = criterion;
+//  return *this;
+//}
+//
+//inline int OnlineForestRegressor::seed() const {
+//  return _seed;
+//}
 
-inline OnlineForestRegressor &OnlineForestRegressor::set_criterion(Criterion criterion) {
-  _criterion = criterion;
-  return *this;
-}
+//inline OnlineForestRegressor &OnlineForestRegressor::set_seed(int seed) {
+//  _seed = seed;
+//  rand.reseed(seed);
+//  return *this;
+//}
 
-inline int OnlineForestRegressor::seed() const {
-  return _seed;
-}
-
-inline OnlineForestRegressor &OnlineForestRegressor::set_seed(int seed) {
-  _seed = seed;
-  rand.reseed(seed);
-  return *this;
-}
-
-inline bool OnlineForestRegressor::verbose() const {
-  return _verbose;
-}
-
-inline OnlineForestRegressor &OnlineForestRegressor::set_verbose(bool verbose) {
-  _verbose = verbose;
-  return *this;
-}
+//inline bool OnlineForestRegressor::verbose() const {
+//  return _verbose;
+//}
+//
+//inline OnlineForestRegressor &OnlineForestRegressor::set_verbose(bool verbose) {
+//  _verbose = verbose;
+//  return *this;
+//}

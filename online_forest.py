@@ -5,7 +5,7 @@ from tick.inference import OnlineForestRegressor
 
 import matplotlib.pyplot as plt
 
-n_samples = 1000
+n_samples = 50
 n_features = 2
 seed = 123
 

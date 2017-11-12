@@ -23,18 +23,19 @@ class OnlineForestRegressor {
   inline double step() const;
   void print();
 
-  inline ulong n_samples() const;
-  inline ulong n_features() const;
-  inline OnlineForestRegressor &set_n_features(ulong n_features);
-  inline uint32_t n_trees() const;
+  ulong n_samples() const;
+  ulong n_features() const;
+  OnlineForestRegressor &set_n_features(ulong n_features);
 
-  inline OnlineForestRegressor &set_n_trees(uint32_t n_trees);
-  inline int32_t n_threads() const;
-  inline OnlineForestRegressor &set_n_threads(int32_t n_threads);
-  inline Criterion criterion() const;
-  inline OnlineForestRegressor &set_criterion(Criterion criterion);
-  inline int seed() const;
-  inline OnlineForestRegressor &set_seed(int seed);
-  inline bool verbose() const;
-  inline OnlineForestRegressor &set_verbose(bool verbose);
+  // uint32_t n_trees() const;
+  // OnlineForestRegressor &set_n_trees(uint32_t n_trees);
+
+  int32_t n_threads() const;
+  OnlineForestRegressor &set_n_threads(int32_t n_threads);
+  Criterion criterion() const;
+  OnlineForestRegressor &set_criterion(Criterion criterion);
+  int seed() const;
+  OnlineForestRegressor &set_seed(int seed);
+  // bool verbose() const;
+  // OnlineForestRegressor &set_verbose(bool verbose);
 };

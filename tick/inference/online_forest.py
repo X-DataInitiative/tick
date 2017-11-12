@@ -82,7 +82,8 @@ class OnlineForestRegressor(ABC, Base):
     _cpp_obj_name = "_forest"
 
     @actual_kwargs
-    def __init__(self, n_trees: int = 10, criterion: str = 'unif',
+    def __init__(self, n_trees: int = 10, step: float = 1.,
+                 criterion: str = 'unif',
                  max_depth: int = -1, min_samples_split: int = 50,
                  n_threads: int = 1, seed: int = -1, verbose: bool = True,
                  warm_start: bool = True, n_splits: int = 10):
@@ -91,6 +92,7 @@ class OnlineForestRegressor(ABC, Base):
             self._actual_kwargs = {}
         self._fitted = False
         self.n_trees = n_trees
+        self.step = step
         self.criterion = criterion
         self.max_depth = max_depth
         self.min_samples_split = min_samples_split
@@ -100,6 +102,7 @@ class OnlineForestRegressor(ABC, Base):
         self.warm_start = warm_start
         self.n_splits = n_splits
         self._forest = _OnlineForestRegressor(n_trees,
+                                              step,
                                               self._criterion,
                                               #max_depth,
                                               # min_samples_split,
