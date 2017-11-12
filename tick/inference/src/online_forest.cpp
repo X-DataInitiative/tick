@@ -3,9 +3,9 @@
 
 #include "online_forest.h"
 
-/*
+/*********************************************************************************
  * Node<NodeType> methods
- */
+ *********************************************************************************/
 
 template<typename NodeType>
 Node<NodeType>::Node(Tree<NodeType> &tree, ulong parent)
@@ -48,11 +48,59 @@ template<typename NodeType>
 Node<NodeType>::~Node() {}
 
 template<typename NodeType>
-void Node<NodeType>::update_down(const ArrayDouble &x_t, double y_t) {
+void Node<NodeType>::update_downwards(const ArrayDouble &x_t, double y_t) {
   _n_samples++;
   // TODO: Make compute loss virtual insteal
-  update_weight(x_t, y_t);
-  update_label_stats(y_t);
+  update_weight(y_t);
+  update_predict(y_t);
+}
+
+template<typename NodeType>
+void Node<NodeType>::update_weight(const double y_t) {
+  _weight *= exp(-step() * loss(y_t));
+}
+
+template<typename NodeType>
+inline Tree<NodeType> &Node<NodeType>::tree() const {
+  return _tree;
+}
+
+template<typename NodeType>
+inline NodeType &Node<NodeType>::node(ulong index) const {
+  return _tree.node(index);
+}
+
+template<typename NodeType>
+ulong Node<NodeType>::n_features() const {
+  return _tree.n_features();
+}
+
+template<typename NodeType>
+inline double Node<NodeType>::step() const {
+  return _tree.step();
+}
+
+template<typename NodeType>
+void Node<NodeType>::print() {
+  std::cout // << "Node(i: " << _index << ", p: " << _parent
+      // << ", f: " << _feature
+      // << ", th: " << _threshold
+      << ", l: " << _left
+      << ", r: " << _right
+      // << ", d: " << _depth
+      // << ", n: " << n_samples()
+      // << ", i: " << _is_leaf
+      // << ", avg: " << std::setprecision(2) << _labels_average
+      // << ", feat_min=[" << std::setprecision(2) << _features_min[0] << ", " << std::setprecision(2)
+      // << _features_min[1] << "]"
+      // << ", feat_max=[" << std::setprecision(2) << _features_max[0] << ", " << std::setprecision(2)
+      // << _features_max[1] << "]"
+      << ")\n";
+}
+
+template<typename NodeType>
+inline ulong Node<NodeType>::parent() const {
+  return _parent;
 }
 
 template<typename NodeType>
@@ -86,11 +134,6 @@ template<typename NodeType>
 inline Node<NodeType> &Node<NodeType>::set_is_leaf(bool is_leaf) {
   _is_leaf = is_leaf;
   return *this;
-}
-
-template<typename NodeType>
-inline ulong Node<NodeType>::parent() const {
-  return _parent;
 }
 
 template<typename NodeType>
@@ -164,27 +207,38 @@ inline Node<NodeType> &Node<NodeType>::set_x_t(const ArrayDouble &x_t) {
   return *this;
 }
 
-template<typename NodeType>
-inline double Node<NodeType>::step() const {
-  return _tree.step();
+/*********************************************************************************
+ * NodeRegressor methods
+ *********************************************************************************/
+
+NodeRegressor::NodeRegressor(Tree<NodeRegressor> &tree, ulong parent)
+    : Node(tree, parent) {
+  _predict = 0;
 }
 
-template<typename NodeType>
-void Node<NodeType>::print() {
-  std::cout // << "Node(i: " << _index << ", p: " << _parent
-      // << ", f: " << _feature
-      // << ", th: " << _threshold
-      << ", l: " << _left
-      << ", r: " << _right
-      // << ", d: " << _depth
-      // << ", n: " << n_samples()
-      // << ", i: " << _is_leaf
-      // << ", avg: " << std::setprecision(2) << _labels_average
-      // << ", feat_min=[" << std::setprecision(2) << _features_min[0] << ", " << std::setprecision(2)
-      // << _features_min[1] << "]"
-      // << ", feat_max=[" << std::setprecision(2) << _features_max[0] << ", " << std::setprecision(2)
-      // << _features_max[1] << "]"
-      << ")\n";
+NodeRegressor::NodeRegressor(const NodeRegressor &node)
+    : Node(node), _predict(node._predict), _y_t(node._y_t) {}
+
+NodeRegressor::NodeRegressor(const NodeRegressor &&node)
+    : Node(node) {
+  _predict = node._predict;
+  _y_t = node._y_t;
+}
+
+NodeRegressor::~NodeRegressor() {}
+
+inline double NodeRegressor::predict() const {
+  return _predict;
+}
+
+void NodeRegressor::update_predict(double y_t) {
+  // When a node is updated, it necessarily contains already a sample
+  _predict = ((_n_samples - 1) * _predict + y_t) / _n_samples;
+}
+
+double NodeRegressor::loss(const double y_t) {
+  double diff = _predict - y_t;
+  return diff * diff / 2;
 }
 
 void NodeRegressor::print() {
@@ -211,101 +265,33 @@ void NodeRegressor::print() {
   std::cout << ")\n";
 }
 
-/*
- * NodeRegressor methods
- */
-
-NodeRegressor::NodeRegressor(Tree<NodeRegressor> &tree, ulong parent)
-    : Node(tree, parent) {
-  _predict = 0;
+inline double NodeRegressor::y_t() const {
+  return _y_t;
 }
 
-NodeRegressor::NodeRegressor(const NodeRegressor &node)
-    : Node(node), _predict(node._predict), _y_t(node._y_t) {}
-
-NodeRegressor::NodeRegressor(const NodeRegressor &&node)
-    : Node(node) {
-  _predict = node._predict;
-  _y_t = node._y_t;
-}
-
-NodeRegressor::~NodeRegressor() {}
-
-inline double NodeRegressor::predict() const {
-  return _predict;
-}
-
-void NodeRegressor::update_label_stats(double y_t) {
-  // When a node is updated, it necessarily contains already a sample
-  _predict = ((_n_samples - 1) * _predict + y_t) / _n_samples;
-}
-
-template<typename NodeType>
-void Node<NodeType>::update_weight(const double y_t) {
-  _weight *= exp(-step() * loss(y_t));
-}
-
-double NodeRegressor::loss(const double y_t) {
-  double diff = _predict - y_t;
-  return diff * diff / 2;
-}
-
-NodeRegressor &NodeRegressor::set_sample(const ArrayDouble &x_t, double y_t) {
-  _sample = std::pair<ArrayDouble, double>(x_t, y_t);
-  // TODO: Don't do this line !!!
-  // _labels_average = y_t;
+inline NodeRegressor &NodeRegressor::set_y_t(const double y_t) {
+  _y_t = y_t;
   return *this;
 }
 
-NodeRegressor &NodeRegressor::set_sample(const std::pair<ArrayDouble, double> &sample) {
-  return set_sample(sample.first, sample.second);
-}
-
-/*
+/*********************************************************************************
  * Tree<NodeType> methods
- */
-
-template<typename NodeType>
-std::pair<ulong, double> Tree<NodeType>::sample_feature_and_threshold(ulong index) {
-  if (criterion() == Criterion::unif) {
-    // Select the splitting feature uniformly at random
-    ulong feature = forest.sample_feature();
-    // Choose at random the feature used to cut uniformly in the
-    // range of the features
-    double left_boundary = node(index).features_min()[feature];
-    double right_boundary = node(index).features_max()[feature];
-    double threshold = forest.sample_threshold(left_boundary, right_boundary);
-    return std::pair<ulong, double>(feature, threshold);
-  } else {
-    TICK_ERROR("Criterion::mse not implemented.");
-  }
-};
+ *********************************************************************************/
 
 template<typename NodeType>
 Tree<NodeType>::Tree(const Tree<NodeType> &tree)
-    : nodes(tree.nodes), forest(tree.forest), already_fitted(tree.already_fitted) {
+    : nodes(tree.nodes), forest(tree.forest) {
   // std::cout << "Tree::Tree(const &Tree tree)" << std::endl;
 }
 
 template<typename NodeType>
 Tree<NodeType>::Tree(const Tree<NodeType> &&tree) : nodes(tree.nodes), forest(tree.forest) {
-  already_fitted = tree.already_fitted;
 }
 
 template<typename NodeType>
 ulong Node<NodeType>::n_features() const {
   return _tree.n_features();
 }
-
-//template <typename NodeType>
-//double Node<NodeType>::get_label(ulong sample_index) const {
-//  return _tree.get_label(sample_index);
-//}
-//
-//template <typename NodeType>
-//ArrayDouble Node<NodeType>::get_features(ulong sample_index) const {
-//  return _tree.get_features(sample_index);
-//}
 
 template<typename NodeType>
 Tree<NodeType>::Tree(OnlineForestRegressor &forest) : forest(forest) {
@@ -363,7 +349,7 @@ ulong Tree<NodeType>::split_leaf(ulong index, const ArrayDouble &x_t, double y_t
 }
 
 template<typename NodeType>
-ulong Tree<NodeType>::go_down(const ArrayDouble &x_t, double y_t, bool predict) {
+ulong Tree<NodeType>::go_downwards(const ArrayDouble &x_t, double y_t, bool predict) {
   // Find the leaf that contains the sample
   // Start at the root. Index of the root is always 0
   // If predict == true, this call to find_leaf is for
@@ -374,7 +360,7 @@ ulong Tree<NodeType>::go_down(const ArrayDouble &x_t, double y_t, bool predict) 
     // Get the current node
     Node<NodeType> &current_node = node(index_current_node);
     if (!predict) {
-      current_node.update_down(x_t, y_t);
+      current_node.update_downwards(x_t, y_t);
     }
     // Is the node a leaf ?
     is_leaf = current_node.is_leaf();
@@ -390,10 +376,10 @@ ulong Tree<NodeType>::go_down(const ArrayDouble &x_t, double y_t, bool predict) 
 }
 
 template<typename NodeType>
-void Tree<NodeType>::go_up(ulong leaf_index) {
-  // TODO: IL FAUT BIEN UPDATED AUSSI LA RACINE ???
+void Tree<NodeType>::go_upwards(ulong leaf_index) {
   ulong current = leaf_index;
   while (true) {
+    // TODO: use a node::update_upward
     Node<NodeType> &current_node = node(current);
     if (current_node.is_leaf()) {
       current_node.set_weight_tree(current_node.weight());
@@ -411,11 +397,17 @@ void Tree<NodeType>::go_up(ulong leaf_index) {
 //        toto = b + log(1 + exp(a - b)) - log(2);
 //      }
     }
+    // TODO: we must update also the root node !!!
     current = node(current).parent();
-    if (current_node.index() == 0) {
+    if (current == 0) {
       break;
     }
   }
+}
+
+template<typename NodeType>
+inline ulong Tree<NodeType>::n_nodes() const {
+  return _n_nodes;
 }
 
 template<typename NodeType>
@@ -436,9 +428,7 @@ void Tree<NodeType>::fit(const ArrayDouble &x_t, double y_t) {
     return;
   }
 
-  ulong leaf = go_down(x_t, y_t, false);
-  // ulong new_leaf = leaf;
-
+  ulong leaf = go_downwards(x_t, y_t, false);
   ulong new_leaf = split_leaf(leaf, x_t, y_t);
 
 //  for(ulong j=0; j < n_features(); ++j) {
@@ -448,24 +438,13 @@ void Tree<NodeType>::fit(const ArrayDouble &x_t, double y_t) {
 //      break;
 //    }
 //  }
-  // TODO: question for Jaouad, if we don't split the node, do we need to go backwards ?
-
-  go_up(new_leaf);
-
-  //  std::cout << "iteration: " << iteration << ", x_t: [";
-  //  std::cout << std::setprecision(2) << x_t[0] << ", ";
-  //  std::cout << std::setprecision(2) << x_t[1] << "]";
-  //  std::cout << std::setprecision(2) << ", y_t: " << y_t << std::endl;
-  //  std::cout << "leaf_index= " << leaf_index << std::endl;
-  //  if (node(leaf_index).is_leaf()) {
-  // std::cout << "n_features()= " << n_features() << std::endl;
-  // std::cout << "max= " << max << std::endl;
-  // std::cout << "node(leaf_index).set_sample(x_t);" << std::endl;
-  // node(leaf_index).set_sample(x_t);
-  // }
-  // print();
+  go_upwards(new_leaf);
   iteration++;
 }
+
+/*********************************************************************************
+* TreeRegressor methods
+*********************************************************************************/
 
 TreeRegressor::TreeRegressor(OnlineForestRegressor &forest)
     : Tree<NodeRegressor>(forest) {}
@@ -477,9 +456,9 @@ TreeRegressor::TreeRegressor(const TreeRegressor &&tree)
     : Tree<NodeRegressor>(forest) {}
 
 double TreeRegressor::predict(const ArrayDouble &x_t, bool use_aggregation) {
-  ulong leaf = go_down(x_t, 0., true);
+  ulong leaf = go_downwards(x_t, 0., true);
   if (!use_aggregation) {
-    return node(leaf).sample().second;
+    return node(leaf).y_t();
   }
   ulong current = leaf;
   // The child of the current node that does not contain the data
@@ -504,7 +483,8 @@ double TreeRegressor::predict(const ArrayDouble &x_t, bool use_aggregation) {
       other = node(parent).left();
     }
     current = parent;
-    if (current_node.index() == 0) {
+    // THE ROOT MUST BE INCLUDED !!!
+    if (current == 0) {
       break;
     }
   }
