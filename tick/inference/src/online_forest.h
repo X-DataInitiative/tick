@@ -246,7 +246,7 @@ class OnlineForestRegressor {
   std::vector<TreeRegressor> trees;
   // Random number generator for feature and threshold sampling
   Rand rand;
-
+  // Create trees
   void create_trees();
 
  public:
@@ -265,7 +265,6 @@ class OnlineForestRegressor {
   inline ulong n_samples() const;
   inline ulong n_features() const;
   inline OnlineForestRegressor &set_n_features(ulong n_features);
-
   inline uint32_t n_trees() const;
   inline OnlineForestRegressor &set_n_trees(uint32_t n_trees);
   inline int32_t n_threads() const;
