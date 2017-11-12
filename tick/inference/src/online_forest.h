@@ -113,8 +113,10 @@ class Node {
   inline Node<NodeType> &set_weight(double weight);
   inline double weight_tree() const;
   inline Node<NodeType> &set_weight_tree(double weight);
-  inline ArrayDouble &x_t() const;
+  inline const ArrayDouble &x_t() const;
   inline Node<NodeType> &set_x_t(const ArrayDouble &x_t);
+  inline double y_t() const;
+  inline Node<NodeType>& set_y_t(const double y_t);
 };
 
 /*********************************************************************************
@@ -141,8 +143,7 @@ class NodeRegressor : public Node<NodeRegressor> {
   virtual double loss(const double y_t);
   virtual void print();
 
-  inline double y_t() const;
-  inline NodeRegressor &set_y_t(const double y_t);
+
 };
 
 class OnlineForestRegressor;
