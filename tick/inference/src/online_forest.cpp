@@ -192,11 +192,6 @@ inline Node<NodeType> &Node<NodeType>::set_weight_tree(double weight_tree) {
 }
 
 template<typename NodeType>
-inline Tree<NodeType> &Node<NodeType>::tree() const {
-  return _tree;
-}
-
-template<typename NodeType>
 inline ArrayDouble &Node<NodeType>::x_t() const {
   return _x_t;
 }
@@ -288,10 +283,10 @@ template<typename NodeType>
 Tree<NodeType>::Tree(const Tree<NodeType> &&tree) : nodes(tree.nodes), forest(tree.forest) {
 }
 
-template<typename NodeType>
-ulong Node<NodeType>::n_features() const {
-  return _tree.n_features();
-}
+//template<typename NodeType>
+//ulong Node<NodeType>::n_features() const {
+//  return _tree.n_features();
+//}
 
 template<typename NodeType>
 Tree<NodeType>::Tree(OnlineForestRegressor &forest) : forest(forest) {

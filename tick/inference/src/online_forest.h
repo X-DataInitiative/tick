@@ -83,7 +83,7 @@ class Node {
   // Update to apply to a node when going forward in the tree (towards leaves)
   virtual void update_downwards(const ArrayDouble &x_t, double y_t);
   // Update of the aggregation weights
-  void update_weight(const double y_t) final;
+  virtual void update_weight(const double y_t) final;
   // Update the prediction of the label
   virtual void update_predict(double y_t) = 0;
   // Loss function used for aggregation
@@ -125,6 +125,8 @@ class NodeRegressor : public Node<NodeRegressor> {
  private:
   // Average of the labels in the node (regression only for now)
   double _predict = 0;
+  // Label of the stored sample point
+  double _y_t;
 
  public:
   NodeRegressor(Tree<NodeRegressor> &tree, ulong parent);
