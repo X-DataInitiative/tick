@@ -42,11 +42,11 @@ class Tree;
  * Node<NodeType>
  *********************************************************************************/
 
-template<typename NodeType>
+// template<typename NodeType>
 class Node {
  protected:
   // Tree containing the node
-  Tree<NodeType> &_tree;
+  Tree &_tree;
   // Index of the left child
   ulong _left;
   // Index of the right child
@@ -72,11 +72,11 @@ class Node {
   bool _is_leaf;
 
  public:
-  Node(Tree<NodeType> &tree, ulong parent);
-  Node(const Node<NodeType> &node);
-  Node(const Node<NodeType> &&node);
-  Node<NodeType> &operator=(const Node<NodeType> &) = delete;
-  Node<NodeType> &operator=(const Node<NodeType> &&) = delete;
+  Node(Tree &tree, ulong parent);
+  Node(const Node&node);
+  Node(const Node &&node);
+  Node &operator=(const Node &) = delete;
+  Node &operator=(const Node &&) = delete;
   virtual ~Node();
 
   // Update to apply to a node when going forward in the tree (towards leaves)
@@ -90,8 +90,8 @@ class Node {
   // Loss function used for aggregation
   virtual double loss(const double y_t) = 0;
 
-  inline Tree<NodeType> &tree() const;
-  inline NodeType &node(ulong index) const;
+  inline Tree &tree() const;
+  inline Node &node(ulong index) const;
   ulong n_features() const;
   inline double step() const;
 
@@ -99,34 +99,34 @@ class Node {
 
   inline ulong parent() const;
   inline ulong left() const;
-  inline Node<NodeType> &set_left(ulong left);
+  inline Node &set_left(ulong left);
   inline ulong right() const;
-  inline Node<NodeType> &set_right(ulong right);
+  inline Node &set_right(ulong right);
   inline bool is_leaf() const;
-  inline Node<NodeType> &set_is_leaf(bool is_leaf);
+  inline Node &set_is_leaf(bool is_leaf);
   inline ulong feature() const;
-  inline Node<NodeType> &set_feature(ulong feature);
+  inline Node &set_feature(ulong feature);
   inline double threshold() const;
-  inline Node<NodeType> &set_threshold(double threshold);
+  inline Node &set_threshold(double threshold);
   inline ulong n_samples() const;
-  inline Node<NodeType> &set_n_samples(ulong n_samples);
+  inline Node &set_n_samples(ulong n_samples);
   inline double weight() const;
-  inline Node<NodeType> &set_weight(double weight);
+  inline Node &set_weight(double weight);
   inline double weight_tree() const;
-  inline Node<NodeType> &set_weight_tree(double weight);
+  inline Node &set_weight_tree(double weight);
   inline const ArrayDouble &x_t() const;
   inline double x_t(const ulong j) const;
-  inline Node<NodeType> &set_x_t(const ArrayDouble &x_t);
+  inline Node &set_x_t(const ArrayDouble &x_t);
   inline double y_t() const;
-  inline Node<NodeType>& set_y_t(const double y_t);
+  inline Node& set_y_t(const double y_t);
 };
 
 /*********************************************************************************
  * NodeRegressor
  *********************************************************************************/
 
-class NodeRegressor : public Node<NodeRegressor> {
-  using node_type = NodeRegressor;
+class NodeRegressor : public Node {
+  // using node_type = NodeRegressor;
  private:
   // Average of the labels in the node (regression only for now)
   double _predict = 0;
@@ -134,7 +134,7 @@ class NodeRegressor : public Node<NodeRegressor> {
   double _y_t;
 
  public:
-  NodeRegressor(Tree<NodeRegressor> &tree, ulong parent);
+  NodeRegressor(Tree &tree, ulong parent);
   NodeRegressor(const NodeRegressor &node);
   NodeRegressor(const NodeRegressor &&node);
   NodeRegressor &operator=(const NodeRegressor &) = delete;
@@ -151,7 +151,7 @@ class NodeRegressor : public Node<NodeRegressor> {
  * NodeClassifier
  *********************************************************************************/
 
-class NodeClassifier : public Node<NodeClassifier> {
+class NodeClassifier : public Node {
  private:
   // Score of each class
   ArrayDouble _predict;
@@ -159,7 +159,7 @@ class NodeClassifier : public Node<NodeClassifier> {
   double _y_t;
 
  public:
-  NodeClassifier(Tree<NodeClassifier> &tree, ulong parent);
+  NodeClassifier(Tree &tree, ulong parent);
   NodeClassifier(const NodeClassifier &node);
   NodeClassifier(const NodeClassifier &&node);
   NodeClassifier &operator=(const NodeClassifier &) = delete;
@@ -181,12 +181,11 @@ class OnlineForestClassifier;
  * Tree<NodeType>
  *********************************************************************************/
 
-template<typename ForestType>
+template<typename NodeType>
 class Tree {
-  using NodeType = typename ForestType::NodeType;
  protected:
   // The forest of the tree
-  ForestType &forest;
+  OnlineForest &forest;
   // Number of nodes in the tree
   ulong _n_nodes = 0;
   // Iteration counter
@@ -202,11 +201,11 @@ class Tree {
   void go_upwards(ulong leaf_index);
 
  public:
-  Tree(ForestType &forest);
-  Tree(const Tree<ForestType> &tree);
-  Tree(const Tree<ForestType> &&tree);
-  Tree &operator=(const Tree<ForestType> &) = delete;
-  Tree &operator=(const Tree<ForestType> &&) = delete;
+  Tree(OnlineForest &forest);
+  Tree(const Tree<NodeType> &tree);
+  Tree(const Tree<NodeType> &&tree);
+  Tree &operator=(const Tree<NodeType> &) = delete;
+  Tree &operator=(const Tree<NodeType> &&) = delete;
   ~Tree() {}
 
   void fit(const ArrayDouble &x_t, double y_t);
@@ -218,14 +217,14 @@ class Tree {
   inline double step() const;
 
   void print() {
-    for (ForestType &node : nodes) {
+    for (NodeType &node : nodes) {
       node.print();
     }
   }
 
   inline Criterion criterion() const;
 
-  ForestType &node(ulong index) {
+  NodeType &node(ulong index) {
     return nodes[index];
   }
 };
@@ -234,7 +233,7 @@ class Tree {
  * TreeRegressor
  *********************************************************************************/
 
-class TreeRegressor : public Tree<OnlineForestRegressor> {
+class TreeRegressor : public Tree<NodeRegressor> {
  public:
   TreeRegressor(OnlineForestRegressor &forest);
   TreeRegressor(const TreeRegressor &tree);
@@ -249,7 +248,7 @@ class TreeRegressor : public Tree<OnlineForestRegressor> {
  * TreeClassifier
  *********************************************************************************/
 
-class TreeClassifier : public Tree<OnlineForestClassifier> {
+class TreeClassifier : public Tree<NodeClassifier> {
  public:
   TreeClassifier(OnlineForestClassifier &forest);
   TreeClassifier(const TreeClassifier &tree);
