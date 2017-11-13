@@ -148,7 +148,7 @@ class OnlineForestRegressor(ABC, Base):
             raise ValueError("You must call ``fit`` before")
         else:
             X = safe_array(X)
-        self._forest.predict(X, y_pred, use_aggregation)
+        self._forest.predict(X, y_pred, True)
         return y_pred
 
     def score(self, X, y):

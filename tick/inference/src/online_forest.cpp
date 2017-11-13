@@ -372,7 +372,9 @@ ulong Tree<NodeType>::go_downwards(const ArrayDouble &x_t, double y_t, bool pred
 
 template<typename NodeType>
 void Tree<NodeType>::go_upwards(ulong leaf_index) {
+
   ulong current = leaf_index;
+
   while (true) {
     // TODO: use a node::update_upward
     Node<NodeType> &current_node = node(current);
@@ -392,11 +394,11 @@ void Tree<NodeType>::go_upwards(ulong leaf_index) {
 //        toto = b + log(1 + exp(a - b)) - log(2);
 //      }
     }
-    // TODO: we must update also the root node !!!
-    current = node(current).parent();
     if (current == 0) {
       break;
     }
+    // We must update the root node
+    current = node(current).parent();
   }
 }
 
@@ -468,11 +470,11 @@ double TreeRegressor::predict(const ArrayDouble &x_t, bool use_aggregation) {
     } else {
       other = node(parent).left();
     }
-    current = parent;
-    // THE ROOT MUST BE INCLUDED !!!
+    // Root must be updated as well
     if (current == 0) {
       break;
     }
+    current = parent;
   }
   return weight / nodes[0].weight_tree();
   // return weight / std::exp(nodes[0].weight_tree());
