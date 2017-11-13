@@ -143,14 +143,14 @@ import os
 
 # plt.savefig(os.path.join(path, 'online1.pdf'))
 
-n_trees = 5
+n_trees = 50
 
 
 from sklearn.datasets import make_moons, make_circles
 from sklearn.preprocessing import StandardScaler
 
-X_moons, _ = make_moons(n_samples=500, noise=0.3, random_state=0)
-X_moons = StandardScaler().fit_transform(X_moons)
+X_moons, _ = make_moons(n_samples=n_samples, noise=0.3, random_state=0)
+# X_moons = StandardScaler().fit_transform(X_moons)
 y_moons = X_moons.dot(w0) - 1
 
 

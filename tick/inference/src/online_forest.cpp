@@ -14,8 +14,10 @@ Node<NodeType>::Node(Tree<NodeType> &tree, ulong parent)
   _is_leaf = true;
   _left = 0;
   _right = 0;
-  _weight = 1;
-  _weight_tree = 1;
+  // _weight = 1;
+  // _weight_tree = 1;
+  _weight = 0;
+  _weight_tree = 0;
   this->_parent = parent;
 }
 
@@ -31,7 +33,7 @@ Node<NodeType>::Node(const Node<NodeType> &node)
       _is_leaf(node._is_leaf) {}
 
 template<typename NodeType>
-Node<NodeType>::Node(const Node<NodeType> &&node) : _tree(_tree) {
+Node<NodeType>::Node(const Node<NodeType> &&node) : _tree(node._tree) {
   _left = node._left;
   _right = node._right;
   _parent = node._parent;
@@ -57,16 +59,24 @@ void Node<NodeType>::update_downwards(const ArrayDouble &x_t, double y_t) {
 
 template<typename NodeType>
 void Node<NodeType>::update_upwards() {
-  if(_is_leaf) {
+  if (_is_leaf) {
     _weight_tree = _weight;
   } else {
-    _weight_tree = (_weight + node(_left).weight_tree() * node(_right).weight_tree()) / 2;
+    double a = _weight;
+    double b = node(_left).weight_tree() + node(_right).weight_tree();
+    if (a > b) {
+      _weight_tree = a + log((1 + exp(b - a)) / 2);
+    } else {
+      _weight_tree = b + log((1 + exp(a - b)) / 2);
+    }
+    // _weight_tree = (_weight + node(_left).weight_tree() * node(_right).weight_tree()) / 2;
   }
 }
 
 template<typename NodeType>
 void Node<NodeType>::update_weight(const double y_t) {
-  _weight *= exp(-step() * loss(y_t));
+  // _weight *= exp(-step() * loss(y_t));
+  _weight -= step() * loss(y_t);
 }
 
 template<typename NodeType>
@@ -286,31 +296,95 @@ void NodeRegressor::print() {
 }
 
 /*********************************************************************************
+ * NodeClassifier methods
+ *********************************************************************************/
+
+NodeClassifier::NodeClassifier(Tree<NodeClassifier> &tree, ulong parent)
+    : Node(tree, parent) {
+  _predict = Arraydouble(n_classes());
+  _predict.fill(static_cast<double>(1) / n_classes());
+
+}
+
+NodeClassifier::NodeClassifier(const NodeClassifier &node)
+    : Node(node), _predict(node._predict), _y_t(node._y_t) {}
+
+NodeClassifier::NodeClassifier(const NodeClassifier &&node)
+    : Node(node) {
+  _predict = node._predict;
+  _y_t = node._y_t;
+}
+
+NodeClassifier::~NodeClassifier() {}
+
+inline const ArrayDouble &NodeClassifier::predict() const {
+  return _predict;
+}
+
+void NodeClassifier::update_predict(double y_t) {
+  // When a node is updated, it necessarily contains already a sample
+  _predict = ((_n_samples - 1) * _predict + y_t) / _n_samples;
+}
+
+double NodeClassifier::loss(const double y_t) {
+  double diff = _predict - y_t;
+  return diff * diff / 2;
+}
+
+void NodeClassifier::print() {
+  std::cout // << "Node(idx: " << _index << ", parent: " << _parent
+      // << ", f: " << _feature
+      // << ", th: " << _threshold
+      << ", left: " << _left
+      << ", right: " << _right
+      // << ", d: " << _depth
+      // << ", n: " << n_samples()
+      // << ", i: " << _is_leaf
+      << ", thresh: " << _threshold
+      << ", y_hat: " << _predict
+      << ", sample: ";
+  // << ", has_sample:" << _has_sample;
+  if (_is_leaf) {
+    std::cout << "[" << std::setprecision(2) << _x_t[0] << ", " << std::setprecision(2) << _x_t[1]
+              << "]";
+  } else {
+    std::cout << "null";
+  }
+  std::cout << ", weight: " << _weight;
+  std::cout << ", weight_tree: " << _weight_tree;
+  std::cout << ")\n";
+}
+
+inline uint8_t NodeClassifier::n_classes() const {
+  return _tree.n_classes();
+}
+
+/*********************************************************************************
  * Tree<NodeType> methods
  *********************************************************************************/
 
-template<typename NodeType>
+template<typename ForestType>
 Tree<NodeType>::Tree(const Tree<NodeType> &tree)
     : nodes(tree.nodes), forest(tree.forest) {
 }
 
-template<typename NodeType>
+template<typename ForestType>
 Tree<NodeType>::Tree(const Tree<NodeType> &&tree) : nodes(tree.nodes), forest(tree.forest) {
 }
 
-template<typename NodeType>
-Tree<NodeType>::Tree(OnlineForestRegressor &forest) : forest(forest) {
+template<typename ForestType>
+Tree<NodeType>::Tree(ForestType &forest) : forest(forest) {
   // TODO: pre-allocate the vector to make things faster ?
   add_node(0, 0);
 }
 
-template<typename NodeType>
-ulong Tree<NodeType>::split_leaf(ulong index, const ArrayDouble &x_t, double y_t) {
+template<typename ForestType>
+ulong Tree<ForestType>::split_leaf(ulong index, const ArrayDouble &x_t, double y_t) {
   // Add the leaf nodes in the tree
   ulong left = add_node(index, iteration);
   ulong right = add_node(index, iteration);
   // Give information to the splitted node about its childs
-  NodeType & current_node = node(index);
+  NodeType &current_node = node(index);
   node(index).set_left(left).set_right(right).set_is_leaf(false);
 
   // TODO: better feature sampling
@@ -335,8 +409,8 @@ ulong Tree<NodeType>::split_leaf(ulong index, const ArrayDouble &x_t, double y_t
   }
   // TODO: code a move_sample
   current_node.set_feature(feature).set_threshold(threshold);
-  NodeType & data_leaf_node = node(data_leaf);
-  NodeType & other_leaf_node = node(other_leaf);
+  NodeType &data_leaf_node = node(data_leaf);
+  NodeType &other_leaf_node = node(other_leaf);
   // We pass the sample to the new leaves, and initialize the _label_average with the value
   data_leaf_node.set_x_t(x_t).set_y_t(y_t);
   other_leaf_node.set_x_t(current_node.x_t()).set_y_t(current_node.y_t());
@@ -350,13 +424,15 @@ ulong Tree<NodeType>::split_leaf(ulong index, const ArrayDouble &x_t, double y_t
   return data_leaf;
 }
 
-template<typename NodeType>
-ulong Tree<NodeType>::go_downwards(const ArrayDouble &x_t, double y_t, bool predict) {
+template<typename ForestType>
+ulong Tree<ForestType>::go_downwards(const ArrayDouble &x_t, double y_t,
+                                   bool predict, ulong &depth) {
   // Find the leaf that contains the sample
   // Start at the root. Index of the root is always 0
   // If predict == true, this call to find_leaf is for
   // prediction only, so that no leaf update and splits can be done
   ulong index_current_node = 0;
+  depth = 0;
   bool is_leaf = false;
   while (!is_leaf) {
     // Get the current node
@@ -372,13 +448,14 @@ ulong Tree<NodeType>::go_downwards(const ArrayDouble &x_t, double y_t, bool pred
       } else {
         index_current_node = current_node.right();
       }
+      depth++;
     }
   }
   return index_current_node;
 }
 
-template<typename NodeType>
-void Tree<NodeType>::go_upwards(ulong leaf_index) {
+template<typename ForestType>
+void Tree<ForestType>::go_upwards(ulong leaf_index) {
   ulong current = leaf_index;
   while (true) {
     node(current).update_upwards();
@@ -390,20 +467,21 @@ void Tree<NodeType>::go_upwards(ulong leaf_index) {
   }
 }
 
-template<typename NodeType>
-inline ulong Tree<NodeType>::n_nodes() const {
+template<typename ForestType>
+inline ulong Tree<ForestType>::n_nodes() const {
   return _n_nodes;
 }
 
-template<typename NodeType>
-void Tree<NodeType>::fit(const ArrayDouble &x_t, double y_t) {
+template<typename ForestType>
+void Tree<ForestType>::fit(const ArrayDouble &x_t, double y_t) {
   // TODO: Test that the size does not change within successive calls to fit
   if (iteration == 0) {
     nodes[0].set_x_t(x_t).set_y_t(y_t);
     iteration++;
     return;
   }
-  ulong leaf = go_downwards(x_t, y_t, false);
+  ulong depth;
+  ulong leaf = go_downwards(x_t, y_t, false, depth);
   ulong new_leaf = split_leaf(leaf, x_t, y_t);
 
 //  for(ulong j=0; j < n_features(); ++j) {
@@ -415,6 +493,27 @@ void Tree<NodeType>::fit(const ArrayDouble &x_t, double y_t) {
 //  }
   go_upwards(new_leaf);
   iteration++;
+}
+
+template<typename ForestType>
+ulong Tree<ForestType>::add_node(ulong parent, ulong creation_time) {
+  nodes.emplace_back(*this, parent);
+  return _n_nodes++;
+}
+
+template<typename ForestType>
+inline ulong Tree<ForestType>::n_features() const {
+  return forest.n_features();
+}
+
+template<typename ForestType>
+inline double Tree<ForestType>::step() const {
+  return forest.step();
+}
+
+template<typename ForestType>
+inline Criterion Tree<ForestType>::criterion() const {
+  return forest.criterion();
 }
 
 /*********************************************************************************
@@ -431,7 +530,10 @@ TreeRegressor::TreeRegressor(const TreeRegressor &&tree)
     : Tree<NodeRegressor>(forest) {}
 
 double TreeRegressor::predict(const ArrayDouble &x_t, bool use_aggregation) {
-  ulong leaf = go_downwards(x_t, 0., true);
+  ulong depth;
+  ulong leaf = go_downwards(x_t, 0., true, depth);
+  //
+  double denominator = -nodes[0].weight_tree();
   if (!use_aggregation) {
     return node(leaf).y_t();
   }
@@ -443,13 +545,13 @@ double TreeRegressor::predict(const ArrayDouble &x_t, bool use_aggregation) {
   while (true) {
     NodeRegressor &current_node = node(current);
     if (current_node.is_leaf()) {
-      weight = current_node.weight() * current_node.predict();
-      // weight = std::exp(current_node.weight()) * current_node.labels_average();
+      // weight = current_node.weight() * current_node.predict();
+      weight = std::exp(current_node.weight() + denominator / pow(2, depth)) * current_node.predict();
     } else {
-      weight = 0.5 * current_node.weight() * current_node.predict()
-          + 0.5 * node(other).weight_tree() * weight;
-//      weight = 0.5 * std::exp(current_node.weight()) * current_node.labels_average()
-//          + 0.5 * std::exp(node(other).weight_tree() + weight);
+//      weight = 0.5 * current_node.weight() * current_node.predict()
+//          + 0.5 * node(other).weight_tree() * weight;
+      weight = 0.5 * std::exp(current_node.weight() + denominator / pow(2, depth)) * current_node.predict()
+          + 0.5 * std::exp(node(other).weight_tree() + denominator / pow(2, depth + 1)) * weight;
     }
     parent = node(current).parent();
     if (node(parent).left() == current) {
@@ -461,31 +563,94 @@ double TreeRegressor::predict(const ArrayDouble &x_t, bool use_aggregation) {
     if (current == 0) {
       break;
     }
+    depth--;
     current = parent;
   }
-  return weight / nodes[0].weight_tree();
+  // return weight / nodes[0].weight_tree();
   // return weight / std::exp(nodes[0].weight_tree());
+  return weight;
 }
 
-template<typename NodeType>
-ulong Tree<NodeType>::add_node(ulong parent, ulong creation_time) {
-  nodes.emplace_back(*this, parent);
-  return _n_nodes++;
+/*********************************************************************************
+* TreeClassifier methods
+*********************************************************************************/
+TreeClassifier::TreeClassifier(OnlineForestClassifier &forest)
+    : Tree<NodeClassifier>(forest) {}
+
+TreeClassifier::TreeClassifier(const TreeClassifier &tree)
+    : Tree<NodeClassifier>(forest) {}
+
+TreeClassifier::TreeClassifier(const TreeClassifier &&tree)
+    : Tree<NodeClassifier>(forest) {}
+
+double TreeClassifier::predict(const ArrayDouble &x_t, bool use_aggregation) {
+  return 0.;
 }
 
-template<typename NodeType>
-inline ulong Tree<NodeType>::n_features() const {
-  return forest.n_features();
+inline uint8_t TreeClassifier::n_classes() const {
+  return _forest.n_classes();
 }
 
-template<typename NodeType>
-inline double Tree<NodeType>::step() const {
-  return forest.step();
+/*********************************************************************************
+ * OnlineForest methods
+ *********************************************************************************/
+
+template<typename TreeType>
+OnlineForest::OnlineForest(uint32_t n_trees,
+                           double step,
+                           Criterion criterion,
+                           int32_t n_threads,
+                           int seed,
+                           bool verbose)
+    : _n_trees(n_trees), _n_threads(n_threads), _criterion(criterion), _step(step), _verbose(verbose), trees() {
+  // No iteration so far
+  _iteration = 0;
+  create_trees();
+  // Seed the random number generators
+  set_seed(seed);
 }
 
-template<typename NodeType>
-inline Criterion Tree<NodeType>::criterion() const {
-  return forest.criterion();
+template<typename TreeType>
+OnlineForest::~OnlineForest() {}
+
+template<typename TreeType>
+void OnlineForest::create_trees() {
+  // Just in case...
+  trees.clear();
+  trees.reserve(_n_trees);
+  for (uint32_t i = 0; i < _n_trees; ++i) {
+    trees.emplace_back(*this);
+  }
+}
+
+template<typename TreeType>
+void OnlineForest::clear() {
+  _iteration = 0;
+  create_trees();
+}
+
+template<typename TreeType>
+void OnlineForest::fit(const SArrayDouble2dPtr features, const SArrayDoublePtr labels) {
+  ulong n_samples = features->n_rows();
+  ulong n_features = features->n_cols();
+  set_n_features(n_features);
+  for (ulong i = 0; i < n_samples; ++i) {
+    for (TreeType &tree : trees) {
+      // Fit the tree online using the new data point
+      tree.fit(view_row(*features, i), (*labels)[i]);
+    }
+    _iteration++;
+  }
+}
+
+template<typename TreeType>
+inline ulong OnlineForest::sample_feature() {
+  return rand.uniform_int(0L, n_features() - 1);
+}
+
+template<typename TreeType>
+inline double OnlineForest::sample_threshold(double left, double right) {
+  return rand.uniform(left, right);
 }
 
 /*********************************************************************************
@@ -498,45 +663,9 @@ OnlineForestRegressor::OnlineForestRegressor(uint32_t n_trees,
                                              int32_t n_threads,
                                              int seed,
                                              bool verbose)
-    : // _n_trees(n_trees),
-      _n_threads(n_threads), _criterion(criterion), _step(step), _verbose(verbose), trees() {
-  // No iteration so far
-  _n_trees = 10;
-  _iteration = 0;
-  create_trees();
-  // Seed the random number generators
-  set_seed(seed);
-}
+    : OnlineForest<TreeRegressor>(n_trees, step, criterion, n_threads, seed, verbose) {}
 
 OnlineForestRegressor::~OnlineForestRegressor() {}
-
-void OnlineForestRegressor::create_trees() {
-  // Just in case...
-  trees.clear();
-  trees.reserve(_n_trees);
-  for (uint32_t i = 0; i < _n_trees; ++i) {
-    trees.emplace_back(*this);
-  }
-}
-
-void OnlineForestRegressor::clear() {
-  _iteration = 0;
-  create_trees();
-}
-
-void OnlineForestRegressor::fit(const SArrayDouble2dPtr features,
-                                const SArrayDoublePtr labels) {
-  ulong n_samples = features->n_rows();
-  ulong n_features = features->n_cols();
-  set_n_features(n_features);
-  for (ulong i = 0; i < n_samples; ++i) {
-    for (TreeRegressor &tree : trees) {
-      // Fit the tree online using the new data point
-      tree.fit(view_row(*features, i), (*labels)[i]);
-    }
-    _iteration++;
-  }
-}
 
 void OnlineForestRegressor::predict(const SArrayDouble2dPtr features,
                                     SArrayDoublePtr predictions,
@@ -554,14 +683,6 @@ void OnlineForestRegressor::predict(const SArrayDouble2dPtr features,
   } else {
     TICK_ERROR("You must call ``fit`` before ``predict``.")
   }
-}
-
-inline ulong OnlineForestRegressor::sample_feature() {
-  return rand.uniform_int(0L, n_features() - 1);
-}
-
-inline double OnlineForestRegressor::sample_threshold(double left, double right) {
-  return rand.uniform(left, right);
 }
 
 //inline double OnlineForestRegressor::step() const {
