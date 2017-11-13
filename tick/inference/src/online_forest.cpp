@@ -56,6 +56,15 @@ void Node<NodeType>::update_downwards(const ArrayDouble &x_t, double y_t) {
 }
 
 template<typename NodeType>
+void Node<NodeType>::update_upwards() {
+  if(_is_leaf) {
+    _weight_tree = _weight;
+  } else {
+    _weight_tree = (_weight + node(_left).weight_tree() * node(_right).weight_tree()) / 2;
+  }
+}
+
+template<typename NodeType>
 void Node<NodeType>::update_weight(const double y_t) {
   _weight *= exp(-step() * loss(y_t));
 }
@@ -197,6 +206,11 @@ inline const ArrayDouble &Node<NodeType>::x_t() const {
 }
 
 template<typename NodeType>
+inline double Node<NodeType>::x_t(const ulong j) const {
+  return _x_t[j];
+}
+
+template<typename NodeType>
 inline Node<NodeType> &Node<NodeType>::set_x_t(const ArrayDouble &x_t) {
   _x_t = x_t;
   return *this;
@@ -284,11 +298,6 @@ template<typename NodeType>
 Tree<NodeType>::Tree(const Tree<NodeType> &&tree) : nodes(tree.nodes), forest(tree.forest) {
 }
 
-//template<typename NodeType>
-//ulong Node<NodeType>::n_features() const {
-//  return _tree.n_features();
-//}
-
 template<typename NodeType>
 Tree<NodeType>::Tree(OnlineForestRegressor &forest) : forest(forest) {
   // TODO: pre-allocate the vector to make things faster ?
@@ -297,49 +306,47 @@ Tree<NodeType>::Tree(OnlineForestRegressor &forest) : forest(forest) {
 
 template<typename NodeType>
 ulong Tree<NodeType>::split_leaf(ulong index, const ArrayDouble &x_t, double y_t) {
-  // std::cout << "Splitting node " << index << std::endl;
+  // Add the leaf nodes in the tree
   ulong left = add_node(index, iteration);
   ulong right = add_node(index, iteration);
+  // Give information to the splitted node about its childs
+  NodeType & current_node = node(index);
   node(index).set_left(left).set_right(right).set_is_leaf(false);
 
   // TODO: better feature sampling
   ulong feature = forest.sample_feature();
 
-  double x1_tj = x_t[feature];
-  double x2_tj = node(index).x_t()[feature];
+  double x_tj = x_t[feature];
+  double x2_tj = current_node.x_t(feature);
   double threshold;
-
   // The leaf that contains the passed sample (x_t, y_t)
   ulong data_leaf;
+  // The other leaf
   ulong other_leaf;
-
-  // std::cout << "x1_tj= " << x1_tj << " x2_tj= " << x2_tj << " threshold= " << threshold << std::endl;
   // TODO: what if x1_tj == x2_tj. Must be taken care of by sample_feature()
-  if (x1_tj < x2_tj) {
-    threshold = forest.sample_threshold(x1_tj, x2_tj);
+  if (x_tj < x2_tj) {
+    threshold = forest.sample_threshold(x_tj, x2_tj);
     data_leaf = left;
     other_leaf = right;
   } else {
-    threshold = forest.sample_threshold(x2_tj, x1_tj);
+    threshold = forest.sample_threshold(x2_tj, x_tj);
     data_leaf = right;
     other_leaf = left;
   }
   // TODO: code a move_sample
-
-  node(index).set_feature(feature).set_threshold(threshold);
-
+  current_node.set_feature(feature).set_threshold(threshold);
+  NodeType & data_leaf_node = node(data_leaf);
+  NodeType & other_leaf_node = node(other_leaf);
   // We pass the sample to the new leaves, and initialize the _label_average with the value
-  node(data_leaf).set_x_t(x_t).set_y_t(y_t);
-  node(other_leaf).set_x_t(node(index).x_t()).set_y_t(node(index).y_t());
-
+  data_leaf_node.set_x_t(x_t).set_y_t(y_t);
+  other_leaf_node.set_x_t(current_node.x_t()).set_y_t(current_node.y_t());
   // Update downwards of v'
-  node(other_leaf).update_downwards(node(index).x_t(), node(index).y_t());
+  other_leaf_node.update_downwards(current_node.x_t(), current_node.y_t());
   // Update upwards of v': it's a leaf
-  node(other_leaf).set_weight_tree(node(other_leaf).weight());
+  other_leaf_node.update_upwards();
   // Update downwards of v''
-  node(data_leaf).update_downwards(x_t, y_t);
+  data_leaf_node.update_downwards(x_t, y_t);
   // Note: the update_up of v'' is done in the go_up method, called in fit()
-
   return data_leaf;
 }
 
@@ -372,28 +379,9 @@ ulong Tree<NodeType>::go_downwards(const ArrayDouble &x_t, double y_t, bool pred
 
 template<typename NodeType>
 void Tree<NodeType>::go_upwards(ulong leaf_index) {
-
   ulong current = leaf_index;
-
   while (true) {
-    // TODO: use a node::update_upward
-    Node<NodeType> &current_node = node(current);
-    if (current_node.is_leaf()) {
-      current_node.set_weight_tree(current_node.weight());
-    } else {
-      double w = current_node.weight();
-      double w0 = node(current_node.left()).weight_tree();
-      double w1 = node(current_node.right()).weight_tree();
-      current_node.set_weight_tree((w + w0 * w1) / 2);
-//      double a = current_node.weight();
-//      double b = weight_tree_left + weight_tree_right;
-//      double toto;
-//      if(a > b) {
-//        toto = a + log(1 + exp(b - a)) - log(2);
-//      } else {
-//        toto = b + log(1 + exp(a - b)) - log(2);
-//      }
-    }
+    node(current).update_upwards();
     if (current == 0) {
       break;
     }
@@ -415,7 +403,6 @@ void Tree<NodeType>::fit(const ArrayDouble &x_t, double y_t) {
     iteration++;
     return;
   }
-
   ulong leaf = go_downwards(x_t, y_t, false);
   ulong new_leaf = split_leaf(leaf, x_t, y_t);
 
@@ -530,6 +517,11 @@ void OnlineForestRegressor::create_trees() {
   for (uint32_t i = 0; i < _n_trees; ++i) {
     trees.emplace_back(*this);
   }
+}
+
+void OnlineForestRegressor::clear() {
+  _iteration = 0;
+  create_trees();
 }
 
 void OnlineForestRegressor::fit(const SArrayDouble2dPtr features,

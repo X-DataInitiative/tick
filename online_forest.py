@@ -19,7 +19,8 @@ np.set_printoptions(precision=2)
 w0 = weights_sparse_gauss(n_features, nnz=2)
 X, y = SimuLinReg(w0, -1., n_samples=n_samples, seed=seed).simulate()
 
-# X_train, X_test, y_train, y_test = train_test_split(X, y)
+# load_boston([return_X_y])
+# load_diabetes([return_X_y])
 
 
 def plot_decisions(clfs, datasets, names, use_aggregation=None):
@@ -59,7 +60,8 @@ def plot_decisions(clfs, datasets, names, use_aggregation=None):
         # iterate over classifiers
         for name, clf in zip(names, clfs):
             ax = plt.subplot(len(datasets), len(clfs) + 1, i)
-
+            if isinstance(clf, OnlineForestRegressor):
+                clf.clear()
             t1 = time()
             clf.fit(X_train, y_train)
             t2 = time()
@@ -141,14 +143,28 @@ import os
 
 # plt.savefig(os.path.join(path, 'online1.pdf'))
 
-n_trees = 10
+n_trees = 5
 
+
+from sklearn.datasets import make_moons, make_circles
+from sklearn.preprocessing import StandardScaler
+
+X_moons, _ = make_moons(n_samples=500, noise=0.3, random_state=0)
+X_moons = StandardScaler().fit_transform(X_moons)
+y_moons = X_moons.dot(w0) - 1
+
+
+# datasets = [make_moons(noise=0.3, random_state=0),
+#             make_circles(noise=0.2, factor=0.5, random_state=1),
+#             linearly_separable
+#             ]
 datasets = [
-    (X, y)
+    (X, y),
+    (X_moons, y_moons)
 ]
 
 clfs = [
-    OnlineForestRegressor(n_trees=n_trees, seed=123, step=0.25),
+    OnlineForestRegressor(n_trees=n_trees, seed=123, step=0.5),
     ExtraTreesRegressor(n_estimators=n_trees),
     RandomForestRegressor(n_estimators=n_trees)
 ]
@@ -159,10 +175,19 @@ names = [
     "Breiman RF"
 ]
 
-plot_decisions(clfs, datasets, names)
-# plt.show()
+# X_train, X_test, y_train, y_test = train_test_split(X, y)
 
-plt.savefig(os.path.join(path, 'decisions.pdf'))
+
+# for clf, name in zip(clfs, names):
+#     clf.fit(X_train, y_train)
+#     pred = clf.predict(X_test)
+#     print(name, "mse: ", np.linalg.norm(y_test - pred))
+
+
+plot_decisions(clfs, datasets, names)
+plt.show()
+
+# plt.savefig(os.path.join(path, 'decisions.pdf'))
 
 
 # plot_decision_regions(clf, X, y, use_aggregation=True)

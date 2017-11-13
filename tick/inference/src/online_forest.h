@@ -81,7 +81,9 @@ class Node {
   virtual ~Node();
 
   // Update to apply to a node when going forward in the tree (towards leaves)
-  virtual void update_downwards(const ArrayDouble &x_t, double y_t);
+  virtual void update_downwards(const ArrayDouble &x_t, double y_t) final;
+  // Update to apply to a node when going upward in the tree (towards the root)
+  virtual void update_upwards() final;
   // Update of the aggregation weights
   virtual void update_weight(const double y_t) final;
   // Update the prediction of the label
@@ -114,6 +116,7 @@ class Node {
   inline double weight_tree() const;
   inline Node<NodeType> &set_weight_tree(double weight);
   inline const ArrayDouble &x_t() const;
+  inline double x_t(const ulong j) const;
   inline Node<NodeType> &set_x_t(const ArrayDouble &x_t);
   inline double y_t() const;
   inline Node<NodeType>& set_y_t(const double y_t);
@@ -142,9 +145,9 @@ class NodeRegressor : public Node<NodeRegressor> {
   virtual void update_predict(double y_t);
   virtual double loss(const double y_t);
   virtual void print();
-
-
 };
+
+
 
 class OnlineForestRegressor;
 
@@ -250,6 +253,8 @@ class OnlineForestRegressor {
 
   void fit(const SArrayDouble2dPtr features, const SArrayDoublePtr labels);
   void predict(const SArrayDouble2dPtr features, SArrayDoublePtr predictions, bool use_aggregation);
+
+  void clear();
 
   inline ulong sample_feature();
   inline double sample_threshold(double left, double right);
