@@ -44,7 +44,7 @@ void ModelHawkesFixedExpKernLogLik::compute_weights_dim_i(const ulong i) {
         if (k < n_jumps_i) g_i[k * n_nodes + j] = g_i[(k - 1) * n_nodes + j] * ebt;
         G_i[k * n_nodes + j] = g_i[(k - 1) * n_nodes + j] * (1 - ebt) / decay;
       } else {
-        g_i[k * n_nodes + j] = 0;
+        if (k < n_jumps_i) g_i[k * n_nodes + j] = 0;
         G_i[k * n_nodes + j] = 0;
         sum_G[i][j] = 0.;
       }

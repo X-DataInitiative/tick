@@ -56,10 +56,12 @@ TimestampListDescriptor describe_timestamps_list(const SArrayDoublePtrList2D &ti
   for (ulong r = 0; r < timestamps_list_descriptor.n_realizations; r++) {
     SArrayDoublePtrList1D realization_r = timestamps_list[r];
     for (ulong i = 0; i < timestamps_list_descriptor.n_nodes; i++) {
-      double last_time_i = (*realization_r[i])[realization_r[i]->size() - 1];
-      if ((*end_times)[r] < last_time_i) {
-        TICK_ERROR("Provided end_time (" << (*end_times)[i] << ") is smaller than last "
-            "time of component " << i << " (" << last_time_i << ")")
+      if (realization_r[i]->size() > 0) {
+        double last_time_i = (*realization_r[i])[realization_r[i]->size() - 1];
+        if ((*end_times)[r] < last_time_i) {
+          TICK_ERROR("Provided end_time (" << (*end_times)[i] << ") is smaller than last time of "
+                                           << "component " << i << " (" << last_time_i << ")")
+        }
       }
     }
   }

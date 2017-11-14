@@ -61,6 +61,27 @@ TEST_F(HawkesModelTest, compute_loss_loglikelihood){
   EXPECT_DOUBLE_EQ(model.get_n_coeffs(), 6);
 }
 
+TEST_F(HawkesModelTest, compute_loss_loglikelihood_sparse){
+  ModelHawkesFixedExpKernLogLik model(2);
+  auto sparse_timestamps = SArrayDoublePtrList1D(0);
+  // Test will fail if process array is not sorted
+  ArrayDouble timestamps_0 = ArrayDouble {0.31, 0.93, 1.29, 2.32, 4.25};
+  sparse_timestamps.push_back(timestamps_0.as_sarray_ptr());
+  ArrayDouble timestamps_1 = ArrayDouble(0);
+  sparse_timestamps.push_back(timestamps_1.as_sarray_ptr());
+
+  model.set_data(sparse_timestamps, 4.25);
+  ArrayDouble coeffs = ArrayDouble {1., 3., 2., 3., 4., 1};
+
+  const double loss = model.loss(coeffs);
+  ArrayDouble grad(model.get_n_coeffs());
+  model.grad(coeffs, grad);
+
+  EXPECT_DOUBLE_EQ(loss, 5.9243119662517856);
+
+  EXPECT_DOUBLE_EQ(model.get_n_coeffs(), 6);
+}
+
 TEST_F(HawkesModelTest, check_sto_loglikelihood){
   ModelHawkesFixedExpKernLogLik model(2);
   model.set_data(timestamps, 6.);

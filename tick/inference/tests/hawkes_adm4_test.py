@@ -3,6 +3,7 @@
 import unittest
 import numpy as np
 from tick.inference import HawkesADM4
+from tick.simulation import SimuHawkesExpKernels, SimuHawkesMulti
 
 
 class Test(unittest.TestCase):
@@ -11,6 +12,41 @@ class Test(unittest.TestCase):
         self.decay = 0.7
         self.float_1 = 5.23e-4
         self.float_2 = 3.86e-2
+
+    def simulate_sparse_realization(self):
+        """Simulate realization in which some nodes are sometimes empty
+        """
+        baseline = np.array([0.3, 0.001])
+        adjacency = np.array([[0.5, 0.8], [0., 1.3]])
+
+        sim = SimuHawkesExpKernels(adjacency=adjacency, decays=self.decay,
+                                   baseline=baseline, verbose=False,
+                                   seed=13487, end_time=500)
+        sim.adjust_spectral_radius(0.8)
+        multi = SimuHawkesMulti(sim, n_simulations=100)
+
+        adjacency = sim.adjacency
+        multi.simulate()
+
+        # Check that some but not all realizations are empty
+        self.assertGreater(max(map(lambda r: len(r[1]), multi.timestamps)), 1)
+        self.assertEqual(min(map(lambda r: len(r[1]), multi.timestamps)), 0)
+
+        return baseline, adjacency, multi.timestamps
+
+    def test_sparse(self):
+        """...Test that original coeffs are correctly retrieved when some
+        realizations are empty
+        """
+        baseline, adjacency, events = self.simulate_sparse_realization()
+
+        learner = HawkesADM4(self.decay, verbose=False)
+        learner.fit(events)
+
+        np.testing.assert_array_almost_equal(learner.baseline, baseline,
+                                             decimal=1)
+        np.testing.assert_array_almost_equal(learner.adjacency, adjacency,
+                                             decimal=1)
 
     def test_hawkes_adm4_solution(self):
         """...Test solution obtained by HawkesADM4 on toy timestamps
