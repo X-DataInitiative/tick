@@ -102,7 +102,8 @@ ulong Node<TreeType>::n_features() const {
 }
 
 template<typename TreeType>
-inline double Node<TreeType>::step() const {
+double Node<TreeType>::step() const {
+  std::cout <<  "double Node<TreeType>::step() const {" << std::endl;
   return _tree.step();
 }
 
@@ -249,15 +250,15 @@ inline Node<TreeType> &Node<TreeType>::set_y_t(const double y_t) {
  *********************************************************************************/
 
 NodeRegressor::NodeRegressor(TreeRegressor &tree, ulong parent)
-    : Node(tree, parent) {
+    : Node<TreeRegressor>(tree, parent) {
   _predict = 0;
 }
 
 NodeRegressor::NodeRegressor(const NodeRegressor &node)
-    : Node(node), _predict(node._predict), _y_t(node._y_t) {}
+    : Node<TreeRegressor>(node), _predict(node._predict), _y_t(node._y_t) {}
 
 NodeRegressor::NodeRegressor(const NodeRegressor &&node)
-    : Node(node) {
+    : Node<TreeRegressor>(node) {
   _predict = node._predict;
   _y_t = node._y_t;
 }
@@ -532,7 +533,8 @@ inline ulong Tree<NodeType, ForestType>::n_features() const {
 }
 
 template<typename NodeType, typename ForestType>
-inline double Tree<NodeType, ForestType>::step() const {
+double Tree<NodeType, ForestType>::step() const {
+  std::cout << "double Tree<NodeType, ForestType>::step() const {" << std::endl;
   return _forest.step();
 }
 

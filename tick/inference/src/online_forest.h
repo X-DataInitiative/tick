@@ -83,7 +83,7 @@ class Node {
   Node(const Node&node);
   Node(const Node &&node);
   Node &operator=(const Node &) = delete;
-  Node &operator=(const Node &&) = delete;
+  Node<TreeType> &operator=(const Node &&) = delete;
   virtual ~Node();
 
   // Update to apply to a node when going forward in the tree (towards leaves)
@@ -98,34 +98,34 @@ class Node {
   virtual double loss(const double y_t) = 0;
 
   inline TreeType &tree() const;
-  inline Node &node(ulong index) const;
+  inline Node<TreeType> &node(ulong index) const;
   ulong n_features() const;
-  inline double step() const;
+  virtual double step() const;
 
   virtual void print();
 
   inline ulong parent() const;
   inline ulong left() const;
-  inline Node &set_left(ulong left);
+  inline Node<TreeType> &set_left(ulong left);
   inline ulong right() const;
-  inline Node &set_right(ulong right);
+  inline Node<TreeType> &set_right(ulong right);
   inline bool is_leaf() const;
-  inline Node &set_is_leaf(bool is_leaf);
+  inline Node<TreeType> &set_is_leaf(bool is_leaf);
   inline ulong feature() const;
-  inline Node &set_feature(ulong feature);
+  inline Node<TreeType> &set_feature(ulong feature);
   inline double threshold() const;
-  inline Node &set_threshold(double threshold);
+  inline Node<TreeType> &set_threshold(double threshold);
   inline ulong n_samples() const;
-  inline Node &set_n_samples(ulong n_samples);
+  inline Node<TreeType> &set_n_samples(ulong n_samples);
   inline double weight() const;
-  inline Node &set_weight(double weight);
+  inline Node<TreeType> &set_weight(double weight);
   inline double weight_tree() const;
-  inline Node &set_weight_tree(double weight);
+  inline Node<TreeType> &set_weight_tree(double weight);
   inline const ArrayDouble &x_t() const;
   inline double x_t(const ulong j) const;
-  inline Node &set_x_t(const ArrayDouble &x_t);
+  inline Node<TreeType> &set_x_t(const ArrayDouble &x_t);
   inline double y_t() const;
-  inline Node& set_y_t(const double y_t);
+  inline Node<TreeType> & set_y_t(const double y_t);
 };
 
 
@@ -227,7 +227,7 @@ class Tree {
 
   inline ulong n_features() const;
   inline ulong n_nodes() const;
-  inline double step() const;
+  virtual double step() const;
 
   void print() {
     for (NodeType &node : nodes) {
@@ -327,7 +327,8 @@ class OnlineForest {
   inline ulong sample_feature();
   inline double sample_threshold(double left, double right);
 
-  inline double step() const {
+  virtual double step() const {
+    std::cout << "double OnlineForest::step() const {" << std::endl;
     return _step;
   }
 
