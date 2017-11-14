@@ -143,7 +143,7 @@ import os
 
 # plt.savefig(os.path.join(path, 'online1.pdf'))
 
-n_trees = 50
+n_trees = 1
 
 
 from sklearn.datasets import make_moons, make_circles

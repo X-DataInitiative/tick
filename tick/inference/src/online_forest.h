@@ -9,6 +9,13 @@
 #include "../../random/src/rand.h"
 
 
+
+// TODO: arreter les conneries et mettre deux templates
+// TODO: Node<TreeType>
+// TODO: Tree<NodeType>
+// TODO:
+// TODO:
+
 // TODO: faire tres attention au features binaires si le range est 0 sur toutes les coordonnées, ne rien faire
 // TODO: code a classifier
 
@@ -35,18 +42,18 @@ enum class Criterion {
 };
 
 
-template<typename NodeType>
+template<typename NodeType, typename ForestType>
 class Tree;
 
 /*********************************************************************************
  * Node<NodeType>
  *********************************************************************************/
 
-// template<typename NodeType>
+template<typename TreeType>
 class Node {
  protected:
   // Tree containing the node
-  Tree &_tree;
+  TreeType &_tree;
   // Index of the left child
   ulong _left;
   // Index of the right child
@@ -72,7 +79,7 @@ class Node {
   bool _is_leaf;
 
  public:
-  Node(Tree &tree, ulong parent);
+  Node(TreeType &tree, ulong parent);
   Node(const Node&node);
   Node(const Node &&node);
   Node &operator=(const Node &) = delete;
@@ -84,13 +91,13 @@ class Node {
   // Update to apply to a node when going upward in the tree (towards the root)
   virtual void update_upwards() final;
   // Update of the aggregation weights
-  virtual void update_weight(const double y_t) final;
+  virtual void update_weight(double y_t);
   // Update the prediction of the label
   virtual void update_predict(double y_t) = 0;
   // Loss function used for aggregation
   virtual double loss(const double y_t) = 0;
 
-  inline Tree &tree() const;
+  inline TreeType &tree() const;
   inline Node &node(ulong index) const;
   ulong n_features() const;
   inline double step() const;
@@ -121,11 +128,14 @@ class Node {
   inline Node& set_y_t(const double y_t);
 };
 
+
 /*********************************************************************************
  * NodeRegressor
  *********************************************************************************/
 
-class NodeRegressor : public Node {
+class TreeRegressor;
+
+class NodeRegressor : public Node<TreeRegressor> {
   // using node_type = NodeRegressor;
  private:
   // Average of the labels in the node (regression only for now)
@@ -134,7 +144,7 @@ class NodeRegressor : public Node {
   double _y_t;
 
  public:
-  NodeRegressor(Tree &tree, ulong parent);
+  NodeRegressor(TreeRegressor &tree, ulong parent);
   NodeRegressor(const NodeRegressor &node);
   NodeRegressor(const NodeRegressor &&node);
   NodeRegressor &operator=(const NodeRegressor &) = delete;
@@ -142,6 +152,7 @@ class NodeRegressor : public Node {
   virtual ~NodeRegressor();
 
   inline double predict() const;
+  void update_weight(double y_t);
   virtual void update_predict(double y_t);
   virtual double loss(const double y_t);
   virtual void print();
@@ -151,7 +162,9 @@ class NodeRegressor : public Node {
  * NodeClassifier
  *********************************************************************************/
 
-class NodeClassifier : public Node {
+class TreeClassifier;
+
+class NodeClassifier : public Node<TreeClassifier> {
  private:
   // Score of each class
   ArrayDouble _predict;
@@ -159,7 +172,7 @@ class NodeClassifier : public Node {
   double _y_t;
 
  public:
-  NodeClassifier(Tree &tree, ulong parent);
+  NodeClassifier(TreeClassifier &tree, ulong parent);
   NodeClassifier(const NodeClassifier &node);
   NodeClassifier(const NodeClassifier &&node);
   NodeClassifier &operator=(const NodeClassifier &) = delete;
@@ -167,6 +180,7 @@ class NodeClassifier : public Node {
   virtual ~NodeClassifier();
 
   inline const ArrayDouble& predict() const;
+  // virtual void update_weight(double y_t);
   virtual void update_predict(double y_t);
   virtual double loss(const double y_t);
   virtual void print();
@@ -174,18 +188,19 @@ class NodeClassifier : public Node {
   inline uint8_t n_classes() const;
 };
 
-class OnlineForestRegressor;
-class OnlineForestClassifier;
+template <typename NodeType, typename TreeType>
+class OnlineForest;
+
 
 /*********************************************************************************
  * Tree<NodeType>
  *********************************************************************************/
 
-template<typename NodeType>
+template<typename NodeType, typename ForestType>
 class Tree {
  protected:
   // The forest of the tree
-  OnlineForest &forest;
+  ForestType &_forest;
   // Number of nodes in the tree
   ulong _n_nodes = 0;
   // Iteration counter
@@ -195,22 +210,20 @@ class Tree {
   // Split the node at given index
   ulong split_leaf(ulong index, const ArrayDouble &x_t, double y_t);
   // Add nodes in the tree
-  virtual ulong add_node(ulong parent, ulong creation_time);
+  virtual ulong add_node(ulong parent, ulong creation_time) = 0;
 
   ulong go_downwards(const ArrayDouble &x_t, double y_t, bool predict, ulong &depth);
   void go_upwards(ulong leaf_index);
 
  public:
-  Tree(OnlineForest &forest);
-  Tree(const Tree<NodeType> &tree);
-  Tree(const Tree<NodeType> &&tree);
-  Tree &operator=(const Tree<NodeType> &) = delete;
-  Tree &operator=(const Tree<NodeType> &&) = delete;
+  Tree(ForestType &forest);
+  Tree(const Tree<NodeType, ForestType> &tree);
+  Tree(const Tree<NodeType, ForestType> &&tree);
+  Tree &operator=(const Tree<NodeType, ForestType> &) = delete;
+  Tree &operator=(const Tree<NodeType, ForestType> &&) = delete;
   ~Tree() {}
 
   void fit(const ArrayDouble &x_t, double y_t);
-
-  // double predict(const ArrayDouble& x_t);
 
   inline ulong n_features() const;
   inline ulong n_nodes() const;
@@ -233,7 +246,9 @@ class Tree {
  * TreeRegressor
  *********************************************************************************/
 
-class TreeRegressor : public Tree<NodeRegressor> {
+class OnlineForestRegressor;
+
+class TreeRegressor : public Tree<NodeRegressor, OnlineForestRegressor> {
  public:
   TreeRegressor(OnlineForestRegressor &forest);
   TreeRegressor(const TreeRegressor &tree);
@@ -241,6 +256,7 @@ class TreeRegressor : public Tree<NodeRegressor> {
   TreeRegressor &operator=(const TreeRegressor &) = delete;
   TreeRegressor &operator=(const TreeRegressor &&) = delete;
 
+  virtual ulong add_node(ulong parent, ulong creation_time);
   double predict(const ArrayDouble &x_t, bool use_aggregation);
 };
 
@@ -248,7 +264,9 @@ class TreeRegressor : public Tree<NodeRegressor> {
  * TreeClassifier
  *********************************************************************************/
 
-class TreeClassifier : public Tree<NodeClassifier> {
+class OnlineForestClassifier;
+
+class TreeClassifier : public Tree<NodeClassifier, OnlineForestClassifier> {
  public:
   TreeClassifier(OnlineForestClassifier &forest);
   TreeClassifier(const TreeClassifier &tree);
@@ -256,6 +274,7 @@ class TreeClassifier : public Tree<NodeClassifier> {
   TreeClassifier &operator=(const TreeClassifier &) = delete;
   TreeClassifier &operator=(const TreeClassifier &&) = delete;
 
+  virtual ulong add_node(ulong parent, ulong creation_time);
   double predict(const ArrayDouble &x_t, bool use_aggregation);
 
   inline uint8_t n_classes() const;
@@ -266,7 +285,7 @@ class TreeClassifier : public Tree<NodeClassifier> {
  * OnlineForest
  *********************************************************************************/
 
-template <typename TreeType>
+template <typename NodeType, typename TreeType>
 class OnlineForest {
  protected:
   // Number of Trees in the forest
@@ -290,7 +309,7 @@ class OnlineForest {
   // Random number generator for feature and threshold sampling
   Rand rand;
   // Create trees
-  void create_trees();
+  virtual void create_trees() = 0;
 
  public:
   OnlineForest(uint32_t n_trees, double step, Criterion criterion, int32_t n_threads, int seed, bool verbose);
@@ -300,7 +319,10 @@ class OnlineForest {
 
   virtual void predict(const SArrayDouble2dPtr features, SArrayDoublePtr predictions, bool use_aggregation) = 0;
 
-  void clear();
+  void clear() {
+    _iteration = 0;
+    create_trees();
+  }
 
   inline ulong sample_feature();
   inline double sample_threshold(double left, double right);
@@ -331,15 +353,13 @@ class OnlineForest {
     }
   }
 
+ private:
   inline OnlineForest &set_n_features(ulong n_features) {
-    if (_iteration == 0) {
-      _n_features = n_features;
-    } else {
-      TICK_ERROR("OnlineForest::set_n_features can be called only once !")
-    }
+    _n_features = n_features;
     return *this;
   }
 
+ public:
   inline uint32_t n_trees() const {
     return _n_trees;
   }
@@ -385,14 +405,33 @@ class OnlineForest {
  * OnlineForestRegressor
  *********************************************************************************/
 
-class OnlineForestRegressor : public OnlineForest<TreeRegressor> {
-  using Nodetype = NodeRegressor;
-
+class OnlineForestRegressor : public OnlineForest<NodeRegressor, TreeRegressor> {
  public:
   OnlineForestRegressor(uint32_t n_trees, double step, Criterion criterion, int32_t n_threads, int seed, bool verbose);
   virtual ~OnlineForestRegressor();
 
+  virtual void create_trees() final;
+
   virtual void predict(const SArrayDouble2dPtr features, SArrayDoublePtr predictions, bool use_aggregation);
 };
+
+/*********************************************************************************
+ * OnlineForestClassifier
+ *********************************************************************************/
+
+class OnlineForestClassifier : public OnlineForest<NodeClassifier, TreeClassifier> {
+ public:
+  OnlineForestClassifier(uint32_t n_trees, double step, Criterion criterion, int32_t n_threads, int seed, bool verbose);
+  virtual ~OnlineForestClassifier();
+
+  virtual void create_trees() final;
+
+  virtual void predict(const SArrayDouble2dPtr features, SArrayDoublePtr predictions, bool use_aggregation);
+
+  inline ulong n_classes() const {
+    return 0.;
+  }
+};
+
 
 #endif //TICK_ONLINEFOREST_H

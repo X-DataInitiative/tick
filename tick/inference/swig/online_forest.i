@@ -27,10 +27,9 @@ class OnlineForestRegressor {
 
   ulong n_samples() const;
   ulong n_features() const;
-  OnlineForestRegressor &set_n_features(ulong n_features);
 
-  // uint32_t n_trees() const;
-  // OnlineForestRegressor &set_n_trees(uint32_t n_trees);
+  uint32_t n_trees() const;
+  OnlineForestRegressor &set_n_trees(uint32_t n_trees);
 
   int32_t n_threads() const;
   OnlineForestRegressor &set_n_threads(int32_t n_threads);
@@ -38,6 +37,5 @@ class OnlineForestRegressor {
   OnlineForestRegressor &set_criterion(Criterion criterion);
   int seed() const;
   OnlineForestRegressor &set_seed(int seed);
-  // bool verbose() const;
-  // OnlineForestRegressor &set_verbose(bool verbose);
+
 };
