@@ -34,6 +34,17 @@ enum class Criterion {
   mse
 };
 
+
+// Computation of log( (e^a + e^b) / 2) in an overproof way
+inline double log_sum_2_exp(const double a, const double b) {
+  // TODO if |a - b| > 50 skip
+  if (a > b) {
+    return a + std::log((1 + std::exp(b - a)) / 2);
+  } else {
+    return b + std::log((1 + std::exp(a - b)) / 2);
+  }
+}
+
 class TreeRegressor;
 
 /*********************************************************************************
@@ -61,9 +72,9 @@ class NodeRegressor {
   ArrayDouble _x_t;
   // The label of the sample saved in the node
   double _y_t;
-  // Aggregation weight for the node
+  // Logarithm of the aggregation weight for the node
   double _weight;
-  // Aggregation weight for the sub-tree starting at this node
+  // Logarithm of the agregation weight for the sub-tree starting at this node
   double _weight_tree;
   // true if the node is a leaf
   bool _is_leaf;
@@ -143,8 +154,6 @@ class TreeRegressor {
   ulong go_downwards(const ArrayDouble &x_t, double y_t, bool predict);
   void go_upwards(ulong leaf_index);
 
-  double predict(const ArrayDouble &x_t, bool use_aggregation);
-
  public:
   TreeRegressor(OnlineForestRegressor &forest);
   TreeRegressor(const TreeRegressor &tree);
@@ -153,8 +162,7 @@ class TreeRegressor {
   TreeRegressor &operator=(const TreeRegressor &&) = delete;
 
   void fit(const ArrayDouble &x_t, double y_t);
-
-  // double predict(const ArrayDouble& x_t);
+  double predict(const ArrayDouble &x_t, bool use_aggregation);
 
   inline ulong n_features() const;
   inline ulong n_nodes() const;
@@ -171,8 +179,6 @@ class TreeRegressor {
   NodeRegressor &node(ulong index) {
     return nodes[index];
   }
-
-
 };
 
 /*********************************************************************************
