@@ -9,13 +9,14 @@
 
 NodeRegressor::NodeRegressor(TreeRegressor &tree, ulong parent)
     : _tree(tree) {
-  _n_samples = 0;
-  _is_leaf = true;
+  _parent = parent;
   _left = 0;
   _right = 0;
+  _n_samples = 0;
+  _is_leaf = true;
   _weight = 1;
   _weight_tree = 1;
-  this->_parent = parent;
+
   _predict = 0;
 }
 
@@ -28,7 +29,7 @@ NodeRegressor::NodeRegressor(const NodeRegressor &node)
       _y_t(node._y_t),
       _weight(node._weight), _weight_tree(node._weight_tree),
       _is_leaf(node._is_leaf),
-      _predict(node._predict) { }
+      _predict(node._predict) {}
 
 NodeRegressor::NodeRegressor(const NodeRegressor &&node) : _tree(_tree) {
   _left = node._left;
@@ -44,15 +45,28 @@ NodeRegressor::NodeRegressor(const NodeRegressor &&node) : _tree(_tree) {
   _y_t = node._y_t;
 }
 
-void NodeRegressor::update_downwards(const ArrayDouble &x_t, double y_t) {
+void NodeRegressor::update_downwards(const ArrayDouble &x_t, const double y_t) {
   _n_samples++;
-  // TODO: Make compute loss virtual insteal
-  update_weight(y_t);
+  _weight *= exp(-step() * loss(y_t));
   update_predict(y_t);
 }
 
-void NodeRegressor::update_weight(const double y_t) {
-  _weight *= exp(-step() * loss(y_t));
+void NodeRegressor::update_upwards() {
+  if (_is_leaf) {
+    _weight_tree = _weight;
+  } else {
+    _weight_tree = (_weight + node(_left).weight_tree() * node(_right).weight_tree()) / 2;
+  }
+}
+
+void NodeRegressor::update_predict(const double y_t) {
+  // When a node is updated, it necessarily contains already a sample
+  _predict = ((_n_samples - 1) * _predict + y_t) / _n_samples;
+}
+
+double NodeRegressor::loss(const double y_t) {
+  double diff = _predict - y_t;
+  return diff * diff / 2;
 }
 
 inline NodeRegressor &NodeRegressor::node(ulong index) const {
@@ -62,7 +76,6 @@ inline NodeRegressor &NodeRegressor::node(ulong index) const {
 ulong NodeRegressor::n_features() const {
   return _tree.n_features();
 }
-
 
 inline double NodeRegressor::step() const {
   return _tree.step();
@@ -157,23 +170,13 @@ inline double NodeRegressor::y_t() const {
   return _y_t;
 }
 
-inline NodeRegressor & NodeRegressor::set_y_t(const double y_t) {
+inline NodeRegressor &NodeRegressor::set_y_t(const double y_t) {
   _y_t = y_t;
   return *this;
 }
 
 inline double NodeRegressor::predict() const {
   return _predict;
-}
-
-void NodeRegressor::update_predict(double y_t) {
-  // When a node is updated, it necessarily contains already a sample
-  _predict = ((_n_samples - 1) * _predict + y_t) / _n_samples;
-}
-
-double NodeRegressor::loss(const double y_t) {
-  double diff = _predict - y_t;
-  return diff * diff / 2;
 }
 
 void NodeRegressor::print() {
@@ -205,27 +208,20 @@ void NodeRegressor::print() {
 *********************************************************************************/
 
 TreeRegressor::TreeRegressor(const TreeRegressor &tree)
-    : nodes(tree.nodes), forest(tree.forest) {
-}
+    : nodes(tree.nodes), forest(tree.forest) {}
 
-TreeRegressor::TreeRegressor(const TreeRegressor &&tree) : nodes(tree.nodes), forest(tree.forest) {
-}
-
-//template<typename NodeType>
-//ulong Node<NodeType>::n_features() const {
-//  return _tree.n_features();
-//}
-
+TreeRegressor::TreeRegressor(const TreeRegressor &&tree)
+    : nodes(tree.nodes), forest(tree.forest) {}
 
 TreeRegressor::TreeRegressor(OnlineForestRegressor &forest) : forest(forest) {
   // TODO: pre-allocate the vector to make things faster ?
-  add_node(0, 0);
+  add_node(0);
 }
 
 ulong TreeRegressor::split_leaf(ulong index, const ArrayDouble &x_t, double y_t) {
   // std::cout << "Splitting node " << index << std::endl;
-  ulong left = add_node(index, iteration);
-  ulong right = add_node(index, iteration);
+  ulong left = add_node(index);
+  ulong right = add_node(index);
   node(index).set_left(left).set_right(right).set_is_leaf(false);
 
   // TODO: better feature sampling
@@ -261,7 +257,8 @@ ulong TreeRegressor::split_leaf(ulong index, const ArrayDouble &x_t, double y_t)
   // Update downwards of v'
   node(other_leaf).update_downwards(node(index).x_t(), node(index).y_t());
   // Update upwards of v': it's a leaf
-  node(other_leaf).set_weight_tree(node(other_leaf).weight());
+  node(other_leaf).update_upwards();
+  // node(other_leaf).set_weight_tree(node(other_leaf).weight());
   // Update downwards of v''
   node(data_leaf).update_downwards(x_t, y_t);
   // Note: the update_up of v'' is done in the go_up method, called in fit()
@@ -302,22 +299,23 @@ void TreeRegressor::go_upwards(ulong leaf_index) {
   while (true) {
     // TODO: use a node::update_upward
     NodeRegressor &current_node = node(current);
-    if (current_node.is_leaf()) {
-      current_node.set_weight_tree(current_node.weight());
-    } else {
-      double w = current_node.weight();
-      double w0 = node(current_node.left()).weight_tree();
-      double w1 = node(current_node.right()).weight_tree();
-      current_node.set_weight_tree((w + w0 * w1) / 2);
-//      double a = current_node.weight();
-//      double b = weight_tree_left + weight_tree_right;
-//      double toto;
-//      if(a > b) {
-//        toto = a + log(1 + exp(b - a)) - log(2);
-//      } else {
-//        toto = b + log(1 + exp(a - b)) - log(2);
-//      }
-    }
+    current_node.update_upwards();
+//    if (current_node.is_leaf()) {
+//      current_node.set_weight_tree(current_node.weight());
+//    } else {
+//      double w = current_node.weight();
+//      double w0 = node(current_node.left()).weight_tree();
+//      double w1 = node(current_node.right()).weight_tree();
+//      current_node.set_weight_tree((w + w0 * w1) / 2);
+////      double a = current_node.weight();
+////      double b = weight_tree_left + weight_tree_right;
+////      double toto;
+////      if(a > b) {
+////        toto = a + log(1 + exp(b - a)) - log(2);
+////      } else {
+////        toto = b + log(1 + exp(a - b)) - log(2);
+////      }
+//    }
     if (current == 0) {
       break;
     }
@@ -325,7 +323,6 @@ void TreeRegressor::go_upwards(ulong leaf_index) {
     current = node(current).parent();
   }
 }
-
 
 inline ulong TreeRegressor::n_nodes() const {
   return _n_nodes;
@@ -390,7 +387,7 @@ double TreeRegressor::predict(const ArrayDouble &x_t, bool use_aggregation) {
   // return weight / std::exp(nodes[0].weight_tree());
 }
 
-ulong TreeRegressor::add_node(ulong parent, ulong creation_time) {
+ulong TreeRegressor::add_node(ulong parent) {
   nodes.emplace_back(*this, parent);
   return _n_nodes++;
 }
@@ -418,7 +415,7 @@ OnlineForestRegressor::OnlineForestRegressor(uint32_t n_trees,
                                              int seed,
                                              bool verbose)
     : // _n_trees(n_trees),
-      _n_threads(n_threads), _criterion(criterion), _step(step), _verbose(verbose), trees() {
+    _n_threads(n_threads), _criterion(criterion), _step(step), _verbose(verbose), trees() {
   // No iteration so far
   _n_trees = 10;
   _iteration = 0;

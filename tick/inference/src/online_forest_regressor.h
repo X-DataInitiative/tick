@@ -44,12 +44,12 @@ class NodeRegressor {
  protected:
   // Tree containing the node
   TreeRegressor &_tree;
+  // Index of the parent
+  ulong _parent;
   // Index of the left child
   ulong _left;
   // Index of the right child
   ulong _right;
-  // Index of the parent
-  ulong _parent;
   // Index of the feature used for the split
   ulong _feature;
   // Threshold used for the split
@@ -78,22 +78,23 @@ class NodeRegressor {
   NodeRegressor &operator=(const NodeRegressor &&) = delete;
 
   // Update to apply to a node when going forward in the tree (towards leaves)
-  void update_downwards(const ArrayDouble &x_t, double y_t);
-  // Update of the aggregation weights
-  void update_weight(const double y_t);
+  void update_downwards(const ArrayDouble &x_t, const double y_t);
+  // Update to apply to a node when going upward in the tree (towards the root)
+  void update_upwards();
   // Update the prediction of the label
-  void update_predict(double y_t);
+  void update_predict(const double y_t);
+  // Predict function (average of the labels of samples that passed through the node)
+  double predict() const;
   // Loss function used for aggregation
   double loss(const double y_t);
-
-  // inline TreeRegressor &tree() const;
+  // Get node at index in the tree
   inline NodeRegressor &node(ulong index) const;
-  ulong n_features() const;
+  // Get number of features
+  inline ulong n_features() const;
+  // Step to use for aggrgation
   inline double step() const;
-
+  // Print of the node
   void print();
-
-  double predict() const;
 
   inline ulong parent() const;
   inline ulong left() const;
@@ -137,10 +138,12 @@ class TreeRegressor {
   // Split the node at given index
   ulong split_leaf(ulong index, const ArrayDouble &x_t, double y_t);
   // Add nodes in the tree
-  ulong add_node(ulong parent, ulong creation_time);
+  ulong add_node(ulong parent);
 
   ulong go_downwards(const ArrayDouble &x_t, double y_t, bool predict);
   void go_upwards(ulong leaf_index);
+
+  double predict(const ArrayDouble &x_t, bool use_aggregation);
 
  public:
   TreeRegressor(OnlineForestRegressor &forest);
@@ -169,9 +172,8 @@ class TreeRegressor {
     return nodes[index];
   }
 
-  double predict(const ArrayDouble &x_t, bool use_aggregation);
-};
 
+};
 
 /*********************************************************************************
  * OnlineForestRegressor
