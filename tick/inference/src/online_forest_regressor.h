@@ -34,20 +34,16 @@ enum class Criterion {
   mse
 };
 
-typedef uint32_t index_t;
-
-template<typename NodeType>
-class Tree;
+class TreeRegressor;
 
 /*********************************************************************************
- * Node<NodeType>
+ * NodeRegressor
  *********************************************************************************/
 
-template<typename NodeType>
-class Node {
+class NodeRegressor {
  protected:
   // Tree containing the node
-  Tree<NodeType> &_tree;
+  TreeRegressor &_tree;
   // Index of the left child
   ulong _left;
   // Index of the right child
@@ -71,89 +67,64 @@ class Node {
   double _weight_tree;
   // true if the node is a leaf
   bool _is_leaf;
-
- public:
-  Node(Tree<NodeType> &tree, ulong parent);
-  Node(const Node<NodeType> &node);
-  Node(const Node<NodeType> &&node);
-  Node<NodeType> &operator=(const Node<NodeType> &) = delete;
-  Node<NodeType> &operator=(const Node<NodeType> &&) = delete;
-  virtual ~Node();
-
-  // Update to apply to a node when going forward in the tree (towards leaves)
-  virtual void update_downwards(const ArrayDouble &x_t, double y_t);
-  // Update of the aggregation weights
-  virtual void update_weight(const double y_t) final;
-  // Update the prediction of the label
-  virtual void update_predict(double y_t) = 0;
-  // Loss function used for aggregation
-  virtual double loss(const double y_t) = 0;
-
-  inline Tree<NodeType> &tree() const;
-  inline NodeType &node(ulong index) const;
-  ulong n_features() const;
-  inline double step() const;
-
-  virtual void print();
-
-  inline ulong parent() const;
-  inline ulong left() const;
-  inline Node<NodeType> &set_left(ulong left);
-  inline ulong right() const;
-  inline Node<NodeType> &set_right(ulong right);
-  inline bool is_leaf() const;
-  inline Node<NodeType> &set_is_leaf(bool is_leaf);
-  inline ulong feature() const;
-  inline Node<NodeType> &set_feature(ulong feature);
-  inline double threshold() const;
-  inline Node<NodeType> &set_threshold(double threshold);
-  inline ulong n_samples() const;
-  inline Node<NodeType> &set_n_samples(ulong n_samples);
-  inline double weight() const;
-  inline Node<NodeType> &set_weight(double weight);
-  inline double weight_tree() const;
-  inline Node<NodeType> &set_weight_tree(double weight);
-  inline const ArrayDouble &x_t() const;
-  inline Node<NodeType> &set_x_t(const ArrayDouble &x_t);
-  inline double y_t() const;
-  inline Node<NodeType>& set_y_t(const double y_t);
-};
-
-/*********************************************************************************
- * NodeRegressor
- *********************************************************************************/
-
-class NodeRegressor : public Node<NodeRegressor> {
- private:
   // Average of the labels in the node (regression only for now)
   double _predict = 0;
-  // Label of the stored sample point
-  double _y_t;
 
  public:
-  NodeRegressor(Tree<NodeRegressor> &tree, ulong parent);
+  NodeRegressor(TreeRegressor &tree, ulong parent);
   NodeRegressor(const NodeRegressor &node);
   NodeRegressor(const NodeRegressor &&node);
   NodeRegressor &operator=(const NodeRegressor &) = delete;
   NodeRegressor &operator=(const NodeRegressor &&) = delete;
-  virtual ~NodeRegressor();
 
-  inline double predict() const;
-  virtual void update_predict(double y_t);
-  virtual double loss(const double y_t);
-  virtual void print();
+  // Update to apply to a node when going forward in the tree (towards leaves)
+  void update_downwards(const ArrayDouble &x_t, double y_t);
+  // Update of the aggregation weights
+  void update_weight(const double y_t);
+  // Update the prediction of the label
+  void update_predict(double y_t);
+  // Loss function used for aggregation
+  double loss(const double y_t);
 
+  // inline TreeRegressor &tree() const;
+  inline NodeRegressor &node(ulong index) const;
+  ulong n_features() const;
+  inline double step() const;
 
+  void print();
+
+  double predict() const;
+
+  inline ulong parent() const;
+  inline ulong left() const;
+  inline NodeRegressor &set_left(ulong left);
+  inline ulong right() const;
+  inline NodeRegressor &set_right(ulong right);
+  inline bool is_leaf() const;
+  inline NodeRegressor &set_is_leaf(bool is_leaf);
+  inline ulong feature() const;
+  inline NodeRegressor &set_feature(ulong feature);
+  inline double threshold() const;
+  inline NodeRegressor &set_threshold(double threshold);
+  inline ulong n_samples() const;
+  inline NodeRegressor &set_n_samples(ulong n_samples);
+  inline double weight() const;
+  inline NodeRegressor &set_weight(double weight);
+  inline double weight_tree() const;
+  inline NodeRegressor &set_weight_tree(double weight);
+  inline const ArrayDouble &x_t() const;
+  inline NodeRegressor &set_x_t(const ArrayDouble &x_t);
+  inline double y_t() const;
+  inline NodeRegressor &set_y_t(const double y_t);
 };
 
 class OnlineForestRegressor;
 
 /*********************************************************************************
- * Tree<NodeType>
+ * TreeRegressor
  *********************************************************************************/
 
-template<typename NodeType>
-class Tree {
+class TreeRegressor {
  protected:
   // The forest of the tree
   OnlineForestRegressor &forest;
@@ -162,22 +133,21 @@ class Tree {
   // Iteration counter
   ulong iteration = 0;
   // Nodes of the tree
-  std::vector<NodeType> nodes = std::vector<NodeType>();
+  std::vector<NodeRegressor> nodes = std::vector<NodeRegressor>();
   // Split the node at given index
   ulong split_leaf(ulong index, const ArrayDouble &x_t, double y_t);
   // Add nodes in the tree
-  virtual ulong add_node(ulong parent, ulong creation_time);
+  ulong add_node(ulong parent, ulong creation_time);
 
   ulong go_downwards(const ArrayDouble &x_t, double y_t, bool predict);
   void go_upwards(ulong leaf_index);
 
  public:
-  Tree(OnlineForestRegressor &forest);
-  Tree(const Tree<NodeType> &tree);
-  Tree(const Tree<NodeType> &&tree);
-  Tree &operator=(const Tree<NodeType> &) = delete;
-  Tree &operator=(const Tree<NodeType> &&) = delete;
-  ~Tree() {}
+  TreeRegressor(OnlineForestRegressor &forest);
+  TreeRegressor(const TreeRegressor &tree);
+  TreeRegressor(const TreeRegressor &&tree);
+  TreeRegressor &operator=(const TreeRegressor &) = delete;
+  TreeRegressor &operator=(const TreeRegressor &&) = delete;
 
   void fit(const ArrayDouble &x_t, double y_t);
 
@@ -188,32 +158,20 @@ class Tree {
   inline double step() const;
 
   void print() {
-    for (NodeType &node : nodes) {
+    for (NodeRegressor &node : nodes) {
       node.print();
     }
   }
 
   inline Criterion criterion() const;
 
-  NodeType &node(ulong index) {
+  NodeRegressor &node(ulong index) {
     return nodes[index];
   }
-};
-
-/*********************************************************************************
- * TreeRegressor
- *********************************************************************************/
-
-class TreeRegressor : public Tree<NodeRegressor> {
- public:
-  TreeRegressor(OnlineForestRegressor &forest);
-  TreeRegressor(const TreeRegressor &tree);
-  TreeRegressor(const TreeRegressor &&tree);
-  TreeRegressor &operator=(const TreeRegressor &) = delete;
-  TreeRegressor &operator=(const TreeRegressor &&) = delete;
 
   double predict(const ArrayDouble &x_t, bool use_aggregation);
 };
+
 
 /*********************************************************************************
  * OnlineForestRegressor
@@ -259,7 +217,7 @@ class OnlineForestRegressor {
   }
 
   void print() {
-    for (Tree<NodeRegressor> &tree: trees) {
+    for (TreeRegressor &tree: trees) {
       tree.print();
     }
   }
