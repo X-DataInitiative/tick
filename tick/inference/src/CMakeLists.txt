@@ -3,7 +3,8 @@ add_library(tick_inference EXCLUDE_FROM_ALL
         hawkes_em.cpp hawkes_em.h
         hawkes_adm4.h hawkes_adm4.cpp
         hawkes_basis_kernels.cpp hawkes_basis_kernels.h
-        hawkes_sumgaussians.h hawkes_sumgaussians.cpp)
+        hawkes_sumgaussians.h hawkes_sumgaussians.cpp
+        online_forest_regressor.h online_forest_regressor.cpp)
 
 target_link_libraries(tick_inference
 

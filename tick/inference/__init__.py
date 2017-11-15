@@ -17,6 +17,8 @@ from .hawkes_sumgaussians import HawkesSumGaussians
 from .survival import kaplan_meier, nelson_aalen
 from .robust import std_iqr, std_mad
 
+from .online_forest_regressor import OnlineForestRegressor
+
 __all__ = [
     "LinearRegression",
     "RobustLinearRegression",
@@ -29,7 +31,8 @@ __all__ = [
     "HawkesEM",
     "HawkesADM4",
     "HawkesBasisKernels",
-    "HawkesSumGaussians,"
+    "HawkesSumGaussians",
+    "OnlineForestRegressor",
     "kaplan_meier",
     "nelson_aalen"
 ]
