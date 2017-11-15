@@ -35,7 +35,7 @@ def run_solvers(model, l_l2sq, ax_list):
     #      lbfgsb_dual.history.values['obj'][i] = lbfgsb.objective(primal)
     # solvers += [lbfgsb_dual]
 
-    max_iter_sdca = 100
+    max_iter_sdca = 1000
     sto_seed = 23983
 
     sdca = SDCA(l_l2sq, max_iter=max_iter_sdca,
@@ -45,25 +45,16 @@ def run_solvers(model, l_l2sq, ax_list):
     sdca.history.name = 'SDCA #1'
     solvers += [sdca]
     #
-    # sdca_2_two = SDCA(l_l2sq, max_iter=max_iter_sdca,
-    #                   print_every=int(max_iter_sdca / 7), tol=1e-10,
-    #                   batch_size=2,
-    #                   seed=sto_seed)
-    # sdca_2_two.set_model(model).set_prox(ProxZero())
-    # sdca_2_two.solve()
-    # sdca_2_two.history.name = 'SDCA #2 Ex'
-    # solvers += [sdca_2_two]
-    #
-    # sdca_2 = SDCA(l_l2sq, max_iter=max_iter_sdca,
-    #               print_every=int(max_iter_sdca / 7), tol=1e-10, batch_size=3,
-    #               seed=sto_seed)
-    # sdca_2.set_model(model).set_prox(ProxZero())
-    # sdca_2.solve()
-    # sdca_2.history.name = 'SDCA #2 LS'
-    # solvers += [sdca_2]
+    sdca_2_two = SDCA(l_l2sq, max_iter=max_iter_sdca,
+                      print_every=int(max_iter_sdca / 7), tol=1e-10,
+                      batch_size=2,
+                      seed=sto_seed)
+    sdca_2_two.set_model(model).set_prox(ProxZero())
+    sdca_2_two.solve()
+    sdca_2_two.history.name = 'SDCA #2 Ex'
+    solvers += [sdca_2_two]
 
-    batch_sizes = [7, 15, 30, 40]
-    batch_sizes = [5, 30]
+    batch_sizes = [2, 3, 7, 15, 20, 30, 35]
     for batch_size in batch_sizes:
         sdca_batch = SDCA(l_l2sq, max_iter=max_iter_sdca,
                           print_every=int(max_iter_sdca / 7), tol=0,
