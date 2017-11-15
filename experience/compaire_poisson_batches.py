@@ -35,50 +35,43 @@ def run_solvers(model, l_l2sq, ax_list):
     #      lbfgsb_dual.history.values['obj'][i] = lbfgsb.objective(primal)
     # solvers += [lbfgsb_dual]
 
-    max_iter_sdca = 1000
+    max_iter_sdca = 100
+    sto_seed = 23983
 
     sdca = SDCA(l_l2sq, max_iter=max_iter_sdca,
-                print_every=int(max_iter_sdca / 7), tol=1e-10)
+                print_every=int(max_iter_sdca / 7), tol=1e-10, seed=sto_seed)
     sdca.set_model(model).set_prox(ProxZero())
     sdca.solve()
+    sdca.history.name = 'SDCA #1'
     solvers += [sdca]
+    #
+    # sdca_2_two = SDCA(l_l2sq, max_iter=max_iter_sdca,
+    #                   print_every=int(max_iter_sdca / 7), tol=1e-10,
+    #                   batch_size=2,
+    #                   seed=sto_seed)
+    # sdca_2_two.set_model(model).set_prox(ProxZero())
+    # sdca_2_two.solve()
+    # sdca_2_two.history.name = 'SDCA #2 Ex'
+    # solvers += [sdca_2_two]
+    #
+    # sdca_2 = SDCA(l_l2sq, max_iter=max_iter_sdca,
+    #               print_every=int(max_iter_sdca / 7), tol=1e-10, batch_size=3,
+    #               seed=sto_seed)
+    # sdca_2.set_model(model).set_prox(ProxZero())
+    # sdca_2.solve()
+    # sdca_2.history.name = 'SDCA #2 LS'
+    # solvers += [sdca_2]
 
-    sdca_2_two = SDCA(l_l2sq, max_iter=max_iter_sdca,
-                  print_every=int(max_iter_sdca / 7), tol=1e-10, batch_size=2)
-    sdca_2_two.set_model(model).set_prox(ProxZero())
-    sdca_2_two.solve()
-    solvers += [sdca_2_two]
-
-    sdca_2 = SDCA(l_l2sq, max_iter=max_iter_sdca,
-                  print_every=int(max_iter_sdca / 7), tol=1e-10, batch_size=3)
-    sdca_2.set_model(model).set_prox(ProxZero())
-    sdca_2.solve()
-    solvers += [sdca_2]
-
-    sdca_7 = SDCA(l_l2sq, max_iter=max_iter_sdca,
-                  print_every=int(max_iter_sdca / 7), tol=1e-10, batch_size=8)
-    sdca_7.set_model(model).set_prox(ProxZero())
-    sdca_7.solve()
-    solvers += [sdca_7]
-
-    sdca_15 = SDCA(l_l2sq, max_iter=max_iter_sdca,
-                   print_every=int(max_iter_sdca / 7), tol=1e-10, batch_size=16)
-    sdca_15.set_model(model).set_prox(ProxZero())
-    sdca_15.solve()
-    solvers += [sdca_15]
-
-    sdca_30 = SDCA(l_l2sq, max_iter=max_iter_sdca,
-                  print_every=int(max_iter_sdca / 7), tol=1e-10, batch_size=31)
-    sdca_30.set_model(model).set_prox(ProxZero())
-    sdca_30.solve()
-    solvers += [sdca_30]
-
-    sdca_60 = SDCA(l_l2sq, max_iter=max_iter_sdca,
-                  print_every=int(max_iter_sdca / 7), tol=1e-10, batch_size=61)
-    solvers += [sdca_60]
-
-    sdca_60.set_model(model).set_prox(ProxZero())
-    sdca_60.solve()
+    batch_sizes = [7, 15, 30, 40]
+    batch_sizes = [5, 30]
+    for batch_size in batch_sizes:
+        sdca_batch = SDCA(l_l2sq, max_iter=max_iter_sdca,
+                          print_every=int(max_iter_sdca / 7), tol=0,
+                          batch_size=batch_size + 1, seed=sto_seed)
+        sdca_batch.set_model(model).set_prox(ProxZero())
+        sdca_batch.solve()
+        sdca_batch.history.name = 'SDCA #{}'.format(sdca_batch.batch_size - 1)
+        solvers += [sdca_batch]
 
     labels = []
     for solver in solvers:
@@ -91,7 +84,9 @@ def run_solvers(model, l_l2sq, ax_list):
             time_per_ite = solver.history.last_values['time'] / \
                            solver.history.last_values['n_iter']
             time_per_ite *= 1000
-            labels += ['SDCA #{} {:.2g} ms/i'.format(solver.batch_size, time_per_ite)]
+            labels += [
+                '{} {:.2g} ms/i'.format(solver.history.name,
+                                        time_per_ite)]
         else:
             labels += [solver.__class__.__name__]
 
@@ -108,11 +103,20 @@ features, labels = fetch_poisson_dataset(dataset, n_samples=10000)
 model = ModelPoisReg(fit_intercept=False, link='identity')
 model.fit(features, labels)
 
-
 l_2sq_list = [1e-2, 1e-3, 1e-4, 1. / np.sqrt(len(labels))]
-fig, ax_list_list = plt.subplots(2, len(l_2sq_list))
-for i, l_2sq in enumerate(l_2sq_list):
-    run_solvers(model, l_2sq, ax_list_list[:, i])
-    ax_list_list[0, i].set_title('$\\lambda = {:.3g}$'.format(l_2sq))
+l_2sq_list = [1e-4,]
+fig, ax_list = plt.subplots(2, len(l_2sq_list), figsize=(12, 8))
+if len(l_2sq_list) == 1:
+    ax_list = np.array([ax_list]).T
 
+for i, l_2sq in enumerate(l_2sq_list):
+    run_solvers(model, l_2sq, ax_list[:, i])
+    ax_list[0, i].set_title('$n={}$ $d={}$ $\\lambda = {:.3g}$'
+                            .format(features.shape[0], features.shape[1],
+                                    l_2sq))
+    if i != len(l_2sq_list) - 1:
+        ax_list[0, i].legend_.remove()
+        ax_list[1, i].legend_.remove()
+
+fig.tight_layout()
 plt.show()

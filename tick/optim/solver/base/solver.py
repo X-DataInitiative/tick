@@ -82,7 +82,7 @@ class Solver(Base):
         self.record_every = record_every
         # Create an history object which deals with printing information
         # along the optimization loop, and stores information
-        self.history = History()
+        self.history = History(self.name)
         self.time_start = None
         self._time_start = None
         self.time_elapsed = None

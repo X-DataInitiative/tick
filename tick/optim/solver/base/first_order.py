@@ -112,6 +112,12 @@ class SolverFirstOrder(Solver):
             raise ValueError('Passed object %s has not been fitted. You must '
                              'call ``fit`` on it before passing it to '
                              '``set_model``' % model.name)
+
+        if hasattr(model, 'n_samples'):
+            self.history.n_samples = model.n_samples
+        if hasattr(model, 'n_features'):
+            self.history.n_features = model.n_features
+
         self._set("model", model)
         return self
 

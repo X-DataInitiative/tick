@@ -115,6 +115,35 @@ TEST(Array2dTest, LinearColumnMajorSystem) {
   ArrayDouble2d arrA_copy = arrA;
   arrA.solve_linear(b);
 
+  b.print();
+
+  for (ulong i = 0; i < size; ++i) {
+    double b_sol_i = view_row(arrA_copy, i).dot(b);
+    ASSERT_DOUBLE_EQ(b_sol_i, b_copy[i]);
+  }
+}
+
+TEST(Array2dTest, LinearColumnMajorSystem2) {
+  ulong size = 3;
+//  ArrayDouble b = ::GenerateRandomArray<ArrayDouble>(size);
+  ArrayDouble b {1487.06,5851.89,1590.46};
+  ArrayDouble b_copy = b;
+  ArrayDouble arrAData {-100.744,-0.597835,-0.714557,
+                        -0.597835,-44600.7,-0.66181,
+                        -0.714557,-0.66181,-100.82};
+  ArrayDouble2d arrA(size, size, arrAData.data());
+
+  TICK_DEBUG();
+  arrA.print();
+  b.print();
+
+
+  ArrayDouble2d arrA_copy = arrA;
+//  arrA.solve_linear(b);
+  tick::vector_operations<double>{}.solve_linear_system(size, arrA.data(), b.data());
+
+  b.print();
+
   for (ulong i = 0; i < size; ++i) {
     double b_sol_i = view_row(arrA_copy, i).dot(b);
     ASSERT_DOUBLE_EQ(b_sol_i, b_copy[i]);

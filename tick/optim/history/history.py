@@ -62,10 +62,16 @@ class History(Base):
         "last_values": {
             "writable": False
         },
+        "name": {
+            "writable": True
+        },
+        'n_samples': {"writable": True},
+        'n_features': {"writable": True},
     }
 
-    def __init__(self):
+    def __init__(self, name=""):
         Base.__init__(self)
+        self.name = name
         self._minimum_col_width = 9
         self.print_order = ["n_iter", "obj", "step", "rel_obj"]
         # Instantiate values of the history

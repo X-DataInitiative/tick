@@ -49,3 +49,4 @@ XCode/
 # Build directory for C++ tests
 cpp_test_build/
 tick/cmake-build-debug
+experience/*.pkl

@@ -196,8 +196,8 @@ std::tuple<double, double> ModelPoisReg::sdca_dual_min_ij(
 //    newton_descent_j =
 //      n_grad_i * inverse_hess_ij_over_n + n_grad_j * inverse_hess_jj_over_n;
 
-    double b[2] {n_grad_i, n_grad_j};
-    double A[4] {n_hess_ii, n_hess_ij, n_hess_ij, n_hess_jj};
+    double b[2]{n_grad_i, n_grad_j};
+    double A[4]{n_hess_ii, n_hess_ij, n_hess_ij, n_hess_jj};
 
 ////    tick::vector_operations<double>{}.solve_symmetric_linear_system(2, A, b);
     tick::vector_operations<double>{}.solve_linear_system(2, A, b);
@@ -236,6 +236,8 @@ ArrayDouble ModelPoisReg::sdca_dual_min_many(const ArrayULong indices,
                                              const ArrayDouble duals,
                                              const ArrayDouble &primal_vector,
                                              double l_l2sq) {
+  const double smallest_dual = 1e-13;
+
   if (link_type == LinkType::exponential) {
     TICK_ERROR("Not available for exponential link")
   }
@@ -277,12 +279,12 @@ ArrayDouble ModelPoisReg::sdca_dual_min_many(const ArrayULong indices,
       }
     }
   }
-  
+
   ArrayDouble p(n_indices);
   for (ulong i = 0; i < n_indices; ++i) p[i] = get_inner_prod(indices[i], primal_vector);
-  
+
   ArrayDouble delta_duals(n_indices);
-  for (ulong i = 0; i < n_indices; ++i) delta_duals[i] = duals[i] == 0? 0.1 : 0;
+  for (ulong i = 0; i < n_indices; ++i) delta_duals[i] = duals[i] == 0 ? 0.1 : 0;
 
   double epsilon = 1e-1;
 
@@ -290,16 +292,19 @@ ArrayDouble ModelPoisReg::sdca_dual_min_many(const ArrayULong indices,
   ArrayDouble newton_descents(n_indices);
   ArrayDouble n_grad(n_indices);
   ArrayDouble2d n_hess(n_indices, n_indices);
-  for (int k = 0; k < 20; ++k) {
+
+  ArrayDouble n_grad_copy(n_indices);
+  ArrayDouble2d n_hess_copy(n_indices, n_indices);
+  for (int k = 0; k < 100; ++k) {
 
     for (ulong i = 0; i < n_indices; ++i) {
       new_duals[i] = duals[i] + delta_duals[i];
 
       // Check we are in the correct bounds
-      if (new_duals[i] <= 0) {
+      if (new_duals[i] <= smallest_dual) {
         new_duals[i] = epsilon;
         delta_duals[i] = new_duals[i] - duals[i];
-        epsilon *= 1e-1;
+        epsilon = std::max(smallest_dual , epsilon * 1e-1);
       }
     }
 
@@ -307,14 +312,25 @@ ArrayDouble ModelPoisReg::sdca_dual_min_many(const ArrayULong indices,
       n_grad[i] = labels[i] / new_duals[i] - p[i];
 
       for (ulong j = 0; j < n_indices; ++j) {
-        n_grad[i] -=  delta_duals[j] * g(i, j);
+        n_grad[i] -= delta_duals[j] * g(i, j);
         n_hess(i, j) = -g(i, j);
       }
 
       n_hess(i, i) -= labels[i] / (new_duals[i] * new_duals[i]);
     }
 
+    n_grad_copy = n_grad;
+    n_hess_copy = n_hess;
+
+//    n_grad.print();
+//    n_hess.print();
+
     tick::vector_operations<double>{}.solve_linear_system(n_indices, n_hess.data(), n_grad.data());
+
+//    n_grad.print();
+//    n_hess.print();
+//    std::cout << "------------" << std::endl;
+
     delta_duals.mult_incr(n_grad, -1.);
 
     bool all_converged = true;
@@ -327,23 +343,74 @@ ArrayDouble ModelPoisReg::sdca_dual_min_many(const ArrayULong indices,
   }
 
   double mean = 0;
+  double max = 0;
+
   for (ulong i = 0; i < n_indices; ++i) {
-    mean += std::abs(n_grad[i]);
+    const double abs_grad_i = std::abs(n_grad[i]);
+    mean += abs_grad_i;
+    max = abs_grad_i > max ? abs_grad_i : max;
   }
   mean /= n_indices;
 
-  if (mean > 1e-7) {
-    std::cout << "did not converge" << std::endl;
-    indices.print();
-    n_grad.print();
+  if (mean > 1e-4) {
+    std::cout << "did not converge with mean=" << mean
+              << ", max=" << max << std::endl;
+//    indices.print();
+//    n_grad.print();
+//    g.print();
+//    p.print();
+//    if (max > 1e2) {
+//      ArrayDouble zero_delta_duals(n_indices);
+//      zero_delta_duals.init_to_zero();
+//      return zero_delta_duals;
+//    }
   }
 
+  bool print_new_duals = false;
   for (ulong i = 0; i < n_indices; ++i) {
     // Check we are in the correct bounds
-    if (new_duals[i] <= 0) {
+    if (new_duals[i] <= smallest_dual) {
       new_duals[i] = epsilon;
       delta_duals[i] = new_duals[i] - duals[i];
     }
+
+    print_new_duals |= new_duals[i] <= 1e-15;
+  }
+  if (print_new_duals){
+    std::cout << "new duals are very small" << std::endl;
+    new_duals.print();
+  }
+
+  double delta_mean = 0;
+  double delta_max = 0;
+  for (ulong i = 0; i < n_indices; ++i) {
+    const double abs_delta_dual_i = std::abs(delta_duals[i]);
+    delta_mean += abs_delta_dual_i;
+    delta_max = std::max(delta_max, abs_delta_dual_i);
+  }
+  delta_mean /= n_indices;
+
+  if (delta_max > (1e2 * delta_mean)) {
+    std::cout << "delta_max is too high!! delta_mean=" << delta_mean
+              << ", delta_max=" << delta_max << std::endl;
+    ArrayDouble zero_delta_duals(n_indices);
+    zero_delta_duals.init_to_zero();
+    return zero_delta_duals;
+  }
+
+  if (delta_mean > 1e4) {
+    std::cout << "delta_mean is too high!! delta_mean=" << delta_mean
+              << ", delta_max=" << delta_max << std::endl;
+
+    n_grad_copy.print();
+    n_hess_copy.print();
+
+    new_duals.print();
+    n_grad.print();
+
+    ArrayDouble zero_delta_duals(n_indices);
+    zero_delta_duals.init_to_zero();
+    return zero_delta_duals;
   }
 
   return delta_duals;

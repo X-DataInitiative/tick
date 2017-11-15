@@ -289,9 +289,16 @@ class SCPG(SolverFirstOrder):
                            np.sum(grad_y_ssc * (x - y), axis=None) + \
                            1. / (2 * step) * norm(x - y) ** 2
                 test = (obj_x_ssc <= envelope)
+
+                # test = obj_x_ssc < obj_y_ssc
+                print('obj_y_ssc', obj_y_ssc)
+                print('obj_x_ssc', obj_x_ssc)
+
             if test:
                 break
             step *= self.linesearch_step_decrease
+
+        print('chosen step', step)
         return step
 
     def _gradient_step(self, x, prev_x, grad_x_ssc, prev_grad_x_ssc,
@@ -300,18 +307,29 @@ class SCPG(SolverFirstOrder):
         # alpha_k
 
         # Barzilai-Borwein step
-        if n_iter % 10 == 1:
+        if n_iter % 10 == 11:
             tmp = x - prev_x
-            if np.linalg.norm(tmp, 2) ** 2 > 0:
+            print('x \t\t\t\t', x)
+            print('prev_x\t\t\t', prev_x)
+
+            print('grad_x_ssc \t\t', grad_x_ssc)
+            print('prev_grad_x_ssc\t', prev_grad_x_ssc)
+
+            print('(grad_x_ssc - prev_grad_x_ssc).dot(tmp)', (grad_x_ssc - prev_grad_x_ssc).dot(tmp))
+            print('np.linalg.norm(tmp, 2) ** 2', np.linalg.norm(tmp, 2) ** 2)
+
+            if np.linalg.norm(tmp, 2) ** 2 > 1e-3:
                 l_k = (grad_x_ssc - prev_grad_x_ssc).dot(tmp) / \
                       (np.linalg.norm(tmp, 2) ** 2)
+
+        print('l_k', l_k)
         l_k *= 2
 
         prev_grad_x_ssc[:] = grad_x_ssc
         prev_x[:] = x
         # Compute x_new, next step vector
-        condition = False
-        while not condition:
+        conditions = False
+        while not conditions:
             y_k = self.prox_ssc.call(x - grad_x_ssc / l_k, 1. / l_k)
             d_k = y_k - x
             beta_k = np.sqrt(l_k) * np.linalg.norm(d_k, 2)
@@ -320,9 +338,16 @@ class SCPG(SolverFirstOrder):
             alpha_k = beta_k * beta_k / \
                       (lambda_k * (lambda_k + beta_k * beta_k))
             # condition = lambda_k >= 1 or lambda_k >= beta_k
-            condition = 0 <= alpha_k < 1
+            condition1 = 0 <= alpha_k < 1
 
-            if not condition:
+            print('beta_k  ', beta_k)
+            print('lambda_k', lambda_k)
+            print('alpha_k ', alpha_k)
+
+            condition2 = lambda_k * lambda_k / (beta_k * beta_k) + lambda_k > 1
+
+            conditions = condition1 and condition2
+            if not conditions:
                 l_k /= 2
 
             if np.isnan(l_k):
@@ -337,6 +362,8 @@ class SCPG(SolverFirstOrder):
         return x_new, y_k, alpha_k, beta_k, lambda_k, l_k
 
     def _solve(self, x0: np.ndarray = None, step: float = None):
+
+        np.set_printoptions(precision=2)
 
         step, obj, x, prev_x, prev_grad_x_ssc, grad_x_ssc = \
             self._initialize_values(x0, step=step)

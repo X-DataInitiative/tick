@@ -59,7 +59,7 @@ def fetch_news_popularity_dataset(n_samples=39797):
     dataset_path = '00332/OnlineNewsPopularity.zip'
     data_filename = "OnlineNewsPopularity/OnlineNewsPopularity.csv"
 
-    original_df = fetch_uci_dataset(dataset_path, data_filename, header=-1)
+    original_df = fetch_uci_dataset(dataset_path, data_filename)
     shuffled_df = shuffle(original_df)
 
     data = shuffled_df.head(n_samples).values

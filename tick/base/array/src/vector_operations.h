@@ -146,13 +146,24 @@ struct vector_operations_cblas<double> final : public vector_operations_cblas_ba
 
 #if defined(__APPLE__)
   void solve_linear_system(int n, double *A, double *b) const {
-    int ipv;
-    int info;
+
     int n_cols = 1;
-    dgesv_(&n, &n_cols, A, &n, &ipv, b, &n, &info);
+    int lda = n;
+    int* ipiv = new int[n];
+    int ldb = n;
+    int info;
+    dgesv_(&n, &n_cols, A, &lda, ipiv, b, &ldb, &info);
     if (info != 0) {
+//      for (int i = 0; i < n; ++i) {
+//        for (int j = 0; j < n; ++j) {
+//          std::cout << A[i * n + j] << ", ";
+//        }
+//        std::cout << "\n";
+//      }
+      std::cout << std::endl;
       TICK_ERROR("Linear solver failed with info=" << info)
     }
+    delete[] ipiv;
   }
 
   void solve_symmetric_linear_system(int n, double *A, double *b) const {
@@ -161,7 +172,14 @@ struct vector_operations_cblas<double> final : public vector_operations_cblas_ba
     char UPLO = 'L';
     dposv_(&UPLO, &n, &n_cols, A, &n, b, &n, &info);
     if (info != 0) {
-      TICK_ERROR("Linear solver failed with info=" << info)
+//      for (int i = 0; i < n; ++i) {
+//        for (int j = 0; j < n; ++j) {
+//          std::cout << A[i * n + j] << ", ";
+//        }
+//        std::cout << "\n";
+//      }
+      std::cout << std::endl;
+      TICK_ERROR("Symmetric linear solver failed with info=" << info)
     }
   }
 

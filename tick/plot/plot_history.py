@@ -5,6 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from tick.inference.base.learner_glm import LearnerOptim
+from tick.optim.history import History
 from tick.optim.solver.base.solver import Solver
 from tick.plot.plot_utilities import get_plot_color
 
@@ -19,6 +20,9 @@ def extract_history(solvers, x, y, given_labels):
             label = solver._solver_obj.name
         elif isinstance(solver, Solver):
             history = solver.history
+            label = solver.name
+        elif isinstance(solver, History):
+            history = solver
             label = solver.name
         else:
             raise ValueError('%s has no history' % solver.__class__.__name__)
