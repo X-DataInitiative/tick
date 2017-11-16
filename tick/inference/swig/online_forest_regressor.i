@@ -8,14 +8,15 @@
 %}
 
 
-enum class Criterion {
+enum class CriterionRegressor {
   unif = 0,
   mse
 };
 
 class OnlineForestRegressor {
  public:
-  OnlineForestRegressor(uint32_t n_trees, double step, Criterion criterion, int32_t n_threads, int seed, bool verbose);
+  OnlineForestRegressor(uint32_t n_trees, double step, CriterionRegressor criterion,
+                        int32_t n_threads, int seed, bool verbose);
 
   void fit(const SArrayDouble2dPtr features, const SArrayDoublePtr labels);
   void predict(const SArrayDouble2dPtr features, SArrayDoublePtr predictions, bool use_aggregation);
@@ -32,8 +33,8 @@ class OnlineForestRegressor {
 
   int32_t n_threads() const;
   OnlineForestRegressor &set_n_threads(int32_t n_threads);
-  Criterion criterion() const;
-  OnlineForestRegressor &set_criterion(Criterion criterion);
+  CriterionRegressor criterion() const;
+  OnlineForestRegressor &set_criterion(CriterionRegressor criterion);
   int seed() const;
   OnlineForestRegressor &set_seed(int seed);
   // bool verbose() const;

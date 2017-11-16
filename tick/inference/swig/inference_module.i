@@ -25,3 +25,4 @@
 %include hawkes_sumgaussians.i
 
 %include online_forest_regressor.i
+%include online_forest_classifier.i

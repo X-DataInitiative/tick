@@ -18,6 +18,7 @@ from .survival import kaplan_meier, nelson_aalen
 from .robust import std_iqr, std_mad
 
 from .online_forest_regressor import OnlineForestRegressor
+from .online_forest_classifier import OnlineForestClassifier
 
 __all__ = [
     "LinearRegression",
@@ -33,6 +34,7 @@ __all__ = [
     "HawkesBasisKernels",
     "HawkesSumGaussians",
     "OnlineForestRegressor",
+    "OnlineForestClassifier",
     "kaplan_meier",
     "nelson_aalen"
 ]

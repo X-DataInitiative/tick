@@ -242,7 +242,10 @@ ulong TreeRegressor::split_leaf(ulong index, const ArrayDouble &x_t, double y_t)
   current_node.set_feature(feature).set_threshold(threshold);
   // We pass the sample to the new leaves, and initialize the _label_average with the value
   data_node.set_x_t(x_t).set_y_t(y_t);
+
+  // other_node.set_x_t(current_node.x_t()).set_y_t(current_node.y_t());
   other_node.set_x_t(current_node.x_t()).set_y_t(current_node.y_t());
+
   // Update downwards of v'
   other_node.update_downwards(current_node.x_t(), current_node.y_t());
   // Update upwards of v': it's a leaf
@@ -326,31 +329,28 @@ double TreeRegressor::predict(const ArrayDouble &x_t, bool use_aggregation) {
   }
   ulong current = leaf;
   // The child of the current node that does not contain the data
-  ulong other_index;
-  ulong parent;
-  ulong data_index;
+//  ulong other_index;
+//  ulong parent;
+//  ulong data_index;
   double pred;
   while (true) {
     // std::cout << "node: " << current << std::endl;
     NodeRegressor &current_node = node(current);
     if (current_node.is_leaf()) {
       pred = current_node.predict();
-      // weight = current_node.weight() * current_node.predict();
-      // weight = std::exp(current_node.weight()) * current_node.labels_average();
     } else {
-      parent = current_node.parent();
-      if (node(parent).left() == current) {
-        // other_index = node(parent).right();
-        data_index = node(parent).left();
-
-      } else {
-        // other_index = node(parent).left();
-        data_index = node(parent).right();
-      }
-      NodeRegressor& data_node = node(data_index);
-
-      double a = 0.5 * std::exp(current_node.weight() - current_node.weight_tree()) * current_node.predict();
-      pred = a + (1 - 0.5 * std::exp(current_node.weight() - current_node.weight_tree())) * pred;
+//      parent = current_node.parent();
+//      if (node(parent).left() == current) {
+//        // other_index = node(parent).right();
+//        data_index = node(parent).left();
+//
+//      } else {
+//        // other_index = node(parent).left();
+//        data_index = node(parent).right();
+//      }
+//      NodeRegressor& data_node = node(data_index);
+      double w = std::exp(current_node.weight() - current_node.weight_tree());
+      pred = 0.5 * w * current_node.predict() + (1 - 0.5 * w) * pred;
 
 //      weight = 0.5 * current_node.weight() * current_node.predict()
 //          + 0.5 * node(other).weight_tree() * weight;
@@ -382,7 +382,7 @@ inline double TreeRegressor::step() const {
   return forest.step();
 }
 
-inline Criterion TreeRegressor::criterion() const {
+inline CriterionRegressor TreeRegressor::criterion() const {
   return forest.criterion();
 }
 
@@ -392,7 +392,7 @@ inline Criterion TreeRegressor::criterion() const {
 
 OnlineForestRegressor::OnlineForestRegressor(uint32_t n_trees,
                                              double step,
-                                             Criterion criterion,
+                                             CriterionRegressor criterion,
                                              int32_t n_threads,
                                              int seed,
                                              bool verbose)
@@ -456,79 +456,6 @@ inline ulong OnlineForestRegressor::sample_feature() {
 inline double OnlineForestRegressor::sample_threshold(double left, double right) {
   return rand.uniform(left, right);
 }
-
-//inline double OnlineForestRegressor::step() const {
-//  return _step;
-//}
-//
-//void OnlineForestRegressor::print() {
-//  for (Tree<NodeRegressor> &tree: trees) {
-//    tree.print();
-//  }
-//}
-//
-//inline ulong OnlineForestRegressor::n_samples() const {
-//  if (_iteration > 0) {
-//    return _iteration;
-//  } else {
-//    TICK_ERROR("You must call ``fit`` before asking for ``n_samples``.")
-//  }
-//}
-
-//inline ulong OnlineForestRegressor::n_features() const {
-//  if (_iteration > 0) {
-//    return _n_features;
-//  } else {
-//    TICK_ERROR("You must call ``fit`` before asking for ``n_features``.")
-//  }
-//}
-
-//inline OnlineForestRegressor &OnlineForestRegressor::set_n_features(ulong n_features) {
-//  if (_iteration == 0) {
-//    _n_features = n_features;
-//  } else {
-//    TICK_ERROR("OnlineForest::set_n_features can be called only once !")
-//  }
-//  return *this;
-//}
-
-//inline uint32_t OnlineForestRegressor::n_trees() const {
-//  return _n_trees;
-//}
-
-
-//inline OnlineForestRegressor &OnlineForestRegressor::set_n_trees(uint32_t n_trees) {
-//  _n_trees = n_trees;
-//  return *this;
-//}
-
-//inline int32_t OnlineForestRegressor::n_threads() const {
-//  return _n_threads;
-//}
-
-//OnlineForestRegressor &OnlineForestRegressor::set_n_threads(int32_t n_threads) {
-//  _n_threads = n_threads;
-//  return *this;
-//}
-
-//inline Criterion OnlineForestRegressor::criterion() const {
-//  return _criterion;
-//}
-
-//inline OnlineForestRegressor &OnlineForestRegressor::set_criterion(Criterion criterion) {
-//  _criterion = criterion;
-//  return *this;
-//}
-//
-//inline int OnlineForestRegressor::seed() const {
-//  return _seed;
-//}
-
-//inline OnlineForestRegressor &OnlineForestRegressor::set_seed(int seed) {
-//  _seed = seed;
-//  rand.reseed(seed);
-//  return *this;
-//}
 
 //inline bool OnlineForestRegressor::verbose() const {
 //  return _verbose;

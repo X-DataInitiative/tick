@@ -5,15 +5,16 @@ from abc import ABC
 from tick.base import Base
 from tick.base import actual_kwargs
 
-from .build.inference import OnlineForestRegressor as _OnlineForestRegressor
+from .build.inference import OnlineForestClassifier as _OnlineForestClassifier
 from tick.preprocessing.utils import safe_array
 
-from .build.inference import CriterionRegressor_unif as unif
-from .build.inference import CriterionRegressor_mse as mse
+from .build.inference import CriterionClassifier_log as log
 
 
-class OnlineForestRegressor(ABC, Base):
+class OnlineForestClassifier(ABC, Base):
     """Truly online random forest for regression (continuous labels). BLABLA
+
+    TODO: update docstrings
 
     Parameters
     ----------
@@ -21,7 +22,7 @@ class OnlineForestRegressor(ABC, Base):
         Number of trees to grow in the forest. Cannot be changed after the first
         call to ``fit``.
 
-    criterion : {'unif', 'mse'}, default='unif'
+    criterion : {'log'}, default='log'
         The criterion used to selected a split. Supported criteria are:
         * 'unif': splits are sampled uniformly in the range of the features, and
           the feature to be splitted is chosen uniformly at random
@@ -83,7 +84,7 @@ class OnlineForestRegressor(ABC, Base):
 
     @actual_kwargs
     def __init__(self, n_trees: int = 10, step: float = 1.,
-                 criterion: str = 'unif',
+                 criterion: str = 'log',
                  max_depth: int = -1, min_samples_split: int = 50,
                  n_threads: int = 1, seed: int = -1, verbose: bool = True,
                  warm_start: bool = True, n_splits: int = 10):
@@ -101,7 +102,7 @@ class OnlineForestRegressor(ABC, Base):
         self.verbose = verbose
         self.warm_start = warm_start
         self.n_splits = n_splits
-        self._forest = _OnlineForestRegressor(n_trees,
+        self._forest = _OnlineForestClassifier(n_trees,
                                               step,
                                               self._criterion,
                                               #max_depth,
@@ -161,18 +162,13 @@ class OnlineForestRegressor(ABC, Base):
 
     @property
     def criterion(self):
-        if self._criterion == unif:
-            return 'unif'
-        else:
-            return 'mse'
+        if self._criterion == log:
+            return 'log'
 
     @criterion.setter
     def criterion(self, value):
-        if value == 'unif':
-            self._set('_criterion', unif)
+        if value == 'log':
+            self._set('_criterion', log)
             # self._forest.set_criterion(unif)
-        elif value == 'mse':
-            self._set('_criterion', mse)
-            # self._forest.set_criterion(mse)
         else:
             raise ValueError("``criterion`` must be either 'unif' or 'mse'.")

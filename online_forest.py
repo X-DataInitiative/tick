@@ -1,7 +1,7 @@
 from tick.simulation import SimuLinReg, weights_sparse_gauss
 from sklearn.model_selection import train_test_split
 import numpy as np
-from tick.inference import OnlineForestRegressor
+from tick.inference import OnlineForestRegressor, OnlineForestClassifier
 from matplotlib.colors import ListedColormap
 
 from sklearn.ensemble import RandomForestRegressor, ExtraTreesRegressor
@@ -148,7 +148,7 @@ datasets = [
 ]
 
 clfs = [
-    OnlineForestRegressor(n_trees=n_trees, seed=123, step=0.25),
+    OnlineForestClassifier(n_trees=n_trees, seed=123, step=0.25),
     ExtraTreesRegressor(n_estimators=n_trees),
     RandomForestRegressor(n_estimators=n_trees)
 ]

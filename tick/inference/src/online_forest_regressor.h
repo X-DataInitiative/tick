@@ -12,38 +12,23 @@
 // TODO: faire tres attention au features binaires si le range est 0 sur toutes les coordonnées, ne rien faire
 // TODO: code a classifier
 
-// TODO: choisir la feature proportionnellement au ratio de la longueur du cote / perimetre. Ca suppose qu'on enregistre
-//       les vraies dimensions de la cellule, et le threhsold est du coup aussi tiré là dedans
 // TODO: choisir la feature proportionnellement au ratio des range de features, mais attention au cas de features
 //       discretes
 // TODO: une option pour créer une cellule vide, enfin oublier les donnes dans la cellule quand elle a ete splitee
 
 // TODO: choix de la feature les labels
 
-// TODO: des fit_online qui prend un mini batch et qui met à jour la foret, mais dans ce cas on ne met qu'un point par
-//       cellule, du coup pas besoin d'enregistrer les sample index ou les points. Ca suppose que min_sample_split == 1
-
-// TODO: pour la regression, on utilise la moyenne des y
 // TODO: pour la classification, on utilise pas les frequences, on utilise des frequences regularisees, prior Dirichlet p_c = (n_c + 0.5) + (\sum n_c + C / 2). En fait une option
 
 // TODO: check that not using reserve in the forest works as well...
 
 
-enum class Criterion {
+enum class CriterionRegressor {
   unif = 0,
   mse
 };
 
 
-// Computation of log( (e^a + e^b) / 2) in an overproof way
-inline double log_sum_2_exp(const double a, const double b) {
-  // TODO if |a - b| > 50 skip
-  if (a > b) {
-    return a + std::log((1 + std::exp(b - a)) / 2);
-  } else {
-    return b + std::log((1 + std::exp(a - b)) / 2);
-  }
-}
 
 class TreeRegressor;
 
@@ -88,6 +73,15 @@ class NodeRegressor {
   NodeRegressor &operator=(const NodeRegressor &) = delete;
   NodeRegressor &operator=(const NodeRegressor &&) = delete;
 
+  // Computation of log( (e^a + e^b) / 2) in an overproof way
+  inline static double log_sum_2_exp(const double a, const double b) {
+    // TODO if |a - b| > 50 skip
+    if (a > b) {
+      return a + std::log((1 + std::exp(b - a)) / 2);
+    } else {
+      return b + std::log((1 + std::exp(a - b)) / 2);
+    }
+  }
   // Update to apply to a node when going forward in the tree (towards leaves)
   void update_downwards(const ArrayDouble &x_t, const double y_t);
   // Update to apply to a node when going upward in the tree (towards the root)
@@ -174,7 +168,7 @@ class TreeRegressor {
     }
   }
 
-  inline Criterion criterion() const;
+  inline CriterionRegressor criterion() const;
 
   NodeRegressor &node(ulong index) {
     return nodes[index];
@@ -191,8 +185,8 @@ class OnlineForestRegressor {
   uint32_t _n_trees;
   // Number of threads to use for parallel growing of trees
   int32_t _n_threads;
-  // Criterion used for splitting (not used for now)
-  Criterion _criterion;
+  // CriterionRegressor used for splitting (not used for now)
+  CriterionRegressor _criterion;
   // Step-size used for aggregation
   double _step;
   // Number of features.
@@ -211,7 +205,8 @@ class OnlineForestRegressor {
   void create_trees();
 
  public:
-  OnlineForestRegressor(uint32_t n_trees, double step, Criterion criterion, int32_t n_threads, int seed, bool verbose);
+  OnlineForestRegressor(uint32_t n_trees, double step, CriterionRegressor criterion, int32_t n_threads,
+                        int seed, bool verbose);
   virtual ~OnlineForestRegressor();
 
   void fit(const SArrayDouble2dPtr features, const SArrayDoublePtr labels);
@@ -268,18 +263,8 @@ class OnlineForestRegressor {
     return _n_threads;
   }
 
-  inline OnlineForestRegressor &set_n_threads(int32_t n_threads) {
-    _n_threads = n_threads;
-    return *this;
-  }
-
-  inline Criterion criterion() const {
+  inline CriterionRegressor criterion() const {
     return _criterion;
-  }
-
-  inline OnlineForestRegressor &set_criterion(Criterion criterion) {
-    _criterion = criterion;
-    return *this;
   }
 
   inline int seed() const {
@@ -291,6 +276,18 @@ class OnlineForestRegressor {
     rand.reseed(seed);
     return *this;
   }
+
+  OnlineForestRegressor &set_n_threads(int32_t n_threads) {
+    _n_threads = n_threads;
+    return *this;
+  }
+
+  inline OnlineForestRegressor &set_criterion(CriterionRegressor criterion) {
+    _criterion = criterion;
+    return *this;
+  }
+
+
 //  inline bool verbose() const;
 //  inline OnlineForestRegressor &set_verbose(bool verbose);
 };
