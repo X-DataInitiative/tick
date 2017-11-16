@@ -82,8 +82,10 @@ class OnlineForestClassifier(ABC, Base):
 
     _cpp_obj_name = "_forest"
 
+    # TODO: n_classes must be mandatory
+
     @actual_kwargs
-    def __init__(self, n_trees: int = 10, step: float = 1.,
+    def __init__(self, n_trees: int = 10, n_classes: int=2, step: float = 1.,
                  criterion: str = 'log',
                  max_depth: int = -1, min_samples_split: int = 50,
                  n_threads: int = 1, seed: int = -1, verbose: bool = True,
@@ -93,6 +95,7 @@ class OnlineForestClassifier(ABC, Base):
             self._actual_kwargs = {}
         self._fitted = False
         self.n_trees = n_trees
+        self.n_classes = n_classes
         self.step = step
         self.criterion = criterion
         self.max_depth = max_depth
@@ -103,6 +106,7 @@ class OnlineForestClassifier(ABC, Base):
         self.warm_start = warm_start
         self.n_splits = n_splits
         self._forest = _OnlineForestClassifier(n_trees,
+                                               n_classes,
                                               step,
                                               self._criterion,
                                               #max_depth,
@@ -130,7 +134,7 @@ class OnlineForestClassifier(ABC, Base):
         """
         raise NotImplementedError()
 
-    def predict(self, X, use_aggregation: bool=True):
+    def predict_proba(self, X, use_aggregation: bool=True):
         """Predict class for given samples
 
         Parameters
@@ -140,17 +144,20 @@ class OnlineForestClassifier(ABC, Base):
 
         Returns
         -------
-        output : `np.array`, shape=(n_samples,)
+        output : `np.ndarray`, shape=(n_samples, n_classes)
             Returns predicted values.
         """
         import numpy as np
-        y_pred = np.empty(X.shape[0])
+        scores = np.empty((X.shape[0], self.n_classes))
         if not self._fitted:
             raise ValueError("You must call ``fit`` before")
         else:
             X = safe_array(X)
-        self._forest.predict(X, y_pred, True)
-        return y_pred
+        self._forest.predict(X, scores, True)
+        return scores
+
+    def clear(self):
+        self._forest.clear()
 
     def score(self, X, y):
         from sklearn.metrics import r2_score

@@ -329,9 +329,9 @@ double TreeRegressor::predict(const ArrayDouble &x_t, bool use_aggregation) {
   }
   ulong current = leaf;
   // The child of the current node that does not contain the data
-//  ulong other_index;
-//  ulong parent;
-//  ulong data_index;
+  ulong other_index;
+  ulong parent;
+  ulong data_index;
   double pred;
   while (true) {
     // std::cout << "node: " << current << std::endl;
