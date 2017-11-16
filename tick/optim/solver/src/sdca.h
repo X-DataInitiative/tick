@@ -44,6 +44,10 @@ class SDCA : public StoSolver {
   BatchSize batch_size;
   ulong batch_number;
 
+  // used for caching when batch_size > 2
+  ArrayDouble duals, delta_duals;
+  ArrayULong indices, feature_indices;
+
  public:
   explicit SDCA(double l_l2sq,
                 ulong epoch_size = 0,

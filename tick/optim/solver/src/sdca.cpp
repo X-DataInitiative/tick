@@ -20,6 +20,11 @@ SDCA::SDCA(double l_l2sq,
 ) : StoSolver(epoch_size, tol, rand_type, seed),
     l_l2sq(l_l2sq), batch_size(batch_size), batch_number(batch_number) {
   stored_variables_ready = false;
+
+  if (batch_size == BatchSize::many) {
+    duals = ArrayDouble(batch_number); delta_duals = ArrayDouble(batch_number);
+    indices = ArrayULong(batch_number); feature_indices = ArrayULong(batch_number);
+  }
 }
 
 void SDCA::set_model(ModelPtr model) {
@@ -140,10 +145,8 @@ void SDCA::solve_batch_size_two(ArrayULong &feature_index_map,
 void SDCA::solve_batch_size_many(ArrayULong &feature_index_map,
                                  double scaled_l_l2sq, double _1_over_lbda_n) {
   // Pick indices uniformly at random
-  ArrayULong indices(batch_number);
   indices.fill(rand_max + 1);
 
-  ArrayDouble duals(batch_number);
   for (ulong i = 0; i < batch_number; ++i) {
     ulong try_i = get_next_i();
     while (indices.contains(try_i)) try_i = get_next_i();
@@ -151,27 +154,10 @@ void SDCA::solve_batch_size_many(ArrayULong &feature_index_map,
     duals[i] = dual_vector[indices[i]];
   }
 
-  ArrayULong feature_indices(batch_number);
   for (ulong i = 0; i < batch_number; ++i)
      feature_indices[i] = feature_index_map.size() != 0? feature_index_map[indices[i]]: indices[i];
 
-  // Maximize the dual coordinates
-// // Uncomment to compare solve_batch_size_many and solve_batch_size_two
-//  ArrayDouble delta_duals(2);
-//  if (batch_number == 2) {
-//    double delta_dual_i, delta_dual_j;
-//    std::tie(delta_dual_i, delta_dual_j) =
-//      model->sdca_dual_min_ij(feature_indices[0], feature_indices[1],
-//                              duals[0], duals[1], iterate, scaled_l_l2sq);
-//    delta_duals[0] = delta_dual_i;
-//    delta_duals[1] = delta_dual_j;
-//  }
-//  else {
-//    delta_duals =
-//      model->sdca_dual_min_many(feature_indices, duals, iterate, scaled_l_l2sq);
-//  }
-
-  ArrayDouble delta_duals =
+  delta_duals =
     model->sdca_dual_min_many(feature_indices, duals, iterate, scaled_l_l2sq);
 
   // Update the dual variable
