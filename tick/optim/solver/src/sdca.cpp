@@ -57,9 +57,6 @@ void SDCA::solve() {
         solve_batch_size_two(feature_index_map, scaled_l_l2sq, _1_over_lbda_n);
         break;
       case BatchSize::many :
-        if (batch_number == 2)
-          solve_batch_size_two(feature_index_map, scaled_l_l2sq, _1_over_lbda_n);
-        else
           solve_batch_size_many(feature_index_map, scaled_l_l2sq, _1_over_lbda_n);
         break;
     }
@@ -115,20 +112,9 @@ void SDCA::solve_batch_size_two(ArrayULong &feature_index_map,
 
   // Maximize the dual coordinates i and j
   double delta_dual_i, delta_dual_j;
-  if (batch_size == BatchSize::many){
-    ArrayULong feature_indices {feature_index_i, feature_index_j};
-    ArrayDouble duals {dual_vector[i], dual_vector[j]};
-    ArrayDouble delta_duals =
-      model->sdca_dual_min_many(feature_indices, duals, iterate, scaled_l_l2sq);
-    delta_dual_i = delta_duals[0];
-    delta_dual_j = delta_duals[1];
-  }
-  else {
-    std::tie(delta_dual_i, delta_dual_j) =
-      model->sdca_dual_min_ij(feature_index_i, feature_index_j,
-                              dual_vector[i], dual_vector[j], iterate, scaled_l_l2sq);
-
-  }
+  std::tie(delta_dual_i, delta_dual_j) =
+    model->sdca_dual_min_ij(feature_index_i, feature_index_j,
+                            dual_vector[i], dual_vector[j], iterate, scaled_l_l2sq);
 
   // Update the dual variable
   dual_vector[i] += delta_dual_i;
