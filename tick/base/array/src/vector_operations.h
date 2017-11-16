@@ -145,25 +145,23 @@ struct vector_operations_cblas<double> final : public vector_operations_cblas_ba
   }
 
 #if defined(__APPLE__)
-  void solve_linear_system(int n, double *A, double *b) const {
+  void solve_linear_system(int n, double *A, double *b, int* ipiv=nullptr) const {
 
     int n_cols = 1;
     int lda = n;
-    int* ipiv = new int[n];
+    bool should_free = false;
+    if (ipiv == nullptr) {
+      ipiv = new int[n];
+      should_free = true;
+    }
     int ldb = n;
     int info;
     dgesv_(&n, &n_cols, A, &lda, ipiv, b, &ldb, &info);
     if (info != 0) {
-//      for (int i = 0; i < n; ++i) {
-//        for (int j = 0; j < n; ++j) {
-//          std::cout << A[i * n + j] << ", ";
-//        }
-//        std::cout << "\n";
-//      }
-      std::cout << std::endl;
       TICK_ERROR("Linear solver failed with info=" << info)
     }
-    delete[] ipiv;
+
+    if (should_free) delete[] ipiv;
   }
 
   void solve_symmetric_linear_system(int n, double *A, double *b) const {

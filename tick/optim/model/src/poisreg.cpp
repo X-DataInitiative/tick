@@ -257,8 +257,9 @@ ArrayDouble ModelPoisReg::sdca_dual_min_many(const ArrayULong indices,
     n_hess = ArrayDouble2d(n_indices, n_indices);
 
     new_duals = ArrayDouble(n_indices);
-    newton_descents = ArrayDouble(n_indices);
     delta_duals = ArrayDouble(n_indices);
+
+    ipiv = ArrayInt(n_indices);
   }
 
   for (ulong i = 0; i < n_indices; ++i) sdca_labels[i] = get_label(indices[i]);
@@ -321,7 +322,8 @@ ArrayDouble ModelPoisReg::sdca_dual_min_many(const ArrayULong indices,
     }
 
     tick::vector_operations<double>{}.solve_linear_system(n_indices,
-                                                          n_hess.data(), n_grad.data());
+                                                          n_hess.data(), n_grad.data(),
+                                                          ipiv.data());
 
     delta_duals.mult_incr(n_grad, -1.);
 

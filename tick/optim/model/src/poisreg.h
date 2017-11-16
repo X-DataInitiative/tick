@@ -25,7 +25,8 @@ class DLL_PUBLIC ModelPoisReg : public ModelGeneralizedLinear {
 
   // use only for SDCA caching
   ArrayDouble2d g, n_hess;
-  ArrayDouble p, n_grad, sdca_labels, new_duals, newton_descents, delta_duals;
+  ArrayDouble p, n_grad, sdca_labels, new_duals, delta_duals;
+  ArrayInt ipiv;
 
  public:
   ModelPoisReg(const SBaseArrayDouble2dPtr features,
