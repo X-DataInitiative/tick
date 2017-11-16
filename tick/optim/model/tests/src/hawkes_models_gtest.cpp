@@ -20,6 +20,7 @@
 #include "hawkes_fixed_sumexpkern_loglik.h"
 #include "hawkes_fixed_expkern_leastsq.h"
 #include "hawkes_fixed_sumexpkern_leastsq.h"
+#include "hawkes_fixed_expkern_loglik_custom.h"
 
 #include "variants/hawkes_fixed_expkern_leastsq_list.h"
 #include "variants/hawkes_fixed_sumexpkern_leastsq_list.h"
@@ -59,6 +60,20 @@ TEST_F(HawkesModelTest, compute_loss_loglikelihood){
   EXPECT_DOUBLE_EQ(loss, 2.9434509731246283);
 
   EXPECT_DOUBLE_EQ(model.get_n_coeffs(), 6);
+}
+
+TEST_F(HawkesModelTest, compute_loss_loglikelihood_custom) {
+    ModelHawkesCustom model(2);
+    model.set_data(timestamps, 4.25);
+    ArrayDouble coeffs = ArrayDouble {1., 3., 2., 3., 4., 1};
+
+    const double loss = model.loss(coeffs);
+    ArrayDouble grad(model.get_n_coeffs());
+    model.grad(coeffs, grad);
+
+    EXPECT_DOUBLE_EQ(loss, 2.9434509731246283);
+
+    EXPECT_DOUBLE_EQ(model.get_n_coeffs(), 6);
 }
 
 TEST_F(HawkesModelTest, check_sto_loglikelihood){
