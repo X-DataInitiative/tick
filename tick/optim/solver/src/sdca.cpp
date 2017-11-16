@@ -57,7 +57,10 @@ void SDCA::solve() {
         solve_batch_size_two(feature_index_map, scaled_l_l2sq, _1_over_lbda_n);
         break;
       case BatchSize::many :
-        solve_batch_size_many(feature_index_map, scaled_l_l2sq, _1_over_lbda_n);
+        if (batch_number == 2)
+          solve_batch_size_two(feature_index_map, scaled_l_l2sq, _1_over_lbda_n);
+        else
+          solve_batch_size_many(feature_index_map, scaled_l_l2sq, _1_over_lbda_n);
         break;
     }
 
@@ -112,9 +115,20 @@ void SDCA::solve_batch_size_two(ArrayULong &feature_index_map,
 
   // Maximize the dual coordinates i and j
   double delta_dual_i, delta_dual_j;
-  std::tie(delta_dual_i, delta_dual_j) =
-    model->sdca_dual_min_ij(feature_index_i, feature_index_j,
-                            dual_vector[i], dual_vector[j], iterate, scaled_l_l2sq);
+  if (batch_size == BatchSize::many){
+    ArrayULong feature_indices {feature_index_i, feature_index_j};
+    ArrayDouble duals {dual_vector[i], dual_vector[j]};
+    ArrayDouble delta_duals =
+      model->sdca_dual_min_many(feature_indices, duals, iterate, scaled_l_l2sq);
+    delta_dual_i = delta_duals[0];
+    delta_dual_j = delta_duals[1];
+  }
+  else {
+    std::tie(delta_dual_i, delta_dual_j) =
+      model->sdca_dual_min_ij(feature_index_i, feature_index_j,
+                              dual_vector[i], dual_vector[j], iterate, scaled_l_l2sq);
+
+  }
 
   // Update the dual variable
   dual_vector[i] += delta_dual_i;
@@ -156,6 +170,21 @@ void SDCA::solve_batch_size_many(ArrayULong &feature_index_map,
      feature_indices[i] = feature_index_map.size() != 0? feature_index_map[indices[i]]: indices[i];
 
   // Maximize the dual coordinates
+// // Uncomment to compare solve_batch_size_many and solve_batch_size_two
+//  ArrayDouble delta_duals(2);
+//  if (batch_number == 2) {
+//    double delta_dual_i, delta_dual_j;
+//    std::tie(delta_dual_i, delta_dual_j) =
+//      model->sdca_dual_min_ij(feature_indices[0], feature_indices[1],
+//                              duals[0], duals[1], iterate, scaled_l_l2sq);
+//    delta_duals[0] = delta_dual_i;
+//    delta_duals[1] = delta_dual_j;
+//  }
+//  else {
+//    delta_duals =
+//      model->sdca_dual_min_many(feature_indices, duals, iterate, scaled_l_l2sq);
+//  }
+
   ArrayDouble delta_duals =
     model->sdca_dual_min_many(feature_indices, duals, iterate, scaled_l_l2sq);
 
