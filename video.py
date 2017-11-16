@@ -1,5 +1,6 @@
 
 import matplotlib.animation as animation
+from matplotlib.animation import MovieWriter
 
 from sklearn.model_selection import train_test_split
 import numpy as np
@@ -37,7 +38,7 @@ ax.set_yticks(())
 ax.scatter(X_train[:2, 0], X_train[:2, 1], c=np.array([0, 1]), s=25, cmap=cm)
 
 n_trees = 50
-clf = OnlineForestClassifier(n_trees=n_trees, n_classes=2, seed=123, step=1e-1)
+clf = OnlineForestClassifier(n_trees=n_trees, n_classes=2, seed=123, step=1.)
 
 def animate(i):
     clf.fit(X_train[i, :].reshape(1, 2), np.array([y_train[i]]))
