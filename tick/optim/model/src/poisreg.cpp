@@ -259,7 +259,7 @@ ArrayDouble ModelPoisReg::sdca_dual_min_many(const ArrayULong indices,
     new_duals = ArrayDouble(n_indices);
     delta_duals = ArrayDouble(n_indices);
 
-    ipiv = ArrayInt(n_indices);
+//    ipiv = ArrayInt(n_indices);
   }
 
   for (ulong i = 0; i < n_indices; ++i) sdca_labels[i] = get_label(indices[i]);
@@ -310,20 +310,25 @@ ArrayDouble ModelPoisReg::sdca_dual_min_many(const ArrayULong indices,
       }
     }
 
+    // Use the opposite to have a positive definite matrix
     for (ulong i = 0; i < n_indices; ++i) {
-      n_grad[i] = sdca_labels[i] / new_duals[i] - p[i];
+      n_grad[i] = -sdca_labels[i] / new_duals[i] + p[i];
 
       for (ulong j = 0; j < n_indices; ++j) {
-        n_grad[i] -= delta_duals[j] * g(i, j);
-        n_hess(i, j) = -g(i, j);
+        n_grad[i] += delta_duals[j] * g(i, j);
+        n_hess(i, j) = g(i, j);
       }
 
-      n_hess(i, i) -= sdca_labels[i] / (new_duals[i] * new_duals[i]);
+      n_hess(i, i) += sdca_labels[i] / (new_duals[i] * new_duals[i]);
     }
 
-    tick::vector_operations<double>{}.solve_linear_system(n_indices,
-                                                          n_hess.data(), n_grad.data(),
-                                                          ipiv.data());
+
+    tick::vector_operations<double>{}.solve_symmetric_linear_system(n_indices,
+                                                          n_hess.data(), n_grad.data());
+//
+//    tick::vector_operations<double>{}.solve_linear_system(n_indices,
+//                                                          n_hess.data(), n_grad.data(),
+//                                                          ipiv.data());
 
     delta_duals.mult_incr(n_grad, -1.);
 
@@ -336,14 +341,14 @@ ArrayDouble ModelPoisReg::sdca_dual_min_many(const ArrayULong indices,
     }
   }
 
-  double mean = 0;
-  for (ulong i = 0; i < n_indices; ++i) {
-    const double abs_grad_i = std::abs(n_grad[i]);
-    mean += abs_grad_i;
-  }
-  mean /= n_indices;
-
-  if (mean > 1e-4) std::cout << "did not converge with mean=" << mean << std::endl;
+//  double mean = 0;
+//  for (ulong i = 0; i < n_indices; ++i) {
+//    const double abs_grad_i = std::abs(n_grad[i]);
+//    mean += abs_grad_i;
+//  }
+//  mean /= n_indices;
+//
+//  if (mean > 1e-4) std::cout << "did not converge with mean=" << mean << std::endl;
 
   for (ulong i = 0; i < n_indices; ++i) {
     // Check we are in the correct bounds

@@ -165,17 +165,19 @@ struct vector_operations_cblas<double> final : public vector_operations_cblas_ba
   }
 
   void solve_symmetric_linear_system(int n, double *A, double *b) const {
-    int info;
     int n_cols = 1;
+    int lda = n;
+    int ldb = n;
+    int info;
     char UPLO = 'L';
-    dposv_(&UPLO, &n, &n_cols, A, &n, b, &n, &info);
+    dposv_(&UPLO, &n, &n_cols, A, &lda, b, &ldb, &info);
     if (info != 0) {
-//      for (int i = 0; i < n; ++i) {
-//        for (int j = 0; j < n; ++j) {
-//          std::cout << A[i * n + j] << ", ";
-//        }
-//        std::cout << "\n";
-//      }
+      for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < n; ++j) {
+          std::cout << A[i * n + j] << ", ";
+        }
+        std::cout << "\n";
+      }
       std::cout << std::endl;
       TICK_ERROR("Symmetric linear solver failed with info=" << info)
     }
