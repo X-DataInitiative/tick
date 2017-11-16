@@ -130,24 +130,24 @@ double ModelHawkesFixedKernCustom::loss_dim_i(const ulong i,
                                               const ArrayDouble &coeffs) {
     const double mu_i = coeffs[i];
     const ArrayDouble alpha_i = view(coeffs, get_alpha_i_first_index(i), get_alpha_i_last_index(i));
-
     const ArrayDouble f_i = view(coeffs, get_f_i_first_index(i), get_f_i_last_index(i));
 
+    //cozy at hand
+    const ArrayDouble2d g_i = view(g[i]);
+    const ArrayDouble2d G_i = view(G[i]);
 
     //term 1
     //end_time is T
     double loss = 0;
-    for (ulong i = 0; i != Total_events; ++i)
+    for (ulong k = 1; k < Total_events + 1; k++)
         //! insert event t0 = 0 in the Total_events and global_n
-        loss += log(f_i[global_n[i]]);
+        loss += log(f_i[global_n[k]]);
 
 
     //term 2
-    for (ulong k = 0; k != Total_events; ++k) {
+    for (ulong k = 1; k < Total_events + 1; k++) {
         double tmp_s = mu_i;
-
         const ArrayDouble g_i_k = view_row(g[i], k);
-
         tmp_s += alpha_i.dot(g_i_k);
         if (tmp_s <= 0) {
             TICK_ERROR("The sum of the influence on someone cannot be negative. "
@@ -158,14 +158,17 @@ double ModelHawkesFixedKernCustom::loss_dim_i(const ulong i,
     }
 
     //term 3,4
-    for (ulong k = 1; k != Total_events; ++k)
-        loss -= (global_timestamps[k] - global_timestamps[k - 1]) * f_i[global_n[k - 1]];
-    loss -= (end_time - global_timestamps[Total_events - 1]) * f_i[global_n[Total_events - 1]];
+    for (ulong k = 1; k < Total_events + 1; k++)
+        loss -= mu_i * (global_timestamps[k] - global_timestamps[k - 1]) * f_i[global_n[k - 1]];
+    loss -= mu_i * (end_time - global_timestamps[Total_events]) * f_i[global_n[Total_events]];
 
     //term 5, 6
-    //sum_g already takes care of the last item T
+    // !sum_g already takes care of the last item T
+    for (ulong j = 0; j < n_nodes; j++)
+        for (ulong k = 1; k < Total_events + 1; k++) {
+            sum_G[i][j] += G_i[k * n_nodes + j];
+        }
     loss += alpha_i.dot(sum_G[i]);
-
 
     return loss;
 }

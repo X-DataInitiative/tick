@@ -39,7 +39,7 @@ private:
      * @brief Precomputations of intermediate values for component i
      * \param i : selected component
      */
-    void compute_weights_dim_i(const ulong i, const ArrayDouble &coeffs);//! override;
+    void compute_weights_dim_i(const ulong i);//! override;
 
     /**
      * @brief Return the start of alpha i coefficients in a coeffs vector
@@ -65,7 +65,7 @@ private:
      * @param i : selected dimension
      */
     ulong get_f_i_first_index(const ulong i) const override {
-        return n_nodes + n_nodes * n_nodes + i * MaxN_of_f;
+        return n_nodes + n_nodes * n_nodes + 1 + i * MaxN_of_f;
     }
 
     /**
@@ -73,7 +73,7 @@ private:
      * @param i : selected dimension
      */
     ulong get_f_i_last_index(const ulong i) const override {
-        return n_nodes + n_nodes * n_nodes + (i + 1) * MaxN_of_f;
+        return n_nodes + n_nodes * n_nodes + 1 + (i + 1) * MaxN_of_f;
     }
 
 public:

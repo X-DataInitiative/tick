@@ -31,6 +31,7 @@ protected:
     ArrayDouble2dList1D G;
 
     //! @brief compensator of kernel intensity of node j on node i between 0 and end_time
+    //! in this custom setting, the sum_G is meanlingless
     ArrayDoubleList1D sum_G;
 
     //! Peng Wu, An array, containing timestamps of all type of events, sorted
@@ -46,6 +47,7 @@ protected:
     ulong Total_events;
 
     //! Peng Wu, the maximum N that we would consider for f_i(n)
+    //! y compris 0
     ulong MaxN_of_f; //! Peng Wu, We change the definition of g and G, that now they save g and G for global t_k
 
 public:
