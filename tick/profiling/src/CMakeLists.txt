@@ -38,3 +38,27 @@ target_link_libraries(tick_profile_hawkes_sdca_sum_exp
         ${TICK_BLAS_LIBRARIES}
         ${TICK_LIB_SIMULATION}
         )
+
+add_executable(tick_profile_poisson_sdca_two poisson_sdca_two.cpp)
+
+target_link_libraries(tick_profile_poisson_sdca_two
+        ${TICK_LIB_BASE}
+        ${TICK_LIB_ARRAY}
+        ${TICK_LIB_MODEL}
+        ${TICK_LIB_SOLVER}
+        ${TICK_LIB_PROX}
+        ${TICK_LIB_CRANDOM}
+        ${TICK_BLAS_LIBRARIES}
+        )
+
+add_executable(tick_profile_poisson_sdca_many poisson_sdca_many.cpp)
+
+target_link_libraries(tick_profile_poisson_sdca_many
+        ${TICK_LIB_BASE}
+        ${TICK_LIB_ARRAY}
+        ${TICK_LIB_MODEL}
+        ${TICK_LIB_SOLVER}
+        ${TICK_LIB_PROX}
+        ${TICK_LIB_CRANDOM}
+        ${TICK_BLAS_LIBRARIES}
+        )
