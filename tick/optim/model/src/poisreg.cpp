@@ -141,11 +141,6 @@ std::tuple<double, double> ModelPoisReg::sdca_dual_min_ij(
   double g_jj = features_norm_sq[j] * _1_lambda_n;
   double g_ij = get_features(i).dot(get_features(j)) * _1_lambda_n;
 
-  // if vector are colinear
-  if (g_ij * g_ij == g_ii * g_jj) {
-    return {0., 0.};
-  }
-
   if (use_intercept()) {
     g_ii += _1_lambda_n;
     g_jj += _1_lambda_n;
@@ -250,7 +245,7 @@ ArrayDouble ModelPoisReg::sdca_dual_min_many(const ArrayULong indices,
     new_duals = ArrayDouble(n_indices);
     delta_duals = ArrayDouble(n_indices);
 
-//    ipiv = ArrayInt(n_indices);
+    ipiv = ArrayInt(n_indices);
   }
 
   for (ulong i = 0; i < n_indices; ++i) sdca_labels[i] = get_label(indices[i]);
@@ -267,19 +262,6 @@ ArrayDouble ModelPoisReg::sdca_dual_min_many(const ArrayULong indices,
       else if (i == j) g(i, i) = features_norm_sq[indices[i]] * _1_lambda_n;
       else g(i, j) = get_features(indices[i]).dot(get_features(indices[j])) * _1_lambda_n;
       if (use_intercept()) g(i, j) += _1_lambda_n;
-    }
-  }
-
-  for (ulong i = 0; i < n_indices; ++i) {
-    for (ulong j = i + 1; j < n_indices; ++j) {
-      // if vector are colinear
-      if (g(i, j) * g(i, j) == g(i, i) * g(j, j)) {
-        ArrayDouble delta_duals(n_indices);
-        delta_duals.init_to_zero();
-        std::cout << "skip colinear" << std::endl;
-        indices.print();
-        return delta_duals;
-      }
     }
   }
 
@@ -313,13 +295,14 @@ ArrayDouble ModelPoisReg::sdca_dual_min_many(const ArrayULong indices,
       n_hess(i, i) += sdca_labels[i] / (new_duals[i] * new_duals[i]);
     }
 
-
-    tick::vector_operations<double>{}.solve_symmetric_linear_system(n_indices,
-                                                          n_hess.data(), n_grad.data());
-//
-//    tick::vector_operations<double>{}.solve_linear_system(n_indices,
-//                                                          n_hess.data(), n_grad.data(),
-//                                                          ipiv.data());
+    // it seems faster this way
+    if (n_indices <= 30) {
+      tick::vector_operations<double>{}.solve_linear_system(
+        n_indices, n_hess.data(), n_grad.data(), ipiv.data());
+    } else {
+      tick::vector_operations<double>{}.solve_symmetric_linear_system(
+        n_indices, n_hess.data(), n_grad.data());
+    }
 
     delta_duals.mult_incr(n_grad, -1.);
 
