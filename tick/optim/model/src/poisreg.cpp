@@ -213,7 +213,7 @@ std::tuple<double, double> ModelPoisReg::sdca_dual_min_ij(
     }
   }
 
-  if (std::abs(newton_descent_i) > 1e-7 || std::abs(newton_descent_j) > 1e-7) {
+  if (std::abs(newton_descent_i) > 1e-4 || std::abs(newton_descent_j) > 1e-4) {
 
     std::cout << "did not converge newton_descent_i=" << newton_descent_i
               << ", newton_descent_j" << newton_descent_j << "i, j = " << i << " " << j
