@@ -248,16 +248,27 @@ ArrayDouble ModelPoisReg::sdca_dual_min_many(const ArrayULong indices,
 
   const ulong n_indices = indices.size();
 
-  ArrayDouble labels(n_indices);
-  for (ulong i = 0; i < n_indices; ++i) labels[i] = get_label(indices[i]);
-  if (labels.min() == 0) {
+  if (p.size() != n_indices) {
+    p = ArrayDouble(n_indices);
+    g = ArrayDouble2d(n_indices, n_indices);
+    sdca_labels = ArrayDouble(n_indices);
+
+    n_grad = ArrayDouble(n_indices);
+    n_hess = ArrayDouble2d(n_indices, n_indices);
+
+    new_duals = ArrayDouble(n_indices);
+    newton_descents = ArrayDouble(n_indices);
+    delta_duals = ArrayDouble(n_indices);
+  }
+
+  for (ulong i = 0; i < n_indices; ++i) sdca_labels[i] = get_label(indices[i]);
+  if (sdca_labels.min() == 0) {
     indices.print();
-    labels.print();
+    sdca_labels.print();
     TICK_ERROR("Labels 0 should not be considered in SDCA");
   }
 
   const double _1_lambda_n = 1 / (l_l2sq * n_non_zeros_labels);
-  ArrayDouble2d g(n_indices, n_indices);
   for (ulong i = 0; i < n_indices; ++i) {
     for (ulong j = 0; j < n_indices; ++j) {
       if (j < i) g(i, j) = g(j, i);
@@ -280,21 +291,11 @@ ArrayDouble ModelPoisReg::sdca_dual_min_many(const ArrayULong indices,
     }
   }
 
-  ArrayDouble p(n_indices);
   for (ulong i = 0; i < n_indices; ++i) p[i] = get_inner_prod(indices[i], primal_vector);
-
-  ArrayDouble delta_duals(n_indices);
   for (ulong i = 0; i < n_indices; ++i) delta_duals[i] = duals[i] == 0 ? 0.1 : 0;
 
   double epsilon = 1e-1;
 
-  ArrayDouble new_duals(n_indices);
-  ArrayDouble newton_descents(n_indices);
-  ArrayDouble n_grad(n_indices);
-  ArrayDouble2d n_hess(n_indices, n_indices);
-
-  ArrayDouble n_grad_copy(n_indices);
-  ArrayDouble2d n_hess_copy(n_indices, n_indices);
   for (int k = 0; k < 20; ++k) {
 
     for (ulong i = 0; i < n_indices; ++i) {
@@ -309,17 +310,18 @@ ArrayDouble ModelPoisReg::sdca_dual_min_many(const ArrayULong indices,
     }
 
     for (ulong i = 0; i < n_indices; ++i) {
-      n_grad[i] = labels[i] / new_duals[i] - p[i];
+      n_grad[i] = sdca_labels[i] / new_duals[i] - p[i];
 
       for (ulong j = 0; j < n_indices; ++j) {
         n_grad[i] -= delta_duals[j] * g(i, j);
         n_hess(i, j) = -g(i, j);
       }
 
-      n_hess(i, i) -= labels[i] / (new_duals[i] * new_duals[i]);
+      n_hess(i, i) -= sdca_labels[i] / (new_duals[i] * new_duals[i]);
     }
 
-    tick::vector_operations<double>{}.solve_linear_system(n_indices, n_hess.data(), n_grad.data());
+    tick::vector_operations<double>{}.solve_linear_system(n_indices,
+                                                          n_hess.data(), n_grad.data());
 
     delta_duals.mult_incr(n_grad, -1.);
 

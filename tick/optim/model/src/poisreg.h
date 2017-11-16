@@ -23,6 +23,10 @@ class DLL_PUBLIC ModelPoisReg : public ModelGeneralizedLinear {
   VArrayULongPtr non_zero_labels;
   ulong n_non_zeros_labels;
 
+  // use only for SDCA caching
+  ArrayDouble2d g, n_hess;
+  ArrayDouble p, n_grad, sdca_labels, new_duals, newton_descents, delta_duals;
+
  public:
   ModelPoisReg(const SBaseArrayDouble2dPtr features,
                const SArrayDoublePtr labels,
