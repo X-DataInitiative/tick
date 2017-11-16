@@ -318,7 +318,9 @@ void TreeRegressor::fit(const ArrayDouble &x_t, double y_t) {
 }
 
 double TreeRegressor::predict(const ArrayDouble &x_t, bool use_aggregation) {
+  // std::cout << "Going downwards" << std::endl;
   ulong leaf = go_downwards(x_t, 0., true);
+  // std::cout << "Done." << std::endl;
   if (!use_aggregation) {
     return node(leaf).y_t();
   }
@@ -329,13 +331,13 @@ double TreeRegressor::predict(const ArrayDouble &x_t, bool use_aggregation) {
   ulong data_index;
   double pred;
   while (true) {
+    // std::cout << "node: " << current << std::endl;
     NodeRegressor &current_node = node(current);
     if (current_node.is_leaf()) {
       pred = current_node.predict();
       // weight = current_node.weight() * current_node.predict();
       // weight = std::exp(current_node.weight()) * current_node.labels_average();
     } else {
-      pred = 0.5 * std::exp(current_node.weight() - current_node.weight_tree()) * current_node.predict();
       parent = current_node.parent();
       if (node(parent).left() == current) {
         // other_index = node(parent).right();
@@ -347,18 +349,20 @@ double TreeRegressor::predict(const ArrayDouble &x_t, bool use_aggregation) {
       }
       NodeRegressor& data_node = node(data_index);
 
-      pred += (1 - 0.5 * std::exp(current_node.weight() - current_node.weight_tree())) * data_node.predict();
+      double a = 0.5 * std::exp(current_node.weight() - current_node.weight_tree()) * current_node.predict();
+      pred = a + (1 - 0.5 * std::exp(current_node.weight() - current_node.weight_tree())) * pred;
 
 //      weight = 0.5 * current_node.weight() * current_node.predict()
 //          + 0.5 * node(other).weight_tree() * weight;
 //      weight = 0.5 * std::exp(current_node.weight()) * current_node.labels_average()
 //          + 0.5 * std::exp(node(other).weight_tree() + weight);
     }
+    // std::cout << "pred: " << pred << std::endl;
     // Root must be updated as well
     if (current == 0) {
       break;
     }
-    current = parent;
+    current = current_node.parent();
   }
   // return weight / nodes[0].weight_tree();
   return pred;

@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 
 from time import time
 
-n_samples = 2000
+n_samples = 1000
 n_features = 2
 seed = 123
 
@@ -161,6 +161,12 @@ names = [
 
 plot_decisions(clfs, datasets, names)
 plt.show()
+
+# forest = OnlineForestRegressor(n_trees=n_trees, seed=123, step=0.25)
+#
+# forest.fit(X, y)
+#
+# forest.predict(X)
 
 # plt.savefig(os.path.join(path, 'decisions.pdf'))
 
