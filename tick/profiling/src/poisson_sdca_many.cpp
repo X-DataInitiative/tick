@@ -44,8 +44,9 @@ int main() {
   std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
   double dif = std::chrono::duration_cast<std::chrono::nanoseconds>(t2 - t1).count() * 1e-9;
 
-  sdca.get_primal_vector()->print();
-  printf("Elasped time is %lf seconds.\n", dif);
+//  sdca.get_primal_vector()->print();
+  printf("Elasped time is %lf seconds. Second value = %lf\n",
+         dif, (*sdca.get_primal_vector())[1]);
 
   return 0;
 }
