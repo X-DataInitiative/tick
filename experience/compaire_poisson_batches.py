@@ -57,7 +57,7 @@ def run_solvers(model, l_l2sq, ax_list):
     batch_sizes = [2, 3, 7, 15, 20, 30, 35]
     for batch_size in batch_sizes:
         sdca_batch = SDCA(l_l2sq, max_iter=max_iter_sdca,
-                          print_every=int(max_iter_sdca / 7), tol=0,
+                          print_every=int(max_iter_sdca / 7), tol=1e-10,
                           batch_size=batch_size + 1, seed=sto_seed)
         sdca_batch.set_model(model).set_prox(ProxZero())
         sdca_batch.solve()
@@ -88,7 +88,7 @@ def run_solvers(model, l_l2sq, ax_list):
                  x='time', y='dual_objective', ax=ax_list[1], labels=labels)
 
 
-dataset = 'crime'
+dataset = 'wine'
 features, labels = fetch_poisson_dataset(dataset, n_samples=10000)
 
 model = ModelPoisReg(fit_intercept=False, link='identity')

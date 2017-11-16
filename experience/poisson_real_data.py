@@ -33,44 +33,45 @@ def run_solvers(model, l_l2sq, skip_newton=False):
 
     max_iter_sdca = 1000
     sdca = SDCA(l_l2sq, max_iter=max_iter_sdca,
-                print_every=int(max_iter_sdca / 7), tol=1e-10, batch_size=1)
+                print_every=int(max_iter_sdca / 7), tol=1e-10, batch_size=2)
     sdca.set_model(model).set_prox(ProxZero())
     sdca.solve()
-    sdca.history.name = 'SDCA 1'
+    sdca.history.name = 'SDCA 2'
     solvers += [sdca]
 
-    print(sdca.solution)
+    # batch_sizes = [10, 30]
+    # for batch_size in batch_sizes:
+    #     sdca_batch = SDCA(l_l2sq, max_iter=max_iter_sdca,
+    #                       print_every=int(max_iter_sdca / 7), tol=1e-10,
+    #                       batch_size=batch_size + 1)
+    #     sdca_batch.set_model(model).set_prox(ProxZero())
+    #     sdca_batch.solve()
+    #     sdca_batch.history.name = 'SDCA #{}'.format(sdca_batch.batch_size - 1)
+    #     solvers += [sdca_batch]
 
-    # sdca_2 = SDCA(l_l2sq, max_iter=max_iter_sdca,
-    #               print_every=int(max_iter_sdca / 7), tol=1e-10, batch_size=2)
-    # sdca_2.set_model(model).set_prox(ProxZero())
-    # sdca_2.solve()
-    # sdca_2.history.name = 'SDCA 2'
-    # solvers += [sdca_2]
-    #
-    # lbfgsb = LBFGSB(max_iter=100, print_every=10, tol=1e-10)
-    # lbfgsb.set_model(model).set_prox(ProxL2Sq(l_l2sq, positive=True))
-    # lbfgsb.solve(coeff0)
-    # solvers += [lbfgsb]
-    #
-    # svrg = SVRG(max_iter=100, print_every=10, tol=1e-10, step=1e-1)
-    # svrg.set_model(model).set_prox(ProxL2Sq(l_l2sq, positive=True))
-    # svrg.solve(coeff0)
-    # solvers += [svrg]
+    lbfgsb = LBFGSB(max_iter=100, print_every=10, tol=1e-10)
+    lbfgsb.set_model(model).set_prox(ProxL2Sq(l_l2sq, positive=True))
+    lbfgsb.solve(coeff0)
+    solvers += [lbfgsb]
+
+    svrg = SVRG(max_iter=100, print_every=10, tol=1e-10, step=1e-1)
+    svrg.set_model(model).set_prox(ProxL2Sq(l_l2sq, positive=True))
+    svrg.solve(coeff0)
+    solvers += [svrg]
 
     sol = np.array([2.29, 1.16, 1.53, 0.78, 0.84, 0.89, 2.11, 1.05, 2.85, 2.00, 3.05])
     sol -= 0.5
 
-    scpg = SCPG(max_iter=15, print_every=1, tol=0, step=1e6, modified=True)
-    scpg.set_model(model).set_prox(ProxL2Sq(l_l2sq, positive=True))
-    scpg.solve(sol)
-    solvers += [scpg]
+    # scpg = SCPG(max_iter=15, print_every=1, tol=0, step=1e6, modified=True)
+    # scpg.set_model(model).set_prox(ProxL2Sq(l_l2sq, positive=True))
+    # scpg.solve(sol)
+    # solvers += [scpg]
 
-    # if not skip_newton:
-    #     newton = Newton(max_iter=100, print_every=10)
-    #     newton.set_model(model).set_prox(ProxL2Sq(l_l2sq))
-    #     newton.solve(coeff0)
-    #     solvers += [newton]
+    if not skip_newton:
+        newton = Newton(max_iter=100, print_every=10)
+        newton.set_model(model).set_prox(ProxL2Sq(l_l2sq))
+        newton.solve(coeff0)
+        solvers += [newton]
 
     return [solver.history for solver in solvers]
 
@@ -89,7 +90,7 @@ def save_experiments(experiments, file_name='poisson_real_data.pkl'):
         pickle.dump(experiments, write_file)
 
 
-def run_experiment(dataset='news', show=True):
+def run_experiment(dataset='news', show=True, l_l2sq_coef=1.):
     features, labels = fetch_poisson_dataset(dataset,
                                              n_samples=max_n_samples)
     labels[:] = 1
@@ -97,34 +98,37 @@ def run_experiment(dataset='news', show=True):
     model = ModelPoisReg(fit_intercept=False, link='identity')
     model.fit(features, labels)
 
-    l_2sq_list = [1. / np.sqrt(len(labels))]
-    fig, ax_list_list = plt.subplots(2, len(l_2sq_list))
-    if len(ax_list_list.shape) == 1:
-        ax_list_list = np.array([ax_list_list])
+    l_2sq_list = [l_l2sq_coef / np.sqrt(len(labels))]
+
+    if show:
+        fig, ax_list_list = plt.subplots(2, len(l_2sq_list))
+        if len(ax_list_list.shape) == 1:
+            ax_list_list = np.array([ax_list_list])
 
     for i, l_2sq in enumerate(l_2sq_list):
-        ax_list = ax_list_list[i]
 
         skip_newton = dataset in ['blog']
         histories = run_solvers(model, l_2sq, skip_newton=skip_newton)
-        #
-        # now_formatted = datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S')
-        #
-        # experiments = load_experiments()
-        # experiments.setdefault(dataset, {})
-        # experiments[dataset].setdefault(l_2sq, {})
-        # experiments[dataset][l_2sq][now_formatted] = histories
-        # save_experiments(experiments)
 
-        plot_history(histories, dist_min=True, log_scale=True,
-                     x='time', ax=ax_list[0])
-        ax_list_list[0, i].set_title('$\\lambda = {:.3g}$'.format(l_2sq))
+        now_formatted = datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S')
+
+        experiments = load_experiments()
+        experiments.setdefault(dataset, {})
+        experiments[dataset].setdefault(l_2sq, {})
+        experiments[dataset][l_2sq][now_formatted] = histories
+        save_experiments(experiments)
+
+        if show:
+            ax_list = ax_list_list[i]
+            plot_history(histories, dist_min=True, log_scale=True,
+                         x='time', ax=ax_list[0])
+            ax_list_list[0, i].set_title('$\\lambda = {:.3g}$'.format(l_2sq))
 
     if show:
         plt.show()
 
 
-def plot_all_last_experiment(datasets=None):
+def plot_all_last_experiment(datasets=None, l_l2sq_coef=1.):
     experiments = load_experiments()
     if datasets is None:
         datasets = experiments.keys()
@@ -146,7 +150,8 @@ def plot_all_last_experiment(datasets=None):
 
         print(dataset)
 
-        l_l2sq = 1. / np.sqrt(n)
+        l_l2sq = l_l2sq_coef / np.sqrt(n)
+        print(experiments[dataset].keys(), l_l2sq)
         all_runs = experiments[dataset][l_l2sq]
         run_times = list(all_runs.keys())
         run_times.sort()
@@ -157,7 +162,8 @@ def plot_all_last_experiment(datasets=None):
         plot_history(histories, dist_min=True, log_scale=True,
                      x='time', ax=ax)
 
-        sdca_index = [history.name for history in histories].index('SDCA 1')
+        # print([history.name for history in histories])
+        sdca_index = [history.name for history in histories].index('SDCA 2')
         sdca_time = histories[sdca_index].last_values['time']
 
         current_lim = ax.get_xlim()
@@ -170,8 +176,8 @@ def plot_all_last_experiment(datasets=None):
             dataset, features.shape[0], features.shape[1]))
 
         ax.set_ylabel('')
-        if i != len(datasets) - 1:
-            ax.legend_.remove()
+        # if i != len(datasets) - 1:
+        #     ax.legend_.remove()
 
         position = np.argwhere(ax_list == ax)[0]
         if len(position) > 1:
@@ -183,10 +189,15 @@ def plot_all_last_experiment(datasets=None):
     plt.show()
 
 
+l_l2sq_coef = 1
 max_n_samples = 10000000
-all_datasets = ['wine', 'facebook', 'news', 'crime', 'vegas', 'blog']
-# for dataset in all_datasets:
-#     run_experiment(dataset, show=False)
-run_experiment('wine', show=True)
+# all_datasets = ['wine', 'facebook', 'crime', 'vegas']
+all_datasets = ['facebook', 'blog']
 
-# plot_all_last_experiment(all_datasets)
+
+for dataset in all_datasets:
+    run_experiment(dataset, show=False, l_l2sq_coef=l_l2sq_coef)
+# run_experiment('wine', show=True)
+
+
+plot_all_last_experiment(all_datasets, l_l2sq_coef=l_l2sq_coef)
