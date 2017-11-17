@@ -95,7 +95,7 @@ class Solver(Base):
         self._set("time_start", self._get_now())
         self._set("_time_start", time())
         if self.verbose:
-            print("Launching the solver " + self.name + "...")
+            print("Launching the solver " + self.history.name + "...")
 
     def _end_solve(self):
         t = time()

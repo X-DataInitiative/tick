@@ -184,7 +184,7 @@ class SDCA(SolverFirstOrderSto):
                              self.tol, self._rand_type, batch_size_enum,
                              batch_size, self.seed)
 
-        self.history.print_order.append('dual_objective')
+        self.history.print_order += ['dual_objective', 'duality_gap']
 
     def set_model(self, model):
         if isinstance(model, ModelPoisReg):
@@ -192,15 +192,21 @@ class SDCA(SolverFirstOrderSto):
         return SolverFirstOrderSto.set_model(self, model)
 
     def extra_history(self, minimizer):
-        try:
-            dual_vector = self._solver.get_dual_vector()
-            dual = self.dual_objective(dual_vector)
-        except:
-            dual = np.nan
-        return {
-            'dual_objective': dual,
-            'dual_vector': dual_vector
-        }
+        fast = True
+        if fast:
+            return {'dual_vector': self._solver.get_dual_vector()}
+        else:
+            try:
+                dual_vector = self._solver.get_dual_vector()
+                dual = self.dual_objective(dual_vector)
+            except:
+                dual = np.nan
+            return {
+                'dual_objective': dual,
+                'dual_vector': dual_vector,
+                'duality_gap': dual - self.objective(minimizer)
+            }
+
 
     def objective(self, coeffs, loss: float = None):
         """Compute the objective minimized by the solver at ``coeffs``
@@ -240,6 +246,9 @@ class SDCA(SolverFirstOrderSto):
         """
         primal = self.model._sdca_primal_dual_relation(self.l_l2sq, dual_coeffs)
         prox_l2_value = 0.5 * self.l_l2sq * np.linalg.norm(primal) ** 2
+        if self.model.fit_intercept:
+            prox_l2_value += 0.5 * self.l_l2sq
+
         return self.model.dual_loss(dual_coeffs) - prox_l2_value
 
     def _set_rand_max(self, model):

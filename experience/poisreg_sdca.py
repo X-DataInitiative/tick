@@ -46,6 +46,7 @@ class ModelPoisRegSDCA(ModelFirstOrder, ModelGeneralizedLinear):
         labels = self.labels
         features = self.features
         n_samples = len(labels)
+        non_zero_samples = sum(labels != 0)
         non_zero_features = features[labels != 0]
 
         alpha_x = np.sum(np.diag(dual_vector).dot(non_zero_features),
@@ -56,12 +57,18 @@ class ModelPoisRegSDCA(ModelFirstOrder, ModelGeneralizedLinear):
         out -= 1. / (self.l_l2sq * n_samples ** 2) * alpha_x.dot(
             non_zero_features.T)
         out += 1. / (self.l_l2sq * n_samples ** 2) * psi_x
+
+        if self.fit_intercept:
+            out -= dual_vector.sum() / (self.l_l2sq * n_samples ** 2)
+            out += 1. / (self.l_l2sq * non_zero_samples)
+
         out *= -1
-        # print(out)
 
     def _loss(self, coeffs: np.ndarray) -> float:
         primal = self.get_primal(coeffs)
         prox_l2_value = 0.5 * self.l_l2sq * np.linalg.norm(primal) ** 2
+        if self.fit_intercept:
+            prox_l2_value += 0.5 * self.l_l2sq
         loss = self._poisreg.dual_loss(coeffs) - prox_l2_value
         loss *= -1
         return loss

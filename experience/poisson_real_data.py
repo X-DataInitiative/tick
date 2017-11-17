@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import datetime
 import os
 
+from experience.poisreg_sdca import ModelPoisRegSDCA
 from experience.poisson_datasets import fetch_poisson_dataset
 from tick.optim.model import ModelPoisReg
 from tick.optim.prox import ProxZero, ProxL2Sq, ProxPositive
@@ -17,21 +18,8 @@ def run_solvers(model, l_l2sq, skip_newton=False):
     solvers = []
     coeff0 = np.ones(model.n_coeffs)
 
-    # model_dual = ModelPoisRegSDCA(l_l2sq, fit_intercept=False)
-    # model_dual.fit(features, labels)
-    # max_iter_dual_bfgs = 1000
-    # lbfgsb_dual = LBFGSB(tol=1e-10, max_iter=max_iter_dual_bfgs,
-    #                      print_every=int(max_iter_dual_bfgs / 7))
-    # lbfgsb_dual.set_model(model_dual).set_prox(ProxPositive())
-    # lbfgsb_dual.solve(0.2 * np.ones(model_dual.n_coeffs))
-    # print(lbfgsb_dual.solution.mean())
-    # print(model_dual.get_primal(lbfgsb_dual.solution))
-    # for i, x in enumerate(lbfgsb_dual.history.values['x']):
-    #      primal = lbfgsb._proj.call(model_dual.get_primal(x))
-    #      lbfgsb_dual.history.values['obj'][i] = lbfgsb.objective(primal)
-    #
     tol = 1e-13
-    max_iter_sdca = 1000
+    max_iter_sdca = 100
     sdca = SDCA(l_l2sq, max_iter=max_iter_sdca,
                 print_every=int(max_iter_sdca / 7), tol=tol, batch_size=2)
     sdca.set_model(model).set_prox(ProxZero())
@@ -54,13 +42,23 @@ def run_solvers(model, l_l2sq, skip_newton=False):
     lbfgsb.solve(coeff0)
     solvers += [lbfgsb]
 
+    # model_dual = ModelPoisRegSDCA(l_l2sq, fit_intercept=fit_intercept)
+    # model_dual.fit(model.features, model.labels)
+    # max_iter_dual_bfgs = 100
+    # lbfgsb_dual = LBFGSB(tol=1e-10, max_iter=max_iter_dual_bfgs,
+    #                      print_every=int(max_iter_dual_bfgs / 7))
+    # lbfgsb_dual.set_model(model_dual).set_prox(ProxPositive())
+    # lbfgsb_dual.history.name = 'LBFGS dual'
+    # lbfgsb_dual.solve(0.2 * np.ones(model_dual.n_coeffs))
+    # for i, x in enumerate(lbfgsb_dual.history.values['x']):
+    #     primal = lbfgsb._proj.call(model_dual.get_primal(x))
+    #     lbfgsb_dual.history.values['obj'][i] = lbfgsb.objective(primal)
+    # solvers += [lbfgsb_dual]
+
     svrg = SVRG(max_iter=100, print_every=10, tol=tol, step=1e-3, step_type='bb')
     svrg.set_model(model).set_prox(ProxL2Sq(l_l2sq, positive=True))
     svrg.solve(coeff0)
     solvers += [svrg]
-
-    sol = np.array([2.29, 1.16, 1.53, 0.78, 0.84, 0.89, 2.11, 1.05, 2.85, 2.00, 3.05])
-    sol -= 0.5
 
     # scpg = SCPG(max_iter=15, print_every=1, tol=0, step=1e6, modified=True)
     # scpg.set_model(model).set_prox(ProxL2Sq(l_l2sq, positive=True))
@@ -97,7 +95,7 @@ def make_key(l_l2sq, fit_intercept):
 def run_experiment(dataset='news', show=True, l_l2sq_coef=1., fit_intercept=False):
     features, labels = fetch_poisson_dataset(dataset,
                                              n_samples=max_n_samples)
-    labels[:] = 1
+    # labels[:] = 1
 
     model = ModelPoisReg(fit_intercept=fit_intercept, link='identity')
     model.fit(features, labels)
@@ -162,7 +160,6 @@ def plot_all_last_experiment(datasets=None, l_l2sq_coef=1., fit_intercept=False)
         last_run = run_times[-1]
 
         print(dataset, last_run)
-        print("run_times", run_times)
 
         ax = ax_list.ravel()[i]
         histories = experiments[dataset][make_key(l_l2sq, fit_intercept)][last_run]
@@ -204,14 +201,15 @@ fit_intercept = True
 l_l2sq_coef = 1
 max_n_samples = 10000000
 all_datasets = ['wine', 'facebook', 'crime', 'vegas', 'news', 'blog']
+# all_datasets = ['wine', 'facebook']#, 'crime', 'vegas']
 # all_datasets = ['facebook', 'blog']
 # all_datasets = ['wine', 'blog']
 
 
-# for dataset in all_datasets:
-#     run_experiment(dataset, show=False, l_l2sq_coef=l_l2sq_coef,
-#                    fit_intercept=fit_intercept)
-# run_experiment('blog', show=False, fit_intercept=fit_intercept)
+for dataset in all_datasets:
+    run_experiment(dataset, show=False, l_l2sq_coef=l_l2sq_coef,
+                   fit_intercept=fit_intercept)
+# run_experiment('wine', show=True, fit_intercept=fit_intercept)
 
 
 plot_all_last_experiment(all_datasets, l_l2sq_coef=l_l2sq_coef,
