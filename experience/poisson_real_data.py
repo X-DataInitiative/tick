@@ -90,12 +90,12 @@ def save_experiments(experiments, file_name='poisson_real_data.pkl'):
         pickle.dump(experiments, write_file)
 
 
-def run_experiment(dataset='news', show=True, l_l2sq_coef=1.):
+def run_experiment(dataset='news', show=True, l_l2sq_coef=1., fit_intercept=False):
     features, labels = fetch_poisson_dataset(dataset,
                                              n_samples=max_n_samples)
     labels[:] = 1
 
-    model = ModelPoisReg(fit_intercept=False, link='identity')
+    model = ModelPoisReg(fit_intercept=fit_intercept, link='identity')
     model.fit(features, labels)
 
     l_2sq_list = [l_l2sq_coef / np.sqrt(len(labels))]
@@ -105,30 +105,30 @@ def run_experiment(dataset='news', show=True, l_l2sq_coef=1.):
         if len(ax_list_list.shape) == 1:
             ax_list_list = np.array([ax_list_list])
 
-    for i, l_2sq in enumerate(l_2sq_list):
+    for i, l_l2sq in enumerate(l_2sq_list):
 
         skip_newton = dataset in ['blog']
-        histories = run_solvers(model, l_2sq, skip_newton=skip_newton)
+        histories = run_solvers(model, l_l2sq, skip_newton=skip_newton)
 
         now_formatted = datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S')
 
         experiments = load_experiments()
         experiments.setdefault(dataset, {})
-        experiments[dataset].setdefault(l_2sq, {})
-        experiments[dataset][l_2sq][now_formatted] = histories
+        experiments[dataset].setdefault((l_l2sq, fit_intercept), {})
+        experiments[dataset][(l_l2sq, fit_intercept)][now_formatted] = histories
         save_experiments(experiments)
 
         if show:
             ax_list = ax_list_list[i]
             plot_history(histories, dist_min=True, log_scale=True,
                          x='time', ax=ax_list[0])
-            ax_list_list[0, i].set_title('$\\lambda = {:.3g}$'.format(l_2sq))
+            ax_list_list[0, i].set_title('$\\lambda = {:.3g}$'.format(l_l2sq))
 
     if show:
         plt.show()
 
 
-def plot_all_last_experiment(datasets=None, l_l2sq_coef=1.):
+def plot_all_last_experiment(datasets=None, l_l2sq_coef=1., fit_intercept=False):
     experiments = load_experiments()
     if datasets is None:
         datasets = experiments.keys()
@@ -151,14 +151,13 @@ def plot_all_last_experiment(datasets=None, l_l2sq_coef=1.):
         print(dataset)
 
         l_l2sq = l_l2sq_coef / np.sqrt(n)
-        print(experiments[dataset].keys(), l_l2sq)
-        all_runs = experiments[dataset][l_l2sq]
+        all_runs = experiments[dataset][(l_l2sq, fit_intercept)]
         run_times = list(all_runs.keys())
         run_times.sort()
         last_run = run_times[-1]
 
         ax = ax_list.ravel()[i]
-        histories = experiments[dataset][l_l2sq][last_run]
+        histories = experiments[dataset][(l_l2sq, fit_intercept)][last_run]
         plot_history(histories, dist_min=True, log_scale=True,
                      x='time', ax=ax)
 
@@ -185,19 +184,26 @@ def plot_all_last_experiment(datasets=None, l_l2sq_coef=1.):
             if row == 0:
                 ax.set_xlabel('')
 
-    fig.tight_layout()
+    fig.suptitle('$\\lambda = \\frac{{{}}} {{ \\sqrt{{n}}}}$ {} intercept'
+                 .format(l_l2sq_coef, 'with' if fit_intercept else 'without'),
+                 fontsize=14)
+    fig.tight_layout(rect=[0, 0., 1, 0.9])
     plt.show()
 
 
+fit_intercept = False
 l_l2sq_coef = 1
 max_n_samples = 10000000
-# all_datasets = ['wine', 'facebook', 'crime', 'vegas']
-all_datasets = ['facebook', 'blog']
+all_datasets = ['wine', 'facebook', 'crime', 'vegas']
+# all_datasets = ['facebook', 'blog']
+# all_datasets = ['wine', 'vegas']
 
 
 for dataset in all_datasets:
-    run_experiment(dataset, show=False, l_l2sq_coef=l_l2sq_coef)
+    run_experiment(dataset, show=False, l_l2sq_coef=l_l2sq_coef,
+                   fit_intercept=fit_intercept)
 # run_experiment('wine', show=True)
 
 
-plot_all_last_experiment(all_datasets, l_l2sq_coef=l_l2sq_coef)
+plot_all_last_experiment(all_datasets, l_l2sq_coef=l_l2sq_coef,
+                         fit_intercept=fit_intercept)

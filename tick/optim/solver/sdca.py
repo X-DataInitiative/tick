@@ -188,11 +188,7 @@ class SDCA(SolverFirstOrderSto):
 
     def set_model(self, model):
         if isinstance(model, ModelPoisReg):
-            A = model.features
-            # mask = model.labels > 0
-            A = A[model.labels > 0, :]
-            b = 1e-8 + np.zeros(A.shape[0])
-            self._set('_proj', ProjHalfSpace(max_iter=1000).fit(A, b))
+            self._set('_proj', model.create_proj())
         return SolverFirstOrderSto.set_model(self, model)
 
     def extra_history(self, minimizer):

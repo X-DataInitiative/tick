@@ -79,10 +79,7 @@ class LBFGSB(SolverFirstOrder):
 
     def set_model(self, model):
         if isinstance(model, ModelPoisReg):
-            A = model.features
-            A = A[model.labels > 0, :]
-            b = 1e-8 + np.zeros(A.shape[0])
-            self._set('_proj', ProjHalfSpace(max_iter=1000).fit(A, b))
+            self._set('_proj', model.create_proj())
         return SolverFirstOrder.set_model(self, model)
 
     def set_prox(self, prox: Prox):

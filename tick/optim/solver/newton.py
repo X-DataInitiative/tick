@@ -78,11 +78,7 @@ class Newton(SolverFirstOrder):
 
     def set_model(self, model):
         if isinstance(model, ModelPoisReg):
-            A = model.features
-            # mask = model.labels > 0
-            A = A[model.labels > 0, :]
-            b = 1e-8 + np.zeros(A.shape[0])
-            self._set('_proj', ProjHalfSpace(max_iter=1000).fit(A, b))
+            self._set('_proj', model.create_proj())
         return SolverFirstOrder.set_model(self, model)
 
     def set_prox(self, prox: Prox):
@@ -147,9 +143,6 @@ class Newton(SolverFirstOrder):
 
         if isinstance(self.model, ModelPoisReg):
             x = self._proj.call(x)
-            assert self.model.features[self.model.labels > 0, :].dot(
-                x).min() > 0
-
             obj = self.objective(x)
         else:
             obj = 0

@@ -1,6 +1,5 @@
 # License: BSD 3 clause
-
-
+from tick.optim.proj import ProjHalfSpace
 from .build.model import ModelPoisReg as _ModelPoisReg
 from .build.model import LinkType_identity as identity
 from .build.model import LinkType_exponential as exponential
@@ -251,3 +250,14 @@ class ModelPoisReg(ModelGeneralizedLinear,
             Value at which the hessian is computed
         """
         return self._model.hessian(x)
+
+    def create_proj(self):
+        A = self.features
+        A = A[self.labels > 0, :]
+        if self.fit_intercept:
+            intercept = np.ones(len(A)).reshape(len(A), 1)
+            A = np.hstack((A, intercept))
+            A = np.ascontiguousarray(A.astype(float))
+
+        b = 1e-8 + np.zeros(A.shape[0])
+        return ProjHalfSpace(max_iter=1000).fit(A, b)
