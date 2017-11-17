@@ -129,12 +129,19 @@ void ModelHawkesFixedKernCustom::sampled_i_to_index(const ulong sampled_i,
 double ModelHawkesFixedKernCustom::loss_dim_i(const ulong i,
                                               const ArrayDouble &coeffs) {
     const double mu_i = coeffs[i];
+    this->MaxN_of_f = (ulong) coeffs[n_nodes + n_nodes * n_nodes];
+
     const ArrayDouble alpha_i = view(coeffs, get_alpha_i_first_index(i), get_alpha_i_last_index(i));
     const ArrayDouble f_i = view(coeffs, get_f_i_first_index(i), get_f_i_last_index(i));
 
     //cozy at hand
     const ArrayDouble2d g_i = view(g[i]);
     const ArrayDouble2d G_i = view(G[i]);
+
+    printf("%d\n", i);
+    for (ulong k = 0; k < Total_events + 1; k++)
+        //! insert event t0 = 0 in the Total_events and global_n
+        printf("%d %lf %lf\n", k, global_n[k], f_i[k]);
 
     //term 1
     //end_time is T

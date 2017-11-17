@@ -48,7 +48,7 @@ protected:
 
     //! Peng Wu, the maximum N that we would consider for f_i(n)
     //! y compris 0
-    ulong MaxN_of_f; //! Peng Wu, We change the definition of g and G, that now they save g and G for global t_k
+    ulong MaxN_of_f = 5; //! Peng Wu, We change the definition of g and G, that now they save g and G for global t_k
 
 public:
     /**

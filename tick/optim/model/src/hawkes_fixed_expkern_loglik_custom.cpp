@@ -14,7 +14,7 @@ void ModelHawkesCustom::allocate_weights() {
     }
 
     //! hacked part of peng Wu
-    Total_events = 1;
+    Total_events = 0;
     for (ulong i = 0; i < n_nodes; i++)
         Total_events += (*n_jumps_per_node)[i];
 
@@ -24,11 +24,13 @@ void ModelHawkesCustom::allocate_weights() {
     sum_G = ArrayDoubleList1D(n_nodes);
 
     for (ulong i = 0; i < n_nodes; i++) {
-        g[i] = ArrayDouble2d(Total_events + 1, n_nodes);
+        //0 + events + T
+        g[i] = ArrayDouble2d(Total_events + 2, n_nodes);
         g[i].init_to_zero();
-        G[i] = ArrayDouble2d(Total_events + 1, n_nodes);
+        G[i] = ArrayDouble2d(Total_events + 2, n_nodes);
         G[i].init_to_zero();
         sum_G[i] = ArrayDouble(n_nodes);
+        sum_G[i].init_to_zero();
     }
 
     global_timestamps = ArrayDouble(Total_events + 1);
@@ -65,7 +67,7 @@ void ModelHawkesCustom::compute_weights_dim_i(const ulong i) {
     for (ulong j = 0; j < n_nodes; j++) {
         //! here k starts from 1, cause g(t_0) = G(t_0) = 0
         // 0 + Totalevents + T
-        for (ulong k = 1; k < Total_events + 1 + 1; k++) {
+        for (ulong k = 1; k < 1 + Total_events + 1; k++) {
             const double t_k = k < Total_events + 1 ? global_timestamps[k] : end_time;
 
             const double ebt = std::exp(-decay * (t_k - global_timestamps[k - 1]));
