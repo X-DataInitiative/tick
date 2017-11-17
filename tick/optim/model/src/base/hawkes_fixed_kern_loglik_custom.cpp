@@ -138,10 +138,9 @@ double ModelHawkesFixedKernCustom::loss_dim_i(const ulong i,
     const ArrayDouble2d g_i = view(g[i]);
     const ArrayDouble2d G_i = view(G[i]);
 
-    printf("%d\n", i);
-    for (ulong k = 0; k < Total_events + 1; k++)
-        //! insert event t0 = 0 in the Total_events and global_n
-        printf("%d %lf %lf\n", k, global_n[k], f_i[k]);
+//    printf("%d\n", i);
+//    for (ulong k = 0; k < Total_events + 1; k++)
+//        printf("%d %lf %lf\n", k, type_n[k], global_n[k]);
 
     //term 1
     //end_time is T

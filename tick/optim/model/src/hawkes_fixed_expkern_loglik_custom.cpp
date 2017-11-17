@@ -18,7 +18,6 @@ void ModelHawkesCustom::allocate_weights() {
     for (ulong i = 0; i < n_nodes; i++)
         Total_events += (*n_jumps_per_node)[i];
 
-
     g = ArrayDouble2dList1D(n_nodes);
     G = ArrayDouble2dList1D(n_nodes);
     sum_G = ArrayDoubleList1D(n_nodes);
@@ -46,22 +45,35 @@ void ModelHawkesCustom::compute_weights_dim_i(const ulong i) {
     ArrayDouble2d G_i = view(G[i]);
 
     //! hacked code here, seperator = 1, meaning L(increasing) is timestamps[1], C,M(decreasing) are timestamps[2] timestamps[3]
+    ArrayULong tmp_pre_type_n(Total_events + 1);
+    tmp_pre_type_n[0] = 0;
+    ArrayULong tmp_index(Total_events + 1);
+
     ulong count = 1;
     for (ulong j = 0; j < n_nodes; j++) {
         const ArrayDouble t_j = view(*timestamps[j]);
-        for (ulong k = 0; k < (*n_jumps_per_node)[i]; ++k) {
+        for (ulong k = 0; k < (*n_jumps_per_node)[j]; ++k) {
             global_timestamps[count] = t_j[k];
-            type_n[count++] = j + 1;
+            tmp_pre_type_n[count++] = j + 1;
         }
     }
-    global_timestamps.sort(type_n);
+
+    global_timestamps.sort(tmp_index);
 
     for (int k = 1; k < Total_events + 1; ++k) {
+        type_n[k] = tmp_pre_type_n[tmp_index[k]];
         if (type_n[k] < 2)
             global_n[k] = global_n[k - 1] + 1;
         else
             global_n[k] = global_n[k - 1] - 1;
     }
+
+    //! ######################
+    //! Martin's timestamps make global_n negative sometimes, in this test phase, let's make them compulsoryly position by taking abs
+    for (int k = 1; k < Total_events + 1; ++k)
+        global_n[k] = abs(global_n[k]);
+    //! end of hacking part
+    //! ######################
 
     //for the g_j, I make all the threads calculating the same g_j in this developing stage
     for (ulong j = 0; j < n_nodes; j++) {
@@ -74,10 +86,14 @@ void ModelHawkesCustom::compute_weights_dim_i(const ulong i) {
             g_i[k * n_nodes + j] = g_i[(k - 1) * n_nodes + j] * ebt + type_n[k] == j ? decay : 0;
             G_i[k * n_nodes + j] = (1 - ebt) / decay * g_i[(k - 1) * n_nodes + j];
 
+            printf("%d %f %f\n", k * n_nodes + j, g_i[k * n_nodes + j], G_i[k * n_nodes + j]);
+
             // ! in the G, we calculated the difference between G without multiplying f
             // sum_G is calculated later, in the calculation of L_dim_i and its grads
         }
     }
+
+    ;
 }
 
 ulong ModelHawkesCustom::get_n_coeffs() const {
