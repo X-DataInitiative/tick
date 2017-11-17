@@ -52,6 +52,20 @@ void NodeClassifier::update_downwards(const ArrayDouble &x_t, const double y_t) 
   update_predict(y_t);
 }
 
+bool NodeClassifier::is_same(const ArrayDouble &x_t) {
+  if (_is_leaf) {
+    for (ulong j = 0; j < n_features(); ++j) {
+      double delta = std::abs(x_t[j] - _x_t[j]);
+      if (delta > 0.) {
+        return false;
+      }
+    }
+    return true;
+  } else {
+    TICK_ERROR("NodeClassifier::is_same: node is not a leaf !")
+  }
+}
+
 void NodeClassifier::update_upwards() {
   if (_is_leaf) {
     _weight_tree = _weight;
@@ -228,8 +242,23 @@ ulong TreeClassifier::split_leaf(ulong index, const ArrayDouble &x_t, double y_t
   ulong right = add_node(index);
   node(index).set_left(left).set_right(right).set_is_leaf(false);
 
+  // std::cout << "n_features(): " << n_features() << std::endl;
+  ArrayDouble diff(n_features());
+  for(ulong j = 0; j < n_features(); ++j) {
+    // std::cout << "j: " << j;
+    diff[j] = std::abs(node(index).x_t()[j] - x_t[j]);
+  }
+  // std::cout << std::endl;
+  diff /= diff.sum();
+  // diff.print();
+  // std::cout << "diff.sum=" << diff.sum() << std::endl;
+
   // TODO: better feature sampling
-  ulong feature = forest.sample_feature();
+  // ulong feature = forest.sample_feature();
+
+  ulong feature = forest.sample_feature(diff);
+
+  // std::cout << "feature: " << feature << std::endl;
 
   double x1_tj = x_t[feature];
   double x2_tj = node(index).x_t()[feature];
@@ -322,22 +351,24 @@ inline ulong TreeClassifier::n_nodes() const {
 
 void TreeClassifier::fit(const ArrayDouble &x_t, double y_t) {
   // TODO: Test that the size does not change within successive calls to fit
-//  std::cout << "iteration: " << iteration << std::endl;
-//  print();
+  // std::cout << "iteration: " << iteration << std::endl;
+  // print();
   if (iteration == 0) {
     nodes[0].set_x_t(x_t).set_y_t(y_t);
     iteration++;
     return;
   }
   ulong leaf = go_downwards(x_t, y_t, false);
-  ulong new_leaf = split_leaf(leaf, x_t, y_t);
-//  for(ulong j=0; j < n_features(); ++j) {
-//    double delta = std::abs(x_t[j] - node(leaf).sample().first[j]);
-//    if (delta > 0.) {
-//      new_leaf = split_node(leaf, x_t, y_t);
-//      break;
-//    }
-//  }
+
+  NodeClassifier& leaf_node = node(leaf);
+  ulong new_leaf;
+  bool is_same = leaf_node.is_same(x_t);
+  // std::cout << "is_same: " << is_same << std::endl;
+  if (is_same) {
+    new_leaf = leaf;
+  } else {
+    new_leaf = split_leaf(leaf, x_t, y_t);
+  }
   go_upwards(new_leaf);
   iteration++;
 }
@@ -371,7 +402,9 @@ void TreeClassifier::predict(const ArrayDouble &x_t, ArrayDouble& scores) {
 }
 
 ulong TreeClassifier::add_node(ulong parent) {
+  // std::cout << "Adding node with parent " << parent << std::endl;
   nodes.emplace_back(*this, parent);
+  // std::cout << "Done." << std::endl;
   return _n_nodes++;
 }
 
@@ -470,6 +503,10 @@ void OnlineForestClassifier::clear() {
 
 inline ulong OnlineForestClassifier::sample_feature() {
   return rand.uniform_int(0L, n_features() - 1);
+}
+
+inline ulong OnlineForestClassifier::sample_feature(const ArrayDouble & prob) {
+  return rand.discrete(prob);
 }
 
 inline double OnlineForestClassifier::sample_threshold(double left, double right) {

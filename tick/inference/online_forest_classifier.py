@@ -156,11 +156,21 @@ class OnlineForestClassifier(ABC, Base):
         self._forest.predict(X, scores, True)
         return scores
 
+    def predict(self, X):
+        if not self._fitted:
+            raise ValueError("You must call ``fit`` before")
+        else:
+            scores = self.predict_proba(X)
+            return scores.argmax(axis=1)
+
     def clear(self):
         self._forest.clear()
 
     def score(self, X, y):
-        from sklearn.metrics import r2_score
+        from sklearn.metrics import accuracy_score
+
+        y_pred = self.predict(X)
+        return accuracy_score(y, y_pred)
 
     def print(self):
         self._forest._print()

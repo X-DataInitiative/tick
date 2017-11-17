@@ -94,6 +94,9 @@ class NodeClassifier {
   double score(uint8_t y) const;
 
   double loss(const double y_t);
+
+  bool is_same(const ArrayDouble &x_t);
+
   // Get node at index in the tree
   inline NodeClassifier &node(ulong index) const;
   // Get number of features
@@ -170,8 +173,11 @@ class TreeClassifier {
   void print() {
     std::cout << "Tree(n_nodes: " << _n_nodes << std::endl;
     std::cout << " ";
+    ulong index = 0;
     for (NodeClassifier &node : nodes) {
+      std::cout << "index: " << index << " ";
       node.print();
+      index++;
     }
     std::cout << ")";
   }
@@ -223,6 +229,7 @@ class OnlineForestClassifier {
   void predict(const SArrayDouble2dPtr features, SArrayDouble2dPtr predictions, bool use_aggregation);
 
   inline ulong sample_feature();
+  inline ulong sample_feature(const ArrayDouble & prob);
   inline double sample_threshold(double left, double right);
 
   void clear();
