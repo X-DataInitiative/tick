@@ -44,4 +44,6 @@ class OnlineForestClassifier {
   OnlineForestClassifier &set_seed(int seed);
   // bool verbose() const;
   // OnlineForestRegressor &set_verbose(bool verbose);
+
+  void set_probabilities(const ArrayDouble & probabilities);
 };

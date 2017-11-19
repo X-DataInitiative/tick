@@ -27,7 +27,6 @@ enum class CriterionClassifier {
   log = 0,
 };
 
-
 class TreeClassifier;
 
 /*********************************************************************************
@@ -39,17 +38,17 @@ class NodeClassifier {
   // Tree containing the node
   TreeClassifier &_tree;
   // Index of the parent
-  ulong _parent;
+  uint32_t _parent;
   // Index of the left child
-  ulong _left;
+  uint32_t _left;
   // Index of the right child
-  ulong _right;
+  uint32_t _right;
   // Index of the feature used for the split
-  ulong _feature;
+  uint32_t _feature;
   // Threshold used for the split
   double _threshold;
   // Number of samples in the node
-  ulong _n_samples;
+  uint32_t _n_samples;
   // The features of the sample saved in the node
   // TODO: use a unique_ptr on x_t
   ArrayDouble _x_t;
@@ -65,7 +64,7 @@ class NodeClassifier {
   ArrayULong _counts;
 
  public:
-  NodeClassifier(TreeClassifier &tree, ulong parent);
+  NodeClassifier(TreeClassifier &tree, uint32_t parent);
   NodeClassifier(const NodeClassifier &node);
   NodeClassifier(const NodeClassifier &&node);
   NodeClassifier &operator=(const NodeClassifier &) = delete;
@@ -88,7 +87,7 @@ class NodeClassifier {
   // Update the prediction of the label
   void update_predict(const double y_t);
   // Predict function (average of the labels of samples that passed through the node)
-  void predict(ArrayDouble& scores) const;
+  void predict(ArrayDouble &scores) const;
   // Loss function used for aggregation
 
   double score(uint8_t y) const;
@@ -98,29 +97,29 @@ class NodeClassifier {
   bool is_same(const ArrayDouble &x_t);
 
   // Get node at index in the tree
-  inline NodeClassifier &node(ulong index) const;
+  inline NodeClassifier &node(uint32_t index) const;
   // Get number of features
-  inline ulong n_features() const;
+  inline uint32_t n_features() const;
   // Number of classes
-  inline uint8_t  n_classes() const;
+  inline uint8_t n_classes() const;
   // Step to use for aggrgation
   inline double step() const;
   // Print of the node
   void print();
 
-  inline ulong parent() const;
-  inline ulong left() const;
-  inline NodeClassifier &set_left(ulong left);
-  inline ulong right() const;
-  inline NodeClassifier &set_right(ulong right);
+  inline uint32_t parent() const;
+  inline uint32_t left() const;
+  inline NodeClassifier &set_left(uint32_t left);
+  inline uint32_t right() const;
+  inline NodeClassifier &set_right(uint32_t right);
   inline bool is_leaf() const;
   inline NodeClassifier &set_is_leaf(bool is_leaf);
-  inline ulong feature() const;
-  inline NodeClassifier &set_feature(ulong feature);
+  inline uint32_t feature() const;
+  inline NodeClassifier &set_feature(uint32_t feature);
   inline double threshold() const;
   inline NodeClassifier &set_threshold(double threshold);
-  inline ulong n_samples() const;
-  inline NodeClassifier &set_n_samples(ulong n_samples);
+  inline uint32_t n_samples() const;
+  inline NodeClassifier &set_n_samples(uint32_t n_samples);
   inline double weight() const;
   inline NodeClassifier &set_weight(double weight);
   inline double weight_tree() const;
@@ -142,18 +141,18 @@ class TreeClassifier {
   // The forest of the tree
   OnlineForestClassifier &forest;
   // Number of nodes in the tree
-  ulong _n_nodes = 0;
+  uint32_t _n_nodes = 0;
   // Iteration counter
-  ulong iteration = 0;
+  uint32_t iteration = 0;
   // Nodes of the tree
   std::vector<NodeClassifier> nodes = std::vector<NodeClassifier>();
   // Split the node at given index
-  ulong split_leaf(ulong index, const ArrayDouble &x_t, double y_t);
+  uint32_t split_leaf(uint32_t index, const ArrayDouble &x_t, double y_t);
   // Add nodes in the tree
-  ulong add_node(ulong parent);
+  uint32_t add_node(uint32_t parent);
 
-  ulong go_downwards(const ArrayDouble &x_t, double y_t, bool predict);
-  void go_upwards(ulong leaf_index);
+  uint32_t go_downwards(const ArrayDouble &x_t, double y_t, bool predict);
+  void go_upwards(uint32_t leaf_index);
 
  public:
   TreeClassifier(OnlineForestClassifier &forest);
@@ -165,15 +164,15 @@ class TreeClassifier {
   void fit(const ArrayDouble &x_t, double y_t);
   void predict(const ArrayDouble &x_t, ArrayDouble &scores);
 
-  inline ulong n_features() const;
-  inline uint8_t  n_classes() const;
-  inline ulong n_nodes() const;
+  inline uint32_t n_features() const;
+  inline uint8_t n_classes() const;
+  inline uint32_t n_nodes() const;
   inline double step() const;
 
   void print() {
     std::cout << "Tree(n_nodes: " << _n_nodes << std::endl;
     std::cout << " ";
-    ulong index = 0;
+    uint32_t index = 0;
     for (NodeClassifier &node : nodes) {
       std::cout << "index: " << index << " ";
       node.print();
@@ -184,7 +183,7 @@ class TreeClassifier {
 
   inline CriterionClassifier criterion() const;
 
-  NodeClassifier &node(ulong index) {
+  NodeClassifier &node(uint32_t index) {
     return nodes[index];
   }
 };
@@ -204,7 +203,7 @@ class OnlineForestClassifier {
   // Step-size used for aggregation
   double _step;
   // Number of features.
-  ulong _n_features;
+  uint32_t _n_features;
   // Number of classes in the classification problem
   uint8_t _n_classes;
   // Seed for random number generation
@@ -212,11 +211,13 @@ class OnlineForestClassifier {
   // Verbose things or not
   bool _verbose;
   // Iteration counter
-  ulong _iteration;
+  uint32_t _iteration;
   // The list of trees in the forest
   std::vector<TreeClassifier> trees;
   // Random number generator for feature and threshold sampling
   Rand rand;
+
+  ArrayDouble _probabilities;
   // Create trees
   void create_trees();
 
@@ -228,8 +229,11 @@ class OnlineForestClassifier {
   void fit(const SArrayDouble2dPtr features, const SArrayDoublePtr labels);
   void predict(const SArrayDouble2dPtr features, SArrayDouble2dPtr predictions, bool use_aggregation);
 
-  inline ulong sample_feature();
-  inline ulong sample_feature(const ArrayDouble & prob);
+  inline uint32_t sample_feature();
+  inline uint32_t sample_feature(const ArrayDouble &prob);
+
+  inline uint32_t sample_feature_bis();
+
   inline double sample_threshold(double left, double right);
 
   void clear();
@@ -244,7 +248,7 @@ class OnlineForestClassifier {
     }
   }
 
-  inline ulong n_samples() const {
+  inline uint32_t n_samples() const {
     if (_iteration > 0) {
       return _iteration;
     } else {
@@ -252,7 +256,7 @@ class OnlineForestClassifier {
     }
   }
 
-  inline ulong n_features() const {
+  inline uint32_t n_features() const {
     if (_iteration > 0) {
       return _n_features;
     } else {
@@ -264,7 +268,7 @@ class OnlineForestClassifier {
     return _n_classes;
   }
 
-  OnlineForestClassifier & set_n_classes(uint8_t n_classes) {
+  OnlineForestClassifier &set_n_classes(uint8_t n_classes) {
     if (_iteration == 0) {
       _n_classes = n_classes;
     } else {
@@ -273,7 +277,7 @@ class OnlineForestClassifier {
     return *this;
   }
 
-  inline OnlineForestClassifier &set_n_features(ulong n_features) {
+  inline OnlineForestClassifier &set_n_features(uint32_t n_features) {
     if (_iteration == 0) {
       _n_features = n_features;
     }
@@ -317,6 +321,9 @@ class OnlineForestClassifier {
     return *this;
   }
 
+  inline void set_probabilities(const ArrayDouble &probabilities) {
+    _probabilities = probabilities;
+  }
 
 //  inline bool verbose() const;
 //  inline OnlineForestClassifier &set_verbose(bool verbose);

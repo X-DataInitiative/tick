@@ -7,7 +7,7 @@
  * NodeClassifier methods
  *********************************************************************************/
 
-NodeClassifier::NodeClassifier(TreeClassifier &tree, ulong parent)
+NodeClassifier::NodeClassifier(TreeClassifier &tree, uint32_t parent)
     : _tree(tree) {
   _parent = parent;
   _left = 0;
@@ -54,7 +54,7 @@ void NodeClassifier::update_downwards(const ArrayDouble &x_t, const double y_t) 
 
 bool NodeClassifier::is_same(const ArrayDouble &x_t) {
   if (_is_leaf) {
-    for (ulong j = 0; j < n_features(); ++j) {
+    for (uint32_t j = 0; j < n_features(); ++j) {
       double delta = std::abs(x_t[j] - _x_t[j]);
       if (delta > 0.) {
         return false;
@@ -96,11 +96,11 @@ double NodeClassifier::loss(const double y_t) {
   return -std::log(score(c));
 }
 
-inline NodeClassifier &NodeClassifier::node(ulong index) const {
+inline NodeClassifier &NodeClassifier::node(uint32_t index) const {
   return _tree.node(index);
 }
 
-ulong NodeClassifier::n_features() const {
+uint32_t NodeClassifier::n_features() const {
   return _tree.n_features();
 }
 
@@ -112,24 +112,24 @@ inline double NodeClassifier::step() const {
   return _tree.step();
 }
 
-inline ulong NodeClassifier::parent() const {
+inline uint32_t NodeClassifier::parent() const {
   return _parent;
 }
 
-inline ulong NodeClassifier::left() const {
+inline uint32_t NodeClassifier::left() const {
   return _left;
 }
 
-inline NodeClassifier &NodeClassifier::set_left(ulong left) {
+inline NodeClassifier &NodeClassifier::set_left(uint32_t left) {
   _left = left;
   return *this;
 }
 
-inline ulong NodeClassifier::right() const {
+inline uint32_t NodeClassifier::right() const {
   return _right;
 }
 
-inline NodeClassifier &NodeClassifier::set_right(ulong right) {
+inline NodeClassifier &NodeClassifier::set_right(uint32_t right) {
   _right = right;
   return *this;
 }
@@ -143,11 +143,11 @@ inline NodeClassifier &NodeClassifier::set_is_leaf(bool is_leaf) {
   return *this;
 }
 
-inline ulong NodeClassifier::feature() const {
+inline uint32_t NodeClassifier::feature() const {
   return _feature;
 }
 
-inline NodeClassifier &NodeClassifier::set_feature(ulong feature) {
+inline NodeClassifier &NodeClassifier::set_feature(uint32_t feature) {
   _feature = feature;
   return *this;
 }
@@ -161,11 +161,11 @@ inline NodeClassifier &NodeClassifier::set_threshold(double threshold) {
   return *this;
 }
 
-inline ulong NodeClassifier::n_samples() const {
+inline uint32_t NodeClassifier::n_samples() const {
   return _n_samples;
 }
 
-inline NodeClassifier &NodeClassifier::set_n_samples(ulong n_samples) {
+inline NodeClassifier &NodeClassifier::set_n_samples(uint32_t n_samples) {
   _n_samples = n_samples;
   return *this;
 }
@@ -236,15 +236,15 @@ TreeClassifier::TreeClassifier(OnlineForestClassifier &forest) : forest(forest) 
   add_node(0);
 }
 
-ulong TreeClassifier::split_leaf(ulong index, const ArrayDouble &x_t, double y_t) {
+uint32_t TreeClassifier::split_leaf(uint32_t index, const ArrayDouble &x_t, double y_t) {
   // std::cout << "Splitting node " << index << std::endl;
-  ulong left = add_node(index);
-  ulong right = add_node(index);
+  uint32_t left = add_node(index);
+  uint32_t right = add_node(index);
   node(index).set_left(left).set_right(right).set_is_leaf(false);
 
   // std::cout << "n_features(): " << n_features() << std::endl;
   ArrayDouble diff(n_features());
-  for(ulong j = 0; j < n_features(); ++j) {
+  for(uint32_t j = 0; j < n_features(); ++j) {
     // std::cout << "j: " << j;
     diff[j] = std::abs(node(index).x_t()[j] - x_t[j]);
   }
@@ -254,9 +254,11 @@ ulong TreeClassifier::split_leaf(ulong index, const ArrayDouble &x_t, double y_t
   // std::cout << "diff.sum=" << diff.sum() << std::endl;
 
   // TODO: better feature sampling
+  // ulong feature = forest.sample_feature_bis();
+
   // ulong feature = forest.sample_feature();
 
-  ulong feature = forest.sample_feature(diff);
+  uint32_t feature = forest.sample_feature(diff);
 
   // std::cout << "feature: " << feature << std::endl;
 
@@ -265,8 +267,8 @@ ulong TreeClassifier::split_leaf(ulong index, const ArrayDouble &x_t, double y_t
   double threshold;
 
   // The leaf that contains the passed sample (x_t, y_t)
-  ulong data_leaf;
-  ulong other_leaf;
+  uint32_t data_leaf;
+  uint32_t other_leaf;
 
   // std::cout << "x1_tj= " << x1_tj << " x2_tj= " << x2_tj << " threshold= " << threshold << std::endl;
   // TODO: what if x1_tj == x2_tj. Must be taken care of by sample_feature()
@@ -302,13 +304,13 @@ ulong TreeClassifier::split_leaf(ulong index, const ArrayDouble &x_t, double y_t
   return data_leaf;
 }
 
-ulong TreeClassifier::go_downwards(const ArrayDouble &x_t, double y_t, bool predict) {
+uint32_t TreeClassifier::go_downwards(const ArrayDouble &x_t, double y_t, bool predict) {
   // Find the leaf that contains the sample
   // Start at the root. Index of the root is always 0
   // If predict == true, this call to find_leaf is for
   // prediction only, so that no leaf update and splits can be done
   // std::cout << "Going downwards" << std::endl;
-  ulong index_current_node = 0;
+  uint32_t index_current_node = 0;
   bool is_leaf = false;
   while (!is_leaf) {
     // Get the current node
@@ -330,9 +332,9 @@ ulong TreeClassifier::go_downwards(const ArrayDouble &x_t, double y_t, bool pred
   return index_current_node;
 }
 
-void TreeClassifier::go_upwards(ulong leaf_index) {
+void TreeClassifier::go_upwards(uint32_t leaf_index) {
   // std::cout << "Going upwards" << std::endl;
-  ulong current = leaf_index;
+  uint32_t current = leaf_index;
   while (true) {
     NodeClassifier &current_node = node(current);
     current_node.update_upwards();
@@ -345,7 +347,7 @@ void TreeClassifier::go_upwards(ulong leaf_index) {
   }
 }
 
-inline ulong TreeClassifier::n_nodes() const {
+inline uint32_t TreeClassifier::n_nodes() const {
   return _n_nodes;
 }
 
@@ -358,10 +360,10 @@ void TreeClassifier::fit(const ArrayDouble &x_t, double y_t) {
     iteration++;
     return;
   }
-  ulong leaf = go_downwards(x_t, y_t, false);
+  uint32_t leaf = go_downwards(x_t, y_t, false);
 
   NodeClassifier& leaf_node = node(leaf);
-  ulong new_leaf;
+  uint32_t new_leaf;
   bool is_same = leaf_node.is_same(x_t);
   // std::cout << "is_same: " << is_same << std::endl;
   if (is_same) {
@@ -375,9 +377,9 @@ void TreeClassifier::fit(const ArrayDouble &x_t, double y_t) {
 
 void TreeClassifier::predict(const ArrayDouble &x_t, ArrayDouble& scores) {
   // std::cout << "Going downwards" << std::endl;
-  ulong leaf = go_downwards(x_t, 0., true);
+  uint32_t leaf = go_downwards(x_t, 0., true);
   // std::cout << "Done." << std::endl;
-  ulong current = leaf;
+  uint32_t current = leaf;
   // The child of the current node that does not contain the data
   ArrayDouble pred_new(n_classes());
   while (true) {
@@ -401,14 +403,14 @@ void TreeClassifier::predict(const ArrayDouble &x_t, ArrayDouble& scores) {
   }
 }
 
-ulong TreeClassifier::add_node(ulong parent) {
+uint32_t TreeClassifier::add_node(uint32_t parent) {
   // std::cout << "Adding node with parent " << parent << std::endl;
   nodes.emplace_back(*this, parent);
   // std::cout << "Done." << std::endl;
   return _n_nodes++;
 }
 
-inline ulong TreeClassifier::n_features() const {
+inline uint32_t TreeClassifier::n_features() const {
   return forest.n_features();
 }
 
@@ -439,6 +441,15 @@ OnlineForestClassifier::OnlineForestClassifier(uint32_t n_trees,
       _criterion(criterion), _step(step), _verbose(verbose), trees() {
   // No iteration so far
   _iteration = 0;
+
+  std::cout << "sizeof(float): " << sizeof(float) << std::endl;
+  std::cout << "sizeof(double): " << sizeof(double) << std::endl;
+  std::cout << "sizeof(uint8_t): " << sizeof(uint8_t) << std::endl;
+  std::cout << "sizeof(uint16_t): " << sizeof(uint16_t) << std::endl;
+  std::cout << "sizeof(uint32_t): " << sizeof(uint32_t) << std::endl;
+  std::cout << "sizeof(long): " << sizeof(long) << std::endl;
+  std::cout << "sizeof(ulong): " << sizeof(ulong) << std::endl;
+
   create_trees();
   // Seed the random number generators
   set_seed(seed);
@@ -458,10 +469,10 @@ void OnlineForestClassifier::create_trees() {
 void OnlineForestClassifier::fit(const SArrayDouble2dPtr features,
                                 const SArrayDoublePtr labels) {
   // std::cout << "OnlineForestClassifier::fit" << std::endl;
-  ulong n_samples = features->n_rows();
-  ulong n_features = features->n_cols();
+  uint32_t n_samples = static_cast<uint32_t>(features->n_rows());
+  uint32_t n_features = static_cast<uint32_t>(features->n_cols());
   set_n_features(n_features);
-  for (ulong i = 0; i < n_samples; ++i) {
+  for (uint32_t i = 0; i < n_samples; ++i) {
     for (TreeClassifier &tree : trees) {
       // Fit the tree online using the new data point
       tree.fit(view_row(*features, i), (*labels)[i]);
@@ -476,12 +487,12 @@ void OnlineForestClassifier::predict(const SArrayDouble2dPtr features,
                                      bool use_aggregation) {
   predictions->fill(0.);
   if (_iteration > 0) {
-    ulong n_samples = features->n_rows();
+    uint32_t n_samples = static_cast<uint32_t>(features->n_rows());
     ArrayDouble scores_tree(_n_classes);
     scores_tree.fill(0.);
     ArrayDouble scores_forest(_n_classes);
     scores_forest.fill(0.);
-    for (ulong i = 0; i < n_samples; ++i) {
+    for (uint32_t i = 0; i < n_samples; ++i) {
       // The prediction is simply the average of the predictions
       ArrayDouble scores_i = view_row(*predictions, i);
       for (TreeClassifier &tree : trees) {
@@ -501,11 +512,15 @@ void OnlineForestClassifier::clear() {
   _iteration = 0;
 }
 
-inline ulong OnlineForestClassifier::sample_feature() {
-  return rand.uniform_int(0L, n_features() - 1);
+inline uint32_t OnlineForestClassifier::sample_feature() {
+  return rand.uniform_int(static_cast<uint32_t>(0), n_features() - 1);
 }
 
-inline ulong OnlineForestClassifier::sample_feature(const ArrayDouble & prob) {
+inline uint32_t OnlineForestClassifier::sample_feature_bis() {
+  return rand.discrete(_probabilities);
+}
+
+inline uint32_t OnlineForestClassifier::sample_feature(const ArrayDouble & prob) {
   return rand.discrete(prob);
 }
 

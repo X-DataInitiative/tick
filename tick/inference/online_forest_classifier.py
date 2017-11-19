@@ -189,3 +189,6 @@ class OnlineForestClassifier(ABC, Base):
             # self._forest.set_criterion(unif)
         else:
             raise ValueError("``criterion`` must be either 'unif' or 'mse'.")
+
+    def set_probabilities(self, probabilities):
+        self._forest.set_probabilities(probabilities)

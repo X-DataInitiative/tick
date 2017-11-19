@@ -161,4 +161,7 @@ names = [
 ]
 
 plot_decision_classification(classifiers, datasets, names)
-plt.show()
+
+plt.savefig('decisions.pdf')
+
+# plt.show()
