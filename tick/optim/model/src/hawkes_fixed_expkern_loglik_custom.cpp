@@ -30,6 +30,11 @@ void ModelHawkesCustom::allocate_weights() {
         G[i].init_to_zero();
         sum_G[i] = ArrayDouble(n_nodes);
         sum_G[i].init_to_zero();
+
+        H1[i] = ArrayDouble2d(n_nodes, MaxN_of_f);
+        H1[i].init_to_zero();
+        H2[i] = ArrayDouble2d(n_nodes, MaxN_of_f);
+        H2[i].init_to_zero();
     }
 
     global_timestamps = ArrayDouble(Total_events + 1);
@@ -75,6 +80,11 @@ void ModelHawkesCustom::compute_weights_dim_i(const ulong i) {
     //! end of hacking part
     //! ######################
 
+//    printf("\n\n");
+//    for (int k = 0; k < Total_events + 1; ++k)
+//        printf("%d %d %f\n", type_n[k],global_n[k],global_timestamps[k]);
+//    printf("\n\n");
+
     //for the g_j, I make all the threads calculating the same g_j in this developing stage
     for (ulong j = 0; j < n_nodes; j++) {
         //! here k starts from 1, cause g(t_0) = G(t_0) = 0
@@ -83,17 +93,25 @@ void ModelHawkesCustom::compute_weights_dim_i(const ulong i) {
             const double t_k = k < Total_events + 1 ? global_timestamps[k] : end_time;
 
             const double ebt = std::exp(-decay * (t_k - global_timestamps[k - 1]));
-            g_i[k * n_nodes + j] = g_i[(k - 1) * n_nodes + j] * ebt + type_n[k] == j ? decay : 0;
+            g_i[k * n_nodes + j] = g_i[(k - 1) * n_nodes + j] * ebt + (type_n[k] == j + 1 ? decay : 0);
             G_i[k * n_nodes + j] = (1 - ebt) / decay * g_i[(k - 1) * n_nodes + j];
 
-            printf("%d %f %f\n", k * n_nodes + j, g_i[k * n_nodes + j], G_i[k * n_nodes + j]);
+//          printf("%d %f %f %d %d %d, %f %f %f\n", k * n_nodes + j, g_i[k * n_nodes + j], G_i[k * n_nodes + j], type_n[k] , j + 1, type_n[k] == j + 1, g_i[(k - 1) * n_nodes + j] * ebt, type_n[k] == j + 1 ? decay : 0, t_k);
 
             // ! in the G, we calculated the difference between G without multiplying f
             // sum_G is calculated later, in the calculation of L_dim_i and its grads
         }
     }
 
-    ;
+    //! TODO add the calculation of H_1, H_2
+    //! in fact, H1 is one dimension, here I make all threads calculating the same thing
+    ArrayDouble2d H1_i = view(g[i]);
+    ArrayDouble2d H2_i = view(G[i]);
+
+    for (ulong k = 1; k < 1 + Total_events + 1; k++) {
+        H1_i[global_n[k - 1]] += 1;
+    }
+    
 }
 
 ulong ModelHawkesCustom::get_n_coeffs() const {

@@ -48,7 +48,13 @@ protected:
 
     //! Peng Wu, the maximum N that we would consider for f_i(n)
     //! y compris 0
-    ulong MaxN_of_f = 5; //! Peng Wu, We change the definition of g and G, that now they save g and G for global t_k
+    ulong MaxN_of_f = 5;
+
+    //! @brief auxilliary variable H1 described in the document
+    ArrayDouble2dList1D H1;
+
+    //! @brief auxilliary variable H2 described in the document
+    ArrayDouble2dList1D H2;
 
 public:
     /**
