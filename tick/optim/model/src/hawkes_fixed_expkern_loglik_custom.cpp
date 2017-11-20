@@ -35,6 +35,8 @@ void ModelHawkesCustom::allocate_weights() {
         H1[i].init_to_zero();
         H2[i] = ArrayDouble2d(n_nodes, MaxN_of_f);
         H2[i].init_to_zero();
+        H3[i] = ArrayDouble2d(n_nodes, MaxN_of_f);
+        H3[i].init_to_zero();
     }
 
     global_timestamps = ArrayDouble(Total_events + 1);
@@ -103,15 +105,22 @@ void ModelHawkesCustom::compute_weights_dim_i(const ulong i) {
         }
     }
 
-    //! TODO add the calculation of H_1, H_2
+    //! TODO add the calculation of H_1, H_2, H_3
     //! in fact, H1 is one dimension, here I make all threads calculating the same thing
-    ArrayDouble2d H1_i = view(g[i]);
-    ArrayDouble2d H2_i = view(G[i]);
+    ArrayDouble2d H1_i = view(H1[i]);
+    ArrayDouble2d H2_i = view(H2[i]);
+    ArrayDouble2d H3_i = view(H3[i]);
 
     for (ulong k = 1; k < 1 + Total_events + 1; k++) {
         H1_i[global_n[k - 1]] += 1;
+
+        const double t_k = k < Total_events + 1 ? global_timestamps[k] : end_time;
+        H2_i[global_n[k - 1]] -= t_k - global_timestamps[k - 1];
+        for (ulong j = 0; j < n_nodes; j++) {
+            H3_i[global_n[k - 1]] -= t_k - global_timestamps[k - 1];
+        }
     }
-    
+
 }
 
 ulong ModelHawkesCustom::get_n_coeffs() const {

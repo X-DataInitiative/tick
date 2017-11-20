@@ -56,6 +56,9 @@ protected:
     //! @brief auxilliary variable H2 described in the document
     ArrayDouble2dList1D H2;
 
+    //! @brief auxilliary variable H2 described in the document
+    ArrayDouble2dList1D H3;
+
 public:
     /**
      * @brief Constructor
