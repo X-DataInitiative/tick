@@ -47,6 +47,12 @@ class NodeClassifier {
   uint32_t _feature;
   // Threshold used for the split
   double _threshold;
+  // Time of creation of the node
+  double _time;
+  // Range of the features
+  ArrayDouble _features_min;
+  ArrayDouble _features_max;
+
   // Number of samples in the node
   uint32_t _n_samples;
   // The features of the sample saved in the node
@@ -64,7 +70,7 @@ class NodeClassifier {
   ArrayULong _counts;
 
  public:
-  NodeClassifier(TreeClassifier &tree, uint32_t parent);
+  NodeClassifier(TreeClassifier &tree, uint32_t parent, uint32_t time = 0);
   NodeClassifier(const NodeClassifier &node);
   NodeClassifier(const NodeClassifier &&node);
   NodeClassifier &operator=(const NodeClassifier &) = delete;
@@ -118,6 +124,12 @@ class NodeClassifier {
   inline NodeClassifier &set_feature(uint32_t feature);
   inline double threshold() const;
   inline NodeClassifier &set_threshold(double threshold);
+  inline double time() const;
+  inline NodeClassifier &set_time(double time);
+  inline double features_min(const uint32_t j) const;
+  inline double set_features_min(const ArrayDouble &features_min);
+  inline double features_max(const uint32_t j) const;
+  inline double set_features_max(const ArrayDouble &features_max);
   inline uint32_t n_samples() const;
   inline NodeClassifier &set_n_samples(uint32_t n_samples);
   inline double weight() const;
@@ -167,6 +179,7 @@ class TreeClassifier {
   inline uint32_t n_features() const;
   inline uint8_t n_classes() const;
   inline uint32_t n_nodes() const;
+  uint32_t n_leaves() const;
   inline double step() const;
 
   void print() {

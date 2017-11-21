@@ -7,9 +7,10 @@
  * NodeClassifier methods
  *********************************************************************************/
 
-NodeClassifier::NodeClassifier(TreeClassifier &tree, uint32_t parent)
+NodeClassifier::NodeClassifier(TreeClassifier &tree, uint32_t parent, uint32_t time)
     : _tree(tree) {
   _parent = parent;
+  _time = time;
   _left = 0;
   _right = 0;
   _n_samples = 0;
@@ -24,6 +25,7 @@ NodeClassifier::NodeClassifier(const NodeClassifier &node)
     : _tree(node._tree),
       _parent(node._parent), _left(node._left), _right(node._right),
       _feature(node._feature), _threshold(node._threshold),
+      _time(node._time), _features_min(node._features_min), _features_max(node._features_max),
       _n_samples(node._n_samples),
       _x_t(node._x_t),
       _y_t(node._y_t),
@@ -37,6 +39,9 @@ NodeClassifier::NodeClassifier(const NodeClassifier &&node) : _tree(_tree) {
   _right = node._right;
   _feature = node._feature;
   _threshold = node._threshold;
+  _time = node._time;
+  _features_min = node._features_min;
+  _features_max = node._features_max;
   _n_samples = node._n_samples;
   _x_t = node._x_t;
   _y_t = node._y_t;
@@ -159,6 +164,30 @@ inline double NodeClassifier::threshold() const {
 inline NodeClassifier &NodeClassifier::set_threshold(double threshold) {
   _threshold = threshold;
   return *this;
+}
+
+inline double NodeClassifier::time() const {
+  return _time;
+}
+
+inline NodeClassifier &NodeClassifier::set_time(double time) {
+  _time = time;
+}
+
+inline double NodeClassifier::features_min(const uint32_t j) const {
+  return _features_min[j];
+}
+
+inline double NodeClassifier::set_features_min(const ArrayDouble &features_min) {
+  _features_min = features_min;
+}
+
+inline double NodeClassifier::features_max(const uint32_t j) const {
+  return _features_max[j];
+}
+
+inline double NodeClassifier::set_features_max(const ArrayDouble &features_max) {
+  _features_max = features_max;
 }
 
 inline uint32_t NodeClassifier::n_samples() const {
@@ -351,6 +380,16 @@ inline uint32_t TreeClassifier::n_nodes() const {
   return _n_nodes;
 }
 
+uint32_t TreeClassifier::n_leaves() const {
+  uint32_t n_leaves = 0;
+  for(const NodeClassifier &node: nodes) {
+    if(node.is_leaf()) {
+      ++n_leaves;
+    }
+  }
+  return n_leaves;
+}
+
 void TreeClassifier::fit(const ArrayDouble &x_t, double y_t) {
   // TODO: Test that the size does not change within successive calls to fit
   // std::cout << "iteration: " << iteration << std::endl;
@@ -442,13 +481,13 @@ OnlineForestClassifier::OnlineForestClassifier(uint32_t n_trees,
   // No iteration so far
   _iteration = 0;
 
-  std::cout << "sizeof(float): " << sizeof(float) << std::endl;
-  std::cout << "sizeof(double): " << sizeof(double) << std::endl;
-  std::cout << "sizeof(uint8_t): " << sizeof(uint8_t) << std::endl;
-  std::cout << "sizeof(uint16_t): " << sizeof(uint16_t) << std::endl;
-  std::cout << "sizeof(uint32_t): " << sizeof(uint32_t) << std::endl;
-  std::cout << "sizeof(long): " << sizeof(long) << std::endl;
-  std::cout << "sizeof(ulong): " << sizeof(ulong) << std::endl;
+//  std::cout << "sizeof(float): " << sizeof(float) << std::endl;
+//  std::cout << "sizeof(double): " << sizeof(double) << std::endl;
+//  std::cout << "sizeof(uint8_t): " << sizeof(uint8_t) << std::endl;
+//  std::cout << "sizeof(uint16_t): " << sizeof(uint16_t) << std::endl;
+//  std::cout << "sizeof(uint32_t): " << sizeof(uint32_t) << std::endl;
+//  std::cout << "sizeof(long): " << sizeof(long) << std::endl;
+//  std::cout << "sizeof(ulong): " << sizeof(ulong) << std::endl;
 
   create_trees();
   // Seed the random number generators

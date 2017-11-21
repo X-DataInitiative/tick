@@ -52,7 +52,7 @@ ulong Rand::uniform_int(ulong a, ulong b) {
 }
 
 uint32_t Rand::uniform_int(uint32_t a, uint32_t b) {
-  std::uniform_int_distribution<ulong>::param_type p(a, b);
+  std::uniform_int_distribution<uint32_t>::param_type p(a, b);
   return uniform_uint32_dist(generator, p);
 }
 
