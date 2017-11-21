@@ -84,6 +84,23 @@ void NodeClassifier::update_predict(const double y_t) {
   _counts[static_cast<uint8_t>(y_t)]++;
 }
 
+void NodeClassifier::update_range(const ArrayDouble &x_t) {
+  if (_n_samples == 0) {
+    _features_min = x_t;
+    _features_max = x_t;
+  } else {
+    for(uint32_t j = 0; j < n_features(); ++j) {
+      double x_tj = x_t[j];
+      if (x_tj < _features_min[j]) {
+        _features_min[j] = x_tj;
+      }
+      if (x_tj > _features_max[j]) {
+        _features_max[j] = x_tj;
+      }
+    }
+  }
+}
+
 double NodeClassifier::score(uint8_t c) const {
   // Using Dirichet(1/2, ... 1/2) prior
   return static_cast<double>(2 * _counts[c] + 1) / (2 * _n_samples + n_classes());
@@ -245,6 +262,8 @@ void NodeClassifier::print() {
       << ", thresh: " << _threshold
       << ", scores: [" << std::setprecision(2) << score(0) << ", " << std::setprecision(2) << score(1) << "]"
       << ", counts: [" << std::setprecision(2) << _counts[0] << ", " << std::setprecision(2) << _counts[1] << "]"
+      << ", min: [" << std::setprecision(2) << _features_min[0] << ", " << std::setprecision(2) << _features_min[1] << "]"
+      << ", max: [" << std::setprecision(2) << _features_max[0] << ", " << std::setprecision(2) << _features_max[1] << "]"
       << ", weight: " << _weight
       << ", weight_tree: " << _weight_tree
       << ")\n";
@@ -333,6 +352,15 @@ uint32_t TreeClassifier::split_leaf(uint32_t index, const ArrayDouble &x_t, doub
   return data_leaf;
 }
 
+void TreeClassifier::extend_range(uint32_t node_index, const ArrayDouble &x_t, const double y_t) {
+
+  NodeClassifier &current_node = node(node_index);
+  if(current_node.n_samples() == 0) {
+
+  }
+}
+
+
 uint32_t TreeClassifier::go_downwards(const ArrayDouble &x_t, double y_t, bool predict) {
   // Find the leaf that contains the sample
   // Start at the root. Index of the root is always 0
@@ -345,6 +373,10 @@ uint32_t TreeClassifier::go_downwards(const ArrayDouble &x_t, double y_t, bool p
     // Get the current node
     NodeClassifier &current_node = node(index_current_node);
     if (!predict) {
+
+      // Do the point extends the node ?
+      extend_range(index_current_node, x_t, y_t);
+
       current_node.update_downwards(x_t, y_t);
     }
     // Is the node a leaf ?
@@ -360,6 +392,9 @@ uint32_t TreeClassifier::go_downwards(const ArrayDouble &x_t, double y_t, bool p
   // std::cout << "Done going downwards" << std::endl;
   return index_current_node;
 }
+
+
+
 
 void TreeClassifier::go_upwards(uint32_t leaf_index) {
   // std::cout << "Going upwards" << std::endl;
@@ -399,6 +434,7 @@ void TreeClassifier::fit(const ArrayDouble &x_t, double y_t) {
     iteration++;
     return;
   }
+
   uint32_t leaf = go_downwards(x_t, y_t, false);
 
   NodeClassifier& leaf_node = node(leaf);

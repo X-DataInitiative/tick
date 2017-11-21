@@ -92,6 +92,8 @@ class NodeClassifier {
   void update_upwards();
   // Update the prediction of the label
   void update_predict(const double y_t);
+  // Update range of the seen features
+  void update_range(const ArrayDouble &x_t);
   // Predict function (average of the labels of samples that passed through the node)
   void predict(ArrayDouble &scores) const;
   // Loss function used for aggregation
@@ -162,6 +164,8 @@ class TreeClassifier {
   uint32_t split_leaf(uint32_t index, const ArrayDouble &x_t, double y_t);
   // Add nodes in the tree
   uint32_t add_node(uint32_t parent);
+
+  void extend_range(uint32_t node_index, const ArrayDouble &x_t, const double y_t);
 
   uint32_t go_downwards(const ArrayDouble &x_t, double y_t, bool predict);
   void go_upwards(uint32_t leaf_index);
