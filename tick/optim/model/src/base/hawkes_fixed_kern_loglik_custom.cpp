@@ -256,6 +256,15 @@ void ModelHawkesFixedKernCustom::grad_dim_i(const ulong i,
     }
 
     //! grad of f^i_n
+    //! in fact, H1_i for different i keep the same information, same thing for H2, H3
+    const ArrayDouble H1_i = view(H1[i]);
+    const ArrayDouble H2_i = view(H2[i]);
+    for (ulong n = 0; n != MaxN_of_f; ++n) {
+        const ArrayDouble H3_j_n = view_row(H3, n);
+        grad_f_i[n] = H1_i[n] / f_i[n] + mu_i * H2_i[n] + alpha_i.dot(H3_j_n);
+    }
+
+    //! Don't forget to put them in *out
 
 }
 

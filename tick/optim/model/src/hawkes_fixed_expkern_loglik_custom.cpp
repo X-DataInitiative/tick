@@ -22,9 +22,8 @@ void ModelHawkesCustom::allocate_weights() {
     G = ArrayDouble2dList1D(n_nodes);
     sum_G = ArrayDoubleList1D(n_nodes);
 
-    H1 = ArrayDouble2dList1D(n_nodes);
-    H2 = ArrayDouble2dList1D(n_nodes);
-    H3 = ArrayDouble2dList1D(n_nodes);
+    H1 = ArrayDoubleList1D(n_nodes);
+    H2 = ArrayDoubleList1D(n_nodes);
 
     for (ulong i = 0; i < n_nodes; i++) {
         //0 + events + T
@@ -35,13 +34,13 @@ void ModelHawkesCustom::allocate_weights() {
         sum_G[i] = ArrayDouble(n_nodes);
         sum_G[i].init_to_zero();
 
-        H1[i] = ArrayDouble2d(n_nodes, MaxN_of_f);
+        H1[i] = ArrayDouble(MaxN_of_f);
         H1[i].init_to_zero();
-        H2[i] = ArrayDouble2d(n_nodes, MaxN_of_f);
+        H2[i] = ArrayDouble(MaxN_of_f);
         H2[i].init_to_zero();
-        H3[i] = ArrayDouble2d(n_nodes, MaxN_of_f);
-        H3[i].init_to_zero();
     }
+    H3 = ArrayDouble2d(MaxN_of_f, n_nodes);
+    H3.init_to_zero();
 
     global_timestamps = ArrayDouble(Total_events + 1);
     global_timestamps.init_to_zero();
@@ -110,9 +109,8 @@ void ModelHawkesCustom::compute_weights_dim_i(const ulong i) {
 
     //! TODO add the calculation of H_1, H_2, H_3
     //! in fact, H1 is one dimension, here I make all threads calculating the same thing
-    ArrayDouble2d H1_i = view(H1[i]);
-    ArrayDouble2d H2_i = view(H2[i]);
-    ArrayDouble2d H3_i = view(H3[i]);
+    ArrayDouble H1_i = view(H1[i]);
+    ArrayDouble H2_i = view(H2[i]);
 
     for (ulong k = 1; k < 1 + Total_events + 1; k++) {
         H1_i[global_n[k - 1]] += 1;
@@ -121,7 +119,9 @@ void ModelHawkesCustom::compute_weights_dim_i(const ulong i) {
         const double ebt = std::exp(-decay * (t_k - global_timestamps[k - 1]));
         H2_i[global_n[k - 1]] -= t_k - global_timestamps[k - 1];
 
-        H3_i[global_n[k - 1]] -= (1 - ebt) / decay * g_i[(k - 1) * n_nodes + i];
+        //! all thread computes the same H3
+        //! recall that all g_i are same
+        H3[global_n[k - 1] * MaxN_of_f + i] -= (1 - ebt) / decay * g_i[(k - 1) * n_nodes + i];
     }
 }
 
