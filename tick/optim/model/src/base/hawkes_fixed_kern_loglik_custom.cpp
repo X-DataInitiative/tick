@@ -171,7 +171,7 @@ double ModelHawkesFixedKernCustom::loss_dim_i(const ulong i,
         }
     loss += alpha_i.dot(sum_G[i]);
 
-    return loss / Total_events;
+    return loss;
 }
 
 double ModelHawkesFixedKernCustom::loss_i_k(const ulong i,

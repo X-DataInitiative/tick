@@ -22,6 +22,10 @@ void ModelHawkesCustom::allocate_weights() {
     G = ArrayDouble2dList1D(n_nodes);
     sum_G = ArrayDoubleList1D(n_nodes);
 
+    H1 = ArrayDouble2dList1D(n_nodes);
+    H2 = ArrayDouble2dList1D(n_nodes);
+    H3 = ArrayDouble2dList1D(n_nodes);
+
     for (ulong i = 0; i < n_nodes; i++) {
         //0 + events + T
         g[i] = ArrayDouble2d(Total_events + 2, n_nodes);
@@ -93,7 +97,6 @@ void ModelHawkesCustom::compute_weights_dim_i(const ulong i) {
         // 0 + Totalevents + T
         for (ulong k = 1; k < 1 + Total_events + 1; k++) {
             const double t_k = k < Total_events + 1 ? global_timestamps[k] : end_time;
-
             const double ebt = std::exp(-decay * (t_k - global_timestamps[k - 1]));
             g_i[k * n_nodes + j] = g_i[(k - 1) * n_nodes + j] * ebt + (type_n[k] == j + 1 ? decay : 0);
             G_i[k * n_nodes + j] = (1 - ebt) / decay * g_i[(k - 1) * n_nodes + j];
@@ -115,12 +118,11 @@ void ModelHawkesCustom::compute_weights_dim_i(const ulong i) {
         H1_i[global_n[k - 1]] += 1;
 
         const double t_k = k < Total_events + 1 ? global_timestamps[k] : end_time;
+        const double ebt = std::exp(-decay * (t_k - global_timestamps[k - 1]));
         H2_i[global_n[k - 1]] -= t_k - global_timestamps[k - 1];
-        for (ulong j = 0; j < n_nodes; j++) {
-            H3_i[global_n[k - 1]] -= t_k - global_timestamps[k - 1];
-        }
-    }
 
+        H3_i[global_n[k - 1]] -= (1 - ebt) / decay * g_i[(k - 1) * n_nodes + i];
+    }
 }
 
 ulong ModelHawkesCustom::get_n_coeffs() const {

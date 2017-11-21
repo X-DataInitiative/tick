@@ -50,13 +50,13 @@ protected:
     //! y compris 0
     ulong MaxN_of_f = 5;
 
-    //! @brief auxilliary variable H1 described in the document
+    //! @brief auxiliary variable H1 described in the document
     ArrayDouble2dList1D H1;
 
-    //! @brief auxilliary variable H2 described in the document
+    //! @brief auxiliary variable H2 described in the document
     ArrayDouble2dList1D H2;
 
-    //! @brief auxilliary variable H2 described in the document
+    //! @brief auxiliary variable H3 described in the document
     ArrayDouble2dList1D H3;
 
 public:
