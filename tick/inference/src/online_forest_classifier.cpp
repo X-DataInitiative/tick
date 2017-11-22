@@ -720,7 +720,7 @@ inline uint32_t OnlineForestClassifier::sample_feature() {
 }
 
 inline uint32_t OnlineForestClassifier::sample_feature_bis() {
-  return rand.discrete(_probabilities);
+  return rand.discrete(_feature_importances);
 }
 
 inline double OnlineForestClassifier::sample_exponential(double intensity) {
@@ -728,7 +728,13 @@ inline double OnlineForestClassifier::sample_exponential(double intensity) {
 }
 
 inline uint32_t OnlineForestClassifier::sample_feature(const ArrayDouble & prob) {
-  return rand.discrete(prob);
+  ArrayDouble my_prob = prob;
+  for(uint32_t j = 0; j < n_features(); ++j) {
+    // my_prob[j] *= _feature_importances[j];
+    my_prob[j] = _feature_importances[j];
+  }
+  my_prob /= my_prob.sum();
+  return rand.discrete(my_prob);
 }
 
 inline double OnlineForestClassifier::sample_threshold(double left, double right) {

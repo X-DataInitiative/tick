@@ -10,6 +10,17 @@ from sklearn.neighbors import KNeighborsClassifier
 
 import matplotlib.pyplot as plt
 
+
+# TODO: options for types of sampling of the features
+# TODO: online construction of the feature_importances
+# TODO: python script that tries all combinations
+# TODO: n_classes is mandatory
+# TODO: test that n_features is consistent across runs
+# TODO: what if we feed several times the same dataset
+# TODO: show that the classifier is insensitive to the time of arrival of the points
+# TODO: try on datasets for which KNN and a linear method performs poorly
+# TODO: V-fold instead of train and test ?
+
 path = '/Users/stephane.gaiffas/Dropbox/jaouad/online-forests/datasets/'
 
 filenames = [
@@ -54,9 +65,9 @@ for filename, n_classes in zip(filenames, n_classess):
         RandomForestClassifier(n_estimators=n_trees)
     ]
 
-    # triche = RandomForestClassifier(n_estimators=n_trees)
-    # triche.fit(X_train, y_train)
-    # probabilities = triche.feature_importances_ / triche.feature_importances_.sum()
+    triche = RandomForestClassifier(n_estimators=n_trees)
+    triche.fit(X_train, y_train)
+    feature_importances = triche.feature_importances_ / triche.feature_importances_.sum()
     #
     # plt.stem(probabilities)
     # plt.title('Features importance for ' + filename, fontsize=18)
@@ -72,6 +83,7 @@ for filename, n_classes in zip(filenames, n_classess):
     for clf, name in zip(classifiers, names):
         if hasattr(clf, 'clear'):
             clf.clear()
+            clf.set_feature_importances(feature_importances)
         # print('Fitting', name)
         clf.fit(X_train, y_train)
         # print('Done.')

@@ -9,20 +9,6 @@
 #include "../../random/src/rand.h"
 
 
-// TODO: faire tres attention au features binaires si le range est 0 sur toutes les coordonnées, ne rien faire
-// TODO: code a classifier
-
-// TODO: choisir la feature proportionnellement au ratio des range de features, mais attention au cas de features
-//       discretes
-// TODO: une option pour créer une cellule vide, enfin oublier les donnes dans la cellule quand elle a ete splitee
-
-// TODO: choix de la feature les labels
-
-// TODO: pour la classification, on utilise pas les frequences, on utilise des frequences regularisees, prior Dirichlet p_c = (n_c + 0.5) + (\sum n_c + C / 2). En fait une option
-
-// TODO: check that not using reserve in the forest works as well...
-
-
 enum class CriterionClassifier {
   log = 0,
 };
@@ -236,7 +222,7 @@ class OnlineForestClassifier {
   // Random number generator for feature and threshold sampling
   Rand rand;
 
-  ArrayDouble _probabilities;
+  ArrayDouble _feature_importances;
   // Create trees
   void create_trees();
 
@@ -346,8 +332,8 @@ class OnlineForestClassifier {
     return *this;
   }
 
-  inline void set_probabilities(const ArrayDouble &probabilities) {
-    _probabilities = probabilities;
+  inline void set_feature_importances(const ArrayDouble &feature_importances) {
+    _feature_importances = feature_importances;
   }
 
 //  inline bool verbose() const;

@@ -48,5 +48,5 @@ class OnlineForestClassifier {
   // bool verbose() const;
   // OnlineForestRegressor &set_verbose(bool verbose);
 
-  void set_probabilities(const ArrayDouble & probabilities);
+  void set_feature_importances(const ArrayDouble &feature_importances);
 };
