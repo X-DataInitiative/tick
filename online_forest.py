@@ -133,7 +133,7 @@ def plot_decision_classification(classifiers, datasets, names):
 
 path = '/Users/stephane.gaiffas/Downloads/'
 
-n_trees = 10
+n_trees = 1
 
 X, y = make_classification(n_samples=n_samples, n_features=2, n_redundant=0,
                            n_informative=2, random_state=1,
@@ -162,6 +162,6 @@ names = [
 
 plot_decision_classification(classifiers, datasets, names)
 
-plt.savefig('decisions.pdf')
+# plt.savefig('decisions.pdf')
 
-# plt.show()
+plt.show()

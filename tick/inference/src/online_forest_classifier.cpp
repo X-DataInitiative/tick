@@ -7,7 +7,7 @@
  * NodeClassifier methods
  *********************************************************************************/
 
-NodeClassifier::NodeClassifier(TreeClassifier &tree, uint32_t parent, uint32_t time)
+NodeClassifier::NodeClassifier(TreeClassifier &tree, uint32_t parent, double time)
     : _tree(tree) {
   _parent = parent;
   _time = time;
@@ -49,6 +49,25 @@ NodeClassifier::NodeClassifier(const NodeClassifier &&node) : _tree(_tree) {
   _weight_tree = node._weight_tree;
   _is_leaf = node._is_leaf;
   _counts = node._counts;
+}
+
+NodeClassifier &NodeClassifier::operator=(const NodeClassifier &node) {
+  _parent = node._parent;
+  _left = node._left;
+  _right = node._right;
+  _feature = node._feature;
+  _threshold = node._threshold;
+  _time = node._time;
+  _features_min = node._features_min;
+  _features_max = node._features_max;
+  _n_samples = node._n_samples;
+  _x_t = node._x_t;
+  _y_t = node._y_t;
+  _weight = node._weight;
+  _weight_tree = node._weight_tree;
+  _is_leaf = node._is_leaf;
+  _counts = node._counts;
+  return *this;
 }
 
 void NodeClassifier::update_downwards(const ArrayDouble &x_t, const double y_t) {
@@ -138,6 +157,11 @@ inline uint32_t NodeClassifier::parent() const {
   return _parent;
 }
 
+inline NodeClassifier& NodeClassifier::set_parent(uint32_t parent) {
+  _parent = parent;
+  return *this;
+}
+
 inline uint32_t NodeClassifier::left() const {
   return _left;
 }
@@ -189,22 +213,25 @@ inline double NodeClassifier::time() const {
 
 inline NodeClassifier &NodeClassifier::set_time(double time) {
   _time = time;
+  return *this;
 }
 
 inline double NodeClassifier::features_min(const uint32_t j) const {
   return _features_min[j];
 }
 
-inline double NodeClassifier::set_features_min(const ArrayDouble &features_min) {
+inline NodeClassifier & NodeClassifier::set_features_min(const ArrayDouble &features_min) {
   _features_min = features_min;
+  return *this;
 }
 
 inline double NodeClassifier::features_max(const uint32_t j) const {
   return _features_max[j];
 }
 
-inline double NodeClassifier::set_features_max(const ArrayDouble &features_max) {
+inline NodeClassifier & NodeClassifier::set_features_max(const ArrayDouble &features_max) {
   _features_max = features_max;
+  return *this;
 }
 
 inline uint32_t NodeClassifier::n_samples() const {
@@ -303,7 +330,6 @@ uint32_t TreeClassifier::split_leaf(uint32_t index, const ArrayDouble &x_t, doub
 
   // TODO: better feature sampling
   // ulong feature = forest.sample_feature_bis();
-
   // ulong feature = forest.sample_feature();
 
   uint32_t feature = forest.sample_feature(diff);
@@ -353,11 +379,97 @@ uint32_t TreeClassifier::split_leaf(uint32_t index, const ArrayDouble &x_t, doub
 }
 
 void TreeClassifier::extend_range(uint32_t node_index, const ArrayDouble &x_t, const double y_t) {
-
+  std::cout << "Extending the range" << index << std::endl;
   NodeClassifier &current_node = node(node_index);
   if(current_node.n_samples() == 0) {
+    // The node is a leaf with no sample point, so it does not have a range
+    // In this case we just initialize the range with the given feature
+    // This node will then be updated by the call to update_downwards in go_downwards
+    current_node.set_features_min(x_t);
+    current_node.set_features_max(x_t);
+  } else {
+    ArrayDouble extension(n_features());
+    double extensions_sum = 0;
+    for(uint32_t j =0; j < n_features(); ++j) {
+      double x_tj = x_t[j];
+      double feature_min_j = current_node.features_min(j);
+      double feature_max_j = current_node.features_max(j);
+      if(x_tj < feature_min_j) {
+        extension[j] = feature_min_j - x_tj;
+        extensions_sum += feature_min_j - x_tj;
+      } else {
+        if (x_tj > feature_max_j) {
+          extension[j] = x_tj - feature_max_j;
+          extensions_sum += x_tj - feature_max_j;
+        } else {
+          extension[j] = 0;
+        }
+      }
+    }
+    // If the sample x_t extends the current range of the node
+    if(extensions_sum > 0) {
+      bool do_split;
+      double time = current_node.time();
+      double T = forest.sample_exponential(extensions_sum);
+      // Let us determine if we need to split the node or not
+      if (current_node.is_leaf()) {
+        do_split = true;
+      } else {
+        // Same as node(current_node.right()).time();
+        double child_time = node(current_node.left()).time();
+        // Sample a exponential random variable with intensity
+        if (time + T < child_time) {
+          do_split = true;
+        } else {
+          do_split = false;
+        }
+      }
+      if (do_split) {
+        // Sample the splitting feature with a probability proportional to the range extensions
+        ArrayDouble probabilities = extension;
+        probabilities /= extensions_sum;
+        uint32_t feature = forest.sample_feature(probabilities);
+        double threshold;
+        // Is the extension on the right side ?
+        bool is_right_extension = x_t[feature] > current_node.features_max(feature);
 
+        // Create new nodes
+        uint32_t left_new = add_node(node_index, time + T);
+        uint32_t right_new = add_node(node_index, time + T);
+        if(is_right_extension) {
+          threshold = forest.sample_threshold(current_node.features_max(feature), x_t[feature]);
+          // left_new is the same as node_index, excepted for the parent, time and the fact that it's not a leaf
+          node(left_new) = node(node_index);
+          // donc faut remettre le bon parent et le bon temps
+          // TODO: set_is_leaf useless for left_new since it's a copy of node_index
+          node(left_new).set_parent(node_index).set_time(time + T);
+          // right_new doit avoir comme parent node_index
+          node(right_new).set_parent(node_index).set_time(time + T);
+          // We must tell the old childs that they have a new parent, if the current node is not a leaf
+          if(!node(node_index).is_leaf()) {
+            node(node(node_index).left()).set_parent(left_new);
+            node(node(node_index).right()).set_parent(left_new);
+          }
+          // TODO: faut retourner right_new dans ce cas ?
+        } else {
+          threshold = forest.sample_threshold(x_t[feature], current_node.features_min(feature));
+          node(right_new) = node(node_index);
+          node(right_new).set_parent(node_index).set_time(time + T);
+          node(left_new).set_parent(node_index).set_time(time + T);
+          if(!node(node_index).is_leaf()) {
+            node(node(node_index).left()).set_parent(right_new);
+            node(node(node_index).right()).set_parent(right_new);
+          }
+        }
+        // We update the splitting feature, threshold, and childs of the current index
+        node(node_index).set_feature(feature).set_threshold(threshold).set_left(left_new)
+            .set_right(right_new).set_is_leaf(false);
+      }
+      // Update the range of the node here
+      node(node_index).update_range(x_t);
+    }
   }
+  std::cout << "Done extending the range." << index << std::endl;
 }
 
 
@@ -366,20 +478,20 @@ uint32_t TreeClassifier::go_downwards(const ArrayDouble &x_t, double y_t, bool p
   // Start at the root. Index of the root is always 0
   // If predict == true, this call to find_leaf is for
   // prediction only, so that no leaf update and splits can be done
-  // std::cout << "Going downwards" << std::endl;
+  std::cout << "Going downwards" << std::endl;
   uint32_t index_current_node = 0;
   bool is_leaf = false;
   while (!is_leaf) {
     // Get the current node
-    NodeClassifier &current_node = node(index_current_node);
+    // NodeClassifier &current_node = node(index_current_node);
     if (!predict) {
-
-      // Do the point extends the node ?
+      // Extend the range and eventually split the current node
       extend_range(index_current_node, x_t, y_t);
-
-      current_node.update_downwards(x_t, y_t);
+      // Update the current node
+      node(index_current_node).update_downwards(x_t, y_t);
     }
     // Is the node a leaf ?
+    NodeClassifier &current_node = node(index_current_node);
     is_leaf = current_node.is_leaf();
     if (!is_leaf) {
       if (x_t[current_node.feature()] <= current_node.threshold()) {
@@ -389,7 +501,7 @@ uint32_t TreeClassifier::go_downwards(const ArrayDouble &x_t, double y_t, bool p
       }
     }
   }
-  // std::cout << "Done going downwards" << std::endl;
+  std::cout << "Done going downwards" << std::endl;
   return index_current_node;
 }
 
@@ -397,13 +509,13 @@ uint32_t TreeClassifier::go_downwards(const ArrayDouble &x_t, double y_t, bool p
 
 
 void TreeClassifier::go_upwards(uint32_t leaf_index) {
-  // std::cout << "Going upwards" << std::endl;
+  std::cout << "Going upwards" << std::endl;
   uint32_t current = leaf_index;
   while (true) {
     NodeClassifier &current_node = node(current);
     current_node.update_upwards();
     if (current == 0) {
-      // std::cout << "Done going upwards" << std::endl;
+      std::cout << "Done going upwards" << std::endl;
       break;
     }
     // We must update the root node
@@ -427,26 +539,30 @@ uint32_t TreeClassifier::n_leaves() const {
 
 void TreeClassifier::fit(const ArrayDouble &x_t, double y_t) {
   // TODO: Test that the size does not change within successive calls to fit
-  // std::cout << "iteration: " << iteration << std::endl;
-  // print();
-  if (iteration == 0) {
-    nodes[0].set_x_t(x_t).set_y_t(y_t);
-    iteration++;
-    return;
-  }
+  std::cout << "iteration: " << iteration << std::endl;
+  std::cout << "x_t: [" << std::setprecision(2) << x_t[0] << ", " << std::setprecision(2) << x_t[1] << "]" << std::endl;
+  print();
+
+  // TODO: what about these lines ???
+//  if (iteration == 0) {
+//    nodes[0].set_x_t(x_t).set_y_t(y_t);
+//    iteration++;
+//    return;
+//  }
 
   uint32_t leaf = go_downwards(x_t, y_t, false);
 
-  NodeClassifier& leaf_node = node(leaf);
-  uint32_t new_leaf;
-  bool is_same = leaf_node.is_same(x_t);
-  // std::cout << "is_same: " << is_same << std::endl;
-  if (is_same) {
-    new_leaf = leaf;
-  } else {
-    new_leaf = split_leaf(leaf, x_t, y_t);
-  }
-  go_upwards(new_leaf);
+ // NodeClassifier& leaf_node = node(leaf);
+  // uint32_t new_leaf;
+
+//  bool is_same = leaf_node.is_same(x_t);
+//  // std::cout << "is_same: " << is_same << std::endl;
+//  if (is_same) {
+//    new_leaf = leaf;
+//  } else {
+//    new_leaf = split_leaf(leaf, x_t, y_t);
+//  }
+  go_upwards(leaf);
   iteration++;
 }
 
@@ -478,9 +594,9 @@ void TreeClassifier::predict(const ArrayDouble &x_t, ArrayDouble& scores) {
   }
 }
 
-uint32_t TreeClassifier::add_node(uint32_t parent) {
+uint32_t TreeClassifier::add_node(uint32_t parent, double time) {
   // std::cout << "Adding node with parent " << parent << std::endl;
-  nodes.emplace_back(*this, parent);
+  nodes.emplace_back(*this, parent, time);
   // std::cout << "Done." << std::endl;
   return _n_nodes++;
 }
@@ -593,6 +709,10 @@ inline uint32_t OnlineForestClassifier::sample_feature() {
 
 inline uint32_t OnlineForestClassifier::sample_feature_bis() {
   return rand.discrete(_probabilities);
+}
+
+inline double OnlineForestClassifier::sample_exponential(double intensity) {
+  return rand.exponential(intensity);
 }
 
 inline uint32_t OnlineForestClassifier::sample_feature(const ArrayDouble & prob) {

@@ -52,7 +52,6 @@ class NodeClassifier {
   // Range of the features
   ArrayDouble _features_min;
   ArrayDouble _features_max;
-
   // Number of samples in the node
   uint32_t _n_samples;
   // The features of the sample saved in the node
@@ -70,10 +69,10 @@ class NodeClassifier {
   ArrayULong _counts;
 
  public:
-  NodeClassifier(TreeClassifier &tree, uint32_t parent, uint32_t time = 0);
+  NodeClassifier(TreeClassifier &tree, uint32_t parent, double time = 0);
   NodeClassifier(const NodeClassifier &node);
   NodeClassifier(const NodeClassifier &&node);
-  NodeClassifier &operator=(const NodeClassifier &) = delete;
+  NodeClassifier &operator=(const NodeClassifier &);
   NodeClassifier &operator=(const NodeClassifier &&) = delete;
 
   // Computation of log( (e^a + e^b) / 2) in an overproof way
@@ -116,6 +115,7 @@ class NodeClassifier {
   void print();
 
   inline uint32_t parent() const;
+  inline NodeClassifier &set_parent(uint32_t parent);
   inline uint32_t left() const;
   inline NodeClassifier &set_left(uint32_t left);
   inline uint32_t right() const;
@@ -129,9 +129,9 @@ class NodeClassifier {
   inline double time() const;
   inline NodeClassifier &set_time(double time);
   inline double features_min(const uint32_t j) const;
-  inline double set_features_min(const ArrayDouble &features_min);
+  inline NodeClassifier & set_features_min(const ArrayDouble &features_min);
   inline double features_max(const uint32_t j) const;
-  inline double set_features_max(const ArrayDouble &features_max);
+  inline NodeClassifier & set_features_max(const ArrayDouble &features_max);
   inline uint32_t n_samples() const;
   inline NodeClassifier &set_n_samples(uint32_t n_samples);
   inline double weight() const;
@@ -163,7 +163,7 @@ class TreeClassifier {
   // Split the node at given index
   uint32_t split_leaf(uint32_t index, const ArrayDouble &x_t, double y_t);
   // Add nodes in the tree
-  uint32_t add_node(uint32_t parent);
+  uint32_t add_node(uint32_t parent, double time = 0);
 
   void extend_range(uint32_t node_index, const ArrayDouble &x_t, const double y_t);
 
@@ -250,6 +250,8 @@ class OnlineForestClassifier {
   inline uint32_t sample_feature(const ArrayDouble &prob);
 
   inline uint32_t sample_feature_bis();
+
+  inline double sample_exponential(double intensity);
 
   inline double sample_threshold(double left, double right);
 
