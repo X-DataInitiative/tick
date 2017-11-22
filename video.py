@@ -30,6 +30,7 @@ cm = plt.cm.RdBu
 fig = plt.figure(figsize=(5, 5))
 ax = plt.subplot(1, 1, 1)
 
+
 ax.set_xlim(xx.min(), xx.max())
 ax.set_ylim(yy.min(), yy.max())
 ax.set_xticks(())
