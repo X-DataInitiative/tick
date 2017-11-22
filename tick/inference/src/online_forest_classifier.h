@@ -240,6 +240,10 @@ class OnlineForestClassifier {
   // Create trees
   void create_trees();
 
+
+  SArrayDouble2dPtr _features;
+  SArrayDoublePtr _labels;
+
  public:
   OnlineForestClassifier(uint32_t n_trees, uint8_t n_classes, double step=1.0, CriterionClassifier criterion=CriterionClassifier::log,
                          bool use_aggregation = true, int32_t n_threads=1, int seed=0, bool verbose=false);

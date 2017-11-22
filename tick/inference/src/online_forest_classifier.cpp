@@ -669,6 +669,10 @@ void OnlineForestClassifier::create_trees() {
 void OnlineForestClassifier::fit(const SArrayDouble2dPtr features,
                                 const SArrayDoublePtr labels) {
   // std::cout << "OnlineForestClassifier::fit" << std::endl;
+
+  _features = features;
+  _labels = labels;
+
   uint32_t n_samples = static_cast<uint32_t>(features->n_rows());
   uint32_t n_features = static_cast<uint32_t>(features->n_cols());
   set_n_features(n_features);

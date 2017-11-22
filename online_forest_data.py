@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 path = '/Users/stephane.gaiffas/Dropbox/jaouad/online-forests/datasets/'
 
 filenames = [
-    # 'dna.p',
+    'dna.p',
     'letter.p',
     'satimage.p',
     'usps.p'
@@ -24,13 +24,14 @@ n_classess = [3, 25, 5, 9]
 n_trees = 10
 
 names = [
-    # "OF (agg, step=1.)",
-    # "OF(agg, step=100.)",
+    "OF (agg, step=1.)",
+    "OF(agg, step=100.)",
     "OF(no agg.)",
     "KNN (k=5)",
     "ET",
     "BRF"
 ]
+
 
 for filename, n_classes in zip(filenames, n_classess):
     print(filename)
@@ -40,6 +41,18 @@ for filename, n_classes in zip(filenames, n_classess):
         X_test = data['x_test']
         y_train = data['y_train']
         y_test = data['y_test']
+
+    classifiers = [
+        OnlineForestClassifier(n_trees=n_trees, seed=123, step=1.,
+                               use_aggregation=True, n_classes=n_classes),
+        OnlineForestClassifier(n_trees=n_trees, seed=123, step=100.,
+                               n_classes=n_classes, use_aggregation=True),
+        OnlineForestClassifier(n_trees=n_trees, seed=123, step=1.,
+                               use_aggregation=False, n_classes=n_classes),
+        KNeighborsClassifier(n_neighbors=5),
+        ExtraTreesClassifier(n_estimators=n_trees),
+        RandomForestClassifier(n_estimators=n_trees)
+    ]
 
     # triche = RandomForestClassifier(n_estimators=n_trees)
     # triche.fit(X_train, y_train)
@@ -53,18 +66,13 @@ for filename, n_classes in zip(filenames, n_classess):
     # plt.savefig(filename + '.pdf')
 
     # online_forest.set_probabilities(probabilities)
-    classifiers = [
-        # OnlineForestClassifier(n_trees=n_trees, seed=123, step=1.,
-        #                        use_aggregation=True),
-        # OnlineForestClassifier(n_trees=n_trees, seed=123, step=100.,
-        #                        use_aggregation=True),
-        OnlineForestClassifier(n_trees=n_trees, seed=123, step=1.,
-                               use_aggregation=False),
-        KNeighborsClassifier(n_neighbors=5),
-        ExtraTreesClassifier(n_estimators=n_trees),
-        RandomForestClassifier(n_estimators=n_trees)
-    ]
+
+    # forest1 =
 
     for clf, name in zip(classifiers, names):
+        if hasattr(clf, 'clear'):
+            clf.clear()
+        # print('Fitting', name)
         clf.fit(X_train, y_train)
-        # print('Accuracy of', name, ': ', '%.2f' % clf.score(X_test, y_test))
+        # print('Done.')
+        print('Accuracy of', name, ': ', '%.2f' % clf.score(X_test, y_test))

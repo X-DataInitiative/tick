@@ -164,7 +164,7 @@ from sklearn.neighbors import KNeighborsClassifier
 
 classifiers = [
     OnlineForestClassifier(n_trees=n_trees, seed=123, step=1., use_aggregation=True),
-    OnlineForestClassifier(n_trees=n_trees, seed=123, step=100., use_aggregation=True),
+    # OnlineForestClassifier(n_trees=n_trees, seed=123, step=100., use_aggregation=True),
     OnlineForestClassifier(n_trees=n_trees, seed=123, step=1., use_aggregation=False),
     KNeighborsClassifier(n_neighbors=5),
     ExtraTreesClassifier(n_estimators=n_trees),
@@ -173,7 +173,7 @@ classifiers = [
 
 names = [
     "OF (agg, step=1.)",
-    "OF(agg, step=100.)",
+    # "OF(agg, step=100.)",
     "OF(no agg.)",
     "KNN (k=5)",
     "ET",
