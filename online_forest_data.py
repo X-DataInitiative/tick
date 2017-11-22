@@ -20,8 +20,7 @@ filenames = [
 
 n_classess = [3, 25, 5, 9]
 
-n_trees = 100
-
+n_trees = 10
 
 names = [
     "Online forest",
@@ -38,9 +37,9 @@ for filename, n_classes in zip(filenames, n_classess):
         y_train = data['y_train']
         y_test = data['y_test']
 
-    triche = RandomForestClassifier(n_estimators=n_trees)
-    triche.fit(X_train, y_train)
-    probabilities = triche.feature_importances_ / triche.feature_importances_.sum()
+    # triche = RandomForestClassifier(n_estimators=n_trees)
+    # triche.fit(X_train, y_train)
+    # probabilities = triche.feature_importances_ / triche.feature_importances_.sum()
     #
     # plt.stem(probabilities)
     # plt.title('Features importance for ' + filename, fontsize=18)
@@ -51,7 +50,7 @@ for filename, n_classes in zip(filenames, n_classess):
 
     online_forest = OnlineForestClassifier(n_trees=n_trees, n_classes=n_classes,
                                            seed=123, step=1.)
-    online_forest.set_probabilities(probabilities)
+    # online_forest.set_probabilities(probabilities)
     classifiers = [
         online_forest,
         ExtraTreesClassifier(n_estimators=n_trees),

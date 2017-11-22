@@ -195,7 +195,7 @@ class TreeClassifier {
       node.print();
       index++;
     }
-    std::cout << ")";
+    std::cout << ")" << std::endl;
   }
 
   inline CriterionClassifier criterion() const;
