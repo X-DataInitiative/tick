@@ -161,7 +161,7 @@ class TreeClassifier {
   // Nodes of the tree
   std::vector<NodeClassifier> nodes = std::vector<NodeClassifier>();
   // Split the node at given index
-  uint32_t split_leaf(uint32_t index, const ArrayDouble &x_t, double y_t);
+  // uint32_t split_leaf(uint32_t index, const ArrayDouble &x_t, double y_t);
   // Add nodes in the tree
   uint32_t add_node(uint32_t parent, double time = 0);
 
@@ -178,7 +178,7 @@ class TreeClassifier {
   TreeClassifier &operator=(const TreeClassifier &&) = delete;
 
   void fit(const ArrayDouble &x_t, double y_t);
-  void predict(const ArrayDouble &x_t, ArrayDouble &scores);
+  void predict(const ArrayDouble &x_t, ArrayDouble &scores, bool use_aggregation);
 
   inline uint32_t n_features() const;
   inline uint8_t n_classes() const;
@@ -217,6 +217,8 @@ class OnlineForestClassifier {
   int32_t _n_threads;
   // CriterionClassifier used for splitting (not used for now)
   CriterionClassifier _criterion;
+
+  bool _use_aggregation;
   // Step-size used for aggregation
   double _step;
   // Number of features.
@@ -239,12 +241,12 @@ class OnlineForestClassifier {
   void create_trees();
 
  public:
-  OnlineForestClassifier(uint32_t n_trees, uint8_t n_classes, double step, CriterionClassifier criterion,
-                         int32_t n_threads, int seed, bool verbose);
+  OnlineForestClassifier(uint32_t n_trees, uint8_t n_classes, double step=1.0, CriterionClassifier criterion=CriterionClassifier::log,
+                         bool use_aggregation = true, int32_t n_threads=1, int seed=0, bool verbose=false);
   virtual ~OnlineForestClassifier();
 
   void fit(const SArrayDouble2dPtr features, const SArrayDoublePtr labels);
-  void predict(const SArrayDouble2dPtr features, SArrayDouble2dPtr predictions, bool use_aggregation);
+  void predict(const SArrayDouble2dPtr features, SArrayDouble2dPtr predictions);
 
   inline uint32_t sample_feature();
   inline uint32_t sample_feature(const ArrayDouble &prob);

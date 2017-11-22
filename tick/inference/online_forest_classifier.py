@@ -86,7 +86,7 @@ class OnlineForestClassifier(ABC, Base):
 
     @actual_kwargs
     def __init__(self, n_trees: int = 10, n_classes: int=2, step: float = 1.,
-                 criterion: str = 'log',
+                 criterion: str = 'log', use_aggregation: bool = True,
                  max_depth: int = -1, min_samples_split: int = 50,
                  n_threads: int = 1, seed: int = -1, verbose: bool = True,
                  warm_start: bool = True, n_splits: int = 10):
@@ -105,10 +105,12 @@ class OnlineForestClassifier(ABC, Base):
         self.verbose = verbose
         self.warm_start = warm_start
         self.n_splits = n_splits
+        self.use_aggregation = use_aggregation
         self._forest = _OnlineForestClassifier(n_trees,
                                                n_classes,
                                               step,
                                               self._criterion,
+                                              self.use_aggregation,
                                               #max_depth,
                                               # min_samples_split,
                                               n_threads,
@@ -134,7 +136,7 @@ class OnlineForestClassifier(ABC, Base):
         """
         raise NotImplementedError()
 
-    def predict_proba(self, X, use_aggregation: bool=True):
+    def predict_proba(self, X):
         """Predict class for given samples
 
         Parameters
@@ -153,7 +155,7 @@ class OnlineForestClassifier(ABC, Base):
             raise ValueError("You must call ``fit`` before")
         else:
             X = safe_array(X)
-        self._forest.predict(X, scores, True)
+        self._forest.predict(X, scores)
         return scores
 
     def predict(self, X):

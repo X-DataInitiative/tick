@@ -6,6 +6,7 @@ import pickle as pkl
 from tick.inference import OnlineForestRegressor, OnlineForestClassifier
 from sklearn.ensemble import RandomForestRegressor, ExtraTreesRegressor, \
     RandomForestClassifier, ExtraTreesClassifier
+from sklearn.neighbors import KNeighborsClassifier
 
 import matplotlib.pyplot as plt
 
@@ -23,9 +24,12 @@ n_classess = [3, 25, 5, 9]
 n_trees = 10
 
 names = [
-    "Online forest",
-    "Extra trees",
-    "Breiman RF"
+    # "OF (agg, step=1.)",
+    # "OF(agg, step=100.)",
+    "OF(no agg.)",
+    "KNN (k=5)",
+    "ET",
+    "BRF"
 ]
 
 for filename, n_classes in zip(filenames, n_classess):
@@ -48,15 +52,19 @@ for filename, n_classes in zip(filenames, n_classess):
     # # plt.show()
     # plt.savefig(filename + '.pdf')
 
-    online_forest = OnlineForestClassifier(n_trees=n_trees, n_classes=n_classes,
-                                           seed=123, step=1.)
     # online_forest.set_probabilities(probabilities)
     classifiers = [
-        online_forest,
+        # OnlineForestClassifier(n_trees=n_trees, seed=123, step=1.,
+        #                        use_aggregation=True),
+        # OnlineForestClassifier(n_trees=n_trees, seed=123, step=100.,
+        #                        use_aggregation=True),
+        OnlineForestClassifier(n_trees=n_trees, seed=123, step=1.,
+                               use_aggregation=False),
+        KNeighborsClassifier(n_neighbors=5),
         ExtraTreesClassifier(n_estimators=n_trees),
         RandomForestClassifier(n_estimators=n_trees)
     ]
 
     for clf, name in zip(classifiers, names):
         clf.fit(X_train, y_train)
-        print('Accuracy of', name, ': ', '%.2f' % clf.score(X_test, y_test))
+        # print('Accuracy of', name, ': ', '%.2f' % clf.score(X_test, y_test))

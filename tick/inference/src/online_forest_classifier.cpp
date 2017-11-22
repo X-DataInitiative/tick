@@ -315,72 +315,72 @@ TreeClassifier::TreeClassifier(OnlineForestClassifier &forest) : forest(forest) 
   add_node(0);
 }
 
-uint32_t TreeClassifier::split_leaf(uint32_t index, const ArrayDouble &x_t, double y_t) {
-  // std::cout << "Splitting node " << index << std::endl;
-  uint32_t left = add_node(index);
-  uint32_t right = add_node(index);
-  node(index).set_left(left).set_right(right).set_is_leaf(false);
-
-  // std::cout << "n_features(): " << n_features() << std::endl;
-  ArrayDouble diff(n_features());
-  for(uint32_t j = 0; j < n_features(); ++j) {
-    // std::cout << "j: " << j;
-    diff[j] = std::abs(node(index).x_t()[j] - x_t[j]);
-  }
-  // std::cout << std::endl;
-  diff /= diff.sum();
-  // diff.print();
-  // std::cout << "diff.sum=" << diff.sum() << std::endl;
-
-  // TODO: better feature sampling
-  // ulong feature = forest.sample_feature_bis();
-  // ulong feature = forest.sample_feature();
-
-  uint32_t feature = forest.sample_feature(diff);
-
-  // std::cout << "feature: " << feature << std::endl;
-
-  double x1_tj = x_t[feature];
-  double x2_tj = node(index).x_t()[feature];
-  double threshold;
-
-  // The leaf that contains the passed sample (x_t, y_t)
-  uint32_t data_leaf;
-  uint32_t other_leaf;
-
-  // std::cout << "x1_tj= " << x1_tj << " x2_tj= " << x2_tj << " threshold= " << threshold << std::endl;
-  // TODO: what if x1_tj == x2_tj. Must be taken care of by sample_feature()
-  if (x1_tj < x2_tj) {
-    threshold = forest.sample_threshold(x1_tj, x2_tj);
-    data_leaf = left;
-    other_leaf = right;
-  } else {
-    threshold = forest.sample_threshold(x2_tj, x1_tj);
-    data_leaf = right;
-    other_leaf = left;
-  }
-  // TODO: code a move_sample
-  NodeClassifier & current_node = node(index);
-  NodeClassifier & data_node = node(data_leaf);
-  NodeClassifier & other_node = node(other_leaf);
-  current_node.set_feature(feature).set_threshold(threshold);
-  // We pass the sample to the new leaves, and initialize the _label_average with the value
-  data_node.set_x_t(x_t).set_y_t(y_t);
-
-  // other_node.set_x_t(current_node.x_t()).set_y_t(current_node.y_t());
-  other_node.set_x_t(current_node.x_t()).set_y_t(current_node.y_t());
-
-  // Update downwards of v'
-  other_node.update_downwards(current_node.x_t(), current_node.y_t());
-  // Update upwards of v': it's a leaf
-  other_node.update_upwards();
-  // node(other_leaf).set_weight_tree(node(other_leaf).weight());
-  // Update downwards of v''
-  data_node.update_downwards(x_t, y_t);
-  // Note: the update_up of v'' is done in the go_up method, called in fit()
-  // std::cout << "Done splitting node." << std::endl;
-  return data_leaf;
-}
+//uint32_t TreeClassifier::split_leaf(uint32_t index, const ArrayDouble &x_t, double y_t) {
+//  // std::cout << "Splitting node " << index << std::endl;
+//  uint32_t left = add_node(index);
+//  uint32_t right = add_node(index);
+//  node(index).set_left(left).set_right(right).set_is_leaf(false);
+//
+//  // std::cout << "n_features(): " << n_features() << std::endl;
+//  ArrayDouble diff(n_features());
+//  for(uint32_t j = 0; j < n_features(); ++j) {
+//    // std::cout << "j: " << j;
+//    diff[j] = std::abs(node(index).x_t()[j] - x_t[j]);
+//  }
+//  // std::cout << std::endl;
+//  diff /= diff.sum();
+//  // diff.print();
+//  // std::cout << "diff.sum=" << diff.sum() << std::endl;
+//
+//  // TODO: better feature sampling
+//  // ulong feature = forest.sample_feature_bis();
+//  // ulong feature = forest.sample_feature();
+//
+//  uint32_t feature = forest.sample_feature(diff);
+//
+//  // std::cout << "feature: " << feature << std::endl;
+//
+//  double x1_tj = x_t[feature];
+//  double x2_tj = node(index).x_t()[feature];
+//  double threshold;
+//
+//  // The leaf that contains the passed sample (x_t, y_t)
+//  uint32_t data_leaf;
+//  uint32_t other_leaf;
+//
+//  // std::cout << "x1_tj= " << x1_tj << " x2_tj= " << x2_tj << " threshold= " << threshold << std::endl;
+//  // TODO: what if x1_tj == x2_tj. Must be taken care of by sample_feature()
+//  if (x1_tj < x2_tj) {
+//    threshold = forest.sample_threshold(x1_tj, x2_tj);
+//    data_leaf = left;
+//    other_leaf = right;
+//  } else {
+//    threshold = forest.sample_threshold(x2_tj, x1_tj);
+//    data_leaf = right;
+//    other_leaf = left;
+//  }
+//  // TODO: code a move_sample
+//  NodeClassifier & current_node = node(index);
+//  NodeClassifier & data_node = node(data_leaf);
+//  NodeClassifier & other_node = node(other_leaf);
+//  current_node.set_feature(feature).set_threshold(threshold);
+//  // We pass the sample to the new leaves, and initialize the _label_average with the value
+//  data_node.set_x_t(x_t).set_y_t(y_t);
+//
+//  // other_node.set_x_t(current_node.x_t()).set_y_t(current_node.y_t());
+//  other_node.set_x_t(current_node.x_t()).set_y_t(current_node.y_t());
+//
+//  // Update downwards of v'
+//  other_node.update_downwards(current_node.x_t(), current_node.y_t());
+//  // Update upwards of v': it's a leaf
+//  other_node.update_upwards();
+//  // node(other_leaf).set_weight_tree(node(other_leaf).weight());
+//  // Update downwards of v''
+//  data_node.update_downwards(x_t, y_t);
+//  // Note: the update_up of v'' is done in the go_up method, called in fit()
+//  // std::cout << "Done splitting node." << std::endl;
+//  return data_leaf;
+//}
 
 void TreeClassifier::extend_range(uint32_t node_index, const ArrayDouble &x_t, const double y_t) {
   // std::cout << "Extending the range of: " << index << std::endl;
@@ -568,9 +568,15 @@ void TreeClassifier::fit(const ArrayDouble &x_t, double y_t) {
   iteration++;
 }
 
-void TreeClassifier::predict(const ArrayDouble &x_t, ArrayDouble& scores) {
+void TreeClassifier::predict(const ArrayDouble &x_t, ArrayDouble& scores, bool use_aggregation) {
   // std::cout << "Going downwards" << std::endl;
   uint32_t leaf = go_downwards(x_t, 0., true);
+
+  if(!use_aggregation) {
+    node(leaf).predict(scores);
+    return;
+  }
+
   // std::cout << "Done." << std::endl;
   uint32_t current = leaf;
   // The child of the current node that does not contain the data
@@ -627,11 +633,12 @@ OnlineForestClassifier::OnlineForestClassifier(uint32_t n_trees,
                                                uint8_t n_classes,
                                                double step,
                                                CriterionClassifier criterion,
+                                               bool use_aggregation,
                                                int32_t n_threads,
                                                int seed,
                                                bool verbose)
     : _n_trees(n_trees), _n_classes(n_classes), _n_threads(n_threads),
-      _criterion(criterion), _step(step), _verbose(verbose), trees() {
+      _criterion(criterion), _use_aggregation(use_aggregation), _step(step), _verbose(verbose), trees() {
   // No iteration so far
   _iteration = 0;
 
@@ -676,8 +683,7 @@ void OnlineForestClassifier::fit(const SArrayDouble2dPtr features,
 }
 
 void OnlineForestClassifier::predict(const SArrayDouble2dPtr features,
-                                     SArrayDouble2dPtr predictions,
-                                     bool use_aggregation) {
+                                     SArrayDouble2dPtr predictions) {
   predictions->fill(0.);
   if (_iteration > 0) {
     uint32_t n_samples = static_cast<uint32_t>(features->n_rows());
@@ -689,7 +695,7 @@ void OnlineForestClassifier::predict(const SArrayDouble2dPtr features,
       // The prediction is simply the average of the predictions
       ArrayDouble scores_i = view_row(*predictions, i);
       for (TreeClassifier &tree : trees) {
-        tree.predict(view_row(*features, i), scores_tree);
+        tree.predict(view_row(*features, i), scores_tree, _use_aggregation);
         // TODO: use a .incr method instead ??
         scores_i.mult_incr(scores_tree, 1.);
       }

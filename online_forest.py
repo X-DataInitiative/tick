@@ -77,8 +77,10 @@ def plot_decisions_regression(clfs, datasets, names):
 
 
 def plot_decision_classification(classifiers, datasets, names):
+    n_classifiers = len(classifiers)
+    n_datasets = len(datasets)
     h = .02
-    fig = plt.figure(figsize=(2 * (len(classifiers) + 1), 2 * len(datasets)))
+    fig = plt.figure(figsize=(2 * (n_classifiers + 1), 2 * n_datasets))
     i = 1
     # iterate over datasets
     for ds_cnt, ds in enumerate(datasets):
@@ -93,7 +95,7 @@ def plot_decision_classification(classifiers, datasets, names):
         # just plot the dataset first
         cm = plt.cm.RdBu
         cm_bright = ListedColormap(['#FF0000', '#0000FF'])
-        ax = plt.subplot(len(datasets), len(classifiers) + 1, i)
+        ax = plt.subplot(n_datasets, n_classifiers + 1, i)
         if ds_cnt == 0:
             ax.set_title("Input data")
         # Plot the training points
@@ -108,7 +110,7 @@ def plot_decision_classification(classifiers, datasets, names):
         i += 1
         # iterate over classifiers
         for name, clf in zip(names, classifiers):
-            ax = plt.subplot(len(datasets), len(classifiers) + 1, i)
+            ax = plt.subplot(n_datasets, n_classifiers + 1, i)
             if hasattr(clf, 'clear'):
                 clf.clear()
             clf.fit(X_train, y_train)
@@ -134,7 +136,7 @@ def plot_decision_classification(classifiers, datasets, names):
 
 path = '/Users/stephane.gaiffas/Downloads/'
 
-n_trees = 20
+n_trees = 10
 
 X, y = make_classification(n_samples=n_samples, n_features=2, n_redundant=0,
                            n_informative=2, random_state=1,
@@ -149,22 +151,33 @@ X += 2 * rng.uniform(size=X.shape)
 
 linearly_separable = (X, y)
 
+
 datasets = [
     make_moons(n_samples=n_samples, noise=0.3, random_state=0),
     make_circles(n_samples=n_samples, noise=0.2, factor=0.5, random_state=1),
     linearly_separable
 ]
 
+
+from sklearn.neighbors import KNeighborsClassifier
+
+
 classifiers = [
-    OnlineForestClassifier(n_trees=n_trees, seed=123, step=1.),
+    OnlineForestClassifier(n_trees=n_trees, seed=123, step=1., use_aggregation=True),
+    OnlineForestClassifier(n_trees=n_trees, seed=123, step=100., use_aggregation=True),
+    OnlineForestClassifier(n_trees=n_trees, seed=123, step=1., use_aggregation=False),
+    KNeighborsClassifier(n_neighbors=5),
     ExtraTreesClassifier(n_estimators=n_trees),
     RandomForestClassifier(n_estimators=n_trees)
 ]
 
 names = [
-    "Online forest",
-    "Extra trees",
-    "Breiman RF"
+    "OF (agg, step=1.)",
+    "OF(agg, step=100.)",
+    "OF(no agg.)",
+    "KNN (k=5)",
+    "ET",
+    "BRF"
 ]
 
 plot_decision_classification(classifiers, datasets, names)

@@ -37,8 +37,11 @@ ax.set_yticks(())
 
 ax.scatter(X_train[:2, 0], X_train[:2, 1], c=np.array([0, 1]), s=25, cmap=cm)
 
-n_trees = 50
-clf = OnlineForestClassifier(n_trees=n_trees, n_classes=2, seed=123, step=1.)
+n_trees = 10
+
+clf = OnlineForestClassifier(n_trees=n_trees, n_classes=2, seed=123, step=1.,
+                             use_aggregation=False)
+
 
 def animate(i):
     clf.fit(X_train[i, :].reshape(1, 2), np.array([y_train[i]]))
