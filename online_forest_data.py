@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 path = '/Users/stephane.gaiffas/Dropbox/jaouad/online-forests/datasets/'
 
 filenames = [
-    'dna.p',
+    # 'dna.p',
     'letter.p',
     'satimage.p',
     'usps.p'
