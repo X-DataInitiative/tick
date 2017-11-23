@@ -63,7 +63,7 @@ TEST_F(HawkesModelTest, compute_loss_loglikelihood){
 }
 
 TEST_F(HawkesModelTest, compute_loss_loglikelihood_custom) {
-  ModelHawkesCustom model(2, 4);
+    ModelHawkesCustom model(2, 2);
   //! timestamps, T
     model.set_data(timestamps, 4.25);
   //ArrayDouble coeffs = ArrayDouble {1., 3., 2., 3., 4., 1};

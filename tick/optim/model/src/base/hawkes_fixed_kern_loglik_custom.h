@@ -46,10 +46,6 @@ protected:
     //! Peng wu, length of the previous two arrays
     ulong Total_events;
 
-    //! Peng Wu, the maximum N that we would consider for f_i(n)
-    //! y compris 0
-    ulong MaxN_of_f = 5;
-
     //! @brief auxiliary variable H1 described in the document
     ArrayDoubleList1D H1;
 
@@ -59,6 +55,9 @@ protected:
     //! @brief auxiliary variable H3 described in the document
     // H3 experimental here
     ArrayDouble2d H3;
+
+    //! @brief the max value of n kept for all f_i(n)
+    ulong MaxN_of_f = 5;
 
 public:
     /**

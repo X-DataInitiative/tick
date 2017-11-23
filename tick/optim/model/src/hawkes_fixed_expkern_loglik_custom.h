@@ -19,7 +19,6 @@ class DLL_PUBLIC ModelHawkesCustom : public ModelHawkesFixedKernCustom {
 private:
     //! @brief Value of decay for this model
     double decay;
-
 public:
     //! @brief Default constructor
     //! @note This constructor is only used to create vectors of ModelHawkesFixedExpKernLeastSq
