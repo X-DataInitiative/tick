@@ -3,10 +3,9 @@
 
 #include "hawkes_fixed_expkern_loglik_custom.h"
 
-ModelHawkesCustom::ModelHawkesCustom(
-        const double decay, const int max_n_threads) :
-        ModelHawkesFixedKernCustom(max_n_threads),
-        decay(decay) {}
+ModelHawkesCustom::ModelHawkesCustom(const double _decay, const ulong _MaxN_of_f, const int max_n_threads) :
+        ModelHawkesFixedKernCustom(_MaxN_of_f, max_n_threads),
+        decay(_decay) {}
 
 void ModelHawkesCustom::allocate_weights() {
     if (n_nodes == 0) {
@@ -127,5 +126,5 @@ void ModelHawkesCustom::compute_weights_dim_i(const ulong i) {
 
 ulong ModelHawkesCustom::get_n_coeffs() const {
     //!seems not ever used in this stage
-    return n_nodes + n_nodes * n_nodes + 1 + n_nodes * MaxN_of_f;
+    return n_nodes + n_nodes * n_nodes + n_nodes * MaxN_of_f;
 }

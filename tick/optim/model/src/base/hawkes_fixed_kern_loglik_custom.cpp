@@ -2,8 +2,8 @@
 
 #include "hawkes_fixed_kern_loglik_custom.h"
 
-ModelHawkesFixedKernCustom::ModelHawkesFixedKernCustom(const int max_n_threads) :
-        ModelHawkesSingle(max_n_threads, 0) {}
+ModelHawkesFixedKernCustom::ModelHawkesFixedKernCustom(const ulong _MaxN_of_f, const int max_n_threads) :
+        MaxN_of_f(_MaxN_of_f), ModelHawkesSingle(max_n_threads, 0) {}
 
 void ModelHawkesFixedKernCustom::compute_weights() {
     allocate_weights();
@@ -129,7 +129,7 @@ void ModelHawkesFixedKernCustom::sampled_i_to_index(const ulong sampled_i,
 double ModelHawkesFixedKernCustom::loss_dim_i(const ulong i,
                                               const ArrayDouble &coeffs) {
     const double mu_i = coeffs[i];
-    this->MaxN_of_f = (ulong) coeffs[n_nodes + n_nodes * n_nodes];
+    //this->MaxN_of_f = (ulong) coeffs[n_nodes + n_nodes * n_nodes];
 
     const ArrayDouble alpha_i = view(coeffs, get_alpha_i_first_index(i), get_alpha_i_last_index(i));
     const ArrayDouble f_i = view(coeffs, get_f_i_first_index(i), get_f_i_last_index(i));
@@ -263,9 +263,6 @@ void ModelHawkesFixedKernCustom::grad_dim_i(const ulong i,
         const ArrayDouble H3_j_n = view_row(H3, n);
         grad_f_i[n] = H1_i[n] / f_i[n] + mu_i * H2_i[n] + alpha_i.dot(H3_j_n);
     }
-
-    //! Don't forget to put them in *out
-
 }
 
 void ModelHawkesFixedKernCustom::grad_i_k(const ulong i, const ulong k,

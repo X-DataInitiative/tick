@@ -22,14 +22,14 @@ private:
 public:
     //! @brief Default constructor
     //! @note This constructor is only used to create vectors of ModelHawkesFixedExpKernLeastSq
-    ModelHawkesCustom() : ModelHawkesFixedKernCustom(), decay(0) {}
+    ModelHawkesCustom() : ModelHawkesFixedKernCustom(0), decay(0) {}
 
     /**
      * @brief Constructor
      * \param decay : decay for this model (remember that decay is fixed!)
      * \param n_threads : number of threads that will be used for parallel computations
      */
-    explicit ModelHawkesCustom(const double decay, const int max_n_threads = 1);
+    ModelHawkesCustom(const double _decay, const ulong _MaxN_of_f, const int max_n_threads = 1);
 
 private:
     void allocate_weights() override;
@@ -64,7 +64,7 @@ private:
      * @param i : selected dimension
      */
     ulong get_f_i_first_index(const ulong i) const override {
-        return n_nodes + n_nodes * n_nodes + 1 + i * MaxN_of_f;
+        return n_nodes + n_nodes * n_nodes + i * MaxN_of_f;
     }
 
     /**
@@ -72,7 +72,7 @@ private:
      * @param i : selected dimension
      */
     ulong get_f_i_last_index(const ulong i) const override {
-        return n_nodes + n_nodes * n_nodes + 1 + (i + 1) * MaxN_of_f;
+        return n_nodes + n_nodes * n_nodes + (i + 1) * MaxN_of_f;
     }
 
 public:

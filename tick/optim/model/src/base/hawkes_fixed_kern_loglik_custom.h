@@ -57,14 +57,14 @@ protected:
     ArrayDouble2d H3;
 
     //! @brief the max value of n kept for all f_i(n)
-    ulong MaxN_of_f = 5;
+    ulong MaxN_of_f;
 
 public:
     /**
      * @brief Constructor
      * \param n_threads : number of threads that will be used for parallel computations
      */
-    explicit ModelHawkesFixedKernCustom(const int max_n_threads = 1);
+    ModelHawkesFixedKernCustom(const ulong _MaxN_of_f, const int max_n_threads = 1);
 
     /**
      * @brief Precomputations of intermediate values

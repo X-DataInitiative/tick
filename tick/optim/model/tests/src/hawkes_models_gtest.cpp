@@ -63,20 +63,19 @@ TEST_F(HawkesModelTest, compute_loss_loglikelihood){
 }
 
 TEST_F(HawkesModelTest, compute_loss_loglikelihood_custom) {
-    ModelHawkesCustom model(2, 2);
-  //! timestamps, T
+    //! beta = 2
+    ModelHawkesCustom model(2, 5);
+    //! timestamps, T
     model.set_data(timestamps, 4.25);
-  //ArrayDouble coeffs = ArrayDouble {1., 3., 2., 3., 4., 1};
-    ArrayDouble coeffs = ArrayDouble {1., 3., 2., 3., 4., 1, 5, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2};
+    ArrayDouble coeffs = ArrayDouble {1., 3., 2., 3., 4., 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2};
 
     const double loss = model.loss(coeffs);
-  ArrayDouble grad(model.get_n_coeffs());
-  model.grad(coeffs, grad);
-  grad.print();
+    ArrayDouble grad(model.get_n_coeffs());
+    model.grad(coeffs, grad);
+    grad.print();
 
-    EXPECT_DOUBLE_EQ(loss, 2.9434509731246283);
-
-  //EXPECT_DOUBLE_EQ(model.get_n_coeffs(), 6);
+    EXPECT_DOUBLE_EQ(loss, 8.4408654055430485);
+    EXPECT_DOUBLE_EQ(model.get_n_coeffs(), 16);
 }
 
 TEST_F(HawkesModelTest, check_sto_loglikelihood){
