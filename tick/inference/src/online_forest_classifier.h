@@ -9,6 +9,9 @@
 #include "../../random/src/rand.h"
 
 
+// TODO: in the forest, tests for the input labels and the size of the features (for fit and predict_proba and predict)
+
+
 enum class CriterionClassifier {
   log = 0,
 };
@@ -236,7 +239,7 @@ class OnlineForestClassifier {
   virtual ~OnlineForestClassifier();
 
   void fit(const SArrayDouble2dPtr features, const SArrayDoublePtr labels);
-  void predict(const SArrayDouble2dPtr features, SArrayDouble2dPtr predictions);
+  void predict(const SArrayDouble2dPtr features, SArrayDouble2dPtr scores);
 
   inline uint32_t sample_feature();
   inline uint32_t sample_feature(const ArrayDouble &prob);

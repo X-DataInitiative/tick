@@ -569,7 +569,7 @@ void TreeClassifier::fit(const ArrayDouble &x_t, double y_t) {
 }
 
 void TreeClassifier::predict(const ArrayDouble &x_t, ArrayDouble& scores, bool use_aggregation) {
-  // std::cout << "Going downwards" << std::endl;
+  std::cout << "Going downwards" << std::endl;
   uint32_t leaf = go_downwards(x_t, 0., true);
 
   if(!use_aggregation) {
@@ -577,12 +577,12 @@ void TreeClassifier::predict(const ArrayDouble &x_t, ArrayDouble& scores, bool u
     return;
   }
 
-  // std::cout << "Done." << std::endl;
+  std::cout << "Done." << std::endl;
   uint32_t current = leaf;
   // The child of the current node that does not contain the data
   ArrayDouble pred_new(n_classes());
   while (true) {
-    // std::cout << "node: " << current << std::endl;
+    std::cout << "node: " << current << std::endl;
     NodeClassifier &current_node = node(current);
     if (current_node.is_leaf()) {
       current_node.predict(scores);
@@ -603,9 +603,7 @@ void TreeClassifier::predict(const ArrayDouble &x_t, ArrayDouble& scores, bool u
 }
 
 uint32_t TreeClassifier::add_node(uint32_t parent, double time) {
-  // std::cout << "Adding node with parent " << parent << std::endl;
   nodes.emplace_back(*this, parent, time);
-  // std::cout << "Done." << std::endl;
   return _n_nodes++;
 }
 
@@ -687,8 +685,11 @@ void OnlineForestClassifier::fit(const SArrayDouble2dPtr features,
 }
 
 void OnlineForestClassifier::predict(const SArrayDouble2dPtr features,
-                                     SArrayDouble2dPtr predictions) {
-  predictions->fill(0.);
+                                     SArrayDouble2dPtr scores) {
+  scores->fill(0.);
+  std::cout << "features->n_rows(): " << features->n_rows() << ", features->n_cols(): " << features->n_cols() << std::endl;
+  std::cout << "scores->n_rows(): " << scores->n_rows() << ", scores->n_cols(): " << scores->n_cols() << std::endl;
+  std::cout << "n_classes: " << _n_classes << std::endl;
   if (_iteration > 0) {
     uint32_t n_samples = static_cast<uint32_t>(features->n_rows());
     ArrayDouble scores_tree(_n_classes);
@@ -697,8 +698,9 @@ void OnlineForestClassifier::predict(const SArrayDouble2dPtr features,
     scores_forest.fill(0.);
     for (uint32_t i = 0; i < n_samples; ++i) {
       // The prediction is simply the average of the predictions
-      ArrayDouble scores_i = view_row(*predictions, i);
+      ArrayDouble scores_i = view_row(*scores, i);
       for (TreeClassifier &tree : trees) {
+        std::cout << "predict for tree " << std::endl;
         tree.predict(view_row(*features, i), scores_tree, _use_aggregation);
         // TODO: use a .incr method instead ??
         scores_i.mult_incr(scores_tree, 1.);
@@ -728,13 +730,15 @@ inline double OnlineForestClassifier::sample_exponential(double intensity) {
 }
 
 inline uint32_t OnlineForestClassifier::sample_feature(const ArrayDouble & prob) {
-  ArrayDouble my_prob = prob;
-  for(uint32_t j = 0; j < n_features(); ++j) {
-    // my_prob[j] *= _feature_importances[j];
-    my_prob[j] = _feature_importances[j];
-  }
-  my_prob /= my_prob.sum();
-  return rand.discrete(my_prob);
+//  ArrayDouble my_prob = prob;
+//  for(uint32_t j = 0; j < n_features(); ++j) {
+//    // my_prob[j] *= _feature_importances[j];
+//    my_prob[j] = _feature_importances[j];
+//  }
+//  my_prob /= my_prob.sum();
+  // return rand.discrete(my_prob);
+  return rand.discrete(prob);
+
 }
 
 inline double OnlineForestClassifier::sample_threshold(double left, double right) {
