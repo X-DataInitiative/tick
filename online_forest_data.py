@@ -20,6 +20,7 @@ import matplotlib.pyplot as plt
 # TODO: show that the classifier is insensitive to the time of arrival of the points
 # TODO: try on datasets for which KNN and a linear method performs poorly
 # TODO: V-fold instead of train and test ?
+# TODO: Set features importance with default to none
 
 path = '/Users/stephane.gaiffas/Dropbox/jaouad/online-forests/datasets/'
 
