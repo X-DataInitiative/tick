@@ -118,9 +118,9 @@ class NodeClassifier {
   inline double time() const;
   inline NodeClassifier &set_time(double time);
   inline double features_min(const uint32_t j) const;
-  inline NodeClassifier & set_features_min(const ArrayDouble &features_min);
+  inline NodeClassifier &set_features_min(const ArrayDouble &features_min);
   inline double features_max(const uint32_t j) const;
-  inline NodeClassifier & set_features_max(const ArrayDouble &features_max);
+  inline NodeClassifier &set_features_max(const ArrayDouble &features_max);
   inline uint32_t n_samples() const;
   inline NodeClassifier &set_n_samples(uint32_t n_samples);
   inline double weight() const;
@@ -200,24 +200,24 @@ class TreeClassifier {
 
 class OnlineForestClassifier {
  private:
-  // Number of Trees in the forest
-  uint32_t _n_trees;
-  // Number of threads to use for parallel growing of trees
-  int32_t _n_threads;
-  // CriterionClassifier used for splitting (not used for now)
-  CriterionClassifier _criterion;
-
-  bool _use_aggregation;
-  // Step-size used for aggregation
-  double _step;
-  // Number of features.
-  uint32_t _n_features;
   // Number of classes in the classification problem
   uint8_t _n_classes;
+  // Number of Trees in the forest
+  uint32_t _n_trees;
+  // Step-size used for aggregation
+  double _step;
+  // CriterionClassifier used for splitting (not used for now)
+  CriterionClassifier _criterion;
+  //
+  bool _use_aggregation;
+  // Number of threads to use for parallel growing of trees
+  int32_t _n_threads;
   // Seed for random number generation
   int _seed;
   // Verbose things or not
   bool _verbose;
+  // Number of features.
+  uint32_t _n_features;
   // Iteration counter
   uint32_t _iteration;
   // The list of trees in the forest
@@ -229,13 +229,14 @@ class OnlineForestClassifier {
   // Create trees
   void create_trees();
 
-
   SArrayDouble2dPtr _features;
   SArrayDoublePtr _labels;
 
  public:
-  OnlineForestClassifier(uint32_t n_trees, uint8_t n_classes, double step=1.0, CriterionClassifier criterion=CriterionClassifier::log,
-                         bool use_aggregation = true, int32_t n_threads=1, int seed=0, bool verbose=false);
+  OnlineForestClassifier(uint8_t n_classes, uint32_t n_trees, double step = 1.0,
+                         CriterionClassifier criterion = CriterionClassifier::log,
+                         bool use_aggregation = true, int32_t n_threads = 1,
+                         int seed = 0, bool verbose = false);
   virtual ~OnlineForestClassifier();
 
   void fit(const SArrayDouble2dPtr features, const SArrayDoublePtr labels);

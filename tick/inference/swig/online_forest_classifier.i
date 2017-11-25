@@ -14,11 +14,11 @@ enum class CriterionClassifier {
 
 class OnlineForestClassifier {
  public:
-    OnlineForestClassifier(uint32_t n_trees, uint8_t n_classes, double step=1.0,
-                           CriterionClassifier criterion=CriterionClassifier::log,
-                           bool use_aggregation = true,
-                           int32_t n_threads=1,
-                           int seed=0, bool verbose=false);
+
+  OnlineForestClassifier(uint8_t n_classes, uint32_t n_trees, double step = 1.0,
+                         CriterionClassifier criterion = CriterionClassifier::log,
+                         bool use_aggregation = true, int32_t n_threads = 1,
+                         int seed = 0, bool verbose = false);
 
   void fit(const SArrayDouble2dPtr features, const SArrayDoublePtr labels);
   void predict(const SArrayDouble2dPtr features, SArrayDouble2dPtr predictions);

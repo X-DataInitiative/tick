@@ -137,6 +137,7 @@ def plot_decision_classification(classifiers, datasets, names):
 
 path = '/Users/stephane.gaiffas/Downloads/'
 
+n_classes = 2
 n_trees = 20
 
 X, y = make_classification(n_samples=n_samples, n_features=2, n_redundant=0,
@@ -146,16 +147,17 @@ rng = np.random.RandomState(2)
 X += 2 * rng.uniform(size=X.shape)
 
 
-clf = OnlineForestClassifier(n_classes=2, n_trees=n_trees, seed=123, step=1.)
+# clf = OnlineForestClassifier(n_classes=n_classes, n_trees=n_trees, seed=123,
+#                              step=1., use_aggregation=True)
 
-X_train, X_test, y_train, y_test = \
-    train_test_split(X, y, test_size=.4, random_state=42)
-
-clf.fit(X_train, y_train)
-
-clf.predict(X_test)
-
-exit(0)
+# X_train, X_test, y_train, y_test = \
+#     train_test_split(X, y, test_size=.4, random_state=42)
+#
+# clf.fit(X_train, y_train)
+#
+# clf.predict(X_test)
+#
+# exit(0)
 
 # clf.print()
 

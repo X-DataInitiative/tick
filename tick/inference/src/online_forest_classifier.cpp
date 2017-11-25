@@ -126,9 +126,15 @@ double NodeClassifier::score(uint8_t c) const {
 }
 
 inline void NodeClassifier::predict(ArrayDouble& scores) const {
+//  std::cout << "NodeClassifier::predict" << std::endl;
+//  std::cout << "n_classes: " << n_classes() << std::endl;
+//  std::cout << "scores.size(): " << scores.size() << std::endl;
+//  std::cout << "c=";
   for (uint8_t c=0; c < n_classes(); ++c) {
+//    std::cout << " " << c;
     scores[c] = score(c);
   }
+//  std::cout << std::endl << "... Done with NodeClassifier::predict" << std::endl;
 }
 
 double NodeClassifier::loss(const double y_t) {
@@ -501,7 +507,7 @@ uint32_t TreeClassifier::go_downwards(const ArrayDouble &x_t, double y_t, bool p
   // Start at the root. Index of the root is always 0
   // If predict == true, this call to find_leaf is for
   // prediction only, so that no leaf update and splits can be done
-  // std::cout << "Going downwards" << std::endl;
+//  std::cout << "Going downwards" << std::endl;
   uint32_t index_current_node = 0;
   bool is_leaf = false;
   while (!is_leaf) {
@@ -524,7 +530,7 @@ uint32_t TreeClassifier::go_downwards(const ArrayDouble &x_t, double y_t, bool p
       }
     }
   }
-  // std::cout << "...Done going downwards." << std::endl;
+//  std::cout << "...Done going downwards." << std::endl;
   return index_current_node;
 }
 
@@ -569,24 +575,26 @@ void TreeClassifier::fit(const ArrayDouble &x_t, double y_t) {
 }
 
 void TreeClassifier::predict(const ArrayDouble &x_t, ArrayDouble& scores, bool use_aggregation) {
-  std::cout << "Going downwards" << std::endl;
+//  std::cout << "TreeClassifier::predict" << std::endl;
   uint32_t leaf = go_downwards(x_t, 0., true);
-
   if(!use_aggregation) {
+//    std::cout << "Not using aggregation so using only the leaf's prediction" << std::endl;
     node(leaf).predict(scores);
     return;
   }
 
-  std::cout << "Done." << std::endl;
+//  std::cout << "Done." << std::endl;
   uint32_t current = leaf;
   // The child of the current node that does not contain the data
   ArrayDouble pred_new(n_classes());
   while (true) {
-    std::cout << "node: " << current << std::endl;
+//    std::cout << "node: " << current << std::endl;
     NodeClassifier &current_node = node(current);
     if (current_node.is_leaf()) {
+//      std::cout << "predict leaf" << std::endl;
       current_node.predict(scores);
     } else {
+//      std::cout << "predict node" << std::endl;
       double w = std::exp(current_node.weight() - current_node.weight_tree());
       // Get the predictions of the current node
       current_node.predict(pred_new);
@@ -596,6 +604,7 @@ void TreeClassifier::predict(const ArrayDouble &x_t, ArrayDouble& scores, bool u
     }
     // Root must be updated as well
     if (current == 0) {
+//      std::cout << "Done with predict." << std::endl;
       break;
     }
     current = current_node.parent();
@@ -627,19 +636,18 @@ inline CriterionClassifier TreeClassifier::criterion() const {
  * OnlineForestClassifier methods
  *********************************************************************************/
 
-OnlineForestClassifier::OnlineForestClassifier(uint32_t n_trees,
-                                               uint8_t n_classes,
+OnlineForestClassifier::OnlineForestClassifier(uint8_t n_classes,
+                                               uint32_t n_trees,
                                                double step,
                                                CriterionClassifier criterion,
                                                bool use_aggregation,
                                                int32_t n_threads,
                                                int seed,
                                                bool verbose)
-    : _n_trees(n_trees), _n_classes(n_classes), _n_threads(n_threads),
-      _criterion(criterion), _use_aggregation(use_aggregation), _step(step), _verbose(verbose), trees() {
+    : _n_classes(n_classes), _n_trees(n_trees), _step(step), _criterion(criterion),
+      _use_aggregation(use_aggregation), _n_threads(n_threads), _verbose(verbose), rand(seed) {
   // No iteration so far
   _iteration = 0;
-
 //  std::cout << "sizeof(float): " << sizeof(float) << std::endl;
 //  std::cout << "sizeof(double): " << sizeof(double) << std::endl;
 //  std::cout << "sizeof(uint8_t): " << sizeof(uint8_t) << std::endl;
@@ -649,8 +657,6 @@ OnlineForestClassifier::OnlineForestClassifier(uint32_t n_trees,
 //  std::cout << "sizeof(ulong): " << sizeof(ulong) << std::endl;
 
   create_trees();
-  // Seed the random number generators
-  set_seed(seed);
 }
 
 OnlineForestClassifier::~OnlineForestClassifier() {}
@@ -687,9 +693,9 @@ void OnlineForestClassifier::fit(const SArrayDouble2dPtr features,
 void OnlineForestClassifier::predict(const SArrayDouble2dPtr features,
                                      SArrayDouble2dPtr scores) {
   scores->fill(0.);
-  std::cout << "features->n_rows(): " << features->n_rows() << ", features->n_cols(): " << features->n_cols() << std::endl;
-  std::cout << "scores->n_rows(): " << scores->n_rows() << ", scores->n_cols(): " << scores->n_cols() << std::endl;
-  std::cout << "n_classes: " << _n_classes << std::endl;
+//  std::cout << "features->n_rows(): " << features->n_rows() << ", features->n_cols(): " << features->n_cols() << std::endl;
+//  std::cout << "scores->n_rows(): " << scores->n_rows() << ", scores->n_cols(): " << scores->n_cols() << std::endl;
+//  std::cout << "n_classes: " << _n_classes << std::endl;
   if (_iteration > 0) {
     uint32_t n_samples = static_cast<uint32_t>(features->n_rows());
     ArrayDouble scores_tree(_n_classes);
@@ -700,7 +706,7 @@ void OnlineForestClassifier::predict(const SArrayDouble2dPtr features,
       // The prediction is simply the average of the predictions
       ArrayDouble scores_i = view_row(*scores, i);
       for (TreeClassifier &tree : trees) {
-        std::cout << "predict for tree " << std::endl;
+//        std::cout << "predict for tree " << std::endl;
         tree.predict(view_row(*features, i), scores_tree, _use_aggregation);
         // TODO: use a .incr method instead ??
         scores_i.mult_incr(scores_tree, 1.);
