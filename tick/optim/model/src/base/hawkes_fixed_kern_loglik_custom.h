@@ -73,6 +73,9 @@ public:
      */
     void compute_weights();
 
+    void set_data(const SArrayDoublePtrList2D &timestamps_list,
+                  VArrayDoublePtr end_times);
+
     /**
      * @brief Compute loss and gradient
      * \param coeffs : Point in which loss and gradient are computed

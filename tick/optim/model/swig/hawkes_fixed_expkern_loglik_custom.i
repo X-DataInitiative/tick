@@ -14,6 +14,9 @@ public:
 
     void set_data(const SArrayDoublePtrList1D &timestamps, const double end_time);
 
+    void set_data(const SArrayDoublePtrList2D &timestamps_list,
+                  const VArrayDoublePtr end_times);
+
     void compute_weights();
 
     inline unsigned long get_rand_max() const;

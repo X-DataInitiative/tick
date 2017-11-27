@@ -19,6 +19,12 @@ void ModelHawkesFixedKernCustom::compute_weights_dim_i(const ulong i) {
     TICK_CLASS_DOES_NOT_IMPLEMENT("");
 }
 
+void ModelHawkesFixedKernCustom::set_data(const SArrayDoublePtrList2D &timestamps_list,
+                                          VArrayDoublePtr end_times) {
+    if (timestamps_list.size() != 1) TICK_ERROR("Can handle only one realization, provided " << timestamps_list.size());
+    ModelHawkesSingle::set_data(timestamps_list[0], (*end_times)[0]);
+}
+
 double ModelHawkesFixedKernCustom::loss(const ArrayDouble &coeffs) {
     if (!weights_computed) compute_weights();
 
