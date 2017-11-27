@@ -60,6 +60,7 @@ protected:
     ulong MaxN_of_f;
 
 public:
+    using ModelHawkesSingle::set_data;
     /**
      * @brief Constructor
      * \param n_threads : number of threads that will be used for parallel computations
