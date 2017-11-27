@@ -54,7 +54,7 @@ void ModelHawkesFixedSumExpKernLogLik::compute_weights_dim_i(const ulong i) {
           G_i[get_index(k, j, u)] = g_i[get_index(k - 1, j, u)] * (1 - ebt) / decays[u];
 
         } else {
-          g_i[get_index(k, j, u)] = 0;
+          if (k < n_jumps_i) g_i[get_index(k, j, u)] = 0;
           G_i[get_index(k, j, u)] = 0;
           sum_G_i[j * get_n_decays() + u] = 0.;
         }
@@ -63,9 +63,7 @@ void ModelHawkesFixedSumExpKernLogLik::compute_weights_dim_i(const ulong i) {
       while ((ij < (*n_jumps_per_node)[j]) && (t_j[ij] < t_i_k)) {
         for (ulong u = 0; u < get_n_decays(); ++u) {
           const double ebt = std::exp(-decays[u] * (t_i_k - t_j[ij]));
-          if (k < n_jumps_i) {
-            g_i[get_index(k, j, u)] += decays[u] * ebt;
-          }
+          if (k < n_jumps_i) g_i[get_index(k, j, u)] += decays[u] * ebt;
           G_i[get_index(k, j, u)] += 1 - ebt;
         }
         ij++;

@@ -120,12 +120,13 @@ class LearnerHawkesNoParam(Solver):
             self._learner.set_data(events)
 
     def _clean_events_and_endtimes(self, events):
-        if not isinstance(events[0][0], np.ndarray):
+        if len(events[0]) == 0 or not isinstance(events[0][0], np.ndarray):
             events = [events]
 
         end_times = self._end_times
         if end_times is None:
-            end_times = np.array([max(map(max, e)) for e in events])
+            non_empty_events = [[r for r in e if len(r) > 0] for e in events]
+            end_times = np.array([max(map(max, e)) for e in non_empty_events])
 
         if isinstance(end_times, (int, float)):
             end_times = np.array([end_times], dtype=float)

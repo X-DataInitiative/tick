@@ -7,7 +7,7 @@ from tick.inference.tests.inference import InferenceTest
 from tick.optim.prox import ProxNuclear
 from tick.optim.prox import ProxPositive, ProxL1, ProxL2Sq, ProxElasticNet
 from tick.optim.solver import AGD, GD, BFGS, SGD, SVRG
-from tick.simulation import SimuHawkesSumExpKernels
+from tick.simulation import SimuHawkesSumExpKernels, SimuHawkesMulti
 from tick.inference import HawkesSumExpKern
 
 solvers = ['gd', 'agd', 'svrg', 'bfgs', 'sgd']
@@ -41,6 +41,41 @@ class Test(InferenceTest):
         sim.simulate()
 
         return sim.timestamps, baseline, adjacency
+
+    def simulate_sparse_realization(self):
+        """Simulate realization in which some nodes are sometimes empty
+        """
+        baseline = np.array([0.3, 0.001])
+        adjacency = np.array([[[0.5, 0.3], [0.8, 0.2]], [[0., 0.], [1.3, 0.9]]])
+
+        sim = SimuHawkesSumExpKernels(adjacency=adjacency, decays=self.decays,
+                                      baseline=baseline, verbose=False,
+                                      seed=13487, end_time=500)
+        sim.adjust_spectral_radius(0.8)
+        multi = SimuHawkesMulti(sim, n_simulations=100)
+
+        adjacency = sim.adjacency
+        multi.simulate()
+
+        # Check that some but not all realizations are empty
+        self.assertGreater(max(map(lambda r: len(r[1]), multi.timestamps)), 1)
+        self.assertEqual(min(map(lambda r: len(r[1]), multi.timestamps)), 0)
+
+        return baseline, adjacency, multi.timestamps
+
+    def test_sparse(self):
+        """...Test that original coeffs are correctly retrieved when some
+        realizations are empty
+        """
+        baseline, adjacency, events = self.simulate_sparse_realization()
+
+        learner = HawkesSumExpKern(self.decays, verbose=False)
+        learner.fit(events)
+
+        np.testing.assert_array_almost_equal(learner.baseline, baseline,
+                                             decimal=1)
+        np.testing.assert_array_almost_equal(learner.adjacency, adjacency,
+                                             decimal=1)
 
     @staticmethod
     def estimation_error(estimated, original):

@@ -8,7 +8,7 @@
 
 ModelHawkesSingle::ModelHawkesSingle(const int max_n_threads,
                                      const unsigned int optimization_level) :
-    ModelHawkes(max_n_threads, optimization_level), n_total_jumps(0) {}
+  ModelHawkes(max_n_threads, optimization_level), n_total_jumps(0) {}
 
 void ModelHawkesSingle::set_data(const SArrayDoublePtrList1D &timestamps,
                                  const double end_time) {
@@ -25,10 +25,12 @@ void ModelHawkesSingle::set_data(const SArrayDoublePtrList1D &timestamps,
   n_total_jumps = n_jumps_per_node->sum();
 
   for (ulong i = 0; i < n_nodes; ++i) {
-    double last_time_i = (*timestamps[i])[timestamps[i]->size() - 1];
-    if (end_time < last_time_i) {
-      TICK_ERROR("Provided end_time (" << end_time << ") is smaller than last time of component "
-                                       << i << " (" << last_time_i << ")")
+    if (timestamps[i]->size() > 0) {
+      double last_time_i = (*timestamps[i])[timestamps[i]->size() - 1];
+      if (end_time < last_time_i) {
+        TICK_ERROR("Provided end_time (" << end_time << ") is smaller than last time of "
+                                         << "component " << i << " (" << last_time_i << ")")
+      }
     }
   }
 

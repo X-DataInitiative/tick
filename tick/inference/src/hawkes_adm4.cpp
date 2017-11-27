@@ -64,7 +64,7 @@ void HawkesADM4::compute_weights_ru(const ulong r_u, ArrayDouble2d &map_kernel_i
         const double ebt = cexp(-decay * (t_ru_k - timestamps_ru[k - 1]));
         g_ru[k * n_nodes + v] = g_ru[(k - 1) * n_nodes + v] * ebt;
       } else {
-        g_ru[k * n_nodes + v] = 0;
+        if (k < timestamps_ru.size()) g_ru[k * n_nodes + v] = 0;
       }
       while ((ij < timestamps_rv.size()) && (timestamps_rv[ij] < t_ru_k)) {
         const double ebt = cexp(-decay * (t_ru_k - timestamps_rv[ij]));
