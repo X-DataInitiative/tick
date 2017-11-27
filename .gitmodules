@@ -1,3 +1,3 @@
-[submodule "tick/third_party/cereal"]
-	path = tick/third_party/cereal
+[submodule "lib/third_party/cereal"]
+	path = lib/third_party/cereal
 	url = https://github.com/USCiLab/cereal.git
