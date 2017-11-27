@@ -40,6 +40,11 @@
 %shared_ptr(ModelHawkesFixedExpKernLogLikList);
 %shared_ptr(ModelHawkesFixedSumExpKernLogLikList);
 
+%
+shared_ptr(ModelHawkesFixedKernCustom);
+%
+shared_ptr(ModelHawkesCustom);
+
 %shared_ptr(ModelCoxRegPartialLik);
 %shared_ptr(ModelSCCS);
 
@@ -86,3 +91,7 @@
 %include coxreg_partial_lik.i
 
 %include sccs.i
+
+%
+include hawkes_fixed_expkern_loglik_custom
+.i
