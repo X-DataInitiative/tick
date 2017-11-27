@@ -20,6 +20,9 @@ import matplotlib.pyplot as plt
 
 path = '/Users/stephane.gaiffas/Dropbox/jaouad/online-forests/datasets/'
 
+# TODO: do for dna.p
+
+
 
 def read_abalone(path):
     archive = zipfile.ZipFile(os.path.join(path, 'abalone.csv.zip'), 'r')
@@ -155,14 +158,158 @@ def read_default_cb(path):
     X = np.hstack((X_continuous, X_discrete))
     return X, y, 'default_cb'
 
+
+def read_ijcnn1(path):
+    archive = zipfile.ZipFile(os.path.join(path, 'ijcnn1.csv.zip'), 'r')
+    with archive.open('ijcnn1.csv', ) as f:
+        data = pd.read_csv(f, header=None)
+    y = data.pop(12).as_matrix()
+    y = (y + 1) / 2
+    X = data.as_matrix()
+    return X, y, 'ijcnn1'
+
+
+def read_isolet(path):
+    archive = zipfile.ZipFile(os.path.join(path, 'isolet.zip'), 'r')
+    with archive.open('isolet/isolet1234.csv') as f:
+        data1 = pd.read_csv(f, header=None)
+    with archive.open('isolet/isolet5.csv') as f:
+        data2 = pd.read_csv(f, header=None)
+    data = pd.concat((data1, data2))
+    y = data.pop(617).as_matrix()
+    y -= 1
+    X = data.as_matrix()
+    return X, y, 'isolet'
+
+
+def read_letter(path):
+    archive = zipfile.ZipFile(os.path.join(path, 'letter.csv.zip'), 'r')
+    with archive.open('letter.csv') as f:
+        data = pd.read_csv(f)
+    data.drop(['Unnamed: 0'], axis=1, inplace=True)
+    y = data.pop('y').as_matrix()
+    X = data.as_matrix()
+    return X, y, 'letter'
+
+
+def read_nursery(path):
+    archive = zipfile.ZipFile(os.path.join(path, 'nursery.csv.zip'), 'r')
+    with archive.open('nursery.csv') as f:
+        data = pd.read_csv(f, header=None)
+    y1 = data.pop(7)
+    y1 = pd.get_dummies(y1)
+    y1 = y1.as_matrix().argmax(axis=1)
+    y2 = data.pop(8)
+    y2 = pd.get_dummies(y2)
+    y2 = y2.as_matrix().argmax(axis=1)
+    X = pd.get_dummies(data, prefix_sep='#').as_matrix()
+    return X, y2, 'nursery'
+
+
+def read_ozone(path):
+    archive = zipfile.ZipFile(os.path.join(path, 'ozone.zip'), 'r')
+    with archive.open('ozone/ozone.eighthr.csv') as f:
+        data = pd.read_csv(f, header=None, na_values='?')
+    data.dropna(inplace=True)
+    data.drop([0], axis=1, inplace=True)
+    y = data.pop(73).as_matrix()
+    X = data.as_matrix()
+    return X, y, 'ozone'
+
+
+def read_satimage(path):
+    archive = zipfile.ZipFile(os.path.join(path, 'satimage.csv.zip'), 'r')
+    with archive.open('satimage.csv') as f:
+        data = pd.read_csv(f)
+    data.drop(['Unnamed: 0'], axis=1, inplace=True)
+    y = data.pop('y').as_matrix()
+    X = data.as_matrix()
+    return X, y, 'satimage'
+
+
+def read_sensorless(path):
+    archive = zipfile.ZipFile(os.path.join(path, 'sensorless.csv.zip'), 'r')
+    with archive.open('sensorless.csv') as f:
+        data = pd.read_csv(f, sep=' ', header=None)
+    y = data.pop(48).as_matrix()
+    y -= 1
+    X = MinMaxScaler().fit_transform(data)
+    return X, y, 'sensorless'
+
+
+def read_shuttle(path):
+    archive = zipfile.ZipFile(os.path.join(path, 'shuttle.csv.zip'), 'r')
+    with archive.open('shuttle.csv') as f:
+        data = pd.read_csv(f, header=None)
+
+    y = data.pop(10).as_matrix()
+    y -= 1
+    X = MinMaxScaler().fit_transform(data)
+    return X, y, 'shuttle'
+
+
+def read_spambase(path):
+    archive = zipfile.ZipFile(os.path.join(path, 'spambase.csv.zip'), 'r')
+    with archive.open('spambase.csv') as f:
+        data = pd.read_csv(f, header=None)
+    y = data.pop(57).as_matrix()
+    X = MinMaxScaler().fit_transform(data)
+    return X, y, 'spambase'
+
+
+def read_usps(path):
+    archive = zipfile.ZipFile(os.path.join(path, 'usps.csv.zip'), 'r')
+    with archive.open('usps.csv') as f:
+        data = pd.read_csv(f)
+    data.drop(['Unnamed: 0'], axis=1, inplace=True)
+    y = data.pop('y').as_matrix()
+    X = data.as_matrix()
+    return X, y, 'usps'
+
+
+def read_wilt(path):
+    archive = zipfile.ZipFile(os.path.join(path, 'wilt.csv.zip'), 'r')
+    with archive.open('wilt.csv') as f:
+        data = pd.read_csv(f)
+    y = data.pop('class')
+    y = pd.get_dummies(y).as_matrix().argmax(axis=1)
+    X = MinMaxScaler().fit_transform(data)
+    return X, y, 'wilt'
+
+
+def read_wine(path):
+    archive = zipfile.ZipFile(os.path.join(path, 'wine.zip'), 'r')
+    with archive.open('wine/red.csv') as f:
+        data_red = pd.read_csv(f, sep=';')
+    with archive.open('wine/white.csv') as f:
+        data_white = pd.read_csv(f, sep=";")
+    data = data_red
+    y = data.pop('quality').as_matrix()
+    y -= 3
+    X = MinMaxScaler().fit_transform(data)
+    return X, y, 'wine'
+
+
 readers = [
     # read_abalone,
     # read_adult
     # read_bank
     # read_car,
-    read_cardio,
-    read_churn,
-    read_default_cb
+    # read_cardio,
+    # read_churn,
+    # read_default_cb,
+    # read_ijcnn1
+    # read_isolet,
+    # read_letter,
+    # read_nursery,
+    # read_ozone,
+    # read_satimage,
+    # read_sensorless,
+    # read_shuttle,
+    # read_spambase,
+    # read_usps,
+    # read_wilt,
+    read_wine
 ]
 
 n_trees = 10
