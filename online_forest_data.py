@@ -10,7 +10,6 @@ from sklearn.neighbors import KNeighborsClassifier
 
 import matplotlib.pyplot as plt
 
-
 # TODO: options for types of sampling of the features
 # TODO: online construction of the feature_importances
 # TODO: python script that tries all combinations
@@ -21,6 +20,11 @@ import matplotlib.pyplot as plt
 # TODO: try on datasets for which KNN and a linear method performs poorly
 # TODO: V-fold instead of train and test ?
 # TODO: Set features importance with default to none
+# TODO: implement a subsample strategy : only one tree is updated with the given sample
+# TODO: tree aggregation
+# TODO: different "types" of trees: no aggregation, aggregation and different temperatures
+# TODO: parse as int the n_classes
+
 
 path = '/Users/stephane.gaiffas/Dropbox/jaouad/online-forests/datasets/'
 
