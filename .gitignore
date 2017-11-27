@@ -1,6 +1,6 @@
 _*.so
 bin/
-build/
+build
 
 # All hidden files except for gitignore
 .*
@@ -40,12 +40,12 @@ doc/tex/**/*.blg
 
 
 # Doxygen generated files
-doc_cpp/
-!doc_cpp/mainpage.dox
+lib/doc/*
+!lib/doc/mainpage.dox
 
 # XCode Project
 XCode/
 
 # Build directory for C++ tests
 cpp_test_build/
-tick/cmake-build-debug
+lib/cmake-build-debug

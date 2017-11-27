@@ -36,28 +36,19 @@ do
    FILES+=("${array[$i-1]}")
 done
 
-[ "$arraylength" == "0" ] && FILES=($(find tick -name "*gtest.cpp"))
-
 cd $CWD/.. 
 ROOT=$PWD
+
 source $ROOT/sh/configure_env.sh
 
-[ ! -z "$CXXFLAGS" ] && CARGS="$CXXFLAGS $CARGS"
+cd $ROOT/lib
+[ "$arraylength" == "0" ] && FILES=($(find src/cpp-test -name "*gtest.cpp"))
 
-case "${unameOut}" in
-    Linux*)     LDARGS="${LDARGS} $(mkn -G nix_largs)";;
-    Darwin*)    LDARGS="${LDARGS} $(mkn -G bsd_largs)";;
-    CYGWIN*)    LDARGS="${LDARGS}";;
-    MINGW*)     LDARGS="${LDARGS}";;
-    *)          LDARGS="${LDARGS}";;
-esac
+[ ! -z "$CXXFLAGS" ] && CARGS="$CXXFLAGS $CARGS"
 [ ! -z "$LDFLAGS" ] && LDARGS="${LDARGS} ${LDFLAGS}"
 
-cd $CWD/..
-export PYTHONPATH=$PWD
-
 mkn build -p gtest -tSa "-fPIC -O2 -DNDEBUG -DGTEST_CREATE_SHARED_LIBRARY" \
-    -d google.test,+
+    -d google.test,+ ${MKN_X_FILE[@]}
 
 LIB=""
 if [[ "$unameOut" == "Darwin"* ]]; then
@@ -66,13 +57,16 @@ if [[ "$unameOut" == "Darwin"* ]]; then
   done
 fi
 
+RUN="run"
+[[ $DEBUG == 1 ]] && RUN="dbg"
+
 for FILE in "${FILES[@]}"; do
 
     echo FILE $FILE
 
-    mkn clean build run -p gtest -a "${CARGS}" \
+    mkn clean build -p gtest -a "${CARGS}" \
         -tl "${LDARGS} ${LIB}" -b "$PY_INCS" \
         -M "${FILE}" -P "${MKN_P}" \
-        -B $B_PATH
+        -B $B_PATH ${RUN} ${MKN_X_FILE[@]}
         
 done
