@@ -169,40 +169,13 @@ if [[ "$PYVER" == *"Anaconda"* ]]; then
   ANACONDA=1
   ANACONDA_LIB_PATH=$(linkread $(dirname $(which $PY))/../lib)
   if [[ "$unameOut" == "Darwin"* ]]; then
-    # Unknown reason why these are not required for Anaconda -
-    #  Not just that but neither is the -lpython
-    #  The line below is left intentionally commented as a reference of what should be linked
+    ## Unknown reason why these are not required for Anaconda -
+    ##  Not just that but neither is the -lpython
+    ##  The line below is left intentionally commented as a reference of what should be linked
     LDARGS="" #-L${ANACONDA_LIB_PATH} -Wl,-rpath,${ANACONDA_LIB_PATH} $LDARGS -lmkl_rt -lpthread"
     LIBLDARGS="-dynamiclib -undefined dynamic_lookup -Wl,-headerpad_max_install_names"
-    CXXFLAGS="-DSCIPY_MKL_H -DHAVE_CBLAS -DTICK_CBLAS_AVAILABLE $CXXFLAGS"
   fi
 fi
-
-
-##
-# MKN_P_ARRAY exists to allow platfrom 
-#  specific properties to be passed to mkn if required
-MKN_P_ARRAY=(lib_name=$LIB_POSTFIX)
-case "${unameOut}" in
-    Linux*)     LDARGS="${LDARGS}";;
-    Darwin*)    LDARGS="${LDARGS}";;
-    CYGWIN*)    LDARGS="${LDARGS}";;
-    MINGW*)     LDARGS="${LDARGS}";;
-    *)          LDARGS="${LDARGS}";;
-esac
-MKN_P=""
-for PROP in "${MKN_P_ARRAY[@]}"; do
-  MKN_P+="${PROP},"
-done
-MKN_P_SIZE=${#MKN_P}
-MKN_P_SIZE=$((MKN_P_SIZE - 1))
-MKN_P=${MKN_P:0:${MKN_P_SIZE}}
-# The argument passed to "mkn -P" is "MKN_P"
-#  such that all entries in the MKN_P_ARRAY 
-#  become CSV values in MKN_P
-#  Any commas (,) in array entries must
-#  be escaped with a single backslash (\)
-##
 
 PROFILES=(
     array
@@ -231,7 +204,7 @@ function hash_index() {
     esac
 }
 LIBRARIES=(
-    "tick/base/array/build/_array$LIB_POSTFIX"
+    "tick/array/build/_array$LIB_POSTFIX"
     "tick/base/build/_base$LIB_POSTFIX"
     "tick/random/build/_crandom$LIB_POSTFIX"
     "tick/optim/model/build/_model$LIB_POSTFIX"
@@ -240,14 +213,32 @@ LIBRARIES=(
     "tick/simulation/build/_simulation$LIB_POSTFIX"
     "tick/inference/build/_inference$LIB_POSTFIX"
     "tick/preprocessing/build/_preprocessing$LIB_POSTFIX"
-    "tick/base/array_test/build/array_test${LIB_POSTFIX}"
+    "tick/array_test/build/array_test${LIB_POSTFIX}"
 )
+
+##
+# MKN_P_ARRAY exists to allow platfrom 
+#  specific properties to be passed to mkn if required
+MKN_P_ARRAY=(lib_name=$LIB_POSTFIX)
+case "${unameOut}" in
+    Linux*)     LDARGS="${LDARGS}";;
+    Darwin*)    LDARGS="${LDARGS}";;
+    CYGWIN*)    LDARGS="${LDARGS}";;
+    MINGW*)     LDARGS="${LDARGS}";;
+    *)          LDARGS="${LDARGS}";;
+esac
+ICC_LARGS=""
+CLANG_LARGS=""
+GCC_LARGS=""
+MSVC_LARGS=""
+#
+##
 
 LIB_LD_PER_LIB=()
 ITER=0
 for PROFILE in "${PROFILES[@]}"; do
   LIBS=
-  TREE=($(mkn tree -p $PROFILE))
+  TREE=($(mkn tree -p $PROFILE -C lib))
   TREE_LEN=${#TREE[@]}
   for idx in $(seq $TREE_LEN -1 0); do
     LINE="${TREE[idx]}"
@@ -260,22 +251,52 @@ for PROFILE in "${PROFILES[@]}"; do
       EX=$(hash_index $INDEX)
       ADD_LIB=${LIBRARIES[$EX]}
       if [ -n "$ADD_LIB" ]; then
-         if [[ "$unameOut" == "Darwin"* ]]; then
-           LIBS="$LIBS $(linkread ${ADD_LIB}.${LIB_POSTEXT})"
-           REL=$(dirname ${LIBRARIES[$ITER]}) 
-           RPATH=$(dirname $ADD_LIB)
-           [ "$REL" != "$PATH" ] && \
-               LIBS="$LIBS -Wl,-rpath,@loader_path/$(relpath $RPATH $REL)"
-         else
-           LIBS="$LIBS ${ADD_LIB}.${LIB_POSTEXT}"
-         fi
+        if [[ "$unameOut" == "Darwin"* ]]; then
+          LIBS="$LIBS $(linkread ${ADD_LIB}.${LIB_POSTEXT})"
+          REL=$(dirname ${LIBRARIES[$ITER]}) 
+          RPATH=$(dirname $ADD_LIB)
+          if [ "$REL" != "$PATH" ]; then
+            LIBS="$LIBS -Wl,-rpath,@loader_path/$(relpath $RPATH $REL)"
+          fi
+        else
+          LIBS="$LIBS ../${ADD_LIB}.${LIB_POSTEXT}"
+        fi
+
       fi
     fi
   done
   if [[ "$unameOut" == "Darwin"* ]]; then
     FIL=$(basename ${LIBRARIES[$ITER]})
-    LIBS="$LIBS -Wl,-install_name,@rpath/${FIL}.${LIB_POSTEXT}"
+    CLANG_LARGS+=" -Wl,-install_name,@rpath/${FIL}.${LIB_POSTEXT}"
   fi 
   LIB_LD_PER_LIB+=("$LIBS")
   ITER=$(($ITER + 1))
 done
+
+##
+# We allow for compiler specific linking arguments
+MKN_P=""
+for PROP in "${MKN_P_ARRAY[@]}"; do
+  MKN_P+=${PROP},
+done
+MKN_P_SIZE=${#MKN_P}
+MKN_P_SIZE=$((MKN_P_SIZE - 1))
+X_MKN_P="${MKN_P:0:${MKN_P_SIZE}}"
+MKN_P=($X_MKN_P)
+# The argument passed to "mkn -P" is "MKN_P"
+#  such that all entries in the MKN_P_ARRAY 
+#  become CSV values in MKN_P
+#  Any commas (,) in array entries must
+#  be escaped with a single backslash (\)
+##
+
+##
+# The mkn -x option overrides the default settings file 
+#  to allow to build with differernt compilers/configurations
+MKN_X="${MKN_X_FILE}"
+[ -n "${MKN_X_FILE}" ] && MKN_X_FILE=(-x $MKN_X)
+
+echo ""
+##
+
+

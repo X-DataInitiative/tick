@@ -1,4 +1,4 @@
 # License: BSD 3 clause
 
-import tick.base.array
+import tick.array
 from .build.crandom import *
