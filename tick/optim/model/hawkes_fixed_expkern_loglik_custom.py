@@ -1,28 +1,26 @@
 # License: BSD 3 clause
 
-from .base import ModelHawkes, ModelSecondOrder, ModelSelfConcordant, \
-    LOSS_AND_GRAD
-from .build.model import ModelHawkesCustom as \
+# from .base import ModelHawkes, ModelSecondOrder, ModelSelfConcordant, \
+#    LOSS_AND_GRAD
+from tick.optim.model.build.model import ModelHawkesCustom as \
     ModelHawkesCustom
 
 import numpy as np
 import matplotlib as plt
 
-beta = 2
+beta = 2.0
 MaxN_of_f = 5
-mu = np.array(1,2,3)
-alpha = np.array([[1,0,1],[0,1,0],[1,0,1]])
 
-ArrayDouble
-timestamps_0 = ArrayDouble
-{0.31, 0.93, 1.29, 2.32, 4.25};
-timestamps.push_back(timestamps_0.as_sarray_ptr());
-ArrayDouble
-timestamps_1 = ArrayDouble
-{0.12, 1.19, 2.12, 2.41, 3.35, 4.21};
+timestamps = [np.array([0.31, 0.93, 1.29, 2.32, 4.25]),
+              np.array([0.12, 1.19, 2.12, 2.41, 3.35, 4.21])]
+T = 4.25
+
+coeffs = np.array([1., 3., 2., 3., 4., 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2])
+# corresponding to mu, alpha,f_i(n)
 
 TestObj = ModelHawkesCustom(beta, MaxN_of_f)
-
+TestObj.set_data(timestamps, T)
+# print(TestObj.loss(coeffs))
 
 
 # class ModelHawkesCustom(ModelHawkes,

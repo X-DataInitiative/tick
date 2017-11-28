@@ -40,7 +40,7 @@ protected:
     //! Peng Wu, An array, indicating how many n (num of orders) is there AFTER GLOBAL timestamp i
     ArrayULong global_n;
 
-    //! Peng Wu, An array, indicating how many n (num of orders) is there AFTER GLOBAL timestamp i
+    //! Peng Wu, An array, indicating the type of event of GLOBAL timestamp i
     ArrayULong type_n;
 
     //! Peng wu, length of the previous two arrays

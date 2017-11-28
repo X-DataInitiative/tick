@@ -134,7 +134,7 @@ void ModelHawkesFixedKernCustom::sampled_i_to_index(const ulong sampled_i,
 
 double ModelHawkesFixedKernCustom::loss_dim_i(const ulong i,
                                               const ArrayDouble &coeffs) {
-    const double mu_i = coeffs[i];
+    /*const double mu_i = coeffs[i];
     //this->MaxN_of_f = (ulong) coeffs[n_nodes + n_nodes * n_nodes];
 
     const ArrayDouble alpha_i = view(coeffs, get_alpha_i_first_index(i), get_alpha_i_last_index(i));
@@ -177,7 +177,8 @@ double ModelHawkesFixedKernCustom::loss_dim_i(const ulong i,
         }
     loss += alpha_i.dot(sum_G[i]);
 
-    return loss;
+    return loss;*/
+    return 0;
 }
 
 double ModelHawkesFixedKernCustom::loss_i_k(const ulong i,
