@@ -134,7 +134,7 @@ void ModelHawkesFixedKernCustom::sampled_i_to_index(const ulong sampled_i,
 
 double ModelHawkesFixedKernCustom::loss_dim_i(const ulong i,
                                               const ArrayDouble &coeffs) {
-    /*const double mu_i = coeffs[i];
+    const double mu_i = coeffs[i];
     //this->MaxN_of_f = (ulong) coeffs[n_nodes + n_nodes * n_nodes];
 
     const ArrayDouble alpha_i = view(coeffs, get_alpha_i_first_index(i), get_alpha_i_last_index(i));
@@ -147,12 +147,12 @@ double ModelHawkesFixedKernCustom::loss_dim_i(const ulong i,
     //term 1
     //end_time is T
     double loss = 0;
-    for (ulong k = 1; k < Total_events + 1; k++)
+    for (ulong k = 1; k != Total_events + 1; k++)
         //! insert event t0 = 0 in the Total_events and global_n
-        loss += log(f_i[global_n[k]]);
+        loss += log(f_i[global_n[k - 1]]);
 
     //term 2
-    for (ulong k = 1; k < Total_events + 1; k++) {
+    for (ulong k = 1; k != Total_events + 1; k++) {
         double tmp_s = mu_i;
         const ArrayDouble g_i_k = view_row(g[i], k);
         tmp_s += alpha_i.dot(g_i_k);
@@ -165,20 +165,19 @@ double ModelHawkesFixedKernCustom::loss_dim_i(const ulong i,
     }
 
     //term 3,4
-    for (ulong k = 1; k < Total_events + 1; k++)
+    for (ulong k = 1; k != Total_events + 1; k++)
         loss -= mu_i * (global_timestamps[k] - global_timestamps[k - 1]) * f_i[global_n[k - 1]];
     loss -= mu_i * (end_time - global_timestamps[Total_events]) * f_i[global_n[Total_events]];
 
     //term 5, 6
     // !sum_g already takes care of the last item T
-    for (ulong j = 0; j < n_nodes; j++)
-        for (ulong k = 1; k < Total_events + 1; k++) {
+    for (ulong j = 0; j != n_nodes; j++)
+        for (ulong k = 1; k != 1 + Total_events + 1; k++) {
             sum_G[i][j] += G_i[k * n_nodes + j] * f_i[global_n[k - 1]];
         }
     loss += alpha_i.dot(sum_G[i]);
 
-    return loss;*/
-    return 0;
+    return loss;
 }
 
 double ModelHawkesFixedKernCustom::loss_i_k(const ulong i,
@@ -267,8 +266,12 @@ void ModelHawkesFixedKernCustom::grad_dim_i(const ulong i,
     const ArrayDouble H1_i = view(H1[i]);
     const ArrayDouble H2_i = view(H2[i]);
     for (ulong n = 0; n != MaxN_of_f; ++n) {
-        const ArrayDouble H3_j_n = view_row(H3, n);
-        grad_f_i[n] = H1_i[n] / f_i[n] + mu_i * H2_i[n] + alpha_i.dot(H3_j_n);
+        double result_dot = 0; //! alpha_i.dot(H3_j_n);
+        for (ulong j = 0; j != n_nodes; ++j) {
+            const ArrayDouble H3_j = view(H3[j]);
+            result_dot += alpha_i[j] * H3_j[n];
+        }
+        grad_f_i[n] = H1_i[n] / f_i[n] + mu_i * H2_i[n] + result_dot;
     }
 }
 

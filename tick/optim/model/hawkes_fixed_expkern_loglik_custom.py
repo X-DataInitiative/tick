@@ -20,7 +20,7 @@ coeffs = np.array([1., 3., 2., 3., 4., 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2])
 
 TestObj = ModelHawkesCustom(beta, MaxN_of_f)
 TestObj.set_data(timestamps, T)
-# print(TestObj.loss(coeffs))
+print(TestObj.loss(coeffs))
 
 
 # class ModelHawkesCustom(ModelHawkes,

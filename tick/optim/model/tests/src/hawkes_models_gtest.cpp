@@ -67,17 +67,16 @@ TEST_F(HawkesModelTest, compute_loss_loglikelihood_custom) {
     ModelHawkesCustom model(2, 5);
 
     //! timestamps, T
-    model.set_data(timestamps, 4.25);
+    model.set_data(timestamps, 4.5);
     ArrayDouble coeffs = ArrayDouble {1., 3., 2., 3., 4., 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2};
 
     const double loss = model.loss(coeffs);
 
-  printf("\nLoss computed %f \n", loss);
-//    ArrayDouble grad(model.get_n_coeffs());
-//    model.grad(coeffs, grad);
-//    grad.print();
+    ArrayDouble grad(model.get_n_coeffs());
+    model.grad(coeffs, grad);
+    grad.print();
 
-  //EXPECT_DOUBLE_EQ(loss, 8.4408654055430485);
+    EXPECT_DOUBLE_EQ(loss, 8.8507123022361025);
     EXPECT_DOUBLE_EQ(model.get_n_coeffs(), 16);
 }
 

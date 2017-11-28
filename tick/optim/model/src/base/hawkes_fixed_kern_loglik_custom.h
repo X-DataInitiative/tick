@@ -54,7 +54,7 @@ protected:
 
     //! @brief auxiliary variable H3 described in the document
     // H3 experimental here
-    ArrayDouble2d H3;
+    ArrayDoubleList1D H3;
 
     //! @brief the max value of n kept for all f_i(n)
     ulong MaxN_of_f;
