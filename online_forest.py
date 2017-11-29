@@ -156,8 +156,14 @@ X, y = make_classification(n_samples=n_samples, n_features=10, n_redundant=0,
                            n_informative=2, random_state=1,
                            n_clusters_per_class=1)
 
-of.fit(X, y + 2)
+of.fit(X, y)
 
+X, y = make_classification(n_samples=n_samples, n_features=3, n_redundant=0,
+                           n_informative=2, random_state=1,
+                           n_clusters_per_class=1)
+
+
+of.predict_proba(X)
 
 exit(0)
 

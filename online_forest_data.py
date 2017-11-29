@@ -14,17 +14,19 @@ import matplotlib.pyplot as plt
 # TODO: options for types of sampling of the features
 # TODO: online construction of the feature_importances
 # TODO: python script that tries all combinations
-# TODO: test that n_features is consistent across runs
+
 # TODO: what if we feed several times the same dataset
 # TODO: show that the classifier is insensitive to the time of arrival of the points
-# TODO: try on datasets for which KNN and a linear method performs poorly
 # TODO: V-fold instead of train and test ?
 # TODO: Set features importance with default to none
 # TODO: implement a subsample strategy : only one tree is updated with the given sample
 # TODO: tree aggregation
 # TODO: different "types" of trees: no aggregation, aggregation and different temperatures
-# TODO: parse as int the n_classes
 
+# TODO: unittest for attributes
+# TODO: unittest for wrong n_features in fit and predict and wrong labels in training
+
+# TODO: tryout multiple passes
 
 path = '/Users/stephane.gaiffas/Dropbox/jaouad/online-forests/datasets/'
 

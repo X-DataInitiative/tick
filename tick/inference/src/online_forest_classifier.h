@@ -9,8 +9,11 @@
 #include <iomanip>
 #include "../../random/src/rand.h"
 
+// TODO: change the Dirichlet parameter
+// TODO: reserve nodes in advance
+// TODO: set_feature_importances with a nullptr by default
+// TODO: subsample parameter, default 0.5
 
-// TODO: in the forest, tests for the input labels and the size of the features (for fit and predict_proba and predict)
 
 
 enum class CriterionClassifier {

@@ -703,6 +703,8 @@ void OnlineForestClassifier::predict(const SArrayDouble2dPtr features,
 //  std::cout << "features->n_rows(): " << features->n_rows() << ", features->n_cols(): " << features->n_cols() << std::endl;
 //  std::cout << "scores->n_rows(): " << scores->n_rows() << ", scores->n_cols(): " << scores->n_cols() << std::endl;
 //  std::cout << "n_classes: " << _n_classes << std::endl;
+  uint32_t n_features = static_cast<uint32_t>(features->n_cols());
+  check_n_features(n_features, true);
   if (_iteration > 0) {
     uint32_t n_samples = static_cast<uint32_t>(features->n_rows());
     ArrayDouble scores_tree(_n_classes);

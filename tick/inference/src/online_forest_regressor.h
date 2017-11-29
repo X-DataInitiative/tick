@@ -9,20 +9,6 @@
 #include "../../random/src/rand.h"
 
 
-// TODO: faire tres attention au features binaires si le range est 0 sur toutes les coordonnées, ne rien faire
-// TODO: code a classifier
-
-// TODO: choisir la feature proportionnellement au ratio des range de features, mais attention au cas de features
-//       discretes
-// TODO: une option pour créer une cellule vide, enfin oublier les donnes dans la cellule quand elle a ete splitee
-
-// TODO: choix de la feature les labels
-
-// TODO: pour la classification, on utilise pas les frequences, on utilise des frequences regularisees, prior Dirichlet p_c = (n_c + 0.5) + (\sum n_c + C / 2). En fait une option
-
-// TODO: check that not using reserve in the forest works as well...
-
-
 enum class CriterionRegressor {
   unif = 0,
   mse
