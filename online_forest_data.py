@@ -10,10 +10,10 @@ from sklearn.neighbors import KNeighborsClassifier
 
 import matplotlib.pyplot as plt
 
+
 # TODO: options for types of sampling of the features
 # TODO: online construction of the feature_importances
 # TODO: python script that tries all combinations
-# TODO: n_classes is mandatory
 # TODO: test that n_features is consistent across runs
 # TODO: what if we feed several times the same dataset
 # TODO: show that the classifier is insensitive to the time of arrival of the points

@@ -665,6 +665,7 @@ void OnlineForestClassifier::create_trees() {
   // Just in case...
   trees.clear();
   trees.reserve(_n_trees);
+  // Better tree allocation
   for (uint32_t i = 0; i < _n_trees; ++i) {
     trees.emplace_back(*this);
   }
@@ -672,17 +673,23 @@ void OnlineForestClassifier::create_trees() {
 
 void OnlineForestClassifier::fit(const SArrayDouble2dPtr features,
                                 const SArrayDoublePtr labels) {
-  // std::cout << "OnlineForestClassifier::fit" << std::endl;
+  uint32_t n_samples = static_cast<uint32_t>(features->n_rows());
+  uint32_t n_features = static_cast<uint32_t>(features->n_cols());
+  if(_iteration == 0) {
+    _n_features = n_features;
+  } else {
+    check_n_features(n_features, false);
+  }
 
   _features = features;
   _labels = labels;
 
-  uint32_t n_samples = static_cast<uint32_t>(features->n_rows());
-  uint32_t n_features = static_cast<uint32_t>(features->n_cols());
-  set_n_features(n_features);
+  // set_n_features(n_features);
   for (uint32_t i = 0; i < n_samples; ++i) {
     for (TreeClassifier &tree : trees) {
       // Fit the tree online using the new data point
+      double label = (*labels)[i];
+      check_label(label);
       tree.fit(view_row(*features, i), (*labels)[i]);
     }
     _iteration++;

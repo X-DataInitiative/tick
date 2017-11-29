@@ -140,11 +140,26 @@ path = '/Users/stephane.gaiffas/Downloads/'
 n_classes = 2
 n_trees = 20
 
-X, y = make_classification(n_samples=n_samples, n_features=2, n_redundant=0,
+X, y = make_classification(n_samples=n_samples, n_features=10, n_redundant=0,
                            n_informative=2, random_state=1,
                            n_clusters_per_class=1)
 rng = np.random.RandomState(2)
 X += 2 * rng.uniform(size=X.shape)
+
+of = OnlineForestClassifier(n_classes=2, n_trees=n_trees, seed=123, step=1.,
+                       use_aggregation=True)
+
+
+of.fit(X, y)
+
+X, y = make_classification(n_samples=n_samples, n_features=10, n_redundant=0,
+                           n_informative=2, random_state=1,
+                           n_clusters_per_class=1)
+
+of.fit(X, y + 2)
+
+
+exit(0)
 
 
 # clf = OnlineForestClassifier(n_classes=n_classes, n_trees=n_trees, seed=123,

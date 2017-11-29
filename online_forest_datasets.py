@@ -15,9 +15,6 @@ from sklearn.model_selection import train_test_split
 from tick.inference import OnlineForestClassifier
 
 
-import matplotlib.pyplot as plt
-
-
 path = '/Users/stephane.gaiffas/Dropbox/jaouad/online-forests/datasets/'
 
 # TODO: do for dna.p
@@ -291,24 +288,24 @@ def read_wine(path):
 
 
 readers = [
-    # read_abalone,
-    # read_adult
-    # read_bank
-    # read_car,
-    # read_cardio,
-    # read_churn,
-    # read_default_cb,
-    # read_ijcnn1
-    # read_isolet,
-    # read_letter,
-    # read_nursery,
-    # read_ozone,
-    # read_satimage,
-    # read_sensorless,
-    # read_shuttle,
-    # read_spambase,
-    # read_usps,
-    # read_wilt,
+    read_abalone,
+    read_adult
+    read_bank
+    read_car,
+    read_cardio,
+    read_churn,
+    read_default_cb,
+    read_ijcnn1
+    read_isolet,
+    read_letter,
+    read_nursery,
+    read_ozone,
+    read_satimage,
+    read_sensorless,
+    read_shuttle,
+    read_spambase,
+    read_usps,
+    read_wilt,
     read_wine
 ]
 

@@ -5,6 +5,7 @@
 // License: BSD 3 clause
 
 #include "base.h"
+#include <cmath>
 #include <iomanip>
 #include "../../random/src/rand.h"
 
@@ -292,12 +293,44 @@ class OnlineForestClassifier {
     return *this;
   }
 
+  inline void check_n_features(uint32_t n_features, bool predict) const {
+    if (n_features != _n_features) {
+      if(predict) {
+        TICK_ERROR("Wrong number of features: trained with " + std::to_string(_n_features)
+                       + " features, but received " + std::to_string(n_features) + " features for prediction");
+      } else {
+        TICK_ERROR("Wrong number of features: started to train with " + std::to_string(_n_features)
+                       + " features, but received " + std::to_string(n_features) + " afterwards");
+
+      }
+    }
+  }
+
+  inline void check_label(double label) const {
+
+    double iptr;
+    double fptr = std::modf(label, &iptr);
+    if(fptr != 0) {
+      TICK_ERROR("Wrong label type: received " + std::to_string(label) + " for a classification problem");
+    }
+    if ((label < 0) || (label >= _n_classes) ) {
+      TICK_ERROR("Wrong label value: received " + std::to_string(label) + " while training for classification with "
+          +  std::to_string(_n_classes) + " classes.");
+    }
+  }
+/*
   inline OnlineForestClassifier &set_n_features(uint32_t n_features) {
     if (_iteration == 0) {
-      _n_features = n_features;
+
+    } else {
+      if (n_features != _n_features) {
+        TICK_ERROR("Wrong number of features: started to train with " + std::to_string(_n_features)
+                       + " features, but received " + std::to_string(n_features) + " afterwards");
+      }
     }
     return *this;
   }
+*/
 
   inline uint32_t n_trees() const {
     return _n_trees;
