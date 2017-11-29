@@ -169,6 +169,10 @@ double ModelHawkesFixedKernCustom::loss_dim_i(const ulong i,
         loss -= mu_i * (global_timestamps[k] - global_timestamps[k - 1]) * f_i[global_n[k - 1]];
     loss -= mu_i * (end_time - global_timestamps[Total_events]) * f_i[global_n[Total_events]];
 
+    //! clean sum_G each time
+    for (ulong i = 0; i != n_nodes; i++)
+        sum_G[i].init_to_zero();
+
     //term 5, 6
     // !sum_g already takes care of the last item T
     for (ulong j = 0; j != n_nodes; j++)
