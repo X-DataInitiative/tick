@@ -2,6 +2,8 @@
 
 from abc import ABC
 
+import numpy as np
+
 from tick.base import Base
 from tick.base import actual_kwargs
 from tick.preprocessing.utils import safe_array
@@ -77,14 +79,18 @@ class OnlineForestClassifier(ABC, Base):
     # TODO: n_classes must be mandatory
 
     @actual_kwargs
-    def __init__(self, n_classes: int, n_trees: int = 10, step: float = 1.,
+    def __init__(self, n_classes: int, n_trees: int = 10, n_passes: int = 1,
+                 step: float = 1.,
                  criterion: str = 'log', use_aggregation: bool = True,
-                 n_threads: int = 1, seed: int = -1, verbose: bool = True):
+                 subsampling: float=1., dirichlet: float=None,
+                 n_threads: int = 1,
+                 seed: int = -1, verbose: bool = True):
         Base.__init__(self)
         if not hasattr(self, "_actual_kwargs"):
             self._actual_kwargs = {}
         self._fitted = False
         self.n_trees = n_trees
+        self.n_passes = n_passes
         self.n_classes = n_classes
         self.step = step
         self.criterion = criterion
@@ -92,9 +98,15 @@ class OnlineForestClassifier(ABC, Base):
         self.seed = seed
         self.verbose = verbose
         self.use_aggregation = use_aggregation
-        self._forest = _OnlineForestClassifier(n_classes, n_trees, step,
+        self.subsampling = subsampling
+        if dirichlet is None:
+            dirichlet = 1 / n_classes
+        self.dirichlet = dirichlet
+        self._forest = _OnlineForestClassifier(n_classes, n_trees, n_passes,
+                                               step,
                                                self._criterion,
-                                               self.use_aggregation, n_threads,
+                                               self.use_aggregation,
+                                               subsampling, dirichlet, n_threads,
                                                seed, verbose)
 
     def set_data(self, X, y):
@@ -155,6 +167,16 @@ class OnlineForestClassifier(ABC, Base):
     def print(self):
         self._forest._print()
         # TODO: property for splits
+
+    def n_leaves(self):
+        n_leaves_per_tree = np.empty(self.n_trees, dtype=np.uint32)
+        self._forest.n_leaves(n_leaves_per_tree)
+        return n_leaves_per_tree
+
+    def n_nodes(self):
+        n_nodes_per_tree = np.empty(self.n_trees, dtype=np.uint32)
+        self._forest.n_nodes(n_nodes_per_tree)
+        return n_nodes_per_tree
 
     @property
     def criterion(self):

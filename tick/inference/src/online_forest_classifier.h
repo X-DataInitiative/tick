@@ -14,7 +14,11 @@
 // TODO: set_feature_importances with a nullptr by default
 // TODO: subsample parameter, default 0.5
 
-
+// TODO: tree aggregation
+// TODO: subsampling in the columns and the rows
+// TODO: memory optimization (a FeatureSplitter), maximum (sizeof(uint8_t) splits)), a set of current splits
+// TODO: only binary features version ?
+// TODO:
 
 enum class CriterionClassifier {
   log = 0,
@@ -70,7 +74,7 @@ class NodeClassifier {
 
   // Computation of log( (e^a + e^b) / 2) in an overproof way
   inline static double log_sum_2_exp(const double a, const double b) {
-    // TODO if |a - b| > 50 skip
+    // TODO: if |a - b| > 50 skip
     if (a > b) {
       return a + std::log((1 + std::exp(b - a)) / 2);
     } else {
@@ -102,8 +106,10 @@ class NodeClassifier {
   inline uint32_t n_features() const;
   // Number of classes
   inline uint8_t n_classes() const;
-  // Step to use for aggrgation
+  // Step to use for aggregation
   inline double step() const;
+  //
+  inline double dirichlet() const;
   // Print of the node
   void print();
 
@@ -127,6 +133,7 @@ class NodeClassifier {
   inline NodeClassifier &set_features_max(const ArrayDouble &features_max);
   inline uint32_t n_samples() const;
   inline NodeClassifier &set_n_samples(uint32_t n_samples);
+  inline bool use_aggregation() const;
   inline double weight() const;
   inline NodeClassifier &set_weight(double weight);
   inline double weight_tree() const;
@@ -178,6 +185,7 @@ class TreeClassifier {
   inline uint32_t n_nodes() const;
   uint32_t n_leaves() const;
   inline double step() const;
+  inline double dirichlet() const;
 
   void print() {
     std::cout << "Tree(n_nodes: " << _n_nodes << std::endl;
@@ -192,6 +200,7 @@ class TreeClassifier {
   }
 
   inline CriterionClassifier criterion() const;
+  inline bool use_aggregation() const;
 
   NodeClassifier &node(uint32_t index) {
     return nodes[index];
@@ -208,12 +217,18 @@ class OnlineForestClassifier {
   uint8_t _n_classes;
   // Number of Trees in the forest
   uint32_t _n_trees;
+  //
+  uint8_t _n_passes;
   // Step-size used for aggregation
   double _step;
   // CriterionClassifier used for splitting (not used for now)
   CriterionClassifier _criterion;
   //
   bool _use_aggregation;
+  //
+  double _subsampling;
+  //
+  double _dirichlet;
   // Number of threads to use for parallel growing of trees
   int32_t _n_threads;
   // Seed for random number generation
@@ -237,10 +252,10 @@ class OnlineForestClassifier {
   SArrayDoublePtr _labels;
 
  public:
-  OnlineForestClassifier(uint8_t n_classes, uint32_t n_trees, double step = 1.0,
+  OnlineForestClassifier(uint8_t n_classes, uint32_t n_trees, uint8_t n_passes = 1, double step = 1.0,
                          CriterionClassifier criterion = CriterionClassifier::log,
-                         bool use_aggregation = true, int32_t n_threads = 1,
-                         int seed = 0, bool verbose = false);
+                         bool use_aggregation = true, double subsampling = 1, double dirichlet = 0.5,
+                         int32_t n_threads = 1, int seed = 0, bool verbose = false);
   virtual ~OnlineForestClassifier();
 
   void fit(const SArrayDouble2dPtr features, const SArrayDoublePtr labels);
@@ -261,11 +276,7 @@ class OnlineForestClassifier {
     return _step;
   }
 
-  void print() {
-    for (TreeClassifier &tree: trees) {
-      tree.print();
-    }
-  }
+  void print();
 
   inline uint32_t n_samples() const {
     if (_iteration > 0) {
@@ -287,6 +298,10 @@ class OnlineForestClassifier {
     return _n_classes;
   }
 
+  inline bool use_aggregation() const {
+    return _use_aggregation;
+  }
+
   OnlineForestClassifier &set_n_classes(uint8_t n_classes) {
     if (_iteration == 0) {
       _n_classes = n_classes;
@@ -304,13 +319,11 @@ class OnlineForestClassifier {
       } else {
         TICK_ERROR("Wrong number of features: started to train with " + std::to_string(_n_features)
                        + " features, but received " + std::to_string(n_features) + " afterwards");
-
       }
     }
   }
 
   inline void check_label(double label) const {
-
     double iptr;
     double fptr = std::modf(label, &iptr);
     if(fptr != 0) {
@@ -375,6 +388,14 @@ class OnlineForestClassifier {
   inline void set_feature_importances(const ArrayDouble &feature_importances) {
     _feature_importances = feature_importances;
   }
+
+  inline double dirichlet() const {
+    return _dirichlet;
+  }
+
+  void n_nodes(SArrayUIntPtr n_nodes_per_tree);
+
+  void n_leaves(SArrayUIntPtr n_leaves_per_tree);
 
 //  inline bool verbose() const;
 //  inline OnlineForestClassifier &set_verbose(bool verbose);

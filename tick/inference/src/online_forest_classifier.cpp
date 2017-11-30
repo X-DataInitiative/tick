@@ -72,7 +72,9 @@ NodeClassifier &NodeClassifier::operator=(const NodeClassifier &node) {
 
 void NodeClassifier::update_downwards(const ArrayDouble &x_t, const double y_t) {
   _n_samples++;
-  _weight -= step() * loss(y_t);
+  if(use_aggregation()) {
+    _weight -= step() * loss(y_t);
+  }
   update_predict(y_t);
 }
 
@@ -121,20 +123,14 @@ void NodeClassifier::update_range(const ArrayDouble &x_t) {
 }
 
 double NodeClassifier::score(uint8_t c) const {
-  // Using Dirichet(1/2, ... 1/2) prior
-  return static_cast<double>(2 * _counts[c] + 1) / (2 * _n_samples + n_classes());
+  // Using the Dirichet prior
+  return (_counts[c] + dirichlet()) / (_n_samples + dirichlet() * n_classes());
 }
 
 inline void NodeClassifier::predict(ArrayDouble& scores) const {
-//  std::cout << "NodeClassifier::predict" << std::endl;
-//  std::cout << "n_classes: " << n_classes() << std::endl;
-//  std::cout << "scores.size(): " << scores.size() << std::endl;
-//  std::cout << "c=";
   for (uint8_t c=0; c < n_classes(); ++c) {
-//    std::cout << " " << c;
     scores[c] = score(c);
   }
-//  std::cout << std::endl << "... Done with NodeClassifier::predict" << std::endl;
 }
 
 double NodeClassifier::loss(const double y_t) {
@@ -157,6 +153,10 @@ uint8_t  NodeClassifier::n_classes() const {
 
 inline double NodeClassifier::step() const {
   return _tree.step();
+}
+
+inline double NodeClassifier::dirichlet() const {
+  return _tree.dirichlet();
 }
 
 inline uint32_t NodeClassifier::parent() const {
@@ -249,6 +249,10 @@ inline NodeClassifier &NodeClassifier::set_n_samples(uint32_t n_samples) {
   return *this;
 }
 
+inline bool NodeClassifier::use_aggregation() const {
+  return _tree.use_aggregation();
+}
+
 inline double NodeClassifier::weight() const {
   return _weight;
 }
@@ -319,74 +323,8 @@ TreeClassifier::TreeClassifier(const TreeClassifier &&tree)
 TreeClassifier::TreeClassifier(OnlineForestClassifier &forest) : forest(forest) {
   // TODO: pre-allocate the vector to make things faster ?
   add_node(0);
-}
 
-//uint32_t TreeClassifier::split_leaf(uint32_t index, const ArrayDouble &x_t, double y_t) {
-//  // std::cout << "Splitting node " << index << std::endl;
-//  uint32_t left = add_node(index);
-//  uint32_t right = add_node(index);
-//  node(index).set_left(left).set_right(right).set_is_leaf(false);
-//
-//  // std::cout << "n_features(): " << n_features() << std::endl;
-//  ArrayDouble diff(n_features());
-//  for(uint32_t j = 0; j < n_features(); ++j) {
-//    // std::cout << "j: " << j;
-//    diff[j] = std::abs(node(index).x_t()[j] - x_t[j]);
-//  }
-//  // std::cout << std::endl;
-//  diff /= diff.sum();
-//  // diff.print();
-//  // std::cout << "diff.sum=" << diff.sum() << std::endl;
-//
-//  // TODO: better feature sampling
-//  // ulong feature = forest.sample_feature_bis();
-//  // ulong feature = forest.sample_feature();
-//
-//  uint32_t feature = forest.sample_feature(diff);
-//
-//  // std::cout << "feature: " << feature << std::endl;
-//
-//  double x1_tj = x_t[feature];
-//  double x2_tj = node(index).x_t()[feature];
-//  double threshold;
-//
-//  // The leaf that contains the passed sample (x_t, y_t)
-//  uint32_t data_leaf;
-//  uint32_t other_leaf;
-//
-//  // std::cout << "x1_tj= " << x1_tj << " x2_tj= " << x2_tj << " threshold= " << threshold << std::endl;
-//  // TODO: what if x1_tj == x2_tj. Must be taken care of by sample_feature()
-//  if (x1_tj < x2_tj) {
-//    threshold = forest.sample_threshold(x1_tj, x2_tj);
-//    data_leaf = left;
-//    other_leaf = right;
-//  } else {
-//    threshold = forest.sample_threshold(x2_tj, x1_tj);
-//    data_leaf = right;
-//    other_leaf = left;
-//  }
-//  // TODO: code a move_sample
-//  NodeClassifier & current_node = node(index);
-//  NodeClassifier & data_node = node(data_leaf);
-//  NodeClassifier & other_node = node(other_leaf);
-//  current_node.set_feature(feature).set_threshold(threshold);
-//  // We pass the sample to the new leaves, and initialize the _label_average with the value
-//  data_node.set_x_t(x_t).set_y_t(y_t);
-//
-//  // other_node.set_x_t(current_node.x_t()).set_y_t(current_node.y_t());
-//  other_node.set_x_t(current_node.x_t()).set_y_t(current_node.y_t());
-//
-//  // Update downwards of v'
-//  other_node.update_downwards(current_node.x_t(), current_node.y_t());
-//  // Update upwards of v': it's a leaf
-//  other_node.update_upwards();
-//  // node(other_leaf).set_weight_tree(node(other_leaf).weight());
-//  // Update downwards of v''
-//  data_node.update_downwards(x_t, y_t);
-//  // Note: the update_up of v'' is done in the go_up method, called in fit()
-//  // std::cout << "Done splitting node." << std::endl;
-//  return data_leaf;
-//}
+}
 
 void TreeClassifier::extend_range(uint32_t node_index, const ArrayDouble &x_t, const double y_t) {
   // std::cout << "Extending the range of: " << index << std::endl;
@@ -570,7 +508,9 @@ void TreeClassifier::fit(const ArrayDouble &x_t, double y_t) {
   // std::cout << "x_t: [" << std::setprecision(2) << x_t[0] << ", " << std::setprecision(2) << x_t[1] << "]" << std::endl;
   // print();
   uint32_t leaf = go_downwards(x_t, y_t, false);
-  go_upwards(leaf);
+  if(use_aggregation()) {
+    go_upwards(leaf);
+  }
   iteration++;
 }
 
@@ -628,8 +568,16 @@ inline double TreeClassifier::step() const {
   return forest.step();
 }
 
+inline double TreeClassifier::dirichlet() const {
+  return forest.dirichlet();
+}
+
 inline CriterionClassifier TreeClassifier::criterion() const {
   return forest.criterion();
+}
+
+inline bool TreeClassifier::use_aggregation() const {
+  return forest.use_aggregation();
 }
 
 /*********************************************************************************
@@ -638,24 +586,20 @@ inline CriterionClassifier TreeClassifier::criterion() const {
 
 OnlineForestClassifier::OnlineForestClassifier(uint8_t n_classes,
                                                uint32_t n_trees,
+                                               uint8_t n_passes,
                                                double step,
                                                CriterionClassifier criterion,
                                                bool use_aggregation,
+                                               double subsampling,
+                                               double dirichlet,
                                                int32_t n_threads,
                                                int seed,
                                                bool verbose)
-    : _n_classes(n_classes), _n_trees(n_trees), _step(step), _criterion(criterion),
-      _use_aggregation(use_aggregation), _n_threads(n_threads), _verbose(verbose), rand(seed) {
+    : _n_classes(n_classes), _n_trees(n_trees), _n_passes(n_passes), _step(step), _criterion(criterion),
+      _use_aggregation(use_aggregation), _subsampling(subsampling), _dirichlet(dirichlet), _n_threads(n_threads),
+      _verbose(verbose), rand(seed) {
   // No iteration so far
   _iteration = 0;
-//  std::cout << "sizeof(float): " << sizeof(float) << std::endl;
-//  std::cout << "sizeof(double): " << sizeof(double) << std::endl;
-//  std::cout << "sizeof(uint8_t): " << sizeof(uint8_t) << std::endl;
-//  std::cout << "sizeof(uint16_t): " << sizeof(uint16_t) << std::endl;
-//  std::cout << "sizeof(uint32_t): " << sizeof(uint32_t) << std::endl;
-//  std::cout << "sizeof(long): " << sizeof(long) << std::endl;
-//  std::cout << "sizeof(ulong): " << sizeof(ulong) << std::endl;
-
   create_trees();
 }
 
@@ -684,15 +628,22 @@ void OnlineForestClassifier::fit(const SArrayDouble2dPtr features,
   _features = features;
   _labels = labels;
 
+
   // set_n_features(n_features);
-  for (uint32_t i = 0; i < n_samples; ++i) {
-    for (TreeClassifier &tree : trees) {
-      // Fit the tree online using the new data point
-      double label = (*labels)[i];
-      check_label(label);
-      tree.fit(view_row(*features, i), (*labels)[i]);
+
+  for(uint8_t pass = 0; pass < _n_passes; ++pass) {
+    for (uint32_t i = 0; i < n_samples; ++i) {
+      for (TreeClassifier &tree : trees) {
+        // Fit the tree online using the new data point
+        double label = (*labels)[i];
+        check_label(label);
+        double U = rand.uniform();
+        if (U <= _subsampling) {
+          tree.fit(view_row(*features, i), (*labels)[i]);
+        }
+      }
+      _iteration++;
     }
-    _iteration++;
   }
   // std::cout << "Done OnlineForestClassifier::fit" << std::endl;
 }
@@ -732,6 +683,12 @@ void OnlineForestClassifier::clear() {
   _iteration = 0;
 }
 
+void OnlineForestClassifier::print() {
+  for (TreeClassifier &tree: trees) {
+    tree.print();
+  }
+}
+
 inline uint32_t OnlineForestClassifier::sample_feature() {
   return rand.uniform_int(static_cast<uint32_t>(0), n_features() - 1);
 }
@@ -758,6 +715,23 @@ inline uint32_t OnlineForestClassifier::sample_feature(const ArrayDouble & prob)
 
 inline double OnlineForestClassifier::sample_threshold(double left, double right) {
   return rand.uniform(left, right);
+}
+
+
+void OnlineForestClassifier::n_nodes(SArrayUIntPtr n_nodes_per_tree) {
+  uint8_t j = 0;
+  for (TreeClassifier& tree : trees) {
+    (*n_nodes_per_tree)[j] = tree.n_nodes();
+    j++;
+  }
+}
+
+void OnlineForestClassifier::n_leaves(SArrayUIntPtr n_leaves_per_tree) {
+  uint8_t j = 0;
+  for (TreeClassifier& tree : trees) {
+    (*n_leaves_per_tree)[j] = tree.n_leaves();
+    j++;
+  }
 }
 
 //inline bool OnlineForestClassifier::verbose() const {

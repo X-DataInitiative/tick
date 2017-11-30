@@ -27,6 +27,8 @@ import matplotlib.pyplot as plt
 # TODO: unittest for wrong n_features in fit and predict and wrong labels in training
 
 # TODO: tryout multiple passes
+# TODO: really make seed work with inline forest
+
 
 path = '/Users/stephane.gaiffas/Dropbox/jaouad/online-forests/datasets/'
 

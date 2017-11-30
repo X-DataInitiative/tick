@@ -15,10 +15,10 @@ enum class CriterionClassifier {
 class OnlineForestClassifier {
  public:
 
-  OnlineForestClassifier(uint8_t n_classes, uint32_t n_trees, double step = 1.0,
+  OnlineForestClassifier(uint8_t n_classes, uint32_t n_trees, uint8_t n_passes = 1, double step = 1.0,
                          CriterionClassifier criterion = CriterionClassifier::log,
-                         bool use_aggregation = true, int32_t n_threads = 1,
-                         int seed = 0, bool verbose = false);
+                         bool use_aggregation = true, double subsampling=1, double dirichlet=0.5,
+                         int32_t n_threads = 1, int seed = 0, bool verbose = false);
 
   void fit(const SArrayDouble2dPtr features, const SArrayDoublePtr labels);
   void predict(const SArrayDouble2dPtr features, SArrayDouble2dPtr predictions);
@@ -45,6 +45,10 @@ class OnlineForestClassifier {
   OnlineForestClassifier &set_criterion(CriterionClassifier criterion);
   int seed() const;
   OnlineForestClassifier &set_seed(int seed);
+
+  void n_nodes(SArrayUIntPtr n_nodes_per_tree);
+  void n_leaves(SArrayUIntPtr n_leaves_per_tree);
+
   // bool verbose() const;
   // OnlineForestRegressor &set_verbose(bool verbose);
 
