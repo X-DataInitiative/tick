@@ -107,10 +107,11 @@ void ModelHawkesCustom::compute_weights_dim_i(const ulong i) {
         }
     }
 
-    //! in fact, H1 is one dimension, here I make all threads calculating the same thing
+    //! in fact, H1, H2 is one dimension, here I make all threads calculate the same thing
     ArrayDouble H1_i = view(H1[i]);
     ArrayDouble H2_i = view(H2[i]);
     ArrayDouble H3_i = view(H3[i]);
+    H1_i[0] -= 1;
     for (ulong k = 1; k != 1 + Total_events + 1; k++) {
         H1_i[global_n[k - 1]] += 1;
 

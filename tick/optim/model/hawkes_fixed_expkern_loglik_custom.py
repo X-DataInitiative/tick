@@ -16,48 +16,51 @@ timestamps = [np.array([0.31, 0.93, 1.29, 2.32, 4.25]),
               np.array([0.12, 1.19, 2.12, 2.41, 3.35, 4.21])]
 T = 4.5
 
-coeffs = np.array([1., 3., 2., 3., 4., 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2])
+coeffs = np.array([1., 3., 2., 3., 4., 1, 1, 3, 5, 7, 9, 2, 4, 6, 8, 10])
 # corresponding to mu, alpha,f_i(n)
 
 TestObj = ModelHawkesCustom(beta, MaxN_of_f)
 TestObj.set_data(timestamps, T)
 
 ''' test of the loss function'''
-print(TestObj.loss(coeffs))
+loss_out = TestObj.loss(coeffs)
+print(loss_out)
 
 '''test of the grad'''
 grad_out = np.array(np.zeros(len(coeffs)))
 TestObj.grad(coeffs, grad_out)
 print(grad_out)
 
-################################
-''' test of the loss function'''
-print(TestObj.loss(coeffs))
 
-'''test of the grad'''
-grad_out = np.array(np.zeros(len(coeffs)))
-TestObj.grad(coeffs, grad_out)
-print(grad_out)
-
-'''
-! bug known, don't call .loss 2 times
-! however, we can call .grad 2 times
-'''
-
-'''we need to warp the grad function to match the form of scipy.chec_kgrad'''
-
-
-def custom_loss(self, coeffs):
+def custom_loss(coeffs, *argv):
+    self = argv[0]
     return self.loss(coeffs)
 
 
-def custom_grad(self, coeffs):
+def custom_grad(coeffs, *argv):
+    self = argv[0]
     grad_out = np.array(np.zeros(len(coeffs)))
     self.grad(coeffs, grad_out)
     return grad_out
 
 
-print(custom_grad(TestObj, coeffs))
+print(custom_loss(coeffs, TestObj))
+print(custom_grad(coeffs, TestObj))
+
+print('#' * 40, '\nTest of gradient\n', '#' * 40)
+# print(check_grad(custom_loss, custom_grad, coeffs, TestObj))
+
+manual_grad = []
+dup_coeffs = coeffs.copy()
+epsilon = 1e-8
+for i in range(len(coeffs)):
+    dup_coeffs[i] += epsilon
+    loss_out_new = custom_loss(dup_coeffs, TestObj)
+    manual_grad.append((loss_out_new - loss_out) / epsilon)
+    dup_coeffs[i] -= epsilon
+manual_grad = np.array(manual_grad)
+print(manual_grad)
+
 
 # class ModelHawkesCustom(ModelHawkes,
 #                                     ModelSecondOrder,

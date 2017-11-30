@@ -74,7 +74,7 @@ TEST_F(HawkesModelTest, compute_loss_loglikelihood_custom) {
     model.grad(coeffs, grad);
     grad.print();
 
-    EXPECT_DOUBLE_EQ(loss, 8.8507123022361025);
+    EXPECT_DOUBLE_EQ(loss, -3.9407137213235459);
     EXPECT_DOUBLE_EQ(model.get_n_coeffs(), 16);
 }
 

@@ -170,16 +170,15 @@ double ModelHawkesFixedKernCustom::loss_dim_i(const ulong i,
     loss -= mu_i * (end_time - global_timestamps[Total_events]) * f_i[global_n[Total_events]];
 
     //! clean sum_G each time
-    for (ulong i = 0; i != n_nodes; i++)
-        sum_G[i].init_to_zero();
+    sum_G[i].init_to_zero();
 
     //term 5, 6
-    // !sum_g already takes care of the last item T
+    //! sum_g already takes care of the last item T
     for (ulong j = 0; j != n_nodes; j++)
         for (ulong k = 1; k != 1 + Total_events + 1; k++) {
             sum_G[i][j] += G_i[k * n_nodes + j] * f_i[global_n[k - 1]];
         }
-    loss += alpha_i.dot(sum_G[i]);
+    loss -= alpha_i.dot(sum_G[i]);
 
     return loss;
 }
@@ -234,19 +233,17 @@ void ModelHawkesFixedKernCustom::grad_dim_i(const ulong i,
     const ArrayDouble2d G_i = view(G[i]);
 
     //! grad of mu_i
+    grad_mu_i = 0;
     for (ulong k = 1; k < Total_events + 1; ++k) {
+        //! recall that all g_i are the same
+        const ArrayDouble g_i_k = view_row(g[i], k);
         double numerator = 1;
-        double denominator = mu_i;
-
-        for (ulong j = 0; j < n_nodes; j++) {
-            const ArrayDouble g_i_k = view_row(g[i], k);
-            denominator += alpha_i.dot(g_i_k);
-        }
+        double denominator = mu_i + alpha_i.dot(g_i_k);
         grad_mu_i += numerator / denominator;
     }
 
     for (ulong k = 1; k < 1 + Total_events + 1; k++) {
-        const double t_k = k < Total_events + 1 ? global_timestamps[k] : end_time;
+        const double t_k = (k != (Total_events + 1)) ? global_timestamps[k] : end_time;
         grad_mu_i -= (t_k - global_timestamps[k - 1]) * f_i[global_n[k - 1]];
     }
 
@@ -258,11 +255,11 @@ void ModelHawkesFixedKernCustom::grad_dim_i(const ulong i,
         grad_alpha_i.mult_incr(g_i_k, 1. / s);
     }
     for (ulong j = 0; j < n_nodes; j++) {
-        double tmp = 0;
+        double sum_G_ij = 0;
         for (ulong k = 1; k < 1 + Total_events + 1; k++) {
-            tmp += G_i[k] * f_i[global_n[k - 1]];
+            sum_G_ij += G_i[k * n_nodes + j] * f_i[global_n[k - 1]];
         }
-        grad_alpha_i[j] -= tmp;
+        grad_alpha_i[j] -= sum_G_ij;
     }
 
     //! grad of f^i_n
