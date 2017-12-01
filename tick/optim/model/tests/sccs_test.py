@@ -1,15 +1,17 @@
 # License: BSD 3 clause
 
 import unittest
+
 import numpy as np
-from scipy.optimize import check_grad, fmin_bfgs
 from scipy.linalg import norm
+from scipy.optimize import check_grad, fmin_bfgs
 from scipy.sparse import csr_matrix
+
 from tick.optim.model.sccs import ModelSCCS
-from tick.simulation import SimuSCCS
 from tick.preprocessing import LongitudinalFeaturesLagger
-from tick.optim.solver import SVRG
-from tick.optim.prox import ProxZero
+from tick.prox import ProxZero
+from tick.simulation import SimuSCCS
+from tick.solver import SVRG
 
 
 class ModelSCCSTest(unittest.TestCase):

@@ -7,10 +7,9 @@ import numpy as np
 from tick.base import actual_kwargs
 from tick.inference.base import LearnerOptim
 from tick.optim.model.base import ModelLipschitz
-from tick.optim.prox import ProxElasticNet, ProxL1, ProxL2Sq, ProxPositive
-from tick.optim.solver import AGD, GD, SGD, SVRG, BFGS
-from tick.plot import plot_point_process
+from tick.prox import ProxElasticNet, ProxL1, ProxL2Sq, ProxPositive
 from tick.simulation import SimuHawkes
+from tick.solver import AGD, GD, SGD, SVRG, BFGS
 
 
 class LearnerHawkesParametric(LearnerOptim):

@@ -3,7 +3,7 @@
 import numpy as np
 
 from tick.inference.base import LearnerHawkesNoParam
-from tick.optim.solver.base.utils import relative_distance
+from tick.solver.base.utils import relative_distance
 from .build.inference import HawkesEM as _HawkesEM
 
 

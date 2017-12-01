@@ -4,9 +4,9 @@ from warnings import warn
 import numpy as np
 from tick.base import Base
 from . import LearnerGLM
-from tick.optim.prox import ProxZero, ProxL1, ProxL2Sq, ProxElasticNet, \
+from tick.prox import ProxZero, ProxL1, ProxL2Sq, ProxElasticNet, \
     ProxSlope, ProxMulti
-from tick.optim.solver import AGD, GD
+from tick.solver import AGD, GD
 
 
 class LearnerRobustGLM(LearnerGLM):

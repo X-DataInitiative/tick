@@ -512,10 +512,10 @@ prox_core_info = {
     "cpp_files": [],
     "h_files": [],
     "folders": [
-        "lib/src/cpp/optim/prox"
+        "lib/src/cpp/prox"
     ],
     "swig_files": ["prox_module.i"],
-    "module_dir": "./tick/optim/prox/",
+    "module_dir": "./tick/prox/",
     "extension_name": "prox",
     "include_modules": base_array_modules
 }
@@ -526,10 +526,10 @@ solver_core_info = {
     "cpp_files": [],
     "h_files": [],
     "folders": [
-        "lib/src/cpp/optim/solver"
+        "lib/src/cpp/solver"
     ],
     "swig_files": ["solver_module.i"],
-    "module_dir": "./tick/optim/solver/",
+    "module_dir": "./tick/solver/",
     "extension_name": "solver",
     "include_modules": base_array_modules + [random_extension.module_ref,
                                              model_core.module_ref,

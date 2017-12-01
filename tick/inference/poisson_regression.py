@@ -5,7 +5,7 @@ import numpy as np
 from tick.base import actual_kwargs
 from tick.inference.base import LearnerGLM
 from tick.optim.model import ModelPoisReg
-from tick.optim.solver import GD, AGD, SGD, BFGS, SVRG, AdaGrad
+from tick.solver import GD, AGD, SGD, BFGS, SVRG, AdaGrad
 
 
 class PoissonRegression(LearnerGLM):

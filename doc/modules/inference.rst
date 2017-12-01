@@ -28,8 +28,8 @@ The first learner types concern linear models presented in
 Theses learners are essentially a combination of
 
 * :ref:`optim-model`
-* :ref:`optim-prox`
-* :ref:`optim-solver`
+* :ref:`prox`
+* :ref:`solver`
 
 which are described in depth in :ref:`optim`.
 

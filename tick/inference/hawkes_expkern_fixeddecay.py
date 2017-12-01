@@ -6,7 +6,7 @@ from tick.base import actual_kwargs
 from tick.inference.base import LearnerHawkesParametric
 from tick.optim.model import ModelHawkesFixedExpKernLogLik, \
     ModelHawkesFixedExpKernLeastSq
-from tick.optim.prox import ProxElasticNet, ProxL1, ProxL2Sq, ProxNuclear, \
+from tick.prox import ProxElasticNet, ProxL1, ProxL2Sq, ProxNuclear, \
     ProxPositive
 from tick.simulation import SimuHawkesExpKernels
 

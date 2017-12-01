@@ -7,8 +7,8 @@ import numpy as np
 from tick.inference.tests.inference import InferenceTest
 from tick.simulation import SimuCoxReg, weights_sparse_gauss
 from tick.inference import CoxRegression
-from tick.optim.solver import GD, AGD
-from tick.optim.prox import ProxZero, ProxL1, ProxL2Sq, ProxElasticNet, ProxTV, \
+from tick.solver import GD, AGD
+from tick.prox import ProxZero, ProxL1, ProxL2Sq, ProxElasticNet, ProxTV, \
     ProxBinarsity
 from tick.preprocessing.features_binarizer import FeaturesBinarizer
 

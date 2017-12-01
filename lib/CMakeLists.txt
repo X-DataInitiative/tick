@@ -49,8 +49,8 @@ add_subdirectory(src/cpp/array_test)
 add_subdirectory(src/cpp/random)
 add_subdirectory(src/cpp/simulation)
 add_subdirectory(src/cpp/optim/model)
-add_subdirectory(src/cpp/optim/prox)
-add_subdirectory(src/cpp/optim/solver)
+add_subdirectory(src/cpp/prox)
+add_subdirectory(src/cpp/solver)
 add_subdirectory(src/cpp/inference)
 add_subdirectory(src/cpp/preprocessing)
 
@@ -73,7 +73,7 @@ if (${GTEST_FOUND})
         ${TICK_BLAS_LIBRARIES})
 
     if(APPLE)
-        set(TICK_INSTALL_RPATH "${CMAKE_CURRENT_SOURCE_DIR}/../tick/base/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/array/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/optim/model/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/random/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/optim/prox/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/optim/solver/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/simulation/build")
+        set(TICK_INSTALL_RPATH "${CMAKE_CURRENT_SOURCE_DIR}/../tick/base/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/array/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/optim/model/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/random/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/prox/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/solver/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/simulation/build")
 
         set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
         set(CMAKE_INSTALL_RPATH "${TICK_INSTALL_RPATH}")
@@ -88,7 +88,7 @@ if (${GTEST_FOUND})
     add_subdirectory(src/cpp-test/base)
     add_subdirectory(src/cpp-test/array)
     add_subdirectory(src/cpp-test/optim/model)
-    add_subdirectory(src/cpp-test/optim/solver)
+    add_subdirectory(src/cpp-test/solver)
     add_subdirectory(src/cpp-test/simulation)
 
     add_custom_target(check
@@ -97,7 +97,7 @@ if (${GTEST_FOUND})
             COMMAND src/cpp-test/array/tick_test_varray
             COMMAND src/cpp-test/optim/model/tick_test_model
             COMMAND src/cpp-test/simulation/tick_test_hawkes
-            COMMAND src/cpp-test/optim/solver/tick_test_solver
+            COMMAND src/cpp-test/solver/tick_test_solver
             )
 else()
     message(STATUS "Testing in C++ NOT enabled")

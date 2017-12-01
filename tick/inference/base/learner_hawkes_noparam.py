@@ -2,7 +2,7 @@
 
 import numpy as np
 
-from tick.optim.solver.base import Solver
+from tick.solver.base import Solver
 
 
 class LearnerHawkesNoParam(Solver):

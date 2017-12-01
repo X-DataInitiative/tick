@@ -5,7 +5,7 @@ import numpy as np
 from tick.base import actual_kwargs
 from tick.preprocessing.utils import safe_array
 from tick.optim.model import ModelCoxRegPartialLik
-from tick.optim.solver import GD, AGD
+from tick.solver import GD, AGD
 from tick.inference.base import LearnerOptim
 
 

@@ -4,7 +4,7 @@
 from tick.base import actual_kwargs
 from tick.inference.base import LearnerGLM
 from tick.optim.model import ModelLinReg
-from tick.optim.solver import GD, AGD, SVRG
+from tick.solver import GD, AGD, SVRG
 
 
 class LinearRegression(LearnerGLM):

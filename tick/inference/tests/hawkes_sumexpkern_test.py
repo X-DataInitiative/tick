@@ -1,14 +1,15 @@
 # License: BSD 3 clause
 
 import unittest
+
 import numpy as np
 
-from tick.inference.tests.inference import InferenceTest
-from tick.optim.prox import ProxNuclear
-from tick.optim.prox import ProxPositive, ProxL1, ProxL2Sq, ProxElasticNet
-from tick.optim.solver import AGD, GD, BFGS, SGD, SVRG
-from tick.simulation import SimuHawkesSumExpKernels, SimuHawkesMulti
 from tick.inference import HawkesSumExpKern
+from tick.inference.tests.inference import InferenceTest
+from tick.prox import ProxNuclear
+from tick.prox import ProxPositive, ProxL1, ProxL2Sq, ProxElasticNet
+from tick.simulation import SimuHawkesSumExpKernels, SimuHawkesMulti
+from tick.solver import AGD, GD, BFGS, SGD, SVRG
 
 solvers = ['gd', 'agd', 'svrg', 'bfgs', 'sgd']
 penalties = ['none', 'l2', 'l1', 'elasticnet']

@@ -6,8 +6,8 @@ self:
   preprocessing
   array_test 
   inference 
-  simulation 
-  optim/solver 
+  simulation
+  solver
 
 property:
     postfix: x86_64-linux-gnu
@@ -101,22 +101,22 @@ profile:
     install: ${lib_path}/optim/model/build
     out: _model${lib_name}
 
-  - name: optim/prox
+  - name: prox
     parent: arg
     self: base
     src:
-      ./src/cpp/optim/prox
-      ./src/swig/optim/prox
-    install: ${lib_path}/optim/prox/build
+      ./src/cpp/prox
+      ./src/swig/prox
+    install: ${lib_path}/prox/build
     out: _prox${lib_name}
 
-  - name: optim/solver
+  - name: solver
     parent: arg
-    self: random optim/model optim/prox
+    self: random optim/model prox
     src:
-      ./src/cpp/optim/solver
-      ./src/swig/optim/solver
-    install: ${lib_path}/optim/solver/build
+      ./src/cpp/solver
+      ./src/swig/solver
+    install: ${lib_path}/solver/build
     out: _solver${lib_name}
 
   - name: preprocessing
@@ -164,4 +164,4 @@ profile:
 
   - name: gtest
     parent: gtest_nodep
-    self: optim/solver simulation
+    self: solver simulation

@@ -1,13 +1,14 @@
 # License: BSD 3 clause
 
 import unittest
+
 import numpy as np
 
 from tick.inference import LogisticRegression
-from tick.optim.history import History
-from tick.optim.solver import AGD
-from tick.optim.solver import GD
 from tick.plot import plot_history
+from tick.solver import AGD
+from tick.solver import GD
+from tick.solver import History
 
 
 class Test(unittest.TestCase):

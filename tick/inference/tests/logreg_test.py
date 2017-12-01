@@ -7,9 +7,9 @@ import numpy as np
 from sklearn.metrics.ranking import roc_auc_score
 
 from tick.inference.tests.inference import InferenceTest
-from tick.optim.prox import ProxZero, ProxL1, ProxL2Sq, ProxElasticNet, ProxTV, \
+from tick.prox import ProxZero, ProxL1, ProxL2Sq, ProxElasticNet, ProxTV, \
     ProxBinarsity
-from tick.optim.solver import AGD, GD, BFGS, SGD, SVRG, SDCA
+from tick.solver import AGD, GD, BFGS, SGD, SVRG, SDCA
 from tick.simulation import SimuLogReg, weights_sparse_gauss
 from tick.inference import LogisticRegression
 from tick.preprocessing.features_binarizer import FeaturesBinarizer

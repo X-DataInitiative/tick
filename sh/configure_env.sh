@@ -182,8 +182,8 @@ PROFILES=(
     base
     random
     optim/model
-    optim/prox
-    optim/solver
+    prox
+    solver
     simulation
     inference
     preprocessing
@@ -195,8 +195,8 @@ function hash_index() {
         'base')          echo 1;;
         'random')        echo 2;;
         'optim/model')   echo 3;;
-        'optim/prox')    echo 4;;
-        'optim/solver')  echo 5;;
+        'prox')          echo 4;;
+        'solver')  echo 5;;
         'simulation')    echo 6;;
         'inference')     echo 7;;
         'preprocessing') echo 8;;
@@ -208,8 +208,8 @@ LIBRARIES=(
     "tick/base/build/_base$LIB_POSTFIX"
     "tick/random/build/_crandom$LIB_POSTFIX"
     "tick/optim/model/build/_model$LIB_POSTFIX"
-    "tick/optim/prox/build/_prox$LIB_POSTFIX"
-    "tick/optim/solver/build/_solver$LIB_POSTFIX"
+    "tick/prox/build/_prox$LIB_POSTFIX"
+    "tick/solver/build/_solver$LIB_POSTFIX"
     "tick/simulation/build/_simulation$LIB_POSTFIX"
     "tick/inference/build/_inference$LIB_POSTFIX"
     "tick/preprocessing/build/_preprocessing$LIB_POSTFIX"

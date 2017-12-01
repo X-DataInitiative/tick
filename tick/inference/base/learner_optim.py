@@ -5,15 +5,15 @@ from warnings import warn
 
 import numpy as np
 from tick.base import Base
-from tick.optim.prox import ProxZero, ProxL1, ProxL2Sq, ProxElasticNet, \
+from tick.prox import ProxZero, ProxL1, ProxL2Sq, ProxElasticNet, \
     ProxTV, ProxBinarsity
-from tick.optim.solver import AGD, GD, BFGS, SGD, SVRG, SDCA
+from tick.solver import AGD, GD, BFGS, SGD, SVRG, SDCA
 from tick.preprocessing.utils import safe_array
 
 
 class LearnerOptim(ABC, Base):
-    """Learner for all models that are inferred with a `tick.optim.solver`
-    and a `tick.optim.prox`
+    """Learner for all models that are inferred with a `tick.solver`
+    and a `tick.prox`
     Not intended for end-users, but for development only.
     It should be sklearn-learn compliant
 

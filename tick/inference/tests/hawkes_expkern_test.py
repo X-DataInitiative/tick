@@ -8,9 +8,9 @@ from tick.optim.model.hawkes_fixed_expkern_leastsq import \
     ModelHawkesFixedExpKernLeastSq
 from tick.optim.model.hawkes_fixed_expkern_loglik import \
     ModelHawkesFixedExpKernLogLik
-from tick.optim.prox import ProxNuclear
-from tick.optim.prox import ProxPositive, ProxL1, ProxL2Sq, ProxElasticNet
-from tick.optim.solver import AGD, GD, BFGS, SGD, SVRG
+from tick.prox import ProxNuclear
+from tick.prox import ProxPositive, ProxL1, ProxL2Sq, ProxElasticNet
+from tick.solver import AGD, GD, BFGS, SGD, SVRG
 from tick.simulation import SimuHawkesExpKernels
 from tick.inference import HawkesExpKern
 
