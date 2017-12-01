@@ -128,6 +128,13 @@ class PP {
   virtual void reset();
 
   /**
+   * @brief Set timestamps of a new point process
+   * @param timestamps : timestamps that will be set
+   * @param end_time : end_time corresponding to these timestamps
+   */
+  void set_timestamps(VArrayDoublePtrList1D &timestamps, double end_time);
+
+  /**
    * @brief (Des)Activate track recording of intensity
    * @param dt : The time step used for track recording the intensity (if
    * negative then Desactivate Track Record)

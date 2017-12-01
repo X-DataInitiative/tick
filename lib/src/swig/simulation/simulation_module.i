@@ -41,6 +41,7 @@ class PP {
   void reseed_random_generator(int seed);
 
   SArrayDoublePtrList1D get_timestamps();
+  void set_timestamps(VArrayDoublePtrList1D &timestamps, double end_time);
 
   bool get_threshold_negative_intensity() const;
   void set_threshold_negative_intensity(const bool threshold_negative_intensity);
