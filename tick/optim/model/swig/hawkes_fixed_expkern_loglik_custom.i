@@ -5,6 +5,10 @@
 
 %}
 
+%{
+#include "defs.h"
+%}
+
 class ModelHawkesCustom : public Model {
 
 public:

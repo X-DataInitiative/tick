@@ -46,7 +46,7 @@ void ModelHawkesCustom::allocate_weights() {
     global_timestamps.init_to_zero();
     type_n = ArrayULong(Total_events + 1);
     type_n.init_to_zero();
-    global_n = ArrayULong(Total_events + 1);
+    global_n = ArrayLong(Total_events + 1);
     global_n.init_to_zero();
 }
 

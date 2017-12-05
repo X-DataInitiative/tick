@@ -63,20 +63,45 @@ TEST_F(HawkesModelTest, compute_loss_loglikelihood){
 }
 
 TEST_F(HawkesModelTest, compute_loss_loglikelihood_custom) {
+
+    SArrayDoublePtrList1D timestamps2;
+    timestamps2 = SArrayDoublePtrList1D(0);
+    // Test will fail if process array is not sorted
+    ArrayDouble timestamps_0 = ArrayDouble {0.31, 0.93, 1.29, 2.32, 4.25};
+    timestamps2.push_back(timestamps_0.as_sarray_ptr());
+    ArrayDouble timestamps_1 = ArrayDouble {0.12, 1.19, 2.12, 2.41, 3.77, 4.21};
+    timestamps2.push_back(timestamps_1.as_sarray_ptr());
+
     //! beta = 2
     ModelHawkesCustom model(2, 5);
     //! timestamps, T
-    model.set_data(timestamps, 4.5);
-    ArrayDouble coeffs = ArrayDouble {1., 3., 2., 3., 4., 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2};
+    model.set_data(timestamps2, 4.5);
+    ArrayDouble coeffs = ArrayDouble {1., 3., 2., 3., 4., 1, 1, 3, 5, 7, 9, 2, 4, 6, 8, 10};
 
     const double loss = model.loss(coeffs);
     ArrayDouble grad(model.get_n_coeffs());
     model.grad(coeffs, grad);
     grad.print();
 
-    EXPECT_DOUBLE_EQ(loss, -3.9407137213235459);
+    EXPECT_DOUBLE_EQ(loss, -9.025186344864748);
     EXPECT_DOUBLE_EQ(model.get_n_coeffs(), 16);
 }
+//! origin test
+//TEST_F(HawkesModelTest, compute_loss_loglikelihood_custom) {
+//    //! beta = 2
+//    ModelHawkesCustom model(2, 5);
+//    //! timestamps, T
+//    model.set_data(timestamps, 4.5);
+//    ArrayDouble coeffs = ArrayDouble {1., 3., 2., 3., 4., 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2};
+//
+//    const double loss = model.loss(coeffs);
+//    ArrayDouble grad(model.get_n_coeffs());
+//    model.grad(coeffs, grad);
+//    grad.print();
+//
+//    EXPECT_DOUBLE_EQ(loss, -3.9407137213235459);
+//    EXPECT_DOUBLE_EQ(model.get_n_coeffs(), 16);
+//}
 
 TEST_F(HawkesModelTest, check_sto_loglikelihood){
   ModelHawkesFixedExpKernLogLik model(2);

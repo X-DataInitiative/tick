@@ -38,7 +38,7 @@ protected:
     ArrayDouble global_timestamps;
 
     //! Peng Wu, An array, indicating how many n (num of orders) is there AFTER GLOBAL timestamp i
-    ArrayULong global_n;
+    ArrayLong global_n;
 
     //! Peng Wu, An array, indicating the type of event of GLOBAL timestamp i
     ArrayULong type_n;
