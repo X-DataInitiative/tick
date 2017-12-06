@@ -1,68 +1,137 @@
 # License: BSD 3 clause
 
-# from .base import ModelHawkes, ModelSecondOrder, ModelSelfConcordant, \
-#    LOSS_AND_GRAD
-from tick.optim.model.build.model import ModelHawkesCustom as \
-    ModelHawkesCustom
-
 import numpy as np
-from scipy.optimize import check_grad
-import matplotlib as plt
 
-beta = 2.0
-MaxN_of_f = 5
-
-timestamps = [np.array([0.31, 0.93, 1.29, 2.32, 4.25, 4.35, 4.78, 5.5, 6.83, 6.99]),
-              np.array([0.12, 1.19, 2.12, 2.41, 3.77, 4.21, 4.96, 5.11, 6.7, 7.26])]
-T = 9
-
-coeffs = np.array([1., 3., 2., 3., 4., 1, 1, 3, 5, 7, 9, 2, 4, 6, 8, 10])
-# coeffs = np.array([1., 3.,     2., 3., 4., 1,     1, 3,3,3,3,     2, 4, 6, 8, 10])
-# corresponding to mu, alpha,f_i(n)
-
-TestObj = ModelHawkesCustom(beta, MaxN_of_f)
-TestObj.set_data(timestamps, T)
-
-''' test of the loss function'''
-loss_out = TestObj.loss(coeffs)
-print(loss_out)
-
-'''test of the grad'''
-grad_out = np.array(np.zeros(len(coeffs)))
-TestObj.grad(coeffs, grad_out)
-print(grad_out)
+from .base import ModelHawkes, ModelSecondOrder, ModelSelfConcordant, \
+    LOSS_AND_GRAD
+from .build.model import ModelHawkesFixedExpKernLogLikList as \
+    _ModelHawkesFixedExpKernLogLik
 
 
-def custom_loss(coeffs, *argv):
-    self = argv[0]
-    return self.loss(coeffs)
+class ModelHawkesFixedExpKernLogLik(ModelHawkes,
+                                    ModelSecondOrder,
+                                    ModelSelfConcordant):
+    """Hawkes process model exponential kernels with fixed and given decay.
+    It is modeled with (opposite) log likelihood loss:
 
+    .. math::
+        \\sum_{i=1}^{D} \\left(
+            \\int_0^T \\lambda_i(t) dt
+            - \\int_0^T \\log \\lambda_i(t) dN_i(t)
+        \\right)
 
-def custom_grad(coeffs, *argv):
-    self = argv[0]
-    grad_out = np.array(np.zeros(len(coeffs)))
-    self.grad(coeffs, grad_out)
-    return grad_out
+    where :math:`\\lambda_i` is the intensity:
 
+    .. math::
+        \\forall i \\in [1 \\dots D], \\quad
+        \\lambda_i(t) = \\mu_i + \\sum_{j=1}^D
+        \\sum_{t_k^j < t} \\phi_{ij}(t - t_k^j)
 
-print(custom_loss(coeffs, TestObj))
-print(custom_grad(coeffs, TestObj))
+    where
 
-print('#' * 40, '\nTest of gradient\n', '#' * 40)
-# print(check_grad(custom_loss, custom_grad, coeffs, TestObj))
+    * :math:`D` is the number of nodes
+    * :math:`\mu_i` are the baseline intensities
+    * :math:`\phi_{ij}` are the kernels
+    * :math:`t_k^j` are the timestamps of all events of node :math:`j`
 
-manual_grad = []
-dup_coeffs = coeffs.copy()
-epsilon = 1e-7
-for i in range(len(coeffs)):
-    dup_coeffs[i] += epsilon
-    loss_out_new = custom_loss(dup_coeffs, TestObj)
-    manual_grad.append((loss_out_new - loss_out) / epsilon)
-    dup_coeffs[i] -= epsilon
-manual_grad = np.array(manual_grad)
-print(manual_grad)
+    and with an exponential parametrisation of the kernels
 
-###########################################################################################
-import tick
+    .. math::
+        \phi_{ij}(t) = \\alpha^{ij} \\beta^{ij}
+                       \exp (- \\beta^{ij} t) 1_{t > 0}
 
-print(tick)
+    In our implementation we denote:
+
+    * Integer :math:`D` by the attribute `n_nodes`
+    * Matrix :math:`B = (\\beta_{ij})_{ij} \in \mathbb{R}^{D \\times D}` by the
+      parameter `decays`. This parameter is given to the model
+
+    Parameters
+    ----------
+    decay : `float`
+        The decay coefficient of the exponential kernels.
+        All kernels share this decay.
+
+    n_threads : `int`, default=1
+        Number of threads used for parallel computation.
+
+        * if ``int <= 0``: the number of threads available on
+          the CPU
+        * otherwise the desired number of threads
+
+    Attributes
+    ----------
+    n_nodes : `int` (read-only)
+        Number of components, or dimension of the Hawkes model
+
+    data : `list` of `numpy.array` (read-only)
+        The events given to the model through `fit` method.
+        Note that data given through `incremental_fit` is not stored
+    """
+    # In Hawkes case, getting value and grad at the same time need only
+    # one pas over the data
+    pass_per_operation = \
+        {k: v for d in [ModelSecondOrder.pass_per_operation,
+                        {LOSS_AND_GRAD: 1}] for k, v in d.items()}
+
+    _attrinfos = {
+        "decay": {
+            "cpp_setter": "set_decay"
+        },
+    }
+
+    def __init__(self, decay: float, n_threads: int = 1):
+        ModelHawkes.__init__(self, n_threads=1, approx=0)
+        ModelSecondOrder.__init__(self)
+        ModelSelfConcordant.__init__(self)
+        self.decay = decay
+        self._model = _ModelHawkesFixedExpKernLogLik(decay, n_threads)
+
+    def fit(self, events, end_times=None):
+        """Set the corresponding realization(s) of the process.
+
+        Parameters
+        ----------
+        events : `list` of `list` of `np.ndarray`
+            List of Hawkes processes realizations.
+            Each realization of the Hawkes process is a list of n_node for
+            each component of the Hawkes. Namely `events[i][j]` contains a
+            one-dimensional `numpy.array` of the events' timestamps of
+            component j of realization i.
+            If only one realization is given, it will be wrapped into a list
+
+        end_times : `np.ndarray` or `float`, default = None
+            List of end time of all hawkes processes that will be given to the
+            model. If None, it will be set to each realization's latest time.
+            If only one realization is provided, then a float can be given.
+        """
+        ModelSecondOrder.fit(self, events)
+        ModelSelfConcordant.fit(self, events)
+        return ModelHawkes.fit(self, events, end_times=end_times)
+
+    def _loss_and_grad(self, coeffs: np.ndarray, out: np.ndarray):
+        value = self._model.loss_and_grad(coeffs, out)
+        return value
+
+    def _hessian_norm(self, coeffs: np.ndarray,
+                      point: np.ndarray) -> float:
+        return self._model.hessian_norm(coeffs, point)
+
+    def _get_sc_constant(self) -> float:
+        return 2.0
+
+    @property
+    def decays(self):
+        return self.decay
+
+    @property
+    def _epoch_size(self):
+        # This gives the typical size of an epoch when using a
+        # stochastic optimization algorithm
+        return self.n_jumps
+
+    @property
+    def _rand_max(self):
+        # This allows to obtain the range of the random sampling when
+        # using a stochastic optimization algorithm
+        return self.n_jumps
