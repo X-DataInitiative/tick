@@ -181,7 +181,10 @@ class History(Base):
     def last_values(self):
         last_values = {}
         for key, hist in self.values.items():
-            last_values[key] = hist[-1]
+            if len(hist) > 0:
+                last_values[key] = hist[-1]
+            else:
+                last_values[key] = []
         return last_values
 
     def set_minimizer(self, minimizer: np.ndarray):
