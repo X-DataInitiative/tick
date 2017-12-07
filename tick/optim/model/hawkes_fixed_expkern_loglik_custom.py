@@ -10,16 +10,16 @@ from .build.model import ModelHawkesFixedExpKernLogLikList as \
 
 from tick.optim.model.build.model import ModelHawkesCustom as _ModelHawkesCustom
 
-def custom_loss(coeffs, *argv):
-    self = argv[0]
-    return self.loss(coeffs)
-
-
-def custom_grad(coeffs, *argv):
-    self = argv[0]
-    grad_out = np.array(np.zeros(len(coeffs)))
-    self.grad(coeffs, grad_out)
-    return grad_out
+# def custom_loss(coeffs, *argv):
+#     self = argv[0]
+#     return self.loss(coeffs)
+#
+#
+# def custom_grad(coeffs, *argv):
+#     self = argv[0]
+#     grad_out = np.array(np.zeros(len(coeffs)))
+#     self.grad(coeffs, grad_out)
+#     return grad_out
 
 
 class ModelHawkesCustom(ModelFirstOrder):
@@ -32,10 +32,10 @@ class ModelHawkesCustom(ModelFirstOrder):
         "data": {}
     }
 
-    def __init__(self, decay: float, n_threads: int = 1):
+    def __init__(self, decay: float, MaxN_of_f : int, n_threads: int = 1):
         ModelFirstOrder.__init__(self)
         self.decay = decay
-        self._model = _ModelHawkesCustom(decay, n_threads)
+        self._model = _ModelHawkesCustom(decay, MaxN_of_f, n_threads)
         print(self._model)
 
 

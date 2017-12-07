@@ -1,12 +1,8 @@
 # License: BSD 3 clause
 
-# from .base import ModelHawkes, ModelSecondOrder, ModelSelfConcordant, \
-#    LOSS_AND_GRAD
 from tick.optim.model import ModelHawkesCustom
 
 import numpy as np
-from scipy.optimize import check_grad
-import matplotlib as plt
 
 beta = 2.0
 MaxN_of_f = 5
