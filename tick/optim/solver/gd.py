@@ -155,6 +155,10 @@ class GD(SolverFirstOrder):
     def _solve(self, x0: np.ndarray = None, step: float = None):
         x, prev_x, x_new, step, obj = self._initialize_values(x0, step)
         for n_iter in range(self.max_iter + 1):
+            print(x)
+            x[x < 1e-5] = 1e-5
+            print('min(x)', min(x))
+
             prev_x[:] = x
             prev_obj = obj
             x, step, obj = self._gradient_step(x, x_new, step)
@@ -172,6 +176,7 @@ class GD(SolverFirstOrder):
             self._handle_history(n_iter, force=converged, obj=obj,
                                  x=x.copy(), rel_delta=rel_delta,
                                  step=step, rel_obj=rel_obj)
+
             if converged:
                 break
         self._set("solution", x)

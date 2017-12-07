@@ -107,3 +107,7 @@ class ModelHawkesCustom(ModelFirstOrder):
         # This allows to obtain the range of the random sampling when
         # using a stochastic optimization algorithm
         return self.n_jumps
+
+    @property
+    def n_jumps(self):
+        return self._model.get_n_total_jumps()
