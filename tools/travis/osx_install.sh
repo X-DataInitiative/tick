@@ -6,15 +6,15 @@ shell_session_update() { :; }
 
 brew update
 brew install swig
-brew upgrade pyenv
+#brew upgrade pyenv
 
-if [ ! -d googletest ] || [ ! -f googletest/CMakeLists.txt ]
-    then
-        git clone https://github.com/google/googletest.git
-        (cd googletest && mkdir -p build && cd build && cmake .. && make -s)
+if [ ! -d googletest ] || [ ! -f googletest/CMakeLists.txt ]; then
+  git clone https://github.com/google/googletest
+  mkdir -p googletest/build
+  pushd googletest/build
+  cmake .. && make -s && make -s install
+  popd
 fi
-
-(cd googletest && cd build && sudo make -s install)
 
 export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/bin:$PATH"
@@ -31,3 +31,4 @@ python -m pip install -r requirements.txt
 python -m pip install sphinx pillow
 python -m pip install cpplint
 pyenv rehash
+
