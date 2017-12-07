@@ -105,7 +105,8 @@ class FeaturesBinarizer(Base, BaseEstimator, TransformerMixin):
         "bins_boundaries": {"writable": False},
         "mapper": {"writable": False},
         "feature_type": {"writable": False},
-        "_fitted": {"writable": False}
+        "_fitted": {"writable": False},
+        "_columns": {},
     }
 
     def __init__(self, method="quantile", n_cuts=10, detect_column_type="auto",
@@ -172,7 +173,7 @@ class FeaturesBinarizer(Base, BaseEstimator, TransformerMixin):
 
         return X, columns
 
-    def fit(self, X):
+    def fit(self, X, columns=None):
         """Fit the binarization using the features matrix.
 
         Parameters
@@ -187,6 +188,7 @@ class FeaturesBinarizer(Base, BaseEstimator, TransformerMixin):
         """
         self.reset()
         X, columns = FeaturesBinarizer.cast_to_array(X)
+        self._columns = columns
 
         categorical_X = np.empty_like(X)
         for i, column in enumerate(columns):
@@ -253,6 +255,44 @@ class FeaturesBinarizer(Base, BaseEstimator, TransformerMixin):
         binarized_X = self.transform(X)
 
         return binarized_X
+
+    def get_column_names(self):
+        columns_names = []
+        for feature_name in self._columns:
+            feature_type = self.feature_type[feature_name]
+
+            if feature_type == 'discrete':
+                feature_index = self.mapper[feature_name]
+                for _, index in feature_index.items():
+                    if index == 0 and self.remove_first:
+                        continue
+
+                    feature_name = feature_name.replace(':discrete', '')
+                    index_label = next((k for k, v in feature_index.items()
+                                        if v == index), 'Unkown')
+
+                    columns_names += ['{}#{}'.format(feature_name, index_label)]
+
+            else:
+                boundaries = self.bins_boundaries[feature_name]
+                for i, (lower, upper) in enumerate(
+                        zip(boundaries[:-1], boundaries[1:])):
+                    if i == 0 and self.remove_first:
+                        continue
+
+                    if lower == -np.inf:
+                        column_label = '<{:.3g}'.format(upper)
+                    elif upper == np.inf:
+                        column_label = '>{:.3g}'.format(lower)
+                    else:
+                        column_label = '{:.3g}<{:.3g}'.format(lower, upper)
+
+                    feature_name = feature_name.replace(':continuous', '')
+                    columns_names += ['{}#{}'.format(feature_name, column_label)]
+
+        columns_names = np.array(columns_names)
+
+        return columns_names
 
     @staticmethod
     def _detect_feature_type(feature, detect_column_type="auto",
@@ -478,7 +518,10 @@ class FeaturesBinarizer(Base, BaseEstimator, TransformerMixin):
             if category in mapper:
                 return mapper.get(category)
             else:
-                return len(list(mapper.keys())) + 1
+                if fit:
+                    return len(list(mapper.keys())) + 1
+                else:
+                    raise ValueError('Unknown feature {}'.format(category))
 
         return np.vectorize(category_to_interval)(feature)
 

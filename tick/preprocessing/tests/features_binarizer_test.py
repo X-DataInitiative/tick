@@ -37,6 +37,27 @@ class Test(unittest.TestCase):
                                                     [0, 1, 1, 1],
                                                     [1, 2, 0, 0]])
 
+    def test_columns_names(self):
+        binarizer = FeaturesBinarizer(n_cuts=3)
+        binarizer.fit(self.df_features)
+        columns_names = [
+            'c#<0.00902', 'c#0.00902<0.271', 'c#0.271<0.473', 'c#>0.473',
+            'a#<-0.719', 'a#-0.719<-0.191', 'a#-0.191<0.446', 'a#>0.446',
+            'd#0.0', 'd#1.0',
+            'b#0.0', 'b#1.0', 'b#2.0', 'b#20.0', 'b#z']
+
+        self.assertEqual(binarizer.get_column_names(), columns_names)
+
+        columns_names_no_first = [
+            'c#0.00902<0.271', 'c#0.271<0.473', 'c#>0.473',
+            'a#-0.719<-0.191', 'a#-0.191<0.446', 'a#>0.446',
+            'd#1.0',
+            'b#1.0', 'b#2.0', 'b#20.0', 'b#z']
+
+        binarizer = FeaturesBinarizer(n_cuts=3, remove_first=True)
+        binarizer.fit(self.df_features)
+        self.assertEqual(binarizer.get_column_names(), columns_names_no_first)
+
     def test_column_type_detection(self):
         """...Test column type detection
         """
