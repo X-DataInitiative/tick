@@ -2,8 +2,7 @@
 
 # from .base import ModelHawkes, ModelSecondOrder, ModelSelfConcordant, \
 #    LOSS_AND_GRAD
-from tick.optim.model.build.model import ModelHawkesCustom as \
-    ModelHawkesCustom
+from tick.optim.model import ModelHawkesCustom
 
 import numpy as np
 from scipy.optimize import check_grad
@@ -21,7 +20,7 @@ coeffs = np.array([1., 3., 2., 3., 4., 1, 1, 3, 5, 7, 9, 2, 4, 6, 8, 10])
 # corresponding to mu, alpha,f_i(n)
 
 TestObj = ModelHawkesCustom(beta, MaxN_of_f)
-TestObj.set_data(timestamps, T)
+TestObj.fit(timestamps, T)
 
 ''' test of the loss function'''
 loss_out = TestObj.loss(coeffs)
