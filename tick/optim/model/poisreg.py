@@ -261,3 +261,17 @@ class ModelPoisReg(ModelGeneralizedLinear,
 
         b = 1e-8 + np.zeros(A.shape[0])
         return ProjHalfSpace(max_iter=1000).fit(A, b)
+
+    def get_dual_bounds(self, l_l2sq):
+        labels = self.labels
+        features = self.features
+
+        n_non_zeros = sum(labels != 0)
+        feature_norms = np.linalg.norm(features, axis=1)
+        non_zero_features = features[labels != 0]
+        n_psi_x = n_non_zeros * np.mean(features, axis=0)\
+            .dot(non_zero_features.T)
+        tmp = np.power(n_psi_x, 2)
+        tmp += 4 * l_l2sq * n_non_zeros * labels[labels != 0] * feature_norms
+
+        return 0.5 / feature_norms * (n_psi_x + np.sqrt(tmp))
