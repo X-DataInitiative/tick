@@ -1,6 +1,6 @@
 # License: BSD 3 clause
 
-from tick.optim.model.base import ModelGeneralizedLinear
+from tick.base_model import ModelGeneralizedLinear
 from .base import SolverFirstOrderSto
 from .build.solver  import SAGA as _SAGA
 
