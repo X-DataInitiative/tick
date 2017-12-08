@@ -1,0 +1,24 @@
+Metadata-Version: 1.1
+Name: tick
+Version: 0.3.0.0
+Summary: Module for statistical learning, with a particular emphasis on time-dependent modelling
+Home-page: https://x-datainitiative.github.io/tick/
+Author: Emmanuel Bacry, Stephane Gaiffas, Martin Bompaire, Søren V. Poulsen, Maryan Morel, Simon Bussy
+Author-email: martin.bompaire@polytechnique.edu, soren.poulsen@polytechnique.edu
+License: UNKNOWN
+Description: UNKNOWN
+Platform: UNKNOWN
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Science/Research
+Classifier: Intended Audience :: Developers
+Classifier: Programming Language :: C++
+Classifier: Programming Language :: Python
+Classifier: Topic :: Software Development
+Classifier: Topic :: Scientific/Engineering
+Classifier: Operating System :: POSIX
+Classifier: Operating System :: Unix
+Classifier: Operating System :: MacOS
+Classifier: Programming Language :: Python :: 3.4
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: 3.6
+Classifier: License :: OSI Approved :: BSD License
