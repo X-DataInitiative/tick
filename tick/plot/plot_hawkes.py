@@ -344,7 +344,7 @@ def plot_basis_kernels(learner, support=None, basis_kernels=None,
                        n_points=300, show=True):
     """Function used to plot basis of kernels
     
-    It is used jointly with `tick.inference.HawkesBasisKernels` learner class.
+    It is used jointly with `tick.hawkes.inference.HawkesBasisKernels` learner class.
 
     Parameters
     ----------

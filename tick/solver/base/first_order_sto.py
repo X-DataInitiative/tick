@@ -2,7 +2,7 @@
 
 import numpy as np
 
-from tick.optim.model.base import Model
+from tick.base_model import Model
 from tick.prox.base import Prox
 from . import SolverFirstOrder, SolverSto
 from .utils import relative_distance

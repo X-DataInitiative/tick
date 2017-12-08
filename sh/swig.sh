@@ -21,7 +21,7 @@ if [ -z "$TICK_CONFIGURED" ]; then
    source $ROOT/sh/configure_env.sh
 fi
 
-SWIG_BASE="lib/src/swig"
+SWIG_BASE="lib/swig"
 
 echo "SWIG sub-routine - START"
 # This block iterates over each module to create swig cpp files
@@ -32,6 +32,7 @@ for P in "${PROFILES[@]}"; do
   TREE_LEN=${#TREE[@]}
   INCS=(-Ilib/include)
   INCS+=(-I${SWIG_BASE}/base)
+  INCS+=(-Ilib/swig/${P})
   for idx in $(seq $TREE_LEN -1 0); do
     LINE="${TREE[idx]}"
     set +e  

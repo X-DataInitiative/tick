@@ -5,7 +5,7 @@
 import numpy as np
 from numpy.linalg import norm
 
-from tick.optim.model.base import ModelSecondOrder
+from tick.base_model import ModelSecondOrder
 from tick.prox.base import Prox
 from .base import SolverFirstOrder
 from .base.utils import relative_distance

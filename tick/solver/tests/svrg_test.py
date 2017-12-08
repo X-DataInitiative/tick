@@ -8,7 +8,7 @@ import numpy as np
 from scipy.linalg.special_matrices import toeplitz
 from scipy.sparse import csr_matrix
 
-from tick.optim.model import ModelLinReg
+from tick.linear_model import ModelLinReg
 
 from tick.prox import ProxL1, ProxL1w, ProxTV, ProxEquality, \
     ProxElasticNet

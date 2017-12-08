@@ -3,7 +3,7 @@
 import numpy as np
 
 from . import Solver
-from tick.optim.model.base import Model
+from tick.base_model import Model
 from tick.prox.base import Prox
 
 __author__ = 'Stephane Gaiffas'

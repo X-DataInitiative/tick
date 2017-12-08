@@ -1,7 +1,7 @@
 # License: BSD 3 clause
 
 from warnings import warn
-from tick.optim.model.base import Model
+from tick.base_model import Model
 from .base import SolverFirstOrderSto
 from .build.solver import SVRG as _SVRG
 

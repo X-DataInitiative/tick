@@ -3,11 +3,11 @@
 import unittest
 import numpy as np
 
-from tick.optim.model import ModelLogReg, ModelPoisReg
+from tick.linear_model import ModelLogReg, ModelPoisReg
 from tick.prox import ProxL1, ProxElasticNet, ProxZero, ProxL2Sq
 from tick.solver import SDCA, SVRG
 from . import TestSolver
-from tick.simulation import SimuPoisReg
+from tick.hawkes.simulation import SimuPoisReg
 
 
 class Test(TestSolver):

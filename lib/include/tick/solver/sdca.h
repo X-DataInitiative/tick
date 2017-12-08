@@ -7,7 +7,7 @@
 
 // License: BSD 3 clause
 
-#include "tick/optim/model/model.h"
+#include "tick/base_model/model.h"
 #include "sto_solver.h"
 
 
