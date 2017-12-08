@@ -9,7 +9,7 @@
 
 #include "tick/base/base.h"
 #include "tick/random/rand.h"
-#include "tick/optim/model/model.h"
+#include "tick/base_model/model.h"
 #include "tick/prox/prox.h"
 
 

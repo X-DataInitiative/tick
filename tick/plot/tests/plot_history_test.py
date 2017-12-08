@@ -4,7 +4,7 @@ import unittest
 
 import numpy as np
 
-from tick.inference import LogisticRegression
+from tick.hawkes.inference import LogisticRegression
 from tick.plot import plot_history
 from tick.solver import AGD
 from tick.solver import GD

@@ -3,7 +3,7 @@
 from abc import ABC
 
 from tick.base import Base
-from tick.optim.model.base import Model
+from tick.base_model import Model
 from tick.prox.base import Prox
 
 from ..build.solver import RandType_perm as perm
