@@ -22,8 +22,8 @@ import matplotlib.pyplot as plt
 from tick.plot import plot_history
 import numpy as np
 from tick.optim.model import ModelLogReg
-from tick.optim.solver import SVRG
-from tick.optim.prox import ProxElasticNet
+from tick.solver import SVRG
+from tick.prox import ProxElasticNet
 from tick.simulation import SimuLogReg, weights_sparse_gauss
 
 seed = 1398

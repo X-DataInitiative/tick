@@ -21,19 +21,37 @@
 set -e
 
 CWD="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-ROOT=$CWD/..
+pushd $CWD/.. 2>&1 > /dev/null
+ROOT=$PWD
+popd 2>&1 > /dev/null
 
 source $ROOT/sh/configure_env.sh
+
+COMPILE=1
+LINK=1
 
 CLI_ARGS=( "$@" )
 CLI_ARGS_LEN=${#CLI_ARGS[@]}
 if (( $CLI_ARGS_LEN > 0 )); then
-    PROFILES=()
-    ALL=0
-    for (( i=1; i<${CLI_ARGS_LEN}+1; i++ ));
-    do
-       PROFILES+=("${CLI_ARGS[$i-1]}")
-    done
+  NPROFILES=()
+  for (( i=1; i<${CLI_ARGS_LEN}+1; i++ )); do
+    C=${CLI_ARGS[$i-1]}
+    case $C in
+        -c=*|--compile=*)
+        COMPILE="${C#*=}"
+        shift # past argument=value
+        ;;
+        -l=*|--link=*)
+        LINK="${C#*=}"
+        shift # past argument=value
+        ;;
+        *)
+        NPROFILES+=("$C")      
+        ;;
+    esac
+  done
+  NPROFILES_LEN=${#NPROFILES[@]}
+  (( $NPROFILES_LEN > 0 )) && PROFILES=("${NPROFILES[@]}")
 fi
 
 TICK_INDICES=$($PY $ROOT/tools/python/numpy/check_sparse_indices.py)
@@ -46,41 +64,46 @@ MKN_C_FLAGS=" $TICK_INDICES "
 
 cd $ROOT
 
-for P in "${PROFILES[@]}"; do 
-  mkn compile -ta "${MKN_C_FLAGS[@]}" -b "$PY_INCS" -p ${P} -C lib
-done
+(( $COMPILE == 1 )) && \
+  for P in "${PROFILES[@]}"; do 
+    mkn compile -ta "${MKN_C_FLAGS[@]}" -b "$PY_INCS" \
+      ${MKN_X_FILE[@]} -p ${P} -C lib "${MKN_WITH[@]}"
+  done
 
 TKLOG=$KLOG
-for P in "${PROFILES[@]}"; do
-  EX=$(hash_index $P)
-  LIBLD=${LIB_LD_PER_LIB[$EX]}
-  if [[ "$unameOut" == "CYGWIN"* ]] || [[ "$unameOut" == "MINGW"* ]]; then
-    # Here we intercept the command for linking on windows and change 
-    # the output from ".dll" to ".pyd"
-    KLOG=0 
-    OUT=$(mkn link -p $P -l "${LDARGS} $LIBLD" \
-          -P lib_name=$LIB_POSTFIX \
-          -RB $B_PATH -C lib |  head -1)
-    OUT=$(echo $OUT | sed -e "s/.dll/.pyd/g")
-    (( TKLOG > 0 )) && echo $OUT
-    cmd /c "${OUT[@]}"
-  else
-    mkn link -p $P -l "${LIBLDARGS} ${LDARGS} $LIBLD" \
-       -P "${MKN_P[@]}" \
-       -B "$B_PATH" -C lib
-  fi
-  PUSHD=${LIBRARIES[$EX]}
-  pushd $ROOT/$(dirname ${PUSHD}) 2>&1 > /dev/null
-    if [[ "$unameOut" == "CYGWIN"* ]] || [[ "$unameOut" == "MINGW"* ]]; then
-      for f in $(find . -maxdepth 1 -type f -name "*.dll" ); do    
-        DLL="${f%.*}"
-        cp ${f:2} ${DLL}.pyd
-      done
-    else
-      for f in $(find . -maxdepth 1 -type f ! -name "*.py" ! -name "__*" ); do
-        SUB=${f:2:3}
-        [ "$SUB" == "lib" ] && cp "$f" "${f:5}"
-      done
-    fi      
-  popd 2>&1 > /dev/null
-done
+(( $LINK == 1 )) && \
+  for P in "${PROFILES[@]}"; do
+      EX=$(hash_index $P)
+      LIBLD=${LIB_LD_PER_LIB[$EX]}
+      if [[ "$unameOut" == "CYGWIN"* ]] || [[ "$unameOut" == "MINGW"* ]]; then
+        # Here we intercept the command for linking on windows and change 
+        # the output from ".dll" to ".pyd"
+        KLOG=0 
+        OUT=$(mkn link -p $P -l "${LDARGS} $LIBLD" \
+              -P "${MKN_P}" -C lib "${MKN_WITH[@]}" \
+              ${MKN_X_FILE[@]} -RB $B_PATH  |  head -1)
+        OUT=$(echo $OUT | sed -e "s/.dll/.pyd/g")
+        (( TKLOG > 0 )) && echo $OUT
+        cmd /c "${OUT[@]}"
+      else
+        mkn link -p $P -l "${LIBLDARGS} ${LDARGS} $LIBLD" \
+           -P "${MKN_P}" -C lib "${MKN_WITH[@]}" \
+           ${MKN_X_FILE[@]} -B "$B_PATH" 
+      fi
+      PUSHD=${LIBRARIES[$EX]}
+      pushd $ROOT/$(dirname ${PUSHD}) 2>&1 > /dev/null
+        if [[ "$unameOut" == "CYGWIN"* ]] || [[ "$unameOut" == "MINGW"* ]]; then
+          for f in $(find . -maxdepth 1 -type f -name "*.dll" ); do    
+            DLL="${f%.*}"
+            cp ${f:2} ${DLL}.pyd
+          done
+        else
+          for f in $(find . -maxdepth 1 -type f ! -name "*.py" ! -name "__*" ); do
+            SUB=${f:2:3}
+            [ "$SUB" == "lib" ] && cp "$f" "${f:5}"
+          done
+        fi
+      popd 2>&1 > /dev/null
+  done
+
+echo "Finished - Success"

@@ -58,8 +58,8 @@ for FILE in "${FILES[@]}"; do
 
     mkn compile -p gtest -a "${CARGS}" \
         -tb "$PY_INCS" \
-        -M "${FILE}" -P "${MKN_P}" \
-        -B $B_PATH ${MKN_X_FILE[@]}
+        -M "${FILE}" -P "${MKN_P[@]}" \
+        ${MKN_X_FILE[@]} -B "$B_PATH" ${MKN_WITH[@]}        
 
     mv bin/gtest bin/gtest_nodep
     

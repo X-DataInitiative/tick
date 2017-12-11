@@ -5,9 +5,8 @@ name: tick
 self: 
   preprocessing
   array_test 
-  inference 
-  simulation 
-  optim/solver 
+  hawkes
+  solver
 
 property:
     postfix: x86_64-linux-gnu
@@ -58,8 +57,8 @@ profile:
     parent: arg
     self: array
     src:
-      ./src/cpp/base
-      ./src/swig/base
+      ./cpp/base
+      ./swig/base
     install: ${lib_path}/base/build
     out: _base${lib_name}
 
@@ -69,8 +68,8 @@ profile:
       ./include
       ./third_party/cereal/include
     src:
-      ./src/cpp/array
-      ./src/swig/array
+      ./cpp/array
+      ./swig/array
     install: ${lib_path}/array/build
     out: _array${lib_name}
 
@@ -78,78 +77,96 @@ profile:
     parent: arg
     self: base
     src:
-      ./src/cpp/array_test
-      ./src/swig/array_test
+      ./cpp/array_test
+      ./swig/array_test
     install: ${lib_path}/array_test/build
     out: _array_test${lib_name}
 
-  - name: inference
-    parent: arg
-    self: optim/model
-    src:
-      ./src/cpp/inference
-      ./src/swig/inference
-    install: ${lib_path}/inference/build
-    out: _inference${lib_name}
-
-  - name: optim/model
+  - name: base_model
     parent: arg
     self: base
     src:
-      ./src/cpp/optim/model
-      ./src/swig/optim/model
-    install: ${lib_path}/optim/model/build
-    out: _model${lib_name}
+      ./cpp/base_model
+      ./swig/base_model
+    install: ${lib_path}/base_model/build
+    out: _base_model${lib_name}
 
-  - name: optim/prox
+  - name: hawkes
+    parent: arg
+    self: base_model random
+    src:
+      ./cpp/hawkes
+      ./swig/hawkes
+    install: ${lib_path}/hawkes/build
+    out: _hawkes${lib_name}
+
+  - name: linear_model
+    parent: arg
+    self: base_model
+    src:
+      ./cpp/linear_model
+      ./swig/linear_model
+    install: ${lib_path}/linear_model/build
+    out: _linear_model${lib_name}
+
+  - name: prox
     parent: arg
     self: base
     src:
-      ./src/cpp/optim/prox
-      ./src/swig/optim/prox
-    install: ${lib_path}/optim/prox/build
+      ./cpp/prox
+      ./swig/prox
+    install: ${lib_path}/prox/build
     out: _prox${lib_name}
-
-  - name: optim/solver
-    parent: arg
-    self: random optim/model optim/prox
-    src:
-      ./src/cpp/optim/solver
-      ./src/swig/optim/solver
-    install: ${lib_path}/optim/solver/build
-    out: _solver${lib_name}
 
   - name: preprocessing
     parent: arg
     self: base
     src:
-      ./src/cpp/preprocessing
-      ./src/swig/preprocessing
+      ./cpp/preprocessing
+      ./swig/preprocessing
     install: ${lib_path}/preprocessing/build
     out: _preprocessing${lib_name}
-
-  - name: simulation
-    parent: arg
-    self: random
-    src:
-      ./src/cpp/simulation
-      ./src/swig/simulation
-    install: ${lib_path}/simulation/build
-    out: _simulation${lib_name}
 
   - name: random
     parent: arg
     self: base
     src:
-      ./src/cpp/random
-      ./src/swig/random
+      ./cpp/random
+      ./swig/random
     install: ${lib_path}/random/build
     out: _crandom${lib_name}
+
+  - name: robust
+    parent: arg
+    self: linear_model
+    src:
+      ./cpp/robust
+      ./swig/robust
+    install: ${lib_path}/robust/build
+    out: _robust${lib_name}
+
+  - name: solver
+    parent: arg
+    self: random linear_model prox
+    src:
+      ./cpp/solver
+      ./swig/solver
+    install: ${lib_path}/solver/build
+    out: _solver${lib_name}
+
+  - name: survival
+    parent: arg
+    self: base_model
+    src:
+      ./cpp/survival
+      ./swig/survival
+    install: ${lib_path}/survival/build
+    out: _survival${lib_name}
 
 ### See file ./sh/gtest/sh 
   - name: gtest_nodep
     parent: arg
-    main: src/cpp-test/optim/model/hawkes_models_gtest.cpp
+    main: cpp-test/linear_model/hawkes_models_gtest.cpp
     arg: -DADD_MAIN
     mode: none
     if_arg:
@@ -164,4 +181,4 @@ profile:
 
   - name: gtest
     parent: gtest_nodep
-    self: optim/solver simulation
+    self: solver hawkes
