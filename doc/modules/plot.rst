@@ -17,7 +17,7 @@ Optimization
 ------------
 
 Used to compare efficiency of optimization algorithms implemented in
-`tick.optim.solver`.
+`tick.solver`.
 
 .. currentmodule:: tick
 
@@ -27,7 +27,7 @@ Used to compare efficiency of optimization algorithms implemented in
 
     plot.plot_history
 
-.. plot:: modules/code_samples/optim/plot_optim_comparison.py
+.. plot:: modules/code_samples/solver/plot_solver_comparison.py
     :include-source:
 
 Hawkes estimation

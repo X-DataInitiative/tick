@@ -180,39 +180,45 @@ fi
 PROFILES=(
     array
     base
+    base_model
     random
-    optim/model
-    optim/prox
-    optim/solver
-    simulation
-    inference
+    linear_model
+    prox
+    solver
+    hawkes
     preprocessing
+    robust
+    survival
     array_test
 )
 function hash_index() {
     case $1 in
         'array')         echo 0;;
         'base')          echo 1;;
-        'random')        echo 2;;
-        'optim/model')   echo 3;;
-        'optim/prox')    echo 4;;
-        'optim/solver')  echo 5;;
-        'simulation')    echo 6;;
-        'inference')     echo 7;;
+        'base_model')    echo 2;;
+        'random')        echo 3;;
+        'linear_model')  echo 4;;
+        'prox')          echo 5;;
+        'solver')        echo 6;;
+        'hawkes')        echo 7;;
         'preprocessing') echo 8;;
-        'array_test')    echo 9;;
+        'robust')        echo 9;;
+        'survival')      echo 10;;
+        'array_test')    echo 11;;
     esac
 }
 LIBRARIES=(
     "tick/array/build/_array$LIB_POSTFIX"
     "tick/base/build/_base$LIB_POSTFIX"
+    "tick/base_model/build/_base_model$LIB_POSTFIX"
     "tick/random/build/_crandom$LIB_POSTFIX"
-    "tick/optim/model/build/_model$LIB_POSTFIX"
-    "tick/optim/prox/build/_prox$LIB_POSTFIX"
-    "tick/optim/solver/build/_solver$LIB_POSTFIX"
-    "tick/simulation/build/_simulation$LIB_POSTFIX"
-    "tick/inference/build/_inference$LIB_POSTFIX"
+    "tick/linear_model/build/_linear_model$LIB_POSTFIX"
+    "tick/prox/build/_prox$LIB_POSTFIX"
+    "tick/solver/build/_solver$LIB_POSTFIX"
+    "tick/hawkes/build/_hawkes$LIB_POSTFIX"
     "tick/preprocessing/build/_preprocessing$LIB_POSTFIX"
+    "tick/robust/build/_robust$LIB_POSTFIX"
+    "tick/survival/build/_survival$LIB_POSTFIX"
     "tick/array_test/build/array_test${LIB_POSTFIX}"
 )
 
@@ -259,7 +265,7 @@ for PROFILE in "${PROFILES[@]}"; do
             LIBS="$LIBS -Wl,-rpath,@loader_path/$(relpath $RPATH $REL)"
           fi
         else
-          LIBS="$LIBS ../${ADD_LIB}.${LIB_POSTEXT}"
+          LIBS="$LIBS $(linkread ${ADD_LIB}.${LIB_POSTEXT})"
         fi
 
       fi

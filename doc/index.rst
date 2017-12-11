@@ -76,23 +76,22 @@
 
   <div class="row" style="margin-bottom:40px">
      <div class="col-sm-4 col-sm-offset-1">
-        <a class="reference internal" href="modules/api.html">
-           <h2>API reference</h2>
+        <a class="reference internal" href="modules/solver.html">
+           <h2>Solvers</h2>
         </a>
         <p>
-           The full tick API
+           Optimization algorithm
         </p>
      </div>
-
      <div class="col-sm-4 col-sm-offset-1">
-        <a class="reference internal" href="modules/dev.html">
-           <h2>Development</h2>
+        <a class="reference internal" href="modules/prox.html">
+           <h2>Proximal operators</h2>
         </a>
         <p>
-           You would like to contribute? Here you will find many tips.
+           Proximal operators for penalization of models weights
         </p>
      </div>
-  </div>
+ </div>
 
   <div class="row" style="margin-bottom:40px">
      <div class="col-sm-4 col-sm-offset-1">
@@ -103,8 +102,27 @@
            How to use tick from the R software
         </p>
      </div>
+
+     <div class="col-sm-4 col-sm-offset-1">
+        <a class="reference internal" href="modules/api.html">
+           <h2>API reference</h2>
+        </a>
+        <p>
+           The full tick API
+        </p>
+     </div>
  </div>
 
+  <div class="row" style="margin-bottom:40px">
+     <div class="col-sm-4 col-sm-offset-1">
+        <a class="reference internal" href="modules/dev.html">
+           <h2>Development</h2>
+        </a>
+        <p>
+           You would like to contribute? Here you will find many tips.
+        </p>
+     </div>
+  </div>
 
 
 .. toctree::
@@ -113,6 +131,8 @@
 
     modules/inference
     modules/optim
+    modules/solver
+    modules/prox
     modules/plot
     modules/preprocessing
     modules/simulation
