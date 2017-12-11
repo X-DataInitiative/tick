@@ -185,5 +185,52 @@ void PP::update_jump(int index) {
   n_total_jumps += 1;
 }
 
+void PP::set_timestamps(VArrayDoublePtrList1D &timestamps, double end_time) {
+  if (n_nodes != timestamps.size()) {
+    TICK_ERROR("Should provide n_nodes (" << n_nodes << ") arrays for timestamps but"
+      " was " << timestamps.size());
+  }
 
+  reset();
 
+  ArrayULong current_index(n_nodes);
+  current_index.init_to_zero();
+
+  const double inf = std::numeric_limits<double>::max();
+  while (true) {
+    ulong next_jump_node = 0;
+    double next_jump_time = inf;
+
+    // Find where is next jump
+    for (ulong i = 0; i < n_nodes; ++i) {
+      const double next_jump_node_i = current_index[i] < timestamps[i]->size() ?
+                                      (*timestamps[i])[current_index[i]] : inf;
+      if (next_jump_node_i < next_jump_time) {
+        next_jump_node = i;
+        next_jump_time = next_jump_node_i;
+      }
+    }
+
+    // All jumps have been seen
+    // We still want to continue to record intensity
+    if (next_jump_time == inf) {
+      next_jump_time = end_time;
+    }
+
+    current_index[next_jump_node]++;
+
+    if (itr_on()) {
+      while (itr_time + itr_time_step < next_jump_time) {
+        update_time_shift(itr_time_step + itr_time - time, false, true);
+        if (flag_negative_intensity && !threshold_negative_intensity) break;
+        itr_time = itr_time + itr_time_step;
+      }
+    }
+
+    // Exit before recording end_time as a jump
+    if (next_jump_time == end_time) break;
+
+    update_time_shift(next_jump_time - time, true, true);
+    update_jump(next_jump_node);
+  }
+}

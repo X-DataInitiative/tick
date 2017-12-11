@@ -9,6 +9,7 @@ from tick.inference.base import LearnerOptim
 from tick.optim.model.base import ModelLipschitz
 from tick.optim.prox import ProxElasticNet, ProxL1, ProxL2Sq, ProxPositive
 from tick.optim.solver import AGD, GD, SGD, SVRG, BFGS
+from tick.plot import plot_point_process
 from tick.simulation import SimuHawkes
 
 
@@ -96,6 +97,9 @@ class LearnerHawkesParametric(LearnerOptim):
 
     coeffs : `np.array`, shape=(n_nodes * n_nodes + n_nodes, )
         Raw coefficients of the model.
+
+    events : `list` of `np.ndarray`
+        Events given to learner during fitting
     """
 
     _attrinfos = {
@@ -123,6 +127,7 @@ class LearnerHawkesParametric(LearnerOptim):
                  tol=1e-5, max_iter=100, verbose=False, print_every=10,
                  record_every=10, elastic_net_ratio=0.95, random_state=None):
         self.coeffs = None
+        self.events = None
 
         extra_prox_kwarg = {"positive": True}
 
@@ -157,6 +162,8 @@ class LearnerHawkesParametric(LearnerOptim):
         output : `LearnerHawkesParametric`
             The current instance of the Learner
         """
+        self._set('events', events)
+
         solver_obj = self._solver_obj
         model_obj = self._model_obj
         prox_obj = self._prox_obj
@@ -321,3 +328,109 @@ class LearnerHawkesParametric(LearnerOptim):
             model.fit(events, end_times)
 
         return - model.loss(coeffs)
+
+    def estimated_intensity(self, events, intensity_track_step,
+                            end_time=None):
+        """Value of intensity for a given realization with the fitted parameters
+
+        Parameters
+        ----------
+        events : `list` of `np.ndarray`, default = None
+            One Hawkes processes realization, a list of n_node for
+            each component of the Hawkes. Namely `events[i]` contains a
+            one-dimensional `numpy.array` of the events' timestamps of
+            component i.
+
+        intensity_track_step : `float`, default = None
+            How often the intensity should be computed
+
+        end_time : `float`, default = None
+            End time of hawkes process.
+            If None, it will be set to realization's latest time.
+
+        Returns
+        -------
+        tracked_intensity : `list` of `np.array`
+            intensity values for all components
+
+        intensity_tracked_times : `np.array`
+            Times at wich intensity has been recorded
+        """
+        if end_time is None:
+            end_time = max(map(max, events))
+
+        simu = self._corresponding_simu()
+        if intensity_track_step is not None:
+            simu.track_intensity(intensity_track_step)
+
+        simu.set_timestamps(events, end_time)
+        return simu.tracked_intensity, simu.intensity_tracked_times
+
+    def plot_estimated_intensity(self, events, n_points=10000,
+                                 plot_nodes=None, t_min=None, t_max=None,
+                                 intensity_track_step=None, max_jumps=None,
+                                 show=True, ax=None):
+        """Plot value of intensity for a given realization with the fitted
+        parameters
+
+        events : `list` of `np.ndarray`, default = None
+            One Hawkes processes realization, a list of n_node for
+            each component of the Hawkes. Namely `events[i]` contains a
+            one-dimensional `numpy.array` of the events' timestamps of
+            component i.
+
+        n_points : `int`, default=10000
+            Number of points used for intensity plot.
+
+        plot_nodes : `list` of `int`, default=`None`
+            List of nodes that will be plotted. If `None`, all nodes are
+            considered
+
+        t_min : `float`, default=`None`
+            If not `None`, time at which plot will start
+
+        t_max : `float`, default=`None`
+            If not `None`, time at which plot will stop
+
+        intensity_track_step : `float`, default=`None`
+            Defines how often intensity will be computed. If this is too low,
+            computations might be long. By default, a value will be
+            extrapolated from (t_max - t_min) / n_points.
+
+        max_jumps : `int`, default=`None`
+            If not `None`, maximum of jumps per coordinate that will be plotted.
+            This is useful when plotting big point processes to ensure a only
+            readable part of them will be plotted
+
+        show : `bool`, default=`True`
+            if `True`, show the plot. Otherwise an explicit call to the show
+            function is necessary. Useful when superposing several plots.
+
+        ax : `list` of `matplotlib.axes`, default=None
+            If not None, the figure will be plot on this axis and show will be
+            set to False.
+        """
+
+        simu = self._corresponding_simu()
+        end_time = max(map(max, events))
+
+        if t_max is not None:
+            end_time = max(end_time, t_max)
+
+        if intensity_track_step is None:
+            display_start_time = 0
+            if t_min is not None:
+                display_start_time = t_min
+            display_end_time = end_time
+            if t_min is not None:
+                display_start_time = t_min
+
+            intensity_track_step = (display_end_time - display_start_time) \
+                                   / n_points
+
+        simu.track_intensity(intensity_track_step)
+        simu.set_timestamps(events, end_time)
+
+        plot_point_process(simu, plot_intensity=True, n_points=n_points,
+                           plot_nodes=plot_nodes, t_min=t_min, t_max=t_max,
+                           max_jumps=max_jumps, show=show, ax=ax)

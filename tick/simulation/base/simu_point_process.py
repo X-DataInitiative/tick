@@ -194,3 +194,10 @@ class SimuPointProcess(Simu):
             Flag to allow negative intensity thresholding
         """
         self._pp.set_threshold_negative_intensity(allow)
+
+    def set_timestamps(self, timestamps, end_time=None):
+        if end_time is None:
+            end_time = max(map(max, timestamps))
+
+        self.end_time = end_time
+        self._pp.set_timestamps(timestamps, end_time)

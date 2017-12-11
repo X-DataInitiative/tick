@@ -10,4 +10,5 @@ pyenv global ${PYVER}
 
 python setup.py cpplint build_ext --inplace cpptest pytest
 
-export PYTHONPATH=${PYTHONPATH}:`pwd` && (cd doc && make doctest)
+export PYTHONPATH=${PYTHONPATH}:`pwd` && cd doc && make doctest
+
