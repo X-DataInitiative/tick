@@ -33,6 +33,8 @@ def get_train_data(n_nodes, betas):
 # timestamps = [np.array([0.31, 0.93, 1.29, 2.32, 4.25, 4.35, 4.78, 5.5, 6.83, 6.99]),
 #               np.array([0.12, 1.19, 2.12, 2.41, 3.77, 4.21, 4.96, 5.11, 6.7, 7.26])]
 
+global_n = np.array([0,    1,0,1,0,1,0,1,0,1,2,1])
+
 timestamps, baseline, adjacency = get_train_data(n_nodes=2, betas=beta)
 
 # coeffs = np.array([1., 3., 2., 3., 4., 1, 1, 3, 5, 7, 9, 2, 4, 6, 8, 10])

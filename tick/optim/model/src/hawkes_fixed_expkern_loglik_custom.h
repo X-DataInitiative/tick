@@ -31,6 +31,11 @@ public:
      */
     ModelHawkesCustom(const double _decay, const ulong _MaxN_of_f, const int max_n_threads = 1);
 
+    using ModelHawkesSingle::set_data;
+    void set_data(const SArrayDoublePtrList1D &_timestamps,
+                  const SArrayLongPtr _global_n,
+                  const double _end_times);
+
 private:
     void allocate_weights() override;
 

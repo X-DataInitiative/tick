@@ -9,6 +9,8 @@
 #include "defs.h"
 %}
 
+%include <std_shared_ptr.i>
+
 class ModelHawkesCustom : public Model {
 
 public:
@@ -16,10 +18,9 @@ public:
     ModelHawkesCustom(const double _decay,
                       const unsigned long _MaxN_of_f, const unsigned int n_cores = 1);
 
-    void set_data(const SArrayDoublePtrList1D &timestamps, const double end_time);
-
-    void set_data(const SArrayDoublePtrList2D &timestamps_list,
-                  const VArrayDoublePtr end_times);
+    void set_data(const SArrayDoublePtrList1D &_timestamps,
+                                 const SArrayLongPtr _global_n,
+                                 const double _end_times);
 
     void compute_weights();
 

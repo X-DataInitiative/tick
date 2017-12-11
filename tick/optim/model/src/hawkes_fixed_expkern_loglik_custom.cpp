@@ -13,9 +13,7 @@ void ModelHawkesCustom::allocate_weights() {
     }
 
     //! hacked part of peng Wu
-    Total_events = 0;
-    for (ulong i = 0; i != n_nodes; i++)
-        Total_events += (*n_jumps_per_node)[i];
+    Total_events = n_total_jumps;
 
     g = ArrayDouble2dList1D(n_nodes);
     G = ArrayDouble2dList1D(n_nodes);
@@ -41,13 +39,12 @@ void ModelHawkesCustom::allocate_weights() {
         H3[i] = ArrayDouble(MaxN_of_f);
         H3[i].init_to_zero();
     }
-
     global_timestamps = ArrayDouble(Total_events + 1);
     global_timestamps.init_to_zero();
     type_n = ArrayULong(Total_events + 1);
     type_n.init_to_zero();
-    global_n = ArrayLong(Total_events + 1);
-    global_n.init_to_zero();
+    //global_n = ArrayLong(Total_events + 1);
+    //global_n.init_to_zero();
 }
 
 void ModelHawkesCustom::compute_weights_dim_i(const ulong i) {
@@ -70,20 +67,8 @@ void ModelHawkesCustom::compute_weights_dim_i(const ulong i) {
 
     global_timestamps.sort(tmp_index);
 
-    for (ulong k = 1; k != Total_events + 1; ++k) {
-        type_n[k] = tmp_pre_type_n[tmp_index[k]];
-        if (type_n[k] < 2)
-            global_n[k] = global_n[k - 1] + 1;
-        else
-            global_n[k] = global_n[k - 1] - 1;
-    }
-
-    //! ######################
-    //! Martin's timestamps make global_n negative sometimes, in this test phase, let's make them compulsoryly position by taking abs
     for (ulong k = 1; k != Total_events + 1; ++k)
-        global_n[k] = abs(global_n[k]);
-    //! end of hacking part
-    //! ######################
+        type_n[k] = tmp_pre_type_n[tmp_index[k]];
 
 //    printf("\n\n");
 //    for (ulong k = 0; k < Total_events + 1; ++k)
@@ -128,4 +113,14 @@ void ModelHawkesCustom::compute_weights_dim_i(const ulong i) {
 ulong ModelHawkesCustom::get_n_coeffs() const {
     //!seems not ever used in this stage
     return n_nodes + n_nodes * n_nodes + n_nodes * MaxN_of_f;
+}
+
+void ModelHawkesCustom::set_data(const SArrayDoublePtrList1D &_timestamps,
+                                 const SArrayLongPtr _global_n,
+                                 const double _end_times){
+    ModelHawkesSingle::set_data(_timestamps, _end_times);
+
+    global_n = ArrayLong(n_total_jumps + 1);
+    for(ulong k = 0; k != n_total_jumps + 1; ++k)
+        global_n[k] = _global_n->value(k);
 }

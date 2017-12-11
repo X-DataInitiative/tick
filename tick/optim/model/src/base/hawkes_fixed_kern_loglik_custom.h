@@ -60,7 +60,7 @@ protected:
     ulong MaxN_of_f;
 
 public:
-    using ModelHawkesSingle::set_data;
+//    using ModelHawkesSingle::set_data;
     /**
      * @brief Constructor
      * \param n_threads : number of threads that will be used for parallel computations
@@ -74,8 +74,8 @@ public:
      */
     void compute_weights();
 
-    void set_data(const SArrayDoublePtrList2D &timestamps_list,
-                  VArrayDoublePtr end_times);
+//    void set_data(const SArrayDoublePtrList2D &timestamps_list,
+//                  VArrayDoublePtr end_times);
 
     /**
      * @brief Compute loss and gradient

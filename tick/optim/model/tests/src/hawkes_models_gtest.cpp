@@ -62,22 +62,27 @@ TEST_F(HawkesModelTest, compute_loss_loglikelihood){
   EXPECT_DOUBLE_EQ(model.get_n_coeffs(), 6);
 }
 
+
 TEST_F(HawkesModelTest, compute_loss_loglikelihood_custom) {
 
-    SArrayDoublePtrList1D timestamps2;
-    timestamps2 = SArrayDoublePtrList1D(0);
+    SArrayDoublePtrList1D timestamps;
+    timestamps = SArrayDoublePtrList1D(0);
     // Test will fail if process array is not sorted
     ArrayDouble timestamps_0 = ArrayDouble {0.31, 0.93, 1.29, 2.32, 4.25};
-    timestamps2.push_back(timestamps_0.as_sarray_ptr());
+    timestamps.push_back(timestamps_0.as_sarray_ptr());
     ArrayDouble timestamps_1 = ArrayDouble {0.12, 1.19, 2.12, 2.41, 3.77, 4.21};
-    timestamps2.push_back(timestamps_1.as_sarray_ptr());
+    timestamps.push_back(timestamps_1.as_sarray_ptr());
+
+    ArrayLong global_n = ArrayLong {0,    1,0,1,0,1,0,1,0,1,2,1};
 
     //! beta = 2
     ModelHawkesCustom model(2, 5);
-    //! timestamps, T
-    model.set_data(timestamps2, 4.5);
-    ArrayDouble coeffs = ArrayDouble {1., 3., 2., 3., 4., 1, 1, 3, 5, 7, 9, 2, 4, 6, 8, 10};
+    //! timestamps, user-fixed global_n, T
+    model.set_data(timestamps, global_n.as_sarray_ptr(), 4.5);
 
+
+
+    ArrayDouble coeffs = ArrayDouble {1., 3., 2., 3., 4., 1, 1, 3, 5, 7, 9, 2, 4, 6, 8, 10};
     const double loss = model.loss(coeffs);
     ArrayDouble grad(model.get_n_coeffs());
     model.grad(coeffs, grad);
@@ -86,20 +91,30 @@ TEST_F(HawkesModelTest, compute_loss_loglikelihood_custom) {
     EXPECT_DOUBLE_EQ(loss, -9.025186344864748);
     EXPECT_DOUBLE_EQ(model.get_n_coeffs(), 16);
 }
-//! origin test
+
+//! test compatiable with the no-global-n-passed version
 //TEST_F(HawkesModelTest, compute_loss_loglikelihood_custom) {
+//
+//    SArrayDoublePtrList1D timestamps2;
+//    timestamps2 = SArrayDoublePtrList1D(0);
+//    // Test will fail if process array is not sorted
+//    ArrayDouble timestamps_0 = ArrayDouble {0.31, 0.93, 1.29, 2.32, 4.25};
+//    timestamps2.push_back(timestamps_0.as_sarray_ptr());
+//    ArrayDouble timestamps_1 = ArrayDouble {0.12, 1.19, 2.12, 2.41, 3.77, 4.21};
+//    timestamps2.push_back(timestamps_1.as_sarray_ptr());
+//
 //    //! beta = 2
 //    ModelHawkesCustom model(2, 5);
 //    //! timestamps, T
-//    model.set_data(timestamps, 4.5);
-//    ArrayDouble coeffs = ArrayDouble {1., 3., 2., 3., 4., 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2};
+//    model.set_data(timestamps2, 4.5);
+//    ArrayDouble coeffs = ArrayDouble {1., 3., 2., 3., 4., 1, 1, 3, 5, 7, 9, 2, 4, 6, 8, 10};
 //
 //    const double loss = model.loss(coeffs);
 //    ArrayDouble grad(model.get_n_coeffs());
 //    model.grad(coeffs, grad);
 //    grad.print();
 //
-//    EXPECT_DOUBLE_EQ(loss, -3.9407137213235459);
+//    EXPECT_DOUBLE_EQ(loss, -9.025186344864748);
 //    EXPECT_DOUBLE_EQ(model.get_n_coeffs(), 16);
 //}
 

@@ -39,7 +39,7 @@ class ModelHawkesCustom(ModelFirstOrder):
         print(self._model)
 
 
-    def fit(self, events, end_times=None):
+    def fit(self, events, global_n, end_times=None):
         """Set the corresponding realization(s) of the process.
 
         Parameters
@@ -58,9 +58,9 @@ class ModelHawkesCustom(ModelFirstOrder):
             If only one realization is provided, then a float can be given.
         """
         self._end_times = end_times
-        return ModelFirstOrder.fit(self, events)
+        return ModelFirstOrder.fit(self, events, global_n)
 
-    def _set_data(self, events):
+    def _set_data(self, events, global_n):
         """Set the corresponding realization(s) of the process.
 
         Parameters
@@ -73,13 +73,13 @@ class ModelHawkesCustom(ModelFirstOrder):
             component j of realization i.
             If only one realization is given, it will be wrapped into a list
         """
-        self._set("data", events)
+        #self._set("data", events, global_n)
 
         end_times = self._end_times
         if end_times is None:
             end_times = max(map(max, events))
 
-        self._model.set_data(events, end_times)
+        self._model.set_data(events, global_n, end_times)
 
 
     def _loss(self, coeffs):
