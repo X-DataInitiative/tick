@@ -172,11 +172,12 @@ class SwigPath:
     def __init__(self, module_path, extension_name):
         module_path = os.path.normpath(module_path)
 
-        # Module C++ source directory (e.g. lib/src/cpp/tick/base)
+
+        # Module C++ source directory (e.g. lib/cpp/tick/base)
         self.src = os.path.join(module_path, 'src')
 
         # Module SWIG interface files directory (e.g. tick/array/swig)
-        self.swig = "lib/src/swig/" + module_path[5:]
+        self.swig = "lib/swig/" + module_path[5:]
 
         # Module build directory. Will contain generated .py files, and .so
         # files if built with flag --inplace.
@@ -198,6 +199,10 @@ class SwigPath:
         # Filename of the produced .so file (e.g. _array.so)
         self.lib_filename = '{}{}'.format(self.private_extension_name,
                                           sysconfig.get_config_var('SO'))
+
+        print("self.extension_path ", self.extension_path)
+        print("self.build ", self.build)
+        print("self.lib_filename ", self.lib_filename)
 
     def _check_configuration(self):
         exception_base_msg = (
@@ -243,7 +248,7 @@ def create_extension(extension_name, module_dir,
     def add_dir_name(dir_name, filenames):
         return list(os.path.join(dir_name, filename) for filename in filenames)
 
-    swig_files = add_dir_name("lib/src/swig/" + module_dir[7:], swig_files)
+    swig_files = add_dir_name("lib/swig/" + module_dir[7:], swig_files)
 
     for folder in folders:
         for file in os.listdir(folder):
@@ -266,7 +271,7 @@ def create_extension(extension_name, module_dir,
                      '-c++',
                      '-modern',
                      '-new_repr',
-                     '-Ilib/src/swig/base',
+                     '-Ilib/swig/base',
                      '-Ilib/include',
                      '-outdir', swig_path.build,
                      ]
@@ -404,6 +409,8 @@ def create_extension(extension_name, module_dir,
         implib += os.path.splitext(sysconfig.get_config_var("SO"))[0]
         extra_link_args.append(implib + ".lib")
 
+    print("extension_path ", extension_path)
+
     core_module = SwigExtension(extension_path, module_ref=swig_path,
                                 sources=swig_files + cpp_files,
                                 extra_compile_args=extra_compile_args,
@@ -427,7 +434,7 @@ def create_extension(extension_name, module_dir,
 
 array_extension_info = {
     "cpp_files": [],
-    "h_files": ["lib/src/cpp/array"],
+    "h_files": ["lib/cpp/array"],
     "swig_files": ["array_module.i"],
     "module_dir": "./tick/array/",
     "extension_name": "array"
@@ -439,8 +446,8 @@ base_extension_info = {
     "cpp_files": [],
     "h_files": [],
     "folders": [
-        "lib/src/cpp/base",
-        "lib/src/cpp/base/math"
+        "lib/cpp/base",
+        "lib/cpp/base/math"
     ],
     "swig_files": ["base_module.i"],
     "module_dir": "./tick/base",
@@ -455,7 +462,7 @@ base_array_modules = [array_extension.module_ref, base_extension.module_ref]
 array_test_extension_info = {
     "cpp_files": [],
     "h_files": [],
-    "folders": ["lib/src/cpp/array_test"],
+    "folders": ["lib/cpp/array_test"],
     "swig_files": ["array_test_module.i"],
     "module_dir": "./tick/array_test/",
     "extension_name": "array_test",
@@ -467,7 +474,7 @@ test_extension = create_extension(**array_test_extension_info)
 random_extension_info = {
     "cpp_files": [],
     "h_files": [],
-    "folders": ["lib/src/cpp/random"],
+    "folders": ["lib/cpp/random"],
     "swig_files": ["crandom_module.i"],
     "module_dir": "./tick/random/",
     "extension_name": "crandom",
@@ -476,73 +483,95 @@ random_extension_info = {
 
 random_extension = create_extension(**random_extension_info)
 
-simulation_extension_info = {
+base_model_core_info = {
     "cpp_files": [],
     "h_files": [],
     "folders": [
-        "lib/src/cpp/simulation",
-        "lib/src/cpp/simulation/hawkes_baselines", 
-        "lib/src/cpp/simulation/hawkes_kernels"
+        "lib/cpp/base_model"
     ],
-    "swig_files": ["simulation_module.i"],
-    "module_dir": "./tick/simulation/",
-    "extension_name": "simulation",
-    "include_modules": base_array_modules + [random_extension.module_ref]
-}
-
-simulation_extension = create_extension(**simulation_extension_info)
-
-model_core_info = {
-    "cpp_files": [],
-    "h_files": [],
-    "folders": [
-        "lib/src/cpp/optim/model",
-        "lib/src/cpp/optim/model/variants", 
-        "lib/src/cpp/optim/model/base"
-    ],
-    "swig_files": ["model_module.i"],
-    "module_dir": "./tick/optim/model/",
-    "extension_name": "model",
+    "swig_files": ["base_model_module.i"],
+    "module_dir": "./tick/base_model/",
+    "extension_name": "base_model",
     "include_modules": base_array_modules
 }
+base_model_core = create_extension(**base_model_core_info)
 
-model_core = create_extension(**model_core_info)
+linear_model_core_info = {
+    "cpp_files": [],
+    "h_files": [],
+    "folders": [
+        "lib/cpp/linear_model"
+    ],
+    "swig_files": ["linear_model_module.i"],
+    "module_dir": "./tick/linear_model/",
+    "extension_name": "linear_model",
+    "include_modules": base_array_modules + 
+    [
+      base_model_core.module_ref,
+    ]
+}
+linear_model_core = create_extension(**linear_model_core_info)
+
+hawkes_extension_info = {
+    "cpp_files": [],
+    "h_files": [],
+    "folders": [
+        "lib/cpp/hawkes/model",
+        "lib/cpp/hawkes/model/base",
+        "lib/cpp/hawkes/model/variants",
+        "lib/cpp/hawkes/inference",
+        "lib/cpp/hawkes/simulation", 
+        "lib/cpp/hawkes/simulation/hawkes_baselines", 
+        "lib/cpp/hawkes/simulation/hawkes_kernels"
+    ],
+    "swig_files": [
+      "hawkes_module.i"
+    ],
+    "swig_opts": ["-Ilib/swig/hawkes"],
+    "module_dir": "./tick/hawkes/",
+    "extension_name": "hawkes",
+    "include_modules": base_array_modules + 
+    [
+      base_model_core.module_ref,
+      random_extension.module_ref
+    ]
+}
+hawkes_extension = create_extension(**hawkes_extension_info)
 
 prox_core_info = {
     "cpp_files": [],
     "h_files": [],
     "folders": [
-        "lib/src/cpp/optim/prox"
+        "lib/cpp/prox"
     ],
     "swig_files": ["prox_module.i"],
-    "module_dir": "./tick/optim/prox/",
+    "module_dir": "./tick/prox/",
     "extension_name": "prox",
     "include_modules": base_array_modules
 }
-
 prox_core = create_extension(**prox_core_info)
 
 solver_core_info = {
     "cpp_files": [],
     "h_files": [],
     "folders": [
-        "lib/src/cpp/optim/solver"
+        "lib/cpp/solver"
     ],
     "swig_files": ["solver_module.i"],
-    "module_dir": "./tick/optim/solver/",
+    "module_dir": "./tick/solver/",
     "extension_name": "solver",
     "include_modules": base_array_modules + [random_extension.module_ref,
-                                             model_core.module_ref,
+                                             base_model_core.module_ref,
+                                             linear_model_core.module_ref,
                                              prox_core.module_ref]
 }
-
 solver_core = create_extension(**solver_core_info)
 
 preprocessing_core_info = {
     "cpp_files": [],
     "h_files": [],
     "folders": [
-        "lib/src/cpp/preprocessing"
+        "lib/cpp/preprocessing"
     ],
     "swig_files": ["preprocessing_module.i"],
     "module_dir": "./tick/preprocessing/",
@@ -552,25 +581,39 @@ preprocessing_core_info = {
 
 preprocessing_core = create_extension(**preprocessing_core_info)
 
-inference_extension_info = {
+robust_extension_info = {
     "cpp_files": [],
     "h_files": [],
     "folders": [
-        "lib/src/cpp/inference"
+        "lib/cpp/robust"
     ],
-    "swig_files": ["inference_module.i"],
-    "module_dir": "./tick/inference/",
-    "extension_name": "inference",
-    "include_modules": base_array_modules + [model_core.module_ref]
+    "swig_files": ["robust_module.i"],
+    "module_dir": "./tick/robust/",
+    "extension_name": "robust",
+    "include_modules": base_array_modules + [
+      base_model_core.module_ref,linear_model_core.module_ref]
 }
+robust_extension = create_extension(**robust_extension_info)
 
-inference_extension = create_extension(**inference_extension_info)
+survival_extension_info = {
+    "cpp_files": [],
+    "h_files": [],
+    "folders": [
+        "lib/cpp/survival"
+    ],
+    "swig_files": ["survival_module.i"],
+    "module_dir": "./tick/survival/",
+    "extension_name": "survival",
+    "include_modules": base_array_modules + [base_model_core.module_ref]
+}
+survival_extension = create_extension(**survival_extension_info)
 
-tick_modules = [array_extension, base_extension,
-                test_extension, random_extension, simulation_extension,
-                model_core, prox_core, solver_core,
-                inference_extension, preprocessing_core]
-
+tick_modules = [
+  array_extension, base_extension, test_extension, 
+  random_extension, base_model_core, linear_model_core,
+  hawkes_extension, prox_core, solver_core, preprocessing_core, 
+  robust_extension,  survival_extension 
+]
 
 # Abstract class for tick-specific commands that need access to common build
 # directories
@@ -787,7 +830,8 @@ class CleanTick(clean):
                     path.rmdir()
                 else:
                     path.unlink()
-
+from pprint import pprint
+pprint(tick_modules)
 
 setup(name="tick",
       version='0.3.0.0',
