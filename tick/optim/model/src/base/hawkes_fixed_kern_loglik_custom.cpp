@@ -158,7 +158,7 @@ double ModelHawkesFixedKernCustom::loss_dim_i(const ulong i,
         if (tmp_s <= 0) {
             TICK_ERROR("The sum of the influence on someone cannot be negative. "
                                "Maybe did you forget to add a positive constraint to "
-                               "your proximal operator");
+                               "your proximal operator, in loss_dim_i");
         }
         loss += log(tmp_s);
     }

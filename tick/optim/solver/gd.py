@@ -155,9 +155,10 @@ class GD(SolverFirstOrder):
     def _solve(self, x0: np.ndarray = None, step: float = None):
         x, prev_x, x_new, step, obj = self._initialize_values(x0, step)
         for n_iter in range(self.max_iter + 1):
-            print(x)
-            x[x < 1e-5] = 1e-5
-            print('min(x)', min(x))
+            # print(x)
+            # print(x < 1e-3)
+            # x[x < 1e-3] = 1e-3
+            # print('min(x)', min(x))
 
             prev_x[:] = x
             prev_obj = obj
