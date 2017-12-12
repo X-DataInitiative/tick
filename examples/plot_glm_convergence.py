@@ -9,11 +9,11 @@ This example illustrates the optimization of three linear models:
     * Poisson regression (`tick.optim.model.ModelPoisReg`)
 
 with five different solvers:
-    * LBFGS (`tick.optim.solver.BFGS`)
-    * SVRG (`tick.optim.solver.SVRG`)
-    * SDCA (`tick.optim.solver.SDCA`)
-    * GD (`tick.optim.solver.GD`)
-    * AGD (`tick.optim.solver.AGD`)
+    * LBFGS (`tick.solver.BFGS`)
+    * SVRG (`tick.solver.SVRG`)
+    * SDCA (`tick.solver.SDCA`)
+    * GD (`tick.solver.GD`)
+    * AGD (`tick.solver.AGD`)
 """
 
 import matplotlib.pyplot as plt
@@ -21,8 +21,8 @@ from tick.plot import plot_history
 import numpy as np
 from itertools import product
 from tick.optim.model import ModelLinReg, ModelLogReg, ModelPoisReg
-from tick.optim.solver import SDCA, SVRG, BFGS, GD, AGD
-from tick.optim.prox import ProxZero, ProxL2Sq
+from tick.solver import SDCA, SVRG, BFGS, GD, AGD
+from tick.prox import ProxZero, ProxL2Sq
 from tick.simulation import SimuLinReg, SimuLogReg, SimuPoisReg
 
 seed = 1398

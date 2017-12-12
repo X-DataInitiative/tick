@@ -127,7 +127,7 @@ through the ``tick.inference.LinearRegression`` class as well.
     # Use tick.optim to train a linear regression model with SLOPE penalization
     optim = tick$optim
     ModelLinReg = optim$model$ModelLinReg
-    ProxSlope = optim$prox$ProxSlope
+    ProxSlope = prox$ProxSlope
     AGD = optim$solver$AGD
 
     model = ModelLinReg(fit_intercept=FALSE)$fit(X, y)

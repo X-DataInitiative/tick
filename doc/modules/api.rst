@@ -178,14 +178,16 @@ Hawkes
    optim.model.ModelHawkesFixedSumExpKernLeastSq
 
 
-:mod:`tick.optim.prox`: Proximal operators classes
+.. _api-prox:
+
+:mod:`tick.prox`: Proximal operators classes
 ==================================================
 
 This module contains all the proximal operators available in tick.
 
-**User guide:** See the :ref:`optim-prox` section for further details.
+**User guide:** See the :ref:`prox` section for further details.
 
-.. automodule:: tick.optim.prox
+.. automodule:: tick.prox
    :no-members:
    :no-inherited-members:
 
@@ -195,31 +197,31 @@ This module contains all the proximal operators available in tick.
    :toctree: generated/
    :template: class.rst
 
-   optim.prox.ProxZero
-   optim.prox.ProxL1
-   optim.prox.ProxL1w
-   optim.prox.ProxElasticNet
-   optim.prox.ProxL2Sq
-   optim.prox.ProxL2
-   optim.prox.ProxMulti
-   optim.prox.ProxNuclear
-   optim.prox.ProxPositive
-   optim.prox.ProxEquality
-   optim.prox.ProxSlope
-   optim.prox.ProxTV
-   optim.prox.ProxBinarsity
-   optim.prox.ProxGroupL1
+   prox.ProxZero
+   prox.ProxL1
+   prox.ProxL1w
+   prox.ProxElasticNet
+   prox.ProxL2Sq
+   prox.ProxL2
+   prox.ProxMulti
+   prox.ProxNuclear
+   prox.ProxPositive
+   prox.ProxEquality
+   prox.ProxSlope
+   prox.ProxTV
+   prox.ProxBinarsity
+   prox.ProxGroupL1
 
-.. _api-optim-solver:
+.. _api-solver:
 
-:mod:`tick.optim.solver`: Solver classes
+:mod:`tick.solver`: Solver classes
 ========================================
 
 This module contains all the solvers available in tick.
 
-**User guide:** See the :ref:`optim-solver` section for further details.
+**User guide:** See the :ref:`solver` section for further details.
 
-.. automodule:: tick.optim.solver
+.. automodule:: tick.solver
    :no-members:
    :no-inherited-members:
 
@@ -231,11 +233,11 @@ Batch solvers
    :toctree: generated/
    :template: class.rst
 
-   optim.solver.GD
-   optim.solver.AGD
-   optim.solver.BFGS
-   optim.solver.GFB
-   optim.solver.SCPG
+   solver.GD
+   solver.AGD
+   solver.BFGS
+   solver.GFB
+   solver.SCPG
 
 Stochastic solvers
 ------------------
@@ -245,11 +247,11 @@ Stochastic solvers
    :toctree: generated/
    :template: class.rst
 
-   optim.solver.SGD
-   optim.solver.AdaGrad
-   optim.solver.SVRG
-   optim.solver.SAGA
-   optim.solver.SDCA
+   solver.SGD
+   solver.AdaGrad
+   solver.SVRG
+   solver.SAGA
+   solver.SDCA
 
 History
 -------
@@ -259,7 +261,7 @@ History
    :toctree: generated/
    :template: class.rst
 
-   optim.history.History
+   solver.History
 
 
 .. _api-plot:

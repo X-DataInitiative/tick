@@ -23,7 +23,7 @@ Other penalizations are available in `tick.inference.PoissonRegression`:
 * total-variation penalization, using ``penalty='tv'``
 
 **Remark**: we don't use in this example ``solver='sgd'`` (namely vanilla
-stochastic gradient descent, see `tick.optim.solver.SGD`) since it performs
+stochastic gradient descent, see `tick.solver.SGD`) since it performs
 too poorly.
 
 The plot given below compares the distance to the minimum of each solver along
