@@ -4,7 +4,7 @@
 %shared_ptr(ModelSCCS);
 
 %{
-#include "tick/survival/sccs.h"
+#include "tick/survival/model_sccs.h"
 %}
 
 

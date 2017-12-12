@@ -9,10 +9,10 @@ add_library(tick_linear_model EXCLUDE_FROM_ALL
         ${TICK_LINEAR_MODEL_INCLUDE_DIR}/poisreg.h
         model_hinge.cpp 
         model_quadratic_hinge.cpp 
-        model_smoothed_hinge.cpp 
-        linreg.cpp 
-        logreg.cpp
-        poisreg.cpp 
+        model_smoothed_hinge.cpp
+		model_linreg.cpp
+		model_logreg.cpp
+		model_poisreg.cpp
 )
 
 target_link_libraries(tick_linear_model

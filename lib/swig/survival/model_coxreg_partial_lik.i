@@ -1,7 +1,7 @@
 // License: BSD 3 clause
 
 %{
-#include "tick/survival/coxreg_partial_lik.h"
+#include "tick/survival/model_coxreg_partial_lik.h"
 %}
 
 

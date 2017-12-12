@@ -26,10 +26,8 @@
 
 %include model_smoothed_hinge.i
 
-%include linreg.i
+%include model_linreg.i
 
-%include logreg.i
+%include model_logreg.i
 
-%include poisreg.i
-
-
+%include model_poisreg.i

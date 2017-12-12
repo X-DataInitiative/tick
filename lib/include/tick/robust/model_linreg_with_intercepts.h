@@ -5,7 +5,7 @@
 
 
 #include "tick/robust/model_generalized_linear_with_intercepts.h"
-#include "tick/linear_model/linreg.h"
+#include "tick/linear_model/model_linreg.h"
 
 class DLL_PUBLIC ModelLinRegWithIntercepts : public ModelGeneralizedLinearWithIntercepts,
                                   public ModelLinReg {

@@ -1,7 +1,7 @@
 // License: BSD 3 clause
 
 %{
-#include "tick/linear_model/poisreg.h"
+#include "tick/linear_model/model_poisreg.h"
 %}
 
 enum class LinkType {

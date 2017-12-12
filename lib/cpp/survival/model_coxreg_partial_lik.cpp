@@ -4,7 +4,7 @@
 // Created by Stéphane GAIFFAS on 12/04/2016.
 //
 
-#include "tick/survival/coxreg_partial_lik.h"
+#include "tick/survival/model_coxreg_partial_lik.h"
 
 #include <cmath>
 

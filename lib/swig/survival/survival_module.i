@@ -13,6 +13,6 @@
 
 %import(module="tick.base") base_module.i
 
-%include coxreg_partial_lik.i
+%include model_coxreg_partial_lik.i
 
-%include sccs.i
+%include model_sccs.i

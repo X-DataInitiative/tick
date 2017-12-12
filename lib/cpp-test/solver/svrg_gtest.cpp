@@ -3,7 +3,7 @@
 #include <gtest/gtest.h>
 #include "tick/solver/svrg.h"
 #include "tick/prox/prox_l2sq.h"
-#include "tick/linear_model/linreg.h"
+#include "tick/linear_model/model_linreg.h"
 
 SArrayDoublePtr get_labels() {
   ArrayDouble labels{-1.76, 2.6, -0.7, -1.84, -1.88, -1.78, 2.52};

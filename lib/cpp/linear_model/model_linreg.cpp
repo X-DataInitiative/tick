@@ -4,7 +4,7 @@
 // Created by Stéphane GAIFFAS on 12/12/2015.
 //
 
-#include "tick/linear_model/linreg.h"
+#include "tick/linear_model/model_linreg.h"
 
 ModelLinReg::ModelLinReg(const SBaseArrayDouble2dPtr features,
                          const SArrayDoublePtr labels,

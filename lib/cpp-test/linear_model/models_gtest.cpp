@@ -10,7 +10,7 @@
 #include <gtest/gtest.h>
 
 #include "tick/array/array.h"
-#include "tick/linear_model/linreg.h"
+#include "tick/linear_model/model_linreg.h"
 
 #include <cereal/types/unordered_map.hpp>
 #include <cereal/types/memory.hpp>

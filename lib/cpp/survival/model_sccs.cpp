@@ -4,7 +4,7 @@
 // Created by Maryan Morel on 18/05/2017.
 //
 
-#include "tick/survival/sccs.h"
+#include "tick/survival/model_sccs.h"
 #include "tick/base/base.h"
 #include <cmath>
 

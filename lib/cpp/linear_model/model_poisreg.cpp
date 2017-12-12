@@ -4,7 +4,7 @@
 // Created by Martin Bompaire on 21/10/15.
 //
 
-#include "tick/linear_model/poisreg.h"
+#include "tick/linear_model/model_poisreg.h"
 
 ModelPoisReg::ModelPoisReg(const SBaseArrayDouble2dPtr features,
                            const SArrayDoublePtr labels,
