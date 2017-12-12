@@ -8,8 +8,8 @@ from .hawkes_fixed_expkern_leastsq import ModelHawkesFixedExpKernLeastSq
 from .hawkes_fixed_sumexpkern_leastsq import ModelHawkesFixedSumExpKernLeastSq
 
 __all__ = [
-           "ModelHawkesFixedExpKernLogLik",
-           "ModelHawkesFixedSumExpKernLogLik",
-           "ModelHawkesFixedExpKernLeastSq",
-           "ModelHawkesFixedSumExpKernLeastSq"
-           ]
+    "ModelHawkesFixedExpKernLogLik",
+    "ModelHawkesFixedSumExpKernLogLik",
+    "ModelHawkesFixedExpKernLeastSq",
+    "ModelHawkesFixedSumExpKernLeastSq"
+]

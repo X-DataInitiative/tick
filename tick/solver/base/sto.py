@@ -10,9 +10,6 @@ from ..build.solver import RandType_perm as perm
 from ..build.solver import RandType_unif as unif
 
 
-__author__ = 'stephanegaiffas'
-
-
 class SolverSto(Base):
     """The base class for a stochastic solver.
     In only deals with verbosing information, and setting parameters.

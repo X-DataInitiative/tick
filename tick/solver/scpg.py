@@ -1,7 +1,5 @@
 # License: BSD 3 clause
 
-# -*- coding: utf8 -*-
-
 import numpy as np
 from numpy.linalg import norm
 

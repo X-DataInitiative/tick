@@ -7,7 +7,7 @@ from scipy.sparse import csr_matrix
 
 from tick.robust import ModelModifiedHuber
 from tick.base_model.tests.generalized_linear_model import TestGLM
-from tick.hawkes.simulation import SimuLogReg
+from tick.linear_model import SimuLogReg
 
 
 class Test(TestGLM):

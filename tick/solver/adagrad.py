@@ -1,6 +1,6 @@
 # License: BSD 3 clause
 
-from .build.solver  import AdaGrad as _AdaGrad
+from .build.solver import AdaGrad as _AdaGrad
 from .base import SolverFirstOrderSto
 
 __author__ = "Søren Vinther Poulsen"

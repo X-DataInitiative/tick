@@ -4,11 +4,11 @@ import unittest
 
 import numpy as np
 
+from tick.base.inference import InferenceTest
 from tick.hawkes.inference import HawkesSumExpKern
-from tick.hawkes.inference.tests.inference import InferenceTest
+from tick.hawkes.simulation import SimuHawkesSumExpKernels, SimuHawkesMulti
 from tick.prox import ProxNuclear
 from tick.prox import ProxPositive, ProxL1, ProxL2Sq, ProxElasticNet
-from tick.hawkes.simulation import SimuHawkesSumExpKernels, SimuHawkesMulti
 from tick.solver import AGD, GD, BFGS, SGD, SVRG
 
 solvers = ['gd', 'agd', 'svrg', 'bfgs', 'sgd']

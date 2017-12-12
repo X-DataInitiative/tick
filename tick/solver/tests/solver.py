@@ -4,16 +4,15 @@ import unittest
 
 import itertools
 import numpy as np
-from tick.linear_model import ModelLogReg, ModelPoisReg, ModelLinReg
-from tick.prox import ProxL2Sq, ProxZero, ProxL1
-from tick.solver import SVRG, AGD, SGD, SDCA, GD, BFGS, AdaGrad
 from scipy.linalg import norm
-
-from tick.hawkes.simulation import SimuPoisReg
-
 from scipy.sparse import csr_matrix
 
-from tick.hawkes.simulation import weights_sparse_gauss, SimuLinReg, SimuLogReg
+from tick.linear_model import ModelLogReg, ModelPoisReg, ModelLinReg, \
+    SimuLinReg, SimuLogReg, SimuPoisReg
+from tick.prox import ProxL2Sq, ProxZero, ProxL1
+from tick.solver import SVRG, AGD, SGD, SDCA, GD, BFGS, AdaGrad
+
+from tick.simulation import weights_sparse_gauss
 
 
 class TestSolver(unittest.TestCase):

@@ -4,11 +4,9 @@ import unittest
 
 import numpy as np
 
-from tick.hawkes.inference import LogisticRegression
+from tick.linear_model import LogisticRegression
 from tick.plot import plot_history
-from tick.solver import AGD
-from tick.solver import GD
-from tick.solver import History
+from tick.solver import GD, AGD, History
 
 
 class Test(unittest.TestCase):

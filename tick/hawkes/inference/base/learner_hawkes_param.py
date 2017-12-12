@@ -5,7 +5,7 @@ from warnings import warn
 import numpy as np
 
 from tick.base import actual_kwargs
-from tick.hawkes.inference.base import LearnerOptim
+from tick.base.learner import LearnerOptim
 from tick.base_model import ModelLipschitz
 from tick.prox import ProxElasticNet, ProxL1, ProxL2Sq, ProxPositive
 from tick.hawkes.simulation import SimuHawkes

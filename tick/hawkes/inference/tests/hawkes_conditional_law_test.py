@@ -1,12 +1,13 @@
 # License: BSD 3 clause
 
-import unittest
 import os
+import unittest
+
 import numpy as np
 from numpy.random import random, randint
 
+from tick.base.inference import InferenceTest
 from tick.hawkes.inference import HawkesConditionalLaw
-from tick.hawkes.inference.tests.inference import InferenceTest
 
 
 class Test(InferenceTest):

@@ -6,9 +6,8 @@ from tick.solver import SAGA
 from . import TestSolver
 from ..build.solver import SAGA as _SAGA
 
-from tick.linear_model import ModelLinReg
-from tick.survival import ModelCoxRegPartialLik
-from tick.hawkes.simulation import SimuLinReg, SimuCoxReg, weights_sparse_gauss
+from tick.survival import SimuCoxReg, ModelCoxRegPartialLik
+from tick.simulation import weights_sparse_gauss
 
 
 class Test(TestSolver):

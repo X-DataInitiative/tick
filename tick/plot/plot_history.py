@@ -1,12 +1,11 @@
 # License: BSD 3 clause
 
+import matplotlib.pyplot as plt
 import numpy as np
 
-import matplotlib.pyplot as plt
-
-from tick.hawkes.inference.base.learner_glm import LearnerOptim
-from tick.solver.base import Solver
+from tick.base.learner import LearnerOptim
 from tick.plot.plot_utilities import get_plot_color
+from tick.solver.base import Solver
 
 
 def extract_history(solvers, x, y, given_labels):

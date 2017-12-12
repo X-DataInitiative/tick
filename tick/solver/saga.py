@@ -2,7 +2,7 @@
 
 from tick.base_model import ModelGeneralizedLinear
 from .base import SolverFirstOrderSto
-from .build.solver  import SAGA as _SAGA
+from .build.solver import SAGA as _SAGA
 
 __author__ = "Stephane Gaiffas"
 

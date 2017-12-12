@@ -38,7 +38,7 @@ class Test(TestSolver):
 
         # Then we get AGD solution with prox ElasticNet
         agd = AGD(tol=1e-13, max_iter=1000, verbose=False, step=0.5,
-                    linesearch=False)
+                  linesearch=False)
         Test.prepare_solver(agd, X, y, prox=prox_elasticnet)
         agd_solution = agd.solve()
 

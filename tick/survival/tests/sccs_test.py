@@ -7,10 +7,9 @@ from scipy.linalg import norm
 from scipy.optimize import check_grad, fmin_bfgs
 from scipy.sparse import csr_matrix
 
-from tick.survival.sccs import ModelSCCS
+from tick.survival import SimuSCCS, ModelSCCS
 from tick.preprocessing import LongitudinalFeaturesLagger
 from tick.prox import ProxZero
-from tick.hawkes.simulation import SimuSCCS
 from tick.solver import SVRG
 
 
