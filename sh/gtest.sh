@@ -36,37 +36,40 @@ do
    FILES+=("${array[$i-1]}")
 done
 
-cd $CWD/.. 
+pushd $CWD/.. 2>&1 > /dev/null
 ROOT=$PWD
+popd 2>&1 > /dev/null
 
 source $ROOT/sh/configure_env.sh
 
-cd $ROOT/lib
-[ "$arraylength" == "0" ] && FILES=($(find src/cpp-test -name "*gtest.cpp"))
+pushd $ROOT/lib 2>&1 > /dev/null
+  [ "$arraylength" == "0" ] && FILES=($(find src/cpp-test -name "*gtest.cpp"))
 
-[ ! -z "$CXXFLAGS" ] && CARGS="$CXXFLAGS $CARGS"
-[ ! -z "$LDFLAGS" ] && LDARGS="${LDARGS} ${LDFLAGS}"
+  [ ! -z "$CXXFLAGS" ] && CARGS="$CXXFLAGS $CARGS"
+  [ ! -z "$LDFLAGS" ] && LDARGS="${LDARGS} ${LDFLAGS}"
 
-mkn build -p gtest -tSa "-fPIC -O2 -DNDEBUG -DGTEST_CREATE_SHARED_LIBRARY" \
-    -d google.test,+ ${MKN_X_FILE[@]}
+  mkn build -p gtest -tSa "-fPIC -O2 -DNDEBUG -DGTEST_CREATE_SHARED_LIBRARY" \
+      -d google.test,+ ${MKN_X_FILE[@]} "${MKN_WITH[@]}"
 
-LIB=""
-if [[ "$unameOut" == "Darwin"* ]]; then
-  for P in "${PROFILES[@]}"; do
-    LIB="${LIB} -Wl,-rpath,@loader_path/../../$(dirname ${LIBRARIES[$(hash_index $P)]})"
+  LIB=""
+  if [[ "$unameOut" == "Darwin"* ]]; then
+    for P in "${PROFILES[@]}"; do
+      LIB="${LIB} -Wl,-rpath,@loader_path/../../$(dirname ${LIBRARIES[$(hash_index $P)]})"
+    done
+  fi
+
+  RUN="run"
+  [[ $DEBUG == 1 ]] && RUN="dbg"
+  set -x
+  for FILE in "${FILES[@]}"; do
+
+      echo FILE $FILE
+
+      mkn clean build -p gtest -a "${CARGS}" \
+          -tl "${LDARGS} ${LIB}" -b "$PY_INCS" \
+          -M "${FILE}" -P "${MKN_P}" "${MKN_WITH[@]}" \
+          -B $B_PATH ${RUN} ${MKN_X_FILE[@]}
+          
   done
-fi
 
-RUN="run"
-[[ $DEBUG == 1 ]] && RUN="dbg"
-
-for FILE in "${FILES[@]}"; do
-
-    echo FILE $FILE
-
-    mkn clean build -p gtest -a "${CARGS}" \
-        -tl "${LDARGS} ${LIB}" -b "$PY_INCS" \
-        -M "${FILE}" -P "${MKN_P}" \
-        -B $B_PATH ${RUN} ${MKN_X_FILE[@]}
-        
-done
+popd 2>&1 > /dev/null

@@ -45,11 +45,11 @@ class SSparseArray : public SparseArray<T> {
 #ifdef PYTHON_LINK
     //! @brief The (eventual) Python owner of the array _data;
     //! If ==nullptr then it is self-owned
-    void *_data_owner;
+    void *_data_owner = nullptr;
 
     //! @brief The (eventual) Python owner of the array _indices;
     //! If ==nullptr then it is self-owned
-    void *_indices_owner;
+    void *_indices_owner = nullptr;
 #endif
 
  public:

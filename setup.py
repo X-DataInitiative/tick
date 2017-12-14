@@ -283,7 +283,7 @@ def create_extension(extension_name, module_dir,
                               '-Ilib/include',
                               sparse_indices_flag,
                               '-std=c++11',
-                              '-O3',
+                              '-O2', # -O3 is sometimes dangerous and has caused segfaults on Travis
                               ]
 
     if use_fast_math:
