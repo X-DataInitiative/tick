@@ -30,5 +30,6 @@ python -m pip install --quiet numpy pandas
 python -m pip install -r requirements.txt
 python -m pip install sphinx pillow
 python -m pip install cpplint
+python -m pip install tensorflow
 pyenv rehash
 

@@ -7,7 +7,7 @@ This Hawkes EM (`tick.inference.HawkesEM`) algorithm assume that kernels are
 piecewise constant. Hence it can fit basically any kernel form. However it
 doesn't scale very well.
 
-I has been originally described in this paper:
+It has been originally described in this paper:
 
 Lewis, E., & Mohler, G. (2011).
 A nonparametric EM algorithm for multiscale Hawkes processes.

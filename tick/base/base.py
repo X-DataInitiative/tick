@@ -249,7 +249,8 @@ class BaseMeta(ABCMeta):
 
         current_class_doc = inspect.cleandoc(attrs['__doc__'])
         parsed_doc = nd.docscrape.ClassDoc(None, doc=current_class_doc)
-        attr_docs = parsed_doc['Parameters'] + parsed_doc['Attributes']
+        attr_docs = parsed_doc['Parameters'] + parsed_doc['Attributes'] + \
+            parsed_doc['Other Parameters']
 
         attr_and_doc = []
 

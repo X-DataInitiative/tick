@@ -96,6 +96,7 @@ These learners might be used to infer more exotic kernels.
    HawkesEM
    HawkesBasisKernels
    HawkesConditionalLaw
+   HawkesCumulantMatching
 
 Example
 *******
