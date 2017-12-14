@@ -59,6 +59,9 @@ void ModelHawkesFixedKernCustom::grad(const ArrayDouble &coeffs,
                  coeffs,
                  out);
     out /= n_total_jumps;
+
+    for (ulong k = 0; k != get_n_coeffs(); ++k)
+        out[k] = -out[k];
 }
 
 void ModelHawkesFixedKernCustom::grad_i(const ulong sampled_i,
@@ -137,7 +140,14 @@ double ModelHawkesFixedKernCustom::loss_dim_i(const ulong i,
     const double mu_i = coeffs[i];
 
     const ArrayDouble alpha_i = view(coeffs, get_alpha_i_first_index(i), get_alpha_i_last_index(i));
-    const ArrayDouble f_i = view(coeffs, get_f_i_first_index(i), get_f_i_last_index(i));
+    //const ArrayDouble f_i = view(coeffs, get_f_i_first_index(i), get_f_i_last_index(i));
+    /*
+     * specially for debug
+     */
+    ArrayDouble f_i = ArrayDouble(MaxN_of_f);
+    for (ulong k = 0; k != MaxN_of_f; ++k)
+        f_i[k] = 1;
+
 
     //cozy at hand
     const ArrayDouble2d g_i = view(g[i]);
@@ -148,20 +158,22 @@ double ModelHawkesFixedKernCustom::loss_dim_i(const ulong i,
     double loss = 0;
     for (ulong k = 1; k != Total_events + 1; k++)
         //! insert event t0 = 0 in the Total_events and global_n
-        loss += log(f_i[global_n[k - 1]]);
+        if (type_n[k] == i + 1)
+            loss += log(f_i[global_n[k - 1]]);
 
     //term 2
-    for (ulong k = 1; k != Total_events + 1; k++) {
-        double tmp_s = mu_i;
-        const ArrayDouble g_i_k = view_row(g[i], k);
-        tmp_s += alpha_i.dot(g_i_k);
-        if (tmp_s <= 0) {
-            TICK_ERROR("The sum of the influence on someone cannot be negative. "
-                               "Maybe did you forget to add a positive constraint to "
-                               "your proximal operator, in loss_dim_i");
+    for (ulong k = 1; k != Total_events + 1; k++)
+        if (type_n[k] == i + 1) {
+            double tmp_s = mu_i;
+            const ArrayDouble g_i_k = view_row(g[i], k);
+            tmp_s += alpha_i.dot(g_i_k);
+            if (tmp_s <= 0) {
+                TICK_ERROR("The sum of the influence on someone cannot be negative. "
+                                   "Maybe did you forget to add a positive constraint to "
+                                   "your proximal operator, in loss_dim_i");
+            }
+            loss += log(tmp_s);
         }
-        loss += log(tmp_s);
-    }
 
     //term 3,4
     for (ulong k = 1; k != Total_events + 1; k++)
@@ -179,7 +191,11 @@ double ModelHawkesFixedKernCustom::loss_dim_i(const ulong i,
         }
     loss -= alpha_i.dot(sum_G[i]);
 
-    return loss;
+    // debug
+//    for (ulong j = 0; j < n_nodes; j++)
+//    printf("sum_G_(%d,%d) = %f\n",i,j,sum_G[i][j]);
+
+    return -end_time - loss;
 }
 
 double ModelHawkesFixedKernCustom::loss_i_k(const ulong i,
@@ -224,21 +240,36 @@ void ModelHawkesFixedKernCustom::grad_dim_i(const ulong i,
     const ArrayDouble alpha_i = view(coeffs, get_alpha_i_first_index(i), get_alpha_i_last_index(i));
     ArrayDouble grad_alpha_i = view(out, get_alpha_i_first_index(i), get_alpha_i_last_index(i));
 
-    const ArrayDouble f_i = view(coeffs, get_f_i_first_index(i), get_f_i_last_index(i));
+    //const ArrayDouble f_i = view(coeffs, get_f_i_first_index(i), get_f_i_last_index(i));
     ArrayDouble grad_f_i = view(out, get_f_i_first_index(i), get_f_i_last_index(i));
 
     //necessary information required
     const ArrayDouble2d g_i = view(g[i]);
     const ArrayDouble2d G_i = view(G[i]);
 
+    /*
+     * specially for debug
+     */
+    ArrayDouble f_i = ArrayDouble(MaxN_of_f);
+    for (ulong k = 0; k != MaxN_of_f; ++k)
+        f_i[k] = 1;
+
+
     //! grad of mu_i
     grad_mu_i = 0;
     for (ulong k = 1; k < Total_events + 1; ++k) {
-        //! recall that all g_i are the same
-        const ArrayDouble g_i_k = view_row(g[i], k);
-        double numerator = 1;
-        double denominator = mu_i + alpha_i.dot(g_i_k);
-        grad_mu_i += numerator / denominator;
+        int tmp_flag = 0;
+        if (k == Total_events + 1)
+            tmp_flag = 1;
+        else if (type_n[k] == i + 1)
+            tmp_flag = 1;
+        if (tmp_flag) {
+            //! recall that all g_i are the same
+            const ArrayDouble g_i_k = view_row(g[i], k);
+            double numerator = 1;
+            double denominator = mu_i + alpha_i.dot(g_i_k);
+            grad_mu_i += numerator / denominator;
+        }
     }
 
     for (ulong k = 1; k < 1 + Total_events + 1; k++) {
@@ -248,10 +279,17 @@ void ModelHawkesFixedKernCustom::grad_dim_i(const ulong i,
 
     //! grad of alpha_{ij}
     for (ulong k = 1; k < 1 + Total_events + 1; k++) {
-        const ArrayDouble g_i_k = view_row(g[i], k);
-        double s = mu_i + alpha_i.dot(g_i_k);
+        int tmp_flag = 0;
+        if (k == Total_events + 1)
+            tmp_flag = 1;
+        else if (type_n[k] == i + 1)
+            tmp_flag = 1;
+        if (tmp_flag) {
+            const ArrayDouble g_i_k = view_row(g[i], k);
+            double s = mu_i + alpha_i.dot(g_i_k);
 
-        grad_alpha_i.mult_incr(g_i_k, 1. / s);
+            grad_alpha_i.mult_incr(g_i_k, 1. / s);
+        }
     }
     for (ulong j = 0; j < n_nodes; j++) {
         double sum_G_ij = 0;
@@ -273,6 +311,12 @@ void ModelHawkesFixedKernCustom::grad_dim_i(const ulong i,
         }
         grad_f_i[n] = H1_i[n] / f_i[n] + mu_i * H2_i[n] + result_dot;
     }
+
+    /*
+    * specially for debug
+    */
+    for (ulong k = 0; k != MaxN_of_f; ++k)
+        grad_f_i[k] = 0;
 }
 
 void ModelHawkesFixedKernCustom::grad_i_k(const ulong i, const ulong k,

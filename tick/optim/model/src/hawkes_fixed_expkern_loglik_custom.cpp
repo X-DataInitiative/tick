@@ -12,7 +12,6 @@ void ModelHawkesCustom::allocate_weights() {
         TICK_ERROR("Please provide valid timestamps before allocating weights")
     }
 
-    //! hacked part of peng Wu
     Total_events = n_total_jumps;
 
     g = ArrayDouble2dList1D(n_nodes);
@@ -70,11 +69,6 @@ void ModelHawkesCustom::compute_weights_dim_i(const ulong i) {
     for (ulong k = 1; k != Total_events + 1; ++k)
         type_n[k] = tmp_pre_type_n[tmp_index[k]];
 
-//    printf("\n\n");
-//    for (ulong k = 0; k < Total_events + 1; ++k)
-//        printf("%d %d %f\n", type_n[k],global_n[k],global_timestamps[k]);
-//    printf("\n\n");
-
     //for the g_j, I make all the threads calculating the same g in this developing stage
     for (ulong j = 0; j != n_nodes; j++) {
         //! here k starts from 1, cause g(t_0) = G(t_0) = 0
@@ -83,14 +77,19 @@ void ModelHawkesCustom::compute_weights_dim_i(const ulong i) {
             const double t_k = (k != (1 + Total_events) ? global_timestamps[k] : end_time);
             const double ebt = std::exp(-decay * (t_k - global_timestamps[k - 1]));
             if (k != 1 + Total_events)
-                g_i[k * n_nodes + j] = g_i[(k - 1) * n_nodes + j] * ebt + (type_n[k] == j + 1 ? decay : 0);
-            G_i[k * n_nodes + j] = (1 - ebt) / decay * g_i[(k - 1) * n_nodes + j];
+                g_i[k * n_nodes + j] = g_i[(k - 1) * n_nodes + j] * ebt + (type_n[k - 1] == j + 1 ? decay * ebt : 0);
+            G_i[k * n_nodes + j] =
+                    (1 - ebt) / decay * g_i[(k - 1) * n_nodes + j] + ((type_n[k - 1] == j + 1) ? 1 - ebt : 0);
 
             // ! in the G, we calculated the difference between G without multiplying f
             // sum_G is calculated later, in the calculation of L_dim_i and its grads
-            // debug printf("%d %d %d %d %f #############%f %f\n",i,j,k,k * n_nodes + j,G_i[k * n_nodes + j],t_k, global_timestamps[k - 1]);
         }
     }
+
+//    // debug
+//    for (ulong j = 0; j != n_nodes; j++)
+//        for (ulong k = 1; k != 1 + Total_events; k++)
+//            printf("g_%d(%d,%d) = %f\n",i,j,k,g_i[k * n_nodes + j]);
 
     //! in fact, H1, H2 is one dimension, here I make all threads calculate the same thing
     ArrayDouble H1_i = view(H1[i]);
