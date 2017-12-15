@@ -103,9 +103,10 @@ void ModelHawkesCustom::compute_weights_dim_i(const ulong i) {
         const double ebt = std::exp(-decay * (t_k - global_timestamps[k - 1]));
         H2_i[global_n[k - 1]] -= t_k - global_timestamps[k - 1];
 
-        //! recall that all g_i are same
+        //! recall that all g_i_j(t) are same, for any i
         //! thread_i calculate H3_i
         H3_i[global_n[k - 1]] -= (1 - ebt) / decay * g_i[(k - 1) * n_nodes + i];
+        H3_i[global_n[k - 1]] -= ((type_n[k - 1] == i + 1) ? 1 - ebt : 0);
     }
 }
 

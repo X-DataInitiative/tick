@@ -195,6 +195,7 @@ double ModelHawkesFixedKernCustom::loss_dim_i(const ulong i,
 //    for (ulong j = 0; j < n_nodes; j++)
 //    printf("sum_G_(%d,%d) = %f\n",i,j,sum_G[i][j]);
 
+    //add a constant to the loss, then inverse the loss to make it convex
     return -end_time - loss;
 }
 
