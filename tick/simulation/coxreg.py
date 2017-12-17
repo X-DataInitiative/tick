@@ -2,7 +2,9 @@
 
 
 import numpy as np
+from scipy.stats import norm
 from .base import SimuWithFeatures
+from tick.preprocessing.features_binarizer import FeaturesBinarizer
 
 
 # TODO: something better to tune the censoring level than this censoring factor
@@ -33,7 +35,7 @@ class SimuCoxReg(SimuWithFeatures):
         Shape parameter to use in the distribution of times
 
     censoring_factor : `float`, default=2.0
-        Level of censoring. Increasing censoring_factor lead
+        Level of censoring. Increasing censoring_factor leads
         to less censored times and conversely.
 
     features_type : `str`, default="cov_toeplitz"
@@ -83,15 +85,6 @@ class SimuCoxReg(SimuWithFeatures):
         time, and where ``censoring[i] == 0`` means that the time of
         the i-th individual is a censoring time
 
-    time_start : `str`
-        Start date of the simulation
-
-    time_elapsed : `int`
-        Duration of the simulation, in seconds
-
-    time_end : `str`
-        End date of the simulation
-
     Notes
     -----
     There is no intercept in this model
@@ -105,6 +98,12 @@ class SimuCoxReg(SimuWithFeatures):
             "writable": False
         },
         "_times_distribution": {
+            "writable": False
+        },
+        "_scale": {
+            "writable": False
+        },
+        "_shape": {
             "writable": False
         }
     }
@@ -124,7 +123,6 @@ class SimuCoxReg(SimuWithFeatures):
                                   n_features, features_type, cov_corr,
                                   features_scaling, seed, verbose)
         self.coeffs = coeffs
-        self.times_distribution = times_distribution
         self.shape = shape
         self.scale = scale
         self.censoring_factor = censoring_factor
@@ -132,8 +130,6 @@ class SimuCoxReg(SimuWithFeatures):
         self.features = None
         self.times = None
         self.censoring = None
-
-    # TODO: properties for times_dist, shape, scale, censoring factor
 
     def simulate(self):
         """Launch simulation of the data
@@ -165,6 +161,26 @@ class SimuCoxReg(SimuWithFeatures):
                              "understood, try using 'weibull' instead")
         self._set("_times_distribution", val)
 
+    @property
+    def shape(self):
+        return self._shape
+
+    @shape.setter
+    def shape(self, val):
+        if val <= 0:
+            raise ValueError("``shape`` must be strictly positive")
+        self._set("_shape", val)
+
+    @property
+    def scale(self):
+        return self._scale
+
+    @scale.setter
+    def scale(self, val):
+        if val <= 0:
+            raise ValueError("``scale`` must be strictly positive")
+        self._set("_scale", val)
+
     def _simulate(self):
         # The features matrix already exists, and is created by the
         # super class
@@ -194,6 +210,253 @@ class SimuCoxReg(SimuWithFeatures):
         censoring = (T <= C).astype(np.ushort)
         self._set("censoring", censoring)
         return self.features, self.times, self.censoring
+
+    def _as_dict(self):
+        dd = SimuWithFeatures._as_dict(self)
+        dd.pop("features", None)
+        dd.pop("times", None)
+        dd.pop("censoring", None)
+        return dd
+
+
+class SimuCoxRegWithCutPoints(SimuWithFeatures):
+    """Simulation of a Cox regression for proportional hazards with cut-points
+
+    Parameters
+    ----------
+    features : `numpy.ndarray`, shape=(n_samples, n_features), default=`None`
+        The features matrix to use. If None, it is simulated
+
+    n_samples : `int`, default=200
+        Number of samples
+
+    n_features : `int`, default=5
+        Number of features
+
+    times_distribution : `str`, default="weibull"
+        The distrubution of times. Only ``"weibull"``
+        is implemented for now
+
+    scale : `float`, default=1.0
+        Scaling parameter to use in the distribution of times
+
+    shape : `float`, default=1.0
+        Shape parameter to use in the distribution of times
+
+    censoring_factor : `float`, default=2.0
+        Level of censoring. Increasing censoring_factor leads
+        to less censored times and conversely.
+
+    features_type : `str`, default="cov_toeplitz"
+        The type of features matrix to simulate
+
+        * If ``"cov_toeplitz"`` : a Gaussian distribution with
+          Toeplitz correlation matrix
+
+        * If ``"cov_uniform"`` : a Gaussian distribution with
+          correlation matrix given by O.5 * (U + U.T), where U is
+          uniform on [0, 1] and diagonal filled with ones.
+
+    cov_corr : `float`, default=0.5
+        Correlation to use in the Toeplitz correlation matrix
+
+    features_scaling : `str`, default="none"
+        The way the features matrix is scaled after simulation
+
+        * If ``"standard"`` : the columns are centered and
+          normalized
+
+        * If ``"min-max"`` : remove the minimum and divide by
+          max-min
+
+        * If ``"norm"`` : the columns are normalized but not centered
+
+        * If ``"none"`` : nothing is done to the features
+
+    seed : `int`, default=None
+        The seed of the random number generator. If `None` it is not
+        seeded
+
+    verbose : `bool`, default=True
+        If True, print things
+
+    n_cut_points : `int`, default="none"
+        Number of cut-points generated per feature. If `None` it is sampled from
+        a geometric distribution of parameter n_cut_points_factor.
+
+    n_cut_points_factor : `float`, default=0.7
+        Parameter of the geometric distribution used to generate the number of
+        cut-points when n_cut_points is `None`. Increasing n_cut_points_factor
+        leads to less cut-points per feature on average.
+
+    Attributes
+    ----------
+    features : `numpy.ndarray`, shape=(n_samples, n_features)
+        The simulated (or given) features matrix
+
+    times : `numpy.ndarray`, shape=(n_samples,)
+        Simulated times
+
+    censoring : `numpy.ndarray`, shape=(n_samples,)
+        Simulated censoring indicator, where ``censoring[i] == 1``
+        indicates that the time of the i-th individual is a failure
+        time, and where ``censoring[i] == 0`` means that the time of
+        the i-th individual is a censoring time
+
+    Notes
+    -----
+    There is no intercept in this model
+    """
+
+    _attrinfos = {
+        "times": {
+            "writable": False
+        },
+        "censoring": {
+            "writable": False
+        },
+        "_times_distribution": {
+            "writable": False
+        },
+        "_scale": {
+            "writable": False
+        },
+        "_shape": {
+            "writable": False
+        }
+    }
+
+    def __init__(self, features: np.ndarray = None, n_samples: int = 200,
+                 n_features: int = 5, n_cut_points: int = None,
+                 n_cut_points_factor: float = .7,
+                 times_distribution: str = "weibull",
+                 shape: float = 1., scale: float = 1.,
+                 censoring_factor: float = 2.,
+                 features_type: str = "cov_toeplitz",
+                 cov_corr: float = 0.5, features_scaling: str = "none",
+                 seed: int = None, verbose: bool = True):
+
+        # intercept=None in this model
+        SimuWithFeatures.__init__(self, None, features, n_samples,
+                                  n_features, features_type, cov_corr,
+                                  features_scaling, seed, verbose)
+
+        self.shape = shape
+        self.scale = scale
+        self.censoring_factor = censoring_factor
+        self.times_distribution = times_distribution
+        self.n_cut_points = n_cut_points
+        self.n_cut_points_factor = n_cut_points_factor
+        self.features = None
+        self.times = None
+        self.censoring = None
+
+    def simulate(self):
+        """Launch simulation of the data
+
+        Returns
+        -------
+        features : `numpy.ndarray`, shape=(n_samples, n_features)
+            The simulated (or given) features matrix
+
+        times : `numpy.ndarray`, shape=(n_samples,)
+            Simulated times
+
+        censoring : `numpy.ndarray`, shape=(n_samples,)
+            Simulated censoring indicator, where ``censoring[i] == 1``
+            indicates that the time of the i-th individual is a failure
+            time, and where ``censoring[i] == 0`` means that the time of
+            the i-th individual is a censoring time
+        """
+        return SimuWithFeatures.simulate(self)
+
+    @property
+    def times_distribution(self):
+        return self._times_distribution
+
+    @times_distribution.setter
+    def times_distribution(self, val):
+        if val != "weibull":
+            raise ValueError("``times_distribution`` was not "
+                             "understood, try using 'weibull' instead")
+        self._set("_times_distribution", val)
+
+    @property
+    def shape(self):
+        return self._shape
+
+    @shape.setter
+    def shape(self, val):
+        if val <= 0:
+            raise ValueError("``shape`` must be strictly positive")
+        self._set("_shape", val)
+
+    @property
+    def scale(self):
+        return self._scale
+
+    @scale.setter
+    def scale(self, val):
+        if val <= 0:
+            raise ValueError("``scale`` must be strictly positive")
+        self._set("_scale", val)
+
+    def _simulate(self):
+        # The features matrix already exists, and is created by the
+        # super class
+        features = self.features
+        n_samples, n_features = features.shape
+        # Simulation of cut-points
+        n_cut_points = self.n_cut_points
+        n_cut_points_factor = self.n_cut_points_factor
+        if n_cut_points is None:
+            n_cut_points = np.random.geometric(n_cut_points_factor, n_features)
+        else:
+            n_cut_points = np.repeat(n_cut_points, n_features)
+
+        cut_points = {}
+        coeffs_binarized = np.array([])
+        for i in range(n_features):
+            cut_points_ = np.random.normal(scale=.5, size=n_cut_points[i])
+            cut_points_ = np.sort(cut_points_)
+            cut_points_ = np.insert(cut_points_, 0, -np.inf)
+            cut_points_ = np.append(cut_points_, np.inf)
+            cut_points[str(i)] = cut_points_
+            # generate beta star
+            coeffs_block = np.random.normal(0, 2, n_cut_points[i] + 1)
+            # make sure 2 consecutive coeffs are "different enough"
+            coeffs_block = np.abs(coeffs_block)
+            coeffs_block[::2] *= -1
+            coeffs_binarized = np.append(coeffs_binarized, coeffs_block)
+
+        binarizer = FeaturesBinarizer(method='given',
+                                      bins_boundaries=cut_points)
+        binarized_features = binarizer.fit_transform(features)
+
+        u = binarized_features.dot(coeffs_binarized)
+        # Simulation of true times
+        E = np.random.exponential(scale=1., size=n_samples)
+        E *= np.exp(-u)
+        scale = self.scale
+        shape = self.shape
+        if self.times_distribution == "weibull":
+            T = 1. / scale * E ** (1. / shape)
+        else:
+            # There is not point in this test, but let's do it like that
+            # since we're likely to implement other distributions
+            T = 1. / scale * E ** (1. / shape)
+
+        m = T.mean()
+        # Simulation of the censoring
+        c = self.censoring_factor
+        C = np.random.exponential(scale=c * m, size=n_samples)
+        # Observed time
+        self._set("times", np.minimum(T, C))
+        # Censoring indicator: 1 if it is a time of failure, 0 if censoring.
+        censoring = (T <= C).astype(np.ushort)
+        self._set("censoring", censoring)
+        return self.features, self.times, self.censoring, cut_points, \
+               coeffs_binarized
 
     def _as_dict(self):
         dd = SimuWithFeatures._as_dict(self)

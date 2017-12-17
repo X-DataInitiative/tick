@@ -29,6 +29,7 @@ class FeaturesBinarizer(Base, BaseEstimator, TransformerMixin):
     method : "quantile" or "linspace", default="quantile"
         * If ``"quantile"`` quantile-based cuts are used.
         * If ``"linspace"`` linearly spaced cuts are used.
+        * If ``"given"`` bins_boundaries needs to be provided.
 
     detect_column_type : "auto" or "column_names", default="auto"
         * If ``"auto"`` feature type detection done automatically.
@@ -40,13 +41,13 @@ class FeaturesBinarizer(Base, BaseEstimator, TransformerMixin):
         If `True`, first column of each binarized continuous feature block is
         removed.
 
+    bins_boundaries : `list`, default="none"
+        Bins boundaries for continuous features.
+
     Attributes
     ----------
     one_hot_encoder : `OneHotEncoder`
         OneHotEncoders for continuous and discrete features.
-
-    bins_boundaries : `list`
-        Bins boundaries for continuous features.
 
     mapper : `dict`
         Map modalities to column indexes for categorical features.
@@ -102,28 +103,44 @@ class FeaturesBinarizer(Base, BaseEstimator, TransformerMixin):
 
     _attrinfos = {
         "one_hot_encoder": {"writable": False},
-        "bins_boundaries": {"writable": False},
+        "bins_boundaries": {"writable": True},
         "mapper": {"writable": False},
         "feature_type": {"writable": False},
         "_fitted": {"writable": False}
     }
 
     def __init__(self, method="quantile", n_cuts=10, detect_column_type="auto",
-                 remove_first=False):
+                 remove_first=False, bins_boundaries=None):
         Base.__init__(self)
 
         self.method = method
         self.n_cuts = n_cuts
         self.detect_column_type = detect_column_type
         self.remove_first = remove_first
+        self.bins_boundaries = bins_boundaries
         self.reset()
 
     def reset(self):
         self._set("one_hot_encoder", OneHotEncoder(sparse=True))
-        self._set("bins_boundaries", {})
         self._set("mapper", {})
         self._set("feature_type", {})
         self._set("_fitted", False)
+        if self.method != "given":
+            self._set("bins_boundaries", {})
+
+    @property
+    def boundaries(self):
+        """Get bins boundaries for all features.
+
+        Returns
+        -------
+        output : `dict`
+            The bins boundaries for each feature.
+        """
+        if not self._fitted:
+            raise ValueError("cannot get bins_boundaries if object has not "
+                             "been fitted")
+        return self.bins_boundaries
 
     @property
     def blocks_start(self):
@@ -431,13 +448,19 @@ class FeaturesBinarizer(Base, BaseEstimator, TransformerMixin):
             the actual number of distinct boundaries for this feature.
         """
         if fit:
-            boundaries = FeaturesBinarizer._detect_boundaries(
-                feature, self.n_cuts, self.method)
-            self.bins_boundaries[feature_name] = boundaries
-
+            if self.method == 'given':
+                if self.bins_boundaries is None:
+                    raise ValueError("bins_boundaries required when `method` "
+                                     "equals 'given'")
+                # if not isinstance(self.bins_boundaries[feature_name], np.ndarray):
+                #     raise ValueError("feature %s not found in bins_boundaries" % feature_name)
+                boundaries = self.bins_boundaries[feature_name]
+            else:
+                boundaries = FeaturesBinarizer._detect_boundaries(
+                    feature, self.n_cuts, self.method)
+                self.bins_boundaries[feature_name] = boundaries
         elif self._fitted:
             boundaries = self.bins_boundaries[feature_name]
-
         else:
             raise ValueError("cannot call method with fit=True as object has "
                              "not been fit")
@@ -507,7 +530,7 @@ class FeaturesBinarizer(Base, BaseEstimator, TransformerMixin):
             if feature.dtype != float:
                 feature = feature.astype(float)
 
-            # Compute bins boundaries for the feature
+            # Get bins boundaries for the feature
             boundaries = self._get_boundaries(feature_name, feature, fit)
 
             # Discretize feature

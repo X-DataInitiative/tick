@@ -9,7 +9,7 @@ from .base import features_normal_cov_uniform, \
 from .linreg import SimuLinReg
 from .logreg import SimuLogReg
 from .poisreg import SimuPoisReg
-from .coxreg import SimuCoxReg
+from .coxreg import SimuCoxReg, SimuCoxRegWithCutPoints
 
 from .poisson_process import SimuPoissonProcess
 from .inhomogeneous_poisson import SimuInhomogeneousPoisson
@@ -24,6 +24,7 @@ __all__ = ["SimuLinReg",
            "SimuLogReg",
            "SimuPoisReg",
            "SimuCoxReg",
+           "SimuCoxRegWithCutPoints",
            "features_normal_cov_uniform",
            "features_normal_cov_toeplitz",
            "weights_sparse_exp",
