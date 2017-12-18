@@ -101,7 +101,7 @@ TEST_F(HawkesModelTest, compute_loss_loglikelihood_custom) {
     model.set_data(timestamps, global_n.as_sarray_ptr(), 4.5);
 
 
-    ArrayDouble coeffs = ArrayDouble {1., 3., 2., 3., 4., 1, 1, 3, 5, 7, 9, 2, 4, 6, 8, 10};
+    ArrayDouble coeffs = ArrayDouble {1., 3., 2., 3., 4., 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
     const double loss = model.loss(coeffs);
     ArrayDouble grad(model.get_n_coeffs());
     model.grad(coeffs, grad);

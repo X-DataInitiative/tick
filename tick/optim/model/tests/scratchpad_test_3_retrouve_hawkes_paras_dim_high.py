@@ -12,7 +12,8 @@ from tick.plot import plot_history
 pre_set parameters
 '''
 beta = 2.0
-end_time = 10000
+end_time = 100000
+dim = 3
 
 '''
 generating a hawkes expnential process
@@ -36,16 +37,16 @@ def get_train_data(n_nodes, betas):
     return sim.timestamps, baseline, adjacency
 
 
-timestamps, baseline, adjacency = get_train_data(n_nodes=2, betas=beta)
+timestamps, baseline, adjacency = get_train_data(n_nodes=dim, betas=beta)
 
-print('data size =', len(timestamps[0]), ',', len(timestamps[1]))
+print('data size =', len(timestamps[0]), ',', len(timestamps[1]), ',', len(timestamps[2]))
 
 print(baseline)
 print(adjacency)
 
 from tick.inference import HawkesExpKern
 
-decays = np.ones((2, 2)) * beta
+decays = np.ones((dim, dim)) * beta
 learner = HawkesExpKern(decays, penalty='l1', C=100)
 learner.fit(timestamps)
 
@@ -58,7 +59,7 @@ print('#' * 40)
 calculate global_n and maxN_of_f
 '''
 MaxN_of_f = 10
-global_n = np.random.randint(0, MaxN_of_f - 1, size=1 + len(timestamps[0]) + len(timestamps[1]))
+global_n = np.random.randint(0, MaxN_of_f - 1, size=1 + len(timestamps[0]) + len(timestamps[1]) + len(timestamps[2]))
 '''
 create a model_custom
 '''
@@ -67,13 +68,23 @@ model.fit(timestamps, global_n, end_time)
 #############################################################################
 prox = ProxL1(0.01, positive=True)
 
-solver = AGD(step=2e-2, linesearch=False)
+# solver = AGD(step=5e-2, linesearch=False, max_iter= 350)
+solver = AGD(step=1e-2, linesearch=False, max_iter=1500)
 solver.set_model(model).set_prox(prox)
 
-x0_3 = np.array([0.55, 0.5, 0.06, 0.09, 0.8, 0.9, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2])
+x0_3 = np.array(
+    [0.5, 0.2, 0.8, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 2, 4, 2, 4, 2, 4, 2, 4, 2, 4, 2, 4, 2, 4, 2, 4, 2, 4,
+     2, 4, 2, 4, 2, 4, 2, 4, 2, 4, 2, 4])
 solver.solve(x0_3)
 
-print(solver.solution)
+# normalisation
+solution_adj = solver.solution
+for i in range(dim):
+    solution_adj[i] *= solver.solution[dim + dim * dim + MaxN_of_f * i]
+    solution_adj[(dim + dim * i): (dim + dim * (i + 1))] *= solver.solution[dim + dim * dim + MaxN_of_f * i]
+    solution_adj[(dim + dim * dim + MaxN_of_f * i): (dim + dim * dim + MaxN_of_f * (i + 1))] /= solver.solution[
+        dim + dim * dim + MaxN_of_f * i]
+print(solution_adj)
 #############################################################################
 '''
 optimization of parameters

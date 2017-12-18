@@ -140,13 +140,13 @@ double ModelHawkesFixedKernCustom::loss_dim_i(const ulong i,
     const double mu_i = coeffs[i];
 
     const ArrayDouble alpha_i = view(coeffs, get_alpha_i_first_index(i), get_alpha_i_last_index(i));
-    //const ArrayDouble f_i = view(coeffs, get_f_i_first_index(i), get_f_i_last_index(i));
+    const ArrayDouble f_i = view(coeffs, get_f_i_first_index(i), get_f_i_last_index(i));
     /*
      * specially for debug
      */
-    ArrayDouble f_i = ArrayDouble(MaxN_of_f);
-    for (ulong k = 0; k != MaxN_of_f; ++k)
-        f_i[k] = 1;
+//    ArrayDouble f_i = ArrayDouble(MaxN_of_f);
+//    for (ulong k = 0; k != MaxN_of_f; ++k)
+//        f_i[k] = 1;
 
 
     //cozy at hand
@@ -168,6 +168,10 @@ double ModelHawkesFixedKernCustom::loss_dim_i(const ulong i,
             const ArrayDouble g_i_k = view_row(g[i], k);
             tmp_s += alpha_i.dot(g_i_k);
             if (tmp_s <= 0) {
+//
+                printf("\nDebug Info : %d %d\n", i, k);
+                printf("%f %f %f %f %f\n", mu_i, alpha_i[0], alpha_i[1], g_i_k[0], g_i_k[1]);
+//                return 1000 + rand();
                 TICK_ERROR("The sum of the influence on someone cannot be negative. "
                                    "Maybe did you forget to add a positive constraint to "
                                    "your proximal operator, in loss_dim_i");
@@ -241,7 +245,7 @@ void ModelHawkesFixedKernCustom::grad_dim_i(const ulong i,
     const ArrayDouble alpha_i = view(coeffs, get_alpha_i_first_index(i), get_alpha_i_last_index(i));
     ArrayDouble grad_alpha_i = view(out, get_alpha_i_first_index(i), get_alpha_i_last_index(i));
 
-    //const ArrayDouble f_i = view(coeffs, get_f_i_first_index(i), get_f_i_last_index(i));
+    const ArrayDouble f_i = view(coeffs, get_f_i_first_index(i), get_f_i_last_index(i));
     ArrayDouble grad_f_i = view(out, get_f_i_first_index(i), get_f_i_last_index(i));
 
     //necessary information required
@@ -251,9 +255,9 @@ void ModelHawkesFixedKernCustom::grad_dim_i(const ulong i,
     /*
      * specially for debug
      */
-    ArrayDouble f_i = ArrayDouble(MaxN_of_f);
-    for (ulong k = 0; k != MaxN_of_f; ++k)
-        f_i[k] = 1;
+//    ArrayDouble f_i = ArrayDouble(MaxN_of_f);
+//    for (ulong k = 0; k != MaxN_of_f; ++k)
+//        f_i[k] = 1;
 
 
     //! grad of mu_i
@@ -316,8 +320,8 @@ void ModelHawkesFixedKernCustom::grad_dim_i(const ulong i,
     /*
     * specially for debug
     */
-    for (ulong k = 0; k != MaxN_of_f; ++k)
-        grad_f_i[k] = 0;
+//    for (ulong k = 0; k != MaxN_of_f; ++k)
+//        grad_f_i[k] = 0;
 }
 
 void ModelHawkesFixedKernCustom::grad_i_k(const ulong i, const ulong k,
