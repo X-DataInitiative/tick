@@ -81,6 +81,8 @@ extern DLL_PUBLIC bool BuildFromPyObj_List2d_##SBASEARRAY2DPTR_TYPE(PyObject *ob
 #define EXTERN_SSPARSEARRAY(SSPARSEARRAY_TYPE, SSPARSEARRAYPTR_TYPE, SSPARSEARRAY2D_TYPE, SSPARSEARRAY2DPTR_TYPE) \
     extern DLL_PUBLIC bool BuildFromPyObj_##SSPARSEARRAY_TYPE(PyObject *obj, SSPARSEARRAYPTR_TYPE *result); \
     extern DLL_PUBLIC int TypeCheckPyObj_##SSPARSEARRAY_TYPE(PyObject *obj); \
+    extern DLL_PUBLIC PyObject *_XSparseArray2NumpyArray(SSPARSEARRAY_TYPE *sig); \
+    extern DLL_PUBLIC PyObject *_XSparseArray2d2NumpyArray(SSPARSEARRAY2D_TYPE *sig); \
     extern DLL_PUBLIC bool BuildFromPyObj_##SSPARSEARRAY_TYPE(PyObject *obj, SSPARSEARRAYPTR_TYPE *result); \
     extern DLL_PUBLIC int TypeCheckPyObj_##SSPARSEARRAY_TYPE(PyObject *obj); \
     extern DLL_PUBLIC bool BuildFromPyObj_##SSPARSEARRAY2D_TYPE(PyObject *obj, SSPARSEARRAY2DPTR_TYPE *result); \
