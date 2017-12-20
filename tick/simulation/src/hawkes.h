@@ -47,6 +47,9 @@
  *   - \f$ * \f$ is a convolution product
  */
 class Hawkes : public PP {
+
+    //using PP::PP;
+
  public:
   /// @brief The kernel matrix
   std::vector<HawkesKernelPtr> kernels;
@@ -122,7 +125,7 @@ class Hawkes : public PP {
    */
   SArrayDoublePtr get_baseline(unsigned int i, ArrayDouble &t);
 
- private :
+public :
   /**
    * @brief Virtual method called once (at startup) to set the initial
    * intensity

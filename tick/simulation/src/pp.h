@@ -25,7 +25,7 @@ class PP {
    */
   VArrayDoublePtrList1D timestamps;
 
- private :
+public :
   // Thread safe random generator
   Rand rand;
 
@@ -44,7 +44,7 @@ class PP {
   /// @brief Bound of the future total intensity
   double total_intensity_bound;
 
- private :
+public :
   // Current total intensity
   double total_intensity;
 
@@ -65,7 +65,7 @@ class PP {
   bool threshold_negative_intensity = false;
 
 // Fields to deal with intensity track recording (itr)
- private :
+public :
   // The current time for Track recording intensity
   double itr_time;
 
@@ -159,7 +159,7 @@ class PP {
    */
   void update_jump(int index);
 
- private :
+public :
   /**
    * @brief Update a time shift of delay seconds and eventually recompute the
    * intensity bound if asked and update track record of intensity if asked
