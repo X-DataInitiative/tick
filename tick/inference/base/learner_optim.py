@@ -7,7 +7,7 @@ import numpy as np
 from tick.base import Base
 from tick.optim.prox import ProxZero, ProxL1, ProxL2Sq, ProxElasticNet, \
     ProxTV, ProxBinarsity
-from tick.optim.solver import AGD, GD, BFGS, SGD, SVRG, SDCA
+from tick.optim.solver import AGD, GD, BFGS, SGD, SVRG, SDCA, SAGA
 from tick.preprocessing.utils import safe_array
 
 
@@ -124,11 +124,12 @@ class LearnerOptim(ABC, Base):
         'sgd': SGD,
         'svrg': SVRG,
         'bfgs': BFGS,
-        'sdca': SDCA
+        'sdca': SDCA,
+        'saga': SAGA,
     }
     _solvers_with_linesearch = ['gd', 'agd']
-    _solvers_with_step = ['gd', 'agd', 'svrg', 'sgd']
-    _solvers_stochastic = ['sgd', 'svrg', 'sdca']
+    _solvers_with_step = ['gd', 'agd', 'svrg', 'sgd', 'saga']
+    _solvers_stochastic = ['sgd', 'svrg', 'sdca', 'saga']
     _penalties = {
         'none': ProxZero,
         'l1': ProxL1,

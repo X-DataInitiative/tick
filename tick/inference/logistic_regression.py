@@ -257,3 +257,33 @@ class LogisticRegression(LearnerGLM):
             probs[:, 1] = probs_class_1
             probs[:, 0] = 1. - probs_class_1
             return probs
+
+    def get_params(self, deep=False):
+        if deep:
+            raise ValueError("Don't know chat to do")
+
+        params = {
+            'C': self.C,
+            'penalty': self.penalty,
+            'solver': self.solver,
+            'fit_intercept': self.fit_intercept,
+            'warm_start': self.warm_start,
+            'step': self.step,
+            'tol': self.tol,
+            'max_iter': self.max_iter,
+            'verbose': self.verbose,
+            'print_every': self.print_every,
+            'record_every': self.record_every,
+        }
+
+        if self.solver == 'sdca':
+            params['sdca_ridge_strength'] = self.sdca_ridge_strength
+
+        if self.penalty == 'elasticnet':
+            params['elastic_net_ratio'] = self.elastic_net_ratio
+
+        if self.penalty == 'binarsity':
+            params['blocks_start'] = self.blocks_start
+            params['blocks_length'] = self.blocks_length
+
+        return params
