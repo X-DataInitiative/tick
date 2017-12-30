@@ -584,7 +584,8 @@ inline bool TreeClassifier::use_aggregation() const {
  * OnlineForestClassifier methods
  *********************************************************************************/
 
-OnlineForestClassifier::OnlineForestClassifier(uint8_t n_classes,
+OnlineForestClassifier::OnlineForestClassifier(uint32_t n_features,
+                                               uint8_t n_classes,
                                                uint32_t n_trees,
                                                uint8_t n_passes,
                                                double step,
@@ -595,7 +596,7 @@ OnlineForestClassifier::OnlineForestClassifier(uint8_t n_classes,
                                                int32_t n_threads,
                                                int seed,
                                                bool verbose)
-    : _n_classes(n_classes), _n_trees(n_trees), _n_passes(n_passes), _step(step), _criterion(criterion),
+    : _n_features(n_features), _n_classes(n_classes), _n_trees(n_trees), _n_passes(n_passes), _step(step), _criterion(criterion),
       _use_aggregation(use_aggregation), _subsampling(subsampling), _dirichlet(dirichlet), _n_threads(n_threads),
       _verbose(verbose), rand(seed) {
   // No iteration so far
@@ -734,11 +735,11 @@ void OnlineForestClassifier::n_leaves(SArrayUIntPtr n_leaves_per_tree) {
   }
 }
 
-//inline bool OnlineForestClassifier::verbose() const {
-//  return _verbose;
-//}
-//
-//inline OnlineForestClassifier &OnlineForestClassifier::set_verbose(bool verbose) {
-//  _verbose = verbose;
-//  return *this;
-//}
+bool OnlineForestClassifier::verbose() const {
+  return _verbose;
+}
+
+OnlineForestClassifier &OnlineForestClassifier::set_verbose(bool verbose) {
+  _verbose = verbose;
+  return *this;
+}

@@ -213,10 +213,12 @@ class TreeClassifier {
 
 class OnlineForestClassifier {
  private:
+  // Number of features
+  uint32_t _n_features;
   // Number of classes in the classification problem
   uint8_t _n_classes;
   // Number of Trees in the forest
-  uint32_t _n_trees;
+  uint8_t _n_trees;
   //
   uint8_t _n_passes;
   // Step-size used for aggregation
@@ -235,8 +237,6 @@ class OnlineForestClassifier {
   int _seed;
   // Verbose things or not
   bool _verbose;
-  // Number of features.
-  uint32_t _n_features;
   // Iteration counter
   uint32_t _iteration;
   // The list of trees in the forest
@@ -252,7 +252,7 @@ class OnlineForestClassifier {
   SArrayDoublePtr _labels;
 
  public:
-  OnlineForestClassifier(uint8_t n_classes, uint32_t n_trees, uint8_t n_passes = 1, double step = 1.0,
+  OnlineForestClassifier(uint32_t n_features, uint8_t n_classes, uint32_t n_trees, uint8_t n_passes = 1, double step = 1.0,
                          CriterionClassifier criterion = CriterionClassifier::log,
                          bool use_aggregation = true, double subsampling = 1, double dirichlet = 0.5,
                          int32_t n_threads = 1, int seed = 0, bool verbose = false);
@@ -274,6 +274,11 @@ class OnlineForestClassifier {
 
   inline double step() const {
     return _step;
+  }
+
+  inline OnlineForestClassifier& set_step(const double step) {
+    _step = step;
+    return *this;
   }
 
   void print();
@@ -397,8 +402,8 @@ class OnlineForestClassifier {
 
   void n_leaves(SArrayUIntPtr n_leaves_per_tree);
 
-//  inline bool verbose() const;
-//  inline OnlineForestClassifier &set_verbose(bool verbose);
+  bool verbose() const;
+  OnlineForestClassifier &set_verbose(bool verbose);
 };
 
 #endif //TICK_ONLINE_FOREST_CLASSIFIER_H

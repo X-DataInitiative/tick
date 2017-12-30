@@ -72,6 +72,7 @@ class OnlineForestClassifier(ABC, Base):
         'verbose': {'writable': True, 'cpp_setter': 'set_verbose'},
         'warm_start': {'writable': True, 'cpp_setter': 'set_warm_start'},
         'n_splits': {'writable': True, 'cpp_setter': 'set_n_splits'},
+        'dirichlet': {'writable': True, 'cpp_setter': 'set_dirichlet'}
     }
 
     _cpp_obj_name = "_forest"
@@ -91,6 +92,7 @@ class OnlineForestClassifier(ABC, Base):
         self._fitted = False
         self.n_trees = n_trees
         self.n_passes = n_passes
+        self.n_features = None
         self.n_classes = n_classes
         self.step = step
         self.criterion = criterion
@@ -102,12 +104,7 @@ class OnlineForestClassifier(ABC, Base):
         if dirichlet is None:
             dirichlet = 1 / n_classes
         self.dirichlet = dirichlet
-        self._forest = _OnlineForestClassifier(n_classes, n_trees, n_passes,
-                                               step,
-                                               self._criterion,
-                                               self.use_aggregation,
-                                               subsampling, dirichlet, n_threads,
-                                               seed, verbose)
+        self._forest = None
 
     def set_data(self, X, y):
         X = safe_array(X)
@@ -117,6 +114,17 @@ class OnlineForestClassifier(ABC, Base):
     def fit(self, X, y):
         X = safe_array(X)
         y = safe_array(y)
+        n_samples, n_features = X.shape
+        # TODO: check that sizes of X and y match
+        if self._forest is None:
+            self.n_features = n_features
+            _forest = _OnlineForestClassifier(
+                n_features, self.n_classes, self.n_trees, self.n_passes,
+                self.step,
+                self._criterion, self.use_aggregation, self.subsampling,
+                self.dirichlet, self.n_threads, self.seed, self.verbose
+            )
+            self._set('_forest', _forest)
         self._set("_fitted", True)
         self._forest.fit(X, y)
         return self
