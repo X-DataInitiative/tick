@@ -272,36 +272,15 @@ class OnlineForestClassifier {
 
   void clear();
 
-  inline double step() const {
-    return _step;
-  }
-
-  inline OnlineForestClassifier& set_step(const double step) {
-    _step = step;
-    return *this;
-  }
+  double step() const;
+  OnlineForestClassifier& set_step(const double step);
 
   void print();
 
-  inline uint32_t n_samples() const {
-    if (_iteration > 0) {
-      return _iteration;
-    } else {
-      TICK_ERROR("You must call ``fit`` before asking for ``n_samples``.")
-    }
-  }
+  uint32_t n_samples() const;
+  uint32_t n_features() const;
 
-  inline uint32_t n_features() const {
-    if (_iteration > 0) {
-      return _n_features;
-    } else {
-      TICK_ERROR("You must call ``fit`` before asking for ``n_features``.")
-    }
-  }
-
-  inline uint8_t n_classes() const {
-    return _n_classes;
-  }
+  uint8_t n_classes() const;
 
   inline bool use_aggregation() const {
     return _use_aggregation;

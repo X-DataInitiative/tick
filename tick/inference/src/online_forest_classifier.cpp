@@ -743,3 +743,34 @@ OnlineForestClassifier &OnlineForestClassifier::set_verbose(bool verbose) {
   _verbose = verbose;
   return *this;
 }
+
+
+double OnlineForestClassifier::step() const {
+  return _step;
+}
+
+OnlineForestClassifier& OnlineForestClassifier::set_step(const double step) {
+  _step = step;
+  return *this;
+}
+
+
+uint32_t OnlineForestClassifier::n_samples() const {
+  if (_iteration > 0) {
+    return _iteration;
+  } else {
+    TICK_ERROR("You must call ``fit`` before asking for ``n_samples``.")
+  }
+}
+
+inline uint32_t OnlineForestClassifier::n_features() const {
+  if (_iteration > 0) {
+    return _n_features;
+  } else {
+    TICK_ERROR("You must call ``fit`` before asking for ``n_features``.")
+  }
+}
+
+uint8_t OnlineForestClassifier::n_classes() const {
+  return _n_classes;
+}
