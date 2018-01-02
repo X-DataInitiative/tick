@@ -13,6 +13,7 @@ from tick.inference import OnlineForestClassifier
 class Test(InferenceTest):
 
     def test_online_forest_n_features_differs(self):
+        n_samples = 1000
         n_classes = 2
         n_trees = 20
 

@@ -34,7 +34,6 @@ class OnlineForestClassifier {
   inline OnlineForestClassifier& set_step(const double step);
 
   uint32_t n_trees() const;
-  OnlineForestClassifier &set_n_trees(uint32_t n_trees);
 
   int32_t n_threads() const;
   OnlineForestClassifier &set_n_threads(int32_t n_threads);

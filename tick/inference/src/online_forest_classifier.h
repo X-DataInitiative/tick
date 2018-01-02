@@ -187,17 +187,7 @@ class TreeClassifier {
   inline double step() const;
   inline double dirichlet() const;
 
-  void print() {
-    std::cout << "Tree(n_nodes: " << _n_nodes << std::endl;
-    std::cout << " ";
-    uint32_t index = 0;
-    for (NodeClassifier &node : nodes) {
-      std::cout << "index: " << index << " ";
-      node.print();
-      index++;
-    }
-    std::cout << ")" << std::endl;
-  }
+  void print();
 
   inline CriterionClassifier criterion() const;
   inline bool use_aggregation() const;
@@ -219,7 +209,7 @@ class OnlineForestClassifier {
   uint8_t _n_classes;
   // Number of Trees in the forest
   uint8_t _n_trees;
-  //
+  // Number of passes over each given data
   uint8_t _n_passes;
   // Step-size used for aggregation
   double _step;
@@ -251,11 +241,22 @@ class OnlineForestClassifier {
   SArrayDouble2dPtr _features;
   SArrayDoublePtr _labels;
 
+  void check_n_features(uint32_t n_features, bool predict) const;
+  inline void check_label(double label) const;
+
  public:
-  OnlineForestClassifier(uint32_t n_features, uint8_t n_classes, uint32_t n_trees, uint8_t n_passes = 1, double step = 1.0,
+  OnlineForestClassifier(uint32_t n_features,
+                         uint8_t n_classes,
+                         uint8_t n_trees,
+                         uint8_t n_passes = 1,
+                         double step = 1.0,
                          CriterionClassifier criterion = CriterionClassifier::log,
-                         bool use_aggregation = true, double subsampling = 1, double dirichlet = 0.5,
-                         int32_t n_threads = 1, int seed = 0, bool verbose = false);
+                         bool use_aggregation = true,
+                         double subsampling = 1,
+                         double dirichlet = 0.5,
+                         int32_t n_threads = 1,
+                         int seed = 0,
+                         bool verbose = false);
   virtual ~OnlineForestClassifier();
 
   void fit(const SArrayDouble2dPtr features, const SArrayDoublePtr labels);
@@ -263,126 +264,37 @@ class OnlineForestClassifier {
 
   inline uint32_t sample_feature();
   inline uint32_t sample_feature(const ArrayDouble &prob);
-
   inline uint32_t sample_feature_bis();
-
   inline double sample_exponential(double intensity);
-
   inline double sample_threshold(double left, double right);
 
   void clear();
-
-  double step() const;
-  OnlineForestClassifier& set_step(const double step);
-
   void print();
 
   uint32_t n_samples() const;
   uint32_t n_features() const;
-
   uint8_t n_classes() const;
 
-  inline bool use_aggregation() const {
-    return _use_aggregation;
-  }
-
-  OnlineForestClassifier &set_n_classes(uint8_t n_classes) {
-    if (_iteration == 0) {
-      _n_classes = n_classes;
-    } else {
-      TICK_ERROR("OnlineForest::set_n_classes can be called only once !")
-    }
-    return *this;
-  }
-
-  inline void check_n_features(uint32_t n_features, bool predict) const {
-    if (n_features != _n_features) {
-      if(predict) {
-        TICK_ERROR("Wrong number of features: trained with " + std::to_string(_n_features)
-                       + " features, but received " + std::to_string(n_features) + " features for prediction");
-      } else {
-        TICK_ERROR("Wrong number of features: started to train with " + std::to_string(_n_features)
-                       + " features, but received " + std::to_string(n_features) + " afterwards");
-      }
-    }
-  }
-
-  inline void check_label(double label) const {
-    double iptr;
-    double fptr = std::modf(label, &iptr);
-    if(fptr != 0) {
-      TICK_ERROR("Wrong label type: received " + std::to_string(label) + " for a classification problem");
-    }
-    if ((label < 0) || (label >= _n_classes) ) {
-      TICK_ERROR("Wrong label value: received " + std::to_string(label) + " while training for classification with "
-          +  std::to_string(_n_classes) + " classes.");
-    }
-  }
-/*
-  inline OnlineForestClassifier &set_n_features(uint32_t n_features) {
-    if (_iteration == 0) {
-
-    } else {
-      if (n_features != _n_features) {
-        TICK_ERROR("Wrong number of features: started to train with " + std::to_string(_n_features)
-                       + " features, but received " + std::to_string(n_features) + " afterwards");
-      }
-    }
-    return *this;
-  }
-*/
-
-  inline uint32_t n_trees() const {
-    return _n_trees;
-  }
-
-  inline OnlineForestClassifier &set_n_trees(uint32_t n_trees) {
-    _n_trees = n_trees;
-    return *this;
-  }
-
-  inline int32_t n_threads() const {
-    return _n_threads;
-  }
-
-  inline CriterionClassifier criterion() const {
-    return _criterion;
-  }
-
-  inline int seed() const {
-    return _seed;
-  }
-
-  inline OnlineForestClassifier &set_seed(int seed) {
-    _seed = seed;
-    rand.reseed(seed);
-    return *this;
-  }
-
-  OnlineForestClassifier &set_n_threads(int32_t n_threads) {
-    _n_threads = n_threads;
-    return *this;
-  }
-
-  inline OnlineForestClassifier &set_criterion(CriterionClassifier criterion) {
-    _criterion = criterion;
-    return *this;
-  }
-
-  inline void set_feature_importances(const ArrayDouble &feature_importances) {
-    _feature_importances = feature_importances;
-  }
-
-  inline double dirichlet() const {
-    return _dirichlet;
-  }
-
-  void n_nodes(SArrayUIntPtr n_nodes_per_tree);
-
-  void n_leaves(SArrayUIntPtr n_leaves_per_tree);
-
+  uint8_t n_trees() const;
+  bool use_aggregation() const;
+  double step() const;
+  OnlineForestClassifier &set_step(const double step);
+  double dirichlet() const;
+  OnlineForestClassifier &set_dirichlet(const double dirichlet);
   bool verbose() const;
   OnlineForestClassifier &set_verbose(bool verbose);
+  CriterionClassifier criterion() const;
+  OnlineForestClassifier &set_criterion(CriterionClassifier criterion);
+  int32_t n_threads() const;
+  OnlineForestClassifier &set_n_threads(int32_t n_threads);
+  int seed() const;
+  OnlineForestClassifier &set_seed(int seed);
+
+  void n_nodes(SArrayUIntPtr n_nodes_per_tree);
+  void n_leaves(SArrayUIntPtr n_leaves_per_tree);
+
+  void set_feature_importances(const ArrayDouble &feature_importances);
+
 };
 
 #endif //TICK_ONLINE_FOREST_CLASSIFIER_H
