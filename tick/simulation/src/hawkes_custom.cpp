@@ -4,25 +4,16 @@
 
 #include "hawkes_custom.h"
 
-Hawkes_custom::Hawkes_custom(unsigned int n_nodes, int seed, ulong _MaxN_of_f, ArrayDoubleList1D _f_i)
+
+Hawkes_custom::Hawkes_custom(unsigned int n_nodes, int seed, ulong _MaxN_of_f, const SArrayDoublePtrList1D &_f_i)
         : Hawkes(n_nodes, seed), global_n(0) {
-    for (unsigned int i = 0; i < n_nodes; i++) {
-        baselines[i] = std::make_shared<HawkesConstantBaseline>(0.);
-
-        for (unsigned int j = 0; j < n_nodes; j++) {
-            kernels[i * n_nodes + j] = std::make_shared<HawkesKernel0>();
-        }
-    }
-
-    //! initialize additional content, f_i(n) and Max_N_of_f
     this->MaxN_of_f = _MaxN_of_f;
-    this->f_i = ArrayDoubleList1D(n_nodes);
+    this->f_i = _f_i;
 
-    for (ulong i = 0; i != n_nodes; ++i) {
-        //copy constructor
-        this->f_i[i] = ArrayDouble(_f_i[i]);
-        f_i_Max[i] = _f_i[i].max();
-    }
+    f_i_Max = ArrayDouble(n_nodes);
+
+    for (ulong i = 0; i != n_nodes; ++i)
+        f_i_Max[i] = f_i[i]->max();
 }
 
 bool Hawkes_custom::update_time_shift_(double delay,

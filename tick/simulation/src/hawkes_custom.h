@@ -2,8 +2,8 @@
 // Created by pwu on 12/19/17.
 //
 
-#ifndef TICK_HAWKES_CUSTOM_H
-#define TICK_HAWKES_CUSTOM_H
+#ifndef TICK_SIMULATION_SRC_HAWKES_CUSTOM_H_
+#define  TICK_SIMULATION_SRC_HAWKES_CUSTOM_H_
 
 #include "hawkes.h"
 
@@ -14,22 +14,17 @@ public:
 
     //! @brief the max value of n kept for all f_i(n)
     ulong MaxN_of_f;
-    ArrayDoubleList1D f_i;
+    SArrayDoublePtrList1D f_i;
+    //! array for accelerating the calculation
     ArrayDouble f_i_Max;
 
-//
+
 //    using Hawkes::get_baseline_bound;
 //    using Hawkes::baselines;
 //    using Hawkes::kernels;
 
-    //! variables used to calclate status
-
 public :
-    /**
-     * @brief A constructor for an empty multidimensional Hawkes process
-     * \param n_nodes : The dimension of the Hawkes process
-     */
-    explicit Hawkes_custom(unsigned int n_nodes, int seed, ulong _MaxN_of_f, ArrayDoubleList1D _f_i);
+    Hawkes_custom(unsigned int n_nodes, int seed, ulong _MaxN_of_f, const SArrayDoublePtrList1D &_f_i);
 
     // This forbids the unwanted copy of an Hawkes process
     Hawkes_custom(Hawkes_custom &hawkes_custom) = delete;
@@ -50,5 +45,4 @@ public :
     void update_jump(int index);
 };
 
-
-#endif //TICK_HAWKES_CUSTOM_H
+#endif // TICK_SIMULATION_SRC_HAWKES_CUSTOM_H_

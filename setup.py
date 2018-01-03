@@ -505,9 +505,9 @@ random_extension = create_extension(**random_extension_info)
 
 simulation_extension_info = {
     "cpp_files": ["pp.cpp", "poisson.cpp", "inhomogeneous_poisson.cpp",
-                  "hawkes.cpp"],
+                  "hawkes.cpp", "hawkes_custom.cpp"],
     "h_files": ["pp.h", "poisson.h", "inhomogeneous_poisson.h",
-                "hawkes.h"],
+                "hawkes.h", "hawkes_custom.h"],
     "folders": ["hawkes_baselines", "hawkes_kernels"],
     "swig_files": ["simulation_module.i"],
     "module_dir": "./tick/simulation/",
@@ -539,9 +539,7 @@ model_core_info = {
                   "model_quadratic_hinge.cpp",
                   "model_smoothed_hinge.cpp",
                   "coxreg_partial_lik.cpp",
-
-"hawkes_fixed_expkern_loglik_custom.cpp",
-
+                  "hawkes_fixed_expkern_loglik_custom.cpp",
                   "sccs.cpp"],
     "h_files": ["model.h",
                 "model_labels_features.h",
@@ -879,7 +877,7 @@ class CleanTick(clean):
     description = 'cleans all generated and built files'
 
     def run(self):
-        seconds_until_clean = 5
+        seconds_until_clean = 1
 
         print("Cleaning source directories in %d seconds..." %
               seconds_until_clean)
