@@ -23,6 +23,40 @@ BASE_URL = ("https://raw.githubusercontent.com/X-DataInitiative/tick-datasets"
             "/master/%s")
 
 
+def download_dataset(dataset_url, dataset_path, data_home=None, verbose=True):
+    data_home = get_data_home(data_home)
+    cache_path = os.path.join(data_home, dataset_path)
+    cache_dir = os.path.dirname(cache_path)
+
+    if not os.path.exists(cache_dir):
+        os.makedirs(cache_dir)
+
+    if verbose:
+        logger.warning("Downloading dataset from %s", dataset_url)
+    opener = urlopen(dataset_url)
+    chunk_size = 4096
+    with open(cache_path, 'wb') as f:
+        n_chunks = 0
+        file_size = opener.length
+        last_percent = -1
+        while True:
+            data = opener.read(chunk_size)
+            if data:
+                percent = chunk_size * n_chunks / file_size
+                if verbose:
+                    progress_bar(percent, length=file_size,
+                                 last_progress=last_percent)
+                    last_percent = percent
+                f.write(data)
+                n_chunks += 1
+            else:
+                if verbose:
+                    progress_bar(1, length=file_size)
+                break
+
+    return cache_path
+
+
 def download_tick_dataset(dataset_path, data_home=None, verbose=True):
     """Downloads dataset from tick_datasets github repository and store it
     locally
@@ -45,35 +79,9 @@ def download_tick_dataset(dataset_path, data_home=None, verbose=True):
     cache_path : `str`
         File path of the downloaded data
     """
-    data_home = get_data_home(data_home)
-    cache_path = os.path.join(data_home, dataset_path)
-    cache_dir = os.path.dirname(cache_path)
-
-    if not os.path.exists(cache_dir):
-        os.makedirs(cache_dir)
-
-    file_url = BASE_URL % dataset_path
-    if verbose:
-        logger.warning("Downloading dataset from %s", file_url)
-    opener = urlopen(file_url)
-    chunk_size = 4096
-    with open(cache_path, 'wb') as f:
-        n_chunks = 0
-        file_size = opener.length
-        while True:
-            data = opener.read(chunk_size)
-            if data:
-                percent = chunk_size * n_chunks / file_size
-                if verbose:
-                    progress_bar(percent, length=file_size)
-                f.write(data)
-                n_chunks += 1
-            else:
-                if verbose:
-                    progress_bar(1, length=file_size)
-                break
-
-    return cache_path
+    dataset_url = BASE_URL % dataset_path
+    download_dataset(dataset_url, dataset_path, data_home=data_home,
+                     verbose=verbose)
 
 
 def fetch_tick_dataset(dataset_path, data_home=None, verbose=True):
@@ -209,7 +217,7 @@ def convert_size(size_bytes):
     return '%s %s' % (s, size_name[i])
 
 
-def progress_bar(progress, width=40, length=None):
+def progress_bar(progress, width=40, length=None, last_progress=None):
     """Print progress bar to sys.stdout
 
     Parameters
@@ -229,6 +237,9 @@ def progress_bar(progress, width=40, length=None):
         size = ''
 
     n_bars = int(progress * width)
+    if last_progress is not None and n_bars == int(last_progress * width):
+        return
+
     bar = "[%s%s]" % ("=" * n_bars, " " * (width - n_bars))
     print("\r%s %s %2d%%" % (size, bar, progress * 100), flush=True, end="")
     if progress == 1:
