@@ -1,7 +1,12 @@
 #define DEBUG_COSTLY_THROW 1
 
 #include <gtest/gtest.h>
+#include <cereal/types/memory.hpp>
+#include <cereal/archives/binary.hpp>
+#include <cereal/archives/json.hpp>
+
 #include "tick/optim/solver/svrg.h"
+#include "tick/optim/solver/saga.h"
 #include "tick/optim/prox/prox_l2sq.h"
 #include "tick/optim/model/linreg.h"
 
@@ -72,6 +77,50 @@ TEST(SVRG, test_convergence) {
 
   out_iterate60.mult_incr(out_iterate30, -1);
   EXPECT_LE(out_iterate60.norm_sq() / n_features, 0.1);
+}
+
+
+TEST(SAGA, test_saga_serrialization) {
+  SArrayDoublePtr labels_ptr = get_labels();
+  SArrayDouble2dPtr features_ptr = get_features();
+
+  ulong n_samples = features_ptr->n_rows();
+  ulong n_features = features_ptr->n_cols();
+
+  auto model = std::make_shared<ModelLinReg>(features_ptr, labels_ptr, false, 1);
+  SAGA saga(n_samples, 0, RandType::unif, model->get_lip_max() / 1000, 1309);
+  saga.set_rand_max(n_samples);
+  saga.set_model(model);
+  saga.set_prox(std::make_shared<ProxL2Sq>(1e-3, false));
+
+
+  std::stringstream os;
+  {
+    cereal::JSONOutputArchive outputArchive(os);
+    outputArchive( saga );
+  }
+
+  SAGA restored_saga(0, 0, RandType::perm, 0);
+  {
+    cereal::JSONInputArchive inputArchive(os);
+    inputArchive( restored_saga );
+  }
+
+  // Both solvers should reach exactly the same solution
+  ArrayDouble out_iterate(n_features);
+  for (int j = 0; j < 30; ++j) {
+    saga.solve();
+  }
+  saga.get_iterate(out_iterate);
+
+  ArrayDouble out_iterate_restored(n_features);
+  for (int j = 0; j < 30; ++j) {
+    restored_saga.solve();
+  }
+  restored_saga.get_iterate(out_iterate_restored);
+
+  out_iterate_restored.mult_incr(out_iterate, -1);
+  EXPECT_DOUBLE_EQ(out_iterate_restored.norm_sq(), 0.);
 }
 
 #ifdef ADD_MAIN

@@ -2,6 +2,10 @@
 
 import unittest
 
+import pickle
+import numpy as np
+
+from tick.optim.prox import ProxL1
 from tick.optim.solver import SAGA
 from tick.optim.solver.tests.solver import TestSolver
 from tick.optim.solver.build.solver import SAGA as _SAGA
@@ -78,6 +82,20 @@ class Test(TestSolver):
             model = ModelCoxRegPartialLik().fit(X, T, C)
             saga = SAGA()
             saga._solver.set_model(model._model)
+
+    def test_saga_serialization(self):
+        """...Test that serialized linear regression computes loss correctly
+        """
+        model = ModelLinReg(fit_intercept=False)
+        features, labels = np.random.rand(5, 3), np.random.rand(5)
+        model.fit(features, labels)
+        prox = ProxL1(2.)
+
+        obj = SAGA()
+        obj.set_prox(prox).set_model(model)
+        pickled = pickle.loads(pickle.dumps(obj))
+        self.assertEqual(pickled.objective(features[0]),
+                         obj.objective(features[0]))
 
 
 if __name__ == '__main__':

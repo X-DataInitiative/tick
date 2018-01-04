@@ -16,6 +16,9 @@ public:
         Random  = 3
     };
 
+    // Empty constructor only used for serialization
+    SAGA(){};
+
     SAGA(unsigned long epoch_size,
          double tol,
          RandType rand_type,
@@ -31,3 +34,5 @@ public:
 
     void set_variance_reduction(VarianceReductionMethod variance_reduction);
 };
+
+TICK_MAKE_PICKLABLE(SAGA);

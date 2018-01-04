@@ -149,6 +149,53 @@ class StoSolver {
         this->rand_max = rand_max;
         permutation_ready = false;
     }
+
+  ////////////////////////////////////////////////////////////////////////////////
+  //                            Serialization
+  ////////////////////////////////////////////////////////////////////////////////
+
+ public:
+    template<class Archive>
+    void load(Archive &ar) {
+        ar(CEREAL_NVP(model));
+        ar(CEREAL_NVP(prox));
+        ar(CEREAL_NVP(t));
+        ar(CEREAL_NVP(iterate));
+        ar(CEREAL_NVP(rand_max));
+        ar(CEREAL_NVP(epoch_size));
+        ar(CEREAL_NVP(tol));
+        ar(CEREAL_NVP(rand_type));
+        ar(CEREAL_NVP(permutation));
+        ar(CEREAL_NVP(i_perm));
+        ar(CEREAL_NVP(permutation_ready));
+
+        int rand_seed;
+        ar(CEREAL_NVP(rand_seed));
+
+        rand = Rand(rand_seed);
+    }
+
+    template<class Archive>
+    void save(Archive &ar) const {
+        ar(CEREAL_NVP(model));
+        ar(CEREAL_NVP(prox));
+        ar(CEREAL_NVP(t));
+        ar(CEREAL_NVP(iterate));
+        ar(CEREAL_NVP(rand_max));
+        ar(CEREAL_NVP(epoch_size));
+        ar(CEREAL_NVP(tol));
+        ar(CEREAL_NVP(rand_type));
+        ar(CEREAL_NVP(permutation));
+        ar(CEREAL_NVP(i_perm));
+        ar(CEREAL_NVP(permutation_ready));
+
+        // Note that only the seed is part of the serialization.
+        //
+        // If the generator has been used (i.e. numbers have been drawn from it) this will not be
+        // reflected in the restored (deserialized) object.
+        const auto rand_seed = rand.get_seed();
+        ar(CEREAL_NVP(rand_seed));
+    }
 };
 
 #endif  // TICK_OPTIM_SOLVER_SRC_STO_SOLVER_H_

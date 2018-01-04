@@ -44,6 +44,9 @@ class SAGA : public StoSolver {
   void compute_step_corrections();
 
  public:
+  // Empty constructor only used for serialization
+  SAGA(): StoSolver(-1) {};
+
   SAGA(ulong epoch_size,
        double tol,
        RandType rand_type,
@@ -72,6 +75,25 @@ class SAGA : public StoSolver {
   }
 
   void set_starting_iterate(ArrayDouble &new_iterate) override;
+
+ public:
+  template<class Archive>
+  void serialize(Archive &ar) {
+    ar(cereal::make_nvp("StoSolver", cereal::base_class<StoSolver>(this)));
+
+    ar(CEREAL_NVP(step));
+    ar(CEREAL_NVP(steps_correction));
+    ar(CEREAL_NVP(variance_reduction));
+    ar(CEREAL_NVP(next_iterate));
+    ar(CEREAL_NVP(solver_ready));
+    ar(CEREAL_NVP(gradients_memory));
+    ar(CEREAL_NVP(gradients_average));
+    ar(CEREAL_NVP(rand_index));
+    ar(CEREAL_NVP(ready_step_corrections));
+  }
+
 };
+
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SAGA, cereal::specialization::member_serialize);
 
 #endif  // TICK_OPTIM_SOLVER_SRC_SAGA_H_
