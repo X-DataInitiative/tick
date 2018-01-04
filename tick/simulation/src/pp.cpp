@@ -121,6 +121,8 @@ void PP::simulate(double end_time, ulong n_points) {
     // We compute the time of the potential next random jump
     const double time_of_next_jump = time + rand.exponential(total_intensity_bound);
 
+      printf("%f %f\n",time_of_next_jump,itr_time_step);
+
     // If we must track record the intensities we perform a loop
     if (itr_on()) {
       while (itr_time + itr_time_step < std::min(time_of_next_jump, end_time)) {

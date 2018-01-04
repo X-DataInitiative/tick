@@ -3,7 +3,7 @@
 from tick.optim.model import ModelHawkesCustom
 
 import numpy as np
-from tick.simulation import SimuLogReg, weights_sparse_gauss, SimuHawkesExpKernels
+from tick.simulation import SimuHawkesExpKernels
 from tick.optim.solver import GD, AGD, SGD, SVRG, SDCA
 from tick.optim.prox import ProxElasticNet, ProxL2Sq, ProxZero, ProxL1
 from tick.plot import plot_history

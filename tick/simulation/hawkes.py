@@ -9,7 +9,7 @@ from tick.base import TimeFunction
 from tick.simulation.base import SimuPointProcess
 from numpy.linalg import eig, inv
 
-from .build.simulation import Hawkes as _Hawkes
+from .build.simulation import Hawkes as _Hawkes, Hawkes_custom as _HawkesCustom
 from .hawkes_kernels import HawkesKernel0
 
 
@@ -105,7 +105,8 @@ class SimuHawkes(SimuPointProcess):
     def __init__(self, kernels=None, baseline=None, n_nodes=None,
                  end_time=None, period_length=None,
                  max_jumps=None, seed=None, verbose=True,
-                 force_simulation=False):
+                 force_simulation=False,
+                 custom=False, MaxN_of_f = None, f_i = None):
         SimuPointProcess.__init__(self, end_time=end_time, max_jumps=max_jumps,
                                   seed=seed, verbose=verbose)
 
@@ -135,7 +136,11 @@ class SimuHawkes(SimuPointProcess):
 
         if n_nodes <= 0:
             raise ValueError("n_nodes must be positive but equals %i" % n_nodes)
-        self._pp = _Hawkes(n_nodes, self._pp_init_seed)
+
+        if custom:
+            self._pp = _HawkesCustom(n_nodes, self._pp_init_seed, MaxN_of_f, f_i)
+        else:
+            self._pp = _Hawkes(n_nodes, self._pp_init_seed)
 
         if kernels is not None:
             if kernels.shape != (self.n_nodes, self.n_nodes):
