@@ -7,6 +7,8 @@
 
 class ModelLogReg : public ModelGeneralizedLinear, public ModelLipschitz {
  public:
+ // Empty constructor only used for serialization
+   ModelLogReg(){};
 
   ModelLogReg(const SBaseArrayDouble2dPtr features,
               const SArrayDoublePtr labels,
@@ -17,3 +19,5 @@ class ModelLogReg : public ModelGeneralizedLinear, public ModelLipschitz {
 
   static void logistic(const ArrayDouble &x, ArrayDouble &out);
 };
+
+TICK_MAKE_PICKLABLE(ModelLogReg);

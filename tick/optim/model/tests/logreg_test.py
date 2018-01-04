@@ -2,6 +2,7 @@
 
 import unittest
 
+import pickle
 import numpy as np
 from scipy.sparse import csr_matrix
 
@@ -55,6 +56,16 @@ class Test(TestGLM):
         self.assertAlmostEqual(model.get_lip_max(), 13.956542412138093)
         self.assertAlmostEqual(model_spars.get_lip_mean(), model.get_lip_mean())
         self.assertAlmostEqual(model_spars.get_lip_max(), model.get_lip_max())
+
+    def test_logreg_serialization(self):
+        """...Test that serialized logistic regression computes loss correctly
+        """
+        obj = ModelLogReg(fit_intercept=False)
+        features, labels = np.random.rand(5, 3), np.random.rand(5)
+        obj.fit(features, labels)
+
+        pickled = pickle.loads(pickle.dumps(obj))
+        self.assertEqual(pickled.loss(features[0]), obj.loss(features[0]))
 
 
 if __name__ == '__main__':

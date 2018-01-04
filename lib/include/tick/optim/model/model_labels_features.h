@@ -21,6 +21,8 @@ class DLL_PUBLIC ModelLabelsFeatures : public virtual Model {
   ArrayDouble column_sparsity;
 
  public:
+  ModelLabelsFeatures(){};
+
   ModelLabelsFeatures(SBaseArrayDouble2dPtr features,
                       SArrayDoublePtr labels);
 
@@ -66,7 +68,11 @@ class DLL_PUBLIC ModelLabelsFeatures : public virtual Model {
 
   template<class Archive>
   void load(Archive &ar) {
+    ar(cereal::make_nvp("Model", cereal::base_class<Model>(this)));
     ar(CEREAL_NVP(n_samples));
+    ar(CEREAL_NVP(n_features));
+    ar(CEREAL_NVP(ready_columns_sparsity));
+    ar(CEREAL_NVP(column_sparsity));
 
     ArrayDouble temp_labels;
     ArrayDouble2d temp_features;
@@ -79,10 +85,17 @@ class DLL_PUBLIC ModelLabelsFeatures : public virtual Model {
 
   template<class Archive>
   void save(Archive &ar) const {
+    ar(cereal::make_nvp("Model", cereal::base_class<Model>(this)));
     ar(CEREAL_NVP(n_samples));
+    ar(CEREAL_NVP(n_features));
+    ar(CEREAL_NVP(ready_columns_sparsity));
+    ar(CEREAL_NVP(column_sparsity));
+
     ar(cereal::make_nvp("labels", *labels));
     ar(cereal::make_nvp("features", *features));
   }
 };
+
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelLabelsFeatures, cereal::specialization::member_load_save)
 
 #endif  // TICK_OPTIM_MODEL_SRC_MODEL_LABELS_FEATURES_H_

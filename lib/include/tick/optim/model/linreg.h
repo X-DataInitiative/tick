@@ -14,6 +14,9 @@
 
 class DLL_PUBLIC ModelLinReg : public virtual ModelGeneralizedLinear, public ModelLipschitz {
  public:
+  // Empty constructor only used for serialization
+  ModelLinReg(){};
+
   ModelLinReg(const SBaseArrayDouble2dPtr features,
               const SArrayDoublePtr labels,
               const bool fit_intercept,
@@ -33,6 +36,7 @@ class DLL_PUBLIC ModelLinReg : public virtual ModelGeneralizedLinear, public Mod
 
   void compute_lip_consts() override;
 
+ public:
   template<class Archive>
   void serialize(Archive & ar) {
     ar(cereal::make_nvp("ModelGeneralizedLinear", cereal::base_class<ModelGeneralizedLinear>(this)));
@@ -41,5 +45,6 @@ class DLL_PUBLIC ModelLinReg : public virtual ModelGeneralizedLinear, public Mod
 };
 
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelLinReg, cereal::specialization::member_serialize)
+CEREAL_REGISTER_TYPE(ModelLinReg)
 
 #endif  // TICK_OPTIM_MODEL_SRC_LINREG_H_

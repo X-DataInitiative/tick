@@ -62,6 +62,8 @@ class DLL_PUBLIC ModelHawkes : public Model {
  public:
   template<class Archive>
   void serialize(Archive &ar) {
+    ar(cereal::make_nvp("Model", cereal::base_class<Model>(this)));
+
     ar(CEREAL_NVP(max_n_threads));
     ar(CEREAL_NVP(optimization_level));
     ar(CEREAL_NVP(weights_computed));

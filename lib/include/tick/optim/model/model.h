@@ -10,6 +10,7 @@
 #include "tick/base/base.h"
 
 #include <cereal/cereal.hpp>
+#include <cereal/types/polymorphic.hpp>
 
 #include <iostream>
 
@@ -123,6 +124,11 @@ class Model {
    */
   virtual double get_lip_mean() {
     TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
+  }
+
+ public:
+  template<class Archive>
+  void serialize(Archive & ar) {
   }
 };
 

@@ -51,6 +51,8 @@ class DLL_PUBLIC ModelLipschitz : public virtual Model {
 
   template<class Archive>
   void serialize(Archive & ar) {
+    ar(cereal::make_nvp("Model", cereal::base_class<Model>(this)));
+
     ar(CEREAL_NVP(ready_lip_consts),
        CEREAL_NVP(ready_lip_max),
        CEREAL_NVP(ready_lip_mean),

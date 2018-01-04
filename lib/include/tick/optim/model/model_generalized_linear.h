@@ -32,6 +32,8 @@ class DLL_PUBLIC ModelGeneralizedLinear : public ModelLabelsFeatures {
     void compute_features_norm_sq();
 
  public:
+  ModelGeneralizedLinear(){};
+
   ModelGeneralizedLinear(const SBaseArrayDouble2dPtr features,
                          const SArrayDoublePtr labels,
                          const bool fit_intercept,
@@ -87,6 +89,7 @@ class DLL_PUBLIC ModelGeneralizedLinear : public ModelLabelsFeatures {
     ar(CEREAL_NVP(features_norm_sq));
     ar(CEREAL_NVP(fit_intercept));
     ar(CEREAL_NVP(ready_features_norm_sq));
+    ar(CEREAL_NVP(n_threads));
   }
 };
 
