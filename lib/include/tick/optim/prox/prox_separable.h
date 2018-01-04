@@ -7,7 +7,7 @@
 
 class DLL_PUBLIC ProxSeparable : public Prox {
  public:
-  ProxSeparable(double strength, bool positive);
+  ProxSeparable(double strength = 0, bool positive = false);
 
   ProxSeparable(double strength, ulong start, ulong end, bool positive);
 
@@ -50,6 +50,14 @@ class DLL_PUBLIC ProxSeparable : public Prox {
   //! @brief get penalization value of the prox on a single value
   //! @warning This does not take strength into account
   virtual double value_single(double x) const;
+
+ public:
+  template<class Archive>
+  void serialize(Archive & ar) {
+    ar(cereal::make_nvp("Prox", cereal::base_class<Prox>(this)));
+  }
 };
+
+CEREAL_REGISTER_TYPE(ProxSeparable)
 
 #endif  // TICK_OPTIM_PROX_SRC_PROX_SEPARABLE_H_

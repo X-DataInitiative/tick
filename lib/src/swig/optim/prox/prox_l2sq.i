@@ -6,11 +6,12 @@
 
 class ProxL2Sq : public ProxSeparable {
  public:
-   ProxL2Sq(double strength,
-            bool positive);
+   ProxL2Sq(double strength = 0., bool positive = false);
 
    ProxL2Sq(double strength,
             ulong start,
             ulong end,
             bool positive);
 };
+
+TICK_MAKE_PICKLABLE(ProxL2Sq);

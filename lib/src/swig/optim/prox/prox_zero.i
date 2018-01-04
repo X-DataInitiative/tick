@@ -12,3 +12,5 @@ class ProxZero : public Prox {
             unsigned long start,
             unsigned long end);
 };
+
+TICK_MAKE_PICKLABLE(ProxL2Sq);

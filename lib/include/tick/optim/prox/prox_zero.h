@@ -7,7 +7,7 @@
 
 class DLL_PUBLIC ProxZero : public ProxSeparable {
  public:
-  explicit ProxZero(double strength);
+  explicit ProxZero(double strength = 0.);
 
   ProxZero(double strength,
            ulong start,
@@ -21,6 +21,14 @@ class DLL_PUBLIC ProxZero : public ProxSeparable {
   double call_single(double x, double step) const override;
 
   double call_single(double x, double step, ulong n_times) const override;
+
+ public:
+  template<class Archive>
+  void serialize(Archive & ar) {
+    ar(cereal::make_nvp("ProxSeparable", cereal::base_class<Prox>(this)));
+  }
 };
+
+CEREAL_REGISTER_TYPE(ProxZero)
 
 #endif  // TICK_OPTIM_PROX_SRC_PROX_ZERO_H_

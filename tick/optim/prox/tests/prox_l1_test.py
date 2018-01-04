@@ -2,6 +2,7 @@
 
 import unittest
 
+import pickle
 from numpy.testing import assert_almost_equal
 import numpy as np
 
@@ -51,6 +52,13 @@ class Test(TestProx):
                                l_l1 * np.abs(coeffs[3:8]).sum(),
                                delta=1e-15)
         assert_almost_equal(prox.call(coeffs, step=t), out, decimal=10)
+
+    def test_ProxL1_serrialization(self):
+        """...Test that ProxL1 value is correct after deserialization
+        """
+        obj = ProxL1(2.)
+        pickled = pickle.loads(pickle.dumps(obj))
+        self.assertEqual(pickled.value(np.ones(2)), pickled.value(np.ones(2)))
 
 
 if __name__ == '__main__':

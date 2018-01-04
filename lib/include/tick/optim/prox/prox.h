@@ -10,6 +10,7 @@
 #include "tick/base/base.h"
 
 #include <memory>
+#include <cereal/types/polymorphic.hpp>
 #include <string>
 
 class DLL_PUBLIC Prox {
@@ -27,7 +28,7 @@ class DLL_PUBLIC Prox {
   bool positive;
 
  public:
-  Prox(double strength, bool positive);
+  Prox(double strength = 0., bool positive = false);
 
   Prox(double strength, ulong start, ulong end, bool positive);
 
@@ -70,6 +71,16 @@ class DLL_PUBLIC Prox {
   virtual bool get_positive() const;
 
   virtual void set_positive(bool positive);
+
+ public:
+  template<class Archive>
+  void serialize(Archive & ar) {
+    ar(CEREAL_NVP(strength),
+       CEREAL_NVP(has_range),
+       CEREAL_NVP(start),
+       CEREAL_NVP(end),
+       CEREAL_NVP(positive));
+  }
 };
 
 typedef std::shared_ptr<Prox> ProxPtr;

@@ -2,6 +2,7 @@
 
 %module prox
 
+%include serialization.i
 %include defs.i
 %include std_shared_ptr.i
 

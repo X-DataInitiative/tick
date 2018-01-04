@@ -7,7 +7,7 @@
 
 class ProxL2Sq : public ProxSeparable {
  public:
-  ProxL2Sq(double strength, bool positive);
+  ProxL2Sq(double strength = 0, bool positive = false);
 
   ProxL2Sq(double strength, ulong start, ulong end, bool positive);
 
@@ -20,6 +20,14 @@ class ProxL2Sq : public ProxSeparable {
 
   // Repeat n_times the prox on coordinate i
   double call_single(double x, double step, ulong n_times) const override;
+
+ public:
+  template<class Archive>
+  void serialize(Archive & ar) {
+    ar(cereal::make_nvp("ProxSeparable", cereal::base_class<ProxSeparable>(this)));
+  }
 };
+
+CEREAL_REGISTER_TYPE(ProxL2Sq)
 
 #endif  // TICK_OPTIM_PROX_SRC_PROX_L2SQ_H_
