@@ -43,6 +43,12 @@ public :
                             double *total_intensity_bound);
 
     void update_jump(int index);
+
+    VArrayULongPtr get_global_n() {
+        VArrayULongPtr shared_process = VArrayULong::new_ptr(global_n);
+        return shared_process;
+    }
+
 };
 
 #endif // TICK_SIMULATION_SRC_HAWKES_CUSTOM_H_

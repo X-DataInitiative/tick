@@ -9,6 +9,7 @@
 class Hawkes_custom : public Hawkes {
     public :
     Hawkes_custom::Hawkes_custom(unsigned int n_nodes, int seed, ulong _MaxN_of_f, const SArrayDoublePtrList1D &_f_i);
+    VArrayULongPtr get_global_n();
 };
 
 // laisse tomber le cereal

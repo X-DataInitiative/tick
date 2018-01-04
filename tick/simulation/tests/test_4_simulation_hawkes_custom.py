@@ -21,7 +21,7 @@ kernels = np.array([
 
 
 
-simu_model = SimuHawkes(n_nodes = n_nodes, kernels=kernels, end_time=10, seed=seed, MaxN_of_f = MaxN_of_f, f_i=f_i)
+simu_model = SimuHawkes(kernels=kernels, end_time=10, custom=True, seed=seed, MaxN_of_f = MaxN_of_f, f_i=f_i)
 for i in range(n_nodes):
     simu_model.set_baseline(i, 0.3)
     for j in range(n_nodes):
@@ -36,17 +36,17 @@ print(simu_model.baseline)
 plot_point_process(simu_model)
 
 
-# simu_model2 = SimuHawkes(kernels=kernels, end_time=10, seed=seed)
-# for i in range(n_nodes):
-#     simu_model2.set_baseline(i, 0.3)
-#     for j in range(n_nodes):
-#         simu_model2.set_kernel(i, j, kernels[i, j])
-#
-# simu_model2.track_intensity(0.1)
-# # print(simu_model.simulate)
-# simu_model2.simulate()
-#
-# print(simu_model2.timestamps)
-# print(simu_model2.baseline)
-#
-# plot_point_process(simu_model2)
+simu_model2 = SimuHawkes(kernels=kernels, end_time=10, seed=seed)
+for i in range(n_nodes):
+    simu_model2.set_baseline(i, 0.3)
+    for j in range(n_nodes):
+        simu_model2.set_kernel(i, j, kernels[i, j])
+
+simu_model2.track_intensity(0.1)
+# print(simu_model.simulate)
+simu_model2.simulate()
+
+print(simu_model2.timestamps)
+print(simu_model2.baseline)
+
+plot_point_process(simu_model2)

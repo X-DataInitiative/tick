@@ -157,7 +157,7 @@ public :
   /**
    * @brief Record a jump in ith component
    */
-  void update_jump(int index);
+  virtual void update_jump(int index);
 
 public :
   /**
