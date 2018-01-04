@@ -16,14 +16,14 @@ from tick.inference import LogisticRegression as LogisticRegressionTick
 
 def find_best_C(learner, X, y):
     scores = {}
-    next_test_C = np.logspace(-3, 1, 4)
+    next_test_C = np.logspace(-5, 5, 20)
 
     for _ in range(5):
         print('triying', next_test_C)
         parameters = {'C': next_test_C}
 
         learner_cv = GridSearchCV(learner, parameters, scoring='roc_auc',
-                                  return_train_score=True, cv=5, n_jobs=1)
+                                  return_train_score=True, cv=5, n_jobs=20)
 
         with warnings.catch_warnings(record=True) as w_list:
             learner_cv.fit(X, y)
