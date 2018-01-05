@@ -18,7 +18,7 @@ public:
     //! array for accelerating the calculation
     ArrayDouble f_i_Max;
 
-
+    ulong last_global_n;
 //    using Hawkes::get_baseline_bound;
 //    using Hawkes::baselines;
 //    using Hawkes::kernels;

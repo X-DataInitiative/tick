@@ -14,6 +14,8 @@ Hawkes_custom::Hawkes_custom(unsigned int n_nodes, int seed, ulong _MaxN_of_f, c
 
     for (ulong i = 0; i != n_nodes; ++i)
         f_i_Max[i] = f_i[i]->max();
+
+    last_global_n = 0;
 }
 
 bool Hawkes_custom::update_time_shift_(double delay,
@@ -43,13 +45,14 @@ bool Hawkes_custom::update_time_shift_(double delay,
                 flag_negative_intensity1 = true;
             }
         }
+        intensity[i] *= f_i[i]->operator[](last_global_n);
     }
     return flag_negative_intensity1;
 }
 
 void Hawkes_custom::update_jump(int index) {
-    ulong rand_n = (unsigned long) std::rand() % MaxN_of_f;
-    global_n.append1(rand_n);
+    last_global_n = (unsigned long) std::rand() % MaxN_of_f;
+    global_n.append1(last_global_n);
     // We make the jump on the corresponding signal
     timestamps[index]->append1(time);
     n_total_jumps++;

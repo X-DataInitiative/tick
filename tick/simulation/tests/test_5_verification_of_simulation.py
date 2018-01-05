@@ -12,10 +12,10 @@ n_nodes = 2
 dim = n_nodes
 seed = 3007
 MaxN_of_f = 5
-f_i = [np.array([1.0, 7, 7.7, 6, 3]), np.array([1.0, 0.5, 2, 1, 2])]
+f_i = [np.array([1.,2,3,4,5]), np.array([1.,5,4,3,2])]
 
 beta = 3
-end_time = 10000
+end_time = 10
 
 kernels = np.array([
             [HawkesKernelExp(0.7, beta), HawkesKernelExp(0.6, beta)],
@@ -32,6 +32,9 @@ simu_model.track_intensity(0.1)
 simu_model.simulate()
 
 # plot_point_process(simu_model)
+##################################################################################################################
+
+
 
 
 
@@ -44,19 +47,17 @@ timestamps = simu_model.timestamps
 global_n = np.array(simu_model._pp.get_global_n())
 global_n = np.insert(global_n, 0, 0).astype(int)
 
-print(global_n)
-
 model = ModelHawkesCustom(beta, MaxN_of_f)
 model.fit(timestamps, global_n, end_time)
 #############################################################################
 prox = ProxL1(0.01, positive=True)
 
 # solver = AGD(step=5e-2, linesearch=False, max_iter= 350)
-solver = AGD(step=1e-2, linesearch=False, max_iter=1500)
+solver = AGD(step=1e-2, linesearch=False, max_iter=3000, print_every=100)
 solver.set_model(model).set_prox(prox)
 
 x0 = np.array(
-    [0.5, 0.5, 0.3, 0.4, 0.6, 2.0,   1,1,1,1,1, 1,1,1,1,1])
+    [0.5, 0.5, 0.3, 0.4, 0.6, 2.0,   2,3,4,5,6, 1,2,3,4,2])
 solver.solve(x0)
 
 # normalisation
