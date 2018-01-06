@@ -118,7 +118,7 @@ void PP::simulate(double end_time, ulong n_points) {
   // We loop till we reach the endTime
   while (time < end_time && n_total_jumps < n_points &&
     (!flag_negative_intensity || threshold_negative_intensity) ) {
-    // We compute the time of the potential next random jump
+      // We compute the time of the potential next random jump
     const double time_of_next_jump = time + rand.exponential(total_intensity_bound);
 
     // If we must track record the intensities we perform a loop
@@ -143,7 +143,7 @@ void PP::simulate(double end_time, ulong n_points) {
     update_time_shift(time_of_next_jump - time, false, false);
     if (flag_negative_intensity && !threshold_negative_intensity) break;
 
-    // We need to understand which component jumps
+      // We need to understand which component jumps
     double temp = rand.uniform() * total_intensity_bound;
 
     unsigned int i;
@@ -152,7 +152,7 @@ void PP::simulate(double end_time, ulong n_points) {
       if (temp <= 0) break;
     }
 
-    // Case we discard the jump, we should recompute max intensity ?????????  !
+      // Case we discard the jump, we should recompute max intensity ?????????  !
     if (i == n_nodes) {
       update_time_shift(0, true, false);
       if (flag_negative_intensity && !threshold_negative_intensity) break;
@@ -184,6 +184,3 @@ void PP::update_jump(int index) {
   timestamps[index]->append1(time);
   n_total_jumps += 1;
 }
-
-
-

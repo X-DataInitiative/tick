@@ -49,6 +49,9 @@ public :
         return shared_process;
     }
 
+    void init_intensity_(ArrayDouble &intensity,
+                         double *total_intensity_bound);
+
 };
 
 #endif // TICK_SIMULATION_SRC_HAWKES_CUSTOM_H_

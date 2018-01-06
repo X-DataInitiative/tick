@@ -57,3 +57,12 @@ void Hawkes_custom::update_jump(int index) {
     timestamps[index]->append1(time);
     n_total_jumps++;
 }
+
+void Hawkes_custom::init_intensity_(ArrayDouble &intensity, double *total_intensity_bound) {
+    *total_intensity_bound = 0;
+    for (unsigned int i = 0; i < n_nodes; i++) {
+        intensity[i] = get_baseline(i, 0.) * f_i[i]->operator[](last_global_n);;
+//        *total_intensity_bound += get_baseline_bound(i, 0.);
+        *total_intensity_bound += get_baseline(i, 0.) * f_i_Max[i];
+    }
+}
