@@ -9,8 +9,8 @@ from tick.simulation import SimuHawkes
 n_nodes = 2
 dim = n_nodes
 seed = 3007
-MaxN_of_f = 5
-f_i = [np.array([1., 0.8, 0.9, 1.0, 0.7]), np.array([1., 0.6, 0.5, 0.7, 1.0])]
+MaxN_of_f = 2
+f_i = [np.array([1., 0.8]), np.array([1., 0.6])]
 
 beta = 3
 end_time = 100000
@@ -48,14 +48,16 @@ global_n = np.insert(global_n, 0, 0).astype(int)
 model = ModelHawkesCustom(beta, MaxN_of_f)
 model.fit(timestamps, global_n, end_time)
 #############################################################################
-prox = ProxL1(0.01, positive=True)
+prox = ProxL1(0.0, positive=True)
 
 # solver = AGD(step=5e-2, linesearch=False, max_iter= 350)
-solver = AGD(step=1e-2, linesearch=False, max_iter=100, print_every=100)
+solver = AGD(step=1e-2, linesearch=False, max_iter=500, print_every=100)
 solver.set_model(model).set_prox(prox)
 
+x_real = np.array(
+    [0.5, 0.5, 0.7, 0.6, 0.2, 0.3,   1., 0.8, 1., 0.6])
 x0 = np.array(
-    [0.3, 0.3, 0.5, 0.5, 0.5, 0.5,   1., 0.8, 0.9, 1.0, 0.7, 1., 0.6, 0.5, 0.7, 1.0])
+    [0.3, 0.3, 0.5, 0.5, 0.5, 0.5,   1., 0.6, 1., 0.8])
 solver.solve(x0)
 
 # normalisation
@@ -66,3 +68,6 @@ for i in range(dim):
     solution_adj[(dim + dim * dim + MaxN_of_f * i): (dim + dim * dim + MaxN_of_f * (i + 1))] /= solver.solution[
         dim + dim * dim + MaxN_of_f * i]
 print(solution_adj)
+
+print(model.loss(x_real))
+print(model.loss(solution_adj))
