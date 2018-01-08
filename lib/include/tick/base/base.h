@@ -6,8 +6,8 @@
 //  Copyright (c) 2015 bacry. All rights reserved.
 //
 
-#ifndef TICK_BASE_SRC_BASE_H_
-#define TICK_BASE_SRC_BASE_H_
+#ifndef LIB_INCLUDE_TICK_BASE_BASE_H_
+#define LIB_INCLUDE_TICK_BASE_BASE_H_
 
 // License: BSD 3 clause
 
@@ -35,4 +35,4 @@
 #include "tick/array/sbasearray2d.h"
 #include "tick/array/varray.h"
 
-#endif  // TICK_BASE_SRC_BASE_H_
+#endif  // LIB_INCLUDE_TICK_BASE_BASE_H_

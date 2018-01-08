@@ -1,5 +1,5 @@
-#ifndef TICK_BASE_ARRAY_SRC_ALLOC_H_
-#define TICK_BASE_ARRAY_SRC_ALLOC_H_
+#ifndef LIB_INCLUDE_TICK_ARRAY_ALLOC_H_
+#define LIB_INCLUDE_TICK_ARRAY_ALLOC_H_
 
 // License: BSD 3 clause
 
@@ -85,4 +85,4 @@ extern DEBUGCAllocArrayCount_t DEBUGCAllocArrayCount;
 
 #endif  // DEBUG_C_ARRAY
 
-#endif  // TICK_BASE_ARRAY_SRC_ALLOC_H_
+#endif  // LIB_INCLUDE_TICK_ARRAY_ALLOC_H_

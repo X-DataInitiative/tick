@@ -2,8 +2,8 @@
 // Created by Martin Bompaire on 22/10/15.
 //
 
-#ifndef TICK_OPTIM_MODEL_SRC_MODEL_H_
-#define TICK_OPTIM_MODEL_SRC_MODEL_H_
+#ifndef LIB_INCLUDE_TICK_OPTIM_MODEL_MODEL_H_
+#define LIB_INCLUDE_TICK_OPTIM_MODEL_MODEL_H_
 
 // License: BSD 3 clause
 
@@ -128,5 +128,5 @@ class Model {
 
 typedef std::shared_ptr<Model> ModelPtr;
 
-#endif  // TICK_OPTIM_MODEL_SRC_MODEL_H_
+#endif  // LIB_INCLUDE_TICK_OPTIM_MODEL_MODEL_H_
 

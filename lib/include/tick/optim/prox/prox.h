@@ -2,8 +2,8 @@
 // Created by Martin Bompaire on 26/10/15.
 //
 
-#ifndef TICK_OPTIM_PROX_SRC_PROX_H_
-#define TICK_OPTIM_PROX_SRC_PROX_H_
+#ifndef LIB_INCLUDE_TICK_OPTIM_PROX_PROX_H_
+#define LIB_INCLUDE_TICK_OPTIM_PROX_PROX_H_
 
 // License: BSD 3 clause
 
@@ -74,4 +74,4 @@ class DLL_PUBLIC Prox {
 
 typedef std::shared_ptr<Prox> ProxPtr;
 
-#endif  // TICK_OPTIM_PROX_SRC_PROX_H_
+#endif  // LIB_INCLUDE_TICK_OPTIM_PROX_PROX_H_

@@ -1,6 +1,6 @@
 
-#ifndef TICK_BASE_ARRAY_SRC_SPARSEARRAY2D_H_
-#define TICK_BASE_ARRAY_SRC_SPARSEARRAY2D_H_
+#ifndef LIB_INCLUDE_TICK_ARRAY_SPARSEARRAY2D_H_
+#define LIB_INCLUDE_TICK_ARRAY_SPARSEARRAY2D_H_
 
 // License: BSD 3 clause
 
@@ -13,8 +13,7 @@ template<typename T>
 class SSparseArray2d;
 
 // Class forwarding to allow "friend class" declarations
-namespace cereal
-{
+namespace cereal {
   template <typename T, class Archive> void save(Archive& ar, const SparseArray2d<T>& s);
   template <typename T, class Archive> void load(Archive& ar, SparseArray2d<T>& s);
 }
@@ -41,9 +40,10 @@ namespace cereal
  */
 template<typename T>
 class SparseArray2d : public BaseArray2d<T> {
- // "friend class" declarations to allow private member access when de/serializing
- template <typename T1, class Archive> friend void cereal::save(Archive& ar, const SparseArray2d<T1>& s);
- template <typename T1, class Archive> friend void cereal::load(Archive& ar, SparseArray2d<T1>& s);
+  // "friend class" declarations to allow private member access when de/serializing
+  template <typename T1, class Archive> friend void cereal::save(Archive& ar, const SparseArray2d<T1>& s);
+  template <typename T1, class Archive> friend void cereal::load(Archive& ar, SparseArray2d<T1>& s);
+
  protected:
     using BaseArray2d<T>::_size;
     using BaseArray2d<T>::_size_sparse;
@@ -146,11 +146,11 @@ Array2d<T> BaseArray2d<T>::as_array2d() {
 }
 
 // Using save/load methods directory on SparseArray2d<T> does not compile simply
-namespace cereal
-{
+namespace cereal {
+
   template <typename T, class Archive>
   void save(Archive& ar, const SparseArray2d<T>& s) {
-    try{
+    try {
       ar(s._size_sparse);
       ar(s._n_rows);
       ar(s._n_cols);
@@ -158,14 +158,13 @@ namespace cereal
       ar( cereal::binary_data(s._data, sizeof(T) * s._size_sparse));
       ar( cereal::binary_data(s._indices, sizeof(INDICE_TYPE) * s._size_sparse));
       ar( cereal::binary_data(s._row_indices, sizeof(INDICE_TYPE) * (s._n_rows + 1)));
-    }catch(const std::exception& e){
+    }catch(const std::exception& e) {
       std::cerr << e.what() << std::endl;
     }
   }
 
   template<typename T, class Archive>
   void load(Archive &ar, SparseArray2d<T> &s) {
-
     if (s._data || s._indices || s._row_indices)
       throw std::runtime_error(
         "SparseArray2d being used for deserializing may not have previous allocations");
@@ -198,12 +197,11 @@ namespace cereal
       s.is_data_allocation_owned = 1;
       s.is_indices_allocation_owned = 1;
       s.is_row_indices_allocation_owned = 1;
-
     } catch (const std::exception &e) {
       std::cerr << e.what() << std::endl;
     }
   }
-}
+}  // namespace cereal
 
 /////////////////////////////////////////////////////////////////
 //
@@ -229,4 +227,4 @@ typedef SparseArray2d<ulong> SparseArrayULong2d;
  * @}
  */
 
-#endif  // TICK_BASE_ARRAY_SRC_SPARSEARRAY2D_H_
+#endif  // LIB_INCLUDE_TICK_ARRAY_SPARSEARRAY2D_H_

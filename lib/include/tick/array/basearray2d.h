@@ -1,5 +1,5 @@
-#ifndef TICK_BASE_ARRAY_SRC_BASEARRAY2D_H_
-#define TICK_BASE_ARRAY_SRC_BASEARRAY2D_H_
+#ifndef LIB_INCLUDE_TICK_ARRAY_BASEARRAY2D_H_
+#define LIB_INCLUDE_TICK_ARRAY_BASEARRAY2D_H_
 
 // License: BSD 3 clause
 
@@ -275,4 +275,4 @@ typedef std::vector<BaseArrayDouble2dList1D> BaseArrayDouble2dList2D;
  * @}
  */
 
-#endif  // TICK_BASE_ARRAY_SRC_BASEARRAY2D_H_
+#endif  // LIB_INCLUDE_TICK_ARRAY_BASEARRAY2D_H_

@@ -1,5 +1,5 @@
-#ifndef TICK_OPTIM_PROX_SRC_PROX_GROUP_L1_H_
-#define TICK_OPTIM_PROX_SRC_PROX_GROUP_L1_H_
+#ifndef LIB_INCLUDE_TICK_OPTIM_PROX_PROX_GROUP_L1_H_
+#define LIB_INCLUDE_TICK_OPTIM_PROX_PROX_GROUP_L1_H_
 
 // License: BSD 3 clause
 
@@ -19,4 +19,4 @@ class ProxGroupL1 : public ProxWithGroups {
   const std::string get_class_name() const final;
 };
 
-#endif  // TICK_OPTIM_PROX_SRC_PROX_GROUP_L1_H_
+#endif  // LIB_INCLUDE_TICK_OPTIM_PROX_PROX_GROUP_L1_H_

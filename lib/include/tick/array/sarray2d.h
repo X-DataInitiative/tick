@@ -6,8 +6,8 @@
 //  Copyright (c) 2016 bacry. All rights reserved.
 //
 
-#ifndef TICK_BASE_ARRAY_SRC_SARRAY2D_H_
-#define TICK_BASE_ARRAY_SRC_SARRAY2D_H_
+#ifndef LIB_INCLUDE_TICK_ARRAY_SARRAY2D_H_
+#define LIB_INCLUDE_TICK_ARRAY_SARRAY2D_H_
 
 // License: BSD 3 clause
 
@@ -378,4 +378,4 @@ INSTANTIATE_SARRAY2D(SArrayUShort2dPtr, std::uint16_t);
 INSTANTIATE_SARRAY2D(SArrayLong2dPtr, std::int64_t);
 INSTANTIATE_SARRAY2D(SArrayULong2dPtr, ulong);
 
-#endif  // TICK_BASE_ARRAY_SRC_SARRAY2D_H_
+#endif  // LIB_INCLUDE_TICK_ARRAY_SARRAY2D_H_

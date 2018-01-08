@@ -1,5 +1,5 @@
-#ifndef TICK_RANDOM_SRC_RAND_H_
-#define TICK_RANDOM_SRC_RAND_H_
+#ifndef LIB_INCLUDE_TICK_RANDOM_RAND_H_
+#define LIB_INCLUDE_TICK_RANDOM_RAND_H_
 
 // License: BSD 3 clause
 
@@ -144,4 +144,4 @@ class DLL_PUBLIC Rand {
     void reseed(const int seed);
 };
 
-#endif  // TICK_RANDOM_SRC_RAND_H_
+#endif  // LIB_INCLUDE_TICK_RANDOM_RAND_H_

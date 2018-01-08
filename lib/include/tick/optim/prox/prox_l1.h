@@ -1,5 +1,5 @@
-#ifndef TICK_OPTIM_PROX_SRC_PROX_L1_H_
-#define TICK_OPTIM_PROX_SRC_PROX_L1_H_
+#ifndef LIB_INCLUDE_TICK_OPTIM_PROX_PROX_L1_H_
+#define LIB_INCLUDE_TICK_OPTIM_PROX_PROX_L1_H_
 
 // License: BSD 3 clause
 
@@ -22,4 +22,4 @@ class ProxL1 : public ProxSeparable {
   double value_single(double x) const override;
 };
 
-#endif  // TICK_OPTIM_PROX_SRC_PROX_L1_H_
+#endif  // LIB_INCLUDE_TICK_OPTIM_PROX_PROX_L1_H_

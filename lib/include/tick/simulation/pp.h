@@ -1,5 +1,5 @@
-#ifndef TICK_SIMULATION_SRC_PP_H_
-#define TICK_SIMULATION_SRC_PP_H_
+#ifndef LIB_INCLUDE_TICK_SIMULATION_PP_H_
+#define LIB_INCLUDE_TICK_SIMULATION_PP_H_
 
 // License: BSD 3 clause
 
@@ -301,4 +301,4 @@ class PP {
   }
 };
 
-#endif  // TICK_SIMULATION_SRC_PP_H_
+#endif  // LIB_INCLUDE_TICK_SIMULATION_PP_H_
