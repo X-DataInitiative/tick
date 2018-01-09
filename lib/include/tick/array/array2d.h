@@ -1,5 +1,5 @@
-#ifndef TICK_BASE_ARRAY_SRC_ARRAY2D_H_
-#define TICK_BASE_ARRAY_SRC_ARRAY2D_H_
+#ifndef LIB_INCLUDE_TICK_ARRAY_ARRAY2D_H_
+#define LIB_INCLUDE_TICK_ARRAY_ARRAY2D_H_
 
 // License: BSD 3 clause
 
@@ -466,4 +466,4 @@ tick::TemporaryLog<E>& operator<<(tick::TemporaryLog<E>& log, const Array2d<T>& 
     return log;
 }
 
-#endif  // TICK_BASE_ARRAY_SRC_ARRAY2D_H_
+#endif  // LIB_INCLUDE_TICK_ARRAY_ARRAY2D_H_

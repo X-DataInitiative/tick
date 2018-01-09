@@ -2,8 +2,8 @@
 // Created by Martin Bompaire on 19/01/16.
 //
 
-#ifndef TICK_BASE_SRC_BASE_TEST_H_
-#define TICK_BASE_SRC_BASE_TEST_H_
+#ifndef LIB_INCLUDE_TICK_BASE_BASE_TEST_H_
+#define LIB_INCLUDE_TICK_BASE_BASE_TEST_H_
 
 // License: BSD 3 clause
 
@@ -21,4 +21,4 @@ class A0 {
     }
 };
 
-#endif  // TICK_BASE_SRC_BASE_TEST_H_
+#endif  // LIB_INCLUDE_TICK_BASE_BASE_TEST_H_

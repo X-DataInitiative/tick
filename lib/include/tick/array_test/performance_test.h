@@ -2,8 +2,8 @@
 // Created by Martin Bompaire on 22/05/15.
 //
 
-#ifndef TICK_BASE_ARRAY_TEST_SRC_PERFORMANCE_TEST_H_
-#define TICK_BASE_ARRAY_TEST_SRC_PERFORMANCE_TEST_H_
+#ifndef LIB_INCLUDE_TICK_ARRAY_TEST_PERFORMANCE_TEST_H_
+#define LIB_INCLUDE_TICK_ARRAY_TEST_PERFORMANCE_TEST_H_
 
 // License: BSD 3 clause
 
@@ -60,4 +60,4 @@ class InheritedArray : public ToyAbstractArray {
     }
 };
 
-#endif  // TICK_BASE_ARRAY_TEST_SRC_PERFORMANCE_TEST_H_
+#endif  // LIB_INCLUDE_TICK_ARRAY_TEST_PERFORMANCE_TEST_H_

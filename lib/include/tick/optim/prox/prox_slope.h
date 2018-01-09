@@ -1,5 +1,5 @@
-#ifndef TICK_OPTIM_PROX_SRC_PROX_SLOPE_H_
-#define TICK_OPTIM_PROX_SRC_PROX_SLOPE_H_
+#ifndef LIB_INCLUDE_TICK_OPTIM_PROX_PROX_SLOPE_H_
+#define LIB_INCLUDE_TICK_OPTIM_PROX_PROX_SLOPE_H_
 
 // License: BSD 3 clause
 
@@ -38,4 +38,4 @@ class ProxSlope : public ProxSortedL1 {
   }
 };
 
-#endif  // TICK_OPTIM_PROX_SRC_PROX_SLOPE_H_
+#endif  // LIB_INCLUDE_TICK_OPTIM_PROX_PROX_SLOPE_H_

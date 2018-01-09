@@ -2,8 +2,8 @@
 // Created by poulsen on 10/24/16.
 //
 
-#ifndef TICK_BASE_SRC_PARALLEL_PARALLEL_UTILS_H_
-#define TICK_BASE_SRC_PARALLEL_PARALLEL_UTILS_H_
+#ifndef LIB_INCLUDE_TICK_BASE_PARALLEL_PARALLEL_UTILS_H_
+#define LIB_INCLUDE_TICK_BASE_PARALLEL_PARALLEL_UTILS_H_
 
 // License: BSD 3 clause
 
@@ -95,4 +95,4 @@ struct map_return_t<T, S, typename enable_if_not_python_primitive<T, S, Args...>
 };
 }  // namespace tick
 
-#endif  // TICK_BASE_SRC_PARALLEL_PARALLEL_UTILS_H_
+#endif  // LIB_INCLUDE_TICK_BASE_PARALLEL_PARALLEL_UTILS_H_

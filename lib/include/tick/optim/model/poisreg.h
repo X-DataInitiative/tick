@@ -2,8 +2,8 @@
 // Created by Martin Bompaire on 21/10/15.
 //
 
-#ifndef TICK_OPTIM_MODEL_SRC_POISREG_H_
-#define TICK_OPTIM_MODEL_SRC_POISREG_H_
+#ifndef LIB_INCLUDE_TICK_OPTIM_MODEL_POISREG_H_
+#define LIB_INCLUDE_TICK_OPTIM_MODEL_POISREG_H_
 
 // License: BSD 3 clause
 
@@ -90,4 +90,4 @@ class DLL_PUBLIC ModelPoisReg : public ModelGeneralizedLinear {
   }
 };
 
-#endif  // TICK_OPTIM_MODEL_SRC_POISREG_H_
+#endif  // LIB_INCLUDE_TICK_OPTIM_MODEL_POISREG_H_

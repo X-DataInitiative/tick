@@ -1,5 +1,5 @@
-#ifndef TICK_BASE_ARRAY_SRC_CARRAY_PYTHON_H_
-#define TICK_BASE_ARRAY_SRC_CARRAY_PYTHON_H_
+#ifndef LIB_INCLUDE_TICK_ARRAY_CARRAY_PYTHON_H_
+#define LIB_INCLUDE_TICK_ARRAY_CARRAY_PYTHON_H_
 
 // License: BSD 3 clause
 
@@ -273,4 +273,4 @@ INSTANTIATE(float, NPY_FLOAT,
             SBaseArrayFloatPtrList1D, SBaseArrayFloatPtrList2D,
             SBaseArrayFloat2dPtrList1D, SBaseArrayFloat2dPtrList2D);
 
-#endif  // TICK_BASE_ARRAY_SRC_CARRAY_PYTHON_H_
+#endif  // LIB_INCLUDE_TICK_ARRAY_CARRAY_PYTHON_H_

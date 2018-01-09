@@ -1,5 +1,5 @@
-#ifndef TICK_BASE_ARRAY_SRC_SPARSEARRAY_H_
-#define TICK_BASE_ARRAY_SRC_SPARSEARRAY_H_
+#ifndef LIB_INCLUDE_TICK_ARRAY_SPARSEARRAY_H_
+#define LIB_INCLUDE_TICK_ARRAY_SPARSEARRAY_H_
 
 // License: BSD 3 clause
 
@@ -211,4 +211,4 @@ tick::TemporaryLog<E>& operator<<(tick::TemporaryLog<E>& log, const SparseArray<
     return log;
 }
 
-#endif  // TICK_BASE_ARRAY_SRC_SPARSEARRAY_H_
+#endif  // LIB_INCLUDE_TICK_ARRAY_SPARSEARRAY_H_

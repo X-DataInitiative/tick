@@ -1,5 +1,5 @@
-#ifndef TICK_BASE_ARRAY_SRC_SERIALIZER_H_
-#define TICK_BASE_ARRAY_SRC_SERIALIZER_H_
+#ifndef LIB_INCLUDE_TICK_ARRAY_SERIALIZER_H_
+#define LIB_INCLUDE_TICK_ARRAY_SERIALIZER_H_
 
 #include "array.h"
 #include "sarray.h"
@@ -56,4 +56,4 @@ SSparseArrayDouble2dPtr tick_double_sparse2d_from_file(std::string _file) {
   return array_from_file<SSparseArrayDouble2d>(_file);
 }
 
-#endif  // TICK_BASE_ARRAY_SRC_SERIALIZER_H_
+#endif  // LIB_INCLUDE_TICK_ARRAY_SERIALIZER_H_

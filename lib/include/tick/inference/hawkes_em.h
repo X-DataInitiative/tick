@@ -1,6 +1,6 @@
 
-#ifndef TICK_INFERENCE_SRC_HAWKES_EM_H_
-#define TICK_INFERENCE_SRC_HAWKES_EM_H_
+#ifndef LIB_INCLUDE_TICK_INFERENCE_HAWKES_EM_H_
+#define LIB_INCLUDE_TICK_INFERENCE_HAWKES_EM_H_
 
 // License: BSD 3 clause
 
@@ -102,4 +102,4 @@ class HawkesEM : public ModelHawkesList {
   double get_kernel_dt(const ulong m = 0) const;
 };
 
-#endif  // TICK_INFERENCE_SRC_HAWKES_EM_H_
+#endif  // LIB_INCLUDE_TICK_INFERENCE_HAWKES_EM_H_
