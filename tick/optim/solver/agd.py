@@ -184,27 +184,5 @@ class AGD(SolverFirstOrder):
                 print(x)
             # print(n_iter, self.model.loss_and_grad
 
-            # force f_i(0) = 1 for all i
-            solution_adj = x.copy()
-            dim = 2
-            MaxN_of_f = 2
-            for i in range(dim):
-                solution_adj[i] *= x[dim + dim * dim + MaxN_of_f * i]
-                solution_adj[(dim + dim * i): (dim + dim * (i + 1))] *= x[dim + dim * dim + MaxN_of_f * i]
-                solution_adj[(dim + dim * dim + MaxN_of_f * i): (dim + dim * dim + MaxN_of_f * (i + 1))] /= x[dim + dim * dim + MaxN_of_f * i]
-            print(solution_adj)
-            x = solution_adj.copy()
-
-            solution_adj = y.copy()
-            dim = 2
-            MaxN_of_f = 2
-            for i in range(dim):
-                solution_adj[i] *= y[dim + dim * dim + MaxN_of_f * i]
-                solution_adj[(dim + dim * i): (dim + dim * (i + 1))] *= y[dim + dim * dim + MaxN_of_f * i]
-                solution_adj[(dim + dim * dim + MaxN_of_f * i): (dim + dim * dim + MaxN_of_f * (i + 1))] /= y[dim + dim * dim + MaxN_of_f * i]
-            print(solution_adj)
-            y = solution_adj.copy()
-
-
         self._set("solution", x)
         return x
