@@ -3,8 +3,8 @@
 //  TICK
 //
 
-#ifndef TICK_BASE_ARRAY_SRC_DOT_H_
-#define TICK_BASE_ARRAY_SRC_DOT_H_
+#ifndef LIB_INCLUDE_TICK_ARRAY_DOT_H_
+#define LIB_INCLUDE_TICK_ARRAY_DOT_H_
 
 // License: BSD 3 clause
 
@@ -72,4 +72,4 @@ T BaseArray<T>::dot(const BaseArray<T> &array) const {
     return result;
 }
 
-#endif  // TICK_BASE_ARRAY_SRC_DOT_H_
+#endif  // LIB_INCLUDE_TICK_ARRAY_DOT_H_

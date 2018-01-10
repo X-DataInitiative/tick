@@ -2,8 +2,8 @@
 // Created by Martin Bompaire on 02/06/15.
 //
 
-#ifndef TICK_SIMULATION_SRC_HAWKES_H_
-#define TICK_SIMULATION_SRC_HAWKES_H_
+#ifndef LIB_INCLUDE_TICK_SIMULATION_HAWKES_H_
+#define LIB_INCLUDE_TICK_SIMULATION_HAWKES_H_
 
 // License: BSD 3 clause
 
@@ -169,4 +169,4 @@ class Hawkes : public PP {
 
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(Hawkes, cereal::specialization::member_serialize)
 
-#endif  // TICK_SIMULATION_SRC_HAWKES_H_
+#endif  // LIB_INCLUDE_TICK_SIMULATION_HAWKES_H_

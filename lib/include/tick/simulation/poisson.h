@@ -6,8 +6,8 @@
 //  Copyright (c) 2015 bacry. All rights reserved.
 //
 
-#ifndef TICK_SIMULATION_SRC_POISSON_H_
-#define TICK_SIMULATION_SRC_POISSON_H_
+#ifndef LIB_INCLUDE_TICK_SIMULATION_POISSON_H_
+#define LIB_INCLUDE_TICK_SIMULATION_POISSON_H_
 
 // License: BSD 3 clause
 
@@ -66,4 +66,4 @@ class Poisson : public PP {
   SArrayDoublePtr get_intensities() { return intensities; }
 };
 
-#endif  // TICK_SIMULATION_SRC_POISSON_H_
+#endif  // LIB_INCLUDE_TICK_SIMULATION_POISSON_H_

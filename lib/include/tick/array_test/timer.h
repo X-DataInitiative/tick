@@ -6,8 +6,8 @@
 //  Copyright (c) 2015 bacry. All rights reserved.
 //
 
-#ifndef TICK_BASE_ARRAY_TEST_SRC_TIMER_H_
-#define TICK_BASE_ARRAY_TEST_SRC_TIMER_H_
+#ifndef LIB_INCLUDE_TICK_ARRAY_TEST_TIMER_H_
+#define LIB_INCLUDE_TICK_ARRAY_TEST_TIMER_H_
 
 // License: BSD 3 clause
 
@@ -45,4 +45,4 @@ inline void compare_timers(const clock_t& t1, const std::string& msg1, const clo
 
 #define COMPARE_TIMER(i, j) tick::compare_timers(__timer ## i, __timer_message ## i , __timer ## j, __timer_message ## j)
 
-#endif  // TICK_BASE_ARRAY_TEST_SRC_TIMER_H_
+#endif  // LIB_INCLUDE_TICK_ARRAY_TEST_TIMER_H_

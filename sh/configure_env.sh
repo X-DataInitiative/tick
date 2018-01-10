@@ -19,7 +19,7 @@
 
 set -e
 
-TICK_CONFIGURED=1
+echo "Entering configure_env.sh"
 
 # Finding the system python binary
 # To override, export PY variable with full path to python binary
@@ -216,24 +216,6 @@ LIBRARIES=(
     "tick/array_test/build/array_test${LIB_POSTFIX}"
 )
 
-##
-# MKN_P_ARRAY exists to allow platfrom 
-#  specific properties to be passed to mkn if required
-MKN_P_ARRAY=(lib_name=$LIB_POSTFIX)
-case "${unameOut}" in
-    Linux*)     LDARGS="${LDARGS}";;
-    Darwin*)    LDARGS="${LDARGS}";;
-    CYGWIN*)    LDARGS="${LDARGS}";;
-    MINGW*)     LDARGS="${LDARGS}";;
-    *)          LDARGS="${LDARGS}";;
-esac
-ICC_LARGS=""
-CLANG_LARGS=""
-GCC_LARGS=""
-MSVC_LARGS=""
-#
-##
-
 LIB_LD_PER_LIB=()
 ITER=0
 for PROFILE in "${PROFILES[@]}"; do
@@ -259,9 +241,8 @@ for PROFILE in "${PROFILES[@]}"; do
             LIBS="$LIBS -Wl,-rpath,@loader_path/$(relpath $RPATH $REL)"
           fi
         else
-          LIBS="$LIBS ../${ADD_LIB}.${LIB_POSTEXT}"
+          LIBS="$LIBS $(linkread ${ADD_LIB}.${LIB_POSTEXT})"
         fi
-
       fi
     fi
   done
@@ -273,8 +254,29 @@ for PROFILE in "${PROFILES[@]}"; do
   ITER=$(($ITER + 1))
 done
 
+
+##
+# The mkn -x option overrides the default settings file 
+#  to allow to build with differernt compilers/configurations
+MKN_X="${MKN_X_FILE}"
+[ -n "${MKN_X_FILE}" ] && MKN_X_FILE=(-x $MKN_X)
+
 ##
 # We allow for compiler specific linking arguments
+THIS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+pushd $THIS_DIR/.. 2>&1 > /dev/null
+COMMAND=$(mkn compile -Rp array ${MKN_X_FILE[@]} -C lib | head -1 )
+if [[ "$COMMAND" == *"icpc "* ]]; then
+  LDARGS+="$(echo " -Wl,-rpath,${ROOT}")"
+fi
+popd 2>&1 > /dev/null
+#
+##
+
+##
+# MKN_P_ARRAY exists to allow platfrom 
+#  specific properties to be passed to mkn if required
+MKN_P_ARRAY=(lib_name=$LIB_POSTFIX)
 MKN_P=""
 for PROP in "${MKN_P_ARRAY[@]}"; do
   MKN_P+=${PROP},
@@ -283,6 +285,7 @@ MKN_P_SIZE=${#MKN_P}
 MKN_P_SIZE=$((MKN_P_SIZE - 1))
 X_MKN_P="${MKN_P:0:${MKN_P_SIZE}}"
 MKN_P=($X_MKN_P)
+
 # The argument passed to "mkn -P" is "MKN_P"
 #  such that all entries in the MKN_P_ARRAY 
 #  become CSV values in MKN_P
@@ -290,13 +293,18 @@ MKN_P=($X_MKN_P)
 #  be escaped with a single backslash (\)
 ##
 
-##
-# The mkn -x option overrides the default settings file 
-#  to allow to build with differernt compilers/configurations
-MKN_X="${MKN_X_FILE}"
-[ -n "${MKN_X_FILE}" ] && MKN_X_FILE=(-x $MKN_X)
+V_MKN_WITH="$MKN_WITH"
+MKN_WITH_SIZE=${#V_MKN_WITH}
+(( $MKN_WITH_SIZE > 0 )) && MKN_WITH=(-w $V_MKN_WITH)
 
-echo ""
+##
+# if a file included from source ends with a non-zero exitting command 
+#  the "set -e" can cause the script to exit
+
+
+export TICK_CONFIGURED=1
+
+echo "Finished configure_env.sh"
 ##
 
 

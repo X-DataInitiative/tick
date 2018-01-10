@@ -1,5 +1,5 @@
-#ifndef TICK_BASE_ARRAY_SRC_VECTOR_OPERATIONS_H_
-#define TICK_BASE_ARRAY_SRC_VECTOR_OPERATIONS_H_
+#ifndef LIB_INCLUDE_TICK_ARRAY_VECTOR_OPERATIONS_H_
+#define LIB_INCLUDE_TICK_ARRAY_VECTOR_OPERATIONS_H_
 
 // License: BSD 3 clause
 
@@ -152,4 +152,4 @@ using vector_operations = detail::vector_operations_cblas<T>;
 
 #endif  // if !defined(TICK_CBLAS_AVAILABLE)
 
-#endif  // TICK_BASE_ARRAY_SRC_VECTOR_OPERATIONS_H_
+#endif  // LIB_INCLUDE_TICK_ARRAY_VECTOR_OPERATIONS_H_

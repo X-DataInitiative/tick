@@ -2,8 +2,8 @@
 // Created by Stéphane GAIFFAS on 12/12/2015.
 //
 
-#ifndef TICK_OPTIM_MODEL_SRC_LINREG_H_
-#define TICK_OPTIM_MODEL_SRC_LINREG_H_
+#ifndef LIB_INCLUDE_TICK_OPTIM_MODEL_LINREG_H_
+#define LIB_INCLUDE_TICK_OPTIM_MODEL_LINREG_H_
 
 // License: BSD 3 clause
 
@@ -42,4 +42,4 @@ class DLL_PUBLIC ModelLinReg : public virtual ModelGeneralizedLinear, public Mod
 
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelLinReg, cereal::specialization::member_serialize)
 
-#endif  // TICK_OPTIM_MODEL_SRC_LINREG_H_
+#endif  // LIB_INCLUDE_TICK_OPTIM_MODEL_LINREG_H_

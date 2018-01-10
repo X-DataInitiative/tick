@@ -2,8 +2,8 @@
 // Created by Martin Bompaire on 24/11/15.
 //
 
-#ifndef TICK_SIMULATION_SRC_INHOMOGENEOUS_POISSON_H_
-#define TICK_SIMULATION_SRC_INHOMOGENEOUS_POISSON_H_
+#ifndef LIB_INCLUDE_TICK_SIMULATION_INHOMOGENEOUS_POISSON_H_
+#define LIB_INCLUDE_TICK_SIMULATION_INHOMOGENEOUS_POISSON_H_
 
 // License: BSD 3 clause
 
@@ -69,4 +69,4 @@ class InhomogeneousPoisson : public PP {
                                   double *total_intensity_bound);
 };
 
-#endif  // TICK_SIMULATION_SRC_INHOMOGENEOUS_POISSON_H_
+#endif  // LIB_INCLUDE_TICK_SIMULATION_INHOMOGENEOUS_POISSON_H_

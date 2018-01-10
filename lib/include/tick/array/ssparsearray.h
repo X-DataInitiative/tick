@@ -6,8 +6,8 @@
 //  Copyright (c) 2016 bacry. All rights reserved.
 //
 
-#ifndef TICK_BASE_ARRAY_SRC_SSPARSEARRAY_H_
-#define TICK_BASE_ARRAY_SRC_SSPARSEARRAY_H_
+#ifndef LIB_INCLUDE_TICK_ARRAY_SSPARSEARRAY_H_
+#define LIB_INCLUDE_TICK_ARRAY_SSPARSEARRAY_H_
 
 // License: BSD 3 clause
 
@@ -45,11 +45,11 @@ class SSparseArray : public SparseArray<T> {
 #ifdef PYTHON_LINK
     //! @brief The (eventual) Python owner of the array _data;
     //! If ==nullptr then it is self-owned
-    void *_data_owner;
+    void *_data_owner = nullptr;
 
     //! @brief The (eventual) Python owner of the array _indices;
     //! If ==nullptr then it is self-owned
-    void *_indices_owner;
+    void *_indices_owner = nullptr;
 #endif
 
  public:
@@ -410,4 +410,4 @@ typedef std::vector<SSparseArrayDoublePtrList1D> SSparseArrayDoublePtrList2D;
  * @}
  */
 
-#endif  // TICK_BASE_ARRAY_SRC_SSPARSEARRAY_H_
+#endif  // LIB_INCLUDE_TICK_ARRAY_SSPARSEARRAY_H_

@@ -1,5 +1,5 @@
-#ifndef TICK_BASE_SRC_PARALLEL_PARALLEL_H_
-#define TICK_BASE_SRC_PARALLEL_PARALLEL_H_
+#ifndef LIB_INCLUDE_TICK_BASE_PARALLEL_PARALLEL_H_
+#define LIB_INCLUDE_TICK_BASE_PARALLEL_PARALLEL_H_
 
 // License: BSD 3 clause
 
@@ -592,4 +592,4 @@ auto parallel_map_additive_reduce(unsigned int n_threads,
     return parallel_map_reduce(n_threads, dim, std::plus<RT>{}, f, obj, args...);
 };
 
-#endif  // TICK_BASE_SRC_PARALLEL_PARALLEL_H_
+#endif  // LIB_INCLUDE_TICK_BASE_PARALLEL_PARALLEL_H_

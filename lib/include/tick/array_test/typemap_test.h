@@ -2,8 +2,8 @@
 // Created by Martin Bompaire on 13/12/15.
 //
 
-#ifndef TICK_BASE_ARRAY_TEST_SRC_TYPEMAP_TEST_H_
-#define TICK_BASE_ARRAY_TEST_SRC_TYPEMAP_TEST_H_
+#ifndef LIB_INCLUDE_TICK_ARRAY_TEST_TYPEMAP_TEST_H_
+#define LIB_INCLUDE_TICK_ARRAY_TEST_TYPEMAP_TEST_H_
 
 // License: BSD 3 clause
 
@@ -266,4 +266,4 @@ ARRAY_TYPEMAP(float,
               SBaseArrayFloatPtrList1D, SBaseArrayFloatPtrList2D,
               SBaseArrayFloat2dPtrList1D, SBaseArrayFloat2dPtrList2D);
 
-#endif  // TICK_BASE_ARRAY_TEST_SRC_TYPEMAP_TEST_H_
+#endif  // LIB_INCLUDE_TICK_ARRAY_TEST_TYPEMAP_TEST_H_

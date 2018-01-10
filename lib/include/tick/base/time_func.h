@@ -1,5 +1,5 @@
-#ifndef TICK_BASE_SRC_TIME_FUNC_H_
-#define TICK_BASE_SRC_TIME_FUNC_H_
+#ifndef LIB_INCLUDE_TICK_BASE_TIME_FUNC_H_
+#define LIB_INCLUDE_TICK_BASE_TIME_FUNC_H_
 
 // License: BSD 3 clause
 
@@ -158,4 +158,4 @@ class DLL_PUBLIC TimeFunction {
 
 typedef std::shared_ptr<TimeFunction> TimeFunctionPtr;
 
-#endif  // TICK_BASE_SRC_TIME_FUNC_H_
+#endif  // LIB_INCLUDE_TICK_BASE_TIME_FUNC_H_

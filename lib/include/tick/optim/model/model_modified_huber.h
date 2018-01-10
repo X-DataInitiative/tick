@@ -1,5 +1,5 @@
-#ifndef TICK_OPTIM_MODEL_SRC_MODEL_MODIFIED_HUBER_H_
-#define TICK_OPTIM_MODEL_SRC_MODEL_MODIFIED_HUBER_H_
+#ifndef LIB_INCLUDE_TICK_OPTIM_MODEL_MODEL_MODIFIED_HUBER_H_
+#define LIB_INCLUDE_TICK_OPTIM_MODEL_MODEL_MODIFIED_HUBER_H_
 
 // License: BSD 3 clause
 
@@ -32,4 +32,4 @@ class ModelModifiedHuber : public virtual ModelGeneralizedLinear, public ModelLi
 
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelModifiedHuber, cereal::specialization::member_serialize)
 
-#endif  // TICK_OPTIM_MODEL_SRC_MODEL_MODIFIED_HUBER_H_
+#endif  // LIB_INCLUDE_TICK_OPTIM_MODEL_MODEL_MODIFIED_HUBER_H_

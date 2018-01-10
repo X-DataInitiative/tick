@@ -2,8 +2,8 @@
 // Created by Martin Bompaire on 22/10/15.
 //
 
-#ifndef TICK_OPTIM_SOLVER_SRC_SGD_H_
-#define TICK_OPTIM_SOLVER_SRC_SGD_H_
+#ifndef LIB_INCLUDE_TICK_OPTIM_SOLVER_SGD_H_
+#define LIB_INCLUDE_TICK_OPTIM_SOLVER_SGD_H_
 
 // License: BSD 3 clause
 
@@ -42,4 +42,4 @@ class SGD : public StoSolver {
     inline double get_step_t();
 };
 
-#endif  // TICK_OPTIM_SOLVER_SRC_SGD_H_
+#endif  // LIB_INCLUDE_TICK_OPTIM_SOLVER_SGD_H_

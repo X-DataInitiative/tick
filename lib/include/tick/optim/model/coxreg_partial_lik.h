@@ -2,8 +2,8 @@
 // Created by Stéphane GAIFFAS on 12/04/2016.
 //
 
-#ifndef TICK_OPTIM_MODEL_SRC_COXREG_PARTIAL_LIK_H_
-#define TICK_OPTIM_MODEL_SRC_COXREG_PARTIAL_LIK_H_
+#ifndef LIB_INCLUDE_TICK_OPTIM_MODEL_COXREG_PARTIAL_LIK_H_
+#define LIB_INCLUDE_TICK_OPTIM_MODEL_COXREG_PARTIAL_LIK_H_
 
 // License: BSD 3 clause
 
@@ -71,4 +71,4 @@ class DLL_PUBLIC ModelCoxRegPartialLik : public Model {
 typedef std::shared_ptr<ModelCoxRegPartialLik> ModelCoxRegPartialLikPtr;
 
 
-#endif  // TICK_OPTIM_MODEL_SRC_COXREG_PARTIAL_LIK_H_
+#endif  // LIB_INCLUDE_TICK_OPTIM_MODEL_COXREG_PARTIAL_LIK_H_

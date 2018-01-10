@@ -1,6 +1,6 @@
 
-#ifndef TICK_INFERENCE_SRC_HAWKES_BASIS_KERNELS_H_
-#define TICK_INFERENCE_SRC_HAWKES_BASIS_KERNELS_H_
+#ifndef LIB_INCLUDE_TICK_INFERENCE_HAWKES_BASIS_KERNELS_H_
+#define LIB_INCLUDE_TICK_INFERENCE_HAWKES_BASIS_KERNELS_H_
 
 // License: BSD 3 clause
 
@@ -98,4 +98,4 @@ class HawkesBasisKernels : public ModelHawkesList {
   void set_alpha(const double alpha);
 };
 
-#endif  // TICK_INFERENCE_SRC_HAWKES_BASIS_KERNELS_H_
+#endif  // LIB_INCLUDE_TICK_INFERENCE_HAWKES_BASIS_KERNELS_H_

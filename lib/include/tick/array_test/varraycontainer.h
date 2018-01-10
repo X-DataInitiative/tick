@@ -2,8 +2,8 @@
 // Created by Martin Bompaire on 21/05/15.
 //
 
-#ifndef TICK_BASE_ARRAY_TEST_SRC_VARRAYCONTAINER_H_
-#define TICK_BASE_ARRAY_TEST_SRC_VARRAYCONTAINER_H_
+#ifndef LIB_INCLUDE_TICK_ARRAY_TEST_VARRAYCONTAINER_H_
+#define LIB_INCLUDE_TICK_ARRAY_TEST_VARRAYCONTAINER_H_
 
 // License: BSD 3 clause
 
@@ -30,4 +30,4 @@ class VarrayUser {
     void setArray(VarrayContainer vcc);
 };
 
-#endif  // TICK_BASE_ARRAY_TEST_SRC_VARRAYCONTAINER_H_
+#endif  // LIB_INCLUDE_TICK_ARRAY_TEST_VARRAYCONTAINER_H_

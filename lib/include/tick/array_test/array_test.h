@@ -1,5 +1,5 @@
-#ifndef TICK_BASE_ARRAY_TEST_SRC_ARRAY_TEST_H_
-#define TICK_BASE_ARRAY_TEST_SRC_ARRAY_TEST_H_
+#ifndef LIB_INCLUDE_TICK_ARRAY_TEST_ARRAY_TEST_H_
+#define LIB_INCLUDE_TICK_ARRAY_TEST_ARRAY_TEST_H_
 
 // License: BSD 3 clause
 
@@ -427,4 +427,4 @@ extern void test_mult_fill_ArrayDouble(ArrayDouble &array, BaseArrayDouble& x, d
 extern void test_mult_add_mult_incr_ArrayDouble(ArrayDouble &array, BaseArrayDouble& x, double a,
                                                 BaseArrayDouble& y, double b);
 
-#endif  // TICK_BASE_ARRAY_TEST_SRC_ARRAY_TEST_H_
+#endif  // LIB_INCLUDE_TICK_ARRAY_TEST_ARRAY_TEST_H_

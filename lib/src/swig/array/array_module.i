@@ -41,6 +41,9 @@
 // Dealing with typemap in templates of SSparseArray
 %include ssparsearray_typemap_in.i
 
+// Dealing with typemap out in templates of SSparseArray
+%include ssparsearray_typemap_out.i
+
 // Dealing with SBaseArrayPtr
 %include sbasearray_typemap_in.i
 
@@ -113,6 +116,10 @@ XARRAY_FINAL_MACROS(SARRAYPTR_TYPE, SARRAY_TYPE,
                     SARRAY2DPTR_TYPE, SARRAY2D_TYPE,
                     SARRAYPTRLIST1D_TYPE, SARRAYPTRLIST2D_TYPE,
                     C_TYPE, NP_TYPE)
+
+XSPARSEARRAY_FINAL_MACROS(SSPARSEARRAYPTR_TYPE, SSPARSEARRAY_TYPE,
+                    SSPARSEARRAY2DPTR_TYPE, SSPARSEARRAY2D_TYPE,
+                    C_TYPE, NP_TYPE)                    
 
 VARRAY_TYPEMAPOUT_MACROS(VARRAYPTR_TYPE, VARRAY_TYPE,
                          VARRAYPTRLIST1D_TYPE, VARRAYPTRLIST2D_TYPE,
@@ -267,3 +274,6 @@ INSTANTIATE(float, NPY_FLOAT,
             BaseArrayFloat2dList1D,BaseArrayFloat2dList2D,
             SBaseArrayFloatPtrList1D,SBaseArrayFloatPtrList2D,
             SBaseArrayFloat2dPtrList1D,SBaseArrayFloat2dPtrList2D);
+
+
+%include serializer.i

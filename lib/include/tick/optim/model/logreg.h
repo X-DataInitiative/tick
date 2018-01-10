@@ -2,8 +2,8 @@
 // Created by Martin Bompaire on 21/10/15.
 //
 
-#ifndef TICK_OPTIM_MODEL_SRC_LOGREG_H_
-#define TICK_OPTIM_MODEL_SRC_LOGREG_H_
+#ifndef LIB_INCLUDE_TICK_OPTIM_MODEL_LOGREG_H_
+#define LIB_INCLUDE_TICK_OPTIM_MODEL_LOGREG_H_
 
 // License: BSD 3 clause
 
@@ -57,4 +57,4 @@ class DLL_PUBLIC ModelLogReg : public ModelGeneralizedLinear, public ModelLipsch
   void compute_lip_consts() override;
 };
 
-#endif  // TICK_OPTIM_MODEL_SRC_LOGREG_H_
+#endif  // LIB_INCLUDE_TICK_OPTIM_MODEL_LOGREG_H_

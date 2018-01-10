@@ -1,5 +1,5 @@
-#ifndef TICK_INFERENCE_SRC_HAWKES_SUMGAUSSIANS_H_
-#define TICK_INFERENCE_SRC_HAWKES_SUMGAUSSIANS_H_
+#ifndef LIB_INCLUDE_TICK_INFERENCE_HAWKES_SUMGAUSSIANS_H_
+#define LIB_INCLUDE_TICK_INFERENCE_HAWKES_SUMGAUSSIANS_H_
 
 // License: BSD 3 clause
 
@@ -98,4 +98,4 @@ class HawkesSumGaussians : public ModelHawkesList {
   void set_strength_grouplasso(const double strength_grouplasso);
 };
 
-#endif  // TICK_INFERENCE_SRC_HAWKES_SUMGAUSSIANS_H_
+#endif  // LIB_INCLUDE_TICK_INFERENCE_HAWKES_SUMGAUSSIANS_H_

@@ -2,8 +2,8 @@
 // Created by Martin Bompaire on 17/06/15.
 //
 
-#ifndef TICK_RANDOM_SRC_TEST_RAND_H_
-#define TICK_RANDOM_SRC_TEST_RAND_H_
+#ifndef LIB_INCLUDE_TICK_RANDOM_TEST_RAND_H_
+#define LIB_INCLUDE_TICK_RANDOM_TEST_RAND_H_
 
 // License: BSD 3 clause
 
@@ -108,4 +108,4 @@ SArrayDoublePtr test_uniform_lagged(ulong size, int wait_time = 0, int seed = -1
  */
 SArrayDoublePtr test_uniform_threaded(ulong size, int wait_time = 0, int seed = -1);
 
-#endif  // TICK_RANDOM_SRC_TEST_RAND_H_
+#endif  // LIB_INCLUDE_TICK_RANDOM_TEST_RAND_H_

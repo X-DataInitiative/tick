@@ -1,5 +1,5 @@
-#ifndef TICK_BASE_ARRAY_SRC_SARRAY_H_
-#define TICK_BASE_ARRAY_SRC_SARRAY_H_
+#ifndef LIB_INCLUDE_TICK_ARRAY_SARRAY_H_
+#define LIB_INCLUDE_TICK_ARRAY_SARRAY_H_
 
 // License: BSD 3 clause
 
@@ -35,7 +35,7 @@ class SArray : public Array<T> {
 #ifdef PYTHON_LINK
     //! @brief The (eventual) Python owner of the array _data;
     //! If ==nullptr then it is self-owned
-    void *_data_owner;
+    void *_data_owner = nullptr;
 #endif
 
  public:
@@ -358,4 +358,4 @@ INSTANTIATE_SARRAY(SArrayUShortPtr, std::uint16_t);
 INSTANTIATE_SARRAY(SArrayLongPtr, std::int64_t);
 INSTANTIATE_SARRAY(SArrayULongPtr, ulong);
 
-#endif  // TICK_BASE_ARRAY_SRC_SARRAY_H_
+#endif  // LIB_INCLUDE_TICK_ARRAY_SARRAY_H_

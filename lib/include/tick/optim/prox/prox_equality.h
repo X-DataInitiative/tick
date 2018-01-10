@@ -1,5 +1,5 @@
-#ifndef TICK_OPTIM_PROX_SRC_PROX_EQUALITY_H_
-#define TICK_OPTIM_PROX_SRC_PROX_EQUALITY_H_
+#ifndef LIB_INCLUDE_TICK_OPTIM_PROX_PROX_EQUALITY_H_
+#define LIB_INCLUDE_TICK_OPTIM_PROX_PROX_EQUALITY_H_
 
 // License: BSD 3 clause
 
@@ -19,4 +19,4 @@ class ProxEquality : public Prox {
             ulong start, ulong end) override;
 };
 
-#endif  // TICK_OPTIM_PROX_SRC_PROX_EQUALITY_H_
+#endif  // LIB_INCLUDE_TICK_OPTIM_PROX_PROX_EQUALITY_H_

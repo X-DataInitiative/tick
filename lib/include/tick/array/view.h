@@ -8,8 +8,8 @@
 
 /// @file
 
-#ifndef TICK_BASE_ARRAY_SRC_VIEW_H_
-#define TICK_BASE_ARRAY_SRC_VIEW_H_
+#ifndef LIB_INCLUDE_TICK_ARRAY_VIEW_H_
+#define LIB_INCLUDE_TICK_ARRAY_VIEW_H_
 
 // License: BSD 3 clause
 
@@ -97,4 +97,4 @@ BaseArray<T> view(BaseArray<T> &a, ulong first, ulong last) {
 
 //! @}
 
-#endif  // TICK_BASE_ARRAY_SRC_VIEW_H_
+#endif  // LIB_INCLUDE_TICK_ARRAY_VIEW_H_

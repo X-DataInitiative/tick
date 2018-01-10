@@ -1,5 +1,5 @@
-#ifndef TICK_BASE_ARRAY_SRC_SSPARSEARRAY2D_H_
-#define TICK_BASE_ARRAY_SRC_SSPARSEARRAY2D_H_
+#ifndef LIB_INCLUDE_TICK_ARRAY_SSPARSEARRAY2D_H_
+#define LIB_INCLUDE_TICK_ARRAY_SSPARSEARRAY2D_H_
 
 // License: BSD 3 clause
 
@@ -46,15 +46,15 @@ class SSparseArray2d : public SparseArray2d<T> {
 #ifdef PYTHON_LINK
     //! @brief The (eventual) Python owner of the array _data;
     //! If ==nullptr then it is self-owned
-    void *_data_owner;
+    void *_data_owner = nullptr;
 
     //! @brief The (eventual) Python owner of the array _indices;
     //! If ==nullptr then it is self-owned
-    void *_indices_owner;
+    void *_indices_owner = nullptr;
 
     //! @brief The (eventual) Python owner of the array _row_indices;
     //! If ==nullptr then it is self-owned
-    void *_row_indices_owner;
+    void *_row_indices_owner = nullptr;
 #endif
 
  public:
@@ -277,7 +277,8 @@ std::shared_ptr<SSparseArray2d<T>> SSparseArray2d<T>::new_ptr(ulong n_rows, ulon
 // Constructor from a SparseArray2d (copy is made)
 template<typename T>
 std::shared_ptr<SSparseArray2d<T>> SSparseArray2d<T>::new_ptr(SparseArray2d<T> &a) {
-    std::shared_ptr<SSparseArray2d<T>> aptr = SSparseArray2d<T>::new_ptr(a.n_rows(), a.n_rows(), a.size_sparse());
+    std::shared_ptr<SSparseArray2d<T>> aptr = SSparseArray2d<T>::new_ptr(a.n_rows(), a.n_cols(), a.size_sparse());
+    aptr->_size = a.size();
     if (a.size_sparse() != 0) {
         memcpy(aptr->data(), a.data(), sizeof(T) * a.size_sparse());
         memcpy(aptr->indices(), a.indices(), sizeof(INDICE_TYPE) * a.size_sparse());
@@ -499,4 +500,4 @@ typedef std::vector<SSparseArrayDouble2dPtrList1D> SSparseArrayDouble2dPtrList2D
  * @}
  */
 
-#endif  // TICK_BASE_ARRAY_SRC_SSPARSEARRAY2D_H_
+#endif  // LIB_INCLUDE_TICK_ARRAY_SSPARSEARRAY2D_H_
