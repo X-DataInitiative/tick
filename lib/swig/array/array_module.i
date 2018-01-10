@@ -6,6 +6,7 @@
 %import defs.i
 
 %{
+#include <system_error>
 #include "numpy/arrayobject.h"
 #include "numpy/npy_math.h"
 #include "tick/base/debug.h"
