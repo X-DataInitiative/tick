@@ -200,3 +200,9 @@ class OnlineForestClassifier(ABC, Base):
 
     def set_feature_importances(self, feature_importances):
         self._forest.set_feature_importances(feature_importances)
+
+    @property
+    def feature_importances(self):
+        feature_importances = np.empty(self.n_features)
+        self._forest.get_feature_importances(feature_importances)
+        return feature_importances

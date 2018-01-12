@@ -83,7 +83,7 @@ class NodeClassifier {
   }
 
   // Update to apply to a node when going forward in the tree (towards leaves)
-  void update_downwards(const ArrayDouble &x_t, const double y_t);
+  double update_downwards(const ArrayDouble &x_t, const double y_t);
   // Update to apply to a node when going upward in the tree (towards the root)
   void update_upwards();
   // Update the prediction of the label
@@ -102,6 +102,7 @@ class NodeClassifier {
 
   // Get node at index in the tree
   inline NodeClassifier &node(uint32_t index) const;
+
   // Get number of features
   inline uint32_t n_features() const;
   // Number of classes
@@ -165,6 +166,8 @@ class TreeClassifier {
   // Add nodes in the tree
   uint32_t add_node(uint32_t parent, double time = 0);
 
+  ArrayDouble feature_importances_;
+
   void extend_range(uint32_t node_index, const ArrayDouble &x_t, const double y_t);
 
   uint32_t go_downwards(const ArrayDouble &x_t, double y_t, bool predict);
@@ -194,6 +197,10 @@ class TreeClassifier {
 
   NodeClassifier &node(uint32_t index) {
     return nodes[index];
+  }
+
+  inline ArrayDouble& feature_importances() {
+    return feature_importances_;
   }
 };
 
@@ -234,7 +241,7 @@ class OnlineForestClassifier {
   // Random number generator for feature and threshold sampling
   Rand rand;
 
-  ArrayDouble _feature_importances;
+  // ArrayDouble _feature_importances;
   // Create trees
   void create_trees();
 
@@ -264,7 +271,7 @@ class OnlineForestClassifier {
 
   inline uint32_t sample_feature();
   inline uint32_t sample_feature(const ArrayDouble &prob);
-  inline uint32_t sample_feature_bis();
+  // inline uint32_t sample_feature_bis();
   inline double sample_exponential(double intensity);
   inline double sample_threshold(double left, double right);
 
@@ -293,7 +300,9 @@ class OnlineForestClassifier {
   void n_nodes(SArrayUIntPtr n_nodes_per_tree);
   void n_leaves(SArrayUIntPtr n_leaves_per_tree);
 
-  void set_feature_importances(const ArrayDouble &feature_importances);
+  // void set_feature_importances(const ArrayDouble &feature_importances);
+
+  void get_feature_importances(SArrayDoublePtr feature_importances);
 
 };
 

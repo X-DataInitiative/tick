@@ -70,12 +70,16 @@ NodeClassifier &NodeClassifier::operator=(const NodeClassifier &node) {
   return *this;
 }
 
-void NodeClassifier::update_downwards(const ArrayDouble &x_t, const double y_t) {
+double NodeClassifier::update_downwards(const ArrayDouble &x_t, const double y_t) {
   _n_samples++;
+  // double loss_t =  loss(y_t);
   if (use_aggregation()) {
     _weight -= step() * loss(y_t);
   }
   update_predict(y_t);
+  // We return the loss before updating the predictor of the node in order to
+  // update the feature importance in TreeClassifier::go_downwards
+  return loss(y_t);
 }
 
 bool NodeClassifier::is_same(const ArrayDouble &x_t) {
@@ -325,7 +329,8 @@ TreeClassifier::TreeClassifier(const TreeClassifier &&tree)
 TreeClassifier::TreeClassifier(OnlineForestClassifier &forest) : forest(forest) {
   // TODO: pre-allocate the vector to make things faster ?
   add_node(0);
-
+  feature_importances_ = ArrayDouble(forest.n_features());
+  feature_importances_.fill(1.);
 }
 
 void TreeClassifier::extend_range(uint32_t node_index, const ArrayDouble &x_t, const double y_t) {
@@ -333,7 +338,7 @@ void TreeClassifier::extend_range(uint32_t node_index, const ArrayDouble &x_t, c
   NodeClassifier &current_node = node(node_index);
   if (current_node.n_samples() == 0) {
     // The node is a leaf with no sample point, so it does not have a range
-    // In this case we just initialize the range with the given feature
+    // In this case we just initialize the range with the given feature.
     // This node will then be updated by the call to update_downwards in go_downwards
     current_node.set_features_min(x_t);
     current_node.set_features_max(x_t);
@@ -442,21 +447,22 @@ void TreeClassifier::extend_range(uint32_t node_index, const ArrayDouble &x_t, c
 }
 
 uint32_t TreeClassifier::go_downwards(const ArrayDouble &x_t, double y_t, bool predict) {
-  // Find the leaf that contains the sample
-  // Start at the root. Index of the root is always 0
-  // If predict == true, this call to find_leaf is for
-  // prediction only, so that no leaf update and splits can be done
-//  std::cout << "Going downwards" << std::endl;
+  // Find the leaf that contains the sample. Start at the root. Index of the root is always 0.
+  // If predict == true, this is for prediction only, so no leaf update and splits can be done.
   uint32_t index_current_node = 0;
   bool is_leaf = false;
+  double loss_t = 0;
+  uint32_t feature = 0;
+
   while (!is_leaf) {
-    // Get the current node
-    // NodeClassifier &current_node = node(index_current_node);
     if (!predict) {
       // Extend the range and eventually split the current node
       extend_range(index_current_node, x_t, y_t);
-      // Update the current node
-      node(index_current_node).update_downwards(x_t, y_t);
+      // Update the current node. We get the loss for this point before the node update
+      // to compute feature importance below
+      NodeClassifier& current_node = node(index_current_node);
+      feature = current_node.feature();
+      loss_t = current_node.update_downwards(x_t, y_t);
     }
     // Is the node a leaf ?
     NodeClassifier &current_node = node(index_current_node);
@@ -467,11 +473,16 @@ uint32_t TreeClassifier::go_downwards(const ArrayDouble &x_t, double y_t, bool p
       } else {
         index_current_node = current_node.right();
       }
+      if(!predict) {
+        // Compute the difference with the loss of the child
+        loss_t -= node(index_current_node).loss(y_t);
+        feature_importances_[feature] += loss_t;
+      }
     }
   }
-//  std::cout << "...Done going downwards." << std::endl;
   return index_current_node;
 }
+
 
 void TreeClassifier::go_upwards(uint32_t leaf_index) {
   // std::cout << "Going upwards" << std::endl;
@@ -515,11 +526,6 @@ void TreeClassifier::print() {
 }
 
 void TreeClassifier::fit(const ArrayDouble &x_t, double y_t) {
-  // TODO: Test that the size does not change within successive calls to fit
-  // std::cout << "------------------------------------------" << std::endl;
-  // std::cout << "iteration: " << iteration << std::endl;
-  // std::cout << "x_t: [" << std::setprecision(2) << x_t[0] << ", " << std::setprecision(2) << x_t[1] << "]" << std::endl;
-  // print();
   uint32_t leaf = go_downwards(x_t, y_t, false);
   if (use_aggregation()) {
     go_upwards(leaf);
@@ -716,9 +722,9 @@ inline uint32_t OnlineForestClassifier::sample_feature() {
   return rand.uniform_int(static_cast<uint32_t>(0), n_features() - 1);
 }
 
-inline uint32_t OnlineForestClassifier::sample_feature_bis() {
-  return rand.discrete(_feature_importances);
-}
+//inline uint32_t OnlineForestClassifier::sample_feature_bis() {
+//  return rand.discrete(_fefeature_importances_);
+//}
 
 inline double OnlineForestClassifier::sample_exponential(double intensity) {
   return rand.exponential(intensity);
@@ -787,11 +793,7 @@ uint32_t OnlineForestClassifier::n_samples() const {
 }
 
 uint32_t OnlineForestClassifier::n_features() const {
-  if (_iteration > 0) {
-    return _n_features;
-  } else {
-    TICK_ERROR("You must call ``fit`` before asking for ``n_features``.")
-  }
+  return _n_features;
 }
 
 void OnlineForestClassifier::check_n_features(uint32_t n_features, bool predict) const {
@@ -854,9 +856,9 @@ OnlineForestClassifier &OnlineForestClassifier::set_criterion(CriterionClassifie
   return *this;
 }
 
-void OnlineForestClassifier::set_feature_importances(const ArrayDouble &feature_importances) {
-  _feature_importances = feature_importances;
-}
+//void OnlineForestClassifier::set_feature_importances(const ArrayDouble &feature_importances) {
+//  _feature_importances = feature_importances;
+//}
 
 double OnlineForestClassifier::dirichlet() const {
   return _dirichlet;
@@ -865,4 +867,12 @@ double OnlineForestClassifier::dirichlet() const {
 OnlineForestClassifier &OnlineForestClassifier::set_dirichlet(const double dirichlet) {
   _dirichlet = dirichlet;
   return *this;
+}
+
+void OnlineForestClassifier::get_feature_importances(SArrayDoublePtr feature_importances) {
+  feature_importances->fill(0);
+  const double a = static_cast<double>(1) / n_trees();
+  for (TreeClassifier &tree : trees) {
+    feature_importances->mult_incr(tree.feature_importances(), a);
+  }
 }

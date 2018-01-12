@@ -50,5 +50,8 @@ class OnlineForestClassifier {
   bool verbose() const;
   OnlineForestRegressor &set_verbose(bool verbose);
 
-  void set_feature_importances(const ArrayDouble &feature_importances);
+  // void set_feature_importances(const ArrayDouble &feature_importances);
+
+  void get_feature_importances(SArrayDoublePtr feature_importances);
+
 };
