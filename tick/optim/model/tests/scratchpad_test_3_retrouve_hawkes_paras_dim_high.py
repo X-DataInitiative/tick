@@ -59,7 +59,7 @@ print('#' * 40)
 calculate global_n and maxN_of_f
 '''
 MaxN_of_f = 10
-global_n = np.random.randint(0, MaxN_of_f - 1, size=1 + len(timestamps[0]) + len(timestamps[1]) + len(timestamps[2]))
+global_n = np.random.randint(0, MaxN_of_f, size=1 + len(timestamps[0]) + len(timestamps[1]) + len(timestamps[2]))
 '''
 create a model_custom
 '''

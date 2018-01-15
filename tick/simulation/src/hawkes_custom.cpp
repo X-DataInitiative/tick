@@ -26,7 +26,7 @@ bool Hawkes_custom::update_time_shift_(double delay,
 
     // We loop on the contributions
     for (unsigned int i = 0; i < n_nodes; i++) {
-        intensity[i] = get_baseline(i, get_time());
+        intensity[i] = get_baseline(i, get_time()) * (f_i[i]->operator[](last_global_n));
         if (total_intensity_bound1)
             *total_intensity_bound1 += get_baseline_bound(i, get_time()) * f_i_Max[i];
 
@@ -35,7 +35,7 @@ bool Hawkes_custom::update_time_shift_(double delay,
 
             if (k->get_support() == 0) continue;
             double bound = 0;
-            intensity[i] += k->get_convolution(get_time() + delay, *timestamps[j], &bound);
+            intensity[i] += k->get_convolution(get_time() + delay, *timestamps[j], &bound) * f_i[i]->operator[](last_global_n);
 
             if (total_intensity_bound1) {
                 *total_intensity_bound1 += bound * f_i_Max[i];
@@ -45,7 +45,6 @@ bool Hawkes_custom::update_time_shift_(double delay,
                 flag_negative_intensity1 = true;
             }
         }
-        intensity[i] *= f_i[i]->operator[](last_global_n);
     }
     return flag_negative_intensity1;
 }

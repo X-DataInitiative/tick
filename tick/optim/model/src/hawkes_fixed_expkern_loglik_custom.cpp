@@ -97,7 +97,8 @@ void ModelHawkesCustom::compute_weights_dim_i(const ulong i) {
     ArrayDouble H3_i = view(H3[i]);
     H1_i[global_n[Total_events]] -= 1;
     for (ulong k = 1; k != 1 + Total_events + 1; k++) {
-        H1_i[global_n[k - 1]] += 1;
+        if(k != (1 + Total_events))
+            H1_i[global_n[k - 1]] += (type_n[k] == i + 1 ? 1 : 0);
 
         const double t_k = (k != (1 + Total_events) ? global_timestamps[k] : end_time);
         const double ebt = std::exp(-decay * (t_k - global_timestamps[k - 1]));
@@ -105,8 +106,7 @@ void ModelHawkesCustom::compute_weights_dim_i(const ulong i) {
 
         //! recall that all g_i_j(t) are same, for any i
         //! thread_i calculate H3_i
-        H3_i[global_n[k - 1]] -= (1 - ebt) / decay * g_i[(k - 1) * n_nodes + i];
-        H3_i[global_n[k - 1]] -= ((type_n[k - 1] == i + 1) ? 1 - ebt : 0);
+        H3_i[global_n[k - 1]] -= G_i[k * n_nodes + i];
     }
 }
 
