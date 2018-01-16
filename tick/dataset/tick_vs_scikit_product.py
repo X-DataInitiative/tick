@@ -6,6 +6,7 @@ import pprint
 import time
 from collections import OrderedDict
 from itertools import chain
+from multiprocessing.pool import Pool
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -18,6 +19,7 @@ from tick.dataset.url_dataset import fetch_url_dataset
 from tick.inference import LogisticRegression as LogisticRegressionTick
 
 TOL = 1e-16
+N_CORES = 15
 
 C_FORMULAS = {
     'n': lambda n: n,
@@ -40,18 +42,27 @@ def write_to_file(file_path, text):
         f.write(text)
 
 
-def load_dataset(dataset, *args):
-    if dataset == 'url':
-        n_url_days = args[0]
+def load_dataset(dataset,  retrieve=True):
+    if dataset.startswith('url'):
+        n_url_days = int(dataset.split('_')[1])
         dataset_file_name = 'url_d{}'.format(n_url_days)
+        if not retrieve:
+            return dataset_file_name
+
         X, y = fetch_url_dataset(n_url_days)
 
     elif dataset == 'breast':
         dataset_file_name = 'breast'
+        if not retrieve:
+            return dataset_file_name
+
         X, y = sklearn.datasets.load_breast_cancer(return_X_y=True)
 
     elif dataset == 'adult':
         dataset_file_name = 'adult'
+        if not retrieve:
+            return dataset_file_name
+
         X, y = fetch_tick_dataset('binary/adult/adult.trn.bz2')
 
     else:
@@ -88,7 +99,7 @@ def create_learner(lib, solver, C, max_iter, penalty, train_size):
             C=C, penalty=penalty, solver=solver, max_iter=max_iter,
             fit_intercept=False,
             tol=TOL, random_state=10392,
-            record_every=10000, print_every=10000, verbose=True)
+            record_every=10000, print_every=10000, verbose=False)
 
     return learner
 
@@ -166,93 +177,78 @@ def add_nest(d, value, *keys):
     nest_d[keys[-1]] = value
 
 
-if __name__ == '__main__':
+def train_dataset(dataset):
+    dataset_file_name, X, y = load_dataset(dataset)
+    X_train, y_train, X_test, y_test = load_train_test(X, y)
+    n_train_samples = len(y_train)
 
-    do_training = False
+    args = []
+    results = []
+    for solver, C_formula, penalty, max_iter in scikit_runs:
+        arg = [
+            dataset_file_name, X_train, y_train, X_test, y_test,
+            'scikit', solver, C_formula, max_iter, penalty
+        ]
 
-    datasets = ['adult']
+        args += [arg]
 
-    scikit_solvers = ['saga', 'liblinear']
-    tick_solvers = ['saga']
+    for solver, C_formula, penalty, max_iter in tick_runs:
+        arg = [
+            dataset_file_name, X_train, y_train, X_test, y_test,
+            'tick', solver, C_formula, max_iter, penalty
+        ]
 
-    C_formulas = ['n', 'sqrt(n)']
-    penalties = ['l1', 'l2']
+        args += [arg]
 
-    max_iters = [10, 20, 30, 50, 70, 100]
+    with Pool(N_CORES) as p:
+        results = p.starmap(run_and_evaluate, args)
 
-    scikit_runs = itertools.product(
-        scikit_solvers, C_formulas, penalties, max_iters)
+    for arg, result in zip(args, results):
+        dataset_file_name, X_train, y_train, X_test, y_test, \
+        lib, solver, C_formula, max_iter, penalty = arg
 
-    tick_runs = itertools.product(
-        tick_solvers, C_formulas, penalties, max_iters)
+        elapsed_time, train_objective, auc_value = result
 
-    agg_results = OrderedDict()
-    for dataset in datasets:
-        dataset_file_name, X, y = load_dataset(dataset)
-        X_train, y_train, X_test, y_test = load_train_test(X, y)
-        n_train_samples = len(y_train)
+        path = [
+            dataset_file_name, penalty, C_formula, lib, solver, max_iter]
 
-        args = []
-        results = []
-        for solver, C_formula, penalty, max_iter in scikit_runs:
-            arg = [
-                dataset_file_name, X_train, y_train, X_test, y_test,
-                'scikit', solver, C_formula, max_iter, penalty
-            ]
+        add_nest(agg_results, elapsed_time, *(path + ['elapsed_time']))
+        add_nest(agg_results, train_objective, *(path + ['objective']))
+        add_nest(agg_results, auc_value, *(path + ['auc']))
 
-            args += [arg]
+    result_file_name_base = 'results/{}-{}'.format(
+        dataset_file_name, time.strftime('%H:%M:%S'))
+    write_to_file('{}.txt'.format(result_file_name_base),
+                  pprint.pformat(agg_results[dataset_file_name]))
+    with open('{}.pkl'.format(result_file_name_base), 'wb') as f:
+        pickle.dump(agg_results[dataset_file_name], f)
 
-        for solver, C_formula, penalty, max_iter in tick_runs:
-            arg = [
-                dataset_file_name, X_train, y_train, X_test, y_test,
-                'tick', solver, C_formula, max_iter, penalty
-            ]
 
-            args += [arg]
+def plot_agg_results(dataset):
 
-        if do_training:
-            for arg in args:
-                results += [run_and_evaluate(*arg)]
+    dataset_file_name = load_dataset(dataset, retrieve=False)
 
-            for arg, result in zip(args, results):
-                dataset_file_name, X_train, y_train, X_test, y_test, \
-                lib, solver, C_formula, max_iter, penalty = arg
+    dataset_files = [file_name
+                     for file_name in os.listdir('results')
+                     if file_name.startswith(dataset_file_name)
+                     and file_name.endswith('pkl')]
+    dataset_files.sort()
+    last_result_file = dataset_files[-1]
 
-                elapsed_time, train_objective, auc_value = result
+    dict_path = 'results/{}'.format(last_result_file)
 
-                path = [
-                    dataset_file_name, penalty, C_formula, lib, solver, max_iter]
-
-                add_nest(agg_results, elapsed_time, *(path + ['elapsed_time']))
-                add_nest(agg_results, train_objective, *(path + ['objective']))
-                add_nest(agg_results, auc_value, *(path + ['auc']))
-
-            result_file_name_base = 'results/{}-{}'.format(
-                dataset_file_name, time.strftime('%H:%M:%S'))
-            write_to_file('{}.txt'.format(result_file_name_base),
-                          pprint.pformat(agg_results[dataset_file_name]))
-            with open('{}.pkl'.format(result_file_name_base), 'wb') as f:
-                pickle.dump(agg_results[dataset_file_name], f)
-
-        else:
-            dataset_files = [file_name
-                             for file_name in os.listdir('results')
-                             if file_name.startswith('adult-')
-                             and file_name.endswith('pkl')]
-            dataset_files.sort()
-            last_result_file = dataset_files[-1]
-
-            dict_path = 'results/{}'.format(last_result_file)
-
-            with open(dict_path, 'rb') as f:
-                agg_results[dataset_file_name] = pickle.load(f)
+    with open(dict_path, 'rb') as f:
+        agg_results[dataset_file_name] = pickle.load(f)
 
     for dataset_file_name in agg_results.keys():
         penalties = list(agg_results[dataset_file_name].keys())
+        penalties.sort()
         C_formulas = list(
             agg_results[dataset_file_name][penalties[0]].keys())
+        C_formulas.sort()
         libs = list(
             agg_results[dataset_file_name][penalties[0]][C_formulas[0]].keys())
+        libs.sort()
 
         n_rows = len(penalties)
         n_cols = len(C_formulas)
@@ -307,79 +303,36 @@ if __name__ == '__main__':
                 print(times)
 
             ax.legend()
+            ax.set_title('{}, $\\lambda$=1/{}'.format(penalty, C_formula))
 
-        plt.show()
+        fig.tight_layout()
+        plt.savefig('results/comp_{}.pdf'.format(dataset_file_name))
 
 
+if __name__ == '__main__':
 
-def plot_best_params(C):
-    dataset_file_name, X, y = load_dataset()
-    print(X.shape)
+    do_training = True
 
-    test_size = int(0.2 * len(y))
-    train_size = len(y) - test_size
+    datasets = ['adult', 'url_1', 'url_10']
 
-    tick_learner = LogisticRegressionTick(C=C, penalty='l1',
-                                          fit_intercept=False)
+    scikit_solvers = ['saga', 'liblinear']
+    tick_solvers = ['saga']
 
-    fig, axes = plt.subplots(1, 2, figsize=(10, 5))
+    C_formulas = ['n', 'sqrt(n)']
+    penalties = ['l1', 'l2']
 
-    times = {}
-    auc_values = {}
-    objectives = {}
+    max_iters = [10, 20, 30, 50, 70, 100]
 
-    libs = ['tick', 'scikit']
-    for lib in libs:
-        times[lib] = []
-        auc_values[lib] = []
-        objectives[lib] = []
+    scikit_runs = itertools.product(
+        scikit_solvers, C_formulas, penalties, max_iters)
 
-        for max_iter in [10 * i for i in range(1, 11)]:# + [200, 300]:
+    tick_runs = itertools.product(
+        tick_solvers, C_formulas, penalties, max_iters)
 
-            if lib == 'scikit':
-                learner = LogisticRegressionSKlearn(solver='saga',
-                                                    max_iter=max_iter,
-                                                    tol=tol,
-                                                    C=C / train_size,
-                                                    penalty='l1',
-                                                    fit_intercept=False)
-            else:
-                learner = LogisticRegressionTick(solver='saga',
-                                                 max_iter=max_iter,
-                                                 tol=tol,
-                                                 record_every=10000,
-                                                 print_every=10000,
-                                                 verbose=True,
-                                                 C=C, penalty='l1',
-                                                 random_state=10392,
-                                                 fit_intercept=False)
+    agg_results = OrderedDict()
+    for dataset in datasets:
+        if do_training:
+            train_dataset(dataset)
 
-            _, elapsed_time, auc_value, train_objective = run_best_C(
-                learner, X, y, tick_learner, test_size)
+        plot_agg_results(dataset)
 
-            times[lib] += [elapsed_time]
-            auc_values[lib] += [auc_value]
-            objectives[lib] += [train_objective]
-
-        print(objectives)
-
-    min_objectives = min(chain.from_iterable([objectives[lib] for lib in libs]))
-    for lib in libs:
-        axes[0].plot(times[lib], auc_values[lib], marker='x', label=lib)
-
-        lib_objectives = np.array(objectives[lib]) - min_objectives
-        lib_objectives += min(lib_objectives[lib_objectives != 0]) / 2
-        axes[1].plot(times[lib], lib_objectives,
-                     marker='x', label=lib)
-
-    axes[1].set_yscale('log')
-
-    axes[0].set_xlabel('time')
-    axes[0].set_title('AUC')
-    axes[1].set_xlabel('time')
-    axes[1].set_title('distance to optimal objective')
-    axes[0].legend()
-    axes[1].legend()
-
-    fig.tight_layout()
-    plt.show()
