@@ -180,10 +180,8 @@ def add_nest(d, value, *keys):
 def train_dataset(dataset):
     dataset_file_name, X, y = load_dataset(dataset)
     X_train, y_train, X_test, y_test = load_train_test(X, y)
-    n_train_samples = len(y_train)
 
     args = []
-    results = []
     for solver, C_formula, penalty, max_iter in scikit_runs:
         arg = [
             dataset_file_name, X_train, y_train, X_test, y_test,
@@ -203,14 +201,14 @@ def train_dataset(dataset):
     with Pool(N_CORES) as p:
         results = p.starmap(run_and_evaluate, args)
 
+    agg_results = OrderedDict()
     for arg, result in zip(args, results):
         dataset_file_name, X_train, y_train, X_test, y_test, \
         lib, solver, C_formula, max_iter, penalty = arg
 
         elapsed_time, train_objective, auc_value = result
 
-        path = [
-            dataset_file_name, penalty, C_formula, lib, solver, max_iter]
+        path = [penalty, C_formula, lib, solver, max_iter]
 
         add_nest(agg_results, elapsed_time, *(path + ['elapsed_time']))
         add_nest(agg_results, train_objective, *(path + ['objective']))
@@ -219,9 +217,9 @@ def train_dataset(dataset):
     result_file_name_base = 'results/{}-{}'.format(
         dataset_file_name, time.strftime('%H:%M:%S'))
     write_to_file('{}.txt'.format(result_file_name_base),
-                  pprint.pformat(agg_results[dataset_file_name]))
+                  pprint.pformat(agg_results))
     with open('{}.pkl'.format(result_file_name_base), 'wb') as f:
-        pickle.dump(agg_results[dataset_file_name], f)
+        pickle.dump(agg_results, f)
 
 
 def plot_agg_results(dataset):
@@ -237,17 +235,18 @@ def plot_agg_results(dataset):
 
     dict_path = 'results/{}'.format(last_result_file)
 
+    agg_results = OrderedDict()
     with open(dict_path, 'rb') as f:
-        agg_results[dataset_file_name] = pickle.load(f)
+        agg_results = pickle.load(f)
 
     for dataset_file_name in agg_results.keys():
-        penalties = list(agg_results[dataset_file_name].keys())
+        penalties = list(agg_results.keys())
         penalties.sort()
         C_formulas = list(
-            agg_results[dataset_file_name][penalties[0]].keys())
+            agg_results[penalties[0]].keys())
         C_formulas.sort()
         libs = list(
-            agg_results[dataset_file_name][penalties[0]][C_formulas[0]].keys())
+            agg_results[penalties[0]][C_formulas[0]].keys())
         libs.sort()
 
         n_rows = len(penalties)
@@ -262,9 +261,9 @@ def plot_agg_results(dataset):
         min_objectives = {}
         for penalty, C_formula in itertools.product(penalties, C_formulas):
             min_objective = 1e300
-            for lib in agg_results[dataset_file_name][penalty][C_formula].keys():
+            for lib in agg_results[penalty][C_formula].keys():
                 lib_solvers = \
-                agg_results[dataset_file_name][penalty][C_formula][lib]
+                agg_results[penalty][C_formula][lib]
                 for solver in lib_solvers.keys():
                     min_objective = min(min_objective, min([
                         lib_solvers[solver][max_iter]['objective']
@@ -280,7 +279,7 @@ def plot_agg_results(dataset):
 
             ax = axes[row][col]
 
-            lib_solvers = agg_results[dataset_file_name][penalty][C_formula][lib]
+            lib_solvers = agg_results[penalty][C_formula][lib]
             for solver in lib_solvers.keys():
                 label = '{} {}'.format(lib, solver)
 
@@ -289,7 +288,6 @@ def plot_agg_results(dataset):
                 max_iters = list(lib_solvers[solver].keys())
                 max_iters.sort()
                 for max_iter in max_iters:
-                    print(max_iter)
                     times += [lib_solvers[solver][max_iter]['elapsed_time']]
                     objectives += [lib_solvers[solver][max_iter]['objective']]
 
@@ -299,8 +297,6 @@ def plot_agg_results(dataset):
 
                 ax.plot(times, diff_objectives, label=label)
                 ax.set_yscale('log')
-
-                print(times)
 
             ax.legend()
             ax.set_title('{}, $\\lambda$=1/{}'.format(penalty, C_formula))
@@ -329,7 +325,6 @@ if __name__ == '__main__':
     tick_runs = itertools.product(
         tick_solvers, C_formulas, penalties, max_iters)
 
-    agg_results = OrderedDict()
     for dataset in datasets:
         if do_training:
             train_dataset(dataset)
