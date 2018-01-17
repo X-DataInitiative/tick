@@ -1,5 +1,5 @@
-#ifndef TICK_OPTIM_MODEL_SRC_CUSTOM
-#define TICK_OPTIM_MODEL_SRC_CUSTOM
+#ifndef TICK_OPTIM_MODEL_SRC_CUSTOM_SUMEXP
+#define TICK_OPTIM_MODEL_SRC_CUSTOM_SUMEXP
 
 // License: BSD 3 clause
 
@@ -102,4 +102,4 @@ public:
 //    friend ModelHawkesCustomList;
 };
 
-#endif  // TICK_OPTIM_MODEL_SRC_CUSTOM
+#endif  // TICK_OPTIM_MODEL_SRC_CUSTOM_SUMEXP

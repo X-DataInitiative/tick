@@ -140,14 +140,6 @@ void ModelHawkesFixedSumExpKernCustom::grad_dim_i(const ulong i,
 //    const ArrayDouble2d g_i = view(g[i]);
 //    const ArrayDouble2d G_i = view(G[i]);
 //
-//    /*
-//     * specially for debug
-//     */
-////    ArrayDouble f_i = ArrayDouble(MaxN_of_f);
-////    for (ulong k = 0; k != MaxN_of_f; ++k)
-////        f_i[k] = 1;
-//
-//
 //    //! grad of mu_i
 //    grad_mu_i = 0;
 //    for (ulong k = 1; k < Total_events + 1; ++k) {

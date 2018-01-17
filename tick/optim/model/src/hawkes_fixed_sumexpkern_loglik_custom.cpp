@@ -112,7 +112,6 @@ void ModelHawkesSumExpCustom::compute_weights_dim_i(const ulong i) {
         double decay = decays[u];
         for (ulong k = 1; k != 1 + Total_events + 1; k++) {
             const double t_k = (k != (1 + Total_events) ? global_timestamps[k] : end_time);
-            const double ebt = std::exp(-decay * (t_k - global_timestamps[k - 1]));
             //! recall that all g_i_j(t) are same, for any i
             //! thread_i calculate H3_i
             H3_i[global_n[k - 1] * U + u] -= G_i[get_index(k, i, u)];
