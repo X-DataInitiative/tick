@@ -20,6 +20,9 @@ class SVRG : public StoSolver {
         BarzilaiBorwein = 2,
     };
 
+    // Empty constructor only used for serialization
+    SVRG(){};
+
     SVRG(ulong epoch_size,
          double tol,
          RandType rand_type,
@@ -40,3 +43,5 @@ class SVRG : public StoSolver {
     StepType get_step_type();
     void set_step_type(StepType step_type);
 };
+
+TICK_MAKE_PICKLABLE(SVRG);

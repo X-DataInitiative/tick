@@ -3,6 +3,7 @@
 import unittest
 from warnings import catch_warnings, simplefilter
 from itertools import product
+import pickle
 
 import numpy as np
 from scipy.linalg.special_matrices import toeplitz
@@ -223,6 +224,20 @@ class Test(TestSolver):
         def create_solver():
             return SVRG(max_iter=1, verbose=False, step=1e-5,
                         seed=TestSolver.sto_seed, n_threads=2)
+
+    def test_svrg_serialization(self):
+        """...Test that serialized linear regression computes loss correctly
+        """
+        model = ModelLinReg(fit_intercept=False)
+        features, labels = np.random.rand(5, 3), np.random.rand(5)
+        model.fit(features, labels)
+        prox = ProxL1(2.)
+
+        obj = SVRG()
+        obj.set_prox(prox).set_model(model)
+        pickled = pickle.loads(pickle.dumps(obj))
+        self.assertEqual(pickled.objective(features[0]),
+                         obj.objective(features[0]))
 
 
 if __name__ == '__main__':
