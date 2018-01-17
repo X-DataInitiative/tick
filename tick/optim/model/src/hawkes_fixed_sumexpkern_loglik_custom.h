@@ -37,29 +37,11 @@ private:
      */
     void compute_weights_dim_i(const ulong i);//! override;
 
-    /**
-     * @brief Return the start of alpha i coefficients in a coeffs vector
-     * @param i : selected dimension
-     */
-    ulong get_alpha_i_first_index(const ulong u, const ulong i) const override {
-     return n_nodes + u * n_nodes * n_nodes + i * n_nodes;
-    }
-
-    /**
-     * @brief Return the end of alpha i coefficients in a coeffs vector
-     * @param i : selected dimension
-     */
-    ulong get_alpha_i_last_index(const ulong u, const ulong i) const override {
-     return n_nodes + u * n_nodes * n_nodes + (i + 1) * n_nodes;
-    }
-
+    //! you know what it is
     ulong get_alpha_u_i_j_index(const ulong u, const ulong i, const ulong j) const{
         return n_nodes + u * n_nodes * n_nodes + i * n_nodes + j;
     }
 
-
-    //! The following part is hacked
-    //! For hawkes_custom
     /**
      * @brief Return the start of f_i(n) in a coeffs vector
      * @param i : selected dimension

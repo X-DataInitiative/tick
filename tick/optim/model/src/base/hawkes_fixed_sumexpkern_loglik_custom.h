@@ -120,17 +120,6 @@ protected:
      * @brief Return the start of alpha i coefficients in a coeffs vector
      * @param i : selected dimension
      */
-    virtual ulong get_alpha_i_first_index(const ulong u, const ulong i) const {
-        TICK_CLASS_DOES_NOT_IMPLEMENT("");
-    }
-
-    /**
-     * @brief Return the end of alpha i coefficients in a coeffs vector
-     * @param i : selected dimension
-     */
-    virtual ulong get_alpha_i_last_index(const ulong u, const ulong i) const {
-        TICK_CLASS_DOES_NOT_IMPLEMENT("");
-    }
 
     /**
      * @brief Return the start of f_i_n coefficients in a coeffs vector

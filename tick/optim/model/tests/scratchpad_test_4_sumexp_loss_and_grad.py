@@ -38,10 +38,8 @@ global_n = np.insert(global_n, 0, 0).astype(int)
 model = ModelHawkesCustom(beta, MaxN_of_f)
 model.fit(timestamps, global_n, end_time)
 
-x_real = np.array(
-    [0.7, 0.7, 0.7, 0.6, 0.2, 0.3,   1., 0.7, 0.8, 0.6, 0.5, 1., 0.6, 0.8, 0.8, 0.6])
 x0 = np.array(
-    [0.6, 0.8, 0.5, 0.5, 0.5, 0.5,   1., 0.5, 0.5, 0.9, 0.9, 1., 0.6, 0.7, 0.8, 0.5])
+    [0.6, 0.8, 0.5, 0.6, 0.7, 0.8,   1., 0.5, 0.5, 0.9, 0.9, 1., 0.6, 0.7, 0.8, 0.5])
 print(model.loss(x0))
 print(model.grad(x0))
 ##################################################################################################################
@@ -52,6 +50,6 @@ betas = np.array([beta, beta])
 model2 = ModelHawkesSumExpCustom(betas, MaxN_of_f)
 model2.fit(timestamps, global_n, end_time)
 x0 = np.array(
-    [0.6, 0.8,    0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25,     1., 0.5, 0.5, 0.9, 0.9, 1., 0.6, 0.7, 0.8, 0.5])
+    [0.6, 0.8,    0.25, 0.3, 0.35, 0.4, 0.25, 0.3, 0.35, 0.4,     1., 0.5, 0.5, 0.9, 0.9, 1., 0.6, 0.7, 0.8, 0.5])
 print(model2.loss(x0))
 print(model2.grad(x0))
