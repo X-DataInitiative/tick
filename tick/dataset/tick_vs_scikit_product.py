@@ -4,10 +4,9 @@ import os
 import pickle
 import pprint
 import time
-from collections import OrderedDict
-from itertools import chain
 from multiprocessing.pool import Pool
 
+import tick
 import matplotlib.pyplot as plt
 import numpy as np
 import sklearn
@@ -183,23 +182,15 @@ def add_nest(d, value, *keys):
     nest_d[keys[-1]] = value
 
 
-def train_dataset(dataset):
+def train_dataset(dataset, runs):
     dataset_file_name, X, y = load_dataset(dataset)
     X_train, y_train, X_test, y_test = load_train_test(X, y)
 
     args = []
-    for solver, C_formula, penalty, max_iter in scikit_runs:
+    for lib, solver, C_formula, penalty, max_iter in runs:
         arg = [
             dataset_file_name, X_train, y_train, X_test, y_test,
-            'scikit', solver, C_formula, max_iter, penalty
-        ]
-
-        args += [arg]
-
-    for solver, C_formula, penalty, max_iter in tick_runs:
-        arg = [
-            dataset_file_name, X_train, y_train, X_test, y_test,
-            'tick', solver, C_formula, max_iter, penalty
+            lib, solver, C_formula, max_iter, penalty
         ]
 
         args += [arg]
@@ -210,7 +201,7 @@ def train_dataset(dataset):
     # for arg in args:
     #     results += [run_and_evaluate(*arg)]
 
-    agg_results = OrderedDict()
+    agg_results = {}
     for arg, result in zip(args, results):
         dataset_file_name, X_train, y_train, X_test, y_test, \
         lib, solver, C_formula, max_iter, penalty = arg
@@ -237,87 +228,90 @@ def plot_agg_results(dataset):
 
     dataset_files = [file_name
                      for file_name in os.listdir('results')
-                     if file_name.startswith(dataset_file_name)
+                     if file_name.startswith('{}-'.format(dataset_file_name))
                      and file_name.endswith('pkl')]
     dataset_files.sort()
     last_result_file = dataset_files[-1]
 
     dict_path = 'results/{}'.format(last_result_file)
 
-    agg_results = OrderedDict()
     with open(dict_path, 'rb') as f:
         agg_results = pickle.load(f)
 
-    for dataset_file_name in agg_results.keys():
-        penalties = list(agg_results.keys())
-        penalties.sort()
-        C_formulas = list(
-            agg_results[penalties[0]].keys())
-        C_formulas.sort()
-        libs = list(
-            agg_results[penalties[0]][C_formulas[0]].keys())
-        libs.sort()
+    penalties = list(agg_results.keys())
+    penalties.sort()
 
-        n_rows = len(penalties)
-        n_cols = len(C_formulas)
+    C_formulas = list(
+        agg_results[penalties[0]].keys())
+    C_formulas.sort()
+    libs = list(
+        agg_results[penalties[0]][C_formulas[0]].keys())
+    libs.sort()
 
-        fig, axes = plt.subplots(n_rows, n_rows)
-        if n_rows == 1:
-            axes = [axes]
-        if n_cols == 1:
-            axes = [axes]
+    n_rows = len(penalties)
+    n_cols = len(C_formulas)
 
-        min_objectives = {}
-        for penalty, C_formula in itertools.product(penalties, C_formulas):
-            min_objective = 1e300
-            for lib in agg_results[penalty][C_formula].keys():
-                lib_solvers = \
-                agg_results[penalty][C_formula][lib]
-                for solver in lib_solvers.keys():
-                    min_objective = min(min_objective, min([
-                        lib_solvers[solver][max_iter]['objective']
-                        for max_iter in lib_solvers[solver]
-                    ]))
+    fig, axes = plt.subplots(n_rows, n_rows)
+    if n_rows == 1:
+        axes = [axes]
+    if n_cols == 1:
+        axes = [axes]
 
-            add_nest(min_objectives, min_objective, penalty, C_formula)
-
-        for penalty, C_formula, lib in itertools.product(
-                penalties, C_formulas, libs):
-            row = penalties.index(penalty)
-            col = C_formulas.index(C_formula)
-
-            ax = axes[row][col]
-
-            lib_solvers = agg_results[penalty][C_formula][lib]
+    min_objectives = {}
+    for penalty, C_formula in itertools.product(penalties, C_formulas):
+        min_objective = 1e300
+        for lib in agg_results[penalty][C_formula].keys():
+            lib_solvers = \
+            agg_results[penalty][C_formula][lib]
             for solver in lib_solvers.keys():
-                label = '{} {}'.format(lib, solver)
+                min_objective = min(min_objective, min([
+                    lib_solvers[solver][max_iter]['objective']
+                    for max_iter in lib_solvers[solver]
+                ]))
 
-                times = []
-                objectives = []
-                max_iters = list(lib_solvers[solver].keys())
-                max_iters.sort()
-                for max_iter in max_iters:
-                    times += [lib_solvers[solver][max_iter]['elapsed_time']]
-                    objectives += [lib_solvers[solver][max_iter]['objective']]
+        add_nest(min_objectives, min_objective, penalty, C_formula)
 
-                objectives = np.array(objectives)
-                diff_objectives = objectives - min_objectives[penalty][C_formula]
-                diff_objectives += min(diff_objectives[diff_objectives != 0]) / 2
+    for penalty, C_formula, lib in itertools.product(
+            penalties, C_formulas, libs):
+        row = penalties.index(penalty)
+        col = C_formulas.index(C_formula)
 
-                ax.plot(times, diff_objectives, label=label)
-                ax.set_yscale('log')
+        ax = axes[row][col]
 
-            ax.legend()
-            ax.set_title('{}, $\\lambda$=1/{}'.format(penalty, C_formula))
+        lib_solvers = agg_results[penalty][C_formula][lib]
+        for solver in lib_solvers.keys():
+            label = '{} {}'.format(lib, solver)
 
-        fig.tight_layout()
-        plt.savefig('results/comp_{}.pdf'.format(dataset_file_name))
+            times = []
+            objectives = []
+            max_iters = list(lib_solvers[solver].keys())
+            max_iters.sort()
+            for max_iter in max_iters:
+                times += [lib_solvers[solver][max_iter]['elapsed_time']]
+                objectives += [lib_solvers[solver][max_iter]['objective']]
+
+            objectives = np.array(objectives)
+            diff_objectives = objectives - min_objectives[penalty][C_formula]
+            diff_objectives += min(diff_objectives[diff_objectives != 0]) / 2
+
+            ax.plot(times, diff_objectives, label=label)
+            ax.set_yscale('log')
+
+        ax.legend()
+        ax.set_title('{}, $\\lambda$=1/{}'.format(penalty, C_formula))
+
+    fig.tight_layout()
+
+    fig_file = 'results/comp_{}.pdf'.format(dataset_file_name)
+    print('save figure in ', fig_file, 'from', last_result_file)
+    plt.savefig(fig_file)
 
 
 if __name__ == '__main__':
 
     do_training = True
 
+    datasets = ['breast']
     datasets = ['adult', 'url_1', 'url_10']
 
     scikit_solvers = ['saga', 'liblinear']
@@ -325,18 +319,26 @@ if __name__ == '__main__':
 
     C_formulas = ['n', 'sqrt(n)']
     penalties = ['l1', 'l2']
-
     max_iters = [10, 20, 30, 50, 70, 100]
 
-    scikit_runs = list(itertools.product(
-        scikit_solvers, C_formulas, penalties, max_iters))
+    runs = []
+    for C_formula, penalty, max_iter in itertools.product(
+            C_formulas, penalties, max_iters):
 
-    tick_runs = list(itertools.product(
-        tick_solvers, C_formulas, penalties, max_iters))
+        runs += [('tick', 'saga', C_formula, penalty, max_iter)]
+        runs += [('tick', 'svrg', C_formula, penalty, max_iter)]
+
+        runs += [('scikit', 'liblinear', C_formula, penalty, max_iter)]
+        runs += [('scikit', 'saga', C_formula, penalty, max_iter)]
+
+        if penalty == 'l2':
+            runs += [('scikit', 'newton-cg', C_formula, penalty, max_iter)]
+            runs += [('scikit', 'sag', C_formula, penalty, max_iter)]
+            runs += [('scikit', 'lbfgs', C_formula, penalty, max_iter)]
 
     for dataset in datasets:
         if do_training:
-            train_dataset(dataset)
+            train_dataset(dataset, runs)
 
         plot_agg_results(dataset)
 
