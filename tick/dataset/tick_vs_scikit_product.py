@@ -19,7 +19,7 @@ from tick.dataset.url_dataset import fetch_url_dataset
 from tick.inference import LogisticRegression as LogisticRegressionTick
 
 TOL = 1e-16
-N_CORES = 15
+N_CORES = 40
 
 C_FORMULAS = {
     'n': lambda n: n,
@@ -68,6 +68,8 @@ def load_dataset(dataset,  retrieve=True):
     else:
         raise ValueError('Unknown dataset {}'.format(dataset))
 
+    X = X.astype(float)
+    y = y.astype(float)
     print('SHAPES', X.shape, y.shape)
     return dataset_file_name, X, y
 
@@ -162,8 +164,12 @@ def run_and_evaluate(dataset_file_name, X_train, y_train, X_test, y_test,
 
     create_dir_if_missing(learner_save_file)
     with open(learner_save_file, 'wb') as f:
-        pickle.dump(learner, f)
-        print('saved in ', learner_save_file)
+        try:
+            pickle.dump(learner, f)
+            print('saved in ', learner_save_file)
+        except TypeError:
+            print('cant save', learner_save_file)
+
 
     return elapsed_time, train_objective, auc_value
 
@@ -200,6 +206,9 @@ def train_dataset(dataset):
 
     with Pool(N_CORES) as p:
         results = p.starmap(run_and_evaluate, args)
+    # results = []
+    # for arg in args:
+    #     results += [run_and_evaluate(*arg)]
 
     agg_results = OrderedDict()
     for arg, result in zip(args, results):
@@ -312,18 +321,18 @@ if __name__ == '__main__':
     datasets = ['adult', 'url_1', 'url_10']
 
     scikit_solvers = ['saga', 'liblinear']
-    tick_solvers = ['saga']
+    tick_solvers = ['saga', 'svrg']
 
     C_formulas = ['n', 'sqrt(n)']
     penalties = ['l1', 'l2']
 
     max_iters = [10, 20, 30, 50, 70, 100]
 
-    scikit_runs = itertools.product(
-        scikit_solvers, C_formulas, penalties, max_iters)
+    scikit_runs = list(itertools.product(
+        scikit_solvers, C_formulas, penalties, max_iters))
 
-    tick_runs = itertools.product(
-        tick_solvers, C_formulas, penalties, max_iters)
+    tick_runs = list(itertools.product(
+        tick_solvers, C_formulas, penalties, max_iters))
 
     for dataset in datasets:
         if do_training:
