@@ -14,20 +14,14 @@
  * decay)
  */
 class DLL_PUBLIC ModelHawkesSumExpCustom : public ModelHawkesFixedSumExpKernCustom {
-private:
-    //! @brief Value of decay for this model
-    double decay;
-public:
-    //! @brief Default constructor
-    //! @note This constructor is only used to create vectors of ModelHawkesFixedExpKernLeastSq
-    ModelHawkesSumExpCustom() : ModelHawkesFixedSumExpKernCustom(0), decay(0) {}
 
+public:
     /**
      * @brief Constructor
      * \param decay : decay for this model (remember that decay is fixed!)
      * \param n_threads : number of threads that will be used for parallel computations
      */
-    ModelHawkesSumExpCustom(const double _decay, const ulong _MaxN_of_f, const int max_n_threads = 1);
+    ModelHawkesSumExpCustom(const ArrayDouble _decays, const ulong _MaxN_of_f, const int max_n_threads = 1);
 
     using ModelHawkesSingle::set_data;
     void set_data(const SArrayDoublePtrList1D &_timestamps,
@@ -47,16 +41,20 @@ private:
      * @brief Return the start of alpha i coefficients in a coeffs vector
      * @param i : selected dimension
      */
-    ulong get_alpha_i_first_index(const ulong i) const override {
-     return n_nodes + i * n_nodes;
+    ulong get_alpha_i_first_index(const ulong u, const ulong i) const override {
+     return n_nodes + u * n_nodes * n_nodes + i * n_nodes;
     }
 
     /**
      * @brief Return the end of alpha i coefficients in a coeffs vector
      * @param i : selected dimension
      */
-    ulong get_alpha_i_last_index(const ulong i) const override {
-     return n_nodes + (i + 1) * n_nodes;
+    ulong get_alpha_i_last_index(const ulong u, const ulong i) const override {
+     return n_nodes + u * n_nodes * n_nodes + (i + 1) * n_nodes;
+    }
+
+    ulong get_alpha_u_i_j_index(const ulong u, const ulong i, const ulong j) const{
+        return n_nodes + u * n_nodes * n_nodes + i * n_nodes + j;
     }
 
 
@@ -67,7 +65,7 @@ private:
      * @param i : selected dimension
      */
     ulong get_f_i_first_index(const ulong i) const override {
-     return n_nodes + n_nodes * n_nodes + i * MaxN_of_f;
+     return n_nodes + n_nodes * n_nodes * decays.size() + i * MaxN_of_f;
     }
 
     /**
@@ -75,15 +73,20 @@ private:
      * @param i : selected dimension
      */
     ulong get_f_i_last_index(const ulong i) const override {
-     return n_nodes + n_nodes * n_nodes + (i + 1) * MaxN_of_f;
+     return n_nodes + n_nodes * n_nodes * decays.size() + (i + 1) * MaxN_of_f;
     }
 
 public:
     ulong get_n_coeffs() const override;
 
+    ulong get_n_decays() const {
+        return decays.size();
+    }
+
     //! @brief Returns decay that was set
-    double get_decay() const {
-     return decay;
+    SArrayDoublePtr get_decays() const {
+        ArrayDouble copied_decays = decays;
+        return copied_decays.as_sarray_ptr();
     }
 
     /**
@@ -91,8 +94,8 @@ public:
      * \param decay : new decay
      * \note Weights will need to be recomputed
      */
-    void set_decay(double decay) {
-     this->decay = decay;
+    void set_decays(ArrayDouble decays) {
+     this->decays = decays;
      weights_computed = false;
     }
 
