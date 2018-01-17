@@ -51,5 +51,17 @@ model2 = ModelHawkesSumExpCustom(betas, MaxN_of_f)
 model2.fit(timestamps, global_n, end_time)
 x0 = np.array(
     [0.6, 0.8,    0.25, 0.3, 0.35, 0.4, 0.25, 0.3, 0.35, 0.4,     1., 0.5, 0.5, 0.9, 0.9, 1., 0.6, 0.7, 0.8, 0.5])
+x0 = np.array(
+    [0.6, 0.8,    0.25, 0.3, 0.35, 0.4, 0.5, 0.6, 0.7, 0.8,     1., 0.5, 0.5, 0.9, 0.9, 1., 0.6, 0.7, 0.8, 0.5])
 print(model2.loss(x0))
 print(model2.grad(x0))
+
+#manuel grad
+delta = 1e-8
+x1 = x0.copy()
+grad2 = []
+for i in range(len(x0)):
+    x1[i] += 1e-8
+    grad2.append((model2.loss(x1) - model2.loss(x0)) / delta)
+    x1[i] -= 1e-8
+print(model2.grad(x0) / grad2)
