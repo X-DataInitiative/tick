@@ -112,7 +112,7 @@ def create_learner(lib, solver, C, max_iter, penalty, train_size):
         if solver == 'svrg bb':
             learner._solver_obj.step_type = 'bb'
         elif solver == 'sdca':
-            learner.elastic_net_ratio = 1. / C
+            learner.sdca_ridge_strength = 1. / C
 
     return learner
 
