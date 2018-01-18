@@ -96,12 +96,23 @@ def create_learner(lib, solver, C, max_iter, penalty, train_size):
             fit_intercept=False,
             tol=TOL, random_state=10392)
     else:
+        solver_key = solver.split(' ')[0]
+
+        if solver == 'sdca':
+            penalty_key = 'none'
+        else:
+            penalty_key = penalty
+
         learner = LogisticRegressionTick(
-            C=C, penalty=penalty, solver=solver, max_iter=max_iter,
+            C=C, penalty=penalty_key, solver=solver_key, max_iter=max_iter,
             fit_intercept=False,
             tol=TOL, random_state=10392,
             record_every=1000000, print_every=1000000, verbose=False)
-        # learner._solver_obj.epoch_size = int(train_size * max_iter)
+
+        if solver == 'svrg bb':
+            learner._solver_obj.step_type = 'bb'
+        elif solver == 'sdca':
+            learner.elastic_net_ratio = 1. / C
 
     return learner
 
@@ -316,9 +327,6 @@ if __name__ == '__main__':
     datasets = ['breast']
     datasets = ['adult', 'url_1', 'url_10']
 
-    scikit_solvers = ['saga', 'liblinear']
-    tick_solvers = ['saga', 'svrg']
-
     C_formulas = ['n', 'sqrt(n)']
     penalties = ['l1', 'l2']
     max_iters = [10, 20, 30, 50, 70, 100]
@@ -329,11 +337,13 @@ if __name__ == '__main__':
 
         runs += [('tick', 'saga', C_formula, penalty, max_iter)]
         runs += [('tick', 'svrg', C_formula, penalty, max_iter)]
+        runs += [('tick', 'svrg bb', C_formula, penalty, max_iter)]
 
         runs += [('scikit', 'liblinear', C_formula, penalty, max_iter)]
         runs += [('scikit', 'saga', C_formula, penalty, max_iter)]
 
         if penalty == 'l2':
+            runs += [('tick', 'sdca', C_formula, penalty, max_iter)]
             runs += [('scikit', 'newton-cg', C_formula, penalty, max_iter)]
             runs += [('scikit', 'sag', C_formula, penalty, max_iter)]
             runs += [('scikit', 'lbfgs', C_formula, penalty, max_iter)]

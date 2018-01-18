@@ -41,7 +41,13 @@ void SVRG::prepare_solve() {
     iterate_diff.mult_incr(previous_iterate, -1);
     ArrayDouble full_gradient_diff = full_gradient;
     full_gradient_diff.mult_incr(previous_full_gradient, -1);
-    step = 1. / epoch_size * iterate_diff.norm_sq() / iterate_diff.dot(full_gradient_diff);
+
+    // TODO(martin) strange but this sometimes happen...
+    if (full_gradient_diff.norm_sq() != 0) {
+      step = 1. / epoch_size * iterate_diff.norm_sq() / iterate_diff.dot(full_gradient_diff);
+    } else {
+      std::cout << "Did not update step in svrg bb, left to " << step << std::endl;
+    }
   }
 
   if ((model->is_sparse()) && (prox->is_separable())) {
