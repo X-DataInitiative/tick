@@ -49,7 +49,7 @@ as well).
     test_set = fetch_tick_dataset('binary/adult/adult.tst.bz2')
 
     # Logistic regression training
-    LogisticRegression = tick$inference$LogisticRegression
+    LogisticRegression = tick$linear_model$LogisticRegression
     clf = LogisticRegression(penalty='elasticnet')
     clf$fit(train_set[[1]], train_set[[2]])
 
@@ -80,8 +80,8 @@ floating point and results in errors.
 
 .. code-block:: r
 
-    SimuHawkes = tick$simulation$SimuHawkes
-    HawkesKernelSumExp = tick$simulation$HawkesKernelSumExp
+    SimuHawkes = tick$hawkes$SimuHawkes
+    HawkesKernelSumExp = tick$hawkes$HawkesKernelSumExp
     end_time = 40L
 
     hawkes = SimuHawkes(n_nodes=1L, end_time=end_time, verbose=FALSE, seed=1398L)
@@ -101,34 +101,33 @@ floating point and results in errors.
 
 .. _r_usage_tick_optim:
 
-3. Using ``tick.optim`` from R
-==============================
+3. Using optimization tools from R
+==================================
 
-In the following example we use ``tick.simulation`` to simulate a linear
-regression model with sparse weights and ``tick.optim`` to estimate these
+In the following example we use ``tick.linear_model`` to simulate a linear
+regression model with sparse weights and to estimate these
 weights, by combining a ``ModelLinReg`` object for linear regression, and a
 ``ProxSlope`` object for SLOPE penalization (Sorted-L1 norm) in a ``AGD``
 solver, namely accelerated gradient descent.
 We then plot the true weights and estimated ones, together with the solver's
 history. Note that the estimation of the weights can be achieved more easily
-through the ``tick.inference.LinearRegression`` class as well.
+through the ``tick.linear_model.LinearRegression`` class as well.
 
 .. code-block:: r
 
     # Simulation of a linear regression model with sparse weights
     weights_sparse_gauss = tick$simulation$weights_sparse_gauss
     weights = weights_sparse_gauss(n_weights=50L)
-    SimuLinReg = tick$simulation$SimuLinReg
+    SimuLinReg = tick$linear_model$SimuLinReg
     simu = SimuLinReg(weights=weights, n_samples=5000L)
     res = simu$simulate()
     X = res[[1]]
     y = res[[2]]
 
-    # Use tick.optim to train a linear regression model with SLOPE penalization
-    optim = tick$optim
-    ModelLinReg = optim$model$ModelLinReg
-    ProxSlope = optim$prox$ProxSlope
-    AGD = optim$solver$AGD
+    # Use tick to train a linear regression model with SLOPE penalization
+    ModelLinReg = tick$linear_model$ModelLinReg
+    ProxSlope = tick$prox$ProxSlope
+    AGD = tick$solver$$AGD
 
     model = ModelLinReg(fit_intercept=FALSE)$fit(X, y)
     prox = ProxSlope(strength=1e-2, fdr=0.05)

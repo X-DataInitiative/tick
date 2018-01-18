@@ -23,7 +23,7 @@ Other penalizations are available in `tick.inference.PoissonRegression`:
 * total-variation penalization, using ``penalty='tv'``
 
 **Remark**: we don't use in this example ``solver='sgd'`` (namely vanilla
-stochastic gradient descent, see `tick.optim.solver.SGD`) since it performs
+stochastic gradient descent, see `tick.solver.SGD`) since it performs
 too poorly.
 
 The plot given below compares the distance to the minimum of each solver along
@@ -33,8 +33,8 @@ iterations, on a logarithmic scale.
 import numpy as np
 import matplotlib.pyplot as plt
 
-from tick.simulation import SimuPoisReg, weights_sparse_gauss
-from tick.inference import PoissonRegression
+from tick.simulation import weights_sparse_gauss
+from tick.linear_model import SimuPoisReg, PoissonRegression
 from tick.plot import plot_history
 
 

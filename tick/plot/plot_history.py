@@ -1,12 +1,11 @@
 # License: BSD 3 clause
 
+import matplotlib.pyplot as plt
 import numpy as np
 
-import matplotlib.pyplot as plt
-
-from tick.inference.base.learner_glm import LearnerOptim
-from tick.optim.solver.base.solver import Solver
+from tick.base.learner import LearnerOptim
 from tick.plot.plot_utilities import get_plot_color
+from tick.solver.base import Solver
 
 
 def extract_history(solvers, x, y, given_labels):
@@ -50,8 +49,8 @@ def plot_history(solvers, x='n_iter', y='obj', labels=None, show=True,
     Parameters
     ----------
     solvers : `list` of `object` with and history to plot, namely solvers
-        (children of `tick.optim.solver.base.Solver`) or learners (children of
-        `tick.inference.base.LearnerOptim`)
+        (children of `tick.solver.base.Solver`) or learners (children of
+        `tick.hawkes.inference.base.LearnerOptim`)
 
     x : `str`, default='n_iter'
         - if 'n_iter' : iteration number

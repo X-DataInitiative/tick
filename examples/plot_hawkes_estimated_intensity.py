@@ -11,9 +11,8 @@ the process.
 
 import matplotlib.pyplot as plt
 
-from tick.inference import HawkesSumExpKern
+from tick.hawkes import SimuHawkesSumExpKernels, HawkesSumExpKern
 from tick.plot import plot_point_process
-from tick.simulation import SimuHawkesSumExpKernels
 
 end_time = 1000
 

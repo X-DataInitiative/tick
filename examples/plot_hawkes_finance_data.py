@@ -25,7 +25,7 @@ triggering (resp. preventing) market orders at the ask (resp. at the bid).
 import numpy as np
 
 from tick.dataset import fetch_hawkes_bund_data
-from tick.inference import HawkesConditionalLaw
+from tick.hawkes import HawkesConditionalLaw
 from tick.plot import plot_hawkes_kernel_norms
 
 timestamps_list = fetch_hawkes_bund_data()

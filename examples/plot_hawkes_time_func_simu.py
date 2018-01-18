@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from tick.base import TimeFunction
-from tick.simulation import SimuHawkes, HawkesKernelExp, HawkesKernelTimeFunc
+from tick.hawkes import SimuHawkes, HawkesKernelExp, HawkesKernelTimeFunc
 from tick.plot import plot_point_process
 
 t_values = np.array([0, 1, 1.5], dtype=float)

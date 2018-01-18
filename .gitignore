@@ -1,6 +1,7 @@
 _*.so
 bin/
 build
+!*build/__init__.py
 
 # All hidden files except for gitignore
 .*

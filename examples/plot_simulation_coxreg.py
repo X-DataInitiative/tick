@@ -8,7 +8,7 @@ Generates Cox Regression realization given a weight vector
 
 import matplotlib.pyplot as plt
 import numpy as np
-from tick.simulation import SimuCoxReg
+from tick.survival import SimuCoxReg
 
 n_samples = 150
 weights = np.array([0.3, 1.2])

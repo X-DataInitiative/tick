@@ -43,7 +43,7 @@ popd 2>&1 > /dev/null
 source $ROOT/sh/configure_env.sh
 
 pushd $ROOT/lib 2>&1 > /dev/null
-  [ "$arraylength" == "0" ] && FILES=($(find src/cpp-test -name "*gtest.cpp"))
+  [ "$arraylength" == "0" ] && FILES=($(find cpp-test -name "*gtest.cpp"))
 
   [ ! -z "$CXXFLAGS" ] && CARGS="$CXXFLAGS $CARGS"
   [ ! -z "$LDFLAGS" ] && LDARGS="${LDARGS} ${LDFLAGS}"

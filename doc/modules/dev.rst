@@ -1,6 +1,13 @@
 
+.. _dev:
+
 Developer documentation
 =======================
+
+.. todo::
+
+    This page might need some update
+
 
 Main highlights
 ---------------
@@ -296,7 +303,7 @@ Our .cpp implementation looks like:
             out[i] = coeffs[i] / (1 + step * strength);
     }
 
-In tick these files are stored in /src folder
+In tick these files are stored in the lib/cpp and lib/include folders
 
 Link it with Python
 ^^^^^^^^^^^^^^^^^^^
@@ -306,7 +313,7 @@ Create SWIG file
 
 Now that our proximal operator is defined in C++ we need to make it available
 in Python. We do it thanks to `SWIG <http://www.swig.org/Doc3.0/>`_.
-Hence we have to create a .i file. In tick we store them in /swig folder.
+Hence we have to create a .i file. In tick we store them in the lib/swig folder.
 
 This .i file looks a lot like our .h file.
 

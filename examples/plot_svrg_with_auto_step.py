@@ -20,10 +20,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 from cycler import cycler
 
-from tick.simulation import SimuLogReg, weights_sparse_gauss
-from tick.optim.solver import SVRG
-from tick.optim.model import ModelLogReg
-from tick.optim.prox import ProxElasticNet
+from tick.simulation import weights_sparse_gauss
+from tick.solver import SVRG
+from tick.linear_model import SimuLogReg, ModelLogReg
+from tick.prox import ProxElasticNet
 from tick.plot import plot_history
 
 n_samples, n_features, = 5000, 50
