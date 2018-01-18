@@ -73,7 +73,7 @@ class DLL_PUBLIC ModelHawkesFixedKernLogLik : public ModelHawkesSingle {
    * \param coeffs : Point in which gradient is computed
    * \param out : Array in which the value of the gradient is stored
    */
-  void grad(const ArrayDouble &coeffs, ArrayDouble &out) override;
+  virtual void grad(const ArrayDouble &coeffs, ArrayDouble &out) override;
 
   /**
    * @brief Compute gradient corresponding to sample i (between 0 and rand_max)
@@ -125,7 +125,7 @@ class DLL_PUBLIC ModelHawkesFixedKernLogLik : public ModelHawkesSingle {
    * \note For two different values of i, this function will modify different coordinates of
    * out. Hence, it is thread safe.
    */
-  double loss_dim_i(const ulong i, const ArrayDouble &coeffs);
+  virtual double loss_dim_i(const ulong i, const ArrayDouble &coeffs);
 
   /**
    * @brief Compute loss corresponding to timestamp k of component i
@@ -144,7 +144,7 @@ class DLL_PUBLIC ModelHawkesFixedKernLogLik : public ModelHawkesSingle {
    * \note For two different values of i, this function will modify different coordinates of
    * out. Hence, it is thread safe.
    */
-  void grad_dim_i(const ulong i, const ArrayDouble &coeffs, ArrayDouble &out);
+  virtual void grad_dim_i(const ulong i, const ArrayDouble &coeffs, ArrayDouble &out);
 
   /**
    * @brief Compute gradient corresponding to timestamp k of component i

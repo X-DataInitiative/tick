@@ -5,7 +5,7 @@
 
 #include "base.h"
 
-#include "base/hawkes_fixed_sumexpkern_loglik_custom.h"
+#include "base/hawkes_fixed_kern_loglik.h"
 
 /**
  * \class ModelHawkesCustom
@@ -13,7 +13,37 @@
  * exponential kernels with fixed exponent (i.e., \f$ \alpha \beta e^{-\beta t} \f$, with fixed
  * decay)
  */
-class DLL_PUBLIC ModelHawkesSumExpCustom : public ModelHawkesFixedSumExpKernCustom {
+class DLL_PUBLIC ModelHawkesSumExpCustom : public ModelHawkesFixedKernLogLik {
+public:
+    //! @brief Value of decay for this model
+    ArrayDouble decays;
+protected:
+    // Some arrays used for intermediate computings. They are initialized in init()
+
+    //! Peng Wu, An array, containing timestamps of all type of events, sorted
+    ArrayDouble global_timestamps;
+
+    //! Peng Wu, An array, indicating how many n (num of orders) is there AFTER GLOBAL timestamp i
+    ArrayLong global_n;
+
+    //! Peng Wu, An array, indicating the type of event of GLOBAL timestamp i
+    ArrayULong type_n;
+
+    //! Peng wu, length of the previous two arrays
+    ulong Total_events;
+
+    //! @brief auxiliary variable H1 described in the document
+    ArrayDoubleList1D H1;
+
+    //! @brief auxiliary variable H2 described in the document
+    ArrayDoubleList1D H2;
+
+    //! @brief auxiliary variable H3 described in the document
+    // H3 experimental here
+    ArrayDoubleList1D H3;
+
+    //! @brief the max value of n kept for all f_i(n)
+    ulong MaxN_of_f;
 
 public:
     /**
@@ -46,7 +76,7 @@ private:
      * @brief Return the start of f_i(n) in a coeffs vector
      * @param i : selected dimension
      */
-    ulong get_f_i_first_index(const ulong i) const override {
+    ulong get_f_i_first_index(const ulong i) const {
      return n_nodes + n_nodes * n_nodes * decays.size() + i * MaxN_of_f;
     }
 
@@ -54,7 +84,7 @@ private:
      * @brief Return the end of f_i(n) in a coeffs vector
      * @param i : selected dimension
      */
-    ulong get_f_i_last_index(const ulong i) const override {
+    ulong get_f_i_last_index(const ulong i) const {
      return n_nodes + n_nodes * n_nodes * decays.size() + (i + 1) * MaxN_of_f;
     }
 
@@ -80,6 +110,14 @@ public:
      this->decays = decays;
      weights_computed = false;
     }
+
+    //!override the loss_dim_i and grad_dim_i from src/hawkes_fixed_kern_loglik.h
+
+    double loss_dim_i(const ulong i, const ArrayDouble &coeffs) override;
+
+    void grad_dim_i(const ulong i, const ArrayDouble &coeffs, ArrayDouble &out) override;
+
+    void grad(const ArrayDouble &coeffs, ArrayDouble &out) override;
 
 //    friend ModelHawkesCustomList;
 };

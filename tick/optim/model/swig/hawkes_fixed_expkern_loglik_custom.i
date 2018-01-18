@@ -30,9 +30,6 @@ public:
     double loss(const ArrayDouble &coeffs);
 
     void grad(const ArrayDouble &coeffs, ArrayDouble &out);
-//double loss_and_grad(const ArrayDouble &coeffs, ArrayDouble &out_grad);  
-//double hessian_norm(const ArrayDouble &coeffs, const ArrayDouble &vector);
-//void hessian(const ArrayDouble &coeffs, ArrayDouble &out);
 
     double get_decay() const;
 
