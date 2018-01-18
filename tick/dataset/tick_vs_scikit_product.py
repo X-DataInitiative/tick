@@ -100,7 +100,8 @@ def create_learner(lib, solver, C, max_iter, penalty, train_size):
             C=C, penalty=penalty, solver=solver, max_iter=max_iter,
             fit_intercept=False,
             tol=TOL, random_state=10392,
-            record_every=10000, print_every=10000, verbose=False)
+            record_every=1000000, print_every=1000000, verbose=False)
+        # learner._solver_obj.epoch_size = int(train_size * max_iter)
 
     return learner
 
@@ -215,7 +216,7 @@ def train_dataset(dataset, runs):
         add_nest(agg_results, auc_value, *(path + ['auc']))
 
     result_file_name_base = 'results/{}-{}'.format(
-        dataset_file_name, time.strftime('%H:%M:%S'))
+        dataset_file_name, time.strftime('%m-%d_%H:%M:%S'))
     write_to_file('{}.txt'.format(result_file_name_base),
                   pprint.pformat(agg_results))
     with open('{}.pkl'.format(result_file_name_base), 'wb') as f:
@@ -247,11 +248,12 @@ def plot_agg_results(dataset):
     libs = list(
         agg_results[penalties[0]][C_formulas[0]].keys())
     libs.sort()
+    libs.reverse()
 
     n_rows = len(penalties)
     n_cols = len(C_formulas)
 
-    fig, axes = plt.subplots(n_rows, n_rows)
+    fig, axes = plt.subplots(n_rows, n_rows, figsize=(14, 8))
     if n_rows == 1:
         axes = [axes]
     if n_cols == 1:
@@ -294,7 +296,7 @@ def plot_agg_results(dataset):
             diff_objectives = objectives - min_objectives[penalty][C_formula]
             diff_objectives += min(diff_objectives[diff_objectives != 0]) / 2
 
-            ax.plot(times, diff_objectives, label=label)
+            ax.plot(times, diff_objectives, label=label, marker='x')
             ax.set_yscale('log')
 
         ax.legend()

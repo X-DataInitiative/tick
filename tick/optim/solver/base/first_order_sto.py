@@ -148,7 +148,16 @@ class SolverFirstOrderSto(SolverFirstOrder, SolverSto):
             val = 0.
         if self._solver is not None:
             self._solver.set_step(val)
-
+    
+    def record_iter(self, n_iter):
+        if self.max_iter < self.print_every and self.max_iter < self.record_every:
+            return False
+        elif n_iter % self.print_every == 0 or n_iter % self.record_every == 0:
+            return True
+        elif n_iter == self.max_iter:
+            return True
+        return False
+    
     def _solve(self, x0: np.array = None, step: float = None):
         """
         Launch the solver
@@ -185,23 +194,29 @@ class SolverFirstOrderSto(SolverFirstOrder, SolverSto):
         # At each iteration we call self._solver.solve that does a full
         # epoch
         for n_iter in range(self.max_iter + 1):
-            prev_minimizer[:] = minimizer
-            prev_obj = obj
+            if self.record_iter(n_iter):
+                prev_minimizer[:] = minimizer
+                prev_obj = obj
             # Launch one epoch using the wrapped C++ solver
             self._solver.solve()
-            self._solver.get_minimizer(minimizer)
-            # The step might be modified by the C++ solver
-            # step = self._solver.get_step()
-            obj = self.objective(minimizer)
-            rel_delta = relative_distance(minimizer, prev_minimizer)
-            rel_obj = abs(obj - prev_obj) / abs(prev_obj)
-            converged = rel_obj < self.tol
-            # If converged, we stop the loop and record the last step
-            # in history
-            self._handle_history(n_iter, force=converged, obj=obj,
-                                 x=minimizer.copy(), rel_delta=rel_delta,
-                                 rel_obj=rel_obj)
-            if converged:
-                break
+            
+            if self.record_iter(n_iter):
+                print('RECORD ITER', n_iter)
+                self._solver.get_minimizer(minimizer)
+                # The step might be modified by the C++ solver
+                # step = self._solver.get_step()
+                obj = self.objective(minimizer)
+                rel_delta = relative_distance(minimizer, prev_minimizer)
+                rel_obj = abs(obj - prev_obj) / abs(prev_obj)
+                converged = rel_obj < self.tol
+                # If converged, we stop the loop and record the last step
+                # in history
+                self._handle_history(n_iter, force=converged, obj=obj,
+                                     x=minimizer.copy(), rel_delta=rel_delta,
+                                     rel_obj=rel_obj)
+                if converged:
+                    break
+        
+        self._solver.get_minimizer(minimizer)
         self._set("solution", minimizer)
         return minimizer
