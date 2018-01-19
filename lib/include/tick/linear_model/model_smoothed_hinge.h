@@ -8,7 +8,7 @@
 
 #include <cereal/types/base_class.hpp>
 
-class ModelSmoothedHinge : public virtual ModelGeneralizedLinear, public ModelLipschitz {
+class DLL_PUBLIC ModelSmoothedHinge : public virtual ModelGeneralizedLinear, public ModelLipschitz {
  private:
   double smoothness;
 

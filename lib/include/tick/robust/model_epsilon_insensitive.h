@@ -7,7 +7,7 @@
 #include "tick/base_model/model_generalized_linear.h"
 #include <cereal/types/base_class.hpp>
 
-class ModelEpsilonInsensitive : public virtual ModelGeneralizedLinear {
+class DLL_PUBLIC ModelEpsilonInsensitive : public virtual ModelGeneralizedLinear {
  private:
   double threshold;
 

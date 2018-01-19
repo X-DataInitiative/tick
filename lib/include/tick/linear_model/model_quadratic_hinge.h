@@ -8,7 +8,7 @@
 
 #include <cereal/types/base_class.hpp>
 
-class ModelQuadraticHinge : public virtual ModelGeneralizedLinear, public ModelLipschitz {
+class DLL_PUBLIC ModelQuadraticHinge : public virtual ModelGeneralizedLinear, public ModelLipschitz {
  public:
   ModelQuadraticHinge(const SBaseArrayDouble2dPtr features,
                       const SArrayDoublePtr labels,
