@@ -9,7 +9,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from tick.base import TimeFunction
-from tick.simulation import SimuHawkesExpKernels
+from tick.hawkes import SimuHawkesExpKernels
 
 from tick.plot import plot_point_process
 

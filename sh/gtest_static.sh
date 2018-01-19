@@ -41,7 +41,7 @@ ROOT=$PWD
 source $ROOT/sh/configure_env.sh
 
 cd $ROOT/lib
-[ "$arraylength" == "0" ] && FILES=($(find src/cpp-test -name "*gtest.cpp"))
+[ "$arraylength" == "0" ] && FILES=($(find cpp-test -name "*gtest.cpp"))
 
 [ ! -z "$CXXFLAGS" ] && CARGS="$CXXFLAGS $CARGS"
 [ ! -z "$LDFLAGS" ] && LDARGS="${LDARGS} ${LDFLAGS}"

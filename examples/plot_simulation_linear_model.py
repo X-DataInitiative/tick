@@ -9,7 +9,7 @@ weight vector.
 
 import matplotlib.pyplot as plt
 import numpy as np
-from tick.simulation import SimuLinReg, SimuLogReg, SimuPoisReg
+from tick.linear_model import SimuLinReg, SimuLogReg, SimuPoisReg
 
 n_samples, n_features = 150, 2
 

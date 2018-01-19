@@ -11,11 +11,13 @@ baselines. In this example the intensity is written the following way
 Kernels are sum of exponentials and varying baseline :math:`\\mu_i(t)`
 piecewise constant.
 """
+
 import matplotlib.pyplot as plt
 
 from tick.plot import plot_hawkes_baseline_and_kernels
-from tick.simulation import SimuHawkesSumExpKernels, SimuHawkesMulti
-from tick.inference import HawkesSumExpKern
+from tick.hawkes import (
+    SimuHawkesSumExpKernels, SimuHawkesMulti, HawkesSumExpKern
+)
 
 period_length = 300
 baselines = [[0.3, 0.5, 0.6, 0.4, 0.2, 0],

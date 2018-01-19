@@ -29,7 +29,7 @@ from sklearn.metrics import roc_curve, auc
 from sklearn.linear_model import LogisticRegression as LogRegScikit
 
 from tick.dataset import fetch_tick_dataset
-from tick.inference import LogisticRegression as LogRegTick
+from tick.linear_model import LogisticRegression as LogRegTick
 
 train_set = fetch_tick_dataset('binary/adult/adult.trn.bz2')
 test_set = fetch_tick_dataset('binary/adult/adult.tst.bz2')

@@ -5,9 +5,9 @@ import unittest
 import numpy as np
 import itertools
 
-from tick.inference import HawkesSumExpKern
+from tick.hawkes import HawkesSumExpKern
 from tick.plot import plot_hawkes_kernels
-from tick.simulation import SimuHawkesSumExpKernels
+from tick.hawkes import SimuHawkesSumExpKernels
 
 
 class Test(unittest.TestCase):

@@ -3,7 +3,7 @@
 import unittest
 import numpy as np
 
-from tick.plot.plot_point_process import _extract_process_interval
+from tick.plot.plot_point_processes import _extract_process_interval
 
 
 class Test(unittest.TestCase):

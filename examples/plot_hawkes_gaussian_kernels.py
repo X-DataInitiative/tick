@@ -20,10 +20,10 @@ Xu, Farajtabar, and Zha (2016, June) in ICML,
 import numpy as np
 
 from tick.plot import plot_hawkes_kernels
-from tick.simulation import (SimuHawkes, SimuHawkesMulti,
-                             HawkesKernelExp, HawkesKernelTimeFunc,
-                             HawkesKernelPowerLaw, HawkesKernel0)
-from tick.inference import HawkesSumGaussians
+from tick.hawkes import (SimuHawkes, SimuHawkesMulti,
+                         HawkesKernelExp, HawkesKernelTimeFunc,
+                         HawkesKernelPowerLaw, HawkesKernel0,
+                         HawkesSumGaussians)
 
 end_time = 1000
 n_nodes = 2
