@@ -8,7 +8,7 @@
 
 #include <cereal/types/base_class.hpp>
 
-class ModelAbsoluteRegression : public virtual ModelGeneralizedLinear {
+class DLL_PUBLIC ModelAbsoluteRegression : public virtual ModelGeneralizedLinear {
  public:
   ModelAbsoluteRegression(const SBaseArrayDouble2dPtr features,
                           const SArrayDoublePtr labels,

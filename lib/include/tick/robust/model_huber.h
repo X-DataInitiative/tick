@@ -9,7 +9,7 @@
 
 #include <cereal/types/base_class.hpp>
 
-class ModelHuber : public virtual ModelGeneralizedLinear, public ModelLipschitz {
+class DLL_PUBLIC ModelHuber : public virtual ModelGeneralizedLinear, public ModelLipschitz {
  private:
   double threshold, threshold_squared_over_two;
 

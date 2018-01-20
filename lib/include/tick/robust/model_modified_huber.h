@@ -8,7 +8,7 @@
 
 #include <cereal/types/base_class.hpp>
 
-class ModelModifiedHuber : public virtual ModelGeneralizedLinear, public ModelLipschitz {
+class DLL_PUBLIC ModelModifiedHuber : public virtual ModelGeneralizedLinear, public ModelLipschitz {
  public:
   ModelModifiedHuber(const SBaseArrayDouble2dPtr features,
                      const SArrayDoublePtr labels,

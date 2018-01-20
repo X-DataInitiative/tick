@@ -7,7 +7,7 @@
 
 #include <cereal/types/base_class.hpp>
 
-class ModelHinge : public virtual ModelGeneralizedLinear {
+class DLL_PUBLIC ModelHinge : public virtual ModelGeneralizedLinear {
  public:
   ModelHinge(const SBaseArrayDouble2dPtr features,
              const SArrayDoublePtr labels,
