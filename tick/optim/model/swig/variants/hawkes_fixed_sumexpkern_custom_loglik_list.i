@@ -5,6 +5,8 @@
 #include "variants/hawkes_fixed_sumexpkern_custom_loglik_list.h"
 %}
 
+%shared_ptr(ModelHawkesFixedSumExpKernCustomLogLikList);
+
 
 class ModelHawkesFixedSumExpKernCustomLogLikList : public ModelHawkesFixedKernLogLikList {
     
