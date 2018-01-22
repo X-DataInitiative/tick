@@ -4,7 +4,7 @@
 %shared_ptr(OnlineForestRegressor);
 
 %{
-#include "online_forest_classifier.h"
+#include "tick/online/online_forest_classifier.h"
 %}
 
 
