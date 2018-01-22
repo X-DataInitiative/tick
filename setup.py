@@ -526,6 +526,20 @@ hawkes_inference_extension_info = {
 }
 hawkes_inference_extension = create_extension(**hawkes_inference_extension_info)
 
+
+online_core_info = {
+    "cpp_files": [],
+    "h_files": [],
+    "folders": [
+        "lib/cpp/online"
+    ],
+    "swig_files": ["online_module.i"],
+    "module_dir": "./tick/online/",
+    "extension_name": "online",
+    "include_modules": base_array_modules,
+}
+online_core = create_extension(**online_core_info)
+
 prox_core_info = {
     "cpp_files": [],
     "h_files": [],
