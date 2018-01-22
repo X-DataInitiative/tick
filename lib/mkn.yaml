@@ -156,7 +156,7 @@ profile:
       ./cpp/online
       ./swig/online
     install: ${lib_path}/online/build
-    out: _online{lib_name}
+    out: _online${lib_name}
 
   - name: random
     parent: arg
