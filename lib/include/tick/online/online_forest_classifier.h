@@ -4,10 +4,11 @@
 
 // License: BSD 3 clause
 
-#include "base.h"
 #include <cmath>
 #include <iomanip>
-#include "../../random/src/rand.h"
+#include "tick/base/base.h"
+#include "tick/random/rand.h"
+
 
 // TODO: change the Dirichlet parameter
 // TODO: reserve nodes in advance
@@ -199,7 +200,7 @@ class TreeClassifier {
     return nodes[index];
   }
 
-  inline ArrayDouble& feature_importances() {
+  inline ArrayDouble &feature_importances() {
     return feature_importances_;
   }
 };

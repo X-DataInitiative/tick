@@ -4,9 +4,9 @@
 
 // License: BSD 3 clause
 
-#include "base.h"
+#include "tick/base/base.h"
+#include "tick/random/rand.h"
 #include <iomanip>
-#include "../../random/src/rand.h"
 
 
 enum class CriterionRegressor {

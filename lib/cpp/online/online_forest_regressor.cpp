@@ -1,7 +1,7 @@
 
 // License: BSD 3 clause
 
-#include "online_forest_regressor.h"
+#include "tick/online/online_forest_regressor.h"
 
 /*********************************************************************************
  * NodeRegressor methods
