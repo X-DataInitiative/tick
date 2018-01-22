@@ -64,6 +64,13 @@ def load_dataset(dataset,  retrieve=True):
 
         X, y = fetch_tick_dataset('binary/adult/adult.trn.bz2')
 
+    elif dataset == 'kdd10':
+        dataset_file_name = 'kdd10'
+        if not retrieve:
+            return dataset_file_name
+
+        X, y = fetch_tick_dataset('binary/kdd2010/kdd2010.trn.bz2')
+
     else:
         raise ValueError('Unknown dataset {}'.format(dataset))
 
