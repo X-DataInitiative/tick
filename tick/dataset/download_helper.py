@@ -68,7 +68,8 @@ def download_tick_dataset(dataset_path, data_home=None, verbose=True):
         "binary/adult/adult.trn.bz2" for adult train dataset
 
     data_home : `str`, optional, default=None
-        Specify a download and cache folder for the datasets. If None,
+        Specify a download and cache folder for the datasets. If None
+        and not configured with TICK_DATASETS environement variable
         all tick datasets are stored in '~/tick_datasets' subfolders.
 
     verbose : `bool`, default=True
@@ -84,7 +85,8 @@ def download_tick_dataset(dataset_path, data_home=None, verbose=True):
                      verbose=verbose)
 
 
-def fetch_tick_dataset(dataset_path, data_home=None, verbose=True):
+def fetch_tick_dataset(dataset_path, data_home=None, n_features=None,
+                       verbose=True):
     """Fetch dataset from tick_datasets github repository.
      
     Uses cache if this dataset has already been downloaded.
@@ -96,8 +98,16 @@ def fetch_tick_dataset(dataset_path, data_home=None, verbose=True):
         "binary/adult/adult.trn.bz2" for adult train dataset
 
     data_home : `str`, optional, default=None
-        Specify a download and cache folder for the datasets. If None,
+        Specify a download and cache folder for the datasets. If None
+        and not configured with TICK_DATASETS environement variable
         all tick datasets are stored in '~/tick_datasets' subfolders.
+
+    n_features : `int`, optional, default=None
+        The number of features to use. If None, it will be inferred. This
+        argument is useful to load several files that are subsets of a
+        bigger sliced dataset: each subset might not have examples of
+        every feature, hence the inferred shape might vary from one
+        slice to another.
 
     verbose : `bool`, default=True
         If True, download progress bar will be printed
@@ -113,7 +123,8 @@ def fetch_tick_dataset(dataset_path, data_home=None, verbose=True):
     dataset = None
     if os.path.exists(cache_path):
         try:
-            dataset = load_dataset(dataset_path, data_home=data_home)
+            dataset = load_dataset(dataset_path, data_home=data_home,
+                                   n_features=n_features)
         except Exception as e:
             print(80 * '_')
             print('Cache loading failed')
@@ -123,12 +134,13 @@ def fetch_tick_dataset(dataset_path, data_home=None, verbose=True):
     if dataset is None:
         download_tick_dataset(dataset_path, data_home=data_home,
                               verbose=verbose)
-        dataset = load_dataset(dataset_path, data_home=data_home)
+        dataset = load_dataset(dataset_path, data_home=data_home,
+                               n_features=n_features)
 
     return dataset
 
 
-def load_dataset(dataset_path, data_home=None):
+def load_dataset(dataset_path, data_home=None, n_features=None):
     """Load dataset from given path
 
     Parameters
@@ -137,8 +149,16 @@ def load_dataset(dataset_path, data_home=None):
         Dataset relative path
 
     data_home : `str`, optional, default=None
-        Specify a download and cache folder for the datasets. If None,
+        Specify a download and cache folder for the datasets. If None
+        and not configured with TICK_DATASETS environement variable
         all tick datasets are stored in '~/tick_datasets' subfolders.
+
+    n_features : `int`, optional, default=None
+        The number of features to use. If None, it will be inferred. This
+        argument is useful to load several files that are subsets of a
+        bigger sliced dataset: each subset might not have examples of
+        every feature, hence the inferred shape might vary from one
+        slice to another.
 
     Returns
     -------
@@ -158,7 +178,7 @@ def load_dataset(dataset_path, data_home=None):
         else:
             dataset = dataset.items()
     else:
-        dataset = load_svmlight_file(cache_path)
+        dataset = load_svmlight_file(cache_path, n_features=n_features)
 
     return dataset
 
