@@ -18,6 +18,8 @@ class DLL_PUBLIC ModelHawkesFixedSumExpKernCustomLogLikList : public ModelHawkes
 
   ulong MaxN_of_f;
 
+    SArrayDoublePtrList1D global_n_list;
+
 public:
   /**
    * @brief Constructor
@@ -61,7 +63,9 @@ public:
       new ModelHawkesSumExpCustom(decays, MaxN_of_f, n_threads));
   }
 
-  ulong get_n_coeffs() const override;
+    void set_data(const SArrayDoublePtrList2D &timestamps_list, const SArrayDoublePtrList1D &global_n_list, const VArrayDoublePtr end_times);
+
+    ulong get_n_coeffs() const override;
 };
 
 #endif  // TICK_OPTIM_MODEL_SRC_VARIANTS_HAWKES_FIXED_SUMEXPKERN_CUSTOM_LOGLIK_LIST_H_

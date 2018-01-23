@@ -32,7 +32,7 @@ for i in range(n_nodes):
 simu_model.track_intensity(0.1)
 simu_model.simulate()
 
-timestamps_list.aappend(simu_model.timestamps)
+timestamps_list.append(simu_model.timestamps)
 global_n = np.array(simu_model._pp.get_global_n())
 global_n = np.insert(global_n, 0, 0).astype(int)
 global_n_list.append(global_n)
@@ -58,24 +58,5 @@ global_n_list.append(global_n)
 from tick.optim.model.hawkes_fixed_sumexpkern_loglik_custom_list import ModelHawkesFixedSumExpKernCustomLogLikList
 
 model_list = ModelHawkesFixedSumExpKernCustomLogLikList(betas, MaxN_of_f)
-model_list.fit(timestamps_list, end_times=end_times)
-def fit(self, events, global_n, end_times=None):
+model_list.fit(timestamps_list, global_n_list, end_times=end_times)
 
-
-intensities_list = [
-    hawkes_sumexp_kernel_intensities(
-        baseline, decays, adjacency, timestamps)
-    for timestamps in timestamps_list
-]
-
-integral_approx = sum([hawkes_log_likelihood(intensities,
-                                             timestamps, end_time)
-                       for (intensities, timestamps, end_time) in zip(
-        intensities_list, timestamps_list,
-        model_list.end_times
-    )])
-
-integral_approx /= model_list.n_jumps
-assertAlmostEqual(integral_approx,
-                       - model_list.loss(coeffs),
-                       places=2)

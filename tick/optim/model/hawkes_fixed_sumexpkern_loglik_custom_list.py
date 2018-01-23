@@ -9,6 +9,11 @@ from .build.model import ModelHawkesFixedSumExpKernCustomLogLikList as \
 
 class ModelHawkesFixedSumExpKernCustomLogLikList(ModelFirstOrder):
 
+    _attrinfos = {
+        "_end_times": {
+        },
+    }
+
     def __init__(self, decays: np.ndarray, MaxN_of_f : int, n_threads: int = 1):
         ModelFirstOrder.__init__(self)
         self._model = _ModelHawkesFixedSumExpKernCustomLogLikList(decays, MaxN_of_f, n_threads)
@@ -35,3 +40,27 @@ class ModelHawkesFixedSumExpKernCustomLogLikList(ModelFirstOrder):
         """
         self._end_times = end_times
         return ModelFirstOrder.fit(self, events, global_n)
+
+    def _loss(self, coeffs):
+        return self._model.loss(coeffs)
+
+    def _grad(self, coeffs: np.ndarray, out: np.ndarray) -> np.ndarray:
+        self._model.grad(coeffs, out)
+        return out
+
+    def _get_n_coeffs(self):
+        return self._model.get_n_coeffs()
+
+    def _set_data(self, events, global_ns):
+        # self._set("data", events)
+        if not isinstance(events[0][0], np.ndarray):
+            events = [events]
+
+        end_times = self._end_times
+        if end_times is None:
+            end_times = np.array([max(map(max, e)) for e in events])
+
+        if isinstance(end_times, (int, float)):
+            end_times = np.array([end_times], dtype=float)
+
+        self._model.set_data(events, global_ns, self._end_times)
