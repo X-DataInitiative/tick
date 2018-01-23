@@ -49,7 +49,8 @@ struct vector_operations_unoptimized {
 }  // namespace detail
 }  // namespace tick
 
-#if !defined(TICK_CBLAS_AVAILABLE)
+// Detect if a blas distribution is available
+#if !defined(TICK_USE_BLAS) && !defined(TICK_USE_MKL)
 
 namespace tick {
 
@@ -60,7 +61,13 @@ using vector_operations = detail::vector_operations_unoptimized<T>;
 
 #else  // if defined(TICK_CBLAS_AVAILABLE)
 
-#if defined(__APPLE__)
+
+// Find available blas distribution
+#if defined(TICK_USE_MKL)
+
+#include <mkl.h>
+
+#elif defined(__APPLE__)
 
 #include <Accelerate/Accelerate.h>
 
@@ -71,9 +78,10 @@ using vector_operations = detail::vector_operations_unoptimized<T>;
 
 extern "C" {
 #include <cblas.h>
+
 }
 
-#endif  // defined(__APPLE__)
+#endif
 
 namespace tick {
 
