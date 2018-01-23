@@ -183,6 +183,7 @@ PROFILES=(
     base_model
     random
     linear_model
+    online
     prox
     solver
     hawkes/simulation
@@ -209,6 +210,7 @@ function hash_index() {
         'robust')             echo 11;;
         'survival')           echo 12;;
         'array_test')         echo 13;;
+        'online')             echo 14;;
     esac
 }
 LIBRARIES=(
@@ -218,6 +220,7 @@ LIBRARIES=(
     "tick/random/build/_crandom$LIB_POSTFIX"
     "tick/linear_model/build/_linear_model$LIB_POSTFIX"
     "tick/prox/build/_prox$LIB_POSTFIX"
+    "tick/online/build/_online$LIB_POSTFIX"
     "tick/solver/build/_solver$LIB_POSTFIX"
     "tick/hawkes/simulation/build/_hawkes_simulation$LIB_POSTFIX"
     "tick/hawkes/model/build/_hawkes_model$LIB_POSTFIX"

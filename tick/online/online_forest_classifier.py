@@ -8,7 +8,6 @@ from tick.base import Base
 from tick.base import actual_kwargs
 from tick.preprocessing.utils import safe_array
 
-
 from .build.online import OnlineForestClassifier as _OnlineForestClassifier
 from .build.online import CriterionClassifier_log as log
 
