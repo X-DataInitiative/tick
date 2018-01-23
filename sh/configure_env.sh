@@ -183,7 +183,6 @@ PROFILES=(
     base_model
     random
     linear_model
-    online
     prox
     solver
     hawkes/simulation
@@ -193,6 +192,7 @@ PROFILES=(
     robust
     survival
     array_test
+    online
 )
 function hash_index() {
     case $1 in
@@ -220,7 +220,6 @@ LIBRARIES=(
     "tick/random/build/_crandom$LIB_POSTFIX"
     "tick/linear_model/build/_linear_model$LIB_POSTFIX"
     "tick/prox/build/_prox$LIB_POSTFIX"
-    "tick/online/build/_online$LIB_POSTFIX"
     "tick/solver/build/_solver$LIB_POSTFIX"
     "tick/hawkes/simulation/build/_hawkes_simulation$LIB_POSTFIX"
     "tick/hawkes/model/build/_hawkes_model$LIB_POSTFIX"
@@ -229,6 +228,7 @@ LIBRARIES=(
     "tick/robust/build/_robust$LIB_POSTFIX"
     "tick/survival/build/_survival$LIB_POSTFIX"
     "tick/array_test/build/array_test${LIB_POSTFIX}"
+    "tick/online/build/_online$LIB_POSTFIX"
 )
 
 LIB_LD_PER_LIB=()

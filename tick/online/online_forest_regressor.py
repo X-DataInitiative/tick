@@ -5,11 +5,11 @@ from abc import ABC
 from tick.base import Base
 from tick.base import actual_kwargs
 
-from .build.inference import OnlineForestRegressor as _OnlineForestRegressor
+from .build.online import OnlineForestRegressor as _OnlineForestRegressor
 from tick.preprocessing.utils import safe_array
 
-from .build.inference import CriterionRegressor_unif as unif
-from .build.inference import CriterionRegressor_mse as mse
+from .build.online import CriterionRegressor_unif as unif
+from .build.online import CriterionRegressor_mse as mse
 
 
 class OnlineForestRegressor(ABC, Base):
