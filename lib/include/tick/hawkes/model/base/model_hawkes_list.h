@@ -20,7 +20,7 @@ class DLL_PUBLIC ModelHawkesList : public ModelHawkes {
   SArrayDoublePtrList2D timestamps_list;
 
   //! @brief Ending time of the realization
-  VArrayDoublePtr end_times;
+  VArrayDoublePtr end_times = nullptr;
 
   //! @brief Number of jumps of the process per realization (size=n_realizations)
   VArrayULongPtr n_jumps_per_realization;
@@ -33,7 +33,8 @@ class DLL_PUBLIC ModelHawkesList : public ModelHawkes {
   ModelHawkesList(const int max_n_threads = 1,
                   const unsigned int optimization_level = 0);
 
-  void set_data(const SArrayDoublePtrList2D &timestamps_list, const VArrayDoublePtr end_times);
+  virtual void set_data(const SArrayDoublePtrList2D &timestamps_list,
+                        const VArrayDoublePtr end_times);
 
   //! @brief returns the number of jumps per realization
   SArrayULongPtr get_n_jumps_per_realization() const {
@@ -45,6 +46,10 @@ class DLL_PUBLIC ModelHawkesList : public ModelHawkes {
   }
 
   virtual unsigned int get_n_threads() const;
+
+  SArrayDoublePtrList2D get_timestamps_list() const {
+    return timestamps_list;
+  }
 
  public:
   template<class Archive>

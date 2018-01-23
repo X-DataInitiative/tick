@@ -50,6 +50,7 @@ Learners
    HawkesBasisKernels
    HawkesSumGaussians
    HawkesConditionalLaw
+   HawkesCumulantMatching
 
 Simulation
 ----------

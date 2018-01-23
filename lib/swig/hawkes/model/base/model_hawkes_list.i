@@ -18,5 +18,7 @@ class ModelHawkesList : public ModelHawkes {
   ulong get_n_threads() const;
   SArrayULongPtr get_n_jumps_per_realization() const;
 
+  SArrayDoublePtrList2D get_timestamps_list() const;
+
   void set_n_threads(const int max_n_threads);
 };

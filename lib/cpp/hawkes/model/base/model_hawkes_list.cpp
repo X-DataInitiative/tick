@@ -6,7 +6,7 @@
 ModelHawkesList::ModelHawkesList(
   const int max_n_threads,
   const unsigned int optimization_level)
-  : ModelHawkes(max_n_threads, optimization_level), n_realizations(0) {
+  : ModelHawkes(max_n_threads, optimization_level), n_realizations(0), timestamps_list(0) {
   n_jumps_per_realization = VArrayULong::new_ptr(n_realizations);
   end_times = VArrayDouble::new_ptr(n_realizations);
 }
