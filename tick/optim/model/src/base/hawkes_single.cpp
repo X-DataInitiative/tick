@@ -24,13 +24,13 @@ void ModelHawkesSingle::set_data(const SArrayDoublePtrList1D &timestamps,
   }
   n_total_jumps = n_jumps_per_node->sum();
 
-  for (ulong i = 0; i < n_nodes; ++i) {
-    double last_time_i = (*timestamps[i])[timestamps[i]->size() - 1];
-    if (end_time < last_time_i) {
-      TICK_ERROR("Provided end_time (" << end_time << ") is smaller than last time of component "
-                                       << i << " (" << last_time_i << ")")
-    }
-  }
+  for (ulong i = 0; i < n_nodes - 1; ++i){
+          double last_time_i = (*timestamps[i])[timestamps[i]->size() - 1];
+          if (end_time < last_time_i) {
+              TICK_ERROR("Provided end_time (" << end_time << ") is smaller than last time of component "
+                                               << i << " (" << last_time_i << ")")
+          }
+      }
 
   this->end_time = end_time;
   this->timestamps = timestamps;

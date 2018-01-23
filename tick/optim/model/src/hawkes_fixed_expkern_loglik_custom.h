@@ -104,7 +104,9 @@ private:
     }
 
 public:
-    ulong get_n_coeffs() const override;
+    ulong get_n_coeffs() const override{
+        return n_nodes + n_nodes * n_nodes + n_nodes * (MaxN_of_f - 1);
+    }
 
     //! @brief Returns decay that was set
     double get_decay() const {

@@ -43,6 +43,7 @@ from tick.optim.solver import GD, AGD, SGD, SVRG, SDCA
 from tick.optim.prox import ProxElasticNet, ProxL2Sq, ProxZero, ProxL1
 
 timestamps = simu_model.timestamps
+timestamps.append(np.array([]))
 global_n = np.array(simu_model._pp.get_global_n())
 global_n = np.insert(global_n, 0, 0).astype(int)
 
@@ -57,20 +58,11 @@ solver = AGD(step=1e-2, linesearch=False, max_iter=1000, print_every=50)
 solver.set_model(model).set_prox(prox)
 
 x_real = np.array(
-    [0.2, 0.3, 0.4,  0.3, 0.1, 0.4, 0.2, 0.3, 0.5, 0.3, 0.4, 0.3,   1., 0.7, 0.8, 0.6, 0.5, 1., 0.6, 0.8, 0.8, 0.6, 1., 0.6, 0.9, 0.2, 0.7])
+    [0.2, 0.3, 0.4,  0.3, 0.1, 0.4, 0.2, 0.3, 0.5, 0.3, 0.4, 0.3,   0.7, 0.8, 0.6, 0.5, 0.6, 0.8, 0.8, 0.6, 0.6, 0.9, 0.2, 0.7])
 x0 = np.array(
-    [0.6, 0.6, 0.8,  0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.6,   1., 0.5, 0.5, 0.9, 0.9, 1., 0.6, 0.7, 0.8, 0.5, 1., 0.7, 0.7, 0.5, 0.5])
+    [0.6, 0.6, 0.8,  0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.6,   0.5, 0.5, 0.9, 0.9, 0.6, 0.7, 0.8, 0.5, 0.7, 0.7, 0.5, 0.5])
 solver.solve(x0)
 
-print('-' * 60)
-# normalisation
-solution_adj = solver.solution
-for i in range(dim):
-    solution_adj[i] *= solver.solution[dim + dim * dim + MaxN_of_f * i]
-    solution_adj[(dim + dim * i): (dim + dim * (i + 1))] *= solver.solution[dim + dim * dim + MaxN_of_f * i]
-    solution_adj[(dim + dim * dim + MaxN_of_f * i): (dim + dim * dim + MaxN_of_f * (i + 1))] /= solver.solution[
-        dim + dim * dim + MaxN_of_f * i]
-print(solution_adj)
-
 print(model.loss(x_real))
-print(model.loss(solution_adj))
+print(model.loss(solver.solution))
+print(solver.solution)
