@@ -89,7 +89,9 @@ private:
     }
 
 public:
-    ulong get_n_coeffs() const override;
+    ulong get_n_coeffs() const override{
+        return n_nodes + n_nodes * n_nodes * decays.size() + n_nodes * (MaxN_of_f - 1);
+    }
 
     ulong get_n_decays() const {
         return decays.size();
