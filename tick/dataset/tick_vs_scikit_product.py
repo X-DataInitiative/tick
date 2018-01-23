@@ -14,6 +14,7 @@ from sklearn.linear_model import LogisticRegression as LogisticRegressionSKlearn
 from sklearn.metrics import roc_curve, auc
 
 from tick.dataset import fetch_tick_dataset
+from tick.dataset.timeout_pool import apply_async_with_timeout
 from tick.dataset.url_dataset import fetch_url_dataset
 from tick.inference import LogisticRegression as LogisticRegressionTick
 
@@ -70,6 +71,20 @@ def load_dataset(dataset,  retrieve=True):
             return dataset_file_name
 
         X, y = fetch_tick_dataset('binary/kdd2010/kdd2010.trn.bz2')
+
+    elif dataset == 'kdd12':
+        dataset_file_name = 'kdd12'
+        if not retrieve:
+            return dataset_file_name
+
+        X, y = fetch_tick_dataset('binary/kdd2012/kdd2012.trn.bz2')
+
+    elif dataset == 'criteo':
+        dataset_file_name = 'criteo'
+        if not retrieve:
+            return dataset_file_name
+
+        X, y = fetch_tick_dataset('binary/criteo/criteo.trn.bz2')
 
     else:
         raise ValueError('Unknown dataset {}'.format(dataset))
@@ -215,7 +230,11 @@ def train_dataset(dataset, runs):
         args += [arg]
 
     with Pool(N_CORES) as p:
-        results = p.starmap(run_and_evaluate, args)
+        # results = p.starmap(run_and_evaluate, args)
+        timeout = dataset_timeout.get(dataset, DEFAULT_TIMEOUT)
+        results = apply_async_with_timeout(p, run_and_evaluate, args,
+                                           timeout=timeout)
+
     # results = []
     # for arg in args:
     #     results += [run_and_evaluate(*arg)]
@@ -225,7 +244,10 @@ def train_dataset(dataset, runs):
         dataset_file_name, X_train, y_train, X_test, y_test, \
         lib, solver, C_formula, max_iter, penalty = arg
 
-        elapsed_time, train_objective, auc_value = result
+        if result is not None:
+            elapsed_time, train_objective, auc_value = result
+        else:
+            elapsed_time, train_objective, auc_value = np.nan, np.nan, np.nan
 
         path = [penalty, C_formula, lib, solver, max_iter]
 
@@ -253,6 +275,7 @@ def plot_agg_results(dataset):
     last_result_file = dataset_files[-1]
 
     dict_path = 'results/{}'.format(last_result_file)
+    last_time = '-'.join(last_result_file.split('-')[1:]).split('.')[0]
 
     with open(dict_path, 'rb') as f:
         agg_results = pickle.load(f)
@@ -322,7 +345,7 @@ def plot_agg_results(dataset):
 
     fig.tight_layout()
 
-    fig_file = 'results/comp_{}.pdf'.format(dataset_file_name)
+    fig_file = 'results/comp_{}-{}.pdf'.format(dataset_file_name, last_time)
     print('save figure in ', fig_file, 'from', last_result_file)
     plt.savefig(fig_file)
 
@@ -331,8 +354,19 @@ if __name__ == '__main__':
 
     do_training = True
 
+    DEFAULT_TIMEOUT = 3600
     datasets = ['breast']
-    datasets = ['adult', 'url_1', 'url_10']
+    datasets = ['adult', 'url_1', 'url_10', 'url_100', 'kdd10',
+                'kdd12', 'criteo']
+    dataset_timeout = {
+        'adult': 2,
+        'url_1': 200,
+        'url_10': 600,
+        'url_100': 3600,
+        'kdd10': 3600,
+        'kdd12': 3600,
+        'criteo': 3600,
+    }
 
     C_formulas = ['n', 'sqrt(n)']
     penalties = ['l1', 'l2']
@@ -344,13 +378,13 @@ if __name__ == '__main__':
 
         runs += [('tick', 'saga', C_formula, penalty, max_iter)]
         runs += [('tick', 'svrg', C_formula, penalty, max_iter)]
-        runs += [('tick', 'svrg bb', C_formula, penalty, max_iter)]
+        # runs += [('tick', 'svrg bb', C_formula, penalty, max_iter)]
 
         runs += [('scikit', 'liblinear', C_formula, penalty, max_iter)]
         runs += [('scikit', 'saga', C_formula, penalty, max_iter)]
 
         if penalty == 'l2':
-            runs += [('tick', 'sdca', C_formula, penalty, max_iter)]
+            # runs += [('tick', 'sdca', C_formula, penalty, max_iter)]
             runs += [('scikit', 'newton-cg', C_formula, penalty, max_iter)]
             runs += [('scikit', 'sag', C_formula, penalty, max_iter)]
             runs += [('scikit', 'lbfgs', C_formula, penalty, max_iter)]
