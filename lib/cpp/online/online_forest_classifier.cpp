@@ -330,7 +330,8 @@ TreeClassifier::TreeClassifier(OnlineForestClassifier &forest) : forest(forest) 
   // TODO: pre-allocate the vector to make things faster ?
   add_node(0);
   feature_importances_ = ArrayDouble(forest.n_features());
-  feature_importances_.fill(1.);
+  // feature_importances_.fill(1.);
+  feature_importances_.fill(10.);
 }
 
 void TreeClassifier::extend_range(uint32_t node_index, const ArrayDouble &x_t, const double y_t) {
@@ -344,21 +345,33 @@ void TreeClassifier::extend_range(uint32_t node_index, const ArrayDouble &x_t, c
     current_node.set_features_max(x_t);
   } else {
     // std::cout << "Computing extension" << std::endl;
-    ArrayDouble extension(n_features());
-    double extensions_sum = 0;
+    // ArrayDouble extension(n_features());
+
+    // ArrayDouble probabilities(n_features());
+
+    // A vector that will hold the intensities of each feature. The intensity of a feature is measured by the product
+    // between the square root of the feature importance and the range extension at this node...
+    ArrayDouble intensities(n_features());
+
+    double intensities_sum = 0;
     for (uint32_t j = 0; j < n_features(); ++j) {
       double x_tj = x_t[j];
       double feature_min_j = current_node.features_min(j);
       double feature_max_j = current_node.features_max(j);
+      // double intensity = std::sqrt(feature_importances_[j] / (iteration + 1));
+      double intensity = feature_importances_[j] / (iteration + 1);
       if (x_tj < feature_min_j) {
-        extension[j] = feature_min_j - x_tj;
-        extensions_sum += feature_min_j - x_tj;
+        // extension[j] = feature_min_j - x_tj;
+        intensities[j] = intensity * (feature_min_j - x_tj);
+        // extensions_sum += feature_min_j - x_tj;
+        intensities_sum += intensities[j];
       } else {
         if (x_tj > feature_max_j) {
-          extension[j] = x_tj - feature_max_j;
-          extensions_sum += x_tj - feature_max_j;
+          // extension[j] = x_tj - feature_max_j;
+          intensities[j] = intensity * (x_tj - feature_max_j);
+          intensities_sum += intensities[j];
         } else {
-          extension[j] = 0;
+          intensities[j] = 0;
         }
       }
     }
@@ -367,11 +380,11 @@ void TreeClassifier::extend_range(uint32_t node_index, const ArrayDouble &x_t, c
 //    std::cout << "... Done computing extension." << std::endl;
 
     // If the sample x_t extends the current range of the node
-    if (extensions_sum > 0) {
+    if (intensities_sum > 0) {
       // std::cout << "Extension non-zero, considering the possibility of a split" << std::endl;
       bool do_split;
       double time = current_node.time();
-      double T = forest.sample_exponential(extensions_sum);
+      double T = forest.sample_exponential(intensities_sum);
       // std::cout << "time: " << std::setprecision(2) << time << ", T: " << std::setprecision(2) << T << std::endl;
       // Let us determine if we need to split the node or not
       if (current_node.is_leaf()) {
@@ -392,19 +405,19 @@ void TreeClassifier::extend_range(uint32_t node_index, const ArrayDouble &x_t, c
       if (do_split) {
         // std::cout << "Starting the splitting of node: " << node_index << std::endl;
         // Sample the splitting feature with a probability proportional to the range extensions
-        ArrayDouble probabilities = extension;
+        ArrayDouble probabilities = intensities;
         probabilities /= probabilities.sum();
-        extension /= extensions_sum;
+        // extension /= intensities_sum;
 
         // ArrayDouble probabilities = ArrayDouble(n_features());
-        for(uint32_t j = 0; j < n_features(); ++j) {
-          double prb_step = static_cast<double>(1) / std::sqrt(iteration + 1);
-          probabilities[j] = (1 - prb_step) + prb_step * extension[j] * feature_importances_[j];
-
-
-          // probabilities[j] = extension[j];
-        }
-        probabilities /= probabilities.sum();
+//        for(uint32_t j = 0; j < n_features(); ++j) {
+//          double prb_step = static_cast<double>(1) / std::sqrt(iteration + 1);
+//          probabilities[j] = (1 - prb_step) + prb_step * extension[j] * feature_importances_[j];
+//
+//
+//          // probabilities[j] = extension[j];
+//        }
+        // probabilities /= probabilities.sum();
 
         // std::cout << "using the probabilities: [" << std::setprecision(2) << probabilities[0] << ", " << std::setprecision(2) << probabilities[1] << "]" << std::endl;
         uint32_t feature = forest.sample_feature(probabilities);
@@ -488,7 +501,9 @@ uint32_t TreeClassifier::go_downwards(const ArrayDouble &x_t, double y_t, bool p
       if(!predict) {
         // Compute the difference with the loss of the child
         loss_t -= node(index_current_node).loss(y_t);
-        feature_importances_[feature] += loss_t;
+        if (loss_t > 0) {
+          feature_importances_[feature] += loss_t;
+        }
       }
     }
   }

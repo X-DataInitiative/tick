@@ -17,15 +17,19 @@ nnz = 5
 w0 = np.zeros(n_features)
 w0[:nnz] = 1
 
+# TODO: Seed
+
 # w0 = weights_sparse_exp(n_features, nnz=nnz)
 
 X, y = SimuLogReg(weights=w0, intercept=None, n_samples=n_samples,
-                  cov_corr=0.1, features_scaling='standard').simulate()
+                  cov_corr=0.1, features_scaling='standard',
+                  seed=123).simulate()
 y = (y + 1) / 2
 
-X_train, X_test, y_train, y_test = train_test_split(X, y)
+X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=123)
 
-rf = RandomForestClassifier(n_estimators=10, criterion="entropy")
+rf = RandomForestClassifier(n_estimators=10, criterion="entropy",
+                            random_state=123)
 of = OnlineForestClassifier(n_classes=n_classes, n_trees=10, seed=123,
                              step=1., use_aggregation=True)
 
