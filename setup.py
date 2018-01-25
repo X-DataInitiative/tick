@@ -542,6 +542,7 @@ model_core_info = {
                   "hawkes_fixed_expkern_loglik_custom.cpp",
 			
 "hawkes_fixed_sumexpkern_loglik_custom.cpp",
+"modelcustombasic.cpp",
 
                   "sccs.cpp"],
     "h_files": ["model.h",
@@ -569,6 +570,7 @@ model_core_info = {
 
 "hawkes_fixed_expkern_loglik_custom.h",
 "hawkes_fixed_sumexpkern_loglik_custom.h",
+"modelcustombasic.h",
 
                 "sccs.h"],
     "folders": ["variants", "base"],
