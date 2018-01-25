@@ -824,15 +824,16 @@ class CleanTick(clean):
 
 
 setup(name="tick",
-      version='0.3.0.0',
+      version='0.4.0.0',
       author="Emmanuel Bacry, "
              "Stephane Gaiffas, "
              "Martin Bompaire, "
              "Søren V. Poulsen, "
              "Maryan Morel, "
-             "Simon Bussy",
+             "Simon Bussy, "
+             "Philip Deegan",
       author_email='martin.bompaire@polytechnique.edu, '
-                   'soren.poulsen@polytechnique.edu',
+                   'philip.deegan@polytechnique.edu',
       url="https://x-datainitiative.github.io/tick/",
       description="Module for statistical learning, with a particular emphasis "
                   "on time-dependent modelling",
