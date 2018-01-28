@@ -505,9 +505,9 @@ random_extension = create_extension(**random_extension_info)
 
 simulation_extension_info = {
     "cpp_files": ["pp.cpp", "poisson.cpp", "inhomogeneous_poisson.cpp",
-                  "hawkes.cpp", "hawkes_custom.cpp"],
+                  "hawkes.cpp", "hawkes_custom.cpp", "hawkes_custom2.cpp"],
     "h_files": ["pp.h", "poisson.h", "inhomogeneous_poisson.h",
-                "hawkes.h", "hawkes_custom.h"],
+                "hawkes.h", "hawkes_custom.h", "hawkes_custom2.h"],
     "folders": ["hawkes_baselines", "hawkes_kernels"],
     "swig_files": ["simulation_module.i"],
     "module_dir": "./tick/simulation/",
@@ -540,10 +540,9 @@ model_core_info = {
                   "model_smoothed_hinge.cpp",
                   "coxreg_partial_lik.cpp",
                   "hawkes_fixed_expkern_loglik_custom.cpp",
-			
-"hawkes_fixed_sumexpkern_loglik_custom.cpp",
-"modelcustombasic.cpp",
-
+		  "hawkes_fixed_sumexpkern_loglik_custom.cpp",
+		  "modelcustombasic.cpp",
+		  "hawkes_fixed_expkern_loglik_custom2.cpp",
                   "sccs.cpp"],
     "h_files": ["model.h",
                 "model_labels_features.h",
@@ -571,6 +570,7 @@ model_core_info = {
 "hawkes_fixed_expkern_loglik_custom.h",
 "hawkes_fixed_sumexpkern_loglik_custom.h",
 "modelcustombasic.h",
+"hawkes_fixed_expkern_loglik_custom2.h",
 
                 "sccs.h"],
     "folders": ["variants", "base"],

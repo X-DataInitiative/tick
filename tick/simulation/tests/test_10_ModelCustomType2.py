@@ -8,22 +8,23 @@ from tick.simulation import SimuHawkes
 
 n_nodes = 3
 dim = n_nodes
-seed = 60056
-MaxN_of_f = 5
-f_i = [np.array([1., 0.7, 0.8, 0.6, 0.5]), np.array([1., 0.6, 0.2, 0.8, 0.9]), np.array([1., 0.6, 0.9, 0.2, 0.7])]
+seed = 3007
+MaxN = 5
+mu_i = [np.array([0.5, 0.7, 0.8, 0.6, 0.5]), np.array([0.5, 0.6, 0.8, 0.8, 0.6]), np.array([0.5, 0.6, 0.9, 0.2, 0.7])]
 
 beta = 3
 end_time = 100000
 
 kernels = np.array([
-            [HawkesKernelExp(0.0, beta), HawkesKernelExp(0.0, beta), HawkesKernelExp(0.0, beta)],
-            [HawkesKernelExp(0.0, beta), HawkesKernelExp(0.0, beta), HawkesKernelExp(0.0, beta)],
-            [HawkesKernelExp(0.0, beta), HawkesKernelExp(0.0, beta), HawkesKernelExp(0.0, beta)]
+            [HawkesKernelExp(0.3, beta), HawkesKernelExp(0.1, beta), HawkesKernelExp(0.4, beta)],
+            [HawkesKernelExp(0.2, beta), HawkesKernelExp(0.3, beta), HawkesKernelExp(0.5, beta)],
+            [HawkesKernelExp(0.3, beta), HawkesKernelExp(0.4, beta), HawkesKernelExp(0.3, beta)]
 ])
 
-simu_model = SimuHawkes(kernels=kernels, end_time=end_time, custom=True, seed=seed, MaxN_of_f = MaxN_of_f, f_i=f_i)
+simu_model = SimuHawkes(kernels=kernels, end_time=end_time, custom=True, seed=seed, MaxN_of_f = MaxN, f_i=mu_i)
 for i in range(n_nodes):
-    simu_model.set_baseline(i, 0.2 + 0.1 * i)
+    # simu_model.set_baseline(i, 0.2 + 0.1 * i)
+    simu_model.set_baseline(i, 0.0)
     for j in range(n_nodes):
         simu_model.set_kernel(i, j, kernels[i, j])
 simu_model.track_intensity(0.1)
@@ -38,7 +39,7 @@ simu_model.simulate()
 
 
 ##################################################################################################################
-from tick.optim.model import ModelCustomBasic
+from tick.optim.model import ModelHawkesCustomType2
 from tick.optim.solver import GD, AGD, SGD, SVRG, SDCA
 from tick.optim.prox import ProxElasticNet, ProxL2Sq, ProxZero, ProxL1
 
@@ -47,7 +48,7 @@ timestamps.append(np.array([]))
 global_n = np.array(simu_model._pp.get_global_n())
 global_n = np.insert(global_n, 0, 0).astype(int)
 
-model = ModelCustomBasic(beta, MaxN_of_f)
+model = ModelHawkesCustomType2(beta, MaxN)
 model.fit(timestamps, global_n, end_time)
 #############################################################################
 prox = ProxL1(0.0, positive=True)
@@ -57,10 +58,12 @@ prox = ProxZero()
 solver = AGD(step=1e-2, linesearch=False, max_iter=1000, print_every=50)
 solver.set_model(model).set_prox(prox)
 
+
+
 x_real = np.array(
-    [0.2, 0.3, 0.4,   0.7, 0.8, 0.6, 0.5,  0.6, 0.2, 0.8, 0.9,  0.6, 0.9, 0.2, 0.7])
+    [0.5, 0.7, 0.8, 0.6, 0.5,    0.5, 0.6, 0.8, 0.8, 0.6,    0.5, 0.6, 0.9, 0.2, 0.7,  0.3, 0.1, 0.4, 0.2, 0.3, 0.5, 0.3, 0.4, 0.3])
 x0 = np.array(
-    [0.6, 0.6, 0.8,   0.5, 0.5, 0.9, 0.9,  0.6, 0.7, 0.8, 0.5,  0.7, 0.7, 0.5, 0.5])
+    [0.5, 0.7, 0.8, 0.6, 0.5,    0.5, 0.6, 0.8, 0.8, 0.6,    0.5, 0.6, 0.9, 0.2, 0.7,  0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.6])
 solver.solve(x0)
 
 print(model.loss(x_real))

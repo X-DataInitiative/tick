@@ -25,6 +25,7 @@ from .hawkes_fixed_sumexpkern_leastsq import ModelHawkesFixedSumExpKernLeastSq
 from .hawkes_fixed_expkern_loglik_custom import ModelHawkesCustom
 from .hawkes_fixed_sumexpkern_loglik_custom import ModelHawkesSumExpCustom
 from .modelcustombasic import ModelCustomBasic
+from .hawkes_fixed_expkern_loglik_custom2 import ModelHawkesCustomType2
 
 from .sccs import ModelSCCS
 
@@ -47,5 +48,6 @@ __all__ = ["ModelLinReg",
            "ModelHawkesCustom",
            "ModelHawkesSumExpCustom",
            "ModelSCCS",
-           "ModelCustomBasic"
+           "ModelCustomBasic",
+           "ModelHawkesCustomType2"
            ]

@@ -32,7 +32,8 @@ add_library(tick_model EXCLUDE_FROM_ALL
         variants/hawkes_fixed_sumexpkern_leastsq_list.h variants/hawkes_fixed_sumexpkern_leastsq_list.cpp
 		variants/hawkes_fixed_sumexpkern_loglik_list.h variants/hawkes_fixed_sumexpkern_loglik_list.cpp
         sccs.cpp sccs.h
-        hawkes_fixed_expkern_loglik_custom.h hawkes_fixed_expkern_loglik_custom.cpp
+		hawkes_fixed_expkern_loglik_custom.h hawkes_fixed_expkern_loglik_custom.cpp
+		hawkes_fixed_expkern_loglik_custom2.h hawkes_fixed_expkern_loglik_custom2.cpp
 		hawkes_fixed_sumexpkern_loglik_custom.h hawkes_fixed_sumexpkern_loglik_custom.cpp
 
 		variants/hawkes_fixed_sumexpkern_custom_loglik_list.h variants/hawkes_fixed_sumexpkern_custom_loglik_list.cpp
