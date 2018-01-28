@@ -55,7 +55,7 @@ model.fit(timestamps, global_n, end_time)
 prox = ProxZero()
 
 # solver = AGD(step=5e-2, linesearch=False, max_iter= 350)
-solver = AGD(step=1e0, linesearch=False, max_iter=500, print_every=50)
+solver = AGD(step=1e0, linesearch=False, print_every=50)
 solver.set_model(model).set_prox(prox)
 
 
