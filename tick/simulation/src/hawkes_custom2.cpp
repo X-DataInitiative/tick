@@ -11,10 +11,8 @@ Hawkes_customType2::Hawkes_customType2(unsigned int n_nodes, int seed, ulong _Ma
     this->mu_ = _mu_;
 
     mu_Max = ArrayDouble(n_nodes);
-
     for (ulong i = 0; i != n_nodes; ++i)
         mu_Max[i] = mu_[i]->max();
-
     last_global_n = 0;
 }
 

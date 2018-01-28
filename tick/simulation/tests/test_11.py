@@ -16,9 +16,9 @@ beta = 3
 end_time = 100000
 
 kernels = np.array([
-            [HawkesKernelExp(0.3, beta), HawkesKernelExp(0.1, beta), HawkesKernelExp(0.4, beta)],
-            [HawkesKernelExp(0.2, beta), HawkesKernelExp(0.3, beta), HawkesKernelExp(0.5, beta)],
-            [HawkesKernelExp(0.3, beta), HawkesKernelExp(0.4, beta), HawkesKernelExp(0.3, beta)]
+            [HawkesKernelExp(0.0, beta), HawkesKernelExp(0.0, beta), HawkesKernelExp(0.0, beta)],
+            [HawkesKernelExp(0.0, beta), HawkesKernelExp(0.0, beta), HawkesKernelExp(0.0, beta)],
+            [HawkesKernelExp(0.0, beta), HawkesKernelExp(0.0, beta), HawkesKernelExp(0.0, beta)]
 ])
 
 simu_model = SimuHawkes(kernels=kernels, end_time=end_time, custom='Type2', seed=seed, MaxN_of_f = MaxN, f_i=mu_i)
@@ -39,7 +39,7 @@ simu_model.simulate()
 
 
 ##################################################################################################################
-from tick.optim.model import ModelHawkesCustomType2
+from tick.optim.model import ModelCustomBasic
 from tick.optim.solver import GD, AGD, SGD, SVRG, SDCA
 from tick.optim.prox import ProxElasticNet, ProxL2Sq, ProxZero, ProxL1
 
@@ -48,24 +48,23 @@ timestamps.append(np.array([]))
 global_n = np.array(simu_model._pp.get_global_n())
 global_n = np.insert(global_n, 0, 0).astype(int)
 
-model = ModelHawkesCustomType2(beta, MaxN)
+model = ModelCustomBasic(beta, MaxN)
 model.fit(timestamps, global_n, end_time)
 #############################################################################
-# prox = ProxL1(0.0, positive=True)
+prox = ProxL1(0.0, positive=True)
 prox = ProxZero()
 
 # solver = AGD(step=5e-2, linesearch=False, max_iter= 350)
-solver = AGD(step=1e-1, linesearch=False, max_iter=500, print_every=50)
+solver = AGD(step=1e-2, linesearch=False, max_iter=2000, print_every=50)
 solver.set_model(model).set_prox(prox)
 
-
-
 x_real = np.array(
-    [0.5, 0.7, 0.8, 0.6, 0.5,    0.5, 0.6, 0.8, 0.8, 0.6,    0.5, 0.6, 0.9, 0.2, 0.7,  0.3, 0.1, 0.4, 0.2, 0.3, 0.5, 0.3, 0.4, 0.3])
+    [0.5, 0.5, 0.5,   0.7 / 0.5, 0.8 / 0.5, 0.6 / 0.5, 0.5 / 0.5,  0.6 / 0.5, 0.8 / 0.5, 0.8 / 0.5, 0.6 / 0.5,  0.6 / 0.5, 0.9 / 0.5, 0.2 / 0.5, 0.7 / 0.5])
 x0 = np.array(
-    [0.2, 0.2, 0.2, 0.9, 0.9,    0.2, 0.2, 0.2, 0.9, 0.9,    0.2, 0.2, 0.2, 0.9, 0.9,  0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.6])
+    [0.6, 0.6, 0.8,   0.5, 0.5, 0.9, 0.9,  0.6, 0.7, 0.8, 0.5,  0.7, 0.7, 0.5, 0.5])
 solver.solve(x0)
 
 print(model.loss(x_real))
 print(model.loss(solver.solution))
+print(x_real)
 print(solver.solution)
