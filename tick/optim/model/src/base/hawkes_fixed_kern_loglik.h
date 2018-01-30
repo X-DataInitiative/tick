@@ -56,7 +56,7 @@ class DLL_PUBLIC ModelHawkesFixedKernLogLik : public ModelHawkesSingle {
    * \param coeffs : Point in which loss is computed
    * \return Loss' value
    */
-  double loss(const ArrayDouble &coeffs) override;
+  virtual double loss(const ArrayDouble &coeffs) override;
 
   /**
    * @brief Compute loss corresponding to sample i (between 0 and rand_max)

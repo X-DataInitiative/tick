@@ -113,6 +113,17 @@ void ModelHawkesCustom::set_data(const SArrayDoublePtrList1D &_timestamps,
     n_nodes--;
 }
 
+double ModelHawkesCustom::loss(const ArrayDouble &coeffs) {
+    if (!weights_computed) compute_weights();
+
+    const double loss =
+            parallel_map_additive_reduce(get_n_threads(), n_nodes,
+                                         &ModelHawkesCustom::loss_dim_i,
+                                         this,
+                                         coeffs);
+    return loss / (n_total_jumps - (*n_jumps_per_node)[n_nodes]);
+}
+
 double ModelHawkesCustom::loss_dim_i(const ulong i,
                                               const ArrayDouble &coeffs) {
     const double mu_i = coeffs[i];
@@ -183,7 +194,7 @@ void ModelHawkesCustom::grad(const ArrayDouble &coeffs,
                  this,
                  coeffs,
                  out);
-    out /= n_total_jumps;
+    out /= (n_total_jumps - (*n_jumps_per_node)[n_nodes]);
 
     for (ulong k = 0; k != get_n_coeffs(); ++k)
         out[k] = -out[k];
