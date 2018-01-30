@@ -11,7 +11,6 @@ eval "$(pyenv init -)"
 pyenv global ${PYVER}
 pyenv local ${PYVER}
 
-python -m pip install tensorflow
 python setup.py cpplint build_ext --inplace cpptest pytest
 
 export PYTHONPATH=${PYTHONPATH}:`pwd` && (cd doc && make doctest)
