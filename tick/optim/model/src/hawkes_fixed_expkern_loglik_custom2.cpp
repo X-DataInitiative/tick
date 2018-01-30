@@ -11,7 +11,7 @@ void ModelHawkesCustomType2::allocate_weights() {
         TICK_ERROR("Please provide valid timestamps before allocating weights")
     }
 
-    Total_events = n_total_jumps;
+    Total_events = n_total_jumps - (*n_jumps_per_node)[n_nodes];
 
     g = ArrayDouble2dList1D(n_nodes);
     G = ArrayDouble2dList1D(n_nodes);
@@ -19,9 +19,9 @@ void ModelHawkesCustomType2::allocate_weights() {
 
     for (ulong i = 0; i != n_nodes; i++) {
         //0 + events + T
-        g[i] = ArrayDouble2d(Total_events + 2, n_nodes);
+        g[i] = ArrayDouble2d(n_total_jumps + 2, n_nodes);
         g[i].init_to_zero();
-        G[i] = ArrayDouble2d(Total_events + 2, n_nodes);
+        G[i] = ArrayDouble2d(n_total_jumps + 2, n_nodes);
         G[i].init_to_zero();
         sum_G[i] = ArrayDouble(n_nodes);
         sum_G[i].init_to_zero();
@@ -36,10 +36,10 @@ void ModelHawkesCustomType2::compute_weights_dim_i(const ulong i) {
     for (ulong j = 0; j != n_nodes; j++) {
         //! here k starts from 1, cause g(t_0) = G(t_0) = 0
         // 0 + Totalevents + T
-        for (ulong k = 1; k != 1 + Total_events + 1; k++) {
-            const double t_k = (k != (1 + Total_events) ? global_timestamps[k] : end_time);
+        for (ulong k = 1; k != 1 + n_total_jumps + 1; k++) {
+            const double t_k = (k != (1 + n_total_jumps) ? global_timestamps[k] : end_time);
             const double ebt = std::exp(-decay * (t_k - global_timestamps[k - 1]));
-            if (k != 1 + Total_events)
+            if (k != 1 + n_total_jumps)
                 g_i[k * n_nodes + j] = g_i[(k - 1) * n_nodes + j] * ebt + (type_n[k - 1] == j + 1 ? decay * ebt : 0);
             G_i[k * n_nodes + j] =
                     (1 - ebt) / decay * g_i[(k - 1) * n_nodes + j] + ((type_n[k - 1] == j + 1) ? 1 - ebt : 0);
@@ -85,6 +85,17 @@ void ModelHawkesCustomType2::set_data(const SArrayDoublePtrList1D &_timestamps,
     n_nodes--;
 }
 
+double ModelHawkesCustomType2::loss(const ArrayDouble &coeffs) {
+    if (!weights_computed) compute_weights();
+
+    const double loss =
+            parallel_map_additive_reduce(get_n_threads(), n_nodes,
+                                         &ModelHawkesCustomType2::loss_dim_i,
+                                         this,
+                                         coeffs);
+    return loss / Total_events;
+}
+
 double ModelHawkesCustomType2::loss_dim_i(const ulong i,
                                               const ArrayDouble &coeffs) {
     double loss = 0;
@@ -97,7 +108,7 @@ double ModelHawkesCustomType2::loss_dim_i(const ulong i,
     const ArrayDouble2d G_i = view(G[i]);
 
     //term 1
-    for (ulong k = 1; k != Total_events + 1; k++)
+    for (ulong k = 1; k != n_total_jumps + 1; k++)
         if (type_n[k] == i + 1) {
             double tmp_s = mu_i[global_n[k - 1]];
             const ArrayDouble g_i_k = view_row(g[i], k);
@@ -111,9 +122,9 @@ double ModelHawkesCustomType2::loss_dim_i(const ulong i,
         }
 
     //term 2, 3
-    for (ulong k = 1; k != Total_events + 1; k++)
+    for (ulong k = 1; k != n_total_jumps + 1; k++)
         loss -= mu_i[global_n[k - 1]] * (global_timestamps[k] - global_timestamps[k - 1]);
-    loss -= mu_i[global_n[Total_events]] * (end_time - global_timestamps[Total_events]);
+    loss -= mu_i[global_n[n_total_jumps]] * (end_time - global_timestamps[n_total_jumps]);
 
     //! clean sum_G each time
     sum_G[i].init_to_zero();
@@ -121,7 +132,7 @@ double ModelHawkesCustomType2::loss_dim_i(const ulong i,
     //term 4,5
     //! sum_g already takes care of the last item T
     for (ulong j = 0; j != n_nodes; j++)
-        for (ulong k = 1; k != 1 + Total_events + 1; k++) {
+        for (ulong k = 1; k != 1 + n_total_jumps + 1; k++) {
             sum_G[i][j] += G_i[k * n_nodes + j];
         }
     loss -= alpha_i.dot(sum_G[i]);
@@ -142,7 +153,7 @@ void ModelHawkesCustomType2::grad(const ArrayDouble &coeffs,
                  this,
                  coeffs,
                  out);
-    out /= n_total_jumps;
+    out /= Total_events;
 
     for (ulong k = 0; k != get_n_coeffs(); ++k)
         out[k] = -out[k];
@@ -163,9 +174,9 @@ void ModelHawkesCustomType2::grad_dim_i(const ulong i,
     const ArrayDouble2d G_i = view(G[i]);
 
     //! grad of mu_i(n)
-    for (ulong k = 1; k < Total_events + 1; ++k) {
+    for (ulong k = 1; k < n_total_jumps + 1; ++k) {
         int tmp_flag = 0;
-        if (k == Total_events + 1)
+        if (k == n_total_jumps + 1)
             tmp_flag = 1;
         else if (type_n[k] == i + 1)
             tmp_flag = 1;
@@ -177,15 +188,15 @@ void ModelHawkesCustomType2::grad_dim_i(const ulong i,
         }
     }
 
-    for (ulong k = 1; k < 1 + Total_events + 1; k++) {
-        const double t_k = (k != (Total_events + 1)) ? global_timestamps[k] : end_time;
+    for (ulong k = 1; k < 1 + n_total_jumps + 1; k++) {
+        const double t_k = (k != (n_total_jumps + 1)) ? global_timestamps[k] : end_time;
         grad_mu_i[global_n[k - 1]] -= (t_k - global_timestamps[k - 1]);
     }
 
     //! grad of alpha_{ij}
-    for (ulong k = 1; k < 1 + Total_events + 1; k++) {
+    for (ulong k = 1; k < 1 + n_total_jumps + 1; k++) {
         int tmp_flag = 0;
-        if (k == Total_events + 1)
+        if (k == n_total_jumps + 1)
             tmp_flag = 1;
         else if (type_n[k] == i + 1)
             tmp_flag = 1;
@@ -198,7 +209,7 @@ void ModelHawkesCustomType2::grad_dim_i(const ulong i,
     }
     for (ulong j = 0; j < n_nodes; j++) {
         double sum_G_ij = 0;
-        for (ulong k = 1; k < 1 + Total_events + 1; k++) {
+        for (ulong k = 1; k < 1 + n_total_jumps + 1; k++) {
             sum_G_ij += G_i[k * n_nodes + j];
         }
         grad_alpha_i[j] -= sum_G_ij;

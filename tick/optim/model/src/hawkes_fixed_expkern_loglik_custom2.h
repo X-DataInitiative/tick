@@ -114,6 +114,8 @@ public:
 
     void grad(const ArrayDouble &coeffs, ArrayDouble &out) override;
 
+    double loss(const ArrayDouble &coeffs) override;
+
 //    friend ModelHawkesCustomList;
 };
 

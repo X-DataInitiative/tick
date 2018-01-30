@@ -144,7 +144,7 @@ double ModelHawkesCustom::loss_dim_i(const ulong i,
     //end_time is T
     double loss = 0;
     for (ulong k = 1; k != n_total_jumps + 1; k++)
-        //! insert event t0 = 0 in the Total_events and global_n
+        //! insert event t0 = 0 as an event
         if (type_n[k] == i + 1)
             loss += log(f_i[global_n[k - 1]]);
 

@@ -11,7 +11,7 @@ void ModelCustomBasic::allocate_weights() {
         TICK_ERROR("Please provide valid timestamps before allocating weights")
     }
 
-    Total_events = n_total_jumps;
+    Total_events = n_total_jumps - (*n_jumps_per_node)[n_nodes];
 
     H1 = ArrayDoubleList1D(n_nodes);
     H2 = ArrayDoubleList1D(n_nodes);
@@ -30,12 +30,12 @@ void ModelCustomBasic::compute_weights_dim_i(const ulong i) {
     //! in fact, H1, H2 is one dimension, here I make all threads calculate the same thing
     ArrayDouble H1_i = view(H1[i]);
     ArrayDouble H2_i = view(H2[i]);
-    H1_i[global_n[Total_events]] -= 1;
-    for (ulong k = 1; k != 1 + Total_events + 1; k++) {
-        if(k != (1 + Total_events))
+    H1_i[global_n[n_total_jumps]] -= 1;
+    for (ulong k = 1; k != 1 + n_total_jumps + 1; k++) {
+        if(k != (1 + n_total_jumps))
             H1_i[global_n[k - 1]] += (type_n[k] == i + 1 ? 1 : 0);
 
-        const double t_k = (k != (1 + Total_events) ? global_timestamps[k] : end_time);
+        const double t_k = (k != (1 + n_total_jumps) ? global_timestamps[k] : end_time);
         H2_i[global_n[k - 1]] -= t_k - global_timestamps[k - 1];
     }
 }
@@ -75,6 +75,17 @@ void ModelCustomBasic::set_data(const SArrayDoublePtrList1D &_timestamps,
     n_nodes--;
 }
 
+double ModelCustomBasic::loss(const ArrayDouble &coeffs) {
+    if (!weights_computed) compute_weights();
+
+    const double loss =
+            parallel_map_additive_reduce(get_n_threads(), n_nodes,
+                                         &ModelCustomBasic::loss_dim_i,
+                                         this,
+                                         coeffs);
+    return loss / Total_events;
+}
+
 double ModelCustomBasic::loss_dim_i(const ulong i,
                                               const ArrayDouble &coeffs) {
     const double mu_i = coeffs[i];
@@ -89,13 +100,13 @@ double ModelCustomBasic::loss_dim_i(const ulong i,
     //term 1
     //end_time is T
     double loss = 0;
-    for (ulong k = 1; k != Total_events + 1; k++)
-        //! insert event t0 = 0 in the Total_events and global_n
+    for (ulong k = 1; k != n_total_jumps + 1; k++)
+        //! insert event t0 = 0
         if (type_n[k] == i + 1)
             loss += log(f_i[global_n[k - 1]]);
 
     //term 2
-    for (ulong k = 1; k != Total_events + 1; k++)
+    for (ulong k = 1; k != n_total_jumps + 1; k++)
         if (type_n[k] == i + 1) {
             double tmp_s = mu_i;
             if (tmp_s <= 0) {
@@ -107,9 +118,9 @@ double ModelCustomBasic::loss_dim_i(const ulong i,
         }
 
     //term 3,4
-    for (ulong k = 1; k != Total_events + 1; k++)
+    for (ulong k = 1; k != n_total_jumps + 1; k++)
         loss -= mu_i * (global_timestamps[k] - global_timestamps[k - 1]) * f_i[global_n[k - 1]];
-    loss -= mu_i * (end_time - global_timestamps[Total_events]) * f_i[global_n[Total_events]];
+    loss -= mu_i * (end_time - global_timestamps[n_total_jumps]) * f_i[global_n[n_total_jumps]];
 
     //add a constant to the loss, then inverse the loss to make it convex
     return -end_time - loss;
@@ -127,7 +138,7 @@ void ModelCustomBasic::grad(const ArrayDouble &coeffs,
                  this,
                  coeffs,
                  out);
-    out /= n_total_jumps;
+    out /= Total_events;
 
     for (ulong k = 0; k != get_n_coeffs(); ++k)
         out[k] = -out[k];
@@ -151,9 +162,9 @@ void ModelCustomBasic::grad_dim_i(const ulong i,
 
     //! grad of mu_i
     grad_mu_i = 0;
-    for (ulong k = 1; k < Total_events + 1; ++k) {
+    for (ulong k = 1; k < n_total_jumps + 1; ++k) {
         int tmp_flag = 0;
-        if (k == Total_events + 1)
+        if (k == n_total_jumps + 1)
             tmp_flag = 1;
         else if (type_n[k] == i + 1)
             tmp_flag = 1;
@@ -164,8 +175,8 @@ void ModelCustomBasic::grad_dim_i(const ulong i,
         }
     }
 
-    for (ulong k = 1; k < 1 + Total_events + 1; k++) {
-        const double t_k = (k != (Total_events + 1)) ? global_timestamps[k] : end_time;
+    for (ulong k = 1; k < 1 + n_total_jumps + 1; k++) {
+        const double t_k = (k != (n_total_jumps + 1)) ? global_timestamps[k] : end_time;
         grad_mu_i -= (t_k - global_timestamps[k - 1]) * f_i[global_n[k - 1]];
     }
 
