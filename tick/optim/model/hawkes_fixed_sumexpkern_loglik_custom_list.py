@@ -63,4 +63,4 @@ class ModelHawkesFixedSumExpKernCustomLogLikList(ModelFirstOrder):
         if isinstance(end_times, (int, float)):
             end_times = np.array([end_times], dtype=float)
 
-        self._model.set_data(events, global_ns, self._end_times)
+        self._model.set_data(events, global_ns, end_times)

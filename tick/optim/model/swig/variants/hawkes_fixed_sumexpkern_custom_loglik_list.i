@@ -19,4 +19,7 @@ public:
   SArrayDoublePtr get_decays() const;
   ulong get_MaxN_of_f() const;
   void set_MaxN_of_f(ulong _MaxN_of_f);
+
+  void set_data(const SArrayDoublePtrList2D &timestamps_list, const SArrayULongPtrList1D &global_n_list,
+                                                              const VArrayDoublePtr end_times);
 };

@@ -18,7 +18,7 @@ class DLL_PUBLIC ModelHawkesFixedSumExpKernCustomLogLikList : public ModelHawkes
 
   ulong MaxN_of_f;
 
-    SArrayDoublePtrList1D global_n_list;
+    SArrayULongPtrList1D global_n_list;
 
 public:
   /**
@@ -63,7 +63,7 @@ public:
       new ModelHawkesSumExpCustom(decays, MaxN_of_f, n_threads));
   }
 
-    void set_data(const SArrayDoublePtrList2D &timestamps_list, const SArrayDoublePtrList1D &global_n_list, const VArrayDoublePtr end_times);
+    void set_data(const SArrayDoublePtrList2D &timestamps_list, const SArrayULongPtrList1D &global_n_list, const VArrayDoublePtr end_times);
 
     ulong get_n_coeffs() const override;
 };
