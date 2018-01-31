@@ -73,6 +73,13 @@ class ProxWithGroups : public Prox {
     this->blocks_length = blocks_length;
     is_synchronized = false;
   }
+
+  void set_strength(double strength) override {
+    Prox::set_strength(strength);
+    for (auto &prox : proxs) {
+      prox->set_strength(strength);
+    }
+  }
 };
 
 #endif  // LIB_INCLUDE_TICK_OPTIM_PROX_PROX_WITH_GROUPS_H_
