@@ -15,7 +15,7 @@ git clone --recursive ${TICK_CLONE_FROM} tick
 CUR_DIR=$(pwd)
 
 (
-  cd tick  && TICK_NO_CPPLINT=true ./build_test.sh
+  cd tick  && TICK_NO_CPPLINT=true ./sh/build_test.sh
   TICK_BUILD_DIR=${CUR_DIR}/tick
   cd DOC && make clean html
 )
