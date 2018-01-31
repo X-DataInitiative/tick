@@ -1,0 +1,12 @@
+
+.. _ModelPoisReg:
+
+tick.linear_model.ModelPoisReg
+==============================
+
+.. currentmodule:: tick.linear_model
+
+.. autoclass:: ModelPoisReg
+
+.. include:: tick.linear_model.ModelPoisReg.examples
+    :allowmissing:

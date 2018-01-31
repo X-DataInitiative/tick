@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>Overview: module code &#8212; tick 0.3.0 documentation</title>
+    <title>Overview: module code &#8212; tick 0.4.0 documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.3.0',
+        VERSION:     '0.4.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.3</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -79,45 +79,75 @@
   <ul class="dropdown-menu globaltoc"
       role="menu"
       aria-labelledby="dLabelGlobalToc"><ul>
-<li class="toctree-l1"><a class="reference internal" href="../modules/inference.html"><code class="docutils literal"><span class="pre">tick.inference</span></code>: user-friendly inference tools</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../modules/inference.html#generalized-linear-models">1. Generalized linear models</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/inference.html#hawkes">2. Hawkes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/inference.html#survival-analysis">3. Survival analysis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/inference.html#robust-analysis">4. Robust Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/hawkes.html"><code class="docutils literal"><span class="pre">tick.hawkes</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/hawkes.html#introduction">1. Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/hawkes.html#learners">2. Learners</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/hawkes.html#point-process-simulation">3. Point process simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/hawkes.html#models-for-inference">4. Models for inference</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../modules/optim.html"><code class="docutils literal"><span class="pre">tick.optim</span></code>: optimization toolbox</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../modules/optim.html#contents">Contents</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/optim.html#a-first-example">A First example</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/optim.html#tick-optim-model-model-classes">1. <code class="docutils literal"><span class="pre">tick.optim.model</span></code>: model classes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/optim.html#tick-optim-prox-proximal-operators">2. <code class="docutils literal"><span class="pre">tick.optim.prox</span></code>: proximal operators</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/optim.html#tick-optim-solver-solvers">3. <code class="docutils literal"><span class="pre">tick.optim.solver</span></code>: solvers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/optim.html#what-s-under-the-hood">4. What’s under the hood?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/linear_model.html"><code class="docutils literal"><span class="pre">tick.linear_model</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/linear_model.html#introduction">1. Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/linear_model.html#learners">2. Learners</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/linear_model.html#models">3. Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/linear_model.html#simulation">4. Simulation</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../modules/plot.html"><code class="docutils literal"><span class="pre">tick.plot</span></code>: plotting utilities</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../modules/plot.html#optimization">Optimization</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/plot.html#hawkes-estimation">Hawkes estimation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/plot.html#point-process-simulation">Point process simulation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/plot.html#others">Others</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/robust.html"><code class="docutils literal"><span class="pre">tick.robust</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/robust.html#regression-with-individual-intercepts">1. Regression with individual intercepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/robust.html#robust-losses">2. Robust losses</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../modules/preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../modules/generated/tick.preprocessing.FeaturesBinarizer.html">tick.preprocessing.FeaturesBinarizer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/generated/tick.preprocessing.LongitudinalFeaturesProduct.html">tick.preprocessing.LongitudinalFeaturesProduct</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/generated/tick.preprocessing.LongitudinalFeaturesLagger.html">tick.preprocessing.LongitudinalFeaturesLagger</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/survival.html"><code class="docutils literal"><span class="pre">tick.survival</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/survival.html#learners">1. Learners</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/survival.html#models">2. Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/survival.html#simulation">3. Simulation</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../modules/simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code>: simulation toolbox</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../modules/simulation.html#simulation-tools">1. Simulation tools</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/simulation.html#linear-model-simulation">2. Linear model simulation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/simulation.html#survival-analysis-simulation">3. Survival analysis simulation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/simulation.html#point-process-simulation">4. Point process simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/prox.html"><code class="docutils literal"><span class="pre">tick.prox</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/prox.html#available-operators">1. Available operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/prox.html#example">2. Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/prox.html#how-to-combine-several-prox">3. How to combine several prox ?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/prox.html#the-prox-class-api">4. The <code class="docutils literal"><span class="pre">prox</span></code> class API</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../modules/dataset.html"><code class="docutils literal"><span class="pre">tick.dataset</span></code>: real world datasets</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../modules/dataset.html#functions">Functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/dataset.html#example">Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/solver.html"><code class="docutils literal"><span class="pre">tick.solver</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/solver.html#the-solver-class-api">1. The <code class="docutils literal"><span class="pre">solver</span></code> class API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/solver.html#available-solvers">2. Available solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/solver.html#example">3. Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/simulation.html#simulation-of-model-weights">1. Simulation of model weights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/simulation.html#simulation-of-a-features-matrix">2. Simulation of a features matrix</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/plot.html"><code class="docutils literal"><span class="pre">tick.plot</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/plot.html#history-plot">1. History plot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/plot.html#plots-for-hawkes-processes">2. Plots for Hawkes processes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/plot.html#plots-for-point-process-simulation">3. Plots for point process simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/plot.html#miscellaneous-plots">4. Miscellaneous plots</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/dataset.html"><code class="docutils literal"><span class="pre">tick.dataset</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/generated/tick.dataset.fetch_tick_dataset.html">tick.dataset.fetch_tick_dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/generated/tick.dataset.fetch_hawkes_bund_data.html">tick.dataset.fetch_hawkes_bund_data</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/preprocessing.html#preprocessing-for-static-features">Preprocessing for static features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/preprocessing.html#preprocessing-for-longitudinal-features">Preprocessing for longitudinal features</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/metrics.html"><code class="docutils literal"><span class="pre">tick.metrics</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/generated/tick.metrics.support_fdp.html">tick.metrics.support_fdp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/generated/tick.metrics.support_recall.html">tick.metrics.support_recall</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/R.html">How to use <code class="docutils literal"><span class="pre">tick</span></code> from the R statistical software</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/R.html#training-a-logistic-regression-model">1. Training a logistic regression model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/R.html#simulation-of-a-hawkes-process">2. Simulation of a Hawkes process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/R.html#using-optimization-tools-from-r">3. Using optimization tools from R</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../modules/dev.html">Developer documentation</a><ul>
@@ -128,10 +158,19 @@
 <li class="toctree-l2"><a class="reference internal" href="../modules/dev.html#tips-for-debugging-c-classes-in-tick">Tips for debugging C++ classes in tick</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../modules/R.html">How to use <code class="docutils literal"><span class="pre">tick</span></code> from the R statistical software</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../modules/R.html#training-a-logistic-regression-model">1. Training a logistic regression model</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/R.html#simulation-of-a-hawkes-process">2. Simulation of a Hawkes process</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/R.html#using-tick-optim-from-r">3. Using <code class="docutils literal"><span class="pre">tick.optim</span></code> from R</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/api.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/api.html#table-of-contents">Table of contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/api.html#hawkes"><code class="docutils literal"><span class="pre">hawkes</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/api.html#linear-model"><code class="docutils literal"><span class="pre">linear_model</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/api.html#robust"><code class="docutils literal"><span class="pre">robust</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/api.html#survival"><code class="docutils literal"><span class="pre">survival</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/api.html#prox"><code class="docutils literal"><span class="pre">prox</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/api.html#solver"><code class="docutils literal"><span class="pre">solver</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/api.html#api-simulation"><code class="docutils literal"><span class="pre">simulation</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/api.html#plot"><code class="docutils literal"><span class="pre">plot</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/api.html#dataset"><code class="docutils literal"><span class="pre">dataset</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/api.html#preprocessing"><code class="docutils literal"><span class="pre">preprocessing</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/api.html#metrics"><code class="docutils literal"><span class="pre">metrics</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -164,108 +203,109 @@
   <h1>All modules for which code is available</h1>
 <ul><li><a href="sklearn/base.html">sklearn.base</a></li>
 <li><a href="tick/base/decorators.html">tick.base.decorators</a></li>
+<li><a href="tick/base/learner/learner_glm.html">tick.base.learner.learner_glm</a></li>
+<li><a href="tick/base/simulation/simu.html">tick.base.simulation.simu</a></li>
 <li><a href="tick/base/timefunc.html">tick.base.timefunc</a></li>
+<li><a href="tick/base_model/model.html">tick.base_model.model</a></li>
+<li><a href="tick/base_model/model_first_order.html">tick.base_model.model_first_order</a></li>
+<li><a href="tick/base_model/model_lipschitz.html">tick.base_model.model_lipschitz</a></li>
+<li><a href="tick/base_model/model_second_order.html">tick.base_model.model_second_order</a></li>
 <li><a href="tick/dataset/download_helper.html">tick.dataset.download_helper</a></li>
 <li><a href="tick/dataset/fetch_hawkes_data.html">tick.dataset.fetch_hawkes_data</a></li>
-<li><a href="tick/inference/base/learner_glm.html">tick.inference.base.learner_glm</a></li>
-<li><a href="tick/inference/base/learner_hawkes_param.html">tick.inference.base.learner_hawkes_param</a></li>
-<li><a href="tick/inference/base/learner_robust_glm.html">tick.inference.base.learner_robust_glm</a></li>
-<li><a href="tick/inference/cox_regression.html">tick.inference.cox_regression</a></li>
-<li><a href="tick/inference/hawkes_adm4.html">tick.inference.hawkes_adm4</a></li>
-<li><a href="tick/inference/hawkes_basis_kernels.html">tick.inference.hawkes_basis_kernels</a></li>
-<li><a href="tick/inference/hawkes_conditional_law.html">tick.inference.hawkes_conditional_law</a></li>
-<li><a href="tick/inference/hawkes_em.html">tick.inference.hawkes_em</a></li>
-<li><a href="tick/inference/hawkes_expkern_fixeddecay.html">tick.inference.hawkes_expkern_fixeddecay</a></li>
-<li><a href="tick/inference/hawkes_sumexpkern_fixeddecay.html">tick.inference.hawkes_sumexpkern_fixeddecay</a></li>
-<li><a href="tick/inference/hawkes_sumgaussians.html">tick.inference.hawkes_sumgaussians</a></li>
-<li><a href="tick/inference/linear_regression.html">tick.inference.linear_regression</a></li>
-<li><a href="tick/inference/logistic_regression.html">tick.inference.logistic_regression</a></li>
-<li><a href="tick/inference/poisson_regression.html">tick.inference.poisson_regression</a></li>
-<li><a href="tick/inference/robust.html">tick.inference.robust</a></li>
-<li><a href="tick/inference/robust_linear_regression.html">tick.inference.robust_linear_regression</a></li>
-<li><a href="tick/inference/survival.html">tick.inference.survival</a></li>
+<li><a href="tick/hawkes/inference/base/learner_hawkes_param.html">tick.hawkes.inference.base.learner_hawkes_param</a></li>
+<li><a href="tick/hawkes/inference/hawkes_adm4.html">tick.hawkes.inference.hawkes_adm4</a></li>
+<li><a href="tick/hawkes/inference/hawkes_basis_kernels.html">tick.hawkes.inference.hawkes_basis_kernels</a></li>
+<li><a href="tick/hawkes/inference/hawkes_conditional_law.html">tick.hawkes.inference.hawkes_conditional_law</a></li>
+<li><a href="tick/hawkes/inference/hawkes_cumulant_matching.html">tick.hawkes.inference.hawkes_cumulant_matching</a></li>
+<li><a href="tick/hawkes/inference/hawkes_em.html">tick.hawkes.inference.hawkes_em</a></li>
+<li><a href="tick/hawkes/inference/hawkes_expkern_fixeddecay.html">tick.hawkes.inference.hawkes_expkern_fixeddecay</a></li>
+<li><a href="tick/hawkes/inference/hawkes_sumexpkern_fixeddecay.html">tick.hawkes.inference.hawkes_sumexpkern_fixeddecay</a></li>
+<li><a href="tick/hawkes/inference/hawkes_sumgaussians.html">tick.hawkes.inference.hawkes_sumgaussians</a></li>
+<li><a href="tick/hawkes/model/base/model_hawkes.html">tick.hawkes.model.base.model_hawkes</a></li>
+<li><a href="tick/hawkes/model/model_hawkes_expkern_leastsq.html">tick.hawkes.model.model_hawkes_expkern_leastsq</a></li>
+<li><a href="tick/hawkes/model/model_hawkes_expkern_loglik.html">tick.hawkes.model.model_hawkes_expkern_loglik</a></li>
+<li><a href="tick/hawkes/model/model_hawkes_sumexpkern_leastsq.html">tick.hawkes.model.model_hawkes_sumexpkern_leastsq</a></li>
+<li><a href="tick/hawkes/model/model_hawkes_sumexpkern_loglik.html">tick.hawkes.model.model_hawkes_sumexpkern_loglik</a></li>
+<li><a href="tick/hawkes/simulation/base/simu_point_process.html">tick.hawkes.simulation.base.simu_point_process</a></li>
+<li><a href="tick/hawkes/simulation/hawkes_kernels/hawkes_kernel.html">tick.hawkes.simulation.hawkes_kernels.hawkes_kernel</a></li>
+<li><a href="tick/hawkes/simulation/hawkes_kernels/hawkes_kernel_0.html">tick.hawkes.simulation.hawkes_kernels.hawkes_kernel_0</a></li>
+<li><a href="tick/hawkes/simulation/hawkes_kernels/hawkes_kernel_exp.html">tick.hawkes.simulation.hawkes_kernels.hawkes_kernel_exp</a></li>
+<li><a href="tick/hawkes/simulation/hawkes_kernels/hawkes_kernel_power_law.html">tick.hawkes.simulation.hawkes_kernels.hawkes_kernel_power_law</a></li>
+<li><a href="tick/hawkes/simulation/hawkes_kernels/hawkes_kernel_sum_exp.html">tick.hawkes.simulation.hawkes_kernels.hawkes_kernel_sum_exp</a></li>
+<li><a href="tick/hawkes/simulation/hawkes_kernels/hawkes_kernel_time_func.html">tick.hawkes.simulation.hawkes_kernels.hawkes_kernel_time_func</a></li>
+<li><a href="tick/hawkes/simulation/simu_hawkes.html">tick.hawkes.simulation.simu_hawkes</a></li>
+<li><a href="tick/hawkes/simulation/simu_hawkes_exp_kernels.html">tick.hawkes.simulation.simu_hawkes_exp_kernels</a></li>
+<li><a href="tick/hawkes/simulation/simu_hawkes_multi.html">tick.hawkes.simulation.simu_hawkes_multi</a></li>
+<li><a href="tick/hawkes/simulation/simu_hawkes_sumexp_kernels.html">tick.hawkes.simulation.simu_hawkes_sumexp_kernels</a></li>
+<li><a href="tick/hawkes/simulation/simu_inhomogeneous_poisson.html">tick.hawkes.simulation.simu_inhomogeneous_poisson</a></li>
+<li><a href="tick/hawkes/simulation/simu_poisson_process.html">tick.hawkes.simulation.simu_poisson_process</a></li>
+<li><a href="tick/linear_model/linear_regression.html">tick.linear_model.linear_regression</a></li>
+<li><a href="tick/linear_model/logistic_regression.html">tick.linear_model.logistic_regression</a></li>
+<li><a href="tick/linear_model/model_hinge.html">tick.linear_model.model_hinge</a></li>
+<li><a href="tick/linear_model/model_linreg.html">tick.linear_model.model_linreg</a></li>
+<li><a href="tick/linear_model/model_logreg.html">tick.linear_model.model_logreg</a></li>
+<li><a href="tick/linear_model/model_poisreg.html">tick.linear_model.model_poisreg</a></li>
+<li><a href="tick/linear_model/model_quadratic_hinge.html">tick.linear_model.model_quadratic_hinge</a></li>
+<li><a href="tick/linear_model/model_smoothed_hinge.html">tick.linear_model.model_smoothed_hinge</a></li>
+<li><a href="tick/linear_model/poisson_regression.html">tick.linear_model.poisson_regression</a></li>
+<li><a href="tick/linear_model/simu_linreg.html">tick.linear_model.simu_linreg</a></li>
+<li><a href="tick/linear_model/simu_logreg.html">tick.linear_model.simu_logreg</a></li>
+<li><a href="tick/linear_model/simu_poisreg.html">tick.linear_model.simu_poisreg</a></li>
 <li><a href="tick/metrics/metrics.html">tick.metrics.metrics</a></li>
-<li><a href="tick/optim/history/history.html">tick.optim.history.history</a></li>
-<li><a href="tick/optim/model/absolute_regression.html">tick.optim.model.absolute_regression</a></li>
-<li><a href="tick/optim/model/base/model.html">tick.optim.model.base.model</a></li>
-<li><a href="tick/optim/model/base/model_first_order.html">tick.optim.model.base.model_first_order</a></li>
-<li><a href="tick/optim/model/base/model_hawkes.html">tick.optim.model.base.model_hawkes</a></li>
-<li><a href="tick/optim/model/base/model_lipschitz.html">tick.optim.model.base.model_lipschitz</a></li>
-<li><a href="tick/optim/model/base/model_second_order.html">tick.optim.model.base.model_second_order</a></li>
-<li><a href="tick/optim/model/coxreg_partial_lik.html">tick.optim.model.coxreg_partial_lik</a></li>
-<li><a href="tick/optim/model/epsilon_insensitive.html">tick.optim.model.epsilon_insensitive</a></li>
-<li><a href="tick/optim/model/hawkes_fixed_expkern_leastsq.html">tick.optim.model.hawkes_fixed_expkern_leastsq</a></li>
-<li><a href="tick/optim/model/hawkes_fixed_expkern_loglik.html">tick.optim.model.hawkes_fixed_expkern_loglik</a></li>
-<li><a href="tick/optim/model/hawkes_fixed_sumexpkern_leastsq.html">tick.optim.model.hawkes_fixed_sumexpkern_leastsq</a></li>
-<li><a href="tick/optim/model/hawkes_fixed_sumexpkern_loglik.html">tick.optim.model.hawkes_fixed_sumexpkern_loglik</a></li>
-<li><a href="tick/optim/model/hinge.html">tick.optim.model.hinge</a></li>
-<li><a href="tick/optim/model/huber.html">tick.optim.model.huber</a></li>
-<li><a href="tick/optim/model/linreg.html">tick.optim.model.linreg</a></li>
-<li><a href="tick/optim/model/linreg_with_intercepts.html">tick.optim.model.linreg_with_intercepts</a></li>
-<li><a href="tick/optim/model/logreg.html">tick.optim.model.logreg</a></li>
-<li><a href="tick/optim/model/modified_huber.html">tick.optim.model.modified_huber</a></li>
-<li><a href="tick/optim/model/poisreg.html">tick.optim.model.poisreg</a></li>
-<li><a href="tick/optim/model/quadratic_hinge.html">tick.optim.model.quadratic_hinge</a></li>
-<li><a href="tick/optim/model/sccs.html">tick.optim.model.sccs</a></li>
-<li><a href="tick/optim/model/smoothed_hinge.html">tick.optim.model.smoothed_hinge</a></li>
-<li><a href="tick/optim/prox/base/prox.html">tick.optim.prox.base.prox</a></li>
-<li><a href="tick/optim/prox/base/prox_with_groups.html">tick.optim.prox.base.prox_with_groups</a></li>
-<li><a href="tick/optim/prox/prox_binarsity.html">tick.optim.prox.prox_binarsity</a></li>
-<li><a href="tick/optim/prox/prox_elasticnet.html">tick.optim.prox.prox_elasticnet</a></li>
-<li><a href="tick/optim/prox/prox_equality.html">tick.optim.prox.prox_equality</a></li>
-<li><a href="tick/optim/prox/prox_group_l1.html">tick.optim.prox.prox_group_l1</a></li>
-<li><a href="tick/optim/prox/prox_l1.html">tick.optim.prox.prox_l1</a></li>
-<li><a href="tick/optim/prox/prox_l1w.html">tick.optim.prox.prox_l1w</a></li>
-<li><a href="tick/optim/prox/prox_l2.html">tick.optim.prox.prox_l2</a></li>
-<li><a href="tick/optim/prox/prox_l2sq.html">tick.optim.prox.prox_l2sq</a></li>
-<li><a href="tick/optim/prox/prox_multi.html">tick.optim.prox.prox_multi</a></li>
-<li><a href="tick/optim/prox/prox_nuclear.html">tick.optim.prox.prox_nuclear</a></li>
-<li><a href="tick/optim/prox/prox_positive.html">tick.optim.prox.prox_positive</a></li>
-<li><a href="tick/optim/prox/prox_slope.html">tick.optim.prox.prox_slope</a></li>
-<li><a href="tick/optim/prox/prox_tv.html">tick.optim.prox.prox_tv</a></li>
-<li><a href="tick/optim/prox/prox_zero.html">tick.optim.prox.prox_zero</a></li>
-<li><a href="tick/optim/solver/adagrad.html">tick.optim.solver.adagrad</a></li>
-<li><a href="tick/optim/solver/agd.html">tick.optim.solver.agd</a></li>
-<li><a href="tick/optim/solver/base/first_order.html">tick.optim.solver.base.first_order</a></li>
-<li><a href="tick/optim/solver/base/first_order_sto.html">tick.optim.solver.base.first_order_sto</a></li>
-<li><a href="tick/optim/solver/base/solver.html">tick.optim.solver.base.solver</a></li>
-<li><a href="tick/optim/solver/bfgs.html">tick.optim.solver.bfgs</a></li>
-<li><a href="tick/optim/solver/gd.html">tick.optim.solver.gd</a></li>
-<li><a href="tick/optim/solver/gfb.html">tick.optim.solver.gfb</a></li>
-<li><a href="tick/optim/solver/saga.html">tick.optim.solver.saga</a></li>
-<li><a href="tick/optim/solver/scpg.html">tick.optim.solver.scpg</a></li>
-<li><a href="tick/optim/solver/sdca.html">tick.optim.solver.sdca</a></li>
-<li><a href="tick/optim/solver/sgd.html">tick.optim.solver.sgd</a></li>
-<li><a href="tick/optim/solver/svrg.html">tick.optim.solver.svrg</a></li>
 <li><a href="tick/plot/plot_hawkes.html">tick.plot.plot_hawkes</a></li>
 <li><a href="tick/plot/plot_history.html">tick.plot.plot_history</a></li>
-<li><a href="tick/plot/plot_point_process.html">tick.plot.plot_point_process</a></li>
+<li><a href="tick/plot/plot_point_processes.html">tick.plot.plot_point_processes</a></li>
 <li><a href="tick/plot/plot_stem.html">tick.plot.plot_stem</a></li>
 <li><a href="tick/plot/plot_timefunction.html">tick.plot.plot_timefunction</a></li>
 <li><a href="tick/preprocessing/features_binarizer.html">tick.preprocessing.features_binarizer</a></li>
 <li><a href="tick/preprocessing/longitudinal_features_lagger.html">tick.preprocessing.longitudinal_features_lagger</a></li>
 <li><a href="tick/preprocessing/longitudinal_features_product.html">tick.preprocessing.longitudinal_features_product</a></li>
-<li><a href="tick/simulation/base/features.html">tick.simulation.base.features</a></li>
-<li><a href="tick/simulation/base/simu.html">tick.simulation.base.simu</a></li>
-<li><a href="tick/simulation/base/simu_point_process.html">tick.simulation.base.simu_point_process</a></li>
-<li><a href="tick/simulation/base/weights.html">tick.simulation.base.weights</a></li>
-<li><a href="tick/simulation/coxreg.html">tick.simulation.coxreg</a></li>
-<li><a href="tick/simulation/hawkes.html">tick.simulation.hawkes</a></li>
-<li><a href="tick/simulation/hawkes_exp_kernels.html">tick.simulation.hawkes_exp_kernels</a></li>
-<li><a href="tick/simulation/hawkes_kernels/hawkes_kernel.html">tick.simulation.hawkes_kernels.hawkes_kernel</a></li>
-<li><a href="tick/simulation/hawkes_kernels/hawkes_kernel_0.html">tick.simulation.hawkes_kernels.hawkes_kernel_0</a></li>
-<li><a href="tick/simulation/hawkes_kernels/hawkes_kernel_exp.html">tick.simulation.hawkes_kernels.hawkes_kernel_exp</a></li>
-<li><a href="tick/simulation/hawkes_kernels/hawkes_kernel_power_law.html">tick.simulation.hawkes_kernels.hawkes_kernel_power_law</a></li>
-<li><a href="tick/simulation/hawkes_kernels/hawkes_kernel_sum_exp.html">tick.simulation.hawkes_kernels.hawkes_kernel_sum_exp</a></li>
-<li><a href="tick/simulation/hawkes_kernels/hawkes_kernel_time_func.html">tick.simulation.hawkes_kernels.hawkes_kernel_time_func</a></li>
-<li><a href="tick/simulation/hawkes_multi.html">tick.simulation.hawkes_multi</a></li>
-<li><a href="tick/simulation/hawkes_sumexp_kernels.html">tick.simulation.hawkes_sumexp_kernels</a></li>
-<li><a href="tick/simulation/inhomogeneous_poisson.html">tick.simulation.inhomogeneous_poisson</a></li>
-<li><a href="tick/simulation/linreg.html">tick.simulation.linreg</a></li>
-<li><a href="tick/simulation/logreg.html">tick.simulation.logreg</a></li>
-<li><a href="tick/simulation/poisreg.html">tick.simulation.poisreg</a></li>
-<li><a href="tick/simulation/poisson_process.html">tick.simulation.poisson_process</a></li>
-<li><a href="tick/simulation/sccs.html">tick.simulation.sccs</a></li>
+<li><a href="tick/prox/base/prox.html">tick.prox.base.prox</a></li>
+<li><a href="tick/prox/base/prox_with_groups.html">tick.prox.base.prox_with_groups</a></li>
+<li><a href="tick/prox/prox_binarsity.html">tick.prox.prox_binarsity</a></li>
+<li><a href="tick/prox/prox_elasticnet.html">tick.prox.prox_elasticnet</a></li>
+<li><a href="tick/prox/prox_equality.html">tick.prox.prox_equality</a></li>
+<li><a href="tick/prox/prox_group_l1.html">tick.prox.prox_group_l1</a></li>
+<li><a href="tick/prox/prox_l1.html">tick.prox.prox_l1</a></li>
+<li><a href="tick/prox/prox_l1w.html">tick.prox.prox_l1w</a></li>
+<li><a href="tick/prox/prox_l2.html">tick.prox.prox_l2</a></li>
+<li><a href="tick/prox/prox_l2sq.html">tick.prox.prox_l2sq</a></li>
+<li><a href="tick/prox/prox_multi.html">tick.prox.prox_multi</a></li>
+<li><a href="tick/prox/prox_nuclear.html">tick.prox.prox_nuclear</a></li>
+<li><a href="tick/prox/prox_positive.html">tick.prox.prox_positive</a></li>
+<li><a href="tick/prox/prox_slope.html">tick.prox.prox_slope</a></li>
+<li><a href="tick/prox/prox_tv.html">tick.prox.prox_tv</a></li>
+<li><a href="tick/prox/prox_zero.html">tick.prox.prox_zero</a></li>
+<li><a href="tick/robust/base/learner_robust_glm.html">tick.robust.base.learner_robust_glm</a></li>
+<li><a href="tick/robust/model_absolute_regression.html">tick.robust.model_absolute_regression</a></li>
+<li><a href="tick/robust/model_epsilon_insensitive.html">tick.robust.model_epsilon_insensitive</a></li>
+<li><a href="tick/robust/model_huber.html">tick.robust.model_huber</a></li>
+<li><a href="tick/robust/model_linreg_with_intercepts.html">tick.robust.model_linreg_with_intercepts</a></li>
+<li><a href="tick/robust/model_modified_huber.html">tick.robust.model_modified_huber</a></li>
+<li><a href="tick/robust/robust.html">tick.robust.robust</a></li>
+<li><a href="tick/robust/robust_linear_regression.html">tick.robust.robust_linear_regression</a></li>
+<li><a href="tick/simulation/features.html">tick.simulation.features</a></li>
+<li><a href="tick/simulation/weights.html">tick.simulation.weights</a></li>
+<li><a href="tick/solver/adagrad.html">tick.solver.adagrad</a></li>
+<li><a href="tick/solver/agd.html">tick.solver.agd</a></li>
+<li><a href="tick/solver/base/first_order.html">tick.solver.base.first_order</a></li>
+<li><a href="tick/solver/base/first_order_sto.html">tick.solver.base.first_order_sto</a></li>
+<li><a href="tick/solver/base/solver.html">tick.solver.base.solver</a></li>
+<li><a href="tick/solver/bfgs.html">tick.solver.bfgs</a></li>
+<li><a href="tick/solver/gd.html">tick.solver.gd</a></li>
+<li><a href="tick/solver/gfb.html">tick.solver.gfb</a></li>
+<li><a href="tick/solver/history/history.html">tick.solver.history.history</a></li>
+<li><a href="tick/solver/saga.html">tick.solver.saga</a></li>
+<li><a href="tick/solver/scpg.html">tick.solver.scpg</a></li>
+<li><a href="tick/solver/sdca.html">tick.solver.sdca</a></li>
+<li><a href="tick/solver/sgd.html">tick.solver.sgd</a></li>
+<li><a href="tick/solver/svrg.html">tick.solver.svrg</a></li>
+<li><a href="tick/survival/cox_regression.html">tick.survival.cox_regression</a></li>
+<li><a href="tick/survival/model_coxreg_partial_lik.html">tick.survival.model_coxreg_partial_lik</a></li>
+<li><a href="tick/survival/model_sccs.html">tick.survival.model_sccs</a></li>
+<li><a href="tick/survival/simu_coxreg.html">tick.survival.simu_coxreg</a></li>
+<li><a href="tick/survival/simu_sccs.html">tick.survival.simu_sccs</a></li>
+<li><a href="tick/survival/survival.html">tick.survival.survival</a></li>
 </ul>
 
 </div>

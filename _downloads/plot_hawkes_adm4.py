@@ -18,8 +18,7 @@ Multi-dimensional Hawkes Processes. In `AISTATS (Vol. 31, pp. 641-649)
 import numpy as np
 
 from tick.plot import plot_hawkes_kernel_norms
-from tick.simulation import SimuHawkesExpKernels, SimuHawkesMulti
-from tick.inference import HawkesADM4
+from tick.hawkes import HawkesADM4, SimuHawkesExpKernels, SimuHawkesMulti
 
 end_time = 10000
 n_realizations = 5

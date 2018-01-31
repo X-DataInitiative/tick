@@ -11,7 +11,7 @@ import numpy as np
 from tick.base import TimeFunction
 
 from tick.plot import plot_point_process
-from tick.simulation.inhomogeneous_poisson import SimuInhomogeneousPoisson
+from tick.hawkes import SimuInhomogeneousPoisson
 
 run_time = 30
 

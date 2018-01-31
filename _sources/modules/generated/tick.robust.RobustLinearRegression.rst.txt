@@ -1,0 +1,12 @@
+
+.. _RobustLinearRegression:
+
+tick.robust.RobustLinearRegression
+==================================
+
+.. currentmodule:: tick.robust
+
+.. autoclass:: RobustLinearRegression
+
+.. include:: tick.robust.RobustLinearRegression.examples
+    :allowmissing:

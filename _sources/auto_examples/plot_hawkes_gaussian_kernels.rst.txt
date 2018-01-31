@@ -33,15 +33,15 @@ Xu, Farajtabar, and Zha (2016, June) in ICML,
 .. literalinclude:: plot_hawkes_gaussian_kernels.py
     :lines: 19-
 
-**Total running time of the example:**  2.10 seconds
-( 0 minutes  2.10 seconds)
+**Total running time of the example:**  3.04 seconds
+( 0 minutes  3.04 seconds)
     
 Mentioned *tick* classes:
-   * `tick.inference.HawkesSumGaussians`
+   * `tick.hawkes.HawkesKernel0`
+   * `tick.hawkes.HawkesKernelExp`
+   * `tick.hawkes.HawkesKernelPowerLaw`
+   * `tick.hawkes.HawkesKernelTimeFunc`
+   * `tick.hawkes.HawkesSumGaussians`
+   * `tick.hawkes.SimuHawkes`
+   * `tick.hawkes.SimuHawkesMulti`
    * `tick.plot.plot_hawkes_kernels`
-   * `tick.simulation.HawkesKernel0`
-   * `tick.simulation.HawkesKernelExp`
-   * `tick.simulation.HawkesKernelPowerLaw`
-   * `tick.simulation.HawkesKernelTimeFunc`
-   * `tick.simulation.SimuHawkes`
-   * `tick.simulation.SimuHawkesMulti`

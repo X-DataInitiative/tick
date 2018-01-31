@@ -1,0 +1,12 @@
+
+.. _SDCA:
+
+tick.solver.SDCA
+================
+
+.. currentmodule:: tick.solver
+
+.. autoclass:: SDCA
+
+.. include:: tick.solver.SDCA.examples
+    :allowmissing:

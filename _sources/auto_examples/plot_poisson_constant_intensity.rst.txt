@@ -1,0 +1,26 @@
+
+
+.. _example_plot_poisson_constant_intensity.py:
+
+plot_poisson_constant_intensity.py
+==================================
+
+
+
+.. image:: images/plot_poisson_constant_intensity_001.png
+    :align: center
+
+
+
+
+**Python source code:** :download:`plot_poisson_constant_intensity.py <plot_poisson_constant_intensity.py>`
+
+.. literalinclude:: plot_poisson_constant_intensity.py
+    :lines: 1-
+
+**Total running time of the example:**  0.29 seconds
+( 0 minutes  0.29 seconds)
+    
+Mentioned *tick* classes:
+   * `tick.hawkes.SimuPoissonProcess`
+   * `tick.plot.plot_point_process`

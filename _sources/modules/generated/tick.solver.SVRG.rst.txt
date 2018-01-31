@@ -1,0 +1,12 @@
+
+.. _SVRG:
+
+tick.solver.SVRG
+================
+
+.. currentmodule:: tick.solver
+
+.. autoclass:: SVRG
+
+.. include:: tick.solver.SVRG.examples
+    :allowmissing:

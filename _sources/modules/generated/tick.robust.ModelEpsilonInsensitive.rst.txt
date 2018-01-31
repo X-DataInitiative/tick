@@ -1,0 +1,12 @@
+
+.. _ModelEpsilonInsensitive:
+
+tick.robust.ModelEpsilonInsensitive
+===================================
+
+.. currentmodule:: tick.robust
+
+.. autoclass:: ModelEpsilonInsensitive
+
+.. include:: tick.robust.ModelEpsilonInsensitive.examples
+    :allowmissing:

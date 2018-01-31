@@ -228,14 +228,14 @@ How to use tick in practise?
 
 .. raw:: html
 
-    <div class="thumbnailContainer" tooltip="Plot examples of proximal operators available in `tick.optim.prox` ">
+    <div class="thumbnailContainer" tooltip="This non parametric Hawkes cumulants matching (`tick.hawkes.HawkesCumulantMatching`) algorithm ...">
 
 .. only:: html
 
-  .. figure:: ./images/thumb/plot_prox_example.png
-    :target: ./plot_prox_example.html
+  .. figure:: ./images/thumb/plot_hawkes_cumulants_matching.png
+    :target: ./plot_hawkes_cumulants_matching.html
 
-    :ref:`example_plot_prox_example.py`
+    :ref:`example_plot_hawkes_cumulants_matching.py`
 
 
 .. raw:: html
@@ -247,32 +247,7 @@ How to use tick in practise?
 .. toctree::
    :hidden:
 
-   ./plot_prox_example
-
-
-
-.. raw:: html
-
-    <div class="thumbnailContainer" tooltip="This example simulates and then estimates Hawkes kernels with varying baselines. In this exampl...">
-
-.. only:: html
-
-  .. figure:: ./images/thumb/plot_hawkes_varying_baseline.png
-    :target: ./plot_hawkes_varying_baseline.html
-
-    :ref:`example_plot_hawkes_varying_baseline.py`
-
-
-.. raw:: html
-
-    </div>
-
-
-
-.. toctree::
-   :hidden:
-
-   ./plot_hawkes_varying_baseline
+   ./plot_hawkes_cumulants_matching
 
 
 
@@ -328,6 +303,56 @@ How to use tick in practise?
 
 .. raw:: html
 
+    <div class="thumbnailContainer" tooltip="This example simulates and then estimates Hawkes kernels with varying baselines. In this exampl...">
+
+.. only:: html
+
+  .. figure:: ./images/thumb/plot_hawkes_varying_baseline.png
+    :target: ./plot_hawkes_varying_baseline.html
+
+    :ref:`example_plot_hawkes_varying_baseline.py`
+
+
+.. raw:: html
+
+    </div>
+
+
+
+.. toctree::
+   :hidden:
+
+   ./plot_hawkes_varying_baseline
+
+
+
+.. raw:: html
+
+    <div class="thumbnailContainer" tooltip="Plot examples of proximal operators available in tick ">
+
+.. only:: html
+
+  .. figure:: ./images/thumb/plot_prox_example.png
+    :target: ./plot_prox_example.html
+
+    :ref:`example_plot_prox_example.py`
+
+
+.. raw:: html
+
+    </div>
+
+
+
+.. toctree::
+   :hidden:
+
+   ./plot_prox_example
+
+
+
+.. raw:: html
+
     <div class="thumbnailContainer" tooltip="This Hawkes EM (`tick.inference.HawkesEM`) algorithm assume that kernels are piecewise constant...">
 
 .. only:: html
@@ -373,6 +398,56 @@ How to use tick in practise?
    :hidden:
 
    ./plot_simulation_linear_model
+
+
+
+.. raw:: html
+
+    <div class="thumbnailContainer" tooltip="This examples shows how the estimated intensity of a learned Hawkes process can be plotted. In ...">
+
+.. only:: html
+
+  .. figure:: ./images/thumb/plot_hawkes_estimated_intensity.png
+    :target: ./plot_hawkes_estimated_intensity.html
+
+    :ref:`example_plot_hawkes_estimated_intensity.py`
+
+
+.. raw:: html
+
+    </div>
+
+
+
+.. toctree::
+   :hidden:
+
+   ./plot_hawkes_estimated_intensity
+
+
+
+.. raw:: html
+
+    <div class="thumbnailContainer" tooltip="This example presents automatic step choice for SVRG thanks to Barzilai Borwein algorithm. This...">
+
+.. only:: html
+
+  .. figure:: ./images/thumb/plot_svrg_with_auto_step.png
+    :target: ./plot_svrg_with_auto_step.html
+
+    :ref:`example_plot_svrg_with_auto_step.py`
+
+
+.. raw:: html
+
+    </div>
+
+
+
+.. toctree::
+   :hidden:
+
+   ./plot_svrg_with_auto_step
 
 
 
@@ -508,103 +583,89 @@ How to use tick in practise?
 .. toctree::
    :hidden:
 
-   inference/plot_hawkes_sum_exp_kernels
+   ./plot_grad_coeff0
 
 
 
 .. toctree::
    :hidden:
 
-   optim/plot_grad_coeff0
+   ./plot_hawkes_matrix_exp_kernels
 
 
 
 .. toctree::
    :hidden:
 
-   optim/plot_losses_classification
+   ./plot_hawkes_sum_exp_kernels
 
 
 
 .. toctree::
    :hidden:
 
-   optim/plot_losses_regression
+   ./plot_poisson_constant_intensity
 
 
 
 .. toctree::
    :hidden:
 
-   optim/plot_prox_multi
+   ./plot_prox_multi
 
 
 
 .. toctree::
    :hidden:
 
-   optim/plot_optim_comparison
+   ./plot_simulation_weights
 
 
 
 .. toctree::
    :hidden:
 
-   optim/plot_prox_api
+   ./plot_solver_comparison
 
 
 
 .. toctree::
    :hidden:
 
-   optim/plot_losses_count_data
+   ./plot_prox_api
 
 
 
 .. toctree::
    :hidden:
 
-   plot/plot_hawkes_matrix_exp_kernels
+   ./plot_hawkes_1d_simu
 
 
 
 .. toctree::
    :hidden:
 
-   simulation/plot_poisson_constant_intensity
+   ./plot_time_function
 
 
 
 .. toctree::
    :hidden:
 
-   simulation/plot_simulation_weights
+   ./plot_hawkes_multidim_simu
 
 
 
 .. toctree::
    :hidden:
 
-   simulation/plot_time_function
+   ./plot_hawkes_kernels
 
 
 
 .. toctree::
    :hidden:
 
-   simulation/plot_hawkes_1d_simu
-
-
-
-.. toctree::
-   :hidden:
-
-   simulation/plot_hawkes_multidim_simu
-
-
-
-.. toctree::
-   :hidden:
-
-   simulation/plot_hawkes_kernels
+   ./plot_linear_model_losses
 

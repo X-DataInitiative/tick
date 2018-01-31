@@ -1,0 +1,12 @@
+
+.. _SimuSCCS:
+
+tick.survival.SimuSCCS
+======================
+
+.. currentmodule:: tick.survival
+
+.. autoclass:: SimuSCCS
+
+.. include:: tick.survival.SimuSCCS.examples
+    :allowmissing:

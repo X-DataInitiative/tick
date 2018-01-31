@@ -1,0 +1,12 @@
+
+.. _HawkesExpKern:
+
+tick.hawkes.HawkesExpKern
+=========================
+
+.. currentmodule:: tick.hawkes
+
+.. autoclass:: HawkesExpKern
+
+.. include:: tick.hawkes.HawkesExpKern.examples
+    :allowmissing:

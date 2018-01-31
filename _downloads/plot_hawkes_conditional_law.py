@@ -19,9 +19,8 @@ non-parametric estimation. `arXiv preprint arXiv:1401.0903`_.
 import numpy as np
 import matplotlib.pyplot as plt
 
-from tick.inference import HawkesConditionalLaw
+from tick.hawkes import SimuHawkes, HawkesKernelPowerLaw, HawkesConditionalLaw
 from tick.plot import plot_hawkes_kernels
-from tick.simulation import SimuHawkes, HawkesKernelPowerLaw
 
 multiplier = np.array([0.012, 0.008, 0.004, 0.005])
 cutoff = 0.0005

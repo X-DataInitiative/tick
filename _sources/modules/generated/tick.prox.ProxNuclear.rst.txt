@@ -1,0 +1,12 @@
+
+.. _ProxNuclear:
+
+tick.prox.ProxNuclear
+=====================
+
+.. currentmodule:: tick.prox
+
+.. autoclass:: ProxNuclear
+
+.. include:: tick.prox.ProxNuclear.examples
+    :allowmissing:

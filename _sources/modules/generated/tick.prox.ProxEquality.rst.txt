@@ -1,0 +1,12 @@
+
+.. _ProxEquality:
+
+tick.prox.ProxEquality
+======================
+
+.. currentmodule:: tick.prox
+
+.. autoclass:: ProxEquality
+
+.. include:: tick.prox.ProxEquality.examples
+    :allowmissing:

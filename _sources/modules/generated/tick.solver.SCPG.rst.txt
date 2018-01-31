@@ -1,0 +1,12 @@
+
+.. _SCPG:
+
+tick.solver.SCPG
+================
+
+.. currentmodule:: tick.solver
+
+.. autoclass:: SCPG
+
+.. include:: tick.solver.SCPG.examples
+    :allowmissing:

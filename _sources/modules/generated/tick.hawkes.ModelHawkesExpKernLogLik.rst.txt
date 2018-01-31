@@ -1,0 +1,12 @@
+
+.. _ModelHawkesExpKernLogLik:
+
+tick.hawkes.ModelHawkesExpKernLogLik
+====================================
+
+.. currentmodule:: tick.hawkes
+
+.. autoclass:: ModelHawkesExpKernLogLik
+
+.. include:: tick.hawkes.ModelHawkesExpKernLogLik.examples
+    :allowmissing:

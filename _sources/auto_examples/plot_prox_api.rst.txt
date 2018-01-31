@@ -1,0 +1,25 @@
+
+
+.. _example_plot_prox_api.py:
+
+plot_prox_api.py
+================
+
+
+
+.. image:: images/plot_prox_api_001.png
+    :align: center
+
+
+
+
+**Python source code:** :download:`plot_prox_api.py <plot_prox_api.py>`
+
+.. literalinclude:: plot_prox_api.py
+    :lines: 1-
+
+**Total running time of the example:**  1.41 seconds
+( 0 minutes  1.41 seconds)
+    
+Mentioned *tick* classes:
+   * `tick.prox.ProxL1`

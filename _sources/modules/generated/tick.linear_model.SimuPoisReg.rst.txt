@@ -1,0 +1,12 @@
+
+.. _SimuPoisReg:
+
+tick.linear_model.SimuPoisReg
+=============================
+
+.. currentmodule:: tick.linear_model
+
+.. autoclass:: SimuPoisReg
+
+.. include:: tick.linear_model.SimuPoisReg.examples
+    :allowmissing:

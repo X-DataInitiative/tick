@@ -1,0 +1,34 @@
+
+
+.. _example_plot_hawkes_estimated_intensity.py:
+
+
+============================================
+Plot estimated intensity of Hawkes processes
+============================================
+
+This examples shows how the estimated intensity of a learned Hawkes process
+can be plotted. In this example, the data has been generated so we are able
+to compare this estimated intensity with the true intensity that has generated
+the process.
+
+
+
+.. image:: images/plot_hawkes_estimated_intensity_001.png
+    :align: center
+
+
+
+
+**Python source code:** :download:`plot_hawkes_estimated_intensity.py <plot_hawkes_estimated_intensity.py>`
+
+.. literalinclude:: plot_hawkes_estimated_intensity.py
+    :lines: 11-
+
+**Total running time of the example:**  0.45 seconds
+( 0 minutes  0.45 seconds)
+    
+Mentioned *tick* classes:
+   * `tick.hawkes.HawkesSumExpKern`
+   * `tick.hawkes.SimuHawkesSumExpKernels`
+   * `tick.plot.plot_point_process`

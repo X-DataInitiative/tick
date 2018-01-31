@@ -1,0 +1,12 @@
+
+.. _HawkesKernelSumExp:
+
+tick.hawkes.HawkesKernelSumExp
+==============================
+
+.. currentmodule:: tick.hawkes
+
+.. autoclass:: HawkesKernelSumExp
+
+.. include:: tick.hawkes.HawkesKernelSumExp.examples
+    :allowmissing:

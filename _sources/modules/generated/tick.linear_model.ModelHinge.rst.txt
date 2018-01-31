@@ -1,0 +1,12 @@
+
+.. _ModelHinge:
+
+tick.linear_model.ModelHinge
+============================
+
+.. currentmodule:: tick.linear_model
+
+.. autoclass:: ModelHinge
+
+.. include:: tick.linear_model.ModelHinge.examples
+    :allowmissing:

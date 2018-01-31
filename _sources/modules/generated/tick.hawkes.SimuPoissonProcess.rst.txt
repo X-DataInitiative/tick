@@ -1,0 +1,12 @@
+
+.. _SimuPoissonProcess:
+
+tick.hawkes.SimuPoissonProcess
+==============================
+
+.. currentmodule:: tick.hawkes
+
+.. autoclass:: SimuPoissonProcess
+
+.. include:: tick.hawkes.SimuPoissonProcess.examples
+    :allowmissing:

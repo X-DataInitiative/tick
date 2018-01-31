@@ -1,0 +1,12 @@
+
+.. _ModelHuber:
+
+tick.robust.ModelHuber
+======================
+
+.. currentmodule:: tick.robust
+
+.. autoclass:: ModelHuber
+
+.. include:: tick.robust.ModelHuber.examples
+    :allowmissing:

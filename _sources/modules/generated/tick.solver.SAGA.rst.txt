@@ -1,0 +1,12 @@
+
+.. _SAGA:
+
+tick.solver.SAGA
+================
+
+.. currentmodule:: tick.solver
+
+.. autoclass:: SAGA
+
+.. include:: tick.solver.SAGA.examples
+    :allowmissing:

@@ -32,13 +32,13 @@ sparse and ill-conditonned problem.
 .. literalinclude:: plot_asynchronous_stochastic_solver.py
     :lines: 18-
 
-**Total running time of the example:**  2.41 seconds
-( 0 minutes  2.41 seconds)
+**Total running time of the example:**  4.59 seconds
+( 0 minutes  4.59 seconds)
     
 Mentioned *tick* classes:
-   * `tick.optim.model.ModelLogReg`
-   * `tick.optim.prox.ProxElasticNet`
-   * `tick.optim.solver.SVRG`
+   * `tick.linear_model.ModelLogReg`
+   * `tick.linear_model.SimuLogReg`
    * `tick.plot.plot_history`
-   * `tick.simulation.SimuLogReg`
+   * `tick.prox.ProxElasticNet`
    * `tick.simulation.weights_sparse_gauss`
+   * `tick.solver.SVRG`

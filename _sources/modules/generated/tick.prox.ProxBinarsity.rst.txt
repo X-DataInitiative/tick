@@ -1,0 +1,12 @@
+
+.. _ProxBinarsity:
+
+tick.prox.ProxBinarsity
+=======================
+
+.. currentmodule:: tick.prox
+
+.. autoclass:: ProxBinarsity
+
+.. include:: tick.prox.ProxBinarsity.examples
+    :allowmissing:

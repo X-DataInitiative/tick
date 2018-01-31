@@ -1,0 +1,263 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-97947441-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+    <title>plot_hawkes_kernels.py &#8212; tick 0.4.0 documentation</title>
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.4.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+
+  <div id="navbar" class="None navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          tick</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="index.html">Examples</a></li>
+                <li><a href="../modules/api.html">API</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Browse <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="../modules/hawkes.html"><code class="docutils literal"><span class="pre">tick.hawkes</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/hawkes.html#introduction">1. Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/hawkes.html#learners">2. Learners</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/hawkes.html#point-process-simulation">3. Point process simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/hawkes.html#models-for-inference">4. Models for inference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/linear_model.html"><code class="docutils literal"><span class="pre">tick.linear_model</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/linear_model.html#introduction">1. Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/linear_model.html#learners">2. Learners</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/linear_model.html#models">3. Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/linear_model.html#simulation">4. Simulation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/robust.html"><code class="docutils literal"><span class="pre">tick.robust</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/robust.html#regression-with-individual-intercepts">1. Regression with individual intercepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/robust.html#robust-losses">2. Robust losses</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/survival.html"><code class="docutils literal"><span class="pre">tick.survival</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/survival.html#learners">1. Learners</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/survival.html#models">2. Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/survival.html#simulation">3. Simulation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/prox.html"><code class="docutils literal"><span class="pre">tick.prox</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/prox.html#available-operators">1. Available operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/prox.html#example">2. Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/prox.html#how-to-combine-several-prox">3. How to combine several prox ?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/prox.html#the-prox-class-api">4. The <code class="docutils literal"><span class="pre">prox</span></code> class API</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/solver.html"><code class="docutils literal"><span class="pre">tick.solver</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/solver.html#the-solver-class-api">1. The <code class="docutils literal"><span class="pre">solver</span></code> class API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/solver.html#available-solvers">2. Available solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/solver.html#example">3. Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/simulation.html#simulation-of-model-weights">1. Simulation of model weights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/simulation.html#simulation-of-a-features-matrix">2. Simulation of a features matrix</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/plot.html"><code class="docutils literal"><span class="pre">tick.plot</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/plot.html#history-plot">1. History plot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/plot.html#plots-for-hawkes-processes">2. Plots for Hawkes processes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/plot.html#plots-for-point-process-simulation">3. Plots for point process simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/plot.html#miscellaneous-plots">4. Miscellaneous plots</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/dataset.html"><code class="docutils literal"><span class="pre">tick.dataset</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/generated/tick.dataset.fetch_tick_dataset.html">tick.dataset.fetch_tick_dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/generated/tick.dataset.fetch_hawkes_bund_data.html">tick.dataset.fetch_hawkes_bund_data</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/preprocessing.html#preprocessing-for-static-features">Preprocessing for static features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/preprocessing.html#preprocessing-for-longitudinal-features">Preprocessing for longitudinal features</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/metrics.html"><code class="docutils literal"><span class="pre">tick.metrics</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/generated/tick.metrics.support_fdp.html">tick.metrics.support_fdp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/generated/tick.metrics.support_recall.html">tick.metrics.support_recall</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/R.html">How to use <code class="docutils literal"><span class="pre">tick</span></code> from the R statistical software</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/R.html#training-a-logistic-regression-model">1. Training a logistic regression model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/R.html#simulation-of-a-hawkes-process">2. Simulation of a Hawkes process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/R.html#using-optimization-tools-from-r">3. Using optimization tools from R</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/dev.html">Developer documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/dev.html#main-highlights">Main highlights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/dev.html#base-class">Base class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/dev.html#how-to-add-a-new-model-solver-or-prox">How to add a new model, solver or prox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/dev.html#enable-python-pickling-of-c-objects">Enable Python-pickling of C++ objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/dev.html#tips-for-debugging-c-classes-in-tick">Tips for debugging C++ classes in tick</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/api.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/api.html#table-of-contents">Table of contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/api.html#hawkes"><code class="docutils literal"><span class="pre">hawkes</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/api.html#linear-model"><code class="docutils literal"><span class="pre">linear_model</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/api.html#robust"><code class="docutils literal"><span class="pre">robust</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/api.html#survival"><code class="docutils literal"><span class="pre">survival</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/api.html#prox"><code class="docutils literal"><span class="pre">prox</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/api.html#solver"><code class="docutils literal"><span class="pre">solver</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/api.html#api-simulation"><code class="docutils literal"><span class="pre">simulation</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/api.html#plot"><code class="docutils literal"><span class="pre">plot</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/api.html#dataset"><code class="docutils literal"><span class="pre">dataset</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/api.html#preprocessing"><code class="docutils literal"><span class="pre">preprocessing</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/api.html#metrics"><code class="docutils literal"><span class="pre">metrics</span></code></a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container content-container">
+  
+  <div class="section" id="plot-hawkes-kernels-py">
+<span id="example-plot-hawkes-kernels-py"></span><h1>plot_hawkes_kernels.py<a class="headerlink" href="#plot-hawkes-kernels-py" title="Permalink to this headline">¶</a></h1>
+<img alt="../_images/plot_hawkes_kernels_001.png" class="align-center" src="../_images/plot_hawkes_kernels_001.png" />
+<p><strong>Python source code:</strong> <a class="reference download internal" href="../_downloads/plot_hawkes_kernels.py" download=""><code class="xref download docutils literal"><span class="pre">plot_hawkes_kernels.py</span></code></a></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="kn">from</span> <span class="nn">tick.hawkes</span> <span class="k">import</span> <a href="../modules/generated/tick.hawkes.HawkesKernel0.html#tick.hawkes.HawkesKernel0"><span class="n">HawkesKernel0</span></a><span class="p">,</span> <a href="../modules/generated/tick.hawkes.HawkesKernelExp.html#tick.hawkes.HawkesKernelExp"><span class="n">HawkesKernelExp</span></a><span class="p">,</span> <a href="../modules/generated/tick.hawkes.HawkesKernelPowerLaw.html#tick.hawkes.HawkesKernelPowerLaw"><span class="n">HawkesKernelPowerLaw</span></a><span class="p">,</span> \
+    <a href="../modules/generated/tick.hawkes.HawkesKernelTimeFunc.html#tick.hawkes.HawkesKernelTimeFunc"><span class="n">HawkesKernelTimeFunc</span></a>
+
+<span class="n">kernel_0</span> <span class="o">=</span> <a href="../modules/generated/tick.hawkes.HawkesKernel0.html#tick.hawkes.HawkesKernel0"><span class="n">HawkesKernel0</span></a><span class="p">()</span>
+<span class="n">kernel_exp</span> <span class="o">=</span> <a href="../modules/generated/tick.hawkes.HawkesKernelExp.html#tick.hawkes.HawkesKernelExp"><span class="n">HawkesKernelExp</span></a><span class="p">(</span><span class="o">.</span><span class="mi">7</span><span class="p">,</span> <span class="mf">1.3</span><span class="p">)</span>
+<span class="n">kernel_pl</span> <span class="o">=</span> <a href="../modules/generated/tick.hawkes.HawkesKernelPowerLaw.html#tick.hawkes.HawkesKernelPowerLaw"><span class="n">HawkesKernelPowerLaw</span></a><span class="p">(</span><span class="o">.</span><span class="mi">1</span><span class="p">,</span> <span class="o">.</span><span class="mi">2</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">)</span>
+
+<span class="n">t_values</span> <span class="o">=</span> <a href="http://docs.scipy.org/doc/numpy-1.6.0/reference/generated/numpy.array.html#numpy.array"><span class="n">np</span><span class="o">.</span><span class="n">array</span></a><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="mf">1.8</span><span class="p">,</span> <span class="mf">2.7</span><span class="p">])</span>
+<span class="n">y_values</span> <span class="o">=</span> <a href="http://docs.scipy.org/doc/numpy-1.6.0/reference/generated/numpy.array.html#numpy.array"><span class="n">np</span><span class="o">.</span><span class="n">array</span></a><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="o">.</span><span class="mi">6</span><span class="p">,</span> <span class="o">.</span><span class="mi">34</span><span class="p">,</span> <span class="o">.</span><span class="mi">2</span><span class="p">,</span> <span class="o">.</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">kernel_tf</span> <span class="o">=</span> <a href="../modules/generated/tick.hawkes.HawkesKernelTimeFunc.html#tick.hawkes.HawkesKernelTimeFunc"><span class="n">HawkesKernelTimeFunc</span></a><span class="p">(</span><span class="n">t_values</span><span class="o">=</span><span class="n">t_values</span><span class="p">,</span> <span class="n">y_values</span><span class="o">=</span><span class="n">y_values</span><span class="p">)</span>
+
+<span class="n">kernels</span> <span class="o">=</span> <span class="p">[[</span><span class="n">kernel_0</span><span class="p">,</span> <span class="n">kernel_exp</span><span class="p">],</span> <span class="p">[</span><span class="n">kernel_pl</span><span class="p">,</span> <span class="n">kernel_tf</span><span class="p">]]</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+
+<span class="n">t_values</span> <span class="o">=</span> <a href="http://docs.scipy.org/doc/numpy-1.6.0/reference/generated/numpy.linspace.html#numpy.linspace"><span class="n">np</span><span class="o">.</span><span class="n">linspace</span></a><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
+        <span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t_values</span><span class="p">,</span> <span class="n">kernels</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">get_values</span><span class="p">(</span><span class="n">t_values</span><span class="p">),</span>
+                      <span class="n">label</span><span class="o">=</span><span class="n">kernels</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">])</span>
+        <span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<a href="http://matplotlib.org/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
+</pre></div>
+</div>
+<p><strong>Total running time of the example:</strong>  0.55 seconds
+( 0 minutes  0.55 seconds)</p>
+<dl class="docutils">
+<dt>Mentioned <em>tick</em> classes:</dt>
+<dd><ul class="first last simple">
+<li><a class="reference internal" href="../modules/generated/tick.hawkes.HawkesKernel0.html#tick.hawkes.HawkesKernel0" title="tick.hawkes.HawkesKernel0"><code class="xref py py-obj docutils literal"><span class="pre">tick.hawkes.HawkesKernel0</span></code></a></li>
+<li><a class="reference internal" href="../modules/generated/tick.hawkes.HawkesKernelExp.html#tick.hawkes.HawkesKernelExp" title="tick.hawkes.HawkesKernelExp"><code class="xref py py-obj docutils literal"><span class="pre">tick.hawkes.HawkesKernelExp</span></code></a></li>
+<li><a class="reference internal" href="../modules/generated/tick.hawkes.HawkesKernelPowerLaw.html#tick.hawkes.HawkesKernelPowerLaw" title="tick.hawkes.HawkesKernelPowerLaw"><code class="xref py py-obj docutils literal"><span class="pre">tick.hawkes.HawkesKernelPowerLaw</span></code></a></li>
+<li><a class="reference internal" href="../modules/generated/tick.hawkes.HawkesKernelTimeFunc.html#tick.hawkes.HawkesKernelTimeFunc" title="tick.hawkes.HawkesKernelTimeFunc"><code class="xref py py-obj docutils literal"><span class="pre">tick.hawkes.HawkesKernelTimeFunc</span></code></a></li>
+</ul>
+</dd>
+</dl>
+</div>
+
+
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Vinther Poulsen.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

@@ -1,0 +1,12 @@
+
+.. _SimuCoxReg:
+
+tick.survival.SimuCoxReg
+========================
+
+.. currentmodule:: tick.survival
+
+.. autoclass:: SimuCoxReg
+
+.. include:: tick.survival.SimuCoxReg.examples
+    :allowmissing:

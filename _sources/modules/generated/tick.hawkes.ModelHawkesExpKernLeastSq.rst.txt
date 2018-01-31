@@ -1,0 +1,12 @@
+
+.. _ModelHawkesExpKernLeastSq:
+
+tick.hawkes.ModelHawkesExpKernLeastSq
+=====================================
+
+.. currentmodule:: tick.hawkes
+
+.. autoclass:: ModelHawkesExpKernLeastSq
+
+.. include:: tick.hawkes.ModelHawkesExpKernLeastSq.examples
+    :allowmissing:

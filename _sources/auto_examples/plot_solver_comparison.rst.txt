@@ -1,0 +1,33 @@
+
+
+.. _example_plot_solver_comparison.py:
+
+plot_solver_comparison.py
+=========================
+
+
+
+.. image:: images/plot_solver_comparison_001.png
+    :align: center
+
+
+
+
+**Python source code:** :download:`plot_solver_comparison.py <plot_solver_comparison.py>`
+
+.. literalinclude:: plot_solver_comparison.py
+    :lines: 1-
+
+**Total running time of the example:**  3.60 seconds
+( 0 minutes  3.60 seconds)
+    
+Mentioned *tick* classes:
+   * `tick.linear_model.ModelLogReg`
+   * `tick.linear_model.SimuLogReg`
+   * `tick.plot.plot_history`
+   * `tick.prox.ProxElasticNet`
+   * `tick.simulation.weights_sparse_gauss`
+   * `tick.solver.AGD`
+   * `tick.solver.GD`
+   * `tick.solver.SGD`
+   * `tick.solver.SVRG`

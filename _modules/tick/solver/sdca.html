@@ -1,0 +1,442 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-97947441-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+    <title>tick.solver.sdca &#8212; tick 0.4.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.4.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../../../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../../../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../../_static/bootstrap-sphinx.js"></script>
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+
+  <div id="navbar" class="None navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../../index.html">
+          tick</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../../../index.html">Home</a></li>
+                <li><a href="../../../auto_examples/index.html">Examples</a></li>
+                <li><a href="../../../modules/api.html">API</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../../index.html">Browse <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/hawkes.html"><code class="docutils literal"><span class="pre">tick.hawkes</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/hawkes.html#introduction">1. Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/hawkes.html#learners">2. Learners</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/hawkes.html#point-process-simulation">3. Point process simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/hawkes.html#models-for-inference">4. Models for inference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/linear_model.html"><code class="docutils literal"><span class="pre">tick.linear_model</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/linear_model.html#introduction">1. Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/linear_model.html#learners">2. Learners</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/linear_model.html#models">3. Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/linear_model.html#simulation">4. Simulation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/robust.html"><code class="docutils literal"><span class="pre">tick.robust</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/robust.html#regression-with-individual-intercepts">1. Regression with individual intercepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/robust.html#robust-losses">2. Robust losses</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/survival.html"><code class="docutils literal"><span class="pre">tick.survival</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/survival.html#learners">1. Learners</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/survival.html#models">2. Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/survival.html#simulation">3. Simulation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/prox.html"><code class="docutils literal"><span class="pre">tick.prox</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/prox.html#available-operators">1. Available operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/prox.html#example">2. Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/prox.html#how-to-combine-several-prox">3. How to combine several prox ?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/prox.html#the-prox-class-api">4. The <code class="docutils literal"><span class="pre">prox</span></code> class API</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/solver.html"><code class="docutils literal"><span class="pre">tick.solver</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/solver.html#the-solver-class-api">1. The <code class="docutils literal"><span class="pre">solver</span></code> class API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/solver.html#available-solvers">2. Available solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/solver.html#example">3. Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/simulation.html#simulation-of-model-weights">1. Simulation of model weights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/simulation.html#simulation-of-a-features-matrix">2. Simulation of a features matrix</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/plot.html"><code class="docutils literal"><span class="pre">tick.plot</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/plot.html#history-plot">1. History plot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/plot.html#plots-for-hawkes-processes">2. Plots for Hawkes processes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/plot.html#plots-for-point-process-simulation">3. Plots for point process simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/plot.html#miscellaneous-plots">4. Miscellaneous plots</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/dataset.html"><code class="docutils literal"><span class="pre">tick.dataset</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/generated/tick.dataset.fetch_tick_dataset.html">tick.dataset.fetch_tick_dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/generated/tick.dataset.fetch_hawkes_bund_data.html">tick.dataset.fetch_hawkes_bund_data</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/preprocessing.html#preprocessing-for-static-features">Preprocessing for static features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/preprocessing.html#preprocessing-for-longitudinal-features">Preprocessing for longitudinal features</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/metrics.html"><code class="docutils literal"><span class="pre">tick.metrics</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/generated/tick.metrics.support_fdp.html">tick.metrics.support_fdp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/generated/tick.metrics.support_recall.html">tick.metrics.support_recall</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/R.html">How to use <code class="docutils literal"><span class="pre">tick</span></code> from the R statistical software</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/R.html#training-a-logistic-regression-model">1. Training a logistic regression model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/R.html#simulation-of-a-hawkes-process">2. Simulation of a Hawkes process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/R.html#using-optimization-tools-from-r">3. Using optimization tools from R</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/dev.html">Developer documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/dev.html#main-highlights">Main highlights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/dev.html#base-class">Base class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/dev.html#how-to-add-a-new-model-solver-or-prox">How to add a new model, solver or prox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/dev.html#enable-python-pickling-of-c-objects">Enable Python-pickling of C++ objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/dev.html#tips-for-debugging-c-classes-in-tick">Tips for debugging C++ classes in tick</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/api.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/api.html#table-of-contents">Table of contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/api.html#hawkes"><code class="docutils literal"><span class="pre">hawkes</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/api.html#linear-model"><code class="docutils literal"><span class="pre">linear_model</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/api.html#robust"><code class="docutils literal"><span class="pre">robust</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/api.html#survival"><code class="docutils literal"><span class="pre">survival</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/api.html#prox"><code class="docutils literal"><span class="pre">prox</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/api.html#solver"><code class="docutils literal"><span class="pre">solver</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/api.html#api-simulation"><code class="docutils literal"><span class="pre">simulation</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/api.html#plot"><code class="docutils literal"><span class="pre">plot</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/api.html#dataset"><code class="docutils literal"><span class="pre">dataset</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/api.html#preprocessing"><code class="docutils literal"><span class="pre">preprocessing</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/api.html#metrics"><code class="docutils literal"><span class="pre">metrics</span></code></a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container content-container">
+  
+  <h1>Source code for tick.solver.sdca</h1><div class="highlight"><pre>
+<span></span><span class="c1"># License: BSD 3 clause</span>
+
+
+<span class="kn">from</span> <span class="nn">.base</span> <span class="k">import</span> <span class="n">SolverFirstOrderSto</span>
+<span class="kn">from</span> <span class="nn">.build.solver</span> <span class="k">import</span> <span class="n">SDCA</span> <span class="k">as</span> <span class="n">_SDCA</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+
+<div class="viewcode-block" id="SDCA"><a class="viewcode-back" href="../../../modules/generated/tick.solver.SDCA.html#tick.solver.SDCA">[docs]</a><span class="k">class</span> <span class="nc">SDCA</span><span class="p">(</span><span class="n">SolverFirstOrderSto</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Stochastic Dual Coordinate Ascent</span>
+
+<span class="sd">    For the minimization of objectives of the form</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        \\frac 1n \\sum_{i=1}^n f_i(w^\\top x_i) + g(w),</span>
+
+<span class="sd">    where the functions :math:`f_i` have smooth gradients and :math:`g` is</span>
+<span class="sd">    prox-capable. This solver actually requires more than that, since it is</span>
+<span class="sd">    working in a Fenchel dual formulation of the primal problem given above.</span>
+<span class="sd">    First, it requires that some ridge penalization is used, hence the mandatory</span>
+<span class="sd">    parameter ``l_l2sq`` below: SDCA will actually minimize the objective</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        \\frac 1n \\sum_{i=1}^n f_i(x_i^\\top w) + g(w) + \\frac{\\lambda}{2}</span>
+<span class="sd">        \\| w \\|_2^2,</span>
+
+<span class="sd">    where :math:`\lambda` is tuned with the ``l_l2sq`` (see below). Now, putting</span>
+<span class="sd">    :math:`h(w) = g(w) + \lambda \|w\|_2^2 / 2`, SDCA maximize</span>
+<span class="sd">    the Fenchel dual problem</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        D(\\alpha) = \\frac 1n \\sum_{i=1}^n \\Bigg[ - f_i^*(-\\alpha_i) -</span>
+<span class="sd">        \lambda h^*\\Big( \\frac{1}{\\lambda n} \\sum_{i=1}^n \\alpha_i x_i)</span>
+<span class="sd">        \\Big) \\Bigg],</span>
+
+<span class="sd">    where :math:`f_i^*` and :math:`h^*` and the Fenchel duals of :math:`f_i`</span>
+<span class="sd">    and :math:`h` respectively.</span>
+<span class="sd">    Function :math:`f = \\frac 1n \\sum_{i=1}^n f_i` corresponds</span>
+<span class="sd">    to the ``model.loss`` method of the model (passed with ``set_model`` to the</span>
+<span class="sd">    solver) and :math:`g` corresponds to the ``prox.value`` method of the</span>
+<span class="sd">    prox (passed with the ``set_prox`` method). One iteration of</span>
+<span class="sd">    :class:`SDCA &lt;tick.solver.SDCA&gt;` corresponds to the</span>
+<span class="sd">    following iteration applied ``epoch_size`` times:</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        \\begin{align*}</span>
+<span class="sd">        \\delta_i &amp;\\gets \\arg\\min_{\\delta} \\Big[ \\; f_i^*(-\\alpha_i -</span>
+<span class="sd">        \\delta) + w^\\top x_i \\delta + \\frac{1}{2 \\lambda n} \\| x_i\\|_2^2</span>
+<span class="sd">        \\delta^2 \\Big] \\\\</span>
+<span class="sd">        \\alpha_i &amp;\\gets \\alpha_i + \\delta_i \\\\</span>
+<span class="sd">        v &amp;\\gets v + \\frac{1}{\\lambda n} \\delta_i x_i \\\\</span>
+<span class="sd">        w &amp;\\gets \\nabla g^*(v)</span>
+<span class="sd">        \\end{align*}</span>
+
+<span class="sd">    where :math:`i` is sampled at random (strategy depends on ``rand_type``) at</span>
+<span class="sd">    each iteration. The ridge regularization :math:`\\lambda` can be tuned with</span>
+<span class="sd">    ``l_l2sq``, the seed of the random number generator for generation</span>
+<span class="sd">    of samples :math:`i` can be seeded with ``seed``. The iterations stop</span>
+<span class="sd">    whenever tolerance ``tol`` is achieved, or after ``max_iter`` epochs</span>
+<span class="sd">    (namely ``max_iter`` :math:`\\times` ``epoch_size`` iterates).</span>
+<span class="sd">    The obtained solution :math:`w` is returned by the ``solve`` method, and is</span>
+<span class="sd">    also stored in the ``solution`` attribute of the solver. The dual solution</span>
+<span class="sd">    :math:`\\alpha` is stored in the ``dual_solution`` attribute.</span>
+
+<span class="sd">    Internally, :class:`SDCA &lt;tick.solver.SDCA&gt;` has dedicated code when</span>
+<span class="sd">    the model is a generalized linear model with sparse features, and a</span>
+<span class="sd">    separable proximal operator: in this case, each iteration works only in the</span>
+<span class="sd">    set of non-zero features, leading to much faster iterates.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    l_l2sq : `float`</span>
+<span class="sd">        Level of L2 penalization. L2 penalization is mandatory for SDCA.</span>
+<span class="sd">        Convergence properties of this solver are deeply connected to this</span>
+<span class="sd">        parameter, which should be understood as the &quot;step&quot; used by the</span>
+<span class="sd">        algorithm.</span>
+
+<span class="sd">    tol : `float`, default=1e-10</span>
+<span class="sd">        The tolerance of the solver (iterations stop when the stopping</span>
+<span class="sd">        criterion is below it)</span>
+
+<span class="sd">    max_iter : `int`, default=10</span>
+<span class="sd">        Maximum number of iterations of the solver, namely maximum number of</span>
+<span class="sd">        epochs (by default full pass over the data, unless ``epoch_size`` has</span>
+<span class="sd">        been modified from default)</span>
+
+<span class="sd">    verbose : `bool`, default=True</span>
+<span class="sd">        If `True`, solver verboses history, otherwise nothing is displayed,</span>
+<span class="sd">        but history is recorded anyway</span>
+
+<span class="sd">    seed : `int`, default=-1</span>
+<span class="sd">        The seed of the random sampling. If it is negative then a random seed</span>
+<span class="sd">        (different at each run) will be chosen.</span>
+
+<span class="sd">    epoch_size : `int`, default given by model</span>
+<span class="sd">        Epoch size, namely how many iterations are made before updating the</span>
+<span class="sd">        variance reducing term. By default, this is automatically tuned using</span>
+<span class="sd">        information from the model object passed through ``set_model``.</span>
+
+<span class="sd">    rand_type : {&#39;unif&#39;, &#39;perm&#39;}, default=&#39;unif&#39;</span>
+<span class="sd">        How samples are randomly selected from the data</span>
+
+<span class="sd">        * if ``&#39;unif&#39;`` samples are uniformly drawn among all possibilities</span>
+<span class="sd">        * if ``&#39;perm&#39;`` a random permutation of all possibilities is</span>
+<span class="sd">          generated and samples are sequentially taken from it. Once all of</span>
+<span class="sd">          them have been taken, a new random permutation is generated</span>
+
+<span class="sd">    print_every : `int`, default=1</span>
+<span class="sd">        Print history information every time the iteration number is a</span>
+<span class="sd">        multiple of ``print_every``. Used only is ``verbose`` is True</span>
+
+<span class="sd">    record_every : `int`, default=1</span>
+<span class="sd">        Save history information every time the iteration number is a</span>
+<span class="sd">        multiple of ``record_every``</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    model : `Model`</span>
+<span class="sd">        The model used by the solver, passed with the ``set_model`` method</span>
+
+<span class="sd">    prox : `Prox`</span>
+<span class="sd">        Proximal operator used by the solver, passed with the ``set_prox``</span>
+<span class="sd">        method</span>
+
+<span class="sd">    solution : `numpy.array`, shape=(n_coeffs,)</span>
+<span class="sd">        Minimizer found by the solver</span>
+
+<span class="sd">    dual_solution : `numpy.array`</span>
+<span class="sd">        Dual vector corresponding to the primal solution obtained by the solver</span>
+
+<span class="sd">    history : `dict`-like</span>
+<span class="sd">        A dict-type of object that contains history of the solver along</span>
+<span class="sd">        iterations. It should be accessed using the ``get_history`` method</span>
+
+<span class="sd">    time_start : `str`</span>
+<span class="sd">        Start date of the call to ``solve()``</span>
+
+<span class="sd">    time_elapsed : `float`</span>
+<span class="sd">        Duration of the call to ``solve()``, in seconds</span>
+
+<span class="sd">    time_end : `str`</span>
+<span class="sd">        End date of the call to ``solve()``</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    * S. Shalev-Shwartz and T. Zhang, Accelerated proximal stochastic dual</span>
+<span class="sd">      coordinate ascent for regularized loss minimization, *ICML 2014*</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_attrinfos</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;l_l2sq&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;cpp_setter&#39;</span><span class="p">:</span> <span class="s1">&#39;set_l_l2sq&#39;</span><span class="p">}</span>
+    <span class="p">}</span>
+
+<div class="viewcode-block" id="SDCA.__init__"><a class="viewcode-back" href="../../../modules/generated/tick.solver.SDCA.html#tick.solver.SDCA.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">l_l2sq</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">epoch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">rand_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;unif&#39;</span><span class="p">,</span> <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-10</span><span class="p">,</span>
+                 <span class="n">max_iter</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                 <span class="n">print_every</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">record_every</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+                 <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+
+        <span class="n">SolverFirstOrderSto</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">epoch_size</span><span class="o">=</span><span class="n">epoch_size</span><span class="p">,</span>
+                                     <span class="n">rand_type</span><span class="o">=</span><span class="n">rand_type</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">,</span>
+                                     <span class="n">max_iter</span><span class="o">=</span><span class="n">max_iter</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
+                                     <span class="n">print_every</span><span class="o">=</span><span class="n">print_every</span><span class="p">,</span>
+                                     <span class="n">record_every</span><span class="o">=</span><span class="n">record_every</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">l_l2sq</span> <span class="o">=</span> <span class="n">l_l2sq</span>
+        <span class="n">epoch_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">epoch_size</span>
+        <span class="k">if</span> <span class="n">epoch_size</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">epoch_size</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="c1"># Construct the wrapped C++ SDCA solver</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_solver</span> <span class="o">=</span> <span class="n">_SDCA</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">l_l2sq</span><span class="p">,</span> <span class="n">epoch_size</span><span class="p">,</span>
+                             <span class="bp">self</span><span class="o">.</span><span class="n">tol</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rand_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">seed</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SDCA.objective"><a class="viewcode-back" href="../../../modules/generated/tick.solver.SDCA.html#tick.solver.SDCA.objective">[docs]</a>    <span class="k">def</span> <span class="nf">objective</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coeffs</span><span class="p">,</span> <span class="n">loss</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Compute the objective minimized by the solver at ``coeffs``</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        coeffs : `numpy.ndarray`, shape=(n_coeffs,)</span>
+<span class="sd">            The objective is computed at this point</span>
+
+<span class="sd">        loss : `float`, default=`None`</span>
+<span class="sd">            Gives the value of the loss if already known (allows to</span>
+<span class="sd">            avoid its computation in some cases)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        output : `float`</span>
+<span class="sd">            Value of the objective at given ``coeffs``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">prox_l2_value</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">l_l2sq</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">coeffs</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+        <span class="k">return</span> <span class="n">SolverFirstOrderSto</span><span class="o">.</span><span class="n">objective</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coeffs</span><span class="p">,</span> <span class="n">loss</span><span class="p">)</span> <span class="o">+</span> <span class="n">prox_l2_value</span></div>
+
+<div class="viewcode-block" id="SDCA.dual_objective"><a class="viewcode-back" href="../../../modules/generated/tick.solver.SDCA.html#tick.solver.SDCA.dual_objective">[docs]</a>    <span class="k">def</span> <span class="nf">dual_objective</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dual_coeffs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Compute the dual objective at ``dual_coeffs``</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        dual_coeffs : `numpy.ndarray`, shape=(n_samples,)</span>
+<span class="sd">            The dual objective objective is computed at this point</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        output : `float`</span>
+<span class="sd">            Value of the dual objective at given ``dual_coeffs``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">primal</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">_sdca_primal_dual_relation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">l_l2sq</span><span class="p">,</span> <span class="n">dual_coeffs</span><span class="p">)</span>
+        <span class="n">prox_l2_value</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">l_l2sq</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">primal</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">dual_loss</span><span class="p">(</span><span class="n">dual_coeffs</span><span class="p">)</span> <span class="o">-</span> <span class="n">prox_l2_value</span></div>
+
+    <span class="k">def</span> <span class="nf">_set_rand_max</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Some model, like Poisreg with linear link, have a special</span>
+            <span class="c1"># rand_max for SDCA</span>
+            <span class="n">model_rand_max</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">_sdca_rand_max</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">NotImplementedError</span><span class="p">):</span>
+            <span class="n">model_rand_max</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">_rand_max</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;_rand_max&quot;</span><span class="p">,</span> <span class="n">model_rand_max</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">dual_solution</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_solver</span><span class="o">.</span><span class="n">get_dual_vector</span><span class="p">()</span></div>
+</pre></div>
+
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Vinther Poulsen.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

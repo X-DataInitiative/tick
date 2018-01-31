@@ -21,6 +21,7 @@ Some remarks are the following:
   ``LogisticRegression``
 * In this example, the computational time of ``tick`` is better than ``scikit``'s
 """
+
 import numpy as np
 from time import time
 import matplotlib.pyplot as plt
@@ -29,7 +30,7 @@ from sklearn.metrics import roc_curve, auc
 from sklearn.linear_model import LogisticRegression as LogRegScikit
 
 from tick.dataset import fetch_tick_dataset
-from tick.inference import LogisticRegression as LogRegTick
+from tick.linear_model import LogisticRegression as LogRegTick
 
 train_set = fetch_tick_dataset('binary/adult/adult.trn.bz2')
 test_set = fetch_tick_dataset('binary/adult/adult.tst.bz2')
@@ -79,6 +80,3 @@ plt.bar([1, 2], [t_tick, t_scikit])
 ax4.set_xticks([1, 2])
 ax4.set_xticklabels(['tick', 'scikit-learn'], fontsize=14)
 plt.title('Computational time (seconds)', fontsize=16)
-
-plt.tight_layout()
-plt.show()

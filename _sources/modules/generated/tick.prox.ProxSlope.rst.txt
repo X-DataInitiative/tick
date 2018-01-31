@@ -1,0 +1,12 @@
+
+.. _ProxSlope:
+
+tick.prox.ProxSlope
+===================
+
+.. currentmodule:: tick.prox
+
+.. autoclass:: ProxSlope
+
+.. include:: tick.prox.ProxSlope.examples
+    :allowmissing:

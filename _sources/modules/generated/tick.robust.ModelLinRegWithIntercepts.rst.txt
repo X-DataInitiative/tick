@@ -1,0 +1,12 @@
+
+.. _ModelLinRegWithIntercepts:
+
+tick.robust.ModelLinRegWithIntercepts
+=====================================
+
+.. currentmodule:: tick.robust
+
+.. autoclass:: ModelLinRegWithIntercepts
+
+.. include:: tick.robust.ModelLinRegWithIntercepts.examples
+    :allowmissing:

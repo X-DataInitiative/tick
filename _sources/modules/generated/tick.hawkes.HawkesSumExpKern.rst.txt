@@ -1,0 +1,12 @@
+
+.. _HawkesSumExpKern:
+
+tick.hawkes.HawkesSumExpKern
+============================
+
+.. currentmodule:: tick.hawkes
+
+.. autoclass:: HawkesSumExpKern
+
+.. include:: tick.hawkes.HawkesSumExpKern.examples
+    :allowmissing:

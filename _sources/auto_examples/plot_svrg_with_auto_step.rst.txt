@@ -1,0 +1,44 @@
+
+
+.. _example_plot_svrg_with_auto_step.py:
+
+
+=====================
+Automatic step choice
+=====================
+
+This example presents automatic step choice for SVRG thanks to
+Barzilai Borwein algorithm. This allows SVRG to be way less
+sensitive to the choice of the step. In this example we use a toy
+problem for which we know the theoretical optimal step and presents
+how SVRG deals with badly chosen steps.
+
+Tan, C., Ma, S., Dai, Y. H., & Qian, Y. (2016).
+Barzilai-Borwein step size for stochastic gradient descent.
+`In Advances in Neural Information Processing Systems`_.
+
+.. _In Advances in Neural Information Processing Systems: http://papers.nips.cc/paper/6286-barzilai-borwein-step-size-for-stochastic-gradient-descent
+
+
+
+.. image:: images/plot_svrg_with_auto_step_001.png
+    :align: center
+
+
+
+
+**Python source code:** :download:`plot_svrg_with_auto_step.py <plot_svrg_with_auto_step.py>`
+
+.. literalinclude:: plot_svrg_with_auto_step.py
+    :lines: 18-
+
+**Total running time of the example:**  4.28 seconds
+( 0 minutes  4.28 seconds)
+    
+Mentioned *tick* classes:
+   * `tick.linear_model.ModelLogReg`
+   * `tick.linear_model.SimuLogReg`
+   * `tick.plot.plot_history`
+   * `tick.prox.ProxElasticNet`
+   * `tick.simulation.weights_sparse_gauss`
+   * `tick.solver.SVRG`

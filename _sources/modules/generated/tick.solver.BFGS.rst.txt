@@ -1,0 +1,12 @@
+
+.. _BFGS:
+
+tick.solver.BFGS
+================
+
+.. currentmodule:: tick.solver
+
+.. autoclass:: BFGS
+
+.. include:: tick.solver.BFGS.examples
+    :allowmissing:

@@ -1,0 +1,12 @@
+
+.. _HawkesSumGaussians:
+
+tick.hawkes.HawkesSumGaussians
+==============================
+
+.. currentmodule:: tick.hawkes
+
+.. autoclass:: HawkesSumGaussians
+
+.. include:: tick.hawkes.HawkesSumGaussians.examples
+    :allowmissing:

@@ -1,0 +1,9 @@
+tick.robust.std_mad
+===================
+
+.. currentmodule:: tick.robust
+
+.. autofunction:: std_mad
+
+.. include:: tick.robust.std_mad.examples
+    :allowmissing:

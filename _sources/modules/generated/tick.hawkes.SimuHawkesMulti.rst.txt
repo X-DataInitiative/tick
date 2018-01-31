@@ -1,0 +1,12 @@
+
+.. _SimuHawkesMulti:
+
+tick.hawkes.SimuHawkesMulti
+===========================
+
+.. currentmodule:: tick.hawkes
+
+.. autoclass:: SimuHawkesMulti
+
+.. include:: tick.hawkes.SimuHawkesMulti.examples
+    :allowmissing:

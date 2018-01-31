@@ -1,0 +1,34 @@
+
+
+.. _example_plot_linear_model_losses.py:
+
+plot_linear_model_losses.py
+===========================
+
+
+
+.. image:: images/plot_linear_model_losses_001.png
+    :align: center
+
+
+
+
+**Python source code:** :download:`plot_linear_model_losses.py <plot_linear_model_losses.py>`
+
+.. literalinclude:: plot_linear_model_losses.py
+    :lines: 1-
+
+**Total running time of the example:**  1.13 seconds
+( 0 minutes  1.13 seconds)
+    
+Mentioned *tick* classes:
+   * `tick.linear_model.ModelHinge`
+   * `tick.linear_model.ModelLinReg`
+   * `tick.linear_model.ModelLogReg`
+   * `tick.linear_model.ModelPoisReg`
+   * `tick.linear_model.ModelQuadraticHinge`
+   * `tick.linear_model.ModelSmoothedHinge`
+   * `tick.robust.ModelAbsoluteRegression`
+   * `tick.robust.ModelEpsilonInsensitive`
+   * `tick.robust.ModelHuber`
+   * `tick.robust.ModelModifiedHuber`

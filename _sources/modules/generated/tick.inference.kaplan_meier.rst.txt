@@ -1,9 +1,0 @@
-tick.inference.kaplan_meier
-===========================
-
-.. currentmodule:: tick.inference
-
-.. autofunction:: kaplan_meier
-
-.. include:: tick.inference.kaplan_meier.examples
-    :allowmissing:

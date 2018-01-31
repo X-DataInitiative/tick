@@ -1,9 +1,0 @@
-tick.plot.stem
-==============
-
-.. currentmodule:: tick.plot
-
-.. autofunction:: stem
-
-.. include:: tick.plot.stem.examples
-    :allowmissing:

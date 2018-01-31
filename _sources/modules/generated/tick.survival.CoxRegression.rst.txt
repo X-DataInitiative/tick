@@ -1,0 +1,9 @@
+tick.survival.CoxRegression
+===========================
+
+.. currentmodule:: tick.survival
+
+.. autofunction:: CoxRegression
+
+.. include:: tick.survival.CoxRegression.examples
+    :allowmissing:

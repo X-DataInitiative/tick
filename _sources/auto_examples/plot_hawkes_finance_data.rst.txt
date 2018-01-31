@@ -39,10 +39,10 @@ triggering (resp. preventing) market orders at the ask (resp. at the bid).
 .. literalinclude:: plot_hawkes_finance_data.py
     :lines: 25-
 
-**Total running time of the example:**  5.83 seconds
-( 0 minutes  5.83 seconds)
+**Total running time of the example:**  10.49 seconds
+( 0 minutes  10.49 seconds)
     
 Mentioned *tick* classes:
    * `tick.dataset.fetch_hawkes_bund_data`
-   * `tick.inference.HawkesConditionalLaw`
+   * `tick.hawkes.HawkesConditionalLaw`
    * `tick.plot.plot_hawkes_kernel_norms`

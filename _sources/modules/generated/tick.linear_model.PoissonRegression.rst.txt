@@ -1,0 +1,12 @@
+
+.. _PoissonRegression:
+
+tick.linear_model.PoissonRegression
+===================================
+
+.. currentmodule:: tick.linear_model
+
+.. autoclass:: PoissonRegression
+
+.. include:: tick.linear_model.PoissonRegression.examples
+    :allowmissing:

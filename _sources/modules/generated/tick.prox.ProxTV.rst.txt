@@ -1,0 +1,12 @@
+
+.. _ProxTV:
+
+tick.prox.ProxTV
+================
+
+.. currentmodule:: tick.prox
+
+.. autoclass:: ProxTV
+
+.. include:: tick.prox.ProxTV.examples
+    :allowmissing:

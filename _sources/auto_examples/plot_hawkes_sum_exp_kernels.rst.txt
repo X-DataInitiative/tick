@@ -1,0 +1,28 @@
+
+
+.. _example_plot_hawkes_sum_exp_kernels.py:
+
+plot_hawkes_sum_exp_kernels.py
+==============================
+
+
+
+.. image:: images/plot_hawkes_sum_exp_kernels_001.png
+    :align: center
+
+
+
+
+**Python source code:** :download:`plot_hawkes_sum_exp_kernels.py <plot_hawkes_sum_exp_kernels.py>`
+
+.. literalinclude:: plot_hawkes_sum_exp_kernels.py
+    :lines: 1-
+
+**Total running time of the example:**  0.71 seconds
+( 0 minutes  0.71 seconds)
+    
+Mentioned *tick* classes:
+   * `tick.hawkes.HawkesSumExpKern`
+   * `tick.hawkes.SimuHawkesMulti`
+   * `tick.hawkes.SimuHawkesSumExpKernels`
+   * `tick.plot.plot_hawkes_kernels`

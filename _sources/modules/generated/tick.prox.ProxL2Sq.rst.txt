@@ -1,0 +1,12 @@
+
+.. _ProxL2Sq:
+
+tick.prox.ProxL2Sq
+==================
+
+.. currentmodule:: tick.prox
+
+.. autoclass:: ProxL2Sq
+
+.. include:: tick.prox.ProxL2Sq.examples
+    :allowmissing:

@@ -1,0 +1,12 @@
+
+.. _SimuInhomogeneousPoisson:
+
+tick.hawkes.SimuInhomogeneousPoisson
+====================================
+
+.. currentmodule:: tick.hawkes
+
+.. autoclass:: SimuInhomogeneousPoisson
+
+.. include:: tick.hawkes.SimuInhomogeneousPoisson.examples
+    :allowmissing:

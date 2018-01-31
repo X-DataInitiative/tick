@@ -1,0 +1,12 @@
+
+.. _SGD:
+
+tick.solver.SGD
+===============
+
+.. currentmodule:: tick.solver
+
+.. autoclass:: SGD
+
+.. include:: tick.solver.SGD.examples
+    :allowmissing:

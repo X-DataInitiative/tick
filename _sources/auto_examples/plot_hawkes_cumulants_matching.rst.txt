@@ -1,0 +1,43 @@
+
+
+.. _example_plot_hawkes_cumulants_matching.py:
+
+
+=======================================
+Fit Hawkes kernel norms using cumulants
+=======================================
+
+This non parametric Hawkes cumulants matching
+(`tick.hawkes.HawkesCumulantMatching`) algorithm estimates directly
+kernels norms without making any assumption on kernel shapes.
+
+It has been originally described in this paper:
+
+Achab, M., Bacry, E., Gaiffas, S., Mastromatteo, I., & Muzy, J. F.
+(2017, July). Uncovering causality from multivariate Hawkes integrated
+cumulants.
+`In International Conference on Machine Learning (pp. 1-10)`_.
+
+.. _In International Conference on Machine Learning (pp. 1-10): http://proceedings.mlr.press/v70/achab17a.html
+
+
+
+.. image:: images/plot_hawkes_cumulants_matching_001.png
+    :align: center
+
+
+
+
+**Python source code:** :download:`plot_hawkes_cumulants_matching.py <plot_hawkes_cumulants_matching.py>`
+
+.. literalinclude:: plot_hawkes_cumulants_matching.py
+    :lines: 19-
+
+**Total running time of the example:**  5.19 seconds
+( 0 minutes  5.19 seconds)
+    
+Mentioned *tick* classes:
+   * `tick.hawkes.HawkesCumulantMatching`
+   * `tick.hawkes.SimuHawkesExpKernels`
+   * `tick.hawkes.SimuHawkesMulti`
+   * `tick.plot.plot_hawkes_kernel_norms`

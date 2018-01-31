@@ -1,0 +1,12 @@
+
+.. _ModelSCCS:
+
+tick.survival.ModelSCCS
+=======================
+
+.. currentmodule:: tick.survival
+
+.. autoclass:: ModelSCCS
+
+.. include:: tick.survival.ModelSCCS.examples
+    :allowmissing:

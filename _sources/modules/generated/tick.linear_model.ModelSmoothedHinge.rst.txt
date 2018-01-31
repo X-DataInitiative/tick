@@ -1,0 +1,12 @@
+
+.. _ModelSmoothedHinge:
+
+tick.linear_model.ModelSmoothedHinge
+====================================
+
+.. currentmodule:: tick.linear_model
+
+.. autoclass:: ModelSmoothedHinge
+
+.. include:: tick.linear_model.ModelSmoothedHinge.examples
+    :allowmissing:

@@ -16,14 +16,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>Index &#8212; tick 0.3.0 documentation</title>
+    <title>Index &#8212; tick 0.4.0 documentation</title>
     <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.3.0',
+        VERSION:     '0.4.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -60,7 +60,7 @@
         </button>
         <a class="navbar-brand" href="index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.3</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -80,45 +80,75 @@
   <ul class="dropdown-menu globaltoc"
       role="menu"
       aria-labelledby="dLabelGlobalToc"><ul>
-<li class="toctree-l1"><a class="reference internal" href="modules/inference.html"><code class="docutils literal"><span class="pre">tick.inference</span></code>: user-friendly inference tools</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="modules/inference.html#generalized-linear-models">1. Generalized linear models</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/inference.html#hawkes">2. Hawkes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/inference.html#survival-analysis">3. Survival analysis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/inference.html#robust-analysis">4. Robust Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/hawkes.html"><code class="docutils literal"><span class="pre">tick.hawkes</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/hawkes.html#introduction">1. Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/hawkes.html#learners">2. Learners</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/hawkes.html#point-process-simulation">3. Point process simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/hawkes.html#models-for-inference">4. Models for inference</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="modules/optim.html"><code class="docutils literal"><span class="pre">tick.optim</span></code>: optimization toolbox</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="modules/optim.html#contents">Contents</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/optim.html#a-first-example">A First example</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/optim.html#tick-optim-model-model-classes">1. <code class="docutils literal"><span class="pre">tick.optim.model</span></code>: model classes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/optim.html#tick-optim-prox-proximal-operators">2. <code class="docutils literal"><span class="pre">tick.optim.prox</span></code>: proximal operators</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/optim.html#tick-optim-solver-solvers">3. <code class="docutils literal"><span class="pre">tick.optim.solver</span></code>: solvers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/optim.html#what-s-under-the-hood">4. What’s under the hood?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/linear_model.html"><code class="docutils literal"><span class="pre">tick.linear_model</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/linear_model.html#introduction">1. Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/linear_model.html#learners">2. Learners</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/linear_model.html#models">3. Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/linear_model.html#simulation">4. Simulation</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="modules/plot.html"><code class="docutils literal"><span class="pre">tick.plot</span></code>: plotting utilities</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="modules/plot.html#optimization">Optimization</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/plot.html#hawkes-estimation">Hawkes estimation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/plot.html#point-process-simulation">Point process simulation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/plot.html#others">Others</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/robust.html"><code class="docutils literal"><span class="pre">tick.robust</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/robust.html#regression-with-individual-intercepts">1. Regression with individual intercepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/robust.html#robust-losses">2. Robust losses</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="modules/preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="modules/generated/tick.preprocessing.FeaturesBinarizer.html">tick.preprocessing.FeaturesBinarizer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/generated/tick.preprocessing.LongitudinalFeaturesProduct.html">tick.preprocessing.LongitudinalFeaturesProduct</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/generated/tick.preprocessing.LongitudinalFeaturesLagger.html">tick.preprocessing.LongitudinalFeaturesLagger</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/survival.html"><code class="docutils literal"><span class="pre">tick.survival</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/survival.html#learners">1. Learners</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/survival.html#models">2. Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/survival.html#simulation">3. Simulation</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="modules/simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code>: simulation toolbox</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="modules/simulation.html#simulation-tools">1. Simulation tools</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/simulation.html#linear-model-simulation">2. Linear model simulation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/simulation.html#survival-analysis-simulation">3. Survival analysis simulation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/simulation.html#point-process-simulation">4. Point process simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/prox.html"><code class="docutils literal"><span class="pre">tick.prox</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/prox.html#available-operators">1. Available operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/prox.html#example">2. Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/prox.html#how-to-combine-several-prox">3. How to combine several prox ?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/prox.html#the-prox-class-api">4. The <code class="docutils literal"><span class="pre">prox</span></code> class API</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="modules/dataset.html"><code class="docutils literal"><span class="pre">tick.dataset</span></code>: real world datasets</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="modules/dataset.html#functions">Functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/dataset.html#example">Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/solver.html"><code class="docutils literal"><span class="pre">tick.solver</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/solver.html#the-solver-class-api">1. The <code class="docutils literal"><span class="pre">solver</span></code> class API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/solver.html#available-solvers">2. Available solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/solver.html#example">3. Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules/simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/simulation.html#simulation-of-model-weights">1. Simulation of model weights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/simulation.html#simulation-of-a-features-matrix">2. Simulation of a features matrix</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules/plot.html"><code class="docutils literal"><span class="pre">tick.plot</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/plot.html#history-plot">1. History plot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/plot.html#plots-for-hawkes-processes">2. Plots for Hawkes processes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/plot.html#plots-for-point-process-simulation">3. Plots for point process simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/plot.html#miscellaneous-plots">4. Miscellaneous plots</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules/dataset.html"><code class="docutils literal"><span class="pre">tick.dataset</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/generated/tick.dataset.fetch_tick_dataset.html">tick.dataset.fetch_tick_dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/generated/tick.dataset.fetch_hawkes_bund_data.html">tick.dataset.fetch_hawkes_bund_data</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules/preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/preprocessing.html#preprocessing-for-static-features">Preprocessing for static features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/preprocessing.html#preprocessing-for-longitudinal-features">Preprocessing for longitudinal features</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules/metrics.html"><code class="docutils literal"><span class="pre">tick.metrics</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/generated/tick.metrics.support_fdp.html">tick.metrics.support_fdp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/generated/tick.metrics.support_recall.html">tick.metrics.support_recall</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules/R.html">How to use <code class="docutils literal"><span class="pre">tick</span></code> from the R statistical software</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/R.html#training-a-logistic-regression-model">1. Training a logistic regression model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/R.html#simulation-of-a-hawkes-process">2. Simulation of a Hawkes process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/R.html#using-optimization-tools-from-r">3. Using optimization tools from R</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="modules/dev.html">Developer documentation</a><ul>
@@ -129,10 +159,19 @@
 <li class="toctree-l2"><a class="reference internal" href="modules/dev.html#tips-for-debugging-c-classes-in-tick">Tips for debugging C++ classes in tick</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="modules/R.html">How to use <code class="docutils literal"><span class="pre">tick</span></code> from the R statistical software</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="modules/R.html#training-a-logistic-regression-model">1. Training a logistic regression model</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/R.html#simulation-of-a-hawkes-process">2. Simulation of a Hawkes process</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/R.html#using-tick-optim-from-r">3. Using <code class="docutils literal"><span class="pre">tick.optim</span></code> from R</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/api.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/api.html#table-of-contents">Table of contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/api.html#hawkes"><code class="docutils literal"><span class="pre">hawkes</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/api.html#linear-model"><code class="docutils literal"><span class="pre">linear_model</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/api.html#robust"><code class="docutils literal"><span class="pre">robust</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/api.html#survival"><code class="docutils literal"><span class="pre">survival</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/api.html#prox"><code class="docutils literal"><span class="pre">prox</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/api.html#solver"><code class="docutils literal"><span class="pre">solver</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/api.html#api-simulation"><code class="docutils literal"><span class="pre">simulation</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/api.html#plot"><code class="docutils literal"><span class="pre">plot</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/api.html#dataset"><code class="docutils literal"><span class="pre">dataset</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/api.html#preprocessing"><code class="docutils literal"><span class="pre">preprocessing</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/api.html#metrics"><code class="docutils literal"><span class="pre">metrics</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -171,6 +210,7 @@
  | <a href="#B"><strong>B</strong></a>
  | <a href="#C"><strong>C</strong></a>
  | <a href="#D"><strong>D</strong></a>
+ | <a href="#E"><strong>E</strong></a>
  | <a href="#F"><strong>F</strong></a>
  | <a href="#G"><strong>G</strong></a>
  | <a href="#H"><strong>H</strong></a>
@@ -194,113 +234,75 @@
       <li><a href="modules/generated/tick.base.TimeFunction.html#tick.base.TimeFunction.__init__">__init__() (tick.base.TimeFunction method)</a>
 
       <ul>
-        <li><a href="modules/generated/tick.inference.CoxRegression.html#tick.inference.CoxRegression.__init__">(tick.inference.CoxRegression method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesADM4.html#tick.hawkes.HawkesADM4.__init__">(tick.hawkes.HawkesADM4 method)</a>
 </li>
-        <li><a href="modules/generated/tick.inference.HawkesADM4.html#tick.inference.HawkesADM4.__init__">(tick.inference.HawkesADM4 method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesBasisKernels.html#tick.hawkes.HawkesBasisKernels.__init__">(tick.hawkes.HawkesBasisKernels method)</a>
 </li>
-        <li><a href="modules/generated/tick.inference.HawkesBasisKernels.html#tick.inference.HawkesBasisKernels.__init__">(tick.inference.HawkesBasisKernels method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesConditionalLaw.html#tick.hawkes.HawkesConditionalLaw.__init__">(tick.hawkes.HawkesConditionalLaw method)</a>
 </li>
-        <li><a href="modules/generated/tick.inference.HawkesConditionalLaw.html#tick.inference.HawkesConditionalLaw.__init__">(tick.inference.HawkesConditionalLaw method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesCumulantMatching.html#tick.hawkes.HawkesCumulantMatching.__init__">(tick.hawkes.HawkesCumulantMatching method)</a>
 </li>
-        <li><a href="modules/generated/tick.inference.HawkesEM.html#tick.inference.HawkesEM.__init__">(tick.inference.HawkesEM method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesEM.html#tick.hawkes.HawkesEM.__init__">(tick.hawkes.HawkesEM method)</a>
 </li>
-        <li><a href="modules/generated/tick.inference.HawkesExpKern.html#tick.inference.HawkesExpKern.__init__">(tick.inference.HawkesExpKern method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesExpKern.html#tick.hawkes.HawkesExpKern.__init__">(tick.hawkes.HawkesExpKern method)</a>
 </li>
-        <li><a href="modules/generated/tick.inference.HawkesSumExpKern.html#tick.inference.HawkesSumExpKern.__init__">(tick.inference.HawkesSumExpKern method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesKernel0.html#tick.hawkes.HawkesKernel0.__init__">(tick.hawkes.HawkesKernel0 method)</a>
 </li>
-        <li><a href="modules/generated/tick.inference.HawkesSumGaussians.html#tick.inference.HawkesSumGaussians.__init__">(tick.inference.HawkesSumGaussians method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesKernelExp.html#tick.hawkes.HawkesKernelExp.__init__">(tick.hawkes.HawkesKernelExp method)</a>
 </li>
-        <li><a href="modules/generated/tick.inference.LinearRegression.html#tick.inference.LinearRegression.__init__">(tick.inference.LinearRegression method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesKernelPowerLaw.html#tick.hawkes.HawkesKernelPowerLaw.__init__">(tick.hawkes.HawkesKernelPowerLaw method)</a>
 </li>
-        <li><a href="modules/generated/tick.inference.LogisticRegression.html#tick.inference.LogisticRegression.__init__">(tick.inference.LogisticRegression method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesKernelSumExp.html#tick.hawkes.HawkesKernelSumExp.__init__">(tick.hawkes.HawkesKernelSumExp method)</a>
 </li>
-        <li><a href="modules/generated/tick.inference.PoissonRegression.html#tick.inference.PoissonRegression.__init__">(tick.inference.PoissonRegression method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesKernelTimeFunc.html#tick.hawkes.HawkesKernelTimeFunc.__init__">(tick.hawkes.HawkesKernelTimeFunc method)</a>
 </li>
-        <li><a href="modules/generated/tick.inference.RobustLinearRegression.html#tick.inference.RobustLinearRegression.__init__">(tick.inference.RobustLinearRegression method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesSumExpKern.html#tick.hawkes.HawkesSumExpKern.__init__">(tick.hawkes.HawkesSumExpKern method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.history.History.html#tick.optim.history.History.__init__">(tick.optim.history.History method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesSumGaussians.html#tick.hawkes.HawkesSumGaussians.__init__">(tick.hawkes.HawkesSumGaussians method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelAbsoluteRegression.html#tick.optim.model.ModelAbsoluteRegression.__init__">(tick.optim.model.ModelAbsoluteRegression method)</a>
+        <li><a href="modules/generated/tick.hawkes.ModelHawkesExpKernLeastSq.html#tick.hawkes.ModelHawkesExpKernLeastSq.__init__">(tick.hawkes.ModelHawkesExpKernLeastSq method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelCoxRegPartialLik.html#tick.optim.model.ModelCoxRegPartialLik.__init__">(tick.optim.model.ModelCoxRegPartialLik method)</a>
+        <li><a href="modules/generated/tick.hawkes.ModelHawkesExpKernLogLik.html#tick.hawkes.ModelHawkesExpKernLogLik.__init__">(tick.hawkes.ModelHawkesExpKernLogLik method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelEpsilonInsensitive.html#tick.optim.model.ModelEpsilonInsensitive.__init__">(tick.optim.model.ModelEpsilonInsensitive method)</a>
+        <li><a href="modules/generated/tick.hawkes.ModelHawkesSumExpKernLeastSq.html#tick.hawkes.ModelHawkesSumExpKernLeastSq.__init__">(tick.hawkes.ModelHawkesSumExpKernLeastSq method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelHawkesFixedExpKernLeastSq.html#tick.optim.model.ModelHawkesFixedExpKernLeastSq.__init__">(tick.optim.model.ModelHawkesFixedExpKernLeastSq method)</a>
+        <li><a href="modules/generated/tick.hawkes.ModelHawkesSumExpKernLogLik.html#tick.hawkes.ModelHawkesSumExpKernLogLik.__init__">(tick.hawkes.ModelHawkesSumExpKernLogLik method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelHawkesFixedExpKernLogLik.html#tick.optim.model.ModelHawkesFixedExpKernLogLik.__init__">(tick.optim.model.ModelHawkesFixedExpKernLogLik method)</a>
+        <li><a href="modules/generated/tick.hawkes.SimuHawkes.html#tick.hawkes.SimuHawkes.__init__">(tick.hawkes.SimuHawkes method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelHawkesFixedSumExpKernLeastSq.html#tick.optim.model.ModelHawkesFixedSumExpKernLeastSq.__init__">(tick.optim.model.ModelHawkesFixedSumExpKernLeastSq method)</a>
+        <li><a href="modules/generated/tick.hawkes.SimuHawkesExpKernels.html#tick.hawkes.SimuHawkesExpKernels.__init__">(tick.hawkes.SimuHawkesExpKernels method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelHawkesFixedSumExpKernLogLik.html#tick.optim.model.ModelHawkesFixedSumExpKernLogLik.__init__">(tick.optim.model.ModelHawkesFixedSumExpKernLogLik method)</a>
+        <li><a href="modules/generated/tick.hawkes.SimuHawkesMulti.html#tick.hawkes.SimuHawkesMulti.__init__">(tick.hawkes.SimuHawkesMulti method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelHinge.html#tick.optim.model.ModelHinge.__init__">(tick.optim.model.ModelHinge method)</a>
+        <li><a href="modules/generated/tick.hawkes.SimuHawkesSumExpKernels.html#tick.hawkes.SimuHawkesSumExpKernels.__init__">(tick.hawkes.SimuHawkesSumExpKernels method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelHuber.html#tick.optim.model.ModelHuber.__init__">(tick.optim.model.ModelHuber method)</a>
+        <li><a href="modules/generated/tick.hawkes.SimuInhomogeneousPoisson.html#tick.hawkes.SimuInhomogeneousPoisson.__init__">(tick.hawkes.SimuInhomogeneousPoisson method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelLinReg.html#tick.optim.model.ModelLinReg.__init__">(tick.optim.model.ModelLinReg method)</a>
+        <li><a href="modules/generated/tick.hawkes.SimuPoissonProcess.html#tick.hawkes.SimuPoissonProcess.__init__">(tick.hawkes.SimuPoissonProcess method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelLinRegWithIntercepts.html#tick.optim.model.ModelLinRegWithIntercepts.__init__">(tick.optim.model.ModelLinRegWithIntercepts method)</a>
+        <li><a href="modules/generated/tick.linear_model.LinearRegression.html#tick.linear_model.LinearRegression.__init__">(tick.linear_model.LinearRegression method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelLogReg.html#tick.optim.model.ModelLogReg.__init__">(tick.optim.model.ModelLogReg method)</a>
+        <li><a href="modules/generated/tick.linear_model.LogisticRegression.html#tick.linear_model.LogisticRegression.__init__">(tick.linear_model.LogisticRegression method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelModifiedHuber.html#tick.optim.model.ModelModifiedHuber.__init__">(tick.optim.model.ModelModifiedHuber method)</a>
+        <li><a href="modules/generated/tick.linear_model.ModelHinge.html#tick.linear_model.ModelHinge.__init__">(tick.linear_model.ModelHinge method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelPoisReg.html#tick.optim.model.ModelPoisReg.__init__">(tick.optim.model.ModelPoisReg method)</a>
+        <li><a href="modules/generated/tick.linear_model.ModelLinReg.html#tick.linear_model.ModelLinReg.__init__">(tick.linear_model.ModelLinReg method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelQuadraticHinge.html#tick.optim.model.ModelQuadraticHinge.__init__">(tick.optim.model.ModelQuadraticHinge method)</a>
+        <li><a href="modules/generated/tick.linear_model.ModelLogReg.html#tick.linear_model.ModelLogReg.__init__">(tick.linear_model.ModelLogReg method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelSCCS.html#tick.optim.model.ModelSCCS.__init__">(tick.optim.model.ModelSCCS method)</a>
+        <li><a href="modules/generated/tick.linear_model.ModelPoisReg.html#tick.linear_model.ModelPoisReg.__init__">(tick.linear_model.ModelPoisReg method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelSmoothedHinge.html#tick.optim.model.ModelSmoothedHinge.__init__">(tick.optim.model.ModelSmoothedHinge method)</a>
+        <li><a href="modules/generated/tick.linear_model.ModelQuadraticHinge.html#tick.linear_model.ModelQuadraticHinge.__init__">(tick.linear_model.ModelQuadraticHinge method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.prox.ProxBinarsity.html#tick.optim.prox.ProxBinarsity.__init__">(tick.optim.prox.ProxBinarsity method)</a>
+        <li><a href="modules/generated/tick.linear_model.ModelSmoothedHinge.html#tick.linear_model.ModelSmoothedHinge.__init__">(tick.linear_model.ModelSmoothedHinge method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.prox.ProxElasticNet.html#tick.optim.prox.ProxElasticNet.__init__">(tick.optim.prox.ProxElasticNet method)</a>
+        <li><a href="modules/generated/tick.linear_model.PoissonRegression.html#tick.linear_model.PoissonRegression.__init__">(tick.linear_model.PoissonRegression method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.prox.ProxEquality.html#tick.optim.prox.ProxEquality.__init__">(tick.optim.prox.ProxEquality method)</a>
+        <li><a href="modules/generated/tick.linear_model.SimuLinReg.html#tick.linear_model.SimuLinReg.__init__">(tick.linear_model.SimuLinReg method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.prox.ProxGroupL1.html#tick.optim.prox.ProxGroupL1.__init__">(tick.optim.prox.ProxGroupL1 method)</a>
+        <li><a href="modules/generated/tick.linear_model.SimuLogReg.html#tick.linear_model.SimuLogReg.__init__">(tick.linear_model.SimuLogReg method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.prox.ProxL1.html#tick.optim.prox.ProxL1.__init__">(tick.optim.prox.ProxL1 method)</a>
-</li>
-        <li><a href="modules/generated/tick.optim.prox.ProxL1w.html#tick.optim.prox.ProxL1w.__init__">(tick.optim.prox.ProxL1w method)</a>
-</li>
-        <li><a href="modules/generated/tick.optim.prox.ProxL2.html#tick.optim.prox.ProxL2.__init__">(tick.optim.prox.ProxL2 method)</a>
-</li>
-        <li><a href="modules/generated/tick.optim.prox.ProxL2Sq.html#tick.optim.prox.ProxL2Sq.__init__">(tick.optim.prox.ProxL2Sq method)</a>
-</li>
-        <li><a href="modules/generated/tick.optim.prox.ProxMulti.html#tick.optim.prox.ProxMulti.__init__">(tick.optim.prox.ProxMulti method)</a>
-</li>
-        <li><a href="modules/generated/tick.optim.prox.ProxNuclear.html#tick.optim.prox.ProxNuclear.__init__">(tick.optim.prox.ProxNuclear method)</a>
-</li>
-        <li><a href="modules/generated/tick.optim.prox.ProxPositive.html#tick.optim.prox.ProxPositive.__init__">(tick.optim.prox.ProxPositive method)</a>
-</li>
-        <li><a href="modules/generated/tick.optim.prox.ProxSlope.html#tick.optim.prox.ProxSlope.__init__">(tick.optim.prox.ProxSlope method)</a>
-</li>
-        <li><a href="modules/generated/tick.optim.prox.ProxTV.html#tick.optim.prox.ProxTV.__init__">(tick.optim.prox.ProxTV method)</a>
-</li>
-        <li><a href="modules/generated/tick.optim.prox.ProxZero.html#tick.optim.prox.ProxZero.__init__">(tick.optim.prox.ProxZero method)</a>
-</li>
-        <li><a href="modules/generated/tick.optim.solver.AGD.html#tick.optim.solver.AGD.__init__">(tick.optim.solver.AGD method)</a>
-</li>
-        <li><a href="modules/generated/tick.optim.solver.AdaGrad.html#tick.optim.solver.AdaGrad.__init__">(tick.optim.solver.AdaGrad method)</a>
-</li>
-        <li><a href="modules/generated/tick.optim.solver.BFGS.html#tick.optim.solver.BFGS.__init__">(tick.optim.solver.BFGS method)</a>
-</li>
-        <li><a href="modules/generated/tick.optim.solver.GD.html#tick.optim.solver.GD.__init__">(tick.optim.solver.GD method)</a>
-</li>
-        <li><a href="modules/generated/tick.optim.solver.GFB.html#tick.optim.solver.GFB.__init__">(tick.optim.solver.GFB method)</a>
-</li>
-        <li><a href="modules/generated/tick.optim.solver.SAGA.html#tick.optim.solver.SAGA.__init__">(tick.optim.solver.SAGA method)</a>
-</li>
-        <li><a href="modules/generated/tick.optim.solver.SCPG.html#tick.optim.solver.SCPG.__init__">(tick.optim.solver.SCPG method)</a>
-</li>
-        <li><a href="modules/generated/tick.optim.solver.SDCA.html#tick.optim.solver.SDCA.__init__">(tick.optim.solver.SDCA method)</a>
-</li>
-        <li><a href="modules/generated/tick.optim.solver.SGD.html#tick.optim.solver.SGD.__init__">(tick.optim.solver.SGD method)</a>
-</li>
-        <li><a href="modules/generated/tick.optim.solver.SVRG.html#tick.optim.solver.SVRG.__init__">(tick.optim.solver.SVRG method)</a>
+        <li><a href="modules/generated/tick.linear_model.SimuPoisReg.html#tick.linear_model.SimuPoisReg.__init__">(tick.linear_model.SimuPoisReg method)</a>
 </li>
         <li><a href="modules/generated/tick.preprocessing.FeaturesBinarizer.html#tick.preprocessing.FeaturesBinarizer.__init__">(tick.preprocessing.FeaturesBinarizer method)</a>
 </li>
@@ -308,37 +310,75 @@
 </li>
         <li><a href="modules/generated/tick.preprocessing.LongitudinalFeaturesProduct.html#tick.preprocessing.LongitudinalFeaturesProduct.__init__">(tick.preprocessing.LongitudinalFeaturesProduct method)</a>
 </li>
-        <li><a href="modules/generated/tick.simulation.HawkesKernel0.html#tick.simulation.HawkesKernel0.__init__">(tick.simulation.HawkesKernel0 method)</a>
+        <li><a href="modules/generated/tick.prox.ProxBinarsity.html#tick.prox.ProxBinarsity.__init__">(tick.prox.ProxBinarsity method)</a>
 </li>
-        <li><a href="modules/generated/tick.simulation.HawkesKernelExp.html#tick.simulation.HawkesKernelExp.__init__">(tick.simulation.HawkesKernelExp method)</a>
+        <li><a href="modules/generated/tick.prox.ProxElasticNet.html#tick.prox.ProxElasticNet.__init__">(tick.prox.ProxElasticNet method)</a>
 </li>
-        <li><a href="modules/generated/tick.simulation.HawkesKernelPowerLaw.html#tick.simulation.HawkesKernelPowerLaw.__init__">(tick.simulation.HawkesKernelPowerLaw method)</a>
+        <li><a href="modules/generated/tick.prox.ProxEquality.html#tick.prox.ProxEquality.__init__">(tick.prox.ProxEquality method)</a>
 </li>
-        <li><a href="modules/generated/tick.simulation.HawkesKernelSumExp.html#tick.simulation.HawkesKernelSumExp.__init__">(tick.simulation.HawkesKernelSumExp method)</a>
+        <li><a href="modules/generated/tick.prox.ProxGroupL1.html#tick.prox.ProxGroupL1.__init__">(tick.prox.ProxGroupL1 method)</a>
 </li>
-        <li><a href="modules/generated/tick.simulation.HawkesKernelTimeFunc.html#tick.simulation.HawkesKernelTimeFunc.__init__">(tick.simulation.HawkesKernelTimeFunc method)</a>
+        <li><a href="modules/generated/tick.prox.ProxL1.html#tick.prox.ProxL1.__init__">(tick.prox.ProxL1 method)</a>
 </li>
-        <li><a href="modules/generated/tick.simulation.SimuCoxReg.html#tick.simulation.SimuCoxReg.__init__">(tick.simulation.SimuCoxReg method)</a>
+        <li><a href="modules/generated/tick.prox.ProxL1w.html#tick.prox.ProxL1w.__init__">(tick.prox.ProxL1w method)</a>
 </li>
-        <li><a href="modules/generated/tick.simulation.SimuHawkes.html#tick.simulation.SimuHawkes.__init__">(tick.simulation.SimuHawkes method)</a>
+        <li><a href="modules/generated/tick.prox.ProxL2.html#tick.prox.ProxL2.__init__">(tick.prox.ProxL2 method)</a>
 </li>
-        <li><a href="modules/generated/tick.simulation.SimuHawkesExpKernels.html#tick.simulation.SimuHawkesExpKernels.__init__">(tick.simulation.SimuHawkesExpKernels method)</a>
+        <li><a href="modules/generated/tick.prox.ProxL2Sq.html#tick.prox.ProxL2Sq.__init__">(tick.prox.ProxL2Sq method)</a>
 </li>
-        <li><a href="modules/generated/tick.simulation.SimuHawkesMulti.html#tick.simulation.SimuHawkesMulti.__init__">(tick.simulation.SimuHawkesMulti method)</a>
+        <li><a href="modules/generated/tick.prox.ProxMulti.html#tick.prox.ProxMulti.__init__">(tick.prox.ProxMulti method)</a>
 </li>
-        <li><a href="modules/generated/tick.simulation.SimuHawkesSumExpKernels.html#tick.simulation.SimuHawkesSumExpKernels.__init__">(tick.simulation.SimuHawkesSumExpKernels method)</a>
+        <li><a href="modules/generated/tick.prox.ProxNuclear.html#tick.prox.ProxNuclear.__init__">(tick.prox.ProxNuclear method)</a>
 </li>
-        <li><a href="modules/generated/tick.simulation.SimuInhomogeneousPoisson.html#tick.simulation.SimuInhomogeneousPoisson.__init__">(tick.simulation.SimuInhomogeneousPoisson method)</a>
+        <li><a href="modules/generated/tick.prox.ProxPositive.html#tick.prox.ProxPositive.__init__">(tick.prox.ProxPositive method)</a>
 </li>
-        <li><a href="modules/generated/tick.simulation.SimuLinReg.html#tick.simulation.SimuLinReg.__init__">(tick.simulation.SimuLinReg method)</a>
+        <li><a href="modules/generated/tick.prox.ProxSlope.html#tick.prox.ProxSlope.__init__">(tick.prox.ProxSlope method)</a>
 </li>
-        <li><a href="modules/generated/tick.simulation.SimuLogReg.html#tick.simulation.SimuLogReg.__init__">(tick.simulation.SimuLogReg method)</a>
+        <li><a href="modules/generated/tick.prox.ProxTV.html#tick.prox.ProxTV.__init__">(tick.prox.ProxTV method)</a>
 </li>
-        <li><a href="modules/generated/tick.simulation.SimuPoisReg.html#tick.simulation.SimuPoisReg.__init__">(tick.simulation.SimuPoisReg method)</a>
+        <li><a href="modules/generated/tick.prox.ProxZero.html#tick.prox.ProxZero.__init__">(tick.prox.ProxZero method)</a>
 </li>
-        <li><a href="modules/generated/tick.simulation.SimuPoissonProcess.html#tick.simulation.SimuPoissonProcess.__init__">(tick.simulation.SimuPoissonProcess method)</a>
+        <li><a href="modules/generated/tick.robust.ModelAbsoluteRegression.html#tick.robust.ModelAbsoluteRegression.__init__">(tick.robust.ModelAbsoluteRegression method)</a>
 </li>
-        <li><a href="modules/generated/tick.simulation.SimuSCCS.html#tick.simulation.SimuSCCS.__init__">(tick.simulation.SimuSCCS method)</a>
+        <li><a href="modules/generated/tick.robust.ModelEpsilonInsensitive.html#tick.robust.ModelEpsilonInsensitive.__init__">(tick.robust.ModelEpsilonInsensitive method)</a>
+</li>
+        <li><a href="modules/generated/tick.robust.ModelHuber.html#tick.robust.ModelHuber.__init__">(tick.robust.ModelHuber method)</a>
+</li>
+        <li><a href="modules/generated/tick.robust.ModelLinRegWithIntercepts.html#tick.robust.ModelLinRegWithIntercepts.__init__">(tick.robust.ModelLinRegWithIntercepts method)</a>
+</li>
+        <li><a href="modules/generated/tick.robust.ModelModifiedHuber.html#tick.robust.ModelModifiedHuber.__init__">(tick.robust.ModelModifiedHuber method)</a>
+</li>
+        <li><a href="modules/generated/tick.robust.RobustLinearRegression.html#tick.robust.RobustLinearRegression.__init__">(tick.robust.RobustLinearRegression method)</a>
+</li>
+        <li><a href="modules/generated/tick.solver.AGD.html#tick.solver.AGD.__init__">(tick.solver.AGD method)</a>
+</li>
+        <li><a href="modules/generated/tick.solver.AdaGrad.html#tick.solver.AdaGrad.__init__">(tick.solver.AdaGrad method)</a>
+</li>
+        <li><a href="modules/generated/tick.solver.BFGS.html#tick.solver.BFGS.__init__">(tick.solver.BFGS method)</a>
+</li>
+        <li><a href="modules/generated/tick.solver.GD.html#tick.solver.GD.__init__">(tick.solver.GD method)</a>
+</li>
+        <li><a href="modules/generated/tick.solver.GFB.html#tick.solver.GFB.__init__">(tick.solver.GFB method)</a>
+</li>
+        <li><a href="modules/generated/tick.solver.History.html#tick.solver.History.__init__">(tick.solver.History method)</a>
+</li>
+        <li><a href="modules/generated/tick.solver.SAGA.html#tick.solver.SAGA.__init__">(tick.solver.SAGA method)</a>
+</li>
+        <li><a href="modules/generated/tick.solver.SCPG.html#tick.solver.SCPG.__init__">(tick.solver.SCPG method)</a>
+</li>
+        <li><a href="modules/generated/tick.solver.SDCA.html#tick.solver.SDCA.__init__">(tick.solver.SDCA method)</a>
+</li>
+        <li><a href="modules/generated/tick.solver.SGD.html#tick.solver.SGD.__init__">(tick.solver.SGD method)</a>
+</li>
+        <li><a href="modules/generated/tick.solver.SVRG.html#tick.solver.SVRG.__init__">(tick.solver.SVRG method)</a>
+</li>
+        <li><a href="modules/generated/tick.survival.ModelCoxRegPartialLik.html#tick.survival.ModelCoxRegPartialLik.__init__">(tick.survival.ModelCoxRegPartialLik method)</a>
+</li>
+        <li><a href="modules/generated/tick.survival.ModelSCCS.html#tick.survival.ModelSCCS.__init__">(tick.survival.ModelSCCS method)</a>
+</li>
+        <li><a href="modules/generated/tick.survival.SimuCoxReg.html#tick.survival.SimuCoxReg.__init__">(tick.survival.SimuCoxReg method)</a>
+</li>
+        <li><a href="modules/generated/tick.survival.SimuSCCS.html#tick.survival.SimuSCCS.__init__">(tick.survival.SimuSCCS method)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -347,17 +387,19 @@
 <h2 id="A">A</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="modules/generated/tick.optim.solver.AdaGrad.html#tick.optim.solver.AdaGrad">AdaGrad (class in tick.optim.solver)</a>
+      <li><a href="modules/generated/tick.solver.AdaGrad.html#tick.solver.AdaGrad">AdaGrad (class in tick.solver)</a>
 </li>
-      <li><a href="modules/generated/tick.simulation.SimuHawkesExpKernels.html#tick.simulation.SimuHawkesExpKernels.adjust_spectral_radius">adjust_spectral_radius() (tick.simulation.SimuHawkesExpKernels method)</a>
+      <li><a href="modules/generated/tick.hawkes.SimuHawkesExpKernels.html#tick.hawkes.SimuHawkesExpKernels.adjust_spectral_radius">adjust_spectral_radius() (tick.hawkes.SimuHawkesExpKernels method)</a>
 
       <ul>
-        <li><a href="modules/generated/tick.simulation.SimuHawkesSumExpKernels.html#tick.simulation.SimuHawkesSumExpKernels.adjust_spectral_radius">(tick.simulation.SimuHawkesSumExpKernels method)</a>
+        <li><a href="modules/generated/tick.hawkes.SimuHawkesSumExpKernels.html#tick.hawkes.SimuHawkesSumExpKernels.adjust_spectral_radius">(tick.hawkes.SimuHawkesSumExpKernels method)</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="modules/generated/tick.optim.solver.AGD.html#tick.optim.solver.AGD">AGD (class in tick.optim.solver)</a>
+      <li><a href="modules/generated/tick.solver.AGD.html#tick.solver.AGD">AGD (class in tick.solver)</a>
+</li>
+      <li><a href="modules/generated/tick.hawkes.HawkesCumulantMatching.html#tick.hawkes.HawkesCumulantMatching.approximate_optimal_cs_ratio">approximate_optimal_cs_ratio() (tick.hawkes.HawkesCumulantMatching method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -365,7 +407,7 @@
 <h2 id="B">B</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="modules/generated/tick.optim.solver.BFGS.html#tick.optim.solver.BFGS">BFGS (class in tick.optim.solver)</a>
+      <li><a href="modules/generated/tick.solver.BFGS.html#tick.solver.BFGS">BFGS (class in tick.solver)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -373,43 +415,45 @@
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="modules/generated/tick.optim.prox.ProxBinarsity.html#tick.optim.prox.ProxBinarsity.call">call() (tick.optim.prox.ProxBinarsity method)</a>
+      <li><a href="modules/generated/tick.prox.ProxBinarsity.html#tick.prox.ProxBinarsity.call">call() (tick.prox.ProxBinarsity method)</a>
 
       <ul>
-        <li><a href="modules/generated/tick.optim.prox.ProxElasticNet.html#tick.optim.prox.ProxElasticNet.call">(tick.optim.prox.ProxElasticNet method)</a>
+        <li><a href="modules/generated/tick.prox.ProxElasticNet.html#tick.prox.ProxElasticNet.call">(tick.prox.ProxElasticNet method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.prox.ProxEquality.html#tick.optim.prox.ProxEquality.call">(tick.optim.prox.ProxEquality method)</a>
+        <li><a href="modules/generated/tick.prox.ProxEquality.html#tick.prox.ProxEquality.call">(tick.prox.ProxEquality method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.prox.ProxGroupL1.html#tick.optim.prox.ProxGroupL1.call">(tick.optim.prox.ProxGroupL1 method)</a>
+        <li><a href="modules/generated/tick.prox.ProxGroupL1.html#tick.prox.ProxGroupL1.call">(tick.prox.ProxGroupL1 method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.prox.ProxL1.html#tick.optim.prox.ProxL1.call">(tick.optim.prox.ProxL1 method)</a>
+        <li><a href="modules/generated/tick.prox.ProxL1.html#tick.prox.ProxL1.call">(tick.prox.ProxL1 method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.prox.ProxL1w.html#tick.optim.prox.ProxL1w.call">(tick.optim.prox.ProxL1w method)</a>
+        <li><a href="modules/generated/tick.prox.ProxL1w.html#tick.prox.ProxL1w.call">(tick.prox.ProxL1w method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.prox.ProxL2.html#tick.optim.prox.ProxL2.call">(tick.optim.prox.ProxL2 method)</a>
+        <li><a href="modules/generated/tick.prox.ProxL2.html#tick.prox.ProxL2.call">(tick.prox.ProxL2 method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.prox.ProxL2Sq.html#tick.optim.prox.ProxL2Sq.call">(tick.optim.prox.ProxL2Sq method)</a>
+        <li><a href="modules/generated/tick.prox.ProxL2Sq.html#tick.prox.ProxL2Sq.call">(tick.prox.ProxL2Sq method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.prox.ProxMulti.html#tick.optim.prox.ProxMulti.call">(tick.optim.prox.ProxMulti method)</a>
+        <li><a href="modules/generated/tick.prox.ProxMulti.html#tick.prox.ProxMulti.call">(tick.prox.ProxMulti method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.prox.ProxNuclear.html#tick.optim.prox.ProxNuclear.call">(tick.optim.prox.ProxNuclear method)</a>
+        <li><a href="modules/generated/tick.prox.ProxNuclear.html#tick.prox.ProxNuclear.call">(tick.prox.ProxNuclear method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.prox.ProxPositive.html#tick.optim.prox.ProxPositive.call">(tick.optim.prox.ProxPositive method)</a>
+        <li><a href="modules/generated/tick.prox.ProxPositive.html#tick.prox.ProxPositive.call">(tick.prox.ProxPositive method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.prox.ProxSlope.html#tick.optim.prox.ProxSlope.call">(tick.optim.prox.ProxSlope method)</a>
+        <li><a href="modules/generated/tick.prox.ProxSlope.html#tick.prox.ProxSlope.call">(tick.prox.ProxSlope method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.prox.ProxTV.html#tick.optim.prox.ProxTV.call">(tick.optim.prox.ProxTV method)</a>
+        <li><a href="modules/generated/tick.prox.ProxTV.html#tick.prox.ProxTV.call">(tick.prox.ProxTV method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.prox.ProxZero.html#tick.optim.prox.ProxZero.call">(tick.optim.prox.ProxZero method)</a>
+        <li><a href="modules/generated/tick.prox.ProxZero.html#tick.prox.ProxZero.call">(tick.prox.ProxZero method)</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="modules/generated/tick.preprocessing.FeaturesBinarizer.html#tick.preprocessing.FeaturesBinarizer.cast_to_array">cast_to_array() (tick.preprocessing.FeaturesBinarizer static method)</a>
 </li>
-      <li><a href="modules/generated/tick.inference.HawkesConditionalLaw.html#tick.inference.HawkesConditionalLaw.compute">compute() (tick.inference.HawkesConditionalLaw method)</a>
+      <li><a href="modules/generated/tick.hawkes.HawkesConditionalLaw.html#tick.hawkes.HawkesConditionalLaw.compute">compute() (tick.hawkes.HawkesConditionalLaw method)</a>
 </li>
-      <li><a href="modules/generated/tick.inference.CoxRegression.html#tick.inference.CoxRegression">CoxRegression (class in tick.inference)</a>
+      <li><a href="modules/generated/tick.hawkes.HawkesCumulantMatching.html#tick.hawkes.HawkesCumulantMatching.compute_cumulants">compute_cumulants() (tick.hawkes.HawkesCumulantMatching method)</a>
+</li>
+      <li><a href="modules/generated/tick.survival.CoxRegression.html#tick.survival.CoxRegression">CoxRegression() (in module tick.survival)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -417,18 +461,30 @@
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="modules/generated/tick.inference.LogisticRegression.html#tick.inference.LogisticRegression.decision_function">decision_function() (tick.inference.LogisticRegression method)</a>
+      <li><a href="modules/generated/tick.linear_model.LogisticRegression.html#tick.linear_model.LogisticRegression.decision_function">decision_function() (tick.linear_model.LogisticRegression method)</a>
 
       <ul>
-        <li><a href="modules/generated/tick.inference.PoissonRegression.html#tick.inference.PoissonRegression.decision_function">(tick.inference.PoissonRegression method)</a>
+        <li><a href="modules/generated/tick.linear_model.PoissonRegression.html#tick.linear_model.PoissonRegression.decision_function">(tick.linear_model.PoissonRegression method)</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="modules/generated/tick.optim.model.ModelPoisReg.html#tick.optim.model.ModelPoisReg.dual_loss">dual_loss() (tick.optim.model.ModelPoisReg method)</a>
+      <li><a href="modules/generated/tick.linear_model.ModelPoisReg.html#tick.linear_model.ModelPoisReg.dual_loss">dual_loss() (tick.linear_model.ModelPoisReg method)</a>
 </li>
-      <li><a href="modules/generated/tick.optim.solver.SDCA.html#tick.optim.solver.SDCA.dual_objective">dual_objective() (tick.optim.solver.SDCA method)</a>
+      <li><a href="modules/generated/tick.solver.SDCA.html#tick.solver.SDCA.dual_objective">dual_objective() (tick.solver.SDCA method)</a>
 </li>
+  </ul></td>
+</tr></table>
+
+<h2 id="E">E</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="modules/generated/tick.hawkes.HawkesExpKern.html#tick.hawkes.HawkesExpKern.estimated_intensity">estimated_intensity() (tick.hawkes.HawkesExpKern method)</a>
+
+      <ul>
+        <li><a href="modules/generated/tick.hawkes.HawkesSumExpKern.html#tick.hawkes.HawkesSumExpKern.estimated_intensity">(tick.hawkes.HawkesSumExpKern method)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -445,70 +501,70 @@
 </li>
       <li><a href="modules/generated/tick.dataset.fetch_tick_dataset.html#tick.dataset.fetch_tick_dataset">fetch_tick_dataset() (in module tick.dataset)</a>
 </li>
-      <li><a href="modules/generated/tick.inference.CoxRegression.html#tick.inference.CoxRegression.fit">fit() (tick.inference.CoxRegression method)</a>
+      <li><a href="modules/generated/tick.hawkes.HawkesADM4.html#tick.hawkes.HawkesADM4.fit">fit() (tick.hawkes.HawkesADM4 method)</a>
 
       <ul>
-        <li><a href="modules/generated/tick.inference.HawkesADM4.html#tick.inference.HawkesADM4.fit">(tick.inference.HawkesADM4 method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesBasisKernels.html#tick.hawkes.HawkesBasisKernels.fit">(tick.hawkes.HawkesBasisKernels method)</a>
 </li>
-        <li><a href="modules/generated/tick.inference.HawkesBasisKernels.html#tick.inference.HawkesBasisKernels.fit">(tick.inference.HawkesBasisKernels method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesConditionalLaw.html#tick.hawkes.HawkesConditionalLaw.fit">(tick.hawkes.HawkesConditionalLaw method)</a>
 </li>
-        <li><a href="modules/generated/tick.inference.HawkesConditionalLaw.html#tick.inference.HawkesConditionalLaw.fit">(tick.inference.HawkesConditionalLaw method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesCumulantMatching.html#tick.hawkes.HawkesCumulantMatching.fit">(tick.hawkes.HawkesCumulantMatching method)</a>
 </li>
-        <li><a href="modules/generated/tick.inference.HawkesEM.html#tick.inference.HawkesEM.fit">(tick.inference.HawkesEM method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesEM.html#tick.hawkes.HawkesEM.fit">(tick.hawkes.HawkesEM method)</a>
 </li>
-        <li><a href="modules/generated/tick.inference.HawkesExpKern.html#tick.inference.HawkesExpKern.fit">(tick.inference.HawkesExpKern method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesExpKern.html#tick.hawkes.HawkesExpKern.fit">(tick.hawkes.HawkesExpKern method)</a>
 </li>
-        <li><a href="modules/generated/tick.inference.HawkesSumExpKern.html#tick.inference.HawkesSumExpKern.fit">(tick.inference.HawkesSumExpKern method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesSumExpKern.html#tick.hawkes.HawkesSumExpKern.fit">(tick.hawkes.HawkesSumExpKern method)</a>
 </li>
-        <li><a href="modules/generated/tick.inference.HawkesSumGaussians.html#tick.inference.HawkesSumGaussians.fit">(tick.inference.HawkesSumGaussians method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesSumGaussians.html#tick.hawkes.HawkesSumGaussians.fit">(tick.hawkes.HawkesSumGaussians method)</a>
 </li>
-        <li><a href="modules/generated/tick.inference.LinearRegression.html#tick.inference.LinearRegression.fit">(tick.inference.LinearRegression method)</a>
+        <li><a href="modules/generated/tick.hawkes.ModelHawkesExpKernLeastSq.html#tick.hawkes.ModelHawkesExpKernLeastSq.fit">(tick.hawkes.ModelHawkesExpKernLeastSq method)</a>
 </li>
-        <li><a href="modules/generated/tick.inference.LogisticRegression.html#tick.inference.LogisticRegression.fit">(tick.inference.LogisticRegression method)</a>
+        <li><a href="modules/generated/tick.hawkes.ModelHawkesExpKernLogLik.html#tick.hawkes.ModelHawkesExpKernLogLik.fit">(tick.hawkes.ModelHawkesExpKernLogLik method)</a>
 </li>
-        <li><a href="modules/generated/tick.inference.PoissonRegression.html#tick.inference.PoissonRegression.fit">(tick.inference.PoissonRegression method)</a>
+        <li><a href="modules/generated/tick.hawkes.ModelHawkesSumExpKernLeastSq.html#tick.hawkes.ModelHawkesSumExpKernLeastSq.fit">(tick.hawkes.ModelHawkesSumExpKernLeastSq method)</a>
 </li>
-        <li><a href="modules/generated/tick.inference.RobustLinearRegression.html#tick.inference.RobustLinearRegression.fit">(tick.inference.RobustLinearRegression method)</a>
+        <li><a href="modules/generated/tick.hawkes.ModelHawkesSumExpKernLogLik.html#tick.hawkes.ModelHawkesSumExpKernLogLik.fit">(tick.hawkes.ModelHawkesSumExpKernLogLik method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelAbsoluteRegression.html#tick.optim.model.ModelAbsoluteRegression.fit">(tick.optim.model.ModelAbsoluteRegression method)</a>
+        <li><a href="modules/generated/tick.linear_model.LinearRegression.html#tick.linear_model.LinearRegression.fit">(tick.linear_model.LinearRegression method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelCoxRegPartialLik.html#tick.optim.model.ModelCoxRegPartialLik.fit">(tick.optim.model.ModelCoxRegPartialLik method)</a>
+        <li><a href="modules/generated/tick.linear_model.LogisticRegression.html#tick.linear_model.LogisticRegression.fit">(tick.linear_model.LogisticRegression method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelEpsilonInsensitive.html#tick.optim.model.ModelEpsilonInsensitive.fit">(tick.optim.model.ModelEpsilonInsensitive method)</a>
+        <li><a href="modules/generated/tick.linear_model.ModelHinge.html#tick.linear_model.ModelHinge.fit">(tick.linear_model.ModelHinge method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelHawkesFixedExpKernLeastSq.html#tick.optim.model.ModelHawkesFixedExpKernLeastSq.fit">(tick.optim.model.ModelHawkesFixedExpKernLeastSq method)</a>
+        <li><a href="modules/generated/tick.linear_model.ModelLinReg.html#tick.linear_model.ModelLinReg.fit">(tick.linear_model.ModelLinReg method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelHawkesFixedExpKernLogLik.html#tick.optim.model.ModelHawkesFixedExpKernLogLik.fit">(tick.optim.model.ModelHawkesFixedExpKernLogLik method)</a>
+        <li><a href="modules/generated/tick.linear_model.ModelLogReg.html#tick.linear_model.ModelLogReg.fit">(tick.linear_model.ModelLogReg method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelHawkesFixedSumExpKernLeastSq.html#tick.optim.model.ModelHawkesFixedSumExpKernLeastSq.fit">(tick.optim.model.ModelHawkesFixedSumExpKernLeastSq method)</a>
+        <li><a href="modules/generated/tick.linear_model.ModelPoisReg.html#tick.linear_model.ModelPoisReg.fit">(tick.linear_model.ModelPoisReg method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelHawkesFixedSumExpKernLogLik.html#tick.optim.model.ModelHawkesFixedSumExpKernLogLik.fit">(tick.optim.model.ModelHawkesFixedSumExpKernLogLik method)</a>
+        <li><a href="modules/generated/tick.linear_model.ModelQuadraticHinge.html#tick.linear_model.ModelQuadraticHinge.fit">(tick.linear_model.ModelQuadraticHinge method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelHinge.html#tick.optim.model.ModelHinge.fit">(tick.optim.model.ModelHinge method)</a>
+        <li><a href="modules/generated/tick.linear_model.ModelSmoothedHinge.html#tick.linear_model.ModelSmoothedHinge.fit">(tick.linear_model.ModelSmoothedHinge method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelHuber.html#tick.optim.model.ModelHuber.fit">(tick.optim.model.ModelHuber method)</a>
-</li>
-        <li><a href="modules/generated/tick.optim.model.ModelLinReg.html#tick.optim.model.ModelLinReg.fit">(tick.optim.model.ModelLinReg method)</a>
-</li>
-        <li><a href="modules/generated/tick.optim.model.ModelLinRegWithIntercepts.html#tick.optim.model.ModelLinRegWithIntercepts.fit">(tick.optim.model.ModelLinRegWithIntercepts method)</a>
-</li>
-        <li><a href="modules/generated/tick.optim.model.ModelLogReg.html#tick.optim.model.ModelLogReg.fit">(tick.optim.model.ModelLogReg method)</a>
-</li>
-        <li><a href="modules/generated/tick.optim.model.ModelModifiedHuber.html#tick.optim.model.ModelModifiedHuber.fit">(tick.optim.model.ModelModifiedHuber method)</a>
-</li>
-        <li><a href="modules/generated/tick.optim.model.ModelPoisReg.html#tick.optim.model.ModelPoisReg.fit">(tick.optim.model.ModelPoisReg method)</a>
-</li>
-        <li><a href="modules/generated/tick.optim.model.ModelQuadraticHinge.html#tick.optim.model.ModelQuadraticHinge.fit">(tick.optim.model.ModelQuadraticHinge method)</a>
-</li>
-        <li><a href="modules/generated/tick.optim.model.ModelSCCS.html#tick.optim.model.ModelSCCS.fit">(tick.optim.model.ModelSCCS method)</a>
-</li>
-        <li><a href="modules/generated/tick.optim.model.ModelSmoothedHinge.html#tick.optim.model.ModelSmoothedHinge.fit">(tick.optim.model.ModelSmoothedHinge method)</a>
+        <li><a href="modules/generated/tick.linear_model.PoissonRegression.html#tick.linear_model.PoissonRegression.fit">(tick.linear_model.PoissonRegression method)</a>
 </li>
         <li><a href="modules/generated/tick.preprocessing.FeaturesBinarizer.html#tick.preprocessing.FeaturesBinarizer.fit">(tick.preprocessing.FeaturesBinarizer method)</a>
 </li>
         <li><a href="modules/generated/tick.preprocessing.LongitudinalFeaturesLagger.html#tick.preprocessing.LongitudinalFeaturesLagger.fit">(tick.preprocessing.LongitudinalFeaturesLagger method)</a>
 </li>
         <li><a href="modules/generated/tick.preprocessing.LongitudinalFeaturesProduct.html#tick.preprocessing.LongitudinalFeaturesProduct.fit">(tick.preprocessing.LongitudinalFeaturesProduct method)</a>
+</li>
+        <li><a href="modules/generated/tick.robust.ModelAbsoluteRegression.html#tick.robust.ModelAbsoluteRegression.fit">(tick.robust.ModelAbsoluteRegression method)</a>
+</li>
+        <li><a href="modules/generated/tick.robust.ModelEpsilonInsensitive.html#tick.robust.ModelEpsilonInsensitive.fit">(tick.robust.ModelEpsilonInsensitive method)</a>
+</li>
+        <li><a href="modules/generated/tick.robust.ModelHuber.html#tick.robust.ModelHuber.fit">(tick.robust.ModelHuber method)</a>
+</li>
+        <li><a href="modules/generated/tick.robust.ModelLinRegWithIntercepts.html#tick.robust.ModelLinRegWithIntercepts.fit">(tick.robust.ModelLinRegWithIntercepts method)</a>
+</li>
+        <li><a href="modules/generated/tick.robust.ModelModifiedHuber.html#tick.robust.ModelModifiedHuber.fit">(tick.robust.ModelModifiedHuber method)</a>
+</li>
+        <li><a href="modules/generated/tick.robust.RobustLinearRegression.html#tick.robust.RobustLinearRegression.fit">(tick.robust.RobustLinearRegression method)</a>
+</li>
+        <li><a href="modules/generated/tick.survival.ModelCoxRegPartialLik.html#tick.survival.ModelCoxRegPartialLik.fit">(tick.survival.ModelCoxRegPartialLik method)</a>
+</li>
+        <li><a href="modules/generated/tick.survival.ModelSCCS.html#tick.survival.ModelSCCS.fit">(tick.survival.ModelSCCS method)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -527,142 +583,146 @@
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="modules/generated/tick.optim.solver.GD.html#tick.optim.solver.GD">GD (class in tick.optim.solver)</a>
+      <li><a href="modules/generated/tick.solver.GD.html#tick.solver.GD">GD (class in tick.solver)</a>
 </li>
-      <li><a href="modules/generated/tick.simulation.SimuHawkes.html#tick.simulation.SimuHawkes.get_baseline_values">get_baseline_values() (tick.simulation.SimuHawkes method)</a>
+      <li><a href="modules/generated/tick.hawkes.SimuHawkes.html#tick.hawkes.SimuHawkes.get_baseline_values">get_baseline_values() (tick.hawkes.SimuHawkes method)</a>
 
       <ul>
-        <li><a href="modules/generated/tick.simulation.SimuHawkesExpKernels.html#tick.simulation.SimuHawkesExpKernels.get_baseline_values">(tick.simulation.SimuHawkesExpKernels method)</a>
+        <li><a href="modules/generated/tick.hawkes.SimuHawkesExpKernels.html#tick.hawkes.SimuHawkesExpKernels.get_baseline_values">(tick.hawkes.SimuHawkesExpKernels method)</a>
 </li>
-        <li><a href="modules/generated/tick.simulation.SimuHawkesSumExpKernels.html#tick.simulation.SimuHawkesSumExpKernels.get_baseline_values">(tick.simulation.SimuHawkesSumExpKernels method)</a>
+        <li><a href="modules/generated/tick.hawkes.SimuHawkesSumExpKernels.html#tick.hawkes.SimuHawkesSumExpKernels.get_baseline_values">(tick.hawkes.SimuHawkesSumExpKernels method)</a>
 </li>
       </ul></li>
-      <li><a href="modules/generated/tick.inference.HawkesADM4.html#tick.inference.HawkesADM4.get_history">get_history() (tick.inference.HawkesADM4 method)</a>
+      <li><a href="modules/generated/tick.hawkes.HawkesADM4.html#tick.hawkes.HawkesADM4.get_history">get_history() (tick.hawkes.HawkesADM4 method)</a>
 
       <ul>
-        <li><a href="modules/generated/tick.inference.HawkesBasisKernels.html#tick.inference.HawkesBasisKernels.get_history">(tick.inference.HawkesBasisKernels method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesBasisKernels.html#tick.hawkes.HawkesBasisKernels.get_history">(tick.hawkes.HawkesBasisKernels method)</a>
 </li>
-        <li><a href="modules/generated/tick.inference.HawkesEM.html#tick.inference.HawkesEM.get_history">(tick.inference.HawkesEM method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesCumulantMatching.html#tick.hawkes.HawkesCumulantMatching.get_history">(tick.hawkes.HawkesCumulantMatching method)</a>
 </li>
-        <li><a href="modules/generated/tick.inference.HawkesSumGaussians.html#tick.inference.HawkesSumGaussians.get_history">(tick.inference.HawkesSumGaussians method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesEM.html#tick.hawkes.HawkesEM.get_history">(tick.hawkes.HawkesEM method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.solver.AGD.html#tick.optim.solver.AGD.get_history">(tick.optim.solver.AGD method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesSumGaussians.html#tick.hawkes.HawkesSumGaussians.get_history">(tick.hawkes.HawkesSumGaussians method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.solver.AdaGrad.html#tick.optim.solver.AdaGrad.get_history">(tick.optim.solver.AdaGrad method)</a>
+        <li><a href="modules/generated/tick.solver.AGD.html#tick.solver.AGD.get_history">(tick.solver.AGD method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.solver.BFGS.html#tick.optim.solver.BFGS.get_history">(tick.optim.solver.BFGS method)</a>
+        <li><a href="modules/generated/tick.solver.AdaGrad.html#tick.solver.AdaGrad.get_history">(tick.solver.AdaGrad method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.solver.GD.html#tick.optim.solver.GD.get_history">(tick.optim.solver.GD method)</a>
+        <li><a href="modules/generated/tick.solver.BFGS.html#tick.solver.BFGS.get_history">(tick.solver.BFGS method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.solver.GFB.html#tick.optim.solver.GFB.get_history">(tick.optim.solver.GFB method)</a>
+        <li><a href="modules/generated/tick.solver.GD.html#tick.solver.GD.get_history">(tick.solver.GD method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.solver.SAGA.html#tick.optim.solver.SAGA.get_history">(tick.optim.solver.SAGA method)</a>
+        <li><a href="modules/generated/tick.solver.GFB.html#tick.solver.GFB.get_history">(tick.solver.GFB method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.solver.SCPG.html#tick.optim.solver.SCPG.get_history">(tick.optim.solver.SCPG method)</a>
+        <li><a href="modules/generated/tick.solver.SAGA.html#tick.solver.SAGA.get_history">(tick.solver.SAGA method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.solver.SDCA.html#tick.optim.solver.SDCA.get_history">(tick.optim.solver.SDCA method)</a>
+        <li><a href="modules/generated/tick.solver.SCPG.html#tick.solver.SCPG.get_history">(tick.solver.SCPG method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.solver.SGD.html#tick.optim.solver.SGD.get_history">(tick.optim.solver.SGD method)</a>
+        <li><a href="modules/generated/tick.solver.SDCA.html#tick.solver.SDCA.get_history">(tick.solver.SDCA method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.solver.SVRG.html#tick.optim.solver.SVRG.get_history">(tick.optim.solver.SVRG method)</a>
+        <li><a href="modules/generated/tick.solver.SGD.html#tick.solver.SGD.get_history">(tick.solver.SGD method)</a>
+</li>
+        <li><a href="modules/generated/tick.solver.SVRG.html#tick.solver.SVRG.get_history">(tick.solver.SVRG method)</a>
 </li>
       </ul></li>
-      <li><a href="modules/generated/tick.inference.HawkesADM4.html#tick.inference.HawkesADM4.get_kernel_norms">get_kernel_norms() (tick.inference.HawkesADM4 method)</a>
+      <li><a href="modules/generated/tick.hawkes.HawkesADM4.html#tick.hawkes.HawkesADM4.get_kernel_norms">get_kernel_norms() (tick.hawkes.HawkesADM4 method)</a>
 
       <ul>
-        <li><a href="modules/generated/tick.inference.HawkesConditionalLaw.html#tick.inference.HawkesConditionalLaw.get_kernel_norms">(tick.inference.HawkesConditionalLaw method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesConditionalLaw.html#tick.hawkes.HawkesConditionalLaw.get_kernel_norms">(tick.hawkes.HawkesConditionalLaw method)</a>
 </li>
-        <li><a href="modules/generated/tick.inference.HawkesEM.html#tick.inference.HawkesEM.get_kernel_norms">(tick.inference.HawkesEM method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesCumulantMatching.html#tick.hawkes.HawkesCumulantMatching.get_kernel_norms">(tick.hawkes.HawkesCumulantMatching method)</a>
 </li>
-        <li><a href="modules/generated/tick.inference.HawkesExpKern.html#tick.inference.HawkesExpKern.get_kernel_norms">(tick.inference.HawkesExpKern method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesEM.html#tick.hawkes.HawkesEM.get_kernel_norms">(tick.hawkes.HawkesEM method)</a>
 </li>
-        <li><a href="modules/generated/tick.inference.HawkesSumExpKern.html#tick.inference.HawkesSumExpKern.get_kernel_norms">(tick.inference.HawkesSumExpKern method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesExpKern.html#tick.hawkes.HawkesExpKern.get_kernel_norms">(tick.hawkes.HawkesExpKern method)</a>
 </li>
-        <li><a href="modules/generated/tick.inference.HawkesSumGaussians.html#tick.inference.HawkesSumGaussians.get_kernel_norms">(tick.inference.HawkesSumGaussians method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesSumExpKern.html#tick.hawkes.HawkesSumExpKern.get_kernel_norms">(tick.hawkes.HawkesSumExpKern method)</a>
+</li>
+        <li><a href="modules/generated/tick.hawkes.HawkesSumGaussians.html#tick.hawkes.HawkesSumGaussians.get_kernel_norms">(tick.hawkes.HawkesSumGaussians method)</a>
 </li>
       </ul></li>
-      <li><a href="modules/generated/tick.inference.HawkesADM4.html#tick.inference.HawkesADM4.get_kernel_supports">get_kernel_supports() (tick.inference.HawkesADM4 method)</a>
+      <li><a href="modules/generated/tick.hawkes.HawkesADM4.html#tick.hawkes.HawkesADM4.get_kernel_supports">get_kernel_supports() (tick.hawkes.HawkesADM4 method)</a>
 
       <ul>
-        <li><a href="modules/generated/tick.inference.HawkesConditionalLaw.html#tick.inference.HawkesConditionalLaw.get_kernel_supports">(tick.inference.HawkesConditionalLaw method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesConditionalLaw.html#tick.hawkes.HawkesConditionalLaw.get_kernel_supports">(tick.hawkes.HawkesConditionalLaw method)</a>
 </li>
-        <li><a href="modules/generated/tick.inference.HawkesEM.html#tick.inference.HawkesEM.get_kernel_supports">(tick.inference.HawkesEM method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesEM.html#tick.hawkes.HawkesEM.get_kernel_supports">(tick.hawkes.HawkesEM method)</a>
 </li>
-        <li><a href="modules/generated/tick.inference.HawkesExpKern.html#tick.inference.HawkesExpKern.get_kernel_supports">(tick.inference.HawkesExpKern method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesExpKern.html#tick.hawkes.HawkesExpKern.get_kernel_supports">(tick.hawkes.HawkesExpKern method)</a>
 </li>
-        <li><a href="modules/generated/tick.inference.HawkesSumExpKern.html#tick.inference.HawkesSumExpKern.get_kernel_supports">(tick.inference.HawkesSumExpKern method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesSumExpKern.html#tick.hawkes.HawkesSumExpKern.get_kernel_supports">(tick.hawkes.HawkesSumExpKern method)</a>
 </li>
-        <li><a href="modules/generated/tick.inference.HawkesSumGaussians.html#tick.inference.HawkesSumGaussians.get_kernel_supports">(tick.inference.HawkesSumGaussians method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesSumGaussians.html#tick.hawkes.HawkesSumGaussians.get_kernel_supports">(tick.hawkes.HawkesSumGaussians method)</a>
 </li>
       </ul></li>
-      <li><a href="modules/generated/tick.inference.HawkesADM4.html#tick.inference.HawkesADM4.get_kernel_values">get_kernel_values() (tick.inference.HawkesADM4 method)</a>
+      <li><a href="modules/generated/tick.hawkes.HawkesADM4.html#tick.hawkes.HawkesADM4.get_kernel_values">get_kernel_values() (tick.hawkes.HawkesADM4 method)</a>
 
       <ul>
-        <li><a href="modules/generated/tick.inference.HawkesBasisKernels.html#tick.inference.HawkesBasisKernels.get_kernel_values">(tick.inference.HawkesBasisKernels method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesBasisKernels.html#tick.hawkes.HawkesBasisKernels.get_kernel_values">(tick.hawkes.HawkesBasisKernels method)</a>
 </li>
-        <li><a href="modules/generated/tick.inference.HawkesConditionalLaw.html#tick.inference.HawkesConditionalLaw.get_kernel_values">(tick.inference.HawkesConditionalLaw method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesConditionalLaw.html#tick.hawkes.HawkesConditionalLaw.get_kernel_values">(tick.hawkes.HawkesConditionalLaw method)</a>
 </li>
-        <li><a href="modules/generated/tick.inference.HawkesEM.html#tick.inference.HawkesEM.get_kernel_values">(tick.inference.HawkesEM method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesEM.html#tick.hawkes.HawkesEM.get_kernel_values">(tick.hawkes.HawkesEM method)</a>
 </li>
-        <li><a href="modules/generated/tick.inference.HawkesExpKern.html#tick.inference.HawkesExpKern.get_kernel_values">(tick.inference.HawkesExpKern method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesExpKern.html#tick.hawkes.HawkesExpKern.get_kernel_values">(tick.hawkes.HawkesExpKern method)</a>
 </li>
-        <li><a href="modules/generated/tick.inference.HawkesSumExpKern.html#tick.inference.HawkesSumExpKern.get_kernel_values">(tick.inference.HawkesSumExpKern method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesSumExpKern.html#tick.hawkes.HawkesSumExpKern.get_kernel_values">(tick.hawkes.HawkesSumExpKern method)</a>
 </li>
-        <li><a href="modules/generated/tick.inference.HawkesSumGaussians.html#tick.inference.HawkesSumGaussians.get_kernel_values">(tick.inference.HawkesSumGaussians method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesSumGaussians.html#tick.hawkes.HawkesSumGaussians.get_kernel_values">(tick.hawkes.HawkesSumGaussians method)</a>
 </li>
       </ul></li>
-      <li><a href="modules/generated/tick.optim.model.ModelHuber.html#tick.optim.model.ModelHuber.get_lip_best">get_lip_best() (tick.optim.model.ModelHuber method)</a>
+      <li><a href="modules/generated/tick.linear_model.ModelLinReg.html#tick.linear_model.ModelLinReg.get_lip_best">get_lip_best() (tick.linear_model.ModelLinReg method)</a>
 
       <ul>
-        <li><a href="modules/generated/tick.optim.model.ModelLinReg.html#tick.optim.model.ModelLinReg.get_lip_best">(tick.optim.model.ModelLinReg method)</a>
+        <li><a href="modules/generated/tick.linear_model.ModelLogReg.html#tick.linear_model.ModelLogReg.get_lip_best">(tick.linear_model.ModelLogReg method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelLinRegWithIntercepts.html#tick.optim.model.ModelLinRegWithIntercepts.get_lip_best">(tick.optim.model.ModelLinRegWithIntercepts method)</a>
+        <li><a href="modules/generated/tick.linear_model.ModelQuadraticHinge.html#tick.linear_model.ModelQuadraticHinge.get_lip_best">(tick.linear_model.ModelQuadraticHinge method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelLogReg.html#tick.optim.model.ModelLogReg.get_lip_best">(tick.optim.model.ModelLogReg method)</a>
+        <li><a href="modules/generated/tick.linear_model.ModelSmoothedHinge.html#tick.linear_model.ModelSmoothedHinge.get_lip_best">(tick.linear_model.ModelSmoothedHinge method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelModifiedHuber.html#tick.optim.model.ModelModifiedHuber.get_lip_best">(tick.optim.model.ModelModifiedHuber method)</a>
+        <li><a href="modules/generated/tick.robust.ModelHuber.html#tick.robust.ModelHuber.get_lip_best">(tick.robust.ModelHuber method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelQuadraticHinge.html#tick.optim.model.ModelQuadraticHinge.get_lip_best">(tick.optim.model.ModelQuadraticHinge method)</a>
+        <li><a href="modules/generated/tick.robust.ModelLinRegWithIntercepts.html#tick.robust.ModelLinRegWithIntercepts.get_lip_best">(tick.robust.ModelLinRegWithIntercepts method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelSCCS.html#tick.optim.model.ModelSCCS.get_lip_best">(tick.optim.model.ModelSCCS method)</a>
+        <li><a href="modules/generated/tick.robust.ModelModifiedHuber.html#tick.robust.ModelModifiedHuber.get_lip_best">(tick.robust.ModelModifiedHuber method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelSmoothedHinge.html#tick.optim.model.ModelSmoothedHinge.get_lip_best">(tick.optim.model.ModelSmoothedHinge method)</a>
+        <li><a href="modules/generated/tick.survival.ModelSCCS.html#tick.survival.ModelSCCS.get_lip_best">(tick.survival.ModelSCCS method)</a>
 </li>
       </ul></li>
-      <li><a href="modules/generated/tick.optim.model.ModelHuber.html#tick.optim.model.ModelHuber.get_lip_max">get_lip_max() (tick.optim.model.ModelHuber method)</a>
+      <li><a href="modules/generated/tick.linear_model.ModelLinReg.html#tick.linear_model.ModelLinReg.get_lip_max">get_lip_max() (tick.linear_model.ModelLinReg method)</a>
 
       <ul>
-        <li><a href="modules/generated/tick.optim.model.ModelLinReg.html#tick.optim.model.ModelLinReg.get_lip_max">(tick.optim.model.ModelLinReg method)</a>
+        <li><a href="modules/generated/tick.linear_model.ModelLogReg.html#tick.linear_model.ModelLogReg.get_lip_max">(tick.linear_model.ModelLogReg method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelLinRegWithIntercepts.html#tick.optim.model.ModelLinRegWithIntercepts.get_lip_max">(tick.optim.model.ModelLinRegWithIntercepts method)</a>
+        <li><a href="modules/generated/tick.linear_model.ModelQuadraticHinge.html#tick.linear_model.ModelQuadraticHinge.get_lip_max">(tick.linear_model.ModelQuadraticHinge method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelLogReg.html#tick.optim.model.ModelLogReg.get_lip_max">(tick.optim.model.ModelLogReg method)</a>
+        <li><a href="modules/generated/tick.linear_model.ModelSmoothedHinge.html#tick.linear_model.ModelSmoothedHinge.get_lip_max">(tick.linear_model.ModelSmoothedHinge method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelModifiedHuber.html#tick.optim.model.ModelModifiedHuber.get_lip_max">(tick.optim.model.ModelModifiedHuber method)</a>
+        <li><a href="modules/generated/tick.robust.ModelHuber.html#tick.robust.ModelHuber.get_lip_max">(tick.robust.ModelHuber method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelQuadraticHinge.html#tick.optim.model.ModelQuadraticHinge.get_lip_max">(tick.optim.model.ModelQuadraticHinge method)</a>
+        <li><a href="modules/generated/tick.robust.ModelLinRegWithIntercepts.html#tick.robust.ModelLinRegWithIntercepts.get_lip_max">(tick.robust.ModelLinRegWithIntercepts method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelSCCS.html#tick.optim.model.ModelSCCS.get_lip_max">(tick.optim.model.ModelSCCS method)</a>
+        <li><a href="modules/generated/tick.robust.ModelModifiedHuber.html#tick.robust.ModelModifiedHuber.get_lip_max">(tick.robust.ModelModifiedHuber method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelSmoothedHinge.html#tick.optim.model.ModelSmoothedHinge.get_lip_max">(tick.optim.model.ModelSmoothedHinge method)</a>
+        <li><a href="modules/generated/tick.survival.ModelSCCS.html#tick.survival.ModelSCCS.get_lip_max">(tick.survival.ModelSCCS method)</a>
 </li>
       </ul></li>
-      <li><a href="modules/generated/tick.optim.model.ModelHuber.html#tick.optim.model.ModelHuber.get_lip_mean">get_lip_mean() (tick.optim.model.ModelHuber method)</a>
+      <li><a href="modules/generated/tick.linear_model.ModelLinReg.html#tick.linear_model.ModelLinReg.get_lip_mean">get_lip_mean() (tick.linear_model.ModelLinReg method)</a>
 
       <ul>
-        <li><a href="modules/generated/tick.optim.model.ModelLinReg.html#tick.optim.model.ModelLinReg.get_lip_mean">(tick.optim.model.ModelLinReg method)</a>
+        <li><a href="modules/generated/tick.linear_model.ModelLogReg.html#tick.linear_model.ModelLogReg.get_lip_mean">(tick.linear_model.ModelLogReg method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelLinRegWithIntercepts.html#tick.optim.model.ModelLinRegWithIntercepts.get_lip_mean">(tick.optim.model.ModelLinRegWithIntercepts method)</a>
+        <li><a href="modules/generated/tick.linear_model.ModelQuadraticHinge.html#tick.linear_model.ModelQuadraticHinge.get_lip_mean">(tick.linear_model.ModelQuadraticHinge method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelLogReg.html#tick.optim.model.ModelLogReg.get_lip_mean">(tick.optim.model.ModelLogReg method)</a>
+        <li><a href="modules/generated/tick.linear_model.ModelSmoothedHinge.html#tick.linear_model.ModelSmoothedHinge.get_lip_mean">(tick.linear_model.ModelSmoothedHinge method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelModifiedHuber.html#tick.optim.model.ModelModifiedHuber.get_lip_mean">(tick.optim.model.ModelModifiedHuber method)</a>
+        <li><a href="modules/generated/tick.robust.ModelHuber.html#tick.robust.ModelHuber.get_lip_mean">(tick.robust.ModelHuber method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelQuadraticHinge.html#tick.optim.model.ModelQuadraticHinge.get_lip_mean">(tick.optim.model.ModelQuadraticHinge method)</a>
+        <li><a href="modules/generated/tick.robust.ModelLinRegWithIntercepts.html#tick.robust.ModelLinRegWithIntercepts.get_lip_mean">(tick.robust.ModelLinRegWithIntercepts method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelSCCS.html#tick.optim.model.ModelSCCS.get_lip_mean">(tick.optim.model.ModelSCCS method)</a>
+        <li><a href="modules/generated/tick.robust.ModelModifiedHuber.html#tick.robust.ModelModifiedHuber.get_lip_mean">(tick.robust.ModelModifiedHuber method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelSmoothedHinge.html#tick.optim.model.ModelSmoothedHinge.get_lip_mean">(tick.optim.model.ModelSmoothedHinge method)</a>
+        <li><a href="modules/generated/tick.survival.ModelSCCS.html#tick.survival.ModelSCCS.get_lip_mean">(tick.survival.ModelSCCS method)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -670,113 +730,113 @@
       <li><a href="modules/generated/tick.base.TimeFunction.html#tick.base.TimeFunction.get_norm">get_norm() (tick.base.TimeFunction method)</a>
 
       <ul>
-        <li><a href="modules/generated/tick.simulation.HawkesKernel0.html#tick.simulation.HawkesKernel0.get_norm">(tick.simulation.HawkesKernel0 method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesKernel0.html#tick.hawkes.HawkesKernel0.get_norm">(tick.hawkes.HawkesKernel0 method)</a>
 </li>
-        <li><a href="modules/generated/tick.simulation.HawkesKernelExp.html#tick.simulation.HawkesKernelExp.get_norm">(tick.simulation.HawkesKernelExp method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesKernelExp.html#tick.hawkes.HawkesKernelExp.get_norm">(tick.hawkes.HawkesKernelExp method)</a>
 </li>
-        <li><a href="modules/generated/tick.simulation.HawkesKernelPowerLaw.html#tick.simulation.HawkesKernelPowerLaw.get_norm">(tick.simulation.HawkesKernelPowerLaw method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesKernelPowerLaw.html#tick.hawkes.HawkesKernelPowerLaw.get_norm">(tick.hawkes.HawkesKernelPowerLaw method)</a>
 </li>
-        <li><a href="modules/generated/tick.simulation.HawkesKernelSumExp.html#tick.simulation.HawkesKernelSumExp.get_norm">(tick.simulation.HawkesKernelSumExp method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesKernelSumExp.html#tick.hawkes.HawkesKernelSumExp.get_norm">(tick.hawkes.HawkesKernelSumExp method)</a>
 </li>
-        <li><a href="modules/generated/tick.simulation.HawkesKernelTimeFunc.html#tick.simulation.HawkesKernelTimeFunc.get_norm">(tick.simulation.HawkesKernelTimeFunc method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesKernelTimeFunc.html#tick.hawkes.HawkesKernelTimeFunc.get_norm">(tick.hawkes.HawkesKernelTimeFunc method)</a>
 </li>
       </ul></li>
-      <li><a href="modules/generated/tick.inference.LinearRegression.html#tick.inference.LinearRegression.get_params">get_params() (tick.inference.LinearRegression method)</a>
+      <li><a href="modules/generated/tick.linear_model.LinearRegression.html#tick.linear_model.LinearRegression.get_params">get_params() (tick.linear_model.LinearRegression method)</a>
 
       <ul>
-        <li><a href="modules/generated/tick.inference.LogisticRegression.html#tick.inference.LogisticRegression.get_params">(tick.inference.LogisticRegression method)</a>
+        <li><a href="modules/generated/tick.linear_model.LogisticRegression.html#tick.linear_model.LogisticRegression.get_params">(tick.linear_model.LogisticRegression method)</a>
 </li>
-        <li><a href="modules/generated/tick.inference.PoissonRegression.html#tick.inference.PoissonRegression.get_params">(tick.inference.PoissonRegression method)</a>
-</li>
-        <li><a href="modules/generated/tick.inference.RobustLinearRegression.html#tick.inference.RobustLinearRegression.get_params">(tick.inference.RobustLinearRegression method)</a>
+        <li><a href="modules/generated/tick.linear_model.PoissonRegression.html#tick.linear_model.PoissonRegression.get_params">(tick.linear_model.PoissonRegression method)</a>
 </li>
         <li><a href="modules/generated/tick.preprocessing.FeaturesBinarizer.html#tick.preprocessing.FeaturesBinarizer.get_params">(tick.preprocessing.FeaturesBinarizer method)</a>
 </li>
-      </ul></li>
-      <li><a href="modules/generated/tick.simulation.HawkesKernel0.html#tick.simulation.HawkesKernel0.get_plot_support">get_plot_support() (tick.simulation.HawkesKernel0 method)</a>
-
-      <ul>
-        <li><a href="modules/generated/tick.simulation.HawkesKernelExp.html#tick.simulation.HawkesKernelExp.get_plot_support">(tick.simulation.HawkesKernelExp method)</a>
-</li>
-        <li><a href="modules/generated/tick.simulation.HawkesKernelPowerLaw.html#tick.simulation.HawkesKernelPowerLaw.get_plot_support">(tick.simulation.HawkesKernelPowerLaw method)</a>
-</li>
-        <li><a href="modules/generated/tick.simulation.HawkesKernelSumExp.html#tick.simulation.HawkesKernelSumExp.get_plot_support">(tick.simulation.HawkesKernelSumExp method)</a>
-</li>
-        <li><a href="modules/generated/tick.simulation.HawkesKernelTimeFunc.html#tick.simulation.HawkesKernelTimeFunc.get_plot_support">(tick.simulation.HawkesKernelTimeFunc method)</a>
+        <li><a href="modules/generated/tick.robust.RobustLinearRegression.html#tick.robust.RobustLinearRegression.get_params">(tick.robust.RobustLinearRegression method)</a>
 </li>
       </ul></li>
-      <li><a href="modules/generated/tick.simulation.HawkesKernel0.html#tick.simulation.HawkesKernel0.get_support">get_support() (tick.simulation.HawkesKernel0 method)</a>
+      <li><a href="modules/generated/tick.hawkes.HawkesKernel0.html#tick.hawkes.HawkesKernel0.get_plot_support">get_plot_support() (tick.hawkes.HawkesKernel0 method)</a>
 
       <ul>
-        <li><a href="modules/generated/tick.simulation.HawkesKernelExp.html#tick.simulation.HawkesKernelExp.get_support">(tick.simulation.HawkesKernelExp method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesKernelExp.html#tick.hawkes.HawkesKernelExp.get_plot_support">(tick.hawkes.HawkesKernelExp method)</a>
 </li>
-        <li><a href="modules/generated/tick.simulation.HawkesKernelPowerLaw.html#tick.simulation.HawkesKernelPowerLaw.get_support">(tick.simulation.HawkesKernelPowerLaw method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesKernelPowerLaw.html#tick.hawkes.HawkesKernelPowerLaw.get_plot_support">(tick.hawkes.HawkesKernelPowerLaw method)</a>
 </li>
-        <li><a href="modules/generated/tick.simulation.HawkesKernelSumExp.html#tick.simulation.HawkesKernelSumExp.get_support">(tick.simulation.HawkesKernelSumExp method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesKernelSumExp.html#tick.hawkes.HawkesKernelSumExp.get_plot_support">(tick.hawkes.HawkesKernelSumExp method)</a>
 </li>
-        <li><a href="modules/generated/tick.simulation.HawkesKernelTimeFunc.html#tick.simulation.HawkesKernelTimeFunc.get_support">(tick.simulation.HawkesKernelTimeFunc method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesKernelTimeFunc.html#tick.hawkes.HawkesKernelTimeFunc.get_plot_support">(tick.hawkes.HawkesKernelTimeFunc method)</a>
 </li>
       </ul></li>
-      <li><a href="modules/generated/tick.simulation.HawkesKernel0.html#tick.simulation.HawkesKernel0.get_value">get_value() (tick.simulation.HawkesKernel0 method)</a>
+      <li><a href="modules/generated/tick.hawkes.HawkesKernel0.html#tick.hawkes.HawkesKernel0.get_support">get_support() (tick.hawkes.HawkesKernel0 method)</a>
 
       <ul>
-        <li><a href="modules/generated/tick.simulation.HawkesKernelExp.html#tick.simulation.HawkesKernelExp.get_value">(tick.simulation.HawkesKernelExp method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesKernelExp.html#tick.hawkes.HawkesKernelExp.get_support">(tick.hawkes.HawkesKernelExp method)</a>
 </li>
-        <li><a href="modules/generated/tick.simulation.HawkesKernelPowerLaw.html#tick.simulation.HawkesKernelPowerLaw.get_value">(tick.simulation.HawkesKernelPowerLaw method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesKernelPowerLaw.html#tick.hawkes.HawkesKernelPowerLaw.get_support">(tick.hawkes.HawkesKernelPowerLaw method)</a>
 </li>
-        <li><a href="modules/generated/tick.simulation.HawkesKernelSumExp.html#tick.simulation.HawkesKernelSumExp.get_value">(tick.simulation.HawkesKernelSumExp method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesKernelSumExp.html#tick.hawkes.HawkesKernelSumExp.get_support">(tick.hawkes.HawkesKernelSumExp method)</a>
 </li>
-        <li><a href="modules/generated/tick.simulation.HawkesKernelTimeFunc.html#tick.simulation.HawkesKernelTimeFunc.get_value">(tick.simulation.HawkesKernelTimeFunc method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesKernelTimeFunc.html#tick.hawkes.HawkesKernelTimeFunc.get_support">(tick.hawkes.HawkesKernelTimeFunc method)</a>
 </li>
       </ul></li>
-      <li><a href="modules/generated/tick.simulation.HawkesKernel0.html#tick.simulation.HawkesKernel0.get_values">get_values() (tick.simulation.HawkesKernel0 method)</a>
+      <li><a href="modules/generated/tick.hawkes.HawkesKernel0.html#tick.hawkes.HawkesKernel0.get_value">get_value() (tick.hawkes.HawkesKernel0 method)</a>
 
       <ul>
-        <li><a href="modules/generated/tick.simulation.HawkesKernelExp.html#tick.simulation.HawkesKernelExp.get_values">(tick.simulation.HawkesKernelExp method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesKernelExp.html#tick.hawkes.HawkesKernelExp.get_value">(tick.hawkes.HawkesKernelExp method)</a>
 </li>
-        <li><a href="modules/generated/tick.simulation.HawkesKernelPowerLaw.html#tick.simulation.HawkesKernelPowerLaw.get_values">(tick.simulation.HawkesKernelPowerLaw method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesKernelPowerLaw.html#tick.hawkes.HawkesKernelPowerLaw.get_value">(tick.hawkes.HawkesKernelPowerLaw method)</a>
 </li>
-        <li><a href="modules/generated/tick.simulation.HawkesKernelSumExp.html#tick.simulation.HawkesKernelSumExp.get_values">(tick.simulation.HawkesKernelSumExp method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesKernelSumExp.html#tick.hawkes.HawkesKernelSumExp.get_value">(tick.hawkes.HawkesKernelSumExp method)</a>
 </li>
-        <li><a href="modules/generated/tick.simulation.HawkesKernelTimeFunc.html#tick.simulation.HawkesKernelTimeFunc.get_values">(tick.simulation.HawkesKernelTimeFunc method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesKernelTimeFunc.html#tick.hawkes.HawkesKernelTimeFunc.get_value">(tick.hawkes.HawkesKernelTimeFunc method)</a>
 </li>
       </ul></li>
-      <li><a href="modules/generated/tick.optim.solver.GFB.html#tick.optim.solver.GFB">GFB (class in tick.optim.solver)</a>
-</li>
-      <li><a href="modules/generated/tick.optim.model.ModelAbsoluteRegression.html#tick.optim.model.ModelAbsoluteRegression.grad">grad() (tick.optim.model.ModelAbsoluteRegression method)</a>
+      <li><a href="modules/generated/tick.hawkes.HawkesKernel0.html#tick.hawkes.HawkesKernel0.get_values">get_values() (tick.hawkes.HawkesKernel0 method)</a>
 
       <ul>
-        <li><a href="modules/generated/tick.optim.model.ModelCoxRegPartialLik.html#tick.optim.model.ModelCoxRegPartialLik.grad">(tick.optim.model.ModelCoxRegPartialLik method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesKernelExp.html#tick.hawkes.HawkesKernelExp.get_values">(tick.hawkes.HawkesKernelExp method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelEpsilonInsensitive.html#tick.optim.model.ModelEpsilonInsensitive.grad">(tick.optim.model.ModelEpsilonInsensitive method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesKernelPowerLaw.html#tick.hawkes.HawkesKernelPowerLaw.get_values">(tick.hawkes.HawkesKernelPowerLaw method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelHawkesFixedExpKernLeastSq.html#tick.optim.model.ModelHawkesFixedExpKernLeastSq.grad">(tick.optim.model.ModelHawkesFixedExpKernLeastSq method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesKernelSumExp.html#tick.hawkes.HawkesKernelSumExp.get_values">(tick.hawkes.HawkesKernelSumExp method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelHawkesFixedExpKernLogLik.html#tick.optim.model.ModelHawkesFixedExpKernLogLik.grad">(tick.optim.model.ModelHawkesFixedExpKernLogLik method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesKernelTimeFunc.html#tick.hawkes.HawkesKernelTimeFunc.get_values">(tick.hawkes.HawkesKernelTimeFunc method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelHawkesFixedSumExpKernLeastSq.html#tick.optim.model.ModelHawkesFixedSumExpKernLeastSq.grad">(tick.optim.model.ModelHawkesFixedSumExpKernLeastSq method)</a>
+      </ul></li>
+      <li><a href="modules/generated/tick.solver.GFB.html#tick.solver.GFB">GFB (class in tick.solver)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelHawkesFixedSumExpKernLogLik.html#tick.optim.model.ModelHawkesFixedSumExpKernLogLik.grad">(tick.optim.model.ModelHawkesFixedSumExpKernLogLik method)</a>
+      <li><a href="modules/generated/tick.hawkes.ModelHawkesExpKernLeastSq.html#tick.hawkes.ModelHawkesExpKernLeastSq.grad">grad() (tick.hawkes.ModelHawkesExpKernLeastSq method)</a>
+
+      <ul>
+        <li><a href="modules/generated/tick.hawkes.ModelHawkesExpKernLogLik.html#tick.hawkes.ModelHawkesExpKernLogLik.grad">(tick.hawkes.ModelHawkesExpKernLogLik method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelHinge.html#tick.optim.model.ModelHinge.grad">(tick.optim.model.ModelHinge method)</a>
+        <li><a href="modules/generated/tick.hawkes.ModelHawkesSumExpKernLeastSq.html#tick.hawkes.ModelHawkesSumExpKernLeastSq.grad">(tick.hawkes.ModelHawkesSumExpKernLeastSq method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelHuber.html#tick.optim.model.ModelHuber.grad">(tick.optim.model.ModelHuber method)</a>
+        <li><a href="modules/generated/tick.hawkes.ModelHawkesSumExpKernLogLik.html#tick.hawkes.ModelHawkesSumExpKernLogLik.grad">(tick.hawkes.ModelHawkesSumExpKernLogLik method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelLinReg.html#tick.optim.model.ModelLinReg.grad">(tick.optim.model.ModelLinReg method)</a>
+        <li><a href="modules/generated/tick.linear_model.ModelHinge.html#tick.linear_model.ModelHinge.grad">(tick.linear_model.ModelHinge method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelLinRegWithIntercepts.html#tick.optim.model.ModelLinRegWithIntercepts.grad">(tick.optim.model.ModelLinRegWithIntercepts method)</a>
+        <li><a href="modules/generated/tick.linear_model.ModelLinReg.html#tick.linear_model.ModelLinReg.grad">(tick.linear_model.ModelLinReg method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelLogReg.html#tick.optim.model.ModelLogReg.grad">(tick.optim.model.ModelLogReg method)</a>
+        <li><a href="modules/generated/tick.linear_model.ModelLogReg.html#tick.linear_model.ModelLogReg.grad">(tick.linear_model.ModelLogReg method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelModifiedHuber.html#tick.optim.model.ModelModifiedHuber.grad">(tick.optim.model.ModelModifiedHuber method)</a>
+        <li><a href="modules/generated/tick.linear_model.ModelPoisReg.html#tick.linear_model.ModelPoisReg.grad">(tick.linear_model.ModelPoisReg method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelPoisReg.html#tick.optim.model.ModelPoisReg.grad">(tick.optim.model.ModelPoisReg method)</a>
+        <li><a href="modules/generated/tick.linear_model.ModelQuadraticHinge.html#tick.linear_model.ModelQuadraticHinge.grad">(tick.linear_model.ModelQuadraticHinge method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelQuadraticHinge.html#tick.optim.model.ModelQuadraticHinge.grad">(tick.optim.model.ModelQuadraticHinge method)</a>
+        <li><a href="modules/generated/tick.linear_model.ModelSmoothedHinge.html#tick.linear_model.ModelSmoothedHinge.grad">(tick.linear_model.ModelSmoothedHinge method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelSCCS.html#tick.optim.model.ModelSCCS.grad">(tick.optim.model.ModelSCCS method)</a>
+        <li><a href="modules/generated/tick.robust.ModelAbsoluteRegression.html#tick.robust.ModelAbsoluteRegression.grad">(tick.robust.ModelAbsoluteRegression method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelSmoothedHinge.html#tick.optim.model.ModelSmoothedHinge.grad">(tick.optim.model.ModelSmoothedHinge method)</a>
+        <li><a href="modules/generated/tick.robust.ModelEpsilonInsensitive.html#tick.robust.ModelEpsilonInsensitive.grad">(tick.robust.ModelEpsilonInsensitive method)</a>
+</li>
+        <li><a href="modules/generated/tick.robust.ModelHuber.html#tick.robust.ModelHuber.grad">(tick.robust.ModelHuber method)</a>
+</li>
+        <li><a href="modules/generated/tick.robust.ModelLinRegWithIntercepts.html#tick.robust.ModelLinRegWithIntercepts.grad">(tick.robust.ModelLinRegWithIntercepts method)</a>
+</li>
+        <li><a href="modules/generated/tick.robust.ModelModifiedHuber.html#tick.robust.ModelModifiedHuber.grad">(tick.robust.ModelModifiedHuber method)</a>
+</li>
+        <li><a href="modules/generated/tick.survival.ModelCoxRegPartialLik.html#tick.survival.ModelCoxRegPartialLik.grad">(tick.survival.ModelCoxRegPartialLik method)</a>
+</li>
+        <li><a href="modules/generated/tick.survival.ModelSCCS.html#tick.survival.ModelSCCS.grad">(tick.survival.ModelSCCS method)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -785,51 +845,53 @@
 <h2 id="H">H</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="modules/generated/tick.inference.HawkesADM4.html#tick.inference.HawkesADM4">HawkesADM4 (class in tick.inference)</a>
+      <li><a href="modules/generated/tick.hawkes.HawkesADM4.html#tick.hawkes.HawkesADM4">HawkesADM4 (class in tick.hawkes)</a>
 </li>
-      <li><a href="modules/generated/tick.inference.HawkesBasisKernels.html#tick.inference.HawkesBasisKernels">HawkesBasisKernels (class in tick.inference)</a>
+      <li><a href="modules/generated/tick.hawkes.HawkesBasisKernels.html#tick.hawkes.HawkesBasisKernels">HawkesBasisKernels (class in tick.hawkes)</a>
 </li>
-      <li><a href="modules/generated/tick.inference.HawkesConditionalLaw.html#tick.inference.HawkesConditionalLaw">HawkesConditionalLaw (class in tick.inference)</a>
+      <li><a href="modules/generated/tick.hawkes.HawkesConditionalLaw.html#tick.hawkes.HawkesConditionalLaw">HawkesConditionalLaw (class in tick.hawkes)</a>
 </li>
-      <li><a href="modules/generated/tick.inference.HawkesEM.html#tick.inference.HawkesEM">HawkesEM (class in tick.inference)</a>
+      <li><a href="modules/generated/tick.hawkes.HawkesCumulantMatching.html#tick.hawkes.HawkesCumulantMatching">HawkesCumulantMatching (class in tick.hawkes)</a>
 </li>
-      <li><a href="modules/generated/tick.inference.HawkesExpKern.html#tick.inference.HawkesExpKern">HawkesExpKern (class in tick.inference)</a>
+      <li><a href="modules/generated/tick.hawkes.HawkesEM.html#tick.hawkes.HawkesEM">HawkesEM (class in tick.hawkes)</a>
 </li>
-      <li><a href="modules/generated/tick.simulation.HawkesKernel0.html#tick.simulation.HawkesKernel0">HawkesKernel0 (class in tick.simulation)</a>
+      <li><a href="modules/generated/tick.hawkes.HawkesExpKern.html#tick.hawkes.HawkesExpKern">HawkesExpKern (class in tick.hawkes)</a>
 </li>
-      <li><a href="modules/generated/tick.simulation.HawkesKernelExp.html#tick.simulation.HawkesKernelExp">HawkesKernelExp (class in tick.simulation)</a>
+      <li><a href="modules/generated/tick.hawkes.HawkesKernel0.html#tick.hawkes.HawkesKernel0">HawkesKernel0 (class in tick.hawkes)</a>
 </li>
-      <li><a href="modules/generated/tick.simulation.HawkesKernelPowerLaw.html#tick.simulation.HawkesKernelPowerLaw">HawkesKernelPowerLaw (class in tick.simulation)</a>
+      <li><a href="modules/generated/tick.hawkes.HawkesKernelExp.html#tick.hawkes.HawkesKernelExp">HawkesKernelExp (class in tick.hawkes)</a>
 </li>
-      <li><a href="modules/generated/tick.simulation.HawkesKernelSumExp.html#tick.simulation.HawkesKernelSumExp">HawkesKernelSumExp (class in tick.simulation)</a>
+      <li><a href="modules/generated/tick.hawkes.HawkesKernelPowerLaw.html#tick.hawkes.HawkesKernelPowerLaw">HawkesKernelPowerLaw (class in tick.hawkes)</a>
 </li>
-      <li><a href="modules/generated/tick.simulation.HawkesKernelTimeFunc.html#tick.simulation.HawkesKernelTimeFunc">HawkesKernelTimeFunc (class in tick.simulation)</a>
+      <li><a href="modules/generated/tick.hawkes.HawkesKernelSumExp.html#tick.hawkes.HawkesKernelSumExp">HawkesKernelSumExp (class in tick.hawkes)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="modules/generated/tick.inference.HawkesSumExpKern.html#tick.inference.HawkesSumExpKern">HawkesSumExpKern (class in tick.inference)</a>
+      <li><a href="modules/generated/tick.hawkes.HawkesKernelTimeFunc.html#tick.hawkes.HawkesKernelTimeFunc">HawkesKernelTimeFunc (class in tick.hawkes)</a>
 </li>
-      <li><a href="modules/generated/tick.inference.HawkesSumGaussians.html#tick.inference.HawkesSumGaussians">HawkesSumGaussians (class in tick.inference)</a>
+      <li><a href="modules/generated/tick.hawkes.HawkesSumExpKern.html#tick.hawkes.HawkesSumExpKern">HawkesSumExpKern (class in tick.hawkes)</a>
 </li>
-      <li><a href="modules/generated/tick.optim.model.ModelHawkesFixedExpKernLeastSq.html#tick.optim.model.ModelHawkesFixedExpKernLeastSq.hessian">hessian() (tick.optim.model.ModelHawkesFixedExpKernLeastSq method)</a>
+      <li><a href="modules/generated/tick.hawkes.HawkesSumGaussians.html#tick.hawkes.HawkesSumGaussians">HawkesSumGaussians (class in tick.hawkes)</a>
+</li>
+      <li><a href="modules/generated/tick.hawkes.ModelHawkesExpKernLeastSq.html#tick.hawkes.ModelHawkesExpKernLeastSq.hessian">hessian() (tick.hawkes.ModelHawkesExpKernLeastSq method)</a>
 
       <ul>
-        <li><a href="modules/generated/tick.optim.model.ModelHawkesFixedExpKernLogLik.html#tick.optim.model.ModelHawkesFixedExpKernLogLik.hessian">(tick.optim.model.ModelHawkesFixedExpKernLogLik method)</a>
+        <li><a href="modules/generated/tick.hawkes.ModelHawkesExpKernLogLik.html#tick.hawkes.ModelHawkesExpKernLogLik.hessian">(tick.hawkes.ModelHawkesExpKernLogLik method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelHawkesFixedSumExpKernLeastSq.html#tick.optim.model.ModelHawkesFixedSumExpKernLeastSq.hessian">(tick.optim.model.ModelHawkesFixedSumExpKernLeastSq method)</a>
+        <li><a href="modules/generated/tick.hawkes.ModelHawkesSumExpKernLeastSq.html#tick.hawkes.ModelHawkesSumExpKernLeastSq.hessian">(tick.hawkes.ModelHawkesSumExpKernLeastSq method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelHawkesFixedSumExpKernLogLik.html#tick.optim.model.ModelHawkesFixedSumExpKernLogLik.hessian">(tick.optim.model.ModelHawkesFixedSumExpKernLogLik method)</a>
+        <li><a href="modules/generated/tick.hawkes.ModelHawkesSumExpKernLogLik.html#tick.hawkes.ModelHawkesSumExpKernLogLik.hessian">(tick.hawkes.ModelHawkesSumExpKernLogLik method)</a>
 </li>
       </ul></li>
-      <li><a href="modules/generated/tick.optim.model.ModelHawkesFixedExpKernLogLik.html#tick.optim.model.ModelHawkesFixedExpKernLogLik.hessian_norm">hessian_norm() (tick.optim.model.ModelHawkesFixedExpKernLogLik method)</a>
+      <li><a href="modules/generated/tick.hawkes.ModelHawkesExpKernLogLik.html#tick.hawkes.ModelHawkesExpKernLogLik.hessian_norm">hessian_norm() (tick.hawkes.ModelHawkesExpKernLogLik method)</a>
 
       <ul>
-        <li><a href="modules/generated/tick.optim.model.ModelHawkesFixedSumExpKernLogLik.html#tick.optim.model.ModelHawkesFixedSumExpKernLogLik.hessian_norm">(tick.optim.model.ModelHawkesFixedSumExpKernLogLik method)</a>
+        <li><a href="modules/generated/tick.hawkes.ModelHawkesSumExpKernLogLik.html#tick.hawkes.ModelHawkesSumExpKernLogLik.hessian_norm">(tick.hawkes.ModelHawkesSumExpKernLogLik method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelPoisReg.html#tick.optim.model.ModelPoisReg.hessian_norm">(tick.optim.model.ModelPoisReg method)</a>
+        <li><a href="modules/generated/tick.linear_model.ModelPoisReg.html#tick.linear_model.ModelPoisReg.hessian_norm">(tick.linear_model.ModelPoisReg method)</a>
 </li>
       </ul></li>
-      <li><a href="modules/generated/tick.optim.history.History.html#tick.optim.history.History">History (class in tick.optim.history)</a>
+      <li><a href="modules/generated/tick.solver.History.html#tick.solver.History">History (class in tick.solver)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -837,44 +899,44 @@
 <h2 id="I">I</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="modules/generated/tick.inference.HawkesConditionalLaw.html#tick.inference.HawkesConditionalLaw.incremental_fit">incremental_fit() (tick.inference.HawkesConditionalLaw method)</a>
+      <li><a href="modules/generated/tick.hawkes.HawkesConditionalLaw.html#tick.hawkes.HawkesConditionalLaw.incremental_fit">incremental_fit() (tick.hawkes.HawkesConditionalLaw method)</a>
 
       <ul>
-        <li><a href="modules/generated/tick.optim.model.ModelHawkesFixedExpKernLeastSq.html#tick.optim.model.ModelHawkesFixedExpKernLeastSq.incremental_fit">(tick.optim.model.ModelHawkesFixedExpKernLeastSq method)</a>
+        <li><a href="modules/generated/tick.hawkes.ModelHawkesExpKernLeastSq.html#tick.hawkes.ModelHawkesExpKernLeastSq.incremental_fit">(tick.hawkes.ModelHawkesExpKernLeastSq method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelHawkesFixedExpKernLogLik.html#tick.optim.model.ModelHawkesFixedExpKernLogLik.incremental_fit">(tick.optim.model.ModelHawkesFixedExpKernLogLik method)</a>
+        <li><a href="modules/generated/tick.hawkes.ModelHawkesExpKernLogLik.html#tick.hawkes.ModelHawkesExpKernLogLik.incremental_fit">(tick.hawkes.ModelHawkesExpKernLogLik method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelHawkesFixedSumExpKernLeastSq.html#tick.optim.model.ModelHawkesFixedSumExpKernLeastSq.incremental_fit">(tick.optim.model.ModelHawkesFixedSumExpKernLeastSq method)</a>
+        <li><a href="modules/generated/tick.hawkes.ModelHawkesSumExpKernLeastSq.html#tick.hawkes.ModelHawkesSumExpKernLeastSq.incremental_fit">(tick.hawkes.ModelHawkesSumExpKernLeastSq method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelHawkesFixedSumExpKernLogLik.html#tick.optim.model.ModelHawkesFixedSumExpKernLogLik.incremental_fit">(tick.optim.model.ModelHawkesFixedSumExpKernLogLik method)</a>
+        <li><a href="modules/generated/tick.hawkes.ModelHawkesSumExpKernLogLik.html#tick.hawkes.ModelHawkesSumExpKernLogLik.incremental_fit">(tick.hawkes.ModelHawkesSumExpKernLogLik method)</a>
 </li>
       </ul></li>
       <li><a href="modules/generated/tick.preprocessing.LongitudinalFeaturesProduct.html#tick.preprocessing.LongitudinalFeaturesProduct.infinite_exposure_products">infinite_exposure_products() (tick.preprocessing.LongitudinalFeaturesProduct method)</a>
 </li>
-      <li><a href="modules/generated/tick.simulation.SimuHawkes.html#tick.simulation.SimuHawkes.is_intensity_tracked">is_intensity_tracked() (tick.simulation.SimuHawkes method)</a>
+      <li><a href="modules/generated/tick.hawkes.SimuHawkes.html#tick.hawkes.SimuHawkes.is_intensity_tracked">is_intensity_tracked() (tick.hawkes.SimuHawkes method)</a>
 
       <ul>
-        <li><a href="modules/generated/tick.simulation.SimuHawkesExpKernels.html#tick.simulation.SimuHawkesExpKernels.is_intensity_tracked">(tick.simulation.SimuHawkesExpKernels method)</a>
+        <li><a href="modules/generated/tick.hawkes.SimuHawkesExpKernels.html#tick.hawkes.SimuHawkesExpKernels.is_intensity_tracked">(tick.hawkes.SimuHawkesExpKernels method)</a>
 </li>
-        <li><a href="modules/generated/tick.simulation.SimuHawkesSumExpKernels.html#tick.simulation.SimuHawkesSumExpKernels.is_intensity_tracked">(tick.simulation.SimuHawkesSumExpKernels method)</a>
+        <li><a href="modules/generated/tick.hawkes.SimuHawkesSumExpKernels.html#tick.hawkes.SimuHawkesSumExpKernels.is_intensity_tracked">(tick.hawkes.SimuHawkesSumExpKernels method)</a>
 </li>
-        <li><a href="modules/generated/tick.simulation.SimuInhomogeneousPoisson.html#tick.simulation.SimuInhomogeneousPoisson.is_intensity_tracked">(tick.simulation.SimuInhomogeneousPoisson method)</a>
+        <li><a href="modules/generated/tick.hawkes.SimuInhomogeneousPoisson.html#tick.hawkes.SimuInhomogeneousPoisson.is_intensity_tracked">(tick.hawkes.SimuInhomogeneousPoisson method)</a>
 </li>
-        <li><a href="modules/generated/tick.simulation.SimuPoissonProcess.html#tick.simulation.SimuPoissonProcess.is_intensity_tracked">(tick.simulation.SimuPoissonProcess method)</a>
+        <li><a href="modules/generated/tick.hawkes.SimuPoissonProcess.html#tick.hawkes.SimuPoissonProcess.is_intensity_tracked">(tick.hawkes.SimuPoissonProcess method)</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="modules/generated/tick.simulation.HawkesKernel0.html#tick.simulation.HawkesKernel0.is_zero">is_zero() (tick.simulation.HawkesKernel0 method)</a>
+      <li><a href="modules/generated/tick.hawkes.HawkesKernel0.html#tick.hawkes.HawkesKernel0.is_zero">is_zero() (tick.hawkes.HawkesKernel0 method)</a>
 
       <ul>
-        <li><a href="modules/generated/tick.simulation.HawkesKernelExp.html#tick.simulation.HawkesKernelExp.is_zero">(tick.simulation.HawkesKernelExp method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesKernelExp.html#tick.hawkes.HawkesKernelExp.is_zero">(tick.hawkes.HawkesKernelExp method)</a>
 </li>
-        <li><a href="modules/generated/tick.simulation.HawkesKernelPowerLaw.html#tick.simulation.HawkesKernelPowerLaw.is_zero">(tick.simulation.HawkesKernelPowerLaw method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesKernelPowerLaw.html#tick.hawkes.HawkesKernelPowerLaw.is_zero">(tick.hawkes.HawkesKernelPowerLaw method)</a>
 </li>
-        <li><a href="modules/generated/tick.simulation.HawkesKernelSumExp.html#tick.simulation.HawkesKernelSumExp.is_zero">(tick.simulation.HawkesKernelSumExp method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesKernelSumExp.html#tick.hawkes.HawkesKernelSumExp.is_zero">(tick.hawkes.HawkesKernelSumExp method)</a>
 </li>
-        <li><a href="modules/generated/tick.simulation.HawkesKernelTimeFunc.html#tick.simulation.HawkesKernelTimeFunc.is_zero">(tick.simulation.HawkesKernelTimeFunc method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesKernelTimeFunc.html#tick.hawkes.HawkesKernelTimeFunc.is_zero">(tick.hawkes.HawkesKernelTimeFunc method)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -883,7 +945,7 @@
 <h2 id="K">K</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="modules/generated/tick.inference.kaplan_meier.html#tick.inference.kaplan_meier">kaplan_meier() (in module tick.inference)</a>
+      <li><a href="modules/generated/tick.survival.kaplan_meier.html#tick.survival.kaplan_meier">kaplan_meier() (in module tick.survival)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -891,88 +953,88 @@
 <h2 id="L">L</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="modules/generated/tick.inference.LinearRegression.html#tick.inference.LinearRegression">LinearRegression (class in tick.inference)</a>
+      <li><a href="modules/generated/tick.linear_model.LinearRegression.html#tick.linear_model.LinearRegression">LinearRegression (class in tick.linear_model)</a>
 </li>
-      <li><a href="modules/generated/tick.inference.LogisticRegression.html#tick.inference.LogisticRegression">LogisticRegression (class in tick.inference)</a>
+      <li><a href="modules/generated/tick.linear_model.LogisticRegression.html#tick.linear_model.LogisticRegression">LogisticRegression (class in tick.linear_model)</a>
 </li>
-      <li><a href="modules/generated/tick.inference.PoissonRegression.html#tick.inference.PoissonRegression.loglik">loglik() (tick.inference.PoissonRegression method)</a>
+      <li><a href="modules/generated/tick.linear_model.PoissonRegression.html#tick.linear_model.PoissonRegression.loglik">loglik() (tick.linear_model.PoissonRegression method)</a>
 </li>
       <li><a href="modules/generated/tick.preprocessing.LongitudinalFeaturesLagger.html#tick.preprocessing.LongitudinalFeaturesLagger">LongitudinalFeaturesLagger (class in tick.preprocessing)</a>
 </li>
       <li><a href="modules/generated/tick.preprocessing.LongitudinalFeaturesProduct.html#tick.preprocessing.LongitudinalFeaturesProduct">LongitudinalFeaturesProduct (class in tick.preprocessing)</a>
 </li>
-      <li><a href="modules/generated/tick.optim.model.ModelAbsoluteRegression.html#tick.optim.model.ModelAbsoluteRegression.loss">loss() (tick.optim.model.ModelAbsoluteRegression method)</a>
+      <li><a href="modules/generated/tick.hawkes.ModelHawkesExpKernLeastSq.html#tick.hawkes.ModelHawkesExpKernLeastSq.loss">loss() (tick.hawkes.ModelHawkesExpKernLeastSq method)</a>
 
       <ul>
-        <li><a href="modules/generated/tick.optim.model.ModelCoxRegPartialLik.html#tick.optim.model.ModelCoxRegPartialLik.loss">(tick.optim.model.ModelCoxRegPartialLik method)</a>
+        <li><a href="modules/generated/tick.hawkes.ModelHawkesExpKernLogLik.html#tick.hawkes.ModelHawkesExpKernLogLik.loss">(tick.hawkes.ModelHawkesExpKernLogLik method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelEpsilonInsensitive.html#tick.optim.model.ModelEpsilonInsensitive.loss">(tick.optim.model.ModelEpsilonInsensitive method)</a>
+        <li><a href="modules/generated/tick.hawkes.ModelHawkesSumExpKernLeastSq.html#tick.hawkes.ModelHawkesSumExpKernLeastSq.loss">(tick.hawkes.ModelHawkesSumExpKernLeastSq method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelHawkesFixedExpKernLeastSq.html#tick.optim.model.ModelHawkesFixedExpKernLeastSq.loss">(tick.optim.model.ModelHawkesFixedExpKernLeastSq method)</a>
+        <li><a href="modules/generated/tick.hawkes.ModelHawkesSumExpKernLogLik.html#tick.hawkes.ModelHawkesSumExpKernLogLik.loss">(tick.hawkes.ModelHawkesSumExpKernLogLik method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelHawkesFixedExpKernLogLik.html#tick.optim.model.ModelHawkesFixedExpKernLogLik.loss">(tick.optim.model.ModelHawkesFixedExpKernLogLik method)</a>
+        <li><a href="modules/generated/tick.linear_model.ModelHinge.html#tick.linear_model.ModelHinge.loss">(tick.linear_model.ModelHinge method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelHawkesFixedSumExpKernLeastSq.html#tick.optim.model.ModelHawkesFixedSumExpKernLeastSq.loss">(tick.optim.model.ModelHawkesFixedSumExpKernLeastSq method)</a>
+        <li><a href="modules/generated/tick.linear_model.ModelLinReg.html#tick.linear_model.ModelLinReg.loss">(tick.linear_model.ModelLinReg method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelHawkesFixedSumExpKernLogLik.html#tick.optim.model.ModelHawkesFixedSumExpKernLogLik.loss">(tick.optim.model.ModelHawkesFixedSumExpKernLogLik method)</a>
+        <li><a href="modules/generated/tick.linear_model.ModelLogReg.html#tick.linear_model.ModelLogReg.loss">(tick.linear_model.ModelLogReg method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelHinge.html#tick.optim.model.ModelHinge.loss">(tick.optim.model.ModelHinge method)</a>
+        <li><a href="modules/generated/tick.linear_model.ModelPoisReg.html#tick.linear_model.ModelPoisReg.loss">(tick.linear_model.ModelPoisReg method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelHuber.html#tick.optim.model.ModelHuber.loss">(tick.optim.model.ModelHuber method)</a>
+        <li><a href="modules/generated/tick.linear_model.ModelQuadraticHinge.html#tick.linear_model.ModelQuadraticHinge.loss">(tick.linear_model.ModelQuadraticHinge method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelLinReg.html#tick.optim.model.ModelLinReg.loss">(tick.optim.model.ModelLinReg method)</a>
+        <li><a href="modules/generated/tick.linear_model.ModelSmoothedHinge.html#tick.linear_model.ModelSmoothedHinge.loss">(tick.linear_model.ModelSmoothedHinge method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelLinRegWithIntercepts.html#tick.optim.model.ModelLinRegWithIntercepts.loss">(tick.optim.model.ModelLinRegWithIntercepts method)</a>
+        <li><a href="modules/generated/tick.robust.ModelAbsoluteRegression.html#tick.robust.ModelAbsoluteRegression.loss">(tick.robust.ModelAbsoluteRegression method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelLogReg.html#tick.optim.model.ModelLogReg.loss">(tick.optim.model.ModelLogReg method)</a>
+        <li><a href="modules/generated/tick.robust.ModelEpsilonInsensitive.html#tick.robust.ModelEpsilonInsensitive.loss">(tick.robust.ModelEpsilonInsensitive method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelModifiedHuber.html#tick.optim.model.ModelModifiedHuber.loss">(tick.optim.model.ModelModifiedHuber method)</a>
+        <li><a href="modules/generated/tick.robust.ModelHuber.html#tick.robust.ModelHuber.loss">(tick.robust.ModelHuber method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelPoisReg.html#tick.optim.model.ModelPoisReg.loss">(tick.optim.model.ModelPoisReg method)</a>
+        <li><a href="modules/generated/tick.robust.ModelLinRegWithIntercepts.html#tick.robust.ModelLinRegWithIntercepts.loss">(tick.robust.ModelLinRegWithIntercepts method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelQuadraticHinge.html#tick.optim.model.ModelQuadraticHinge.loss">(tick.optim.model.ModelQuadraticHinge method)</a>
+        <li><a href="modules/generated/tick.robust.ModelModifiedHuber.html#tick.robust.ModelModifiedHuber.loss">(tick.robust.ModelModifiedHuber method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelSCCS.html#tick.optim.model.ModelSCCS.loss">(tick.optim.model.ModelSCCS method)</a>
+        <li><a href="modules/generated/tick.survival.ModelCoxRegPartialLik.html#tick.survival.ModelCoxRegPartialLik.loss">(tick.survival.ModelCoxRegPartialLik method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelSmoothedHinge.html#tick.optim.model.ModelSmoothedHinge.loss">(tick.optim.model.ModelSmoothedHinge method)</a>
+        <li><a href="modules/generated/tick.survival.ModelSCCS.html#tick.survival.ModelSCCS.loss">(tick.survival.ModelSCCS method)</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="modules/generated/tick.optim.model.ModelAbsoluteRegression.html#tick.optim.model.ModelAbsoluteRegression.loss_and_grad">loss_and_grad() (tick.optim.model.ModelAbsoluteRegression method)</a>
+      <li><a href="modules/generated/tick.hawkes.ModelHawkesExpKernLeastSq.html#tick.hawkes.ModelHawkesExpKernLeastSq.loss_and_grad">loss_and_grad() (tick.hawkes.ModelHawkesExpKernLeastSq method)</a>
 
       <ul>
-        <li><a href="modules/generated/tick.optim.model.ModelCoxRegPartialLik.html#tick.optim.model.ModelCoxRegPartialLik.loss_and_grad">(tick.optim.model.ModelCoxRegPartialLik method)</a>
+        <li><a href="modules/generated/tick.hawkes.ModelHawkesExpKernLogLik.html#tick.hawkes.ModelHawkesExpKernLogLik.loss_and_grad">(tick.hawkes.ModelHawkesExpKernLogLik method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelEpsilonInsensitive.html#tick.optim.model.ModelEpsilonInsensitive.loss_and_grad">(tick.optim.model.ModelEpsilonInsensitive method)</a>
+        <li><a href="modules/generated/tick.hawkes.ModelHawkesSumExpKernLeastSq.html#tick.hawkes.ModelHawkesSumExpKernLeastSq.loss_and_grad">(tick.hawkes.ModelHawkesSumExpKernLeastSq method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelHawkesFixedExpKernLeastSq.html#tick.optim.model.ModelHawkesFixedExpKernLeastSq.loss_and_grad">(tick.optim.model.ModelHawkesFixedExpKernLeastSq method)</a>
+        <li><a href="modules/generated/tick.hawkes.ModelHawkesSumExpKernLogLik.html#tick.hawkes.ModelHawkesSumExpKernLogLik.loss_and_grad">(tick.hawkes.ModelHawkesSumExpKernLogLik method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelHawkesFixedExpKernLogLik.html#tick.optim.model.ModelHawkesFixedExpKernLogLik.loss_and_grad">(tick.optim.model.ModelHawkesFixedExpKernLogLik method)</a>
+        <li><a href="modules/generated/tick.linear_model.ModelHinge.html#tick.linear_model.ModelHinge.loss_and_grad">(tick.linear_model.ModelHinge method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelHawkesFixedSumExpKernLeastSq.html#tick.optim.model.ModelHawkesFixedSumExpKernLeastSq.loss_and_grad">(tick.optim.model.ModelHawkesFixedSumExpKernLeastSq method)</a>
+        <li><a href="modules/generated/tick.linear_model.ModelLinReg.html#tick.linear_model.ModelLinReg.loss_and_grad">(tick.linear_model.ModelLinReg method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelHawkesFixedSumExpKernLogLik.html#tick.optim.model.ModelHawkesFixedSumExpKernLogLik.loss_and_grad">(tick.optim.model.ModelHawkesFixedSumExpKernLogLik method)</a>
+        <li><a href="modules/generated/tick.linear_model.ModelLogReg.html#tick.linear_model.ModelLogReg.loss_and_grad">(tick.linear_model.ModelLogReg method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelHinge.html#tick.optim.model.ModelHinge.loss_and_grad">(tick.optim.model.ModelHinge method)</a>
+        <li><a href="modules/generated/tick.linear_model.ModelPoisReg.html#tick.linear_model.ModelPoisReg.loss_and_grad">(tick.linear_model.ModelPoisReg method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelHuber.html#tick.optim.model.ModelHuber.loss_and_grad">(tick.optim.model.ModelHuber method)</a>
+        <li><a href="modules/generated/tick.linear_model.ModelQuadraticHinge.html#tick.linear_model.ModelQuadraticHinge.loss_and_grad">(tick.linear_model.ModelQuadraticHinge method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelLinReg.html#tick.optim.model.ModelLinReg.loss_and_grad">(tick.optim.model.ModelLinReg method)</a>
+        <li><a href="modules/generated/tick.linear_model.ModelSmoothedHinge.html#tick.linear_model.ModelSmoothedHinge.loss_and_grad">(tick.linear_model.ModelSmoothedHinge method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelLinRegWithIntercepts.html#tick.optim.model.ModelLinRegWithIntercepts.loss_and_grad">(tick.optim.model.ModelLinRegWithIntercepts method)</a>
+        <li><a href="modules/generated/tick.robust.ModelAbsoluteRegression.html#tick.robust.ModelAbsoluteRegression.loss_and_grad">(tick.robust.ModelAbsoluteRegression method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelLogReg.html#tick.optim.model.ModelLogReg.loss_and_grad">(tick.optim.model.ModelLogReg method)</a>
+        <li><a href="modules/generated/tick.robust.ModelEpsilonInsensitive.html#tick.robust.ModelEpsilonInsensitive.loss_and_grad">(tick.robust.ModelEpsilonInsensitive method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelModifiedHuber.html#tick.optim.model.ModelModifiedHuber.loss_and_grad">(tick.optim.model.ModelModifiedHuber method)</a>
+        <li><a href="modules/generated/tick.robust.ModelHuber.html#tick.robust.ModelHuber.loss_and_grad">(tick.robust.ModelHuber method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelPoisReg.html#tick.optim.model.ModelPoisReg.loss_and_grad">(tick.optim.model.ModelPoisReg method)</a>
+        <li><a href="modules/generated/tick.robust.ModelLinRegWithIntercepts.html#tick.robust.ModelLinRegWithIntercepts.loss_and_grad">(tick.robust.ModelLinRegWithIntercepts method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelQuadraticHinge.html#tick.optim.model.ModelQuadraticHinge.loss_and_grad">(tick.optim.model.ModelQuadraticHinge method)</a>
+        <li><a href="modules/generated/tick.robust.ModelModifiedHuber.html#tick.robust.ModelModifiedHuber.loss_and_grad">(tick.robust.ModelModifiedHuber method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelSCCS.html#tick.optim.model.ModelSCCS.loss_and_grad">(tick.optim.model.ModelSCCS method)</a>
+        <li><a href="modules/generated/tick.survival.ModelCoxRegPartialLik.html#tick.survival.ModelCoxRegPartialLik.loss_and_grad">(tick.survival.ModelCoxRegPartialLik method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.model.ModelSmoothedHinge.html#tick.optim.model.ModelSmoothedHinge.loss_and_grad">(tick.optim.model.ModelSmoothedHinge method)</a>
+        <li><a href="modules/generated/tick.survival.ModelSCCS.html#tick.survival.ModelSCCS.loss_and_grad">(tick.survival.ModelSCCS method)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -981,49 +1043,49 @@
 <h2 id="M">M</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="modules/generated/tick.simulation.SimuHawkes.html#tick.simulation.SimuHawkes.mean_intensity">mean_intensity() (tick.simulation.SimuHawkes method)</a>
+      <li><a href="modules/generated/tick.hawkes.SimuHawkes.html#tick.hawkes.SimuHawkes.mean_intensity">mean_intensity() (tick.hawkes.SimuHawkes method)</a>
 
       <ul>
-        <li><a href="modules/generated/tick.simulation.SimuHawkesExpKernels.html#tick.simulation.SimuHawkesExpKernels.mean_intensity">(tick.simulation.SimuHawkesExpKernels method)</a>
+        <li><a href="modules/generated/tick.hawkes.SimuHawkesExpKernels.html#tick.hawkes.SimuHawkesExpKernels.mean_intensity">(tick.hawkes.SimuHawkesExpKernels method)</a>
 </li>
-        <li><a href="modules/generated/tick.simulation.SimuHawkesSumExpKernels.html#tick.simulation.SimuHawkesSumExpKernels.mean_intensity">(tick.simulation.SimuHawkesSumExpKernels method)</a>
+        <li><a href="modules/generated/tick.hawkes.SimuHawkesSumExpKernels.html#tick.hawkes.SimuHawkesSumExpKernels.mean_intensity">(tick.hawkes.SimuHawkesSumExpKernels method)</a>
 </li>
       </ul></li>
-      <li><a href="modules/generated/tick.optim.model.ModelAbsoluteRegression.html#tick.optim.model.ModelAbsoluteRegression">ModelAbsoluteRegression (class in tick.optim.model)</a>
+      <li><a href="modules/generated/tick.robust.ModelAbsoluteRegression.html#tick.robust.ModelAbsoluteRegression">ModelAbsoluteRegression (class in tick.robust)</a>
 </li>
-      <li><a href="modules/generated/tick.optim.model.ModelCoxRegPartialLik.html#tick.optim.model.ModelCoxRegPartialLik">ModelCoxRegPartialLik (class in tick.optim.model)</a>
+      <li><a href="modules/generated/tick.survival.ModelCoxRegPartialLik.html#tick.survival.ModelCoxRegPartialLik">ModelCoxRegPartialLik (class in tick.survival)</a>
 </li>
-      <li><a href="modules/generated/tick.optim.model.ModelEpsilonInsensitive.html#tick.optim.model.ModelEpsilonInsensitive">ModelEpsilonInsensitive (class in tick.optim.model)</a>
+      <li><a href="modules/generated/tick.robust.ModelEpsilonInsensitive.html#tick.robust.ModelEpsilonInsensitive">ModelEpsilonInsensitive (class in tick.robust)</a>
 </li>
-      <li><a href="modules/generated/tick.optim.model.ModelHawkesFixedExpKernLeastSq.html#tick.optim.model.ModelHawkesFixedExpKernLeastSq">ModelHawkesFixedExpKernLeastSq (class in tick.optim.model)</a>
+      <li><a href="modules/generated/tick.hawkes.ModelHawkesExpKernLeastSq.html#tick.hawkes.ModelHawkesExpKernLeastSq">ModelHawkesExpKernLeastSq (class in tick.hawkes)</a>
 </li>
-      <li><a href="modules/generated/tick.optim.model.ModelHawkesFixedExpKernLogLik.html#tick.optim.model.ModelHawkesFixedExpKernLogLik">ModelHawkesFixedExpKernLogLik (class in tick.optim.model)</a>
+      <li><a href="modules/generated/tick.hawkes.ModelHawkesExpKernLogLik.html#tick.hawkes.ModelHawkesExpKernLogLik">ModelHawkesExpKernLogLik (class in tick.hawkes)</a>
 </li>
-      <li><a href="modules/generated/tick.optim.model.ModelHawkesFixedSumExpKernLeastSq.html#tick.optim.model.ModelHawkesFixedSumExpKernLeastSq">ModelHawkesFixedSumExpKernLeastSq (class in tick.optim.model)</a>
+      <li><a href="modules/generated/tick.hawkes.ModelHawkesSumExpKernLeastSq.html#tick.hawkes.ModelHawkesSumExpKernLeastSq">ModelHawkesSumExpKernLeastSq (class in tick.hawkes)</a>
 </li>
-      <li><a href="modules/generated/tick.optim.model.ModelHawkesFixedSumExpKernLogLik.html#tick.optim.model.ModelHawkesFixedSumExpKernLogLik">ModelHawkesFixedSumExpKernLogLik (class in tick.optim.model)</a>
+      <li><a href="modules/generated/tick.hawkes.ModelHawkesSumExpKernLogLik.html#tick.hawkes.ModelHawkesSumExpKernLogLik">ModelHawkesSumExpKernLogLik (class in tick.hawkes)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="modules/generated/tick.optim.model.ModelHinge.html#tick.optim.model.ModelHinge">ModelHinge (class in tick.optim.model)</a>
+      <li><a href="modules/generated/tick.linear_model.ModelHinge.html#tick.linear_model.ModelHinge">ModelHinge (class in tick.linear_model)</a>
 </li>
-      <li><a href="modules/generated/tick.optim.model.ModelHuber.html#tick.optim.model.ModelHuber">ModelHuber (class in tick.optim.model)</a>
+      <li><a href="modules/generated/tick.robust.ModelHuber.html#tick.robust.ModelHuber">ModelHuber (class in tick.robust)</a>
 </li>
-      <li><a href="modules/generated/tick.optim.model.ModelLinReg.html#tick.optim.model.ModelLinReg">ModelLinReg (class in tick.optim.model)</a>
+      <li><a href="modules/generated/tick.linear_model.ModelLinReg.html#tick.linear_model.ModelLinReg">ModelLinReg (class in tick.linear_model)</a>
 </li>
-      <li><a href="modules/generated/tick.optim.model.ModelLinRegWithIntercepts.html#tick.optim.model.ModelLinRegWithIntercepts">ModelLinRegWithIntercepts (class in tick.optim.model)</a>
+      <li><a href="modules/generated/tick.robust.ModelLinRegWithIntercepts.html#tick.robust.ModelLinRegWithIntercepts">ModelLinRegWithIntercepts (class in tick.robust)</a>
 </li>
-      <li><a href="modules/generated/tick.optim.model.ModelLogReg.html#tick.optim.model.ModelLogReg">ModelLogReg (class in tick.optim.model)</a>
+      <li><a href="modules/generated/tick.linear_model.ModelLogReg.html#tick.linear_model.ModelLogReg">ModelLogReg (class in tick.linear_model)</a>
 </li>
-      <li><a href="modules/generated/tick.optim.model.ModelModifiedHuber.html#tick.optim.model.ModelModifiedHuber">ModelModifiedHuber (class in tick.optim.model)</a>
+      <li><a href="modules/generated/tick.robust.ModelModifiedHuber.html#tick.robust.ModelModifiedHuber">ModelModifiedHuber (class in tick.robust)</a>
 </li>
-      <li><a href="modules/generated/tick.optim.model.ModelPoisReg.html#tick.optim.model.ModelPoisReg">ModelPoisReg (class in tick.optim.model)</a>
+      <li><a href="modules/generated/tick.linear_model.ModelPoisReg.html#tick.linear_model.ModelPoisReg">ModelPoisReg (class in tick.linear_model)</a>
 </li>
-      <li><a href="modules/generated/tick.optim.model.ModelQuadraticHinge.html#tick.optim.model.ModelQuadraticHinge">ModelQuadraticHinge (class in tick.optim.model)</a>
+      <li><a href="modules/generated/tick.linear_model.ModelQuadraticHinge.html#tick.linear_model.ModelQuadraticHinge">ModelQuadraticHinge (class in tick.linear_model)</a>
 </li>
-      <li><a href="modules/generated/tick.optim.model.ModelSCCS.html#tick.optim.model.ModelSCCS">ModelSCCS (class in tick.optim.model)</a>
+      <li><a href="modules/generated/tick.survival.ModelSCCS.html#tick.survival.ModelSCCS">ModelSCCS (class in tick.survival)</a>
 </li>
-      <li><a href="modules/generated/tick.optim.model.ModelSmoothedHinge.html#tick.optim.model.ModelSmoothedHinge">ModelSmoothedHinge (class in tick.optim.model)</a>
+      <li><a href="modules/generated/tick.linear_model.ModelSmoothedHinge.html#tick.linear_model.ModelSmoothedHinge">ModelSmoothedHinge (class in tick.linear_model)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -1031,7 +1093,7 @@
 <h2 id="N">N</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="modules/generated/tick.inference.nelson_aalen.html#tick.inference.nelson_aalen">nelson_aalen() (in module tick.inference)</a>
+      <li><a href="modules/generated/tick.survival.nelson_aalen.html#tick.survival.nelson_aalen">nelson_aalen() (in module tick.survival)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -1039,28 +1101,30 @@
 <h2 id="O">O</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="modules/generated/tick.inference.HawkesADM4.html#tick.inference.HawkesADM4.objective">objective() (tick.inference.HawkesADM4 method)</a>
+      <li><a href="modules/generated/tick.hawkes.HawkesADM4.html#tick.hawkes.HawkesADM4.objective">objective() (tick.hawkes.HawkesADM4 method)</a>
 
       <ul>
-        <li><a href="modules/generated/tick.optim.solver.AGD.html#tick.optim.solver.AGD.objective">(tick.optim.solver.AGD method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesCumulantMatching.html#tick.hawkes.HawkesCumulantMatching.objective">(tick.hawkes.HawkesCumulantMatching method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.solver.AdaGrad.html#tick.optim.solver.AdaGrad.objective">(tick.optim.solver.AdaGrad method)</a>
+        <li><a href="modules/generated/tick.solver.AGD.html#tick.solver.AGD.objective">(tick.solver.AGD method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.solver.BFGS.html#tick.optim.solver.BFGS.objective">(tick.optim.solver.BFGS method)</a>
+        <li><a href="modules/generated/tick.solver.AdaGrad.html#tick.solver.AdaGrad.objective">(tick.solver.AdaGrad method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.solver.GD.html#tick.optim.solver.GD.objective">(tick.optim.solver.GD method)</a>
+        <li><a href="modules/generated/tick.solver.BFGS.html#tick.solver.BFGS.objective">(tick.solver.BFGS method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.solver.GFB.html#tick.optim.solver.GFB.objective">(tick.optim.solver.GFB method)</a>
+        <li><a href="modules/generated/tick.solver.GD.html#tick.solver.GD.objective">(tick.solver.GD method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.solver.SAGA.html#tick.optim.solver.SAGA.objective">(tick.optim.solver.SAGA method)</a>
+        <li><a href="modules/generated/tick.solver.GFB.html#tick.solver.GFB.objective">(tick.solver.GFB method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.solver.SCPG.html#tick.optim.solver.SCPG.objective">(tick.optim.solver.SCPG method)</a>
+        <li><a href="modules/generated/tick.solver.SAGA.html#tick.solver.SAGA.objective">(tick.solver.SAGA method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.solver.SDCA.html#tick.optim.solver.SDCA.objective">(tick.optim.solver.SDCA method)</a>
+        <li><a href="modules/generated/tick.solver.SCPG.html#tick.solver.SCPG.objective">(tick.solver.SCPG method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.solver.SGD.html#tick.optim.solver.SGD.objective">(tick.optim.solver.SGD method)</a>
+        <li><a href="modules/generated/tick.solver.SDCA.html#tick.solver.SDCA.objective">(tick.solver.SDCA method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.solver.SVRG.html#tick.optim.solver.SVRG.objective">(tick.optim.solver.SVRG method)</a>
+        <li><a href="modules/generated/tick.solver.SGD.html#tick.solver.SGD.objective">(tick.solver.SGD method)</a>
+</li>
+        <li><a href="modules/generated/tick.solver.SVRG.html#tick.solver.SVRG.objective">(tick.solver.SVRG method)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -1071,6 +1135,12 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="modules/generated/tick.plot.plot_basis_kernels.html#tick.plot.plot_basis_kernels">plot_basis_kernels() (in module tick.plot)</a>
 </li>
+      <li><a href="modules/generated/tick.hawkes.HawkesExpKern.html#tick.hawkes.HawkesExpKern.plot_estimated_intensity">plot_estimated_intensity() (tick.hawkes.HawkesExpKern method)</a>
+
+      <ul>
+        <li><a href="modules/generated/tick.hawkes.HawkesSumExpKern.html#tick.hawkes.HawkesSumExpKern.plot_estimated_intensity">(tick.hawkes.HawkesSumExpKern method)</a>
+</li>
+      </ul></li>
       <li><a href="modules/generated/tick.plot.plot_hawkes_kernel_norms.html#tick.plot.plot_hawkes_kernel_norms">plot_hawkes_kernel_norms() (in module tick.plot)</a>
 </li>
       <li><a href="modules/generated/tick.plot.plot_hawkes_kernels.html#tick.plot.plot_hawkes_kernels">plot_hawkes_kernels() (in module tick.plot)</a>
@@ -1081,49 +1151,49 @@
 </li>
       <li><a href="modules/generated/tick.plot.plot_timefunction.html#tick.plot.plot_timefunction">plot_timefunction() (in module tick.plot)</a>
 </li>
-      <li><a href="modules/generated/tick.inference.PoissonRegression.html#tick.inference.PoissonRegression">PoissonRegression (class in tick.inference)</a>
+      <li><a href="modules/generated/tick.linear_model.PoissonRegression.html#tick.linear_model.PoissonRegression">PoissonRegression (class in tick.linear_model)</a>
 </li>
-      <li><a href="modules/generated/tick.inference.LinearRegression.html#tick.inference.LinearRegression.predict">predict() (tick.inference.LinearRegression method)</a>
+      <li><a href="modules/generated/tick.linear_model.LinearRegression.html#tick.linear_model.LinearRegression.predict">predict() (tick.linear_model.LinearRegression method)</a>
 
       <ul>
-        <li><a href="modules/generated/tick.inference.LogisticRegression.html#tick.inference.LogisticRegression.predict">(tick.inference.LogisticRegression method)</a>
+        <li><a href="modules/generated/tick.linear_model.LogisticRegression.html#tick.linear_model.LogisticRegression.predict">(tick.linear_model.LogisticRegression method)</a>
 </li>
-        <li><a href="modules/generated/tick.inference.PoissonRegression.html#tick.inference.PoissonRegression.predict">(tick.inference.PoissonRegression method)</a>
+        <li><a href="modules/generated/tick.linear_model.PoissonRegression.html#tick.linear_model.PoissonRegression.predict">(tick.linear_model.PoissonRegression method)</a>
 </li>
-        <li><a href="modules/generated/tick.inference.RobustLinearRegression.html#tick.inference.RobustLinearRegression.predict">(tick.inference.RobustLinearRegression method)</a>
+        <li><a href="modules/generated/tick.robust.RobustLinearRegression.html#tick.robust.RobustLinearRegression.predict">(tick.robust.RobustLinearRegression method)</a>
 </li>
       </ul></li>
-      <li><a href="modules/generated/tick.inference.LogisticRegression.html#tick.inference.LogisticRegression.predict_proba">predict_proba() (tick.inference.LogisticRegression method)</a>
-</li>
-      <li><a href="modules/generated/tick.optim.prox.ProxBinarsity.html#tick.optim.prox.ProxBinarsity">ProxBinarsity (class in tick.optim.prox)</a>
+      <li><a href="modules/generated/tick.linear_model.LogisticRegression.html#tick.linear_model.LogisticRegression.predict_proba">predict_proba() (tick.linear_model.LogisticRegression method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="modules/generated/tick.optim.prox.ProxElasticNet.html#tick.optim.prox.ProxElasticNet">ProxElasticNet (class in tick.optim.prox)</a>
+      <li><a href="modules/generated/tick.prox.ProxBinarsity.html#tick.prox.ProxBinarsity">ProxBinarsity (class in tick.prox)</a>
 </li>
-      <li><a href="modules/generated/tick.optim.prox.ProxEquality.html#tick.optim.prox.ProxEquality">ProxEquality (class in tick.optim.prox)</a>
+      <li><a href="modules/generated/tick.prox.ProxElasticNet.html#tick.prox.ProxElasticNet">ProxElasticNet (class in tick.prox)</a>
 </li>
-      <li><a href="modules/generated/tick.optim.prox.ProxGroupL1.html#tick.optim.prox.ProxGroupL1">ProxGroupL1 (class in tick.optim.prox)</a>
+      <li><a href="modules/generated/tick.prox.ProxEquality.html#tick.prox.ProxEquality">ProxEquality (class in tick.prox)</a>
 </li>
-      <li><a href="modules/generated/tick.optim.prox.ProxL1.html#tick.optim.prox.ProxL1">ProxL1 (class in tick.optim.prox)</a>
+      <li><a href="modules/generated/tick.prox.ProxGroupL1.html#tick.prox.ProxGroupL1">ProxGroupL1 (class in tick.prox)</a>
 </li>
-      <li><a href="modules/generated/tick.optim.prox.ProxL1w.html#tick.optim.prox.ProxL1w">ProxL1w (class in tick.optim.prox)</a>
+      <li><a href="modules/generated/tick.prox.ProxL1.html#tick.prox.ProxL1">ProxL1 (class in tick.prox)</a>
 </li>
-      <li><a href="modules/generated/tick.optim.prox.ProxL2.html#tick.optim.prox.ProxL2">ProxL2 (class in tick.optim.prox)</a>
+      <li><a href="modules/generated/tick.prox.ProxL1w.html#tick.prox.ProxL1w">ProxL1w (class in tick.prox)</a>
 </li>
-      <li><a href="modules/generated/tick.optim.prox.ProxL2Sq.html#tick.optim.prox.ProxL2Sq">ProxL2Sq (class in tick.optim.prox)</a>
+      <li><a href="modules/generated/tick.prox.ProxL2.html#tick.prox.ProxL2">ProxL2 (class in tick.prox)</a>
 </li>
-      <li><a href="modules/generated/tick.optim.prox.ProxMulti.html#tick.optim.prox.ProxMulti">ProxMulti (class in tick.optim.prox)</a>
+      <li><a href="modules/generated/tick.prox.ProxL2Sq.html#tick.prox.ProxL2Sq">ProxL2Sq (class in tick.prox)</a>
 </li>
-      <li><a href="modules/generated/tick.optim.prox.ProxNuclear.html#tick.optim.prox.ProxNuclear">ProxNuclear (class in tick.optim.prox)</a>
+      <li><a href="modules/generated/tick.prox.ProxMulti.html#tick.prox.ProxMulti">ProxMulti (class in tick.prox)</a>
 </li>
-      <li><a href="modules/generated/tick.optim.prox.ProxPositive.html#tick.optim.prox.ProxPositive">ProxPositive (class in tick.optim.prox)</a>
+      <li><a href="modules/generated/tick.prox.ProxNuclear.html#tick.prox.ProxNuclear">ProxNuclear (class in tick.prox)</a>
 </li>
-      <li><a href="modules/generated/tick.optim.prox.ProxSlope.html#tick.optim.prox.ProxSlope">ProxSlope (class in tick.optim.prox)</a>
+      <li><a href="modules/generated/tick.prox.ProxPositive.html#tick.prox.ProxPositive">ProxPositive (class in tick.prox)</a>
 </li>
-      <li><a href="modules/generated/tick.optim.prox.ProxTV.html#tick.optim.prox.ProxTV">ProxTV (class in tick.optim.prox)</a>
+      <li><a href="modules/generated/tick.prox.ProxSlope.html#tick.prox.ProxSlope">ProxSlope (class in tick.prox)</a>
 </li>
-      <li><a href="modules/generated/tick.optim.prox.ProxZero.html#tick.optim.prox.ProxZero">ProxZero (class in tick.optim.prox)</a>
+      <li><a href="modules/generated/tick.prox.ProxTV.html#tick.prox.ProxTV">ProxTV (class in tick.prox)</a>
+</li>
+      <li><a href="modules/generated/tick.prox.ProxZero.html#tick.prox.ProxZero">ProxZero (class in tick.prox)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -1131,23 +1201,23 @@
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="modules/generated/tick.simulation.SimuHawkesMulti.html#tick.simulation.SimuHawkesMulti.reseed_simulations">reseed_simulations() (tick.simulation.SimuHawkesMulti method)</a>
+      <li><a href="modules/generated/tick.hawkes.SimuHawkesMulti.html#tick.hawkes.SimuHawkesMulti.reseed_simulations">reseed_simulations() (tick.hawkes.SimuHawkesMulti method)</a>
 </li>
-      <li><a href="modules/generated/tick.simulation.SimuHawkes.html#tick.simulation.SimuHawkes.reset">reset() (tick.simulation.SimuHawkes method)</a>
+      <li><a href="modules/generated/tick.hawkes.SimuHawkes.html#tick.hawkes.SimuHawkes.reset">reset() (tick.hawkes.SimuHawkes method)</a>
 
       <ul>
-        <li><a href="modules/generated/tick.simulation.SimuHawkesExpKernels.html#tick.simulation.SimuHawkesExpKernels.reset">(tick.simulation.SimuHawkesExpKernels method)</a>
+        <li><a href="modules/generated/tick.hawkes.SimuHawkesExpKernels.html#tick.hawkes.SimuHawkesExpKernels.reset">(tick.hawkes.SimuHawkesExpKernels method)</a>
 </li>
-        <li><a href="modules/generated/tick.simulation.SimuHawkesSumExpKernels.html#tick.simulation.SimuHawkesSumExpKernels.reset">(tick.simulation.SimuHawkesSumExpKernels method)</a>
+        <li><a href="modules/generated/tick.hawkes.SimuHawkesSumExpKernels.html#tick.hawkes.SimuHawkesSumExpKernels.reset">(tick.hawkes.SimuHawkesSumExpKernels method)</a>
 </li>
-        <li><a href="modules/generated/tick.simulation.SimuInhomogeneousPoisson.html#tick.simulation.SimuInhomogeneousPoisson.reset">(tick.simulation.SimuInhomogeneousPoisson method)</a>
+        <li><a href="modules/generated/tick.hawkes.SimuInhomogeneousPoisson.html#tick.hawkes.SimuInhomogeneousPoisson.reset">(tick.hawkes.SimuInhomogeneousPoisson method)</a>
 </li>
-        <li><a href="modules/generated/tick.simulation.SimuPoissonProcess.html#tick.simulation.SimuPoissonProcess.reset">(tick.simulation.SimuPoissonProcess method)</a>
+        <li><a href="modules/generated/tick.hawkes.SimuPoissonProcess.html#tick.hawkes.SimuPoissonProcess.reset">(tick.hawkes.SimuPoissonProcess method)</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="modules/generated/tick.inference.RobustLinearRegression.html#tick.inference.RobustLinearRegression">RobustLinearRegression (class in tick.inference)</a>
+      <li><a href="modules/generated/tick.robust.RobustLinearRegression.html#tick.robust.RobustLinearRegression">RobustLinearRegression (class in tick.robust)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -1155,177 +1225,177 @@
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="modules/generated/tick.optim.solver.SAGA.html#tick.optim.solver.SAGA">SAGA (class in tick.optim.solver)</a>
+      <li><a href="modules/generated/tick.solver.SAGA.html#tick.solver.SAGA">SAGA (class in tick.solver)</a>
 </li>
-      <li><a href="modules/generated/tick.inference.CoxRegression.html#tick.inference.CoxRegression.score">score() (tick.inference.CoxRegression method)</a>
+      <li><a href="modules/generated/tick.hawkes.HawkesADM4.html#tick.hawkes.HawkesADM4.score">score() (tick.hawkes.HawkesADM4 method)</a>
 
       <ul>
-        <li><a href="modules/generated/tick.inference.HawkesADM4.html#tick.inference.HawkesADM4.score">(tick.inference.HawkesADM4 method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesEM.html#tick.hawkes.HawkesEM.score">(tick.hawkes.HawkesEM method)</a>
 </li>
-        <li><a href="modules/generated/tick.inference.HawkesEM.html#tick.inference.HawkesEM.score">(tick.inference.HawkesEM method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesExpKern.html#tick.hawkes.HawkesExpKern.score">(tick.hawkes.HawkesExpKern method)</a>
 </li>
-        <li><a href="modules/generated/tick.inference.HawkesExpKern.html#tick.inference.HawkesExpKern.score">(tick.inference.HawkesExpKern method)</a>
+        <li><a href="modules/generated/tick.hawkes.HawkesSumExpKern.html#tick.hawkes.HawkesSumExpKern.score">(tick.hawkes.HawkesSumExpKern method)</a>
 </li>
-        <li><a href="modules/generated/tick.inference.HawkesSumExpKern.html#tick.inference.HawkesSumExpKern.score">(tick.inference.HawkesSumExpKern method)</a>
+        <li><a href="modules/generated/tick.linear_model.LinearRegression.html#tick.linear_model.LinearRegression.score">(tick.linear_model.LinearRegression method)</a>
 </li>
-        <li><a href="modules/generated/tick.inference.LinearRegression.html#tick.inference.LinearRegression.score">(tick.inference.LinearRegression method)</a>
-</li>
-        <li><a href="modules/generated/tick.inference.RobustLinearRegression.html#tick.inference.RobustLinearRegression.score">(tick.inference.RobustLinearRegression method)</a>
+        <li><a href="modules/generated/tick.robust.RobustLinearRegression.html#tick.robust.RobustLinearRegression.score">(tick.robust.RobustLinearRegression method)</a>
 </li>
       </ul></li>
-      <li><a href="modules/generated/tick.optim.solver.SCPG.html#tick.optim.solver.SCPG">SCPG (class in tick.optim.solver)</a>
+      <li><a href="modules/generated/tick.solver.SCPG.html#tick.solver.SCPG">SCPG (class in tick.solver)</a>
 </li>
-      <li><a href="modules/generated/tick.optim.solver.SDCA.html#tick.optim.solver.SDCA">SDCA (class in tick.optim.solver)</a>
+      <li><a href="modules/generated/tick.solver.SDCA.html#tick.solver.SDCA">SDCA (class in tick.solver)</a>
 </li>
-      <li><a href="modules/generated/tick.optim.history.History.html#tick.optim.history.History.set_minimizer">set_minimizer() (tick.optim.history.History method)</a>
+      <li><a href="modules/generated/tick.solver.History.html#tick.solver.History.set_minimizer">set_minimizer() (tick.solver.History method)</a>
 </li>
-      <li><a href="modules/generated/tick.optim.history.History.html#tick.optim.history.History.set_minimum">set_minimum() (tick.optim.history.History method)</a>
+      <li><a href="modules/generated/tick.solver.History.html#tick.solver.History.set_minimum">set_minimum() (tick.solver.History method)</a>
 </li>
-      <li><a href="modules/generated/tick.inference.HawkesConditionalLaw.html#tick.inference.HawkesConditionalLaw.set_model">set_model() (tick.inference.HawkesConditionalLaw method)</a>
+      <li><a href="modules/generated/tick.hawkes.HawkesConditionalLaw.html#tick.hawkes.HawkesConditionalLaw.set_model">set_model() (tick.hawkes.HawkesConditionalLaw method)</a>
 
       <ul>
-        <li><a href="modules/generated/tick.optim.solver.AGD.html#tick.optim.solver.AGD.set_model">(tick.optim.solver.AGD method)</a>
+        <li><a href="modules/generated/tick.solver.AGD.html#tick.solver.AGD.set_model">(tick.solver.AGD method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.solver.AdaGrad.html#tick.optim.solver.AdaGrad.set_model">(tick.optim.solver.AdaGrad method)</a>
+        <li><a href="modules/generated/tick.solver.AdaGrad.html#tick.solver.AdaGrad.set_model">(tick.solver.AdaGrad method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.solver.BFGS.html#tick.optim.solver.BFGS.set_model">(tick.optim.solver.BFGS method)</a>
+        <li><a href="modules/generated/tick.solver.BFGS.html#tick.solver.BFGS.set_model">(tick.solver.BFGS method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.solver.GD.html#tick.optim.solver.GD.set_model">(tick.optim.solver.GD method)</a>
+        <li><a href="modules/generated/tick.solver.GD.html#tick.solver.GD.set_model">(tick.solver.GD method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.solver.GFB.html#tick.optim.solver.GFB.set_model">(tick.optim.solver.GFB method)</a>
+        <li><a href="modules/generated/tick.solver.GFB.html#tick.solver.GFB.set_model">(tick.solver.GFB method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.solver.SAGA.html#tick.optim.solver.SAGA.set_model">(tick.optim.solver.SAGA method)</a>
+        <li><a href="modules/generated/tick.solver.SAGA.html#tick.solver.SAGA.set_model">(tick.solver.SAGA method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.solver.SCPG.html#tick.optim.solver.SCPG.set_model">(tick.optim.solver.SCPG method)</a>
+        <li><a href="modules/generated/tick.solver.SCPG.html#tick.solver.SCPG.set_model">(tick.solver.SCPG method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.solver.SDCA.html#tick.optim.solver.SDCA.set_model">(tick.optim.solver.SDCA method)</a>
+        <li><a href="modules/generated/tick.solver.SDCA.html#tick.solver.SDCA.set_model">(tick.solver.SDCA method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.solver.SGD.html#tick.optim.solver.SGD.set_model">(tick.optim.solver.SGD method)</a>
+        <li><a href="modules/generated/tick.solver.SGD.html#tick.solver.SGD.set_model">(tick.solver.SGD method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.solver.SVRG.html#tick.optim.solver.SVRG.set_model">(tick.optim.solver.SVRG method)</a>
+        <li><a href="modules/generated/tick.solver.SVRG.html#tick.solver.SVRG.set_model">(tick.solver.SVRG method)</a>
 </li>
       </ul></li>
-      <li><a href="modules/generated/tick.inference.LinearRegression.html#tick.inference.LinearRegression.set_params">set_params() (tick.inference.LinearRegression method)</a>
+      <li><a href="modules/generated/tick.linear_model.LinearRegression.html#tick.linear_model.LinearRegression.set_params">set_params() (tick.linear_model.LinearRegression method)</a>
 
       <ul>
-        <li><a href="modules/generated/tick.inference.LogisticRegression.html#tick.inference.LogisticRegression.set_params">(tick.inference.LogisticRegression method)</a>
+        <li><a href="modules/generated/tick.linear_model.LogisticRegression.html#tick.linear_model.LogisticRegression.set_params">(tick.linear_model.LogisticRegression method)</a>
 </li>
-        <li><a href="modules/generated/tick.inference.PoissonRegression.html#tick.inference.PoissonRegression.set_params">(tick.inference.PoissonRegression method)</a>
-</li>
-        <li><a href="modules/generated/tick.inference.RobustLinearRegression.html#tick.inference.RobustLinearRegression.set_params">(tick.inference.RobustLinearRegression method)</a>
+        <li><a href="modules/generated/tick.linear_model.PoissonRegression.html#tick.linear_model.PoissonRegression.set_params">(tick.linear_model.PoissonRegression method)</a>
 </li>
         <li><a href="modules/generated/tick.preprocessing.FeaturesBinarizer.html#tick.preprocessing.FeaturesBinarizer.set_params">(tick.preprocessing.FeaturesBinarizer method)</a>
 </li>
+        <li><a href="modules/generated/tick.robust.RobustLinearRegression.html#tick.robust.RobustLinearRegression.set_params">(tick.robust.RobustLinearRegression method)</a>
+</li>
       </ul></li>
-      <li><a href="modules/generated/tick.optim.solver.AdaGrad.html#tick.optim.solver.AdaGrad.set_prox">set_prox() (tick.optim.solver.AdaGrad method)</a>
+      <li><a href="modules/generated/tick.solver.AdaGrad.html#tick.solver.AdaGrad.set_prox">set_prox() (tick.solver.AdaGrad method)</a>
 
       <ul>
-        <li><a href="modules/generated/tick.optim.solver.AGD.html#tick.optim.solver.AGD.set_prox">(tick.optim.solver.AGD method)</a>
+        <li><a href="modules/generated/tick.solver.AGD.html#tick.solver.AGD.set_prox">(tick.solver.AGD method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.solver.BFGS.html#tick.optim.solver.BFGS.set_prox">(tick.optim.solver.BFGS method)</a>
+        <li><a href="modules/generated/tick.solver.BFGS.html#tick.solver.BFGS.set_prox">(tick.solver.BFGS method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.solver.GD.html#tick.optim.solver.GD.set_prox">(tick.optim.solver.GD method)</a>
+        <li><a href="modules/generated/tick.solver.GD.html#tick.solver.GD.set_prox">(tick.solver.GD method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.solver.GFB.html#tick.optim.solver.GFB.set_prox">(tick.optim.solver.GFB method)</a>
+        <li><a href="modules/generated/tick.solver.GFB.html#tick.solver.GFB.set_prox">(tick.solver.GFB method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.solver.SAGA.html#tick.optim.solver.SAGA.set_prox">(tick.optim.solver.SAGA method)</a>
+        <li><a href="modules/generated/tick.solver.SAGA.html#tick.solver.SAGA.set_prox">(tick.solver.SAGA method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.solver.SCPG.html#tick.optim.solver.SCPG.set_prox">(tick.optim.solver.SCPG method)</a>
+        <li><a href="modules/generated/tick.solver.SCPG.html#tick.solver.SCPG.set_prox">(tick.solver.SCPG method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.solver.SDCA.html#tick.optim.solver.SDCA.set_prox">(tick.optim.solver.SDCA method)</a>
+        <li><a href="modules/generated/tick.solver.SDCA.html#tick.solver.SDCA.set_prox">(tick.solver.SDCA method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.solver.SGD.html#tick.optim.solver.SGD.set_prox">(tick.optim.solver.SGD method)</a>
+        <li><a href="modules/generated/tick.solver.SGD.html#tick.solver.SGD.set_prox">(tick.solver.SGD method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.solver.SVRG.html#tick.optim.solver.SVRG.set_prox">(tick.optim.solver.SVRG method)</a>
+        <li><a href="modules/generated/tick.solver.SVRG.html#tick.solver.SVRG.set_prox">(tick.solver.SVRG method)</a>
 </li>
       </ul></li>
-      <li><a href="modules/generated/tick.optim.solver.SGD.html#tick.optim.solver.SGD">SGD (class in tick.optim.solver)</a>
+      <li><a href="modules/generated/tick.solver.SGD.html#tick.solver.SGD">SGD (class in tick.solver)</a>
 </li>
       <li><a href="modules/generated/tick.preprocessing.LongitudinalFeaturesProduct.html#tick.preprocessing.LongitudinalFeaturesProduct.short_exposure_products">short_exposure_products() (tick.preprocessing.LongitudinalFeaturesProduct method)</a>
 </li>
-      <li><a href="modules/generated/tick.optim.model.ModelLogReg.html#tick.optim.model.ModelLogReg.sigmoid">sigmoid() (tick.optim.model.ModelLogReg static method)</a>
+      <li><a href="modules/generated/tick.linear_model.ModelLogReg.html#tick.linear_model.ModelLogReg.sigmoid">sigmoid() (tick.linear_model.ModelLogReg static method)</a>
+</li>
+      <li><a href="modules/generated/tick.survival.SimuCoxReg.html#tick.survival.SimuCoxReg">SimuCoxReg (class in tick.survival)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="modules/generated/tick.simulation.SimuCoxReg.html#tick.simulation.SimuCoxReg">SimuCoxReg (class in tick.simulation)</a>
+      <li><a href="modules/generated/tick.hawkes.SimuHawkes.html#tick.hawkes.SimuHawkes">SimuHawkes (class in tick.hawkes)</a>
 </li>
-      <li><a href="modules/generated/tick.simulation.SimuHawkes.html#tick.simulation.SimuHawkes">SimuHawkes (class in tick.simulation)</a>
+      <li><a href="modules/generated/tick.hawkes.SimuHawkesExpKernels.html#tick.hawkes.SimuHawkesExpKernels">SimuHawkesExpKernels (class in tick.hawkes)</a>
 </li>
-      <li><a href="modules/generated/tick.simulation.SimuHawkesExpKernels.html#tick.simulation.SimuHawkesExpKernels">SimuHawkesExpKernels (class in tick.simulation)</a>
+      <li><a href="modules/generated/tick.hawkes.SimuHawkesMulti.html#tick.hawkes.SimuHawkesMulti">SimuHawkesMulti (class in tick.hawkes)</a>
 </li>
-      <li><a href="modules/generated/tick.simulation.SimuHawkesMulti.html#tick.simulation.SimuHawkesMulti">SimuHawkesMulti (class in tick.simulation)</a>
+      <li><a href="modules/generated/tick.hawkes.SimuHawkesSumExpKernels.html#tick.hawkes.SimuHawkesSumExpKernels">SimuHawkesSumExpKernels (class in tick.hawkes)</a>
 </li>
-      <li><a href="modules/generated/tick.simulation.SimuHawkesSumExpKernels.html#tick.simulation.SimuHawkesSumExpKernels">SimuHawkesSumExpKernels (class in tick.simulation)</a>
+      <li><a href="modules/generated/tick.hawkes.SimuInhomogeneousPoisson.html#tick.hawkes.SimuInhomogeneousPoisson">SimuInhomogeneousPoisson (class in tick.hawkes)</a>
 </li>
-      <li><a href="modules/generated/tick.simulation.SimuInhomogeneousPoisson.html#tick.simulation.SimuInhomogeneousPoisson">SimuInhomogeneousPoisson (class in tick.simulation)</a>
-</li>
-      <li><a href="modules/generated/tick.simulation.SimuCoxReg.html#tick.simulation.SimuCoxReg.simulate">simulate() (tick.simulation.SimuCoxReg method)</a>
+      <li><a href="modules/generated/tick.hawkes.SimuHawkes.html#tick.hawkes.SimuHawkes.simulate">simulate() (tick.hawkes.SimuHawkes method)</a>
 
       <ul>
-        <li><a href="modules/generated/tick.simulation.SimuHawkes.html#tick.simulation.SimuHawkes.simulate">(tick.simulation.SimuHawkes method)</a>
+        <li><a href="modules/generated/tick.hawkes.SimuHawkesExpKernels.html#tick.hawkes.SimuHawkesExpKernels.simulate">(tick.hawkes.SimuHawkesExpKernels method)</a>
 </li>
-        <li><a href="modules/generated/tick.simulation.SimuHawkesExpKernels.html#tick.simulation.SimuHawkesExpKernels.simulate">(tick.simulation.SimuHawkesExpKernels method)</a>
+        <li><a href="modules/generated/tick.hawkes.SimuHawkesMulti.html#tick.hawkes.SimuHawkesMulti.simulate">(tick.hawkes.SimuHawkesMulti method)</a>
 </li>
-        <li><a href="modules/generated/tick.simulation.SimuHawkesMulti.html#tick.simulation.SimuHawkesMulti.simulate">(tick.simulation.SimuHawkesMulti method)</a>
+        <li><a href="modules/generated/tick.hawkes.SimuHawkesSumExpKernels.html#tick.hawkes.SimuHawkesSumExpKernels.simulate">(tick.hawkes.SimuHawkesSumExpKernels method)</a>
 </li>
-        <li><a href="modules/generated/tick.simulation.SimuHawkesSumExpKernels.html#tick.simulation.SimuHawkesSumExpKernels.simulate">(tick.simulation.SimuHawkesSumExpKernels method)</a>
+        <li><a href="modules/generated/tick.hawkes.SimuInhomogeneousPoisson.html#tick.hawkes.SimuInhomogeneousPoisson.simulate">(tick.hawkes.SimuInhomogeneousPoisson method)</a>
 </li>
-        <li><a href="modules/generated/tick.simulation.SimuInhomogeneousPoisson.html#tick.simulation.SimuInhomogeneousPoisson.simulate">(tick.simulation.SimuInhomogeneousPoisson method)</a>
+        <li><a href="modules/generated/tick.hawkes.SimuPoissonProcess.html#tick.hawkes.SimuPoissonProcess.simulate">(tick.hawkes.SimuPoissonProcess method)</a>
 </li>
-        <li><a href="modules/generated/tick.simulation.SimuLinReg.html#tick.simulation.SimuLinReg.simulate">(tick.simulation.SimuLinReg method)</a>
+        <li><a href="modules/generated/tick.linear_model.SimuLinReg.html#tick.linear_model.SimuLinReg.simulate">(tick.linear_model.SimuLinReg method)</a>
 </li>
-        <li><a href="modules/generated/tick.simulation.SimuLogReg.html#tick.simulation.SimuLogReg.simulate">(tick.simulation.SimuLogReg method)</a>
+        <li><a href="modules/generated/tick.linear_model.SimuLogReg.html#tick.linear_model.SimuLogReg.simulate">(tick.linear_model.SimuLogReg method)</a>
 </li>
-        <li><a href="modules/generated/tick.simulation.SimuPoisReg.html#tick.simulation.SimuPoisReg.simulate">(tick.simulation.SimuPoisReg method)</a>
+        <li><a href="modules/generated/tick.linear_model.SimuPoisReg.html#tick.linear_model.SimuPoisReg.simulate">(tick.linear_model.SimuPoisReg method)</a>
 </li>
-        <li><a href="modules/generated/tick.simulation.SimuPoissonProcess.html#tick.simulation.SimuPoissonProcess.simulate">(tick.simulation.SimuPoissonProcess method)</a>
+        <li><a href="modules/generated/tick.survival.SimuCoxReg.html#tick.survival.SimuCoxReg.simulate">(tick.survival.SimuCoxReg method)</a>
 </li>
-        <li><a href="modules/generated/tick.simulation.SimuSCCS.html#tick.simulation.SimuSCCS.simulate">(tick.simulation.SimuSCCS method)</a>
+        <li><a href="modules/generated/tick.survival.SimuSCCS.html#tick.survival.SimuSCCS.simulate">(tick.survival.SimuSCCS method)</a>
 </li>
       </ul></li>
-      <li><a href="modules/generated/tick.simulation.SimuLinReg.html#tick.simulation.SimuLinReg">SimuLinReg (class in tick.simulation)</a>
+      <li><a href="modules/generated/tick.linear_model.SimuLinReg.html#tick.linear_model.SimuLinReg">SimuLinReg (class in tick.linear_model)</a>
 </li>
-      <li><a href="modules/generated/tick.simulation.SimuLogReg.html#tick.simulation.SimuLogReg">SimuLogReg (class in tick.simulation)</a>
+      <li><a href="modules/generated/tick.linear_model.SimuLogReg.html#tick.linear_model.SimuLogReg">SimuLogReg (class in tick.linear_model)</a>
 </li>
-      <li><a href="modules/generated/tick.simulation.SimuPoisReg.html#tick.simulation.SimuPoisReg">SimuPoisReg (class in tick.simulation)</a>
+      <li><a href="modules/generated/tick.linear_model.SimuPoisReg.html#tick.linear_model.SimuPoisReg">SimuPoisReg (class in tick.linear_model)</a>
 </li>
-      <li><a href="modules/generated/tick.simulation.SimuPoissonProcess.html#tick.simulation.SimuPoissonProcess">SimuPoissonProcess (class in tick.simulation)</a>
+      <li><a href="modules/generated/tick.hawkes.SimuPoissonProcess.html#tick.hawkes.SimuPoissonProcess">SimuPoissonProcess (class in tick.hawkes)</a>
 </li>
-      <li><a href="modules/generated/tick.simulation.SimuSCCS.html#tick.simulation.SimuSCCS">SimuSCCS (class in tick.simulation)</a>
+      <li><a href="modules/generated/tick.survival.SimuSCCS.html#tick.survival.SimuSCCS">SimuSCCS (class in tick.survival)</a>
 </li>
-      <li><a href="modules/generated/tick.optim.solver.AdaGrad.html#tick.optim.solver.AdaGrad.solve">solve() (tick.optim.solver.AdaGrad method)</a>
+      <li><a href="modules/generated/tick.solver.AdaGrad.html#tick.solver.AdaGrad.solve">solve() (tick.solver.AdaGrad method)</a>
 
       <ul>
-        <li><a href="modules/generated/tick.optim.solver.AGD.html#tick.optim.solver.AGD.solve">(tick.optim.solver.AGD method)</a>
+        <li><a href="modules/generated/tick.solver.AGD.html#tick.solver.AGD.solve">(tick.solver.AGD method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.solver.BFGS.html#tick.optim.solver.BFGS.solve">(tick.optim.solver.BFGS method)</a>
+        <li><a href="modules/generated/tick.solver.BFGS.html#tick.solver.BFGS.solve">(tick.solver.BFGS method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.solver.GD.html#tick.optim.solver.GD.solve">(tick.optim.solver.GD method)</a>
+        <li><a href="modules/generated/tick.solver.GD.html#tick.solver.GD.solve">(tick.solver.GD method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.solver.GFB.html#tick.optim.solver.GFB.solve">(tick.optim.solver.GFB method)</a>
+        <li><a href="modules/generated/tick.solver.GFB.html#tick.solver.GFB.solve">(tick.solver.GFB method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.solver.SAGA.html#tick.optim.solver.SAGA.solve">(tick.optim.solver.SAGA method)</a>
+        <li><a href="modules/generated/tick.solver.SAGA.html#tick.solver.SAGA.solve">(tick.solver.SAGA method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.solver.SCPG.html#tick.optim.solver.SCPG.solve">(tick.optim.solver.SCPG method)</a>
+        <li><a href="modules/generated/tick.solver.SCPG.html#tick.solver.SCPG.solve">(tick.solver.SCPG method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.solver.SDCA.html#tick.optim.solver.SDCA.solve">(tick.optim.solver.SDCA method)</a>
+        <li><a href="modules/generated/tick.solver.SDCA.html#tick.solver.SDCA.solve">(tick.solver.SDCA method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.solver.SGD.html#tick.optim.solver.SGD.solve">(tick.optim.solver.SGD method)</a>
+        <li><a href="modules/generated/tick.solver.SGD.html#tick.solver.SGD.solve">(tick.solver.SGD method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.solver.SVRG.html#tick.optim.solver.SVRG.solve">(tick.optim.solver.SVRG method)</a>
+        <li><a href="modules/generated/tick.solver.SVRG.html#tick.solver.SVRG.solve">(tick.solver.SVRG method)</a>
 </li>
       </ul></li>
-      <li><a href="modules/generated/tick.simulation.SimuHawkes.html#tick.simulation.SimuHawkes.spectral_radius">spectral_radius() (tick.simulation.SimuHawkes method)</a>
+      <li><a href="modules/generated/tick.hawkes.SimuHawkes.html#tick.hawkes.SimuHawkes.spectral_radius">spectral_radius() (tick.hawkes.SimuHawkes method)</a>
 
       <ul>
-        <li><a href="modules/generated/tick.simulation.SimuHawkesExpKernels.html#tick.simulation.SimuHawkesExpKernels.spectral_radius">(tick.simulation.SimuHawkesExpKernels method)</a>
+        <li><a href="modules/generated/tick.hawkes.SimuHawkesExpKernels.html#tick.hawkes.SimuHawkesExpKernels.spectral_radius">(tick.hawkes.SimuHawkesExpKernels method)</a>
 </li>
-        <li><a href="modules/generated/tick.simulation.SimuHawkesSumExpKernels.html#tick.simulation.SimuHawkesSumExpKernels.spectral_radius">(tick.simulation.SimuHawkesSumExpKernels method)</a>
+        <li><a href="modules/generated/tick.hawkes.SimuHawkesSumExpKernels.html#tick.hawkes.SimuHawkesSumExpKernels.spectral_radius">(tick.hawkes.SimuHawkesSumExpKernels method)</a>
 </li>
       </ul></li>
-      <li><a href="modules/generated/tick.inference.std_iqr.html#tick.inference.std_iqr">std_iqr() (in module tick.inference)</a>
+      <li><a href="modules/generated/tick.hawkes.HawkesCumulantMatching.html#tick.hawkes.HawkesCumulantMatching.starting_point">starting_point() (tick.hawkes.HawkesCumulantMatching method)</a>
 </li>
-      <li><a href="modules/generated/tick.inference.std_mad.html#tick.inference.std_mad">std_mad() (in module tick.inference)</a>
+      <li><a href="modules/generated/tick.robust.std_iqr.html#tick.robust.std_iqr">std_iqr() (in module tick.robust)</a>
+</li>
+      <li><a href="modules/generated/tick.robust.std_mad.html#tick.robust.std_mad">std_mad() (in module tick.robust)</a>
 </li>
       <li><a href="modules/generated/tick.plot.stems.html#tick.plot.stems">stems() (in module tick.plot)</a>
 </li>
@@ -1333,7 +1403,7 @@
 </li>
       <li><a href="modules/generated/tick.metrics.support_recall.html#tick.metrics.support_recall">support_recall() (in module tick.metrics)</a>
 </li>
-      <li><a href="modules/generated/tick.optim.solver.SVRG.html#tick.optim.solver.SVRG">SVRG (class in tick.optim.solver)</a>
+      <li><a href="modules/generated/tick.solver.SVRG.html#tick.solver.SVRG">SVRG (class in tick.solver)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -1341,40 +1411,36 @@
 <h2 id="T">T</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="modules/generated/tick.simulation.SimuHawkes.html#tick.simulation.SimuHawkes.threshold_negative_intensity">threshold_negative_intensity() (tick.simulation.SimuHawkes method)</a>
+      <li><a href="modules/generated/tick.hawkes.SimuHawkes.html#tick.hawkes.SimuHawkes.threshold_negative_intensity">threshold_negative_intensity() (tick.hawkes.SimuHawkes method)</a>
 
       <ul>
-        <li><a href="modules/generated/tick.simulation.SimuHawkesExpKernels.html#tick.simulation.SimuHawkesExpKernels.threshold_negative_intensity">(tick.simulation.SimuHawkesExpKernels method)</a>
+        <li><a href="modules/generated/tick.hawkes.SimuHawkesExpKernels.html#tick.hawkes.SimuHawkesExpKernels.threshold_negative_intensity">(tick.hawkes.SimuHawkesExpKernels method)</a>
 </li>
-        <li><a href="modules/generated/tick.simulation.SimuHawkesSumExpKernels.html#tick.simulation.SimuHawkesSumExpKernels.threshold_negative_intensity">(tick.simulation.SimuHawkesSumExpKernels method)</a>
+        <li><a href="modules/generated/tick.hawkes.SimuHawkesSumExpKernels.html#tick.hawkes.SimuHawkesSumExpKernels.threshold_negative_intensity">(tick.hawkes.SimuHawkesSumExpKernels method)</a>
 </li>
-        <li><a href="modules/generated/tick.simulation.SimuInhomogeneousPoisson.html#tick.simulation.SimuInhomogeneousPoisson.threshold_negative_intensity">(tick.simulation.SimuInhomogeneousPoisson method)</a>
+        <li><a href="modules/generated/tick.hawkes.SimuInhomogeneousPoisson.html#tick.hawkes.SimuInhomogeneousPoisson.threshold_negative_intensity">(tick.hawkes.SimuInhomogeneousPoisson method)</a>
 </li>
-        <li><a href="modules/generated/tick.simulation.SimuPoissonProcess.html#tick.simulation.SimuPoissonProcess.threshold_negative_intensity">(tick.simulation.SimuPoissonProcess method)</a>
+        <li><a href="modules/generated/tick.hawkes.SimuPoissonProcess.html#tick.hawkes.SimuPoissonProcess.threshold_negative_intensity">(tick.hawkes.SimuPoissonProcess method)</a>
 </li>
       </ul></li>
-      <li><a href="modules/api.html#module-tick.inference">tick.inference (module)</a>
+      <li><a href="modules/api.html#module-tick.prox">tick.prox (module)</a>
 </li>
-      <li><a href="modules/api.html#module-tick.optim.model">tick.optim.model (module)</a>
+      <li><a href="modules/api.html#module-tick.solver">tick.solver (module)</a>
 </li>
-      <li><a href="modules/api.html#module-tick.optim.prox">tick.optim.prox (module)</a>
-</li>
-      <li><a href="modules/api.html#module-tick.optim.solver">tick.optim.solver (module)</a>
+      <li><a href="modules/generated/tick.base.TimeFunction.html#tick.base.TimeFunction">TimeFunction (class in tick.base)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="modules/generated/tick.base.TimeFunction.html#tick.base.TimeFunction">TimeFunction (class in tick.base)</a>
-</li>
-      <li><a href="modules/generated/tick.simulation.SimuHawkes.html#tick.simulation.SimuHawkes.track_intensity">track_intensity() (tick.simulation.SimuHawkes method)</a>
+      <li><a href="modules/generated/tick.hawkes.SimuHawkes.html#tick.hawkes.SimuHawkes.track_intensity">track_intensity() (tick.hawkes.SimuHawkes method)</a>
 
       <ul>
-        <li><a href="modules/generated/tick.simulation.SimuHawkesExpKernels.html#tick.simulation.SimuHawkesExpKernels.track_intensity">(tick.simulation.SimuHawkesExpKernels method)</a>
+        <li><a href="modules/generated/tick.hawkes.SimuHawkesExpKernels.html#tick.hawkes.SimuHawkesExpKernels.track_intensity">(tick.hawkes.SimuHawkesExpKernels method)</a>
 </li>
-        <li><a href="modules/generated/tick.simulation.SimuHawkesSumExpKernels.html#tick.simulation.SimuHawkesSumExpKernels.track_intensity">(tick.simulation.SimuHawkesSumExpKernels method)</a>
+        <li><a href="modules/generated/tick.hawkes.SimuHawkesSumExpKernels.html#tick.hawkes.SimuHawkesSumExpKernels.track_intensity">(tick.hawkes.SimuHawkesSumExpKernels method)</a>
 </li>
-        <li><a href="modules/generated/tick.simulation.SimuInhomogeneousPoisson.html#tick.simulation.SimuInhomogeneousPoisson.track_intensity">(tick.simulation.SimuInhomogeneousPoisson method)</a>
+        <li><a href="modules/generated/tick.hawkes.SimuInhomogeneousPoisson.html#tick.hawkes.SimuInhomogeneousPoisson.track_intensity">(tick.hawkes.SimuInhomogeneousPoisson method)</a>
 </li>
-        <li><a href="modules/generated/tick.simulation.SimuPoissonProcess.html#tick.simulation.SimuPoissonProcess.track_intensity">(tick.simulation.SimuPoissonProcess method)</a>
+        <li><a href="modules/generated/tick.hawkes.SimuPoissonProcess.html#tick.hawkes.SimuPoissonProcess.track_intensity">(tick.hawkes.SimuPoissonProcess method)</a>
 </li>
       </ul></li>
       <li><a href="modules/generated/tick.preprocessing.FeaturesBinarizer.html#tick.preprocessing.FeaturesBinarizer.transform">transform() (tick.preprocessing.FeaturesBinarizer method)</a>
@@ -1394,33 +1460,33 @@
       <li><a href="modules/generated/tick.base.TimeFunction.html#tick.base.TimeFunction.value">value() (tick.base.TimeFunction method)</a>
 
       <ul>
-        <li><a href="modules/generated/tick.optim.prox.ProxBinarsity.html#tick.optim.prox.ProxBinarsity.value">(tick.optim.prox.ProxBinarsity method)</a>
+        <li><a href="modules/generated/tick.prox.ProxBinarsity.html#tick.prox.ProxBinarsity.value">(tick.prox.ProxBinarsity method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.prox.ProxElasticNet.html#tick.optim.prox.ProxElasticNet.value">(tick.optim.prox.ProxElasticNet method)</a>
+        <li><a href="modules/generated/tick.prox.ProxElasticNet.html#tick.prox.ProxElasticNet.value">(tick.prox.ProxElasticNet method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.prox.ProxEquality.html#tick.optim.prox.ProxEquality.value">(tick.optim.prox.ProxEquality method)</a>
+        <li><a href="modules/generated/tick.prox.ProxEquality.html#tick.prox.ProxEquality.value">(tick.prox.ProxEquality method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.prox.ProxGroupL1.html#tick.optim.prox.ProxGroupL1.value">(tick.optim.prox.ProxGroupL1 method)</a>
+        <li><a href="modules/generated/tick.prox.ProxGroupL1.html#tick.prox.ProxGroupL1.value">(tick.prox.ProxGroupL1 method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.prox.ProxL1.html#tick.optim.prox.ProxL1.value">(tick.optim.prox.ProxL1 method)</a>
+        <li><a href="modules/generated/tick.prox.ProxL1.html#tick.prox.ProxL1.value">(tick.prox.ProxL1 method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.prox.ProxL1w.html#tick.optim.prox.ProxL1w.value">(tick.optim.prox.ProxL1w method)</a>
+        <li><a href="modules/generated/tick.prox.ProxL1w.html#tick.prox.ProxL1w.value">(tick.prox.ProxL1w method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.prox.ProxL2.html#tick.optim.prox.ProxL2.value">(tick.optim.prox.ProxL2 method)</a>
+        <li><a href="modules/generated/tick.prox.ProxL2.html#tick.prox.ProxL2.value">(tick.prox.ProxL2 method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.prox.ProxL2Sq.html#tick.optim.prox.ProxL2Sq.value">(tick.optim.prox.ProxL2Sq method)</a>
+        <li><a href="modules/generated/tick.prox.ProxL2Sq.html#tick.prox.ProxL2Sq.value">(tick.prox.ProxL2Sq method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.prox.ProxMulti.html#tick.optim.prox.ProxMulti.value">(tick.optim.prox.ProxMulti method)</a>
+        <li><a href="modules/generated/tick.prox.ProxMulti.html#tick.prox.ProxMulti.value">(tick.prox.ProxMulti method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.prox.ProxNuclear.html#tick.optim.prox.ProxNuclear.value">(tick.optim.prox.ProxNuclear method)</a>
+        <li><a href="modules/generated/tick.prox.ProxNuclear.html#tick.prox.ProxNuclear.value">(tick.prox.ProxNuclear method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.prox.ProxPositive.html#tick.optim.prox.ProxPositive.value">(tick.optim.prox.ProxPositive method)</a>
+        <li><a href="modules/generated/tick.prox.ProxPositive.html#tick.prox.ProxPositive.value">(tick.prox.ProxPositive method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.prox.ProxSlope.html#tick.optim.prox.ProxSlope.value">(tick.optim.prox.ProxSlope method)</a>
+        <li><a href="modules/generated/tick.prox.ProxSlope.html#tick.prox.ProxSlope.value">(tick.prox.ProxSlope method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.prox.ProxTV.html#tick.optim.prox.ProxTV.value">(tick.optim.prox.ProxTV method)</a>
+        <li><a href="modules/generated/tick.prox.ProxTV.html#tick.prox.ProxTV.value">(tick.prox.ProxTV method)</a>
 </li>
-        <li><a href="modules/generated/tick.optim.prox.ProxZero.html#tick.optim.prox.ProxZero.value">(tick.optim.prox.ProxZero method)</a>
+        <li><a href="modules/generated/tick.prox.ProxZero.html#tick.prox.ProxZero.value">(tick.prox.ProxZero method)</a>
 </li>
       </ul></li>
   </ul></td>

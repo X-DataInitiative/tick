@@ -1,0 +1,12 @@
+
+.. _ProxPositive:
+
+tick.prox.ProxPositive
+======================
+
+.. currentmodule:: tick.prox
+
+.. autoclass:: ProxPositive
+
+.. include:: tick.prox.ProxPositive.examples
+    :allowmissing:

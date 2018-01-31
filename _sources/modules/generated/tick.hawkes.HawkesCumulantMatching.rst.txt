@@ -1,0 +1,12 @@
+
+.. _HawkesCumulantMatching:
+
+tick.hawkes.HawkesCumulantMatching
+==================================
+
+.. currentmodule:: tick.hawkes
+
+.. autoclass:: HawkesCumulantMatching
+
+.. include:: tick.hawkes.HawkesCumulantMatching.examples
+    :allowmissing:

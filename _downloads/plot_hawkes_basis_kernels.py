@@ -21,9 +21,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from tick.plot import plot_basis_kernels, plot_hawkes_kernels
-from tick.simulation import SimuHawkes
-from tick.simulation import HawkesKernelTimeFunc
-from tick.inference import HawkesBasisKernels
+from tick.hawkes import SimuHawkes, HawkesKernelTimeFunc, HawkesBasisKernels
 
 end_time = 1e9
 C = 1e-3

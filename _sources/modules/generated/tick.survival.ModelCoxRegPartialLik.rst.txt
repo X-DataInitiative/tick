@@ -1,0 +1,12 @@
+
+.. _ModelCoxRegPartialLik:
+
+tick.survival.ModelCoxRegPartialLik
+===================================
+
+.. currentmodule:: tick.survival
+
+.. autoclass:: ModelCoxRegPartialLik
+
+.. include:: tick.survival.ModelCoxRegPartialLik.examples
+    :allowmissing:

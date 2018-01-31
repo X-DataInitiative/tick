@@ -1,0 +1,9 @@
+tick.survival.kaplan_meier
+==========================
+
+.. currentmodule:: tick.survival
+
+.. autofunction:: kaplan_meier
+
+.. include:: tick.survival.kaplan_meier.examples
+    :allowmissing:

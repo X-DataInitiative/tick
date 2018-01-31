@@ -1,0 +1,467 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-97947441-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+    <title>tick.linear_model.LogisticRegression &#8212; tick 0.4.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.4.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../_static/bootstrap-sphinx.js"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="tick.linear_model.PoissonRegression" href="tick.linear_model.PoissonRegression.html" />
+    <link rel="prev" title="tick.linear_model.LinearRegression" href="tick.linear_model.LinearRegression.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+
+  <div id="navbar" class="None navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../index.html">
+          tick</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../../index.html">Home</a></li>
+                <li><a href="../../auto_examples/index.html">Examples</a></li>
+                <li><a href="../api.html">API</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../index.html">Browse <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../hawkes.html"><code class="docutils literal"><span class="pre">tick.hawkes</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../hawkes.html#introduction">1. Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../hawkes.html#learners">2. Learners</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../hawkes.html#point-process-simulation">3. Point process simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../hawkes.html#models-for-inference">4. Models for inference</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../linear_model.html"><code class="docutils literal"><span class="pre">tick.linear_model</span></code></a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../linear_model.html#introduction">1. Introduction</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../linear_model.html#learners">2. Learners</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../linear_model.html#models">3. Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../linear_model.html#simulation">4. Simulation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../robust.html"><code class="docutils literal"><span class="pre">tick.robust</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../robust.html#regression-with-individual-intercepts">1. Regression with individual intercepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../robust.html#robust-losses">2. Robust losses</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../survival.html"><code class="docutils literal"><span class="pre">tick.survival</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../survival.html#learners">1. Learners</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../survival.html#models">2. Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../survival.html#simulation">3. Simulation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../prox.html"><code class="docutils literal"><span class="pre">tick.prox</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../prox.html#available-operators">1. Available operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../prox.html#example">2. Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../prox.html#how-to-combine-several-prox">3. How to combine several prox ?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../prox.html#the-prox-class-api">4. The <code class="docutils literal"><span class="pre">prox</span></code> class API</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../solver.html"><code class="docutils literal"><span class="pre">tick.solver</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../solver.html#the-solver-class-api">1. The <code class="docutils literal"><span class="pre">solver</span></code> class API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../solver.html#available-solvers">2. Available solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../solver.html#example">3. Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../simulation.html#simulation-of-model-weights">1. Simulation of model weights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../simulation.html#simulation-of-a-features-matrix">2. Simulation of a features matrix</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../plot.html"><code class="docutils literal"><span class="pre">tick.plot</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../plot.html#history-plot">1. History plot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plot.html#plots-for-hawkes-processes">2. Plots for Hawkes processes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plot.html#plots-for-point-process-simulation">3. Plots for point process simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plot.html#miscellaneous-plots">4. Miscellaneous plots</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../dataset.html"><code class="docutils literal"><span class="pre">tick.dataset</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tick.dataset.fetch_tick_dataset.html">tick.dataset.fetch_tick_dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tick.dataset.fetch_hawkes_bund_data.html">tick.dataset.fetch_hawkes_bund_data</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../preprocessing.html#preprocessing-for-static-features">Preprocessing for static features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../preprocessing.html#preprocessing-for-longitudinal-features">Preprocessing for longitudinal features</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../metrics.html"><code class="docutils literal"><span class="pre">tick.metrics</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tick.metrics.support_fdp.html">tick.metrics.support_fdp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tick.metrics.support_recall.html">tick.metrics.support_recall</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../R.html">How to use <code class="docutils literal"><span class="pre">tick</span></code> from the R statistical software</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../R.html#training-a-logistic-regression-model">1. Training a logistic regression model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../R.html#simulation-of-a-hawkes-process">2. Simulation of a Hawkes process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../R.html#using-optimization-tools-from-r">3. Using optimization tools from R</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../dev.html">Developer documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../dev.html#main-highlights">Main highlights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dev.html#base-class">Base class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dev.html#how-to-add-a-new-model-solver-or-prox">How to add a new model, solver or prox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dev.html#enable-python-pickling-of-c-objects">Enable Python-pickling of C++ objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dev.html#tips-for-debugging-c-classes-in-tick">Tips for debugging C++ classes in tick</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../api.html#table-of-contents">Table of contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#hawkes"><code class="docutils literal"><span class="pre">hawkes</span></code></a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../api.html#linear-model"><code class="docutils literal"><span class="pre">linear_model</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#robust"><code class="docutils literal"><span class="pre">robust</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#survival"><code class="docutils literal"><span class="pre">survival</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#prox"><code class="docutils literal"><span class="pre">prox</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#solver"><code class="docutils literal"><span class="pre">solver</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#api-simulation"><code class="docutils literal"><span class="pre">simulation</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#plot"><code class="docutils literal"><span class="pre">plot</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#dataset"><code class="docutils literal"><span class="pre">dataset</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#preprocessing"><code class="docutils literal"><span class="pre">preprocessing</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#metrics"><code class="docutils literal"><span class="pre">metrics</span></code></a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container content-container">
+  
+  <div class="section" id="tick-linear-model-logisticregression">
+<span id="logisticregression"></span><h1>tick.linear_model.LogisticRegression<a class="headerlink" href="#tick-linear-model-logisticregression" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="tick.linear_model.LogisticRegression">
+<em class="property">class </em><code class="descclassname">tick.linear_model.</code><code class="descname">LogisticRegression</code><span class="sig-paren">(</span><em>fit_intercept=True</em>, <em>penalty='l2'</em>, <em>C=1000.0</em>, <em>solver='svrg'</em>, <em>step=None</em>, <em>tol=1e-05</em>, <em>max_iter=100</em>, <em>verbose=False</em>, <em>warm_start=False</em>, <em>print_every=10</em>, <em>record_every=10</em>, <em>sdca_ridge_strength=0.001</em>, <em>elastic_net_ratio=0.95</em>, <em>random_state=None</em>, <em>blocks_start=None</em>, <em>blocks_length=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/linear_model/logistic_regression.html#LogisticRegression"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.linear_model.LogisticRegression" title="Permalink to this definition">¶</a></dt>
+<dd><p>Logistic regression learner, with many choices of penalization and
+solvers.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>C</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default=1e3</p>
+<blockquote>
+<div><p>Level of penalization</p>
+</div></blockquote>
+<p><strong>penalty</strong> : {‘l1’, ‘l2’, ‘elasticnet’, ‘tv’, ‘none’, ‘binarsity’}, default=’l2’</p>
+<blockquote>
+<div><p>The penalization to use. Default is ridge penalization</p>
+</div></blockquote>
+<p><strong>solver</strong> : {‘gd’, ‘agd’, ‘bfgs’, ‘svrg’, ‘sdca’, ‘sgd’}, default=’svrg’</p>
+<blockquote>
+<div><p>The name of the solver to use</p>
+</div></blockquote>
+<p><strong>fit_intercept</strong> : <code class="xref py py-obj docutils literal"><span class="pre">bool</span></code>, default=True</p>
+<blockquote>
+<div><p>If <code class="xref py py-obj docutils literal"><span class="pre">True</span></code>, include an intercept in the model</p>
+</div></blockquote>
+<p><strong>warm_start</strong> : <code class="xref py py-obj docutils literal"><span class="pre">bool</span></code>, default=False</p>
+<blockquote>
+<div><p>If true, learning will start from the last reached solution</p>
+</div></blockquote>
+<p><strong>step</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default=None</p>
+<blockquote>
+<div><p>Initial step size used for learning. Used in gd, agd, sgd and svrg
+solvers</p>
+</div></blockquote>
+<p><strong>tol</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default=1e-5</p>
+<blockquote>
+<div><p>The tolerance of the solver (iterations stop when the stopping
+criterion is below it). By default the solver does <code class="docutils literal"><span class="pre">max_iter</span></code>
+iterations</p>
+</div></blockquote>
+<p><strong>max_iter</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code>, default=100</p>
+<blockquote>
+<div><p>Maximum number of iterations of the solver</p>
+</div></blockquote>
+<p><strong>verbose</strong> : <code class="xref py py-obj docutils literal"><span class="pre">bool</span></code>, default=False</p>
+<blockquote>
+<div><p>If <code class="xref py py-obj docutils literal"><span class="pre">True</span></code>, we verbose things, otherwise the solver does not
+print anything (but records information in history anyway)</p>
+</div></blockquote>
+<p><strong>print_every</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code>, default=10</p>
+<blockquote>
+<div><p>Print history information when <code class="docutils literal"><span class="pre">n_iter</span></code> (iteration number) is
+a multiple of <code class="docutils literal"><span class="pre">print_every</span></code></p>
+</div></blockquote>
+<p><strong>record_every</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code>, default=10</p>
+<blockquote>
+<div><p>Record history information when <code class="docutils literal"><span class="pre">n_iter</span></code> (iteration number) is
+a multiple of <code class="docutils literal"><span class="pre">record_every</span></code></p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Attributes:</th><td class="field-body"><p class="first"><strong>weights</strong> : <code class="xref py py-obj docutils literal"><span class="pre">numpy.array</span></code>, shape=(n_features,)</p>
+<blockquote>
+<div><p>The learned weights of the model (not including the intercept)</p>
+</div></blockquote>
+<p><strong>intercept</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code> or None</p>
+<blockquote>
+<div><p>The intercept, if <code class="docutils literal"><span class="pre">fit_intercept=True</span></code>, otherwise <code class="xref py py-obj docutils literal"><span class="pre">None</span></code></p>
+</div></blockquote>
+<p><strong>classes</strong> : <code class="xref py py-obj docutils literal"><span class="pre">numpy.array</span></code>, shape=(n_classes,)</p>
+<blockquote class="last">
+<div><p>The class labels of our problem</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="tick.linear_model.LogisticRegression.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>fit_intercept=True</em>, <em>penalty='l2'</em>, <em>C=1000.0</em>, <em>solver='svrg'</em>, <em>step=None</em>, <em>tol=1e-05</em>, <em>max_iter=100</em>, <em>verbose=False</em>, <em>warm_start=False</em>, <em>print_every=10</em>, <em>record_every=10</em>, <em>sdca_ridge_strength=0.001</em>, <em>elastic_net_ratio=0.95</em>, <em>random_state=None</em>, <em>blocks_start=None</em>, <em>blocks_length=None</em><span class="sig-paren">)</span><a class="headerlink" href="#tick.linear_model.LogisticRegression.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="tick.linear_model.LogisticRegression.decision_function">
+<code class="descname">decision_function</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/linear_model/logistic_regression.html#LogisticRegression.decision_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.linear_model.LogisticRegression.decision_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Predict scores for given samples</p>
+<p>The confidence score for a sample is the signed distance of that
+sample to the hyperplane.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>X</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code> or <code class="xref py py-obj docutils literal"><span class="pre">scipy.sparse.csr_matrix</span></code>, shape=(n_samples, n_features)</p>
+<blockquote>
+<div><p>Samples.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.array</span></code>, shape=(n_samples,)</p>
+<blockquote class="last">
+<div><p>Confidence scores.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tick.linear_model.LogisticRegression.fit">
+<code class="descname">fit</code><span class="sig-paren">(</span><em>X: object</em>, <em>y: &lt;built-in function array&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/linear_model/logistic_regression.html#LogisticRegression.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.linear_model.LogisticRegression.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit the model according to the given training data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>X</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code> or <code class="xref py py-obj docutils literal"><span class="pre">scipy.sparse.csr_matrix</span></code>,, shape=(n_samples, n_features)</p>
+<blockquote>
+<div><p>Training vector, where n_samples in the number of samples and
+n_features is the number of features.</p>
+</div></blockquote>
+<p><strong>y</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.array</span></code>, shape=(n_samples,)</p>
+<blockquote>
+<div><p>Target vector relative to X.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>self</strong> : LearnerGLM</p>
+<blockquote class="last">
+<div><p>The fitted instance of the model</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tick.linear_model.LogisticRegression.get_params">
+<code class="descname">get_params</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tick.linear_model.LogisticRegression.get_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get parameters for this estimator.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>params</strong> : <code class="xref py py-obj docutils literal"><span class="pre">dict</span></code></p>
+<blockquote class="last">
+<div><p>Parameter names mapped to their values.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tick.linear_model.LogisticRegression.predict">
+<code class="descname">predict</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/linear_model/logistic_regression.html#LogisticRegression.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.linear_model.LogisticRegression.predict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Predict class for given samples</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>X</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code> or <code class="xref py py-obj docutils literal"><span class="pre">scipy.sparse.csr_matrix</span></code>, shape=(n_samples, n_features)</p>
+<blockquote>
+<div><p>Samples.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.array</span></code>, shape=(n_samples,)</p>
+<blockquote class="last">
+<div><p>Returns predicted values.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tick.linear_model.LogisticRegression.predict_proba">
+<code class="descname">predict_proba</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/linear_model/logistic_regression.html#LogisticRegression.predict_proba"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.linear_model.LogisticRegression.predict_proba" title="Permalink to this definition">¶</a></dt>
+<dd><p>Probability estimates.</p>
+<p>The returned estimates for all classes are ordered by the
+label of classes.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>X</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code> or <code class="xref py py-obj docutils literal"><span class="pre">scipy.sparse.csr_matrix</span></code>, shape=(n_samples, n_features)</p>
+<blockquote>
+<div><p>Input features matrix</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code>, shape=(n_samples, 2)</p>
+<blockquote class="last">
+<div><p>Returns the probability of the sample for each class
+in the model in the same order as in <code class="xref py py-obj docutils literal"><span class="pre">self.classes</span></code></p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tick.linear_model.LogisticRegression.set_params">
+<code class="descname">set_params</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#tick.linear_model.LogisticRegression.set_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the parameters for this learner.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>**kwargs :</strong> :</p>
+<blockquote>
+<div><p>Named arguments to update in the learner</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> : <code class="xref py py-obj docutils literal"><span class="pre">LearnerGLM</span></code></p>
+<blockquote class="last">
+<div><p>self with updated parameters</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<div class="section" id="examples-using-tick-linear-model-logisticregression">
+<h2>Examples using <code class="docutils literal"><span class="pre">tick.linear_model.LogisticRegression</span></code><a class="headerlink" href="#examples-using-tick-linear-model-logisticregression" title="Permalink to this headline">¶</a></h2>
+<div class="thumbnailContainer" tooltip="This code perform binary classification on adult dataset with logistic regression learner (`tic..."><div class="figure" id="id1">
+<a class="reference external image-reference" href="./../../auto_examples/./plot_logistic_adult.html"><img alt="../../_images/plot_logistic_adult2.png" src="../../_images/plot_logistic_adult2.png" /></a>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="../../auto_examples/plot_logistic_adult.html#example-plot-logistic-adult-py"><span class="std std-ref">Binary classification with logistic regression</span></a></span></p>
+</div>
+</div><div class="thumbnailContainer" tooltip="In this example we give a naive comparison of ``tick`` and ``scikit-learn`` for binary classifi..."><div class="figure" id="id2">
+<a class="reference external image-reference" href="./../../auto_examples/./plot_logistic_tick_vs_scikit.html"><img alt="../../_images/plot_logistic_tick_vs_scikit1.png" src="../../_images/plot_logistic_tick_vs_scikit1.png" /></a>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="../../auto_examples/plot_logistic_tick_vs_scikit.html#example-plot-logistic-tick-vs-scikit-py"><span class="std std-ref">Logistic regression comparison: scikit-learn versus tick</span></a></span></p>
+</div>
+</div></div>
+</div>
+
+
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Vinther Poulsen.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

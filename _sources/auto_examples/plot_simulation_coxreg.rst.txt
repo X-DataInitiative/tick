@@ -22,8 +22,8 @@ Generates Cox Regression realization given a weight vector
 .. literalinclude:: plot_simulation_coxreg.py
     :lines: 8-
 
-**Total running time of the example:**  0.19 seconds
-( 0 minutes  0.19 seconds)
+**Total running time of the example:**  0.27 seconds
+( 0 minutes  0.27 seconds)
     
 Mentioned *tick* classes:
-   * `tick.simulation.SimuCoxReg`
+   * `tick.survival.SimuCoxReg`

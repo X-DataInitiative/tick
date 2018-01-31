@@ -1,0 +1,9 @@
+tick.robust.std_iqr
+===================
+
+.. currentmodule:: tick.robust
+
+.. autofunction:: std_iqr
+
+.. include:: tick.robust.std_iqr.examples
+    :allowmissing:

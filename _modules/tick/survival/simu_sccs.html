@@ -1,0 +1,665 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-97947441-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+    <title>tick.survival.simu_sccs &#8212; tick 0.4.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.4.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../../../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../../../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../../_static/bootstrap-sphinx.js"></script>
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+
+  <div id="navbar" class="None navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../../index.html">
+          tick</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../../../index.html">Home</a></li>
+                <li><a href="../../../auto_examples/index.html">Examples</a></li>
+                <li><a href="../../../modules/api.html">API</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../../index.html">Browse <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/hawkes.html"><code class="docutils literal"><span class="pre">tick.hawkes</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/hawkes.html#introduction">1. Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/hawkes.html#learners">2. Learners</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/hawkes.html#point-process-simulation">3. Point process simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/hawkes.html#models-for-inference">4. Models for inference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/linear_model.html"><code class="docutils literal"><span class="pre">tick.linear_model</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/linear_model.html#introduction">1. Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/linear_model.html#learners">2. Learners</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/linear_model.html#models">3. Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/linear_model.html#simulation">4. Simulation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/robust.html"><code class="docutils literal"><span class="pre">tick.robust</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/robust.html#regression-with-individual-intercepts">1. Regression with individual intercepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/robust.html#robust-losses">2. Robust losses</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/survival.html"><code class="docutils literal"><span class="pre">tick.survival</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/survival.html#learners">1. Learners</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/survival.html#models">2. Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/survival.html#simulation">3. Simulation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/prox.html"><code class="docutils literal"><span class="pre">tick.prox</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/prox.html#available-operators">1. Available operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/prox.html#example">2. Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/prox.html#how-to-combine-several-prox">3. How to combine several prox ?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/prox.html#the-prox-class-api">4. The <code class="docutils literal"><span class="pre">prox</span></code> class API</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/solver.html"><code class="docutils literal"><span class="pre">tick.solver</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/solver.html#the-solver-class-api">1. The <code class="docutils literal"><span class="pre">solver</span></code> class API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/solver.html#available-solvers">2. Available solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/solver.html#example">3. Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/simulation.html#simulation-of-model-weights">1. Simulation of model weights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/simulation.html#simulation-of-a-features-matrix">2. Simulation of a features matrix</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/plot.html"><code class="docutils literal"><span class="pre">tick.plot</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/plot.html#history-plot">1. History plot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/plot.html#plots-for-hawkes-processes">2. Plots for Hawkes processes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/plot.html#plots-for-point-process-simulation">3. Plots for point process simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/plot.html#miscellaneous-plots">4. Miscellaneous plots</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/dataset.html"><code class="docutils literal"><span class="pre">tick.dataset</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/generated/tick.dataset.fetch_tick_dataset.html">tick.dataset.fetch_tick_dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/generated/tick.dataset.fetch_hawkes_bund_data.html">tick.dataset.fetch_hawkes_bund_data</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/preprocessing.html#preprocessing-for-static-features">Preprocessing for static features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/preprocessing.html#preprocessing-for-longitudinal-features">Preprocessing for longitudinal features</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/metrics.html"><code class="docutils literal"><span class="pre">tick.metrics</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/generated/tick.metrics.support_fdp.html">tick.metrics.support_fdp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/generated/tick.metrics.support_recall.html">tick.metrics.support_recall</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/R.html">How to use <code class="docutils literal"><span class="pre">tick</span></code> from the R statistical software</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/R.html#training-a-logistic-regression-model">1. Training a logistic regression model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/R.html#simulation-of-a-hawkes-process">2. Simulation of a Hawkes process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/R.html#using-optimization-tools-from-r">3. Using optimization tools from R</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/dev.html">Developer documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/dev.html#main-highlights">Main highlights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/dev.html#base-class">Base class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/dev.html#how-to-add-a-new-model-solver-or-prox">How to add a new model, solver or prox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/dev.html#enable-python-pickling-of-c-objects">Enable Python-pickling of C++ objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/dev.html#tips-for-debugging-c-classes-in-tick">Tips for debugging C++ classes in tick</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/api.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/api.html#table-of-contents">Table of contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/api.html#hawkes"><code class="docutils literal"><span class="pre">hawkes</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/api.html#linear-model"><code class="docutils literal"><span class="pre">linear_model</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/api.html#robust"><code class="docutils literal"><span class="pre">robust</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/api.html#survival"><code class="docutils literal"><span class="pre">survival</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/api.html#prox"><code class="docutils literal"><span class="pre">prox</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/api.html#solver"><code class="docutils literal"><span class="pre">solver</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/api.html#api-simulation"><code class="docutils literal"><span class="pre">simulation</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/api.html#plot"><code class="docutils literal"><span class="pre">plot</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/api.html#dataset"><code class="docutils literal"><span class="pre">dataset</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/api.html#preprocessing"><code class="docutils literal"><span class="pre">preprocessing</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/api.html#metrics"><code class="docutils literal"><span class="pre">metrics</span></code></a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container content-container">
+  
+  <h1>Source code for tick.survival.simu_sccs</h1><div class="highlight"><pre>
+<span></span><span class="c1"># License: BSD 3 clause</span>
+
+<span class="kn">from</span> <span class="nn">operator</span> <span class="k">import</span> <span class="n">itemgetter</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">scipy.sparse</span> <span class="k">as</span> <span class="nn">sps</span>
+<span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="k">import</span> <span class="n">csr_matrix</span>
+
+<span class="kn">from</span> <span class="nn">tick.base.simulation</span> <span class="k">import</span> <span class="n">Simu</span>
+<span class="kn">from</span> <span class="nn">tick.preprocessing.longitudinal_features_lagger</span>\
+    <span class="kn">import</span> <span class="nn">LongitudinalFeaturesLagger</span>
+
+
+<div class="viewcode-block" id="SimuSCCS"><a class="viewcode-back" href="../../../modules/generated/tick.survival.SimuSCCS.html#tick.survival.SimuSCCS">[docs]</a><span class="k">class</span> <span class="nc">SimuSCCS</span><span class="p">(</span><span class="n">Simu</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Simulation of a Self Control Case Series (SCCS) model. This simulator can</span>
+<span class="sd">    produce exposure (features), outcomes (labels) and censoring data. </span>
+<span class="sd">     </span>
+<span class="sd">    The features matrices  are a `n_sample` list of numpy arrays (dense case) or </span>
+<span class="sd">    csr_matrices (sparse case) of shape `(n_intervals, n_features)` containing</span>
+<span class="sd">    exposures to each feature.</span>
+<span class="sd">    Exposure can take two forms:</span>
+<span class="sd">    - short repeated exposures: in that case, each column of the numpy arrays </span>
+<span class="sd">    or csr matrices can contain multiple ones, each one representing an exposure</span>
+<span class="sd">    for a particular time bucket.</span>
+<span class="sd">    - infinite unique exposures: in that case, each column of the numpy arrays</span>
+<span class="sd">    or csr matrices can only contain a single one, corresponding to the starting</span>
+<span class="sd">    date of the exposure.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n_samples : `int`,</span>
+<span class="sd">        Number of samples to generate.</span>
+<span class="sd">    </span>
+<span class="sd">    n_intervals : `int`</span>
+<span class="sd">        Number of time intervals used to generate features and outcomes.</span>
+<span class="sd">         </span>
+<span class="sd">    n_lags : `int`</span>
+<span class="sd">        Number of lags to be used when simulating the outcomes. The output</span>
+<span class="sd">        features are returned without lagging to allow the testing of lag</span>
+<span class="sd">        misspecification in the model.</span>
+
+<span class="sd">    sparse : `boolean`, default=True</span>
+<span class="sd">        Generate sparse or dense features.</span>
+<span class="sd">     </span>
+<span class="sd">    exposure_type : {&#39;infinite&#39;, &#39;short&#39;}, default=&#39;infinite&#39;</span>
+<span class="sd">        Either &#39;infinite&#39; for infinite unique exposures or &#39;short&#39; for short</span>
+<span class="sd">        repeated exposures.</span>
+<span class="sd">        </span>
+<span class="sd">    distribution : {&#39;multinomial&#39;, &#39;poisson&#39;}, default=&#39;multinomial&#39;</span>
+<span class="sd">        Dristribution used to generate the outcomes. In the &#39;multinomial&#39; case,</span>
+<span class="sd">        the Poisson process used to generate the events is conditionned by total </span>
+<span class="sd">        the number event per sample, which is set to be equal to one. In that</span>
+<span class="sd">        case, the simulation matches exactly the SCCS model hypotheses. In the</span>
+<span class="sd">        &#39;poisson&#39; case, the outcomes are generated from a Poisson process, which</span>
+<span class="sd">        can result in more than one outcome tick per sample. See </span>
+<span class="sd">        `first_tick_only` option to filter out additional events.</span>
+<span class="sd">        </span>
+<span class="sd">    first_tick_only : `Boolean`, default=True</span>
+<span class="sd">        Keep only the first event and drop the consecutive ones when simulating</span>
+<span class="sd">        with Poisson distribution. </span>
+<span class="sd">        </span>
+<span class="sd">    censoring : `Boolean`, default=True</span>
+<span class="sd">        Simulate a censoring vector. In that case, the features and outcomes are</span>
+<span class="sd">        simulated, then right-censored according to the simulated censoring</span>
+<span class="sd">        dates.</span>
+<span class="sd">        </span>
+<span class="sd">    censoring_prob : `float`, default=.7</span>
+<span class="sd">        Probability that a sample is censored. Should be in [0, 1].</span>
+<span class="sd">        </span>
+<span class="sd">    censoring_intensity : `float`, default=.9</span>
+<span class="sd">        The number of censored time intervals are drawn from a Poisson </span>
+<span class="sd">        distribution with intensity equal to `censoring_intensity`. The higher,</span>
+<span class="sd">        the more intervals will be censored. Should be greater than 0.</span>
+<span class="sd">        </span>
+<span class="sd">    coeffs : `numpy.ndarray` of shape (n_features * (n_lags + 1)), default=None</span>
+<span class="sd">        Can be used to provide your own set of coefficients. If set to None, the</span>
+<span class="sd">        simulator will generate coefficients randomly.</span>
+<span class="sd">        </span>
+<span class="sd">    seed : `int`</span>
+<span class="sd">        The seed of the random number generator</span>
+<span class="sd">        </span>
+<span class="sd">    verbose : `bool`</span>
+<span class="sd">        If True, print things</span>
+<span class="sd">        </span>
+<span class="sd">    batch_size : `int`, default=None</span>
+<span class="sd">        When generating outcomes with Poisson distribution, the simulator will</span>
+<span class="sd">        discard samples to which no event has occured. In this case, the</span>
+<span class="sd">        simulator generate successive batches of samples, until it reaches </span>
+<span class="sd">        a total of n_samples. This parameter can be used to set the batch size.</span>
+<span class="sd">        </span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; from tick.survival import SimuSCCS</span>
+<span class="sd">    &gt;&gt;&gt; sim = SimuSCCS(n_samples=2, n_intervals=3, n_features=2, n_lags=2,</span>
+<span class="sd">    ... seed=42, sparse=False, exposure_type=&quot;short&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; features, labels, censoring, coeffs = sim.simulate()</span>
+<span class="sd">    --------------------------------------</span>
+<span class="sd">    Launching simulation using SimuSCCS...</span>
+<span class="sd">    &gt;&gt;&gt; print(features)</span>
+<span class="sd">    [array([[ 0.,  0.],</span>
+<span class="sd">           [ 1.,  0.],</span>
+<span class="sd">           [ 1.,  1.]]), array([[ 1.,  1.],</span>
+<span class="sd">           [ 1.,  1.],</span>
+<span class="sd">           [ 1.,  1.]])]</span>
+<span class="sd">    &gt;&gt;&gt; print(labels)</span>
+<span class="sd">    [array([0, 0, 1], dtype=int32), array([0, 0, 1], dtype=int32)]</span>
+<span class="sd">    &gt;&gt;&gt; print(censoring)</span>
+<span class="sd">    [3 3]</span>
+<span class="sd">    &gt;&gt;&gt; print(coeffs)</span>
+<span class="sd">    [ 0.54738557 -0.15109073  0.71345739  1.67633284 -0.25656871 -0.25655065]</span>
+<span class="sd">     &quot;&quot;&quot;</span>
+
+    <span class="n">_attrinfos</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;_exposure_type&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;_distribution&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;_censoring_prob&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;_censoring_intensity&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;_coeffs&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;_batch_size&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+<div class="viewcode-block" id="SimuSCCS.__init__"><a class="viewcode-back" href="../../../modules/generated/tick.survival.SimuSCCS.html#tick.survival.SimuSCCS.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">,</span> <span class="n">n_intervals</span><span class="p">,</span> <span class="n">n_features</span><span class="p">,</span> <span class="n">n_lags</span><span class="p">,</span> <span class="n">coeffs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exposure_type</span><span class="o">=</span><span class="s2">&quot;infinite&quot;</span><span class="p">,</span>
+                 <span class="n">distribution</span><span class="o">=</span><span class="s2">&quot;multinomial&quot;</span><span class="p">,</span> <span class="n">first_tick_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                 <span class="n">censoring</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">censoring_prob</span><span class="o">=.</span><span class="mi">7</span><span class="p">,</span> <span class="n">censoring_intensity</span><span class="o">=.</span><span class="mi">9</span><span class="p">,</span>
+                 <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">SimuSCCS</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">seed</span><span class="p">,</span> <span class="n">verbose</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_samples</span> <span class="o">=</span> <span class="n">n_samples</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_intervals</span> <span class="o">=</span> <span class="n">n_intervals</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_features</span> <span class="o">=</span> <span class="n">n_features</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_lags</span> <span class="o">=</span> <span class="n">n_lags</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sparse</span> <span class="o">=</span> <span class="n">sparse</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">first_tick_only</span> <span class="o">=</span> <span class="n">first_tick_only</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">censoring</span> <span class="o">=</span> <span class="n">censoring</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exposure_type</span> <span class="o">=</span> <span class="n">exposure_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">distribution</span> <span class="o">=</span> <span class="n">distribution</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">censoring_prob</span> <span class="o">=</span> <span class="n">censoring_prob</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">censoring_intensity</span> <span class="o">=</span> <span class="n">censoring_intensity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">coeffs</span> <span class="o">=</span> <span class="n">coeffs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span> <span class="o">=</span> <span class="n">batch_size</span></div>
+
+<div class="viewcode-block" id="SimuSCCS.simulate"><a class="viewcode-back" href="../../../modules/generated/tick.survival.SimuSCCS.html#tick.survival.SimuSCCS.simulate">[docs]</a>    <span class="k">def</span> <span class="nf">simulate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Launch simulation of the data.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        features : `list` of `numpy.ndarray` or `list` of `scipy.sparse.csr_matrix`,</span>
+<span class="sd">            list of length n_samples, each element of the list of </span>
+<span class="sd">            shape=(n_intervals, n_features)</span>
+<span class="sd">            The list of features matrices.</span>
+
+<span class="sd">        labels : `list` of `numpy.ndarray`,</span>
+<span class="sd">            list of length n_samples, each element of the list of </span>
+<span class="sd">            shape=(n_intervals,)</span>
+<span class="sd">            The labels vector</span>
+<span class="sd">            </span>
+<span class="sd">        censoring : `numpy.ndarray`, shape=(n_samples,), dtype=&quot;uint64&quot;</span>
+<span class="sd">            The censoring data. This array should contain integers in </span>
+<span class="sd">            [1, n_intervals]. If the value i is equal to n_intervals, then there</span>
+<span class="sd">            is no censoring for sample i. If censoring = c &lt; n_intervals, then </span>
+<span class="sd">            the observation of sample i is stopped at interval c, that is, the </span>
+<span class="sd">            row c - 1 of the corresponding matrix. The last n_intervals - c rows</span>
+<span class="sd">            are then set to 0.</span>
+<span class="sd">        </span>
+<span class="sd">        coeffs : `numpy.ndarray`, shape=(n_features * (n_lags + 1),)</span>
+<span class="sd">            The coefficients used to simulate the data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Simu</span><span class="o">.</span><span class="n">simulate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_simulate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Loop to generate batches of samples until n_samples is reached.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">n_lagged_features</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_lags</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_features</span>
+        <span class="n">n_samples</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_samples</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">coeffs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">coeffs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mf">1e-3</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">,</span> <span class="n">n_lagged_features</span><span class="p">)</span>
+
+        <span class="n">features</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">outcomes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">out_censoring</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_samples</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;uint64&quot;</span><span class="p">)</span>
+        <span class="n">sample_count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="n">sample_count</span> <span class="o">&lt;</span> <span class="n">n_samples</span><span class="p">:</span>
+            <span class="n">X_temp</span><span class="p">,</span> <span class="n">y_temp</span><span class="p">,</span> <span class="n">_censoring</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simulate_batch</span><span class="p">()</span>
+            <span class="n">n_new_samples</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">y_temp</span><span class="p">)</span>
+            <span class="n">expected_count</span> <span class="o">=</span> <span class="n">sample_count</span> <span class="o">+</span> <span class="n">n_new_samples</span>
+            <span class="k">if</span> <span class="n">expected_count</span> <span class="o">&gt;=</span> <span class="n">n_samples</span><span class="p">:</span>
+                <span class="n">n</span> <span class="o">=</span> <span class="n">n_new_samples</span> <span class="o">-</span> <span class="p">(</span><span class="n">expected_count</span> <span class="o">-</span> <span class="n">n_samples</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">n</span> <span class="o">=</span> <span class="n">n_new_samples</span>
+
+            <span class="n">features</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">X_temp</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">n</span><span class="p">])</span>
+            <span class="n">outcomes</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">y_temp</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">n</span><span class="p">])</span>
+            <span class="n">out_censoring</span><span class="p">[</span><span class="n">sample_count</span><span class="p">:</span><span class="n">sample_count</span><span class="o">+</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">_censoring</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">n</span><span class="p">]</span>
+            <span class="n">sample_count</span> <span class="o">+=</span> <span class="n">n_new_samples</span>
+
+        <span class="k">return</span> <span class="n">features</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">,</span> <span class="n">out_censoring</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">coeffs</span>
+
+    <span class="k">def</span> <span class="nf">_simulate_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Simulate a batch of samples, each of which have ticked at least once.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_censoring</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,),</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_intervals</span><span class="p">,</span>
+                             <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;uint64&quot;</span><span class="p">)</span>
+        <span class="c1"># No censoring right now</span>
+        <span class="n">X_temp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simulate_sccs_features</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)</span>
+        <span class="n">y_temp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simulate_outcomes</span><span class="p">(</span><span class="n">X_temp</span><span class="p">,</span> <span class="n">_censoring</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">censoring</span><span class="p">:</span>
+            <span class="n">censored_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">binomial</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">censoring_prob</span><span class="p">,</span>
+                                              <span class="n">size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span>
+                                              <span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;bool&quot;</span><span class="p">)</span>
+            <span class="n">_censoring</span><span class="p">[</span><span class="n">censored_idx</span><span class="p">]</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">poisson</span><span class="p">(</span>
+                <span class="n">lam</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">censoring_intensity</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">censored_idx</span><span class="o">.</span><span class="n">sum</span><span class="p">(),)</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;uint64&quot;</span><span class="p">)</span>
+            <span class="n">X_temp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_censor_array_list</span><span class="p">(</span><span class="n">X_temp</span><span class="p">,</span> <span class="n">_censoring</span><span class="p">)</span>
+            <span class="n">y_temp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_censor_array_list</span><span class="p">(</span><span class="n">y_temp</span><span class="p">,</span> <span class="n">_censoring</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_non_positive_samples</span><span class="p">(</span><span class="n">X_temp</span><span class="p">,</span> <span class="n">y_temp</span><span class="p">,</span>
+                                                 <span class="n">_censoring</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_simulate_sccs_features</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Simulates features, either `infinite` or `short` exposures.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">exposure_type</span> <span class="o">==</span> <span class="s2">&quot;infinite&quot;</span><span class="p">:</span>
+            <span class="n">sim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sim_infinite_exposures</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">exposure_type</span> <span class="o">==</span> <span class="s2">&quot;short&quot;</span><span class="p">:</span>
+            <span class="n">sim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sim_short_exposures</span>
+
+        <span class="k">return</span> <span class="p">[</span><span class="n">sim</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_samples</span><span class="p">)]</span>
+
+    <span class="k">def</span> <span class="nf">_sim_short_exposures</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">features</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span>
+                                     <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_intervals</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_features</span><span class="p">),</span>
+                                     <span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;float64&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sparse</span><span class="p">:</span>
+            <span class="n">features</span> <span class="o">=</span> <span class="n">csr_matrix</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float64&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">features</span>
+
+    <span class="k">def</span> <span class="nf">_sim_infinite_exposures</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">sparse</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;infinite&#39; exposures can only be simulated as </span><span class="se">\</span>
+<span class="s2">            sparse feature matrices&quot;</span><span class="p">)</span>
+        <span class="c1"># Select features for which there is exposure</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_features</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">n_exposures</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_features</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">cols</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_features</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;int64&quot;</span><span class="p">),</span>
+                                    <span class="n">n_exposures</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">n_exposures</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">cols</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">])</span>
+        <span class="c1"># choose exposure start</span>
+        <span class="n">rows</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_intervals</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n_exposures</span><span class="p">)</span>
+        <span class="c1"># build sparse matrix</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">cols</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float64&quot;</span><span class="p">)</span>
+        <span class="n">exposures</span> <span class="o">=</span> <span class="n">csr_matrix</span><span class="p">((</span><span class="n">data</span><span class="p">,</span> <span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">)),</span>
+                               <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_intervals</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_features</span><span class="p">),</span>
+                               <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float64&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">exposures</span>
+
+    <span class="k">def</span> <span class="nf">_simulate_outcomes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">censoring</span><span class="p">):</span>
+        <span class="n">features</span> <span class="o">=</span> <span class="n">LongitudinalFeaturesLagger</span><span class="p">(</span><span class="n">n_lags</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_lags</span><span class="p">)</span><span class="o">.</span>\
+            <span class="n">fit_transform</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">censoring</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">distribution</span> <span class="o">==</span> <span class="s2">&quot;poisson&quot;</span><span class="p">:</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simulate_outcome_from_poisson</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">coeffs</span><span class="p">,</span>
+                                                    <span class="bp">self</span><span class="o">.</span><span class="n">first_tick_only</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simulate_outcome_from_multi</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">coeffs</span><span class="p">,)</span>
+        <span class="k">return</span> <span class="n">y</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_simulate_outcome_from_multi</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">coeffs</span><span class="p">):</span>
+        <span class="n">dot_products</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">coeffs</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">features</span><span class="p">]</span>
+
+        <span class="k">def</span> <span class="nf">sim</span><span class="p">(</span><span class="n">dot_prod</span><span class="p">):</span>
+            <span class="n">dot_prod</span> <span class="o">-=</span> <span class="n">dot_prod</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+            <span class="n">probabilities</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">dot_prod</span><span class="p">)</span> <span class="o">/</span> \
+                            <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">dot_prod</span><span class="p">))</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">multinomial</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">y</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;int32&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">[</span><span class="n">sim</span><span class="p">(</span><span class="n">dot_product</span><span class="p">)</span> <span class="k">for</span> <span class="n">dot_product</span> <span class="ow">in</span> <span class="n">dot_products</span><span class="p">]</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_simulate_outcome_from_poisson</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">coeffs</span><span class="p">,</span> <span class="n">first_tick_only</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="n">dot_products</span> <span class="o">=</span> <span class="p">[</span><span class="n">feat</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">coeffs</span><span class="p">)</span> <span class="k">for</span> <span class="n">feat</span> <span class="ow">in</span> <span class="n">features</span><span class="p">]</span>
+
+        <span class="k">def</span> <span class="nf">sim</span><span class="p">(</span><span class="n">dot_prod</span><span class="p">):</span>
+            <span class="n">dot_prod</span> <span class="o">-=</span> <span class="n">dot_prod</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+
+            <span class="n">intensities</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">dot_prod</span><span class="p">)</span>
+            <span class="n">ticks</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">poisson</span><span class="p">(</span><span class="n">lam</span><span class="o">=</span><span class="n">intensities</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">first_tick_only</span><span class="p">:</span>
+                <span class="n">first_tick_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">ticks</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+                <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">intensities</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">ticks</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">y</span><span class="p">[</span><span class="n">first_tick_idx</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">y</span> <span class="o">=</span> <span class="n">ticks</span>
+            <span class="k">return</span> <span class="n">y</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;int32&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">[</span><span class="n">sim</span><span class="p">(</span><span class="n">dot_product</span><span class="p">)</span> <span class="k">for</span> <span class="n">dot_product</span> <span class="ow">in</span> <span class="n">dot_products</span><span class="p">]</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_censor_array_list</span><span class="p">(</span><span class="n">array_list</span><span class="p">,</span> <span class="n">censoring</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Apply censoring to a list of array-like objects. Works for 1-D or 2-D</span>
+<span class="sd">        arrays, as long as the first axis represents the time.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        array_list : list of numpy.ndarray or list of scipy.sparse.csr_matrix,</span>
+<span class="sd">            list of length n_samples, each element of the list of </span>
+<span class="sd">            shape=(n_intervals, n_features) or shape=(n_intervals,)</span>
+<span class="sd">            The list of features matrices.</span>
+<span class="sd">            </span>
+<span class="sd">        censoring : `numpy.ndarray`, shape=(n_samples, 1), dtype=&quot;uint64&quot;</span>
+<span class="sd">            The censoring data. This array should contain integers in </span>
+<span class="sd">            [1, n_intervals]. If the value i is equal to n_intervals, then there</span>
+<span class="sd">            is no censoring for sample i. If censoring = c &lt; n_intervals, then </span>
+<span class="sd">            the observation of sample i is stopped at interval c, that is, the </span>
+<span class="sd">            row c - 1 of the correponding matrix. The last n_intervals - c rows</span>
+<span class="sd">            are then set to 0.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        output : `[numpy.ndarrays]`  or `[csr_matrices]`, shape=(n_intervals, n_features)</span>
+<span class="sd">            The list of censored features matrices.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">def</span> <span class="nf">censor</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">censoring_idx</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">sps</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">array</span><span class="p">):</span>
+                <span class="n">array</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">tolil</span><span class="p">()</span>
+                <span class="n">array</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">censoring_idx</span><span class="p">):]</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">array</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">tocsr</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">array</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">censoring_idx</span><span class="p">):]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">return</span> <span class="n">array</span>
+
+        <span class="k">return</span> <span class="p">[</span><span class="n">censor</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">censoring</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">array_list</span><span class="p">)]</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_filter_non_positive_samples</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">censoring</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Filter out samples which don&#39;t tick in the observation window.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        features : list of numpy.ndarray or list of scipy.sparse.csr_matrix,</span>
+<span class="sd">            list of length n_samples, each element of the list of </span>
+<span class="sd">            shape=(n_intervals, n_features)</span>
+<span class="sd">            The list of features matrices.</span>
+<span class="sd">            </span>
+<span class="sd">        labels : list of numpy.ndarray of length n_samples,</span>
+<span class="sd">            shape=(n_intervals,)</span>
+<span class="sd">            The list of labels matrices.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">nnz</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">arr</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">arr</span> <span class="ow">in</span> <span class="n">labels</span><span class="p">]</span>
+        <span class="n">positive_sample_idx</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">arr</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">nnz</span><span class="p">)</span> <span class="k">if</span>
+                               <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">positive_sample_idx</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;There should be at least one positive sample per</span><span class="se">\</span>
+<span class="s2">             batch. Try to increase batch_size.&quot;</span><span class="p">)</span>
+        <span class="n">pos_samples_filter</span> <span class="o">=</span> <span class="n">itemgetter</span><span class="p">(</span><span class="o">*</span><span class="n">positive_sample_idx</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">pos_samples_filter</span><span class="p">(</span><span class="n">features</span><span class="p">)),</span>\
+            <span class="nb">list</span><span class="p">(</span><span class="n">pos_samples_filter</span><span class="p">(</span><span class="n">labels</span><span class="p">)),</span>\
+            <span class="n">censoring</span><span class="p">[</span><span class="n">positive_sample_idx</span><span class="p">],</span>\
+            <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">positive_sample_idx</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;uint64&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">exposure_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exposure_type</span>
+
+    <span class="nd">@exposure_type</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">exposure_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;infinite&quot;</span><span class="p">,</span> <span class="s2">&quot;short&quot;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;exposure_type can be only &#39;infinite&#39; or &#39;short&#39;.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;_exposure_type&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">distribution</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_distribution</span>
+
+    <span class="nd">@distribution</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">distribution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;multinomial&quot;</span><span class="p">,</span> <span class="s2">&quot;poisson&quot;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;distribution can be only &#39;multinomial&#39; or</span><span class="se">\</span>
+<span class="s2">             &#39;poisson&#39;.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;_distribution&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">censoring_prob</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_censoring_prob</span>
+
+    <span class="nd">@censoring_prob</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">censoring_prob</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">value</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;value should be in [0, 1].&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;_censoring_prob&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">censoring_intensity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_censoring_intensity</span>
+
+    <span class="nd">@censoring_intensity</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">censoring_intensity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;censoring_intensity should be greater than 0.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;_censoring_intensity&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">coeffs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coeffs</span>
+
+    <span class="nd">@coeffs</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">coeffs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> \
+                        <span class="n">value</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_features</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_lags</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Coeffs should be of shape</span><span class="se">\</span>
+<span class="s2">             (n_features * (n_lags + 1),)&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;_coeffs&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">batch_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_size</span>
+
+    <span class="nd">@batch_size</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">batch_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">distribution</span> <span class="o">==</span> <span class="s2">&quot;multinomial&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;_batch_size&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_samples</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;_batch_size&quot;</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="mi">2000</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_samples</span><span class="p">)))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;_batch_size&quot;</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;_batch_size&quot;</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">))</span></div>
+</pre></div>
+
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Vinther Poulsen.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

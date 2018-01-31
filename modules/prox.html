@@ -1,0 +1,521 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-97947441-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+    <title>tick.prox &#8212; tick 0.4.0 documentation</title>
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.4.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="tick.solver" href="solver.html" />
+    <link rel="prev" title="tick.survival.SimuSCCS" href="generated/tick.survival.SimuSCCS.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+
+  <div id="navbar" class="None navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          tick</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="../auto_examples/index.html">Examples</a></li>
+                <li><a href="api.html">API</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Browse <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="hawkes.html"><code class="docutils literal"><span class="pre">tick.hawkes</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="hawkes.html#introduction">1. Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hawkes.html#learners">2. Learners</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hawkes.html#point-process-simulation">3. Point process simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hawkes.html#models-for-inference">4. Models for inference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="linear_model.html"><code class="docutils literal"><span class="pre">tick.linear_model</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="linear_model.html#introduction">1. Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linear_model.html#learners">2. Learners</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linear_model.html#models">3. Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linear_model.html#simulation">4. Simulation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="robust.html"><code class="docutils literal"><span class="pre">tick.robust</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="robust.html#regression-with-individual-intercepts">1. Regression with individual intercepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="robust.html#robust-losses">2. Robust losses</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="survival.html"><code class="docutils literal"><span class="pre">tick.survival</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="survival.html#learners">1. Learners</a></li>
+<li class="toctree-l2"><a class="reference internal" href="survival.html#models">2. Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="survival.html#simulation">3. Simulation</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#"><code class="docutils literal"><span class="pre">tick.prox</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#available-operators">1. Available operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example">2. Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#how-to-combine-several-prox">3. How to combine several prox ?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#the-prox-class-api">4. The <code class="docutils literal"><span class="pre">prox</span></code> class API</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="solver.html"><code class="docutils literal"><span class="pre">tick.solver</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="solver.html#the-solver-class-api">1. The <code class="docutils literal"><span class="pre">solver</span></code> class API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="solver.html#available-solvers">2. Available solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="solver.html#example">3. Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="simulation.html#simulation-of-model-weights">1. Simulation of model weights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="simulation.html#simulation-of-a-features-matrix">2. Simulation of a features matrix</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="plot.html"><code class="docutils literal"><span class="pre">tick.plot</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="plot.html#history-plot">1. History plot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot.html#plots-for-hawkes-processes">2. Plots for Hawkes processes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot.html#plots-for-point-process-simulation">3. Plots for point process simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot.html#miscellaneous-plots">4. Miscellaneous plots</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="dataset.html"><code class="docutils literal"><span class="pre">tick.dataset</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="generated/tick.dataset.fetch_tick_dataset.html">tick.dataset.fetch_tick_dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/tick.dataset.fetch_hawkes_bund_data.html">tick.dataset.fetch_hawkes_bund_data</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="preprocessing.html#preprocessing-for-static-features">Preprocessing for static features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="preprocessing.html#preprocessing-for-longitudinal-features">Preprocessing for longitudinal features</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="metrics.html"><code class="docutils literal"><span class="pre">tick.metrics</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="generated/tick.metrics.support_fdp.html">tick.metrics.support_fdp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/tick.metrics.support_recall.html">tick.metrics.support_recall</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="R.html">How to use <code class="docutils literal"><span class="pre">tick</span></code> from the R statistical software</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="R.html#training-a-logistic-regression-model">1. Training a logistic regression model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="R.html#simulation-of-a-hawkes-process">2. Simulation of a Hawkes process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="R.html#using-optimization-tools-from-r">3. Using optimization tools from R</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="dev.html">Developer documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dev.html#main-highlights">Main highlights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev.html#base-class">Base class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev.html#how-to-add-a-new-model-solver-or-prox">How to add a new model, solver or prox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev.html#enable-python-pickling-of-c-objects">Enable Python-pickling of C++ objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev.html#tips-for-debugging-c-classes-in-tick">Tips for debugging C++ classes in tick</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api.html#table-of-contents">Table of contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#hawkes"><code class="docutils literal"><span class="pre">hawkes</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#linear-model"><code class="docutils literal"><span class="pre">linear_model</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#robust"><code class="docutils literal"><span class="pre">robust</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#survival"><code class="docutils literal"><span class="pre">survival</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#prox"><code class="docutils literal"><span class="pre">prox</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#solver"><code class="docutils literal"><span class="pre">solver</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#api-simulation"><code class="docutils literal"><span class="pre">simulation</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#plot"><code class="docutils literal"><span class="pre">plot</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#dataset"><code class="docutils literal"><span class="pre">dataset</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#preprocessing"><code class="docutils literal"><span class="pre">preprocessing</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#metrics"><code class="docutils literal"><span class="pre">metrics</span></code></a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container content-container">
+  
+  <div class="section" id="tick-prox">
+<span id="prox"></span><h1><a class="reference internal" href="api.html#module-tick.prox" title="tick.prox"><code class="xref py py-mod docutils literal"><span class="pre">tick.prox</span></code></a><a class="headerlink" href="#tick-prox" title="Permalink to this headline">¶</a></h1>
+<p>This module proposes a large number of proximal operator, allowing the use
+many penalization techniques for model fitting. Namely, most optimization
+problems considered in <code class="docutils literal"><span class="pre">tick</span></code> (but not all) can be written as</p>
+<div class="math">
+\[\min_w f(w) + g(w)\]</div>
+<p>where <span class="math">\(f\)</span> is a goodness-of-fit term and <span class="math">\(g\)</span> is a function
+penalizing <span class="math">\(w\)</span>. Depending on the problem, you might want to use some
+function <span class="math">\(g\)</span> in order to induce a specific property of the weights
+<span class="math">\(w\)</span> of the model.</p>
+<p>The proximal operator of a convex function <span class="math">\(g\)</span> at some point <span class="math">\(w\)</span>
+is defined as the unique minimizer of the problem</p>
+<div class="math">
+\[\text{prox}_{g}(w, t) = \text{argmin}_{w'} \Big\{ \frac 12 \| w - w' \|_2^2 + t g(w') \Big\}\]</div>
+<p>where <span class="math">\(t &gt; 0\)</span> is a regularization parameter and <span class="math">\(\| \cdot \|_2\)</span> is the
+Euclidean norm. Note that in the particular case where <span class="math">\(g(w) = \delta_{C}(w)\)</span>,
+with <span class="math">\(C\)</span> a convex set, then <span class="math">\(\text{prox}_g\)</span> is a projection
+operator (here <span class="math">\(\delta_{C}(w) = 0\)</span> if <span class="math">\(w \in C\)</span>
+and <span class="math">\(+\infty\)</span> otherwise).</p>
+<p>Depending on the problem, <span class="math">\(g\)</span> might actually be used only a subset of
+entries of <span class="math">\(w\)</span>.
+For instance, in a generalized linear models, <span class="math">\(w\)</span> corresponds to the
+concatenation of model weights and intercept, and the latter should not be
+penalized, see <a class="reference internal" href="linear_model.html#linear-model"><span class="std std-ref">tick.linear_model</span></a>.
+To solve this issue, in all <code class="docutils literal"><span class="pre">prox</span></code> classes, an optional <code class="docutils literal"><span class="pre">range</span></code> parameter
+is available, to apply the regularization only to a subset of entries of
+<span class="math">\(w\)</span>.</p>
+<div class="section" id="available-operators">
+<h2>1. Available operators<a class="headerlink" href="#available-operators" title="Permalink to this headline">¶</a></h2>
+<p>The list of available operators in <code class="docutils literal"><span class="pre">tick</span></code> given in the next table.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="13%" />
+<col width="59%" />
+<col width="28%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Penalization</th>
+<th class="head">Function</th>
+<th class="head">Class</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Identity</td>
+<td><span class="math">\(g(w) = 0\)</span></td>
+<td><a class="reference internal" href="generated/tick.prox.ProxZero.html#tick.prox.ProxZero" title="tick.prox.ProxZero"><code class="xref py py-class docutils literal"><span class="pre">ProxZero</span></code></a></td>
+</tr>
+<tr class="row-odd"><td>L1 norm</td>
+<td><span class="math">\(g(w) = s \sum_{j=1}^d |w_j|\)</span></td>
+<td><a class="reference internal" href="generated/tick.prox.ProxL1.html#tick.prox.ProxL1" title="tick.prox.ProxL1"><code class="xref py py-class docutils literal"><span class="pre">ProxL1</span></code></a></td>
+</tr>
+<tr class="row-even"><td>L1 norm with weights</td>
+<td><span class="math">\(g(w) = s \sum_{j=1}^d c_j |w_j|\)</span></td>
+<td><a class="reference internal" href="generated/tick.prox.ProxL1w.html#tick.prox.ProxL1w" title="tick.prox.ProxL1w"><code class="xref py py-class docutils literal"><span class="pre">ProxL1w</span></code></a></td>
+</tr>
+<tr class="row-odd"><td>Ridge</td>
+<td><span class="math">\(g(w) = s \sum_{j=1}^d \frac{w_j^2}{2}\)</span></td>
+<td><a class="reference internal" href="generated/tick.prox.ProxL2Sq.html#tick.prox.ProxL2Sq" title="tick.prox.ProxL2Sq"><code class="xref py py-class docutils literal"><span class="pre">ProxL2Sq</span></code></a></td>
+</tr>
+<tr class="row-even"><td>L2 norm</td>
+<td><span class="math">\(g(w) = s \sqrt{d \sum_{j=1}^d w_j^2}\)</span></td>
+<td><a class="reference internal" href="generated/tick.prox.ProxL2.html#tick.prox.ProxL2" title="tick.prox.ProxL2"><code class="xref py py-class docutils literal"><span class="pre">ProxL2</span></code></a></td>
+</tr>
+<tr class="row-odd"><td>Elastic-net</td>
+<td><span class="math">\(g(w) = s \Big(\sum_{j=1}^{d} \alpha |w_j| + (1 - \alpha) \frac{w_j^2}{2} \Big)\)</span></td>
+<td><a class="reference internal" href="generated/tick.prox.ProxElasticNet.html#tick.prox.ProxElasticNet" title="tick.prox.ProxElasticNet"><code class="xref py py-class docutils literal"><span class="pre">ProxElasticNet</span></code></a></td>
+</tr>
+<tr class="row-even"><td>Nuclear norm</td>
+<td><span class="math">\(g(w) = s \sum_{j=1}^{q} \sigma_j(w)\)</span></td>
+<td><a class="reference internal" href="generated/tick.prox.ProxNuclear.html#tick.prox.ProxNuclear" title="tick.prox.ProxNuclear"><code class="xref py py-class docutils literal"><span class="pre">ProxNuclear</span></code></a></td>
+</tr>
+<tr class="row-odd"><td>Non-negative constraint</td>
+<td><span class="math">\(g(w) = s \delta_C(w)\)</span> where <span class="math">\(C=\)</span> set of vectors with non-negative entries</td>
+<td><a class="reference internal" href="generated/tick.prox.ProxPositive.html#tick.prox.ProxPositive" title="tick.prox.ProxPositive"><code class="xref py py-class docutils literal"><span class="pre">ProxPositive</span></code></a></td>
+</tr>
+<tr class="row-even"><td>Equality constraint</td>
+<td><span class="math">\(g(w) = s \delta_C(w)\)</span> where <span class="math">\(C=\)</span> set of vectors with identical entries</td>
+<td><code class="xref py py-class docutils literal"><span class="pre">ProxEquality</span></code></td>
+</tr>
+<tr class="row-odd"><td>Sorted L1</td>
+<td><span class="math">\(g(w) = s \sum_{j=1}^{d} c_j |w_{(j)}|\)</span> where <span class="math">\(|w_{(j)}|\)</span> is decreasing</td>
+<td><a class="reference internal" href="generated/tick.prox.ProxSlope.html#tick.prox.ProxSlope" title="tick.prox.ProxSlope"><code class="xref py py-class docutils literal"><span class="pre">ProxSlope</span></code></a></td>
+</tr>
+<tr class="row-even"><td>Total-variation</td>
+<td><span class="math">\(g(w) = s \sum_{j=2}^d |w_j - w_{j-1}|\)</span></td>
+<td><a class="reference internal" href="generated/tick.prox.ProxTV.html#tick.prox.ProxTV" title="tick.prox.ProxTV"><code class="xref py py-class docutils literal"><span class="pre">ProxTV</span></code></a></td>
+</tr>
+<tr class="row-odd"><td>Binarsity</td>
+<td><span class="math">\(g(w) = s \sum_{j=1}^d \big( \sum_{k=2}^{d_j} |w_{j,k} - w_{j,k-1} | + \delta_C(w_{j,\bullet}) \big)\)</span></td>
+<td><a class="reference internal" href="generated/tick.prox.ProxBinarsity.html#tick.prox.ProxBinarsity" title="tick.prox.ProxBinarsity"><code class="xref py py-class docutils literal"><span class="pre">ProxBinarsity</span></code></a></td>
+</tr>
+<tr class="row-even"><td>Group L1</td>
+<td><span class="math">\(g(w) = s \sum_{j=1}^d \sqrt{d_j} \| w^{(j)}\|_2\)</span></td>
+<td><a class="reference internal" href="generated/tick.prox.ProxGroupL1.html#tick.prox.ProxGroupL1" title="tick.prox.ProxGroupL1"><code class="xref py py-class docutils literal"><span class="pre">ProxGroupL1</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="example">
+<h2>2. Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<p>Here is an illustration of the effect of these proximal operators on an example.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">==============================</span>
+<span class="sd">Examples of proximal operators</span>
+<span class="sd">==============================</span>
+
+<span class="sd">Plot examples of proximal operators available in tick</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">tick.prox</span> <span class="kn">import</span> <span class="n">ProxL1</span><span class="p">,</span> <span class="n">ProxElasticNet</span><span class="p">,</span> <span class="n">ProxL2Sq</span><span class="p">,</span> \
+    <span class="n">ProxPositive</span><span class="p">,</span> <span class="n">ProxSlope</span><span class="p">,</span> <span class="n">ProxTV</span><span class="p">,</span> <span class="n">ProxZero</span><span class="p">,</span> <span class="n">ProxBinarsity</span><span class="p">,</span> <span class="n">ProxGroupL1</span><span class="p">,</span> \
+    <span class="n">ProxEquality</span><span class="p">,</span> <span class="n">ProxL1w</span>
+
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
+<span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">-</span> <span class="mf">1e-1</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">+</span> <span class="mf">1e-1</span>
+<span class="n">s</span> <span class="o">=</span> <span class="mf">0.4</span>
+
+<span class="n">proxs</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">ProxZero</span><span class="p">(),</span>
+    <span class="n">ProxPositive</span><span class="p">(),</span>
+    <span class="n">ProxL2Sq</span><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="n">s</span><span class="p">),</span>
+    <span class="n">ProxL1</span><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="n">s</span><span class="p">),</span>
+    <span class="n">ProxElasticNet</span><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="n">s</span><span class="p">,</span> <span class="n">ratio</span><span class="o">=</span><span class="mf">0.5</span><span class="p">),</span>
+    <span class="n">ProxSlope</span><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="n">s</span><span class="p">),</span>
+    <span class="n">ProxTV</span><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="n">s</span><span class="p">),</span>
+    <span class="n">ProxEquality</span><span class="p">(</span><span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="mi">25</span><span class="p">,</span> <span class="mi">40</span><span class="p">)),</span>
+    <span class="n">ProxL1w</span><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="n">s</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="mf">0.1</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">double</span><span class="p">)),</span>
+    <span class="n">ProxGroupL1</span><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="mi">2</span><span class="o">*</span><span class="n">s</span><span class="p">,</span> <span class="n">blocks_start</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
+                <span class="n">blocks_length</span><span class="o">=</span><span class="mi">10</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">5</span><span class="p">,))),</span>
+    <span class="n">ProxBinarsity</span><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="n">s</span><span class="p">,</span> <span class="n">blocks_start</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
+                  <span class="n">blocks_length</span><span class="o">=</span><span class="mi">10</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">5</span><span class="p">,)))</span>
+<span class="p">]</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">12</span><span class="p">),</span> <span class="n">sharey</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">sharex</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">stem</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;original vector&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">51</span><span class="p">))</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">((</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">))</span>
+
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">prox</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">proxs</span><span class="p">):</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">stem</span><span class="p">(</span><span class="n">prox</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">prox</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">51</span><span class="p">))</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">((</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">))</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>(<a class="reference external" href="../../examples/plot_prox_example.py">Source code</a>, <a class="reference external" href="../../examples/plot_prox_example.png">png</a>, <a class="reference external" href="../../examples/plot_prox_example.hires.png">hires.png</a>, <a class="reference external" href="../../examples/plot_prox_example.pdf">pdf</a>)</p>
+<div class="figure">
+<img alt="../_images/plot_prox_example2.png" src="../_images/plot_prox_example2.png" />
+</div>
+</div>
+<div class="section" id="how-to-combine-several-prox">
+<h2>3. How to combine several prox ?<a class="headerlink" href="#how-to-combine-several-prox" title="Permalink to this headline">¶</a></h2>
+<p>Another <code class="docutils literal"><span class="pre">prox</span></code> class is the <a class="reference internal" href="generated/tick.prox.ProxMulti.html#tick.prox.ProxMulti" title="tick.prox.ProxMulti"><code class="xref py py-class docutils literal"><span class="pre">ProxMulti</span></code></a> that
+allows to combine any proximal operators together.
+It simply applies sequentially each operator passed to <a class="reference internal" href="generated/tick.prox.ProxMulti.html#tick.prox.ProxMulti" title="tick.prox.ProxMulti"><code class="xref py py-class docutils literal"><span class="pre">ProxMulti</span></code></a>,
+one after the other. Here is an example of combination of a total-variation penalization and L1 penalization
+applied to different parts of a vector.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">tick.prox</span> <span class="kn">import</span> <span class="n">ProxL1</span><span class="p">,</span> <span class="n">ProxTV</span><span class="p">,</span> <span class="n">ProxMulti</span>
+
+<span class="n">s</span> <span class="o">=</span> <span class="mf">0.4</span>
+
+<span class="n">prox</span> <span class="o">=</span> <span class="n">ProxMulti</span><span class="p">(</span>
+    <span class="n">proxs</span><span class="o">=</span><span class="p">(</span>
+        <span class="n">ProxTV</span><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="n">s</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">)),</span>
+        <span class="n">ProxL1</span><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="mi">2</span> <span class="o">*</span> <span class="n">s</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">50</span><span class="p">))</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
+<span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">-</span> <span class="mf">1e-1</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">+</span> <span class="mf">1e-1</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">stem</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;original vector&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">51</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">((</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">stem</span><span class="p">(</span><span class="n">prox</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;ProxMulti: TV and L1&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">51</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">((</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">vlines</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">linestyles</span><span class="o">=</span><span class="s1">&#39;dashed&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>(<a class="reference external" href="../modules/code_samples/plot_prox_multi.py">Source code</a>, <a class="reference external" href="../modules/code_samples/plot_prox_multi.png">png</a>, <a class="reference external" href="../modules/code_samples/plot_prox_multi.hires.png">hires.png</a>, <a class="reference external" href="../modules/code_samples/plot_prox_multi.pdf">pdf</a>)</p>
+<div class="figure">
+<img alt="../_images/plot_prox_multi1.png" src="../_images/plot_prox_multi1.png" />
+</div>
+</div>
+<div class="section" id="the-prox-class-api">
+<h2>4. The <code class="docutils literal"><span class="pre">prox</span></code> class API<a class="headerlink" href="#the-prox-class-api" title="Permalink to this headline">¶</a></h2>
+<p>Let us describe the <code class="docutils literal"><span class="pre">prox</span></code> API with the <a class="reference internal" href="generated/tick.prox.ProxL1.html#tick.prox.ProxL1" title="tick.prox.ProxL1"><code class="xref py py-class docutils literal"><span class="pre">ProxL1</span></code></a>
+class, that provides the proximal operator of the function
+<span class="math">\(g(w) = s \|w\|_1 = s \sum_{j=1}^d |w_j|\)</span>, where <span class="math">\(s\)</span> corresponds
+to the strength of penalization, and can be tuned using the <code class="docutils literal"><span class="pre">strength</span></code>
+parameter.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">tick.prox</span> <span class="k">import</span> <span class="n">ProxL1</span>
+
+<span class="n">prox</span> <span class="o">=</span> <span class="n">ProxL1</span><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">prox</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>prints</p>
+<div class="highlight-none"><div class="highlight"><pre><span></span>{
+  &quot;name&quot;: &quot;ProxL1&quot;,
+  &quot;positive&quot;: false,
+  &quot;range&quot;: null,
+  &quot;strength&quot;: 0.01
+}
+</pre></div>
+</div>
+<p>The <code class="docutils literal"><span class="pre">positive</span></code> parameter allows to enforce positivity, namely when <code class="docutils literal"><span class="pre">positive=True</span></code> then
+the considered function is actually <span class="math">\(g(w) = s \|w\|_1 + \delta_{C}(x)\)</span> where <span class="math">\(C\)</span> is
+the set of vectors with non-negative entries.
+Note that no <code class="docutils literal"><span class="pre">range</span></code> was specified to this prox so that it is null (<code class="docutils literal"><span class="pre">None</span></code>) for now.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">prox</span> <span class="o">=</span> <span class="n">ProxL1</span><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">30</span><span class="p">),</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">prox</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>prints</p>
+<div class="highlight-none"><div class="highlight"><pre><span></span>{
+  &quot;name&quot;: &quot;ProxL1&quot;,
+  &quot;positive&quot;: true,
+  &quot;range&quot;: [
+    0,
+    30
+  ],
+  &quot;strength&quot;: 0.01
+}
+</pre></div>
+</div>
+<p>All <code class="docutils literal"><span class="pre">prox</span></code> classes provide a method <code class="docutils literal"><span class="pre">call</span></code> that computes <span class="math">\(\text{prox}_{g}(w, t)\)</span>
+where <span class="math">\(t\)</span> is a parameter passed using the <code class="docutils literal"><span class="pre">step</span></code> argument.
+The output of <code class="docutils literal"><span class="pre">call</span></code> can optionally be passed using the <code class="docutils literal"><span class="pre">out</span></code> argument (this
+allows to avoid unnecessary copies, and thus extra memory allocation).</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">tick.prox</span> <span class="kn">import</span> <span class="n">ProxL1</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
+<span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">-</span> <span class="mf">1e-1</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">+</span> <span class="mf">1e-1</span>
+
+<span class="n">proxs</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">ProxL1</span><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="mf">0.</span><span class="p">),</span>
+    <span class="n">ProxL1</span><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="mf">3e-1</span><span class="p">),</span>
+    <span class="n">ProxL1</span><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="mf">3e-1</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">40</span><span class="p">)),</span>
+    <span class="n">ProxL1</span><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="mf">3e-1</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="bp">True</span><span class="p">),</span>
+    <span class="n">ProxL1</span><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="mf">3e-1</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">40</span><span class="p">),</span> <span class="n">positive</span><span class="o">=</span><span class="bp">True</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="n">names</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;original vector&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;prox&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;prox with range=(10, 40)&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;prox with positive=True&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;range=(10, 40) and positive=True&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="n">_</span><span class="p">,</span> <span class="n">ax_list</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">sharey</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">prox</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">ax</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">proxs</span><span class="p">,</span> <span class="n">names</span><span class="p">,</span> <span class="n">ax_list</span><span class="p">):</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">stem</span><span class="p">(</span><span class="n">prox</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">51</span><span class="p">))</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">((</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">))</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>(<a class="reference external" href="../modules/code_samples/plot_prox_api.py">Source code</a>, <a class="reference external" href="../modules/code_samples/plot_prox_api.png">png</a>, <a class="reference external" href="../modules/code_samples/plot_prox_api.hires.png">hires.png</a>, <a class="reference external" href="../modules/code_samples/plot_prox_api.pdf">pdf</a>)</p>
+<div class="figure">
+<img alt="../_images/plot_prox_api1.png" src="../_images/plot_prox_api1.png" />
+</div>
+<p>The value of <span class="math">\(g\)</span> is simply obtained using the <code class="docutils literal"><span class="pre">value</span></code> method</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">prox</span> <span class="o">=</span> <span class="n">ProxL1</span><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="n">val</span> <span class="o">=</span> <span class="n">prox</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">double</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>simply prints</p>
+<div class="highlight-none"><div class="highlight"><pre><span></span>35.0
+</pre></div>
+</div>
+<p>which corresponds to the sum of integers between 5 and 9 included.</p>
+</div>
+</div>
+
+
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Vinther Poulsen.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

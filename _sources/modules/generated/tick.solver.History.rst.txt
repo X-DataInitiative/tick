@@ -1,0 +1,12 @@
+
+.. _History:
+
+tick.solver.History
+===================
+
+.. currentmodule:: tick.solver
+
+.. autoclass:: History
+
+.. include:: tick.solver.History.examples
+    :allowmissing:

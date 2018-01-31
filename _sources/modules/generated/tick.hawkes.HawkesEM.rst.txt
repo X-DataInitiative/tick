@@ -1,0 +1,12 @@
+
+.. _HawkesEM:
+
+tick.hawkes.HawkesEM
+====================
+
+.. currentmodule:: tick.hawkes
+
+.. autoclass:: HawkesEM
+
+.. include:: tick.hawkes.HawkesEM.examples
+    :allowmissing:

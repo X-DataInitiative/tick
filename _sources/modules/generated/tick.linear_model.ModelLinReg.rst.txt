@@ -1,0 +1,12 @@
+
+.. _ModelLinReg:
+
+tick.linear_model.ModelLinReg
+=============================
+
+.. currentmodule:: tick.linear_model
+
+.. autoclass:: ModelLinReg
+
+.. include:: tick.linear_model.ModelLinReg.examples
+    :allowmissing:

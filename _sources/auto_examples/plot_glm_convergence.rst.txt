@@ -13,11 +13,11 @@ This example illustrates the optimization of three linear models:
     * Poisson regression (`tick.optim.model.ModelPoisReg`)
 
 with five different solvers:
-    * LBFGS (`tick.optim.solver.BFGS`)
-    * SVRG (`tick.optim.solver.SVRG`)
-    * SDCA (`tick.optim.solver.SDCA`)
-    * GD (`tick.optim.solver.GD`)
-    * AGD (`tick.optim.solver.AGD`)
+    * LBFGS (`tick.solver.BFGS`)
+    * SVRG (`tick.solver.SVRG`)
+    * SDCA (`tick.solver.SDCA`)
+    * GD (`tick.solver.GD`)
+    * AGD (`tick.solver.AGD`)
 
 
 
@@ -32,21 +32,21 @@ with five different solvers:
 .. literalinclude:: plot_glm_convergence.py
     :lines: 18-
 
-**Total running time of the example:**  1.71 seconds
-( 0 minutes  1.71 seconds)
+**Total running time of the example:**  3.96 seconds
+( 0 minutes  3.96 seconds)
     
 Mentioned *tick* classes:
-   * `tick.optim.model.ModelLinReg`
-   * `tick.optim.model.ModelLogReg`
-   * `tick.optim.model.ModelPoisReg`
-   * `tick.optim.prox.ProxL2Sq`
-   * `tick.optim.prox.ProxZero`
-   * `tick.optim.solver.AGD`
-   * `tick.optim.solver.BFGS`
-   * `tick.optim.solver.GD`
-   * `tick.optim.solver.SDCA`
-   * `tick.optim.solver.SVRG`
+   * `tick.linear_model.ModelLinReg`
+   * `tick.linear_model.ModelLogReg`
+   * `tick.linear_model.ModelPoisReg`
+   * `tick.linear_model.SimuLinReg`
+   * `tick.linear_model.SimuLogReg`
+   * `tick.linear_model.SimuPoisReg`
    * `tick.plot.plot_history`
-   * `tick.simulation.SimuLinReg`
-   * `tick.simulation.SimuLogReg`
-   * `tick.simulation.SimuPoisReg`
+   * `tick.prox.ProxL2Sq`
+   * `tick.prox.ProxZero`
+   * `tick.solver.AGD`
+   * `tick.solver.BFGS`
+   * `tick.solver.GD`
+   * `tick.solver.SDCA`
+   * `tick.solver.SVRG`

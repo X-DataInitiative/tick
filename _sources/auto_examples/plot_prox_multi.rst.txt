@@ -1,0 +1,27 @@
+
+
+.. _example_plot_prox_multi.py:
+
+plot_prox_multi.py
+==================
+
+
+
+.. image:: images/plot_prox_multi_001.png
+    :align: center
+
+
+
+
+**Python source code:** :download:`plot_prox_multi.py <plot_prox_multi.py>`
+
+.. literalinclude:: plot_prox_multi.py
+    :lines: 1-
+
+**Total running time of the example:**  1.03 seconds
+( 0 minutes  1.03 seconds)
+    
+Mentioned *tick* classes:
+   * `tick.prox.ProxL1`
+   * `tick.prox.ProxMulti`
+   * `tick.prox.ProxTV`

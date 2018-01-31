@@ -1,0 +1,12 @@
+
+.. _ProxZero:
+
+tick.prox.ProxZero
+==================
+
+.. currentmodule:: tick.prox
+
+.. autoclass:: ProxZero
+
+.. include:: tick.prox.ProxZero.examples
+    :allowmissing:

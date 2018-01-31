@@ -1,0 +1,12 @@
+
+.. _ModelAbsoluteRegression:
+
+tick.robust.ModelAbsoluteRegression
+===================================
+
+.. currentmodule:: tick.robust
+
+.. autoclass:: ModelAbsoluteRegression
+
+.. include:: tick.robust.ModelAbsoluteRegression.examples
+    :allowmissing:

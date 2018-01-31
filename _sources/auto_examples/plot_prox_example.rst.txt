@@ -7,7 +7,7 @@
 Examples of proximal operators
 ==============================
 
-Plot examples of proximal operators available in `tick.optim.prox` 
+Plot examples of proximal operators available in tick
 
 
 
@@ -22,14 +22,18 @@ Plot examples of proximal operators available in `tick.optim.prox`
 .. literalinclude:: plot_prox_example.py
     :lines: 8-
 
-**Total running time of the example:**  0.91 seconds
-( 0 minutes  0.91 seconds)
+**Total running time of the example:**  3.29 seconds
+( 0 minutes  3.29 seconds)
     
 Mentioned *tick* classes:
-   * `tick.optim.prox.ProxElasticNet`
-   * `tick.optim.prox.ProxL1`
-   * `tick.optim.prox.ProxL2Sq`
-   * `tick.optim.prox.ProxPositive`
-   * `tick.optim.prox.ProxSlope`
-   * `tick.optim.prox.ProxTV`
-   * `tick.optim.prox.ProxZero`
+   * `tick.prox.ProxBinarsity`
+   * `tick.prox.ProxElasticNet`
+   * `tick.prox.ProxEquality`
+   * `tick.prox.ProxGroupL1`
+   * `tick.prox.ProxL1`
+   * `tick.prox.ProxL1w`
+   * `tick.prox.ProxL2Sq`
+   * `tick.prox.ProxPositive`
+   * `tick.prox.ProxSlope`
+   * `tick.prox.ProxTV`
+   * `tick.prox.ProxZero`

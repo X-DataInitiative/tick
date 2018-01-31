@@ -1,0 +1,26 @@
+
+
+.. _example_plot_simulation_weights.py:
+
+plot_simulation_weights.py
+==========================
+
+
+
+.. image:: images/plot_simulation_weights_001.png
+    :align: center
+
+
+
+
+**Python source code:** :download:`plot_simulation_weights.py <plot_simulation_weights.py>`
+
+.. literalinclude:: plot_simulation_weights.py
+    :lines: 1-
+
+**Total running time of the example:**  0.98 seconds
+( 0 minutes  0.98 seconds)
+    
+Mentioned *tick* classes:
+   * `tick.simulation.weights_sparse_exp`
+   * `tick.simulation.weights_sparse_gauss`

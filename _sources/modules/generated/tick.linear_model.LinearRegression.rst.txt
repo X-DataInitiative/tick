@@ -1,0 +1,12 @@
+
+.. _LinearRegression:
+
+tick.linear_model.LinearRegression
+==================================
+
+.. currentmodule:: tick.linear_model
+
+.. autoclass:: LinearRegression
+
+.. include:: tick.linear_model.LinearRegression.examples
+    :allowmissing:

@@ -1,0 +1,9 @@
+tick.survival.nelson_aalen
+==========================
+
+.. currentmodule:: tick.survival
+
+.. autofunction:: nelson_aalen
+
+.. include:: tick.survival.nelson_aalen.examples
+    :allowmissing:

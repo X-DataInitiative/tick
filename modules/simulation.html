@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.simulation: simulation toolbox &#8212; tick 0.3.0 documentation</title>
+    <title>tick.simulation &#8212; tick 0.4.0 documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.3.0',
+        VERSION:     '0.4.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -41,7 +41,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="tick.simulation.weights_sparse_exp" href="generated/tick.simulation.weights_sparse_exp.html" />
-    <link rel="prev" title="tick.preprocessing.LongitudinalFeaturesLagger" href="generated/tick.preprocessing.LongitudinalFeaturesLagger.html" />
+    <link rel="prev" title="tick.solver" href="solver.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -61,7 +61,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.3</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -81,45 +81,75 @@
   <ul class="dropdown-menu globaltoc"
       role="menu"
       aria-labelledby="dLabelGlobalToc"><ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="inference.html"><code class="docutils literal"><span class="pre">tick.inference</span></code>: user-friendly inference tools</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="inference.html#generalized-linear-models">1. Generalized linear models</a></li>
-<li class="toctree-l2"><a class="reference internal" href="inference.html#hawkes">2. Hawkes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="inference.html#survival-analysis">3. Survival analysis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="inference.html#robust-analysis">4. Robust Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hawkes.html"><code class="docutils literal"><span class="pre">tick.hawkes</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="hawkes.html#introduction">1. Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hawkes.html#learners">2. Learners</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hawkes.html#point-process-simulation">3. Point process simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hawkes.html#models-for-inference">4. Models for inference</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="optim.html"><code class="docutils literal"><span class="pre">tick.optim</span></code>: optimization toolbox</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="optim.html#contents">Contents</a></li>
-<li class="toctree-l2"><a class="reference internal" href="optim.html#a-first-example">A First example</a></li>
-<li class="toctree-l2"><a class="reference internal" href="optim.html#tick-optim-model-model-classes">1. <code class="docutils literal"><span class="pre">tick.optim.model</span></code>: model classes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="optim.html#tick-optim-prox-proximal-operators">2. <code class="docutils literal"><span class="pre">tick.optim.prox</span></code>: proximal operators</a></li>
-<li class="toctree-l2"><a class="reference internal" href="optim.html#tick-optim-solver-solvers">3. <code class="docutils literal"><span class="pre">tick.optim.solver</span></code>: solvers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="optim.html#what-s-under-the-hood">4. What’s under the hood?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="linear_model.html"><code class="docutils literal"><span class="pre">tick.linear_model</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="linear_model.html#introduction">1. Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linear_model.html#learners">2. Learners</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linear_model.html#models">3. Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linear_model.html#simulation">4. Simulation</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="plot.html"><code class="docutils literal"><span class="pre">tick.plot</span></code>: plotting utilities</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="plot.html#optimization">Optimization</a></li>
-<li class="toctree-l2"><a class="reference internal" href="plot.html#hawkes-estimation">Hawkes estimation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="plot.html#point-process-simulation">Point process simulation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="plot.html#others">Others</a></li>
+<li class="toctree-l1"><a class="reference internal" href="robust.html"><code class="docutils literal"><span class="pre">tick.robust</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="robust.html#regression-with-individual-intercepts">1. Regression with individual intercepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="robust.html#robust-losses">2. Robust losses</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code>: preprocessing utilities</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="generated/tick.preprocessing.FeaturesBinarizer.html">tick.preprocessing.FeaturesBinarizer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="generated/tick.preprocessing.LongitudinalFeaturesProduct.html">tick.preprocessing.LongitudinalFeaturesProduct</a></li>
-<li class="toctree-l2"><a class="reference internal" href="generated/tick.preprocessing.LongitudinalFeaturesLagger.html">tick.preprocessing.LongitudinalFeaturesLagger</a></li>
+<li class="toctree-l1"><a class="reference internal" href="survival.html"><code class="docutils literal"><span class="pre">tick.survival</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="survival.html#learners">1. Learners</a></li>
+<li class="toctree-l2"><a class="reference internal" href="survival.html#models">2. Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="survival.html#simulation">3. Simulation</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#"><code class="docutils literal"><span class="pre">tick.simulation</span></code>: simulation toolbox</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#simulation-tools">1. Simulation tools</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#linear-model-simulation">2. Linear model simulation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#survival-analysis-simulation">3. Survival analysis simulation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#point-process-simulation">4. Point process simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prox.html"><code class="docutils literal"><span class="pre">tick.prox</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="prox.html#available-operators">1. Available operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="prox.html#example">2. Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="prox.html#how-to-combine-several-prox">3. How to combine several prox ?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="prox.html#the-prox-class-api">4. The <code class="docutils literal"><span class="pre">prox</span></code> class API</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="dataset.html"><code class="docutils literal"><span class="pre">tick.dataset</span></code>: real world datasets</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="dataset.html#functions">Functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dataset.html#example">Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="solver.html"><code class="docutils literal"><span class="pre">tick.solver</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="solver.html#the-solver-class-api">1. The <code class="docutils literal"><span class="pre">solver</span></code> class API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="solver.html#available-solvers">2. Available solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="solver.html#example">3. Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#"><code class="docutils literal"><span class="pre">tick.simulation</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#simulation-of-model-weights">1. Simulation of model weights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#simulation-of-a-features-matrix">2. Simulation of a features matrix</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="plot.html"><code class="docutils literal"><span class="pre">tick.plot</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="plot.html#history-plot">1. History plot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot.html#plots-for-hawkes-processes">2. Plots for Hawkes processes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot.html#plots-for-point-process-simulation">3. Plots for point process simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot.html#miscellaneous-plots">4. Miscellaneous plots</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="dataset.html"><code class="docutils literal"><span class="pre">tick.dataset</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="generated/tick.dataset.fetch_tick_dataset.html">tick.dataset.fetch_tick_dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/tick.dataset.fetch_hawkes_bund_data.html">tick.dataset.fetch_hawkes_bund_data</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="preprocessing.html#preprocessing-for-static-features">Preprocessing for static features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="preprocessing.html#preprocessing-for-longitudinal-features">Preprocessing for longitudinal features</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="metrics.html"><code class="docutils literal"><span class="pre">tick.metrics</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="generated/tick.metrics.support_fdp.html">tick.metrics.support_fdp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/tick.metrics.support_recall.html">tick.metrics.support_recall</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="R.html">How to use <code class="docutils literal"><span class="pre">tick</span></code> from the R statistical software</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="R.html#training-a-logistic-regression-model">1. Training a logistic regression model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="R.html#simulation-of-a-hawkes-process">2. Simulation of a Hawkes process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="R.html#using-optimization-tools-from-r">3. Using optimization tools from R</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="dev.html">Developer documentation</a><ul>
@@ -130,10 +160,19 @@
 <li class="toctree-l2"><a class="reference internal" href="dev.html#tips-for-debugging-c-classes-in-tick">Tips for debugging C++ classes in tick</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="R.html">How to use <code class="docutils literal"><span class="pre">tick</span></code> from the R statistical software</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="R.html#training-a-logistic-regression-model">1. Training a logistic regression model</a></li>
-<li class="toctree-l2"><a class="reference internal" href="R.html#simulation-of-a-hawkes-process">2. Simulation of a Hawkes process</a></li>
-<li class="toctree-l2"><a class="reference internal" href="R.html#using-tick-optim-from-r">3. Using <code class="docutils literal"><span class="pre">tick.optim</span></code> from R</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api.html#table-of-contents">Table of contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#hawkes"><code class="docutils literal"><span class="pre">hawkes</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#linear-model"><code class="docutils literal"><span class="pre">linear_model</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#robust"><code class="docutils literal"><span class="pre">robust</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#survival"><code class="docutils literal"><span class="pre">survival</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#prox"><code class="docutils literal"><span class="pre">prox</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#solver"><code class="docutils literal"><span class="pre">solver</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#api-simulation"><code class="docutils literal"><span class="pre">simulation</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#plot"><code class="docutils literal"><span class="pre">plot</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#dataset"><code class="docutils literal"><span class="pre">dataset</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#preprocessing"><code class="docutils literal"><span class="pre">preprocessing</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#metrics"><code class="docutils literal"><span class="pre">metrics</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -163,35 +202,14 @@
 
 <div class="container content-container">
   
-  <div class="section" id="tick-simulation-simulation-toolbox">
-<span id="simulation"></span><h1><code class="xref py py-mod docutils literal"><span class="pre">tick.simulation</span></code>: simulation toolbox<a class="headerlink" href="#tick-simulation-simulation-toolbox" title="Permalink to this headline">¶</a></h1>
-<p>tick provides several classes to simulate datasets.
+  <div class="section" id="tick-simulation">
+<span id="simulation"></span><h1><code class="xref py py-mod docutils literal"><span class="pre">tick.simulation</span></code><a class="headerlink" href="#tick-simulation" title="Permalink to this headline">¶</a></h1>
+<p>This module provides basic tools for the simulation of model weights and
+features matrices.
 This is particularly useful to test optimization algorithms, and to
 compare the statistical properties of inference methods.</p>
-<p>For now, tick gives simulation classes for Generalized Linear
-Models, Cox regression, Poisson Processes with any intensity and
-Hawkes processes. Utilities for simulation of model coefficients
-(with sparsity, etc.) and utilities for features matrix simulation
-are provided as well.</p>
-<div class="contents topic" id="contents">
-<p class="topic-title first">Contents</p>
-<ul class="simple">
-<li><a class="reference internal" href="#tick-simulation-simulation-toolbox" id="id1"><code class="xref py py-mod docutils literal"><span class="pre">tick.simulation</span></code>: simulation toolbox</a><ul>
-<li><a class="reference internal" href="#simulation-tools" id="id2">1. Simulation tools</a></li>
-<li><a class="reference internal" href="#linear-model-simulation" id="id3">2. Linear model simulation</a></li>
-<li><a class="reference internal" href="#survival-analysis-simulation" id="id4">3. Survival analysis simulation</a></li>
-<li><a class="reference internal" href="#point-process-simulation" id="id5">4. Point process simulation</a></li>
-</ul>
-</li>
-</ul>
-</div>
-<div class="section" id="simulation-tools">
-<h2>1. Simulation tools<a class="headerlink" href="#simulation-tools" title="Permalink to this headline">¶</a></h2>
-<p>We gather in this section tools for the simulation of datasets : simulation of
-model weights, simulation of a features matrix, kernels for the simulation of
-Hawkes processes and time functions for the simulation of Poisson processes.</p>
 <div class="section" id="simulation-of-model-weights">
-<h3>1.1 Simulation of model weights<a class="headerlink" href="#simulation-of-model-weights" title="Permalink to this headline">¶</a></h3>
+<h2>1. Simulation of model weights<a class="headerlink" href="#simulation-of-model-weights" title="Permalink to this headline">¶</a></h2>
 <p>Here are functions for the simulation of model weights.</p>
 <table border="1" class="longtable docutils">
 <colgroup>
@@ -199,10 +217,10 @@ Hawkes processes and time functions for the simulation of Poisson processes.</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.weights_sparse_exp.html#tick.simulation.weights_sparse_exp" title="tick.simulation.weights_sparse_exp"><code class="xref py py-obj docutils literal"><span class="pre">simulation.weights_sparse_exp</span></code></a>(…)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.weights_sparse_exp.html#tick.simulation.weights_sparse_exp" title="tick.simulation.weights_sparse_exp"><code class="xref py py-obj docutils literal"><span class="pre">weights_sparse_exp</span></code></a>((n_weigths:&nbsp;int&nbsp;=&nbsp;100,&nbsp;…)</td>
 <td>Sparse and exponential model weights generator</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/tick.simulation.weights_sparse_gauss.html#tick.simulation.weights_sparse_gauss" title="tick.simulation.weights_sparse_gauss"><code class="xref py py-obj docutils literal"><span class="pre">simulation.weights_sparse_gauss</span></code></a>(…)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/tick.simulation.weights_sparse_gauss.html#tick.simulation.weights_sparse_gauss" title="tick.simulation.weights_sparse_gauss"><code class="xref py py-obj docutils literal"><span class="pre">weights_sparse_gauss</span></code></a>((n_weights:&nbsp;int&nbsp;=&nbsp;100,&nbsp;…)</td>
 <td>Sparse and gaussian model weights generator</td>
 </tr>
 </tbody>
@@ -222,15 +240,16 @@ Hawkes processes and time functions for the simulation of Poisson processes.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">stem</span><span class="p">(</span><span class="n">weights2</span><span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>(<a class="reference external" href="../modules/code_samples/simulation/plot_simulation_weights.py">Source code</a>, <a class="reference external" href="../modules/code_samples/simulation/plot_simulation_weights.png">png</a>, <a class="reference external" href="../modules/code_samples/simulation/plot_simulation_weights.hires.png">hires.png</a>, <a class="reference external" href="../modules/code_samples/simulation/plot_simulation_weights.pdf">pdf</a>)</p>
+<p>(<a class="reference external" href="../modules/code_samples/plot_simulation_weights.py">Source code</a>, <a class="reference external" href="../modules/code_samples/plot_simulation_weights.png">png</a>, <a class="reference external" href="../modules/code_samples/plot_simulation_weights.hires.png">hires.png</a>, <a class="reference external" href="../modules/code_samples/plot_simulation_weights.pdf">pdf</a>)</p>
 <div class="figure">
 <img alt="../_images/plot_simulation_weights1.png" src="../_images/plot_simulation_weights1.png" />
 </div>
 </div>
 <div class="section" id="simulation-of-a-features-matrix">
-<h3>1.2 Simulation of a features matrix<a class="headerlink" href="#simulation-of-a-features-matrix" title="Permalink to this headline">¶</a></h3>
+<h2>2. Simulation of a features matrix<a class="headerlink" href="#simulation-of-a-features-matrix" title="Permalink to this headline">¶</a></h2>
 <p>Here are functions for the simulation of a features matrix: each simulated
 vector or features is distributed as a centered Gaussian vector with
 a particular covariance matrix (uniform symmetrized or toeplitz).</p>
@@ -240,479 +259,14 @@ a particular covariance matrix (uniform symmetrized or toeplitz).</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.features_normal_cov_uniform.html#tick.simulation.features_normal_cov_uniform" title="tick.simulation.features_normal_cov_uniform"><code class="xref py py-obj docutils literal"><span class="pre">simulation.features_normal_cov_uniform</span></code></a>(…)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.features_normal_cov_uniform.html#tick.simulation.features_normal_cov_uniform" title="tick.simulation.features_normal_cov_uniform"><code class="xref py py-obj docutils literal"><span class="pre">features_normal_cov_uniform</span></code></a>(…)</td>
 <td>Normal features generator with uniform covariance</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/tick.simulation.features_normal_cov_toeplitz.html#tick.simulation.features_normal_cov_toeplitz" title="tick.simulation.features_normal_cov_toeplitz"><code class="xref py py-obj docutils literal"><span class="pre">simulation.features_normal_cov_toeplitz</span></code></a>(…)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/tick.simulation.features_normal_cov_toeplitz.html#tick.simulation.features_normal_cov_toeplitz" title="tick.simulation.features_normal_cov_toeplitz"><code class="xref py py-obj docutils literal"><span class="pre">features_normal_cov_toeplitz</span></code></a>(…)</td>
 <td>Normal features generator with toeplitz covariance</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Example</strong></p>
-<div class="admonition-todo admonition" id="index-0">
-<p class="first admonition-title">Todo</p>
-<p class="last">Insert a sample code here</p>
-</div>
-</div>
-<div class="section" id="time-function">
-<h3>1.3 Time function<a class="headerlink" href="#time-function" title="Permalink to this headline">¶</a></h3>
-<p>A class of time function to explicitly define a function on
-<span class="math">\([0, \infty)\)</span>. It uses several types of interpolation to determine value
-between two points.
-It is used for the simulation of an inhomogeneous Poisson process and some
-Hawkes processes.</p>
-<p><strong>Example</strong></p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">tick.base</span> <span class="kn">import</span> <span class="n">TimeFunction</span>
-<span class="kn">from</span> <span class="nn">tick.plot</span> <span class="kn">import</span> <span class="n">plot_timefunction</span>
-
-<span class="n">T</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mf">5.9</span><span class="p">,</span> <span class="mf">8.001</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
-<span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mf">4.1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
-
-<span class="n">tf_1</span> <span class="o">=</span> <span class="n">TimeFunction</span><span class="p">((</span><span class="n">T</span><span class="p">,</span> <span class="n">Y</span><span class="p">),</span> <span class="n">dt</span><span class="o">=</span><span class="mf">1.2</span><span class="p">)</span>
-<span class="n">tf_2</span> <span class="o">=</span> <span class="n">TimeFunction</span><span class="p">((</span><span class="n">T</span><span class="p">,</span> <span class="n">Y</span><span class="p">),</span> <span class="n">border_type</span><span class="o">=</span><span class="n">TimeFunction</span><span class="o">.</span><span class="n">BorderContinue</span><span class="p">,</span>
-                    <span class="n">inter_mode</span><span class="o">=</span><span class="n">TimeFunction</span><span class="o">.</span><span class="n">InterConstRight</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
-<span class="n">tf_3</span> <span class="o">=</span> <span class="n">TimeFunction</span><span class="p">((</span><span class="n">T</span><span class="p">,</span> <span class="n">Y</span><span class="p">),</span> <span class="n">border_type</span><span class="o">=</span><span class="n">TimeFunction</span><span class="o">.</span><span class="n">BorderConstant</span><span class="p">,</span>
-                    <span class="n">inter_mode</span><span class="o">=</span><span class="n">TimeFunction</span><span class="o">.</span><span class="n">InterConstLeft</span><span class="p">,</span> <span class="n">border_value</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-
-<span class="n">time_functions</span> <span class="o">=</span> <span class="p">[</span><span class="n">tf_1</span><span class="p">,</span> <span class="n">tf_2</span><span class="p">,</span> <span class="n">tf_3</span><span class="p">]</span>
-
-<span class="n">_</span><span class="p">,</span> <span class="n">ax_list</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">sharey</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-
-<span class="k">for</span> <span class="n">tf</span><span class="p">,</span> <span class="n">ax</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">time_functions</span><span class="p">,</span> <span class="n">ax_list</span><span class="p">):</span>
-    <span class="n">plot_timefunction</span><span class="p">(</span><span class="n">tf_1</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">([</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">6.0</span><span class="p">])</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-<p>(<a class="reference external" href="../modules/code_samples/simulation/plot_time_function.py">Source code</a>, <a class="reference external" href="../modules/code_samples/simulation/plot_time_function.png">png</a>, <a class="reference external" href="../modules/code_samples/simulation/plot_time_function.hires.png">hires.png</a>, <a class="reference external" href="../modules/code_samples/simulation/plot_time_function.pdf">pdf</a>)</p>
-<div class="figure">
-<img alt="../_images/plot_time_function1.png" src="../_images/plot_time_function1.png" />
-</div>
-</div>
-<div class="section" id="kernels-for-hawkes-process-simulation">
-<h3>1.4 Kernels for Hawkes process simulation<a class="headerlink" href="#kernels-for-hawkes-process-simulation" title="Permalink to this headline">¶</a></h3>
-<p>A Hawkes process is defined through its kernels which are functions defined on
-<span class="math">\([0, \infty)\)</span>.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
-
-<span class="kn">from</span> <span class="nn">tick.simulation</span> <span class="kn">import</span> <span class="n">HawkesKernel0</span><span class="p">,</span> <span class="n">HawkesKernelExp</span><span class="p">,</span> \
-    <span class="n">HawkesKernelPowerLaw</span><span class="p">,</span> <span class="n">HawkesKernelTimeFunc</span>
-
-<span class="n">kernel_0</span> <span class="o">=</span> <span class="n">HawkesKernel0</span><span class="p">()</span>
-<span class="n">kernel_exp</span> <span class="o">=</span> <span class="n">HawkesKernelExp</span><span class="p">(</span><span class="o">.</span><span class="mi">7</span><span class="p">,</span> <span class="mf">1.3</span><span class="p">)</span>
-<span class="n">kernel_pl</span> <span class="o">=</span> <span class="n">HawkesKernelPowerLaw</span><span class="p">(</span><span class="o">.</span><span class="mi">1</span><span class="p">,</span> <span class="o">.</span><span class="mi">2</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">)</span>
-
-<span class="n">t_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="mf">1.8</span><span class="p">,</span> <span class="mf">2.7</span><span class="p">])</span>
-<span class="n">y_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="o">.</span><span class="mi">6</span><span class="p">,</span> <span class="o">.</span><span class="mi">34</span><span class="p">,</span> <span class="o">.</span><span class="mi">2</span><span class="p">,</span> <span class="o">.</span><span class="mi">1</span><span class="p">])</span>
-<span class="n">kernel_tf</span> <span class="o">=</span> <span class="n">HawkesKernelTimeFunc</span><span class="p">(</span><span class="n">t_values</span><span class="o">=</span><span class="n">t_values</span><span class="p">,</span> <span class="n">y_values</span><span class="o">=</span><span class="n">y_values</span><span class="p">)</span>
-
-<span class="n">kernels</span> <span class="o">=</span> <span class="p">[[</span><span class="n">kernel_0</span><span class="p">,</span> <span class="n">kernel_exp</span><span class="p">],</span> <span class="p">[</span><span class="n">kernel_pl</span><span class="p">,</span> <span class="n">kernel_tf</span><span class="p">]]</span>
-
-<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">sharex</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
-
-<span class="n">t_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
-    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
-        <span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t_values</span><span class="p">,</span> <span class="n">kernels</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">get_values</span><span class="p">(</span><span class="n">t_values</span><span class="p">),</span>
-                      <span class="n">label</span><span class="o">=</span><span class="n">kernels</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">])</span>
-        <span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-<p>(<a class="reference external" href="../modules/code_samples/simulation/plot_hawkes_kernels.py">Source code</a>, <a class="reference external" href="../modules/code_samples/simulation/plot_hawkes_kernels.png">png</a>, <a class="reference external" href="../modules/code_samples/simulation/plot_hawkes_kernels.hires.png">hires.png</a>, <a class="reference external" href="../modules/code_samples/simulation/plot_hawkes_kernels.pdf">pdf</a>)</p>
-<div class="figure">
-<img alt="../_images/plot_hawkes_kernels1.png" src="../_images/plot_hawkes_kernels1.png" />
-</div>
-<table border="1" class="longtable docutils">
-<colgroup>
-<col width="10%" />
-<col width="90%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.HawkesKernel0.html#tick.simulation.HawkesKernel0" title="tick.simulation.HawkesKernel0"><code class="xref py py-obj docutils literal"><span class="pre">simulation.HawkesKernel0</span></code></a>()</td>
-<td>Hawkes zero kernel</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/tick.simulation.HawkesKernelExp.html#tick.simulation.HawkesKernelExp" title="tick.simulation.HawkesKernelExp"><code class="xref py py-obj docutils literal"><span class="pre">simulation.HawkesKernelExp</span></code></a>(intensity,&nbsp;decay)</td>
-<td>Hawkes kernel with exponential decay</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.HawkesKernelSumExp.html#tick.simulation.HawkesKernelSumExp" title="tick.simulation.HawkesKernelSumExp"><code class="xref py py-obj docutils literal"><span class="pre">simulation.HawkesKernelSumExp</span></code></a>(intensities,&nbsp;…)</td>
-<td>Hawkes kernel with sum exponential decays</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/tick.simulation.HawkesKernelPowerLaw.html#tick.simulation.HawkesKernelPowerLaw" title="tick.simulation.HawkesKernelPowerLaw"><code class="xref py py-obj docutils literal"><span class="pre">simulation.HawkesKernelPowerLaw</span></code></a>(multiplier,&nbsp;…)</td>
-<td>Hawkes kernel for power law</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.HawkesKernelTimeFunc.html#tick.simulation.HawkesKernelTimeFunc" title="tick.simulation.HawkesKernelTimeFunc"><code class="xref py py-obj docutils literal"><span class="pre">simulation.HawkesKernelTimeFunc</span></code></a>([…])</td>
-<td>Hawkes kernel defined by an arbitrary time function.</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="section" id="linear-model-simulation">
-<span id="simulation-linear-model"></span><h2>2. Linear model simulation<a class="headerlink" href="#linear-model-simulation" title="Permalink to this headline">¶</a></h2>
-<p>Simulation of several linear models can be done using the following classes.
-All simulation classes simulates a features matrix <span class="math">\(\boldsymbol X\)</span> with rows <span class="math">\(x_i\)</span>
-and a labels vector <span class="math">\(y\)</span> with coordinates <span class="math">\(y_i\)</span> for <span class="math">\(i=1, \ldots, n\)</span>, that
-are i.i.d realizations of a random vector <span class="math">\(X\)</span> and a scalar random variable <span class="math">\(Y\)</span>.</p>
-<p>The conditional distribution of <span class="math">\(Y | X\)</span> is <span class="math">\(\mathbb P(Y=y | X=x)\)</span>,
-where <span class="math">\(\mathbb P\)</span> depends on the considered model.</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="25%" />
-<col width="31%" />
-<col width="44%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Model</th>
-<th class="head">Distribution <span class="math">\(\mathbb P(Y=y | X=x)\)</span></th>
-<th class="head">Class</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td>Linear regression</td>
-<td><span class="math">\(\text{Normal}(w^\top x + b, \sigma^2)\)</span></td>
-<td><a class="reference internal" href="generated/tick.simulation.SimuLinReg.html#tick.simulation.SimuLinReg" title="tick.simulation.SimuLinReg"><code class="xref py py-class docutils literal"><span class="pre">tick.simulation.SimuLinReg</span></code></a></td>
-</tr>
-<tr class="row-odd"><td>Logistic regression</td>
-<td><span class="math">\(\text{Binomial}(w^\top x + b)\)</span></td>
-<td><a class="reference internal" href="generated/tick.simulation.SimuLogReg.html#tick.simulation.SimuLogReg" title="tick.simulation.SimuLogReg"><code class="xref py py-class docutils literal"><span class="pre">tick.simulation.SimuLogReg</span></code></a></td>
-</tr>
-<tr class="row-even"><td>Poisson regression (identity link)</td>
-<td><span class="math">\(\text{Poisson}(w^\top x + b)\)</span></td>
-<td><a class="reference internal" href="generated/tick.simulation.SimuPoisReg.html#tick.simulation.SimuPoisReg" title="tick.simulation.SimuPoisReg"><code class="xref py py-class docutils literal"><span class="pre">tick.simulation.SimuPoisReg</span></code></a> with <code class="docutils literal"><span class="pre">link=&quot;identity&quot;</span></code></td>
-</tr>
-<tr class="row-odd"><td>Poisson regression (exponential link)</td>
-<td><span class="math">\(\text{Poisson}(e^{w^\top x + b})\)</span></td>
-<td><a class="reference internal" href="generated/tick.simulation.SimuPoisReg.html#tick.simulation.SimuPoisReg" title="tick.simulation.SimuPoisReg"><code class="xref py py-class docutils literal"><span class="pre">tick.simulation.SimuPoisReg</span></code></a> with <code class="docutils literal"><span class="pre">link=&quot;exponential&quot;</span></code></td>
-</tr>
-</tbody>
-</table>
-<p><strong>Example</strong></p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">=============================</span>
-<span class="sd">Linear models data simulation</span>
-<span class="sd">=============================</span>
-
-<span class="sd">Generates Linear, Logistic and Poisson regression realizations given a</span>
-<span class="sd">weight vector.</span>
-<span class="sd">&quot;&quot;&quot;</span>
-
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">tick.simulation</span> <span class="kn">import</span> <span class="n">SimuLinReg</span><span class="p">,</span> <span class="n">SimuLogReg</span><span class="p">,</span> <span class="n">SimuPoisReg</span>
-
-<span class="n">n_samples</span><span class="p">,</span> <span class="n">n_features</span> <span class="o">=</span> <span class="mi">150</span><span class="p">,</span> <span class="mi">2</span>
-
-<span class="n">weights0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">])</span>
-<span class="n">intercept0</span> <span class="o">=</span> <span class="mf">0.5</span>
-
-<span class="n">simu_linreg</span> <span class="o">=</span> <span class="n">SimuLinReg</span><span class="p">(</span><span class="n">weights0</span><span class="p">,</span> <span class="n">intercept0</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">123</span><span class="p">,</span>
-                         <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
-<span class="n">X_linreg</span><span class="p">,</span> <span class="n">y_linreg</span> <span class="o">=</span> <span class="n">simu_linreg</span><span class="o">.</span><span class="n">simulate</span><span class="p">()</span>
-
-<span class="n">simu_logreg</span> <span class="o">=</span> <span class="n">SimuLogReg</span><span class="p">(</span><span class="n">weights0</span><span class="p">,</span> <span class="n">intercept0</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">123</span><span class="p">,</span>
-                         <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
-<span class="n">X_logreg</span><span class="p">,</span> <span class="n">y_logreg</span> <span class="o">=</span> <span class="n">simu_logreg</span><span class="o">.</span><span class="n">simulate</span><span class="p">()</span>
-
-<span class="n">simu_poisreg</span> <span class="o">=</span> <span class="n">SimuPoisReg</span><span class="p">(</span><span class="n">weights0</span><span class="p">,</span> <span class="n">intercept0</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span>
-                           <span class="n">link</span><span class="o">=</span><span class="s1">&#39;exponential&#39;</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">123</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
-<span class="n">X_poisreg</span><span class="p">,</span> <span class="n">y_poisreg</span> <span class="o">=</span> <span class="n">simu_poisreg</span><span class="o">.</span><span class="n">simulate</span><span class="p">()</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="o">*</span><span class="n">X_linreg</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">y_linreg</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;RdBu&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Linear&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="o">*</span><span class="n">X_logreg</span><span class="p">[</span><span class="n">y_logreg</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;$y_i=1$&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="o">*</span><span class="n">X_logreg</span><span class="p">[</span><span class="n">y_logreg</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;$y_i=-1$&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;upper left&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Logistic&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="o">*</span><span class="n">X_poisreg</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">y_poisreg</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;RdBu&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Poisson&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-<p>(<a class="reference external" href="../../examples/plot_simulation_linear_model.py">Source code</a>, <a class="reference external" href="../../examples/plot_simulation_linear_model.png">png</a>, <a class="reference external" href="../../examples/plot_simulation_linear_model.hires.png">hires.png</a>, <a class="reference external" href="../../examples/plot_simulation_linear_model.pdf">pdf</a>)</p>
-<div class="figure">
-<img alt="../_images/plot_simulation_linear_model2.png" src="../_images/plot_simulation_linear_model2.png" />
-</div>
-<div class="admonition-todo admonition" id="index-1">
-<p class="first admonition-title">Todo</p>
-<p class="last">Give more details on these classes abilities</p>
-</div>
-</div>
-<div class="section" id="survival-analysis-simulation">
-<h2>3. Survival analysis simulation<a class="headerlink" href="#survival-analysis-simulation" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="cox-regression-simulation-proportional-hazards">
-<h3>3.1 Cox regression simulation (proportional hazards)<a class="headerlink" href="#cox-regression-simulation-proportional-hazards" title="Permalink to this headline">¶</a></h3>
-<p>We provide a class for the simulation of a Cox regression model with right-censoring.
-This generates data in the form of i.i.d triplets <span class="math">\((x_i, t_i, c_i)\)</span>
-for <span class="math">\(i=1, \ldots, n\)</span>, where <span class="math">\(x_i \in \mathbb R^d\)</span> is a features vector,
-<span class="math">\(t_i \in \mathbb R_+\)</span> is the survival time and <span class="math">\(c_i \in \{ 0, 1 \}\)</span> is the
-indicator of right censoring.
-Note that <span class="math">\(c_i = 1\)</span> means that <span class="math">\(t_i\)</span> is a failure time
-while <span class="math">\(c_i = 0\)</span> means that <span class="math">\(t_i\)</span> is a censoring time.</p>
-<div class="admonition-todo admonition" id="index-2">
-<p class="first admonition-title">Todo</p>
-<p class="last">Describe precisely cox model</p>
-</div>
-<p>For now, the following class is available</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="50%" />
-<col width="50%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Model</th>
-<th class="head">Class</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td>Cox regression with right-censoring</td>
-<td><a class="reference internal" href="generated/tick.simulation.SimuCoxReg.html#tick.simulation.SimuCoxReg" title="tick.simulation.SimuCoxReg"><code class="xref py py-class docutils literal"><span class="pre">tick.simulation.SimuCoxReg</span></code></a></td>
-</tr>
-</tbody>
-</table>
-<p><strong>Examples</strong></p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">==============================</span>
-<span class="sd">Cox regression data simulation</span>
-<span class="sd">==============================</span>
-
-<span class="sd">Generates Cox Regression realization given a weight vector</span>
-<span class="sd">&quot;&quot;&quot;</span>
-
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">tick.simulation</span> <span class="kn">import</span> <span class="n">SimuCoxReg</span>
-
-<span class="n">n_samples</span> <span class="o">=</span> <span class="mi">150</span>
-<span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">])</span>
-
-<span class="n">seed</span> <span class="o">=</span> <span class="mi">123</span>
-<span class="n">simu_coxreg</span> <span class="o">=</span> <span class="n">SimuCoxReg</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">123</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
-<span class="n">X</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="n">simu_coxreg</span><span class="o">.</span><span class="n">simulate</span><span class="p">()</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="o">*</span><span class="n">X</span><span class="p">[</span><span class="n">C</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">T</span><span class="p">[</span><span class="n">C</span> <span class="o">==</span> <span class="mi">0</span><span class="p">],</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;RdBu&#39;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;x&quot;</span><span class="p">,</span>
-            <span class="n">label</span><span class="o">=</span><span class="s2">&quot;censoring&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="o">*</span><span class="n">X</span><span class="p">[</span><span class="n">C</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">T</span><span class="p">[</span><span class="n">C</span> <span class="o">==</span> <span class="mi">1</span><span class="p">],</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;RdBu&#39;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;o&quot;</span><span class="p">,</span>
-            <span class="n">label</span><span class="o">=</span><span class="s2">&quot;failure&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;upper left&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Cox regression&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>(<a class="reference external" href="../../examples/plot_simulation_coxreg.py">Source code</a>, <a class="reference external" href="../../examples/plot_simulation_coxreg.png">png</a>, <a class="reference external" href="../../examples/plot_simulation_coxreg.hires.png">hires.png</a>, <a class="reference external" href="../../examples/plot_simulation_coxreg.pdf">pdf</a>)</p>
-<div class="figure">
-<img alt="../_images/plot_simulation_coxreg2.png" src="../_images/plot_simulation_coxreg2.png" />
-</div>
-</div>
-<div class="section" id="self-controlled-case-series-sccs">
-<h3>3.2 Self-controlled case series (SCCS)<a class="headerlink" href="#self-controlled-case-series-sccs" title="Permalink to this headline">¶</a></h3>
-<p>We provide a class for the simulation of a SCCS regression model with right-censoring.</p>
-<table border="1" class="longtable docutils">
-<colgroup>
-<col width="10%" />
-<col width="90%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.SimuSCCS.html#tick.simulation.SimuSCCS" title="tick.simulation.SimuSCCS"><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuSCCS</span></code></a>(n_samples,&nbsp;n_intervals,&nbsp;…)</td>
-<td>Simulation of a Self Control Case Series (SCCS) model.</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="section" id="point-process-simulation">
-<h2>4. Point process simulation<a class="headerlink" href="#point-process-simulation" title="Permalink to this headline">¶</a></h2>
-<p>Tick has a particular focus on inference for point processes.
-It therefore proposes as well tools for their simulation: for now, inhomogeneous
-Poisson processes and Hawkes processes.</p>
-<div class="section" id="poisson-processes">
-<h3>4.1 Poisson processes<a class="headerlink" href="#poisson-processes" title="Permalink to this headline">¶</a></h3>
-<p>Both homogeneous and inhomogeneous Poisson process might be simulated with tick
-thanks to the following classes.</p>
-<table border="1" class="longtable docutils">
-<colgroup>
-<col width="10%" />
-<col width="90%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.SimuPoissonProcess.html#tick.simulation.SimuPoissonProcess" title="tick.simulation.SimuPoissonProcess"><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuPoissonProcess</span></code></a>(intensities[,&nbsp;…])</td>
-<td>Homogeneous Poisson process simulation</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/tick.simulation.SimuInhomogeneousPoisson.html#tick.simulation.SimuInhomogeneousPoisson" title="tick.simulation.SimuInhomogeneousPoisson"><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuInhomogeneousPoisson</span></code></a>(…[,&nbsp;…])</td>
-<td>Inhomogeneous Poisson process simulation</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Examples</strong></p>
-<p>A Poisson process with constant intensity</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tick.simulation</span> <span class="kn">import</span> <span class="n">SimuPoissonProcess</span>
-<span class="kn">from</span> <span class="nn">tick.plot</span> <span class="kn">import</span> <span class="n">plot_point_process</span>
-
-<span class="n">run_time</span> <span class="o">=</span> <span class="mi">10</span>
-<span class="n">intensity</span> <span class="o">=</span> <span class="mi">5</span>
-
-<span class="n">poi</span> <span class="o">=</span> <span class="n">SimuPoissonProcess</span><span class="p">(</span><span class="n">intensity</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">run_time</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
-<span class="n">poi</span><span class="o">.</span><span class="n">simulate</span><span class="p">()</span>
-<span class="n">plot_point_process</span><span class="p">(</span><span class="n">poi</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>(<a class="reference external" href="../modules/code_samples/simulation/plot_poisson_constant_intensity.py">Source code</a>, <a class="reference external" href="../modules/code_samples/simulation/plot_poisson_constant_intensity.png">png</a>, <a class="reference external" href="../modules/code_samples/simulation/plot_poisson_constant_intensity.hires.png">hires.png</a>, <a class="reference external" href="../modules/code_samples/simulation/plot_poisson_constant_intensity.pdf">pdf</a>)</p>
-<div class="figure">
-<img alt="../_images/plot_poisson_constant_intensity1.png" src="../_images/plot_poisson_constant_intensity1.png" />
-</div>
-<p>A Poisson process with variable intensity. In this case, the intensity is
-defined through a <a class="reference internal" href="generated/tick.base.TimeFunction.html#tick.base.TimeFunction" title="tick.base.TimeFunction"><code class="xref py py-obj docutils literal"><span class="pre">tick.base.TimeFunction</span></code></a></p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">========================================</span>
-<span class="sd">Inhomogeneous Poisson process simulation</span>
-<span class="sd">========================================</span>
-
-<span class="sd">This example show how to simulate any inhomogeneous Poisson process. Its</span>
-<span class="sd">intensity is modeled through `tick.base.TimeFunction`</span>
-<span class="sd">&quot;&quot;&quot;</span>
-
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">tick.base</span> <span class="kn">import</span> <span class="n">TimeFunction</span>
-
-<span class="kn">from</span> <span class="nn">tick.plot</span> <span class="kn">import</span> <span class="n">plot_point_process</span>
-<span class="kn">from</span> <span class="nn">tick.simulation.inhomogeneous_poisson</span> <span class="kn">import</span> <span class="n">SimuInhomogeneousPoisson</span>
-
-<span class="n">run_time</span> <span class="o">=</span> <span class="mi">30</span>
-
-<span class="n">T</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">((</span><span class="n">run_time</span> <span class="o">*</span> <span class="mf">0.9</span><span class="p">)</span> <span class="o">*</span> <span class="mi">5</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span> <span class="o">/</span> <span class="mi">5</span>
-<span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="mi">15</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">T</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">T</span><span class="p">),</span>
-                                           <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">T</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="n">T</span><span class="p">)),</span> <span class="mf">0.001</span><span class="p">)</span>
-
-<span class="n">tf</span> <span class="o">=</span> <span class="n">TimeFunction</span><span class="p">((</span><span class="n">T</span><span class="p">,</span> <span class="n">Y</span><span class="p">),</span> <span class="n">dt</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
-
-<span class="c1"># We define a 1 dimensional inhomogeneous Poisson process with the</span>
-<span class="c1"># intensity function seen above</span>
-<span class="n">in_poi</span> <span class="o">=</span> <span class="n">SimuInhomogeneousPoisson</span><span class="p">([</span><span class="n">tf</span><span class="p">],</span> <span class="n">end_time</span><span class="o">=</span><span class="n">run_time</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
-
-<span class="c1"># We activate intensity tracking and launch simulation</span>
-<span class="n">in_poi</span><span class="o">.</span><span class="n">track_intensity</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
-<span class="n">in_poi</span><span class="o">.</span><span class="n">simulate</span><span class="p">()</span>
-
-<span class="c1"># We plot the resulting inhomogeneous Poisson process with its</span>
-<span class="c1"># intensity and its ticks over time</span>
-<span class="n">plot_point_process</span><span class="p">(</span><span class="n">in_poi</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>(<a class="reference external" href="../../examples/plot_poisson_inhomogeneous.py">Source code</a>, <a class="reference external" href="../../examples/plot_poisson_inhomogeneous.png">png</a>, <a class="reference external" href="../../examples/plot_poisson_inhomogeneous.hires.png">hires.png</a>, <a class="reference external" href="../../examples/plot_poisson_inhomogeneous.pdf">pdf</a>)</p>
-<div class="figure">
-<img alt="../_images/plot_poisson_inhomogeneous2.png" src="../_images/plot_poisson_inhomogeneous2.png" />
-</div>
-</div>
-<div class="section" id="hawkes-processes">
-<h3>4.2 Hawkes processes<a class="headerlink" href="#hawkes-processes" title="Permalink to this headline">¶</a></h3>
-<p>Simulation of Hawkes processes can be done using the following classes. The
-main class <a class="reference internal" href="generated/tick.simulation.SimuHawkes.html#tick.simulation.SimuHawkes" title="tick.simulation.SimuHawkes"><code class="xref py py-obj docutils literal"><span class="pre">tick.simulation.SimuHawkes</span></code></a> might use any type of kernels and
-will perform simulation. For some specific cases there are some classes
-dedicated to a type of kernel: exponential or sum of exponential kernels.</p>
-<table border="1" class="longtable docutils">
-<colgroup>
-<col width="10%" />
-<col width="90%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.SimuHawkes.html#tick.simulation.SimuHawkes" title="tick.simulation.SimuHawkes"><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuHawkes</span></code></a>([kernels,&nbsp;baseline,&nbsp;…])</td>
-<td>Hawkes process simulation</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/tick.simulation.SimuHawkesExpKernels.html#tick.simulation.SimuHawkesExpKernels" title="tick.simulation.SimuHawkesExpKernels"><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuHawkesExpKernels</span></code></a>(adjacency,&nbsp;…)</td>
-<td>Hawkes process with exponential kernels simulation</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.SimuHawkesSumExpKernels.html#tick.simulation.SimuHawkesSumExpKernels" title="tick.simulation.SimuHawkesSumExpKernels"><code class="xref py py-obj docutils literal"><span class="pre">simulation.SimuHawkesSumExpKernels</span></code></a>(…[,&nbsp;…])</td>
-<td>Hawkes process with sum-exponential kernels simulation</td>
-</tr>
-</tbody>
-</table>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">1 dimensional Hawkes process simulation</span>
-<span class="sd">=======================================</span>
-<span class="sd">&quot;&quot;&quot;</span>
-
-<span class="kn">from</span> <span class="nn">tick.plot</span> <span class="kn">import</span> <span class="n">plot_point_process</span>
-<span class="kn">from</span> <span class="nn">tick.simulation</span> <span class="kn">import</span> <span class="n">SimuHawkes</span><span class="p">,</span> <span class="n">HawkesKernelSumExp</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
-
-<span class="n">run_time</span> <span class="o">=</span> <span class="mi">40</span>
-
-<span class="n">hawkes</span> <span class="o">=</span> <span class="n">SimuHawkes</span><span class="p">(</span><span class="n">n_nodes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">run_time</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">1398</span><span class="p">)</span>
-<span class="n">kernel</span> <span class="o">=</span> <span class="n">HawkesKernelSumExp</span><span class="p">([</span><span class="o">.</span><span class="mi">1</span><span class="p">,</span> <span class="o">.</span><span class="mi">2</span><span class="p">,</span> <span class="o">.</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">,</span> <span class="mf">7.</span><span class="p">])</span>
-<span class="n">hawkes</span><span class="o">.</span><span class="n">set_kernel</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">kernel</span><span class="p">)</span>
-<span class="n">hawkes</span><span class="o">.</span><span class="n">set_baseline</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1.</span><span class="p">)</span>
-
-<span class="n">dt</span> <span class="o">=</span> <span class="mf">0.01</span>
-<span class="n">hawkes</span><span class="o">.</span><span class="n">track_intensity</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span>
-<span class="n">hawkes</span><span class="o">.</span><span class="n">simulate</span><span class="p">()</span>
-<span class="n">timestamps</span> <span class="o">=</span> <span class="n">hawkes</span><span class="o">.</span><span class="n">timestamps</span>
-<span class="n">intensity</span> <span class="o">=</span> <span class="n">hawkes</span><span class="o">.</span><span class="n">tracked_intensity</span>
-<span class="n">intensity_times</span> <span class="o">=</span> <span class="n">hawkes</span><span class="o">.</span><span class="n">intensity_tracked_times</span>
-
-<span class="n">_</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
-<span class="n">plot_point_process</span><span class="p">(</span><span class="n">hawkes</span><span class="p">,</span> <span class="n">n_points</span><span class="o">=</span><span class="mi">50000</span><span class="p">,</span> <span class="n">t_min</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">max_jumps</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-<span class="n">plot_point_process</span><span class="p">(</span><span class="n">hawkes</span><span class="p">,</span> <span class="n">n_points</span><span class="o">=</span><span class="mi">50000</span><span class="p">,</span> <span class="n">t_min</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">t_max</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-<p>(<a class="reference external" href="../modules/code_samples/simulation/plot_hawkes_1d_simu.py">Source code</a>, <a class="reference external" href="../modules/code_samples/simulation/plot_hawkes_1d_simu.png">png</a>, <a class="reference external" href="../modules/code_samples/simulation/plot_hawkes_1d_simu.hires.png">hires.png</a>, <a class="reference external" href="../modules/code_samples/simulation/plot_hawkes_1d_simu.pdf">pdf</a>)</p>
-<div class="figure">
-<img alt="../_images/plot_hawkes_1d_simu1.png" src="../_images/plot_hawkes_1d_simu1.png" />
-</div>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Simulation of 3-dimensional hawkes process</span>
-<span class="sd">==========================================</span>
-<span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
-
-<span class="kn">from</span> <span class="nn">tick.simulation</span> <span class="kn">import</span> <span class="n">SimuHawkesExpKernels</span>
-<span class="kn">from</span> <span class="nn">tick.plot</span> <span class="kn">import</span> <span class="n">plot_point_process</span>
-
-<span class="n">n_nodes</span> <span class="o">=</span> <span class="mi">3</span>  <span class="c1"># dimension of the Hawkes process</span>
-<span class="n">adjacency</span> <span class="o">=</span> <span class="mf">0.2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">n_nodes</span><span class="p">,</span> <span class="n">n_nodes</span><span class="p">))</span>
-<span class="n">adjacency</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="n">decays</span> <span class="o">=</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">n_nodes</span><span class="p">,</span> <span class="n">n_nodes</span><span class="p">))</span>
-<span class="n">baseline</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n_nodes</span><span class="p">)</span>
-<span class="n">hawkes</span> <span class="o">=</span> <span class="n">SimuHawkesExpKernels</span><span class="p">(</span><span class="n">adjacency</span><span class="o">=</span><span class="n">adjacency</span><span class="p">,</span> <span class="n">decays</span><span class="o">=</span><span class="n">decays</span><span class="p">,</span>
-                              <span class="n">baseline</span><span class="o">=</span><span class="n">baseline</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">2398</span><span class="p">)</span>
-
-<span class="n">run_time</span> <span class="o">=</span> <span class="mi">100</span>
-<span class="n">hawkes</span><span class="o">.</span><span class="n">end_time</span> <span class="o">=</span> <span class="n">run_time</span>
-<span class="n">dt</span> <span class="o">=</span> <span class="mf">0.01</span>
-<span class="n">hawkes</span><span class="o">.</span><span class="n">track_intensity</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span>
-<span class="n">hawkes</span><span class="o">.</span><span class="n">simulate</span><span class="p">()</span>
-
-<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">n_nodes</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span> <span class="n">sharex</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-<span class="n">plot_point_process</span><span class="p">(</span><span class="n">hawkes</span><span class="p">,</span> <span class="n">n_points</span><span class="o">=</span><span class="mi">50000</span><span class="p">,</span> <span class="n">t_min</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">max_jumps</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
-<span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-<p>(<a class="reference external" href="../modules/code_samples/simulation/plot_hawkes_multidim_simu.py">Source code</a>, <a class="reference external" href="../modules/code_samples/simulation/plot_hawkes_multidim_simu.png">png</a>, <a class="reference external" href="../modules/code_samples/simulation/plot_hawkes_multidim_simu.hires.png">hires.png</a>, <a class="reference external" href="../modules/code_samples/simulation/plot_hawkes_multidim_simu.pdf">pdf</a>)</p>
-<div class="figure">
-<img alt="../_images/plot_hawkes_multidim_simu1.png" src="../_images/plot_hawkes_multidim_simu1.png" />
-</div>
-</div>
 </div>
 </div>
 

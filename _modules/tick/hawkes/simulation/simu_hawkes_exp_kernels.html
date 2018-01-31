@@ -1,0 +1,397 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-97947441-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+    <title>tick.hawkes.simulation.simu_hawkes_exp_kernels &#8212; tick 0.4.0 documentation</title>
+    <link rel="stylesheet" href="../../../../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/css/custom.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     '0.4.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../../../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../../../../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../../../../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../../../_static/bootstrap-sphinx.js"></script>
+    <link rel="shortcut icon" href="../../../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+
+  <div id="navbar" class="None navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../../../index.html">
+          tick</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../../../../index.html">Home</a></li>
+                <li><a href="../../../../auto_examples/index.html">Examples</a></li>
+                <li><a href="../../../../modules/api.html">API</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../../../index.html">Browse <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/hawkes.html"><code class="docutils literal"><span class="pre">tick.hawkes</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/hawkes.html#introduction">1. Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/hawkes.html#learners">2. Learners</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/hawkes.html#point-process-simulation">3. Point process simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/hawkes.html#models-for-inference">4. Models for inference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/linear_model.html"><code class="docutils literal"><span class="pre">tick.linear_model</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/linear_model.html#introduction">1. Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/linear_model.html#learners">2. Learners</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/linear_model.html#models">3. Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/linear_model.html#simulation">4. Simulation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/robust.html"><code class="docutils literal"><span class="pre">tick.robust</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/robust.html#regression-with-individual-intercepts">1. Regression with individual intercepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/robust.html#robust-losses">2. Robust losses</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/survival.html"><code class="docutils literal"><span class="pre">tick.survival</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/survival.html#learners">1. Learners</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/survival.html#models">2. Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/survival.html#simulation">3. Simulation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/prox.html"><code class="docutils literal"><span class="pre">tick.prox</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/prox.html#available-operators">1. Available operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/prox.html#example">2. Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/prox.html#how-to-combine-several-prox">3. How to combine several prox ?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/prox.html#the-prox-class-api">4. The <code class="docutils literal"><span class="pre">prox</span></code> class API</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/solver.html"><code class="docutils literal"><span class="pre">tick.solver</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/solver.html#the-solver-class-api">1. The <code class="docutils literal"><span class="pre">solver</span></code> class API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/solver.html#available-solvers">2. Available solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/solver.html#example">3. Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/simulation.html#simulation-of-model-weights">1. Simulation of model weights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/simulation.html#simulation-of-a-features-matrix">2. Simulation of a features matrix</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/plot.html"><code class="docutils literal"><span class="pre">tick.plot</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/plot.html#history-plot">1. History plot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/plot.html#plots-for-hawkes-processes">2. Plots for Hawkes processes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/plot.html#plots-for-point-process-simulation">3. Plots for point process simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/plot.html#miscellaneous-plots">4. Miscellaneous plots</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/dataset.html"><code class="docutils literal"><span class="pre">tick.dataset</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/generated/tick.dataset.fetch_tick_dataset.html">tick.dataset.fetch_tick_dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/generated/tick.dataset.fetch_hawkes_bund_data.html">tick.dataset.fetch_hawkes_bund_data</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/preprocessing.html#preprocessing-for-static-features">Preprocessing for static features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/preprocessing.html#preprocessing-for-longitudinal-features">Preprocessing for longitudinal features</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/metrics.html"><code class="docutils literal"><span class="pre">tick.metrics</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/generated/tick.metrics.support_fdp.html">tick.metrics.support_fdp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/generated/tick.metrics.support_recall.html">tick.metrics.support_recall</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/R.html">How to use <code class="docutils literal"><span class="pre">tick</span></code> from the R statistical software</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/R.html#training-a-logistic-regression-model">1. Training a logistic regression model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/R.html#simulation-of-a-hawkes-process">2. Simulation of a Hawkes process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/R.html#using-optimization-tools-from-r">3. Using optimization tools from R</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/dev.html">Developer documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/dev.html#main-highlights">Main highlights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/dev.html#base-class">Base class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/dev.html#how-to-add-a-new-model-solver-or-prox">How to add a new model, solver or prox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/dev.html#enable-python-pickling-of-c-objects">Enable Python-pickling of C++ objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/dev.html#tips-for-debugging-c-classes-in-tick">Tips for debugging C++ classes in tick</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/api.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/api.html#table-of-contents">Table of contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/api.html#hawkes"><code class="docutils literal"><span class="pre">hawkes</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/api.html#linear-model"><code class="docutils literal"><span class="pre">linear_model</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/api.html#robust"><code class="docutils literal"><span class="pre">robust</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/api.html#survival"><code class="docutils literal"><span class="pre">survival</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/api.html#prox"><code class="docutils literal"><span class="pre">prox</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/api.html#solver"><code class="docutils literal"><span class="pre">solver</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/api.html#api-simulation"><code class="docutils literal"><span class="pre">simulation</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/api.html#plot"><code class="docutils literal"><span class="pre">plot</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/api.html#dataset"><code class="docutils literal"><span class="pre">dataset</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/api.html#preprocessing"><code class="docutils literal"><span class="pre">preprocessing</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/api.html#metrics"><code class="docutils literal"><span class="pre">metrics</span></code></a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container content-container">
+  
+  <h1>Source code for tick.hawkes.simulation.simu_hawkes_exp_kernels</h1><div class="highlight"><pre>
+<span></span><span class="c1"># License: BSD 3 clause</span>
+
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">product</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">tick.hawkes.simulation</span> <span class="k">import</span> <span class="n">SimuHawkes</span>
+<span class="kn">from</span> <span class="nn">.hawkes_kernels</span> <span class="k">import</span> <span class="n">HawkesKernelExp</span><span class="p">,</span> <span class="n">HawkesKernel0</span>
+
+
+<div class="viewcode-block" id="SimuHawkesExpKernels"><a class="viewcode-back" href="../../../../modules/generated/tick.hawkes.SimuHawkesExpKernels.html#tick.hawkes.SimuHawkesExpKernels">[docs]</a><span class="k">class</span> <span class="nc">SimuHawkesExpKernels</span><span class="p">(</span><span class="n">SimuHawkes</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Hawkes process with exponential kernels simulation</span>
+<span class="sd">    </span>
+<span class="sd">    They are defined by the intensity:</span>
+<span class="sd">    </span>
+<span class="sd">    .. math::</span>
+<span class="sd">        \\forall i \\in [1 \\dots D], \\quad</span>
+<span class="sd">        \\lambda_i(t) = \\mu_i + \\sum_{j=1}^D \\int \\phi_{ij}(t - s) dN_j(s)</span>
+<span class="sd">    </span>
+<span class="sd">    where</span>
+<span class="sd">    </span>
+<span class="sd">      - :math:`D` is the number of nodes</span>
+<span class="sd">      - :math:`\mu_i(t)` are the baseline intensities</span>
+<span class="sd">      - :math:`\phi_{ij}` are the kernels</span>
+<span class="sd">      - :math:`dN_j` are the processes differentiates</span>
+
+<span class="sd">    and with an exponential parametrisation of the kernels</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        \\phi_{ij}(t) = \\alpha_{ij} \\beta_{ij} \\exp (- \\beta_{ij} t) 1_{t &gt; 0}</span>
+
+<span class="sd">    where :math:`\\alpha_{ij}` is the intensity of the kernel and</span>
+<span class="sd">    :math:`\\beta_{ij}` its decay. The matrix of all :math:`\\alpha` is called</span>
+<span class="sd">    adjacency matrix.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    baseline : `np.ndarray` or `list`</span>
+<span class="sd">        The baseline of all intensities, also noted :math:`\mu(t)`. It might </span>
+<span class="sd">        be three different types:</span>
+<span class="sd">        </span>
+<span class="sd">        * `np.ndarray`, shape=(n_nodes,) : One baseline per node is given. </span>
+<span class="sd">          Hence baseline is assumed to be constant, ie. </span>
+<span class="sd">          :math:`\mu_i(t) = \mu_i`</span>
+<span class="sd">        * `np.ndarray`, shape=(n_nodes, n_intervals) : `n_intervals` baselines </span>
+<span class="sd">          are given per node. This assumes parameter `period_length` is also </span>
+<span class="sd">          given. In this case baseline is piecewise constant on intervals of </span>
+<span class="sd">          size `period_length / n_intervals` and periodic.</span>
+<span class="sd">        * `list` of `tick.base.TimeFunction`, shape=(n_nodes,) : One function </span>
+<span class="sd">          is given per node, ie. :math:`\mu_i(t)` is explicitely given.</span>
+
+<span class="sd">    adjacency : `np.ndarray`, shape=(n_nodes, n_nodes)</span>
+<span class="sd">        Intensities of exponential kernels, also named :math:`\\alpha_{ij}`</span>
+
+<span class="sd">    decays : `float` or `np.ndarray`, shape=(n_nodes, n_nodes)</span>
+<span class="sd">        Decays of exponential kernels, also named :math:`\\beta_{ij}`</span>
+<span class="sd">        If a `float` is given, all decays are equal to this float</span>
+
+<span class="sd">    end_time : `float`, default=None</span>
+<span class="sd">        Time until which this point process will be simulated</span>
+
+<span class="sd">    max_jumps : `int`, default=None</span>
+<span class="sd">        Simulation will stop if this number of jumps in reached</span>
+
+<span class="sd">    seed : `int`, default = None</span>
+<span class="sd">        The seed of the random sampling. If it is None then a random seed</span>
+<span class="sd">        (different at each run) will be chosen.</span>
+
+<span class="sd">    force_simulation : `bool`, default = False</span>
+<span class="sd">        If force is not set to True, simulation won&#39;t be run if the matrix of</span>
+<span class="sd">        the L1 norm of kernels has a spectral radius greater or equal to 1 as</span>
+<span class="sd">        it would be unstable</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    timestamps : `list` of `np.ndarray`, size=n_nodes</span>
+<span class="sd">        A list of n_nodes timestamps arrays, each array containing the</span>
+<span class="sd">        timestamps of all the jumps for this node</span>
+
+<span class="sd">    simulation_time : `float`</span>
+<span class="sd">        Time until which this point process has been simulated</span>
+
+<span class="sd">    n_total_jumps : `int`</span>
+<span class="sd">        Total number of jumps simulated</span>
+
+<span class="sd">    tracked_intensity : `list[np.ndarray]`, size=n_nodes</span>
+<span class="sd">        A record of the intensity with which this point process has been</span>
+<span class="sd">        simulated.</span>
+<span class="sd">        Note: you must call track_intensity before simulation to record it</span>
+
+<span class="sd">    intensity_tracked_times : `np.ndarray`</span>
+<span class="sd">        The times at which intensity has been recorded.</span>
+<span class="sd">        Note: you must call track_intensity before simulation to record it</span>
+
+<span class="sd">    intensity_track_step : `float`</span>
+<span class="sd">        Step with which the intensity has been recorded</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_attrinfos</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;adjacency&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+        <span class="s2">&quot;decays&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+    <span class="p">}</span>
+
+<div class="viewcode-block" id="SimuHawkesExpKernels.__init__"><a class="viewcode-back" href="../../../../modules/generated/tick.hawkes.SimuHawkesExpKernels.html#tick.hawkes.SimuHawkesExpKernels.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">adjacency</span><span class="p">,</span> <span class="n">decays</span><span class="p">,</span> <span class="n">baseline</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">end_time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">period_length</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_jumps</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">force_simulation</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">adjacency</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">adjacency</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">adjacency</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">decays</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">decays</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">decays</span><span class="p">)</span>
+
+        <span class="n">n_nodes</span> <span class="o">=</span> <span class="n">adjacency</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">adjacency</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="p">(</span><span class="n">n_nodes</span><span class="p">,</span> <span class="n">n_nodes</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;adjacency matrix should be squared and its &quot;</span>
+                             <span class="s2">&quot;shape is </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">adjacency</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+
+        <span class="n">decays_is_number</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">decays</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">decays_is_number</span> <span class="ow">and</span> <span class="n">decays</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="p">(</span><span class="n">n_nodes</span><span class="p">,</span> <span class="n">n_nodes</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;decays should be either a float or an array of &quot;</span>
+                             <span class="s2">&quot;shape </span><span class="si">%s</span><span class="s2"> but its shape is </span><span class="si">%s</span><span class="s2">&quot;</span>
+                             <span class="o">%</span> <span class="p">(</span><span class="nb">str</span><span class="p">((</span><span class="n">n_nodes</span><span class="p">,</span> <span class="n">n_nodes</span><span class="p">)),</span>
+                                <span class="nb">str</span><span class="p">(</span><span class="n">decays</span><span class="o">.</span><span class="n">shape</span><span class="p">)))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">adjacency</span> <span class="o">=</span> <span class="n">adjacency</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">decays</span> <span class="o">=</span> <span class="n">decays</span>
+
+        <span class="n">kernels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_exp_kernels</span><span class="p">()</span>
+
+        <span class="n">SimuHawkes</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kernels</span><span class="o">=</span><span class="n">kernels</span><span class="p">,</span> <span class="n">baseline</span><span class="o">=</span><span class="n">baseline</span><span class="p">,</span>
+                            <span class="n">end_time</span><span class="o">=</span><span class="n">end_time</span><span class="p">,</span> <span class="n">period_length</span><span class="o">=</span><span class="n">period_length</span><span class="p">,</span>
+                            <span class="n">max_jumps</span><span class="o">=</span><span class="n">max_jumps</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
+                            <span class="n">force_simulation</span><span class="o">=</span><span class="n">force_simulation</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_build_exp_kernels</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Build exponential kernels from adjacency and decays</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">decays_is_number</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">decays</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span>
+        <span class="n">n_nodes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">adjacency</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">kernel_0</span> <span class="o">=</span> <span class="n">HawkesKernel0</span><span class="p">()</span>
+        <span class="n">kernels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">adjacency</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">product</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">n_nodes</span><span class="p">),</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_nodes</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">decays_is_number</span><span class="p">:</span>
+                <span class="n">kernel_decay</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">decays</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">kernel_decay</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">decays</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
+            <span class="n">kernel_intensity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">adjacency</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">kernel_intensity</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">kernels</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">kernel_0</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">kernels</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">HawkesKernelExp</span><span class="p">(</span><span class="n">kernel_intensity</span><span class="p">,</span> <span class="n">kernel_decay</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">kernels</span>
+
+<div class="viewcode-block" id="SimuHawkesExpKernels.adjust_spectral_radius"><a class="viewcode-back" href="../../../../modules/generated/tick.hawkes.SimuHawkesExpKernels.html#tick.hawkes.SimuHawkesExpKernels.adjust_spectral_radius">[docs]</a>    <span class="k">def</span> <span class="nf">adjust_spectral_radius</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spectral_radius</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Adjust the spectral radius of the matrix of l1 norm of Hawkes</span>
+<span class="sd">        kernels.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        spectral_radius : `float`</span>
+<span class="sd">            The targeted spectral radius</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">original_spectral_radius</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectral_radius</span><span class="p">()</span>
+
+        <span class="n">adjacency</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">adjacency</span> <span class="o">*</span> \
+                    <span class="n">spectral_radius</span> <span class="o">/</span> <span class="n">original_spectral_radius</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;adjacency&quot;</span><span class="p">,</span> <span class="n">adjacency</span><span class="p">)</span>
+
+        <span class="n">kernels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_exp_kernels</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">product</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span><span class="p">),</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span><span class="p">)):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_kernel</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">kernels</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">])</span></div></div>
+</pre></div>
+
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Vinther Poulsen.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>
