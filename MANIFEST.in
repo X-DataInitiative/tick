@@ -5,4 +5,4 @@ global-include *.i
 global-include *.inl
 
 # Getting the Cereal header-only library
-recursive-include tick/third_party/cereal/include *.h *.hpp
+recursive-include lib/third_party/cereal/include *.h *.hpp
