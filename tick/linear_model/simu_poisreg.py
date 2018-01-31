@@ -101,17 +101,20 @@ class SimuPoisReg(SimuWithFeatures):
         }
     }
 
-    def __init__(self, weights: np.ndarray, intercept: float = None,
-                 features: np.ndarray = None, n_samples: int = 200,
-                 link: str = "exponential",
-                 features_type: str = "cov_toeplitz",
-                 cov_corr: float = 0.5, features_scaling: str = "none",
-                 seed: int = None, verbose: bool = True):
+    def __init__(
+        self, weights: np.ndarray, intercept: float = None,
+        features: np.ndarray = None, n_samples: int = 200,
+        link: str = "exponential",
+        features_type: str = "cov_toeplitz",
+        cov_corr: float = 0.5, features_scaling: str = "none",
+        seed: int = None, verbose: bool = True,
+        dtype=np.float64
+    ):
 
         n_features = weights.shape[0]
         SimuWithFeatures.__init__(self, intercept, features, n_samples,
                                   n_features, features_type, cov_corr,
-                                  features_scaling, seed, verbose)
+                                  features_scaling, seed, verbose, dtype=dtype)
         self.weights = weights
         self.link = link
         self._set("labels", None)
@@ -165,5 +168,7 @@ class SimuPoisReg(SimuWithFeatures):
         #   later computations, hence the next line.
         labels = np.empty(n_samples)
         labels[:] = poisson(intensity)
+        if self.dtype != np.float64:
+          labels = labels.astype(self.dtype)
         self._set("labels", labels)
         return features, labels

@@ -5,7 +5,7 @@
 ProxSortedL1::ProxSortedL1(double strength,
                            WeightsType weights_type,
                            bool positive)
-  : Prox(strength, positive) {
+  : TProx<double, double>(strength, positive) {
   this->weights_type = weights_type;
   weights_ready = false;
 }
@@ -15,12 +15,12 @@ ProxSortedL1::ProxSortedL1(double strength,
                            ulong start,
                            ulong end,
                            bool positive)
-  : Prox(strength, start, end, positive) {
+  : TProx<double, double>(strength, start, end, positive) {
   this->weights_type = weights_type;
   weights_ready = false;
 }
 
-const std::string ProxSortedL1::get_class_name() const {
+std::string ProxSortedL1::get_class_name() const {
   return "ProxSortedL1";
 }
 
@@ -153,7 +153,7 @@ void ProxSortedL1::set_strength(double strength) {
   if (strength != this->strength) {
     weights_ready = false;
   }
-  Prox::set_strength(strength);
+  TProx<double, double>::set_strength(strength);
 }
 
 // We overload set_start_end here, since we'd need to update weights when they're changed
@@ -163,5 +163,5 @@ void ProxSortedL1::set_start_end(ulong start,
     // If we change the range, we need to compute again the weights
     weights_ready = false;
   }
-  Prox::set_start_end(start, end);
+  TProx<double, double>::set_start_end(start, end);
 }

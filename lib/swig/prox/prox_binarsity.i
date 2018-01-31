@@ -5,7 +5,7 @@
 %}
 
 
-class ProxBinarsity: public Prox {
+class ProxBinarsity: public TProx<double, double> {
 
  public:
 

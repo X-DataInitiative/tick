@@ -5,9 +5,9 @@
 
 #include "prox_with_groups.h"
 
-class ProxGroupL1 : public ProxWithGroups {
+class ProxGroupL1 : public TProxWithGroups<double, double> {
  protected:
-  std::unique_ptr<Prox> build_prox(double strength, ulong start, ulong end, bool positive) final;
+  std::unique_ptr<TProx<double, double> > build_prox(double strength, ulong start, ulong end, bool positive);
 
  public:
   ProxGroupL1(double strength, SArrayULongPtr blocks_start, SArrayULongPtr blocks_length,
@@ -16,7 +16,7 @@ class ProxGroupL1 : public ProxWithGroups {
   ProxGroupL1(double strength, SArrayULongPtr blocks_start, SArrayULongPtr blocks_length,
                 ulong start, ulong end, bool positive);
 
-  const std::string get_class_name() const final;
+  std::string get_class_name() const;
 };
 
 #endif  // LIB_INCLUDE_TICK_PROX_PROX_GROUP_L1_H_

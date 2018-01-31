@@ -5,12 +5,24 @@
 %include defs.i
 %include std_shared_ptr.i
 
+%shared_ptr(TProx<double, double>);
+%shared_ptr(TProx<float , float>);
 %shared_ptr(Prox);
-%shared_ptr(ProxSeparable);
+
+%shared_ptr(TProxSeparable<double, double>);
+%shared_ptr(TProxSeparable<float , float>);
+
 %shared_ptr(ProxZero);
 %shared_ptr(ProxPositive);
-%shared_ptr(ProxL2Sq);
-%shared_ptr(ProxL1);
+
+%shared_ptr(TProxL2Sq);
+%shared_ptr(TProxL2Sq<double, double>);
+%shared_ptr(TProxL2Sq<float , float>);
+
+%shared_ptr(TProxL1);
+%shared_ptr(TProxL1<double, double>);
+%shared_ptr(TProxL1<float , float>);
+
 %shared_ptr(ProxL1w);
 %shared_ptr(ProxTV);
 %shared_ptr(ProxElasticNet);

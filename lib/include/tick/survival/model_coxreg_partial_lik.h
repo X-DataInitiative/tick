@@ -10,7 +10,7 @@
 #include "tick/base_model/model.h"
 
 
-class DLL_PUBLIC ModelCoxRegPartialLik : public Model {
+class DLL_PUBLIC ModelCoxRegPartialLik : public TModel<double, double> {
  private:
     ArrayDouble inner_prods;
     ArrayDouble s1;

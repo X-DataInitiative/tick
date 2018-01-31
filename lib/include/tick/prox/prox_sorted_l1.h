@@ -10,7 +10,7 @@ enum class WeightsType {
   oscar
 };
 
-class ProxSortedL1 : public Prox {
+class ProxSortedL1 : public TProx<double, double> {
  protected:
   WeightsType weights_type;
   ArrayDouble weights;
@@ -28,7 +28,7 @@ class ProxSortedL1 : public Prox {
   ProxSortedL1(double strength, WeightsType weights_type, ulong start,
                ulong end, bool positive);
 
-  const std::string get_class_name() const override;
+  std::string get_class_name() const override;
 
   double value(const ArrayDouble &coeffs, ulong start, ulong end) override;
 

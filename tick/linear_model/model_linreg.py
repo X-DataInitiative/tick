@@ -2,12 +2,18 @@
 
 import numpy as np
 from numpy.linalg import svd
+
 from tick.base_model import ModelGeneralizedLinear, ModelFirstOrder, \
     ModelLipschitz
-from .build.linear_model import ModelLinReg as _ModelLinReg
+from .build.linear_model import ModelLinRegDouble as _ModelLinRegDouble
+from .build.linear_model import ModelLinRegFloat  as _ModelLinRegFloat
 
 __author__ = 'Stephane Gaiffas'
 
+dtype_map = {
+  np.float64: _ModelLinRegDouble,
+  np.float32: _ModelLinRegFloat
+}
 
 class ModelLinReg(ModelFirstOrder,
                   ModelGeneralizedLinear,
@@ -64,10 +70,18 @@ class ModelLinReg(ModelFirstOrder,
         * otherwise the desired number of threads
     """
 
-    def __init__(self, fit_intercept: bool = True, n_threads: int = 1):
-        ModelFirstOrder.__init__(self)
-        ModelGeneralizedLinear.__init__(self, fit_intercept)
-        ModelLipschitz.__init__(self)
+    def __init__(
+        self, 
+        fit_intercept: bool = True, 
+        n_threads: int = 1,
+        dtype=np.float64
+    ):
+
+        ModelFirstOrder.__init__(self, dtype=dtype)
+        ModelGeneralizedLinear.__init__(self, fit_intercept, dtype=dtype)
+        ModelLipschitz.__init__(self, dtype=dtype)
+        if self.dtype not in dtype_map:
+            raise ValueError('dtype provided to ModelLinReg is not handled')
         self.n_threads = n_threads
 
         # TODO: implement _set_data and not fit
@@ -91,10 +105,16 @@ class ModelLinReg(ModelFirstOrder,
         ModelFirstOrder.fit(self, features, labels)
         ModelGeneralizedLinear.fit(self, features, labels)
         ModelLipschitz.fit(self, features, labels)
-        self._set("_model", _ModelLinReg(self.features,
-                                         self.labels,
-                                         self.fit_intercept,
-                                         self.n_threads))
+
+        self._set(
+          "_model", 
+          dtype_map[self.dtype](
+            self.features,
+            self.labels,
+            self.fit_intercept,
+            self.n_threads
+          )
+        )
         return self
 
     def _grad(self, coeffs: np.ndarray, out: np.ndarray) -> None:

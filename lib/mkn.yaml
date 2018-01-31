@@ -202,4 +202,4 @@ profile:
 
   - name: gtest
     parent: gtest_nodep
-    self: solver hawkes/model hawkes/simulation
+    self: solver hawkes/model hawkes/simulation robust

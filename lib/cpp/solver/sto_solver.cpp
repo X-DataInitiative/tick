@@ -8,25 +8,41 @@
 
 #include "tick/prox/prox_zero.h"
 
-StoSolver::StoSolver(int seed)
+template <class T, class K>
+TStoSolver<T, K>::TStoSolver(int seed)
     : seed(seed) {
     set_seed(seed);
     permutation_ready = false;
 }
 
-StoSolver::StoSolver(ulong epoch_size,
-                     double tol,
+template <class T, class K>
+TStoSolver<T, K>::TStoSolver(ulong epoch_size,
+                     K tol,
                      RandType rand_type,
                      int seed)
-    : prox(std::make_shared<ProxZero>(0.0)),
-      epoch_size(epoch_size),
+    : epoch_size(epoch_size),
       tol(tol),
+      prox(std::make_shared<TProxZero<T, K> >(0.0)),
       rand_type(rand_type) {
     set_seed(seed);
     permutation_ready = false;
 }
 
-void StoSolver::init_permutation() {
+StoSolver::StoSolver(int seed)
+    : TStoSolver(seed) {
+}
+
+StoSolver::StoSolver(
+  ulong epoch_size,
+  double tol,
+  RandType rand_type,
+  int seed
+) : TStoSolver(epoch_size, tol, rand_type, seed)
+{}
+
+template <class T, class K>
+void
+TStoSolver<T, K>::init_permutation() {
     if ((rand_type == RandType::perm) && (rand_max > 0)) {
         permutation = ArrayULong(rand_max);
         for (ulong i = 0; i < rand_max; ++i)
@@ -34,7 +50,9 @@ void StoSolver::init_permutation() {
     }
 }
 
-void StoSolver::reset() {
+template <class T, class K>
+void
+TStoSolver<T, K>::reset() {
     t = 1;
     if (rand_type == RandType::perm) {
         i_perm = 0;
@@ -42,7 +60,9 @@ void StoSolver::reset() {
     }
 }
 
-ulong StoSolver::get_next_i() {
+template <class T, class K>
+ulong
+TStoSolver<T, K>::get_next_i() {
     ulong i = 0;
     if (rand_type == RandType::unif) {
         i = rand_unif(rand_max - 1);
@@ -60,7 +80,9 @@ ulong StoSolver::get_next_i() {
 }
 
 // Simulation of a random permutation using Knuth's algorithm
-void StoSolver::shuffle() {
+template <class T, class K>
+void
+TStoSolver<T, K>::shuffle() {
     if (rand_type == RandType::perm) {
         // A secure check
         if (permutation.size() != rand_max) {
@@ -81,17 +103,28 @@ void StoSolver::shuffle() {
     permutation_ready = true;
 }
 
-void StoSolver::get_minimizer(ArrayDouble &out) {
-    for (ulong i = 0; i < iterate.size(); ++i)
-        out[i] = iterate[i];
+template <class T, class K>
+void
+TStoSolver<T, K>::get_minimizer(Array<K> &out) {
+  for (ulong i = 0; i < iterate.size(); ++i) {
+    out[i] = iterate[i];
+  }
 }
 
-void StoSolver::get_iterate(ArrayDouble &out) {
-    for (ulong i = 0; i < iterate.size(); ++i)
-        out[i] = iterate[i];
+template <class T, class K>
+void
+TStoSolver<T, K>::get_iterate(Array<K> &out) {
+  for (ulong i = 0; i < iterate.size(); ++i)
+    out[i] = iterate[i];
 }
 
-void StoSolver::set_starting_iterate(ArrayDouble &new_iterate) {
-    for (ulong i = 0; i < new_iterate.size(); ++i)
-        iterate[i] = new_iterate[i];
+template <class T, class K>
+void
+TStoSolver<T, K>::set_starting_iterate(Array<K> &new_iterate) {
+  for (ulong i = 0; i < new_iterate.size(); ++i) {
+    iterate[i] = new_iterate[i];
+  }
 }
+
+template class TStoSolver<double, double>;
+template class TStoSolver<float , float>;

@@ -27,7 +27,9 @@ class Test(TestProx):
         prox_enet = ProxElasticNet(l_enet, ratio=ratio)
         prox_enet_multi = ProxElasticNet(l_enet, ratio=ratio,
                                          range=(half_size, full_size))
-
+        print("what: ", type((prox_tv_multi, prox_enet_multi)))
+        print("what: ", type(prox_enet_multi))
+        print("what: ", type(prox_tv_multi))
         prox_multi = ProxMulti((prox_tv_multi, prox_enet_multi))
 
         # Test that the value of the prox is correct

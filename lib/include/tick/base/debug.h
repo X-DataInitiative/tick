@@ -198,7 +198,8 @@ struct LogExitCout {
 /**
  * Convenience macro to error the program if the current function is not implemented in class 'cls'
  */
-#define TICK_CLASS_DOES_NOT_IMPLEMENT(cls) TICK_ERROR("Function not implemented in  " << cls)
+#define TICK_CLASS_DOES_NOT_IMPLEMENT(cls) \
+  TICK_ERROR(cls << " does not implement " << __func__)
 
 /**
  * Macro to print current function stack.

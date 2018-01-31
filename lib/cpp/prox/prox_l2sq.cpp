@@ -2,23 +2,52 @@
 
 #include "tick/prox/prox_l2sq.h"
 
-ProxL2Sq::ProxL2Sq(double strength,
-                   bool positive)
-  : ProxSeparable(strength, positive) {}
+template <class T, class K>
+TProxL2Sq<T, K>::TProxL2Sq(
+  K strength,
+  bool positive
+) : TProxSeparable<T, K>(strength, positive) {}
 
-ProxL2Sq::ProxL2Sq(double strength,
-                   ulong start,
-                   ulong end,
-                   bool positive)
-  : ProxSeparable(strength, start, end, positive) {}
+template <class T, class K>
+TProxL2Sq<T, K>::TProxL2Sq(
+  K strength,
+  ulong start,
+  ulong end,
+  bool positive
+) : TProxSeparable<T, K>(strength, start, end, positive) {}
 
-const std::string ProxL2Sq::get_class_name() const {
+
+ProxL2Sq::ProxL2Sq(
+  double strength,
+  bool positive
+) : TProxL2Sq<double, double>(strength, positive) {}
+
+ProxL2Sq::ProxL2Sq(
+  double strength,
+  ulong start,
+  ulong end,
+  bool positive
+) : TProxL2Sq<double, double>(strength, start, end, positive)
+{}
+
+template <class T, class K>
+std::string
+TProxL2Sq<T, K>::get_class_name() const {
+  return "TProxL2Sq<T, K>";
+}
+
+std::string
+ProxL2Sq::get_class_name() const {
   return "ProxL2Sq";
 }
 
 // Compute the prox on the i-th coordinate only
-double ProxL2Sq::call_single(double x,
-                             double step) const {
+template <class T, class K>
+K
+TProxL2Sq<T, K>::call_single(
+  K x,
+  K step
+) const {
   if (positive && x < 0) {
     return 0;
   } else {
@@ -27,9 +56,13 @@ double ProxL2Sq::call_single(double x,
 }
 
 // Repeat n_times the prox on coordinate i
-double ProxL2Sq::call_single(double x,
-                             double step,
-                             ulong n_times) const {
+template <class T, class K>
+K
+TProxL2Sq<T, K>::call_single(
+  K x,
+  K step,
+  ulong n_times
+) const {
   if (n_times >= 1) {
     if (positive && x < 0) {
       return 0;
@@ -41,6 +74,11 @@ double ProxL2Sq::call_single(double x,
   }
 }
 
-double ProxL2Sq::value_single(double x) const {
+template <class T, class K>
+K
+TProxL2Sq<T, K>::value_single(K x) const {
   return x * x / 2;
 }
+
+template class TProxL2Sq<double, double>;
+template class TProxL2Sq<float , float>;

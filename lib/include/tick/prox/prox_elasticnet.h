@@ -5,7 +5,7 @@
 
 #include "prox_separable.h"
 
-class ProxElasticNet : public ProxSeparable {
+class ProxElasticNet : public TProxSeparable<double, double> {
  protected:
   double ratio;
 
@@ -14,7 +14,7 @@ class ProxElasticNet : public ProxSeparable {
 
   ProxElasticNet(double strength, double ratio, ulong start, ulong end, bool positive);
 
-  const std::string get_class_name() const override;
+  std::string get_class_name() const override;
 
   virtual double get_ratio() const;
 

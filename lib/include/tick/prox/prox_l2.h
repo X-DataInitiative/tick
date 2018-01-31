@@ -5,13 +5,13 @@
 
 #include "prox.h"
 
-class ProxL2 : public Prox {
+class ProxL2 : public TProx<double, double> {
  public:
   ProxL2(double strength, bool positive);
 
   ProxL2(double strength, ulong start, ulong end, bool positive);
 
-  const std::string get_class_name() const override;
+  std::string get_class_name() const override;
 
   double value(const ArrayDouble &coeffs, ulong start, ulong end) override;
 

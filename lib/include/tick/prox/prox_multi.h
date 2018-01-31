@@ -9,14 +9,14 @@
 // TODO: this requires some work. ProxMulti should have the standard
 // TODO: prox API, with a set_strength, and things like that
 
-class ProxMulti : public Prox {
+class ProxMulti : public TProx<double, double> {
  protected:
-  std::vector<ProxPtr> proxs;
+  ProxDoublePtrVector proxs;
 
  public:
-  explicit ProxMulti(std::vector<ProxPtr> proxs);
+  explicit ProxMulti(ProxDoublePtrVector proxs);
 
-  const std::string get_class_name() const override;
+  std::string get_class_name() const override;
 
   double value(const ArrayDouble &coeffs, ulong start, ulong end) override;
 

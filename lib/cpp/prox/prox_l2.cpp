@@ -4,15 +4,15 @@
 
 ProxL2::ProxL2(double strength,
                    bool positive)
-  : Prox(strength, positive) {}
+  : TProx<double, double>(strength, positive) {}
 
 ProxL2::ProxL2(double strength,
                    ulong start,
                    ulong end,
                    bool positive)
-  : Prox(strength, start, end, positive) {}
+  : TProx<double, double>(strength, start, end, positive) {}
 
-const std::string ProxL2::get_class_name() const {
+std::string ProxL2::get_class_name() const {
   return "ProxL2";
 }
 

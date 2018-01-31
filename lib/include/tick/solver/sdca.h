@@ -47,7 +47,7 @@ class SDCA : public StoSolver {
 
   void solve() override;
 
-  void set_model(ModelPtr model) override;
+  void set_model(std::shared_ptr<TModel<double, double> > model) override;
 
   double get_l_l2sq() const {
     return l_l2sq;

@@ -4,10 +4,15 @@
 
 import numpy as np
 from .base import Prox
-from .build.prox import ProxL1 as _ProxL1
+from .build.prox import ProxL1Double as _ProxL1Double
+from .build.prox import ProxL1Float as _ProxL1Float
 
 __author__ = 'Stephane Gaiffas'
 
+dtype_map = {
+  np.float64: _ProxL1Double,
+  np.float32: _ProxL1Float
+}
 
 class ProxL1(Prox):
     """Proximal operator of the L1 norm (soft-thresholding)
@@ -38,12 +43,14 @@ class ProxL1(Prox):
     }
 
     def __init__(self, strength: float, range: tuple=None,
-                 positive: bool=False):
-        Prox.__init__(self, range)
+                 positive: bool=False, dtype=np.float64):
+        Prox.__init__(self, range, dtype=dtype)
+        if self.dtype not in dtype_map:
+            raise ValueError('dtype provided to ProxL1 is not handled')
         if range is None:
-            self._prox = _ProxL1(strength, positive)
+            self._prox = dtype_map[self.dtype](strength, positive)
         else:
-            self._prox = _ProxL1(strength, range[0], range[1], positive)
+            self._prox = dtype_map[self.dtype](strength, range[0], range[1], positive)
         self.positive = positive
         self.strength = strength
 

@@ -5,17 +5,62 @@
 #include "tick/base_model/model_generalized_linear.h"
 %}
 
-class ModelGeneralizedLinear : public ModelLabelsFeatures {
+%include "model_labels_features.i"
+
+template <class T, class K>
+class TModelGeneralizedLinear : public virtual TModelLabelsFeatures<T, K> {
+ public:
+  TModelGeneralizedLinear(
+    const std::shared_ptr<BaseArray2d<K> > features,
+    const std::shared_ptr<SArray<K> > labels,
+    const bool fit_intercept,
+    const int n_threads = 1
+  );
+  unsigned long get_n_coeffs() const override;
+  virtual void set_fit_intercept(bool fit_intercept);
+  void sdca_primal_dual_relation(const K l_l2sq,
+                                 const Array<K> &dual_vector,
+                                 Array<K> &out_primal_vector) override;
+};
+
+%rename(ModelGeneralizedLinearDouble) TModelGeneralizedLinear<double, double>;
+class TModelGeneralizedLinear<double, double> : public virtual TModelLabelsFeatures<double, double>{
+ public:
+  TModelGeneralizedLinear(const SBaseArrayDouble2dPtr features,
+                         const SArrayDoublePtr labels,
+                         const bool fit_intercept,
+                         const int n_threads = 1);
+  unsigned long get_n_coeffs() const override;
+  virtual void set_fit_intercept(bool fit_intercept);
+  void sdca_primal_dual_relation(const double l_l2sq,
+                                 const ArrayDouble &dual_vector,
+                                 ArrayDouble &out_primal_vector);
+};
+typedef TModelGeneralizedLinear<double, double> ModelGeneralizedLinearDouble;
+
+%rename(ModelGeneralizedLinearFloat) TModelGeneralizedLinear<float, float>;
+class TModelGeneralizedLinear<float, float> : public virtual TModelLabelsFeatures<float, float>{
+ public:
+  TModelGeneralizedLinear(const SBaseArrayFloat2dPtr features,
+                         const SArrayFloatPtr labels,
+                         const bool fit_intercept,
+                         const int n_threads = 1);
+  unsigned long get_n_coeffs() const override;
+  virtual void set_fit_intercept(bool fit_intercept);
+  void sdca_primal_dual_relation(const float l_l2sq,
+                                 const ArrayFloat &dual_vector,
+                                 ArrayFloat &out_primal_vector);
+};
+typedef TModelGeneralizedLinear<float, float> ModelGeneralizedLinearFloat;
+
+class ModelGeneralizedLinear : public ModelGeneralizedLinearDouble{
  public:
   ModelGeneralizedLinear(const SBaseArrayDouble2dPtr features,
                          const SArrayDoublePtr labels,
                          const bool fit_intercept,
                          const int n_threads = 1);
-
   unsigned long get_n_coeffs() const override;
-
   virtual void set_fit_intercept(bool fit_intercept);
-
   void sdca_primal_dual_relation(const double l_l2sq,
                                  const ArrayDouble &dual_vector,
                                  ArrayDouble &out_primal_vector);

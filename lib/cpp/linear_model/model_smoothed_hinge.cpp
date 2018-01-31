@@ -2,16 +2,14 @@
 
 #include "tick/linear_model/model_smoothed_hinge.h"
 
-ModelSmoothedHinge::ModelSmoothedHinge(const SBaseArrayDouble2dPtr features,
-                                       const SArrayDoublePtr labels,
-                                       const bool fit_intercept,
-                                       const double smoothness,
-                                       const int n_threads)
-    : ModelGeneralizedLinear(features,
-                             labels,
-                             fit_intercept,
-                             n_threads),
-      ModelLipschitz() {
+ModelSmoothedHinge::ModelSmoothedHinge(
+  const SBaseArrayDouble2dPtr features,
+  const SArrayDoublePtr labels,
+  const bool fit_intercept,
+  const double smoothness,
+  const int n_threads
+) : TModelLabelsFeatures<double, double>(features, labels),
+    ModelGeneralizedLinear(features, labels, fit_intercept, n_threads) {
   set_smoothness(smoothness);
 }
 

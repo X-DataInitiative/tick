@@ -2,19 +2,34 @@
 
 #include "tick/robust/model_generalized_linear_with_intercepts.h"
 
+template <class T, class K>
+TModelGeneralizedLinearWithIntercepts<T, K>::TModelGeneralizedLinearWithIntercepts(
+  const std::shared_ptr<BaseArray2d<K> > features,
+  const std::shared_ptr<SArray<K> > labels,
+  const bool fit_intercept,
+  const int n_threads
+) : TModelLabelsFeatures<T, K>(features, labels),
+    TModelGeneralizedLinear<T, K>(features, labels, fit_intercept, n_threads)
+{}
+
 ModelGeneralizedLinearWithIntercepts::ModelGeneralizedLinearWithIntercepts(
-    const SBaseArrayDouble2dPtr features,
-    const SArrayDoublePtr labels,
-    const bool fit_intercept,
-    const int n_threads)
-    : ModelGeneralizedLinear(features, labels, fit_intercept, n_threads) {}
+  const SBaseArrayDouble2dPtr features,
+  const SArrayDoublePtr labels,
+  const bool fit_intercept,
+  const int n_threads
+) : TModelLabelsFeatures<double, double>(features, labels),
+    TModelGeneralizedLinear<double, double>(features, labels, fit_intercept, n_threads),
+    TModelGeneralizedLinearWithIntercepts<double, double>(features, labels, fit_intercept, n_threads)
+{}
 
 const char *ModelGeneralizedLinearWithIntercepts::get_class_name() const {
   return "ModelGeneralizedLinear";
 }
 
-double ModelGeneralizedLinearWithIntercepts::get_inner_prod(const ulong i,
-                                                            const ArrayDouble &coeffs) const {
+template <class T, class K>
+K
+TModelGeneralizedLinearWithIntercepts<T, K>::get_inner_prod(const ulong i,
+                                                            const Array<T> &coeffs) const {
   const BaseArrayDouble x_i = get_features(i);
   const ArrayDouble weights = view(coeffs, 0, n_features);
   if (fit_intercept) {
@@ -24,14 +39,16 @@ double ModelGeneralizedLinearWithIntercepts::get_inner_prod(const ulong i,
   }
 }
 
-void ModelGeneralizedLinearWithIntercepts::compute_grad_i(const ulong i, const ArrayDouble &coeffs,
-                                                          ArrayDouble &out, const bool fill) {
+template <class T, class K>
+void
+TModelGeneralizedLinearWithIntercepts<T, K>::compute_grad_i(const ulong i, const Array<T> &coeffs,
+                                                          Array<K> &out, const bool fill) {
   const BaseArrayDouble x_i = get_features(i);
   const double alpha_i = grad_i_factor(i, coeffs);
-  ArrayDouble out_weights = view(out, 0, n_features);
+  Array<K> out_weights = view(out, 0, n_features);
 
   if (fit_intercept) {
-    ArrayDouble out_intercepts = view(out, n_features + 1, n_samples + n_features + 1);
+    Array<K> out_intercepts = view(out, n_features + 1, n_samples + n_features + 1);
     if (fill) {
       out_weights.mult_fill(x_i, alpha_i);
       out_intercepts.fill(0);
@@ -43,7 +60,7 @@ void ModelGeneralizedLinearWithIntercepts::compute_grad_i(const ulong i, const A
       out[n_features] += alpha_i;
     }
   } else {
-    ArrayDouble out_intercepts = view(out, n_features, n_samples + n_features);
+    Array<K> out_intercepts = view(out, n_features, n_samples + n_features);
     if (fill) {
       out_weights.mult_fill(x_i, alpha_i);
       out_intercepts.fill(0);
@@ -55,12 +72,14 @@ void ModelGeneralizedLinearWithIntercepts::compute_grad_i(const ulong i, const A
   }
 }
 
-void ModelGeneralizedLinearWithIntercepts::grad(const ArrayDouble &coeffs,
-                                                ArrayDouble &out) {
+template <class T, class K>
+void
+TModelGeneralizedLinearWithIntercepts<T, K>::grad(const Array<T> &coeffs,
+                                                Array<K> &out) {
   out.fill(0.0);
-  parallel_map_array<ArrayDouble>(n_threads,
+  parallel_map_array<Array<K>>(n_threads,
                                   n_samples,
-                                  [](ArrayDouble &r, const ArrayDouble &s) {
+                                  [](Array<K> &r, const Array<T> &s) {
                                     r.mult_incr(s,
                                                 1.0);
                                   },
@@ -73,9 +92,13 @@ void ModelGeneralizedLinearWithIntercepts::grad(const ArrayDouble &coeffs,
   out *= one_over_n_samples;
 }
 
-double ModelGeneralizedLinearWithIntercepts::loss(const ArrayDouble &coeffs) {
+template <class T, class K>
+K
+TModelGeneralizedLinearWithIntercepts<T, K>::loss(const Array<T> &coeffs) {
   return parallel_map_additive_reduce(n_threads, n_samples,
                                       &ModelGeneralizedLinearWithIntercepts::loss_i,
                                       this, coeffs)
       / n_samples;
 }
+
+template class TModelGeneralizedLinearWithIntercepts<double, double>;

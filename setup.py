@@ -719,7 +719,7 @@ class RunCPPLint(TickCommand):
 
     CPPLINT_DIRS = [
         'lib/include',
-        'lib/src',
+        'lib/cpp',
     ]
 
     def run(self):

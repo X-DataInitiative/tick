@@ -16,37 +16,54 @@ enum class LinkType {
   exponential
 };
 
-class DLL_PUBLIC ModelPoisReg : public ModelGeneralizedLinear {
- private:
+template <class T, class K>
+class DLL_PUBLIC TModelPoisReg : public TModelGeneralizedLinear<T, K> {
+ protected:
+  using TModelGeneralizedLinear<T, K>::compute_features_norm_sq;
+  using TModelGeneralizedLinear<T, K>::n_samples;
+  using TModelGeneralizedLinear<T, K>::features_norm_sq;
+  using TModelGeneralizedLinear<T, K>::fit_intercept;
+  using TModelGeneralizedLinear<T, K>::ready_features_norm_sq;
+  using TModelGeneralizedLinear<T, K>::get_n_samples;
+  using TModelGeneralizedLinear<T, K>::get_n_coeffs;
+  using TModelGeneralizedLinear<T, K>::get_features;
+
+ public:
+  using TModelGeneralizedLinear<T, K>::get_label;
+  using TModelGeneralizedLinear<T, K>::use_intercept;
+  using TModelGeneralizedLinear<T, K>::get_inner_prod;
+
+ protected:
+  bool ready_non_zero_label_map = 0;
   LinkType link_type;
-  bool ready_non_zero_label_map;
   VArrayULongPtr non_zero_labels;
   ulong n_non_zeros_labels;
 
  public:
-  ModelPoisReg(const SBaseArrayDouble2dPtr features,
-               const SArrayDoublePtr labels,
-               const LinkType link_type,
-               const bool fit_intercept,
-               const int n_threads = 1);
+  TModelPoisReg(
+    const std::shared_ptr<BaseArray2d<K> > features,
+    const std::shared_ptr<SArray<K> > labels,
+    const LinkType link_type,
+    const bool fit_intercept,
+    const int n_threads = 1);
 
   const char *get_class_name() const override {
-    return "ModelPoisReg";
+    return "TModelPoisReg";
   }
 
-  double loss_i(const ulong i, const ArrayDouble &coeffs) override;
+  K loss_i(const ulong i, const Array<T> &coeffs) override;
 
-  double grad_i_factor(const ulong i, const ArrayDouble &coeffs) override;
+  K grad_i_factor(const ulong i, const Array<T> &coeffs) override;
 
-  double sdca_dual_min_i(const ulong i,
-                         const double dual_i,
-                         const ArrayDouble &primal_vector,
-                         const double previous_delta_dual_i,
-                         double l_l2sq) override;
+  K sdca_dual_min_i(const ulong i,
+                         const K dual_i,
+                         const Array<K> &primal_vector,
+                         const K previous_delta_dual_i,
+                         K l_l2sq) override;
 
-  void sdca_primal_dual_relation(const double l_l2sq,
-                                 const ArrayDouble &dual_vector,
-                                 ArrayDouble &out_primal_vector) override;
+  void sdca_primal_dual_relation(const K l_l2sq,
+                                 const Array<K> &dual_vector,
+                                 Array<K> &out_primal_vector) override;
 
   /**
    * Returns a mapping from the sampled observation (in [0, rand_max)) to the observation
@@ -64,21 +81,21 @@ class DLL_PUBLIC ModelPoisReg : public ModelGeneralizedLinear {
   }
 
  private:
-  double sdca_dual_min_i_exponential(const ulong i,
-                                     const double dual_i,
-                                     const ArrayDouble &primal_vector,
-                                     const double previous_delta_dual_i,
-                                     double l_l2sq);
+  K sdca_dual_min_i_exponential(const ulong i,
+                                     const K dual_i,
+                                     const Array<K> &primal_vector,
+                                     const K previous_delta_dual_i,
+                                     K l_l2sq);
   /**
    * @brief Initialize the hash map that allow fast retrieving for get_non_zero_i
    */
   void init_non_zero_label_map();
 
-  double sdca_dual_min_i_identity(const ulong i,
-                                  const double dual_i,
-                                  const ArrayDouble &primal_vector,
-                                  const double previous_delta_dual_i,
-                                  double l_l2sq);
+  K sdca_dual_min_i_identity(const ulong i,
+                                  const K dual_i,
+                                  const Array<K> &primal_vector,
+                                  const K previous_delta_dual_i,
+                                  K l_l2sq);
 
  public:
   virtual void set_link_type(const LinkType link_type) {
@@ -89,5 +106,17 @@ class DLL_PUBLIC ModelPoisReg : public ModelGeneralizedLinear {
     return link_type;
   }
 };
+
+class DLL_PUBLIC ModelPoisReg : public TModelPoisReg<double, double> {
+ public:
+  ModelPoisReg(const SBaseArrayDouble2dPtr features,
+               const SArrayDoublePtr labels,
+               const LinkType link_type,
+               const bool fit_intercept,
+               const int n_threads = 1);
+};
+
+using ModelPoisRegDouble = TModelPoisReg<double, double>;
+using ModelPoisRegFloat  = TModelPoisReg<float , float >;
 
 #endif  // LIB_INCLUDE_TICK_LINEAR_MODEL_MODEL_POISREG_H_

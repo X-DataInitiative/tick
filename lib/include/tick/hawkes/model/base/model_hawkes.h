@@ -10,7 +10,7 @@
 /** \class ModelHawkes
  * \brief Base class of Hawkes models
  */
-class DLL_PUBLIC ModelHawkes : public Model {
+class DLL_PUBLIC ModelHawkes : public TModel<double, double> {
  protected:
   //! @brief Maximum number of threads that will be used for computation
   //! if < 1 then it is set to the maximum number of threads

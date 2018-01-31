@@ -2,23 +2,32 @@
 
 #include "tick/prox/prox_separable.h"
 
-ProxSeparable::ProxSeparable(double strength, bool positive)
-    : Prox(strength, positive) {}
 
-ProxSeparable::ProxSeparable(double strength, ulong start, ulong end, bool positive)
-    : Prox(strength, start, end, positive) {}
+template <class T, class K>
+TProxSeparable<T, K>::TProxSeparable(K strength, bool positive)
+    : TProx<T, K>(strength, positive) {}
 
-const std::string ProxSeparable::get_class_name() const {
+template <class T, class K>
+TProxSeparable<T, K>::TProxSeparable(K strength, ulong start, ulong end, bool positive)
+    : TProx<T, K>(strength, start, end, positive) {}
+
+template <class T, class K>
+std::string
+TProxSeparable<T, K>::get_class_name() const {
   return "ProxSeparable";
 }
 
-const bool ProxSeparable::is_separable() const {
+template <class T, class K>
+bool
+TProxSeparable<T, K>::is_separable() const {
   return true;
 }
 
-void ProxSeparable::call(const ArrayDouble &coeffs,
-                         const ArrayDouble &step,
-                         ArrayDouble &out) {
+template <class T, class K>
+void
+TProxSeparable<T, K>::call(const Array<T> &coeffs,
+                         const Array<K> &step,
+                         Array<T> &out) {
   if (has_range) {
     if (end > coeffs.size()) TICK_ERROR(
         "Range [" << start << ", " << end
@@ -32,38 +41,46 @@ void ProxSeparable::call(const ArrayDouble &coeffs,
   }
 }
 
-void ProxSeparable::call(const ArrayDouble &coeffs,
-                         double step,
-                         ArrayDouble &out,
+template <class T, class K>
+void
+TProxSeparable<T, K>::call(const Array<T> &coeffs,
+                         K step,
+                         Array<T> &out,
                          ulong start,
                          ulong end) {
-  ArrayDouble sub_coeffs = view(coeffs, start, end);
-  ArrayDouble sub_out = view(out, start, end);
+  Array<T> sub_coeffs = view(coeffs, start, end);
+  Array<T> sub_out = view(out, start, end);
   for (ulong i = 0; i < sub_coeffs.size(); ++i) {
     // Call the prox on each coordinate
     sub_out[i] = call_single(sub_coeffs[i], step);
   }
 }
 
-void ProxSeparable::call(const ArrayDouble &coeffs,
-                         const ArrayDouble &step,
-                         ArrayDouble &out,
+template <class T, class K>
+void
+TProxSeparable<T, K>::call(const Array<T> &coeffs,
+                         const Array<K> &step,
+                         Array<T> &out,
                          ulong start,
                          ulong end) {
-  ArrayDouble sub_coeffs = view(coeffs, start, end);
-  ArrayDouble sub_out = view(out, start, end);
+  Array<T> sub_coeffs = view(coeffs, start, end);
+  Array<T> sub_out = view(out, start, end);
   for (ulong i = 0; i < sub_coeffs.size(); ++i) {
     sub_out[i] = call_single(sub_coeffs[i], step[i]);
   }
 }
 
-double ProxSeparable::call_single(double x,
-                                  double step) const {
+template <class T, class K>
+K
+TProxSeparable<T, K>::call_single(K x,
+                                  K step) const {
   TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
 }
 
-double ProxSeparable::call_single(double x,
-                                  double step,
+template <class T, class K>
+K
+TProxSeparable<T, K>::call_single(K x,
+                                  K step,
                                   ulong n_times) const {
   if (n_times >= 1) {
     for (ulong r = 0; r < n_times; ++r) {
@@ -74,61 +91,80 @@ double ProxSeparable::call_single(double x,
 }
 
 // Compute the prox on the i-th coordinate only
-void ProxSeparable::call_single(ulong i,
-                                const ArrayDouble &coeffs,
-                                double step,
-                                ArrayDouble &out) const {
+template <class T, class K>
+void
+TProxSeparable<T, K>::call_single(ulong i,
+                                const Array<T> &coeffs,
+                                K step,
+                                Array<T> &out) const {
   if (i >= coeffs.size()) {
     TICK_ERROR(get_class_name() << "::call_single " << "i= " << i << " while coeffs.size()=" << coeffs.size());
   } else {
     if (has_range) {
       if ((i >= start) && (i < end)) {
-        out[i] = call_single(coeffs[i], step);
+        set_out_i(out, i, call_single(coeffs[i], step));
       } else {
-        out[i] = coeffs[i];
+        set_out_i(out, i, coeffs[i]);
       }
     } else {
-      out[i] = call_single(coeffs[i], step);
+      set_out_i(out, i, call_single(coeffs[i], step));
     }
   }
 }
 
 // Repeat n_times the prox on coordinate i
-void ProxSeparable::call_single(ulong i,
-                                const ArrayDouble &coeffs,
-                                double step,
-                                ArrayDouble &out,
-                                ulong n_times) const {
+template <class T, class K>
+void
+TProxSeparable<T, K>::call_single(
+  ulong i,
+  const Array<T> &coeffs,
+  K step,
+  Array<T> &out,
+  ulong n_times
+) const {
   if (i >= coeffs.size()) {
     TICK_ERROR(get_class_name() << "::call_single " << "i= " << i << " while coeffs.size()=" << coeffs.size());
   } else {
     if (has_range) {
       if ((i >= start) && (i < end)) {
-        out[i] = call_single(coeffs[i], step, n_times);
+        set_out_i(out, i, call_single(coeffs[i], step, n_times));
       } else {
-        out[i] = coeffs[i];
+        set_out_i(out, i, coeffs[i]);
       }
     } else {
-      out[i] = call_single(coeffs[i], step, n_times);
+      set_out_i(out, i, call_single(coeffs[i], step, n_times));
     }
   }
 }
 
-double ProxSeparable::value(const ArrayDouble &coeffs,
+template <class T, class K>
+K
+TProxSeparable<T, K>::value(const Array<T> &coeffs,
                             ulong start,
                             ulong end) {
-  double val = 0;
+  K val = 0;
   // We work on a view, so that sub_coeffs and weights are "aligned"
   // (namely both ranging between 0 and end - start).
   // This is particularly convenient for Prox classes with weights for each
   // coordinate
-  ArrayDouble sub_coeffs = view(coeffs, start, end);
+  Array<T> sub_coeffs = view(coeffs, start, end);
   for (ulong i = 0; i < sub_coeffs.size(); ++i) {
     val += value_single(sub_coeffs[i]);
   }
   return strength * val;
 }
 
-double ProxSeparable::value_single(double x) const {
+template <class T, class K>
+K
+TProxSeparable<T, K>::value_single(K x) const {
   TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
 }
+
+template <class T, class K>
+void
+TProxSeparable<T, K>::set_out_i(Array<T> &out, size_t i, K d) const {
+  out[i] = d;
+}
+
+template class TProxSeparable<double, double>;
+template class TProxSeparable<float , float >;
