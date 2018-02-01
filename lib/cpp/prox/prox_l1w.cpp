@@ -5,7 +5,7 @@
 ProxL1w::ProxL1w(double strength,
                  SArrayDoublePtr weights,
                  bool positive)
-    : ProxSeparable(strength, positive) {
+    : TProxSeparable<double, double>(strength, positive) {
   this->weights = weights;
 }
 
@@ -14,11 +14,11 @@ ProxL1w::ProxL1w(double strength,
                  ulong start,
                  ulong end,
                  bool positive)
-    : ProxSeparable(strength, start, end, positive) {
+    : TProxSeparable<double, double>(strength, start, end, positive) {
   this->weights = weights;
 }
 
-const std::string ProxL1w::get_class_name() const {
+std::string ProxL1w::get_class_name() const {
   return "ProxL1w";
 }
 

@@ -7,20 +7,21 @@ ProxBinarsity::ProxBinarsity(double strength,
                              SArrayULongPtr blocks_start,
                              SArrayULongPtr blocks_length,
                              bool positive)
-    : ProxWithGroups(strength, blocks_start, blocks_length, positive) {}
+    : TProxWithGroups<double, double>(strength, blocks_start, blocks_length, positive) {}
 
 ProxBinarsity::ProxBinarsity(double strength,
                              SArrayULongPtr blocks_start,
                              SArrayULongPtr blocks_length,
                              ulong start,
                              ulong end, bool positive)
-    : ProxWithGroups(strength, blocks_start, blocks_length, start, end, positive) {}
+    : TProxWithGroups<double, double>(strength, blocks_start, blocks_length, start, end, positive) {}
 
-std::unique_ptr<Prox> ProxBinarsity::build_prox(double strength, ulong start, ulong end, bool positive) {
+std::unique_ptr<TProx<double, double> >
+ProxBinarsity::build_prox(double strength, ulong start, ulong end, bool positive) {
   return std::unique_ptr<ProxTV>(new ProxTV(strength, start, end, positive));
 }
 
-const std::string ProxBinarsity::get_class_name() const {
+std::string ProxBinarsity::get_class_name() const {
   return "ProxBinarsity";
 }
 

@@ -15,6 +15,9 @@
 %{
 DLL_PUBLIC PyObject *_XArray2NumpyArray(XARRAY_TYPE *sig)
 {
+#ifdef DEBUG_SHAREDARRAY
+    std::cout << "Shared Array -> NumpyArray _XArray2NumpyArray real: " << __func__ << std::endl;
+#endif
     npy_intp dims[1];
     dims[0] = sig->size();
 
@@ -57,6 +60,9 @@ DLL_PUBLIC PyObject *_XArray2NumpyArray(XARRAY_TYPE *sig)
 %{
 DLL_PUBLIC PyObject *_XArray2d2NumpyArray(XARRAY2D_TYPE *sig)
 {
+#ifdef DEBUG_SHAREDARRAY
+    std::cout << "Shared Array -> NumpyArray _XArray2d2NumpyArray real: " << __func__ << std::endl;
+#endif
     npy_intp dims[2];
     dims[0] = sig->n_rows();
     dims[1] = sig->n_cols();

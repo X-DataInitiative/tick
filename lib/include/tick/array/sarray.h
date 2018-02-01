@@ -159,9 +159,9 @@ ulong SArray<T>::n_allocs = 0;
 template<typename T>
 std::ostream &operator<<(std::ostream &Str, SArray<T> *v) {
 #ifdef DEBUG_SHAREDARRAY
-    Str << "SArray(" << reinterpret_cast<void*>(v) << ",size=" << v->size() << ")";
+    Str << "SArray<" << typeid(T).name() << ">(" << reinterpret_cast<void*>(v) << ",size=" << v->size() << ")";
 #else
-    Str << "SArray(" << reinterpret_cast<void *>(v) << ",size=" << v->size() << ")";
+    Str << "SArray<" << typeid(T).name() << ">(" << reinterpret_cast<void *>(v) << ",size=" << v->size() << ")";
 #endif
     return Str;
 }
@@ -174,7 +174,7 @@ SArray<T>::SArray(ulong size) : Array<T>(size) {
 #endif
 #ifdef DEBUG_SHAREDARRAY
     n_allocs++;
-    std::cout << "SArray Constructor (->#" << n_allocs << ") : SArray(size=" << _size << ") --> "
+    std::cout << "SArray<" << typeid(T).name() << "> Constructor (->#" << n_allocs << ") : SArray(size=" << _size << ") --> "
         << this << std::endl;
 #endif
 }
@@ -239,7 +239,7 @@ template<typename T>
 SArray<T>::~SArray<T>() {
 #ifdef DEBUG_SHAREDARRAY
     n_allocs--;
-    std::cout << "SArray Destructor (->#" << n_allocs << ") : ~SArray on " <<  this << std::endl;
+    std::cout << "SArray<" << typeid(T).name() << "> Destructor (->#" << n_allocs << ") : ~SArray on " <<  this << std::endl;
 #endif
     clear();
 }

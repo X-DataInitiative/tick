@@ -8,9 +8,9 @@ AdaGrad::AdaGrad(ulong epoch_size, double tol, RandType rand_type, double step, 
 }
 
 void AdaGrad::solve() {
-  std::shared_ptr<ProxSeparable> casted_prox;
+  std::shared_ptr<TProxSeparable<double, double> > casted_prox;
   if (prox->is_separable()) {
-    casted_prox = std::static_pointer_cast<ProxSeparable>(prox);
+    casted_prox = std::static_pointer_cast<TProxSeparable<double, double> >(prox);
   } else {
     TICK_ERROR("Prox in Adagrad must be separable but got " << prox->get_class_name());
   }

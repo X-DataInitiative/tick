@@ -47,8 +47,8 @@ class ModelLabelsFeatures(Model):
     }
 
     # fit_intercept should be in a model_generalized_linear, not here
-    def __init__(self):
-        Model.__init__(self)
+    def __init__(self, dtype=np.float64):
+        Model.__init__(self, dtype = dtype)
         self.features = None
         self.labels = None
         self.n_features = None
@@ -79,8 +79,8 @@ class ModelLabelsFeatures(Model):
             raise ValueError(("Features has %i samples while labels "
                               "have %i" % (n_samples, labels.shape[0])))
 
-        features = safe_array(features)
-        labels = safe_array(labels)
+        features = safe_array(features, dtype=self.dtype)
+        labels = safe_array(labels, dtype=self.dtype)
 
         self._set("features", features)
         self._set("labels", labels)

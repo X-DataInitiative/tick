@@ -1,7 +1,7 @@
 # License: BSD 3 clause
 
-from abc import ABC, abstractmethod
 import numpy as np
+from abc import ABC, abstractmethod
 from tick.base import Base
 
 
@@ -26,8 +26,9 @@ class Prox(ABC, Base):
     # The name of the attribute that will contain the C++ prox object
     _cpp_obj_name = "_prox"
 
-    def __init__(self, range: tuple=None):
+    def __init__(self, range: tuple=None, dtype=np.float64):
         Base.__init__(self)
+        self.dtype = dtype
         self._range = None
         self._prox = None
         self.range = range

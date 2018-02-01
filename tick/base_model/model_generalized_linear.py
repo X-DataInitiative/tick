@@ -1,5 +1,6 @@
 # License: BSD 3 clause
 
+import numpy as np
 
 from . import ModelLabelsFeatures
 
@@ -45,8 +46,11 @@ class ModelGeneralizedLinear(ModelLabelsFeatures):
         }
     }
 
-    def __init__(self, fit_intercept: bool = True):
-        ModelLabelsFeatures.__init__(self)
+    def __init__(
+        self, fit_intercept: bool = True,
+        dtype=np.float64
+    ):
+        ModelLabelsFeatures.__init__(self, dtype=dtype)
         self.fit_intercept = fit_intercept
 
     def _get_n_coeffs(self):

@@ -6,9 +6,19 @@
 %include serialization.i
 %include std_shared_ptr.i
 
-%shared_ptr(Model);
+%shared_ptr(TModel<double, double>);
+%shared_ptr(TModel<float, float>);
+
+%shared_ptr(TModelLabelsFeatures<double, double>);
+%shared_ptr(TModelLabelsFeatures<float, float>);
 %shared_ptr(ModelLabelsFeatures);
+
+%shared_ptr(TModelGeneralizedLinear<double, double>);
+%shared_ptr(TModelGeneralizedLinear<float, float>);
 %shared_ptr(ModelGeneralizedLinear);
+
+%shared_ptr(TModelLipschitz<double, double>);
+%shared_ptr(TModelLipschitz<float, float>);
 %shared_ptr(ModelLipschitz);
 
 %{

@@ -20,7 +20,7 @@ class ProxSlope : public ProxSortedL1 {
             ulong end,
             bool positive);
 
-  const std::string get_class_name() const override;
+  std::string get_class_name() const override;
 
   inline double get_false_discovery_rate() const {
     return false_discovery_rate;

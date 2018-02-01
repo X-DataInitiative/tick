@@ -4,7 +4,7 @@
 #include "tick/prox/prox_positive.h"
 %}
 
-class ProxPositive : public Prox {
+class ProxPositive : public TProx<double, double> {
  public:
    ProxPositive(double strength);
 

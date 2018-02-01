@@ -22,7 +22,9 @@ class SVRG : public StoSolver {
   };
 
  private:
+  bool ready_step_corrections;
   int n_threads = 1;
+  ulong rand_index;
   double step;
   // Probabilistic correction of the step-sizes of all model weights,
   // given by the inverse proportion of non-zero entries in each feature column
@@ -37,8 +39,6 @@ class SVRG : public StoSolver {
   ArrayDouble grad_i_fixed_w;
   ArrayDouble next_iterate;
 
-  ulong rand_index;
-  bool ready_step_corrections;
 
   void prepare_solve();
 
@@ -58,7 +58,7 @@ class SVRG : public StoSolver {
       const ulong& next_i,
       const ulong& n_features,
       const bool use_intercept,
-      ProxSeparable*& casted_prox);
+      TProxSeparable<double, double>*& casted_prox);
 
  public:
   SVRG(ulong epoch_size,
@@ -72,7 +72,7 @@ class SVRG : public StoSolver {
 
   void solve() override;
 
-  void set_model(ModelPtr model) override;
+  void set_model(std::shared_ptr<TModel<double, double> > model) override;
 
   double get_step() const {
     return step;

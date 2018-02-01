@@ -2,17 +2,14 @@
 
 #include "tick/robust/model_huber.h"
 
-ModelHuber::ModelHuber(const SBaseArrayDouble2dPtr features,
-                       const SArrayDoublePtr labels,
-                       const bool fit_intercept,
-                       const double threshold,
-                       const int n_threads)
-
-    : ModelGeneralizedLinear(features,
-                             labels,
-                             fit_intercept,
-                             n_threads),
-      ModelLipschitz() {
+ModelHuber::ModelHuber(
+  const SBaseArrayDouble2dPtr features,
+  const SArrayDoublePtr labels,
+  const bool fit_intercept,
+  const double threshold,
+  const int n_threads
+) : TModelLabelsFeatures<double, double>(features, labels),
+    ModelGeneralizedLinear(features, labels, fit_intercept, n_threads) {
   set_threshold(threshold);
 }
 

@@ -6,7 +6,8 @@ ModelLinRegWithIntercepts::ModelLinRegWithIntercepts(const SBaseArrayDouble2dPtr
                                                      const SArrayDoublePtr labels,
                                                      const bool fit_intercept,
                                                      const int n_threads)
-    : ModelGeneralizedLinear(features, labels, fit_intercept, n_threads),
+    : TModelLabelsFeatures<double, double>(features, labels),
+      TModelGeneralizedLinear<double, double>(features, labels, fit_intercept, n_threads) ,
       ModelGeneralizedLinearWithIntercepts(features, labels, fit_intercept, n_threads),
       ModelLinReg(features, labels, fit_intercept, n_threads) {}
 
@@ -19,13 +20,13 @@ void ModelLinRegWithIntercepts::compute_lip_consts() {
     return;
   } else {
     compute_features_norm_sq();
-    lip_consts = ArrayDouble(n_samples);
+    lip_consts = ArrayDouble(get_n_samples());
     double c = 1;
-    if (fit_intercept) {
+    if (use_intercept()) {
       c = 2;
     }
-    for (ulong i = 0; i < n_samples; ++i) {
-      lip_consts[i] = features_norm_sq[i] + c;
+    for (ulong i = 0; i < get_n_samples(); ++i) {
+      lip_consts[i] = get_features_norm_sq()[i] + c;
     }
   }
 }

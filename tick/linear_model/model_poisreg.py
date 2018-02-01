@@ -1,18 +1,21 @@
 # License: BSD 3 clause
 
-
-from .build.linear_model import ModelPoisReg as _ModelPoisReg
-from .build.linear_model import LinkType_identity as identity
-from .build.linear_model import LinkType_exponential as exponential
-
 import numpy as np
 from scipy.special import gammaln
 
 from tick.base_model import ModelGeneralizedLinear, ModelFirstOrder, \
     ModelSecondOrder, ModelSelfConcordant
+from .build.linear_model import ModelPoisRegDouble as _ModelPoisRegDouble
+from .build.linear_model import ModelPoisRegFloat as _ModelPoisRegFloat
+from .build.linear_model import LinkType_identity as identity
+from .build.linear_model import LinkType_exponential as exponential
 
 __author__ = 'Stephane Gaiffas'
 
+dtype_map = {
+  np.float64: _ModelPoisRegDouble,
+  np.float32: _ModelPoisRegFloat
+}
 
 class ModelPoisReg(ModelGeneralizedLinear,
                    ModelSecondOrder,
@@ -108,13 +111,18 @@ class ModelPoisReg(ModelGeneralizedLinear,
         }
     }
 
-    def __init__(self, fit_intercept: bool = True,
-                 link: str = "exponential", n_threads: int = 1):
+    def __init__(
+        self, fit_intercept: bool = True,
+        link: str = "exponential", n_threads: int = 1,
+        dtype=np.float64
+    ):
         """
         """
-        ModelSecondOrder.__init__(self)
-        ModelGeneralizedLinear.__init__(self, fit_intercept)
-        ModelSelfConcordant.__init__(self)
+        ModelSecondOrder.__init__(self, dtype=dtype)
+        ModelGeneralizedLinear.__init__(self, fit_intercept, dtype=dtype)
+        ModelSelfConcordant.__init__(self, dtype=dtype)
+        if self.dtype not in dtype_map:
+            raise ValueError('dtype provided to PoisReg is not handled')
         self._set("_link", None)
         self.link = link
         self.n_threads = n_threads
@@ -138,11 +146,18 @@ class ModelPoisReg(ModelGeneralizedLinear,
         """
         ModelFirstOrder.fit(self, features, labels)
         ModelGeneralizedLinear.fit(self, features, labels)
-        self._set("_model", _ModelPoisReg(features,
-                                          labels,
-                                          self._link_type,
-                                          self.fit_intercept,
-                                          self.n_threads))
+
+        self._set(
+          "_model", 
+          dtype_map[self.dtype](
+            self.features,
+            self.labels,
+            self._link_type,
+            self.fit_intercept,
+            self.n_threads
+          )
+        )
+
         return self
 
     def _grad(self, coeffs: np.ndarray, out: np.ndarray) -> None:
@@ -206,7 +221,7 @@ class ModelPoisReg(ModelGeneralizedLinear,
         else:
             scaled_l_l2sq = l_l2sq
 
-        primal_vector = np.empty(self.n_coeffs)
+        primal_vector = np.empty(self.n_coeffs).astype(self.dtype)
         self._model.sdca_primal_dual_relation(scaled_l_l2sq, dual_vector,
                                               primal_vector)
         return primal_vector

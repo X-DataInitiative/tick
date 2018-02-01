@@ -1,13 +1,17 @@
 // License: BSD 3 clause
 
+
 %{
 #include "tick/prox/prox_multi.h"
 %}
 
-%include "std_vector.i"
-%template(ProxPtrVector) std::vector<ProxPtr>;
+%include "prox.i"
 
-class ProxMulti : public Prox {
+%template(ProxDoublePtrVector) std::vector<ProxDoublePtr>;
+
+class ProxMulti : public ProxDouble {
  public:
-   ProxMulti(std::vector<ProxPtr> proxs);
+   explicit ProxMulti(
+     std::vector<std::shared_ptr<TProx<double, double> > > proxs
+   );
 };

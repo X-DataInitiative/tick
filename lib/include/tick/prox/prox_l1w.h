@@ -6,7 +6,7 @@
 #include "tick/base/base.h"
 #include "prox_separable.h"
 
-class ProxL1w : public ProxSeparable {
+class ProxL1w : public TProxSeparable<double, double> {
  protected:
   // Weights for L1 penalization
   SArrayDoublePtr weights;
@@ -16,7 +16,7 @@ class ProxL1w : public ProxSeparable {
 
   ProxL1w(double strength, SArrayDoublePtr weights, ulong start, ulong end, bool positive);
 
-  const std::string get_class_name() const override;
+  std::string get_class_name() const override;
 
   void call(const ArrayDouble &coeffs, const double step, ArrayDouble &out,
             ulong start, ulong end) override;

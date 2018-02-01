@@ -32,28 +32,54 @@ std::shared_ptr<A> array_from_file(const std::string &_file) {
   return arr;
 }
 
-void tick_double_array_to_file(std::string _file, const ArrayDouble &array) {
+inline void tick_float_array_to_file(std::string _file, const ArrayFloat &array) {
+  array_to_file<ArrayFloat>(_file, array);
+}
+
+inline void tick_double_array_to_file(std::string _file, const ArrayDouble &array) {
   array_to_file<ArrayDouble>(_file, array);
 }
 
-SArrayDoublePtr tick_double_array_from_file(std::string _file) {
+inline SArrayFloatPtr tick_float_array_from_file(std::string _file) {
+  return array_from_file<SArrayFloat>(_file);
+}
+
+inline SArrayDoublePtr tick_double_array_from_file(std::string _file) {
   return array_from_file<SArrayDouble>(_file);
 }
 
-void tick_double_array2d_to_file(std::string _file, const ArrayDouble2d &array) {
+inline void tick_float_array2d_to_file(std::string _file, const ArrayFloat2d &array) {
+  array_to_file<ArrayFloat2d>(_file, array);
+}
+
+inline void tick_double_array2d_to_file(std::string _file, const ArrayDouble2d &array) {
   array_to_file<ArrayDouble2d>(_file, array);
 }
 
-SArrayDouble2dPtr tick_double_array2d_from_file(std::string _file) {
+inline SArrayFloat2dPtr tick_float_array2d_from_file(std::string _file) {
+  return array_from_file<SArrayFloat2d>(_file);
+}
+
+inline SArrayDouble2dPtr tick_double_array2d_from_file(std::string _file) {
   return array_from_file<SArrayDouble2d>(_file);
 }
 
-void tick_double_sparse2d_to_file(std::string _file, const SparseArrayDouble2d &array) {
+inline void tick_float_sparse2d_to_file(std::string _file, const SparseArrayFloat2d &array) {
+  array_to_file<SparseArrayFloat2d>(_file, array);;
+}
+
+inline void tick_double_sparse2d_to_file(std::string _file, const SparseArrayDouble2d &array) {
   array_to_file<SparseArrayDouble2d>(_file, array);;
 }
 
-SSparseArrayDouble2dPtr tick_double_sparse2d_from_file(std::string _file) {
+inline SSparseArrayFloat2dPtr tick_float_sparse2d_from_file(std::string _file) {
+  return array_from_file<SSparseArrayFloat2d>(_file);
+}
+
+inline SSparseArrayDouble2dPtr tick_double_sparse2d_from_file(std::string _file) {
   return array_from_file<SSparseArrayDouble2d>(_file);
 }
+
+
 
 #endif  // LIB_INCLUDE_TICK_ARRAY_SERIALIZER_H_

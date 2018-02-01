@@ -4,7 +4,7 @@
 #include "tick/prox/prox_elasticnet.h"
 %}
 
-class ProxElasticNet : public ProxSeparable {
+class ProxElasticNet : public TProxSeparable<double, double> {
  public:
   ProxElasticNet(double strength,
                  double ratio,

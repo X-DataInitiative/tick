@@ -5,13 +5,13 @@
 
 #include "prox.h"
 
-class ProxEquality : public Prox {
+class ProxEquality : public TProx<double, double> {
  public:
   explicit ProxEquality(double strength, bool positive);
 
   ProxEquality(double strength, ulong start, ulong end, bool positive);
 
-  const std::string get_class_name() const override;
+  std::string get_class_name() const override;
 
   double value(const ArrayDouble &coeffs, ulong start, ulong end) override;
 

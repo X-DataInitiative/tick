@@ -66,7 +66,8 @@ class Model(ABC, Base):
     # The name of the attribute that might contain the C++ model object
     _cpp_obj_name = "_model"
 
-    def __init__(self):
+    def __init__(self, dtype=np.float64):
+        self.dtype = dtype
         Base.__init__(self)
         self._fitted = False
         self._model = None
@@ -120,6 +121,11 @@ class Model(ABC, Base):
         The ``fit`` method must be called to give data to the model,
         before using ``loss``. An error is raised otherwise.
         """
+        # This is a bit of a hack as I don't see how to control the dtype of 
+        #  coeffes returning from scipy through lambdas
+        if self.dtype != np.float64:
+          coeffs = coeffs.astype(self.dtype)
+
         if not self._fitted:
             raise ValueError("call ``fit`` before using ``loss``")
         if coeffs.shape[0] != self.n_coeffs:
@@ -129,6 +135,7 @@ class Model(ABC, Base):
         self._inc_attr(N_CALLS_LOSS)
         self._inc_attr(PASS_OVER_DATA,
                        step=self.pass_per_operation[LOSS])
+
         return self._loss(coeffs)
 
     @abstractmethod

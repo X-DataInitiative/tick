@@ -5,9 +5,12 @@
 
 #include "prox_with_groups.h"
 
-class ProxBinarsity : public ProxWithGroups {
+class ProxBinarsity : public TProxWithGroups<double, double> {
  protected:
-  std::unique_ptr<Prox> build_prox(double strength, ulong start, ulong end, bool positive) final;
+  using TProxWithGroups<double, double>::is_synchronized;
+
+ protected:
+  std::unique_ptr<TProx<double, double> > build_prox(double strength, ulong start, ulong end, bool positive);
 
  public:
   ProxBinarsity(double strength, SArrayULongPtr blocks_start, SArrayULongPtr blocks_length,
@@ -16,10 +19,10 @@ class ProxBinarsity : public ProxWithGroups {
   ProxBinarsity(double strength, SArrayULongPtr blocks_start, SArrayULongPtr blocks_length,
                 ulong start, ulong end, bool positive);
 
-  const std::string get_class_name() const final;
+  std::string get_class_name() const;
 
   void call(const ArrayDouble &coeffs, double step, ArrayDouble &out,
-            ulong start, ulong end) final;
+            ulong start, ulong end);
 };
 
 #endif  // LIB_INCLUDE_TICK_PROX_PROX_BINARSITY_H_

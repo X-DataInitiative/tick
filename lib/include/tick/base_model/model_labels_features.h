@@ -6,27 +6,38 @@
 
 #include "model.h"
 
-#include <iostream>
+#include <string>
 
-class DLL_PUBLIC ModelLabelsFeatures : public virtual Model {
+template <class T, class K = T>
+class DLL_PUBLIC TModelLabelsFeatures : public virtual TModel<T, K> {
+ private:
+  std::string clazz = "TModelLabelsFeatures<"
+    + std::string(typeid(T).name())
+    + ", " + std::string(typeid(K).name()) + ">";
+
  protected:
+  bool ready_columns_sparsity;
   ulong n_samples, n_features;
 
   //! Labels vector
-  SArrayDoublePtr labels;
+  std::shared_ptr<SArray<K> > labels;
 
   //! Features matrix (either sparse or not)
-  SBaseArrayDouble2dPtr features;
+  std::shared_ptr<BaseArray2d<K> > features;
 
-  bool ready_columns_sparsity;
-  ArrayDouble column_sparsity;
+  Array<K> column_sparsity;
 
  public:
-  ModelLabelsFeatures(SBaseArrayDouble2dPtr features,
-                      SArrayDoublePtr labels);
+  TModelLabelsFeatures(
+    const std::shared_ptr<BaseArray2d<K> > features,
+    const std::shared_ptr<SArray<K> > labels);
+  TModelLabelsFeatures(const TModelLabelsFeatures&) = delete;
+  TModelLabelsFeatures(const TModelLabelsFeatures&&) = delete;
 
-  const char *get_class_name() const override {
-    return "ModelLabelsFeatures";
+  virtual ~TModelLabelsFeatures() {}
+
+  virtual const char *get_class_name() const {
+    return clazz.c_str();
   }
 
   ulong get_n_samples() const override {
@@ -38,11 +49,11 @@ class DLL_PUBLIC ModelLabelsFeatures : public virtual Model {
   }
 
   // TODO: add consts
-  BaseArrayDouble get_features(ulong i) const override {
+  BaseArray<T> get_features(ulong i) const override {
     return view_row(*features, i);
   }
 
-  virtual double get_label(ulong i) const {
+  virtual K get_label(ulong i) const {
     return (*labels)[i];
   }
 
@@ -58,7 +69,7 @@ class DLL_PUBLIC ModelLabelsFeatures : public virtual Model {
     return ready_columns_sparsity;
   }
 
-  ArrayDouble get_column_sparsity_view() {
+  Array<T> get_column_sparsity_view() {
     if (!is_ready_columns_sparsity()) compute_columns_sparsity();
     return view(column_sparsity);
   }
@@ -85,5 +96,19 @@ class DLL_PUBLIC ModelLabelsFeatures : public virtual Model {
     ar(cereal::make_nvp("features", *features));
   }
 };
+
+class DLL_PUBLIC ModelLabelsFeatures : public TModelLabelsFeatures<double, double> {
+ public:
+  ModelLabelsFeatures(
+    const SBaseArrayDouble2dPtr features,
+    const SArrayDoublePtr labels);
+
+  const char *get_class_name() const override {
+    return "ModelLabelsFeatures";
+  }
+};
+
+using ModelLabelsFeaturesDouble = TModelLabelsFeatures<double, double>;
+using ModelLabelsFeaturesFloat  = TModelLabelsFeatures<float , float>;
 
 #endif  // LIB_INCLUDE_TICK_BASE_MODEL_MODEL_LABELS_FEATURES_H_

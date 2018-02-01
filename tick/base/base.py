@@ -547,4 +547,8 @@ class Base(metaclass=BaseMeta):
         self._set(key, getattr(self, key) + step)
 
     def __str__(self):
-        return json.dumps(self._as_dict(), sort_keys=True, indent=2)
+
+        dic = self._as_dict()
+        if 'dtype' in dic:
+          del dic['dtype']
+        return json.dumps(dic, sort_keys=True, indent=2)

@@ -40,8 +40,11 @@ class TestSolver(unittest.TestCase):
         X, y = simu.simulate()
         return y, X, coeffs0, interc0
 
-    def check_solver(self, solver, fit_intercept=True, model='logreg',
-                     decimal=1):
+    def check_solver(
+        self, solver, fit_intercept=True, model='logreg',
+        decimal=1, 
+        dtype=np.float64
+    ):
         """Check solver instance finds same parameters as scipy BFGS
 
         Parameters
@@ -63,7 +66,7 @@ class TestSolver(unittest.TestCase):
         n_samples = TestSolver.n_samples
         n_features = TestSolver.n_features
 
-        coeffs0 = weights_sparse_gauss(n_features, nnz=5)
+        coeffs0 = weights_sparse_gauss(n_features, nnz=5, dtype=dtype)
         if fit_intercept:
             interc0 = 2.
         else:
@@ -71,18 +74,18 @@ class TestSolver(unittest.TestCase):
 
         if model == 'linreg':
             X, y = SimuLinReg(coeffs0, interc0, n_samples=n_samples,
-                              verbose=False, seed=123).simulate()
-            model = ModelLinReg(fit_intercept=fit_intercept).fit(X, y)
+                              verbose=False, seed=123, dtype=dtype).simulate()
+            model = ModelLinReg(fit_intercept=fit_intercept, dtype=dtype).fit(X, y)
         elif model == 'logreg':
             X, y = SimuLogReg(coeffs0, interc0, n_samples=n_samples,
-                              verbose=False, seed=123).simulate()
-            model = ModelLogReg(fit_intercept=fit_intercept).fit(X, y)
+                              verbose=False, seed=123, dtype=dtype).simulate()
+            model = ModelLogReg(fit_intercept=fit_intercept, dtype=dtype).fit(X, y)
         elif model == 'poisreg':
             X, y = SimuPoisReg(coeffs0, interc0, n_samples=n_samples,
-                               verbose=False, seed=123).simulate()
+                               verbose=False, seed=123, dtype=dtype).simulate()
             # Rescale features to avoid overflows in Poisson simulations
             X /= np.linalg.norm(X, axis=1).reshape(n_samples, 1)
-            model = ModelPoisReg(fit_intercept=fit_intercept).fit(X, y)
+            model = ModelPoisReg(fit_intercept=fit_intercept, dtype=dtype).fit(X, y)
         else:
             raise ValueError("``model`` must be either 'linreg', 'logreg' or"
                              " 'poisreg'")
@@ -90,7 +93,7 @@ class TestSolver(unittest.TestCase):
         solver.set_model(model)
 
         strength = 1e-2
-        prox = ProxL2Sq(strength, (0, model.n_features))
+        prox = ProxL2Sq(strength, (0, model.n_features), dtype=dtype)
 
         if type(solver) is not SDCA:
             solver.set_prox(prox)
@@ -100,7 +103,7 @@ class TestSolver(unittest.TestCase):
 
         coeffs_solver = solver.solve()
         # Compare with BFGS
-        bfgs = BFGS(max_iter=100, verbose=False).set_model(model).set_prox(prox)
+        bfgs = BFGS(max_iter=100, verbose=False, dtype=dtype).set_model(model).set_prox(prox)
         coeffs_bfgs = bfgs.solve()
         np.testing.assert_almost_equal(coeffs_solver, coeffs_bfgs,
                                        decimal=decimal)
@@ -126,17 +129,18 @@ class TestSolver(unittest.TestCase):
             solver.set_prox(prox)
 
     def _test_solver_sparse_and_dense_consistency(
-            self, create_solver,
-            model_classes=list([ModelLinReg, ModelLogReg, ModelPoisReg]),
-            proxs_classes=list([ProxL2Sq, ProxL1]),
-            fit_intercepts=list([False, True])
+        self, create_solver,
+        model_classes=list([ModelLinReg, ModelLogReg, ModelPoisReg]),
+        proxs_classes=list([ProxL2Sq, ProxL1]),
+        fit_intercepts=list([False, True]), 
+        dtype = np.float64
     ):
         """...Test that solvers can run all glm models and are consistent
         with sparsity
         """
         n_samples = 50
         n_features = 10
-        coeffs0 = weights_sparse_gauss(n_features, nnz=5)
+        coeffs0 = weights_sparse_gauss(n_features, nnz=5, dtype=dtype)
         interc0 = 2.
         seed = 123
         prox_strength = 1e-3
@@ -158,19 +162,19 @@ class TestSolver(unittest.TestCase):
 
             Simu = model_simu_map[Model]
             simu = Simu(coeffs0, interc, n_samples=n_samples,
-                        seed=seed, verbose=False)
+                        seed=seed, verbose=False, dtype=dtype)
             X, y = simu.simulate()
-            X_sparse = csr_matrix(X)
+            X_sparse = csr_matrix(X, dtype = dtype)
 
             for sparse in [True, False]:
-                model = Model(fit_intercept=fit_intercept)
+                model = Model(fit_intercept=fit_intercept, dtype=dtype)
 
                 if sparse:
                     model.fit(X_sparse, y)
                 else:
                     model.fit(X, y)
 
-                prox = Prox(prox_strength, (0, n_features))
+                prox = Prox(prox_strength, (0, n_features), dtype=dtype)
                 solver = create_solver()
                 solver.set_model(model).set_prox(prox)
 

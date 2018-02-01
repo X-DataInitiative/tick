@@ -2,13 +2,15 @@
 
 #include "tick/base_model/model_labels_features.h"
 
-ModelLabelsFeatures::ModelLabelsFeatures(SBaseArrayDouble2dPtr features,
-                                         SArrayDoublePtr labels)
-    : n_samples(labels.get() ? labels->size() : 0),
-      n_features(features.get() ? features->n_cols() : 0),
-      labels(labels),
-      features(features),
-      ready_columns_sparsity(false) {
+template <class T, class K>
+TModelLabelsFeatures<T, K>::TModelLabelsFeatures(
+  const std::shared_ptr<BaseArray2d<K> > features,
+  const std::shared_ptr<SArray<K> > labels
+) : ready_columns_sparsity(false),
+    n_samples(labels.get() ? labels->size() : 0),
+    n_features(features.get() ? features->n_cols() : 0),
+    labels(labels),
+    features(features) {
   if (labels.get() && labels->size() != features->n_rows()) {
     std::stringstream ss;
     ss << "In ModelLabelsFeatures, number of labels is " << labels->size();
@@ -17,12 +19,19 @@ ModelLabelsFeatures::ModelLabelsFeatures(SBaseArrayDouble2dPtr features,
   }
 }
 
-void ModelLabelsFeatures::compute_columns_sparsity() {
+ModelLabelsFeatures::ModelLabelsFeatures(
+  const SBaseArrayDouble2dPtr features,
+  const SArrayDoublePtr labels
+) : TModelLabelsFeatures<double, double>(features, labels)
+{}
+
+template <class T, class K>
+void TModelLabelsFeatures<T, K>::compute_columns_sparsity() {
   if (features->is_sparse()) {
-    column_sparsity = ArrayDouble(n_features);
+    column_sparsity = Array<K>(n_features);
     column_sparsity.fill(0.);
     for (ulong i = 0; i < n_samples; ++i) {
-      BaseArrayDouble features_i = get_features(i);
+      BaseArray<T> features_i = get_features(i);
       for (ulong j = 0; j < features_i.size_sparse(); ++j) {
         // Even if the entry is zero (nothing forbids to store zeros...) increment
         // the number of non-zeros of the columns. This is necessary when computed step-size corrections
@@ -36,3 +45,6 @@ void ModelLabelsFeatures::compute_columns_sparsity() {
     TICK_ERROR("The features matrix is not sparse.")
   }
 }
+
+template class TModelLabelsFeatures<double, double>;
+template class TModelLabelsFeatures<float , float>;

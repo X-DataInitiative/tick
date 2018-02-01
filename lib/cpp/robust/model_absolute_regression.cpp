@@ -6,10 +6,8 @@ ModelAbsoluteRegression::ModelAbsoluteRegression(const SBaseArrayDouble2dPtr fea
                                                  const SArrayDoublePtr labels,
                                                  const bool fit_intercept,
                                                  const int n_threads)
-    : ModelGeneralizedLinear(features,
-                             labels,
-                             fit_intercept,
-                             n_threads) {}
+    : TModelLabelsFeatures<double, double>(features, labels),
+      ModelGeneralizedLinear(features, labels, fit_intercept, n_threads) {}
 
 const char *ModelAbsoluteRegression::get_class_name() const {
   return "ModelAbsoluteRegression";

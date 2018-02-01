@@ -17,7 +17,7 @@ SDCA::SDCA(double l_l2sq,
   stored_variables_ready = false;
 }
 
-void SDCA::set_model(ModelPtr model) {
+void SDCA::set_model(std::shared_ptr<TModel<double, double> > model) {
   StoSolver::set_model(model);
   this->model = model;
   this->n_coeffs = model->get_n_coeffs();

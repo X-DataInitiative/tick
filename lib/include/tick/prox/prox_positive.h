@@ -5,13 +5,13 @@
 
 #include "prox_separable.h"
 
-class ProxPositive : public ProxSeparable {
+class ProxPositive : public TProxSeparable<double, double> {
  public:
   explicit ProxPositive(double strength);
 
   ProxPositive(double strength, ulong start, ulong end);
 
-  const std::string get_class_name() const override;
+  std::string get_class_name() const override;
 
   // Override value, only this value method should be called
   double value(const ArrayDouble &coeffs, ulong start, ulong end) override;

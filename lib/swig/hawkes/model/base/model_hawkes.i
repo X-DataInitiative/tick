@@ -5,7 +5,9 @@
 #include "tick/hawkes/model/base/model_hawkes.h"
 %}
 
-class ModelHawkes : public Model {
+%include "base_model_module.i"
+
+class ModelHawkes : public TModel<double, double> {
 
  public:
   ModelHawkes(const int max_n_threads = 1,

@@ -7,10 +7,8 @@ ModelHinge::ModelHinge(const SBaseArrayDouble2dPtr features,
                        const bool fit_intercept,
                        const int n_threads)
 
-    : ModelGeneralizedLinear(features,
-                             labels,
-                             fit_intercept,
-                             n_threads) {}
+    : TModelLabelsFeatures<double, double>(features, labels),
+      ModelGeneralizedLinear(features, labels, fit_intercept, n_threads) {}
 
 const char *ModelHinge::get_class_name() const {
   return "ModelHinge";

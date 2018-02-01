@@ -89,13 +89,16 @@ class BFGS(SolverFirstOrder):
         }
     }
 
-    def __init__(self, tol: float = 1e-10,
-                 max_iter: int = 10, verbose: bool = True,
-                 print_every: int = 1, record_every: int = 1):
+    def __init__(
+        self, tol: float = 1e-10,
+        max_iter: int = 10, verbose: bool = True,
+        print_every: int = 1, record_every: int = 1,
+        dtype=np.float64
+    ):
         SolverFirstOrder.__init__(self, step=None, tol=tol,
                                   max_iter=max_iter, verbose=verbose,
                                   print_every=print_every,
-                                  record_every=record_every)
+                                  record_every=record_every, dtype=dtype)
         self._prox_grad = None
 
     def set_prox(self, prox: Prox):
@@ -149,7 +152,7 @@ class BFGS(SolverFirstOrder):
 
     def _solve(self, x0: np.ndarray = None):
         if x0 is None:
-            x0 = np.zeros(self.model.n_coeffs)
+            x0 = np.zeros(self.model.n_coeffs).astype(self.dtype)
         obj = self.objective(x0)
 
         # A closure to maintain history along internal BFGS's iterations

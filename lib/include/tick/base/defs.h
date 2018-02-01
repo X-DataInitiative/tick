@@ -17,6 +17,11 @@
 #include <cstdint>
 
 #if defined _WIN32 || defined __CYGWIN__
+
+#ifndef __func__
+#define __func__ __FUNCTION__
+#endif
+
 #ifdef BUILDING_DLL
 #ifdef __GNUC__
 #define DLL_PUBLIC __attribute__ ((dllexport))
