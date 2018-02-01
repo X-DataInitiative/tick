@@ -13,8 +13,10 @@ ulong ModelHawkesFixedSumExpKernCustomLogLikList::get_n_coeffs() const {
 }
 
 void ModelHawkesFixedSumExpKernCustomLogLikList::set_data(const SArrayDoublePtrList2D &timestamps_list,
-                                                          const SArrayULongPtrList1D &global_n_list,
+                                                          const SArrayLongPtrList1D &global_n_list,
                                                             const VArrayDoublePtr end_times) {
+
+    printf("\nModelHawkesFixedSumExpKernCustomLogLikList::set_data is called.\n");
 
     const auto timestamps_list_descriptor = describe_timestamps_list(timestamps_list, end_times);
     n_realizations = timestamps_list_descriptor.n_realizations;
@@ -26,7 +28,6 @@ void ModelHawkesFixedSumExpKernCustomLogLikList::set_data(const SArrayDoublePtrL
     this->end_times = end_times;
 
     this->global_n_list = global_n_list;
-
 
     weights_computed = false;
 }
