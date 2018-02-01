@@ -4,8 +4,9 @@
 #include "tick/survival/model_coxreg_partial_lik.h"
 %}
 
+%include "model.i"
 
-class ModelCoxRegPartialLik : public Model {
+class ModelCoxRegPartialLik : public TModel<double, double> {
  public:
 
   ModelCoxRegPartialLik(const SBaseArrayDouble2dPtr features,

@@ -14,35 +14,30 @@
 #include <iostream>
 
 // TODO: Model "data" : ModeLabelsFeatures, Model,Model pour les Hawkes
-
-/**
- * @class Model
- * @brief The main Model class from which all models inherit.
- * @note This class has all methods ever used by any model, hence solvers which are using a
- * pointer on a model should be able to call all methods they need. This is certainly not the
- * best possible design but it is sufficient at the moment.
- */
-class Model {
+template <class T = double, class K = T>
+class TModel {
  public:
-  Model() {}
+  TModel() {}
+  virtual ~TModel() {}
 
   virtual const char *get_class_name() const {
-    return "Model";
+    return "TModel<T>";
   }
 
-  virtual double loss_i(const ulong i, const ArrayDouble &coeffs) {
+  virtual K loss_i(const ulong i, const Array<T> &coeffs) {
     TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
   }
 
-  virtual void grad_i(const ulong i, const ArrayDouble &coeffs, ArrayDouble &out) {
+
+  virtual void grad_i(const ulong i, const Array<T> &coeffs, Array<K> &out) {
     TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
   }
 
-  virtual void grad(const ArrayDouble &coeffs, ArrayDouble &out) {
+  virtual void grad(const Array<T> &coeffs, Array<K> &out) {
     TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
   }
 
-  virtual double loss(const ArrayDouble &coeffs) {
+  virtual K loss(const Array<T> &coeffs) {
     TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
   }
 
@@ -64,11 +59,11 @@ class Model {
     TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
   }
 
-  virtual double sdca_dual_min_i(const ulong i,
-                                 const double dual_i,
-                                 const ArrayDouble &primal_vector,
-                                 const double previous_delta_dual_i,
-                                 double l_l2sq) {
+  virtual K sdca_dual_min_i(const ulong i,
+                                 const K dual_i,
+                                 const Array<K> &primal_vector,
+                                 const K previous_delta_dual_i,
+                                 K l_l2sq) {
     TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
   }
 
@@ -83,13 +78,13 @@ class Model {
     return nullptr;
   }
 
-  virtual BaseArrayDouble get_features(const ulong i) const {
+  virtual BaseArray<T> get_features(const ulong i) const {
     TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
   }
 
-  virtual void sdca_primal_dual_relation(const double l_l2sq,
-                                         const ArrayDouble &dual_vector,
-                                         ArrayDouble &out_primal_vector) {
+  virtual void sdca_primal_dual_relation(const K l_l2sq,
+                                         const Array<K> &dual_vector,
+                                         Array<K> &out_primal_vector) {
     TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
   }
 
@@ -98,10 +93,11 @@ class Model {
   }
 
   virtual bool use_intercept() const {
+    TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
     return false;
   }
 
-  virtual double grad_i_factor(const ulong i, const ArrayDouble &coeffs) {
+  virtual K grad_i_factor(const ulong i, const Array<T> &coeffs) {
     TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
   }
 
@@ -113,7 +109,7 @@ class Model {
    * @brief Get the maximum of all Lipschits constants
    * @note This will cache the obtained value for later calls
    */
-  virtual double get_lip_max() {
+  virtual K get_lip_max() {
     TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
   }
 
@@ -121,12 +117,15 @@ class Model {
    * @brief Get the mean of all Lipschits constants
    * @note This will cache the obtained value for later calls
    */
-  virtual double get_lip_mean() {
+  virtual K get_lip_mean() {
     TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
   }
 };
 
-typedef std::shared_ptr<Model> ModelPtr;
+using ModelDouble = TModel<double, double>;
+using ModelDoublePtr = std::shared_ptr<ModelDouble>;
+
+using ModelFloat = TModel<float , float>;
+using ModelFloatPtr = std::shared_ptr<ModelFloat>;
 
 #endif  // LIB_INCLUDE_TICK_BASE_MODEL_MODEL_H_
-

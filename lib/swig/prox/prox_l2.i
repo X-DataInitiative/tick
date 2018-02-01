@@ -4,7 +4,7 @@
 #include "tick/prox/prox_l2.h"
 %}
 
-class ProxL2 : public Prox {
+class ProxL2 : public TProx<double, double> {
  public:
    ProxL2(double strength,
           bool positive);

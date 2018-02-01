@@ -5,15 +5,15 @@
 
 ProxTV::ProxTV(double strength,
                bool positive)
-  : Prox(strength, positive) {}
+  : TProx<double, double>(strength, positive) {}
 
 ProxTV::ProxTV(double strength,
                ulong start,
                ulong end,
                bool positive)
-  : Prox(strength, start, end, positive) {}
+  : TProx<double, double>(strength, start, end, positive) {}
 
-const std::string ProxTV::get_class_name() const {
+std::string ProxTV::get_class_name() const {
   return "ProxTV";
 }
 

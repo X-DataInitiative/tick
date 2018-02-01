@@ -4,7 +4,7 @@
 #include "tick/prox/prox_tv.h"
 %}
 
-class ProxTV : public Prox {
+class ProxTV : public TProx<double, double> {
  public:
    ProxTV(double strength,
           bool positive);

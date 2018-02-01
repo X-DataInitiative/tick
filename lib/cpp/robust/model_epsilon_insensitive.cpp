@@ -8,10 +8,8 @@ ModelEpsilonInsensitive::ModelEpsilonInsensitive(const SBaseArrayDouble2dPtr fea
                                                  const double threshold,
                                                  const int n_threads)
 
-    : ModelGeneralizedLinear(features,
-                             labels,
-                             fit_intercept,
-                             n_threads) {
+    : TModelLabelsFeatures<double, double>(features, labels),
+      ModelGeneralizedLinear(features, labels, fit_intercept, n_threads) {
   set_threshold(threshold);
 }
 

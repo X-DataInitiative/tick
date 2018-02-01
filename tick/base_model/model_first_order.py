@@ -51,8 +51,8 @@ class ModelFirstOrder(Model):
         },
     }
 
-    def __init__(self):
-        Model.__init__(self)
+    def __init__(self, dtype=np.float64):
+        Model.__init__(self, dtype=dtype)
         setattr(self, N_CALLS_GRAD, 0)
         setattr(self, N_CALLS_LOSS_AND_GRAD, 0)
 
@@ -85,6 +85,9 @@ class ModelFirstOrder(Model):
         The ``fit`` method must be called to give data to the model,
         before using ``grad``. An error is raised otherwise.
         """
+        if self.dtype != np.float64:
+          coeffs = coeffs.astype(self.dtype)
+
         if not self._fitted:
             raise ValueError("call ``fit`` before using ``grad``")
 
@@ -92,13 +95,16 @@ class ModelFirstOrder(Model):
             raise ValueError(("``coeffs`` has size %i while the model" +
                               " expects %i coefficients") %
                              (len(coeffs), self.n_coeffs))
+
         if out is not None:
             grad = out
         else:
-            grad = np.empty(self.n_coeffs)
+            grad = np.empty(self.n_coeffs).astype(self.dtype)
+
         self._inc_attr(N_CALLS_GRAD)
         self._inc_attr(PASS_OVER_DATA,
                        step=self.pass_per_operation[GRAD])
+
         self._grad(coeffs, out=grad)
         return grad
 

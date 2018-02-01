@@ -5,7 +5,7 @@
 %}
 
 
-class ProxGroupL1: public Prox {
+class ProxGroupL1: public TProx<double, double> {
  public:
   ProxGroupL1(double strength, SArrayULongPtr blocks_start,
                 SArrayULongPtr blocks_length, bool positive);
@@ -20,4 +20,3 @@ class ProxGroupL1: public Prox {
 
   inline virtual void set_blocks_length(SArrayULongPtr blocks_length);
 };
-

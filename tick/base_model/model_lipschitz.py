@@ -2,6 +2,7 @@
 
 from abc import abstractmethod
 from . import Model
+import numpy as np
 
 
 __author__ = 'Stephane Gaiffas'
@@ -26,8 +27,8 @@ class ModelLipschitz(Model):
         }
     }
 
-    def __init__(self):
-        Model.__init__(self)
+    def __init__(self, dtype=np.float64):
+        Model.__init__(self, dtype=dtype)
         self._ready_lip_best = False
         self._lip_best = None
 

@@ -76,12 +76,16 @@ class SimuWithFeatures(Simu):
         }
     }
 
-    def __init__(self, intercept: float = None,
-                 features: np.ndarray = None, n_samples: int = 200,
-                 n_features: int = 30, features_type: str = "cov_toeplitz",
-                 cov_corr: float = 0.5, features_scaling: str = "none",
-                 seed: int = None, verbose: bool = True):
+    def __init__(
+        self, intercept: float = None,
+        features: np.ndarray = None, n_samples: int = 200,
+        n_features: int = 30, features_type: str = "cov_toeplitz",
+        cov_corr: float = 0.5, features_scaling: str = "none",
+        seed: int = None, verbose: bool = True, 
+        dtype=np.float64
+    ):
         Simu.__init__(self, seed, verbose)
+        self.dtype = dtype
         self.intercept = intercept
         self.features = features
         self.n_samples = n_samples
@@ -154,12 +158,14 @@ class SimuWithFeatures(Simu):
             n_features = self.n_features
             if features_type == "cov_uniform":
                 features = features_normal_cov_uniform(n_samples,
-                                                       n_features)
+                                                       n_features,
+                                                       dtype = self.dtype)
             else:
                 cov_corr = self.cov_corr
                 features = features_normal_cov_toeplitz(n_samples,
                                                         n_features,
-                                                        cov_corr)
+                                                        cov_corr,
+                                                        dtype = self.dtype)
         else:
             features = self.features
 

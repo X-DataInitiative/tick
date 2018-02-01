@@ -4,7 +4,10 @@
 
 %include linear_model_module.i
 
+%shared_ptr(TModelGeneralizedLinearWithIntercepts<double, double>);
+%shared_ptr(TModelGeneralizedLinearWithIntercepts<float, float>);
 %shared_ptr(ModelGeneralizedLinearWithIntercepts);
+
 %shared_ptr(ModelLinRegWithIntercepts);
 
 %shared_ptr(ModelHuber);

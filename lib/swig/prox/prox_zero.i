@@ -4,7 +4,7 @@
 #include "tick/prox/prox_zero.h"
 %}
 
-class ProxZero : public Prox {
+class ProxZero : public TProx<double, double> {
  public:
    ProxZero(double strength);
 

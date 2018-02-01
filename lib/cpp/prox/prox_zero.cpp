@@ -2,31 +2,62 @@
 
 #include "tick/prox/prox_zero.h"
 
+template <class T, class K>
+TProxZero<T, K>::TProxZero(K strength)
+  : TProxSeparable<T, K>(strength, false) {}
+
+template <class T, class K>
+TProxZero<T, K>::TProxZero(K strength,
+                   ulong start,
+                   ulong end)
+  : TProxSeparable<T, K>(strength, start, end, false) {}
+
 ProxZero::ProxZero(double strength)
-  : ProxSeparable(strength, false) {}
+  : TProxZero<double, double>(strength) {}
 
 ProxZero::ProxZero(double strength,
                    ulong start,
                    ulong end)
-  : ProxSeparable(strength, start, end, false) {}
+  : TProxZero<double, double>(strength, start, end) {}
 
-const std::string ProxZero::get_class_name() const {
+
+template <class T, class K>
+std::string TProxZero<T, K>::get_class_name() const {
+  return "TProxZero<T, K>";
+}
+
+std::string ProxZero::get_class_name() const {
   return "ProxZero";
 }
 
-double ProxZero::call_single(double x,
-                             double step) const {
+template <class T, class K>
+K
+TProxZero<T, K>::call_single(
+  K x,
+  K step
+) const {
   return x;
 }
 
-double ProxZero::call_single(double x,
-                             double step,
-                             ulong n_times) const {
+template <class T, class K>
+K
+TProxZero<T, K>::call_single(
+  K x,
+  K step,
+  ulong n_times
+) const {
   return x;
 }
 
-double ProxZero::value(const ArrayDouble &coeffs,
-                       ulong start,
-                       ulong end) {
+template <class T, class K>
+K
+TProxZero<T, K>::value(
+  const Array<T> &coeffs,
+  ulong start,
+  ulong end
+) {
   return 0.;
 }
+
+template class TProxZero<double, double>;
+template class TProxZero<float , float>;

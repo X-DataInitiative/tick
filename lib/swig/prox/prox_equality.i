@@ -4,7 +4,7 @@
 #include "tick/prox/prox_equality.h"
 %}
 
-class ProxEquality : public Prox {
+class ProxEquality : public TProx<double, double> {
  public:
    ProxEquality(double strength,
                 bool positive);

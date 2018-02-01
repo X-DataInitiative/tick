@@ -4,7 +4,7 @@
 #include "tick/prox/prox_slope.h"
 %}
 
-class ProxSlope : public Prox {
+class ProxSlope : public TProx<double, double> {
  public:
    ProxSlope(double lambda, double fdr, bool positive);
 

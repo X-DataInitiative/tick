@@ -1,17 +1,29 @@
 # License: BSD 3 clause
 
+import numpy as np
+
 from tick.base_model import ModelGeneralizedLinear
 from .base import SolverFirstOrderSto
-from .build.solver import SAGA as _SAGA
+from .build.solver import BaseSAGADouble as _BaseSAGA_d
+from .build.solver import BaseSAGAFloat  as _BaseSAGA_f
 
 __author__ = "Stephane Gaiffas"
 
-variance_reduction_methods_mapper = {
-    'last': _SAGA.VarianceReductionMethod_Last,
-    'avg': _SAGA.VarianceReductionMethod_Average,
-    'rand': _SAGA.VarianceReductionMethod_Random
+variance_reduction_methods_mapper_float = {
+    'last': _BaseSAGA_f.VarianceReductionMethod_Last,
+    'avg': _BaseSAGA_f.VarianceReductionMethod_Average,
+    'rand': _BaseSAGA_f.VarianceReductionMethod_Random
+}
+variance_reduction_methods_mapper_double = {
+    'last': _BaseSAGA_d.VarianceReductionMethod_Last,
+    'avg': _BaseSAGA_d.VarianceReductionMethod_Average,
+    'rand': _BaseSAGA_d.VarianceReductionMethod_Random
 }
 
+variance_reduction_type_mapper = {
+    np.float32: variance_reduction_methods_mapper_float,
+    np.float64: variance_reduction_methods_mapper_double
+}
 
 class SAGA(SolverFirstOrderSto):
     """Stochastic Average Gradient solver, for the minimization of objectives
@@ -150,11 +162,13 @@ class SAGA(SolverFirstOrderSto):
                  rand_type: str = "unif", tol: float = 0.,
                  max_iter: int = 100, verbose: bool = True,
                  print_every: int = 10, record_every: int = 1,
-                 seed: int = -1, variance_reduction: str = "last"):
+                 seed: int = -1, variance_reduction: str = "last", 
+                 dtype = np.float64):
 
         SolverFirstOrderSto.__init__(self, step, epoch_size, rand_type,
                                      tol, max_iter, verbose,
-                                     print_every, record_every, seed=seed)
+                                     print_every, record_every, seed=seed,
+                                     dtype=dtype)
         step = self.step
         if step is None:
             step = 0.
@@ -164,27 +178,32 @@ class SAGA(SolverFirstOrderSto):
             epoch_size = 0
 
         # Construct the wrapped C++ SAGA solver
-        self._solver = _SAGA(epoch_size, self.tol,
-                             self._rand_type, step, self.seed)
+        if dtype == np.dtype('d'):
+          self._solver = _BaseSAGA_d(epoch_size, self.tol,
+                               self._rand_type, step, self.seed)
+        elif dtype == np.dtype('f'):
+          self._solver = _BaseSAGA_f(epoch_size, self.tol,
+                               self._rand_type, step, self.seed)
 
         self.variance_reduction = variance_reduction
 
     @property
     def variance_reduction(self):
-        return next((k for k, v in variance_reduction_methods_mapper.items()
+        return next((k for k, v in variance_reduction_type_mapper[self.dtype].items()
                      if v == self._solver.get_variance_reduction()), None)
 
     @variance_reduction.setter
     def variance_reduction(self, val: str):
 
-        if val not in variance_reduction_methods_mapper:
+        if val not in variance_reduction_type_mapper[self.dtype]:
             raise ValueError(
                 'variance_reduction should be one of "{}", got "{}".'.format(
-                    ', '.join(variance_reduction_methods_mapper.keys()),
+                    ', '.join(variance_reduction_type_mapper[self.dtype].keys()),
                     val))
 
         self._solver.set_variance_reduction(
-            variance_reduction_methods_mapper[val])
+          variance_reduction_type_mapper[self.dtype][val]
+        )
 
     def set_model(self, model: ModelGeneralizedLinear):
         """Set model in the solver

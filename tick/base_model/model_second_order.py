@@ -37,8 +37,8 @@ class ModelSecondOrder(ModelFirstOrder):
         }
     }
 
-    def __init__(self):
-        ModelFirstOrder.__init__(self)
+    def __init__(self, dtype=np.float64):
+        ModelFirstOrder.__init__(self, dtype=dtype)
         setattr(self, N_CALLS_HESSIAN_NORM, 0)
 
     def fit(self, *args):

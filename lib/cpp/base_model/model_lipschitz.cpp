@@ -6,7 +6,8 @@
 
 #include "tick/base_model/model_lipschitz.h"
 
-ModelLipschitz::ModelLipschitz() : Model() {
+template <class T, class K>
+TModelLipschitz<T, K>::TModelLipschitz() : TModel<T, K>() {
   ready_lip_consts = false;
   ready_lip_max = false;
   ready_lip_mean = false;
@@ -14,7 +15,11 @@ ModelLipschitz::ModelLipschitz() : Model() {
   lip_max = 0;
 }
 
-double ModelLipschitz::get_lip_max() {
+ModelLipschitz::ModelLipschitz() : TModelLipschitz<double>() {
+}
+
+template <class T, class K>
+K TModelLipschitz<T, K>::get_lip_max() {
   if (ready_lip_max) {
     return lip_max;
   } else {
@@ -25,7 +30,8 @@ double ModelLipschitz::get_lip_max() {
   }
 }
 
-double ModelLipschitz::get_lip_mean() {
+template <class T, class K>
+K TModelLipschitz<T, K>::get_lip_mean() {
   if (ready_lip_mean) {
     return lip_mean;
   } else {
@@ -36,3 +42,6 @@ double ModelLipschitz::get_lip_mean() {
     return lip_mean;
   }
 }
+
+template class TModelLipschitz<double, double>;
+template class TModelLipschitz<float , float>;

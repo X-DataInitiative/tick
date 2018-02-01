@@ -13,6 +13,9 @@
     // 'result' will hold the resulting array
     DLL_PUBLIC bool BuildFromPyObj_##SARRAY_TYPE(PyObject *obj, SARRAYPTR_TYPE *result) {
         
+    #ifdef DEBUG_SHAREDARRAY
+        std::cout << "BuildFromPyObj_ real: " << __func__ << std::endl;
+    #endif
         if (!TestPyObj_##ARRAY_TYPE((PyObject *) obj)) return false;
         *result = SARRAY_TYPE::new_ptr(0);
         (*result)->set_data((C_TYPE *) PyArray_DATA((PyArrayObject *) (obj)), PyArray_DIM((PyArrayObject *) (obj),0),obj);
@@ -37,6 +40,9 @@
     // 'result' will hold the resulting array
     DLL_PUBLIC bool BuildFromPyObj_##SARRAY2D_TYPE(PyObject *obj, SARRAY2DPTR_TYPE *result) {
         
+    #ifdef DEBUG_SHAREDARRAY
+        std::cout << "BuildFromPyObj_ real: " << __func__ << std::endl;
+    #endif
         if (!TestPyObj_##ARRAY2D_TYPE((PyObject *) obj)) return false;
         *result = SARRAY2D_TYPE::new_ptr();
         (*result)->set_data((C_TYPE *) PyArray_DATA((PyArrayObject *) (obj)),
@@ -62,6 +68,9 @@
     // Now a function that fills an existing ArrayList1D from a python list of numpy arrays
     DLL_PUBLIC bool BuildFromPyObj_List1d_##SARRAY_TYPE(PyObject *obj,SARRAYPTR_LIST1D_TYPE &list)
     {
+    #ifdef DEBUG_SHAREDARRAY
+        std::cout << "BuildFromPyObj_List1d_ real: " << __func__ << std::endl;
+    #endif
         if (!PyList_Check((PyObject *) obj)) {
             PyErr_SetString(PyExc_ValueError,"Argument is not a list (it should be a list of SArrays)");
             return false;
@@ -92,6 +101,10 @@
     // Now a function that fills an existing ArrayList2D from a python list of numpy arrays
     DLL_PUBLIC bool BuildFromPyObj_List2d_##SARRAY_TYPE(PyObject *obj,SARRAYPTR_LIST2D_TYPE &list)
     {
+    #ifdef DEBUG_SHAREDARRAY
+        std::cout << "BuildFromPyObj_List2d_ real: " << __func__ << std::endl;
+    #endif
+
         if (!PyList_Check((PyObject *) obj)) {
             PyErr_SetString(PyExc_ValueError,"Argument is not a list (it should be a 2d-list of SArrays)");
             return false;
@@ -138,6 +151,9 @@
     // Now a function that fills an existing ArrayList1D from a python list of numpy arrays
     DLL_PUBLIC bool BuildFromPyObj_List1d_##SARRAY2D_TYPE(PyObject *obj,SARRAY2DPTR_LIST1D_TYPE &list)
     {
+    #ifdef DEBUG_SHAREDARRAY
+        std::cout << "BuildFromPyObj_List1d_ real: " << __func__ << std::endl;
+    #endif
         if (!PyList_Check((PyObject *) obj)) {
             PyErr_SetString(PyExc_ValueError,"Argument is not a list (it should be a list of SArray2d)");
             return false;
@@ -169,6 +185,9 @@
     // Now a function that fills an existing ArrayList2D from a python list of numpy arrays
     DLL_PUBLIC bool BuildFromPyObj_List2d_##SARRAY2D_TYPE(PyObject *obj,SARRAY2DPTR_LIST2D_TYPE &list)
     {
+    #ifdef DEBUG_SHAREDARRAY
+        std::cout << "BuildFromPyObj_List2d_ real: " << __func__ << std::endl;
+    #endif
         if (!PyList_Check((PyObject *) obj)) {
             PyErr_SetString(PyExc_ValueError,"Argument is not a list (it should be a 2d-list of SArray2D)");
             return false;

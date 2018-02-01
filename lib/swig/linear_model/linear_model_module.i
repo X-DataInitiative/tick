@@ -4,15 +4,21 @@
 
 %include base_model_module.i
 
+%shared_ptr(TModelLinReg<double, double>);
+%shared_ptr(TModelLinReg<float, float>);
 %shared_ptr(ModelLinReg);
 
+%shared_ptr(TModelLogReg<double, double>);
+%shared_ptr(TModelLogReg<float, float>);
 %shared_ptr(ModelLogReg);
+
+%shared_ptr(TModelPoisReg<double, double>);
+%shared_ptr(TModelPoisReg<float, float>);
 %shared_ptr(ModelPoisReg);
 
 %shared_ptr(ModelHinge);
 %shared_ptr(ModelSmoothedHinge);
 %shared_ptr(ModelQuadraticHinge);
-
 
 %{
 #include "tick/base/tick_python.h"

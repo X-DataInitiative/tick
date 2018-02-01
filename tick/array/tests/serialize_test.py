@@ -7,7 +7,7 @@ import numpy as np
 import scipy
 
 from tick.array.serialize import serialize_array, load_array
-from tick.optim.solver.tests.solver import TestSolver
+from tick.solver.tests.solver import TestSolver
 
 
 class Test(TestSolver):

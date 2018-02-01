@@ -109,20 +109,23 @@ class SimuCoxReg(SimuWithFeatures):
         }
     }
 
-    def __init__(self, coeffs: np.ndarray,
-                 features: np.ndarray = None, n_samples: int = 200,
-                 times_distribution: str = "weibull",
-                 shape: float = 1., scale: float = 1.,
-                 censoring_factor: float = 2.,
-                 features_type: str = "cov_toeplitz",
-                 cov_corr: float = 0.5, features_scaling: str = "none",
-                 seed: int = None, verbose: bool = True):
+    def __init__(
+        self, coeffs: np.ndarray,
+        features: np.ndarray = None, n_samples: int = 200,
+        times_distribution: str = "weibull",
+        shape: float = 1., scale: float = 1.,
+        censoring_factor: float = 2.,
+        features_type: str = "cov_toeplitz",
+        cov_corr: float = 0.5, features_scaling: str = "none",
+        seed: int = None, verbose: bool = True,
+        dtype=np.float64
+    ):
 
         n_features = coeffs.shape[0]
         # intercept=None in this model
         SimuWithFeatures.__init__(self, None, features, n_samples,
                                   n_features, features_type, cov_corr,
-                                  features_scaling, seed, verbose)
+                                  features_scaling, seed, verbose, dtype=dtype)
         self.coeffs = coeffs
         self.times_distribution = times_distribution
         self.shape = shape

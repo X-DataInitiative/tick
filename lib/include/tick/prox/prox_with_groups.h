@@ -5,37 +5,43 @@
 
 #include "prox.h"
 
-class ProxWithGroups : public Prox {
+template <class T, class K = T>
+class TProxWithGroups : public TProx<T, K> {
+ protected:
+  using TProx<T, K>::has_range;
+  using TProx<T, K>::strength;
+
  protected:
   bool positive;
+
+  // Tells us if the prox is ready (with correctly allocated sub-prox for each blocks).
+  // This is mainly necessary when the user changes the range from python
+  bool is_synchronized;
+
   ulong n_blocks;
 
   SArrayULongPtr blocks_start;
   SArrayULongPtr blocks_length;
 
   // A vector that contains the prox for each block
-  std::vector <std::unique_ptr<Prox>> proxs;
-
-  // Tells us if the prox is ready (with correctly allocated sub-prox for each blocks).
-  // This is mainly necessary when the user changes the range from python
-  bool is_synchronized;
+  std::vector <std::unique_ptr<TProx<T, K> > > proxs;
 
   void synchronize_proxs();
 
-  virtual std::unique_ptr<Prox> build_prox(double strength, ulong start, ulong end, bool positive);
+  virtual std::unique_ptr<TProx<T, K> > build_prox(K strength, ulong start, ulong end, bool positive);
 
  public:
-  ProxWithGroups(double strength, SArrayULongPtr blocks_start, SArrayULongPtr blocks_length,
+  TProxWithGroups(K strength, SArrayULongPtr blocks_start, SArrayULongPtr blocks_length,
                  bool positive);
 
-  ProxWithGroups(double strength, SArrayULongPtr blocks_start, SArrayULongPtr blocks_length,
+  TProxWithGroups(K strength, SArrayULongPtr blocks_start, SArrayULongPtr blocks_length,
                  ulong start, ulong end, bool positive);
 
-  const std::string get_class_name() const override;
+  std::string get_class_name() const override;
 
-  double value(const ArrayDouble &coeffs, ulong start, ulong end) override;
+  K value(const ArrayDouble &coeffs, ulong start, ulong end) override;
 
-  void call(const ArrayDouble &coeffs, double step, ArrayDouble &out,
+  void call(const ArrayDouble &coeffs, K step, ArrayDouble &out,
             ulong start, ulong end) override;
 
   inline void set_positive(bool positive) override {

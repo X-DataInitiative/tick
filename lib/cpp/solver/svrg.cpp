@@ -12,11 +12,11 @@ SVRG::SVRG(ulong epoch_size,
            VarianceReductionMethod variance_reduction,
            StepType step_method)
     : StoSolver(epoch_size, tol, rand_type, seed),
+      ready_step_corrections(false),
       n_threads(n_threads), step(step),
-      variance_reduction(variance_reduction),
-      ready_step_corrections(false), step_type(step_method) {}
+      variance_reduction(variance_reduction), step_type(step_method) {}
 
-void SVRG::set_model(ModelPtr model) {
+void SVRG::set_model(std::shared_ptr<TModel<double, double> > model) {
   StoSolver::set_model(model);
   ready_step_corrections = false;
 }
@@ -75,8 +75,8 @@ void SVRG::solve() {
 
 void SVRG::compute_step_corrections() {
   ulong n_features = model->get_n_features();
-  std::shared_ptr<ModelLabelsFeatures> casted_model;
-  casted_model = std::dynamic_pointer_cast<ModelLabelsFeatures>(model);
+  std::shared_ptr<ModelLabelsFeaturesDouble> casted_model;
+  casted_model = std::dynamic_pointer_cast<ModelLabelsFeaturesDouble>(model);
   ArrayDouble columns_sparsity = casted_model->get_column_sparsity_view();
   steps_correction = ArrayDouble(n_features);
   for (ulong j = 0; j < n_features; ++j) {
@@ -119,13 +119,13 @@ void SVRG::solve_sparse_proba_updates(bool use_intercept, ulong n_features) {
   // step-sizes using a probabilistic approximation and the
   // penalization trick: with such a model and prox, we can work only inside the current
   // support (non-zero values) of the sampled vector of features
-  std::shared_ptr<ProxSeparable> casted_prox;
+  std::shared_ptr<TProxSeparable<double, double>> casted_prox;
   if (prox->is_separable()) {
-    casted_prox = std::static_pointer_cast<ProxSeparable>(prox);
+    casted_prox = std::static_pointer_cast<TProxSeparable<double, double> >(prox);
   } else {
     TICK_ERROR("SVRG::solve_sparse_proba_updates can be used with a separable prox only.")
   }
-  ProxSeparable* p_casted_prox = casted_prox.get();
+  TProxSeparable<double, double>* p_casted_prox = casted_prox.get();
   if (n_threads > 1) {
       std::vector<std::thread> threadsV;
       for (int i = 0; i < n_threads; i++) {
@@ -176,7 +176,7 @@ void SVRG::dense_single_thread_solver(const ulong& next_i) {
 void SVRG::sparse_single_thread_solver(const ulong& next_i,
                           const ulong& n_features,
                           const bool use_intercept,
-                          ProxSeparable*& casted_prox) {
+                          TProxSeparable<double, double>*& casted_prox) {
     const ulong& i = next_i;
     // Sparse features vector
     BaseArrayDouble x_i = model->get_features(i);

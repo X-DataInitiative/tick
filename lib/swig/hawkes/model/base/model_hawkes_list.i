@@ -5,6 +5,8 @@
 #include "tick/hawkes/model/base/model_hawkes_list.h"
 %}
 
+%include "model.i"
+
 class ModelHawkesList : public ModelHawkes {
 
  public:

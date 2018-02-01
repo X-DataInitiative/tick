@@ -15,6 +15,9 @@
 %{
 DLL_PUBLIC PyObject *_XSparseArray2NumpyArray(XSPARSEARRAY_TYPE *sig)
 {
+#ifdef DEBUG_SHAREDARRAY
+    std::cout << "Shared Array -> NumpyArray _XSparseArray2NumpyArray real: " << __func__ << std::endl;
+#endif 
     npy_intp dims[1];
     dims[0] = sig->size();
 
@@ -59,7 +62,9 @@ DLL_PUBLIC PyObject *_XSparseArray2NumpyArray(XSPARSEARRAY_TYPE *sig)
 %{
 DLL_PUBLIC PyObject *_XSparseArray2d2NumpyArray(XSPARSEARRAY2D_TYPE *sig)
 {
-
+#ifdef DEBUG_SHAREDARRAY
+    std::cout << "Shared Array -> NumpyArray _XSparseArray2d2NumpyArray real: " << __func__ << std::endl;
+#endif
 #ifdef TICK_SPARSE_INDICES_INT64
     auto indice_type = NPY_UINT64;
 #else

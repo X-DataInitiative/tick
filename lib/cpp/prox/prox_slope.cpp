@@ -18,7 +18,7 @@ ProxSlope::ProxSlope(double strength,
   this->false_discovery_rate = false_discovery_rate;
 }
 
-const std::string ProxSlope::get_class_name() const {
+std::string ProxSlope::get_class_name() const {
   return "ProxSlope";
 }
 

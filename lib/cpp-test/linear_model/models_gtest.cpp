@@ -11,12 +11,23 @@
 
 #include "tick/array/array.h"
 #include "tick/linear_model/model_linreg.h"
+#include "tick/robust/model_generalized_linear_with_intercepts.h"
 
 #include <cereal/types/unordered_map.hpp>
 #include <cereal/types/memory.hpp>
 #include <cereal/archives/json.hpp>
 #include <cereal/archives/binary.hpp>
 #include <fstream>
+
+TEST(Model, NoAbstractClasses) {
+  ArrayDouble2d r_features;
+  ArrayDouble r_labels;
+  auto features(r_features.as_sarray2d_ptr());
+  auto labels(r_labels.as_sarray_ptr());
+  TModelLinReg<double, double> modelLinRegdd(features, labels, 0, 1);
+  TModelGeneralizedLinearWithIntercepts<double, double> modelGeneralizedLinearWithInterceptsdd(features, labels, 0, 1);
+  TModelGeneralizedLinear<double, double> modelGeneralizedLinear(features, labels, 0, 1);
+}
 
 TEST(Model, PartialVsFull) {
   ArrayDouble y(3);
@@ -34,7 +45,7 @@ TEST(Model, PartialVsFull) {
   SArrayDoublePtr labels = y.as_sarray_ptr();
   SArrayDouble2dPtr features = x.as_sarray2d_ptr();
 
-  ModelLinReg model(features, labels, false, 2);
+  TModelLinReg<double, double> model(features, labels, false, 2);
 
   ArrayDouble coeffs(2);
   coeffs[0] = -2;
@@ -81,7 +92,7 @@ void TestModelLinRegSerialization() {
   SArrayDoublePtr labels = y.as_sarray_ptr();
   SArrayDouble2dPtr features = x.as_sarray2d_ptr();
 
-  ModelLinReg model(features, labels, false, 1);
+  TModelLinReg<double> model(features, labels, false, 1);
 
   ArrayDouble coeffs({-2, 5.2});
 
@@ -99,7 +110,7 @@ void TestModelLinRegSerialization() {
   {
     InputArchive inputArchive(os);
 
-    ModelLinReg restored_model(nullptr, nullptr, false);
+    TModelLinReg<double> restored_model(nullptr, nullptr, false);
     inputArchive( restored_model );
 
     ArrayDouble out_grad_restored(2);

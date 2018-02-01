@@ -17,9 +17,9 @@ public:
          RandType rand_type = RandType::unif,
          int seed = -1);
 
-    void set_model(std::shared_ptr<Model> model);
+    void set_model(std::shared_ptr<TModel<double, double> > model);
 
-    void set_prox(std::shared_ptr<Prox> prox);
+    void set_prox(std::shared_ptr<TProx<double, double> > prox);
 
     void reset();
 

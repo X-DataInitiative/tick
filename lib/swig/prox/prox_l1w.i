@@ -4,7 +4,7 @@
 #include "tick/prox/prox_l1w.h"
 %}
 
-class ProxL1w : public Prox {
+class ProxL1w : public TProx<double, double> {
  public:
    ProxL1w(double strength,
            SArrayDoublePtr weights,

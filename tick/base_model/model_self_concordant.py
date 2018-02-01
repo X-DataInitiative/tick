@@ -2,7 +2,7 @@
 
 from abc import abstractmethod
 from . import Model
-
+import numpy as np
 
 __author__ = 'Stephane Gaiffas'
 
@@ -17,8 +17,8 @@ class ModelSelfConcordant(Model):
     development only.
     """
 
-    def __init__(self):
-        Model.__init__(self)
+    def __init__(self, dtype=np.float64):
+        Model.__init__(self, dtype=dtype)
 
     @property
     def _sc_constant(self) -> float:

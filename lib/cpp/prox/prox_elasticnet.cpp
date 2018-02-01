@@ -5,7 +5,7 @@
 ProxElasticNet::ProxElasticNet(double strength,
                                double ratio,
                                bool positive)
-  : ProxSeparable(strength, positive) {
+  : TProxSeparable<double, double>(strength, positive) {
   this->positive = positive;
   set_ratio(ratio);
 }
@@ -15,12 +15,12 @@ ProxElasticNet::ProxElasticNet(double strength,
                                ulong start,
                                ulong end,
                                bool positive)
-  : ProxSeparable(strength, start, end, positive) {
+  : TProxSeparable<double, double>(strength, start, end, positive) {
   this->positive = positive;
   set_ratio(ratio);
 }
 
-const std::string ProxElasticNet::get_class_name() const {
+std::string ProxElasticNet::get_class_name() const {
   return "ProxElasticNet";
 }
 

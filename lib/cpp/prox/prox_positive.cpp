@@ -3,14 +3,14 @@
 #include "tick/prox/prox_positive.h"
 
 ProxPositive::ProxPositive(double strength)
-  : ProxSeparable(strength, true) {}
+  : TProxSeparable<double, double>(strength, true) {}
 
 ProxPositive::ProxPositive(double strength,
                            ulong start,
                            ulong end)
-  : ProxSeparable(strength, start, end, true) {}
+  : TProxSeparable<double, double>(strength, start, end, true) {}
 
-const std::string ProxPositive::get_class_name() const {
+std::string ProxPositive::get_class_name() const {
   return "ProxPositive";
 }
 

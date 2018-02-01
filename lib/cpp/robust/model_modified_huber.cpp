@@ -2,16 +2,14 @@
 
 #include "tick/robust/model_modified_huber.h"
 
-ModelModifiedHuber::ModelModifiedHuber(const SBaseArrayDouble2dPtr features,
-                                       const SArrayDoublePtr labels,
-                                       const bool fit_intercept,
-                                       const int n_threads)
-
-    : ModelGeneralizedLinear(features,
-                             labels,
-                             fit_intercept,
-                             n_threads),
-      ModelLipschitz() {}
+ModelModifiedHuber::ModelModifiedHuber(
+  const SBaseArrayDouble2dPtr features,
+  const SArrayDoublePtr labels,
+  const bool fit_intercept,
+  const int n_threads
+) : TModelLabelsFeatures<double, double>(features, labels),
+    ModelGeneralizedLinear(features, labels, fit_intercept, n_threads)
+{}
 
 const char *ModelModifiedHuber::get_class_name() const {
   return "ModelModifiedHuber";

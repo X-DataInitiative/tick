@@ -4,15 +4,15 @@
 #include "tick/prox/prox_equality.h"
 
 ProxEquality::ProxEquality(double strength, bool positive)
-  : Prox(0., positive) {}
+  : TProx<double, double>(0., positive) {}
 
 ProxEquality::ProxEquality(double strength,
                            ulong start,
                            ulong end,
                            bool positive)
-  : Prox(0., start, end, positive) {}
+  : TProx<double, double>(0., start, end, positive) {}
 
-const std::string ProxEquality::get_class_name() const {
+std::string ProxEquality::get_class_name() const {
   return "ProxEquality";
 }
 

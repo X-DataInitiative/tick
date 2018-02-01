@@ -6,4 +6,5 @@ target_link_libraries(tick_test_linear_model
     ${TICK_LIB_BASE_MODEL}
     ${TICK_LIB_LINEAR_MODEL}
     ${TICK_TEST_LIBS}
+    ${TICK_LIB_ROBUST}
     )

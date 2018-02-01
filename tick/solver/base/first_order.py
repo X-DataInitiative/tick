@@ -78,7 +78,11 @@ class SolverFirstOrder(Solver):
 
     def __init__(self, step: float=None, tol: float =0.,
                  max_iter: int=100, verbose: bool=True,
-                 print_every: int=10, record_every: int=1):
+                 print_every: int=10, record_every: int=1,
+                 dtype = np.float64):
+
+        self.dtype = dtype
+
         Solver.__init__(self, tol, max_iter, verbose, print_every,
                         record_every)
         self.model = None
@@ -154,8 +158,8 @@ class SolverFirstOrder(Solver):
                 step = self.step
         else:
             self.step = step
-        if x0 is None:
-            x0 = np.zeros(self.model.n_coeffs)
+        if x0 is None:            
+            x0 = np.zeros(self.model.n_coeffs).astype(self.dtype)
         iterate = x0.copy()
         obj = self.objective(iterate)
 

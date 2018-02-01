@@ -84,7 +84,7 @@ class SolverFirstOrderSto(SolverFirstOrder, SolverSto):
 
     def __init__(self, step: float = None, epoch_size: int = None,
                  rand_type="unif", tol=0., max_iter=100, verbose=True,
-                 print_every=10, record_every=1, seed=-1):
+                 print_every=10, record_every=1, seed=-1, dtype = np.float64):
 
         self._step = None
 
@@ -94,7 +94,7 @@ class SolverFirstOrderSto(SolverFirstOrder, SolverSto):
                            seed=seed)
         SolverFirstOrder.__init__(self, step=step, tol=tol, max_iter=max_iter,
                                   verbose=verbose, print_every=print_every,
-                                  record_every=record_every)
+                                  record_every=record_every, dtype=dtype)
 
     def set_model(self, model: Model):
         """Set model in the solver
@@ -170,7 +170,6 @@ class SolverFirstOrderSto(SolverFirstOrder, SolverSto):
         if not isinstance(self, SDCA):
             if step is not None:
                 self.step = step
-
             step, obj, minimizer, prev_minimizer = \
                 self._initialize_values(x0, step, n_empty_vectors=1)
             self._solver.set_starting_iterate(minimizer)
