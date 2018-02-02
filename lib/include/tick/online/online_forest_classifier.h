@@ -19,10 +19,16 @@
 // TODO: subsampling in the columns and the rows
 // TODO: memory optimization (a FeatureSplitter), maximum (sizeof(uint8_t) splits)), a set of current splits
 // TODO: only binary features version ?
-// TODO:
+
 
 enum class CriterionClassifier {
   log = 0,
+};
+
+enum class FeatureImportanceType {
+  no = 0,
+  estimated,
+  given
 };
 
 class TreeClassifier;
@@ -221,8 +227,16 @@ class OnlineForestClassifier {
   uint8_t _n_passes;
   // Step-size used for aggregation
   double _step;
+
+  bool _estimate_feature_importances;
+
+  // A vector of given feature importances (not estimated)
+  ArrayDouble _given_feature_importances;
+
   // CriterionClassifier used for splitting (not used for now)
   CriterionClassifier _criterion;
+  //
+  FeatureImportanceType _feature_importance_type;
   //
   bool _use_aggregation;
   //
@@ -242,7 +256,6 @@ class OnlineForestClassifier {
   // Random number generator for feature and threshold sampling
   Rand rand;
 
-  // ArrayDouble _feature_importances;
   // Create trees
   void create_trees();
 
@@ -259,6 +272,7 @@ class OnlineForestClassifier {
                          uint8_t n_passes = 1,
                          double step = 1.0,
                          CriterionClassifier criterion = CriterionClassifier::log,
+                         FeatureImportanceType feature_importance_type = FeatureImportanceType::estimated,
                          bool use_aggregation = true,
                          double subsampling = 1,
                          double dirichlet = 0.5,
@@ -293,6 +307,8 @@ class OnlineForestClassifier {
   OnlineForestClassifier &set_verbose(bool verbose);
   CriterionClassifier criterion() const;
   OnlineForestClassifier &set_criterion(CriterionClassifier criterion);
+  FeatureImportanceType feature_importance_type() const;
+
   int32_t n_threads() const;
   OnlineForestClassifier &set_n_threads(int32_t n_threads);
   int seed() const;
@@ -301,7 +317,7 @@ class OnlineForestClassifier {
   void n_nodes(SArrayUIntPtr n_nodes_per_tree);
   void n_leaves(SArrayUIntPtr n_leaves_per_tree);
 
-  // void set_feature_importances(const ArrayDouble &feature_importances);
+  OnlineForestClassifier &set_given_feature_importances(const ArrayDouble &feature_importances);
 
   void get_feature_importances(SArrayDoublePtr feature_importances);
 

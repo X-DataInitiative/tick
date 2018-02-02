@@ -72,7 +72,7 @@ NodeClassifier &NodeClassifier::operator=(const NodeClassifier &node) {
 
 double NodeClassifier::update_downwards(const ArrayDouble &x_t, const double y_t) {
   _n_samples++;
-  double loss_t =  loss(y_t);
+  double loss_t = loss(y_t);
   if (use_aggregation()) {
     _weight -= step() * loss_t;
   }
@@ -331,6 +331,7 @@ TreeClassifier::TreeClassifier(OnlineForestClassifier &forest) : forest(forest) 
   add_node(0);
   feature_importances_ = ArrayDouble(forest.n_features());
   // feature_importances_.fill(1.);
+  // TODO: initialization might be important
   feature_importances_.fill(10.);
 }
 
@@ -349,7 +350,8 @@ void TreeClassifier::extend_range(uint32_t node_index, const ArrayDouble &x_t, c
 
     // ArrayDouble probabilities(n_features());
 
-    // A vector that will hold the intensities of each feature. The intensity of a feature is measured by the product
+    // A vector that will hold the intensities of each feature.
+    // The intensity of a feature is measured by the product
     // between the square root of the feature importance and the range extension at this node...
     ArrayDouble intensities(n_features());
 
@@ -358,6 +360,7 @@ void TreeClassifier::extend_range(uint32_t node_index, const ArrayDouble &x_t, c
       double x_tj = x_t[j];
       double feature_min_j = current_node.features_min(j);
       double feature_max_j = current_node.features_max(j);
+      // TODO: several choices are available here...
       // double intensity = std::sqrt(feature_importances_[j] / (iteration + 1));
       double intensity = feature_importances_[j] / (iteration + 1);
       if (x_tj < feature_min_j) {
@@ -405,8 +408,9 @@ void TreeClassifier::extend_range(uint32_t node_index, const ArrayDouble &x_t, c
       if (do_split) {
         // std::cout << "Starting the splitting of node: " << node_index << std::endl;
         // Sample the splitting feature with a probability proportional to the range extensions
-        ArrayDouble probabilities = intensities;
-        probabilities /= probabilities.sum();
+        intensities /= intensities.sum();
+        // ArrayDouble probabilities = intensities;
+        // probabilities /= probabilities.sum();
         // extension /= intensities_sum;
 
         // ArrayDouble probabilities = ArrayDouble(n_features());
@@ -420,7 +424,7 @@ void TreeClassifier::extend_range(uint32_t node_index, const ArrayDouble &x_t, c
         // probabilities /= probabilities.sum();
 
         // std::cout << "using the probabilities: [" << std::setprecision(2) << probabilities[0] << ", " << std::setprecision(2) << probabilities[1] << "]" << std::endl;
-        uint32_t feature = forest.sample_feature(probabilities);
+        uint32_t feature = forest.sample_feature(intensities);
         // std::cout << "sampled feature: " << feature << std::endl;
         double threshold;
         // Is the extension on the right side ?
@@ -485,7 +489,7 @@ uint32_t TreeClassifier::go_downwards(const ArrayDouble &x_t, double y_t, bool p
       extend_range(index_current_node, x_t, y_t);
       // Update the current node. We get the loss for this point before the node update
       // to compute feature importance below
-      NodeClassifier& current_node = node(index_current_node);
+      NodeClassifier &current_node = node(index_current_node);
       feature = current_node.feature();
       loss_t = current_node.update_downwards(x_t, y_t);
     }
@@ -498,7 +502,7 @@ uint32_t TreeClassifier::go_downwards(const ArrayDouble &x_t, double y_t, bool p
       } else {
         index_current_node = current_node.right();
       }
-      if(!predict) {
+      if (!predict) {
         // Compute the difference with the loss of the child
         loss_t -= node(index_current_node).loss(y_t);
         if (loss_t > 0) {
@@ -509,7 +513,6 @@ uint32_t TreeClassifier::go_downwards(const ArrayDouble &x_t, double y_t, bool p
   }
   return index_current_node;
 }
-
 
 void TreeClassifier::go_upwards(uint32_t leaf_index) {
   // std::cout << "Going upwards" << std::endl;
@@ -636,6 +639,7 @@ OnlineForestClassifier::OnlineForestClassifier(uint32_t n_features,
                                                uint8_t n_passes,
                                                double step,
                                                CriterionClassifier criterion,
+                                               FeatureImportanceType feature_importance_type,
                                                bool use_aggregation,
                                                double subsampling,
                                                double dirichlet,
@@ -648,6 +652,7 @@ OnlineForestClassifier::OnlineForestClassifier(uint32_t n_features,
       _n_passes(n_passes),
       _step(step),
       _criterion(criterion),
+      _feature_importance_type(feature_importance_type),
       _use_aggregation(use_aggregation),
       _subsampling(subsampling),
       _dirichlet(dirichlet),
@@ -883,9 +888,14 @@ OnlineForestClassifier &OnlineForestClassifier::set_criterion(CriterionClassifie
   return *this;
 }
 
-//void OnlineForestClassifier::set_feature_importances(const ArrayDouble &feature_importances) {
-//  _feature_importances = feature_importances;
-//}
+FeatureImportanceType OnlineForestClassifier::feature_importance_type() const {
+  return _feature_importance_type;
+}
+
+OnlineForestClassifier &OnlineForestClassifier::set_given_feature_importances(const ArrayDouble &feature_importances) {
+  _given_feature_importances = feature_importances;
+  return *this;
+}
 
 double OnlineForestClassifier::dirichlet() const {
   return _dirichlet;

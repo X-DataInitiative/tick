@@ -61,4 +61,6 @@ plt.title('Model weights', fontsize=16)
 
 plt.show()
 plt.tight_layout()
+
+exit(0)
 # print(clf.feature_importances)

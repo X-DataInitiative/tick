@@ -9,7 +9,11 @@ from tick.base import actual_kwargs
 from tick.preprocessing.utils import safe_array
 
 from .build.online import OnlineForestClassifier as _OnlineForestClassifier
-from .build.online import CriterionClassifier_log as log
+from .build.online import CriterionClassifier_log
+
+from .build.online import FeatureImportanceType_no
+from .build.online import FeatureImportanceType_estimated
+from .build.online import FeatureImportanceType_given
 
 
 class OnlineForestClassifier(ABC, Base):
@@ -41,6 +45,11 @@ class OnlineForestClassifier(ABC, Base):
     use_aggregation : `bool`, default=True
         If True
 
+    use_feature_importances : `bool` or `np.array`
+        If `True`, then we estimate the feature importances online, if `False`
+        all the features are used. If a `numpy.array` is given, then it is a
+        vector of probabilities that give the importance of each feature.
+
     n_threads : `int`, default=1
         The number of threads used to grow trees in parallel during training.
         If n_threads < 0, then all available cores will be used.
@@ -69,9 +78,12 @@ class OnlineForestClassifier(ABC, Base):
         'n_trees': {'writable': True, 'cpp_setter': 'set_n_trees'},
         'n_threads': {'writable': True, 'cpp_setter': 'set_n_threads'},
         'seed': {'writable': True, 'cpp_setter': 'set_seed'},
+        '_use_feature_importances': {'writable': False},
+        '_feature_importances_type': {'writable': False},
+        '_given_feature_importances': {'writable': False},
         'verbose': {'writable': True, 'cpp_setter': 'set_verbose'},
         'warm_start': {'writable': True, 'cpp_setter': 'set_warm_start'},
-        'n_splits': {'writable': True, 'cpp_setter': 'set_n_splits'},
+        # 'n_splits': {'writable': True, 'cpp_setter': 'set_n_splits'},
         'dirichlet': {'writable': True, 'cpp_setter': 'set_dirichlet'}
     }
 
@@ -84,7 +96,7 @@ class OnlineForestClassifier(ABC, Base):
                  step: float = 1.,
                  criterion: str = 'log', use_aggregation: bool = True,
                  subsampling: float=1., dirichlet: float=None,
-                 n_threads: int = 1,
+                 n_threads: int = 1, use_feature_importances=True,
                  seed: int = -1, verbose: bool = True):
         Base.__init__(self)
         if not hasattr(self, "_actual_kwargs"):
@@ -97,6 +109,9 @@ class OnlineForestClassifier(ABC, Base):
         self.step = step
         self.criterion = criterion
         self.n_threads = n_threads
+        self._given_feature_importances = None
+        self._feature_importances_type = None
+        self.use_feature_importances = use_feature_importances
         self.seed = seed
         self.verbose = verbose
         self.use_aggregation = use_aggregation
@@ -121,9 +136,13 @@ class OnlineForestClassifier(ABC, Base):
             _forest = _OnlineForestClassifier(
                 n_features, self.n_classes, self.n_trees, self.n_passes,
                 self.step,
-                self._criterion, self.use_aggregation, self.subsampling,
+                self._criterion, self._feature_importances_type,
+                self.use_aggregation, self.subsampling,
                 self.dirichlet, self.n_threads, self.seed, self.verbose
             )
+            if self._feature_importances_type == FeatureImportanceType_given:
+                _forest.set_given_feature_importances(
+                    self._given_feature_importances)
             self._set('_forest', _forest)
         self._set("_fitted", True)
         self._forest.fit(X, y)
@@ -165,7 +184,8 @@ class OnlineForestClassifier(ABC, Base):
             return scores.argmax(axis=1)
 
     def clear(self):
-        self._forest.clear()
+        if self._forest is not None:
+            self._forest.clear()
 
     def score(self, X, y):
         from sklearn.metrics import accuracy_score
@@ -188,18 +208,43 @@ class OnlineForestClassifier(ABC, Base):
 
     @property
     def criterion(self):
-        if self._criterion == log:
+        if self._criterion == CriterionClassifier_log:
             return 'log'
 
     @criterion.setter
     def criterion(self, value):
         if value == 'log':
-            self._set('_criterion', log)
+            self._set('_criterion', CriterionClassifier_log)
         else:
             raise ValueError("``criterion`` must be either 'unif' or 'mse'.")
 
-    def set_feature_importances(self, feature_importances):
-        self._forest.set_feature_importances(feature_importances)
+    @property
+    def use_feature_importances(self):
+        feature_importances_type = self._feature_importances_type
+        if feature_importances_type == FeatureImportanceType_no:
+            return False
+        elif feature_importances_type == FeatureImportanceType_estimated:
+            return True
+        else:
+            return self._given_feature_importances
+
+    @use_feature_importances.setter
+    def use_feature_importances(self, value):
+        if type(value) is bool:
+            if value:
+                self._set('_feature_importances_type',
+                          FeatureImportanceType_no)
+            else:
+                self._set('_feature_importances_type',
+                          FeatureImportanceType_estimated)
+        elif type(value) is np.array:
+            self._set('_feature_importances_type',
+                      FeatureImportanceType_given)
+            if self._forest is not None:
+                self._forest.set_feature_importances(value)
+        else:
+            raise ValueError('use_feature_importances can be either `bool` or'
+                             'a numpy array')
 
     @property
     def feature_importances(self):
