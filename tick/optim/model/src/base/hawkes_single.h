@@ -34,6 +34,12 @@ class DLL_PUBLIC ModelHawkesSingle : public ModelHawkes {
 
   void set_data(const SArrayDoublePtrList1D &timestamps, const double end_time);
 
+    virtual void set_data(const SArrayDoublePtrList1D &_timestamps,
+                                     const SArrayLongPtr _global_n,
+                                     const double _end_times){
+      TICK_CLASS_DOES_NOT_IMPLEMENT("");
+    }
+
   unsigned int get_n_threads() const;
 
   double get_end_time() const {

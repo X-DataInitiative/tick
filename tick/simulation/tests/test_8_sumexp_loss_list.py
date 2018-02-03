@@ -66,4 +66,9 @@ from tick.optim.model.hawkes_fixed_sumexpkern_loglik_custom_list import ModelHaw
 
 model_list = ModelHawkesFixedSumExpKernCustomLogLikList(betas, MaxN_of_f)
 model_list.fit(timestamps_list, global_n_list, end_times=end_times)
-# model_list.fit([timestamps], [global_n], end_times=np.array([20.0]))
+
+print(timestamps_list[0])
+x0 = np.array(
+    [0.6, 0.8,   0.2,0.2,0.2,0.2,  0.2,0.2,0.2,0.2,  0.4,0.4,0.4,0.4, 0.5,0.5,0.5,0.5,
+     0.5, 0.5, 0.9, 0.9, 0.3, 0.6, 0.7, 0.8, 0.5,  0.5, 0.5, 0.9, 0.9, 0.3, 0.6, 0.7, 0.8, 0.5])
+print(model_list.loss(x0))

@@ -1,24 +1,26 @@
-#ifndef TICK_OPTIM_MODEL_SRC_VARIANTS_HAWKES_FIXED_SUMEXPKERN_CUSTOM_LOGLIK_LIST_H_
-#define TICK_OPTIM_MODEL_SRC_VARIANTS_HAWKES_FIXED_SUMEXPKERN_CUSTOM_LOGLIK_LIST_H_
+#ifndef TICK_OPTIM_MODEL_SRC_VARIANTS_HAWKES_CUSTOM_LOGLIK_LIST_H_
+#define TICK_OPTIM_MODEL_SRC_VARIANTS_HAWKES_CUSTOM_LOGLIK_LIST_H_
 
 // License: BSD 3 clause
 
 #include "base.h"
-#include "./hawkes_fixed_kern_loglik_list.h"
-#include "../hawkes_fixed_sumexpkern_loglik_custom.h"
+#include "../base/hawkes_list.h"
+#include "../base/hawkes_fixed_kern_loglik.h"
 
 /** \class ModelHawkesFixedSumExpKernLogLikList
  * \brief Class for computing L2 Contrast function and gradient for Hawkes processes with
  * exponential kernels with fixed exponent (i.e., alpha*beta*e^{-beta t}, with fixed beta)
  * on a list of realizations
  */
-class DLL_PUBLIC ModelHawkesFixedSumExpKernCustomLogLikList : public ModelHawkesFixedKernLogLikList {
+class DLL_PUBLIC ModelHawkesCustomLogLikList : public ModelHawkesList {
   //! @brief Value of decays array for this model
   ArrayDouble decays;
 
   ulong MaxN_of_f;
 
     SArrayLongPtrList1D global_n_list;
+
+    std::vector<std::unique_ptr<ModelHawkesFixedKernLogLik> > model_list;
 
 public:
   /**
@@ -27,7 +29,7 @@ public:
    * \param max_n_threads : number of cores to be used for multithreading. If negative,
    * the number of physical cores will be used
    */
-  ModelHawkesFixedSumExpKernCustomLogLikList(const ArrayDouble &decay, const ulong _MaxN_of_f,
+  ModelHawkesCustomLogLikList(const ArrayDouble &decay, const ulong _MaxN_of_f,
                                        const int max_n_threads = 1);
 
   //! @brief Returns decay that was set
@@ -58,7 +60,7 @@ public:
         return MaxN_of_f;
     }
 
-    std::unique_ptr<ModelHawkesFixedKernLogLik> build_model(const int n_threads) override {
+    std::unique_ptr<ModelHawkesSumExpCustom> build_model(const int n_threads) {
     return std::unique_ptr<ModelHawkesSumExpCustom>(
       new ModelHawkesSumExpCustom(decays, MaxN_of_f, n_threads));
   }
@@ -66,6 +68,13 @@ public:
     void set_data(const SArrayDoublePtrList2D &timestamps_list, const SArrayLongPtrList1D &global_n_list, const VArrayDoublePtr end_times);
 
     ulong get_n_coeffs() const override;
+
+    void compute_weights() override;
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
 };
 
-#endif  // TICK_OPTIM_MODEL_SRC_VARIANTS_HAWKES_FIXED_SUMEXPKERN_CUSTOM_LOGLIK_LIST_H_
+#endif  // TICK_OPTIM_MODEL_SRC_VARIANTS_HAWKES_FIXED_CUSTOM_LOGLIK_LIST_H_
