@@ -1,7 +1,7 @@
 // License: BSD 3 clause
 
 
-#include "hawkes_fixed_kern_custom_loglik_list.h"
+#include "hawkes_fixed_expkern_custom_loglik_list.h"
 #include "hawkes_utils.h"
 
 ModelHawkesCustomLogLikList::ModelHawkesCustomLogLikList(const int max_n_threads):

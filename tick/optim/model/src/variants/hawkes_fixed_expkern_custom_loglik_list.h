@@ -7,11 +7,6 @@
 #include "../base/hawkes_list.h"
 #include "../base/hawkes_fixed_kern_loglik.h"
 
-/** \class ModelHawkesFixedSumExpKernLogLikList
- * \brief Class for computing L2 Contrast function and gradient for Hawkes processes with
- * exponential kernels with fixed exponent (i.e., alpha*beta*e^{-beta t}, with fixed beta)
- * on a list of realizations
- */
 class DLL_PUBLIC ModelHawkesCustomLogLikList : public ModelHawkesList {
 
     SArrayLongPtrList1D global_n_list;
