@@ -9,9 +9,9 @@
 
 
 class ModelHawkesFixedSumExpKernCustomLogLikList : public ModelHawkesFixedKernLogLikList {
-    
+
 public:
-    
+
   ModelHawkesFixedSumExpKernCustomLogLikList(const ArrayDouble &decays, const ulong _MaxN_of_f,
                                        const int max_n_threads = 1);
 

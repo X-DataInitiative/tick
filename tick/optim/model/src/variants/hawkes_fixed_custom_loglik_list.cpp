@@ -1,7 +1,7 @@
 // License: BSD 3 clause
 
 
-#include "hawkes_fixed_expkern_custom_loglik_list.h"
+#include "hawkes_fixed_custom_loglik_list.h"
 #include "hawkes_utils.h"
 
 ModelHawkesCustomLogLikList::ModelHawkesCustomLogLikList(const int max_n_threads):
@@ -34,8 +34,6 @@ void ModelHawkesCustomLogLikList::compute_weights() {
         TICK_ERROR("Cannot compute weights as timestamps have not been stored. "
                            "Did you use incremental_fit?");
     }
-    model_list = std::vector<std::unique_ptr<ModelHawkesFixedKernLogLik> >(n_realizations);
-
     model_list = std::vector<std::unique_ptr<ModelHawkesFixedKernLogLik> >(n_realizations);
 
     for (ulong r = 0; r < n_realizations; ++r) {
