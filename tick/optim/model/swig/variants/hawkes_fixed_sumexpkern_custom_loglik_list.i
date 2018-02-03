@@ -8,7 +8,7 @@
 %shared_ptr(ModelHawkesFixedSumExpKernCustomLogLikList);
 
 
-class ModelHawkesFixedSumExpKernCustomLogLikList : public ModelHawkesFixedKernLogLikList {
+class ModelHawkesFixedSumExpKernCustomLogLikList : public ModelHawkesCustomLogLikList {
 
 public:
 

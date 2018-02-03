@@ -87,9 +87,7 @@ void ModelHawkesSumExpCustom::compute_weights_dim_i(const ulong i) {
   }
 
     for(ulong u = 0; u != U; ++u) {
-        double decay = decays[u];
         for (ulong k = 1; k != 1 + n_total_jumps + 1; k++) {
-            const double t_k = (k != (1 + n_total_jumps) ? global_timestamps[k] : end_time);
             //! recall that all g_i_j(t) are same, for any i
             //! thread_i calculate H3_i
             H3_i[global_n[k - 1] * U + u] -= G_i[get_index(k, i, u)];
