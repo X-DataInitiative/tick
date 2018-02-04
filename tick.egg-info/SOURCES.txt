@@ -1,4 +1,5 @@
 MANIFEST.in
+README.md
 setup.py
 lib/include/tick/array/abstractarray1d2d.h
 lib/include/tick/array/alloc.h
@@ -13,6 +14,7 @@ lib/include/tick/array/sarray.h
 lib/include/tick/array/sarray2d.h
 lib/include/tick/array/sbasearray.h
 lib/include/tick/array/sbasearray2d.h
+lib/include/tick/array/serializer.h
 lib/include/tick/array/sparsearray.h
 lib/include/tick/array/sparsearray2d.h
 lib/include/tick/array/ssparsearray.h
@@ -211,8 +213,10 @@ lib/src/swig/array/basearray_typemap_in.i
 lib/src/swig/array/sarray_typemap_in.i
 lib/src/swig/array/sarray_typemap_out.i
 lib/src/swig/array/sbasearray_typemap_in.i
+lib/src/swig/array/serializer.i
 lib/src/swig/array/sparsearray_typemap_in.i
 lib/src/swig/array/ssparsearray_typemap_in.i
+lib/src/swig/array/ssparsearray_typemap_out.i
 lib/src/swig/array/varray_typemap_in.i
 lib/src/swig/array/varray_typemap_out.i
 lib/src/swig/array_test/array_test_module.i
@@ -337,6 +341,7 @@ tick.egg-info/dependency_links.txt
 tick.egg-info/requires.txt
 tick.egg-info/top_level.txt
 tick/array/__init__.py
+tick/array/serialize.py
 tick/array/build/__init__.py
 tick/array/build/array.py
 tick/array_test/__init__.py
