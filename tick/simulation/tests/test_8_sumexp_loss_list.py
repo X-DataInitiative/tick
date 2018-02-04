@@ -14,7 +14,7 @@ seed = 3007
 MaxN_of_f = 10
 f_i = [np.array([1., 0.7, 0.8, 0.6, 0.5, 0.8, 0.3, 0.6, 0.2, 0.7]), np.array([1., 0.6, 0.8, 0.8, 0.6, 0.6, 0.5, 0.8, 0.3, 0.6])]
 
-end_time = 100.0
+end_time = 1000.0
 end_times = np.array([end_time, end_time])
 betas = np.array([0.1, 1, 3, 10])
 
@@ -82,3 +82,18 @@ for i in range(2):
 
 print("Loss calculated using list:", model_list.loss(x0))
 print("Loss calculated accurate  :", tmp1 / tmp2)
+
+tmp1 = 0
+tmp2 = 0
+from tick.optim.model import ModelHawkesSumExpCustom
+for i in range(2):
+    timestamps = timestamps_list[i]
+    global_n = global_n_list[i]
+    modelSumExp = ModelHawkesSumExpCustom(betas, MaxN_of_f)
+    modelSumExp.fit(timestamps, global_n, end_times[i])
+    tmp1 += modelSumExp.grad(x0) * (len(global_n) - 1)
+    tmp2 += (len(global_n) - 1)
+
+
+print("Grad calculated using list:", model_list.grad(x0))
+print("Grad calculated accurate  :", tmp1 / tmp2)

@@ -10,9 +10,6 @@ ModelHawkesCustomLogLikList::ModelHawkesCustomLogLikList(const int max_n_threads
 void ModelHawkesCustomLogLikList::set_data(const SArrayDoublePtrList2D &timestamps_list,
                                                           const SArrayLongPtrList1D &global_n_list,
                                                             const VArrayDoublePtr end_times) {
-
-    printf("\nModelHawkesFixedSumExpKernCustomLogLikList::set_data is called.\n");
-
     const auto timestamps_list_descriptor = describe_timestamps_list(timestamps_list, end_times);
     n_realizations = timestamps_list_descriptor.n_realizations;
     set_n_nodes(timestamps_list_descriptor.n_nodes);
@@ -106,7 +103,6 @@ void ModelHawkesCustomLogLikList::compute_weights_i_r(const ulong i_r) {
 double ModelHawkesCustomLogLikList::loss_i_r(const ulong i_r, const ArrayDouble &coeffs) {
     ulong r, i;
     std::tie(r, i) = get_realization_node(i_r);
-
     return model_list[r]->loss_dim_i(i, coeffs);
 }
 
@@ -129,10 +125,11 @@ void ModelHawkesCustomLogLikList::grad_i_r(const ulong i_r,
     ulong r, i;
     std::tie(r, i) = get_realization_node(i_r);
 
-    ArrayDouble tmp_grad_i(get_n_coeffs());
+    ArrayDouble tmp_grad_i(out.size());
+//    ArrayDouble tmp_grad_i(get_n_coeffs());
     tmp_grad_i.init_to_zero();
     model_list[r]->grad_dim_i(i, coeffs, tmp_grad_i);
-    out.mult_incr(tmp_grad_i, 1.);
+    out.mult_incr(tmp_grad_i, - 1.);
 }
 
 void ModelHawkesCustomLogLikList::grad(const ArrayDouble &coeffs, ArrayDouble &out) {
