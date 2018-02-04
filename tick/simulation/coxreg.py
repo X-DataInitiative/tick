@@ -443,7 +443,7 @@ class SimuCoxRegWithCutPoints(SimuWithFeatures):
             if j in S:
                 coeffs_block = np.zeros(n_cut_points[j] + 1)
             else:
-                coeffs_block = np.random.normal(.5, .25, n_cut_points[j] + 1)
+                coeffs_block = np.random.normal(1, .5, n_cut_points[j] + 1)
                 # make sure 2 consecutive coeffs are different enough
                 coeffs_block = np.abs(coeffs_block)
                 coeffs_block[::2] *= -1
