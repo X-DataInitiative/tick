@@ -24,6 +24,7 @@ void ModelHawkesCustomLogLikList::set_data(const SArrayDoublePtrList2D &timestam
     weights_computed = false;
 
     n_nodes--;
+    Total_events = get_n_total_jumps() - (*n_jumps_per_node)[n_nodes];
 }
 
 void ModelHawkesCustomLogLikList::compute_weights() {
@@ -110,7 +111,7 @@ double ModelHawkesCustomLogLikList::loss(const ArrayDouble &coeffs) {
     if (!weights_computed) compute_weights();
     return parallel_map_additive_reduce(
             get_n_threads(), n_realizations * n_nodes,
-            &ModelHawkesCustomLogLikList::loss_i_r, this, coeffs) / get_n_total_jumps();
+            &ModelHawkesCustomLogLikList::loss_i_r, this, coeffs) / Total_events;
 }
 
 double ModelHawkesCustomLogLikList::loss_i(const ulong i, const ArrayDouble &coeffs) {
@@ -140,7 +141,7 @@ void ModelHawkesCustomLogLikList::grad(const ArrayDouble &coeffs, ArrayDouble &o
             [](ArrayDouble &r, const ArrayDouble &s) { r.mult_incr(s, 1.0); },
             &ModelHawkesCustomLogLikList::grad_i_r,
             this, out, coeffs);
-    out /= get_n_total_jumps();
+    out /= Total_events;
 }
 
 void ModelHawkesCustomLogLikList::grad_i(const ulong i, const ArrayDouble &coeffs,

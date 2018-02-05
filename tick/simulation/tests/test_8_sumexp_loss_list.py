@@ -33,10 +33,14 @@ simu_model.track_intensity(0.1)
 simu_model.simulate()
 
 timestamps = simu_model.timestamps
-timestamps.append(np.array([]))
+timestamps.append(np.array([3.2, 6.7, 9.9, 11.3]))
 timestamps_list.append(timestamps)
 
 global_n = np.array(simu_model._pp.get_global_n())
+global_n = np.insert(global_n, 0, 0).astype(int)
+global_n = np.insert(global_n, 0, 0).astype(int)
+global_n = np.insert(global_n, 0, 0).astype(int)
+global_n = np.insert(global_n, 0, 0).astype(int)
 global_n = np.insert(global_n, 0, 0).astype(int)
 global_n_list.append(global_n)
 ##################################################################################################################
@@ -51,10 +55,11 @@ simu_model.track_intensity(0.1)
 simu_model.simulate()
 
 timestamps = simu_model.timestamps
-timestamps.append(np.array([]))
+timestamps.append(np.array([5.0]))
 timestamps_list.append(timestamps)
 
 global_n = np.array(simu_model._pp.get_global_n())
+global_n = np.insert(global_n, 0, 0).astype(int)
 global_n = np.insert(global_n, 0, 0).astype(int)
 global_n_list.append(global_n)
 
@@ -76,8 +81,8 @@ for i in range(2):
     global_n = global_n_list[i]
     modelSumExp = ModelHawkesSumExpCustom(betas, MaxN_of_f)
     modelSumExp.fit(timestamps, global_n, end_times[i])
-    tmp1 += modelSumExp.loss(x0) * (len(global_n) - 1)
-    tmp2 += (len(global_n) - 1)
+    tmp1 += modelSumExp.loss(x0) * (len(timestamps_list[i][0]) + len(timestamps_list[i][1]))
+    tmp2 +=  (len(timestamps_list[i][0]) + len(timestamps_list[i][1]))
 
 
 print("Loss calculated using list:", model_list.loss(x0))
@@ -91,8 +96,8 @@ for i in range(2):
     global_n = global_n_list[i]
     modelSumExp = ModelHawkesSumExpCustom(betas, MaxN_of_f)
     modelSumExp.fit(timestamps, global_n, end_times[i])
-    tmp1 += modelSumExp.grad(x0) * (len(global_n) - 1)
-    tmp2 += (len(global_n) - 1)
+    tmp1 += modelSumExp.grad(x0) * (len(timestamps_list[i][0]) + len(timestamps_list[i][1]))
+    tmp2 +=  (len(timestamps_list[i][0]) + len(timestamps_list[i][1]))
 
 
 print("Grad calculated using list:", model_list.grad(x0))

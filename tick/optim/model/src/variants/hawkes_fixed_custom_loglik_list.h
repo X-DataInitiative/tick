@@ -13,6 +13,9 @@ class DLL_PUBLIC ModelHawkesCustomLogLikList : public ModelHawkesList {
 
     std::vector<std::unique_ptr<ModelHawkesFixedKernLogLik> > model_list;
 
+    //Total valid jumps, in all realizations
+    ulong Total_events;
+
 public:
 
     void set_data(const SArrayDoublePtrList2D &timestamps_list, const SArrayLongPtrList1D &global_n_list, const VArrayDoublePtr end_times);
