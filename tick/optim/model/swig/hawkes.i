@@ -14,3 +14,4 @@
 %include variants/hawkes_fixed_expkern_loglik_list.i
 %include variants/hawkes_fixed_sumexpkern_loglik_list.i
 %include variants/hawkes_fixed_sumexpkern_custom_loglik_list.i
+%include variants/hawkes_fixed_expkern_custom_loglik_list.i
