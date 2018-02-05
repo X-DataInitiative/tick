@@ -82,7 +82,7 @@ for i in range(2):
     modelSumExp = ModelHawkesSumExpCustom(betas, MaxN_of_f)
     modelSumExp.fit(timestamps, global_n, end_times[i])
     tmp1 += modelSumExp.loss(x0) * (len(timestamps_list[i][0]) + len(timestamps_list[i][1]))
-    tmp2 +=  (len(timestamps_list[i][0]) + len(timestamps_list[i][1]))
+    tmp2 += (len(timestamps_list[i][0]) + len(timestamps_list[i][1]))
 
 
 print("Loss calculated using list:", model_list.loss(x0))
@@ -97,7 +97,7 @@ for i in range(2):
     modelSumExp = ModelHawkesSumExpCustom(betas, MaxN_of_f)
     modelSumExp.fit(timestamps, global_n, end_times[i])
     tmp1 += modelSumExp.grad(x0) * (len(timestamps_list[i][0]) + len(timestamps_list[i][1]))
-    tmp2 +=  (len(timestamps_list[i][0]) + len(timestamps_list[i][1]))
+    tmp2 += (len(timestamps_list[i][0]) + len(timestamps_list[i][1]))
 
 
 print("Grad calculated using list:", model_list.grad(x0))

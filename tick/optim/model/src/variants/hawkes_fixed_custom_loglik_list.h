@@ -43,7 +43,7 @@ public:
       return get_n_total_jumps();
     }
 
-    virtual ulong get_n_coeffs(){
+    virtual ulong get_n_coeffs() const{
         TICK_CLASS_DOES_NOT_IMPLEMENT("");
     }
 protected:
