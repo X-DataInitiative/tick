@@ -39,6 +39,7 @@ add_library(tick_model EXCLUDE_FROM_ALL
         variants/hawkes_fixed_custom_loglik_list.cpp variants/hawkes_fixed_custom_loglik_list.h
 		variants/hawkes_fixed_sumexpkern_custom_loglik_list.h variants/hawkes_fixed_sumexpkern_custom_loglik_list.cpp
 		variants/hawkes_fixed_expkern_custom_loglik_list.h variants/hawkes_fixed_expkern_custom_loglik_list.cpp
+		variants/hawkes_fixed_expkern_custom2_loglik_list.h variants/hawkes_fixed_expkern_custom2_loglik_list.cpp
 		modelcustombasic.cpp modelcustombasic.h
 		)
 
