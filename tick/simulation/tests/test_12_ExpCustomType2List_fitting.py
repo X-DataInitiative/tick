@@ -59,7 +59,7 @@ from tick.optim.prox import ProxElasticNet, ProxL2Sq, ProxZero, ProxL1
 prox = ProxL1(0.0, positive=True)
 prox = ProxZero()
 
-solver = AGD(step=1e-1, linesearch=False, max_iter=1000, print_every=50)
+solver = AGD(step=1e0, linesearch=False, max_iter=1000, print_every=50)
 solver.set_model(model_list).set_prox(prox)
 
 x_real = np.array(
