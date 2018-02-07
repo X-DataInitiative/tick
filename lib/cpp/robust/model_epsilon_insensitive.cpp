@@ -2,26 +2,24 @@
 
 #include "tick/robust/model_epsilon_insensitive.h"
 
-ModelEpsilonInsensitive::ModelEpsilonInsensitive(const SBaseArrayDouble2dPtr features,
-                                                 const SArrayDoublePtr labels,
-                                                 const bool fit_intercept,
-                                                 const double threshold,
-                                                 const int n_threads)
-
-    : ModelGeneralizedLinear(features,
-                             labels,
-                             fit_intercept,
-                             n_threads) {
+template <class T>
+TModelEpsilonInsensitive<T>::TModelEpsilonInsensitive(
+    const std::shared_ptr<BaseArray2d<T> > features,
+    const std::shared_ptr<SArray<T> > labels, const bool fit_intercept,
+    const T threshold, const int n_threads)
+    : TModelLabelsFeatures<T>(features, labels),
+      TModelGeneralizedLinear<T>(features, labels, fit_intercept, n_threads) {
   set_threshold(threshold);
 }
 
-const char *ModelEpsilonInsensitive::get_class_name() const {
+template <class T>
+const char *TModelEpsilonInsensitive<T>::get_class_name() const {
   return "ModelEpsilonInsensitive";
 }
 
-double ModelEpsilonInsensitive::loss_i(const ulong i,
-                                       const ArrayDouble &coeffs) {
-  const double z = std::abs(get_inner_prod(i, coeffs) - get_label(i));
+template <class T>
+T TModelEpsilonInsensitive<T>::loss_i(const ulong i, const Array<T> &coeffs) {
+  const T z = std::abs(get_inner_prod(i, coeffs) - get_label(i));
   if (z > threshold) {
     return z - threshold;
   } else {
@@ -29,9 +27,10 @@ double ModelEpsilonInsensitive::loss_i(const ulong i,
   }
 }
 
-double ModelEpsilonInsensitive::grad_i_factor(const ulong i,
-                                              const ArrayDouble &coeffs) {
-  const double d = get_inner_prod(i, coeffs) - get_label(i);
+template <class T>
+T TModelEpsilonInsensitive<T>::grad_i_factor(const ulong i,
+                                             const Array<T> &coeffs) {
+  const T d = get_inner_prod(i, coeffs) - get_label(i);
   if (std::abs(d) > threshold) {
     if (d > 0) {
       return 1;
@@ -42,3 +41,6 @@ double ModelEpsilonInsensitive::grad_i_factor(const ulong i,
     return 0.;
   }
 }
+
+template class TModelEpsilonInsensitive<double>;
+template class TModelEpsilonInsensitive<float>;

@@ -7,25 +7,45 @@
 
 #include <cereal/types/base_class.hpp>
 
-class DLL_PUBLIC ModelHinge : public virtual ModelGeneralizedLinear {
+template <class T>
+class DLL_PUBLIC TModelHinge : public virtual TModelGeneralizedLinear<T> {
+ protected:
+  using TModelGeneralizedLinear<T>::compute_features_norm_sq;
+  using TModelGeneralizedLinear<T>::n_samples;
+  using TModelGeneralizedLinear<T>::features_norm_sq;
+  using TModelGeneralizedLinear<T>::fit_intercept;
+
  public:
-  ModelHinge(const SBaseArrayDouble2dPtr features,
-             const SArrayDoublePtr labels,
-             const bool fit_intercept,
-             const int n_threads = 1);
+  using TModelGeneralizedLinear<T>::get_label;
+  using TModelGeneralizedLinear<T>::use_intercept;
+  using TModelGeneralizedLinear<T>::get_inner_prod;
+
+ public:
+  TModelHinge(const std::shared_ptr<BaseArray2d<T> > features,
+              const std::shared_ptr<SArray<T> > labels,
+              const bool fit_intercept, const int n_threads = 1);
 
   const char *get_class_name() const override;
 
-  double loss_i(const ulong i, const ArrayDouble &coeffs) override;
+  T loss_i(const ulong i, const Array<T> &coeffs) override;
 
-  double grad_i_factor(const ulong i, const ArrayDouble &coeffs) override;
+  T grad_i_factor(const ulong i, const Array<T> &coeffs) override;
 
-  template<class Archive>
+  template <class Archive>
   void serialize(Archive &ar) {
-    ar(cereal::make_nvp("ModelGeneralizedLinear", cereal::base_class<ModelGeneralizedLinear>(this)));
+    ar(cereal::make_nvp("ModelGeneralizedLinear",
+                        cereal::base_class<ModelGeneralizedLinear>(this)));
   }
 };
 
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelHinge, cereal::specialization::member_serialize)
+using ModelHinge = TModelHinge<double>;
+
+using ModelHingeDouble = TModelHinge<double>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelHingeDouble,
+                                   cereal::specialization::member_serialize)
+
+using ModelHingeFloat = TModelHinge<float>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelHingeFloat,
+                                   cereal::specialization::member_serialize)
 
 #endif  // LIB_INCLUDE_TICK_LINEAR_MODEL_MODEL_HINGE_H_

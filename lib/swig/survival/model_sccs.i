@@ -7,8 +7,7 @@
 #include "tick/survival/model_sccs.h"
 %}
 
-
-class ModelSCCS : public Model {
+class ModelSCCS : public ModelLipschitz {
 
  public:
   ModelSCCS(const SBaseArrayDouble2dPtrList1D &features,

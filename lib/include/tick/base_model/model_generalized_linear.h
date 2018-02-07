@@ -8,88 +8,108 @@
 
 #include "model_labels_features.h"
 
-class DLL_PUBLIC ModelGeneralizedLinear : public ModelLabelsFeatures {
+template <class T>
+class DLL_PUBLIC TModelGeneralizedLinear
+    : virtual public TModelLabelsFeatures<T> {
+ private:
+  std::string clazz =
+      "TModelLabelsFeatures<" + std::string(typeid(T).name()) + ">";
+
  protected:
-  ArrayDouble features_norm_sq;
+  using TModelLabelsFeatures<T>::features;
+  using TModelLabelsFeatures<T>::labels;
+  using TModelLabelsFeatures<T>::n_samples;
+  using TModelLabelsFeatures<T>::get_n_samples;
+  using TModelLabelsFeatures<T>::n_features;
+  using TModelLabelsFeatures<T>::get_n_features;
+  using TModelLabelsFeatures<T>::get_label;
+  using TModelLabelsFeatures<T>::get_features;
+  using TModelLabelsFeatures<T>::is_ready_columns_sparsity;
+
+  bool fit_intercept = false;
+  bool ready_features_norm_sq = false;
 
   unsigned int n_threads;
 
-  bool fit_intercept;
+  Array<T> features_norm_sq;
 
   /**
    * Computes gradient fo ith observation
    * @param i : The selected observation
    * @param out : Preallocated vector in which information is store
    * @param coeffs : coefficient at which the gradient is computed
-   * @param fill : If `true` out will be filled by the gradient value, otherwise out will be
-   * inceremented by the gradient value.
+   * @param fill : If `true` out will be filled by the gradient value, otherwise
+   * out will be inceremented by the gradient value.
    */
-  virtual void compute_grad_i(const ulong i, const ArrayDouble &coeffs,
-                              ArrayDouble &out, const bool fill);
+  virtual void compute_grad_i(const ulong i, const Array<T> &coeffs,
+                              Array<T> &out, const bool fill);
 
-    bool ready_features_norm_sq;
+  void compute_features_norm_sq();
 
-    void compute_features_norm_sq();
+  Array<T> &get_features_norm_sq() { return features_norm_sq; }
 
  public:
-  ModelGeneralizedLinear(const SBaseArrayDouble2dPtr features,
-                         const SArrayDoublePtr labels,
-                         const bool fit_intercept,
-                         const int n_threads = 1);
+  TModelGeneralizedLinear(const std::shared_ptr<BaseArray2d<T> > features,
+                          const std::shared_ptr<SArray<T> > labels,
+                          const bool fit_intercept, const int n_threads = 1);
 
-  const char *get_class_name() const override;
+  virtual ~TModelGeneralizedLinear() {}
 
-  double grad_i_factor(const ulong i, const ArrayDouble &coeffs) override;
+  virtual const char *get_class_name() const { return clazz.c_str(); }
 
-  void grad_i(const ulong i, const ArrayDouble &coeffs, ArrayDouble &out) override;
+  virtual T grad_i_factor(const ulong i, const Array<T> &coeffs);
+
+  virtual void grad_i(const ulong i, const Array<T> &coeffs, Array<T> &out);
 
   /**
-   * To be used by grad(ArrayDouble&, ArrayDouble&) to calculate grad by incrementally
-   * updating 'out'
-   * out and coeffs are not in the same order as in grad_i as this is necessary for
-   * parallel_map_array
+   * To be used by grad(ArrayDouble&, ArrayDouble&) to calculate grad by
+   * incrementally updating 'out' out and coeffs are not in the same order as in
+   * grad_i as this is necessary for parallel_map_array
    */
-  virtual void inc_grad_i(const ulong i, ArrayDouble &out, const ArrayDouble &coeffs);
+  virtual void inc_grad_i(const ulong i, Array<T> &out, const Array<T> &coeffs);
 
-  void grad(const ArrayDouble &coeffs, ArrayDouble &out) override;
+  virtual void grad(const Array<T> &coeffs, Array<T> &out);
 
-  double loss(const ArrayDouble &coeffs) override;
+  virtual T loss(const Array<T> &coeffs);
 
-  void sdca_primal_dual_relation(const double l_l2sq,
-                                 const ArrayDouble &dual_vector,
-                                 ArrayDouble &out_primal_vector) override;
+  void sdca_primal_dual_relation(const T l_l2sq, const Array<T> &dual_vector,
+                                 Array<T> &out_primal_vector) override;
 
-  bool use_intercept() const override {
-    return fit_intercept;
-  }
+  bool use_intercept() const override { return fit_intercept; }
 
-  bool is_sparse() const override {
-    return features->is_sparse();
-  }
+  bool is_sparse() const override { return features->is_sparse(); }
 
   ulong get_n_coeffs() const override {
     return get_n_features() + static_cast<int>(fit_intercept);
   }
 
-  virtual double get_inner_prod(const ulong i, const ArrayDouble &coeffs) const;
+  virtual T get_inner_prod(const ulong i, const Array<T> &coeffs) const;
 
   virtual void set_fit_intercept(const bool fit_intercept) {
     this->fit_intercept = fit_intercept;
   }
 
-  virtual bool get_fit_intercept() const {
-    return fit_intercept;
-  }
+  virtual bool get_fit_intercept() const { return fit_intercept; }
 
-  template<class Archive>
-  void serialize(Archive & ar) {
-    ar(cereal::make_nvp("ModelLabelsFeatures", cereal::base_class<ModelLabelsFeatures>(this)));
+  template <class Archive>
+  void serialize(Archive &ar) {
+    ar(cereal::make_nvp(
+        "ModelLabelsFeatures",
+        typename cereal::virtual_base_class<TModelLabelsFeatures<T> >(this)));
     ar(CEREAL_NVP(features_norm_sq));
     ar(CEREAL_NVP(fit_intercept));
     ar(CEREAL_NVP(ready_features_norm_sq));
   }
 };
 
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelGeneralizedLinear, cereal::specialization::member_serialize)
+using ModelGeneralizedLinear = TModelGeneralizedLinear<double>;
+
+using ModelGeneralizedLinearDouble = TModelGeneralizedLinear<double>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelGeneralizedLinearDouble,
+                                   cereal::specialization::member_serialize)
+
+using ModelGeneralizedLinearFloat = TModelGeneralizedLinear<float>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelGeneralizedLinearFloat,
+                                   cereal::specialization::member_serialize)
 
 #endif  // LIB_INCLUDE_TICK_BASE_MODEL_MODEL_GENERALIZED_LINEAR_H_

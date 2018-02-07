@@ -12,34 +12,65 @@
 
 #include <cereal/types/base_class.hpp>
 
-class DLL_PUBLIC ModelLinReg : public virtual ModelGeneralizedLinear, public ModelLipschitz {
+template <class T>
+class DLL_PUBLIC TModelLinReg : public virtual TModelGeneralizedLinear<T>,
+                                public TModelLipschitz<T> {
+ private:
+  std::string clazz = "TModelGeneralizedLinearWithIntercepts<" +
+                      std::string(typeid(T).name()) + ">";
+
+ protected:
+  using TModelLipschitz<T>::ready_lip_consts;
+  using TModelLipschitz<T>::lip_consts;
+  using TModelGeneralizedLinear<T>::compute_features_norm_sq;
+  using TModelGeneralizedLinear<T>::n_samples;
+  using TModelGeneralizedLinear<T>::features_norm_sq;
+  using TModelGeneralizedLinear<T>::fit_intercept;
+
  public:
-  ModelLinReg(const SBaseArrayDouble2dPtr features,
-              const SArrayDoublePtr labels,
-              const bool fit_intercept,
-              const int n_threads = 1);
+  using TModelGeneralizedLinear<T>::get_label;
+  using TModelGeneralizedLinear<T>::use_intercept;
+  using TModelGeneralizedLinear<T>::get_inner_prod;
 
-  const char *get_class_name() const override;
+ public:
+  TModelLinReg(const std::shared_ptr<BaseArray2d<T> > features,
+               const std::shared_ptr<SArray<T> > labels,
+               const bool fit_intercept, const int n_threads = 1);
 
-  double sdca_dual_min_i(const ulong i,
-                         const double dual_i,
-                         const ArrayDouble &primal_vector,
-                         const double previous_delta_dual_i,
-                         double l_l2sq) override;
+  virtual ~TModelLinReg() {}
 
-  double loss_i(const ulong i, const ArrayDouble &coeffs) override;
+  virtual const char *get_class_name() const { return clazz.c_str(); }
 
-  double grad_i_factor(const ulong i, const ArrayDouble &coeffs) override;
+  T sdca_dual_min_i(const ulong i, const T dual_i,
+                    const Array<T> &primal_vector,
+                    const T previous_delta_dual_i, T l_l2sq) override;
+
+  T loss_i(const ulong i, const Array<T> &coeffs) override;
+
+  T grad_i_factor(const ulong i, const Array<T> &coeffs) override;
 
   void compute_lip_consts() override;
 
-  template<class Archive>
-  void serialize(Archive & ar) {
-    ar(cereal::make_nvp("ModelGeneralizedLinear", cereal::base_class<ModelGeneralizedLinear>(this)));
-    ar(cereal::make_nvp("ModelLipschitz", cereal::base_class<ModelLipschitz>(this)));
+  template <class Archive>
+  void serialize(Archive &ar) {
+    ar(cereal::make_nvp(
+        "ModelGeneralizedLinear",
+        typename cereal::virtual_base_class<TModelGeneralizedLinear<T> >(
+            this)));
+    ar(cereal::make_nvp(
+        "ModelLipschitz",
+        typename cereal::base_class<TModelLipschitz<T> >(this)));
   }
 };
 
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelLinReg, cereal::specialization::member_serialize)
+using ModelLinReg = TModelLinReg<double>;
+
+using ModelLinRegDouble = TModelLinReg<double>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelLinRegDouble,
+                                   cereal::specialization::member_serialize)
+
+using ModelLinRegFloat = TModelLinReg<float>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelLinRegFloat,
+                                   cereal::specialization::member_serialize)
 
 #endif  // LIB_INCLUDE_TICK_LINEAR_MODEL_MODEL_LINREG_H_

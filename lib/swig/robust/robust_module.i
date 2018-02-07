@@ -4,12 +4,40 @@
 
 %include linear_model_module.i
 
+%shared_ptr(TModelGeneralizedLinearWithIntercepts<double>);
+%shared_ptr(TModelGeneralizedLinearWithIntercepts<float>);
+%shared_ptr(ModelGeneralizedLinearWithInterceptsDouble);
+%shared_ptr(ModelGeneralizedLinearWithInterceptsFloat);
 %shared_ptr(ModelGeneralizedLinearWithIntercepts);
+
+%shared_ptr(TModelLinRegWithIntercepts<double>);
+%shared_ptr(TModelLinRegWithIntercepts<float>);
+%shared_ptr(ModelLinRegWithInterceptsDouble);
+%shared_ptr(ModelLinRegWithInterceptsFloat);
 %shared_ptr(ModelLinRegWithIntercepts);
 
+%shared_ptr(TModelHuber<double>);
+%shared_ptr(TModelHuber<float>);
+%shared_ptr(ModelHuberDouble);
+%shared_ptr(ModelHuberFloat);
 %shared_ptr(ModelHuber);
+
+%shared_ptr(TModelModifiedHuber<double>);
+%shared_ptr(TModelModifiedHuber<float>);
+%shared_ptr(ModelModifiedHuberDouble);
+%shared_ptr(ModelModifiedHuberFloat);
 %shared_ptr(ModelModifiedHuber);
+
+%shared_ptr(TModelEpsilonInsensitive<double>);
+%shared_ptr(TModelEpsilonInsensitive<float>);
+%shared_ptr(ModelEpsilonInsensitiveDouble);
+%shared_ptr(ModelEpsilonInsensitiveFloat);
 %shared_ptr(ModelEpsilonInsensitive);
+
+%shared_ptr(TModelAbsoluteRegression<double>);
+%shared_ptr(TModelAbsoluteRegression<float>);
+%shared_ptr(ModelAbsoluteRegressionDouble);
+%shared_ptr(ModelAbsoluteRegressionFloat);
 %shared_ptr(ModelAbsoluteRegression);
 
 
