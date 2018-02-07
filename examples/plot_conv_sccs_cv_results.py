@@ -35,7 +35,7 @@ sim_effects = [*null_effect, intermediate_effect, late_effects]
 n_features = len(sim_effects)
 n_lags = np.repeat(lags, n_features).astype('uint64')
 
-coeffs = np.log(np.hstack(sim_effects))
+coeffs = [np.log(c) for c in sim_effects]
 
 # Time drift (age effect) used for the simulations.
 time_drift = lambda t: np.log(8 * np.sin(.01 * t) + 9)
@@ -75,68 +75,63 @@ n_lags = np.hstack([n_lags, np.zeros(n_agegrps)])
 # learner = ConvSCCS(n_lags=n_lags.astype('uint64'),
 #                    penalized_features=np.arange(n_features),
 #                    random_state=42)
-# strength_TV_range = (-4, -1)
-# strength_L1_range = (-5, -2)
+# C_TV_range = (1, 4)
+# C_L1_range = (2, 5)
 # _, cv_track = learner.fit_kfold_cv(features, labels, censoring,
-#                            strength_TV_range, strength_L1_range,
-#                            bootstrap=True, bootstrap_rep=50, n_cv_iter=50)
+#                                    C_TV_range, C_L1_range,
+#                                    confidence_intervals=True,
+#                                    n_samples_bootstrap=20, n_cv_iter=50)
 # elapsed_time = time() - start
 # print("Elapsed time (model training): %.2f seconds \n" % elapsed_time)
-# print("Best model hyper parameters: \n", cv_track.best_model['strength'])
+# print("Best model hyper parameters: \n")
+# print("C_tv : %f \n" % cv_track.best_model['C_tv'])
+# print("C_group_l1 : %f \n" % cv_track.best_model['C_group_l1'])
 # cv_track.plot_cv_report(35, 45)
 # plt.show()
+# confidence_intervals = cv_track.best_model['confidence_intervals']
 
 # using the parameters resulting from cross-validation
 learner = ConvSCCS(n_lags=n_lags.astype('uint64'),
                    penalized_features=np.arange(n_features),
-                   random_state=42, strength_tv=0.0036999724314638062,
-                   strength_group_l1=0.0001917004158917066)
+                   random_state=42, C_tv=270.2722840570933,
+                   C_group_l1=5216.472772625124)
 
-_, bootstrap_ci = learner.fit(features, labels, censoring,
-                              bootstrap=True, bootstrap_rep=20)
+_, confidence_intervals = learner.fit(features, labels, censoring,
+                                      confidence_intervals=True,
+                                      n_samples_bootstrap=20)
 
 # Plot estimated parameters
-# when using cross validation output:
-# bootstrap_ci = cv_track.best_model['bootstrap_ci']
 # get bootstrap confidence intervals
-refitted_coeffs = bootstrap_ci['refit_coeffs']
-lower_bound = bootstrap_ci['lower_bound']
-upper_bound = bootstrap_ci['upper_bound']
+refitted_coeffs = confidence_intervals['refit_coeffs']
+lower_bound = confidence_intervals['lower_bound']
+upper_bound = confidence_intervals['upper_bound']
 
-n_plots = np.sum([1 for l in n_lags if l > 0])
-n_rows = int(np.ceil(n_plots / 2))
+n_rows = int(np.ceil(n_features / 2))
+remove_last_plot = (n_features % 2 != 0)
+
 fig, axarr = plt.subplots(n_rows, 2, sharex=True, sharey=True, figsize=(10, 6))
-offset = 0
-c = 0
-for l in n_lags:
-    if l == 0:
-        offset += 1
-        continue
-    end = int(offset + l + 1)
-    m = refitted_coeffs[offset:end]
-    lb = lower_bound[offset:end]
-    ub = upper_bound[offset:end]
-    ax = axarr[c // 2][c % 2]
-    ax.plot(np.exp(coeffs[offset:end]), label="True RI")
-    ax.step(np.arange(l+1), np.exp(m), label="Estimated RI")
-    ax.fill_between(np.arange(l + 1), np.exp(lb), np.exp(ub), alpha=.5,
+y = confidence_intervals['refit_coeffs']
+lb = confidence_intervals['lower_bound']
+ub = confidence_intervals['upper_bound']
+for i, c in enumerate(y[:-6]):
+    ax = axarr[i // 2][i % 2]
+    l = n_lags[i]
+    ax.plot(np.exp(coeffs[i]), label="True RI")
+    ax.step(np.arange(l + 1), np.exp(c), label="Estimated RI")
+    ax.fill_between(np.arange(l + 1), np.exp(lb[i]), np.exp(ub[i]), alpha=.5,
                     color='orange', step='pre', label="95% boostrap CI")
-    offset = end
-    c += 1
-
 plt.suptitle('Estimated relative risks with 95% confidence bands')
-axarr[0][1].legend(loc='upper right')
-axarr[0][0].set_ylabel('Relative incidence')
-axarr[1][0].set_ylabel('Relative incidence')
-axarr[-1][0].set_xlabel('Time after exposure start')
-axarr[-1][1].set_xlabel('Time after exposure start')
+axarr[0][1].legend(loc='best')
+[ax[0].set_ylabel('Relative incidence') for ax in axarr]
+[ax.set_xlabel('Time after exposure start') for ax in axarr[-1]]
+if remove_last_plot:
+    fig.delaxes(axarr[-1][-1])
 plt.show()
 
 normalize = lambda x: x / np.sum(x)
-offset = n_features * (lags + 1)
-m = np.repeat(refitted_coeffs[offset:], 125)
-lb = np.repeat(lower_bound[offset:], 125)
-ub = np.repeat(upper_bound[offset:], 125)
+m = np.repeat(np.hstack(refitted_coeffs[-6:]), 125)
+lb = np.repeat(np.hstack(lower_bound[-6:]), 125)
+ub = np.repeat(np.hstack(upper_bound[-6:]), 125)
 plt.figure()
 plt.plot(np.arange(n_intervals),
          normalize(np.exp(time_drift(np.arange(n_intervals)))))

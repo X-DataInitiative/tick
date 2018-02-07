@@ -59,6 +59,7 @@ class ModelSCCSTest(unittest.TestCase):
         sim = SimuSCCS(500, 36, 3, n_lags, None, "single_exposure", seed=42,
                        verbose=False)
         _, X, y, censoring, coeffs = sim.simulate()
+        coeffs =np.hstack(coeffs)
         X, _, _ = LongitudinalFeaturesLagger(n_lags=n_lags) \
             .fit_transform(X, censoring)
         model = ModelSCCS(n_intervals=36, n_lags=n_lags)\
@@ -99,6 +100,7 @@ class ModelSCCSTest(unittest.TestCase):
         sim = SimuSCCS(n_samples, n_intervals, n_features, n_lags, None,
                        "multiple_exposures", seed=42)
         _, X, y, censoring, coeffs = sim.simulate()
+        coeffs = np.hstack(coeffs)
         X, _, _ = LongitudinalFeaturesLagger(n_lags=n_lags) \
             .fit_transform(X, censoring)
         model = ModelSCCS(n_intervals=n_intervals,
@@ -117,6 +119,7 @@ class ModelSCCSTest(unittest.TestCase):
         sim = SimuSCCS(n_samples, n_intervals, n_features, n_lags, None,
                        "multiple_exposures", seed=42, verbose=False)
         _, X, y, censoring, coeffs = sim.simulate()
+        coeffs = np.hstack(coeffs)
         X, _, _ = LongitudinalFeaturesLagger(n_lags=n_lags) \
             .fit_transform(X, censoring)
         model = ModelSCCS(n_intervals=n_intervals,

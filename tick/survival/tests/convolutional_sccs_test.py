@@ -8,8 +8,8 @@ class Test(unittest.TestCase):
     def setUp(self):
         self.n_lags = np.repeat(1, 2).astype('uint64')
         self.seed = 42
-        self.coeffs = np.log(np.array([2.1, 2.5,
-                                       .8, .5]))
+        self.coeffs = [np.log(np.array([2.1, 2.5])),
+                       np.log(np.array([.8, .5]))]
         self.n_features = len(self.n_lags)
         self.n_correlations = 2
         # Create data
@@ -88,22 +88,24 @@ class Test(unittest.TestCase):
         lrn = ConvSCCS(n_lags=n_lags, penalized_features=[],
                        tol=0, max_iter=10, random_state=seed)
         estimated_coeffs, _ = lrn.fit(features, labels, censoring)
-        np.testing.assert_almost_equal(estimated_coeffs, coeffs, decimal=1)
+        np.testing.assert_almost_equal(np.hstack(estimated_coeffs),
+                                       np.hstack(coeffs), decimal=1)
 
-    def test_LearnerSCCS_bootstrap_CI(self):
+    def test_LearnerSCCS_confidence_intervals(self):
         lrn = ConvSCCS(n_lags=self.n_lags, penalized_features=[])
         coeffs, _ = lrn.fit(self.features, self.labels, self.censoring)
         p_features, p_labels, p_censoring = lrn._preprocess_data(self.features,
                                                                  self.labels,
                                                                  self.censoring)
-        bootstrap_ci = lrn._bootstrap(p_features, p_labels, p_censoring,
-                                      coeffs, 5, .90)
-        self.assertTrue(np.all(bootstrap_ci.lower_bound <= coeffs),
-                        "lower bound of the confidence interval\
-                               should be <= coeffs")
-        self.assertTrue(np.all(coeffs <= bootstrap_ci.upper_bound),
-                        "upper bound of the confidence interval\
-                               should be >= coeffs")
+        confidence_intervals = lrn._bootstrap(p_features, p_labels, p_censoring,
+                                              np.hstack(coeffs), 5, .90)
+        for i, c in enumerate(coeffs):
+            self.assertTrue(np.all(confidence_intervals.lower_bound[i] <= c),
+                            "lower bound of the confidence interval\
+                                   should be <= coeffs at index %i" %i)
+            self.assertTrue(np.all(c <= confidence_intervals.upper_bound[i]),
+                            "upper bound of the confidence interval\
+                                   should be >= coeffs at index %i" %i)
         # Same with 0 lags
         n_lags = np.zeros_like(self.n_lags, dtype='uint64')
         lrn = ConvSCCS(n_lags=n_lags, penalized_features=[])
@@ -111,14 +113,15 @@ class Test(unittest.TestCase):
         p_features, p_labels, p_censoring = lrn._preprocess_data(self.features,
                                                                  self.labels,
                                                                  self.censoring)
-        bootstrap_ci = lrn._bootstrap(p_features, p_labels, p_censoring,
-                                      coeffs, 5, .90)
-        self.assertTrue(np.all(bootstrap_ci.lower_bound <= coeffs),
-                        "lower bound of the confidence interval\
-                               should be <= coeffs")
-        self.assertTrue(np.all(coeffs <= bootstrap_ci.upper_bound),
-                        "upper bound of the confidence interval\
-                               should be >= coeffs")
+        confidence_intervals = lrn._bootstrap(p_features, p_labels, p_censoring,
+                                              np.hstack(coeffs), 5, .90)
+        for i, c in enumerate(coeffs):
+            self.assertTrue(np.all(confidence_intervals.lower_bound[i] <= c),
+                            "lower bound of the confidence interval\
+                                   should be <= coeffs at index %i" %i)
+            self.assertTrue(np.all(c <= confidence_intervals.upper_bound[i]),
+                            "upper bound of the confidence interval\
+                                   should be >= coeffs at index %i" %i)
 
     def test_LearnerSCCS_score(self):
         lrn = ConvSCCS(n_lags=self.n_lags, penalized_features=[],
@@ -130,13 +133,13 @@ class Test(unittest.TestCase):
     def test_LearnerSCCS_fit_KFold_CV(self):
         lrn = ConvSCCS(n_lags=self.n_lags,
                        penalized_features=np.arange(self.n_features),
-                       random_state=self.seed, strength_tv=1e-1,
-                       strength_group_l1=1e-1)
+                       random_state=self.seed, C_tv=1e-1,
+                       C_group_l1=1e-1)
         lrn.fit(self.features, self.labels, self.censoring)
         score = lrn.score()
         tv_range = (-5, -1)
         groupl1_range = (-5, -1)
         lrn.fit_kfold_cv(self.features, self.labels, self.censoring,
-                         strength_tv_range=tv_range,
-                         strength_group_l1_range=groupl1_range, n_cv_iter=4)
+                         C_tv_range=tv_range,
+                         C_group_l1_range=groupl1_range, n_cv_iter=4)
         self.assertTrue(lrn.score() <= score)

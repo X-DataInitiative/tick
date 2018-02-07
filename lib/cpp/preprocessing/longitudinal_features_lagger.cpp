@@ -7,15 +7,8 @@
 #include "tick/preprocessing/longitudinal_features_lagger.h"
 
 LongitudinalFeaturesLagger::LongitudinalFeaturesLagger(
-<<<<<<< ours
-    const SBaseArrayDouble2dPtrList1D &features, const ulong n_lags)
-||||||| ancestor
-    const SBaseArrayDouble2dPtrList1D &features,
-    const ulong n_lags)
-=======
     const SBaseArrayDouble2dPtrList1D &features,
     const SArrayULongPtr n_lags)
->>>>>>> theirs
     : n_intervals(features[0]->n_rows()),
       n_lags(n_lags),
       n_samples(features.size()),
@@ -58,16 +51,7 @@ void LongitudinalFeaturesLagger::dense_lag_preprocessor(ArrayDouble2d &features,
       value = features(row, feature);
       max_col = col + n_cols_feature;
       if (value != 0) {
-<<<<<<< ours
-        while (row < censoring && row / n_intervals == sample &&
-               col / (n_lags + 1) == feature) {
-||||||| ancestor
-        while (row < censoring &&
-            row / n_intervals == sample &&
-            col / (n_lags + 1) == feature) {
-=======
         while (row < censoring && col < max_col) {
->>>>>>> theirs
           out[row * n_lagged_features + col] = value;
           row++;
           col++;
@@ -77,38 +61,6 @@ void LongitudinalFeaturesLagger::dense_lag_preprocessor(ArrayDouble2d &features,
   }
 }
 
-<<<<<<< ours
-void LongitudinalFeaturesLagger::sparse_lag_preprocessor(
-    ArrayULong &row, ArrayULong &col, ArrayDouble &data, ArrayULong &out_row,
-    ArrayULong &out_col, ArrayDouble &out_data, ulong censoring) const {
-  ulong j = 0;
-  for (ulong i = 0; i < row.size(); i++) {
-    double value = data[i];
-    ulong r = row[i];
-    ulong c = col[i] * (n_lags + 1);
-    ulong sample = r / n_intervals;
-    ulong feature = c / (n_lags + 1);
-    while (r < censoring && r / n_intervals == sample &&
-           c / (n_lags + 1) == feature) {
-||||||| ancestor
-void LongitudinalFeaturesLagger::sparse_lag_preprocessor(ArrayULong &row,
-                                                         ArrayULong &col,
-                                                         ArrayDouble &data,
-                                                         ArrayULong &out_row,
-                                                         ArrayULong &out_col,
-                                                         ArrayDouble &out_data,
-                                                         ulong censoring) const {
-  ulong j = 0;
-  for (ulong i = 0; i < row.size(); i++) {
-    double value = data[i];
-    ulong r = row[i];
-    ulong c = col[i] * (n_lags + 1);
-    ulong sample = r / n_intervals;
-    ulong feature = c / (n_lags + 1);
-    while (r < censoring &&
-        r / n_intervals == sample &&
-        c / (n_lags + 1) == feature) {
-=======
 void LongitudinalFeaturesLagger::sparse_lag_preprocessor(ArrayULong &row,
                                                          ArrayULong &col,
                                                          ArrayDouble &data,
@@ -128,7 +80,6 @@ void LongitudinalFeaturesLagger::sparse_lag_preprocessor(ArrayULong &row,
     new_col = offset;
 
     while (r < censoring && new_col < max_col) {
->>>>>>> theirs
       out_row[j] = r;
       out_col[j] = new_col;
       out_data[j] = value;

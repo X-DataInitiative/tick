@@ -8,8 +8,8 @@ from tick.preprocessing.utils import check_longitudinal_features_consistency, \
 
 
 class ModelSCCS(ModelFirstOrder, ModelLipschitz):
-    """SCCS model. This class gives first order information (gradient and loss)
-    for this model.
+    """Discrete-time Self Control Case Series (SCCS) likelihood. This class
+    provides first order information (gradient and loss) model.
 
     Parameters
     ----------

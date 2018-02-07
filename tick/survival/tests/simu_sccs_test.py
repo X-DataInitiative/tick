@@ -44,7 +44,10 @@ class Test(unittest.TestCase):
             self.assertGreater(expect_lab[i].sum(), 0)
 
     def test_simulated_features(self):
-        sim = SimuSCCS(100, 10, 3, 2, None, 'multiple_exposures', verbose=False)
+        n_features = 3
+        n_lags = np.repeat(2, n_features)
+        sim = SimuSCCS(100, 10, n_features, n_lags, None,
+                       'multiple_exposures', verbose=False)
         feat, n_samples = sim.simulate_features(100)
         self.assertEqual(100, len(feat))
         print(np.sum([1 for f in feat if f.sum() <= 0]))
@@ -62,7 +65,8 @@ class Test(unittest.TestCase):
             self.assertEqual(X[0].shape, (n_intervals, n_features))
             self.assertEqual(y[0].shape, (n_intervals,))
             self.assertEqual(c.shape, (n_cases,))
-            self.assertEqual(coeffs.shape, ((n_lags + 1).sum(),))
+            [self.assertEqual(co.shape, (int(n_lags[i]+1),))
+             for i, co in enumerate(coeffs)]
             self.assertEqual(np.sum([1 for f in X if f.sum() <= 0]), 0)
             self.assertEqual(np.sum([1 for f in X_c if f.sum() <= 0]), 0)
 

@@ -13,6 +13,120 @@ from scipy.stats import beta, norm, truncnorm, wald
 
 
 class SimuSCCS(Simu):
+    """Simulation of a Self Control Case Series (SCCS) model. This simulator can
+    produce exposure (features), outcomes (labels) and censoring data.
+    The features matrices  are a `n_cases` list of numpy arrays (dense case) or
+    csr_matrices (sparse case) of shape `(n_intervals, n_features)` containing
+    exposures to each feature.
+    Exposure can take two forms:
+    - short repeated exposures: in that case, each column of the numpy arrays
+    or csr matrices can contain multiple ones, each one representing an exposure
+    for a particular time bucket.
+    - infinite unique exposures: in that case, each column of the numpy arrays
+    or csr matrices can only contain a single one, corresponding to the starting
+    date of the exposure.
+
+    Parameters
+    ----------
+    n_cases : `int`
+        Number of cases to generate. A case is a sample who experience at
+        least one adverse event.
+
+    n_intervals : `int`
+        Number of time intervals used to generate features and outcomes.
+
+    n_features : `int`
+        Number of features to simulate for each case.
+
+    n_lags : `numpy.ndarray`, shape=(n_features,), dtype="uint64"
+       Number of lags per feature. The model will regress labels on the
+       last observed values of the features over their corresponding
+       `n_lags` time intervals. `n_lags` values must be between 0 and
+       `n_intervals` - 1.
+
+    exposure_type : {'infinite', 'short'}, default='infinite'
+       Either 'infinite' for infinite unique exposures or 'short' for short
+       repeated exposures.
+
+    distribution : {'multinomial', 'poisson'}, default='multinomial'
+       Distribution used to generate the outcomes. In the 'multinomial'
+       case, the Poisson process used to generate the events is conditionned
+       by total the number event per sample, which is set to be equal to
+       one. In that case, the simulation matches exactly the SCCS model
+       hypotheses. In the 'poisson' case, the outcomes are generated from a
+       Poisson process, which can result in more than one outcome tick per
+       sample. In this case, the first event is kept, and the other are
+       discarded.
+
+    sparse : `boolean`, default=True
+        Generate sparse or dense features.
+
+    censoring : `Boolean`, default=True
+       Simulate a censoring vector. In that case, the features and outcomes are
+       simulated, then right-censored according to the simulated censoring
+       dates.
+
+    censoring_prob : `float`, default=0.
+       Probability that a sample is censored. Should be in [0, 1]. If 0, no
+       censoring is applied.
+
+    censoring_scale : `float`, default=None
+       The number of censored time intervals are drawn from a Poisson
+       distribution with intensity equal to `censoring_scale`. The higher,
+       the more intervals will be censored. If None, no censoring is
+       applied.
+
+    coeffs : `list` containing `numpy.ndarray`, default=None
+       Can be used to provide your own set of coefficients. Element `i` of
+       the list should be a 1-d `numpy.ndarray` of shape (n_lags + 1), where
+       `n_lags[i]` is the number of lags associated to feature `i`.
+       If set to None, the simulator will generate coefficients randomly.
+
+    hawkes_exp_kernels : `SimuHawkesExpKernels`, default=None
+        Features are simulated with exponential kernel Hawkes proecesses.
+        This parameter can be used to specify your own kernels (see
+        `SimuHawkesExpKernels` documentation). If None, random kernels
+        are generated. The same kernels are used to generate features for
+        the whole generated population.
+
+    n_correlations : `int`, default=0
+        If `hawkes_exp_kernels` is None, random kernels are generated. This
+        parameter controls the number of non-null non-diagonal kernels.
+
+    batch_size : `int`, default=None
+       When generating outcomes with Poisson distribution, the simulator will
+       discard samples to which no event has occured. In this case, the
+       simulator generate successive batches of samples, until it reaches
+       a total of n_samples. This parameter can be used to set the batch size.
+
+    seed : `int`, default=None
+        The seed of the random number generator
+
+    verbose : `bool`, default=True
+        If True, print things
+
+    Examples
+    --------
+    >>> from tick.survival import SimuSCCS
+    >>> n_lags = np.repeat(2, 2).astype('uint64')
+    >>> sim = SimuSCCS(n_cases=5, n_intervals=3, n_features=2, n_lags=n_lags,
+    ... seed=42, sparse=False, exposure_type="single_exposure",
+    ... verbose=False)
+    >>> features, labels, censoring, _coeffs = sim.simulate()
+    >>> print(features)
+    [array([[ 0.,  0.],
+           [ 1.,  0.],
+           [ 1.,  1.]]), array([[ 1.,  1.],
+           [ 1.,  1.],
+           [ 1.,  1.]])]
+    >>> print(labels)
+    [array([0, 0, 1], dtype=int32), array([0, 0, 1], dtype=int32)]
+    >>> print(censoring)
+    [3 3]
+    >>> print(_coeffs)
+    [ 0.54738557 -0.15109073  0.71345739  1.67633284 -0.25656871 -0.25655065]
+    """
+
     _const_attr = [
         # user defined parameters
         '_exposure_type',
@@ -21,10 +135,12 @@ class SimuSCCS(Simu):
         '_censoring_scale',  # redundant with prob ?
         '_batch_size',
         '_distribution',
+        '_n_lags',
         # user defined or computed attributes
         '_hawkes_exp_kernel',
         '_coeffs',
-        '_time_drift'
+        '_time_drift',
+        '_features_offset'
     ]
 
     _attrinfos = {key: {'writable': False} for key in _const_attr}
@@ -37,122 +153,12 @@ class SimuSCCS(Simu):
                  coeffs=None, hawkes_exp_kernels=None, n_correlations=0,
                  batch_size=None, seed=None, verbose=True,
                  ):
-        """Simulation of a Self Control Case Series (SCCS) model. This simulator can
-        produce exposure (features), outcomes (labels) and censoring data.
-        The features matrices  are a `n_cases` list of numpy arrays (dense case) or
-        csr_matrices (sparse case) of shape `(n_intervals, n_features)` containing
-        exposures to each feature.
-        Exposure can take two forms:
-        - short repeated exposures: in that case, each column of the numpy arrays
-        or csr matrices can contain multiple ones, each one representing an exposure
-        for a particular time bucket.
-        - infinite unique exposures: in that case, each column of the numpy arrays
-        or csr matrices can only contain a single one, corresponding to the starting
-        date of the exposure.
-
-        Parameters
-        ----------
-        n_cases : `int`
-            Number of cases to generate. A case is a sample who experience at
-            least one adverse event.
-
-        n_intervals : `int`
-            Number of time intervals used to generate features and outcomes.
-
-        n_features : `int`
-            Number of features to simulate for each case.
-
-        n_lags : `numpy.ndarray`, shape=(n_features,), dtype="uint64"
-           Number of lags per feature. The model will regress labels on the
-           last observed values of the features over their corresponding
-           `n_lags` time intervals. `n_lags` values must be between 0 and
-           `n_intervals` - 1.
-
-        exposure_type : {'infinite', 'short'}, default='infinite'
-           Either 'infinite' for infinite unique exposures or 'short' for short
-           repeated exposures.
-
-        distribution : {'multinomial', 'poisson'}, default='multinomial'
-           Distribution used to generate the outcomes. In the 'multinomial'
-           case, the Poisson process used to generate the events is conditionned
-           by total the number event per sample, which is set to be equal to
-           one. In that case, the simulation matches exactly the SCCS model
-           hypotheses. In the 'poisson' case, the outcomes are generated from a
-           Poisson process, which can result in more than one outcome tick per
-           sample. In this case, the first event is kept, and the other are
-           discarded.
-
-        sparse : `boolean`, default=True
-            Generate sparse or dense features.
-
-        censoring : `Boolean`, default=True
-           Simulate a censoring vector. In that case, the features and outcomes are
-           simulated, then right-censored according to the simulated censoring
-           dates.
-
-        censoring_prob : `float`, default=0.
-           Probability that a sample is censored. Should be in [0, 1]. If 0, no
-           censoring is applied.
-
-        censoring_scale : `float`, default=None
-           The number of censored time intervals are drawn from a Poisson
-           distribution with intensity equal to `censoring_scale`. The higher,
-           the more intervals will be censored. If None, no censoring is
-           applied.
-
-        coeffs : `numpy.ndarray` of shape (n_features + (n_lags + 1).sum()), default=None
-           Can be used to provide your own set of coefficients. If set to None,
-           the simulator will generate coefficients randomly.
-
-        hawkes_exp_kernels : `SimuHawkesExpKernels`, default=None
-            Features are simulated with exponential kernel Hawkes proecesses.
-            This parameter can be used to specify your own kernels (see
-            `SimuHawkesExpKernels` documentation). If None, random kernels
-            are generated. The same kernels are used to generate features for
-            the whole generated population.
-
-        n_correlations : `int`, default=0
-            If `hawkes_exp_kernels` is None, random kernels are generated. This
-            parameter controls the number of non-null non-diagonal kernels.
-
-        batch_size : `int`, default=None
-           When generating outcomes with Poisson distribution, the simulator will
-           discard samples to which no event has occured. In this case, the
-           simulator generate successive batches of samples, until it reaches
-           a total of n_samples. This parameter can be used to set the batch size.
-
-        seed : `int`, default=None
-            The seed of the random number generator
-
-        verbose : `bool`, default=True
-            If True, print things
-
-        Examples
-        --------
-        >>> from tick.survival import SimuSCCS
-        >>> n_lags = np.repeat(2, 2).astype('uint64')
-        >>> sim = SimuSCCS(n_cases=5, n_intervals=3, n_features=2, n_lags=n_lags,
-        ... seed=42, sparse=False, exposure_type="single_exposure",
-        ... verbose=False)
-        >>> features, labels, censoring, coeffs = sim.simulate()
-        >>> print(features)
-        [array([[ 0.,  0.],
-               [ 1.,  0.],
-               [ 1.,  1.]]), array([[ 1.,  1.],
-               [ 1.,  1.],
-               [ 1.,  1.]])]
-        >>> print(labels)
-        [array([0, 0, 1], dtype=int32), array([0, 0, 1], dtype=int32)]
-        >>> print(censoring)
-        [3 3]
-        >>> print(coeffs)
-        [ 0.54738557 -0.15109073  0.71345739  1.67633284 -0.25656871 -0.25655065]
-        """
-
         super(SimuSCCS, self).__init__(seed, verbose)
         self.n_cases = n_cases
         self.n_intervals = n_intervals
         self.n_features = n_features
+        self._features_offset = None
+        self._n_lags = None
         self.n_lags = n_lags
         self.sparse = sparse
 
@@ -207,7 +213,7 @@ class SimuSCCS(Simu):
             row c - 1 of the corresponding matrix. The last n_intervals - c rows
             are then set to 0.
 
-        coeffs : `numpy.ndarray`, shape=(n_features * (n_lags + 1),)
+        _coeffs : `numpy.ndarray`, shape=(n_features * (n_lags + 1),)
             The coefficients used to simulate the data.
         """
         return Simu.simulate(self)
@@ -217,8 +223,8 @@ class SimuSCCS(Simu):
         """
         n_lagged_features = int(self.n_lags.sum() + self.n_features)
         n_cases = self.n_cases
-        if self.coeffs is None:
-            self.coeffs = np.random.normal(1e-3, 1.1, n_lagged_features)
+        if self._coeffs is None:
+            self._set('_coeffs', np.random.normal(1e-3, 1.1, n_lagged_features))
 
         features = []
         censored_features = []
@@ -271,7 +277,7 @@ class SimuSCCS(Simu):
         `multiple_exposures` exposures.
         """
         if self.exposure_type == "single_exposure":
-            features, n_samples = self._sim_single_exposure_exposures()
+            features, n_samples = self._sim_single_exposures()
         elif self.exposure_type == "multiple_exposures":
             sim = self._sim_multiple_exposures_exposures
             features = [sim() for _ in range(n_samples)]
@@ -291,7 +297,7 @@ class SimuSCCS(Simu):
             features = csr_matrix(features, dtype="float64")
         return features
 
-    def _sim_single_exposure_exposures(self):
+    def _sim_single_exposures(self):
         if not self.sparse:
             raise ValueError("'single_exposure' exposures can only be simulated"
                              " as sparse feature matrices")
@@ -352,10 +358,10 @@ class SimuSCCS(Simu):
         if self.distribution == "poisson":
             # TODO later: add self.max_n_events to allow for multiple outcomes
             # In this case, the multinomial simulator should use this arg too
-            outcomes = self._simulate_poisson_outcomes(features, self.coeffs)
+            outcomes = self._simulate_poisson_outcomes(features, self._coeffs)
         else:
             outcomes = self._simulate_multinomial_outcomes(features,
-                                                           self.coeffs)
+                                                           self._coeffs)
         return outcomes
 
     def _simulate_multinomial_outcomes(self, features, coeffs):
@@ -514,15 +520,37 @@ class SimuSCCS(Simu):
         self._set("_censoring_scale", value)
 
     @property
+    def n_lags(self):
+        return self._n_lags
+
+    @n_lags.setter
+    def n_lags(self, value):
+        offsets = [0]
+        for l in value:
+            if l < 0:
+                raise ValueError('n_lags elements should be greater than or '
+                                 'equal to 0.')
+            offsets.append(offsets[-1] + l + 1)
+        self._set('_n_lags', value)
+        self._set('_features_offset', offsets)
+
+    @property
     def coeffs(self):
-        return self._coeffs
+        value = list()
+        for i, l in enumerate(self.n_lags):
+            start = int(self._features_offset[i])
+            end = int(start + l + 1)
+            value.append(self._coeffs[start:end])
+        return value
 
     @coeffs.setter
     def coeffs(self, value):
-        if value is not None and \
-                value.shape != (int(self.n_lags.sum() + self.n_features),):
-            raise ValueError("Coeffs should be of shape\
-             (n_features * (n_lags + 1),)")
+        if value is not None:
+            for i, c in enumerate(value):
+                if c.shape[0] != int(self.n_lags[i] + 1):
+                    raise ValueError("Coeffs %i th element should be of shape\
+                     (n_lags[%i] + 1),)" % (i, self.n_lags[i]))
+            value = np.hstack(value)
         self._set("_coeffs", value)
 
     @property

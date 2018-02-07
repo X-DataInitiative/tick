@@ -15,18 +15,114 @@ import matplotlib.pylab as plt
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import cm
 from tick.preprocessing.utils import check_longitudinal_features_consistency, \
-    check_censoring_consistency
+    check_censoring_consistency, safe_array
 
 # Case classes
-Bootstrap_CI = namedtuple('Bootstrap_CI', ['refit_coeffs', 'median',
-                                           'lower_bound', 'upper_bound',
-                                           'confidence'])
-
-Strengths = namedtuple('Strengths', ['strength_tv', 'strength_group_l1'])
+Confidence_intervals = namedtuple('Confidence_intervals',
+                                  ['refit_coeffs', 'lower_bound',
+                                   'upper_bound', 'confidence_level'])
 
 
 # TODO later: exploit new options of SVRG (parallel fit, variance_reduction...)
+# TODO later: add SAGA solver
 class ConvSCCS(ABC, Base):
+    """ConvSCCS learner, estimates lagged features effect using TV and Group L1
+    penalties. These penalties constrain the coefficient groups modelling the
+    lagged effects to ensure their regularity and sparsity.
+
+    Parameters
+    ----------
+    n_lags : `numpy.ndarray`, shape=(n_features,), dtype="uint64"
+        Number of lags per feature. The model will regress labels on the
+        last observed values of the features over their corresponding
+        `n_lags` time intervals. `n_lags` values must be between 0 and
+        `n_intervals` - 1.
+
+    penalized_features : `numpy.ndarray`, shape=(n_features,), dtype="bool", default=None
+        Booleans indicating whether the features should be penalised or
+        not. If set to None, pernalize all features.
+
+    C_tv : `float`, default=None
+        Level of TV penalization TV penalization. This value should be
+        `None` or greater than 0.
+
+    C_group_l1 : `float`, default=None
+        Level of group Lasso penalization. This value should be `None` or
+        greater than 0.
+
+    step : `float`, default=None
+        Step-size parameter, the most important parameter of the solver.
+        If set to None, it will be automatically tuned as
+        ``step = 1 / model.get_lip_max()``.
+
+    tol : `float`, default=1e-5
+        The tolerance of the solver (iterations stop when the stopping
+        criterion is below it).
+
+    max_iter : `int`, default=100
+        Maximum number of iterations of the solver, namely maximum
+        number of epochs.
+
+    verbose : `bool`, default=False
+        If `True`, solver verboses history, otherwise nothing is
+        displayed.
+
+    print_every : `int`, default=1
+        Print history information every time the iteration number is a
+        multiple of ``print_every``. Used only is ``verbose`` is True.
+
+    record_every : `int`, default=1
+        Save history information every time the iteration number is a
+        multiple of ``record_every``.
+
+    random_state : `int`, default=None
+        If not None, the seed of the random sampling.
+
+
+    Attributes
+    ----------
+    n_cases : `int` (read-only)
+        Number of samples with at least one outcome.
+
+    n_intervals : `int` (read-only)
+        Number of time intervals.
+
+    n_features : `int` (read-only)
+        Number of features.
+
+    n_coeffs : `int` (read-only)
+        Total number of coefficients of the model.
+
+    coeffs : `list` (read-only)
+        List containing 1-dimensional `np.ndarray` (`dtype=float`)
+        containing the coefficients of the model. Each numpy array contains
+        the `(n_lags + 1)` coefficients associated with a feature. Each
+        coefficient of such arrays can be interpreted as the log relative
+        intensity associated with this feature, `k` periods after exposure
+        start, where `k` is the index of the coefficient in the array.
+
+    intensities : `list` (read-only)
+        List containing 1-dimensional `np.ndarray` (`dtype=float`)
+        containing the intensities estimated by the model.
+        Each numpy array contains the relative intensities of a feature.
+        Element of these arrays can be interpreted as the relative
+        intensity associated with a feature, `k` periods after exposure
+        start, where `k` is the index of the coefficient in the array.
+
+    confidence_intervals : `Confidence_intervals` (read-only)
+        Coefficients refitted on the model and associated confidence
+        intervals computed using parametric bootstrap. Refitted coefficients
+        are projected on the support of the coefficients estimated by the
+        penalised model.
+        Refitted coefficients and their confidence
+        intervals follow the same structure as `coeffs`.
+
+    References
+    ----------
+    Morel, M., Bacry, E., Gaïffas, S., Guilloux, A., & Leroy, F.
+    (Submitted, 2018, January). ConvSCCS: convolutional self-controlled case
+    series model for lagged adverse event detection
+    """
     _const_attr = [
         # constructed attributes
         '_preprocessor_obj',
@@ -35,105 +131,38 @@ class ConvSCCS(ABC, Base):
         # user defined parameters
         '_n_lags',
         '_penalized_features',
-        '_strength_tv',
-        '_strength_group_l1',
+        '_C_tv',
+        '_C_group_l1',
         '_random_state',
         # computed attributes
         'n_cases',
         'n_intervals',
         'n_features',
         'n_coeffs',
-        'coeffs',
+        '_coeffs',
         '_features_offset',
         '_fitted',
         '_step_size',
-        # refit coeffs, median, and CI data
-        'bootstrap_coeffs',
+        # refit _coeffs, median, and CI data
+        'confidence_intervals',
     ]
 
     _attrinfos = {key: {'writable': False} for key in _const_attr}
 
-    def __init__(self, n_lags: np.array,
-                 penalized_features: np.array,
-                 strength_tv=None, strength_group_l1=None,
-                 step: float = None, tol: float = 1e-5, max_iter: int = 100,
-                 verbose: bool = False, print_every: int = 10,
-                 record_every: int = 10, random_state: int = None):
-        """ConvSCCS model. This class allows to estimate a lagged effect for
-        each feature. TV and Group L1 penalties might be used to penalize the
-        coefficient groups modelling the lagged effects.
-
-        Parameters
-        ----------
-        n_lags : `numpy.ndarray`, shape=(n_features,), dtype="uint64"
-            Number of lags per feature. The model will regress labels on the
-            last observed values of the features over their corresponding
-            `n_lags` time intervals. `n_lags` values must be between 0 and
-            `n_intervals` - 1.
-
-        penalized_features : `numpy.ndarray`, shape=(n_features,), dtype="bool"
-            Booleans indicating whether the features should be penalised or
-            not.
-
-        strength_tv : `float`, default=None
-            Strength of the TV penalization. This value should be `None` or
-            greater than 0.
-
-        strength_group_l1 : `float`, default=None
-            Strength of the group Lasso penalization. This value should be
-            `None` or greater than 0.
-
-        step : `float`
-            Step-size parameter, the most important parameter of the solver.
-            Whenever possible, this can be automatically tuned as
-            ``step = 1 / model.get_lip_max()``. Otherwise, use a
-            try-an-improve approach.
-
-        tol : `float`, default=1e-5
-            The tolerance of the solver (iterations stop when the stopping
-            criterion is below it).
-
-        max_iter : `int`, default=100
-            Maximum number of iterations of the solver, namely maximum
-            number of epochs.
-
-        verbose : `bool`, default=False
-            If `True`, solver verboses history, otherwise nothing is
-            displayed.
-
-        random_state : `int`, default=None
-            If not None, the seed of the random sampling.
-
-
-        Attributes
-        ----------
-        n_cases : `int` (read-only)
-            Number of samples
-
-        n_intervals : `int` (read-only)
-            Number of time intervals
-
-        n_features : `int` (read-only)
-            Number of features
-
-        n_coeffs : `int` (read-only)
-            Total number of coefficients of the model
-
-        coeffs : `numpy.ndarray`, shape=(n_coeffs,), dtype="float64" (read-only)
-            Coefficients of the model.
-
-        bootstrap_coeffs : `Bootstrap_CI` (read-only)
-            Bootstrap coefficients and confidence intervals of the model.
-        """
+    def __init__(self, n_lags: np.array, penalized_features: np.array = None,
+                 C_tv=None, C_group_l1=None, step: float = None,
+                 tol: float = 1e-5, max_iter: int = 100, verbose: bool = False,
+                 print_every: int = 10, record_every: int = 10,
+                 random_state: int = None):
         Base.__init__(self)
         # Init objects to be computed later
         self.n_cases = None
         self.n_intervals = None
         self.n_features = None
         self.n_coeffs = None
-        self.coeffs = None
-        self.bootstrap_coeffs = Bootstrap_CI(list(), list(), list(), list(),
-                                             None)
+        self._coeffs = None
+        self.confidence_intervals = Confidence_intervals(list(), list(),
+                                                         list(), None)
         self._fitted = None
         self._step_size = None
 
@@ -143,10 +172,10 @@ class ConvSCCS(ABC, Base):
         self.n_lags = n_lags
         self._penalized_features = None
         self.penalized_features = penalized_features
-        self._strength_tv = None
-        self._strength_group_l1 = None
-        self.strength_tv = strength_tv
-        self.strength_group_l1 = strength_group_l1
+        self._C_tv = None
+        self._C_group_l1 = None
+        self.C_tv = C_tv
+        self.C_group_l1 = C_group_l1
 
         self._step_size = step
         self.tol = tol
@@ -168,9 +197,9 @@ class ConvSCCS(ABC, Base):
 
     # Interface
     def fit(self, features: list, labels: list,
-            censoring: np.array, bootstrap: bool = False,
-            bootstrap_rep: int = 200,
-            bootstrap_confidence: float = .95):
+            censoring: np.array, confidence_intervals: bool = False,
+            n_samples_bootstrap: int = 200,
+            confidence_level: float = .95):
         """Fit the model according to the given training data.
 
         Parameters
@@ -193,13 +222,13 @@ class ConvSCCS(ABC, Base):
             row c - 1 of the corresponding matrix. The last n_intervals - c rows
             are then set to 0.
 
-        bootstrap : `bool`, default=False
+        confidence_intervals : `bool`, default=False
             Activate parametric bootstrap confidence intervals computation.
 
-        bootstrap_rep : `int`, default=200
+        n_samples_bootstrap : `int`, default=200
             Number of parametric bootstrap iterations
 
-        bootstrap_confidence : `float`, default=.95
+        confidence_level : `float`, default=.95
             Confidence level of the bootstrapped confidence intervals
 
         Returns
@@ -211,9 +240,9 @@ class ConvSCCS(ABC, Base):
                                                          censoring)
         self._fit(project=False)
         self._postfit(p_features, p_labels, p_censoring, False,
-                      bootstrap, bootstrap_rep, bootstrap_confidence)
+                      confidence_intervals, n_samples_bootstrap, confidence_level)
 
-        return self.coeffs, self.bootstrap_coeffs
+        return self.coeffs, self.confidence_intervals
 
     def score(self, features=None, labels=None, censoring=None):
         """Returns the negative log-likelihood of the model, using the current
@@ -250,14 +279,14 @@ class ConvSCCS(ABC, Base):
         return self._score(features, labels, censoring, preprocess=True)
 
     def fit_kfold_cv(self, features, labels, censoring,
-                     strength_tv_range: tuple=(),
-                     strength_group_l1_range: tuple=(), logspace=True,
-                     n_cv_iter: int= 30, n_folds: int = 3, shuffle: bool = True,
-                     bootstrap: bool = False, bootstrap_rep: int = 100,
-                     bootstrap_confidence: float = .95):
+                     C_tv_range: tuple=(), C_group_l1_range: tuple=(),
+                     logscale=True, n_cv_iter: int= 30, n_folds: int = 3,
+                     shuffle: bool = True, confidence_intervals: bool = False,
+                     n_samples_bootstrap: int = 100,
+                     confidence_level: float = .95):
         """Perform a cross validation to find optimal hyperparameters given
         training data. Cross validation using stratified K-folds and random
-        search, parameters being sampled uniformly in the range (logspace or
+        search, parameters being sampled uniformly in the range (logscale or
         linspace) specified by the user.
 
         Parameters
@@ -280,20 +309,20 @@ class ConvSCCS(ABC, Base):
             row c - 1 of the corresponding matrix. The last n_intervals - c rows
             are then set to 0.
 
-        strength_tv_range : `tuple`, shape=(2,), dtype="int"
-            Range in which sampling TV penalization strength during the
-            random search. `logspace=True`, range values are understood as
-            powers of ten, i.e `(-5, -1)` will result in samples being in
-            `10**(-5), 10**(-1)`.
+        C_tv_range : `tuple`, shape=(2,), dtype="int"
+            Range in which sampling TV penalization level during the
+            random search. `logscale=True`, range values are understood as
+            powers of ten, i.e `(0, 5)` will result in samples being in
+            `10**(0), 10**(5)`.
 
-        strength_group_l1_range : `tuple`, shape=(2,), dtype="int"
-            Range in which sampling group L1 penalization strength during the
-            random search. `logspace=True`, range values are understood as
-            powers of ten, i.e `(-5, -1)` will result in samples being in
-            `10**(-5), 10**(-1)`.
+        C_group_l1_range : `tuple`, shape=(2,), dtype="int"
+            Range in which sampling group L1 penalization level during the
+            random search. `logscale=True`, range values are understood as
+            powers of ten, i.e `(0, 5)` will result in samples being in
+            `10**(0), 10**(5)`.
 
-        logspace : `bool`
-            If `True`, hyperparameters are samples in logspace.
+        logscale : `bool`
+            If `True`, hyperparameters are sampled on logscale.
 
         n_cv_iter : `int`
             Number of hyperparameters samples to draw when performing
@@ -306,13 +335,13 @@ class ConvSCCS(ABC, Base):
             If `True`, the data is shuffled before performing train / validation
             / test splits.
 
-        bootstrap : `bool`, default=False
+        confidence_intervals : `bool`, default=False
             Activate parametric bootstrap confidence intervals computation.
 
-        bootstrap_rep : `int`, default=200
+        n_samples_bootstrap : `int`, default=200
             Number of parametric bootstrap iterations
 
-        bootstrap_confidence : `float`, default=.95
+        confidence_level : `float`, default=.95
             Confidence level of the bootstrapped confidence intervals
 
         Returns
@@ -334,14 +363,14 @@ class ConvSCCS(ABC, Base):
             "n_features": self.n_features,
         }
         cv_tracker = CrossValidationTracker(model_global_parameters)
-        generators = self._construct_generator_obj(strength_tv_range,
-                                                   strength_group_l1_range,
-                                                   logspace)
+        C_tv_generator, C_group_l1_generator = self._construct_generator_obj(
+            C_tv_range, C_group_l1_range, logscale)
         # TODO later: parallelize CV
         i = 0
         while i < n_cv_iter:
-            self._set('coeffs', np.zeros(self.n_coeffs))
-            self._strengths = [g.rvs(1)[0] for g in generators]
+            self._set('_coeffs', np.zeros(self.n_coeffs))
+            self.C_tv = C_tv_generator.rvs(1)[0]
+            self.C_group_l1 = C_group_l1_generator.rvs(1)[0]
 
             train_scores = []
             test_scores = []
@@ -359,32 +388,140 @@ class ConvSCCS(ABC, Base):
                 train_scores.append(self._score())
                 test_scores.append(self._score(X_test, y_test, censoring_test))
 
-            cv_tracker.log_cv_iteration({'strength': self._strengths},
+            cv_tracker.log_cv_iteration(self.C_tv, self.C_group_l1,
                                         np.array(train_scores),
                                         np.array(test_scores))
             i += 1
 
-        best_parameters = cv_tracker.find_best_params()
-        best_strength = best_parameters["strength"]
-
         # refit best model on all the data
-        self._set('coeffs', np.zeros(self.n_coeffs))
-        self._strengths = best_strength
+        best_parameters = cv_tracker.find_best_params()
+        self.C_tv = best_parameters["C_tv"]
+        self.C_group_l1 = best_parameters["C_group_l1"]
+        self._set('_coeffs', np.zeros(self.n_coeffs))
 
         self._model_obj.fit(p_features, p_labels, p_censoring)
         coeffs, bootstrap_ci = self._postfit(p_features, p_labels, p_censoring,
-                                             True, bootstrap, bootstrap_rep,
-                                             bootstrap_confidence)
+                                             True, confidence_intervals,
+                                             n_samples_bootstrap,
+                                             confidence_level)
 
-        cv_tracker.log_best_model(self._strengths, self.coeffs.tolist(),
+        cv_tracker.log_best_model(self.C_tv, self.C_group_l1,
+                                  self._coeffs.tolist(),
                                   self.score(),
-                                  self.bootstrap_coeffs)
+                                  self.confidence_intervals)
 
-        return coeffs, cv_tracker
+        return self.coeffs, cv_tracker
+
+    def plot_intensities(self, figsize=(10, 6), sharex=False,
+                                  sharey=False):
+        """Plot intensities estimated by the penalized model. The intensities
+        subfigures are plotted on two columns.
+
+        Parameters
+        ----------
+        figsize : `tuple`, default=(10, 6)
+        Size of the figure
+        
+        sharex : `bool`, default=False
+        Constrain the x axes to have the same range.
+        
+        sharey : `bool`, default=False
+        Constrain the y axes to have the same range.
+        
+        Returns
+        -------
+        fig : `matplotlib.figure.Figure`
+        Figure to be plotted
+        
+        axarr : `numpy.ndarray`, `dtype=object`
+        `matplotlib.axes._subplots.AxesSubplot` objects associated to each
+        intensity subplot.
+        """
+        n_rows = int(np.ceil(self.n_features / 2))
+        remove_last_plot = self.n_features % 2 != 0
+
+        fig, axarr = plt.subplots(n_rows, 2, sharex=sharex, sharey=sharey,
+                                  figsize=figsize)
+        for i, c in enumerate(self.coeffs):
+            self._plot_intensity(axarr[i // 2][i % 2], c, None, None)
+        plt.suptitle('Estimated (penalized) relative risks')
+        axarr[0][1].legend(loc='upper right')
+        [ax[0].set_ylabel('Relative incidence') for ax in axarr]
+        [ax.set_xlabel('Time after exposure start') for ax in axarr[-1]]
+        if remove_last_plot:
+            fig.delaxes(axarr[-1][-1])
+        return fig, axarr
+
+    def plot_confidence_intervals(self, figsize=(10, 6), sharex=False,
+                                  sharey=False):
+        """Plot intensities estimated by the penalized model. The intensities
+        subfigures are plotted on two columns.
+
+        Parameters
+        ----------
+        figsize : `tuple`, default=(10, 6)
+        Size of the figure
+
+        sharex : `bool`, default=False
+        Constrain the x axes to have the same range.
+
+        sharey : `bool`, default=False
+        Constrain the y axes to have the same range.
+
+        Returns
+        -------
+        fig : `matplotlib.figure.Figure`
+        Figure to be plotted
+
+        axarr : `numpy.ndarray`, `dtype=object`
+        `matplotlib.axes._subplots.AxesSubplot` objects associated to each
+        intensity subplot
+        """
+        n_rows = int(np.ceil(self.n_features / 2))
+        remove_last_plot = (self.n_features % 2 != 0)
+
+        fig, axarr = plt.subplots(n_rows, 2, sharex=sharex, sharey=sharey,
+                                  figsize=figsize)
+        ci = self.confidence_intervals
+        coeffs = ci['refit_coeffs']
+        lb = ci['lower_bound']
+        ub = ci['upper_bound']
+        for i, c in enumerate(coeffs):
+            self._plot_intensity(axarr[i // 2][i % 2], c, lb[i], ub[i])
+        plt.suptitle('Estimated relative risks with 95% confidence bands')
+        axarr[0][1].legend(loc='best')
+        [ax[0].set_ylabel('Relative incidence') for ax in axarr]
+        [ax.set_xlabel('Time after exposure start') for ax in axarr[-1]]
+        if remove_last_plot:
+            fig.delaxes(axarr[-1][-1])
+        return fig, axarr
+
+    @staticmethod
+    def _plot_intensity(ax, coeffs, upper_bound, lower_bound):
+        n_coeffs = len(coeffs)
+        if n_coeffs > 1:
+            x = np.arange(n_coeffs)
+            ax.step(x, np.exp(coeffs), label="Estimated RI")
+            if upper_bound is not None and lower_bound is not None:
+                ax.fill_between(x, np.exp(lower_bound), np.exp(upper_bound),
+                                alpha=.5, color='orange', step='pre',
+                                label="95% boostrap CI")
+        elif n_coeffs == 1:
+            if upper_bound is not None and lower_bound is not None:
+                ax.errorbar(0, coeffs, yerr=(np.exp(lower_bound),
+                                        np.exp(upper_bound)),
+                            fmt='o', ecolor='orange')
+            else:
+                ax.scatter([0], np.exp(coeffs), label="Estimated RI")
+        return ax
 
     # Internals
     def _prefit(self, features, labels, censoring):
         n_intervals, n_features = features[0].shape
+        if any(self.n_lags > n_intervals - 1):
+            raise ValueError('`n_lags` should be < `n_intervals` - 1, where '
+                             '`n_intervals` is the number of rows of the '
+                             'feature matrices.')
         n_cases = len(features)
         censoring = check_censoring_consistency(censoring, n_cases)
         features = check_longitudinal_features_consistency(features,
@@ -402,7 +539,7 @@ class ConvSCCS(ABC, Base):
                                                             censoring)
         n_coeffs = int(np.sum(self._n_lags) + self.n_features)
         self._set('n_coeffs', n_coeffs)
-        self._set('coeffs', np.zeros(n_coeffs))
+        self._set('_coeffs', np.zeros(n_coeffs))
         self._set('n_cases', len(features))
 
         # Step computation
@@ -414,45 +551,46 @@ class ConvSCCS(ABC, Base):
         return features, labels, censoring
 
     def _fit(self, project):
-        prox_obj = self._construct_prox_obj(self.coeffs, project)
+        prox_obj = self._construct_prox_obj(self._coeffs, project)
         solver_obj = self._solver_obj
         model_obj = self._model_obj
 
         # Now, we can pass the model and prox objects to the solver
         solver_obj.set_model(model_obj).set_prox(prox_obj)
 
-        coeffs_start = self.coeffs
+        coeffs_start = self._coeffs
 
         # Launch the solver
-        coeffs = solver_obj.solve(coeffs_start, step=self.step)
+        _coeffs = solver_obj.solve(coeffs_start, step=self.step)
 
-        self._set("coeffs", coeffs)
+        self._set("_coeffs", _coeffs)
         self._set("_fitted", True)
 
-        return coeffs
+        return _coeffs
 
     def _postfit(self, p_features, p_labels, p_censoring,
-                 refit, bootstrap, bootstrap_rep, bootstrap_confidence):
+                 refit, bootstrap, n_samples_bootstrap, confidence_level):
         # WARNING: _refit uses already preprocessed p_features, p_labels
         # and p_censoring
         if not self._fitted:
             raise RuntimeError('You must fit the model first')
 
         if refit:
-            # refit coeffs on all the data (after Cross Validation for example)
+            # refit _coeffs on all the data (after Cross Validation for example)
             self._model_obj.fit(p_features, p_labels, p_censoring)
             coeffs = self._fit(project=False)
-            self._set('coeffs', coeffs)
+            self._set('_coeffs', coeffs)
 
         if bootstrap:
             self._model_obj.fit(p_features, p_labels, p_censoring)
-            refit_coeffs = self._fit(project=True)
-            bootstrap_ci = self._bootstrap(p_features, p_labels, p_censoring,
-                                           refit_coeffs, bootstrap_rep,
-                                           bootstrap_confidence)
-            self._set('bootstrap_coeffs', bootstrap_ci._asdict())
+            _refit_coeffs = self._fit(project=True)
+            confidence_intervals = self._bootstrap(p_features, p_labels,
+                                                   p_censoring, _refit_coeffs,
+                                                   n_samples_bootstrap,
+                                                   confidence_level)
+            self._set('confidence_intervals', confidence_intervals._asdict())
 
-        return self.coeffs, self.bootstrap_coeffs
+        return self.coeffs, self.confidence_intervals
 
     # Utilities #
     def _preprocess_data(self, features, labels, censoring):
@@ -467,15 +605,16 @@ class ConvSCCS(ABC, Base):
                    rep, confidence):
         # WARNING: _bootstrap inputs are already preprocessed p_features,
         # p_labels and p_censoring
+        # Coeffs here are assumed to be an array (same object than self._coeffs)
         if confidence <= 0 or confidence >= 1:
-            raise ValueError("`bootstrap_confidence` should be in (0, 1)")
+            raise ValueError("`confidence_level` should be in (0, 1)")
         confidence = 1 - confidence
         if not self._fitted:
             raise RuntimeError('You must fit the model first')
 
         bootstrap_coeffs = []
         sim = SimuSCCS(self.n_cases, self.n_intervals, self.n_features,
-                       self.n_lags, coeffs=coeffs)
+                       self.n_lags, coeffs=self._format_coeffs(coeffs))
         # TODO later: parallelize bootstrap (everything should be pickable...)
         for k in range(rep):
             y = sim._simulate_multinomial_outcomes(p_features, coeffs)
@@ -488,10 +627,10 @@ class ConvSCCS(ABC, Base):
                                  int(np.floor(rep * confidence / 2))])
         upper_bound = np.log(bootstrap_coeffs[
                                  int(np.floor(rep * (1 - confidence / 2)))])
-        median_coeffs = np.log(bootstrap_coeffs[
-                                   int(np.floor(rep * .5))])
-        return Bootstrap_CI(coeffs, median_coeffs, lower_bound,
-                            upper_bound, confidence)
+        return Confidence_intervals(self._format_coeffs(coeffs),
+                                    self._format_coeffs(lower_bound),
+                                    self._format_coeffs(upper_bound),
+                                    confidence)
 
     def _score(self, features=None, labels=None, censoring=None,
                preprocess=False):
@@ -500,7 +639,7 @@ class ConvSCCS(ABC, Base):
 
         all_none = all(e is None for e in [features, labels, censoring])
         if all_none:
-            loss = self._model_obj.loss(self.coeffs)
+            loss = self._model_obj.loss(self._coeffs)
         else:
             if features is None:
                 raise ValueError('Passed ``features`` is None')
@@ -517,8 +656,16 @@ class ConvSCCS(ABC, Base):
                         censoring)
                 model = self._construct_model_obj().fit(features, labels,
                                                         censoring)
-                loss = model.loss(self.coeffs)
+                loss = model.loss(self._coeffs)
         return loss
+
+    def _format_coeffs(self, coeffs):
+        value = list()
+        for i, l in enumerate(self.n_lags):
+            start = int(self._features_offset[i])
+            end = int(start + l + 1)
+            value.append(coeffs[start:end])
+        return value
 
     # Factories #
     def _construct_preprocessor_obj(self):
@@ -538,18 +685,18 @@ class ConvSCCS(ABC, Base):
             if self.penalized_features is not None else 0
 
         if project:
-            # project future coeffs on the support of given coeffs
-            if all(self.n_lags) == 0:
+            # project future _coeffs on the support of given _coeffs
+            if all(self.n_lags == 0):
                 proxs = [ProxZero()]
-            elif coeffs is not None and any(self.n_lags) > 0:
+            elif coeffs is not None:
                 prox_ranges = self._detect_support(coeffs)
                 proxs = [ProxEquality(0, range=r) for r in prox_ranges]
             else:
                 raise ValueError("Coeffs are None. " +
                                  "Equality penalty cannot infer the "
                                  "coefficients support.")
-        elif n_penalized_features > 0 and self._strength_tv is not None or \
-                self._strength_group_l1 is not None:
+        elif n_penalized_features > 0 and self._C_tv is not None or \
+                self._C_group_l1 is not None:
             # TV and GroupLasso penalties
             blocks_start = np.zeros(n_penalized_features)
             blocks_end = np.zeros(n_penalized_features)
@@ -560,12 +707,12 @@ class ConvSCCS(ABC, Base):
                 blocks_start[i] = start
                 end = int(blocks_start[i] + self._n_lags[i] + 1)
                 blocks_end[i] = end
-                if self._strength_tv is not None:
-                    proxs.append(ProxTV(self._strength_tv, range=(start, end)))
+                if self._C_tv is not None:
+                    proxs.append(ProxTV(1 / self._C_tv, range=(start, end)))
 
-            if self._strength_group_l1 is not None:
+            if self._C_group_l1 is not None:
                 blocks_size = blocks_end - blocks_start
-                proxs.append(ProxGroupL1(self._strength_group_l1,
+                proxs.append(ProxGroupL1(1 / self._C_group_l1,
                                          blocks_start.tolist(),
                                          blocks_size.tolist()))
         else:
@@ -581,11 +728,11 @@ class ConvSCCS(ABC, Base):
         case at least two coefficients are equal.
 
         This method is used to compute the ranges for ProxEquality,
-        to enforce a support corresponding to the support of `coeffs`.
+        to enforce a support corresponding to the support of `_coeffs`.
 
          example:
-         coeffs = np.array([ 1.  2.  2.  1.  1.])
-         self._detect_support(coeffs)
+         _coeffs = np.array([ 1.  2.  2.  1.  1.])
+         self._detect_support(_coeffs)
          >>> [(1, 3), (3, 5)]
          """
         kernel = np.array([1, -1])
@@ -612,6 +759,7 @@ class ConvSCCS(ABC, Base):
     @staticmethod
     def _construct_solver_obj(step, max_iter, tol, print_every,
                               record_every, verbose, seed):
+        # TODO: we might want to use SAGA also later... (might be faster here)
         # seed cannot be None in SVRG
         solver_obj = SVRG(step=step, max_iter=max_iter, tol=tol,
                           print_every=print_every,
@@ -620,24 +768,23 @@ class ConvSCCS(ABC, Base):
 
         return solver_obj
 
-    def _construct_generator_obj(self, strength_tv_range,
-                                 strength_group_l1_range,
+    def _construct_generator_obj(self, C_tv_range, C_group_l1_range,
                                  logspace=True):
         generators = []
-        if len(strength_tv_range) == 2:
+        if len(C_tv_range) == 2:
             if logspace:
-                generators.append(Log10UniformGenerator(*strength_tv_range))
+                generators.append(Log10UniformGenerator(*C_tv_range))
             else:
-                generators.append(uniform(strength_tv_range))
+                generators.append(uniform(C_tv_range))
         else:
             generators.append(null_generator)
 
-        if len(strength_group_l1_range) == 2:
+        if len(C_group_l1_range) == 2:
             if logspace:
                 generators.append(
-                    Log10UniformGenerator(*strength_group_l1_range))
+                    Log10UniformGenerator(*C_group_l1_range))
             else:
-                generators.append(uniform(strength_group_l1_range))
+                generators.append(uniform(C_group_l1_range))
         else:
             generators.append(null_generator)
 
@@ -650,44 +797,34 @@ class ConvSCCS(ABC, Base):
 
     @step.setter
     def step(self, value):
-        self._set('_step_size', value)
-        self._solver_obj.step = value
-
-    @property
-    def _strengths(self):
-        return Strengths(self._strength_tv,
-                         self._strength_group_l1)
-
-    @_strengths.setter
-    def _strengths(self, value):
-        if len(value) == 2:
-            self.strength_tv = value[0]
-            self.strength_group_l1 = value[1]
+        if value > 0:
+            self._set('_step_size', value)
+            self._solver_obj.step = value
         else:
-            raise ValueError('strength should be a tuple of length 2.')
+            raise ValueError("step should be greater than 0.")
 
     @property
-    def strength_tv(self):
-        return self._strength_tv
+    def C_tv(self):
+        return self._C_tv
 
-    @strength_tv.setter
-    def strength_tv(self, value):
+    @C_tv.setter
+    def C_tv(self, value):
         if value is None or isinstance(value, float) and value > 0:
-            self._set('_strength_tv', value)
+            self._set('_C_tv', value)
         else:
             raise ValueError(
-                'strength_tv should be a float greater than zero.')
+                'C_tv should be a float greater than zero.')
 
     @property
-    def strength_group_l1(self):
-        return self._strength_tv
+    def C_group_l1(self):
+        return self._C_group_l1
 
-    @strength_group_l1.setter
-    def strength_group_l1(self, value):
+    @C_group_l1.setter
+    def C_group_l1(self, value):
         if value is None or isinstance(value, float) and value > 0:
-            self._set('_strength_group_l1', value)
+            self._set('_C_group_l1', value)
         else:
-            raise ValueError('strength_group_l1 should be a float greater '
+            raise ValueError('C_group_l1 should be a float greater '
                              'than zero.')
 
     @property
@@ -707,7 +844,11 @@ class ConvSCCS(ABC, Base):
     def n_lags(self, value):
         offsets = [0]
         for l in value:
+            if l < 0:
+                raise ValueError('n_lags elements should be greater than or '
+                                 'equal to 0.')
             offsets.append(offsets[-1] + l + 1)
+        value = safe_array(value, dtype=np.uint64)
         self._set('_n_lags', value)
         self._set('_features_offset', offsets)
         self._construct_preprocessor_obj()
@@ -718,128 +859,149 @@ class ConvSCCS(ABC, Base):
 
     @penalized_features.setter
     def penalized_features(self, value):
+        if value is None:
+            value = [True] * len(self.n_lags)
         self._set('_penalized_features', value)
         self._construct_preprocessor_obj()
+        
+    @property
+    def coeffs(self):
+        return self._format_coeffs(self._coeffs)
+
+    @coeffs.setter
+    def coeffs(self, value):
+        raise ValueError('coeffs cannot be set')
+
+    @property
+    def intensities(self):
+        return [np.exp(c) for c in self.coeffs]
+
+    @intensities.setter
+    def intensities(self, value):
+        raise ValueError('intensities cannot be set')
 
 
 # TODO later: put the code below somewhere else?
 class CrossValidationTracker:
-    def __init__(self, global_params: dict):
-        self.global_params = global_params
-        self.cv_params = list()
-        self.cv_train_scores = list()
-        self.cv_mean_train_scores = list()
-        self.cv_sd_train_scores = list()
-        self.cv_test_scores = list()
-        self.cv_mean_test_scores = list()
-        self.cv_sd_test_scores = list()
-        self.best_model = {
-            'strength': list(),
-            'coeffs': list(),
-            'bootstrap_ci': {}
-        }
 
-    def log_cv_iteration(self, cv_params, cv_train_score, cv_test_score):
-        self.cv_params.append(cv_params)
-        self.cv_train_scores.append(list(cv_train_score))
-        self.cv_mean_train_scores.append(cv_train_score.mean())
-        self.cv_sd_train_scores.append(cv_train_score.std())
-        self.cv_test_scores.append(list(cv_test_score))
-        self.cv_mean_test_scores.append(cv_test_score.mean())
-        self.cv_sd_test_scores.append(cv_test_score.std())
+    def __init__(self, model_params: dict):
+        self.model_params = model_params
+        self.kfold_train_scores = list()
+        self.kfold_mean_train_scores = list()
+        self.kfold_sd_train_scores = list()
+        self.kfold_test_scores = list()
+        self.kfold_mean_test_scores = list()
+        self.kfold_sd_test_scores = list()
+        # TODO later: make this class usable for any parameters
+        # self.parameter_names = parameter_names
+        # self.best_model = {
+        #     '_coeffs': list(),
+        #     'confidence_interval': {},
+        #     **{name: list() for name in parameter_names}
+        # }
+        # for field in parameter_names:
+        #     setattr(field + '_history', list())
+        self.C_tv_history = list()
+        self.C_group_l1_history = list()
+
+    def log_cv_iteration(self, C_tv, C_group_l1, kfold_train_scores,
+                         kfold_test_scores):
+        self.kfold_train_scores.append(list(kfold_train_scores))
+        self.kfold_mean_train_scores.append(kfold_train_scores.mean())
+        self.kfold_sd_train_scores.append(kfold_train_scores.std())
+        self.kfold_test_scores.append(list(kfold_test_scores))
+        self.kfold_mean_test_scores.append(kfold_test_scores.mean())
+        self.kfold_sd_test_scores.append(kfold_test_scores.std())
+        self.C_tv_history.append(C_tv)
+        self.C_group_l1_history.append(C_group_l1)
 
     def find_best_params(self):
         # Find best parameters
-        best_idx = int(np.argmin(self.cv_mean_test_scores))
-        return self.cv_params[best_idx]
+        best_idx = int(np.argmin(self.kfold_mean_test_scores))
+        best_C_tv = self.C_tv_history[best_idx]
+        best_C_group_l1 = self.C_group_l1_history[best_idx]
+        return {'C_tv': best_C_tv, 'C_group_l1': best_C_group_l1}
 
-    def log_best_model(self, strength, coeffs, score, bootstrap_ci_dict):
+    def log_best_model(self, C_tv, C_group_l1, coeffs, score,
+                       confidence_interval_dict):
         self.best_model = {
-            'strength': strength,
-            'coeffs': list(coeffs),
+            'C_tv': C_tv,
+            'C_group_l1': C_group_l1,
+            '_coeffs': list(coeffs),
             'score': score,
-            'bootstrap_ci': bootstrap_ci_dict
+            'confidence_intervals': confidence_interval_dict
         }
 
     def todict(self):
-        return {'global_model_parameters': list(self.global_params),
-                'cv_params': list(self.cv_params),
-                'cv_train_scores': list(self.cv_train_scores),
-                'cv_mean_train_scores': list(self.cv_mean_train_scores),
-                'cv_sd_train_scores': list(self.cv_sd_train_scores),
-                'cv_test_scores': list(self.cv_test_scores),
-                'cv_mean_test_scores': list(self.cv_mean_test_scores),
-                'cv_sd_test_scores': list(self.cv_sd_test_scores),
+        return {'global_model_parameters': list(self.model_params),
+                'C_tv_history': list(self.C_tv_history),
+                'C_group_l1_history': list(self.C_group_l1_history),
+                'kfold_train_scores': list(self.kfold_train_scores),
+                'kfold_mean_train_scores': list(self.kfold_mean_train_scores),
+                'kfold_sd_train_scores': list(self.kfold_sd_train_scores),
+                'kfold_test_scores': list(self.kfold_test_scores),
+                'kfold_mean_test_scores': list(self.kfold_mean_test_scores),
+                'kfold_sd_test_scores': list(self.kfold_sd_test_scores),
                 'best_model': self.best_model
                 }
 
     def plot_cv_report(self, elevation=25, azimuth=35):
-        group_l1_strength = [p['strength'].strength_group_l1 for p in
-                             self.cv_params]
-        tv_strength = [p['strength'].strength_tv for p in
-                       self.cv_params]
-        if not any(group_l1_strength) is None and not any(tv_strength) is None:
+        if len(self.C_group_l1_history) > 0 and len(self.C_tv_history) > 0:
             return self.plot_learning_curves_contour(elevation, azimuth)
-        elif not any(group_l1_strength) is None:
+        elif len(self.C_group_l1_history) == 0:
             return self.plot_learning_curves('Group L1')
-        elif not any(tv_strength) is None:
+        elif len(self.C_tv_history) == 0:
             return self.plot_learning_curves('TV')
         else:
-            raise ValueError("Logged Group L1 and TV strengths are None.")
+            raise ValueError("Logged Group L1 and TV penalisation levels "
+                             "history are empty.")
 
     def plot_learning_curves(self, hyperparameter):
-        #TODO: test this method
         if hyperparameter == "TV":
-            strength = [p['strength'].strength_tv for p in
-                        self.cv_params]
+            C = self.C_tv_history
         elif hyperparameter == "Group L1":
-            strength = [p['strength'].strength_group_l1 for p in
-                        self.cv_params]
+            C = self.C_group_l1_history
         else:
             raise ValueError("hyperparameter value should be either `TV` or"
                              " `Group L1`")
-        x = np.log10(strength)
+        x = np.log10(C)
         order = np.argsort(x)
-        m = np.array(self.cv_mean_train_scores)[order]
-        sd = np.array(self.cv_sd_train_scores)[order]
-        fig, ax = plt.figure()
-
+        m = np.array(self.kfold_mean_train_scores)[order]
+        sd = np.array(self.kfold_sd_train_scores)[order]
+        fig = plt.figure()
+        ax = plt.gca()
         p1 = ax.plot(x[order], m)
         p2 = ax.fill_between(x[order], m - sd, m + sd, alpha=.3)
         min_point_train = np.min(m - sd)
-        m = np.array(self.cv_mean_test_scores)[order]
-        sd = np.array(self.cv_sd_test_scores)[order]
+        m = np.array(self.kfold_mean_test_scores)[order]
+        sd = np.array(self.kfold_sd_test_scores)[order]
         p3 = ax.plot(x[order], m)
         p4 = ax.fill_between(x[order], m - sd, m + sd, alpha=.3)
         min_point_test = np.min(m - sd)
         min_point = min(min_point_train, min_point_test)
-        p5 = plt.scatter(np.log10(strength), min_point*np.ones_like(strength))
+        p5 = plt.scatter(np.log10(C), min_point*np.ones_like(C))
 
         ax.legend([(p1[0], p2), (p3[0], p4), p5],
                   ['train score', 'test score', 'tested hyperparameters'],
                   loc='lower right')
         ax.set_title('Learning curves')
-        ax.set_xlabel('Strength %s (log scale)' % hyperparameter)
+        ax.set_xlabel('C %s (log scale)' % hyperparameter)
         ax.set_ylabel('Loss')
         return fig, ax
 
     def plot_learning_curves_contour(self, elevation=25, azimuth=35):
         """‘elev’ stores the elevation angle in the z plane.
         ‘azim’ stores the azimuth angle in the x,y plane."""
-        sc_train = self.cv_mean_train_scores
-        sc_test = self.cv_mean_test_scores
-        group_l1_strength = [p['strength'].strength_group_l1 for p in
-                             self.cv_params]
-        tv_strength = [p['strength'].strength_tv for p in
-                       self.cv_params]
-        X_tile = np.log10(tv_strength)
-        Y_tile = np.log10(group_l1_strength)
+        sc_train = self.kfold_mean_train_scores
+        sc_test = self.kfold_mean_test_scores
+        X_tile = np.log10(self.C_tv_history)
+        Y_tile = np.log10(self.C_group_l1_history)
 
         fig, axarr = plt.subplots(1, 3, figsize=(12, 4), sharey=True,
                                   sharex=True)
 
         ax = axarr[-1]
-        ax.scatter(np.log10(tv_strength), np.log10(group_l1_strength))
+        ax.scatter(X_tile, Y_tile)
         ax.set_title("Random search tested hyperparameters")
         ax.set_xlabel('Strength TV')
         ax.set_ylabel('Strength Group L1')
@@ -852,13 +1014,13 @@ class CrossValidationTracker:
             ax = axarr[i]
             cax = ax.tricontourf(X_tile, Y_tile, Z, 50, cmap=cmaps[i])
             ax.set_title(r'Loss (%s)' % names[i])
-            ax.set_xlabel("TV strength (log)")
+            ax.set_xlabel("TV level (log)")
             idx = np.where(Z == Z.min())
             x, y = (X_tile[idx][0], Y_tile[idx][0])
             ax.scatter(x, y, color="red", marker="x")
             ax.text(x, y, r'%.2f' % Z.min(), color="red", fontsize=12)
 
-        axarr[0].set_ylabel("Group L1 strength (log)")
+        axarr[0].set_ylabel("Group L1 level (log)")
         plt.tight_layout()
 
         fig2 = plt.figure(figsize=(8, 6.5))
@@ -874,28 +1036,17 @@ class CrossValidationTracker:
             proxy_names.append("%s score" % names[i])
 
         Z = np.array(sc_test)
-        x, y = np.log10(
-            np.array(
-                self.find_best_params()['strength']).astype(
-                np.float))
+        best_params = self.find_best_params()
+        x = np.log10(best_params['C_tv'])
+        y = np.log10(best_params['C_group_l1'])
         idx = np.where(X_tile == x)  # should be equal to np.where(Y_tile == y)
         z = Z[idx]
         p1 = ax.scatter(x, y, z, c='red')
         proxies.append(p1)
         proxy_names.append('CV best score')
 
-        x, y = np.log10(
-            np.array(
-                self.find_best_params()['strength']).astype(
-                np.float))
-        idx = np.where(X_tile == x)  # should be equal to np.where(Y_tile == y)
-        z = Z[idx]
-        p2 = ax.scatter(x, y, z, c='magenta')
-        proxies.append(p2)
-        proxy_names.append('CV best score')
-
-        ax.set_xlabel("TV strength (log)")
-        ax.set_ylabel("Group L1 strength (log)")
+        ax.set_xlabel("TV level (log)")
+        ax.set_ylabel("Group L1 level (log)")
         ax.set_title("Learning surfaces")
         ax.set_zlabel("loss")
         ax.view_init(elevation, azimuth)
