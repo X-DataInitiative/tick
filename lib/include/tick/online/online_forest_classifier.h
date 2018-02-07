@@ -27,8 +27,8 @@ enum class CriterionClassifier {
 
 enum class FeatureImportanceType {
   no = 0,
-  estimated,
-  given
+  estimated = 1,
+  given = 2
 };
 
 class TreeClassifier;
@@ -201,6 +201,9 @@ class TreeClassifier {
 
   inline CriterionClassifier criterion() const;
   inline bool use_aggregation() const;
+  FeatureImportanceType feature_importance_type() const;
+  double feature_importance(const uint32_t j) const;
+  double given_feature_importance(const uint32_t j) const;
 
   NodeClassifier &node(uint32_t index) {
     return nodes[index];
@@ -308,6 +311,8 @@ class OnlineForestClassifier {
   CriterionClassifier criterion() const;
   OnlineForestClassifier &set_criterion(CriterionClassifier criterion);
   FeatureImportanceType feature_importance_type() const;
+
+  double given_feature_importances(const double j) const;
 
   int32_t n_threads() const;
   OnlineForestClassifier &set_n_threads(int32_t n_threads);

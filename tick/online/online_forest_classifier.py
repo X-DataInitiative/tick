@@ -109,6 +109,7 @@ class OnlineForestClassifier(ABC, Base):
         self.step = step
         self.criterion = criterion
         self.n_threads = n_threads
+        self._forest = None
         self._given_feature_importances = None
         self._feature_importances_type = None
         self.use_feature_importances = use_feature_importances
@@ -116,10 +117,10 @@ class OnlineForestClassifier(ABC, Base):
         self.verbose = verbose
         self.use_aggregation = use_aggregation
         self.subsampling = subsampling
+        self._forest = None
         if dirichlet is None:
             dirichlet = 1 / n_classes
         self.dirichlet = dirichlet
-        self._forest = None
 
     def set_data(self, X, y):
         X = safe_array(X)
@@ -233,13 +234,14 @@ class OnlineForestClassifier(ABC, Base):
         if type(value) is bool:
             if value:
                 self._set('_feature_importances_type',
-                          FeatureImportanceType_no)
+                          FeatureImportanceType_estimated)
             else:
                 self._set('_feature_importances_type',
-                          FeatureImportanceType_estimated)
-        elif type(value) is np.array:
+                          FeatureImportanceType_no)
+        elif type(value) is np.ndarray:
             self._set('_feature_importances_type',
                       FeatureImportanceType_given)
+            self._set('_given_feature_importances', value)
             if self._forest is not None:
                 self._forest.set_feature_importances(value)
         else:
@@ -248,6 +250,12 @@ class OnlineForestClassifier(ABC, Base):
 
     @property
     def feature_importances(self):
-        feature_importances = np.empty(self.n_features)
-        self._forest.get_feature_importances(feature_importances)
-        return feature_importances
+        if self._feature_importances_type == FeatureImportanceType_no:
+            return None
+        else:
+            if self._forest is None:
+                return None
+            else:
+                feature_importances = np.empty(self.n_features)
+                self._forest.get_feature_importances(feature_importances)
+                return feature_importances

@@ -332,7 +332,7 @@ TreeClassifier::TreeClassifier(OnlineForestClassifier &forest) : forest(forest) 
   feature_importances_ = ArrayDouble(forest.n_features());
   // feature_importances_.fill(1.);
   // TODO: initialization might be important
-  feature_importances_.fill(10.);
+  feature_importances_.fill(1.);
 }
 
 void TreeClassifier::extend_range(uint32_t node_index, const ArrayDouble &x_t, const double y_t) {
@@ -362,7 +362,10 @@ void TreeClassifier::extend_range(uint32_t node_index, const ArrayDouble &x_t, c
       double feature_max_j = current_node.features_max(j);
       // TODO: several choices are available here...
       // double intensity = std::sqrt(feature_importances_[j] / (iteration + 1));
-      double intensity = feature_importances_[j] / (iteration + 1);
+
+      double intensity = feature_importance(j) / (iteration + 1);
+
+      // double intensity = featufeature_importances_[j] / (iteration + 1);
       if (x_tj < feature_min_j) {
         // extension[j] = feature_min_j - x_tj;
         intensities[j] = intensity * (feature_min_j - x_tj);
@@ -505,9 +508,9 @@ uint32_t TreeClassifier::go_downwards(const ArrayDouble &x_t, double y_t, bool p
       if (!predict) {
         // Compute the difference with the loss of the child
         loss_t -= node(index_current_node).loss(y_t);
-        if (loss_t > 0) {
+        //if (loss_t > 0) {
           feature_importances_[feature] += loss_t;
-        }
+        // }
       }
     }
   }
@@ -628,6 +631,27 @@ inline CriterionClassifier TreeClassifier::criterion() const {
 inline bool TreeClassifier::use_aggregation() const {
   return forest.use_aggregation();
 }
+
+FeatureImportanceType TreeClassifier::feature_importance_type() const {
+  return forest.feature_importance_type();
+}
+
+double TreeClassifier::feature_importance(const uint32_t j) const {
+  if (feature_importance_type() == FeatureImportanceType::no) {
+    return 1;
+  } else {
+    if (feature_importance_type() == FeatureImportanceType::estimated) {
+      return feature_importances_[j];
+    } else {
+      return (iteration + 1) * given_feature_importance(j);
+    }
+  }
+}
+
+double TreeClassifier::given_feature_importance(const uint32_t j) const {
+  return forest.given_feature_importances(j);
+}
+
 
 /*********************************************************************************
  * OnlineForestClassifier methods
@@ -860,6 +884,10 @@ uint8_t OnlineForestClassifier::n_trees() const {
   return _n_trees;
 }
 
+double OnlineForestClassifier::given_feature_importances(const double j) const {
+  return _given_feature_importances[j];
+}
+
 int32_t OnlineForestClassifier::n_threads() const {
   return _n_threads;
 }
@@ -907,9 +935,18 @@ OnlineForestClassifier &OnlineForestClassifier::set_dirichlet(const double diric
 }
 
 void OnlineForestClassifier::get_feature_importances(SArrayDoublePtr feature_importances) {
-  feature_importances->fill(0);
-  const double a = static_cast<double>(1) / n_trees();
-  for (TreeClassifier &tree : trees) {
-    feature_importances->mult_incr(tree.feature_importances(), a);
+
+  if(_feature_importance_type == FeatureImportanceType::estimated) {
+    feature_importances->fill(0);
+    const double a = static_cast<double>(1) / n_trees();
+    for (TreeClassifier &tree : trees) {
+      feature_importances->mult_incr(tree.feature_importances(), a);
+    }
+    feature_importances->operator/=(feature_importances->sum());
+  } else {
+    if (_feature_importance_type == FeatureImportanceType::given) {
+      feature_importances->fill(0);
+      feature_importances->mult_incr(_given_feature_importances, 1.);
+    }
   }
 }

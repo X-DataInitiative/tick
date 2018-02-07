@@ -15,8 +15,8 @@ enum class CriterionClassifier {
 
 enum class FeatureImportanceType {
   no = 0,
-  estimated,
-  given
+  estimated = 1,
+  given = 2
 };
 
 
