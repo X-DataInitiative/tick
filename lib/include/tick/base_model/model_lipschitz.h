@@ -11,9 +11,14 @@
 
 /**
  * \class ModelLipschitz
- * \brief An interface for a Model with the ability to compute Lipschitz constants
+ * \brief An interface for a Model with the ability to compute Lipschitz
+ * constants
  */
-class DLL_PUBLIC ModelLipschitz : public virtual Model {
+template <class T>
+class DLL_PUBLIC TModelLipschitz : public virtual TModel<T> {
+ protected:
+  using TModel<T>::compute_lip_consts;
+
  protected:
   //! True if all lipschitz constants are already computed
   bool ready_lip_consts;
@@ -24,40 +29,41 @@ class DLL_PUBLIC ModelLipschitz : public virtual Model {
   //! True if the mean of lipschitz constants is already computed
   bool ready_lip_mean;
 
-  //! All Lipschitz constants
-  ArrayDouble lip_consts;
-
   //! Average and maximum Lipschitz constants
-  double lip_mean, lip_max;
+  T lip_mean, lip_max;
+
+  //! All Lipschitz constants
+  Array<T> lip_consts;
 
  public:
-  ModelLipschitz();
+  TModelLipschitz();
+  virtual ~TModelLipschitz() {}
 
-  const char *get_class_name() const override {
-    return "ModelLipchitz";
-  }
+  const char *get_class_name() const override { return "ModelLipchitz"; }
 
   /**
    * @brief Get the maximum of all Lipschits constants
    * @note This will cache the obtained value for later calls
    */
-  double get_lip_max() override;
+  T get_lip_max() override;
 
   /**
    * @brief Get the mean of all Lipschits constants
    * @note This will cache the obtained value for later calls
    */
-  double get_lip_mean() override;
+  T get_lip_mean() override;
 
-  template<class Archive>
-  void serialize(Archive & ar) {
-    ar(CEREAL_NVP(ready_lip_consts),
-       CEREAL_NVP(ready_lip_max),
-       CEREAL_NVP(ready_lip_mean),
-       CEREAL_NVP(lip_consts),
-       CEREAL_NVP(lip_mean),
+  template <class Archive>
+  void serialize(Archive &ar) {
+    ar(CEREAL_NVP(ready_lip_consts), CEREAL_NVP(ready_lip_max),
+       CEREAL_NVP(ready_lip_mean), CEREAL_NVP(lip_consts), CEREAL_NVP(lip_mean),
        CEREAL_NVP(lip_max));
   }
 };
+
+using ModelLipschitz = TModelLipschitz<double>;
+
+using ModelLipschitzDouble = TModelLipschitz<double>;
+using ModelLipschitzFloat = TModelLipschitz<float>;
 
 #endif  // LIB_INCLUDE_TICK_BASE_MODEL_MODEL_LIPSCHITZ_H_

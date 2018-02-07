@@ -8,6 +8,7 @@
 #include "tick/base_model/model.h"
 %}
 
+%include "model.i"
 
 // Type of randomness used when sampling at random data points
 enum class RandType {

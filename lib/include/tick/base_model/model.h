@@ -14,35 +14,27 @@
 #include <iostream>
 
 // TODO: Model "data" : ModeLabelsFeatures, Model,Model pour les Hawkes
-
-/**
- * @class Model
- * @brief The main Model class from which all models inherit.
- * @note This class has all methods ever used by any model, hence solvers which are using a
- * pointer on a model should be able to call all methods they need. This is certainly not the
- * best possible design but it is sufficient at the moment.
- */
-class Model {
+template <class T>
+class TModel {
  public:
-  Model() {}
+  TModel() {}
+  virtual ~TModel() {}
 
-  virtual const char *get_class_name() const {
-    return "Model";
-  }
+  virtual const char *get_class_name() const { return "TModel<T>"; }
 
-  virtual double loss_i(const ulong i, const ArrayDouble &coeffs) {
+  virtual T loss_i(const ulong i, const Array<T> &coeffs) {
     TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
   }
 
-  virtual void grad_i(const ulong i, const ArrayDouble &coeffs, ArrayDouble &out) {
+  virtual void grad_i(const ulong i, const Array<T> &coeffs, Array<T> &out) {
     TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
   }
 
-  virtual void grad(const ArrayDouble &coeffs, ArrayDouble &out) {
+  virtual void grad(const Array<T> &coeffs, Array<T> &out) {
     TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
   }
 
-  virtual double loss(const ArrayDouble &coeffs) {
+  virtual T loss(const Array<T> &coeffs) {
     TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
   }
 
@@ -64,44 +56,39 @@ class Model {
     TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
   }
 
-  virtual double sdca_dual_min_i(const ulong i,
-                                 const double dual_i,
-                                 const ArrayDouble &primal_vector,
-                                 const double previous_delta_dual_i,
-                                 double l_l2sq) {
+  virtual T sdca_dual_min_i(const ulong i, const T dual_i,
+                            const Array<T> &primal_vector,
+                            const T previous_delta_dual_i, T l_l2sq) {
     TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
   }
 
   /**
-   * For SDCA, sometimes observations might be discarded (Poisson regression). In this case
-   * this returns a mapping from the sampled observation (in [0, rand_max)) to the observation
-   * position (in [0, n_samples)).
-   * If nullptr is returned, then it means no index_map is required as the mapping is the
+   * For SDCA, sometimes observations might be discarded (Poisson regression).
+   * In this case this returns a mapping from the sampled observation (in [0,
+   * rand_max)) to the observation position (in [0, n_samples)). If nullptr is
+   * returned, then it means no index_map is required as the mapping is the
    * canonical inedx_map[i] = i
    */
-  virtual SArrayULongPtr get_sdca_index_map() {
-    return nullptr;
-  }
+  virtual SArrayULongPtr get_sdca_index_map() { return nullptr; }
 
-  virtual BaseArrayDouble get_features(const ulong i) const {
+  virtual BaseArray<T> get_features(const ulong i) const {
     TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
   }
 
-  virtual void sdca_primal_dual_relation(const double l_l2sq,
-                                         const ArrayDouble &dual_vector,
-                                         ArrayDouble &out_primal_vector) {
+  virtual void sdca_primal_dual_relation(const T l_l2sq,
+                                         const Array<T> &dual_vector,
+                                         Array<T> &out_primal_vector) {
     TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
   }
 
-  virtual bool is_sparse() const {
-    return false;
-  }
+  virtual bool is_sparse() const { return false; }
 
   virtual bool use_intercept() const {
+    TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
     return false;
   }
 
-  virtual double grad_i_factor(const ulong i, const ArrayDouble &coeffs) {
+  virtual T grad_i_factor(const ulong i, const Array<T> &coeffs) {
     TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
   }
 
@@ -113,20 +100,16 @@ class Model {
    * @brief Get the maximum of all Lipschits constants
    * @note This will cache the obtained value for later calls
    */
-  virtual double get_lip_max() {
-    TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
-  }
+  virtual T get_lip_max() { TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name()); }
 
   /**
    * @brief Get the mean of all Lipschits constants
    * @note This will cache the obtained value for later calls
    */
-  virtual double get_lip_mean() {
-    TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
-  }
+  virtual T get_lip_mean() { TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name()); }
 };
 
-typedef std::shared_ptr<Model> ModelPtr;
+using Model = TModel<double>;
+using ModelPtr = std::shared_ptr<Model>;
 
 #endif  // LIB_INCLUDE_TICK_BASE_MODEL_MODEL_H_
-
