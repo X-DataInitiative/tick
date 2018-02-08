@@ -20,9 +20,10 @@ RUN pyenv install 3.4.6 && pyenv install 3.5.3 && pyenv install 3.6.1
 
 COPY requirements.txt requirements.txt 
 
-RUN eval "$(pyenv init -)" && \ 
-	pyenv local 3.4.6 && pip install -r requirements.txt -U pip && \
-	pyenv local 3.5.3 && pip install -r requirements.txt -U pip && \
-	pyenv local 3.6.1 && pip install -r requirements.txt -U pip
+RUN eval "$(pyenv init -)" && \
+    pyenv local 3.4.6 && pip install -r requirements.txt -U pip && pip install tensorflow && \
+    pyenv local 3.5.3 && pip install -r requirements.txt -U pip && pip install tensorflow && \
+    pyenv local 3.6.1 && pip install -r requirements.txt -U pip && pip install tensorflow
+
 
 LABEL maintainer "soren.poulsen@polytechnique.edu"
