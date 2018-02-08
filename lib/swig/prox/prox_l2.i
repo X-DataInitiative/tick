@@ -4,13 +4,23 @@
 #include "tick/prox/prox_l2.h"
 %}
 
-class ProxL2 : public Prox {
+template <class T>
+class TProxL2 : public TProx<T> {
  public:
-   ProxL2(double strength,
+   TProxL2(T strength,
           bool positive);
 
-   ProxL2(double strength,
+   TProxL2(T strength,
           unsigned long start,
           unsigned long end,
           bool positive);
 };
+
+%template(ProxL2) TProxL2<double>;
+typedef TProxL2<double> ProxL2;
+
+%template(ProxL2Double) TProxL2<double>;
+typedef TProxL2<double> ProxL2Double;
+
+%template(ProxL2Float) TProxL2<float>;
+typedef TProxL2<float> ProxL2Float;

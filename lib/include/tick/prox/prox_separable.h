@@ -5,51 +5,67 @@
 
 #include "prox.h"
 
-class DLL_PUBLIC ProxSeparable : public Prox {
+template <class T>
+class DLL_PUBLIC TProxSeparable : public TProx<T> {
+ protected:
+  using TProx<T>::has_range;
+  using TProx<T>::strength;
+  using TProx<T>::start;
+  using TProx<T>::end;
+  using TProx<T>::positive;
+
  public:
-  ProxSeparable(double strength, bool positive);
+  using TProx<T>::call;
 
-  ProxSeparable(double strength, ulong start, ulong end, bool positive);
+ public:
+  TProxSeparable(T strength, bool positive);
 
-  const std::string get_class_name() const override;
+  TProxSeparable(T strength, ulong start, ulong end, bool positive);
 
-  const bool is_separable() const override;
+  std::string get_class_name() const override;
 
-  using Prox::call;
+  bool is_separable() const override;
 
   //! @brief call prox on coeffs, with a given step and store result in out
   //! @note this calls call_single on each coordinate
-  void call(const ArrayDouble &coeffs, double step, ArrayDouble &out, ulong start,
+  void call(const Array<T> &coeffs, T step, Array<T> &out, ulong start,
             ulong end) override;
 
-  //! @brief call prox on coeffs, with a vector of different steps and store result in out
-  virtual void call(const ArrayDouble &coeffs, const ArrayDouble &step, ArrayDouble &out);
+  //! @brief call prox on coeffs, with a vector of different steps and store
+  //! result in out
+  virtual void call(const Array<T> &coeffs, const Array<T> &step,
+                    Array<T> &out);
 
-  //! @brief call prox on a part of coeffs (defined by start-end), with a vector of different
-  //! steps and store result in out
-  virtual void call(const ArrayDouble &coeffs, const ArrayDouble &step, ArrayDouble &out,
+  //! @brief call prox on a part of coeffs (defined by start-end), with a vector
+  //! of different steps and store result in out
+  virtual void call(const Array<T> &coeffs, const Array<T> &step, Array<T> &out,
                     ulong start, ulong end);
 
   //! @brief apply prox on a single value defined by coordinate i
-  virtual void call_single(ulong i, const ArrayDouble &coeffs, double step,
-                           ArrayDouble &out) const;
+  virtual void call_single(ulong i, const Array<T> &coeffs, T step,
+                           Array<T> &out) const;
 
   //! @brief apply prox on a single value defined by coordinate i several times
-  virtual void call_single(ulong i, const ArrayDouble &coeffs, double step,
-                           ArrayDouble &out, ulong n_times) const;
+  virtual void call_single(ulong i, const Array<T> &coeffs, T step,
+                           Array<T> &out, ulong n_times) const;
 
-  double value(const ArrayDouble &coeffs, ulong start, ulong end) override;
+  T value(const Array<T> &coeffs, ulong start, ulong end) override;
 
  private:
   //! @brief apply prox on a single value
-  virtual double call_single(double x, double step) const;
+  virtual T call_single(T x, T step) const;
 
   //! @brief apply prox on a single value several times
-  virtual double call_single(double x, double step, ulong n_times) const;
+  virtual T call_single(T x, T step, ulong n_times) const;
 
   //! @brief get penalization value of the prox on a single value
   //! @warning This does not take strength into account
-  virtual double value_single(double x) const;
+  virtual T value_single(T x) const;
 };
+
+using ProxSeparable = TProxSeparable<double>;
+
+using ProxSeparableDouble = TProxSeparable<double>;
+using ProxSeparableFloat = TProxSeparable<float>;
 
 #endif  // LIB_INCLUDE_TICK_PROX_PROX_SEPARABLE_H_

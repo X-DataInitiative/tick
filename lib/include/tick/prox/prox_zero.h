@@ -6,22 +6,26 @@
 
 #include "prox_separable.h"
 
-class DLL_PUBLIC ProxZero : public ProxSeparable {
+template <class T>
+class DLL_PUBLIC TProxZero : public TProxSeparable<T> {
  public:
-  explicit ProxZero(double strength);
+  explicit TProxZero(T strength);
 
-  ProxZero(double strength,
-           ulong start,
-           ulong end);
+  TProxZero(T strength, ulong start, ulong end);
 
-  const std::string get_class_name() const override;
+  std::string get_class_name() const override;
 
-  double value(const ArrayDouble &coeffs, ulong start, ulong end) override;
+  T value(const Array<T> &coeffs, ulong start, ulong end) override;
 
  private:
-  double call_single(double x, double step) const override;
+  T call_single(T x, T step) const override;
 
-  double call_single(double x, double step, ulong n_times) const override;
+  T call_single(T x, T step, ulong n_times) const override;
 };
+
+using ProxZero = TProxZero<double>;
+
+using ProxZeroDouble = TProxZero<double>;
+using ProxZeroFloat = TProxZero<float>;
 
 #endif  // LIB_INCLUDE_TICK_PROX_PROX_ZERO_H_

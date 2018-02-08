@@ -5,18 +5,28 @@
 
 #include "prox.h"
 
-class ProxL2 : public Prox {
+template <class T>
+class TProxL2 : public TProx<T> {
+ protected:
+  using TProx<T>::strength;
+  using TProx<T>::positive;
+
  public:
-  ProxL2(double strength, bool positive);
+  TProxL2(T strength, bool positive);
 
-  ProxL2(double strength, ulong start, ulong end, bool positive);
+  TProxL2(T strength, ulong start, ulong end, bool positive);
 
-  const std::string get_class_name() const override;
+  std::string get_class_name() const override;
 
-  double value(const ArrayDouble &coeffs, ulong start, ulong end) override;
+  T value(const Array<T> &coeffs, ulong start, ulong end) override;
 
-  void call(const ArrayDouble &coeffs, double step, ArrayDouble &out,
-            ulong start, ulong end) override;
+  void call(const Array<T> &coeffs, T step, Array<T> &out, ulong start,
+            ulong end) override;
 };
+
+using ProxL2 = TProxL2<double>;
+
+using ProxL2Double = TProxL2<double>;
+using ProxL2Float = TProxL2<float>;
 
 #endif  // LIB_INCLUDE_TICK_PROX_PROX_L2_H_

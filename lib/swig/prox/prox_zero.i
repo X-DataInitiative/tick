@@ -4,11 +4,22 @@
 #include "tick/prox/prox_zero.h"
 %}
 
-class ProxZero : public Prox {
+template <class T>
+class TProxZero : public TProx<T> {
  public:
-   ProxZero(double strength);
+   TProxZero(T strength);
 
-   ProxZero(double strength,
+   TProxZero(T strength,
             unsigned long start,
             unsigned long end);
 };
+
+%template(ProxZero) TProxZero<double>;
+typedef TProxZero<double> ProxZero;
+
+%template(ProxZeroDouble) TProxZero<double>;
+typedef TProxZero<double> ProxZeroDouble;
+
+%template(ProxZeroFloat) TProxZero<float>;
+typedef TProxZero<float> ProxZeroFloat;
+

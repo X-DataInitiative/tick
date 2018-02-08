@@ -9,6 +9,7 @@
 %}
 
 %include "model.i"
+%include "prox.i"
 
 // Type of randomness used when sampling at random data points
 enum class RandType {

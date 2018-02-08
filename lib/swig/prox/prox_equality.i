@@ -4,13 +4,19 @@
 #include "tick/prox/prox_equality.h"
 %}
 
-class ProxEquality : public Prox {
+template <class T>
+class TProxEquality : public TProx<T> {
  public:
-   ProxEquality(double strength,
-                bool positive);
+  explicit TProxEquality(T strength, bool positive);
 
-   ProxEquality(double strength,
-                ulong start,
-                ulong end,
-                bool positive);
+  TProxEquality(T strength, ulong start, ulong end, bool positive);
 };
+
+%template(ProxEquality) TProxEquality<double>;
+typedef TProxEquality<double> ProxEquality;
+
+%template(ProxEqualityDouble) TProxEquality<double>;
+typedef TProxEquality<double> ProxEqualityDouble;
+
+%template(ProxEqualityFloat) TProxEquality<float>;
+typedef TProxEquality<float> ProxEqualityFloat;

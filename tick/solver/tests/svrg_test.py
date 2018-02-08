@@ -14,8 +14,8 @@ from tick.prox import ProxL1, ProxL1w, ProxTV, ProxEquality, \
     ProxElasticNet
 
 from tick.solver import SVRG
-from . import TestSolver
-from ..build.solver import SVRG as _SVRG
+from tick.solver.tests import TestSolver
+from tick.solver.build.solver import SVRG as _SVRG
 
 
 class Test(TestSolver):

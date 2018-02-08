@@ -2,11 +2,10 @@
 
 #include "tick/prox/prox_with_groups.h"
 
-ProxWithGroups::ProxWithGroups(double strength,
-                               SArrayULongPtr blocks_start,
-                               SArrayULongPtr blocks_length,
-                               bool positive)
-    : Prox(strength, positive), is_synchronized(false) {
+template <class T>
+TProxWithGroups<T>::TProxWithGroups(T strength, SArrayULongPtr blocks_start,
+                                    SArrayULongPtr blocks_length, bool positive)
+    : TProx<T>(strength, positive), is_synchronized(false) {
   this->blocks_start = blocks_start;
   this->blocks_length = blocks_length;
   this->positive = positive;
@@ -16,12 +15,11 @@ ProxWithGroups::ProxWithGroups(double strength,
   is_synchronized = false;
 }
 
-ProxWithGroups::ProxWithGroups(double strength,
-                               SArrayULongPtr blocks_start,
-                               SArrayULongPtr blocks_length,
-                               ulong start,
-                               ulong end, bool positive)
-    : Prox(strength, start, end, positive) {
+template <class T>
+TProxWithGroups<T>::TProxWithGroups(T strength, SArrayULongPtr blocks_start,
+                                    SArrayULongPtr blocks_length, ulong start,
+                                    ulong end, bool positive)
+    : TProx<T>(strength, start, end, positive) {
   this->blocks_start = blocks_start;
   this->blocks_length = blocks_length;
   this->positive = positive;
@@ -31,7 +29,8 @@ ProxWithGroups::ProxWithGroups(double strength,
   is_synchronized = false;
 }
 
-void ProxWithGroups::synchronize_proxs() {
+template <class T>
+void TProxWithGroups<T>::synchronize_proxs() {
   proxs.clear();
   for (ulong k = 0; k < n_blocks; k++) {
     ulong start = (*blocks_start)[k];
@@ -45,32 +44,34 @@ void ProxWithGroups::synchronize_proxs() {
   is_synchronized = true;
 }
 
-std::unique_ptr<Prox> ProxWithGroups::build_prox(double strength, ulong start, ulong end, bool positive) {
+template <class T>
+std::unique_ptr<TProx<T> > TProxWithGroups<T>::build_prox(T strength,
+                                                          ulong start,
+                                                          ulong end,
+                                                          bool positive) {
   TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
 }
 
-const std::string ProxWithGroups::get_class_name() const {
-  return "ProxWithGroups";
+template <class T>
+std::string TProxWithGroups<T>::get_class_name() const {
+  return "TProxWithGroups";
 }
 
-double ProxWithGroups::value(const ArrayDouble &coeffs,
-                             ulong start,
-                             ulong end) {
+template <class T>
+T TProxWithGroups<T>::value(const Array<T> &coeffs, ulong start, ulong end) {
   if (!is_synchronized) {
     synchronize_proxs();
   }
-  double val = 0.;
+  T val = 0.;
   for (auto &prox : proxs) {
     val += prox->value(coeffs, prox->get_start(), prox->get_end());
   }
   return val;
 }
 
-void ProxWithGroups::call(const ArrayDouble &coeffs,
-                          double step,
-                          ArrayDouble &out,
-                          ulong start,
-                          ulong end) {
+template <class T>
+void TProxWithGroups<T>::call(const Array<T> &coeffs, T step, Array<T> &out,
+                              ulong start, ulong end) {
   if (!is_synchronized) {
     synchronize_proxs();
   }
@@ -78,3 +79,6 @@ void ProxWithGroups::call(const ArrayDouble &coeffs,
     prox->call(coeffs, step, out, prox->get_start(), prox->get_end());
   }
 }
+
+template class TProxWithGroups<double>;
+template class TProxWithGroups<float>;

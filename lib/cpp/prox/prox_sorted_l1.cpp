@@ -2,62 +2,60 @@
 
 #include "tick/prox/prox_sorted_l1.h"
 
-ProxSortedL1::ProxSortedL1(double strength,
-                           WeightsType weights_type,
-                           bool positive)
-  : Prox(strength, positive) {
+template <class T>
+TProxSortedL1<T>::TProxSortedL1(T strength, WeightsType weights_type,
+                                bool positive)
+    : TProx<T>(strength, positive) {
   this->weights_type = weights_type;
   weights_ready = false;
 }
 
-ProxSortedL1::ProxSortedL1(double strength,
-                           WeightsType weights_type,
-                           ulong start,
-                           ulong end,
-                           bool positive)
-  : Prox(strength, start, end, positive) {
+template <class T>
+TProxSortedL1<T>::TProxSortedL1(T strength, WeightsType weights_type,
+                                ulong start, ulong end, bool positive)
+    : TProx<T>(strength, start, end, positive) {
   this->weights_type = weights_type;
   weights_ready = false;
 }
 
-const std::string ProxSortedL1::get_class_name() const {
-  return "ProxSortedL1";
+template <class T>
+std::string TProxSortedL1<T>::get_class_name() const {
+  return "TProxSortedL1";
 }
 
-void ProxSortedL1::compute_weights(void) {
+template <class T>
+void TProxSortedL1<T>::compute_weights(void) {
   TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
 }
 
-void ProxSortedL1::call(const ArrayDouble &coeffs,
-                        double t,
-                        ArrayDouble &out,
-                        ulong start,
-                        ulong end) {
+template <class T>
+void TProxSortedL1<T>::call(const Array<T> &coeffs, T t, Array<T> &out,
+                            ulong start, ulong end) {
   // If necessary, compute weights
   compute_weights();
   ulong size = end - start;
-  double thresh = t;
+  T thresh = t;
 
-  ArrayDouble sub_coeffs = view(coeffs, start, end);
-  ArrayDouble sub_out = view(out, start, end);
+  Array<T> sub_coeffs = view(coeffs, start, end);
+  Array<T> sub_out = view(out, start, end);
   sub_out.fill(0);
 
-  ArrayDouble weights_copy(weights);
+  Array<T> weights_copy(weights);
 
   ArrayShort sub_coeffs_sign(size);
-  ArrayDouble sub_coeffs_abs(size);
+  Array<T> sub_coeffs_abs(size);
   // Will contain the indexes that sort abs(sub_coeffs) in decreasing order
   ArrayULong idx(size);
   // Sort sub_coeffs with decreasing absolute values, keeping the sorting index
-  ArrayDouble sub_coeffs_sorted = sort_abs(sub_coeffs, idx, false);
+  Array<T> sub_coeffs_sorted = sort_abs(sub_coeffs, idx, false);
 
-  ArrayDouble sub_coeffs_abs_sort(size);
+  Array<T> sub_coeffs_abs_sort(size);
   // Multiply weights by the threshold, compute abs and sign of sub_coeffs,
   // and compute abs(sub_coeffs_sorted)
   for (ulong i = 0; i < size; i++) {
     weights_copy[i] *= thresh;
     sub_coeffs_abs_sort[i] = std::abs(sub_coeffs_sorted[i]);
-    double sub_coeffs_i = sub_coeffs[i];
+    T sub_coeffs_i = sub_coeffs[i];
     if (sub_coeffs_i >= 0) {
       sub_coeffs_sign[i] = 1;
       sub_coeffs_abs[i] = sub_coeffs_i;
@@ -80,8 +78,8 @@ void ProxSortedL1::call(const ArrayDouble &coeffs,
     n_sub_coeffs = size;
   }
 
-  ArrayDouble subsub_coeffs = view(sub_coeffs_abs_sort, 0, n_sub_coeffs);
-  ArrayDouble subsub_out(n_sub_coeffs);
+  Array<T> subsub_coeffs = view(sub_coeffs_abs_sort, 0, n_sub_coeffs);
+  Array<T> subsub_out(n_sub_coeffs);
   subsub_out.fill(0);
 
   prox_sorted_l1(subsub_coeffs, weights_copy, subsub_out);
@@ -97,15 +95,17 @@ void ProxSortedL1::call(const ArrayDouble &coeffs,
 // This piece comes from E. Candes and co-authors
 // from SLOPE Matlab's code, see tick's documentation
 // for a precise about this
-void ProxSortedL1::prox_sorted_l1(const ArrayDouble &y,  // Input vector
-                                  const ArrayDouble &lambda,  // Thresholding vector
-                                  ArrayDouble &x) const {  // output vector
+template <class T>
+void TProxSortedL1<T>::prox_sorted_l1(
+    const Array<T> &y,       // Input vector
+    const Array<T> &lambda,  // Thresholding vector
+    Array<T> &x) const {     // output vector
   const ulong n = y.size();
-  double d;
+  T d;
   ulong i, j, k;
 
-  ArrayDouble s(n);
-  ArrayDouble w(n);
+  Array<T> s(n);
+  Array<T> w(n);
   ArrayULong idx_i(n);
   ArrayULong idx_j(n);
 
@@ -132,36 +132,41 @@ void ProxSortedL1::prox_sorted_l1(const ArrayDouble &y,  // Input vector
   }
 }
 
-double ProxSortedL1::value(const ArrayDouble &coeffs,
-                           ulong start,
-                           ulong end) {
+template <class T>
+T TProxSortedL1<T>::value(const Array<T> &coeffs, ulong start, ulong end) {
   // If necessary, compute weights
   compute_weights();
   ulong size = end - start;
-  ArrayDouble sub_coeffs = view(coeffs, start, end);
+  Array<T> sub_coeffs = view(coeffs, start, end);
   ArrayULong idx(size);
-  // Sort sub_coeffs with decreasing absolute values, and keeping sorting indexes in idx
-  ArrayDouble sub_coeffs_sorted = sort_abs(sub_coeffs, idx, false);
-  double val = 0;
+  // Sort sub_coeffs with decreasing absolute values, and keeping sorting
+  // indexes in idx
+  Array<T> sub_coeffs_sorted = sort_abs(sub_coeffs, idx, false);
+  T val = 0;
   for (ulong i = 0; i < size; i++) {
     val += weights[i] * std::abs(sub_coeffs_sorted[i]);
   }
   return val;
 }
 
-void ProxSortedL1::set_strength(double strength) {
+template <class T>
+void TProxSortedL1<T>::set_strength(T strength) {
   if (strength != this->strength) {
     weights_ready = false;
   }
-  Prox::set_strength(strength);
+  TProx<T>::set_strength(strength);
 }
 
-// We overload set_start_end here, since we'd need to update weights when they're changed
-void ProxSortedL1::set_start_end(ulong start,
-                                 ulong end) {
+// We overload set_start_end here, since we'd need to update weights when
+// they're changed
+template <class T>
+void TProxSortedL1<T>::set_start_end(ulong start, ulong end) {
   if ((start != this->start) || (end != this->end)) {
     // If we change the range, we need to compute again the weights
     weights_ready = false;
   }
-  Prox::set_start_end(start, end);
+  TProx<T>::set_start_end(start, end);
 }
+
+template class TProxSortedL1<double>;
+template class TProxSortedL1<float>;

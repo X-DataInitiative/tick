@@ -4,11 +4,21 @@
 #include "tick/prox/prox_positive.h"
 %}
 
-class ProxPositive : public Prox {
+template <class T>
+class TProxPositive : public TProx<T> {
  public:
-   ProxPositive(double strength);
+   TProxPositive(T strength);
 
-   ProxPositive(double strength,
-                ulong start,
-                ulong end);
+   TProxPositive(T strength,
+          unsigned long start,
+          unsigned long end);
 };
+
+%template(ProxPositive) TProxPositive<double>;
+typedef TProxPositive<double> ProxPositive;
+
+%template(ProxPositiveDouble) TProxPositive<double>;
+typedef TProxPositive<double> ProxPositiveDouble;
+
+%template(ProxPositiveFloat) TProxPositive<float>;
+typedef TProxPositive<float> ProxPositiveFloat;

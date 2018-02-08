@@ -5,22 +5,28 @@
 
 #include "prox_separable.h"
 
-class ProxPositive : public ProxSeparable {
+template <class T>
+class TProxPositive : public TProxSeparable<T> {
  public:
-  explicit ProxPositive(double strength);
+  explicit TProxPositive(T strength);
 
-  ProxPositive(double strength, ulong start, ulong end);
+  TProxPositive(T strength, ulong start, ulong end);
 
-  const std::string get_class_name() const override;
+  std::string get_class_name() const override;
 
   // Override value, only this value method should be called
-  double value(const ArrayDouble &coeffs, ulong start, ulong end) override;
+  T value(const Array<T> &coeffs, ulong start, ulong end) override;
 
  private:
-  double call_single(double x, double step) const override;
+  T call_single(T x, T step) const override;
 
   // Repeat n_times the prox on coordinate i
-  double call_single(double x, double step, ulong n_times) const override;
+  T call_single(T x, T step, ulong n_times) const override;
 };
+
+using ProxPositive = TProxPositive<double>;
+
+using ProxPositiveDouble = TProxPositive<double>;
+using ProxPositiveFloat = TProxPositive<float>;
 
 #endif  // LIB_INCLUDE_TICK_PROX_PROX_POSITIVE_H_

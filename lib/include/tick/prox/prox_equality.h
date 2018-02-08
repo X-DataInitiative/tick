@@ -5,18 +5,27 @@
 
 #include "prox.h"
 
-class ProxEquality : public Prox {
+template <class T>
+class TProxEquality : public TProx<T> {
+ protected:
+  using TProx<T>::positive;
+
  public:
-  explicit ProxEquality(double strength, bool positive);
+  explicit TProxEquality(T strength, bool positive);
 
-  ProxEquality(double strength, ulong start, ulong end, bool positive);
+  TProxEquality(T strength, ulong start, ulong end, bool positive);
 
-  const std::string get_class_name() const override;
+  std::string get_class_name() const override;
 
-  double value(const ArrayDouble &coeffs, ulong start, ulong end) override;
+  T value(const Array<T> &coeffs, ulong start, ulong end) override;
 
-  void call(const ArrayDouble &coeffs, double step, ArrayDouble &out,
-            ulong start, ulong end) override;
+  void call(const Array<T> &coeffs, T step, Array<T> &out, ulong start,
+            ulong end) override;
 };
+
+using ProxEquality = TProxEquality<double>;
+
+using ProxEqualityDouble = TProxEquality<double>;
+using ProxEqualityFloat = TProxEquality<float>;
 
 #endif  // LIB_INCLUDE_TICK_PROX_PROX_EQUALITY_H_

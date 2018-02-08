@@ -2,40 +2,42 @@
 
 #include "tick/prox/prox_l1w.h"
 
-ProxL1w::ProxL1w(double strength,
-                 SArrayDoublePtr weights,
-                 bool positive)
-    : ProxSeparable(strength, positive) {
+template <class T>
+TProxL1w<T>::TProxL1w(T strength, SArrayTPtr weights, bool positive)
+    : TProxSeparable<T>(strength, positive) {
   this->weights = weights;
 }
 
-ProxL1w::ProxL1w(double strength,
-                 SArrayDoublePtr weights,
-                 ulong start,
-                 ulong end,
-                 bool positive)
-    : ProxSeparable(strength, start, end, positive) {
+template <class T>
+TProxL1w<T>::TProxL1w(T strength, SArrayTPtr weights, ulong start, ulong end,
+                      bool positive)
+    : TProxSeparable<T>(strength, start, end, positive) {
   this->weights = weights;
 }
 
-const std::string ProxL1w::get_class_name() const {
-  return "ProxL1w";
+template <class T>
+std::string TProxL1w<T>::get_class_name() const {
+  return "TProxL1w";
 }
 
-double ProxL1w::call_single(double x, double step) const {
+template <class T>
+T TProxL1w<T>::call_single(T x, T step) const {
   TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
 }
 
-double ProxL1w::call_single(double x, double step, ulong n_times) const {
+template <class T>
+T TProxL1w<T>::call_single(T x, T step, ulong n_times) const {
   TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
 }
 
-double ProxL1w::value_single(double x) const {
+template <class T>
+T TProxL1w<T>::value_single(T x) const {
   TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
 }
 
-double ProxL1w::call_single(double x, double step, double weight) const {
-  double thresh = step * strength * weight;
+template <class T>
+T TProxL1w<T>::call_single(T x, T step, T weight) const {
+  T thresh = step * strength * weight;
   if (x > 0) {
     if (x > thresh) {
       return x - thresh;
@@ -56,7 +58,8 @@ double ProxL1w::call_single(double x, double step, double weight) const {
   }
 }
 
-double ProxL1w::call_single(double x, double step, double weight, ulong n_times) const {
+template <class T>
+T TProxL1w<T>::call_single(T x, T step, T weight, ulong n_times) const {
   if (n_times >= 1) {
     return call_single(x, n_times * step, weight);
   } else {
@@ -64,40 +67,36 @@ double ProxL1w::call_single(double x, double step, double weight, ulong n_times)
   }
 }
 
-void ProxL1w::call(const ArrayDouble &coeffs,
-                   double step,
-                   ArrayDouble &out,
-                   ulong start,
-                   ulong end) {
-  ArrayDouble sub_coeffs = view(coeffs, start, end);
-  ArrayDouble sub_out = view(out, start, end);
+template <class T>
+void TProxL1w<T>::call(const Array<T> &coeffs, T step, Array<T> &out,
+                       ulong start, ulong end) {
+  Array<T> sub_coeffs = view(coeffs, start, end);
+  Array<T> sub_out = view(out, start, end);
   for (ulong i = 0; i < sub_coeffs.size(); ++i) {
     sub_out[i] = call_single(sub_coeffs[i], step, (*weights)[i]);
   }
 }
 
-void ProxL1w::call(const ArrayDouble &coeffs,
-                   const ArrayDouble &step,
-                   ArrayDouble &out,
-                   ulong start,
-                   ulong end) {
-  ArrayDouble sub_coeffs = view(coeffs, start, end);
-  ArrayDouble sub_out = view(out, start, end);
+template <class T>
+void TProxL1w<T>::call(const Array<T> &coeffs, const Array<T> &step,
+                       Array<T> &out, ulong start, ulong end) {
+  Array<T> sub_coeffs = view(coeffs, start, end);
+  Array<T> sub_out = view(out, start, end);
   for (ulong i = 0; i < sub_coeffs.size(); ++i) {
     // weights has the same size as end - start, but not the step array
     sub_out[i] = call_single(sub_coeffs[i], step[i + start], (*weights)[i]);
   }
 }
 
-// We cannot implement only ProxL1w::call_single(double x, double step) since we need to
-// know i to find the weight
-void ProxL1w::call_single(ulong i,
-                          const ArrayDouble &coeffs,
-                          double step,
-                          ArrayDouble &out) const {
+// We cannot implement only TProxL1w<T>::call_single(T x, T step) since we need
+// to know i to find the weight
+template <class T>
+void TProxL1w<T>::call_single(ulong i, const Array<T> &coeffs, T step,
+                              Array<T> &out) const {
   if (i >= coeffs.size()) {
-    TICK_ERROR(get_class_name() << "::call_single " << "i= " << i
-                                << " while coeffs.size()=" << coeffs.size());
+    TICK_ERROR(get_class_name()
+               << "::call_single "
+               << "i= " << i << " while coeffs.size()=" << coeffs.size());
   } else {
     if (has_range) {
       if ((i >= start) && (i < end)) {
@@ -111,14 +110,13 @@ void ProxL1w::call_single(ulong i,
   }
 }
 
-void ProxL1w::call_single(ulong i,
-                          const ArrayDouble &coeffs,
-                          double step,
-                          ArrayDouble &out,
-                          ulong n_times) const {
+template <class T>
+void TProxL1w<T>::call_single(ulong i, const Array<T> &coeffs, T step,
+                              Array<T> &out, ulong n_times) const {
   if (i >= coeffs.size()) {
-    TICK_ERROR(get_class_name() << "::call_single " << "i= " << i
-                                << " while coeffs.size()=" << coeffs.size());
+    TICK_ERROR(get_class_name()
+               << "::call_single "
+               << "i= " << i << " while coeffs.size()=" << coeffs.size());
   } else {
     if (has_range) {
       if ((i >= start) && (i < end)) {
@@ -132,17 +130,22 @@ void ProxL1w::call_single(ulong i,
   }
 }
 
-double ProxL1w::value_single(double x, double weight) const {
+template <class T>
+T TProxL1w<T>::value_single(T x, T weight) const {
   return weight * std::abs(x);
 }
 
-double ProxL1w::value(const ArrayDouble &coeffs, ulong start, ulong end) {
-  double val = 0;
+template <class T>
+T TProxL1w<T>::value(const Array<T> &coeffs, ulong start, ulong end) {
+  T val = 0;
   // We work on a view, so that sub_coeffs and weights are "aligned"
   // (namely both ranging between 0 and end - start).
-  ArrayDouble sub_coeffs = view(coeffs, start, end);
+  Array<T> sub_coeffs = view(coeffs, start, end);
   for (ulong i = 0; i < sub_coeffs.size(); ++i) {
     val += value_single(sub_coeffs[i], (*weights)[i]);
   }
   return strength * val;
 }
+
+template class TProxL1w<double>;
+template class TProxL1w<float>;

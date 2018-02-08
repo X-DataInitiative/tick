@@ -2,31 +2,29 @@
 
 #include "tick/prox/prox_elasticnet.h"
 
-ProxElasticNet::ProxElasticNet(double strength,
-                               double ratio,
-                               bool positive)
-  : ProxSeparable(strength, positive) {
+template <class T>
+TProxElasticNet<T>::TProxElasticNet(T strength, T ratio, bool positive)
+    : TProxSeparable<T>(strength, positive) {
   this->positive = positive;
   set_ratio(ratio);
 }
 
-ProxElasticNet::ProxElasticNet(double strength,
-                               double ratio,
-                               ulong start,
-                               ulong end,
-                               bool positive)
-  : ProxSeparable(strength, start, end, positive) {
+template <class T>
+TProxElasticNet<T>::TProxElasticNet(T strength, T ratio, ulong start, ulong end,
+                                    bool positive)
+    : TProxSeparable<T>(strength, start, end, positive) {
   this->positive = positive;
   set_ratio(ratio);
 }
 
-const std::string ProxElasticNet::get_class_name() const {
-  return "ProxElasticNet";
+template <class T>
+std::string TProxElasticNet<T>::get_class_name() const {
+  return "TTProxElasticNet<T>";
 }
 
-double ProxElasticNet::call_single(double x,
-                                   double step) const {
-  double thresh = step * ratio * strength;
+template <class T>
+T TProxElasticNet<T>::call_single(T x, T step) const {
+  T thresh = step * ratio * strength;
   if (x > 0) {
     if (x > thresh) {
       return (x - thresh) / (1 + step * strength * (1 - ratio));
@@ -46,17 +44,25 @@ double ProxElasticNet::call_single(double x,
       }
     }
   }
+  return 0;
 }
 
-double ProxElasticNet::value_single(double x) const {
+template <class T>
+T TProxElasticNet<T>::value_single(T x) const {
   return (1 - ratio) * 0.5 * x * x + ratio * std::abs(x);
 }
 
-double ProxElasticNet::get_ratio() const {
+template <class T>
+T TProxElasticNet<T>::get_ratio() const {
   return ratio;
 }
 
-void ProxElasticNet::set_ratio(double ratio) {
-  if (ratio < 0 || ratio > 1) TICK_ERROR("Ratio should be in the [0, 1] interval");
+template <class T>
+void TProxElasticNet<T>::set_ratio(T ratio) {
+  if (ratio < 0 || ratio > 1)
+    TICK_ERROR("Ratio should be in the [0, 1] interval");
   this->ratio = ratio;
 }
+
+template class TProxElasticNet<double>;
+template class TProxElasticNet<float>;

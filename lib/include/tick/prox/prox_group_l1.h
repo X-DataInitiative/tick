@@ -5,18 +5,26 @@
 
 #include "prox_with_groups.h"
 
-class ProxGroupL1 : public ProxWithGroups {
+template <class T>
+class TProxGroupL1 : public TProxWithGroups<T> {
  protected:
-  std::unique_ptr<Prox> build_prox(double strength, ulong start, ulong end, bool positive) final;
+  std::unique_ptr<TProx<T> > build_prox(T strength, ulong start, ulong end,
+                                        bool positive);
 
  public:
-  ProxGroupL1(double strength, SArrayULongPtr blocks_start, SArrayULongPtr blocks_length,
-                bool positive);
+  TProxGroupL1(T strength, SArrayULongPtr blocks_start,
+               SArrayULongPtr blocks_length, bool positive);
 
-  ProxGroupL1(double strength, SArrayULongPtr blocks_start, SArrayULongPtr blocks_length,
-                ulong start, ulong end, bool positive);
+  TProxGroupL1(T strength, SArrayULongPtr blocks_start,
+               SArrayULongPtr blocks_length, ulong start, ulong end,
+               bool positive);
 
-  const std::string get_class_name() const final;
+  std::string get_class_name() const;
 };
+
+using ProxGroupL1 = TProxGroupL1<double>;
+
+using ProxGroupL1Double = TProxGroupL1<double>;
+using ProxGroupL1Float = TProxGroupL1<float>;
 
 #endif  // LIB_INCLUDE_TICK_PROX_PROX_GROUP_L1_H_
