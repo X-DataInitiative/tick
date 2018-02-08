@@ -2,25 +2,46 @@ cmake_minimum_required(VERSION 2.8)
 project(tick)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -ffast-math")
-set(CMAKE_BUILD_TYPE RelWithDebInfo)
 
-find_package(BLAS)
+include_directories(${CMAKE_SOURCE_DIR}/..)
 
+option(USE_MKL "Force tick to use MKL" OFF)
+option(USE_BLAS "Force tick to use BLAS" OFF)
+
+set(TICK_EXTRA_RPATH "")
 set(TICK_BLAS_LIBRARIES "")
 
-if (${BLAS_FOUND})
+if (${USE_MKL})
+    list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/modules)
+    find_package(MKL REQUIRED)
+    message(STATUS "Using MKL")
+
+    add_definitions(-DTICK_USE_MKL)
+
+    include_directories(${MKL_INCLUDE_DIRECTORIES})
+
+    set(TICK_BLAS_LIBRARIES ${MKL_LIBRARIES} ${INTEL_LIBRARIES})
+    set(TICK_EXTRA_RPATH "${TICK_EXTRA_RPATH};${INTEL_LIB};${MKL_LIB}")
+
+    message(STATUS "MKL include directory: " ${MKL_INCLUDE_DIRECTORIES})
+
+elseif(${USE_BLAS})
+    find_package(BLAS REQUIRED)
     message(STATUS "Using BLAS")
-    add_definitions(-DTICK_CBLAS_AVAILABLE)
+
+    add_definitions(-DTICK_USE_BLAS)
 
     set(TICK_BLAS_LIBRARIES ${BLAS_LIBRARIES})
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${BLAS_LINKER_FLAGS}")
 
     message(STATUS "BLAS Libraries: " ${BLAS_LIBRARIES})
     message(STATUS "BLAS Linker flags: " ${BLAS_LINKER_FLAGS})
+else()
+    message(STATUS "Using no BLAS nor MKL")
 endif()
 
 include_directories(
-        ${CMAKE_CURRENT_SOURCE_DIR}/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/third_party/cereal/include)
@@ -62,6 +83,16 @@ add_subdirectory(cpp/robust)
 add_subdirectory(cpp/survival)
 add_subdirectory(cpp/preprocessing)
 
+
+if(APPLE)
+    set(TICK_INSTALL_RPATH "${CMAKE_CURRENT_SOURCE_DIR}/../tick/base/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/array/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/base_model/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/linear_model/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/random/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/prox/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/solver/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/hawkes/inference/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/hawkes/model/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/hawkes/simulation/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/robust/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/survival/build;${TICK_EXTRA_RPATH}")
+
+
+
+    set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
+    set(CMAKE_INSTALL_RPATH "${TICK_INSTALL_RPATH}")
+endif(APPLE)
+
 find_package(GTest)
 
 if (${GTEST_FOUND})
@@ -81,17 +112,15 @@ if (${GTEST_FOUND})
         ${TICK_BLAS_LIBRARIES})
 
     if(APPLE)
-        set(TICK_INSTALL_RPATH "${CMAKE_CURRENT_SOURCE_DIR}/../tick/base/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/array/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/base_model/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/linear_model/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/random/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/prox/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/solver/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/hawkes/inference/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/hawkes/model/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/hawkes/simulation/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/robust/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/survival/build")
-
-        set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
-        set(CMAKE_INSTALL_RPATH "${TICK_INSTALL_RPATH}")
-
         find_library(ACCELERATE_LIBRARY Accelerate)
+
         mark_as_advanced(ACCELERATE_LIBRARY)
         set(TICK_TEST_LIBS ${TICK_TEST_LIBS} ${ACCELERATE_LIBRARY})
+
     else(APPLE)
         set(TICK_TEST_LIBS ${TICK_TEST_LIBS} -lrt -ldl -lutil)
     endif(APPLE)
+
 
     add_subdirectory(cpp-test/base)
     add_subdirectory(cpp-test/array)
@@ -109,8 +138,10 @@ if (${GTEST_FOUND})
             COMMAND cpp-test/hawkes/simulation/tick_test_hawkes_simulation
             COMMAND cpp-test/solver/tick_test_solver
             )
+
+    add_subdirectory(cpp-test/benchmark)
 else()
-    message(STATUS "Testing in C++ NOT enabled")
+    message(STATUS "Testing and benchmarking in C++ NOT enabled")
 
     add_custom_target(check COMMAND
             echo "Could not run C++ checks - gtest framework not found"
