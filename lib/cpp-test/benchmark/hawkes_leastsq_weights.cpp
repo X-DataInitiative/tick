@@ -11,7 +11,7 @@ int main(int nargs, char **args) {
 
   const ulong num_iterations = 100;
   const ulong num_events_per_node = 30;
-  const ulong num_nodes = 20;
+  const ulong num_nodes = 40;
   const ulong num_decays = 10;
   const ulong num_baselines = 1;
 
