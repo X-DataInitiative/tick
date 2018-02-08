@@ -24,7 +24,7 @@ class Test(TestGLM):
         X_spars = csr_matrix(X)
         model = ModelHinge(fit_intercept=True).fit(X, y)
         model_spars = ModelHinge(fit_intercept=True).fit(X_spars, y)
-        self.run_test_for_glm(model, model_spars, 1e-5, 1e-3)
+        self.run_test_for_glm(model, model_spars, 1e-5, 1e-2)
         self._test_glm_intercept_vs_hardcoded_intercept(model)
 
         # Then check without intercept
@@ -34,7 +34,7 @@ class Test(TestGLM):
         model = ModelHinge(fit_intercept=False).fit(X, y)
 
         model_spars = ModelHinge(fit_intercept=False).fit(X_spars, y)
-        self.run_test_for_glm(model, model_spars, 1e-5, 1e-3)
+        self.run_test_for_glm(model, model_spars, 1e-5, 1e-2)
 
 if __name__ == '__main__':
     unittest.main()
