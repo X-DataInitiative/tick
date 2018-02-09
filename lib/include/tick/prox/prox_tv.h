@@ -5,18 +5,28 @@
 
 #include "prox.h"
 
-class ProxTV : public Prox {
+template <class T>
+class TProxTV : public TProx<T> {
+ protected:
+  using TProx<T>::strength;
+  using TProx<T>::positive;
+
  public:
-  ProxTV(double strength, bool positive);
+  TProxTV(T strength, bool positive);
 
-  ProxTV(double strength, ulong start, ulong end, bool positive);
+  TProxTV(T strength, ulong start, ulong end, bool positive);
 
-  const std::string get_class_name() const override;
+  std::string get_class_name() const override;
 
-  double value(const ArrayDouble &coeffs, ulong start, ulong end) override;
+  T value(const Array<T> &coeffs, ulong start, ulong end) override;
 
-  void call(const ArrayDouble &coeffs, double step, ArrayDouble &out,
-            ulong start, ulong end) override;
+  void call(const Array<T> &coeffs, T step, Array<T> &out, ulong start,
+            ulong end) override;
 };
+
+using ProxTV = TProxTV<double>;
+
+using ProxTVDouble = TProxTV<double>;
+using ProxTVFloat = TProxTV<float>;
 
 #endif  // LIB_INCLUDE_TICK_PROX_PROX_TV_H_

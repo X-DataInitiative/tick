@@ -9,19 +9,26 @@
 // TODO: this requires some work. ProxMulti should have the standard
 // TODO: prox API, with a set_strength, and things like that
 
-class ProxMulti : public Prox {
+template <class T>
+class TProxMulti : public TProx<T> {
+  using ProxTPtrVector = std::vector<std::shared_ptr<TProx<T> > >;
+
  protected:
-  std::vector<ProxPtr> proxs;
+  ProxTPtrVector proxs;
 
  public:
-  explicit ProxMulti(std::vector<ProxPtr> proxs);
+  explicit TProxMulti(ProxTPtrVector proxs);
 
-  const std::string get_class_name() const override;
+  std::string get_class_name() const override;
 
-  double value(const ArrayDouble &coeffs, ulong start, ulong end) override;
+  T value(const Array<T> &coeffs, ulong start, ulong end) override;
 
-  void call(const ArrayDouble &coeffs, double step, ArrayDouble &out, ulong start,
+  void call(const Array<T> &coeffs, T step, Array<T> &out, ulong start,
             ulong end) override;
 };
+
+using ProxMulti = TProxMulti<double>;
+using ProxMultiDouble = TProxMulti<double>;
+using ProxMultiFloat = TProxMulti<float>;
 
 #endif  // LIB_INCLUDE_TICK_PROX_PROX_MULTI_H_

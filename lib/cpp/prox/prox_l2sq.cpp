@@ -2,23 +2,22 @@
 
 #include "tick/prox/prox_l2sq.h"
 
-ProxL2Sq::ProxL2Sq(double strength,
-                   bool positive)
-  : ProxSeparable(strength, positive) {}
+template <class T>
+TProxL2Sq<T>::TProxL2Sq(T strength, bool positive)
+    : TProxSeparable<T>(strength, positive) {}
 
-ProxL2Sq::ProxL2Sq(double strength,
-                   ulong start,
-                   ulong end,
-                   bool positive)
-  : ProxSeparable(strength, start, end, positive) {}
+template <class T>
+TProxL2Sq<T>::TProxL2Sq(T strength, ulong start, ulong end, bool positive)
+    : TProxSeparable<T>(strength, start, end, positive) {}
 
-const std::string ProxL2Sq::get_class_name() const {
-  return "ProxL2Sq";
+template <class T>
+std::string TProxL2Sq<T>::get_class_name() const {
+  return "TProxL2Sq<T>";
 }
 
 // Compute the prox on the i-th coordinate only
-double ProxL2Sq::call_single(double x,
-                             double step) const {
+template <class T>
+T TProxL2Sq<T>::call_single(T x, T step) const {
   if (positive && x < 0) {
     return 0;
   } else {
@@ -27,9 +26,8 @@ double ProxL2Sq::call_single(double x,
 }
 
 // Repeat n_times the prox on coordinate i
-double ProxL2Sq::call_single(double x,
-                             double step,
-                             ulong n_times) const {
+template <class T>
+T TProxL2Sq<T>::call_single(T x, T step, ulong n_times) const {
   if (n_times >= 1) {
     if (positive && x < 0) {
       return 0;
@@ -41,6 +39,10 @@ double ProxL2Sq::call_single(double x,
   }
 }
 
-double ProxL2Sq::value_single(double x) const {
+template <class T>
+T TProxL2Sq<T>::value_single(T x) const {
   return x * x / 2;
 }
+
+template class TProxL2Sq<double>;
+template class TProxL2Sq<float>;

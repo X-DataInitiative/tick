@@ -4,15 +4,17 @@
 #include "tick/prox/prox_group_l1.h"
 %}
 
+template <class T>
+class TProxGroupL1 : public TProxWithGroups<T> {
+ protected:
+  std::unique_ptr<TProx<T> > build_prox(T strength, ulong start, ulong end, bool positive);
 
-class ProxGroupL1: public Prox {
  public:
-  ProxGroupL1(double strength, SArrayULongPtr blocks_start,
-                SArrayULongPtr blocks_length, bool positive);
+  TProxGroupL1(T strength, SArrayULongPtr blocks_start, SArrayULongPtr blocks_length,
+                bool positive);
 
-  ProxGroupL1(double strength, SArrayULongPtr blocks_start,
-                SArrayULongPtr blocks_length, ulong start,
-                ulong end, bool positive);
+  TProxGroupL1(T strength, SArrayULongPtr blocks_start, SArrayULongPtr blocks_length,
+                ulong start, ulong end, bool positive);
 
   inline void set_positive(bool positive);
 
@@ -20,4 +22,13 @@ class ProxGroupL1: public Prox {
 
   inline virtual void set_blocks_length(SArrayULongPtr blocks_length);
 };
+
+%template(ProxGroupL1) TProxGroupL1<double>;
+typedef TProxGroupL1<double> ProxGroupL1;
+
+%template(ProxGroupL1Double) TProxGroupL1<double>;
+typedef TProxGroupL1<double> ProxGroupL1Double;
+
+%template(ProxGroupL1Float) TProxGroupL1<float>;
+typedef TProxGroupL1<float> ProxGroupL1Float;
 

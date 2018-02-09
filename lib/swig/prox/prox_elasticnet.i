@@ -4,19 +4,24 @@
 #include "tick/prox/prox_elasticnet.h"
 %}
 
-class ProxElasticNet : public ProxSeparable {
+template <class T>
+class TProxElasticNet : public TProxSeparable<T> {
+
  public:
-  ProxElasticNet(double strength,
-                 double ratio,
-                 bool positive);
+  TProxElasticNet(T strength, T ratio, bool positive);
 
-  ProxElasticNet(double strength,
-                 double ratio,
-                 ulong start,
-                 ulong end,
-                 bool positive);
+  TProxElasticNet(T strength, T ratio, ulong start, ulong end, bool positive);
 
-  virtual double get_ratio() const final;
+  virtual T get_ratio() const;
 
-  virtual void set_ratio(double ratio) final;
+  virtual void set_ratio(T ratio);
 };
+
+%template(ProxElasticNet) TProxElasticNet<double>;
+typedef TProxElasticNet<double> ProxElasticNet;
+
+%template(ProxElasticNetDouble) TProxElasticNet<double>;
+typedef TProxElasticNet<double> ProxElasticNetDouble;
+
+%template(ProxElasticNetFloat) TProxElasticNet<float>;
+typedef TProxElasticNet<float> ProxElasticNetFloat;

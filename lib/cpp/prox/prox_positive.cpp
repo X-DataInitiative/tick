@@ -2,20 +2,21 @@
 
 #include "tick/prox/prox_positive.h"
 
-ProxPositive::ProxPositive(double strength)
-  : ProxSeparable(strength, true) {}
+template <class T>
+TProxPositive<T>::TProxPositive(T strength)
+    : TProxSeparable<T>(strength, true) {}
 
-ProxPositive::ProxPositive(double strength,
-                           ulong start,
-                           ulong end)
-  : ProxSeparable(strength, start, end, true) {}
+template <class T>
+TProxPositive<T>::TProxPositive(T strength, ulong start, ulong end)
+    : TProxSeparable<T>(strength, start, end, true) {}
 
-const std::string ProxPositive::get_class_name() const {
-  return "ProxPositive";
+template <class T>
+std::string TProxPositive<T>::get_class_name() const {
+  return "TProxPositive";
 }
 
-double ProxPositive::call_single(double x,
-                                 double step) const {
+template <class T>
+T TProxPositive<T>::call_single(T x, T step) const {
   if (x < 0) {
     return 0;
   } else {
@@ -23,14 +24,15 @@ double ProxPositive::call_single(double x,
   }
 }
 
-double ProxPositive::call_single(double x,
-                                 double step,
-                                 ulong n_times) const {
+template <class T>
+T TProxPositive<T>::call_single(T x, T step, ulong n_times) const {
   return call_single(x, step);
 }
 
-double ProxPositive::value(const ArrayDouble &coeffs,
-                           ulong start,
-                           ulong end) {
+template <class T>
+T TProxPositive<T>::value(const Array<T> &coeffs, ulong start, ulong end) {
   return 0.;
 }
+
+template class TProxPositive<double>;
+template class TProxPositive<float>;

@@ -4,15 +4,25 @@
 #include "tick/prox/prox_slope.h"
 %}
 
-class ProxSlope : public Prox {
+template <class T>
+class TProxSlope : public TProx<T> {
  public:
-   ProxSlope(double lambda, double fdr, bool positive);
+   TProxSlope(T lambda, T fdr, bool positive);
 
-   ProxSlope(double lambda, double fdr, unsigned long start, unsigned long end, bool positive);
+   TProxSlope(T lambda, T fdr, unsigned long start, unsigned long end, bool positive);
 
-   inline double get_false_discovery_rate() const;
+   inline T get_false_discovery_rate() const;
 
-   inline void set_false_discovery_rate(double fdr);
+   inline void set_false_discovery_rate(T fdr);
 
-   inline double get_weight_i(unsigned long i);
+   inline T get_weight_i(unsigned long i);
 };
+
+%template(ProxSlope) TProxSlope<double>;
+typedef TProxSlope<double> ProxSlope;
+
+%template(ProxSlopeDouble) TProxSlope<double>;
+typedef TProxSlope<double> ProxSlopeDouble;
+
+%template(ProxSlopeFloat) TProxSlope<float>;
+typedef TProxSlope<float> ProxSlopeFloat;

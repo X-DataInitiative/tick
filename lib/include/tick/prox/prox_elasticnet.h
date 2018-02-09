@@ -5,25 +5,35 @@
 
 #include "prox_separable.h"
 
-class ProxElasticNet : public ProxSeparable {
+template <class T>
+class TProxElasticNet : public TProxSeparable<T> {
  protected:
-  double ratio;
+  using TProxSeparable<T>::strength;
+  using TProxSeparable<T>::positive;
+
+ protected:
+  T ratio;
 
  public:
-  ProxElasticNet(double strength, double ratio, bool positive);
+  TProxElasticNet(T strength, T ratio, bool positive);
 
-  ProxElasticNet(double strength, double ratio, ulong start, ulong end, bool positive);
+  TProxElasticNet(T strength, T ratio, ulong start, ulong end, bool positive);
 
-  const std::string get_class_name() const override;
+  std::string get_class_name() const override;
 
-  virtual double get_ratio() const;
+  virtual T get_ratio() const;
 
-  virtual void set_ratio(double ratio);
+  virtual void set_ratio(T ratio);
 
  private:
-  double call_single(double x, double step) const override;
+  T call_single(T x, T step) const override;
 
-  double value_single(double x) const override;
+  T value_single(T x) const override;
 };
+
+using ProxElasticNet = TProxElasticNet<double>;
+
+using ProxElasticNetDouble = TProxElasticNet<double>;
+using ProxElasticNetFloat = TProxElasticNet<float>;
 
 #endif  // LIB_INCLUDE_TICK_PROX_PROX_ELASTICNET_H_

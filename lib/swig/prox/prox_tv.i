@@ -4,13 +4,24 @@
 #include "tick/prox/prox_tv.h"
 %}
 
-class ProxTV : public Prox {
+template <class T>
+class TProxTV : public TProx<T> {
  public:
-   ProxTV(double strength,
-          bool positive);
+   TProxTV(T strength,
+             bool positive);
 
-   ProxTV(double strength,
-          unsigned long start,
-          unsigned long end,
-          bool positive);
+   TProxTV(T strength,
+             unsigned long start,
+             unsigned long end,
+             bool positive);
 };
+
+%template(ProxTV) TProxTV<double>;
+typedef TProxTV<double> ProxTV;
+
+%template(ProxTVDouble) TProxTV<double>;
+typedef TProxTV<double> ProxTVDouble;
+
+%template(ProxTVFloat) TProxTV<float>;
+typedef TProxTV<float> ProxTVFloat;
+

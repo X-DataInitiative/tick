@@ -2,23 +2,22 @@
 
 #include "tick/prox/prox_l1.h"
 
-ProxL1::ProxL1(double strength,
-               bool positive)
-    : ProxSeparable(strength, positive) {}
+template <class T>
+TProxL1<T>::TProxL1(T strength, bool positive)
+    : TProxSeparable<T>(strength, positive) {}
 
-ProxL1::ProxL1(double strength,
-               ulong start,
-               ulong end,
-               bool positive)
-    : ProxSeparable(strength, start, end, positive) {}
+template <class T>
+TProxL1<T>::TProxL1(T strength, ulong start, ulong end, bool positive)
+    : TProxSeparable<T>(strength, start, end, positive) {}
 
-const std::string ProxL1::get_class_name() const {
-  return "ProxL1";
+template <class T>
+std::string TProxL1<T>::get_class_name() const {
+  return "TProxL1<T>";
 }
 
-double ProxL1::call_single(double x,
-                           double step) const {
-  double thresh = step * strength;
+template <class T>
+T TProxL1<T>::call_single(T x, T step) const {
+  T thresh = step * strength;
   if (x > 0) {
     if (x > thresh) {
       return x - thresh;
@@ -40,9 +39,8 @@ double ProxL1::call_single(double x,
   }
 }
 
-double ProxL1::call_single(double x,
-                           double step,
-                           ulong n_times) const {
+template <class T>
+T TProxL1<T>::call_single(T x, T step, ulong n_times) const {
   if (n_times >= 1) {
     return call_single(x, n_times * step);
   } else {
@@ -50,6 +48,10 @@ double ProxL1::call_single(double x,
   }
 }
 
-double ProxL1::value_single(double x) const {
+template <class T>
+T TProxL1<T>::value_single(T x) const {
   return std::abs(x);
 }
+
+template class TProxL1<double>;
+template class TProxL1<float>;

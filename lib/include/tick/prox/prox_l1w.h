@@ -3,53 +3,68 @@
 
 // License: BSD 3 clause
 
-#include "tick/base/base.h"
 #include "prox_separable.h"
+#include "tick/base/base.h"
 
-class ProxL1w : public ProxSeparable {
+template <class T>
+class TProxL1w : public TProxSeparable<T> {
  protected:
-  // Weights for L1 penalization
-  SArrayDoublePtr weights;
+  using TProx<T>::has_range;
+  using TProx<T>::positive;
+  using TProx<T>::strength;
+  using TProx<T>::start;
+  using TProx<T>::end;
 
  public:
-  ProxL1w(double strength, SArrayDoublePtr weights, bool positive);
+  using SArrayTPtr = std::shared_ptr<SArray<T>>;
 
-  ProxL1w(double strength, SArrayDoublePtr weights, ulong start, ulong end, bool positive);
+ protected:
+  // Weights for L1 penalization
+  SArrayTPtr weights;
 
-  const std::string get_class_name() const override;
+ public:
+  TProxL1w(T strength, std::shared_ptr<SArray<T>> weights, bool positive);
 
-  void call(const ArrayDouble &coeffs, const double step, ArrayDouble &out,
+  TProxL1w(T strength, std::shared_ptr<SArray<T>> weights, ulong start,
+           ulong end, bool positive);
+
+  std::string get_class_name() const override;
+
+  void call(const Array<T> &coeffs, const T step, Array<T> &out, ulong start,
+            ulong end) override;
+
+  void call(const Array<T> &coeffs, const Array<T> &step, Array<T> &out,
             ulong start, ulong end) override;
 
-  void call(const ArrayDouble &coeffs, const ArrayDouble &step, ArrayDouble &out,
-            ulong start, ulong end) override;
-
-  // For this prox we cannot only override double call_single(double, step) const,
+  // For this prox we cannot only override T call_single(T, step) const,
   // since we need the weights...
-  void call_single(ulong i, const ArrayDouble &coeffs, double step,
-                   ArrayDouble &out) const override;
+  void call_single(ulong i, const Array<T> &coeffs, T step,
+                   Array<T> &out) const override;
 
-  void call_single(ulong i, const ArrayDouble &coeffs, double step,
-                   ArrayDouble &out, ulong n_times) const override;
+  void call_single(ulong i, const Array<T> &coeffs, T step, Array<T> &out,
+                   ulong n_times) const override;
 
-  double value(const ArrayDouble &coeffs, ulong start, ulong end) override;
+  T value(const Array<T> &coeffs, ulong start, ulong end) override;
 
-  void set_weights(SArrayDoublePtr weights) {
-    this->weights = weights;
-  }
+  void set_weights(SArrayTPtr weights) { this->weights = weights; }
 
  private:
-  double call_single(double x, double step) const override;
+  T call_single(T x, T step) const override;
 
-  double call_single(double x, double step, ulong n_times) const override;
+  T call_single(T x, T step, ulong n_times) const override;
 
-  double value_single(double x) const override;
+  T value_single(T x) const override;
 
-  double call_single(double x, double step, double weight) const;
+  T call_single(T x, T step, T weight) const;
 
-  double call_single(double x, double step, double weight, ulong n_times) const;
+  T call_single(T x, T step, T weight, ulong n_times) const;
 
-  double value_single(double x, double weight) const;
+  T value_single(T x, T weight) const;
 };
+
+using ProxL1w = TProxL1w<double>;
+
+using ProxL1wDouble = TProxL1w<double>;
+using ProxL1wFloat = TProxL1w<float>;
 
 #endif  // LIB_INCLUDE_TICK_PROX_PROX_L1W_H_

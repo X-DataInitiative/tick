@@ -1,41 +1,44 @@
 // License: BSD 3 clause
 
-#include "tick/base/base.h"
 #include "tick/prox/prox_equality.h"
+#include "tick/base/base.h"
 
-ProxEquality::ProxEquality(double strength, bool positive)
-  : Prox(0., positive) {}
+template <class T>
+TProxEquality<T>::TProxEquality(T strength, bool positive)
+    : TProx<T>(0., positive) {}
 
-ProxEquality::ProxEquality(double strength,
-                           ulong start,
-                           ulong end,
-                           bool positive)
-  : Prox(0., start, end, positive) {}
+template <class T>
+TProxEquality<T>::TProxEquality(T strength, ulong start, ulong end,
+                                bool positive)
+    : TProx<T>(0., start, end, positive) {}
 
-const std::string ProxEquality::get_class_name() const {
-  return "ProxEquality";
+template <class T>
+std::string TProxEquality<T>::get_class_name() const {
+  return "TProxEquality";
 }
 
-double ProxEquality::value(const ArrayDouble &coeffs, ulong start, ulong end) {
-  ArrayDouble sub_coeffs = view(coeffs, start, end);
+template <class T>
+T TProxEquality<T>::value(const Array<T> &coeffs, ulong start, ulong end) {
+  Array<T> sub_coeffs = view(coeffs, start, end);
   if (sub_coeffs.min() == sub_coeffs.max()) {
     return 0;
   } else {
-    return std::numeric_limits<double>::max();
+    return std::numeric_limits<T>::max();
   }
 }
 
-void ProxEquality::call(const ArrayDouble &coeffs,
-                        double step,
-                        ArrayDouble &out,
-                        ulong start,
-                        ulong end) {
-  ArrayDouble sub_coeffs = view(coeffs, start, end);
-  ArrayDouble sub_out = view(out, start, end);
-  double mean = sub_coeffs.sum() / sub_coeffs.size();
+template <class T>
+void TProxEquality<T>::call(const Array<T> &coeffs, T step, Array<T> &out,
+                            ulong start, ulong end) {
+  Array<T> sub_coeffs = view(coeffs, start, end);
+  Array<T> sub_out = view(out, start, end);
+  T mean = sub_coeffs.sum() / sub_coeffs.size();
   if (positive && (mean < 0)) {
     sub_out.fill(0);
   } else {
     sub_out.fill(mean);
   }
 }
+
+template class TProxEquality<double>;
+template class TProxEquality<float>;

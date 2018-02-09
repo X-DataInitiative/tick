@@ -12,66 +12,72 @@
 #include <memory>
 #include <string>
 
-class DLL_PUBLIC Prox {
+template <class T>
+class DLL_PUBLIC TProx {
  protected:
-  //! @brief Weight of the proximal operator
-  double strength;
-
-  //! @brief Flag to know if proximal operator concerns only a part of the vector
+  //! @brief Flag to know if proximal operator concerns only a part of the
+  //! vector
   bool has_range;
-
-  //! @brief If range is restricted it will be applied from index start to index end
-  ulong start, end;
 
   //! @brief If true, we apply on non negativity constraint
   bool positive;
 
+  //! @brief If range is restricted it will be applied from index start to index
+  //! end
+  ulong start, end;
+
+  //! @brief Weight of the proximal operator
+  T strength;
+
  public:
-  Prox(double strength, bool positive);
+  TProx(T strength, bool positive);
 
-  Prox(double strength, ulong start, ulong end, bool positive);
+  TProx(T strength, ulong start, ulong end, bool positive);
 
-  virtual const std::string get_class_name() const;
+  virtual ~TProx() {}
 
-  virtual const bool is_separable() const;
+  virtual std::string get_class_name() const;
+
+  virtual bool is_separable() const;
 
   //! @brief call prox on coeffs, with a given step and store result in out
-  virtual void call(const ArrayDouble &coeffs, double step, ArrayDouble &out);
+  virtual void call(const Array<T> &coeffs, T step, Array<T> &out);
 
-  //! @brief call prox on a part of coeffs (defined by start-end), with a given step and
-  //! store result in out
-  virtual void call(const ArrayDouble &coeffs,
-                    double step,
-                    ArrayDouble &out,
-                    ulong start,
+  //! @brief call prox on a part of coeffs (defined by start-end), with a given
+  //! step and store result in out
+  virtual void call(const Array<T> &coeffs, T step, Array<T> &out, ulong start,
                     ulong end);
 
   //! @brief get penalization value of the prox on the coeffs vector.
   //! This takes strength into account
-  virtual double value(const ArrayDouble &coeffs);
+  virtual T value(const Array<T> &coeffs);
 
-  //! @brief get penalization value of the prox on a part of coeffs (defined by start-end).
-  //! This takes strength into account
-  virtual double value(const ArrayDouble &coeffs,
-                       ulong start,
-                       ulong end);
+  //! @brief get penalization value of the prox on a part of coeffs (defined by
+  //! start-end). This takes strength into account
+  virtual T value(const Array<T> &coeffs, ulong start, ulong end);
 
-  virtual double get_strength() const;
+  virtual T get_strength() const;
 
-  virtual void set_strength(double strength);
+  virtual void set_strength(T strength);
 
   virtual ulong get_start() const;
 
   virtual ulong get_end() const;
 
-  virtual void set_start_end(ulong start,
-                             ulong end);
+  virtual void set_start_end(ulong start, ulong end);
 
   virtual bool get_positive() const;
 
   virtual void set_positive(bool positive);
 };
 
-typedef std::shared_ptr<Prox> ProxPtr;
+using Prox = TProx<double>;
+using ProxPtr = std::shared_ptr<Prox>;
+
+using ProxDouble = TProx<double>;
+using ProxDoublePtr = std::shared_ptr<ProxDouble>;
+
+using ProxFloat = TProx<float>;
+using ProxFloatPtr = std::shared_ptr<ProxFloat>;
 
 #endif  // LIB_INCLUDE_TICK_PROX_PROX_H_

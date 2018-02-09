@@ -2,35 +2,30 @@
 
 #include "tick/prox/prox_l2.h"
 
-ProxL2::ProxL2(double strength,
-                   bool positive)
-  : Prox(strength, positive) {}
+template <class T>
+TProxL2<T>::TProxL2(T strength, bool positive) : TProx<T>(strength, positive) {}
 
-ProxL2::ProxL2(double strength,
-                   ulong start,
-                   ulong end,
-                   bool positive)
-  : Prox(strength, start, end, positive) {}
+template <class T>
+TProxL2<T>::TProxL2(T strength, ulong start, ulong end, bool positive)
+    : TProx<T>(strength, start, end, positive) {}
 
-const std::string ProxL2::get_class_name() const {
-  return "ProxL2";
+template <class T>
+std::string TProxL2<T>::get_class_name() const {
+  return "TProxL2";
 }
 
-
-void ProxL2::call(const ArrayDouble &coeffs,
-                  double step,
-                  ArrayDouble &out,
-                  ulong start,
-                  ulong end) {
-  ArrayDouble sub_coeffs = view(coeffs, start, end);
-  ArrayDouble sub_out = view(out, start, end);
-  const double thresh = step * strength * std::sqrt(end - start);
-  double norm = std::sqrt(sub_coeffs.norm_sq());
+template <class T>
+void TProxL2<T>::call(const Array<T> &coeffs, T step, Array<T> &out,
+                      ulong start, ulong end) {
+  Array<T> sub_coeffs = view(coeffs, start, end);
+  Array<T> sub_out = view(out, start, end);
+  const T thresh = step * strength * std::sqrt(end - start);
+  T norm = std::sqrt(sub_coeffs.norm_sq());
 
   if (norm <= thresh) {
     sub_out.fill(0.);
   } else {
-    double t = 1. - thresh / norm;
+    T t = 1. - thresh / norm;
     sub_out *= t;
   }
   if (positive) {
@@ -42,10 +37,11 @@ void ProxL2::call(const ArrayDouble &coeffs,
   }
 }
 
-
-double ProxL2::value(const ArrayDouble &coeffs,
-                     ulong start,
-                     ulong end) {
-  double norm_sq = view(coeffs, start, end).norm_sq();
+template <class T>
+T TProxL2<T>::value(const Array<T> &coeffs, ulong start, ulong end) {
+  T norm_sq = view(coeffs, start, end).norm_sq();
   return strength * std::sqrt((end - start) * norm_sq);
 }
+
+template class TProxL2<double>;
+template class TProxL2<float>;
