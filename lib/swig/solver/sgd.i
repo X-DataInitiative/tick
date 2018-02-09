@@ -7,19 +7,29 @@
 #include "tick/base_model/model.h"
 %}
 
-class SGD : public StoSolver {
+template <class T>
+class TSGD : public TStoSolver<T> {
 
 public:
 
-    SGD(unsigned long epoch_size,
-        double tol,
+    TSGD(unsigned long epoch_size,
+        T tol,
         RandType rand_type,
-        double step,
+        T step,
         int seed);
 
-    inline void set_step(double step);
+    inline void set_step(T step);
 
-    inline double get_step() const;
+    inline T get_step() const;
 
     void solve();
 };
+
+%template(SGD) TSGD<double>; 
+typedef TSGD<double> SGD;
+
+%template(SGDDouble) TSGD<double>;
+typedef TSGD<double> SGDDouble;
+
+%template(SGDFloat) TSGD<float>;
+typedef TSGD<double> SGDFloat;

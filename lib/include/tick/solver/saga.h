@@ -3,10 +3,26 @@
 
 // License: BSD 3 clause
 
-#include "tick/base/base.h"
 #include "sto_solver.h"
+#include "tick/base/base.h"
+#include "tick/base_model/model_generalized_linear.h"
 
-class SAGA : public StoSolver {
+template <class T>
+class TSAGA : public TStoSolver<T> {
+ protected:
+  using TStoSolver<T>::t;
+  using TStoSolver<T>::model;
+  using TStoSolver<T>::iterate;
+  using TStoSolver<T>::prox;
+  using TStoSolver<T>::epoch_size;
+  using TStoSolver<T>::get_next_i;
+  using TStoSolver<T>::rand_unif;
+
+ public:
+  using TStoSolver<T>::set_model;
+  using TStoSolver<T>::get_minimizer;
+  using TStoSolver<T>::set_starting_iterate;
+
  public:
   enum class VarianceReductionMethod {
     Last = 1,
@@ -14,24 +30,23 @@ class SAGA : public StoSolver {
     Random = 3,
   };
 
- private:
-  double step;
+ protected:
+  bool solver_ready = false;
+  bool ready_step_corrections = false;
+  uint64_t rand_index = 0;
+  T step = 0;
   // Probabilistic correction of the step-sizes of all model weights,
   // given by the inverse proportion of non-zero entries in each feature column
-  ArrayDouble steps_correction;
+  Array<T> steps_correction;
 
   VarianceReductionMethod variance_reduction;
 
-  ArrayDouble next_iterate;
+  Array<T> next_iterate;
 
-  bool solver_ready;
-  // The past gradients. Can be stored in a 1D array since we consider only GLMs
-  // with this solver
-  ArrayDouble gradients_memory;
-  ArrayDouble gradients_average;
+  Array<T> gradients_memory;
+  Array<T> gradients_average;
 
-  ulong rand_index;
-  bool ready_step_corrections;
+  std::shared_ptr<TModelGeneralizedLinear<T> > casted_model;
 
   void initialize_solver();
 
@@ -43,35 +58,33 @@ class SAGA : public StoSolver {
 
   void compute_step_corrections();
 
+  void set_starting_iterate(Array<T> &new_iterate) override;
+
  public:
-  SAGA(ulong epoch_size,
-       double tol,
-       RandType rand_type,
-       double step,
-       int seed = -1,
-       VarianceReductionMethod variance_reduction = VarianceReductionMethod::Last);
+  TSAGA(ulong epoch_size, T tol, RandType rand_type, T step, int seed,
+        VarianceReductionMethod variance_reduction =
+            TSAGA<T>::VarianceReductionMethod::Last);
 
   void solve() override;
 
-  void set_model(ModelPtr model) override;
+  void set_model(std::shared_ptr<TModel<T> > model) override;
 
-  double get_step() const {
-    return step;
-  }
+  T get_step() const { return step; }
 
-  void set_step(double step) {
-    this->step = step;
-  }
+  void set_step(T step) { this->step = step; }
 
-  VarianceReductionMethod get_variance_reduction() const {
+  TSAGA<T>::VarianceReductionMethod get_variance_reduction() const {
     return variance_reduction;
   }
 
-  void set_variance_reduction(VarianceReductionMethod variance_reduction) {
-    SAGA::variance_reduction = variance_reduction;
+  void set_variance_reduction(
+      TSAGA<T>::VarianceReductionMethod _variance_reduction) {
+    variance_reduction = _variance_reduction;
   }
-
-  void set_starting_iterate(ArrayDouble &new_iterate) override;
 };
+
+using SAGA = TSAGA<double>;
+using SAGADouble = TSAGA<double>;
+using SAGAFloat = TSAGA<float>;
 
 #endif  // LIB_INCLUDE_TICK_SOLVER_SAGA_H_
