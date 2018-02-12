@@ -3,12 +3,22 @@
 
 // License: BSD 3 clause
 
-#include "tick/array/array.h"
 #include "sgd.h"
+#include "tick/array/array.h"
 #include "tick/prox/prox.h"
 #include "tick/prox/prox_separable.h"
 
-class SVRG : public StoSolver {
+template <class T>
+class TSVRG : public TStoSolver<T> {
+ protected:
+  using TStoSolver<T>::t;
+  using TStoSolver<T>::model;
+  using TStoSolver<T>::iterate;
+  using TStoSolver<T>::prox;
+  using TStoSolver<T>::epoch_size;
+  using TStoSolver<T>::get_next_i;
+  using TStoSolver<T>::rand_unif;
+
  public:
   enum class VarianceReductionMethod {
     Last = 1,
@@ -17,25 +27,25 @@ class SVRG : public StoSolver {
   };
 
   enum class StepType {
-      Fixed = 1,
-      BarzilaiBorwein = 2,
+    Fixed = 1,
+    BarzilaiBorwein = 2,
   };
 
  private:
   int n_threads = 1;
-  double step;
+  T step;
   // Probabilistic correction of the step-sizes of all model weights,
   // given by the inverse proportion of non-zero entries in each feature column
-  ArrayDouble steps_correction;
+  Array<T> steps_correction;
 
   VarianceReductionMethod variance_reduction;
   StepType step_type;
 
-  ArrayDouble full_gradient;
-  ArrayDouble fixed_w;
-  ArrayDouble grad_i;
-  ArrayDouble grad_i_fixed_w;
-  ArrayDouble next_iterate;
+  Array<T> full_gradient;
+  Array<T> fixed_w;
+  Array<T> grad_i;
+  Array<T> grad_i_fixed_w;
+  Array<T> next_iterate;
 
   ulong rand_index;
   bool ready_step_corrections;
@@ -50,54 +60,46 @@ class SVRG : public StoSolver {
 
   void dense_single_thread_solver(const ulong& next_i);
 
-  // ProxSeparable* is a raw pointer here as the
+  // TProxSeparable<T>* is a raw pointer here as the
   //  ownership of the pointer is handled by
   //  a shared_ptr which is above it in the same
   //  scope so a shared_ptr is not needed
-  void sparse_single_thread_solver(
-      const ulong& next_i,
-      const ulong& n_features,
-      const bool use_intercept,
-      ProxSeparable*& casted_prox);
+  void sparse_single_thread_solver(const ulong& next_i, const ulong& n_features,
+                                   const bool use_intercept,
+                                   TProxSeparable<T>*& casted_prox);
 
  public:
-  SVRG(ulong epoch_size,
-       double tol,
-       RandType rand_type,
-       double step,
-       int seed = -1,
-       int n_threads = 1,
-       VarianceReductionMethod variance_reduction = VarianceReductionMethod::Last,
-       StepType step_method = StepType::Fixed);
+  TSVRG(ulong epoch_size, T tol, RandType rand_type, T step, int seed = -1,
+        int n_threads = 1,
+        VarianceReductionMethod variance_reduction =
+            VarianceReductionMethod::Last,
+        StepType step_method = StepType::Fixed);
 
   void solve() override;
 
-  void set_model(ModelPtr model) override;
+  void set_model(std::shared_ptr<TModel<T> > model) override;
 
-  double get_step() const {
-    return step;
-  }
+  T get_step() const { return step; }
 
-  void set_step(double step) {
-    SVRG::step = step;
-  }
+  void set_step(T step) { TSVRG<T>::step = step; }
 
   VarianceReductionMethod get_variance_reduction() const {
     return variance_reduction;
   }
 
   void set_variance_reduction(VarianceReductionMethod variance_reduction) {
-    SVRG::variance_reduction = variance_reduction;
+    TSVRG<T>::variance_reduction = variance_reduction;
   }
 
-  StepType get_step_type() {
-    return step_type;
-  }
-  void set_step_type(StepType step_type) {
-    SVRG::step_type = step_type;
-  }
+  StepType get_step_type() { return step_type; }
+  void set_step_type(StepType step_type) { TSVRG<T>::step_type = step_type; }
 
-  void set_starting_iterate(ArrayDouble &new_iterate) override;
+  void set_starting_iterate(Array<T>& new_iterate) override;
 };
+
+using SVRG = TSVRG<double>;
+
+using SVRGDouble = TSVRG<double>;
+using SVRGFloat = TSVRG<float>;
 
 #endif  // LIB_INCLUDE_TICK_SOLVER_SVRG_H_

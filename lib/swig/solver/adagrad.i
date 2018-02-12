@@ -7,15 +7,23 @@
 #include "tick/base_model/model.h"
 %}
 
-class AdaGrad : public StoSolver {
-
+template <class T>
+class TAdaGrad : public TStoSolver<T> {
 public:
-
-    AdaGrad(unsigned long epoch_size,
-        double tol,
+    TAdaGrad(unsigned long epoch_size,
+        T tol,
         RandType rand_type,
-        double step,
+        T step,
         int seed);
 
     void solve();
 };
+
+%template(AdaGrad) TAdaGrad<double>; 
+typedef TAdaGrad<double> AdaGrad;
+
+%template(AdaGradDouble) TAdaGrad<double>;
+typedef TAdaGrad<double> AdaGradDouble;
+
+%template(AdaGradFloat) TAdaGrad<float>;
+typedef TAdaGrad<double> AdaGradFloat;

@@ -3,22 +3,27 @@
 #include "tick/solver/adagrad.h"
 #include "tick/prox/prox_separable.h"
 
-AdaGrad::AdaGrad(ulong epoch_size, double tol, RandType rand_type, double step, int seed)
-  : StoSolver(epoch_size, tol, rand_type, seed), hist_grad(iterate.size()), step(step) {
-}
+template <class T>
+TAdaGrad<T>::TAdaGrad(ulong epoch_size, T tol, RandType rand_type, T step,
+                      int seed)
+    : TStoSolver<T>(epoch_size, tol, rand_type, seed),
+      hist_grad(iterate.size()),
+      step(step) {}
 
-void AdaGrad::solve() {
-  std::shared_ptr<ProxSeparable> casted_prox;
+template <class T>
+void TAdaGrad<T>::solve() {
+  std::shared_ptr<TProxSeparable<T>> casted_prox;
   if (prox->is_separable()) {
-    casted_prox = std::static_pointer_cast<ProxSeparable>(prox);
+    casted_prox = std::static_pointer_cast<TProxSeparable<T>>(prox);
   } else {
-    TICK_ERROR("Prox in Adagrad must be separable but got " << prox->get_class_name());
+    TICK_ERROR("Prox in Adagrad must be separable but got "
+               << prox->get_class_name());
   }
 
-  ArrayDouble grad_i(iterate.size());
+  Array<T> grad_i(iterate.size());
   grad_i.init_to_zero();
 
-  ArrayDouble steps(iterate.size());
+  Array<T> steps(iterate.size());
 
   const ulong prox_start = prox->get_start();
   const ulong prox_end = prox->get_end();
@@ -33,7 +38,7 @@ void AdaGrad::solve() {
     }
 
     // We add this constant in case the sqrt below approaches 0.0
-    const double jitter = 1e-6;
+    const T jitter = 1e-6;
 
     for (ulong j = 0; j < hist_grad.size(); ++j) {
       steps[j] = step / (std::sqrt(hist_grad[j] + jitter));
@@ -43,17 +48,19 @@ void AdaGrad::solve() {
       iterate[j] = iterate[j] - steps[j] * grad_i[j];
     }
 
-    ArrayDouble prox_steps = view(steps, prox_start, prox_end);
+    Array<T> prox_steps = view(steps, prox_start, prox_end);
 
     casted_prox->call(iterate, prox_steps, iterate);
   }
 }
 
-void AdaGrad::set_starting_iterate(ArrayDouble &new_iterate) {
-  StoSolver::set_starting_iterate(new_iterate);
+template <class T>
+void TAdaGrad<T>::set_starting_iterate(Array<T> &new_iterate) {
+  TStoSolver<T>::set_starting_iterate(new_iterate);
 
-  hist_grad = ArrayDouble(new_iterate.size());
+  hist_grad = Array<T>(new_iterate.size());
   hist_grad.init_to_zero();
 }
 
-
+template class TAdaGrad<double>;
+template class TAdaGrad<float>;

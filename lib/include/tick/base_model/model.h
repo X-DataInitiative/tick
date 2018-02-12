@@ -112,4 +112,10 @@ class TModel {
 using Model = TModel<double>;
 using ModelPtr = std::shared_ptr<Model>;
 
+using ModelDouble = TModel<double>;
+using ModelDoublePtr = std::shared_ptr<ModelDouble>;
+
+using ModelFloat = TModel<float>;
+using ModelFloatPtr = std::shared_ptr<ModelFloat>;
+
 #endif  // LIB_INCLUDE_TICK_BASE_MODEL_MODEL_H_

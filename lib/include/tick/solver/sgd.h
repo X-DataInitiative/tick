@@ -7,39 +7,43 @@
 
 // License: BSD 3 clause
 
+#include "sto_solver.h"
 #include "tick/base_model/model.h"
 #include "tick/prox/prox.h"
-#include "sto_solver.h"
 
-class SGD : public StoSolver {
+template <class T>
+class TSGD : public TStoSolver<T> {
+ protected:
+  using TStoSolver<T>::t;
+  using TStoSolver<T>::model;
+  using TStoSolver<T>::iterate;
+  using TStoSolver<T>::prox;
+  using TStoSolver<T>::epoch_size;
+  using TStoSolver<T>::get_next_i;
+
  private:
-    double step_t;
-    double step;
+  T step_t;
+  T step;
 
  public:
-    SGD(ulong epoch_size = 0,
-        double tol = 0.,
-        RandType rand_type = RandType::unif,
-        double step = 0.,
-        int seed = -1);
+  TSGD(ulong epoch_size = 0, T tol = 0., RandType rand_type = RandType::unif,
+       T step = 0., int seed = -1);
 
-    inline double get_step_t() const {
-        return step_t;
-    }
+  inline T get_step_t() const { return step_t; }
 
-    inline double get_step() const {
-        return step;
-    }
+  inline T get_step() const { return step; }
 
-    inline void set_step(double step) {
-        this->step = step;
-    }
+  inline void set_step(T step) { this->step = step; }
 
-    void solve();
+  void solve();
 
-    void solve_sparse();
+  void solve_sparse();
 
-    inline double get_step_t();
+  inline T get_step_t();
 };
+
+using SGD = TSGD<double>;
+using SGDDouble = TSGD<double>;
+using SGDFloat = TSGD<float>;
 
 #endif  // LIB_INCLUDE_TICK_SOLVER_SGD_H_

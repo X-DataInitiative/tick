@@ -7,7 +7,8 @@
 #include "tick/base_model/model.h"
 %}
 
-class SVRG : public StoSolver {
+template <class T>
+class TSVRG : public TStoSolver<T> {
   public:
     enum class VarianceReductionMethod {
         Last    = 1,
@@ -20,10 +21,10 @@ class SVRG : public StoSolver {
         BarzilaiBorwein = 2,
     };
 
-    SVRG(ulong epoch_size,
-         double tol,
+    TSVRG(ulong epoch_size,
+         T tol,
          RandType rand_type,
-         double step,
+         T step,
          int seed = -1,
          int n_threads = 1,
          VarianceReductionMethod variance_reduction = VarianceReductionMethod::Last,
@@ -31,8 +32,8 @@ class SVRG : public StoSolver {
 
     void solve();
 
-    double get_step();
-    void set_step(double step);
+    T get_step();
+    void set_step(T step);
 
     VarianceReductionMethod get_variance_reduction();
     void set_variance_reduction(VarianceReductionMethod variance_reduction);
@@ -40,3 +41,12 @@ class SVRG : public StoSolver {
     StepType get_step_type();
     void set_step_type(StepType step_type);
 };
+
+%template(SVRG) TSVRG<double>; 
+typedef TSVRG<double> SVRG;
+
+%template(SVRGDouble) TSVRG<double>;
+typedef TSVRG<double> SVRGDouble;
+
+%template(SVRGFloat) TSVRG<float>;
+typedef TSVRG<double> SVRGFloat;
