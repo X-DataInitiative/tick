@@ -9,66 +9,67 @@
 
 #include "tick/base_model/model.h"
 
-
-class DLL_PUBLIC ModelCoxRegPartialLik : public Model {
+template <class T>
+class DLL_PUBLIC TModelCoxRegPartialLik : public TModel<T> {
  private:
-    ArrayDouble inner_prods;
-    ArrayDouble s1;
-    ArrayULong idx;
+  Array<T> inner_prods;
+  Array<T> s1;
+  ArrayULong idx;
 
  protected:
-    ulong n_samples, n_features, n_failures;
+  ulong n_samples, n_features, n_failures;
 
-    SBaseArrayDouble2dPtr features;
-    ArrayDouble times;
-    ArrayUShort censoring;
-    ArrayULong idx_failures;
+  std::shared_ptr<BaseArray2d<T> > features;
+  Array<T> times;
+  ArrayUShort censoring;
+  ArrayULong idx_failures;
 
-    inline BaseArrayDouble get_feature(ulong i) const {
-        return view_row(*features, idx[i]);
-    }
+  inline BaseArray<T> get_feature(ulong i) const {
+    return view_row(*features, idx[i]);
+  }
 
-    inline double get_time(ulong i) const {
-        return times[i];
-    }
+  inline T get_time(ulong i) const { return times[i]; }
 
-    inline ushort get_censoring(ulong i) const {
-        return censoring[i];
-    }
+  inline ushort get_censoring(ulong i) const { return censoring[i]; }
 
-    inline ulong get_idx_failure(ulong i) const {
-        return idx_failures[i];
-    }
+  inline ulong get_idx_failure(ulong i) const { return idx_failures[i]; }
 
  public:
-    ModelCoxRegPartialLik(const SBaseArrayDouble2dPtr features,
-                          const SArrayDoublePtr times,
-                          const SArrayUShortPtr censoring);
+  TModelCoxRegPartialLik(const std::shared_ptr<BaseArray2d<T> > features,
+                         const std::shared_ptr<SArray<T> > times,
+                         const SArrayUShortPtr censoring);
 
-    const char *get_class_name() const override {
-        return "ModelCoxRegPartialLik";
-    }
+  const char *get_class_name() const override {
+    return "TModelCoxRegPartialLik<T>";
+  }
 
-    /**
-     * \brief Computation of the value of minus the partial Cox
-     * log-likelihood at
-     * point coeffs.
-     * It should be overflow proof and fast.
-     *
-     * \note
-     * This code assumes that the times are inversely sorted and that the
-     * rows of the features matrix and index of failure times are sorted
-     * accordingly. This sorting is done automatically by the SurvData object.
-     *
-     * \param coeffs : The vector at which the loss is computed
-    */
-    double loss(const ArrayDouble &coeffs) override;
+  /**
+   * \brief Computation of the value of minus the partial Cox
+   * log-likelihood at
+   * point coeffs.
+   * It should be overflow proof and fast.
+   *
+   * \note
+   * This code assumes that the times are inversely sorted and that the
+   * rows of the features matrix and index of failure times are sorted
+   * accordingly. This sorting is done automatically by the SurvData object.
+   *
+   * \param coeffs : The vector at which the loss is computed
+   */
+  T loss(const Array<T> &coeffs) override;
 
-    void grad(const ArrayDouble &coeffs, ArrayDouble &out) override;
+  void grad(const Array<T> &coeffs, Array<T> &out) override;
 };
 
+using ModelCoxRegPartialLik = TModelCoxRegPartialLik<double>;
+using ModelCoxRegPartialLikPtr = std::shared_ptr<ModelCoxRegPartialLik>;
 
-typedef std::shared_ptr<ModelCoxRegPartialLik> ModelCoxRegPartialLikPtr;
+using ModelCoxRegPartialLikDouble = TModelCoxRegPartialLik<double>;
+using ModelCoxRegPartialLikDoublePtr =
+    std::shared_ptr<ModelCoxRegPartialLikDouble>;
 
+using ModelCoxRegPartialLikFloat = TModelCoxRegPartialLik<double>;
+using ModelCoxRegPartialLikFloatPtr =
+    std::shared_ptr<ModelCoxRegPartialLikFloat>;
 
 #endif  // LIB_INCLUDE_TICK_SURVIVAL_MODEL_COXREG_PARTIAL_LIK_H_
