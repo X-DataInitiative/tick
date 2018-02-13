@@ -10,7 +10,13 @@
 #include "tick/base/base.h"
 #include "tick/base_model/model_lipschitz.h"
 
-class DLL_PUBLIC ModelSCCS : public ModelLipschitz  {
+template <class T>
+class DLL_PUBLIC TModelSCCS : public TModelLipschitz<T> {
+ protected:
+  using SBaseArrayT2dPtrList1D = std::vector<std::shared_ptr<BaseArray2d<T> > >;
+  using TModelLipschitz<T>::ready_lip_consts;
+  using TModelLipschitz<T>::lip_consts;
+
  protected:
   ulong n_intervals;
   ulong n_lags;
@@ -23,30 +29,27 @@ class DLL_PUBLIC ModelSCCS : public ModelLipschitz  {
   SArrayIntPtrList1D labels;
 
   // Feature matrices
-  SBaseArrayDouble2dPtrList1D features;
+  SBaseArrayT2dPtrList1D features;
 
   // Censoring vectors
   SBaseArrayULongPtr censoring;
 
  public:
-  ModelSCCS(const SBaseArrayDouble2dPtrList1D &features,
-                          const SArrayIntPtrList1D &labels,
-                          const SBaseArrayULongPtr censoring,
-                          ulong n_lags);
+  TModelSCCS(const SBaseArrayT2dPtrList1D &features,
+             const SArrayIntPtrList1D &labels,
+             const SBaseArrayULongPtr censoring, ulong n_lags);
 
   const char *get_class_name() const override {
     return "LongitudinalMultinomial";
   };
 
-  double loss(const ArrayDouble &coeffs) override;
+  T loss(const Array<T> &coeffs) override;
 
-  double loss_i(const ulong i, const ArrayDouble &coeffs) override;
+  T loss_i(const ulong i, const Array<T> &coeffs) override;
 
-  void grad(const ArrayDouble &coeffs, ArrayDouble &out) override;
+  void grad(const Array<T> &coeffs, Array<T> &out) override;
 
-  void grad_i(const ulong i,
-              const ArrayDouble &coeffs,
-              ArrayDouble &out) override;
+  void grad_i(const ulong i, const Array<T> &coeffs, Array<T> &out) override;
 
   void compute_lip_consts() override;
 
@@ -68,37 +71,41 @@ class DLL_PUBLIC ModelSCCS : public ModelLipschitz  {
 
   bool is_sparse() const override { return false; }
 
-  inline BaseArrayDouble get_longitudinal_features(ulong i,
-                                                   ulong t) const {
+  inline BaseArray<T> get_longitudinal_features(ulong i, ulong t) const {
     return view_row(*features[i], t);
   }
 
-  inline double get_longitudinal_label(ulong i, ulong t) const {
+  inline T get_longitudinal_label(ulong i, ulong t) const {
     return view(*labels[i])[t];
   }
 
-  double get_inner_prod(const ulong i,
-                        const ulong t,
-                        const ArrayDouble &coeffs) const;
+  T get_inner_prod(const ulong i, const ulong t, const Array<T> &coeffs) const;
 
-  static inline double sumExpMinusMax(ArrayDouble &x, double x_max) {
-    double sum = 0;
-    for (ulong i = 0; i < x.size(); ++i) sum += exp(x[i] - x_max);  // overflow-proof
+  static inline T sumExpMinusMax(Array<T> &x, T x_max) {
+    T sum = 0;
+    for (ulong i = 0; i < x.size(); ++i)
+      sum += exp(x[i] - x_max);  // overflow-proof
     return sum;
   }
 
-  static inline double logSumExp(ArrayDouble &x) {
-    double x_max = x.max();
+  static inline T logSumExp(Array<T> &x) {
+    T x_max = x.max();
     return x_max + log(sumExpMinusMax(x, x_max));
   }
 
-  static inline void softMax(ArrayDouble &x, ArrayDouble &out) {
-    double x_max = x.max();
-    double sum = sumExpMinusMax(x, x_max);
+  static inline void softMax(Array<T> &x, Array<T> &out) {
+    T x_max = x.max();
+    T sum = sumExpMinusMax(x, x_max);
     for (ulong i = 0; i < x.size(); i++) {
       out[i] = exp(x[i] - x_max) / sum;  // overflow-proof
     }
   }
 };
+
+using ModelSCCS = TModelSCCS<double>;
+
+using ModelSCCSDouble = TModelSCCS<double>;
+
+using ModelSCCSFloat = TModelSCCS<float>;
 
 #endif  // LIB_INCLUDE_TICK_SURVIVAL_MODEL_SCCS_H_

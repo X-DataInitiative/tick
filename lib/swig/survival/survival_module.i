@@ -4,7 +4,12 @@
 
 %include base_model_module.i
 
+%shared_ptr(TModelCoxRegPartialLik<double>);
+%shared_ptr(TModelCoxRegPartialLik<float>);
 %shared_ptr(ModelCoxRegPartialLik);
+
+%shared_ptr(TModelSCCS<double>);
+%shared_ptr(TModelSCCS<float>);
 %shared_ptr(ModelSCCS);
 
 %{
