@@ -1,11 +1,9 @@
 # License: BSD 3 clause
 
-import tick
-
 import numpy as np
 import matplotlib.pyplot as plt
 
-from experience.poisreg_sdca import ModelPoisRegSDCA
+# from experience.poisreg_sdca import ModelPoisRegSDCA
 from experience.poisson_datasets import fetch_poisson_dataset
 from tick.optim.model import ModelPoisReg
 from tick.optim.prox import ProxZero, ProxL2Sq, ProxPositive

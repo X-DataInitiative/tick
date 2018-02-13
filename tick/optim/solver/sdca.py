@@ -192,7 +192,7 @@ class SDCA(SolverFirstOrderSto):
         return SolverFirstOrderSto.set_model(self, model)
 
     def extra_history(self, minimizer):
-        fast = True
+        fast = False
         if fast:
             return {'dual_vector': self._solver.get_dual_vector()}
         else:

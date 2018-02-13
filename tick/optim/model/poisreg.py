@@ -275,3 +275,38 @@ class ModelPoisReg(ModelGeneralizedLinear,
         tmp += 4 * l_l2sq * n_non_zeros * labels[labels != 0] * feature_norms
 
         return 0.5 / feature_norms * (n_psi_x + np.sqrt(tmp))
+
+    def get_dual_init(self, l_l2sq):
+        labels = self.labels
+        features = self.features
+
+        n_non_zeros = sum(labels != 0)
+
+        non_zero_features = features[labels != 0]
+        non_zero_labels = labels[labels != 0]
+
+        features_sum = np.sum(non_zero_features, axis=0)
+        features_dot_features_sum = non_zero_features.dot(features_sum)
+        n_psi_x = np.sum(features, axis=0) \
+            .dot(non_zero_features.T)
+
+        tmp1 = np.power(n_psi_x, 2)
+        tmp1 += 4 * l_l2sq * n_non_zeros * non_zero_labels * \
+               features_dot_features_sum
+        inits1 = n_psi_x + np.sqrt(tmp1)
+        inits1 /= (2 * features_dot_features_sum)
+
+        # tmp2 = features_dot_features_sum /
+
+        # print('l2 n', l_l2sq * n_non_zeros, 'tmp - 1', tmp)
+        # inits -= 1
+
+        # corr = l_l2sq * n_non_zeros * non_zero_labels
+        # corr *= features_dot_features_sum / np.power(n_psi_x, 2)
+        corr = l_l2sq * n_non_zeros * non_zero_labels / n_psi_x
+
+        # import matplotlib.pyplot as plt
+        # plt.hist(n_psi_x / n_non_zeros)
+        # plt.show()
+
+        return corr

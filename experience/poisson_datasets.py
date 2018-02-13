@@ -10,7 +10,7 @@ from sklearn.utils import shuffle
 
 from tick.dataset.download_helper import download_tick_dataset, get_data_home
 from tick.preprocessing.features_binarizer import FeaturesBinarizer
-
+from tick.simulation import SimuPoisReg
 
 np.random.seed(43938)
 
@@ -150,6 +150,26 @@ def fetch_crime_dataset(n_samples=2215):
 
     return features, labels
 
+def simulate_poisson(n_samples, n_features=30):
+    np.random.seed(32032)
+
+    weights = np.random.normal(size=n_features)
+    weights = np.abs(weights)
+
+    features = np.random.randn(n_samples, n_features)
+    features = np.abs(features)
+
+    # epsilon = 1e-1
+    # while features.dot(weights).min() <= epsilon:
+    #     n_fail = sum(features.dot(weights) <= epsilon)
+    #     features[features.dot(weights) <= epsilon] = \
+    #         np.random.randn(n_fail, n_features)
+
+    simu = SimuPoisReg(weights, features=features, n_samples=n_samples,
+                       link='identity')
+    features, labels = simu.simulate()
+    return features, labels
+
 
 def fetch_facebook_dataset():
     dataset_path = '00368/Facebook_metrics.zip'
@@ -183,4 +203,6 @@ def fetch_poisson_dataset(dataset, n_samples=1000):
         features, labels = fetch_crime_dataset(n_samples=n_samples)
     elif dataset == 'wine':
         features, labels = fetch_wine_datase()
+    elif dataset == 'simulated':
+        features, labels = simulate_poisson(n_samples)
     return features, labels
