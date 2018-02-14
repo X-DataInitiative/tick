@@ -16,6 +16,10 @@ from .build.online import FeatureImportanceType_estimated
 from .build.online import FeatureImportanceType_given
 
 
+# TODO: respect the scikit-learn API: partial_fit with classes= ?
+# TODO: clean the C++ part, optimize a little bit the code (memory allocation)
+# TODO:
+
 class OnlineForestClassifier(ABC, Base):
     """Truly online random forest for regression (continuous labels). BLABLA
 
@@ -89,7 +93,6 @@ class OnlineForestClassifier(ABC, Base):
 
     _cpp_obj_name = "_forest"
 
-    # TODO: n_classes must be mandatory
 
     @actual_kwargs
     def __init__(self, n_classes: int, n_trees: int = 10, n_passes: int = 1,
@@ -127,7 +130,14 @@ class OnlineForestClassifier(ABC, Base):
         y = safe_array(y)
         self._forest.set_data(X, y)
 
-    def fit(self, X, y):
+    def partial_fit(self, X, y, classes=None):
+        """
+
+        :param X:
+        :param y:
+        :param classes:
+        :return:
+        """
         X = safe_array(X)
         y = safe_array(y)
         n_samples, n_features = X.shape

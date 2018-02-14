@@ -58,9 +58,6 @@ class NodeClassifier {
   ArrayDouble _features_max;
   // Number of samples in the node
   uint32_t _n_samples;
-  // The features of the sample saved in the node
-  // TODO: use a unique_ptr on x_t
-  ArrayDouble _x_t;
   // The label of the sample saved in the node
   double _y_t;
   // Logarithm of the aggregation weight for the node
@@ -105,8 +102,6 @@ class NodeClassifier {
 
   double loss(const double y_t);
 
-  bool is_same(const ArrayDouble &x_t);
-
   // Get node at index in the tree
   inline NodeClassifier &node(uint32_t index) const;
 
@@ -146,8 +141,6 @@ class NodeClassifier {
   inline NodeClassifier &set_weight(double weight);
   inline double weight_tree() const;
   inline NodeClassifier &set_weight_tree(double weight);
-  inline const ArrayDouble &x_t() const;
-  inline NodeClassifier &set_x_t(const ArrayDouble &x_t);
   inline double y_t() const;
   inline NodeClassifier &set_y_t(const double y_t);
 };

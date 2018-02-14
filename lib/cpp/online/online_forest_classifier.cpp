@@ -27,7 +27,6 @@ NodeClassifier::NodeClassifier(const NodeClassifier &node)
       _feature(node._feature), _threshold(node._threshold),
       _time(node._time), _features_min(node._features_min), _features_max(node._features_max),
       _n_samples(node._n_samples),
-      _x_t(node._x_t),
       _y_t(node._y_t),
       _weight(node._weight), _weight_tree(node._weight_tree),
       _is_leaf(node._is_leaf),
@@ -43,7 +42,6 @@ NodeClassifier::NodeClassifier(const NodeClassifier &&node) : _tree(_tree) {
   _features_min = node._features_min;
   _features_max = node._features_max;
   _n_samples = node._n_samples;
-  _x_t = node._x_t;
   _y_t = node._y_t;
   _weight = node._weight;
   _weight_tree = node._weight_tree;
@@ -61,7 +59,6 @@ NodeClassifier &NodeClassifier::operator=(const NodeClassifier &node) {
   _features_min = node._features_min;
   _features_max = node._features_max;
   _n_samples = node._n_samples;
-  _x_t = node._x_t;
   _y_t = node._y_t;
   _weight = node._weight;
   _weight_tree = node._weight_tree;
@@ -80,20 +77,6 @@ double NodeClassifier::update_downwards(const ArrayDouble &x_t, const double y_t
   // We return the loss before updating the predictor of the node in order to
   // update the feature importance in TreeClassifier::go_downwards
   return loss_t;
-}
-
-bool NodeClassifier::is_same(const ArrayDouble &x_t) {
-  if (_is_leaf) {
-    for (uint32_t j = 0; j < n_features(); ++j) {
-      double delta = std::abs(x_t[j] - _x_t[j]);
-      if (delta > 0.) {
-        return false;
-      }
-    }
-    return true;
-  } else {
-    TICK_ERROR("NodeClassifier::is_same: node is not a leaf !")
-  }
 }
 
 void NodeClassifier::update_upwards() {
@@ -275,15 +258,6 @@ inline NodeClassifier &NodeClassifier::set_weight_tree(double weight_tree) {
   return *this;
 }
 
-inline const ArrayDouble &NodeClassifier::x_t() const {
-  return _x_t;
-}
-
-inline NodeClassifier &NodeClassifier::set_x_t(const ArrayDouble &x_t) {
-  _x_t = x_t;
-  return *this;
-}
-
 inline double NodeClassifier::y_t() const {
   return _y_t;
 }
@@ -342,14 +316,10 @@ void TreeClassifier::extend_range(uint32_t node_index, const ArrayDouble &x_t, c
     // The node is a leaf with no sample point, so it does not have a range
     // In this case we just initialize the range with the given feature.
     // This node will then be updated by the call to update_downwards in go_downwards
-    current_node.set_features_min(x_t);
-    current_node.set_features_max(x_t);
+    current_node.update_range(x_t);
+    // current_node.set_features_min(x_t);
+    // current_node.set_features_max(x_t);
   } else {
-    // std::cout << "Computing extension" << std::endl;
-    // ArrayDouble extension(n_features());
-
-    // ArrayDouble probabilities(n_features());
-
     // A vector that will hold the intensities of each feature.
     // The intensity of a feature is measured by the product
     // between the square root of the feature importance and the range extension at this node...
@@ -383,6 +353,8 @@ void TreeClassifier::extend_range(uint32_t node_index, const ArrayDouble &x_t, c
     }
 //    std::cout << "extension: [" << extension[0] << ", " << std::setprecision(2) << extension[1] << "]" << std::endl;
 //    std::cout << "extension_sum: " << std::setprecision(2) << extensions_sum << std::endl;
+//    std::cout << "extension_sum: " << std::setpre
+// cision(2) << extensions_sum << std::endl;
 //    std::cout << "... Done computing extension." << std::endl;
 
     // If the sample x_t extends the current range of the node
