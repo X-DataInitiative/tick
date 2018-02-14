@@ -3,9 +3,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-from tick.hawkes.simulation.base import SimuPointProcess
-
-
 def plot_point_process(point_process, plot_intensity=None, n_points=10000,
                        plot_nodes=None, t_min=None, t_max=None,
                        max_jumps=None, show=True, ax=None):
