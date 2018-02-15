@@ -50,34 +50,34 @@ class NodeClassifier {
   // Index of the feature used for the split
   uint32_t _feature;
   // Threshold used for the split
-  double _threshold;
+  float _threshold;
   // Time of creation of the node
-  double _time;
+  float _time;
   // Range of the features
-  ArrayDouble _features_min;
-  ArrayDouble _features_max;
+  ArrayFloat _features_min;
+  ArrayFloat _features_max;
   // Number of samples in the node
   uint32_t _n_samples;
   // The label of the sample saved in the node
-  double _y_t;
+  float _y_t;
   // Logarithm of the aggregation weight for the node
-  double _weight;
+  float _weight;
   // Logarithm of the agregation weight for the sub-tree starting at this node
-  double _weight_tree;
+  float _weight_tree;
   // true if the node is a leaf
   bool _is_leaf;
   // Counts the number of sample seen in each class
   ArrayULong _counts;
 
  public:
-  NodeClassifier(TreeClassifier &tree, uint32_t parent, double time = 0);
+  NodeClassifier(TreeClassifier &tree, uint32_t parent, float time = 0);
   NodeClassifier(const NodeClassifier &node);
   NodeClassifier(const NodeClassifier &&node);
   NodeClassifier &operator=(const NodeClassifier &);
   NodeClassifier &operator=(const NodeClassifier &&) = delete;
 
   // Computation of log( (e^a + e^b) / 2) in an overproof way
-  inline static double log_sum_2_exp(const double a, const double b) {
+  inline static float log_sum_2_exp(const float a, const float b) {
     // TODO: if |a - b| > 50 skip
     if (a > b) {
       return a + std::log((1 + std::exp(b - a)) / 2);
@@ -87,7 +87,7 @@ class NodeClassifier {
   }
 
   // Update to apply to a node when going forward in the tree (towards leaves)
-  double update_downwards(const ArrayDouble &x_t, const double y_t);
+  float update_downwards(const ArrayDouble &x_t, const double y_t);
   // Update to apply to a node when going upward in the tree (towards the root)
   void update_upwards();
   // Update the prediction of the label
@@ -98,9 +98,9 @@ class NodeClassifier {
   void predict(ArrayDouble &scores) const;
   // Loss function used for aggregation
 
-  double score(uint8_t y) const;
+  float score(uint8_t y) const;
 
-  double loss(const double y_t);
+  float loss(const double y_t);
 
   // Get node at index in the tree
   inline NodeClassifier &node(uint32_t index) const;
@@ -110,9 +110,9 @@ class NodeClassifier {
   // Number of classes
   inline uint8_t n_classes() const;
   // Step to use for aggregation
-  inline double step() const;
+  inline float step() const;
   //
-  inline double dirichlet() const;
+  inline float dirichlet() const;
   // Print of the node
   void print();
 
@@ -126,21 +126,21 @@ class NodeClassifier {
   inline NodeClassifier &set_is_leaf(bool is_leaf);
   inline uint32_t feature() const;
   inline NodeClassifier &set_feature(uint32_t feature);
-  inline double threshold() const;
-  inline NodeClassifier &set_threshold(double threshold);
-  inline double time() const;
-  inline NodeClassifier &set_time(double time);
-  inline double features_min(const uint32_t j) const;
-  inline NodeClassifier &set_features_min(const ArrayDouble &features_min);
-  inline double features_max(const uint32_t j) const;
-  inline NodeClassifier &set_features_max(const ArrayDouble &features_max);
+  inline float threshold() const;
+  inline NodeClassifier &set_threshold(float threshold);
+  inline float time() const;
+  inline NodeClassifier &set_time(float time);
+  inline float features_min(const uint32_t j) const;
+  inline NodeClassifier &set_features_min(const ArrayFloat &features_min);
+  inline float features_max(const uint32_t j) const;
+  inline NodeClassifier &set_features_max(const ArrayFloat &features_max);
   inline uint32_t n_samples() const;
   inline NodeClassifier &set_n_samples(uint32_t n_samples);
   inline bool use_aggregation() const;
-  inline double weight() const;
-  inline NodeClassifier &set_weight(double weight);
-  inline double weight_tree() const;
-  inline NodeClassifier &set_weight_tree(double weight);
+  inline float weight() const;
+  inline NodeClassifier &set_weight(float weight);
+  inline float weight_tree() const;
+  inline NodeClassifier &set_weight_tree(float weight);
   inline double y_t() const;
   inline NodeClassifier &set_y_t(const double y_t);
 };
@@ -155,6 +155,10 @@ class TreeClassifier {
  protected:
   // The forest of the tree
   OnlineForestClassifier &forest;
+  // Number of features
+  uint32_t _n_features;
+  // Number of classes
+  uint8_t _n_classes;
   // Number of nodes in the tree
   uint32_t _n_nodes = 0;
   // Iteration counter
@@ -164,9 +168,9 @@ class TreeClassifier {
   // Split the node at given index
   // uint32_t split_leaf(uint32_t index, const ArrayDouble &x_t, double y_t);
   // Add nodes in the tree
-  uint32_t add_node(uint32_t parent, double time = 0);
+  uint32_t add_node(uint32_t parent, float time = 0);
 
-  ArrayDouble feature_importances_;
+  ArrayFloat feature_importances_;
 
   void extend_range(uint32_t node_index, const ArrayDouble &x_t, const double y_t);
 
@@ -187,22 +191,22 @@ class TreeClassifier {
   inline uint8_t n_classes() const;
   inline uint32_t n_nodes() const;
   uint32_t n_leaves() const;
-  inline double step() const;
-  inline double dirichlet() const;
+  inline float step() const;
+  inline float dirichlet() const;
 
   void print();
 
   inline CriterionClassifier criterion() const;
   inline bool use_aggregation() const;
   FeatureImportanceType feature_importance_type() const;
-  double feature_importance(const uint32_t j) const;
-  double given_feature_importance(const uint32_t j) const;
+  float feature_importance(const uint32_t j) const;
+  float given_feature_importance(const uint32_t j) const;
 
   NodeClassifier &node(uint32_t index) {
     return nodes[index];
   }
 
-  inline ArrayDouble &feature_importances() {
+  inline ArrayFloat &feature_importances() {
     return feature_importances_;
   }
 };
@@ -222,12 +226,12 @@ class OnlineForestClassifier {
   // Number of passes over each given data
   uint8_t _n_passes;
   // Step-size used for aggregation
-  double _step;
+  float _step;
 
   bool _estimate_feature_importances;
 
   // A vector of given feature importances (not estimated)
-  ArrayDouble _given_feature_importances;
+  ArrayFloat _given_feature_importances;
 
   // CriterionClassifier used for splitting (not used for now)
   CriterionClassifier _criterion;
@@ -238,7 +242,7 @@ class OnlineForestClassifier {
   //
   double _subsampling;
   //
-  double _dirichlet;
+  float _dirichlet;
   // Number of threads to use for parallel growing of trees
   int32_t _n_threads;
   // Seed for random number generation
@@ -266,12 +270,12 @@ class OnlineForestClassifier {
                          uint8_t n_classes,
                          uint8_t n_trees,
                          uint8_t n_passes = 1,
-                         double step = 1.0,
+                         float step = 1.0,
                          CriterionClassifier criterion = CriterionClassifier::log,
                          FeatureImportanceType feature_importance_type = FeatureImportanceType::estimated,
                          bool use_aggregation = true,
                          double subsampling = 1,
-                         double dirichlet = 0.5,
+                         float dirichlet = 0.5,
                          int32_t n_threads = 1,
                          int seed = 0,
                          bool verbose = false);
@@ -281,10 +285,10 @@ class OnlineForestClassifier {
   void predict(const SArrayDouble2dPtr features, SArrayDouble2dPtr scores);
 
   inline uint32_t sample_feature();
-  inline uint32_t sample_feature(const ArrayDouble &prob);
+  inline uint32_t sample_feature(const ArrayFloat &prob);
   // inline uint32_t sample_feature_bis();
-  inline double sample_exponential(double intensity);
-  inline double sample_threshold(double left, double right);
+  inline float sample_exponential(float intensity);
+  inline float sample_threshold(float left, float right);
 
   void clear();
   void print();
@@ -295,17 +299,17 @@ class OnlineForestClassifier {
 
   uint8_t n_trees() const;
   bool use_aggregation() const;
-  double step() const;
-  OnlineForestClassifier &set_step(const double step);
-  double dirichlet() const;
-  OnlineForestClassifier &set_dirichlet(const double dirichlet);
+  float step() const;
+  OnlineForestClassifier &set_step(const float step);
+  float dirichlet() const;
+  OnlineForestClassifier &set_dirichlet(const float dirichlet);
   bool verbose() const;
   OnlineForestClassifier &set_verbose(bool verbose);
   CriterionClassifier criterion() const;
   OnlineForestClassifier &set_criterion(CriterionClassifier criterion);
   FeatureImportanceType feature_importance_type() const;
 
-  double given_feature_importances(const double j) const;
+  double given_feature_importances(const ulong j) const;
 
   int32_t n_threads() const;
   OnlineForestClassifier &set_n_threads(int32_t n_threads);

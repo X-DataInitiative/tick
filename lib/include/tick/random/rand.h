@@ -32,6 +32,7 @@ class DLL_PUBLIC Rand {
   std::uniform_real_distribution<double> uniform_dist;
   std::normal_distribution<double> normal_dist;
   std::exponential_distribution<double> expon_dist;
+  std::exponential_distribution<float> expon_dist_float;
   std::poisson_distribution<int> poisson_dist;
   std::discrete_distribution<ulong> discrete_dist;
 
@@ -110,6 +111,8 @@ class DLL_PUBLIC Rand {
    */
   double gaussian(double mean, double std);
 
+  float exponential(float intensity);
+
   /**
    * @brief Returns a realization of an exponential distribution with given intensity
    * \param intensity : given intensity
@@ -138,6 +141,8 @@ class DLL_PUBLIC Rand {
    * \param probabilities: probabilities of each event
    */
   ulong discrete(ArrayDouble probabilities);
+
+  uint32_t discrete(ArrayFloat probabilities);
 
   /**
    * @brief Getter for seed variable

@@ -43,6 +43,13 @@ n_trees = 20
 clf = OnlineForestClassifier(n_classes=2, n_trees=n_trees, seed=123, step=1.,
                              use_aggregation=False)
 
+# print("clf=", clf)
+
+
+clf.partial_fit(X, y)
+
+exit(0)
+
 
 def animate(i):
     clf.partial_fit(X_train[i, :].reshape(1, 2), np.array([y_train[i]]))

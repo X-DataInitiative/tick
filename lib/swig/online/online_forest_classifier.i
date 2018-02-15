@@ -5,6 +5,7 @@
 
 %{
 #include "tick/online/online_forest_classifier.h"
+#include "tick/online/online_forest_classifier.h"
 %}
 
 
@@ -24,10 +25,10 @@ class OnlineForestClassifier {
  public:
 
   OnlineForestClassifier(uint32_t n_features, uint8_t n_classes, uint8_t n_trees,
-                         uint8_t n_passes = 1, double step = 1.0,
+                         uint8_t n_passes = 1, float step = 1.0,
                          CriterionClassifier criterion = CriterionClassifier::log,
                          FeatureImportanceType feature_importance_type = FeatureImportanceType::estimated,
-                         bool use_aggregation = true, double subsampling=1, double dirichlet=0.5,
+                         bool use_aggregation = true, double subsampling=1, float dirichlet=0.5,
                          int32_t n_threads = 1, int seed = 0, bool verbose = false);
 
   void fit(const SArrayDouble2dPtr features, const SArrayDoublePtr labels);
@@ -41,8 +42,8 @@ class OnlineForestClassifier {
   uint32_t n_features() const;
   uint8_t n_classes() const;
 
-  inline double step() const;
-  inline OnlineForestClassifier& set_step(const double step);
+  inline float step() const;
+  inline OnlineForestClassifier& set_step(const float step);
 
   uint32_t n_trees() const;
 

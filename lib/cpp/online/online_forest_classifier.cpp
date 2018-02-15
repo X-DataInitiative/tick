@@ -7,23 +7,16 @@
  * NodeClassifier methods
  *********************************************************************************/
 
-NodeClassifier::NodeClassifier(TreeClassifier &tree, uint32_t parent, double time)
-    : _tree(tree) {
-  _parent = parent;
-  _time = time;
-  _left = 0;
-  _right = 0;
-  _n_samples = 0;
-  _is_leaf = true;
-  _weight = 0;
-  _weight_tree = 0;
-  _counts = ArrayULong(n_classes());
+NodeClassifier::NodeClassifier(TreeClassifier &tree, uint32_t parent, float time)
+    : _tree(tree), _parent(parent), _left(0), _right(0), _time(time),
+      _features_min(tree.n_features()), _features_max(tree.n_features()),
+      _n_samples(0), _is_leaf(true), _weight(0), _weight_tree(0),
+      _counts(tree.n_classes()) {
   _counts.fill(0);
 }
 
 NodeClassifier::NodeClassifier(const NodeClassifier &node)
-    : _tree(node._tree),
-      _parent(node._parent), _left(node._left), _right(node._right),
+    : _tree(node._tree), _parent(node._parent), _left(node._left), _right(node._right),
       _feature(node._feature), _threshold(node._threshold),
       _time(node._time), _features_min(node._features_min), _features_max(node._features_max),
       _n_samples(node._n_samples),
@@ -67,9 +60,9 @@ NodeClassifier &NodeClassifier::operator=(const NodeClassifier &node) {
   return *this;
 }
 
-double NodeClassifier::update_downwards(const ArrayDouble &x_t, const double y_t) {
+float NodeClassifier::update_downwards(const ArrayDouble &x_t, const double y_t) {
   _n_samples++;
-  double loss_t = loss(y_t);
+  float loss_t = loss(y_t);
   if (use_aggregation()) {
     _weight -= step() * loss_t;
   }
@@ -93,12 +86,16 @@ void NodeClassifier::update_predict(const double y_t) {
 }
 
 void NodeClassifier::update_range(const ArrayDouble &x_t) {
+  std::cout << "NodeClassifier::update_range" << std::endl;
   if (_n_samples == 0) {
-    _features_min = x_t;
-    _features_max = x_t;
+    for (ulong j = 0; j < x_t.size(); ++j) {
+      float x_tj = static_cast<float>(x_t[j]);
+      _features_min[j] = x_tj;
+      _features_max[j] = x_tj;
+    }
   } else {
     for (uint32_t j = 0; j < n_features(); ++j) {
-      double x_tj = x_t[j];
+      float x_tj = static_cast<float>(x_t[j]);
       if (x_tj < _features_min[j]) {
         _features_min[j] = x_tj;
       }
@@ -107,20 +104,21 @@ void NodeClassifier::update_range(const ArrayDouble &x_t) {
       }
     }
   }
+  std::cout << "Done NodeClassifier::update_range." << std::endl;
 }
 
-double NodeClassifier::score(uint8_t c) const {
+float NodeClassifier::score(uint8_t c) const {
   // Using the Dirichet prior
   return (_counts[c] + dirichlet()) / (_n_samples + dirichlet() * n_classes());
 }
 
 inline void NodeClassifier::predict(ArrayDouble &scores) const {
   for (uint8_t c = 0; c < n_classes(); ++c) {
-    scores[c] = score(c);
+    scores[c] = static_cast<double>(score(c));
   }
 }
 
-double NodeClassifier::loss(const double y_t) {
+float NodeClassifier::loss(const double y_t) {
   // Log-loss
   uint8_t c = static_cast<uint8_t>(y_t);
   return -std::log(score(c));
@@ -138,11 +136,11 @@ uint8_t NodeClassifier::n_classes() const {
   return _tree.n_classes();
 }
 
-inline double NodeClassifier::step() const {
+inline float NodeClassifier::step() const {
   return _tree.step();
 }
 
-inline double NodeClassifier::dirichlet() const {
+inline float NodeClassifier::dirichlet() const {
   return _tree.dirichlet();
 }
 
@@ -191,38 +189,38 @@ inline NodeClassifier &NodeClassifier::set_feature(uint32_t feature) {
   return *this;
 }
 
-inline double NodeClassifier::threshold() const {
+inline float NodeClassifier::threshold() const {
   return _threshold;
 }
 
-inline NodeClassifier &NodeClassifier::set_threshold(double threshold) {
+inline NodeClassifier &NodeClassifier::set_threshold(float threshold) {
   _threshold = threshold;
   return *this;
 }
 
-inline double NodeClassifier::time() const {
+inline float NodeClassifier::time() const {
   return _time;
 }
 
-inline NodeClassifier &NodeClassifier::set_time(double time) {
+inline NodeClassifier &NodeClassifier::set_time(float time) {
   _time = time;
   return *this;
 }
 
-inline double NodeClassifier::features_min(const uint32_t j) const {
+inline float NodeClassifier::features_min(const uint32_t j) const {
   return _features_min[j];
 }
 
-inline NodeClassifier &NodeClassifier::set_features_min(const ArrayDouble &features_min) {
+inline NodeClassifier &NodeClassifier::set_features_min(const ArrayFloat &features_min) {
   _features_min = features_min;
   return *this;
 }
 
-inline double NodeClassifier::features_max(const uint32_t j) const {
+inline float NodeClassifier::features_max(const uint32_t j) const {
   return _features_max[j];
 }
 
-inline NodeClassifier &NodeClassifier::set_features_max(const ArrayDouble &features_max) {
+inline NodeClassifier &NodeClassifier::set_features_max(const ArrayFloat &features_max) {
   _features_max = features_max;
   return *this;
 }
@@ -240,20 +238,20 @@ inline bool NodeClassifier::use_aggregation() const {
   return _tree.use_aggregation();
 }
 
-inline double NodeClassifier::weight() const {
+inline float NodeClassifier::weight() const {
   return _weight;
 }
 
-inline NodeClassifier &NodeClassifier::set_weight(double weight) {
+inline NodeClassifier &NodeClassifier::set_weight(float weight) {
   _weight = weight;
   return *this;
 }
 
-inline double NodeClassifier::weight_tree() const {
+inline float NodeClassifier::weight_tree() const {
   return _weight_tree;
 }
 
-inline NodeClassifier &NodeClassifier::set_weight_tree(double weight_tree) {
+inline NodeClassifier &NodeClassifier::set_weight_tree(float weight_tree) {
   _weight_tree = weight_tree;
   return *this;
 }
@@ -294,23 +292,25 @@ void NodeClassifier::print() {
 * TreeClassifier methods
 *********************************************************************************/
 
+TreeClassifier::TreeClassifier(OnlineForestClassifier &forest)
+    : forest(forest), _n_features(forest.n_features()), _n_classes(forest.n_classes()) {
+  // TODO: pre-allocate the vector to make things faster ?
+  add_node(0);
+
+  feature_importances_ = ArrayFloat(_n_features);
+  // feature_importances_.fill(1.);
+  // TODO: initialization might be important
+  feature_importances_.fill(1.);
+}
+
 TreeClassifier::TreeClassifier(const TreeClassifier &tree)
     : forest(tree.forest), nodes(tree.nodes) {}
 
 TreeClassifier::TreeClassifier(const TreeClassifier &&tree)
     : forest(tree.forest), nodes(tree.nodes) {}
 
-TreeClassifier::TreeClassifier(OnlineForestClassifier &forest) : forest(forest) {
-  // TODO: pre-allocate the vector to make things faster ?
-  add_node(0);
-  feature_importances_ = ArrayDouble(forest.n_features());
-  // feature_importances_.fill(1.);
-  // TODO: initialization might be important
-  feature_importances_.fill(1.);
-}
-
 void TreeClassifier::extend_range(uint32_t node_index, const ArrayDouble &x_t, const double y_t) {
-  // std::cout << "Extending the range of: " << index << std::endl;
+  std::cout << "Extending the range of: " << index << std::endl;
   NodeClassifier &current_node = node(node_index);
   if (current_node.n_samples() == 0) {
     // The node is a leaf with no sample point, so it does not have a range
@@ -323,17 +323,17 @@ void TreeClassifier::extend_range(uint32_t node_index, const ArrayDouble &x_t, c
     // A vector that will hold the intensities of each feature.
     // The intensity of a feature is measured by the product
     // between the square root of the feature importance and the range extension at this node...
-    ArrayDouble intensities(n_features());
+    ArrayFloat intensities(n_features());
 
-    double intensities_sum = 0;
+    float intensities_sum = 0;
     for (uint32_t j = 0; j < n_features(); ++j) {
-      double x_tj = x_t[j];
-      double feature_min_j = current_node.features_min(j);
-      double feature_max_j = current_node.features_max(j);
+      float x_tj = static_cast<float>(x_t[j]);
+      float feature_min_j = current_node.features_min(j);
+      float feature_max_j = current_node.features_max(j);
       // TODO: several choices are available here...
       // double intensity = std::sqrt(feature_importances_[j] / (iteration + 1));
 
-      double intensity = feature_importance(j) / (iteration + 1);
+      float intensity = feature_importance(j) / (iteration + 1);
 
       // double intensity = featufeature_importances_[j] / (iteration + 1);
       if (x_tj < feature_min_j) {
@@ -361,8 +361,8 @@ void TreeClassifier::extend_range(uint32_t node_index, const ArrayDouble &x_t, c
     if (intensities_sum > 0) {
       // std::cout << "Extension non-zero, considering the possibility of a split" << std::endl;
       bool do_split;
-      double time = current_node.time();
-      double T = forest.sample_exponential(intensities_sum);
+      float time = current_node.time();
+      float T = forest.sample_exponential(intensities_sum);
       // std::cout << "time: " << std::setprecision(2) << time << ", T: " << std::setprecision(2) << T << std::endl;
       // Let us determine if we need to split the node or not
       if (current_node.is_leaf()) {
@@ -370,7 +370,7 @@ void TreeClassifier::extend_range(uint32_t node_index, const ArrayDouble &x_t, c
         do_split = true;
       } else {
         // Same as node(current_node.right()).time();
-        double child_time = node(current_node.left()).time();
+        float child_time = node(current_node.left()).time();
         // Sample a exponential random variable with intensity
         if (time + T < child_time) {
           // std::cout << "  I'll split since time + T < child_time with child_time: " << child_time << std::endl;
@@ -401,7 +401,7 @@ void TreeClassifier::extend_range(uint32_t node_index, const ArrayDouble &x_t, c
         // std::cout << "using the probabilities: [" << std::setprecision(2) << probabilities[0] << ", " << std::setprecision(2) << probabilities[1] << "]" << std::endl;
         uint32_t feature = forest.sample_feature(intensities);
         // std::cout << "sampled feature: " << feature << std::endl;
-        double threshold;
+        float threshold;
         // Is the extension on the right side ?
         bool is_right_extension = x_t[feature] > current_node.features_max(feature);
         // Create new nodes
@@ -447,15 +447,16 @@ void TreeClassifier::extend_range(uint32_t node_index, const ArrayDouble &x_t, c
       node(node_index).update_range(x_t);
     }
   }
-  // std::cout << "...Done extending the range." << std::endl;
+  std::cout << "...Done extending the range." << std::endl;
 }
 
 uint32_t TreeClassifier::go_downwards(const ArrayDouble &x_t, double y_t, bool predict) {
+  std::cout << "Going downwards" << std::endl;
   // Find the leaf that contains the sample. Start at the root. Index of the root is always 0.
   // If predict == true, this is for prediction only, so no leaf update and splits can be done.
   uint32_t index_current_node = 0;
   bool is_leaf = false;
-  double loss_t = 0;
+  float loss_t = 0;
   uint32_t feature = 0;
 
   while (!is_leaf) {
@@ -481,41 +482,28 @@ uint32_t TreeClassifier::go_downwards(const ArrayDouble &x_t, double y_t, bool p
         // Compute the difference with the loss of the child
         loss_t -= node(index_current_node).loss(y_t);
         //if (loss_t > 0) {
-          feature_importances_[feature] += loss_t;
+        feature_importances_[feature] += loss_t;
         // }
       }
     }
   }
+  std::cout << "Done going downwards." << std::endl;
   return index_current_node;
 }
 
 void TreeClassifier::go_upwards(uint32_t leaf_index) {
-  // std::cout << "Going upwards" << std::endl;
+  std::cout << "Going upwards" << std::endl;
   uint32_t current = leaf_index;
   while (true) {
     NodeClassifier &current_node = node(current);
     current_node.update_upwards();
     if (current == 0) {
-      // std::cout << "...Done going upwards." << std::endl;
+      std::cout << "...Done going upwards." << std::endl;
       break;
     }
     // We must update the root node
     current = node(current).parent();
   }
-}
-
-inline uint32_t TreeClassifier::n_nodes() const {
-  return _n_nodes;
-}
-
-uint32_t TreeClassifier::n_leaves() const {
-  uint32_t n_leaves = 0;
-  for (const NodeClassifier &node: nodes) {
-    if (node.is_leaf()) {
-      ++n_leaves;
-    }
-  }
-  return n_leaves;
 }
 
 void TreeClassifier::print() {
@@ -531,6 +519,7 @@ void TreeClassifier::print() {
 }
 
 void TreeClassifier::fit(const ArrayDouble &x_t, double y_t) {
+  std::cout << "TreeClassifier::fit" << std::endl;
   uint32_t leaf = go_downwards(x_t, y_t, false);
   if (use_aggregation()) {
     go_upwards(leaf);
@@ -559,7 +548,7 @@ void TreeClassifier::predict(const ArrayDouble &x_t, ArrayDouble &scores, bool u
       current_node.predict(scores);
     } else {
 //      std::cout << "predict node" << std::endl;
-      double w = std::exp(current_node.weight() - current_node.weight_tree());
+      float w = std::exp(current_node.weight() - current_node.weight_tree());
       // Get the predictions of the current node
       current_node.predict(pred_new);
       for (uint8_t c = 0; c < n_classes(); ++c) {
@@ -575,24 +564,38 @@ void TreeClassifier::predict(const ArrayDouble &x_t, ArrayDouble &scores, bool u
   }
 }
 
-uint32_t TreeClassifier::add_node(uint32_t parent, double time) {
+uint32_t TreeClassifier::add_node(uint32_t parent, float time) {
   nodes.emplace_back(*this, parent, time);
   return _n_nodes++;
 }
 
 inline uint32_t TreeClassifier::n_features() const {
-  return forest.n_features();
+  return _n_features;
 }
 
 inline uint8_t TreeClassifier::n_classes() const {
-  return forest.n_classes();
+  return _n_classes;
 }
 
-inline double TreeClassifier::step() const {
+inline uint32_t TreeClassifier::n_nodes() const {
+  return _n_nodes;
+}
+
+uint32_t TreeClassifier::n_leaves() const {
+  uint32_t n_leaves = 0;
+  for (const NodeClassifier &node: nodes) {
+    if (node.is_leaf()) {
+      ++n_leaves;
+    }
+  }
+  return n_leaves;
+}
+
+inline float TreeClassifier::step() const {
   return forest.step();
 }
 
-inline double TreeClassifier::dirichlet() const {
+inline float TreeClassifier::dirichlet() const {
   return forest.dirichlet();
 }
 
@@ -608,7 +611,7 @@ FeatureImportanceType TreeClassifier::feature_importance_type() const {
   return forest.feature_importance_type();
 }
 
-double TreeClassifier::feature_importance(const uint32_t j) const {
+float TreeClassifier::feature_importance(const uint32_t j) const {
   if (feature_importance_type() == FeatureImportanceType::no) {
     return 1;
   } else {
@@ -620,10 +623,9 @@ double TreeClassifier::feature_importance(const uint32_t j) const {
   }
 }
 
-double TreeClassifier::given_feature_importance(const uint32_t j) const {
+float TreeClassifier::given_feature_importance(const uint32_t j) const {
   return forest.given_feature_importances(j);
 }
-
 
 /*********************************************************************************
  * OnlineForestClassifier methods
@@ -633,12 +635,12 @@ OnlineForestClassifier::OnlineForestClassifier(uint32_t n_features,
                                                uint8_t n_classes,
                                                uint8_t n_trees,
                                                uint8_t n_passes,
-                                               double step,
+                                               float step,
                                                CriterionClassifier criterion,
                                                FeatureImportanceType feature_importance_type,
                                                bool use_aggregation,
                                                double subsampling,
-                                               double dirichlet,
+                                               float dirichlet,
                                                int32_t n_threads,
                                                int seed,
                                                bool verbose)
@@ -674,6 +676,7 @@ void OnlineForestClassifier::create_trees() {
 
 void OnlineForestClassifier::fit(const SArrayDouble2dPtr features,
                                  const SArrayDoublePtr labels) {
+  // std::cout << "OnlineForestClassifier::fit" << std::endl;
   uint32_t n_samples = static_cast<uint32_t>(features->n_rows());
   uint32_t n_features = static_cast<uint32_t>(features->n_cols());
   if (_iteration == 0) {
@@ -688,19 +691,18 @@ void OnlineForestClassifier::fit(const SArrayDouble2dPtr features,
 
   // set_n_features(n_features);
 
-  for (uint8_t pass = 0; pass < _n_passes; ++pass) {
-    for (uint32_t i = 0; i < n_samples; ++i) {
-      for (TreeClassifier &tree : trees) {
-        // Fit the tree online using the new data point
-        double label = (*labels)[i];
-        check_label(label);
-        double U = rand.uniform();
-        if (U <= _subsampling) {
-          tree.fit(view_row(*features, i), (*labels)[i]);
-        }
+  for (uint32_t i = 0; i < n_samples; ++i) {
+    std::cout << "i= " << i << std::endl;
+    for (TreeClassifier &tree : trees) {
+      // Fit the tree online using the new data point
+      double label = (*labels)[i];
+      check_label(label);
+      double U = rand.uniform();
+      if (U <= _subsampling) {
+        tree.fit(view_row(*features, i), (*labels)[i]);
       }
-      _iteration++;
     }
+    _iteration++;
   }
   // std::cout << "Done OnlineForestClassifier::fit" << std::endl;
 }
@@ -754,11 +756,11 @@ inline uint32_t OnlineForestClassifier::sample_feature() {
 //  return rand.discrete(_fefeature_importances_);
 //}
 
-inline double OnlineForestClassifier::sample_exponential(double intensity) {
+inline float OnlineForestClassifier::sample_exponential(float intensity) {
   return rand.exponential(intensity);
 }
 
-inline uint32_t OnlineForestClassifier::sample_feature(const ArrayDouble &prob) {
+inline uint32_t OnlineForestClassifier::sample_feature(const ArrayFloat &prob) {
 //  ArrayDouble my_prob = prob;
 //  for(uint32_t j = 0; j < n_features(); ++j) {
 //    // my_prob[j] *= _feature_importances[j];
@@ -770,7 +772,7 @@ inline uint32_t OnlineForestClassifier::sample_feature(const ArrayDouble &prob) 
 
 }
 
-inline double OnlineForestClassifier::sample_threshold(double left, double right) {
+inline float OnlineForestClassifier::sample_threshold(float left, float right) {
   return rand.uniform(left, right);
 }
 
@@ -803,11 +805,11 @@ bool OnlineForestClassifier::use_aggregation() const {
   return _use_aggregation;
 }
 
-double OnlineForestClassifier::step() const {
+float OnlineForestClassifier::step() const {
   return _step;
 }
 
-OnlineForestClassifier &OnlineForestClassifier::set_step(const double step) {
+OnlineForestClassifier &OnlineForestClassifier::set_step(const float step) {
   _step = step;
   return *this;
 }
@@ -856,8 +858,8 @@ uint8_t OnlineForestClassifier::n_trees() const {
   return _n_trees;
 }
 
-double OnlineForestClassifier::given_feature_importances(const double j) const {
-  return _given_feature_importances[j];
+double OnlineForestClassifier::given_feature_importances(const ulong j) const {
+  return static_cast<double>(_given_feature_importances[j]);
 }
 
 int32_t OnlineForestClassifier::n_threads() const {
@@ -893,32 +895,38 @@ FeatureImportanceType OnlineForestClassifier::feature_importance_type() const {
 }
 
 OnlineForestClassifier &OnlineForestClassifier::set_given_feature_importances(const ArrayDouble &feature_importances) {
-  _given_feature_importances = feature_importances;
+  for (ulong j = 0; j < n_features(); ++j) {
+    _given_feature_importances[j] = static_cast<float>(feature_importances[j]);
+  }
   return *this;
 }
 
-double OnlineForestClassifier::dirichlet() const {
+float OnlineForestClassifier::dirichlet() const {
   return _dirichlet;
 }
 
-OnlineForestClassifier &OnlineForestClassifier::set_dirichlet(const double dirichlet) {
+OnlineForestClassifier &OnlineForestClassifier::set_dirichlet(const float dirichlet) {
   _dirichlet = dirichlet;
   return *this;
 }
 
 void OnlineForestClassifier::get_feature_importances(SArrayDoublePtr feature_importances) {
-
-  if(_feature_importance_type == FeatureImportanceType::estimated) {
-    feature_importances->fill(0);
-    const double a = static_cast<double>(1) / n_trees();
+  if (_feature_importance_type == FeatureImportanceType::estimated) {
+    const float a = static_cast<float>(1) / n_trees();
+    ArrayFloat importances(_n_features);
+    importances.fill(0);
     for (TreeClassifier &tree : trees) {
-      feature_importances->mult_incr(tree.feature_importances(), a);
+      importances.mult_incr(tree.feature_importances(), a);
     }
-    feature_importances->operator/=(feature_importances->sum());
+    importances /= (importances.sum());
+    for (ulong j = 0; j < _n_features; ++j) {
+      (*feature_importances)[j] = static_cast<double>(importances[j]);
+    }
   } else {
     if (_feature_importance_type == FeatureImportanceType::given) {
-      feature_importances->fill(0);
-      feature_importances->mult_incr(_given_feature_importances, 1.);
+      for (ulong j = 0; j < _n_features; ++j) {
+        (*feature_importances)[j] = static_cast<double>(_given_feature_importances[j]);
+      }
     }
   }
 }

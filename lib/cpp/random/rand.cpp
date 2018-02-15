@@ -74,6 +74,11 @@ double Rand::gaussian(double mean, double std) {
     return normal_dist(generator, p);
 }
 
+float Rand::exponential(float intensity) {
+  std::exponential_distribution<float>::param_type p(intensity);
+  return expon_dist_float(generator, p);
+}
+
 double Rand::exponential(double intensity) {
     std::exponential_distribution<double>::param_type p(intensity);
     return expon_dist(generator, p);
@@ -100,6 +105,13 @@ ulong Rand::discrete(ArrayDouble probabilities) {
     double *end = probabilities.data() + probabilities.size();
     std::discrete_distribution<ulong>::param_type p(start, end);
     return discrete_dist(generator, p);
+}
+
+uint32_t Rand::discrete(ArrayFloat probabilities) {
+  float *start = probabilities.data();
+  float *end = probabilities.data() + probabilities.size();
+  std::discrete_distribution<ulong>::param_type p(start, end);
+  return discrete_dist(generator, p);
 }
 
 int Rand::get_seed() const {
