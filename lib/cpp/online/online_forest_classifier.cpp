@@ -86,7 +86,7 @@ void NodeClassifier::update_predict(const double y_t) {
 }
 
 void NodeClassifier::update_range(const ArrayDouble &x_t) {
-  std::cout << "NodeClassifier::update_range" << std::endl;
+  // std::cout << "NodeClassifier::update_range" << std::endl;
   if (_n_samples == 0) {
     for (ulong j = 0; j < x_t.size(); ++j) {
       float x_tj = static_cast<float>(x_t[j]);
@@ -104,7 +104,7 @@ void NodeClassifier::update_range(const ArrayDouble &x_t) {
       }
     }
   }
-  std::cout << "Done NodeClassifier::update_range." << std::endl;
+  // std::cout << "Done NodeClassifier::update_range." << std::endl;
 }
 
 float NodeClassifier::score(uint8_t c) const {
@@ -310,7 +310,7 @@ TreeClassifier::TreeClassifier(const TreeClassifier &&tree)
     : forest(tree.forest), nodes(tree.nodes) {}
 
 void TreeClassifier::extend_range(uint32_t node_index, const ArrayDouble &x_t, const double y_t) {
-  std::cout << "Extending the range of: " << index << std::endl;
+  // std::cout << "Extending the range of: " << index << std::endl;
   NodeClassifier &current_node = node(node_index);
   if (current_node.n_samples() == 0) {
     // The node is a leaf with no sample point, so it does not have a range
@@ -447,11 +447,11 @@ void TreeClassifier::extend_range(uint32_t node_index, const ArrayDouble &x_t, c
       node(node_index).update_range(x_t);
     }
   }
-  std::cout << "...Done extending the range." << std::endl;
+  // std::cout << "...Done extending the range." << std::endl;
 }
 
 uint32_t TreeClassifier::go_downwards(const ArrayDouble &x_t, double y_t, bool predict) {
-  std::cout << "Going downwards" << std::endl;
+  // std::cout << "Going downwards" << std::endl;
   // Find the leaf that contains the sample. Start at the root. Index of the root is always 0.
   // If predict == true, this is for prediction only, so no leaf update and splits can be done.
   uint32_t index_current_node = 0;
@@ -487,18 +487,18 @@ uint32_t TreeClassifier::go_downwards(const ArrayDouble &x_t, double y_t, bool p
       }
     }
   }
-  std::cout << "Done going downwards." << std::endl;
+  // std::cout << "Done going downwards." << std::endl;
   return index_current_node;
 }
 
 void TreeClassifier::go_upwards(uint32_t leaf_index) {
-  std::cout << "Going upwards" << std::endl;
+  // std::cout << "Going upwards" << std::endl;
   uint32_t current = leaf_index;
   while (true) {
     NodeClassifier &current_node = node(current);
     current_node.update_upwards();
     if (current == 0) {
-      std::cout << "...Done going upwards." << std::endl;
+      // std::cout << "...Done going upwards." << std::endl;
       break;
     }
     // We must update the root node
@@ -519,7 +519,7 @@ void TreeClassifier::print() {
 }
 
 void TreeClassifier::fit(const ArrayDouble &x_t, double y_t) {
-  std::cout << "TreeClassifier::fit" << std::endl;
+  // std::cout << "TreeClassifier::fit" << std::endl;
   uint32_t leaf = go_downwards(x_t, y_t, false);
   if (use_aggregation()) {
     go_upwards(leaf);
@@ -692,7 +692,7 @@ void OnlineForestClassifier::fit(const SArrayDouble2dPtr features,
   // set_n_features(n_features);
 
   for (uint32_t i = 0; i < n_samples; ++i) {
-    std::cout << "i= " << i << std::endl;
+    // std::cout << "i= " << i << std::endl;
     for (TreeClassifier &tree : trees) {
       // Fit the tree online using the new data point
       double label = (*labels)[i];

@@ -1,7 +1,10 @@
-from tick.simulation import SimuLogReg, weights_sparse_gauss
+
+
+from tick.linear_model import SimuLogReg
+from tick.simulation import weights_sparse_gauss
 from sklearn.model_selection import train_test_split
 import numpy as np
-from tick.inference import OnlineForestClassifier
+from tick.online import OnlineForestClassifier
 from matplotlib.colors import ListedColormap
 
 from sklearn.ensemble import RandomForestClassifier, ExtraTreesClassifier
@@ -110,7 +113,10 @@ def plot_decision_classification(classifiers, datasets, names):
             ax = plt.subplot(n_datasets, n_classifiers + 1, i)
             if hasattr(clf, 'clear'):
                 clf.clear()
-            clf.fit(X_train, y_train)
+            if hasattr(clf, 'partial_fit'):
+                clf.partial_fit(X_train, y_train)
+            else:
+                clf.fit(X_train, y_train)
             Z = clf.predict_proba(np.array([xx.ravel(), yy.ravel()]).T)[:, 1]
 
             score = roc_auc_score(y_test, clf.predict_proba(X_test)[:, 1])
@@ -133,8 +139,8 @@ def plot_decision_classification(classifiers, datasets, names):
 
 path = '/Users/stephane.gaiffas/Downloads/'
 
-n_samples = 20000
-n_features = 100
+n_samples = 500
+n_features = 2
 n_classes = 2
 
 #
@@ -174,11 +180,11 @@ clf = OnlineForestClassifier(n_classes=n_classes, n_trees=50, seed=123,
 X_train, X_test, y_train, y_test = \
     train_test_split(X, y, test_size=.4, random_state=42)
 
-clf.fit(X_train, y_train)
+clf.partial_fit(X_train, y_train)
 
 # clf.predict(X_test)
 
-exit(0)
+# exit(0)
 
 # clf.print()
 
@@ -260,6 +266,6 @@ classifiers += [
 
 plot_decision_classification(classifiers, datasets, names)
 
-# plt.savefig('decisions.pdf')
+plt.savefig('decisions.pdf')
 
 plt.show()
