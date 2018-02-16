@@ -577,8 +577,8 @@ void TreeClassifier::create_root() {
 }
 
 uint32_t TreeClassifier::add_node(uint32_t parent, float time) {
-  std::cout << "add_node" << std::endl;
-  std::cout << "_n_nodes: " << _n_nodes << ", nodes.size()= " << nodes.size() << std::endl;
+  // std::cout << "add_node" << std::endl;
+  // std::cout << "_n_nodes: " << _n_nodes << ", nodes.size()= " << nodes.size() << std::endl;
   if (_n_nodes < nodes.size()) {
     // We have enough nodes already, so let's use the last free one, and just update its time and parent
     node(_n_nodes).set_parent(parent).set_time(time);
@@ -587,8 +587,8 @@ uint32_t TreeClassifier::add_node(uint32_t parent, float time) {
     // node(_n_nodes).set_parent(parent).set_time(time);
     // return _n_nodes;
   } else {
-    std::cout << "_n_nodes: " << _n_nodes << ", nodes.size()= " << nodes.size() << std::endl;
-    TICK_ERROR('Something went wrong with nodes !!! ')
+    // std::cout << "_n_nodes: " << _n_nodes << ", nodes.size()= " << nodes.size() << std::endl;
+    // TICK_ERROR('Something went wrong with nodes !!! ')
   }
 
 //  nodes.emplace_back(*this, parent, time);
@@ -712,14 +712,14 @@ void OnlineForestClassifier::fit(const SArrayDouble2dPtr features,
   }
 
   // TODO: remove this
-  _features = features;
-  _labels = labels;
+  // _features = features;
+  // _labels = labels;
 
   // set_n_features(n_features);
 
   for (TreeClassifier &tree : trees) {
     // Maximum number of nodes is now the current one + number of samples in this batch
-    tree.reserve_nodes(tree.n_nodes() + n_samples);
+    tree.reserve_nodes(2 * tree.n_nodes() + 2 * n_samples);
     for (uint32_t i = 0; i < n_samples; ++i) {
       // double label = (*labels)[i];
       // TODO: put back the check label

@@ -265,8 +265,8 @@ class OnlineForestClassifier {
   // Create trees
   void create_trees();
 
-  SArrayDouble2dPtr _features;
-  SArrayDoublePtr _labels;
+  // SArrayDouble2dPtr _features;
+  // SArrayDoublePtr _labels;
 
   void check_n_features(uint32_t n_features, bool predict) const;
   inline void check_label(double label) const;
