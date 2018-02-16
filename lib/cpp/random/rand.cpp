@@ -60,6 +60,11 @@ double Rand::uniform() {
     return uniform_dist(generator);
 }
 
+float Rand::uniform(float a, float b) {
+  std::uniform_real_distribution<float>::param_type p(a, b);
+  return uniform_dist_float(generator, p);
+}
+
 double Rand::uniform(double a, double b) {
     std::uniform_real_distribution<double>::param_type p(a, b);
     return uniform_dist(generator, p);

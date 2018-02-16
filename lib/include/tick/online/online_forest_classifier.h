@@ -1,8 +1,7 @@
+// License: BSD 3 clause
 
 #ifndef TICK_ONLINE_FOREST_CLASSIFIER_H
 #define TICK_ONLINE_FOREST_CLASSIFIER_H
-
-// License: BSD 3 clause
 
 #include <cmath>
 #include <iomanip>
@@ -11,12 +10,10 @@
 
 
 // TODO: change the Dirichlet parameter
-// TODO: reserve nodes in advance
 // TODO: set_feature_importances with a nullptr by default
 // TODO: subsample parameter, default 0.5
 
 // TODO: tree aggregation
-// TODO: subsampling in the columns and the rows
 // TODO: memory optimization (a FeatureSplitter), maximum (sizeof(uint8_t) splits)), a set of current splits
 // TODO: only binary features version ?
 
@@ -54,20 +51,19 @@ class NodeClassifier {
   // Time of creation of the node
   float _time;
   // Range of the features
-  ArrayFloat _features_min;
-  ArrayFloat _features_max;
+  ArrayFloat _features_min, _features_max;
   // Number of samples in the node
   uint32_t _n_samples;
   // The label of the sample saved in the node
   float _y_t;
   // Logarithm of the aggregation weight for the node
   float _weight;
-  // Logarithm of the agregation weight for the sub-tree starting at this node
+  // Logarithm of the aggregation weight for the sub-tree starting at this node
   float _weight_tree;
   // true if the node is a leaf
   bool _is_leaf;
   // Counts the number of sample seen in each class
-  ArrayULong _counts;
+  ArrayUInt _counts;
 
  public:
   NodeClassifier(TreeClassifier &tree, uint32_t parent, float time = 0);
@@ -97,10 +93,9 @@ class NodeClassifier {
   // Predict function (average of the labels of samples that passed through the node)
   void predict(ArrayDouble &scores) const;
   // Loss function used for aggregation
-
-  float score(uint8_t y) const;
-
   float loss(const double y_t);
+  // Score of the node when the true label is y
+  float score(uint8_t y) const;
 
   // Get node at index in the tree
   inline NodeClassifier &node(uint32_t index) const;
@@ -111,9 +106,9 @@ class NodeClassifier {
   inline uint8_t n_classes() const;
   // Step to use for aggregation
   inline float step() const;
-  //
+  // Dirichlet prior
   inline float dirichlet() const;
-  // Print of the node
+  // Print the node
   void print();
 
   inline uint32_t parent() const;
@@ -131,18 +126,11 @@ class NodeClassifier {
   inline float time() const;
   inline NodeClassifier &set_time(float time);
   inline float features_min(const uint32_t j) const;
-  inline NodeClassifier &set_features_min(const ArrayFloat &features_min);
   inline float features_max(const uint32_t j) const;
-  inline NodeClassifier &set_features_max(const ArrayFloat &features_max);
   inline uint32_t n_samples() const;
-  inline NodeClassifier &set_n_samples(uint32_t n_samples);
   inline bool use_aggregation() const;
   inline float weight() const;
-  inline NodeClassifier &set_weight(float weight);
   inline float weight_tree() const;
-  inline NodeClassifier &set_weight_tree(float weight);
-  inline double y_t() const;
-  inline NodeClassifier &set_y_t(const double y_t);
 };
 
 class OnlineForestClassifier;
@@ -165,15 +153,16 @@ class TreeClassifier {
   uint32_t iteration = 0;
   // Nodes of the tree
   std::vector<NodeClassifier> nodes = std::vector<NodeClassifier>();
-  // Split the node at given index
-  // uint32_t split_leaf(uint32_t index, const ArrayDouble &x_t, double y_t);
 
   // Create the root node
   void create_root();
   // Add nodes in the tree
   uint32_t add_node(uint32_t parent, float time = 0);
 
+  // A vector containing estimated feature importances
   ArrayFloat feature_importances_;
+  // A vector used for computations
+  ArrayFloat intensities;
 
   void extend_range(uint32_t node_index, const ArrayDouble &x_t, const double y_t);
 
@@ -290,9 +279,7 @@ class OnlineForestClassifier {
   void fit(const SArrayDouble2dPtr features, const SArrayDoublePtr labels);
   void predict(const SArrayDouble2dPtr features, SArrayDouble2dPtr scores);
 
-  inline uint32_t sample_feature();
   inline uint32_t sample_feature(const ArrayFloat &prob);
-  // inline uint32_t sample_feature_bis();
   inline float sample_exponential(float intensity);
   inline float sample_threshold(float left, float right);
 

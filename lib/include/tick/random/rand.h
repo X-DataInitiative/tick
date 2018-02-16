@@ -29,6 +29,7 @@ class DLL_PUBLIC Rand {
   std::uniform_int_distribution<int> uniform_int_dist;
   std::uniform_int_distribution<uint32_t > uniform_uint32_dist;
   std::uniform_int_distribution<ulong> uniform_ulong_dist;
+  std::uniform_real_distribution<float> uniform_dist_float;
   std::uniform_real_distribution<double> uniform_dist;
   std::normal_distribution<double> normal_dist;
   std::exponential_distribution<double> expon_dist;
@@ -91,6 +92,9 @@ class DLL_PUBLIC Rand {
    * @brief Returns a random real between 0 and 1
    */
   double uniform();
+
+
+  float uniform(float a, float b);
 
   /**
    * @brief Returns a random real between two numbers

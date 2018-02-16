@@ -1,4 +1,3 @@
-
 // License: BSD 3 clause
 
 #include "tick/online/online_forest_classifier.h"
@@ -86,15 +85,14 @@ void NodeClassifier::update_predict(const double y_t) {
 }
 
 void NodeClassifier::update_range(const ArrayDouble &x_t) {
-  // std::cout << "NodeClassifier::update_range" << std::endl;
   if (_n_samples == 0) {
-    for (ulong j = 0; j < x_t.size(); ++j) {
+    for (ulong j = 0; j < n_features(); ++j) {
       float x_tj = static_cast<float>(x_t[j]);
       _features_min[j] = x_tj;
       _features_max[j] = x_tj;
     }
   } else {
-    for (uint32_t j = 0; j < n_features(); ++j) {
+    for (ulong j = 0; j < n_features(); ++j) {
       float x_tj = static_cast<float>(x_t[j]);
       if (x_tj < _features_min[j]) {
         _features_min[j] = x_tj;
@@ -104,7 +102,6 @@ void NodeClassifier::update_range(const ArrayDouble &x_t) {
       }
     }
   }
-  // std::cout << "Done NodeClassifier::update_range." << std::endl;
 }
 
 float NodeClassifier::score(uint8_t c) const {
@@ -112,7 +109,7 @@ float NodeClassifier::score(uint8_t c) const {
   return (_counts[c] + dirichlet()) / (_n_samples + dirichlet() * n_classes());
 }
 
-inline void NodeClassifier::predict(ArrayDouble &scores) const {
+void NodeClassifier::predict(ArrayDouble &scores) const {
   for (uint8_t c = 0; c < n_classes(); ++c) {
     scores[c] = static_cast<double>(score(c));
   }
@@ -211,27 +208,12 @@ inline float NodeClassifier::features_min(const uint32_t j) const {
   return _features_min[j];
 }
 
-inline NodeClassifier &NodeClassifier::set_features_min(const ArrayFloat &features_min) {
-  _features_min = features_min;
-  return *this;
-}
-
 inline float NodeClassifier::features_max(const uint32_t j) const {
   return _features_max[j];
 }
 
-inline NodeClassifier &NodeClassifier::set_features_max(const ArrayFloat &features_max) {
-  _features_max = features_max;
-  return *this;
-}
-
 inline uint32_t NodeClassifier::n_samples() const {
   return _n_samples;
-}
-
-inline NodeClassifier &NodeClassifier::set_n_samples(uint32_t n_samples) {
-  _n_samples = n_samples;
-  return *this;
 }
 
 inline bool NodeClassifier::use_aggregation() const {
@@ -242,27 +224,8 @@ inline float NodeClassifier::weight() const {
   return _weight;
 }
 
-inline NodeClassifier &NodeClassifier::set_weight(float weight) {
-  _weight = weight;
-  return *this;
-}
-
 inline float NodeClassifier::weight_tree() const {
   return _weight_tree;
-}
-
-inline NodeClassifier &NodeClassifier::set_weight_tree(float weight_tree) {
-  _weight_tree = weight_tree;
-  return *this;
-}
-
-inline double NodeClassifier::y_t() const {
-  return _y_t;
-}
-
-inline NodeClassifier &NodeClassifier::set_y_t(const double y_t) {
-  _y_t = y_t;
-  return *this;
 }
 
 void NodeClassifier::print() {
@@ -281,7 +244,6 @@ void NodeClassifier::print() {
               << _features_min[1] << "]"
               << ", max: [" << std::setprecision(2) << _features_max[0] << ", " << std::setprecision(2)
               << _features_max[1] << "]";
-
   }
   std::cout << ", weight: " << _weight
             << ", weight_tree: " << _weight_tree
@@ -294,11 +256,9 @@ void NodeClassifier::print() {
 
 TreeClassifier::TreeClassifier(OnlineForestClassifier &forest)
     : forest(forest), _n_features(forest.n_features()), _n_classes(forest.n_classes()) {
-  // TODO: pre-allocate the vector to make things faster ?
   create_root();
-
   feature_importances_ = ArrayFloat(_n_features);
-  // feature_importances_.fill(1.);
+  intensities = ArrayFloat(_n_features);
   // TODO: initialization might be important
   feature_importances_.fill(1.);
 }
@@ -310,155 +270,120 @@ TreeClassifier::TreeClassifier(const TreeClassifier &&tree)
     : forest(tree.forest), nodes(tree.nodes) {}
 
 void TreeClassifier::extend_range(uint32_t node_index, const ArrayDouble &x_t, const double y_t) {
-  // std::cout << "Extending the range of: " << index << std::endl;
   NodeClassifier &current_node = node(node_index);
   if (current_node.n_samples() == 0) {
     // The node is a leaf with no sample point, so it does not have a range
     // In this case we just initialize the range with the given feature.
     // This node will then be updated by the call to update_downwards in go_downwards
     current_node.update_range(x_t);
-    // current_node.set_features_min(x_t);
-    // current_node.set_features_max(x_t);
   } else {
     // A vector that will hold the intensities of each feature.
     // The intensity of a feature is measured by the product
     // between the square root of the feature importance and the range extension at this node...
-    ArrayFloat intensities(n_features());
-
     float intensities_sum = 0;
-    for (uint32_t j = 0; j < n_features(); ++j) {
+    for (uint32_t j = 0; j < _n_features; ++j) {
       float x_tj = static_cast<float>(x_t[j]);
       float feature_min_j = current_node.features_min(j);
       float feature_max_j = current_node.features_max(j);
       // TODO: several choices are available here...
-      // double intensity = std::sqrt(feature_importances_[j] / (iteration + 1));
-
-      float intensity = feature_importance(j) / (iteration + 1);
-
-      // double intensity = featufeature_importances_[j] / (iteration + 1);
+      // Intensity will be used to compute the probabilities used for
+      // sampling the feature. It contains the extension of the range wrt each feature
+      // TODO: ouch !!! Some extra work on feature selection is welcome
+      // float intensity = feature_importance(j) / (iteration + 1);
+      float intensity = 1;
       if (x_tj < feature_min_j) {
-        // extension[j] = feature_min_j - x_tj;
-        intensities[j] = intensity * (feature_min_j - x_tj);
-        // extensions_sum += feature_min_j - x_tj;
-        intensities_sum += intensities[j];
+        float diff = intensity * (feature_min_j - x_tj);
+        intensities[j] = diff;
+        intensities_sum += diff;
       } else {
         if (x_tj > feature_max_j) {
-          // extension[j] = x_tj - feature_max_j;
-          intensities[j] = intensity * (x_tj - feature_max_j);
-          intensities_sum += intensities[j];
+          float diff = intensity * (x_tj - feature_max_j);
+          intensities[j] = diff;
+          intensities_sum += diff;
         } else {
           intensities[j] = 0;
         }
       }
     }
-//    std::cout << "extension: [" << extension[0] << ", " << std::setprecision(2) << extension[1] << "]" << std::endl;
-//    std::cout << "extension_sum: " << std::setprecision(2) << extensions_sum << std::endl;
-//    std::cout << "extension_sum: " << std::setpre
-// cision(2) << extensions_sum << std::endl;
-//    std::cout << "... Done computing extension." << std::endl;
-
     // If the sample x_t extends the current range of the node
     if (intensities_sum > 0) {
-      // std::cout << "Extension non-zero, considering the possibility of a split" << std::endl;
       bool do_split;
-      float time = current_node.time();
-      float T = forest.sample_exponential(intensities_sum);
-      // std::cout << "time: " << std::setprecision(2) << time << ", T: " << std::setprecision(2) << T << std::endl;
+      float time, T;
       // Let us determine if we need to split the node or not
       if (current_node.is_leaf()) {
-        // std::cout << "I'll split the node since it's a leaf" << std::endl;
+        // If the node is a leaf we must split it
         do_split = true;
       } else {
-        // Same as node(current_node.right()).time();
+        time = current_node.time();
+        // NB: time = current_node.time() gives the same thing...
+        T = forest.sample_exponential(intensities_sum);
         float child_time = node(current_node.left()).time();
         // Sample a exponential random variable with intensity
         if (time + T < child_time) {
-          // std::cout << "  I'll split since time + T < child_time with child_time: " << child_time << std::endl;
+          // Another Mondrian dark magic :) This is the rejection rule used
+          // in the Mondrian process
           do_split = true;
         } else {
-          // std::cout << "I won't split since time + T >= child_time with child_time: " << child_time << std::endl;
           do_split = false;
         }
       }
       if (do_split) {
-        // std::cout << "Starting the splitting of node: " << node_index << std::endl;
         // Sample the splitting feature with a probability proportional to the range extensions
         intensities /= intensities.sum();
-        // ArrayDouble probabilities = intensities;
-        // probabilities /= probabilities.sum();
-        // extension /= intensities_sum;
-
-        // ArrayDouble probabilities = ArrayDouble(n_features());
-//        for(uint32_t j = 0; j < n_features(); ++j) {
-//          double prb_step = static_cast<double>(1) / std::sqrt(iteration + 1);
-//          probabilities[j] = (1 - prb_step) + prb_step * extension[j] * feature_importances_[j];
-//
-//
-//          // probabilities[j] = extension[j];
-//        }
-        // probabilities /= probabilities.sum();
-
-        // std::cout << "using the probabilities: [" << std::setprecision(2) << probabilities[0] << ", " << std::setprecision(2) << probabilities[1] << "]" << std::endl;
         uint32_t feature = forest.sample_feature(intensities);
-        // std::cout << "sampled feature: " << feature << std::endl;
         float threshold;
         // Is the extension on the right side ?
         bool is_right_extension = x_t[feature] > current_node.features_max(feature);
         // Create new nodes
         uint32_t left_new = add_node(node_index, time + T);
         uint32_t right_new = add_node(node_index, time + T);
+        // Let's take again the current node (adding node might lead to re-allocations in the nodes std::vector)
+        current_node = node(node_index);
+        NodeClassifier &left_new_node = node(left_new);
+        NodeClassifier &right_new_node = node(right_new);
+        // The value of the feature
+        float x_tf = static_cast<float>(x_t[feature]);
         if (is_right_extension) {
-          // std::cout << "extension is on the right" << std::endl;
-          threshold = forest.sample_threshold(node(node_index).features_max(feature), x_t[feature]);
-          // std::cout << "sample inside the extension the threshold: " << threshold << std::endl;
+          // Sample a threshold uniformly in the range extension: the magic of the Mondrian process
+          threshold = forest.sample_threshold(current_node.features_max(feature), x_tf);
           // left_new is the same as node_index, excepted for the parent, time and the fact that it's not a leaf
-          // std::cout << "Let's copy the current node in the left child" << threshold << std::endl;
-          node(left_new) = node(node_index);
-          // donc faut remettre le bon parent et le bon temps
-          // TODO: set_is_leaf useless for left_new since it's a copy of node_index
-          // std::cout << "Let's the update the left child" << std::endl;
-          node(left_new).set_parent(node_index).set_time(time + T);
+          left_new_node = current_node;
+          // so we need to put back the correct parent and time
+          left_new_node.set_parent(node_index).set_time(time + T);
           // right_new doit avoir comme parent node_index
-          // std::cout << "Let's the update the right child" << std::endl;
-          node(right_new).set_parent(node_index).set_time(time + T);
+          right_new_node.set_parent(node_index).set_time(time + T);
           // We must tell the old childs that they have a new parent, if the current node is not a leaf
-          if (!node(node_index).is_leaf()) {
-            // std::cout << "The current node is not a leaf, so let's not forget to update the old childs" << std::endl;
-            node(node(node_index).left()).set_parent(left_new);
-            node(node(node_index).right()).set_parent(left_new);
+          if (!current_node.is_leaf()) {
+            node(current_node.left()).set_parent(left_new);
+            node(current_node.right()).set_parent(left_new);
           }
-          // TODO: faut retourner right_new dans ce cas ?
         } else {
-          // std::cout << "extension is on the left" << std::endl;
-          threshold = forest.sample_threshold(x_t[feature], node(node_index).features_min(feature));
-          node(right_new) = node(node_index);
-          node(right_new).set_parent(node_index).set_time(time + T);
-          node(left_new).set_parent(node_index).set_time(time + T);
-          if (!node(node_index).is_leaf()) {
-            node(node(node_index).left()).set_parent(right_new);
-            node(node(node_index).right()).set_parent(right_new);
+          threshold = forest.sample_threshold(x_t[feature], current_node.features_min(feature));
+          right_new_node = current_node;
+          right_new_node.set_parent(node_index).set_time(time + T);
+          left_new_node.set_parent(node_index).set_time(time + T);
+          if (!current_node.is_leaf()) {
+            node(current_node.left()).set_parent(right_new);
+            node(current_node.right()).set_parent(right_new);
           }
         }
         // We update the splitting feature, threshold, and childs of the current index
-        node(node_index).set_feature(feature).set_threshold(threshold).set_left(left_new)
+        current_node.set_feature(feature).set_threshold(threshold).set_left(left_new)
             .set_right(right_new).set_is_leaf(false);
       }
       // Update the range of the node here
-      node(node_index).update_range(x_t);
+      current_node.update_range(x_t);
     }
   }
-  // std::cout << "...Done extending the range." << std::endl;
 }
 
 uint32_t TreeClassifier::go_downwards(const ArrayDouble &x_t, double y_t, bool predict) {
-  // std::cout << "Going downwards" << std::endl;
   // Find the leaf that contains the sample. Start at the root. Index of the root is always 0.
   // If predict == true, this is for prediction only, so no leaf update and splits can be done.
   uint32_t index_current_node = 0;
   bool is_leaf = false;
   float loss_t = 0;
   uint32_t feature = 0;
-
   while (!is_leaf) {
     if (!predict) {
       // Extend the range and eventually split the current node
@@ -481,24 +406,21 @@ uint32_t TreeClassifier::go_downwards(const ArrayDouble &x_t, double y_t, bool p
       if (!predict) {
         // Compute the difference with the loss of the child
         loss_t -= node(index_current_node).loss(y_t);
-        //if (loss_t > 0) {
-        feature_importances_[feature] += loss_t;
-        // }
+        if (loss_t > 0) {
+          feature_importances_[feature] += loss_t;
+        }
       }
     }
   }
-  // std::cout << "Done going downwards." << std::endl;
   return index_current_node;
 }
 
 void TreeClassifier::go_upwards(uint32_t leaf_index) {
-  // std::cout << "Going upwards" << std::endl;
   uint32_t current = leaf_index;
   while (true) {
     NodeClassifier &current_node = node(current);
     current_node.update_upwards();
     if (current == 0) {
-      // std::cout << "...Done going upwards." << std::endl;
       break;
     }
     // We must update the root node
@@ -519,7 +441,6 @@ void TreeClassifier::print() {
 }
 
 void TreeClassifier::fit(const ArrayDouble &x_t, double y_t) {
-  // std::cout << "TreeClassifier::fit" << std::endl;
   uint32_t leaf = go_downwards(x_t, y_t, false);
   if (use_aggregation()) {
     go_upwards(leaf);
@@ -528,26 +449,19 @@ void TreeClassifier::fit(const ArrayDouble &x_t, double y_t) {
 }
 
 void TreeClassifier::predict(const ArrayDouble &x_t, ArrayDouble &scores, bool use_aggregation) {
-//  std::cout << "TreeClassifier::predict" << std::endl;
   uint32_t leaf = go_downwards(x_t, 0., true);
   if (!use_aggregation) {
-//    std::cout << "Not using aggregation so using only the leaf's prediction" << std::endl;
     node(leaf).predict(scores);
     return;
   }
-
-//  std::cout << "Done." << std::endl;
   uint32_t current = leaf;
   // The child of the current node that does not contain the data
   ArrayDouble pred_new(n_classes());
   while (true) {
-//    std::cout << "node: " << current << std::endl;
     NodeClassifier &current_node = node(current);
     if (current_node.is_leaf()) {
-//      std::cout << "predict leaf" << std::endl;
       current_node.predict(scores);
     } else {
-//      std::cout << "predict node" << std::endl;
       float w = std::exp(current_node.weight() - current_node.weight_tree());
       // Get the predictions of the current node
       current_node.predict(pred_new);
@@ -557,7 +471,6 @@ void TreeClassifier::predict(const ArrayDouble &x_t, ArrayDouble &scores, bool u
     }
     // Root must be updated as well
     if (current == 0) {
-//      std::cout << "Done with predict." << std::endl;
       break;
     }
     current = current_node.parent();
@@ -577,22 +490,14 @@ void TreeClassifier::create_root() {
 }
 
 uint32_t TreeClassifier::add_node(uint32_t parent, float time) {
-  // std::cout << "add_node" << std::endl;
-  // std::cout << "_n_nodes: " << _n_nodes << ", nodes.size()= " << nodes.size() << std::endl;
   if (_n_nodes < nodes.size()) {
     // We have enough nodes already, so let's use the last free one, and just update its time and parent
     node(_n_nodes).set_parent(parent).set_time(time);
     _n_nodes++;
     return _n_nodes - 1;
-    // node(_n_nodes).set_parent(parent).set_time(time);
-    // return _n_nodes;
   } else {
-    // std::cout << "_n_nodes: " << _n_nodes << ", nodes.size()= " << nodes.size() << std::endl;
-    // TICK_ERROR('Something went wrong with nodes !!! ')
+    TICK_ERROR('OnlineForest: Something went wrong with nodes allocation !!!')
   }
-
-//  nodes.emplace_back(*this, parent, time);
-//  return _n_nodes++;
 }
 
 inline uint32_t TreeClassifier::n_features() const {
@@ -637,7 +542,7 @@ FeatureImportanceType TreeClassifier::feature_importance_type() const {
   return forest.feature_importance_type();
 }
 
-float TreeClassifier::feature_importance(const uint32_t j) const {
+inline float TreeClassifier::feature_importance(const uint32_t j) const {
   if (feature_importance_type() == FeatureImportanceType::no) {
     return 1;
   } else {
@@ -656,6 +561,9 @@ float TreeClassifier::given_feature_importance(const uint32_t j) const {
 /*********************************************************************************
  * OnlineForestClassifier methods
  *********************************************************************************/
+
+// TODO: remove n_passes and subsampling
+// Add the bootstrap option ?
 
 OnlineForestClassifier::OnlineForestClassifier(uint32_t n_features,
                                                uint8_t n_classes,
@@ -702,7 +610,6 @@ void OnlineForestClassifier::create_trees() {
 
 void OnlineForestClassifier::fit(const SArrayDouble2dPtr features,
                                  const SArrayDoublePtr labels) {
-  // std::cout << "OnlineForestClassifier::fit" << std::endl;
   uint32_t n_samples = static_cast<uint32_t>(features->n_rows());
   uint32_t n_features = static_cast<uint32_t>(features->n_cols());
   if (_iteration == 0) {
@@ -710,45 +617,22 @@ void OnlineForestClassifier::fit(const SArrayDouble2dPtr features,
   } else {
     check_n_features(n_features, false);
   }
-
-  // TODO: remove this
-  // _features = features;
-  // _labels = labels;
-
-  // set_n_features(n_features);
-
   for (TreeClassifier &tree : trees) {
     // Maximum number of nodes is now the current one + number of samples in this batch
+    // TODO: IMPORTANT !!!! are we sure about this ?????
     tree.reserve_nodes(2 * tree.n_nodes() + 2 * n_samples);
     for (uint32_t i = 0; i < n_samples; ++i) {
-      // double label = (*labels)[i];
-      // TODO: put back the check label
-      // check_label(label);
+      double label = (*labels)[i];
+      check_label(label);
       tree.fit(view_row(*features, i), (*labels)[i]);
       _iteration++;
     }
   }
-
-//  for (uint32_t i = 0; i < n_samples; ++i) {
-//    // std::cout << "i= " << i << std::endl;
-//    for (TreeClassifier &tree : trees) {
-//      // Fit the tree online using the new data point
-//      double U = rand.uniform();
-//      if (U <= _subsampling) {
-//        tree.fit(view_row(*features, i), (*labels)[i]);
-//      }
-//    }
-//    _iteration++;
-//  }
-  // std::cout << "Done OnlineForestClassifier::fit" << std::endl;
 }
 
 void OnlineForestClassifier::predict(const SArrayDouble2dPtr features,
                                      SArrayDouble2dPtr scores) {
   scores->fill(0.);
-//  std::cout << "features->n_rows(): " << features->n_rows() << ", features->n_cols(): " << features->n_cols() << std::endl;
-//  std::cout << "scores->n_rows(): " << scores->n_rows() << ", scores->n_cols(): " << scores->n_cols() << std::endl;
-//  std::cout << "n_classes: " << _n_classes << std::endl;
   uint32_t n_features = static_cast<uint32_t>(features->n_cols());
   check_n_features(n_features, true);
   if (_iteration > 0) {
@@ -761,7 +645,6 @@ void OnlineForestClassifier::predict(const SArrayDouble2dPtr features,
       // The prediction is simply the average of the predictions
       ArrayDouble scores_i = view_row(*scores, i);
       for (TreeClassifier &tree : trees) {
-//        std::cout << "predict for tree " << std::endl;
         tree.predict(view_row(*features, i), scores_tree, _use_aggregation);
         // TODO: use a .incr method instead ??
         scores_i.mult_incr(scores_tree, 1.);
@@ -784,28 +667,13 @@ void OnlineForestClassifier::print() {
   }
 }
 
-inline uint32_t OnlineForestClassifier::sample_feature() {
-  return rand.uniform_int(static_cast<uint32_t>(0), n_features() - 1);
-}
-
-//inline uint32_t OnlineForestClassifier::sample_feature_bis() {
-//  return rand.discrete(_fefeature_importances_);
-//}
-
 inline float OnlineForestClassifier::sample_exponential(float intensity) {
   return rand.exponential(intensity);
 }
 
 inline uint32_t OnlineForestClassifier::sample_feature(const ArrayFloat &prob) {
-//  ArrayDouble my_prob = prob;
-//  for(uint32_t j = 0; j < n_features(); ++j) {
-//    // my_prob[j] *= _feature_importances[j];
-//    my_prob[j] = _feature_importances[j];
-//  }
-//  my_prob /= my_prob.sum();
-  // return rand.discrete(my_prob);
+  // TODO: warning this assumes that prob is indeed a probability vector... !
   return rand.discrete(prob);
-
 }
 
 inline float OnlineForestClassifier::sample_threshold(float left, float right) {
