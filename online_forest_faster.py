@@ -1,43 +1,15 @@
-import os
-import pandas as pd
-import numpy as np
 from time import time
-import zipfile
-
-from sklearn.preprocessing import MinMaxScaler
-from sklearn.ensemble import RandomForestClassifier, ExtraTreesClassifier
-from sklearn.dummy import DummyClassifier
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.metrics import roc_auc_score
-from sklearn.ensemble import GradientBoostingClassifier
-from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
-
-from tick.online import OnlineForestClassifier
-
-import os
-import numpy as np
-import pandas as pd
-import seaborn.apionly as sns
-import pylab as pl
-import warnings
-
-import matplotlib.pyplot as plt
-
 import sys
 
 sys.path.append('/Users/stephane.gaiffas/Dropbox/jaouad/code/online-forests/')
 
-
 from datasets import readers as all_readers
-
 from skgarden import MondrianForestClassifier
 from tick.online import OnlineForestClassifier
 
-
 path = '/Users/stephane.gaiffas/Dropbox/jaouad/code/online-forests/datasets/'
 
-# path = './datasets/'
 readers = all_readers
 
 X, y, dataset_name = all_readers[1](path)
