@@ -167,6 +167,9 @@ class TreeClassifier {
   std::vector<NodeClassifier> nodes = std::vector<NodeClassifier>();
   // Split the node at given index
   // uint32_t split_leaf(uint32_t index, const ArrayDouble &x_t, double y_t);
+
+  // Create the root node
+  void create_root();
   // Add nodes in the tree
   uint32_t add_node(uint32_t parent, float time = 0);
 
@@ -183,6 +186,9 @@ class TreeClassifier {
   TreeClassifier(const TreeClassifier &&tree);
   TreeClassifier &operator=(const TreeClassifier &) = delete;
   TreeClassifier &operator=(const TreeClassifier &&) = delete;
+
+  // Reserve nodes in the tree in advance
+  void reserve_nodes(uint32_t n_nodes);
 
   void fit(const ArrayDouble &x_t, double y_t);
   void predict(const ArrayDouble &x_t, ArrayDouble &scores, bool use_aggregation);

@@ -295,7 +295,7 @@ void NodeClassifier::print() {
 TreeClassifier::TreeClassifier(OnlineForestClassifier &forest)
     : forest(forest), _n_features(forest.n_features()), _n_classes(forest.n_classes()) {
   // TODO: pre-allocate the vector to make things faster ?
-  add_node(0);
+  create_root();
 
   feature_importances_ = ArrayFloat(_n_features);
   // feature_importances_.fill(1.);
@@ -564,9 +564,34 @@ void TreeClassifier::predict(const ArrayDouble &x_t, ArrayDouble &scores, bool u
   }
 }
 
+void TreeClassifier::reserve_nodes(uint32_t n_nodes) {
+  nodes.reserve(n_nodes);
+  for (uint32_t i = 0; i < n_nodes; ++i) {
+    nodes.emplace_back(*this, 0, 0);
+  }
+}
+
+void TreeClassifier::create_root() {
+  nodes.emplace_back(*this, 0, 0);
+  _n_nodes++;
+}
+
 uint32_t TreeClassifier::add_node(uint32_t parent, float time) {
-  nodes.emplace_back(*this, parent, time);
-  return _n_nodes++;
+  std::cout << "add_node" << std::endl;
+  std::cout << "_n_nodes: " << _n_nodes << ", nodes.size()= " << nodes.size() << std::endl;
+  if (_n_nodes < nodes.size()) {
+    // We have enough nodes already, so let's use the last free one, and just update its time and parent
+    node(_n_nodes).set_parent(parent).set_time(time);
+    return _n_nodes++;
+    // node(_n_nodes).set_parent(parent).set_time(time);
+    // return _n_nodes;
+  } else {
+    std::cout << "_n_nodes: " << _n_nodes << ", nodes.size()= " << nodes.size() << std::endl;
+    TICK_ERROR('Something went wrong with nodes !!! ')
+  }
+
+//  nodes.emplace_back(*this, parent, time);
+//  return _n_nodes++;
 }
 
 inline uint32_t TreeClassifier::n_features() const {
@@ -691,19 +716,29 @@ void OnlineForestClassifier::fit(const SArrayDouble2dPtr features,
 
   // set_n_features(n_features);
 
-  for (uint32_t i = 0; i < n_samples; ++i) {
-    // std::cout << "i= " << i << std::endl;
-    for (TreeClassifier &tree : trees) {
-      // Fit the tree online using the new data point
-      double label = (*labels)[i];
-      check_label(label);
-      double U = rand.uniform();
-      if (U <= _subsampling) {
-        tree.fit(view_row(*features, i), (*labels)[i]);
-      }
+  for (TreeClassifier &tree : trees) {
+    // Maximum number of nodes is now the current one + number of samples in this batch
+    tree.reserve_nodes(tree.n_nodes() + n_samples + 1);
+    for (uint32_t i = 0; i < n_samples; ++i) {
+      // double label = (*labels)[i];
+      // TODO: put back the check label
+      // check_label(label);
+      tree.fit(view_row(*features, i), (*labels)[i]);
+      _iteration++;
     }
-    _iteration++;
   }
+
+//  for (uint32_t i = 0; i < n_samples; ++i) {
+//    // std::cout << "i= " << i << std::endl;
+//    for (TreeClassifier &tree : trees) {
+//      // Fit the tree online using the new data point
+//      double U = rand.uniform();
+//      if (U <= _subsampling) {
+//        tree.fit(view_row(*features, i), (*labels)[i]);
+//      }
+//    }
+//    _iteration++;
+//  }
   // std::cout << "Done OnlineForestClassifier::fit" << std::endl;
 }
 
