@@ -42,6 +42,8 @@ readers = all_readers
 
 X, y, dataset_name = all_readers[1](path)
 
+print("X.shape=", X.shape)
+
 
 X_train, X_test, y_train, y_test = \
     train_test_split(X, y, test_size=.3, random_state=42)

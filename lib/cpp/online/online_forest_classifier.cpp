@@ -582,7 +582,8 @@ uint32_t TreeClassifier::add_node(uint32_t parent, float time) {
   if (_n_nodes < nodes.size()) {
     // We have enough nodes already, so let's use the last free one, and just update its time and parent
     node(_n_nodes).set_parent(parent).set_time(time);
-    return _n_nodes++;
+    _n_nodes++;
+    return _n_nodes - 1;
     // node(_n_nodes).set_parent(parent).set_time(time);
     // return _n_nodes;
   } else {
@@ -718,7 +719,7 @@ void OnlineForestClassifier::fit(const SArrayDouble2dPtr features,
 
   for (TreeClassifier &tree : trees) {
     // Maximum number of nodes is now the current one + number of samples in this batch
-    tree.reserve_nodes(tree.n_nodes() + n_samples + 1);
+    tree.reserve_nodes(tree.n_nodes() + n_samples);
     for (uint32_t i = 0; i < n_samples; ++i) {
       // double label = (*labels)[i];
       // TODO: put back the check label
