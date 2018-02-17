@@ -24,12 +24,17 @@ enum class FeatureImportanceType {
 class OnlineForestClassifier {
  public:
 
-  OnlineForestClassifier(uint32_t n_features, uint8_t n_classes, uint8_t n_trees,
-                         uint8_t n_passes = 1, float step = 1.0,
-                         CriterionClassifier criterion = CriterionClassifier::log,
-                         FeatureImportanceType feature_importance_type = FeatureImportanceType::estimated,
-                         bool use_aggregation = true, double subsampling=1, float dirichlet=0.5,
-                         int32_t n_threads = 1, int seed = 0, bool verbose = false);
+  OnlineForestClassifier(uint32_t n_features,
+                         uint8_t n_classes,
+                         uint8_t n_trees,
+                         float step,
+                         CriterionClassifier criterion,
+                         FeatureImportanceType feature_importance_type,
+                         bool use_aggregation,
+                         float dirichlet,
+                         int32_t n_threads,
+                         int seed,
+                         bool verbose);
 
   void fit(const SArrayDouble2dPtr features, const SArrayDoublePtr labels);
   void predict(const SArrayDouble2dPtr features, SArrayDouble2dPtr predictions);

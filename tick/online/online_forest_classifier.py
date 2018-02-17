@@ -95,18 +95,16 @@ class OnlineForestClassifier(ABC, Base):
 
 
     @actual_kwargs
-    def __init__(self, n_classes: int, n_trees: int = 10, n_passes: int = 1,
-                 step: float = 1.,
+    def __init__(self, n_classes: int, n_trees: int = 10, step: float = 1.,
                  criterion: str = 'log', use_aggregation: bool = True,
-                 subsampling: float=1., dirichlet: float=None,
-                 n_threads: int = 1, use_feature_importances=True,
-                 seed: int = -1, verbose: bool = True):
+                 dirichlet: float=0.5, n_threads: int = 1,
+                 use_feature_importances=True, seed: int = -1,
+                 verbose: bool = True):
         Base.__init__(self)
         if not hasattr(self, "_actual_kwargs"):
             self._actual_kwargs = {}
         self._fitted = False
         self.n_trees = n_trees
-        self.n_passes = n_passes
         self.n_features = None
         self.n_classes = n_classes
         self.step = step
@@ -119,10 +117,7 @@ class OnlineForestClassifier(ABC, Base):
         self.seed = seed
         self.verbose = verbose
         self.use_aggregation = use_aggregation
-        self.subsampling = subsampling
         self._forest = None
-        if dirichlet is None:
-            dirichlet = 1 / n_classes
         self.dirichlet = dirichlet
 
     def set_data(self, X, y):
@@ -144,12 +139,15 @@ class OnlineForestClassifier(ABC, Base):
         # TODO: check that sizes of X and y match
         if self._forest is None:
             self.n_features = n_features
-            _forest = _OnlineForestClassifier(
-                n_features, self.n_classes, self.n_trees, self.n_passes,
-                self.step,
+            print(n_features, self.n_classes, self.n_trees, self.step,
                 self._criterion, self._feature_importances_type,
-                self.use_aggregation, self.subsampling,
-                self.dirichlet, self.n_threads, self.seed, self.verbose
+                self.use_aggregation, self.dirichlet, self.n_threads,
+                self.seed, self.verbose)
+            _forest = _OnlineForestClassifier(
+                n_features, self.n_classes, self.n_trees, self.step,
+                self._criterion, self._feature_importances_type,
+                self.use_aggregation, self.dirichlet, self.n_threads,
+                self.seed, self.verbose
             )
             if self._feature_importances_type == FeatureImportanceType_given:
                 _forest.set_given_feature_importances(

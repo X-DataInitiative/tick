@@ -563,17 +563,15 @@ float TreeClassifier::given_feature_importance(const uint32_t j) const {
  *********************************************************************************/
 
 // TODO: remove n_passes and subsampling
-// Add the bootstrap option ?
+// TODO: Add the bootstrap option ? (supposedly useless)
 
 OnlineForestClassifier::OnlineForestClassifier(uint32_t n_features,
                                                uint8_t n_classes,
                                                uint8_t n_trees,
-                                               uint8_t n_passes,
                                                float step,
                                                CriterionClassifier criterion,
                                                FeatureImportanceType feature_importance_type,
                                                bool use_aggregation,
-                                               double subsampling,
                                                float dirichlet,
                                                int32_t n_threads,
                                                int seed,
@@ -581,12 +579,10 @@ OnlineForestClassifier::OnlineForestClassifier(uint32_t n_features,
     : _n_features(n_features),
       _n_classes(n_classes),
       _n_trees(n_trees),
-      _n_passes(n_passes),
       _step(step),
       _criterion(criterion),
       _feature_importance_type(feature_importance_type),
       _use_aggregation(use_aggregation),
-      _subsampling(subsampling),
       _dirichlet(dirichlet),
       _n_threads(n_threads),
       _verbose(verbose),
@@ -810,6 +806,7 @@ float OnlineForestClassifier::dirichlet() const {
 }
 
 OnlineForestClassifier &OnlineForestClassifier::set_dirichlet(const float dirichlet) {
+  // TODO: check that it's > 0
   _dirichlet = dirichlet;
   return *this;
 }
