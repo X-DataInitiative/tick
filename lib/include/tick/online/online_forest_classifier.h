@@ -182,7 +182,17 @@ class TreeClassifier {
   void fit(const ArrayDouble &x_t, double y_t);
   void predict(const ArrayDouble &x_t, ArrayDouble &scores, bool use_aggregation);
 
-  inline uint32_t n_features() const;
+  // Give the depth of the path for x_t
+  uint32_t get_path_depth(const ArrayDouble &x_t);
+  // Get the path of x_t
+  void get_path(const ArrayDouble &x_t, SArrayUIntPtr path);
+
+  void get_aggregate_path(const SArrayDoublePtr features,
+                                SArrayDouble2dPtr node_scores,
+                                SArrayDoublePtr aggregation_weights);
+
+
+    inline uint32_t n_features() const;
   inline uint8_t n_classes() const;
   inline uint32_t n_nodes() const;
   uint32_t n_leaves() const;
@@ -203,6 +213,14 @@ class TreeClassifier {
 
   inline ArrayFloat &feature_importances() {
     return feature_importances_;
+  }
+
+  static void show_vector(const ArrayDouble x, int precision=2) {
+    std::cout << "[";
+    for(ulong j = 0; j < x.size(); ++j) {
+      std::cout << " " << std::setprecision(precision) << x[j];
+    }
+    std::cout << " ]" << std::endl;
   }
 };
 
@@ -313,6 +331,15 @@ class OnlineForestClassifier {
   OnlineForestClassifier &set_given_feature_importances(const ArrayDouble &feature_importances);
 
   void get_feature_importances(SArrayDoublePtr feature_importances);
+
+  // Get the path for of a tree for a single vector of features
+  // void get_path(uint8_t tree, const SArrayDoublePtr features);
+
+  // Give the depth of the path for x_t
+  uint32_t get_path_depth(const uint8_t tree, const SArrayDoublePtr x_t);
+
+  // Get the path of x_t
+  void get_path(const uint8_t tree, const SArrayDoublePtr x_t, SArrayUIntPtr path);
 
 };
 

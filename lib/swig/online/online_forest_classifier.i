@@ -71,4 +71,9 @@ class OnlineForestClassifier {
 
   OnlineForestClassifier &set_given_feature_importances(const ArrayDouble &feature_importances);
 
+  uint32_t get_path_depth(const uint8_t tree, const SArrayDoublePtr x_t);
+
+  void get_path(const uint8_t tree, const SArrayDoublePtr x_t, SArrayUIntPtr path);
+
+
 };

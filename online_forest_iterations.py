@@ -4,8 +4,6 @@ from matplotlib.colors import ListedColormap
 from sklearn.model_selection import train_test_split
 import numpy as np
 from tick.online import OnlineForestClassifier
-
-from sklearn.ensemble import RandomForestClassifier
 from sklearn.datasets import make_moons
 from sklearn.metrics import roc_auc_score
 import matplotlib.pyplot as plt
@@ -30,12 +28,10 @@ cm = plt.cm.RdBu
 cm_bright = ListedColormap(['#FF0000', '#0000FF'])
 
 
-n_trees = 1
+n_trees = 10
 
 clf = OnlineForestClassifier(n_classes=2, n_trees=n_trees, seed=123, step=1.,
                              use_aggregation=True)
-
-# clf = RandomForestClassifier(n_estimators=n_trees, random_state=123)
 
 save_iterations = [5, 10, 30, 50, 100, 300]
 n_plots = len(save_iterations)
@@ -75,11 +71,10 @@ for i in range(X_train.shape[0]):
 
 plt.tight_layout()
 
+import os
 
-# import os
-#
-# path = '/Users/stephane.gaiffas/Dropbox/jaouad/papers/mondrian-journal-online/current/'
-# plt.savefig(os.path.join(path, 'truc.pdf'))
+path = '/Users/stephane.gaiffas/Dropbox/jaouad/papers/mondrian-journal-online/current/'
+plt.savefig(os.path.join(path, 'of_iterations.pdf'))
 
 # plt.show()
 

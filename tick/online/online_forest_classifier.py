@@ -139,10 +139,6 @@ class OnlineForestClassifier(ABC, Base):
         # TODO: check that sizes of X and y match
         if self._forest is None:
             self.n_features = n_features
-            print(n_features, self.n_classes, self.n_trees, self.step,
-                self._criterion, self._feature_importances_type,
-                self.use_aggregation, self.dirichlet, self.n_threads,
-                self.seed, self.verbose)
             _forest = _OnlineForestClassifier(
                 n_features, self.n_classes, self.n_trees, self.step,
                 self._criterion, self._feature_importances_type,
@@ -267,3 +263,15 @@ class OnlineForestClassifier(ABC, Base):
                 feature_importances = np.empty(self.n_features)
                 self._forest.get_feature_importances(feature_importances)
                 return feature_importances
+
+    def get_path(self, n_tree, xt):
+        self._forest.get_path(n_tree, xt)
+
+    def get_path_depth(self, n_tree, x_t):
+        return self._forest.get_path_depth(n_tree, x_t)
+
+    def get_path(self, n_tree, x_t):
+        depth = self.get_path_depth(n_tree, x_t)
+        path = np.empty(depth, dtype=np.uint32)
+        self._forest.get_path(n_tree, x_t, path)
+        return path

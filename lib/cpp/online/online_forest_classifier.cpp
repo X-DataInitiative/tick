@@ -415,6 +415,49 @@ uint32_t TreeClassifier::go_downwards(const ArrayDouble &x_t, double y_t, bool p
   return index_current_node;
 }
 
+// Given a sample point, return the depth of the leaf corresponding to the point (including root)
+uint32_t TreeClassifier::get_path_depth(const ArrayDouble &x_t) {
+  uint32_t index_current_node = 0;
+  bool is_leaf = false;
+  uint32_t depth = 0;
+  while (!is_leaf) {
+    // Is the node a leaf ?
+    NodeClassifier &current_node = node(index_current_node);
+    is_leaf = current_node.is_leaf();
+    depth++;
+    if (!is_leaf) {
+      if (x_t[current_node.feature()] <= current_node.threshold()) {
+        index_current_node = current_node.left();
+      } else {
+        index_current_node = current_node.right();
+      }
+    }
+  }
+  return depth;
+}
+
+// Given a sample point, return the depth of the leaf corresponding to the point (including root)
+void TreeClassifier::get_path(const ArrayDouble &x_t, SArrayUIntPtr path) {
+  uint32_t index_current_node = 0;
+  bool is_leaf = false;
+  uint32_t depth = 0;
+  while (!is_leaf) {
+    // Is the node a leaf ?
+    NodeClassifier &current_node = node(index_current_node);
+    is_leaf = current_node.is_leaf();
+    (*path)[depth] = index_current_node;
+    depth++;
+    if (!is_leaf) {
+      if (x_t[current_node.feature()] <= current_node.threshold()) {
+        index_current_node = current_node.left();
+      } else {
+        index_current_node = current_node.right();
+      }
+    }
+  }
+}
+
+
 void TreeClassifier::go_upwards(uint32_t leaf_index) {
   uint32_t current = leaf_index;
   while (true) {
@@ -476,6 +519,57 @@ void TreeClassifier::predict(const ArrayDouble &x_t, ArrayDouble &scores, bool u
     current = current_node.parent();
   }
 }
+
+
+//// This function actually compute the way the aggregate is computed along the path
+//void TreeClassifier::get_aggregate_path(const SArrayDoublePtr features,
+//                              SArrayDoublePtrList1D
+//                              SArrayDouble2dPtr node_scores,
+//                              SArrayDoublePtr aggregation_weights) {
+//
+//  ArrayDouble &x_t = *features;
+//  uint32_t leaf = go_downwards(x_t, 0., true);
+//  uint32_t current = leaf;
+//  // The child of the current node that does not contain the data
+//  ArrayDouble pred_new(n_classes());
+//  ArrayDouble scores(n_classes());
+//
+//  aggregation_weights->fill(1.);
+//
+//  while (true) {
+//    NodeClassifier &current_node = node(current);
+//    if (current_node.is_leaf()) {
+//      current_node.predict(scores);
+//      std::cout << "node: " << current;
+//      show_vector(scores);
+//    } else {
+//      float w = std::exp(current_node.weight() - current_node.weight_tree());
+//      // Get the predictions of the current node
+//      current_node.predict(pred_new);
+//      std::cout << "current score: " << current;
+//      show_vector(scores);
+//      std::cout << "node scores: " << current;
+//      show_vector(pred_new);
+//      std::cout << "weight: " << 0.5 * w << std::endl;
+//
+//
+//
+//      for (uint8_t c = 0; c < n_classes(); ++c) {
+//        scores[c] = 0.5 * w * pred_new[c] + (1 - 0.5 * w) * scores[c];
+//
+//
+//      }
+//      std::cout << "new score" << std::endl;
+//      show_vector(scores);
+//    }
+//    // Root must be updated as well
+//    if (current == 0) {
+//      break;
+//    }
+//    current = current_node.parent();
+//  }
+//}
+
 
 void TreeClassifier::reserve_nodes(uint32_t n_nodes) {
   nodes.reserve(n_nodes);
@@ -830,4 +924,14 @@ void OnlineForestClassifier::get_feature_importances(SArrayDoublePtr feature_imp
       }
     }
   }
+}
+
+
+uint32_t OnlineForestClassifier::get_path_depth(const uint8_t tree, const SArrayDoublePtr x_t) {
+  return trees[tree].get_path_depth(*x_t);
+}
+
+// Get the path of x_t
+void OnlineForestClassifier::get_path(const uint8_t tree, const SArrayDoublePtr x_t, SArrayUIntPtr path) {
+  trees[tree].get_path(*x_t, path);
 }

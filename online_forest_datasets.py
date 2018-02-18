@@ -361,7 +361,7 @@ for reader in readers:
         LogisticRegression(class_weight='balanced'),
         ExtraTreesClassifier(n_estimators=n_trees),
         RandomForestClassifier(n_estimators=n_trees)
-    ]
+    ]w
 
     performance = [dataset_name]
     timing = [dataset_name]
