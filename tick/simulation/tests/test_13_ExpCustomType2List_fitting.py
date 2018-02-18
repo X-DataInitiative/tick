@@ -13,7 +13,7 @@ dim = n_nodes
 MaxN = 5
 mu_i = [np.array([0.5, 0.7, 0.8, 0.6, 0.5]), np.array([0.5, 0.6, 0.8, 0.8, 0.6]), np.array([0.5, 0.6, 0.9, 0.2, 0.7])]
 
-end_time = 10000.0
+end_time = 1.0
 end_times = []
 
 beta = 3
@@ -23,7 +23,7 @@ kernels = np.array([
             [HawkesKernelExp(0.3, beta), HawkesKernelExp(0.4, beta), HawkesKernelExp(0.3, beta)]
 ])
 
-for num_simu in range(10):
+for num_simu in range(100000):
     seed = num_simu * 10086 + 3007
     simu_model = SimuHawkes(kernels=kernels, end_time=end_time, custom='Type2', seed=seed, MaxN_of_f=MaxN, f_i=mu_i)
 
@@ -35,6 +35,10 @@ for num_simu in range(10):
     simu_model.simulate()
 
     timestamps = simu_model.timestamps
+
+    # print(len(timestamps[0]) + len(timestamps[1])+len(timestamps[2]))
+    # exit(0)
+
     timestamps.append(np.array([]))
     timestamps_list.append(timestamps)
 
@@ -48,7 +52,7 @@ end_times = np.array(end_times)
 ##################################################################################################################
 from tick.optim.model.hawkes_fixed_expkern_loglik_custom2_list import ModelHawkesFixedExpKernCustomType2LogLikList
 
-model_list = ModelHawkesFixedExpKernCustomType2LogLikList(beta, MaxN)
+model_list = ModelHawkesFixedExpKernCustomType2LogLikList(beta, MaxN, n_threads=4)
 model_list.fit(timestamps_list, global_n_list, end_times=end_times)
 
 

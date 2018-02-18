@@ -64,7 +64,6 @@ void ModelHawkesCustom::compute_weights_dim_i(const ulong i) {
     ArrayDouble H1_i = view(H1[i]);
     ArrayDouble H2_i = view(H2[i]);
     ArrayDouble H3_i = view(H3[i]);
-    H1_i[global_n[n_total_jumps]] -= 1;
     for (ulong k = 1; k != 1 + n_total_jumps + 1; k++) {
         if(k != (1 + n_total_jumps))
             H1_i[global_n[k - 1]] += (type_n[k] == i + 1 ? 1 : 0);
