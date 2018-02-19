@@ -96,6 +96,9 @@ class NodeClassifier {
   float loss(const double y_t);
   // Score of the node when the true label is y
   float score(uint8_t y) const;
+  // Compute the exntension of the range of the node when adding x_t.
+  // Output is in intensities, and returns the sum of the extensions
+  float compute_range_extension(const ArrayDouble &x_t, ArrayFloat &extensions);
 
   // Get node at index in the tree
   inline NodeClassifier &node(uint32_t index) const;
@@ -166,8 +169,18 @@ class TreeClassifier {
 
   void extend_range(uint32_t node_index, const ArrayDouble &x_t, const double y_t);
 
-  uint32_t go_downwards(const ArrayDouble &x_t, double y_t, bool predict);
+  // Get the index of the leaf containing x_t
+  uint32_t get_leaf(const ArrayDouble &x_t);
+
+  uint32_t go_downwards(const ArrayDouble &x_t, double y_t);
+
   void go_upwards(uint32_t leaf_index);
+
+  void split_node(uint32_t node_index, const ArrayDouble &x_t, const ArrayFloat &intensities);
+
+
+    // Compute the extension of the range of the node using the features vector x_t
+//  float compute_range_extension(const uint32_t node_index, const ArrayDouble &x_t, ArrayFloat &intensities);
 
  public:
   TreeClassifier(OnlineForestClassifier &forest);
@@ -192,7 +205,7 @@ class TreeClassifier {
                                 SArrayDoublePtr aggregation_weights);
 
 
-    inline uint32_t n_features() const;
+  inline uint32_t n_features() const;
   inline uint8_t n_classes() const;
   inline uint32_t n_nodes() const;
   uint32_t n_leaves() const;
