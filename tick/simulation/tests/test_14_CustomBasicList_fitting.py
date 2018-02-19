@@ -13,7 +13,7 @@ dim = n_nodes
 MaxN_of_f = 5
 f_i = [np.array([1., 0.7, 0.8, 0.6, 0.5]), np.array([1., 0.6, 0.2, 0.8, 0.9]), np.array([1., 0.6, 0.9, 0.2, 0.7])]
 
-end_time = 1000.0
+end_time = 20.0
 end_times = []
 
 beta = 3
@@ -23,7 +23,7 @@ kernels = np.array([
             [HawkesKernelExp(0.0, beta), HawkesKernelExp(0.0, beta), HawkesKernelExp(0.0, beta)]
 ])
 
-for num_simu in range(1000):
+for num_simu in range(10000):
     seed = num_simu * 10086 + 3007
     simu_model = SimuHawkes(kernels=kernels, end_time=end_time, custom=True, seed=seed, MaxN_of_f = MaxN_of_f, f_i=f_i)
     for i in range(n_nodes):

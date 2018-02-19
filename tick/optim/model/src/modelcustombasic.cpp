@@ -30,7 +30,6 @@ void ModelCustomBasic::compute_weights_dim_i(const ulong i) {
     //! in fact, H1, H2 is one dimension, here I make all threads calculate the same thing
     ArrayDouble H1_i = view(H1[i]);
     ArrayDouble H2_i = view(H2[i]);
-    H1_i[global_n[n_total_jumps]] -= 1;
     for (ulong k = 1; k != 1 + n_total_jumps + 1; k++) {
         if(k != (1 + n_total_jumps))
             H1_i[global_n[k - 1]] += (type_n[k] == i + 1 ? 1 : 0);
