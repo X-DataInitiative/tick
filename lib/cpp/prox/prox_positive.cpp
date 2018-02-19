@@ -34,5 +34,5 @@ T TProxPositive<T>::value(const Array<T> &coeffs, ulong start, ulong end) {
   return 0.;
 }
 
-template class TProxPositive<double>;
-template class TProxPositive<float>;
+template class DLL_PUBLIC TProxPositive<double>;
+template class DLL_PUBLIC TProxPositive<float>;

@@ -6,7 +6,7 @@
 #include "prox_separable.h"
 
 template <class T>
-class TProxElasticNet : public TProxSeparable<T> {
+class DLL_PUBLIC TProxElasticNet : public TProxSeparable<T> {
  protected:
   using TProxSeparable<T>::strength;
   using TProxSeparable<T>::positive;

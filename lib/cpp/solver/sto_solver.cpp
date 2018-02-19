@@ -6,24 +6,6 @@
 
 #include "tick/solver/sto_solver.h"
 
-#include "tick/prox/prox_zero.h"
-
-template <class T>
-TStoSolver<T>::TStoSolver(int seed) : seed(seed) {
-  set_seed(seed);
-  permutation_ready = false;
-}
-
-template <class T>
-TStoSolver<T>::TStoSolver(ulong epoch_size, T tol, RandType rand_type, int seed)
-    : epoch_size(epoch_size),
-      tol(tol),
-      prox(std::make_shared<TProxZero<T> >(0.0)),
-      rand_type(rand_type) {
-  set_seed(seed);
-  permutation_ready = false;
-}
-
 template <class T>
 void TStoSolver<T>::init_permutation() {
   if ((rand_type == RandType::perm) && (rand_max > 0)) {
@@ -101,5 +83,5 @@ void TStoSolver<T>::set_starting_iterate(Array<T> &new_iterate) {
   }
 }
 
-template class TStoSolver<double>;
-template class TStoSolver<float>;
+template class DLL_PUBLIC TStoSolver<double>;
+template class DLL_PUBLIC TStoSolver<float>;

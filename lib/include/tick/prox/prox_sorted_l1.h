@@ -8,7 +8,7 @@
 enum class WeightsType { bh = 0, oscar };
 
 template <class T>
-class TProxSortedL1 : public TProx<T> {
+class DLL_PUBLIC TProxSortedL1 : public TProx<T> {
  protected:
   using TProx<T>::start;
   using TProx<T>::end;

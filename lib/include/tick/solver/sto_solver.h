@@ -10,6 +10,7 @@
 #include "tick/base/base.h"
 #include "tick/base_model/model.h"
 #include "tick/prox/prox.h"
+#include "tick/prox/prox_zero.h"
 #include "tick/random/rand.h"
 
 // TODO: code an abstract class and use it for StoSolvers
@@ -19,13 +20,13 @@
 enum class RandType { unif = 0, perm };
 
 template <class T>
-class TStoSolver {
+class DLL_PUBLIC TStoSolver {
  protected:
   // A flag that specify if random permutation is ready to be used or not
   bool permutation_ready;
 
   // Seed of the random sampling
-  int seed;
+  int seed = -1;
 
   // Iteration counter
   ulong t = 1;
@@ -67,10 +68,15 @@ class TStoSolver {
   void init_permutation();
 
  public:
-  explicit TStoSolver(int seed = -1);
-
-  TStoSolver(ulong epoch_size = 0, T tol = 0.,
-             RandType rand_type = RandType::unif, int seed = -1);
+  inline TStoSolver(ulong epoch_size = 0, T tol = 0.,
+                    RandType rand_type = RandType::unif, int seed = -1)
+      : epoch_size(epoch_size),
+        tol(tol),
+        prox(std::make_shared<TProxZero<T> >(0.0)),
+        rand_type(rand_type) {
+    set_seed(seed);
+    permutation_ready = false;
+  }
 
   virtual ~TStoSolver() {}
 

@@ -107,5 +107,5 @@ T TProxTV<T>::value(const Array<T> &coeffs, ulong start, ulong end) {
   return strength * tv_norm;
 }
 
-template class TProxTV<double>;
-template class TProxTV<float>;
+template class DLL_PUBLIC TProxTV<double>;
+template class DLL_PUBLIC TProxTV<float>;

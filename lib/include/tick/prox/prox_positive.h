@@ -6,7 +6,7 @@
 #include "prox_separable.h"
 
 template <class T>
-class TProxPositive : public TProxSeparable<T> {
+class DLL_PUBLIC TProxPositive : public TProxSeparable<T> {
  public:
   explicit TProxPositive(T strength);
 

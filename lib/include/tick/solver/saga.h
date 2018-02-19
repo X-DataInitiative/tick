@@ -8,7 +8,7 @@
 #include "tick/base_model/model_generalized_linear.h"
 
 template <class T>
-class TSAGA : public TStoSolver<T> {
+class DLL_PUBLIC TSAGA : public TStoSolver<T> {
  protected:
   using TStoSolver<T>::t;
   using TStoSolver<T>::model;
@@ -73,12 +73,12 @@ class TSAGA : public TStoSolver<T> {
 
   void set_step(T step) { this->step = step; }
 
-  TSAGA<T>::VarianceReductionMethod get_variance_reduction() const {
+  typename TSAGA<T>::VarianceReductionMethod get_variance_reduction() const {
     return variance_reduction;
   }
 
   void set_variance_reduction(
-      TSAGA<T>::VarianceReductionMethod _variance_reduction) {
+      typename TSAGA<T>::VarianceReductionMethod _variance_reduction) {
     variance_reduction = _variance_reduction;
   }
 };

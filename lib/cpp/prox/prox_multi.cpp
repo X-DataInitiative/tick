@@ -34,5 +34,5 @@ void TProxMulti<T>::call(const Array<T> &coeffs, T step, Array<T> &out,
   }
 }
 
-template class TProxMulti<double>;
-template class TProxMulti<float>;
+template class DLL_PUBLIC TProxMulti<double>;
+template class DLL_PUBLIC TProxMulti<float>;

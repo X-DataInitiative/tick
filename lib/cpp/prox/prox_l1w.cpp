@@ -147,5 +147,5 @@ T TProxL1w<T>::value(const Array<T> &coeffs, ulong start, ulong end) {
   return strength * val;
 }
 
-template class TProxL1w<double>;
-template class TProxL1w<float>;
+template class DLL_PUBLIC TProxL1w<double>;
+template class DLL_PUBLIC TProxL1w<float>;

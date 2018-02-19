@@ -3,6 +3,17 @@
 #include "tick/prox/prox.h"
 
 template <class T>
+void TProx<T>::set_start_end(ulong start, ulong end) {
+  if (start >= end)
+    TICK_ERROR(get_class_name()
+               << " can't have start(" << start
+               << ") greater or equal than end(" << end << ")");
+  this->has_range = true;
+  this->start = start;
+  this->end = end;
+}
+
+template <class T>
 TProx<T>::TProx(T strength, bool positive) {
   has_range = false;
   this->strength = strength;
@@ -79,17 +90,6 @@ T TProx<T>::get_strength() const {
 template <class T>
 void TProx<T>::set_strength(T strength) {
   this->strength = strength;
-}
-
-template <class T>
-void TProx<T>::set_start_end(ulong start, ulong end) {
-  if (start >= end)
-    TICK_ERROR(get_class_name()
-               << " can't have start(" << start
-               << ") greater or equal than end(" << end << ")");
-  this->has_range = true;
-  this->start = start;
-  this->end = end;
 }
 
 template <class T>

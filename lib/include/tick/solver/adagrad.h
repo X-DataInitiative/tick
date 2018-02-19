@@ -6,7 +6,7 @@
 #include "sto_solver.h"
 
 template <class T>
-class TAdaGrad : public TStoSolver<T> {
+class DLL_PUBLIC TAdaGrad : public TStoSolver<T> {
  protected:
   using TStoSolver<T>::t;
   using TStoSolver<T>::model;

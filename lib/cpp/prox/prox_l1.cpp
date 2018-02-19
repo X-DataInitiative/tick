@@ -53,5 +53,5 @@ T TProxL1<T>::value_single(T x) const {
   return std::abs(x);
 }
 
-template class TProxL1<double>;
-template class TProxL1<float>;
+template class DLL_PUBLIC TProxL1<double>;
+template class DLL_PUBLIC TProxL1<float>;

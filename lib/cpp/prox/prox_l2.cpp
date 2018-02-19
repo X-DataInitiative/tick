@@ -43,5 +43,5 @@ T TProxL2<T>::value(const Array<T> &coeffs, ulong start, ulong end) {
   return strength * std::sqrt((end - start) * norm_sq);
 }
 
-template class TProxL2<double>;
-template class TProxL2<float>;
+template class DLL_PUBLIC TProxL2<double>;
+template class DLL_PUBLIC TProxL2<float>;

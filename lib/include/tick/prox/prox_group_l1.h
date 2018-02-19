@@ -6,10 +6,10 @@
 #include "prox_with_groups.h"
 
 template <class T>
-class TProxGroupL1 : public TProxWithGroups<T> {
+class DLL_PUBLIC TProxGroupL1 : public TProxWithGroups<T> {
  protected:
   std::unique_ptr<TProx<T> > build_prox(T strength, ulong start, ulong end,
-                                        bool positive);
+                                        bool positive) override;
 
  public:
   TProxGroupL1(T strength, SArrayULongPtr blocks_start,
@@ -18,6 +18,12 @@ class TProxGroupL1 : public TProxWithGroups<T> {
   TProxGroupL1(T strength, SArrayULongPtr blocks_start,
                SArrayULongPtr blocks_length, ulong start, ulong end,
                bool positive);
+
+  TProxGroupL1() = delete;
+  TProxGroupL1(const TProxGroupL1<T>& other) = delete;
+  TProxGroupL1(TProxGroupL1<T>&& other) = delete;
+  TProxGroupL1<T>& operator=(const TProxGroupL1<T>& other) = delete;
+  TProxGroupL1<T>& operator=(TProxGroupL1<T>&& other) = delete;
 
   std::string get_class_name() const;
 };

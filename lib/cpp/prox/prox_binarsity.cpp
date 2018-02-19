@@ -19,8 +19,8 @@ template <class T>
 std::unique_ptr<TProx<T> > TProxBinarsity<T>::build_prox(T strength,
                                                          ulong start, ulong end,
                                                          bool positive) {
-  return std::unique_ptr<TProxTV<T> >(
-      new TProxTV<T>(strength, start, end, positive));
+  return std::move(std::unique_ptr<TProxTV<T> >(
+      new TProxTV<T>(strength, start, end, positive)));
 }
 
 template <class T>
@@ -46,5 +46,5 @@ void TProxBinarsity<T>::call(const Array<T> &coeffs, T step, Array<T> &out,
   }
 }
 
-template class TProxBinarsity<double>;
-template class TProxBinarsity<float>;
+template class DLL_PUBLIC TProxBinarsity<double>;
+template class DLL_PUBLIC TProxBinarsity<float>;

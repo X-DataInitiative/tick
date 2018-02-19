@@ -58,23 +58,12 @@ if [[ "$unameOut" == "CYGWIN"* ]] || [[ "$unameOut" == "MINGW"* ]]; then
     P=$1
     which cygpath.exe 2>&1 > /dev/null
     CYGPATH=$?
-    (( $CYGPATH == 0 )) && P=$(cygpath $P)
-    if [[ $P == "$PWD"* ]]; then
-        LEN=${#PWD}
-        P="${P:$LEN}"
-        P="${P:1}"
-    fi
-    echo $P
+    (( $CYGPATH == 0 )) && P=$(cygpath -w $P)
+    echo "$P" | sed -e "s/\\\/\\\\\\\/g"
   }
 else
   function pathreal(){
-    if [[ $1 == "$PWD"* ]]; then
-        IN=$1
-        LEN=${#PWD}
-        echo \.${IN:$LEN}
-    else
-        echo $1
-    fi
+    echo $1
   }
 fi
 #################
@@ -253,7 +242,7 @@ for PROFILE in "${PROFILES[@]}"; do
             LIBS="$LIBS -Wl,-rpath,@loader_path/$(relpath $RPATH $REL)"
           fi
         else
-          LIBS="$LIBS $(linkread ${ADD_LIB}.${LIB_POSTEXT})"
+          LIBS="$LIBS $(pathreal $(linkread ${ADD_LIB}.${LIB_POSTEXT}))"
         fi
       fi
     fi

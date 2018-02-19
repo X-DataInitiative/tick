@@ -66,5 +66,5 @@ inline T TSGD<T>::get_step_t() {
   return step / (t + 1);
 }
 
-template class TSGD<double>;
-template class TSGD<float>;
+template class DLL_PUBLIC TSGD<double>;
+template class DLL_PUBLIC TSGD<float>;

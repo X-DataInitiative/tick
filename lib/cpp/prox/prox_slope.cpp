@@ -33,5 +33,5 @@ void TProxSlope<T>::compute_weights(void) {
   }
 }
 
-template class TProxSlope<double>;
-template class TProxSlope<float>;
+template class DLL_PUBLIC TProxSlope<double>;
+template class DLL_PUBLIC TProxSlope<float>;

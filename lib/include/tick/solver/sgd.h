@@ -12,7 +12,7 @@
 #include "tick/prox/prox.h"
 
 template <class T>
-class TSGD : public TStoSolver<T> {
+class DLL_PUBLIC TSGD : public TStoSolver<T> {
  protected:
   using TStoSolver<T>::t;
   using TStoSolver<T>::model;

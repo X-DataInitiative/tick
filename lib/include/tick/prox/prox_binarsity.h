@@ -6,7 +6,7 @@
 #include "prox_with_groups.h"
 
 template <class T>
-class TProxBinarsity : public TProxWithGroups<T> {
+class DLL_PUBLIC TProxBinarsity : public TProxWithGroups<T> {
  protected:
   using TProxWithGroups<T>::proxs;
   using TProxWithGroups<T>::is_synchronized;
@@ -14,7 +14,7 @@ class TProxBinarsity : public TProxWithGroups<T> {
 
  protected:
   std::unique_ptr<TProx<T> > build_prox(T strength, ulong start, ulong end,
-                                        bool positive);
+                                        bool positive) override;
 
  public:
   TProxBinarsity(T strength, SArrayULongPtr blocks_start,
@@ -24,9 +24,15 @@ class TProxBinarsity : public TProxWithGroups<T> {
                  SArrayULongPtr blocks_length, ulong start, ulong end,
                  bool positive);
 
+  TProxBinarsity() = delete;
+  TProxBinarsity(const TProxBinarsity& other) = delete;
+  TProxBinarsity(TProxBinarsity&& other) = delete;
+  TProxBinarsity& operator=(const TProxBinarsity& other) = delete;
+  TProxBinarsity& operator=(TProxBinarsity&& other) = delete;
+
   std::string get_class_name() const;
 
-  void call(const Array<T> &coeffs, T step, Array<T> &out, ulong start,
+  void call(const Array<T>& coeffs, T step, Array<T>& out, ulong start,
             ulong end);
 };
 

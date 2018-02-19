@@ -44,5 +44,5 @@ T TProxL2Sq<T>::value_single(T x) const {
   return x * x / 2;
 }
 
-template class TProxL2Sq<double>;
-template class TProxL2Sq<float>;
+template class DLL_PUBLIC TProxL2Sq<double>;
+template class DLL_PUBLIC TProxL2Sq<float>;

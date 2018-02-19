@@ -129,5 +129,5 @@ void TSDCA<T>::set_starting_iterate(Array<T> &dual_vector) {
   stored_variables_ready = true;
 }
 
-template class TSDCA<double>;
-template class TSDCA<float>;
+template class DLL_PUBLIC TSDCA<double>;
+template class DLL_PUBLIC TSDCA<float>;

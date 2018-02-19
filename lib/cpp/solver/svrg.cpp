@@ -234,5 +234,5 @@ void TSVRG<T>::sparse_single_thread_solver(const ulong& next_i,
   }
 }
 
-template class TSVRG<double>;
-template class TSVRG<float>;
+template class DLL_PUBLIC TSVRG<double>;
+template class DLL_PUBLIC TSVRG<float>;
