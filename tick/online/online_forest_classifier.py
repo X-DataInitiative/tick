@@ -277,7 +277,7 @@ class OnlineForestClassifier(ABC, Base):
         return path
 
     def get_nodes(self, tree):
-        n_nodes = self._forest.n_nodes()
+        n_nodes = self.n_nodes()[0]
         nodes_parent = np.empty(n_nodes, dtype=np.uint32)
         nodes_left = np.empty(n_nodes, dtype=np.uint32)
         nodes_right = np.empty(n_nodes, dtype=np.uint32)
