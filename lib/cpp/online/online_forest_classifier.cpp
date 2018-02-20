@@ -670,7 +670,7 @@ uint32_t TreeClassifier::add_node(uint32_t parent, float time) {
     _n_nodes++;
     return _n_nodes - 1;
   } else {
-    TICK_ERROR('OnlineForest: Something went wrong with nodes allocation !!!')
+    TICK_ERROR("OnlineForest: Something went wrong with nodes allocation !!!")
   }
 }
 
@@ -730,6 +730,42 @@ inline float TreeClassifier::feature_importance(const uint32_t j) const {
 
 float TreeClassifier::given_feature_importance(const uint32_t j) const {
   return forest.given_feature_importances(j);
+}
+
+void TreeClassifier::get_flat_nodes(
+    SArrayUIntPtr nodes_parent,
+    SArrayUIntPtr nodes_left,
+    SArrayUIntPtr nodes_right,
+    SArrayUIntPtr nodes_feature,
+    SArrayFloatPtr nodes_threshold,
+    SArrayFloatPtr nodes_time,
+    SArrayFloat2dPtr nodes_features_min,
+    SArrayFloat2dPtr nodes_features_max,
+    SArrayUIntPtr nodes_n_samples,
+    SArrayFloatPtr nodes_weight,
+    SArrayFloatPtr nodes_weight_tree,
+    SArrayUShortPtr nodes_is_leaf,
+    SArrayUInt2dPtr nodes_counts) {
+
+  ulong n_node = 0;
+  for(NodeClassifier &node : nodes) {
+    (*nodes_parent)[n_node] = node.parent();
+    (*nodes_left)[n_node] = node.left();
+    (*nodes_right)[n_node] = node.right();
+    (*nodes_feature)[n_node] = node.feature();
+    (*nodes_threshold)[n_node] = node.threshold();
+    (*nodes_time)[n_node] = node.time();
+    // (*nodes_features_min)[n_node] = node.features_min();
+    // (*nodes_features_max)[n_node] = node.features_max();
+    (*nodes_n_samples)[n_node] = node.n_samples();
+    (*nodes_weight)[n_node] = node.weight();
+    (*nodes_weight_tree)[n_node] = node.weight_tree();
+    // (*nodes_is_leaf)[n_node] = static_cast<ushort>(node.is_leaf());
+    nodes_is_leaf->operator[](n_node) = static_cast<ushort>(node.is_leaf());
+    (*nodes_is_leaf)[n_node] = static_cast<ushort>(node.is_leaf());
+    // nodes_counts
+    n_node++;
+  }
 }
 
 /*********************************************************************************
@@ -1015,4 +1051,36 @@ uint32_t OnlineForestClassifier::get_path_depth(const uint8_t tree, const SArray
 // Get the path of x_t
 void OnlineForestClassifier::get_path(const uint8_t tree, const SArrayDoublePtr x_t, SArrayUIntPtr path) {
   trees[tree].get_path(*x_t, path);
+}
+
+void OnlineForestClassifier::get_flat_nodes(
+    uint8_t tree,
+    SArrayUIntPtr nodes_parent,
+    SArrayUIntPtr nodes_left,
+    SArrayUIntPtr nodes_right,
+    SArrayUIntPtr nodes_feature,
+    SArrayFloatPtr nodes_threshold,
+    SArrayFloatPtr nodes_time,
+    SArrayFloat2dPtr nodes_features_min,
+    SArrayFloat2dPtr nodes_features_max,
+    SArrayUIntPtr nodes_n_samples,
+    SArrayFloatPtr nodes_weight,
+    SArrayFloatPtr nodes_weight_tree,
+    SArrayUShortPtr nodes_is_leaf,
+    SArrayUInt2dPtr nodes_counts)
+{
+  trees[tree].get_flat_nodes(
+      nodes_parent,
+      nodes_left,
+      nodes_right,
+      nodes_feature,
+      nodes_threshold,
+      nodes_time,
+      nodes_features_min,
+      nodes_features_max,
+      nodes_n_samples,
+      nodes_weight,
+      nodes_weight_tree,
+      nodes_is_leaf,
+      nodes_counts);
 }

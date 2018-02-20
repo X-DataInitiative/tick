@@ -275,3 +275,40 @@ class OnlineForestClassifier(ABC, Base):
         path = np.empty(depth, dtype=np.uint32)
         self._forest.get_path(n_tree, x_t, path)
         return path
+
+    def get_nodes(self, tree):
+        n_nodes = self._forest.n_nodes()
+        nodes_parent = np.empty(n_nodes, dtype=np.uint32)
+        nodes_left = np.empty(n_nodes, dtype=np.uint32)
+        nodes_right = np.empty(n_nodes, dtype=np.uint32)
+        nodes_feature = np.empty(n_nodes, dtype=np.float32)
+        nodes_threshold = np.empty(n_nodes, dtype=np.float32)
+        nodes_time = np.empty(n_nodes, dtype=np.float32)
+        nodes_features_min = np.empty(1, dtype=np.float32)
+        nodes_features_max = np.empty(1, dtype=np.float32)
+        nodes_n_samples = np.empty(n_nodes, dtype=np.uint32)
+        nodes_weight = np.empty(n_nodes, dtype=np.float32)
+        nodes_weight_tree = np.empty(n_nodes, dtype=np.float32)
+        nodes_is_leaf = np.empty(n_nodes, dtype=np.ushort)
+        nodes_counts = np.empty(n_nodes, dtype=np.uint32)
+
+        self._forest.get_flat_nodes(
+            tree,
+            nodes_parent,
+            nodes_left,
+            nodes_right,
+            nodes_feature,
+            nodes_threshold,
+            nodes_time,
+            nodes_features_min,
+            nodes_features_max,
+            nodes_n_samples,
+            nodes_weight,
+            nodes_weight_tree,
+            nodes_is_leaf,
+            nodes_counts)
+
+        return nodes_parent, nodes_left, nodes_right, nodes_feature, \
+               nodes_threshold, nodes_time, nodes_features_min, \
+               nodes_features_max, nodes_n_samples, nodes_weight, \
+               nodes_weight_tree, nodes_is_leaf, nodes_counts

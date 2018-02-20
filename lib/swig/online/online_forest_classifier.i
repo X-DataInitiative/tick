@@ -75,5 +75,21 @@ class OnlineForestClassifier {
 
   void get_path(const uint8_t tree, const SArrayDoublePtr x_t, SArrayUIntPtr path);
 
+  void get_flat_nodes(
+      uint8_t tree,
+      SArrayUIntPtr nodes_parent,
+      SArrayUIntPtr nodes_left,
+      SArrayUIntPtr nodes_right,
+      SArrayUIntPtr nodes_feature,
+      SArrayFloatPtr nodes_threshold,
+      SArrayFloatPtr nodes_time,
+      SArrayFloat2dPtr nodes_features_min,
+      SArrayFloat2dPtr nodes_features_max,
+      SArrayUIntPtr nodes_n_samples,
+      SArrayFloatPtr nodes_weight,
+      SArrayFloatPtr nodes_weight_tree,
+      SArrayUShortPtr nodes_is_leaf,
+      SArrayUInt2dPtr nodes_counts
+  );
 
 };
