@@ -7,7 +7,7 @@
 #include "tick/base/base.h"
 
 template <class T>
-class TProxL1w : public TProxSeparable<T> {
+class DLL_PUBLIC TProxL1w : public TProxSeparable<T> {
  protected:
   using TProx<T>::has_range;
   using TProx<T>::positive;

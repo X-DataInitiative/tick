@@ -64,5 +64,5 @@ void TProxElasticNet<T>::set_ratio(T ratio) {
   this->ratio = ratio;
 }
 
-template class TProxElasticNet<double>;
-template class TProxElasticNet<float>;
+template class DLL_PUBLIC TProxElasticNet<double>;
+template class DLL_PUBLIC TProxElasticNet<float>;

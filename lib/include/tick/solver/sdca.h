@@ -14,7 +14,7 @@
 // TODO: code accelerated SDCA
 
 template <class T>
-class TSDCA : public TStoSolver<T> {
+class DLL_PUBLIC TSDCA : public TStoSolver<T> {
  protected:
   using TStoSolver<T>::t;
   using TStoSolver<T>::model;

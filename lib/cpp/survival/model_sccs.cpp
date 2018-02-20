@@ -5,24 +5,25 @@
 //
 
 #include "tick/survival/model_sccs.h"
-#include "tick/base/base.h"
 #include <cmath>
+#include "tick/base/base.h"
 
 // Remark: in this model, i represents a patient, not an observation (i, b)
 
 ModelSCCS::ModelSCCS(const SBaseArrayDouble2dPtrList1D &features,
                      const SArrayIntPtrList1D &labels,
-                     const SBaseArrayULongPtr censoring,
-                     ulong n_lags)
-    : n_intervals(features[0]->n_rows()),
-      n_lags(n_lags),
-      n_samples(features.size()),
-      n_observations(n_samples * n_intervals),
-      n_lagged_features(features[0]->n_cols()),
-      n_features(n_lags > 0 ? n_lagged_features / (n_lags + 1) : n_lagged_features),
-      labels(labels),
-      features(features),
-      censoring(censoring) {
+                     const SBaseArrayULongPtr censoring, ulong n_lags)
+    : n_lags(n_lags), labels(labels), features(features), censoring(censoring) {
+  if (features.size() == 0) TICK_ERROR("ModelSCCS: features empty");
+
+  n_samples = features.size();
+  n_intervals = features[0]->n_rows();
+  n_observations = (n_samples * n_intervals);
+
+  n_lagged_features = features[0]->n_cols();
+  n_features =
+      n_lags > 0 ? n_lagged_features / (n_lags + 1) : n_lagged_features;
+
   if (n_lags >= n_intervals)
     TICK_ERROR("ModelSCCS requires n_lags < n_intervals");
 
@@ -30,14 +31,17 @@ ModelSCCS::ModelSCCS(const SBaseArrayDouble2dPtrList1D &features,
     TICK_ERROR("features, labels and censoring should have equal length.");
 
   if (n_lags > 0 && n_lagged_features % (n_lags + 1) != 0)
-    TICK_ERROR("n_lags should be a divisor of the number of feature matrices columns.");
+    TICK_ERROR(
+        "n_lags should be a divisor of the number of feature matrices "
+        "columns.");
 
   for (ulong i(0); i < n_samples; i++) {
     if (features[i]->n_rows() != n_intervals)
       TICK_ERROR("All feature matrices should have " << n_intervals << " rows");
 
     if (features[i]->n_cols() != n_lagged_features)
-      TICK_ERROR("All feature matrices should have " << n_lagged_features << " cols");
+      TICK_ERROR("All feature matrices should have " << n_lagged_features
+                                                     << " cols");
 
     if (labels[i]->size() != n_intervals)
       TICK_ERROR("All labels should have " << n_intervals << " rows");
@@ -46,8 +50,7 @@ ModelSCCS::ModelSCCS(const SBaseArrayDouble2dPtrList1D &features,
 
 double ModelSCCS::loss(const ArrayDouble &coeffs) {
   double loss = 0;
-  for (ulong i = 0; i < n_samples; ++i)
-    loss += loss_i(i, coeffs);
+  for (ulong i = 0; i < n_samples; ++i) loss += loss_i(i, coeffs);
 
   return loss / n_samples;
 }
@@ -59,8 +62,7 @@ double ModelSCCS::loss_i(const ulong i, const ArrayDouble &coeffs) {
 
   for (ulong t = 0; t < max_interval; t++)
     inner_prod[t] = get_inner_prod(i, t, coeffs);
-  for (ulong t = max_interval; t < n_intervals; t++)
-    inner_prod[t] = 0;
+  for (ulong t = max_interval; t < n_intervals; t++) inner_prod[t] = 0;
 
   softMax(inner_prod, softmax);
 
@@ -84,8 +86,7 @@ void ModelSCCS::grad(const ArrayDouble &coeffs, ArrayDouble &out) {
   }
 }
 
-void ModelSCCS::grad_i(const ulong i,
-                       const ArrayDouble &coeffs,
+void ModelSCCS::grad_i(const ulong i, const ArrayDouble &coeffs,
                        ArrayDouble &out) {
   out.init_to_zero();
   ArrayDouble inner_prod(n_intervals);
@@ -104,8 +105,7 @@ void ModelSCCS::grad_i(const ulong i,
 
   double multiplier = 0;  // need a double instead of long double for mult_incr
   for (ulong t = 0; t < max_interval; t++) {
-    multiplier =
-        exp(inner_prod[t] - x_max) / sum_exp;  // overflow-proof
+    multiplier = exp(inner_prod[t] - x_max) / sum_exp;  // overflow-proof
     buffer.mult_incr(get_longitudinal_features(i, t), multiplier);
   }
 
@@ -113,9 +113,7 @@ void ModelSCCS::grad_i(const ulong i,
   for (ulong t = 0; t < max_interval; t++) {
     label = get_longitudinal_label(i, t);
     if (label != 0) {
-      out.mult_add_mult_incr(get_longitudinal_features(i, t),
-                             -label,
-                             buffer,
+      out.mult_add_mult_incr(get_longitudinal_features(i, t), -label, buffer,
                              label);
     }
   }
@@ -131,7 +129,7 @@ void ModelSCCS::compute_lip_consts() {
   for (ulong sample = 0; sample < n_samples; sample++) {
     max_sq_norm = 0;
     ulong max_interval = get_max_interval(sample);
-    for (ulong t=0; t < max_interval; t++) {
+    for (ulong t = 0; t < max_interval; t++) {
       row = get_longitudinal_features(sample, t);
       // Lipschitz constant = 0 if Y_{sample, t} = 0
       if (get_longitudinal_label(sample, t) > 0) {
@@ -149,8 +147,7 @@ void ModelSCCS::compute_lip_consts() {
   }
 }
 
-double ModelSCCS::get_inner_prod(const ulong i,
-                                 const ulong t,
+double ModelSCCS::get_inner_prod(const ulong i, const ulong t,
                                  const ArrayDouble &coeffs) const {
   BaseArrayDouble sample = get_longitudinal_features(i, t);
   return sample.dot(coeffs);

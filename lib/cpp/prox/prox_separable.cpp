@@ -137,5 +137,5 @@ T TProxSeparable<T>::value_single(T x) const {
   TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
 }
 
-template class TProxSeparable<double>;
-template class TProxSeparable<float>;
+template class DLL_PUBLIC TProxSeparable<double>;
+template class DLL_PUBLIC TProxSeparable<float>;

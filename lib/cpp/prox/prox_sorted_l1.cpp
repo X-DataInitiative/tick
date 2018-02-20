@@ -168,5 +168,5 @@ void TProxSortedL1<T>::set_start_end(ulong start, ulong end) {
   TProx<T>::set_start_end(start, end);
 }
 
-template class TProxSortedL1<double>;
-template class TProxSortedL1<float>;
+template class DLL_PUBLIC TProxSortedL1<double>;
+template class DLL_PUBLIC TProxSortedL1<float>;

@@ -79,12 +79,14 @@ TKLOG=$KLOG
         # Here we intercept the command for linking on windows and change 
         # the output from ".dll" to ".pyd"
         KLOG=0 
-        OUT=$(mkn link -p $P -l "${LDARGS} $LIBLD" \
+        OUT=$(mkn link -Sp $P -l "${LDARGS} $LIBLD" \
               -P "${MKN_P}" -C lib "${MKN_WITH[@]}" \
-              ${MKN_X_FILE[@]} -RB $B_PATH  |  head -1)
+              ${MKN_X_FILE[@]} -RB $B_PATH |  head -1)
         OUT=$(echo $OUT | sed -e "s/.dll/.pyd/g")
         (( TKLOG > 0 )) && echo $OUT
+        pushd lib 2>&1 > /dev/null
         cmd /c "${OUT[@]}"
+        popd  2>&1 > /dev/null
       else
         mkn link -p $P -l "${LIBLDARGS} ${LDARGS} $LIBLD" \
            -P "${MKN_P}" -C lib "${MKN_WITH[@]}" \

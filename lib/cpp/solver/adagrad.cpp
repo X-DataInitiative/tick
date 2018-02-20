@@ -62,5 +62,5 @@ void TAdaGrad<T>::set_starting_iterate(Array<T> &new_iterate) {
   hist_grad.init_to_zero();
 }
 
-template class TAdaGrad<double>;
-template class TAdaGrad<float>;
+template class DLL_PUBLIC TAdaGrad<double>;
+template class DLL_PUBLIC TAdaGrad<float>;

@@ -16,6 +16,9 @@ TModelCoxRegPartialLik<T>::TModelCoxRegPartialLik(
     const std::shared_ptr<BaseArray2d<T> > features,
     const std::shared_ptr<SArray<T> > times_,
     const SArrayUShortPtr censoring_) {
+  if (!features) TICK_ERROR("ModelCoxRegPartialLik: features is a nullptr");
+  if (!times_) TICK_ERROR("ModelCoxRegPartialLik: times is a nullptr");
+
   n_samples = features->n_rows();
   n_features = features->n_cols();
   n_failures = 0;
@@ -158,5 +161,5 @@ void TModelCoxRegPartialLik<T>::grad(const Array<T> &coeffs, Array<T> &out) {
   }
 }
 
-template class TModelCoxRegPartialLik<double>;
-template class TModelCoxRegPartialLik<float>;
+template class DLL_PUBLIC TModelCoxRegPartialLik<double>;
+template class DLL_PUBLIC TModelCoxRegPartialLik<float>;

@@ -6,7 +6,7 @@
 #include "prox_separable.h"
 
 template <class T>
-class TProxL1 : public TProxSeparable<T> {
+class DLL_PUBLIC TProxL1 : public TProxSeparable<T> {
  protected:
   using TProx<T>::has_range;
   using TProx<T>::strength;

@@ -10,7 +10,7 @@
 // TODO: prox API, with a set_strength, and things like that
 
 template <class T>
-class TProxMulti : public TProx<T> {
+class DLL_PUBLIC TProxMulti : public TProx<T> {
   using ProxTPtrVector = std::vector<std::shared_ptr<TProx<T> > >;
 
  protected:

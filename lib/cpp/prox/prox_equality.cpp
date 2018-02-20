@@ -40,5 +40,5 @@ void TProxEquality<T>::call(const Array<T> &coeffs, T step, Array<T> &out,
   }
 }
 
-template class TProxEquality<double>;
-template class TProxEquality<float>;
+template class DLL_PUBLIC TProxEquality<double>;
+template class DLL_PUBLIC TProxEquality<float>;

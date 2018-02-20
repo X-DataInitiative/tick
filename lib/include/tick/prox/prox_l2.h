@@ -6,7 +6,7 @@
 #include "prox.h"
 
 template <class T>
-class TProxL2 : public TProx<T> {
+class DLL_PUBLIC TProxL2 : public TProx<T> {
  protected:
   using TProx<T>::strength;
   using TProx<T>::positive;

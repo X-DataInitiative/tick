@@ -29,5 +29,5 @@ T TProxZero<T>::value(const Array<T> &coeffs, ulong start, ulong end) {
   return 0.;
 }
 
-template class TProxZero<double>;
-template class TProxZero<float>;
+template class DLL_PUBLIC TProxZero<double>;
+template class DLL_PUBLIC TProxZero<float>;

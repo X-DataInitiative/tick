@@ -9,7 +9,7 @@
 #include "tick/prox/prox_separable.h"
 
 template <class T>
-class TSVRG : public TStoSolver<T> {
+class DLL_PUBLIC TSVRG : public TStoSolver<T> {
  protected:
   using TStoSolver<T>::t;
   using TStoSolver<T>::model;

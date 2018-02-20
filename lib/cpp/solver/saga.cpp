@@ -194,5 +194,5 @@ void TSAGA<T>::set_starting_iterate(Array<T> &new_iterate) {
   next_iterate = iterate;
 }
 
-template class TSAGA<double>;
-template class TSAGA<float>;
+template class DLL_PUBLIC TSAGA<double>;
+template class DLL_PUBLIC TSAGA<float>;

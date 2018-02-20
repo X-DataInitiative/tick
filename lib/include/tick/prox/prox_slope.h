@@ -7,7 +7,7 @@
 #include "prox_sorted_l1.h"
 
 template <class T>
-class TProxSlope : public TProxSortedL1<T> {
+class DLL_PUBLIC TProxSlope : public TProxSortedL1<T> {
  protected:
   using TProxSortedL1<T>::start;
   using TProxSortedL1<T>::end;
