@@ -13,7 +13,7 @@
  * `Learning Social Infectivity in Sparse Low-rank Networks Using
  * Multi-dimensional Hawkes Processes` by Zhou, Zha and Song (2013) in AISTATS
  */
-class HawkesADM4 : public ModelHawkesList {
+class DLL_PUBLIC HawkesADM4 : public ModelHawkesList {
   //! @brief Decay shared by all Hawkes exponential kernels
   double decay;
 

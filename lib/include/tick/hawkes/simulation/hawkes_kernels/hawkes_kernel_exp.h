@@ -20,7 +20,7 @@
  * \f]
  * where \f$ \alpha \f$ is the intensity of the kernel and \f$ \beta \f$ its decay.
  */
-class HawkesKernelExp : public HawkesKernel {
+class DLL_PUBLIC HawkesKernelExp : public HawkesKernel {
   //! A static field to decide whether (approximated) fast formula for exponential
   //! should be used or not
   static bool use_fast_exp;

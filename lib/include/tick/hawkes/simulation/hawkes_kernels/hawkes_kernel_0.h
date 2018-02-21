@@ -17,7 +17,7 @@
  *     \phi(t) = 0
  * \f]
  */
-class HawkesKernel0 : public HawkesKernel {
+class DLL_PUBLIC HawkesKernel0 : public HawkesKernel {
  public :
 
   //! @brief Constructor

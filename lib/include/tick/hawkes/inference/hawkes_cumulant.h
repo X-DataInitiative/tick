@@ -6,7 +6,7 @@
 #include "tick/base/base.h"
 #include "tick/hawkes/model/base/model_hawkes_list.h"
 
-class HawkesCumulant : public ModelHawkesList {
+class DLL_PUBLIC HawkesCumulant : public ModelHawkesList {
   double integration_support;
   bool are_cumulants_ready;
 

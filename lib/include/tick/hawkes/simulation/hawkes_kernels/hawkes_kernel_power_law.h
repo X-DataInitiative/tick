@@ -30,7 +30,7 @@
  * Where \f$ \alpha \f$ is called the multiplier, \f$ \delta \f$ the cut-off and
  * \f$ \beta \f$ the exponent
  */
-class HawkesKernelPowerLaw : public HawkesKernel {
+class DLL_PUBLIC HawkesKernelPowerLaw : public HawkesKernel {
  private:
   //! @brief multiplier of the kernel
   double multiplier;

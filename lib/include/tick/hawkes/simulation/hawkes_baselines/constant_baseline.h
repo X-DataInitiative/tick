@@ -11,7 +11,7 @@
 /*! \class HawkesConstantBaseline
  * \brief A basic wrapper of double to represent \f$ \mu \f$ of Hawkes processes
  */
-class HawkesConstantBaseline : public HawkesBaseline {
+class DLL_PUBLIC HawkesConstantBaseline : public HawkesBaseline {
   //! @brief The value
   double value;
 

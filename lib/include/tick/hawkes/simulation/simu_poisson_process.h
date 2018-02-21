@@ -12,7 +12,7 @@
  * \brief This is the class of constant Poisson processes
  */
 
-class Poisson : public PP {
+class DLL_PUBLIC Poisson : public PP {
  public:
   /// @brief Process intensities
   SArrayDoublePtr intensities;

@@ -35,14 +35,22 @@
 #include "tick/prox/prox_tv.h"
 #include "tick/prox/prox_zero.h"
 
-
 #include "tick/robust/model_absolute_regression.h"
 
 #include "tick/survival/model_coxreg_partial_lik.h"
 #include "tick/survival/model_sccs.h"
 
+#include "tick/hawkes/model/model_hawkes_expkern_leastsq_single.h"
+#include "tick/hawkes/model/model_hawkes_sumexpkern_loglik_single.h"
+
+
+#include "tick/hawkes/simulation/simu_hawkes.h"
+#include "tick/hawkes/simulation/simu_poisson_process.h"
+
+#ifdef _MKN_WITH_MKN_KUL_
 #include "kul/log.hpp"
 #include "kul/signal.hpp"
+#endif
 
 #define DEBUG std::cout << __LINE__ << std::endl
 
@@ -50,7 +58,7 @@ void run(const std::function<void()>& func){
   try{
     func();
   }catch(const std::exception &e){
-    KLOG(ERR) << e.what();
+    std::cerr << e.what() << std::endl;
   }catch(...){
     DEBUG;
   }
@@ -80,10 +88,11 @@ SArrayDouble2dPtr get_features() {
   return features.as_sarray2d_ptr();
 }
 
-
 #ifdef ADD_MAIN
 int main(int argc, char** argv) {
+#ifdef _MKN_WITH_MKN_KUL_
   kul::Signal sig;
+#endif
   SArrayULongPtr start, length;
   std::shared_ptr<SArray<double>> weights;
 
@@ -93,9 +102,7 @@ int main(int argc, char** argv) {
   ulong n_samples = features_ptr->n_rows();
   ulong n_features = features_ptr->n_cols();
 
-
   try{
-
     auto linreg = std::make_shared<TModelLinReg<double> >(features_ptr, labels_ptr, false, 1);
     auto logreg = std::make_shared<TModelLogReg<double> >(features_ptr, labels_ptr, false, 1);
     
@@ -136,8 +143,13 @@ int main(int argc, char** argv) {
 
     run([&](){ TModelAbsoluteRegression<double> t(features_ptr, labels_ptr, false, 1); });
 
+    run([&](){ ModelHawkesExpKernLeastSqSingle t(features_ptr, 1, 1); });
+
+    run([&](){ Hawkes t(1, 1); });
+    run([&](){ Poisson t(1, 1); });
+    
   }catch(const std::exception &e){
-    KLOG(ERR) << e.what();
+    std::cerr << e.what() << std::endl;
   }catch(...){
     DEBUG;
   }

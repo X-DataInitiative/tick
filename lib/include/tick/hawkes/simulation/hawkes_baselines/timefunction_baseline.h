@@ -12,7 +12,7 @@
 /*! \class HawkesBaseline
  * \brief Class of time varying baselines modeled by TimeFunction
  */
-class HawkesTimeFunctionBaseline : public HawkesBaseline {
+class DLL_PUBLIC HawkesTimeFunctionBaseline : public HawkesBaseline {
   //! @brief The timefunction that will compute time varying baseline
   TimeFunction time_function;
 

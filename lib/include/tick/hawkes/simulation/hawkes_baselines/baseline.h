@@ -11,7 +11,7 @@
 /*! \class HawkesBaseline
  * \brief A abstract class for Hawkes baselines
  */
-class HawkesBaseline {
+class DLL_PUBLIC HawkesBaseline {
  public:
   //! @brief Empty constuctor
   HawkesBaseline() {}
