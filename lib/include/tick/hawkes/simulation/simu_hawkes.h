@@ -42,7 +42,7 @@
  *   - \f$ dN \f$ are the processes differentiates
  *   - \f$ * \f$ is a convolution product
  */
-class Hawkes : public PP {
+class DLL_PUBLIC Hawkes : public PP {
  public:
   /// @brief The kernel matrix
   std::vector<HawkesKernelPtr> kernels;

@@ -16,7 +16,7 @@
  * Their intensities are modeled by TimeFunction
  */
 
-class InhomogeneousPoisson : public PP {
+class DLL_PUBLIC InhomogeneousPoisson : public PP {
   std::vector<TimeFunction> intensities_functions;
  public :
   /**

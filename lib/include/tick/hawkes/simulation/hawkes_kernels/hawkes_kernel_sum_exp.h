@@ -16,7 +16,7 @@
  * \f]
  * where \f$ \alpha_u \f$ are the intensities of the kernel and \f$ \beta_u \f$ its decays.
  */
-class HawkesKernelSumExp : public HawkesKernel {
+class DLL_PUBLIC HawkesKernelSumExp : public HawkesKernel {
   //! A static field to decide whether (approximated) fast formula for exponential
   //! should be used or not
   static bool use_fast_exp;

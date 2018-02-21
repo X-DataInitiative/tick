@@ -13,7 +13,7 @@
  * `Learning Granger Causality for Hawkes Processes`
  *  by Xu, Farajtabar, and Zha (2016) in ICML
  */
-class HawkesSumGaussians : public ModelHawkesList {
+class DLL_PUBLIC HawkesSumGaussians : public ModelHawkesList {
   //! @brief Number of gaussian functions to approximate each kernel
   ulong n_gaussians;
 

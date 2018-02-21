@@ -18,7 +18,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////////////////
 
-class HawkesEM : public ModelHawkesList {
+class DLL_PUBLIC HawkesEM : public ModelHawkesList {
   //! @brief Maximum support of the kernel
   double kernel_support;
 

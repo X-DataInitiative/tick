@@ -4,13 +4,11 @@ import os
 import unittest
 
 import numpy as np
-import scipy
+from scipy import sparse
 
 from tick.array.serialize import serialize_array, load_array
-from tick.optim.solver.tests.solver import TestSolver
 
-
-class Test(TestSolver):
+class Test(unittest.TestCase):
     def setUp(self):
         self.array_file = 'tmp_array_file.cereal'
 
@@ -39,7 +37,7 @@ class Test(TestSolver):
     def test_serialize_sparse_2d_array(self):
         """...Test serialization of 2d dense array is done as expected
         """
-        array = scipy.sparse.rand(10, 10, density=0.3, format='csr')
+        array = sparse.rand(10, 10, density=0.3, format='csr')
         serialize_array(array, self.array_file)
 
         serialized_array = load_array(self.array_file, array_dim=2,

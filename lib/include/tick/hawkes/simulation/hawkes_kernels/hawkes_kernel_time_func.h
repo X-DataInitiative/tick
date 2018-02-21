@@ -11,7 +11,7 @@
  * @class HawkesKernelTimeFunc
  * @brief Piecewise linear Hawkes kernels. This kernel is handled with a TimeFunction
  */
-class HawkesKernelTimeFunc : public HawkesKernel {
+class DLL_PUBLIC HawkesKernelTimeFunc : public HawkesKernel {
  private:
   //! @brief The TimeFunction used by the kernel
   TimeFunction time_function;
