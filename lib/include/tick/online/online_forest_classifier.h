@@ -171,8 +171,6 @@ class TreeClassifier {
   // A vector used for computations
   ArrayFloat intensities;
 
-  void extend_range(uint32_t node_index, const ArrayDouble &x_t, const double y_t);
-
   void split_node(uint32_t node_index,
                   const float split_time,
                   const float threshold,
@@ -183,6 +181,8 @@ class TreeClassifier {
   uint32_t get_leaf(const ArrayDouble &x_t);
 
   uint32_t go_downwards(const ArrayDouble &x_t, double y_t);
+
+  float compute_split_time(uint32_t node_index, const ArrayDouble &x_t);
 
   void go_upwards(uint32_t leaf_index);
 

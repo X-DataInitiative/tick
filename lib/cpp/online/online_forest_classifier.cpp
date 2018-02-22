@@ -303,45 +303,31 @@ TreeClassifier::TreeClassifier(const TreeClassifier &tree)
 TreeClassifier::TreeClassifier(const TreeClassifier &&tree)
     : forest(tree.forest), nodes(tree.nodes) {}
 
+void TreeClassifier::fit(const ArrayDouble &x_t, double y_t) {
+  uint32_t leaf = go_downwards(x_t, y_t);
+  if (use_aggregation()) {
+    go_upwards(leaf);
+  }
+  iteration++;
+}
 
-void TreeClassifier::extend_range(uint32_t node_index, const ArrayDouble &x_t, const double y_t) {
-  NodeClassifier &current_node = node(node_index);
-  if (current_node.n_samples() == 0) {
-    // The node is a leaf with no sample point, so it does not have a range
-    // In this case we just initialize the range with the given feature.
-    // This node will then be updated by the call to update_downwards in go_downwards
-    current_node.update_range(x_t);
-  } else {
-    // The intensity of a feature is measured by the product
-    // between the square root of the feature importance and the range extension at this node...
-    // Let's compute the extension of the range of the current node, and its sum
-    float intensities_sum = current_node.compute_range_extension(x_t, intensities);
+uint32_t TreeClassifier::go_downwards(const ArrayDouble &x_t, double y_t) {
+  // We update the nodes along the path which leads to the leaf containing x_t
+  // For each node on the path, we consider the possibility of splitting it,
+  // following the Mondrian process definition.
+  // Index of the root is 0
+  uint32_t index_current_node = 0;
+  bool is_leaf = false;
+  float loss_t;
 
-    bool do_split = false;
-    float split_time;
-
-    // If the sample x_t extends the current range of the node
-    if (intensities_sum > 0) {
-      // Let us determine if we need to split the node or not
-      if (current_node.is_leaf()) {
-        // If the node is a leaf we must split it
-        do_split = true;
-      } else {
-        time = current_node.time();
-        // NB: time = current_node.time() gives the same thing...
-        float T = forest.sample_exponential(intensities_sum);
-        float child_time = node(current_node.left()).time();
-        // Sample a exponential random variable with intensity
-        if (time + T < child_time) {
-          // Another Mondrian dark magic :) This is the rejection rule used
-          // in the Mondrian process
-          do_split = true;
-        } else {
-          do_split = false;
-        }
-      }
-
-      if (do_split) {
+  while (!is_leaf) {
+    if(iteration != 0) {
+      // If it's not the first iteration (otherwise the current node is root
+      // with no range), we consider the possibility of a split
+      float split_time = compute_split_time(index_current_node, x_t);
+      // If we do split
+      if (split_time > 0) {
+        NodeClassifier &current_node = node(index_current_node);
         // Normalize the range extensions to get probabilities
         intensities /= intensities.sum();
         // Sample the feature at random with with a probability proportional to the range extensions
@@ -356,53 +342,66 @@ void TreeClassifier::extend_range(uint32_t node_index, const ArrayDouble &x_t, c
         } else {
           threshold = forest.sample_threshold(x_tf, current_node.features_min(feature));
         }
-
-        split_node(node_index, split_time, threshold, feature, is_right_extension);
-
-//        // Create new nodes
-//        uint32_t left_new = add_node(node_index, time + T);
-//        uint32_t right_new = add_node(node_index, time + T);
-//        // Let's take again the current node (adding node might lead to re-allocations in the nodes std::vector)
-//        current_node = node(node_index);
-//        NodeClassifier &left_new_node = node(left_new);
-//        NodeClassifier &right_new_node = node(right_new);
-//        // The value of the feature
-//
-//        if (is_right_extension) {
-//          // Sample a threshold uniformly in the range extension: the magic of the Mondrian process
-//          threshold = forest.sample_threshold(current_node.features_max(feature), x_tf);
-//          // left_new is the same as node_index, excepted for the parent, time and the fact that it's not a leaf
-//          left_new_node = current_node;
-//          // so we need to put back the correct parent and time
-//          left_new_node.set_parent(node_index).set_time(time + T);
-//          // right_new doit avoir comme parent node_index
-//          // TODO: next line useless ?
-//          right_new_node.set_parent(node_index).set_time(time + T);
-//          // We must tell the old childs that they have a new parent, if the current node is not a leaf
-//          if (!current_node.is_leaf()) {
-//            node(current_node.left()).set_parent(left_new);
-//            node(current_node.right()).set_parent(left_new);
-//          }
-//        } else {
-//          threshold = forest.sample_threshold(x_t[feature], current_node.features_min(feature));
-//          right_new_node = current_node;
-//          right_new_node.set_parent(node_index).set_time(time + T);
-//          left_new_node.set_parent(node_index).set_time(time + T);
-//          if (!current_node.is_leaf()) {
-//            node(current_node.left()).set_parent(right_new);
-//            node(current_node.right()).set_parent(right_new);
-//          }
-//        }
-//        // We update the splitting feature, threshold, and childs of the current index
-//        current_node.set_feature(feature).set_threshold(threshold).set_left(left_new)
-//            .set_right(right_new).set_is_leaf(false);
+        split_node(index_current_node, split_time, threshold, feature, is_right_extension);
       }
-      // Update the range of the node here
-      current_node.update_range(x_t);
+    }
+    // Get the current node
+    NodeClassifier &current_node = node(index_current_node);
+    // Update its range
+    current_node.update_range(x_t);
+    // Update the current node. Returns the loss of the node (before its update).
+    // This will be used to update the feature importances below
+    loss_t = current_node.update_downwards(x_t, y_t);
+    is_leaf = current_node.is_leaf();
+    if (!is_leaf) {
+      float feature = current_node.feature();
+      float threshold = current_node.threshold();
+      if (x_t[feature] <= threshold) {
+        index_current_node = current_node.left();
+      } else {
+        index_current_node = current_node.right();
+      }
+//      // Compute the difference with the loss of the child
+//      loss_t -= node(index_current_node).loss(y_t);
+//      if (loss_t > 0) {
+//        feature_importances_[feature] += loss_t;
+//      }
     }
   }
+  return index_current_node;
 }
 
+
+float TreeClassifier::compute_split_time(uint32_t node_index, const ArrayDouble &x_t) {
+  NodeClassifier &current_node = node(node_index);
+  // Let's compute the extension of the range of the current node, and its sum
+  float intensities_sum = current_node.compute_range_extension(x_t, intensities);
+  // If the sample x_t extends the current range of the node
+  if (intensities_sum > 0) {
+    // TODO: check that intensity is indeed intensity in the rand.h
+    float T = forest.sample_exponential(intensities_sum);
+    float time = current_node.time();
+    // Splitting time of the node (if splitting occurs)
+    float split_time = time + T;
+    if (current_node.is_leaf()) {
+      // If the node is a leaf we must split it
+      return split_time;
+    } else {
+      // Otherwise we apply Mondrian process dark magic :)
+      // 1. We get the creation time of the childs (left and right is the same)
+      float child_time = node(current_node.left()).time();
+      // 2. We check if splitting time occurs before child creation time
+      // Sample a exponential random variable with intensity
+      if (split_time < child_time) {
+        return split_time;
+      } else {
+        return 0;
+      }
+    }
+  } else {
+    return 0;
+  }
+}
 
 // Split node at time split_time, using the given feature and threshold
 void TreeClassifier::split_node(uint32_t node_index,
@@ -446,7 +445,6 @@ void TreeClassifier::split_node(uint32_t node_index,
 }
 
 
-
 uint32_t TreeClassifier::get_leaf(const ArrayDouble &x_t) {
   // Find the index of the leaf that contains the sample.
   // Start at the root. Index of the root is 0
@@ -469,41 +467,6 @@ uint32_t TreeClassifier::get_leaf(const ArrayDouble &x_t) {
 }
 
 
-uint32_t TreeClassifier::go_downwards(const ArrayDouble &x_t, double y_t) {
-  // We update the nodes along the path which leads to the leaf containing x_t
-  // For each node on the path, we consider the possibility of splitting it,
-  // following the Mondrian process definition.
-  // Index of the root is 0
-  uint32_t index_current_node = 0;
-  bool is_leaf = false;
-  float loss_t;
-  while (!is_leaf) {
-    // Extend the range and eventually split the current node
-    // If we split this node, then the leaf is one of the two new nodes
-    extend_range(index_current_node, x_t, y_t);
-    // Get the current node
-    NodeClassifier &current_node = node(index_current_node);
-    // Update the current node. Returns the loss of the node (before its update).
-    // This will be used to update the feature importances below
-    loss_t = current_node.update_downwards(x_t, y_t);
-    is_leaf = current_node.is_leaf();
-    if (!is_leaf) {
-      float feature = current_node.feature();
-      float threshold = current_node.threshold();
-      if (x_t[feature] <= threshold) {
-        index_current_node = current_node.left();
-      } else {
-        index_current_node = current_node.right();
-      }
-//      // Compute the difference with the loss of the child
-//      loss_t -= node(index_current_node).loss(y_t);
-//      if (loss_t > 0) {
-//        feature_importances_[feature] += loss_t;
-//      }
-    }
-  }
-  return index_current_node;
-}
 
 // Given a sample point, return the depth of the leaf corresponding to the point (including root)
 uint32_t TreeClassifier::get_path_depth(const ArrayDouble &x_t) {
@@ -577,13 +540,6 @@ void TreeClassifier::print() {
   std::cout << ")" << std::endl;
 }
 
-void TreeClassifier::fit(const ArrayDouble &x_t, double y_t) {
-  uint32_t leaf = go_downwards(x_t, y_t);
-  if (use_aggregation()) {
-    go_upwards(leaf);
-  }
-  iteration++;
-}
 
 void TreeClassifier::predict(const ArrayDouble &x_t, ArrayDouble &scores, bool use_aggregation) {
   uint32_t leaf = get_leaf(x_t);
