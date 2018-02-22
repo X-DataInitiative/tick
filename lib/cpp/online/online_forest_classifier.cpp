@@ -325,6 +325,10 @@ uint32_t TreeClassifier::go_downwards(const ArrayDouble &x_t, double y_t) {
       // If it's not the first iteration (otherwise the current node is root
       // with no range), we consider the possibility of a split
       float split_time = compute_split_time(index_current_node, x_t);
+
+      std::cout << "iteration: " << iteration << std::endl;
+      std::cout << "split_time: " << split_time << std::endl;
+
       // If we do split
       if (split_time > 0) {
         NodeClassifier &current_node = node(index_current_node);
@@ -342,6 +346,12 @@ uint32_t TreeClassifier::go_downwards(const ArrayDouble &x_t, double y_t) {
         } else {
           threshold = forest.sample_threshold(x_tf, current_node.features_min(feature));
         }
+        std::cout << "node: " << index_current_node;
+        std::cout << "split_time: " << split_time;
+        std::cout << "threshold: " << threshold;
+        std::cout << "feature: " << feature;
+        std::cout << "is_right_extension: " << is_right_extension;
+        std::cout << std::endl;
         split_node(index_current_node, split_time, threshold, feature, is_right_extension);
       }
     }
