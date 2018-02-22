@@ -62,6 +62,7 @@ class OnlineForestClassifier {
   OnlineForestClassifier &set_seed(int seed);
 
   void n_nodes(SArrayUIntPtr n_nodes_per_tree);
+  void n_nodes_reserved(SArrayUIntPtr n_reserved_nodes_per_tree);
   void n_leaves(SArrayUIntPtr n_leaves_per_tree);
 
   bool verbose() const;
@@ -83,6 +84,7 @@ class OnlineForestClassifier {
       SArrayUIntPtr nodes_feature,
       SArrayFloatPtr nodes_threshold,
       SArrayFloatPtr nodes_time,
+      SArrayUShortPtr nodes_depth,
       SArrayFloat2dPtr nodes_features_min,
       SArrayFloat2dPtr nodes_features_max,
       SArrayUIntPtr nodes_n_samples,

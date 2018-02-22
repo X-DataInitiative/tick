@@ -211,6 +211,11 @@ class OnlineForestClassifier(ABC, Base):
         self._forest.n_nodes(n_nodes_per_tree)
         return n_nodes_per_tree
 
+    def n_nodes_reserved(self):
+        n_nodes_reserved_per_tree = np.empty(self.n_trees, dtype=np.uint32)
+        self._forest.n_nodes_reserved(n_nodes_reserved_per_tree)
+        return n_nodes_reserved_per_tree
+
     @property
     def criterion(self):
         if self._criterion == CriterionClassifier_log:
@@ -276,21 +281,22 @@ class OnlineForestClassifier(ABC, Base):
         self._forest.get_path(n_tree, x_t, path)
         return path
 
-    def get_nodes(self, tree):
-        n_nodes = self.n_nodes()[0]
+    def get_nodes_json(self, tree):
+        n_nodes = self.n_nodes()[tree]
+        # print("n_nodes=", n_nodes)
         nodes_parent = np.empty(n_nodes, dtype=np.uint32)
         nodes_left = np.empty(n_nodes, dtype=np.uint32)
         nodes_right = np.empty(n_nodes, dtype=np.uint32)
-        nodes_feature = np.empty(n_nodes, dtype=np.float32)
+        nodes_feature = np.empty(n_nodes, dtype=np.uint32)
         nodes_threshold = np.empty(n_nodes, dtype=np.float32)
         nodes_time = np.empty(n_nodes, dtype=np.float32)
-        nodes_features_min = np.empty(1, dtype=np.float32)
-        nodes_features_max = np.empty(1, dtype=np.float32)
+        nodes_features_min = np.empty((n_nodes, self.n_features), dtype=np.float32)
+        nodes_features_max = np.empty((n_nodes, self.n_features), dtype=np.float32)
         nodes_n_samples = np.empty(n_nodes, dtype=np.uint32)
         nodes_weight = np.empty(n_nodes, dtype=np.float32)
         nodes_weight_tree = np.empty(n_nodes, dtype=np.float32)
         nodes_is_leaf = np.empty(n_nodes, dtype=np.ushort)
-        nodes_counts = np.empty(n_nodes, dtype=np.uint32)
+        nodes_counts = np.empty((n_nodes, self.n_classes), dtype=np.uint32)
 
         self._forest.get_flat_nodes(
             tree,
@@ -307,8 +313,130 @@ class OnlineForestClassifier(ABC, Base):
             nodes_weight_tree,
             nodes_is_leaf,
             nodes_counts)
+        nodes = []
+        for index, (parent, left, right, time) \
+            in enumerate(zip(nodes_parent, nodes_left,
+                             nodes_right, nodes_time)):
+            nodes.append(
+                {'index': int(index), 'left': int(left), 'right': int(right),
+                 'time': float(time)}
+            )
+        return nodes
 
-        return nodes_parent, nodes_left, nodes_right, nodes_feature, \
-               nodes_threshold, nodes_time, nodes_features_min, \
-               nodes_features_max, nodes_n_samples, nodes_weight, \
-               nodes_weight_tree, nodes_is_leaf, nodes_counts
+    def get_nodes_df(self, tree):
+        import pandas as pd
+        n_nodes = self.n_nodes()[tree]
+        # print("n_nodes=", n_nodes)
+        nodes_parent = np.empty(n_nodes, dtype=np.uint32)
+        nodes_left = np.empty(n_nodes, dtype=np.uint32)
+        nodes_right = np.empty(n_nodes, dtype=np.uint32)
+        nodes_feature = np.empty(n_nodes, dtype=np.uint32)
+        nodes_threshold = np.empty(n_nodes, dtype=np.float32)
+        nodes_time = np.empty(n_nodes, dtype=np.float32)
+        nodes_depth = np.empty(n_nodes, dtype=np.ushort)
+        nodes_features_min = np.empty((n_nodes, self.n_features), dtype=np.float32)
+        nodes_features_max = np.empty((n_nodes, self.n_features), dtype=np.float32)
+        nodes_n_samples = np.empty(n_nodes, dtype=np.uint32)
+        nodes_weight = np.empty(n_nodes, dtype=np.float32)
+        nodes_weight_tree = np.empty(n_nodes, dtype=np.float32)
+        nodes_is_leaf = np.empty(n_nodes, dtype=np.ushort)
+        nodes_counts = np.empty((n_nodes, self.n_classes), dtype=np.uint32)
+
+        self._forest.get_flat_nodes(
+            tree,
+            nodes_parent,
+            nodes_left,
+            nodes_right,
+            nodes_feature,
+            nodes_threshold,
+            nodes_time,
+            nodes_depth,
+            nodes_features_min,
+            nodes_features_max,
+            nodes_n_samples,
+            nodes_weight,
+            nodes_weight_tree,
+            nodes_is_leaf,
+            nodes_counts)
+
+        index = np.arange(n_nodes)
+        columns = ['index', 'parent', 'left', 'right', 'depth', 'leaf',
+                   'feature', 'threshold', 'time', 'n_samples']
+        data = {'index': index, 'parent': nodes_parent, 'left': nodes_left,
+                'right': nodes_right, 'depth': nodes_depth,
+                'feature': nodes_feature,
+                'threshold': nodes_threshold,
+                'leaf': nodes_is_leaf.astype(np.bool),
+                'time': nodes_time, 'n_samples': nodes_n_samples}
+        df = pd.DataFrame(data, columns=columns)
+        return df
+
+    def get_nodes(self, tree):
+        n_nodes = self.n_nodes()[tree]
+        # print("n_nodes=", n_nodes)
+        nodes_parent = np.empty(n_nodes, dtype=np.uint32)
+        nodes_left = np.empty(n_nodes, dtype=np.uint32)
+        nodes_right = np.empty(n_nodes, dtype=np.uint32)
+        nodes_feature = np.empty(n_nodes, dtype=np.uint32)
+        nodes_threshold = np.empty(n_nodes, dtype=np.float32)
+        nodes_time = np.empty(n_nodes, dtype=np.float32)
+        nodes_depth = np.empty(n_nodes, dtype=np.ushort)
+        nodes_features_min = np.empty((n_nodes, self.n_features), dtype=np.float32)
+        nodes_features_max = np.empty((n_nodes, self.n_features), dtype=np.float32)
+        nodes_n_samples = np.empty(n_nodes, dtype=np.uint32)
+        nodes_weight = np.empty(n_nodes, dtype=np.float32)
+        nodes_weight_tree = np.empty(n_nodes, dtype=np.float32)
+        nodes_is_leaf = np.empty(n_nodes, dtype=np.ushort)
+        nodes_counts = np.empty((n_nodes, self.n_classes), dtype=np.uint32)
+
+        self._forest.get_flat_nodes(
+            tree,
+            nodes_parent,
+            nodes_left,
+            nodes_right,
+            nodes_feature,
+            nodes_threshold,
+            nodes_time,
+            nodes_depth,
+            nodes_features_min,
+            nodes_features_max,
+            nodes_n_samples,
+            nodes_weight,
+            nodes_weight_tree,
+            nodes_is_leaf,
+            nodes_counts)
+
+        index = np.arange(n_nodes)
+        nodes_info = {'index': index, 'parent': nodes_parent, 'left': nodes_left,
+                'right': nodes_right, 'depth': nodes_depth,
+                'feature': nodes_feature,
+                'threshold': nodes_threshold,
+                'leaf': nodes_is_leaf.astype(np.bool),
+                'time': nodes_time, 'n_samples': nodes_n_samples}
+        return nodes_info
+
+    def print_tree(self, n_tree):
+        nodes_info = self.get_nodes(n_tree)
+        indexes = nodes_info['index']
+        parents = nodes_info['parent']
+        lefts = nodes_info['left']
+        rights = nodes_info['right']
+        depths = nodes_info['depth']
+        leafs = nodes_info['leaf']
+        times = nodes_info['time']
+        n_samples = nodes_info['n_samples']
+
+        depths[0] = 0
+        max_depth = depths.max()
+        for depth in range(max_depth):
+            print('=' * 16)
+            print('depth:', depth)
+            print('-' * 8)
+            filt = (depths == depth)
+            print('index:', indexes[filt])
+            print('leaf:   ', leafs[filt].astype(np.int))
+            print('parent:', parents[filt])
+            print('left:   ', lefts[filt])
+            print('right:   ', rights[filt])
+            print('time:   ', times[filt])
+            print('n_samples:   ', n_samples[filt])

@@ -50,6 +50,8 @@ class NodeClassifier {
   float _threshold;
   // Time of creation of the node
   float _time;
+  // depth of the node in the tree
+  uint8_t _depth;
   // Range of the features
   ArrayFloat _features_min, _features_max;
   // Number of samples in the node
@@ -128,6 +130,8 @@ class NodeClassifier {
   inline NodeClassifier &set_threshold(float threshold);
   inline float time() const;
   inline NodeClassifier &set_time(float time);
+  inline uint8_t depth() const;
+  inline NodeClassifier &set_depth(uint8_t depth);
   inline float features_min(const uint32_t j) const;
   inline float features_max(const uint32_t j) const;
   inline uint32_t n_samples() const;
@@ -169,6 +173,12 @@ class TreeClassifier {
 
   void extend_range(uint32_t node_index, const ArrayDouble &x_t, const double y_t);
 
+  void split_node(uint32_t node_index,
+                  const float split_time,
+                  const float threshold,
+                  const uint32_t feature,
+                  const bool is_right_extension);
+
   // Get the index of the leaf containing x_t
   uint32_t get_leaf(const ArrayDouble &x_t);
 
@@ -179,7 +189,7 @@ class TreeClassifier {
   void split_node(uint32_t node_index, const ArrayDouble &x_t, const ArrayFloat &intensities);
 
 
-    // Compute the extension of the range of the node using the features vector x_t
+  // Compute the extension of the range of the node using the features vector x_t
 //  float compute_range_extension(const uint32_t node_index, const ArrayDouble &x_t, ArrayFloat &intensities);
 
  public:
@@ -201,13 +211,13 @@ class TreeClassifier {
   void get_path(const ArrayDouble &x_t, SArrayUIntPtr path);
 
   void get_aggregate_path(const SArrayDoublePtr features,
-                                SArrayDouble2dPtr node_scores,
-                                SArrayDoublePtr aggregation_weights);
-
+                          SArrayDouble2dPtr node_scores,
+                          SArrayDoublePtr aggregation_weights);
 
   inline uint32_t n_features() const;
   inline uint8_t n_classes() const;
   inline uint32_t n_nodes() const;
+  inline uint32_t n_nodes_reserved() const;
   uint32_t n_leaves() const;
   inline float step() const;
   inline float dirichlet() const;
@@ -228,9 +238,9 @@ class TreeClassifier {
     return feature_importances_;
   }
 
-  static void show_vector(const ArrayDouble x, int precision=2) {
+  static void show_vector(const ArrayDouble x, int precision = 2) {
     std::cout << "[";
-    for(ulong j = 0; j < x.size(); ++j) {
+    for (ulong j = 0; j < x.size(); ++j) {
       std::cout << " " << std::setprecision(precision) << x[j];
     }
     std::cout << " ]" << std::endl;
@@ -243,6 +253,7 @@ class TreeClassifier {
       SArrayUIntPtr nodes_feature,
       SArrayFloatPtr nodes_threshold,
       SArrayFloatPtr nodes_time,
+      SArrayUShortPtr nodes_depth,
       SArrayFloat2dPtr nodes_features_min,
       SArrayFloat2dPtr nodes_features_max,
       SArrayUIntPtr nodes_n_samples,
@@ -266,8 +277,6 @@ class OnlineForestClassifier {
   uint8_t _n_classes;
   // Number of Trees in the forest
   uint8_t _n_trees;
-  // Number of passes over each given data
-  uint8_t _n_passes;
   // Step-size used for aggregation
   float _step;
 
@@ -282,8 +291,6 @@ class OnlineForestClassifier {
   FeatureImportanceType _feature_importance_type;
   //
   bool _use_aggregation;
-  //
-  double _subsampling;
   //
   float _dirichlet;
   // Number of threads to use for parallel growing of trees
@@ -301,9 +308,6 @@ class OnlineForestClassifier {
 
   // Create trees
   void create_trees();
-
-  // SArrayDouble2dPtr _features;
-  // SArrayDoublePtr _labels;
 
   void check_n_features(uint32_t n_features, bool predict) const;
   inline void check_label(double label) const;
@@ -356,6 +360,7 @@ class OnlineForestClassifier {
   OnlineForestClassifier &set_seed(int seed);
 
   void n_nodes(SArrayUIntPtr n_nodes_per_tree);
+  void n_nodes_reserved(SArrayUIntPtr n_reserved_nodes_per_tree);
   void n_leaves(SArrayUIntPtr n_leaves_per_tree);
 
   OnlineForestClassifier &set_given_feature_importances(const ArrayDouble &feature_importances);
@@ -379,6 +384,7 @@ class OnlineForestClassifier {
       SArrayUIntPtr nodes_feature,
       SArrayFloatPtr nodes_threshold,
       SArrayFloatPtr nodes_time,
+      SArrayUShortPtr nodes_depth,
       SArrayFloat2dPtr nodes_features_min,
       SArrayFloat2dPtr nodes_features_max,
       SArrayUIntPtr nodes_n_samples,

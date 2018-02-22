@@ -17,7 +17,7 @@ NodeClassifier::NodeClassifier(TreeClassifier &tree, uint32_t parent, float time
 NodeClassifier::NodeClassifier(const NodeClassifier &node)
     : _tree(node._tree), _parent(node._parent), _left(node._left), _right(node._right),
       _feature(node._feature), _threshold(node._threshold),
-      _time(node._time), _features_min(node._features_min), _features_max(node._features_max),
+      _time(node._time), _depth(node._depth), _features_min(node._features_min), _features_max(node._features_max),
       _n_samples(node._n_samples),
       _y_t(node._y_t),
       _weight(node._weight), _weight_tree(node._weight_tree),
@@ -31,6 +31,7 @@ NodeClassifier::NodeClassifier(const NodeClassifier &&node) : _tree(_tree) {
   _feature = node._feature;
   _threshold = node._threshold;
   _time = node._time;
+  _depth = node._depth;
   _features_min = node._features_min;
   _features_max = node._features_max;
   _n_samples = node._n_samples;
@@ -48,6 +49,7 @@ NodeClassifier &NodeClassifier::operator=(const NodeClassifier &node) {
   _feature = node._feature;
   _threshold = node._threshold;
   _time = node._time;
+  _depth = node._depth;
   _features_min = node._features_min;
   _features_max = node._features_max;
   _n_samples = node._n_samples;
@@ -227,6 +229,15 @@ inline NodeClassifier &NodeClassifier::set_time(float time) {
   return *this;
 }
 
+inline uint8_t NodeClassifier::depth() const {
+  return _depth;
+}
+
+inline NodeClassifier &NodeClassifier::set_depth(uint8_t depth) {
+  _depth = depth;
+  return *this;
+}
+
 inline float NodeClassifier::features_min(const uint32_t j) const {
   return _features_min[j];
 }
@@ -306,10 +317,11 @@ void TreeClassifier::extend_range(uint32_t node_index, const ArrayDouble &x_t, c
     // Let's compute the extension of the range of the current node, and its sum
     float intensities_sum = current_node.compute_range_extension(x_t, intensities);
 
+    bool do_split = false;
+    float split_time;
+
     // If the sample x_t extends the current range of the node
     if (intensities_sum > 0) {
-      bool do_split;
-      float time, T;
       // Let us determine if we need to split the node or not
       if (current_node.is_leaf()) {
         // If the node is a leaf we must split it
@@ -317,7 +329,7 @@ void TreeClassifier::extend_range(uint32_t node_index, const ArrayDouble &x_t, c
       } else {
         time = current_node.time();
         // NB: time = current_node.time() gives the same thing...
-        T = forest.sample_exponential(intensities_sum);
+        float T = forest.sample_exponential(intensities_sum);
         float child_time = node(current_node.left()).time();
         // Sample a exponential random variable with intensity
         if (time + T < child_time) {
@@ -328,51 +340,62 @@ void TreeClassifier::extend_range(uint32_t node_index, const ArrayDouble &x_t, c
           do_split = false;
         }
       }
+
       if (do_split) {
-        // Sample the splitting feature with a probability proportional to the range extensions
-        // TODO: /= intensities_sum instead
+        // Normalize the range extensions to get probabilities
         intensities /= intensities.sum();
+        // Sample the feature at random with with a probability proportional to the range extensions
         uint32_t feature = forest.sample_feature(intensities);
-        float threshold;
-        // Is the extension on the right side ?
-        bool is_right_extension = x_t[feature] > current_node.features_max(feature);
-        // Create new nodes
-        uint32_t left_new = add_node(node_index, time + T);
-        uint32_t right_new = add_node(node_index, time + T);
-        // Let's take again the current node (adding node might lead to re-allocations in the nodes std::vector)
-        current_node = node(node_index);
-        NodeClassifier &left_new_node = node(left_new);
-        NodeClassifier &right_new_node = node(right_new);
-        // The value of the feature
+        // Value of the feature
         float x_tf = static_cast<float>(x_t[feature]);
+        // Is it a right extension of the node ?
+        bool is_right_extension = x_tf > current_node.features_max(feature);
+        float threshold;
         if (is_right_extension) {
-          // Sample a threshold uniformly in the range extension: the magic of the Mondrian process
           threshold = forest.sample_threshold(current_node.features_max(feature), x_tf);
-          // left_new is the same as node_index, excepted for the parent, time and the fact that it's not a leaf
-          left_new_node = current_node;
-          // so we need to put back the correct parent and time
-          left_new_node.set_parent(node_index).set_time(time + T);
-          // right_new doit avoir comme parent node_index
-          // TODO: next line useless ?
-          right_new_node.set_parent(node_index).set_time(time + T);
-          // We must tell the old childs that they have a new parent, if the current node is not a leaf
-          if (!current_node.is_leaf()) {
-            node(current_node.left()).set_parent(left_new);
-            node(current_node.right()).set_parent(left_new);
-          }
         } else {
-          threshold = forest.sample_threshold(x_t[feature], current_node.features_min(feature));
-          right_new_node = current_node;
-          right_new_node.set_parent(node_index).set_time(time + T);
-          left_new_node.set_parent(node_index).set_time(time + T);
-          if (!current_node.is_leaf()) {
-            node(current_node.left()).set_parent(right_new);
-            node(current_node.right()).set_parent(right_new);
-          }
+          threshold = forest.sample_threshold(x_tf, current_node.features_min(feature));
         }
-        // We update the splitting feature, threshold, and childs of the current index
-        current_node.set_feature(feature).set_threshold(threshold).set_left(left_new)
-            .set_right(right_new).set_is_leaf(false);
+
+        split_node(node_index, split_time, threshold, feature, is_right_extension);
+
+//        // Create new nodes
+//        uint32_t left_new = add_node(node_index, time + T);
+//        uint32_t right_new = add_node(node_index, time + T);
+//        // Let's take again the current node (adding node might lead to re-allocations in the nodes std::vector)
+//        current_node = node(node_index);
+//        NodeClassifier &left_new_node = node(left_new);
+//        NodeClassifier &right_new_node = node(right_new);
+//        // The value of the feature
+//
+//        if (is_right_extension) {
+//          // Sample a threshold uniformly in the range extension: the magic of the Mondrian process
+//          threshold = forest.sample_threshold(current_node.features_max(feature), x_tf);
+//          // left_new is the same as node_index, excepted for the parent, time and the fact that it's not a leaf
+//          left_new_node = current_node;
+//          // so we need to put back the correct parent and time
+//          left_new_node.set_parent(node_index).set_time(time + T);
+//          // right_new doit avoir comme parent node_index
+//          // TODO: next line useless ?
+//          right_new_node.set_parent(node_index).set_time(time + T);
+//          // We must tell the old childs that they have a new parent, if the current node is not a leaf
+//          if (!current_node.is_leaf()) {
+//            node(current_node.left()).set_parent(left_new);
+//            node(current_node.right()).set_parent(left_new);
+//          }
+//        } else {
+//          threshold = forest.sample_threshold(x_t[feature], current_node.features_min(feature));
+//          right_new_node = current_node;
+//          right_new_node.set_parent(node_index).set_time(time + T);
+//          left_new_node.set_parent(node_index).set_time(time + T);
+//          if (!current_node.is_leaf()) {
+//            node(current_node.left()).set_parent(right_new);
+//            node(current_node.right()).set_parent(right_new);
+//          }
+//        }
+//        // We update the splitting feature, threshold, and childs of the current index
+//        current_node.set_feature(feature).set_threshold(threshold).set_left(left_new)
+//            .set_right(right_new).set_is_leaf(false);
       }
       // Update the range of the node here
       current_node.update_range(x_t);
@@ -381,55 +404,46 @@ void TreeClassifier::extend_range(uint32_t node_index, const ArrayDouble &x_t, c
 }
 
 
-//// Split node using , using new point x_t
-//void TreeClassifier::split_node(uint32_t node_index, const ArrayDouble &x_t,
-//                                const uint32_t feature, const float split_time) {
-//  // Sample the splitting feature with a probability proportional to the range extensions
-//
-//  // Let's get the current node
-//  NodeClassifier & current_node = node(node_index);
-//
-//  float threshold;
-//  // Is the extension on the right side ?
-//  bool is_right_extension = x_t[feature] > current_node.features_max(feature);
-//  // Create new nodes
-//  uint32_t left_new = add_node(node_index, time + T);
-//  uint32_t right_new = add_node(node_index, time + T);
-//  // Let's take again the current node (adding node might lead to re-allocations in the nodes std::vector)
-//  current_node = node(node_index);
-//  NodeClassifier &left_new_node = node(left_new);
-//  NodeClassifier &right_new_node = node(right_new);
-//  // The value of the feature
-//  float x_tf = static_cast<float>(x_t[feature]);
-//  if (is_right_extension) {
-//    // Sample a threshold uniformly in the range extension: the magic of the Mondrian process
-//    threshold = forest.sample_threshold(current_node.features_max(feature), x_tf);
-//    // left_new is the same as node_index, excepted for the parent, time and the fact that it's not a leaf
-//    left_new_node = current_node;
-//    // so we need to put back the correct parent and time
-//    left_new_node.set_parent(node_index).set_time(time + T);
-//    // right_new doit avoir comme parent node_index
-//    right_new_node.set_parent(node_index).set_time(time + T);
-//    // We must tell the old childs that they have a new parent, if the current node is not a leaf
-//    if (!current_node.is_leaf()) {
-//      node(current_node.left()).set_parent(left_new);
-//      node(current_node.right()).set_parent(left_new);
-//    }
-//  } else {
-//    threshold = forest.sample_threshold(x_t[feature], current_node.features_min(feature));
-//    right_new_node = current_node;
-//    right_new_node.set_parent(node_index).set_time(time + T);
-//    left_new_node.set_parent(node_index).set_time(time + T);
-//    if (!current_node.is_leaf()) {
-//      node(current_node.left()).set_parent(right_new);
-//      node(current_node.right()).set_parent(right_new);
-//    }
-//  }
-//  // We update the splitting feature, threshold, and childs of the current index
-//  current_node.set_feature(feature).set_threshold(threshold).set_left(left_new)
-//      .set_right(right_new).set_is_leaf(false);
-//
-//}
+// Split node at time split_time, using the given feature and threshold
+void TreeClassifier::split_node(uint32_t node_index,
+                                const float split_time,
+                                const float threshold,
+                                const uint32_t feature,
+                                const bool is_right_extension) {
+  // Get new nodes
+  uint32_t left_new = add_node(node_index, split_time);
+  uint32_t right_new = add_node(node_index, split_time);
+  // Let's take again the current node (adding node might lead to re-allocations in the nodes std::vector)
+  NodeClassifier &current_node = node(node_index);
+  NodeClassifier &left_new_node = node(left_new);
+  NodeClassifier &right_new_node = node(right_new);
+  // The value of the feature
+  if (is_right_extension) {
+    // left_new is the same as node_index, excepted for the parent, time and the fact that it's not a leaf
+    left_new_node = current_node;
+    // so we need to put back the correct parent and time
+    left_new_node.set_parent(node_index).set_time(split_time);
+    // right_new doit avoir comme parent node_index
+    right_new_node.set_parent(node_index).set_time(split_time);
+    // We must tell the old childs that they have a new parent, if the current node is not a leaf
+    if (!current_node.is_leaf()) {
+      node(current_node.left()).set_parent(left_new);
+      node(current_node.right()).set_parent(left_new);
+    }
+  } else {
+    right_new_node = current_node;
+    right_new_node.set_parent(node_index).set_time(split_time);
+    left_new_node.set_parent(node_index).set_time(split_time);
+    if (!current_node.is_leaf()) {
+      node(current_node.left()).set_parent(right_new);
+      node(current_node.right()).set_parent(right_new);
+    }
+  }
+  // We update the splitting feature, threshold, and childs of the current index
+  current_node.set_feature(feature).set_threshold(threshold).set_left(left_new)
+      .set_right(right_new).set_is_leaf(false);
+
+}
 
 
 
@@ -514,7 +528,7 @@ uint32_t TreeClassifier::get_path_depth(const ArrayDouble &x_t) {
   return depth;
 }
 
-// Given a sample point, return the depth of the leaf corresponding to the point (including root)
+// Given a sample point, return the path to the leaf corresponding to the point (including root)
 void TreeClassifier::get_path(const ArrayDouble &x_t, SArrayUIntPtr path) {
   uint32_t index_current_node = 0;
   bool is_leaf = false;
@@ -537,13 +551,13 @@ void TreeClassifier::get_path(const ArrayDouble &x_t, SArrayUIntPtr path) {
   }
 }
 
-
 void TreeClassifier::go_upwards(uint32_t leaf_index) {
   uint32_t current = leaf_index;
   while (true) {
     NodeClassifier &current_node = node(current);
     current_node.update_upwards();
     if (current == 0) {
+      // We arrive at the root
       break;
     }
     // We must update the root node
@@ -653,6 +667,7 @@ void TreeClassifier::predict(const ArrayDouble &x_t, ArrayDouble &scores, bool u
 
 void TreeClassifier::reserve_nodes(uint32_t n_nodes) {
   nodes.reserve(n_nodes);
+  // TODO: requires some thought...
   for (uint32_t i = 0; i < n_nodes; ++i) {
     nodes.emplace_back(*this, 0, 0);
   }
@@ -686,9 +701,14 @@ inline uint32_t TreeClassifier::n_nodes() const {
   return _n_nodes;
 }
 
+inline uint32_t TreeClassifier::n_nodes_reserved() const {
+  return static_cast<uint32_t>(nodes.size());
+}
+
 uint32_t TreeClassifier::n_leaves() const {
   uint32_t n_leaves = 0;
-  for (const NodeClassifier &node: nodes) {
+  for (uint32_t node_index = 0; node_index < _n_nodes; ++node_index) {
+    const NodeClassifier & node = nodes[node_index];
     if (node.is_leaf()) {
       ++n_leaves;
     }
@@ -739,6 +759,7 @@ void TreeClassifier::get_flat_nodes(
     SArrayUIntPtr nodes_feature,
     SArrayFloatPtr nodes_threshold,
     SArrayFloatPtr nodes_time,
+    SArrayUShortPtr nodes_depth,
     SArrayFloat2dPtr nodes_features_min,
     SArrayFloat2dPtr nodes_features_max,
     SArrayUIntPtr nodes_n_samples,
@@ -747,24 +768,27 @@ void TreeClassifier::get_flat_nodes(
     SArrayUShortPtr nodes_is_leaf,
     SArrayUInt2dPtr nodes_counts) {
 
-  ulong n_node = 0;
-  for(NodeClassifier &node : nodes) {
-    (*nodes_parent)[n_node] = node.parent();
-    (*nodes_left)[n_node] = node.left();
-    (*nodes_right)[n_node] = node.right();
-    (*nodes_feature)[n_node] = node.feature();
-    (*nodes_threshold)[n_node] = node.threshold();
-    (*nodes_time)[n_node] = node.time();
+  // std::cout << "void TreeClassifier::get_flat_nodes(" << std::endl;
+  // std::cout << "n_nodes: " << _n_nodes << ", nodes.size(): " << nodes.size() << std::endl;
+
+  for(uint32_t node_index=0; node_index < _n_nodes; ++node_index) {
+    // std::cout << "n_node= " << node_index << std::endl;
+    NodeClassifier & node = nodes[node_index];
+    (*nodes_parent)[node_index] = node.parent();
+    (*nodes_left)[node_index] = node.left();
+    (*nodes_right)[node_index] = node.right();
+    (*nodes_feature)[node_index] = node.feature();
+    (*nodes_threshold)[node_index] = node.threshold();
+    (*nodes_time)[node_index] = node.time();
+    (*nodes_depth)[node_index] = node.depth();
     // (*nodes_features_min)[n_node] = node.features_min();
     // (*nodes_features_max)[n_node] = node.features_max();
-    (*nodes_n_samples)[n_node] = node.n_samples();
-    (*nodes_weight)[n_node] = node.weight();
-    (*nodes_weight_tree)[n_node] = node.weight_tree();
+    (*nodes_n_samples)[node_index] = node.n_samples();
+    (*nodes_weight)[node_index] = node.weight();
+    (*nodes_weight_tree)[node_index] = node.weight_tree();
     // (*nodes_is_leaf)[n_node] = static_cast<ushort>(node.is_leaf());
-    nodes_is_leaf->operator[](n_node) = static_cast<ushort>(node.is_leaf());
-    (*nodes_is_leaf)[n_node] = static_cast<ushort>(node.is_leaf());
-    // nodes_counts
-    n_node++;
+    nodes_is_leaf->operator[](node_index) = static_cast<ushort>(node.is_leaf());
+    (*nodes_is_leaf)[node_index] = static_cast<ushort>(node.is_leaf());
   }
 }
 
@@ -827,7 +851,10 @@ void OnlineForestClassifier::fit(const SArrayDouble2dPtr features,
     // Maximum number of nodes is now the current one + number of samples in this batch
     // TODO: IMPORTANT !!!! are we sure about this ?????
     // TODO: tree.reserve_nodes(tree.n_nodes() + 2 * n_samples - 1);
-    tree.reserve_nodes(2 * tree.n_nodes() + 2 * n_samples);
+    // tree.reserve_nodes(2 * tree.n_nodes() + 2 * n_samples);
+    if (tree.n_nodes() + 2 * n_samples > tree.n_nodes_reserved()) {
+      tree.reserve_nodes(tree.n_nodes() + 2 * n_samples);
+    }
     for (uint32_t i = 0; i < n_samples; ++i) {
       double label = (*labels)[i];
       check_label(label);
@@ -891,6 +918,14 @@ void OnlineForestClassifier::n_nodes(SArrayUIntPtr n_nodes_per_tree) {
   uint8_t j = 0;
   for (TreeClassifier &tree : trees) {
     (*n_nodes_per_tree)[j] = tree.n_nodes();
+    j++;
+  }
+}
+
+void OnlineForestClassifier::n_nodes_reserved(SArrayUIntPtr n_reserved_nodes_per_tree) {
+  uint8_t j = 0;
+  for (TreeClassifier &tree : trees) {
+    (*n_reserved_nodes_per_tree)[j] = tree.n_nodes_reserved();
     j++;
   }
 }
@@ -1061,6 +1096,7 @@ void OnlineForestClassifier::get_flat_nodes(
     SArrayUIntPtr nodes_feature,
     SArrayFloatPtr nodes_threshold,
     SArrayFloatPtr nodes_time,
+    SArrayUShortPtr nodes_depth,
     SArrayFloat2dPtr nodes_features_min,
     SArrayFloat2dPtr nodes_features_max,
     SArrayUIntPtr nodes_n_samples,
@@ -1076,6 +1112,7 @@ void OnlineForestClassifier::get_flat_nodes(
       nodes_feature,
       nodes_threshold,
       nodes_time,
+      nodes_depth,
       nodes_features_min,
       nodes_features_max,
       nodes_n_samples,
