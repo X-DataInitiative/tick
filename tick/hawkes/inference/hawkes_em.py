@@ -177,21 +177,23 @@ class HawkesEM(LearnerHawkesNoParam):
             self.baseline = baseline_start.copy()
 
         for i in range(self.max_iter + 1):
-            prev_baseline = self.baseline.copy()
-            prev_kernel = self.kernel.copy()
+            if self._should_record_iter(i):
+                prev_baseline = self.baseline.copy()
+                prev_kernel = self.kernel.copy()
 
             self._learner.solve(self.baseline, self._flat_kernels)
 
-            rel_baseline = relative_distance(self.baseline, prev_baseline)
-            rel_kernel = relative_distance(self.kernel, prev_kernel)
+            if self._should_record_iter(i):
+                rel_baseline = relative_distance(self.baseline, prev_baseline)
+                rel_kernel = relative_distance(self.kernel, prev_kernel)
 
-            converged = max(rel_baseline, rel_kernel) <= self.tol
-            force_print = (i == self.max_iter) or converged
-            self._handle_history(i, rel_baseline=rel_baseline,
-                                 rel_kernel=rel_kernel, force=force_print)
+                converged = max(rel_baseline, rel_kernel) <= self.tol
+                force_print = (i == self.max_iter) or converged
+                self._handle_history(i, rel_baseline=rel_baseline,
+                                     rel_kernel=rel_kernel, force=force_print)
 
-            if converged:
-                break
+                if converged:
+                    break
 
     def get_kernel_supports(self):
         """Computes kernel support. This makes our learner compliant with

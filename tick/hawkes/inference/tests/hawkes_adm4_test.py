@@ -69,9 +69,10 @@ class Test(unittest.TestCase):
         baseline_start = np.zeros(n_nodes) + .2
         adjacency_start = np.zeros((n_nodes, n_nodes)) + .2
 
-        learner = HawkesADM4(
-            self.decay, rho=rho, C=C, lasso_nuclear_ratio=lasso_nuclear_ratio,
-            n_threads=3, max_iter=10, verbose=False, em_max_iter=3)
+        learner = HawkesADM4(self.decay, rho=rho, C=C,
+                             lasso_nuclear_ratio=lasso_nuclear_ratio,
+                             n_threads=3, max_iter=10, verbose=False,
+                             em_max_iter=3, record_every=1)
         learner.fit(events[0], baseline_start=baseline_start,
                     adjacency_start=adjacency_start)
 
@@ -99,7 +100,7 @@ class Test(unittest.TestCase):
             np.cumsum(np.random.rand(4 + i)) for i in range(n_nodes)
         ] for _ in range(n_realizations)]
 
-        learner = HawkesADM4(self.decay)
+        learner = HawkesADM4(self.decay, record_every=1)
 
         msg = '^You must either call `fit` before `score` or provide events$'
         with self.assertRaisesRegex(ValueError, msg):

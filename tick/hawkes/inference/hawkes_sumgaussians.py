@@ -271,41 +271,45 @@ class HawkesSumGaussians(LearnerHawkesNoParam):
 
         max_relative_distance = 1e-1
         for i in range(self.max_iter + 1):
-            prev_baseline = self.baseline.copy()
-            prev_amplitudes = self.amplitudes.copy()
+            if self._should_record_iter(i):
+                prev_baseline = self.baseline.copy()
+                prev_amplitudes = self.amplitudes.copy()
 
-            inner_prev_baseline = self.baseline.copy()
-            inner_prev_amplitudes = self.amplitudes.copy()
+                inner_prev_baseline = self.baseline.copy()
+                inner_prev_amplitudes = self.amplitudes.copy()
+
             self._learner.solve(self.baseline, _amplitudes_2d)
-            inner_rel_baseline = relative_distance(self.baseline,
-                                                   inner_prev_baseline)
-            inner_rel_adjacency = relative_distance(self.amplitudes,
-                                                    inner_prev_amplitudes)
 
-            if self.em_tol is None:
-                inner_tol = max_relative_distance * 1e-2
-            else:
-                inner_tol = self.em_tol
+            if self._should_record_iter(i):
+                inner_rel_baseline = relative_distance(self.baseline,
+                                                       inner_prev_baseline)
+                inner_rel_adjacency = relative_distance(
+                    self.amplitudes, inner_prev_amplitudes)
 
-            if max(inner_rel_baseline, inner_rel_adjacency) < inner_tol:
-                break
+                if self.em_tol is None:
+                    inner_tol = max_relative_distance * 1e-2
+                else:
+                    inner_tol = self.em_tol
 
-            rel_baseline = relative_distance(self.baseline, prev_baseline)
-            rel_amplitudes = relative_distance(self.amplitudes,
-                                               prev_amplitudes)
+                if max(inner_rel_baseline, inner_rel_adjacency) < inner_tol:
+                    break
 
-            max_relative_distance = max(rel_baseline, rel_amplitudes)
-            # We perform at least 5 iterations as at start we sometimes reach a
-            # low tolerance if inner_tol is too low
-            converged = max_relative_distance <= self.tol and i > 5
-            force_print = (i == self.max_iter) or converged
+                rel_baseline = relative_distance(self.baseline, prev_baseline)
+                rel_amplitudes = relative_distance(self.amplitudes,
+                                                   prev_amplitudes)
 
-            self._handle_history(i, rel_baseline=rel_baseline,
-                                 rel_amplitudes=rel_amplitudes,
-                                 force=force_print)
+                max_relative_distance = max(rel_baseline, rel_amplitudes)
+                # We perform at least 5 iterations as at start we sometimes
+                # reach a low tolerance if inner_tol is too low
+                converged = max_relative_distance <= self.tol and i > 5
+                force_print = (i == self.max_iter) or converged
 
-            if converged:
-                break
+                self._handle_history(i, rel_baseline=rel_baseline,
+                                     rel_amplitudes=rel_amplitudes,
+                                     force=force_print)
+
+                if converged:
+                    break
 
     @property
     def C(self):

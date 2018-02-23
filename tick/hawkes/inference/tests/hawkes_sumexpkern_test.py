@@ -154,7 +154,7 @@ class Test(InferenceTest):
             np.cumsum(np.random.rand(4 + i)) for i in range(n_nodes)
         ] for _ in range(n_realizations)]
 
-        learner = HawkesSumExpKern(self.decays)
+        learner = HawkesSumExpKern(self.decays, record_every=1)
 
         msg = '^You must either call `fit` before `score` or provide events$'
         with self.assertRaisesRegex(ValueError, msg):
