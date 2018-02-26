@@ -14,6 +14,9 @@ class DLL_PUBLIC TProxSortedL1 : public TProx<T> {
   using TProx<T>::end;
   using TProx<T>::strength;
 
+ public:
+  using TProx<T>::get_class_name;
+
  protected:
   WeightsType weights_type;
   Array<T> weights;
@@ -29,8 +32,6 @@ class DLL_PUBLIC TProxSortedL1 : public TProx<T> {
 
   TProxSortedL1(T strength, WeightsType weights_type, ulong start, ulong end,
                 bool positive);
-
-  std::string get_class_name() const override;
 
   T value(const Array<T> &coeffs, ulong start, ulong end) override;
 

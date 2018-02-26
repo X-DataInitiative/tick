@@ -13,11 +13,6 @@ TModelEpsilonInsensitive<T>::TModelEpsilonInsensitive(
 }
 
 template <class T>
-const char *TModelEpsilonInsensitive<T>::get_class_name() const {
-  return "ModelEpsilonInsensitive";
-}
-
-template <class T>
 T TModelEpsilonInsensitive<T>::loss_i(const ulong i, const Array<T> &coeffs) {
   const T z = std::abs(get_inner_prod(i, coeffs) - get_label(i));
   if (z > threshold) {

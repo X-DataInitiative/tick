@@ -18,11 +18,6 @@ TProxElasticNet<T>::TProxElasticNet(T strength, T ratio, ulong start, ulong end,
 }
 
 template <class T>
-std::string TProxElasticNet<T>::get_class_name() const {
-  return "TTProxElasticNet<T>";
-}
-
-template <class T>
 T TProxElasticNet<T>::call_single(T x, T step) const {
   T thresh = step * ratio * strength;
   if (x > 0) {

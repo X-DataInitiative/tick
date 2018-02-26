@@ -11,6 +11,9 @@ class DLL_PUBLIC TProxElasticNet : public TProxSeparable<T> {
   using TProxSeparable<T>::strength;
   using TProxSeparable<T>::positive;
 
+ public:
+  using TProxSeparable<T>::get_class_name;
+
  protected:
   T ratio;
 
@@ -18,8 +21,6 @@ class DLL_PUBLIC TProxElasticNet : public TProxSeparable<T> {
   TProxElasticNet(T strength, T ratio, bool positive);
 
   TProxElasticNet(T strength, T ratio, ulong start, ulong end, bool positive);
-
-  std::string get_class_name() const override;
 
   virtual T get_ratio() const;
 

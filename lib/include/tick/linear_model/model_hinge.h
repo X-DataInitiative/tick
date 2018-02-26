@@ -19,13 +19,12 @@ class DLL_PUBLIC TModelHinge : public virtual TModelGeneralizedLinear<T> {
   using TModelGeneralizedLinear<T>::get_label;
   using TModelGeneralizedLinear<T>::use_intercept;
   using TModelGeneralizedLinear<T>::get_inner_prod;
+  using TModelGeneralizedLinear<T>::get_class_name;
 
  public:
   TModelHinge(const std::shared_ptr<BaseArray2d<T> > features,
               const std::shared_ptr<SArray<T> > labels,
               const bool fit_intercept, const int n_threads = 1);
-
-  const char *get_class_name() const override;
 
   T loss_i(const ulong i, const Array<T> &coeffs) override;
 

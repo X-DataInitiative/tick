@@ -13,11 +13,6 @@ TModelSmoothedHinge<T>::TModelSmoothedHinge(
 }
 
 template <class T>
-const char *TModelSmoothedHinge<T>::get_class_name() const {
-  return "ModelSmoothedHinge";
-}
-
-template <class T>
 T TModelSmoothedHinge<T>::loss_i(const ulong i, const Array<T> &coeffs) {
   const double z = get_label(i) * get_inner_prod(i, coeffs);
   if (z >= 1) {

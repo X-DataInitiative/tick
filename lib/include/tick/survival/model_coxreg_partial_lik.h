@@ -11,6 +11,9 @@
 
 template <class T>
 class DLL_PUBLIC TModelCoxRegPartialLik : public TModel<T> {
+ public:
+  using TModel<T>::get_class_name;
+
  private:
   Array<T> inner_prods;
   Array<T> s1;
@@ -38,10 +41,6 @@ class DLL_PUBLIC TModelCoxRegPartialLik : public TModel<T> {
   TModelCoxRegPartialLik(const std::shared_ptr<BaseArray2d<T> > features,
                          const std::shared_ptr<SArray<T> > times,
                          const SArrayUShortPtr censoring);
-
-  const char *get_class_name() const override {
-    return "TModelCoxRegPartialLik<T>";
-  }
 
   /**
    * \brief Computation of the value of minus the partial Cox

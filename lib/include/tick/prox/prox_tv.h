@@ -12,11 +12,12 @@ class DLL_PUBLIC TProxTV : public TProx<T> {
   using TProx<T>::positive;
 
  public:
+  using TProx<T>::get_class_name;
+
+ public:
   TProxTV(T strength, bool positive);
 
   TProxTV(T strength, ulong start, ulong end, bool positive);
-
-  std::string get_class_name() const override;
 
   T value(const Array<T> &coeffs, ulong start, ulong end) override;
 

@@ -11,11 +11,6 @@ TProxL1<T>::TProxL1(T strength, ulong start, ulong end, bool positive)
     : TProxSeparable<T>(strength, start, end, positive) {}
 
 template <class T>
-std::string TProxL1<T>::get_class_name() const {
-  return "TProxL1<T>";
-}
-
-template <class T>
 T TProxL1<T>::call_single(T x, T step) const {
   T thresh = step * strength;
   if (x > 0) {

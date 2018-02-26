@@ -15,11 +15,12 @@ class DLL_PUBLIC TProxL2Sq : public TProxSeparable<T> {
   using TProxSeparable<T>::positive;
 
  public:
+  using TProxSeparable<T>::get_class_name;
+
+ public:
   TProxL2Sq(T strength, bool positive);
 
   TProxL2Sq(T strength, ulong start, ulong end, bool positive);
-
-  virtual std::string get_class_name() const;
 
  protected:
   T value_single(T x) const override;

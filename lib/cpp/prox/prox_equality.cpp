@@ -13,11 +13,6 @@ TProxEquality<T>::TProxEquality(T strength, ulong start, ulong end,
     : TProx<T>(0., start, end, positive) {}
 
 template <class T>
-std::string TProxEquality<T>::get_class_name() const {
-  return "TProxEquality";
-}
-
-template <class T>
 T TProxEquality<T>::value(const Array<T> &coeffs, ulong start, ulong end) {
   Array<T> sub_coeffs = view(coeffs, start, end);
   if (sub_coeffs.min() == sub_coeffs.max()) {

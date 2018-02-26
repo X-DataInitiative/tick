@@ -41,7 +41,11 @@ class DLL_PUBLIC TProx {
 
   virtual ~TProx() {}
 
-  virtual std::string get_class_name() const;
+  virtual const std::string get_class_name() const {
+    std::stringstream ss;
+    ss << typeid(*this).name() << "<" << typeid(T).name() << ">";
+    return ss.str();
+  }
 
   virtual bool is_separable() const;
 

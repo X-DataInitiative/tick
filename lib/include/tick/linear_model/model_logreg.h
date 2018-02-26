@@ -29,13 +29,12 @@ class DLL_PUBLIC TModelLogReg : public TModelGeneralizedLinear<T>,
   using TModelGeneralizedLinear<T>::use_intercept;
   using TModelGeneralizedLinear<T>::get_inner_prod;
   using TModelGeneralizedLinear<T>::fit_intercept;
+  using TModelGeneralizedLinear<T>::get_class_name;
 
  public:
   TModelLogReg(const std::shared_ptr<BaseArray2d<T> > features,
                const std::shared_ptr<SArray<T> > labels,
                const bool fit_intercept, const int n_threads = 1);
-
-  virtual const char *get_class_name() const { return clazz.c_str(); }
 
   static inline T sigmoid(const T z) {
     // Overflow-proof sigmoid

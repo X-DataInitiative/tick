@@ -13,11 +13,6 @@ TModelHuber<T>::TModelHuber(const std::shared_ptr<BaseArray2d<T> > features,
 }
 
 template <class T>
-const char *TModelHuber<T>::get_class_name() const {
-  return "ModelHuber";
-}
-
-template <class T>
 T TModelHuber<T>::loss_i(const ulong i, const Array<T> &coeffs) {
   const T d = get_inner_prod(i, coeffs) - get_label(i);
   const T d_abs = std::abs(d);

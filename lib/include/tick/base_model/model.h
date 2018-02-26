@@ -20,7 +20,11 @@ class TModel {
   TModel() {}
   virtual ~TModel() {}
 
-  virtual const char *get_class_name() const { return "TModel<T>"; }
+  virtual const std::string get_class_name() const {
+    std::stringstream ss;
+    ss << typeid(*this).name() << "<" << typeid(T).name() << ">";
+    return ss.str();
+  }
 
   virtual T loss_i(const ulong i, const Array<T> &coeffs) {
     TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());

@@ -11,11 +11,6 @@ TModelAbsoluteRegression<T>::TModelAbsoluteRegression(
       TModelGeneralizedLinear<T>(features, labels, fit_intercept, n_threads) {}
 
 template <class T>
-const char *TModelAbsoluteRegression<T>::get_class_name() const {
-  return "ModelAbsoluteRegression";
-}
-
-template <class T>
 T TModelAbsoluteRegression<T>::loss_i(const ulong i, const Array<T> &coeffs) {
   return std::abs(get_inner_prod(i, coeffs) - get_label(i));
 }

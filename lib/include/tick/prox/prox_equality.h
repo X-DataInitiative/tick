@@ -11,11 +11,12 @@ class DLL_PUBLIC TProxEquality : public TProx<T> {
   using TProx<T>::positive;
 
  public:
+  using TProx<T>::get_class_name;
+
+ public:
   explicit TProxEquality(T strength, bool positive);
 
   TProxEquality(T strength, ulong start, ulong end, bool positive);
-
-  std::string get_class_name() const override;
 
   T value(const Array<T> &coeffs, ulong start, ulong end) override;
 

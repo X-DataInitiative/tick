@@ -141,9 +141,17 @@ int main(int argc, char** argv) {
       TModelCoxRegPartialLik<double> t(features, times, censoring);
     });
 
-    run([&](){ TModelAbsoluteRegression<double> t(features_ptr, labels_ptr, false, 1); });
+    run([&](){ 
+      TModelAbsoluteRegression<double> t(features_ptr, labels_ptr, false, 1);
+      std::cout << "TModelAbsoluteRegression<double>.get_class_name() " 
+                << t.get_class_name() << std::endl;
+    });
 
-    run([&](){ ModelHawkesExpKernLeastSqSingle t(features_ptr, 1, 1); });
+    run([&](){ 
+      ModelHawkesExpKernLeastSqSingle t(features_ptr, 1, 1);
+      std::cout << "ModelHawkesExpKernLeastSqSingle<double>.get_class_name() " 
+                << t.get_class_name() << std::endl;
+     });
 
     run([&](){ Hawkes t(1, 1); });
     run([&](){ Poisson t(1, 1); });

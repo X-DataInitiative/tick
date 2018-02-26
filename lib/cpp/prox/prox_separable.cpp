@@ -12,11 +12,6 @@ TProxSeparable<T>::TProxSeparable(T strength, ulong start, ulong end,
     : TProx<T>(strength, start, end, positive) {}
 
 template <class T>
-std::string TProxSeparable<T>::get_class_name() const {
-  return "ProxSeparable";
-}
-
-template <class T>
 bool TProxSeparable<T>::is_separable() const {
   return true;
 }

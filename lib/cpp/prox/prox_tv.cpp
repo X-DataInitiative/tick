@@ -10,11 +10,6 @@ template <class T>
 TProxTV<T>::TProxTV(T strength, ulong start, ulong end, bool positive)
     : TProx<T>(strength, start, end, positive) {}
 
-template <class T>
-std::string TProxTV<T>::get_class_name() const {
-  return "TProxTV";
-}
-
 // This piece comes from L. Condat's paper, see tick's documentation
 template <class T>
 void TProxTV<T>::call(const Array<T> &coeffs, T step, Array<T> &out,

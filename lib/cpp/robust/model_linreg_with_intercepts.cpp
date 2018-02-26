@@ -14,11 +14,6 @@ TModelLinRegWithIntercepts<T>::TModelLinRegWithIntercepts(
       TModelLinReg<T>(features, labels, fit_intercept, n_threads) {}
 
 template <class T>
-const char *TModelLinRegWithIntercepts<T>::get_class_name() const {
-  return "ModelLinRegWithIntercepts";
-}
-
-template <class T>
 void TModelLinRegWithIntercepts<T>::compute_lip_consts() {
   if (ready_lip_consts) {
     return;

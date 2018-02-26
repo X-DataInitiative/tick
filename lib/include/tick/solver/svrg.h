@@ -39,7 +39,6 @@ class DLL_PUBLIC TSVRG : public TStoSolver<T> {
   Array<T> steps_correction;
 
   VarianceReductionMethod variance_reduction;
-  StepType step_type;
 
   Array<T> full_gradient;
   Array<T> fixed_w;
@@ -49,6 +48,7 @@ class DLL_PUBLIC TSVRG : public TStoSolver<T> {
 
   ulong rand_index;
   bool ready_step_corrections;
+  StepType step_type;
 
   void prepare_solve();
 

@@ -34,8 +34,6 @@ class DLL_PUBLIC TModelLabelsFeatures : public virtual TModel<T> {
 
   virtual ~TModelLabelsFeatures() {}
 
-  virtual const char *get_class_name() const { return clazz.c_str(); }
-
   ulong get_n_samples() const override { return n_samples; }
 
   ulong get_n_features() const override { return n_features; }

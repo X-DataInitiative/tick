@@ -9,11 +9,6 @@ TProxMulti<T>::TProxMulti(ProxTPtrVector proxs)
     : TProx<T>(0, false), proxs(proxs) {}
 
 template <class T>
-std::string TProxMulti<T>::get_class_name() const {
-  return "TProxMulti";
-}
-
-template <class T>
 T TProxMulti<T>::value(const Array<T> &coeffs, ulong start, ulong end) {
   T val = 0;
   for (auto prox : proxs) {

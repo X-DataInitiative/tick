@@ -10,11 +10,6 @@ TModelHinge<T>::TModelHinge(const std::shared_ptr<BaseArray2d<T> > features,
       TModelGeneralizedLinear<T>(features, labels, fit_intercept, n_threads) {}
 
 template <class T>
-const char *TModelHinge<T>::get_class_name() const {
-  return "TModelHinge<T>";
-}
-
-template <class T>
 T TModelHinge<T>::loss_i(const ulong i, const Array<T> &coeffs) {
   const T z = get_label(i) * get_inner_prod(i, coeffs);
   if (z <= 1.) {

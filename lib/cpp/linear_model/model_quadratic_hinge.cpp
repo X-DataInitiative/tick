@@ -11,11 +11,6 @@ TModelQuadraticHinge<T>::TModelQuadraticHinge(
       TModelGeneralizedLinear<T>(features, labels, fit_intercept, n_threads) {}
 
 template <class T>
-const char *TModelQuadraticHinge<T>::get_class_name() const {
-  return "ModelQuadraticHinge";
-}
-
-template <class T>
 T TModelQuadraticHinge<T>::loss_i(const ulong i, const Array<T> &coeffs) {
   const T z = get_label(i) * get_inner_prod(i, coeffs);
   if (z < 1.) {
