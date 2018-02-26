@@ -16,11 +16,6 @@ TProxL1w<T>::TProxL1w(T strength, SArrayTPtr weights, ulong start, ulong end,
 }
 
 template <class T>
-std::string TProxL1w<T>::get_class_name() const {
-  return "TProxL1w";
-}
-
-template <class T>
 T TProxL1w<T>::call_single(T x, T step) const {
   TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
 }

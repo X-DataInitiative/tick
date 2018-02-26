@@ -10,11 +10,6 @@ template <class T>
 TProxL2Sq<T>::TProxL2Sq(T strength, ulong start, ulong end, bool positive)
     : TProxSeparable<T>(strength, start, end, positive) {}
 
-template <class T>
-std::string TProxL2Sq<T>::get_class_name() const {
-  return "TProxL2Sq<T>";
-}
-
 // Compute the prox on the i-th coordinate only
 template <class T>
 T TProxL2Sq<T>::call_single(T x, T step) const {

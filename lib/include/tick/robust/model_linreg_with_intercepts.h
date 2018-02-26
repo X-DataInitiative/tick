@@ -27,13 +27,14 @@ class DLL_PUBLIC TModelLinRegWithIntercepts
   using TModelLinReg<T>::lip_consts;
 
  public:
+  using TModelGeneralizedLinear<T>::get_class_name;
+
+ public:
   TModelLinRegWithIntercepts(const std::shared_ptr<BaseArray2d<T> > features,
                              const std::shared_ptr<SArray<T> > labels,
                              const bool fit_intercept, const int n_threads = 1);
 
   virtual ~TModelLinRegWithIntercepts() {}
-
-  const char *get_class_name() const override;
 
   void compute_lip_consts() override;
 };

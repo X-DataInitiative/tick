@@ -11,11 +11,6 @@ TProxPositive<T>::TProxPositive(T strength, ulong start, ulong end)
     : TProxSeparable<T>(strength, start, end, true) {}
 
 template <class T>
-std::string TProxPositive<T>::get_class_name() const {
-  return "TProxPositive";
-}
-
-template <class T>
 T TProxPositive<T>::call_single(T x, T step) const {
   if (x < 0) {
     return 0;

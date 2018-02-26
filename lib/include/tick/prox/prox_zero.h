@@ -9,11 +9,12 @@
 template <class T>
 class DLL_PUBLIC TProxZero : public TProxSeparable<T> {
  public:
+  using TProxSeparable<T>::get_class_name;
+
+ public:
   explicit TProxZero(T strength);
 
   TProxZero(T strength, ulong start, ulong end);
-
-  std::string get_class_name() const override;
 
   T value(const Array<T> &coeffs, ulong start, ulong end) override;
 

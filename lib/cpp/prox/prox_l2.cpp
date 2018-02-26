@@ -10,11 +10,6 @@ TProxL2<T>::TProxL2(T strength, ulong start, ulong end, bool positive)
     : TProx<T>(strength, start, end, positive) {}
 
 template <class T>
-std::string TProxL2<T>::get_class_name() const {
-  return "TProxL2";
-}
-
-template <class T>
 void TProxL2<T>::call(const Array<T> &coeffs, T step, Array<T> &out,
                       ulong start, ulong end) {
   Array<T> sub_coeffs = view(coeffs, start, end);

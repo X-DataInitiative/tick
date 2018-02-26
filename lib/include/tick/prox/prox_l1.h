@@ -15,11 +15,12 @@ class DLL_PUBLIC TProxL1 : public TProxSeparable<T> {
   using TProx<T>::positive;
 
  public:
+  using TProxSeparable<T>::get_class_name;
+
+ public:
   TProxL1(T strength, bool positive);
 
   TProxL1(T strength, ulong start, ulong end, bool positive);
-
-  virtual std::string get_class_name() const;
 
  protected:
   T call_single(T x, T step) const override;

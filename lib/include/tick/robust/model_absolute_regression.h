@@ -26,13 +26,12 @@ class DLL_PUBLIC TModelAbsoluteRegression
   using TModelGeneralizedLinear<T>::grad_i;
   using TModelGeneralizedLinear<T>::get_features;
   using TModelGeneralizedLinear<T>::grad_i_factor;
+  using TModelGeneralizedLinear<T>::get_class_name;
 
  public:
   TModelAbsoluteRegression(const std::shared_ptr<BaseArray2d<T> > features,
                            const std::shared_ptr<SArray<T> > labels,
                            const bool fit_intercept, const int n_threads = 1);
-
-  const char *get_class_name() const override;
 
   T loss_i(const ulong i, const Array<T> &coeffs) override;
 

@@ -25,6 +25,7 @@ class DLL_PUBLIC TModelGeneralizedLinear
   using TModelLabelsFeatures<T>::get_label;
   using TModelLabelsFeatures<T>::get_features;
   using TModelLabelsFeatures<T>::is_ready_columns_sparsity;
+  using TModelLabelsFeatures<T>::get_class_name;
 
   bool fit_intercept = false;
   bool ready_features_norm_sq = false;
@@ -55,11 +56,9 @@ class DLL_PUBLIC TModelGeneralizedLinear
 
   virtual ~TModelGeneralizedLinear() {}
 
-  virtual const char *get_class_name() const { return clazz.c_str(); }
+  T grad_i_factor(const ulong i, const Array<T> &coeffs) override;
 
-  virtual T grad_i_factor(const ulong i, const Array<T> &coeffs);
-
-  virtual void grad_i(const ulong i, const Array<T> &coeffs, Array<T> &out);
+  void grad_i(const ulong i, const Array<T> &coeffs, Array<T> &out) override;
 
   /**
    * To be used by grad(ArrayDouble&, ArrayDouble&) to calculate grad by
@@ -68,9 +67,9 @@ class DLL_PUBLIC TModelGeneralizedLinear
    */
   virtual void inc_grad_i(const ulong i, Array<T> &out, const Array<T> &coeffs);
 
-  virtual void grad(const Array<T> &coeffs, Array<T> &out);
+  void grad(const Array<T> &coeffs, Array<T> &out) override;
 
-  virtual T loss(const Array<T> &coeffs);
+  T loss(const Array<T> &coeffs) override;
 
   void sdca_primal_dual_relation(const T l_l2sq, const Array<T> &dual_vector,
                                  Array<T> &out_primal_vector) override;

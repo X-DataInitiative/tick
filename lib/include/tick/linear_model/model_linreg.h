@@ -31,6 +31,7 @@ class DLL_PUBLIC TModelLinReg : public virtual TModelGeneralizedLinear<T>,
   using TModelGeneralizedLinear<T>::get_label;
   using TModelGeneralizedLinear<T>::use_intercept;
   using TModelGeneralizedLinear<T>::get_inner_prod;
+  using TModelGeneralizedLinear<T>::get_class_name;
 
  public:
   TModelLinReg(const std::shared_ptr<BaseArray2d<T> > features,
@@ -38,8 +39,6 @@ class DLL_PUBLIC TModelLinReg : public virtual TModelGeneralizedLinear<T>,
                const bool fit_intercept, const int n_threads = 1);
 
   virtual ~TModelLinReg() {}
-
-  virtual const char *get_class_name() const { return clazz.c_str(); }
 
   T sdca_dual_min_i(const ulong i, const T dual_i,
                     const Array<T> &primal_vector,

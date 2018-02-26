@@ -8,11 +8,12 @@
 template <class T>
 class DLL_PUBLIC TProxPositive : public TProxSeparable<T> {
  public:
+  using TProxSeparable<T>::get_class_name;
+
+ public:
   explicit TProxPositive(T strength);
 
   TProxPositive(T strength, ulong start, ulong end);
-
-  std::string get_class_name() const override;
 
   // Override value, only this value method should be called
   T value(const Array<T> &coeffs, ulong start, ulong end) override;

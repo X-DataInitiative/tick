@@ -18,6 +18,7 @@ template <class T>
 class DLL_PUBLIC TModelLipschitz : public virtual TModel<T> {
  protected:
   using TModel<T>::compute_lip_consts;
+  using TModel<T>::get_class_name;
 
  protected:
   //! True if all lipschitz constants are already computed
@@ -38,8 +39,6 @@ class DLL_PUBLIC TModelLipschitz : public virtual TModel<T> {
  public:
   TModelLipschitz();
   virtual ~TModelLipschitz() {}
-
-  const char *get_class_name() const override { return "ModelLipchitz"; }
 
   /**
    * @brief Get the maximum of all Lipschits constants

@@ -12,6 +12,9 @@ class DLL_PUBLIC TProxBinarsity : public TProxWithGroups<T> {
   using TProxWithGroups<T>::is_synchronized;
   using TProxWithGroups<T>::synchronize_proxs;
 
+ public:
+  using TProxWithGroups<T>::get_class_name;
+
  protected:
   std::unique_ptr<TProx<T> > build_prox(T strength, ulong start, ulong end,
                                         bool positive) override;
@@ -30,10 +33,8 @@ class DLL_PUBLIC TProxBinarsity : public TProxWithGroups<T> {
   TProxBinarsity& operator=(const TProxBinarsity& other) = delete;
   TProxBinarsity& operator=(TProxBinarsity&& other) = delete;
 
-  std::string get_class_name() const;
-
   void call(const Array<T>& coeffs, T step, Array<T>& out, ulong start,
-            ulong end);
+            ulong end) override;
 };
 
 using ProxBinarsity = TProxBinarsity<double>;

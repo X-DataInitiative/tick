@@ -11,15 +11,17 @@
 
 template <class T>
 class DLL_PUBLIC TProxMulti : public TProx<T> {
+ protected:
   using ProxTPtrVector = std::vector<std::shared_ptr<TProx<T> > >;
+
+ public:
+  using TProx<T>::get_class_name;
 
  protected:
   ProxTPtrVector proxs;
 
  public:
   explicit TProxMulti(ProxTPtrVector proxs);
-
-  std::string get_class_name() const override;
 
   T value(const Array<T> &coeffs, ulong start, ulong end) override;
 

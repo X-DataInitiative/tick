@@ -15,6 +15,9 @@ class DLL_PUBLIC TProxSlope : public TProxSortedL1<T> {
   using TProxSortedL1<T>::weights;
   using TProxSortedL1<T>::strength;
 
+ public:
+  using TProxSortedL1<T>::get_class_name;
+
  protected:
   T false_discovery_rate;
   void compute_weights(void) override;
@@ -24,8 +27,6 @@ class DLL_PUBLIC TProxSlope : public TProxSortedL1<T> {
 
   TProxSlope(T strength, T false_discovery_rate, ulong start, ulong end,
              bool positive);
-
-  std::string get_class_name() const override;
 
   inline T get_false_discovery_rate() const { return false_discovery_rate; }
 

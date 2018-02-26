@@ -7,6 +7,9 @@
 
 template <class T>
 class DLL_PUBLIC TProxGroupL1 : public TProxWithGroups<T> {
+ public:
+  using TProxWithGroups<T>::get_class_name;
+
  protected:
   std::unique_ptr<TProx<T> > build_prox(T strength, ulong start, ulong end,
                                         bool positive) override;
@@ -24,8 +27,6 @@ class DLL_PUBLIC TProxGroupL1 : public TProxWithGroups<T> {
   TProxGroupL1(TProxGroupL1<T>&& other) = delete;
   TProxGroupL1<T>& operator=(const TProxGroupL1<T>& other) = delete;
   TProxGroupL1<T>& operator=(TProxGroupL1<T>&& other) = delete;
-
-  std::string get_class_name() const;
 };
 
 using ProxGroupL1 = TProxGroupL1<double>;

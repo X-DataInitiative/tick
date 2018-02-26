@@ -29,6 +29,7 @@ class DLL_PUBLIC TModelGeneralizedLinearWithIntercepts
   using TModelGeneralizedLinear<T>::grad_i;
   using TModelGeneralizedLinear<T>::get_features;
   using TModelGeneralizedLinear<T>::grad_i_factor;
+  using TModelGeneralizedLinear<T>::get_class_name;
 
  protected:
   /**
@@ -39,8 +40,8 @@ class DLL_PUBLIC TModelGeneralizedLinearWithIntercepts
    * @param fill : If `true` out will be filled by the gradient value, otherwise
    * out will be inceremented by the gradient value.
    */
-  virtual void compute_grad_i(const ulong i, const Array<T> &coeffs,
-                              Array<T> &out, const bool fill);
+  void compute_grad_i(const ulong i, const Array<T> &coeffs, Array<T> &out,
+                      const bool fill) override;
 
  public:
   TModelGeneralizedLinearWithIntercepts(
@@ -50,13 +51,11 @@ class DLL_PUBLIC TModelGeneralizedLinearWithIntercepts
 
   virtual ~TModelGeneralizedLinearWithIntercepts() {}
 
-  virtual const char *get_class_name() const { return clazz.c_str(); }
+  void grad(const Array<T> &coeffs, Array<T> &out) override;
 
-  virtual void grad(const Array<T> &coeffs, Array<T> &out);
+  T loss(const Array<T> &coeffs) override;
 
-  virtual T loss(const Array<T> &coeffs);
-
-  virtual T get_inner_prod(const ulong i, const Array<T> &coeffs) const;
+  T get_inner_prod(const ulong i, const Array<T> &coeffs) const override;
 
   ulong get_n_coeffs() const override {
     return n_features + n_samples + static_cast<int>(fit_intercept);

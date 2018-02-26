@@ -16,13 +16,12 @@ class DLL_PUBLIC TProxSeparable : public TProx<T> {
 
  public:
   using TProx<T>::call;
+  using TProx<T>::get_class_name;
 
  public:
   TProxSeparable(T strength, bool positive);
 
   TProxSeparable(T strength, ulong start, ulong end, bool positive);
-
-  std::string get_class_name() const override;
 
   bool is_separable() const override;
 

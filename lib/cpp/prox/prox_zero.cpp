@@ -10,11 +10,6 @@ TProxZero<T>::TProxZero(T strength, ulong start, ulong end)
     : TProxSeparable<T>(strength, start, end, false) {}
 
 template <class T>
-std::string TProxZero<T>::get_class_name() const {
-  return "TProxZero<T>";
-}
-
-template <class T>
 T TProxZero<T>::call_single(T x, T step) const {
   return x;
 }

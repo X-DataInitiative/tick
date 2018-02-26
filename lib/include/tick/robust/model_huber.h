@@ -29,6 +29,7 @@ class DLL_PUBLIC TModelHuber : public virtual TModelGeneralizedLinear<T>,
   using TModelGeneralizedLinear<T>::grad_i;
   using TModelGeneralizedLinear<T>::get_features;
   using TModelGeneralizedLinear<T>::grad_i_factor;
+  using TModelGeneralizedLinear<T>::get_class_name;
 
  private:
   T threshold, threshold_squared_over_two;
@@ -38,8 +39,6 @@ class DLL_PUBLIC TModelHuber : public virtual TModelGeneralizedLinear<T>,
               const std::shared_ptr<SArray<T> > labels,
               const bool fit_intercept, const T threshold,
               const int n_threads = 1);
-
-  const char *get_class_name() const override;
 
   T loss_i(const ulong i, const Array<T> &coeffs) override;
 

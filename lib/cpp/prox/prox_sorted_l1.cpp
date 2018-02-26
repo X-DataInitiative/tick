@@ -19,11 +19,6 @@ TProxSortedL1<T>::TProxSortedL1(T strength, WeightsType weights_type,
 }
 
 template <class T>
-std::string TProxSortedL1<T>::get_class_name() const {
-  return "TProxSortedL1";
-}
-
-template <class T>
 void TProxSortedL1<T>::compute_weights(void) {
   TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
 }

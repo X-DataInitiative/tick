@@ -11,11 +11,6 @@ TModelModifiedHuber<T>::TModelModifiedHuber(
       TModelGeneralizedLinear<T>(features, labels, fit_intercept, n_threads) {}
 
 template <class T>
-const char *TModelModifiedHuber<T>::get_class_name() const {
-  return "ModelModifiedHuber";
-}
-
-template <class T>
 T TModelModifiedHuber<T>::loss_i(const ulong i, const Array<T> &coeffs) {
   const T z = get_label(i) * get_inner_prod(i, coeffs);
   if (z >= 1) {

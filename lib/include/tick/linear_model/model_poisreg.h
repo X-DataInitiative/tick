@@ -29,6 +29,7 @@ class DLL_PUBLIC TModelPoisReg : public TModelGeneralizedLinear<T> {
   using TModelGeneralizedLinear<T>::get_label;
   using TModelGeneralizedLinear<T>::use_intercept;
   using TModelGeneralizedLinear<T>::get_inner_prod;
+  using TModelGeneralizedLinear<T>::get_class_name;
 
  protected:
   bool ready_non_zero_label_map = 0;
@@ -41,8 +42,6 @@ class DLL_PUBLIC TModelPoisReg : public TModelGeneralizedLinear<T> {
                 const std::shared_ptr<SArray<T> > labels,
                 const LinkType link_type, const bool fit_intercept,
                 const int n_threads = 1);
-
-  const char *get_class_name() const override { return "TModelPoisReg"; }
 
   T loss_i(const ulong i, const Array<T> &coeffs) override;
 

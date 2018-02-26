@@ -24,11 +24,6 @@ std::unique_ptr<TProx<T> > TProxBinarsity<T>::build_prox(T strength,
 }
 
 template <class T>
-std::string TProxBinarsity<T>::get_class_name() const {
-  return "TProxBinarsity";
-}
-
-template <class T>
 void TProxBinarsity<T>::call(const Array<T> &coeffs, T step, Array<T> &out,
                              ulong start, ulong end) {
   if (!is_synchronized) {

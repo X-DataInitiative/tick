@@ -9,11 +9,14 @@
 template <class T>
 class DLL_PUBLIC TProxL1w : public TProxSeparable<T> {
  protected:
-  using TProx<T>::has_range;
-  using TProx<T>::positive;
-  using TProx<T>::strength;
-  using TProx<T>::start;
-  using TProx<T>::end;
+  using TProxSeparable<T>::has_range;
+  using TProxSeparable<T>::positive;
+  using TProxSeparable<T>::strength;
+  using TProxSeparable<T>::start;
+  using TProxSeparable<T>::end;
+
+ public:
+  using TProxSeparable<T>::get_class_name;
 
  public:
   using SArrayTPtr = std::shared_ptr<SArray<T>>;
@@ -27,8 +30,6 @@ class DLL_PUBLIC TProxL1w : public TProxSeparable<T> {
 
   TProxL1w(T strength, std::shared_ptr<SArray<T>> weights, ulong start,
            ulong end, bool positive);
-
-  std::string get_class_name() const override;
 
   void call(const Array<T> &coeffs, const T step, Array<T> &out, ulong start,
             ulong end) override;

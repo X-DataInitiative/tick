@@ -4,12 +4,12 @@
 // License: BSD 3 clause
 
 /**
-* Templating updates
-*  Since the addition of templating this file class has been 
-*  required to be entirely in a header file.  
-*  This is solely for the Windows MSVC. which complains
-*  about missing or deleted function for "std::unique_ptr" 
-*/
+ * Templating updates
+ *  Since the addition of templating this file class has been
+ *  required to be entirely in a header file.
+ *  This is solely for the Windows MSVC. which complains
+ *  about missing or deleted function for "std::unique_ptr"
+ */
 
 #include "prox.h"
 
@@ -18,6 +18,9 @@ class TProxWithGroups : public TProx<T> {
  protected:
   using TProx<T>::has_range;
   using TProx<T>::strength;
+
+ public:
+  using TProx<T>::get_class_name;
 
  protected:
   bool positive = false;
@@ -53,8 +56,6 @@ class TProxWithGroups : public TProx<T> {
   TProxWithGroups(TProxWithGroups<T> &&other) = delete;
   TProxWithGroups<T> &operator=(const TProxWithGroups<T> &other) = delete;
   TProxWithGroups<T> &operator=(TProxWithGroups<T> &&other) = delete;
-
-  std::string get_class_name() const override;
 
   T value(const Array<T> &coeffs, ulong start, ulong end) override;
 
@@ -151,11 +152,6 @@ std::unique_ptr<TProx<T> > TProxWithGroups<T>::build_prox(T strength,
                                                           ulong end,
                                                           bool positive) {
   TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
-}
-
-template <class T>
-std::string TProxWithGroups<T>::get_class_name() const {
-  return "TProxWithGroups";
 }
 
 template <class T>

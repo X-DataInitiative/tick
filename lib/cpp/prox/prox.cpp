@@ -27,11 +27,6 @@ TProx<T>::TProx(T strength, ulong start, ulong end, bool positive)
 }
 
 template <class T>
-std::string TProx<T>::get_class_name() const {
-  return "TProx";
-}
-
-template <class T>
 bool TProx<T>::is_separable() const {
   return false;
 }

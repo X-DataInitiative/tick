@@ -16,11 +16,6 @@ TProxSlope<T>::TProxSlope(T strength, T false_discovery_rate, ulong start,
 }
 
 template <class T>
-std::string TProxSlope<T>::get_class_name() const {
-  return "TProxSlope";
-}
-
-template <class T>
 void TProxSlope<T>::compute_weights(void) {
   if (!weights_ready) {
     ulong size = end - start;

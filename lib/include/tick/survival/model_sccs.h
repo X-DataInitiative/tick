@@ -10,7 +10,10 @@
 #include "tick/base/base.h"
 #include "tick/base_model/model_lipschitz.h"
 
-class DLL_PUBLIC ModelSCCS : public ModelLipschitz  {
+class DLL_PUBLIC ModelSCCS : public ModelLipschitz {
+ public:
+  using ModelLipschitz::get_class_name;
+
  protected:
   ulong n_intervals;
   ulong n_lags;
@@ -30,13 +33,8 @@ class DLL_PUBLIC ModelSCCS : public ModelLipschitz  {
 
  public:
   ModelSCCS(const SBaseArrayDouble2dPtrList1D &features,
-                          const SArrayIntPtrList1D &labels,
-                          const SBaseArrayULongPtr censoring,
-                          ulong n_lags);
-
-  const char *get_class_name() const override {
-    return "LongitudinalMultinomial";
-  };
+            const SArrayIntPtrList1D &labels,
+            const SBaseArrayULongPtr censoring, ulong n_lags);
 
   double loss(const ArrayDouble &coeffs) override;
 
@@ -44,8 +42,7 @@ class DLL_PUBLIC ModelSCCS : public ModelLipschitz  {
 
   void grad(const ArrayDouble &coeffs, ArrayDouble &out) override;
 
-  void grad_i(const ulong i,
-              const ArrayDouble &coeffs,
+  void grad_i(const ulong i, const ArrayDouble &coeffs,
               ArrayDouble &out) override;
 
   void compute_lip_consts() override;
@@ -68,8 +65,7 @@ class DLL_PUBLIC ModelSCCS : public ModelLipschitz  {
 
   bool is_sparse() const override { return false; }
 
-  inline BaseArrayDouble get_longitudinal_features(ulong i,
-                                                   ulong t) const {
+  inline BaseArrayDouble get_longitudinal_features(ulong i, ulong t) const {
     return view_row(*features[i], t);
   }
 
@@ -77,13 +73,13 @@ class DLL_PUBLIC ModelSCCS : public ModelLipschitz  {
     return view(*labels[i])[t];
   }
 
-  double get_inner_prod(const ulong i,
-                        const ulong t,
+  double get_inner_prod(const ulong i, const ulong t,
                         const ArrayDouble &coeffs) const;
 
   static inline double sumExpMinusMax(ArrayDouble &x, double x_max) {
     double sum = 0;
-    for (ulong i = 0; i < x.size(); ++i) sum += exp(x[i] - x_max);  // overflow-proof
+    for (ulong i = 0; i < x.size(); ++i)
+      sum += exp(x[i] - x_max);  // overflow-proof
     return sum;
   }
 

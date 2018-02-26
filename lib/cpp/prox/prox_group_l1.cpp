@@ -16,11 +16,6 @@ TProxGroupL1<T>::TProxGroupL1(T strength, SArrayULongPtr blocks_start,
                          positive) {}
 
 template <class T>
-std::string TProxGroupL1<T>::get_class_name() const {
-  return "TProxGroupL1";
-}
-
-template <class T>
 std::unique_ptr<TProx<T> > TProxGroupL1<T>::build_prox(T strength, ulong start,
                                                        ulong end,
                                                        bool positive) {
