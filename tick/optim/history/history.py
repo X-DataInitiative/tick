@@ -2,6 +2,7 @@
 
 from collections import defaultdict
 
+import dill
 import numpy as np
 from tick.base import Base
 from numpy.linalg import norm
@@ -233,3 +234,11 @@ class History(Base):
         dd = Base._as_dict(self)
         dd.pop("values", None)
         return dd
+
+    # We use dill for serialization because history uses lambda functions
+    def __getstate__(self):
+        return dill.dumps(self.__dict__)
+
+    def __setstate__(self, state):
+        object.__setattr__(self, '__dict__', dill.loads(state))
+
