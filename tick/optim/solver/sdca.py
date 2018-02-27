@@ -157,13 +157,14 @@ class SDCA(SolverFirstOrderSto):
                  rand_type: str = 'unif', tol: float = 1e-10,
                  max_iter: int = 10, verbose: bool = True,
                  print_every: int = 1, record_every: int = 1,
-                 seed: int = -1, batch_size=1):
+                 seed: int = -1, batch_size=1, store_only_x=False):
 
         SolverFirstOrderSto.__init__(self, step=0, epoch_size=epoch_size,
                                      rand_type=rand_type, tol=tol,
                                      max_iter=max_iter, verbose=verbose,
                                      print_every=print_every,
-                                     record_every=record_every, seed=seed)
+                                     record_every=record_every, seed=seed,
+                                     store_only_x=store_only_x)
         self.l_l2sq = l_l2sq
         epoch_size = self.epoch_size
         self._proj = None
@@ -192,12 +193,11 @@ class SDCA(SolverFirstOrderSto):
         return SolverFirstOrderSto.set_model(self, model)
 
     def extra_history(self, minimizer):
-        fast = False
-        if fast:
+        if self.store_only_x:
             return {'dual_vector': self._solver.get_dual_vector()}
         else:
+            dual_vector = self._solver.get_dual_vector()
             try:
-                dual_vector = self._solver.get_dual_vector()
                 dual = self.dual_objective(dual_vector)
             except:
                 dual = np.nan

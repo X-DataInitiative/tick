@@ -84,9 +84,10 @@ class SolverFirstOrderSto(SolverFirstOrder, SolverSto):
 
     def __init__(self, step: float = None, epoch_size: int = None,
                  rand_type="unif", tol=0., max_iter=100, verbose=True,
-                 print_every=10, record_every=1, seed=-1):
+                 print_every=10, record_every=1, seed=-1, store_only_x=False):
 
         self._step = None
+        self.store_only_x = store_only_x
 
         # We must first construct SolverSto (otherwise self.step won't
         # work in SolverFirstOrder)
@@ -193,18 +194,26 @@ class SolverFirstOrderSto(SolverFirstOrder, SolverSto):
             # Launch one epoch using the wrapped C++ solver
             self._solver.solve()
             self._solver.get_minimizer(minimizer)
-            # The step might be modified by the C++ solver
-            # step = self._solver.get_step()
-            obj = self.objective(minimizer)
-            rel_delta = relative_distance(minimizer, prev_minimizer)
-            rel_obj = abs(obj - prev_obj) / abs(prev_obj)
-            converged = rel_obj < self.tol
-            # If converged, we stop the loop and record the last step
-            # in history
-            extra_history = self.extra_history(minimizer)
-            self._handle_history(n_iter, force=converged, obj=obj,
-                                 x=minimizer.copy(), rel_delta=rel_delta,
-                                 rel_obj=rel_obj, **extra_history)
+
+            if self.store_only_x:
+                extra_history = self.extra_history(minimizer)
+                self._handle_history(n_iter, x=minimizer.copy(),
+                                     **extra_history)
+                converged = False
+
+            else:
+                # The step might be modified by the C++ solver
+                # step = self._solver.get_step()
+                obj = self.objective(minimizer)
+                rel_delta = relative_distance(minimizer, prev_minimizer)
+                rel_obj = abs(obj - prev_obj) / abs(prev_obj)
+                converged = rel_obj < self.tol
+                # If converged, we stop the loop and record the last step
+                # in history
+                extra_history = self.extra_history(minimizer)
+                self._handle_history(n_iter, force=converged, obj=obj,
+                                     x=minimizer.copy(), rel_delta=rel_delta,
+                                     rel_obj=rel_obj, **extra_history)
             if converged:
                 break
         self._set("solution", minimizer)
