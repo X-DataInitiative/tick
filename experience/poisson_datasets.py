@@ -12,7 +12,6 @@ from tick.dataset.download_helper import download_tick_dataset, get_data_home
 from tick.preprocessing.features_binarizer import FeaturesBinarizer
 from tick.simulation import SimuPoisReg
 
-np.random.seed(43938)
 
 def fetch_uci_dataset(dataset_path, data_filename, sep=',', header=0):
     base_url = 'https://archive.ics.uci.edu/ml/machine-learning-databases/%s'
@@ -38,7 +37,7 @@ def fetch_blog_dataset(n_samples=52397):
     data_filename = "blogData_train.csv"  # "blogData_test-2012.03.25.00_00.csv"  #
 
     original_df = fetch_uci_dataset(dataset_path, data_filename, header=-1)
-    shuffled_df = shuffle(original_df)
+    shuffled_df = shuffle(original_df, random_state=20329)
 
     data = shuffled_df.head(n_samples).values
     features = data[:, :-1]
@@ -60,7 +59,7 @@ def fetch_news_popularity_dataset(n_samples=39797):
     data_filename = "OnlineNewsPopularity/OnlineNewsPopularity.csv"
 
     original_df = fetch_uci_dataset(dataset_path, data_filename)
-    shuffled_df = shuffle(original_df)
+    shuffled_df = shuffle(original_df, random_state=20329)
 
     data = shuffled_df.head(n_samples).values
     features = data[:, 1:-1].astype(float)
@@ -82,7 +81,7 @@ def fetch_las_vegas_dataset(n_samples=504):
     data_filename = "LasVegasTripAdvisorReviews-Dataset.csv"
 
     original_df = fetch_uci_dataset(dataset_path, data_filename, sep=';')
-    shuffled_df = shuffle(original_df)
+    shuffled_df = shuffle(original_df, random_state=20329)
     shuffled_df = shuffled_df.head(n_samples)
 
     labels = shuffled_df['Score'].values.astype(float)
@@ -101,7 +100,7 @@ def fetch_wine_datase(n_samples=4998):
     data_filename = "winequality-white.csv"
 
     original_df = fetch_uci_dataset(dataset_path, data_filename, sep=';')
-    shuffled_df = shuffle(original_df)
+    shuffled_df = shuffle(original_df, random_state=20329)
     shuffled_df = shuffled_df.head(n_samples)
 
     labels = shuffled_df['quality'].values.astype(float)
@@ -120,7 +119,7 @@ def fetch_crime_dataset(n_samples=2215):
     data_filename = "CommViolPredUnnormalizedData.txt"
 
     original_df = fetch_uci_dataset(dataset_path, data_filename, header=-1)
-    shuffled_df = shuffle(original_df)
+    shuffled_df = shuffle(original_df, random_state=20329)
     shuffled_df = shuffled_df.head(n_samples)
 
     labels = shuffled_df[129].values.astype(float)
