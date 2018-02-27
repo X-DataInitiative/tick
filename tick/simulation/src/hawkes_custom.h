@@ -23,8 +23,19 @@ public:
 //    using Hawkes::baselines;
 //    using Hawkes::kernels;
 
+//! add the additonal information to allow the simulation
+    std::string simu_mode = "random";
+    //! for scenario 1, simulation of LOB
+    double dim;
+    double current_num;
+    //the normarlizer
+    double avg;
+    ArrayDouble avg_order_size;
+
 public :
     Hawkes_custom(unsigned int n_nodes, int seed, ulong _MaxN_of_f, const SArrayDoublePtrList1D &_f_i);
+
+    Hawkes_custom(unsigned int n_nodes, int seed, ulong _MaxN_of_f, const SArrayDoublePtrList1D &_f_i, const ArrayDouble &extrainfo, const std::string _simu_mode = "generate");
 
     // This forbids the unwanted copy of an Hawkes process
     Hawkes_custom(Hawkes_custom &hawkes_custom) = delete;

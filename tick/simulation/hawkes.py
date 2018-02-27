@@ -106,7 +106,8 @@ class SimuHawkes(SimuPointProcess):
                  end_time=None, period_length=None,
                  max_jumps=None, seed=None, verbose=True,
                  force_simulation=False,
-                 custom=False, MaxN_of_f = None, f_i = None):
+                 custom=False, MaxN_of_f=None, f_i=None,
+                 extrainfo=None, simu_mode=None):
         SimuPointProcess.__init__(self, end_time=end_time, max_jumps=max_jumps,
                                   seed=seed, verbose=verbose)
 
@@ -140,7 +141,10 @@ class SimuHawkes(SimuPointProcess):
         if custom == 'Type2':
             self._pp = _Hawkes_customType2(n_nodes, self._pp_init_seed, MaxN_of_f, f_i)
         elif custom:
-            self._pp = _HawkesCustom(n_nodes, self._pp_init_seed, MaxN_of_f, f_i)
+            if extrainfo is not None:
+                self._pp = _HawkesCustom(n_nodes, self._pp_init_seed, MaxN_of_f, f_i, extrainfo, simu_mode)
+            else:
+                self._pp = _HawkesCustom(n_nodes, self._pp_init_seed, MaxN_of_f, f_i)
         else:
             self._pp = _Hawkes(n_nodes, self._pp_init_seed)
 

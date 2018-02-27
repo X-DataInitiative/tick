@@ -18,6 +18,33 @@ Hawkes_custom::Hawkes_custom(unsigned int n_nodes, int seed, ulong _MaxN_of_f, c
     last_global_n = 0;
 }
 
+Hawkes_custom::Hawkes_custom(unsigned int n_nodes, int seed, ulong _MaxN_of_f, const SArrayDoublePtrList1D &_f_i, const ArrayDouble &extrainfo, const std::string _simu_mode)
+        : Hawkes(n_nodes, seed), global_n(0), simu_mode(_simu_mode) {
+    this->MaxN_of_f = _MaxN_of_f;
+    this->f_i = _f_i;
+
+    f_i_Max = ArrayDouble(n_nodes);
+
+    for (ulong i = 0; i != n_nodes; ++i)
+        f_i_Max[i] = f_i[i]->max();
+
+    last_global_n = 0;
+    if(simu_mode == "random")
+        return;
+    else if(simu_mode == "generate"){
+        current_num = extrainfo[0];
+        avg = extrainfo[1];
+        dim = extrainfo[2];
+        avg_order_size = ArrayDouble(dim);
+        for(ulong k = 0; k != dim; ++k)
+            avg_order_size[k] = extrainfo[3 + k];
+    }
+    else
+        TICK_ERROR("Unknown scenario");
+}
+
+
+
 bool Hawkes_custom::update_time_shift_(double delay,
                                        ArrayDouble &intensity,
                                        double *total_intensity_bound1) {
@@ -50,11 +77,34 @@ bool Hawkes_custom::update_time_shift_(double delay,
 }
 
 void Hawkes_custom::update_jump(int index) {
-    last_global_n = (unsigned long) std::rand() % MaxN_of_f;
-    global_n.append1(last_global_n);
-    // We make the jump on the corresponding signal
-    timestamps[index]->append1(time);
-    n_total_jumps++;
+    if(simu_mode == "random") {
+        last_global_n = (unsigned long) std::rand() % MaxN_of_f;
+        global_n.append1(last_global_n);
+        // We make the jump on the corresponding signal
+        timestamps[index]->append1(time);
+        n_total_jumps++;
+    }
+    else if(simu_mode == "generate"){
+        current_num += avg_order_size[index];
+        double exact = current_num / avg;
+        ulong round = (exact > (floor(exact) + 0.5)) ? (floor(exact) + 1) : floor(exact);
+        if(round > MaxN_of_f - 1)
+            round = MaxN_of_f - 1;
+        last_global_n = round;
+        global_n.append1(last_global_n);
+        // We make the jump on the corresponding signal
+        timestamps[index]->append1(time);
+        n_total_jumps++;
+
+        if(exact < 0){
+            //!terminate the simulation, becuase there is no order now
+            //!set time large enough to terminate the simulation
+            this->time = 1e10;
+        }
+    }
+    else {
+        TICK_ERROR("Unknown simulation scenario.");
+    }
 }
 
 void Hawkes_custom::init_intensity_(ArrayDouble &intensity, double *total_intensity_bound) {
