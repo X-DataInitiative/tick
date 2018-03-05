@@ -1,7 +1,13 @@
 
 [![PyPI version](https://badge.fury.io/py/tick.svg)](https://badge.fury.io/py/tick)
-[![Build Status](https://travis-ci.org/X-DataInitiative/tick.svg?branch=master)](https://travis-ci.org/X-DataInitiative/tick)
+[![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/xdata-tick/Lobby)
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
+
+| Operating system  | Build Status |
+| ------------- | ------------- |
+| Linux/Mac  | [![Linux/Mac Build](https://travis-ci.org/X-DataInitiative/tick.svg?branch=master)](https://travis-ci.org/X-DataInitiative/tick)  |
+| Windows  | [![Windows Build](https://ci.appveyor.com/api/projects/status/abjfv0rawliv0qqn/branch/master?svg=true)](https://ci.appveyor.com/project/Dekken/tick-cyjm4)  |
+
 
 # tick
 
