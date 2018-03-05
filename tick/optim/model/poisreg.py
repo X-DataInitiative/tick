@@ -303,7 +303,7 @@ class ModelPoisReg(ModelGeneralizedLinear,
 
         # corr = l_l2sq * n_non_zeros * non_zero_labels
         # corr *= features_dot_features_sum / np.power(n_psi_x, 2)
-        corr = l_l2sq * n_non_zeros * non_zero_labels / n_psi_x
+        corr = np.sqrt(l_l2sq * n_non_zeros) * non_zero_labels / n_psi_x
 
         # import matplotlib.pyplot as plt
         # plt.hist(n_psi_x / n_non_zeros)

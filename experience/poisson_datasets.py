@@ -149,7 +149,7 @@ def fetch_crime_dataset(n_samples=2215):
 
     return features, labels
 
-def simulate_poisson(n_samples, n_features=30):
+def simulate_poisson(n_samples, n_features=100):
     np.random.seed(32032)
 
     weights = np.random.normal(size=n_features)
