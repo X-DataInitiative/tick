@@ -10,17 +10,18 @@ n_nodes = 2
 dim = n_nodes
 seed = 3007
 MaxN_of_f = 5
-f_i = [np.array([1., 0.7, 0.8, 0.6, 0.5]), np.array([1., 0.6, 0.8, 0.8, 0.6])]
+f_i = [np.array([1., 0.6, 0.8, 0.6, 0.5]), np.array([1., 0.6, 0.8, 0.6, 0.5])]
 
-beta = 3
-end_time = 100000
+beta = 100
+end_time = 2000
 
 kernels = np.array([
             [HawkesKernelExp(0.5, beta), HawkesKernelExp(0.2, beta)],
             [HawkesKernelExp(0.2, beta), HawkesKernelExp(0.5, beta)]
         ])
 
-extrainfo = np.array([50, 20.0, 2, 2.0, -2.0])
+''' current_num avg dim {avg_dim_i}'''
+extrainfo = np.array([120.0, 20.0, 2, 2.0, -2.0])
 simu_mode = "generate"
 
 simu_model = SimuHawkes(kernels=kernels, end_time=end_time, custom=True, seed=seed, MaxN_of_f = MaxN_of_f, f_i=f_i, extrainfo=extrainfo, simu_mode=simu_mode)
@@ -55,7 +56,8 @@ for timestamp in timestamps:
         if timestamp[-1] > end_time:
             end_time = timestamp[-1]
 
-print(global_n)
+print(len(timestamps[0]))
+print(len(timestamps[1]))
 print(len(global_n))
 print(end_time)
 
