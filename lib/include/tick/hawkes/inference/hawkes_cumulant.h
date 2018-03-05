@@ -13,15 +13,14 @@ class DLL_PUBLIC HawkesCumulant : public ModelHawkesList {
  public:
   explicit HawkesCumulant(double integration_support);
 
-  SArrayDoublePtr compute_A_and_I_ij(ulong r, ulong i, ulong j, double mean_intensity_j);
+  SArrayDoublePtr compute_A_and_I_ij(ulong r, ulong i, ulong j,
+                                     double mean_intensity_j);
 
   double compute_E_ijk(ulong r, ulong i, ulong j, ulong k,
                        double mean_intensity_i, double mean_intensity_j,
                        double J_ij);
 
-  double get_integration_support() const {
-    return integration_support;
-  }
+  double get_integration_support() const { return integration_support; }
 
   void set_integration_support(const double integration_support) {
     if (integration_support <= 0) TICK_ERROR("Kernel support must be positive");
@@ -29,9 +28,7 @@ class DLL_PUBLIC HawkesCumulant : public ModelHawkesList {
     are_cumulants_ready = false;
   }
 
-  bool get_are_cumulants_ready() const {
-    return are_cumulants_ready;
-  }
+  bool get_are_cumulants_ready() const { return are_cumulants_ready; }
 
   void set_are_cumulants_ready(const bool are_cumulants_ready) {
     this->are_cumulants_ready = are_cumulants_ready;

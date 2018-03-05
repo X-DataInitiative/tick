@@ -1,18 +1,15 @@
 #include <chrono>
 
-#include "tick/random/test_rand.h"
 #include "tick/linear_model/model_logreg.h"
+#include "tick/random/test_rand.h"
 
 int main(int nargs, char *args[]) {
-
   ulong num_threads = 1;
   ulong n_samples = 20000;
 
-  if (nargs > 1)
-    num_threads = std::stoul(args[1]);
+  if (nargs > 1) num_threads = std::stoul(args[1]);
 
-  if (nargs > 2)
-    n_samples = std::stoul(args[1]);
+  if (nargs > 2) n_samples = std::stoul(args[1]);
 
   const int seed = 1933;
   ulong num_runs = 5;
@@ -34,8 +31,8 @@ int main(int nargs, char *args[]) {
   }
 
   for (ulong run_i = 0; run_i < num_runs; ++run_i) {
-
-    auto model = std::make_shared<ModelLogReg>(features, labels, false, num_threads);
+    auto model =
+        std::make_shared<ModelLogReg>(features, labels, false, num_threads);
 
     using milli = std::chrono::microseconds;
     const auto start = std::chrono::system_clock::now();
@@ -50,13 +47,9 @@ int main(int nargs, char *args[]) {
 
     std::chrono::duration<double> elapsed_seconds = end - start;
 
-    std::cout << elapsed_seconds.count() << '\t'
-              << num_iterations << '\t'
-              << num_threads << '\t'
-              << n_samples << '\t'
-              << n_features << '\t'
-              << args[0] << '\t'
-              << std::endl;
+    std::cout << elapsed_seconds.count() << '\t' << num_iterations << '\t'
+              << num_threads << '\t' << n_samples << '\t' << n_features << '\t'
+              << args[0] << '\t' << std::endl;
   }
 
   return 0;

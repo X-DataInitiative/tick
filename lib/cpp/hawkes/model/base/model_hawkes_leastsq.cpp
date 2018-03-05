@@ -2,11 +2,10 @@
 
 #include "tick/hawkes/model/base/model_hawkes_leastsq.h"
 
-ModelHawkesLeastSq::ModelHawkesLeastSq(
-  const int max_n_threads,
-  const unsigned int optimization_level)
-  : ModelHawkesList(max_n_threads, optimization_level),
-    weights_allocated(false) {}
+ModelHawkesLeastSq::ModelHawkesLeastSq(const int max_n_threads,
+                                       const unsigned int optimization_level)
+    : ModelHawkesList(max_n_threads, optimization_level),
+      weights_allocated(false) {}
 
 void ModelHawkesLeastSq::grad_i(const ulong i, const ArrayDouble &coeffs,
                                 ArrayDouble &out) {
@@ -40,8 +39,8 @@ void ModelHawkesLeastSq::compute_weights() {
   synchronize_aggregated_model();
 }
 
-void ModelHawkesLeastSq::incremental_set_data(const SArrayDoublePtrList1D &timestamps,
-                                              double end_time) {
+void ModelHawkesLeastSq::incremental_set_data(
+    const SArrayDoublePtrList1D &timestamps, double end_time) {
   weights_computed = false;
   if (!weights_allocated) {
     set_n_nodes(timestamps.size());

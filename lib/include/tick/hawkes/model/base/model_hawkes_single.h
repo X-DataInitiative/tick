@@ -4,9 +4,9 @@
 
 // License: BSD 3 clause
 
-#include <cereal/types/vector.hpp>
-#include <cereal/types/polymorphic.hpp>
 #include <cereal/types/base_class.hpp>
+#include <cereal/types/polymorphic.hpp>
+#include <cereal/types/vector.hpp>
 
 #include "model_hawkes.h"
 
@@ -26,9 +26,9 @@ class DLL_PUBLIC ModelHawkesSingle : public ModelHawkes {
 
  public:
   //! @brief Constructor
-  //! \param max_n_threads : maximum number of threads to be used for multithreading
-  //! \param optimization_level : 0 corresponds to no optimization and 1 to use of faster
-  //! (approximated) exponential function
+  //! \param max_n_threads : maximum number of threads to be used for
+  //! multithreading \param optimization_level : 0 corresponds to no
+  //! optimization and 1 to use of faster (approximated) exponential function
   ModelHawkesSingle(const int max_n_threads = 1,
                     const unsigned int optimization_level = 0);
 
@@ -36,14 +36,12 @@ class DLL_PUBLIC ModelHawkesSingle : public ModelHawkes {
 
   unsigned int get_n_threads() const;
 
-  double get_end_time() const {
-    return end_time;
-  }
+  double get_end_time() const { return end_time; }
 
   friend class ModelHawkesList;
 
  public:
-  template<class Archive>
+  template <class Archive>
   void serialize(Archive &ar) {
     ar(cereal::make_nvp("ModelHawkes", cereal::base_class<ModelHawkes>(this)));
 

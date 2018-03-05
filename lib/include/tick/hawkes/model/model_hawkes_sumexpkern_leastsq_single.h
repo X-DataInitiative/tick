@@ -8,15 +8,16 @@
 #include "tick/hawkes/model/base/model_hawkes_single.h"
 
 /** \class ModelHawkesSumExpKernLeastSqSingle
- * \brief Class for computing L2 Contrast function and gradient for Hawkes processes with
- * sum exponential kernels with fixed exponent (i.e., \sum_u alpha_u*beta_u*e^{-beta_u t},
- * with fixed beta)
+ * \brief Class for computing L2 Contrast function and gradient for Hawkes
+ * processes with sum exponential kernels with fixed exponent (i.e., \sum_u
+ * alpha_u*beta_u*e^{-beta_u t}, with fixed beta)
  */
 class DLL_PUBLIC ModelHawkesSumExpKernLeastSqSingle : public ModelHawkesSingle {
   //! @brief Some arrays used for intermediate computings.
   ArrayDouble2dList1D E, Dgg, C;
 
-  //! @brief some arrays used for intermediate computings in varying baseline case
+  //! @brief some arrays used for intermediate computings in varying baseline
+  //! case
   ArrayDouble L;
   ArrayDoubleList1D K;
   ArrayDouble2dList1D Dg;
@@ -32,16 +33,17 @@ class DLL_PUBLIC ModelHawkesSumExpKernLeastSqSingle : public ModelHawkesSingle {
 
  public:
   //! @brief Default constructor
-  //! @note This constructor is only used to create vectors of ModelHawkesSumExpKernLeastSqSingle and serialization
+  //! @note This constructor is only used to create vectors of
+  //! ModelHawkesSumExpKernLeastSqSingle and serialization
   ModelHawkesSumExpKernLeastSqSingle() {}
 
   //! @brief Constructor
   //! \param timestamps : a list of arrays representing the realization
   //! \param decays : the 2d array of the decays
   //! \param end_time : The time until which this process has been observed
-  //! \param max_n_threads : maximum number of threads to be used for multithreading
-  //! \param optimization_level : 0 corresponds to no optimization and 1 to use of faster
-  //! (approximated) exponential function
+  //! \param max_n_threads : maximum number of threads to be used for
+  //! multithreading \param optimization_level : 0 corresponds to no
+  //! optimization and 1 to use of faster (approximated) exponential function
   ModelHawkesSumExpKernLeastSqSingle(const ArrayDouble &decays,
                                      const ulong n_baselines,
                                      const double period_length,
@@ -62,10 +64,9 @@ class DLL_PUBLIC ModelHawkesSumExpKernLeastSqSingle : public ModelHawkesSingle {
   double loss(const ArrayDouble &coeffs) override;
 
   /**
-   * @brief Compute loss corresponding to sample i (between 0 and rand_max = n_nodes)
-   * \param i : selected component
-   * \param coeffs : Point in which loss is computed
-   * \return Loss' value
+   * @brief Compute loss corresponding to sample i (between 0 and rand_max =
+   * n_nodes) \param i : selected component \param coeffs : Point in which loss
+   * is computed \return Loss' value
    */
   double loss_i(const ulong i, const ArrayDouble &coeffs) override;
 
@@ -77,10 +78,10 @@ class DLL_PUBLIC ModelHawkesSumExpKernLeastSqSingle : public ModelHawkesSingle {
   void grad(const ArrayDouble &coeffs, ArrayDouble &out) override;
 
   /**
-   * @brief Compute gradient corresponding to sample i (between 0 and rand_max = n_nodes)
-   * \param i : selected component
-   * \param coeffs : Point in which gradient is computed
-   * \param out : Array in which the value of the gradient is stored
+   * @brief Compute gradient corresponding to sample i (between 0 and rand_max =
+   * n_nodes) \param i : selected component \param coeffs : Point in which
+   * gradient is computed \param out : Array in which the value of the gradient
+   * is stored
    */
   void grad_i(ulong i, const ArrayDouble &coeffs, ArrayDouble &out) override;
 
@@ -116,9 +117,10 @@ class DLL_PUBLIC ModelHawkesSumExpKernLeastSqSingle : public ModelHawkesSingle {
   friend class ModelHawkesSumExpKernLeastSq;
 
  public:
-  template<class Archive>
+  template <class Archive>
   void serialize(Archive &ar) {
-    ar(cereal::make_nvp("ModelHawkesSingle", cereal::base_class<ModelHawkesSingle>(this)));
+    ar(cereal::make_nvp("ModelHawkesSingle",
+                        cereal::base_class<ModelHawkesSingle>(this)));
 
     ar(CEREAL_NVP(E));
     ar(CEREAL_NVP(Dgg));

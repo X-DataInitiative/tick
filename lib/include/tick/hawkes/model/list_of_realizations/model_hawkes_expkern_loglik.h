@@ -9,9 +9,9 @@
 #include "tick/hawkes/model/model_hawkes_expkern_loglik_single.h"
 
 /** \class ModelHawkesExpKernLogLik
- * \brief Class for computing L2 Contrast function and gradient for Hawkes processes with
- * exponential kernels with fixed exponent (i.e., alpha*beta*e^{-beta t}, with fixed beta)
- * on a list of realizations
+ * \brief Class for computing L2 Contrast function and gradient for Hawkes
+ * processes with exponential kernels with fixed exponent (i.e.,
+ * alpha*beta*e^{-beta t}, with fixed beta) on a list of realizations
  */
 class DLL_PUBLIC ModelHawkesExpKernLogLik : public ModelHawkesLogLik {
   //! @brief Value of decay for this model. Shared by all kernels
@@ -20,12 +20,11 @@ class DLL_PUBLIC ModelHawkesExpKernLogLik : public ModelHawkesLogLik {
  public:
   /**
    * @brief Constructor
-   * \param decay : decay for this model (remember that decay is fixed!) 
-   * \param max_n_threads : number of cores to be used for multithreading. If negative,
-   * the number of physical cores will be used
+   * \param decay : decay for this model (remember that decay is fixed!)
+   * \param max_n_threads : number of cores to be used for multithreading. If
+   * negative, the number of physical cores will be used
    */
-  ModelHawkesExpKernLogLik(const double decay,
-                           const int max_n_threads = 1);
+  explicit ModelHawkesExpKernLogLik(const double decay, const int max_n_threads = 1);
 
   /**
    * @brief Set decays and reset weights computing
@@ -36,13 +35,12 @@ class DLL_PUBLIC ModelHawkesExpKernLogLik : public ModelHawkesLogLik {
     this->decay = decay;
   }
 
-  double get_decay() const {
-    return decay;
-  }
+  double get_decay() const { return decay; }
 
-  std::unique_ptr<ModelHawkesLogLikSingle> build_model(const int n_threads) override {
+  std::unique_ptr<ModelHawkesLogLikSingle> build_model(
+      const int n_threads) override {
     return std::unique_ptr<ModelHawkesExpKernLogLikSingle>(
-      new ModelHawkesExpKernLogLikSingle(decay, n_threads));
+        new ModelHawkesExpKernLogLikSingle(decay, n_threads));
   }
 
   ulong get_n_coeffs() const override;

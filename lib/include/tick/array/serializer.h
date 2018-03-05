@@ -2,17 +2,17 @@
 #define LIB_INCLUDE_TICK_ARRAY_SERIALIZER_H_
 
 #include "array.h"
-#include "sarray.h"
 #include "array2d.h"
+#include "sarray.h"
 #include "sarray2d.h"
 
 #include "sparsearray2d.h"
 #include "ssparsearray2d.h"
 
-#include <fstream>
 #include <cereal/archives/portable_binary.hpp>
+#include <fstream>
 
-template<typename A>
+template <typename A>
 void array_to_file(std::string _file, const A &array) {
   std::ofstream ss(_file, std::ios::out | std::ios::binary);
   {
@@ -21,7 +21,7 @@ void array_to_file(std::string _file, const A &array) {
   }
 }
 
-template<typename A>
+template <typename A>
 std::shared_ptr<A> array_from_file(const std::string &_file) {
   auto arr = std::make_shared<A>();
   {
@@ -40,7 +40,8 @@ SArrayDoublePtr tick_double_array_from_file(std::string _file) {
   return array_from_file<SArrayDouble>(_file);
 }
 
-void tick_double_array2d_to_file(std::string _file, const ArrayDouble2d &array) {
+void tick_double_array2d_to_file(std::string _file,
+                                 const ArrayDouble2d &array) {
   array_to_file<ArrayDouble2d>(_file, array);
 }
 
@@ -48,8 +49,9 @@ SArrayDouble2dPtr tick_double_array2d_from_file(std::string _file) {
   return array_from_file<SArrayDouble2d>(_file);
 }
 
-void tick_double_sparse2d_to_file(std::string _file, const SparseArrayDouble2d &array) {
-  array_to_file<SparseArrayDouble2d>(_file, array);;
+void tick_double_sparse2d_to_file(std::string _file,
+                                  const SparseArrayDouble2d &array) {
+  array_to_file<SparseArrayDouble2d>(_file, array);
 }
 
 SSparseArrayDouble2dPtr tick_double_sparse2d_from_file(std::string _file) {

@@ -2,26 +2,22 @@
 
 #include "tick/base/interruption.h"
 
-#include <iostream>
 #include <csignal>
+#include <iostream>
 
 const char *Interruption::what() const noexcept {
-    return "Process was interrupted with signal SIGINT";
+  return "Process was interrupted with signal SIGINT";
 }
 
 namespace {
 
-void signal_handler(int signum) {
-    Interruption::set();
-}
+void signal_handler(int signum) { Interruption::set(); }
 
-}
+}  // namespace
 
 class InterruptionInit {
- public :
-    InterruptionInit() {
-        std::signal(SIGINT, signal_handler);
-    }
+ public:
+  InterruptionInit() { std::signal(SIGINT, signal_handler); }
 };
 
 InterruptionInit init;

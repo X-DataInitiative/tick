@@ -5,14 +5,15 @@
 
 class HawkesKernelTimeFuncTest : public ::testing::Test {
  protected:
-  // we need to use a unique_ptr as HawkesKernelTimeFunc has no default constructor
+  // we need to use a unique_ptr as HawkesKernelTimeFunc has no default
+  // constructor
   std::unique_ptr<HawkesKernelTimeFunc> hawkes_kernel_time_func;
 
   void SetUp() override {
     ArrayDouble t_axis{1, 2, 3, 4};
     ArrayDouble y_axis{1, 1, 3, 2};
     hawkes_kernel_time_func = std::unique_ptr<HawkesKernelTimeFunc>(
-      new HawkesKernelTimeFunc(t_axis, y_axis));
+        new HawkesKernelTimeFunc(t_axis, y_axis));
   }
 };
 

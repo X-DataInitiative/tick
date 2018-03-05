@@ -1,6 +1,5 @@
 // License: BSD 3 clause
 
-
 #include "tick/hawkes/simulation/hawkes_kernels/hawkes_kernel.h"
 
 // Constructor
@@ -26,24 +25,24 @@ SArrayDoublePtr HawkesKernel::get_values(const ArrayDouble &t_values) {
 }
 
 // Get L1 norm
-// By default, it discretizes the integral with nsteps (Riemann sum with step-wise function)
-// Should be overloaded if L1 norm closed formula exists
+// By default, it discretizes the integral with nsteps (Riemann sum with
+// step-wise function) Should be overloaded if L1 norm closed formula exists
 double HawkesKernel::get_norm(int nsteps) {
   double norm = 0;
   double dx = support / nsteps;
 
-  if (support == 0)
-    return 0;
+  if (support == 0) return 0;
 
-  for (double x = 0; x <= support; x += dx)
-    norm += get_value(x) * dx;
+  for (double x = 0; x <= support; x += dx) norm += get_value(x) * dx;
 
   return norm;
 }
 
 // Returns the convolution kernel*process(time)
-// If bound != NULL then *bound will return a bound of the future values of the convolution, i.e., MAX(kernel*process(t>=time))
-// Should be overloaded for efficiency if there is a faster way to compute this convolution than just regular algorithm
+// If bound != NULL then *bound will return a bound of the future values of the
+// convolution, i.e., MAX(kernel*process(t>=time)) Should be overloaded for
+// efficiency if there is a faster way to compute this convolution than just
+// regular algorithm
 double HawkesKernel::get_convolution(const double time,
                                      const ArrayDouble &timestamps,
                                      double *const bound) {

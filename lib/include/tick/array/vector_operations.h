@@ -5,13 +5,13 @@
 
 #include <numeric>
 
-#include "tick/base/defs.h"
 #include "promote.h"
+#include "tick/base/defs.h"
 
 namespace tick {
 namespace detail {
 
-template<typename T>
+template <typename T>
 struct vector_operations_unoptimized {
   T dot(const ulong n, const T *x, const T *y) const {
     T result{0};
@@ -54,13 +54,12 @@ struct vector_operations_unoptimized {
 
 namespace tick {
 
-template<typename T>
+template <typename T>
 using vector_operations = detail::vector_operations_unoptimized<T>;
 
 }  // namespace tick
 
 #else  // if defined(TICK_CBLAS_AVAILABLE)
-
 
 // Find available blas distribution
 #if defined(TICK_USE_MKL)
@@ -71,14 +70,13 @@ using vector_operations = detail::vector_operations_unoptimized<T>;
 
 #include <Accelerate/Accelerate.h>
 
-// TODO(svp) Disabling this feature until we find a good way to determine if ATLAS is actually available
-// #define XDATA_CATLAS_AVAILABLE
+// TODO(svp) Disabling this feature until we find a good way to determine if
+// ATLAS is actually available #define XDATA_CATLAS_AVAILABLE
 
 #else
 
 extern "C" {
 #include <cblas.h>
-
 }
 
 #endif
@@ -87,10 +85,10 @@ namespace tick {
 
 namespace detail {
 
-template<typename T>
+template <typename T>
 struct vector_operations_cblas : vector_operations_unoptimized<T> {};
 
-template<typename T>
+template <typename T>
 struct vector_operations_cblas_base {
   promote_t<T> sum(const ulong n, const T *x) const {
     return vector_operations_unoptimized<T>{}.sum(n, x);
@@ -101,8 +99,9 @@ struct vector_operations_cblas_base {
   }
 };
 
-template<>
-struct vector_operations_cblas<float> final : public vector_operations_cblas_base<float> {
+template <>
+struct vector_operations_cblas<float> final
+    : public vector_operations_cblas_base<float> {
   float absolute_sum(const ulong n, const float *x) const {
     return cblas_sasum(n, x, 1);
   }
@@ -115,19 +114,21 @@ struct vector_operations_cblas<float> final : public vector_operations_cblas_bas
     cblas_sscal(n, alpha, x, 1);
   }
 
-  void mult_incr(const ulong n, const float alpha, const float *x, float *y) const {
+  void mult_incr(const ulong n, const float alpha, const float *x,
+                 float *y) const {
     cblas_saxpy(n, alpha, x, 1, y, 1);
   }
 
 #if defined(TICK_CATLAS_AVAILABLE)
-  void set(const ulong n, const float alpha, float* x) const override {
-      catlas_sset(n, alpha, x, 1);
+  void set(const ulong n, const float alpha, float *x) const override {
+    catlas_sset(n, alpha, x, 1);
   }
 #endif
 };
 
-template<>
-struct vector_operations_cblas<double> final : public vector_operations_cblas_base<double> {
+template <>
+struct vector_operations_cblas<double> final
+    : public vector_operations_cblas_base<double> {
   double absolute_sum(const ulong n, const double *x) const {
     return cblas_dasum(n, x, 1);
   }
@@ -140,12 +141,13 @@ struct vector_operations_cblas<double> final : public vector_operations_cblas_ba
     cblas_dscal(n, alpha, x, 1);
   }
 
-  void mult_incr(const ulong n, const double alpha, const double *x, double *y) const {
+  void mult_incr(const ulong n, const double alpha, const double *x,
+                 double *y) const {
     cblas_daxpy(n, alpha, x, 1, y, 1);
   }
 
 #if defined(TICK_CATLAS_AVAILABLE)
-  void set(const ulong n, const double alpha, double* x) const {
+  void set(const ulong n, const double alpha, double *x) const {
     catlas_dset(n, alpha, x, 1);
   }
 #endif
@@ -153,7 +155,7 @@ struct vector_operations_cblas<double> final : public vector_operations_cblas_ba
 
 }  // namespace detail
 
-template<typename T>
+template <typename T>
 using vector_operations = detail::vector_operations_cblas<T>;
 
 }  // namespace tick

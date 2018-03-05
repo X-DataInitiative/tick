@@ -1,12 +1,10 @@
 // License: BSD 3 clause
 
-
 #include "tick/hawkes/model/model_hawkes_expkern_loglik_single.h"
 
 ModelHawkesExpKernLogLikSingle::ModelHawkesExpKernLogLikSingle(
-  const double decay, const int max_n_threads) :
-  ModelHawkesLogLikSingle(max_n_threads),
-  decay(decay) {}
+    const double decay, const int max_n_threads)
+    : ModelHawkesLogLikSingle(max_n_threads), decay(decay) {}
 
 void ModelHawkesExpKernLogLikSingle::allocate_weights() {
   if (n_nodes == 0) {
@@ -41,7 +39,8 @@ void ModelHawkesExpKernLogLikSingle::compute_weights_dim_i(const ulong i) {
       if (k > 0) {
         const double ebt = std::exp(-decay * (t_i_k - t_i[k - 1]));
 
-        if (k < n_jumps_i) g_i[k * n_nodes + j] = g_i[(k - 1) * n_nodes + j] * ebt;
+        if (k < n_jumps_i)
+          g_i[k * n_nodes + j] = g_i[(k - 1) * n_nodes + j] * ebt;
         G_i[k * n_nodes + j] = g_i[(k - 1) * n_nodes + j] * (1 - ebt) / decay;
       } else {
         if (k < n_jumps_i) g_i[k * n_nodes + j] = 0;

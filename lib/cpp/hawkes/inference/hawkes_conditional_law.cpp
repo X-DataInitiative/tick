@@ -1,6 +1,5 @@
 // License: BSD 3 clause
 
-
 #ifdef PYTHON_LINK
 #include <Python.h>
 #else
@@ -14,42 +13,43 @@
 //
 // Given two point processes Y and Z, computes (for all i) the Signal
 //
-//      E((Y[t+lags[i+1]+epsilon]-Y[t+lags[i]+epsilon]) | zmin<=Z[t]<=zmax) - Lambda_Y
+//      E((Y[t+lags[i+1]+epsilon]-Y[t+lags[i]+epsilon]) | zmin<=Z[t]<=zmax) -
+//      Lambda_Y
 //
 // where epsilon is infinitely small
 //
-//  - lags : array of lags to loop on. It is of size N+1, so it represents N intervals.
+//  - lags : array of lags to loop on. It is of size N+1, so it represents N
+//  intervals.
 //  - y_T : end time of Y signal
 //  - y_lambda : unconditionnal intensity of Y
 //
-// The result is stored in res_X (abscissa) and res_Y (ordinates) : they are of size N
+// The result is stored in res_X (abscissa) and res_Y (ordinates) : they are of
+// size N
 //
 // Returns the number of terms involved in computation.
 //
 
 // No mark for y !!
 
-void PointProcessCondLaw(ArrayDouble &y_time,
-                         ArrayDouble &z_time, ArrayDouble &z_mark,
-                         ArrayDouble &lags,
-                         double zmin, double zmax,
-                         double y_T,
-                         double y_lambda,
+void PointProcessCondLaw(ArrayDouble &y_time, ArrayDouble &z_time,
+                         ArrayDouble &z_mark, ArrayDouble &lags, double zmin,
+                         double zmax, double y_T, double y_lambda,
                          ArrayDouble &res_X, ArrayDouble &res_Y) {
   if (z_time.size() != z_mark.size()) {
-    TICK_ERROR("z_time (size=" << z_time.size() << ") and z_mark (size=" << z_mark.size()
+    TICK_ERROR("z_time (size=" << z_time.size()
+                               << ") and z_mark (size=" << z_mark.size()
                                << ") should have the same size");
   }
 
   if (res_X.size() != res_Y.size()) {
-    TICK_ERROR("res_X (size=" << res_X.size() << ") and res_Y (size=" << res_Y.size()
-                              << ") should have the same size");
+    TICK_ERROR("res_X (size=" << res_X.size() << ") and res_Y (size="
+                              << res_Y.size() << ") should have the same size");
   }
 
   if (res_X.size() + 1 != lags.size()) {
-    TICK_ERROR(
-      "lags (size=" << lags.size() << ") should be of the size of res_X (size=" << res_X.size()
-                    << " plus one");
+    TICK_ERROR("lags (size=" << lags.size()
+                             << ") should be of the size of res_X (size="
+                             << res_X.size() << " plus one");
   }
 
   ulong y_index_lag;
@@ -65,12 +65,13 @@ void PointProcessCondLaw(ArrayDouble &y_time,
 
   Py_BEGIN_ALLOW_THREADS
 
-  // Inititialization of the resulting array
-  res_Y.fill(0);
+      // Inititialization of the resulting array
+      res_Y.fill(0);
 
   double lagMax = lags[N];
 
-  // To improve performance by remembering the last point of Y in each time slice
+  // To improve performance by remembering the last point of Y in each time
+  // slice
   tab_y_index.fill(0);
 
   // The loop on the jumps of Z
@@ -78,8 +79,8 @@ void PointProcessCondLaw(ArrayDouble &y_time,
   for (ulong z_index = 0; z_index < z_mark.size(); z_index++) {
     // Is it an eligible jump ?
     if (zmin < zmax && z_index > 0 &&
-      (zmin > z_mark[z_index] - z_mark[z_index - 1]
-        || z_mark[z_index] - z_mark[z_index - 1] > zmax))
+        (zmin > z_mark[z_index] - z_mark[z_index - 1] ||
+         z_mark[z_index] - z_mark[z_index - 1] > zmax))
       continue;
 
     // Brings y_index after z_t
@@ -146,17 +147,14 @@ void PointProcessCondLaw(ArrayDouble &y_time,
 //
 // where epsilon is infinitely small
 //
-double PointProcessCondLawSingle(ArrayDouble &y_time,
-                                 ArrayDouble &y_mark,
-                                 ArrayDouble &z_time,
-                                 ArrayDouble &z_mark,
-                                 double delta,
-                                 double zmin,
-                                 double zmax) {
+double PointProcessCondLawSingle(ArrayDouble &y_time, ArrayDouble &y_mark,
+                                 ArrayDouble &z_time, ArrayDouble &z_mark,
+                                 double delta, double zmin, double zmax) {
   double res = 0;
   Py_BEGIN_ALLOW_THREADS
 
-  const double lambda = y_time.size() / (y_time[y_time.size() - 1] - y_time[0]);
+      const double lambda =
+          y_time.size() / (y_time[y_time.size() - 1] - y_time[0]);
 
   // The loop on the jumps of Z
   std::int64_t count = 0;
@@ -165,8 +163,8 @@ double PointProcessCondLawSingle(ArrayDouble &y_time,
   for (ulong z_index = 0; z_index < z_time.size(); z_index++) {
     // Is it an eligible jump ?
     if (zmin < zmax && z_index > 0 &&
-      (zmin > z_mark[z_index] - z_mark[z_index - 1]
-        || z_mark[z_index] - z_mark[z_index - 1] > zmax))
+        (zmin > z_mark[z_index] - z_mark[z_index - 1] ||
+         z_mark[z_index] - z_mark[z_index - 1] > zmax))
       continue;
 
     double z_t = z_time[z_index];
@@ -174,8 +172,7 @@ double PointProcessCondLawSingle(ArrayDouble &y_time,
     // Looking for index of y[t]
     while (y_index < y_mark.size() && y_time[y_index] < z_t) y_index++;
 
-    if (y_index >= y_time.size())
-      break;
+    if (y_index >= y_time.size()) break;
 
     double yt;
 
@@ -206,6 +203,5 @@ double PointProcessCondLawSingle(ArrayDouble &y_time,
 
   Py_END_ALLOW_THREADS
 
-  return res;
+      return res;
 }
-

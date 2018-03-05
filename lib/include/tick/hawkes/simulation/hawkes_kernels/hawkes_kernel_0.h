@@ -18,21 +18,21 @@
  * \f]
  */
 class DLL_PUBLIC HawkesKernel0 : public HawkesKernel {
- public :
-
+ public:
   //! @brief Constructor
   HawkesKernel0() : HawkesKernel(0) {}
 
   /**
- * Computes L1 norm with an explicit formula
- * @param nsteps: number of steps for norm approximation (unused)
- * @return L1 norm of the kernel
- */
+   * Computes L1 norm with an explicit formula
+   * @param nsteps: number of steps for norm approximation (unused)
+   * @return L1 norm of the kernel
+   */
   double get_norm(int nsteps = 10000) override { return 0; }
 
-  template<class Archive>
+  template <class Archive>
   void serialize(Archive &ar) {
-    ar(cereal::make_nvp("HawkesKernel", cereal::base_class<HawkesKernel>(this)));
+    ar(cereal::make_nvp("HawkesKernel",
+                        cereal::base_class<HawkesKernel>(this)));
   }
 };
 

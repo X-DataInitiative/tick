@@ -21,13 +21,15 @@ class DLL_PUBLIC ModelHawkesLeastSq : public ModelHawkesList {
 
  public:
   //! @brief Constructor
-  //! \param max_n_threads : number of cores to be used for multithreading. If negative,
-  //! the number of physical cores will be used
-  //! \param optimization_level : 0 corresponds to no optimization and 1 to use of faster (approximated) exponential function
+  //! \param max_n_threads : number of cores to be used for multithreading. If
+  //! negative, the number of physical cores will be used \param
+  //! optimization_level : 0 corresponds to no optimization and 1 to use of
+  //! faster (approximated) exponential function
   ModelHawkesLeastSq(const int max_n_threads = 1,
                      const unsigned int optimization_level = 0);
 
-  void incremental_set_data(const SArrayDoublePtrList1D &timestamps, double end_time);
+  void incremental_set_data(const SArrayDoublePtrList1D &timestamps,
+                            double end_time);
 
   /**
    * @brief Precomputations of intermediate values
@@ -43,10 +45,9 @@ class DLL_PUBLIC ModelHawkesLeastSq : public ModelHawkesList {
   double loss(const ArrayDouble &coeffs) override;
 
   /**
-   * @brief Compute loss corresponding to sample i (between 0 and rand_max = dim)
-   * \param i : selected dimension
-   * \param coeffs : Point in which loss is computed
-   * \return Loss' value
+   * @brief Compute loss corresponding to sample i (between 0 and rand_max =
+   * dim) \param i : selected dimension \param coeffs : Point in which loss is
+   * computed \return Loss' value
    */
   double loss_i(const ulong i, const ArrayDouble &coeffs) override;
 
@@ -58,12 +59,12 @@ class DLL_PUBLIC ModelHawkesLeastSq : public ModelHawkesList {
   void grad(const ArrayDouble &coeffs, ArrayDouble &out) override;
 
   /**
-   * @brief Compute gradient corresponding to sample i (between 0 and rand_max = dim)
-   * \param i : selected dimension
-   * \param coeffs : Point in which gradient is computed
-   * \param out : Array in which the value of the gradient is stored
+   * @brief Compute gradient corresponding to sample i (between 0 and rand_max =
+   * dim) \param i : selected dimension \param coeffs : Point in which gradient
+   * is computed \param out : Array in which the value of the gradient is stored
    */
-  void grad_i(const ulong i, const ArrayDouble &coeffs, ArrayDouble &out) override;
+  void grad_i(const ulong i, const ArrayDouble &coeffs,
+              ArrayDouble &out) override;
 
  protected:
   //! @brief allocate arrays to store precomputations
@@ -73,13 +74,14 @@ class DLL_PUBLIC ModelHawkesLeastSq : public ModelHawkesList {
   virtual void synchronize_aggregated_model() {}
 
   virtual void compute_weights_timestamps_list() {}
-  virtual void compute_weights_timestamps(const SArrayDoublePtrList1D &timestamps,
-                                          double end_time) {}
+  virtual void compute_weights_timestamps(
+      const SArrayDoublePtrList1D &timestamps, double end_time) {}
 
  public:
-  template<class Archive>
+  template <class Archive>
   void serialize(Archive &ar) {
-    ar(cereal::make_nvp("ModelHawkesList", cereal::base_class<ModelHawkesList>(this)));
+    ar(cereal::make_nvp("ModelHawkesList",
+                        cereal::base_class<ModelHawkesList>(this)));
 
     ar(CEREAL_NVP(weights_allocated));
     ar(CEREAL_NVP(aggregated_model));

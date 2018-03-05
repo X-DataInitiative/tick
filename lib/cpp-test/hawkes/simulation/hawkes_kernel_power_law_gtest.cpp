@@ -13,15 +13,16 @@ class HawkesKernelPowerLawTest : public ::testing::Test {
 
   std::array<double, 6> test_times{{1., 2., 3.5, 5., 8., 100.}};
 
-  HawkesKernelPowerLawTest() : hawkes_kernel_power_law(0, 0, 0) {};
+  HawkesKernelPowerLawTest() : hawkes_kernel_power_law(0, 0, 0){};
 
   void SetUp() override {
     multiplier = 0.1;
     cutoff = 0.01;
     exponent = 1.2;
-    hawkes_kernel_power_law = HawkesKernelPowerLaw(multiplier, cutoff, exponent);
+    hawkes_kernel_power_law =
+        HawkesKernelPowerLaw(multiplier, cutoff, exponent);
 
-    timestamps = ArrayDouble {0.31, 0.93, 1.29, 2.32, 4.25};
+    timestamps = ArrayDouble{0.31, 0.93, 1.29, 2.32, 4.25};
   }
 };
 
@@ -39,15 +40,18 @@ TEST_F(HawkesKernelPowerLawTest, get_value) {
 }
 
 TEST_F(HawkesKernelPowerLawTest, get_norm) {
-  EXPECT_DOUBLE_EQ(hawkes_kernel_power_law.get_norm(),
-                   1.2096372793483503);
+  EXPECT_DOUBLE_EQ(hawkes_kernel_power_law.get_norm(), 1.2096372793483503);
 }
 
 TEST_F(HawkesKernelPowerLawTest, invalid_constructor_parameters) {
-  EXPECT_THROW(HawkesKernelPowerLaw(multiplier, cutoff, exponent, -1, -1), std::invalid_argument);
-  EXPECT_THROW(HawkesKernelPowerLaw(multiplier, cutoff, exponent, -1, 0), std::invalid_argument);
-  EXPECT_THROW(HawkesKernelPowerLaw(multiplier, cutoff, exponent, 0, -1), std::invalid_argument);
-  EXPECT_THROW(HawkesKernelPowerLaw(multiplier, cutoff, exponent, 0, 0), std::invalid_argument);
+  EXPECT_THROW(HawkesKernelPowerLaw(multiplier, cutoff, exponent, -1, -1),
+               std::invalid_argument);
+  EXPECT_THROW(HawkesKernelPowerLaw(multiplier, cutoff, exponent, -1, 0),
+               std::invalid_argument);
+  EXPECT_THROW(HawkesKernelPowerLaw(multiplier, cutoff, exponent, 0, -1),
+               std::invalid_argument);
+  EXPECT_THROW(HawkesKernelPowerLaw(multiplier, cutoff, exponent, 0, 0),
+               std::invalid_argument);
 }
 
 #ifdef ADD_MAIN

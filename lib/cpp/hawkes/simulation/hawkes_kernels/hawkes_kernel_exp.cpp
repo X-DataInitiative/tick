@@ -1,6 +1,5 @@
 // License: BSD 3 clause
 
-
 #include "tick/hawkes/simulation/hawkes_kernels/hawkes_kernel_exp.h"
 
 // By default, approximated fast formula for computing exponentials are not used
@@ -14,7 +13,7 @@ void HawkesKernelExp::rewind() {
 
 // constructor
 HawkesKernelExp::HawkesKernelExp(double intensity, double decay)
-  : intensity(intensity), decay(decay) {
+    : intensity(intensity), decay(decay) {
   if (decay < 0)
     throw std::invalid_argument("Decay of HawkesKernelExp must be positive");
   support = std::numeric_limits<double>::max();
@@ -23,20 +22,17 @@ HawkesKernelExp::HawkesKernelExp(double intensity, double decay)
 
 // copy constructor
 HawkesKernelExp::HawkesKernelExp(const HawkesKernelExp &kernel)
-  : HawkesKernel(kernel) {
+    : HawkesKernel(kernel) {
   intensity = kernel.intensity;
   decay = kernel.decay;
   rewind();
 }
 
-HawkesKernelExp::HawkesKernelExp()
-  : HawkesKernelExp(0.0, 0.0) {
-}
+HawkesKernelExp::HawkesKernelExp() : HawkesKernelExp(0.0, 0.0) {}
 
 // Getting the value of the kernel at the point x
 double HawkesKernelExp::get_value_(double x) {
-  if (intensity == 0)
-    return 0;
+  if (intensity == 0) return 0;
 
   return intensity * decay * cexp(-decay * x);
 }
@@ -55,13 +51,15 @@ double HawkesKernelExp::get_convolution(const double time,
     // value stays at 0
   } else {
     if (timestamps.size() < convolution_restart_index) {
-      throw std::runtime_error("HawkesKernelExp cannot get convolution on an "
-                                 "another process unless it has been rewound");
+      throw std::runtime_error(
+          "HawkesKernelExp cannot get convolution on an "
+          "another process unless it has been rewound");
     }
     double delay = time - last_convolution_time;
     if (delay < 0) {
-      throw std::runtime_error("HawkesKernelExp cannot get convolution on an "
-                                 "older time unless it has been rewound");
+      throw std::runtime_error(
+          "HawkesKernelExp cannot get convolution on an "
+          "older time unless it has been rewound");
     }
 
     value = last_convolution_value * cexp(-decay * delay);
@@ -90,4 +88,3 @@ double HawkesKernelExp::get_convolution(const double time,
 
   return value;
 }
-

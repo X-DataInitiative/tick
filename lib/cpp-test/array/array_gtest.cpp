@@ -4,11 +4,11 @@
 
 #include <algorithm>
 #include <limits>
-#include <type_traits>
 #include <random>
+#include <type_traits>
 
-#include <cereal/archives/json.hpp>
 #include <cereal/archives/binary.hpp>
+#include <cereal/archives/json.hpp>
 
 #include <gtest/gtest.h>
 
@@ -27,7 +27,7 @@
  * For unsigned integer arrays (of any size) the minimum value is 0.
  */
 #define TICK_TEST_DATA_MIN_VALUE -10000
-#define TICK_TEST_DATA_MAX_VALUE  10000
+#define TICK_TEST_DATA_MAX_VALUE 10000
 
 #define TICK_TEST_SINGLE_RELATIVE_ERROR 1e-4
 #define TICK_TEST_DOUBLE_RELATIVE_ERROR 1e-13
@@ -41,55 +41,77 @@ namespace {
 /**
  * Function to get the minimum test data value for signed integers
  */
-template<typename T>
-constexpr T GetTestMinimum(typename std::enable_if<std::is_signed<T>::value>::type * = 0) { return TICK_TEST_DATA_MIN_VALUE; }
+template <typename T>
+constexpr T GetTestMinimum(
+    typename std::enable_if<std::is_signed<T>::value>::type * = 0) {
+  return TICK_TEST_DATA_MIN_VALUE;
+}
 
 /**
  * Function to get the minimum test data value for unsigned integers
  */
-template<typename T>
-constexpr T GetTestMinimum(typename std::enable_if<std::is_unsigned<T>::value>::type * = 0) { return 0; }
+template <typename T>
+constexpr T GetTestMinimum(
+    typename std::enable_if<std::is_unsigned<T>::value>::type * = 0) {
+  return 0;
+}
 
 template <typename T>
-constexpr double GetAcceptedRelativeError(typename std::enable_if<std::is_integral<T>::value>::type * = 0) { return 0; }
+constexpr double GetAcceptedRelativeError(
+    typename std::enable_if<std::is_integral<T>::value>::type * = 0) {
+  return 0;
+}
 
 template <typename T>
-constexpr double GetAcceptedRelativeError(typename std::enable_if<std::is_same<T, float>::value>::type * = 0) { return TICK_TEST_SINGLE_RELATIVE_ERROR; }
+constexpr double GetAcceptedRelativeError(
+    typename std::enable_if<std::is_same<T, float>::value>::type * = 0) {
+  return TICK_TEST_SINGLE_RELATIVE_ERROR;
+}
 
 template <typename T>
-constexpr double GetAcceptedRelativeError(typename std::enable_if<std::is_same<T, double>::value>::type * = 0) { return TICK_TEST_DOUBLE_RELATIVE_ERROR; }
+constexpr double GetAcceptedRelativeError(
+    typename std::enable_if<std::is_same<T, double>::value>::type * = 0) {
+  return TICK_TEST_DOUBLE_RELATIVE_ERROR;
+}
 
 std::random_device rd;
 std::mt19937 gen(rd());
 
-template<typename ArrType>
-ArrType GenerateRandomArray(ulong n = TICK_TEST_DATA_SIZE,
-                            typename std::enable_if<std::is_floating_point<typename ArrType::value_type>::value>::type * = 0) {
+template <typename ArrType>
+ArrType GenerateRandomArray(
+    ulong n = TICK_TEST_DATA_SIZE,
+    typename std::enable_if<
+        std::is_floating_point<typename ArrType::value_type>::value>::type * =
+        0) {
   ArrType res(n);
 
   using nl = std::numeric_limits<typename ArrType::value_type>;
-  std::uniform_real_distribution<> dis(TICK_TEST_DATA_MIN_VALUE, TICK_TEST_DATA_MAX_VALUE);
+  std::uniform_real_distribution<> dis(TICK_TEST_DATA_MIN_VALUE,
+                                       TICK_TEST_DATA_MAX_VALUE);
 
   for (ulong i = 0; i < res.size(); ++i) res[i] = dis(gen);
 
   return res;
 }
 
-template<typename ArrType>
-ArrType GenerateRandomArray(ulong n = TICK_TEST_DATA_SIZE,
-                            typename std::enable_if<std::is_integral<typename ArrType::value_type>::value>::type * = 0) {
+template <typename ArrType>
+ArrType GenerateRandomArray(
+    ulong n = TICK_TEST_DATA_SIZE,
+    typename std::enable_if<
+        std::is_integral<typename ArrType::value_type>::value>::type * = 0) {
   ArrType res(n);
 
   using value_type = typename ArrType::value_type;
   using nl = std::numeric_limits<value_type>;
-  std::uniform_int_distribution<> dis(GetTestMinimum<value_type>(), TICK_TEST_DATA_MAX_VALUE);
+  std::uniform_int_distribution<> dis(GetTestMinimum<value_type>(),
+                                      TICK_TEST_DATA_MAX_VALUE);
 
   for (ulong i = 0; i < res.size(); ++i) res[i] = dis(gen);
 
   return res;
 }
 
-template<typename Arr2dType>
+template <typename Arr2dType>
 Arr2dType GenerateRandomArray2d(ulong n_rows = TICK_TEST_ROW_SIZE,
                                 ulong n_cols = TICK_TEST_COLUMN_SIZE) {
   Arr2dType random_2d_array = Arr2dType(n_rows, n_cols);
@@ -97,45 +119,63 @@ Arr2dType GenerateRandomArray2d(ulong n_rows = TICK_TEST_ROW_SIZE,
   typedef Array<typename Arr2dType::value_type> Array1dType;
   Array1dType random_array = GenerateRandomArray<Array1dType>(n_rows * n_cols);
 
-  std::copy(random_array.data(), random_array.data() + random_array.size(), random_2d_array.data());
+  std::copy(random_array.data(), random_array.data() + random_array.size(),
+            random_2d_array.data());
 
   return random_2d_array;
 }
 
 }  // namespace
 
-#define EXPECT_RELATIVE_ERROR(type, actual, expected) { const double relE = std::fabs((expected - actual) / static_cast<double>(expected == 0 ? std::numeric_limits<float>::epsilon() : expected)); EXPECT_LE(relE, ::GetAcceptedRelativeError<type>()); }
-#define ASSERT_RELATIVE_ERROR(type, actual, expected) { const double relE = std::fabs((expected - actual) / static_cast<double>(expected == 0 ? std::numeric_limits<float>::epsilon() : expected)); ASSERT_LE(relE, ::GetAcceptedRelativeError<type>()); }
+#define EXPECT_RELATIVE_ERROR(type, actual, expected)                       \
+  {                                                                         \
+    const double relE =                                                     \
+        std::fabs((expected - actual) /                                     \
+                  static_cast<double>(                                      \
+                      expected == 0 ? std::numeric_limits<float>::epsilon() \
+                                    : expected));                           \
+    EXPECT_LE(relE, ::GetAcceptedRelativeError<type>());                    \
+  }
+#define ASSERT_RELATIVE_ERROR(type, actual, expected)                       \
+  {                                                                         \
+    const double relE =                                                     \
+        std::fabs((expected - actual) /                                     \
+                  static_cast<double>(                                      \
+                      expected == 0 ? std::numeric_limits<float>::epsilon() \
+                                    : expected));                           \
+    ASSERT_LE(relE, ::GetAcceptedRelativeError<type>());                    \
+  }
 
 TEST(ArrayTestSetup, RelativeErrors) {
   ASSERT_EQ(GetAcceptedRelativeError<int>(), 0);
-  ASSERT_DOUBLE_EQ(GetAcceptedRelativeError<float>(), TICK_TEST_SINGLE_RELATIVE_ERROR);
-  ASSERT_DOUBLE_EQ(GetAcceptedRelativeError<double>(), TICK_TEST_DOUBLE_RELATIVE_ERROR);
+  ASSERT_DOUBLE_EQ(GetAcceptedRelativeError<float>(),
+                   TICK_TEST_SINGLE_RELATIVE_ERROR);
+  ASSERT_DOUBLE_EQ(GetAcceptedRelativeError<double>(),
+                   TICK_TEST_DOUBLE_RELATIVE_ERROR);
 }
 
-template<typename ArrType>
+template <typename ArrType>
 class ArrayTest : public ::testing::Test {
  public:
   using value_type = typename ArrType::value_type;
 };
 
-typedef ::testing::Types<ArrayFloat, ArrayDouble, ArrayShort, ArrayUShort, ArrayInt, ArrayUInt, ArrayLong, ArrayULong>
+typedef ::testing::Types<ArrayFloat, ArrayDouble, ArrayShort, ArrayUShort,
+                         ArrayInt, ArrayUInt, ArrayLong, ArrayULong>
     MyArrayTypes;
 TYPED_TEST_CASE(ArrayTest, MyArrayTypes);
 
-
-template<typename ArrType>
+template <typename ArrType>
 class Array2dTest : public ::testing::Test {
  public:
   using value_type = typename ArrType::value_type;
 };
 
-typedef ::testing::Types<ArrayFloat2d, ArrayDouble2d, ArrayShort2d, ArrayUShort2d, ArrayInt2d,
-                         ArrayUInt2d, ArrayLong2d, ArrayULong2d>
+typedef ::testing::Types<ArrayFloat2d, ArrayDouble2d, ArrayShort2d,
+                         ArrayUShort2d, ArrayInt2d, ArrayUInt2d, ArrayLong2d,
+                         ArrayULong2d>
     MyArray2dTypes;
 TYPED_TEST_CASE(Array2dTest, MyArray2dTypes);
-
-
 
 TYPED_TEST(ArrayTest, InitToZero) {
   TypeParam arr{TICK_TEST_DATA_SIZE};
@@ -167,7 +207,8 @@ TYPED_TEST(ArrayTest, Move) {
   EXPECT_NE(arr.data(), arrMoved.data());
   EXPECT_EQ(arrDataPtr, arrMoved.data());
 
-  for (ulong j = 0; j < arrMoved.size(); ++j) ASSERT_DOUBLE_EQ(arrCopy[j], arrMoved[j]);
+  for (ulong j = 0; j < arrMoved.size(); ++j)
+    ASSERT_DOUBLE_EQ(arrCopy[j], arrMoved[j]);
 }
 
 TYPED_TEST(ArrayTest, View) {
@@ -179,21 +220,26 @@ TYPED_TEST(ArrayTest, View) {
   EXPECT_EQ(arrView.size(), arr.size());
   EXPECT_EQ(arr.data(), arrView.data());
 
-  for (ulong j = 0; j < arrView.size(); ++j) ASSERT_DOUBLE_EQ(arr[j], arrView[j]);
+  for (ulong j = 0; j < arrView.size(); ++j)
+    ASSERT_DOUBLE_EQ(arr[j], arrView[j]);
 }
 
 TYPED_TEST(ArrayTest, Index) {
   TypeParam arr = ::GenerateRandomArray<TypeParam>();
 
-  for (ulong j = 0; j < arr.size(); ++j) ASSERT_DOUBLE_EQ(arr[j], arr.data()[j]);
-  for (ulong j = 0; j < arr.size(); ++j) ASSERT_DOUBLE_EQ(arr.value(j), arr.data()[j]);
+  for (ulong j = 0; j < arr.size(); ++j)
+    ASSERT_DOUBLE_EQ(arr[j], arr.data()[j]);
+  for (ulong j = 0; j < arr.size(); ++j)
+    ASSERT_DOUBLE_EQ(arr.value(j), arr.data()[j]);
 }
 
 TYPED_TEST(ArrayTest, ConstIndex) {
   const TypeParam arr = ::GenerateRandomArray<TypeParam>();
 
-  for (ulong j = 0; j < arr.size(); ++j) ASSERT_DOUBLE_EQ(arr[j], arr.data()[j]);
-  for (ulong j = 0; j < arr.size(); ++j) ASSERT_DOUBLE_EQ(arr.value(j), arr.data()[j]);
+  for (ulong j = 0; j < arr.size(); ++j)
+    ASSERT_DOUBLE_EQ(arr[j], arr.data()[j]);
+  for (ulong j = 0; j < arr.size(); ++j)
+    ASSERT_DOUBLE_EQ(arr.value(j), arr.data()[j]);
 }
 
 TYPED_TEST(ArrayTest, Last) {
@@ -220,13 +266,9 @@ TYPED_TEST(ArrayTest, Size) {
 TYPED_TEST(ArrayTest, InitList) {
   using VT = typename TypeParam::value_type;
 
-  std::array<VT, 6> vals = {
-      static_cast<VT>(0.0),
-      static_cast<VT>(1.0),
-      static_cast<VT>(2.0),
-      static_cast<VT>(4.0),
-      static_cast<VT>(8.0),
-      static_cast<VT>(16.0)};
+  std::array<VT, 6> vals = {static_cast<VT>(0.0), static_cast<VT>(1.0),
+                            static_cast<VT>(2.0), static_cast<VT>(4.0),
+                            static_cast<VT>(8.0), static_cast<VT>(16.0)};
 
   TypeParam arr{vals[0], vals[1], vals[2], vals[3], vals[4], vals[5]};
 
@@ -240,7 +282,8 @@ TYPED_TEST(ArrayTest, Fill) {
 
   arr.fill(1337.0);
 
-  for (ulong j = 0; j < arr.size(); ++j) ASSERT_DOUBLE_EQ(arr.data()[j], 1337.0);
+  for (ulong j = 0; j < arr.size(); ++j)
+    ASSERT_DOUBLE_EQ(arr.data()[j], 1337.0);
 }
 
 TYPED_TEST(ArrayTest, Sum) {
@@ -255,13 +298,15 @@ TYPED_TEST(ArrayTest, Sum) {
 TYPED_TEST(ArrayTest, Min) {
   TypeParam arrA = ::GenerateRandomArray<TypeParam>();
 
-  EXPECT_DOUBLE_EQ(arrA.min(), *std::min_element(arrA.data(), arrA.data() + arrA.size()));
+  EXPECT_DOUBLE_EQ(arrA.min(),
+                   *std::min_element(arrA.data(), arrA.data() + arrA.size()));
 }
 
 TYPED_TEST(ArrayTest, Max) {
   TypeParam arrA = ::GenerateRandomArray<TypeParam>();
 
-  EXPECT_DOUBLE_EQ(arrA.max(), *std::max_element(arrA.data(), arrA.data() + arrA.size()));
+  EXPECT_DOUBLE_EQ(arrA.max(),
+                   *std::max_element(arrA.data(), arrA.data() + arrA.size()));
 }
 
 TYPED_TEST(ArrayTest, MultOperator) {
@@ -273,7 +318,8 @@ TYPED_TEST(ArrayTest, MultOperator) {
     arrA *= factor;
 
     SCOPED_TRACE(factor);
-    for (ulong j = 0; j < arrA.size(); ++j) ASSERT_DOUBLE_EQ(arrA[j], static_cast<VT>(oldA[j] * factor));
+    for (ulong j = 0; j < arrA.size(); ++j)
+      ASSERT_DOUBLE_EQ(arrA[j], static_cast<VT>(oldA[j] * factor));
   }
 }
 
@@ -286,7 +332,8 @@ TYPED_TEST(ArrayTest, DivOperator) {
     arrA /= factor;
 
     SCOPED_TRACE(factor);
-    for (ulong j = 0; j < arrA.size(); ++j) ASSERT_RELATIVE_ERROR(VT, arrA[j], static_cast<VT>(oldA[j] / factor));
+    for (ulong j = 0; j < arrA.size(); ++j)
+      ASSERT_RELATIVE_ERROR(VT, arrA[j], static_cast<VT>(oldA[j] / factor));
   }
 }
 
@@ -321,7 +368,8 @@ TYPED_TEST(ArrayTest, Multiply) {
 
     arrA.multiply(factor);
 
-    for (ulong j = 0; j < arrA.size(); ++j) ASSERT_DOUBLE_EQ(arrA[j], static_cast<VT>(oldA[j] * factor));
+    for (ulong j = 0; j < arrA.size(); ++j)
+      ASSERT_DOUBLE_EQ(arrA[j], static_cast<VT>(oldA[j] * factor));
   }
 }
 
@@ -335,7 +383,9 @@ TYPED_TEST(ArrayTest, MultIncr) {
     arrA.mult_incr(arrB, factor);
 
     SCOPED_TRACE(factor);
-    for (ulong j = 0; j < arrA.size(); ++j) ASSERT_RELATIVE_ERROR(VT, arrA[j], static_cast<VT>(oldA[j] + arrB[j] * factor));
+    for (ulong j = 0; j < arrA.size(); ++j)
+      ASSERT_RELATIVE_ERROR(VT, arrA[j],
+                            static_cast<VT>(oldA[j] + arrB[j] * factor));
   }
 }
 
@@ -349,7 +399,9 @@ TYPED_TEST(Array2dTest, MultIncr) {
     arrA.mult_incr(arrB, factor);
 
     SCOPED_TRACE(factor);
-    for (ulong j = 0; j < arrA.size(); ++j) ASSERT_RELATIVE_ERROR(VT, arrA[j], static_cast<VT>(oldA[j] + arrB[j] * factor));
+    for (ulong j = 0; j < arrA.size(); ++j)
+      ASSERT_RELATIVE_ERROR(VT, arrA[j],
+                            static_cast<VT>(oldA[j] + arrB[j] * factor));
   }
 }
 
@@ -368,7 +420,8 @@ TYPED_TEST(ArrayTest, MultAddMultIncr) {
     for (ulong j = 0; j < arrA.size(); ++j) oldA[j] += arrC[j] * factor_2;
 
     SCOPED_TRACE(factor);
-    for (ulong j = 0; j < arrA.size(); ++j) ASSERT_RELATIVE_ERROR(VT, arrA[j], static_cast<VT>(oldA[j]));
+    for (ulong j = 0; j < arrA.size(); ++j)
+      ASSERT_RELATIVE_ERROR(VT, arrA[j], static_cast<VT>(oldA[j]));
   }
 }
 
@@ -387,7 +440,8 @@ TYPED_TEST(Array2dTest, MultAddMultIncr) {
     for (ulong j = 0; j < arrA.size(); ++j) oldA[j] += arrC[j] * factor_2;
 
     SCOPED_TRACE(factor);
-    for (ulong j = 0; j < arrA.size(); ++j) ASSERT_RELATIVE_ERROR(VT, arrA[j], static_cast<VT>(oldA[j]));
+    for (ulong j = 0; j < arrA.size(); ++j)
+      ASSERT_RELATIVE_ERROR(VT, arrA[j], static_cast<VT>(oldA[j]));
   }
 }
 
@@ -399,7 +453,8 @@ TYPED_TEST(ArrayTest, MultFill) {
 
     arrA.mult_fill(arrB, factor);
 
-    for (ulong j = 0; j < arrA.size(); ++j) ASSERT_DOUBLE_EQ(arrA[j], static_cast<VT>(arrB[j] * factor));
+    for (ulong j = 0; j < arrA.size(); ++j)
+      ASSERT_DOUBLE_EQ(arrA[j], static_cast<VT>(arrB[j] * factor));
   }
 }
 
@@ -411,19 +466,20 @@ TYPED_TEST(Array2dTest, MultFill) {
 
     arrA.mult_fill(arrB, factor);
 
-    for (ulong j = 0; j < arrA.size(); ++j) ASSERT_DOUBLE_EQ(arrA[j], static_cast<VT>(arrB[j] * factor));
+    for (ulong j = 0; j < arrA.size(); ++j)
+      ASSERT_DOUBLE_EQ(arrA[j], static_cast<VT>(arrB[j] * factor));
   }
 }
 
-
 namespace {
 
-template<typename ArrType, typename F1, typename F2>
+template <typename ArrType, typename F1, typename F2>
 void TestSorting(F1 stlSort, F2 tickSort) {
   ArrType arrA;
 
   // Repeat until we get a shuffled array (most likely the first one)
-  while (std::is_sorted(arrA.data(), arrA.data() + arrA.size(), stlSort) || arrA.size() == 0)
+  while (std::is_sorted(arrA.data(), arrA.data() + arrA.size(), stlSort) ||
+         arrA.size() == 0)
     arrA = ::GenerateRandomArray<ArrType>();
 
   ASSERT_FALSE(std::is_sorted(arrA.data(), arrA.data() + arrA.size(), stlSort));
@@ -437,50 +493,57 @@ void TestSorting(F1 stlSort, F2 tickSort) {
 
 TYPED_TEST(ArrayTest, Sort) {
   SCOPED_TRACE("");
-  ::TestSorting<TypeParam>(std::less<typename TypeParam::value_type>(), [](TypeParam &arr) { arr.sort(true); });
+  ::TestSorting<TypeParam>(std::less<typename TypeParam::value_type>(),
+                           [](TypeParam &arr) { arr.sort(true); });
 }
 
 TYPED_TEST(ArrayTest, SortDecreasing) {
   SCOPED_TRACE("");
-  ::TestSorting<TypeParam>(std::greater<typename TypeParam::value_type>(), [](TypeParam &arr) { arr.sort(false); });
+  ::TestSorting<TypeParam>(std::greater<typename TypeParam::value_type>(),
+                           [](TypeParam &arr) { arr.sort(false); });
 }
 
 TYPED_TEST(ArrayTest, SortAbs) {
   using VT = typename TypeParam::value_type;
 
   SCOPED_TRACE("");
-  ::TestSorting<TypeParam>([](const VT &lhs, const VT &rhs) { return std::fabs(lhs) < std::fabs(rhs); },
-                           [](TypeParam &arr) {
-                             Array<ulong> indices(arr.size());
-                             arr.sort_abs(indices, true);
-                           });
+  ::TestSorting<TypeParam>(
+      [](const VT &lhs, const VT &rhs) {
+        return std::fabs(lhs) < std::fabs(rhs);
+      },
+      [](TypeParam &arr) {
+        Array<ulong> indices(arr.size());
+        arr.sort_abs(indices, true);
+      });
 }
 
 TYPED_TEST(ArrayTest, SortAbsDecreasing) {
   using VT = typename TypeParam::value_type;
 
   SCOPED_TRACE("");
-  ::TestSorting<TypeParam>([](const VT &lhs, const VT &rhs) { return std::fabs(lhs) > std::fabs(rhs); },
-                           [](TypeParam &arr) {
-                             Array<ulong> indices(arr.size());
-                             arr.sort_abs(indices, false);
-                           });
+  ::TestSorting<TypeParam>(
+      [](const VT &lhs, const VT &rhs) {
+        return std::fabs(lhs) > std::fabs(rhs);
+      },
+      [](TypeParam &arr) {
+        Array<ulong> indices(arr.size());
+        arr.sort_abs(indices, false);
+      });
 }
 
 namespace {
 
-template<typename ArrType, typename F1, typename F2>
+template <typename ArrType, typename F1, typename F2>
 void TestSortingAndTracking(F1 stlSort, F2 tickSort) {
-  ::TestSorting<ArrType>(stlSort,
-                         [&tickSort](ArrType &arr) {
-                           ArrType arrCopy = arr;
-                           Array<ulong> indices(arr.size());
-                           tickSort(arr, indices);
+  ::TestSorting<ArrType>(stlSort, [&tickSort](ArrType &arr) {
+    ArrType arrCopy = arr;
+    Array<ulong> indices(arr.size());
+    tickSort(arr, indices);
 
-                           for (ulong j = 0; j < indices.size(); ++j) {
-                             ASSERT_DOUBLE_EQ(arr[j], arrCopy[indices[j]]);
-                           }
-                         });
+    for (ulong j = 0; j < indices.size(); ++j) {
+      ASSERT_DOUBLE_EQ(arr[j], arrCopy[indices[j]]);
+    }
+  });
 }
 
 }  // namespace
@@ -504,8 +567,12 @@ TYPED_TEST(ArrayTest, SortAbsTrack) {
 
   SCOPED_TRACE("");
   ::TestSortingAndTracking<TypeParam>(
-      [](const VT &lhs, const VT &rhs) { return std::fabs(lhs) < std::fabs(rhs); },
-      [](TypeParam &arr, Array<ulong> &indices) { arr.sort_abs(indices, true); });
+      [](const VT &lhs, const VT &rhs) {
+        return std::fabs(lhs) < std::fabs(rhs);
+      },
+      [](TypeParam &arr, Array<ulong> &indices) {
+        arr.sort_abs(indices, true);
+      });
 }
 
 TYPED_TEST(ArrayTest, SortAbsTrackDecreasing) {
@@ -513,8 +580,12 @@ TYPED_TEST(ArrayTest, SortAbsTrackDecreasing) {
 
   SCOPED_TRACE("");
   ::TestSortingAndTracking<TypeParam>(
-      [](const VT &lhs, const VT &rhs) { return std::fabs(lhs) > std::fabs(rhs); },
-      [](TypeParam &arr, Array<ulong> &indices) { arr.sort_abs(indices, false); });
+      [](const VT &lhs, const VT &rhs) {
+        return std::fabs(lhs) > std::fabs(rhs);
+      },
+      [](TypeParam &arr, Array<ulong> &indices) {
+        arr.sort_abs(indices, false);
+      });
 }
 
 namespace {
@@ -617,50 +688,56 @@ void TestSerialization2D() {
 
 TYPED_TEST(ArrayTest, EmptySerializationJSON) {
   SCOPED_TRACE("");
-  ::TestEmptySerialization<cereal::JSONInputArchive, cereal::JSONOutputArchive, TypeParam>();
+  ::TestEmptySerialization<cereal::JSONInputArchive, cereal::JSONOutputArchive,
+                           TypeParam>();
 }
 
 TYPED_TEST(ArrayTest, EmptySerializationBinary) {
   SCOPED_TRACE("");
-  ::TestEmptySerialization<cereal::BinaryInputArchive, cereal::BinaryOutputArchive, TypeParam>();
+  ::TestEmptySerialization<cereal::BinaryInputArchive,
+                           cereal::BinaryOutputArchive, TypeParam>();
 }
 
 TYPED_TEST(Array2dTest, EmptySerializationJSON) {
   SCOPED_TRACE("");
-  ::TestEmptySerialization2D<cereal::JSONInputArchive, cereal::JSONOutputArchive, TypeParam>();
+  ::TestEmptySerialization2D<cereal::JSONInputArchive,
+                             cereal::JSONOutputArchive, TypeParam>();
 }
 
 TYPED_TEST(Array2dTest, EmptySerializationBinary) {
   SCOPED_TRACE("");
-  ::TestEmptySerialization2D<cereal::BinaryInputArchive, cereal::BinaryOutputArchive, TypeParam>();
+  ::TestEmptySerialization2D<cereal::BinaryInputArchive,
+                             cereal::BinaryOutputArchive, TypeParam>();
 }
 
 TYPED_TEST(ArrayTest, SerializationJSON) {
   SCOPED_TRACE("");
-  ::TestSerialization<cereal::JSONInputArchive, cereal::JSONOutputArchive, TypeParam>();
+  ::TestSerialization<cereal::JSONInputArchive, cereal::JSONOutputArchive,
+                      TypeParam>();
 }
 
 TYPED_TEST(ArrayTest, SerializationBinary) {
   SCOPED_TRACE("");
-  ::TestSerialization<cereal::BinaryInputArchive, cereal::BinaryOutputArchive, TypeParam>();
+  ::TestSerialization<cereal::BinaryInputArchive, cereal::BinaryOutputArchive,
+                      TypeParam>();
 }
 
 TYPED_TEST(Array2dTest, SerializationJSON) {
   SCOPED_TRACE("");
-  ::TestSerialization2D<cereal::JSONInputArchive, cereal::JSONOutputArchive, TypeParam>();
+  ::TestSerialization2D<cereal::JSONInputArchive, cereal::JSONOutputArchive,
+                        TypeParam>();
 }
 
 TYPED_TEST(Array2dTest, SerializationBinary) {
   SCOPED_TRACE("");
-  ::TestSerialization2D<cereal::BinaryInputArchive, cereal::BinaryOutputArchive, TypeParam>();
+  ::TestSerialization2D<cereal::BinaryInputArchive, cereal::BinaryOutputArchive,
+                        TypeParam>();
 }
 
-
 #ifdef ADD_MAIN
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
   ::testing::FLAGS_gtest_death_test_style = "fast";
   return RUN_ALL_TESTS();
 }
 #endif  // ADD_MAIN
-

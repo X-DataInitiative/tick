@@ -7,8 +7,8 @@
 
 // License: BSD 3 clause
 
-#include "tick/base/time_func.h"
 #include "simu_point_process.h"
+#include "tick/base/time_func.h"
 
 /*! \class InhomogeneousPoisson
  * \brief This is the class for Poisson processes with variable intensities
@@ -18,20 +18,22 @@
 
 class DLL_PUBLIC InhomogeneousPoisson : public PP {
   std::vector<TimeFunction> intensities_functions;
- public :
+
+ public:
   /**
-  * @brief A constructor for a 1 dimensional inhomogeneous Poisson process
-  * \param intensities_function : The intensity function of the first and
+   * @brief A constructor for a 1 dimensional inhomogeneous Poisson process
+   * \param intensities_function : The intensity function of the first and
    * single dimension
-  */
-  explicit InhomogeneousPoisson(const TimeFunction &intensities_function, int seed = -1);
+   */
+  explicit InhomogeneousPoisson(const TimeFunction &intensities_function,
+                                int seed = -1);
 
   /**
    * @brief Multi-dimensional constructor
    * \param intensities_functions : Array of intensity functions
    */
-  explicit InhomogeneousPoisson(const std::vector<TimeFunction> &intensities_functions,
-                                int seed = -1);
+  explicit InhomogeneousPoisson(
+      const std::vector<TimeFunction> &intensities_functions, int seed = -1);
 
   /**
    * @brief Returns for a given dimension, the value of the intensity
@@ -64,8 +66,7 @@ class DLL_PUBLIC InhomogeneousPoisson : public PP {
    * \param total_intensity_bound : If not NULL then used to set a bound of
    * total future intensity
    */
-  virtual bool update_time_shift_(double delay,
-                                  ArrayDouble &intensity,
+  virtual bool update_time_shift_(double delay, ArrayDouble &intensity,
                                   double *total_intensity_bound);
 };
 

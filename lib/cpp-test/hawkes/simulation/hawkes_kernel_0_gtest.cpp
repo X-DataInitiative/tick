@@ -11,7 +11,7 @@ class HawkesKernel0Test : public ::testing::Test {
   std::array<double, 6> test_times{{1., 2., 3.5, 5., 8., 100.}};
 
   void SetUp() override {
-    timestamps = ArrayDouble {0.31, 0.93, 1.29, 2.32, 4.25};
+    timestamps = ArrayDouble{0.31, 0.93, 1.29, 2.32, 4.25};
   }
 };
 

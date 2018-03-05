@@ -1,15 +1,13 @@
 // License: BSD 3 clause
 
-
 #include "tick/hawkes/model/model_hawkes_sumexpkern_loglik_single.h"
 
-ModelHawkesSumExpKernLogLikSingle::ModelHawkesSumExpKernLogLikSingle() :
-  ModelHawkesLogLikSingle(), decays(0) {}
+ModelHawkesSumExpKernLogLikSingle::ModelHawkesSumExpKernLogLikSingle()
+    : ModelHawkesLogLikSingle(), decays(0) {}
 
 ModelHawkesSumExpKernLogLikSingle::ModelHawkesSumExpKernLogLikSingle(
-  const ArrayDouble &decays, const int max_n_threads) :
-  ModelHawkesLogLikSingle(max_n_threads),
-  decays(decays) {}
+    const ArrayDouble &decays, const int max_n_threads)
+    : ModelHawkesLogLikSingle(max_n_threads), decays(decays) {}
 
 void ModelHawkesSumExpKernLogLikSingle::allocate_weights() {
   if (n_nodes == 0) {
@@ -50,8 +48,10 @@ void ModelHawkesSumExpKernLogLikSingle::compute_weights_dim_i(const ulong i) {
         if (k > 0) {
           const double ebt = std::exp(-decays[u] * (t_i_k - t_i[k - 1]));
 
-          if (k < n_jumps_i) g_i[get_index(k, j, u)] = g_i[get_index(k - 1, j, u)] * ebt;
-          G_i[get_index(k, j, u)] = g_i[get_index(k - 1, j, u)] * (1 - ebt) / decays[u];
+          if (k < n_jumps_i)
+            g_i[get_index(k, j, u)] = g_i[get_index(k - 1, j, u)] * ebt;
+          G_i[get_index(k, j, u)] =
+              g_i[get_index(k - 1, j, u)] * (1 - ebt) / decays[u];
 
         } else {
           if (k < n_jumps_i) g_i[get_index(k, j, u)] = 0;

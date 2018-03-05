@@ -9,9 +9,9 @@
 #include "tick/hawkes/model/base/model_hawkes_loglik_single.h"
 
 /** \class ModelHawkesLogLik
- * \brief Class for computing L2 Contrast function and gradient for Hawkes processes with
- * exponential kernels with fixed exponent (i.e., alpha*beta*e^{-beta t}, with fixed beta)
- * on a list of realizations
+ * \brief Class for computing L2 Contrast function and gradient for Hawkes
+ * processes with exponential kernels with fixed exponent (i.e.,
+ * alpha*beta*e^{-beta t}, with fixed beta) on a list of realizations
  */
 class DLL_PUBLIC ModelHawkesLogLik : public ModelHawkesList {
   //! @brief Value of decay for this model. Shared by all kernels
@@ -21,22 +21,23 @@ class DLL_PUBLIC ModelHawkesLogLik : public ModelHawkesList {
  public:
   /**
    * @brief Constructor
-   * \param decay : decay for this model (remember that decay is fixed!) 
-   * \param max_n_threads : number of cores to be used for multithreading. If negative,
-   * the number of physical cores will be used
+   * \param decay : decay for this model (remember that decay is fixed!)
+   * \param max_n_threads : number of cores to be used for multithreading. If
+   * negative, the number of physical cores will be used
    */
   explicit ModelHawkesLogLik(const int max_n_threads = 1);
 
   /**
    * These lines are required for visual studio but are suggested in general
    *   for a class that should never be copied
-   *  Visual studio seems to get confused and tries to copy this class, and it 
+   *  Visual studio seems to get confused and tries to copy this class, and it
    *   errors as unique_ptrs are not copy-able
    */
   ModelHawkesLogLik(const ModelHawkesLogLik &model) = delete;
   ModelHawkesLogLik &operator=(const ModelHawkesLogLik &model) = delete;
 
-  void incremental_set_data(const SArrayDoublePtrList1D &timestamps, double end_time);
+  void incremental_set_data(const SArrayDoublePtrList1D &timestamps,
+                            double end_time);
 
   /**
    * @brief Precomputations of intermediate values
@@ -52,10 +53,9 @@ class DLL_PUBLIC ModelHawkesLogLik : public ModelHawkesList {
   double loss(const ArrayDouble &coeffs) override;
 
   /**
-   * @brief Compute loss corresponding to sample i (between 0 and rand_max = dim)
-   * \param i : selected dimension
-   * \param coeffs : Point in which loss is computed
-   * \return Loss' value
+   * @brief Compute loss corresponding to sample i (between 0 and rand_max =
+   * dim) \param i : selected dimension \param coeffs : Point in which loss is
+   * computed \return Loss' value
    */
   double loss_i(const ulong i, const ArrayDouble &coeffs) override;
 
@@ -67,12 +67,12 @@ class DLL_PUBLIC ModelHawkesLogLik : public ModelHawkesList {
   void grad(const ArrayDouble &coeffs, ArrayDouble &out) override;
 
   /**
-   * @brief Compute gradient corresponding to sample i (between 0 and rand_max = dim)
-   * \param i : selected dimension
-   * \param coeffs : Point in which gradient is computed
-   * \param out : Array in which the value of the gradient is stored
+   * @brief Compute gradient corresponding to sample i (between 0 and rand_max =
+   * dim) \param i : selected dimension \param coeffs : Point in which gradient
+   * is computed \param out : Array in which the value of the gradient is stored
    */
-  void grad_i(const ulong i, const ArrayDouble &coeffs, ArrayDouble &out) override;
+  void grad_i(const ulong i, const ArrayDouble &coeffs,
+              ArrayDouble &out) override;
 
   /**
    * @brief Compute loss and gradient
@@ -93,25 +93,25 @@ class DLL_PUBLIC ModelHawkesLogLik : public ModelHawkesList {
    * @brief Compute hessian
    * \param coeffs : Point in which hessian is computed
    * \param out : Array in which the value of the hessian is stored
-   * \note : We only fill data, python code takes care of creating index and indexptr
+   * \note : We only fill data, python code takes care of creating index and
+   * indexptr
    */
   void hessian(const ArrayDouble &coeffs, ArrayDouble &out);
 
-  ulong get_rand_max() const {
-    return get_n_total_jumps();
-  }
+  ulong get_rand_max() const { return get_n_total_jumps(); }
 
   ulong get_n_coeffs() const override;
 
  protected:
-  virtual std::unique_ptr<ModelHawkesLogLikSingle> build_model(const int n_threads) {
+  virtual std::unique_ptr<ModelHawkesLogLikSingle> build_model(
+      const int n_threads) {
     TICK_CLASS_DOES_NOT_IMPLEMENT("");
   }
 
  private:
   /**
-   * @brief Converts index between 0 and n_realizations * n_nodes to corresponding
-   * realization and node
+   * @brief Converts index between 0 and n_realizations * n_nodes to
+   * corresponding realization and node
    * @param i_r : original index
    * @return tuple containing first the realization, then the node
    */
@@ -131,18 +131,18 @@ class DLL_PUBLIC ModelHawkesLogLik : public ModelHawkesList {
   double loss_i_r(const ulong i_r, const ArrayDouble &coeffs);
 
   /**
-   * @brief Compute gradient for one index between 0 and n_realizations * n_nodes
-   * \param i_r : r * n_realizations + i, tells which realization and which node
-   * \param coeffs : Point in which gradient is computed
-   * \param out : Array in which the value of the gradient is stored
+   * @brief Compute gradient for one index between 0 and n_realizations *
+   * n_nodes \param i_r : r * n_realizations + i, tells which realization and
+   * which node \param coeffs : Point in which gradient is computed \param out :
+   * Array in which the value of the gradient is stored
    */
   void grad_i_r(const ulong i_r, ArrayDouble &out, const ArrayDouble &coeffs);
 
   /**
-   * @brief Compute the hessian norm for one index between 0 and n_realizations * n_nodes
-   * \param i_r : r * n_realizations + i, tells which realization and which node
-   * \param coeffs : Point in which the hessian is computed
-   * \param vector : Point of which the norm is computed
+   * @brief Compute the hessian norm for one index between 0 and n_realizations
+   * * n_nodes \param i_r : r * n_realizations + i, tells which realization and
+   * which node \param coeffs : Point in which the hessian is computed \param
+   * vector : Point of which the norm is computed
    */
   double hessian_norm_i_r(const ulong i_r, const ArrayDouble &coeffs,
                           const ArrayDouble &vector);
@@ -152,9 +152,11 @@ class DLL_PUBLIC ModelHawkesLogLik : public ModelHawkesList {
    * \param i_r : r * n_realizations + i, tells which realization and which node
    * \param coeffs : Point in which hessian is computed
    * \param out : Array in which the value of the hessian is stored
-   * \note : We only fill data, python code takes care of creating index and indexptr
+   * \note : We only fill data, python code takes care of creating index and
+   * indexptr
    */
-  void hessian_i_r(const ulong i_r, const ArrayDouble &coeffs, ArrayDouble &out);
+  void hessian_i_r(const ulong i_r, const ArrayDouble &coeffs,
+                   ArrayDouble &out);
 
   std::pair<ulong, ulong> sampled_i_to_realization(const ulong sampled_i);
 };

@@ -1,30 +1,27 @@
 // License: BSD 3 clause
 
-
 #include "tick/hawkes/model/model_hawkes_sumexpkern_leastsq_single.h"
 
 ModelHawkesSumExpKernLeastSqSingle::ModelHawkesSumExpKernLeastSqSingle(
-  const ArrayDouble &decays,
-  const ulong n_baselines,
-  const double period_length,
-  const unsigned int max_n_threads,
-  const unsigned int optimization_level)
-  : ModelHawkesSingle(max_n_threads, optimization_level),
-    n_baselines(n_baselines), period_length(period_length),
-    decays(decays), n_decays(decays.size()) {}
+    const ArrayDouble &decays, const ulong n_baselines,
+    const double period_length, const unsigned int max_n_threads,
+    const unsigned int optimization_level)
+    : ModelHawkesSingle(max_n_threads, optimization_level),
+      n_baselines(n_baselines),
+      period_length(period_length),
+      decays(decays),
+      n_decays(decays.size()) {}
 
 // Method that computes the value
 double ModelHawkesSumExpKernLeastSqSingle::loss(const ArrayDouble &coeffs) {
   // The initialization should be performed if not performed yet
   if (!weights_computed) compute_weights();
 
-  // This allows to run in a multithreaded environment the computation of the contribution of each component
+  // This allows to run in a multithreaded environment the computation of the
+  // contribution of each component
   SArrayDoublePtr values =
-    parallel_map(get_n_threads(),
-                 n_nodes,
-                 &ModelHawkesSumExpKernLeastSqSingle::loss_i,
-                 this,
-                 coeffs);
+      parallel_map(get_n_threads(), n_nodes,
+                   &ModelHawkesSumExpKernLeastSqSingle::loss_i, this, coeffs);
 
   // We just need to sum up the contribution
   return values->sum() / n_total_jumps;
@@ -33,7 +30,8 @@ double ModelHawkesSumExpKernLeastSqSingle::loss(const ArrayDouble &coeffs) {
 // Performs the computation of the contribution of the i component to the value
 double ModelHawkesSumExpKernLeastSqSingle::loss_i(const ulong i,
                                                   const ArrayDouble &coeffs) {
-  if (!weights_computed) TICK_ERROR("Please compute weights before calling loss_i");
+  if (!weights_computed)
+    TICK_ERROR("Please compute weights before calling loss_i");
 
   ArrayDouble mu_i = view(coeffs, i * n_baselines, (i + 1) * n_baselines);
   ulong start_alpha_i = n_nodes * n_baselines + i * n_nodes * n_decays;
@@ -95,13 +93,10 @@ void ModelHawkesSumExpKernLeastSqSingle::grad(const ArrayDouble &coeffs,
   // The initialization should be performed if not performed yet
   if (!weights_computed) compute_weights();
 
-  // This allows to run in a multithreaded environment the computation of each component
-  parallel_run(get_n_threads(),
-               n_nodes,
-               &ModelHawkesSumExpKernLeastSqSingle::grad_i,
-               this,
-               coeffs,
-               out);
+  // This allows to run in a multithreaded environment the computation of each
+  // component
+  parallel_run(get_n_threads(), n_nodes,
+               &ModelHawkesSumExpKernLeastSqSingle::grad_i, this, coeffs, out);
   out /= n_total_jumps;
 }
 
@@ -109,7 +104,8 @@ void ModelHawkesSumExpKernLeastSqSingle::grad(const ArrayDouble &coeffs,
 void ModelHawkesSumExpKernLeastSqSingle::grad_i(const ulong i,
                                                 const ArrayDouble &coeffs,
                                                 ArrayDouble &out) {
-  if (!weights_computed) TICK_ERROR("Please compute weights before calling hessian_i");
+  if (!weights_computed)
+    TICK_ERROR("Please compute weights before calling hessian_i");
 
   ArrayDouble mu_i = view(coeffs, i * n_baselines, (i + 1) * n_baselines);
   ulong start_alpha_i = n_nodes * n_baselines + i * n_nodes * n_decays;
@@ -162,8 +158,8 @@ void ModelHawkesSumExpKernLeastSqSingle::grad_i(const ulong i,
 
 // Computes both gradient and value
 // TODO : optimization !
-double ModelHawkesSumExpKernLeastSqSingle::loss_and_grad(const ArrayDouble &coeffs,
-                                                         ArrayDouble &out) {
+double ModelHawkesSumExpKernLeastSqSingle::loss_and_grad(
+    const ArrayDouble &coeffs, ArrayDouble &out) {
   grad(coeffs, out);
   return loss(coeffs);
 }
@@ -173,8 +169,7 @@ double ModelHawkesSumExpKernLeastSqSingle::loss_and_grad(const ArrayDouble &coef
 void ModelHawkesSumExpKernLeastSqSingle::compute_weights_i(const ulong i) {
   for (ulong p = 0; p < n_baselines; ++p) {
     // dispatch interval length computation among threads
-    if (p % n_nodes == i)
-      L[p] = get_baseline_interval_length(p);
+    if (p % n_nodes == i) L[p] = get_baseline_interval_length(p);
   }
 
   ulong n_decays = decays.size();
@@ -202,7 +197,8 @@ void ModelHawkesSumExpKernLeastSqSingle::compute_weights_i(const ulong i) {
     ArrayDouble2d exponentials(n_decays, n_decays);
     for (ulong u = 0; u < n_decays; ++u) {
       for (ulong u1 = 0; u1 < n_decays; ++u1) {
-        exponentials(u, u1) = exp(-(decays[u1] + decays[u]) * (end_time - t_k_i));
+        exponentials(u, u1) =
+            exp(-(decays[u1] + decays[u]) * (end_time - t_k_i));
       }
     }
     ArrayDouble exponential_diff;
@@ -255,13 +251,17 @@ void ModelHawkesSumExpKernLeastSqSingle::compute_weights_i(const ulong i) {
       double decay_u = decays[u];
       ArrayDouble Dg_i_u = view_row(Dg_i, u);
       for (ulong p = 0; p < n_baselines; ++p) {
-        ulong n_passed_periods = static_cast<ulong>(std::floor(t_k_i / period_length));
-        double lower = n_passed_periods * period_length + (p * period_length) / n_baselines;
+        ulong n_passed_periods =
+            static_cast<ulong>(std::floor(t_k_i / period_length));
+        double lower = n_passed_periods * period_length +
+                       (p * period_length) / n_baselines;
         while (lower < end_time) {
           const double shift_lower = std::max(t_k_i, lower);
-          const double upper = std::min(lower + period_length / n_baselines, end_time);
+          const double upper =
+              std::min(lower + period_length / n_baselines, end_time);
           if (shift_lower < upper)
-            Dg_i_u[p] += cexp(-decay_u * (shift_lower - t_k_i)) - cexp(-decay_u * (upper - t_k_i));
+            Dg_i_u[p] += cexp(-decay_u * (shift_lower - t_k_i)) -
+                         cexp(-decay_u * (upper - t_k_i));
           lower += period_length;
         }
       }
@@ -309,8 +309,7 @@ void ModelHawkesSumExpKernLeastSqSingle::compute_weights() {
 
   // Multithreaded computation of the arrays
   parallel_run(get_n_threads(), n_nodes,
-               &ModelHawkesSumExpKernLeastSqSingle::compute_weights_i,
-               this);
+               &ModelHawkesSumExpKernLeastSqSingle::compute_weights_i, this);
   weights_computed = true;
 }
 
@@ -318,19 +317,24 @@ ulong ModelHawkesSumExpKernLeastSqSingle::get_n_coeffs() const {
   return n_nodes * n_baselines + n_nodes * n_nodes * n_decays;
 }
 
-ulong ModelHawkesSumExpKernLeastSqSingle::get_baseline_interval(const double t) {
-  const double first_period_t = t - std::floor(t / period_length) * period_length;
+ulong ModelHawkesSumExpKernLeastSqSingle::get_baseline_interval(
+    const double t) {
+  const double first_period_t =
+      t - std::floor(t / period_length) * period_length;
   if (first_period_t == period_length) return n_baselines - 1;
-  return static_cast<ulong>(std::floor(first_period_t / period_length * n_baselines));
+  return static_cast<ulong>(
+      std::floor(first_period_t / period_length * n_baselines));
 }
 
-double ModelHawkesSumExpKernLeastSqSingle::get_baseline_interval_length(const ulong interval_p) {
-  const ulong n_full_periods = static_cast<ulong>(std::floor(end_time / period_length));
+double ModelHawkesSumExpKernLeastSqSingle::get_baseline_interval_length(
+    const ulong interval_p) {
+  const ulong n_full_periods =
+      static_cast<ulong>(std::floor(end_time / period_length));
   const double full_interval_length = period_length / n_baselines;
   const double remaining_time = end_time - n_full_periods * period_length;
   const double period_start = interval_p * full_interval_length;
-  const double extra_period = std::min(std::max(remaining_time - period_start, 0.),
-                                       full_interval_length);
+  const double extra_period = std::min(
+      std::max(remaining_time - period_start, 0.), full_interval_length);
   return n_full_periods * full_interval_length + extra_period;
 }
 
@@ -347,7 +351,8 @@ double ModelHawkesSumExpKernLeastSqSingle::get_period_length() const {
   return period_length;
 }
 
-void ModelHawkesSumExpKernLeastSqSingle::set_period_length(double period_length) {
+void ModelHawkesSumExpKernLeastSqSingle::set_period_length(
+    double period_length) {
   this->period_length = period_length;
   weights_computed = false;
 }

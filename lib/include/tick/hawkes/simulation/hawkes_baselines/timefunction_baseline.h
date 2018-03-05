@@ -4,8 +4,8 @@
 
 // License: BSD 3 clause
 
-#include "tick/base/base.h"
 #include "baseline.h"
+#include "tick/base/base.h"
 
 #include <cereal/types/polymorphic.hpp>
 
@@ -39,9 +39,10 @@ class DLL_PUBLIC HawkesTimeFunctionBaseline : public HawkesBaseline {
   //! @brief get the future maximum reachable value of the baseline after time t
   double get_future_bound(double t) override;
 
-  template<class Archive>
+  template <class Archive>
   void serialize(Archive &ar) {
-    ar(cereal::make_nvp("HawkesBaseline", cereal::base_class<HawkesBaseline>(this)));
+    ar(cereal::make_nvp("HawkesBaseline",
+                        cereal::base_class<HawkesBaseline>(this)));
     ar(CEREAL_NVP(time_function));
   }
 };

@@ -1,12 +1,12 @@
 // License: BSD 3 clause
 
-
-#include "tick/base/base.h"
 #include "tick/hawkes/inference/hawkes_adm4.h"
+#include "tick/base/base.h"
 
 HawkesADM4::HawkesADM4(const double decay, const double rho,
-                       const int max_n_threads, const unsigned int optimization_level)
-  : ModelHawkesList(max_n_threads, optimization_level) {
+                       const int max_n_threads,
+                       const unsigned int optimization_level)
+    : ModelHawkesList(max_n_threads, optimization_level) {
   set_decay(decay);
   set_rho(rho);
 }
@@ -27,11 +27,12 @@ void HawkesADM4::compute_weights() {
   }
 
   // Compute weights
-  // variable to compute kernel integral in parallel that will be reduced afterwards
+  // variable to compute kernel integral in parallel that will be reduced
+  // afterwards
   ArrayDouble2d map_kernel_integral(n_realizations, n_nodes);
   map_kernel_integral.init_to_zero();
-  parallel_run(get_n_threads(), n_nodes * n_realizations, &HawkesADM4::compute_weights_ru, this,
-               map_kernel_integral);
+  parallel_run(get_n_threads(), n_nodes * n_realizations,
+               &HawkesADM4::compute_weights_ru, this, map_kernel_integral);
 
   kernel_integral.init_to_zero();
   for (ulong r = 0; r < n_realizations; ++r) {
@@ -45,7 +46,8 @@ void HawkesADM4::compute_weights() {
 }
 
 // This code is very similar to ModelHawkesExpKernLogLikSingle
-void HawkesADM4::compute_weights_ru(const ulong r_u, ArrayDouble2d &map_kernel_integral) {
+void HawkesADM4::compute_weights_ru(const ulong r_u,
+                                    ArrayDouble2d &map_kernel_integral) {
   // Obtain realization and node index from r_u
   const ulong r = static_cast<const ulong>(r_u / n_nodes);
   const ulong u = r_u % n_nodes;
@@ -82,27 +84,32 @@ void HawkesADM4::compute_weights_ru(const ulong r_u, ArrayDouble2d &map_kernel_i
 
 // The main method for performing one iteration
 void HawkesADM4::solve(ArrayDouble &mu, ArrayDouble2d &adjacency,
-                       ArrayDouble2d &z1, ArrayDouble2d &z2,
-                       ArrayDouble2d &u1, ArrayDouble2d &u2) {
+                       ArrayDouble2d &z1, ArrayDouble2d &z2, ArrayDouble2d &u1,
+                       ArrayDouble2d &u2) {
   if (!weights_computed) compute_weights();
 
   if (mu.size() != n_nodes) {
     TICK_ERROR("mu argument must be an array of shape (" << n_nodes << ",)");
   }
   if (adjacency.n_rows() != n_nodes || adjacency.n_cols() != n_nodes) {
-    TICK_ERROR("adjacency matrix must be an array of shape (" << n_nodes << ", " << n_nodes << ")");
+    TICK_ERROR("adjacency matrix must be an array of shape ("
+               << n_nodes << ", " << n_nodes << ")");
   }
   if (z1.n_rows() != n_nodes || z1.n_cols() != n_nodes) {
-    TICK_ERROR("Z1 matrix must be an array of shape (" << n_nodes << ", " << n_nodes << ")");
+    TICK_ERROR("Z1 matrix must be an array of shape (" << n_nodes << ", "
+                                                       << n_nodes << ")");
   }
   if (z2.n_rows() != n_nodes || z2.n_cols() != n_nodes) {
-    TICK_ERROR("Z2 matrix must be an array of shape (" << n_nodes << ", " << n_nodes << ")");
+    TICK_ERROR("Z2 matrix must be an array of shape (" << n_nodes << ", "
+                                                       << n_nodes << ")");
   }
   if (u1.n_rows() != n_nodes || u1.n_cols() != n_nodes) {
-    TICK_ERROR("U1 matrix must be an array of shape (" << n_nodes << ", " << n_nodes << ")");
+    TICK_ERROR("U1 matrix must be an array of shape (" << n_nodes << ", "
+                                                       << n_nodes << ")");
   }
   if (u2.n_rows() != n_nodes || u2.n_cols() != n_nodes) {
-    TICK_ERROR("U2 matrix must be an array of shape (" << n_nodes << ", " << n_nodes << ")");
+    TICK_ERROR("U2 matrix must be an array of shape (" << n_nodes << ", "
+                                                       << n_nodes << ")");
   }
 
   next_C.init_to_zero();
@@ -110,13 +117,14 @@ void HawkesADM4::solve(ArrayDouble &mu, ArrayDouble2d &adjacency,
 
   parallel_run(get_n_threads(), n_nodes * n_realizations,
                &HawkesADM4::estimate_ru, this, mu, adjacency);
-  parallel_run(std::min(get_n_threads(), static_cast<const unsigned int>(n_nodes)), n_nodes,
-               &HawkesADM4::update_u, this, mu, adjacency, z1, z2, u1, u2);
+  parallel_run(
+      std::min(get_n_threads(), static_cast<const unsigned int>(n_nodes)),
+      n_nodes, &HawkesADM4::update_u, this, mu, adjacency, z1, z2, u1, u2);
 }
 
 // Procedure called by HawkesADM4::solve
-void HawkesADM4::estimate_ru(const ulong r_u,
-                             ArrayDouble &mu, ArrayDouble2d &adjacency) {
+void HawkesADM4::estimate_ru(const ulong r_u, ArrayDouble &mu,
+                             ArrayDouble2d &adjacency) {
   // Obtain realization and node index from r_u
   const ulong r = static_cast<const ulong>(r_u / n_nodes);
   const ulong node_u = r_u % n_nodes;
@@ -130,10 +138,12 @@ void HawkesADM4::estimate_ru(const ulong r_u,
   // initialize next data
   double &next_mu_ur = next_mu(r, node_u);
   ArrayDouble next_C_ru = view_row(next_C, r * n_nodes + node_u);
-  ArrayDouble unnormalized_next_C_ru = view_row(unnormalized_next_C, r * n_nodes + node_u);
+  ArrayDouble unnormalized_next_C_ru =
+      view_row(unnormalized_next_C, r * n_nodes + node_u);
 
   // We loop in reverse order to benefit from last_indices
-  for (ulong i = realization[node_u]->size() - 1; i != static_cast<ulong>(-1); i--) {
+  for (ulong i = realization[node_u]->size() - 1; i != static_cast<ulong>(-1);
+       i--) {
     // this array will store temporary values
     unnormalized_next_C_ru.init_to_zero();
     ArrayDouble g_ru_i = view_row(g_ru, i);
@@ -153,9 +163,10 @@ void HawkesADM4::estimate_ru(const ulong r_u,
 }
 
 // A method called in parallel by the method 'solve' (see below)
-void HawkesADM4::update_u(const ulong u, ArrayDouble &mu, ArrayDouble2d &adjacency,
-                          ArrayDouble2d &z1, ArrayDouble2d &z2,
-                          ArrayDouble2d &u1, ArrayDouble2d &u2) {
+void HawkesADM4::update_u(const ulong u, ArrayDouble &mu,
+                          ArrayDouble2d &adjacency, ArrayDouble2d &z1,
+                          ArrayDouble2d &z2, ArrayDouble2d &u1,
+                          ArrayDouble2d &u2) {
   ArrayDouble adjacency_u = view_row(adjacency, u);
 
   ArrayDouble z1_u = view_row(z1, u);
@@ -172,7 +183,8 @@ void HawkesADM4::update_adjacency_u(const ulong u, ArrayDouble &adjacency_u,
                                     ArrayDouble &z1_u, ArrayDouble &z2_u,
                                     ArrayDouble &u1_u, ArrayDouble &u2_u) {
   for (ulong v = 0; v < n_nodes; v++) {
-    const double B = kernel_integral[v] + rho * (-z1_u[v] + u1_u[v] - z2_u[v] + u2_u[v]);
+    const double B =
+        kernel_integral[v] + rho * (-z1_u[v] + u1_u[v] - z2_u[v] + u2_u[v]);
 
     double C = 0;
     for (ulong r = 0; r < n_realizations; ++r) {
@@ -191,9 +203,7 @@ void HawkesADM4::update_baseline_u(const ulong u, ArrayDouble &mu) {
   }
 }
 
-double HawkesADM4::get_decay() const {
-  return decay;
-}
+double HawkesADM4::get_decay() const { return decay; }
 
 void HawkesADM4::set_decay(const double decay) {
   if (decay <= 0) {
@@ -203,9 +213,7 @@ void HawkesADM4::set_decay(const double decay) {
   weights_computed = false;
 }
 
-double HawkesADM4::get_rho() const {
-  return rho;
-}
+double HawkesADM4::get_rho() const { return rho; }
 
 void HawkesADM4::set_rho(double rho) {
   if (rho <= 0) {

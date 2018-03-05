@@ -7,15 +7,15 @@
 #include "tick/base/base.h"
 #include "tick/hawkes/model/base/model_hawkes_list.h"
 
-
 ////////////////////////////////////////////////////////////////////////////////////////////
 //
 //
 // The following class implements the algorithm described in the paper
 // `Learning Triggering Kernels for Multi-dimensional Hawkes Processes` by
-// Zhou, Zha, and Song (2013) in Proc of the International Conf. on Machine Learning.
-// Some rewriting notes for implementing the algorithm can be found in the file
-// hawkes_basis_kernels.pdf in the directory tex/hawkes_basis_kernels (LaTeX)
+// Zhou, Zha, and Song (2013) in Proc of the International Conf. on Machine
+// Learning. Some rewriting notes for implementing the algorithm can be found in
+// the file hawkes_basis_kernels.pdf in the directory tex/hawkes_basis_kernels
+// (LaTeX)
 //
 //
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -37,29 +37,23 @@ class DLL_PUBLIC HawkesBasisKernels : public ModelHawkesList {
   ArrayDouble2d rud, Dudm, Dudm_temp, Cudm, Gdm, a_sum_vd;
   ArrayDouble2d quvd, quvd_temp;
 
- public :
-  HawkesBasisKernels(const double kernel_support,
-                     const ulong kernel_size,
-                     const ulong n_basis,
-                     const double alpha,
+ public:
+  HawkesBasisKernels(const double kernel_support, const ulong kernel_size,
+                     const ulong n_basis, const double alpha,
                      const int max_n_threads = 1);
 
-  double solve(ArrayDouble &mu,
-               ArrayDouble2d &gdm,
-               ArrayDouble2d &auvd,
-               ulong max_iter_gdm,
-               double max_tol_gdm);
+  double solve(ArrayDouble &mu, ArrayDouble2d &gdm, ArrayDouble2d &auvd,
+               ulong max_iter_gdm, double max_tol_gdm);
 
  private:
-  void solve_u(ulong u,
-               ArrayDouble &mu,
-               ArrayDouble2d &gdm,
+  void solve_u(ulong u, ArrayDouble &mu, ArrayDouble2d &gdm,
                ArrayDouble2d &auvd);
 
   void allocate_weights();
 
  public:
-  //! @brief we need to override this function as we do not parallelize over realizations
+  //! @brief we need to override this function as we do not parallelize over
+  //! realizations
   unsigned int get_n_threads() const override;
 
   double get_kernel_support() const { return kernel_support; }
@@ -69,15 +63,14 @@ class DLL_PUBLIC HawkesBasisKernels : public ModelHawkesList {
   inline double get_kernel_dt() const { return kernel_support / kernel_size; }
 
   //! @brief if n_basis was not set, we use n_nodes
-  inline ulong get_n_basis() const {
-    return n_basis == 0 ? n_nodes : n_basis;
-  }
+  inline ulong get_n_basis() const { return n_basis == 0 ? n_nodes : n_basis; }
 
   double get_alpha() const { return alpha; }
 
   SArrayDoublePtr get_kernel_discretization() const {
     ArrayDouble kernel_discretization_tmp = arange<double>(0, kernel_size + 1);
-    kernel_discretization_tmp.mult_fill(kernel_discretization_tmp, get_kernel_dt());
+    kernel_discretization_tmp.mult_fill(kernel_discretization_tmp,
+                                        get_kernel_dt());
     return kernel_discretization_tmp.as_sarray_ptr();
   }
 

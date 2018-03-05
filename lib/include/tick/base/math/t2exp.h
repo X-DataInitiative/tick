@@ -24,9 +24,9 @@
 #ifndef LIB_INCLUDE_TICK_BASE_MATH_T2EXP_H_
 #define LIB_INCLUDE_TICK_BASE_MATH_T2EXP_H_
 
-#ifdef  __cplusplus
+#ifdef __cplusplus
 extern "C" {
-#endif/*__cplusplus*/
+#endif /*__cplusplus*/
 
 /* --------------------------------------------------------------
     Name:       t2exp
@@ -70,16 +70,17 @@ extern void t2expini(void);
 
 extern void t2expinl(void);
 
-inline extern double optimized_exp(double x,
-                                   int optimization_level) {
+inline extern double optimized_exp(double x, int optimization_level) {
   switch (optimization_level) {
-    case 0:return exp(x);
-    default:return t2exp(x);
+    case 0:
+      return exp(x);
+    default:
+      return t2exp(x);
   }
 }
 
-#ifdef  __cplusplus
+#ifdef __cplusplus
 }
-#endif/*__cplusplus*/
+#endif /*__cplusplus*/
 
 #endif  // LIB_INCLUDE_TICK_BASE_MATH_T2EXP_H_

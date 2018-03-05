@@ -14,9 +14,9 @@
 #include <cfloat>
 #include <memory>
 
-#include "tick/base/time_func.h"
-#include "tick/array/varray.h"
 #include "simu_point_process.h"
+#include "tick/array/varray.h"
+#include "tick/base/time_func.h"
 
 #include "hawkes_baselines/baseline.h"
 #include "hawkes_baselines/constant_baseline.h"
@@ -50,7 +50,7 @@ class DLL_PUBLIC Hawkes : public PP {
   /// @brief The mus
   std::vector<HawkesBaselinePtr> baselines;
 
- public :
+ public:
   /**
    * @brief A constructor for an empty multidimensional Hawkes process
    * \param n_nodes : The dimension of the Hawkes process
@@ -84,7 +84,8 @@ class DLL_PUBLIC Hawkes : public PP {
   /**
    * @brief Set baseline for a specific dimension
    * \param i : the dimension
-   * \param baseline : a double that will be used to construct a HawkesConstantBaseline
+   * \param baseline : a double that will be used to construct a
+   * HawkesConstantBaseline
    */
   void set_baseline(unsigned int i, double baseline);
 
@@ -97,11 +98,12 @@ class DLL_PUBLIC Hawkes : public PP {
   void set_baseline(unsigned int i, TimeFunction time_function);
 
   /**
-  * @brief Set baseline for a specific dimension
-  * \param i : the dimension
-  * \param times : times that will be used to construct a HawkesTimeFunctionBaseline
-  * \param values : values that will be used to construct a HawkesTimeFunctionBaseline
-  */
+   * @brief Set baseline for a specific dimension
+   * \param i : the dimension
+   * \param times : times that will be used to construct a
+   * HawkesTimeFunctionBaseline \param values : values that will be used to
+   * construct a HawkesTimeFunctionBaseline
+   */
   void set_baseline(unsigned int i, ArrayDouble &times, ArrayDouble &values);
 
   /**
@@ -118,7 +120,7 @@ class DLL_PUBLIC Hawkes : public PP {
    */
   SArrayDoublePtr get_baseline(unsigned int i, ArrayDouble &t);
 
- private :
+ private:
   /**
    * @brief Virtual method called once (at startup) to set the initial
    * intensity
@@ -138,14 +140,12 @@ class DLL_PUBLIC Hawkes : public PP {
    * \param total_intensity_bound : If not NULL then used to set a bound of
    * total future intensity
    */
-  virtual bool update_time_shift_(double delay,
-                                  ArrayDouble &intensity,
+  virtual bool update_time_shift_(double delay, ArrayDouble &intensity,
                                   double *total_intensity_bound);
 
   /**
-   * @brief Get future baseline maximum reachable value for a specific dimension at a given time
-   * \param i : the dimension
-   * \param t : considered time
+   * @brief Get future baseline maximum reachable value for a specific dimension
+   * at a given time \param i : the dimension \param t : considered time
    */
   double get_baseline_bound(unsigned int i, double t);
 
@@ -157,7 +157,7 @@ class DLL_PUBLIC Hawkes : public PP {
   void set_baseline(unsigned int i, const HawkesBaselinePtr &baseline);
 
  public:
-  template<class Archive>
+  template <class Archive>
   void serialize(Archive &ar) {
     ar(cereal::make_nvp("PP", cereal::base_class<PP>(this)));
 
@@ -166,6 +166,7 @@ class DLL_PUBLIC Hawkes : public PP {
   }
 };
 
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(Hawkes, cereal::specialization::member_serialize)
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(Hawkes,
+                                   cereal::specialization::member_serialize)
 
 #endif  // LIB_INCLUDE_TICK_HAWKES_SIMULATION_SIMU_HAWKES_H_

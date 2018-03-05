@@ -2,12 +2,13 @@
 
 #include "tick/hawkes/model/base/model_hawkes_loglik_single.h"
 
-ModelHawkesLogLikSingle::ModelHawkesLogLikSingle(const int max_n_threads) :
-  ModelHawkesSingle(max_n_threads, 0) {}
+ModelHawkesLogLikSingle::ModelHawkesLogLikSingle(const int max_n_threads)
+    : ModelHawkesSingle(max_n_threads, 0) {}
 
 void ModelHawkesLogLikSingle::compute_weights() {
   allocate_weights();
-  parallel_run(get_n_threads(), n_nodes, &ModelHawkesLogLikSingle::compute_weights_dim_i, this);
+  parallel_run(get_n_threads(), n_nodes,
+               &ModelHawkesLogLikSingle::compute_weights_dim_i, this);
   weights_computed = true;
 }
 
@@ -22,11 +23,9 @@ void ModelHawkesLogLikSingle::compute_weights_dim_i(const ulong i) {
 double ModelHawkesLogLikSingle::loss(const ArrayDouble &coeffs) {
   if (!weights_computed) compute_weights();
 
-  const double loss =
-    parallel_map_additive_reduce(get_n_threads(), n_nodes,
-                                 &ModelHawkesLogLikSingle::loss_dim_i,
-                                 this,
-                                 coeffs);
+  const double loss = parallel_map_additive_reduce(
+      get_n_threads(), n_nodes, &ModelHawkesLogLikSingle::loss_dim_i, this,
+      coeffs);
   return loss / n_total_jumps;
 }
 
@@ -45,13 +44,10 @@ void ModelHawkesLogLikSingle::grad(const ArrayDouble &coeffs,
   if (!weights_computed) compute_weights();
   out.fill(0);
 
-  // This allows to run in a multithreaded environment the computation of each component
-  parallel_run(get_n_threads(),
-               n_nodes,
-               &ModelHawkesLogLikSingle::grad_dim_i,
-               this,
-               coeffs,
-               out);
+  // This allows to run in a multithreaded environment the computation of each
+  // component
+  parallel_run(get_n_threads(), n_nodes, &ModelHawkesLogLikSingle::grad_dim_i,
+               this, coeffs, out);
   out /= n_total_jumps;
 }
 
@@ -75,11 +71,9 @@ double ModelHawkesLogLikSingle::loss_and_grad(const ArrayDouble &coeffs,
   if (!weights_computed) compute_weights();
   out.fill(0);
 
-  const double loss =
-    parallel_map_additive_reduce(get_n_threads(), n_nodes,
-                                 &ModelHawkesLogLikSingle::loss_and_grad_dim_i,
-                                 this,
-                                 coeffs, out);
+  const double loss = parallel_map_additive_reduce(
+      get_n_threads(), n_nodes, &ModelHawkesLogLikSingle::loss_and_grad_dim_i,
+      this, coeffs, out);
   out /= n_total_jumps;
   return loss / n_total_jumps;
 }
@@ -88,33 +82,30 @@ double ModelHawkesLogLikSingle::hessian_norm(const ArrayDouble &coeffs,
                                              const ArrayDouble &vector) {
   if (!weights_computed) compute_weights();
 
-  const double norm_sum =
-    parallel_map_additive_reduce(get_n_threads(), n_nodes,
-                                 &ModelHawkesLogLikSingle::hessian_norm_dim_i,
-                                 this,
-                                 coeffs, vector);
+  const double norm_sum = parallel_map_additive_reduce(
+      get_n_threads(), n_nodes, &ModelHawkesLogLikSingle::hessian_norm_dim_i,
+      this, coeffs, vector);
 
   return norm_sum / n_total_jumps;
 }
 
-void ModelHawkesLogLikSingle::hessian(const ArrayDouble &coeffs, ArrayDouble &out) {
+void ModelHawkesLogLikSingle::hessian(const ArrayDouble &coeffs,
+                                      ArrayDouble &out) {
   if (!weights_computed) compute_weights();
 
-  // This allows to run in a multithreaded environment the computation of each component
+  // This allows to run in a multithreaded environment the computation of each
+  // component
   parallel_run(get_n_threads(), n_nodes, &ModelHawkesLogLikSingle::hessian_i,
                this, coeffs, out);
   out /= n_total_jumps;
 }
-
-
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                    PRIVATE METHODS
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void ModelHawkesLogLikSingle::sampled_i_to_index(const ulong sampled_i,
-                                                 ulong *i,
-                                                 ulong *k) {
+                                                 ulong *i, ulong *k) {
   ulong cum_N_i = 0;
   for (ulong d = 0; d < n_nodes; d++) {
     cum_N_i += (*n_jumps_per_node)[d];
@@ -129,7 +120,8 @@ void ModelHawkesLogLikSingle::sampled_i_to_index(const ulong sampled_i,
 double ModelHawkesLogLikSingle::loss_dim_i(const ulong i,
                                            const ArrayDouble &coeffs) {
   const double mu_i = coeffs[i];
-  const ArrayDouble alpha_i = view(coeffs, get_alpha_i_first_index(i), get_alpha_i_last_index(i));
+  const ArrayDouble alpha_i =
+      view(coeffs, get_alpha_i_first_index(i), get_alpha_i_last_index(i));
 
   double loss = -end_time;
   loss += end_time * mu_i;
@@ -140,9 +132,10 @@ double ModelHawkesLogLikSingle::loss_dim_i(const ulong i,
     double s = mu_i;
     s += alpha_i.dot(g_i_k);
     if (s <= 0) {
-      TICK_ERROR("The sum of the influence on someone cannot be negative. "
-                   "Maybe did you forget to add a positive constraint to "
-                   "your proximal operator");
+      TICK_ERROR(
+          "The sum of the influence on someone cannot be negative. "
+          "Maybe did you forget to add a positive constraint to "
+          "your proximal operator");
     }
     loss -= log(s);
   }
@@ -151,18 +144,19 @@ double ModelHawkesLogLikSingle::loss_dim_i(const ulong i,
   return loss;
 }
 
-double ModelHawkesLogLikSingle::loss_i_k(const ulong i,
-                                         const ulong k,
+double ModelHawkesLogLikSingle::loss_i_k(const ulong i, const ulong k,
                                          const ArrayDouble &coeffs) {
   const double mu_i = coeffs[i];
-  const ArrayDouble alpha_i = view(coeffs, get_alpha_i_first_index(i), get_alpha_i_last_index(i));
+  const ArrayDouble alpha_i =
+      view(coeffs, get_alpha_i_first_index(i), get_alpha_i_last_index(i));
   double loss = 0;
 
   const ArrayDouble g_i_k = view_row(g[i], k);
   const ArrayDouble G_i_k = view_row(G[i], k);
 
   // Both are correct, just a question of point of view
-  const double t_i_k = k == (*n_jumps_per_node)[i] - 1 ? end_time : (*timestamps[i])[k];
+  const double t_i_k =
+      k == (*n_jumps_per_node)[i] - 1 ? end_time : (*timestamps[i])[k];
   const double t_i_k_minus_one = k == 0 ? 0 : (*timestamps[i])[k - 1];
   loss += (t_i_k - t_i_k_minus_one) * (mu_i - 1);
   //  loss += end_time * (mu[i] - 1) / (*n_jumps_per_node)[i];
@@ -171,9 +165,10 @@ double ModelHawkesLogLikSingle::loss_i_k(const ulong i,
   s += alpha_i.dot(g_i_k);
 
   if (s <= 0) {
-    TICK_ERROR("The sum of the influence on someone cannot be negative. Maybe did "
-                 "you forget to add a positive constraint to your "
-                 "proximal operator");
+    TICK_ERROR(
+        "The sum of the influence on someone cannot be negative. Maybe did "
+        "you forget to add a positive constraint to your "
+        "proximal operator");
   }
   loss -= log(s);
 
@@ -188,10 +183,12 @@ void ModelHawkesLogLikSingle::grad_dim_i(const ulong i,
                                          const ArrayDouble &coeffs,
                                          ArrayDouble &out) {
   const double mu_i = coeffs[i];
-  const ArrayDouble alpha_i = view(coeffs, get_alpha_i_first_index(i), get_alpha_i_last_index(i));
+  const ArrayDouble alpha_i =
+      view(coeffs, get_alpha_i_first_index(i), get_alpha_i_last_index(i));
 
   double &grad_mu_i = out[i];
-  ArrayDouble grad_alpha_i = view(out, get_alpha_i_first_index(i), get_alpha_i_last_index(i));
+  ArrayDouble grad_alpha_i =
+      view(out, get_alpha_i_first_index(i), get_alpha_i_last_index(i));
 
   grad_mu_i += end_time;
 
@@ -211,16 +208,19 @@ void ModelHawkesLogLikSingle::grad_i_k(const ulong i, const ulong k,
                                        const ArrayDouble &coeffs,
                                        ArrayDouble &out) {
   const double mu_i = coeffs[i];
-  const ArrayDouble alpha_i = view(coeffs, get_alpha_i_first_index(i), get_alpha_i_last_index(i));
+  const ArrayDouble alpha_i =
+      view(coeffs, get_alpha_i_first_index(i), get_alpha_i_last_index(i));
 
   double &grad_mu_i = out[i];
-  ArrayDouble grad_alpha_i = view(out, get_alpha_i_first_index(i), get_alpha_i_last_index(i));
+  ArrayDouble grad_alpha_i =
+      view(out, get_alpha_i_first_index(i), get_alpha_i_last_index(i));
 
   const ArrayDouble g_i_k = view_row(g[i], k);
   const ArrayDouble G_i_k = view_row(G[i], k);
 
   // Both are correct, just a question of point of view
-  const double t_i_k = k == (*n_jumps_per_node)[i] - 1 ? end_time : (*timestamps[i])[k];
+  const double t_i_k =
+      k == (*n_jumps_per_node)[i] - 1 ? end_time : (*timestamps[i])[k];
   const double t_i_k_minus_one = k == 0 ? 0 : (*timestamps[i])[k - 1];
   grad_mu_i += t_i_k - t_i_k_minus_one;
   //  grad_mu[i] += end_time / (*n_jumps_per_node)[i];
@@ -240,10 +240,12 @@ double ModelHawkesLogLikSingle::loss_and_grad_dim_i(const ulong i,
                                                     const ArrayDouble &coeffs,
                                                     ArrayDouble &out) {
   const double mu_i = coeffs[i];
-  const ArrayDouble alpha_i = view(coeffs, get_alpha_i_first_index(i), get_alpha_i_last_index(i));
+  const ArrayDouble alpha_i =
+      view(coeffs, get_alpha_i_first_index(i), get_alpha_i_last_index(i));
 
   double &grad_mu_i = out[i];
-  ArrayDouble grad_alpha_i = view(out, get_alpha_i_first_index(i), get_alpha_i_last_index(i));
+  ArrayDouble grad_alpha_i =
+      view(out, get_alpha_i_first_index(i), get_alpha_i_last_index(i));
 
   double loss = 0;
 
@@ -256,9 +258,10 @@ double ModelHawkesLogLikSingle::loss_and_grad_dim_i(const ulong i,
     s += alpha_i.dot(g_i_k);
 
     if (s <= 0) {
-      TICK_ERROR("The sum of the influence on someone cannot be negative. Maybe did "
-                   "you forget to add a positive constraint to your "
-                   "proximal operator");
+      TICK_ERROR(
+          "The sum of the influence on someone cannot be negative. Maybe did "
+          "you forget to add a positive constraint to your "
+          "proximal operator");
     }
     loss -= log(s);
     grad_mu_i -= 1. / s;
@@ -276,10 +279,12 @@ double ModelHawkesLogLikSingle::hessian_norm_dim_i(const ulong i,
                                                    const ArrayDouble &coeffs,
                                                    const ArrayDouble &vector) {
   const double mu_i = coeffs[i];
-  const ArrayDouble alpha_i = view(coeffs, get_alpha_i_first_index(i), get_alpha_i_last_index(i));
+  const ArrayDouble alpha_i =
+      view(coeffs, get_alpha_i_first_index(i), get_alpha_i_last_index(i));
 
   double d_mu_i = vector[i];
-  ArrayDouble d_alpha_i = view(vector, get_alpha_i_first_index(i), get_alpha_i_last_index(i));
+  ArrayDouble d_alpha_i =
+      view(vector, get_alpha_i_first_index(i), get_alpha_i_last_index(i));
 
   double hess_norm = 0;
 
@@ -301,13 +306,16 @@ double ModelHawkesLogLikSingle::hessian_norm_dim_i(const ulong i,
 void ModelHawkesLogLikSingle::hessian_i(const ulong i,
                                         const ArrayDouble &coeffs,
                                         ArrayDouble &out) {
-  if (!weights_computed) TICK_ERROR("Please compute weights before calling hessian_i");
+  if (!weights_computed)
+    TICK_ERROR("Please compute weights before calling hessian_i");
 
   const double mu_i = coeffs[i];
-  const ArrayDouble alpha_i = view(coeffs, get_alpha_i_first_index(i), get_alpha_i_last_index(i));
+  const ArrayDouble alpha_i =
+      view(coeffs, get_alpha_i_first_index(i), get_alpha_i_last_index(i));
 
   // number of alphas per dimension
-  const ulong n_alpha_i = get_alpha_i_last_index(i) - get_alpha_i_first_index(i);
+  const ulong n_alpha_i =
+      get_alpha_i_last_index(i) - get_alpha_i_first_index(i);
 
   const ulong start_mu_line = i * (n_alpha_i + 1);
   const ulong block_start = (n_nodes + i * n_alpha_i) * (n_alpha_i + 1);

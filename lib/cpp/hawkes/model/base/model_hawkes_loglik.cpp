@@ -1,13 +1,12 @@
 // License: BSD 3 clause
 
-
 #include "tick/hawkes/model/base/model_hawkes_loglik.h"
 
-ModelHawkesLogLik::ModelHawkesLogLik(const int max_n_threads) :
-  ModelHawkesList(max_n_threads, 0) {}
+ModelHawkesLogLik::ModelHawkesLogLik(const int max_n_threads)
+    : ModelHawkesList(max_n_threads, 0) {}
 
 void ModelHawkesLogLik::incremental_set_data(
-  const SArrayDoublePtrList1D &timestamps, double end_time) {
+    const SArrayDoublePtrList1D &timestamps, double end_time) {
   weights_computed = false;
   if (model_list.empty()) {
     set_n_nodes(timestamps.size());
@@ -44,10 +43,12 @@ void ModelHawkesLogLik::incremental_set_data(
 
 void ModelHawkesLogLik::compute_weights() {
   if (!model_list.empty() && timestamps_list.size() != model_list.size()) {
-    TICK_ERROR("Cannot compute weights as timestamps have not been stored. "
-                 "Did you use incremental_fit?");
+    TICK_ERROR(
+        "Cannot compute weights as timestamps have not been stored. "
+        "Did you use incremental_fit?");
   }
-  model_list = std::vector<std::unique_ptr<ModelHawkesLogLikSingle> >(n_realizations);
+  model_list =
+      std::vector<std::unique_ptr<ModelHawkesLogLikSingle> >(n_realizations);
 
   for (ulong r = 0; r < n_realizations; ++r) {
     model_list[r] = build_model(1);
@@ -85,9 +86,10 @@ double ModelHawkesLogLik::loss_i_r(const ulong i_r, const ArrayDouble &coeffs) {
 
 double ModelHawkesLogLik::loss(const ArrayDouble &coeffs) {
   if (!weights_computed) compute_weights();
-  return parallel_map_additive_reduce(
-    get_n_threads(), n_realizations * n_nodes,
-    &ModelHawkesLogLik::loss_i_r, this, coeffs) / get_n_total_jumps();
+  return parallel_map_additive_reduce(get_n_threads(), n_realizations * n_nodes,
+                                      &ModelHawkesLogLik::loss_i_r, this,
+                                      coeffs) /
+         get_n_total_jumps();
 }
 
 double ModelHawkesLogLik::loss_i(const ulong i, const ArrayDouble &coeffs) {
@@ -96,8 +98,7 @@ double ModelHawkesLogLik::loss_i(const ulong i, const ArrayDouble &coeffs) {
   return model_list[r_i.first]->loss_i(r_i.second, coeffs);
 }
 
-void ModelHawkesLogLik::grad_i_r(const ulong i_r,
-                                 ArrayDouble &out,
+void ModelHawkesLogLik::grad_i_r(const ulong i_r, ArrayDouble &out,
                                  const ArrayDouble &coeffs) {
   ulong r, i;
   std::tie(r, i) = get_realization_node(i_r);
@@ -112,10 +113,9 @@ void ModelHawkesLogLik::grad(const ArrayDouble &coeffs, ArrayDouble &out) {
   if (!weights_computed) compute_weights();
   out.init_to_zero();
   parallel_map_array<ArrayDouble>(
-    get_n_threads(), n_realizations * n_nodes,
-    [](ArrayDouble &r, const ArrayDouble &s) { r.mult_incr(s, 1.0); },
-    &ModelHawkesLogLik::grad_i_r,
-    this, out, coeffs);
+      get_n_threads(), n_realizations * n_nodes,
+      [](ArrayDouble &r, const ArrayDouble &s) { r.mult_incr(s, 1.0); },
+      &ModelHawkesLogLik::grad_i_r, this, out, coeffs);
   out /= get_n_total_jumps();
 }
 
@@ -147,14 +147,13 @@ double ModelHawkesLogLik::hessian_norm_i_r(const ulong i_r,
 double ModelHawkesLogLik::hessian_norm(const ArrayDouble &coeffs,
                                        const ArrayDouble &vector) {
   if (!weights_computed) compute_weights();
-  return parallel_map_additive_reduce(
-    get_n_threads(), n_realizations * n_nodes,
-    &ModelHawkesLogLik::hessian_norm_i_r, this, coeffs, vector)
-    / get_n_total_jumps();
+  return parallel_map_additive_reduce(get_n_threads(), n_realizations * n_nodes,
+                                      &ModelHawkesLogLik::hessian_norm_i_r,
+                                      this, coeffs, vector) /
+         get_n_total_jumps();
 }
 
-void ModelHawkesLogLik::hessian_i_r(const ulong i_r,
-                                    const ArrayDouble &coeffs,
+void ModelHawkesLogLik::hessian_i_r(const ulong i_r, const ArrayDouble &coeffs,
                                     ArrayDouble &out) {
   ulong r, i;
   std::tie(r, i) = get_realization_node(i_r);
@@ -162,22 +161,21 @@ void ModelHawkesLogLik::hessian_i_r(const ulong i_r,
   model_list[r]->hessian_i(i, coeffs, out);
 }
 
-void ModelHawkesLogLik::hessian(const ArrayDouble &coeffs,
-                                ArrayDouble &out) {
+void ModelHawkesLogLik::hessian(const ArrayDouble &coeffs, ArrayDouble &out) {
   if (!weights_computed) compute_weights();
-  parallel_run(
-    get_n_threads(), n_realizations * n_nodes,
-    &ModelHawkesLogLik::hessian_i_r, this, coeffs, out);
+  parallel_run(get_n_threads(), n_realizations * n_nodes,
+               &ModelHawkesLogLik::hessian_i_r, this, coeffs, out);
   out /= get_n_total_jumps();
 }
 
 std::pair<ulong, ulong> ModelHawkesLogLik::sampled_i_to_realization(
-  const ulong sampled_i) {
+    const ulong sampled_i) {
   ulong cum_n_jumps = 0;
   for (ulong r = 0; r < n_realizations; r++) {
     cum_n_jumps += (*n_jumps_per_realization)[r];
     if (sampled_i < cum_n_jumps) {
-      const ulong i_in_realization_r = sampled_i - cum_n_jumps + (*n_jumps_per_realization)[r];
+      const ulong i_in_realization_r =
+          sampled_i - cum_n_jumps + (*n_jumps_per_realization)[r];
       return std::pair<ulong, ulong>(r, i_in_realization_r);
     }
   }

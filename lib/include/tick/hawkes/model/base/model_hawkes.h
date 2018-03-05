@@ -32,9 +32,9 @@ class DLL_PUBLIC ModelHawkes : public Model {
 
  public:
   //! @brief Constructor
-  //! \param max_n_threads : maximum number of threads to be used for multithreading
-  //! \param optimization_level : 0 corresponds to no optimization and 1 to use of faster
-  //! (approximated) exponential function
+  //! \param max_n_threads : maximum number of threads to be used for
+  //! multithreading \param optimization_level : 0 corresponds to no
+  //! optimization and 1 to use of faster (approximated) exponential function
   ModelHawkes(const int max_n_threads = 1,
               const unsigned int optimization_level = 0);
 
@@ -54,14 +54,12 @@ class DLL_PUBLIC ModelHawkes : public Model {
   //! @brief Custom exponential function taking into account optimization
   //! level
   //! \param x : The value exponential is computed at
-  inline double cexp(double x) {
-    return optimized_exp(x, optimization_level);
-  }
+  inline double cexp(double x) { return optimized_exp(x, optimization_level); }
 
   friend class ModelHawkesList;
 
  public:
-  template<class Archive>
+  template <class Archive>
   void serialize(Archive &ar) {
     ar(CEREAL_NVP(max_n_threads));
     ar(CEREAL_NVP(optimization_level));
