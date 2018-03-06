@@ -46,7 +46,7 @@ cd $ROOT/lib
 [ ! -z "$CXXFLAGS" ] && CARGS="$CXXFLAGS $CARGS"
 [ ! -z "$LDFLAGS" ] && LDARGS="${LDARGS} ${LDFLAGS}"
 
-mkn clean build -p gtest -tKa "-fPIC -O2 -DNDEBUG -DGTEST_CREATE_SHARED_LIBRARY" \
+mkn clean build -p gtest -tKa "${CXXFLAGS} -DGTEST_CREATE_SHARED_LIBRARY" \
     -d google.test,+ ${MKN_X_FILE[@]}
 
 mkdir -p $ROOT/gtest
@@ -56,7 +56,7 @@ for FILE in "${FILES[@]}"; do
     echo FILE $FILE
     rm -rf bin/gtest*
 
-    mkn compile -p gtest -a "${CARGS}" \
+    mkn compile -p gtest -a "${CARGS} -DGTEST_LINKED_AS_SHARED_LIBRARY" \
         -tb "$PY_INCS" \
         -M "${FILE}" -P "${MKN_P[@]}" \
         ${MKN_X_FILE[@]} -B "$B_PATH" ${MKN_WITH[@]}        

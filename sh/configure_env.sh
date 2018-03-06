@@ -45,7 +45,7 @@ function relpath(){
   echo $($PY -c "import os.path; print(os.path.relpath('$1', '$2'))")
 }
 function linkread(){
-if [[ "$unameOut" == "CYGWIN"* ]] || [[ "$unameOut" == "MINGW"* ]]; then
+if [[ "$unameOut" == "CYGWIN"* ]] || [[ "$unameOut" == "MINGW"* ]] || [[ "$unameOut" == "MSYS_NT"* ]]; then
   echo $(readlink -f $1)
 else
   echo $($PY -c "import os; print(os.path.realpath(\"$1\"))")
@@ -53,7 +53,7 @@ fi
 }
 
 #################
-if [[ "$unameOut" == "CYGWIN"* ]] || [[ "$unameOut" == "MINGW"* ]]; then
+if [[ "$unameOut" == "CYGWIN"* ]] || [[ "$unameOut" == "MINGW"* ]] || [[ "$unameOut" == "MSYS_NT"* ]]; then
   function pathreal(){
     P=$1
     which cygpath.exe 2>&1 > /dev/null
@@ -69,14 +69,14 @@ fi
 #################
 
 # if windows - python-config does not exist
-if [[ "$unameOut" == "CYGWIN"* ]] || [[ "$unameOut" == "MINGW"* ]]; then
+if [[ "$unameOut" == "CYGWIN"* ]] || [[ "$unameOut" == "MINGW"* ]] || [[ "$unameOut" == "MSYS_NT"* ]]; then
   echo "Windows detected"
   
   CL_PATH=0
   GCC_PATH=0
   which cl.exe &> /dev/null && CL_PATH=$(which cl.exe)
   which gcc.exe &> /dev/null && GCC_PATH=$(which gcc.exe)
-  if [ $CL_PATH == 0 ] && [ $GCC_PATH == 0 ] ; then
+  if [[ $CL_PATH == 0 ]] && [[ $GCC_PATH == 0 ]] ; then
     echo "Neither cl.exe or gcc.exe on path: Error"
     exit 1
   fi

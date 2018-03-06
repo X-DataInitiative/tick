@@ -17,7 +17,7 @@
  *  The kernel class allows to define 1 element of the kernel matrix of a Hawkes
  * process
  */
-class HawkesKernel {
+class DLL_PUBLIC HawkesKernel {
  protected:
   /**
    * Support is used for dealing with support of the kernel
