@@ -4,9 +4,8 @@
 
 // License: BSD 3 clause
 
-#include "tick/random/rand.h"
-#include "tick/random/rand.h"
 #include "tick/array/varray.h"
+#include "tick/random/rand.h"
 
 #include <cereal/types/vector.hpp>
 
@@ -16,9 +15,9 @@
  */
 
 class DLL_PUBLIC PP {
-////////////////////////////////////////////////////////////////////////////////
-//                            Attributes
-////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////
+  //                            Attributes
+  ////////////////////////////////////////////////////////////////////////////////
 
  public:
   /*! @brief A 1-dimensional array of VArrayDoublePtr holding the different
@@ -26,7 +25,7 @@ class DLL_PUBLIC PP {
    */
   VArrayDoublePtrList1D timestamps;
 
- private :
+ private:
   // Thread safe random generator
   Rand rand;
 
@@ -40,12 +39,12 @@ class DLL_PUBLIC PP {
   /// @brief the dimension of the point process
   unsigned int n_nodes;
 
-// Intensity related fields
+  // Intensity related fields
  protected:
   /// @brief Bound of the future total intensity
   double total_intensity_bound;
 
- private :
+ private:
   // Current total intensity
   double total_intensity;
 
@@ -65,8 +64,8 @@ class DLL_PUBLIC PP {
   /// @brief If set then it thresholds negative intensities
   bool threshold_negative_intensity = false;
 
-// Fields to deal with intensity track recording (itr)
- private :
+  // Fields to deal with intensity track recording (itr)
+ private:
   // The current time for Track recording intensity
   double itr_time;
 
@@ -80,10 +79,10 @@ class DLL_PUBLIC PP {
   // The time corresponding to the track records of the intensity
   VArrayDoublePtr itr_times;
 
-////////////////////////////////////////////////////////////////////////////////
-//                            Constructors and destructors
-////////////////////////////////////////////////////////////////////////////////
- protected :
+  ////////////////////////////////////////////////////////////////////////////////
+  //                            Constructors and destructors
+  ////////////////////////////////////////////////////////////////////////////////
+ protected:
   PP() : n_nodes(0) {}
 
  public:
@@ -94,11 +93,11 @@ class DLL_PUBLIC PP {
   /// Destructor
   virtual ~PP();
 
-////////////////////////////////////////////////////////////////////////////////
-//                            Methods
-////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////
+  //                            Methods
+  ////////////////////////////////////////////////////////////////////////////////
 
- public :
+ public:
   /**
    * @brief Builds the process up to time endTime
    * \param end_time : Time until the realization is performed
@@ -148,7 +147,7 @@ class DLL_PUBLIC PP {
    */
   void reseed_random_generator(int seed);
 
- protected :
+ protected:
   /**
    * @brief Updates the current time so that it goes forward of delay seconds
    * The intensities must be updated and track recorded if needed
@@ -158,22 +157,22 @@ class DLL_PUBLIC PP {
    * \param total_intensity_bound : If not NULL then used to set a bound of
    * total future intensity
    */
-  virtual bool update_time_shift_(double delay,
-                                  ArrayDouble &intensity,
-                                  double *total_intensity_bound) { return false; }
+  virtual bool update_time_shift_(double delay, ArrayDouble &intensity,
+                                  double *total_intensity_bound) {
+    return false;
+  }
 
   /**
    * @brief Record a jump in ith component
    */
   void update_jump(int index);
 
- private :
+ private:
   /**
    * @brief Update a time shift of delay seconds and eventually recompute the
    * intensity bound if asked and update track record of intensity if asked
    */
-  void update_time_shift(double delay,
-                         bool flag_compute_intensity_bound,
+  void update_time_shift(double delay, bool flag_compute_intensity_bound,
                          bool flag_itr);
 
   /**
@@ -193,10 +192,9 @@ class DLL_PUBLIC PP {
   virtual void init_intensity_(ArrayDouble &intensity,
                                double *total_intensity_bound);
 
-
-////////////////////////////////////////////////////////////////////////////////
-//                            Getters and setters
-////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////
+  //                            Getters and setters
+  ////////////////////////////////////////////////////////////////////////////////
 
  public:
   /// @brief Returns the dimension of the process
@@ -213,14 +211,16 @@ class DLL_PUBLIC PP {
 
   /// @brief Returns intensity track record array
   inline VArrayDoublePtrList1D get_itr() {
-    if (!itr_on()) TICK_ERROR("``activate_itr()`` must be call before simulation");
+    if (!itr_on())
+      TICK_ERROR("``activate_itr()`` must be call before simulation");
 
     return itr;
   }
 
   /// @brief Returns times at which intensity has been recorded
   inline VArrayDoublePtr get_itr_times() {
-    if (!itr_on()) TICK_ERROR("``activate_itr()`` must be call before simulation");
+    if (!itr_on())
+      TICK_ERROR("``activate_itr()`` must be call before simulation");
 
     return itr_times;
   }
@@ -234,26 +234,30 @@ class DLL_PUBLIC PP {
   /// @brief Get the process (converted into fixed size array)
   SArrayDoublePtrList1D get_timestamps() {
     SArrayDoublePtrList1D shared_process =
-      std::vector<SArrayDoublePtr>(timestamps.begin(), timestamps.end());
+        std::vector<SArrayDoublePtr>(timestamps.begin(), timestamps.end());
     return shared_process;
   }
 
-  /// @brief Gets Maximimum Total intensity bound that wwas encountered during realization
-  inline double get_max_total_intensity_bound() { return max_total_intensity_bound; }
+  /// @brief Gets Maximimum Total intensity bound that wwas encountered during
+  /// realization
+  inline double get_max_total_intensity_bound() {
+    return max_total_intensity_bound;
+  }
 
   bool get_threshold_negative_intensity() const {
     return threshold_negative_intensity;
   }
 
-  void set_threshold_negative_intensity(const bool threshold_negative_intensity) {
+  void set_threshold_negative_intensity(
+      const bool threshold_negative_intensity) {
     this->threshold_negative_intensity = threshold_negative_intensity;
   }
 
-////////////////////////////////////////////////////////////////////////////////
-//                            Serialization
-////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////
+  //                            Serialization
+  ////////////////////////////////////////////////////////////////////////////////
 
-  template<class Archive>
+  template <class Archive>
   void load(Archive &ar) {
     ar(CEREAL_NVP(timestamps));
     ar(CEREAL_NVP(time));
@@ -276,7 +280,7 @@ class DLL_PUBLIC PP {
     rand = Rand(rand_seed);
   }
 
-  template<class Archive>
+  template <class Archive>
   void save(Archive &ar) const {
     ar(CEREAL_NVP(timestamps));
     ar(CEREAL_NVP(time));
@@ -295,8 +299,8 @@ class DLL_PUBLIC PP {
 
     // Note that only the seed is part of the serialization.
     //
-    // If the generator has been used (i.e. numbers have been drawn from it) this will not be
-    // reflected in the restored (deserialized) object.
+    // If the generator has been used (i.e. numbers have been drawn from it)
+    // this will not be reflected in the restored (deserialized) object.
     const auto rand_seed = rand.get_seed();
     ar(CEREAL_NVP(rand_seed));
   }

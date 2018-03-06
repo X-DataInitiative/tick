@@ -15,12 +15,13 @@ Poisson::Poisson(double intensity, int seed) : PP(1, seed) {
   (*intensities)[0] = intensity;
 }
 
-Poisson::Poisson(SArrayDoublePtr intensities, int seed) :
-  PP(static_cast<unsigned int>(intensities->size()), seed) {
+Poisson::Poisson(SArrayDoublePtr intensities, int seed)
+    : PP(static_cast<unsigned int>(intensities->size()), seed) {
   this->intensities = intensities;
 }
 
-void Poisson::init_intensity_(ArrayDouble &intensity, double *total_intensity_bound1) {
+void Poisson::init_intensity_(ArrayDouble &intensity,
+                              double *total_intensity_bound1) {
   *total_intensity_bound1 = 0;
   for (unsigned int i = 0; i < get_n_nodes(); i++) {
     intensity[i] = (*intensities)[i];
@@ -32,4 +33,3 @@ bool Poisson::update_time_shift_(double delay, ArrayDouble &intensity,
                                  double *total_intensity_bound) {
   return false;
 }
-

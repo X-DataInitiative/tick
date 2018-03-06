@@ -29,25 +29,27 @@
 
 #endif  // _WIN32
 
-#include <string>
+#include <array>
+#include <exception>
 #include <iostream>
 #include <sstream>
-#include <exception>
-#include <array>
+#include <string>
 #include <type_traits>
 
 #ifdef DEBUG_VERBOSE
-  #define TICK_DEBUG_VERBOSE_MODE 1
+#define TICK_DEBUG_VERBOSE_MODE 1
 #endif
 
 namespace tick {
 
 /**
- * Utility class used to insert into a std::stringstream. On exit it calls the functor given as template parameter.
+ * Utility class used to insert into a std::stringstream. On exit it calls the
+ * functor given as template parameter.
  *
- * @tparam ExitPolicy Functor called in deconstructor. Must take a std::string as first and only argument.
+ * @tparam ExitPolicy Functor called in deconstructor. Must take a std::string
+ * as first and only argument.
  */
-template<typename ExitPolicy>
+template <typename ExitPolicy>
 class TemporaryLog {
  private:
   std::stringstream ss;
@@ -55,16 +57,16 @@ class TemporaryLog {
  public:
   TemporaryLog() : ss() {}
 
-  ~TemporaryLog() {
-    ExitPolicy{}(ss.str());
-  }
+  ~TemporaryLog() { ExitPolicy{}(ss.str()); }
 
   TemporaryLog &insert_backtrace() {
 #ifndef _WIN32
     std::array<void *, 100> stack_addresses;
 
-    const int num_addresses = backtrace(stack_addresses.data(), stack_addresses.size());
-    char **const strings = backtrace_symbols(stack_addresses.data(), num_addresses);
+    const int num_addresses =
+        backtrace(stack_addresses.data(), stack_addresses.size());
+    char **const strings =
+        backtrace_symbols(stack_addresses.data(), num_addresses);
 
     (*this) << "C++ extension backtrace: \n";
 
@@ -74,20 +76,20 @@ class TemporaryLog {
     return *this;
   }
 
-  std::stringstream& stream() { return ss; }
+  std::stringstream &stream() { return ss; }
 
   std::string value() const { return ss.str(); }
 };
 
-template<typename E, typename T>
-TemporaryLog<E>& operator<<(TemporaryLog<E>& log, const T &item) {
+template <typename E, typename T>
+TemporaryLog<E> &operator<<(TemporaryLog<E> &log, const T &item) {
   log.stream() << item;
 
   return log;
 }
 
-template<typename E, typename T>
-TemporaryLog<E>& operator<<(TemporaryLog<E>&& log, const T &item) {
+template <typename E, typename T>
+TemporaryLog<E> &operator<<(TemporaryLog<E> &&log, const T &item) {
   log.stream() << item;
 
   return log;
@@ -111,9 +113,11 @@ struct LogExitCout {
  * Inserts filename, linenumber and function name into stream
  */
 #ifdef _WIN32
-#define TICK_LOG_PREFIX __FILE__ ":"  << __LINE__ << " in " << __FUNCTION__ << ": "
+#define TICK_LOG_PREFIX \
+  __FILE__ ":" << __LINE__ << " in " << __FUNCTION__ << ": "
 #else
-#define TICK_LOG_PREFIX __FILE__ ":"  << __LINE__ << " in " << __PRETTY_FUNCTION__ << ": "
+#define TICK_LOG_PREFIX \
+  __FILE__ ":" << __LINE__ << " in " << __PRETTY_FUNCTION__ << ": "
 #endif
 
 /**
@@ -122,7 +126,8 @@ struct LogExitCout {
  * @{
  */
 
-// If we're in debug mode a more explicit error exception is thrown, otherwise just a simple text
+// If we're in debug mode a more explicit error exception is thrown, otherwise
+// just a simple text
 #ifdef TICK_DEBUG_VERBOSE_MODE
 
 /**
@@ -135,12 +140,19 @@ struct LogExitCout {
   TICK_ERROR("A fatal error occurred: " << 42);
   \endcode
 
-  Anything that can be inserted into std::stringstream can also be inserted as a parameter here.
+  Anything that can be inserted into std::stringstream can also be inserted as a
+  parameter here.
  */
-  #define TICK_ERROR(fmt) \
-  {throw std::runtime_error(((tick::TemporaryLog<tick::LogExitNoop>{} << TICK_LOG_PREFIX << fmt << '\n').insert_backtrace()).value());}
+#define TICK_ERROR(fmt)                                                \
+  {                                                                    \
+    throw std::runtime_error(((tick::TemporaryLog<tick::LogExitNoop>{} \
+                               << TICK_LOG_PREFIX << fmt << '\n')      \
+                                  .insert_backtrace())                 \
+                                 .value());                            \
+  }
 
-// If TICK_DEBUG_VERBOSE_MODE flag is not enabled, we throw a simpler error exception
+// If TICK_DEBUG_VERBOSE_MODE flag is not enabled, we throw a simpler error
+// exception
 #else  // TICK_DEBUG_VERBOSE_MODE
 
 /**
@@ -151,10 +163,14 @@ struct LogExitCout {
    TICK_ERROR("A fatal error occurred: " << 42);
   \endcode
 
-  Anything that can be inserted into std::stringstream can also be inserted as a parameter here.
+  Anything that can be inserted into std::stringstream can also be inserted as a
+  parameter here.
  */
-#define TICK_ERROR(fmt) \
-  {throw std::runtime_error(((tick::TemporaryLog<tick::LogExitNoop>{} << fmt << '\n')).value());}
+#define TICK_ERROR(fmt)                                                      \
+  {                                                                          \
+    throw std::runtime_error(                                                \
+        ((tick::TemporaryLog<tick::LogExitNoop>{} << fmt << '\n')).value()); \
+  }
 
 #endif  // TICK_DEBUG_VERBOSE_MODE
 
@@ -165,8 +181,15 @@ struct LogExitCout {
  * \param imax : the highest available index
  * \param i    : the requested index
  */
-#define TICK_BAD_INDEX(imin, imax, i) \
-  {throw std::out_of_range(((tick::TemporaryLog<tick::LogExitNoop>{} << TICK_LOG_PREFIX << "Bad index: " << i << " should be in [" << imin << ", " << imax << "]\n").insert_backtrace()).value());}
+#define TICK_BAD_INDEX(imin, imax, i)                                   \
+  {                                                                     \
+    throw std::out_of_range(                                            \
+        ((tick::TemporaryLog<tick::LogExitNoop>{}                       \
+          << TICK_LOG_PREFIX << "Bad index: " << i << " should be in [" \
+          << imin << ", " << imax << "]\n")                             \
+             .insert_backtrace())                                       \
+            .value());                                                  \
+  }
 
 /**
   Macro for non-fatal user warnings printed to std::cerr.
@@ -176,9 +199,11 @@ struct LogExitCout {
   TICK_WARNING() << "User has made a non-fatal mistake with number: " << 2;
   \endcode
 
-  Anything that can be inserted into std::stringstream can also be inserted here.
+  Anything that can be inserted into std::stringstream can also be inserted
+  here.
  */
-#define TICK_WARNING()  (tick::TemporaryLog<tick::LogExitCerr>{} << TICK_LOG_PREFIX)
+#define TICK_WARNING() \
+  (tick::TemporaryLog<tick::LogExitCerr>{} << TICK_LOG_PREFIX)
 
 /**
   Macro for non-fatal developer debug messages printed to std::cout.
@@ -191,14 +216,18 @@ struct LogExitCout {
   TICK_DEBUG() << "Debugging this pointer: " << ptr;
   @endcode
 
-  Anything that can be inserted into std::stringstream can also be inserted here.
+  Anything that can be inserted into std::stringstream can also be inserted
+  here.
  */
-#define TICK_DEBUG()    (tick::TemporaryLog<tick::LogExitCout>{} << TICK_LOG_PREFIX)
+#define TICK_DEBUG() \
+  (tick::TemporaryLog<tick::LogExitCout>{} << TICK_LOG_PREFIX)
 
 /**
- * Convenience macro to error the program if the current function is not implemented in class 'cls'
+ * Convenience macro to error the program if the current function is not
+ * implemented in class 'cls'
  */
-#define TICK_CLASS_DOES_NOT_IMPLEMENT(cls) TICK_ERROR("Function not implemented in  " << cls)
+#define TICK_CLASS_DOES_NOT_IMPLEMENT(cls) \
+  TICK_ERROR("Function not implemented in  " << cls)
 
 /**
  * Macro to print current function stack.
@@ -208,7 +237,8 @@ struct LogExitCout {
 /**@}*/
 
 /**
-  Convenience macro to define that method/member/variable/class/struct or typedef is deprecated.
+  Convenience macro to define that method/member/variable/class/struct or
+  typedef is deprecated.
 
   Will generate a warning on compilation if deprecated definition is used.
 
@@ -234,13 +264,13 @@ struct LogExitCout {
   \endcode
  */
 #if defined(__cpp_attributes)
-  #define TICK_DEPRECATED(reason) [[deprecated(reason)]]
+#define TICK_DEPRECATED(reason) [[deprecated(reason)]]
 #elif defined(__GNUC__)
-  #define TICK_DEPRECATED(reason) __attribute__ ((deprecated))
+#define TICK_DEPRECATED(reason) __attribute__((deprecated))
 #elif defined(__clang__)
-  #define TICK_DEPRECATED(reason) __attribute__((deprecated(reason)))
+#define TICK_DEPRECATED(reason) __attribute__((deprecated(reason)))
 #else
-  #define TICK_DEPRECATED(reason)
+#define TICK_DEPRECATED(reason)
 #endif
 
 #endif  // LIB_INCLUDE_TICK_BASE_DEBUG_H_

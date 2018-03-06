@@ -13,9 +13,11 @@ struct TimestampListDescriptor {
   SArrayULongPtr n_jumps_per_node;
 };
 
-TimestampListDescriptor describe_timestamps_list(const SArrayDoublePtrList2D &timestamps_list);
+TimestampListDescriptor describe_timestamps_list(
+    const SArrayDoublePtrList2D &timestamps_list);
 
-TimestampListDescriptor describe_timestamps_list(const SArrayDoublePtrList2D &timestamps_list,
-                                                 const VArrayDoublePtr end_times);
+TimestampListDescriptor describe_timestamps_list(
+    const SArrayDoublePtrList2D &timestamps_list,
+    const VArrayDoublePtr end_times);
 
 #endif  // LIB_INCLUDE_TICK_HAWKES_MODEL_MODEL_HAWKES_UTILS_H_

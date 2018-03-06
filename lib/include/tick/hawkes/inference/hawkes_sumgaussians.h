@@ -17,7 +17,8 @@ class DLL_PUBLIC HawkesSumGaussians : public ModelHawkesList {
   //! @brief Number of gaussian functions to approximate each kernel
   ulong n_gaussians;
 
-  //! @brief Upper bound of the last mean of gaussian functions. This is a proxy for the kernel support.
+  //! @brief Upper bound of the last mean of gaussian functions. This is a proxy
+  //! for the kernel support.
   double max_mean_gaussian;
 
   //! @brief Standard deviation of the gaussian functions. This bandlimit
@@ -45,11 +46,13 @@ class DLL_PUBLIC HawkesSumGaussians : public ModelHawkesList {
   ArrayDouble means_gaussians;
 
   //! @brief Weights storing kernel integrals equal
-  //! for node u : kernel_integral[u] = \sum_r \sum_m \int_0^{T - t_i^u} g_m(s) ds
+  //! for node u : kernel_integral[u] = \sum_r \sum_m \int_0^{T - t_i^u} g_m(s)
+  //! ds
   ArrayDouble kernel_integral;
 
   //! @brief Weights storing sum of kernel values at specific points
-  //! for realization r: g[r][u][i][v*n_nodes+m] = \sum_{t_j^v < t_i^u} g_m(t_i^u - t_j^v)
+  //! for realization r: g[r][u][i][v*n_nodes+m] = \sum_{t_j^v < t_i^u}
+  //! g_m(t_i^u - t_j^v)
   ArrayDouble2dList2D g;
 
   //! @brief Buffer variables used to compute p_ij
@@ -60,9 +63,9 @@ class DLL_PUBLIC HawkesSumGaussians : public ModelHawkesList {
 
  public:
   HawkesSumGaussians(const ulong n_gaussians, const double max_mean_gaussian,
-                     const double step_size,
-                     const double strength_lasso, const double strength_grouplasso,
-                     const ulong em_max_iter, const int max_n_threads = 1,
+                     const double step_size, const double strength_lasso,
+                     const double strength_grouplasso, const ulong em_max_iter,
+                     const int max_n_threads = 1,
                      const unsigned int optimization_level = 0);
 
   //! @brief allocate buffer arrays once data has been given
@@ -76,12 +79,12 @@ class DLL_PUBLIC HawkesSumGaussians : public ModelHawkesList {
 
   void update_u(const ulong u, ArrayDouble &mu, ArrayDouble2d &amplitudes);
 
-  void estimate_ru(const ulong r_u,
-                   ArrayDouble &mu, ArrayDouble2d &amplitudes);
+  void estimate_ru(const ulong r_u, ArrayDouble &mu, ArrayDouble2d &amplitudes);
 
   void update_amplitudes_u(const ulong u, ArrayDouble &amplitudes_u);
 
-  void prox_amplitudes_u(const ulong u, ArrayDouble2d &amplitudes, ArrayDouble2d &amplitudes_old);
+  void prox_amplitudes_u(const ulong u, ArrayDouble2d &amplitudes,
+                         ArrayDouble2d &amplitudes_old);
 
   void update_baseline_u(const ulong u, ArrayDouble &mu);
 

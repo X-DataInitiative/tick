@@ -4,8 +4,8 @@
 // Created by Martin Bompaire on 08/06/15.
 //
 
-#include <float.h>
 #include "tick/base/time_func.h"
+#include <float.h>
 
 const double floor_threshold = 1e-10;
 
@@ -23,9 +23,8 @@ TimeFunction::TimeFunction(double y) {
   border_type = DEFAULT_BORDER;
 }
 
-TimeFunction::TimeFunction(const ArrayDouble &Y,
-                           BorderType type, InterMode mode,
-                           double dt, double border_value)
+TimeFunction::TimeFunction(const ArrayDouble &Y, BorderType type,
+                           InterMode mode, double dt, double border_value)
     : inter_mode(mode), border_type(type), dt(dt), border_value(border_value) {
   sampled_y = SArrayDouble::new_ptr(Y.size());
   std::copy(Y.data(), Y.data() + Y.size(), sampled_y->data());
@@ -33,19 +32,22 @@ TimeFunction::TimeFunction(const ArrayDouble &Y,
   last_value_before_border = dt * sampled_y->size();
 }
 
-TimeFunction::TimeFunction(const ArrayDouble &T, const ArrayDouble &Y, double dt)
-    : TimeFunction(T, Y, DEFAULT_BORDER, DEFAULT_INTER, dt, 0.0) {
-}
+TimeFunction::TimeFunction(const ArrayDouble &T, const ArrayDouble &Y,
+                           double dt)
+    : TimeFunction(T, Y, DEFAULT_BORDER, DEFAULT_INTER, dt, 0.0) {}
 
 TimeFunction::TimeFunction(const ArrayDouble &T, const ArrayDouble &Y,
-                           BorderType type, InterMode mode, double dt1, double border_value1)
+                           BorderType type, InterMode mode, double dt1,
+                           double border_value1)
     : inter_mode(mode), border_type(type) {
-
   const ulong size = T.size();
   if (size != Y.size()) TICK_ERROR("Both array should have the same size");
   if (size == 0) TICK_ERROR("T and Y arrays cannot be empty");
   if (dt1 < 0) TICK_ERROR("``dt` cannot be negative");
-  if (T[0] < 0) TICK_ERROR("TimeFunction support is on R+, hence no negative time can be provided");
+  if (T[0] < 0)
+    TICK_ERROR(
+        "TimeFunction support is on R+, hence no negative time can be "
+        "provided");
 
   // Check that T array is sorted and find min step
   double min_step = DBL_MAX;
@@ -63,19 +65,23 @@ TimeFunction::TimeFunction(const ArrayDouble &T, const ArrayDouble &Y,
     dt = dt1;
   }
 
-  if (dt < 10 * floor_threshold) TICK_ERROR(
-      "dt is too small, we currently cannot reach this precision");
+  if (dt < 10 * floor_threshold)
+    TICK_ERROR("dt is too small, we currently cannot reach this precision");
 
   t0 = T[0];
   last_value_before_border = T[size - 1];
   switch (border_type) {
-    case (BorderType::Border0):border_value = 0;
+    case (BorderType::Border0):
+      border_value = 0;
       break;
-    case (BorderType::BorderConstant):border_value = border_value1;
+    case (BorderType::BorderConstant):
+      border_value = border_value1;
       break;
-    case (BorderType::BorderContinue):border_value = Y[size - 1];
+    case (BorderType::BorderContinue):
+      border_value = Y[size - 1];
       break;
-    case (BorderType::Cyclic):border_value = 0;
+    case (BorderType::Cyclic):
+      border_value = 0;
       break;
   }
 
@@ -84,15 +90,18 @@ TimeFunction::TimeFunction(const ArrayDouble &T, const ArrayDouble &Y,
   // either dt don't (common case)
   const double length = T[size - 1] - T[0];
 
-  if (length < dt) TICK_ERROR("``dt`` cannot be bigger than the time space you are considering");
+  if (length < dt)
+    TICK_ERROR(
+        "``dt`` cannot be bigger than the time space you are considering");
 
-  // We add 2 in order to be sure that we will have at least one value after the last given t
-  // This value will be used to interpolate until the last given t
-  ulong sample_size = (ulong) threshold_floor(length / dt) + 2;
+  // We add 2 in order to be sure that we will have at least one value after the
+  // last given t This value will be used to interpolate until the last given t
+  ulong sample_size = (ulong)threshold_floor(length / dt) + 2;
 
   sampled_y = SArrayDouble::new_ptr(sample_size);
 
-  // We iterate over all given points and evaluate the function between them to fill sampled_y by dt step
+  // We iterate over all given points and evaluate the function between them to
+  // fill sampled_y by dt step
   double t = t0;
 
   // Index of the left point selected
@@ -105,8 +114,9 @@ TimeFunction::TimeFunction(const ArrayDouble &T, const ArrayDouble &Y,
 
   for (ulong i = 0; i < sampled_y->size(); ++i) {
     while (t > t_right + floor_threshold && index_left < size - 2) {
-      // Ensure we are not behind the last point. This might happen if dt does not divides length
-      // In this case we keep the last two points to interpolate
+      // Ensure we are not behind the last point. This might happen if dt does
+      // not divides length In this case we keep the last two points to
+      // interpolate
       index_left += 1;
       t_left = T[index_left];
       y_left = Y[index_left];
@@ -150,12 +160,14 @@ void TimeFunction::compute_future_max() {
 double TimeFunction::value(double t) {
   // First handle if we are out of the border
 
-  // this test must be the first one otherwise we might have problem with constant TimeFunctions
+  // this test must be the first one otherwise we might have problem with
+  // constant TimeFunctions
   if (t > last_value_before_border + floor_threshold) {
     if (border_type != BorderType::Cyclic) {
       return border_value;
     } else {
-      // If border type is cyclic then we simply return the value it would have in the first cycle
+      // If border type is cyclic then we simply return the value it would have
+      // in the first cycle
       const double divider = last_value_before_border;
       const int quotient = static_cast<int>(threshold_floor(t / divider));
       return value(t - quotient * divider);
@@ -195,7 +207,8 @@ double TimeFunction::future_bound(double t) {
     if (border_type != BorderType::Cyclic) {
       return border_value;
     } else {
-      // If border type is cyclic then we simply return the value it would have in the first cycle
+      // If border type is cyclic then we simply return the value it would have
+      // in the first cycle
       const double divider = last_value_before_border;
       const int quotient = static_cast<int>(threshold_floor(t / divider));
       return future_bound(t - quotient * divider);
@@ -240,9 +253,12 @@ double TimeFunction::max_error(double t) {
         const double slope = (y_right - y_left) / (t_right - t_left);
         return std::abs(slope) * dt;
       }
-    case (InterMode::InterConstLeft):return floor_threshold;
-    case (InterMode::InterConstRight):return floor_threshold;
-    default:return 0;
+    case (InterMode::InterConstLeft):
+      return floor_threshold;
+    case (InterMode::InterConstRight):
+      return floor_threshold;
+    default:
+      return 0;
   }
 }
 
@@ -303,7 +319,8 @@ double TimeFunction::constant_left_interpolation(double t_left, double y_left,
 }
 
 double TimeFunction::constant_right_interpolation(double t_left, double y_left,
-                                                  double t_right, double y_right,
+                                                  double t_right,
+                                                  double y_right,
                                                   double t_value) {
   if (std::abs(t_value - t_right) < floor_threshold)
     return y_right;
@@ -322,32 +339,23 @@ double TimeFunction::linear_interpolation(double t_left, double y_left,
   }
 }
 
-double TimeFunction::interpolation(double t_left, double y_left,
-                                   double t_right, double y_right,
-                                   double t) {
+double TimeFunction::interpolation(double t_left, double y_left, double t_right,
+                                   double y_right, double t) {
   // Second do the right interpolation
   switch (inter_mode) {
-    case (InterMode::InterLinear):return linear_interpolation(t_left, y_left, t_right, y_right, t);
+    case (InterMode::InterLinear):
+      return linear_interpolation(t_left, y_left, t_right, y_right, t);
     case (InterMode::InterConstLeft):
-      return constant_left_interpolation(t_left,
-                                         y_left,
-                                         t_right,
-                                         y_right,
-                                         t);
+      return constant_left_interpolation(t_left, y_left, t_right, y_right, t);
     case (InterMode::InterConstRight):
-      return constant_right_interpolation(t_left,
-                                          y_left,
-                                          t_right,
-                                          y_right,
-                                          t);
-    default:throw std::runtime_error("Undefined interpolation mode");
+      return constant_right_interpolation(t_left, y_left, t_right, y_right, t);
+    default:
+      throw std::runtime_error("Undefined interpolation mode");
   }
 }
 
 ulong TimeFunction::get_index_(double t) {
-  return (ulong) threshold_floor((t - t0) / dt);
+  return (ulong)threshold_floor((t - t0) / dt);
 }
 
-double TimeFunction::get_t_from_index_(ulong i) {
-  return t0 + dt * i;
-}
+double TimeFunction::get_t_from_index_(ulong i) { return t0 + dt * i; }

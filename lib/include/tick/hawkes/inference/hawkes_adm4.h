@@ -42,17 +42,17 @@ class DLL_PUBLIC HawkesADM4 : public ModelHawkesList {
   void compute_weights();
 
   //! @brief Perform one iteration of the algorithm
-  void solve(ArrayDouble &mu, ArrayDouble2d &adjacency, ArrayDouble2d &z1, ArrayDouble2d &z2,
-             ArrayDouble2d &u1, ArrayDouble2d &u2);
+  void solve(ArrayDouble &mu, ArrayDouble2d &adjacency, ArrayDouble2d &z1,
+             ArrayDouble2d &z2, ArrayDouble2d &u1, ArrayDouble2d &u2);
 
  private:
   void compute_weights_ru(const ulong r_u, ArrayDouble2d &map_kernel_integral);
 
-  void update_u(const ulong u, ArrayDouble &mu, ArrayDouble2d &adjacency, ArrayDouble2d &z1,
-                ArrayDouble2d &z2, ArrayDouble2d &u1, ArrayDouble2d &u2);
+  void update_u(const ulong u, ArrayDouble &mu, ArrayDouble2d &adjacency,
+                ArrayDouble2d &z1, ArrayDouble2d &z2, ArrayDouble2d &u1,
+                ArrayDouble2d &u2);
 
-  void estimate_ru(const ulong r_u,
-                   ArrayDouble &mu, ArrayDouble2d &adjacency);
+  void estimate_ru(const ulong r_u, ArrayDouble &mu, ArrayDouble2d &adjacency);
 
   void update_adjacency_u(const ulong u, ArrayDouble &adjacency_u,
                           ArrayDouble &z1_u, ArrayDouble &z2_u,

@@ -2,25 +2,24 @@
 
 #include <csignal>
 
-#include <numeric>
 #include <algorithm>
 #include <complex>
 #include <fstream>
+#include <numeric>
 
 #define DEBUG_COSTLY_THROW 1
 #define XDATA_TEST_DATA_SIZE (1000)
 
+#include "tick/base/base.h"
+#include "tick/array/array2d.h"
 #include "tick/base/parallel/parallel.h"
 #include "tick/base/time_func.h"
-#include "tick/array/array2d.h"
 
 #include <gtest/gtest.h>
 #include <cereal/archives/json.hpp>
 
-
 struct MapFunctorsUnary {
-  MapFunctorsUnary(std::size_t n)
-      : data(n, 0) {}
+  MapFunctorsUnary(std::size_t n) : data(n, 0) {}
 
   unsigned long Set(unsigned long i) {
     data[i] = i;
@@ -28,13 +27,9 @@ struct MapFunctorsUnary {
     return i;
   }
 
-  void Double(unsigned long i) {
-    data[i] *= 2;
-  }
+  void Double(unsigned long i) { data[i] *= 2; }
 
-  void Scale(unsigned long i, long alpha) {
-    data[i] *= alpha;
-  }
+  void Scale(unsigned long i, long alpha) { data[i] *= alpha; }
 
   std::vector<long> data;
 };
@@ -101,7 +96,8 @@ TEST_P(ParallelTest, ReduceSum) {
 
   MapFunctorsUnary m{n};
 
-  const long result = parallel_map_reduce(GetParam(), m.data.size(), plus_f, &MapFunctorsUnary::Set, &m);
+  const long result = parallel_map_reduce(GetParam(), m.data.size(), plus_f,
+                                          &MapFunctorsUnary::Set, &m);
 
   const auto na = n - 1;
   EXPECT_EQ((na * (na + 1)) / 2, result);
@@ -112,14 +108,14 @@ TEST_P(ParallelTest, ReduceSumAdditive) {
 
   MapFunctorsUnary m{n};
 
-  const long result = parallel_map_additive_reduce(GetParam(), m.data.size(), &MapFunctorsUnary::Set, &m);
+  const long result = parallel_map_additive_reduce(GetParam(), m.data.size(),
+                                                   &MapFunctorsUnary::Set, &m);
 
   const auto na = n - 1;
   EXPECT_EQ((na * (na + 1)) / 2, result);
 }
 
 struct CalcFibo {
-
   unsigned long Fibo(unsigned long n, unsigned long u0, unsigned long u1) {
     unsigned long a, b;
 
@@ -138,22 +134,21 @@ struct CalcFibo {
     return a;
   }
 
-  unsigned long DoIt(unsigned long i) {
-    return Fibo(i, 0, 1);
-  }
-
+  unsigned long DoIt(unsigned long i) { return Fibo(i, 0, 1); }
 };
 
 TEST_P(ParallelTest, MapFibo) {
   CalcFibo c{};
   auto result = parallel_map(GetParam(), 100, &CalcFibo::DoIt, &c);
 
-  std::vector<unsigned long> resultAsVector{result->data(), result->data() + result->size()};
+  std::vector<unsigned long> resultAsVector{result->data(),
+                                            result->data() + result->size()};
   std::vector<unsigned long> expected(resultAsVector.size(), 0);
 
   {
     std::size_t i = 0;
-    std::generate(std::begin(expected), std::end(expected), [&i] { return CalcFibo{}.Fibo(i++, 0, 1); });
+    std::generate(std::begin(expected), std::end(expected),
+                  [&i] { return CalcFibo{}.Fibo(i++, 0, 1); });
   }
 
   EXPECT_EQ(expected, resultAsVector);
@@ -161,41 +156,41 @@ TEST_P(ParallelTest, MapFibo) {
 
 struct ComplexFunctors {
   std::complex<double> DoIt(unsigned long i) {
-    return std::proj(std::sqrt(std::cos(std::sin(std::complex<double>(0, 1)))))
-        * std::exp(std::complex<double>(0.0, 1.0) * std::acos(-1));
+    return std::proj(
+               std::sqrt(std::cos(std::sin(std::complex<double>(0, 1))))) *
+           std::exp(std::complex<double>(0.0, 1.0) * std::acos(-1));
   }
 };
 
 TEST_P(ParallelTest, MapComplex) {
   ComplexFunctors c{};
 
-  std::vector<std::complex<double>> result = parallel_map(GetParam(), 100000, &ComplexFunctors::DoIt, &c);
+  std::vector<std::complex<double>> result =
+      parallel_map(GetParam(), 100000, &ComplexFunctors::DoIt, &c);
   std::vector<std::complex<double>> expected(result.size(), 0);
 
   {
     std::size_t i = 0;
-    std::generate(std::begin(expected), std::end(expected), [&] { return c.DoIt(i++); });
+    std::generate(std::begin(expected), std::end(expected),
+                  [&] { return c.DoIt(i++); });
   }
 
   EXPECT_EQ(expected, result);
 }
 
 struct ExceptionThrower {
-  void DoIt(unsigned long i) {
-    throw std::runtime_error("Example");
-  }
+  void DoIt(unsigned long i) { throw std::runtime_error("Example"); }
 };
 
 struct ExceptionThrowerBadIndex {
-  void DoIt(unsigned long i, ArrayDouble &arrayDouble) {
-    arrayDouble[i] += 1;
-  }
+  void DoIt(unsigned long i, ArrayDouble &arrayDouble) { arrayDouble[i] += 1; }
 };
 
 TEST_P(ParallelTest, ExceptionThrow) {
   ExceptionThrower e{};
 
-  EXPECT_THROW(parallel_run(GetParam(), 1000, &ExceptionThrower::DoIt, &e), std::runtime_error);
+  EXPECT_THROW(parallel_run(GetParam(), 1000, &ExceptionThrower::DoIt, &e),
+               std::runtime_error);
 }
 
 TEST_P(ParallelTest, ExceptionThrowBadIndex) {
@@ -204,20 +199,22 @@ TEST_P(ParallelTest, ExceptionThrowBadIndex) {
   ArrayDouble arrayDouble(1);
   arrayDouble.fill(1.0);
 
-  EXPECT_THROW(parallel_run(GetParam(), 1000, &ExceptionThrowerBadIndex::DoIt, &e, arrayDouble), std::exception);
+  EXPECT_THROW(parallel_run(GetParam(), 1000, &ExceptionThrowerBadIndex::DoIt,
+                            &e, arrayDouble),
+               std::exception);
 }
 
 struct SignalRaiser {
   void DoIt(unsigned long i) {
-    if (!Interruption::is_raised())
-      std::raise(SIGINT);
+    if (!Interruption::is_raised()) std::raise(SIGINT);
   }
 };
 
 TEST_P(ParallelTest, SignalInterrupt) {
   SignalRaiser s{};
 
-  EXPECT_THROW(parallel_run(GetParam(), 1000, &SignalRaiser::DoIt, &s), Interruption);
+  EXPECT_THROW(parallel_run(GetParam(), 1000, &SignalRaiser::DoIt, &s),
+               Interruption);
 
   Interruption::reset();
 }
@@ -231,20 +228,22 @@ TEST_P(ParallelTest, MapArray) {
   auto f = [](ulong i, ArrayDouble &s) { s[i] = i; };
   auto redux = [](ArrayDouble &r, ArrayDouble &s) { r.mult_incr(s, 1.0); };
 
-  EXPECT_NO_THROW(parallel_map_array<ArrayDouble>(GetParam(), N, redux, f, data));
+  EXPECT_NO_THROW(
+      parallel_map_array<ArrayDouble>(GetParam(), N, redux, f, data));
 
   {
     std::vector<double> expected(1000);
 
     std::size_t i = 0;
-    std::generate(std::begin(expected), std::end(expected), [&i]() { return i++; });
+    std::generate(std::begin(expected), std::end(expected),
+                  [&i]() { return i++; });
 
-    EXPECT_TRUE(std::equal(std::begin(expected), std::end(expected), data.data()));
+    EXPECT_TRUE(
+        std::equal(std::begin(expected), std::end(expected), data.data()));
   }
 }
 
-INSTANTIATE_TEST_CASE_P(AllParallelTests,
-                        ParallelTest,
+INSTANTIATE_TEST_CASE_P(AllParallelTests, ParallelTest,
                         ::testing::Values(1, 2, 4, 8, 16));
 
 TEST(ParallelTest, CPUCount) {
@@ -348,7 +347,7 @@ TEST(DebugTest, PrintSparseArray) {
 }
 
 #ifdef ADD_MAIN
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }

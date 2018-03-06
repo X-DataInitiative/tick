@@ -6,19 +6,21 @@
 
 #include "tick/base/base.h"
 #include "tick/base_model/model.h"
-#include "tick/hawkes/model/model_hawkes_sumexpkern_leastsq_single.h"
 #include "tick/hawkes/model/base/model_hawkes_leastsq.h"
+#include "tick/hawkes/model/model_hawkes_sumexpkern_leastsq_single.h"
 
 /** \class ModelHawkesSumExpKernLeastSq
- * \brief Class for computing L2 Contrast function and gradient for Hawkes processes with
- * exponential kernels with fixed exponent (i.e., alpha*beta*e^{-beta t}, with fixed beta)
+ * \brief Class for computing L2 Contrast function and gradient for Hawkes
+ * processes with exponential kernels with fixed exponent (i.e.,
+ * alpha*beta*e^{-beta t}, with fixed beta)
  */
 class DLL_PUBLIC ModelHawkesSumExpKernLeastSq : public ModelHawkesLeastSq {
   //! @brief Some arrays used for intermediate computings.
   std::vector<ArrayDouble2d> E, Dgg, C;
   ArrayDouble2dList1D Dg;
 
-  //! @brief some arrays used for intermediate computings in varying baseline case
+  //! @brief some arrays used for intermediate computings in varying baseline
+  //! case
   ArrayDouble L;
   ArrayDoubleList1D K;
 
@@ -40,7 +42,8 @@ class DLL_PUBLIC ModelHawkesSumExpKernLeastSq : public ModelHawkesLeastSq {
   //! \param timestamps : a list of arrays representing the realization
   //! \param decays : the 2d array of the decays
   //! \param n_cores : number of cores to be used for multithreading
-  //! \param optimization_level : 0 corresponds to no optimization and 1 to use of faster (approximated) exponential function
+  //! \param optimization_level : 0 corresponds to no optimization and 1 to use
+  //! of faster (approximated) exponential function
   ModelHawkesSumExpKernLeastSq(const ArrayDouble &decays,
                                const ulong n_baselines,
                                const double period_length,
@@ -68,11 +71,12 @@ class DLL_PUBLIC ModelHawkesSumExpKernLeastSq : public ModelHawkesLeastSq {
   /**
    * @brief Compute weights for one index between 0 and n_realizations * n_nodes
    * @param i_r : r * n_realizations + i, tells which realization and which node
-   * @param model_list : list of models on which to compute and store weights. Only model_list[r]
-   * will be modified
+   * @param model_list : list of models on which to compute and store weights.
+   * Only model_list[r] will be modified
    */
-  void compute_weights_i_r(const ulong i_r,
-                           std::vector<ModelHawkesSumExpKernLeastSqSingle> &model_list);
+  void compute_weights_i_r(
+      const ulong i_r,
+      std::vector<ModelHawkesSumExpKernLeastSqSingle> &model_list);
 
   //! @brief allocate arrays to store precomputations
   void allocate_weights() override;
@@ -85,9 +89,10 @@ class DLL_PUBLIC ModelHawkesSumExpKernLeastSq : public ModelHawkesLeastSq {
                                   double end_time) override;
 
  public:
-  template<class Archive>
+  template <class Archive>
   void serialize(Archive &ar) {
-    ar(cereal::make_nvp("ModelHawkesLeastSq", cereal::base_class<ModelHawkesLeastSq>(this)));
+    ar(cereal::make_nvp("ModelHawkesLeastSq",
+                        cereal::base_class<ModelHawkesLeastSq>(this)));
 
     ar(CEREAL_NVP(E));
     ar(CEREAL_NVP(Dgg));

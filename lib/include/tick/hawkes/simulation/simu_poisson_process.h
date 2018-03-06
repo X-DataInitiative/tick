@@ -4,9 +4,9 @@
 
 // License: BSD 3 clause
 
-#include "tick/base/time_func.h"
-#include "simu_point_process.h"
 #include <numeric>
+#include "simu_point_process.h"
+#include "tick/base/time_func.h"
 
 /*! \class Poisson
  * \brief This is the class of constant Poisson processes
@@ -17,7 +17,7 @@ class DLL_PUBLIC Poisson : public PP {
   /// @brief Process intensities
   SArrayDoublePtr intensities;
 
- public :
+ public:
   /**
    * @brief A constructor for a 1 dimensional Poisson process
    * \param intensity : The intensity of the first and single dimension
@@ -50,8 +50,7 @@ class DLL_PUBLIC Poisson : public PP {
    * \param total_intensity_bound : If not NULL then used to set a bound of
    * total future intensity
    */
-  virtual bool update_time_shift_(double delay,
-                                  ArrayDouble &intensity,
+  virtual bool update_time_shift_(double delay, ArrayDouble &intensity,
                                   double *total_intensity_bound);
 
  public:

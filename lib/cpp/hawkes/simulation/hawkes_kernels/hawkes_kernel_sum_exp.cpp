@@ -4,8 +4,8 @@
 // Created by Martin Bompaire on 26/11/15.
 //
 
-#include "tick/base/base.h"
 #include "tick/hawkes/simulation/hawkes_kernels/hawkes_kernel_sum_exp.h"
+#include "tick/base/base.h"
 
 // By default, approximated fast formula for computing exponentials are not used
 bool HawkesKernelSumExp::use_fast_exp = false;
@@ -20,29 +20,32 @@ void HawkesKernelSumExp::rewind() {
 
 HawkesKernelSumExp::HawkesKernelSumExp(const ArrayDouble &intensities,
                                        const ArrayDouble &decays)
-  : HawkesKernel() {
+    : HawkesKernel() {
   n_decays = decays.size();
 
   if (n_decays != intensities.size())
-    throw std::invalid_argument("Intensities and decays arrays of HawkesKernelSumExp "
-                                  "must have the same length");
+    throw std::invalid_argument(
+        "Intensities and decays arrays of HawkesKernelSumExp "
+        "must have the same length");
 
   if (n_decays == 0)
-    throw std::invalid_argument("Intensities and decays arrays of HawkesKernelSumExp "
-                                  "must contain at least one value");
+    throw std::invalid_argument(
+        "Intensities and decays arrays of HawkesKernelSumExp "
+        "must contain at least one value");
 
   support = std::numeric_limits<double>::max();
   this->intensities = intensities;
   this->decays = decays;
 
   if (decays.size() > 0 && decays.min() < 0)
-    throw std::invalid_argument("All decays of HawkesKernelSumExp must be positive");
+    throw std::invalid_argument(
+        "All decays of HawkesKernelSumExp must be positive");
 
   rewind();
 }
 
 HawkesKernelSumExp::HawkesKernelSumExp(const HawkesKernelSumExp &kernel)
-  : HawkesKernel(kernel) {
+    : HawkesKernel(kernel) {
   n_decays = kernel.n_decays;
   intensities = kernel.intensities;
   decays = kernel.decays;
@@ -50,8 +53,7 @@ HawkesKernelSumExp::HawkesKernelSumExp(const HawkesKernelSumExp &kernel)
 }
 
 HawkesKernelSumExp::HawkesKernelSumExp()
-  : HawkesKernelSumExp(ArrayDouble{1}, ArrayDouble{1}) {
-}
+    : HawkesKernelSumExp(ArrayDouble{1}, ArrayDouble{1}) {}
 
 // kernel value for one part of the sum
 double HawkesKernelSumExp::get_value_i(double x, ulong i) {
@@ -71,16 +73,19 @@ double HawkesKernelSumExp::get_value_(double x) {
 }
 
 // Compute the convolution kernel*process(time)
-double HawkesKernelSumExp::get_convolution(const double time, const ArrayDouble &timestamps,
+double HawkesKernelSumExp::get_convolution(const double time,
+                                           const ArrayDouble &timestamps,
                                            double *const bound) {
   if (timestamps.size() < convolution_restart_index) {
-    throw std::runtime_error("HawkesKernelSumExp cannot get convolution on an "
-                               "another process unless it has been rewound");
+    throw std::runtime_error(
+        "HawkesKernelSumExp cannot get convolution on an "
+        "another process unless it has been rewound");
   }
   double delay = time - last_convolution_time;
   if (delay < 0) {
-    throw std::runtime_error("HawkesKernelSumExp cannot get convolution on an "
-                               "older time unless it has been rewound");
+    throw std::runtime_error(
+        "HawkesKernelSumExp cannot get convolution on an "
+        "older time unless it has been rewound");
   }
 
   double value{0.};
@@ -118,9 +123,7 @@ double HawkesKernelSumExp::get_convolution(const double time, const ArrayDouble 
   return value;
 }
 
-double HawkesKernelSumExp::get_norm(int nsteps) {
-  return intensities.sum();
-}
+double HawkesKernelSumExp::get_norm(int nsteps) { return intensities.sum(); }
 
 SArrayDoublePtr HawkesKernelSumExp::get_intensities() {
   ArrayDouble intensities_copy = intensities;

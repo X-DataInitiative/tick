@@ -42,8 +42,7 @@ class DLL_PUBLIC HawkesKernelPowerLaw : public HawkesKernel {
   //! Getting the value of the kernel at the point x (where x is positive)
   double get_value_(double x) override;
 
- public :
-
+ public:
   //! @brief simple getter
   double get_multiplier() { return multiplier; }
   //! @brief simple getter
@@ -53,25 +52,23 @@ class DLL_PUBLIC HawkesKernelPowerLaw : public HawkesKernel {
 
   /**
    * @brief Constructor
-   * @param support: Support of the kernel (value after which the kernel equals zero)
+   * @param support: Support of the kernel (value after which the kernel equals
+   * zero)
    * @param error: If necessary, error will be used to compute the support
-   * @note For specifying the support, you can either specify it directly (support > 0) or
-   * specify an error such that support = f^{-1}(error)
+   * @note For specifying the support, you can either specify it directly
+   * (support > 0) or specify an error such that support = f^{-1}(error)
    */
-  HawkesKernelPowerLaw(double multiplier,
-                       double cutoff,
-                       double exponent,
-                       double support = -1,
-                       double error = 1e-5);
+  HawkesKernelPowerLaw(double multiplier, double cutoff, double exponent,
+                       double support = -1, double error = 1e-5);
 
   //! @brief Copy constructor
   HawkesKernelPowerLaw(HawkesKernelPowerLaw &kernel) = default;
 
   /**
-    * Empty constructor
-    *
-    * Used only for (de)serialization
-  */
+   * Empty constructor
+   *
+   * Used only for (de)serialization
+   */
   HawkesKernelPowerLaw();
 
   /**
@@ -81,9 +78,10 @@ class DLL_PUBLIC HawkesKernelPowerLaw : public HawkesKernel {
    */
   double get_norm(int nsteps = 10000) override;
 
-  template<class Archive>
+  template <class Archive>
   void serialize(Archive &ar) {
-    ar(cereal::make_nvp("HawkesKernel", cereal::base_class<HawkesKernel>(this)));
+    ar(cereal::make_nvp("HawkesKernel",
+                        cereal::base_class<HawkesKernel>(this)));
 
     ar(CEREAL_NVP(multiplier));
     ar(CEREAL_NVP(exponent));

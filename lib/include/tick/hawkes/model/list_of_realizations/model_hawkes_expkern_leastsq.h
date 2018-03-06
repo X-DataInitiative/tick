@@ -9,12 +9,13 @@
 #include "tick/hawkes/model/model_hawkes_expkern_leastsq_single.h"
 
 /** \class ModelHawkesExpKernLeastSq
- * \brief Class for computing L2 Contrast function and gradient for Hawkes processes with
- * exponential kernels with fixed exponent (i.e., alpha*beta*e^{-beta t}, with fixed beta)
- * on a list of realizations
+ * \brief Class for computing L2 Contrast function and gradient for Hawkes
+ * processes with exponential kernels with fixed exponent (i.e.,
+ * alpha*beta*e^{-beta t}, with fixed beta) on a list of realizations
  */
 class DLL_PUBLIC ModelHawkesExpKernLeastSq : public ModelHawkesLeastSq {
-  //! @brief Some arrays used for intermediate computings. They are initialized in init()
+  //! @brief Some arrays used for intermediate computings. They are initialized
+  //! in init()
   ArrayDouble2d E, Dg, Dg2, C;
 
   //! @brief The 2d array of decays (remember that the decays are fixed!)
@@ -27,9 +28,10 @@ class DLL_PUBLIC ModelHawkesExpKernLeastSq : public ModelHawkesLeastSq {
 
   //! @brief Constructor
   //! \param decays : the 2d array of the decays
-  //! \param max_n_threads : number of cores to be used for multithreading. If negative,
-  //! the number of physical cores will be used
-  //! \param optimization_level : 0 corresponds to no optimization and 1 to use of faster (approximated) exponential function
+  //! \param max_n_threads : number of cores to be used for multithreading. If
+  //! negative, the number of physical cores will be used \param
+  //! optimization_level : 0 corresponds to no optimization and 1 to use of
+  //! faster (approximated) exponential function
   ModelHawkesExpKernLeastSq(const SArrayDouble2dPtr decays,
                             const int max_n_threads = 1,
                             const unsigned int optimization_level = 0);
@@ -38,7 +40,8 @@ class DLL_PUBLIC ModelHawkesExpKernLeastSq : public ModelHawkesLeastSq {
    * @brief Compute hessian
    * \param coeffs : Point in which hessian is computed
    * \param out : Array in which the value of the hessian is stored
-   * \note : We only fill data, python code takes care of creating index and indexptr
+   * \note : We only fill data, python code takes care of creating index and
+   * indexptr
    */
   void hessian(ArrayDouble &out);
 
@@ -50,8 +53,8 @@ class DLL_PUBLIC ModelHawkesExpKernLeastSq : public ModelHawkesLeastSq {
     weights_computed = false;
     if (decays->n_rows() != n_nodes || decays->n_cols() != n_nodes) {
       TICK_ERROR("decays must be (" << n_nodes << ", " << n_nodes << ") array"
-                                    << " but recevied a (" << decays->n_rows() << ", "
-                                    << decays->n_cols() << ") array");
+                                    << " but recevied a (" << decays->n_rows()
+                                    << ", " << decays->n_cols() << ") array");
     }
     this->decays = decays;
   }
@@ -62,11 +65,12 @@ class DLL_PUBLIC ModelHawkesExpKernLeastSq : public ModelHawkesLeastSq {
   /**
    * @brief Compute weights for one index between 0 and n_realizations * n_nodes
    * @param i_r : r * n_realizations + i, tells which realization and which node
-   * @param model_list : list of models on which to compute and store weights. Only model_list[r]
-   * will be modified
+   * @param model_list : list of models on which to compute and store weights.
+   * Only model_list[r] will be modified
    */
-  void compute_weights_i_r(const ulong i_r,
-                           std::vector<ModelHawkesExpKernLeastSqSingle> &model_list);
+  void compute_weights_i_r(
+      const ulong i_r,
+      std::vector<ModelHawkesExpKernLeastSqSingle> &model_list);
 
   //! @brief allocate arrays to store precomputations
   void allocate_weights() override;
@@ -79,9 +83,10 @@ class DLL_PUBLIC ModelHawkesExpKernLeastSq : public ModelHawkesLeastSq {
                                   double end_time) override;
 
  public:
-  template<class Archive>
+  template <class Archive>
   void serialize(Archive &ar) {
-    ar(cereal::make_nvp("ModelHawkesLeastSq", cereal::base_class<ModelHawkesLeastSq>(this)));
+    ar(cereal::make_nvp("ModelHawkesLeastSq",
+                        cereal::base_class<ModelHawkesLeastSq>(this)));
 
     ar(CEREAL_NVP(E));
     ar(CEREAL_NVP(Dg));

@@ -12,7 +12,8 @@
 //
 // IMPORTANT : let us note that we do not define a class SBaseArray2d<T>
 // it would make inheritance much more complicated.
-// Since we are not allowed to directly instantiate Base arrays. It is not really a problem.
+// Since we are not allowed to directly instantiate Base arrays. It is not
+// really a problem.
 //
 
 #include "basearray2d.h"
@@ -21,8 +22,8 @@
 
 /**
  * \defgroup SArray2d_typedefs_mod shared array related typedef
- * \brief List of all the instantiations of the shared array2d mechanism and associated
- *  shared pointers and 1d and 2d List of these classes
+ * \brief List of all the instantiations of the shared array2d mechanism and
+ * associated shared pointers and 1d and 2d List of these classes
  * @{
  */
 
@@ -48,7 +49,8 @@ typedef std::shared_ptr<BaseArrayDouble2d> SBaseArrayDouble2dPtr;
  * @}
  */
 
-/** @defgroup sabstractarray2dptrlist1d_sub_mod The classes for dealing with 1d-list of shared pointer basearrays2d
+/** @defgroup sabstractarray2dptrlist1d_sub_mod The classes for dealing with
+ * 1d-list of shared pointer basearrays2d
  *  @ingroup SArray_typedefs_mod
  * @{
  */
@@ -67,7 +69,8 @@ typedef std::vector<SBaseArrayDouble2dPtr> SBaseArrayDouble2dPtrList1D;
  * @}
  */
 
-/** @defgroup sabstractarray2dptrlist2d_sub_mod The classes for dealing with 2d-list of shared pointer basearrays2d
+/** @defgroup sabstractarray2dptrlist2d_sub_mod The classes for dealing with
+ * 2d-list of shared pointer basearrays2d
  *  @ingroup SArray_typedefs_mod
  * @{
  */

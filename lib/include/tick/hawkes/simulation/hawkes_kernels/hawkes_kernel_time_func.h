@@ -4,12 +4,13 @@
 
 // License: BSD 3 clause
 
-#include "tick/base/time_func.h"
 #include "hawkes_kernel.h"
+#include "tick/base/time_func.h"
 
 /**
  * @class HawkesKernelTimeFunc
- * @brief Piecewise linear Hawkes kernels. This kernel is handled with a TimeFunction
+ * @brief Piecewise linear Hawkes kernels. This kernel is handled with a
+ * TimeFunction
  */
 class DLL_PUBLIC HawkesKernelTimeFunc : public HawkesKernel {
  private:
@@ -19,7 +20,7 @@ class DLL_PUBLIC HawkesKernelTimeFunc : public HawkesKernel {
   //! Getting the value of the kernel at the point x (where x is positive)
   double get_value_(double x) override;
 
- public :
+ public:
   //! @brief Constructor
   explicit HawkesKernelTimeFunc(const TimeFunction &time_function);
 
@@ -35,15 +36,16 @@ class DLL_PUBLIC HawkesKernelTimeFunc : public HawkesKernel {
   /**
    * Returns the maximum of the kernel after time t
    * knowing that the value of the kernel at time t is value_at_t
-  */
+   */
   double get_future_max(double t, double value_at_t) override;
 
   //! @brief simple getter
   const TimeFunction &get_time_function() const { return time_function; }
 
-  template<class Archive>
+  template <class Archive>
   void serialize(Archive &ar) {
-    ar(cereal::make_nvp("HawkesKernel", cereal::base_class<HawkesKernel>(this)));
+    ar(cereal::make_nvp("HawkesKernel",
+                        cereal::base_class<HawkesKernel>(this)));
 
     ar(CEREAL_NVP(time_function));
   }

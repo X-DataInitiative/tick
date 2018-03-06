@@ -15,26 +15,30 @@ class ModelHawkesExpKernLogLik;
 
 /**
  * \class ModelHawkesExpKernLogLikSingle
- * \brief Class for computing loglikelihood function and gradient for Hawkes processes with
- * exponential kernels with fixed exponent (i.e., \f$ \alpha \beta e^{-\beta t} \f$, with fixed
- * decay)
+ * \brief Class for computing loglikelihood function and gradient for Hawkes
+ * processes with exponential kernels with fixed exponent (i.e., \f$ \alpha
+ * \beta e^{-\beta t} \f$, with fixed decay)
  */
-class DLL_PUBLIC ModelHawkesExpKernLogLikSingle : public ModelHawkesLogLikSingle {
+class DLL_PUBLIC ModelHawkesExpKernLogLikSingle
+    : public ModelHawkesLogLikSingle {
  private:
   //! @brief Value of decay for this model
   double decay;
 
  public:
   //! @brief Default constructor
-  //! @note This constructor is only used to create vectors of ModelHawkesExpKernLogLikSingle
+  //! @note This constructor is only used to create vectors of
+  //! ModelHawkesExpKernLogLikSingle
   ModelHawkesExpKernLogLikSingle() : ModelHawkesLogLikSingle() {}
 
   /**
    * @brief Constructor
    * \param decay : decay for this model (remember that decay is fixed!)
-   * \param n_threads : number of threads that will be used for parallel computations
+   * \param n_threads : number of threads that will be used for parallel
+   * computations
    */
-  explicit ModelHawkesExpKernLogLikSingle(const double decay, const int max_n_threads = 1);
+  explicit ModelHawkesExpKernLogLikSingle(const double decay,
+                                          const int max_n_threads = 1);
 
  private:
   void allocate_weights() override;
@@ -64,9 +68,7 @@ class DLL_PUBLIC ModelHawkesExpKernLogLikSingle : public ModelHawkesLogLikSingle
   ulong get_n_coeffs() const override;
 
   //! @brief Returns decay that was set
-  double get_decay() const {
-    return decay;
-  }
+  double get_decay() const { return decay; }
 
   /**
    * @brief Set new decay

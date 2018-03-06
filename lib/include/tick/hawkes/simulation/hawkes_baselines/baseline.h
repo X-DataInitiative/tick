@@ -25,7 +25,7 @@ class DLL_PUBLIC HawkesBaseline {
   //! @brief get the future maximum reachable value of the baseline after time t
   virtual double get_future_bound(double t) = 0;
 
-  template<class Archive>
+  template <class Archive>
   void serialize(Archive &ar) {}
 };
 

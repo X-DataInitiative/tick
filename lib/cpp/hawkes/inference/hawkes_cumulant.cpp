@@ -1,7 +1,7 @@
 #include "tick/hawkes/inference/hawkes_cumulant.h"
 
 HawkesCumulant::HawkesCumulant(double integration_support)
-  : integration_support(integration_support), are_cumulants_ready(false) { }
+    : integration_support(integration_support), are_cumulants_ready(false) {}
 
 SArrayDoublePtr HawkesCumulant::compute_A_and_I_ij(ulong r, ulong i, ulong j,
                                                    double mean_intensity_j) {
@@ -26,7 +26,8 @@ SArrayDoublePtr HawkesCumulant::compute_A_and_I_ij(ulong r, ulong i, ulong j,
 
     // Find next t_j_l that occurs width before t_i_k
     while (last_l < n_j) {
-      if ((*timestamps_j)[last_l] <= t_i_k_minus_width) ++last_l;
+      if ((*timestamps_j)[last_l] <= t_i_k_minus_width)
+        ++last_l;
       else
         break;
     }
@@ -43,7 +44,8 @@ SArrayDoublePtr HawkesCumulant::compute_A_and_I_ij(ulong r, ulong i, ulong j,
       if (abs_t_j_l_minus_t_i_k < width) {
         sub_res += width - abs_t_j_l_minus_t_i_k;
 
-        if (abs_t_j_l_minus_t_i_k < integration_support) timestamps_in_interval++;
+        if (abs_t_j_l_minus_t_i_k < integration_support)
+          timestamps_in_interval++;
       } else {
         break;
       }
@@ -63,8 +65,8 @@ SArrayDoublePtr HawkesCumulant::compute_A_and_I_ij(ulong r, ulong i, ulong j,
 }
 
 double HawkesCumulant::compute_E_ijk(ulong r, ulong i, ulong j, ulong k,
-                                     double mean_intensity_i, double mean_intensity_j,
-                                     double J_ij) {
+                                     double mean_intensity_i,
+                                     double mean_intensity_j, double J_ij) {
   auto timestamps_i = timestamps_list[r][i];
   auto timestamps_j = timestamps_list[r][j];
   auto timestamps_k = timestamps_list[r][k];
@@ -88,27 +90,31 @@ double HawkesCumulant::compute_E_ijk(ulong r, ulong i, ulong j, ulong k,
     if (tau - integration_support < 0) continue;
 
     while (last_l < n_i) {
-      if ((*timestamps_i)[last_l] <= tau - integration_support) last_l += 1;
+      if ((*timestamps_i)[last_l] <= tau - integration_support)
+        last_l += 1;
       else
         break;
     }
     ulong l = last_l;
 
     while (l < n_i) {
-      if ((*timestamps_i)[l] < tau + integration_support) l += 1;
+      if ((*timestamps_i)[l] < tau + integration_support)
+        l += 1;
       else
         break;
     }
 
     while (last_m < n_j) {
-      if ((*timestamps_j)[last_m] <= tau - integration_support) last_m += 1;
+      if ((*timestamps_j)[last_m] <= tau - integration_support)
+        last_m += 1;
       else
         break;
     }
     ulong m = last_m;
 
     while (m < n_j) {
-      if ((*timestamps_j)[m] < tau + integration_support) m += 1;
+      if ((*timestamps_j)[m] < tau + integration_support)
+        m += 1;
       else
         break;
     }

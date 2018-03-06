@@ -31,9 +31,10 @@ class DLL_PUBLIC HawkesConstantBaseline : public HawkesBaseline {
   //! @brief get the future maximum reachable value of the baseline after time t
   double get_future_bound(double t) override;
 
-  template<class Archive>
+  template <class Archive>
   void serialize(Archive &ar) {
-    ar(cereal::make_nvp("HawkesBaseline", cereal::base_class<HawkesBaseline>(this)));
+    ar(cereal::make_nvp("HawkesBaseline",
+                        cereal::base_class<HawkesBaseline>(this)));
     ar(CEREAL_NVP(value));
   }
 };

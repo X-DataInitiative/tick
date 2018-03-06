@@ -6,8 +6,7 @@
 int main(int nargs, char **args) {
   ulong num_threads = 1;
 
-  if (nargs > 1)
-    num_threads = std::stoul(args[1]);
+  if (nargs > 1) num_threads = std::stoul(args[1]);
 
   const ulong num_iterations = 100;
   const ulong num_events_per_node = 30;
@@ -47,11 +46,12 @@ int main(int nargs, char **args) {
       decays[j] = j + 1.0;
     }
 
-    ModelHawkesSumExpKernLeastSqSingle model(decays, num_baselines, end_time, num_threads);
+    ModelHawkesSumExpKernLeastSqSingle model(decays, num_baselines, end_time,
+                                             num_threads);
     model.set_data(timestamps, end_time);
 
-    ArrayDouble
-      coeffs = ArrayDouble(num_nodes * num_baselines + num_nodes * num_nodes * decays.size());
+    ArrayDouble coeffs = ArrayDouble(num_nodes * num_baselines +
+                                     num_nodes * num_nodes * decays.size());
 
     const auto start = std::chrono::system_clock::now();
     for (ulong i = 0; i < num_iterations; ++i) {
@@ -61,11 +61,8 @@ int main(int nargs, char **args) {
 
     std::chrono::duration<double> elapsed_seconds = end - start;
 
-    std::cout << elapsed_seconds.count() << '\t'
-              << num_iterations << '\t'
-              << num_threads << '\t'
-              << num_nodes << '\t'
-              << args[0] << '\t'
+    std::cout << elapsed_seconds.count() << '\t' << num_iterations << '\t'
+              << num_threads << '\t' << num_nodes << '\t' << args[0] << '\t'
               << std::endl;
   }
 }

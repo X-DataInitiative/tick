@@ -9,9 +9,9 @@
 #include "tick/hawkes/model/model_hawkes_sumexpkern_loglik_single.h"
 
 /** \class ModelHawkesSumExpKernLogLik
- * \brief Class for computing L2 Contrast function and gradient for Hawkes processes with
- * exponential kernels with fixed exponent (i.e., alpha*beta*e^{-beta t}, with fixed beta)
- * on a list of realizations
+ * \brief Class for computing L2 Contrast function and gradient for Hawkes
+ * processes with exponential kernels with fixed exponent (i.e.,
+ * alpha*beta*e^{-beta t}, with fixed beta) on a list of realizations
  */
 class DLL_PUBLIC ModelHawkesSumExpKernLogLik : public ModelHawkesLogLik {
   //! @brief Value of decays array for this model
@@ -20,9 +20,9 @@ class DLL_PUBLIC ModelHawkesSumExpKernLogLik : public ModelHawkesLogLik {
  public:
   /**
    * @brief Constructor
-   * \param decay : decay for this model (remember that decay is fixed!) 
-   * \param max_n_threads : number of cores to be used for multithreading. If negative,
-   * the number of physical cores will be used
+   * \param decay : decay for this model (remember that decay is fixed!)
+   * \param max_n_threads : number of cores to be used for multithreading. If
+   * negative, the number of physical cores will be used
    */
   ModelHawkesSumExpKernLogLik(const ArrayDouble &decay,
                               const int max_n_threads = 1);
@@ -43,13 +43,12 @@ class DLL_PUBLIC ModelHawkesSumExpKernLogLik : public ModelHawkesLogLik {
     weights_computed = false;
   }
 
-  ulong get_n_decays() const {
-    return decays.size();
-  }
+  ulong get_n_decays() const { return decays.size(); }
 
-  std::unique_ptr<ModelHawkesLogLikSingle> build_model(const int n_threads) override {
+  std::unique_ptr<ModelHawkesLogLikSingle> build_model(
+      const int n_threads) override {
     return std::unique_ptr<ModelHawkesSumExpKernLogLikSingle>(
-      new ModelHawkesSumExpKernLogLikSingle(decays, n_threads));
+        new ModelHawkesSumExpKernLogLikSingle(decays, n_threads));
   }
 
   ulong get_n_coeffs() const override;

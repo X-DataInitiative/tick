@@ -1,8 +1,8 @@
 // License: BSD 3 clause
 
-#include <numeric>
 #include <algorithm>
 #include <complex>
+#include <numeric>
 
 #define DEBUG_COSTLY_THROW 1
 #define TICK_TEST_DATA_SIZE (1000)
@@ -12,10 +12,10 @@
 #include "tick/array/array.h"
 #include "tick/linear_model/model_linreg.h"
 
-#include <cereal/types/unordered_map.hpp>
-#include <cereal/types/memory.hpp>
-#include <cereal/archives/json.hpp>
 #include <cereal/archives/binary.hpp>
+#include <cereal/archives/json.hpp>
+#include <cereal/types/memory.hpp>
+#include <cereal/types/unordered_map.hpp>
 #include <fstream>
 
 TEST(Model, PartialVsFull) {
@@ -93,19 +93,20 @@ void TestModelLinRegSerialization() {
   {
     OutputArchive outputArchive(os);
 
-    outputArchive( model );
+    outputArchive(model);
   }
 
   {
     InputArchive inputArchive(os);
 
     ModelLinReg restored_model(nullptr, nullptr, false);
-    inputArchive( restored_model );
+    inputArchive(restored_model);
 
     ArrayDouble out_grad_restored(2);
     restored_model.grad(coeffs, out_grad_restored);
 
-    for (ulong i = 0; i < out_grad.size(); ++i) ASSERT_DOUBLE_EQ(out_grad[i], out_grad_restored[i]);
+    for (ulong i = 0; i < out_grad.size(); ++i)
+      ASSERT_DOUBLE_EQ(out_grad[i], out_grad_restored[i]);
 
     const double lip_max_restored = restored_model.get_lip_max();
     EXPECT_DOUBLE_EQ(lip_max, lip_max_restored);
@@ -116,14 +117,15 @@ void TestModelLinRegSerialization() {
 
 TEST(Model, SerializationJSON) {
   SCOPED_TRACE("");
-  ::TestModelLinRegSerialization<cereal::JSONInputArchive, cereal::JSONOutputArchive>();
+  ::TestModelLinRegSerialization<cereal::JSONInputArchive,
+                                 cereal::JSONOutputArchive>();
 }
 
 TEST(Model, SerializationBinary) {
   SCOPED_TRACE("");
-  ::TestModelLinRegSerialization<cereal::BinaryInputArchive, cereal::BinaryOutputArchive>();
+  ::TestModelLinRegSerialization<cereal::BinaryInputArchive,
+                                 cereal::BinaryOutputArchive>();
 }
-
 
 #ifdef ADD_MAIN
 int main(int argc, char** argv) {

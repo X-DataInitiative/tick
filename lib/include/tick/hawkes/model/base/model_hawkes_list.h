@@ -4,9 +4,9 @@
 
 // License: BSD 3 clause
 
-#include "tick/base/base.h"
 #include "model_hawkes.h"
 #include "model_hawkes_single.h"
+#include "tick/base/base.h"
 
 /** \class ModelHawkesList
  * \brief Base class of Hawkes models handling several realizations
@@ -22,14 +22,16 @@ class DLL_PUBLIC ModelHawkesList : public ModelHawkes {
   //! @brief Ending time of the realization
   VArrayDoublePtr end_times = nullptr;
 
-  //! @brief Number of jumps of the process per realization (size=n_realizations)
+  //! @brief Number of jumps of the process per realization
+  //! (size=n_realizations)
   VArrayULongPtr n_jumps_per_realization;
 
  public:
   //! @brief Constructor
-  //! \param max_n_threads : number of cores to be used for multithreading. If negative,
-  //! the number of physical cores will be used
-  //! \param optimization_level : 0 corresponds to no optimization and 1 to use of faster (approximated) exponential function
+  //! \param max_n_threads : number of cores to be used for multithreading. If
+  //! negative, the number of physical cores will be used \param
+  //! optimization_level : 0 corresponds to no optimization and 1 to use of
+  //! faster (approximated) exponential function
   ModelHawkesList(const int max_n_threads = 1,
                   const unsigned int optimization_level = 0);
 
@@ -41,18 +43,14 @@ class DLL_PUBLIC ModelHawkesList : public ModelHawkes {
     return n_jumps_per_realization;
   }
 
-  VArrayDoublePtr get_end_times() const {
-    return end_times;
-  }
+  VArrayDoublePtr get_end_times() const { return end_times; }
 
   virtual unsigned int get_n_threads() const;
 
-  SArrayDoublePtrList2D get_timestamps_list() const {
-    return timestamps_list;
-  }
+  SArrayDoublePtrList2D get_timestamps_list() const { return timestamps_list; }
 
  public:
-  template<class Archive>
+  template <class Archive>
   void serialize(Archive &ar) {
     ar(cereal::make_nvp("ModelHawkes", cereal::base_class<ModelHawkes>(this)));
 

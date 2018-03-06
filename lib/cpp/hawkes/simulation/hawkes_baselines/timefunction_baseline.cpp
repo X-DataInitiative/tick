@@ -1,18 +1,16 @@
 // License: BSD 3 clause
 
-
 #include "tick/hawkes/simulation/hawkes_baselines/timefunction_baseline.h"
 
-HawkesTimeFunctionBaseline::HawkesTimeFunctionBaseline()
-  : time_function(0.) {}
+HawkesTimeFunctionBaseline::HawkesTimeFunctionBaseline() : time_function(0.) {}
 
-HawkesTimeFunctionBaseline::HawkesTimeFunctionBaseline(TimeFunction time_function)
-  : time_function(time_function) {}
+HawkesTimeFunctionBaseline::HawkesTimeFunctionBaseline(
+    TimeFunction time_function)
+    : time_function(time_function) {}
 
 HawkesTimeFunctionBaseline::HawkesTimeFunctionBaseline(ArrayDouble &times,
                                                        ArrayDouble &values) {
-  time_function = TimeFunction(times, values,
-                               TimeFunction::BorderType::Cyclic,
+  time_function = TimeFunction(times, values, TimeFunction::BorderType::Cyclic,
                                TimeFunction::InterMode::InterConstRight);
 }
 
