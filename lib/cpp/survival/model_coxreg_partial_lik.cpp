@@ -8,9 +8,6 @@
 
 #include <cmath>
 
-// Include this to get DBL_MAX, DBL_MIN and DBL_MIN_EXP
-#include <cfloat>
-
 template <class T>
 TModelCoxRegPartialLik<T>::TModelCoxRegPartialLik(
     const std::shared_ptr<BaseArray2d<T> > features,
@@ -73,7 +70,7 @@ template <class T>
 T TModelCoxRegPartialLik<T>::loss(const Array<T> &coeffs) {
   const ulong n_failures_minus_one = n_failures - 1;
   // Compute all the inner products and maintain the maximal one
-  T max_inner_prod = -DBL_MAX;
+  T max_inner_prod = -((std::numeric_limits<T>::max)());
   for (ulong i = 0; i < n_samples; ++i) {
     const T inner_prod = get_feature(i).dot(coeffs);
     inner_prods[i] = inner_prod;
@@ -82,7 +79,7 @@ T TModelCoxRegPartialLik<T>::loss(const Array<T> &coeffs) {
     }
   }
   T log_lik = 0;
-  T s = DBL_MIN;
+  T s = (std::numeric_limits<T>::min)();
   const ulong idx0 = get_idx_failure(0);
   for (ulong i = 0; i <= idx0; ++i) {
     const T diff = inner_prods[i] - max_inner_prod;
@@ -95,7 +92,7 @@ T TModelCoxRegPartialLik<T>::loss(const Array<T> &coeffs) {
       const ulong idx_next = get_idx_failure(k + 1) + 1;
       for (ulong i = idx + 1; i < idx_next; ++i) {
         const T diff = inner_prods[i] - max_inner_prod;
-        if (diff > DBL_MIN_EXP) {
+        if (diff > std::numeric_limits<T>::min_exponent) {
           s += exp(diff);
         }
       }
@@ -114,11 +111,11 @@ void TModelCoxRegPartialLik<T>::grad(const Array<T> &coeffs, Array<T> &out) {
 
   // Initialize s to a very small positive number (to avoid division by
   // 0 in weird cases)
-  T s2 = DBL_MIN;
+  T s2 = (std::numeric_limits<T>::min)();
 
   // Compute first all inner products and keep the maximum
   // (to avoid overflow)
-  T max_inner_prod = -DBL_MAX;
+  T max_inner_prod = -((std::numeric_limits<T>::max)());
   for (ulong i = 0; i < n_samples; ++i) {
     const T inner_prod = get_feature(i).dot(coeffs);
     inner_prods[i] = inner_prod;
@@ -126,12 +123,12 @@ void TModelCoxRegPartialLik<T>::grad(const Array<T> &coeffs, Array<T> &out) {
       max_inner_prod = inner_prod;
     }
   }
-
+  constexpr const auto min_exp = std::numeric_limits<T>::min_exponent;
   const ulong idx0 = get_idx_failure(0);
   for (ulong i = 0; i <= idx0; ++i) {
     const T diff = inner_prods[i] - max_inner_prod;
     const T exp_diff = exp(diff);
-    if (diff > DBL_MIN_EXP) {
+    if (diff > min_exp) {
       const BaseArray<T> x_i = get_feature(i);
       s1.mult_incr(x_i, exp_diff);
       s2 += exp_diff;
@@ -148,7 +145,7 @@ void TModelCoxRegPartialLik<T>::grad(const Array<T> &coeffs, Array<T> &out) {
       for (ulong i = idx + 1; i < idx_next; ++i) {
         const BaseArray<T> x_i = get_feature(i);
         T diff = inner_prods[i] - max_inner_prod;
-        if (diff > DBL_MIN_EXP) {
+        if (diff > min_exp) {
           const T exp_diff = exp(diff);
           s1.mult_incr(x_i, exp_diff);
           s2 += exp_diff;
