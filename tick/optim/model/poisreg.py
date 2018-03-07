@@ -276,7 +276,18 @@ class ModelPoisReg(ModelGeneralizedLinear,
 
         return 0.5 / feature_norms * (n_psi_x + np.sqrt(tmp))
 
-    def get_dual_init(self, l_l2sq):
+    def get_dual_init(self, l_l2sq, init_type='psi'):
+
+        if init_type == 'psi':
+            kappa = self._get_unscaled_dual_init(l_l2sq)
+        elif init_type == 'features':
+            kappa = self._get_unscaled_dual_init_features(l_l2sq)
+        else:
+            raise ValueError('Unknown init type {}'.format(init_type))
+
+        return self._get_dual_init_estimated_base(l_l2sq, kappa) * kappa
+
+    def _get_unscaled_dual_init(self, l_l2sq):
         labels = self.labels
         features = self.features
 
@@ -303,10 +314,44 @@ class ModelPoisReg(ModelGeneralizedLinear,
 
         # corr = l_l2sq * n_non_zeros * non_zero_labels
         # corr *= features_dot_features_sum / np.power(n_psi_x, 2)
-        corr = np.sqrt(l_l2sq * n_non_zeros) * non_zero_labels / n_psi_x
+        corr = n_non_zeros * non_zero_labels / n_psi_x
 
         # import matplotlib.pyplot as plt
         # plt.hist(n_psi_x / n_non_zeros)
         # plt.show()
 
         return corr
+
+    def _get_unscaled_dual_init_features(self, l_l2sq):
+        labels = self.labels
+        features = self.features
+
+        n_non_zeros = sum(labels != 0)
+
+        non_zero_features = features[labels != 0]
+        non_zero_labels = labels[labels != 0]
+
+        features_sum = np.sum(non_zero_features, axis=0)
+        features_dot_x = features_sum.dot(non_zero_features.T)
+
+        corr = n_non_zeros * non_zero_labels / features_dot_x
+
+        # import matplotlib.pyplot as plt
+        # plt.hist(n_psi_x / n_non_zeros)
+        # plt.show()
+
+        return corr
+
+    def _get_dual_init_estimated_base(self, l_l2sq, kappa_i):
+        n_non_zeros = sum(self.labels != 0)
+        non_zero_features = self.features[self.labels != 0]
+
+        phi = np.sum((kappa_i * non_zero_features.T), axis=1)
+        psi = np.sum(self.features, axis=0) / n_non_zeros
+        norm_phi_sq = np.linalg.norm(phi) ** 2
+        n_phi_dot_psi = n_non_zeros * psi.dot(phi)
+
+        tmp = (n_phi_dot_psi ** 2 +
+               4 * l_l2sq * n_non_zeros * self.labels.sum() * norm_phi_sq)
+
+        return 0.5 / norm_phi_sq * (n_phi_dot_psi + np.sqrt(tmp))

@@ -149,20 +149,30 @@ def fetch_crime_dataset(n_samples=2215):
 
     return features, labels
 
-def simulate_poisson(n_samples, n_features=100):
-    np.random.seed(32032)
+def simulate_poisson(n_samples, n_features=None):
+    if n_features is None:
+        n_features = 30
+
+    np.random.seed(239829)
 
     weights = np.random.normal(size=n_features)
-    weights = np.abs(weights)
+    # weights = np.abs(weights)
+
+    weights /= np.linalg.norm(weights) ** 2 / n_features
+    # print(np.linalg.norm(weights) ** 2 / n_features)
+
+    np.random.seed(2309)
 
     features = np.random.randn(n_samples, n_features)
     features = np.abs(features)
+    features /= n_features
 
-    # epsilon = 1e-1
-    # while features.dot(weights).min() <= epsilon:
-    #     n_fail = sum(features.dot(weights) <= epsilon)
-    #     features[features.dot(weights) <= epsilon] = \
-    #         np.random.randn(n_fail, n_features)
+    epsilon = 1e-1
+    while features.dot(weights).min() <= epsilon:
+        n_fail = sum(features.dot(weights) <= epsilon)
+        features[features.dot(weights) <= epsilon] = \
+            np.random.randn(n_fail, n_features)
+        features = np.abs(features)
 
     simu = SimuPoisReg(weights, features=features, n_samples=n_samples,
                        link='identity')
@@ -189,7 +199,7 @@ def fetch_facebook_dataset():
     return features, labels
 
 
-def fetch_poisson_dataset(dataset, n_samples=1000):
+def fetch_poisson_dataset(dataset, n_samples=1000, n_features=None):
     if dataset == 'facebook':
         features, labels = fetch_facebook_dataset()
     elif dataset == 'blog':
@@ -203,5 +213,5 @@ def fetch_poisson_dataset(dataset, n_samples=1000):
     elif dataset == 'wine':
         features, labels = fetch_wine_datase()
     elif dataset == 'simulated':
-        features, labels = simulate_poisson(n_samples)
+        features, labels = simulate_poisson(n_samples, n_features=n_features)
     return features, labels

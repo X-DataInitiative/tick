@@ -74,16 +74,16 @@ def run_solvers(model, l_l2sq, skip_newton=False):
     # scpg.solve(sol)
     # solvers += [scpg]
 
-    if not skip_newton and False:
-        newton = Newton(max_iter=100, print_every=10, tol=tol)
-        newton.set_model(model).set_prox(ProxL2Sq(l_l2sq))
-        newton.solve(coeff0)
-        solvers += [newton]
+    # if not skip_newton and False:
+    #     newton = Newton(max_iter=100, print_every=10, tol=tol)
+    #     newton.set_model(model).set_prox(ProxL2Sq(l_l2sq))
+    #     newton.solve(coeff0)
+    #     solvers += [newton]
 
     return [solver.history for solver in solvers]
 
 
-def load_experiments(file_name='poisson_real_data.pkl'):
+def load_experiments(file_name='poisson_real_data_diff_pen.pkl'):
     if os.path.exists(file_name):
         with open(file_name, 'rb') as read_file:
             experiments = pickle.load(read_file)
@@ -92,7 +92,7 @@ def load_experiments(file_name='poisson_real_data.pkl'):
     return experiments
 
 
-def save_experiments(experiments, file_name='poisson_real_data.pkl'):
+def save_experiments(experiments, file_name='poisson_real_data_diff_pen.pkl'):
     with open(file_name, 'wb') as write_file:
         pickle.dump(experiments, write_file)
 
@@ -141,85 +141,106 @@ def run_experiment(dataset='news', show=True, l_l2sq_coef=1., fit_intercept=Fals
         plt.show()
 
 
-def plot_all_last_experiment(datasets=None, l_l2sq_coef=1., fit_intercept=False):
+def plot_all_last_experiment(datasets=None, fit_intercept=False):
     experiments = load_experiments()
     if datasets is None:
-        datasets = experiments.keys()
+        datasets = list(experiments.keys())
 
-    if len(datasets) > 3:
-        n_rows = 2
-        n_cols = int(np.ceil(len(datasets) / n_rows))
-    else:
-        n_rows = 1
-        n_cols = len(datasets)
+    l_l2sq_list = [float(key[0])
+                        for key in  experiments[datasets[0]].keys()
+                        if key[1] == fit_intercept]
+    l_l2sq_list.sort()
+
+    n_rows = len(l_l2sq_list)
+    n_cols = len(datasets)
 
     fig, ax_list = plt.subplots(n_rows, n_cols, sharey=True,
-                                figsize=(3 * n_cols, 3 * n_rows))
+                                figsize=(3 * n_cols, 2 * n_rows))
 
     for i, dataset in enumerate(datasets):
-        features, labels = fetch_poisson_dataset(dataset,
-                                                 n_samples=max_n_samples)
-        n = len(labels)
+        l_l2sq_list = [float(key[0])
+                       for key in experiments[datasets[i]].keys()
+                       if key[1] == fit_intercept]
+        l_l2sq_list.sort()
 
+        for j, l_l2sq in enumerate(l_l2sq_list):
+            features, labels = fetch_poisson_dataset(dataset,
+                                                     n_samples=max_n_samples)
+            n = len(labels)
 
-        l_l2sq = l_l2sq_coef / np.sqrt(n)
-        all_runs = experiments[dataset][make_key(l_l2sq, fit_intercept)]
-        run_times = list(all_runs.keys())
-        run_times.sort()
-        last_run = run_times[-1]
+            all_runs = experiments[dataset][make_key(l_l2sq, fit_intercept)]
+            run_times = list(all_runs.keys())
+            run_times.sort()
+            last_run = run_times[-1]
 
-        print(dataset, last_run)
+            print(dataset, last_run)
 
-        ax = ax_list.ravel()[i]
-        histories = experiments[dataset][make_key(l_l2sq, fit_intercept)][last_run]
-        plot_history(histories, dist_min=True, log_scale=True,
-                     x='time', ax=ax)
+            ax = ax_list[j, i]
+            histories = experiments[dataset][make_key(l_l2sq, fit_intercept)][last_run]
+            plot_history(histories, dist_min=True, log_scale=True,
+                         x='time', ax=ax)
 
-        # print([history.name for history in histories])
-        sdca_index = [history.name for history in histories].index('SDCA 2')
-        sdca_time = histories[sdca_index].last_values['time']
+            # print([history.name for history in histories])
+            sdca_index = [history.name for history in histories].index('SDCA 2')
+            sdca_time = histories[sdca_index].last_values['time']
 
-        current_lim = ax.get_xlim()
-        if sdca_time * 4 < current_lim[1]:
-            ax.set_xlim(0, sdca_time * 4)
+            current_lim = ax.get_xlim()
+            if sdca_time * 4 < current_lim[1]:
+                ax.set_xlim(0, sdca_time * 4)
 
-        ax.set_ylim(1e-13, 1e6)
+            ax.set_ylim(1e-13, 1e6)
 
-        ax.set_title('{} $n={}$ $d={}$'.format(
-            dataset, features.shape[0], features.shape[1]))
+            l_l2sq_coef = l_l2sq * np.sqrt(n)
+            # ax.set_title('{} $n={}$ $d={}$ '
+            #              '$\\lambda = \\frac{{{:.3g}}} {{ \\sqrt{{n}}}}$'.format(
+            #     dataset, features.shape[0], features.shape[1],
+            #     l_l2sq_coef
+            # ))
+            if j == 0:
+                ax.set_title('{} $n={}$ $d={}$ '.format(
+                    dataset, features.shape[0], features.shape[1],
+                ))
 
-        ax.set_ylabel('')
-        ax.legend_.remove()
+            if i == 0:
+                ax.text(-ax.get_xlim()[1] * 0.6, 1e-1,
+                        '$\\lambda = \\frac{{{:.3g}}} {{ \\sqrt{{n}}}}$'
+                        .format(l_l2sq_coef),
+                        fontsize=14)
 
-        position = np.argwhere(ax_list == ax)[0]
-        if len(position) > 1:
-            row = position[0]
-            if row == 0:
-                ax.set_xlabel('')
+            ax.set_ylabel('')
+            ax.legend_.remove()
 
-    fig.suptitle('$\\lambda = \\frac{{{}}} {{ \\sqrt{{n}}}}$ {} intercept'
-                 .format(l_l2sq_coef, 'with' if fit_intercept else 'without'),
-                 fontsize=14)
-    fig.tight_layout(rect=[0, 0.05, 1, 0.9])
-    handles, labels = ax_list.ravel()[0].get_legend_handles_labels()
-    fig.legend(handles, labels, loc='lower center', ncol=4)
+            position = np.argwhere(ax_list == ax)[0]
+            if len(position) > 1:
+                row = position[0]
+                if row == 0:
+                    ax.set_xlabel('')
+
+            # fig.suptitle('$\\lambda = \\frac{{{:.3g}}} {{ \\sqrt{{n}}}}$ {} intercept'
+            #              .format(l_l2sq_coef, 'with' if fit_intercept else 'without'),
+            #              fontsize=14)
+
+        fig.tight_layout(rect=[0.1, 0.05, 1, 1.])
+        handles, labels = ax_list.ravel()[0].get_legend_handles_labels()
+        fig.legend(handles, labels, loc='lower center', ncol=4)
     plt.show()
 
 
-fit_intercept = True
-l_l2sq_coef = 1
+fit_intercept = False
 max_n_samples = 10000000
-all_datasets = ['wine', 'facebook', 'crime']#, 'vegas', 'news', 'blog']
+all_datasets = ['wine', 'facebook', 'crime', 'vegas', 'news', 'blog']
 # all_datasets = ['wine', 'facebook']#, 'crime', 'vegas']
 # all_datasets = ['facebook', 'blog']
 # all_datasets = ['wine', 'blog']
 
+l_l2sq_coef_list = [0.01, 0.1, 1., 3.]
 
-for dataset in all_datasets:
-    run_experiment(dataset, show=False, l_l2sq_coef=l_l2sq_coef,
-                   fit_intercept=fit_intercept)
+# for l_l2sq_coef in l_l2sq_coef_list:
+#     for dataset in all_datasets:
+#         run_experiment(dataset, show=False, l_l2sq_coef=l_l2sq_coef,
+#                        fit_intercept=fit_intercept)
 # run_experiment('wine', show=True, fit_intercept=fit_intercept)
 
 
-plot_all_last_experiment(all_datasets, l_l2sq_coef=l_l2sq_coef,
+plot_all_last_experiment(all_datasets,
                          fit_intercept=fit_intercept)
