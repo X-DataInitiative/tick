@@ -85,13 +85,17 @@ class NodeClassifier {
   }
 
   // Update to apply to a node when going forward in the tree (towards leaves)
-  float update_downwards(const ArrayDouble &x_t, const double y_t);
+  float update_weight(const ArrayDouble &x_t, const double y_t);
   // Update to apply to a node when going upward in the tree (towards the root)
-  void update_upwards();
+  void update_weight_tree();
   // Update the prediction of the label
-  void update_predict(const double y_t);
+  void update_count(const double y_t);
   // Update range of the seen features
   void update_range(const ArrayDouble &x_t);
+  // Update n_samples
+  void update_n_samples();
+
+
   // Predict function (average of the labels of samples that passed through the node)
   void predict(ArrayDouble &scores) const;
   // Loss function used for aggregation

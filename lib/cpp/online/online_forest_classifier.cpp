@@ -61,19 +61,17 @@ NodeClassifier &NodeClassifier::operator=(const NodeClassifier &node) {
   return *this;
 }
 
-float NodeClassifier::update_downwards(const ArrayDouble &x_t, const double y_t) {
-  // _n_samples++;
+float NodeClassifier::update_weight(const ArrayDouble &x_t, const double y_t) {
   float loss_t = loss(y_t);
   if (use_aggregation()) {
     _weight -= step() * loss_t;
   }
-  update_predict(y_t);
   // We return the loss before updating the predictor of the node in order to
   // update the feature importance in TreeClassifier::go_downwards
   return loss_t;
 }
 
-void NodeClassifier::update_upwards() {
+void NodeClassifier::update_weight_tree() {
   if (_is_leaf) {
     _weight_tree = _weight;
   } else {
@@ -81,7 +79,7 @@ void NodeClassifier::update_upwards() {
   }
 }
 
-void NodeClassifier::update_predict(const double y_t) {
+void NodeClassifier::update_count(const double y_t) {
   // We update the counts for the class y_t
   _counts[static_cast<uint8_t>(y_t)]++;
 }
@@ -104,8 +102,12 @@ void NodeClassifier::update_range(const ArrayDouble &x_t) {
       }
     }
   }
+}
+
+void NodeClassifier::update_n_samples() {
   _n_samples++;
 }
+
 
 float NodeClassifier::score(uint8_t c) const {
   // Using the Dirichet prior
@@ -270,19 +272,20 @@ void NodeClassifier::print() {
             << ", time: " << std::setprecision(2) << _time
             << ", n_samples: " << _n_samples
             << ", is_leaf: " << _is_leaf
-            << ", feature: " << _feature
-            << ", thresh: " << _threshold
+            // << ", feature: " << _feature
+            // << ", thresh: " << _threshold
             << ", scores: [" << std::setprecision(2) << score(0) << ", " << std::setprecision(2) << score(1) << "]"
             << ", counts: [" << std::setprecision(2) << _counts[0] << ", " << std::setprecision(2) << _counts[1] << "]";
-  if (_n_samples > 0) {
-    std::cout << ", min: [" << std::setprecision(2) << _features_min[0] << ", " << std::setprecision(2)
-              << _features_min[1] << "]"
-              << ", max: [" << std::setprecision(2) << _features_max[0] << ", " << std::setprecision(2)
-              << _features_max[1] << "]";
-  }
-  std::cout << ", weight: " << _weight
-            << ", weight_tree: " << _weight_tree
-            << ")\n";
+//  if (_n_samples > 0) {
+//    std::cout << ", min: [" << std::setprecision(2) << _features_min[0] << ", " << std::setprecision(2)
+//              << _features_min[1] << "]"
+//              << ", max: [" << std::setprecision(2) << _features_max[0] << ", " << std::setprecision(2)
+//              << _features_max[1] << "]";
+//  }
+//  std::cout << ", weight: " << _weight
+//            << ", weight_tree: " << _weight_tree
+//            << ")\n";
+  std::cout << ")\n";
 }
 
 /*********************************************************************************
@@ -305,10 +308,15 @@ TreeClassifier::TreeClassifier(const TreeClassifier &&tree)
     : forest(tree.forest), nodes(tree.nodes) {}
 
 void TreeClassifier::fit(const ArrayDouble &x_t, double y_t) {
+//  std::cout << "++++++++++++++++++++++++++++++++" << std::endl;
+//  std::cout << "Starting iteration: " << iteration << std::endl;
   uint32_t leaf = go_downwards(x_t, y_t);
+
   if (use_aggregation()) {
     go_upwards(leaf);
   }
+//  std::cout << "Finished iteration: " << iteration << std::endl;
+//  print();
   iteration++;
 }
 
@@ -322,31 +330,28 @@ uint32_t TreeClassifier::go_downwards(const ArrayDouble &x_t, double y_t) {
   bool is_leaf = false;
   float loss_t;
 
-  // Let's get the root
-  NodeClassifier &current_node = node(0);
-
   if(iteration == 0) {
     // If it's the first iteration, we just put the point in the range of root
+    // Let's get the root
+    NodeClassifier &current_node = node(0);
     current_node.update_range(x_t);
+    current_node.update_n_samples();
     // And we update the label count of root
-    current_node.update_predict(y_t);
+    current_node.update_count(y_t);
     return index_current_node;
   } else {
-    while (!is_leaf) {
-
+    while (true) {
       // If it's not the first iteration (otherwise the current node is root
       // with no range), we consider the possibility of a split
       float split_time = compute_split_time(index_current_node, x_t);
+//      std::cout << "iteration: " << iteration;
+//      std::cout << ", split_time: " << split_time << std::endl;
 
-      std::cout << "iteration: " << iteration;
-      std::cout << ", split_time: " << split_time << std::endl;
-
-      // If we do split
       if (split_time > 0) {
         NodeClassifier &current_node = node(index_current_node);
-
-        current_node.print();
-
+        // We split the current node: because the current node is a leaf, or because we add a new node along the path
+        // std::cout << "current node before split: " << index_current_node << std::endl;
+        // current_node.print();
         // Normalize the range extensions to get probabilities
         intensities /= intensities.sum();
         // Sample the feature at random with with a probability proportional to the range extensions
@@ -361,87 +366,114 @@ uint32_t TreeClassifier::go_downwards(const ArrayDouble &x_t, double y_t) {
         } else {
           threshold = forest.sample_threshold(x_tf, current_node.features_min(feature));
         }
-        std::cout << "node: " << index_current_node;
-        std::cout << ", split_time: " << split_time;
-        std::cout << ", threshold: " << threshold;
-        std::cout << ", feature: " << feature;
-        std::cout << ", is_right_extension: " << is_right_extension;
-        std::cout << std::endl;
+//        std::cout << "node: " << index_current_node;
+//        std::cout << ", split_time: " << split_time;
+//        std::cout << ", threshold: " << threshold;
+//        std::cout << ", feature: " << feature;
+//        std::cout << ", is_right_extension: " << is_right_extension;
+//        std::cout << std::endl;
+
         split_node(index_current_node, split_time, threshold, feature, is_right_extension);
-      }
 
-      // Get the current node
-      NodeClassifier &current_node = node(index_current_node);
+        // Get the current node again, and update it
+        NodeClassifier &current_node_again = node(index_current_node);
+        current_node_again.update_range(x_t);
+        current_node_again.update_n_samples();
+        // First update the weights, then update the counts...
+        loss_t = current_node_again.update_weight(x_t, y_t);
+        current_node_again.update_count(y_t);
+//        std::cout << "current node after split: " << index_current_node << std::endl;
+//        current_node_again.print();
+//        nodes[index_current_node].print();
 
-      current_node.print();
-
-      // Update its range
-      current_node.update_range(x_t);
-      // Update the current node. Returns the loss of the node (before its update).
-      // This will be used to update the feature importances below
-      loss_t = current_node.update_downwards(x_t, y_t);
-      is_leaf = current_node.is_leaf();
-      if (!is_leaf) {
-        float feature = current_node.feature();
-        float threshold = current_node.threshold();
-        if (x_t[feature] <= threshold) {
-          index_current_node = current_node.left();
-        } else {
+        // Now, get the next node
+        if(is_right_extension) {
           index_current_node = current_node.right();
+        } else {
+          index_current_node = current_node.left();
         }
-//      // Compute the difference with the loss of the child
-//      loss_t -= node(index_current_node).loss(y_t);
-//      if (loss_t > 0) {
-//        feature_importances_[feature] += loss_t;
-//      }
+        // This is the leaf containing the sample point (we've just splitted the current node with the data point)
+        NodeClassifier & leaf = node(index_current_node);
+        // Let's update the leaf containing the point
+        leaf.update_range(x_t);
+        leaf.update_n_samples();
+        leaf.update_count(y_t);
+        // We don't update the weight of the leaf, since we have a single point... and we stop
+        // std::cout << "New leaf node: " << index_current_node << std::endl;
+        // leaf.print();
+        // nodes[index_current_node].print();
+        return index_current_node;
+      } else {
+        // There is no split, so we just update the node and go to the next one
+        NodeClassifier &current_node = node(index_current_node);
+        current_node.update_range(x_t);
+        current_node.update_n_samples();
+        loss_t = current_node.update_weight(x_t, y_t);
+        current_node.update_count(y_t);
+        // std::cout << "current node with no split: " << index_current_node << std::endl;
+        // current_node.print();
+        // nodes[index_current_node].print();
+        is_leaf = current_node.is_leaf();
+        if (is_leaf) {
+          return index_current_node;
+        } else {
+          float feature = current_node.feature();
+          float threshold = current_node.threshold();
+          if (x_t[feature] <= threshold) {
+            index_current_node = current_node.left();
+          } else {
+            index_current_node = current_node.right();
+          }
+          // current_node = node(index_current_node);
+        }
       }
     }
-
-
   }
-
-
-
-  return index_current_node;
 }
 
 
 float TreeClassifier::compute_split_time(uint32_t node_index, const ArrayDouble &x_t) {
-  std::cout << "TreeClassifier::compute_split_time with node_index: " << node_index << std::endl;
+  // std::cout << "TreeClassifier::compute_split_time with node_index: " << node_index << std::endl;
   NodeClassifier &current_node = node(node_index);
   // Let's compute the extension of the range of the current node, and its sum
   float intensities_sum = current_node.compute_range_extension(x_t, intensities);
   // If the sample x_t extends the current range of the node
   if (intensities_sum > 0) {
-    std::cout << "intensities_sum: " << intensities_sum;
+    // std::cout << "intensities_sum: " << intensities_sum;
     // TODO: check that intensity is indeed intensity in the rand.h
     float T = forest.sample_exponential(intensities_sum);
     float time = current_node.time();
     // Splitting time of the node (if splitting occurs)
+    // float split_time = time + T;
     float split_time = time + T;
-    std::cout << ", T: " << T << ", time: " << time << ", split_time: " << split_time;
+    // std::cout << ", T: " << T << ", time: " << time << ", split_time: " << split_time;
     if (current_node.is_leaf()) {
       // If the node is a leaf we must split it
-      std::cout << std::endl;
-      std::cout << "Done with TreeClassifier::compute_split_time returning " << split_time << std::endl;
-      return split_time;
+      // std::cout << std::endl;
+      // std::cout << "Done with TreeClassifier::compute_split_time returning " << split_time << std::endl;
+
+      if(split_time < 10) {
+        return split_time;
+      } else {
+        return 0;
+      }
     } else {
       // Otherwise we apply Mondrian process dark magic :)
       // 1. We get the creation time of the childs (left and right is the same)
       float child_time = node(current_node.left()).time();
-      std::cout << ", child_time: " << child_time << std::endl;
+      // std::cout << ", child_time: " << child_time << std::endl;
       // 2. We check if splitting time occurs before child creation time
       // Sample a exponential random variable with intensity
       if (split_time < child_time) {
-        std::cout << "Done with TreeClassifier::compute_split_time returning " << split_time << std::endl;
+        // std::cout << "Done with TreeClassifier::compute_split_time returning " << split_time << std::endl;
         return split_time;
       } else {
-        std::cout << "Done with TreeClassifier::compute_split_time returning " << 0 << std::endl;
+        // std::cout << "Done with TreeClassifier::compute_split_time returning " << 0 << std::endl;
         return 0;
       }
     }
   } else {
-    std::cout << "Done with TreeClassifier::compute_split_time returning " << 0 << std::endl;
+    // std::cout << "Done with TreeClassifier::compute_split_time returning " << 0 << std::endl;
     return 0;
   }
 }
@@ -452,7 +484,7 @@ void TreeClassifier::split_node(uint32_t node_index,
                                 const float threshold,
                                 const uint32_t feature,
                                 const bool is_right_extension) {
-  std::cout << "TreeClassifier::split_node with node_index: " << node_index << std::endl;
+  // std::cout << "TreeClassifier::split_node with node_index: " << node_index << std::endl;
   // Get new nodes
   uint32_t left_new = add_node(node_index, split_time);
   uint32_t right_new = add_node(node_index, split_time);
@@ -485,7 +517,7 @@ void TreeClassifier::split_node(uint32_t node_index,
   // We update the splitting feature, threshold, and childs of the current index
   current_node.set_feature(feature).set_threshold(threshold).set_left(left_new)
       .set_right(right_new).set_is_leaf(false);
-  std::cout << "Done with TreeClassifier::split_node." << std::endl;
+  // std::cout << "Done with TreeClassifier::split_node." << std::endl;
 }
 
 
@@ -563,7 +595,7 @@ void TreeClassifier::go_upwards(uint32_t leaf_index) {
   if (iteration >= 1) {
     while (true) {
       NodeClassifier &current_node = node(current);
-      current_node.update_upwards();
+      current_node.update_weight_tree();
       if (current == 0) {
         // We arrive at the root
         break;
@@ -575,13 +607,11 @@ void TreeClassifier::go_upwards(uint32_t leaf_index) {
 }
 
 void TreeClassifier::print() {
-  std::cout << "Tree(n_nodes: " << _n_nodes << std::endl;
-  std::cout << " ";
-  uint32_t index = 0;
-  for (NodeClassifier &node : nodes) {
-    std::cout << "index: " << index << " ";
-    node.print();
-    index++;
+  std::cout << "Tree(n_nodes: " << _n_nodes << "," << std::endl;
+  for (uint32_t node_index=0; node_index < _n_nodes; ++node_index) {
+    std::cout << " ";
+    std::cout << "index: " << node_index << " ";
+    nodes[node_index].print();
   }
   std::cout << ")" << std::endl;
 }
