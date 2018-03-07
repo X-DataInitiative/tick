@@ -20,12 +20,14 @@ X_train, X_test, y_train, y_test = \
     train_test_split(X, y, test_size=.3, random_state=42)
 
 #
-# clf = MondrianForestClassifier(n_estimators=50, min_samples_split=1)
+# clf = MondrianForestClassifier(n_estimators=1, min_samples_split=1)
 #
 # t1 = time()
 # clf.partial_fit(X_train, y_train)
 # t2 = time()
 # print('MF:', t2 - t1, 'Acc:', clf.score(X_test, y_test))
+#
+# exit(0)
 
 of = OnlineForestClassifier(n_classes=2, n_trees=1)
 t1 = time()
