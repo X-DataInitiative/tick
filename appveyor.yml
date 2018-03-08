@@ -5,47 +5,41 @@ branches:
   only:
     - master
 
-max_jobs: 2
+max_jobs: 1
 
 image:
-- Visual Studio 2015
 - Visual Studio 2017
 
-# scripts that are called at very beginning, before repo cloning
 init:
   - git config --global core.autocrlf input
 
-# set clone depth
-clone_depth: 1                      # clone entire repository history if not defined
+clone_depth: 1
 
-# setting up etc\hosts file
 hosts:
   queue-server: 127.0.0.1
   db.server.com: 127.0.0.2
 
-# build platform, i.e. x86, x64, Any CPU. This setting is optional.
 platform: x64
 
 configuration: Release
 
 cache:
-  ## Cache swig, which we install via AppVeyor.
-  # The syntax here is <dir-to-cache> -> <invalidated-when-this-file-changes>
-  # If the appveyor.yml script is changed, then the cache is invalidated.
-  # https://www.appveyor.com/docs/build-cache/
   - C:\ProgramData\chocolatey\bin -> appveyor.yml # swig.exe
   - C:\ProgramData\chocolatey\lib -> appveyor.yml # supporting swig Lib files.
 
 install:
-  ## Use Chocolatey to install SWIG.
-  # Only install swig if it isn't present (as a result of AppVeyor's caching).
-  # SWIG 3.0.8 is the minimum required version, but it does not yet exist in
-  # Chocolatey.
-  - IF NOT EXIST C:\ProgramData\chocolatey\bin\swig.exe choco install swig --version 3.0.9 --yes --limit-output #> $null
+  - git submodule update --init
+  - curl -o mkn.exe -L https://ci.appveyor.com/api/projects/dekken/maiken/artifacts/bin/build/mkn.exe
+  - IF NOT EXIST C:\ProgramData\chocolatey\bin\swig.exe choco install tools\windows\swig.3.0.12.nupkg --yes --limit-output #> $null
+  - git clone https://github.com/X-DataInitiative/tick_appveyor -b master --depth 1 appveyor
 
 build_script:
-  - git submodule update --init
-  - git clone https://github.com/X-DataInitiative/tick_appveyor -b master --depth 1 appveyor
+  - cp "C:\Program Files (x86)\Windows Kits\10\bin\x64\rc.exe" %CD%
+  - cp %CD%\rc.exe %CD%\lib
+  - SET MKN_CL_PREFERRED=1 # forces mkn to use cl even if gcc/clang are found
+  - SET SWIG=0 # disables swig for mkn
+  - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
+
   # Python 3.6
   - cat appveyor/pip/numpy/numpy-1.14.0+mkl-cp36* > appveyor/pip/numpy-1.14.0+mkl-cp36-cp36m-win_amd64.whl
   - C:\Python36-x64\Scripts\pip install appveyor\pip\numpy-1.14.0+mkl-cp36-cp36m-win_amd64.whl
@@ -56,7 +50,11 @@ build_script:
   - C:\Python36-x64\python setup.py build_ext --inplace 
   - C:\Python36-x64\python -m unittest discover -v . "*_test.py"
   - C:\Python36-x64\python setup.py bdist_wheel
+  - bash -c "PATH=\"$PWD:/c/Python36-x64/:/c/Program Files/Git/usr/bin:$PATH\"; sh/mkn.sh"
+  - bash -c "PATH=\"$PWD:/c/Python36-x64/:/c/Program Files/Git/usr/bin:$PATH\"; sh/gtest.sh" 
   - rm -rf build
+  - rm -rf lib\bin
+
   # Python 3.5
   - cat appveyor/pip/numpy/numpy-1.14.0+mkl-cp35* > appveyor/pip/numpy-1.14.0+mkl-cp35-cp35m-win_amd64.whl
   - C:\Python35-x64\Scripts\pip install appveyor\pip\numpy-1.14.0+mkl-cp35-cp35m-win_amd64.whl
@@ -67,7 +65,11 @@ build_script:
   - C:\Python35-x64\python setup.py build_ext --inplace 
   - C:\Python35-x64\python -m unittest discover -v . "*_test.py"
   - C:\Python35-x64\python setup.py bdist_wheel
+  - bash -c "PATH=\"$PWD:/c/Python35-x64/:/c/Program Files/Git/usr/bin:$PATH\"; sh/mkn.sh"
+  - bash -c "PATH=\"$PWD:/c/Python35-x64/:/c/Program Files/Git/usr/bin:$PATH\"; sh/gtest.sh" 
   - rm -rf build
+  - rm -rf lib\bin
+
   # Python 3.4 : Building wheels for pandas is currently failing, having trouble with pandas
 
 artifacts:

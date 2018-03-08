@@ -88,13 +88,13 @@ TKLOG=$KLOG
         cmd /c "${OUT[@]}"
         popd  2>&1 > /dev/null
       else
-        mkn link -p $P -l "${LIBLDARGS} ${LDARGS} $LIBLD" \
+        mkn link -Sp $P -l "${LIBLDARGS} ${LDARGS} $LIBLD" \
            -P "${MKN_P}" -C lib "${MKN_WITH[@]}" \
            ${MKN_X_FILE[@]} -B "$B_PATH" 
       fi
       PUSHD=${LIBRARIES[$EX]}
       pushd $ROOT/$(dirname ${PUSHD}) 2>&1 > /dev/null
-        if [[ "$unameOut" == "CYGWIN"* ]] || [[ "$unameOut" == "MINGW"* ]]; then
+        if [[ "$unameOut" == "CYGWIN"* ]] || [[ "$unameOut" == "MINGW"* ]] || [[ "$unameOut" == "MSYS_NT"* ]]; then
           for f in $(find . -maxdepth 1 -type f -name "*.dll" ); do    
             DLL="${f%.*}"
             cp ${f:2} ${DLL}.pyd

@@ -48,7 +48,7 @@ pushd $ROOT/lib 2>&1 > /dev/null
   [ ! -z "$CXXFLAGS" ] && CARGS="$CXXFLAGS $CARGS"
   [ ! -z "$LDFLAGS" ] && LDARGS="${LDARGS} ${LDFLAGS}"
 
-  mkn build -p gtest -tSa "-fPIC -O2 -DNDEBUG -DGTEST_CREATE_SHARED_LIBRARY" \
+  mkn build -p gtest -tSa "$CARGS -DGTEST_CREATE_SHARED_LIBRARY" \
       -d google.test,+ ${MKN_X_FILE[@]} "${MKN_WITH[@]}"
 
   LIB=""
@@ -65,7 +65,7 @@ pushd $ROOT/lib 2>&1 > /dev/null
 
       echo FILE $FILE
 
-      mkn clean build -p gtest -a "${CARGS}" \
+      mkn clean build -p gtest -a "${CARGS} -DGTEST_LINKED_AS_SHARED_LIBRARY" \
           -tl "${LDARGS} ${LIB}" -b "$PY_INCS" \
           -M "${FILE}" -P "${MKN_P}" "${MKN_WITH[@]}" \
           -B $B_PATH ${RUN} ${MKN_X_FILE[@]}
