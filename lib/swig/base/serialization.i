@@ -5,8 +5,11 @@
 %{
 #include "tick/base/serialization.h"
 %}
-
+// TICK_SWIG_INCLUDE is a flag as the MACROs to disable certain compiler errors
+// messes with swig
+%define TICK_SWIG_INCLUDE
 %include tick/base/serialization.h
+%enddef TICK_SWIG_INCLUDE
 
 %define TICK_MAKE_PICKLABLE(CLASS_NAME, CONSTRUCTOR_ARGS...)
 

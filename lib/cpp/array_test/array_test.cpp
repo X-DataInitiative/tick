@@ -208,7 +208,7 @@ bool test_move_##ARRAY_TYPE(ARRAY_TYPE & constructor_array) { \
     array = move_##ARRAY_TYPE(constructor_array, first_ptr); \
     /* We check that the newly assigned array has kept the data of the original one */ \
     bool eq_assignment = *first_ptr == array.data(); \
-    return eq_constructor * eq_assignment; \
+    return eq_constructor && eq_assignment; \
 }
 
 TEST_MOVE_CPP(BaseArrayDouble);
