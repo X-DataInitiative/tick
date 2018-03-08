@@ -3,8 +3,18 @@
 
 // License: BSD 3 clause
 
+#include "tick/base/defs.h"
+
+#ifndef TICK_SWIG_INCLUDE
+DISABLE_WARNING(unused, exceptions, 42)
+DISABLE_WARNING(unused, unused-private-field, 42)
+#endif
 #include <cereal/archives/binary.hpp>
 #include <cereal/archives/json.hpp>
+#ifndef TICK_SWIG_INCLUDE
+ENABLE_WARNING(unused, exceptions, 42)
+ENABLE_WARNING(unused, unused-private-field, 42)
+#endif
 
 namespace tick {
 

@@ -24,7 +24,7 @@ property:
       -Ox -GL -MD -EHsc -DBUILDING_DLL
     nixish_cargs: -fwrapv -O2 -Wall
                   -fstack-protector-strong 
-                  -Wformat -Werror=format-security -Wdate-time 
+                  -Wformat -Werror -Wdate-time 
                   -D_FORTIFY_SOURCE=2 -fPIC -std=c++11
                   -ffast-math -Wno-uninitialized
                   
