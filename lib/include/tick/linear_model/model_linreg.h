@@ -15,9 +15,8 @@
 template <class T>
 class DLL_PUBLIC TModelLinReg : public virtual TModelGeneralizedLinear<T>,
                                 public TModelLipschitz<T> {
- private:
-  std::string clazz = "TModelGeneralizedLinearWithIntercepts<" +
-                      std::string(typeid(T).name()) + ">";
+  // Grants cereal access to default constructor
+  friend class cereal::access;
 
  protected:
   using TModelLipschitz<T>::ready_lip_consts;
@@ -33,10 +32,17 @@ class DLL_PUBLIC TModelLinReg : public virtual TModelGeneralizedLinear<T>,
   using TModelGeneralizedLinear<T>::get_inner_prod;
   using TModelGeneralizedLinear<T>::get_class_name;
 
+ private:
+  // This exists soley for cereal which has friend access
+  TModelLinReg() : TModelLinReg<T>(nullptr, nullptr, 0, 0) {}
+
  public:
   TModelLinReg(const std::shared_ptr<BaseArray2d<T> > features,
                const std::shared_ptr<SArray<T> > labels,
-               const bool fit_intercept, const int n_threads = 1);
+               const bool fit_intercept, const int n_threads = 1)
+      : TModelLabelsFeatures<T>(features, labels),
+        TModelGeneralizedLinear<T>(features, labels, fit_intercept, n_threads) {
+  }
 
   virtual ~TModelLinReg() {}
 
@@ -60,6 +66,20 @@ class DLL_PUBLIC TModelLinReg : public virtual TModelGeneralizedLinear<T>,
         "ModelLipschitz",
         typename cereal::base_class<TModelLipschitz<T> >(this)));
   }
+
+  BoolStrReport compare(const TModelLinReg<T> &that, std::stringstream &ss) {
+    ss << get_class_name() << std::endl;
+    bool are_equal = TModelGeneralizedLinear<T>::compare(that, ss) &&
+                     TModelLipschitz<T>::compare(that, ss);
+    return BoolStrReport(are_equal, ss.str());
+  }
+  BoolStrReport compare(const TModelLinReg<T> &that) {
+    std::stringstream ss;
+    return compare(that, ss);
+  }
+  BoolStrReport operator==(const TModelLinReg<T> &that) {
+    return TModelLinReg<T>::compare(that);
+  }
 };
 
 using ModelLinReg = TModelLinReg<double>;
@@ -67,9 +87,11 @@ using ModelLinReg = TModelLinReg<double>;
 using ModelLinRegDouble = TModelLinReg<double>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelLinRegDouble,
                                    cereal::specialization::member_serialize)
+CEREAL_REGISTER_TYPE(ModelLinRegDouble)
 
 using ModelLinRegFloat = TModelLinReg<float>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelLinRegFloat,
                                    cereal::specialization::member_serialize)
+CEREAL_REGISTER_TYPE(ModelLinRegFloat)
 
 #endif  // LIB_INCLUDE_TICK_LINEAR_MODEL_MODEL_LINREG_H_

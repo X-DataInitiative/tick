@@ -7,13 +7,6 @@
 #include "tick/linear_model/model_logreg.h"
 
 template <class T>
-TModelLogReg<T>::TModelLogReg(const std::shared_ptr<BaseArray2d<T> > features,
-                              const std::shared_ptr<SArray<T> > labels,
-                              const bool fit_intercept, const int n_threads)
-    : TModelLabelsFeatures<T>(features, labels),
-      TModelGeneralizedLinear<T>(features, labels, fit_intercept, n_threads) {}
-
-template <class T>
 void TModelLogReg<T>::sigmoid(const Array<T> &x, Array<T> &out) {
   for (ulong i = 0; i < x.size(); ++i) {
     out[i] = sigmoid(x[i]);
@@ -129,5 +122,5 @@ void TModelLogReg<T>::compute_lip_consts() {
   }
 }
 
-template class TModelLogReg<double>;
-template class TModelLogReg<float>;
+template class DLL_PUBLIC TModelLogReg<double>;
+template class DLL_PUBLIC TModelLogReg<float>;

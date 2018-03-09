@@ -12,6 +12,9 @@ template <class T>
 class DLL_PUBLIC TModelModifiedHuber
     : public virtual TModelGeneralizedLinear<T>,
       public TModelLipschitz<T> {
+  // Grants cereal access to default constructor
+  friend class cereal::access;
+
  protected:
   using TModelGeneralizedLinear<T>::features_norm_sq;
   using TModelGeneralizedLinear<T>::compute_features_norm_sq;
@@ -31,6 +34,10 @@ class DLL_PUBLIC TModelModifiedHuber
   using TModelGeneralizedLinear<T>::grad_i_factor;
   using TModelGeneralizedLinear<T>::get_class_name;
 
+ private:
+  // This exists soley for cereal which has friend access
+  TModelModifiedHuber() : TModelModifiedHuber(nullptr, nullptr, false) {}
+
  public:
   TModelModifiedHuber(const std::shared_ptr<BaseArray2d<T>> features,
                       const std::shared_ptr<SArray<T>> labels,
@@ -49,6 +56,21 @@ class DLL_PUBLIC TModelModifiedHuber
     ar(cereal::make_nvp("ModelLipschitz",
                         cereal::base_class<TModelLipschitz<T>>(this)));
   }
+
+  BoolStrReport compare(const TModelModifiedHuber<T> &that,
+                        std::stringstream &ss) {
+    ss << get_class_name() << std::endl;
+    bool are_equal = TModelGeneralizedLinear<T>::compare(that, ss) &&
+                     TModelLipschitz<T>::compare(that, ss);
+    return BoolStrReport(are_equal, ss.str());
+  }
+  BoolStrReport compare(const TModelModifiedHuber<T> &that) {
+    std::stringstream ss;
+    return compare(that, ss);
+  }
+  BoolStrReport operator==(const TModelModifiedHuber<T> &that) {
+    return TModelModifiedHuber<T>::compare(that);
+  }
 };
 
 using ModelModifiedHuber = TModelModifiedHuber<double>;
@@ -56,8 +78,11 @@ using ModelModifiedHuber = TModelModifiedHuber<double>;
 using ModelModifiedHuberDouble = TModelModifiedHuber<double>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelModifiedHuberDouble,
                                    cereal::specialization::member_serialize)
+CEREAL_REGISTER_TYPE(ModelModifiedHuberDouble)
+
 using ModelModifiedHuberFloat = TModelModifiedHuber<float>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelModifiedHuberFloat,
                                    cereal::specialization::member_serialize)
+CEREAL_REGISTER_TYPE(ModelModifiedHuberFloat)
 
 #endif  // LIB_INCLUDE_TICK_ROBUST_MODEL_MODIFIED_HUBER_H_

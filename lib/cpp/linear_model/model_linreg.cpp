@@ -7,13 +7,6 @@
 #include "tick/linear_model/model_linreg.h"
 
 template <class T>
-TModelLinReg<T>::TModelLinReg(const std::shared_ptr<BaseArray2d<T> > features,
-                              const std::shared_ptr<SArray<T> > labels,
-                              const bool fit_intercept, const int n_threads)
-    : TModelLabelsFeatures<T>(features, labels),
-      TModelGeneralizedLinear<T>(features, labels, fit_intercept, n_threads) {}
-
-template <class T>
 T TModelLinReg<T>::sdca_dual_min_i(const ulong i, const T dual_i,
                                    const Array<T> &primal_vector,
                                    const T previous_delta_dual_i, T l_l2sq) {
@@ -60,5 +53,5 @@ void TModelLinReg<T>::compute_lip_consts() {
   }
 }
 
-template class TModelLinReg<double>;
-template class TModelLinReg<float>;
+template class DLL_PUBLIC TModelLinReg<double>;
+template class DLL_PUBLIC TModelLinReg<float>;

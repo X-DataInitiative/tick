@@ -58,7 +58,13 @@ class DLL_PUBLIC TSAGA : public TStoSolver<T> {
 
   void compute_step_corrections();
 
-  void set_starting_iterate(Array<T> &new_iterate) override;
+  void set_starting_iterate(Array<T> &new_iterate) override {
+    TStoSolver<T>::set_starting_iterate(new_iterate);
+    next_iterate = iterate;
+  }
+
+ private:
+  TSAGA() : TSAGA(0, 0, RandType::unif, 0, 0) {}
 
  public:
   TSAGA(ulong epoch_size, T tol, RandType rand_type, T step, int seed,
@@ -81,7 +87,12 @@ class DLL_PUBLIC TSAGA : public TStoSolver<T> {
       typename TSAGA<T>::VarianceReductionMethod _variance_reduction) {
     variance_reduction = _variance_reduction;
   }
+
+  static std::shared_ptr<TSAGA<T> > AS_NULL() {
+    return std::move(std::shared_ptr<TSAGA<T> >(new TSAGA<T>));
+  }
 };
+
 
 using SAGA = TSAGA<double>;
 using SAGADouble = TSAGA<double>;

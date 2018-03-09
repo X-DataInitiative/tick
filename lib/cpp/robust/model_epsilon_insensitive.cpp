@@ -37,5 +37,5 @@ T TModelEpsilonInsensitive<T>::grad_i_factor(const ulong i,
   }
 }
 
-template class TModelEpsilonInsensitive<double>;
-template class TModelEpsilonInsensitive<float>;
+template class DLL_PUBLIC TModelEpsilonInsensitive<double>;
+template class DLL_PUBLIC TModelEpsilonInsensitive<float>;

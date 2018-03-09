@@ -58,6 +58,17 @@ class DLL_PUBLIC TModelLipschitz : public virtual TModel<T> {
        CEREAL_NVP(ready_lip_mean), CEREAL_NVP(lip_consts), CEREAL_NVP(lip_mean),
        CEREAL_NVP(lip_max));
   }
+
+ protected:
+  BoolStrReport compare(const TModelLipschitz<T> &that, std::stringstream &ss) {
+    return BoolStrReport(TICK_CMP_REPORT(ss, ready_lip_consts) &&
+                             TICK_CMP_REPORT(ss, ready_lip_max) &&
+                             TICK_CMP_REPORT(ss, ready_lip_mean) &&
+                             TICK_CMP_REPORT(ss, lip_mean) &&
+                             TICK_CMP_REPORT(ss, lip_max) &&
+                             TICK_CMP_REPORT(ss, lip_consts),
+                         ss.str());
+  }
 };
 
 using ModelLipschitz = TModelLipschitz<double>;

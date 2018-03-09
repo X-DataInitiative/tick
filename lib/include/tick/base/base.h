@@ -13,6 +13,7 @@
 
 #include "debug.h"
 #include "defs.h"
+#include "report.h"
 
 #include "interruption.h"
 #include "math/normal_distribution.h"

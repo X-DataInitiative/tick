@@ -54,5 +54,5 @@ void TModelHuber<T>::compute_lip_consts() {
   }
 }
 
-template class TModelHuber<double>;
-template class TModelHuber<float>;
+template class DLL_PUBLIC TModelHuber<double>;
+template class DLL_PUBLIC TModelHuber<float>;

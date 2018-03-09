@@ -10,6 +10,9 @@
 template <class T>
 class DLL_PUBLIC TModelEpsilonInsensitive
     : public virtual TModelGeneralizedLinear<T> {
+  // Grants cereal access to default constructor
+  friend class cereal::access;
+
  protected:
   using TModelGeneralizedLinear<T>::features_norm_sq;
   using TModelGeneralizedLinear<T>::compute_features_norm_sq;
@@ -29,6 +32,11 @@ class DLL_PUBLIC TModelEpsilonInsensitive
 
  private:
   T threshold;
+
+ private:
+  // This exists soley for cereal which has friend access
+  TModelEpsilonInsensitive()
+      : TModelEpsilonInsensitive(nullptr, nullptr, false, 1) {}
 
  public:
   TModelEpsilonInsensitive(const std::shared_ptr<BaseArray2d<T>> features,
@@ -54,6 +62,22 @@ class DLL_PUBLIC TModelEpsilonInsensitive
   void serialize(Archive &ar) {
     ar(cereal::make_nvp("ModelGeneralizedLinear",
                         cereal::base_class<TModelGeneralizedLinear<T>>(this)));
+    ar(threshold);
+  }
+
+  BoolStrReport compare(const TModelEpsilonInsensitive<T> &that,
+                        std::stringstream &ss) {
+    ss << get_class_name() << std::endl;
+    auto are_equal = TModelGeneralizedLinear<T>::compare(that, ss) &&
+                     TICK_CMP_REPORT(ss, threshold);
+    return BoolStrReport(are_equal, ss.str());
+  }
+  BoolStrReport compare(const TModelEpsilonInsensitive<T> &that) {
+    std::stringstream ss;
+    return compare(that, ss);
+  }
+  BoolStrReport operator==(const TModelEpsilonInsensitive<T> &that) {
+    return TModelEpsilonInsensitive<T>::compare(that);
   }
 };
 
@@ -62,9 +86,11 @@ using ModelEpsilonInsensitive = TModelEpsilonInsensitive<double>;
 using ModelEpsilonInsensitiveDouble = TModelEpsilonInsensitive<double>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelEpsilonInsensitiveDouble,
                                    cereal::specialization::member_serialize)
+CEREAL_REGISTER_TYPE(ModelEpsilonInsensitiveDouble)
 
 using ModelEpsilonInsensitiveFloat = TModelEpsilonInsensitive<float>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelEpsilonInsensitiveFloat,
                                    cereal::specialization::member_serialize)
+CEREAL_REGISTER_TYPE(ModelEpsilonInsensitiveFloat)
 
 #endif  // LIB_INCLUDE_TICK_ROBUST_MODEL_EPSILON_INSENSITIVE_H_

@@ -11,10 +11,17 @@
 
 // TODO: labels should be a ArrayUInt
 
-enum class LinkType { identity = 0, exponential };
+enum class LinkType : uint16_t { identity = 0, exponential };
+inline std::ostream &operator<<(std::ostream &s, const LinkType l) {
+  typedef std::underlying_type<LinkType>::type utype;
+  return s << static_cast<utype>(l);
+}
 
 template <class T>
 class DLL_PUBLIC TModelPoisReg : public TModelGeneralizedLinear<T> {
+  // Grants cereal access to default constructor
+  friend class cereal::access;
+
  protected:
   using TModelGeneralizedLinear<T>::compute_features_norm_sq;
   using TModelGeneralizedLinear<T>::n_samples;
@@ -22,7 +29,6 @@ class DLL_PUBLIC TModelPoisReg : public TModelGeneralizedLinear<T> {
   using TModelGeneralizedLinear<T>::fit_intercept;
   using TModelGeneralizedLinear<T>::ready_features_norm_sq;
   using TModelGeneralizedLinear<T>::get_n_samples;
-  using TModelGeneralizedLinear<T>::get_n_coeffs;
   using TModelGeneralizedLinear<T>::get_features;
 
  public:
@@ -30,6 +36,7 @@ class DLL_PUBLIC TModelPoisReg : public TModelGeneralizedLinear<T> {
   using TModelGeneralizedLinear<T>::use_intercept;
   using TModelGeneralizedLinear<T>::get_inner_prod;
   using TModelGeneralizedLinear<T>::get_class_name;
+  using TModelGeneralizedLinear<T>::get_n_coeffs;
 
  protected:
   bool ready_non_zero_label_map = 0;
@@ -37,11 +44,19 @@ class DLL_PUBLIC TModelPoisReg : public TModelGeneralizedLinear<T> {
   VArrayULongPtr non_zero_labels;
   ulong n_non_zeros_labels;
 
+ private:
+  // This exists soley for cereal which has friend access
+  TModelPoisReg()
+      : TModelPoisReg<T>(nullptr, nullptr, LinkType::identity, 0, 0) {}
+
  public:
   TModelPoisReg(const std::shared_ptr<BaseArray2d<T> > features,
                 const std::shared_ptr<SArray<T> > labels,
                 const LinkType link_type, const bool fit_intercept,
-                const int n_threads = 1);
+                const int n_threads = 1)
+      : TModelLabelsFeatures<T>(features, labels),
+        TModelGeneralizedLinear<T>(features, labels, fit_intercept, n_threads),
+        link_type(link_type) {}
 
   T loss_i(const ulong i, const Array<T> &coeffs) override;
 
@@ -89,10 +104,49 @@ class DLL_PUBLIC TModelPoisReg : public TModelGeneralizedLinear<T> {
   }
 
   virtual LinkType get_link_type() { return link_type; }
+
+  template <class Archive>
+  void serialize(Archive &ar) {
+    ar(cereal::make_nvp(
+        "ModelGeneralizedLinear",
+        typename cereal::virtual_base_class<TModelGeneralizedLinear<T> >(
+            this)));
+
+    ar(CEREAL_NVP(ready_non_zero_label_map));
+    ar(CEREAL_NVP(link_type));
+    ar(CEREAL_NVP(non_zero_labels));
+    ar(CEREAL_NVP(n_non_zeros_labels));
+  }
+
+  BoolStrReport compare(const TModelPoisReg<T> &that, std::stringstream &ss) {
+    ss << get_class_name() << std::endl;
+    auto are_equal = TModelGeneralizedLinear<T>::compare(that, ss) &&
+                     TICK_CMP_REPORT(ss, ready_non_zero_label_map) &&
+                     TICK_CMP_REPORT(ss, link_type) &&
+                     TICK_CMP_REPORT(ss, non_zero_labels) &&
+                     TICK_CMP_REPORT(ss, n_non_zeros_labels);
+    return BoolStrReport(are_equal, ss.str());
+  }
+
+  BoolStrReport compare(const TModelPoisReg<T> &that) {
+    std::stringstream ss;
+    return compare(that, ss);
+  }
+  BoolStrReport operator==(const TModelPoisReg<T> &that) {
+    return TModelPoisReg<T>::compare(that);
+  }
 };
 
 using ModelPoisReg = TModelPoisReg<double>;
+
 using ModelPoisRegDouble = TModelPoisReg<double>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelPoisRegDouble,
+                                   cereal::specialization::member_serialize)
+CEREAL_REGISTER_TYPE(ModelPoisRegDouble)
+
 using ModelPoisRegFloat = TModelPoisReg<float>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelPoisRegFloat,
+                                   cereal::specialization::member_serialize)
+CEREAL_REGISTER_TYPE(ModelPoisRegFloat)
 
 #endif  // LIB_INCLUDE_TICK_LINEAR_MODEL_MODEL_POISREG_H_

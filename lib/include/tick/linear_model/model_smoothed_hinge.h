@@ -12,6 +12,10 @@ template <class T>
 class DLL_PUBLIC TModelSmoothedHinge
     : public virtual TModelGeneralizedLinear<T>,
       public TModelLipschitz<T> {
+  // Grants cereal access to default constructor
+  friend class cereal::access;
+
+ protected:
   using TModelLipschitz<T>::ready_lip_consts;
   using TModelLipschitz<T>::lip_consts;
   using TModelGeneralizedLinear<T>::compute_features_norm_sq;
@@ -26,13 +30,20 @@ class DLL_PUBLIC TModelSmoothedHinge
   using TModelGeneralizedLinear<T>::get_class_name;
 
  private:
+  // This exists soley for cereal which has friend access
+  TModelSmoothedHinge() : TModelSmoothedHinge<T>(nullptr, nullptr, 0) {}
+
   T smoothness;
 
  public:
   TModelSmoothedHinge(const std::shared_ptr<BaseArray2d<T> > features,
                       const std::shared_ptr<SArray<T> > labels,
                       const bool fit_intercept, const T smoothness = 1,
-                      const int n_threads = 1);
+                      const int n_threads = 1)
+      : TModelLabelsFeatures<T>(features, labels),
+        TModelGeneralizedLinear<T>(features, labels, fit_intercept, n_threads) {
+    set_smoothness(smoothness);
+  }
 
   T loss_i(const ulong i, const Array<T> &coeffs) override;
 
@@ -52,10 +63,29 @@ class DLL_PUBLIC TModelSmoothedHinge
 
   template <class Archive>
   void serialize(Archive &ar) {
-    ar(cereal::make_nvp("ModelGeneralizedLinear",
-                        cereal::base_class<ModelGeneralizedLinear>(this)));
-    ar(cereal::make_nvp("ModelLipschitz",
-                        cereal::base_class<ModelLipschitz>(this)));
+    ar(cereal::make_nvp(
+        "ModelGeneralizedLinear",
+        typename cereal::base_class<TModelGeneralizedLinear<T> >(this)));
+    ar(cereal::make_nvp(
+        "ModelLipschitz",
+        typename cereal::base_class<TModelLipschitz<T> >(this)));
+    ar(CEREAL_NVP(smoothness));
+  }
+
+  BoolStrReport compare(const TModelSmoothedHinge<T> &that,
+                        std::stringstream &ss) {
+    ss << get_class_name() << std::endl;
+    bool are_equal = TModelGeneralizedLinear<T>::compare(that, ss) &&
+                     TModelLipschitz<T>::compare(that, ss) &&
+                     TICK_CMP_REPORT(ss, smoothness);
+    return BoolStrReport(are_equal, ss.str());
+  }
+  BoolStrReport compare(const TModelSmoothedHinge<T> &that) {
+    std::stringstream ss;
+    return compare(that, ss);
+  }
+  BoolStrReport operator==(const TModelSmoothedHinge<T> &that) {
+    return TModelSmoothedHinge<T>::compare(that);
   }
 };
 
@@ -64,9 +94,11 @@ using ModelSmoothedHinge = TModelSmoothedHinge<double>;
 using ModelSmoothedHingeDouble = TModelSmoothedHinge<double>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelSmoothedHingeDouble,
                                    cereal::specialization::member_serialize)
+CEREAL_REGISTER_TYPE(ModelSmoothedHingeDouble)
 
 using ModelSmoothedHingeFloat = TModelSmoothedHinge<float>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelSmoothedHingeFloat,
                                    cereal::specialization::member_serialize)
+CEREAL_REGISTER_TYPE(ModelSmoothedHingeFloat)
 
 #endif  // LIB_INCLUDE_TICK_LINEAR_MODEL_MODEL_SMOOTHED_HINGE_H_

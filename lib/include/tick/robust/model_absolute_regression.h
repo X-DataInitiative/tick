@@ -11,6 +11,9 @@
 template <class T>
 class DLL_PUBLIC TModelAbsoluteRegression
     : public virtual TModelGeneralizedLinear<T> {
+  // Grants cereal access to default constructor
+  friend class cereal::access;
+
  protected:
   using TModelGeneralizedLinear<T>::features_norm_sq;
   using TModelGeneralizedLinear<T>::compute_features_norm_sq;
@@ -28,6 +31,11 @@ class DLL_PUBLIC TModelAbsoluteRegression
   using TModelGeneralizedLinear<T>::grad_i_factor;
   using TModelGeneralizedLinear<T>::get_class_name;
 
+ private:
+  // This exists soley for cereal which has friend access
+  TModelAbsoluteRegression()
+      : TModelAbsoluteRegression(nullptr, nullptr, false) {}
+
  public:
   TModelAbsoluteRegression(const std::shared_ptr<BaseArray2d<T> > features,
                            const std::shared_ptr<SArray<T> > labels,
@@ -40,7 +48,20 @@ class DLL_PUBLIC TModelAbsoluteRegression
   template <class Archive>
   void serialize(Archive &ar) {
     ar(cereal::make_nvp("ModelGeneralizedLinear",
-                        cereal::base_class<ModelGeneralizedLinear>(this)));
+                        cereal::base_class<TModelGeneralizedLinear<T> >(this)));
+  }
+
+  BoolStrReport compare(const TModelAbsoluteRegression<T> &that,
+                        std::stringstream &ss) {
+    ss << get_class_name() << std::endl;
+    return TModelGeneralizedLinear<T>::compare(that, ss);
+  }
+  BoolStrReport compare(const TModelAbsoluteRegression<T> &that) {
+    std::stringstream ss;
+    return compare(that, ss);
+  }
+  BoolStrReport operator==(const TModelAbsoluteRegression<T> &that) {
+    return TModelAbsoluteRegression<T>::compare(that);
   }
 };
 
@@ -49,9 +70,11 @@ using ModelAbsoluteRegression = TModelAbsoluteRegression<double>;
 using ModelAbsoluteRegressionDouble = TModelAbsoluteRegression<double>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelAbsoluteRegressionDouble,
                                    cereal::specialization::member_serialize)
+CEREAL_REGISTER_TYPE(ModelAbsoluteRegressionDouble)
 
 using ModelAbsoluteRegressionFloat = TModelAbsoluteRegression<float>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelAbsoluteRegressionFloat,
                                    cereal::specialization::member_serialize)
+CEREAL_REGISTER_TYPE(ModelAbsoluteRegressionFloat)
 
 #endif  // LIB_INCLUDE_TICK_ROBUST_MODEL_ABSOLUTE_REGRESSION_H_

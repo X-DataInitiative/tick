@@ -12,9 +12,8 @@
 template <class T>
 class DLL_PUBLIC TModelGeneralizedLinearWithIntercepts
     : public virtual TModelGeneralizedLinear<T> {
- private:
-  std::string clazz = "TModelGeneralizedLinearWithIntercepts<" +
-                      std::string(typeid(T).name()) + ">";
+  // Grants cereal access to default constructor
+  friend class cereal::access;
 
  protected:
   using TModelGeneralizedLinear<T>::features_norm_sq;
@@ -43,10 +42,15 @@ class DLL_PUBLIC TModelGeneralizedLinearWithIntercepts
   void compute_grad_i(const ulong i, const Array<T> &coeffs, Array<T> &out,
                       const bool fill) override;
 
+ private:
+  // This exists soley for cereal which has friend access
+  TModelGeneralizedLinearWithIntercepts()
+      : TModelGeneralizedLinearWithIntercepts(nullptr, nullptr, false) {}
+
  public:
   TModelGeneralizedLinearWithIntercepts(
-      const std::shared_ptr<BaseArray2d<T> > features,
-      const std::shared_ptr<SArray<T> > labels, const bool fit_intercept,
+      const std::shared_ptr<BaseArray2d<T>> features,
+      const std::shared_ptr<SArray<T>> labels, const bool fit_intercept,
       const int n_threads = 1);
 
   virtual ~TModelGeneralizedLinearWithIntercepts() {}
@@ -60,13 +64,41 @@ class DLL_PUBLIC TModelGeneralizedLinearWithIntercepts
   ulong get_n_coeffs() const override {
     return n_features + n_samples + static_cast<int>(fit_intercept);
   }
+
+  template <class Archive>
+  void serialize(Archive &ar) {
+    ar(cereal::make_nvp("ModelGeneralizedLinear",
+                        cereal::base_class<TModelGeneralizedLinear<T>>(this)));
+  }
+
+  BoolStrReport compare(const TModelGeneralizedLinearWithIntercepts<T> &that,
+                        std::stringstream &ss) {
+    ss << get_class_name() << std::endl;
+    return TModelGeneralizedLinear<T>::compare(that, ss);
+  }
+  BoolStrReport compare(const TModelGeneralizedLinearWithIntercepts<T> &that) {
+    std::stringstream ss;
+    return compare(that, ss);
+  }
+  BoolStrReport operator==(
+      const TModelGeneralizedLinearWithIntercepts<T> &that) {
+    return TModelGeneralizedLinearWithIntercepts<T>::compare(that);
+  }
 };
 
 using ModelGeneralizedLinearWithIntercepts =
     TModelGeneralizedLinearWithIntercepts<double>;
+
 using ModelGeneralizedLinearWithInterceptsDouble =
     TModelGeneralizedLinearWithIntercepts<double>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelGeneralizedLinearWithInterceptsDouble,
+                                   cereal::specialization::member_serialize)
+CEREAL_REGISTER_TYPE(ModelGeneralizedLinearWithInterceptsDouble)
+
 using ModelGeneralizedLinearWithInterceptsFloat =
     TModelGeneralizedLinearWithIntercepts<float>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelGeneralizedLinearWithInterceptsFloat,
+                                   cereal::specialization::member_serialize)
+CEREAL_REGISTER_TYPE(ModelGeneralizedLinearWithInterceptsFloat)
 
 #endif  // LIB_INCLUDE_TICK_ROBUST_MODEL_GENERALIZED_LINEAR_WITH_INTERCEPTS_H_

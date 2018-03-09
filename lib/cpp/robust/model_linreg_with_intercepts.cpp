@@ -30,5 +30,5 @@ void TModelLinRegWithIntercepts<T>::compute_lip_consts() {
   }
 }
 
-template class TModelLinRegWithIntercepts<double>;
-template class TModelLinRegWithIntercepts<float>;
+template class DLL_PUBLIC TModelLinRegWithIntercepts<double>;
+template class DLL_PUBLIC TModelLinRegWithIntercepts<float>;

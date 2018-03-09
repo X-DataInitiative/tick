@@ -30,5 +30,5 @@ T TModelAbsoluteRegression<T>::grad_i_factor(const ulong i,
   }
 }
 
-template class TModelAbsoluteRegression<double>;
-template class TModelAbsoluteRegression<float>;
+template class DLL_PUBLIC TModelAbsoluteRegression<double>;
+template class DLL_PUBLIC TModelAbsoluteRegression<float>;

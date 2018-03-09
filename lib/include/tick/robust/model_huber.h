@@ -12,6 +12,9 @@
 template <class T>
 class DLL_PUBLIC TModelHuber : public virtual TModelGeneralizedLinear<T>,
                                public TModelLipschitz<T> {
+  // Grants cereal access to default constructor
+  friend class cereal::access;
+
  protected:
   using TModelGeneralizedLinear<T>::features_norm_sq;
   using TModelGeneralizedLinear<T>::compute_features_norm_sq;
@@ -33,6 +36,10 @@ class DLL_PUBLIC TModelHuber : public virtual TModelGeneralizedLinear<T>,
 
  private:
   T threshold, threshold_squared_over_two;
+
+ private:
+  // This exists soley for cereal which has friend access
+  TModelHuber() : TModelHuber(nullptr, nullptr, false, 1) {}
 
  public:
   TModelHuber(const std::shared_ptr<BaseArray2d<T> > features,
@@ -60,9 +67,28 @@ class DLL_PUBLIC TModelHuber : public virtual TModelGeneralizedLinear<T>,
   template <class Archive>
   void serialize(Archive &ar) {
     ar(cereal::make_nvp("ModelGeneralizedLinear",
-                        cereal::base_class<ModelGeneralizedLinear>(this)));
+                        cereal::base_class<TModelGeneralizedLinear<T> >(this)));
     ar(cereal::make_nvp("ModelLipschitz",
-                        cereal::base_class<ModelLipschitz>(this)));
+                        cereal::base_class<TModelLipschitz<T> >(this)));
+    ar(threshold);
+    ar(threshold_squared_over_two);
+  }
+
+  BoolStrReport compare(const TModelHuber<T> &that, std::stringstream &ss) {
+    ss << get_class_name() << std::endl;
+    bool are_equal = TModelGeneralizedLinear<T>::compare(that, ss) &&
+                     TModelLipschitz<T>::compare(that, ss) &&
+                     TICK_CMP_REPORT(ss, threshold) &&
+                     TICK_CMP_REPORT(ss, threshold_squared_over_two);
+
+    return BoolStrReport(are_equal, ss.str());
+  }
+  BoolStrReport compare(const TModelHuber<T> &that) {
+    std::stringstream ss;
+    return compare(that, ss);
+  }
+  BoolStrReport operator==(const TModelHuber<T> &that) {
+    return TModelHuber<T>::compare(that);
   }
 };
 
@@ -71,9 +97,11 @@ using ModelHuber = TModelHuber<double>;
 using ModelHuberDouble = TModelHuber<double>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelHuberDouble,
                                    cereal::specialization::member_serialize)
+CEREAL_REGISTER_TYPE(ModelHuberDouble)
 
 using ModelHuberFloat = TModelHuber<float>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelHuberFloat,
                                    cereal::specialization::member_serialize)
+CEREAL_REGISTER_TYPE(ModelHuberFloat)
 
 #endif  // LIB_INCLUDE_TICK_ROBUST_MODEL_HUBER_H_
