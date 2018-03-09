@@ -15,6 +15,9 @@ class Array2d;
  */
 template <typename T>
 class BaseArray2d : public AbstractArray1d2d<T> {
+  template <class T1>
+  friend std::ostream &operator<<(std::ostream &, const BaseArray2d<T1> &);
+
  protected:
   using AbstractArray1d2d<T>::_size;
   using AbstractArray1d2d<T>::_size_sparse;
@@ -132,6 +135,21 @@ class BaseArray2d : public AbstractArray1d2d<T> {
   // This method is defined in sparsearray2d.h
   Array2d<T> as_array2d();
 
+  //! @brief Compare two arrays by value - ignores allocation methodology !)
+  bool compare(const BaseArray2d<T> &that) {
+    bool are_equal = AbstractArray1d2d<T>::compare(that) &&
+                     (this->_n_rows == that._n_rows) &&
+                     (this->_n_cols == that._n_cols);
+    if (are_equal && this->_row_indices && that._row_indices) {
+      for (size_t i = 0; i < _n_rows + 1; i++) {
+        are_equal = (this->_row_indices[i] == that._row_indices[i]);
+        if (!are_equal) break;
+      }
+    }
+    return are_equal;
+  }
+  bool operator==(const BaseArray2d<T> &that) { return compare(that); }
+
  private:
   std::string type() const {
     return (is_dense() ? "Array2d" : "SparseArray2d");
@@ -216,6 +234,11 @@ void BaseArray2d<T>::_print_dense() const {
 template <typename T>
 void BaseArray2d<T>::_print_sparse() const {
   std::cout << "_print_sparse ... not implemented" << std::endl;
+}
+
+template <typename T>
+inline std::ostream &operator<<(std::ostream &s, const BaseArray2d<T> &p) {
+  return s << typeid(p).name() << "<" << typeid(T).name() << ">";
 }
 
   /////////////////////////////////////////////////////////////////

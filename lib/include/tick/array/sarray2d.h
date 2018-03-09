@@ -268,7 +268,7 @@ void SArray2d<T>::clear() {
 
 // Destructor
 template <typename T>
-SArray2d<T>::~SArray2d<T>() {
+SArray2d<T>::~SArray2d() {
 #ifdef DEBUG_SHAREDARRAY
   n_allocs--;
   std::cout << "SArray2d Destructor (->#" << n_allocs << ") : ~SArray2d on "

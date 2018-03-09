@@ -76,5 +76,5 @@ T TModelGeneralizedLinearWithIntercepts<T>::loss(const Array<T> &coeffs) {
          n_samples;
 }
 
-template class TModelGeneralizedLinearWithIntercepts<double>;
-template class TModelGeneralizedLinearWithIntercepts<float>;
+template class DLL_PUBLIC TModelGeneralizedLinearWithIntercepts<double>;
+template class DLL_PUBLIC TModelGeneralizedLinearWithIntercepts<float>;

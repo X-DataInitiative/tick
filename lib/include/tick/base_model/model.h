@@ -10,12 +10,16 @@
 #include "tick/base/base.h"
 
 #include <cereal/cereal.hpp>
+#include <cereal/types/polymorphic.hpp>
 
 #include <iostream>
 
 // TODO: Model "data" : ModeLabelsFeatures, Model,Model pour les Hawkes
 template <class T>
 class TModel {
+  template <class T1>
+  friend std::ostream &operator<<(std::ostream &, const TModel<T1> &);
+
  public:
   TModel() {}
   virtual ~TModel() {}
@@ -111,7 +115,16 @@ class TModel {
    * @note This will cache the obtained value for later calls
    */
   virtual T get_lip_mean() { TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name()); }
+
+ public:
+  template <class Archive>
+  void serialize(Archive &ar) {}
 };
+
+template <typename T>
+inline std::ostream &operator<<(std::ostream &s, const TModel<T> &p) {
+  return s << typeid(p).name() << "<" << typeid(T).name() << ">";
+}
 
 using Model = TModel<double>;
 using ModelPtr = std::shared_ptr<Model>;

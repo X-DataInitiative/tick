@@ -127,6 +127,26 @@ class AbstractArray1d2d {
   virtual void _print_dense() const = 0;
   virtual void _print_sparse() const = 0;
 
+  //! @brief Compare two arrays by value - ignores allocation methodology !)
+  bool compare(const AbstractArray1d2d<T> &that) {
+    bool are_equal =
+        this->_size == that._size && this->_size_sparse == that._size_sparse;
+    if (are_equal && this->_indices && that._indices) {
+      for (size_t i = 0; i < this->_size_sparse; i++) {
+        are_equal = this->_indices[i] == that._indices[i];
+        if (!are_equal) break;
+      }
+    }
+    if (are_equal) {
+      for (size_t i = 0; i < size_data(); i++) {
+        are_equal = this->_data[i] == that._data[i];
+        if (!are_equal) break;
+      }
+    }
+    return are_equal;
+  }
+  bool operator==(const AbstractArray1d2d<T> &that) { return compare(that); }
+
  public:
   //! @brief Fill array with zeros (in case of a sparse array we do not
   //! desallocate the various arrays... so it is a "lazy" but quick init !)

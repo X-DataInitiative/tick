@@ -7,15 +7,6 @@
 #include "tick/linear_model/model_poisreg.h"
 
 template <class T>
-TModelPoisReg<T>::TModelPoisReg(const std::shared_ptr<BaseArray2d<T> > features,
-                                const std::shared_ptr<SArray<T> > labels,
-                                const LinkType link_type,
-                                const bool fit_intercept, const int n_threads)
-    : TModelLabelsFeatures<T>(features, labels),
-      TModelGeneralizedLinear<T>(features, labels, fit_intercept, n_threads),
-      link_type(link_type) {}
-
-template <class T>
 T TModelPoisReg<T>::sdca_dual_min_i(const ulong i, const T dual_i,
                                     const Array<T> &primal_vector,
                                     const T previous_delta_dual_i, T l_l2sq) {
@@ -201,5 +192,5 @@ T TModelPoisReg<T>::grad_i_factor(const ulong i, const Array<T> &coeffs) {
   }
 }
 
-template class TModelPoisReg<double>;
-template class TModelPoisReg<float>;
+template class DLL_PUBLIC TModelPoisReg<double>;
+template class DLL_PUBLIC TModelPoisReg<float>;

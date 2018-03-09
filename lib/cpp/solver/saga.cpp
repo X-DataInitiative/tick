@@ -188,11 +188,5 @@ void TSAGA<T>::solve_sparse_proba_updates(bool use_intercept,
   TStoSolver<T>::t += epoch_size;
 }
 
-template <class T>
-void TSAGA<T>::set_starting_iterate(Array<T> &new_iterate) {
-  TStoSolver<T>::set_starting_iterate(new_iterate);
-  next_iterate = iterate;
-}
-
 template class DLL_PUBLIC TSAGA<double>;
 template class DLL_PUBLIC TSAGA<float>;

@@ -3,16 +3,6 @@
 #include "tick/linear_model/model_smoothed_hinge.h"
 
 template <class T>
-TModelSmoothedHinge<T>::TModelSmoothedHinge(
-    const std::shared_ptr<BaseArray2d<T> > features,
-    const std::shared_ptr<SArray<T> > labels, const bool fit_intercept,
-    const T smoothness, const int n_threads)
-    : TModelLabelsFeatures<T>(features, labels),
-      TModelGeneralizedLinear<T>(features, labels, fit_intercept, n_threads) {
-  set_smoothness(smoothness);
-}
-
-template <class T>
 T TModelSmoothedHinge<T>::loss_i(const ulong i, const Array<T> &coeffs) {
   const double z = get_label(i) * get_inner_prod(i, coeffs);
   if (z >= 1) {
@@ -59,5 +49,5 @@ void TModelSmoothedHinge<T>::compute_lip_consts() {
   }
 }
 
-template class TModelSmoothedHinge<double>;
-template class TModelSmoothedHinge<float>;
+template class DLL_PUBLIC TModelSmoothedHinge<double>;
+template class DLL_PUBLIC TModelSmoothedHinge<float>;

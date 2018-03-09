@@ -57,5 +57,5 @@ void TModelModifiedHuber<T>::compute_lip_consts() {
   }
 }
 
-template class TModelModifiedHuber<double>;
-template class TModelModifiedHuber<float>;
+template class DLL_PUBLIC TModelModifiedHuber<double>;
+template class DLL_PUBLIC TModelModifiedHuber<float>;

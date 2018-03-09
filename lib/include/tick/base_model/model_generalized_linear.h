@@ -11,10 +11,6 @@
 template <class T>
 class DLL_PUBLIC TModelGeneralizedLinear
     : virtual public TModelLabelsFeatures<T> {
- private:
-  std::string clazz =
-      "TModelLabelsFeatures<" + std::string(typeid(T).name()) + ">";
-
  protected:
   using TModelLabelsFeatures<T>::features;
   using TModelLabelsFeatures<T>::labels;
@@ -92,12 +88,24 @@ class DLL_PUBLIC TModelGeneralizedLinear
 
   template <class Archive>
   void serialize(Archive &ar) {
-    ar(cereal::make_nvp(
-        "ModelLabelsFeatures",
-        typename cereal::virtual_base_class<TModelLabelsFeatures<T> >(this)));
+    ar(cereal::make_nvp("ModelLabelsFeatures",
+                        cereal::base_class<TModelLabelsFeatures<T> >(this)));
     ar(CEREAL_NVP(features_norm_sq));
     ar(CEREAL_NVP(fit_intercept));
     ar(CEREAL_NVP(ready_features_norm_sq));
+    ar(CEREAL_NVP(n_threads));
+  }
+
+ protected:
+  BoolStrReport compare(const TModelGeneralizedLinear<T> &that,
+                        std::stringstream &ss) {
+    auto are_equal = TModelLabelsFeatures<T>::compare(that, ss) &&
+                     TICK_CMP_REPORT(ss, features_norm_sq) &&
+                     TICK_CMP_REPORT(ss, fit_intercept) &&
+                     TICK_CMP_REPORT(ss, n_features) &&
+                     TICK_CMP_REPORT(ss, ready_features_norm_sq) &&
+                     TICK_CMP_REPORT(ss, n_threads);
+    return BoolStrReport(are_equal, ss.str());
   }
 };
 

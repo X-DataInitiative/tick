@@ -40,6 +40,46 @@
 #define TICK_DEBUG_VERBOSE_MODE 1
 #endif
 
+/** MACRO TICK_CMP_REPORT
+* This exists for comparison of two objects of the exact same type
+*  so that we can compare values of variables, and know when they differ
+*  Its a lambda which receives all values as reference
+* an example looks like
+
+  bool compare(const Object<T> &that) {
+    std::stringsteam ss;
+    bool are_equal = TICK_CMP_REPORT(ss, variable_on_class);
+    if(are_equal){
+      std::cerr << "Objects differ \n" << ss.str();
+    }
+    return are_equal;
+  }
+*/
+#define TICK_CMP_REPORT(ss, var)                                       \
+  [&]() {                                                              \
+    bool are_equal = this->var == that.var;                            \
+    if (!are_equal)                                                    \
+      ss << #var ": " << this->var << " != " << that.var << std::endl; \
+    return are_equal;                                                  \
+  }()
+/** TICK_CMP_REPORT_PTR
+ * This is the same as the above macro expect it includes a dereference for
+ *  pointers or std::shared_ptr etc - null checks are included
+ */
+#define TICK_CMP_REPORT_PTR(ss, var)                                      \
+  [&]() {                                                                 \
+    bool is_not_null_eq = (this->var != nullptr && that.var != nullptr);  \
+    bool are_equal = (is_not_null_eq && (*this->var) == (*that.var)) ||   \
+                     (this->var == nullptr && that.var == nullptr);       \
+    if (!are_equal) {                                                     \
+      if (is_not_null_eq)                                                 \
+        ss << #var " : " << this->var << " != " << that.var << std::endl; \
+      else                                                                \
+        ss << #var ":are not equals" << std::endl;                        \
+    }                                                                     \
+    return are_equal;                                                     \
+  }()
+
 namespace tick {
 
 /**
