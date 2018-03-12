@@ -8,6 +8,9 @@
 
 template <class T>
 class DLL_PUBLIC TProxSlope : public TProxSortedL1<T> {
+  // Grants cereal access to default constructor
+  friend class cereal::access;
+
  protected:
   using TProxSortedL1<T>::start;
   using TProxSortedL1<T>::end;
@@ -21,6 +24,10 @@ class DLL_PUBLIC TProxSlope : public TProxSortedL1<T> {
  protected:
   T false_discovery_rate;
   void compute_weights(void) override;
+
+ protected:
+  // This exists soley for cereal which has friend access
+  TProxSlope() : TProxSlope(0, 0, 0, 1, false) {}
 
  public:
   TProxSlope(T strength, T false_discovery_rate, bool positive);
@@ -40,11 +47,33 @@ class DLL_PUBLIC TProxSlope : public TProxSortedL1<T> {
     }
     this->false_discovery_rate = false_discovery_rate;
   }
+
+  template <class Archive>
+  void serialize(Archive& ar) {
+    ar(cereal::make_nvp("ProxSeparable", cereal::base_class<TProx<T> >(this)));
+
+    ar(CEREAL_NVP(false_discovery_rate));
+  }
+
+  BoolStrReport compare(const TProxSlope<T>& that) {
+    std::stringstream ss;
+    ss << get_class_name();
+    auto are_equal = TProx<T>::compare(that, ss);
+    return BoolStrReport(are_equal, ss.str());
+  }
+  BoolStrReport operator==(const TProxSlope<T>& that) { return compare(that); }
 };
 
 using ProxSlope = TProxSlope<double>;
 
 using ProxSlopeDouble = TProxSlope<double>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ProxSlopeDouble,
+                                   cereal::specialization::member_serialize)
+CEREAL_REGISTER_TYPE(ProxSlopeDouble)
+
 using ProxSlopeFloat = TProxSlope<float>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ProxSlopeFloat,
+                                   cereal::specialization::member_serialize)
+CEREAL_REGISTER_TYPE(ProxSlopeFloat)
 
 #endif  // LIB_INCLUDE_TICK_PROX_PROX_SLOPE_H_

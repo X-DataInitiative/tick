@@ -11,6 +11,9 @@
 
 template <class T>
 class DLL_PUBLIC TProxMulti : public TProx<T> {
+  // Grants cereal access to default constructor
+  friend class cereal::access;
+
  protected:
   using ProxTPtrVector = std::vector<std::shared_ptr<TProx<T> > >;
 
@@ -20,6 +23,10 @@ class DLL_PUBLIC TProxMulti : public TProx<T> {
  protected:
   ProxTPtrVector proxs;
 
+ protected:
+  // This exists soley for cereal which has friend access
+  TProxMulti() {}
+
  public:
   explicit TProxMulti(ProxTPtrVector proxs);
 
@@ -27,6 +34,21 @@ class DLL_PUBLIC TProxMulti : public TProx<T> {
 
   void call(const Array<T> &coeffs, T step, Array<T> &out, ulong start,
             ulong end) override;
+
+  template <class Archive>
+  void serialize(Archive& ar) {
+    ar(cereal::make_nvp("ProxSeparable",
+                        cereal::base_class<TProx<T> >(this)));
+    ar(CEREAL_NVP(proxs));
+  }
+
+  BoolStrReport compare(const TProxMulti<T>& that) {
+    std::stringstream ss;
+    ss << get_class_name();
+    auto are_equal = TProx<T>::compare(that, ss);
+    return BoolStrReport(are_equal, ss.str());
+  }
+  BoolStrReport operator==(const TProxMulti<T>& that) { return compare(that); }
 };
 
 using ProxMulti = TProxMulti<double>;

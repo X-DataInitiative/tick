@@ -8,6 +8,9 @@
 
 template <class T>
 class DLL_PUBLIC TProxL1w : public TProxSeparable<T> {
+  // Grants cereal access to default constructor
+  friend class cereal::access;
+
  protected:
   using TProxSeparable<T>::has_range;
   using TProxSeparable<T>::positive;
@@ -24,6 +27,10 @@ class DLL_PUBLIC TProxL1w : public TProxSeparable<T> {
  protected:
   // Weights for L1 penalization
   SArrayTPtr weights;
+
+ protected:
+  // This exists soley for cereal which has friend access
+  TProxL1w() : TProxL1w<T>(0, nullptr, 0) {}
 
  public:
   TProxL1w(T strength, std::shared_ptr<SArray<T>> weights, bool positive);
@@ -49,6 +56,22 @@ class DLL_PUBLIC TProxL1w : public TProxSeparable<T> {
 
   void set_weights(SArrayTPtr weights) { this->weights = weights; }
 
+  template <class Archive>
+  void serialize(Archive &ar) {
+    ar(cereal::make_nvp("ProxSeparable",
+                        cereal::base_class<TProxSeparable<T>>(this)));
+
+    ar(CEREAL_NVP(weights));
+  }
+
+  BoolStrReport compare(const TProxL1w<T> &that) {
+    std::stringstream ss;
+    ss << get_class_name();
+    auto are_equal = TProxSeparable<T>::compare(that, ss) && TICK_CMP_REPORT_PTR(ss, weights);
+    return BoolStrReport(are_equal, ss.str());
+  }
+  BoolStrReport operator==(const TProxL1w<T> &that) { return compare(that); }
+
  private:
   T call_single(T x, T step) const override;
 
@@ -66,6 +89,13 @@ class DLL_PUBLIC TProxL1w : public TProxSeparable<T> {
 using ProxL1w = TProxL1w<double>;
 
 using ProxL1wDouble = TProxL1w<double>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ProxL1wDouble,
+                                   cereal::specialization::member_serialize)
+CEREAL_REGISTER_TYPE(ProxL1wDouble)
+
 using ProxL1wFloat = TProxL1w<float>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ProxL1wFloat,
+                                   cereal::specialization::member_serialize)
+CEREAL_REGISTER_TYPE(ProxL1wFloat)
 
 #endif  // LIB_INCLUDE_TICK_PROX_PROX_L1W_H_

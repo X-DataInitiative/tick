@@ -12,8 +12,18 @@
 #include <memory>
 #include <string>
 
+#include <cereal/cereal.hpp>
+#include <cereal/types/memory.hpp>
+#include <cereal/types/polymorphic.hpp>
+
 template <class T>
 class DLL_PUBLIC TProx {
+  // Grants cereal access to default constructor
+  friend class cereal::access;
+
+  template <class T1>
+  friend std::ostream& operator<<(std::ostream&, const TProx<T1>&);
+
  protected:
   //! @brief Flag to know if proximal operator concerns only a part of the
   //! vector
@@ -29,11 +39,14 @@ class DLL_PUBLIC TProx {
   //! @brief Weight of the proximal operator
   T strength;
 
+ protected:
+  // This exists soley for cereal which has friend access
+  TProx() {}
+
  public:
   TProx(T strength, bool positive);
   TProx(T strength, ulong start, ulong end, bool positive);
 
-  TProx() = delete;
   TProx(const TProx<T>& other) = delete;
   TProx(TProx<T>&& other) = delete;
   TProx<T>& operator=(const TProx<T>& other) = delete;
@@ -78,7 +91,29 @@ class DLL_PUBLIC TProx {
   virtual bool get_positive() const;
 
   virtual void set_positive(bool positive);
+
+ protected:
+  template <class Archive>
+  void serialize(Archive& ar) {
+    ar(CEREAL_NVP(strength), CEREAL_NVP(has_range), CEREAL_NVP(start),
+       CEREAL_NVP(end), CEREAL_NVP(positive));
+  }
+
+  BoolStrReport operator==(const TProx<T>& that) = delete;
+
+  BoolStrReport compare(const TProx<T> &that, std::stringstream& ss) {
+    return BoolStrReport(
+        TICK_CMP_REPORT(ss, strength) && TICK_CMP_REPORT(ss, has_range) &&
+            TICK_CMP_REPORT(ss, start) && TICK_CMP_REPORT(ss, end) &&
+            TICK_CMP_REPORT(ss, positive),
+        ss.str());
+  }
 };
+
+template <typename T>
+inline std::ostream& operator<<(std::ostream& s, const TProx<T>& p) {
+  return s << typeid(p).name() << "<" << typeid(T).name() << ">";
+}
 
 using Prox = TProx<double>;
 using ProxPtr = std::shared_ptr<Prox>;

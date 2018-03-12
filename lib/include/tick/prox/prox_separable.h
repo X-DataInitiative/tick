@@ -7,6 +7,9 @@
 
 template <class T>
 class DLL_PUBLIC TProxSeparable : public TProx<T> {
+  // Grants cereal access to default constructor
+  friend class cereal::access;
+
  protected:
   using TProx<T>::has_range;
   using TProx<T>::strength;
@@ -17,6 +20,10 @@ class DLL_PUBLIC TProxSeparable : public TProx<T> {
  public:
   using TProx<T>::call;
   using TProx<T>::get_class_name;
+
+ protected:
+  // This exists soley for cereal which has friend access
+  TProxSeparable() : TProxSeparable<T>(0, 0, 1, 0) {}
 
  public:
   TProxSeparable(T strength, bool positive);
@@ -60,11 +67,24 @@ class DLL_PUBLIC TProxSeparable : public TProx<T> {
   //! @brief get penalization value of the prox on a single value
   //! @warning This does not take strength into account
   virtual T value_single(T x) const;
+
+ protected:
+  template <class Archive>
+  void serialize(Archive &ar) {
+    ar(cereal::make_nvp("Prox", cereal::base_class<TProx<T> >(this)));
+  }
+
+  BoolStrReport compare(const TProxSeparable<T> &that, std::stringstream &ss) {
+    return TProx<T>::compare(that, ss);
+  }
 };
 
 using ProxSeparable = TProxSeparable<double>;
 
 using ProxSeparableDouble = TProxSeparable<double>;
+CEREAL_REGISTER_TYPE(ProxSeparableDouble)
+
 using ProxSeparableFloat = TProxSeparable<float>;
+CEREAL_REGISTER_TYPE(ProxSeparableFloat)
 
 #endif  // LIB_INCLUDE_TICK_PROX_PROX_SEPARABLE_H_
