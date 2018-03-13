@@ -15,6 +15,9 @@
 
 template <class T>
 class TProxWithGroups : public TProx<T> {
+  // Grants cereal access to default constructor
+  friend class cereal::access;
+
  protected:
   using TProx<T>::has_range;
   using TProx<T>::strength;
@@ -43,6 +46,10 @@ class TProxWithGroups : public TProx<T> {
   virtual std::unique_ptr<TProx<T> > build_prox(T strength, ulong start,
                                                 ulong end, bool positive);
 
+ protected:
+  // This exists soley for cereal which has friend access
+  TProxWithGroups() : TProxWithGroups(0, nullptr, nullptr, false) {}
+
  public:
   TProxWithGroups(T strength, SArrayULongPtr blocks_start,
                   SArrayULongPtr blocks_length, bool positive);
@@ -50,12 +57,6 @@ class TProxWithGroups : public TProx<T> {
   TProxWithGroups(T strength, SArrayULongPtr blocks_start,
                   SArrayULongPtr blocks_length, ulong start, ulong end,
                   bool positive);
-
-  TProxWithGroups() = delete;
-  TProxWithGroups(const TProxWithGroups<T> &other) = delete;
-  TProxWithGroups(TProxWithGroups<T> &&other) = delete;
-  TProxWithGroups<T> &operator=(const TProxWithGroups<T> &other) = delete;
-  TProxWithGroups<T> &operator=(TProxWithGroups<T> &&other) = delete;
 
   T value(const Array<T> &coeffs, ulong start, ulong end) override;
 
@@ -99,6 +100,30 @@ class TProxWithGroups : public TProx<T> {
     }
     this->blocks_length = blocks_length;
     is_synchronized = false;
+  }
+
+ protected:
+  template <class Archive>
+  void serialize(Archive &ar) {
+    ar(cereal::make_nvp("Prox", cereal::base_class<TProx<T> >(this)));
+    ar(CEREAL_NVP(positive));
+    ar(CEREAL_NVP(is_synchronized));
+    ar(CEREAL_NVP(n_blocks));
+    ar(CEREAL_NVP(blocks_start));
+    ar(CEREAL_NVP(blocks_length));
+    ar(CEREAL_NVP(proxs));
+  }
+
+  BoolStrReport compare(const TProxWithGroups<T> &that, std::stringstream &ss) {
+    auto are_equal = TProx<T>::compare(that, ss)
+        && this->proxs.size() == that.proxs.size();
+    if (are_equal) {
+      for (size_t i = 0; i < this->proxs.size(); i++) {
+        are_equal = this->proxs[i] == that.proxs[i];
+        if (!are_equal) break;
+      }
+    }
+    return BoolStrReport(are_equal, ss.str());
   }
 };
 
