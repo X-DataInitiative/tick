@@ -541,6 +541,7 @@ model_core_info = {
                   "coxreg_partial_lik.cpp",
                   "hawkes_fixed_expkern_loglik_custom.cpp",
 		  "hawkes_fixed_sumexpkern_loglik_custom.cpp",
+		  "hawkes_fixed_sumexpkern_loglik_custom2.cpp",
 		  "modelcustombasic.cpp",
 		  "hawkes_fixed_expkern_loglik_custom2.cpp",
                   "sccs.cpp"],
@@ -569,6 +570,7 @@ model_core_info = {
 
 "hawkes_fixed_expkern_loglik_custom.h",
 "hawkes_fixed_sumexpkern_loglik_custom.h",
+"hawkes_fixed_sumexpkern_loglik_custom2.h",
 "modelcustombasic.h",
 "hawkes_fixed_expkern_loglik_custom2.h",
 
