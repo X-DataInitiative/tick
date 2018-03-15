@@ -19,9 +19,6 @@ public:
     ArrayDouble f_i_Max;
 
     ulong last_global_n;
-//    using Hawkes::get_baseline_bound;
-//    using Hawkes::baselines;
-//    using Hawkes::kernels;
 
 //! add the additonal information to allow the simulation
     std::string simu_mode = "random";

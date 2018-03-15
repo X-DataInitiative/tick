@@ -19,12 +19,19 @@ public:
     ArrayDouble mu_Max;
 
     ulong last_global_n;
-//    using Hawkes::get_baseline_bound;
-//    using Hawkes::baselines;
-//    using Hawkes::kernels;
+
+    //! extra information used that will be required during simulation of LOB
+    std::string simu_mode = "random";
+    //! for scenario 1, simulation of LOB
+    double current_num;
+    double avg;    //the normarlizer
+    ArrayDouble avg_order_size;
 
 public :
     Hawkes_customType2(unsigned int n_nodes, int seed, ulong _MaxN, const SArrayDoublePtrList1D &_mu_);
+
+    //!constructor dedicated for simulation
+    Hawkes_customType2(unsigned int n_nodes, int seed, ulong _MaxN, const SArrayDoublePtrList1D &_mu_, const ArrayDouble &extrainfo, const std::string _mode);
 
     // This forbids the unwanted copy of an Hawkes process
     Hawkes_customType2(Hawkes_customType2 &obj) = delete;
