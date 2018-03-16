@@ -65,7 +65,6 @@ np.set_printoptions(precision=2)
 # plt.tight_layout()
 
 
-
 for i in range(10):
     # print(of1.get_path_depth(0, X_test[i, :].ravel()))
     print(of1.get_path(0, X_test[i, :].ravel()))

@@ -94,7 +94,8 @@ class NodeClassifier {
   void update_range(const ArrayDouble &x_t);
   // Update n_samples
   void update_n_samples();
-
+  // Get the index of the child node containing x_t
+  uint32_t get_child(const ArrayDouble & x_t);
 
   // Predict function (average of the labels of samples that passed through the node)
   void predict(ArrayDouble &scores) const;

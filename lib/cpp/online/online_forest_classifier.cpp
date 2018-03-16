@@ -108,6 +108,13 @@ void NodeClassifier::update_n_samples() {
   _n_samples++;
 }
 
+uint32_t NodeClassifier::get_child(const ArrayDouble &x_t) {
+  if (static_cast<float>(x_t[_feature]) <= _threshold) {
+    return _left;
+  } else {
+    return _right;
+  }
+}
 
 float NodeClassifier::score(uint8_t c) const {
   // Using the Dirichet prior
@@ -320,7 +327,6 @@ void TreeClassifier::fit(const ArrayDouble &x_t, double y_t) {
   iteration++;
 }
 
-
 uint32_t TreeClassifier::go_downwards(const ArrayDouble &x_t, double y_t) {
   // We update the nodes along the path which leads to the leaf containing x_t
   // For each node on the path, we consider the possibility of splitting it,
@@ -330,7 +336,7 @@ uint32_t TreeClassifier::go_downwards(const ArrayDouble &x_t, double y_t) {
   bool is_leaf = false;
   float loss_t;
 
-  if(iteration == 0) {
+  if (iteration == 0) {
     // If it's the first iteration, we just put the point in the range of root
     // Let's get the root
     NodeClassifier &current_node = node(0);
@@ -387,13 +393,13 @@ uint32_t TreeClassifier::go_downwards(const ArrayDouble &x_t, double y_t) {
 //        nodes[index_current_node].print();
 
         // Now, get the next node
-        if(is_right_extension) {
+        if (is_right_extension) {
           index_current_node = current_node.right();
         } else {
           index_current_node = current_node.left();
         }
         // This is the leaf containing the sample point (we've just splitted the current node with the data point)
-        NodeClassifier & leaf = node(index_current_node);
+        NodeClassifier &leaf = node(index_current_node);
         // Let's update the leaf containing the point
         leaf.update_range(x_t);
         leaf.update_n_samples();
@@ -417,20 +423,20 @@ uint32_t TreeClassifier::go_downwards(const ArrayDouble &x_t, double y_t) {
         if (is_leaf) {
           return index_current_node;
         } else {
-          float feature = current_node.feature();
-          float threshold = current_node.threshold();
-          if (x_t[feature] <= threshold) {
-            index_current_node = current_node.left();
-          } else {
-            index_current_node = current_node.right();
-          }
+          index_current_node = current_node.get_child(x_t);
+//          float feature = current_node.feature();
+//          float threshold = current_node.threshold();
+//          if (x_t[feature] <= threshold) {
+//            index_current_node = current_node.left();
+//          } else {
+//            index_current_node = current_node.right();
+//          }
           // current_node = node(index_current_node);
         }
       }
     }
   }
 }
-
 
 float TreeClassifier::compute_split_time(uint32_t node_index, const ArrayDouble &x_t) {
   // std::cout << "TreeClassifier::compute_split_time with node_index: " << node_index << std::endl;
@@ -452,7 +458,7 @@ float TreeClassifier::compute_split_time(uint32_t node_index, const ArrayDouble 
       // std::cout << std::endl;
       // std::cout << "Done with TreeClassifier::compute_split_time returning " << split_time << std::endl;
 
-      if(split_time < 10) {
+      if (split_time < 10) {
         return split_time;
       } else {
         return 0;
@@ -520,7 +526,6 @@ void TreeClassifier::split_node(uint32_t node_index,
   // std::cout << "Done with TreeClassifier::split_node." << std::endl;
 }
 
-
 uint32_t TreeClassifier::get_leaf(const ArrayDouble &x_t) {
   // Find the index of the leaf that contains the sample.
   // Start at the root. Index of the root is 0
@@ -542,50 +547,35 @@ uint32_t TreeClassifier::get_leaf(const ArrayDouble &x_t) {
   return index_current_node;
 }
 
-
-
 // Given a sample point, return the depth of the leaf corresponding to the point (including root)
 uint32_t TreeClassifier::get_path_depth(const ArrayDouble &x_t) {
-  uint32_t index_current_node = 0;
-  bool is_leaf = false;
-  uint32_t depth = 0;
-  while (!is_leaf) {
-    // Is the node a leaf ?
+  uint32_t index_current_node = node(0).get_child(x_t);
+  uint32_t depth = 1;
+  while (true) {
     NodeClassifier &current_node = node(index_current_node);
-    is_leaf = current_node.is_leaf();
-    depth++;
-    if (!is_leaf) {
-      float feature = current_node.feature();
-      float threshold = current_node.threshold();
-      if (x_t[feature] <= threshold) {
-        index_current_node = current_node.left();
-      } else {
-        index_current_node = current_node.right();
-      }
+    bool is_leaf = current_node.is_leaf();
+    if (is_leaf) {
+      return depth;
+    } else {
+      depth++;
+      index_current_node = current_node.get_child(x_t);
     }
   }
-  return depth;
 }
 
-// Given a sample point, return the path to the leaf corresponding to the point (including root)
+// Given a sample point, return the path to the leaf corresponding to the point (not including root)
 void TreeClassifier::get_path(const ArrayDouble &x_t, SArrayUIntPtr path) {
-  uint32_t index_current_node = 0;
-  bool is_leaf = false;
+  uint32_t index_current_node = node(0).get_child(x_t);
   uint32_t depth = 0;
-  while (!is_leaf) {
-    // Is the node a leaf ?
-    NodeClassifier &current_node = node(index_current_node);
-    is_leaf = current_node.is_leaf();
+  while (true) {
     (*path)[depth] = index_current_node;
-    depth++;
-    if (!is_leaf) {
-      float feature = current_node.feature();
-      float threshold = current_node.threshold();
-      if (x_t[feature] <= threshold) {
-        index_current_node = current_node.left();
-      } else {
-        index_current_node = current_node.right();
-      }
+    NodeClassifier &current_node = node(index_current_node);
+    bool is_leaf = current_node.is_leaf();
+    if (is_leaf) {
+      return;
+    } else {
+      depth++;
+      index_current_node = current_node.get_child(x_t);
     }
   }
 }
@@ -608,7 +598,7 @@ void TreeClassifier::go_upwards(uint32_t leaf_index) {
 
 void TreeClassifier::print() {
   std::cout << "Tree(n_nodes: " << _n_nodes << "," << std::endl;
-  for (uint32_t node_index=0; node_index < _n_nodes; ++node_index) {
+  for (uint32_t node_index = 0; node_index < _n_nodes; ++node_index) {
     std::cout << " ";
     std::cout << "index: " << node_index << " ";
     nodes[node_index].print();
@@ -619,7 +609,7 @@ void TreeClassifier::print() {
 
 void TreeClassifier::predict(const ArrayDouble &x_t, ArrayDouble &scores, bool use_aggregation) {
   uint32_t leaf = get_leaf(x_t);
-    if (!use_aggregation) {
+  if (!use_aggregation) {
     node(leaf).predict(scores);
     return;
   }
@@ -740,7 +730,7 @@ inline uint32_t TreeClassifier::n_nodes_reserved() const {
 uint32_t TreeClassifier::n_leaves() const {
   uint32_t n_leaves = 0;
   for (uint32_t node_index = 0; node_index < _n_nodes; ++node_index) {
-    const NodeClassifier & node = nodes[node_index];
+    const NodeClassifier &node = nodes[node_index];
     if (node.is_leaf()) {
       ++n_leaves;
     }
@@ -803,9 +793,9 @@ void TreeClassifier::get_flat_nodes(
   // std::cout << "void TreeClassifier::get_flat_nodes(" << std::endl;
   // std::cout << "n_nodes: " << _n_nodes << ", nodes.size(): " << nodes.size() << std::endl;
 
-  for(uint32_t node_index=0; node_index < _n_nodes; ++node_index) {
+  for (uint32_t node_index = 0; node_index < _n_nodes; ++node_index) {
     // std::cout << "n_node= " << node_index << std::endl;
-    NodeClassifier & node = nodes[node_index];
+    NodeClassifier &node = nodes[node_index];
     (*nodes_parent)[node_index] = node.parent();
     (*nodes_left)[node_index] = node.left();
     (*nodes_right)[node_index] = node.right();
@@ -1110,7 +1100,6 @@ void OnlineForestClassifier::get_feature_importances(SArrayDoublePtr feature_imp
   }
 }
 
-
 uint32_t OnlineForestClassifier::get_path_depth(const uint8_t tree, const SArrayDoublePtr x_t) {
   return trees[tree].get_path_depth(*x_t);
 }
@@ -1135,8 +1124,7 @@ void OnlineForestClassifier::get_flat_nodes(
     SArrayFloatPtr nodes_weight,
     SArrayFloatPtr nodes_weight_tree,
     SArrayUShortPtr nodes_is_leaf,
-    SArrayUInt2dPtr nodes_counts)
-{
+    SArrayUInt2dPtr nodes_counts) {
   trees[tree].get_flat_nodes(
       nodes_parent,
       nodes_left,
