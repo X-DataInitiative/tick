@@ -5,7 +5,7 @@
 #include "hawkes_custom2.h"
 
 Hawkes_customType2::Hawkes_customType2(unsigned int n_nodes, int seed, ulong _MaxN, const SArrayDoublePtrList1D &_mu_, const ArrayDouble &extrainfo, const std::string _simu_mode)
-        : Hawkes(n_nodes, seed), global_n(0), simu_mode(_simu_mode){
+        : Hawkes(n_nodes, seed), global_n(0), Qty(0), simu_mode(_simu_mode){
     this->MaxN = _MaxN;
     this->mu_ = _mu_;
 
@@ -28,7 +28,7 @@ Hawkes_customType2::Hawkes_customType2(unsigned int n_nodes, int seed, ulong _Ma
 }
 
 Hawkes_customType2::Hawkes_customType2(unsigned int n_nodes, int seed, ulong _MaxN, const SArrayDoublePtrList1D &_mu_)
-        : Hawkes(n_nodes, seed), global_n(0), simu_mode("random"){
+        : Hawkes(n_nodes, seed), global_n(0), Qty(0), simu_mode("random"){
     this->MaxN = _MaxN;
     this->mu_ = _mu_;
 
@@ -90,11 +90,11 @@ void Hawkes_customType2::update_jump(int index) {
     else if (simu_mode == "generate") {
         current_num += avg_order_size[index];
         double exact = current_num / avg;
-        ulong round = (exact > (floor(exact) + 0.5)) ? (floor(exact) + 1) : floor(exact);
-        if (round > MaxN - 1)
-            round = MaxN - 1;
-        last_global_n = round;
+        ulong round = floor(exact + 0.5);  //round a number
+        last_global_n = (round > MaxN - 1) ? MaxN - 1 : round;
+
         global_n.append1(last_global_n);
+        Qty.append1(current_num);
         // We make the jump on the corresponding signal
         timestamps[index]->append1(time);
         n_total_jumps++;

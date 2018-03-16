@@ -24,14 +24,15 @@ public:
     std::string simu_mode = "random";
     //! for scenario 1, simulation of LOB
     double current_num;
-    double avg;    //the normarlizer
+    double avg;    //!the normarlizer
     ArrayDouble avg_order_size;
+    VArrayDouble Qty; //!exact number of shares in the line
 
 public :
     Hawkes_customType2(unsigned int n_nodes, int seed, ulong _MaxN, const SArrayDoublePtrList1D &_mu_);
 
     //!constructor dedicated for simulation
-    Hawkes_customType2(unsigned int n_nodes, int seed, ulong _MaxN, const SArrayDoublePtrList1D &_mu_, const ArrayDouble &extrainfo, const std::string _mode);
+    Hawkes_customType2(unsigned int n_nodes, int seed, ulong _MaxN, const SArrayDoublePtrList1D &_mu_, const ArrayDouble &extrainfo, const std::string _simu_mode);
 
     // This forbids the unwanted copy of an Hawkes process
     Hawkes_customType2(Hawkes_customType2 &obj) = delete;
@@ -53,6 +54,11 @@ public :
 
     VArrayULongPtr get_global_n() {
         VArrayULongPtr shared_process = VArrayULong::new_ptr(global_n);
+        return shared_process;
+    }
+
+    VArrayDoublePtr get_Qty() {
+        VArrayDoublePtr shared_process = VArrayDouble::new_ptr(Qty);
         return shared_process;
     }
 

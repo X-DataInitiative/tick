@@ -139,7 +139,10 @@ class SimuHawkes(SimuPointProcess):
             raise ValueError("n_nodes must be positive but equals %i" % n_nodes)
 
         if custom == 'Type2':
-            self._pp = _Hawkes_customType2(n_nodes, self._pp_init_seed, MaxN_of_f, f_i)
+            if extrainfo is not None:
+                self._pp = _Hawkes_customType2(n_nodes, self._pp_init_seed, MaxN_of_f, f_i, extrainfo, simu_mode)
+            else:
+                self._pp = _Hawkes_customType2(n_nodes, self._pp_init_seed, MaxN_of_f, f_i)
         elif custom:
             if extrainfo is not None:
                 self._pp = _HawkesCustom(n_nodes, self._pp_init_seed, MaxN_of_f, f_i, extrainfo, simu_mode)

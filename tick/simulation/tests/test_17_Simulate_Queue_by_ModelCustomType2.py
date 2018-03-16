@@ -6,66 +6,57 @@ from tick.simulation import HawkesKernel0, HawkesKernelExp, HawkesKernelPowerLaw
     HawkesKernelSumExp
 from tick.simulation import SimuHawkes
 
-n_nodes = 3
+n_nodes = 2
 dim = n_nodes
-seed = 3007
-MaxN = 5
-mu_i = [np.array([0.5, 0.7, 0.8, 0.6, 0.5]), np.array([0.5, 0.6, 0.8, 0.8, 0.6]), np.array([0.5, 0.6, 0.9, 0.2, 0.7])]
+MaxN = 10
+mu_i = [np.array([1.42559266,0.71285859,0.91608318,1.04369095,0.93826717,0.98857302,0.9269507, 0.87988071,0.81952085,0.8221487]),
+        np.array([0.26746583,0.35055464,0.47732612,0.60000532,0.63844536,0.73559956 ,0.83674834,0.8316625, 0.84332456,0.93058838])]
 
-beta = 3
-end_time = 100000
+beta = 100
+end_time = 1000
 
 kernels = np.array([
-            [HawkesKernelExp(0.3, beta), HawkesKernelExp(0.1, beta), HawkesKernelExp(0.4, beta)],
-            [HawkesKernelExp(0.2, beta), HawkesKernelExp(0.3, beta), HawkesKernelExp(0.5, beta)],
-            [HawkesKernelExp(0.3, beta), HawkesKernelExp(0.4, beta), HawkesKernelExp(0.3, beta)]
+            [HawkesKernelExp(0.6430364, beta), HawkesKernelExp(0.06335673, beta)],
+            [HawkesKernelExp(0.05711409, beta), HawkesKernelExp(0.72201187, beta)],
 ])
 
-simu_model = SimuHawkes(kernels=kernels, end_time=end_time, custom='Type2', seed=seed, MaxN_of_f = MaxN, f_i=mu_i)
-for i in range(n_nodes):
-    # simu_model.set_baseline(i, 0.2 + 0.1 * i)
-    simu_model.set_baseline(i, 0.0)
-    for j in range(n_nodes):
-        simu_model.set_kernel(i, j, kernels[i, j])
-simu_model.track_intensity(0.1)
-# print(simu_model.simulate)
-simu_model.simulate()
-
-# plot_point_process(simu_model)
-##################################################################################################################
+#current_num avg avg_order_size
+extrainfo = np.array([20.0, 40, 5.4, 4.5])
 
 
+Qty_list = []
+for num_simu in range(1000):
+    seed = num_simu * 10086 + 3007
+    simu_model = SimuHawkes(kernels=kernels, end_time=end_time, custom='Type2', seed=seed, MaxN_of_f=MaxN, f_i=mu_i,
+                            extrainfo=extrainfo, simu_mode="generate")
+    for i in range(n_nodes):
+        # simu_model.set_baseline(i, 0.2 + 0.1 * i)
+        simu_model.set_baseline(i, 0.0)
+        for j in range(n_nodes):
+            simu_model.set_kernel(i, j, kernels[i, j])
+    simu_model.track_intensity(0.1)
+
+    simu_model.simulate()
+
+    Qty = np.array(simu_model._pp.get_Qty())
+    Qty_list.append(Qty)
 
 
+import matplotlib.pyplot as plt
+length = []
+for Qty in Qty_list:
+    length.append(len(Qty))
+plt.hist(length, bins = 50)
+plt.show()
+plt.close()
 
-##################################################################################################################
-from tick.optim.model import ModelHawkesCustomType2
-from tick.optim.solver import GD, AGD, SGD, SVRG, SDCA
-from tick.optim.prox import ProxElasticNet, ProxL2Sq, ProxZero, ProxL1
+# import matplotlib.pyplot as plt
+# length = []
+# for Qty in Qty_list:
+#     if len(Qty) > 5000:
+#         length.append(Qty[5000])
+# plt.hist(length, bins=10)
+# plt.show()
+# plt.close()
 
-timestamps = simu_model.timestamps
-timestamps.append(np.array([]))
-global_n = np.array(simu_model._pp.get_global_n())
-global_n = np.insert(global_n, 0, 0).astype(int)
-
-model = ModelHawkesCustomType2(beta, MaxN)
-model.fit(timestamps, global_n, end_time)
-#############################################################################
-# prox = ProxL1(0.0, positive=True)
-prox = ProxZero()
-
-# solver = AGD(step=5e-2, linesearch=False, max_iter= 350)
-solver = AGD(step=1e0, max_iter=1000, linesearch=False, print_every=50)
-solver.set_model(model).set_prox(prox)
-
-
-
-x_real = np.array(
-    [0.5, 0.7, 0.8, 0.6, 0.5,    0.5, 0.6, 0.8, 0.8, 0.6,    0.5, 0.6, 0.9, 0.2, 0.7,  0.3, 0.1, 0.4, 0.2, 0.3, 0.5, 0.3, 0.4, 0.3])
-x0 = np.array(
-    [0.2, 0.2, 0.2, 0.9, 0.9,    0.2, 0.2, 0.2, 0.9, 0.9,    0.2, 0.2, 0.2, 0.9, 0.9,  0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.6])
-solver.solve(x0)
-
-print(model.loss(x_real))
-print(model.loss(solver.solution))
-print(solver.solution)
+print(Qty_list)
