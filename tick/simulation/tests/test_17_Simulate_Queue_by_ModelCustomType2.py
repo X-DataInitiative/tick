@@ -21,7 +21,7 @@ kernels = np.array([
 ])
 
 #current_num avg avg_order_size
-extrainfo = np.array([20.0, 40, 5.4, 4.5])
+extrainfo = np.array([20.0, 40, 5.4, -4.5])
 
 
 Qty_list = []
@@ -50,13 +50,11 @@ plt.hist(length, bins = 50)
 plt.show()
 plt.close()
 
-# import matplotlib.pyplot as plt
-# length = []
-# for Qty in Qty_list:
-#     if len(Qty) > 5000:
-#         length.append(Qty[5000])
-# plt.hist(length, bins=10)
-# plt.show()
-# plt.close()
-
-print(Qty_list)
+import matplotlib.pyplot as plt
+length = []
+for Qty in Qty_list:
+    if len(Qty) > 5000:
+        length.append(Qty[5000])
+plt.hist(length, bins=50)
+plt.show()
+plt.close()
