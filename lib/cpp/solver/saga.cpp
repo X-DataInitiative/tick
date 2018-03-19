@@ -6,7 +6,7 @@
 
 template <class T>
 TSAGA<T>::TSAGA(ulong epoch_size, T tol, RandType rand_type, T step, int seed,
-                VarianceReductionMethod variance_reduction)
+                SAGA_VarianceReductionMethod variance_reduction)
     : TStoSolver<T>(epoch_size, tol, rand_type, seed),
       solver_ready(false),
       ready_step_corrections(false),
@@ -49,10 +49,10 @@ void TSAGA<T>::prepare_solve() {
     }
   }
   rand_index = 0;
-  if (variance_reduction == VarianceReductionMethod::Average) {
+  if (variance_reduction == SAGA_VarianceReductionMethod::Average) {
     next_iterate.init_to_zero();
   }
-  if (variance_reduction == VarianceReductionMethod::Random) {
+  if (variance_reduction == SAGA_VarianceReductionMethod::Random) {
     rand_index = rand_unif(epoch_size);
   }
 }
@@ -108,15 +108,15 @@ void TSAGA<T>::solve_dense(bool use_intercept, ulong n_features) {
     }
     // Call the prox on the iterate
     prox->call(iterate, step, iterate);
-    if (variance_reduction == VarianceReductionMethod::Random &&
+    if (variance_reduction == SAGA_VarianceReductionMethod::Random &&
         t == rand_index) {
       next_iterate = iterate;
     }
-    if (variance_reduction == VarianceReductionMethod::Average) {
+    if (variance_reduction == SAGA_VarianceReductionMethod::Average) {
       next_iterate.mult_incr(iterate, 1.0 / epoch_size);
     }
   }
-  if (variance_reduction == VarianceReductionMethod::Last) {
+  if (variance_reduction == SAGA_VarianceReductionMethod::Last) {
     next_iterate = iterate;
   }
   TStoSolver<T>::t += epoch_size;
@@ -174,18 +174,24 @@ void TSAGA<T>::solve_sparse_proba_updates(bool use_intercept,
     }
     // Note that the average option for variance reduction with sparse data is a
     // very bad idea, but this is caught in the python class
-    if (variance_reduction == VarianceReductionMethod::Random &&
+    if (variance_reduction == SAGA_VarianceReductionMethod::Random &&
         t == rand_index) {
       next_iterate = iterate;
     }
-    if (variance_reduction == VarianceReductionMethod::Average) {
+    if (variance_reduction == SAGA_VarianceReductionMethod::Average) {
       next_iterate.mult_incr(iterate, 1.0 / epoch_size);
     }
   }
-  if (variance_reduction == VarianceReductionMethod::Last) {
+  if (variance_reduction == SAGA_VarianceReductionMethod::Last) {
     next_iterate = iterate;
   }
   TStoSolver<T>::t += epoch_size;
+}
+
+template <class T>
+void TSAGA<T>::set_starting_iterate(Array<T> &new_iterate) {
+  TStoSolver<T>::set_starting_iterate(new_iterate);
+  next_iterate = iterate;
 }
 
 template class DLL_PUBLIC TSAGA<double>;

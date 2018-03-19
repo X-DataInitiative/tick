@@ -13,14 +13,26 @@
 #include "tick/prox/prox_zero.h"
 #include "tick/random/rand.h"
 
+#include <iostream>
+#include <sstream>
+
+#include "tick/solver/enums.h"
+
 // TODO: code an abstract class and use it for StoSolvers
 // TODO: StoSolver and LabelsFeaturesSolver
 
 // Type of randomness used when sampling at random data points
 enum class RandType { unif = 0, perm };
+inline std::ostream &operator<<(std::ostream &s, const RandType &r) {
+  typedef std::underlying_type<RandType>::type utype;
+  return s << static_cast<utype>(r);
+}
 
 template <class T>
 class DLL_PUBLIC TStoSolver {
+  template <class T1>
+  friend std::ostream &operator<<(std::ostream &, const TStoSolver<T1> &);
+
  protected:
   // A flag that specify if random permutation is ready to be used or not
   bool permutation_ready;
@@ -133,7 +145,69 @@ class DLL_PUBLIC TStoSolver {
     this->rand_max = rand_max;
     permutation_ready = false;
   }
+
+  const std::shared_ptr<TModel<T> > get_model() { return model; }
+  const std::shared_ptr<TProx<T> > get_prox() { return prox; }
+
+  virtual std::string get_class_name() const {
+    std::stringstream ss;
+    ss << typeid(*this).name() << "<" << typeid(T).name() << ">";
+    return ss.str();
+  }
+
+  template <class Archive>
+  void load(Archive &ar) {
+    ar(CEREAL_NVP(model));
+    ar(CEREAL_NVP(prox));
+    ar(CEREAL_NVP(t));
+    ar(CEREAL_NVP(iterate));
+    ar(CEREAL_NVP(rand_max));
+    ar(CEREAL_NVP(epoch_size));
+    ar(CEREAL_NVP(tol));
+    ar(CEREAL_NVP(rand_type));
+    ar(CEREAL_NVP(permutation));
+    ar(CEREAL_NVP(i_perm));
+    ar(CEREAL_NVP(permutation_ready));
+    int rand_seed;
+    ar(CEREAL_NVP(rand_seed));
+    rand = Rand(rand_seed);
+  }
+
+  template <class Archive>
+  void save(Archive &ar) const {
+    ar(CEREAL_NVP(model));
+    ar(CEREAL_NVP(prox));
+    ar(CEREAL_NVP(t));
+    ar(CEREAL_NVP(iterate));
+    ar(CEREAL_NVP(rand_max));
+    ar(CEREAL_NVP(epoch_size));
+    ar(CEREAL_NVP(tol));
+    ar(CEREAL_NVP(rand_type));
+    ar(CEREAL_NVP(permutation));
+    ar(CEREAL_NVP(i_perm));
+    ar(CEREAL_NVP(permutation_ready));
+    // Note that only the seed is part of the serialization.
+    // If the generator has been used (i.e. numbers have been drawn from it)
+    // this will not be reflected in the restored (deserialized) object.
+    const auto rand_seed = rand.get_seed();
+    ar(CEREAL_NVP(rand_seed));
+  }
+
+  BoolStrReport compare(const TStoSolver<T> &that, std::stringstream &ss) {
+    return BoolStrReport(
+        TICK_CMP_REPORT(ss, t) && TICK_CMP_REPORT(ss, iterate) &&
+            TICK_CMP_REPORT(ss, rand_max) && TICK_CMP_REPORT(ss, epoch_size) &&
+            TICK_CMP_REPORT(ss, tol) && TICK_CMP_REPORT(ss, rand_type) &&
+            TICK_CMP_REPORT(ss, permutation) && TICK_CMP_REPORT(ss, i_perm) &&
+            TICK_CMP_REPORT(ss, permutation_ready),
+        ss.str());
+  }
 };
+
+template <typename T>
+inline std::ostream &operator<<(std::ostream &s, const TStoSolver<T> &p) {
+  return s << typeid(p).name() << "<" << typeid(T).name() << ">";
+}
 
 using StoSolver = TStoSolver<double>;
 using TStoSolverDouble = TStoSolver<double>;

@@ -3,12 +3,15 @@
 import unittest
 
 from tick.solver import SAGA
-from . import TestSolver
-from ..build.solver import SAGA as _SAGA
+from tick.solver.tests import TestSolver
+from tick.solver.build.solver import SAGA as _SAGA
 
 from tick.survival import SimuCoxReg, ModelCoxRegPartialLik
 from tick.simulation import weights_sparse_gauss
 
+from tick.solver.build.solver import SAGA_VarianceReductionMethod_Last
+from tick.solver.build.solver import SAGA_VarianceReductionMethod_Average
+from tick.solver.build.solver import SAGA_VarianceReductionMethod_Random
 
 class Test(TestSolver):
     def test_solver_saga(self):
@@ -34,27 +37,27 @@ class Test(TestSolver):
         svrg = SAGA()
         self.assertEqual(svrg.variance_reduction, 'last')
         self.assertEqual(svrg._solver.get_variance_reduction(),
-                         _SAGA.VarianceReductionMethod_Last)
+                         SAGA_VarianceReductionMethod_Last)
 
         svrg = SAGA(variance_reduction='rand')
         self.assertEqual(svrg.variance_reduction, 'rand')
         self.assertEqual(svrg._solver.get_variance_reduction(),
-                         _SAGA.VarianceReductionMethod_Random)
+                         SAGA_VarianceReductionMethod_Random)
 
         svrg.variance_reduction = 'avg'
         self.assertEqual(svrg.variance_reduction, 'avg')
         self.assertEqual(svrg._solver.get_variance_reduction(),
-                         _SAGA.VarianceReductionMethod_Average)
+                         SAGA_VarianceReductionMethod_Average)
 
         svrg.variance_reduction = 'rand'
         self.assertEqual(svrg.variance_reduction, 'rand')
         self.assertEqual(svrg._solver.get_variance_reduction(),
-                         _SAGA.VarianceReductionMethod_Random)
+                         SAGA_VarianceReductionMethod_Random)
 
         svrg.variance_reduction = 'last'
         self.assertEqual(svrg.variance_reduction, 'last')
         self.assertEqual(svrg._solver.get_variance_reduction(),
-                         _SAGA.VarianceReductionMethod_Last)
+                         SAGA_VarianceReductionMethod_Last)
 
         with self.assertRaises(ValueError):
             svrg.variance_reduction = 'wrong_name'

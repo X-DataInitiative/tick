@@ -12,11 +12,16 @@
 
 %{
 #include "tick/base_model/model.h"
+#include "tick/solver/enums.h"
 %}
 
 %include sto_solver.i
-%include sgd.i
-%include svrg.i
-%include saga.i
-%include sdca.i
 %include adagrad.i
+
+
+
+%include sdca.i
+%include sgd.i
+
+%include saga.i
+%include svrg.i
