@@ -153,12 +153,16 @@ def simulate_poisson(n_samples, n_features=None):
     if n_features is None:
         n_features = 30
 
+    nnz = int(0.3 * n_features)
+
     np.random.seed(239829)
 
     weights = np.random.normal(size=n_features)
+    mask_weights = np.random.choice(np.arange(n_features), nnz, replace=False)
+    weights[mask_weights] = 0
     # weights = np.abs(weights)
 
-    weights /= np.linalg.norm(weights) ** 2 / n_features
+    weights /= nnz
     # print(np.linalg.norm(weights) ** 2 / n_features)
 
     np.random.seed(2309)

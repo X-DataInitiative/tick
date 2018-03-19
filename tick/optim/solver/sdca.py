@@ -157,7 +157,8 @@ class SDCA(SolverFirstOrderSto):
                  rand_type: str = 'unif', tol: float = 1e-10,
                  max_iter: int = 10, verbose: bool = True,
                  print_every: int = 1, record_every: int = 1,
-                 seed: int = -1, batch_size=1, store_only_x=False):
+                 seed: int = -1, batch_size=1, store_only_x=False,
+                 store_only_primal=False):
 
         SolverFirstOrderSto.__init__(self, step=0, epoch_size=epoch_size,
                                      rand_type=rand_type, tol=tol,
@@ -185,7 +186,8 @@ class SDCA(SolverFirstOrderSto):
                              self.tol, self._rand_type, batch_size_enum,
                              batch_size, self.seed)
 
-        self.history.print_order += ['dual_objective', 'duality_gap']
+        self.store_only_primal = store_only_primal
+        self.history.print_order += ['dual_objective', 'max_dual', 'duality_gap']
 
     def set_model(self, model):
         if isinstance(model, ModelPoisReg):
@@ -193,7 +195,7 @@ class SDCA(SolverFirstOrderSto):
         return SolverFirstOrderSto.set_model(self, model)
 
     def extra_history(self, minimizer):
-        if self.store_only_x:
+        if self.store_only_x or self.store_only_primal:
             return {'dual_vector': self._solver.get_dual_vector()}
         else:
             dual_vector = self._solver.get_dual_vector()
@@ -204,7 +206,8 @@ class SDCA(SolverFirstOrderSto):
             return {
                 'dual_objective': dual,
                 'dual_vector': dual_vector,
-                'duality_gap': dual - self.objective(minimizer)
+                'duality_gap': dual - self.objective(minimizer),
+                'max_dual': max(dual_vector),
             }
 
 

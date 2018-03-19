@@ -120,7 +120,7 @@ def plot_history(solvers, x='n_iter', y='obj', labels=None, show=True,
         ax.set_xlabel(x, fontsize=16)
         ax.set_ylabel(y, fontsize=16)
         ax.set_xlim([min_x, max_x])
-        ax.set_ylim([min_y, max_y])
+        ax.set_ylim([min_y, max_y * 3])
         ax.tick_params(axis='both', which='major', labelsize=12)
         ax.legend()
 

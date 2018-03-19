@@ -36,7 +36,8 @@ def save_experiments(experiments, dataset, l_l2sq, filename):
         pickle.dump(experiments, write_file)
 
 
-def run_solver(dataset, features, labels, l_l2sq, max_iter_sdca=1000):
+def run_solver(dataset, features, labels, l_l2sq, max_iter_sdca=1000,
+               init_type='psi'):
     model = ModelPoisReg(fit_intercept=False, link='identity')
     model.fit(features, labels)
 
@@ -45,6 +46,9 @@ def run_solver(dataset, features, labels, l_l2sq, max_iter_sdca=1000):
                 print_every=max(1, int(max_iter_sdca / 7)), tol=tol,
                 batch_size=2, verbose=True)
     sdca.set_model(model).set_prox(ProxZero())
+    dual_inits = model.get_dual_init(l_l2sq, init_type)
+    sdca._solver.set_starting_iterate(dual_inits)
+
     sdca.solve()
     save_solver(dataset, sdca)
     return sdca

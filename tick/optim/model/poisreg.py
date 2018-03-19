@@ -282,24 +282,29 @@ class ModelPoisReg(ModelGeneralizedLinear,
             kappa = self._get_unscaled_dual_init(l_l2sq)
         elif init_type == 'features':
             kappa = self._get_unscaled_dual_init_features(l_l2sq)
+        elif init_type == 'sqrt':
+            kappa = self._get_unscaled_dual_init_sqrt(l_l2sq)
+        elif init_type == 'log':
+            kappa = self._get_unscaled_dual_init_log(l_l2sq)
         else:
             raise ValueError('Unknown init type {}'.format(init_type))
 
-        return self._get_dual_init_estimated_base(l_l2sq, kappa) * kappa
+        dual_inits = self._get_dual_init_estimated_base(l_l2sq, kappa) * kappa
+
+        return dual_inits
 
     def _get_unscaled_dual_init(self, l_l2sq):
         labels = self.labels
         features = self.features
 
         n_non_zeros = sum(labels != 0)
-
         non_zero_features = features[labels != 0]
         non_zero_labels = labels[labels != 0]
 
         features_sum = np.sum(non_zero_features, axis=0)
         features_dot_features_sum = non_zero_features.dot(features_sum)
-        n_psi_x = np.sum(features, axis=0) \
-            .dot(non_zero_features.T)
+        n_psi = np.sum(features, axis=0)
+        n_psi_x = n_psi.dot(non_zero_features.T)
 
         tmp1 = np.power(n_psi_x, 2)
         tmp1 += 4 * l_l2sq * n_non_zeros * non_zero_labels * \
@@ -316,9 +321,36 @@ class ModelPoisReg(ModelGeneralizedLinear,
         # corr *= features_dot_features_sum / np.power(n_psi_x, 2)
         corr = n_non_zeros * non_zero_labels / n_psi_x
 
-        # import matplotlib.pyplot as plt
-        # plt.hist(n_psi_x / n_non_zeros)
-        # plt.show()
+        return corr
+
+    def _get_unscaled_dual_init_sqrt(self, l_l2sq):
+        labels = self.labels
+        features = self.features
+
+        n_non_zeros = sum(labels != 0)
+        non_zero_features = features[labels != 0]
+        non_zero_labels = labels[labels != 0]
+
+        n_psi = np.sum(features, axis=0)
+        n_psi_x = n_psi.dot(non_zero_features.T)
+
+        corr = n_non_zeros * np.sqrt(non_zero_labels) / n_psi_x
+
+        return corr
+
+
+    def _get_unscaled_dual_init_log(self, l_l2sq):
+        labels = self.labels
+        features = self.features
+
+        n_non_zeros = sum(labels != 0)
+        non_zero_features = features[labels != 0]
+        non_zero_labels = labels[labels != 0]
+
+        n_psi = np.sum(features, axis=0)
+        n_psi_x = n_psi.dot(non_zero_features.T)
+
+        corr = n_non_zeros * np.log(1 + non_zero_labels) / n_psi_x
 
         return corr
 
@@ -332,13 +364,10 @@ class ModelPoisReg(ModelGeneralizedLinear,
         non_zero_labels = labels[labels != 0]
 
         features_sum = np.sum(non_zero_features, axis=0)
+
         features_dot_x = features_sum.dot(non_zero_features.T)
 
         corr = n_non_zeros * non_zero_labels / features_dot_x
-
-        # import matplotlib.pyplot as plt
-        # plt.hist(n_psi_x / n_non_zeros)
-        # plt.show()
 
         return corr
 
@@ -348,6 +377,11 @@ class ModelPoisReg(ModelGeneralizedLinear,
 
         phi = np.sum((kappa_i * non_zero_features.T), axis=1)
         psi = np.sum(self.features, axis=0) / n_non_zeros
+
+        if self.fit_intercept:
+            phi = np.hstack((phi, np.sum(kappa_i)))
+            psi = np.hstack((psi, self.n_samples / n_non_zeros))
+
         norm_phi_sq = np.linalg.norm(phi) ** 2
         n_phi_dot_psi = n_non_zeros * psi.dot(phi)
 
