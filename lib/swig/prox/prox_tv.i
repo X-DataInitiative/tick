@@ -14,14 +14,15 @@ class TProxTV : public TProx<T> {
              unsigned long start,
              unsigned long end,
              bool positive);
-};
 
-%template(ProxTV) TProxTV<double>;
-typedef TProxTV<double> ProxTV;
+  bool compare(const TProxTV<T> &that);
+};
 
 %template(ProxTVDouble) TProxTV<double>;
 typedef TProxTV<double> ProxTVDouble;
+TICK_MAKE_TEMPLATED_PICKLABLE(TProxTV, ProxTVDouble , double);
 
 %template(ProxTVFloat) TProxTV<float>;
 typedef TProxTV<float> ProxTVFloat;
+TICK_MAKE_TEMPLATED_PICKLABLE(TProxTV, ProxTVFloat , float);
 

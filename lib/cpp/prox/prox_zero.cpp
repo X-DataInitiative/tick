@@ -3,13 +3,6 @@
 #include "tick/prox/prox_zero.h"
 
 template <class T>
-TProxZero<T>::TProxZero(T strength) : TProxSeparable<T>(strength, false) {}
-
-template <class T>
-TProxZero<T>::TProxZero(T strength, ulong start, ulong end)
-    : TProxSeparable<T>(strength, start, end, false) {}
-
-template <class T>
 T TProxZero<T>::call_single(T x, T step) const {
   return x;
 }

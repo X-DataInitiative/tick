@@ -4,7 +4,7 @@ import numpy as np
 from numpy.linalg import svd
 from tick.base_model import ModelGeneralizedLinear, ModelFirstOrder, \
     ModelLipschitz
-from .build.linear_model import ModelLogReg as _ModelLogReg
+from .build.linear_model import ModelLogRegDouble as _ModelLogReg
 
 __author__ = 'Stephane Gaiffas'
 

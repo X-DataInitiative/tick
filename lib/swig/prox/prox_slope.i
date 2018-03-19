@@ -16,6 +16,8 @@ class TProxSlope : public TProx<T> {
    inline void set_false_discovery_rate(T fdr);
 
    inline T get_weight_i(unsigned long i);
+
+  bool compare(const TProxSlope<T> &that);
 };
 
 %template(ProxSlope) TProxSlope<double>;

@@ -4,7 +4,7 @@ import numpy as np
 from numpy.linalg import svd
 from tick.base_model import ModelGeneralizedLinear, ModelFirstOrder, \
     ModelLipschitz
-from .build.linear_model import ModelQuadraticHinge as _ModelModelQuadraticHinge
+from .build.linear_model import ModelQuadraticHingeDouble as _ModelModelQuadraticHinge
 
 __author__ = 'Stephane Gaiffas'
 

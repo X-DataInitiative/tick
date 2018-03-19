@@ -3,19 +3,6 @@
 #include "tick/prox/prox_l1w.h"
 
 template <class T>
-TProxL1w<T>::TProxL1w(T strength, SArrayTPtr weights, bool positive)
-    : TProxSeparable<T>(strength, positive) {
-  this->weights = weights;
-}
-
-template <class T>
-TProxL1w<T>::TProxL1w(T strength, SArrayTPtr weights, ulong start, ulong end,
-                      bool positive)
-    : TProxSeparable<T>(strength, start, end, positive) {
-  this->weights = weights;
-}
-
-template <class T>
 T TProxL1w<T>::call_single(T x, T step) const {
   TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
 }

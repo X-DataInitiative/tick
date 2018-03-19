@@ -2,7 +2,7 @@
 
 import numpy as np
 from tick.base_model import ModelGeneralizedLinear, ModelFirstOrder
-from .build.linear_model import ModelHinge as _ModelHinge
+from .build.linear_model import ModelHingeDouble as _ModelHinge
 
 __author__ = 'Stephane Gaiffas'
 

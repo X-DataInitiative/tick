@@ -1,6 +1,6 @@
 # License: BSD 3 clause
 
-from .build.solver import SGD as _SGD
+from .build.solver import SGDDouble as _SGD
 from .base import SolverFirstOrderSto
 
 __author__ = "Stephane Gaiffas"

@@ -3,15 +3,6 @@
 #include "tick/prox/prox_separable.h"
 
 template <class T>
-TProxSeparable<T>::TProxSeparable(T strength, bool positive)
-    : TProx<T>(strength, positive) {}
-
-template <class T>
-TProxSeparable<T>::TProxSeparable(T strength, ulong start, ulong end,
-                                  bool positive)
-    : TProx<T>(strength, start, end, positive) {}
-
-template <class T>
 bool TProxSeparable<T>::is_separable() const {
   return true;
 }

@@ -3,7 +3,7 @@
 from tick.prox.base import Prox
 import numpy as np
 
-from .build.prox import ProxSlope as _ProxSlope
+from .build.prox import ProxSlopeDouble as _ProxSlope
 
 
 class ProxSlope(Prox):

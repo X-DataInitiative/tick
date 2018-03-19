@@ -7,9 +7,6 @@
 
 template <class T>
 class DLL_PUBLIC TAdaGrad : public TStoSolver<T> {
-  // Grants cereal access to default constructor
-  friend class cereal::access;
-
  protected:
   using TStoSolver<T>::t;
   using TStoSolver<T>::model;
@@ -25,11 +22,10 @@ class DLL_PUBLIC TAdaGrad : public TStoSolver<T> {
   Array<T> hist_grad;
   T step;
 
- private:
-  // This exists soley for cereal which has friend access
+ public:
+  // This exists soley for cereal/swig
   TAdaGrad() : TAdaGrad<T>(0, 0, RandType::unif, 0, 0) {}
 
- public:
   TAdaGrad(ulong epoch_size, T tol, RandType rand_type, T step, int seed);
 
   void solve() override;

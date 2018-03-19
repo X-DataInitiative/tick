@@ -12,14 +12,14 @@ class TProxZero : public TProx<T> {
    TProxZero(T strength,
             unsigned long start,
             unsigned long end);
-};
 
-%template(ProxZero) TProxZero<double>;
-typedef TProxZero<double> ProxZero;
+  bool compare(const TProxZero<T> &that);
+};
 
 %template(ProxZeroDouble) TProxZero<double>;
 typedef TProxZero<double> ProxZeroDouble;
+TICK_MAKE_TEMPLATED_PICKLABLE(TProxZero, ProxZeroDouble, double);
 
 %template(ProxZeroFloat) TProxZero<float>;
 typedef TProxZero<float> ProxZeroFloat;
-
+TICK_MAKE_TEMPLATED_PICKLABLE(TProxZero, ProxZeroFloat , float);

@@ -10,9 +10,6 @@ template <class T>
 class DLL_PUBLIC TModelLinRegWithIntercepts
     : virtual public TModelGeneralizedLinearWithIntercepts<T>,
       virtual public TModelLinReg<T> {
-  // Grants cereal access to default constructor
-  friend class cereal::access;
-
  protected:
   using TModelGeneralizedLinearWithIntercepts<T>::n_samples;
   using TModelGeneralizedLinearWithIntercepts<T>::n_features;
@@ -32,15 +29,19 @@ class DLL_PUBLIC TModelLinRegWithIntercepts
  public:
   using TModelGeneralizedLinear<T>::get_class_name;
 
- private:
-  // This exists soley for cereal which has friend access
+ public:
+  // This exists soley for cereal/swig
   TModelLinRegWithIntercepts()
       : TModelLinRegWithIntercepts(nullptr, nullptr, false) {}
 
- public:
   TModelLinRegWithIntercepts(const std::shared_ptr<BaseArray2d<T> > features,
                              const std::shared_ptr<SArray<T> > labels,
-                             const bool fit_intercept, const int n_threads = 1);
+                             const bool fit_intercept, const int n_threads = 1)
+      : TModelLabelsFeatures<T>(features, labels),
+        TModelGeneralizedLinear<T>(features, labels, fit_intercept, n_threads),
+        TModelGeneralizedLinearWithIntercepts<T>(features, labels,
+                                                 fit_intercept, n_threads),
+        TModelLinReg<T>(features, labels, fit_intercept, n_threads) {}
 
   virtual ~TModelLinRegWithIntercepts() {}
 
@@ -50,9 +51,9 @@ class DLL_PUBLIC TModelLinRegWithIntercepts
   void serialize(Archive &ar) {
     ar(cereal::make_nvp(
         "ModelGeneralizedLinearWithIntercepts",
-        cereal::base_class<TModelGeneralizedLinearWithIntercepts<T> >(this)));
+        cereal::virtual_base_class<TModelGeneralizedLinearWithIntercepts<T> >(this)));
     ar(cereal::make_nvp("ModelLinReg",
-                        cereal::base_class<TModelLinReg<T> >(this)));
+                        cereal::virtual_base_class<TModelLinReg<T> >(this)));
   }
 
   BoolStrReport compare(const TModelLinRegWithIntercepts<T> &that,
@@ -73,13 +74,13 @@ class DLL_PUBLIC TModelLinRegWithIntercepts
 };
 
 using ModelLinRegWithIntercepts = TModelLinRegWithIntercepts<double>;
-
 using ModelLinRegWithInterceptsDouble = TModelLinRegWithIntercepts<double>;
+using ModelLinRegWithInterceptsFloat = TModelLinRegWithIntercepts<float>;
+
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelLinRegWithInterceptsDouble,
                                    cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(ModelLinRegWithInterceptsDouble)
 
-using ModelLinRegWithInterceptsFloat = TModelLinRegWithIntercepts<float>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelLinRegWithInterceptsFloat,
                                    cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(ModelLinRegWithInterceptsFloat)

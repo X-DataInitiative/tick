@@ -3,14 +3,6 @@
 #include "tick/prox/prox_l1.h"
 
 template <class T>
-TProxL1<T>::TProxL1(T strength, bool positive)
-    : TProxSeparable<T>(strength, positive) {}
-
-template <class T>
-TProxL1<T>::TProxL1(T strength, ulong start, ulong end, bool positive)
-    : TProxSeparable<T>(strength, start, end, positive) {}
-
-template <class T>
 T TProxL1<T>::call_single(T x, T step) const {
   T thresh = step * strength;
   if (x > 0) {

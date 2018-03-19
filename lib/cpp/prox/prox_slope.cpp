@@ -3,19 +3,6 @@
 #include "tick/prox/prox_slope.h"
 
 template <class T>
-TProxSlope<T>::TProxSlope(T strength, T false_discovery_rate, bool positive)
-    : TProxSortedL1<T>(strength, WeightsType::bh, positive) {
-  this->false_discovery_rate = false_discovery_rate;
-}
-
-template <class T>
-TProxSlope<T>::TProxSlope(T strength, T false_discovery_rate, ulong start,
-                          ulong end, bool positive)
-    : TProxSortedL1<T>(strength, WeightsType::bh, start, end, positive) {
-  this->false_discovery_rate = false_discovery_rate;
-}
-
-template <class T>
 void TProxSlope<T>::compute_weights(void) {
   if (!weights_ready) {
     ulong size = end - start;

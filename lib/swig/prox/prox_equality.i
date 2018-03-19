@@ -10,6 +10,8 @@ class TProxEquality : public TProx<T> {
   explicit TProxEquality(T strength, bool positive);
 
   TProxEquality(T strength, ulong start, ulong end, bool positive);
+
+  bool compare(const TProxEquality<T> &that);
 };
 
 %template(ProxEquality) TProxEquality<double>;

@@ -1,14 +1,6 @@
 // License: BSD 3 clause
 
 #include "tick/prox/prox_tv.h"
-#include "tick/base/base.h"
-
-template <class T>
-TProxTV<T>::TProxTV(T strength, bool positive) : TProx<T>(strength, positive) {}
-
-template <class T>
-TProxTV<T>::TProxTV(T strength, ulong start, ulong end, bool positive)
-    : TProx<T>(strength, start, end, positive) {}
 
 // This piece comes from L. Condat's paper, see tick's documentation
 template <class T>

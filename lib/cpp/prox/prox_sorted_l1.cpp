@@ -3,22 +3,6 @@
 #include "tick/prox/prox_sorted_l1.h"
 
 template <class T>
-TProxSortedL1<T>::TProxSortedL1(T strength, WeightsType weights_type,
-                                bool positive)
-    : TProx<T>(strength, positive) {
-  this->weights_type = weights_type;
-  weights_ready = false;
-}
-
-template <class T>
-TProxSortedL1<T>::TProxSortedL1(T strength, WeightsType weights_type,
-                                ulong start, ulong end, bool positive)
-    : TProx<T>(strength, start, end, positive) {
-  this->weights_type = weights_type;
-  weights_ready = false;
-}
-
-template <class T>
 void TProxSortedL1<T>::compute_weights(void) {
   TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
 }

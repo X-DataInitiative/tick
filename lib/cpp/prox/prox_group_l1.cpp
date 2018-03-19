@@ -4,18 +4,6 @@
 #include "tick/prox/prox_l2.h"
 
 template <class T>
-TProxGroupL1<T>::TProxGroupL1(T strength, SArrayULongPtr blocks_start,
-                              SArrayULongPtr blocks_length, bool positive)
-    : TProxWithGroups<T>(strength, blocks_start, blocks_length, positive) {}
-
-template <class T>
-TProxGroupL1<T>::TProxGroupL1(T strength, SArrayULongPtr blocks_start,
-                              SArrayULongPtr blocks_length, ulong start,
-                              ulong end, bool positive)
-    : TProxWithGroups<T>(strength, blocks_start, blocks_length, start, end,
-                         positive) {}
-
-template <class T>
 std::unique_ptr<TProx<T> > TProxGroupL1<T>::build_prox(T strength, ulong start,
                                                        ulong end,
                                                        bool positive) {

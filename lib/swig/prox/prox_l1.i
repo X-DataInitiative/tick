@@ -7,50 +7,48 @@
 template <class T>
 class TProxL1 : public TProx<T> {
  public:
-   ProxL1(double strength,
+   TProxL1();
+   TProxL1(double strength,
           bool positive);
 
-   ProxL1(double strength,
+   TProxL1(double strength,
           ulong start,
           ulong end,
           bool positive);
+          
+  bool compare(const TProxL1<T> &that);
 };
-
-%rename(ProxL1) TProxL1<double>;
-class TProxL1<double> : public TProxSeparable<double> {
- public:
-   TProxL1(double strength,
-            bool positive);
-
-   TProxL1(double strength,
-            ulong start,
-            ulong end,
-            bool positive);
-};
-typedef TProxL1<double> ProxL1;
 
 %rename(ProxL1Double) TProxL1<double>;
-class TProxL1<double> : public TProxSeparable<double> {
+class ProxL1Double : public TProxSeparable<double> {
  public:
-   TProxL1(double strength,
+   ProxL1Double();
+   ProxL1Double(double strength,
             bool positive);
 
-   TProxL1(double strength,
+   ProxL1Double(double strength,
             ulong start,
             ulong end,
             bool positive);
+
+  bool compare(const ProxL1Double &that);
 };
 typedef TProxL1<double> ProxL1Double;
+TICK_MAKE_PICKLABLE(ProxL1Double);
 
 %rename(ProxL1Float) TProxL1<float>;
-class TProxL1<float> : public TProxSeparable<float> {
+class ProxL1Float : public TProxSeparable<float> {
  public:
-   TProxL1(float strength,
+   ProxL1Float();
+   ProxL1Float(float strength,
             bool positive);
 
-   TProxL1(float strength,
+   ProxL1Float(float strength,
             ulong start,
             ulong end,
             bool positive);
+          
+  bool compare(const ProxL1Float &that);
 };
 typedef TProxL1<float> ProxL1Float;
+TICK_MAKE_PICKLABLE(ProxL1Float);

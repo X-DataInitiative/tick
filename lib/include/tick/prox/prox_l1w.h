@@ -8,9 +8,6 @@
 
 template <class T>
 class DLL_PUBLIC TProxL1w : public TProxSeparable<T> {
-  // Grants cereal access to default constructor
-  friend class cereal::access;
-
  protected:
   using TProxSeparable<T>::has_range;
   using TProxSeparable<T>::positive;
@@ -28,15 +25,20 @@ class DLL_PUBLIC TProxL1w : public TProxSeparable<T> {
   // Weights for L1 penalization
   SArrayTPtr weights;
 
- protected:
-  // This exists soley for cereal which has friend access
+ public:
+  // This exists soley for cereal/swig
   TProxL1w() : TProxL1w<T>(0, nullptr, 0) {}
 
- public:
-  TProxL1w(T strength, std::shared_ptr<SArray<T>> weights, bool positive);
+  TProxL1w(T strength, std::shared_ptr<SArray<T>> weights, bool positive)
+      : TProxSeparable<T>(strength, positive) {
+    this->weights = weights;
+  }
 
   TProxL1w(T strength, std::shared_ptr<SArray<T>> weights, ulong start,
-           ulong end, bool positive);
+           ulong end, bool positive)
+      : TProxSeparable<T>(strength, start, end, positive) {
+    this->weights = weights;
+  }
 
   void call(const Array<T> &coeffs, const T step, Array<T> &out, ulong start,
             ulong end) override;
@@ -87,13 +89,13 @@ class DLL_PUBLIC TProxL1w : public TProxSeparable<T> {
 };
 
 using ProxL1w = TProxL1w<double>;
-
 using ProxL1wDouble = TProxL1w<double>;
+using ProxL1wFloat = TProxL1w<float>;
+
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ProxL1wDouble,
                                    cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(ProxL1wDouble)
 
-using ProxL1wFloat = TProxL1w<float>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ProxL1wFloat,
                                    cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(ProxL1wFloat)

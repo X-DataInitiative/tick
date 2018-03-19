@@ -3,7 +3,14 @@
 from warnings import warn
 from tick.base_model import Model
 from .base import SolverFirstOrderSto
-from .build.solver import SVRG as _SVRG
+from .build.solver import SVRGDouble as _SVRG
+
+from tick.solver.build.solver import SVRG_VarianceReductionMethod_Last
+from tick.solver.build.solver import SVRG_VarianceReductionMethod_Average
+from tick.solver.build.solver import SVRG_VarianceReductionMethod_Random
+
+from tick.solver.build.solver import SVRG_StepType_Fixed
+from tick.solver.build.solver import SVRG_StepType_BarzilaiBorwein
 
 from tick.solver.build.solver import SVRG_VarianceReductionMethod_Last
 from tick.solver.build.solver import SVRG_VarianceReductionMethod_Average

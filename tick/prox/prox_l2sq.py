@@ -4,11 +4,9 @@
 
 import numpy as np
 from .base import Prox
-from .build.prox import ProxL2Sq as _ProxL2sq
-
+from .build.prox import ProxL2SqDouble as _ProxL2sq
 
 __author__ = 'Stephane Gaiffas'
-
 
 class ProxL2Sq(Prox):
     """Proximal operator of the squared L2 norm (ridge penalization)

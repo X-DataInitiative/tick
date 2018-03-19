@@ -2,7 +2,8 @@
 
 name: tick
 
-self: 
+self:
+  serialization
   preprocessing
   array_test
   hawkes/simulation
@@ -23,29 +24,29 @@ property:
     win_cargs:
       -Ox -GL -MD -EHsc -DBUILDING_DLL
     nixish_cargs: -fwrapv -O2 -Wall
-                  -fstack-protector-strong 
-                  -Wformat -Werror -Wdate-time 
+                  -fstack-protector-strong
+                  -Wformat -Werror -Wdate-time
                   -D_FORTIFY_SOURCE=2 -fPIC -std=c++11
                   -ffast-math -Wno-uninitialized
-                  
+
     nix_cargs: ${nixish_cargs}
 
     bsd_cargs: ${nixish_cargs}
 
-    nixish_largs: -fstack-protector-strong -Wformat 
-                  -Werror=format-security -Wdate-time 
-                  -D_FORTIFY_SOURCE=2 
+    nixish_largs: -fstack-protector-strong -Wformat
+                  -Werror=format-security -Wdate-time
+                  -D_FORTIFY_SOURCE=2
     nix_largs: ${nixish_largs} -pthread
                -Wl,-O1 -Wl,-Bsymbolic-functions
                -Wl,-z,relro -Wl,-z,relro
-    bsd_largs: ${nixish_largs} 
+    bsd_largs: ${nixish_largs}
 
-    nixish_test_cargs: -Wno-error=unused-local-typedefs 
+    nixish_test_cargs: -Wno-error=unused-local-typedefs
                        -Wno-error=sign-compare -Wno-sign-compare
 
 profile:
   - name: arg
-    arg: ${cargs} 
+    arg: ${cargs}
     if_arg:
       win: ${win_cargs}
       nix: ${nix_cargs}
@@ -53,7 +54,7 @@ profile:
     if_link:
       nix_lib: ${nix_largs}
       bsd_lib: ${bsd_largs}
-      win: -nodefaultlib:libucrt.lib ucrt.lib -MANIFEST:EMBED,ID=2 -MANIFESTUAC:NO -LTCG 
+      win: -nodefaultlib:libucrt.lib ucrt.lib -MANIFEST:EMBED,ID=2 -MANIFESTUAC:NO -LTCG
 
   - name: base
     parent: arg
@@ -66,7 +67,7 @@ profile:
 
   - name: array
     parent: arg
-    inc: 
+    inc:
       ./include
       ./third_party/cereal/include
     src:
@@ -167,7 +168,7 @@ profile:
 
   - name: solver
     parent: arg
-    self: random linear_model prox
+    self: random linear_model prox robust
     src:
       ./cpp/solver
       ./swig/solver
@@ -183,17 +184,23 @@ profile:
     install: ${lib_path}/survival/build
     out: _survival${lib_name}
 
-### See file ./sh/gtest/sh 
+  - name: serialization
+    parent: arg
+    self: linear_model solver prox robust survival
+    install: ${lib_path}/serialization/build
+    out: _serialization${lib_name}
+
+### See file ./sh/gtest/sh
   - name: exe
-    arg: ${cargs} 
+    arg: ${cargs}
     if_arg:
-      win: -Ox -GL -MD -EHsc 
+      win: -Ox -GL -MD -EHsc
       nix: ${nix_cargs}
       bsd: ${bsd_cargs}
     if_link:
       nix_lib: ${nix_largs}
       bsd_lib: ${bsd_largs}
-      win: -nodefaultlib:libucrt.lib ucrt.lib -MANIFEST:EMBED,ID=2 -MANIFESTUAC:NO -LTCG 
+      win: -nodefaultlib:libucrt.lib ucrt.lib -MANIFEST:EMBED,ID=2 -MANIFESTUAC:NO -LTCG
 
   - name: gtest_nodep
     parent: exe

@@ -14,9 +14,6 @@
 template <class T>
 class DLL_PUBLIC TModelLogReg : public TModelGeneralizedLinear<T>,
                                 virtual public TModelLipschitz<T> {
-  // Grants cereal access to default constructor
-  friend class cereal::access;
-
  protected:
   using TModelLipschitz<T>::ready_lip_consts;
   using TModelLipschitz<T>::lip_consts;
@@ -30,11 +27,10 @@ class DLL_PUBLIC TModelLogReg : public TModelGeneralizedLinear<T>,
   using TModelGeneralizedLinear<T>::fit_intercept;
   using TModelGeneralizedLinear<T>::get_class_name;
 
- private:
-  // This exists soley for cereal which has friend access
+ public:
+  // This exists soley for cereal/swig
   TModelLogReg() : TModelLogReg<T>(nullptr, nullptr, 0, 0) {}
 
- public:
   TModelLogReg(const std::shared_ptr<BaseArray2d<T> > features,
                const std::shared_ptr<SArray<T> > labels,
                const bool fit_intercept, const int n_threads = 1)
@@ -101,13 +97,13 @@ class DLL_PUBLIC TModelLogReg : public TModelGeneralizedLinear<T>,
 };
 
 using ModelLogReg = TModelLogReg<double>;
-
 using ModelLogRegDouble = TModelLogReg<double>;
+using ModelLogRegFloat = TModelLogReg<float>;
+
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelLogRegDouble,
                                    cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(ModelLogRegDouble)
 
-using ModelLogRegFloat = TModelLogReg<float>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelLogRegFloat,
                                    cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(ModelLogRegFloat)

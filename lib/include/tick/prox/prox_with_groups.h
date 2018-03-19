@@ -47,7 +47,7 @@ class TProxWithGroups : public TProx<T> {
                                                 ulong end, bool positive);
 
  protected:
-  // This exists soley for cereal which has friend access
+  // This exists soley for cereal/swig
   TProxWithGroups() : TProxWithGroups(0, nullptr, nullptr, false) {}
 
  public:

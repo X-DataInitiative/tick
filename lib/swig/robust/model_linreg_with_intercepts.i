@@ -11,49 +11,44 @@ template <class T>
 class TModelLinRegWithIntercepts : public virtual TModelGeneralizedLinearWithIntercepts<T>,
                     public TModelLinReg<T> {
  public:
+  TModelLinRegWithIntercepts();
   TModelLinRegWithIntercepts(
     const std::shared_ptr<BaseArray2d<T> > features,
     const std::shared_ptr<SArray<T> > labels,
     const bool fit_intercept,
     const int n_threads
   );
+  bool compare(const TModelLinRegWithIntercepts<T> &that);
 };
-
-%rename(ModelLinRegWithIntercepts) TModelLinRegWithIntercepts<double>;
-class ModelLinRegWithIntercepts : public virtual ModelGeneralizedLinearWithInterceptsDouble,
-                    public TModelLinReg<double> {
- public:
-  ModelLinRegWithIntercepts(
-    const SBaseArrayDouble2dPtr features,
-    const SArrayDoublePtr labels,
-    const bool fit_intercept,
-    const int n_threads = 1
-  );
-};
-typedef TModelLinRegWithIntercepts<double> ModelLinRegWithIntercepts;
 
 %rename(ModelLinRegWithInterceptsDouble) TModelLinRegWithIntercepts<double>;
 class ModelLinRegWithInterceptsDouble : public virtual ModelGeneralizedLinearWithInterceptsDouble,
-                    public TModelLinReg<double> {
+                    public ModelLinRegDouble {
  public:
+  ModelLinRegWithInterceptsDouble();
   ModelLinRegWithInterceptsDouble(
     const SBaseArrayDouble2dPtr features,
     const SArrayDoublePtr labels,
     const bool fit_intercept,
     const int n_threads = 1
   );
+  bool compare(const ModelLinRegWithInterceptsDouble &that);
 };
 typedef TModelLinRegWithIntercepts<double> ModelLinRegWithInterceptsDouble;
+TICK_MAKE_PICKLABLE(ModelLinRegWithInterceptsDouble);
 
 %rename(ModelLinRegWithInterceptsFloat) TModelLinRegWithIntercepts<float>;
 class ModelLinRegWithInterceptsFloat : public virtual ModelGeneralizedLinearWithInterceptsFloat,
-                    public TModelLinReg<float> {
+                    public ModelLinRegFloat {
  public:
+  ModelLinRegWithInterceptsFloat();
   ModelLinRegWithInterceptsFloat(
     const SBaseArrayFloat2dPtr features,
     const SArrayFloatPtr labels,
     const bool fit_intercept,
     const int n_threads = 1
   );
+  bool compare(const ModelLinRegWithInterceptsFloat &that);
 };
 typedef TModelLinRegWithIntercepts<float> ModelLinRegWithInterceptsFloat;
+TICK_MAKE_PICKLABLE(ModelLinRegWithInterceptsFloat);

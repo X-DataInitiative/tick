@@ -9,9 +9,6 @@
 
 template <class T>
 class DLL_PUBLIC TSAGA : public TStoSolver<T> {
-  // Grants cereal access to default constructor
-  friend class cereal::access;
-
  protected:
   using TStoSolver<T>::t;
   using TStoSolver<T>::model;
@@ -57,11 +54,10 @@ class DLL_PUBLIC TSAGA : public TStoSolver<T> {
 
   void set_starting_iterate(Array<T> &new_iterate) override;
 
- protected:
-  // This exists soley for cereal which has friend access
+ public:
+  // This exists soley for cereal/swig
   TSAGA() : TSAGA<T>(0, 0, RandType::unif, 0, 0) {}
 
- public:
   TSAGA(ulong epoch_size, T tol, RandType rand_type, T step, int seed,
         SAGA_VarianceReductionMethod variance_reduction =
             SAGA_VarianceReductionMethod::Last);

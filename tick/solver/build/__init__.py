@@ -11,12 +11,11 @@ def required():
   import os, sys
   root = os.path.dirname(os.path.realpath(os.path.join(__file__, "../..")))
 
-  if "tick.base_model.build" not in sys.modules:
-    p = os.path.realpath(os.path.join(root, "base_model/build"))
-    os.environ["PATH"] = p + os.pathsep + os.environ["PATH"]
+  deps = ["base_model", "linear_model", "robust"]
 
-  if "tick.linear_model.build" not in sys.modules:
-    p = os.path.realpath(os.path.join(root, "linear_model/build"))
-    os.environ["PATH"] = p + os.pathsep + os.environ["PATH"]
+  for dep in deps:
+      if "tick." + dep + ".build" not in sys.modules:
+        p = os.path.realpath(os.path.join(root, dep + "/build"))
+        os.environ["PATH"] = p + os.pathsep + os.environ["PATH"]
 
 add_to_path_if_windows(__file__, [required])

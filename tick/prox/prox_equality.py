@@ -6,7 +6,7 @@ import numpy as np
 import sys
 
 from .base import Prox
-from .build.prox import ProxEquality as _ProxEquality
+from .build.prox import ProxEqualityDouble as _ProxEquality
 
 __author__ = 'Stephane Gaiffas'
 

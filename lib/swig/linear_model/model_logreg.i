@@ -10,6 +10,7 @@
 template <class T>
 class TModelLogReg : public virtual TModelGeneralizedLinear<T>, public TModelLipschitz<T> {
  public:
+  TModelLogReg();
   TModelLogReg(
     const std::shared_ptr<BaseArray2d<T> > features,
     const std::shared_ptr<SArray<T> > labels,
@@ -17,48 +18,46 @@ class TModelLogReg : public virtual TModelGeneralizedLinear<T>, public TModelLip
     const int n_threads = 1
   );
 
+  bool compare(const TModelLogReg<T> &that);
+
   static void sigmoid(const Array<T> &x, Array<T> &out);
   static void logistic(const Array<T> &x, Array<T> &out);
 };
 
-%rename(ModelLogReg) TModelLogReg<double>;
-class ModelLogReg : public virtual TModelGeneralizedLinear<double>, public TModelLipschitz<double> {
- public:
-  ModelLogReg(
-    const SBaseArrayDouble2dPtr features,
-    const SArrayDoublePtr labels,
-    const bool fit_intercept,
-    const int n_threads
-  );
-  static void sigmoid(const ArrayDouble &x, ArrayDouble &out);
-  static void logistic(const ArrayDouble &x, ArrayDouble &out);
-};
-typedef TModelLogReg<double> ModelLogReg;
-
 %rename(ModelLogRegDouble) TModelLogReg<double>;
-class TModelLogReg<double> : public virtual TModelGeneralizedLinear<double>, public TModelLipschitz<double> {
+class ModelLogRegDouble : public virtual TModelGeneralizedLinear<double>, public TModelLipschitz<double> {
  public:
-  TModelLogReg(
+  ModelLogRegDouble();
+  ModelLogRegDouble(
     const SBaseArrayDouble2dPtr features,
     const SArrayDoublePtr labels,
     const bool fit_intercept,
     const int n_threads
   );
+
+  bool compare(const ModelLogRegDouble &that);
+
   static void sigmoid(const ArrayDouble &x, ArrayDouble &out);
   static void logistic(const ArrayDouble &x, ArrayDouble &out);
 };
 typedef TModelLogReg<double> ModelLogRegDouble;
+TICK_MAKE_PICKLABLE(ModelLogRegDouble);
 
 %rename(ModelLogRegFloat) TModelLogReg<float>;
-class TModelLogReg<float> : public virtual TModelGeneralizedLinear<float>, public TModelLipschitz<float> {
+class ModelLogRegFloat : public virtual TModelGeneralizedLinear<float>, public TModelLipschitz<float> {
  public:
-  TModelLogReg(
+  ModelLogRegFloat();
+  ModelLogRegFloat(
     const SBaseArrayFloat2dPtr features,
     const SArrayFloatPtr labels,
     const bool fit_intercept,
     const int n_threads = 1
   );
+
+  bool compare(const ModelLogRegFloat &that);
+
   static void sigmoid(const Array<float> &x, Array<float> &out);
   static void logistic(const Array<float> &x, Array<float> &out);
 };
 typedef TModelLogReg<float> ModelLogRegFloat;
+TICK_MAKE_PICKLABLE(ModelLogRegFloat);

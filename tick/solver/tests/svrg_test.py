@@ -15,7 +15,7 @@ from tick.prox import ProxL1, ProxL1w, ProxTV, ProxEquality, \
 
 from tick.solver import SVRG
 from tick.solver.tests import TestSolver
-from tick.solver.build.solver import SVRG as _SVRG
+from tick.solver.build.solver import SVRGDouble as _SVRG
 
 from tick.solver.build.solver import SVRG_VarianceReductionMethod_Last
 from tick.solver.build.solver import SVRG_VarianceReductionMethod_Average

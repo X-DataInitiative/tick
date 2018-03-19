@@ -4,18 +4,6 @@
 #include "tick/prox/prox_tv.h"
 
 template <class T>
-TProxBinarsity<T>::TProxBinarsity(T strength, SArrayULongPtr blocks_start,
-                                  SArrayULongPtr blocks_length, bool positive)
-    : TProxWithGroups<T>(strength, blocks_start, blocks_length, positive) {}
-
-template <class T>
-TProxBinarsity<T>::TProxBinarsity(T strength, SArrayULongPtr blocks_start,
-                                  SArrayULongPtr blocks_length, ulong start,
-                                  ulong end, bool positive)
-    : TProxWithGroups<T>(strength, blocks_start, blocks_length, start, end,
-                         positive) {}
-
-template <class T>
 std::unique_ptr<TProx<T> > TProxBinarsity<T>::build_prox(T strength,
                                                          ulong start, ulong end,
                                                          bool positive) {

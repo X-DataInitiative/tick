@@ -29,9 +29,9 @@
 %shared_ptr(TProxL2Sq<float>);
 %shared_ptr(ProxL2Sq);
 
-%shared_ptr(TProxL1<double>);
-%shared_ptr(TProxL1<float>);
 %shared_ptr(ProxL1);
+%shared_ptr(ProxL1Double);
+%shared_ptr(ProxL1Float);
 
 %shared_ptr(TProxL1w<double>);
 %shared_ptr(TProxL1w<float>);
@@ -71,9 +71,12 @@
 
 %{
 #include "tick/base/tick_python.h"
+#include "tick/base/serialization.h"
 %}
 
 %import(module="tick.base") base_module.i
+
+%include serialization.i
 
 %include "prox.i"
 

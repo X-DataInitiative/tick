@@ -19,9 +19,6 @@ inline std::ostream &operator<<(std::ostream &s, const LinkType l) {
 
 template <class T>
 class DLL_PUBLIC TModelPoisReg : public TModelGeneralizedLinear<T> {
-  // Grants cereal access to default constructor
-  friend class cereal::access;
-
  protected:
   using TModelGeneralizedLinear<T>::compute_features_norm_sq;
   using TModelGeneralizedLinear<T>::n_samples;
@@ -44,12 +41,11 @@ class DLL_PUBLIC TModelPoisReg : public TModelGeneralizedLinear<T> {
   VArrayULongPtr non_zero_labels;
   ulong n_non_zeros_labels;
 
- private:
-  // This exists soley for cereal which has friend access
+ public:
+  // This exists soley for cereal/swig
   TModelPoisReg()
       : TModelPoisReg<T>(nullptr, nullptr, LinkType::identity, 0, 0) {}
 
- public:
   TModelPoisReg(const std::shared_ptr<BaseArray2d<T> > features,
                 const std::shared_ptr<SArray<T> > labels,
                 const LinkType link_type, const bool fit_intercept,
@@ -138,13 +134,13 @@ class DLL_PUBLIC TModelPoisReg : public TModelGeneralizedLinear<T> {
 };
 
 using ModelPoisReg = TModelPoisReg<double>;
-
 using ModelPoisRegDouble = TModelPoisReg<double>;
+using ModelPoisRegFloat = TModelPoisReg<float>;
+
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelPoisRegDouble,
                                    cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(ModelPoisRegDouble)
 
-using ModelPoisRegFloat = TModelPoisReg<float>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelPoisRegFloat,
                                    cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(ModelPoisRegFloat)

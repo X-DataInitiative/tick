@@ -6,15 +6,10 @@
 #include "tick/base_model/model_generalized_linear.h"
 #include "tick/base_model/model_lipschitz.h"
 
-#include <cereal/types/base_class.hpp>
-
 template <class T>
 class DLL_PUBLIC TModelQuadraticHinge
     : public virtual TModelGeneralizedLinear<T>,
       public TModelLipschitz<T> {
-  // Grants cereal access to default constructor
-  friend class cereal::access;
-
  protected:
   using TModelLipschitz<T>::ready_lip_consts;
   using TModelLipschitz<T>::lip_consts;
@@ -29,11 +24,10 @@ class DLL_PUBLIC TModelQuadraticHinge
   using TModelGeneralizedLinear<T>::get_inner_prod;
   using TModelGeneralizedLinear<T>::get_class_name;
 
- private:
-  // This exists soley for cereal which has friend access
+ public:
+  // This exists soley for cereal/swig
   TModelQuadraticHinge() : TModelQuadraticHinge<T>(nullptr, nullptr, false) {}
 
- public:
   TModelQuadraticHinge(const std::shared_ptr<BaseArray2d<T>> features,
                        const std::shared_ptr<SArray<T>> labels,
                        const bool fit_intercept, const int n_threads = 1)
@@ -73,13 +67,13 @@ class DLL_PUBLIC TModelQuadraticHinge
 };
 
 using ModelQuadraticHinge = TModelQuadraticHinge<double>;
-
 using ModelQuadraticHingeDouble = TModelQuadraticHinge<double>;
+using ModelQuadraticHingeFloat = TModelQuadraticHinge<float>;
+
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelQuadraticHingeDouble,
                                    cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(ModelQuadraticHingeDouble)
 
-using ModelQuadraticHingeFloat = TModelQuadraticHinge<float>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelQuadraticHingeFloat,
                                    cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(ModelQuadraticHingeFloat)

@@ -4,15 +4,6 @@
 #include "tick/base/base.h"
 
 template <class T>
-TProxEquality<T>::TProxEquality(T strength, bool positive)
-    : TProx<T>(0., positive) {}
-
-template <class T>
-TProxEquality<T>::TProxEquality(T strength, ulong start, ulong end,
-                                bool positive)
-    : TProx<T>(0., start, end, positive) {}
-
-template <class T>
 T TProxEquality<T>::value(const Array<T> &coeffs, ulong start, ulong end) {
   Array<T> sub_coeffs = view(coeffs, start, end);
   if (sub_coeffs.min() == sub_coeffs.max()) {

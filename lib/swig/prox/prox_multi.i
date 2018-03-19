@@ -13,6 +13,8 @@ template <class T>
 class TProxMulti : public TProx<T> {
  public:
    explicit TProxMulti(std::vector<std::shared_ptr<TProx<T> > > proxs);
+
+  bool compare(const TProxMulti<T> &that);
 };
 
 %template(ProxMulti) TProxMulti<double>;

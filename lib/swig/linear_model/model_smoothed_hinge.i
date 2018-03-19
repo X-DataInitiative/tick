@@ -10,6 +10,7 @@
 template <class T>
 class DLL_PUBLIC TModelSmoothedHinge : public virtual TModelGeneralizedLinear<T>, public TModelLipschitz<T> {
  public:
+  TModelSmoothedHinge();
   TModelSmoothedHinge(
     const std::shared_ptr<BaseArray2d<T> > features,
     const std::shared_ptr<SArray<T> > labels,
@@ -20,29 +21,15 @@ class DLL_PUBLIC TModelSmoothedHinge : public virtual TModelGeneralizedLinear<T>
   T get_smoothness() const;
 
   void set_smoothness(T smoothness);
-};
 
-%rename(ModelSmoothedHinge) TModelSmoothedHinge<double>;
-class ModelSmoothedHinge : public virtual TModelGeneralizedLinear<double>,
-                    public TModelLipschitz<double> {
- public:
-  ModelSmoothedHinge(
-    const SBaseArrayDouble2dPtr features,
-    const SArrayDoublePtr labels,
-    const bool fit_intercept,
-    const double smoothness = 1,
-    const int n_threads = 1
-  );
-  double get_smoothness() const;
-
-  void set_smoothness(double smoothness);
+  bool compare(const TModelSmoothedHinge<T> &that);
 };
-typedef TModelSmoothedHinge<double> ModelSmoothedHinge;
 
 %rename(ModelSmoothedHingeDouble) TModelSmoothedHinge<double>;
 class ModelSmoothedHingeDouble : public virtual TModelGeneralizedLinear<double>,
                     public TModelLipschitz<double> {
  public:
+  ModelSmoothedHingeDouble();
   ModelSmoothedHingeDouble(
     const SBaseArrayDouble2dPtr features,
     const SArrayDoublePtr labels,
@@ -53,13 +40,17 @@ class ModelSmoothedHingeDouble : public virtual TModelGeneralizedLinear<double>,
   double get_smoothness() const;
 
   void set_smoothness(double smoothness);
+
+  bool compare(const ModelSmoothedHingeDouble &that);
 };
 typedef TModelSmoothedHinge<double> ModelSmoothedHingeDouble;
+TICK_MAKE_PICKLABLE(ModelSmoothedHingeDouble);
 
 %rename(ModelSmoothedHingeFloat) TModelSmoothedHinge<float>;
 class ModelSmoothedHingeFloat : public virtual TModelGeneralizedLinear<float>,
                     public TModelLipschitz<float> {
  public:
+  ModelSmoothedHingeFloat();
   ModelSmoothedHingeFloat(
     const SBaseArrayFloat2dPtr features,
     const SArrayFloatPtr labels,
@@ -70,5 +61,8 @@ class ModelSmoothedHingeFloat : public virtual TModelGeneralizedLinear<float>,
   float get_smoothness() const;
 
   void set_smoothness(float smoothness);
+
+  bool compare(const ModelSmoothedHingeFloat &that);
 };
 typedef TModelSmoothedHinge<double> ModelSmoothedHingeFloat;
+TICK_MAKE_PICKLABLE(ModelSmoothedHingeFloat);
