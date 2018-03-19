@@ -76,7 +76,7 @@ class TStoSolver<double> {
 };
 typedef TStoSolver<double> StoSolver;
 
-%rename(TStoSolverDouble) TStoSolver<double>; 
+%rename(TStoSolverDouble) TStoSolver<double>;
 class TStoSolver<double> {
  // Base abstract for a stochastic solver
  public:
@@ -107,7 +107,7 @@ class TStoSolver<double> {
 };
 typedef TStoSolver<double> TStoSolverDouble;
 
-%rename(TStoSolverFloat) TStoSolver<float>; 
+%rename(TStoSolverFloat) TStoSolver<float>;
 class TStoSolver<float> {
  // Base abstract for a stochastic solver
  public:

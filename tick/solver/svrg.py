@@ -5,19 +5,25 @@ from tick.base_model import Model
 from .base import SolverFirstOrderSto
 from .build.solver import SVRG as _SVRG
 
+from tick.solver.build.solver import SVRG_VarianceReductionMethod_Last
+from tick.solver.build.solver import SVRG_VarianceReductionMethod_Average
+from tick.solver.build.solver import SVRG_VarianceReductionMethod_Random
+
+from tick.solver.build.solver import SVRG_StepType_Fixed
+from tick.solver.build.solver import SVRG_StepType_BarzilaiBorwein
+
 __author__ = "Stephane Gaiffas"
 
 variance_reduction_methods_mapper = {
-    'last': _SVRG.VarianceReductionMethod_Last,
-    'avg': _SVRG.VarianceReductionMethod_Average,
-    'rand': _SVRG.VarianceReductionMethod_Random
+    'last': SVRG_VarianceReductionMethod_Last,
+    'avg':  SVRG_VarianceReductionMethod_Average,
+    'rand': SVRG_VarianceReductionMethod_Random
 }
 
 step_types_mapper = {
-    'fixed': _SVRG.StepType_Fixed,
-    'bb': _SVRG.StepType_BarzilaiBorwein
+    'fixed': SVRG_StepType_Fixed,
+    'bb':    SVRG_StepType_BarzilaiBorwein
 }
-
 
 class SVRG(SolverFirstOrderSto):
     """Stochastic Variance Reduced Gradient solver

@@ -15,6 +15,9 @@
 
 template <class T>
 class DLL_PUBLIC TSDCA : public TStoSolver<T> {
+  // Grants cereal access to default constructor
+  friend class cereal::access;
+
  protected:
   using TStoSolver<T>::t;
   using TStoSolver<T>::model;
@@ -25,6 +28,7 @@ class DLL_PUBLIC TSDCA : public TStoSolver<T> {
   using TStoSolver<T>::rand_max;
 
  public:
+  using TStoSolver<T>::get_class_name;
   using SArrayTPtr = std::shared_ptr<SArray<T>>;
 
  protected:
@@ -45,6 +49,10 @@ class DLL_PUBLIC TSDCA : public TStoSolver<T> {
 
   // The dual variable
   Array<T> dual_vector;
+
+ protected:
+  // This exists soley for cereal which has friend access
+  TSDCA() : TSDCA<T>(0, 0, 0) {}
 
  public:
   explicit TSDCA(T l_l2sq, ulong epoch_size = 0, T tol = 0.,
@@ -80,10 +88,47 @@ class DLL_PUBLIC TSDCA : public TStoSolver<T> {
     // This is useful for Poisson regression with identity link
     return l_l2sq * model->get_n_samples() / rand_max;
   }
+
+ public:
+  template <class Archive>
+  void serialize(Archive &ar) {
+    ar(cereal::make_nvp("StoSolver", cereal::base_class<TStoSolver<T>>(this)));
+
+    ar(CEREAL_NVP(n_coeffs));
+    ar(CEREAL_NVP(stored_variables_ready));
+    ar(CEREAL_NVP(l_l2sq));
+    ar(CEREAL_NVP(delta));
+    ar(CEREAL_NVP(dual_vector));
+  }
+
+  BoolStrReport compare(const TSDCA<T> &that) {
+    std::stringstream ss;
+    ss << get_class_name() << std::endl;
+    bool are_equal =
+        TStoSolver<T>::compare(that, ss) && TICK_CMP_REPORT(ss, n_coeffs) &&
+        TICK_CMP_REPORT(ss, stored_variables_ready) &&
+        TICK_CMP_REPORT(ss, l_l2sq) && TICK_CMP_REPORT(ss, delta) &&
+        TICK_CMP_REPORT(ss, dual_vector);
+    return BoolStrReport(are_equal, ss.str());
+  }
+
+  BoolStrReport operator==(const TSDCA<T> &that) { return compare(that); }
+
+  static std::shared_ptr<TSDCA<T>> AS_NULL() {
+    return std::move(std::shared_ptr<TSDCA<T>>(new TSDCA<T>));
+  }
 };
 
 using SDCA = TSDCA<double>;
+
 using SDCADouble = TSDCA<double>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SDCADouble,
+                                   cereal::specialization::member_serialize)
+CEREAL_REGISTER_TYPE(SDCADouble)
+
 using SDCAFloat = TSDCA<float>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SDCAFloat,
+                                   cereal::specialization::member_serialize)
+CEREAL_REGISTER_TYPE(SDCAFloat)
 
 #endif  // LIB_INCLUDE_TICK_SOLVER_SDCA_H_

@@ -4,45 +4,45 @@
 
 %{
 #include "tick/solver/svrg.h"
-#include "tick/base_model/model.h"
 %}
+
+
+enum class SVRG_VarianceReductionMethod : uint16_t {
+  Last = 1,
+  Average = 2,
+  Random = 3,
+};
+enum class SVRG_StepType : uint16_t {
+    Fixed = 1,
+    BarzilaiBorwein = 2,
+};
+
 
 template <class T>
 class TSVRG : public TStoSolver<T> {
   public:
-    enum class VarianceReductionMethod {
-        Last    = 1,
-        Average = 2,
-        Random  = 3
-    };
-
-    enum class StepType {
-        Fixed = 1,
-        BarzilaiBorwein = 2,
-    };
-
     TSVRG(ulong epoch_size,
          T tol,
          RandType rand_type,
          T step,
          int seed = -1,
          int n_threads = 1,
-         VarianceReductionMethod variance_reduction = VarianceReductionMethod::Last,
-         StepType step_method = StepType::Fixed);
+         SVRG_VarianceReductionMethod variance_reduction = SVRG_VarianceReductionMethod::Last,
+         SVRG_StepType step_method = SVRG_StepType::Fixed);
 
     void solve();
 
     T get_step();
     void set_step(T step);
 
-    VarianceReductionMethod get_variance_reduction();
-    void set_variance_reduction(VarianceReductionMethod variance_reduction);
+    SVRG_VarianceReductionMethod get_variance_reduction();
+    void set_variance_reduction(SVRG_VarianceReductionMethod variance_reduction);
 
-    StepType get_step_type();
-    void set_step_type(StepType step_type);
+    SVRG_StepType get_step_type();
+    void set_step_type(SVRG_StepType step_type);
 };
 
-%template(SVRG) TSVRG<double>; 
+%template(SVRG) TSVRG<double>;
 typedef TSVRG<double> SVRG;
 
 %template(SVRGDouble) TSVRG<double>;

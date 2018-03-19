@@ -17,6 +17,12 @@ from tick.solver import SVRG
 from tick.solver.tests import TestSolver
 from tick.solver.build.solver import SVRG as _SVRG
 
+from tick.solver.build.solver import SVRG_VarianceReductionMethod_Last
+from tick.solver.build.solver import SVRG_VarianceReductionMethod_Average
+from tick.solver.build.solver import SVRG_VarianceReductionMethod_Random
+
+from tick.solver.build.solver import SVRG_StepType_Fixed
+from tick.solver.build.solver import SVRG_StepType_BarzilaiBorwein
 
 class Test(TestSolver):
     @staticmethod
@@ -69,27 +75,27 @@ class Test(TestSolver):
         svrg = SVRG()
         self.assertEqual(svrg.variance_reduction, 'last')
         self.assertEqual(svrg._solver.get_variance_reduction(),
-                         _SVRG.VarianceReductionMethod_Last)
+                         SVRG_VarianceReductionMethod_Last)
 
         svrg = SVRG(variance_reduction='rand')
         self.assertEqual(svrg.variance_reduction, 'rand')
         self.assertEqual(svrg._solver.get_variance_reduction(),
-                         _SVRG.VarianceReductionMethod_Random)
+                         SVRG_VarianceReductionMethod_Random)
 
         svrg.variance_reduction = 'avg'
         self.assertEqual(svrg.variance_reduction, 'avg')
         self.assertEqual(svrg._solver.get_variance_reduction(),
-                         _SVRG.VarianceReductionMethod_Average)
+                         SVRG_VarianceReductionMethod_Average)
 
         svrg.variance_reduction = 'rand'
         self.assertEqual(svrg.variance_reduction, 'rand')
         self.assertEqual(svrg._solver.get_variance_reduction(),
-                         _SVRG.VarianceReductionMethod_Random)
+                         SVRG_VarianceReductionMethod_Random)
 
         svrg.variance_reduction = 'last'
         self.assertEqual(svrg.variance_reduction, 'last')
         self.assertEqual(svrg._solver.get_variance_reduction(),
-                         _SVRG.VarianceReductionMethod_Last)
+                         SVRG_VarianceReductionMethod_Last)
 
         msg = '^variance_reduction should be one of "avg, last, rand", ' \
               'got "stuff"$'
@@ -127,22 +133,22 @@ class Test(TestSolver):
         svrg = SVRG()
         self.assertEqual(svrg.step_type, 'fixed')
         self.assertEqual(svrg._solver.get_step_type(),
-                         _SVRG.StepType_Fixed)
+                         SVRG_StepType_Fixed)
 
         svrg = SVRG(step_type='bb')
         self.assertEqual(svrg.step_type, 'bb')
         self.assertEqual(svrg._solver.get_step_type(),
-                         _SVRG.StepType_BarzilaiBorwein)
+                         SVRG_StepType_BarzilaiBorwein)
 
         svrg.step_type = 'fixed'
         self.assertEqual(svrg.step_type, 'fixed')
         self.assertEqual(svrg._solver.get_step_type(),
-                         _SVRG.StepType_Fixed)
+                         SVRG_StepType_Fixed)
 
         svrg.step_type = 'bb'
         self.assertEqual(svrg.step_type, 'bb')
         self.assertEqual(svrg._solver.get_step_type(),
-                         _SVRG.StepType_BarzilaiBorwein)
+                         SVRG_StepType_BarzilaiBorwein)
 
     def test_set_model(self):
         """...Test SVRG set_model

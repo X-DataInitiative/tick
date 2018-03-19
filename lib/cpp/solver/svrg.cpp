@@ -5,8 +5,8 @@
 
 template <class T>
 TSVRG<T>::TSVRG(ulong epoch_size, T tol, RandType rand_type, T step, int seed,
-                int n_threads, VarianceReductionMethod variance_reduction,
-                StepType step_method)
+                int n_threads, SVRG_VarianceReductionMethod variance_reduction,
+                SVRG_StepType step_method)
     : TStoSolver<T>(epoch_size, tol, rand_type, seed),
       n_threads(n_threads),
       step(step),
@@ -24,7 +24,7 @@ template <class T>
 void TSVRG<T>::prepare_solve() {
   Array<T> previous_iterate;
   Array<T> previous_full_gradient;
-  if (step_type == StepType::BarzilaiBorwein && t > 1) {
+  if (step_type == SVRG_StepType::BarzilaiBorwein && t > 1) {
     previous_iterate = fixed_w;
     previous_full_gradient = full_gradient;
   }
@@ -36,7 +36,7 @@ void TSVRG<T>::prepare_solve() {
   full_gradient = Array<T>(iterate.size());
   model->grad(fixed_w, full_gradient);
 
-  if (step_type == StepType::BarzilaiBorwein && t > 1) {
+  if (step_type == SVRG_StepType::BarzilaiBorwein && t > 1) {
     Array<T> iterate_diff = iterate;
     iterate_diff.mult_incr(previous_iterate, -1);
     Array<T> full_gradient_diff = full_gradient;
@@ -54,11 +54,11 @@ void TSVRG<T>::prepare_solve() {
     grad_i_fixed_w = Array<T>(iterate.size());
   }
   rand_index = 0;
-  if (variance_reduction == VarianceReductionMethod::Random ||
-      variance_reduction == VarianceReductionMethod::Average) {
+  if (variance_reduction == SVRG_VarianceReductionMethod::Random ||
+      variance_reduction == SVRG_VarianceReductionMethod::Average) {
     next_iterate.init_to_zero();
   }
-  if (variance_reduction == VarianceReductionMethod::Random) {
+  if (variance_reduction == SVRG_VarianceReductionMethod::Random) {
     rand_index = rand_unif(epoch_size);
   }
 }
@@ -110,7 +110,7 @@ void TSVRG<T>::solve_dense() {
       dense_single_thread_solver(next_i);
     }
   }
-  if (variance_reduction == VarianceReductionMethod::Last) {
+  if (variance_reduction == SVRG_VarianceReductionMethod::Last) {
     next_iterate = iterate;
   }
   TStoSolver<T>::t += epoch_size;
@@ -156,7 +156,7 @@ void TSVRG<T>::solve_sparse_proba_updates(bool use_intercept,
     }
   }
 
-  if (variance_reduction == VarianceReductionMethod::Last) {
+  if (variance_reduction == SVRG_VarianceReductionMethod::Last) {
     next_iterate = iterate;
   }
   TStoSolver<T>::t += epoch_size;
@@ -178,11 +178,11 @@ void TSVRG<T>::dense_single_thread_solver(const ulong& next_i) {
         iterate[j] - step * (grad_i[j] - grad_i_fixed_w[j] + full_gradient[j]);
   }
   prox->call(iterate, step, iterate);
-  if (variance_reduction == VarianceReductionMethod::Random &&
+  if (variance_reduction == SVRG_VarianceReductionMethod::Random &&
       t == rand_index) {
     next_iterate = iterate;
   }
-  if (variance_reduction == VarianceReductionMethod::Average) {
+  if (variance_reduction == SVRG_VarianceReductionMethod::Average) {
     next_iterate.mult_incr(iterate, 1.0 / epoch_size);
   }
 }
@@ -225,11 +225,11 @@ void TSVRG<T>::sparse_single_thread_solver(const ulong& next_i,
   }
   // Note that the average option for variance reduction with sparse data is a
   // very bad idea, but this is caught in the python class
-  if (variance_reduction == VarianceReductionMethod::Random &&
+  if (variance_reduction == SVRG_VarianceReductionMethod::Random &&
       t == rand_index) {
     next_iterate = iterate;
   }
-  if (variance_reduction == VarianceReductionMethod::Average) {
+  if (variance_reduction == SVRG_VarianceReductionMethod::Average) {
     next_iterate.mult_incr(iterate, 1.0 / epoch_size);
   }
 }

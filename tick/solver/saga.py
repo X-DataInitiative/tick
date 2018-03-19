@@ -1,17 +1,20 @@
 # License: BSD 3 clause
 
 from tick.base_model import ModelGeneralizedLinear
-from .base import SolverFirstOrderSto
-from .build.solver import SAGA as _SAGA
+from tick.solver.base import SolverFirstOrderSto
+from tick.solver.build.solver import SAGA as _SAGA
+
+from tick.solver.build.solver import SAGA_VarianceReductionMethod_Last
+from tick.solver.build.solver import SAGA_VarianceReductionMethod_Average
+from tick.solver.build.solver import SAGA_VarianceReductionMethod_Random
 
 __author__ = "Stephane Gaiffas"
 
 variance_reduction_methods_mapper = {
-    'last': _SAGA.VarianceReductionMethod_Last,
-    'avg': _SAGA.VarianceReductionMethod_Average,
-    'rand': _SAGA.VarianceReductionMethod_Random
+    'last': SAGA_VarianceReductionMethod_Last,
+    'avg':  SAGA_VarianceReductionMethod_Average,
+    'rand': SAGA_VarianceReductionMethod_Random
 }
-
 
 class SAGA(SolverFirstOrderSto):
     """Stochastic Average Gradient solver, for the minimization of objectives

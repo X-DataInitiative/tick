@@ -9,6 +9,9 @@
 
 template <class T>
 class DLL_PUBLIC TSAGA : public TStoSolver<T> {
+  // Grants cereal access to default constructor
+  friend class cereal::access;
+
  protected:
   using TStoSolver<T>::t;
   using TStoSolver<T>::model;
@@ -22,13 +25,7 @@ class DLL_PUBLIC TSAGA : public TStoSolver<T> {
   using TStoSolver<T>::set_model;
   using TStoSolver<T>::get_minimizer;
   using TStoSolver<T>::set_starting_iterate;
-
- public:
-  enum class VarianceReductionMethod {
-    Last = 1,
-    Average = 2,
-    Random = 3,
-  };
+  using TStoSolver<T>::get_class_name;
 
  protected:
   bool solver_ready = false;
@@ -39,7 +36,7 @@ class DLL_PUBLIC TSAGA : public TStoSolver<T> {
   // given by the inverse proportion of non-zero entries in each feature column
   Array<T> steps_correction;
 
-  VarianceReductionMethod variance_reduction;
+  SAGA_VarianceReductionMethod variance_reduction;
 
   Array<T> next_iterate;
 
@@ -58,18 +55,16 @@ class DLL_PUBLIC TSAGA : public TStoSolver<T> {
 
   void compute_step_corrections();
 
-  void set_starting_iterate(Array<T> &new_iterate) override {
-    TStoSolver<T>::set_starting_iterate(new_iterate);
-    next_iterate = iterate;
-  }
+  void set_starting_iterate(Array<T> &new_iterate) override;
 
- private:
-  TSAGA() : TSAGA(0, 0, RandType::unif, 0, 0) {}
+ protected:
+  // This exists soley for cereal which has friend access
+  TSAGA() : TSAGA<T>(0, 0, RandType::unif, 0, 0) {}
 
  public:
   TSAGA(ulong epoch_size, T tol, RandType rand_type, T step, int seed,
-        VarianceReductionMethod variance_reduction =
-            TSAGA<T>::VarianceReductionMethod::Last);
+        SAGA_VarianceReductionMethod variance_reduction =
+            SAGA_VarianceReductionMethod::Last);
 
   void solve() override;
 
@@ -79,23 +74,62 @@ class DLL_PUBLIC TSAGA : public TStoSolver<T> {
 
   void set_step(T step) { this->step = step; }
 
-  typename TSAGA<T>::VarianceReductionMethod get_variance_reduction() const {
+  SAGA_VarianceReductionMethod get_variance_reduction() const {
     return variance_reduction;
   }
 
-  void set_variance_reduction(
-      typename TSAGA<T>::VarianceReductionMethod _variance_reduction) {
+  void set_variance_reduction(SAGA_VarianceReductionMethod _variance_reduction) {
     variance_reduction = _variance_reduction;
   }
+
+ public:
+  template <class Archive>
+  void serialize(Archive &ar) {
+    ar(cereal::make_nvp("StoSolver", cereal::base_class<TStoSolver<T> >(this)));
+
+    ar(CEREAL_NVP(step));
+    ar(CEREAL_NVP(steps_correction));
+    ar(CEREAL_NVP(variance_reduction));
+    ar(CEREAL_NVP(next_iterate));
+    ar(CEREAL_NVP(solver_ready));
+    ar(CEREAL_NVP(gradients_memory));
+    ar(CEREAL_NVP(gradients_average));
+    ar(CEREAL_NVP(rand_index));
+    ar(CEREAL_NVP(ready_step_corrections));
+  }
+
+  BoolStrReport compare(const TSAGA<T> &that) {
+    std::stringstream ss;
+    ss << get_class_name() << std::endl;
+    bool ret = TStoSolver<T>::compare(that, ss) && TICK_CMP_REPORT(ss, step) &&
+               TICK_CMP_REPORT(ss, steps_correction) &&
+               TICK_CMP_REPORT(ss, variance_reduction) &&
+               TICK_CMP_REPORT(ss, next_iterate) &&
+               TICK_CMP_REPORT(ss, solver_ready) &&
+               TICK_CMP_REPORT(ss, gradients_memory) &&
+               TICK_CMP_REPORT(ss, gradients_average) &&
+               TICK_CMP_REPORT(ss, rand_index) &&
+               TICK_CMP_REPORT(ss, ready_step_corrections);
+    return BoolStrReport(ret, ss.str());
+  }
+
+  BoolStrReport operator==(const TSAGA<T> &that) { return compare(that); }
 
   static std::shared_ptr<TSAGA<T> > AS_NULL() {
     return std::move(std::shared_ptr<TSAGA<T> >(new TSAGA<T>));
   }
 };
 
-
 using SAGA = TSAGA<double>;
+
 using SAGADouble = TSAGA<double>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SAGADouble,
+                                   cereal::specialization::member_serialize)
+CEREAL_REGISTER_TYPE(SAGADouble)
+
 using SAGAFloat = TSAGA<float>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SAGAFloat,
+                                   cereal::specialization::member_serialize)
+CEREAL_REGISTER_TYPE(SAGAFloat)
 
 #endif  // LIB_INCLUDE_TICK_SOLVER_SAGA_H_

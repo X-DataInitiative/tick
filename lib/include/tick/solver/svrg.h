@@ -10,6 +10,9 @@
 
 template <class T>
 class DLL_PUBLIC TSVRG : public TStoSolver<T> {
+  // Grants cereal access to default constructor
+  friend class cereal::access;
+
  protected:
   using TStoSolver<T>::t;
   using TStoSolver<T>::model;
@@ -20,16 +23,7 @@ class DLL_PUBLIC TSVRG : public TStoSolver<T> {
   using TStoSolver<T>::rand_unif;
 
  public:
-  enum class VarianceReductionMethod {
-    Last = 1,
-    Average = 2,
-    Random = 3,
-  };
-
-  enum class StepType {
-    Fixed = 1,
-    BarzilaiBorwein = 2,
-  };
+  using TStoSolver<T>::get_class_name;
 
  private:
   int n_threads = 1;
@@ -38,7 +32,7 @@ class DLL_PUBLIC TSVRG : public TStoSolver<T> {
   // given by the inverse proportion of non-zero entries in each feature column
   Array<T> steps_correction;
 
-  VarianceReductionMethod variance_reduction;
+  SVRG_VarianceReductionMethod variance_reduction;
 
   Array<T> full_gradient;
   Array<T> fixed_w;
@@ -48,7 +42,7 @@ class DLL_PUBLIC TSVRG : public TStoSolver<T> {
 
   ulong rand_index;
   bool ready_step_corrections;
-  StepType step_type;
+  SVRG_StepType step_type;
 
   void prepare_solve();
 
@@ -68,12 +62,16 @@ class DLL_PUBLIC TSVRG : public TStoSolver<T> {
                                    const bool use_intercept,
                                    TProxSeparable<T>*& casted_prox);
 
+ protected:
+  // This exists soley for cereal which has friend access
+  TSVRG() : TSVRG<T>(0, 0, RandType::unif, 0) {}
+
  public:
   TSVRG(ulong epoch_size, T tol, RandType rand_type, T step, int seed = -1,
         int n_threads = 1,
-        VarianceReductionMethod variance_reduction =
-            VarianceReductionMethod::Last,
-        StepType step_method = StepType::Fixed);
+        SVRG_VarianceReductionMethod variance_reduction =
+            SVRG_VarianceReductionMethod::Last,
+        SVRG_StepType step_method = SVRG_StepType::Fixed);
 
   void solve() override;
 
@@ -83,23 +81,67 @@ class DLL_PUBLIC TSVRG : public TStoSolver<T> {
 
   void set_step(T step) { TSVRG<T>::step = step; }
 
-  VarianceReductionMethod get_variance_reduction() const {
+  SVRG_VarianceReductionMethod get_variance_reduction() const {
     return variance_reduction;
   }
 
-  void set_variance_reduction(VarianceReductionMethod variance_reduction) {
+  void set_variance_reduction(SVRG_VarianceReductionMethod variance_reduction) {
     TSVRG<T>::variance_reduction = variance_reduction;
   }
 
-  StepType get_step_type() { return step_type; }
-  void set_step_type(StepType step_type) { TSVRG<T>::step_type = step_type; }
+  SVRG_StepType get_step_type() { return step_type; }
+  void set_step_type(SVRG_StepType step_type) { TSVRG<T>::step_type = step_type; }
 
   void set_starting_iterate(Array<T>& new_iterate) override;
+
+  template <class Archive>
+  void serialize(Archive& ar) {
+    ar(cereal::make_nvp("StoSolver", cereal::base_class<TStoSolver<T>>(this)));
+
+    ar(CEREAL_NVP(step));
+    ar(CEREAL_NVP(steps_correction));
+    ar(CEREAL_NVP(variance_reduction));
+    ar(CEREAL_NVP(full_gradient));
+    ar(CEREAL_NVP(fixed_w));
+    ar(CEREAL_NVP(grad_i));
+    ar(CEREAL_NVP(grad_i_fixed_w));
+    ar(CEREAL_NVP(next_iterate));
+    ar(CEREAL_NVP(ready_step_corrections));
+    ar(CEREAL_NVP(step_type));
+  }
+
+  BoolStrReport compare(const TSVRG<T>& that) {
+    std::stringstream ss;
+    ss << get_class_name() << std::endl;
+    bool are_equal =
+        TStoSolver<T>::compare(that, ss) && TICK_CMP_REPORT(ss, step) &&
+        TICK_CMP_REPORT(ss, steps_correction) &&
+        TICK_CMP_REPORT(ss, variance_reduction) &&
+        TICK_CMP_REPORT(ss, full_gradient) && TICK_CMP_REPORT(ss, fixed_w) &&
+        TICK_CMP_REPORT(ss, grad_i) && TICK_CMP_REPORT(ss, grad_i_fixed_w) &&
+        TICK_CMP_REPORT(ss, next_iterate) &&
+        TICK_CMP_REPORT(ss, ready_step_corrections) &&
+        TICK_CMP_REPORT(ss, step_type);
+    return BoolStrReport(are_equal, ss.str());
+  }
+
+  BoolStrReport operator==(const TSVRG<T>& that) { return compare(that); }
+
+  static std::shared_ptr<TSVRG<T>> AS_NULL() {
+    return std::move(std::shared_ptr<TSVRG<T>>(new TSVRG<T>));
+  }
 };
 
 using SVRG = TSVRG<double>;
 
 using SVRGDouble = TSVRG<double>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SVRGDouble,
+                                   cereal::specialization::member_serialize)
+CEREAL_REGISTER_TYPE(SVRGDouble)
+
 using SVRGFloat = TSVRG<float>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SVRGFloat,
+                                   cereal::specialization::member_serialize)
+CEREAL_REGISTER_TYPE(SVRGFloat)
 
 #endif  // LIB_INCLUDE_TICK_SOLVER_SVRG_H_

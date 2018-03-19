@@ -13,6 +13,9 @@
 
 template <class T>
 class DLL_PUBLIC TSGD : public TStoSolver<T> {
+  // Grants cereal access to default constructor
+  friend class cereal::access;
+
  protected:
   using TStoSolver<T>::t;
   using TStoSolver<T>::model;
@@ -20,6 +23,9 @@ class DLL_PUBLIC TSGD : public TStoSolver<T> {
   using TStoSolver<T>::prox;
   using TStoSolver<T>::epoch_size;
   using TStoSolver<T>::get_next_i;
+
+ public:
+  using TStoSolver<T>::get_class_name;
 
  private:
   T step_t;
@@ -40,10 +46,40 @@ class DLL_PUBLIC TSGD : public TStoSolver<T> {
   void solve_sparse();
 
   inline T get_step_t();
+
+  template <class Archive>
+  void serialize(Archive &ar) {
+    ar(cereal::make_nvp("StoSolver", cereal::base_class<TStoSolver<T>>(this)));
+
+    ar(CEREAL_NVP(step_t));
+    ar(CEREAL_NVP(step));
+  }
+
+  BoolStrReport compare(const TSGD<T> &that) {
+    std::stringstream ss;
+    ss << get_class_name() << std::endl;
+    bool are_equal = TStoSolver<T>::compare(that, ss) &&
+                     TICK_CMP_REPORT(ss, step_t) && TICK_CMP_REPORT(ss, step);
+    return BoolStrReport(are_equal, ss.str());
+  }
+
+  BoolStrReport operator==(const TSGD<T> &that) { return compare(that); }
+
+  static std::shared_ptr<TSGD<T>> AS_NULL() {
+    return std::move(std::shared_ptr<TSGD<T>>(new TSGD<T>));
+  }
 };
 
 using SGD = TSGD<double>;
+
 using SGDDouble = TSGD<double>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SGDDouble,
+                                   cereal::specialization::member_serialize)
+CEREAL_REGISTER_TYPE(SGDDouble)
+
 using SGDFloat = TSGD<float>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SGDFloat,
+                                   cereal::specialization::member_serialize)
+CEREAL_REGISTER_TYPE(SGDFloat)
 
 #endif  // LIB_INCLUDE_TICK_SOLVER_SGD_H_
