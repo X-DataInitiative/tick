@@ -12,28 +12,31 @@
 
 ModelSCCS::ModelSCCS(const SBaseArrayDouble2dPtrList1D &features,
                      const SArrayIntPtrList1D &labels,
-                     const SBaseArrayULongPtr censoring, ulong n_lags)
-    : n_lags(n_lags), labels(labels), features(features), censoring(censoring) {
-  if (features.size() == 0) TICK_ERROR("ModelSCCS: features empty");
-
-  n_samples = features.size();
-  n_intervals = features[0]->n_rows();
-  n_observations = (n_samples * n_intervals);
-
-  n_lagged_features = features[0]->n_cols();
-  n_features =
-      n_lags > 0 ? n_lagged_features / (n_lags + 1) : n_lagged_features;
-
-  if (n_lags >= n_intervals)
-    TICK_ERROR("ModelSCCS requires n_lags < n_intervals");
+                     const SBaseArrayULongPtr censoring,
+                     const SArrayULongPtr n_lags)
+    : n_intervals(features[0]->n_rows()),
+      n_lags(n_lags),
+      n_samples(features.size()),
+      n_observations(n_samples * n_intervals),
+      n_lagged_features(n_lags->sum() + n_lags->size()),
+      n_features(n_lags->size()),
+      labels(labels),
+      features(features),
+      censoring(censoring) {
+  if ((*n_lags)[0] >= n_intervals) {
+    TICK_ERROR("n_lags elements must be between 0 and (n_intervals - 1).");
+  }
+  col_offset = ArrayULong(n_lags->size());
+  col_offset.init_to_zero();
+  for (ulong i(1); i < n_lags->size(); i++) {
+    if ((*n_lags)[i] >= n_intervals) {
+      TICK_ERROR("n_lags elements must be between 0 and (n_intervals - 1).");
+    }
+    col_offset[i] = col_offset[i - 1] + (*n_lags)[i-1] + 1;
+  }
 
   if (n_samples != labels.size() || n_samples != (*censoring).size())
     TICK_ERROR("features, labels and censoring should have equal length.");
-
-  if (n_lags > 0 && n_lagged_features % (n_lags + 1) != 0)
-    TICK_ERROR(
-        "n_lags should be a divisor of the number of feature matrices "
-        "columns.");
 
   for (ulong i(0); i < n_samples; i++) {
     if (features[i]->n_rows() != n_intervals)
@@ -62,7 +65,8 @@ double ModelSCCS::loss_i(const ulong i, const ArrayDouble &coeffs) {
 
   for (ulong t = 0; t < max_interval; t++)
     inner_prod[t] = get_inner_prod(i, t, coeffs);
-  for (ulong t = max_interval; t < n_intervals; t++) inner_prod[t] = 0;
+  if (max_interval < n_intervals)
+    view(inner_prod, max_interval, n_intervals).fill(0);
 
   softMax(inner_prod, softmax);
 
@@ -98,7 +102,7 @@ void ModelSCCS::grad_i(const ulong i, const ArrayDouble &coeffs,
     inner_prod[t] = get_inner_prod(i, t, coeffs);
 
   if (max_interval < n_intervals)
-    view(inner_prod, max_interval, n_intervals).fill(0);  // TODO
+    view(inner_prod, max_interval, n_intervals).fill(0);
 
   double x_max = inner_prod.max();
   double sum_exp = sumExpMinusMax(inner_prod, x_max);

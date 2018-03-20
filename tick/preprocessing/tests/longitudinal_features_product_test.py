@@ -3,21 +3,21 @@
 import numpy as np
 from scipy.sparse import csr_matrix
 import unittest
-from tick.preprocessing.longitudinal_features_product import LongitudinalFeaturesProduct
+from tick.preprocessing import LongitudinalFeaturesProduct
 
 
 class Test(unittest.TestCase):
 
     def setUp(self):
-        self.short_exposures = [np.array([[0, 1, 0],
+        self.finite_exposures = [np.array([[0, 1, 0],
                                           [0, 0, 0],
                                           [0, 1, 1]], dtype="float64"),
                                 np.array([[1, 1, 1],
                                           [0, 0, 1],
                                           [1, 1, 0]], dtype="float64")
                                 ]
-        self.sparse_short_exposures = [csr_matrix(f)
-                                       for f in self.short_exposures]
+        self.sparse_finite_exposures = [csr_matrix(f)
+                                       for f in self.finite_exposures]
 
         self.infinite_exposures = [np.array([[0, 1, 0],
                                              [0, 0, 0],
@@ -29,8 +29,7 @@ class Test(unittest.TestCase):
         self.sparse_infinite_exposures = [csr_matrix(f)
                                           for f in self.infinite_exposures]
 
-
-    def test_short_features_product(self):
+    def test_finite_features_product(self):
         expected_output = \
             [np.array([[0, 1, 0, 0, 0, 0],
                        [0, 0, 0, 0, 0, 0],
@@ -41,13 +40,12 @@ class Test(unittest.TestCase):
                        [1, 1, 0, 1, 0, 0],
                        ], dtype="float64")
              ]
-        pp = LongitudinalFeaturesProduct("short")
+        pp = LongitudinalFeaturesProduct("finite")
 
-        feat_prod = pp.fit_transform(self.short_exposures)
+        feat_prod, _, _ = pp.fit_transform(self.finite_exposures)
         np.testing.assert_equal(feat_prod, expected_output)
 
-        feat_prod = pp.fit_transform(self.sparse_short_exposures)
-        print(feat_prod.__class__)
+        feat_prod, _, _ = pp.fit_transform(self.sparse_finite_exposures)
         feat_prod = [f.toarray() for f in feat_prod]
         np.testing.assert_equal(feat_prod, expected_output)
 
@@ -63,7 +61,7 @@ class Test(unittest.TestCase):
                        ], dtype="float64")
              ]
         sparse_feat = [csr_matrix(f) for f in self.infinite_exposures]
-        feat_prod = LongitudinalFeaturesProduct("infinite")\
+        feat_prod, _, _ = LongitudinalFeaturesProduct("infinite")\
             .fit_transform(sparse_feat)
         feat_prod = [f.toarray() for f in feat_prod]
         np.testing.assert_equal(feat_prod, expected_output)

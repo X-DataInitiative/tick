@@ -16,32 +16,32 @@ class ModelSCCS(ModelFirstOrder, ModelLipschitz):
     n_intervals : `int`
         Number of time intervals observed for each sample.
 
-    n_lags : `int`
-        Number of lags. The model will regress labels on the last observed
-        values of the features over the `n_lags` time intervals. `n_lags`
-        must be between 0 and `n_intervals` - 1
+    n_lags : `numpy.ndarray`, shape=(n_features,), dtype="uint64"
+        Number of lags per feature. The model will regress labels on the last
+        observed values of the features over the corresponding `n_lags` time
+        intervals. `n_lags` values must be between 0 and `n_intervals` - 1.
 
     Attributes
     ----------
     features : `list` of `numpy.ndarray` or `list` of `scipy.sparse.csr_matrix`,
-        list of length n_samples, each element of the list of
+        list of length n_cases, each element of the list of
         shape=(n_intervals, n_features)
         The list of features matrices.
 
     labels : `list` of `numpy.ndarray`,
-        list of length n_samples, each element of the list of 
+        list of length n_cases, each element of the list of
         shape=(n_intervals,)
         The labels vector
-        
-    censoring : `numpy.ndarray`, shape=(n_samples,), dtype="uint64"
+
+    censoring : `numpy.ndarray`, shape=(n_cases,), dtype="uint64"
         The censoring data. This array should contain integers in
         [1, n_intervals]. If the value i is equal to n_intervals, then there
         is no censoring for sample i. If censoring = c < n_intervals, then
         the observation of sample i is stopped at interval c, that is, the
-        row c - 1 of the correponding matrix. The last n_intervals - c rows
+        row c - 1 of the corresponding matrix. The last n_intervals - c rows
         are then set to 0.
 
-    n_samples : `int` (read-only)
+    n_cases : `int` (read-only)
         Number of samples
 
     n_features : `int` (read-only)
@@ -51,43 +51,31 @@ class ModelSCCS(ModelFirstOrder, ModelLipschitz):
         Total number of coefficients of the model
     """
 
-    _attrinfos = {
-        "labels": {
-            "writable": False
-        },
-        "features": {
-            "writable": False
-        },
-        "censoring": {
-            "writable": False
-        },
-        "n_features": {
-            "writable": False
-        },
-        "n_samples": {
-            "writable": False
-        },
-        "n_lags": {
-            "writable": False
-        },
-        "n_intervals": {
-            "writable": False
-        }
-    }
+    _const_attr = [
+        "labels",
+        "features",
+        "censoring",
+        "n_features",
+        "n_cases",
+        "n_lags",
+        "n_intervals"
+    ]
 
-    def __init__(self, n_intervals: int, n_lags: int):
-        if n_lags >= n_intervals:
-            raise ValueError("n_lags should be < n_intervals")
+    _attrinfos = {key: {'writable': False} for key in _const_attr}
 
+    def __init__(self, n_intervals: int, n_lags: np.array):
         ModelFirstOrder.__init__(self)
         ModelLipschitz.__init__(self)
-        self.n_lags = n_lags
         self.n_intervals = n_intervals
+        self.n_features = len(n_lags)
+        self.n_lags = n_lags
+        for n_l in n_lags:
+            if n_l >= n_intervals:
+                raise ValueError("n_lags should be < n_intervals")
         self.labels = None
         self.features = None
         self.censoring = None
-        self.n_features = None
-        self.n_samples = None
+        self.n_cases = None
 
     def fit(self, features, labels, censoring=None):
         """Set the data into the model object.
@@ -100,8 +88,8 @@ class ModelSCCS(ModelFirstOrder, ModelLipschitz):
 
         labels : List[{1d array, csr matrix of shape (n_intervals,)]
             The labels vector
-            
-        censoring : 1d array of shape (n_samples,)
+
+        censoring : 1d array of shape (n_cases,)
             The censoring vector
 
         Returns
@@ -126,16 +114,16 @@ class ModelSCCS(ModelFirstOrder, ModelLipschitz):
         Parameters
         ----------
         features : `list` of `numpy.ndarray` or `list` of `scipy.sparse.csr_matrix`,
-            list of length n_samples, each element of the list of
+            list of length n_cases, each element of the list of
             shape=(n_intervals, n_features)
             The list of features matrices.
 
         labels : `list` of `numpy.ndarray`,
-            list of length n_samples, each element of the list of 
+            list of length n_cases, each element of the list of
             shape=(n_intervals,)
             The labels vector
-        
-        censoring : `numpy.ndarray`, shape=(n_samples,), dtype="uint64"
+
+        censoring : `numpy.ndarray`, shape=(n_cases,), dtype="uint64"
             The censoring data. This array should contain integers in
             [1, n_intervals]. If the value i is equal to n_intervals, then there
             is no censoring for sample i. If censoring = c < n_intervals, then
@@ -143,20 +131,26 @@ class ModelSCCS(ModelFirstOrder, ModelLipschitz):
             row c - 1 of the correponding matrix. The last n_intervals - c rows
             are then set to 0.
         """
-        n_intervals, n_features = features[0].shape
+        n_intervals, n_coeffs = features[0].shape
+        n_lags = self.n_lags
         self._set("n_intervals", n_intervals)
-        self._set("n_features", n_features)
-        self._set("n_samples", len(features))
-        if len(labels) != self.n_samples:
+        self._set("n_coeffs", n_coeffs)
+        # TODO: implement checker as outside function
+        # if n_lags > 0 and n_coeffs % (n_lags + 1) != 0:
+        #     raise ValueError("(n_lags + 1) should be a divisor of n_coeffs")
+        # else:
+        #     self._set("n_features", int(n_coeffs / (n_lags + 1)))
+        self._set("n_cases", len(features))
+        if len(labels) != self.n_cases:
             raise ValueError("Features and labels lists should have the same\
              length.")
         if censoring is None:
-            censoring = np.full(self.n_samples, self.n_intervals,
+            censoring = np.full(self.n_cases, self.n_intervals,
                                 dtype="uint64")
-        censoring = check_censoring_consistency(censoring, self.n_samples)
+        censoring = check_censoring_consistency(censoring, self.n_cases)
         features = check_longitudinal_features_consistency(features,
                                                            (n_intervals,
-                                                            n_features),
+                                                            n_coeffs),
                                                            "float64")
         labels = check_longitudinal_features_consistency(labels,
                                                          (self.n_intervals,),

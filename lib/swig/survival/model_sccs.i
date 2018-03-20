@@ -13,7 +13,7 @@ class ModelSCCS : public ModelLipschitz {
   ModelSCCS(const SBaseArrayDouble2dPtrList1D &features,
             const SArrayIntPtrList1D &labels,
             const SBaseArrayULongPtr censoring,
-            ulong n_lags);
+            const SArrayULongPtr n_lags);
 
   double loss(ArrayDouble &coeffs);
 

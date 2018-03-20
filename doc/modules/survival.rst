@@ -25,6 +25,7 @@ Kaplan-Meier estimators.
    CoxRegression
    nelson_aalen
    kaplan_meier
+   ConvSCCS
 
 2. Models
 =========
