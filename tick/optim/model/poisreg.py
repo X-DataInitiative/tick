@@ -293,6 +293,27 @@ class ModelPoisReg(ModelGeneralizedLinear,
 
         return dual_inits
 
+    def _get_unscaled_dual_full_init(self, l_l2sq):
+        labels = self.labels
+        features = self.features
+
+        n_non_zeros = sum(labels != 0)
+        non_zero_features = features[labels != 0]
+        non_zero_labels = labels[labels != 0]
+
+        features_sum = np.sum(non_zero_features, axis=0)
+        features_dot_features_sum = non_zero_features.dot(features_sum)
+        n_psi = np.sum(features, axis=0)
+        n_psi_x = n_psi.dot(non_zero_features.T)
+
+        tmp1 = np.power(n_psi_x, 2)
+        tmp1 += 4 * l_l2sq * n_non_zeros * non_zero_labels * \
+                features_dot_features_sum
+
+        inits = n_psi_x + np.sqrt(tmp1)
+        inits /= (2 * features_dot_features_sum)
+        return inits
+
     def _get_unscaled_dual_init(self, l_l2sq):
         labels = self.labels
         features = self.features
