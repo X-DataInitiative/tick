@@ -6,23 +6,23 @@ from itertools import combinations
 from copy import deepcopy
 from scipy.misc import comb
 from sklearn.externals.joblib import Parallel, delayed
-from tick.base import Base
+from tick.preprocessing.base import LongitudinalPreprocessor
 from .build.preprocessing import SparseLongitudinalFeaturesProduct
 from .utils import check_longitudinal_features_consistency
 
 
-class LongitudinalFeaturesProduct(Base):
+class LongitudinalFeaturesProduct(LongitudinalPreprocessor):
     """Transforms longitudinal exposure features to add the corresponding
-    product features. 
+    product features.
 
-    This preprocessor transform an input list of `n_samples` numpy arrays or 
+    This preprocessor transform an input list of `n_cases` numpy arrays or
     csr_matrices of shape `(n_intervals, n_features)` so as to add columns
     representing the product of combination of two features. It outputs a list
-    of `n_samples` numpy arrays or  csr_matrices of shape `(n_intervals, 
+    of `n_cases` numpy arrays or  csr_matrices of shape `(n_intervals,
     n_features + comb(n_features, 2))`.
 
     Exposure can take two forms:
-    - short repeated exposures: in that case, each column of the numpy arrays 
+    - short repeated exposures: in that case, each column of the numpy arrays
     or csr matrices can contain multiple ones, each one representing an exposure
     for a particular time bucket.
     - infinite unique exposures: in that case, each column of the numpy arrays
@@ -35,8 +35,8 @@ class LongitudinalFeaturesProduct(Base):
         Either 'infinite' for infinite unique exposures or 'short' for short
         repeated exposures.
 
-    n_threads : `int`, default=-1
-        Number of tasks to run in parallel. If set to -1, the number of tasks is 
+    n_jobs : `int`, default=-1
+        Number of tasks to run in parallel. If set to -1, the number of tasks is
         set to the number of cores.
 
     Attributes
@@ -80,12 +80,11 @@ class LongitudinalFeaturesProduct(Base):
         "_fitted": {"writable": False}
     }
 
-    def __init__(self, exposure_type="infinite", n_threads=-1):
-        Base.__init__(self)
-        if exposure_type not in ["infinite", "short"]:
+    def __init__(self, exposure_type="infinite", n_jobs=-1):
+        LongitudinalPreprocessor.__init__(self, n_jobs=n_jobs)
+        if exposure_type not in ["infinite", "finite"]:
             raise ValueError("exposure_type should be either 'infinite' or\
-             'short', not %s" % exposure_type)
-        self.n_threads = n_threads
+             'finite', not %s" % exposure_type)
         self.exposure_type = exposure_type
         self._reset()
 
@@ -111,13 +110,13 @@ class LongitudinalFeaturesProduct(Base):
             raise ValueError("cannot get mapper if object has not been fitted.")
         return deepcopy(self._mapper)
 
-    def fit(self, X):
+    def fit(self, features, labels=None, censoring=None):
         """Fit the feature product using the features matrices list.
 
         Parameters
         ----------
-        X : list of numpy.ndarray or list of scipy.sparse.csr_matrix,
-            list of length n_samples, each element of the list of 
+        features : list of numpy.ndarray or list of scipy.sparse.csr_matrix,
+            list of length n_cases, each element of the list of
             shape=(n_intervals, n_features)
             The list of features matrices.
 
@@ -127,8 +126,9 @@ class LongitudinalFeaturesProduct(Base):
             The fitted current instance.
         """
         self._reset()
-        base_shape = X[0].shape
-        X = check_longitudinal_features_consistency(X, base_shape, "float64")
+        base_shape = features[0].shape
+        features = check_longitudinal_features_consistency(features, base_shape,
+                                                           "float64")
         n_intervals, n_init_features = base_shape
         if n_init_features < 2:
             raise ValueError("There should be at least two features to compute\
@@ -141,75 +141,54 @@ class LongitudinalFeaturesProduct(Base):
         self._set("_n_output_features", int(n_init_features +
                                             comb(n_init_features, 2)))
 
-        if sps.issparse(X[0]) and self.exposure_type == "infinite":
-            self._set("_preprocessor", SparseLongitudinalFeaturesProduct(X))
+        if sps.issparse(features[0]) and self.exposure_type == "infinite":
+            self._set("_preprocessor",
+                      SparseLongitudinalFeaturesProduct(features))
 
         self._set("_fitted", True)
 
         return self
 
-    def transform(self, X):
+    def transform(self, features, labels=None, censoring=None):
         """Add the product features to the given features matrices list.
 
         Parameters
         ----------
-        X : list of numpy.ndarray or list of scipy.sparse.csr_matrix,
-            list of length n_samples, each element of the list of 
+        features : list of numpy.ndarray or list of scipy.sparse.csr_matrix,
+            list of length n_cases, each element of the list of
             shape=(n_intervals, n_features)
             The list of features matrices.
 
         Returns
         -------
         output : list of numpy.ndarray or list of scipy.sparse.csr_matrix,
-            list of length n_samples, each element of the list of 
+            list of length n_cases, each element of the list of
             shape=(n_intervals, n_new_features)
-            The list of features matrices with added product features. 
+            The list of features matrices with added product features.
             n_new_features = n_features + comb(n_features, 2)
         """
 
         base_shape = (self._n_intervals, self._n_init_features)
-        X = check_longitudinal_features_consistency(X, base_shape, "float64")
-        if self.exposure_type == "short":
-            X_with_products = self.short_exposure_products(X)
+        features = check_longitudinal_features_consistency(features, base_shape,
+                                                           "float64")
+        if self.exposure_type == "finite":
+            X_with_products = self._finite_exposure_products(features)
         elif self.exposure_type == "infinite":
-            X_with_products = self.infinite_exposure_products(X)
+            X_with_products = self._infinite_exposure_products(features)
         else:
             raise ValueError("exposure_type should be either 'infinite' or\
-                         'short', not %s" % self.exposure_type)
+                         'finite', not %s" % self.exposure_type)
 
-        return X_with_products
+        return X_with_products, labels, censoring
 
-    def fit_transform(self, X):
-        """Fit and apply the product feature computation using the features 
-        matrices list.
-
-        Parameters
-        ----------
-        X : list of numpy.ndarray or list of scipy.sparse.csr_matrix,
-            list of length n_samples, each element of the list of 
-            shape=(n_intervals, n_features)
-            The list of features matrices.
-
-        Returns
-        -------
-        output : list of numpy.ndarray or list of scipy.sparse.csr_matrix,
-            list of length n_samples, each element of the list of 
-            shape=(n_intervals, n_new_features)
-            The list of features matrices with added product features. 
-            n_new_features = n_features + comb(n_features, 2)
-        """
-        self.fit(X)
-        X_with_products = self.transform(X)
-
-        return X_with_products
-
-    def infinite_exposure_products(self, X):
-        """Add product features to X in the infinite exposure case."""
-        if sps.issparse(X[0]):
-            X_with_products = [self._sparse_infinite_product(arr) for arr in X]
-            # TODO: fix multiprocessing
-            # X_with_products = Parallel(n_threads=self.n_threads)(
-            #     delayed(self._sparse_infinite_product)(arr) for arr in X)
+    def _infinite_exposure_products(self, features):
+        """Add product features to features in the infinite exposure case."""
+        if sps.issparse(features[0]):
+            X_with_products = [self._sparse_infinite_product(arr) for arr in
+                               features]
+            # TODO later: fix multiprocessing
+            # X_with_products = Parallel(n_jobs=self.n_jobs)(
+            #     delayed(self._sparse_infinite_product)(arr) for arr in features)
             # Should be done in C++
         else:
             raise ValueError("Infinite exposures should be stored in \
@@ -218,29 +197,29 @@ class LongitudinalFeaturesProduct(Base):
 
         return X_with_products
 
-    def short_exposure_products(self, X):
-        """Add product features to X in the short exposure case."""
-        if sps.issparse(X[0]):
-            X_with_products = Parallel(n_jobs=self.n_threads)(
-                delayed(self._sparse_short_product)(arr) for arr in X)
+    def _finite_exposure_products(self, features):
+        """Add product features to features in the finite exposure case."""
+        if sps.issparse(features[0]):
+            X_with_products = Parallel(n_jobs=self.n_jobs)(
+                delayed(self._sparse_finite_product)(arr) for arr in features)
         else:
-            X_with_products = Parallel(n_jobs=self.n_threads)(
-                delayed(self._dense_short_product)(arr) for arr in X)
+            X_with_products = Parallel(n_jobs=self.n_jobs)(
+                delayed(self._dense_finite_product)(arr) for arr in features)
 
         return X_with_products
 
-    def _dense_short_product(self, feat_mat):
+    def _dense_finite_product(self, feat_mat):
         """Performs feature product on a numpy.ndarray containing
-        short exposures."""
+        finite exposures."""
         feat = [feat_mat]
         feat.extend([(feat_mat[:, i] * feat_mat[:, j]
                       ).reshape((-1, 1))
                      for i, j in self._mapper.values()])
         return np.hstack(feat)
 
-    def _sparse_short_product(self, feat_mat):
+    def _sparse_finite_product(self, feat_mat):
         """Performs feature product on a scipy.sparse.csr_matrix containing
-        short exposures."""
+        finite exposures."""
         feat = [feat_mat.tocsc()]
         feat.extend([(feat_mat[:, i].multiply(feat_mat[:, j]))
                      for i, j in self.mapper.values()])

@@ -232,8 +232,8 @@ class Test(unittest.TestCase):
 
         if parallelization_type == 'multiprocessing':
 
-            pool = Pool(processes=n_workers)
-            samples = pool.starmap(test_uniform_threaded, args)
+            with Pool(processes=n_workers) as pool:
+                samples = pool.starmap(test_uniform_threaded, args)
 
             samples = np.array(samples)
 

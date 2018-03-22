@@ -11,10 +11,13 @@ from .model_sccs import ModelSCCS
 
 from .simu_coxreg import SimuCoxReg
 from .simu_sccs import SimuSCCS
+from .convolutional_sccs import ConvSCCS
 
 __all__ = [
     "ModelCoxRegPartialLik",
+    "SimuSCCS",
     "ModelSCCS",
+    "ConvSCCS",
     "kaplan_meier",
     "nelson_aalen"
 ]

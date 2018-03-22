@@ -16,7 +16,8 @@ class DLL_PUBLIC ModelSCCS : public ModelLipschitz {
 
  protected:
   ulong n_intervals;
-  ulong n_lags;
+  SArrayULongPtr n_lags;
+  ArrayULong col_offset;
   ulong n_samples;
   ulong n_observations;
   ulong n_lagged_features;
@@ -34,7 +35,8 @@ class DLL_PUBLIC ModelSCCS : public ModelLipschitz {
  public:
   ModelSCCS(const SBaseArrayDouble2dPtrList1D &features,
             const SArrayIntPtrList1D &labels,
-            const SBaseArrayULongPtr censoring, ulong n_lags);
+            const SBaseArrayULongPtr censoring,
+            const SArrayULongPtr n_lags);
 
   double loss(const ArrayDouble &coeffs) override;
 

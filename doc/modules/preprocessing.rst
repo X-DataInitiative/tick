@@ -43,3 +43,4 @@ similar API to scikit-learn preprocessors.
 
    LongitudinalFeaturesProduct
    LongitudinalFeaturesLagger
+   LongitudinalSamplesFilter

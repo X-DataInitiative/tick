@@ -8,7 +8,7 @@ class LongitudinalFeaturesLagger {
 
  public:
   LongitudinalFeaturesLagger(const SBaseArrayDouble2dPtrList1D &features,
-                             const ulong n_lags);
+                             const SArrayULongPtr n_lags);
 
   void dense_lag_preprocessor(ArrayDouble2d &features,
                               ArrayDouble2d &out,

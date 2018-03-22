@@ -167,5 +167,5 @@ class SimuHawkesMulti(Simu):
         """ Launches a series of n_simulations Hawkes simulation in a thread
         pool
         """
-        p = Pool(self.n_threads)
-        self._simulations = p.map(simulate_single, self._simulations)
+        with Pool(self.n_threads) as p:
+            self._simulations = p.map(simulate_single, self._simulations)

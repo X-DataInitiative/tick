@@ -14,7 +14,8 @@
 class LongitudinalFeaturesLagger {
  protected:
   ulong n_intervals;
-  ulong n_lags;
+  SArrayULongPtr n_lags;
+  ArrayULong col_offset;
   ulong n_samples;
   ulong n_observations;
   ulong n_features;
@@ -22,7 +23,7 @@ class LongitudinalFeaturesLagger {
 
  public:
   LongitudinalFeaturesLagger(const SBaseArrayDouble2dPtrList1D &features,
-                             const ulong n_lags);
+                             const SArrayULongPtr n_lags);
 
   void dense_lag_preprocessor(ArrayDouble2d &features, ArrayDouble2d &out,
                               ulong censoring) const;
@@ -36,6 +37,7 @@ class LongitudinalFeaturesLagger {
   void serialize(Archive &ar) {
     ar(CEREAL_NVP(n_intervals));
     ar(CEREAL_NVP(n_lags));
+    ar(CEREAL_NVP(col_offset));
     ar(CEREAL_NVP(n_samples));
     ar(CEREAL_NVP(n_observations));
     ar(CEREAL_NVP(n_features));
