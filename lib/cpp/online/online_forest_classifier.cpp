@@ -7,7 +7,7 @@
  *********************************************************************************/
 
 NodeClassifier::NodeClassifier(TreeClassifier &tree, uint32_t parent, float time)
-    : _tree(tree), _parent(parent), _left(0), _right(0), _time(time),
+    : _tree(tree), _parent(parent), _left(0), _right(0), _time(time), _depth(0),
       _features_min(tree.n_features()), _features_max(tree.n_features()),
       _n_samples(0), _is_leaf(true), _weight(0), _weight_tree(0),
       _counts(tree.n_classes()) {
@@ -295,6 +295,7 @@ void NodeClassifier::print() {
   std::cout << ")\n";
 }
 
+
 /*********************************************************************************
 * TreeClassifier methods
 *********************************************************************************/
@@ -381,6 +382,8 @@ uint32_t TreeClassifier::go_downwards(const ArrayDouble &x_t, double y_t) {
 
         split_node(index_current_node, split_time, threshold, feature, is_right_extension);
 
+        // Update the depth of the new childs of the current node
+
         // Get the current node again, and update it
         NodeClassifier &current_node_again = node(index_current_node);
         current_node_again.update_range(x_t);
@@ -392,12 +395,20 @@ uint32_t TreeClassifier::go_downwards(const ArrayDouble &x_t, double y_t) {
 //        current_node_again.print();
 //        nodes[index_current_node].print();
 
+        uint32_t left = current_node_again.left();
+        uint32_t right = current_node_again.right();
+        uint8_t depth = current_node_again.depth();
+
         // Now, get the next node
         if (is_right_extension) {
-          index_current_node = current_node.right();
+          index_current_node = right;
         } else {
-          index_current_node = current_node.left();
+          index_current_node = left;
         }
+
+        update_depth(left, depth);
+        update_depth(right, depth);
+
         // This is the leaf containing the sample point (we've just splitted the current node with the data point)
         NodeClassifier &leaf = node(index_current_node);
         // Let's update the leaf containing the point
@@ -444,7 +455,7 @@ float TreeClassifier::compute_split_time(uint32_t node_index, const ArrayDouble 
   // Let's compute the extension of the range of the current node, and its sum
   float intensities_sum = current_node.compute_range_extension(x_t, intensities);
   // If the sample x_t extends the current range of the node
-  if (intensities_sum > 0) {
+  if (intensities_sum > 1e-5) {
     // std::cout << "intensities_sum: " << intensities_sum;
     // TODO: check that intensity is indeed intensity in the rand.h
     float T = forest.sample_exponential(intensities_sum);
@@ -457,12 +468,7 @@ float TreeClassifier::compute_split_time(uint32_t node_index, const ArrayDouble 
       // If the node is a leaf we must split it
       // std::cout << std::endl;
       // std::cout << "Done with TreeClassifier::compute_split_time returning " << split_time << std::endl;
-
-      if (split_time < 10) {
-        return split_time;
-      } else {
-        return 0;
-      }
+      return split_time;
     } else {
       // Otherwise we apply Mondrian process dark magic :)
       // 1. We get the creation time of the childs (left and right is the same)
@@ -500,7 +506,7 @@ void TreeClassifier::split_node(uint32_t node_index,
   NodeClassifier &right_new_node = node(right_new);
   // The value of the feature
   if (is_right_extension) {
-    // left_new is the same as node_index, excepted for the parent, time and the fact that it's not a leaf
+    // left_new is the same as node_index, excepted for the parent, time and the fact that it's a leaf
     left_new_node = current_node;
     // so we need to put back the correct parent and time
     left_new_node.set_parent(node_index).set_time(split_time);
@@ -595,6 +601,22 @@ void TreeClassifier::go_upwards(uint32_t leaf_index) {
     }
   }
 }
+
+
+void TreeClassifier::update_depth(uint32_t node_index, uint8_t depth) {
+
+  NodeClassifier & current_node = node(node_index);
+  depth++;
+  current_node.set_depth(depth);
+  if(current_node.is_leaf()) {
+    return;
+  } else {
+    update_depth(current_node.left(), depth);
+    update_depth(current_node.right(), depth);
+  }
+
+}
+
 
 void TreeClassifier::print() {
   std::cout << "Tree(n_nodes: " << _n_nodes << "," << std::endl;

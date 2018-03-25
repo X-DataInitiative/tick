@@ -121,6 +121,8 @@ class NodeClassifier {
   // Print the node
   void print();
 
+  inline void increment_depth();
+
   inline uint32_t parent() const;
   inline NodeClassifier &set_parent(uint32_t parent);
   inline uint32_t left() const;
@@ -193,6 +195,7 @@ class TreeClassifier {
 
   void split_node(uint32_t node_index, const ArrayDouble &x_t, const ArrayFloat &intensities);
 
+  void update_depth(uint32_t node_index, uint8_t depth);
 
   // Compute the extension of the range of the node using the features vector x_t
 //  float compute_range_extension(const uint32_t node_index, const ArrayDouble &x_t, ArrayFloat &intensities);

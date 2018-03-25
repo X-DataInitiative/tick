@@ -360,9 +360,9 @@ class OnlineForestClassifier(ABC, Base):
             nodes_counts)
 
         index = np.arange(n_nodes)
-        columns = ['index', 'parent', 'left', 'right', 'depth', 'leaf',
+        columns = ['id', 'parent', 'left', 'right', 'depth', 'leaf',
                    'feature', 'threshold', 'time', 'n_samples']
-        data = {'index': index, 'parent': nodes_parent, 'left': nodes_left,
+        data = {'id': index, 'parent': nodes_parent, 'left': nodes_left,
                 'right': nodes_right, 'depth': nodes_depth,
                 'feature': nodes_feature,
                 'threshold': nodes_threshold,
