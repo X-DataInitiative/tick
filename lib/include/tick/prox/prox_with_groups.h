@@ -26,8 +26,6 @@ class TProxWithGroups : public TProx<T> {
   using TProx<T>::get_class_name;
 
  protected:
-  bool positive = false;
-
   // Tells us if the prox is ready (with correctly allocated sub-prox for each
   // blocks). This is mainly necessary when the user changes the range from
   // python
@@ -106,7 +104,6 @@ class TProxWithGroups : public TProx<T> {
   template <class Archive>
   void serialize(Archive &ar) {
     ar(cereal::make_nvp("Prox", cereal::base_class<TProx<T> >(this)));
-    ar(CEREAL_NVP(positive));
     ar(CEREAL_NVP(is_synchronized));
     ar(CEREAL_NVP(n_blocks));
     ar(CEREAL_NVP(blocks_start));
@@ -133,7 +130,6 @@ TProxWithGroups<T>::TProxWithGroups(T strength, SArrayULongPtr blocks_start,
     : TProx<T>(strength, positive), is_synchronized(false) {
   this->blocks_start = blocks_start;
   this->blocks_length = blocks_length;
-  this->positive = positive;
   // blocks_start and blocks_end have the same size
   if (!blocks_start) TICK_ERROR("ProxWithGroups blocks_start cannot be empty");
   n_blocks = blocks_start->size();
@@ -148,7 +144,6 @@ TProxWithGroups<T>::TProxWithGroups(T strength, SArrayULongPtr blocks_start,
     : TProx<T>(strength, start, end, positive) {
   this->blocks_start = blocks_start;
   this->blocks_length = blocks_length;
-  this->positive = positive;
   // blocks_start and blocks_end have the same size
   if (!blocks_start) TICK_ERROR("ProxWithGroups blocks_start cannot be empty");
   n_blocks = blocks_start->size();
@@ -166,7 +161,7 @@ void TProxWithGroups<T>::synchronize_proxs() {
       start += this->start;
     }
     ulong end = start + (*blocks_length)[k];
-    proxs.emplace_back(build_prox(strength, start, end, positive));
+    proxs.emplace_back(build_prox(strength, start, end, this->positive));
   }
   is_synchronized = true;
 }
