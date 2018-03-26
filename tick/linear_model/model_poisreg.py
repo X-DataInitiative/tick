@@ -1,7 +1,7 @@
 # License: BSD 3 clause
 
 
-from .build.linear_model import ModelPoisReg as _ModelPoisReg
+from .build.linear_model import ModelPoisRegDouble as _ModelPoisReg
 from .build.linear_model import LinkType_identity as identity
 from .build.linear_model import LinkType_exponential as exponential
 

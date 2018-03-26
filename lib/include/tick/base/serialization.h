@@ -1,7 +1,8 @@
-#ifndef LIB_INCLUDE_TICK_BASE_SERIALIZATION_H_
-#define LIB_INCLUDE_TICK_BASE_SERIALIZATION_H_
 
 // License: BSD 3 clause
+
+#ifndef LIB_INCLUDE_TICK_BASE_SERIALIZATION_H_
+#define LIB_INCLUDE_TICK_BASE_SERIALIZATION_H_
 
 #include "tick/base/defs.h"
 
@@ -15,6 +16,10 @@ DISABLE_WARNING(unused, unused-private-field, 42)
 ENABLE_WARNING(unused, exceptions, 42)
 ENABLE_WARNING(unused, unused-private-field, 42)
 #endif
+
+#include <cereal/cereal.hpp>
+#include <cereal/types/memory.hpp>
+#include <cereal/types/polymorphic.hpp>
 
 namespace tick {
 

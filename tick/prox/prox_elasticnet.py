@@ -4,7 +4,7 @@
 
 import numpy as np
 from .base import Prox
-from .build.prox import ProxElasticNet as _ProxElasticNet
+from .build.prox import ProxElasticNetDouble as _ProxElasticNet
 
 __author__ = 'Maryan Morel'
 

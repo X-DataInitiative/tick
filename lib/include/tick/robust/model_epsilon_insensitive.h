@@ -4,15 +4,11 @@
 
 // License: BSD 3 clause
 
-#include <cereal/types/base_class.hpp>
 #include "tick/base_model/model_generalized_linear.h"
 
 template <class T>
 class DLL_PUBLIC TModelEpsilonInsensitive
     : public virtual TModelGeneralizedLinear<T> {
-  // Grants cereal access to default constructor
-  friend class cereal::access;
-
  protected:
   using TModelGeneralizedLinear<T>::features_norm_sq;
   using TModelGeneralizedLinear<T>::compute_features_norm_sq;
@@ -33,16 +29,19 @@ class DLL_PUBLIC TModelEpsilonInsensitive
  private:
   T threshold;
 
- private:
-  // This exists soley for cereal which has friend access
+ public:
+  // This exists soley for cereal/swig
   TModelEpsilonInsensitive()
       : TModelEpsilonInsensitive(nullptr, nullptr, false, 1) {}
 
- public:
   TModelEpsilonInsensitive(const std::shared_ptr<BaseArray2d<T>> features,
                            const std::shared_ptr<SArray<T>> labels,
                            const bool fit_intercept, const T threshold,
-                           const int n_threads = 1);
+                           const int n_threads = 1)
+      : TModelLabelsFeatures<T>(features, labels),
+        TModelGeneralizedLinear<T>(features, labels, fit_intercept, n_threads) {
+    set_threshold(threshold);
+  }
 
   T loss_i(const ulong i, const Array<T> &coeffs) override;
 
@@ -82,13 +81,13 @@ class DLL_PUBLIC TModelEpsilonInsensitive
 };
 
 using ModelEpsilonInsensitive = TModelEpsilonInsensitive<double>;
-
 using ModelEpsilonInsensitiveDouble = TModelEpsilonInsensitive<double>;
+using ModelEpsilonInsensitiveFloat = TModelEpsilonInsensitive<float>;
+
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelEpsilonInsensitiveDouble,
                                    cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(ModelEpsilonInsensitiveDouble)
 
-using ModelEpsilonInsensitiveFloat = TModelEpsilonInsensitive<float>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelEpsilonInsensitiveFloat,
                                    cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(ModelEpsilonInsensitiveFloat)

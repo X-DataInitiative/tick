@@ -8,24 +8,22 @@
 
 template <class T>
 class DLL_PUBLIC TProxZero : public TProxSeparable<T> {
-  // Grants cereal access to default constructor
-  friend class cereal::access;
-
  public:
   using TProxSeparable<T>::get_class_name;
 
  private:
-  // This exists soley for cereal which has friend access
-  TProxZero() : TProxZero(0) {}
-
   T call_single(T x, T step) const override;
 
   T call_single(T x, T step, ulong n_times) const override;
 
  public:
-  explicit TProxZero(T strength);
+  // This exists soley for cereal/swig
+  TProxZero() : TProxZero(0) {}
 
-  TProxZero(T strength, ulong start, ulong end);
+  explicit TProxZero(T strength) : TProxSeparable<T>(strength, false) {}
+
+  TProxZero(T strength, ulong start, ulong end)
+      : TProxSeparable<T>(strength, start, end, false) {}
 
   T value(const Array<T>& coeffs, ulong start, ulong end) override;
 
@@ -45,13 +43,13 @@ class DLL_PUBLIC TProxZero : public TProxSeparable<T> {
 };
 
 using ProxZero = TProxZero<double>;
-
 using ProxZeroDouble = TProxZero<double>;
+using ProxZeroFloat = TProxZero<float>;
+
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ProxZeroDouble,
                                    cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(ProxZeroDouble)
 
-using ProxZeroFloat = TProxZero<float>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ProxZeroFloat,
                                    cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(ProxZeroFloat)

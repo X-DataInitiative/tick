@@ -4,7 +4,7 @@ import unittest
 
 from tick.solver import SAGA
 from tick.solver.tests import TestSolver
-from tick.solver.build.solver import SAGA as _SAGA
+from tick.solver.build.solver import SAGADouble as _SAGA
 
 from tick.survival import SimuCoxReg, ModelCoxRegPartialLik
 from tick.simulation import weights_sparse_gauss

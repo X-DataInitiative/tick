@@ -6,14 +6,9 @@
 
 #include "tick/base_model/model_generalized_linear.h"
 
-#include <cereal/types/base_class.hpp>
-
 template <class T>
 class DLL_PUBLIC TModelAbsoluteRegression
     : public virtual TModelGeneralizedLinear<T> {
-  // Grants cereal access to default constructor
-  friend class cereal::access;
-
  protected:
   using TModelGeneralizedLinear<T>::features_norm_sq;
   using TModelGeneralizedLinear<T>::compute_features_norm_sq;
@@ -31,15 +26,17 @@ class DLL_PUBLIC TModelAbsoluteRegression
   using TModelGeneralizedLinear<T>::grad_i_factor;
   using TModelGeneralizedLinear<T>::get_class_name;
 
- private:
-  // This exists soley for cereal which has friend access
+ public:
+  // This exists soley for cereal/swig
   TModelAbsoluteRegression()
       : TModelAbsoluteRegression(nullptr, nullptr, false) {}
 
- public:
   TModelAbsoluteRegression(const std::shared_ptr<BaseArray2d<T> > features,
                            const std::shared_ptr<SArray<T> > labels,
-                           const bool fit_intercept, const int n_threads = 1);
+                           const bool fit_intercept, const int n_threads = 1)
+      : TModelLabelsFeatures<T>(features, labels),
+        TModelGeneralizedLinear<T>(features, labels, fit_intercept, n_threads) {
+  }
 
   T loss_i(const ulong i, const Array<T> &coeffs) override;
 
@@ -66,15 +63,16 @@ class DLL_PUBLIC TModelAbsoluteRegression
 };
 
 using ModelAbsoluteRegression = TModelAbsoluteRegression<double>;
-
 using ModelAbsoluteRegressionDouble = TModelAbsoluteRegression<double>;
+using ModelAbsoluteRegressionFloat = TModelAbsoluteRegression<float>;
+
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelAbsoluteRegressionDouble,
                                    cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(ModelAbsoluteRegressionDouble)
 
-using ModelAbsoluteRegressionFloat = TModelAbsoluteRegression<float>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelAbsoluteRegressionFloat,
                                    cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(ModelAbsoluteRegressionFloat)
+
 
 #endif  // LIB_INCLUDE_TICK_ROBUST_MODEL_ABSOLUTE_REGRESSION_H_

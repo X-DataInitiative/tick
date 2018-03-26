@@ -14,6 +14,8 @@ class TProxL2 : public TProx<T> {
           unsigned long start,
           unsigned long end,
           bool positive);
+
+  bool compare(const TProxL2<T> &that);
 };
 
 %template(ProxL2) TProxL2<double>;

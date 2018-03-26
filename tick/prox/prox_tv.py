@@ -5,7 +5,7 @@
 
 import numpy as np
 from .base import Prox
-from .build.prox import ProxTV as _ProxTV
+from .build.prox import ProxTVDouble as _ProxTV
 
 
 __author__ = 'Stephane Gaiffas'

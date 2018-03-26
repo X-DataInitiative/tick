@@ -10,9 +10,6 @@
 
 template <class T>
 class DLL_PUBLIC TSVRG : public TStoSolver<T> {
-  // Grants cereal access to default constructor
-  friend class cereal::access;
-
  protected:
   using TStoSolver<T>::t;
   using TStoSolver<T>::model;
@@ -62,11 +59,10 @@ class DLL_PUBLIC TSVRG : public TStoSolver<T> {
                                    const bool use_intercept,
                                    TProxSeparable<T>*& casted_prox);
 
- protected:
-  // This exists soley for cereal which has friend access
+ public:
+  // This exists soley for cereal/swig
   TSVRG() : TSVRG<T>(0, 0, RandType::unif, 0) {}
 
- public:
   TSVRG(ulong epoch_size, T tol, RandType rand_type, T step, int seed = -1,
         int n_threads = 1,
         SVRG_VarianceReductionMethod variance_reduction =
@@ -90,7 +86,10 @@ class DLL_PUBLIC TSVRG : public TStoSolver<T> {
   }
 
   SVRG_StepType get_step_type() { return step_type; }
-  void set_step_type(SVRG_StepType step_type) { TSVRG<T>::step_type = step_type; }
+
+  void set_step_type(SVRG_StepType step_type) {
+    TSVRG<T>::step_type = step_type;
+  }
 
   void set_starting_iterate(Array<T>& new_iterate) override;
 
@@ -133,7 +132,6 @@ class DLL_PUBLIC TSVRG : public TStoSolver<T> {
 };
 
 using SVRG = TSVRG<double>;
-
 using SVRGDouble = TSVRG<double>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SVRGDouble,
                                    cereal::specialization::member_serialize)

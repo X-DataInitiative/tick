@@ -3,7 +3,7 @@
 import numpy as np
 from numpy.linalg import svd
 from tick.base_model import ModelGeneralizedLinear, ModelFirstOrder, ModelLipschitz
-from .build.robust import ModelHuber as _ModelHuber
+from .build.robust import ModelHuberDouble as _ModelHuber
 
 __author__ = 'Stephane Gaiffas'
 

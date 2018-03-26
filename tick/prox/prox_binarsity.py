@@ -2,7 +2,7 @@
 
 
 from .base import ProxWithGroups
-from .build.prox import ProxBinarsity as _ProxBinarsity
+from .build.prox import ProxBinarsityDouble as _ProxBinarsity
 
 
 class ProxBinarsity(ProxWithGroups):

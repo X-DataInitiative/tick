@@ -4,7 +4,7 @@
 
 import numpy as np
 from .base import Prox
-from .build.prox import ProxL1w as _ProxL1w
+from .build.prox import ProxL1wDouble as _ProxL1w
 
 __author__ = 'Stephane Gaiffas'
 

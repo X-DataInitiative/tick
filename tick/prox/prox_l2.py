@@ -2,11 +2,9 @@
 
 import numpy as np
 from .base import Prox
-from .build.prox import ProxL2 as _ProxL2
-
+from .build.prox import ProxL2Double as _ProxL2
 
 __author__ = 'Stephane Gaiffas'
-
 
 class ProxL2(Prox):
     """Proximal operator of the L2 penalization. Do not mix up with ProxL2sq,

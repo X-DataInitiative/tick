@@ -10,6 +10,7 @@
 template <class T>
 class TSDCA : public TStoSolver<T> {
 public:
+    TSDCA();
     TSDCA(T l_l2sq,
          unsigned long epoch_size = 0,
          T tol = 0.,
@@ -25,32 +26,14 @@ public:
     void set_l_l2sq(T l_l2sq);
     std::shared_ptr<Array<T> > get_primal_vector();
     std::shared_ptr<Array<T> > get_dual_vector();
-};
 
-%rename(SDCA) TSDCA<double>;
-class TSDCA<double> : public TStoSolver<double> {
-public:
-    SDCA(double l_l2sq,
-         unsigned long epoch_size = 0,
-         double tol = 0.,
-         RandType rand_type = RandType::unif,
-         int seed = -1);
-
-    void set_model(ModelDoublePtr model);
-    void reset();
-    void set_starting_iterate();
-    void set_starting_iterate(ArrayDouble &dual_vector);
-    void solve();
-    double get_l_l2sq() const;
-    void set_l_l2sq(double l_l2sq);
-    SArrayDoublePtr get_primal_vector();
-    SArrayDoublePtr get_dual_vector();
+    bool compare(const TSDCA<T> &that);
 };
-typedef TSDCA<double> SDCA;
 
 %rename(SDCADouble) TSDCA<double>;
-class TSDCA<double> : public TStoSolver<double> {
+class SDCADouble : public TStoSolver<double> {
 public:
+    SDCADouble();
     SDCADouble(double l_l2sq,
          unsigned long epoch_size = 0,
          double tol = 0.,
@@ -66,12 +49,16 @@ public:
     void set_l_l2sq(double l_l2sq);
     SArrayDoublePtr get_primal_vector();
     SArrayDoublePtr get_dual_vector();
+
+    bool compare(const SDCADouble &that);
 };
 typedef TSDCA<double> SDCADouble;
+TICK_MAKE_PICKLABLE(SDCADouble);
 
 %rename(SDCAFloat) TSDCA<float>;
-class TSDCA<float> : public TStoSolver<float> {
+class SDCAFloat : public TStoSolver<float> {
 public:
+    SDCAFloat();
     SDCAFloat(float l_l2sq,
          unsigned long epoch_size = 0,
          float tol = 0.,
@@ -87,5 +74,8 @@ public:
     void set_l_l2sq(float l_l2sq);
     SArrayFloatPtr get_primal_vector();
     SArrayFloatPtr get_dual_vector();
+
+    bool compare(const SDCAFloat &that);
 };
 typedef TSDCA<float> SDCAFloat;
+TICK_MAKE_PICKLABLE(SDCAFloat);

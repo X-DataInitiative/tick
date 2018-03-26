@@ -2,7 +2,7 @@
 
 import numpy as np
 from tick.base_model import ModelGeneralizedLinear, ModelFirstOrder
-from .build.robust import ModelEpsilonInsensitive as _ModelEpsilonInsensitive
+from .build.robust import ModelEpsilonInsensitiveDouble as _ModelEpsilonInsensitive
 
 __author__ = 'Stephane Gaiffas'
 

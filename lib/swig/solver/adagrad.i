@@ -10,6 +10,7 @@
 template <class T>
 class TAdaGrad : public TStoSolver<T> {
 public:
+    TAdaGrad();
     TAdaGrad(unsigned long epoch_size,
         T tol,
         RandType rand_type,
@@ -17,13 +18,14 @@ public:
         int seed);
 
     void solve();
-};
 
-%template(AdaGrad) TAdaGrad<double>; 
-typedef TAdaGrad<double> AdaGrad;
+    bool compare(const TAdaGrad<T> &that);
+};
 
 %template(AdaGradDouble) TAdaGrad<double>;
 typedef TAdaGrad<double> AdaGradDouble;
+TICK_MAKE_TEMPLATED_PICKLABLE(TAdaGrad, AdaGradDouble, double);
 
 %template(AdaGradFloat) TAdaGrad<float>;
-typedef TAdaGrad<double> AdaGradFloat;
+typedef TAdaGrad<float> AdaGradFloat;
+TICK_MAKE_TEMPLATED_PICKLABLE(TAdaGrad, AdaGradFloat , float);

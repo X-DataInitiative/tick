@@ -8,13 +8,10 @@
 // License: BSD 3 clause
 
 #include "tick/base/base.h"
+#include "tick/base/serialization.h"
 
 #include <memory>
 #include <string>
-
-#include <cereal/cereal.hpp>
-#include <cereal/types/memory.hpp>
-#include <cereal/types/polymorphic.hpp>
 
 template <class T>
 class DLL_PUBLIC TProx {
@@ -40,7 +37,7 @@ class DLL_PUBLIC TProx {
   T strength;
 
  protected:
-  // This exists soley for cereal which has friend access
+  // This exists soley for cereal/swig
   TProx() {}
 
  public:

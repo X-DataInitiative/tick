@@ -463,7 +463,7 @@ linear_model_core_info = {
     "swig_files": ["linear_model_module.i"],
     "module_dir": "./tick/linear_model/",
     "extension_name": "linear_model",
-    "include_modules": base_array_modules + 
+    "include_modules": base_array_modules +
     [
       base_model_core.module_ref,
     ]
@@ -475,7 +475,7 @@ hawkes_simulation_extension_info = {
     "h_files": [],
     "folders": [
         "lib/cpp/hawkes/simulation",
-        "lib/cpp/hawkes/simulation/hawkes_baselines", 
+        "lib/cpp/hawkes/simulation/hawkes_baselines",
         "lib/cpp/hawkes/simulation/hawkes_kernels"
     ],
     "swig_files": [
@@ -537,6 +537,20 @@ prox_core_info = {
 }
 prox_core = create_extension(**prox_core_info)
 
+robust_extension_info = {
+    "cpp_files": [],
+    "h_files": [],
+    "folders": [
+        "lib/cpp/robust"
+    ],
+    "swig_files": ["robust_module.i"],
+    "module_dir": "./tick/robust/",
+    "extension_name": "robust",
+    "include_modules": base_array_modules + [
+      base_model_core.module_ref,linear_model_core.module_ref]
+}
+robust_extension = create_extension(**robust_extension_info)
+
 solver_core_info = {
     "cpp_files": [],
     "h_files": [],
@@ -549,7 +563,8 @@ solver_core_info = {
     "include_modules": base_array_modules + [random_extension.module_ref,
                                              base_model_core.module_ref,
                                              linear_model_core.module_ref,
-                                             prox_core.module_ref]
+                                             prox_core.module_ref,
+                                             robust_extension.module_ref]
 }
 solver_core = create_extension(**solver_core_info)
 
@@ -566,20 +581,6 @@ preprocessing_core_info = {
 }
 
 preprocessing_core = create_extension(**preprocessing_core_info)
-
-robust_extension_info = {
-    "cpp_files": [],
-    "h_files": [],
-    "folders": [
-        "lib/cpp/robust"
-    ],
-    "swig_files": ["robust_module.i"],
-    "module_dir": "./tick/robust/",
-    "extension_name": "robust",
-    "include_modules": base_array_modules + [
-      base_model_core.module_ref,linear_model_core.module_ref]
-}
-robust_extension = create_extension(**robust_extension_info)
 
 survival_extension_info = {
     "cpp_files": [],
@@ -599,8 +600,8 @@ tick_modules = [
     random_extension, base_model_core, linear_model_core,
     hawkes_simulation_extension, hawkes_model_extension,
     hawkes_inference_extension,
-    prox_core, solver_core, preprocessing_core,
-    robust_extension, survival_extension
+    prox_core, preprocessing_core,
+    robust_extension, survival_extension, solver_core
 ]
 
 # Abstract class for tick-specific commands that need access to common build

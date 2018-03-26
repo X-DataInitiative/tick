@@ -21,6 +21,8 @@ class TProxGroupL1 : public TProxWithGroups<T> {
   inline virtual void set_blocks_start(SArrayULongPtr blocks_start);
 
   inline virtual void set_blocks_length(SArrayULongPtr blocks_length);
+
+  bool compare(const TProxGroupL1<T> &that);
 };
 
 %template(ProxGroupL1) TProxGroupL1<double>;

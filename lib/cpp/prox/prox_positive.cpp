@@ -3,14 +3,6 @@
 #include "tick/prox/prox_positive.h"
 
 template <class T>
-TProxPositive<T>::TProxPositive(T strength)
-    : TProxSeparable<T>(strength, true) {}
-
-template <class T>
-TProxPositive<T>::TProxPositive(T strength, ulong start, ulong end)
-    : TProxSeparable<T>(strength, start, end, true) {}
-
-template <class T>
 T TProxPositive<T>::call_single(T x, T step) const {
   if (x < 0) {
     return 0;

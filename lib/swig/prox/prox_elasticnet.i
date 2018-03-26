@@ -15,6 +15,8 @@ class TProxElasticNet : public TProxSeparable<T> {
   virtual T get_ratio() const;
 
   virtual void set_ratio(T ratio);
+
+  bool compare(const TProxElasticNet<T> &that);
 };
 
 %template(ProxElasticNet) TProxElasticNet<double>;

@@ -9,9 +9,6 @@ enum class WeightsType : uint16_t { bh = 0, oscar };
 
 template <class T>
 class DLL_PUBLIC TProxSortedL1 : public TProx<T> {
-  // Grants cereal access to default constructor
-  friend class cereal::access;
-
  protected:
   using TProx<T>::start;
   using TProx<T>::end;
@@ -30,15 +27,22 @@ class DLL_PUBLIC TProxSortedL1 : public TProx<T> {
   void prox_sorted_l1(const Array<T>& y, const Array<T>& strength,
                       Array<T>& x) const;
 
- protected:
-  // This exists soley for cereal which has friend access
+ public:
+  // This exists soley for cereal/swig
   TProxSortedL1() : TProxSortedL1(0, WeightsType::bh, 0, 1, false) {}
 
- public:
-  TProxSortedL1(T strength, WeightsType weights_type, bool positive);
+  TProxSortedL1(T strength, WeightsType weights_type, bool positive)
+      : TProx<T>(strength, positive) {
+    this->weights_type = weights_type;
+    weights_ready = false;
+  }
 
   TProxSortedL1(T strength, WeightsType weights_type, ulong start, ulong end,
-                bool positive);
+                bool positive)
+      : TProx<T>(strength, start, end, positive) {
+    this->weights_type = weights_type;
+    weights_ready = false;
+  }
 
   T value(const Array<T>& coeffs, ulong start, ulong end) override;
 
@@ -75,13 +79,13 @@ class DLL_PUBLIC TProxSortedL1 : public TProx<T> {
 };
 
 using ProxSortedL1 = TProxSortedL1<double>;
-
 using ProxSortedL1Double = TProxSortedL1<double>;
+using ProxSortedL1Float = TProxSortedL1<float>;
+
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ProxSortedL1Double,
                                    cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(ProxSortedL1Double)
 
-using ProxSortedL1Float = TProxSortedL1<float>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ProxSortedL1Float,
                                    cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(ProxSortedL1Float)

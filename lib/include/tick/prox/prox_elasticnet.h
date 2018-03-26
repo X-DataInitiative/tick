@@ -7,9 +7,6 @@
 
 template <class T>
 class DLL_PUBLIC TProxElasticNet : public TProxSeparable<T> {
-  // Grants cereal access to default constructor
-  friend class cereal::access;
-
  protected:
   using TProxSeparable<T>::strength;
   using TProxSeparable<T>::positive;
@@ -20,14 +17,21 @@ class DLL_PUBLIC TProxElasticNet : public TProxSeparable<T> {
  protected:
   T ratio = 0;
 
- protected:
-  // This exists soley for cereal which has friend access
+ public:
+  // This exists soley for cereal/swig
   TProxElasticNet() : TProxElasticNet<T>(0, 0, false) {}
 
- public:
-  TProxElasticNet(T strength, T ratio, bool positive);
+  TProxElasticNet(T strength, T ratio, bool positive)
+      : TProxSeparable<T>(strength, positive) {
+    this->positive = positive;
+    set_ratio(ratio);
+  }
 
-  TProxElasticNet(T strength, T ratio, ulong start, ulong end, bool positive);
+  TProxElasticNet(T strength, T ratio, ulong start, ulong end, bool positive)
+      : TProxSeparable<T>(strength, start, end, positive) {
+    this->positive = positive;
+    set_ratio(ratio);
+  }
 
   virtual T get_ratio() const;
 
@@ -58,13 +62,14 @@ class DLL_PUBLIC TProxElasticNet : public TProxSeparable<T> {
 };
 
 using ProxElasticNet = TProxElasticNet<double>;
-
 using ProxElasticNetDouble = TProxElasticNet<double>;
+using ProxElasticNetFloat = TProxElasticNet<float>;
+
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ProxElasticNetDouble,
                                    cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(ProxElasticNetDouble)
 
-using ProxElasticNetFloat = TProxElasticNet<float>;
+
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ProxElasticNetFloat,
                                    cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(ProxElasticNetFloat)

@@ -2,14 +2,6 @@
 
 #include "tick/prox/prox_l2sq.h"
 
-template <class T>
-TProxL2Sq<T>::TProxL2Sq(T strength, bool positive)
-    : TProxSeparable<T>(strength, positive) {}
-
-template <class T>
-TProxL2Sq<T>::TProxL2Sq(T strength, ulong start, ulong end, bool positive)
-    : TProxSeparable<T>(strength, start, end, positive) {}
-
 // Compute the prox on the i-th coordinate only
 template <class T>
 T TProxL2Sq<T>::call_single(T x, T step) const {

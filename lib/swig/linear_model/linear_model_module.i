@@ -42,9 +42,12 @@
 
 %{
 #include "tick/base/tick_python.h"
+#include "tick/base/serialization.h"
 %}
 
 %import(module="tick.base") base_module.i
+
+%include serialization.i
 
 %include model_hinge.i
 

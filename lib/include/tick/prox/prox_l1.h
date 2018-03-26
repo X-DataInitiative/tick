@@ -7,9 +7,6 @@
 
 template <class T>
 class DLL_PUBLIC TProxL1 : public TProxSeparable<T> {
-  // Grants cereal access to default constructor
-  friend class cereal::access;
-
  protected:
   using TProx<T>::has_range;
   using TProx<T>::strength;
@@ -21,9 +18,6 @@ class DLL_PUBLIC TProxL1 : public TProxSeparable<T> {
   using TProxSeparable<T>::get_class_name;
 
  protected:
-  // This exists soley for cereal which has friend access
-  TProxL1() : TProxL1<T>(0, 0) {}
-
   T call_single(T x, T step) const override;
 
   // Repeat n_times the prox on coordinate i
@@ -32,9 +26,13 @@ class DLL_PUBLIC TProxL1 : public TProxSeparable<T> {
   T value_single(T x) const override;
 
  public:
-  TProxL1(T strength, bool positive);
+  // This exists soley for cereal/swig
+  TProxL1() : TProxL1<T>(0, 0) {}
 
-  TProxL1(T strength, ulong start, ulong end, bool positive);
+  TProxL1(T strength, bool positive) : TProxSeparable<T>(strength, positive) {}
+
+  TProxL1(T strength, ulong start, ulong end, bool positive)
+      : TProxSeparable<T>(strength, start, end, positive) {}
 
   template <class Archive>
   void serialize(Archive& ar) {
@@ -52,13 +50,13 @@ class DLL_PUBLIC TProxL1 : public TProxSeparable<T> {
 };
 
 using ProxL1 = TProxL1<double>;
-
 using ProxL1Double = TProxL1<double>;
+using ProxL1Float = TProxL1<float>;
+
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ProxL1Double,
                                    cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(ProxL1Double)
 
-using ProxL1Float = TProxL1<float>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ProxL1Float,
                                    cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(ProxL1Float)

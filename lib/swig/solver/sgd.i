@@ -11,7 +11,7 @@ template <class T>
 class TSGD : public TStoSolver<T> {
 
 public:
-
+    TSGD();
     TSGD(unsigned long epoch_size,
         T tol,
         RandType rand_type,
@@ -23,13 +23,14 @@ public:
     inline T get_step() const;
 
     void solve();
-};
 
-%template(SGD) TSGD<double>; 
-typedef TSGD<double> SGD;
+    bool compare(const TSGD<T> &that);
+};
 
 %template(SGDDouble) TSGD<double>;
 typedef TSGD<double> SGDDouble;
+TICK_MAKE_TEMPLATED_PICKLABLE(TSGD, SGDDouble , double);
 
 %template(SGDFloat) TSGD<float>;
-typedef TSGD<double> SGDFloat;
+typedef TSGD<float> SGDFloat;
+TICK_MAKE_TEMPLATED_PICKLABLE(TSGD, SGDFloat , float);

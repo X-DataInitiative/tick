@@ -2,7 +2,7 @@
 
 from tick.base_model import ModelGeneralizedLinear
 from tick.solver.base import SolverFirstOrderSto
-from tick.solver.build.solver import SAGA as _SAGA
+from tick.solver.build.solver import SAGADouble as _SAGA
 
 from tick.solver.build.solver import SAGA_VarianceReductionMethod_Last
 from tick.solver.build.solver import SAGA_VarianceReductionMethod_Average

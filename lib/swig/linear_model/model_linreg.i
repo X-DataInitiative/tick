@@ -10,46 +10,45 @@
 template <class T>
 class TModelLinReg : public virtual TModelGeneralizedLinear<T>, public TModelLipschitz<T> {
  public:
+  TModelLinReg();
   TModelLinReg(
     const std::shared_ptr<BaseArray2d<T> > features,
     const std::shared_ptr<SArray<T> > labels,
     const bool fit_intercept,
     const int n_threads = 1
   );
-};
 
-%rename(ModelLinReg) TModelLinReg<double>;
-class ModelLinReg : public virtual TModelGeneralizedLinear<double>, public TModelLipschitz<double> {
- public:
-  ModelLinReg(
-    const SBaseArrayDouble2dPtr features,
-    const SArrayDoublePtr labels,
-    const bool fit_intercept,
-    const int n_threads = 1
-  );
+  bool compare(const TModelLinReg<T> &that);
 };
-typedef TModelLinReg<double> ModelLinReg;
 
 %rename(ModelLinRegDouble) TModelLinReg<double>;
-class TModelLinReg<double> : public virtual TModelGeneralizedLinear<double>, public TModelLipschitz<double> {
+class ModelLinRegDouble : public virtual TModelGeneralizedLinear<double>, public TModelLipschitz<double> {
  public:
-  TModelLinReg(
+  ModelLinRegDouble();
+  ModelLinRegDouble(
     const SBaseArrayDouble2dPtr features,
     const SArrayDoublePtr labels,
     const bool fit_intercept,
     const int n_threads = 1
   );
+
+  bool compare(const ModelLinRegDouble &that);
 };
 typedef TModelLinReg<double> ModelLinRegDouble;
+TICK_MAKE_PICKLABLE(ModelLinRegDouble);
 
 %rename(ModelLinRegFloat) TModelLinReg<float>;
-class TModelLinReg<float> : public virtual TModelGeneralizedLinear<float>, public TModelLipschitz<float> {
+class ModelLinRegFloat : public virtual TModelGeneralizedLinear<float>, public TModelLipschitz<float> {
  public:
-  TModelLinReg(
+  ModelLinRegFloat();
+  ModelLinRegFloat(
     const SBaseArrayFloat2dPtr features,
     const SArrayFloatPtr labels,
     const bool fit_intercept,
     const int n_threads = 1
   );
+
+  bool compare(const ModelLinRegFloat &that);
 };
 typedef TModelLinReg<float> ModelLinRegFloat;
+TICK_MAKE_PICKLABLE(ModelLinRegFloat);

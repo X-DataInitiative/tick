@@ -6,7 +6,6 @@
 #include "tick/solver/svrg.h"
 %}
 
-
 enum class SVRG_VarianceReductionMethod : uint16_t {
   Last = 1,
   Average = 2,
@@ -17,10 +16,10 @@ enum class SVRG_StepType : uint16_t {
     BarzilaiBorwein = 2,
 };
 
-
 template <class T>
 class TSVRG : public TStoSolver<T> {
   public:
+    TSVRG();
     TSVRG(ulong epoch_size,
          T tol,
          RandType rand_type,
@@ -40,13 +39,14 @@ class TSVRG : public TStoSolver<T> {
 
     SVRG_StepType get_step_type();
     void set_step_type(SVRG_StepType step_type);
-};
 
-%template(SVRG) TSVRG<double>;
-typedef TSVRG<double> SVRG;
+    bool compare(const TSVRG<T> &that);
+};
 
 %template(SVRGDouble) TSVRG<double>;
 typedef TSVRG<double> SVRGDouble;
+TICK_MAKE_TEMPLATED_PICKLABLE(TSVRG, SVRGDouble, double);
 
 %template(SVRGFloat) TSVRG<float>;
-typedef TSVRG<double> SVRGFloat;
+typedef TSVRG<float> SVRGFloat;
+TICK_MAKE_TEMPLATED_PICKLABLE(TSVRG, SVRGFloat , float);

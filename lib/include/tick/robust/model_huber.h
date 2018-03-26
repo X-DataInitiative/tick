@@ -7,14 +7,9 @@
 #include "tick/base_model/model_generalized_linear.h"
 #include "tick/base_model/model_lipschitz.h"
 
-#include <cereal/types/base_class.hpp>
-
 template <class T>
 class DLL_PUBLIC TModelHuber : public virtual TModelGeneralizedLinear<T>,
                                public TModelLipschitz<T> {
-  // Grants cereal access to default constructor
-  friend class cereal::access;
-
  protected:
   using TModelGeneralizedLinear<T>::features_norm_sq;
   using TModelGeneralizedLinear<T>::compute_features_norm_sq;
@@ -37,15 +32,18 @@ class DLL_PUBLIC TModelHuber : public virtual TModelGeneralizedLinear<T>,
  private:
   T threshold, threshold_squared_over_two;
 
- private:
-  // This exists soley for cereal which has friend access
+ public:
+  // This exists soley for cereal/swig
   TModelHuber() : TModelHuber(nullptr, nullptr, false, 1) {}
 
- public:
   TModelHuber(const std::shared_ptr<BaseArray2d<T> > features,
               const std::shared_ptr<SArray<T> > labels,
               const bool fit_intercept, const T threshold,
-              const int n_threads = 1);
+              const int n_threads = 1)
+      : TModelLabelsFeatures<T>(features, labels),
+        TModelGeneralizedLinear<T>(features, labels, fit_intercept, n_threads) {
+    set_threshold(threshold);
+  }
 
   T loss_i(const ulong i, const Array<T> &coeffs) override;
 
@@ -93,13 +91,13 @@ class DLL_PUBLIC TModelHuber : public virtual TModelGeneralizedLinear<T>,
 };
 
 using ModelHuber = TModelHuber<double>;
-
 using ModelHuberDouble = TModelHuber<double>;
+using ModelHuberFloat = TModelHuber<float>;
+
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelHuberDouble,
                                    cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(ModelHuberDouble)
 
-using ModelHuberFloat = TModelHuber<float>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelHuberFloat,
                                    cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(ModelHuberFloat)

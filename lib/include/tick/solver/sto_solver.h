@@ -9,6 +9,7 @@
 
 #include "tick/base/base.h"
 #include "tick/base_model/model.h"
+
 #include "tick/prox/prox.h"
 #include "tick/prox/prox_zero.h"
 #include "tick/random/rand.h"
@@ -175,8 +176,8 @@ class DLL_PUBLIC TStoSolver {
 
   template <class Archive>
   void save(Archive &ar) const {
-    ar(CEREAL_NVP(model));
     ar(CEREAL_NVP(prox));
+    ar(CEREAL_NVP(model));
     ar(CEREAL_NVP(t));
     ar(CEREAL_NVP(iterate));
     ar(CEREAL_NVP(rand_max));

@@ -22,13 +22,14 @@ class DLL_PUBLIC TProxSeparable : public TProx<T> {
   using TProx<T>::get_class_name;
 
  protected:
-  // This exists soley for cereal which has friend access
+  // This exists soley for cereal/swig
   TProxSeparable() : TProxSeparable<T>(0, 0, 1, 0) {}
 
  public:
-  TProxSeparable(T strength, bool positive);
+  TProxSeparable(T strength, bool positive) : TProx<T>(strength, positive) {}
 
-  TProxSeparable(T strength, ulong start, ulong end, bool positive);
+  TProxSeparable(T strength, ulong start, ulong end, bool positive)
+      : TProx<T>(strength, start, end, positive) {}
 
   bool is_separable() const override;
 
@@ -82,9 +83,7 @@ class DLL_PUBLIC TProxSeparable : public TProx<T> {
 using ProxSeparable = TProxSeparable<double>;
 
 using ProxSeparableDouble = TProxSeparable<double>;
-CEREAL_REGISTER_TYPE(ProxSeparableDouble)
 
 using ProxSeparableFloat = TProxSeparable<float>;
-CEREAL_REGISTER_TYPE(ProxSeparableFloat)
 
 #endif  // LIB_INCLUDE_TICK_PROX_PROX_SEPARABLE_H_

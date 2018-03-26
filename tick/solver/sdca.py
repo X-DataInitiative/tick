@@ -2,7 +2,7 @@
 
 
 from .base import SolverFirstOrderSto
-from .build.solver import SDCA as _SDCA
+from .build.solver import SDCADouble as _SDCA
 import numpy as np
 
 

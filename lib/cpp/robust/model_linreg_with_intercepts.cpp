@@ -3,17 +3,6 @@
 #include "tick/robust/model_linreg_with_intercepts.h"
 
 template <class T>
-TModelLinRegWithIntercepts<T>::TModelLinRegWithIntercepts(
-    const std::shared_ptr<BaseArray2d<T> > features,
-    const std::shared_ptr<SArray<T> > labels, const bool fit_intercept,
-    const int n_threads)
-    : TModelLabelsFeatures<T>(features, labels),
-      TModelGeneralizedLinear<T>(features, labels, fit_intercept, n_threads),
-      TModelGeneralizedLinearWithIntercepts<T>(features, labels, fit_intercept,
-                                               n_threads),
-      TModelLinReg<T>(features, labels, fit_intercept, n_threads) {}
-
-template <class T>
 void TModelLinRegWithIntercepts<T>::compute_lip_consts() {
   if (ready_lip_consts) {
     return;

@@ -7,23 +7,20 @@
 
 template <class T>
 class DLL_PUBLIC TProxEquality : public TProx<T> {
-  // Grants cereal access to default constructor
-  friend class cereal::access;
-
  protected:
   using TProx<T>::positive;
 
  public:
   using TProx<T>::get_class_name;
 
- private:
-  // This exists soley for cereal which has friend access
+ public:
+  // This exists soley for cereal/swig
   TProxEquality() : TProxEquality<T>(0, false) {}
 
- public:
-  explicit TProxEquality(T strength, bool positive);
+  explicit TProxEquality(T strength, bool positive) : TProx<T>(0., positive) {}
 
-  TProxEquality(T strength, ulong start, ulong end, bool positive);
+  TProxEquality(T strength, ulong start, ulong end, bool positive)
+      : TProx<T>(0., start, end, positive) {}
 
   T value(const Array<T>& coeffs, ulong start, ulong end) override;
 
@@ -47,13 +44,13 @@ class DLL_PUBLIC TProxEquality : public TProx<T> {
 };
 
 using ProxEquality = TProxEquality<double>;
-
 using ProxEqualityDouble = TProxEquality<double>;
+using ProxEqualityFloat = TProxEquality<float>;
+
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ProxEqualityDouble,
                                    cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(ProxEqualityDouble)
 
-using ProxEqualityFloat = TProxEquality<float>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ProxEqualityFloat,
                                    cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(ProxEqualityFloat)

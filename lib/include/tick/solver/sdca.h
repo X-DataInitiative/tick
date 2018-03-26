@@ -15,9 +15,6 @@
 
 template <class T>
 class DLL_PUBLIC TSDCA : public TStoSolver<T> {
-  // Grants cereal access to default constructor
-  friend class cereal::access;
-
  protected:
   using TStoSolver<T>::t;
   using TStoSolver<T>::model;
@@ -50,11 +47,10 @@ class DLL_PUBLIC TSDCA : public TStoSolver<T> {
   // The dual variable
   Array<T> dual_vector;
 
- protected:
-  // This exists soley for cereal which has friend access
+ public:
+  // This exists soley for cereal/swig
   TSDCA() : TSDCA<T>(0, 0, 0) {}
 
- public:
   explicit TSDCA(T l_l2sq, ulong epoch_size = 0, T tol = 0.,
                  RandType rand_type = RandType::unif, int seed = -1);
 

@@ -24,7 +24,7 @@ class DLL_PUBLIC TProxMulti : public TProx<T> {
   ProxTPtrVector proxs;
 
  protected:
-  // This exists soley for cereal which has friend access
+  // This exists soley for cereal/swig
   TProxMulti() {}
 
  public:

@@ -20,6 +20,8 @@ class TProxBinarsity : public TProxWithGroups<T> {
   inline virtual void set_blocks_start(SArrayULongPtr blocks_start);
 
   inline virtual void set_blocks_length(SArrayULongPtr blocks_length);
+
+  bool compare(const TProxBinarsity<T> &that);
 };
 
 %template(ProxBinarsity) TProxBinarsity<double>;

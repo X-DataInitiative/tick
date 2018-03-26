@@ -55,7 +55,7 @@ namespace testing
       COLOR_GREEN,
       COLOR_YELLOW
   };
-#ifdef _WIN32
+#if defined(_WIN32) || defined(__APPLE__)
   void ColoredPrintf(GTestColor color, const char* fmt, ...){}
 #else
   extern void ColoredPrintf(GTestColor color, const char* fmt, ...);

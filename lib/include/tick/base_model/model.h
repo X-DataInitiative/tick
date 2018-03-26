@@ -7,12 +7,11 @@
 
 // License: BSD 3 clause
 
+#include <iostream>
+
 #include "tick/base/base.h"
 
-#include <cereal/cereal.hpp>
-#include <cereal/types/polymorphic.hpp>
-
-#include <iostream>
+#include "tick/base/serialization.h"
 
 // TODO: Model "data" : ModeLabelsFeatures, Model,Model pour les Hawkes
 template <class T>

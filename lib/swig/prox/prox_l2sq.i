@@ -14,6 +14,8 @@ class TProxL2Sq : public TProxSeparable<T> {
             ulong start,
             ulong end,
             bool positive);
+
+  bool compare(const TProxL2Sq<T> &that);
 };
 
 %template(ProxL2Sq) TProxL2Sq<double>;

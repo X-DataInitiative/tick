@@ -7,9 +7,6 @@
 
 template <class T>
 class DLL_PUBLIC TProxL2Sq : public TProxSeparable<T> {
-  // Grants cereal access to default constructor
-  friend class cereal::access;
-
  protected:
   using TProxSeparable<T>::has_range;
   using TProxSeparable<T>::strength;
@@ -20,14 +17,15 @@ class DLL_PUBLIC TProxL2Sq : public TProxSeparable<T> {
  public:
   using TProxSeparable<T>::get_class_name;
 
- private:
-  // This exists soley for cereal which has friend access
+ public:
+  // This exists soley for cereal/swig
   TProxL2Sq() : TProxL2Sq(0, 0, 1, false) {}
 
- public:
-  TProxL2Sq(T strength, bool positive);
+  TProxL2Sq(T strength, bool positive)
+      : TProxSeparable<T>(strength, positive) {}
 
-  TProxL2Sq(T strength, ulong start, ulong end, bool positive);
+  TProxL2Sq(T strength, ulong start, ulong end, bool positive)
+      : TProxSeparable<T>(strength, start, end, positive) {}
 
   template <class Archive>
   void serialize(Archive& ar) {
@@ -53,13 +51,13 @@ class DLL_PUBLIC TProxL2Sq : public TProxSeparable<T> {
 };
 
 using ProxL2Sq = TProxL2Sq<double>;
-
 using ProxL2SqDouble = TProxL2Sq<double>;
+using ProxL2SqFloat = TProxL2Sq<float>;
+
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ProxL2SqDouble,
                                    cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(ProxL2SqDouble)
 
-using ProxL2SqFloat = TProxL2Sq<float>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ProxL2SqFloat,
                                    cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(ProxL2SqFloat)

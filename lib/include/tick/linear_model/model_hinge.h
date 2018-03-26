@@ -9,9 +9,6 @@
 
 template <class T>
 class DLL_PUBLIC TModelHinge : public virtual TModelGeneralizedLinear<T> {
-  // Grants cereal access to default constructor
-  friend class cereal::access;
-
  protected:
   using TModelGeneralizedLinear<T>::compute_features_norm_sq;
   using TModelGeneralizedLinear<T>::n_samples;
@@ -24,11 +21,10 @@ class DLL_PUBLIC TModelHinge : public virtual TModelGeneralizedLinear<T> {
   using TModelGeneralizedLinear<T>::get_inner_prod;
   using TModelGeneralizedLinear<T>::get_class_name;
 
- private:
-  // This exists soley for cereal which has friend access
+ public:
+  // This exists soley for cereal/swig
   TModelHinge() : TModelHinge<T>(nullptr, nullptr, false) {}
 
- public:
   TModelHinge(const std::shared_ptr<BaseArray2d<T> > features,
               const std::shared_ptr<SArray<T> > labels,
               const bool fit_intercept, const int n_threads = 1)
@@ -61,15 +57,16 @@ class DLL_PUBLIC TModelHinge : public virtual TModelGeneralizedLinear<T> {
 };
 
 using ModelHinge = TModelHinge<double>;
-
 using ModelHingeDouble = TModelHinge<double>;
+using ModelHingeFloat = TModelHinge<float>;
+
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelHingeDouble,
                                    cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(ModelHingeDouble)
 
-using ModelHingeFloat = TModelHinge<float>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelHingeFloat,
                                    cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(ModelHingeFloat)
+
 
 #endif  // LIB_INCLUDE_TICK_LINEAR_MODEL_MODEL_HINGE_H_

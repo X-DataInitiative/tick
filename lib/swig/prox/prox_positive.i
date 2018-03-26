@@ -12,6 +12,8 @@ class TProxPositive : public TProx<T> {
    TProxPositive(T strength,
           unsigned long start,
           unsigned long end);
+
+  bool compare(const TProxPositive<T> &that);
 };
 
 %template(ProxPositive) TProxPositive<double>;

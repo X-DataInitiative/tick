@@ -3,21 +3,6 @@
 #include "tick/prox/prox_elasticnet.h"
 
 template <class T>
-TProxElasticNet<T>::TProxElasticNet(T strength, T ratio, bool positive)
-    : TProxSeparable<T>(strength, positive) {
-  this->positive = positive;
-  set_ratio(ratio);
-}
-
-template <class T>
-TProxElasticNet<T>::TProxElasticNet(T strength, T ratio, ulong start, ulong end,
-                                    bool positive)
-    : TProxSeparable<T>(strength, start, end, positive) {
-  this->positive = positive;
-  set_ratio(ratio);
-}
-
-template <class T>
 T TProxElasticNet<T>::call_single(T x, T step) const {
   T thresh = step * ratio * strength;
   if (x > 0) {

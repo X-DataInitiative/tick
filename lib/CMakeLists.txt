@@ -128,6 +128,7 @@ if (${GTEST_FOUND})
     add_subdirectory(cpp-test/hawkes/simulation)
     add_subdirectory(cpp-test/linear_model)
     add_subdirectory(cpp-test/solver)
+    add_subdirectory(cpp-test/serialization)
 
     add_custom_target(check
             COMMAND cpp-test/base/tick_test_base
@@ -137,6 +138,7 @@ if (${GTEST_FOUND})
             COMMAND cpp-test/hawkes/model/tick_test_hawkes_model
             COMMAND cpp-test/hawkes/simulation/tick_test_hawkes_simulation
             COMMAND cpp-test/solver/tick_test_solver
+            COMMAND cpp-test/serialization/tick_test_serialization
             )
 
     add_subdirectory(cpp-test/benchmark)

@@ -2,7 +2,7 @@
 
 
 from .base import ProxWithGroups
-from .build.prox import ProxGroupL1 as _ProxGroupL1
+from .build.prox import ProxGroupL1Double as _ProxGroupL1
 
 
 class ProxGroupL1(ProxWithGroups):

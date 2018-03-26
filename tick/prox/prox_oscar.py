@@ -5,7 +5,7 @@
 from tick.prox.base import Prox
 import numpy as np
 
-from .build.prox import ProxSortedL1 as _ProxSortedL1
+from .build.prox import ProxSortedL1Double as _ProxSortedL1
 from .build.prox import WeightsType_bh, WeightsType_oscar
 
 # TODO: put also the OSCAR weights
