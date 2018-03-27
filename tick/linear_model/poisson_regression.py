@@ -98,15 +98,24 @@ class PoissonRegression(LearnerGLM):
         'bfgs': BFGS,
     }
 
-    _attrinfos = {
-        "_actual_kwargs": {"writable": False}
-    }
+    _attrinfos = {"_actual_kwargs": {"writable": False}}
 
     @actual_kwargs
-    def __init__(self, step=1e-3, fit_intercept=True, penalty='l2', C=1e3,
-                 tol=1e-5, max_iter=100, solver='svrg', verbose=False,
-                 warm_start=False, print_every=10, record_every=1,
-                 elastic_net_ratio=0.95, random_state=None, blocks_start=None,
+    def __init__(self,
+                 step=1e-3,
+                 fit_intercept=True,
+                 penalty='l2',
+                 C=1e3,
+                 tol=1e-5,
+                 max_iter=100,
+                 solver='svrg',
+                 verbose=False,
+                 warm_start=False,
+                 print_every=10,
+                 record_every=1,
+                 elastic_net_ratio=0.95,
+                 random_state=None,
+                 blocks_start=None,
                  blocks_length=None):
 
         self._actual_kwargs = PoissonRegression.__init__.actual_kwargs
@@ -116,15 +125,23 @@ class PoissonRegression(LearnerGLM):
         if solver == 'bfgs':
             step = None
 
-        LearnerGLM.__init__(self, step=step, fit_intercept=fit_intercept,
-                            penalty=penalty, C=C, solver=solver, tol=tol,
-                            max_iter=max_iter, verbose=verbose,
-                            warm_start=warm_start, print_every=print_every,
-                            record_every=record_every,
-                            elastic_net_ratio=elastic_net_ratio,
-                            random_state=random_state,
-                            blocks_start=blocks_start,
-                            blocks_length=blocks_length)
+        LearnerGLM.__init__(
+            self,
+            step=step,
+            fit_intercept=fit_intercept,
+            penalty=penalty,
+            C=C,
+            solver=solver,
+            tol=tol,
+            max_iter=max_iter,
+            verbose=verbose,
+            warm_start=warm_start,
+            print_every=print_every,
+            record_every=record_every,
+            elastic_net_ratio=elastic_net_ratio,
+            random_state=random_state,
+            blocks_start=blocks_start,
+            blocks_length=blocks_length)
 
     def _construct_model_obj(self, fit_intercept=True):
         return ModelPoisReg(fit_intercept=fit_intercept, link='exponential')
@@ -196,7 +213,7 @@ class PoissonRegression(LearnerGLM):
         if not self._fitted:
             raise ValueError("You must call ``fit`` before")
         else:
-            X = self._safe_array(X)
+            X = self._safe_array(X, dtype=X.dtype)
             z = X.dot(self.weights)
             if self.intercept:
                 z += self.intercept

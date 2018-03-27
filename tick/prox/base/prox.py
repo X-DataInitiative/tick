@@ -1,7 +1,7 @@
 # License: BSD 3 clause
 
-from abc import ABC, abstractmethod
 import numpy as np
+from abc import ABC, abstractmethod
 from tick.base import Base
 
 
@@ -16,18 +16,24 @@ class Prox(ABC, Base):
 
     _attrinfos = {
         "_prox": {
-            "writable": False
+            "writable": True
         },
         "_range": {
             "writable": False
+        },
+        "dtype": {
+            "writable": True
         }
     }
 
     # The name of the attribute that will contain the C++ prox object
     _cpp_obj_name = "_prox"
 
-    def __init__(self, range: tuple=None):
+    _allowable_exceptions = ["fmin_bfgs"]
+
+    def __init__(self, range: tuple = None):
         Base.__init__(self)
+        self.dtype = None
         self._range = None
         self._prox = None
         self.range = range
@@ -40,8 +46,7 @@ class Prox(ABC, Base):
     def range(self, val):
         if val is not None:
             if len(val) != 2:
-                raise ValueError("``range`` must be a tuple with 2 "
-                                 "elements")
+                raise ValueError("``range`` must be a tuple with 2 " "elements")
             if val[0] >= val[1]:
                 raise ValueError("first element must be smaller than "
                                  "second element in ``range``")
@@ -97,10 +102,35 @@ class Prox(ABC, Base):
         return out
 
     @abstractmethod
-    def _call(self, coeffs: np.ndarray, step: object,
-              out: np.ndarray) -> None:
+    def _call(self, coeffs: np.ndarray, step: object, out: np.ndarray) -> None:
         pass
 
     @abstractmethod
     def value(self, coeffs: np.ndarray) -> float:
         pass
+
+    def _check_set_prox(self, coeffs: np.ndarray = None, dtype=None) -> bool:
+        if coeffs is None and dtype is None:
+            raise ValueError("Method requires either ndarray or dtype")
+        if coeffs is not None:
+            dtype = coeffs.dtype
+        ret = self.dtype is None or self.dtype != dtype
+        self.dtype = dtype
+        return ret
+
+    def _check_stack_or_raise(self):
+        import traceback
+        acceptable = 0
+        # this is a hack for python 3.4 which returns a list in "extract_stack"
+        stack = traceback.extract_stack()
+        if type(stack) is not list:
+          stack = stack.format()
+        for st in stack:
+            for allowable in self._allowable_exceptions:
+                if allowable in st:
+                    acceptable = 1
+                    break
+            if acceptable == 1:
+                break
+        if acceptable == 0:
+            raise ValueError("Stack check failure please sanitize your inputs")

@@ -101,15 +101,24 @@ class GD(SolverFirstOrder):
       *SIAM journal on imaging sciences*, 2009
     """
 
-    def __init__(self, step: float = None, tol: float = 0.,
-                 max_iter: int = 100, linesearch: bool = True,
+    def __init__(self,
+                 step: float = None,
+                 tol: float = 0.,
+                 max_iter: int = 100,
+                 linesearch: bool = True,
                  linesearch_step_increase: float = 2.,
                  linesearch_step_decrease: float = 0.5,
-                 verbose: bool = True, print_every: int = 10,
+                 verbose: bool = True,
+                 print_every: int = 10,
                  record_every: int = 1):
-        SolverFirstOrder.__init__(self, step=step, tol=tol, max_iter=max_iter,
-                                  verbose=verbose, print_every=print_every,
-                                  record_every=record_every)
+        SolverFirstOrder.__init__(
+            self,
+            step=step,
+            tol=tol,
+            max_iter=max_iter,
+            verbose=verbose,
+            print_every=print_every,
+            record_every=record_every)
         self.linesearch = linesearch
         self.linesearch_step_increase = linesearch_step_increase
         self.linesearch_step_decrease = linesearch_step_decrease
@@ -154,6 +163,7 @@ class GD(SolverFirstOrder):
 
     def _solve(self, x0: np.ndarray = None, step: float = None):
         x, prev_x, x_new, step, obj = self._initialize_values(x0, step)
+
         for n_iter in range(self.max_iter + 1):
             prev_x[:] = x
             prev_obj = obj
@@ -169,9 +179,14 @@ class GD(SolverFirstOrder):
             converged = rel_obj < self.tol
             # If converged, we stop the loop and record the last step
             # in history
-            self._handle_history(n_iter, force=converged, obj=obj,
-                                 x=x.copy(), rel_delta=rel_delta,
-                                 step=step, rel_obj=rel_obj)
+            self._handle_history(
+                n_iter,
+                force=converged,
+                obj=obj,
+                x=x.copy(),
+                rel_delta=rel_delta,
+                step=step,
+                rel_obj=rel_obj)
             if converged:
                 break
         self._set("solution", x)

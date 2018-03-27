@@ -2,7 +2,7 @@
 
 from abc import abstractmethod
 from . import Model
-
+import numpy as np
 
 __author__ = 'Stephane Gaiffas'
 
@@ -10,6 +10,11 @@ __author__ = 'Stephane Gaiffas'
 class ModelSelfConcordant(Model):
     """An abstract base class for a model that implements the
     self-concordant constant
+
+    Parameters
+    ----------
+    dtype : `string`
+        Type of arrays to use - default float64
 
     Notes
     -----
@@ -23,8 +28,7 @@ class ModelSelfConcordant(Model):
     @property
     def _sc_constant(self) -> float:
         if not self._fitted:
-            raise ValueError("call ``fit`` before using "
-                             "``sc_constant``")
+            raise ValueError("call ``fit`` before using " "``sc_constant``")
         return self._get_sc_constant()
 
     @abstractmethod

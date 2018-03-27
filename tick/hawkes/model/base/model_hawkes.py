@@ -6,7 +6,8 @@ from scipy.sparse import sputils, csr_matrix
 from tick.base_model import N_CALLS_LOSS, PASS_OVER_DATA
 from tick.base_model.model_first_order import ModelFirstOrder
 from tick.hawkes.model.build.hawkes_model import (
-    ModelHawkesSumExpKernLeastSq, ModelHawkesExpKernLeastSq,
+    ModelHawkesSumExpKernLeastSq,
+    ModelHawkesExpKernLeastSq,
     ModelHawkesSumExpKernLogLik,
 )
 
@@ -44,6 +45,7 @@ class ModelHawkes(ModelFirstOrder):
         self.data = None
         self._end_times = None
         self._model = None
+        self.dtype = np.dtype("float64")
 
     def _get_n_coeffs(self):
         return self._model.get_n_coeffs()
@@ -156,8 +158,9 @@ class ModelHawkes(ModelFirstOrder):
 
         n_baselines = self.n_nodes
         # number of alphas per dimension
-        if isinstance(self._model, (ModelHawkesSumExpKernLeastSq,
-                                    ModelHawkesSumExpKernLogLik)):
+        if isinstance(
+                self._model,
+            (ModelHawkesSumExpKernLeastSq, ModelHawkesSumExpKernLogLik)):
             n_alphas_i = self.n_nodes * len(self.decays)
         else:
             n_alphas_i = self.n_nodes
@@ -167,8 +170,8 @@ class ModelHawkes(ModelFirstOrder):
         data_size = (n_baselines + dim * n_alphas_i) * (1 + n_alphas_i)
 
         # looks like [0  3  6  9 12 15 18] in dimension 2
-        row_indices = np.arange(row_indices_size,
-                                dtype=sparse_dtype) * (1 + n_alphas_i)
+        row_indices = np.arange(
+            row_indices_size, dtype=sparse_dtype) * (1 + n_alphas_i)
 
         # looks like [0 2 3 1 4 5 0 2 3 0 2 3 1 4 5 1 4 5] in dimension 2
         # We first create the recurrent pattern for each dim
@@ -192,8 +195,9 @@ class ModelHawkes(ModelFirstOrder):
         data = np.zeros(data_size, dtype=float)
 
         # In these two models, hessian does not depend on x
-        if isinstance(self._model, (ModelHawkesSumExpKernLeastSq,
-                                    ModelHawkesExpKernLeastSq)):
+        if isinstance(
+                self._model,
+            (ModelHawkesSumExpKernLeastSq, ModelHawkesExpKernLeastSq)):
             self._model.hessian(data)
         else:
             self._model.hessian(x, data)

@@ -4,10 +4,12 @@
 
 import numpy as np
 from .base import Prox
-from .build.prox import ProxL1wDouble as _ProxL1w
+from .build.prox import ProxL1wDouble as _ProxL1w_d
+from .build.prox import ProxL1wFloat as _ProxL1w_f
 
 __author__ = 'Stephane Gaiffas'
 
+dtype_map = {np.dtype("float64"): _ProxL1w_d, np.dtype("float32"): _ProxL1w_f}
 
 # TODO: if we set a weights vector with length != end - start ???
 
@@ -48,21 +50,32 @@ class ProxL1w(Prox):
         }
     }
 
-    def __init__(self, strength: float, weights: np.ndarray,
-                 range: tuple=None, positive: bool=False):
+    def __init__(self,
+                 strength: float,
+                 weights: np.ndarray,
+                 range: tuple = None,
+                 positive: bool = False):
         Prox.__init__(self, range)
-        if range is None:
-            self._prox = _ProxL1w(strength, weights, positive)
-        else:
-            start, end = range
-            if (end - start) != weights.shape[0]:
-                raise ValueError("Size of ``weights`` does not match "
-                                 "the given ``range``")
-            self._prox = _ProxL1w(strength, weights, range[0], range[1],
-                                  positive)
         self.positive = positive
         self.strength = strength
         self.weights = weights
+        self._check_set_prox(dtype=np.dtype("float64"))
+
+    def _check_set_prox(self, coeffs: np.ndarray = None, dtype=None):
+        if Prox._check_set_prox(self, coeffs, dtype):
+            weights = self.weights.astype(self.dtype)
+            if self.range is None:
+                self._prox = dtype_map[self.dtype](self.strength, weights,
+                                                   self.positive)
+            else:
+                start, end = self.range
+                if (end - start) != self.weights.shape[0]:
+                    raise ValueError("Size of ``weights`` does not match "
+                                     "the given ``range``")
+                self._prox = dtype_map[dtype](self.strength, weights,
+                                              self.range[0], self.range[1],
+                                              self.positive)
+            self.weights = weights
 
     def _call(self, coeffs: np.ndarray, step: object, out: np.ndarray):
         self._prox.call(coeffs, step, out)

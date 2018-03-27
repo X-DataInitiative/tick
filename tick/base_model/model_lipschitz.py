@@ -2,7 +2,7 @@
 
 from abc import abstractmethod
 from . import Model
-
+import numpy as np
 
 __author__ = 'Stephane Gaiffas'
 
@@ -10,6 +10,11 @@ __author__ = 'Stephane Gaiffas'
 class ModelLipschitz(Model):
     """An abstract base class for a model that implements lipschitz
     constants
+
+    Parameters
+    ----------
+    dtype : `string`
+        Type of arrays to use - default float64
 
     Notes
     -----

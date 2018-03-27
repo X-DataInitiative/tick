@@ -4,9 +4,15 @@
 
 import numpy as np
 from .base import Prox
-from .build.prox import ProxL1Double as _ProxL1
+from .build.prox import ProxL1Double as _ProxL1Double
+from .build.prox import ProxL1Float as _ProxL1Float
 
 __author__ = 'Stephane Gaiffas'
+
+dtype_map = {
+    np.dtype("float64"): _ProxL1Double,
+    np.dtype("float32"): _ProxL1Float
+}
 
 
 class ProxL1(Prox):
@@ -37,15 +43,22 @@ class ProxL1(Prox):
         }
     }
 
-    def __init__(self, strength: float, range: tuple=None,
-                 positive: bool=False):
+    def __init__(self,
+                 strength: float,
+                 range: tuple = None,
+                 positive: bool = False):
         Prox.__init__(self, range)
-        if range is None:
-            self._prox = _ProxL1(strength, positive)
-        else:
-            self._prox = _ProxL1(strength, range[0], range[1], positive)
         self.positive = positive
         self.strength = strength
+        self._check_set_prox(dtype=np.dtype("float64"))
+
+    def _check_set_prox(self, coeffs: np.ndarray = None, dtype=None):
+        if Prox._check_set_prox(self, coeffs, dtype):
+            if self.range is None:
+                self._prox = dtype_map[self.dtype](self.strength, self.positive)
+            else:
+                self._prox = dtype_map[self.dtype](self.strength, self.range[0],
+                                                   self.range[1], self.positive)
 
     def _call(self, coeffs: np.ndarray, step: object, out: np.ndarray):
         self._prox.call(coeffs, step, out)

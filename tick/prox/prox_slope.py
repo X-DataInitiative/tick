@@ -3,8 +3,13 @@
 from tick.prox.base import Prox
 import numpy as np
 
-from .build.prox import ProxSlopeDouble as _ProxSlope
+from .build.prox import ProxSlopeDouble as _ProxSlopeDouble
+from .build.prox import ProxSlopeFloat as _ProxSlopeFloat
 
+dtype_map = {
+    np.dtype("float64"): _ProxSlopeDouble,
+    np.dtype("float32"): _ProxSlopeFloat
+}
 
 class ProxSlope(Prox):
     """Proximal operator of Slope penalization.
@@ -59,19 +64,27 @@ class ProxSlope(Prox):
         }
     }
 
-    def __init__(self, strength: float, fdr: float=0.6, range: tuple=None,
-                 positive: bool=False):
+    def __init__(self,
+                 strength: float,
+                 fdr: float = 0.6,
+                 range: tuple = None,
+                 positive: bool = False):
         Prox.__init__(self, range)
         self.strength = strength
         self.fdr = fdr
         self.positive = positive
         self.weights = None
-        if range is None:
-            self._prox = _ProxSlope(self.strength, self.fdr, self.positive)
-        else:
-            self._prox = _ProxSlope(self.strength, self.fdr,
-                                    self.range[0], self.range[1],
-                                    self.positive)
+        self._check_set_prox(dtype=np.dtype("float64"))
+
+    def _check_set_prox(self, coeffs: np.ndarray = None, dtype=None):
+        if Prox._check_set_prox(self, coeffs, dtype):
+            if self.range is None:
+                self._prox = dtype_map[self.dtype](self.strength, self.fdr,
+                                                   self.positive)
+            else:
+                self._prox = dtype_map[self.dtype](self.strength, self.fdr,
+                                                   self.range[0], self.range[1],
+                                                   self.positive)
 
     def _call(self, coeffs: np.ndarray, t: float, out: np.ndarray):
         self._prox.call(coeffs, t, out)

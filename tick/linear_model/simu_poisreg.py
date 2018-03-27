@@ -1,13 +1,11 @@
 # License: BSD 3 clause
 
-
 import numpy as np
 from numpy.random.mtrand import poisson
 from os import linesep
 from warnings import warn
 
 from tick.base.simulation import SimuWithFeatures
-
 
 # TODO: raise a warning when the maximum label value is too large
 # TODO: unittest for SimuPoisReg
@@ -74,6 +72,9 @@ class SimuPoisReg(SimuWithFeatures):
     verbose : `bool`, default=True
         If `True`, print things
 
+    dtype : `string`
+        Type of arrays to use - default float64
+
     Attributes
     ----------
     features : `numpy.ndarray`, shape=(n_samples, n_features)
@@ -92,21 +93,19 @@ class SimuPoisReg(SimuWithFeatures):
         End date of the simulation
     """
 
-    _attrinfos = {
-        "labels": {
-            "writable": False
-        },
-        "_link": {
-            "writable": False
-        }
-    }
+    _attrinfos = {"labels": {"writable": False}, "_link": {"writable": False}}
 
-    def __init__(self, weights: np.ndarray, intercept: float = None,
-                 features: np.ndarray = None, n_samples: int = 200,
+    def __init__(self,
+                 weights: np.ndarray,
+                 intercept: float = None,
+                 features: np.ndarray = None,
+                 n_samples: int = 200,
                  link: str = "exponential",
                  features_type: str = "cov_toeplitz",
-                 cov_corr: float = 0.5, features_scaling: str = "none",
-                 seed: int = None, verbose: bool = True):
+                 cov_corr: float = 0.5,
+                 features_scaling: str = "none",
+                 seed: int = None,
+                 verbose: bool = True):
 
         n_features = weights.shape[0]
         SimuWithFeatures.__init__(self, intercept, features, n_samples,
@@ -128,7 +127,7 @@ class SimuPoisReg(SimuWithFeatures):
             val = "exponential"
         self._set("_link", val)
 
-    def simulate(self):
+    def simulate(self, dtype="float64"):
         """
         Launch simulation of the data
 
@@ -140,7 +139,7 @@ class SimuPoisReg(SimuWithFeatures):
         labels: `numpy.ndarray`, shape=(n_samples,)
             The labels vector
         """
-        return SimuWithFeatures.simulate(self)
+        return SimuWithFeatures.simulate(self, dtype=dtype)
 
     def _simulate(self):
         # Note: the features matrix already exists, and is created by
@@ -156,8 +155,7 @@ class SimuPoisReg(SimuWithFeatures):
         if link == "identity":
             if np.any(u <= 0):
                 raise ValueError(("features and weights leads to ,",
-                                  "non-negative intensities for ",
-                                  "Poisson."))
+                                  "non-negative intensities for ", "Poisson."))
             intensity = u
         else:
             intensity = np.exp(u)
@@ -165,5 +163,8 @@ class SimuPoisReg(SimuWithFeatures):
         #   later computations, hence the next line.
         labels = np.empty(n_samples)
         labels[:] = poisson(intensity)
+        if self.dtype != np.float64:
+            labels = labels.astype(self.dtype)
+            features = features.astype(self.dtype)
         self._set("labels", labels)
         return features, labels

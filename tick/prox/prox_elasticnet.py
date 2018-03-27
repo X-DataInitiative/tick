@@ -4,9 +4,15 @@
 
 import numpy as np
 from .base import Prox
-from .build.prox import ProxElasticNetDouble as _ProxElasticNet
+from .build.prox import ProxElasticNetDouble as _ProxElasticNet_d
+from .build.prox import ProxElasticNetFloat as _ProxElasticNet_f
 
 __author__ = 'Maryan Morel'
+
+dtype_map = {
+    np.dtype("float64"): _ProxElasticNet_d,
+    np.dtype("float32"): _ProxElasticNet_f
+}
 
 
 class ProxElasticNet(Prox):
@@ -32,6 +38,13 @@ class ProxElasticNet(Prox):
     positive : `bool`, default=`False`
         If True, apply the penalization together with a projection
         onto the set of vectors with non-negative entries
+
+
+    Attributes
+    ----------
+    strength : `float`
+        Level of ElasticNet regularization
+
     """
 
     _attrinfos = {
@@ -49,17 +62,26 @@ class ProxElasticNet(Prox):
         }
     }
 
-    def __init__(self, strength: float, ratio: float, range: tuple=None,
+    def __init__(self,
+                 strength: float,
+                 ratio: float,
+                 range: tuple = None,
                  positive=False):
         Prox.__init__(self, range)
-        if range is None:
-            self._prox = _ProxElasticNet(strength, ratio, positive)
-        else:
-            self._prox = _ProxElasticNet(strength, ratio, range[0],
-                                         range[1], positive)
         self.positive = positive
         self.strength = strength
         self.ratio = ratio
+        self._check_set_prox(dtype=np.dtype("float64"))
+
+    def _check_set_prox(self, coeffs: np.ndarray = None, dtype=None):
+        if Prox._check_set_prox(self, coeffs, dtype):
+            if self.range is None:
+                self._prox = dtype_map[self.dtype](self.strength, self.ratio,
+                                                   self.positive)
+            else:
+                self._prox = dtype_map[self.dtype](self.strength, self.ratio,
+                                                   self.range[0], self.range[1],
+                                                   self.positive)
 
     def _call(self, coeffs: np.ndarray, step: object, out: np.ndarray):
         self._prox.call(coeffs, step, out)

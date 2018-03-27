@@ -6,7 +6,6 @@ from tick.base import Base
 
 __author__ = 'Stephane Gaiffas'
 
-
 LOSS = "loss"
 GRAD = "grad"
 LOSS_AND_GRAD = "loss_and_grad"
@@ -60,6 +59,9 @@ class Model(ABC, Base):
         },
         "_model": {
             "writable": False
+        },
+        "dtype": {
+            "writable": True
         }
     }
 
@@ -72,6 +74,7 @@ class Model(ABC, Base):
         self._model = None
         setattr(self, N_CALLS_LOSS, 0)
         setattr(self, PASS_OVER_DATA, 0)
+        self.dtype = None
 
     def fit(self, *args):
         self._set_data(*args)
@@ -90,8 +93,7 @@ class Model(ABC, Base):
     @property
     def n_coeffs(self):
         if not self._fitted:
-            raise ValueError(("call ``fit`` before using "
-                              "``n_coeffs``"))
+            raise ValueError(("call ``fit`` before using " "``n_coeffs``"))
         return self._get_n_coeffs()
 
     @abstractmethod
@@ -120,15 +122,20 @@ class Model(ABC, Base):
         The ``fit`` method must be called to give data to the model,
         before using ``loss``. An error is raised otherwise.
         """
+        # This is a bit of a hack as I don't see how to control the dtype of
+        #  coeffes returning from scipy through lambdas
+        if self.dtype != "float64":
+            coeffs = coeffs.astype(self.dtype)
+
         if not self._fitted:
             raise ValueError("call ``fit`` before using ``loss``")
         if coeffs.shape[0] != self.n_coeffs:
             raise ValueError(("``coeffs`` has size %i while the model" +
-                              " expects %i coefficients") %
-                             (len(coeffs), self.n_coeffs))
+                              " expects %i coefficients") % (len(coeffs),
+                                                             self.n_coeffs))
         self._inc_attr(N_CALLS_LOSS)
-        self._inc_attr(PASS_OVER_DATA,
-                       step=self.pass_per_operation[LOSS])
+        self._inc_attr(PASS_OVER_DATA, step=self.pass_per_operation[LOSS])
+
         return self._loss(coeffs)
 
     @abstractmethod

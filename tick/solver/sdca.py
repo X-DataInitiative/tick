@@ -1,10 +1,16 @@
 # License: BSD 3 clause
 
-
 from .base import SolverFirstOrderSto
-from .build.solver import SDCADouble as _SDCA
+
+from .build.solver import SDCADouble as _SDCA_d
+from .build.solver import SDCAFloat as _SDCA_f
+
 import numpy as np
 
+dtype_class_mapper = {
+    np.dtype('float32'): _SDCA_f,
+    np.dtype('float64'): _SDCA_d
+}
 
 class SDCA(SolverFirstOrderSto):
     """Stochastic Dual Coordinate Ascent
@@ -113,6 +119,9 @@ class SDCA(SolverFirstOrderSto):
         Save history information every time the iteration number is a
         multiple of ``record_every``
 
+    dtype : `string`
+        Type of arrays to use - default float64
+
     Attributes
     ----------
     model : `Model`
@@ -147,28 +156,55 @@ class SDCA(SolverFirstOrderSto):
       coordinate ascent for regularized loss minimization, *ICML 2014*
     """
 
-    _attrinfos = {
-        'l_l2sq': {'cpp_setter': 'set_l_l2sq'}
-    }
+    _attrinfos = {'l_l2sq': {'cpp_setter': 'set_l_l2sq'}}
 
-    def __init__(self, l_l2sq: float, epoch_size: int = None,
-                 rand_type: str = 'unif', tol: float = 1e-10,
-                 max_iter: int = 10, verbose: bool = True,
-                 print_every: int = 1, record_every: int = 1,
+    def __init__(self,
+                 l_l2sq: float,
+                 epoch_size: int = None,
+                 rand_type: str = 'unif',
+                 tol: float = 1e-10,
+                 max_iter: int = 10,
+                 verbose: bool = True,
+                 print_every: int = 1,
+                 record_every: int = 1,
                  seed: int = -1):
 
-        SolverFirstOrderSto.__init__(self, step=0, epoch_size=epoch_size,
-                                     rand_type=rand_type, tol=tol,
-                                     max_iter=max_iter, verbose=verbose,
-                                     print_every=print_every,
-                                     record_every=record_every, seed=seed)
+        SolverFirstOrderSto.__init__(
+            self,
+            step=0,
+            epoch_size=epoch_size,
+            rand_type=rand_type,
+            tol=tol,
+            max_iter=max_iter,
+            verbose=verbose,
+            print_every=print_every,
+            record_every=record_every,
+            seed=seed)
         self.l_l2sq = l_l2sq
+        self._set_solver()
+
+    def _set_solver(self, model=None):
         epoch_size = self.epoch_size
         if epoch_size is None:
             epoch_size = 0
         # Construct the wrapped C++ SDCA solver
-        self._solver = _SDCA(self.l_l2sq, epoch_size,
-                             self.tol, self._rand_type, self.seed)
+        if model is None and self._solver is None:
+            self.dtype = np.dtype("float64")
+
+        if model is not None and self.dtype is not None and model.dtype != self.dtype:
+            self.dtype = model.dtype
+            self._solver = None
+        if self._solver is None:
+            self._solver = dtype_class_mapper[self.dtype](
+                self.l_l2sq, epoch_size, self.tol, self._rand_type, self.seed)
+
+    def set_model(self, model):
+
+        first = self.dtype is None or self.dtype != model.dtype
+        self._set_solver(model)
+        self.dtype = model.dtype
+
+        return SolverFirstOrderSto.set_model(self, model)
 
     def objective(self, coeffs, loss: float = None):
         """Compute the objective minimized by the solver at ``coeffs``
@@ -187,7 +223,7 @@ class SDCA(SolverFirstOrderSto):
         output : `float`
             Value of the objective at given ``coeffs``
         """
-        prox_l2_value = 0.5 * self.l_l2sq * np.linalg.norm(coeffs) ** 2
+        prox_l2_value = 0.5 * self.l_l2sq * np.linalg.norm(coeffs)**2
         return SolverFirstOrderSto.objective(self, coeffs, loss) + prox_l2_value
 
     def dual_objective(self, dual_coeffs):
@@ -204,7 +240,7 @@ class SDCA(SolverFirstOrderSto):
             Value of the dual objective at given ``dual_coeffs``
         """
         primal = self.model._sdca_primal_dual_relation(self.l_l2sq, dual_coeffs)
-        prox_l2_value = 0.5 * self.l_l2sq * np.linalg.norm(primal) ** 2
+        prox_l2_value = 0.5 * self.l_l2sq * np.linalg.norm(primal)**2
         return self.model.dual_loss(dual_coeffs) - prox_l2_value
 
     def _set_rand_max(self, model):

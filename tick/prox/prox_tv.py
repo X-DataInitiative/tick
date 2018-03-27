@@ -2,13 +2,14 @@
 
 # -*- coding: utf8 -*-
 
-
 import numpy as np
 from .base import Prox
-from .build.prox import ProxTVDouble as _ProxTV
-
+from .build.prox import ProxTVDouble as _ProxTV_d
+from .build.prox import ProxTVFloat as _ProxTV_f
 
 __author__ = 'Stephane Gaiffas'
+
+dtype_map = {np.dtype("float64"): _ProxTV_d, np.dtype("float32"): _ProxTV_f}
 
 
 class ProxTV(Prox):
@@ -46,15 +47,22 @@ class ProxTV(Prox):
         }
     }
 
-    def __init__(self, strength: float, range: tuple=None,
-                 positive: bool=False):
+    def __init__(self,
+                 strength: float,
+                 range: tuple = None,
+                 positive: bool = False):
         Prox.__init__(self, range)
-        if range is None:
-            self._prox = _ProxTV(strength, positive)
-        else:
-            self._prox = _ProxTV(strength, range[0], range[1], positive)
         self.positive = positive
         self.strength = strength
+        self._check_set_prox(dtype=np.dtype("float64"))
+
+    def _check_set_prox(self, coeffs: np.ndarray = None, dtype=None):
+        if Prox._check_set_prox(self, coeffs, dtype):
+            if self.range is None:
+                self._prox = dtype_map[self.dtype](self.strength, self.positive)
+            else:
+                self._prox = dtype_map[self.dtype](self.strength, self.range[0],
+                                                   self.range[1], self.positive)
 
     def _call(self, coeffs: np.ndarray, step: float, out: np.ndarray):
         self._prox.call(coeffs, step, out)

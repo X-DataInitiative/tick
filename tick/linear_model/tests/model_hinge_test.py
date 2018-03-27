@@ -10,6 +10,7 @@ from tick.base_model.tests.generalized_linear_model import TestGLM
 
 
 class Test(TestGLM):
+
     def test_ModelHinge(self):
         """...Numerical consistency check of loss and gradient for Hinge model
         """
@@ -19,22 +20,22 @@ class Test(TestGLM):
         c0 = np.random.randn()
 
         # First check with intercept
-        X, y = SimuLogReg(w0, c0, n_samples=n_samples,
-                          verbose=False).simulate()
+        X, y = SimuLogReg(w0, c0, n_samples=n_samples, verbose=False).simulate()
         X_spars = csr_matrix(X)
         model = ModelHinge(fit_intercept=True).fit(X, y)
         model_spars = ModelHinge(fit_intercept=True).fit(X_spars, y)
-        self.run_test_for_glm(model, model_spars, 1e-5, 1e-2)
+        self.run_test_for_glm(model, model_spars, 1e-5, 1e-3)
         self._test_glm_intercept_vs_hardcoded_intercept(model)
 
         # Then check without intercept
-        X, y = SimuLogReg(w0, None, n_samples=n_samples,
-                          verbose=False, seed=2038).simulate()
+        X, y = SimuLogReg(
+            w0, None, n_samples=n_samples, verbose=False, seed=2038).simulate()
         X_spars = csr_matrix(X)
         model = ModelHinge(fit_intercept=False).fit(X, y)
 
         model_spars = ModelHinge(fit_intercept=False).fit(X_spars, y)
-        self.run_test_for_glm(model, model_spars, 1e-5, 1e-2)
+        self.run_test_for_glm(model, model_spars, 1e-5, 1e-3)
+
 
 if __name__ == '__main__':
     unittest.main()

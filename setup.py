@@ -761,7 +761,6 @@ class RunPyLint(TickCommand):
         raise NotImplementedError('Running pylint from setup.py'
                                   'not supported yet')
 
-
 class RunPyTests(TickCommand):
     description = 'run tick Python tests'
     start_dir = '.'
@@ -774,11 +773,39 @@ class RunPyTests(TickCommand):
     def initialize_options(self):
         """Set default values for options."""
         self.start_dir = '.'
+        self.added = {}
+
+    def fullname(self, o):
+      return getattr(sys.modules[o.__module__], o.__class__.__name__)
+
+    def parameterize(self, klass, dtype):
+      testnames = unittest.TestLoader().getTestCaseNames(klass)
+      suite = unittest.TestSuite()
+      clazz = self.fullname(klass)
+      if clazz in self.added and dtype in self.added[clazz]:
+        return suite
+      if clazz not in self.added:
+        self.added[clazz] = []  
+      self.added[clazz].append(dtype)
+      for name in testnames:
+        suite.addTest(clazz(name, dtype=dtype))
+      return suite
 
     def run(self):
+        dtype_list = ["float64", "float32"]
         loader = unittest.TestLoader()
         alltests = loader.discover(self.start_dir, pattern="*_test.py")
-        result = unittest.TextTestRunner(verbosity=2).run(alltests)
+        suite = unittest.TestSuite()
+        for testsuite in alltests:
+          for test in testsuite:
+            if type(test).__name__ is not "_FailedTest":
+              for t in test._tests:
+                if type(t).__name__ is "SolverTest":
+                  for dt in dtype_list:
+                    suite.addTest(self.parameterize(t, dtype=dt))
+                else:
+                  suite.addTest(t)
+        result = unittest.TextTestRunner(verbosity=2).run(suite)
         sys.exit(not result.wasSuccessful())
 
 

@@ -8,7 +8,6 @@ from .build.prox import ProxMulti as _ProxMulti
 
 __author__ = 'Stephane Gaiffas'
 
-
 class ProxMulti(Prox):
     """
     Multiple proximal operator. This allows to apply sequentially a list

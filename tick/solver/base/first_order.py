@@ -49,6 +49,8 @@ class SolverFirstOrder(Solver):
     prox : `Prox`
         Proximal operator to solve
 
+    dtype : `string`
+        Type of arrays to use - default float64
 
     Notes
     -----
@@ -76,11 +78,17 @@ class SolverFirstOrder(Solver):
         },
     }
 
-    def __init__(self, step: float=None, tol: float =0.,
-                 max_iter: int=100, verbose: bool=True,
-                 print_every: int=10, record_every: int=1):
-        Solver.__init__(self, tol, max_iter, verbose, print_every,
-                        record_every)
+    def __init__(self,
+                 step: float = None,
+                 tol: float = 0.,
+                 max_iter: int = 100,
+                 verbose: bool = True,
+                 print_every: int = 10,
+                 record_every: int = 1):
+
+        self.dtype = None
+
+        Solver.__init__(self, tol, max_iter, verbose, print_every, record_every)
         self.model = None
         self.prox = None
         self.step = step
@@ -89,6 +97,15 @@ class SolverFirstOrder(Solver):
         self._initial_n_calls_loss = 0
         self._initial_n_calls_grad = 0
         self._initial_n_passes_over_data = 0
+
+    def validate_model(self, model: Model):
+        if not isinstance(model, Model):
+            raise ValueError('Passed object of class %s is not a '
+                             'Model class' % model.name)
+        if not model._fitted:
+            raise ValueError('Passed object %s has not been fitted. You must '
+                             'call ``fit`` on it before passing it to '
+                             '``set_model``' % model.name)
 
     def set_model(self, model: Model):
         """Set model in the solver
@@ -105,17 +122,15 @@ class SolverFirstOrder(Solver):
         output : `Solver`
             The same instance with given model
         """
-        if not isinstance(model, Model):
-            raise ValueError('Passed object of class %s is not a '
-                             'Model class' % model.name)
-        if not model._fitted:
-            raise ValueError('Passed object %s has not been fitted. You must '
-                             'call ``fit`` on it before passing it to '
-                             '``set_model``' % model.name)
+        self.validate_model(model)
+        # Give the C++ wrapped model to the solver
+        self.dtype = model.dtype
         self._set("model", model)
         return self
 
-    def _initialize_values(self, x0: np.ndarray = None, step: float = None,
+    def _initialize_values(self,
+                           x0: np.ndarray = None,
+                           step: float = None,
                            n_empty_vectors: int = 0):
         """Initialize values
 
@@ -155,7 +170,7 @@ class SolverFirstOrder(Solver):
         else:
             self.step = step
         if x0 is None:
-            x0 = np.zeros(self.model.n_coeffs)
+            x0 = np.zeros(self.model.n_coeffs).astype(self.dtype)
         iterate = x0.copy()
         obj = self.objective(iterate)
 
@@ -186,6 +201,9 @@ class SolverFirstOrder(Solver):
         if not isinstance(prox, Prox):
             raise ValueError('Passed object of class %s is not a '
                              'Prox class' % prox.name)
+        if self.dtype is None:
+            raise ValueError("Solver must call set_model before set_prox")
+        prox._check_set_prox(dtype=self.dtype)
         self._set("prox", prox)
         return self
 
@@ -197,7 +215,7 @@ class SolverFirstOrder(Solver):
             dd["prox"] = self.prox._as_dict()
         return dd
 
-    def objective(self, coeffs, loss: float=None):
+    def objective(self, coeffs, loss: float = None):
         """Compute the objective function
 
         Parameters
@@ -242,6 +260,9 @@ class SolverFirstOrder(Solver):
         output : `np.array`, shape=(n_coeffs,)
             Obtained minimizer for the problem, same as ``solution`` attribute
         """
+        if x0 is not None and self.dtype is not "float64":
+            x0 = x0.astype(self.dtype)
+
         if self.model is None:
             raise ValueError('You must first set the model using '
                              '``set_model``.')
@@ -251,7 +272,7 @@ class SolverFirstOrder(Solver):
         solution = Solver.solve(self, x0, step)
         return solution
 
-    def _handle_history(self, n_iter: int, force: bool=False, **kwargs):
+    def _handle_history(self, n_iter: int, force: bool = False, **kwargs):
         """Updates the history of the solver.
 
         Parameters

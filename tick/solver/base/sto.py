@@ -40,7 +40,7 @@ class SolverSto(Base):
 
     _attrinfos = {
         "_solver": {
-            "writable": False
+            "writable": True
         },
         "epoch_size": {
             "writable": True,
@@ -62,7 +62,8 @@ class SolverSto(Base):
     # The name of the attribute that might contain the C++ solver object
     _cpp_obj_name = "_solver"
 
-    def __init__(self, epoch_size: int=None, rand_type: str="unif", seed=-1):
+    def __init__(self, epoch_size: int = None, rand_type: str = "unif",
+                 seed=-1):
         Base.__init__(self)
         # The C++ wrapped solver is to be given in child classes
         self._solver = None
@@ -74,6 +75,7 @@ class SolverSto(Base):
 
     def set_model(self, model: Model):
         # Give the C++ wrapped model to the solver
+        self.dtype = model.dtype
         self._solver.set_model(model._model)
         # If not already specified, we use the model's epoch_size
         if self.epoch_size is None:
@@ -83,6 +85,7 @@ class SolverSto(Base):
         return self
 
     def set_prox(self, prox: Prox):
+        prox._check_set_prox(dtype=self.dtype)
         if prox._prox is None:
             raise ValueError("Prox %s is not compatible with stochastic "
                              "solver %s" % (prox.__class__.__name__,
@@ -103,8 +106,7 @@ class SolverSto(Base):
     @rand_type.setter
     def rand_type(self, val):
         if val not in ["unif", "perm"]:
-            raise ValueError("``rand_type`` can be 'unif' or "
-                             "'perm'")
+            raise ValueError("``rand_type`` can be 'unif' or " "'perm'")
         else:
             if val == "unif":
                 enum_val = unif

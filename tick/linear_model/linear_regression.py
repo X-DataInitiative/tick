@@ -1,6 +1,5 @@
 # License: BSD 3 clause
 
-
 from tick.base import actual_kwargs
 from tick.base.learner import LearnerGLM
 from .model_linreg import ModelLinReg
@@ -87,35 +86,46 @@ class LinearRegression(LearnerGLM):
         The intercept, if ``fit_intercept=True``, otherwise `None`
     """
 
-    _solvers = {
-        'gd': GD,
-        'agd': AGD,
-        'svrg': SVRG
-    }
+    _solvers = {'gd': GD, 'agd': AGD, 'svrg': SVRG}
 
-    _attrinfos = {
-        "_actual_kwargs": {"writable": False}
-    }
+    _attrinfos = {"_actual_kwargs": {"writable": False}}
 
     @actual_kwargs
-    def __init__(self, fit_intercept=True, penalty='l2', C=1e3,
-                 solver='svrg', step=None, tol=1e-5, max_iter=100,
-                 verbose=False, warm_start=False,
-                 print_every=10, record_every=1,
-                 elastic_net_ratio=0.95, random_state=None, blocks_start=None,
+    def __init__(self,
+                 fit_intercept=True,
+                 penalty='l2',
+                 C=1e3,
+                 solver='svrg',
+                 step=None,
+                 tol=1e-5,
+                 max_iter=100,
+                 verbose=False,
+                 warm_start=False,
+                 print_every=10,
+                 record_every=1,
+                 elastic_net_ratio=0.95,
+                 random_state=None,
+                 blocks_start=None,
                  blocks_length=None):
 
         self._actual_kwargs = LinearRegression.__init__.actual_kwargs
-        LearnerGLM.__init__(self, fit_intercept=fit_intercept,
-                            penalty=penalty, C=C,
-                            solver=solver, step=step, tol=tol,
-                            max_iter=max_iter, verbose=verbose,
-                            warm_start=warm_start, print_every=print_every,
-                            record_every=record_every,
-                            elastic_net_ratio=elastic_net_ratio,
-                            random_state=random_state,
-                            blocks_start=blocks_start,
-                            blocks_length=blocks_length)
+        LearnerGLM.__init__(
+            self,
+            fit_intercept=fit_intercept,
+            penalty=penalty,
+            C=C,
+            solver=solver,
+            step=step,
+            tol=tol,
+            max_iter=max_iter,
+            verbose=verbose,
+            warm_start=warm_start,
+            print_every=print_every,
+            record_every=record_every,
+            elastic_net_ratio=elastic_net_ratio,
+            random_state=random_state,
+            blocks_start=blocks_start,
+            blocks_length=blocks_length)
 
     def _construct_model_obj(self, fit_intercept=True):
         return ModelLinReg(fit_intercept)
@@ -136,7 +146,7 @@ class LinearRegression(LearnerGLM):
         if not self._fitted:
             raise ValueError("You must call ``fit`` before")
         else:
-            X = self._safe_array(X)
+            X = self._safe_array(X, dtype=X.dtype)
             z = X.dot(self.weights)
             if self.intercept:
                 z += self.intercept

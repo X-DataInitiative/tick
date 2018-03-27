@@ -1,9 +1,7 @@
 # License: BSD 3 clause
 
-
 import numpy as np
 from tick.base.simulation import SimuWithFeatures
-
 
 # TODO: something better to tune the censoring level than this censoring factor
 
@@ -109,20 +107,25 @@ class SimuCoxReg(SimuWithFeatures):
         }
     }
 
-    def __init__(self, coeffs: np.ndarray,
-                 features: np.ndarray = None, n_samples: int = 200,
+    def __init__(self,
+                 coeffs: np.ndarray,
+                 features: np.ndarray = None,
+                 n_samples: int = 200,
                  times_distribution: str = "weibull",
-                 shape: float = 1., scale: float = 1.,
+                 shape: float = 1.,
+                 scale: float = 1.,
                  censoring_factor: float = 2.,
                  features_type: str = "cov_toeplitz",
-                 cov_corr: float = 0.5, features_scaling: str = "none",
-                 seed: int = None, verbose: bool = True):
+                 cov_corr: float = 0.5,
+                 features_scaling: str = "none",
+                 seed: int = None,
+                 verbose: bool = True):
 
         n_features = coeffs.shape[0]
         # intercept=None in this model
-        SimuWithFeatures.__init__(self, None, features, n_samples,
-                                  n_features, features_type, cov_corr,
-                                  features_scaling, seed, verbose)
+        SimuWithFeatures.__init__(self, None, features, n_samples, n_features,
+                                  features_type, cov_corr, features_scaling,
+                                  seed, verbose)
         self.coeffs = coeffs
         self.times_distribution = times_distribution
         self.shape = shape
@@ -135,7 +138,7 @@ class SimuCoxReg(SimuWithFeatures):
 
     # TODO: properties for times_dist, shape, scale, censoring factor
 
-    def simulate(self):
+    def simulate(self, dtype="float64"):
         """Launch simulation of the data
 
         Returns
@@ -152,7 +155,7 @@ class SimuCoxReg(SimuWithFeatures):
             time, and where ``censoring[i] == 0`` means that the time of
             the i-th individual is a censoring time
         """
-        return SimuWithFeatures.simulate(self)
+        return SimuWithFeatures.simulate(self, dtype=dtype)
 
     @property
     def times_distribution(self):
@@ -177,17 +180,17 @@ class SimuCoxReg(SimuWithFeatures):
         scale = self.scale
         shape = self.shape
         if self.times_distribution == "weibull":
-            T = 1. / scale * E ** (1. / shape)
+            T = 1. / scale * E**(1. / shape)
         else:
             # There is not point in this test, but let's do it like that
             # since we're likely to implement other distributions
-            T = 1. / scale * E ** (1. / shape)
+            T = 1. / scale * E**(1. / shape)
         m = T.mean()
         # Simulation of the censoring
         c = self.censoring_factor
         C = np.random.exponential(scale=c * m, size=n_samples)
         # Observed time
-        self._set("times", np.minimum(T, C))
+        self._set("times", np.minimum(T, C).astype(self.dtype))
         # Censoring indicator: 1 if it is a time of failure, 0 if it's
         #   censoring. It is as int8 and not bool as we might need to
         #   construct a memory access on it later

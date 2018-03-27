@@ -7,8 +7,7 @@ from .build.linear_model import ModelHingeDouble as _ModelHinge
 __author__ = 'Stephane Gaiffas'
 
 
-class ModelHinge(ModelFirstOrder,
-                 ModelGeneralizedLinear):
+class ModelHinge(ModelFirstOrder, ModelGeneralizedLinear):
     """Hinge loss model for binary classification. This class gives first order
     information (gradient and loss) for this model and can be passed
     to any solver through the solver's ``set_model`` method.
@@ -39,6 +38,9 @@ class ModelHinge(ModelFirstOrder,
     ----------
     fit_intercept : `bool`
         If `True`, the model uses an intercept
+
+    dtype : `string`
+        Type of arrays to use - default float64
 
     Attributes
     ----------
@@ -89,10 +91,9 @@ class ModelHinge(ModelFirstOrder,
         """
         ModelFirstOrder.fit(self, features, labels)
         ModelGeneralizedLinear.fit(self, features, labels)
-        self._set("_model", _ModelHinge(self.features,
-                                        self.labels,
-                                        self.fit_intercept,
-                                        self.n_threads))
+        self._set("_model",
+                  _ModelHinge(self.features, self.labels, self.fit_intercept,
+                              self.n_threads))
         return self
 
     def _grad(self, coeffs: np.ndarray, out: np.ndarray) -> None:

@@ -1,6 +1,5 @@
 # License: BSD 3 clause
 
-
 import numpy as np
 
 from tick.base.simulation import SimuWithFeatures
@@ -74,17 +73,18 @@ class SimuLogReg(SimuWithFeatures):
         End date of the simulation
     """
 
-    _attrinfos = {
-        "labels": {
-            "writable": False
-        }
-    }
+    _attrinfos = {"labels": {"writable": False}}
 
-    def __init__(self, weights: np.ndarray, intercept: float = None,
-                 features: np.ndarray = None, n_samples: int = 200,
+    def __init__(self,
+                 weights: np.ndarray,
+                 intercept: float = None,
+                 features: np.ndarray = None,
+                 n_samples: int = 200,
                  features_type: str = "cov_toeplitz",
-                 cov_corr: float = 0.5, features_scaling: str = "none",
-                 seed: int = None, verbose: bool = True):
+                 cov_corr: float = 0.5,
+                 features_scaling: str = "none",
+                 seed: int = None,
+                 verbose: bool = True):
 
         n_features = weights.shape[0]
         SimuWithFeatures.__init__(self, intercept, features, n_samples,
@@ -93,7 +93,7 @@ class SimuLogReg(SimuWithFeatures):
         self.weights = weights
         self._set("labels", None)
 
-    def simulate(self):
+    def simulate(self, dtype="float64"):
         """
         Launch simulation of the data
 
@@ -105,7 +105,7 @@ class SimuLogReg(SimuWithFeatures):
         labels : `numpy.ndarray`, shape=(n_samples,)
             The labels vector
         """
-        return SimuWithFeatures.simulate(self)
+        return SimuWithFeatures.simulate(self, dtype=dtype)
 
     @staticmethod
     def sigmoid(t):
@@ -130,5 +130,7 @@ class SimuLogReg(SimuWithFeatures):
         labels = np.empty(n_samples)
         labels[:] = np.random.binomial(1, p, size=n_samples)
         labels[labels == 0] = -1
+        if self.dtype != np.float64:
+            labels = labels.astype(self.dtype)
         self._set("labels", labels)
         return features, labels

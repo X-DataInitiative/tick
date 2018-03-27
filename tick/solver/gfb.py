@@ -43,8 +43,7 @@ class CompositeProx(Prox):
         self.prox_list = prox_list
         self.n_proxs = len(self.prox_list)
 
-    def _call(self, coeffs: np.ndarray, step: object,
-              out: np.ndarray):
+    def _call(self, coeffs: np.ndarray, step: object, out: np.ndarray):
         raise ValueError("You cannot call globally a CompositeProx")
 
     def call_i(self, i: int, coeffs: np.ndarray, step: object):
@@ -57,6 +56,10 @@ class CompositeProx(Prox):
         for prox in self.prox_list:
             prox_value += prox.value(coeffs)
         return prox_value
+
+    def _check_set_prox(self, coeffs: np.ndarray = None, dtype=None):
+        for prox in self.prox_list:
+            prox._check_set_prox(coeffs, dtype)
 
 
 class GFB(SolverFirstOrder):
@@ -152,13 +155,22 @@ class GFB(SolverFirstOrder):
       *SIAM Journal on Imaging Sciences* (2013)
     """
 
-    def __init__(self, step: float = None, tol: float = 1e-10,
-                 max_iter: int = 500, surrelax=1., verbose: bool = True,
-                 print_every: int = 10, record_every: int = 1):
-        SolverFirstOrder.__init__(self, step=step, tol=tol,
-                                  max_iter=max_iter, verbose=verbose,
-                                  print_every=print_every,
-                                  record_every=record_every)
+    def __init__(self,
+                 step: float = None,
+                 tol: float = 1e-10,
+                 max_iter: int = 500,
+                 surrelax=1.,
+                 verbose: bool = True,
+                 print_every: int = 10,
+                 record_every: int = 1):
+        SolverFirstOrder.__init__(
+            self,
+            step=step,
+            tol=tol,
+            max_iter=max_iter,
+            verbose=verbose,
+            print_every=print_every,
+            record_every=record_every)
         self.surrelax = surrelax
 
     def set_prox(self, prox: list):
@@ -208,9 +220,14 @@ class GFB(SolverFirstOrder):
             converged = rel_obj < self.tol
             # if converged, we stop the loop and record the last step
             # in history
-            self._handle_history(n_iter, force=converged, obj=obj,
-                                 x=x.copy(), rel_delta=rel_delta,
-                                 step=step, rel_obj=rel_obj)
+            self._handle_history(
+                n_iter,
+                force=converged,
+                obj=obj,
+                x=x.copy(),
+                rel_delta=rel_delta,
+                step=step,
+                rel_obj=rel_obj)
             if converged:
                 break
 

@@ -4,9 +4,15 @@
 
 import numpy as np
 from .base import Prox
-from .build.prox import ProxL2SqDouble as _ProxL2sq
+from .build.prox import ProxL2SqDouble as _ProxL2sqDouble
+from .build.prox import ProxL2SqFloat as _ProxL2sqFloat
 
 __author__ = 'Stephane Gaiffas'
+
+dtype_map = {
+    np.dtype("float64"): _ProxL2sqDouble,
+    np.dtype("float32"): _ProxL2sqFloat
+}
 
 class ProxL2Sq(Prox):
     """Proximal operator of the squared L2 norm (ridge penalization)
@@ -23,6 +29,9 @@ class ProxL2Sq(Prox):
     positive : `bool`, default=`False`
         If True, apply L2 penalization together with a projection
         onto the set of vectors with non-negative entries
+
+    dtype : `string`
+        Type of arrays to use - default float64
     """
 
     _attrinfos = {
@@ -36,15 +45,22 @@ class ProxL2Sq(Prox):
         }
     }
 
-    def __init__(self, strength: float, range: tuple=None,
-                 positive: bool=False):
+    def __init__(self,
+                 strength: float,
+                 range: tuple = None,
+                 positive: bool = False):
         Prox.__init__(self, range)
-        if range is None:
-            self._prox = _ProxL2sq(strength, positive)
-        else:
-            self._prox = _ProxL2sq(strength, range[0], range[1], positive)
         self.positive = positive
         self.strength = strength
+        self._check_set_prox(dtype=np.dtype("float64"))
+
+    def _check_set_prox(self, coeffs: np.ndarray = None, dtype=None):
+        if Prox._check_set_prox(self, coeffs, dtype):
+            if self.range is None:
+                self._prox = dtype_map[self.dtype](self.strength, self.positive)
+            else:
+                self._prox = dtype_map[self.dtype](self.strength, self.range[0],
+                                                   self.range[1], self.positive)
 
     def _call(self, coeffs: np.ndarray, step: object, out: np.ndarray):
         self._prox.call(coeffs, step, out)
@@ -63,4 +79,13 @@ class ProxL2Sq(Prox):
         output : `float`
             Value of the penalization at ``coeffs``
         """
+
+        # raise ValueError(coeffs.dtype)
+        # if self.dtype != np.float64:
+        #     coeffs = coeffs.astype(self.dtype)
+        if self._prox is None:
+            self.dtype = coeffs.dtype
+        if self.dtype != coeffs.dtype:
+            self._check_stack_or_raise()
+            coeffs = coeffs.astype(self.dtype)
         return self._prox.value(coeffs)

@@ -1,6 +1,5 @@
 # License: BSD 3 clause
 
-
 import numpy as np
 from warnings import warn
 from os import linesep
@@ -8,7 +7,6 @@ from os import linesep
 from . import Simu
 from tick.simulation import features_normal_cov_toeplitz, \
     features_normal_cov_uniform
-
 
 # TODO: features simulation isn't launch each time we call simulate
 # TODO: there's a problem if we give other coeffs with another size or
@@ -76,11 +74,16 @@ class SimuWithFeatures(Simu):
         }
     }
 
-    def __init__(self, intercept: float = None,
-                 features: np.ndarray = None, n_samples: int = 200,
-                 n_features: int = 30, features_type: str = "cov_toeplitz",
-                 cov_corr: float = 0.5, features_scaling: str = "none",
-                 seed: int = None, verbose: bool = True):
+    def __init__(self,
+                 intercept: float = None,
+                 features: np.ndarray = None,
+                 n_samples: int = 200,
+                 n_features: int = 30,
+                 features_type: str = "cov_toeplitz",
+                 cov_corr: float = 0.5,
+                 features_scaling: str = "none",
+                 seed: int = None,
+                 verbose: bool = True):
         Simu.__init__(self, seed, verbose)
         self.intercept = intercept
         self.features = features
@@ -90,6 +93,7 @@ class SimuWithFeatures(Simu):
         self.cov_corr = cov_corr
         self.features_scaling = features_scaling
         self.features = None
+        self.dtype = None
 
         if features is not None:
             if n_features != features.shape[1]:
@@ -105,6 +109,7 @@ class SimuWithFeatures(Simu):
             self.n_samples = n_samples
             self.n_features = n_features
             self.features_type = features_type
+            self.dtype = self.features.dtype
 
         # TODO: check and correct also n_samples, n_features and cov_corr and features_scaling
 
@@ -125,8 +130,7 @@ class SimuWithFeatures(Simu):
 
     @features_type.setter
     def features_type(self, val):
-        if val not in ["given", "cov_toeplitz",
-                       "cov_uniform"]:
+        if val not in ["given", "cov_toeplitz", "cov_uniform"]:
             warn(linesep + "features_type was not understood, using" +
                  " cov_toeplitz instead.")
             val = "cov_toeplitz"
@@ -144,22 +148,24 @@ class SimuWithFeatures(Simu):
             val = "none"
         self._set("_features_scaling", val)
 
-    def simulate(self):
+    def simulate(self, dtype="float64"):
         """Launch the simulation of data.
         """
+        if self.features is None:
+            self.dtype = dtype
+
         self._start_simulation()
         features_type = self.features_type
         if features_type != "given":
             n_samples = self.n_samples
             n_features = self.n_features
             if features_type == "cov_uniform":
-                features = features_normal_cov_uniform(n_samples,
-                                                       n_features)
+                features = features_normal_cov_uniform(
+                    n_samples, n_features, dtype=self.dtype)
             else:
                 cov_corr = self.cov_corr
-                features = features_normal_cov_toeplitz(n_samples,
-                                                        n_features,
-                                                        cov_corr)
+                features = features_normal_cov_toeplitz(
+                    n_samples, n_features, cov_corr, dtype=self.dtype)
         else:
             features = self.features
 

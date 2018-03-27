@@ -3,29 +3,42 @@
 import unittest
 
 from tick.solver import SGD
-from . import TestSolver
+from tick.solver.tests import TestSolver
+
+dtype_list = ["float64", "float32"]
 
 
-class Test(TestSolver):
+class SolverTest(TestSolver):
+
     def test_solver_sgd(self):
         """...Check SGD solver for Logistic Regression with Ridge
         penalization
         """
-        solver = SGD(max_iter=100, verbose=False, seed=Test.sto_seed,
-                     step=200)
-        self.check_solver(solver, fit_intercept=True, model="logreg",
-                          decimal=0)
+        solver = SGD(
+            max_iter=100, verbose=False, seed=SolverTest.sto_seed, step=200)
+        self.check_solver(solver, fit_intercept=True, model="logreg", decimal=0)
 
     def test_sgd_sparse_and_dense_consistency(self):
-        """...Test SGD can run all glm models and is consistent with sparsity
+        """...SolverTest SGD can run all glm models and is consistent with sparsity
         """
 
         def create_solver():
-            return SGD(max_iter=1, verbose=False, step=1e-5,
-                       seed=TestSolver.sto_seed)
+            return SGD(
+                max_iter=1, verbose=False, step=1e-5, seed=TestSolver.sto_seed)
 
         self._test_solver_sparse_and_dense_consistency(create_solver)
 
 
+def parameterize(klass, dtype):
+    testnames = unittest.TestLoader().getTestCaseNames(klass)
+    suite = unittest.TestSuite()
+    for name in testnames:
+        suite.addTest(klass(name, dtype=dtype))
+    return suite
+
+
 if __name__ == '__main__':
-    unittest.main()
+    suite = unittest.TestSuite()
+    for dt in dtype_list:
+        suite.addTest(parameterize(SolverTest, dtype=dt))
+    unittest.TextTestRunner().run(suite)

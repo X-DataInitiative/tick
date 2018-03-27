@@ -52,6 +52,9 @@ class BFGS(SolverFirstOrder):
         Save history information every time the iteration number is a
         multiple of ``record_every``
 
+    dtype : `string`
+        Type of arrays to use - default float64
+
     Attributes
     ----------
     model : `Model`
@@ -83,19 +86,22 @@ class BFGS(SolverFirstOrder):
       see Wright, and Nocedal 'Numerical Optimization', 1999, pg. 198.
     """
 
-    _attrinfos = {
-        "_prox_grad": {
-            "writable": False
-        }
-    }
+    _attrinfos = {"_prox_grad": {"writable": False}}
 
-    def __init__(self, tol: float = 1e-10,
-                 max_iter: int = 10, verbose: bool = True,
-                 print_every: int = 1, record_every: int = 1):
-        SolverFirstOrder.__init__(self, step=None, tol=tol,
-                                  max_iter=max_iter, verbose=verbose,
-                                  print_every=print_every,
-                                  record_every=record_every)
+    def __init__(self,
+                 tol: float = 1e-10,
+                 max_iter: int = 10,
+                 verbose: bool = True,
+                 print_every: int = 1,
+                 record_every: int = 1):
+        SolverFirstOrder.__init__(
+            self,
+            step=None,
+            tol=tol,
+            max_iter=max_iter,
+            verbose=verbose,
+            print_every=print_every,
+            record_every=record_every)
         self._prox_grad = None
 
     def set_prox(self, prox: Prox):
@@ -149,7 +155,7 @@ class BFGS(SolverFirstOrder):
 
     def _solve(self, x0: np.ndarray = None):
         if x0 is None:
-            x0 = np.zeros(self.model.n_coeffs)
+            x0 = np.zeros(self.model.n_coeffs).astype(self.dtype)
         obj = self.objective(x0)
 
         # A closure to maintain history along internal BFGS's iterations
@@ -164,10 +170,13 @@ class BFGS(SolverFirstOrder):
             obj = self.objective(x)
             rel_obj = abs(obj - prev_obj[0]) / abs(prev_obj[0])
             prev_obj[0] = obj
-            self._handle_history(n_iter[0], force=False, obj=obj,
-                                 x=xk.copy(),
-                                 rel_delta=rel_delta,
-                                 rel_obj=rel_obj)
+            self._handle_history(
+                n_iter[0],
+                force=False,
+                obj=obj,
+                x=xk.copy(),
+                rel_delta=rel_delta,
+                rel_obj=rel_obj)
             n_iter[0] += 1
 
         insp.n_iter = n_iter
@@ -183,5 +192,6 @@ class BFGS(SolverFirstOrder):
                       maxiter=self.max_iter, gtol=self.tol,
                       callback=insp, full_output=True,
                       disp=False, retall=False)
-
+        if x_min.dtype is not np.float64:
+            x_min = x_min.astype(self.dtype)
         return x_min

@@ -1,5 +1,6 @@
 # License: BSD 3 clause
 
+import numpy as np
 
 from . import ModelLabelsFeatures
 
@@ -14,6 +15,9 @@ class ModelGeneralizedLinear(ModelLabelsFeatures):
     ----------
     fit_intercept : `bool`
         If `True`, the model uses an intercept
+
+    dtype : `string`
+        Type of arrays to use - default float64
 
     Attributes
     ----------

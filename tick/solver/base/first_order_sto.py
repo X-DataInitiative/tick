@@ -9,7 +9,6 @@ from .utils import relative_distance
 
 __author__ = 'stephanegaiffas'
 
-
 # TODO: property for step that sets it in the C++
 
 
@@ -76,25 +75,33 @@ class SolverFirstOrderSto(SolverFirstOrder, SolverSto):
     This class should not be used by end-users
     """
 
-    _attrinfos = {
-        "_step": {
-            "writable": False
-        }
-    }
+    _attrinfos = {"_step": {"writable": False}}
 
-    def __init__(self, step: float = None, epoch_size: int = None,
-                 rand_type="unif", tol=0., max_iter=100, verbose=True,
-                 print_every=10, record_every=1, seed=-1):
+    def __init__(self,
+                 step: float = None,
+                 epoch_size: int = None,
+                 rand_type="unif",
+                 tol: float = 0.,
+                 max_iter=100,
+                 verbose=True,
+                 print_every=10,
+                 record_every=1,
+                 seed=-1):
 
         self._step = None
 
         # We must first construct SolverSto (otherwise self.step won't
         # work in SolverFirstOrder)
-        SolverSto.__init__(self, epoch_size=epoch_size, rand_type=rand_type,
-                           seed=seed)
-        SolverFirstOrder.__init__(self, step=step, tol=tol, max_iter=max_iter,
-                                  verbose=verbose, print_every=print_every,
-                                  record_every=record_every)
+        SolverSto.__init__(
+            self, epoch_size=epoch_size, rand_type=rand_type, seed=seed)
+        SolverFirstOrder.__init__(
+            self,
+            step=step,
+            tol=tol,
+            max_iter=max_iter,
+            verbose=verbose,
+            print_every=print_every,
+            record_every=record_every)
 
     def set_model(self, model: Model):
         """Set model in the solver
@@ -170,7 +177,6 @@ class SolverFirstOrderSto(SolverFirstOrder, SolverSto):
         if not isinstance(self, SDCA):
             if step is not None:
                 self.step = step
-
             step, obj, minimizer, prev_minimizer = \
                 self._initialize_values(x0, step, n_empty_vectors=1)
             self._solver.set_starting_iterate(minimizer)
@@ -198,9 +204,13 @@ class SolverFirstOrderSto(SolverFirstOrder, SolverSto):
             converged = rel_obj < self.tol
             # If converged, we stop the loop and record the last step
             # in history
-            self._handle_history(n_iter, force=converged, obj=obj,
-                                 x=minimizer.copy(), rel_delta=rel_delta,
-                                 rel_obj=rel_obj)
+            self._handle_history(
+                n_iter,
+                force=converged,
+                obj=obj,
+                x=minimizer.copy(),
+                rel_delta=rel_delta,
+                rel_obj=rel_obj)
             if converged:
                 break
         self._set("solution", minimizer)

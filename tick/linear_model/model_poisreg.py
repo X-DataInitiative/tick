@@ -1,21 +1,23 @@
 # License: BSD 3 clause
 
-
-from .build.linear_model import ModelPoisRegDouble as _ModelPoisReg
-from .build.linear_model import LinkType_identity as identity
-from .build.linear_model import LinkType_exponential as exponential
-
 import numpy as np
 from scipy.special import gammaln
 
 from tick.base_model import ModelGeneralizedLinear, ModelFirstOrder, \
     ModelSecondOrder, ModelSelfConcordant
+from .build.linear_model import ModelPoisRegDouble as _ModelPoisRegDouble
+from .build.linear_model import ModelPoisRegFloat as _ModelPoisRegFloat
+from .build.linear_model import LinkType_identity as identity
+from .build.linear_model import LinkType_exponential as exponential
 
 __author__ = 'Stephane Gaiffas'
 
+dtype_map = {
+    np.dtype('float32'): _ModelPoisRegFloat,
+    np.dtype('float64'): _ModelPoisRegDouble
+}
 
-class ModelPoisReg(ModelGeneralizedLinear,
-                   ModelSecondOrder,
+class ModelPoisReg(ModelGeneralizedLinear, ModelSecondOrder,
                    ModelSelfConcordant):
     """Poisson regression model with identity or exponential link for data with
     a count label. This class gives first order and second order information for
@@ -51,6 +53,9 @@ class ModelPoisReg(ModelGeneralizedLinear,
     ----------
     fit_intercept : `bool`
         If `True`, the model uses an intercept
+
+    dtype : `string`
+        Type of arrays to use - default float64
 
     link : `str`, default="exponential"
         Type of link function
@@ -108,13 +113,16 @@ class ModelPoisReg(ModelGeneralizedLinear,
         }
     }
 
-    def __init__(self, fit_intercept: bool = True,
-                 link: str = "exponential", n_threads: int = 1):
+    def __init__(self,
+                 fit_intercept: bool = True,
+                 link: str = "exponential",
+                 n_threads: int = 1):
         """
         """
         ModelSecondOrder.__init__(self)
         ModelGeneralizedLinear.__init__(self, fit_intercept)
         ModelSelfConcordant.__init__(self)
+
         self._set("_link", None)
         self.link = link
         self.n_threads = n_threads
@@ -138,11 +146,15 @@ class ModelPoisReg(ModelGeneralizedLinear,
         """
         ModelFirstOrder.fit(self, features, labels)
         ModelGeneralizedLinear.fit(self, features, labels)
-        self._set("_model", _ModelPoisReg(features,
-                                          labels,
-                                          self._link_type,
-                                          self.fit_intercept,
-                                          self.n_threads))
+
+        if self.dtype not in dtype_map:
+            raise ValueError('dtype provided to PoisReg is not handled: ',
+                             self.dtype)
+
+        self._set("_model", dtype_map[self.dtype](
+            self.features, self.labels, self._link_type, self.fit_intercept,
+            self.n_threads))
+
         return self
 
     def _grad(self, coeffs: np.ndarray, out: np.ndarray) -> None:
@@ -180,8 +192,7 @@ class ModelPoisReg(ModelGeneralizedLinear,
                               "link is not self-concordant"))
 
     # TODO: C++ for this
-    def _hessian_norm(self, coeffs: np.ndarray,
-                      point: np.ndarray) -> float:
+    def _hessian_norm(self, coeffs: np.ndarray, point: np.ndarray) -> float:
 
         link = self.link
         features, labels = self.features, self.labels
@@ -189,7 +200,7 @@ class ModelPoisReg(ModelGeneralizedLinear,
             z1 = features.dot(coeffs)
             z2 = features.dot(point)
             # TODO: beware of zeros in z1 or z2 !
-            return np.sqrt((labels * z1 ** 2 / z2 ** 2).mean())
+            return np.sqrt((labels * z1**2 / z2**2).mean())
         elif link == "exponential":
             raise NotImplementedError("exp link is not yet implemented")
         else:
@@ -206,7 +217,7 @@ class ModelPoisReg(ModelGeneralizedLinear,
         else:
             scaled_l_l2sq = l_l2sq
 
-        primal_vector = np.empty(self.n_coeffs)
+        primal_vector = np.empty(self.n_coeffs).astype(self.dtype)
         self._model.sdca_primal_dual_relation(scaled_l_l2sq, dual_vector,
                                               primal_vector)
         return primal_vector

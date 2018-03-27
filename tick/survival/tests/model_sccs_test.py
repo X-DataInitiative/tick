@@ -103,8 +103,8 @@ class ModelSCCSTest(unittest.TestCase):
         coeffs = np.hstack(coeffs)
         X, _, _ = LongitudinalFeaturesLagger(n_lags=n_lags) \
             .fit_transform(X, censoring)
-        model = ModelSCCS(n_intervals=n_intervals,
-                          n_lags=n_lags).fit(X, y, censoring)
+        model = ModelSCCS(
+            n_intervals=n_intervals, n_lags=n_lags).fit(X, y, censoring)
         solver = SVRG(max_iter=15, verbose=False)
         solver.set_model(model).set_prox(ProxZero())
         coeffs_svrg = solver.solve(step=1/model.get_lip_max())
@@ -122,14 +122,16 @@ class ModelSCCSTest(unittest.TestCase):
         coeffs = np.hstack(coeffs)
         X, _, _ = LongitudinalFeaturesLagger(n_lags=n_lags) \
             .fit_transform(X, censoring)
-        model = ModelSCCS(n_intervals=n_intervals,
-                          n_lags=n_lags).fit(X, y, censoring)
+        model = ModelSCCS(
+            n_intervals=n_intervals, n_lags=n_lags).fit(X, y, censoring)
         solver = SVRG(max_iter=15, verbose=False)
         solver.set_model(model).set_prox(ProxZero())
         coeffs_svrg = solver.solve(step=1 / model.get_lip_max())
         np.testing.assert_almost_equal(coeffs, coeffs_svrg, decimal=1)
 
-    def _test_grad(self, model, coeffs,
+    def _test_grad(self,
+                   model,
+                   coeffs,
                    delta_check_grad=1e-5,
                    delta_model_grad=1e-4):
             """Test that gradient is consistent with loss and that minimum is

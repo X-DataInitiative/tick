@@ -9,6 +9,7 @@ from tick.prox.tests.prox import TestProx
 
 
 class Test(TestProx):
+
     def test_prox_multi(self):
         """...Test of ProxMulti
         """
@@ -25,8 +26,8 @@ class Test(TestProx):
         l_enet = 3e-2
         ratio = .3
         prox_enet = ProxElasticNet(l_enet, ratio=ratio)
-        prox_enet_multi = ProxElasticNet(l_enet, ratio=ratio,
-                                         range=(half_size, full_size))
+        prox_enet_multi = ProxElasticNet(
+            l_enet, ratio=ratio, range=(half_size, full_size))
 
         prox_multi = ProxMulti((prox_tv_multi, prox_enet_multi))
 
@@ -48,8 +49,8 @@ class Test(TestProx):
         start2 = 10
         end2 = 17
         prox_tv = ProxTV(strength=l_tv, range=(start1, end1))
-        prox_enet = ProxElasticNet(strength=l_enet, ratio=ratio,
-                                   range=(start2, end2))
+        prox_enet = ProxElasticNet(
+            strength=l_enet, ratio=ratio, range=(start2, end2))
         prox_multi = ProxMulti((prox_tv, prox_enet))
 
         val_correct = prox_tv.value(double_coeffs)

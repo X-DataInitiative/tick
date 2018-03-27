@@ -1,6 +1,5 @@
 # License: BSD 3 clause
 
-
 import numpy as np
 
 from tick.base.simulation import SimuWithFeatures
@@ -38,6 +37,9 @@ class SimuLinReg(SimuWithFeatures):
 
     cov_corr : `float`, default=.5
         Correlation to use in the Toeplitz correlation matrix
+
+    dtype : `string`
+        Type of arrays to use - default float64
 
     features_scaling : `str`, default="none"
         The way the features matrix is scaled after simulation
@@ -77,17 +79,20 @@ class SimuLinReg(SimuWithFeatures):
         End date of the simulation
     """
 
-    _attrinfos = {
-        "labels": {
-            "writable": False
-        }
-    }
+    _attrinfos = {"labels": {"writable": False}}
 
-    def __init__(self, weights: np.ndarray, intercept: float = None,
-                 features: np.ndarray = None, n_samples: int = 200,
-                 std: float = 1., features_type: str = "cov_toeplitz",
-                 cov_corr: float = 0.5, features_scaling: str = "none",
-                 seed: int = None, verbose: bool = True):
+    def __init__(self,
+                 weights: np.ndarray,
+                 intercept: float = None,
+                 features: np.ndarray = None,
+                 n_samples: int = 200,
+                 std: float = 1.,
+                 features_type: str = "cov_toeplitz",
+                 cov_corr: float = 0.5,
+                 features_scaling: str = "none",
+                 seed: int = None,
+                 verbose: bool = True):
+
         n_features = weights.shape[0]
         SimuWithFeatures.__init__(self, intercept, features, n_samples,
                                   n_features, features_type, cov_corr,
@@ -96,7 +101,7 @@ class SimuLinReg(SimuWithFeatures):
         self.std = std
         self._set("labels", None)
 
-    def simulate(self):
+    def simulate(self, dtype="float64"):
         """
         Launch simulation of the data
 
@@ -108,7 +113,7 @@ class SimuLinReg(SimuWithFeatures):
         labels: `numpy.ndarray`, shape=(n_samples,)
             The labels vector
         """
-        return SimuWithFeatures.simulate(self)
+        return SimuWithFeatures.simulate(self, dtype=dtype)
 
     def _simulate(self):
         # The features matrix already exists, and is created by the
@@ -120,5 +125,7 @@ class SimuLinReg(SimuWithFeatures):
         if self.intercept is not None:
             u += self.intercept
         labels = u + self.std * np.random.randn(n_samples)
+        if self.dtype != np.float64:
+            labels = labels.astype(self.dtype)
         self._set("labels", labels)
         return features, labels

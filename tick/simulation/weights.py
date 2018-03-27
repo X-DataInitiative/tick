@@ -1,13 +1,13 @@
 # License: BSD 3 clause
 
-
 import numpy as np
 from warnings import warn
 
 
 def weights_sparse_gauss(n_weights: int = 100,
                          nnz: int = 10,
-                         std: float = 1.) -> np.ndarray:
+                         std: float = 1.,
+                         dtype=np.float64) -> np.ndarray:
     """Sparse and gaussian model weights generator
     
     Instance of weights for a model, given by a sparse vector,
@@ -34,7 +34,7 @@ def weights_sparse_gauss(n_weights: int = 100,
         warn(("nnz must be smaller than n_weights "
               "using nnz=n_weights instead"))
         nnz = n_weights
-    weights0 = np.zeros(n_weights)
+    weights0 = np.zeros(n_weights).astype(dtype)
     idx = np.arange(n_weights)
     np.random.shuffle(idx)
     weights0[idx[:nnz]] = np.random.randn(nnz)
@@ -44,7 +44,8 @@ def weights_sparse_gauss(n_weights: int = 100,
 
 def weights_sparse_exp(n_weigths: int = 100,
                        nnz: int = 10,
-                       scale: float = 10.) -> np.ndarray:
+                       scale: float = 10.,
+                       dtype=np.float64) -> np.ndarray:
     """Sparse and exponential model weights generator
     
     Instance of weights for a model, given by a vector with
@@ -75,7 +76,7 @@ def weights_sparse_exp(n_weigths: int = 100,
               "using nnz=n_weigths instead"))
         nnz = n_weigths
     idx = np.arange(nnz)
-    out = np.zeros(n_weigths)
+    out = np.zeros(n_weigths).astype(dtype)
     out[:nnz] = np.exp(-idx / scale)
     out[:nnz:2] *= -1
     return out

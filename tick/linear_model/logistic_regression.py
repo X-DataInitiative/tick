@@ -93,30 +93,46 @@ class LogisticRegression(LearnerGLM):
     classes : `numpy.array`, shape=(n_classes,)
         The class labels of our problem
     """
-    _attrinfos = {
-        "_actual_kwargs": {"writable": False}
-    }
+    _attrinfos = {"_actual_kwargs": {"writable": False}}
 
     @actual_kwargs
-    def __init__(self, fit_intercept=True, penalty='l2', C=1e3,
-                 solver="svrg", step=None, tol=1e-5, max_iter=100,
-                 verbose=False, warm_start=False,
-                 print_every=10, record_every=10, sdca_ridge_strength=1e-3,
-                 elastic_net_ratio=0.95, random_state=None, blocks_start=None,
+    def __init__(self,
+                 fit_intercept=True,
+                 penalty='l2',
+                 C=1e3,
+                 solver="svrg",
+                 step=None,
+                 tol=1e-5,
+                 max_iter=100,
+                 verbose=False,
+                 warm_start=False,
+                 print_every=10,
+                 record_every=10,
+                 sdca_ridge_strength=1e-3,
+                 elastic_net_ratio=0.95,
+                 random_state=None,
+                 blocks_start=None,
                  blocks_length=None):
 
         self._actual_kwargs = LogisticRegression.__init__.actual_kwargs
-        LearnerGLM.__init__(self, fit_intercept=fit_intercept,
-                            penalty=penalty, C=C,
-                            solver=solver, step=step, tol=tol,
-                            max_iter=max_iter, verbose=verbose,
-                            warm_start=warm_start, print_every=print_every,
-                            record_every=record_every,
-                            sdca_ridge_strength=sdca_ridge_strength,
-                            elastic_net_ratio=elastic_net_ratio,
-                            random_state=random_state,
-                            blocks_start=blocks_start,
-                            blocks_length=blocks_length)
+        LearnerGLM.__init__(
+            self,
+            fit_intercept=fit_intercept,
+            penalty=penalty,
+            C=C,
+            solver=solver,
+            step=step,
+            tol=tol,
+            max_iter=max_iter,
+            verbose=verbose,
+            warm_start=warm_start,
+            print_every=print_every,
+            record_every=record_every,
+            sdca_ridge_strength=sdca_ridge_strength,
+            elastic_net_ratio=elastic_net_ratio,
+            random_state=random_state,
+            blocks_start=blocks_start,
+            blocks_length=blocks_length)
 
         self.classes = None
 
@@ -143,10 +159,7 @@ class LogisticRegression(LearnerGLM):
                 np.array_equal(self.classes, [-1, 1]):
             return labels
 
-        mapper = {
-            self.classes[0]: -1.,
-            self.classes[1]: 1.
-        }
+        mapper = {self.classes[0]: -1., self.classes[1]: 1.}
         y = np.vectorize(mapper.get)(labels)
         return y
 
@@ -205,7 +218,7 @@ class LogisticRegression(LearnerGLM):
         if not self._fitted:
             raise ValueError("You must call ``fit`` before")
         else:
-            X = self._safe_array(X)
+            X = self._safe_array(X, dtype=X.dtype)
             z = X.dot(self.weights)
             if self.intercept:
                 z += self.intercept

@@ -2,16 +2,20 @@
 
 import numpy as np
 from numpy.linalg import svd
+
 from tick.base_model import ModelGeneralizedLinear, ModelFirstOrder, \
     ModelLipschitz
-from .build.linear_model import ModelLogRegDouble as _ModelLogReg
+from .build.linear_model import ModelLogRegDouble as _ModelLogRegDouble
+from .build.linear_model import ModelLogRegFloat as _ModelLogRegFloat
 
 __author__ = 'Stephane Gaiffas'
 
+dtype_map = {
+    np.dtype('float32'): _ModelLogRegFloat,
+    np.dtype('float64'): _ModelLogRegDouble
+}
 
-class ModelLogReg(ModelFirstOrder,
-                  ModelGeneralizedLinear,
-                  ModelLipschitz):
+class ModelLogReg(ModelFirstOrder, ModelGeneralizedLinear, ModelLipschitz):
     """Logistic regression model for binary classification. This class gives
     first order information (gradient and loss) for this model and can be passed
     to any solver through the solver's ``set_model`` method.
@@ -39,6 +43,9 @@ class ModelLogReg(ModelFirstOrder,
     fit_intercept : `bool`
         If `True`, the model uses an intercept
 
+    dtype : `string`
+        Type of arrays to use - default float64
+
     Attributes
     ----------
     features : {`numpy.ndarray`, `scipy.sparse.csr_matrix`}, shape=(n_samples, n_features)
@@ -65,6 +72,7 @@ class ModelLogReg(ModelFirstOrder,
     """
 
     def __init__(self, fit_intercept: bool = True, n_threads: int = 1):
+
         ModelFirstOrder.__init__(self)
         ModelGeneralizedLinear.__init__(self, fit_intercept)
         ModelLipschitz.__init__(self)
@@ -91,10 +99,13 @@ class ModelLogReg(ModelFirstOrder,
         ModelFirstOrder.fit(self, features, labels)
         ModelGeneralizedLinear.fit(self, features, labels)
         ModelLipschitz.fit(self, features, labels)
-        self._set("_model", _ModelLogReg(self.features,
-                                         self.labels,
-                                         self.fit_intercept,
-                                         self.n_threads))
+
+        if self.dtype not in dtype_map:
+            raise ValueError('dtype provided to ModelLogReg is not handled: ',
+                             self.dtype)
+
+        self._set("_model", dtype_map[self.dtype](
+            self.features, self.labels, self.fit_intercept, self.n_threads))
         return self
 
     def _grad(self, coeffs: np.ndarray, out: np.ndarray) -> None:
@@ -104,8 +115,7 @@ class ModelLogReg(ModelFirstOrder,
         return self._model.loss(coeffs)
 
     @staticmethod
-    def sigmoid(coeffs: np.ndarray,
-                out: np.ndarray = None) -> np.ndarray:
+    def sigmoid(coeffs: np.ndarray, out: np.ndarray = None) -> np.ndarray:
         """The sigmoid function
 
         Parameters
@@ -123,14 +133,15 @@ class ModelLogReg(ModelFirstOrder,
             ``out``
         """
         if out is None:
-            out = np.empty(coeffs.shape[0])
-        _ModelLogReg.sigmoid(coeffs, out)
+            out = np.empty(coeffs.shape[0]).astype(coeffs.dtype)
+        # this following line requires "np.dtype('floatxx')
+        #  for reasons unknown
+        dtype_map[coeffs.dtype].sigmoid(coeffs, out)
         return out
 
     def _get_lip_best(self):
         # TODO: Use sklearn.decomposition.TruncatedSVD instead?
-        s = svd(self.features, full_matrices=False,
-                compute_uv=False)[0] ** 2
+        s = svd(self.features, full_matrices=False, compute_uv=False)[0]**2
         if self.fit_intercept:
             return (s + 1) / (4 * self.n_samples)
         else:
