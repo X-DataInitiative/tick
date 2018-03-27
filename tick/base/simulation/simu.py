@@ -44,6 +44,9 @@ class Simu(ABC, Base):
         },
         "_time_start": {
             "writable": False
+        },
+        "dtype": {
+            "writable": True
         }
     }
 

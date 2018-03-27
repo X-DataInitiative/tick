@@ -125,7 +125,9 @@ class SolverFirstOrder(Solver):
         self._set("model", model)
         return self
 
-    def _initialize_values(self, x0: np.ndarray = None, step: float = None,
+    def _initialize_values(self,
+                           x0: np.ndarray = None,
+                           step: float = None,
                            n_empty_vectors: int = 0):
         """Initialize values
 

@@ -40,7 +40,7 @@ class SolverSto(Base):
 
     _attrinfos = {
         "_solver": {
-            "writable": False
+            "writable": True
         },
         "epoch_size": {
             "writable": True,
@@ -85,6 +85,7 @@ class SolverSto(Base):
         return self
 
     def set_prox(self, prox: Prox):
+        prox._check_set_prox(dtype=self.dtype)
         if prox._prox is None:
             raise ValueError("Prox %s is not compatible with stochastic "
                              "solver %s" % (prox.__class__.__name__,

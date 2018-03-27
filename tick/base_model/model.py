@@ -63,6 +63,9 @@ class Model(ABC, Base):
         },
         "_model": {
             "writable": False
+        },
+        "dtype": {
+            "writable": True
         }
     }
 

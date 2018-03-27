@@ -4,7 +4,6 @@
 
 import numpy as np
 from .base import Prox
-
 from .build.prox import ProxTVDouble as _ProxTVDouble
 from .build.prox import ProxTVFloat as _ProxTVFloat
 
@@ -14,7 +13,6 @@ dtype_map = {
     np.dtype("float64"): _ProxTVDouble,
     np.dtype("float32"): _ProxTVFloat
 }
-
 
 class ProxTV(Prox):
     """Proximal operator of the total-variation penalization

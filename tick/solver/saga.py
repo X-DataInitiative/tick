@@ -25,7 +25,6 @@ dtype_class_mapper = {
     np.dtype('float64'): _SAGADouble
 }
 
-
 class SAGA(SolverFirstOrderSto):
     """Stochastic Average Gradient solver, for the minimization of objectives
     of the form
@@ -178,8 +177,9 @@ class SAGA(SolverFirstOrderSto):
 
     @property
     def variance_reduction(self):
-        return next((k for k, v in variance_reduction_methods_mapper.items()
-                     if v == self._solver.get_variance_reduction()), None)
+        return next(
+            (k for k, v in variance_reduction_methods_mapper.items()
+             if v == self._solver.get_variance_reduction()), None)
 
     @variance_reduction.setter
     def variance_reduction(self, val: str):

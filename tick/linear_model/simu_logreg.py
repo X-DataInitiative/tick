@@ -92,7 +92,7 @@ class SimuLogReg(SimuWithFeatures):
         self.weights = weights
         self._set("labels", None)
 
-    def simulate(self):
+    def simulate(self, dtype="float64"):
         """
         Launch simulation of the data
 
@@ -104,7 +104,7 @@ class SimuLogReg(SimuWithFeatures):
         labels : `numpy.ndarray`, shape=(n_samples,)
             The labels vector
         """
-        return SimuWithFeatures.simulate(self)
+        return SimuWithFeatures.simulate(self, dtype=dtype)
 
     @staticmethod
     def sigmoid(t):
@@ -129,5 +129,7 @@ class SimuLogReg(SimuWithFeatures):
         labels = np.empty(n_samples, dtype=self.dtype)
         labels[:] = np.random.binomial(1, p, size=n_samples)
         labels[labels == 0] = -1
+        if self.dtype != np.float64:
+            labels = labels.astype(self.dtype)
         self._set("labels", labels)
         return features, labels

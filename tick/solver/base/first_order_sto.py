@@ -85,11 +85,16 @@ class SolverFirstOrderSto(SolverFirstOrder, SolverSto):
 
         # We must first construct SolverSto (otherwise self.step won't
         # work in SolverFirstOrder)
-        SolverSto.__init__(self, epoch_size=epoch_size, rand_type=rand_type,
-                           seed=seed)
-        SolverFirstOrder.__init__(self, step=step, tol=tol, max_iter=max_iter,
-                                  verbose=verbose, print_every=print_every,
-                                  record_every=record_every)
+        SolverSto.__init__(
+            self, epoch_size=epoch_size, rand_type=rand_type, seed=seed)
+        SolverFirstOrder.__init__(
+            self,
+            step=step,
+            tol=tol,
+            max_iter=max_iter,
+            verbose=verbose,
+            print_every=print_every,
+            record_every=record_every)
 
     def set_model(self, model: Model):
         """Set model in the solver
@@ -192,9 +197,13 @@ class SolverFirstOrderSto(SolverFirstOrder, SolverSto):
             converged = rel_obj < self.tol
             # If converged, we stop the loop and record the last step
             # in history
-            self._handle_history(n_iter, force=converged, obj=obj,
-                                 x=minimizer.copy(), rel_delta=rel_delta,
-                                 rel_obj=rel_obj)
+            self._handle_history(
+                n_iter,
+                force=converged,
+                obj=obj,
+                x=minimizer.copy(),
+                rel_delta=rel_delta,
+                rel_obj=rel_obj)
             if converged:
                 break
         self._set("solution", minimizer)

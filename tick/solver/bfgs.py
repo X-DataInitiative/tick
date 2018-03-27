@@ -180,8 +180,6 @@ class BFGS(SolverFirstOrder):
                       maxiter=self.max_iter, gtol=self.tol,
                       callback=insp, full_output=True,
                       disp=False, retall=False)
-        # if x_min.dtype is not np.float64:
-        #     x_min = x_min.astype(self.dtype)
         return x_min
 
     def set_model(self, model: Model):

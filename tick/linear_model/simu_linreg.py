@@ -102,7 +102,7 @@ class SimuLinReg(SimuWithFeatures):
         self.std = std
         self._set("labels", None)
 
-    def simulate(self):
+    def simulate(self, dtype="float64"):
         """
         Launch simulation of the data
 
@@ -114,7 +114,7 @@ class SimuLinReg(SimuWithFeatures):
         labels: `numpy.ndarray`, shape=(n_samples,)
             The labels vector
         """
-        return SimuWithFeatures.simulate(self)
+        return SimuWithFeatures.simulate(self, dtype=dtype)
 
     def _simulate(self):
         # The features matrix already exists, and is created by the

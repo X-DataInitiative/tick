@@ -8,7 +8,6 @@ from scipy import sparse
 
 from tick.array.serialize import serialize_array, load_array
 
-
 class Test(unittest.TestCase):
     def setUp(self):
         self.array_file = 'tmp_array_file.cereal'
@@ -41,8 +40,8 @@ class Test(unittest.TestCase):
         array = sparse.rand(10, 10, density=0.3, format='csr')
         serialize_array(array, self.array_file)
 
-        serialized_array = load_array(self.array_file, array_dim=2,
-                                      array_type='sparse')
+        serialized_array = load_array(
+            self.array_file, array_dim=2, array_type='sparse')
         np.testing.assert_array_almost_equal(array.toarray(),
                                              serialized_array.toarray())
 

@@ -7,7 +7,6 @@ import numpy as np
 from tick.prox import ProxMulti, ProxTV, ProxElasticNet
 from tick.prox.tests.prox import TestProx
 
-
 class ProxMultiTest(object):
     def test_prox_multi(self):
         """...Test of ProxMulti
@@ -75,7 +74,6 @@ class ProxMultiTestFloat32(TestProx, ProxMultiTest):
 class ProxMultiTestFloat64(TestProx, ProxMultiTest):
     def __init__(self, *args, **kwargs):
         TestProx.__init__(self, *args, dtype="float64", **kwargs)
-
 
 if __name__ == '__main__':
     unittest.main()

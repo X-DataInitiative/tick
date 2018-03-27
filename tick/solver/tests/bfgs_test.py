@@ -11,8 +11,11 @@ from tick.solver.tests import TestSolver
 from tick.linear_model import SimuLogReg
 from tick.simulation import weights_sparse_gauss
 
+dtype_list = ["float64", "float32"]
 
-class Test(TestSolver):
+
+class SolverTest(TestSolver):
+
     def test_solver_bfgs(self):
         """...Check BFGS solver for Logistic Regression with Ridge
     penalization
@@ -34,6 +37,8 @@ class Test(TestSolver):
         err = TestSolver.evaluate_model(coeffs, coeffs0, interc0)
         self.assertAlmostEqual(err, 0., delta=5e-1)
 
-
 if __name__ == '__main__':
-    unittest.main()
+    suite = unittest.TestSuite()
+    for dt in dtype_list:
+        suite.addTest(parameterize(SolverTest, dtype=dt))
+    unittest.TextTestRunner().run(suite)

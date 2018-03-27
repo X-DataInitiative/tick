@@ -4,7 +4,6 @@
 
 import numpy as np
 from .base import Prox
-
 from .build.prox import ProxZeroDouble as _ProxZeroDouble
 from .build.prox import ProxZeroFloat as _ProxZeroFloat
 
@@ -15,7 +14,6 @@ dtype_map = {
     np.dtype("float32"): _ProxZeroFloat
 }
 
-
 class ProxZero(Prox):
     """Proximal operator of the null function (identity)
 
@@ -24,6 +22,9 @@ class ProxZero(Prox):
     range : `tuple` of two `int`, default=`None`
         Range on which the prox is applied. If `None` then the prox is
         applied on the whole vector
+
+    dtype : `string`
+        Type of arrays to use - default float64
 
     Notes
     -----

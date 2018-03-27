@@ -15,7 +15,6 @@ dtype_map = {
     np.dtype("float32"): _ProxMultiFloat
 }
 
-
 class ProxMulti(Prox):
     """
     Multiple proximal operator. This allows to apply sequentially a list

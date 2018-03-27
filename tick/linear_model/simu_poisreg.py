@@ -123,7 +123,7 @@ class SimuPoisReg(SimuWithFeatures):
             val = "exponential"
         self._set("_link", val)
 
-    def simulate(self):
+    def simulate(self, dtype="float64"):
         """
         Launch simulation of the data
 
@@ -135,7 +135,7 @@ class SimuPoisReg(SimuWithFeatures):
         labels: `numpy.ndarray`, shape=(n_samples,)
             The labels vector
         """
-        return SimuWithFeatures.simulate(self)
+        return SimuWithFeatures.simulate(self, dtype=dtype)
 
     def _simulate(self):
         # Note: the features matrix already exists, and is created by
@@ -159,5 +159,8 @@ class SimuPoisReg(SimuWithFeatures):
         #   later computations, hence the next line.
         labels = np.empty(n_samples, dtype=self.dtype)
         labels[:] = poisson(intensity)
+        if self.dtype != np.float64:
+            labels = labels.astype(self.dtype)
+            features = features.astype(self.dtype)
         self._set("labels", labels)
         return features, labels

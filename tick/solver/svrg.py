@@ -34,7 +34,6 @@ dtype_class_mapper = {
     np.dtype('float64'): _SVRGDouble
 }
 
-
 class SVRG(SolverFirstOrderSto):
     """Stochastic Variance Reduced Gradient solver
 
@@ -207,8 +206,9 @@ class SVRG(SolverFirstOrderSto):
 
     @property
     def variance_reduction(self):
-        return next((k for k, v in variance_reduction_methods_mapper.items()
-                     if v == self._solver.get_variance_reduction()), None)
+        return next(
+            (k for k, v in variance_reduction_methods_mapper.items()
+             if v == self._solver.get_variance_reduction()), None)
 
     @variance_reduction.setter
     def variance_reduction(self, val: str):

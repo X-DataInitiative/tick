@@ -12,7 +12,6 @@ dtype_map = {
     np.dtype('float32'): _ModelHingeFloat
 }
 
-
 class ModelHinge(ModelFirstOrder, ModelGeneralizedLinear):
     """Hinge loss model for binary classification. This class gives first order
     information (gradient and loss) for this model and can be passed
@@ -44,6 +43,9 @@ class ModelHinge(ModelFirstOrder, ModelGeneralizedLinear):
     ----------
     fit_intercept : `bool`
         If `True`, the model uses an intercept
+
+    dtype : `string`
+        Type of arrays to use - default float64
 
     Attributes
     ----------
@@ -97,7 +99,6 @@ class ModelHinge(ModelFirstOrder, ModelGeneralizedLinear):
         """
         ModelFirstOrder.fit(self, features, labels)
         ModelGeneralizedLinear.fit(self, features, labels)
-
         self._set("_model", self._build_cpp_model(features.dtype))
         return self
 

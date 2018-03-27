@@ -216,11 +216,8 @@ class BaseMeta(ABCMeta):
         The formatted doc
         """
         attr_type = attr_doc[1]
-        attr_docstring = [
-            line for line in attr_doc[2] if len(line.strip()) > 0
-        ]
+        attr_docstring = [line for line in attr_doc[2] if len(line.strip()) > 0]
         attr_from = 'from %s' % class_name
-
         doc = [attr_type] + attr_docstring + [attr_from]
         return doc
 
@@ -402,9 +399,9 @@ class BaseMeta(ABCMeta):
         # furthest classes first (and potentially override infos of
         # parents for an attribute if two classes document it)
         attrinfos = {}
-        for cls_key, info_index in sorted(classinfos.items(),
-                                          key=lambda item: item[1]['index'],
-                                          reverse=True):
+        for cls_key, info_index in sorted(
+                classinfos.items(), key=lambda item: item[1]['index'],
+                reverse=True):
             classinfos = info_index['attr']
 
             for attr_name in classinfos:
@@ -530,8 +527,7 @@ class Base(metaclass=BaseMeta):
 
                     # We copy property and add the doc found in docstring
                     setattr(self.__class__, attr_name,
-                            property(prop.fget, prop.fset, prop.fdel,
-                                     prop_doc))
+                            property(prop.fget, prop.fset, prop.fdel, prop_doc))
 
     @staticmethod
     def _get_now():

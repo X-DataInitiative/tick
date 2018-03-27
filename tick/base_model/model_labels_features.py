@@ -59,7 +59,6 @@ class ModelLabelsFeatures(Model):
         self.n_features = None
         self.n_samples = None
 
-
     def fit(self, features: np.ndarray, labels: np.ndarray) -> Model:
         """Set the data into the model object
 
@@ -77,11 +76,13 @@ class ModelLabelsFeatures(Model):
             The current instance with given data
         """
         # The fit from Model calls the _set_data below
+        self.check_set_dtype(features, labels)
         return Model.fit(self, features, labels)
 
     def _set_data(self, features, labels):
         self.dtype = features.dtype
         n_samples, n_features = features.shape
+        self.check_set_dtype(features, labels)
         if n_samples != labels.shape[0]:
             raise ValueError(("Features has %i samples while labels "
                               "have %i" % (n_samples, labels.shape[0])))

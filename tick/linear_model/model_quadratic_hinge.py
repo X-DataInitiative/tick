@@ -14,7 +14,6 @@ dtype_map = {
     np.dtype('float32'): _ModelModelQuadraticHingeFloat
 }
 
-
 class ModelQuadraticHinge(ModelFirstOrder, ModelGeneralizedLinear,
                           ModelLipschitz):
     """Quadratic hinge loss model for binary classification. This class gives
@@ -47,6 +46,9 @@ class ModelQuadraticHinge(ModelFirstOrder, ModelGeneralizedLinear,
     ----------
     fit_intercept : `bool`
         If `True`, the model uses an intercept
+
+    dtype : `string`
+        Type of arrays to use - default float64
 
     Attributes
     ----------
@@ -102,7 +104,6 @@ class ModelQuadraticHinge(ModelFirstOrder, ModelGeneralizedLinear,
         ModelFirstOrder.fit(self, features, labels)
         ModelGeneralizedLinear.fit(self, features, labels)
         ModelLipschitz.fit(self, features, labels)
-
         self._set("_model", self._build_cpp_model(features.dtype))
         return self
 

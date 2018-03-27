@@ -8,6 +8,7 @@ from tick.prox import ProxElasticNet, ProxL2Sq, ProxL1
 from tick.solver import GFB, AGD
 from tick.solver.tests import TestSolver
 
+dtype_list = ["float64", "float32"]
 
 class GDBTest(object):
     def test_solver_gfb(self):
@@ -45,7 +46,6 @@ class GDBTest(object):
         # Finally we assert that both algorithms lead to the same solution
         np.testing.assert_almost_equal(gfb_solution, agd_solution, decimal=1)
 
-
 class GDBTestFloat32(TestSolver, GDBTest):
     def __init__(self, *args, **kwargs):
         TestSolver.__init__(self, *args, dtype="float32", **kwargs)
@@ -55,6 +55,8 @@ class GDBTestFloat64(TestSolver, GDBTest):
     def __init__(self, *args, **kwargs):
         TestSolver.__init__(self, *args, dtype="float64", **kwargs)
 
-
 if __name__ == '__main__':
-    unittest.main()
+    suite = unittest.TestSuite()
+    for dt in dtype_list:
+        suite.addTest(parameterize(SolverTest, dtype=dt))
+    unittest.TextTestRunner().run(suite)

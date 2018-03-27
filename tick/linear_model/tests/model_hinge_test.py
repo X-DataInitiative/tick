@@ -8,7 +8,6 @@ from scipy.sparse import csr_matrix
 from tick.linear_model import SimuLogReg, ModelHinge
 from tick.base_model.tests.generalized_linear_model import TestGLM
 
-
 class ModelHingeTest(object):
     def test_ModelHinge(self):
         """...Numerical consistency check of loss and gradient for Hinge model
@@ -36,7 +35,6 @@ class ModelHingeTest(object):
         model_spars = ModelHinge(fit_intercept=False).fit(X_spars, y)
         self.run_test_for_glm(model, model_spars, 1e-5, 1e-3)
 
-
 class ModelHingeTestFloat32(TestGLM, ModelHingeTest):
     def __init__(self, *args, **kwargs):
         TestGLM.__init__(self, *args, dtype="float32", **kwargs)
@@ -45,7 +43,6 @@ class ModelHingeTestFloat32(TestGLM, ModelHingeTest):
 class ModelHingeTestFloat64(TestGLM, ModelHingeTest):
     def __init__(self, *args, **kwargs):
         TestGLM.__init__(self, *args, dtype="float64", **kwargs)
-
 
 if __name__ == '__main__':
     unittest.main()

@@ -16,7 +16,6 @@ dtype_map = {
 
 # TODO: if we set a weights vector with length != end - start ???
 
-
 class ProxL1w(Prox):
     """Proximal operator of the weighted L1 norm (weighted
     soft-thresholding)

@@ -136,7 +136,7 @@ class SimuCoxReg(SimuWithFeatures):
 
     # TODO: properties for times_dist, shape, scale, censoring factor
 
-    def simulate(self):
+    def simulate(self, dtype="float64"):
         """Launch simulation of the data
 
         Returns
@@ -153,7 +153,7 @@ class SimuCoxReg(SimuWithFeatures):
             time, and where ``censoring[i] == 0`` means that the time of
             the i-th individual is a censoring time
         """
-        return SimuWithFeatures.simulate(self)
+        return SimuWithFeatures.simulate(self, dtype=dtype)
 
     @property
     def times_distribution(self):
@@ -178,11 +178,11 @@ class SimuCoxReg(SimuWithFeatures):
         scale = self.scale
         shape = self.shape
         if self.times_distribution == "weibull":
-            T = 1. / scale * E ** (1. / shape)
+            T = 1. / scale * E**(1. / shape)
         else:
             # There is not point in this test, but let's do it like that
             # since we're likely to implement other distributions
-            T = 1. / scale * E ** (1. / shape)
+            T = 1. / scale * E**(1. / shape)
         m = T.mean()
         # Simulation of the censoring
         c = self.censoring_factor

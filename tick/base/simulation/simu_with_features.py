@@ -83,7 +83,6 @@ class SimuWithFeatures(Simu):
                  features_type: str = "cov_toeplitz", cov_corr: float = 0.5,
                  features_scaling: str = "none", seed: int = None,
                  verbose: bool = True, dtype="float64"):
-
         Simu.__init__(self, seed, verbose)
         self.intercept = intercept
         self.features = features
@@ -148,9 +147,12 @@ class SimuWithFeatures(Simu):
             val = "none"
         self._set("_features_scaling", val)
 
-    def simulate(self):
+    def simulate(self, dtype="float64"):
         """Launch the simulation of data.
         """
+        if self.features is None:
+            self.dtype = dtype
+
         self._start_simulation()
         features_type = self.features_type
         if features_type != "given":

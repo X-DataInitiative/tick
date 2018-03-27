@@ -14,7 +14,6 @@ dtype_map = {
     np.dtype('float32'): _ModelSmoothedHingeFloat
 }
 
-
 class ModelSmoothedHinge(ModelFirstOrder, ModelGeneralizedLinear,
                          ModelLipschitz):
     """Smoothed hinge loss model for binary classification. This class gives
@@ -50,6 +49,9 @@ class ModelSmoothedHinge(ModelFirstOrder, ModelGeneralizedLinear,
     ----------
     fit_intercept : `bool`
         If `True`, the model uses an intercept
+
+    dtype : `string`
+        Type of arrays to use - default float64
 
     smoothness : `double`, default=1.
         The smoothness parameter used in the loss. It should be > 0 and <= 1
@@ -90,7 +92,9 @@ class ModelSmoothedHinge(ModelFirstOrder, ModelGeneralizedLinear,
         }
     }
 
-    def __init__(self, fit_intercept: bool = True, smoothness: float = 1.,
+    def __init__(self,
+                 fit_intercept: bool = True,
+                 smoothness: float = 1.,
                  n_threads: int = 1):
         ModelFirstOrder.__init__(self)
         ModelGeneralizedLinear.__init__(self, fit_intercept)
@@ -118,7 +122,6 @@ class ModelSmoothedHinge(ModelFirstOrder, ModelGeneralizedLinear,
         ModelFirstOrder.fit(self, features, labels)
         ModelGeneralizedLinear.fit(self, features, labels)
         ModelLipschitz.fit(self, features, labels)
-
         self._set("_model", self._build_cpp_model(features.dtype))
         return self
 
@@ -130,9 +133,7 @@ class ModelSmoothedHinge(ModelFirstOrder, ModelGeneralizedLinear,
 
     def _get_lip_best(self):
         # TODO: Use sklearn.decomposition.TruncatedSVD instead?
-
         s = svd(self.features, full_matrices=False, compute_uv=False)[0] ** 2
-
         if self.fit_intercept:
             return (s + 1) / (self.smoothness * self.n_samples)
         else:

@@ -5,7 +5,6 @@ from . import Model
 
 __author__ = 'Stephane Gaiffas'
 
-
 class ModelSelfConcordant(Model):
     """An abstract base class for a model that implements the
     self-concordant constant

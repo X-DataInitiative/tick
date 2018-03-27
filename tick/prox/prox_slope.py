@@ -11,7 +11,6 @@ dtype_map = {
     np.dtype("float32"): _ProxSlopeFloat
 }
 
-
 class ProxSlope(Prox):
     """Proximal operator of Slope penalization.
     This penalization is particularly relevant for feature selection, in

@@ -12,7 +12,6 @@ dtype_class_mapper = {
     np.dtype('float64'): _SDCADouble
 }
 
-
 class SDCA(SolverFirstOrderSto):
     """Stochastic Dual Coordinate Ascent
 

@@ -15,7 +15,6 @@ dtype_map = {
     np.dtype('float64'): _ModelLogRegDouble
 }
 
-
 class ModelLogReg(ModelFirstOrder, ModelGeneralizedLinear, ModelLipschitz):
     """Logistic regression model for binary classification. This class gives
     first order information (gradient and loss) for this model and can be passed
@@ -43,6 +42,9 @@ class ModelLogReg(ModelFirstOrder, ModelGeneralizedLinear, ModelLipschitz):
     ----------
     fit_intercept : `bool`
         If `True`, the model uses an intercept
+
+    dtype : `string`
+        Type of arrays to use - default float64
 
     Attributes
     ----------
@@ -73,6 +75,7 @@ class ModelLogReg(ModelFirstOrder, ModelGeneralizedLinear, ModelLipschitz):
     """
 
     def __init__(self, fit_intercept: bool = True, n_threads: int = 1):
+
         ModelFirstOrder.__init__(self)
         ModelGeneralizedLinear.__init__(self, fit_intercept)
         ModelLipschitz.__init__(self)

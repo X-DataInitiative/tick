@@ -13,6 +13,11 @@ class ModelSecondOrder(ModelFirstOrder):
     order and second information, namely gradient and hessian norm
     information
 
+    Parameters
+    ----------
+    dtype : `string`
+        Type of arrays to use - default float64
+
     Attributes
     ----------
     n_calls_hessian_norm : `int` (read-only)
@@ -75,8 +80,8 @@ class ModelSecondOrder(ModelFirstOrder):
                               "expects %i coefficients") % (len(coeffs),
                                                             self.n_coeffs))
         self._inc_attr(N_CALLS_HESSIAN_NORM)
-        self._inc_attr(PASS_OVER_DATA,
-                       step=self.pass_per_operation[HESSIAN_NORM])
+        self._inc_attr(
+            PASS_OVER_DATA, step=self.pass_per_operation[HESSIAN_NORM])
         return self._hessian_norm(coeffs, point)
 
     @abstractmethod

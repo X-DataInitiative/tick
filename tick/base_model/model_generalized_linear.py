@@ -14,6 +14,9 @@ class ModelGeneralizedLinear(ModelLabelsFeatures):
     fit_intercept : `bool`
         If `True`, the model uses an intercept
 
+    dtype : `string`
+        Type of arrays to use - default float64
+
     Attributes
     ----------
     features : `numpy.ndarray`, shape=(n_samples, n_features) (read-only)

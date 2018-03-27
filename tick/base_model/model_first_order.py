@@ -167,8 +167,8 @@ class ModelFirstOrder(Model):
         self._inc_attr(N_CALLS_LOSS_AND_GRAD)
         self._inc_attr(N_CALLS_LOSS)
         self._inc_attr(N_CALLS_GRAD)
-        self._inc_attr(PASS_OVER_DATA,
-                       step=self.pass_per_operation[LOSS_AND_GRAD])
+        self._inc_attr(
+            PASS_OVER_DATA, step=self.pass_per_operation[LOSS_AND_GRAD])
         loss = self._loss_and_grad(coeffs, out=grad)
         return loss, grad
 

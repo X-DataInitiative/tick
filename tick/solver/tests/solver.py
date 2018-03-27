@@ -46,7 +46,10 @@ class TestSolver(unittest.TestCase):
         X, y = simu.simulate()
         return y, X, coeffs0, interc0
 
-    def check_solver(self, solver, fit_intercept=True, model='logreg',
+    def check_solver(self,
+                     solver,
+                     fit_intercept=True,
+                     model='logreg',
                      decimal=1):
         """Check solver instance finds same parameters as scipy BFGS
 
@@ -128,7 +131,11 @@ class TestSolver(unittest.TestCase):
             delta=1e-2)
 
     @staticmethod
-    def prepare_solver(solver, X, y, fit_intercept=True, model="logistic",
+    def prepare_solver(solver,
+                       X,
+                       y,
+                       fit_intercept=True,
+                       model="logistic",
                        prox="l2"):
         if model == "logistic":
             model = ModelLogReg(fit_intercept=fit_intercept).fit(X, y)
@@ -207,7 +214,6 @@ class TestSolver(unittest.TestCase):
                 error_msg += ' without intercept'
 
             self.assertEqual(np.isfinite(iterate_dense).all(), True, error_msg)
-
             places = 7
             if self.dtype is "float32" or self.dtype is np.dtype("float32"):
                 places = 4
