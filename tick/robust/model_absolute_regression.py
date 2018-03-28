@@ -2,10 +2,16 @@
 
 import numpy as np
 from tick.base_model import ModelGeneralizedLinear, ModelFirstOrder
-from .build.robust import ModelAbsoluteRegressionDouble as _ModelAbsoluteRegression
+
+from .build.robust import ModelAbsoluteRegressionDouble as _ModelAbsoluteRegressionDouble
+from .build.robust import ModelAbsoluteRegressionFloat as _ModelAbsoluteRegressionFloat
 
 __author__ = 'Stephane Gaiffas'
 
+dtype_map = {
+    np.dtype('float32'): _ModelAbsoluteRegressionFloat,
+    np.dtype('float64'): _ModelAbsoluteRegressionDouble
+}
 
 class ModelAbsoluteRegression(ModelFirstOrder, ModelGeneralizedLinear):
     """Absolute value (L1) loss for linear regression. This class gives first
@@ -84,9 +90,15 @@ class ModelAbsoluteRegression(ModelFirstOrder, ModelGeneralizedLinear):
         """
         ModelFirstOrder.fit(self, features, labels)
         ModelGeneralizedLinear.fit(self, features, labels)
-        self._set("_model",
-                  _ModelAbsoluteRegression(self.features, self.labels,
-                                           self.fit_intercept, self.n_threads))
+
+        if self.dtype not in dtype_map:
+            raise ValueError('dtype provided to ModelAbsoluteRegression is not handled: ',
+                             self.dtype)
+
+        self._set("_model", dtype_map[self.dtype](self.features,
+                                                     self.labels,
+                                                     self.fit_intercept,
+                                                     self.n_threads))
         return self
 
     def _grad(self, coeffs: np.ndarray, out: np.ndarray) -> None:

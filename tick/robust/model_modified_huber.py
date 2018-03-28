@@ -4,10 +4,16 @@ import numpy as np
 from numpy.linalg import svd
 from tick.base_model import ModelGeneralizedLinear, ModelFirstOrder, \
     ModelLipschitz
-from .build.robust import ModelModifiedHuberDouble as _ModelModifiedHuber
+
+from .build.robust import ModelModifiedHuberDouble as _ModelModifiedHuberDouble
+from .build.robust import ModelModifiedHuberFloat as _ModelModifiedHuberFloat
 
 __author__ = 'Stephane Gaiffas'
 
+dtype_map = {
+    np.dtype('float32'): _ModelModifiedHuberFloat,
+    np.dtype('float64'): _ModelModifiedHuberDouble
+}
 
 class ModelModifiedHuber(ModelFirstOrder, ModelGeneralizedLinear,
                          ModelLipschitz):
@@ -95,9 +101,15 @@ class ModelModifiedHuber(ModelFirstOrder, ModelGeneralizedLinear,
         ModelFirstOrder.fit(self, features, labels)
         ModelGeneralizedLinear.fit(self, features, labels)
         ModelLipschitz.fit(self, features, labels)
-        self._set("_model",
-                  _ModelModifiedHuber(self.features, self.labels,
-                                      self.fit_intercept, self.n_threads))
+
+        if self.dtype not in dtype_map:
+            raise ValueError('dtype provided to ModelModifiedHuber is not handled: ',
+                             self.dtype)
+
+        self._set("_model", dtype_map[self.dtype](self.features,
+                                                self.labels,
+                                                self.fit_intercept,
+                                                self.n_threads))
         return self
 
     def _grad(self, coeffs: np.ndarray, out: np.ndarray) -> None:

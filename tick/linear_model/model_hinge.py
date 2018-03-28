@@ -2,6 +2,7 @@
 
 import numpy as np
 from tick.base_model import ModelGeneralizedLinear, ModelFirstOrder
+
 from .build.linear_model import ModelHingeDouble as _ModelHingeDouble
 from .build.linear_model import ModelHingeFloat as _ModelHingeFloat
 
@@ -99,7 +100,14 @@ class ModelHinge(ModelFirstOrder, ModelGeneralizedLinear):
         """
         ModelFirstOrder.fit(self, features, labels)
         ModelGeneralizedLinear.fit(self, features, labels)
-        self._set("_model", self._build_cpp_model(features.dtype))
+
+        if self.dtype not in dtype_map:
+            raise ValueError('dtype provided to ModelHinge is not handled: ',
+                             self.dtype)
+
+        self._set("_model",
+                  dtype_map[self.dtype](self.features, self.labels, self.fit_intercept,
+                              self.n_threads))
         return self
 
     def _grad(self, coeffs: np.ndarray, out: np.ndarray) -> None:

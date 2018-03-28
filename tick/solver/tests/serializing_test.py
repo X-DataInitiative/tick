@@ -20,7 +20,6 @@ from tick.solver import AdaGrad, SGD, SDCA, SAGA, SVRG
 
 from tick.simulation import weights_sparse_gauss
 
-
 class Test(TestSolver):
     def test_serializing_solvers(self):
         """...Test serialization of solvers
@@ -49,7 +48,6 @@ class Test(TestSolver):
             ModelLinRegWithIntercepts: SimuLinReg,
             ModelModifiedHuber: SimuLogReg
         }
-
         for solver in solvers:
             for mod in model_map:
 
@@ -57,10 +55,10 @@ class Test(TestSolver):
                 n_samples, n_features = 100, 5
                 w0 = np.random.randn(n_features)
                 intercept0 = 50 * weights_sparse_gauss(n_weights=n_samples,
-                                                       nnz=30)
+                                                       nnz=30, dtype=self.dtype)
                 c0 = None
                 X, y = SimuLinReg(w0, c0, n_samples=n_samples, verbose=False,
-                                  seed=2038).simulate()
+                                  seed=2038,dtype=self.dtype).simulate()
 
                 if mod == ModelLinRegWithIntercepts:
                     y += intercept0
@@ -88,6 +86,8 @@ class Test(TestSolver):
                 else:
                     self.assertEqual(model.loss(X[0]), solver.model.loss(X[0]))
 
-
 if __name__ == "__main__":
-    unittest.main()
+    suite = unittest.TestSuite()
+    for dt in dtype_list:
+        suite.addTest(parameterize(SolverTest, dtype=dt))
+    unittest.TextTestRunner().run(suite)

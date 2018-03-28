@@ -122,7 +122,14 @@ class ModelSmoothedHinge(ModelFirstOrder, ModelGeneralizedLinear,
         ModelFirstOrder.fit(self, features, labels)
         ModelGeneralizedLinear.fit(self, features, labels)
         ModelLipschitz.fit(self, features, labels)
-        self._set("_model", self._build_cpp_model(features.dtype))
+
+        if self.dtype not in dtype_map:
+            raise ValueError('dtype provided to ModelSmoothedHinge is not handled: ',
+                             self.dtype)
+
+        self._set("_model", dtype_map[self.dtype](self.features, self.labels,
+                                      self.fit_intercept, self.smoothness,
+                                      self.n_threads))
         return self
 
     def _grad(self, coeffs: np.ndarray, out: np.ndarray) -> None:
