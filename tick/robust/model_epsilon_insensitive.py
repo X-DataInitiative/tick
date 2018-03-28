@@ -2,10 +2,16 @@
 
 import numpy as np
 from tick.base_model import ModelGeneralizedLinear, ModelFirstOrder
-from .build.robust import ModelEpsilonInsensitiveDouble as _ModelEpsilonInsensitive
+
+from .build.robust import ModelEpsilonInsensitiveDouble as _ModelEpsilonInsensitiveDouble
+from .build.robust import ModelEpsilonInsensitiveFloat as _ModelEpsilonInsensitiveFloat
 
 __author__ = 'Stephane Gaiffas'
 
+dtype_map = {
+    np.dtype('float32'): _ModelEpsilonInsensitiveFloat,
+    np.dtype('float64'): _ModelEpsilonInsensitiveDouble
+}
 
 class ModelEpsilonInsensitive(ModelFirstOrder,
                               ModelGeneralizedLinear):
@@ -102,7 +108,12 @@ class ModelEpsilonInsensitive(ModelFirstOrder,
         """
         ModelFirstOrder.fit(self, features, labels)
         ModelGeneralizedLinear.fit(self, features, labels)
-        self._set("_model", _ModelEpsilonInsensitive(self.features,
+
+        if self.dtype not in dtype_map:
+            raise ValueError('dtype provided to ModelEpsilonInsensitive is not handled: ',
+                             self.dtype)
+
+        self._set("_model", dtype_map[self.dtype](self.features,
                                                      self.labels,
                                                      self.fit_intercept,
                                                      self.threshold,

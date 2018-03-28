@@ -4,10 +4,15 @@ import numpy as np
 from numpy.linalg import svd
 from tick.base_model import ModelGeneralizedLinear, ModelFirstOrder, \
     ModelLipschitz
-from .build.linear_model import ModelQuadraticHingeDouble as _ModelModelQuadraticHinge
+from .build.linear_model import ModelQuadraticHingeDouble as _ModelModelQuadraticHingeDouble
+from .build.linear_model import ModelQuadraticHingeFloat as _ModelModelQuadraticFloat
 
 __author__ = 'Stephane Gaiffas'
 
+dtype_map = {
+    np.dtype('float32'): _ModelModelQuadraticFloat,
+    np.dtype('float64'): _ModelModelQuadraticHingeDouble
+}
 
 class ModelQuadraticHinge(ModelFirstOrder, ModelGeneralizedLinear,
                           ModelLipschitz):
@@ -96,9 +101,13 @@ class ModelQuadraticHinge(ModelFirstOrder, ModelGeneralizedLinear,
         ModelFirstOrder.fit(self, features, labels)
         ModelGeneralizedLinear.fit(self, features, labels)
         ModelLipschitz.fit(self, features, labels)
-        self._set("_model",
-                  _ModelModelQuadraticHinge(self.features, self.labels,
-                                            self.fit_intercept, self.n_threads))
+
+        if self.dtype not in dtype_map:
+            raise ValueError('dtype provided to ModelQuadraticHinge is not handled: ',
+                             self.dtype)
+
+        self._set("_model", dtype_map[self.dtype](self.features, self.labels,
+                                      self.fit_intercept, self.n_threads))
         return self
 
     def _grad(self, coeffs: np.ndarray, out: np.ndarray) -> None:

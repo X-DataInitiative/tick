@@ -5,11 +5,18 @@ from numpy.linalg import svd
 
 from tick.base_model import ModelFirstOrder, ModelLipschitz
 from .base import ModelGeneralizedLinearWithIntercepts
+
 from .build.robust import \
-    ModelLinRegWithInterceptsDouble as _ModelLinRegWithIntercepts
+    ModelLinRegWithInterceptsDouble as _ModelLinRegWithInterceptsDouble
+from .build.robust import \
+    ModelLinRegWithInterceptsFloat as _ModelLinRegWithInterceptsFloat
 
 __author__ = 'Stephane Gaiffas'
 
+dtype_map = {
+    np.dtype('float32'): _ModelLinRegWithInterceptsFloat,
+    np.dtype('float64'): _ModelLinRegWithInterceptsDouble
+}
 
 class ModelLinRegWithIntercepts(ModelFirstOrder,
                                 ModelGeneralizedLinearWithIntercepts,
@@ -74,7 +81,12 @@ class ModelLinRegWithIntercepts(ModelFirstOrder,
         ModelFirstOrder.fit(self, features, labels)
         ModelGeneralizedLinearWithIntercepts.fit(self, features, labels)
         ModelLipschitz.fit(self, features, labels)
-        self._set("_model", _ModelLinRegWithIntercepts(self.features,
+
+        if self.dtype not in dtype_map:
+            raise ValueError('dtype provided to ModelLinRegWithIntercepts is not handled: ',
+                             self.dtype)
+
+        self._set("_model", dtype_map[self.dtype](self.features,
                                                        self.labels,
                                                        self.fit_intercept,
                                                        self.n_threads))

@@ -4,10 +4,15 @@ import numpy as np
 from numpy.linalg import svd
 from tick.base_model import ModelGeneralizedLinear, ModelFirstOrder, \
     ModelLipschitz
-from .build.linear_model import ModelSmoothedHingeDouble as _ModelSmoothedHinge
+from .build.linear_model import ModelSmoothedHingeDouble as _ModelSmoothedHingeDouble
+from .build.linear_model import ModelSmoothedHingeFloat as _ModelSmoothedHingeFloat
 
 __author__ = 'Stephane Gaiffas'
 
+dtype_map = {
+    np.dtype('float32'): _ModelSmoothedHingeFloat,
+    np.dtype('float64'): _ModelSmoothedHingeDouble
+}
 
 class ModelSmoothedHinge(ModelFirstOrder, ModelGeneralizedLinear,
                          ModelLipschitz):
@@ -114,8 +119,12 @@ class ModelSmoothedHinge(ModelFirstOrder, ModelGeneralizedLinear,
         ModelFirstOrder.fit(self, features, labels)
         ModelGeneralizedLinear.fit(self, features, labels)
         ModelLipschitz.fit(self, features, labels)
-        self._set("_model",
-                  _ModelSmoothedHinge(self.features, self.labels,
+
+        if self.dtype not in dtype_map:
+            raise ValueError('dtype provided to ModelSmoothedHinge is not handled: ',
+                             self.dtype)
+
+        self._set("_model", dtype_map[self.dtype](self.features, self.labels,
                                       self.fit_intercept, self.smoothness,
                                       self.n_threads))
         return self

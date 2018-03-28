@@ -22,7 +22,9 @@ from tick.solver import AdaGrad, SGD, SDCA, SAGA, SVRG
 
 from tick.simulation import weights_sparse_gauss
 
-class Test(TestSolver):
+dtype_list = ["float64", "float32"]
+
+class SolverTest(TestSolver):
     def test_serializing_solvers(self):
         """...Test serialization of solvers
         """
@@ -48,24 +50,23 @@ class Test(TestSolver):
             ModelAbsoluteRegression : SimuLinReg,
             ModelEpsilonInsensitive : SimuLinReg,
             ModelHuber              : SimuLinReg,
-            ModelLinRegWithIntercepts : SimuLinReg, 
+            ModelLinRegWithIntercepts : SimuLinReg,
             ModelModifiedHuber      : SimuLogReg
         }
-
         for solver in solvers:
             for mod in model_map:
 
                 np.random.seed(12)
                 n_samples, n_features = 100, 5
                 w0 = np.random.randn(n_features)
-                intercept0 = 50 * weights_sparse_gauss(n_weights=n_samples, nnz=30)
+                intercept0 = 50 * weights_sparse_gauss(n_weights=n_samples, nnz=30).astype(self.dtype)
                 c0 = None
                 X, y = SimuLinReg(w0, c0, n_samples=n_samples, verbose=False,
-                                  seed=2038).simulate()
-                
+                                  seed=2038).simulate(dtype=self.dtype)
+
                 if mod == ModelLinRegWithIntercepts:
                     y += intercept0
-                
+
                 model = mod(fit_intercept=False).fit(X, y)
 
                 prox = ProxL1(2.)
@@ -86,5 +87,16 @@ class Test(TestSolver):
                 else:
                     self.assertEqual(model.loss(X[0]), solver.model.loss(X[0]))
 
+
+def parameterize(klass, dtype):
+    testnames = unittest.TestLoader().getTestCaseNames(klass)
+    suite = unittest.TestSuite()
+    for name in testnames:
+        suite.addTest(klass(name, dtype=dtype))
+    return suite
+
 if __name__ == "__main__":
-    unittest.main()
+    suite = unittest.TestSuite()
+    for dt in dtype_list:
+        suite.addTest(parameterize(SolverTest, dtype=dt))
+    unittest.TextTestRunner().run(suite)

@@ -3,10 +3,16 @@
 import numpy as np
 from numpy.linalg import svd
 from tick.base_model import ModelGeneralizedLinear, ModelFirstOrder, ModelLipschitz
-from .build.robust import ModelHuberDouble as _ModelHuber
+
+from .build.robust import ModelHuberDouble as _ModelHuberDouble
+from .build.robust import ModelHuberFloat as _ModelHuberFloat
 
 __author__ = 'Stephane Gaiffas'
 
+dtype_map = {
+    np.dtype('float32'): _ModelHuberFloat,
+    np.dtype('float64'): _ModelHuberDouble
+}
 
 class ModelHuber(ModelFirstOrder,
                  ModelGeneralizedLinear,
@@ -107,7 +113,12 @@ class ModelHuber(ModelFirstOrder,
         ModelFirstOrder.fit(self, features, labels)
         ModelGeneralizedLinear.fit(self, features, labels)
         ModelLipschitz.fit(self, features, labels)
-        self._set("_model", _ModelHuber(self.features,
+
+        if self.dtype not in dtype_map:
+            raise ValueError('dtype provided to ModelHuber is not handled: ',
+                             self.dtype)
+
+        self._set("_model", dtype_map[self.dtype](self.features,
                                         self.labels,
                                         self.fit_intercept,
                                         self.threshold,

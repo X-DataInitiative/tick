@@ -2,10 +2,16 @@
 
 import numpy as np
 from tick.base_model import ModelGeneralizedLinear, ModelFirstOrder
-from .build.linear_model import ModelHingeDouble as _ModelHinge
+
+from .build.linear_model import ModelHingeDouble as _ModelHingeDouble
+from .build.linear_model import ModelHingeFloat as _ModelHingeFloat
 
 __author__ = 'Stephane Gaiffas'
 
+dtype_map = {
+    np.dtype('float32'): _ModelHingeFloat,
+    np.dtype('float64'): _ModelHingeDouble
+}
 
 class ModelHinge(ModelFirstOrder, ModelGeneralizedLinear):
     """Hinge loss model for binary classification. This class gives first order
@@ -91,8 +97,13 @@ class ModelHinge(ModelFirstOrder, ModelGeneralizedLinear):
         """
         ModelFirstOrder.fit(self, features, labels)
         ModelGeneralizedLinear.fit(self, features, labels)
+
+        if self.dtype not in dtype_map:
+            raise ValueError('dtype provided to ModelHinge is not handled: ',
+                             self.dtype)
+
         self._set("_model",
-                  _ModelHinge(self.features, self.labels, self.fit_intercept,
+                  dtype_map[self.dtype](self.features, self.labels, self.fit_intercept,
                               self.n_threads))
         return self
 
