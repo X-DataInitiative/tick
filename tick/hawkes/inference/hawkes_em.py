@@ -3,9 +3,8 @@
 import numpy as np
 
 from tick.hawkes.inference.base import LearnerHawkesNoParam
-from tick.hawkes.inference.build.hawkes_inference import (
-    HawkesEM as _HawkesEM
-)
+from tick.hawkes.inference.build.hawkes_inference import (HawkesEM as
+                                                          _HawkesEM)
 from tick.solver.base.utils import relative_distance
 
 
@@ -93,8 +92,7 @@ class HawkesEM(LearnerHawkesNoParam):
 
     def __init__(self, kernel_support=None, kernel_size=10,
                  kernel_discretization=None, tol=1e-5, max_iter=100,
-                 print_every=10, record_every=10,
-                 verbose=False, n_threads=1):
+                 print_every=10, record_every=10, verbose=False, n_threads=1):
 
         LearnerHawkesNoParam.__init__(
             self, n_threads=n_threads, verbose=verbose, tol=tol,
@@ -166,11 +164,11 @@ class HawkesEM(LearnerHawkesNoParam):
         else:
             if kernel_start.shape != (self.n_nodes, self.n_nodes,
                                       self.kernel_size):
-                raise ValueError('kernel_start has shape {} but should have '
-                                 'shape {}'.format(
-                    kernel_start.shape,
-                    (self.n_nodes, self.n_nodes, self.kernel_size)
-                ))
+                raise ValueError(
+                    'kernel_start has shape {} but should have '
+                    'shape {}'.format(
+                        kernel_start.shape,
+                        (self.n_nodes, self.n_nodes, self.kernel_size)))
             self.kernel = kernel_start.copy()
 
         if baseline_start is None:
@@ -231,8 +229,8 @@ class HawkesEM(LearnerHawkesNoParam):
         """
         indices_in_support = (abscissa_array > 0) & \
                              (abscissa_array < self.kernel_support)
-        index = np.searchsorted(self.kernel_discretization, abscissa_array[
-            indices_in_support]) - 1
+        index = np.searchsorted(self.kernel_discretization,
+                                abscissa_array[indices_in_support]) - 1
 
         kernel_values = np.empty_like(abscissa_array)
         kernel_values[np.invert(indices_in_support)] = 0

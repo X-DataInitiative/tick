@@ -23,14 +23,15 @@ __author__ = "Stephane Gaiffas"
 
 variance_reduction_methods_mapper = {
     'last': SVRG_VarianceReductionMethod_Last,
-    'avg':  SVRG_VarianceReductionMethod_Average,
+    'avg': SVRG_VarianceReductionMethod_Average,
     'rand': SVRG_VarianceReductionMethod_Random
 }
 
 step_types_mapper = {
     'fixed': SVRG_StepType_Fixed,
-    'bb':    SVRG_StepType_BarzilaiBorwein
+    'bb': SVRG_StepType_BarzilaiBorwein
 }
+
 
 class SVRG(SolverFirstOrderSto):
     """Stochastic Variance Reduced Gradient solver
@@ -185,12 +186,12 @@ class SVRG(SolverFirstOrderSto):
     def __init__(self, step: float = None, epoch_size: int = None,
                  rand_type: str = 'unif', tol: float = 1e-10,
                  max_iter: int = 10, verbose: bool = True,
-                 print_every: int = 1, record_every: int = 1,
-                 seed: int = -1, variance_reduction: str = 'last',
-                 step_type: str = 'fixed', n_threads: int = 1):
-        SolverFirstOrderSto.__init__(self, step, epoch_size, rand_type,
-                                     tol, max_iter, verbose,
-                                     print_every, record_every, seed=seed)
+                 print_every: int = 1, record_every: int = 1, seed: int = -1,
+                 variance_reduction: str = 'last', step_type: str = 'fixed',
+                 n_threads: int = 1):
+        SolverFirstOrderSto.__init__(self, step, epoch_size, rand_type, tol,
+                                     max_iter, verbose, print_every,
+                                     record_every, seed=seed)
         self.n_threads = n_threads
         step = self.step
         if step is None:
@@ -201,9 +202,8 @@ class SVRG(SolverFirstOrderSto):
             epoch_size = 0
 
         # Construct the wrapped C++ SGD solver
-        self._solver = _SVRG(epoch_size, self.tol,
-                             self._rand_type, step, self.seed,
-                             self.n_threads)
+        self._solver = _SVRG(epoch_size, self.tol, self._rand_type, step,
+                             self.seed, self.n_threads)
 
         self.variance_reduction = variance_reduction
         self.step_type = step_type
@@ -218,7 +218,8 @@ class SVRG(SolverFirstOrderSto):
         if val not in variance_reduction_methods_mapper:
             raise ValueError(
                 'variance_reduction should be one of "{}", got "{}"'.format(
-                    ', '.join(sorted(variance_reduction_methods_mapper.keys())),
+                    ', '.join(
+                        sorted(variance_reduction_methods_mapper.keys())),
                     val))
         if self.model is not None:
             if val == 'avg' and self.model._model.is_sparse():
@@ -237,8 +238,7 @@ class SVRG(SolverFirstOrderSto):
         if val not in step_types_mapper:
             raise ValueError(
                 'step_type should be one of "{}", got "{}"'.format(
-                    ', '.join(sorted(step_types_mapper.keys())),
-                    val))
+                    ', '.join(sorted(step_types_mapper.keys())), val))
         self._solver.set_step_type(step_types_mapper[val])
 
     def set_model(self, model: Model):

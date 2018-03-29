@@ -3,8 +3,7 @@
 import numpy as np
 
 from tick.hawkes.simulation.build.hawkes_simulation import (
-    HawkesKernelSumExp as _HawkesKernelSumExp
-)
+    HawkesKernelSumExp as _HawkesKernelSumExp)
 from . import HawkesKernelExp
 from .hawkes_kernel import HawkesKernel
 
@@ -60,17 +59,25 @@ class HawkesKernelSumExp(HawkesKernel):
         return self._kernel.get_n_decays()
 
     def _generate_corresponding_single_exp_kernels(self):
-        return [HawkesKernelExp(intensity, decay)
-                for (intensity, decay) in zip(self.intensities, self.decays)]
+        return [
+            HawkesKernelExp(intensity, decay)
+            for (intensity, decay) in zip(self.intensities, self.decays)
+        ]
 
     def __str__(self):
-        return " + ".join([str(kernel) for kernel in
-                           self._generate_corresponding_single_exp_kernels()])
+        return " + ".join([
+            str(kernel)
+            for kernel in self._generate_corresponding_single_exp_kernels()
+        ])
 
     def __repr__(self):
-        return " + ".join([kernel.__repr__() for kernel in
-                           self._generate_corresponding_single_exp_kernels()])
+        return " + ".join([
+            kernel.__repr__()
+            for kernel in self._generate_corresponding_single_exp_kernels()
+        ])
 
     def __strtex__(self):
-        return " + ".join([kernel.__strtex__() for kernel in
-                           self._generate_corresponding_single_exp_kernels()])
+        return " + ".join([
+            kernel.__strtex__()
+            for kernel in self._generate_corresponding_single_exp_kernels()
+        ])

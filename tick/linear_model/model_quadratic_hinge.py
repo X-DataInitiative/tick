@@ -9,8 +9,7 @@ from .build.linear_model import ModelQuadraticHingeDouble as _ModelModelQuadrati
 __author__ = 'Stephane Gaiffas'
 
 
-class ModelQuadraticHinge(ModelFirstOrder,
-                          ModelGeneralizedLinear,
+class ModelQuadraticHinge(ModelFirstOrder, ModelGeneralizedLinear,
                           ModelLipschitz):
     """Quadratic hinge loss model for binary classification. This class gives
     first order information (gradient and loss) for this model and can be passed
@@ -94,10 +93,10 @@ class ModelQuadraticHinge(ModelFirstOrder,
         ModelFirstOrder.fit(self, features, labels)
         ModelGeneralizedLinear.fit(self, features, labels)
         ModelLipschitz.fit(self, features, labels)
-        self._set("_model", _ModelModelQuadraticHinge(self.features,
-                                                      self.labels,
-                                                      self.fit_intercept,
-                                                      self.n_threads))
+        self._set("_model",
+                  _ModelModelQuadraticHinge(self.features, self.labels,
+                                            self.fit_intercept,
+                                            self.n_threads))
         return self
 
     def _grad(self, coeffs: np.ndarray, out: np.ndarray) -> None:
@@ -108,8 +107,7 @@ class ModelQuadraticHinge(ModelFirstOrder,
 
     def _get_lip_best(self):
         # TODO: Use sklearn.decomposition.TruncatedSVD instead?
-        s = svd(self.features, full_matrices=False,
-                compute_uv=False)[0] ** 2
+        s = svd(self.features, full_matrices=False, compute_uv=False)[0] ** 2
         if self.fit_intercept:
             return (s + 1) / self.n_samples
         else:

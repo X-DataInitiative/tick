@@ -102,17 +102,20 @@ class SimuHawkesSumExpKernels(SimuHawkes):
     """
 
     _attrinfos = {
-        "adjacency": {"writable": False},
-        "decays": {"writable": False},
+        "adjacency": {
+            "writable": False
+        },
+        "decays": {
+            "writable": False
+        },
     }
 
     @property
     def n_decays(self):
         return self.decays.shape[0]
 
-    def __init__(self, adjacency, decays, baseline=None,
-                 end_time=None, period_length=None, max_jumps=None,
-                 seed=None, verbose=True,
+    def __init__(self, adjacency, decays, baseline=None, end_time=None,
+                 period_length=None, max_jumps=None, seed=None, verbose=True,
                  force_simulation=False):
 
         if isinstance(adjacency, list):
@@ -126,7 +129,8 @@ class SimuHawkesSumExpKernels(SimuHawkes):
 
         if adjacency.shape != (n_nodes, n_nodes, n_decays):
             raise ValueError("adjacency matrix shape should be %s but its "
-                             "shape is %s" % (str((n_nodes, n_nodes, n_decays)),
+                             "shape is %s" % (str((n_nodes, n_nodes,
+                                                   n_decays)),
                                               str(adjacency.shape)))
 
         self.adjacency = adjacency

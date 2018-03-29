@@ -13,6 +13,7 @@ from tick.solver.build.solver import SAGA_VarianceReductionMethod_Last
 from tick.solver.build.solver import SAGA_VarianceReductionMethod_Average
 from tick.solver.build.solver import SAGA_VarianceReductionMethod_Random
 
+
 class Test(TestSolver):
     def test_solver_saga(self):
         """...Check SAGA solver for a Logistic Regression with Ridge
@@ -25,6 +26,7 @@ class Test(TestSolver):
     def test_saga_sparse_and_dense_consistency(self):
         """...Test SAGA can run all glm models and is consistent with sparsity
         """
+
         def create_solver():
             return SAGA(max_iter=1, verbose=False, step=1e-5,
                         seed=TestSolver.sto_seed)

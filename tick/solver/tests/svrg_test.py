@@ -24,6 +24,7 @@ from tick.solver.build.solver import SVRG_VarianceReductionMethod_Random
 from tick.solver.build.solver import SVRG_StepType_Fixed
 from tick.solver.build.solver import SVRG_StepType_BarzilaiBorwein
 
+
 class Test(TestSolver):
     @staticmethod
     def simu_linreg_data(n_samples=5000, n_features=50, interc=-1., p_nnz=0.3):
@@ -32,8 +33,8 @@ class Test(TestSolver):
         weights = (-1) ** (idx - 1) * np.exp(-idx / 10.)
         corr = 0.5
         cov = toeplitz(corr ** np.arange(0, n_features))
-        X = np.random.multivariate_normal(np.zeros(n_features), cov,
-                                          size=n_samples)
+        X = np.random.multivariate_normal(
+            np.zeros(n_features), cov, size=n_samples)
         X *= np.random.binomial(1, p_nnz, size=X.shape)
         idx = np.nonzero(X.sum(axis=1))
         X = X[idx]
@@ -132,8 +133,7 @@ class Test(TestSolver):
         """
         svrg = SVRG()
         self.assertEqual(svrg.step_type, 'fixed')
-        self.assertEqual(svrg._solver.get_step_type(),
-                         SVRG_StepType_Fixed)
+        self.assertEqual(svrg._solver.get_step_type(), SVRG_StepType_Fixed)
 
         svrg = SVRG(step_type='bb')
         self.assertEqual(svrg.step_type, 'bb')
@@ -142,8 +142,7 @@ class Test(TestSolver):
 
         svrg.step_type = 'fixed'
         self.assertEqual(svrg.step_type, 'fixed')
-        self.assertEqual(svrg._solver.get_step_type(),
-                         SVRG_StepType_Fixed)
+        self.assertEqual(svrg._solver.get_step_type(), SVRG_StepType_Fixed)
 
         svrg.step_type = 'bb'
         self.assertEqual(svrg.step_type, 'bb')
@@ -190,13 +189,12 @@ class Test(TestSolver):
         ]
 
         for intercept in [-1, None]:
-            X, y = self.simu_linreg_data(interc=intercept,
-                                         n_features=n_features,
-                                         n_samples=n_samples)
+            X, y = self.simu_linreg_data(
+                interc=intercept, n_features=n_features, n_samples=n_samples)
 
             fit_intercept = intercept is not None
             model_dense, model_spars = self.get_dense_and_sparse_linreg_model(
-                    X, y, fit_intercept=fit_intercept)
+                X, y, fit_intercept=fit_intercept)
             step = 1 / model_spars.get_lip_max()
 
             for variance_reduction, rand_type, prox in product(
@@ -219,8 +217,6 @@ class Test(TestSolver):
                 solver_dense.solve()
                 np.testing.assert_array_almost_equal(solver_sparse.solution,
                                                      solver_dense.solution, 7)
-
-
 
     def test_asvrg_sparse_and_dense_consistency(self):
         """...Test ASVRG can run all glm models and is consistent with sparsity

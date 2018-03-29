@@ -6,9 +6,11 @@ import numpy as np
 import scipy
 
 from tick.array.build.array import (
-    tick_double_array_to_file, tick_double_array2d_to_file,
+    tick_double_array_to_file,
+    tick_double_array2d_to_file,
     tick_double_sparse2d_to_file,
-    tick_double_array_from_file, tick_double_array2d_from_file,
+    tick_double_array_from_file,
+    tick_double_array2d_from_file,
     tick_double_sparse2d_from_file,
 )
 
@@ -94,4 +96,3 @@ def load_array(filepath, array_type='dense', array_dim=1):
         raise ValueError('Cannot load this class of array')
 
     return reader(filepath)
-

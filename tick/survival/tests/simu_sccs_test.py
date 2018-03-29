@@ -7,7 +7,6 @@ from tick.survival import SimuSCCS
 
 
 class Test(unittest.TestCase):
-
     def test_censoring(self):
         array_list = [np.ones((2, 3)) for _ in range(3)]
         expected = [np.zeros((2, 3)) for _ in range(3)]
@@ -46,8 +45,8 @@ class Test(unittest.TestCase):
     def test_simulated_features(self):
         n_features = 3
         n_lags = np.repeat(2, n_features)
-        sim = SimuSCCS(100, 10, n_features, n_lags, None,
-                       'multiple_exposures', verbose=False)
+        sim = SimuSCCS(100, 10, n_features, n_lags, None, 'multiple_exposures',
+                       verbose=False)
         feat, n_samples = sim.simulate_features(100)
         self.assertEqual(100, len(feat))
         print(np.sum([1 for f in feat if f.sum() <= 0]))
@@ -57,16 +56,19 @@ class Test(unittest.TestCase):
                       time_drift):
             n_intervals = 5
             n_lags = np.repeat(2, n_features).astype('uint64')
-            sim = SimuSCCS(n_cases, n_intervals, n_features, n_lags, time_drift,
-                           exposure_type, distribution, sparse, verbose=False)
+            sim = SimuSCCS(n_cases, n_intervals, n_features, n_lags,
+                           time_drift, exposure_type, distribution, sparse,
+                           verbose=False)
             X, X_c, y, c, coeffs = sim.simulate()
             self.assertEqual(len(X), n_cases)
             self.assertEqual(len(y), n_cases)
             self.assertEqual(X[0].shape, (n_intervals, n_features))
             self.assertEqual(y[0].shape, (n_intervals,))
             self.assertEqual(c.shape, (n_cases,))
-            [self.assertEqual(co.shape, (int(n_lags[i]+1),))
-             for i, co in enumerate(coeffs)]
+            [
+                self.assertEqual(co.shape, (int(n_lags[i] + 1),))
+                for i, co in enumerate(coeffs)
+            ]
             self.assertEqual(np.sum([1 for f in X if f.sum() <= 0]), 0)
             self.assertEqual(np.sum([1 for f in X_c if f.sum() <= 0]), 0)
 

@@ -8,7 +8,6 @@ from .build.prox import ProxL1wDouble as _ProxL1w
 
 __author__ = 'Stephane Gaiffas'
 
-
 # TODO: if we set a weights vector with length != end - start ???
 
 
@@ -49,7 +48,7 @@ class ProxL1w(Prox):
     }
 
     def __init__(self, strength: float, weights: np.ndarray,
-                 range: tuple=None, positive: bool=False):
+                 range: tuple = None, positive: bool = False):
         Prox.__init__(self, range)
         if range is None:
             self._prox = _ProxL1w(strength, weights, positive)

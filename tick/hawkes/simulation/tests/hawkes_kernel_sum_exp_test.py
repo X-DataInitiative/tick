@@ -34,27 +34,30 @@ class Test(unittest.TestCase):
     def test_HawkesKernelSumExp_str(self):
         """...Test HawkesKernelSumExp string representation
         """
-        self.assertEqual(str(self.hawkes_kernel_sumexp),
-                         "0.3 * 1 * exp(- 1 * t) + 4 * 2 * exp(- 2 * t) + "
-                         "2 * 0.2 * exp(- 0.2 * t)")
+        self.assertEqual(
+            str(self.hawkes_kernel_sumexp),
+            "0.3 * 1 * exp(- 1 * t) + 4 * 2 * exp(- 2 * t) + "
+            "2 * 0.2 * exp(- 0.2 * t)")
 
-        self.assertEqual(str(self.hawkes_kernel_sumexp),
-                         "0.3 * 1 * exp(- 1 * t) + 4 * 2 * exp(- 2 * t) + "
-                         "2 * 0.2 * exp(- 0.2 * t)")
+        self.assertEqual(
+            str(self.hawkes_kernel_sumexp),
+            "0.3 * 1 * exp(- 1 * t) + 4 * 2 * exp(- 2 * t) + "
+            "2 * 0.2 * exp(- 0.2 * t)")
 
         self.decays[1] = 0
         self.intensities[2] = 0
         hawkes_kernel_sumexp = HawkesKernelSumExp(self.intensities,
                                                   self.decays)
-        self.assertEqual(str(hawkes_kernel_sumexp),
-                         "0.3 * 1 * exp(- 1 * t) + 4 + 0")
+        self.assertEqual(
+            str(hawkes_kernel_sumexp), "0.3 * 1 * exp(- 1 * t) + 4 + 0")
 
     def test_HawkesKernelSumExp_repr(self):
         """...Test HawkesKernelSumExp string in list representation
         """
-        self.assertEqual(str([self.hawkes_kernel_sumexp]),
-                         "[0.3*1*exp(-1*t) + 4*2*exp(-2*t) + "
-                         "2*0.2*exp(-0.2*t)]")
+        self.assertEqual(
+            str([self.hawkes_kernel_sumexp]),
+            "[0.3*1*exp(-1*t) + 4*2*exp(-2*t) + "
+            "2*0.2*exp(-0.2*t)]")
 
     def test_HawkesKernelSumExp_strtex(self):
         """...Test HawkesKernelSumExp latex string representation

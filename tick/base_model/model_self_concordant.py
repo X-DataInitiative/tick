@@ -3,7 +3,6 @@
 from abc import abstractmethod
 from . import Model
 
-
 __author__ = 'Stephane Gaiffas'
 
 
@@ -23,8 +22,7 @@ class ModelSelfConcordant(Model):
     @property
     def _sc_constant(self) -> float:
         if not self._fitted:
-            raise ValueError("call ``fit`` before using "
-                             "``sc_constant``")
+            raise ValueError("call ``fit`` before using " "``sc_constant``")
         return self._get_sc_constant()
 
     @abstractmethod

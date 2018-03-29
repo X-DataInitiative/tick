@@ -3,9 +3,8 @@
 import numpy as np
 
 from tick.hawkes.inference.base import LearnerHawkesNoParam
-from tick.hawkes.inference.build.hawkes_inference import (
-    HawkesBasisKernels as _HawkesBasisKernels
-)
+from tick.hawkes.inference.build.hawkes_inference import (HawkesBasisKernels as
+                                                          _HawkesBasisKernels)
 from tick.solver.base.utils import relative_distance
 
 
@@ -132,10 +131,18 @@ class HawkesBasisKernels(LearnerHawkesNoParam):
     """
 
     _attrinfos = {
-        'baseline': {'writable': False},
-        'amplitudes': {'writable': False},
-        'basis_kernels': {'writable': False},
-        '_amplitudes_2d': {'writable': False},
+        'baseline': {
+            'writable': False
+        },
+        'amplitudes': {
+            'writable': False
+        },
+        'basis_kernels': {
+            'writable': False
+        },
+        '_amplitudes_2d': {
+            'writable': False
+        },
     }
 
     def __init__(self, kernel_support, n_basis=None, kernel_size=10, tol=1e-5,
@@ -158,8 +165,9 @@ class HawkesBasisKernels(LearnerHawkesNoParam):
                                             n_basis, alpha, n_threads)
         self._amplitudes_2d = None
 
-        self.history.print_order = ["n_iter", "rel_baseline", "rel_amplitudes",
-                                    "rel_basis_kernels"]
+        self.history.print_order = [
+            "n_iter", "rel_baseline", "rel_amplitudes", "rel_basis_kernels"
+        ]
 
     def fit(self, events, end_times=None, baseline_start=None,
             amplitudes_start=None, basis_kernels_start=None):
@@ -227,21 +235,22 @@ class HawkesBasisKernels(LearnerHawkesNoParam):
 
         if amplitudes_start is None:
             self._set("amplitudes",
-                      np.random.uniform(0.5, 0.9, size=(
-                          self.n_nodes, self.n_nodes, self.n_basis)))
+                      np.random.uniform(0.5, 0.9,
+                                        size=(self.n_nodes, self.n_nodes,
+                                              self.n_basis)))
         else:
             self._set("amplitudes", amplitudes_start.copy())
 
         if basis_kernels_start is None:
-            self._set("basis_kernels",
-                      0.1 * np.random.uniform(size=(self.n_basis,
-                                                    self.kernel_size)))
+            self._set(
+                "basis_kernels",
+                0.1 * np.random.uniform(size=(self.n_basis, self.kernel_size)))
         else:
             self._set("basis_kernels", basis_kernels_start.copy())
 
         self._set('_amplitudes_2d',
-                  self.amplitudes.reshape((self.n_nodes, self.n_nodes *
-                                           self.n_basis)))
+                  self.amplitudes.reshape((self.n_nodes,
+                                           self.n_nodes * self.n_basis)))
 
         for i in range(self.max_iter + 1):
             prev_baseline = self.baseline.copy()
@@ -250,11 +259,11 @@ class HawkesBasisKernels(LearnerHawkesNoParam):
 
             rel_ode = self._learner.solve(self.baseline, self.basis_kernels,
                                           self._amplitudes_2d,
-                                          self.ode_max_iter,
-                                          self.ode_tol)
+                                          self.ode_max_iter, self.ode_tol)
 
             rel_baseline = relative_distance(self.baseline, prev_baseline)
-            rel_amplitudes = relative_distance(self.amplitudes, prev_amplitudes)
+            rel_amplitudes = relative_distance(self.amplitudes,
+                                               prev_amplitudes)
             rel_basis_kernels = relative_distance(self.basis_kernels,
                                                   prev_basis_kernels)
 
@@ -265,8 +274,7 @@ class HawkesBasisKernels(LearnerHawkesNoParam):
             self._handle_history(i, rel_baseline=rel_baseline,
                                  rel_amplitudes=rel_amplitudes,
                                  rel_basis_kernels=rel_basis_kernels,
-                                 rel_ode=rel_ode,
-                                 force=force_print)
+                                 rel_ode=rel_ode, force=force_print)
 
             if converged:
                 break
@@ -298,8 +306,8 @@ class HawkesBasisKernels(LearnerHawkesNoParam):
         """
         indices_in_support = (abscissa_array > 0) & \
                              (abscissa_array < self.kernel_support)
-        index = np.searchsorted(self.kernel_discretization, abscissa_array[
-            indices_in_support]) - 1
+        index = np.searchsorted(self.kernel_discretization,
+                                abscissa_array[indices_in_support]) - 1
 
         kernel_values = np.empty_like(abscissa_array)
         kernel_values[np.invert(indices_in_support)] = 0

@@ -48,8 +48,8 @@ class Test(TestProx):
         start2 = 10
         end2 = 17
         prox_tv = ProxTV(strength=l_tv, range=(start1, end1))
-        prox_enet = ProxElasticNet(strength=l_enet, ratio=ratio,
-                                   range=(start2, end2))
+        prox_enet = ProxElasticNet(strength=l_enet, ratio=ratio, range=(start2,
+                                                                        end2))
         prox_multi = ProxMulti((prox_tv, prox_enet))
 
         val_correct = prox_tv.value(double_coeffs)

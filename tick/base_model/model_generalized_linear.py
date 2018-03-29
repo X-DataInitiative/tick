@@ -1,6 +1,5 @@
 # License: BSD 3 clause
 
-
 from . import ModelLabelsFeatures
 
 __author__ = 'Stephane Gaiffas'

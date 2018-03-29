@@ -21,8 +21,8 @@ class Test(TestGLM):
         c0 = np.random.randn() / n_features
 
         # First check with intercept
-        X, y = SimuPoisReg(w0, c0, n_samples=n_samples,
-                           verbose=False, seed=1234).simulate()
+        X, y = SimuPoisReg(w0, c0, n_samples=n_samples, verbose=False,
+                           seed=1234).simulate()
         # Rescale features since ModelPoisReg with exponential link
         #   (default) is not overflow proof
         X /= n_features
@@ -33,8 +33,8 @@ class Test(TestGLM):
         self._test_glm_intercept_vs_hardcoded_intercept(model)
 
         # Then check without intercept
-        X, y = SimuPoisReg(w0, None, n_samples=n_samples,
-                           verbose=False, seed=1234).simulate()
+        X, y = SimuPoisReg(w0, None, n_samples=n_samples, verbose=False,
+                           seed=1234).simulate()
         X /= n_features
         X_spars = csr_matrix(X)
         model = ModelPoisReg(fit_intercept=False).fit(X, y)
@@ -47,10 +47,9 @@ class Test(TestGLM):
         X = np.zeros((n_samples, n_features))
         X_spars = csr_matrix(X)
         y = np.array([0, 0, 3, 2, 5], dtype=np.double)
-        model = ModelPoisReg(fit_intercept=True,
-                             link="identity").fit(X, y)
-        model_sparse = ModelPoisReg(fit_intercept=True,
-                                    link="identity").fit(X_spars, y)
+        model = ModelPoisReg(fit_intercept=True, link="identity").fit(X, y)
+        model_sparse = ModelPoisReg(fit_intercept=True, link="identity").fit(
+            X_spars, y)
         self.assertAlmostEqual(model._sc_constant, 1.41421356237)
         self.assertAlmostEqual(model_sparse._sc_constant, 1.41421356237)
         y = np.array([0, 0, 3, 2, 1], dtype=np.double)

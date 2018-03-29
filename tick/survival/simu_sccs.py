@@ -146,13 +146,25 @@ class SimuSCCS(Simu):
     _attrinfos = {key: {'writable': False} for key in _const_attr}
     _attrinfos['hawkes_obj'] = {'writable': True}
 
-    def __init__(self, n_cases, n_intervals, n_features, n_lags,
-                 time_drift=None, exposure_type="single_exposure",
-                 distribution="multinomial", sparse=True,
-                 censoring_prob=0, censoring_scale=None,
-                 coeffs=None, hawkes_exp_kernels=None, n_correlations=0,
-                 batch_size=None, seed=None, verbose=True,
-                 ):
+    def __init__(
+            self,
+            n_cases,
+            n_intervals,
+            n_features,
+            n_lags,
+            time_drift=None,
+            exposure_type="single_exposure",
+            distribution="multinomial",
+            sparse=True,
+            censoring_prob=0,
+            censoring_scale=None,
+            coeffs=None,
+            hawkes_exp_kernels=None,
+            n_correlations=0,
+            batch_size=None,
+            seed=None,
+            verbose=True,
+    ):
         super(SimuSCCS, self).__init__(seed, verbose)
         self.n_cases = n_cases
         self.n_intervals = n_intervals
@@ -224,7 +236,8 @@ class SimuSCCS(Simu):
         n_lagged_features = int(self.n_lags.sum() + self.n_features)
         n_cases = self.n_cases
         if self._coeffs is None:
-            self._set('_coeffs', np.random.normal(1e-3, 1.1, n_lagged_features))
+            self._set('_coeffs', np.random.normal(1e-3, 1.1,
+                                                  n_lagged_features))
 
         features = []
         censored_features = []
@@ -253,17 +266,15 @@ class SimuSCCS(Simu):
         _features, _n_samples = self.simulate_features(self.batch_size)
         _censored_features = deepcopy(_features)
         _outcomes = self.simulate_outcomes(_features)
-        _censoring = np.full((_n_samples,), self.n_intervals,
-                             dtype="uint64")
+        _censoring = np.full((_n_samples,), self.n_intervals, dtype="uint64")
         if self.censoring_prob:
             censored_idx = np.random.binomial(1, self.censoring_prob,
-                                              size=_n_samples
-                                              ).astype("bool")
+                                              size=_n_samples).astype("bool")
             _censoring[censored_idx] -= np.random.poisson(
-                lam=self.censoring_scale, size=(censored_idx.sum(),)
-            ).astype("uint64")
-            _censored_features = self._censor_array_list(_censored_features,
-                                                         _censoring)
+                lam=self.censoring_scale,
+                size=(censored_idx.sum(),)).astype("uint64")
+            _censored_features = self._censor_array_list(
+                _censored_features, _censoring)
             _outcomes = self._censor_array_list(_outcomes, _censoring)
 
             _features, _censored_features, _outcomes, censoring, _ = \
@@ -289,18 +300,19 @@ class SimuSCCS(Simu):
         features = np.zeros((self.n_intervals, self.n_features))
         while features.sum() == 0:
             # Make sure we do not generate empty feature matrix
-            features = np.random.randint(2,
-                                         size=(
-                                             self.n_intervals, self.n_features),
-                                         ).astype("float64")
+            features = np.random.randint(
+                2,
+                size=(self.n_intervals, self.n_features),
+            ).astype("float64")
         if self.sparse:
             features = csr_matrix(features, dtype="float64")
         return features
 
     def _sim_single_exposures(self):
         if not self.sparse:
-            raise ValueError("'single_exposure' exposures can only be simulated"
-                             " as sparse feature matrices")
+            raise ValueError(
+                "'single_exposure' exposures can only be simulated"
+                " as sparse feature matrices")
 
         if self.hawkes_exp_kernels is None:
             np.random.seed(self.seed)
@@ -312,17 +324,18 @@ class SimuSCCS(Simu):
             if self.n_correlations:
                 comb = list(permutations(range(self.n_features), 2))
                 if len(comb) > 1:
-                    idx = itemgetter(*np.random.choice(range(len(comb)),
-                                                       size=self.n_correlations,
-                                                       replace=False))
+                    idx = itemgetter(*np.random.choice(
+                        range(len(comb)), size=self.n_correlations,
+                        replace=False))
                     comb = idx(comb)
 
                 for i, j in comb:
                     adjacency[i, j] = np.random.random(1)
 
-            self._set('hawkes_exp_kernels', SimuHawkesExpKernels(
-                adjacency=adjacency, decays=decays, baseline=baseline,
-                verbose=False, seed=self.seed))
+            self._set('hawkes_exp_kernels',
+                      SimuHawkesExpKernels(adjacency=adjacency, decays=decays,
+                                           baseline=baseline, verbose=False,
+                                           seed=self.seed))
 
         self.hawkes_exp_kernels.adjust_spectral_radius(
             .1)  # TODO later: allow to change this parameter
@@ -336,16 +349,17 @@ class SimuSCCS(Simu):
         hawkes.simulate()
 
         self.hawkes_obj = hawkes
-        features = [[np.min(np.floor(f)) if len(f) > 0 else -1
-                     for f in patient_events]
-                    for patient_events in hawkes.timestamps]
+        features = [[
+            np.min(np.floor(f)) if len(f) > 0 else -1 for f in patient_events
+        ] for patient_events in hawkes.timestamps]
 
-        features = [self.to_coo(feat, (run_time, self.n_features)) for feat in
-                    features]
+        features = [
+            self.to_coo(feat, (run_time, self.n_features)) for feat in features
+        ]
 
         # Make sure patients have at least one exposure?
-        exposures_filter = itemgetter(*[i for i, f in enumerate(features)
-                                        if f.sum() > 0])
+        exposures_filter = itemgetter(
+            *[i for i, f in enumerate(features) if f.sum() > 0])
         features = exposures_filter(features)
         n_samples = len(features)
 
@@ -360,8 +374,8 @@ class SimuSCCS(Simu):
             # In this case, the multinomial simulator should use this arg too
             outcomes = self._simulate_poisson_outcomes(features, self._coeffs)
         else:
-            outcomes = self._simulate_multinomial_outcomes(features,
-                                                           self._coeffs)
+            outcomes = self._simulate_multinomial_outcomes(
+                features, self._coeffs)
         return outcomes
 
     def _simulate_multinomial_outcomes(self, features, coeffs):
@@ -454,8 +468,7 @@ class SimuSCCS(Simu):
             The list of labels matrices.
         """
         nnz = [np.nonzero(arr)[0] for arr in labels]
-        positive_sample_idx = [i for i, arr in enumerate(nnz) if
-                               len(arr) > 0]
+        positive_sample_idx = [i for i, arr in enumerate(nnz) if len(arr) > 0]
         if len(positive_sample_idx) == 0:
             raise ValueError("There should be at least one positive sample per\
              batch. Try to increase batch_size.")

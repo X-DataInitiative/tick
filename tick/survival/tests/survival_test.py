@@ -6,7 +6,6 @@ from tick.survival import nelson_aalen, kaplan_meier
 
 
 class Test(unittest.TestCase):
-
     def test_hazard_rate_from_survival_function(self):
         n_observations = 100
         timestamps = np.random.uniform(size=n_observations)

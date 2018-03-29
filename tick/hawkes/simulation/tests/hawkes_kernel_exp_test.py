@@ -27,20 +27,17 @@ class Test(unittest.TestCase):
         intensity = 3
         decay = 2
         hawkes_kernel_exp = HawkesKernelExp(intensity, decay)
-        self.assertEqual(str(hawkes_kernel_exp),
-                         "3 * 2 * exp(- 2 * t)")
+        self.assertEqual(str(hawkes_kernel_exp), "3 * 2 * exp(- 2 * t)")
 
         intensity = 3
         decay = 0
         hawkes_kernel_exp = HawkesKernelExp(intensity, decay)
-        self.assertEqual(str(hawkes_kernel_exp),
-                         "3")
+        self.assertEqual(str(hawkes_kernel_exp), "3")
 
         intensity = 0
         decay = 2
         hawkes_kernel_exp = HawkesKernelExp(intensity, decay)
-        self.assertEqual(str(hawkes_kernel_exp),
-                         "0")
+        self.assertEqual(str(hawkes_kernel_exp), "0")
 
     def test_HawkesKernelExp_repr(self):
         """...Test HawkesKernelExp string in list representation
@@ -48,20 +45,17 @@ class Test(unittest.TestCase):
         intensity = 3
         decay = 2
         hawkes_kernel_exp = HawkesKernelExp(intensity, decay)
-        self.assertEqual(str([hawkes_kernel_exp]),
-                         "[3*2*exp(-2*t)]")
+        self.assertEqual(str([hawkes_kernel_exp]), "[3*2*exp(-2*t)]")
 
         intensity = 3
         decay = 0
         hawkes_kernel_exp = HawkesKernelExp(intensity, decay)
-        self.assertEqual(str([hawkes_kernel_exp]),
-                         "[3]")
+        self.assertEqual(str([hawkes_kernel_exp]), "[3]")
 
         intensity = 0
         decay = 2
         hawkes_kernel_exp = HawkesKernelExp(intensity, decay)
-        self.assertEqual(str([hawkes_kernel_exp]),
-                         "[0]")
+        self.assertEqual(str([hawkes_kernel_exp]), "[0]")
 
     def test_HawkesKernelExp_strtex(self):
         """...Test HawkesKernelExp latex string representation
@@ -69,38 +63,32 @@ class Test(unittest.TestCase):
         decay = 2
         intensity = 3
         hawkes_kernel_exp = HawkesKernelExp(intensity, decay)
-        self.assertEqual(hawkes_kernel_exp.__strtex__(),
-                         "$6 e^{-2 t}$")
+        self.assertEqual(hawkes_kernel_exp.__strtex__(), "$6 e^{-2 t}$")
 
         intensity = 3
         decay = 0
         hawkes_kernel_exp = HawkesKernelExp(intensity, decay)
-        self.assertEqual(hawkes_kernel_exp.__strtex__(),
-                         "$3$")
+        self.assertEqual(hawkes_kernel_exp.__strtex__(), "$3$")
 
         intensity = 0
         decay = 2
         hawkes_kernel_exp = HawkesKernelExp(intensity, decay)
-        self.assertEqual(hawkes_kernel_exp.__strtex__(),
-                         "$0$")
+        self.assertEqual(hawkes_kernel_exp.__strtex__(), "$0$")
 
         intensity = 0.5
         decay = 2
         hawkes_kernel_exp = HawkesKernelExp(intensity, decay)
-        self.assertEqual(hawkes_kernel_exp.__strtex__(),
-                         "$e^{-2 t}$")
+        self.assertEqual(hawkes_kernel_exp.__strtex__(), "$e^{-2 t}$")
 
         decay = 1
         intensity = 3
         hawkes_kernel_exp = HawkesKernelExp(intensity, decay)
-        self.assertEqual(hawkes_kernel_exp.__strtex__(),
-                         "$3 e^{- t}$")
+        self.assertEqual(hawkes_kernel_exp.__strtex__(), "$3 e^{- t}$")
 
         decay = 1
         intensity = 1
         hawkes_kernel_exp = HawkesKernelExp(intensity, decay)
-        self.assertEqual(hawkes_kernel_exp.__strtex__(),
-                         "$e^{-t}$")
+        self.assertEqual(hawkes_kernel_exp.__strtex__(), "$e^{-t}$")
 
 
 if __name__ == "__main__":

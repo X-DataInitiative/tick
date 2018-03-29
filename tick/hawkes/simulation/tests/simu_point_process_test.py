@@ -12,9 +12,8 @@ class Test(unittest.TestCase):
     def setUp(self):
         self.intensities = [1, 3, 2.2]
         self.run_time = 30
-        self.poisson_process = SimuPoissonProcess(self.intensities,
-                                                  end_time=self.run_time,
-                                                  verbose=False)
+        self.poisson_process = SimuPoissonProcess(
+            self.intensities, end_time=self.run_time, verbose=False)
 
     def test_n_nodes(self):
         """...Test n_nodes attribute of Point Process
@@ -42,8 +41,7 @@ class Test(unittest.TestCase):
 
         n_total_jumps = sum(map(len, self.poisson_process.timestamps))
 
-        self.assertEqual(self.poisson_process.n_total_jumps,
-                         n_total_jumps)
+        self.assertEqual(self.poisson_process.n_total_jumps, n_total_jumps)
 
     def test_max_jumps(self):
         """...Test max_jumps attribute of Point Process

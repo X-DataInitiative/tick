@@ -12,9 +12,10 @@ __author__ = "Stephane Gaiffas"
 
 variance_reduction_methods_mapper = {
     'last': SAGA_VarianceReductionMethod_Last,
-    'avg':  SAGA_VarianceReductionMethod_Average,
+    'avg': SAGA_VarianceReductionMethod_Average,
     'rand': SAGA_VarianceReductionMethod_Random
 }
+
 
 class SAGA(SolverFirstOrderSto):
     """Stochastic Average Gradient solver, for the minimization of objectives
@@ -150,14 +151,14 @@ class SAGA(SolverFirstOrderSto):
     """
 
     def __init__(self, step: float = None, epoch_size: int = None,
-                 rand_type: str = "unif", tol: float = 0.,
-                 max_iter: int = 100, verbose: bool = True,
-                 print_every: int = 10, record_every: int = 1,
-                 seed: int = -1, variance_reduction: str = "last"):
+                 rand_type: str = "unif", tol: float = 0., max_iter: int = 100,
+                 verbose: bool = True, print_every: int = 10,
+                 record_every: int = 1, seed: int = -1,
+                 variance_reduction: str = "last"):
 
-        SolverFirstOrderSto.__init__(self, step, epoch_size, rand_type,
-                                     tol, max_iter, verbose,
-                                     print_every, record_every, seed=seed)
+        SolverFirstOrderSto.__init__(self, step, epoch_size, rand_type, tol,
+                                     max_iter, verbose, print_every,
+                                     record_every, seed=seed)
         step = self.step
         if step is None:
             step = 0.
@@ -167,8 +168,8 @@ class SAGA(SolverFirstOrderSto):
             epoch_size = 0
 
         # Construct the wrapped C++ SAGA solver
-        self._solver = _SAGA(epoch_size, self.tol,
-                             self._rand_type, step, self.seed)
+        self._solver = _SAGA(epoch_size, self.tol, self._rand_type, step,
+                             self.seed)
 
         self.variance_reduction = variance_reduction
 
@@ -183,8 +184,7 @@ class SAGA(SolverFirstOrderSto):
         if val not in variance_reduction_methods_mapper:
             raise ValueError(
                 'variance_reduction should be one of "{}", got "{}".'.format(
-                    ', '.join(variance_reduction_methods_mapper.keys()),
-                    val))
+                    ', '.join(variance_reduction_methods_mapper.keys()), val))
 
         self._solver.set_variance_reduction(
             variance_reduction_methods_mapper[val])

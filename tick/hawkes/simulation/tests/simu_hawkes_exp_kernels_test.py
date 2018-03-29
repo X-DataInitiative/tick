@@ -71,8 +71,9 @@ class Test(unittest.TestCase):
 
         mean_intensity = self.hawkes.mean_intensity()
         for i in range(self.hawkes.n_nodes):
-            self.assertAlmostEqual(np.mean(self.hawkes.tracked_intensity[i]),
-                                   mean_intensity[i], delta=0.1)
+            self.assertAlmostEqual(
+                np.mean(self.hawkes.tracked_intensity[i]), mean_intensity[i],
+                delta=0.1)
 
 
 if __name__ == "__main__":

@@ -37,8 +37,8 @@ class ProxL1(Prox):
         }
     }
 
-    def __init__(self, strength: float, range: tuple=None,
-                 positive: bool=False):
+    def __init__(self, strength: float, range: tuple = None,
+                 positive: bool = False):
         Prox.__init__(self, range)
         if range is None:
             self._prox = _ProxL1(strength, positive)

@@ -73,9 +73,9 @@ class ProxSortedL1(Prox):
         }
     }
 
-    def __init__(self, strength: float, fdr: float=0.6,
-                 weights_type: str="bh", range: tuple=None,
-                 positive: bool=False):
+    def __init__(self, strength: float, fdr: float = 0.6,
+                 weights_type: str = "bh", range: tuple = None,
+                 positive: bool = False):
         Prox.__init__(self, range)
         self.strength = strength
         self.fdr = fdr
@@ -84,13 +84,11 @@ class ProxSortedL1(Prox):
         self.weights = None
         if range is None:
             self._prox = _ProxSortedL1(self.strength, self.fdr,
-                                       self._weights_type,
-                                       self.positive)
+                                       self._weights_type, self.positive)
         else:
             self._prox = _ProxSortedL1(self.strength, self.fdr,
-                                       self._weights_type,
-                                       self.range[0], self.range[1],
-                                       self.positive)
+                                       self._weights_type, self.range[0],
+                                       self.range[1], self.positive)
 
     @property
     def weights_type(self):

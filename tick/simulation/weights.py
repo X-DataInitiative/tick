@@ -1,12 +1,10 @@
 # License: BSD 3 clause
 
-
 import numpy as np
 from warnings import warn
 
 
-def weights_sparse_gauss(n_weights: int = 100,
-                         nnz: int = 10,
+def weights_sparse_gauss(n_weights: int = 100, nnz: int = 10,
                          std: float = 1.) -> np.ndarray:
     """Sparse and gaussian model weights generator
     
@@ -42,8 +40,7 @@ def weights_sparse_gauss(n_weights: int = 100,
     return weights0
 
 
-def weights_sparse_exp(n_weigths: int = 100,
-                       nnz: int = 10,
+def weights_sparse_exp(n_weigths: int = 100, nnz: int = 10,
                        scale: float = 10.) -> np.ndarray:
     """Sparse and exponential model weights generator
     

@@ -76,9 +76,9 @@ class SolverFirstOrder(Solver):
         },
     }
 
-    def __init__(self, step: float=None, tol: float =0.,
-                 max_iter: int=100, verbose: bool=True,
-                 print_every: int=10, record_every: int=1):
+    def __init__(self, step: float = None, tol: float = 0.,
+                 max_iter: int = 100, verbose: bool = True,
+                 print_every: int = 10, record_every: int = 1):
         Solver.__init__(self, tol, max_iter, verbose, print_every,
                         record_every)
         self.model = None
@@ -197,7 +197,7 @@ class SolverFirstOrder(Solver):
             dd["prox"] = self.prox._as_dict()
         return dd
 
-    def objective(self, coeffs, loss: float=None):
+    def objective(self, coeffs, loss: float = None):
         """Compute the objective function
 
         Parameters
@@ -251,7 +251,7 @@ class SolverFirstOrder(Solver):
         solution = Solver.solve(self, x0, step)
         return solution
 
-    def _handle_history(self, n_iter: int, force: bool=False, **kwargs):
+    def _handle_history(self, n_iter: int, force: bool = False, **kwargs):
         """Updates the history of the solver.
 
         Parameters

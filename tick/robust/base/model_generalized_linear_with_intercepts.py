@@ -1,6 +1,5 @@
 # License: BSD 3 clause
 
-
 from tick.base_model import ModelGeneralizedLinear
 
 __author__ = 'Stephane Gaiffas'

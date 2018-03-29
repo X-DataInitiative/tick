@@ -1,6 +1,5 @@
 # License: BSD 3 clause
 
-
 # -*- coding: utf8 -*-
 
 import numpy as np
@@ -8,9 +7,7 @@ from numpy.linalg import svd
 
 from tick.prox.base import Prox
 
-
 __author__ = 'Stephane Gaiffas'
-
 
 # TODO: code the incremental strategy, where we try smaller SVDs
 
@@ -48,8 +45,8 @@ class ProxNuclear(Prox):
     for use on large matrices
     """
 
-    def __init__(self, strength: float, n_rows: int=None,
-                 range: tuple=None, positive: bool=False):
+    def __init__(self, strength: float, n_rows: int = None,
+                 range: tuple = None, positive: bool = False):
         Prox.__init__(self, range)
         self.positive = positive
         self.strength = strength

@@ -7,8 +7,7 @@ from .build.robust import ModelEpsilonInsensitiveDouble as _ModelEpsilonInsensit
 __author__ = 'Stephane Gaiffas'
 
 
-class ModelEpsilonInsensitive(ModelFirstOrder,
-                              ModelGeneralizedLinear):
+class ModelEpsilonInsensitive(ModelFirstOrder, ModelGeneralizedLinear):
     """Epsilon-Insensitive loss for robust regression. This class gives first
     order information (gradient and loss) for this model and can be passed
     to any solver through the solver's ``set_model`` method.
@@ -102,11 +101,10 @@ class ModelEpsilonInsensitive(ModelFirstOrder,
         """
         ModelFirstOrder.fit(self, features, labels)
         ModelGeneralizedLinear.fit(self, features, labels)
-        self._set("_model", _ModelEpsilonInsensitive(self.features,
-                                                     self.labels,
-                                                     self.fit_intercept,
-                                                     self.threshold,
-                                                     self.n_threads))
+        self._set("_model",
+                  _ModelEpsilonInsensitive(self.features, self.labels,
+                                           self.fit_intercept, self.threshold,
+                                           self.n_threads))
         return self
 
     def _grad(self, coeffs: np.ndarray, out: np.ndarray) -> None:

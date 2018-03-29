@@ -6,7 +6,6 @@ import numpy as np
 from .base import Prox
 from .build.prox import ProxPositiveDouble as _ProxPositive
 
-
 __author__ = 'Stephane Gaiffas'
 
 
@@ -21,7 +20,7 @@ class ProxPositive(Prox):
         applied on the whole vector
     """
 
-    def __init__(self, range: tuple=None, positive: bool=False):
+    def __init__(self, range: tuple = None, positive: bool = False):
         Prox.__init__(self, range)
         if range is None:
             self._prox = _ProxPositive(0.)

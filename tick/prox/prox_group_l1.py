@@ -1,6 +1,5 @@
 # License: BSD 3 clause
 
-
 from .base import ProxWithGroups
 from .build.prox import ProxGroupL1Double as _ProxGroupL1
 
@@ -37,6 +36,7 @@ class ProxGroupL1(ProxWithGroups):
     n_blocks : `int`
         Number of blocks
     """
+
     def __init__(self, strength: float, blocks_start, blocks_length,
                  range: tuple = None, positive: bool = False):
         ProxWithGroups.__init__(self, strength, blocks_start, blocks_length,

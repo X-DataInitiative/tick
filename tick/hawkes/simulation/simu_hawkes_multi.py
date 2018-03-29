@@ -63,8 +63,12 @@ class SimuHawkesMulti(Simu):
 
     _attrinfos = {
         "_simulations": {},
-        "hawkes_simu": {"writable": False},
-        "n_simulations": {"writable": False},
+        "hawkes_simu": {
+            "writable": False
+        },
+        "n_simulations": {
+            "writable": False
+        },
     }
 
     def __init__(self, hawkes_simu, n_simulations, n_threads=1):
@@ -135,8 +139,8 @@ class SimuHawkesMulti(Simu):
     @end_time.setter
     def end_time(self, end_times):
         if len(end_times) != self.n_simulations:
-            raise ValueError('end_time must have length {}'
-                             .format(self.n_simulations))
+            raise ValueError('end_time must have length {}'.format(
+                self.n_simulations))
         for i, simu in enumerate(self._simulations):
             simu.end_time = end_times[i]
 

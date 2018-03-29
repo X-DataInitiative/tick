@@ -7,8 +7,7 @@ import numpy as np
 
 from tick.base_model import LOSS_AND_GRAD
 from tick.hawkes.model.build.hawkes_model import (
-    ModelHawkesSumExpKernLeastSq as _ModelHawkesSumExpKernLeastSq
-)
+    ModelHawkesSumExpKernLeastSq as _ModelHawkesSumExpKernLeastSq)
 from .base import ModelHawkes
 
 
@@ -136,8 +135,7 @@ class ModelHawkesSumExpKernLeastSq(ModelHawkes):
 
         self._model = _ModelHawkesSumExpKernLeastSq(
             self.decays, self.n_baselines, self.cast_period_length(),
-            self.n_threads, self.approx
-        )
+            self.n_threads, self.approx)
 
     @property
     def n_decays(self):
@@ -174,4 +172,4 @@ class ModelHawkesSumExpKernLeastSq(ModelHawkes):
     @property
     def baseline_intervals(self):
         return np.arange(self.n_baselines) * (
-                self._model.get_period_length() / self.n_baselines)
+            self._model.get_period_length() / self.n_baselines)

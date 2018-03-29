@@ -53,12 +53,13 @@ class Test(unittest.TestCase):
     def test_hawkes_adm4_solution(self):
         """...Test solution obtained by HawkesADM4 on toy timestamps
         """
-        events = [
-            [np.array([1, 1.2, 3.4, 5.8, 10.3, 11, 13.4]),
-             np.array([2, 5, 8.3, 9.10, 15, 18, 20, 33])],
-            [np.array([2, 3.2, 11.4, 12.8, 45]),
-             np.array([2, 3, 8.8, 9, 15.3, 19])]
-        ]
+        events = [[
+            np.array([1, 1.2, 3.4, 5.8, 10.3, 11, 13.4]),
+            np.array([2, 5, 8.3, 9.10, 15, 18, 20, 33])
+        ], [
+            np.array([2, 3.2, 11.4, 12.8, 45]),
+            np.array([2, 3, 8.8, 9, 15.3, 19])
+        ]]
 
         n_nodes = len(events[0])
         rho = 0.5
@@ -68,10 +69,9 @@ class Test(unittest.TestCase):
         baseline_start = np.zeros(n_nodes) + .2
         adjacency_start = np.zeros((n_nodes, n_nodes)) + .2
 
-        learner = HawkesADM4(self.decay, rho=rho, C=C,
-                             lasso_nuclear_ratio=lasso_nuclear_ratio,
-                             n_threads=3, max_iter=10, verbose=False,
-                             em_max_iter=3)
+        learner = HawkesADM4(
+            self.decay, rho=rho, C=C, lasso_nuclear_ratio=lasso_nuclear_ratio,
+            n_threads=3, max_iter=10, verbose=False, em_max_iter=3)
         learner.fit(events[0], baseline_start=baseline_start,
                     adjacency_start=adjacency_start)
 
@@ -92,12 +92,12 @@ class Test(unittest.TestCase):
         n_realizations = 3
 
         train_events = [[
-            np.cumsum(np.random.rand(4 + i)) for i in range(n_nodes)]
-            for _ in range(n_realizations)]
+            np.cumsum(np.random.rand(4 + i)) for i in range(n_nodes)
+        ] for _ in range(n_realizations)]
 
         test_events = [[
-            np.cumsum(np.random.rand(4 + i)) for i in range(n_nodes)]
-            for _ in range(n_realizations)]
+            np.cumsum(np.random.rand(4 + i)) for i in range(n_nodes)
+        ] for _ in range(n_realizations)]
 
         learner = HawkesADM4(self.decay)
 
@@ -113,8 +113,8 @@ class Test(unittest.TestCase):
         train_score_current_coeffs = learner.score()
         self.assertAlmostEqual(train_score_current_coeffs, 0.12029826)
 
-        train_score_given_coeffs = learner.score(
-            baseline=given_baseline, adjacency=given_adjacency)
+        train_score_given_coeffs = learner.score(baseline=given_baseline,
+                                                 adjacency=given_adjacency)
         self.assertAlmostEqual(train_score_given_coeffs, -0.15247511)
 
         test_score_current_coeffs = learner.score(test_events)
@@ -127,19 +127,22 @@ class Test(unittest.TestCase):
     def test_hawkes_adm4_set_data(self):
         """...Test set_data method of Hawkes ADM4
         """
-        events = [
-            [np.array([1, 1.2, 3.4, 5.8, 10.3, 11, 13.4]),
-             np.array([2, 5, 8.3, 9.10, 15, 18, 20, 33])],
-            [np.array([2, 3.2, 11.4, 12.8, 45]),
-             np.array([2, 3, 8.8, 9, 15.3, 19])]
-        ]
+        events = [[
+            np.array([1, 1.2, 3.4, 5.8, 10.3, 11, 13.4]),
+            np.array([2, 5, 8.3, 9.10, 15, 18, 20, 33])
+        ], [
+            np.array([2, 3.2, 11.4, 12.8, 45]),
+            np.array([2, 3, 8.8, 9, 15.3, 19])
+        ]]
 
         learner = HawkesADM4(1)
         learner._set_data(events)
         self.assertEqual(learner.n_nodes, 2)
 
-        events = [np.array([1, 1.2, 3.4, 5.8, 10.3, 11, 13.4]),
-                  np.array([2, 5, 8.3, 9.10, 15, 18, 20, 33])]
+        events = [
+            np.array([1, 1.2, 3.4, 5.8, 10.3, 11, 13.4]),
+            np.array([2, 5, 8.3, 9.10, 15, 18, 20, 33])
+        ]
 
         learner = HawkesADM4(1)
         learner._set_data(events)
@@ -148,11 +151,10 @@ class Test(unittest.TestCase):
         msg = "All realizations should have 2 nodes, but realization 1 has " \
               "1 nodes"
         with self.assertRaisesRegex(RuntimeError, msg):
-            events = [
-                [np.array([1, 1.2, 3.4, 5.8, 10.3, 11, 13.4]),
-                 np.array([2, 5, 8.3, 9.10, 15, 18, 20, 33])],
-                [np.array([2, 3.2, 11.4, 12.8, 45])]
-            ]
+            events = [[
+                np.array([1, 1.2, 3.4, 5.8, 10.3, 11, 13.4]),
+                np.array([2, 5, 8.3, 9.10, 15, 18, 20, 33])
+            ], [np.array([2, 3.2, 11.4, 12.8, 45])]]
             learner._set_data(events)
 
     def test_hawkes_adm4_parameters(self):

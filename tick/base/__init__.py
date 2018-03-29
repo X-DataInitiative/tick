@@ -1,5 +1,6 @@
 # License: BSD 3 clause
 
+
 def _set_mpl_backend():
     """Make sure that we don't get DISPLAY problems when running without X
     on unices
@@ -11,10 +12,10 @@ def _set_mpl_backend():
     import sys
     # Set the backend to a non-interactive one for unices without X
     if (os.name == 'posix' and 'DISPLAY' not in os.environ
-        and not (sys.platform == 'darwin'
-                 and matplotlib.get_backend() == 'MacOSX'
-                 )):
+            and not (sys.platform == 'darwin'
+                     and matplotlib.get_backend() == 'MacOSX')):
         matplotlib.use('Agg')
+
 
 _set_mpl_backend()
 

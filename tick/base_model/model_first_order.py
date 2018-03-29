@@ -36,11 +36,13 @@ class ModelFirstOrder(Model):
     """
     # A dict which specifies for each operation how many times we pass
     # through data
-    pass_per_operation = {k: v for d in
-                          [Model.pass_per_operation, {
-                              GRAD: 1,
-                              LOSS_AND_GRAD: 2
-                          }] for k, v in d.items()}
+    pass_per_operation = {
+        k: v
+        for d in [Model.pass_per_operation, {
+            GRAD: 1,
+            LOSS_AND_GRAD: 2
+        }] for k, v in d.items()
+    }
 
     _attrinfos = {
         N_CALLS_GRAD: {
@@ -62,8 +64,7 @@ class ModelFirstOrder(Model):
         self._set(N_CALLS_LOSS_AND_GRAD, 0)
         return self
 
-    def grad(self, coeffs: np.ndarray,
-             out: np.ndarray = None) -> np.ndarray:
+    def grad(self, coeffs: np.ndarray, out: np.ndarray = None) -> np.ndarray:
         """Computes the gradient of the model at ``coeffs``
 
         Parameters
@@ -90,15 +91,14 @@ class ModelFirstOrder(Model):
 
         if coeffs.shape[0] != self.n_coeffs:
             raise ValueError(("``coeffs`` has size %i while the model" +
-                              " expects %i coefficients") %
-                             (len(coeffs), self.n_coeffs))
+                              " expects %i coefficients") % (len(coeffs),
+                                                             self.n_coeffs))
         if out is not None:
             grad = out
         else:
             grad = np.empty(self.n_coeffs)
         self._inc_attr(N_CALLS_GRAD)
-        self._inc_attr(PASS_OVER_DATA,
-                       step=self.pass_per_operation[GRAD])
+        self._inc_attr(PASS_OVER_DATA, step=self.pass_per_operation[GRAD])
         self._grad(coeffs, out=grad)
         return grad
 
@@ -143,13 +143,12 @@ class ModelFirstOrder(Model):
 
         """
         if not self._fitted:
-            raise ValueError("call ``fit`` before using "
-                             "``loss_and_grad``")
+            raise ValueError("call ``fit`` before using " "``loss_and_grad``")
 
         if coeffs.shape[0] != self.n_coeffs:
             raise ValueError(("``coeffs`` has size %i while the model" +
-                              "expects %i coefficients") %
-                             (len(coeffs), self.n_coeffs))
+                              "expects %i coefficients") % (len(coeffs),
+                                                            self.n_coeffs))
         if out is not None:
             grad = out
         else:
@@ -163,7 +162,6 @@ class ModelFirstOrder(Model):
         loss = self._loss_and_grad(coeffs, out=grad)
         return loss, grad
 
-    def _loss_and_grad(self, coeffs: np.ndarray,
-                       out: np.ndarray) -> float:
+    def _loss_and_grad(self, coeffs: np.ndarray, out: np.ndarray) -> float:
         self._grad(coeffs, out=out)
         return self._loss(coeffs)

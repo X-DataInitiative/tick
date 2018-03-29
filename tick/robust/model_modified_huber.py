@@ -9,8 +9,7 @@ from .build.robust import ModelModifiedHuberDouble as _ModelModifiedHuber
 __author__ = 'Stephane Gaiffas'
 
 
-class ModelModifiedHuber(ModelFirstOrder,
-                         ModelGeneralizedLinear,
+class ModelModifiedHuber(ModelFirstOrder, ModelGeneralizedLinear,
                          ModelLipschitz):
     """Modified hinge loss model for binary classification. This loss is
     particularly for classification problems with outliers. This class gives
@@ -96,10 +95,9 @@ class ModelModifiedHuber(ModelFirstOrder,
         ModelFirstOrder.fit(self, features, labels)
         ModelGeneralizedLinear.fit(self, features, labels)
         ModelLipschitz.fit(self, features, labels)
-        self._set("_model", _ModelModifiedHuber(self.features,
-                                                self.labels,
-                                                self.fit_intercept,
-                                                self.n_threads))
+        self._set("_model",
+                  _ModelModifiedHuber(self.features, self.labels,
+                                      self.fit_intercept, self.n_threads))
         return self
 
     def _grad(self, coeffs: np.ndarray, out: np.ndarray) -> None:
@@ -110,8 +108,7 @@ class ModelModifiedHuber(ModelFirstOrder,
 
     def _get_lip_best(self):
         # TODO: Use sklearn.decomposition.TruncatedSVD instead?
-        s = svd(self.features, full_matrices=False,
-                compute_uv=False)[0] ** 2
+        s = svd(self.features, full_matrices=False, compute_uv=False)[0] ** 2
         if self.fit_intercept:
             return 2 * (s + 1) / self.n_samples
         else:

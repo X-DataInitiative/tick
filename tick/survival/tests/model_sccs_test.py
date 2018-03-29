@@ -12,16 +12,15 @@ from tick.prox import ProxZero
 
 
 class ModelSCCSTest(unittest.TestCase):
-
     def setUp(self):
-        self.X = [np.array([[0, 1],
-                            [0, 1]], dtype="float64"),
-                  np.array([[1, 1],
-                            [1, 0]], dtype="float64")
-                 ]
-        self.y = [np.array([1, 0], dtype="int32"),
-                  np.array([0, 1], dtype="int32")
-                 ]
+        self.X = [
+            np.array([[0, 1], [0, 1]], dtype="float64"),
+            np.array([[1, 1], [1, 0]], dtype="float64")
+        ]
+        self.y = [
+            np.array([1, 0], dtype="int32"),
+            np.array([0, 1], dtype="int32")
+        ]
 
         self.n_lags = np.array([1, 1], dtype="uint64")
 
@@ -32,25 +31,21 @@ class ModelSCCSTest(unittest.TestCase):
         model = ModelSCCS(n_intervals=2, n_lags=self.n_lags)\
             .fit(X, self.y)
         loss = model.loss(coeffs=np.array([0.0, 0.0, 1.0, 0.0]))
-        expected_loss = - np.log((np.e / (2*np.e) * 1 / (1 + np.e))) / 2
+        expected_loss = -np.log((np.e / (2 * np.e) * 1 / (1 + np.e))) / 2
         self.assertAlmostEqual(loss, expected_loss)
 
     def test_grad(self):
         """Test longitudinal multinomial model gradient value."""
-        X = [np.array([[0, 0.],
-                       [1, 0]]),
-             np.array([[1, 0.],
-                       [0, 1]])
-             ]
+        X = [np.array([[0, 0.], [1, 0]]), np.array([[1, 0.], [0, 1]])]
         X, _, _ = LongitudinalFeaturesLagger(n_lags=self.n_lags) \
             .fit_transform(X)
         model = ModelSCCS(n_intervals=2, n_lags=self.n_lags) \
             .fit(X, self.y)
         grad = model.grad(coeffs=np.array([0.0, 0.0, 1.0, 0.0]))
-        expected_grad = - np.array([-1/2 - 1 / (1 + np.e),
-                                    1 - np.e / (1 + np.e),
-                                    1 - np.e / (1 + np.e),
-                                    0]) / 2
+        expected_grad = -np.array([
+            -1 / 2 - 1 / (1 + np.e), 1 - np.e / (1 + np.e), 1 - np.e /
+            (1 + np.e), 0
+        ]) / 2
         np.testing.assert_almost_equal(grad, expected_grad, decimal=15)
 
     def test_grad_loss_consistency(self):
@@ -59,7 +54,7 @@ class ModelSCCSTest(unittest.TestCase):
         sim = SimuSCCS(500, 36, 3, n_lags, None, "single_exposure", seed=42,
                        verbose=False)
         _, X, y, censoring, coeffs = sim.simulate()
-        coeffs =np.hstack(coeffs)
+        coeffs = np.hstack(coeffs)
         X, _, _ = LongitudinalFeaturesLagger(n_lags=n_lags) \
             .fit_transform(X, censoring)
         model = ModelSCCS(n_intervals=36, n_lags=n_lags)\
@@ -72,21 +67,18 @@ class ModelSCCSTest(unittest.TestCase):
 
     def test_lipschitz_constant(self):
         """Test longitudinal multinomial model Lipschitz constant."""
-        X = [np.array([[0, 0, 1],
-                       [0, 1, 1],
-                       [1, 1, 1]], dtype="float64"),
-             np.array([[0, 1, 1],
-                       [0, 1, 1],
-                       [1, 1, 1]], dtype="float64")
-             ]
-        y = [np.array([0, 1, 0], dtype="int32"),
-             np.array([0, 1, 0], dtype="int32")
-             ]
+        X = [
+            np.array([[0, 0, 1], [0, 1, 1], [1, 1, 1]], dtype="float64"),
+            np.array([[0, 1, 1], [0, 1, 1], [1, 1, 1]], dtype="float64")
+        ]
+        y = [
+            np.array([0, 1, 0], dtype="int32"),
+            np.array([0, 1, 0], dtype="int32")
+        ]
         n_lags = np.repeat(1, 3).astype(dtype="uint64")
         X, _, _ = LongitudinalFeaturesLagger(n_lags=n_lags) \
             .fit_transform(X)
-        model = ModelSCCS(n_intervals=3, n_lags=n_lags).fit(
-            X, y)
+        model = ModelSCCS(n_intervals=3, n_lags=n_lags).fit(X, y)
         lip_constant = model.get_lip_max()
         expected_lip_constant = .5
         self.assertEqual(lip_constant, expected_lip_constant)
@@ -103,11 +95,11 @@ class ModelSCCSTest(unittest.TestCase):
         coeffs = np.hstack(coeffs)
         X, _, _ = LongitudinalFeaturesLagger(n_lags=n_lags) \
             .fit_transform(X, censoring)
-        model = ModelSCCS(n_intervals=n_intervals,
-                          n_lags=n_lags).fit(X, y, censoring)
+        model = ModelSCCS(n_intervals=n_intervals, n_lags=n_lags).fit(
+            X, y, censoring)
         solver = SVRG(max_iter=15, verbose=False)
         solver.set_model(model).set_prox(ProxZero())
-        coeffs_svrg = solver.solve(step=1/model.get_lip_max())
+        coeffs_svrg = solver.solve(step=1 / model.get_lip_max())
         np.testing.assert_almost_equal(coeffs, coeffs_svrg, decimal=1)
 
     def test_convergence_without_lags(self):
@@ -122,29 +114,26 @@ class ModelSCCSTest(unittest.TestCase):
         coeffs = np.hstack(coeffs)
         X, _, _ = LongitudinalFeaturesLagger(n_lags=n_lags) \
             .fit_transform(X, censoring)
-        model = ModelSCCS(n_intervals=n_intervals,
-                          n_lags=n_lags).fit(X, y, censoring)
+        model = ModelSCCS(n_intervals=n_intervals, n_lags=n_lags).fit(
+            X, y, censoring)
         solver = SVRG(max_iter=15, verbose=False)
         solver.set_model(model).set_prox(ProxZero())
         coeffs_svrg = solver.solve(step=1 / model.get_lip_max())
         np.testing.assert_almost_equal(coeffs, coeffs_svrg, decimal=1)
 
-    def _test_grad(self, model, coeffs,
-                   delta_check_grad=1e-5,
+    def _test_grad(self, model, coeffs, delta_check_grad=1e-5,
                    delta_model_grad=1e-4):
-            """Test that gradient is consistent with loss and that minimum is
+        """Test that gradient is consistent with loss and that minimum is
             achievable with a small gradient
             """
-            self.assertAlmostEqual(check_grad(model.loss,
-                                              model.grad,
-                                              coeffs),
-                                   0.,
-                                   delta=delta_check_grad)
-            # Check that minimum iss achievable with a small gradient
-            coeffs_min = fmin_bfgs(model.loss, coeffs,
-                                   fprime=model.grad, disp=False)
-            self.assertAlmostEqual(norm(model.grad(coeffs_min)),
-                                   .0, delta=delta_model_grad)
+        self.assertAlmostEqual(
+            check_grad(model.loss, model.grad, coeffs), 0.,
+            delta=delta_check_grad)
+        # Check that minimum iss achievable with a small gradient
+        coeffs_min = fmin_bfgs(model.loss, coeffs, fprime=model.grad,
+                               disp=False)
+        self.assertAlmostEqual(
+            norm(model.grad(coeffs_min)), .0, delta=delta_model_grad)
 
 
 if __name__ == '__main__':

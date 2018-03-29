@@ -22,10 +22,12 @@ class Test(unittest.TestCase):
         """
         ## Windows returns "permission denied" rather than "Permission denied"
         if platform.system() == 'Windows':
-            with self.assertRaisesRegex(RuntimeError, os.strerror(errno.EACCES).lower()):
+            with self.assertRaisesRegex(RuntimeError,
+                                        os.strerror(errno.EACCES).lower()):
                 throw_system_error()
         else:
-            with self.assertRaisesRegex(RuntimeError, os.strerror(errno.EACCES)):
+            with self.assertRaisesRegex(RuntimeError, os.strerror(
+                    errno.EACCES)):
                 throw_system_error()
 
     def test_throw_invalid_argument(self):

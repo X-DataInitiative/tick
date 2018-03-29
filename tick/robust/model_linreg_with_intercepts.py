@@ -11,9 +11,8 @@ from .build.robust import \
 __author__ = 'Stephane Gaiffas'
 
 
-class ModelLinRegWithIntercepts(ModelFirstOrder,
-                                ModelGeneralizedLinearWithIntercepts,
-                                ModelLipschitz):
+class ModelLinRegWithIntercepts(
+        ModelFirstOrder, ModelGeneralizedLinearWithIntercepts, ModelLipschitz):
     """Linear regression model with individual intercepts.
     This class gives first order information (gradient and loss) for this model
 
@@ -49,8 +48,7 @@ class ModelLinRegWithIntercepts(ModelFirstOrder,
 
     def __init__(self, fit_intercept: bool = True, n_threads: int = 1):
         ModelFirstOrder.__init__(self)
-        ModelGeneralizedLinearWithIntercepts.__init__(self,
-                                                      fit_intercept)
+        ModelGeneralizedLinearWithIntercepts.__init__(self, fit_intercept)
         ModelLipschitz.__init__(self)
         self.n_threads = n_threads
 
@@ -74,10 +72,10 @@ class ModelLinRegWithIntercepts(ModelFirstOrder,
         ModelFirstOrder.fit(self, features, labels)
         ModelGeneralizedLinearWithIntercepts.fit(self, features, labels)
         ModelLipschitz.fit(self, features, labels)
-        self._set("_model", _ModelLinRegWithIntercepts(self.features,
-                                                       self.labels,
-                                                       self.fit_intercept,
-                                                       self.n_threads))
+        self._set("_model",
+                  _ModelLinRegWithIntercepts(self.features, self.labels,
+                                             self.fit_intercept,
+                                             self.n_threads))
         return self
 
     def _grad(self, coeffs: np.ndarray, out: np.ndarray) -> None:
@@ -87,8 +85,7 @@ class ModelLinRegWithIntercepts(ModelFirstOrder,
         return self._model.loss(coeffs)
 
     def _get_lip_best(self):
-        s = svd(self.features, full_matrices=False,
-                compute_uv=False)[0] ** 2
+        s = svd(self.features, full_matrices=False, compute_uv=False)[0] ** 2
         if self.fit_intercept:
             return (s + 2) / self.n_samples
         else:

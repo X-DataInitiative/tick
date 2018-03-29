@@ -8,6 +8,7 @@ from scipy import sparse
 
 from tick.array.serialize import serialize_array, load_array
 
+
 class Test(unittest.TestCase):
     def setUp(self):
         self.array_file = 'tmp_array_file.cereal'

@@ -114,8 +114,7 @@ class ModelCoxRegPartialLik(ModelFirstOrder):
                               "have %i" % (n_samples, times.shape[0])))
         if n_samples != censoring.shape[0]:
             raise ValueError(("Features has %i samples while censoring "
-                              "have %i" % (n_samples,
-                                           censoring.shape[0])))
+                              "have %i" % (n_samples, censoring.shape[0])))
 
         features = safe_array(features)
         times = safe_array(times)
@@ -126,9 +125,9 @@ class ModelCoxRegPartialLik(ModelFirstOrder):
         self._set("censoring", censoring)
         self._set("n_samples", n_samples)
         self._set("n_features", n_features)
-        self._set("_model", _ModelCoxRegPartialLik(self.features,
-                                                   self.times,
-                                                   self.censoring))
+        self._set("_model",
+                  _ModelCoxRegPartialLik(self.features, self.times,
+                                         self.censoring))
 
     def _grad(self, coeffs: np.ndarray, out: np.ndarray) -> None:
         self._model.grad(coeffs, out)

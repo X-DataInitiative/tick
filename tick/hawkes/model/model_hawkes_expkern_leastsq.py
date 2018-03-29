@@ -3,9 +3,8 @@
 import numpy as np
 
 from tick.base_model import LOSS_AND_GRAD
-from tick.hawkes.model.build.hawkes_model import (
-    ModelHawkesExpKernLeastSq as _ModelHawkesExpKernLeastSq
-)
+from tick.hawkes.model.build.hawkes_model import (ModelHawkesExpKernLeastSq as
+                                                  _ModelHawkesExpKernLeastSq)
 from .base import ModelHawkes
 
 
@@ -80,12 +79,7 @@ class ModelHawkesExpKernLeastSq(ModelHawkes):
         {k: v for d in [ModelHawkes.pass_per_operation,
                         {LOSS_AND_GRAD: 2}] for k, v in d.items()}
 
-    _attrinfos = {
-        "decays": {
-            "writable": True,
-            "cpp_setter": "set_decays"
-        }
-    }
+    _attrinfos = {"decays": {"writable": True, "cpp_setter": "set_decays"}}
 
     def __init__(self, decays: np.ndarray, approx: int = 0,
                  n_threads: int = 1):
@@ -99,8 +93,7 @@ class ModelHawkesExpKernLeastSq(ModelHawkes):
         elif decays.dtype != float:
             decays = decays.astype(float)
 
-        self._model = _ModelHawkesExpKernLeastSq(decays.copy(),
-                                                 self.n_threads,
+        self._model = _ModelHawkesExpKernLeastSq(decays.copy(), self.n_threads,
                                                  self.approx)
 
     def _set_data(self, events: list):

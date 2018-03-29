@@ -24,19 +24,19 @@ class Test(TestGLM):
                           verbose=False).simulate()
         X_spars = csr_matrix(X)
         model = ModelAbsoluteRegression(fit_intercept=True).fit(X, y)
-        model_spars = ModelAbsoluteRegression(fit_intercept=True).fit(X_spars,
-                                                                      y)
+        model_spars = ModelAbsoluteRegression(fit_intercept=True).fit(
+            X_spars, y)
         self.run_test_for_glm(model, model_spars, 1e-5, 2e-3)
         self._test_glm_intercept_vs_hardcoded_intercept(model)
 
         # Then check without intercept
-        X, y = SimuLinReg(w0, None, n_samples=n_samples,
-                          verbose=False, seed=2038).simulate()
+        X, y = SimuLinReg(w0, None, n_samples=n_samples, verbose=False,
+                          seed=2038).simulate()
         X_spars = csr_matrix(X)
         model = ModelAbsoluteRegression(fit_intercept=False).fit(X, y)
 
-        model_spars = ModelAbsoluteRegression(fit_intercept=False).fit(X_spars,
-                                                                       y)
+        model_spars = ModelAbsoluteRegression(fit_intercept=False).fit(
+            X_spars, y)
         self.run_test_for_glm(model, model_spars, 1e-5, 2e-3)
 
 

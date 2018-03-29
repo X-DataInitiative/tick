@@ -57,9 +57,8 @@ class LearnerHawkesNoParam(Solver):
 
     _cpp_obj_name = '_learner'
 
-    def __init__(self, tol=1e-5, verbose=False,
-                 approx=0, n_threads=1, max_iter=100,
-                 print_every=10, record_every=10):
+    def __init__(self, tol=1e-5, verbose=False, approx=0, n_threads=1,
+                 max_iter=100, print_every=10, record_every=10):
         Solver.__init__(self, tol=tol, verbose=verbose, max_iter=max_iter,
                         print_every=print_every, record_every=record_every)
 

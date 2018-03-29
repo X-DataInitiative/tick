@@ -3,10 +3,8 @@
 import numpy as np
 
 from tick.base import actual_kwargs
-from tick.hawkes import (
-    ModelHawkesExpKernLogLik, ModelHawkesExpKernLeastSq,
-    SimuHawkesExpKernels
-)
+from tick.hawkes import (ModelHawkesExpKernLogLik, ModelHawkesExpKernLeastSq,
+                         SimuHawkesExpKernels)
 from tick.hawkes.inference.base import LearnerHawkesParametric
 from tick.prox import ProxElasticNet, ProxL1, ProxL2Sq, ProxNuclear, \
     ProxPositive
@@ -122,8 +120,12 @@ class HawkesExpKern(LearnerHawkesParametric):
     """
 
     _attrinfos = {
-        "gofit": {"writable": False},
-        "decays": {"writable": False},
+        "gofit": {
+            "writable": False
+        },
+        "decays": {
+            "writable": False
+        },
     }
 
     _penalties = {
@@ -146,13 +148,11 @@ class HawkesExpKern(LearnerHawkesParametric):
         self._set_gofit(gofit)
         self.decays = decays
 
-        LearnerHawkesParametric.__init__(self, penalty=penalty, C=C,
-                                         solver=solver, step=step, tol=tol,
-                                         max_iter=max_iter, verbose=verbose,
-                                         print_every=print_every,
-                                         record_every=record_every,
-                                         elastic_net_ratio=elastic_net_ratio,
-                                         random_state=random_state)
+        LearnerHawkesParametric.__init__(
+            self, penalty=penalty, C=C, solver=solver, step=step, tol=tol,
+            max_iter=max_iter, verbose=verbose, print_every=print_every,
+            record_every=record_every, elastic_net_ratio=elastic_net_ratio,
+            random_state=random_state)
 
         if penalty == "nuclear" and solver in self._solvers_stochastic:
             raise ValueError("Penalty 'nuclear' cannot be used with "
@@ -176,8 +176,9 @@ class HawkesExpKern(LearnerHawkesParametric):
 
     def _set_gofit(self, val):
         if val not in ["least-squares", "likelihood"]:
-            raise ValueError("Parameter gofit (goodness of fit) must be either "
-                             "'least-squares' or 'likelihood'")
+            raise ValueError(
+                "Parameter gofit (goodness of fit) must be either "
+                "'least-squares' or 'likelihood'")
         self.gofit = val
 
     def _set_prox_range(self, model_obj, prox_obj):
@@ -198,10 +199,10 @@ class HawkesExpKern(LearnerHawkesParametric):
 
     def _corresponding_simu(self):
         return SimuHawkesExpKernels(adjacency=self.adjacency,
-                                    decays=self.decays,
-                                    baseline=self.baseline)
+                                    decays=self.decays, baseline=self.baseline)
 
-    def score(self, events=None, end_times=None, baseline=None, adjacency=None):
+    def score(self, events=None, end_times=None, baseline=None,
+              adjacency=None):
         """Compute score metric
         Score metric is log likelihood (the higher the better)
 
@@ -244,5 +245,4 @@ class HawkesExpKern(LearnerHawkesParametric):
             coeffs = None
 
         return LearnerHawkesParametric.score(
-            self, events=events, end_times=end_times,
-            coeffs=coeffs)
+            self, events=events, end_times=end_times, coeffs=coeffs)

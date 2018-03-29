@@ -3,7 +3,6 @@
 from abc import abstractmethod
 from . import Model
 
-
 __author__ = 'Stephane Gaiffas'
 
 

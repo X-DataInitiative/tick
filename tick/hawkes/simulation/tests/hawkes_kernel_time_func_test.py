@@ -38,8 +38,8 @@ class Test(unittest.TestCase):
     def test_HawkesKernelTimeFunc_repr(self):
         """...Test HawkesKernelTimeFunc string in list representation
         """
-        self.assertEqual(str([self.hawkes_kernel_time_func]),
-                         "[KernelTimeFunc]")
+        self.assertEqual(
+            str([self.hawkes_kernel_time_func]), "[KernelTimeFunc]")
 
     def test_HawkesKernelTimeFunc_strtex(self):
         """...Test HawkesKernelTimeFunc string representation

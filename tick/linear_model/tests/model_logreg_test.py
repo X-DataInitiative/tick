@@ -30,8 +30,8 @@ class Test(TestGLM):
         self._test_glm_intercept_vs_hardcoded_intercept(model)
 
         # Then check without intercept
-        X, y = SimuLogReg(w0, None, n_samples=n_samples,
-                          verbose=False, seed=2038).simulate()
+        X, y = SimuLogReg(w0, None, n_samples=n_samples, verbose=False,
+                          seed=2038).simulate()
         X_spars = csr_matrix(X)
         model = ModelLogReg(fit_intercept=False).fit(X, y)
 
@@ -43,7 +43,8 @@ class Test(TestGLM):
         self.assertAlmostEqual(model.get_lip_best(), 0.67184209642814952)
         self.assertAlmostEqual(model.get_lip_mean(), 2.48961431697108)
         self.assertAlmostEqual(model.get_lip_max(), 13.706542412138093)
-        self.assertAlmostEqual(model_spars.get_lip_mean(), model.get_lip_mean())
+        self.assertAlmostEqual(model_spars.get_lip_mean(),
+                               model.get_lip_mean())
         self.assertAlmostEqual(model_spars.get_lip_max(), model.get_lip_max())
 
         # Test for the Lipschitz constants with intercept
@@ -52,7 +53,8 @@ class Test(TestGLM):
         self.assertAlmostEqual(model.get_lip_best(), 0.671892096428)
         self.assertAlmostEqual(model.get_lip_mean(), 2.739614316971082)
         self.assertAlmostEqual(model.get_lip_max(), 13.956542412138093)
-        self.assertAlmostEqual(model_spars.get_lip_mean(), model.get_lip_mean())
+        self.assertAlmostEqual(model_spars.get_lip_mean(),
+                               model.get_lip_mean())
         self.assertAlmostEqual(model_spars.get_lip_max(), model.get_lip_max())
 
 

@@ -10,7 +10,6 @@ from tick.prox.tests.prox import TestProx
 
 
 class Test(TestProx):
-
     def test_ProxGroupL1(self):
         """...Test of ProxGroupL1
         """
@@ -42,7 +41,7 @@ class Test(TestProx):
         blocks_start = [0, 3, 8, 34]
         blocks_length = [3, 5, 2, 23]
         prox = ProxGroupL1(strength=l_binarsity, blocks_start=blocks_start,
-                             blocks_length=blocks_length)
+                           blocks_length=blocks_length)
         self.assertEqual(prox.n_blocks, 4)
 
     def test_ProxGroupL1_penalty_parameters_setting(self):
@@ -55,47 +54,46 @@ class Test(TestProx):
         msg = '^``blocks_start`` and ``blocks_length`` must have the same size$'
         with self.assertRaisesRegex(ValueError, msg):
             ProxGroupL1(strength=strength, blocks_start=blocks_start,
-                          blocks_length=blocks_length)
+                        blocks_length=blocks_length)
 
         blocks_start = [0, 3, 8]
         blocks_length = [4, 5, 1]
         msg = '^blocks must not overlap$'
         with self.assertRaisesRegex(ValueError, msg):
             ProxGroupL1(strength=strength, blocks_start=blocks_start,
-                          blocks_length=blocks_length)
+                        blocks_length=blocks_length)
 
         # test not overlapping but not penalizing all coefficients either
         blocks_start = [0, 3, 8]
         blocks_length = [2, 2, 2]
         ProxGroupL1(strength=strength, blocks_start=blocks_start,
-                      blocks_length=blocks_length)
+                    blocks_length=blocks_length)
 
         blocks_start = [0, 8, 3]
         blocks_length = [1, 1, 1]
         msg = '^``block_start`` must be sorted$'
         with self.assertRaisesRegex(ValueError, msg):
             ProxGroupL1(strength=strength, blocks_start=blocks_start,
-                          blocks_length=blocks_length)
+                        blocks_length=blocks_length)
 
         blocks_start = [0, 3, 8]
         blocks_length = [-3, 5, 2]
         msg = '^all blocks must be of positive size$'
         with self.assertRaisesRegex(ValueError, msg):
             ProxGroupL1(strength=strength, blocks_start=blocks_start,
-                          blocks_length=blocks_length)
+                        blocks_length=blocks_length)
 
         blocks_start = [0, -3, 8]
         blocks_length = [3, 5, 2]
         msg = '^all blocks must have positive starting indices$'
         with self.assertRaisesRegex(ValueError, msg):
             ProxGroupL1(strength=strength, blocks_start=blocks_start,
-                          blocks_length=blocks_length)
+                        blocks_length=blocks_length)
 
         blocks_start = [0, 3, 8]
         blocks_length = [3, 5, 2]
-        prox = ProxGroupL1(strength=strength,
-                             blocks_start=blocks_start,
-                             blocks_length=blocks_length)
+        prox = ProxGroupL1(strength=strength, blocks_start=blocks_start,
+                           blocks_length=blocks_length)
 
         msg = '^blocks_length and blocks_start must have the same size$'
         with self.assertRaisesRegex(ValueError, msg):
@@ -106,7 +104,7 @@ class Test(TestProx):
         msg = '^last block is not within the range \[0, end-start\)$'
         with self.assertRaisesRegex(ValueError, msg):
             ProxGroupL1(strength=strength, blocks_start=blocks_start,
-                          blocks_length=blocks_length, range=(0, 17))
+                        blocks_length=blocks_length, range=(0, 17))
 
     def test_ProxGroupL1_range(self):
         """...Test that ProxGroupL1 deals with range correctly
@@ -123,8 +121,11 @@ class Test(TestProx):
                            blocks_length=blocks_length, range=prox_range)
         start_penalized_coeff = prox_range[0] + blocks_start[0]
         end_penalized_coeff = prox_range[0] + blocks_start[0] + blocks_length[0]
-        self.assertTrue(all(prox.call(coeffs)
-                            [start_penalized_coeff:end_penalized_coeff] == 0))
+        self.assertTrue(
+            all(
+                prox.call(coeffs)[start_penalized_coeff:end_penalized_coeff] ==
+                0))
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -20,10 +20,10 @@ class Test(unittest.TestCase):
 
         self.decay = np.random.rand()
 
-        self.timestamps_list = [
-            [np.cumsum(np.random.random(np.random.randint(3, 7)))
-             for _ in range(self.n_nodes)]
-            for _ in range(self.n_realizations)]
+        self.timestamps_list = [[
+            np.cumsum(np.random.random(np.random.randint(3, 7)))
+            for _ in range(self.n_nodes)
+        ] for _ in range(self.n_realizations)]
 
         self.end_time = 10
 
@@ -46,15 +46,15 @@ class Test(unittest.TestCase):
         timestamps = self.timestamps_list[self.realization]
 
         decays = np.ones((self.n_nodes, self.n_nodes)) * self.decay
-        intensities = hawkes_exp_kernel_intensities(
-            self.baseline, decays, self.adjacency, timestamps)
+        intensities = hawkes_exp_kernel_intensities(self.baseline, decays,
+                                                    self.adjacency, timestamps)
 
         precision = 3
         integral_approx = hawkes_log_likelihood(
             intensities, timestamps, self.end_time, precision=precision)
         integral_approx /= self.model.n_jumps
 
-        self.assertAlmostEqual(integral_approx, - self.model.loss(self.coeffs),
+        self.assertAlmostEqual(integral_approx, -self.model.loss(self.coeffs),
                                places=precision)
 
     def test_model_hawkes_loglik_multiple_events(self):
@@ -72,17 +72,16 @@ class Test(unittest.TestCase):
             for timestamps in self.timestamps_list
         ]
 
-        integral_approx = sum([hawkes_log_likelihood(intensities,
-                                                     timestamps, end_time)
-                               for (intensities, timestamps, end_time) in zip(
-                intensities_list, self.timestamps_list,
-                self.model_list.end_times
-            )])
+        integral_approx = sum([
+            hawkes_log_likelihood(intensities, timestamps, end_time)
+            for (intensities, timestamps,
+                 end_time) in zip(intensities_list, self.timestamps_list,
+                                  self.model_list.end_times)
+        ])
 
         integral_approx /= self.model_list.n_jumps
         self.assertAlmostEqual(integral_approx,
-                               - self.model_list.loss(self.coeffs),
-                               places=2)
+                               -self.model_list.loss(self.coeffs), places=2)
 
     def test_model_hawkes_loglik_incremental_fit(self):
         """...Test that multiple events list for ModelHawkesExpKernLogLik
@@ -93,24 +92,23 @@ class Test(unittest.TestCase):
         for timestamps in self.timestamps_list:
             model_incremental_fit.incremental_fit(timestamps)
 
-        self.assertEqual(model_incremental_fit.loss(self.coeffs),
-                         self.model_list.loss(self.coeffs))
+        self.assertEqual(
+            model_incremental_fit.loss(self.coeffs),
+            self.model_list.loss(self.coeffs))
 
     def test_model_hawkes_loglik_grad(self):
         """...Test that ModelHawkesExpKernLeastSq gradient is consistent
         with loss
         """
-        self.assertLess(check_grad(self.model.loss, self.model.grad,
-                                   self.coeffs),
-                        1e-5)
+        self.assertLess(
+            check_grad(self.model.loss, self.model.grad, self.coeffs), 1e-5)
 
     def test_model_hawkes_loglik_hessian_norm(self):
         """...Test that ModelHawkesExpKernLeastSq hessian norm is
         consistent with gradient
         """
-        self.assertLess(check_grad(self.model.loss, self.model.grad,
-                                   self.coeffs),
-                        1e-5)
+        self.assertLess(
+            check_grad(self.model.loss, self.model.grad, self.coeffs), 1e-5)
 
     def test_hawkesgrad_hess_norm(self):
         """...Test if grad and log likelihood are correctly computed
@@ -145,17 +143,17 @@ class Test(unittest.TestCase):
 
         model_change_decay.decay = self.decay
 
-        self.assertNotEqual(loss_old_decay,
-                            model_change_decay.loss(self.coeffs))
+        self.assertNotEqual(loss_old_decay, model_change_decay.loss(
+            self.coeffs))
 
-        self.assertEqual(self.model_list.loss(self.coeffs),
-                         model_change_decay.loss(self.coeffs))
+        self.assertEqual(
+            self.model_list.loss(self.coeffs),
+            model_change_decay.loss(self.coeffs))
 
     def test_hawkes_list_n_threads(self):
         """...Test that the number of used threads is as expected
         """
-        model_list = ModelHawkesExpKernLogLik(decay=self.decay,
-                                              n_threads=1)
+        model_list = ModelHawkesExpKernLogLik(decay=self.decay, n_threads=1)
 
         # 0 threads yet as no data has been given
         self.assertEqual(model_list._model.get_n_threads(), 0)
@@ -188,6 +186,7 @@ class Test(unittest.TestCase):
             # Check that for all dimension hessian row is consistent
             # with its corresponding gradient coordinate.
             for i in range(model.n_coeffs):
+
                 def g_i(x):
                     return model.grad(x)[i]
 

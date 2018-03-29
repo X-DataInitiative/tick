@@ -62,7 +62,8 @@ class SolverSto(Base):
     # The name of the attribute that might contain the C++ solver object
     _cpp_obj_name = "_solver"
 
-    def __init__(self, epoch_size: int=None, rand_type: str="unif", seed=-1):
+    def __init__(self, epoch_size: int = None, rand_type: str = "unif",
+                 seed=-1):
         Base.__init__(self)
         # The C++ wrapped solver is to be given in child classes
         self._solver = None
@@ -103,8 +104,7 @@ class SolverSto(Base):
     @rand_type.setter
     def rand_type(self, val):
         if val not in ["unif", "perm"]:
-            raise ValueError("``rand_type`` can be 'unif' or "
-                             "'perm'")
+            raise ValueError("``rand_type`` can be 'unif' or " "'perm'")
         else:
             if val == "unif":
                 enum_val = unif

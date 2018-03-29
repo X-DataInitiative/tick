@@ -4,14 +4,12 @@ import numpy as np
 
 from tick.base_model import ModelSecondOrder, ModelSelfConcordant, \
     LOSS_AND_GRAD
-from tick.hawkes.model.build.hawkes_model import (
-    ModelHawkesExpKernLogLik as _ModelHawkesExpKernLogLik
-)
+from tick.hawkes.model.build.hawkes_model import (ModelHawkesExpKernLogLik as
+                                                  _ModelHawkesExpKernLogLik)
 from .base import ModelHawkes
 
 
-class ModelHawkesExpKernLogLik(ModelHawkes,
-                               ModelSecondOrder,
+class ModelHawkesExpKernLogLik(ModelHawkes, ModelSecondOrder,
                                ModelSelfConcordant):
     """Hawkes process model exponential kernels with fixed and given decay.
     It is modeled with (opposite) log likelihood loss:
@@ -115,8 +113,7 @@ class ModelHawkesExpKernLogLik(ModelHawkes,
         value = self._model.loss_and_grad(coeffs, out)
         return value
 
-    def _hessian_norm(self, coeffs: np.ndarray,
-                      point: np.ndarray) -> float:
+    def _hessian_norm(self, coeffs: np.ndarray, point: np.ndarray) -> float:
         return self._model.hessian_norm(coeffs, point)
 
     def _get_sc_constant(self) -> float:

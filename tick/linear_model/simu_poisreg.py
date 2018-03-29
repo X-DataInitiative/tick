@@ -1,13 +1,11 @@
 # License: BSD 3 clause
 
-
 import numpy as np
 from numpy.random.mtrand import poisson
 from os import linesep
 from warnings import warn
 
 from tick.base.simulation import SimuWithFeatures
-
 
 # TODO: raise a warning when the maximum label value is too large
 # TODO: unittest for SimuPoisReg
@@ -92,21 +90,14 @@ class SimuPoisReg(SimuWithFeatures):
         End date of the simulation
     """
 
-    _attrinfos = {
-        "labels": {
-            "writable": False
-        },
-        "_link": {
-            "writable": False
-        }
-    }
+    _attrinfos = {"labels": {"writable": False}, "_link": {"writable": False}}
 
     def __init__(self, weights: np.ndarray, intercept: float = None,
                  features: np.ndarray = None, n_samples: int = 200,
                  link: str = "exponential",
-                 features_type: str = "cov_toeplitz",
-                 cov_corr: float = 0.5, features_scaling: str = "none",
-                 seed: int = None, verbose: bool = True):
+                 features_type: str = "cov_toeplitz", cov_corr: float = 0.5,
+                 features_scaling: str = "none", seed: int = None,
+                 verbose: bool = True):
 
         n_features = weights.shape[0]
         SimuWithFeatures.__init__(self, intercept, features, n_samples,
@@ -156,8 +147,7 @@ class SimuPoisReg(SimuWithFeatures):
         if link == "identity":
             if np.any(u <= 0):
                 raise ValueError(("features and weights leads to ,",
-                                  "non-negative intensities for ",
-                                  "Poisson."))
+                                  "non-negative intensities for ", "Poisson."))
             intensity = u
         else:
             intensity = np.exp(u)

@@ -71,8 +71,8 @@ class Solver(Base):
         }
     }
 
-    def __init__(self, tol=0., max_iter=100, verbose=True,
-                 print_every=10, record_every=1):
+    def __init__(self, tol=0., max_iter=100, verbose=True, print_every=10,
+                 record_every=1):
         Base.__init__(self)
         self.tol = tol
         self.max_iter = max_iter
@@ -109,7 +109,7 @@ class Solver(Base):
         self._end_solve()
         return self.solution
 
-    def _handle_history(self, n_iter: int, force: bool=False, **kwargs):
+    def _handle_history(self, n_iter: int, force: bool = False, **kwargs):
         """Handles history for keywords and current iteration
 
         Parameters
@@ -133,8 +133,7 @@ class Solver(Base):
         should_record = force or n_iter % print_every == 0 or \
                         n_iter % record_every == 0
         if should_record:
-            self.history._update(n_iter=n_iter,
-                                 time=time() - self._time_start,
+            self.history._update(n_iter=n_iter, time=time() - self._time_start,
                                  **kwargs)
         if should_print:
             self.history._print_history()
@@ -146,7 +145,7 @@ class Solver(Base):
         pass
 
     @abstractmethod
-    def objective(self, coeffs, loss: float=None):
+    def objective(self, coeffs, loss: float = None):
         """Compute the objective minimized by the solver at ``coeffs``
 
         Parameters

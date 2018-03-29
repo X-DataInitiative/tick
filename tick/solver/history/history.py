@@ -160,16 +160,20 @@ class History(Base):
         # names
         if n_iter == 0:
             min_width = self._minimum_col_width
-            line = ' | '.join(list([name.center(min_width) for name in
-                                    print_order if name in values]))
+            line = ' | '.join(
+                list([
+                    name.center(min_width) for name in print_order
+                    if name in values
+                ]))
             names = [name.center(min_width) for name in print_order]
             self._col_widths = list(map(len, names))
             print(line)
         col_widths = self._col_widths
-        line = ' | '.join(list([self._format_last(name)
-                               .rjust(col_widths[i])
-                                for i, name in enumerate(print_order)
-                                if name in values]))
+        line = ' | '.join(
+            list([
+                self._format_last(name).rjust(col_widths[i])
+                for i, name in enumerate(print_order) if name in values
+            ]))
         print(line)
 
     @property

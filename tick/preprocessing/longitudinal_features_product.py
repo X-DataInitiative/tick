@@ -71,13 +71,27 @@ class LongitudinalFeaturesProduct(LongitudinalPreprocessor):
     """
 
     _attrinfos = {
-        "exposure_type": {"writable": False},
-        "_mapper": {"writable": False},
-        "_n_init_features": {"writable": False},
-        "_n_output_features": {"writable": False},
-        "_n_intervals": {"writable": False},
-        "_preprocessor": {"writable": False},
-        "_fitted": {"writable": False}
+        "exposure_type": {
+            "writable": False
+        },
+        "_mapper": {
+            "writable": False
+        },
+        "_n_init_features": {
+            "writable": False
+        },
+        "_n_output_features": {
+            "writable": False
+        },
+        "_n_intervals": {
+            "writable": False
+        },
+        "_preprocessor": {
+            "writable": False
+        },
+        "_fitted": {
+            "writable": False
+        }
     }
 
     def __init__(self, exposure_type="infinite", n_jobs=-1):
@@ -107,7 +121,8 @@ class LongitudinalFeaturesProduct(LongitudinalPreprocessor):
             The column index - feature mapping.
         """
         if not self._fitted:
-            raise ValueError("cannot get mapper if object has not been fitted.")
+            raise ValueError(
+                "cannot get mapper if object has not been fitted.")
         return deepcopy(self._mapper)
 
     def fit(self, features, labels=None, censoring=None):
@@ -127,8 +142,8 @@ class LongitudinalFeaturesProduct(LongitudinalPreprocessor):
         """
         self._reset()
         base_shape = features[0].shape
-        features = check_longitudinal_features_consistency(features, base_shape,
-                                                           "float64")
+        features = check_longitudinal_features_consistency(
+            features, base_shape, "float64")
         n_intervals, n_init_features = base_shape
         if n_init_features < 2:
             raise ValueError("There should be at least two features to compute\
@@ -138,8 +153,8 @@ class LongitudinalFeaturesProduct(LongitudinalPreprocessor):
         comb_it = combinations(range(n_init_features), 2)
         mapper = {i + n_init_features: c for i, c in enumerate(comb_it)}
         self._set("_mapper", mapper)
-        self._set("_n_output_features", int(n_init_features +
-                                            comb(n_init_features, 2)))
+        self._set("_n_output_features",
+                  int(n_init_features + comb(n_init_features, 2)))
 
         if sps.issparse(features[0]) and self.exposure_type == "infinite":
             self._set("_preprocessor",
@@ -169,8 +184,8 @@ class LongitudinalFeaturesProduct(LongitudinalPreprocessor):
         """
 
         base_shape = (self._n_intervals, self._n_init_features)
-        features = check_longitudinal_features_consistency(features, base_shape,
-                                                           "float64")
+        features = check_longitudinal_features_consistency(
+            features, base_shape, "float64")
         if self.exposure_type == "finite":
             X_with_products = self._finite_exposure_products(features)
         elif self.exposure_type == "infinite":
@@ -184,8 +199,9 @@ class LongitudinalFeaturesProduct(LongitudinalPreprocessor):
     def _infinite_exposure_products(self, features):
         """Add product features to features in the infinite exposure case."""
         if sps.issparse(features[0]):
-            X_with_products = [self._sparse_infinite_product(arr) for arr in
-                               features]
+            X_with_products = [
+                self._sparse_infinite_product(arr) for arr in features
+            ]
             # TODO later: fix multiprocessing
             # X_with_products = Parallel(n_jobs=self.n_jobs)(
             #     delayed(self._sparse_infinite_product)(arr) for arr in features)
@@ -212,8 +228,7 @@ class LongitudinalFeaturesProduct(LongitudinalPreprocessor):
         """Performs feature product on a numpy.ndarray containing
         finite exposures."""
         feat = [feat_mat]
-        feat.extend([(feat_mat[:, i] * feat_mat[:, j]
-                      ).reshape((-1, 1))
+        feat.extend([(feat_mat[:, i] * feat_mat[:, j]).reshape((-1, 1))
                      for i, j in self._mapper.values()])
         return np.hstack(feat)
 
@@ -235,13 +250,8 @@ class LongitudinalFeaturesProduct(LongitudinalPreprocessor):
         new_col = np.zeros((new_nnz,), dtype="uint64")
         new_data = np.zeros((new_nnz,), dtype="float64")
         self._preprocessor.sparse_features_product(
-            coo.row.astype("uint64"),
-            coo.col.astype("uint64"),
-            coo.data,
-            new_row,
-            new_col,
-            new_data)
+            coo.row.astype("uint64"), coo.col.astype("uint64"), coo.data,
+            new_row, new_col, new_data)
         return sps.csr_matrix((new_data, (new_row, new_col)),
                               shape=(self._n_intervals,
-                                     self._n_output_features)
-                              )
+                                     self._n_output_features))

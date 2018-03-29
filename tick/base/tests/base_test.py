@@ -6,7 +6,6 @@ import unittest
 from tick.base import Base
 from tick.base.build.base import A0 as _A0
 
-
 # Architecture of the classes
 #         Base
 #          |
@@ -19,6 +18,7 @@ from tick.base.build.base import A0 as _A0
 #        A3  |
 #         \ /
 #         A4
+
 
 class A0(Base):
     """This is a class that inherit directly from Base
@@ -56,16 +56,30 @@ class A0(Base):
     """
 
     _attrinfos = {
-        'x0': {'writable': False},
-        'z0': {'writable': False},
-        'k0': {'writable': True},
-        'creation_time': {'writable': False},
+        'x0': {
+            'writable': False
+        },
+        'z0': {
+            'writable': False
+        },
+        'k0': {
+            'writable': True
+        },
+        'creation_time': {
+            'writable': False
+        },
         '_prop0': {},
         '_getter_called': {},
         '_setter_called': {},
-        '_a0': {'writable': False},
-        'cpp_int': {'cpp_setter': 'set_cpp_int'},
-        'cpp_unlinked_int': {'cpp_setter': 'set_cpp_unlinked_int'},
+        '_a0': {
+            'writable': False
+        },
+        'cpp_int': {
+            'cpp_setter': 'set_cpp_int'
+        },
+        'cpp_unlinked_int': {
+            'cpp_setter': 'set_cpp_unlinked_int'
+        },
     }
 
     _cpp_obj_name = "_a0"
@@ -128,8 +142,12 @@ class A1(A0):
         writable in A0
     """
     _attrinfos = {
-        'z0': {'writable': True},
-        'k0': {'writable': False},
+        'z0': {
+            'writable': True
+        },
+        'k0': {
+            'writable': False
+        },
     }
 
     def __init__(self, x0: int, y1: float = 1.):
@@ -287,17 +305,20 @@ class Test(unittest.TestCase):
         """...Test that an attribute that has not been set cannot be got and
         has correct error message
         """
+
         def f():
             return self.a0.update_time
+
         self.assertRaisesRegex(AttributeError,
-                               "'A0' object has no attribute 'update_time'",
-                               f)
+                               "'A0' object has no attribute 'update_time'", f)
 
     def test_parameter_doc(self):
         """...Test that docstring is correctly parse for parameters
         """
-        attrs_doc = {attr: infos.get('doc', []) for attr, infos in
-                     self.a0._attrinfos.items()}
+        attrs_doc = {
+            attr: infos.get('doc', [])
+            for attr, infos in self.a0._attrinfos.items()
+        }
         self.assertEqual(attrs_doc['x0'],
                          ['`int`', 'This is doc of x0 from A0', 'from A0'])
         self.assertEqual(attrs_doc['y0'],
@@ -306,25 +327,28 @@ class Test(unittest.TestCase):
     def test_attribute_doc(self):
         """...Test that docstring is correctly parse for attributes
         """
-        attrs_doc = {attr: infos.get('doc', []) for attr, infos in
-                     self.a0._attrinfos.items()}
-        self.assertEqual(attrs_doc['creation_time'],
-                         ['`float`',
-                          'This is doc of creation_time, an attribute which '
-                          'is readonly',
-                          'from A0'])
+        attrs_doc = {
+            attr: infos.get('doc', [])
+            for attr, infos in self.a0._attrinfos.items()
+        }
+        self.assertEqual(attrs_doc['creation_time'], [
+            '`float`', 'This is doc of creation_time, an attribute which '
+            'is readonly', 'from A0'
+        ])
 
     def test_inherited_parameter_doc(self):
         """...Test that docstring is correctly inherited
 
         ie. it is override if it is respecified and kept otherwise.
         """
-        attrs_doc = {attr: infos.get('doc', []) for attr, infos in
-                     self.a1._attrinfos.items()}
-        self.assertEqual(attrs_doc['x0'],
-                         ['`int`',
-                          'This is doc of x0 from A1 that overrides A0 doc',
-                          'from A1'])
+        attrs_doc = {
+            attr: infos.get('doc', [])
+            for attr, infos in self.a1._attrinfos.items()
+        }
+        self.assertEqual(attrs_doc['x0'], [
+            '`int`', 'This is doc of x0 from A1 that overrides A0 doc',
+            'from A1'
+        ])
         self.assertEqual(attrs_doc['y0'],
                          ['`float`', 'This is doc of y0 from A0', 'from A0'])
         self.assertEqual(attrs_doc['y1'],
@@ -337,12 +361,14 @@ class Test(unittest.TestCase):
         4 (through A1) even if it could have index 2 (through B1). We want to
         ensure that we keep doc from A1 instead of A0.
         """
-        attrs_doc = {attr: infos.get('doc', []) for attr, infos in
-                     self.a4._attrinfos.items()}
-        self.assertEqual(attrs_doc['x0'],
-                         ['`int`',
-                          'This is doc of x0 from A1 that overrides A0 doc',
-                          'from A1'])
+        attrs_doc = {
+            attr: infos.get('doc', [])
+            for attr, infos in self.a4._attrinfos.items()
+        }
+        self.assertEqual(attrs_doc['x0'], [
+            '`int`', 'This is doc of x0 from A1 that overrides A0 doc',
+            'from A1'
+        ])
 
     def test_multiple_inherited_attrinfo(self):
         """...Test that attrinfo from the closest parent is kept
@@ -418,14 +444,14 @@ class Test(unittest.TestCase):
 
         # Test we raise correct error if _cpp_obj_name was not set
         del A0._cpp_obj_name
-        with self.assertRaisesRegex(NameError,
-                                    "_cpp_obj_name must be set as class "
-                                    "attribute to use automatic C\+\+ setters"):
+        with self.assertRaisesRegex(
+                NameError, "_cpp_obj_name must be set as class "
+                "attribute to use automatic C\+\+ setters"):
             self.a0.cpp_int = 15
 
-        with self.assertRaisesRegex(NameError,
-                                    "_cpp_obj_name must be set as class "
-                                    "attribute to use automatic C\+\+ setters"):
+        with self.assertRaisesRegex(
+                NameError, "_cpp_obj_name must be set as class "
+                "attribute to use automatic C\+\+ setters"):
             self.a0._set('cpp_int', 15)
 
     def test_cpp_inherited_setter(self):

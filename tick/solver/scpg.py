@@ -117,8 +117,12 @@ class SCPG(SolverFirstOrder):
     """
 
     _attrinfos = {
-        'model_ssc': {'writable': False},
-        'prox_ssc': {'writable': False},
+        'model_ssc': {
+            'writable': False
+        },
+        'prox_ssc': {
+            'writable': False
+        },
         '_th_gain': {},
         "_initial_n_hessiannorm_calls": {
             "writable": False
@@ -195,8 +199,7 @@ class SCPG(SolverFirstOrder):
                  max_iter: int = 100, verbose: bool = True,
                  print_every: int = 10, record_every: int = 1,
                  linesearch_step_increase: float = 2.,
-                 linesearch_step_decrease: float = 0.5,
-                 modified=False):
+                 linesearch_step_decrease: float = 0.5, modified=False):
         SolverFirstOrder.__init__(self, step=step, tol=tol, max_iter=max_iter,
                                   verbose=verbose, print_every=print_every,
                                   record_every=record_every)
@@ -292,8 +295,8 @@ class SCPG(SolverFirstOrder):
             step *= self.linesearch_step_decrease
         return step
 
-    def _gradient_step(self, x, prev_x, grad_x_ssc, prev_grad_x_ssc,
-                       n_iter, l_k):
+    def _gradient_step(self, x, prev_x, grad_x_ssc, prev_grad_x_ssc, n_iter,
+                       l_k):
         # Testing if our value of l_k fits the condition for the stepsize
         # alpha_k
 
@@ -326,8 +329,8 @@ class SCPG(SolverFirstOrder):
             if np.isnan(l_k):
                 raise ValueError('l_k is nan')
 
-        self._th_gain = beta_k * beta_k / lambda_k - np.log(1 + beta_k * beta_k
-                                                            / lambda_k)
+        self._th_gain = beta_k * beta_k / lambda_k - np.log(
+            1 + beta_k * beta_k / lambda_k)
         x_new = x + alpha_k * d_k
 
         # we also "return" grad_x_ssc and prev_grad_x_ssc which are filled

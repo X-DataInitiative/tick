@@ -8,8 +8,7 @@ from scipy.optimize import check_grad
 
 from tick.hawkes.model import ModelHawkesExpKernLeastSq
 from tick.hawkes.model.tests.model_hawkes_test_utils import (
-    hawkes_exp_kernel_intensities, hawkes_least_square_error
-)
+    hawkes_exp_kernel_intensities, hawkes_least_square_error)
 
 
 class Test(unittest.TestCase):
@@ -21,10 +20,10 @@ class Test(unittest.TestCase):
 
         self.decays = np.random.rand(self.n_nodes, self.n_nodes)
 
-        self.timestamps_list = [
-            [np.cumsum(np.random.random(np.random.randint(3, 7)))
-             for _ in range(self.n_nodes)]
-            for _ in range(self.n_realizations)]
+        self.timestamps_list = [[
+            np.cumsum(np.random.random(np.random.randint(3, 7)))
+            for _ in range(self.n_nodes)
+        ] for _ in range(self.n_realizations)]
 
         self.baseline = np.random.rand(self.n_nodes)
         self.adjacency = np.random.rand(self.n_nodes, self.n_nodes)
@@ -45,16 +44,14 @@ class Test(unittest.TestCase):
         """
         timestamps = self.timestamps_list[self.realization]
 
-        intensities = hawkes_exp_kernel_intensities(
-            self.baseline, self.decays, self.adjacency, timestamps)
+        intensities = hawkes_exp_kernel_intensities(self.baseline, self.decays,
+                                                    self.adjacency, timestamps)
 
         integral_approx = hawkes_least_square_error(
-            intensities, timestamps,
-            self.model.end_times[self.realization])
+            intensities, timestamps, self.model.end_times[self.realization])
         integral_approx /= self.model.n_jumps
 
-        self.assertAlmostEqual(integral_approx,
-                               self.model.loss(self.coeffs),
+        self.assertAlmostEqual(integral_approx, self.model.loss(self.coeffs),
                                places=2)
 
     def test_model_hawkes_least_sq_multiple_events(self):
@@ -71,17 +68,16 @@ class Test(unittest.TestCase):
             for timestamps in self.timestamps_list
         ]
 
-        integral_approx = sum([hawkes_least_square_error(intensities,
-                                                         timestamps, end_time)
-                               for (intensities, timestamps, end_time) in zip(
-                intensities_list, self.timestamps_list,
-                self.model_list.end_times
-            )])
+        integral_approx = sum([
+            hawkes_least_square_error(intensities, timestamps, end_time)
+            for (intensities, timestamps,
+                 end_time) in zip(intensities_list, self.timestamps_list,
+                                  self.model_list.end_times)
+        ])
 
         integral_approx /= self.model_list.n_jumps
         self.assertAlmostEqual(integral_approx,
-                               self.model_list.loss(self.coeffs),
-                               places=2)
+                               self.model_list.loss(self.coeffs), places=2)
 
     def test_model_hawkes_least_sq_incremental_fit(self):
         """...Test that multiple events list for ModelHawkesExpKernLeastSq
@@ -93,8 +89,9 @@ class Test(unittest.TestCase):
         for timestamps in self.timestamps_list:
             model_incremental_fit.incremental_fit(timestamps)
 
-        self.assertEqual(model_incremental_fit.loss(self.coeffs),
-                         self.model_list.loss(self.coeffs))
+        self.assertEqual(
+            model_incremental_fit.loss(self.coeffs),
+            self.model_list.loss(self.coeffs))
 
     def test_model_hawkes_least_sq_grad(self):
         """...Test that ModelHawkesExpKernLeastSq gradient is consistent
@@ -102,8 +99,8 @@ class Test(unittest.TestCase):
         """
 
         for model in [self.model, self.model_list]:
-            self.assertLess(check_grad(model.loss, model.grad, self.coeffs),
-                            1e-5)
+            self.assertLess(
+                check_grad(model.loss, model.grad, self.coeffs), 1e-5)
 
     def test_ModelHawkesExpKernLeastSqHess(self):
         """...Numerical consistency check of hessian for Hawkes contrast
@@ -120,6 +117,7 @@ class Test(unittest.TestCase):
             # Check that for all dimension hessian row is consistent
             # with its corresponding gradient coordinate.
             for i in range(model.n_coeffs):
+
                 def g_i(x):
                     return model.grad(x)[i]
 
@@ -142,11 +140,12 @@ class Test(unittest.TestCase):
 
         model_change_decay.decays = self.decays
 
-        self.assertNotEqual(loss_old_decay,
-                            model_change_decay.loss(self.coeffs))
+        self.assertNotEqual(loss_old_decay, model_change_decay.loss(
+            self.coeffs))
 
-        self.assertEqual(self.model_list.loss(self.coeffs),
-                         model_change_decay.loss(self.coeffs))
+        self.assertEqual(
+            self.model_list.loss(self.coeffs),
+            model_change_decay.loss(self.coeffs))
 
     def test_hawkes_list_n_threads(self):
         """...Test that the number of used threads is as expected
@@ -178,8 +177,10 @@ class Test(unittest.TestCase):
         """...Numerical consistency check of lik and grad for Hawkes
         Least-Squares with approx=0
         """
-        timestamps = [np.array([.2, .3, .65, .87, 1, 10, 12, 22]),
-                      np.array([3., 40., 60.])]
+        timestamps = [
+            np.array([.2, .3, .65, .87, 1, 10, 12, 22]),
+            np.array([3., 40., 60.])
+        ]
         beta = 2.
 
         model = ModelHawkesExpKernLeastSq(decays=beta).fit(timestamps)
@@ -191,8 +192,9 @@ class Test(unittest.TestCase):
         self.assertAlmostEqual(loss, 1.05752053, delta=1e-7)
 
         model._grad(coeffs, grad)
-        test = np.array(
-            [0.4363636, 4.5818182, -0.6009268, 0.4027132, 1.8310919, 0.3308908])
+        test = np.array([
+            0.4363636, 4.5818182, -0.6009268, 0.4027132, 1.8310919, 0.3308908
+        ])
         np.testing.assert_almost_equal(grad, test, decimal=7)
 
         loss = model._loss_and_grad(coeffs, grad)
@@ -203,8 +205,10 @@ class Test(unittest.TestCase):
         """...Numerical consistency check of lik and grad for Hawkes
         Least-Squares with approx=1
         """
-        timestamps = [np.array([.2, .3, .65, .87, 1, 10, 12, 22]),
-                      np.array([3., 40., 60.])]
+        timestamps = [
+            np.array([.2, .3, .65, .87, 1, 10, 12, 22]),
+            np.array([3., 40., 60.])
+        ]
         beta = 2.
 
         model = ModelHawkesExpKernLeastSq(decays=beta,
@@ -217,8 +221,9 @@ class Test(unittest.TestCase):
         self.assertAlmostEqual(loss, 1.05752053, delta=1e-4)
 
         model._grad(coeffs, grad)
-        test = np.array(
-            [0.4363636, 4.5818182, -0.6009268, 0.4027132, 1.8310919, 0.3308908])
+        test = np.array([
+            0.4363636, 4.5818182, -0.6009268, 0.4027132, 1.8310919, 0.3308908
+        ])
         np.testing.assert_almost_equal(grad, test, decimal=4)
         loss = model._loss_and_grad(coeffs, grad)
         np.testing.assert_almost_equal(grad, test, decimal=4)

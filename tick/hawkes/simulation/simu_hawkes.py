@@ -97,14 +97,17 @@ class SimuHawkes(SimuPointProcess):
     """
 
     _attrinfos = {
-        "kernels": {"writable": False},
-        "_kernel_0": {"writable": False},
+        "kernels": {
+            "writable": False
+        },
+        "_kernel_0": {
+            "writable": False
+        },
     }
 
     def __init__(self, kernels=None, baseline=None, n_nodes=None,
-                 end_time=None, period_length=None,
-                 max_jumps=None, seed=None, verbose=True,
-                 force_simulation=False):
+                 end_time=None, period_length=None, max_jumps=None, seed=None,
+                 verbose=True, force_simulation=False):
         SimuPointProcess.__init__(self, end_time=end_time, max_jumps=max_jumps,
                                   seed=seed, verbose=verbose)
 
@@ -133,14 +136,14 @@ class SimuHawkes(SimuPointProcess):
                 n_nodes = kernels.shape[0]
 
         if n_nodes <= 0:
-            raise ValueError("n_nodes must be positive but equals %i" % n_nodes)
+            raise ValueError(
+                "n_nodes must be positive but equals %i" % n_nodes)
         self._pp = _Hawkes(n_nodes, self._pp_init_seed)
 
         if kernels is not None:
             if kernels.shape != (self.n_nodes, self.n_nodes):
                 raise ValueError("kernels shape should be %s instead of %s" %
-                                 ((self.n_nodes, self.n_nodes),
-                                  kernels.shape))
+                                 ((self.n_nodes, self.n_nodes), kernels.shape))
             self.kernels = kernels
             self._init_kernels()
         else:
@@ -152,8 +155,8 @@ class SimuHawkes(SimuPointProcess):
                                  .format(self.n_nodes, baseline.shape[0]))
             if len(baseline.shape) > 2:
                 raise ValueError("baseline should have at most {} dimensions, "
-                                 "it currently has"
-                                 .format(2, len(baseline.shape)))
+                                 "it currently has".format(
+                                     2, len(baseline.shape)))
             self.baseline = baseline
             self._init_baseline()
 
@@ -256,11 +259,11 @@ class SimuHawkes(SimuPointProcess):
 
         if not self.force_simulation and self.spectral_radius() >= 1 \
                 and self.max_jumps is None:
-            raise ValueError("Simulation not launched as this Hawkes process "
-                             "is not stable (spectral radius of %.2g). You "
-                             "can use force_simulation parameter if you "
-                             "really want to simulate it"
-                             % self.spectral_radius())
+            raise ValueError(
+                "Simulation not launched as this Hawkes process "
+                "is not stable (spectral radius of %.2g). You "
+                "can use force_simulation parameter if you "
+                "really want to simulate it" % self.spectral_radius())
 
         SimuPointProcess._simulate(self)
 

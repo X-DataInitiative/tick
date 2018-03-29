@@ -1,5 +1,4 @@
 # License: BSD 3 clause
-
 """Helper to download and cache datasets from the tick_datasets github
 repository
 

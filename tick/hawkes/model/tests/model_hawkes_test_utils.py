@@ -9,8 +9,10 @@ def exponential_kernel(t, intensity, decay):
 
 
 def sum_exponential_kernel(t, intensities, decays):
-    return sum([alpha * beta * np.exp(- beta * t)
-                for alpha, beta in zip(intensities, decays)])
+    return sum([
+        alpha * beta * np.exp(-beta * t)
+        for alpha, beta in zip(intensities, decays)
+    ])
 
 
 def hawkes_intensities(timestamps, baseline, kernels):
@@ -39,16 +41,14 @@ def hawkes_intensities_varying_baseline(timestamps, baseline, kernels):
 def hawkes_least_square_error(intensities, timestamps, end_time, precision=3):
     dim = len(timestamps)
 
-    squared_intensity_integral = sum(
-        [quad(lambda x, i=i: intensities[i](x) ** 2, 0, end_time,
-              epsabs=np.power(10., -precision), limit=1000)[0]
-         for i in range(dim)]
-    )
+    squared_intensity_integral = sum([
+        quad(lambda x, i=i: intensities[i](x) ** 2, 0, end_time,
+             epsabs=np.power(10., -precision), limit=1000)[0]
+        for i in range(dim)
+    ])
 
     intensity_convolution = sum(
-        [sum([intensities[i](t) for t in timestamps[i]])
-         for i in range(dim)]
-    )
+        [sum([intensities[i](t) for t in timestamps[i]]) for i in range(dim)])
 
     return squared_intensity_integral - 2 * intensity_convolution
 
@@ -56,16 +56,15 @@ def hawkes_least_square_error(intensities, timestamps, end_time, precision=3):
 def hawkes_log_likelihood(intensities, timestamps, end_time, precision=3):
     dim = len(timestamps)
 
-    compensator = sum(
-        [quad(lambda x, i=i: intensities[i](x), 0, end_time,
-              epsabs=np.power(10., -precision), limit=1000)[0]
-         for i in range(dim)]
-    )
+    compensator = sum([
+        quad(lambda x, i=i: intensities[i](x), 0, end_time, epsabs=np.power(
+            10., -precision), limit=1000)[0] for i in range(dim)
+    ])
 
-    log_intensity = sum(
-        [sum([np.log(intensities[i](t)) for t in timestamps[i]])
-         for i in range(dim)]
-    )
+    log_intensity = sum([
+        sum([np.log(intensities[i](t)) for t in timestamps[i]])
+        for i in range(dim)
+    ])
 
     return dim * end_time - compensator + log_intensity
 

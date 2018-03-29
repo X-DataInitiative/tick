@@ -1,6 +1,4 @@
-
 # License: BSD 3 clause
-
 
 import io, unittest
 import numpy as np
@@ -21,16 +19,17 @@ from tick.robust import ModelAbsoluteRegression, ModelEpsilonInsensitive, ModelH
 
 from tick.simulation import weights_sparse_gauss
 
+
 class Test(TestGLM):
     def test_robust_model_serialization(self):
         """...Test serialization of robust models
         """
         model_map = {
-            ModelAbsoluteRegression : SimuLinReg,
-            ModelEpsilonInsensitive : SimuLinReg,
-            ModelHuber              : SimuLinReg,
-            ModelLinRegWithIntercepts : SimuLinReg,
-            ModelModifiedHuber      : SimuLogReg
+            ModelAbsoluteRegression: SimuLinReg,
+            ModelEpsilonInsensitive: SimuLinReg,
+            ModelHuber: SimuLinReg,
+            ModelLinRegWithIntercepts: SimuLinReg,
+            ModelModifiedHuber: SimuLogReg
         }
 
         for mod in model_map:
@@ -41,10 +40,10 @@ class Test(TestGLM):
             c0 = None
             X, y = SimuLinReg(w0, c0, n_samples=n_samples, verbose=False,
                               seed=2038).simulate()
-            
+
             if mod == ModelLinRegWithIntercepts:
                 y += intercept0
-            
+
             model = mod(fit_intercept=False).fit(X, y)
 
             pickled = pickle.loads(pickle.dumps(model))
@@ -53,9 +52,11 @@ class Test(TestGLM):
 
             if mod == ModelLinRegWithIntercepts:
                 test_vector = np.hstack((X[0], np.ones(n_samples)))
-                self.assertEqual(model.loss(test_vector), pickled.loss(test_vector))
+                self.assertEqual(
+                    model.loss(test_vector), pickled.loss(test_vector))
             else:
                 self.assertEqual(model.loss(X[0]), pickled.loss(X[0]))
+
 
 if __name__ == "__main__":
     unittest.main()
