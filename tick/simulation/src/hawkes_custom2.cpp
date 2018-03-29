@@ -92,6 +92,10 @@ void Hawkes_customType2::update_jump(int index) {
         double exact = current_num / avg;
         ulong round = floor(exact + 0.5);  //round a number
         last_global_n = (round > MaxN - 1) ? MaxN - 1 : round;
+        if(current_num < 1.5 * avg)
+            last_global_n = 1;
+        if(current_num == 0)
+            last_global_n = 0;
 
         global_n.append1(last_global_n);
         Qty.append1(current_num);
