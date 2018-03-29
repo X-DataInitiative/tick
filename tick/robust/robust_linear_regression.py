@@ -105,30 +105,22 @@ class RobustLinearRegression(LearnerRobustGLM):
         and ``intercept``
     """
 
-    _attrinfos = {
-        "_actual_kwargs": {"writable": False}
-    }
+    _attrinfos = {"_actual_kwargs": {"writable": False}}
 
     @actual_kwargs
-    def __init__(self, C_sample_intercepts, C=1e3, fdr=0.05,
-                 penalty='l2', fit_intercept=True, refit=False,
-                 solver='agd', warm_start=False, step=None,
-                 tol=1e-7, max_iter=200,
-                 verbose=True, print_every=10,
-                 record_every=10,
+    def __init__(self, C_sample_intercepts, C=1e3, fdr=0.05, penalty='l2',
+                 fit_intercept=True, refit=False, solver='agd',
+                 warm_start=False, step=None, tol=1e-7, max_iter=200,
+                 verbose=True, print_every=10, record_every=10,
                  elastic_net_ratio=0.95, slope_fdr=0.05):
         self._actual_kwargs = RobustLinearRegression.__init__.actual_kwargs
-        LearnerRobustGLM.__init__(self,
-                                  C_sample_intercepts=C_sample_intercepts,
-                                  C=C, fdr=fdr,
-                                  penalty=penalty, fit_intercept=fit_intercept,
-                                  refit=refit, solver=solver,
-                                  warm_start=warm_start, step=step,
-                                  tol=tol, max_iter=max_iter,
-                                  verbose=verbose, print_every=print_every,
-                                  record_every=record_every,
-                                  elastic_net_ratio=elastic_net_ratio,
-                                  slope_fdr=slope_fdr)
+        LearnerRobustGLM.__init__(
+            self, C_sample_intercepts=C_sample_intercepts, C=C, fdr=fdr,
+            penalty=penalty, fit_intercept=fit_intercept, refit=refit,
+            solver=solver, warm_start=warm_start, step=step, tol=tol,
+            max_iter=max_iter, verbose=verbose, print_every=print_every,
+            record_every=record_every, elastic_net_ratio=elastic_net_ratio,
+            slope_fdr=slope_fdr)
 
     def _construct_model_obj(self, fit_intercept=True):
         return ModelLinRegWithIntercepts(fit_intercept)

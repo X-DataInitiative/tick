@@ -10,7 +10,6 @@ from tick.prox.tests.prox import TestProx
 
 
 class Test(TestProx):
-
     def get_coeffs_weak(self, n_coeffs):
         return (-1) ** np.arange(n_coeffs) * \
             np.sqrt(2 * np.log(np.linspace(1, 10, n_coeffs) * n_coeffs))
@@ -85,8 +84,8 @@ class Test(TestProx):
         tmp = prox.fdr / (2 * size)
         weights = strength * normal.ppf(1 - tmp * np.arange(1, size + 1))
 
-        prox_weights = np.array([prox._prox.get_weight_i(i)
-                                 for i in range(size)])
+        prox_weights = np.array(
+            [prox._prox.get_weight_i(i) for i in range(size)])
         np.testing.assert_almost_equal(prox_weights, weights, decimal=7)
 
         strength = 2.5
@@ -97,8 +96,8 @@ class Test(TestProx):
         tmp = prox.fdr / (2 * size)
         weights = strength * normal.ppf(1 - tmp * np.arange(1, size + 1))
 
-        prox_weights = np.array([prox._prox.get_weight_i(i)
-                                 for i in range(size)])
+        prox_weights = np.array(
+            [prox._prox.get_weight_i(i) for i in range(size)])
         np.testing.assert_almost_equal(prox_weights, weights, decimal=7)
 
     def test_ProxSlope_value(self):
@@ -163,6 +162,7 @@ class Test(TestProx):
         sub_y = y_abs
         value = sub_y[np.argsort(-sub_y)].dot(weights)
         self.assertAlmostEqual(prox_value, value, places=places)
+
 
 if __name__ == '__main__':
     unittest.main()

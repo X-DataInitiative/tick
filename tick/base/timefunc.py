@@ -73,10 +73,18 @@ class TimeFunction(Base):
     """
 
     _attrinfos = {
-        '_time_function': {'writable': False},
-        'original_y': {'writable': False},
-        'original_t': {'writable': False},
-        'is_constant': {'writable': False},
+        '_time_function': {
+            'writable': False
+        },
+        'original_y': {
+            'writable': False
+        },
+        'original_t': {
+            'writable': False
+        },
+        'is_constant': {
+            'writable': False
+        },
     }
 
     InterLinear = _TimeFunction.InterMode_InterLinear
@@ -101,9 +109,8 @@ class TimeFunction(Base):
             t_values = np.asarray(values[0], dtype=float)
             y_values = np.asarray(values[1], dtype=float)
 
-            self._time_function = _TimeFunction(t_values, y_values,
-                                                border_type, inter_mode,
-                                                dt, border_value)
+            self._time_function = _TimeFunction(
+                t_values, y_values, border_type, inter_mode, dt, border_value)
             self.original_y = y_values
             self.original_t = t_values
             self.is_constant = False

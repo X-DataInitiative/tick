@@ -24,9 +24,9 @@ class Test(TestProx):
         thresh = t * l_l1 * weights
         out = np.sign(coeffs) * (np.abs(coeffs) - thresh) \
               * (np.abs(coeffs) > thresh)
-        self.assertAlmostEqual(prox.value(coeffs),
-                               l_l1 * (weights * np.abs(coeffs)).sum(),
-                               delta=1e-15)
+        self.assertAlmostEqual(
+            prox.value(coeffs),
+            l_l1 * (weights * np.abs(coeffs)).sum(), delta=1e-15)
         assert_almost_equal(prox.call(coeffs, step=t), out, decimal=10)
 
         weights = np.arange(coeffs.shape[0], dtype=np.double)[3:8]
@@ -37,9 +37,9 @@ class Test(TestProx):
         out[3:8] = np.sign(sub_coeffs) \
                    * (np.abs(sub_coeffs) - thresh) \
                    * (np.abs(sub_coeffs) > thresh)
-        self.assertAlmostEqual(prox.value(coeffs),
-                               l_l1 * (weights * np.abs(coeffs[3:8])).sum(),
-                               delta=1e-15)
+        self.assertAlmostEqual(
+            prox.value(coeffs),
+            l_l1 * (weights * np.abs(coeffs[3:8])).sum(), delta=1e-15)
         assert_almost_equal(prox.call(coeffs, step=t), out, decimal=10)
 
         weights = np.arange(coeffs.shape[0], dtype=np.double)[3:8]
@@ -51,9 +51,9 @@ class Test(TestProx):
                    * (np.abs(sub_coeffs) > thresh)
         idx = out[3:8] < 0
         out[3:8][idx] = 0
-        self.assertAlmostEqual(prox.value(coeffs),
-                               l_l1 * (weights * np.abs(coeffs[3:8])).sum(),
-                               delta=1e-15)
+        self.assertAlmostEqual(
+            prox.value(coeffs),
+            l_l1 * (weights * np.abs(coeffs[3:8])).sum(), delta=1e-15)
         assert_almost_equal(prox.call(coeffs, step=t), out, decimal=10)
 
 

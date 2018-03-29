@@ -14,7 +14,6 @@ from tick.array_test.build import array_test as test
 
 
 class Test(unittest.TestCase):
-
     def test_varray_smart_pointer_in_cpp(self):
         """...Test C++ reference counter
         """
@@ -116,19 +115,22 @@ class Test(unittest.TestCase):
 
         size = int(1e6)
         # The size in memory of an array of ``size`` doubles
-        bytes_size = size*8
+        bytes_size = size * 8
         a = test.test_typemap_out_SArrayDoublePtr(size)
         first_filled_memory = get_memory_used()
 
         # Check that new memory is of the correct order (10%)
-        self.assertAlmostEqual(first_filled_memory - initial_memory, bytes_size, delta=1.1*bytes_size)
+        self.assertAlmostEqual(first_filled_memory - initial_memory,
+                               bytes_size, delta=1.1 * bytes_size)
 
         for _ in range(10):
             del a
             a = test.test_typemap_out_SArrayDoublePtr(size)
             filled_memory = get_memory_used()
             # Check memory is not increasing
-            self.assertAlmostEqual(first_filled_memory - initial_memory, filled_memory - initial_memory, delta=1.1*bytes_size)
+            self.assertAlmostEqual(first_filled_memory - initial_memory,
+                                   filled_memory - initial_memory,
+                                   delta=1.1 * bytes_size)
         #print("\nfirst_filled_memory %.2g, filled_memory %.2g, initial_memory %.2g, array_bytes_size %.2g" % (first_filled_memory, filled_memory, initial_memory, bytes_size))
 
     def test_sarray_memory_leaks2(self):
@@ -158,14 +160,18 @@ class Test(unittest.TestCase):
         first_filled_memory = get_memory_used()
 
         # Check that new memory is of the correct order (10%)
-        self.assertAlmostEqual(first_filled_memory, initial_memory + bytes_size, delta=1.1*bytes_size)
+        self.assertAlmostEqual(first_filled_memory,
+                               initial_memory + bytes_size,
+                               delta=1.1 * bytes_size)
 
         for _ in range(10):
             del c
             c = test.test_VArrayDouble_append(a, b)
             filled_memory = get_memory_used()
             # Check memory is not increasing
-            self.assertAlmostEqual(first_filled_memory - initial_memory, filled_memory - initial_memory, delta=1.1*bytes_size)
+            self.assertAlmostEqual(first_filled_memory - initial_memory,
+                                   filled_memory - initial_memory,
+                                   delta=1.1 * bytes_size)
 
     def test_sarray2d_memory_leaks(self):
         """...Test brute force method in order to see if we have a memory leak
@@ -194,8 +200,8 @@ class Test(unittest.TestCase):
         first_filled_memory = get_memory_used()
 
         # Check that new memory is of the correct order (10%)
-        self.assertAlmostEqual(first_filled_memory - initial_memory, bytes_size,
-                               delta=1.1*bytes_size)
+        self.assertAlmostEqual(first_filled_memory - initial_memory,
+                               bytes_size, delta=1.1 * bytes_size)
 
         for _ in range(10):
             del a
@@ -204,7 +210,7 @@ class Test(unittest.TestCase):
             # Check memory is not increasing
             self.assertAlmostEqual(first_filled_memory - initial_memory,
                                    filled_memory - initial_memory,
-                                   delta=1.1*bytes_size)
+                                   delta=1.1 * bytes_size)
 
     def test_s_sparse_array2d_memory_leaks(self):
         """...Test brute force method in order to see if we have a memory leak
@@ -234,8 +240,8 @@ class Test(unittest.TestCase):
             # The size in memory of an array of ``size`` doubles
             bytes_size = (data_size * 2) + ((n_rows + 1) * 8)
 
-            sparsearray_double = scipy.sparse.rand(n_rows, n_cols, 0.3,
-                                                   "csr", "d")
+            sparsearray_double = scipy.sparse.rand(n_rows, n_cols, 0.3, "csr",
+                                                   "d")
 
             tick_double_sparse2d_to_file(cereal_file, sparsearray_double)
 
@@ -245,8 +251,7 @@ class Test(unittest.TestCase):
 
             # Check that new memory is of the correct order (10%)
             self.assertAlmostEqual(first_filled_memory - initial_memory,
-                                   bytes_size,
-                                   delta=1.1 * bytes_size)
+                                   bytes_size, delta=1.1 * bytes_size)
 
             del a
             for i in range(10):
@@ -262,8 +267,7 @@ class Test(unittest.TestCase):
             gc.collect()
 
             end = get_memory_used()
-            self.assertAlmostEqual(end, initial_memory,
-                                   delta=1.1 * bytes_size)
+            self.assertAlmostEqual(end, initial_memory, delta=1.1 * bytes_size)
 
         finally:
             if os.path.exists(cereal_file):
@@ -282,11 +286,10 @@ class Test(unittest.TestCase):
         vcc.varrayPtr[1] = 999.0
         self.assertEqual(a[1], 999.0)
 
-
     def test_sbasearrayptr(self):
-        sparsearray_double = csr_matrix((np.array([1., 2, 3, 4, 5]),
-                                         np.array([2, 4, 6, 8, 10]),
-                                         np.array([0, 5])), shape=(1, 12))
+        sparsearray_double = csr_matrix(
+            (np.array([1., 2, 3, 4, 5]), np.array([2, 4, 6, 8, 10]),
+             np.array([0, 5])), shape=(1, 12))
         test.test_sbasearray_container_new(sparsearray_double)
         self.assertEqual(test.test_sbasearray_container_compute(), 45)
         test.test_sbasearray_container_clear()
@@ -299,9 +302,9 @@ class Test(unittest.TestCase):
         self.assertEqual(test.test_sbasearray_container_compute(), -1)
 
     def test_ref_sbasearrayptr(self):
-        sparsearray_double = csr_matrix((np.array([1., 2, 3, 4, 5]),
-                                         np.array([2, 4, 6, 8, 10]),
-                                         np.array([0, 5])), shape=(1, 12))
+        sparsearray_double = csr_matrix(
+            (np.array([1., 2, 3, 4, 5]), np.array([2, 4, 6, 8, 10]),
+             np.array([0, 5])), shape=(1, 12))
         refdata = weakref.ref(sparsearray_double.data)
         refindices = weakref.ref(sparsearray_double.indices)
         refindptr = weakref.ref(sparsearray_double.indptr)
@@ -323,9 +326,9 @@ class Test(unittest.TestCase):
         self.assertIsNone(ref())
 
     def test_sbasearray2dptr(self):
-        sparsearray2d_double = csr_matrix((np.array([1., 2, 3, 4, 5]),
-                                           np.array([2, 4, 6, 1, 3]),
-                                           np.array([0, 3, 5])), shape=(2, 4))
+        sparsearray2d_double = csr_matrix(
+            (np.array([1., 2, 3, 4, 5]), np.array([2, 4, 6, 1, 3]),
+             np.array([0, 3, 5])), shape=(2, 4))
         test.test_sbasearray2d_container_new(sparsearray2d_double)
         self.assertEqual(test.test_sbasearray2d_container_compute(), 39)
         test.test_sbasearray2d_container_clear()
@@ -338,9 +341,9 @@ class Test(unittest.TestCase):
         self.assertEqual(test.test_sbasearray2d_container_compute(), -1)
 
     def test_ref_sbasearray2dptr(self):
-        sparsearray2d_double = csr_matrix((np.array([1., 2, 3, 4, 5]),
-                                           np.array([2, 4, 6, 1, 3]),
-                                           np.array([0, 3, 5])), shape=(2, 4))
+        sparsearray2d_double = csr_matrix(
+            (np.array([1., 2, 3, 4, 5]), np.array([2, 4, 6, 1, 3]),
+             np.array([0, 3, 5])), shape=(2, 4))
         refdata = weakref.ref(sparsearray2d_double.data)
         refindices = weakref.ref(sparsearray2d_double.indices)
         refindptr = weakref.ref(sparsearray2d_double.indptr)

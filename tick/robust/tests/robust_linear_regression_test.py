@@ -39,8 +39,8 @@ class Test(InferenceTest):
             interc0 = Test.interc0
         else:
             interc0 = 0.
-        weights0 = np.sqrt(2 * np.log(np.linspace(1, 10, n_features)
-                                      * n_features))
+        weights0 = np.sqrt(
+            2 * np.log(np.linspace(1, 10, n_features) * n_features))
         sample_intercepts0 = weights_sparse_gauss(n_weights=n_samples,
                                                   nnz=nnz_outliers)
         sample_intercepts0[sample_intercepts0 != 0] \
@@ -63,51 +63,61 @@ class Test(InferenceTest):
         for i, solver in enumerate(solvers):
             learner_keywords = {
                 'C_sample_intercepts': Test.n_samples / Test.noise_level,
-                'fit_intercept': True, 'fdr': Test.target_fdr,
-                'max_iter': 3000, 'tol': 1e-7, 'solver': solver,
-                'penalty': 'none', 'verbose': False
+                'fit_intercept': True,
+                'fdr': Test.target_fdr,
+                'max_iter': 3000,
+                'tol': 1e-7,
+                'solver': solver,
+                'penalty': 'none',
+                'verbose': False
             }
 
             learner = RobustLinearRegression(**learner_keywords)
             learner.fit(X, y)
 
-            weights = [1.82145051, 2.32011366, 2.6886905, 2.53289584,
-                       2.86991904]
+            weights = [
+                1.82145051, 2.32011366, 2.6886905, 2.53289584, 2.86991904
+            ]
             interc = -2.9877245464563931
             fdp_ = 0.23076923076923078
             power = 1.0
 
             np.testing.assert_array_almost_equal(weights, learner.weights, 2)
             self.assertAlmostEqual(interc, learner.intercept, 2)
-            self.assertAlmostEqual(fdp_, support_fdp(sample_intercepts0,
-                                                     learner.sample_intercepts),
-                                   4)
+            self.assertAlmostEqual(fdp_,
+                                   support_fdp(sample_intercepts0,
+                                               learner.sample_intercepts), 4)
             self.assertAlmostEqual(power,
                                    support_recall(sample_intercepts0,
-                                                  learner.sample_intercepts), 4)
+                                                  learner.sample_intercepts),
+                                   4)
 
-        X, y, weights0, interc0, sample_intercepts0 = self.get_train_data(False)
+        X, y, weights0, interc0, sample_intercepts0 = self.get_train_data(
+            False)
         for i, solver in enumerate(solvers):
             learner_keywords = {
                 'C_sample_intercepts': Test.n_samples / Test.noise_level,
-                'fit_intercept': False, 'fdr': Test.target_fdr,
-                'max_iter': 3000, 'tol': 1e-7, 'solver': solver,
+                'fit_intercept': False,
+                'fdr': Test.target_fdr,
+                'max_iter': 3000,
+                'tol': 1e-7,
+                'solver': solver,
                 'verbose': False
             }
             learner = RobustLinearRegression(**learner_keywords)
             learner.fit(X, y)
-            weights = [1.82341444, 2.3226882, 2.68081823, 2.53942366,
-                       2.86439685]
+            weights = [
+                1.82341444, 2.3226882, 2.68081823, 2.53942366, 2.86439685
+            ]
             interc = None
             fdp_ = 0.23076923076923078
             power = 1.0
 
-            np.testing.assert_array_almost_equal(weights, learner.weights,
-                                                 2)
+            np.testing.assert_array_almost_equal(weights, learner.weights, 2)
             self.assertEqual(interc, learner.intercept)
-            self.assertAlmostEqual(fdp_, support_fdp(sample_intercepts0,
-                                                     learner.sample_intercepts),
-                                   4)
+            self.assertAlmostEqual(fdp_,
+                                   support_fdp(sample_intercepts0,
+                                               learner.sample_intercepts), 4)
             self.assertAlmostEqual(power,
                                    support_recall(sample_intercepts0,
                                                   learner.sample_intercepts),
@@ -123,8 +133,12 @@ class Test(InferenceTest):
         for solver, fit_intercept in cases:
             solver_kwargs = {
                 'C_sample_intercepts': Test.n_samples / Test.noise_level,
-                'solver': solver, 'max_iter': 2, 'verbose': False,
-                'fit_intercept': fit_intercept, 'warm_start': True, 'tol': 0
+                'solver': solver,
+                'max_iter': 2,
+                'verbose': False,
+                'fit_intercept': fit_intercept,
+                'warm_start': True,
+                'tol': 0
             }
             learner = RobustLinearRegression(**solver_kwargs)
             learner.fit(X, y)
@@ -132,8 +146,9 @@ class Test(InferenceTest):
             learner.fit(X, y)
             coeffs_2 = learner.coeffs
             # Thanks to warm start objective should have decreased
-            self.assertLess(learner._solver_obj.objective(coeffs_2),
-                            learner._solver_obj.objective(coeffs_1))
+            self.assertLess(
+                learner._solver_obj.objective(coeffs_2),
+                learner._solver_obj.objective(coeffs_1))
 
     @staticmethod
     def specific_solver_kwargs(solver):
@@ -147,17 +162,15 @@ class Test(InferenceTest):
         # solver
         solver_class_map = RobustLinearRegression._solvers
         for solver in RobustLinearRegression._solvers.keys():
-            learner = RobustLinearRegression(C_sample_intercepts=1.,
-                                             solver=solver,
-                                             **Test.specific_solver_kwargs(
-                                                 solver))
+            learner = RobustLinearRegression(
+                C_sample_intercepts=1., solver=solver,
+                **Test.specific_solver_kwargs(solver))
             solver_class = solver_class_map[solver]
             self.assertTrue(isinstance(learner._solver_obj, solver_class))
 
         msg = '^``solver`` must be one of agd, gd, got wrong_name$'
         with self.assertRaisesRegex(ValueError, msg):
-            RobustLinearRegression(C_sample_intercepts=1.,
-                                   solver='wrong_name')
+            RobustLinearRegression(C_sample_intercepts=1., solver='wrong_name')
         # prox
         prox_class_map = RobustLinearRegression._penalties
         for penalty in RobustLinearRegression._penalties.keys():
@@ -184,8 +197,8 @@ class Test(InferenceTest):
             self.assertEqual(learner.fit_intercept, False)
             self.assertEqual(learner._model_obj.fit_intercept, False)
 
-            learner = RobustLinearRegression(C_sample_intercepts=1.,
-                                             fit_intercept=False, solver=solver)
+            learner = RobustLinearRegression(
+                C_sample_intercepts=1., fit_intercept=False, solver=solver)
             self.assertEqual(learner.fit_intercept, False)
             self.assertEqual(learner._model_obj.fit_intercept, False)
             learner.fit_intercept = True
@@ -197,9 +210,8 @@ class Test(InferenceTest):
         """
         for penalty in RobustLinearRegression._penalties.keys():
             if penalty != 'none':
-                learner = RobustLinearRegression(C_sample_intercepts=1.,
-                                                 penalty=penalty,
-                                                 C=self.float_1)
+                learner = RobustLinearRegression(
+                    C_sample_intercepts=1., penalty=penalty, C=self.float_1)
                 self.assertEqual(learner.C, self.float_1)
                 self.assertEqual(learner._prox_obj.strength, 1. / self.float_1)
                 learner.C = self.float_2
@@ -290,10 +302,9 @@ class Test(InferenceTest):
         ratio_2 = 0.3
         for penalty in RobustLinearRegression._penalties.keys():
             if penalty == 'elasticnet':
-                learner = RobustLinearRegression(C_sample_intercepts=1.,
-                                                 penalty=penalty,
-                                                 C=self.float_1,
-                                                 elastic_net_ratio=ratio_1)
+                learner = RobustLinearRegression(
+                    C_sample_intercepts=1., penalty=penalty, C=self.float_1,
+                    elastic_net_ratio=ratio_1)
                 self.assertEqual(learner.C, self.float_1)
                 self.assertEqual(learner.elastic_net_ratio, ratio_1)
                 self.assertEqual(learner._prox_obj.strength, 1. / self.float_1)
@@ -323,10 +334,9 @@ class Test(InferenceTest):
         slope_fdr2 = 0.3
         for penalty in RobustLinearRegression._penalties.keys():
             if penalty == 'slope':
-                learner = RobustLinearRegression(C_sample_intercepts=1.,
-                                                 penalty=penalty,
-                                                 C=self.float_1,
-                                                 slope_fdr=slope_fdr1)
+                learner = RobustLinearRegression(
+                    C_sample_intercepts=1., penalty=penalty, C=self.float_1,
+                    slope_fdr=slope_fdr1)
                 self.assertEqual(learner.C, self.float_1)
                 self.assertEqual(learner.slope_fdr, slope_fdr1)
                 self.assertEqual(learner._prox_obj.strength, 1. / self.float_1)
@@ -341,8 +351,7 @@ class Test(InferenceTest):
                       penalty
                 with self.assertWarnsRegex(RuntimeWarning, msg):
                     RobustLinearRegression(C_sample_intercepts=1.,
-                                           penalty=penalty,
-                                           slope_fdr=0.8)
+                                           penalty=penalty, slope_fdr=0.8)
 
                 learner = RobustLinearRegression(C_sample_intercepts=1.,
                                                  penalty=penalty)
@@ -354,8 +363,7 @@ class Test(InferenceTest):
         slope_fdr1 = 0.33
         slope_fdr2 = 0.78
         learner = RobustLinearRegression(C_sample_intercepts=self.float_1,
-                                         slope_fdr=slope_fdr1,
-                                         penalty='slope')
+                                         slope_fdr=slope_fdr1, penalty='slope')
         self.assertEqual(learner.slope_fdr, slope_fdr1)
         self.assertEqual(learner._prox_obj.fdr, slope_fdr1)
         learner.slope_fdr = slope_fdr2

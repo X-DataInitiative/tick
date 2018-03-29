@@ -9,9 +9,7 @@ from numpy.polynomial.legendre import leggauss
 from scipy.linalg import solve
 
 from tick.base import Base, ThreadPool
-from tick.hawkes.inference.build.hawkes_inference import (
-    PointProcessCondLaw
-)
+from tick.hawkes.inference.build.hawkes_inference import (PointProcessCondLaw)
 
 
 # noinspection PyPep8Naming
@@ -157,24 +155,35 @@ class HawkesConditionalLaw(Base):
     _attrinfos = {
         '_hawkes_object': {},
         '_lags': {},
-        '_lock': {'writable': False},
-        '_phi_ijl': {}, '_norm_ijl': {},
+        '_lock': {
+            'writable': False
+        },
+        '_phi_ijl': {},
+        '_norm_ijl': {},
         '_ijl2index': {},
         '_index2ijl': {},
         '_n_index': {},
         '_mark_probabilities': {},
         '_mark_probabilities_N': {},
-        '_mark_min': {}, '_mark_max': {},
-        '_lam_N': {}, '_lam_T': {},
-        '_claw': {}, '_claw1': {}, '_claw_X': {}, '_n_events': {},
-        '_int_claw': {}, '_IG': {}, '_IG2': {},
-        '_quad_x': {}, '_quad_w': {}
+        '_mark_min': {},
+        '_mark_max': {},
+        '_lam_N': {},
+        '_lam_T': {},
+        '_claw': {},
+        '_claw1': {},
+        '_claw_X': {},
+        '_n_events': {},
+        '_int_claw': {},
+        '_IG': {},
+        '_IG2': {},
+        '_quad_x': {},
+        '_quad_w': {}
     }
 
     def __init__(self, delta_lag=.1, min_lag=1e-4, max_lag=40, n_quad=50,
                  max_support=40, min_support=1e-4, quad_method='gauss',
-                 marked_components=None, delayed_component=None,
-                 delay=0.00001, model=None, n_threads=1, claw_method='lin'):
+                 marked_components=None, delayed_component=None, delay=0.00001,
+                 model=None, n_threads=1, claw_method='lin'):
 
         Base.__init__(self)
 
@@ -522,7 +531,8 @@ class HawkesConditionalLaw(Base):
         # If realization empty --> return
         if last_event_time < 0:
             warnings.warn(
-                "An empty realization was passed. No computation was performed.")
+                "An empty realization was passed. No computation was performed."
+            )
             return
 
         # We set T if needed
@@ -531,8 +541,7 @@ class HawkesConditionalLaw(Base):
         elif T < last_event_time:
             raise ValueError("Argument T (%g) specified is too small, "
                              "you should use default value or a value "
-                             "greater or equal to %g."
-                             % (T, last_event_time))
+                             "greater or equal to %g." % (T, last_event_time))
 
         # We update the mark probabilities and min-max
         for i in range(0, self.n_nodes):
@@ -579,8 +588,8 @@ class HawkesConditionalLaw(Base):
 
         for index, (i, j, l) in enumerate(self._index2ijl):
             if with_multi_processing:
-                pool.add_work(self._PointProcessCondLaw, realization,
-                              index, i, j, l, T)
+                pool.add_work(self._PointProcessCondLaw, realization, index, i,
+                              j, l, T)
             else:
                 self._PointProcessCondLaw(realization, index, i, j, l, T)
 
@@ -656,13 +665,10 @@ class HawkesConditionalLaw(Base):
 
         lambda_i = len(realization[i][0]) / T
 
-        PointProcessCondLaw(realization[i][0],
-                            realization[j][0], realization[j][1], self._lags,
-                            self.marked_components[j][l][0],
-                            self.marked_components[j][l][1],
-                            T,
-                            lambda_i,
-                            claw_X, claw_Y)
+        PointProcessCondLaw(
+            realization[i][0], realization[j][0], realization[j][1],
+            self._lags, self.marked_components[j][l][0],
+            self.marked_components[j][l][1], T, lambda_i, claw_X, claw_Y)
 
         self._claw_X = claw_X
 
@@ -691,8 +697,10 @@ class HawkesConditionalLaw(Base):
         # uniform grid (log)
         if claw_method == "log":
             y1 = np.arange(0., self.min_lag, self.min_lag * self.delta_lag)
-            y2 = np.exp(np.arange(np.log(self.min_lag), np.log(self.max_lag),
-                                  self.delta_lag))
+            y2 = np.exp(
+                np.arange(
+                    np.log(self.min_lag), np.log(self.max_lag),
+                    self.delta_lag))
             self._lags = np.append(y1, y2)
 
         if claw_method == "lin":
@@ -709,8 +717,9 @@ class HawkesConditionalLaw(Base):
         for index in range(self._n_index):
             xe = self._claw_X
             ye = self._claw[index]
-            xs2 = np.array([(a - b) for (a, b) in
-                            itertools.product(self._quad_x, repeat=2)])
+            xs2 = np.array(
+                [(a - b)
+                 for (a, b) in itertools.product(self._quad_x, repeat=2)])
             xs2 = np.append(xe, xs2)
             xs2 = np.append(self._quad_x, xs2)
             xs2 = np.array(np.lib.arraysetops.unique(xs2))
@@ -721,7 +730,7 @@ class HawkesConditionalLaw(Base):
             for i in range(1, len(xe)):
                 while j < len(xs2) and xs2[j] < xe[i]:
                     ys2[j] = (ye[i - 1]) + ((ye[i]) - (ye[i - 1])) * (
-                            xs2[j] - xe[i - 1]) / (xe[i] - xe[i - 1])
+                        xs2[j] - xe[i - 1]) / (xe[i] - xe[i - 1])
                     j += 1
             sc = (xs2, ys2)
             self._int_claw[index] = sc
@@ -734,14 +743,15 @@ class HawkesConditionalLaw(Base):
             xc = self._int_claw[i][0]
             yc = self._int_claw[i][1]
 
-            iyc_IG = np.append(np.array(0.),
-                               np.cumsum(np.diff(xc) * (yc[:-1] + yc[1:]) / 2.))
+            iyc_IG = np.append(
+                np.array(0.), np.cumsum(np.diff(xc) * (yc[:-1] + yc[1:]) / 2.))
             self._IG += [(xc, iyc_IG)]
 
-            iyc_IG2 = np.append(np.array(0.), np.cumsum(
-                (yc[:-1] + yc[1:]) / 2. * np.diff(xc) * xc[:-1] +
-                np.diff(xc) * np.diff(xc) / 3. * np.diff(yc) + np.diff(xc) *
-                np.diff(xc) / 2. * yc[:-1]))
+            iyc_IG2 = np.append(
+                np.array(0.),
+                np.cumsum((yc[:-1] + yc[1:]) / 2. * np.diff(xc) * xc[:-1] +
+                          np.diff(xc) * np.diff(xc) / 3. * np.diff(yc) +
+                          np.diff(xc) * np.diff(xc) / 2. * yc[:-1]))
             self._IG2 += [(xc, iyc_IG2)]
 
     @staticmethod
@@ -823,8 +833,9 @@ class HawkesConditionalLaw(Base):
                       self.n_quad
             x1 = np.arange(0., self.min_support, self.min_support * logstep)
             x2 = np.exp(
-                np.arange(np.log(self.min_support), np.log(self.max_support),
-                          logstep))
+                np.arange(
+                    np.log(self.min_support), np.log(self.max_support),
+                    logstep))
             self._quad_x = np.append(x1, x2)
             self._quad_w = self._quad_x[1:] - self._quad_x[:-1]
             self._quad_w = np.append(self._quad_w, self._quad_w[-1])
@@ -833,7 +844,8 @@ class HawkesConditionalLaw(Base):
             self._quad_w = np.array(self._quad_w)
 
         elif self.quad_method == 'lin':
-            x1 = np.arange(0., self.max_support, self.max_support / self.n_quad)
+            x1 = np.arange(0., self.max_support,
+                           self.max_support / self.n_quad)
             self._quad_x = x1
             self._quad_w = self._quad_x[1:] - self._quad_x[:-1]
             self._quad_w = np.append(self._quad_w, self._quad_w[-1])
@@ -902,20 +914,16 @@ class HawkesConditionalLaw(Base):
                         if method == 'gauss' or method == 'gauss-':
                             self._fill_M_for_gauss(M, method, n_quad,
                                                    index_first, index, index1,
-                                                   j, l, j1, l1, fact,
-                                                   n, n1)
+                                                   j, l, j1, l1, fact, n, n1)
 
                         elif method == 'log' or method == 'lin':
-                            self._fill_M_for_log_lin(M, method, n_quad,
-                                                     index_first, index, index1,
-                                                     j, l, j1, l1, fact,
-                                                     n, n1)
+                            self._fill_M_for_log_lin(
+                                M, method, n_quad, index_first, index, index1,
+                                j, l, j1, l1, fact, n, n1)
         return M
 
-    def _fill_M_for_gauss(self, M, method, n_quad,
-                          index_first, index, index1,
+    def _fill_M_for_gauss(self, M, method, n_quad, index_first, index, index1,
                           j, l, j1, l1, fact, n, n1):
-
         def x_value(n_lower, n_greater, j_lower, j_greater, l_greater):
             return self._mark_probabilities[j1][l1] * self._quad_w[n1] * \
                    self._G(j_lower, j_greater, l_greater,
@@ -947,27 +955,18 @@ class HawkesConditionalLaw(Base):
         col = (index1 - index_first) * n_quad + n1
         M[row, col] += x
 
-    def _fill_M_for_log_lin(self, M, method, n_quad,
-                            index_first, index, index1,
-                            j, l, j1, l1, fact, n, n1):
+    def _fill_M_for_log_lin(self, M, method, n_quad, index_first, index,
+                            index1, j, l, j1, l1, fact, n, n1):
 
         mark_probability = self._mark_probabilities[j1][l1]
 
-        ratio_dig = lambda n_q: (
-                (self._quad_x[n] - self._quad_x[n_q]) / self._quad_w[n_q]
-        )
+        ratio_dig = lambda n_q: ((self._quad_x[n] - self._quad_x[n_q]) / self._quad_w[n_q])
 
         ratio_dig2 = lambda n_q: 1. / self._quad_w[n_q]
 
-        dig_arg_greater = lambda n_q: (
-            j1, j, l,
-            self._quad_x[n] - self._quad_x[n_q] - self._quad_w[n_q],
-            self._quad_x[n] - self._quad_x[n_q])
+        dig_arg_greater = lambda n_q: (j1, j, l, self._quad_x[n] - self._quad_x[n_q] - self._quad_w[n_q], self._quad_x[n] - self._quad_x[n_q])
 
-        dig_arg_lower = lambda n_q: (
-            j, j1, l1,
-            self._quad_x[n_q] - self._quad_x[n],
-            self._quad_x[n_q] - self._quad_x[n] + self._quad_w[n_q])
+        dig_arg_lower = lambda n_q: (j, j1, l1, self._quad_x[n_q] - self._quad_x[n], self._quad_x[n_q] - self._quad_x[n] + self._quad_w[n_q])
 
         x = 0
         if n > n1:
@@ -1030,13 +1029,13 @@ class HawkesConditionalLaw(Base):
         col = (index1 - index_first) * n_quad + n1
         M[row, col] += x
 
-    def _estimate_kernels_and_norms(self, i, index_first, index_last,
-                                    res, n_quad, method):
+    def _estimate_kernels_and_norms(self, i, index_first, index_last, res,
+                                    n_quad, method):
         # We rearrange the solution vector and compute the norms
         # Here we get phi^ij_l and the corresponding norms
         for index in range(index_first, index_last + 1):
-            y = res[(index - index_first) * n_quad:
-                    (index - index_first + 1) * n_quad][:, 0]
+            y = res[(index - index_first) * n_quad:(
+                index - index_first + 1) * n_quad][:, 0]
 
             self._phi_ijl.append((self._quad_x, y))
 
@@ -1053,7 +1052,8 @@ class HawkesConditionalLaw(Base):
         for j in range(0, self.n_nodes):
             index = self._ijl2index[i][j][0]
             self.kernels[i].append(
-                np.array(self._phi_ijl[index]) * self._mark_probabilities[j][0])
+                np.array(self._phi_ijl[index]) *
+                self._mark_probabilities[j][0])
             self.kernels_norms[i, j] = self._norm_ijl[index] * \
                                        self._mark_probabilities[j][0]
             index += 1
@@ -1076,17 +1076,18 @@ class HawkesConditionalLaw(Base):
             self.mark_functions.append([])
             for j in range(0, self.n_nodes):
                 if len(self.marked_components[j]) == 1:
-                    self.mark_functions[i].append(
-                        (np.array([1]), np.array([1])))
+                    self.mark_functions[i].append((np.array([1]),
+                                                   np.array([1])))
                     continue
                 y = np.zeros(0)
                 x = np.zeros(0)
                 n = 100
                 for l in range(0, len(self.marked_components[j])):
                     index = self._ijl2index[i][j][l]
-                    y = np.append(y, np.zeros(n) +
-                                  self._norm_ijl[index] /
-                                  self.kernels_norms[i, j])
+                    y = np.append(
+                        y,
+                        np.zeros(n) +
+                        self._norm_ijl[index] / self.kernels_norms[i, j])
                     xmin = self.marked_components[j][l][0]
                     xmax = self.marked_components[j][l][1]
                     if l == 0:
@@ -1094,7 +1095,8 @@ class HawkesConditionalLaw(Base):
                     if l == len(self.marked_components[j]) - 1:
                         xmax = self._mark_max[j]
                     x = np.append(x,
-                                  np.arange(n) * (xmax - xmin) / (n - 1) + xmin)
+                                  np.arange(n) * (xmax - xmin) /
+                                  (n - 1) + xmin)
                 self.mark_functions[i].append((x, y))
 
     def get_kernel_supports(self):
@@ -1143,13 +1145,12 @@ class HawkesConditionalLaw(Base):
                 log_y_values = np.log10(y_values)
             log_abscissa_array = np.log10(abscissa_array)
             min_value = np.nanmin(log_abscissa_array)
-            log_interpolation = np.interp(log_abscissa_array,
-                                          log_t_values, log_y_values,
-                                          left=min_value, right=min_value)
+            log_interpolation = np.interp(log_abscissa_array, log_t_values,
+                                          log_y_values, left=min_value,
+                                          right=min_value)
             kernel_values = np.power(10.0, log_interpolation)
         else:
-            kernel_values = np.interp(abscissa_array,
-                                      t_values, y_values,
+            kernel_values = np.interp(abscissa_array, t_values, y_values,
                                       left=0, right=0)
 
         return kernel_values

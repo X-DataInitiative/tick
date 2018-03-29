@@ -5,20 +5,20 @@ import unittest
 import numpy as np
 
 from tick.base import TimeFunction
-from tick.hawkes import (
-    SimuHawkes, HawkesKernelExp, HawkesKernelSumExp, HawkesKernel0,
-    HawkesKernelPowerLaw, HawkesKernelTimeFunc, SimuHawkesMulti)
+from tick.hawkes import (SimuHawkes, HawkesKernelExp, HawkesKernelSumExp,
+                         HawkesKernel0, HawkesKernelPowerLaw,
+                         HawkesKernelTimeFunc, SimuHawkesMulti)
 
 
 class Test(unittest.TestCase):
     def setUp(self):
         np.random.seed(28374)
 
-        self.kernels = np.array([
-            [HawkesKernel0(), HawkesKernelExp(0.1, 3)],
-            [HawkesKernelPowerLaw(0.2, 4, 2),
-             HawkesKernelSumExp([0.1, 0.4], [3, 4])]
-        ])
+        self.kernels = np.array([[HawkesKernel0(),
+                                  HawkesKernelExp(0.1, 3)], [
+                                      HawkesKernelPowerLaw(0.2, 4, 2),
+                                      HawkesKernelSumExp([0.1, 0.4], [3, 4])
+                                  ]])
 
         self.baseline = np.random.rand(2)
 
@@ -39,18 +39,16 @@ class Test(unittest.TestCase):
 
         np.testing.assert_array_equal(hawkes.simulation_time,
                                       multi.simulation_time)
-        np.testing.assert_array_equal(hawkes.n_nodes,
-                                      multi.n_nodes)
-        np.testing.assert_array_equal(hawkes.end_time,
-                                      multi.end_time)
-        np.testing.assert_array_equal(hawkes.max_jumps,
-                                      multi.max_jumps)
+        np.testing.assert_array_equal(hawkes.n_nodes, multi.n_nodes)
+        np.testing.assert_array_equal(hawkes.end_time, multi.end_time)
+        np.testing.assert_array_equal(hawkes.max_jumps, multi.max_jumps)
         np.testing.assert_array_equal(hawkes.spectral_radius(),
                                       multi.spectral_radius)
 
         self.assertTrue(
-            all(np.array_equal(hawkes.mean_intensity(), np.array(x)) for x in
-                multi.mean_intensity))
+            all(
+                np.array_equal(hawkes.mean_intensity(), np.array(x))
+                for x in multi.mean_intensity))
 
         self.assertFalse(
             np.array_equal(hawkes.n_total_jumps, multi.n_total_jumps))
@@ -62,8 +60,9 @@ class Test(unittest.TestCase):
         hawkes = SimuHawkes(kernels=self.kernels, baseline=self.baseline,
                             end_time=10, verbose=False)
 
-        seeded_hawkes = SimuHawkes(kernels=self.kernels, baseline=self.baseline,
-                                   end_time=10, verbose=False, seed=seed)
+        seeded_hawkes = SimuHawkes(kernels=self.kernels,
+                                   baseline=self.baseline, end_time=10,
+                                   verbose=False, seed=seed)
 
         multi_1 = SimuHawkesMulti(seeded_hawkes, n_threads=4, n_simulations=1)
         multi_2 = SimuHawkesMulti(hawkes, n_threads=4, n_simulations=1)

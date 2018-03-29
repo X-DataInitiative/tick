@@ -23,11 +23,9 @@ class Test(unittest.TestCase):
     def assert_samples_are_different(self, sample1, samples2, discrete):
         # if law is continuous
         if not discrete:
-            self.assertGreater(
-                np.min(np.abs(sample1 - samples2)), 1e-7)
+            self.assertGreater(np.min(np.abs(sample1 - samples2)), 1e-7)
         else:
-            self.assertGreater(
-                np.max(np.abs(sample1 - samples2)), 0)
+            self.assertGreater(np.max(np.abs(sample1 - samples2)), 0)
 
     def _test_dist_with_seed(self, seeded_sample, test_function, *args,
                              discrete=False):
@@ -151,7 +149,7 @@ class Test(unittest.TestCase):
 
         # Statistical tests
         sample = test_exponential(intensity, self.stat_size, self.test_seed)
-        p, _ = stats.kstest(sample, 'expon', (0, 1./intensity))
+        p, _ = stats.kstest(sample, 'expon', (0, 1. / intensity))
         self.assertLess(p, 0.05)
 
     def test_poisson_random(self):
@@ -169,8 +167,9 @@ class Test(unittest.TestCase):
 
         # To test statistical consistency of poisson we do like if it was a
         # discrete law with a probability of sum_{k>K}(P(k)) for the last event
-        probabilities = [stats.poisson.pmf(i, rate)
-                         for i in range(3*int(rate))]
+        probabilities = [
+            stats.poisson.pmf(i, rate) for i in range(3 * int(rate))
+        ]
         f_obs = [sum(sample == i) for i in range(len(probabilities))]
 
         # We add the last event
@@ -240,7 +239,6 @@ class Test(unittest.TestCase):
         elif parallelization_type == 'threading':
 
             class UniformThread(threading.Thread):
-
                 def __init__(self, sample_size, wait_time):
                     super(UniformThread, self).__init__()
                     self.sample_size = sample_size
@@ -248,8 +246,8 @@ class Test(unittest.TestCase):
                     self.sample = None
 
                 def run(self):
-                    self.sample = test_uniform_threaded(self.sample_size,
-                                                        self.wait_time)
+                    self.sample = test_uniform_threaded(
+                        self.sample_size, self.wait_time)
 
             if n_workers is None:
                 threads = []
@@ -261,8 +259,8 @@ class Test(unittest.TestCase):
                 samples = np.array([t.sample for t in threads])
 
             else:
-                samples = np.array([test_uniform_threaded(*arg)
-                                    for arg in args])
+                samples = np.array(
+                    [test_uniform_threaded(*arg) for arg in args])
         else:
             raise ValueError('Unknown thread type')
 
@@ -304,7 +302,7 @@ class Test(unittest.TestCase):
                 p, _ = stats.kstest(sample, 'uniform')
                 self.assertLess(p, 0.05)
 
-            samples.resize((n_task * self.stat_size, ))
+            samples.resize((n_task * self.stat_size,))
 
             # compute p-value with Kolmogorov–Smirnov test
             p, _ = stats.kstest(samples, 'uniform')
@@ -340,6 +338,7 @@ class Test(unittest.TestCase):
                 self.assertGreater(
                     time_needed_sequential / time_needed_parallel, 1.5)
     """
-                
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -83,18 +83,13 @@ class BFGS(SolverFirstOrder):
       see Wright, and Nocedal 'Numerical Optimization', 1999, pg. 198.
     """
 
-    _attrinfos = {
-        "_prox_grad": {
-            "writable": False
-        }
-    }
+    _attrinfos = {"_prox_grad": {"writable": False}}
 
-    def __init__(self, tol: float = 1e-10,
-                 max_iter: int = 10, verbose: bool = True,
-                 print_every: int = 1, record_every: int = 1):
-        SolverFirstOrder.__init__(self, step=None, tol=tol,
-                                  max_iter=max_iter, verbose=verbose,
-                                  print_every=print_every,
+    def __init__(self, tol: float = 1e-10, max_iter: int = 10,
+                 verbose: bool = True, print_every: int = 1,
+                 record_every: int = 1):
+        SolverFirstOrder.__init__(self, step=None, tol=tol, max_iter=max_iter,
+                                  verbose=verbose, print_every=print_every,
                                   record_every=record_every)
         self._prox_grad = None
 
@@ -164,10 +159,8 @@ class BFGS(SolverFirstOrder):
             obj = self.objective(x)
             rel_obj = abs(obj - prev_obj[0]) / abs(prev_obj[0])
             prev_obj[0] = obj
-            self._handle_history(n_iter[0], force=False, obj=obj,
-                                 x=xk.copy(),
-                                 rel_delta=rel_delta,
-                                 rel_obj=rel_obj)
+            self._handle_history(n_iter[0], force=False, obj=obj, x=xk.copy(),
+                                 rel_delta=rel_delta, rel_obj=rel_obj)
             n_iter[0] += 1
 
         insp.n_iter = n_iter

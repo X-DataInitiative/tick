@@ -4,6 +4,7 @@ import warnings
 
 from tick.base.simulation import Simu
 
+
 class SimuPointProcess(Simu):
     """Base class for point process simulation
 
@@ -53,9 +54,15 @@ class SimuPointProcess(Simu):
     """
 
     _attrinfos = {
-        "_pp": {"writable": False},
-        "_pp_init_seed": {"writable": True},
-        "_end_time": {"writable": False},
+        "_pp": {
+            "writable": False
+        },
+        "_pp_init_seed": {
+            "writable": True
+        },
+        "_end_time": {
+            "writable": False
+        },
     }
 
     def __init__(self, end_time=None, max_jumps=None, seed=None, verbose=True):

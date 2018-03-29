@@ -103,9 +103,8 @@ def plot_history(solvers, x='n_iter', y='obj', labels=None, show=True,
         else:
             show = False
 
-        for i, (solver, x_array,
-                y_array, label) in enumerate(zip(solvers, x_arrays,
-                                                 y_arrays, labels)):
+        for i, (solver, x_array, y_array, label) in enumerate(
+                zip(solvers, x_arrays, y_arrays, labels)):
             color = get_plot_color(i)
             ax.plot(x_array, y_array, lw=3, label=label, color=color)
 
@@ -154,9 +153,8 @@ def plot_bokeh_history(solvers, x, y, x_arrays, y_arrays, mins, legends,
         fig = bk.Figure(plot_height=300, x_range=[min_x, max_x],
                         y_range=[min_y, max_y])
 
-    for i, (solver, x_array,
-            y_array, legend) in enumerate(zip(solvers, x_arrays,
-                                              y_arrays, legends)):
+    for i, (solver, x_array, y_array, legend) in enumerate(
+            zip(solvers, x_arrays, y_arrays, legends)):
         color = get_plot_color(i)
         fig.line(x_array, y_array, line_width=3, legend=legend, color=color)
     fig.xaxis.axis_label = x

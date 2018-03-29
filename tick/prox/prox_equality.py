@@ -30,14 +30,10 @@ class ProxEquality(Prox):
         entries (in the given range)
     """
 
-    _attrinfos = {
-        "positive": {
-            "writable": True,
-            "cpp_setter": "set_positive"
-        }
-    }
+    _attrinfos = {"positive": {"writable": True, "cpp_setter": "set_positive"}}
 
-    def __init__(self, strength: float=0, range: tuple=None, positive: bool=False):
+    def __init__(self, strength: float = 0, range: tuple = None,
+                 positive: bool = False):
         Prox.__init__(self, range)
         if range is None:
             self._prox = _ProxEquality(0., positive)

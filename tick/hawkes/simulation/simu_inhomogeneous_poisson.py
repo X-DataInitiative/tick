@@ -5,8 +5,7 @@ import numpy as np
 from tick.base import TimeFunction
 from tick.hawkes.simulation.base import SimuPointProcess
 from tick.hawkes.simulation.build.hawkes_simulation import (
-    InhomogeneousPoisson as _InhomogeneousPoisson
-)
+    InhomogeneousPoisson as _InhomogeneousPoisson)
 
 
 class SimuInhomogeneousPoisson(SimuPointProcess):
@@ -62,8 +61,10 @@ class SimuInhomogeneousPoisson(SimuPointProcess):
                  seed=None, verbose=True):
         SimuPointProcess.__init__(self, end_time=end_time, max_jumps=max_jumps,
                                   seed=seed, verbose=verbose)
-        cpp_obj_list = [intensity_function._time_function
-                        for intensity_function in intensities_functions]
+        cpp_obj_list = [
+            intensity_function._time_function
+            for intensity_function in intensities_functions
+        ]
         self._pp = _InhomogeneousPoisson(cpp_obj_list, self._pp_init_seed)
 
     def intensity_value(self, node, times):

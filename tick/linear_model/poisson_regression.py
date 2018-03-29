@@ -98,9 +98,7 @@ class PoissonRegression(LearnerGLM):
         'bfgs': BFGS,
     }
 
-    _attrinfos = {
-        "_actual_kwargs": {"writable": False}
-    }
+    _attrinfos = {"_actual_kwargs": {"writable": False}}
 
     @actual_kwargs
     def __init__(self, step=1e-3, fit_intercept=True, penalty='l2', C=1e3,
@@ -116,15 +114,13 @@ class PoissonRegression(LearnerGLM):
         if solver == 'bfgs':
             step = None
 
-        LearnerGLM.__init__(self, step=step, fit_intercept=fit_intercept,
-                            penalty=penalty, C=C, solver=solver, tol=tol,
-                            max_iter=max_iter, verbose=verbose,
-                            warm_start=warm_start, print_every=print_every,
-                            record_every=record_every,
-                            elastic_net_ratio=elastic_net_ratio,
-                            random_state=random_state,
-                            blocks_start=blocks_start,
-                            blocks_length=blocks_length)
+        LearnerGLM.__init__(
+            self, step=step, fit_intercept=fit_intercept, penalty=penalty, C=C,
+            solver=solver, tol=tol, max_iter=max_iter, verbose=verbose,
+            warm_start=warm_start, print_every=print_every,
+            record_every=record_every, elastic_net_ratio=elastic_net_ratio,
+            random_state=random_state, blocks_start=blocks_start,
+            blocks_length=blocks_length)
 
     def _construct_model_obj(self, fit_intercept=True):
         return ModelPoisReg(fit_intercept=fit_intercept, link='exponential')

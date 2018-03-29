@@ -88,9 +88,8 @@ def plot_hawkes_kernel_norms(kernel_object, show=True, pcolor_kwargs=None,
     return fig
 
 
-def plot_hawkes_kernels(kernel_object, support=None, hawkes=None,
-                        n_points=300, show=True, log_scale=False,
-                        min_support=1e-4, ax=None):
+def plot_hawkes_kernels(kernel_object, support=None, hawkes=None, n_points=300,
+                        show=True, log_scale=False, min_support=1e-4, ax=None):
     """Generic function to plot Hawkes kernels.
 
     Parameters
@@ -143,8 +142,8 @@ def plot_hawkes_kernels(kernel_object, support=None, hawkes=None,
     n_nodes = kernel_object.n_nodes
 
     if log_scale:
-        x_values = np.logspace(np.log10(min_support), np.log10(support),
-                               n_points)
+        x_values = np.logspace(
+            np.log10(min_support), np.log10(support), n_points)
     else:
         x_values = np.linspace(0, support, n_points)
 
@@ -191,10 +190,9 @@ def plot_hawkes_kernels(kernel_object, support=None, hawkes=None,
     return ax_list_list.ravel()[0].figure
 
 
-def plot_hawkes_baseline_and_kernels(hawkes_object, kernel_support=None,
-                                     hawkes=None, n_points=300, show=True,
-                                     log_scale=False, min_support=1e-4,
-                                     ax=None):
+def plot_hawkes_baseline_and_kernels(
+        hawkes_object, kernel_support=None, hawkes=None, n_points=300,
+        show=True, log_scale=False, min_support=1e-4, ax=None):
     """Generic function to plot Hawkes baseline and kernels.
 
     Parameters
@@ -309,8 +307,9 @@ def _normalize_functions(y_values_list, t_values):
         Normalization factors that have been used
     """
     y_values_list = np.array(y_values_list)
-    normalizations = [1. / np.trapz(y_values, t_values)
-                      for y_values in y_values_list]
+    normalizations = [
+        1. / np.trapz(y_values, t_values) for y_values in y_values_list
+    ]
     normalized_y_values_list = (y_values_list.T * normalizations).T
     return normalized_y_values_list, normalizations
 
@@ -332,16 +331,15 @@ def _find_best_match(diff_matrix):
     matches = []
     n_basis = diff_matrix.shape[0]
     for _ in range(n_basis):
-        row, col = np.unravel_index(np.argmin(diff_matrix),
-                                    (n_basis, n_basis))
+        row, col = np.unravel_index(np.argmin(diff_matrix), (n_basis, n_basis))
         diff_matrix[row, :] = np.inf
         diff_matrix[:, col] = np.inf
         matches += [(row, col)]
     return matches
 
 
-def plot_basis_kernels(learner, support=None, basis_kernels=None,
-                       n_points=300, show=True):
+def plot_basis_kernels(learner, support=None, basis_kernels=None, n_points=300,
+                       show=True):
     """Function used to plot basis of kernels
     
     It is used jointly with `tick.hawkes.inference.HawkesBasisKernels` learner class.
@@ -378,22 +376,24 @@ def plot_basis_kernels(learner, support=None, basis_kernels=None,
     if basis_kernels is not None:
         if len(basis_kernels) != learner.n_basis:
             raise ValueError('Learner has {} basis kernels, cannot '
-                             'compare to {} basis kernels'
-                             .format(learner.n_basis, len(basis_kernels)))
+                             'compare to {} basis kernels'.format(
+                                 learner.n_basis, len(basis_kernels)))
 
         t_values = learner.kernel_discretization[:-1]
 
-        basis_values_list = [basis_kernel(t_values)
-                             for basis_kernel in basis_kernels]
+        basis_values_list = [
+            basis_kernel(t_values) for basis_kernel in basis_kernels
+        ]
         normalized_basis_kernels, basis_normalizations = \
             _normalize_functions(basis_values_list, t_values)
 
         normalized_estimates, estimated_normalizations = \
             _normalize_functions(learner.basis_kernels, t_values)
 
-        kernel_diff = np.array([[np.trapz(np.abs(nbf - ne), t_values)
-                                 for nbf in normalized_basis_kernels]
-                                for ne in normalized_estimates])
+        kernel_diff = np.array([[
+            np.trapz(np.abs(nbf - ne), t_values)
+            for nbf in normalized_basis_kernels
+        ] for ne in normalized_estimates])
 
         matches = _find_best_match(kernel_diff)
 

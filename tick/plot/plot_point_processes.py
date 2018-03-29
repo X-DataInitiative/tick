@@ -3,9 +3,10 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
+
 def plot_point_process(point_process, plot_intensity=None, n_points=10000,
-                       plot_nodes=None, t_min=None, t_max=None,
-                       max_jumps=None, show=True, ax=None):
+                       plot_nodes=None, t_min=None, t_max=None, max_jumps=None,
+                       show=True, ax=None):
     """Plot point process realization
 
     Parameters
@@ -66,8 +67,9 @@ def plot_point_process(point_process, plot_intensity=None, n_points=10000,
         labels += [label]
 
     if ax is None:
-        fig, ax = plt.subplots(len(plot_nodes), 1, sharex=True, sharey=True,
-                               figsize=(12, 4*len(plot_nodes)))
+        fig, ax = plt.subplots(
+            len(plot_nodes), 1, sharex=True, sharey=True,
+            figsize=(12, 4 * len(plot_nodes)))
     else:
         show = False
 
@@ -85,17 +87,18 @@ def plot_point_process(point_process, plot_intensity=None, n_points=10000,
         intensity_times, intensities = None, None
 
     timestamps, intensity_times, intensities = _extract_process_interval(
-        plot_nodes, point_process.end_time,
-        timestamps, intensity_times=intensity_times, intensities=intensities,
-        t_min=t_min, t_max=t_max, max_jumps=max_jumps)
+        plot_nodes, point_process.end_time, timestamps,
+        intensity_times=intensity_times, intensities=intensities, t_min=t_min,
+        t_max=t_max, max_jumps=max_jumps)
 
     for count, i in enumerate(plot_nodes):
         if not plot_intensity:
             _plot_tick_bars(timestamps[i], ax[count], labels[count])
 
         else:
-            _plot_tick_intensity(timestamps[i], intensity_times, intensities[i],
-                                 ax[count], labels[count], n_points)
+            _plot_tick_intensity(timestamps[i], intensity_times,
+                                 intensities[i], ax[count], labels[count],
+                                 n_points)
 
     ax[-1].set_xlabel(r'$t$', fontsize=18)
 
@@ -112,8 +115,8 @@ def _plot_tick_bars(timestamps_i, ax, label):
     ax.get_yaxis().set_visible(False)
 
 
-def _plot_tick_intensity(timestamps_i, intensity_times, intensity_i,
-                         ax, label, n_points):
+def _plot_tick_intensity(timestamps_i, intensity_times, intensity_i, ax, label,
+                         n_points):
     x_intensity = np.linspace(intensity_times.min(), intensity_times.max(),
                               n_points)
     y_intensity = np.interp(x_intensity, intensity_times, intensity_i, left=0)
@@ -146,8 +149,7 @@ def _extract_process_interval(plot_nodes, end_time, timestamps,
         if t_min_is_specified or not t_max_is_specified:
             for i in plot_nodes:
                 timestamps_i = timestamps[i]
-                i_t_min = np.searchsorted(timestamps_i, t_min,
-                                          side="left")
+                i_t_min = np.searchsorted(timestamps_i, t_min, side="left")
                 # This might happen if max_points = 0
                 last_index = i_t_min + max_jumps - 1
                 if last_index < 0:
@@ -159,8 +161,7 @@ def _extract_process_interval(plot_nodes, end_time, timestamps,
         elif t_max_is_specified:
             for i in plot_nodes:
                 timestamps_i = timestamps[i]
-                i_t_max = np.searchsorted(timestamps_i, t_max,
-                                          side="left")
+                i_t_max = np.searchsorted(timestamps_i, t_max, side="left")
                 # This might happen if max_points = 0
                 first_index = i_t_max - max_jumps
                 if first_index >= len(timestamps_i) - 1:
@@ -170,7 +171,8 @@ def _extract_process_interval(plot_nodes, end_time, timestamps,
 
     extracted_timestamps = [
         timestamps_i[(timestamps_i >= t_min) & (timestamps_i <= t_max)]
-        for timestamps_i in timestamps]
+        for timestamps_i in timestamps
+    ]
 
     if intensity_times is not None:
         intensity_extracted_points = (intensity_times >= t_min) \
@@ -178,8 +180,8 @@ def _extract_process_interval(plot_nodes, end_time, timestamps,
         extracted_intensity_times = intensity_times[intensity_extracted_points]
 
         extracted_intensity = [
-            intensity[intensity_extracted_points]
-            for intensity in intensities]
+            intensity[intensity_extracted_points] for intensity in intensities
+        ]
     else:
         extracted_intensity_times, extracted_intensity = None, None
 

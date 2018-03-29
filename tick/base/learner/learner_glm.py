@@ -105,26 +105,22 @@ class LearnerGLM(LearnerOptim):
         },
     }
 
-    def __init__(self, fit_intercept=True, penalty='l2', C=1e3,
-                 solver="svrg", step=None, tol=1e-5, max_iter=100,
-                 verbose=True, warm_start=False, print_every=10,
-                 record_every=10, sdca_ridge_strength=1e-3,
-                 elastic_net_ratio=0.95, random_state=None,
-                 blocks_start=None, blocks_length=None):
+    def __init__(self, fit_intercept=True, penalty='l2', C=1e3, solver="svrg",
+                 step=None, tol=1e-5, max_iter=100, verbose=True,
+                 warm_start=False, print_every=10, record_every=10,
+                 sdca_ridge_strength=1e-3, elastic_net_ratio=0.95,
+                 random_state=None, blocks_start=None, blocks_length=None):
 
         extra_model_kwargs = {'fit_intercept': fit_intercept}
 
-        LearnerOptim.__init__(self, penalty=penalty, C=C,
-                              solver=solver, step=step, tol=tol,
-                              max_iter=max_iter, verbose=verbose,
-                              warm_start=warm_start, print_every=print_every,
-                              record_every=record_every,
-                              sdca_ridge_strength=sdca_ridge_strength,
-                              elastic_net_ratio=elastic_net_ratio,
-                              random_state=random_state,
-                              extra_model_kwargs=extra_model_kwargs,
-                              blocks_start=blocks_start,
-                              blocks_length=blocks_length)
+        LearnerOptim.__init__(
+            self, penalty=penalty, C=C, solver=solver, step=step, tol=tol,
+            max_iter=max_iter, verbose=verbose, warm_start=warm_start,
+            print_every=print_every, record_every=record_every,
+            sdca_ridge_strength=sdca_ridge_strength,
+            elastic_net_ratio=elastic_net_ratio, random_state=random_state,
+            extra_model_kwargs=extra_model_kwargs, blocks_start=blocks_start,
+            blocks_length=blocks_length)
 
         self.fit_intercept = fit_intercept
         self.weights = None
@@ -171,7 +167,8 @@ class LearnerGLM(LearnerOptim):
                 if isinstance(self._model_obj, ModelLipschitz):
                     self.step = 1. / self._model_obj.get_lip_max()
                 else:
-                    warn('SVRG step needs to be tuned manually', RuntimeWarning)
+                    warn('SVRG step needs to be tuned manually',
+                         RuntimeWarning)
                     self.step = 1.
             elif self.solver == 'sgd':
                 warn('SGD step needs to be tuned manually', RuntimeWarning)
@@ -225,10 +222,15 @@ class LearnerGLM(LearnerOptim):
         """
         dd = {
             'fit_intercept': self.fit_intercept,
-            'penalty': self.penalty, 'C': self.C,
-            'solver': self.solver, 'step': self.step, 'tol': self.tol,
-            'max_iter': self.max_iter, 'verbose': self.verbose,
-            'warm_start': self.warm_start, 'print_every': self.print_every,
+            'penalty': self.penalty,
+            'C': self.C,
+            'solver': self.solver,
+            'step': self.step,
+            'tol': self.tol,
+            'max_iter': self.max_iter,
+            'verbose': self.verbose,
+            'warm_start': self.warm_start,
+            'print_every': self.print_every,
             'record_every': self.record_every,
             'sdca_ridge_strength': self.sdca_ridge_strength,
             'elastic_net_ratio': self.elastic_net_ratio,

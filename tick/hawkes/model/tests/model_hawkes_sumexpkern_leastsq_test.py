@@ -24,10 +24,10 @@ class Test(InferenceTest):
 
         self.decays = np.random.rand(self.n_decays)
 
-        self.timestamps_list = [
-            [np.cumsum(np.random.random(np.random.randint(3, 7)))
-             for _ in range(self.dim)]
-            for _ in range(self.n_realizations)]
+        self.timestamps_list = [[
+            np.cumsum(np.random.random(np.random.randint(3, 7)))
+            for _ in range(self.dim)
+        ] for _ in range(self.n_realizations)]
 
         self.baseline = np.random.rand(self.dim)
         self.adjacency = np.random.rand(self.dim, self.dim, self.n_decays)
@@ -58,8 +58,7 @@ class Test(InferenceTest):
                                          period_length=period_length)
         msg = "period_length must be given if multiple baselines are used"
         with self.assertRaisesRegex(ValueError, msg):
-            ModelHawkesSumExpKernLeastSq(self.decays,
-                                         n_baselines=n_baselines)
+            ModelHawkesSumExpKernLeastSq(self.decays, n_baselines=n_baselines)
         msg = "period_length has no effect when using a constant baseline"
         with self.assertWarnsRegex(UserWarning, msg):
             ModelHawkesSumExpKernLeastSq(self.decays,
@@ -97,8 +96,7 @@ class Test(InferenceTest):
         n_baselines = 1
         model = ModelHawkesSumExpKernLeastSq(decays=self.decays,
                                              n_baselines=n_baselines)
-        np.testing.assert_array_equal(model.baseline_intervals,
-                                      np.array([0.]))
+        np.testing.assert_array_equal(model.baseline_intervals, np.array([0.]))
 
     def test_model_hawkes_sum_exp_kernel_least_sq_loss(self):
         """...Test that computed losses are consistent with approximated
@@ -110,12 +108,10 @@ class Test(InferenceTest):
             self.baseline, self.decays, self.adjacency, timestamps)
 
         integral_approx = hawkes_least_square_error(
-            intensities, timestamps,
-            self.model.end_times[self.realization])
+            intensities, timestamps, self.model.end_times[self.realization])
         integral_approx /= self.model.n_jumps
 
-        self.assertAlmostEqual(integral_approx,
-                               self.model.loss(self.coeffs),
+        self.assertAlmostEqual(integral_approx, self.model.loss(self.coeffs),
                                places=2)
 
     def test_model_hawkes_least_sq_multiple_events(self):
@@ -136,13 +132,13 @@ class Test(InferenceTest):
             for timestamps in self.timestamps_list
         ]
 
-        integral_approx = sum([hawkes_least_square_error(intensities,
-                                                         timestamps, end_time,
-                                                         precision=precison)
-                               for (intensities, timestamps, end_time) in zip(
-                intensities_list, self.timestamps_list,
-                self.model_list.end_times
-            )])
+        integral_approx = sum([
+            hawkes_least_square_error(intensities, timestamps, end_time,
+                                      precision=precison)
+            for (intensities, timestamps,
+                 end_time) in zip(intensities_list, self.timestamps_list,
+                                  self.model_list.end_times)
+        ])
 
         integral_approx /= self.model_list.n_jumps
         self.assertAlmostEqual(integral_approx,
@@ -159,8 +155,9 @@ class Test(InferenceTest):
         for timestamps in self.timestamps_list:
             model_incremental_fit.incremental_fit(timestamps)
 
-        self.assertEqual(model_incremental_fit.loss(self.coeffs),
-                         self.model_list.loss(self.coeffs))
+        self.assertEqual(
+            model_incremental_fit.loss(self.coeffs),
+            self.model_list.loss(self.coeffs))
 
     def test_model_hawkes_least_sq_grad(self):
         """...Test that ModelHawkesExpKernLeastSq gradient is consistent
@@ -168,14 +165,14 @@ class Test(InferenceTest):
         """
 
         for model in [self.model, self.model_list]:
-            self.assertLess(check_grad(model.loss, model.grad, self.coeffs),
-                            1e-5)
+            self.assertLess(
+                check_grad(model.loss, model.grad, self.coeffs), 1e-5)
 
             # Check that minimum is achievable with a small gradient
-            coeffs_min = fmin_bfgs(model.loss, self.coeffs,
-                                   fprime=model.grad, disp=False)
-            self.assertAlmostEqual(norm(model.grad(coeffs_min)),
-                                   .0, delta=1e-4)
+            coeffs_min = fmin_bfgs(model.loss, self.coeffs, fprime=model.grad,
+                                   disp=False)
+            self.assertAlmostEqual(
+                norm(model.grad(coeffs_min)), .0, delta=1e-4)
 
     def test_model_hawkes_least_sq_change_decays(self):
         """...Test that loss is still consistent after decays modification in
@@ -191,11 +188,12 @@ class Test(InferenceTest):
 
         model_change_decay.decays = self.decays
 
-        self.assertNotEqual(loss_old_decay,
-                            model_change_decay.loss(self.coeffs))
+        self.assertNotEqual(loss_old_decay, model_change_decay.loss(
+            self.coeffs))
 
-        self.assertEqual(self.model_list.loss(self.coeffs),
-                         model_change_decay.loss(self.coeffs))
+        self.assertEqual(
+            self.model_list.loss(self.coeffs),
+            model_change_decay.loss(self.coeffs))
 
     def test_model_hawkes_sum_exp_kernel_varying_baseline_least_sq_loss(self):
         """...Test that computed losses are consistent with approximated
@@ -211,8 +209,9 @@ class Test(InferenceTest):
         def baseline_function(i):
             def baseline_value(t):
                 first_t = t - period_length * int(t / period_length)
-                interval = min(int(first_t / period_length * n_baselines),
-                               n_baselines - 1)
+                interval = min(
+                    int(first_t / period_length * n_baselines),
+                    n_baselines - 1)
                 return baselines[i, interval]
 
             return baseline_value
@@ -222,8 +221,8 @@ class Test(InferenceTest):
         intensities = hawkes_sumexp_kernel_varying_intensities(
             baseline_functions, self.decays, self.adjacency, timestamps)
 
-        integral_approx = hawkes_least_square_error(
-            intensities, timestamps, end_time)
+        integral_approx = hawkes_least_square_error(intensities, timestamps,
+                                                    end_time)
         integral_approx /= self.model.n_jumps
 
         model = ModelHawkesSumExpKernLeastSq(decays=self.decays,
@@ -232,9 +231,7 @@ class Test(InferenceTest):
         model.fit(self.timestamps_list[self.realization])
 
         coeffs = np.hstack((baselines.ravel(), self.adjacency.ravel()))
-        self.assertAlmostEqual(integral_approx,
-                               model.loss(coeffs),
-                               places=2)
+        self.assertAlmostEqual(integral_approx, model.loss(coeffs), places=2)
 
     def test_model_hawkes_varying_baseline_least_sq_grad(self):
         """...Test that ModelHawkesExpKernLeastSq gradient is consistent
@@ -245,14 +242,13 @@ class Test(InferenceTest):
             model.n_baselines = 3
             coeffs = np.random.rand(model.n_coeffs)
 
-            self.assertLess(check_grad(model.loss, model.grad, coeffs),
-                            1e-5)
+            self.assertLess(check_grad(model.loss, model.grad, coeffs), 1e-5)
 
-            coeffs_min = fmin_bfgs(model.loss, coeffs,
-                                   fprime=model.grad, disp=False)
+            coeffs_min = fmin_bfgs(model.loss, coeffs, fprime=model.grad,
+                                   disp=False)
 
-            self.assertAlmostEqual(norm(model.grad(coeffs_min)),
-                                   .0, delta=1e-4)
+            self.assertAlmostEqual(
+                norm(model.grad(coeffs_min)), .0, delta=1e-4)
 
     def test_model_hawkes_sum_exp_least_sq_serialization(self):
         """...Test that ModelHawkesExpKernLeastSq can be serialized

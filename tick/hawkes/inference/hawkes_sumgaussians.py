@@ -5,9 +5,8 @@ import numpy as np
 from scipy.stats import norm
 
 from tick.hawkes.inference.base import LearnerHawkesNoParam
-from tick.hawkes.inference.build.hawkes_inference import (
-    HawkesSumGaussians as _HawkesSumGaussians
-)
+from tick.hawkes.inference.build.hawkes_inference import (HawkesSumGaussians as
+                                                          _HawkesSumGaussians)
 from tick.solver.base.utils import relative_distance
 
 
@@ -141,8 +140,12 @@ class HawkesSumGaussians(LearnerHawkesNoParam):
     """
 
     _attrinfos = {
-        "_learner": {"writable": False},
-        "_model": {"writable": False},
+        "_learner": {
+            "writable": False
+        },
+        "_model": {
+            "writable": False
+        },
         "n_gaussians": {
             "cpp_setter": "set_n_gaussians"
         },
@@ -155,21 +158,25 @@ class HawkesSumGaussians(LearnerHawkesNoParam):
         "step_size": {
             "cpp_setter": "set_step_size"
         },
-        "baseline": {"writable": False},
-        "amplitudes": {"writable": False},
-        "approx": {"writable": False}
+        "baseline": {
+            "writable": False
+        },
+        "amplitudes": {
+            "writable": False
+        },
+        "approx": {
+            "writable": False
+        }
     }
 
-    def __init__(self, max_mean_gaussian, n_gaussians=5, step_size=1e-7,
-                 C=1e3, lasso_grouplasso_ratio=0.5, max_iter=50,
-                 tol=1e-5, n_threads=1, verbose=False, print_every=10,
-                 record_every=10, approx=0, em_max_iter=30,
-                 em_tol=None):
+    def __init__(self, max_mean_gaussian, n_gaussians=5, step_size=1e-7, C=1e3,
+                 lasso_grouplasso_ratio=0.5, max_iter=50, tol=1e-5,
+                 n_threads=1, verbose=False, print_every=10, record_every=10,
+                 approx=0, em_max_iter=30, em_tol=None):
 
-        LearnerHawkesNoParam.__init__(self, verbose=verbose, max_iter=max_iter,
-                                      print_every=print_every, tol=tol,
-                                      n_threads=n_threads,
-                                      record_every=record_every)
+        LearnerHawkesNoParam.__init__(
+            self, verbose=verbose, max_iter=max_iter, print_every=print_every,
+            tol=tol, n_threads=n_threads, record_every=record_every)
         self.baseline = None
         self.amplitudes = None
 
@@ -249,14 +256,13 @@ class HawkesSumGaussians(LearnerHawkesNoParam):
             amplitudes_start = np.random.uniform(
                 0.5, 0.9, (self.n_nodes, self.n_nodes, self.n_gaussians))
         else:
-            if amplitudes_start.shape != (
-                    self.n_nodes, self.n_nodes, self.n_gaussians):
+            if amplitudes_start.shape != (self.n_nodes, self.n_nodes,
+                                          self.n_gaussians):
                 raise ValueError(
                     'amplitudes_start has shape {} but should have '
                     'shape {}'.format(
                         amplitudes_start.shape,
-                        (self.n_nodes, self.n_nodes, self.n_gaussians)
-                    ))
+                        (self.n_nodes, self.n_nodes, self.n_gaussians)))
 
         self._set('amplitudes', amplitudes_start.copy())
 
@@ -285,7 +291,8 @@ class HawkesSumGaussians(LearnerHawkesNoParam):
                 break
 
             rel_baseline = relative_distance(self.baseline, prev_baseline)
-            rel_amplitudes = relative_distance(self.amplitudes, prev_amplitudes)
+            rel_amplitudes = relative_distance(self.amplitudes,
+                                               prev_amplitudes)
 
             max_relative_distance = max(rel_baseline, rel_amplitudes)
             # We perform at least 5 iterations as at start we sometimes reach a

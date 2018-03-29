@@ -18,16 +18,8 @@ from .simu_logreg import SimuLogReg
 from .simu_poisreg import SimuPoisReg
 
 __all__ = [
-    'LinearRegression',
-    'LogisticRegression',
-    'LogisticRegression',
-    'ModelLinReg',
-    'ModelLogReg',
-    'ModelPoisReg',
-    'ModelHinge',
-    'ModelSmoothedHinge',
-    'ModelQuadraticHinge',
-    'SimuLinReg',
-    'SimuLogReg',
+    'LinearRegression', 'LogisticRegression', 'LogisticRegression',
+    'ModelLinReg', 'ModelLogReg', 'ModelPoisReg', 'ModelHinge',
+    'ModelSmoothedHinge', 'ModelQuadraticHinge', 'SimuLinReg', 'SimuLogReg',
     'SimuPoisReg'
 ]

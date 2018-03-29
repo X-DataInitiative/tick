@@ -1,6 +1,5 @@
 # License: BSD 3 clause
 
-
 from .build.linear_model import ModelPoisRegDouble as _ModelPoisReg
 from .build.linear_model import LinkType_identity as identity
 from .build.linear_model import LinkType_exponential as exponential
@@ -14,8 +13,7 @@ from tick.base_model import ModelGeneralizedLinear, ModelFirstOrder, \
 __author__ = 'Stephane Gaiffas'
 
 
-class ModelPoisReg(ModelGeneralizedLinear,
-                   ModelSecondOrder,
+class ModelPoisReg(ModelGeneralizedLinear, ModelSecondOrder,
                    ModelSelfConcordant):
     """Poisson regression model with identity or exponential link for data with
     a count label. This class gives first order and second order information for
@@ -108,8 +106,8 @@ class ModelPoisReg(ModelGeneralizedLinear,
         }
     }
 
-    def __init__(self, fit_intercept: bool = True,
-                 link: str = "exponential", n_threads: int = 1):
+    def __init__(self, fit_intercept: bool = True, link: str = "exponential",
+                 n_threads: int = 1):
         """
         """
         ModelSecondOrder.__init__(self)
@@ -138,11 +136,9 @@ class ModelPoisReg(ModelGeneralizedLinear,
         """
         ModelFirstOrder.fit(self, features, labels)
         ModelGeneralizedLinear.fit(self, features, labels)
-        self._set("_model", _ModelPoisReg(features,
-                                          labels,
-                                          self._link_type,
-                                          self.fit_intercept,
-                                          self.n_threads))
+        self._set("_model",
+                  _ModelPoisReg(features, labels, self._link_type,
+                                self.fit_intercept, self.n_threads))
         return self
 
     def _grad(self, coeffs: np.ndarray, out: np.ndarray) -> None:
@@ -180,8 +176,7 @@ class ModelPoisReg(ModelGeneralizedLinear,
                               "link is not self-concordant"))
 
     # TODO: C++ for this
-    def _hessian_norm(self, coeffs: np.ndarray,
-                      point: np.ndarray) -> float:
+    def _hessian_norm(self, coeffs: np.ndarray, point: np.ndarray) -> float:
 
         link = self.link
         features, labels = self.features, self.labels

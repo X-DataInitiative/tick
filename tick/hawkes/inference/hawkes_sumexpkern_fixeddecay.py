@@ -3,9 +3,7 @@
 import numpy as np
 
 from tick.base import actual_kwargs
-from tick.hawkes import (
-    ModelHawkesSumExpKernLeastSq, SimuHawkesSumExpKernels
-)
+from tick.hawkes import (ModelHawkesSumExpKernLeastSq, SimuHawkesSumExpKernels)
 from tick.hawkes.inference.base import LearnerHawkesParametric
 from tick.prox import ProxElasticNet, ProxL1, ProxL2Sq, ProxPositive
 
@@ -126,10 +124,18 @@ class HawkesSumExpKern(LearnerHawkesParametric):
     """
 
     _attrinfos = {
-        "n_decays": {"writable": False},
-        "decays": {"writable": False},
-        "n_baselines": {"writable": False},
-        "period_length": {"writable": False},
+        "n_decays": {
+            "writable": False
+        },
+        "decays": {
+            "writable": False
+        },
+        "n_baselines": {
+            "writable": False
+        },
+        "period_length": {
+            "writable": False
+        },
     }
 
     _penalties = {
@@ -152,18 +158,16 @@ class HawkesSumExpKern(LearnerHawkesParametric):
         self.n_baselines = n_baselines
         self.period_length = period_length
 
-        LearnerHawkesParametric.__init__(self, penalty=penalty, C=C,
-                                         solver=solver, step=step, tol=tol,
-                                         max_iter=max_iter, verbose=verbose,
-                                         print_every=print_every,
-                                         record_every=record_every,
-                                         elastic_net_ratio=elastic_net_ratio,
-                                         random_state=random_state)
+        LearnerHawkesParametric.__init__(
+            self, penalty=penalty, C=C, solver=solver, step=step, tol=tol,
+            max_iter=max_iter, verbose=verbose, print_every=print_every,
+            record_every=record_every, elastic_net_ratio=elastic_net_ratio,
+            random_state=random_state)
 
     def _construct_model_obj(self):
-        model = ModelHawkesSumExpKernLeastSq(
-            self.decays, n_baselines=self.n_baselines,
-            period_length=self.period_length)
+        model = ModelHawkesSumExpKernLeastSq(self.decays,
+                                             n_baselines=self.n_baselines,
+                                             period_length=self.period_length)
         return model
 
     @property
@@ -195,12 +199,15 @@ class HawkesSumExpKern(LearnerHawkesParametric):
     def _corresponding_simu(self):
         return SimuHawkesSumExpKernels(
             adjacency=self.adjacency, decays=self.decays,
-            baseline=self.baseline, period_length=self._model_obj.period_length)
+            baseline=self.baseline,
+            period_length=self._model_obj.period_length)
 
     def get_baseline_values(self, i, abscissa_array):
-        return self._corresponding_simu().get_baseline_values(i, abscissa_array)
+        return self._corresponding_simu().get_baseline_values(
+            i, abscissa_array)
 
-    def score(self, events=None, end_times=None, baseline=None, adjacency=None):
+    def score(self, events=None, end_times=None, baseline=None,
+              adjacency=None):
         """Compute score metric
         Score metric is log likelihood (the higher the better)
 
@@ -243,5 +250,4 @@ class HawkesSumExpKern(LearnerHawkesParametric):
             coeffs = None
 
         return LearnerHawkesParametric.score(
-            self, events=events, end_times=end_times,
-            coeffs=coeffs)
+            self, events=events, end_times=end_times, coeffs=coeffs)

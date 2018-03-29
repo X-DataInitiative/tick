@@ -6,6 +6,7 @@ from .build.prox import ProxL2Double as _ProxL2
 
 __author__ = 'Stephane Gaiffas'
 
+
 class ProxL2(Prox):
     """Proximal operator of the L2 penalization. Do not mix up with ProxL2sq,
     which is regular ridge (squared L2) penalization. ProxL2 induces sparsity
@@ -41,8 +42,8 @@ class ProxL2(Prox):
         }
     }
 
-    def __init__(self, strength: float, range: tuple=None,
-                 positive: bool=False):
+    def __init__(self, strength: float, range: tuple = None,
+                 positive: bool = False):
         Prox.__init__(self, range)
         if range is None:
             self._prox = _ProxL2(strength, positive)

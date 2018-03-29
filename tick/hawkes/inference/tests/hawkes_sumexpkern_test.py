@@ -47,7 +47,8 @@ class Test(InferenceTest):
         """Simulate realization in which some nodes are sometimes empty
         """
         baseline = np.array([0.3, 0.001])
-        adjacency = np.array([[[0.5, 0.3], [0.8, 0.2]], [[0., 0.], [1.3, 0.9]]])
+        adjacency = np.array([[[0.5, 0.3], [0.8, 0.2]], [[0., 0.], [1.3,
+                                                                    0.9]]])
 
         sim = SimuHawkesSumExpKernels(adjacency=adjacency, decays=self.decays,
                                       baseline=baseline, verbose=False,
@@ -89,10 +90,8 @@ class Test(InferenceTest):
         """
         sto_seed = 179312
         n_nodes = 2
-        events, baseline, adjacency = Test.get_train_data(self.decays,
-                                                          n_nodes=n_nodes,
-                                                          n_decays=self.n_decays
-                                                          )
+        events, baseline, adjacency = Test.get_train_data(
+            self.decays, n_nodes=n_nodes, n_decays=self.n_decays)
         start = 0.01
         initial_adjacency_error = \
             Test.estimation_error(start * np.ones((n_nodes, n_nodes)),
@@ -101,9 +100,13 @@ class Test(InferenceTest):
         for penalty in penalties:
             for solver in solvers:
 
-                solver_kwargs = {'penalty': penalty, 'tol': 1e-10,
-                                 'solver': solver, 'verbose': False,
-                                 'max_iter': 1000}
+                solver_kwargs = {
+                    'penalty': penalty,
+                    'tol': 1e-10,
+                    'solver': solver,
+                    'verbose': False,
+                    'max_iter': 1000
+                }
 
                 if penalty != 'none':
                     solver_kwargs['C'] = 50
@@ -128,16 +131,14 @@ class Test(InferenceTest):
                             HawkesSumExpKern._solvers_stochastic:
                         continue
 
-                learner = HawkesSumExpKern(self.decays,
-                                           **solver_kwargs)
+                learner = HawkesSumExpKern(self.decays, **solver_kwargs)
                 learner.fit(events, start=start)
                 adjacency_error = Test.estimation_error(
                     learner.adjacency, adjacency)
-                self.assertLess(adjacency_error,
-                                initial_adjacency_error * 0.8,
+                self.assertLess(adjacency_error, initial_adjacency_error * 0.8,
                                 "solver %s with penalty %s "
-                                "reached too high baseline error" %
-                                (solver, penalty))
+                                "reached too high baseline error" % (solver,
+                                                                     penalty))
 
     def test_HawkesSumExpKern_score(self):
         """...Test HawkesSumExpKern score method
@@ -146,12 +147,12 @@ class Test(InferenceTest):
         n_realizations = 3
 
         train_events = [[
-            np.cumsum(np.random.rand(4 + i)) for i in range(n_nodes)]
-            for _ in range(n_realizations)]
+            np.cumsum(np.random.rand(4 + i)) for i in range(n_nodes)
+        ] for _ in range(n_realizations)]
 
         test_events = [[
-            np.cumsum(np.random.rand(4 + i)) for i in range(n_nodes)]
-            for _ in range(n_realizations)]
+            np.cumsum(np.random.rand(4 + i)) for i in range(n_nodes)
+        ] for _ in range(n_realizations)]
 
         learner = HawkesSumExpKern(self.decays)
 
@@ -167,8 +168,8 @@ class Test(InferenceTest):
         train_score_current_coeffs = learner.score()
         self.assertAlmostEqual(train_score_current_coeffs, 1.684827141)
 
-        train_score_given_coeffs = learner.score(
-            baseline=given_baseline, adjacency=given_adjacency)
+        train_score_given_coeffs = learner.score(baseline=given_baseline,
+                                                 adjacency=given_adjacency)
         self.assertAlmostEqual(train_score_given_coeffs, 1.16247892)
 
         test_score_current_coeffs = learner.score(test_events)
@@ -211,12 +212,16 @@ class Test(InferenceTest):
         """...Test HawkesSumExpKern basic settings
         """
         # solver
-        solver_class_map = {'gd': GD, 'agd': AGD, 'sgd': SGD,
-                            'svrg': SVRG, 'bfgs': BFGS}
+        solver_class_map = {
+            'gd': GD,
+            'agd': AGD,
+            'sgd': SGD,
+            'svrg': SVRG,
+            'bfgs': BFGS
+        }
         for solver in solvers:
-            learner = HawkesSumExpKern(
-                self.decays, solver=solver,
-                **Test.specific_solver_kwargs(solver))
+            learner = HawkesSumExpKern(self.decays, solver=solver,
+                                       **Test.specific_solver_kwargs(solver))
 
             solver_class = solver_class_map[solver]
             self.assertTrue(isinstance(learner._solver_obj, solver_class))
@@ -231,11 +236,15 @@ class Test(InferenceTest):
             HawkesSumExpKern(self.decays, solver='wrong_name')
 
         # prox
-        prox_class_map = {'none': ProxPositive, 'l1': ProxL1, 'l2': ProxL2Sq,
-                          'elasticnet': ProxElasticNet, 'nuclear': ProxNuclear}
+        prox_class_map = {
+            'none': ProxPositive,
+            'l1': ProxL1,
+            'l2': ProxL2Sq,
+            'elasticnet': ProxElasticNet,
+            'nuclear': ProxNuclear
+        }
         for penalty in penalties:
-            learner = HawkesSumExpKern(self.decays,
-                                       penalty=penalty)
+            learner = HawkesSumExpKern(self.decays, penalty=penalty)
             prox_class = prox_class_map[penalty]
             self.assertTrue(isinstance(learner._prox_obj, prox_class))
 
@@ -291,8 +300,7 @@ class Test(InferenceTest):
         """
         for penalty in penalties:
             if penalty != 'none':
-                learner = HawkesSumExpKern(self.decays,
-                                           penalty=penalty,
+                learner = HawkesSumExpKern(self.decays, penalty=penalty,
                                            C=self.float_1)
                 self.assertEqual(learner.C, self.float_1)
                 self.assertEqual(learner._prox_obj.strength, 1. / self.float_1)
@@ -302,13 +310,10 @@ class Test(InferenceTest):
 
                 msg = '^``C`` must be positive, got -1$'
                 with self.assertRaisesRegex(ValueError, msg):
-                    HawkesSumExpKern(self.decays,
-                                     penalty=penalty,
-                                     C=-1)
+                    HawkesSumExpKern(self.decays, penalty=penalty, C=-1)
 
             else:
-                learner = HawkesSumExpKern(self.decays,
-                                           penalty=penalty)
+                learner = HawkesSumExpKern(self.decays, penalty=penalty)
                 msg = '^You cannot set C for penalty "%s"$' % penalty
                 with self.assertWarnsRegex(RuntimeWarning, msg):
                     learner.C = self.float_1
@@ -327,9 +332,9 @@ class Test(InferenceTest):
         for penalty in penalties:
             if penalty == 'elasticnet':
 
-                learner = HawkesSumExpKern(
-                    self.decays, penalty=penalty, C=self.float_1,
-                    elastic_net_ratio=ratio_1)
+                learner = HawkesSumExpKern(self.decays, penalty=penalty,
+                                           C=self.float_1,
+                                           elastic_net_ratio=ratio_1)
                 self.assertEqual(learner.C, self.float_1)
                 self.assertEqual(learner.elastic_net_ratio, ratio_1)
                 self.assertEqual(learner._prox_obj.strength, 1. / self.float_1)
@@ -341,8 +346,7 @@ class Test(InferenceTest):
                 self.assertEqual(learner._prox_obj.ratio, ratio_2)
 
             else:
-                learner = HawkesSumExpKern(self.decays,
-                                           penalty=penalty)
+                learner = HawkesSumExpKern(self.decays, penalty=penalty)
                 msg = '^Penalty "%s" has no elastic_net_ratio attribute$$' % \
                       penalty
                 with self.assertWarnsRegex(RuntimeWarning, msg):
@@ -354,9 +358,9 @@ class Test(InferenceTest):
         """
         for solver in solvers:
             # tol
-            learner = HawkesSumExpKern(
-                self.decays, solver=solver, tol=self.float_1,
-                **Test.specific_solver_kwargs(solver))
+            learner = HawkesSumExpKern(self.decays, solver=solver,
+                                       tol=self.float_1,
+                                       **Test.specific_solver_kwargs(solver))
             self.assertEqual(learner.tol, self.float_1)
             self.assertEqual(learner._solver_obj.tol, self.float_1)
             learner.tol = self.float_2
@@ -364,9 +368,9 @@ class Test(InferenceTest):
             self.assertEqual(learner._solver_obj.tol, self.float_2)
 
             # max_iter
-            learner = HawkesSumExpKern(
-                self.decays, solver=solver, max_iter=self.int_1,
-                **Test.specific_solver_kwargs(solver))
+            learner = HawkesSumExpKern(self.decays, solver=solver,
+                                       max_iter=self.int_1,
+                                       **Test.specific_solver_kwargs(solver))
             self.assertEqual(learner.max_iter, self.int_1)
             self.assertEqual(learner._solver_obj.max_iter, self.int_1)
             learner.max_iter = self.int_2
@@ -374,18 +378,18 @@ class Test(InferenceTest):
             self.assertEqual(learner._solver_obj.max_iter, self.int_2)
 
             # verbose
-            learner = HawkesSumExpKern(
-                self.decays, solver=solver, verbose=True,
-                **Test.specific_solver_kwargs(solver))
+            learner = HawkesSumExpKern(self.decays, solver=solver,
+                                       verbose=True,
+                                       **Test.specific_solver_kwargs(solver))
             self.assertEqual(learner.verbose, True)
             self.assertEqual(learner._solver_obj.verbose, True)
             learner.verbose = False
             self.assertEqual(learner.verbose, False)
             self.assertEqual(learner._solver_obj.verbose, False)
 
-            learner = HawkesSumExpKern(
-                self.decays, solver=solver, verbose=False,
-                **Test.specific_solver_kwargs(solver))
+            learner = HawkesSumExpKern(self.decays, solver=solver,
+                                       verbose=False,
+                                       **Test.specific_solver_kwargs(solver))
             self.assertEqual(learner.verbose, False)
             self.assertEqual(learner._solver_obj.verbose, False)
             learner.verbose = True
@@ -393,9 +397,9 @@ class Test(InferenceTest):
             self.assertEqual(learner._solver_obj.verbose, True)
 
             # print_every
-            learner = HawkesSumExpKern(
-                self.decays, solver=solver, print_every=self.int_1,
-                **Test.specific_solver_kwargs(solver))
+            learner = HawkesSumExpKern(self.decays, solver=solver,
+                                       print_every=self.int_1,
+                                       **Test.specific_solver_kwargs(solver))
             self.assertEqual(learner.print_every, self.int_1)
             self.assertEqual(learner._solver_obj.print_every, self.int_1)
             learner.print_every = self.int_2
@@ -403,9 +407,9 @@ class Test(InferenceTest):
             self.assertEqual(learner._solver_obj.print_every, self.int_2)
 
             # record_every
-            learner = HawkesSumExpKern(
-                self.decays, solver=solver, record_every=self.int_1,
-                **Test.specific_solver_kwargs(solver))
+            learner = HawkesSumExpKern(self.decays, solver=solver,
+                                       record_every=self.int_1,
+                                       **Test.specific_solver_kwargs(solver))
             self.assertEqual(learner.record_every, self.int_1)
             self.assertEqual(learner._solver_obj.record_every, self.int_1)
             learner.record_every = self.int_2
@@ -437,8 +441,8 @@ class Test(InferenceTest):
             if solver in ['sgd']:
                 msg = '^SGD step needs to be tuned manually$'
                 with self.assertWarnsRegex(RuntimeWarning, msg):
-                    learner = HawkesSumExpKern(
-                        self.decays, solver='sgd', max_iter=1)
+                    learner = HawkesSumExpKern(self.decays, solver='sgd',
+                                               max_iter=1)
                     learner.fit(self.events, 0.3)
 
     def test_HawkesSumExpKern_solver_random_state(self):
@@ -462,8 +466,7 @@ class Test(InferenceTest):
 
                 msg = '^random_state must be positive, got -1$'
                 with self.assertRaisesRegex(ValueError, msg):
-                    HawkesSumExpKern(self.decays,
-                                     solver=solver,
+                    HawkesSumExpKern(self.decays, solver=solver,
                                      random_state=-1)
 
             msg = '^random_state is readonly in ' \
@@ -482,7 +485,8 @@ class Test(InferenceTest):
         learner.fit(self.events)
 
         corresponding_simu = learner._corresponding_simu()
-        np.testing.assert_array_equal(corresponding_simu.decays, learner.decays)
+        np.testing.assert_array_equal(corresponding_simu.decays,
+                                      learner.decays)
         np.testing.assert_array_equal(corresponding_simu.baseline,
                                       learner.baseline)
         np.testing.assert_array_equal(corresponding_simu.adjacency,
@@ -493,7 +497,8 @@ class Test(InferenceTest):
         learner.fit(self.events)
 
         corresponding_simu = learner._corresponding_simu()
-        np.testing.assert_array_equal(corresponding_simu.decays, learner.decays)
+        np.testing.assert_array_equal(corresponding_simu.decays,
+                                      learner.decays)
         np.testing.assert_array_equal(corresponding_simu.baseline,
                                       learner.baseline)
         np.testing.assert_array_equal(corresponding_simu.adjacency,

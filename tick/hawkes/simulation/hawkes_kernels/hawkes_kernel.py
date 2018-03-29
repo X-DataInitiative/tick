@@ -1,20 +1,15 @@
 # License: BSD 3 clause
 
 from tick.base import Base
-from tick.hawkes.simulation.build.hawkes_simulation import (
-    HawkesKernel as _HawkesKernel
-)
+from tick.hawkes.simulation.build.hawkes_simulation import (HawkesKernel as
+                                                            _HawkesKernel)
 
 
 class HawkesKernel(Base):
     """ The kernel class allows to define 1 element of the kernel matrix of a
     Hawkes process
     """
-    _attrinfos = {
-        "_kernel": {
-            "writable": False
-        }
-    }
+    _attrinfos = {"_kernel": {"writable": False}}
 
     def __init__(self):
         Base.__init__(self)

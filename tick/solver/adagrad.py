@@ -127,12 +127,11 @@ class AdaGrad(SolverFirstOrderSto):
     def __init__(self, step: float = 1e-2, epoch_size: int = None,
                  rand_type: str = 'unif', tol: float = 1e-10,
                  max_iter: int = 100, verbose: bool = True,
-                 print_every: int = 10, record_every: int = 1,
-                 seed: int = -1):
+                 print_every: int = 10, record_every: int = 1, seed: int = -1):
 
-        SolverFirstOrderSto.__init__(self, step, epoch_size, rand_type,
-                                     tol, max_iter, verbose,
-                                     print_every, record_every, seed)
+        SolverFirstOrderSto.__init__(self, step, epoch_size, rand_type, tol,
+                                     max_iter, verbose, print_every,
+                                     record_every, seed)
         # Type mapping None to unsigned long and double does not work...
         step = self.step
         if step is None:

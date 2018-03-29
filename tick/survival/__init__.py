@@ -14,10 +14,6 @@ from .simu_sccs import SimuSCCS
 from .convolutional_sccs import ConvSCCS
 
 __all__ = [
-    "ModelCoxRegPartialLik",
-    "SimuSCCS",
-    "ModelSCCS",
-    "ConvSCCS",
-    "kaplan_meier",
-    "nelson_aalen"
+    "ModelCoxRegPartialLik", "SimuSCCS", "ModelSCCS", "ConvSCCS",
+    "kaplan_meier", "nelson_aalen"
 ]

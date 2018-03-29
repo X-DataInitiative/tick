@@ -1,6 +1,5 @@
 # License: BSD 3 clause
 
-
 from .model import Model
 from .model_first_order import ModelFirstOrder
 from .model_labels_features import ModelLabelsFeatures

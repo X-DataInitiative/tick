@@ -1,6 +1,5 @@
 # License: BSD 3 clause
 
-
 from .base import ProxWithGroups
 from .build.prox import ProxBinarsityDouble as _ProxBinarsity
 
@@ -46,6 +45,7 @@ class ProxBinarsity(ProxWithGroups):
 
     .. _A Direct Algorithm for 1D Total Variation Denoising: https://hal.archives-ouvertes.fr/hal-00675043v2/document
     """
+
     def __init__(self, strength: float, blocks_start, blocks_length,
                  range: tuple = None, positive: bool = False):
         ProxWithGroups.__init__(self, strength, blocks_start, blocks_length,

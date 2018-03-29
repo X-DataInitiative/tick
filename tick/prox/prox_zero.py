@@ -6,7 +6,6 @@ import numpy as np
 from .base import Prox
 from .build.prox import ProxZeroDouble as _ProxZero
 
-
 __author__ = 'Stephane Gaiffas'
 
 
@@ -24,7 +23,7 @@ class ProxZero(Prox):
     Using ``ProxZero`` means no penalization is applied on the model.
     """
 
-    def __init__(self, range: tuple=None):
+    def __init__(self, range: tuple = None):
         Prox.__init__(self, range)
         if range is None:
             self._prox = _ProxZero(0.)

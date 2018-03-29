@@ -34,7 +34,8 @@ class Test(TestGLM):
 
         self.assertAlmostEqual(model.get_lip_mean(), 6.324960325598532)
         self.assertAlmostEqual(model.get_lip_max(), 30.277118951892113)
-        self.assertAlmostEqual(model.get_lip_mean(), model_spars.get_lip_mean())
+        self.assertAlmostEqual(model.get_lip_mean(),
+                               model_spars.get_lip_mean())
         self.assertAlmostEqual(model.get_lip_max(), model_spars.get_lip_max())
         self.assertAlmostEqual(model.get_lip_best(), 2.7217793249045439)
 
@@ -59,7 +60,8 @@ class Test(TestGLM):
 
         self.assertAlmostEqual(model.get_lip_mean(), 7.324960325598536)
         self.assertAlmostEqual(model.get_lip_max(), 31.277118951892113)
-        self.assertAlmostEqual(model.get_lip_mean(), model_spars.get_lip_mean())
+        self.assertAlmostEqual(model.get_lip_mean(),
+                               model_spars.get_lip_mean())
         self.assertAlmostEqual(model.get_lip_max(), model_spars.get_lip_max())
         self.assertAlmostEqual(model.get_lip_best(), 2.7267793249045438)
 

@@ -6,8 +6,6 @@ from .model_hawkes_sumexpkern_leastsq import ModelHawkesSumExpKernLeastSq
 from .model_hawkes_sumexpkern_loglik import ModelHawkesSumExpKernLogLik
 
 __all__ = [
-    "ModelHawkesExpKernLogLik",
-    "ModelHawkesSumExpKernLogLik",
-    "ModelHawkesExpKernLeastSq",
-    "ModelHawkesSumExpKernLeastSq"
+    "ModelHawkesExpKernLogLik", "ModelHawkesSumExpKernLogLik",
+    "ModelHawkesExpKernLeastSq", "ModelHawkesSumExpKernLeastSq"
 ]

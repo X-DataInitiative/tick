@@ -14,19 +14,12 @@ class Prox(ABC, Base):
         Range on which the prox is applied
     """
 
-    _attrinfos = {
-        "_prox": {
-            "writable": False
-        },
-        "_range": {
-            "writable": False
-        }
-    }
+    _attrinfos = {"_prox": {"writable": False}, "_range": {"writable": False}}
 
     # The name of the attribute that will contain the C++ prox object
     _cpp_obj_name = "_prox"
 
-    def __init__(self, range: tuple=None):
+    def __init__(self, range: tuple = None):
         Base.__init__(self)
         self._range = None
         self._prox = None
@@ -97,8 +90,7 @@ class Prox(ABC, Base):
         return out
 
     @abstractmethod
-    def _call(self, coeffs: np.ndarray, step: object,
-              out: np.ndarray) -> None:
+    def _call(self, coeffs: np.ndarray, step: object, out: np.ndarray) -> None:
         pass
 
     @abstractmethod

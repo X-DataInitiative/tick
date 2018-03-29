@@ -49,14 +49,14 @@ class ProxElasticNet(Prox):
         }
     }
 
-    def __init__(self, strength: float, ratio: float, range: tuple=None,
+    def __init__(self, strength: float, ratio: float, range: tuple = None,
                  positive=False):
         Prox.__init__(self, range)
         if range is None:
             self._prox = _ProxElasticNet(strength, ratio, positive)
         else:
-            self._prox = _ProxElasticNet(strength, ratio, range[0],
-                                         range[1], positive)
+            self._prox = _ProxElasticNet(strength, ratio, range[0], range[1],
+                                         positive)
         self.positive = positive
         self.strength = strength
         self.ratio = ratio

@@ -17,35 +17,28 @@ class Test(unittest.TestCase):
 
         self.python_array_2d = np.array([[1, 2.1, 5], [0, 4, 1]])
 
-        self.python_sparse_array_1 = csr_matrix((
-            np.array([1.5, 2, 3, 1]),
-            np.array([3, 5, 7, 8]),
-            np.array([0, 4])
-        ))
+        self.python_sparse_array_1 = csr_matrix((np.array([1.5, 2, 3, 1]),
+                                                 np.array([3, 5, 7, 8]),
+                                                 np.array([0, 4])))
 
-        self.python_sparse_array_2 = csr_matrix((
-            np.array([1.5, -3, np.sqrt(2), 0.9, 4]),
-            np.array([1, 2, 3, 6, 8]),
-            np.array([0, 5])
-        ))
+        self.python_sparse_array_2 = csr_matrix((np.array(
+            [1.5, -3, np.sqrt(2), 0.9, 4]), np.array([1, 2, 3, 6, 8]),
+                                                 np.array([0, 5])))
 
-        self.python_sparse_array_3 = csr_matrix((
-            np.array([-2.]),
-            np.array([8]),
-            np.array([0, 1])
-        ))
+        self.python_sparse_array_3 = csr_matrix(
+            (np.array([-2.]), np.array([8]), np.array([0, 1])))
 
         self.python_sparse_array_2d = csr_matrix((np.array([1.5, 2, 3, 1]),
                                                   np.array([3, 5, 7, 4]),
                                                   np.array([0, 3, 4])))
 
-        self.array_types = ['BaseArrayDouble', 'ArrayDouble',
-                            'SparseArrayDouble', 'BaseArrayDouble2d',
-                            'ArrayDouble2d', 'SparseArrayDouble2d',
-                            'SBaseArrayDoublePtr', 'SArrayDoublePtr',
-                            'VArrayDoublePtr', 'SSparseArrayDoublePtr',
-                            'SBaseArrayDouble2dPtr', 'SArrayDouble2dPtr',
-                            'SSparseArrayDouble2dPtr']
+        self.array_types = [
+            'BaseArrayDouble', 'ArrayDouble', 'SparseArrayDouble',
+            'BaseArrayDouble2d', 'ArrayDouble2d', 'SparseArrayDouble2d',
+            'SBaseArrayDoublePtr', 'SArrayDoublePtr', 'VArrayDoublePtr',
+            'SSparseArrayDoublePtr', 'SBaseArrayDouble2dPtr',
+            'SArrayDouble2dPtr', 'SSparseArrayDouble2dPtr'
+        ]
 
     def _test_arrays(self, array_type):
         test_arrays = []
@@ -130,7 +123,8 @@ class Test(unittest.TestCase):
             test_func = getattr(test, "test_copy_%s" % array_type)
             original_arrays = self._test_arrays(array_type)
             test_arrays = self._test_arrays(array_type)
-            for test_array, original_array in zip(test_arrays, original_arrays):
+            for test_array, original_array in zip(test_arrays,
+                                                  original_arrays):
                 test_func(test_array)
                 # If it is a shared ptr it should have set the pointed array
                 # to 0
@@ -146,8 +140,7 @@ class Test(unittest.TestCase):
         for array_type in self.array_types:
             # We run this test only on non pointer arrays
             if not Test.is_array_ptr(array_type):
-                test_func = getattr(test,
-                                    "test_move_%s" % array_type)
+                test_func = getattr(test, "test_move_%s" % array_type)
                 test_arrays = self._test_arrays(array_type)
                 for test_array in test_arrays:
                     self.assertTrue(test_func(test_array))
@@ -164,8 +157,8 @@ class Test(unittest.TestCase):
                     compare_array = Test.cast_1d_array_to_1d_dense(test_array)
                     # Then we compare that all extracted values are correct
                     for i in range(len(compare_array)):
-                        self.assertEqual(test_func(test_array, i),
-                                         compare_array[i])
+                        self.assertEqual(
+                            test_func(test_array, i), compare_array[i])
 
     def test_last(self):
         """...Test last method of 1d arrays"""
@@ -182,20 +175,23 @@ class Test(unittest.TestCase):
 
     def test_dot(self):
         """...Test dot method of 1d arrays"""
-        array_types_1d = [array_type for array_type in self.array_types
-                          if Test.is_1d(array_type)]
+        array_types_1d = [
+            array_type for array_type in self.array_types
+            if Test.is_1d(array_type)
+        ]
         for array_type_1, array_type_2 in itertools.product(
                 array_types_1d, array_types_1d):
             test_arrays_1 = self._test_arrays(array_type_1)
             test_arrays_2 = self._test_arrays(array_type_2)
-            test_func = getattr(test, "test_dot_%s_%s" % (
-                array_type_1, array_type_2))
+            test_func = getattr(test, "test_dot_%s_%s" % (array_type_1,
+                                                          array_type_2))
             for test_array_1, test_array_2 in itertools.product(
                     test_arrays_1, test_arrays_2):
                 compare_array_1 = Test.cast_1d_array_to_1d_dense(test_array_1)
                 compare_array_2 = Test.cast_1d_array_to_1d_dense(test_array_2)
-                self.assertAlmostEqual(test_func(test_array_1, test_array_2),
-                                       compare_array_1.dot(compare_array_2))
+                self.assertAlmostEqual(
+                    test_func(test_array_1, test_array_2),
+                    compare_array_1.dot(compare_array_2))
 
     def test_as_array(self):
         """...Test behavior of as_array method"""
@@ -235,7 +231,8 @@ class Test(unittest.TestCase):
             test_func = getattr(test, "test_new_ptr_S%sPtr" % array_type)
             test_arrays = self._test_arrays(array_type)
             original_arrays = self._test_arrays(array_type)
-            for test_array, original_array in zip(test_arrays, original_arrays):
+            for test_array, original_array in zip(test_arrays,
+                                                  original_arrays):
                 self.assertAlmostEqual(original_array.sum(),
                                        test_func(test_array))
                 # Data has been copied and original array should not be affected
@@ -254,14 +251,19 @@ class Test(unittest.TestCase):
                     test_array2 = test_array.copy()
                     test_array3 = test_array.copy()
 
-                    expected = np.array([test_array1.sum(), test_array2.sum(),
-                                         test_array3.sum()])
+                    expected = np.array([
+                        test_array1.sum(),
+                        test_array2.sum(),
+                        test_array3.sum()
+                    ])
                     results = test_func(test_array1, test_array2, test_array3)
                     np.testing.assert_array_almost_equal(results, expected)
 
                     Test.compare_arrays(test_array1, test_array)
-                    Test.compare_arrays(test_array2, np.zeros_like(test_array2))
-                    Test.compare_arrays(test_array3, np.zeros_like(test_array3))
+                    Test.compare_arrays(test_array2,
+                                        np.zeros_like(test_array2))
+                    Test.compare_arrays(test_array3,
+                                        np.zeros_like(test_array3))
 
     def test_slice_view1d(self):
         """...Test that view slicing works as expected on Array"""
@@ -280,10 +282,11 @@ class Test(unittest.TestCase):
             end_end_slice_view = end_slice_view[:-end]
 
             # Check that every time the right view has been extracted
-            expected = [full_view, start_slice_view, end_slice_view,
-                        middle_slice_view, start_start_slice_view,
-                        start_end_slice_view, end_start_slice_view,
-                        end_end_slice_view]
+            expected = [
+                full_view, start_slice_view, end_slice_view, middle_slice_view,
+                start_start_slice_view, start_end_slice_view,
+                end_start_slice_view, end_end_slice_view
+            ]
 
             results = test.test_slice_view1d(test_array, start, end)
             for e, r in zip(expected, results):
@@ -386,8 +389,9 @@ class Test(unittest.TestCase):
                 norm_array = Test.cast_array_to_dense(test_array)
 
                 # Then we compare that the norm value is correct
-                self.assertAlmostEqual(test_func(test_array),
-                                       norm(norm_array) ** 2)
+                self.assertAlmostEqual(
+                    test_func(test_array),
+                    norm(norm_array) ** 2)
 
     def test_multiply(self):
         """...Test *= operator of arrays"""
@@ -425,8 +429,9 @@ class Test(unittest.TestCase):
         """...Test arange constructor of array"""
         min_max_couples = [(2, 5), (-10, 3), (-4, -2), (4, 2), (0, 0)]
         for min_value, max_value in min_max_couples:
-            np.testing.assert_equal(test.test_arange(min_value, max_value),
-                                    np.arange(min_value, max_value))
+            np.testing.assert_equal(
+                test.test_arange(min_value, max_value),
+                np.arange(min_value, max_value))
 
     def test_out_of_bound_errors(self):
         """...Test that we obtain an error for out of bounds indexes, if this
@@ -463,14 +468,12 @@ class Test(unittest.TestCase):
         """
         size = 12
         np.testing.assert_array_almost_equal(
-            test.test_VArrayDouble_append1(size),
-            np.arange(size))
+            test.test_VArrayDouble_append1(size), np.arange(size))
 
         np.testing.assert_array_almost_equal(
             test.test_VArrayDouble_append(self.python_array_1,
                                           self.python_array_2),
-            np.hstack((self.python_array_1, self.python_array_2))
-        )
+            np.hstack((self.python_array_1, self.python_array_2)))
 
     def test_sort(self):
         """...Test sort method of arrays
@@ -479,10 +482,9 @@ class Test(unittest.TestCase):
         sorted_a = np.sort(a)
         decreasing_sorted_a = np.sort(a)[::-1]
 
-        np.testing.assert_equal(test.test_sort_ArrayDouble(a, True),
-                                sorted_a)
-        np.testing.assert_equal(test.test_sort_ArrayDouble(a, False),
-                                decreasing_sorted_a)
+        np.testing.assert_equal(test.test_sort_ArrayDouble(a, True), sorted_a)
+        np.testing.assert_equal(
+            test.test_sort_ArrayDouble(a, False), decreasing_sorted_a)
 
         test_a = a.copy()
         test.test_sort_inplace_ArrayDouble(test_a, True)
@@ -504,15 +506,12 @@ class Test(unittest.TestCase):
         index = np.empty_like(a, dtype=np.uint64)
 
         np.testing.assert_equal(
-            test.test_sort_index_ArrayDouble(a, index, True),
-            sorted_a
-        )
+            test.test_sort_index_ArrayDouble(a, index, True), sorted_a)
         np.testing.assert_equal(index, sorted_index)
 
         np.testing.assert_equal(
             test.test_sort_index_ArrayDouble(a, index, False),
-            decreasing_sorted_a
-        )
+            decreasing_sorted_a)
         np.testing.assert_equal(index, decreasing_sorted_index)
 
         test_a = a.copy()
@@ -529,11 +528,13 @@ class Test(unittest.TestCase):
         """...Test sort in absolute value method of arrays which keep track of
         index
         """
-        a = np.array([-0.45, -0.58, -1.31, -0.89, 0.31, -1.29, 1.77, -0.39,
-                      -1.2, -0.86])
+        a = np.array([
+            -0.45, -0.58, -1.31, -0.89, 0.31, -1.29, 1.77, -0.39, -1.2, -0.86
+        ])
         sorted_index = np.array([4, 7, 0, 1, 9, 3, 8, 5, 2, 6])
-        sorted_a = np.array([0.31, -0.39, -0.45, -0.58, -0.86, -0.89, -1.2,
-                             -1.29, -1.31, 1.77])
+        sorted_a = np.array([
+            0.31, -0.39, -0.45, -0.58, -0.86, -0.89, -1.2, -1.29, -1.31, 1.77
+        ])
         decreasing_sorted_index = sorted_index[::-1]
         decreasing_sorted_a = sorted_a[::-1]
 
@@ -549,9 +550,11 @@ class Test(unittest.TestCase):
         np.testing.assert_equal(index, decreasing_sorted_index)
 
     def test_mult_incr(self):
-        test_arrays = [self.python_array_1, self.python_array_2,
-                       self.python_sparse_array_1, self.python_sparse_array_2,
-                       self.python_sparse_array_3]
+        test_arrays = [
+            self.python_array_1, self.python_array_2,
+            self.python_sparse_array_1, self.python_sparse_array_2,
+            self.python_sparse_array_3
+        ]
 
         b = 3
         for test_array in test_arrays:
@@ -562,9 +565,11 @@ class Test(unittest.TestCase):
             np.testing.assert_almost_equal(array, python_result)
 
     def test_mult_fill(self):
-        test_arrays = [self.python_array_1, self.python_array_2,
-                       self.python_sparse_array_1, self.python_sparse_array_2,
-                       self.python_sparse_array_3]
+        test_arrays = [
+            self.python_array_1, self.python_array_2,
+            self.python_sparse_array_1, self.python_sparse_array_2,
+            self.python_sparse_array_3
+        ]
         b = 3
         for test_array in test_arrays:
             array = np.empty_like(self.python_array_1)
@@ -573,10 +578,11 @@ class Test(unittest.TestCase):
             np.testing.assert_almost_equal(array, python_result)
 
     def test_mult_add_mult_incr(self):
-        test_arrays = [self.python_array_1, self.python_array_2,
-                       self.python_sparse_array_1,
-                       self.python_sparse_array_2,
-                       self.python_sparse_array_3]
+        test_arrays = [
+            self.python_array_1, self.python_array_2,
+            self.python_sparse_array_1, self.python_sparse_array_2,
+            self.python_sparse_array_3
+        ]
         a = 3.14
         b = -2.76
         for x, y in itertools.product(test_arrays, test_arrays):

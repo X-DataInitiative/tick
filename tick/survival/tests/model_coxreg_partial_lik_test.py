@@ -16,9 +16,8 @@ class Test(TestGLM):
         np.random.seed(123)
         n_samples, n_features = 100, 5
         w0 = np.random.randn(n_features)
-        features, times, censoring = SimuCoxReg(w0, n_samples=n_samples,
-                                                verbose=False,
-                                                seed=1234).simulate()
+        features, times, censoring = SimuCoxReg(
+            w0, n_samples=n_samples, verbose=False, seed=1234).simulate()
         model = ModelCoxRegPartialLik()
         model.fit(features, times, censoring)
         model_spars = ModelCoxRegPartialLik()

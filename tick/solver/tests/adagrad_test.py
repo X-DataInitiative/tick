@@ -18,5 +18,6 @@ class Test(TestSolver):
         self.check_solver(solver, fit_intercept=True, model="logreg",
                           decimal=1)
 
+
 if __name__ == '__main__':
     unittest.main()

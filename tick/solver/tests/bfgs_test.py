@@ -28,8 +28,8 @@ class Test(TestSolver):
                           verbose=False).simulate()
         model = ModelLogReg(fit_intercept=True).fit(X, y)
         prox = ProxL2Sq(strength=1e-6)
-        solver = BFGS(max_iter=100, print_every=1,
-                      verbose=False, tol=1e-6).set_model(model).set_prox(prox)
+        solver = BFGS(max_iter=100, print_every=1, verbose=False,
+                      tol=1e-6).set_model(model).set_prox(prox)
         coeffs = solver.solve()
         err = Test.evaluate_model(coeffs, coeffs0, interc0)
         self.assertAlmostEqual(err, 0., delta=5e-1)

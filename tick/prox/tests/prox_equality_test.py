@@ -1,6 +1,5 @@
 # License: BSD 3 clause
 
-
 import unittest
 
 import numpy as np
@@ -10,7 +9,6 @@ from tick.prox.tests.prox import TestProx
 
 
 class Test(TestProx):
-
     def test_ProxEquality(self):
         """...Test of ProxEquality
         """
@@ -53,6 +51,7 @@ class Test(TestProx):
 
         self.assertEqual(prox.value(out), 0)
         self.assertEqual(prox.value(coeffs), np.inf)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -137,25 +137,20 @@ class LearnerRobustGLM(LearnerGLM):
         'slope': ProxSlope
     }
 
-    def __init__(self, C_sample_intercepts, C=1e3, fdr=0.05,
-                 penalty='l2', fit_intercept=True, refit=False,
-                 solver='agd', warm_start=False, step=None,
-                 tol=1e-5, max_iter=100,
-                 verbose=True, print_every=10,
-                 record_every=10,
+    def __init__(self, C_sample_intercepts, C=1e3, fdr=0.05, penalty='l2',
+                 fit_intercept=True, refit=False, solver='agd',
+                 warm_start=False, step=None, tol=1e-5, max_iter=100,
+                 verbose=True, print_every=10, record_every=10,
                  elastic_net_ratio=0.95, slope_fdr=0.05):
 
         extra_model_kwargs = {'fit_intercept': fit_intercept}
 
-        LearnerGLM.__init__(self, fit_intercept=fit_intercept,
-                            penalty=penalty, C=C,
-                            solver=solver, step=step, tol=tol,
-                            max_iter=max_iter,
-                            verbose=verbose, warm_start=warm_start,
-                            print_every=print_every, record_every=record_every,
-                            elastic_net_ratio=elastic_net_ratio,
-                            random_state=None, blocks_start=None,
-                            blocks_length=None)
+        LearnerGLM.__init__(
+            self, fit_intercept=fit_intercept, penalty=penalty, C=C,
+            solver=solver, step=step, tol=tol, max_iter=max_iter,
+            verbose=verbose, warm_start=warm_start, print_every=print_every,
+            record_every=record_every, elastic_net_ratio=elastic_net_ratio,
+            random_state=None, blocks_start=None, blocks_length=None)
 
         self._prox_intercepts_obj = ProxSlope(1e-2)
         self.C_sample_intercepts = C_sample_intercepts
@@ -272,10 +267,15 @@ class LearnerRobustGLM(LearnerGLM):
         """
         dd = {
             'fit_intercept': self.fit_intercept,
-            'penalty': self.penalty, 'C': self.C,
-            'solver': self.solver, 'step': self.step, 'tol': self.tol,
-            'max_iter': self.max_iter, 'verbose': self.verbose,
-            'warm_start': self.warm_start, 'print_every': self.print_every,
+            'penalty': self.penalty,
+            'C': self.C,
+            'solver': self.solver,
+            'step': self.step,
+            'tol': self.tol,
+            'max_iter': self.max_iter,
+            'verbose': self.verbose,
+            'warm_start': self.warm_start,
+            'print_every': self.print_every,
             'record_every': self.record_every,
             'sdca_ridge_strength': self.sdca_ridge_strength,
             'elastic_net_ratio': self.elastic_net_ratio,
@@ -320,9 +320,12 @@ class LearnerRobustGLM(LearnerGLM):
         elif val == 0.:
             raise ValueError("``C_sample_intercepts`` cannot be 0.")
         elif val <= 0:
-            raise ValueError("``C_sample_intercepts`` must be positive, got %s" % str(val))
+            raise ValueError(
+                "``C_sample_intercepts`` must be positive, got %s" % str(val))
         elif np.isinf(val):
-            raise ValueError("``C_sample_intercepts`` must be a finite number, got %s" % str(val))
+            raise ValueError(
+                "``C_sample_intercepts`` must be a finite number, got %s" %
+                str(val))
         else:
             strength = 1. / val
             self._prox_intercepts_obj.strength = strength
@@ -336,7 +339,8 @@ class LearnerRobustGLM(LearnerGLM):
         if val is None:
             raise ValueError("``fdr`` cannot be `None`")
         elif np.isinf(val):
-            raise ValueError("``fdr`` must be a finite number, got %s" % str(val))
+            raise ValueError(
+                "``fdr`` must be a finite number, got %s" % str(val))
         elif val <= 0 or val >= 1:
             raise ValueError("``fdr`` must be in (0, 1), got %s" % str(val))
         else:
@@ -355,16 +359,16 @@ class LearnerRobustGLM(LearnerGLM):
             if val is None:
                 raise ValueError("``slope_fdr`` cannot be `None`")
             elif np.isinf(val):
-                raise ValueError("``slope_fdr`` must be a finite number, got %s"
-                                 % str(val))
+                raise ValueError(
+                    "``slope_fdr`` must be a finite number, got %s" % str(val))
             elif val <= 0 or val >= 1:
-                raise ValueError("``slope_fdr`` must be in (0, 1), got %s"
-                                 % str(val))
+                raise ValueError(
+                    "``slope_fdr`` must be in (0, 1), got %s" % str(val))
             else:
                 self._prox_obj.fdr = val
         else:
-            warn('Penalty "%s" has no ``slope_fdr`` attribute' %
-                 self.penalty, RuntimeWarning)
+            warn('Penalty "%s" has no ``slope_fdr`` attribute' % self.penalty,
+                 RuntimeWarning)
 
     @property
     def refit(self):

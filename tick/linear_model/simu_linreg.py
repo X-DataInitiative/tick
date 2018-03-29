@@ -1,6 +1,5 @@
 # License: BSD 3 clause
 
-
 import numpy as np
 
 from tick.base.simulation import SimuWithFeatures
@@ -77,11 +76,7 @@ class SimuLinReg(SimuWithFeatures):
         End date of the simulation
     """
 
-    _attrinfos = {
-        "labels": {
-            "writable": False
-        }
-    }
+    _attrinfos = {"labels": {"writable": False}}
 
     def __init__(self, weights: np.ndarray, intercept: float = None,
                  features: np.ndarray = None, n_samples: int = 200,

@@ -1,8 +1,7 @@
 # License: BSD 3 clause
 
-from tick.hawkes.simulation.build.hawkes_simulation import (
-    HawkesKernelExp as _HawkesKernelExp
-)
+from tick.hawkes.simulation.build.hawkes_simulation import (HawkesKernelExp as
+                                                            _HawkesKernelExp)
 from .hawkes_kernel import HawkesKernel
 
 
@@ -63,5 +62,5 @@ class HawkesKernelExp(HawkesKernel):
                 if self.decay == 1:
                     return r"$%g e^{- t}$" % (self.intensity * self.decay)
                 else:
-                    return r"$%g e^{-%g t}$" % (
-                        self.intensity * self.decay, self.decay)
+                    return r"$%g e^{-%g t}$" % (self.intensity * self.decay,
+                                                self.decay)

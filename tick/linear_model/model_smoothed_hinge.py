@@ -9,8 +9,7 @@ from .build.linear_model import ModelSmoothedHingeDouble as _ModelSmoothedHinge
 __author__ = 'Stephane Gaiffas'
 
 
-class ModelSmoothedHinge(ModelFirstOrder,
-                         ModelGeneralizedLinear,
+class ModelSmoothedHinge(ModelFirstOrder, ModelGeneralizedLinear,
                          ModelLipschitz):
     """Smoothed hinge loss model for binary classification. This class gives
     first order information (gradient and loss) for this model and can be passed
@@ -110,11 +109,10 @@ class ModelSmoothedHinge(ModelFirstOrder,
         ModelFirstOrder.fit(self, features, labels)
         ModelGeneralizedLinear.fit(self, features, labels)
         ModelLipschitz.fit(self, features, labels)
-        self._set("_model", _ModelSmoothedHinge(self.features,
-                                                self.labels,
-                                                self.fit_intercept,
-                                                self.smoothness,
-                                                self.n_threads))
+        self._set("_model",
+                  _ModelSmoothedHinge(self.features, self.labels,
+                                      self.fit_intercept, self.smoothness,
+                                      self.n_threads))
         return self
 
     def _grad(self, coeffs: np.ndarray, out: np.ndarray) -> None:
@@ -125,8 +123,7 @@ class ModelSmoothedHinge(ModelFirstOrder,
 
     def _get_lip_best(self):
         # TODO: Use sklearn.decomposition.TruncatedSVD instead?
-        s = svd(self.features, full_matrices=False,
-                compute_uv=False)[0] ** 2
+        s = svd(self.features, full_matrices=False, compute_uv=False)[0] ** 2
         if self.fit_intercept:
             return (s + 1) / (self.smoothness * self.n_samples)
         else:

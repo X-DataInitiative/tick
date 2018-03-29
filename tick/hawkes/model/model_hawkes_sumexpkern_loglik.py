@@ -5,13 +5,11 @@ import numpy as np
 from tick.base_model import ModelSecondOrder, ModelSelfConcordant, \
     LOSS_AND_GRAD
 from tick.hawkes.model.build.hawkes_model import (
-    ModelHawkesSumExpKernLogLik as _ModelHawkesSumExpKernLogLik
-)
+    ModelHawkesSumExpKernLogLik as _ModelHawkesSumExpKernLogLik)
 from .base import ModelHawkes
 
 
-class ModelHawkesSumExpKernLogLik(ModelHawkes,
-                                  ModelSecondOrder,
+class ModelHawkesSumExpKernLogLik(ModelHawkes, ModelSecondOrder,
                                   ModelSelfConcordant):
     """Hawkes process model for sum of exponential kernels with fixed and
     given decays.
@@ -119,8 +117,7 @@ class ModelHawkesSumExpKernLogLik(ModelHawkes,
         value = self._model.loss_and_grad(coeffs, out)
         return value
 
-    def _hessian_norm(self, coeffs: np.ndarray,
-                      point: np.ndarray) -> float:
+    def _hessian_norm(self, coeffs: np.ndarray, point: np.ndarray) -> float:
         return self._model.hessian_norm(coeffs, point)
 
     def _get_sc_constant(self) -> float:

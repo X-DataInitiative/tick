@@ -138,12 +138,12 @@ class LearnerOptim(ABC, Base):
         'binarsity': ProxBinarsity
     }
 
-    def __init__(self, penalty='l2', C=1e3, solver="svrg", step=None,
-                 tol=1e-5, max_iter=100, verbose=True, warm_start=False,
-                 print_every=10, record_every=10, sdca_ridge_strength=1e-3,
-                 elastic_net_ratio=0.95, random_state=None,
-                 blocks_start=None, blocks_length=None,
-                 extra_model_kwargs=None, extra_prox_kwarg=None):
+    def __init__(self, penalty='l2', C=1e3, solver="svrg", step=None, tol=1e-5,
+                 max_iter=100, verbose=True, warm_start=False, print_every=10,
+                 record_every=10, sdca_ridge_strength=1e-3,
+                 elastic_net_ratio=0.95, random_state=None, blocks_start=None,
+                 blocks_length=None, extra_model_kwargs=None,
+                 extra_prox_kwarg=None):
 
         Base.__init__(self)
         if not hasattr(self, "_actual_kwargs"):
@@ -161,8 +161,7 @@ class LearnerOptim(ABC, Base):
         self._set_random_state(random_state)
         self._solver_obj = self._construct_solver_obj(
             solver, step, max_iter, tol, print_every, record_every, verbose,
-            sdca_ridge_strength
-        )
+            sdca_ridge_strength)
 
         # Construct the prox. The prox is created at creation of the
         # learner, and cannot be instantiated again (using another prox type)
@@ -205,10 +204,13 @@ class LearnerOptim(ABC, Base):
                               record_every, verbose, sdca_ridge_strength):
         # Parameters of the solver
         solver_args = []
-        solver_kwargs = {'max_iter': max_iter, 'tol': tol,
-                         'print_every': print_every,
-                         'record_every': record_every,
-                         'verbose': verbose}
+        solver_kwargs = {
+            'max_iter': max_iter,
+            'tol': tol,
+            'print_every': print_every,
+            'record_every': record_every,
+            'verbose': verbose
+        }
 
         allowed_solvers = list(self._solvers.keys())
         allowed_solvers.sort()
@@ -247,12 +249,12 @@ class LearnerOptim(ABC, Base):
             if penalty == 'binarsity':
                 if blocks_start is None:
                     raise ValueError(
-                        "Penalty '%s' requires ``blocks_start``, got %s"
-                        % (penalty, str(blocks_start)))
+                        "Penalty '%s' requires ``blocks_start``, got %s" %
+                        (penalty, str(blocks_start)))
                 elif blocks_length is None:
                     raise ValueError(
-                        "Penalty '%s' requires ``blocks_length``, got %s"
-                        % (penalty, str(blocks_length)))
+                        "Penalty '%s' requires ``blocks_length``, got %s" %
+                        (penalty, str(blocks_length)))
                 else:
                     penalty_args += [blocks_start, blocks_length]
 
@@ -313,8 +315,8 @@ class LearnerOptim(ABC, Base):
     def _set_random_state(self, val):
         if self.solver in self._solvers_stochastic:
             if val is not None and val < 0:
-                raise ValueError('random_state must be positive, got %s' %
-                                 str(val))
+                raise ValueError(
+                    'random_state must be positive, got %s' % str(val))
             self.random_state = val
         else:
             if val is not None:
@@ -406,8 +408,8 @@ class LearnerOptim(ABC, Base):
                 val = val.astype(np.uint64)
             self._prox_obj.blocks_start = val
         else:
-            warn('Penalty "%s" has no blocks_start attribute' %
-                 self.penalty, RuntimeWarning)
+            warn('Penalty "%s" has no blocks_start attribute' % self.penalty,
+                 RuntimeWarning)
 
     @property
     def blocks_length(self):
@@ -425,8 +427,8 @@ class LearnerOptim(ABC, Base):
                 val = val.astype(np.uint64)
             self._prox_obj.blocks_length = val
         else:
-            warn('Penalty "%s" has no blocks_length attribute' %
-                 self.penalty, RuntimeWarning)
+            warn('Penalty "%s" has no blocks_length attribute' % self.penalty,
+                 RuntimeWarning)
 
     @property
     def sdca_ridge_strength(self):

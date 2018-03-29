@@ -1,8 +1,7 @@
 # License: BSD 3 clause
 
 from tick.hawkes.simulation.build.hawkes_simulation import (
-    HawkesKernelTimeFunc as _HawkesKernelTimeFunc
-)
+    HawkesKernelTimeFunc as _HawkesKernelTimeFunc)
 from .hawkes_kernel import HawkesKernel
 
 

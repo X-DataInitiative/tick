@@ -17,18 +17,8 @@ from .prox_equality import ProxEquality
 from .prox_binarsity import ProxBinarsity
 from .prox_group_l1 import ProxGroupL1
 
-
-__all__ = ["ProxZero",
-           "ProxPositive",
-           "ProxL1",
-           "ProxL1w",
-           "ProxL2Sq",
-           "ProxL2",
-           "ProxTV",
-           "ProxNuclear",
-           "ProxSlope",
-           "ProxElasticNet",
-           "ProxMulti",
-           "ProxEquality",
-           "ProxBinarsity",
-           "ProxGroupL1"]
+__all__ = [
+    "ProxZero", "ProxPositive", "ProxL1", "ProxL1w", "ProxL2Sq", "ProxL2",
+    "ProxTV", "ProxNuclear", "ProxSlope", "ProxElasticNet", "ProxMulti",
+    "ProxEquality", "ProxBinarsity", "ProxGroupL1"
+]

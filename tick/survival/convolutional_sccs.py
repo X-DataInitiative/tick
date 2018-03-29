@@ -18,9 +18,9 @@ from tick.preprocessing.utils import check_longitudinal_features_consistency, \
     check_censoring_consistency, safe_array
 
 # Case classes
-Confidence_intervals = namedtuple('Confidence_intervals',
-                                  ['refit_coeffs', 'lower_bound',
-                                   'upper_bound', 'confidence_level'])
+Confidence_intervals = namedtuple(
+    'Confidence_intervals',
+    ['refit_coeffs', 'lower_bound', 'upper_bound', 'confidence_level'])
 
 
 # TODO later: exploit new options of SVRG (parallel fit, variance_reduction...)
@@ -161,8 +161,8 @@ class ConvSCCS(ABC, Base):
         self.n_features = None
         self.n_coeffs = None
         self._coeffs = None
-        self.confidence_intervals = Confidence_intervals(list(), list(),
-                                                         list(), None)
+        self.confidence_intervals = Confidence_intervals(
+            list(), list(), list(), None)
         self._fitted = None
         self._step_size = None
 
@@ -183,22 +183,22 @@ class ConvSCCS(ABC, Base):
         self.verbose = verbose,
         self.print_every = print_every
         self.record_every = record_every
-        random_state = int(np.random.randint(0, 1000, 1)[0]
-                           if random_state is None else random_state)
+        random_state = int(
+            np.random.randint(0, 1000, 1)[0]
+            if random_state is None else random_state)
         self._random_state = None
         self.random_state = random_state
 
         # Construct objects
         self._preprocessor_obj = self._construct_preprocessor_obj()
         self._model_obj = None
-        self._solver_obj = self._construct_solver_obj(step, max_iter, tol,
-                                                      print_every, record_every,
-                                                      verbose, random_state)
+        self._solver_obj = self._construct_solver_obj(
+            step, max_iter, tol, print_every, record_every, verbose,
+            random_state)
 
     # Interface
-    def fit(self, features: list, labels: list,
-            censoring: np.array, confidence_intervals: bool = False,
-            n_samples_bootstrap: int = 200,
+    def fit(self, features: list, labels: list, censoring: np.array,
+            confidence_intervals: bool = False, n_samples_bootstrap: int = 200,
             confidence_level: float = .95):
         """Fit the model according to the given training data.
 
@@ -236,11 +236,12 @@ class ConvSCCS(ABC, Base):
         output : `LearnerSCCS`
             The current instance with given data
         """
-        p_features, p_labels, p_censoring = self._prefit(features, labels,
-                                                         censoring)
+        p_features, p_labels, p_censoring = self._prefit(
+            features, labels, censoring)
         self._fit(project=False)
         self._postfit(p_features, p_labels, p_censoring, False,
-                      confidence_intervals, n_samples_bootstrap, confidence_level)
+                      confidence_intervals, n_samples_bootstrap,
+                      confidence_level)
 
         return self.coeffs, self.confidence_intervals
 
@@ -278,9 +279,9 @@ class ConvSCCS(ABC, Base):
 
         return self._score(features, labels, censoring, preprocess=True)
 
-    def fit_kfold_cv(self, features, labels, censoring,
-                     C_tv_range: tuple=(), C_group_l1_range: tuple=(),
-                     logscale=True, n_cv_iter: int= 30, n_folds: int = 3,
+    def fit_kfold_cv(self, features, labels, censoring, C_tv_range: tuple = (),
+                     C_group_l1_range: tuple = (), logscale=True,
+                     n_cv_iter: int = 30, n_folds: int = 3,
                      shuffle: bool = True, confidence_intervals: bool = False,
                      n_samples_bootstrap: int = 100,
                      confidence_level: float = .95):
@@ -350,8 +351,8 @@ class ConvSCCS(ABC, Base):
             The current instance with given data
         """
         # setup the model and preprocess the data
-        p_features, p_labels, p_censoring = self._prefit(features, labels,
-                                                         censoring)
+        p_features, p_labels, p_censoring = self._prefit(
+            features, labels, censoring)
         # split the data with stratified KFold
         kf = StratifiedKFold(n_folds, shuffle, self.random_state)
         labels_interval = np.nonzero(p_labels)[1]
@@ -374,10 +375,12 @@ class ConvSCCS(ABC, Base):
 
             train_scores = []
             test_scores = []
-            for train_index, test_index in kf.split(p_features, labels_interval):
+            for train_index, test_index in kf.split(p_features,
+                                                    labels_interval):
                 train = itemgetter(*train_index.tolist())
                 test = itemgetter(*test_index.tolist())
-                X_train, X_test = list(train(p_features)), list(test(p_features))
+                X_train, X_test = list(train(p_features)), list(
+                    test(p_features))
                 y_train, y_test = list(train(p_labels)), list(test(p_labels))
                 censoring_train, censoring_test = p_censoring[train_index], \
                     p_censoring[test_index]
@@ -400,20 +403,17 @@ class ConvSCCS(ABC, Base):
         self._set('_coeffs', np.zeros(self.n_coeffs))
 
         self._model_obj.fit(p_features, p_labels, p_censoring)
-        coeffs, bootstrap_ci = self._postfit(p_features, p_labels, p_censoring,
-                                             True, confidence_intervals,
-                                             n_samples_bootstrap,
-                                             confidence_level)
+        coeffs, bootstrap_ci = self._postfit(
+            p_features, p_labels, p_censoring, True, confidence_intervals,
+            n_samples_bootstrap, confidence_level)
 
         cv_tracker.log_best_model(self.C_tv, self.C_group_l1,
-                                  self._coeffs.tolist(),
-                                  self.score(),
+                                  self._coeffs.tolist(), self.score(),
                                   self.confidence_intervals)
 
         return self.coeffs, cv_tracker
 
-    def plot_intensities(self, figsize=(10, 6), sharex=False,
-                                  sharey=False):
+    def plot_intensities(self, figsize=(10, 6), sharex=False, sharey=False):
         """Plot intensities estimated by the penalized model. The intensities
         subfigures are plotted on two columns.
 
@@ -509,8 +509,8 @@ class ConvSCCS(ABC, Base):
         elif n_coeffs == 1:
             if upper_bound is not None and lower_bound is not None:
                 ax.errorbar(0, coeffs, yerr=(np.exp(lower_bound),
-                                        np.exp(upper_bound)),
-                            fmt='o', ecolor='orange')
+                                             np.exp(upper_bound)), fmt='o',
+                            ecolor='orange')
             else:
                 ax.scatter([0], np.exp(coeffs), label="Estimated RI")
         return ax
@@ -524,19 +524,15 @@ class ConvSCCS(ABC, Base):
                              'feature matrices.')
         n_cases = len(features)
         censoring = check_censoring_consistency(censoring, n_cases)
-        features = check_longitudinal_features_consistency(features,
-                                                           (n_intervals,
-                                                            n_features),
-                                                           "float64")
-        labels = check_longitudinal_features_consistency(labels,
-                                                         (n_intervals,),
-                                                         "int32")
+        features = check_longitudinal_features_consistency(
+            features, (n_intervals, n_features), "float64")
+        labels = check_longitudinal_features_consistency(
+            labels, (n_intervals,), "int32")
         self._set('n_features', n_features)
         self._set('n_intervals', n_intervals)
 
-        features, labels, censoring = self._preprocess_data(features,
-                                                            labels,
-                                                            censoring)
+        features, labels, censoring = self._preprocess_data(
+            features, labels, censoring)
         n_coeffs = int(np.sum(self._n_lags) + self.n_features)
         self._set('n_coeffs', n_coeffs)
         self._set('_coeffs', np.zeros(n_coeffs))
@@ -568,8 +564,8 @@ class ConvSCCS(ABC, Base):
 
         return _coeffs
 
-    def _postfit(self, p_features, p_labels, p_censoring,
-                 refit, bootstrap, n_samples_bootstrap, confidence_level):
+    def _postfit(self, p_features, p_labels, p_censoring, refit, bootstrap,
+                 n_samples_bootstrap, confidence_level):
         # WARNING: _refit uses already preprocessed p_features, p_labels
         # and p_censoring
         if not self._fitted:
@@ -584,10 +580,9 @@ class ConvSCCS(ABC, Base):
         if bootstrap:
             self._model_obj.fit(p_features, p_labels, p_censoring)
             _refit_coeffs = self._fit(project=True)
-            confidence_intervals = self._bootstrap(p_features, p_labels,
-                                                   p_censoring, _refit_coeffs,
-                                                   n_samples_bootstrap,
-                                                   confidence_level)
+            confidence_intervals = self._bootstrap(
+                p_features, p_labels, p_censoring, _refit_coeffs,
+                n_samples_bootstrap, confidence_level)
             self._set('confidence_intervals', confidence_intervals._asdict())
 
         return self.coeffs, self.confidence_intervals
@@ -596,13 +591,11 @@ class ConvSCCS(ABC, Base):
     def _preprocess_data(self, features, labels, censoring):
         for preprocessor in self._preprocessor_obj:
             features, labels, censoring = preprocessor.fit_transform(
-                features,
-                labels,
-                censoring)
+                features, labels, censoring)
         return features, labels, censoring
 
-    def _bootstrap(self, p_features, p_labels, p_censoring, coeffs,
-                   rep, confidence):
+    def _bootstrap(self, p_features, p_labels, p_censoring, coeffs, rep,
+                   confidence):
         # WARNING: _bootstrap inputs are already preprocessed p_features,
         # p_labels and p_censoring
         # Coeffs here are assumed to be an array (same object than self._coeffs)
@@ -623,14 +616,13 @@ class ConvSCCS(ABC, Base):
 
         bootstrap_coeffs = np.exp(np.array(bootstrap_coeffs))
         bootstrap_coeffs.sort(axis=0)
-        lower_bound = np.log(bootstrap_coeffs[
-                                 int(np.floor(rep * confidence / 2))])
-        upper_bound = np.log(bootstrap_coeffs[
-                                 int(np.floor(rep * (1 - confidence / 2)))])
-        return Confidence_intervals(self._format_coeffs(coeffs),
-                                    self._format_coeffs(lower_bound),
-                                    self._format_coeffs(upper_bound),
-                                    confidence)
+        lower_bound = np.log(bootstrap_coeffs[int(
+            np.floor(rep * confidence / 2))])
+        upper_bound = np.log(bootstrap_coeffs[int(
+            np.floor(rep * (1 - confidence / 2)))])
+        return Confidence_intervals(
+            self._format_coeffs(coeffs), self._format_coeffs(lower_bound),
+            self._format_coeffs(upper_bound), confidence)
 
     def _score(self, features=None, labels=None, censoring=None,
                preprocess=False):
@@ -651,11 +643,9 @@ class ConvSCCS(ABC, Base):
                 # Avoid calling preprocessing during CV
                 if preprocess:
                     features, labels, censoring = self._preprocess_data(
-                        features,
-                        labels,
-                        censoring)
-                model = self._construct_model_obj().fit(features, labels,
-                                                        censoring)
+                        features, labels, censoring)
+                model = self._construct_model_obj().fit(
+                    features, labels, censoring)
                 loss = model.loss(self._coeffs)
         return loss
 
@@ -673,8 +663,8 @@ class ConvSCCS(ABC, Base):
         preprocessors = list()
         preprocessors.append(LongitudinalSamplesFilter(n_jobs=1))
         if len(self.n_lags) > 0:
-            preprocessors.append(LongitudinalFeaturesLagger(self.n_lags,
-                                                            n_jobs=1))
+            preprocessors.append(
+                LongitudinalFeaturesLagger(self.n_lags, n_jobs=1))
         return preprocessors
 
     def _construct_model_obj(self):
@@ -692,9 +682,9 @@ class ConvSCCS(ABC, Base):
                 prox_ranges = self._detect_support(coeffs)
                 proxs = [ProxEquality(0, range=r) for r in prox_ranges]
             else:
-                raise ValueError("Coeffs are None. " +
-                                 "Equality penalty cannot infer the "
-                                 "coefficients support.")
+                raise ValueError(
+                    "Coeffs are None. " + "Equality penalty cannot infer the "
+                    "coefficients support.")
         elif n_penalized_features > 0 and self._C_tv is not None or \
                 self._C_group_l1 is not None:
             # TV and GroupLasso penalties
@@ -712,9 +702,9 @@ class ConvSCCS(ABC, Base):
 
             if self._C_group_l1 is not None:
                 blocks_size = blocks_end - blocks_start
-                proxs.append(ProxGroupL1(1 / self._C_group_l1,
-                                         blocks_start.tolist(),
-                                         blocks_size.tolist()))
+                proxs.append(
+                    ProxGroupL1(1 / self._C_group_l1, blocks_start.tolist(),
+                                blocks_size.tolist()))
         else:
             # Default prox: does nothing
             proxs = [ProxZero()]
@@ -742,7 +732,7 @@ class ConvSCCS(ABC, Base):
             n_lags = int(self._n_lags[i])
             if n_lags > 0:
                 acc = 1
-                for change in np.convolve(coeffs[idx:idx+n_lags+1], kernel,
+                for change in np.convolve(coeffs[idx:idx + n_lags + 1], kernel,
                                           'valid'):
                     if change:
                         if acc > 1:
@@ -757,13 +747,12 @@ class ConvSCCS(ABC, Base):
         return groups
 
     @staticmethod
-    def _construct_solver_obj(step, max_iter, tol, print_every,
-                              record_every, verbose, seed):
+    def _construct_solver_obj(step, max_iter, tol, print_every, record_every,
+                              verbose, seed):
         # TODO: we might want to use SAGA also later... (might be faster here)
         # seed cannot be None in SVRG
         solver_obj = SVRG(step=step, max_iter=max_iter, tol=tol,
-                          print_every=print_every,
-                          record_every=record_every,
+                          print_every=print_every, record_every=record_every,
                           verbose=verbose, seed=seed)
 
         return solver_obj
@@ -781,8 +770,7 @@ class ConvSCCS(ABC, Base):
 
         if len(C_group_l1_range) == 2:
             if logspace:
-                generators.append(
-                    Log10UniformGenerator(*C_group_l1_range))
+                generators.append(Log10UniformGenerator(*C_group_l1_range))
             else:
                 generators.append(uniform(C_group_l1_range))
         else:
@@ -812,8 +800,7 @@ class ConvSCCS(ABC, Base):
         if value is None or isinstance(value, float) and value > 0:
             self._set('_C_tv', value)
         else:
-            raise ValueError(
-                'C_tv should be a float greater than zero.')
+            raise ValueError('C_tv should be a float greater than zero.')
 
     @property
     def C_group_l1(self):
@@ -863,7 +850,7 @@ class ConvSCCS(ABC, Base):
             value = [True] * len(self.n_lags)
         self._set('_penalized_features', value)
         self._construct_preprocessor_obj()
-        
+
     @property
     def coeffs(self):
         return self._format_coeffs(self._coeffs)
@@ -883,7 +870,6 @@ class ConvSCCS(ABC, Base):
 
 # TODO later: put the code below somewhere else?
 class CrossValidationTracker:
-
     def __init__(self, model_params: dict):
         self.model_params = model_params
         self.kfold_train_scores = list()
@@ -933,17 +919,18 @@ class CrossValidationTracker:
         }
 
     def todict(self):
-        return {'global_model_parameters': list(self.model_params),
-                'C_tv_history': list(self.C_tv_history),
-                'C_group_l1_history': list(self.C_group_l1_history),
-                'kfold_train_scores': list(self.kfold_train_scores),
-                'kfold_mean_train_scores': list(self.kfold_mean_train_scores),
-                'kfold_sd_train_scores': list(self.kfold_sd_train_scores),
-                'kfold_test_scores': list(self.kfold_test_scores),
-                'kfold_mean_test_scores': list(self.kfold_mean_test_scores),
-                'kfold_sd_test_scores': list(self.kfold_sd_test_scores),
-                'best_model': self.best_model
-                }
+        return {
+            'global_model_parameters': list(self.model_params),
+            'C_tv_history': list(self.C_tv_history),
+            'C_group_l1_history': list(self.C_group_l1_history),
+            'kfold_train_scores': list(self.kfold_train_scores),
+            'kfold_mean_train_scores': list(self.kfold_mean_train_scores),
+            'kfold_sd_train_scores': list(self.kfold_sd_train_scores),
+            'kfold_test_scores': list(self.kfold_test_scores),
+            'kfold_mean_test_scores': list(self.kfold_mean_test_scores),
+            'kfold_sd_test_scores': list(self.kfold_sd_test_scores),
+            'best_model': self.best_model
+        }
 
     def plot_cv_report(self, elevation=25, azimuth=35):
         if len(self.C_group_l1_history) > 0 and len(self.C_tv_history) > 0:
@@ -979,7 +966,7 @@ class CrossValidationTracker:
         p4 = ax.fill_between(x[order], m - sd, m + sd, alpha=.3)
         min_point_test = np.min(m - sd)
         min_point = min(min_point_train, min_point_test)
-        p5 = plt.scatter(np.log10(C), min_point*np.ones_like(C))
+        p5 = plt.scatter(np.log10(C), min_point * np.ones_like(C))
 
         ax.legend([(p1[0], p2), (p3[0], p4), p5],
                   ['train score', 'test score', 'tested hyperparameters'],
@@ -1063,11 +1050,12 @@ null_generator = DumbGenerator(rvs=lambda x: [None])
 
 class Log10UniformGenerator:
     """Generate uniformly distributed points in the log10 space."""
+
     def __init__(self, min_val, max_val):
         self.min_val = min_val
         self.max_val = max_val
         self.gen = uniform(0, 1)
 
     def rvs(self, n):
-        return 10 ** (
-            self.min_val + (self.max_val - self.min_val) * self.gen.rvs(n))
+        return 10 ** (self.min_val +
+                      (self.max_val - self.min_val) * self.gen.rvs(n))

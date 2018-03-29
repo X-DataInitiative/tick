@@ -7,26 +7,21 @@ from tick.preprocessing import LongitudinalFeaturesLagger
 
 
 class Test(unittest.TestCase):
-
     def setUp(self):
-        self.features = [np.array([[0, 1, 0],
-                                   [0, 0, 0],
-                                   [0, 1, 1]], dtype="float64"),
-                         np.array([[1, 1, 1],
-                                   [0, 0, 1],
-                                   [1, 1, 0]], dtype="float64")
-                         ]
+        self.features = [
+            np.array([[0, 1, 0], [0, 0, 0], [0, 1, 1]], dtype="float64"),
+            np.array([[1, 1, 1], [0, 0, 1], [1, 1, 0]], dtype="float64")
+        ]
         self.sparse_features = [csr_matrix(f) for f in self.features]
 
         self.censoring = np.array([2, 3], dtype="uint64")
 
-        self.expected_output = [np.array([[0, 0, 1, 0, 0, 0, 0],
-                                          [0, 0, 0, 1, 0, 0, 0],
-                                          [0, 0, 0, 0, 0, 0, 0.]]),
-                                np.array([[1, 0, 1, 0, 0, 1, 0],
-                                          [0, 1, 0, 1, 0, 1, 1],
-                                          [1, 0, 1, 0, 1, 0, 1.]])
-                                ]
+        self.expected_output = [
+            np.array([[0, 0, 1, 0, 0, 0, 0], [0, 0, 0, 1, 0, 0, 0],
+                      [0, 0, 0, 0, 0, 0, 0.]]),
+            np.array([[1, 0, 1, 0, 0, 1, 0], [0, 1, 0, 1, 0, 1, 1],
+                      [1, 0, 1, 0, 1, 0, 1.]])
+        ]
 
         self.n_lags = np.array([1, 2, 1], dtype="uint64")
 

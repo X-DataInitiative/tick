@@ -11,7 +11,7 @@ class Test(unittest.TestCase):
     def test_pickle(self):
         """...Test TimeFunction's pickling ability
         """
-        T = np.array([0.0, 1.0,  2.0])
+        T = np.array([0.0, 1.0, 2.0])
         Y = np.array([1.0, 0.0, -1.0])
 
         tf = TimeFunction([T, Y], inter_mode=TimeFunction.InterLinear, dt=0.2)

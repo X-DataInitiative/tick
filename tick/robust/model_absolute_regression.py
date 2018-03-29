@@ -7,8 +7,7 @@ from .build.robust import ModelAbsoluteRegressionDouble as _ModelAbsoluteRegress
 __author__ = 'Stephane Gaiffas'
 
 
-class ModelAbsoluteRegression(ModelFirstOrder,
-                              ModelGeneralizedLinear):
+class ModelAbsoluteRegression(ModelFirstOrder, ModelGeneralizedLinear):
     """Absolute value (L1) loss for linear regression. This class gives first
     order information (gradient and loss) for this model and can be passed
     to any solver through the solver's ``set_model`` method.
@@ -60,6 +59,7 @@ class ModelAbsoluteRegression(ModelFirstOrder,
           the CPU
         * otherwise the desired number of threads
     """
+
     def __init__(self, fit_intercept: bool = True, n_threads: int = 1):
         ModelFirstOrder.__init__(self)
         ModelGeneralizedLinear.__init__(self, fit_intercept)
@@ -84,10 +84,9 @@ class ModelAbsoluteRegression(ModelFirstOrder,
         """
         ModelFirstOrder.fit(self, features, labels)
         ModelGeneralizedLinear.fit(self, features, labels)
-        self._set("_model", _ModelAbsoluteRegression(self.features,
-                                                     self.labels,
-                                                     self.fit_intercept,
-                                                     self.n_threads))
+        self._set("_model",
+                  _ModelAbsoluteRegression(self.features, self.labels,
+                                           self.fit_intercept, self.n_threads))
         return self
 
     def _grad(self, coeffs: np.ndarray, out: np.ndarray) -> None:

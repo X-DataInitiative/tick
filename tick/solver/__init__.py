@@ -15,15 +15,6 @@ from .adagrad import AdaGrad
 from .history import History
 
 __all__ = [
-    "GD",
-    "AGD",
-    "BFGS",
-    "SCPG",
-    "SGD",
-    "SVRG",
-    "SAGA",
-    "SDCA",
-    "GFB",
-    "AdaGrad",
-    "History"
+    "GD", "AGD", "BFGS", "SCPG", "SGD", "SVRG", "SAGA", "SDCA", "GFB",
+    "AdaGrad", "History"
 ]

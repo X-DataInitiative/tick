@@ -63,18 +63,31 @@ class LongitudinalFeaturesLagger(LongitudinalPreprocessor):
     """
 
     _attrinfos = {
-        "n_lags": {"writable": False},
-        "_n_init_features": {"writable": False},
-        "_n_output_features": {"writable": False},
-        "_n_intervals": {"writable": False},
-        "_cpp_preprocessor": {"writable": False},
-        "_fitted": {"writable": False}
+        "n_lags": {
+            "writable": False
+        },
+        "_n_init_features": {
+            "writable": False
+        },
+        "_n_output_features": {
+            "writable": False
+        },
+        "_n_intervals": {
+            "writable": False
+        },
+        "_cpp_preprocessor": {
+            "writable": False
+        },
+        "_fitted": {
+            "writable": False
+        }
     }
 
     def __init__(self, n_lags, n_jobs=-1):
         LongitudinalPreprocessor.__init__(self, n_jobs=n_jobs)
         if not isinstance(n_lags, np.ndarray) or n_lags.dtype != 'uint64':
-            raise ValueError('`n_lags` should be a numpy array of dtype uint64')
+            raise ValueError(
+                '`n_lags` should be a numpy array of dtype uint64')
         self.n_lags = n_lags
         self._n_init_features = None
         self._n_output_features = None
@@ -118,8 +131,8 @@ class LongitudinalFeaturesLagger(LongitudinalPreprocessor):
         if base_shape[1] != len(self.n_lags):
             raise ValueError('Number of columns from feature matrices differs'
                              'from self.n_lags length.')
-        features = check_longitudinal_features_consistency(features, base_shape,
-                                                           "float64")
+        features = check_longitudinal_features_consistency(
+            features, base_shape, "float64")
         n_intervals, n_init_features = base_shape
         self._set("_n_init_features", n_init_features)
         self._set("_n_intervals", n_intervals)
@@ -160,25 +173,27 @@ class LongitudinalFeaturesLagger(LongitudinalPreprocessor):
                                 dtype="uint64")
         censoring = check_censoring_consistency(censoring, n_samples)
         base_shape = (self._n_intervals, self._n_init_features)
-        features = check_longitudinal_features_consistency(features, base_shape,
-                                                           "float64")
+        features = check_longitudinal_features_consistency(
+            features, base_shape, "float64")
         if sps.issparse(features[0]):
-            X_with_lags = [self._sparse_lagger(x, int(censoring[i]))
-                           for i, x in enumerate(features)]
+            X_with_lags = [
+                self._sparse_lagger(x, int(censoring[i]))
+                for i, x in enumerate(features)
+            ]
             # TODO: Don't get why int() is required here as censoring_i is uint64
         else:
-            X_with_lags = [self._dense_lagger(x, int(censoring[i]))
-                           for i, x in enumerate(features)]
+            X_with_lags = [
+                self._dense_lagger(x, int(censoring[i]))
+                for i, x in enumerate(features)
+            ]
 
         return X_with_lags, labels, censoring
 
     def _dense_lagger(self, feature_matrix, censoring_i):
         output = np.zeros((self._n_intervals, self._n_output_features),
                           dtype="float64")
-        self._cpp_preprocessor.dense_lag_preprocessor(
-            feature_matrix,
-            output,
-            censoring_i)
+        self._cpp_preprocessor.dense_lag_preprocessor(feature_matrix, output,
+                                                      censoring_i)
         return output
 
     def _sparse_lagger(self, feature_matrix, censoring_i):
@@ -188,14 +203,8 @@ class LongitudinalFeaturesLagger(LongitudinalPreprocessor):
         out_col = np.zeros((estimated_nnz,), dtype="uint64")
         out_data = np.zeros((estimated_nnz,), dtype="float64")
         self._cpp_preprocessor.sparse_lag_preprocessor(
-            coo.row.astype("uint64"),
-            coo.col.astype("uint64"),
-            coo.data,
-            out_row,
-            out_col,
-            out_data,
-            censoring_i
-            )
+            coo.row.astype("uint64"), coo.col.astype("uint64"), coo.data,
+            out_row, out_col, out_data, censoring_i)
         return sps.csr_matrix((out_data, (out_row, out_col)),
                               shape=(self._n_intervals,
                                      self._n_output_features))

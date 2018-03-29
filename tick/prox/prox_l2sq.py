@@ -8,6 +8,7 @@ from .build.prox import ProxL2SqDouble as _ProxL2sq
 
 __author__ = 'Stephane Gaiffas'
 
+
 class ProxL2Sq(Prox):
     """Proximal operator of the squared L2 norm (ridge penalization)
 
@@ -36,8 +37,8 @@ class ProxL2Sq(Prox):
         }
     }
 
-    def __init__(self, strength: float, range: tuple=None,
-                 positive: bool=False):
+    def __init__(self, strength: float, range: tuple = None,
+                 positive: bool = False):
         Prox.__init__(self, range)
         if range is None:
             self._prox = _ProxL2sq(strength, positive)

@@ -1,6 +1,5 @@
 # License: BSD 3 clause
 
-
 from abc import ABC, abstractmethod
 from time import time
 import numpy as np

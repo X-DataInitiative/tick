@@ -52,12 +52,7 @@ class ModelSCCS(ModelFirstOrder, ModelLipschitz):
     """
 
     _const_attr = [
-        "labels",
-        "features",
-        "censoring",
-        "n_features",
-        "n_cases",
-        "n_lags",
+        "labels", "features", "censoring", "n_features", "n_cases", "n_lags",
         "n_intervals"
     ]
 
@@ -101,10 +96,8 @@ class ModelSCCS(ModelFirstOrder, ModelLipschitz):
         ModelLipschitz.fit(self, features, labels)
 
         self._set("_model",
-                  _ModelSCCS(features=self.features,
-                             labels=self.labels,
-                             censoring=self.censoring,
-                             n_lags=self.n_lags))
+                  _ModelSCCS(features=self.features, labels=self.labels,
+                             censoring=self.censoring, n_lags=self.n_lags))
 
         return self
 
@@ -145,16 +138,12 @@ class ModelSCCS(ModelFirstOrder, ModelLipschitz):
             raise ValueError("Features and labels lists should have the same\
              length.")
         if censoring is None:
-            censoring = np.full(self.n_cases, self.n_intervals,
-                                dtype="uint64")
+            censoring = np.full(self.n_cases, self.n_intervals, dtype="uint64")
         censoring = check_censoring_consistency(censoring, self.n_cases)
-        features = check_longitudinal_features_consistency(features,
-                                                           (n_intervals,
-                                                            n_coeffs),
-                                                           "float64")
-        labels = check_longitudinal_features_consistency(labels,
-                                                         (self.n_intervals,),
-                                                         "int32")
+        features = check_longitudinal_features_consistency(
+            features, (n_intervals, n_coeffs), "float64")
+        labels = check_longitudinal_features_consistency(
+            labels, (self.n_intervals,), "int32")
 
         self._set("labels", labels)
         self._set("features", features)

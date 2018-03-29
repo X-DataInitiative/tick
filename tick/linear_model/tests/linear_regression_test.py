@@ -41,9 +41,8 @@ class Test(InferenceTest):
         fit_intercepts = [False, True]
         n_samples = 2000
         n_features = 20
-        X, y, weights0, _ = self.get_train_data(n_samples=n_samples,
-                                                n_features=n_features,
-                                                fit_intercept=False)
+        X, y, weights0, _ = self.get_train_data(
+            n_samples=n_samples, n_features=n_features, fit_intercept=False)
         intercept0 = -1
         for i, (solver, penalty, fit_intercept) \
                 in enumerate(product(LinearRegression._solvers.keys(),
@@ -54,16 +53,14 @@ class Test(InferenceTest):
             else:
                 y_ = y.copy()
             if penalty == 'binarsity':
-                learner = LinearRegression(verbose=False,
-                                           fit_intercept=fit_intercept,
-                                           solver=solver, penalty=penalty,
-                                           tol=1e-10, blocks_start=[0],
-                                           blocks_length=[1])
+                learner = LinearRegression(
+                    verbose=False, fit_intercept=fit_intercept, solver=solver,
+                    penalty=penalty, tol=1e-10, blocks_start=[0],
+                    blocks_length=[1])
             else:
-                learner = LinearRegression(verbose=False,
-                                           fit_intercept=fit_intercept,
-                                           solver=solver, penalty=penalty,
-                                           tol=1e-10)
+                learner = LinearRegression(
+                    verbose=False, fit_intercept=fit_intercept, solver=solver,
+                    penalty=penalty, tol=1e-10)
             learner.fit(X, y_)
             err = norm(learner.weights - weights0) / n_features ** 0.5
             self.assertLess(err, 3e-2)
@@ -80,9 +77,13 @@ class Test(InferenceTest):
                                   fit_intercepts)
 
         for solver, fit_intercept in cases:
-            solver_kwargs = {'solver': solver, 'max_iter': 2,
-                             'fit_intercept': fit_intercept,
-                             'warm_start': True, 'tol': 0}
+            solver_kwargs = {
+                'solver': solver,
+                'max_iter': 2,
+                'fit_intercept': fit_intercept,
+                'warm_start': True,
+                'tol': 0
+            }
 
             learner = LinearRegression(**solver_kwargs)
             learner.fit(X, y)
@@ -97,8 +98,9 @@ class Test(InferenceTest):
             else:
                 coeffs_2 = learner.weights
             # Thanks to warm start objective should have decreased
-            self.assertLess(learner._solver_obj.objective(coeffs_2),
-                            learner._solver_obj.objective(coeffs_1))
+            self.assertLess(
+                learner._solver_obj.objective(coeffs_2),
+                learner._solver_obj.objective(coeffs_1))
 
     @staticmethod
     def specific_solver_kwargs(solver):
@@ -176,8 +178,7 @@ class Test(InferenceTest):
                 with self.assertRaisesRegex(ValueError, msg):
                     if penalty == 'binarsity':
                         LinearRegression(penalty=penalty, C=-1,
-                                         blocks_start=[0],
-                                         blocks_length=[1])
+                                         blocks_start=[0], blocks_length=[1])
                     else:
                         LinearRegression(penalty=penalty, C=-1)
             else:
@@ -218,15 +219,16 @@ class Test(InferenceTest):
                       penalty
                 with self.assertWarnsRegex(RuntimeWarning, msg):
                     if penalty == 'binarsity':
-                        LinearRegression(penalty=penalty, elastic_net_ratio=0.8,
+                        LinearRegression(penalty=penalty,
+                                         elastic_net_ratio=0.8,
                                          blocks_start=[0], blocks_length=[1])
                     else:
-                        LinearRegression(penalty=penalty, elastic_net_ratio=0.8)
+                        LinearRegression(penalty=penalty,
+                                         elastic_net_ratio=0.8)
 
                 if penalty == 'binarsity':
-                    learner = LinearRegression(penalty=penalty,
-                                               blocks_start=[0],
-                                               blocks_length=[1])
+                    learner = LinearRegression(
+                        penalty=penalty, blocks_start=[0], blocks_length=[1])
                 else:
                     learner = LinearRegression(penalty=penalty)
                 with self.assertWarnsRegex(RuntimeWarning, msg):
@@ -308,15 +310,14 @@ class Test(InferenceTest):
             if solver in ['agd', 'gd']:
                 msg = '^Solver "%s" has no settable random_state$' % solver
                 with self.assertWarnsRegex(RuntimeWarning, msg):
-                    learner = LinearRegression(solver=solver, random_state=1,
-                                               **Test.specific_solver_kwargs(
-                                                   solver))
+                    learner = LinearRegression(
+                        solver=solver, random_state=1,
+                        **Test.specific_solver_kwargs(solver))
                     self.assertIsNone(learner.random_state)
             else:
-                learner = LinearRegression(solver=solver,
-                                           random_state=self.int_1,
-                                           **Test.specific_solver_kwargs(
-                                               solver))
+                learner = LinearRegression(
+                    solver=solver, random_state=self.int_1,
+                    **Test.specific_solver_kwargs(solver))
                 self.assertEqual(learner.random_state, self.int_1)
                 self.assertEqual(learner._solver_obj.seed, self.int_1)
 
@@ -327,9 +328,8 @@ class Test(InferenceTest):
 
             msg = '^random_state is readonly in LinearRegression$'
             with self.assertRaisesRegex(AttributeError, msg):
-                learner = LinearRegression(solver=solver,
-                                           **Test.specific_solver_kwargs(
-                                               solver))
+                learner = LinearRegression(
+                    solver=solver, **Test.specific_solver_kwargs(solver))
                 learner.random_state = self.int_2
 
     def test_safe_array_cast(self):
@@ -357,8 +357,8 @@ class Test(InferenceTest):
         learner.fit(X_train, y_train)
         X_test, y_test, _, _ = self.get_train_data(n_samples=5, n_features=12)
         y_pred = np.array([0.084, -1.4276, -3.1555, 2.6218, 0.3736])
-        np.testing.assert_array_almost_equal(learner.predict(X_test), y_pred,
-                                             decimal=4)
+        np.testing.assert_array_almost_equal(
+            learner.predict(X_test), y_pred, decimal=4)
 
     def test_score(self):
         """...Test LinearRegression predict
@@ -367,9 +367,10 @@ class Test(InferenceTest):
                                                      n_features=12)
         learner = LinearRegression(random_state=32789, tol=1e-9)
         learner.fit(X_train, y_train)
-        X_test, y_test, _, _ = self.get_train_data(n_samples=200, n_features=12)
-        self.assertAlmostEqual(learner.score(X_test, y_test), 0.793774,
-                               places=4)
+        X_test, y_test, _, _ = self.get_train_data(n_samples=200,
+                                                   n_features=12)
+        self.assertAlmostEqual(
+            learner.score(X_test, y_test), 0.793774, places=4)
 
 
 if __name__ == "__main__":

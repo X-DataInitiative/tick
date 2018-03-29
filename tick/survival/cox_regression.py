@@ -84,33 +84,24 @@ class CoxRegression(LearnerOptim):
         The learned coefficients of the model
     """
 
-    _solvers = {
-        'gd': GD,
-        'agd': AGD
-    }
+    _solvers = {'gd': GD, 'agd': AGD}
 
-    _attrinfos = {
-        "_actual_kwargs": {"writable": False}
-    }
+    _attrinfos = {"_actual_kwargs": {"writable": False}}
 
     @actual_kwargs
-    def __init__(self, penalty='l2', C=1e3,
-                 solver='agd', step=None, tol=1e-5, max_iter=100,
-                 verbose=False, warm_start=False,
-                 print_every=10, record_every=10,
-                 elastic_net_ratio=0.95, random_state=None, blocks_start=None,
-                 blocks_length=None):
+    def __init__(self, penalty='l2', C=1e3, solver='agd', step=None, tol=1e-5,
+                 max_iter=100, verbose=False, warm_start=False, print_every=10,
+                 record_every=10, elastic_net_ratio=0.95, random_state=None,
+                 blocks_start=None, blocks_length=None):
 
         self._actual_kwargs = CoxRegression.__init__.actual_kwargs
-        LearnerOptim.__init__(self, penalty=penalty, C=C, solver=solver,
-                              step=step, tol=tol, max_iter=max_iter,
-                              verbose=verbose, warm_start=warm_start,
-                              print_every=print_every,
-                              record_every=record_every, sdca_ridge_strength=0,
-                              elastic_net_ratio=elastic_net_ratio,
-                              random_state=random_state,
-                              blocks_start=blocks_start,
-                              blocks_length=blocks_length)
+        LearnerOptim.__init__(
+            self, penalty=penalty, C=C, solver=solver, step=step, tol=tol,
+            max_iter=max_iter, verbose=verbose, warm_start=warm_start,
+            print_every=print_every, record_every=record_every,
+            sdca_ridge_strength=0, elastic_net_ratio=elastic_net_ratio,
+            random_state=random_state, blocks_start=blocks_start,
+            blocks_length=blocks_length)
         self.coeffs = None
 
     def _construct_model_obj(self):
@@ -222,10 +213,10 @@ class CoxRegression(LearnerOptim):
                 elif censoring is None:
                     raise ValueError('Passed ``censoring`` is None')
                 else:
-                    features, times, censoring = self._all_safe(features, times,
-                                                                censoring)
-                    model = ModelCoxRegPartialLik().fit(features, times,
-                                                        censoring)
+                    features, times, censoring = self._all_safe(
+                        features, times, censoring)
+                    model = ModelCoxRegPartialLik().fit(
+                        features, times, censoring)
                     return model.loss(self.coeffs)
         else:
             raise RuntimeError('You must fit the model first')

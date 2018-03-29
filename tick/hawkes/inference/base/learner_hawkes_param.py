@@ -103,8 +103,12 @@ class LearnerHawkesParametric(LearnerOptim):
     """
 
     _attrinfos = {
-        "n_nodes": {"writable": False},
-        "coeffs": {"writable": False},
+        "n_nodes": {
+            "writable": False
+        },
+        "coeffs": {
+            "writable": False
+        },
     }
 
     _solvers = {
@@ -123,22 +127,20 @@ class LearnerHawkesParametric(LearnerOptim):
     }
 
     @actual_kwargs
-    def __init__(self, penalty="l2", C=1e3, solver="agd", step=None,
-                 tol=1e-5, max_iter=100, verbose=False, print_every=10,
-                 record_every=10, elastic_net_ratio=0.95, random_state=None):
+    def __init__(self, penalty="l2", C=1e3, solver="agd", step=None, tol=1e-5,
+                 max_iter=100, verbose=False, print_every=10, record_every=10,
+                 elastic_net_ratio=0.95, random_state=None):
         self.coeffs = None
         self.events = None
 
         extra_prox_kwarg = {"positive": True}
 
-        LearnerOptim.__init__(self, penalty=penalty, C=C,
-                              solver=solver, step=step, tol=tol,
-                              max_iter=max_iter, verbose=verbose,
-                              warm_start=False, print_every=print_every,
-                              record_every=record_every,
-                              elastic_net_ratio=elastic_net_ratio,
-                              random_state=random_state,
-                              extra_prox_kwarg=extra_prox_kwarg)
+        LearnerOptim.__init__(
+            self, penalty=penalty, C=C, solver=solver, step=step, tol=tol,
+            max_iter=max_iter, verbose=verbose, warm_start=False,
+            print_every=print_every, record_every=record_every,
+            elastic_net_ratio=elastic_net_ratio, random_state=random_state,
+            extra_prox_kwarg=extra_prox_kwarg)
 
     def fit(self, events: list, start=None):
         """Fit the model according to the given training data.
@@ -179,7 +181,8 @@ class LearnerHawkesParametric(LearnerOptim):
                 if isinstance(self._model_obj, ModelLipschitz):
                     self.step = 1. / self._model_obj.get_lip_max()
                 else:
-                    warn("SVRG step needs to be tuned manually", RuntimeWarning)
+                    warn("SVRG step needs to be tuned manually",
+                         RuntimeWarning)
                     self.step = 1.
             elif self.solver == "sgd":
                 warn("SGD step needs to be tuned manually", RuntimeWarning)
@@ -327,10 +330,9 @@ class LearnerHawkesParametric(LearnerOptim):
             model = self._construct_model_obj()
             model.fit(events, end_times)
 
-        return - model.loss(coeffs)
+        return -model.loss(coeffs)
 
-    def estimated_intensity(self, events, intensity_track_step,
-                            end_time=None):
+    def estimated_intensity(self, events, intensity_track_step, end_time=None):
         """Value of intensity for a given realization with the fitted parameters
 
         Parameters
@@ -366,8 +368,8 @@ class LearnerHawkesParametric(LearnerOptim):
         simu.set_timestamps(events, end_time)
         return simu.tracked_intensity, simu.intensity_tracked_times
 
-    def plot_estimated_intensity(self, events, n_points=10000,
-                                 plot_nodes=None, t_min=None, t_max=None,
+    def plot_estimated_intensity(self, events, n_points=10000, plot_nodes=None,
+                                 t_min=None, t_max=None,
                                  intensity_track_step=None, max_jumps=None,
                                  show=True, ax=None):
         """Plot value of intensity for a given realization with the fitted

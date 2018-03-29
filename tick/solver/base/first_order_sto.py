@@ -9,7 +9,6 @@ from .utils import relative_distance
 
 __author__ = 'stephanegaiffas'
 
-
 # TODO: property for step that sets it in the C++
 
 
@@ -76,11 +75,7 @@ class SolverFirstOrderSto(SolverFirstOrder, SolverSto):
     This class should not be used by end-users
     """
 
-    _attrinfos = {
-        "_step": {
-            "writable": False
-        }
-    }
+    _attrinfos = {"_step": {"writable": False}}
 
     def __init__(self, step: float = None, epoch_size: int = None,
                  rand_type="unif", tol=0., max_iter=100, verbose=True,

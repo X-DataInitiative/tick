@@ -21,11 +21,7 @@ class ProxMulti(Prox):
         A tuple of prox operators to be applied successively.
     """
 
-    _attrinfos = {
-        "proxs": {
-            "writable": False,
-        }
-    }
+    _attrinfos = {"proxs": {"writable": False,}}
 
     def __init__(self, proxs: tuple):
         Prox.__init__(self, None)

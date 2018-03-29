@@ -1,8 +1,7 @@
 # License: BSD 3 clause
 
 from tick.hawkes.simulation.build.hawkes_simulation import (
-    HawkesKernelPowerLaw as _HawkesKernelPowerLaw
-)
+    HawkesKernelPowerLaw as _HawkesKernelPowerLaw)
 from .hawkes_kernel import HawkesKernel
 
 
@@ -65,5 +64,5 @@ class HawkesKernelPowerLaw(HawkesKernel):
             if self.multiplier == 1:
                 return r'$(%g+t)^{-%g}$' % (self.cutoff, self.exponent)
             else:
-                return r'$%g (%g+t)^{-%g}$' % (
-                    self.multiplier, self.cutoff, self.exponent)
+                return r'$%g (%g+t)^{-%g}$' % (self.multiplier, self.cutoff,
+                                               self.exponent)

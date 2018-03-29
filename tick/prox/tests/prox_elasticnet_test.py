@@ -21,9 +21,9 @@ class Test(TestProx):
         prox_l1 = ProxL1(ratio * l_enet)
         prox_l2 = ProxL2Sq((1 - ratio) * l_enet)
 
-        self.assertAlmostEqual(prox_enet.value(coeffs),
-                               prox_l1.value(coeffs) + prox_l2.value(coeffs),
-                               delta=1e-15)
+        self.assertAlmostEqual(
+            prox_enet.value(coeffs),
+            prox_l1.value(coeffs) + prox_l2.value(coeffs), delta=1e-15)
 
         out = coeffs.copy()
         prox_l1.call(out, t, out)
@@ -34,9 +34,9 @@ class Test(TestProx):
         prox_l1 = ProxL1(ratio * l_enet, positive=True)
         prox_l2 = ProxL2Sq((1 - ratio) * l_enet, positive=True)
 
-        self.assertAlmostEqual(prox_enet.value(coeffs),
-                               prox_l1.value(coeffs) + prox_l2.value(coeffs),
-                               delta=1e-15)
+        self.assertAlmostEqual(
+            prox_enet.value(coeffs),
+            prox_l1.value(coeffs) + prox_l2.value(coeffs), delta=1e-15)
 
         out = coeffs.copy()
         prox_l1.call(out, t, out)

@@ -97,13 +97,17 @@ class SimuHawkesExpKernels(SimuHawkes):
     """
 
     _attrinfos = {
-        "adjacency": {"writable": False},
-        "decays": {"writable": False},
+        "adjacency": {
+            "writable": False
+        },
+        "decays": {
+            "writable": False
+        },
     }
 
-    def __init__(self, adjacency, decays, baseline=None,
-                 end_time=None, period_length=None, max_jumps=None, seed=None,
-                 verbose=True, force_simulation=False):
+    def __init__(self, adjacency, decays, baseline=None, end_time=None,
+                 period_length=None, max_jumps=None, seed=None, verbose=True,
+                 force_simulation=False):
 
         if isinstance(adjacency, list):
             adjacency = np.array(adjacency)
@@ -120,9 +124,8 @@ class SimuHawkesExpKernels(SimuHawkes):
         decays_is_number = isinstance(decays, (int, float))
         if not decays_is_number and decays.shape != (n_nodes, n_nodes):
             raise ValueError("decays should be either a float or an array of "
-                             "shape %s but its shape is %s"
-                             % (str((n_nodes, n_nodes)),
-                                str(decays.shape)))
+                             "shape %s but its shape is %s" % (str(
+                                 (n_nodes, n_nodes)), str(decays.shape)))
 
         self.adjacency = adjacency
         self.decays = decays

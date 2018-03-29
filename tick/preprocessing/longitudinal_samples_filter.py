@@ -44,9 +44,15 @@ class LongitudinalSamplesFilter(LongitudinalPreprocessor):
     """
 
     _attrinfos = {
-        "_mask": {"writable": False},
-        "_n_active_patients": {"writable": False},
-        "_n_patients": {"writable": False},
+        "_mask": {
+            "writable": False
+        },
+        "_n_active_patients": {
+            "writable": False
+        },
+        "_n_patients": {
+            "writable": False
+        },
     }
 
     def __init__(self, n_jobs=-1):
@@ -57,8 +63,10 @@ class LongitudinalSamplesFilter(LongitudinalPreprocessor):
 
     def fit(self, features, labels, censoring):
         nnz = [len(np.nonzero(arr)[0]) > 0 for arr in labels]
-        self._set('_mask', [idx for idx, feat in enumerate(features)
-                            if feat.sum() > 0 and nnz[idx]])
+        self._set('_mask', [
+            idx for idx, feat in enumerate(features)
+            if feat.sum() > 0 and nnz[idx]
+        ])
         self._set('_n_active_patients', len(self._mask))
         self._set('_n_patients', len(features))
 
@@ -66,7 +74,8 @@ class LongitudinalSamplesFilter(LongitudinalPreprocessor):
 
     def transform(self, features, labels, censoring):
         if self._n_active_patients <= 1:
-            raise ValueError("There should be more than one positive sample per\
+            raise ValueError(
+                "There should be more than one positive sample per\
                  batch with nonzero_features. Please check the input data.")
         if self._n_active_patients < self._n_patients:
             features_filter = itemgetter(*self._mask)
@@ -80,4 +89,3 @@ class LongitudinalSamplesFilter(LongitudinalPreprocessor):
             censoring = np.array(censoring, dtype='uint32')
 
         return features, labels, censoring
-

@@ -80,16 +80,16 @@ class Test(TestSolver):
             else:
                 fit_intercept = True
 
-            simu = SimuPoisReg(weight0, intercept=intercept,
-                               features=features, n_samples=n_samples,
-                               link='identity', verbose=False)
+            simu = SimuPoisReg(weight0, intercept=intercept, features=features,
+                               n_samples=n_samples, link='identity',
+                               verbose=False)
             features, labels = simu.simulate()
 
             model = ModelPoisReg(fit_intercept=fit_intercept, link='identity')
             model.fit(features, labels)
 
-            sdca = SDCA(l_l2sq=l_l2sq, max_iter=100, verbose=False,
-                        tol=1e-14, seed=Test.sto_seed)
+            sdca = SDCA(l_l2sq=l_l2sq, max_iter=100, verbose=False, tol=1e-14,
+                        seed=Test.sto_seed)
 
             sdca.set_model(model).set_prox(ProxZero())
             start_dual = np.sqrt(sdca._rand_max * l_l2sq)
@@ -98,8 +98,9 @@ class Test(TestSolver):
             sdca.solve(start_dual)
 
             # Check that duality gap is 0
-            self.assertAlmostEqual(sdca.objective(sdca.solution),
-                                   sdca.dual_objective(sdca.dual_solution))
+            self.assertAlmostEqual(
+                sdca.objective(sdca.solution),
+                sdca.dual_objective(sdca.dual_solution))
 
             # Check that original vector is approximatively retrieved
             if fit_intercept:
@@ -107,12 +108,12 @@ class Test(TestSolver):
             else:
                 original_coeffs = weight0
 
-            np.testing.assert_array_almost_equal(original_coeffs, sdca.solution,
-                                                 decimal=1)
+            np.testing.assert_array_almost_equal(original_coeffs,
+                                                 sdca.solution, decimal=1)
 
             # Ensure that we solve the same problem as other solvers
-            svrg = SVRG(max_iter=100, verbose=False,
-                        tol=1e-14, seed=Test.sto_seed)
+            svrg = SVRG(max_iter=100, verbose=False, tol=1e-14,
+                        seed=Test.sto_seed)
 
             svrg.set_model(model).set_prox(ProxL2Sq(l_l2sq))
             svrg.solve(0.5 * np.ones(model.n_coeffs), step=1e-2)

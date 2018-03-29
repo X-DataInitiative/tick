@@ -7,27 +7,22 @@ from tick.preprocessing import LongitudinalFeaturesProduct
 
 
 class Test(unittest.TestCase):
-
     def setUp(self):
-        self.finite_exposures = [np.array([[0, 1, 0],
-                                          [0, 0, 0],
-                                          [0, 1, 1]], dtype="float64"),
-                                np.array([[1, 1, 1],
-                                          [0, 0, 1],
-                                          [1, 1, 0]], dtype="float64")
-                                ]
-        self.sparse_finite_exposures = [csr_matrix(f)
-                                       for f in self.finite_exposures]
+        self.finite_exposures = [
+            np.array([[0, 1, 0], [0, 0, 0], [0, 1, 1]], dtype="float64"),
+            np.array([[1, 1, 1], [0, 0, 1], [1, 1, 0]], dtype="float64")
+        ]
+        self.sparse_finite_exposures = [
+            csr_matrix(f) for f in self.finite_exposures
+        ]
 
-        self.infinite_exposures = [np.array([[0, 1, 0],
-                                             [0, 0, 0],
-                                             [0, 0, 1]], dtype="float64"),
-                                   np.array([[1, 1, 0],
-                                             [0, 0, 1],
-                                             [0, 0, 0]], dtype="float64")
-                                   ]
-        self.sparse_infinite_exposures = [csr_matrix(f)
-                                          for f in self.infinite_exposures]
+        self.infinite_exposures = [
+            np.array([[0, 1, 0], [0, 0, 0], [0, 0, 1]], dtype="float64"),
+            np.array([[1, 1, 0], [0, 0, 1], [0, 0, 0]], dtype="float64")
+        ]
+        self.sparse_infinite_exposures = [
+            csr_matrix(f) for f in self.infinite_exposures
+        ]
 
     def test_finite_features_product(self):
         expected_output = \

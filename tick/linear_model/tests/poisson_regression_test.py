@@ -27,8 +27,8 @@ class Test(InferenceTest):
             intercept0 = 1.
         else:
             intercept0 = None
-        X, y = SimuPoisReg(weights0, intercept0, n_samples=n_samples,
-                           seed=123, verbose=False).simulate()
+        X, y = SimuPoisReg(weights0, intercept0, n_samples=n_samples, seed=123,
+                           verbose=False).simulate()
         return X, y, weights0, intercept0
 
     def test_PoissonRegression_run(self):
@@ -47,21 +47,14 @@ class Test(InferenceTest):
                     continue
 
                 if penalty == 'binarsity':
-                    learner = PoissonRegression(verbose=False,
-                                                fit_intercept=fit_intercept,
-                                                solver=solver,
-                                                penalty=penalty,
-                                                max_iter=1,
-                                                step=1e-5,
-                                                blocks_start=[0],
-                                                blocks_length=[1])
+                    learner = PoissonRegression(
+                        verbose=False, fit_intercept=fit_intercept,
+                        solver=solver, penalty=penalty, max_iter=1, step=1e-5,
+                        blocks_start=[0], blocks_length=[1])
                 else:
-                    learner = PoissonRegression(verbose=False,
-                                                fit_intercept=fit_intercept,
-                                                solver=solver,
-                                                penalty=penalty,
-                                                max_iter=1,
-                                                step=1e-5)
+                    learner = PoissonRegression(
+                        verbose=False, fit_intercept=fit_intercept,
+                        solver=solver, penalty=penalty, max_iter=1, step=1e-5)
 
                 learner.fit(X, y)
                 self.assertTrue(np.isfinite(learner.weights).all())
@@ -79,8 +72,7 @@ class Test(InferenceTest):
                 n_samples=n_samples, n_features=n_features,
                 fit_intercept=fit_intercept)
 
-            learner = PoissonRegression(C=1e3,
-                                        verbose=False,
+            learner = PoissonRegression(C=1e3, verbose=False,
                                         fit_intercept=fit_intercept,
                                         solver='bfgs')
             learner.fit(X, y)
@@ -143,11 +135,12 @@ class Test(InferenceTest):
         for penalty in PoissonRegression._penalties.keys():
             if penalty != 'none':
                 if penalty == 'binarsity':
-                    learner = PoissonRegression(penalty=penalty, C=self.float_1,
-                                                blocks_start=[0],
-                                                blocks_length=[1])
+                    learner = PoissonRegression(
+                        penalty=penalty, C=self.float_1, blocks_start=[0],
+                        blocks_length=[1])
                 else:
-                    learner = PoissonRegression(penalty=penalty, C=self.float_1)
+                    learner = PoissonRegression(penalty=penalty,
+                                                C=self.float_1)
                 self.assertEqual(learner.C, self.float_1)
                 self.assertEqual(learner._prox_obj.strength, 1. / self.float_1)
                 learner.C = self.float_2
@@ -158,8 +151,7 @@ class Test(InferenceTest):
                 with self.assertRaisesRegex(ValueError, msg):
                     if penalty == 'binarsity':
                         PoissonRegression(penalty=penalty, C=-1,
-                                          blocks_start=[0],
-                                          blocks_length=[1])
+                                          blocks_start=[0], blocks_length=[1])
                     else:
                         PoissonRegression(penalty=penalty, C=-1)
             else:
@@ -207,9 +199,8 @@ class Test(InferenceTest):
                                           elastic_net_ratio=0.8)
 
                 if penalty == 'binarsity':
-                    learner = PoissonRegression(penalty=penalty,
-                                                blocks_start=[0],
-                                                blocks_length=[1])
+                    learner = PoissonRegression(
+                        penalty=penalty, blocks_start=[0], blocks_length=[1])
                 else:
                     learner = PoissonRegression(penalty=penalty)
 

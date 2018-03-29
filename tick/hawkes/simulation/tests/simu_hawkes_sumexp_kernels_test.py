@@ -23,8 +23,7 @@ class Test(unittest.TestCase):
         self.adjacency[-1, -1, :] = 0
 
         self.hawkes = SimuHawkesSumExpKernels(self.adjacency, self.decays,
-                                              baseline=self.baseline,
-                                              seed=203,
+                                              baseline=self.baseline, seed=203,
                                               verbose=False)
 
     def test_hawkes_exponential_kernels(self):
@@ -76,8 +75,9 @@ class Test(unittest.TestCase):
 
         mean_intensity = self.hawkes.mean_intensity()
         for i in range(self.hawkes.n_nodes):
-            self.assertAlmostEqual(np.mean(self.hawkes.tracked_intensity[i]),
-                                   mean_intensity[i], delta=0.1)
+            self.assertAlmostEqual(
+                np.mean(self.hawkes.tracked_intensity[i]), mean_intensity[i],
+                delta=0.1)
 
     def test_hawkes_sumexp_constructor_errors(self):
         bad_adjacency = np.random.rand(self.n_nodes, self.n_nodes,

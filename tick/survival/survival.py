@@ -38,12 +38,9 @@ def kaplan_meier(timestamps, event_observed):
     unique_timestamps = np.concatenate((np.zeros(1), np.unique(timestamps)))
 
     return np.cumprod(
-        np.fromiter((
-            1.0 -
-            np.sum(t == timestamps) /
-            np.sum(t <= timestamps)
-            for t in unique_timestamps
-        ), dtype='float', count=unique_timestamps.size))
+        np.fromiter((1.0 - np.sum(t == timestamps) / np.sum(t <= timestamps)
+                     for t in unique_timestamps), dtype='float',
+                    count=unique_timestamps.size))
 
 
 def nelson_aalen(timestamps, event_observed):
@@ -83,8 +80,6 @@ def nelson_aalen(timestamps, event_observed):
     unique_timestamps = np.concatenate((np.zeros(1), np.unique(timestamps)))
 
     return np.cumsum(
-        np.fromiter((
-            np.sum(t == timestamps) /
-            np.sum(t <= timestamps)
-            for t in unique_timestamps
-        ), dtype='float', count=unique_timestamps.size))
+        np.fromiter((np.sum(t == timestamps) / np.sum(t <= timestamps)
+                     for t in unique_timestamps), dtype='float',
+                    count=unique_timestamps.size))

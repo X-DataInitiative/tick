@@ -6,9 +6,8 @@ from scipy.linalg import qr, sqrtm, norm
 
 from tick.base import Base
 from tick.hawkes.inference.base import LearnerHawkesNoParam
-from tick.hawkes.inference.build.hawkes_inference import (
-    HawkesCumulant as _HawkesCumulant
-)
+from tick.hawkes.inference.build.hawkes_inference import (HawkesCumulant as
+                                                          _HawkesCumulant)
 
 # Tensorflow is not a project requirement but is needed for this class
 try:
@@ -138,17 +137,26 @@ class HawkesCumulantMatching(LearnerHawkesNoParam):
     .. _Tensorflow: https://www.tensorflow.org
     """
     _attrinfos = {
-        '_cumulant_computer': {'writable': False},
-        '_solver': {'writable': False},
-        '_elastic_net_ratio': {'writable': False},
-        '_tf_feed_dict': {}, '_tf_graph': {},
-        '_events_of_cumulants': {'writable': False}
+        '_cumulant_computer': {
+            'writable': False
+        },
+        '_solver': {
+            'writable': False
+        },
+        '_elastic_net_ratio': {
+            'writable': False
+        },
+        '_tf_feed_dict': {},
+        '_tf_graph': {},
+        '_events_of_cumulants': {
+            'writable': False
+        }
     }
 
-    def __init__(self, integration_support, C=1e3, penalty='none', solver='adam',
-                 step=1e-2, tol=1e-8, max_iter=1000, verbose=False,
-                 print_every=100, record_every=10, solver_kwargs=None,
-                 cs_ratio=None, elastic_net_ratio=0.95):
+    def __init__(self, integration_support, C=1e3, penalty='none',
+                 solver='adam', step=1e-2, tol=1e-8, max_iter=1000,
+                 verbose=False, print_every=100, record_every=10,
+                 solver_kwargs=None, cs_ratio=None, elastic_net_ratio=0.95):
         try:
             import tensorflow
         except ImportError:
@@ -159,8 +167,7 @@ class HawkesCumulantMatching(LearnerHawkesNoParam):
 
         LearnerHawkesNoParam.__init__(
             self, tol=tol, verbose=verbose, max_iter=max_iter,
-            print_every=print_every, record_every=record_every
-        )
+            print_every=print_every, record_every=record_every)
 
         self._elastic_net_ratio = None
         self.C = C
@@ -241,9 +248,11 @@ class HawkesCumulantMatching(LearnerHawkesNoParam):
                 sess.run(tf.global_variables_initializer())
                 sess.run(self._tf_model_coeffs.assign(R))
 
-                return sess.run(cost, feed_dict={L: self.mean_intensity,
-                                                 C: self.covariance,
-                                                 K_c: self.skewness})
+                return sess.run(cost, feed_dict={
+                    L: self.mean_intensity,
+                    C: self.covariance,
+                    K_c: self.skewness
+                })
 
     @property
     def _tf_model_coeffs(self):
@@ -405,23 +414,28 @@ class HawkesCumulantMatching(LearnerHawkesNoParam):
                 for n_iter in range(self.max_iter + 1):
                     # We don't use self.objective here as it would be very slow
                     obj = sess.run(
-                        cost, feed_dict={L: self.mean_intensity,
-                                         C: self.covariance,
-                                         K_c: self.skewness})
+                        cost, feed_dict={
+                            L: self.mean_intensity,
+                            C: self.covariance,
+                            K_c: self.skewness
+                        })
                     rel_obj = abs(obj - prev_obj) / abs(prev_obj)
                     prev_obj = obj
                     converged = rel_obj < self.tol
 
                     force = converged or n_iter == self.max_iter
-                    self._handle_history(n_iter, objective=obj, rel_obj=rel_obj,
-                                         force=force)
+                    self._handle_history(n_iter, objective=obj,
+                                         rel_obj=rel_obj, force=force)
 
                     if converged:
                         break
 
-                    sess.run(optimization, feed_dict={L: self.mean_intensity,
-                                                      C: self.covariance,
-                                                      K_c: self.skewness})
+                    sess.run(
+                        optimization, feed_dict={
+                            L: self.mean_intensity,
+                            C: self.covariance,
+                            K_c: self.skewness
+                        })
 
                 self._set('solution', sess.run(self._tf_model_coeffs))
 
@@ -477,11 +491,12 @@ class HawkesCumulantMatching(LearnerHawkesNoParam):
 
     @solver.setter
     def solver(self, val):
-        available_solvers = ['momentum', 'adam', 'adagrad', 'rmsprop',
-                             'adadelta', 'gd']
+        available_solvers = [
+            'momentum', 'adam', 'adagrad', 'rmsprop', 'adadelta', 'gd'
+        ]
         if val.lower() not in available_solvers:
-            raise ValueError('solver must be one of {}, recieved {}'
-                             .format(available_solvers, val))
+            raise ValueError('solver must be one of {}, recieved {}'.format(
+                available_solvers, val))
 
         self._set('_solver', val)
 
@@ -536,9 +551,16 @@ class _HawkesCumulantComputer(Base):
 
     _cpp_obj_name = '_learner'
     _attrinfos = {
-        'integration_support': {'cpp_setter': 'set_integration_support'},
-        '_learner': {}, 'L': {}, 'C': {}, 'K_c': {},
-        '_L_day': {}, '_J': {}, '_events_of_cumulants': {},
+        'integration_support': {
+            'cpp_setter': 'set_integration_support'
+        },
+        '_learner': {},
+        'L': {},
+        'C': {},
+        'K_c': {},
+        '_L_day': {},
+        '_J': {},
+        '_events_of_cumulants': {},
     }
 
     def __init__(self, integration_support=100.):
@@ -619,8 +641,8 @@ class _HawkesCumulantComputer(Base):
             C = np.zeros((d, d))
             J = np.zeros((d, d))
             for i, j in product(range(d), repeat=2):
-                res = self._learner.compute_A_and_I_ij(
-                    day, i, j, self._L_day[day][j])
+                res = self._learner.compute_A_and_I_ij(day, i, j,
+                                                       self._L_day[day][j])
                 C[i, j] = res[0]
                 J[i, j] = res[1]
             # we keep the symmetric part to remove edge effects

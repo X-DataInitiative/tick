@@ -100,7 +100,8 @@ class TestSolver(unittest.TestCase):
 
         coeffs_solver = solver.solve()
         # Compare with BFGS
-        bfgs = BFGS(max_iter=100, verbose=False).set_model(model).set_prox(prox)
+        bfgs = BFGS(max_iter=100,
+                    verbose=False).set_model(model).set_prox(prox)
         coeffs_bfgs = bfgs.solve()
         np.testing.assert_almost_equal(coeffs_solver, coeffs_bfgs,
                                        decimal=decimal)
@@ -108,8 +109,9 @@ class TestSolver(unittest.TestCase):
         # We ensure that reached coeffs are not equal to zero
         self.assertGreater(norm(coeffs_solver), 0)
 
-        self.assertAlmostEqual(solver.objective(coeffs_bfgs),
-                               solver.objective(coeffs_solver), delta=1e-2)
+        self.assertAlmostEqual(
+            solver.objective(coeffs_bfgs), solver.objective(coeffs_solver),
+            delta=1e-2)
 
     @staticmethod
     def prepare_solver(solver, X, y, fit_intercept=True, model="logistic",
@@ -126,11 +128,9 @@ class TestSolver(unittest.TestCase):
             solver.set_prox(prox)
 
     def _test_solver_sparse_and_dense_consistency(
-            self, create_solver,
-            model_classes=list([ModelLinReg, ModelLogReg, ModelPoisReg]),
-            proxs_classes=list([ProxL2Sq, ProxL1]),
-            fit_intercepts=list([False, True])
-    ):
+            self, create_solver, model_classes=list(
+                [ModelLinReg, ModelLogReg, ModelPoisReg]), proxs_classes=list(
+                    [ProxL2Sq, ProxL1]), fit_intercepts=list([False, True])):
         """...Test that solvers can run all glm models and are consistent
         with sparsity
         """
@@ -157,8 +157,8 @@ class TestSolver(unittest.TestCase):
                 interc = None
 
             Simu = model_simu_map[Model]
-            simu = Simu(coeffs0, interc, n_samples=n_samples,
-                        seed=seed, verbose=False)
+            simu = Simu(coeffs0, interc, n_samples=n_samples, seed=seed,
+                        verbose=False)
             X, y = simu.simulate()
             X_sparse = csr_matrix(X)
 
@@ -179,19 +179,17 @@ class TestSolver(unittest.TestCase):
                 else:
                     iterate_dense = solver.solve()
 
-            error_msg = 'Failed for %s and %s solved with %s' % (
-                model.name, prox.name, solver.name
-            )
+            error_msg = 'Failed for %s and %s solved with %s' % (model.name,
+                                                                 prox.name,
+                                                                 solver.name)
 
             if fit_intercept:
                 error_msg += ' with intercept'
             else:
                 error_msg += ' without intercept'
 
-            self.assertEqual(np.isfinite(iterate_dense).all(), True,
-                             error_msg)
-            np.testing.assert_almost_equal(iterate_dense,
-                                           iterate_sparse,
+            self.assertEqual(np.isfinite(iterate_dense).all(), True, error_msg)
+            np.testing.assert_almost_equal(iterate_dense, iterate_sparse,
                                            err_msg=error_msg)
 
     def test_set_model_and_set_prox(self):

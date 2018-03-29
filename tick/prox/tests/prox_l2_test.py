@@ -22,9 +22,9 @@ class Test(TestProx):
         thresh = step * strength * coeffs.shape[0] ** 0.5
         norm = np.linalg.norm(coeffs)
         out *= (1. - thresh / norm) * ((1. - thresh / norm) > 0)
-        self.assertAlmostEqual(prox.value(coeffs),
-                               strength * coeffs.shape[0] ** 0.5 * norm,
-                               delta=1e-15)
+        self.assertAlmostEqual(
+            prox.value(coeffs), strength * coeffs.shape[0] ** 0.5 * norm,
+            delta=1e-15)
         assert_almost_equal(prox.call(coeffs, step=step), out, decimal=10)
 
         start = 3
@@ -36,9 +36,9 @@ class Test(TestProx):
         out = coeffs.copy()
         out[3:8] *= (1. - thresh / norm) * ((1. - thresh / norm) > 0)
 
-        self.assertAlmostEqual(prox.value(coeffs),
-                               strength * (end - start) ** 0.5 * norm,
-                               delta=1e-15)
+        self.assertAlmostEqual(
+            prox.value(coeffs),
+            strength * (end - start) ** 0.5 * norm, delta=1e-15)
         assert_almost_equal(prox.call(coeffs, step=step), out, decimal=10)
 
         prox = ProxL2(strength, range, positive=True)
@@ -49,9 +49,9 @@ class Test(TestProx):
         idx = out[3:8] < 0
         out[3:8][idx] = 0
 
-        self.assertAlmostEqual(prox.value(coeffs),
-                               strength * (end - start) ** 0.5 * norm,
-                               delta=1e-15)
+        self.assertAlmostEqual(
+            prox.value(coeffs),
+            strength * (end - start) ** 0.5 * norm, delta=1e-15)
         assert_almost_equal(prox.call(coeffs, step=step), out, decimal=10)
 
 

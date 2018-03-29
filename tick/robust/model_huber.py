@@ -8,9 +8,7 @@ from .build.robust import ModelHuberDouble as _ModelHuber
 __author__ = 'Stephane Gaiffas'
 
 
-class ModelHuber(ModelFirstOrder,
-                 ModelGeneralizedLinear,
-                 ModelLipschitz):
+class ModelHuber(ModelFirstOrder, ModelGeneralizedLinear, ModelLipschitz):
     """Huber loss for robust regression. This model is particularly relevant
     to deal with datasets with outliers. The class gives first
     order information (gradient and loss) for this model and can be passed
@@ -107,11 +105,9 @@ class ModelHuber(ModelFirstOrder,
         ModelFirstOrder.fit(self, features, labels)
         ModelGeneralizedLinear.fit(self, features, labels)
         ModelLipschitz.fit(self, features, labels)
-        self._set("_model", _ModelHuber(self.features,
-                                        self.labels,
-                                        self.fit_intercept,
-                                        self.threshold,
-                                        self.n_threads))
+        self._set("_model",
+                  _ModelHuber(self.features, self.labels, self.fit_intercept,
+                              self.threshold, self.n_threads))
         return self
 
     def _grad(self, coeffs: np.ndarray, out: np.ndarray) -> None:
@@ -122,8 +118,7 @@ class ModelHuber(ModelFirstOrder,
 
     def _get_lip_best(self):
         # TODO: Use sklearn.decomposition.TruncatedSVD instead?
-        s = svd(self.features, full_matrices=False,
-                compute_uv=False)[0] ** 2
+        s = svd(self.features, full_matrices=False, compute_uv=False)[0] ** 2
         if self.fit_intercept:
             return (s + 1) / self.n_samples
         else:

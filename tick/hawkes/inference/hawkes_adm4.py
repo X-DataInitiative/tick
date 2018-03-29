@@ -4,9 +4,8 @@ import numpy as np
 
 from tick.hawkes import ModelHawkesExpKernLogLik, SimuHawkesExpKernels
 from tick.hawkes.inference.base import LearnerHawkesNoParam
-from tick.hawkes.inference.build.hawkes_inference import (
-    HawkesADM4 as _HawkesADM4
-)
+from tick.hawkes.inference.build.hawkes_inference import (HawkesADM4 as
+                                                          _HawkesADM4)
 from tick.prox import ProxNuclear
 from tick.prox.prox_l1 import ProxL1
 from tick.solver.base.utils import relative_distance
@@ -131,21 +130,39 @@ class HawkesADM4(LearnerHawkesNoParam):
     """
 
     _attrinfos = {
-        "_learner": {"writable": False},
-        "_model": {"writable": False},
+        "_learner": {
+            "writable": False
+        },
+        "_model": {
+            "writable": False
+        },
         "decay": {
             "cpp_setter": "set_decay"
         },
         "rho": {
             "cpp_setter": "set_rho"
         },
-        "_C": {"writable": False},
-        "baseline": {"writable": False},
-        "adjacency": {"writable": False},
-        "_prox_l1": {"writable": False},
-        "_prox_nuclear": {"writable": False},
-        "_lasso_nuclear_ratio": {"writable": False},
-        "approx": {"writable": False}
+        "_C": {
+            "writable": False
+        },
+        "baseline": {
+            "writable": False
+        },
+        "adjacency": {
+            "writable": False
+        },
+        "_prox_l1": {
+            "writable": False
+        },
+        "_prox_nuclear": {
+            "writable": False
+        },
+        "_lasso_nuclear_ratio": {
+            "writable": False
+        },
+        "approx": {
+            "writable": False
+        }
     }
 
     def __init__(self, decay, C=1e3, lasso_nuclear_ratio=0.5, max_iter=50,
@@ -153,10 +170,9 @@ class HawkesADM4(LearnerHawkesNoParam):
                  record_every=10, rho=.1, approx=0, em_max_iter=30,
                  em_tol=None):
 
-        LearnerHawkesNoParam.__init__(self, verbose=verbose, max_iter=max_iter,
-                                      print_every=print_every, tol=tol,
-                                      n_threads=n_threads,
-                                      record_every=record_every)
+        LearnerHawkesNoParam.__init__(
+            self, verbose=verbose, max_iter=max_iter, print_every=print_every,
+            tol=tol, n_threads=n_threads, record_every=record_every)
         self.baseline = None
         self.adjacency = None
         self._C = 0
@@ -282,12 +298,12 @@ class HawkesADM4(LearnerHawkesNoParam):
             for _ in range(self.em_max_iter):
                 inner_prev_baseline = self.baseline.copy()
                 inner_prev_adjacency = self.adjacency.copy()
-                self._learner.solve(self.baseline, self.adjacency,
-                                    z1, z2, u1, u2)
+                self._learner.solve(self.baseline, self.adjacency, z1, z2, u1,
+                                    u2)
                 inner_rel_baseline = relative_distance(self.baseline,
                                                        inner_prev_baseline)
-                inner_rel_adjacency = relative_distance(self.adjacency,
-                                                        inner_prev_adjacency)
+                inner_rel_adjacency = relative_distance(
+                    self.adjacency, inner_prev_adjacency)
 
                 if self.em_tol is None:
                     inner_tol = max_relative_distance * 1e-2
@@ -319,10 +335,9 @@ class HawkesADM4(LearnerHawkesNoParam):
             converged = max_relative_distance <= self.tol and i > 5
             force_print = (i == self.max_iter) or converged
 
-            self._handle_history(i, obj=objective, rel_obj=rel_obj,
-                                 rel_baseline=rel_baseline,
-                                 rel_adjacency=rel_adjacency,
-                                 force=force_print)
+            self._handle_history(
+                i, obj=objective, rel_obj=rel_obj, rel_baseline=rel_baseline,
+                rel_adjacency=rel_adjacency, force=force_print)
 
             if converged:
                 break
@@ -401,8 +416,7 @@ class HawkesADM4(LearnerHawkesNoParam):
         """Create simulation object corresponding to the obtained coefficients
         """
         return SimuHawkesExpKernels(adjacency=self.adjacency,
-                                    decays=self.decay,
-                                    baseline=self.baseline)
+                                    decays=self.decay, baseline=self.baseline)
 
     def get_kernel_supports(self):
         """Computes kernel support. This makes our learner compliant with
@@ -457,7 +471,8 @@ class HawkesADM4(LearnerHawkesNoParam):
         get_norm = np.vectorize(lambda kernel: kernel.get_norm())
         return get_norm(corresponding_simu.kernels)
 
-    def score(self, events=None, end_times=None, baseline=None, adjacency=None):
+    def score(self, events=None, end_times=None, baseline=None,
+              adjacency=None):
         """Compute score metric
         Score metric is log likelihood (the higher the better)
 
@@ -510,4 +525,4 @@ class HawkesADM4(LearnerHawkesNoParam):
                                              n_threads=self.n_threads)
             model.fit(events, end_times)
 
-        return - model.loss(coeffs)
+        return -model.loss(coeffs)

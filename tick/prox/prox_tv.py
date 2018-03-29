@@ -2,11 +2,9 @@
 
 # -*- coding: utf8 -*-
 
-
 import numpy as np
 from .base import Prox
 from .build.prox import ProxTVDouble as _ProxTV
-
 
 __author__ = 'Stephane Gaiffas'
 
@@ -46,8 +44,8 @@ class ProxTV(Prox):
         }
     }
 
-    def __init__(self, strength: float, range: tuple=None,
-                 positive: bool=False):
+    def __init__(self, strength: float, range: tuple = None,
+                 positive: bool = False):
         Prox.__init__(self, range)
         if range is None:
             self._prox = _ProxTV(strength, positive)

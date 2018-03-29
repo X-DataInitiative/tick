@@ -11,8 +11,7 @@ class Test(TestSolver):
         """...Check SGD solver for Logistic Regression with Ridge
         penalization
         """
-        solver = SGD(max_iter=100, verbose=False, seed=Test.sto_seed,
-                     step=200)
+        solver = SGD(max_iter=100, verbose=False, seed=Test.sto_seed, step=200)
         self.check_solver(solver, fit_intercept=True, model="logreg",
                           decimal=0)
 

@@ -11,12 +11,7 @@ from .model_linreg_with_intercepts import ModelLinRegWithIntercepts
 from .model_modified_huber import ModelModifiedHuber
 
 __all__ = [
-    'RobustLinearRegression',
-    'std_iqr',
-    'std_mad',
-    'ModelLinRegWithIntercepts',
-    'ModelHuber',
-    'ModelModifiedHuber',
-    'ModelEpsilonInsensitive',
-    'ModelAbsoluteRegression'
+    'RobustLinearRegression', 'std_iqr', 'std_mad',
+    'ModelLinRegWithIntercepts', 'ModelHuber', 'ModelModifiedHuber',
+    'ModelEpsilonInsensitive', 'ModelAbsoluteRegression'
 ]
