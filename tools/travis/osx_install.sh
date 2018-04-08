@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -e -x
+set -ex
 
 shell_session_update() { :; }
 
