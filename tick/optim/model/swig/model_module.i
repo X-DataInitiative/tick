@@ -105,3 +105,5 @@
 %include hawkes_fixed_expkern_loglik_custom2.i
 
 %include hawkes_fixed_sumexpkern_loglik_custom2.i
+
+%include model_rsb.i
