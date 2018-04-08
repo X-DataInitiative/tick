@@ -16,7 +16,7 @@ We ask that pull requests meet the following standards:
 In order to run these tests, you need:
 
 - [Python unittest](https://docs.python.org/3/library/unittest.html)
-- [gtest](https://github.com/google/googletest) 
+- [gtest](https://github.com/google/googletest)
 - [cpplint](https://pypi.python.org/pypi/cpplint)
 
 On most systems, this will suffice:
@@ -29,3 +29,6 @@ On most systems, this will suffice:
     (cd googletest && mkdir -p build && cd build && cmake .. && make && make install)
 
 Our continuous integration tool (Travis CI) will also run these checks upon submission of a pull request.
+
+    Travis has been configured to not compile sources if there are no C++ changes from the previous commit
+    Compiling from source can be forced by putting the string "FORCE_CI" in the git commit message

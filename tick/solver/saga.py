@@ -2,6 +2,7 @@
 
 from tick.base_model import ModelGeneralizedLinear
 from tick.solver.base import SolverFirstOrderSto
+
 from tick.solver.build.solver import SAGADouble as _SAGA
 
 from tick.solver.build.solver import SAGA_VarianceReductionMethod_Last
@@ -15,7 +16,6 @@ variance_reduction_methods_mapper = {
     'avg': SAGA_VarianceReductionMethod_Average,
     'rand': SAGA_VarianceReductionMethod_Random
 }
-
 
 class SAGA(SolverFirstOrderSto):
     """Stochastic Average Gradient solver, for the minimization of objectives

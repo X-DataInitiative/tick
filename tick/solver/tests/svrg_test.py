@@ -24,6 +24,12 @@ from tick.solver.build.solver import SVRG_VarianceReductionMethod_Random
 from tick.solver.build.solver import SVRG_StepType_Fixed
 from tick.solver.build.solver import SVRG_StepType_BarzilaiBorwein
 
+from tick.solver.build.solver import SVRG_VarianceReductionMethod_Last
+from tick.solver.build.solver import SVRG_VarianceReductionMethod_Average
+from tick.solver.build.solver import SVRG_VarianceReductionMethod_Random
+
+from tick.solver.build.solver import SVRG_StepType_Fixed
+from tick.solver.build.solver import SVRG_StepType_BarzilaiBorwein
 
 class Test(TestSolver):
     @staticmethod
@@ -133,6 +139,7 @@ class Test(TestSolver):
         """
         svrg = SVRG()
         self.assertEqual(svrg.step_type, 'fixed')
+
         self.assertEqual(svrg._solver.get_step_type(), SVRG_StepType_Fixed)
 
         svrg = SVRG(step_type='bb')
@@ -142,6 +149,7 @@ class Test(TestSolver):
 
         svrg.step_type = 'fixed'
         self.assertEqual(svrg.step_type, 'fixed')
+
         self.assertEqual(svrg._solver.get_step_type(), SVRG_StepType_Fixed)
 
         svrg.step_type = 'bb'

@@ -271,6 +271,7 @@ def create_extension(extension_name, module_dir,
         ## This warning is turned off because SWIG generates files that triggers the
         ## warning
         extra_compile_args.append("-Wno-uninitialized")
+        extra_compile_args.append("-g0")        
 
     # Include directory of module
     mod = SwigPath(module_dir, extension_name)
@@ -603,6 +604,8 @@ tick_modules = [
     prox_core, preprocessing_core,
     robust_extension, survival_extension, solver_core
 ]
+
+
 
 # Abstract class for tick-specific commands that need access to common build
 # directories

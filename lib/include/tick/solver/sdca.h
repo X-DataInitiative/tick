@@ -15,6 +15,9 @@
 
 template <class T>
 class DLL_PUBLIC TSDCA : public TStoSolver<T> {
+  // Grants cereal access to default constructor
+  friend class cereal::access;
+
  protected:
   using TStoSolver<T>::t;
   using TStoSolver<T>::model;
