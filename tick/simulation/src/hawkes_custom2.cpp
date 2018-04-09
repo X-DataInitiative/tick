@@ -23,6 +23,16 @@ Hawkes_customType2::Hawkes_customType2(unsigned int n_nodes, int seed, ulong _Ma
         for(ulong k = 0; k != n_nodes; ++k)
             avg_order_size[k] = extrainfo[2 + k];
     }
+    else if(simu_mode == "generate_var_2"){
+        current_num = extrainfo[0];
+        avg = extrainfo[1];
+        avg_order_size_by_state = ArrayDoubleList1D(n_nodes);
+        for(ulong k = 0; k != n_nodes; ++k){
+            avg_order_size_by_state[k] = ArrayDouble(MaxN);
+            for(ulong l; l != MaxN; ++l)
+                avg_order_size_by_state[k][l]=extrainfo[2 + k * MaxN + l];
+        }
+    }
     else
         TICK_ERROR("Unknown scenario");
 }
@@ -49,8 +59,8 @@ bool Hawkes_customType2::update_time_shift_(double delay,
         bool flag = false;
         if(simu_mode == "random")
             flag = true;
-        else if(simu_mode == "generate")
-            if(current_num > 0 || (current_num + avg_order_size[i] > 0))
+        else if(simu_mode == "generate" or simu_mode == "generate_var_2")
+            if(current_num > 0 || (current_num + avg_order_size[i] >= 0))
                 flag = true;
         if (flag) {
             intensity[i] = mu_[i]->operator[](last_global_n);
@@ -103,9 +113,24 @@ void Hawkes_customType2::update_jump(int index) {
         timestamps[index]->append1(time);
         n_total_jumps++;
     }
-    else {
-        TICK_ERROR("Unknown simulation scenario.");
+    else if (simu_mode == "generate_var_2") {
+        current_num += avg_order_size_by_state[index][last_global_n];
+        double exact = current_num / avg;
+        ulong round = ceil(exact);  //ceil a number
+        last_global_n = (round > MaxN - 1) ? MaxN - 1 : round;
+        if(current_num <= 0) {
+            current_num = 0;
+            last_global_n = 0;
+        }
+
+        global_n.append1(last_global_n);
+        Qty.append1(current_num);
+        // We make the jump on the corresponding signal
+        timestamps[index]->append1(time);
+        n_total_jumps++;
     }
+    else
+        TICK_ERROR("Unknown simulation scenario.");
 }
 
 void Hawkes_customType2::init_intensity_(ArrayDouble &intensity, double *total_intensity_bound) {

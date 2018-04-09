@@ -14,7 +14,7 @@ MaxN = MaxN_of_f
 f_i = [np.array([1., 0.7, 0.8, 0.6, 0.5]), np.array([1., 0.6, 0.2, 0.8, 0.9]), np.array([1., 0.6, 0.9, 0.2, 0.7])]
 
 beta = 3
-end_time = 100000
+end_time = 10000
 
 kernels = np.array([
             [HawkesKernelExp(0.0, beta), HawkesKernelExp(0.0, beta), HawkesKernelExp(0.0, beta)],

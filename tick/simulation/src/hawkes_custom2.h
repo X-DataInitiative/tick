@@ -28,6 +28,10 @@ public:
     ArrayDouble avg_order_size;
     VArrayDouble Qty; //!exact number of shares in the line
 
+    //!information for extended scenario
+    //!scenario name <generate_var_2>
+    ArrayDoubleList1D avg_order_size_by_state;
+
 public :
     Hawkes_customType2(unsigned int n_nodes, int seed, ulong _MaxN, const SArrayDoublePtrList1D &_mu_);
 
