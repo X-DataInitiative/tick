@@ -1,9 +1,11 @@
-#ifndef TICK_OPTIM_MODEL_SRC_RSBver2
-#define TICK_OPTIM_MODEL_SRC_RSBver2
+#ifndef TICK_OPTIM_MODEL_SRC_MODELRSB
+#define TICK_OPTIM_MODEL_SRC_MODELRSB
 
 // License: BSD 3 clause
 
 #include "base.h"
+
+#include <memory>
 
 #include "base/hawkes_fixed_kern_loglik.h"
 
@@ -90,4 +92,4 @@ public:
 //    friend ModelHawkesCustomList;
 };
 
-#endif  // TICK_OPTIM_MODEL_SRC_RSBver2
+#endif  // TICK_OPTIM_MODEL_SRC_MODELRSB

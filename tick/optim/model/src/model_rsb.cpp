@@ -3,7 +3,7 @@
 #include "model_rsb.h"
 
 ModelRsb::ModelRsb(const double _decay, const ulong _MaxN, const int max_n_threads) :
-        MaxN(_MaxN), ModelHawkesFixedKernLogLik(max_n_threads), decay(_decay) {}
+        ModelHawkesFixedKernLogLik(max_n_threads), MaxN(_MaxN), decay(_decay) {}
 
 void ModelRsb::set_data(const SArrayDoublePtrList1D &_timestamps,
                                  const SArrayLongPtr _global_n,

@@ -48,6 +48,7 @@
 %shared_ptr(ModelHawkesSumExpCustom);
 %shared_ptr(ModelCustomBasic);
 %shared_ptr(ModelHawkesCustomType2);
+%shared_ptr(ModelRsb);
 
 %shared_ptr(ModelCoxRegPartialLik);
 %shared_ptr(ModelSCCS);
