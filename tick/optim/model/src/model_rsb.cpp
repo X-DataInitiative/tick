@@ -59,9 +59,12 @@ double ModelRsb::loss_dim_i(const ulong i, const ArrayDouble &coeffs) {
         if (type_n[k] == i + 1) {
             double tmp_s = mu_i[global_n[k - 1]];
             if (tmp_s <= 0) {
+                printf("debug: dim %d: %f %d %d\n", i, tmp_s, global_n[k-1], k);
+                printf("debug: %f %f %f %f %f\n", mu_i[0], mu_i[1], mu_i[2], mu_i[3], mu_i[4]);
+                printf("%d\n", Total_events);
                 TICK_ERROR("The sum of the influence on someone cannot be negative. "
                                    "Maybe did you forget to add a positive constraint to "
-                                   "your proximal operator, in ModelHawkesCustomType2::loss_dim_i");
+                                   "your proximal operator, in ModelRsb::loss_dim_i");
             }
             loss += log(tmp_s);
         }
