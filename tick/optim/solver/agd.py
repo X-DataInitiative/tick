@@ -151,7 +151,11 @@ class AGD(SolverFirstOrder):
                     break
         else:
             grad_y = self.model.grad(y)
-            x[:] = self.prox.call(y - step * grad_y, step)
+            #! cheating here to ensure loss(coeff) has coeff positive
+            next_point = y - step * grad_y
+            next_point_adj = next_point.copy()
+            next_point_adj[next_point_adj < 0] = 0
+            x[:] = self.prox.call(next_point_adj, step)
         t = np.sqrt((1. + (1. + 4. * t * t))) / 2.
         y[:] = x + (prev_t - 1) / t * (x - prev_x)
         return x, y, t, step
