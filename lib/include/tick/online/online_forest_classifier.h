@@ -90,7 +90,10 @@ class NodeClassifier {
   void update_weight_tree();
   // Update the prediction of the label
   void update_count(const double y_t);
-  // Update range of the seen features
+
+  bool is_dirac(const double y_t);
+
+    // Update range of the seen features
   void update_range(const ArrayDouble &x_t);
   // Update n_samples
   void update_n_samples();

@@ -84,6 +84,11 @@ void NodeClassifier::update_count(const double y_t) {
   _counts[static_cast<uint8_t>(y_t)]++;
 }
 
+bool NodeClassifier::is_dirac(const double y_t) {
+  // Returns true is the node only has the same label as y_t
+  return (_n_samples == _counts[static_cast<uint8_t>(y_t)]);
+}
+
 void NodeClassifier::update_range(const ArrayDouble &x_t) {
   if (_n_samples == 0) {
     for (ulong j = 0; j < n_features(); ++j) {
@@ -435,14 +440,6 @@ uint32_t TreeClassifier::go_downwards(const ArrayDouble &x_t, double y_t) {
           return index_current_node;
         } else {
           index_current_node = current_node.get_child(x_t);
-//          float feature = current_node.feature();
-//          float threshold = current_node.threshold();
-//          if (x_t[feature] <= threshold) {
-//            index_current_node = current_node.left();
-//          } else {
-//            index_current_node = current_node.right();
-//          }
-          // current_node = node(index_current_node);
         }
       }
     }

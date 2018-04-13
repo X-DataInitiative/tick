@@ -106,19 +106,19 @@ plot = figure(plot_width=900, plot_height=700, title="Mondrian Tree",
 # cir = plot.add_glyph(source, circles)
 
 
-plot.circle(x="x", y="y", size=10, fill_color="color", name="circles",
-            fill_alpha=0.1, source=source)
+circles = plot.circle(x="x", y="y", size=10, fill_color="color", name="circles",
+                      fill_alpha=0.1, source=source)
 
 
-# hover = HoverTool(
-#     renderers=[cir],
-#     tooltips=[
-#         ("time", "@time"),
-#         ("threshold", "@threshold")
-#     ]
-# )
-#
-# plot.add_tools(hover)
+hover = HoverTool(
+    renderers=[circles],
+    tooltips=[
+        ("time", "@time"),
+        ("threshold", "@threshold")
+    ]
+)
+
+plot.add_tools(hover)
 
 
 plot.text(x="x", y="y", text="id", source=source)
@@ -131,48 +131,20 @@ plot.segment(x0="x", y0="y", x1="x0", y1="y0", line_color="#151515",
 
 
 def update_plot(attrname, old, new):
-    # Desired iteration
     t = iteration_slider.value
-    df = dfs[t]
-    print(df)
-    source.data = df.to_dict('list')
+    source.data = dfs[t].to_dict('list')
+    # print(df)
 
 
-iteration_slider = Slider(title="Iteration", value=1, start=1,
+iteration_slider = Slider(title="Iteration", value=0, start=1,
                           end=max_iter, step=1)
 
 iteration_slider.on_change('value', update_plot)
 
-
-# Set up callbacks
-# def update_title(attrname, old, new):
-#     plot.title.text = text.value
-# text.on_change('value', update_title)
-
-
-# def update_data(attrname, old, new):
-#     # Get the current slider values
-#     a = amplitude.value
-#     b = offset.value
-#     w = phase.value
-#     k = freq.value
-#
-#     # Generate the new curve
-#     x = np.linspace(0, 4*np.pi, N)
-#     y = a*np.sin(k*x + w) + b
-#
-#     source.data = dict(x=x, y=y)
-
-
-# for w in [offset, amplitude, phase, freq]:
-#     w.on_change('value', update_data)
-
-
-# Set up layouts and add to document
-# inputs = widgetbox(text, offset, amplitude, phase, freq, iteration_slider)
-
 inputs = widgetbox(iteration_slider)
 
+
 curdoc().add_root(column(plot, inputs, width=800))
+
 
 curdoc().title = "Mondrian trees"

@@ -118,7 +118,11 @@ class OnlineForestClassifier(ABC, Base):
         self.verbose = verbose
         self.use_aggregation = use_aggregation
         self._forest = None
-        self.dirichlet = dirichlet
+
+        if dirichlet is None:
+            self.dirichlet = 0.5
+        else:
+            self.dirichlet = dirichlet
 
     def set_data(self, X, y):
         X = safe_array(X)
