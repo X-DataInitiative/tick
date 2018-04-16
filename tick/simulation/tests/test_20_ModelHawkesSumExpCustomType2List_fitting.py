@@ -12,12 +12,12 @@ MaxN = 10
 mu_i = [np.array([0.5, 0.7, 0.8, 0.6, 0.5, 0.4, 0.3, 0.6, 0.8, 0.1]), np.array([0.5, 0.6, 0.8, 0.8, 0.6, 0.7, 0.8, 0.6, 0.5, 0.4])]
 
 end_time = 50.0
-betas = np.array([5.0, 100])
+betas = np.array([5.0, 150, 2000])
 
 U = len(betas)
 kernels = np.array([
-            [HawkesKernelSumExp(np.array([0.2, 0.1]), betas), HawkesKernelSumExp(np.array([0.3, 0.1]), betas)],
-            [HawkesKernelSumExp(np.array([0.2, 0.05]), betas), HawkesKernelSumExp(np.array([0., 0.1]), betas)]
+            [HawkesKernelSumExp(np.array([0.2, 0.1, 0.1]), betas), HawkesKernelSumExp(np.array([0.3, 0.1, 0.15]), betas)],
+            [HawkesKernelSumExp(np.array([0.2, 0.05, 0.0]), betas), HawkesKernelSumExp(np.array([0., 0.1, 0.2]), betas)]
         ])
 timestamps_list = []
 global_n_list = []
@@ -62,15 +62,15 @@ from tick.optim.model.hawkes_fixed_sumexpkern_loglik_custom2_list import ModelHa
 model_list = ModelHawkesFixedSumExpKernCustomType2LogLikList(betas, MaxN, n_threads=8)
 model_list.fit(timestamps_list, global_n_list, end_times=end_times)
 
-solver = AGD(step=1e-2, linesearch=False, max_iter=5000, print_every=50)
+solver = AGD(step=1e-2, linesearch=False, max_iter=2000, print_every=50)
 solver.set_model(model_list).set_prox(prox)
 
 x_real = np.array(
     [0.5, 0.7, 0.8, 0.6, 0.5, 0.4, 0.3, 0.6, 0.8, 0.1,     0.5, 0.6, 0.8, 0.8, 0.6, 0.7, 0.8, 0.6, 0.5, 0.4,
-     0.2, 0.3, 0.2, 0, 0.1, 0.1, 0.05, 0.1])
+     0.2, 0.3, 0.2, 0, 0.1, 0.1, 0.05, 0.1, 0.1, 0.15, 0.0, 0.2])
 x0 = np.array(
     [0.5, 0.6, 0.2, 0.3, 0.8, 0.5, 0.7, 0.8, 0.6, 0.5,     0.5, 0.6, 0.2, 0.3, 0.8, 0.5, 0.7, 0.8, 0.6, 0.5,
-     0.7, 0.5, 0.2, 0.3, 0.75, 0.1, 0.1, 0.2])
+     0.7, 0.5, 0.2, 0.3, 0.75, 0.1, 0.1, 0.2, 0.2, 0.3, 0.75, 0.1])
 
 solver.solve(x0)
 
