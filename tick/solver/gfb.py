@@ -36,6 +36,9 @@ class CompositeProx(Prox):
     }
 
     def __init__(self, prox_list: list):
+        if isinstance(prox_list, Prox):
+            prox_list = [prox_list]
+
         # Range is stored in each Prox individually
         Prox.__init__(self, range=None)
         if len(prox_list) == 0:
@@ -56,6 +59,12 @@ class CompositeProx(Prox):
         for prox in self.prox_list:
             prox_value += prox.value(coeffs)
         return prox_value
+
+    def astype(self, dtype_or_object_with_dtype):
+        def cast_prox(prox):
+            return prox.astype(dtype_or_object_with_dtype)
+
+        return CompositeProx(list(map(cast_prox, self.prox_list)))
 
 
 class GFB(SolverFirstOrder):
@@ -159,15 +168,19 @@ class GFB(SolverFirstOrder):
                                   record_every=record_every)
         self.surrelax = surrelax
 
-    def set_prox(self, prox: list):
+    def set_prox(self, prox_list: list):
         """
         Parameters
         ----------
-        prox : `list` of `Prox`
+        prox_list : `list` of `Prox`
             List of all proximal operators of the model
         """
-        prox = CompositeProx(prox)
-        SolverFirstOrder.set_prox(self, prox)
+        if not isinstance(prox_list, CompositeProx):
+            prox_list = CompositeProx(prox_list)
+
+        if self.dtype is not None:
+            prox_list = prox_list.astype(self.dtype)
+        SolverFirstOrder.set_prox(self, prox_list)
         return self
 
     def initialize_values(self, x0, step):

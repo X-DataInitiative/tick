@@ -106,3 +106,4 @@ class ProxNuclear(Prox):
                              ', received {} np.ndarray'.format(x.shape))
         s = svd(x, compute_uv=False, full_matrices=False)
         return self.strength * s.sum()
+

@@ -1,7 +1,15 @@
 # License: BSD 3 clause
 
 from .base import ProxWithGroups
-from .build.prox import ProxBinarsityDouble as _ProxBinarsity
+from .build.prox import ProxBinarsityDouble as _ProxBinarsityDouble
+from .build.prox import ProxBinarsityFloat as _ProxBinarsityFloat
+
+import numpy as np
+
+dtype_map = {
+    np.dtype("float64"): _ProxBinarsityDouble,
+    np.dtype("float32"): _ProxBinarsityFloat
+}
 
 
 class ProxBinarsity(ProxWithGroups):
@@ -36,6 +44,9 @@ class ProxBinarsity(ProxWithGroups):
     n_blocks : `int`
         Number of blocks
 
+    dtype : `{'float64', 'float32'}`
+        Type of the arrays used.
+
     References
     ----------
     ProxBinarsity uses the fast-TV algorithm described in:
@@ -50,6 +61,7 @@ class ProxBinarsity(ProxWithGroups):
                  range: tuple = None, positive: bool = False):
         ProxWithGroups.__init__(self, strength, blocks_start, blocks_length,
                                 range, positive)
+        self._prox = self._build_cpp_prox("float64")
 
-    def _get_prox_class(self):
-        return _ProxBinarsity
+    def _get_dtype_map(self):
+        return dtype_map

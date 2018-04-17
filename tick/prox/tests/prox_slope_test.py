@@ -9,7 +9,7 @@ from tick.prox import ProxSlope
 from tick.prox.tests.prox import TestProx
 
 
-class Test(TestProx):
+class ProxSlopeTest(object):
     def get_coeffs_weak(self, n_coeffs):
         return (-1) ** np.arange(n_coeffs) * \
             np.sqrt(2 * np.log(np.linspace(1, 10, n_coeffs) * n_coeffs))
@@ -26,13 +26,13 @@ class Test(TestProx):
         """
         n_coeffs = 30
         np.random.seed(seed=123)
-        coeffs = np.zeros(n_coeffs)
-        coeffs[:10] = self.get_coeffs_strong(10)
-        y = coeffs + 3 * np.random.randn(n_coeffs)
+        coeffs = np.zeros(n_coeffs).astype(self.dtype)
+        coeffs[:10] = self.get_coeffs_strong(10).astype(self.dtype)
+        y = coeffs + 3 * np.random.randn(n_coeffs).astype(self.dtype)
         fdr = 0.6
         strength = 4.
         step = 1.
-        prox = ProxSlope(strength=strength, fdr=fdr)
+        prox = ProxSlope(strength=strength, fdr=fdr).astype(self.dtype)
 
         x_sl1_truth \
             = np.array([2.13923654, -3.53844034, 7.31022147, -9.87610726,
@@ -40,13 +40,15 @@ class Test(TestProx):
                         9.87610726, -9.87610726, -0., -0., 0.08661054, -0.,
                         -0., -0., 1.78604443, 1.78604443, 0., 0., 0.,
                         0.08661054, -0., 0., -0., -0., 0., -0.08661054, -0.,
-                        -0.])
-        np.testing.assert_almost_equal(prox.call(y, step=step), x_sl1_truth)
+                        -0.]).astype(self.dtype)
+        np.testing.assert_almost_equal(
+            prox.call(y, step=step), x_sl1_truth, decimal=self.decimal_places)
 
         strength = 2.
         step = 2.
         prox.strength = strength
-        np.testing.assert_almost_equal(prox.call(y, step=step), x_sl1_truth)
+        np.testing.assert_almost_equal(
+            prox.call(y, step=step), x_sl1_truth, decimal=self.decimal_places)
 
         prox.range = (10, 20)
         strength = 4.
@@ -59,25 +61,28 @@ class Test(TestProx):
                         18.79749156, -17.7744925, -0., -0., 0., -0., -0., -0.,
                         0., 0., 0., 0., 2.21210573, 4.47219608, -2.80750161,
                         3.52748713, -3.761642, -1.91325451, 2.72131559,
-                        -4.2860421, -0.42020616, -2.58526469])
-        np.testing.assert_almost_equal(prox.call(y, step=step), x_sl1_truth)
+                        -4.2860421, -0.42020616, -2.58526469]).astype(self.dtype)
+        np.testing.assert_almost_equal(
+            prox.call(y, step=step), x_sl1_truth, decimal=self.decimal_places)
 
         strength = 2.
         step = 2.
         prox.strength = strength
-        np.testing.assert_almost_equal(prox.call(y, step=step), x_sl1_truth)
+        np.testing.assert_almost_equal(
+            prox.call(y, step=step), x_sl1_truth, decimal=self.decimal_places)
 
     def test_ProxSlope_weights_bh(self):
         """...Test of ProxSlope weights computation
         """
         n_samples = 5000
         n_outliers = int(0.1 * n_samples)
-        interc0 = np.zeros(n_samples)
-        interc0[:n_outliers] = self.get_coeffs_strong(n_outliers)
-        y = interc0 + 3 * np.random.randn(interc0.shape[0])
+        interc0 = np.zeros(n_samples).astype(self.dtype)
+        interc0[:n_outliers] = self.get_coeffs_strong(n_outliers).astype(
+            self.dtype)
+        y = interc0 + 3 * np.random.randn(interc0.shape[0]).astype(self.dtype)
 
         strength = 2.5
-        prox = ProxSlope(strength=strength)
+        prox = ProxSlope(strength=strength).astype(self.dtype)
         prox.value(y)
         prox.strength = 20
         size = y.shape[0]
@@ -86,10 +91,12 @@ class Test(TestProx):
 
         prox_weights = np.array(
             [prox._prox.get_weight_i(i) for i in range(size)])
-        np.testing.assert_almost_equal(prox_weights, weights, decimal=7)
+        np.testing.assert_almost_equal(prox_weights, weights,
+                                       decimal=self.decimal_places)
 
         strength = 2.5
-        prox = ProxSlope(strength=strength, range=(300, 3000))
+        prox = ProxSlope(strength=strength, range=(300, 3000)).astype(
+            self.dtype)
         prox.value(y)
         prox.strength = 20
         size = prox.range[1] - prox.range[0]
@@ -98,20 +105,23 @@ class Test(TestProx):
 
         prox_weights = np.array(
             [prox._prox.get_weight_i(i) for i in range(size)])
-        np.testing.assert_almost_equal(prox_weights, weights, decimal=7)
+        np.testing.assert_almost_equal(prox_weights, weights,
+                                       decimal=self.decimal_places)
 
     def test_ProxSlope_value(self):
         """...Test of ProxSlope.value
         """
+        np.random.seed(1337)
         n_samples = 5000
         n_outliers = int(0.1 * n_samples)
         interc0 = np.zeros(n_samples)
         interc0[:n_outliers] = self.get_coeffs_strong(n_outliers)
-        y = interc0 + 3 * np.random.randn(interc0.shape[0])
+        y = (interc0 + 3 * np.random.randn(interc0.shape[0])).astype(
+            self.dtype)
 
         fdr = 0.6
         strength = 2.5
-        prox = ProxSlope(strength=strength, fdr=fdr)
+        prox = ProxSlope(strength=strength, fdr=fdr).astype(self.dtype)
         prox_value = prox.value(y)
 
         weights = self.get_weights_bh(strength, fdr, size=y.shape[0])
@@ -119,7 +129,8 @@ class Test(TestProx):
         sub_y = y_abs
         value = sub_y[np.argsort(-sub_y)].dot(weights)
         places = 4
-        self.assertAlmostEqual(prox_value, value, places=places)
+
+        self.assertAlmostEqual(prox_value, value, delta=value * 1e-7)
 
         strength = 7.4
         fdr = 0.2
@@ -131,7 +142,7 @@ class Test(TestProx):
         y_abs = np.abs(y)
         sub_y = y_abs
         value = sub_y[np.argsort(-sub_y)].dot(weights)
-        self.assertAlmostEqual(prox_value, value, places=places)
+        self.assertAlmostEqual(prox_value, value, delta=value * 1e-7)
 
         prox.range = (300, 3000)
         fdr = 0.6
@@ -146,7 +157,7 @@ class Test(TestProx):
         y_abs = np.abs(y[a:b])
         sub_y = y_abs
         value = sub_y[np.argsort(-sub_y)].dot(weights)
-        self.assertAlmostEqual(prox_value, value, places=places)
+        self.assertAlmostEqual(prox_value, value, delta=value * 1e-7)
 
         prox.range = (300, 3000)
         strength = 7.4
@@ -161,7 +172,17 @@ class Test(TestProx):
         y_abs = np.abs(y[a:b])
         sub_y = y_abs
         value = sub_y[np.argsort(-sub_y)].dot(weights)
-        self.assertAlmostEqual(prox_value, value, places=places)
+        self.assertAlmostEqual(prox_value, value, delta=value * 1e-7)
+
+
+class ProxSlopeTestFloat32(TestProx, ProxSlopeTest):
+    def __init__(self, *args, **kwargs):
+        TestProx.__init__(self, *args, dtype="float32", **kwargs)
+
+
+class ProxSlopeTestFloat64(TestProx, ProxSlopeTest):
+    def __init__(self, *args, **kwargs):
+        TestProx.__init__(self, *args, dtype="float64", **kwargs)
 
 
 if __name__ == '__main__':

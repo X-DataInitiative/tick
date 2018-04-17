@@ -31,6 +31,9 @@ class ModelGeneralizedLinear(ModelLabelsFeatures):
     n_coeffs : `int` (read-only)
         Total number of coefficients of the model
 
+    dtype : `{'float64', 'float32'}`
+        Type of the data arrays used.
+
     Notes
     -----
     This class should be not used by end-users, it is intended for

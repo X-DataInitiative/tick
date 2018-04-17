@@ -761,7 +761,6 @@ class RunPyLint(TickCommand):
         raise NotImplementedError('Running pylint from setup.py'
                                   'not supported yet')
 
-
 class RunPyTests(TickCommand):
     description = 'run tick Python tests'
     start_dir = '.'

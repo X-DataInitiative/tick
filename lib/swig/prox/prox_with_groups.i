@@ -14,9 +14,6 @@ class TProxWithGroups : public TProx<T> {
                  ulong start, ulong end, bool positive);
 };
 
-%template(ProxWithGroups) TProxWithGroups<double>;
-typedef TProxWithGroups<double> ProxWithGroups;
-
 %template(ProxWithGroupsDouble) TProxWithGroups<double>;
 typedef TProxWithGroups<double> ProxWithGroupsDouble;
 

@@ -1,8 +1,11 @@
 # License: BSD 3 clause
 
-from abc import ABC, abstractmethod
 import numpy as np
+from abc import ABC, abstractmethod
 from tick.base import Base
+
+
+deep_copy_ignore_fields = ["_prox"]
 
 
 class Prox(ABC, Base):
@@ -12,6 +15,11 @@ class Prox(ABC, Base):
     ----------
     range : `tuple` of two `int`, default=`None`
         Range on which the prox is applied
+
+    Attributes
+    ----------
+    dtype : `{'float64', 'float32'}`
+        Type of the arrays used.
     """
 
     _attrinfos = {"_prox": {"writable": False}, "_range": {"writable": False}}
@@ -24,6 +32,7 @@ class Prox(ABC, Base):
         self._range = None
         self._prox = None
         self.range = range
+        self.dtype = None
 
     @property
     def range(self):
@@ -96,3 +105,26 @@ class Prox(ABC, Base):
     @abstractmethod
     def value(self, coeffs: np.ndarray) -> float:
         pass
+
+    def _get_typed_class(self, dtype_or_object_with_dtype, dtype_map):
+        import tick.base.dtype_to_cpp_type
+        return tick.base.dtype_to_cpp_type.get_typed_class(
+            self, dtype_or_object_with_dtype, dtype_map)
+
+    def _extract_dtype(self, dtype_or_object_with_dtype):
+        import tick.base.dtype_to_cpp_type
+        return tick.base.dtype_to_cpp_type.extract_dtype(
+            dtype_or_object_with_dtype)
+
+    def astype(self, dtype_or_object_with_dtype):
+        import tick.base.dtype_to_cpp_type
+        new_prox = tick.base.dtype_to_cpp_type.copy_with(
+          self, ["_prox"] # ignore _prox on deepcopy
+        )
+        new_prox._set('_prox',
+            new_prox._build_cpp_prox(dtype_or_object_with_dtype))
+        return new_prox
+
+    def _build_cpp_prox(self, dtype):
+        raise ValueError("""This function is expected to
+                            overriden in a subclass""".strip())

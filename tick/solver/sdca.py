@@ -1,8 +1,16 @@
 # License: BSD 3 clause
 
 from .base import SolverFirstOrderSto
-from .build.solver import SDCADouble as _SDCA
+
+from .build.solver import SDCADouble as _SDCADouble
+from .build.solver import SDCAFloat as _SDCAFloat
+
 import numpy as np
+
+dtype_class_mapper = {
+    np.dtype('float32'): _SDCAFloat,
+    np.dtype('float64'): _SDCADouble
+}
 
 
 class SDCA(SolverFirstOrderSto):
@@ -140,6 +148,9 @@ class SDCA(SolverFirstOrderSto):
     time_end : `str`
         End date of the call to ``solve()``
 
+    dtype : `{'float64', 'float32'}`, default='float64'
+        Type of the arrays used. This value is set from model and prox dtypes.
+
     References
     ----------
     * S. Shalev-Shwartz and T. Zhang, Accelerated proximal stochastic dual
@@ -153,17 +164,23 @@ class SDCA(SolverFirstOrderSto):
                  max_iter: int = 10, verbose: bool = True,
                  print_every: int = 1, record_every: int = 1, seed: int = -1):
 
+        self.l_l2sq = l_l2sq
         SolverFirstOrderSto.__init__(
             self, step=0, epoch_size=epoch_size, rand_type=rand_type, tol=tol,
             max_iter=max_iter, verbose=verbose, print_every=print_every,
             record_every=record_every, seed=seed)
-        self.l_l2sq = l_l2sq
+
+    def _set_cpp_solver(self, dtype_or_object_with_dtype):
+        self.dtype = self._extract_dtype(dtype_or_object_with_dtype)
+        solver_class = self._get_typed_class(
+            dtype_or_object_with_dtype, dtype_class_mapper)
+
         epoch_size = self.epoch_size
         if epoch_size is None:
             epoch_size = 0
-        # Construct the wrapped C++ SDCA solver
-        self._solver = _SDCA(self.l_l2sq, epoch_size, self.tol,
-                             self._rand_type, self.seed)
+
+        self._set('_solver', solver_class(
+            self.l_l2sq, epoch_size, self.tol, self._rand_type, self.seed))
 
     def objective(self, coeffs, loss: float = None):
         """Compute the objective minimized by the solver at ``coeffs``

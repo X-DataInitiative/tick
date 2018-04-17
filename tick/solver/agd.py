@@ -173,6 +173,7 @@ class AGD(SolverFirstOrder):
             converged = rel_obj < self.tol
             # If converged, we stop the loop and record the last step
             # in history
+
             self._handle_history(n_iter, force=converged, obj=obj, x=x.copy(),
                                  rel_delta=rel_delta, step=step,
                                  rel_obj=rel_obj)

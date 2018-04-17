@@ -3,6 +3,7 @@
 import numpy as np
 from scipy.optimize import fmin_bfgs
 
+from tick.base_model import Model
 from tick.prox import ProxZero, ProxL2Sq
 from tick.prox.base import Prox
 from .base import SolverFirstOrder
@@ -77,6 +78,9 @@ class BFGS(SolverFirstOrder):
     time_end : `str`
         End date of the call to ``solve()``
 
+    dtype : `{'float64', 'float32'}`, default='float64'
+        Type of the arrays used. This value is set from model and prox dtypes.
+
     References
     ----------
     * Quasi-Newton method of Broyden, Fletcher, Goldfarb and Shanno (BFGS),
@@ -144,7 +148,7 @@ class BFGS(SolverFirstOrder):
 
     def _solve(self, x0: np.ndarray = None):
         if x0 is None:
-            x0 = np.zeros(self.model.n_coeffs)
+            x0 = np.zeros(self.model.n_coeffs, dtype=self.dtype)
         obj = self.objective(x0)
 
         # A closure to maintain history along internal BFGS's iterations
@@ -178,3 +182,24 @@ class BFGS(SolverFirstOrder):
                       disp=False, retall=False)
 
         return x_min
+
+    def set_model(self, model: Model):
+        """Set model in the solver
+
+        Parameters
+        ----------
+        model : `Model`
+            Sets the model in the solver. The model gives the first
+            order information about the model (loss, gradient, among
+            other things)
+
+        Returns
+        -------
+        output : `Solver`
+            The `Solver` with given model
+        """
+        self.dtype = model.dtype
+        if np.dtype(self.dtype) != np.dtype("float64"):
+            raise ValueError(
+                "Solver BFGS currenty only accepts float64 array types")
+        return SolverFirstOrder.set_model(self, model)

@@ -1,9 +1,17 @@
 # License: BSD 3 clause
 
-from .build.solver import AdaGradDouble as _AdaGrad
+import numpy as np
+
 from .base import SolverFirstOrderSto
+from .build.solver import AdaGradDouble as _AdaGradDouble
+from .build.solver import AdaGradFloat as _AdaGradFloat
 
 __author__ = "Søren Vinther Poulsen"
+
+dtype_class_mapper = {
+    np.dtype('float32'): _AdaGradFloat,
+    np.dtype('float64'): _AdaGradDouble
+}
 
 
 class AdaGrad(SolverFirstOrderSto):
@@ -117,6 +125,9 @@ class AdaGrad(SolverFirstOrderSto):
     time_end : `str`
         End date of the call to ``solve()``
 
+    dtype : `{'float64', 'float32'}`, default='float64'
+        Type of the arrays used. This value is set from model and prox dtypes.
+
     References
     ----------
     * J. Duchi, E. Hazan, Y. Singer, Adaptive Subgradient Methods for Online
@@ -128,10 +139,19 @@ class AdaGrad(SolverFirstOrderSto):
                  rand_type: str = 'unif', tol: float = 1e-10,
                  max_iter: int = 100, verbose: bool = True,
                  print_every: int = 10, record_every: int = 1, seed: int = -1):
-
         SolverFirstOrderSto.__init__(self, step, epoch_size, rand_type, tol,
                                      max_iter, verbose, print_every,
                                      record_every, seed)
+
+    def set_model(self, model):
+        self.dtype = model.dtype
+        return SolverFirstOrderSto.set_model(self, model)
+
+    def _set_cpp_solver(self, dtype_or_object_with_dtype):
+        self.dtype = self._extract_dtype(dtype_or_object_with_dtype)
+        solver_class = self._get_typed_class(
+            dtype_or_object_with_dtype, dtype_class_mapper)
+
         # Type mapping None to unsigned long and double does not work...
         step = self.step
         if step is None:
@@ -139,7 +159,6 @@ class AdaGrad(SolverFirstOrderSto):
         epoch_size = self.epoch_size
         if epoch_size is None:
             epoch_size = 0
-
         # Construct the wrapped C++ AdaGrad solver
-        self._solver = _AdaGrad(epoch_size, self.tol, self._rand_type, step,
-                                self.seed)
+        self._set('_solver', solver_class(
+            epoch_size, self.tol, self._rand_type, step, self.seed))

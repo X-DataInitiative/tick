@@ -8,7 +8,9 @@ void TProxSlope<T>::compute_weights(void) {
     ulong size = end - start;
     weights = Array<T>(size);
     for (ulong i = 0; i < size; i++) {
-      T tmp = false_discovery_rate / (2 * size);
+      // tmp is double as float prevents adequate precision for
+      //  standard_normal_inv_cdf
+      double tmp = false_discovery_rate / (2 * size);
       weights[i] = strength * standard_normal_inv_cdf(1 - tmp * (i + 1));
     }
     weights_ready = true;

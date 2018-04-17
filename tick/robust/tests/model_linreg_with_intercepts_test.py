@@ -29,7 +29,7 @@ class Test(TestGLM):
         model = ModelLinRegWithIntercepts(fit_intercept=False).fit(X, y)
         model_spars = ModelLinRegWithIntercepts(fit_intercept=False) \
             .fit(X_spars, y)
-        self.run_test_for_glm(model, model_spars, 1e-4, 1e-4)
+        self.run_test_for_glm(model, model_spars)
         self._test_glm_intercept_vs_hardcoded_intercept(model)
 
         self.assertAlmostEqual(model.get_lip_mean(), 6.324960325598532)
@@ -56,7 +56,7 @@ class Test(TestGLM):
         model = ModelLinRegWithIntercepts(fit_intercept=True).fit(X, y)
         model_spars = ModelLinRegWithIntercepts(fit_intercept=True) \
             .fit(X_spars, y)
-        self.run_test_for_glm(model, model_spars, 1e-4, 1e-4)
+        self.run_test_for_glm(model, model_spars)
 
         self.assertAlmostEqual(model.get_lip_mean(), 7.324960325598536)
         self.assertAlmostEqual(model.get_lip_max(), 31.277118951892113)

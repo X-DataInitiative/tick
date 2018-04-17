@@ -112,13 +112,12 @@ inline std::ostream& operator<<(std::ostream& s, const TProx<T>& p) {
   return s << typeid(p).name() << "<" << typeid(T).name() << ">";
 }
 
-using Prox = TProx<double>;
-using ProxPtr = std::shared_ptr<Prox>;
-
 using ProxDouble = TProx<double>;
 using ProxDoublePtr = std::shared_ptr<ProxDouble>;
+using ProxDoublePtrVector = std::vector<ProxDoublePtr>;
 
 using ProxFloat = TProx<float>;
 using ProxFloatPtr = std::shared_ptr<ProxFloat>;
+using ProxFloatPtrVector = std::vector<ProxFloatPtr>;
 
 #endif  // LIB_INCLUDE_TICK_PROX_PROX_H_

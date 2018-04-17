@@ -49,6 +49,8 @@ class SolverFirstOrder(Solver):
     prox : `Prox`
         Proximal operator to solve
 
+    dtype : `{'float64', 'float32'}`, default='float64'
+        Type of the arrays used. This value is set from model and prox dtypes.
 
     Notes
     -----
@@ -79,6 +81,9 @@ class SolverFirstOrder(Solver):
     def __init__(self, step: float = None, tol: float = 0.,
                  max_iter: int = 100, verbose: bool = True,
                  print_every: int = 10, record_every: int = 1):
+
+        self.dtype = None
+
         Solver.__init__(self, tol, max_iter, verbose, print_every,
                         record_every)
         self.model = None
@@ -89,6 +94,15 @@ class SolverFirstOrder(Solver):
         self._initial_n_calls_loss = 0
         self._initial_n_calls_grad = 0
         self._initial_n_passes_over_data = 0
+
+    def validate_model(self, model: Model):
+        if not isinstance(model, Model):
+            raise ValueError('Passed object of class %s is not a '
+                             'Model class' % model.name)
+        if not model._fitted:
+            raise ValueError('Passed object %s has not been fitted. You must '
+                             'call ``fit`` on it before passing it to '
+                             '``set_model``' % model.name)
 
     def set_model(self, model: Model):
         """Set model in the solver
@@ -105,13 +119,8 @@ class SolverFirstOrder(Solver):
         output : `Solver`
             The same instance with given model
         """
-        if not isinstance(model, Model):
-            raise ValueError('Passed object of class %s is not a '
-                             'Model class' % model.name)
-        if not model._fitted:
-            raise ValueError('Passed object %s has not been fitted. You must '
-                             'call ``fit`` on it before passing it to '
-                             '``set_model``' % model.name)
+        self.validate_model(model)
+        self.dtype = model.dtype
         self._set("model", model)
         return self
 
@@ -155,7 +164,7 @@ class SolverFirstOrder(Solver):
         else:
             self.step = step
         if x0 is None:
-            x0 = np.zeros(self.model.n_coeffs)
+            x0 = np.zeros(self.model.n_coeffs, dtype=self.dtype)
         iterate = x0.copy()
         obj = self.objective(iterate)
 
@@ -186,8 +195,27 @@ class SolverFirstOrder(Solver):
         if not isinstance(prox, Prox):
             raise ValueError('Passed object of class %s is not a '
                              'Prox class' % prox.name)
+        if self.dtype is None or self.model is None:
+            raise ValueError("Solver must call set_model before set_prox")
+        if prox.dtype != self.dtype:
+            prox = prox.astype(self.dtype)
         self._set("prox", prox)
         return self
+
+    def astype(self, dtype_or_object_with_dtype):
+        if self.model is None:
+            raise ValueError("Cannot reassign solver without a model")
+
+        import tick.base.dtype_to_cpp_type
+        new_solver = tick.base.dtype_to_cpp_type.copy_with(
+          self, ["prox", "model"]  # ignore on deepcopy
+        )
+        new_solver.dtype = tick.base.dtype_to_cpp_type.extract_dtype(
+            dtype_or_object_with_dtype)
+        new_solver.set_model(self.model.astype(new_solver.dtype))
+        if self.prox is not None:
+            new_solver.set_prox(self.prox.astype(new_solver.dtype))
+        return new_solver
 
     def _as_dict(self):
         dd = Solver._as_dict(self)
@@ -242,6 +270,9 @@ class SolverFirstOrder(Solver):
         output : `np.array`, shape=(n_coeffs,)
             Obtained minimizer for the problem, same as ``solution`` attribute
         """
+        if x0 is not None and self.dtype is not "float64":
+            x0 = x0.astype(self.dtype)
+
         if self.model is None:
             raise ValueError('You must first set the model using '
                              '``set_model``.')

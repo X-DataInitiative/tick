@@ -1,6 +1,7 @@
 # License: BSD 3 clause
 
 import numpy as np
+from abc import ABC, abstractmethod
 
 from tick.base_model import Model
 from tick.prox.base import Prox
@@ -78,7 +79,7 @@ class SolverFirstOrderSto(SolverFirstOrder, SolverSto):
     _attrinfos = {"_step": {"writable": False}}
 
     def __init__(self, step: float = None, epoch_size: int = None,
-                 rand_type="unif", tol=0., max_iter=100, verbose=True,
+                 rand_type="unif", tol: float = 0., max_iter=100, verbose=True,
                  print_every=10, record_every=1, seed=-1):
 
         self._step = None
@@ -90,6 +91,8 @@ class SolverFirstOrderSto(SolverFirstOrder, SolverSto):
         SolverFirstOrder.__init__(self, step=step, tol=tol, max_iter=max_iter,
                                   verbose=verbose, print_every=print_every,
                                   record_every=record_every)
+
+        self._set_cpp_solver('float64')
 
     def set_model(self, model: Model):
         """Set model in the solver
@@ -106,6 +109,11 @@ class SolverFirstOrderSto(SolverFirstOrder, SolverSto):
         output : `Solver`
             The `Solver` with given model
         """
+        self.validate_model(model)
+        if self.dtype != model.dtype or self._solver is None:
+            self._set_cpp_solver(model.dtype)
+
+        self.dtype = model.dtype
         SolverFirstOrder.set_model(self, model)
         SolverSto.set_model(self, model)
         return self
@@ -165,7 +173,6 @@ class SolverFirstOrderSto(SolverFirstOrder, SolverSto):
         if not isinstance(self, SDCA):
             if step is not None:
                 self.step = step
-
             step, obj, minimizer, prev_minimizer = \
                 self._initialize_values(x0, step, n_empty_vectors=1)
             self._solver.set_starting_iterate(minimizer)
@@ -200,3 +207,31 @@ class SolverFirstOrderSto(SolverFirstOrder, SolverSto):
                 break
         self._set("solution", minimizer)
         return minimizer
+
+    def _get_typed_class(self, dtype_or_object_with_dtype, dtype_map):
+        import tick.base.dtype_to_cpp_type
+        return tick.base.dtype_to_cpp_type.get_typed_class(
+            self, dtype_or_object_with_dtype, dtype_map)
+
+    def _extract_dtype(self, dtype_or_object_with_dtype):
+        import tick.base.dtype_to_cpp_type
+        return tick.base.dtype_to_cpp_type.extract_dtype(
+            dtype_or_object_with_dtype)
+
+    @abstractmethod
+    def _set_cpp_solver(self, dtype):
+        pass
+
+    def astype(self, dtype_or_object_with_dtype):
+        if self.model is None:
+            raise ValueError("Cannot reassign solver without a model")
+
+        import tick.base.dtype_to_cpp_type
+        new_solver = tick.base.dtype_to_cpp_type.copy_with(
+          self, ["prox", "model", "_solver"]  # ignore on deepcopy
+        )
+        new_solver._set_cpp_solver(dtype_or_object_with_dtype)
+        new_solver.set_model(self.model.astype(new_solver.dtype))
+        if self.prox is not None:
+            new_solver.set_prox(self.prox.astype(new_solver.dtype))
+        return new_solver

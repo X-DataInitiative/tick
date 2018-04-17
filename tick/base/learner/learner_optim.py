@@ -54,7 +54,7 @@ class LearnerOptim(ABC, Base):
     record_every : `int`, default=10
         Record history information when ``n_iter`` (iteration number) is
         a multiple of ``record_every``
-        
+
     Other Parameters
     ----------------
     sdca_ridge_strength : `float`, default=1e-3
@@ -72,13 +72,13 @@ class LearnerOptim(ABC, Base):
     random_state : int seed, RandomState instance, or None (default)
         The seed that will be used by stochastic solvers. Used in 'sgd',
         'svrg', and 'sdca' solvers
-        
+
     blocks_start : `numpy.array`, shape=(n_features,), default=None
         The indices of the first column of each binarized feature blocks. It
         corresponds to the ``feature_indices`` property of the
         ``FeaturesBinarizer`` preprocessing.
         Used in 'binarsity' penalty
-        
+
     blocks_length : `numpy.array`, shape=(n_features,), default=None
         The length of each binarized feature blocks. It corresponds to the
         ``n_values`` property of the ``FeaturesBinarizer`` preprocessing.
@@ -446,5 +446,5 @@ class LearnerOptim(ABC, Base):
                  self.solver, RuntimeWarning)
 
     @staticmethod
-    def _safe_array(X, dtype=np.float64):
+    def _safe_array(X, dtype="float64"):
         return safe_array(X, dtype)
