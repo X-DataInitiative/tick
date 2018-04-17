@@ -6,9 +6,15 @@ import numpy as np
 import scipy
 
 from tick.array.build.array import (
+    tick_float_array_to_file,
+    tick_float_array2d_to_file,
+    tick_float_sparse2d_to_file,
     tick_double_array_to_file,
     tick_double_array2d_to_file,
     tick_double_sparse2d_to_file,
+    tick_float_array_from_file,
+    tick_float_array2d_from_file,
+    tick_float_sparse2d_from_file,
     tick_double_array_from_file,
     tick_double_array2d_from_file,
     tick_double_sparse2d_from_file,
@@ -34,21 +40,37 @@ def serialize_array(array, filepath):
     path : `str`
         Global path of the serialized array
     """
-    if array.dtype != float:
-        raise ValueError('Only float arrays can be serrialized')
+    if array.dtype not in [np.float32, np.float64]:
+        raise ValueError('Only float32/64 arrays can be serrialized')
 
-    if isinstance(array, np.ndarray):
-        if len(array.shape) == 1:
-            serializer = tick_double_array_to_file
-        elif len(array.shape) == 2:
-            serializer = tick_double_array2d_to_file
+    if array.dtype == "float32":
+        if isinstance(array, np.ndarray):
+            if len(array.shape) == 1:
+                serializer = tick_float_array_to_file
+            elif len(array.shape) == 2:
+                serializer = tick_float_array2d_to_file
+            else:
+                raise ValueError('Only 1d and 2d arrays can be serrialized')
         else:
-            raise ValueError('Only 1d and 2d arrays can be serrialized')
+            if len(array.shape) == 2:
+                serializer = tick_float_sparse2d_to_file
+            else:
+                raise ValueError('Only 2d sparse arrays can be serrialized')
+    elif array.dtype == "float64" or array.dtype == "double":
+        if isinstance(array, np.ndarray):
+            if len(array.shape) == 1:
+                serializer = tick_double_array_to_file
+            elif len(array.shape) == 2:
+                serializer = tick_double_array2d_to_file
+            else:
+                raise ValueError('Only 1d and 2d arrays can be serrialized')
+        else:
+            if len(array.shape) == 2:
+                serializer = tick_double_sparse2d_to_file
+            else:
+                raise ValueError('Only 2d sparse arrays can be serrialized')
     else:
-        if len(array.shape) == 2:
-            serializer = tick_double_sparse2d_to_file
-        else:
-            raise ValueError('Only 2d sparse arrays can be serrialized')
+        raise ValueError('Unhandled serrialization type')
 
     serializer(filepath, array)
     return os.path.abspath(filepath)

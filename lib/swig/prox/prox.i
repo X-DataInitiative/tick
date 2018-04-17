@@ -123,5 +123,5 @@ class TProx<float> {
   virtual bool get_positive() const;
   virtual void set_positive(bool positive);
 };
-typedef TProx<double> ProxFloat;
+typedef TProx<float> ProxFloat;
 typedef std::shared_ptr<ProxFloat> ProxFloatPtr;

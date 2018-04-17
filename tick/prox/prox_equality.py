@@ -6,9 +6,15 @@ import numpy as np
 import sys
 
 from .base import Prox
-from .build.prox import ProxEqualityDouble as _ProxEquality
+from .build.prox import ProxEqualityDouble as _ProxEqualityDouble
+from .build.prox import ProxEqualityFloat as _ProxEqualityFloat
 
 __author__ = 'Stephane Gaiffas'
+
+dtype_map = {
+    np.dtype("float64"): _ProxEqualityDouble,
+    np.dtype("float32"): _ProxEqualityFloat
+}
 
 
 class ProxEquality(Prox):
@@ -28,6 +34,10 @@ class ProxEquality(Prox):
     positive : `bool`, default=`False`
         If True, ensures that the output of the prox has only non-negative
         entries (in the given range)
+
+    dtype : `string`, default='float64'
+        Type of arrays to use - default float64
+
     """
 
     _attrinfos = {"positive": {"writable": True, "cpp_setter": "set_positive"}}
@@ -35,10 +45,16 @@ class ProxEquality(Prox):
     def __init__(self, strength: float = 0, range: tuple = None,
                  positive: bool = False):
         Prox.__init__(self, range)
-        if range is None:
-            self._prox = _ProxEquality(0., positive)
-        else:
-            self._prox = _ProxEquality(0., range[0], range[1], positive)
+        self.positive = positive
+        self._check_set_prox(dtype="float64")
+
+    def _check_set_prox(self, coeffs: np.ndarray = None, dtype=None):
+        if Prox._check_set_prox(self, coeffs, dtype):
+            if self.range is None:
+                self._prox = dtype_map[np.dtype(self.dtype)](0., self.positive)
+            else:
+                self._prox = dtype_map[np.dtype(self.dtype)](
+                    0., self.range[0], self.range[1], self.positive)
 
     def _call(self, coeffs: np.ndarray, step: object, out: np.ndarray):
         self._prox.call(coeffs, step, out)

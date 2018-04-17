@@ -57,6 +57,10 @@ class CompositeProx(Prox):
             prox_value += prox.value(coeffs)
         return prox_value
 
+    def _check_set_prox(self, coeffs: np.ndarray = None, dtype=None):
+        for prox in self.prox_list:
+            prox._check_set_prox(coeffs, dtype)
+
 
 class GFB(SolverFirstOrder):
     """Generalized Forward-Backward algorithm

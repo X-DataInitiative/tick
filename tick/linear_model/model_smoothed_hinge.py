@@ -45,6 +45,9 @@ class ModelSmoothedHinge(ModelFirstOrder, ModelGeneralizedLinear,
     fit_intercept : `bool`
         If `True`, the model uses an intercept
 
+    dtype : `string`, default='float64'
+        Type of arrays to use - default float64
+
     smoothness : `double`, default=1.
         The smoothness parameter used in the loss. It should be > 0 and <= 1
         Note that smoothness=0 corresponds to the Hinge loss.
@@ -123,7 +126,9 @@ class ModelSmoothedHinge(ModelFirstOrder, ModelGeneralizedLinear,
 
     def _get_lip_best(self):
         # TODO: Use sklearn.decomposition.TruncatedSVD instead?
+
         s = svd(self.features, full_matrices=False, compute_uv=False)[0] ** 2
+
         if self.fit_intercept:
             return (s + 1) / (self.smoothness * self.n_samples)
         else:

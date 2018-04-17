@@ -72,6 +72,9 @@ class SimuPoisReg(SimuWithFeatures):
     verbose : `bool`, default=True
         If `True`, print things
 
+    dtype : `string`, default='float64'
+        Type of arrays to use - default float64
+
     Attributes
     ----------
     features : `numpy.ndarray`, shape=(n_samples, n_features)
@@ -88,6 +91,10 @@ class SimuPoisReg(SimuWithFeatures):
 
     time_end : `str`
         End date of the simulation
+
+    dtype : `{'float64', 'float32'}`
+        Type of arrays to use - default float64
+        Used in the case features is None
     """
 
     _attrinfos = {"labels": {"writable": False}, "_link": {"writable": False}}
@@ -97,12 +104,12 @@ class SimuPoisReg(SimuWithFeatures):
                  link: str = "exponential",
                  features_type: str = "cov_toeplitz", cov_corr: float = 0.5,
                  features_scaling: str = "none", seed: int = None,
-                 verbose: bool = True):
+                 verbose: bool = True, dtype="float64"):
 
         n_features = weights.shape[0]
         SimuWithFeatures.__init__(self, intercept, features, n_samples,
                                   n_features, features_type, cov_corr,
-                                  features_scaling, seed, verbose)
+                                  features_scaling, seed, verbose, dtype=dtype)
         self.weights = weights
         self.link = link
         self._set("labels", None)
@@ -119,7 +126,7 @@ class SimuPoisReg(SimuWithFeatures):
             val = "exponential"
         self._set("_link", val)
 
-    def simulate(self):
+    def simulate(self, dtype="float64"):
         """
         Launch simulation of the data
 
@@ -155,5 +162,8 @@ class SimuPoisReg(SimuWithFeatures):
         #   later computations, hence the next line.
         labels = np.empty(n_samples)
         labels[:] = poisson(intensity)
+        if self.dtype != np.float64:
+            labels = labels.astype(self.dtype)
+            features = features.astype(self.dtype)
         self._set("labels", labels)
         return features, labels

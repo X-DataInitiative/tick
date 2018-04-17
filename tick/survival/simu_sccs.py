@@ -107,6 +107,7 @@ class SimuSCCS(Simu):
 
     Examples
     --------
+    >>> import numpy as np
     >>> from tick.survival import SimuSCCS
     >>> n_lags = np.repeat(2, 2).astype('uint64')
     >>> sim = SimuSCCS(n_cases=5, n_intervals=3, n_features=2, n_lags=n_lags,

@@ -1,9 +1,10 @@
 # License: BSD 3 clause
 
+import numpy as np
+
 from warnings import warn
 from tick.base_model import Model
 from .base import SolverFirstOrderSto
-from .build.solver import SVRGDouble as _SVRG
 
 from tick.solver.build.solver import SVRG_VarianceReductionMethod_Last
 from tick.solver.build.solver import SVRG_VarianceReductionMethod_Average
@@ -12,12 +13,8 @@ from tick.solver.build.solver import SVRG_VarianceReductionMethod_Random
 from tick.solver.build.solver import SVRG_StepType_Fixed
 from tick.solver.build.solver import SVRG_StepType_BarzilaiBorwein
 
-from tick.solver.build.solver import SVRG_VarianceReductionMethod_Last
-from tick.solver.build.solver import SVRG_VarianceReductionMethod_Average
-from tick.solver.build.solver import SVRG_VarianceReductionMethod_Random
-
-from tick.solver.build.solver import SVRG_StepType_Fixed
-from tick.solver.build.solver import SVRG_StepType_BarzilaiBorwein
+from .build.solver import SVRGDouble as _SVRGDouble
+from .build.solver import SVRGFloat as _SVRGFloat
 
 __author__ = "Stephane Gaiffas"
 
@@ -30,6 +27,11 @@ variance_reduction_methods_mapper = {
 step_types_mapper = {
     'fixed': SVRG_StepType_Fixed,
     'bb': SVRG_StepType_BarzilaiBorwein
+}
+
+dtype_class_mapper = {
+    np.dtype('float32'): _SVRGFloat,
+    np.dtype('float64'): _SVRGDouble
 }
 
 
@@ -173,6 +175,15 @@ class SVRG(SolverFirstOrderSto):
     time_end : `str`
         End date of the call to ``solve()``
 
+    dtype : `string`, default='float64'
+        Type of arrays to use - default float64
+
+    var_red_str : `string`
+        temporary to hold varience reduction type before dtype is known
+
+    step_type_str : `string`
+        temporary to hold step type before dtype is known
+
     References
     ----------
     * L. Xiao and T. Zhang, A proximal stochastic gradient method with
@@ -193,20 +204,8 @@ class SVRG(SolverFirstOrderSto):
                                      max_iter, verbose, print_every,
                                      record_every, seed=seed)
         self.n_threads = n_threads
-        step = self.step
-        if step is None:
-            step = 0.
-
-        epoch_size = self.epoch_size
-        if epoch_size is None:
-            epoch_size = 0
-
-        # Construct the wrapped C++ SGD solver
-        self._solver = _SVRG(epoch_size, self.tol, self._rand_type, step,
-                             self.seed, self.n_threads)
-
-        self.variance_reduction = variance_reduction
-        self.step_type = step_type
+        self.step_type_str = step_type
+        self.var_red_str = variance_reduction
 
     @property
     def variance_reduction(self):
@@ -258,9 +257,30 @@ class SVRG(SolverFirstOrderSto):
         """
         # We need to check that the setted model is not sparse when the
         # variance reduction method is 'avg'
-        if self.variance_reduction == 'avg' and model._model.is_sparse():
+        SolverFirstOrderSto.validate_model(self, model)
+
+        if self.var_red_str == 'avg' and model._model.is_sparse():
             warn("'avg' variance reduction cannot be used with sparse "
                  "datasets. Please change `variance_reduction` before "
                  "passing sparse data.", UserWarning)
-        SolverFirstOrderSto.set_model(self, model)
-        return self
+
+        first = self.dtype is None or self.dtype != model.dtype
+        self.dtype = model.dtype
+
+        step = self.step
+        if step is None:
+            step = 0.
+        epoch_size = self.epoch_size
+        if epoch_size is None:
+            epoch_size = 0
+
+        # Construct the wrapped C++ SGD solver
+        self._solver = dtype_class_mapper[self.dtype](
+            epoch_size, self.tol, self._rand_type, step, self.seed,
+            self.n_threads)
+
+        if first is True:
+            self.variance_reduction = self.var_red_str
+            self.step_type = self.step_type_str
+
+        return SolverFirstOrderSto.set_model(self, model)

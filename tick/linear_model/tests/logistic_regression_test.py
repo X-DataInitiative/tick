@@ -125,7 +125,7 @@ class Test(InferenceTest):
                     solver_kwargs['random_state'] = sto_seed
 
                 if solver == 'sgd':
-                    solver_kwargs['step'] = 1.
+                    solver_kwargs['step'] = .3
 
                 learner = LogisticRegression(**solver_kwargs)
 

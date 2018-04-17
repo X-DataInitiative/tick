@@ -90,6 +90,10 @@ class SimuCoxReg(SimuWithFeatures):
     time_end : `str`
         End date of the simulation
 
+    dtype : `{'float64', 'float32'}`
+        Type of arrays to use - default float64
+        Used in the case features is None
+
     Notes
     -----
     There is no intercept in this model
@@ -113,13 +117,13 @@ class SimuCoxReg(SimuWithFeatures):
                  censoring_factor: float = 2.,
                  features_type: str = "cov_toeplitz", cov_corr: float = 0.5,
                  features_scaling: str = "none", seed: int = None,
-                 verbose: bool = True):
+                 verbose: bool = True, dtype="float64"):
 
         n_features = coeffs.shape[0]
         # intercept=None in this model
         SimuWithFeatures.__init__(self, None, features, n_samples, n_features,
                                   features_type, cov_corr, features_scaling,
-                                  seed, verbose)
+                                  seed, verbose, dtype=dtype)
         self.coeffs = coeffs
         self.times_distribution = times_distribution
         self.shape = shape
@@ -184,7 +188,7 @@ class SimuCoxReg(SimuWithFeatures):
         c = self.censoring_factor
         C = np.random.exponential(scale=c * m, size=n_samples)
         # Observed time
-        self._set("times", np.minimum(T, C))
+        self._set("times", np.minimum(T, C).astype(self.dtype))
         # Censoring indicator: 1 if it is a time of failure, 0 if it's
         #   censoring. It is as int8 and not bool as we might need to
         #   construct a memory access on it later
