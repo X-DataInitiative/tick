@@ -4,10 +4,9 @@ import numpy as np
 from warnings import warn
 
 
-def weights_sparse_gauss(n_weights: int = 100, nnz: int = 10,
-                         std: float = 1.) -> np.ndarray:
+def weights_sparse_gauss(n_weights: int = 100, nnz: int = 10, std: float = 1.,
+                         dtype="float64") -> np.ndarray:
     """Sparse and gaussian model weights generator
-    
     Instance of weights for a model, given by a sparse vector,
     where non-zero coordinates (chosen at random) are centered Gaussian
     with given standard-deviation
@@ -32,7 +31,7 @@ def weights_sparse_gauss(n_weights: int = 100, nnz: int = 10,
         warn(("nnz must be smaller than n_weights "
               "using nnz=n_weights instead"))
         nnz = n_weights
-    weights0 = np.zeros(n_weights)
+    weights0 = np.zeros(n_weights, dtype=dtype)
     idx = np.arange(n_weights)
     np.random.shuffle(idx)
     weights0[idx[:nnz]] = np.random.randn(nnz)
@@ -40,10 +39,10 @@ def weights_sparse_gauss(n_weights: int = 100, nnz: int = 10,
     return weights0
 
 
-def weights_sparse_exp(n_weigths: int = 100, nnz: int = 10,
-                       scale: float = 10.) -> np.ndarray:
+def weights_sparse_exp(n_weigths: int = 100, nnz: int = 10, scale: float = 10.,
+                       dtype="float64") -> np.ndarray:
     """Sparse and exponential model weights generator
-    
+
     Instance of weights for a model, given by a vector with
     exponentially decaying components: the j-th entry is given by
 
@@ -72,7 +71,7 @@ def weights_sparse_exp(n_weigths: int = 100, nnz: int = 10,
               "using nnz=n_weigths instead"))
         nnz = n_weigths
     idx = np.arange(nnz)
-    out = np.zeros(n_weigths)
+    out = np.zeros(n_weigths, dtype=dtype)
     out[:nnz] = np.exp(-idx / scale)
     out[:nnz:2] *= -1
     return out

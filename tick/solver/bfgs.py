@@ -52,6 +52,9 @@ class BFGS(SolverFirstOrder):
         Save history information every time the iteration number is a
         multiple of ``record_every``
 
+    dtype : `string`, default='float64'
+        Type of arrays to use - default float64
+
     Attributes
     ----------
     model : `Model`
@@ -144,7 +147,7 @@ class BFGS(SolverFirstOrder):
 
     def _solve(self, x0: np.ndarray = None):
         if x0 is None:
-            x0 = np.zeros(self.model.n_coeffs)
+            x0 = np.zeros(self.model.n_coeffs, dtype=self.dtype)
         obj = self.objective(x0)
 
         # A closure to maintain history along internal BFGS's iterations
@@ -176,5 +179,6 @@ class BFGS(SolverFirstOrder):
                       maxiter=self.max_iter, gtol=self.tol,
                       callback=insp, full_output=True,
                       disp=False, retall=False)
-
+        if x_min.dtype is not np.float64:
+            x_min = x_min.astype(self.dtype)
         return x_min

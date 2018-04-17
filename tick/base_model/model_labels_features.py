@@ -11,6 +11,11 @@ class ModelLabelsFeatures(Model):
     features matrix and a labels vector, namely for (one-class
     supervised learning)
 
+    Parameters
+    ----------
+    dtype : `string`, default='float64'
+        Type of arrays to use - default float64
+
     Attributes
     ----------
     features : `numpy.ndarray`, shape=(n_samples, n_features) (read-only)
@@ -54,6 +59,11 @@ class ModelLabelsFeatures(Model):
         self.n_features = None
         self.n_samples = None
 
+    def check_set_dtype(self, features: np.ndarray, labels: np.ndarray):
+        self.dtype = features.dtype
+        if self.dtype != labels.dtype:
+            raise ValueError("Features and labels differ in data types")
+
     def fit(self, features: np.ndarray, labels: np.ndarray) -> Model:
         """Set the data into the model object
 
@@ -71,16 +81,18 @@ class ModelLabelsFeatures(Model):
             The current instance with given data
         """
         # The fit from Model calls the _set_data below
+        self.check_set_dtype(features, labels)
         return Model.fit(self, features, labels)
 
     def _set_data(self, features, labels):
         n_samples, n_features = features.shape
+        self.check_set_dtype(features, labels)
         if n_samples != labels.shape[0]:
             raise ValueError(("Features has %i samples while labels "
                               "have %i" % (n_samples, labels.shape[0])))
 
-        features = safe_array(features)
-        labels = safe_array(labels)
+        features = safe_array(features, dtype=self.dtype)
+        labels = safe_array(labels, dtype=self.dtype)
 
         self._set("features", features)
         self._set("labels", labels)

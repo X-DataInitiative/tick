@@ -2,11 +2,19 @@
 
 import numpy as np
 from numpy.linalg import svd
+
 from tick.base_model import ModelGeneralizedLinear, ModelFirstOrder, \
     ModelLipschitz
-from .build.linear_model import ModelLinRegDouble as _ModelLinReg
+
+from .build.linear_model import ModelLinRegDouble as _ModelLinRegDouble
+from .build.linear_model import ModelLinRegFloat as _ModelLinRegFloat
 
 __author__ = 'Stephane Gaiffas'
+
+dtype_map = {
+    np.dtype('float32'): _ModelLinRegFloat,
+    np.dtype('float64'): _ModelLinRegDouble
+}
 
 
 class ModelLinReg(ModelFirstOrder, ModelGeneralizedLinear, ModelLipschitz):
@@ -36,6 +44,9 @@ class ModelLinReg(ModelFirstOrder, ModelGeneralizedLinear, ModelLipschitz):
     ----------
     fit_intercept : `bool`
         If `True`, the model uses an intercept
+
+    dtype : `string`, default='float64'
+        Type of arrays to use - default float64
 
     Attributes
     ----------
@@ -89,15 +100,22 @@ class ModelLinReg(ModelFirstOrder, ModelGeneralizedLinear, ModelLipschitz):
         ModelFirstOrder.fit(self, features, labels)
         ModelGeneralizedLinear.fit(self, features, labels)
         ModelLipschitz.fit(self, features, labels)
-        self._set("_model",
-                  _ModelLinReg(self.features, self.labels, self.fit_intercept,
-                               self.n_threads))
+
+        if self.dtype not in dtype_map:
+            raise ValueError('dtype provided to ModelLinReg is not handled: ',
+                             self.dtype)
+
+        self._set("_model", dtype_map[np.dtype(self.dtype)](
+            self.features, self.labels, self.fit_intercept, self.n_threads))
+
         return self
 
     def _grad(self, coeffs: np.ndarray, out: np.ndarray) -> None:
         self._model.grad(coeffs, out)
 
     def _loss(self, coeffs: np.ndarray) -> float:
+        if self.dtype is not "float64" and coeffs.dtype is np.float64:
+            coeffs = coeffs.astype(self.dtype)
         return self._model.loss(coeffs)
 
     def _get_lip_best(self):

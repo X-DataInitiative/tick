@@ -81,9 +81,9 @@ class ModelHawkesExpKernLogLik(ModelHawkes, ModelSecondOrder,
     }
 
     def __init__(self, decay: float, n_threads: int = 1):
-        ModelHawkes.__init__(self, n_threads=1, approx=0)
         ModelSecondOrder.__init__(self)
         ModelSelfConcordant.__init__(self)
+        ModelHawkes.__init__(self, n_threads=1, approx=0)
         self.decay = decay
         self._model = _ModelHawkesExpKernLogLik(decay, n_threads)
 

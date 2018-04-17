@@ -1,5 +1,6 @@
 # License: BSD 3 clause
 
+import warnings
 from abc import abstractmethod
 import numpy as np
 
@@ -86,6 +87,12 @@ class ModelFirstOrder(Model):
         The ``fit`` method must be called to give data to the model,
         before using ``grad``. An error is raised otherwise.
         """
+        if coeffs.dtype != self.dtype:
+            warnings.warn(
+                'coeffs vector of type {} has been cast to {}'.format(
+                    coeffs.dtype, self.dtype))
+            coeffs = coeffs.astype(self.dtype)
+
         if not self._fitted:
             raise ValueError("call ``fit`` before using ``grad``")
 
@@ -93,12 +100,15 @@ class ModelFirstOrder(Model):
             raise ValueError(("``coeffs`` has size %i while the model" +
                               " expects %i coefficients") % (len(coeffs),
                                                              self.n_coeffs))
+
         if out is not None:
             grad = out
         else:
-            grad = np.empty(self.n_coeffs)
+            grad = np.empty(self.n_coeffs, dtype=self.dtype)
+
         self._inc_attr(N_CALLS_GRAD)
         self._inc_attr(PASS_OVER_DATA, step=self.pass_per_operation[GRAD])
+
         self._grad(coeffs, out=grad)
         return grad
 
@@ -152,7 +162,7 @@ class ModelFirstOrder(Model):
         if out is not None:
             grad = out
         else:
-            grad = np.empty(self.n_coeffs)
+            grad = np.empty(self.n_coeffs, dtype=self.dtype)
 
         self._inc_attr(N_CALLS_LOSS_AND_GRAD)
         self._inc_attr(N_CALLS_LOSS)

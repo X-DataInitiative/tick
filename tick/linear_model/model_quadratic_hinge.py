@@ -42,6 +42,9 @@ class ModelQuadraticHinge(ModelFirstOrder, ModelGeneralizedLinear,
     fit_intercept : `bool`
         If `True`, the model uses an intercept
 
+    dtype : `string`, default='float64'
+        Type of arrays to use - default float64
+
     Attributes
     ----------
     features : {`numpy.ndarray`, `scipy.sparse.csr_matrix`}, shape=(n_samples, n_features)

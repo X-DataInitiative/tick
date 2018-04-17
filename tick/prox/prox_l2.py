@@ -2,9 +2,15 @@
 
 import numpy as np
 from .base import Prox
-from .build.prox import ProxL2Double as _ProxL2
+from .build.prox import ProxL2Double as _ProxL2Double
+from .build.prox import ProxL2Float as _ProxL2Float
 
 __author__ = 'Stephane Gaiffas'
+
+dtype_map = {
+    np.dtype("float64"): _ProxL2Double,
+    np.dtype("float32"): _ProxL2Float
+}
 
 
 class ProxL2(Prox):
@@ -45,12 +51,19 @@ class ProxL2(Prox):
     def __init__(self, strength: float, range: tuple = None,
                  positive: bool = False):
         Prox.__init__(self, range)
-        if range is None:
-            self._prox = _ProxL2(strength, positive)
-        else:
-            self._prox = _ProxL2(strength, range[0], range[1], positive)
         self.positive = positive
         self.strength = strength
+
+        self._check_set_prox(dtype="float64")
+
+    def _check_set_prox(self, coeffs: np.ndarray = None, dtype=None):
+        if Prox._check_set_prox(self, coeffs, dtype):
+            if self.range is None:
+                self._prox = dtype_map[np.dtype(self.dtype)](self.strength,
+                                                   self.positive)
+            else:
+                self._prox = dtype_map[np.dtype(self.dtype)](
+                    self.strength, self.range[0], self.range[1], self.positive)
 
     def _call(self, coeffs: np.ndarray, step: float, out: np.ndarray):
         self._prox.call(coeffs, step, out)

@@ -1,9 +1,17 @@
 # License: BSD 3 clause
 
-from .build.solver import AdaGradDouble as _AdaGrad
+import numpy as np
+
 from .base import SolverFirstOrderSto
+from .build.solver import AdaGradDouble as _AdaGradDouble
+from .build.solver import AdaGradFloat as _AdaGradFloat
 
 __author__ = "Søren Vinther Poulsen"
+
+dtype_class_mapper = {
+    np.dtype('float32'): _AdaGradFloat,
+    np.dtype('float64'): _AdaGradDouble
+}
 
 
 class AdaGrad(SolverFirstOrderSto):
@@ -92,6 +100,9 @@ class AdaGrad(SolverFirstOrderSto):
         variance reducing term. By default, this is automatically tuned using
         information from the model object passed through ``set_model``.
 
+    dtype : `string`, default='float64'
+        Type of arrays to use - default float64
+
     Attributes
     ----------
     model : `Model`
@@ -128,10 +139,13 @@ class AdaGrad(SolverFirstOrderSto):
                  rand_type: str = 'unif', tol: float = 1e-10,
                  max_iter: int = 100, verbose: bool = True,
                  print_every: int = 10, record_every: int = 1, seed: int = -1):
-
         SolverFirstOrderSto.__init__(self, step, epoch_size, rand_type, tol,
                                      max_iter, verbose, print_every,
                                      record_every, seed)
+
+    def set_model(self, model):
+        first = self.dtype is None or self.dtype != model.dtype
+        self.dtype = model.dtype
         # Type mapping None to unsigned long and double does not work...
         step = self.step
         if step is None:
@@ -139,7 +153,7 @@ class AdaGrad(SolverFirstOrderSto):
         epoch_size = self.epoch_size
         if epoch_size is None:
             epoch_size = 0
-
         # Construct the wrapped C++ AdaGrad solver
-        self._solver = _AdaGrad(epoch_size, self.tol, self._rand_type, step,
-                                self.seed)
+        self._solver = dtype_class_mapper[self.dtype](
+            epoch_size, self.tol, self._rand_type, step, self.seed)
+        return SolverFirstOrderSto.set_model(self, model)

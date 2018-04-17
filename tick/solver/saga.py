@@ -1,12 +1,16 @@
 # License: BSD 3 clause
 
+import numpy as np
+
 from tick.base_model import ModelGeneralizedLinear
-from tick.solver.base import SolverFirstOrderSto
-from tick.solver.build.solver import SAGADouble as _SAGA
+from .base import SolverFirstOrderSto, SolverSto
 
 from tick.solver.build.solver import SAGA_VarianceReductionMethod_Last
 from tick.solver.build.solver import SAGA_VarianceReductionMethod_Average
 from tick.solver.build.solver import SAGA_VarianceReductionMethod_Random
+
+from tick.solver.build.solver import SAGADouble as _SAGADouble
+from tick.solver.build.solver import SAGAFloat as  _SAGAFloat
 
 __author__ = "Stephane Gaiffas"
 
@@ -14,6 +18,11 @@ variance_reduction_methods_mapper = {
     'last': SAGA_VarianceReductionMethod_Last,
     'avg': SAGA_VarianceReductionMethod_Average,
     'rand': SAGA_VarianceReductionMethod_Random
+}
+
+dtype_class_mapper = {
+    np.dtype('float32'):  _SAGAFloat,
+    np.dtype('float64'): _SAGADouble
 }
 
 
@@ -143,6 +152,12 @@ class SAGA(SolverFirstOrderSto):
     time_end : `str`
         End date of the call to ``solve()``
 
+    dtype : `string`, default='float64'
+        Type of arrays to use - default float64
+
+    var_red_str : `string`
+        temporary to hold varience reduction type before dtype is known
+
     References
     ----------
     * A. Defazio, F. Bach, S. Lacoste-Julien, SAGA: A fast incremental gradient
@@ -159,19 +174,8 @@ class SAGA(SolverFirstOrderSto):
         SolverFirstOrderSto.__init__(self, step, epoch_size, rand_type, tol,
                                      max_iter, verbose, print_every,
                                      record_every, seed=seed)
-        step = self.step
-        if step is None:
-            step = 0.
 
-        epoch_size = self.epoch_size
-        if epoch_size is None:
-            epoch_size = 0
-
-        # Construct the wrapped C++ SAGA solver
-        self._solver = _SAGA(epoch_size, self.tol, self._rand_type, step,
-                             self.seed)
-
-        self.variance_reduction = variance_reduction
+        self.var_red_str = variance_reduction
 
     @property
     def variance_reduction(self):
@@ -180,7 +184,6 @@ class SAGA(SolverFirstOrderSto):
 
     @variance_reduction.setter
     def variance_reduction(self, val: str):
-
         if val not in variance_reduction_methods_mapper:
             raise ValueError(
                 'variance_reduction should be one of "{}", got "{}".'.format(
@@ -205,6 +208,24 @@ class SAGA(SolverFirstOrderSto):
             The `Solver` with given model
         """
         if isinstance(model, ModelGeneralizedLinear):
+            # Construct the wrapped C++ SAGA solver
+
+            first = self.dtype is None or self.dtype != model.dtype
+
+            self.dtype = model.dtype
+
+            step = self.step
+            if step is None:
+                step = 0.
+            epoch_size = self.epoch_size
+            if epoch_size is None:
+                epoch_size = 0
+
+            self._solver = dtype_class_mapper[self.dtype](
+                epoch_size, self.tol, self._rand_type, step, self.seed)
+            if first is True:
+                self.variance_reduction = self.var_red_str
+
             return SolverFirstOrderSto.set_model(self, model)
         else:
             raise ValueError("SAGA accepts only childs of "

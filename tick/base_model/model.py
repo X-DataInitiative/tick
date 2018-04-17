@@ -1,5 +1,6 @@
 # License: BSD 3 clause
 
+import warnings
 from abc import ABC, abstractmethod
 import numpy as np
 from tick.base import Base
@@ -33,6 +34,9 @@ class Model(ABC, Base):
 
     n_passes_over_data : `int` (read-only)
         Number of effective passes through the data
+
+    dtype : `{'float64', 'float32'}`
+        Type of arrays to use - default float64
 
     Notes
     -----
@@ -71,6 +75,7 @@ class Model(ABC, Base):
         self._model = None
         setattr(self, N_CALLS_LOSS, 0)
         setattr(self, PASS_OVER_DATA, 0)
+        self.dtype = None
 
     def fit(self, *args):
         self._set_data(*args)
@@ -118,6 +123,14 @@ class Model(ABC, Base):
         The ``fit`` method must be called to give data to the model,
         before using ``loss``. An error is raised otherwise.
         """
+        # This is a bit of a hack as I don't see how to control the dtype of
+        #  coeffs returning from scipy through lambdas
+        if coeffs.dtype != self.dtype:
+            warnings.warn(
+                'coeffs vector of type {} has been cast to {}'.format(
+                    coeffs.dtype, self.dtype))
+            coeffs = coeffs.astype(self.dtype)
+
         if not self._fitted:
             raise ValueError("call ``fit`` before using ``loss``")
         if coeffs.shape[0] != self.n_coeffs:
@@ -126,6 +139,7 @@ class Model(ABC, Base):
                                                              self.n_coeffs))
         self._inc_attr(N_CALLS_LOSS)
         self._inc_attr(PASS_OVER_DATA, step=self.pass_per_operation[LOSS])
+
         return self._loss(coeffs)
 
     @abstractmethod

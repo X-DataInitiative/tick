@@ -153,6 +153,7 @@ class GD(SolverFirstOrder):
 
     def _solve(self, x0: np.ndarray = None, step: float = None):
         x, prev_x, x_new, step, obj = self._initialize_values(x0, step)
+
         for n_iter in range(self.max_iter + 1):
             prev_x[:] = x
             prev_obj = obj

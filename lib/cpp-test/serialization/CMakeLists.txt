@@ -1,4 +1,4 @@
-add_executable(tick_test_serialization solver_gtest.cpp)
+add_executable(tick_test_serialization solver.cpp)
 
 target_link_libraries(tick_test_serialization
     ${TICK_LIB_ARRAY}
