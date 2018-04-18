@@ -17,24 +17,22 @@ class Prox(ABC, Base):
     Attributes
     ----------
 
-    dtype : `{'float64', 'float32'}`
-        Type of arrays to use - default float64
+    dtype : `{'float64', 'float32'}`, default='float64'
+        Type of the arrays used. This value is set from model and prox dtypes.
 
     """
 
-    _attrinfos = {"_prox": {"writable": True}, "_range": {"writable": False}}
+    _attrinfos = {"_prox": {"writable": False}, "_range": {"writable": False}}
 
     # The name of the attribute that will contain the C++ prox object
     _cpp_obj_name = "_prox"
 
-    _allowable_exceptions = ["fmin_bfgs"]
-
     def __init__(self, range: tuple = None):
         Base.__init__(self)
-        self.dtype = None
         self._range = None
         self._prox = None
         self.range = range
+        self.dtype = None
 
     @property
     def range(self):
@@ -108,28 +106,36 @@ class Prox(ABC, Base):
     def value(self, coeffs: np.ndarray) -> float:
         pass
 
-    def _check_set_prox(self, coeffs: np.ndarray = None, dtype=None) -> bool:
-        if coeffs is None and dtype is None:
-            raise ValueError("Method requires either ndarray or dtype")
-        if coeffs is not None:
-            dtype = coeffs.dtype
-        ret = self.dtype is None or self.dtype != dtype
-        self.dtype = dtype
-        return ret
+    def _get_typed_class(self, dtype_or_object_with_dtype, dtype_map):
+        """Apply proximal operator on a vector.
+        Deduce dtype and return true if C++ _prox should be set
+        """
+        import six
+        should_update_prox = False;
+        local_dtype = None
+        if (isinstance(dtype_or_object_with_dtype, six.string_types)
+          or isinstance(dtype_or_object_with_dtype, np.dtype)):
+            local_dtype = np.dtype(dtype_or_object_with_dtype)
+        elif hasattr(dtype_or_object_with_dtype, 'dtype'):
+            local_dtype = np.dtype(dtype_or_object_with_dtype.dtype)
+        else:
+           raise ValueError(("""
+             unsupported type used for
+             prox creation, expects dtype
+             or class with dtype , type: """
+             + self.__class__.__name__).strip())
+        if self.dtype is None or self.dtype != local_dtype:
+            should_update_prox = True
+        self.dtype = np.dtype(local_dtype)
+        if np.dtype(self.dtype) not in dtype_map:
+            raise ValueError("""dtype does not exist in
+              type map for """ + self.__class__.__name__.strip())
+        return (should_update_prox, dtype_map[np.dtype(self.dtype)])
 
-    def _check_stack_or_raise(self):
-        import traceback
-        acceptable = 0
-        # this is a hack for python 3.4 which returns a list in "extract_stack"
-        stack = traceback.extract_stack()
-        if type(stack) is not list:
-            stack = stack.format()
-        for st in stack:
-            for allowable in self._allowable_exceptions:
-                if allowable in st:
-                    acceptable = 1
-                    break
-            if acceptable == 1:
-                break
-        if acceptable == 0:
-            raise ValueError("Stack check failure please sanitize your inputs")
+    def as_type(self, dtype_or_object_with_dtype):
+        new_prox = self._build_cpp_prox(dtype_or_object_with_dtype)
+        if new_prox is not None:
+            self._set('_prox', new_prox)
+
+    def _build_cpp_prox(self, dtype : str):
+      pass  # Not all subclass are templated so this is not abstract

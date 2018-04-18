@@ -45,9 +45,6 @@ class ModelSmoothedHinge(ModelFirstOrder, ModelGeneralizedLinear,
     fit_intercept : `bool`
         If `True`, the model uses an intercept
 
-    dtype : `string`, default='float64'
-        Type of arrays to use - default float64
-
     smoothness : `double`, default=1.
         The smoothness parameter used in the loss. It should be > 0 and <= 1
         Note that smoothness=0 corresponds to the Hinge loss.
@@ -68,6 +65,9 @@ class ModelSmoothedHinge(ModelFirstOrder, ModelGeneralizedLinear,
 
     n_coeffs : `int` (read-only)
         Total number of coefficients of the model
+
+    dtype : `{'float64', 'float32'}`, default='float64'
+        Type of the arrays used. This value is set from model and prox dtypes.
 
     n_threads : `int`, default=1 (read-only)
         Number of threads used for parallel computation.

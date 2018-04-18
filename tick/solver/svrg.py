@@ -175,13 +175,13 @@ class SVRG(SolverFirstOrderSto):
     time_end : `str`
         End date of the call to ``solve()``
 
-    dtype : `string`, default='float64'
-        Type of arrays to use - default float64
+    dtype : `{'float64', 'float32'}`, default='float64'
+        Type of the arrays used. This value is set from model and prox dtypes.
 
-    var_red_str : `string`
+    _var_red_str : `string`
         temporary to hold varience reduction type before dtype is known
 
-    step_type_str : `string`
+    _step_type_str : `string`
         temporary to hold step type before dtype is known
 
     References
@@ -204,8 +204,8 @@ class SVRG(SolverFirstOrderSto):
                                      max_iter, verbose, print_every,
                                      record_every, seed=seed)
         self.n_threads = n_threads
-        self.step_type_str = step_type
-        self.var_red_str = variance_reduction
+        self._step_type_str = step_type
+        self._var_red_str = variance_reduction
 
     @property
     def variance_reduction(self):
@@ -259,7 +259,7 @@ class SVRG(SolverFirstOrderSto):
         # variance reduction method is 'avg'
         SolverFirstOrderSto.validate_model(self, model)
 
-        if self.var_red_str == 'avg' and model._model.is_sparse():
+        if self._var_red_str == 'avg' and model._model.is_sparse():
             warn("'avg' variance reduction cannot be used with sparse "
                  "datasets. Please change `variance_reduction` before "
                  "passing sparse data.", UserWarning)
@@ -275,12 +275,12 @@ class SVRG(SolverFirstOrderSto):
             epoch_size = 0
 
         # Construct the wrapped C++ SGD solver
-        self._solver = dtype_class_mapper[self.dtype](
+        self._set('_solver', dtype_class_mapper[self.dtype](
             epoch_size, self.tol, self._rand_type, step, self.seed,
-            self.n_threads)
+            self.n_threads))
 
         if first is True:
-            self.variance_reduction = self.var_red_str
-            self.step_type = self.step_type_str
+            self.variance_reduction = self._var_red_str
+            self.step_type = self._step_type_str
 
         return SolverFirstOrderSto.set_model(self, model)

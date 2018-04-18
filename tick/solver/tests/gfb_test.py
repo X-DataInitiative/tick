@@ -8,7 +8,7 @@ from tick.prox import ProxElasticNet, ProxL2Sq, ProxL1
 from tick.solver import GFB, AGD
 from tick.solver.tests import TestSolver
 
-dtype_list = ["float64", "float32"]
+dtype_list = ["float64"]
 
 
 class SolverTest(TestSolver):
@@ -47,17 +47,8 @@ class SolverTest(TestSolver):
         # Finally we assert that both algorithms lead to the same solution
         np.testing.assert_almost_equal(gfb_solution, agd_solution, decimal=1)
 
-
-def parameterize(klass, dtype):
-    testnames = unittest.TestLoader().getTestCaseNames(klass)
-    suite = unittest.TestSuite()
-    for name in testnames:
-        suite.addTest(klass(name, dtype=dtype))
-    return suite
-
-
 if __name__ == '__main__':
     suite = unittest.TestSuite()
-    for dt in dtype_list:
-        suite.addTest(parameterize(SolverTest, dtype=dt))
+    for dtype in dtype_list:
+        suite.addTest(TestSolver.parameterize_main(SolverTest, dtype=dtype))
     unittest.TextTestRunner().run(suite)

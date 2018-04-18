@@ -57,10 +57,9 @@ class CompositeProx(Prox):
             prox_value += prox.value(coeffs)
         return prox_value
 
-    def _check_set_prox(self, coeffs: np.ndarray = None, dtype=None):
+    def as_type(self, dtype_or_object_with_dtype):
         for prox in self.prox_list:
-            prox._check_set_prox(coeffs, dtype)
-
+            prox.as_type(dtype_or_object_with_dtype)
 
 class GFB(SolverFirstOrder):
     """Generalized Forward-Backward algorithm
@@ -171,6 +170,7 @@ class GFB(SolverFirstOrder):
             List of all proximal operators of the model
         """
         prox = CompositeProx(prox)
+        prox.as_type(self)
         SolverFirstOrder.set_prox(self, prox)
         return self
 

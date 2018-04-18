@@ -100,8 +100,8 @@ class AdaGrad(SolverFirstOrderSto):
         variance reducing term. By default, this is automatically tuned using
         information from the model object passed through ``set_model``.
 
-    dtype : `string`, default='float64'
-        Type of arrays to use - default float64
+    dtype : `{'float64', 'float32'}`, default='float64'
+        Type of the arrays used. This value is set from model and prox dtypes.
 
     Attributes
     ----------
@@ -144,7 +144,6 @@ class AdaGrad(SolverFirstOrderSto):
                                      record_every, seed)
 
     def set_model(self, model):
-        first = self.dtype is None or self.dtype != model.dtype
         self.dtype = model.dtype
         # Type mapping None to unsigned long and double does not work...
         step = self.step
@@ -154,6 +153,6 @@ class AdaGrad(SolverFirstOrderSto):
         if epoch_size is None:
             epoch_size = 0
         # Construct the wrapped C++ AdaGrad solver
-        self._solver = dtype_class_mapper[self.dtype](
-            epoch_size, self.tol, self._rand_type, step, self.seed)
+        self._set('_solver', dtype_class_mapper[self.dtype](
+            epoch_size, self.tol, self._rand_type, step, self.seed))
         return SolverFirstOrderSto.set_model(self, model)

@@ -35,8 +35,8 @@ class Model(ABC, Base):
     n_passes_over_data : `int` (read-only)
         Number of effective passes through the data
 
-    dtype : `{'float64', 'float32'}`
-        Type of arrays to use - default float64
+    dtype : `{'float64', 'float32'}`, default='float64'
+        Type of the arrays used. This value is set from model and prox dtypes.
 
     Notes
     -----

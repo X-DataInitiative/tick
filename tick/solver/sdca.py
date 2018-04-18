@@ -120,8 +120,8 @@ class SDCA(SolverFirstOrderSto):
         Save history information every time the iteration number is a
         multiple of ``record_every``
 
-    dtype : `string`, default='float64'
-        Type of arrays to use - default float64
+    dtype : `{'float64', 'float32'}`, default='float64'
+        Type of the arrays used. This value is set from model and prox dtypes.
 
     Attributes
     ----------
@@ -182,10 +182,10 @@ class SDCA(SolverFirstOrderSto):
 
         if model is not None and self.dtype is not None and model.dtype != self.dtype:
             self.dtype = model.dtype
-            self._solver = None
+            self._set('_solver', None)
         if self._solver is None:
-            self._solver = dtype_class_mapper[self.dtype](
-                self.l_l2sq, epoch_size, self.tol, self._rand_type, self.seed)
+            self._set('_solver', dtype_class_mapper[self.dtype](
+                self.l_l2sq, epoch_size, self.tol, self._rand_type, self.seed))
 
     def set_model(self, model):
 

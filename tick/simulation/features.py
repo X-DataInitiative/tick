@@ -20,6 +20,9 @@ def features_normal_cov_uniform(n_samples: int = 200, n_features: int = 30,
     n_features : `int`, default=30
         Number of features
 
+    dtype : `{'float64', 'float32'}`, default='float64'
+        Type of the arrays used.
+
     Returns
     -------
     output : `numpy.ndarray`, shape=(n_samples, n_features)
@@ -29,11 +32,11 @@ def features_normal_cov_uniform(n_samples: int = 200, n_features: int = 30,
     C = np.random.uniform(size=(n_features, n_features), dtype=dtype)
     np.fill_diagonal(C, 1.0)
     cov = 0.5 * (C + C.T)
-    ndarray = np.random.multivariate_normal(
+    features = np.random.multivariate_normal(
         np.zeros(n_features), cov, size=n_samples)
     if dtype != "float64":
-        return ndarray.astype(dtype)
-    return ndarray
+        return features.astype(dtype)
+    return features
 
 
 def features_normal_cov_toeplitz(n_samples: int = 200, n_features: int = 30,
@@ -54,6 +57,9 @@ def features_normal_cov_toeplitz(n_samples: int = 200, n_features: int = 30,
     cov_corr : `float`, default=0.5
         correlation coefficient of the Toeplitz correlation matrix
 
+    dtype : `{'float64', 'float32'}`, default='float64'
+        Type of the arrays used.
+
     Returns
     -------
     output : `numpy.ndarray`, shape=(n_samples, n_features)
@@ -62,8 +68,8 @@ def features_normal_cov_toeplitz(n_samples: int = 200, n_features: int = 30,
 
     """
     cov = toeplitz(cov_corr ** np.arange(0, n_features))
-    ndarray = np.random.multivariate_normal(
+    features = np.random.multivariate_normal(
         np.zeros(n_features), cov, size=n_samples)
     if dtype != "float64":
-        return ndarray.astype(dtype)
-    return ndarray
+        return features.astype(dtype)
+    return features

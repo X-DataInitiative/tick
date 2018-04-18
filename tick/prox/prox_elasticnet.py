@@ -21,9 +21,6 @@ class ProxElasticNet(Prox):
 
     Parameters
     ----------
-    strength : `float`
-        Level of ElasticNet regularization
-
     range : `tuple` of two `int`, default=`None`
         Range on which the prox is applied. If `None` then the prox is
         applied on the whole vector
@@ -66,17 +63,8 @@ class ProxElasticNet(Prox):
         self.positive = positive
         self.strength = strength
         self.ratio = ratio
-        self._check_set_prox(dtype="float64")
+        self._prox = self._build_cpp_prox("float64")
 
-    def _check_set_prox(self, coeffs: np.ndarray = None, dtype=None):
-        if Prox._check_set_prox(self, coeffs, dtype):
-            if self.range is None:
-                self._prox = dtype_map[np.dtype(self.dtype)](self.strength, self.ratio,
-                                                   self.positive)
-            else:
-                self._prox = dtype_map[np.dtype(self.dtype)](
-                    self.strength, self.ratio, self.range[0], self.range[1],
-                    self.positive)
 
     def _call(self, coeffs: np.ndarray, step: object, out: np.ndarray):
         self._prox.call(coeffs, step, out)
@@ -96,3 +84,14 @@ class ProxElasticNet(Prox):
             Value of the penalization at ``coeffs``
         """
         return self._prox.value(coeffs)
+
+    def _build_cpp_prox(self, dtype_or_object_with_dtype):
+        (updated_prox, prox_class) = \
+            self._get_typed_class(dtype_or_object_with_dtype, dtype_map)
+        if updated_prox is True:
+            if self.range is None:
+                return prox_class(self.strength, self.ratio, self.positive)
+            else:
+                return prox_class(self.strength, self.ratio, self.range[0], self.range[1],
+                    self.positive)
+        return None

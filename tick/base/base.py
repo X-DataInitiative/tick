@@ -560,6 +560,6 @@ class Base(metaclass=BaseMeta):
 
     def __str__(self):
         dic = self._as_dict()
-        if isinstance(dic['dtype'], np.dtype):
-          dic['dtype'] = dic['dtype'].name
+        if 'dtype' in dic and isinstance(dic['dtype'], np.dtype):
+            dic['dtype'] = dic['dtype'].name
         return json.dumps(dic, sort_keys=True, indent=2)

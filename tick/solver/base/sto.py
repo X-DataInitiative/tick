@@ -40,7 +40,7 @@ class SolverSto(Base):
 
     _attrinfos = {
         "_solver": {
-            "writable": True
+            "writable": False
         },
         "epoch_size": {
             "writable": True,
@@ -85,12 +85,14 @@ class SolverSto(Base):
         return self
 
     def set_prox(self, prox: Prox):
-        prox._check_set_prox(dtype=self.dtype)
+        prox.as_type(self)
         if prox._prox is None:
             raise ValueError("Prox %s is not compatible with stochastic "
                              "solver %s" % (prox.__class__.__name__,
                                             self.__class__.__name__))
             # Give the C++ wrapped prox to the solver
+        if self.dtype is None or self.model is None:
+            raise ValueError("Solver must call set_model before set_prox")
         self._solver.set_prox(prox._prox)
         return self
 

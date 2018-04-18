@@ -49,8 +49,8 @@ class SolverFirstOrder(Solver):
     prox : `Prox`
         Proximal operator to solve
 
-    dtype : `string`, default='float64'
-        Type of arrays to use - default float64
+    dtype : `{'float64', 'float32'}`, default='float64'
+        Type of the arrays used. This value is set from model and prox dtypes.
 
     Notes
     -----
@@ -196,9 +196,9 @@ class SolverFirstOrder(Solver):
         if not isinstance(prox, Prox):
             raise ValueError('Passed object of class %s is not a '
                              'Prox class' % prox.name)
-        if self.dtype is None:
+        if self.dtype is None or self.model is None:
             raise ValueError("Solver must call set_model before set_prox")
-        prox._check_set_prox(dtype=self.dtype)
+        prox.as_type(self)
         self._set("prox", prox)
         return self
 

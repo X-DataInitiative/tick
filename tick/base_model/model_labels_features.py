@@ -13,8 +13,8 @@ class ModelLabelsFeatures(Model):
 
     Parameters
     ----------
-    dtype : `string`, default='float64'
-        Type of arrays to use - default float64
+    dtype : `{'float64', 'float32'}`, default='float64'
+        Type of the arrays used. This value is set from model and prox dtypes.
 
     Attributes
     ----------
@@ -59,7 +59,7 @@ class ModelLabelsFeatures(Model):
         self.n_features = None
         self.n_samples = None
 
-    def check_set_dtype(self, features: np.ndarray, labels: np.ndarray):
+    def _check_set_dtype(self, features: np.ndarray, labels: np.ndarray):
         self.dtype = features.dtype
         if self.dtype != labels.dtype:
             raise ValueError("Features and labels differ in data types")
@@ -81,12 +81,12 @@ class ModelLabelsFeatures(Model):
             The current instance with given data
         """
         # The fit from Model calls the _set_data below
-        self.check_set_dtype(features, labels)
+        self._check_set_dtype(features, labels)
         return Model.fit(self, features, labels)
 
     def _set_data(self, features, labels):
         n_samples, n_features = features.shape
-        self.check_set_dtype(features, labels)
+        self._check_set_dtype(features, labels)
         if n_samples != labels.shape[0]:
             raise ValueError(("Features has %i samples while labels "
                               "have %i" % (n_samples, labels.shape[0])))

@@ -55,6 +55,9 @@ class SimuLogReg(SimuWithFeatures):
     verbose : `bool`, default=True
         If `True`, print things
 
+    dtype : `{'float64', 'float32'}`, default='float64'
+        Type of the arrays used. This value is set from model and prox dtypes.
+
     Attributes
     ----------
     features : `numpy.ndarray`, shape=(n_samples, n_features)
@@ -72,9 +75,6 @@ class SimuLogReg(SimuWithFeatures):
     time_end : `str`
         End date of the simulation
 
-    dtype : `{'float64', 'float32'}`
-        Type of arrays to use - default float64
-        Used in the case features is None
     """
 
     _attrinfos = {"labels": {"writable": False}}
@@ -126,10 +126,8 @@ class SimuLogReg(SimuWithFeatures):
             u += self.intercept
         p = np.empty(n_samples)
         p[:] = SimuLogReg.sigmoid(u)
-        labels = np.empty(n_samples)
+        labels = np.empty(n_samples, dtype=self.dtype)
         labels[:] = np.random.binomial(1, p, size=n_samples)
         labels[labels == 0] = -1
-        if self.dtype != np.float64:
-            labels = labels.astype(self.dtype)
         self._set("labels", labels)
         return features, labels

@@ -44,9 +44,6 @@ class ModelLogReg(ModelFirstOrder, ModelGeneralizedLinear, ModelLipschitz):
     fit_intercept : `bool`
         If `True`, the model uses an intercept
 
-    dtype : `string`, default='float64'
-        Type of arrays to use - default float64
-
     Attributes
     ----------
     features : {`numpy.ndarray`, `scipy.sparse.csr_matrix`}, shape=(n_samples, n_features)
@@ -64,6 +61,9 @@ class ModelLogReg(ModelFirstOrder, ModelGeneralizedLinear, ModelLipschitz):
     n_coeffs : `int` (read-only)
         Total number of coefficients of the model
 
+    dtype : `{'float64', 'float32'}`, default='float64'
+        Type of the arrays used. This value is set from model and prox dtypes.
+
     n_threads : `int`, default=1 (read-only)
         Number of threads used for parallel computation.
 
@@ -77,6 +77,12 @@ class ModelLogReg(ModelFirstOrder, ModelGeneralizedLinear, ModelLipschitz):
         ModelGeneralizedLinear.__init__(self, fit_intercept)
         ModelLipschitz.__init__(self)
         self.n_threads = n_threads
+
+    @property
+    def _model_class(self):
+        if self.dtype not in dtype_map:
+            raise ValueError('dtype provided to ModelLogReg is not handled: {}'.format(self.dtype))
+        return dtype_map[np.dtype(self.dtype)]
 
     # TODO: implement _set_data and not fit
     def fit(self, features, labels):
@@ -99,11 +105,7 @@ class ModelLogReg(ModelFirstOrder, ModelGeneralizedLinear, ModelLipschitz):
         ModelGeneralizedLinear.fit(self, features, labels)
         ModelLipschitz.fit(self, features, labels)
 
-        if self.dtype not in dtype_map:
-            raise ValueError('dtype provided to ModelLogReg is not handled: ',
-                             self.dtype)
-
-        self._set("_model", dtype_map[np.dtype(self.dtype)](
+        self._set("_model", self._model_class(
             self.features, self.labels, self.fit_intercept, self.n_threads))
         return self
 
@@ -133,8 +135,8 @@ class ModelLogReg(ModelFirstOrder, ModelGeneralizedLinear, ModelLipschitz):
         """
         if out is None:
             out = np.empty(coeffs.shape[0], dtype=coeffs.dtype)
-        # this following line requires "np.dtype('floatxx')
-        #  for reasons unknown
+        # sigmoid is a templated static function so
+        ## we must call the right version for the right dtype
         dtype_map[coeffs.dtype].sigmoid(coeffs, out)
         return out
 

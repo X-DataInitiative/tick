@@ -72,17 +72,7 @@ class ProxSlope(Prox):
         self.fdr = fdr
         self.positive = positive
         self.weights = None
-        self._check_set_prox(dtype="float64")
-
-    def _check_set_prox(self, coeffs: np.ndarray = None, dtype=None):
-        if Prox._check_set_prox(self, coeffs, dtype):
-            if self.range is None:
-                self._prox = dtype_map[np.dtype(self.dtype)](self.strength, self.fdr,
-                                                   self.positive)
-            else:
-                self._prox = dtype_map[np.dtype(self.dtype)](
-                    self.strength, self.fdr, self.range[0], self.range[1],
-                    self.positive)
+        self._prox = self._build_cpp_prox("float64")
 
     def _call(self, coeffs: np.ndarray, t: float, out: np.ndarray):
         self._prox.call(coeffs, t, out)
@@ -107,3 +97,14 @@ class ProxSlope(Prox):
         dd = Prox._as_dict(self)
         del dd["weights"]
         return dd
+
+    def _build_cpp_prox(self, dtype_or_object_with_dtype):
+        (updated_prox, prox_class) = \
+            self._get_typed_class(dtype_or_object_with_dtype, dtype_map)
+        if updated_prox is True:
+            if self.range is None:
+                return prox_class(self.strength, self.fdr, self.positive)
+            else:
+                return prox_class(self.strength, self.fdr, self.range[0], self.range[1],
+                    self.positive)
+        return None
