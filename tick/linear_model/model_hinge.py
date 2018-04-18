@@ -39,9 +39,6 @@ class ModelHinge(ModelFirstOrder, ModelGeneralizedLinear):
     fit_intercept : `bool`
         If `True`, the model uses an intercept
 
-    dtype : `string`, default='float64'
-        Type of arrays to use - default float64
-
     Attributes
     ----------
     features : {`numpy.ndarray`, `scipy.sparse.csr_matrix`}, shape=(n_samples, n_features)
@@ -58,6 +55,9 @@ class ModelHinge(ModelFirstOrder, ModelGeneralizedLinear):
 
     n_coeffs : `int` (read-only)
         Total number of coefficients of the model
+
+    dtype : `{'float64', 'float32'}`, default='float64'
+        Type of the arrays used. This value is set from model and prox dtypes.
 
     n_threads : `int`, default=1 (read-only)
         Number of threads used for parallel computation.

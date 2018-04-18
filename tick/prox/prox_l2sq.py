@@ -31,8 +31,8 @@ class ProxL2Sq(Prox):
         If True, apply L2 penalization together with a projection
         onto the set of vectors with non-negative entries
 
-    dtype : `string`, default='float64'
-        Type of arrays to use - default float64
+    dtype : `{'float64', 'float32'}`, default='float64'
+        Type of the arrays used. This value is set from model and prox dtypes.
     """
 
     _attrinfos = {
@@ -51,16 +51,7 @@ class ProxL2Sq(Prox):
         Prox.__init__(self, range)
         self.positive = positive
         self.strength = strength
-        self._check_set_prox(dtype="float64")
-
-    def _check_set_prox(self, coeffs: np.ndarray = None, dtype=None):
-        if Prox._check_set_prox(self, coeffs, dtype):
-            if self.range is None:
-                self._prox = dtype_map[np.dtype(self.dtype)](self.strength,
-                                                   self.positive)
-            else:
-                self._prox = dtype_map[np.dtype(self.dtype)](
-                    self.strength, self.range[0], self.range[1], self.positive)
+        self._prox = self._build_cpp_prox("float64")
 
     def _call(self, coeffs: np.ndarray, step: object, out: np.ndarray):
         self._prox.call(coeffs, step, out)
@@ -80,12 +71,15 @@ class ProxL2Sq(Prox):
             Value of the penalization at ``coeffs``
         """
 
-        # raise ValueError(coeffs.dtype)
-        # if self.dtype != np.float64:
-        #     coeffs = coeffs.astype(self.dtype)
-        if self._prox is None:
-            self.dtype = coeffs.dtype
-        if self.dtype != coeffs.dtype:
-            self._check_stack_or_raise()
-            coeffs = coeffs.astype(self.dtype)
         return self._prox.value(coeffs)
+
+
+    def _build_cpp_prox(self, dtype_or_object_with_dtype):
+        (updated_prox, prox_class) = \
+            self._get_typed_class(dtype_or_object_with_dtype, dtype_map)
+        if updated_prox is True:
+            if self.range is None:
+                return prox_class(self.strength, self.positive)
+            else:
+                return prox_class(self.strength, self.range[0], self.range[1], self.positive)
+        return None

@@ -38,8 +38,8 @@ class SimuLinReg(SimuWithFeatures):
     cov_corr : `float`, default=.5
         Correlation to use in the Toeplitz correlation matrix
 
-    dtype : `string`, default='float64'
-        Type of arrays to use - default float64
+    dtype : `{'float64', 'float32'}`, default='float64'
+        Type of the arrays used. This value is set from model and prox dtypes.
 
     features_scaling : `str`, default="none"
         The way the features matrix is scaled after simulation
@@ -61,6 +61,9 @@ class SimuLinReg(SimuWithFeatures):
     verbose : `bool`, default=True
         If `True`, print things
 
+    dtype : `{'float64', 'float32'}`, default='float64'
+        Type of the arrays used. This value is set from model and prox dtypes.
+
     Attributes
     ----------
     features : `numpy.ndarray`, shape=(n_samples, n_features)
@@ -78,8 +81,8 @@ class SimuLinReg(SimuWithFeatures):
     time_end : `str`
         End date of the simulation
 
-    dtype : `{'float64', 'float32'}`
-        Type of arrays to use - default float64
+    dtype : `{'float64', 'float32'}`, default='float64'
+        Type of the arrays used. This value is set from model and prox dtypes.
         Used in the case features is None
     """
 
@@ -123,6 +126,7 @@ class SimuLinReg(SimuWithFeatures):
         if self.intercept is not None:
             u += self.intercept
         labels = u + self.std * np.random.randn(n_samples)
+        # "astype" must be used for labels as it is always float64
         if self.dtype != np.float64:
             labels = labels.astype(self.dtype)
         self._set("labels", labels)

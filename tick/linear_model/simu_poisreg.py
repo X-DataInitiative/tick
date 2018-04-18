@@ -72,8 +72,8 @@ class SimuPoisReg(SimuWithFeatures):
     verbose : `bool`, default=True
         If `True`, print things
 
-    dtype : `string`, default='float64'
-        Type of arrays to use - default float64
+    dtype : `{'float64', 'float32'}`, default='float64'
+        Type of the arrays used. This value is set from model and prox dtypes.
 
     Attributes
     ----------
@@ -92,9 +92,6 @@ class SimuPoisReg(SimuWithFeatures):
     time_end : `str`
         End date of the simulation
 
-    dtype : `{'float64', 'float32'}`
-        Type of arrays to use - default float64
-        Used in the case features is None
     """
 
     _attrinfos = {"labels": {"writable": False}, "_link": {"writable": False}}
@@ -126,7 +123,7 @@ class SimuPoisReg(SimuWithFeatures):
             val = "exponential"
         self._set("_link", val)
 
-    def simulate(self, dtype="float64"):
+    def simulate(self):
         """
         Launch simulation of the data
 
@@ -160,10 +157,7 @@ class SimuPoisReg(SimuWithFeatures):
             intensity = np.exp(u)
         # Simulate the Poisson variables. We want it in float64 for
         #   later computations, hence the next line.
-        labels = np.empty(n_samples)
+        labels = np.empty(n_samples, dtype=self.dtype)
         labels[:] = poisson(intensity)
-        if self.dtype != np.float64:
-            labels = labels.astype(self.dtype)
-            features = features.astype(self.dtype)
         self._set("labels", labels)
         return features, labels

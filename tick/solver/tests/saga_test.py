@@ -21,7 +21,6 @@ from tick.simulation import weights_sparse_gauss
 
 dtype_list = ["float64", "float32"]
 
-
 class SolverTest(TestSolver):
     def test_solver_saga(self):
         """...Check SAGA solver for a Logistic Regression with Ridge penalization"""
@@ -90,17 +89,8 @@ class SolverTest(TestSolver):
             model = ModelCoxRegPartialLik().fit(X, T, C)
             SAGA().set_model(model)
 
-
-def parameterize(klass, dtype):
-    testnames = unittest.TestLoader().getTestCaseNames(klass)
-    suite = unittest.TestSuite()
-    for name in testnames:
-        suite.addTest(klass(name, dtype=dtype))
-    return suite
-
-
 if __name__ == '__main__':
     suite = unittest.TestSuite()
-    for dt in dtype_list:
-        suite.addTest(parameterize(SolverTest, dtype=dt))
+    for dtype in dtype_list:
+        suite.addTest(TestSolver.parameterize_main(SolverTest, dtype=dtype))
     unittest.TextTestRunner().run(suite)

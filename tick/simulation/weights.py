@@ -1,8 +1,7 @@
 # License: BSD 3 clause
 
-import numpy as np
 from warnings import warn
-
+import numpy as np
 
 def weights_sparse_gauss(n_weights: int = 100, nnz: int = 10, std: float = 1.,
                          dtype="float64") -> np.ndarray:
@@ -21,6 +20,9 @@ def weights_sparse_gauss(n_weights: int = 100, nnz: int = 10, std: float = 1.,
 
     std : `float`, default=1.
         Standard deviation of the Gaussian non-zero entries
+
+    dtype : `{'float64', 'float32'}`, default='float64'
+        Type of the arrays used.
 
     Returns
     -------
@@ -60,6 +62,9 @@ def weights_sparse_exp(n_weigths: int = 100, nnz: int = 10, scale: float = 10.,
 
     scale : `float`, default=10.
         The scaling of the exponential decay
+
+    dtype : `{'float64', 'float32'}`, default='float64'
+        Type of the arrays used.
 
     Returns
     -------

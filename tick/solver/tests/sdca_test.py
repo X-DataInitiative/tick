@@ -84,8 +84,8 @@ class SolverTest(TestSolver):
 
             simu = SimuPoisReg(weight0, intercept=intercept, features=features,
                                n_samples=n_samples, link='identity',
-                               verbose=False)
-            features, labels = simu.simulate(dtype=self.dtype)
+                               verbose=False, dtype=self.dtype)
+            features, labels = simu.simulate()
 
             model = ModelPoisReg(fit_intercept=fit_intercept, link='identity')
             model.fit(features, labels)
@@ -126,17 +126,8 @@ class SolverTest(TestSolver):
             np.testing.assert_array_almost_equal(svrg.solution, sdca.solution,
                                                  decimal=4)
 
-
-def parameterize(klass, dtype):
-    testnames = unittest.TestLoader().getTestCaseNames(klass)
-    suite = unittest.TestSuite()
-    for name in testnames:
-        suite.addTest(klass(name, dtype=dtype))
-    return suite
-
-
 if __name__ == '__main__':
     suite = unittest.TestSuite()
-    for dt in dtype_list:
-        suite.addTest(parameterize(SolverTest, dtype=dt))
+    for dtype in dtype_list:
+        suite.addTest(TestSolver.parameterize_main(SolverTest, dtype=dtype))
     unittest.TextTestRunner().run(suite)

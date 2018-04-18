@@ -26,6 +26,7 @@ from tick.solver.build.solver import SVRG_StepType_BarzilaiBorwein
 
 from tick.simulation import weights_sparse_gauss
 
+dtype_list = ["float64", "float32"]
 
 class SolverTest(TestSolver):
     @staticmethod
@@ -148,7 +149,7 @@ class SolverTest(TestSolver):
             self.assertEqual(str(w[0].message), msg)
 
     def test_step_type_setting(self):
-        """...SolverTest that SVRG step_type parameter behaves correctly
+        """...Test that SVRG step_type parameter behaves correctly
         """
         svrg = SVRG()
 
@@ -263,17 +264,8 @@ class SolverTest(TestSolver):
                         dtype=self.dtype)
 
 
-def parameterize(klass, dtype):
-    testnames = unittest.TestLoader().getTestCaseNames(klass)
-    suite = unittest.TestSuite()
-    for name in testnames:
-        suite.addTest(klass(name, dtype=dtype))
-    return suite
-
-
 if __name__ == '__main__':
-    dtype_list = ["float64", "float32"]
     suite = unittest.TestSuite()
-    for dt in dtype_list:
-        suite.addTest(parameterize(SolverTest, dtype=dt))
+    for dtype in dtype_list:
+        suite.addTest(TestSolver.parameterize_main(SolverTest, dtype=dtype))
     unittest.TextTestRunner().run(suite)

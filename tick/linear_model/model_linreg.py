@@ -45,9 +45,6 @@ class ModelLinReg(ModelFirstOrder, ModelGeneralizedLinear, ModelLipschitz):
     fit_intercept : `bool`
         If `True`, the model uses an intercept
 
-    dtype : `string`, default='float64'
-        Type of arrays to use - default float64
-
     Attributes
     ----------
     features : {`numpy.ndarray`, `scipy.sparse.csr_matrix`}, shape=(n_samples, n_features)
@@ -65,6 +62,9 @@ class ModelLinReg(ModelFirstOrder, ModelGeneralizedLinear, ModelLipschitz):
     n_coeffs : `int` (read-only)
         Total number of coefficients of the model
 
+    dtype : `{'float64', 'float32'}`, default='float64'
+        Type of the arrays used. This value is set from model and prox dtypes.
+
     n_threads : `int`, default=1 (read-only)
         Number of threads used for parallel computation.
 
@@ -80,6 +80,13 @@ class ModelLinReg(ModelFirstOrder, ModelGeneralizedLinear, ModelLipschitz):
         self.n_threads = n_threads
 
         # TODO: implement _set_data and not fit
+
+    @property
+    def _model_class(self):
+        if self.dtype not in dtype_map:
+            raise ValueError('dtype provided to ModelLinReg is not handled: {}'.format(self.dtype))
+        return dtype_map[np.dtype(self.dtype)]
+
 
     def fit(self, features, labels):
         """Set the data into the model object
@@ -101,11 +108,7 @@ class ModelLinReg(ModelFirstOrder, ModelGeneralizedLinear, ModelLipschitz):
         ModelGeneralizedLinear.fit(self, features, labels)
         ModelLipschitz.fit(self, features, labels)
 
-        if self.dtype not in dtype_map:
-            raise ValueError('dtype provided to ModelLinReg is not handled: ',
-                             self.dtype)
-
-        self._set("_model", dtype_map[np.dtype(self.dtype)](
+        self._set("_model", self._model_class(
             self.features, self.labels, self.fit_intercept, self.n_threads))
 
         return self
@@ -115,7 +118,7 @@ class ModelLinReg(ModelFirstOrder, ModelGeneralizedLinear, ModelLipschitz):
 
     def _loss(self, coeffs: np.ndarray) -> float:
         if self.dtype is not "float64" and coeffs.dtype is np.float64:
-            coeffs = coeffs.astype(self.dtype)
+            raise ValueError("Model Linreg has received coeffs array with unexpected dtype")
         return self._model.loss(coeffs)
 
     def _get_lip_best(self):

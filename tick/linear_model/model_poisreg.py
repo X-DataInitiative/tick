@@ -55,8 +55,8 @@ class ModelPoisReg(ModelGeneralizedLinear, ModelSecondOrder,
     fit_intercept : `bool`
         If `True`, the model uses an intercept
 
-    dtype : `string`, default='float64'
-        Type of arrays to use - default float64
+    dtype : `{'float64', 'float32'}`, default='float64'
+        Type of the arrays used. This value is set from model and prox dtypes.
 
     link : `str`, default="exponential"
         Type of link function

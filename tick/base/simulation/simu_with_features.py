@@ -64,8 +64,8 @@ class SimuWithFeatures(Simu):
     verbose : `bool`
         If True, print things
 
-    dtype : `{'float64', 'float32'}`
-        Type of arrays to use - default float64
+    dtype : `{'float64', 'float32'}`, default='float64'
+        Type of the arrays used. This value is set from model and prox dtypes.
         Used in the case features is None
     """
 

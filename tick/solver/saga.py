@@ -152,10 +152,10 @@ class SAGA(SolverFirstOrderSto):
     time_end : `str`
         End date of the call to ``solve()``
 
-    dtype : `string`, default='float64'
-        Type of arrays to use - default float64
+    dtype : `{'float64', 'float32'}`, default='float64'
+        Type of the arrays used. This value is set from model and prox dtypes.
 
-    var_red_str : `string`
+    _var_red_str : `string`
         temporary to hold varience reduction type before dtype is known
 
     References
@@ -175,7 +175,7 @@ class SAGA(SolverFirstOrderSto):
                                      max_iter, verbose, print_every,
                                      record_every, seed=seed)
 
-        self.var_red_str = variance_reduction
+        self._var_red_str = variance_reduction
 
     @property
     def variance_reduction(self):
@@ -221,10 +221,10 @@ class SAGA(SolverFirstOrderSto):
             if epoch_size is None:
                 epoch_size = 0
 
-            self._solver = dtype_class_mapper[self.dtype](
-                epoch_size, self.tol, self._rand_type, step, self.seed)
+            self._set('_solver', dtype_class_mapper[self.dtype](
+                epoch_size, self.tol, self._rand_type, step, self.seed))
             if first is True:
-                self.variance_reduction = self.var_red_str
+                self.variance_reduction = self._var_red_str
 
             return SolverFirstOrderSto.set_model(self, model)
         else:
