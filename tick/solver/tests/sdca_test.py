@@ -8,10 +8,8 @@ from tick.prox import ProxL1, ProxElasticNet, ProxZero, ProxL2Sq
 from tick.solver import SDCA, SVRG
 from tick.solver.tests import TestSolver
 
-dtype_list = ["float64", "float32"]
 
-
-class SolverTest(TestSolver):
+class SDCATest(object):
     def test_solver_sdca(self):
         """...Check SDCA solver for a Logistic regression with Ridge
         penalization and L1 penalization
@@ -91,7 +89,7 @@ class SolverTest(TestSolver):
             model.fit(features, labels)
 
             sdca = SDCA(l_l2sq=l_l2sq, max_iter=100, verbose=False, tol=1e-14,
-                        seed=SolverTest.sto_seed)
+                        seed=TestSolver.sto_seed)
 
             sdca.set_model(model).set_prox(ProxZero())
             start_dual = np.sqrt(sdca._rand_max * l_l2sq)
@@ -119,15 +117,23 @@ class SolverTest(TestSolver):
 
             # Ensure that we solve the same problem as other solvers
             svrg = SVRG(max_iter=100, verbose=False, tol=1e-14,
-                        seed=SolverTest.sto_seed)
+                        seed=TestSolver.sto_seed)
 
             svrg.set_model(model).set_prox(ProxL2Sq(l_l2sq))
             svrg.solve(0.5 * np.ones(model.n_coeffs), step=1e-2)
             np.testing.assert_array_almost_equal(svrg.solution, sdca.solution,
                                                  decimal=4)
 
+
+class SDCATestFloat32(TestSolver, SDCATest):
+    def __init__(self, *args, **kwargs):
+        TestSolver.__init__(self, *args, dtype="float32", **kwargs)
+
+
+class SDCATestFloat64(TestSolver, SDCATest):
+    def __init__(self, *args, **kwargs):
+        TestSolver.__init__(self, *args, dtype="float64", **kwargs)
+
+
 if __name__ == '__main__':
-    suite = unittest.TestSuite()
-    for dtype in dtype_list:
-        suite.addTest(TestSolver.parameterize_main(SolverTest, dtype=dtype))
-    unittest.TextTestRunner().run(suite)
+    unittest.main()

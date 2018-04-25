@@ -5,10 +5,8 @@ import unittest
 from tick.solver import AGD
 from tick.solver.tests import TestSolver
 
-dtype_list = ["float64", "float32"]
 
-
-class SolverTest(TestSolver):
+class AGDTest(object):
     def test_solver_agd(self):
         """...Check AGD solver for Logistic Regression with Ridge penalization"""
         solver = AGD(max_iter=100, verbose=False, linesearch=True)
@@ -23,8 +21,16 @@ class SolverTest(TestSolver):
 
         self._test_solver_sparse_and_dense_consistency(create_solver)
 
+
+class AGDTestFloat32(TestSolver, AGDTest):
+    def __init__(self, *args, **kwargs):
+        TestSolver.__init__(self, *args, dtype="float32", **kwargs)
+
+
+class AGDTestFloat64(TestSolver, AGDTest):
+    def __init__(self, *args, **kwargs):
+        TestSolver.__init__(self, *args, dtype="float64", **kwargs)
+
+
 if __name__ == '__main__':
-    suite = unittest.TestSuite()
-    for dtype in dtype_list:
-        suite.addTest(TestSolver.parameterize_main(SolverTest, dtype=dtype))
-    unittest.TextTestRunner().run(suite)
+    unittest.main()

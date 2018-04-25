@@ -81,7 +81,9 @@ class ModelLogReg(ModelFirstOrder, ModelGeneralizedLinear, ModelLipschitz):
     @property
     def _model_class(self):
         if self.dtype not in dtype_map:
-            raise ValueError('dtype provided to ModelLogReg is not handled: {}'.format(self.dtype))
+            raise ValueError(
+                'dtype provided to ModelLogReg is not handled: {}'.format(
+                    self.dtype))
         return dtype_map[np.dtype(self.dtype)]
 
     # TODO: implement _set_data and not fit
@@ -105,8 +107,10 @@ class ModelLogReg(ModelFirstOrder, ModelGeneralizedLinear, ModelLipschitz):
         ModelGeneralizedLinear.fit(self, features, labels)
         ModelLipschitz.fit(self, features, labels)
 
-        self._set("_model", self._model_class(
-            self.features, self.labels, self.fit_intercept, self.n_threads))
+        model_class = self._get_typed_class(features.dtype, dtype_map)[1]
+        self._set("_model",
+                  model_class(self.features, self.labels, self.fit_intercept,
+                              self.n_threads))
         return self
 
     def _grad(self, coeffs: np.ndarray, out: np.ndarray) -> None:
@@ -147,3 +151,11 @@ class ModelLogReg(ModelFirstOrder, ModelGeneralizedLinear, ModelLipschitz):
             return (s + 1) / (4 * self.n_samples)
         else:
             return s / (4 * self.n_samples)
+
+    def _build_cpp_model(self, dtype_or_object_with_dtype):
+        (updated_model, model_class) = \
+            self._get_typed_class(dtype_or_object_with_dtype, dtype_map)
+        if updated_model is True:
+            return model_class(self.features, self.labels, self.fit_intercept,
+                               self.n_threads)
+        return None

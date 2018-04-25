@@ -127,7 +127,7 @@ class SimuLinReg(SimuWithFeatures):
             u += self.intercept
         labels = u + self.std * np.random.randn(n_samples)
         # "astype" must be used for labels as it is always float64
-        if self.dtype != np.float64:
+        if labels.dtype != self.dtype:
             labels = labels.astype(self.dtype)
         self._set("labels", labels)
         return features, labels

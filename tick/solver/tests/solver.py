@@ -176,7 +176,8 @@ class TestSolver(unittest.TestCase):
                         verbose=False, dtype=self.dtype)
             X, y = simu.simulate()
             if X.dtype != y.dtype:
-                raise ValueError("Simulation error, features and label dtypes differ")
+                raise ValueError(
+                    "Simulation error, features and label dtypes differ")
             X_sparse = csr_matrix(X).astype(self.dtype)
 
             for sparse in [True, False]:
@@ -260,12 +261,3 @@ class TestSolver(unittest.TestCase):
             err = abs(c - coeffs[-1])
             err += norm(coeffs[:-1] - w)
         return err
-
-
-    @staticmethod
-    def parameterize_main(klass, dtype):
-        testnames = unittest.TestLoader().getTestCaseNames(klass)
-        suite = unittest.TestSuite()
-        for name in testnames:
-            suite.addTest(klass(name, dtype=dtype))
-        return suite

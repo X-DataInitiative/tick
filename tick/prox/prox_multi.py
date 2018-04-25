@@ -4,9 +4,16 @@
 
 import numpy as np
 from .base import Prox
-from .build.prox import ProxMulti as _ProxMulti
+from .build.prox import ProxMultiDouble as _ProxMultiDouble
+from .build.prox import ProxMultiFloat as _ProxMultiFloat
+from tick.prox import ProxZero
 
 __author__ = 'Stephane Gaiffas'
+
+dtype_map = {
+    np.dtype("float64"): _ProxMultiDouble,
+    np.dtype("float32"): _ProxMultiFloat
+}
 
 
 class ProxMulti(Prox):
@@ -25,6 +32,9 @@ class ProxMulti(Prox):
 
     def __init__(self, proxs: tuple):
         Prox.__init__(self, None)
+        if not proxs:
+            proxs = [ProxZero()]
+        dtype = proxs[0].dtype
         for prox in proxs:
             if not isinstance(prox, Prox):
                 raise ValueError('%s is not a Prox' % prox.__class__.__name__)
@@ -32,12 +42,13 @@ class ProxMulti(Prox):
                 raise ValueError('%s cannot be used in ProxMulti' % prox.name)
             if prox._prox is None:
                 raise ValueError('%s cannot be used in ProxMulti' % prox.name)
+            if dtype != prox.dtype:
+                raise ValueError(
+                    'ProxMulti can only handle proxes with same dtype')
 
-        _proxs = [prox._prox for prox in proxs]
         # strength of ProxMulti is 0., since it's not used
-        self._prox = _ProxMulti(_proxs)
-        # Replace the list by a tuple to forbid changes
-        self.proxs = proxs
+        self.proxs = [prox._prox for prox in proxs]
+        self._prox = self._build_cpp_prox(dtype)
 
     def _call(self, coeffs: np.ndarray, step: object, out: np.ndarray):
         self._prox.call(coeffs, step, out)
@@ -59,3 +70,10 @@ class ProxMulti(Prox):
             Value of the penalization at ``coeffs``
         """
         return self._prox.value(coeffs)
+
+    def _build_cpp_prox(self, dtype_or_object_with_dtype):
+        (updated_prox, prox_class) = \
+            self._get_typed_class(dtype_or_object_with_dtype, dtype_map)
+        if updated_prox is True:
+            return prox_class(self.proxs)
+        return None

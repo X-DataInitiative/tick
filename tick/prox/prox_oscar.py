@@ -5,11 +5,17 @@
 from tick.prox.base import Prox
 import numpy as np
 
-from .build.prox import ProxSortedL1Double as _ProxSortedL1
+from .build.prox import ProxSortedL1Double as _ProxSortedL1Double
+from .build.prox import ProxSortedL1Float as _ProxSortedL1Float
 from .build.prox import WeightsType_bh, WeightsType_oscar
 
 # TODO: put also the OSCAR weights
 # TODO: we should be able to put any weights we want...
+
+dtype_map = {
+    np.dtype("float64"): _ProxSortedL1Double,
+    np.dtype("float32"): _ProxSortedL1Float
+}
 
 
 class ProxSortedL1(Prox):
@@ -82,13 +88,7 @@ class ProxSortedL1(Prox):
         self.weights_type = weights_type
         self.positive = positive
         self.weights = None
-        if range is None:
-            self._prox = _ProxSortedL1(self.strength, self.fdr,
-                                       self._weights_type, self.positive)
-        else:
-            self._prox = _ProxSortedL1(self.strength, self.fdr,
-                                       self._weights_type, self.range[0],
-                                       self.range[1], self.positive)
+        self._prox = self._build_cpp_prox("float64")
 
     @property
     def weights_type(self):
@@ -131,3 +131,15 @@ class ProxSortedL1(Prox):
         dd = Prox._as_dict(self)
         del dd["weights"]
         return dd
+
+    def _build_cpp_prox(self, dtype_or_object_with_dtype):
+        (updated_prox, prox_class) = \
+            self._get_typed_class(dtype_or_object_with_dtype, dtype_map)
+        if updated_prox is True:
+            if self.range is None:
+                return prox_class(self.strength, self.fdr, self._weights_type,
+                                  self.positive)
+            else:
+                return prox_class(self.strength, self.fdr, self._weights_type,
+                                  self.range[0], self.range[1], self.positive)
+        return None

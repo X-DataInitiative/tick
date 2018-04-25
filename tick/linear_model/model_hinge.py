@@ -2,9 +2,15 @@
 
 import numpy as np
 from tick.base_model import ModelGeneralizedLinear, ModelFirstOrder
-from .build.linear_model import ModelHingeDouble as _ModelHinge
+from .build.linear_model import ModelHingeDouble as _ModelHingeDouble
+from .build.linear_model import ModelHingeFloat as _ModelHingeFloat
 
 __author__ = 'Stephane Gaiffas'
+
+dtype_map = {
+    np.dtype('float64'): _ModelHingeDouble,
+    np.dtype('float32'): _ModelHingeFloat
+}
 
 
 class ModelHinge(ModelFirstOrder, ModelGeneralizedLinear):
@@ -91,8 +97,10 @@ class ModelHinge(ModelFirstOrder, ModelGeneralizedLinear):
         """
         ModelFirstOrder.fit(self, features, labels)
         ModelGeneralizedLinear.fit(self, features, labels)
+
+        model_class = self._get_typed_class(features.dtype, dtype_map)[1]
         self._set("_model",
-                  _ModelHinge(self.features, self.labels, self.fit_intercept,
+                  model_class(self.features, self.labels, self.fit_intercept,
                               self.n_threads))
         return self
 
@@ -101,3 +109,11 @@ class ModelHinge(ModelFirstOrder, ModelGeneralizedLinear):
 
     def _loss(self, coeffs: np.ndarray) -> float:
         return self._model.loss(coeffs)
+
+    def _build_cpp_model(self, dtype_or_object_with_dtype):
+        (updated_model, model_class) = \
+            self._get_typed_class(dtype_or_object_with_dtype, dtype_map)
+        if updated_model is True:
+            return model_class(self.features, self.labels, self.fit_intercept,
+                               self.n_threads)
+        return None

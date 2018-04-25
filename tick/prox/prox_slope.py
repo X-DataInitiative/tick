@@ -105,6 +105,6 @@ class ProxSlope(Prox):
             if self.range is None:
                 return prox_class(self.strength, self.fdr, self.positive)
             else:
-                return prox_class(self.strength, self.fdr, self.range[0], self.range[1],
-                    self.positive)
+                return prox_class(self.strength, self.fdr, self.range[0],
+                                  self.range[1], self.positive)
         return None

@@ -178,12 +178,6 @@ class SVRG(SolverFirstOrderSto):
     dtype : `{'float64', 'float32'}`, default='float64'
         Type of the arrays used. This value is set from model and prox dtypes.
 
-    _var_red_str : `string`
-        temporary to hold varience reduction type before dtype is known
-
-    _step_type_str : `string`
-        temporary to hold step type before dtype is known
-
     References
     ----------
     * L. Xiao and T. Zhang, A proximal stochastic gradient method with
@@ -193,6 +187,7 @@ class SVRG(SolverFirstOrderSto):
       Barzilai-Borwein step size for stochastic gradient descent.
       *Advances in Neural Information Processing Systems* (2016)
     """
+    _attrinfos = {"_step_type_str": {}, "_var_red_str": {}}
 
     def __init__(self, step: float = None, epoch_size: int = None,
                  rand_type: str = 'unif', tol: float = 1e-10,
@@ -204,7 +199,10 @@ class SVRG(SolverFirstOrderSto):
                                      max_iter, verbose, print_every,
                                      record_every, seed=seed)
         self.n_threads = n_threads
+
+        # temporary to hold step type before dtype is known
         self._step_type_str = step_type
+        # temporary to hold varience reduction type before dtype is known
         self._var_red_str = variance_reduction
 
     @property

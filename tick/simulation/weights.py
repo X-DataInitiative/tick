@@ -3,6 +3,7 @@
 from warnings import warn
 import numpy as np
 
+
 def weights_sparse_gauss(n_weights: int = 100, nnz: int = 10, std: float = 1.,
                          dtype="float64") -> np.ndarray:
     """Sparse and gaussian model weights generator

@@ -61,4 +61,4 @@ class ProxZero(Prox):
                 return prox_class(0.)
             else:
                 return prox_class(0., self.range[0], self.range[1])
-        return None
+        return self._prox

@@ -12,8 +12,8 @@ from .build.linear_model import ModelLinRegFloat as _ModelLinRegFloat
 __author__ = 'Stephane Gaiffas'
 
 dtype_map = {
-    np.dtype('float32'): _ModelLinRegFloat,
-    np.dtype('float64'): _ModelLinRegDouble
+    np.dtype('float64'): _ModelLinRegDouble,
+    np.dtype('float32'): _ModelLinRegFloat
 }
 
 
@@ -81,13 +81,6 @@ class ModelLinReg(ModelFirstOrder, ModelGeneralizedLinear, ModelLipschitz):
 
         # TODO: implement _set_data and not fit
 
-    @property
-    def _model_class(self):
-        if self.dtype not in dtype_map:
-            raise ValueError('dtype provided to ModelLinReg is not handled: {}'.format(self.dtype))
-        return dtype_map[np.dtype(self.dtype)]
-
-
     def fit(self, features, labels):
         """Set the data into the model object
 
@@ -108,17 +101,19 @@ class ModelLinReg(ModelFirstOrder, ModelGeneralizedLinear, ModelLipschitz):
         ModelGeneralizedLinear.fit(self, features, labels)
         ModelLipschitz.fit(self, features, labels)
 
-        self._set("_model", self._model_class(
-            self.features, self.labels, self.fit_intercept, self.n_threads))
-
+        model_class = self._get_typed_class(features.dtype, dtype_map)[1]
+        self._set("_model",
+                  model_class(self.features, self.labels, self.fit_intercept,
+                              self.n_threads))
         return self
 
     def _grad(self, coeffs: np.ndarray, out: np.ndarray) -> None:
         self._model.grad(coeffs, out)
 
     def _loss(self, coeffs: np.ndarray) -> float:
-        if self.dtype is not "float64" and coeffs.dtype is np.float64:
-            raise ValueError("Model Linreg has received coeffs array with unexpected dtype")
+        if self.dtype != coeffs.dtype:
+            raise ValueError(
+                "Model Linreg has received coeffs array with unexpected dtype")
         return self._model.loss(coeffs)
 
     def _get_lip_best(self):
@@ -128,3 +123,11 @@ class ModelLinReg(ModelFirstOrder, ModelGeneralizedLinear, ModelLipschitz):
             return (s + 1) / self.n_samples
         else:
             return s / self.n_samples
+
+    def _build_cpp_model(self, dtype_or_object_with_dtype):
+        (updated_model, model_class) = \
+            self._get_typed_class(dtype_or_object_with_dtype, dtype_map)
+        if updated_model is True:
+            return model_class(self.features, self.labels, self.fit_intercept,
+                               self.n_threads)
+        return None

@@ -121,7 +121,9 @@ T TProxSortedL1<T>::value(const Array<T> &coeffs, ulong start, ulong end) {
   // Sort sub_coeffs with decreasing absolute values, and keeping sorting
   // indexes in idx
   Array<T> sub_coeffs_sorted = sort_abs(sub_coeffs, idx, false);
-  T val = 0;
+  // val is double as float prevents adequate precision of sum
+  //  at least in tests
+  double val = 0;
   for (ulong i = 0; i < size; i++) {
     val += weights[i] * std::abs(sub_coeffs_sorted[i]);
   }

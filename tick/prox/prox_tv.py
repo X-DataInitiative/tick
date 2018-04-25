@@ -10,7 +10,10 @@ from .build.prox import ProxTVFloat as _ProxTVFloat
 
 __author__ = 'Stephane Gaiffas'
 
-dtype_map = {np.dtype("float64"): _ProxTVDouble, np.dtype("float32"): _ProxTVFloat}
+dtype_map = {
+    np.dtype("float64"): _ProxTVDouble,
+    np.dtype("float32"): _ProxTVFloat
+}
 
 
 class ProxTV(Prox):
@@ -81,5 +84,6 @@ class ProxTV(Prox):
             if self.range is None:
                 return prox_class(self.strength, self.positive)
             else:
-                return prox_class(self.strength, self.range[0], self.range[1], self.positive)
+                return prox_class(self.strength, self.range[0], self.range[1],
+                                  self.positive)
         return None

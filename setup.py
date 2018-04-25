@@ -775,39 +775,10 @@ class RunPyTests(TickCommand):
         self.start_dir = '.'
         self.added = {}
 
-    # This function takes a full qualified class name and returns
-    ## the class as type which can be used to construct the class
-    def fullname(self, o):
-      return getattr(sys.modules[o.__module__], o.__class__.__name__)
-
-    def parameterize(self, klass, dtype):
-      testnames = unittest.TestLoader().getTestCaseNames(klass)
-      suite = unittest.TestSuite()
-      clazz = self.fullname(klass)
-      if clazz in self.added and dtype in self.added[clazz]:
-        return suite
-      if clazz not in self.added:
-        self.added[clazz] = []
-      self.added[clazz].append(dtype)
-      for name in testnames:
-        suite.addTest(clazz(name, dtype=dtype))
-      return suite
-
     def run(self):
-        dtype_list = ["float64", "float32"]
         loader = unittest.TestLoader()
         alltests = loader.discover(self.start_dir, pattern="*_test.py")
-        suite = unittest.TestSuite()
-        for testsuite in alltests:
-          for test in testsuite:
-            if type(test).__name__ is not "_FailedTest":
-              for t in test._tests:
-                if type(t).__name__ is "SolverTest":
-                  for dt in dtype_list:
-                    suite.addTest(self.parameterize(t, dtype=dt))
-                else:
-                  suite.addTest(t)
-        result = unittest.TextTestRunner(verbosity=2).run(suite)
+        result = unittest.TextTestRunner(verbosity=2).run(alltests)
         sys.exit(not result.wasSuccessful())
 
 

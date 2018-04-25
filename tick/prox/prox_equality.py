@@ -88,6 +88,6 @@ class ProxEquality(Prox):
             if self.range is None:
                 return prox_class(0., self.positive)
             else:
-                return prox_class(
-                    0., self.range[0], self.range[1], self.positive)
+                return prox_class(0., self.range[0], self.range[1],
+                                  self.positive)
         return None
