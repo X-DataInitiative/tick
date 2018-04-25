@@ -65,7 +65,6 @@ class ProxElasticNet(Prox):
         self.ratio = ratio
         self._prox = self._build_cpp_prox("float64")
 
-
     def _call(self, coeffs: np.ndarray, step: object, out: np.ndarray):
         self._prox.call(coeffs, step, out)
 
@@ -92,6 +91,6 @@ class ProxElasticNet(Prox):
             if self.range is None:
                 return prox_class(self.strength, self.ratio, self.positive)
             else:
-                return prox_class(self.strength, self.ratio, self.range[0], self.range[1],
-                    self.positive)
+                return prox_class(self.strength, self.ratio, self.range[0],
+                                  self.range[1], self.positive)
         return None

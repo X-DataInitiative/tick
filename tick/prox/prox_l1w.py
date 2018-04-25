@@ -9,7 +9,10 @@ from .build.prox import ProxL1wFloat as _ProxL1wFloat
 
 __author__ = 'Stephane Gaiffas'
 
-dtype_map = {np.dtype("float64"): _ProxL1wDouble, np.dtype("float32"): _ProxL1wFloat}
+dtype_map = {
+    np.dtype("float64"): _ProxL1wDouble,
+    np.dtype("float32"): _ProxL1wFloat
+}
 
 # TODO: if we set a weights vector with length != end - start ???
 
@@ -95,7 +98,7 @@ class ProxL1w(Prox):
                 if (end - start) != self.weights.shape[0]:
                     raise ValueError("Size of ``weights`` does not match "
                                      "the given ``range``")
-                return_prox = prox_class(self.strength, weights, self.range[0], self.range[1],
-                                              self.positive)
+                return_prox = prox_class(self.strength, weights, self.range[0],
+                                         self.range[1], self.positive)
             return_prox.weights = weights
         return return_prox

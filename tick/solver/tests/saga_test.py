@@ -19,9 +19,8 @@ from tick.solver.build.solver import SAGA_VarianceReductionMethod_Random
 
 from tick.simulation import weights_sparse_gauss
 
-dtype_list = ["float64", "float32"]
 
-class SolverTest(TestSolver):
+class SAGATest(object):
     def test_solver_saga(self):
         """...Check SAGA solver for a Logistic Regression with Ridge penalization"""
         solver = SAGA(step=1e-3, max_iter=100, verbose=False, tol=0)
@@ -79,7 +78,7 @@ class SolverTest(TestSolver):
 
     def test_set_model(self):
         """...SolverTest set_model of saga, should only accept childs of
-      ModelGeneralizedLinear"""
+           ModelGeneralizedLinear"""
         # We try to pass a ModelCoxRegPartialLik which is not a generalized
         # linear model to SAGA to check that the error is raised
         msg = '^SAGA accepts only childs of `ModelGeneralizedLinear`$'
@@ -89,8 +88,16 @@ class SolverTest(TestSolver):
             model = ModelCoxRegPartialLik().fit(X, T, C)
             SAGA().set_model(model)
 
+
+class SAGATestFloat32(TestSolver, SAGATest):
+    def __init__(self, *args, **kwargs):
+        TestSolver.__init__(self, *args, dtype="float32", **kwargs)
+
+
+class SAGATestFloat64(TestSolver, SAGATest):
+    def __init__(self, *args, **kwargs):
+        TestSolver.__init__(self, *args, dtype="float64", **kwargs)
+
+
 if __name__ == '__main__':
-    suite = unittest.TestSuite()
-    for dtype in dtype_list:
-        suite.addTest(TestSolver.parameterize_main(SolverTest, dtype=dtype))
-    unittest.TextTestRunner().run(suite)
+    unittest.main()

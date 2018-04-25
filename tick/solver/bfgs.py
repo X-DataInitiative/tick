@@ -203,5 +203,6 @@ class BFGS(SolverFirstOrder):
         # variance reduction method is 'avg'
         self.dtype = model.dtype
         if np.dtype(self.dtype) != np.dtype("float64"):
-            raise ValueError("Solver BFGS currenty only accepts float64 array types")
+            raise ValueError(
+                "Solver BFGS currenty only accepts float64 array types")
         return SolverFirstOrder.set_model(self, model)

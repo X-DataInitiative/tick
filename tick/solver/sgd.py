@@ -8,7 +8,10 @@ from .build.solver import SGDFloat as _SGDFloat
 
 __author__ = "Stephane Gaiffas"
 
-dtype_class_mapper = {np.dtype('float32'): _SGDFloat, np.dtype('float64'): _SGDDouble}
+dtype_class_mapper = {
+    np.dtype('float32'): _SGDFloat,
+    np.dtype('float64'): _SGDDouble
+}
 
 # TODO: preparer methodes pour set et get attributes
 

@@ -10,7 +10,7 @@ from tick.solver.build.solver import SAGA_VarianceReductionMethod_Average
 from tick.solver.build.solver import SAGA_VarianceReductionMethod_Random
 
 from tick.solver.build.solver import SAGADouble as _SAGADouble
-from tick.solver.build.solver import SAGAFloat as  _SAGAFloat
+from tick.solver.build.solver import SAGAFloat as _SAGAFloat
 
 __author__ = "Stephane Gaiffas"
 
@@ -21,7 +21,7 @@ variance_reduction_methods_mapper = {
 }
 
 dtype_class_mapper = {
-    np.dtype('float32'):  _SAGAFloat,
+    np.dtype('float32'): _SAGAFloat,
     np.dtype('float64'): _SAGADouble
 }
 
@@ -155,15 +155,13 @@ class SAGA(SolverFirstOrderSto):
     dtype : `{'float64', 'float32'}`, default='float64'
         Type of the arrays used. This value is set from model and prox dtypes.
 
-    _var_red_str : `string`
-        temporary to hold varience reduction type before dtype is known
-
     References
     ----------
     * A. Defazio, F. Bach, S. Lacoste-Julien, SAGA: A fast incremental gradient
       method with support for non-strongly convex composite objectives,
       NIPS 2014
     """
+    _attrinfos = {"_var_red_str": {}}
 
     def __init__(self, step: float = None, epoch_size: int = None,
                  rand_type: str = "unif", tol: float = 0., max_iter: int = 100,
@@ -175,6 +173,7 @@ class SAGA(SolverFirstOrderSto):
                                      max_iter, verbose, print_every,
                                      record_every, seed=seed)
 
+        #temporary to hold varience reduction type before dtype is known
         self._var_red_str = variance_reduction
 
     @property

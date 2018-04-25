@@ -1,7 +1,15 @@
 # License: BSD 3 clause
 
 from .base import ProxWithGroups
-from .build.prox import ProxGroupL1Double as _ProxGroupL1
+from .build.prox import ProxGroupL1Double as _ProxGroupL1Double
+from .build.prox import ProxGroupL1Float as _ProxGroupL1Float
+
+import numpy as np
+
+dtype_map = {
+    np.dtype("float64"): _ProxGroupL1Double,
+    np.dtype("float32"): _ProxGroupL1Float
+}
 
 
 class ProxGroupL1(ProxWithGroups):
@@ -41,6 +49,7 @@ class ProxGroupL1(ProxWithGroups):
                  range: tuple = None, positive: bool = False):
         ProxWithGroups.__init__(self, strength, blocks_start, blocks_length,
                                 range, positive)
+        self._prox = self._build_cpp_prox("float64")
 
-    def _get_prox_class(self):
-        return _ProxGroupL1
+    def _get_dtype_map(self):
+        return dtype_map

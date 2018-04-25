@@ -145,13 +145,11 @@ class ModelPoisReg(ModelGeneralizedLinear, ModelSecondOrder,
         ModelFirstOrder.fit(self, features, labels)
         ModelGeneralizedLinear.fit(self, features, labels)
 
-        if self.dtype not in dtype_map:
-            raise ValueError('dtype provided to PoisReg is not handled: ',
-                             self.dtype)
+        model_class = self._get_typed_class(features.dtype, dtype_map)[1]
+        self._set("_model",
+                  model_class(self.features, self.labels, self._link_type,
+                              self.fit_intercept, self.n_threads))
 
-        self._set("_model", dtype_map[np.dtype(self.dtype)](
-            self.features, self.labels, self._link_type, self.fit_intercept,
-            self.n_threads))
         return self
 
     def _grad(self, coeffs: np.ndarray, out: np.ndarray) -> None:
@@ -246,3 +244,11 @@ class ModelPoisReg(ModelGeneralizedLinear, ModelSecondOrder,
             1 + np.log(dual_coeffs / self.labels[non_zero_labels]))
         dual_loss += np.mean(gammaln(self.labels[non_zero_labels] + 1))
         return np.mean(dual_loss) * self._sdca_rand_max / self.n_samples
+
+    def _build_cpp_model(self, dtype_or_object_with_dtype):
+        (updated_model, model_class) = \
+            self._get_typed_class(dtype_or_object_with_dtype, dtype_map)
+        if updated_model is True:
+            return model_class(self.features, self.labels, self._link_type,
+                               self.fit_intercept, self.n_threads)
+        return None

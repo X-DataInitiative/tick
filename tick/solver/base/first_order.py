@@ -198,7 +198,7 @@ class SolverFirstOrder(Solver):
                              'Prox class' % prox.name)
         if self.dtype is None or self.model is None:
             raise ValueError("Solver must call set_model before set_prox")
-        prox.as_type(self)
+        prox.astype(self.dtype)
         self._set("prox", prox)
         return self
 

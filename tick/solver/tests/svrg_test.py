@@ -28,7 +28,8 @@ from tick.simulation import weights_sparse_gauss
 
 dtype_list = ["float64", "float32"]
 
-class SolverTest(TestSolver):
+
+class SVRGTest(object):
     @staticmethod
     def simu_linreg_data(dtype, n_samples=5000, n_features=50, interc=-1.,
                          p_nnz=0.3):
@@ -68,7 +69,7 @@ class SolverTest(TestSolver):
                           decimal=1)
 
     def test_svrg_sparse_and_dense_consistency(self):
-        """...SolverTest SVRG can run all glm models and is consistent with sparsity
+        """...SVRGTest SVRG can run all glm models and is consistent with sparsity
         """
 
         def create_solver():
@@ -78,7 +79,7 @@ class SolverTest(TestSolver):
         self._test_solver_sparse_and_dense_consistency(create_solver)
 
     def test_variance_reduction_setting(self):
-        """...SolverTest that SVRG variance_reduction parameter behaves correctly
+        """...SVRGTest that SVRG variance_reduction parameter behaves correctly
         """
         svrg = SVRG()
 
@@ -180,7 +181,7 @@ class SolverTest(TestSolver):
                          SVRG_StepType_BarzilaiBorwein)
 
     def test_set_model(self):
-        """...SolverTest SVRG set_model
+        """...SVRGTest SVRG set_model
         """
         X, y = self.simu_linreg_data(dtype=self.dtype)
         _, model_spars = self.get_dense_and_sparse_linreg_model(
@@ -197,7 +198,7 @@ class SolverTest(TestSolver):
             self.assertEqual(str(w[0].message), msg)
 
     def test_dense_and_sparse_match(self):
-        """...SolverTest in SVRG that dense and sparse code matches in all possible
+        """...SVRGTest in SVRG that dense and sparse code matches in all possible
         settings
         """
         variance_reductions = ['last', 'rand']
@@ -255,7 +256,7 @@ class SolverTest(TestSolver):
                                                      decimal=places)
 
     def test_asvrg_sparse_and_dense_consistency(self):
-        """...SolverTest ASVRG can run all glm models and is consistent with sparsity
+        """...SVRGTest ASVRG can run all glm models and is consistent with sparsity
         """
 
         def create_solver():
@@ -264,8 +265,15 @@ class SolverTest(TestSolver):
                         dtype=self.dtype)
 
 
+class SVRGTestFloat32(TestSolver, SVRGTest):
+    def __init__(self, *args, **kwargs):
+        TestSolver.__init__(self, *args, dtype="float32", **kwargs)
+
+
+class SVRGTestFloat64(TestSolver, SVRGTest):
+    def __init__(self, *args, **kwargs):
+        TestSolver.__init__(self, *args, dtype="float64", **kwargs)
+
+
 if __name__ == '__main__':
-    suite = unittest.TestSuite()
-    for dtype in dtype_list:
-        suite.addTest(TestSolver.parameterize_main(SolverTest, dtype=dtype))
-    unittest.TextTestRunner().run(suite)
+    unittest.main()

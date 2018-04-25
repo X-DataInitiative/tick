@@ -111,31 +111,32 @@ class Prox(ABC, Base):
         Deduce dtype and return true if C++ _prox should be set
         """
         import six
-        should_update_prox = False;
+        should_update_prox = False
         local_dtype = None
         if (isinstance(dtype_or_object_with_dtype, six.string_types)
-          or isinstance(dtype_or_object_with_dtype, np.dtype)):
+                or isinstance(dtype_or_object_with_dtype, np.dtype)):
             local_dtype = np.dtype(dtype_or_object_with_dtype)
         elif hasattr(dtype_or_object_with_dtype, 'dtype'):
             local_dtype = np.dtype(dtype_or_object_with_dtype.dtype)
         else:
-           raise ValueError(("""
-             unsupported type used for
-             prox creation, expects dtype
-             or class with dtype , type: """
-             + self.__class__.__name__).strip())
+            raise ValueError(("""
+             unsupported type used for prox creation,
+             expects dtype or class with dtype , type:
+             """ + self.__class__.__name__).strip())
         if self.dtype is None or self.dtype != local_dtype:
             should_update_prox = True
-        self.dtype = np.dtype(local_dtype)
+        self.dtype = local_dtype
         if np.dtype(self.dtype) not in dtype_map:
             raise ValueError("""dtype does not exist in
               type map for """ + self.__class__.__name__.strip())
         return (should_update_prox, dtype_map[np.dtype(self.dtype)])
 
-    def as_type(self, dtype_or_object_with_dtype):
+    def astype(self, dtype_or_object_with_dtype):
         new_prox = self._build_cpp_prox(dtype_or_object_with_dtype)
         if new_prox is not None:
             self._set('_prox', new_prox)
+        return self
 
-    def _build_cpp_prox(self, dtype : str):
-      pass  # Not all subclass are templated so this is not abstract
+    def _build_cpp_prox(self, dtype: str):
+        raise ValueError("""This function is expected to
+                            overriden in a subclass""".strip())

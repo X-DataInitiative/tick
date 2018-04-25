@@ -85,7 +85,7 @@ class SolverSto(Base):
         return self
 
     def set_prox(self, prox: Prox):
-        prox.as_type(self)
+        prox.astype(self)
         if prox._prox is None:
             raise ValueError("Prox %s is not compatible with stochastic "
                              "solver %s" % (prox.__class__.__name__,

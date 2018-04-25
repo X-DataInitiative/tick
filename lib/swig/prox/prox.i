@@ -35,35 +35,6 @@ class TProx {
   virtual void set_positive(bool positive);
 };
 
-%rename(Prox) TProx<double>;
-class TProx<double> {
- public:
-  Prox(
-    double strength,
-    bool positive
-  );
-  Prox(
-    double strength,
-    unsigned long start,
-    unsigned long end,
-    bool positive
-  );
-  virtual void call(
-    const ArrayDouble &coeffs,
-    double step,
-    ArrayDouble &out
-  );
-  virtual double value(const ArrayDouble &coeffs);
-  virtual double get_strength() const;
-  virtual void set_strength(double strength);
-  virtual ulong get_start() const;
-  virtual ulong get_end() const;
-  virtual void set_start_end(ulong start, ulong end);
-  virtual bool get_positive() const;
-  virtual void set_positive(bool positive);
-};
-typedef TProx<double> Prox;
-
 %rename(ProxDouble) TProx<double>;
 class TProx<double> {
  public:
@@ -92,7 +63,6 @@ class TProx<double> {
   virtual void set_positive(bool positive);
 };
 typedef TProx<double> ProxDouble;
-
 %rename(ProxDoublePtr) std::shared_ptr<ProxDouble>;
 typedef std::shared_ptr<ProxDouble> ProxDoublePtr;
 
@@ -124,4 +94,5 @@ class TProx<float> {
   virtual void set_positive(bool positive);
 };
 typedef TProx<float> ProxFloat;
+%rename(ProxFloatPtr) std::shared_ptr<ProxFloat>;
 typedef std::shared_ptr<ProxFloat> ProxFloatPtr;

@@ -11,6 +11,7 @@ from tick.solver.tests import TestSolver
 from tick.linear_model import SimuLogReg
 from tick.simulation import weights_sparse_gauss
 
+
 class Test(TestSolver):
     def test_solver_bfgs(self):
         """...Check BFGS solver for Logistic Regression with Ridge
@@ -32,6 +33,7 @@ class Test(TestSolver):
         coeffs = solver.solve()
         err = TestSolver.evaluate_model(coeffs, coeffs0, interc0)
         self.assertAlmostEqual(err, 0., delta=5e-1)
+
 
 if __name__ == '__main__':
     unittest.main()
