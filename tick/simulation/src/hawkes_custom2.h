@@ -11,6 +11,9 @@ class Hawkes_customType2 : public Hawkes {
 public:
     //! Peng Wu, An array, indicaitng the global status after the i_th event
     VArrayULong global_n;
+    //! Explanation of contribution of intensity
+    VArrayDouble Total_intensity;
+    VArrayDouble Hawkes_intensity;
 
     //! @brief the max value of n kept for all f_i(n)
     ulong MaxN;
@@ -65,6 +68,17 @@ public :
         VArrayDoublePtr shared_process = VArrayDouble::new_ptr(Qty);
         return shared_process;
     }
+
+    VArrayDoublePtr get_Total_intensity() {
+        VArrayDoublePtr shared_process = VArrayDouble::new_ptr(Total_intensity);
+        return shared_process;
+    }
+
+    VArrayDoublePtr get_Hawkes_intensity() {
+        VArrayDoublePtr shared_process = VArrayDouble::new_ptr(Hawkes_intensity);
+        return shared_process;
+    }
+
 
     void init_intensity_(ArrayDouble &intensity,
                          double *total_intensity_bound);

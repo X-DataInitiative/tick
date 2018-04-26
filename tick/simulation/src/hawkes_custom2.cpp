@@ -91,6 +91,18 @@ bool Hawkes_customType2::update_time_shift_(double delay,
 
 void Hawkes_customType2::update_jump(int index) {
     if (simu_mode == "random") {
+        //!save the intensity before this event occur
+        double tmp = 0; //intensity partie hawkes
+        double bound = 0;
+        for (unsigned int j = 0; j < n_nodes; j++) {
+            HawkesKernelPtr &k = kernels[index * n_nodes + j];
+            if (k->get_support() == 0) continue;
+            tmp += k->get_convolution(time, *timestamps[j], &bound);
+        }
+
+        Total_intensity.append1(tmp + mu_[index]->operator[](last_global_n));
+        Hawkes_intensity.append1(tmp);
+
         last_global_n = (unsigned long) std::rand() % MaxN;
         global_n.append1(last_global_n);
         // We make the jump on the corresponding signal

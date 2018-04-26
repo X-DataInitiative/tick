@@ -58,8 +58,12 @@ from tick.optim.prox import ProxZero, ProxL1
 prox = ProxL1(0.0, positive=True)
 prox = ProxZero()
 
+
+betas_not_exact = np.array([20.0, 150, 1500])
+
+
 from tick.optim.model.hawkes_fixed_sumexpkern_loglik_custom2_list import ModelHawkesFixedSumExpKernCustomType2LogLikList
-model_list = ModelHawkesFixedSumExpKernCustomType2LogLikList(betas, MaxN, n_threads=8)
+model_list = ModelHawkesFixedSumExpKernCustomType2LogLikList(betas_not_exact, MaxN, n_threads=8)
 model_list.fit(timestamps_list, global_n_list, end_times=end_times)
 
 solver = AGD(step=1e-2, linesearch=False, max_iter=2000, print_every=50)
