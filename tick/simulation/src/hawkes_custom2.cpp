@@ -29,7 +29,7 @@ Hawkes_customType2::Hawkes_customType2(unsigned int n_nodes, int seed, ulong _Ma
         avg_order_size_by_state = ArrayDoubleList1D(n_nodes);
         for(ulong k = 0; k != n_nodes; ++k){
             avg_order_size_by_state[k] = ArrayDouble(MaxN);
-            for(ulong l; l != MaxN; ++l)
+            for(ulong l = 0; l != MaxN; ++l)
                 avg_order_size_by_state[k][l]=extrainfo[2 + k * MaxN + l];
         }
     }
@@ -111,8 +111,7 @@ void Hawkes_customType2::update_jump(int index) {
     }
     else if (simu_mode == "generate") {
         current_num += avg_order_size[index];
-        double exact = current_num / avg;
-        ulong round = ceil(exact + 0.5);  //round a number
+        ulong round = ceil(current_num / avg);  //round a number
         last_global_n = (round > MaxN - 1) ? MaxN - 1 : round;
         if(current_num <= 0) {
             current_num = 0;
