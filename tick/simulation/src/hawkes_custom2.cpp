@@ -110,6 +110,18 @@ void Hawkes_customType2::update_jump(int index) {
         n_total_jumps++;
     }
     else if (simu_mode == "generate") {
+        //!save the intensity before this event occur
+        double tmp = 0; //intensity partie hawkes
+        double bound = 0;
+        for (unsigned int j = 0; j < n_nodes; j++) {
+            HawkesKernelPtr &k = kernels[index * n_nodes + j];
+            if (k->get_support() == 0) continue;
+            tmp += k->get_convolution(time, *timestamps[j], &bound);
+        }
+
+        Total_intensity.append1(tmp + mu_[index]->operator[](last_global_n));
+        Hawkes_intensity.append1(tmp);
+
         current_num += avg_order_size[index];
         double exact = current_num / avg;
         ulong round = ceil(exact + 0.5);  //round a number
