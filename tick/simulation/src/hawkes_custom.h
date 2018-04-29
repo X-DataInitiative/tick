@@ -19,8 +19,9 @@ public:
     ArrayDouble f_i_Max;
 
     ulong last_global_n;
+    VArrayDouble Qty; //!exact number of shares in the line
 
-//! add the additonal information to allow the simulation
+    //! add the additonal information to allow the simulation
     std::string simu_mode = "random";
     //! for scenario 1, simulation of LOB
     double dim;
@@ -54,6 +55,11 @@ public :
 
     VArrayULongPtr get_global_n() {
         VArrayULongPtr shared_process = VArrayULong::new_ptr(global_n);
+        return shared_process;
+    }
+
+    VArrayDoublePtr get_Qty() {
+        VArrayDoublePtr shared_process = VArrayDouble::new_ptr(Qty);
         return shared_process;
     }
 
