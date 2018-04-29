@@ -22,6 +22,13 @@ Hawkes_customType2::Hawkes_customType2(unsigned int n_nodes, int seed, ulong _Ma
         avg_order_size = ArrayDouble(n_nodes);
         for(ulong k = 0; k != n_nodes; ++k)
             avg_order_size[k] = extrainfo[2 + k];
+
+        ulong round = ceil(current_num / avg);  //round a number
+        last_global_n = (round > MaxN - 1) ? MaxN - 1 : round;
+        if(current_num <= 0) {
+            current_num = 0;
+            last_global_n = 0;
+        }
     }
     else if(simu_mode == "generate_var_2"){
         current_num = extrainfo[0];

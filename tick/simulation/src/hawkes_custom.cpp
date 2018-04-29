@@ -38,6 +38,13 @@ Hawkes_custom::Hawkes_custom(unsigned int n_nodes, int seed, ulong _MaxN_of_f, c
         avg_order_size = ArrayDouble(dim);
         for(ulong k = 0; k != dim; ++k)
             avg_order_size[k] = extrainfo[3 + k];
+
+        ulong round = ceil(current_num / avg);  //round a number
+        last_global_n = (round > MaxN_of_f - 1) ? MaxN_of_f - 1 : round;
+        if(current_num <= 0) {
+            current_num = 0;
+            last_global_n = 0;
+        }
     }
     else
         TICK_ERROR("Unknown scenario");
