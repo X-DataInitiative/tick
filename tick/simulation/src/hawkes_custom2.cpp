@@ -67,21 +67,22 @@ bool Hawkes_customType2::update_time_shift_(double delay,
             if (total_intensity_bound1)
                 *total_intensity_bound1 += mu_Max[i];
 
-            for (unsigned int j = 0; j < n_nodes; j++) {
-                HawkesKernelPtr &k = kernels[i * n_nodes + j];
+            if(current_num > 0) //!cancel hawkes term in intensity function when the queue size is 0
+                for (unsigned int j = 0; j < n_nodes; j++) {
+                    HawkesKernelPtr &k = kernels[i * n_nodes + j];
 
-                if (k->get_support() == 0) continue;
-                double bound = 0;
-                intensity[i] += k->get_convolution(get_time() + delay, *timestamps[j], &bound);
+                    if (k->get_support() == 0) continue;
+                    double bound = 0;
+                    intensity[i] += k->get_convolution(get_time() + delay, *timestamps[j], &bound);
 
-                if (total_intensity_bound1) {
-                    *total_intensity_bound1 += bound;
+                    if (total_intensity_bound1) {
+                        *total_intensity_bound1 += bound;
+                    }
+                    if (intensity[i] < 0) {
+                        if (threshold_negative_intensity) intensity[i] = 0;
+                        flag_negative_intensity1 = true;
+                    }
                 }
-                if (intensity[i] < 0) {
-                    if (threshold_negative_intensity) intensity[i] = 0;
-                    flag_negative_intensity1 = true;
-                }
-            }
         }
         else
             intensity[i] = 0;
