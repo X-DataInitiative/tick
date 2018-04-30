@@ -12,9 +12,9 @@ from bokeh.models.widgets import Slider, TextInput
 from bokeh.plotting import figure
 
 
-n_samples = 5000
+n_samples = 500
 n_features = 2
-max_iter = 30
+max_iter = 300
 
 X, y = make_classification(n_samples=n_samples, n_features=n_features,
                            n_informative=n_features, n_redundant=0)
@@ -143,8 +143,7 @@ iteration_slider.on_change('value', update_plot)
 
 inputs = widgetbox(iteration_slider)
 
-
 curdoc().add_root(column(plot, inputs, width=800))
 
-
 curdoc().title = "Mondrian trees"
+
