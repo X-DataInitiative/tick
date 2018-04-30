@@ -74,7 +74,7 @@ bool Hawkes_customType2::update_time_shift_(double delay,
             if (total_intensity_bound1)
                 *total_intensity_bound1 += mu_Max[i];
 
-            if(current_num > 0) //!cancel hawkes term in intensity function when the queue size is 0
+            if(abs(current_num - avg) > 0.5) //cancel hawkes term in intensity function when the queue size is 1
                 for (unsigned int j = 0; j < n_nodes; j++) {
                     HawkesKernelPtr &k = kernels[i * n_nodes + j];
 
