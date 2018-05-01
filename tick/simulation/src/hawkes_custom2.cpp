@@ -142,7 +142,7 @@ void Hawkes_customType2::update_jump(int index) {
             last_global_n = 0;
 
 
-            srand( (unsigned)std::time(0) ); //generate the seed for random number;
+            srand( (unsigned)std::time(0) + Qty.size() * 1086 ); //generate the seed for random number;
             double tmp = (double) std::rand()/RAND_MAX;
             if(tmp < p_chg_at_0){
                 //!terminate the simulation, becuase there is no order now
