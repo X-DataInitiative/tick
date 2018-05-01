@@ -31,6 +31,7 @@ public:
     ArrayDouble avg_order_size;
     VArrayDouble Qty; //!exact number of shares in the line
 
+    double p_chg_at_0;
     //!information for extended scenario
     //!scenario name <generate_var_2>
     ArrayDoubleList1D avg_order_size_by_state;

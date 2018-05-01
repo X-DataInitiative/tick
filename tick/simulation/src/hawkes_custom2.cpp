@@ -29,6 +29,12 @@ Hawkes_customType2::Hawkes_customType2(unsigned int n_nodes, int seed, ulong _Ma
             current_num = 0;
             last_global_n = 0;
         }
+
+        if(extrainfo.size() > 2 + n_nodes)
+            p_chg_at_0 = extrainfo.last();
+        else
+            p_chg_at_0 = 0.64;
+        printf("p_chg_at_0 setted to %f\n", p_chg_at_0);
     }
     else if(simu_mode == "generate_var_2"){
         current_num = extrainfo[0];
@@ -74,25 +80,22 @@ bool Hawkes_customType2::update_time_shift_(double delay,
             if (total_intensity_bound1)
                 *total_intensity_bound1 += mu_Max[i];
 
-            if(abs(current_num - avg) > 0.5) //cancel hawkes term in intensity function when the queue size is 1
-                for (unsigned int j = 0; j < n_nodes; j++) {
-                    HawkesKernelPtr &k = kernels[i * n_nodes + j];
+            for (unsigned int j = 0; j < n_nodes; j++) {
+                HawkesKernelPtr &k = kernels[i * n_nodes + j];
 
-                    if (k->get_support() == 0) continue;
-                    double bound = 0;
-                    intensity[i] += k->get_convolution(get_time() + delay, *timestamps[j], &bound);
+                if (k->get_support() == 0) continue;
+                double bound = 0;
+                intensity[i] += k->get_convolution(get_time() + delay, *timestamps[j], &bound);
 
-                    if (total_intensity_bound1) {
-                        *total_intensity_bound1 += bound;
-                    }
-                    if (intensity[i] < 0) {
-                        if (threshold_negative_intensity) intensity[i] = 0;
-                        flag_negative_intensity1 = true;
-                    }
+                if (total_intensity_bound1) {
+                    *total_intensity_bound1 += bound;
                 }
+                if (intensity[i] < 0) {
+                    if (threshold_negative_intensity) intensity[i] = 0;
+                    flag_negative_intensity1 = true;
+                }
+            }
         }
-        else
-            intensity[i] = 0;
     }
     return flag_negative_intensity1;
 }
@@ -136,6 +139,13 @@ void Hawkes_customType2::update_jump(int index) {
         if(current_num <= 0) {
             current_num = 0;
             last_global_n = 0;
+
+            double tmp = rand.uniform();
+            if(tmp < p_chg_at_0){
+                //!terminate the simulation, becuase there is no order now
+                //!set time large enough to terminate the simulation
+                this->time = 1e10;
+            }
         }
 
         global_n.append1(last_global_n);
