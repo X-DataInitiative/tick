@@ -3,6 +3,7 @@
 //
 
 #include "hawkes_custom2.h"
+#include <time.h>
 
 Hawkes_customType2::Hawkes_customType2(unsigned int n_nodes, int seed, ulong _MaxN, const SArrayDoublePtrList1D &_mu_, const ArrayDouble &extrainfo, const std::string _simu_mode)
         : Hawkes(n_nodes, seed), global_n(0), Qty(0), simu_mode(_simu_mode){
@@ -140,7 +141,9 @@ void Hawkes_customType2::update_jump(int index) {
             current_num = 0;
             last_global_n = 0;
 
-            double tmp = rand.uniform();
+
+            srand( (unsigned)std::time(0) ); //generate the seed for random number;
+            double tmp = (double) std::rand()/RAND_MAX;
             if(tmp < p_chg_at_0){
                 //!terminate the simulation, becuase there is no order now
                 //!set time large enough to terminate the simulation
