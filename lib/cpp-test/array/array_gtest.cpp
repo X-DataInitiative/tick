@@ -7,9 +7,6 @@
 #include <random>
 #include <type_traits>
 
-#include <cereal/archives/binary.hpp>
-#include <cereal/archives/json.hpp>
-
 #include <gtest/gtest.h>
 
 #define DEBUG_COSTLY_THROW 1
@@ -35,6 +32,7 @@
 #include "tick/array/array.h"
 #include "tick/array/dot.h"
 #include "tick/base/base.h"
+#include "tick/base/serialization.h"
 
 namespace {
 
@@ -266,9 +264,9 @@ TYPED_TEST(ArrayTest, Size) {
 TYPED_TEST(ArrayTest, InitList) {
   using VT = typename TypeParam::value_type;
 
-  std::array<VT, 6> vals = {static_cast<VT>(0.0), static_cast<VT>(1.0),
+  std::array<VT, 6> vals = {{static_cast<VT>(0.0), static_cast<VT>(1.0),
                             static_cast<VT>(2.0), static_cast<VT>(4.0),
-                            static_cast<VT>(8.0), static_cast<VT>(16.0)};
+                            static_cast<VT>(8.0), static_cast<VT>(16.0)}};
 
   TypeParam arr{vals[0], vals[1], vals[2], vals[3], vals[4], vals[5]};
 
