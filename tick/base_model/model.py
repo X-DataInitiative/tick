@@ -151,33 +151,18 @@ class Model(ABC, Base):
     def _get_typed_class(self, dtype_or_object_with_dtype, dtype_map):
         """Deduce dtype and return true if C++ _model should be set
         """
-        import six
-        should_update_model = self._model is None
-        local_dtype = None
-        if (isinstance(dtype_or_object_with_dtype, six.string_types)
-                or isinstance(dtype_or_object_with_dtype, np.dtype)):
-            local_dtype = np.dtype(dtype_or_object_with_dtype)
-        elif hasattr(dtype_or_object_with_dtype, 'dtype'):
-            local_dtype = np.dtype(dtype_or_object_with_dtype.dtype)
-        else:
-            raise ValueError(("""
-             unsupported type used for model creation,
-             expects dtype or class with dtype , type:
-             """ + self.__class__.__name__).strip())
-        if self.dtype != local_dtype:
-            should_update_model = True
-        self.dtype = local_dtype
-        if np.dtype(self.dtype) not in dtype_map:
-            raise ValueError("""dtype does not exist in
-              type map for """ + self.__class__.__name__.strip())
-        return (should_update_model, dtype_map[np.dtype(self.dtype)])
+        import tick.base.dtype_to_cpp_type
+        return tick.base.dtype_to_cpp_type.get_typed_class(
+            self, dtype_or_object_with_dtype, dtype_map)
 
     def astype(self, dtype_or_object_with_dtype):
-        new_model = self._build_cpp_model(dtype_or_object_with_dtype)
-        print("new_model", new_model)
-        if new_model is not None:
-            self._set('_model', new_model)
-        return self
+        import tick.base.dtype_to_cpp_type
+        new_prox = tick.base.dtype_to_cpp_type.copy_with(
+          self, ["_model"] # ignore _model on deepcopy
+        )
+        new_prox._set('_model',
+            new_prox._build_cpp_model(dtype_or_object_with_dtype))
+        return new_prox
 
     def _build_cpp_model(self, dtype: str):
         raise ValueError("""This function is expected to

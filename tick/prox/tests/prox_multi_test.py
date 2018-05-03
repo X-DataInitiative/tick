@@ -54,7 +54,7 @@ class ProxMultiTest(object):
             self.dtype)
         prox_enet = ProxElasticNet(strength=l_enet, ratio=ratio,
                                    range=(start2, end2)).astype(self.dtype)
-        prox_multi = ProxMulti((prox_tv, prox_enet)).astype(self.dtype)
+        prox_multi = ProxMulti((prox_tv, prox_enet))
 
         val_correct = prox_tv.value(double_coeffs)
         val_correct += prox_enet.value(double_coeffs)

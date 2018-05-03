@@ -7,6 +7,7 @@
 template <class T>
 class TProxZero : public TProx<T> {
  public:
+   TProxZero();
    TProxZero(T strength);
 
    TProxZero(T strength,

@@ -39,14 +39,14 @@ class SDCATest(object):
             l_l1_sdca = (1 - ratio) * l_enet
             sdca = SDCA(l_l2sq=l_l2_sdca, max_iter=100, verbose=False, tol=0,
                         seed=SolverTest.sto_seed).set_model(model)
-            prox_l1 = ProxL1(l_l1_sdca)
+            prox_l1 = ProxL1(l_l1_sdca).astype(self.dtype)
             sdca.set_prox(prox_l1)
             coeffs_sdca = sdca.solve()
 
             # Compare with SVRG
             svrg = SVRG(max_iter=100, verbose=False, tol=0,
                         seed=SolverTest.sto_seed).set_model(model)
-            prox_enet = ProxElasticNet(l_enet, ratio)
+            prox_enet = ProxElasticNet(l_enet, ratio).astype(self.dtype)
             svrg.set_prox(prox_enet)
             coeffs_svrg = svrg.solve(step=0.1)
 
@@ -91,7 +91,7 @@ class SDCATest(object):
             sdca = SDCA(l_l2sq=l_l2sq, max_iter=100, verbose=False, tol=1e-14,
                         seed=TestSolver.sto_seed)
 
-            sdca.set_model(model).set_prox(ProxZero())
+            sdca.set_model(model).set_prox(ProxZero().astype(self.dtype))
             start_dual = np.sqrt(sdca._rand_max * l_l2sq)
             start_dual = start_dual * np.ones(sdca._rand_max)
 
@@ -119,7 +119,7 @@ class SDCATest(object):
             svrg = SVRG(max_iter=100, verbose=False, tol=1e-14,
                         seed=TestSolver.sto_seed)
 
-            svrg.set_model(model).set_prox(ProxL2Sq(l_l2sq))
+            svrg.set_model(model).set_prox(ProxL2Sq(l_l2sq).astype(self.dtype))
             svrg.solve(0.5 * np.ones(model.n_coeffs), step=1e-2)
             np.testing.assert_array_almost_equal(svrg.solution, sdca.solution,
                                                  decimal=4)

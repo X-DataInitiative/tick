@@ -108,7 +108,7 @@ class TestSolver(unittest.TestCase):
         if type(solver) is not SDCA:
             solver.set_prox(prox)
         else:
-            solver.set_prox(ProxZero())
+            solver.set_prox(ProxZero().astype(self.dtype))
             solver.l_l2sq = strength
 
         coeffs_solver = solver.solve()
@@ -188,7 +188,7 @@ class TestSolver(unittest.TestCase):
                 else:
                     model.fit(X, y)
 
-                prox = Prox(prox_strength, (0, n_features))
+                prox = Prox(prox_strength, (0, n_features)).astype(self.dtype)
                 solver = create_solver()
                 solver.set_model(model).set_prox(prox)
 

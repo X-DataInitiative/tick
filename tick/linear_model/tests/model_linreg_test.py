@@ -73,9 +73,9 @@ class ModelLinRegTestFloat32(TestGLM, ModelLinRegTest):
         TestGLM.__init__(self, *args, dtype="float32", **kwargs)
 
 
-class ModelLinRegTestFloat64(TestGLM, ModelLinRegTest):
-    def __init__(self, *args, **kwargs):
-        TestGLM.__init__(self, *args, dtype="float64", **kwargs)
+# class ModelLinRegTestFloat64(TestGLM, ModelLinRegTest):
+#     def __init__(self, *args, **kwargs):
+#         TestGLM.__init__(self, *args, dtype="float64", **kwargs)
 
 
 if __name__ == '__main__':
