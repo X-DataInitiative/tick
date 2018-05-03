@@ -50,11 +50,9 @@ class ProxElasticNetTestFloat32(TestProx, ProxElasticNetTest):
     def __init__(self, *args, **kwargs):
         TestProx.__init__(self, *args, dtype="float32", **kwargs)
 
-
 class ProxElasticNetTestFloat64(TestProx, ProxElasticNetTest):
     def __init__(self, *args, **kwargs):
         TestProx.__init__(self, *args, dtype="float64", **kwargs)
-
 
 if __name__ == '__main__':
     unittest.main()

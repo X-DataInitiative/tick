@@ -51,11 +51,8 @@ class ProxPositive(Prox):
         return self._prox.value(coeffs)
 
     def _build_cpp_prox(self, dtype_or_object_with_dtype):
-        (updated_prox, prox_class) = \
-            self._get_typed_class(dtype_or_object_with_dtype, dtype_map)
-        if updated_prox is True:
-            if self.range is None:
-                return prox_class(0.)
-            else:
-                return prox_class(0., self.range[0], self.range[1])
-        return None
+        prox_class = self._get_typed_class(dtype_or_object_with_dtype, dtype_map)
+        if self.range is None:
+            return prox_class(0.)
+        else:
+            return prox_class(0., self.range[0], self.range[1])

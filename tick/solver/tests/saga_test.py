@@ -48,12 +48,14 @@ class SAGATest(object):
 
         model = ModelLogReg().fit(X, y)
         svrg.set_model(model)
+        svrg.astype(self.dtype)
         self.assertEqual(svrg.variance_reduction, 'last')
         self.assertEqual(svrg._solver.get_variance_reduction(),
                          SAGA_VarianceReductionMethod_Last)
 
         svrg = SAGA(variance_reduction='rand')
         svrg.set_model(model)
+        svrg.astype(self.dtype)
         self.assertEqual(svrg.variance_reduction, 'rand')
         self.assertEqual(svrg._solver.get_variance_reduction(),
                          SAGA_VarianceReductionMethod_Random)
@@ -97,7 +99,6 @@ class SAGATestFloat32(TestSolver, SAGATest):
 class SAGATestFloat64(TestSolver, SAGATest):
     def __init__(self, *args, **kwargs):
         TestSolver.__init__(self, *args, dtype="float64", **kwargs)
-
 
 if __name__ == '__main__':
     unittest.main()

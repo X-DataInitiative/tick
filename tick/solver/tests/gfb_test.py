@@ -26,9 +26,9 @@ class GDBTest(object):
             n_features=n_features, n_samples=n_samples, dtype=self.dtype)
         strength = 1e-3
         ratio = 0.3
-        prox_elasticnet = ProxElasticNet(strength, ratio)
-        prox_l1 = ProxL1(strength * ratio)
-        prox_l2 = ProxL2Sq(strength * (1 - ratio))
+        prox_elasticnet = ProxElasticNet(strength, ratio).astype(self.dtype)
+        prox_l1 = ProxL1(strength * ratio).astype(self.dtype)
+        prox_l2 = ProxL2Sq(strength * (1 - ratio)).astype(self.dtype)
 
         # First we get GFB solution with prox l1 and prox l2
         gfb = GFB(tol=1e-13, max_iter=1000, verbose=False, step=1)

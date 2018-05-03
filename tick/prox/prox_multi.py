@@ -72,8 +72,9 @@ class ProxMulti(Prox):
         return self._prox.value(coeffs)
 
     def _build_cpp_prox(self, dtype_or_object_with_dtype):
-        (updated_prox, prox_class) = \
-            self._get_typed_class(dtype_or_object_with_dtype, dtype_map)
-        if updated_prox is True:
-            return prox_class(self.proxs)
-        return None
+        prox_class = self._get_typed_class(dtype_or_object_with_dtype, dtype_map)
+        return prox_class(self.proxs)
+
+    def astype(self, dtype_or_object_with_dtype):
+        raise NotImplementedError(
+          "This type requires each Prox to their 'astype' called (for now)")

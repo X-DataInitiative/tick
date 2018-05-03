@@ -212,12 +212,12 @@ class SVRGTest(object):
 
         # Crazy prox examples
         proxs = [
-            ProxTV(strength=1e-2, range=(5, 13), positive=True),
-            ProxElasticNet(strength=1e-2, ratio=0.9),
-            ProxEquality(range=(0, n_features)),
-            ProxL1(strength=1e-3, range=(5, 17)),
+            ProxTV(strength=1e-2, range=(5, 13), positive=True).astype(self.dtype),
+            ProxElasticNet(strength=1e-2, ratio=0.9).astype(self.dtype),
+            ProxEquality(range=(0, n_features)).astype(self.dtype),
+            ProxL1(strength=1e-3, range=(5, 17)).astype(self.dtype),
             ProxL1w(strength=1e-3, weights=np.arange(5, 17, dtype=np.double),
-                    range=(5, 17)),
+                    range=(5, 17)).astype(self.dtype),
         ]
 
         for intercept in [-1, None]:

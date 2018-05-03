@@ -120,22 +120,20 @@ class ProxWithGroups(Prox):
 
     def _build_cpp_prox(self, dtype_or_object_with_dtype):
         dtype_map = self._get_dtype_map()
-        (updated_prox, prox_class) = \
-            self._get_typed_class(dtype_or_object_with_dtype, dtype_map)
-        if updated_prox is True:
-            if self.range is None:
-                self._prox = prox_class(self.strength, self.blocks_start,
-                                        self.blocks_length, self.positive)
-            else:
-                start, end = self.range
-                i_max = self.blocks_start.argmax()
-                if end - start < self.blocks_start[i_max] + self.blocks_length[i_max]:
-                    raise ValueError("last block is not within the range "
-                                     "[0, end-start)")
-                self._prox = prox_class(self.strength, self.blocks_start,
-                                        self.blocks_length, start, end,
-                                        self.positive)
-        return self._prox
+        prox_class = self._get_typed_class(dtype_or_object_with_dtype, dtype_map)
+
+        if self.range is None:
+            return prox_class(self.strength, self.blocks_start,
+                                    self.blocks_length, self.positive)
+        else:
+            start, end = self.range
+            i_max = self.blocks_start.argmax()
+            if end - start < self.blocks_start[i_max] + self.blocks_length[i_max]:
+                raise ValueError("last block is not within the range "
+                                 "[0, end-start)")
+            return prox_class(self.strength, self.blocks_start,
+                                    self.blocks_length, start, end,
+                                    self.positive)
 
     def _get_dtype_map(self):
         raise ValueError("""This function is expected to

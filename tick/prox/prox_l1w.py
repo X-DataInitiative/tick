@@ -86,19 +86,17 @@ class ProxL1w(Prox):
         return dd
 
     def _build_cpp_prox(self, dtype_or_object_with_dtype):
-        (updated_prox, prox_class) = \
-            self._get_typed_class(dtype_or_object_with_dtype, dtype_map)
+        prox_class = self._get_typed_class(dtype_or_object_with_dtype, dtype_map)
         return_prox = None
-        if updated_prox is True:
-            weights = self.weights.astype(self.dtype)
-            if self.range is None:
-                return_prox = prox_class(self.strength, weights, self.positive)
-            else:
-                start, end = self.range
-                if (end - start) != self.weights.shape[0]:
-                    raise ValueError("Size of ``weights`` does not match "
-                                     "the given ``range``")
-                return_prox = prox_class(self.strength, weights, self.range[0],
-                                         self.range[1], self.positive)
-            return_prox.weights = weights
+        weights = self.weights.astype(self.dtype)
+        if self.range is None:
+            return_prox = prox_class(self.strength, weights, self.positive)
+        else:
+            start, end = self.range
+            if (end - start) != self.weights.shape[0]:
+                raise ValueError("Size of ``weights`` does not match "
+                                 "the given ``range``")
+            return_prox = prox_class(self.strength, weights, self.range[0],
+                                     self.range[1], self.positive)
+        return_prox.weights = weights
         return return_prox
