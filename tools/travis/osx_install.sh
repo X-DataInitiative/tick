@@ -26,7 +26,7 @@ env PYTHON_CONFIGURE_OPTS="--enable-framework" pyenv install -s ${PYVER}
 pyenv local ${PYVER}
 
 python -m pip install --quiet -U pip
-python -m pip install --quiet numpy pandas
+#python -m pip install --quiet numpy pandas
 python -m pip install -r requirements.txt
 python -m pip install sphinx pillow
 python -m pip install cpplint
