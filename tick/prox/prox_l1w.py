@@ -4,9 +4,15 @@
 
 import numpy as np
 from .base import Prox
-from .build.prox import ProxL1wDouble as _ProxL1w
+from .build.prox import ProxL1wDouble as _ProxL1wDouble
+from .build.prox import ProxL1wFloat as _ProxL1wFloat
 
 __author__ = 'Stephane Gaiffas'
+
+dtype_map = {
+    np.dtype("float64"): _ProxL1wDouble,
+    np.dtype("float32"): _ProxL1wFloat
+}
 
 # TODO: if we set a weights vector with length != end - start ???
 
@@ -50,18 +56,10 @@ class ProxL1w(Prox):
     def __init__(self, strength: float, weights: np.ndarray,
                  range: tuple = None, positive: bool = False):
         Prox.__init__(self, range)
-        if range is None:
-            self._prox = _ProxL1w(strength, weights, positive)
-        else:
-            start, end = range
-            if (end - start) != weights.shape[0]:
-                raise ValueError("Size of ``weights`` does not match "
-                                 "the given ``range``")
-            self._prox = _ProxL1w(strength, weights, range[0], range[1],
-                                  positive)
         self.positive = positive
         self.strength = strength
         self.weights = weights
+        self._prox = self._build_cpp_prox("float64")
 
     def _call(self, coeffs: np.ndarray, step: object, out: np.ndarray):
         self._prox.call(coeffs, step, out)
@@ -86,3 +84,19 @@ class ProxL1w(Prox):
         dd = Prox._as_dict(self)
         del dd["weights"]
         return dd
+
+    def _build_cpp_prox(self, dtype_or_object_with_dtype):
+        prox_class = self._get_typed_class(dtype_or_object_with_dtype, dtype_map)
+        return_prox = None
+        weights = self.weights.astype(self.dtype)
+        if self.range is None:
+            return_prox = prox_class(self.strength, weights, self.positive)
+        else:
+            start, end = self.range
+            if (end - start) != self.weights.shape[0]:
+                raise ValueError("Size of ``weights`` does not match "
+                                 "the given ``range``")
+            return_prox = prox_class(self.strength, weights, self.range[0],
+                                     self.range[1], self.positive)
+        return_prox.weights = weights
+        return return_prox

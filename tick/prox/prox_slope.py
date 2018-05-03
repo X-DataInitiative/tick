@@ -3,7 +3,13 @@
 from tick.prox.base import Prox
 import numpy as np
 
-from .build.prox import ProxSlopeDouble as _ProxSlope
+from .build.prox import ProxSlopeDouble as _ProxSlopeDouble
+from .build.prox import ProxSlopeFloat as _ProxSlopeFloat
+
+dtype_map = {
+    np.dtype("float64"): _ProxSlopeDouble,
+    np.dtype("float32"): _ProxSlopeFloat
+}
 
 
 class ProxSlope(Prox):
@@ -66,11 +72,7 @@ class ProxSlope(Prox):
         self.fdr = fdr
         self.positive = positive
         self.weights = None
-        if range is None:
-            self._prox = _ProxSlope(self.strength, self.fdr, self.positive)
-        else:
-            self._prox = _ProxSlope(self.strength, self.fdr, self.range[0],
-                                    self.range[1], self.positive)
+        self._prox = self._build_cpp_prox("float64")
 
     def _call(self, coeffs: np.ndarray, t: float, out: np.ndarray):
         self._prox.call(coeffs, t, out)
@@ -95,3 +97,11 @@ class ProxSlope(Prox):
         dd = Prox._as_dict(self)
         del dd["weights"]
         return dd
+
+    def _build_cpp_prox(self, dtype_or_object_with_dtype):
+        prox_class = self._get_typed_class(dtype_or_object_with_dtype, dtype_map)
+        if self.range is None:
+            return prox_class(self.strength, self.fdr, self.positive)
+        else:
+            return prox_class(self.strength, self.fdr, self.range[0],
+                              self.range[1], self.positive)

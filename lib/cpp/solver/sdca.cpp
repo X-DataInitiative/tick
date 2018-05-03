@@ -112,7 +112,7 @@ void TSDCA<T>::set_starting_iterate(Array<T> &dual_vector) {
                << rand_max << ", )");
   }
 
-  if (!dynamic_cast<ProxZero *>(prox.get())) {
+  if (!dynamic_cast<TProxZero<T> *>(prox.get())) {
     TICK_ERROR(
         "set_starting_iterate in SDCA might be call only if prox is ProxZero. "
         "Otherwise "

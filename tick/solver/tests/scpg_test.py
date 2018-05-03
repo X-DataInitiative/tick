@@ -7,7 +7,7 @@ import numpy as np
 from tick.hawkes import ModelHawkesExpKernLogLik, SimuHawkesExpKernels
 from tick.prox import ProxL2Sq
 from tick.solver import SCPG
-from . import TestSolver
+from tick.solver.tests.solver import TestSolver
 
 
 class Test(TestSolver):

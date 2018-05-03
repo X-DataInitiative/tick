@@ -102,6 +102,7 @@ prints
 .. testoutput:: [prox]
 
     {
+      "dtype": "float64",
       "name": "ProxL1",
       "positive": false,
       "range": null,
@@ -124,6 +125,7 @@ prints
 .. testoutput:: [prox]
 
     {
+      "dtype": "float64",
       "name": "ProxL1",
       "positive": true,
       "range": [

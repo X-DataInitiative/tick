@@ -45,6 +45,7 @@ class ModelHawkes(ModelFirstOrder):
         self.data = None
         self._end_times = None
         self._model = None
+        self.dtype = np.dtype("float64")
 
     def _get_n_coeffs(self):
         return self._model.get_n_coeffs()

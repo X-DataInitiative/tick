@@ -11,6 +11,11 @@ class ModelLabelsFeatures(Model):
     features matrix and a labels vector, namely for (one-class
     supervised learning)
 
+    Parameters
+    ----------
+    dtype : `{'float64', 'float32'}`, default='float64'
+        Type of the arrays used. This value is set from model and prox dtypes.
+
     Attributes
     ----------
     features : `numpy.ndarray`, shape=(n_samples, n_features) (read-only)
@@ -54,6 +59,7 @@ class ModelLabelsFeatures(Model):
         self.n_features = None
         self.n_samples = None
 
+
     def fit(self, features: np.ndarray, labels: np.ndarray) -> Model:
         """Set the data into the model object
 
@@ -74,18 +80,32 @@ class ModelLabelsFeatures(Model):
         return Model.fit(self, features, labels)
 
     def _set_data(self, features, labels):
+        self.dtype = features.dtype
         n_samples, n_features = features.shape
         if n_samples != labels.shape[0]:
             raise ValueError(("Features has %i samples while labels "
                               "have %i" % (n_samples, labels.shape[0])))
 
-        features = safe_array(features)
-        labels = safe_array(labels)
+        features = safe_array(features, dtype=self.dtype)
+        labels = safe_array(labels, dtype=self.dtype)
 
         self._set("features", features)
         self._set("labels", labels)
         self._set("n_features", n_features)
         self._set("n_samples", n_samples)
+
+    def astype(self, dtype_or_object_with_dtype):
+        import tick.base.dtype_to_cpp_type
+        new_model = tick.base.dtype_to_cpp_type.copy_with(
+          self, ["_model", "features", "labels"] # ignore _model on deepcopy
+        )
+        if self.features is not None:
+            new_model._set('features', self.features.astype(new_model.dtype))
+        if self.labels is not None:
+            new_model._set('labels', self.labels.astype(new_model.dtype))
+        new_model._set('_model',
+            new_model._build_cpp_model(dtype_or_object_with_dtype))
+        return new_model
 
     @property
     def _epoch_size(self):

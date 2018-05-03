@@ -63,6 +63,10 @@ class SimuWithFeatures(Simu):
 
     verbose : `bool`
         If True, print things
+
+    dtype : `{'float64', 'float32'}`, default='float64'
+        Type of the arrays used. This value is set from model and prox dtypes.
+        Used in the case features is None
     """
 
     _attrinfos = {
@@ -78,7 +82,8 @@ class SimuWithFeatures(Simu):
                  n_samples: int = 200, n_features: int = 30,
                  features_type: str = "cov_toeplitz", cov_corr: float = 0.5,
                  features_scaling: str = "none", seed: int = None,
-                 verbose: bool = True):
+                 verbose: bool = True, dtype="float64"):
+
         Simu.__init__(self, seed, verbose)
         self.intercept = intercept
         self.features = features
@@ -88,6 +93,7 @@ class SimuWithFeatures(Simu):
         self.cov_corr = cov_corr
         self.features_scaling = features_scaling
         self.features = None
+        self.dtype = dtype
 
         if features is not None:
             if n_features != features.shape[1]:
@@ -103,6 +109,7 @@ class SimuWithFeatures(Simu):
             self.n_samples = n_samples
             self.n_features = n_features
             self.features_type = features_type
+            self.dtype = self.features.dtype
 
         # TODO: check and correct also n_samples, n_features and cov_corr and features_scaling
 
@@ -150,11 +157,12 @@ class SimuWithFeatures(Simu):
             n_samples = self.n_samples
             n_features = self.n_features
             if features_type == "cov_uniform":
-                features = features_normal_cov_uniform(n_samples, n_features)
+                features = features_normal_cov_uniform(n_samples, n_features,
+                                                       dtype=self.dtype)
             else:
                 cov_corr = self.cov_corr
                 features = features_normal_cov_toeplitz(
-                    n_samples, n_features, cov_corr)
+                    n_samples, n_features, cov_corr, dtype=self.dtype)
         else:
             features = self.features
 

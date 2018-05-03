@@ -23,20 +23,26 @@ class TestSolver(unittest.TestCase):
 
     solvers = [SVRG, AGD, SGD, SDCA, GD, BFGS, AdaGrad]
 
+    def __init__(self, *args, dtype="float64", **kwargs):
+        unittest.TestCase.__init__(self, *args, **kwargs)
+        self.dtype = dtype
+
     @staticmethod
-    def generate_logistic_data(n_features, n_samples, use_intercept=False):
+    def generate_logistic_data(n_features, n_samples, dtype,
+                               use_intercept=False):
         """ Function to generate labels features y and X that corresponds
         to w, c
         """
         if n_features <= 5:
             raise ValueError("``n_features`` must be larger than 5")
         np.random.seed(12)
-        coeffs0 = weights_sparse_gauss(n_features, nnz=5)
+        coeffs0 = weights_sparse_gauss(n_features, nnz=5, dtype=dtype)
         if use_intercept:
             interc0 = 2.
         else:
             interc0 = None
-        simu = SimuLogReg(coeffs0, interc0, n_samples=n_samples, verbose=False)
+        simu = SimuLogReg(coeffs0, interc0, n_samples=n_samples, verbose=False,
+                          dtype=dtype)
         X, y = simu.simulate()
         return y, X, coeffs0, interc0
 
@@ -59,11 +65,16 @@ class TestSolver(unittest.TestCase):
             Number of decimals required for the test
         """
         # Set seed for data simulation
+        dtype = self.dtype
+
+        if np.dtype(dtype) != np.dtype("float64"):
+            return
+
         np.random.seed(12)
         n_samples = TestSolver.n_samples
         n_features = TestSolver.n_features
 
-        coeffs0 = weights_sparse_gauss(n_features, nnz=5)
+        coeffs0 = weights_sparse_gauss(n_features, nnz=5, dtype=dtype)
         if fit_intercept:
             interc0 = 2.
         else:
@@ -71,15 +82,18 @@ class TestSolver(unittest.TestCase):
 
         if model == 'linreg':
             X, y = SimuLinReg(coeffs0, interc0, n_samples=n_samples,
-                              verbose=False, seed=123).simulate()
+                              verbose=False, seed=123,
+                              dtype=self.dtype).simulate()
             model = ModelLinReg(fit_intercept=fit_intercept).fit(X, y)
         elif model == 'logreg':
             X, y = SimuLogReg(coeffs0, interc0, n_samples=n_samples,
-                              verbose=False, seed=123).simulate()
+                              verbose=False, seed=123,
+                              dtype=self.dtype).simulate()
             model = ModelLogReg(fit_intercept=fit_intercept).fit(X, y)
         elif model == 'poisreg':
             X, y = SimuPoisReg(coeffs0, interc0, n_samples=n_samples,
-                               verbose=False, seed=123).simulate()
+                               verbose=False, seed=123,
+                               dtype=self.dtype).simulate()
             # Rescale features to avoid overflows in Poisson simulations
             X /= np.linalg.norm(X, axis=1).reshape(n_samples, 1)
             model = ModelPoisReg(fit_intercept=fit_intercept).fit(X, y)
@@ -88,14 +102,13 @@ class TestSolver(unittest.TestCase):
                              " 'poisreg'")
 
         solver.set_model(model)
-
         strength = 1e-2
         prox = ProxL2Sq(strength, (0, model.n_features))
 
         if type(solver) is not SDCA:
             solver.set_prox(prox)
         else:
-            solver.set_prox(ProxZero())
+            solver.set_prox(ProxZero().astype(self.dtype))
             solver.l_l2sq = strength
 
         coeffs_solver = solver.solve()
@@ -103,6 +116,7 @@ class TestSolver(unittest.TestCase):
         bfgs = BFGS(max_iter=100,
                     verbose=False).set_model(model).set_prox(prox)
         coeffs_bfgs = bfgs.solve()
+
         np.testing.assert_almost_equal(coeffs_solver, coeffs_bfgs,
                                        decimal=decimal)
 
@@ -134,6 +148,7 @@ class TestSolver(unittest.TestCase):
         """...Test that solvers can run all glm models and are consistent
         with sparsity
         """
+        dtype = self.dtype
         n_samples = 50
         n_features = 10
         coeffs0 = weights_sparse_gauss(n_features, nnz=5)
@@ -158,9 +173,12 @@ class TestSolver(unittest.TestCase):
 
             Simu = model_simu_map[Model]
             simu = Simu(coeffs0, interc, n_samples=n_samples, seed=seed,
-                        verbose=False)
+                        verbose=False, dtype=self.dtype)
             X, y = simu.simulate()
-            X_sparse = csr_matrix(X)
+            if X.dtype != y.dtype:
+                raise ValueError(
+                    "Simulation error, features and label dtypes differ")
+            X_sparse = csr_matrix(X).astype(self.dtype)
 
             for sparse in [True, False]:
                 model = Model(fit_intercept=fit_intercept)
@@ -170,7 +188,7 @@ class TestSolver(unittest.TestCase):
                 else:
                     model.fit(X, y)
 
-                prox = Prox(prox_strength, (0, n_features))
+                prox = Prox(prox_strength, (0, n_features)).astype(self.dtype)
                 solver = create_solver()
                 solver.set_model(model).set_prox(prox)
 
@@ -189,8 +207,12 @@ class TestSolver(unittest.TestCase):
                 error_msg += ' without intercept'
 
             self.assertEqual(np.isfinite(iterate_dense).all(), True, error_msg)
+
+            places = 7
+            if self.dtype is "float32" or self.dtype is np.dtype("float32"):
+                places = 4
             np.testing.assert_almost_equal(iterate_dense, iterate_sparse,
-                                           err_msg=error_msg)
+                                           err_msg=error_msg, decimal=places)
 
     def test_set_model_and_set_prox(self):
         np.random.seed(12)
@@ -210,7 +232,8 @@ class TestSolver(unittest.TestCase):
                 solver.set_model(model)
 
         X, y = SimuLinReg(weights0, interc0, n_samples=n_samples,
-                          verbose=False, seed=123).simulate()
+                          verbose=False, seed=123,
+                          dtype=self.dtype).simulate()
         prox = ProxL2Sq(strength=1e-1)
         msg = '^Passed object of class ProxL2Sq is not a Model class$'
         with self.assertRaisesRegex(ValueError, msg):

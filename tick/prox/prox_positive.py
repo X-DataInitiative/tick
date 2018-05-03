@@ -4,9 +4,16 @@
 
 import numpy as np
 from .base import Prox
-from .build.prox import ProxPositiveDouble as _ProxPositive
+
+from .build.prox import ProxPositiveDouble as _ProxPositiveDouble
+from .build.prox import ProxPositiveFloat as _ProxPositiveFloat
 
 __author__ = 'Stephane Gaiffas'
+
+dtype_map = {
+    np.dtype("float64"): _ProxPositiveDouble,
+    np.dtype("float32"): _ProxPositiveFloat
+}
 
 
 class ProxPositive(Prox):
@@ -22,10 +29,7 @@ class ProxPositive(Prox):
 
     def __init__(self, range: tuple = None, positive: bool = False):
         Prox.__init__(self, range)
-        if range is None:
-            self._prox = _ProxPositive(0.)
-        else:
-            self._prox = _ProxPositive(0., range[0], range[1])
+        self._prox = self._build_cpp_prox("float64")
 
     def _call(self, coeffs: np.ndarray, step: object, out: np.ndarray):
         self._prox.call(coeffs, step, out)
@@ -45,3 +49,10 @@ class ProxPositive(Prox):
             Returns 0 (as this is a projection)
         """
         return self._prox.value(coeffs)
+
+    def _build_cpp_prox(self, dtype_or_object_with_dtype):
+        prox_class = self._get_typed_class(dtype_or_object_with_dtype, dtype_map)
+        if self.range is None:
+            return prox_class(0.)
+        else:
+            return prox_class(0., self.range[0], self.range[1])

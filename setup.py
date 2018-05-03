@@ -761,7 +761,6 @@ class RunPyLint(TickCommand):
         raise NotImplementedError('Running pylint from setup.py'
                                   'not supported yet')
 
-
 class RunPyTests(TickCommand):
     description = 'run tick Python tests'
     start_dir = '.'
@@ -774,6 +773,7 @@ class RunPyTests(TickCommand):
     def initialize_options(self):
         """Set default values for options."""
         self.start_dir = '.'
+        self.added = {}
 
     def run(self):
         loader = unittest.TestLoader()

@@ -4,9 +4,15 @@
 
 import numpy as np
 from .base import Prox
-from .build.prox import ProxElasticNetDouble as _ProxElasticNet
+from .build.prox import ProxElasticNetDouble as _ProxElasticNetDouble
+from .build.prox import ProxElasticNetFloat as _ProxElasticNetFloat
 
 __author__ = 'Maryan Morel'
+
+dtype_map = {
+    np.dtype("float64"): _ProxElasticNetDouble,
+    np.dtype("float32"): _ProxElasticNetFloat
+}
 
 
 class ProxElasticNet(Prox):
@@ -15,9 +21,6 @@ class ProxElasticNet(Prox):
 
     Parameters
     ----------
-    strength : `float`
-        Level of ElasticNet regularization
-
     range : `tuple` of two `int`, default=`None`
         Range on which the prox is applied. If `None` then the prox is
         applied on the whole vector
@@ -32,6 +35,11 @@ class ProxElasticNet(Prox):
     positive : `bool`, default=`False`
         If True, apply the penalization together with a projection
         onto the set of vectors with non-negative entries
+
+    Attributes
+    ----------
+    strength : `float`
+        Level of ElasticNet regularization
     """
 
     _attrinfos = {
@@ -52,14 +60,10 @@ class ProxElasticNet(Prox):
     def __init__(self, strength: float, ratio: float, range: tuple = None,
                  positive=False):
         Prox.__init__(self, range)
-        if range is None:
-            self._prox = _ProxElasticNet(strength, ratio, positive)
-        else:
-            self._prox = _ProxElasticNet(strength, ratio, range[0], range[1],
-                                         positive)
         self.positive = positive
         self.strength = strength
         self.ratio = ratio
+        self._prox = self._build_cpp_prox("float64")
 
     def _call(self, coeffs: np.ndarray, step: object, out: np.ndarray):
         self._prox.call(coeffs, step, out)
@@ -79,3 +83,11 @@ class ProxElasticNet(Prox):
             Value of the penalization at ``coeffs``
         """
         return self._prox.value(coeffs)
+
+    def _build_cpp_prox(self, dtype_or_object_with_dtype):
+        prox_class = self._get_typed_class(dtype_or_object_with_dtype, dtype_map)
+        if self.range is None:
+            return prox_class(self.strength, self.ratio, self.positive)
+        else:
+            return prox_class(self.strength, self.ratio, self.range[0],
+                              self.range[1], self.positive)

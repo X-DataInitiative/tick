@@ -78,6 +78,9 @@ class SCPG(SolverFirstOrder):
         consists in evaluating :math:`f` at :math:`y_k` and :math:`w^{k+1}`
         and keeping the iterate that minimizes the best :math:`f`.
 
+    dtype : `{'float64', 'float32'}`, default='float64'
+        Type of the arrays used. This value is set from model and prox dtypes.
+
     Attributes
     ----------
     model : `Model`
@@ -230,6 +233,7 @@ class SCPG(SolverFirstOrder):
         self._set('model', model)
         self._set('model_ssc', self._ModelStandardSC(model=model))
         self.prox_ssc.set_self_conc_constant(model._sc_constant)
+        self.dtype = np.dtype("float64")
         return self
 
     def set_prox(self, prox: Prox):
@@ -245,6 +249,7 @@ class SCPG(SolverFirstOrder):
         output : `Solver`
             The solver with given prox
         """
+        SolverFirstOrder.set_prox(self, prox)
         self._set('prox', prox)
         self.prox_ssc.set_original_prox(prox)
         return self

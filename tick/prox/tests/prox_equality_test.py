@@ -8,7 +8,7 @@ from tick.prox import ProxEquality
 from tick.prox.tests.prox import TestProx
 
 
-class Test(TestProx):
+class ProxEqualityTest(object):
     def test_ProxEquality(self):
         """...Test of ProxEquality
         """
@@ -51,6 +51,16 @@ class Test(TestProx):
 
         self.assertEqual(prox.value(out), 0)
         self.assertEqual(prox.value(coeffs), np.inf)
+
+
+class ProxEqualityTestFloat32(TestProx, ProxEqualityTest):
+    def __init__(self, *args, **kwargs):
+        TestProx.__init__(self, *args, dtype="float32", **kwargs)
+
+
+class ProxEqualityTestFloat64(TestProx, ProxEqualityTest):
+    def __init__(self, *args, **kwargs):
+        TestProx.__init__(self, *args, dtype="float64", **kwargs)
 
 
 if __name__ == '__main__':

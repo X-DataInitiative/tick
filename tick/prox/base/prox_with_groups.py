@@ -87,22 +87,7 @@ class ProxWithGroups(Prox):
         self.blocks_length = blocks_length
 
         # Get the C++ prox class, given by an overloaded method
-        prox_class = self._get_prox_class()
-        if range is None:
-            self._prox = prox_class(strength, blocks_start, blocks_length,
-                                    positive)
-        else:
-            start, end = self.range
-            i_max = blocks_start.argmax()
-            if end - start < blocks_start[i_max] + blocks_length[i_max]:
-                raise ValueError("last block is not within the range "
-                                 "[0, end-start)")
-            self._prox = prox_class(strength, blocks_start, blocks_length,
-                                    start, end, positive)
-
-    def _get_prox_class(self):
-        raise NotImplementedError('``_get_prox_class`` not implemented in '
-                                  'base ProxWithGroups')
+        self._prox = self._build_cpp_prox("float64")
 
     @property
     def n_blocks(self):
@@ -132,3 +117,24 @@ class ProxWithGroups(Prox):
         del dd["blocks_start"]
         del dd["blocks_length"]
         return dd
+
+    def _build_cpp_prox(self, dtype_or_object_with_dtype):
+        dtype_map = self._get_dtype_map()
+        prox_class = self._get_typed_class(dtype_or_object_with_dtype, dtype_map)
+
+        if self.range is None:
+            return prox_class(self.strength, self.blocks_start,
+                                    self.blocks_length, self.positive)
+        else:
+            start, end = self.range
+            i_max = self.blocks_start.argmax()
+            if end - start < self.blocks_start[i_max] + self.blocks_length[i_max]:
+                raise ValueError("last block is not within the range "
+                                 "[0, end-start)")
+            return prox_class(self.strength, self.blocks_start,
+                                    self.blocks_length, start, end,
+                                    self.positive)
+
+    def _get_dtype_map(self):
+        raise ValueError("""This function is expected to
+                            overriden in a subclass""".strip())

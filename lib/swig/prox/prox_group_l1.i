@@ -25,9 +25,6 @@ class TProxGroupL1 : public TProxWithGroups<T> {
   bool compare(const TProxGroupL1<T> &that);
 };
 
-%template(ProxGroupL1) TProxGroupL1<double>;
-typedef TProxGroupL1<double> ProxGroupL1;
-
 %template(ProxGroupL1Double) TProxGroupL1<double>;
 typedef TProxGroupL1<double> ProxGroupL1Double;
 
