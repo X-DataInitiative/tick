@@ -26,11 +26,12 @@ n_corr = 3
 
 # Relative incidence functions used for the simulation
 ce = CustomEffects(lags + 1)
-null_effect = [ce.constant_effect(1)] * 2
+null_effect = ce.constant_effect(1)
 intermediate_effect = ce.bell_shaped_effect(2, 30, 15, 15)
 late_effects = ce.increasing_effect(2, curvature_type=4)
 
-sim_effects = [*null_effect, intermediate_effect, late_effects]
+sim_effects = [np.copy(null_effect), np.copy(null_effect),
+               intermediate_effect, late_effects]
 
 n_features = len(sim_effects)
 n_lags = np.repeat(lags, n_features).astype('uint64')
