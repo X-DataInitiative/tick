@@ -1,11 +1,10 @@
 # License: BSD 3 clause
 
-import tick
-
 import os
-import pandas as pd
-import numpy as np
 from zipfile import ZipFile
+
+import numpy as np
+import pandas as pd
 from sklearn.utils import shuffle
 
 from tick.dataset.download_helper import download_tick_dataset, get_data_home
@@ -145,13 +144,60 @@ def fetch_crime_dataset(n_samples=2215):
     features = shuffled_df[features_columns].values
     features = (features - features.min(axis=0)) / \
                (features.max(axis=0) - features.min(axis=0))
+
+    # remove_outliers = False
+    # outliers = [16, 17, 51, 60, 136, 138, 143, 154, 187, 258, 349, 375, 389,
+    #             417, 443, 467, 468, 499, 501, 526, 598, 599, 621, 634, 645, 652,
+    #             655, 665, 667, 675, 690, 729, 758, 773, 779, 804, 814, 836, 861,
+    #             880, 895, 969, 987, 1029, 1041, 1046, 1074, 1078, 1086, 1087,
+    #             1106, 1114, 1173, 1176, 1180, 1188]
+    # outliers = [51, 1046]
+    #
+    # if remove_outliers:
+    #     seen_non_zeros = np.cumsum(labels != 0)
+    #     # print(sum(labels != 0))
+    #     # print(labels.shape)
+    #     print(labels[:35])
+    #     print(seen_non_zeros[:35])
+    #     to_remove = np.searchsorted(seen_non_zeros - 1, outliers)
+    #     print(to_remove)
+    #     # labels[to_remove] = 0
+    #     # print(outliers + seen_zeros[outliers])
+    #     labels = np.delete(labels, to_remove)
+    #     features = np.delete(features, to_remove, 0)
+    #     # raise()
+    #
+    # print('SHAPE', len(labels), features.shape)
+
+    labels = np.ascontiguousarray(labels)
     features = np.ascontiguousarray(features.astype(float))
 
     return features, labels
 
+
+def fetch_property_dataset(n_samples=50999):
+    # from https://www.kaggle.com/c/liberty-mutual-group-property-inspection-prediction/data
+    dataset_path = 'property/property.csv'
+    data_filename = "property.csv"
+
+    original_df = fetch_uci_dataset(dataset_path, data_filename, sep=',')
+    shuffled_df = shuffle(original_df, random_state=20329)
+    shuffled_df = shuffled_df.head(n_samples)
+
+    labels = shuffled_df['Hazard'].values.astype(float)
+    labels = np.ascontiguousarray(labels)
+
+    features = shuffled_df.drop(['Hazard', 'Id'], axis=1).values
+    binarizer = FeaturesBinarizer(remove_first=True)
+    features = binarizer.fit_transform(features)
+    features = np.ascontiguousarray(features.toarray().astype(float))
+
+    return features, labels
+
+
 def simulate_poisson(n_samples, n_features=None):
     if n_features is None:
-        n_features = 30
+        n_features = 100
 
     nnz = int(0.3 * n_features)
 
@@ -216,6 +262,10 @@ def fetch_poisson_dataset(dataset, n_samples=1000, n_features=None):
         features, labels = fetch_crime_dataset(n_samples=n_samples)
     elif dataset == 'wine':
         features, labels = fetch_wine_datase()
+    elif dataset == 'property':
+        features, labels = fetch_property_dataset()
     elif dataset == 'simulated':
         features, labels = simulate_poisson(n_samples, n_features=n_features)
+    else:
+        raise ValueError('unknown dataset {}'.format(dataset))
     return features, labels

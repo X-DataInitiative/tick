@@ -286,6 +286,12 @@ class ModelPoisReg(ModelGeneralizedLinear,
             kappa = self._get_unscaled_dual_init_sqrt(l_l2sq)
         elif init_type == 'log':
             kappa = self._get_unscaled_dual_init_log(l_l2sq)
+        elif init_type == 'full':
+            kappa = self._get_unscaled_dual_full_init(l_l2sq)
+        elif init_type == 'labels':
+            kappa = self.labels[self.labels != 0]
+        elif init_type == 'labels':
+            kappa = self._get_unscaled_dual_init_norm_label(l_l2sq)
         else:
             raise ValueError('Unknown init type {}'.format(init_type))
 
@@ -298,6 +304,7 @@ class ModelPoisReg(ModelGeneralizedLinear,
         features = self.features
 
         n_non_zeros = sum(labels != 0)
+        n_features = features.shape[1]
         non_zero_features = features[labels != 0]
         non_zero_labels = labels[labels != 0]
 
@@ -305,6 +312,12 @@ class ModelPoisReg(ModelGeneralizedLinear,
         features_dot_features_sum = non_zero_features.dot(features_sum)
         n_psi = np.sum(features, axis=0)
         n_psi_x = n_psi.dot(non_zero_features.T)
+
+        assert features_sum.shape == (n_features,)
+        assert features_dot_features_sum.shape == (n_non_zeros,)
+        assert n_psi.shape == (n_features,)
+        assert n_psi_x.shape == (n_non_zeros,)
+        assert non_zero_labels.shape == (n_non_zeros,)
 
         tmp1 = np.power(n_psi_x, 2)
         tmp1 += 4 * l_l2sq * n_non_zeros * non_zero_labels * \
@@ -391,6 +404,14 @@ class ModelPoisReg(ModelGeneralizedLinear,
         corr = n_non_zeros * non_zero_labels / features_dot_x
 
         return corr
+
+    def _get_unscaled_dual_init_norm_label(self, l_l2sq):
+        labels = self.labels
+        features = self.features
+
+        non_zero_features = features[labels != 0]
+        norms = np.linalg.norm(non_zero_features, axis=1)
+        return labels[labels != 0] / norms
 
     def _get_dual_init_estimated_base(self, l_l2sq, kappa_i):
         n_non_zeros = sum(self.labels != 0)

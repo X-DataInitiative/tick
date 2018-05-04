@@ -209,10 +209,11 @@ def plot_all_last_experiment(datasets=None, l_l2sq_coef=1., fit_intercept=False)
 fit_intercept = True
 l_l2sq_coef = 1
 max_n_samples = 10000000
-all_datasets = ['wine', 'facebook', 'crime']#, 'vegas', 'news', 'blog']
+# all_datasets = ['wine', 'facebook', 'crime']#, 'vegas', 'news', 'blog']
 # all_datasets = ['wine', 'facebook']#, 'crime', 'vegas']
 # all_datasets = ['facebook', 'blog']
 # all_datasets = ['wine', 'blog']
+all_datasets = ['property', 'wine']
 
 
 for dataset in all_datasets:

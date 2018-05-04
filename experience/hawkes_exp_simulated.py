@@ -88,6 +88,7 @@ for n_plot, positive in enumerate([True, False]):
                                                  hawkes_exp_kernels.adjacency)
 
         hawkes_dual.fit(timestamps)
+        hawkes_dual._learner
 
         hawkes_dual_learners += [hawkes_dual]
     if len(l_l2sq_list) > 1:

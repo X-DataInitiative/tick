@@ -74,7 +74,7 @@ class History(Base):
         Base.__init__(self)
         self.name = name
         self._minimum_col_width = 9
-        self.print_order = ["n_iter", "obj", "step", "rel_obj"]
+        self.print_order = ["time", "n_iter", "obj", "step", "rel_obj"]
         # Instantiate values of the history
         self._clear()
 
@@ -100,6 +100,7 @@ class History(Base):
 
         # Default print style of history values. Default is %.2e
         print_style = defaultdict(lambda: "%.2e")
+        print_style["time"] = "%.4f"
         print_style["n_iter"] = "%d"
         print_style["n_epoch"] = "%d"
         print_style["n_inner_prod"] = "%d"

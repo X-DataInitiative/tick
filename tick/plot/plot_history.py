@@ -112,7 +112,9 @@ def plot_history(solvers, x='n_iter', y='obj', labels=None, show=True,
                 y_array, label) in enumerate(zip(solvers, x_arrays,
                                                  y_arrays, labels)):
             color = get_plot_color(i)
-            ax.plot(x_array, y_array, lw=3, label=label, color=color)
+            mask = y_array != 0
+            ax.plot(x_array[mask], y_array[mask],
+                    lw=3, label=label, color=color)
 
         if log_scale:
             ax.set_yscale('log')

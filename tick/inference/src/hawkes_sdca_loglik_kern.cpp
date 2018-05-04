@@ -84,6 +84,20 @@ void HawkesSDCALoglikKern::synchronize_sdca() {
   }
 }
 
+void HawkesSDCALoglikKern::set_starting_iterate(ArrayDouble & dual_iterate) {
+  if (sdca_list.size() != n_nodes){
+    TICK_ERROR("SDCA list is not correctly initialized");
+  }
+
+  ulong position = 0;
+  for (ulong i = 0; i < n_nodes; ++i) {
+    ulong n_jumps_node_i = (*get_n_jumps_per_node())[i];
+    ArrayDouble dual_iterate_view = view(dual_iterate, position, position + n_jumps_node_i);
+    sdca_list[i].set_starting_iterate(dual_iterate_view);
+    position += n_jumps_node_i;
+  }
+}
+
 void HawkesSDCALoglikKern::compute_weights_dim_i(const ulong i_r,
                                                  std::shared_ptr<ArrayDouble2dList1D> G_buffer) {
   const auto r = static_cast<const ulong>(i_r / n_nodes);

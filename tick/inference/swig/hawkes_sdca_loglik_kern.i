@@ -35,4 +35,5 @@ class HawkesSDCALoglikKern : public ModelHawkesList {
 
   double loss(const ArrayDouble &coeffs) override;
   double current_dual_objective();
+  void set_starting_iterate(ArrayDouble & dual_iterate);
 };

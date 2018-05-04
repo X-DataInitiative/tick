@@ -73,6 +73,8 @@ class HawkesSDCALoglikKern : public ModelHawkesList {
   double get_max_dual() const;
   void set_max_dual(const double l_l2sq);
 
+  void set_starting_iterate(ArrayDouble & dual_iterate);
+
  private:
 
   void allocate_weights();
