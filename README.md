@@ -21,12 +21,12 @@ _tick_ is a machine learning library for Python 3. The focus is on statistical l
 The core of the library is an optimization module providing model computational classes, solvers and proximal operators for regularization. It comes also with inference and simulation tools intended for end-users who for example can easily:
 
 - Perform linear, logistic or Poisson regression
-- Simulate point Hawkes processes with standard or exotic kernels. 
+- Simulate point Hawkes processes with standard or exotic kernels.
 - Infer Hawkes models with various assumptions on the kernels: exponential or sum of exponential kernels, linear combination of basis kernels, sparse interactions, etc.
 
 A comprehensive list of examples can be found at
 
-- [https://x-datainitiative.github.io/tick/auto_examples/index.html](https://x-datainitiative.github.io/tick/auto_examples/index.html) 
+- [https://x-datainitiative.github.io/tick/auto_examples/index.html](https://x-datainitiative.github.io/tick/auto_examples/index.html)
 
 and the documentation is available at
 
@@ -47,17 +47,17 @@ The <i>tick</i> library is released with the support of Intel®. It uses the Int
 _tick_ is used for many industrial applications including:
 
 * [A joint work](https://portail.polytechnique.edu/datascience/fr/node/329) with the French national social security (CNAMTS) to analyses a huge health-care database, that describes the medical care provided to most of the French citizens. For this project, _tick_ is used to detect weak signals in pharmacovigilance, in order quantify the impact of drugs exposures to the occurrence of adverse events.
-   
+
 * High-frequency order book modeling in finance, in order to understand the interactions between different event types and/or between different assets, leveraging the full time resolution available in the original data.
 
-* Analyze the propagation of information in social media. Thanks to a dataset collected during 2017's presidential French election campaign on Twitter, _tick_ is used to recover, for each topic, the network across which information spreads inside the political sphere. 
-  
+* Analyze the propagation of information in social media. Thanks to a dataset collected during 2017's presidential French election campaign on Twitter, _tick_ is used to recover, for each topic, the network across which information spreads inside the political sphere.
+
 
 ## Quick setup
 
 ### Requirements
 
-_tick_ currently works on Linux/OSX (Windows is experimental) systems and requires Python 3.4 or newer. Please have the required Python dependencies in your Python environment:
+_tick_ currently works on Linux/OSX (Windows is experimental) systems and requires Python 3.5 or newer. Please have the required Python dependencies in your Python environment:
 
 ### Install using _pip_
 
@@ -82,12 +82,12 @@ Please see the [INSTALL document](INSTALL.md)
 
 ### Documentation
 
-Documentation is available on 
+Documentation is available on
 
 - [https://x-datainitiative.github.io/tick](https://x-datainitiative.github.io/tick/)
 
 This documentation is built with `Sphinx` and can be compiled and used locally by running `make html` from within the `doc` directory. This obviously needs to have `Sphinx` installed. Several tutorials and code-samples are available in the documentation.
- 
+
 ### Communication
 
 To reach the developers of _tick_, please join our community channel on Gitter (https://gitter.im/xdata-tick).
@@ -100,7 +100,7 @@ If you use _tick_ in a scientific publication, we would appreciate citations. Yo
 
     @ARTICLE{2017arXiv170703003B,
       author = {{Bacry}, E. and {Bompaire}, M. and {Ga{\"i}ffas}, S. and {Poulsen}, S.},
-      title = "{tick: a Python library for statistical learning, with 
+      title = "{tick: a Python library for statistical learning, with
         a particular emphasis on time-dependent modeling}",
       journal = {ArXiv e-prints},
       eprint = {1707.03003},

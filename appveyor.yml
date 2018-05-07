@@ -43,6 +43,8 @@ build_script:
   # doesnt exist for somereason?
   - mkdir -p "C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\cppwinrt"
 
+  # Python 3.7 TODO
+
   # Python 3.6
   - cat appveyor/pip/numpy/numpy-1.14.0+mkl-cp36* > appveyor/pip/numpy-1.14.0+mkl-cp36-cp36m-win_amd64.whl
   - C:\Python36-x64\Scripts\pip install appveyor\pip\numpy-1.14.0+mkl-cp36-cp36m-win_amd64.whl
@@ -70,8 +72,6 @@ build_script:
   # - C:\Python35-x64\python setup.py bdist_wheel
   # - rm -rf build
   # - rm -rf lib\bin
-
-  # Python 3.4 : Building wheels for pandas is currently failing, having trouble with pandas
 
 artifacts:
   - path: "dist\\*.whl"

@@ -16,11 +16,6 @@ matrix:
     services: docker
     env:
       - DOCKER_IMAGE=xdatainitiative/tick_ubuntu:1.4
-      - PYVER=3.4.6
-  - os: linux
-    services: docker
-    env:
-      - DOCKER_IMAGE=xdatainitiative/tick_ubuntu:1.4
       - PYVER=3.5.3
   - os: linux
     services: docker
@@ -30,19 +25,13 @@ matrix:
   - os: osx
     language: generic
     sudo: required
-    env: 
-      - PYVER=3.4.6
-    osx_image: xcode9.1
-  - os: osx
-    language: generic
-    sudo: required
     env:
       - PYVER=3.5.3
     osx_image: xcode9.1
   - os: osx
     language: generic
     sudo: required
-    env: 
+    env:
       - PYVER=3.6.1
     osx_image: xcode9.1
 
