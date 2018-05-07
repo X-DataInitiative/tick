@@ -16,7 +16,7 @@
 #include "tick/base/time_func.h"
 
 #include <gtest/gtest.h>
-#include <cereal/archives/json.hpp>
+#include "tick/base/serialization.h"
 
 struct MapFunctorsUnary {
   MapFunctorsUnary(std::size_t n) : data(n, 0) {}
@@ -349,7 +349,7 @@ TEST(DebugTest, PrintSparseArray) {
 #ifdef ADD_MAIN
 int main(int argc, char** argv) {
 #ifdef _WIN32
-  std::cout << "Skipping tests in " __FILE__ 
+  std::cout << "Skipping tests in " __FILE__
             << " on windows due to strangeness" << std::endl;
 #else
   ::testing::InitGoogleTest(&argc, argv);
