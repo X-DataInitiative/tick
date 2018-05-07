@@ -1,5 +1,5 @@
 numpy
-numpydoc
+numpydoc==0.7.0
 scipy
 matplotlib
 scikit-learn

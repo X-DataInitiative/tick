@@ -149,7 +149,7 @@ if os.name == 'posix':
 # Directory containing built .so files before they are moved either
 # in source (with build flag --inplace) or to site-packages (by install)
 #
-# E.g. build/lib.macosx-10.11-x86_64-3.4
+# E.g. build/lib.macosx-10.11-x86_64-3.5
 build_dir = "build/lib.{}-{}".format(distutils.util.get_platform(),
                                      sys.version[0:3])
 
@@ -865,8 +865,8 @@ setup(name="tick",
                    'Operating System :: POSIX',
                    'Operating System :: Unix',
                    'Operating System :: MacOS',
-                   'Programming Language :: Python :: 3.4',
                    'Programming Language :: Python :: 3.5',
                    'Programming Language :: Python :: 3.6',
+                   'Programming Language :: Python :: 3.7',
                    'License :: OSI Approved :: BSD License'],
       )
