@@ -98,6 +98,71 @@ void HawkesSDCALoglikKern::set_starting_iterate(ArrayDouble & dual_iterate) {
   }
 }
 
+SArrayDoublePtr HawkesSDCALoglikKern::get_dual_unscaled_features_init_i(ulong i) {
+  if (!weights_computed) compute_weights();
+
+  ulong n_jumps_node_i = (*get_n_jumps_per_node())[i];
+  SArrayDoublePtr dual_unscaled_features_init = SArrayDouble::new_ptr(n_jumps_node_i);
+
+  ArrayDouble2d g_i = g[i];
+  ArrayDouble mean_g_i(g_i.n_cols());
+  mean_g_i.init_to_zero();
+  for (ulong j = 0; j < n_jumps_node_i; ++j) {
+    mean_g_i.mult_incr(view_row(g[i], j), 1. / n_jumps_node_i);
+  }
+
+  for (ulong j = 0; j < n_jumps_node_i; ++j) {
+    // This sqrt seems to be very helpful for no reason
+    (*dual_unscaled_features_init)[j] = 1. / (mean_g_i.dot(view_row(g[i], j)));
+  }
+
+  return dual_unscaled_features_init;
+}
+
+double HawkesSDCALoglikKern::get_dual_init_i_scalar_i(ulong i, ArrayDouble &kappa_i) {
+  if (!weights_computed) compute_weights();
+
+  ulong n_jumps_node_i = (*get_n_jumps_per_node())[i];
+  ArrayDouble G_i = G[i];
+
+
+  ArrayDouble phi_over_n(G_i.size());
+  phi_over_n.init_to_zero();
+  for (ulong j = 0; j < n_jumps_node_i; ++j) {
+    phi_over_n.mult_incr(view_row(g[i], j), kappa_i[j] / n_jumps_node_i);
+  }
+
+  ArrayDouble psi(G_i.size());
+  psi.mult_fill(G_i, 1. / n_jumps_node_i);
+
+  const double phi_dot_psi = psi.dot(phi_over_n);
+  const double phi_norm_sq = phi_over_n.norm_sq();
+  double tmp = phi_dot_psi * phi_dot_psi;
+  tmp += 4 * l_l2sq * phi_norm_sq;
+
+  std::cout << "(2 * phi_norm_sq)=" << (2 * phi_norm_sq) << std::endl;
+
+  return (phi_dot_psi + std::sqrt(tmp)) / (2 * phi_norm_sq);
+}
+
+SArrayDoublePtr HawkesSDCALoglikKern::get_dual_init() {
+  ArrayDouble dual_init(get_n_total_jumps());
+  ulong position = 0;
+  for (ulong i = 0; i < n_nodes; ++i) {
+    ulong n_jumps_node_i = (*get_n_jumps_per_node())[i];
+
+    ArrayDouble kappa = *get_dual_unscaled_features_init_i(i);
+    const double alpha = get_dual_init_i_scalar_i(i, kappa);
+    std::cout << "get_dual_init_i_scalar_i, alpha=" << alpha << std::endl;
+
+    ArrayDouble dual_init_view = view(dual_init, position, position + n_jumps_node_i);
+    dual_init_view.mult_fill(kappa, alpha);
+
+    position += n_jumps_node_i;
+  }
+  return dual_init.as_sarray_ptr();
+}
+
 void HawkesSDCALoglikKern::compute_weights_dim_i(const ulong i_r,
                                                  std::shared_ptr<ArrayDouble2dList1D> G_buffer) {
   const auto r = static_cast<const ulong>(i_r / n_nodes);
@@ -170,6 +235,19 @@ double HawkesSDCALoglikKern::current_dual_objective() {
                                       &HawkesSDCALoglikKern::current_dual_objective_dim_i, this)
     - n_nodes * end_times->sum() / get_n_samples();
 }
+
+double HawkesSDCALoglikKern::dual_objective(ArrayDouble &dual) {
+  if (dual.size() != get_n_total_jumps()) {
+    TICK_ERROR("Dual vector must have shape (" << get_n_total_jumps() << ", )"
+                                               << "but has shape (" << dual.size() << ", )");
+  }
+
+  if (!weights_computed) compute_weights();
+  return parallel_map_additive_reduce(get_n_threads(), n_nodes,
+                                      &HawkesSDCALoglikKern::dual_objective_dim_i, this, dual)
+      - n_nodes * end_times->sum() / get_n_samples();
+}
+
 double HawkesSDCALoglikKern::loss(const ArrayDouble &coeffs) {
   if (!weights_computed) compute_weights();
   return parallel_map_additive_reduce(get_n_threads(), n_nodes,
@@ -179,6 +257,16 @@ double HawkesSDCALoglikKern::loss(const ArrayDouble &coeffs) {
 
 double HawkesSDCALoglikKern::current_dual_objective_dim_i(const ulong i) const {
   ArrayDouble dual_vector = sdca_list[i].get_dual_vector_view();
+  auto model_ptr = sdca_list[i].get_model();
+  return model_ptr->dual_objective(l_l2sq, dual_vector);
+}
+
+double HawkesSDCALoglikKern::dual_objective_dim_i(const ulong i, ArrayDouble &dual) const {
+  ulong start = view(*get_n_jumps_per_node(), 0, i).sum();
+  ulong end = start + (*get_n_jumps_per_node())[i];
+
+  ArrayDouble dual_vector = view(dual, start, end);
+
   auto model_ptr = sdca_list[i].get_model();
   return model_ptr->dual_objective(l_l2sq, dual_vector);
 }

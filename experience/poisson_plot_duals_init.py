@@ -132,16 +132,30 @@ def plot_experiment(dataset, l_l2sq, axes=None):
         axes[1].legend()
 
     else:
-        axes.scatter(normalized_inits, normalized_duals)
-        axes.plot([0, max(normalized_inits)],
-                     [0, slope * max(normalized_inits)],
-                     color='r', label='{:.4g}'.format(slope))
-        axes.set_ylabel('dual sol / norm')
-        axes.set_xlabel('dual init / norm')
-        axes.legend()
-        l_l2sq_coeff = l_l2sq * np.sqrt(len(labels))
-        axes.set_title(dataset.replace('simulated_', '') + ' {:.3g}'
-                       .format(l_l2sq_coeff))
+        # axes.scatter(normalized_inits, normalized_duals)
+        # axes.plot([0, max(normalized_inits)],
+        #              [0, slope * max(normalized_inits)],
+        #              color='r', label='{:.4g}'.format(slope))
+        # axes.set_ylabel('dual sol / norm')
+        # axes.set_xlabel('dual init / norm')
+        # axes.legend()
+        # l_l2sq_coeff = l_l2sq * np.sqrt(len(labels))
+        # axes.set_title(dataset.replace('simulated_', '') + ' {:.3g}'
+        #                .format(l_l2sq_coeff))
+        dual_init = dual_inits
+
+        mult = np.linspace(0, 3, 1000)
+        sdca = SDCA(l_l2sq)
+        sdca.set_model(model).set_prox(ProxZero())
+
+        duals = [sdca.dual_objective(dual_init * m) for m in mult]
+
+        ax.scatter(1, sdca.dual_objective(dual_init))
+        ax.plot(mult, duals)
+
+        mult_star = mult[np.argmax(duals)]
+        ax.scatter(mult_star, sdca.dual_objective(dual_init * mult_star))
+        ax.set_title('multstar = {:.5f}'.format(mult_star))
 
 
 def load_dataset(dataset_name):
@@ -224,7 +238,7 @@ def plot_slopes(dataset, ax=None):
 
 if __name__ == '__main__':
 
-    datasets = ['blog']
+    datasets = ['vegas', 'facebook']
 
     # run_all_experiments(datasets)
 
@@ -242,6 +256,8 @@ if __name__ == '__main__':
         # plot_slopes(dataset, ax=ax)
         for experiment in list_all_experiments(dataset):
             l_l2sq = extract_l_l2sq_from_dirname(experiment)
+
+            print("experiment", experiment)
 
             ax = axes.ravel()[count]
             print()

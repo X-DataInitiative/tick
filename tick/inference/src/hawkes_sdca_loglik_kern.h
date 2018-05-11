@@ -55,6 +55,7 @@ class HawkesSDCALoglikKern : public ModelHawkesList {
 
   double loss(const ArrayDouble &coeffs) override;
   double current_dual_objective();
+  double dual_objective(ArrayDouble &dual);
 
   ulong get_n_samples() const override {
     return n_jumps_per_node->sum();
@@ -74,6 +75,11 @@ class HawkesSDCALoglikKern : public ModelHawkesList {
   void set_max_dual(const double l_l2sq);
 
   void set_starting_iterate(ArrayDouble & dual_iterate);
+
+  SArrayDoublePtr get_dual_init();
+  SArrayDoublePtr get_dual_unscaled_features_init_i(ulong i);
+  double get_dual_init_i_scalar_i(ulong i, ArrayDouble &kappa_i);
+  double dual_objective_dim_i(const ulong i, ArrayDouble &dual) const;
 
  private:
 

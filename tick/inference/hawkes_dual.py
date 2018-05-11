@@ -148,6 +148,7 @@ class HawkesDual(LearnerHawkesNoParam):
             If only one realization is provided, then a float can be given.
         """
         LearnerHawkesNoParam.fit(self, events, end_times=end_times)
+        self._learner.set_starting_iterate(self._learner.get_dual_init())
         self._n_iter = 0
         self.solve()
         return self

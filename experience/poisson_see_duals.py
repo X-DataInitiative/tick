@@ -278,7 +278,7 @@ if __name__ == '__main__':
     #         l_l2sq = float('.'.join(result_file.split("=")[1].split('.')[:-1]))
     #         l_l2sqs += [l_l2sq]
     #         slopes += [init_slope(features, labels, lambda n, l_l2sq=l_l2sq: l_l2sq)]
-    #     # plot_experiment(dataset, l_l2sq_func, axes=axes[:, i])
+    #     # plot_experiment_n_samples(dataset, l_l2sq_func, axes=axes[:, i])
     #     # axes[0, i].set_title('${}$'.format(label))
     #
     #     slopes = [x for _, x in sorted(zip(l_l2sqs, slopes), key=lambda pair: pair[0])]

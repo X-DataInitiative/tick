@@ -36,4 +36,9 @@ class HawkesSDCALoglikKern : public ModelHawkesList {
   double loss(const ArrayDouble &coeffs) override;
   double current_dual_objective();
   void set_starting_iterate(ArrayDouble & dual_iterate);
+  SArrayDoublePtr get_dual_unscaled_features_init_i(ulong i);
+  double get_dual_init_i_scalar_i(ulong i, ArrayDouble &kappa_i);
+  SArrayDoublePtr get_dual_init();
+  double dual_objective(ArrayDouble &dual);
+  double dual_objective_dim_i(const ulong i, ArrayDouble &dual) const;
 };

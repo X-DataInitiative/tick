@@ -276,7 +276,7 @@ class ModelPoisReg(ModelGeneralizedLinear,
 
         return 0.5 / feature_norms * (n_psi_x + np.sqrt(tmp))
 
-    def get_dual_init(self, l_l2sq, init_type='psi'):
+    def get_dual_init(self, l_l2sq, init_type='features'):
 
         if init_type == 'psi':
             kappa = self._get_unscaled_dual_init(l_l2sq)
