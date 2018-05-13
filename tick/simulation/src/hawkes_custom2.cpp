@@ -34,7 +34,7 @@ Hawkes_customType2::Hawkes_customType2(unsigned int n_nodes, int seed, ulong _Ma
         if(extrainfo.size() > 2 + n_nodes)
             p_chg_at_0 = extrainfo.last();
         else
-            p_chg_at_0 = 0.64;
+            p_chg_at_0 = -1;
         printf("p_chg_at_0 setted to %f\n", p_chg_at_0);
     }
     else if(simu_mode == "generate_var_2"){
@@ -76,6 +76,7 @@ bool Hawkes_customType2::update_time_shift_(double delay,
         else if(simu_mode == "generate" or simu_mode == "generate_var_2")
             if(current_num > 0 || (current_num + avg_order_size[i] >= 0))
                 flag = true;
+        intensity[i] = 0;
         if (flag) {
             intensity[i] = mu_[i]->operator[](last_global_n);
             if (total_intensity_bound1)
@@ -137,17 +138,23 @@ void Hawkes_customType2::update_jump(int index) {
         current_num += avg_order_size[index];
         ulong round = ceil(current_num / avg);  //round a number
         last_global_n = (round > MaxN - 1) ? MaxN - 1 : round;
+
+
+//        printf("%d: %f %f | %d %f\n", index, Hawkes_intensity.last(), Total_intensity.last(), last_global_n, current_num);
+
+
         if(current_num <= 0) {
             current_num = 0;
             last_global_n = 0;
 
-
-            srand( (unsigned)std::time(0) + Qty.size() * 1086 ); //generate the seed for random number;
-            double tmp = (double) std::rand()/RAND_MAX;
-            if(tmp < p_chg_at_0){
-                //!terminate the simulation, becuase there is no order now
-                //!set time large enough to terminate the simulation
-                this->time = 1e10;
+            if(p_chg_at_0 > 0) {
+                srand( (unsigned)std::time(0) + Qty.size() * 1086 ); //generate the seed for random number;
+                double tmp = (double) std::rand()/RAND_MAX;
+                if(tmp < p_chg_at_0){
+                    //!terminate the simulation, becuase there is no order now
+                    //!set time large enough to terminate the simulation
+                    this->time = 1e10;
+                }
             }
         }
 

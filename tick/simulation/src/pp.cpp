@@ -146,6 +146,9 @@ void PP::simulate(double end_time, ulong n_points) {
       // We need to understand which component jumps
     double temp = rand.uniform() * total_intensity_bound;
 
+//    printf("intensities: {%f}: %f %f %f \n", total_intensity_bound, intensity[0], intensity[1], intensity[2]);
+
+
     unsigned int i;
     for (i = 0; i < n_nodes; i++) {
       temp -= intensity[i];
