@@ -105,9 +105,9 @@ class ModelHawkesExpKernLogLik(ModelHawkes, ModelSecondOrder,
             model. If None, it will be set to each realization's latest time.
             If only one realization is provided, then a float can be given.
         """
+        ModelHawkes.fit(self, events, end_times=end_times)
         ModelSecondOrder.fit(self, events)
-        ModelSelfConcordant.fit(self, events)
-        return ModelHawkes.fit(self, events, end_times=end_times)
+        return ModelSelfConcordant.fit(self, events)
 
     def _loss_and_grad(self, coeffs: np.ndarray, out: np.ndarray):
         value = self._model.loss_and_grad(coeffs, out)
