@@ -196,6 +196,12 @@ class Test(unittest.TestCase):
 
                 self.assertLess(check_grad(g_i, h_i, self.coeffs), 1e-5)
 
+    def test_ModelHawkesExpKernLogLik_refit(self):
+        model = ModelHawkesExpKernLogLik(decay=1.0)
+        model.fit(events=[np.array([0.0, 50.0])], end_times=100.0)
+        model.fit(events=[np.array([0.0, 500.0])], end_times=1000.0)
+        model.fit(events=[np.array([0.0, 50.0])], end_times=100.0)
+
 
 if __name__ == '__main__':
     unittest.main()
