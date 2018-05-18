@@ -220,6 +220,7 @@ class SimuCoxReg(SimuWithFeatures):
 
 class SimuCoxRegWithCutPoints(SimuWithFeatures):
     """Simulation of a Cox regression for proportional hazards with cut-points
+    effects in the features
 
     Parameters
     ----------
@@ -447,6 +448,8 @@ class SimuCoxRegWithCutPoints(SimuWithFeatures):
                 # make sure 2 consecutive coeffs are different enough
                 coeffs_block = np.abs(coeffs_block)
                 coeffs_block[::2] *= -1
+            # sum-to-zero constraint in each block
+            coeffs_block = coeffs_block - coeffs_block.mean()
             coeffs_binarized = np.append(coeffs_binarized, coeffs_block)
 
         binarizer = FeaturesBinarizer(method='given',
