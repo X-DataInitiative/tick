@@ -6,10 +6,10 @@
 
 #include "prox_separable.h"
 
-template <class T>
-class DLL_PUBLIC TProxZero : public TProxSeparable<T> {
+template <class T, class K>
+class DLL_PUBLIC TProxZero : public TProxSeparable<T, K> {
  public:
-  using TProxSeparable<T>::get_class_name;
+  using TProxSeparable<T, K>::get_class_name;
 
  private:
   T call_single(T x, T step) const override;
@@ -18,38 +18,38 @@ class DLL_PUBLIC TProxZero : public TProxSeparable<T> {
 
  public:
   // This exists soley for cereal/swig
-  TProxZero() : TProxZero(0) {}
+  TProxZero() : TProxZero<T, K>(0) {}
 
-  explicit TProxZero(T strength) : TProxSeparable<T>(strength, false) {}
+  explicit TProxZero(T strength) : TProxSeparable<T, K>(strength, false) {}
 
   TProxZero(T strength, ulong start, ulong end)
-      : TProxSeparable<T>(strength, start, end, false) {}
+      : TProxSeparable<T, K>(strength, start, end, false) {}
 
-  T value(const Array<T>& coeffs, ulong start, ulong end) override;
+  T value(const Array<K>& coeffs, ulong start, ulong end) override;
 
   template <class Archive>
   void serialize(Archive& ar) {
     ar(cereal::make_nvp("ProxSeparable",
-                        cereal::base_class<TProxSeparable<T> >(this)));
+                        cereal::base_class<TProxSeparable<T, K> >(this)));
   }
 
-  BoolStrReport compare(const TProxZero<T>& that) {
+  BoolStrReport compare(const TProxZero<T, K>& that) {
     std::stringstream ss;
     ss << get_class_name();
-    auto are_equal = TProxSeparable<T>::compare(that, ss);
+    auto are_equal = TProxSeparable<T, K>::compare(that, ss);
     return BoolStrReport(are_equal, ss.str());
   }
-  BoolStrReport operator==(const TProxZero<T>& that) { return compare(that); }
+  BoolStrReport operator==(const TProxZero<T, K>& that) {
+    return compare(that);
+  }
 };
 
-using ProxZero = TProxZero<double>;
-using ProxZeroDouble = TProxZero<double>;
-using ProxZeroFloat = TProxZero<float>;
-
+using ProxZeroDouble = TProxZero<double, double>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ProxZeroDouble,
                                    cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(ProxZeroDouble)
 
+using ProxZeroFloat = TProxZero<float, float>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ProxZeroFloat,
                                    cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(ProxZeroFloat)

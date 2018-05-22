@@ -6,16 +6,16 @@
 
 #include "tick/solver/sto_solver.h"
 
-template <class T>
-void TStoSolver<T>::init_permutation() {
+template <class T, class K>
+void TStoSolver<T, K>::init_permutation() {
   if ((rand_type == RandType::perm) && (rand_max > 0)) {
     permutation = ArrayULong(rand_max);
     for (ulong i = 0; i < rand_max; ++i) permutation[i] = i;
   }
 }
 
-template <class T>
-void TStoSolver<T>::reset() {
+template <class T, class K>
+void TStoSolver<T, K>::reset() {
   t = 1;
   if (rand_type == RandType::perm) {
     i_perm = 0;
@@ -23,8 +23,8 @@ void TStoSolver<T>::reset() {
   }
 }
 
-template <class T>
-ulong TStoSolver<T>::get_next_i() {
+template <class T, class K>
+ulong TStoSolver<T, K>::get_next_i() {
   ulong i = 0;
   if (rand_type == RandType::unif) {
     i = rand_unif(rand_max - 1);
@@ -42,8 +42,8 @@ ulong TStoSolver<T>::get_next_i() {
 }
 
 // Simulation of a random permutation using Knuth's algorithm
-template <class T>
-void TStoSolver<T>::shuffle() {
+template <class T, class K>
+void TStoSolver<T, K>::shuffle() {
   if (rand_type == RandType::perm) {
     // A secure check
     if (permutation.size() != rand_max) {
@@ -64,24 +64,42 @@ void TStoSolver<T>::shuffle() {
   permutation_ready = true;
 }
 
-template <class T>
-void TStoSolver<T>::get_minimizer(Array<T> &out) {
+template <class T, class K>
+void TStoSolver<T, K>::get_minimizer(Array<T> &out) {
   for (ulong i = 0; i < iterate.size(); ++i) {
     out[i] = iterate[i];
   }
 }
 
-template <class T>
-void TStoSolver<T>::get_iterate(Array<T> &out) {
+template <class T, class K>
+void TStoSolver<T, K>::get_iterate(Array<T> &out) {
   for (ulong i = 0; i < iterate.size(); ++i) out[i] = iterate[i];
 }
 
-template <class T>
-void TStoSolver<T>::set_starting_iterate(Array<T> &new_iterate) {
+template <class T, class K>
+void TStoSolver<T, K>::set_starting_iterate(Array<K> &new_iterate) {
   for (ulong i = 0; i < new_iterate.size(); ++i) {
     iterate[i] = new_iterate[i];
   }
 }
 
-template class DLL_PUBLIC TStoSolver<double>;
-template class DLL_PUBLIC TStoSolver<float>;
+template <>
+void TStoSolver<double, std::atomic<double>>::set_starting_iterate(
+    Array<std::atomic<double>> &new_iterate) {
+  for (ulong i = 0; i < new_iterate.size(); ++i) {
+    iterate[i].store(new_iterate[i].load());
+  }
+}
+template <>
+void TStoSolver<float, std::atomic<float>>::set_starting_iterate(
+    Array<std::atomic<float>> &new_iterate) {
+  for (ulong i = 0; i < new_iterate.size(); ++i) {
+    iterate[i].store(new_iterate[i].load());
+  }
+}
+
+template class TStoSolver<double, double>;
+template class TStoSolver<float, float>;
+
+template class TStoSolver<double, std::atomic<double>>;
+template class TStoSolver<float, std::atomic<float>>;

@@ -2,11 +2,19 @@
 
 import numpy as np
 from numpy.linalg import svd
+
 from tick.base_model import ModelGeneralizedLinear, ModelFirstOrder, \
     ModelLipschitz
-from .build.linear_model import ModelLinRegDouble as _ModelLinReg
+
+from .build.linear_model import ModelLinRegDouble as _ModelLinRegDouble
+from .build.linear_model import ModelLinRegFloat as _ModelLinRegFloat
 
 __author__ = 'Stephane Gaiffas'
+
+dtype_map = {
+    np.dtype('float64'): _ModelLinRegDouble,
+    np.dtype('float32'): _ModelLinRegFloat
+}
 
 
 class ModelLinReg(ModelFirstOrder, ModelGeneralizedLinear, ModelLipschitz):
@@ -37,6 +45,9 @@ class ModelLinReg(ModelFirstOrder, ModelGeneralizedLinear, ModelLipschitz):
     fit_intercept : `bool`
         If `True`, the model uses an intercept
 
+    dtype : `string`
+        Type of arrays to use - default float64
+
     Attributes
     ----------
     features : {`numpy.ndarray`, `scipy.sparse.csr_matrix`}, shape=(n_samples, n_features)
@@ -54,6 +65,9 @@ class ModelLinReg(ModelFirstOrder, ModelGeneralizedLinear, ModelLipschitz):
     n_coeffs : `int` (read-only)
         Total number of coefficients of the model
 
+    dtype : `{'float64', 'float32'}`, default='float64'
+        Type of the arrays used. This value is set from model and prox dtypes.
+
     n_threads : `int`, default=1 (read-only)
         Number of threads used for parallel computation.
 
@@ -63,9 +77,11 @@ class ModelLinReg(ModelFirstOrder, ModelGeneralizedLinear, ModelLipschitz):
     """
 
     def __init__(self, fit_intercept: bool = True, n_threads: int = 1):
+
         ModelFirstOrder.__init__(self)
         ModelGeneralizedLinear.__init__(self, fit_intercept)
         ModelLipschitz.__init__(self)
+
         self.n_threads = n_threads
 
         # TODO: implement _set_data and not fit
@@ -89,15 +105,17 @@ class ModelLinReg(ModelFirstOrder, ModelGeneralizedLinear, ModelLipschitz):
         ModelFirstOrder.fit(self, features, labels)
         ModelGeneralizedLinear.fit(self, features, labels)
         ModelLipschitz.fit(self, features, labels)
-        self._set("_model",
-                  _ModelLinReg(self.features, self.labels, self.fit_intercept,
-                               self.n_threads))
+
+        self._set("_model", self._build_cpp_model(features.dtype))
         return self
 
     def _grad(self, coeffs: np.ndarray, out: np.ndarray) -> None:
         self._model.grad(coeffs, out)
 
     def _loss(self, coeffs: np.ndarray) -> float:
+        if self.dtype != coeffs.dtype:
+            raise ValueError(
+                "Model Linreg has received coeffs array with unexpected dtype")
         return self._model.loss(coeffs)
 
     def _get_lip_best(self):
@@ -107,3 +125,9 @@ class ModelLinReg(ModelFirstOrder, ModelGeneralizedLinear, ModelLipschitz):
             return (s + 1) / self.n_samples
         else:
             return s / self.n_samples
+
+    def _build_cpp_model(self, dtype_or_object_with_dtype):
+        model_class = self._get_typed_class(dtype_or_object_with_dtype,
+                                            dtype_map)
+        return model_class(self.features, self.labels, self.fit_intercept,
+                           self.n_threads)

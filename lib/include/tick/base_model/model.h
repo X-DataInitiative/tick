@@ -14,10 +14,10 @@
 #include "tick/base/serialization.h"
 
 // TODO: Model "data" : ModeLabelsFeatures, Model,Model pour les Hawkes
-template <class T>
+template <class T, class K = T>
 class TModel {
-  template <class T1>
-  friend std::ostream &operator<<(std::ostream &, const TModel<T1> &);
+  template <class T1, class K1>
+  friend std::ostream &operator<<(std::ostream &, const TModel<T1, K1> &);
 
  public:
   TModel() {}
@@ -29,19 +29,19 @@ class TModel {
     return ss.str();
   }
 
-  virtual T loss_i(const ulong i, const Array<T> &coeffs) {
+  virtual T loss_i(const ulong i, const Array<K> &coeffs) {
     TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
   }
 
-  virtual void grad_i(const ulong i, const Array<T> &coeffs, Array<T> &out) {
+  virtual void grad_i(const ulong i, const Array<K> &coeffs, Array<T> &out) {
     TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
   }
 
-  virtual void grad(const Array<T> &coeffs, Array<T> &out) {
+  virtual void grad(const Array<K> &coeffs, Array<T> &out) {
     TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
   }
 
-  virtual T loss(const Array<T> &coeffs) {
+  virtual T loss(const Array<K> &coeffs) {
     TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
   }
 
@@ -64,7 +64,7 @@ class TModel {
   }
 
   virtual T sdca_dual_min_i(const ulong i, const T dual_i,
-                            const Array<T> &primal_vector,
+                            const Array<K> &primal_vector,
                             const T previous_delta_dual_i, T l_l2sq) {
     TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
   }
@@ -95,7 +95,7 @@ class TModel {
     return false;
   }
 
-  virtual T grad_i_factor(const ulong i, const Array<T> &coeffs) {
+  virtual T grad_i_factor(const ulong i, const Array<K> &coeffs) {
     TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
   }
 
@@ -120,18 +120,18 @@ class TModel {
   void serialize(Archive &ar) {}
 };
 
-template <typename T>
-inline std::ostream &operator<<(std::ostream &s, const TModel<T> &p) {
+template <typename T, typename K>
+inline std::ostream &operator<<(std::ostream &s, const TModel<T, K> &p) {
   return s << typeid(p).name() << "<" << typeid(T).name() << ">";
 }
 
-using Model = TModel<double>;
+using Model = TModel<double, double>;
 using ModelPtr = std::shared_ptr<Model>;
 
-using ModelDouble = TModel<double>;
+using ModelDouble = TModel<double, double>;
 using ModelDoublePtr = std::shared_ptr<ModelDouble>;
 
-using ModelFloat = TModel<float>;
+using ModelFloat = TModel<float, float>;
 using ModelFloatPtr = std::shared_ptr<ModelFloat>;
 
 #endif  // LIB_INCLUDE_TICK_BASE_MODEL_MODEL_H_

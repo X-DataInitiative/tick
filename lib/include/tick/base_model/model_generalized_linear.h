@@ -8,25 +8,25 @@
 
 #include "model_labels_features.h"
 
-template <class T>
+template <class T, class K = T>
 class DLL_PUBLIC TModelGeneralizedLinear
-    : virtual public TModelLabelsFeatures<T> {
+    : virtual public TModelLabelsFeatures<T, K> {
  protected:
-  using TModelLabelsFeatures<T>::features;
-  using TModelLabelsFeatures<T>::labels;
-  using TModelLabelsFeatures<T>::n_samples;
-  using TModelLabelsFeatures<T>::get_n_samples;
-  using TModelLabelsFeatures<T>::n_features;
-  using TModelLabelsFeatures<T>::get_n_features;
-  using TModelLabelsFeatures<T>::get_label;
-  using TModelLabelsFeatures<T>::get_features;
-  using TModelLabelsFeatures<T>::is_ready_columns_sparsity;
-  using TModelLabelsFeatures<T>::get_class_name;
+  using TModelLabelsFeatures<T, K>::features;
+  using TModelLabelsFeatures<T, K>::labels;
+  using TModelLabelsFeatures<T, K>::n_samples;
+  using TModelLabelsFeatures<T, K>::get_n_samples;
+  using TModelLabelsFeatures<T, K>::n_features;
+  using TModelLabelsFeatures<T, K>::get_n_features;
+  using TModelLabelsFeatures<T, K>::get_label;
+  using TModelLabelsFeatures<T, K>::get_features;
+  using TModelLabelsFeatures<T, K>::is_ready_columns_sparsity;
+  using TModelLabelsFeatures<T, K>::get_class_name;
 
   bool fit_intercept = false;
   bool ready_features_norm_sq = false;
 
-  unsigned int n_threads;
+  unsigned int n_threads = 0;
 
   Array<T> features_norm_sq;
 
@@ -38,7 +38,7 @@ class DLL_PUBLIC TModelGeneralizedLinear
    * @param fill : If `true` out will be filled by the gradient value, otherwise
    * out will be inceremented by the gradient value.
    */
-  virtual void compute_grad_i(const ulong i, const Array<T> &coeffs,
+  virtual void compute_grad_i(const ulong i, const Array<K> &coeffs,
                               Array<T> &out, const bool fill);
 
   void compute_features_norm_sq();
@@ -52,20 +52,20 @@ class DLL_PUBLIC TModelGeneralizedLinear
 
   virtual ~TModelGeneralizedLinear() {}
 
-  T grad_i_factor(const ulong i, const Array<T> &coeffs) override;
+  T grad_i_factor(const ulong i, const Array<K> &coeffs) override;
 
-  void grad_i(const ulong i, const Array<T> &coeffs, Array<T> &out) override;
+  void grad_i(const ulong i, const Array<K> &coeffs, Array<T> &out) override;
 
   /**
    * To be used by grad(ArrayDouble&, ArrayDouble&) to calculate grad by
    * incrementally updating 'out' out and coeffs are not in the same order as in
    * grad_i as this is necessary for parallel_map_array
    */
-  virtual void inc_grad_i(const ulong i, Array<T> &out, const Array<T> &coeffs);
+  virtual void inc_grad_i(const ulong i, Array<T> &out, const Array<K> &coeffs);
 
-  void grad(const Array<T> &coeffs, Array<T> &out) override;
+  void grad(const Array<K> &coeffs, Array<T> &out) override;
 
-  T loss(const Array<T> &coeffs) override;
+  T loss(const Array<K> &coeffs) override;
 
   void sdca_primal_dual_relation(const T l_l2sq, const Array<T> &dual_vector,
                                  Array<T> &out_primal_vector) override;
@@ -78,7 +78,7 @@ class DLL_PUBLIC TModelGeneralizedLinear
     return get_n_features() + static_cast<int>(fit_intercept);
   }
 
-  virtual T get_inner_prod(const ulong i, const Array<T> &coeffs) const;
+  virtual T get_inner_prod(const ulong i, const Array<K> &coeffs) const;
 
   virtual void set_fit_intercept(const bool fit_intercept) {
     this->fit_intercept = fit_intercept;
@@ -88,8 +88,11 @@ class DLL_PUBLIC TModelGeneralizedLinear
 
   template <class Archive>
   void serialize(Archive &ar) {
-    ar(cereal::make_nvp("ModelLabelsFeatures",
-                        cereal::base_class<TModelLabelsFeatures<T> >(this)));
+    ar(cereal::make_nvp(
+        "ModelLabelsFeatures",
+        typename cereal::virtual_base_class<TModelLabelsFeatures<T, K> >(
+            this)));
+
     ar(CEREAL_NVP(features_norm_sq));
     ar(CEREAL_NVP(fit_intercept));
     ar(CEREAL_NVP(ready_features_norm_sq));
@@ -97,9 +100,9 @@ class DLL_PUBLIC TModelGeneralizedLinear
   }
 
  protected:
-  BoolStrReport compare(const TModelGeneralizedLinear<T> &that,
+  BoolStrReport compare(const TModelGeneralizedLinear<T, K> &that,
                         std::stringstream &ss) {
-    auto are_equal = TModelLabelsFeatures<T>::compare(that, ss) &&
+    auto are_equal = TModelLabelsFeatures<T, K>::compare(that, ss) &&
                      TICK_CMP_REPORT(ss, features_norm_sq) &&
                      TICK_CMP_REPORT(ss, fit_intercept) &&
                      TICK_CMP_REPORT(ss, n_features) &&
@@ -109,14 +112,24 @@ class DLL_PUBLIC TModelGeneralizedLinear
   }
 };
 
-using ModelGeneralizedLinear = TModelGeneralizedLinear<double>;
+using ModelGeneralizedLinear = TModelGeneralizedLinear<double, double>;
 
-using ModelGeneralizedLinearDouble = TModelGeneralizedLinear<double>;
+using ModelGeneralizedLinearDouble = TModelGeneralizedLinear<double, double>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelGeneralizedLinearDouble,
                                    cereal::specialization::member_serialize)
 
-using ModelGeneralizedLinearFloat = TModelGeneralizedLinear<float>;
+using ModelGeneralizedLinearFloat = TModelGeneralizedLinear<float, float>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelGeneralizedLinearFloat,
+                                   cereal::specialization::member_serialize)
+
+using ModelGeneralizedLinearAtomicDouble =
+    TModelGeneralizedLinear<double, std::atomic<double> >;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelGeneralizedLinearAtomicDouble,
+                                   cereal::specialization::member_serialize)
+
+using ModelGeneralizedLinearAtomicFloat =
+    TModelGeneralizedLinear<float, std::atomic<float> >;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelGeneralizedLinearAtomicFloat,
                                    cereal::specialization::member_serialize)
 
 #endif  // LIB_INCLUDE_TICK_BASE_MODEL_MODEL_GENERALIZED_LINEAR_H_

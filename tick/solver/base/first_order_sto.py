@@ -78,7 +78,7 @@ class SolverFirstOrderSto(SolverFirstOrder, SolverSto):
     _attrinfos = {"_step": {"writable": False}}
 
     def __init__(self, step: float = None, epoch_size: int = None,
-                 rand_type="unif", tol=0., max_iter=100, verbose=True,
+                 rand_type="unif", tol: float = 0., max_iter=100, verbose=True,
                  print_every=10, record_every=1, seed=-1):
 
         self._step = None
@@ -165,7 +165,6 @@ class SolverFirstOrderSto(SolverFirstOrder, SolverSto):
         if not isinstance(self, SDCA):
             if step is not None:
                 self.step = step
-
             step, obj, minimizer, prev_minimizer = \
                 self._initialize_values(x0, step, n_empty_vectors=1)
             self._solver.set_starting_iterate(minimizer)

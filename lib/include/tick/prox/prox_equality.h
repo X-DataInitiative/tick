@@ -5,52 +5,52 @@
 
 #include "prox.h"
 
-template <class T>
-class DLL_PUBLIC TProxEquality : public TProx<T> {
+template <class T, class K>
+class DLL_PUBLIC TProxEquality : public TProx<T, K> {
  protected:
-  using TProx<T>::positive;
+  using TProx<T, K>::positive;
 
  public:
-  using TProx<T>::get_class_name;
+  using TProx<T, K>::get_class_name;
 
  public:
   // This exists soley for cereal/swig
-  TProxEquality() : TProxEquality<T>(0, false) {}
+  TProxEquality() : TProxEquality<T, K>(0, false) {}
 
-  explicit TProxEquality(T strength, bool positive) : TProx<T>(0., positive) {}
+  explicit TProxEquality(T strength, bool positive)
+      : TProx<T, K>(0., positive) {}
 
   TProxEquality(T strength, ulong start, ulong end, bool positive)
-      : TProx<T>(0., start, end, positive) {}
+      : TProx<T, K>(0., start, end, positive) {}
 
-  T value(const Array<T>& coeffs, ulong start, ulong end) override;
+  T value(const Array<K>& coeffs, ulong start, ulong end) override;
 
-  void call(const Array<T>& coeffs, T step, Array<T>& out, ulong start,
+  void call(const Array<K>& coeffs, T step, Array<K>& out, ulong start,
             ulong end) override;
 
   template <class Archive>
   void serialize(Archive& ar) {
-    ar(cereal::make_nvp("ProxSeparable", cereal::base_class<TProx<T> >(this)));
+    ar(cereal::make_nvp("ProxSeparable",
+                        cereal::base_class<TProx<T, K> >(this)));
   }
 
-  BoolStrReport compare(const TProxEquality<T>& that) {
+  BoolStrReport compare(const TProxEquality<T, K>& that) {
     std::stringstream ss;
     ss << get_class_name();
-    auto are_equal = TProx<T>::compare(that, ss);
+    auto are_equal = TProx<T, K>::compare(that, ss);
     return BoolStrReport(are_equal, ss.str());
   }
-  BoolStrReport operator==(const TProxEquality<T>& that) {
+  BoolStrReport operator==(const TProxEquality<T, K>& that) {
     return compare(that);
   }
 };
 
-using ProxEquality = TProxEquality<double>;
-using ProxEqualityDouble = TProxEquality<double>;
-using ProxEqualityFloat = TProxEquality<float>;
-
+using ProxEqualityDouble = TProxEquality<double, double>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ProxEqualityDouble,
                                    cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(ProxEqualityDouble)
 
+using ProxEqualityFloat = TProxEquality<float, float>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ProxEqualityFloat,
                                    cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(ProxEqualityFloat)

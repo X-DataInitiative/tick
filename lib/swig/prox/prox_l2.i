@@ -4,8 +4,8 @@
 #include "tick/prox/prox_l2.h"
 %}
 
-template <class T>
-class TProxL2 : public TProx<T> {
+template <class T, class K>
+class TProxL2 : public TProx<T, K> {
  public:
    TProxL2(T strength,
           bool positive);
@@ -15,14 +15,11 @@ class TProxL2 : public TProx<T> {
           unsigned long end,
           bool positive);
 
-  bool compare(const TProxL2<T> &that);
+  bool compare(const TProxL2<T, K> &that);
 };
 
-%template(ProxL2) TProxL2<double>;
-typedef TProxL2<double> ProxL2;
+%template(ProxL2Double) TProxL2<double, double>;
+typedef TProxL2<double, double> ProxL2Double;
 
-%template(ProxL2Double) TProxL2<double>;
-typedef TProxL2<double> ProxL2Double;
-
-%template(ProxL2Float) TProxL2<float>;
-typedef TProxL2<float> ProxL2Float;
+%template(ProxL2Float) TProxL2<float, float>;
+typedef TProxL2<float, float> ProxL2Float;

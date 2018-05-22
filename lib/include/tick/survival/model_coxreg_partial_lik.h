@@ -9,10 +9,10 @@
 
 #include "tick/base_model/model.h"
 
-template <class T>
-class DLL_PUBLIC TModelCoxRegPartialLik : public TModel<T> {
+template <class T, class K = T>
+class DLL_PUBLIC TModelCoxRegPartialLik : public TModel<T, K> {
  public:
-  using TModel<T>::get_class_name;
+  using TModel<T, K>::get_class_name;
 
  private:
   Array<T> inner_prods;
@@ -55,9 +55,9 @@ class DLL_PUBLIC TModelCoxRegPartialLik : public TModel<T> {
    *
    * \param coeffs : The vector at which the loss is computed
    */
-  T loss(const Array<T> &coeffs) override;
+  T loss(const Array<K> &coeffs) override;
 
-  void grad(const Array<T> &coeffs, Array<T> &out) override;
+  void grad(const Array<K> &coeffs, Array<T> &out) override;
 };
 
 using ModelCoxRegPartialLik = TModelCoxRegPartialLik<double>;

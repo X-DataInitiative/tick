@@ -1,5 +1,6 @@
 # License: BSD 3 clause
 
+import warnings
 from abc import ABC, abstractmethod
 import numpy as np
 from tick.base import Base
@@ -34,6 +35,9 @@ class Model(ABC, Base):
     n_passes_over_data : `int` (read-only)
         Number of effective passes through the data
 
+    dtype : `{'float64', 'float32'}`, default='float64'
+        Type of the arrays used. This value is set from model and prox dtypes.
+
     Notes
     -----
     This class should be not used by end-users, it is intended for
@@ -59,6 +63,9 @@ class Model(ABC, Base):
         },
         "_model": {
             "writable": False
+        },
+        "dtype": {
+            "writable": True
         }
     }
 
@@ -71,6 +78,7 @@ class Model(ABC, Base):
         self._model = None
         setattr(self, N_CALLS_LOSS, 0)
         setattr(self, PASS_OVER_DATA, 0)
+        self.dtype = None
 
     def fit(self, *args):
         self._set_data(*args)
@@ -118,6 +126,14 @@ class Model(ABC, Base):
         The ``fit`` method must be called to give data to the model,
         before using ``loss``. An error is raised otherwise.
         """
+        # This is a bit of a hack as I don't see how to control the dtype of
+        #  coeffs returning from scipy through lambdas
+        if coeffs.dtype != self.dtype:
+            warnings.warn(
+                'coeffs vector of type {} has been cast to {}'.format(
+                    coeffs.dtype, self.dtype))
+            coeffs = coeffs.astype(self.dtype)
+
         if not self._fitted:
             raise ValueError("call ``fit`` before using ``loss``")
         if coeffs.shape[0] != self.n_coeffs:
@@ -126,6 +142,7 @@ class Model(ABC, Base):
                                                              self.n_coeffs))
         self._inc_attr(N_CALLS_LOSS)
         self._inc_attr(PASS_OVER_DATA, step=self.pass_per_operation[LOSS])
+
         return self._loss(coeffs)
 
     @abstractmethod
@@ -133,3 +150,24 @@ class Model(ABC, Base):
         """Must be overloaded in child class
         """
         pass
+
+    def _get_typed_class(self, dtype_or_object_with_dtype, dtype_map):
+        """Deduce dtype and return true if C++ _model should be set
+        """
+        import tick.base.dtype_to_cpp_type
+        return tick.base.dtype_to_cpp_type.get_typed_class(
+            self, dtype_or_object_with_dtype, dtype_map)
+
+    def astype(self, dtype_or_object_with_dtype):
+        import tick.base.dtype_to_cpp_type
+        new_prox = tick.base.dtype_to_cpp_type.copy_with(
+            self,
+            ["_model"]  # ignore _model on deepcopy
+        )
+        new_prox._set('_model',
+                      new_prox._build_cpp_model(dtype_or_object_with_dtype))
+        return new_prox
+
+    def _build_cpp_model(self, dtype: str):
+        raise ValueError("""This function is expected to
+                            overriden in a subclass""".strip())

@@ -9,23 +9,23 @@
 #include "tick/base_model/model_generalized_linear.h"
 #include "tick/base_model/model_labels_features.h"
 
-template <class T>
+template <class T, class K = T>
 class DLL_PUBLIC TModelGeneralizedLinearWithIntercepts
-    : public virtual TModelGeneralizedLinear<T> {
+    : public virtual TModelGeneralizedLinear<T, K> {
  protected:
-  using TModelGeneralizedLinear<T>::features_norm_sq;
-  using TModelGeneralizedLinear<T>::compute_features_norm_sq;
-  using TModelGeneralizedLinear<T>::n_samples;
-  using TModelGeneralizedLinear<T>::n_features;
-  using TModelGeneralizedLinear<T>::fit_intercept;
-  using TModelGeneralizedLinear<T>::compute_grad_i;
-  using TModelGeneralizedLinear<T>::n_threads;
+  using TModelGeneralizedLinear<T, K>::features_norm_sq;
+  using TModelGeneralizedLinear<T, K>::compute_features_norm_sq;
+  using TModelGeneralizedLinear<T, K>::n_samples;
+  using TModelGeneralizedLinear<T, K>::n_features;
+  using TModelGeneralizedLinear<T, K>::fit_intercept;
+  using TModelGeneralizedLinear<T, K>::compute_grad_i;
+  using TModelGeneralizedLinear<T, K>::n_threads;
 
  public:
-  using TModelGeneralizedLinear<T>::grad_i;
-  using TModelGeneralizedLinear<T>::get_features;
-  using TModelGeneralizedLinear<T>::grad_i_factor;
-  using TModelGeneralizedLinear<T>::get_class_name;
+  using TModelGeneralizedLinear<T, K>::grad_i;
+  using TModelGeneralizedLinear<T, K>::get_features;
+  using TModelGeneralizedLinear<T, K>::grad_i_factor;
+  using TModelGeneralizedLinear<T, K>::get_class_name;
 
  protected:
   /**
@@ -36,7 +36,7 @@ class DLL_PUBLIC TModelGeneralizedLinearWithIntercepts
    * @param fill : If `true` out will be filled by the gradient value, otherwise
    * out will be inceremented by the gradient value.
    */
-  void compute_grad_i(const ulong i, const Array<T> &coeffs, Array<T> &out,
+  void compute_grad_i(const ulong i, const Array<K> &coeffs, Array<T> &out,
                       const bool fill) override;
 
  public:
@@ -48,17 +48,17 @@ class DLL_PUBLIC TModelGeneralizedLinearWithIntercepts
       const std::shared_ptr<BaseArray2d<T>> features,
       const std::shared_ptr<SArray<T>> labels, const bool fit_intercept,
       const int n_threads = 1)
-      : TModelLabelsFeatures<T>(features, labels),
-        TModelGeneralizedLinear<T>(features, labels, fit_intercept, n_threads) {
-  }
+      : TModelLabelsFeatures<T, K>(features, labels),
+        TModelGeneralizedLinear<T, K>(features, labels, fit_intercept,
+                                      n_threads) {}
 
   virtual ~TModelGeneralizedLinearWithIntercepts() {}
 
-  void grad(const Array<T> &coeffs, Array<T> &out) override;
+  void grad(const Array<K> &coeffs, Array<T> &out) override;
 
-  T loss(const Array<T> &coeffs) override;
+  T loss(const Array<K> &coeffs) override;
 
-  T get_inner_prod(const ulong i, const Array<T> &coeffs) const override;
+  T get_inner_prod(const ulong i, const Array<K> &coeffs) const override;
 
   ulong get_n_coeffs() const override {
     return n_features + n_samples + static_cast<int>(fit_intercept);
@@ -66,22 +66,24 @@ class DLL_PUBLIC TModelGeneralizedLinearWithIntercepts
 
   template <class Archive>
   void serialize(Archive &ar) {
-    ar(cereal::make_nvp("ModelGeneralizedLinear",
-                        cereal::base_class<TModelGeneralizedLinear<T>>(this)));
+    ar(cereal::make_nvp(
+        "ModelGeneralizedLinear",
+        cereal::virtual_base_class<TModelGeneralizedLinear<T, K>>(this)));
   }
 
-  BoolStrReport compare(const TModelGeneralizedLinearWithIntercepts<T> &that,
+  BoolStrReport compare(const TModelGeneralizedLinearWithIntercepts<T, K> &that,
                         std::stringstream &ss) {
     ss << get_class_name() << std::endl;
-    return TModelGeneralizedLinear<T>::compare(that, ss);
+    return TModelGeneralizedLinear<T, K>::compare(that, ss);
   }
-  BoolStrReport compare(const TModelGeneralizedLinearWithIntercepts<T> &that) {
+  BoolStrReport compare(
+      const TModelGeneralizedLinearWithIntercepts<T, K> &that) {
     std::stringstream ss;
     return compare(that, ss);
   }
   BoolStrReport operator==(
-      const TModelGeneralizedLinearWithIntercepts<T> &that) {
-    return TModelGeneralizedLinearWithIntercepts<T>::compare(that);
+      const TModelGeneralizedLinearWithIntercepts<T, K> &that) {
+    return TModelGeneralizedLinearWithIntercepts<T, K>::compare(that);
   }
 };
 

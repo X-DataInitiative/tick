@@ -29,8 +29,7 @@ enum class SVRG_StepType : uint16_t {
   Fixed = 1,
   BarzilaiBorwein = 2,
 };
-inline std::ostream &operator<<(std::ostream &s,
-                                const SVRG_StepType r) {
+inline std::ostream &operator<<(std::ostream &s, const SVRG_StepType r) {
   typedef std::underlying_type<SVRG_StepType>::type utype;
   return s << static_cast<utype>(r);
 }

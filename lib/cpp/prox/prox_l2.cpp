@@ -2,19 +2,19 @@
 
 #include "tick/prox/prox_l2.h"
 
-template <class T>
-void TProxL2<T>::call(const Array<T> &coeffs, T step, Array<T> &out,
-                      ulong start, ulong end) {
-  Array<T> sub_coeffs = view(coeffs, start, end);
-  Array<T> sub_out = view(out, start, end);
+template <class T, class K>
+void TProxL2<T, K>::call(const Array<K> &coeffs, T step, Array<K> &out,
+                         ulong start, ulong end) {
+  auto sub_coeffs = view(coeffs, start, end);
+  auto sub_out = view(out, start, end);
   const T thresh = step * strength * std::sqrt(end - start);
-  T norm = std::sqrt(sub_coeffs.norm_sq());
+  T norm = std::sqrt(sub_coeffs.template norm_sq<T>());
 
   if (norm <= thresh) {
-    sub_out.fill(0.);
+    sub_out.template fill<T>(0.);
   } else {
     T t = 1. - thresh / norm;
-    sub_out *= t;
+    sub_out.multiply(t);
   }
   if (positive) {
     for (ulong i = 0; i < sub_out.size(); ++i) {
@@ -25,11 +25,14 @@ void TProxL2<T>::call(const Array<T> &coeffs, T step, Array<T> &out,
   }
 }
 
-template <class T>
-T TProxL2<T>::value(const Array<T> &coeffs, ulong start, ulong end) {
-  T norm_sq = view(coeffs, start, end).norm_sq();
+template <class T, class K>
+T TProxL2<T, K>::value(const Array<K> &coeffs, ulong start, ulong end) {
+  T norm_sq = view(coeffs, start, end).template norm_sq<T>();
   return strength * std::sqrt((end - start) * norm_sq);
 }
 
-template class DLL_PUBLIC TProxL2<double>;
-template class DLL_PUBLIC TProxL2<float>;
+template class DLL_PUBLIC TProxL2<double, double>;
+template class DLL_PUBLIC TProxL2<float, float>;
+
+template class DLL_PUBLIC TProxL2<double, std::atomic<double>>;
+template class DLL_PUBLIC TProxL2<float, std::atomic<float>>;

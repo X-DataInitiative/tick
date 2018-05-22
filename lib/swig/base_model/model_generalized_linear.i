@@ -7,8 +7,8 @@
 
 %include "model_labels_features.i"
 
-template <class T>
-class TModelGeneralizedLinear : public virtual TModelLabelsFeatures<T> {
+template <class T, class K>
+class TModelGeneralizedLinear : public virtual TModelLabelsFeatures<T, K> {
  public:
   TModelGeneralizedLinear(
     const std::shared_ptr<BaseArray2d<T> > features,
@@ -23,10 +23,10 @@ class TModelGeneralizedLinear : public virtual TModelLabelsFeatures<T> {
                                  Array<T> &out_primal_vector) override;
 };
 
-%rename(ModelGeneralizedLinear) TModelGeneralizedLinear<double>;
-class ModelGeneralizedLinear : public virtual TModelLabelsFeatures<double>{
+%rename(ModelGeneralizedLinearDouble) TModelGeneralizedLinear<double, double>;
+class TModelGeneralizedLinear<double, double> : public virtual TModelLabelsFeatures<double, double>{
  public:
-  ModelGeneralizedLinear(const SBaseArrayDouble2dPtr features,
+  ModelGeneralizedLinearDouble(const SBaseArrayDouble2dPtr features,
                          const SArrayDoublePtr labels,
                          const bool fit_intercept,
                          const int n_threads = 1);
@@ -36,27 +36,12 @@ class ModelGeneralizedLinear : public virtual TModelLabelsFeatures<double>{
                                  const ArrayDouble &dual_vector,
                                  ArrayDouble &out_primal_vector);
 };
-typedef TModelGeneralizedLinear<double> ModelGeneralizedLinear;
+typedef TModelGeneralizedLinear<double, double> ModelGeneralizedLinearDouble;
 
-%rename(ModelGeneralizedLinearDouble) TModelGeneralizedLinear<double>;
-class TModelGeneralizedLinear<double> : public virtual TModelLabelsFeatures<double>{
+%rename(ModelGeneralizedLinearFloat) TModelGeneralizedLinear<float, float>;
+class TModelGeneralizedLinear<float, float> : public virtual TModelLabelsFeatures<float, float>{
  public:
-  TModelGeneralizedLinear(const SBaseArrayDouble2dPtr features,
-                         const SArrayDoublePtr labels,
-                         const bool fit_intercept,
-                         const int n_threads = 1);
-  unsigned long get_n_coeffs() const override;
-  virtual void set_fit_intercept(bool fit_intercept);
-  void sdca_primal_dual_relation(const double l_l2sq,
-                                 const ArrayDouble &dual_vector,
-                                 ArrayDouble &out_primal_vector);
-};
-typedef TModelGeneralizedLinear<double> ModelGeneralizedLinearDouble;
-
-%rename(ModelGeneralizedLinearFloat) TModelGeneralizedLinear<float>;
-class TModelGeneralizedLinear<float> : public virtual TModelLabelsFeatures<float>{
- public:
-  TModelGeneralizedLinear(const SBaseArrayFloat2dPtr features,
+  ModelGeneralizedLinearFloat(const SBaseArrayFloat2dPtr features,
                          const SArrayFloatPtr labels,
                          const bool fit_intercept,
                          const int n_threads = 1);
@@ -66,4 +51,4 @@ class TModelGeneralizedLinear<float> : public virtual TModelLabelsFeatures<float
                                  const ArrayFloat &dual_vector,
                                  ArrayFloat &out_primal_vector);
 };
-typedef TModelGeneralizedLinear<float> ModelGeneralizedLinearFloat;
+typedef TModelGeneralizedLinear<float, float> ModelGeneralizedLinearFloat;

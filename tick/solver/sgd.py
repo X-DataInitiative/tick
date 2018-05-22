@@ -1,9 +1,17 @@
 # License: BSD 3 clause
 
-from .build.solver import SGDDouble as _SGD
+import numpy as np
+
 from .base import SolverFirstOrderSto
+from .build.solver import SGDDouble as _SGDDouble
+from .build.solver import SGDFloat as _SGDFloat
 
 __author__ = "Stephane Gaiffas"
+
+dtype_class_mapper = {
+    np.dtype('float32'): _SGDFloat,
+    np.dtype('float64'): _SGDDouble
+}
 
 # TODO: preparer methodes pour set et get attributes
 
@@ -82,6 +90,9 @@ class SGD(SolverFirstOrderSto):
         Save history information every time the iteration number is a
         multiple of ``record_every``
 
+    dtype : `{'float64', 'float32'}`, default='float64'
+        Type of the arrays used. This value is set from model and prox dtypes.
+
     Attributes
     ----------
     model : `Model`
@@ -120,6 +131,9 @@ class SGD(SolverFirstOrderSto):
         SolverFirstOrderSto.__init__(self, step, epoch_size, rand_type, tol,
                                      max_iter, verbose, print_every,
                                      record_every, seed)
+
+    def set_model(self, model):
+        self.dtype = model.dtype
         # Type mapping None to unsigned long and double does not work...
         step = self.step
         if step is None:
@@ -128,5 +142,6 @@ class SGD(SolverFirstOrderSto):
         if epoch_size is None:
             epoch_size = 0
         # Construct the wrapped C++ SGD solver
-        self._solver = _SGD(epoch_size, self.tol, self._rand_type, step,
-                            self.seed)
+        self._set('_solver', dtype_class_mapper[self.dtype](
+            epoch_size, self.tol, self._rand_type, step, self.seed))
+        return SolverFirstOrderSto.set_model(self, model)

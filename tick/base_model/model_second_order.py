@@ -13,10 +13,18 @@ class ModelSecondOrder(ModelFirstOrder):
     order and second information, namely gradient and hessian norm
     information
 
+    Parameters
+    ----------
+    dtype : `string`
+        Type of arrays to use - default float64
+
     Attributes
     ----------
     n_calls_hessian_norm : `int` (read-only)
         Number of times ``hessian_norm`` has been called so far
+
+    dtype : `{'float64', 'float32'}`, default='float64'
+        Type of the arrays used. This value is set from model and prox dtypes.
 
     Notes
     -----

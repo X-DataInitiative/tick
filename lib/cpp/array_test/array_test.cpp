@@ -49,41 +49,42 @@ double test_constructor_SparseArrayDouble() {
     SparseArrayDouble a(12, 5, indices, data);
     SparseArrayDouble b = SparseArrayDouble(12, 5, indices, data);
 
-    return a.sum() + b.sum();
+    return a.template sum<double>() + b.template sum<double>();
 }
 
 double test_constructor_SparseArrayDouble2d() {
-    // 0,0,0,1,0
-    // 2,0,3,0,1
-    // 0,0,0,0,0
-    // 0,1,0,0,0
-    ulong ncols = 5;
-    ulong nrows = 4;
-    double data[5];
-    data[0] = 1;
-    data[1] = 2;
-    data[2] = 3;
-    data[3] = 1;
-    data[4] = 1;
-    INDICE_TYPE indices[5];
-    indices[0] = 3;
-    indices[1] = 0;
-    indices[2] = 2;
-    indices[3] = 4;
-    indices[4] = 1;
-    INDICE_TYPE row_indices[5];
-    row_indices[0] = 0;
-    row_indices[1] = 1;
-    row_indices[2] = 4;
-    row_indices[3] = 4;
-    row_indices[4] = 5;
+  // 0,0,0,1,0
+  // 2,0,3,0,1
+  // 0,0,0,0,0
+  // 0,1,0,0,0
+  ulong ncols = 5;
+  ulong nrows = 4;
+  double data[5];
+  data[0] = 1;
+  data[1] = 2;
+  data[2] = 3;
+  data[3] = 1;
+  data[4] = 1;
+  INDICE_TYPE indices[5];
+  indices[0] = 3;
+  indices[1] = 0;
+  indices[2] = 2;
+  indices[3] = 4;
+  indices[4] = 1;
+  INDICE_TYPE row_indices[5];
+  row_indices[0] = 0;
+  row_indices[1] = 1;
+  row_indices[2] = 4;
+  row_indices[3] = 4;
+  row_indices[4] = 5;
 
-    SparseArrayDouble2d a(3, 4);
-    a.init_to_zero();
-    SparseArrayDouble2d b(nrows, ncols, row_indices, indices, data);
-    SparseArrayDouble2d c = SparseArrayDouble2d(nrows, ncols, row_indices, indices, data);
+  SparseArrayDouble2d a(3, 4);
+  a.init_to_zero();
+  SparseArrayDouble2d b(nrows, ncols, row_indices, indices, data);
+  SparseArrayDouble2d c =
+      SparseArrayDouble2d(nrows, ncols, row_indices, indices, data);
 
-    return a.sum() + b.sum() + c.sum();
+  return a.sum() + b.sum() + c.sum();
 }
 
 

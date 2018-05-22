@@ -31,7 +31,7 @@ class Test(TestProx):
             out[start:end] *= (1. - thresh / norm) * ((1. - thresh / norm) > 0)
             val += strength * (end - start) ** 0.5 * norm
 
-        self.assertAlmostEqual(prox.value(coeffs), val, delta=1e-15)
+        self.assertAlmostEqual(prox.value(coeffs), val, delta=self.delta)
         assert_almost_equal(prox.call(coeffs, step=step), out, decimal=7)
 
     def test_ProxGroupL1_n_blocks(self):

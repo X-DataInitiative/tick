@@ -7,9 +7,9 @@
 %include "model_generalized_linear.i";
 %include "model_lipschitz.i";
 
-template <class T>
-class TModelQuadraticHinge : public virtual TModelGeneralizedLinear<T>,
-                    public TModelLipschitz<T> {
+template <class T, class K = T>
+class TModelQuadraticHinge : public virtual TModelGeneralizedLinear<T, K>,
+                    public TModelLipschitz<T, K> {
  public:
   TModelQuadraticHinge();
   TModelQuadraticHinge(
@@ -19,12 +19,12 @@ class TModelQuadraticHinge : public virtual TModelGeneralizedLinear<T>,
     const int n_threads
   );
 
-  bool compare(const TModelQuadraticHinge<T> &that);
+  bool compare(const TModelQuadraticHinge<T, K> &that);
 };
 
-%rename(ModelQuadraticHingeDouble) TModelQuadraticHinge<double>;
-class ModelQuadraticHingeDouble : public virtual TModelGeneralizedLinear<double>,
-                    public TModelLipschitz<double> {
+%rename(ModelQuadraticHingeDouble) TModelQuadraticHinge<double, double>;
+class ModelQuadraticHingeDouble : public virtual TModelGeneralizedLinear<double, double>,
+                    public TModelLipschitz<double, double> {
  public:
   ModelQuadraticHingeDouble();
   ModelQuadraticHingeDouble(
@@ -36,12 +36,12 @@ class ModelQuadraticHingeDouble : public virtual TModelGeneralizedLinear<double>
 
   bool compare(const ModelQuadraticHingeDouble &that);
 };
-typedef TModelQuadraticHinge<double> ModelQuadraticHingeDouble;
+typedef TModelQuadraticHinge<double, double> ModelQuadraticHingeDouble;
 TICK_MAKE_PICKLABLE(ModelQuadraticHingeDouble);
 
-%rename(ModelQuadraticHingeFloat) TModelQuadraticHinge<float>;
-class ModelQuadraticHingeFloat : public virtual TModelGeneralizedLinear<float>,
-                    public TModelLipschitz<float> {
+%rename(ModelQuadraticHingeFloat) TModelQuadraticHinge<float, float>;
+class ModelQuadraticHingeFloat : public virtual TModelGeneralizedLinear<float, float>,
+                    public TModelLipschitz<float, float> {
  public:
   ModelQuadraticHingeFloat();
   ModelQuadraticHingeFloat(
@@ -53,5 +53,5 @@ class ModelQuadraticHingeFloat : public virtual TModelGeneralizedLinear<float>,
 
   bool compare(const ModelQuadraticHingeFloat &that);
 };
-typedef TModelQuadraticHinge<float> ModelQuadraticHingeFloat;
+typedef TModelQuadraticHinge<float, float> ModelQuadraticHingeFloat;
 TICK_MAKE_PICKLABLE(ModelQuadraticHingeFloat);

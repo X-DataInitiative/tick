@@ -191,3 +191,26 @@ class Solver(Base):
         dd.pop("coeffs", None)
         dd.pop("history", None)
         return dd
+
+    def _get_typed_class(self, dtype_or_object_with_dtype, dtype_map):
+        """Deduce dtype and return true if C++ _model should be set
+        """
+        import tick.base.dtype_to_cpp_type
+        return tick.base.dtype_to_cpp_type.get_typed_class(
+            self, dtype_or_object_with_dtype, dtype_map)
+
+    def astype(self, dtype_or_object_with_dtype):
+        if self.model is None:
+            raise ValueError("Cannot reassign solver without a model")
+
+        import tick.base.dtype_to_cpp_type
+        new_solver = tick.base.dtype_to_cpp_type.copy_with(
+            self,
+            ["_solver", "prox", "model"]  # ignore on deepcopy
+        )
+        new_solver.dtype = tick.base.dtype_to_cpp_type.extract_dtype(
+            dtype_or_object_with_dtype)
+        new_solver.set_model(self.model.astype(new_solver.dtype))
+        if self.prox != None:
+            new_solver.set_prox(self.prox.astype(new_solver.dtype))
+        return new_solver

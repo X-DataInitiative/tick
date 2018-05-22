@@ -2,8 +2,8 @@
 
 #include "tick/prox/prox_l1.h"
 
-template <class T>
-T TProxL1<T>::call_single(T x, T step) const {
+template <class T, class K>
+T TProxL1<T, K>::call_single(T x, T step) const {
   T thresh = step * strength;
   if (x > 0) {
     if (x > thresh) {
@@ -26,8 +26,8 @@ T TProxL1<T>::call_single(T x, T step) const {
   }
 }
 
-template <class T>
-T TProxL1<T>::call_single(T x, T step, ulong n_times) const {
+template <class T, class K>
+T TProxL1<T, K>::call_single(T x, T step, ulong n_times) const {
   if (n_times >= 1) {
     return call_single(x, n_times * step);
   } else {
@@ -35,10 +35,13 @@ T TProxL1<T>::call_single(T x, T step, ulong n_times) const {
   }
 }
 
-template <class T>
-T TProxL1<T>::value_single(T x) const {
+template <class T, class K>
+T TProxL1<T, K>::value_single(T x) const {
   return std::abs(x);
 }
 
-template class DLL_PUBLIC TProxL1<double>;
-template class DLL_PUBLIC TProxL1<float>;
+template class DLL_PUBLIC TProxL1<double, double>;
+template class DLL_PUBLIC TProxL1<float, float>;
+
+template class DLL_PUBLIC TProxL1<double, std::atomic<double>>;
+template class DLL_PUBLIC TProxL1<float, std::atomic<float>>;

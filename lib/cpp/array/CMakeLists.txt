@@ -25,4 +25,12 @@ add_library(tick_array EXCLUDE_FROM_ALL
         ${TICK_ARRAY_INCLUDE_DIR}/alloc.h
         ${TICK_ARRAY_INCLUDE_DIR}/promote.h
         alloc.cpp
+        template.cpp
+        dot.cpp
+        vector/cblas.cpp
+        vector/unopt.cpp
+        vector/unopt/dot.cpp
+        vector/unopt/mult_incr.cpp
+        vector/unopt/scale.cpp
+        vector/unopt/set.cpp
         )

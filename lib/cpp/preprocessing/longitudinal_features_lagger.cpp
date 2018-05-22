@@ -7,8 +7,7 @@
 #include "tick/preprocessing/longitudinal_features_lagger.h"
 
 LongitudinalFeaturesLagger::LongitudinalFeaturesLagger(
-    const SBaseArrayDouble2dPtrList1D &features,
-    const SArrayULongPtr n_lags)
+    const SBaseArrayDouble2dPtrList1D &features, const SArrayULongPtr n_lags)
     : n_intervals(features[0]->n_rows()),
       n_lags(n_lags),
       n_samples(features.size()),
@@ -27,7 +26,7 @@ LongitudinalFeaturesLagger::LongitudinalFeaturesLagger(
     if ((*n_lags)[i] >= n_intervals) {
       TICK_ERROR("n_lags elements must be between 0 and (n_intervals - 1).");
     }
-    col_offset[i] = col_offset[i - 1] + (*n_lags)[i-1] + 1;
+    col_offset[i] = col_offset[i - 1] + (*n_lags)[i - 1] + 1;
   }
 }
 
@@ -61,13 +60,9 @@ void LongitudinalFeaturesLagger::dense_lag_preprocessor(ArrayDouble2d &features,
   }
 }
 
-void LongitudinalFeaturesLagger::sparse_lag_preprocessor(ArrayULong &row,
-                                                         ArrayULong &col,
-                                                         ArrayDouble &data,
-                                                         ArrayULong &out_row,
-                                                         ArrayULong &out_col,
-                                                         ArrayDouble &out_data,
-                                                         ulong censoring) const {
+void LongitudinalFeaturesLagger::sparse_lag_preprocessor(
+    ArrayULong &row, ArrayULong &col, ArrayDouble &data, ArrayULong &out_row,
+    ArrayULong &out_col, ArrayDouble &out_data, ulong censoring) const {
   ulong j(0), r, c, offset, new_col, max_col;
   double value;
 

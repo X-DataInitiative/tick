@@ -72,6 +72,9 @@ class SimuPoisReg(SimuWithFeatures):
     verbose : `bool`, default=True
         If `True`, print things
 
+    dtype : `{'float64', 'float32'}`, default='float64'
+        Type of the arrays used. This value is set from model and prox dtypes.
+
     Attributes
     ----------
     features : `numpy.ndarray`, shape=(n_samples, n_features)
@@ -88,6 +91,7 @@ class SimuPoisReg(SimuWithFeatures):
 
     time_end : `str`
         End date of the simulation
+
     """
 
     _attrinfos = {"labels": {"writable": False}, "_link": {"writable": False}}
@@ -97,12 +101,12 @@ class SimuPoisReg(SimuWithFeatures):
                  link: str = "exponential",
                  features_type: str = "cov_toeplitz", cov_corr: float = 0.5,
                  features_scaling: str = "none", seed: int = None,
-                 verbose: bool = True):
+                 verbose: bool = True, dtype="float64"):
 
         n_features = weights.shape[0]
         SimuWithFeatures.__init__(self, intercept, features, n_samples,
                                   n_features, features_type, cov_corr,
-                                  features_scaling, seed, verbose)
+                                  features_scaling, seed, verbose, dtype=dtype)
         self.weights = weights
         self.link = link
         self._set("labels", None)
@@ -119,7 +123,7 @@ class SimuPoisReg(SimuWithFeatures):
             val = "exponential"
         self._set("_link", val)
 
-    def simulate(self):
+    def simulate(self, dtype="float64"):
         """
         Launch simulation of the data
 
@@ -131,7 +135,7 @@ class SimuPoisReg(SimuWithFeatures):
         labels: `numpy.ndarray`, shape=(n_samples,)
             The labels vector
         """
-        return SimuWithFeatures.simulate(self)
+        return SimuWithFeatures.simulate(self, dtype=dtype)
 
     def _simulate(self):
         # Note: the features matrix already exists, and is created by
@@ -153,7 +157,10 @@ class SimuPoisReg(SimuWithFeatures):
             intensity = np.exp(u)
         # Simulate the Poisson variables. We want it in float64 for
         #   later computations, hence the next line.
-        labels = np.empty(n_samples)
+        labels = np.empty(n_samples, dtype=self.dtype)
         labels[:] = poisson(intensity)
+        if self.dtype != np.float64:
+            labels = labels.astype(self.dtype)
+            features = features.astype(self.dtype)
         self._set("labels", labels)
         return features, labels

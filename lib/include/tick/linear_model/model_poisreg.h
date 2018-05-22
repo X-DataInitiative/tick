@@ -17,23 +17,23 @@ inline std::ostream &operator<<(std::ostream &s, const LinkType l) {
   return s << static_cast<utype>(l);
 }
 
-template <class T>
-class DLL_PUBLIC TModelPoisReg : public TModelGeneralizedLinear<T> {
+template <class T, class K = T>
+class DLL_PUBLIC TModelPoisReg : public TModelGeneralizedLinear<T, K> {
  protected:
-  using TModelGeneralizedLinear<T>::compute_features_norm_sq;
-  using TModelGeneralizedLinear<T>::n_samples;
-  using TModelGeneralizedLinear<T>::features_norm_sq;
-  using TModelGeneralizedLinear<T>::fit_intercept;
-  using TModelGeneralizedLinear<T>::ready_features_norm_sq;
-  using TModelGeneralizedLinear<T>::get_n_samples;
-  using TModelGeneralizedLinear<T>::get_features;
+  using TModelGeneralizedLinear<T, K>::compute_features_norm_sq;
+  using TModelGeneralizedLinear<T, K>::n_samples;
+  using TModelGeneralizedLinear<T, K>::features_norm_sq;
+  using TModelGeneralizedLinear<T, K>::fit_intercept;
+  using TModelGeneralizedLinear<T, K>::ready_features_norm_sq;
+  using TModelGeneralizedLinear<T, K>::get_n_samples;
+  using TModelGeneralizedLinear<T, K>::get_n_coeffs;
+  using TModelGeneralizedLinear<T, K>::get_features;
 
  public:
-  using TModelGeneralizedLinear<T>::get_label;
-  using TModelGeneralizedLinear<T>::use_intercept;
-  using TModelGeneralizedLinear<T>::get_inner_prod;
-  using TModelGeneralizedLinear<T>::get_class_name;
-  using TModelGeneralizedLinear<T>::get_n_coeffs;
+  using TModelGeneralizedLinear<T, K>::get_label;
+  using TModelGeneralizedLinear<T, K>::use_intercept;
+  using TModelGeneralizedLinear<T, K>::get_inner_prod;
+  using TModelGeneralizedLinear<T, K>::get_class_name;
 
  protected:
   bool ready_non_zero_label_map = 0;
@@ -44,22 +44,23 @@ class DLL_PUBLIC TModelPoisReg : public TModelGeneralizedLinear<T> {
  public:
   // This exists soley for cereal/swig
   TModelPoisReg()
-      : TModelPoisReg<T>(nullptr, nullptr, LinkType::identity, 0, 0) {}
+      : TModelPoisReg<T, K>(nullptr, nullptr, LinkType::identity, 0, 0) {}
 
   TModelPoisReg(const std::shared_ptr<BaseArray2d<T> > features,
                 const std::shared_ptr<SArray<T> > labels,
                 const LinkType link_type, const bool fit_intercept,
                 const int n_threads = 1)
-      : TModelLabelsFeatures<T>(features, labels),
-        TModelGeneralizedLinear<T>(features, labels, fit_intercept, n_threads),
+      : TModelLabelsFeatures<T, K>(features, labels),
+        TModelGeneralizedLinear<T, K>(features, labels, fit_intercept,
+                                      n_threads),
         link_type(link_type) {}
 
-  T loss_i(const ulong i, const Array<T> &coeffs) override;
+  T loss_i(const ulong i, const Array<K> &coeffs) override;
 
-  T grad_i_factor(const ulong i, const Array<T> &coeffs) override;
+  T grad_i_factor(const ulong i, const Array<K> &coeffs) override;
 
   T sdca_dual_min_i(const ulong i, const T dual_i,
-                    const Array<T> &primal_vector,
+                    const Array<K> &primal_vector,
                     const T previous_delta_dual_i, T l_l2sq) override;
 
   void sdca_primal_dual_relation(const T l_l2sq, const Array<T> &dual_vector,
@@ -82,7 +83,7 @@ class DLL_PUBLIC TModelPoisReg : public TModelGeneralizedLinear<T> {
 
  private:
   T sdca_dual_min_i_exponential(const ulong i, const T dual_i,
-                                const Array<T> &primal_vector,
+                                const Array<K> &primal_vector,
                                 const T previous_delta_dual_i, T l_l2sq);
   /**
    * @brief Initialize the hash map that allow fast retrieving for
@@ -91,7 +92,7 @@ class DLL_PUBLIC TModelPoisReg : public TModelGeneralizedLinear<T> {
   void init_non_zero_label_map();
 
   T sdca_dual_min_i_identity(const ulong i, const T dual_i,
-                             const Array<T> &primal_vector,
+                             const Array<K> &primal_vector,
                              const T previous_delta_dual_i, T l_l2sq);
 
  public:
@@ -105,7 +106,7 @@ class DLL_PUBLIC TModelPoisReg : public TModelGeneralizedLinear<T> {
   void serialize(Archive &ar) {
     ar(cereal::make_nvp(
         "ModelGeneralizedLinear",
-        typename cereal::virtual_base_class<TModelGeneralizedLinear<T> >(
+        typename cereal::virtual_base_class<TModelGeneralizedLinear<T, K> >(
             this)));
 
     ar(CEREAL_NVP(ready_non_zero_label_map));
@@ -114,9 +115,10 @@ class DLL_PUBLIC TModelPoisReg : public TModelGeneralizedLinear<T> {
     ar(CEREAL_NVP(n_non_zeros_labels));
   }
 
-  BoolStrReport compare(const TModelPoisReg<T> &that, std::stringstream &ss) {
+  BoolStrReport compare(const TModelPoisReg<T, K> &that,
+                        std::stringstream &ss) {
     ss << get_class_name() << std::endl;
-    auto are_equal = TModelGeneralizedLinear<T>::compare(that, ss) &&
+    auto are_equal = TModelGeneralizedLinear<T, K>::compare(that, ss) &&
                      TICK_CMP_REPORT(ss, ready_non_zero_label_map) &&
                      TICK_CMP_REPORT(ss, link_type) &&
                      TICK_CMP_REPORT(ss, non_zero_labels) &&
@@ -124,25 +126,35 @@ class DLL_PUBLIC TModelPoisReg : public TModelGeneralizedLinear<T> {
     return BoolStrReport(are_equal, ss.str());
   }
 
-  BoolStrReport compare(const TModelPoisReg<T> &that) {
+  BoolStrReport compare(const TModelPoisReg<T, K> &that) {
     std::stringstream ss;
     return compare(that, ss);
   }
-  BoolStrReport operator==(const TModelPoisReg<T> &that) {
-    return TModelPoisReg<T>::compare(that);
+  BoolStrReport operator==(const TModelPoisReg<T, K> &that) {
+    return TModelPoisReg<T, K>::compare(that);
   }
 };
 
-using ModelPoisReg = TModelPoisReg<double>;
-using ModelPoisRegDouble = TModelPoisReg<double>;
-using ModelPoisRegFloat = TModelPoisReg<float>;
+using ModelPoisReg = TModelPoisReg<double, double>;
 
+using ModelPoisRegDouble = TModelPoisReg<double, double>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelPoisRegDouble,
                                    cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(ModelPoisRegDouble)
 
+using ModelPoisRegFloat = TModelPoisReg<float, float>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelPoisRegFloat,
                                    cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(ModelPoisRegFloat)
+
+using ModelPoisRegAtomicDouble = TModelPoisReg<double, std::atomic<double> >;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelPoisRegAtomicDouble,
+                                   cereal::specialization::member_serialize)
+CEREAL_REGISTER_TYPE(ModelPoisRegAtomicDouble)
+
+using ModelPoisRegAtomicFloat = TModelPoisReg<float, std::atomic<float> >;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelPoisRegAtomicFloat,
+                                   cereal::specialization::member_serialize)
+CEREAL_REGISTER_TYPE(ModelPoisRegAtomicFloat)
 
 #endif  // LIB_INCLUDE_TICK_LINEAR_MODEL_MODEL_POISREG_H_

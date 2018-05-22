@@ -13,13 +13,13 @@
 #include <memory>
 #include <string>
 
-template <class T>
+template <class T, class K>
 class DLL_PUBLIC TProx {
-  // Grants cereal access to default constructor
+  // Grants cereal access to default constructor/serialize functions
   friend class cereal::access;
 
-  template <class T1>
-  friend std::ostream& operator<<(std::ostream&, const TProx<T1>&);
+  template <class T1, class K1>
+  friend std::ostream& operator<<(std::ostream&, const TProx<T1, K1>&);
 
  protected:
   //! @brief Flag to know if proximal operator concerns only a part of the
@@ -36,18 +36,12 @@ class DLL_PUBLIC TProx {
   //! @brief Weight of the proximal operator
   T strength;
 
- protected:
+ public:
   // This exists soley for cereal/swig
   TProx() {}
 
- public:
   TProx(T strength, bool positive);
   TProx(T strength, ulong start, ulong end, bool positive);
-
-  TProx(const TProx<T>& other) = delete;
-  TProx(TProx<T>&& other) = delete;
-  TProx<T>& operator=(const TProx<T>& other) = delete;
-  TProx<T>& operator=(TProx<T>&& other) = delete;
 
   virtual ~TProx() {}
 
@@ -60,20 +54,20 @@ class DLL_PUBLIC TProx {
   virtual bool is_separable() const;
 
   //! @brief call prox on coeffs, with a given step and store result in out
-  virtual void call(const Array<T>& coeffs, T step, Array<T>& out);
+  virtual void call(const Array<K>& coeffs, T step, Array<K>& out);
 
   //! @brief call prox on a part of coeffs (defined by start-end), with a given
   //! step and store result in out
-  virtual void call(const Array<T>& coeffs, T step, Array<T>& out, ulong start,
+  virtual void call(const Array<K>& coeffs, T step, Array<K>& out, ulong start,
                     ulong end);
 
   //! @brief get penalization value of the prox on the coeffs vector.
   //! This takes strength into account
-  virtual T value(const Array<T>& coeffs);
+  virtual T value(const Array<K>& coeffs);
 
   //! @brief get penalization value of the prox on a part of coeffs (defined by
   //! start-end). This takes strength into account
-  virtual T value(const Array<T>& coeffs, ulong start, ulong end);
+  virtual T value(const Array<K>& coeffs, ulong start, ulong end);
 
   virtual T get_strength() const;
 
@@ -90,15 +84,17 @@ class DLL_PUBLIC TProx {
   virtual void set_positive(bool positive);
 
  protected:
+  virtual void set_out_i(Array<K>& out, size_t i, T t) const;
+
   template <class Archive>
   void serialize(Archive& ar) {
     ar(CEREAL_NVP(strength), CEREAL_NVP(has_range), CEREAL_NVP(start),
        CEREAL_NVP(end), CEREAL_NVP(positive));
   }
 
-  BoolStrReport operator==(const TProx<T>& that) = delete;
+  BoolStrReport operator==(const TProx<T, K>& that) = delete;
 
-  BoolStrReport compare(const TProx<T> &that, std::stringstream& ss) {
+  BoolStrReport compare(const TProx<T, K>& that, std::stringstream& ss) {
     return BoolStrReport(
         TICK_CMP_REPORT(ss, strength) && TICK_CMP_REPORT(ss, has_range) &&
             TICK_CMP_REPORT(ss, start) && TICK_CMP_REPORT(ss, end) &&
@@ -107,18 +103,21 @@ class DLL_PUBLIC TProx {
   }
 };
 
-template <typename T>
-inline std::ostream& operator<<(std::ostream& s, const TProx<T>& p) {
+template <typename T, typename K>
+inline std::ostream& operator<<(std::ostream& s, const TProx<T, K>& p) {
   return s << typeid(p).name() << "<" << typeid(T).name() << ">";
 }
 
-using Prox = TProx<double>;
-using ProxPtr = std::shared_ptr<Prox>;
-
-using ProxDouble = TProx<double>;
+using ProxDouble = TProx<double, double>;
 using ProxDoublePtr = std::shared_ptr<ProxDouble>;
+using ProxDoublePtrVector = std::vector<ProxDoublePtr>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ProxDouble,
+                                   cereal::specialization::member_serialize)
 
-using ProxFloat = TProx<float>;
+using ProxFloat = TProx<float, float>;
 using ProxFloatPtr = std::shared_ptr<ProxFloat>;
+using ProxFloatPtrVector = std::vector<ProxFloatPtr>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ProxFloat,
+                                   cereal::specialization::member_serialize)
 
 #endif  // LIB_INCLUDE_TICK_PROX_PROX_H_

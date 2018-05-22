@@ -14,24 +14,24 @@
  * \brief An interface for a Model with the ability to compute Lipschitz
  * constants
  */
-template <class T>
-class DLL_PUBLIC TModelLipschitz : public virtual TModel<T> {
+template <class T, class K = T>
+class DLL_PUBLIC TModelLipschitz : public virtual TModel<T, K> {
  protected:
-  using TModel<T>::compute_lip_consts;
-  using TModel<T>::get_class_name;
+  using TModel<T, K>::compute_lip_consts;
+  using TModel<T, K>::get_class_name;
 
  protected:
   //! True if all lipschitz constants are already computed
-  bool ready_lip_consts;
+  bool ready_lip_consts = false;
 
   //! True if the maximum of lipschitz constants is already computed
-  bool ready_lip_max;
+  bool ready_lip_max = false;
 
   //! True if the mean of lipschitz constants is already computed
-  bool ready_lip_mean;
+  bool ready_lip_mean = false;
 
   //! Average and maximum Lipschitz constants
-  T lip_mean, lip_max;
+  T lip_mean = 0, lip_max = 0;
 
   //! All Lipschitz constants
   Array<T> lip_consts;
@@ -60,7 +60,8 @@ class DLL_PUBLIC TModelLipschitz : public virtual TModel<T> {
   }
 
  protected:
-  BoolStrReport compare(const TModelLipschitz<T> &that, std::stringstream &ss) {
+  BoolStrReport compare(const TModelLipschitz<T, K> &that,
+                        std::stringstream &ss) {
     return BoolStrReport(TICK_CMP_REPORT(ss, ready_lip_consts) &&
                              TICK_CMP_REPORT(ss, ready_lip_max) &&
                              TICK_CMP_REPORT(ss, ready_lip_mean) &&
@@ -71,9 +72,9 @@ class DLL_PUBLIC TModelLipschitz : public virtual TModel<T> {
   }
 };
 
-using ModelLipschitz = TModelLipschitz<double>;
+using ModelLipschitz = TModelLipschitz<double, double>;
 
-using ModelLipschitzDouble = TModelLipschitz<double>;
-using ModelLipschitzFloat = TModelLipschitz<float>;
+using ModelLipschitzDouble = TModelLipschitz<double, double>;
+using ModelLipschitzFloat = TModelLipschitz<float, float>;
 
 #endif  // LIB_INCLUDE_TICK_BASE_MODEL_MODEL_LIPSCHITZ_H_

@@ -181,11 +181,11 @@ ulong SArray2d<T>::n_allocs = 0;
 template <typename T>
 std::ostream &operator<<(std::ostream &Str, SArray2d<T> *v) {
 #ifdef DEBUG_SHAREDARRAY
-  Str << "SArray2d(" << reinterpret_cast<void *>(v)
+  Str << "SArray2d<" << typeid(T).name() << ">(" << reinterpret_cast<void *>(v)
       << ", n_rows=" << v->n_rows() << ",n_cols=" << v->n_cols() << ")";
 #else
-  Str << "SArray2d(" << reinterpret_cast<void *>(v) << ",n_rows=" << v->n_rows()
-      << ",n_cols=" << v->n_cols() << ")";
+  Str << "SArray2d<" << typeid(T).name() << ">(" << reinterpret_cast<void *>(v)
+      << ",n_rows=" << v->n_rows() << ",n_cols=" << v->n_cols() << ")";
 #endif
   return Str;
 }
@@ -198,9 +198,9 @@ SArray2d<T>::SArray2d(ulong n_rows, ulong n_cols) : Array2d<T>(n_rows, n_cols) {
 #endif
 #ifdef DEBUG_SHAREDARRAY
   n_allocs++;
-  std::cout << "SArray2d Constructor (->#" << n_allocs
-            << ") : SArray2d(n_rows=" << _n_rows << ",n_cols=" << _n_cols
-            << ") --> " << this << std::endl;
+  std::cout << "SArray2d<" << typeid(T).name() << "> Constructor (->#"
+            << n_allocs << ") : SArray2d(n_rows=" << _n_rows
+            << ",n_cols=" << _n_cols << ") --> " << this << std::endl;
 #endif
 }
 
@@ -271,8 +271,8 @@ template <typename T>
 SArray2d<T>::~SArray2d() {
 #ifdef DEBUG_SHAREDARRAY
   n_allocs--;
-  std::cout << "SArray2d Destructor (->#" << n_allocs << ") : ~SArray2d on "
-            << this << std::endl;
+  std::cout << "SArray2d<" << typeid(T).name() << "> Destructor (->#"
+            << n_allocs << ") : ~SArray2d on " << this << std::endl;
 #endif
   clear();
 }

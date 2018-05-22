@@ -195,7 +195,7 @@ class LogisticRegression(LearnerGLM):
         if not self._fitted:
             raise ValueError("You must call ``fit`` before")
         else:
-            X = self._safe_array(X)
+            X = self._safe_array(X, dtype=X.dtype)
             z = X.dot(self.weights)
             if self.intercept:
                 z += self.intercept

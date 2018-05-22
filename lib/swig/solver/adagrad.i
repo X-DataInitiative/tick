@@ -7,8 +7,8 @@
 #include "tick/base_model/model.h"
 %}
 
-template <class T>
-class TAdaGrad : public TStoSolver<T> {
+template <class T, class K = T>
+class TAdaGrad : public TStoSolver<T, K> {
 public:
     TAdaGrad();
     TAdaGrad(unsigned long epoch_size,
@@ -19,7 +19,7 @@ public:
 
     void solve();
 
-    bool compare(const TAdaGrad<T> &that);
+    bool compare(const TAdaGrad<T, K> &that);
 };
 
 %template(AdaGradDouble) TAdaGrad<double>;

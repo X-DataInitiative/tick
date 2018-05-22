@@ -6,8 +6,8 @@
 
 %include "model_lipschitz.i";
 
-template <class T>
-class TModelCoxRegPartialLik : public TModel<T> {
+template <class T, class K = T>
+class TModelCoxRegPartialLik : public TModel<T, K> {
  public:
   TModelCoxRegPartialLik(const std::shared_ptr<BaseArray2d<T> > features,
                          const std::shared_ptr<SArray<T> > times,

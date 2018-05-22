@@ -476,6 +476,7 @@ std::shared_ptr<SSparseArray2d<T>> SparseArray2d<T>::as_ssparsearray2d_ptr() {
  */
 
 typedef SSparseArray2d<double> SSparseArrayDouble2d;
+typedef SSparseArray2d<std::atomic<double>> SSparseArrayAtomicDouble2d;
 typedef SSparseArray2d<float> SSparseArrayFloat2d;
 typedef SSparseArray2d<std::int32_t> SSparseArrayInt2d;
 typedef SSparseArray2d<std::uint32_t> SSparseArrayUInt2d;
@@ -501,6 +502,8 @@ typedef std::shared_ptr<SSparseArrayUShort2d> SSparseArrayUShort2dPtr;
 typedef std::shared_ptr<SSparseArrayLong2d> SSparseArrayLong2dPtr;
 typedef std::shared_ptr<SSparseArrayULong2d> SSparseArrayULong2dPtr;
 typedef std::shared_ptr<SSparseArrayDouble2d> SSparseArrayDouble2dPtr;
+typedef std::shared_ptr<SSparseArrayAtomicDouble2d>
+    SSparseArrayAtomicDouble2dPtr;
 
 /**
  * @}

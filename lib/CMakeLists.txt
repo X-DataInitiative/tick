@@ -55,7 +55,7 @@ if (${TICK_REBUILD_LIBS})
     set(TICK_LIB_ARRAY      tick_array)
     set(TICK_LIB_BASE_MODEL      tick_base_model)
     set(TICK_LIB_LINEAR_MODEL      tick_linear_model)
-    
+
     set(TICK_LIB_CRANDOM    tick_crandom)
     set(TICK_LIB_ARRAY_TEST tick_array_test)
     set(TICK_LIB_HAWKES_INFERENCE  tick_hawkes_inference)
@@ -68,8 +68,8 @@ if (${TICK_REBUILD_LIBS})
     set(TICK_LIB_SURVIVAL     tick_survival)
 endif()
 
-add_subdirectory(cpp/base)
 add_subdirectory(cpp/array)
+add_subdirectory(cpp/base)
 add_subdirectory(cpp/array_test)
 add_subdirectory(cpp/random)
 add_subdirectory(cpp/base_model)
@@ -85,7 +85,7 @@ add_subdirectory(cpp/preprocessing)
 
 
 if(APPLE)
-    set(TICK_INSTALL_RPATH "${CMAKE_CURRENT_SOURCE_DIR}/../tick/base/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/array/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/base_model/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/linear_model/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/random/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/prox/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/solver/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/hawkes/inference/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/hawkes/model/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/hawkes/simulation/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/robust/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/survival/build;${TICK_EXTRA_RPATH}")
+    set(TICK_INSTALL_RPATH "${CMAKE_CURRENT_SOURCE_DIR}/../tick/array/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/base/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/array/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/base_model/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/linear_model/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/random/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/prox/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/solver/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/hawkes/inference/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/hawkes/model/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/hawkes/simulation/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/robust/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/survival/build;${TICK_EXTRA_RPATH}")
 
 
 
@@ -100,13 +100,13 @@ if (${GTEST_FOUND})
     message(STATUS "Testing in C++ enabled")
 
     find_package(Threads REQUIRED)
-    find_package(PythonInterp REQUIRED)
-    find_package(PythonLibs REQUIRED)
+    find_package(PythonInterp 3 REQUIRED)
+    find_package(PythonLibs 3 REQUIRED)
 
     include_directories(${GTEST_INCLUDE_DIRS})
 
     set(TICK_TEST_LIBS
-        ${PYTHON_LIBRARIES}
+        ${PYTHON_LIBRARY}
         ${GTEST_BOTH_LIBRARIES}
         ${CMAKE_THREAD_LIBS_INIT}
         ${TICK_BLAS_LIBRARIES})
@@ -121,14 +121,12 @@ if (${GTEST_FOUND})
         set(TICK_TEST_LIBS ${TICK_TEST_LIBS} -lrt -ldl -lutil)
     endif(APPLE)
 
-
     add_subdirectory(cpp-test/base)
     add_subdirectory(cpp-test/array)
     add_subdirectory(cpp-test/hawkes/model)
     add_subdirectory(cpp-test/hawkes/simulation)
     add_subdirectory(cpp-test/linear_model)
     add_subdirectory(cpp-test/solver)
-    add_subdirectory(cpp-test/serialization)
 
     add_custom_target(check
             COMMAND cpp-test/base/tick_test_base
@@ -138,7 +136,6 @@ if (${GTEST_FOUND})
             COMMAND cpp-test/hawkes/model/tick_test_hawkes_model
             COMMAND cpp-test/hawkes/simulation/tick_test_hawkes_simulation
             COMMAND cpp-test/solver/tick_test_solver
-            COMMAND cpp-test/serialization/tick_test_serialization
             )
 
     add_subdirectory(cpp-test/benchmark)

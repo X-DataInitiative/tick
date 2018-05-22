@@ -6,4 +6,17 @@
 
 from tick.base.opsys import add_to_path_if_windows
 
-add_to_path_if_windows(__file__)
+
+def required():
+    import os, sys
+    root = os.path.dirname(os.path.realpath(os.path.join(__file__, "../..")))
+
+    deps = ["base_model"]
+
+    for dep in deps:
+        if "tick." + dep + ".build" not in sys.modules:
+            p = os.path.realpath(os.path.join(root, dep + "/build"))
+            os.environ["PATH"] = p + os.pathsep + os.environ["PATH"]
+
+
+add_to_path_if_windows(__file__, [required])

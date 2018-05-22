@@ -13,7 +13,7 @@ enum class SAGA_VarianceReductionMethod : uint16_t {
 };
 
 template <class T>
-class TSAGA : public TStoSolver<T> {
+class TSAGA : public TStoSolver<T, T> {
  public:
     TSAGA();
     TSAGA(unsigned long epoch_size,
@@ -28,7 +28,7 @@ class TSAGA : public TStoSolver<T> {
     SAGA_VarianceReductionMethod get_variance_reduction();
     void set_variance_reduction(SAGA_VarianceReductionMethod variance_reduction);
 
-    void set_model(std::shared_ptr<TModel<T> > model) override;
+    void set_model(std::shared_ptr<TModel<T, T> > model) override;
 
     bool compare(const TSAGA<T> &that);
 };
@@ -37,6 +37,6 @@ class TSAGA : public TStoSolver<T> {
 typedef TSAGA<double> SAGADouble;
 TICK_MAKE_TEMPLATED_PICKLABLE(TSAGA, SAGADouble, double);
 
-%rename(SAGAFloat) TSAGA<float>;
+%template(SAGAFloat) TSAGA<float>;
 typedef TSAGA<float> SAGAFloat;
 TICK_MAKE_TEMPLATED_PICKLABLE(TSAGA, SAGAFloat , float);

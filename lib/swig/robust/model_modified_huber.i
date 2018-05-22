@@ -5,8 +5,8 @@
 %}
 
 template <class T>
-class TModelModifiedHuber : public virtual TModelGeneralizedLinear<T>,
-                    public TModelLipschitz<T> {
+class TModelModifiedHuber : public virtual TModelGeneralizedLinear<T, K>,
+                    public TModelLipschitz<T, K> {
  public:
   TModelModifiedHuber();
   TModelModifiedHuber(
@@ -15,12 +15,12 @@ class TModelModifiedHuber : public virtual TModelGeneralizedLinear<T>,
     const bool fit_intercept,
     const int n_threads
   );
-  bool compare(const TModelModifiedHuber<T> &that);
+  bool compare(const TModelModifiedHuber<T, K> &that);
 };
 
-%rename(ModelModifiedHuberDouble) TModelModifiedHuber<double>;
-class ModelModifiedHuberDouble : public virtual TModelGeneralizedLinear<double>,
-                    public TModelLipschitz<double> {
+%rename(ModelModifiedHuberDouble) TModelModifiedHuber<double, double>;
+class ModelModifiedHuberDouble : public virtual TModelGeneralizedLinear<double, double>,
+                    public TModelLipschitz<double, double> {
  public:
   ModelModifiedHuberDouble();
   ModelModifiedHuberDouble(
@@ -31,12 +31,12 @@ class ModelModifiedHuberDouble : public virtual TModelGeneralizedLinear<double>,
   );
   bool compare(const ModelModifiedHuberDouble &that);
 };
-typedef TModelModifiedHuber<double> ModelModifiedHuberDouble;
+typedef TModelModifiedHuber<double, double> ModelModifiedHuberDouble;
 TICK_MAKE_PICKLABLE(ModelModifiedHuberDouble);
 
-%rename(ModelModifiedHuberFloat) TModelModifiedHuber<float>;
-class ModelModifiedHuberFloat : public virtual TModelGeneralizedLinear<float>,
-                    public TModelLipschitz<float> {
+%rename(ModelModifiedHuberFloat) TModelModifiedHuber<float, float>;
+class ModelModifiedHuberFloat : public virtual TModelGeneralizedLinear<float, float>,
+                    public TModelLipschitz<float, float> {
  public:
   ModelModifiedHuberFloat();
   ModelModifiedHuberFloat(
@@ -47,5 +47,5 @@ class ModelModifiedHuberFloat : public virtual TModelGeneralizedLinear<float>,
   );
   bool compare(const ModelModifiedHuberFloat &that);
 };
-typedef TModelModifiedHuber<float> ModelModifiedHuberFloat;
+typedef TModelModifiedHuber<float, float> ModelModifiedHuberFloat;
 TICK_MAKE_PICKLABLE(ModelModifiedHuberFloat);

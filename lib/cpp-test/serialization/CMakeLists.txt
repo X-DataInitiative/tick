@@ -1,4 +1,8 @@
-add_executable(tick_test_serialization solver_gtest.cpp)
+
+# This test is quite long and can cause issues so
+## it is not included in the normal set of gtests
+
+add_executable(tick_test_serialization solver.cpp)
 
 target_link_libraries(tick_test_serialization
     ${TICK_LIB_ARRAY}

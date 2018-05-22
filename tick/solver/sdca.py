@@ -1,8 +1,16 @@
 # License: BSD 3 clause
 
 from .base import SolverFirstOrderSto
-from .build.solver import SDCADouble as _SDCA
+
+from .build.solver import SDCADouble as _SDCADouble
+from .build.solver import SDCAFloat as _SDCAFloat
+
 import numpy as np
+
+dtype_class_mapper = {
+    np.dtype('float32'): _SDCAFloat,
+    np.dtype('float64'): _SDCADouble
+}
 
 
 class SDCA(SolverFirstOrderSto):
@@ -112,6 +120,9 @@ class SDCA(SolverFirstOrderSto):
         Save history information every time the iteration number is a
         multiple of ``record_every``
 
+    dtype : `{'float64', 'float32'}`, default='float64'
+        Type of the arrays used. This value is set from model and prox dtypes.
+
     Attributes
     ----------
     model : `Model`
@@ -158,12 +169,31 @@ class SDCA(SolverFirstOrderSto):
             max_iter=max_iter, verbose=verbose, print_every=print_every,
             record_every=record_every, seed=seed)
         self.l_l2sq = l_l2sq
+        self._set_solver()
+
+    def _set_solver(self, model=None):
         epoch_size = self.epoch_size
         if epoch_size is None:
             epoch_size = 0
         # Construct the wrapped C++ SDCA solver
-        self._solver = _SDCA(self.l_l2sq, epoch_size, self.tol,
-                             self._rand_type, self.seed)
+
+        if model is None and self._solver is None:
+            self.dtype = np.dtype("float64")
+
+        if model is not None and self.dtype is not None and model.dtype != self.dtype:
+            self.dtype = model.dtype
+            self._set('_solver', None)
+        if self._solver is None:
+            self._set('_solver', dtype_class_mapper[self.dtype](
+                self.l_l2sq, epoch_size, self.tol, self._rand_type, self.seed))
+
+    def set_model(self, model):
+
+        first = self.dtype is None or self.dtype != model.dtype
+        self._set_solver(model)
+        self.dtype = model.dtype
+
+        return SolverFirstOrderSto.set_model(self, model)
 
     def objective(self, coeffs, loss: float = None):
         """Compute the objective minimized by the solver at ``coeffs``

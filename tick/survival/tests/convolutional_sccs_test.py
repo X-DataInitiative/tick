@@ -145,3 +145,7 @@ class Test(unittest.TestCase):
                          C_tv_range=tv_range, C_group_l1_range=groupl1_range,
                          n_cv_iter=4)
         self.assertTrue(lrn.score() <= score)
+
+
+if __name__ == "__main__":
+    unittest.main()

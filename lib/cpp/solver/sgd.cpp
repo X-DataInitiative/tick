@@ -6,12 +6,12 @@
 
 #include "tick/solver/sgd.h"
 
-template <class T>
-TSGD<T>::TSGD(ulong epoch_size, T tol, RandType rand_type, T step, int seed)
-    : TStoSolver<T>(epoch_size, tol, rand_type, seed), step(step) {}
+template <class T, class K>
+TSGD<T, K>::TSGD(ulong epoch_size, T tol, RandType rand_type, T step, int seed)
+    : TStoSolver<T, K>(epoch_size, tol, rand_type, seed), step(step) {}
 
-template <class T>
-void TSGD<T>::solve() {
+template <class T, class K>
+void TSGD<T, K>::solve() {
   if (model->is_sparse()) {
     solve_sparse();
   } else {
@@ -30,8 +30,8 @@ void TSGD<T>::solve() {
   }
 }
 
-template <class T>
-void TSGD<T>::solve_sparse() {
+template <class T, class K>
+void TSGD<T, K>::solve_sparse() {
   // The model is sparse, so it is a ModelGeneralizedLinear and the iteration
   // looks a little bit different
   ulong n_features = model->get_n_features();
@@ -61,8 +61,8 @@ void TSGD<T>::solve_sparse() {
   }
 }
 
-template <class T>
-inline T TSGD<T>::get_step_t() {
+template <class T, class K>
+inline T TSGD<T, K>::get_step_t() {
   return step / (t + 1);
 }
 

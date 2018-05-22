@@ -9,6 +9,7 @@ import json
 import pydoc
 import numpydoc as nd
 from numpydoc import docscrape
+import numpy as np
 import copy
 
 # The metaclass inherits from ABCMeta and not type, since we'd like to
@@ -219,7 +220,6 @@ class BaseMeta(ABCMeta):
             line for line in attr_doc[2] if len(line.strip()) > 0
         ]
         attr_from = 'from %s' % class_name
-
         doc = [attr_type] + attr_docstring + [attr_from]
         return doc
 
@@ -559,4 +559,7 @@ class Base(metaclass=BaseMeta):
         self._set(key, getattr(self, key) + step)
 
     def __str__(self):
-        return json.dumps(self._as_dict(), sort_keys=True, indent=2)
+        dic = self._as_dict()
+        if 'dtype' in dic and isinstance(dic['dtype'], np.dtype):
+            dic['dtype'] = dic['dtype'].name
+        return json.dumps(dic, sort_keys=True, indent=2)

@@ -9,6 +9,7 @@
 #include "tick/base/defs.h"
 
 #include <algorithm>
+#include <atomic>
 #include <cmath>
 #include <iostream>
 #include <memory>
@@ -83,6 +84,7 @@ class Array : public BaseArray<T> {
    * \warning Data from the `std::initializer_list` is copied. This should not
    * be used on big arrays
    */
+  template <class K = T>
   explicit Array(std::initializer_list<T> data_list);
 
   //! @brief The copy constructor
@@ -96,6 +98,9 @@ class Array : public BaseArray<T> {
 
   //! @brief The move assignement operator
   Array<T> &operator=(Array<T> &&other) = default;
+
+  template <class K = T>
+  static Array<T> CREATE_FROM(const Array<K> array);
 
   //! @brief Destructor
   virtual ~Array() {}
@@ -127,14 +132,15 @@ class Array : public BaseArray<T> {
   }
 
   //! @brief Fill vector with given value
-  void fill(const T value);
+  template <typename K = T>
+  void fill(const K value);
 
   /**
    * @brief Sort Array inplace
    * \param increasing : If true, array will be sorted in increasing order,
    * otherwise in decreasing order
    */
-  void sort(bool increasing = true);
+  void DLL_PUBLIC sort(bool increasing = true);
 
   /**
    * @brief Sort Array with respect to a given function inplace and keep track
@@ -142,7 +148,7 @@ class Array : public BaseArray<T> {
    * order_function : function that will be used to compare two values
    */
   template <typename F>
-  void sort_function(Array<ulong> &index, F order_function);
+  void DLL_PUBLIC sort_function(Array<ulong> &index, F order_function);
 
   /**
    * @brief Sort Array inplace and keep track of index
@@ -164,7 +170,8 @@ class Array : public BaseArray<T> {
   //! \param fact : the factor
   //! \param out : if null then the multiplication is performed in-place,
   //!              otherwise it is stored in `out`
-  void multiply(const T fact, Array<T> *out = nullptr);
+  template <typename K = T>
+  void multiply(const K fact, Array<T> *out = nullptr);
 
   //! @brief Multiply vector x by factor a inplace and increment this by new
   //! vector
@@ -173,20 +180,8 @@ class Array : public BaseArray<T> {
   //! \param a : a scalar of type T
   //! @note Scalar is of type T, meaning that real values will get truncated
   //! before multiplication if T is an integer type
-  void mult_incr(const BaseArray<T> &x, const T a) {
-    if (this->size() != x.size()) {
-      TICK_ERROR("Vectors don't have the same size.");
-    } else {
-      if (x.is_sparse()) {
-        for (ulong j = 0; j < x.size_sparse(); j++) {
-          _data[x.indices()[j]] += x.data()[j] * a;
-        }
-      } else {
-        tick::vector_operations<T>{}.mult_incr(this->size(), a, x.data(),
-                                               this->data());
-      }
-    }
-  }
+  template <typename K = T>
+  void DLL_PUBLIC mult_incr(const BaseArray<T> &x, const K a);
 
   //! @brief Multiply vector x by factor a inplace and fill using this by new
   //! vector
@@ -219,6 +214,7 @@ class Array : public BaseArray<T> {
   //! \param a : a scalar
   //! \param y : an Array (can be sparse or dense)
   //! \param b : a scalar
+  template <typename K = T>
   void mult_add_mult_incr(const BaseArray<T> &x, const T a,
                           const BaseArray<T> &y, const T b) {
     if (this->size() == x.size() && x.size() == y.size()) {
@@ -228,13 +224,24 @@ class Array : public BaseArray<T> {
       TICK_ERROR("Vectors don't have the same size.");
     }
   }
-
   //! @brief Returns a shared pointer to a SArray encapsulating the array
   //! \warning : The ownership of the data is given to the returned structure
   //! THUS the array becomes a view.
   //! \warning : This method cannot be called on a view
   // The definition is in the file sarray.h
   std::shared_ptr<SArray<T>> as_sarray_ptr();
+
+  template <typename K = T>
+  void DLL_PUBLIC set_data_index(size_t index, K value);
+
+ protected:
+  template <typename K = T>
+  static void SET_DATA_INDEX(Array<T> &arr, size_t index, K value);
+
+  template <typename K = T>
+  static void SET_T_FROM_K(T &, K);
+
+  static void SET_T_FROM_T(T &, T &);
 };
 
 // Constructor
@@ -258,30 +265,23 @@ Array<T>::Array(ulong size, T *data1) : BaseArray<T>(true) {
 
 // initializer_list constructor
 template <typename T>
+template <typename K>
 Array<T>::Array(std::initializer_list<T> data_list) : BaseArray<T>(true) {
   is_data_allocation_owned = true;
   _size = data_list.size();
   TICK_PYTHON_MALLOC(_data, T, _size);
   size_t index = 0;
   for (auto it = data_list.begin(); it != data_list.end(); ++it) {
-    _data[index] = *it;
+    set_data_index(index, *it);
     index++;
   }
 }
 
 // fill with given value
 template <typename T>
-void Array<T>::fill(const T value) {
+template <typename K>
+void Array<T>::fill(const K value) {
   tick::vector_operations<T>{}.set(_size, value, _data);
-}
-
-// sort array inplace
-template <typename T>
-void Array<T>::sort(bool increasing) {
-  if (increasing)
-    std::sort(_data, _data + _size);
-  else
-    std::sort(_data, _data + _size, std::greater<T>());
 }
 
 template <typename T>
@@ -307,24 +307,6 @@ bool greater_comparator_abs(const value_index<T> &l, const value_index<T> &r) {
   return std::fabs(l.first) > std::fabs(r.first);
 }
 
-// sort array given a sort function
-template <typename T>
-template <typename F>
-void Array<T>::sort_function(Array<ulong> &index, F order_function) {
-  std::vector<value_index<T>> pairs(_size);
-  for (ulong i = 0; i < _size; ++i) {
-    pairs[i].first = _data[i];
-    pairs[i].second = i;
-  }
-
-  std::sort(pairs.begin(), pairs.end(), order_function);
-
-  for (ulong i = 0; i < _size; ++i) {
-    _data[i] = pairs[i].first;
-    index[i] = pairs[i].second;
-  }
-}
-
 // sort array inplace and keep track of index
 template <typename T>
 void Array<T>::sort(Array<ulong> &index, bool increasing) {
@@ -345,9 +327,10 @@ void Array<T>::sort_abs(Array<ulong> &index, bool increasing) {
 
 // Multiply an array with a scalar
 template <typename T>
-void Array<T>::multiply(const T fact, Array<T> *out) {
+template <typename K>
+void Array<T>::multiply(const K fact, Array<T> *out) {
   if (out == nullptr) {
-    tick::vector_operations<T>{}.scale(_size, fact, _data);
+    tick::vector_operations<T>{}.template scale<K>(_size, fact, _data);
   } else {
     for (ulong i = 0; i < _size; i++) (*out)[i] = _data[i] * fact;
   }

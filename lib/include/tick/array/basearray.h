@@ -93,7 +93,8 @@ class BaseArray : public AbstractArray1d2d<T> {
 
   //! @brief Returns the scalar product of the array with `array`
   // defined in file dot.h
-  T dot(const BaseArray<T> &array) const;
+  template <typename K = T>
+  T DLL_PUBLIC dot(const BaseArray<K> &array) const;
 
   //! @brief Creates a dense Array from an BaseArray
   //! In terms of allocation owner, there are two cases
