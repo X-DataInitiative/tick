@@ -15,6 +15,7 @@ dtype_map = {
     np.dtype('float64'): _ModelModifiedHuberDouble
 }
 
+
 class ModelModifiedHuber(ModelFirstOrder, ModelGeneralizedLinear,
                          ModelLipschitz):
     """Modified hinge loss model for binary classification. This loss is
@@ -103,13 +104,12 @@ class ModelModifiedHuber(ModelFirstOrder, ModelGeneralizedLinear,
         ModelLipschitz.fit(self, features, labels)
 
         if self.dtype not in dtype_map:
-            raise ValueError('dtype provided to ModelModifiedHuber is not handled: ',
-                             self.dtype)
+            raise ValueError(
+                'dtype provided to ModelModifiedHuber is not handled: ',
+                self.dtype)
 
-        self._set("_model", dtype_map[self.dtype](self.features,
-                                                self.labels,
-                                                self.fit_intercept,
-                                                self.n_threads))
+        self._set("_model", dtype_map[self.dtype](
+            self.features, self.labels, self.fit_intercept, self.n_threads))
         return self
 
     def _grad(self, coeffs: np.ndarray, out: np.ndarray) -> None:

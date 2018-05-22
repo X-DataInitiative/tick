@@ -7,6 +7,7 @@ from tick.solver.tests import TestSolver
 
 dtype_list = ["float64", "float32"]
 
+
 class SGDTest(object):
     def test_solver_sgd(self):
         """...Check SGD solver for Logistic Regression with Ridge
@@ -20,11 +21,13 @@ class SGDTest(object):
     def test_sgd_sparse_and_dense_consistency(self):
         """...SGDTest SGD can run all glm models and is consistent with sparsity
         """
+
         def create_solver():
-            return SGD(
-                max_iter=1, verbose=False, step=1e-5, seed=TestSolver.sto_seed)
+            return SGD(max_iter=1, verbose=False, step=1e-5,
+                       seed=TestSolver.sto_seed)
 
         self._test_solver_sparse_and_dense_consistency(create_solver)
+
 
 class SGDTestFloat32(TestSolver, SGDTest):
     def __init__(self, *args, **kwargs):
@@ -37,7 +40,4 @@ class SGDTestFloat64(TestSolver, SGDTest):
 
 
 if __name__ == '__main__':
-    suite = unittest.TestSuite()
-    for dt in dtype_list:
-        suite.addTest(parameterize(SolverTest, dtype=dt))
-    unittest.TextTestRunner().run(suite)
+    unittest.main()

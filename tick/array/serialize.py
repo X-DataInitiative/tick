@@ -6,15 +6,15 @@ import numpy as np
 import scipy
 
 from tick.array.build.array import (
-    tick_float_array_to_file,
-    tick_float_array2d_to_file,
-    tick_float_sparse2d_to_file,
+    # tick_float_array_to_file,
+    # tick_float_array2d_to_file,
+    # tick_float_sparse2d_to_file,
     tick_double_array_to_file,
     tick_double_array2d_to_file,
     tick_double_sparse2d_to_file,
-    tick_float_array_from_file,
-    tick_float_array2d_from_file,
-    tick_float_sparse2d_from_file,
+    # tick_float_array_from_file,
+    # tick_float_array2d_from_file,
+    # tick_float_sparse2d_from_file,
     tick_double_array_from_file,
     tick_double_array2d_from_file,
     tick_double_sparse2d_from_file,

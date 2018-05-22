@@ -13,6 +13,7 @@ dtype_map = {
     np.dtype('float64'): _ModelAbsoluteRegressionDouble
 }
 
+
 class ModelAbsoluteRegression(ModelFirstOrder, ModelGeneralizedLinear):
     """Absolute value (L1) loss for linear regression. This class gives first
     order information (gradient and loss) for this model and can be passed
@@ -92,13 +93,12 @@ class ModelAbsoluteRegression(ModelFirstOrder, ModelGeneralizedLinear):
         ModelGeneralizedLinear.fit(self, features, labels)
 
         if self.dtype not in dtype_map:
-            raise ValueError('dtype provided to ModelAbsoluteRegression is not handled: ',
-                             self.dtype)
+            raise ValueError(
+                'dtype provided to ModelAbsoluteRegression is not handled: ',
+                self.dtype)
 
-        self._set("_model", dtype_map[self.dtype](self.features,
-                                                     self.labels,
-                                                     self.fit_intercept,
-                                                     self.n_threads))
+        self._set("_model", dtype_map[self.dtype](
+            self.features, self.labels, self.fit_intercept, self.n_threads))
         return self
 
     def _grad(self, coeffs: np.ndarray, out: np.ndarray) -> None:

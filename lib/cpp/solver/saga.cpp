@@ -4,39 +4,47 @@
 #include "tick/base_model/model_generalized_linear.h"
 #include "tick/prox/prox_separable.h"
 
-template <class T>
-TSAGA<T>::TSAGA(ulong epoch_size, T tol, RandType rand_type, T step, int seed,
-                SAGA_VarianceReductionMethod variance_reduction)
-    : TStoSolver<T>(epoch_size, tol, rand_type, seed),
+template <class T, class K>
+TBaseSAGA<T, K>::TBaseSAGA(ulong epoch_size, T tol, RandType rand_type, T step,
+                           int seed,
+                           SAGA_VarianceReductionMethod variance_reduction)
+    : TStoSolver<T, K>(epoch_size, tol, rand_type, seed),
       solver_ready(false),
       ready_step_corrections(false),
       step(step),
       variance_reduction(variance_reduction) {}
 
 template <class T>
-void TSAGA<T>::set_model(std::shared_ptr<TModel<T> > model) {
+TSAGA<T>::TSAGA(ulong epoch_size, T tol, RandType rand_type, T step, int seed,
+                SAGA_VarianceReductionMethod variance_reduction)
+    : TBaseSAGA<T, T>(epoch_size, tol, rand_type, step, seed,
+                      variance_reduction) {}
+
+template <class T, class K>
+void TBaseSAGA<T, K>::set_model(std::shared_ptr<TModel<T, K> > model) {
   // model must be a child of ModelGeneralizedLinear
-  casted_model = std::dynamic_pointer_cast<TModelGeneralizedLinear<T> >(model);
+  casted_model =
+      std::dynamic_pointer_cast<TModelGeneralizedLinear<T, K> >(model);
   if (casted_model == nullptr) {
     TICK_ERROR("SAGA accepts only childs of `ModelGeneralizedLinear`")
   }
-  TStoSolver<T>::set_model(model);
+  TStoSolver<T, K>::set_model(model);
   ready_step_corrections = false;
   solver_ready = false;
 }
 
-template <class T>
-void TSAGA<T>::initialize_solver() {
+template <class T, class K>
+void TBaseSAGA<T, K>::initialize_solver() {
   ulong n_samples = model->get_n_samples();
-  gradients_memory = Array<T>(n_samples);
+  gradients_memory = Array<K>(n_samples);
   gradients_memory.fill(0);
-  gradients_average = Array<T>(model->get_n_coeffs());
+  gradients_average = Array<K>(model->get_n_coeffs());
   gradients_average.fill(0);
   solver_ready = true;
 }
 
-template <class T>
-void TSAGA<T>::prepare_solve() {
+template <class T, class K>
+void TBaseSAGA<T, K>::prepare_solve() {
   // The point where we compute the full gradient for variance reduction is the
   // new iterate obtained at the previous epoch
   if (!solver_ready) {
@@ -50,27 +58,34 @@ void TSAGA<T>::prepare_solve() {
   }
   rand_index = 0;
   if (variance_reduction == SAGA_VarianceReductionMethod::Average) {
-    next_iterate.init_to_zero();
+    next_iterate.template init_to_zero<T>();
   }
   if (variance_reduction == SAGA_VarianceReductionMethod::Random) {
     rand_index = rand_unif(epoch_size);
   }
 }
 
-template <class T>
-void TSAGA<T>::solve() {
+template <class T, class K>
+void TBaseSAGA<T, K>::solve() {
   prepare_solve();
   bool use_intercept = model->use_intercept();
   ulong n_features = model->get_n_features();
   if ((model->is_sparse()) && (prox->is_separable())) {
+    if (prox->is_separable()) {
+      casted_prox = std::static_pointer_cast<TProxSeparable<T, K> >(prox);
+    } else {
+      TICK_ERROR(
+          "SAGA::solve_sparse_proba_updates can be used with a separable prox "
+          "only.")
+    }
     solve_sparse_proba_updates(use_intercept, n_features);
   } else {
     solve_dense(use_intercept, n_features);
   }
 }
 
-template <class T>
-void TSAGA<T>::compute_step_corrections() {
+template <class T, class K>
+void TBaseSAGA<T, K>::compute_step_corrections() {
   ulong n_features = model->get_n_features();
   Array<T> columns_sparsity = casted_model->get_column_sparsity_view();
   steps_correction = Array<T>(n_features);
@@ -119,7 +134,7 @@ void TSAGA<T>::solve_dense(bool use_intercept, ulong n_features) {
   if (variance_reduction == SAGA_VarianceReductionMethod::Last) {
     next_iterate = iterate;
   }
-  TStoSolver<T>::t += epoch_size;
+  TStoSolver<T, T>::t += epoch_size;
 }
 
 template <class T>
@@ -131,14 +146,7 @@ void TSAGA<T>::solve_sparse_proba_updates(bool use_intercept,
   // step-sizes using a probabilistic approximation and the
   // penalization trick: with such a model and prox, we can work only inside the
   // current support (non-zero values) of the sampled vector of features
-  std::shared_ptr<TProxSeparable<T> > casted_prox;
-  if (prox->is_separable()) {
-    casted_prox = std::static_pointer_cast<TProxSeparable<T> >(prox);
-  } else {
-    TICK_ERROR(
-        "TSAGA<T>::solve_sparse_proba_updates can be used with a separable "
-        "prox only.")
-  }
+
   ulong n_samples = model->get_n_samples();
   for (t = 0; t < epoch_size; ++t) {
     // Get next sample index
@@ -185,14 +193,20 @@ void TSAGA<T>::solve_sparse_proba_updates(bool use_intercept,
   if (variance_reduction == SAGA_VarianceReductionMethod::Last) {
     next_iterate = iterate;
   }
-  TStoSolver<T>::t += epoch_size;
+  TStoSolver<T, T>::t += epoch_size;
 }
 
-template <class T>
-void TSAGA<T>::set_starting_iterate(Array<T> &new_iterate) {
-  TStoSolver<T>::set_starting_iterate(new_iterate);
+template <class T, class K>
+void TBaseSAGA<T, K>::set_starting_iterate(Array<K> &new_iterate) {
+  TStoSolver<T, K>::set_starting_iterate(new_iterate);
   next_iterate = iterate;
 }
 
+template class DLL_PUBLIC TBaseSAGA<double, double>;
+template class DLL_PUBLIC TBaseSAGA<float, float>;
+
 template class DLL_PUBLIC TSAGA<double>;
 template class DLL_PUBLIC TSAGA<float>;
+
+template class DLL_PUBLIC TBaseSAGA<double, std::atomic<double> >;
+template class DLL_PUBLIC TBaseSAGA<float, std::atomic<float> >;

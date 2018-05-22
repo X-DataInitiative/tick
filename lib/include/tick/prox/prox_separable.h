@@ -5,63 +5,63 @@
 
 #include "prox.h"
 
-template <class T>
-class DLL_PUBLIC TProxSeparable : public TProx<T> {
-  // Grants cereal access to default constructor
+template <class T, class K>
+class DLL_PUBLIC TProxSeparable : public TProx<T, K> {
+  // Grants cereal access to default constructor/serialize functions
   friend class cereal::access;
 
  protected:
-  using TProx<T>::has_range;
-  using TProx<T>::strength;
-  using TProx<T>::start;
-  using TProx<T>::end;
-  using TProx<T>::positive;
+  using TProx<T, K>::has_range;
+  using TProx<T, K>::strength;
+  using TProx<T, K>::start;
+  using TProx<T, K>::end;
+  using TProx<T, K>::positive;
+  using TProx<T, K>::set_out_i;
 
  public:
-  using TProx<T>::call;
-  using TProx<T>::get_class_name;
+  using TProx<T, K>::call;
+  using TProx<T, K>::get_class_name;
 
- protected:
+ public:
   // This exists soley for cereal/swig
-  TProxSeparable() : TProxSeparable<T>(0, 0, 1, 0) {}
+  TProxSeparable() : TProxSeparable<T, K>(0, 0, 1, 0) {}
 
- public:
-  TProxSeparable(T strength, bool positive) : TProx<T>(strength, positive) {}
+  TProxSeparable(T strength, bool positive) : TProx<T, K>(strength, positive) {}
 
   TProxSeparable(T strength, ulong start, ulong end, bool positive)
-      : TProx<T>(strength, start, end, positive) {}
+      : TProx<T, K>(strength, start, end, positive) {}
 
   bool is_separable() const override;
 
   //! @brief call prox on coeffs, with a given step and store result in out
   //! @note this calls call_single on each coordinate
-  void call(const Array<T> &coeffs, T step, Array<T> &out, ulong start,
+  void call(const Array<K> &coeffs, T step, Array<K> &out, ulong start,
             ulong end) override;
 
   //! @brief call prox on coeffs, with a vector of different steps and store
   //! result in out
-  virtual void call(const Array<T> &coeffs, const Array<T> &step,
-                    Array<T> &out);
+  virtual void call(const Array<K> &coeffs, const Array<T> &step,
+                    Array<K> &out);
 
   //! @brief call prox on a part of coeffs (defined by start-end), with a vector
   //! of different steps and store result in out
-  virtual void call(const Array<T> &coeffs, const Array<T> &step, Array<T> &out,
+  virtual void call(const Array<K> &coeffs, const Array<T> &step, Array<K> &out,
                     ulong start, ulong end);
 
   //! @brief apply prox on a single value defined by coordinate i
-  virtual void call_single(ulong i, const Array<T> &coeffs, T step,
-                           Array<T> &out) const;
+  virtual void call_single(ulong i, const Array<K> &coeffs, T step,
+                           Array<K> &out) const;
 
   //! @brief apply prox on a single value defined by coordinate i several times
-  virtual void call_single(ulong i, const Array<T> &coeffs, T step,
-                           Array<T> &out, ulong n_times) const;
+  virtual void call_single(ulong i, const Array<K> &coeffs, T step,
+                           Array<K> &out, ulong n_times) const;
 
-  T value(const Array<T> &coeffs, ulong start, ulong end) override;
+  T value(const Array<K> &coeffs, ulong start, ulong end) override;
 
- private:
   //! @brief apply prox on a single value
   virtual T call_single(T x, T step) const;
 
+ private:
   //! @brief apply prox on a single value several times
   virtual T call_single(T x, T step, ulong n_times) const;
 
@@ -72,18 +72,21 @@ class DLL_PUBLIC TProxSeparable : public TProx<T> {
  protected:
   template <class Archive>
   void serialize(Archive &ar) {
-    ar(cereal::make_nvp("Prox", cereal::base_class<TProx<T> >(this)));
+    ar(cereal::make_nvp("Prox", cereal::base_class<TProx<T, K> >(this)));
   }
 
-  BoolStrReport compare(const TProxSeparable<T> &that, std::stringstream &ss) {
-    return TProx<T>::compare(that, ss);
+  BoolStrReport compare(const TProxSeparable<T, K> &that,
+                        std::stringstream &ss) {
+    return TProx<T, K>::compare(that, ss);
   }
 };
 
-using ProxSeparable = TProxSeparable<double>;
+using ProxSeparableDouble = TProxSeparable<double, double>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ProxSeparableDouble,
+                                   cereal::specialization::member_serialize)
 
-using ProxSeparableDouble = TProxSeparable<double>;
-
-using ProxSeparableFloat = TProxSeparable<float>;
+using ProxSeparableFloat = TProxSeparable<float, float>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ProxSeparableFloat,
+                                   cereal::specialization::member_serialize)
 
 #endif  // LIB_INCLUDE_TICK_PROX_PROX_SEPARABLE_H_

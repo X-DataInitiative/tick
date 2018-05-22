@@ -3,18 +3,18 @@
 #include "tick/solver/adagrad.h"
 #include "tick/prox/prox_separable.h"
 
-template <class T>
-TAdaGrad<T>::TAdaGrad(ulong epoch_size, T tol, RandType rand_type, T step,
-                      int seed)
-    : TStoSolver<T>(epoch_size, tol, rand_type, seed),
+template <class T, class K>
+TAdaGrad<T, K>::TAdaGrad(ulong epoch_size, T tol, RandType rand_type, T step,
+                         int seed)
+    : TStoSolver<T, K>(epoch_size, tol, rand_type, seed),
       hist_grad(iterate.size()),
       step(step) {}
 
-template <class T>
-void TAdaGrad<T>::solve() {
-  std::shared_ptr<TProxSeparable<T>> casted_prox;
+template <class T, class K>
+void TAdaGrad<T, K>::solve() {
+  std::shared_ptr<TProxSeparable<T, K>> casted_prox;
   if (prox->is_separable()) {
-    casted_prox = std::static_pointer_cast<TProxSeparable<T>>(prox);
+    casted_prox = std::static_pointer_cast<TProxSeparable<T, K>>(prox);
   } else {
     TICK_ERROR("Prox in Adagrad must be separable but got "
                << prox->get_class_name());
@@ -54,9 +54,9 @@ void TAdaGrad<T>::solve() {
   }
 }
 
-template <class T>
-void TAdaGrad<T>::set_starting_iterate(Array<T> &new_iterate) {
-  TStoSolver<T>::set_starting_iterate(new_iterate);
+template <class T, class K>
+void TAdaGrad<T, K>::set_starting_iterate(Array<T> &new_iterate) {
+  TStoSolver<T, K>::set_starting_iterate(new_iterate);
 
   hist_grad = Array<T>(new_iterate.size());
   hist_grad.init_to_zero();

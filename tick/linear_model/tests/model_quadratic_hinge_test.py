@@ -45,8 +45,10 @@ class ModelQuadraticHingeTest(object):
         self.assertAlmostEqual(model.get_lip_max(), 54.82616964855237,
                                places=self.decimal_places)
         self.assertAlmostEqual(model_spars.get_lip_mean(),
-                               model.get_lip_mean())
-        self.assertAlmostEqual(model_spars.get_lip_max(), model.get_lip_max())
+                               model.get_lip_mean(),
+                               places=self.decimal_places)
+        self.assertAlmostEqual(model_spars.get_lip_max(), model.get_lip_max(),
+                               places=self.decimal_places)
 
         # Test for the Lipschitz constants with intercept
         model = ModelQuadraticHinge(fit_intercept=True).fit(X, y)

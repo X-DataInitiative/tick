@@ -14,6 +14,7 @@ dtype_map = {
     np.dtype("float32"): _ProxL2sqFloat
 }
 
+
 class ProxL2Sq(Prox):
     """Proximal operator of the squared L2 norm (ridge penalization)
 
@@ -72,7 +73,8 @@ class ProxL2Sq(Prox):
         return self._prox.value(coeffs)
 
     def _build_cpp_prox(self, dtype_or_object_with_dtype):
-        prox_class = self._get_typed_class(dtype_or_object_with_dtype, dtype_map)
+        prox_class = self._get_typed_class(dtype_or_object_with_dtype,
+                                           dtype_map)
         if self.range is None:
             return prox_class(self.strength, self.positive)
         else:

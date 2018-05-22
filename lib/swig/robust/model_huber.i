@@ -5,7 +5,7 @@
 %}
 
 template <class T>
-class TModelHuber : public virtual TModelGeneralizedLinear<T>, public TModelLipschitz<T> {
+class TModelHuber : public virtual TModelGeneralizedLinear<T, K>, public TModelLipschitz<T, K> {
  public:
   TModelHuber();
   TModelHuber(
@@ -16,11 +16,11 @@ class TModelHuber : public virtual TModelGeneralizedLinear<T>, public TModelLips
   );
   virtual T get_threshold(void) const;
   virtual void set_threshold(const T threshold);
-  bool compare(const TModelHuber<T> &that);
+  bool compare(const TModelHuber<T, K> &that);
 };
 
-%rename(ModelHuberDouble) TModelHuber<double>;
-class ModelHuberDouble : public virtual TModelGeneralizedLinear<double>, public TModelLipschitz<double> {
+%rename(ModelHuberDouble) TModelHuber<double, double>;
+class ModelHuberDouble : public virtual TModelGeneralizedLinear<double, double>, public TModelLipschitz<double, double> {
  public:
   ModelHuberDouble();
   ModelHuberDouble(
@@ -34,11 +34,11 @@ class ModelHuberDouble : public virtual TModelGeneralizedLinear<double>, public 
   virtual void set_threshold(const double threshold);
   bool compare(const ModelHuberDouble &that);
 };
-typedef TModelHuber<double> ModelHuberDouble;
+typedef TModelHuber<double, double> ModelHuberDouble;
 TICK_MAKE_PICKLABLE(ModelHuberDouble);
 
-%rename(ModelHuberFloat) TModelHuber<float>;
-class ModelHuberFloat : public virtual TModelGeneralizedLinear<float>, public TModelLipschitz<float> {
+%rename(ModelHuberFloat) TModelHuber<float, float>;
+class ModelHuberFloat : public virtual TModelGeneralizedLinear<float, float>, public TModelLipschitz<float, float> {
  public:
   ModelHuberFloat();
   ModelHuberFloat(
@@ -52,5 +52,5 @@ class ModelHuberFloat : public virtual TModelGeneralizedLinear<float>, public TM
   virtual void set_threshold(const float threshold);
   bool compare(const ModelHuberFloat &that);
 };
-typedef TModelHuber<float> ModelHuberFloat;
+typedef TModelHuber<float, float> ModelHuberFloat;
 TICK_MAKE_PICKLABLE(ModelHuberFloat);

@@ -2,8 +2,8 @@
 
 #include "tick/linear_model/model_smoothed_hinge.h"
 
-template <class T>
-T TModelSmoothedHinge<T>::loss_i(const ulong i, const Array<T> &coeffs) {
+template <class T, class K>
+T TModelSmoothedHinge<T, K>::loss_i(const ulong i, const Array<K> &coeffs) {
   const double z = get_label(i) * get_inner_prod(i, coeffs);
   if (z >= 1) {
     return 0.;
@@ -17,8 +17,9 @@ T TModelSmoothedHinge<T>::loss_i(const ulong i, const Array<T> &coeffs) {
   }
 }
 
-template <class T>
-T TModelSmoothedHinge<T>::grad_i_factor(const ulong i, const Array<T> &coeffs) {
+template <class T, class K>
+T TModelSmoothedHinge<T, K>::grad_i_factor(const ulong i,
+                                           const Array<K> &coeffs) {
   const double y = get_label(i);
   const double z = y * get_inner_prod(i, coeffs);
   if (z >= 1) {
@@ -32,8 +33,8 @@ T TModelSmoothedHinge<T>::grad_i_factor(const ulong i, const Array<T> &coeffs) {
   }
 }
 
-template <class T>
-void TModelSmoothedHinge<T>::compute_lip_consts() {
+template <class T, class K>
+void TModelSmoothedHinge<T, K>::compute_lip_consts() {
   if (ready_lip_consts) {
     return;
   } else {
@@ -51,3 +52,6 @@ void TModelSmoothedHinge<T>::compute_lip_consts() {
 
 template class DLL_PUBLIC TModelSmoothedHinge<double>;
 template class DLL_PUBLIC TModelSmoothedHinge<float>;
+
+template class DLL_PUBLIC TModelSmoothedHinge<double, std::atomic<double>>;
+template class DLL_PUBLIC TModelSmoothedHinge<float, std::atomic<float>>;

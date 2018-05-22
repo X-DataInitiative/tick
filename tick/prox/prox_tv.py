@@ -14,6 +14,7 @@ dtype_map = {
     np.dtype("float32"): _ProxTVFloat
 }
 
+
 class ProxTV(Prox):
     """Proximal operator of the total-variation penalization
 
@@ -76,7 +77,8 @@ class ProxTV(Prox):
         return self._prox.value(coeffs)
 
     def _build_cpp_prox(self, dtype_or_object_with_dtype):
-        prox_class = self._get_typed_class(dtype_or_object_with_dtype, dtype_map)
+        prox_class = self._get_typed_class(dtype_or_object_with_dtype,
+                                           dtype_map)
         if self.range is None:
             return prox_class(self.strength, self.positive)
         else:

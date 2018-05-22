@@ -19,53 +19,53 @@ void test_linear_separable(std::function<std::shared_ptr<MODEL>(
   const auto BETA = 1e-10;
   const auto STRENGTH = (1. / n_samples) + BETA;
   auto model = get_model(features, labels);
-  auto proxl1   = std::make_shared<TProxL1<T> >(STRENGTH, true);
-  auto proxl1w  = std::make_shared<TProxL1w<T> >(STRENGTH, get_proxl1w_weights<T>(), true);
-  auto proxl2   = std::make_shared<TProxL2<T> >(STRENGTH, 0,
-                                      model->get_n_coeffs(), 0);
-  auto proxl2sq = std::make_shared<TProxL2Sq<T> >(STRENGTH, true);
-  auto proxelas = std::make_shared<TProxElasticNet<T> >(STRENGTH, BETA / STRENGTH, 0,
-                                      model->get_n_coeffs(), 0);
-  auto proxeq   = std::make_shared<TProxEquality<T> >(STRENGTH, 0,
-                                      model->get_n_coeffs(), 0);
-  auto proxtv   = std::make_shared<TProxTV<T> >(STRENGTH, 0,
-                                      model->get_n_coeffs(), 0);
-  auto proxpos  = std::make_shared<TProxPositive<T> >(STRENGTH);
-  auto prox0    = std::make_shared<TProxZero<T> >(STRENGTH);
+  auto proxl1 = std::make_shared<TProxL1<T, K> >(STRENGTH, true);
+  auto proxl1w = std::make_shared<TProxL1w<T, K> >(
+      STRENGTH, get_proxl1w_weights<T>(), true);
+  auto proxl2 =
+      std::make_shared<TProxL2<T, K> >(STRENGTH, 0, model->get_n_coeffs(), 0);
+  auto proxl2sq = std::make_shared<TProxL2Sq<T, K> >(STRENGTH, true);
+  auto proxelas = std::make_shared<TProxElasticNet<T, K> >(
+      STRENGTH, BETA / STRENGTH, 0, model->get_n_coeffs(), 0);
+  auto proxeq = std::make_shared<TProxEquality<T, K> >(
+      STRENGTH, 0, model->get_n_coeffs(), 0);
+  auto proxtv =
+      std::make_shared<TProxTV<T, K> >(STRENGTH, 0, model->get_n_coeffs(), 0);
+  auto proxpos = std::make_shared<TProxPositive<T, K> >(STRENGTH);
+  auto prox0 = std::make_shared<TProxZero<T, K> >(STRENGTH);
   {
-    auto solver = std::make_shared<TAdaGrad<T> >(n_samples, 0, RandType::unif, 1e3, -1);
+    auto solver = std::make_shared<TAdaGrad<T, K> >(n_samples, 0,
+                                                    RandType::unif, 1e3, -1);
     SCOPED_TRACE("");
-    WITH_PROX(
-      proxl1, proxl1w, proxl2, proxl2sq, proxelas, proxeq, proxtv, proxpos, prox0
-    ); 
+    WITH_PROX(proxl1, proxl1w, proxl2, proxl2sq, proxelas, proxeq, proxtv,
+              proxpos, prox0);
   }
   {
-    auto solver = std::make_shared<TSDCA<T> >(n_samples);
+    auto solver = std::make_shared<TSDCA<T, K> >(n_samples);
     SCOPED_TRACE("");
-    WITH_PROX(
-      proxl1, proxl1w, proxl2, proxl2sq, proxelas, proxeq, proxtv, proxpos, prox0
-    ); 
+    WITH_PROX(proxl1, proxl1w, proxl2, proxl2sq, proxelas, proxeq, proxtv,
+              proxpos, prox0);
   }
   {
-    auto solver = std::make_shared<TSGD<T> >(n_samples, 0, RandType::unif, 1e3, -1);
+    auto solver =
+        std::make_shared<TSGD<T, K> >(n_samples, 0, RandType::unif, 1e3, -1);
     SCOPED_TRACE("");
-    WITH_PROX(
-      proxl1, proxl1w, proxl2, proxl2sq, proxelas, proxeq, proxtv, proxpos, prox0
-    ); 
+    WITH_PROX(proxl1, proxl1w, proxl2, proxl2sq, proxelas, proxeq, proxtv,
+              proxpos, prox0);
   }
   {
-    auto solver = std::make_shared<TSVRG<T> >(n_samples, 0, RandType::unif, 1e3, -1);
+    auto solver =
+        std::make_shared<TSVRG<T, K> >(n_samples, 0, RandType::unif, 1e3, -1);
     SCOPED_TRACE("");
-    WITH_PROX(
-      proxl1, proxl1w, proxl2, proxl2sq, proxelas, proxeq, proxtv, proxpos, prox0
-    ); 
+    WITH_PROX(proxl1, proxl1w, proxl2, proxl2sq, proxelas, proxeq, proxtv,
+              proxpos, prox0);
   }
   {
-    auto solver = std::make_shared<TSVRG<T> >(n_samples, 0, RandType::unif, 1e3, -1);
+    auto solver =
+        std::make_shared<TSVRG<T, K> >(n_samples, 0, RandType::unif, 1e3, -1);
     SCOPED_TRACE("");
-    WITH_PROX(
-      proxl1, proxl1w, proxl2, proxl2sq, proxelas, proxeq, proxtv, proxpos, prox0
-    ); 
+    WITH_PROX(proxl1, proxl1w, proxl2, proxl2sq, proxelas, proxeq, proxtv,
+              proxpos, prox0);
   }
 }
 

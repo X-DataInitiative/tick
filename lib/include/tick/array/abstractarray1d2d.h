@@ -150,27 +150,40 @@ class AbstractArray1d2d {
  public:
   //! @brief Fill array with zeros (in case of a sparse array we do not
   //! desallocate the various arrays... so it is a "lazy" but quick init !)
+  template <typename K = T>
   void init_to_zero() {
-    tick::vector_operations<T>{}.set(size_data(), T{0}, _data);
+    tick::vector_operations<T>{}.template set<K>(size_data(), T{0}, _data);
   }
 
   //! @brief Returns the sum of all the elements of the array
-  tick::promote_t<T> sum() const;
+  template <typename K = T>
+  tick::promote_t<K> sum() const;
 
   //! @brief Returns the minimum element in the array
-  T min() const;
+  template <typename K = T>
+  K min() const;
 
   //! @brief Returns the maximum element in the array
-  T max() const;
+  template <typename K = T>
+  K max() const;
 
   //! @brief Compute the squared Euclidean norm of the array
-  tick::promote_t<T> norm_sq() const;
+
+  template <typename K = T>
+  tick::promote_t<K> norm_sq() const;
 
   //! @brief Multiplication in place with a scalar
   void operator*=(const T a);
 
+  template <typename K>
+  void multiply(const K a);
+
   //! @brief Division in place with a scalar
   void operator/=(const T a);
+
+  // useful if data is atomic
+  template <typename K>
+  K DLL_PUBLIC get_data_index(size_t index) const;
 
  private:
   std::string type() const { return (is_dense() ? "Array" : "SparseArray"); }
@@ -312,19 +325,21 @@ AbstractArray1d2d<T> &AbstractArray1d2d<T>::operator=(
 
 // @brief Returns the sum of all the elements of the array
 template <typename T>
-tick::promote_t<T> AbstractArray1d2d<T>::sum() const {
+template <typename K>
+tick::promote_t<K> AbstractArray1d2d<T>::sum() const {
   if (_size == 0) TICK_ERROR("Cannot take the sum of an empty array");
   if (size_data() == 0) return 0;
 
-  return tick::vector_operations<T>{}.sum(size_data(), _data);
+  return tick::vector_operations<T>{}.template sum<K>(size_data(), _data);
 }
 
 // @brief Returns the min
 template <typename T>
-T AbstractArray1d2d<T>::min() const {
+template <typename K>
+K AbstractArray1d2d<T>::min() const {
   if (_size == 0) TICK_ERROR("Cannot take the min of an empty array");
   if (size_data() == 0) return 0;
-  T min = _data[0];
+  K min = _data[0];
   for (ulong i = 1; i < size_data(); ++i) {
     if (_data[i] < min) min = _data[i];
   }
@@ -337,10 +352,11 @@ T AbstractArray1d2d<T>::min() const {
 
 // @brief Returns the max
 template <typename T>
-T AbstractArray1d2d<T>::max() const {
+template <typename K>
+K AbstractArray1d2d<T>::max() const {
   if (_size == 0) TICK_ERROR("Cannot take the max of an empty array");
   if (size_data() == 0) return 0;
-  T max = _data[0];
+  K max = _data[0];
   for (ulong i = 1; i < size_data(); ++i) {
     if (_data[i] > max) max = _data[i];
   }
@@ -353,17 +369,18 @@ T AbstractArray1d2d<T>::max() const {
 
 // @brief Compute the squared Euclidean norm of the array
 template <typename T>
-tick::promote_t<T> AbstractArray1d2d<T>::norm_sq() const {
+template <typename K>
+tick::promote_t<K> AbstractArray1d2d<T>::norm_sq() const {
   if (_size == 0) TICK_ERROR("Cannot take the norm_sq of an empty array");
   if (size_data() == 0) return 0;
 
-  tick::promote_t<T> norm_sq{0};
+  tick::promote_t<K> _norm_sq{0};
   for (ulong i = 0; i < size_data(); ++i) {
-    const T x_i = _data[i];
-    norm_sq += x_i * x_i;
+    const K x_i = get_data_index<K>(i);
+    _norm_sq += x_i * x_i;
   }
 
-  return norm_sq;
+  return _norm_sq;
 }
 
 // @brief Multiplication in place with a scalar

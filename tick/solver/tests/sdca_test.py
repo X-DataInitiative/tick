@@ -10,14 +10,15 @@ from tick.solver.tests import TestSolver
 
 dtype_list = ["float64", "float32"]
 
+
 class SDCATest(object):
     def test_solver_sdca(self):
         """...Check SDCA solver for a Logistic regression with Ridge
         penalization and L1 penalization
         """
         solver = SDCA(l_l2sq=1e-5, max_iter=100, verbose=False, tol=0)
-        self.check_solver(
-            solver, fit_intercept=False, model="logreg", decimal=1)
+        self.check_solver(solver, fit_intercept=False, model="logreg",
+                          decimal=1)
 
     def compare_solver_sdca(self):
         """...Compare SDCA solution with SVRG solution
@@ -58,11 +59,8 @@ class SDCATest(object):
         """
 
         def create_solver():
-            return SDCA(
-                max_iter=1,
-                verbose=False,
-                l_l2sq=1e-3,
-                seed=TestSolver.sto_seed)
+            return SDCA(max_iter=1, verbose=False, l_l2sq=1e-3,
+                        seed=TestSolver.sto_seed)
 
         self._test_solver_sparse_and_dense_consistency(create_solver)
 
@@ -124,8 +122,8 @@ class SDCATest(object):
 
             svrg.set_model(model).set_prox(ProxL2Sq(l_l2sq).astype(self.dtype))
             svrg.solve(0.5 * np.ones(model.n_coeffs), step=1e-2)
-            np.testing.assert_array_almost_equal(
-                svrg.solution, sdca.solution, decimal=4)
+            np.testing.assert_array_almost_equal(svrg.solution, sdca.solution,
+                                                 decimal=4)
 
 
 def parameterize(klass, dtype):
@@ -147,7 +145,4 @@ class SDCATestFloat64(TestSolver, SDCATest):
 
 
 if __name__ == '__main__':
-    suite = unittest.TestSuite()
-    for dt in dtype_list:
-        suite.addTest(parameterize(SolverTest, dtype=dt))
-    unittest.TextTestRunner().run(suite)
+    unittest.main()

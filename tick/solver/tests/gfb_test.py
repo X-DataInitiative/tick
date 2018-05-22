@@ -8,9 +8,8 @@ from tick.prox import ProxElasticNet, ProxL2Sq, ProxL1
 from tick.solver import GFB, AGD
 from tick.solver.tests import TestSolver
 
-dtype_list = ["float64", "float32"]
 
-class GDBTest(object):
+class GFBTest(object):
     def test_solver_gfb(self):
         """...Check GFB's solver for a Logistic Regression with ElasticNet
         penalization
@@ -34,6 +33,7 @@ class GDBTest(object):
         # First we get GFB solution with prox l1 and prox l2
         gfb = GFB(tol=1e-13, max_iter=1000, verbose=False, step=1)
         TestSolver.prepare_solver(gfb, X, y, prox=None)
+        gfb = gfb.astype(self.dtype)
         gfb.set_prox([prox_l1, prox_l2])
         gfb_solution = gfb.solve()
 
@@ -41,22 +41,19 @@ class GDBTest(object):
         agd = AGD(tol=1e-13, max_iter=1000, verbose=False, step=0.5,
                   linesearch=False)
         TestSolver.prepare_solver(agd, X, y, prox=prox_elasticnet)
+        agd = agd.astype(self.dtype)
         agd_solution = agd.solve()
 
         # Finally we assert that both algorithms lead to the same solution
         np.testing.assert_almost_equal(gfb_solution, agd_solution, decimal=1)
 
-class GDBTestFloat32(TestSolver, GDBTest):
+class GFBTestFloat32(TestSolver, GFBTest):
     def __init__(self, *args, **kwargs):
         TestSolver.__init__(self, *args, dtype="float32", **kwargs)
 
-
-class GDBTestFloat64(TestSolver, GDBTest):
+class GFBTestFloat64(TestSolver, GFBTest):
     def __init__(self, *args, **kwargs):
         TestSolver.__init__(self, *args, dtype="float64", **kwargs)
 
 if __name__ == '__main__':
-    suite = unittest.TestSuite()
-    for dt in dtype_list:
-        suite.addTest(parameterize(SolverTest, dtype=dt))
-    unittest.TextTestRunner().run(suite)
+    unittest.main()

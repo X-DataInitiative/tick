@@ -6,13 +6,10 @@
 
 #include "tick/survival/model_coxreg_partial_lik.h"
 
-#include <cmath>
-
-template <class T>
-TModelCoxRegPartialLik<T>::TModelCoxRegPartialLik(
-    const std::shared_ptr<BaseArray2d<T> > features,
-    const std::shared_ptr<SArray<T> > times_,
-    const SArrayUShortPtr censoring_) {
+template <class T, class K>
+TModelCoxRegPartialLik<T, K>::TModelCoxRegPartialLik(
+    const std::shared_ptr<BaseArray2d<T>> features,
+    const std::shared_ptr<SArray<T>> times_, const SArrayUShortPtr censoring_) {
   if (!features) TICK_ERROR("ModelCoxRegPartialLik: features is a nullptr");
   if (!times_) TICK_ERROR("ModelCoxRegPartialLik: times is a nullptr");
 
@@ -66,8 +63,8 @@ TModelCoxRegPartialLik<T>::TModelCoxRegPartialLik(
   }
 }
 
-template <class T>
-T TModelCoxRegPartialLik<T>::loss(const Array<T> &coeffs) {
+template <class T, class K>
+T TModelCoxRegPartialLik<T, K>::loss(const Array<K> &coeffs) {
   const ulong n_failures_minus_one = n_failures - 1;
   // Compute all the inner products and maintain the maximal one
   T max_inner_prod = -((std::numeric_limits<T>::max)());
@@ -101,8 +98,8 @@ T TModelCoxRegPartialLik<T>::loss(const Array<T> &coeffs) {
   return log_lik / n_failures;
 }
 
-template <class T>
-void TModelCoxRegPartialLik<T>::grad(const Array<T> &coeffs, Array<T> &out) {
+template <class T, class K>
+void TModelCoxRegPartialLik<T, K>::grad(const Array<K> &coeffs, Array<T> &out) {
   const ulong n_failures_minus_one = n_failures - 1;
   // grad must be filled with 0
   out.init_to_zero();
@@ -160,3 +157,6 @@ void TModelCoxRegPartialLik<T>::grad(const Array<T> &coeffs, Array<T> &out) {
 
 template class DLL_PUBLIC TModelCoxRegPartialLik<double>;
 template class DLL_PUBLIC TModelCoxRegPartialLik<float>;
+
+template class DLL_PUBLIC TModelCoxRegPartialLik<double, std::atomic<double>>;
+template class DLL_PUBLIC TModelCoxRegPartialLik<float, std::atomic<float>>;

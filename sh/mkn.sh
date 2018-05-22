@@ -66,7 +66,7 @@ cd $ROOT
 
 (( $COMPILE == 1 )) && \
   for P in "${PROFILES[@]}"; do 
-    mkn compile -ta "${MKN_C_FLAGS[@]}" -b "$PY_INCS" \
+    mkn compile -t ${MKN_COMPILE_THREADS} -a "${MKN_C_FLAGS[@]}" -b "$PY_INCS" \
       ${MKN_X_FILE[@]} -p ${P} -C lib "${MKN_WITH[@]}"
   done
 

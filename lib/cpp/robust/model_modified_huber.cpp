@@ -2,8 +2,8 @@
 
 #include "tick/robust/model_modified_huber.h"
 
-template <class T>
-T TModelModifiedHuber<T>::loss_i(const ulong i, const Array<T> &coeffs) {
+template <class T, class K>
+T TModelModifiedHuber<T, K>::loss_i(const ulong i, const Array<K> &coeffs) {
   const T z = get_label(i) * get_inner_prod(i, coeffs);
   if (z >= 1) {
     return 0.;
@@ -17,8 +17,9 @@ T TModelModifiedHuber<T>::loss_i(const ulong i, const Array<T> &coeffs) {
   }
 }
 
-template <class T>
-T TModelModifiedHuber<T>::grad_i_factor(const ulong i, const Array<T> &coeffs) {
+template <class T, class K>
+T TModelModifiedHuber<T, K>::grad_i_factor(const ulong i,
+                                           const Array<K> &coeffs) {
   const T y = get_label(i);
   const T z = y * get_inner_prod(i, coeffs);
   if (z >= 1) {
@@ -32,8 +33,8 @@ T TModelModifiedHuber<T>::grad_i_factor(const ulong i, const Array<T> &coeffs) {
   }
 }
 
-template <class T>
-void TModelModifiedHuber<T>::compute_lip_consts() {
+template <class T, class K>
+void TModelModifiedHuber<T, K>::compute_lip_consts() {
   if (ready_lip_consts) {
     return;
   } else {
@@ -51,3 +52,6 @@ void TModelModifiedHuber<T>::compute_lip_consts() {
 
 template class DLL_PUBLIC TModelModifiedHuber<double>;
 template class DLL_PUBLIC TModelModifiedHuber<float>;
+
+// template class DLL_PUBLIC TModelModifiedHuber<double, std::atomic<double>>;
+// template class DLL_PUBLIC TModelModifiedHuber<float, std::atomic<float>>;

@@ -4,6 +4,7 @@ import numpy as np
 from abc import ABC, abstractmethod
 from tick.base import Base
 
+
 class Prox(ABC, Base):
     """An abstract base class for a proximal operator
 
@@ -42,7 +43,8 @@ class Prox(ABC, Base):
     def range(self, val):
         if val is not None:
             if len(val) != 2:
-                raise ValueError("``range`` must be a tuple with 2 " "elements")
+                raise ValueError("``range`` must be a tuple with 2 "
+                                 "elements")
             if val[0] >= val[1]:
                 raise ValueError("first element must be smaller than "
                                  "second element in ``range``")
@@ -114,13 +116,13 @@ class Prox(ABC, Base):
     def astype(self, dtype_or_object_with_dtype):
         import tick.base.dtype_to_cpp_type
         new_prox = tick.base.dtype_to_cpp_type.copy_with(
-          self, ["_prox"] # ignore _prox on deepcopy
+            self,
+            ["_prox"]  # ignore _prox on deepcopy
         )
         new_prox._set('_prox',
-            new_prox._build_cpp_prox(dtype_or_object_with_dtype))
+                      new_prox._build_cpp_prox(dtype_or_object_with_dtype))
         return new_prox
 
     def _build_cpp_prox(self, dtype: str):
         raise ValueError("""This function is expected to
                             overriden in a subclass""".strip())
-

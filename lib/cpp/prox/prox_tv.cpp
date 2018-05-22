@@ -3,11 +3,11 @@
 #include "tick/prox/prox_tv.h"
 
 // This piece comes from L. Condat's paper, see tick's documentation
-template <class T>
-void TProxTV<T>::call(const Array<T> &coeffs, T step, Array<T> &out,
-                      ulong start, ulong end) {
-  Array<T> sub_coeffs = view(coeffs, start, end);
-  Array<T> sub_out = view(out, start, end);
+template <class T, class K>
+void TProxTV<T, K>::call(const Array<K> &coeffs, T step, Array<K> &out,
+                         ulong start, ulong end) {
+  Array<K> sub_coeffs = view(coeffs, start, end);
+  Array<K> sub_out = view(out, start, end);
 
   const T width = sub_coeffs.size();
   const T thresh = step * strength;
@@ -83,8 +83,8 @@ void TProxTV<T>::call(const Array<T> &coeffs, T step, Array<T> &out,
   }
 }
 
-template <class T>
-T TProxTV<T>::value(const Array<T> &coeffs, ulong start, ulong end) {
+template <class T, class K>
+T TProxTV<T, K>::value(const Array<K> &coeffs, ulong start, ulong end) {
   T diff, tv_norm = 0;
   for (ulong i = start + 1; i < end; i++) {
     diff = coeffs[i] - coeffs[i - 1];
@@ -94,5 +94,8 @@ T TProxTV<T>::value(const Array<T> &coeffs, ulong start, ulong end) {
   return strength * tv_norm;
 }
 
-template class DLL_PUBLIC TProxTV<double>;
-template class DLL_PUBLIC TProxTV<float>;
+template class DLL_PUBLIC TProxTV<double, double>;
+template class DLL_PUBLIC TProxTV<float, float>;
+
+template class DLL_PUBLIC TProxTV<double, std::atomic<double>>;
+template class DLL_PUBLIC TProxTV<float, std::atomic<float>>;

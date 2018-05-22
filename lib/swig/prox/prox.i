@@ -7,7 +7,7 @@
 #include "tick/prox/prox.h"
 %}
 
-template <class T>
+template <class T, class K>
 class TProx {
  public:
   TProx(
@@ -25,7 +25,7 @@ class TProx {
     T step,
     Array<T> &out
   );
-  virtual T value(const Array<T> &coeffs);
+  virtual T value(const Array<K> &coeffs);
   virtual T get_strength() const;
   virtual void set_strength(T strength);
   virtual ulong get_start() const;
@@ -35,8 +35,37 @@ class TProx {
   virtual void set_positive(bool positive);
 };
 
-%rename(ProxDouble) TProx<double>;
-class TProx<double> {
+%rename(Prox) TProx<double, double>;
+class TProx<double, double> {
+ public:
+  Prox(
+    double strength,
+    bool positive
+  );
+  Prox(
+    double strength,
+    unsigned long start,
+    unsigned long end,
+    bool positive
+  );
+  virtual void call(
+    const ArrayDouble &coeffs,
+    double step,
+    ArrayDouble &out
+  );
+  virtual double value(const ArrayDouble &coeffs);
+  virtual double get_strength() const;
+  virtual void set_strength(double strength);
+  virtual ulong get_start() const;
+  virtual ulong get_end() const;
+  virtual void set_start_end(ulong start, ulong end);
+  virtual bool get_positive() const;
+  virtual void set_positive(bool positive);
+};
+typedef TProx<double, double> Prox;
+
+%rename(ProxDouble) TProx<double, double>;
+class TProx<double, double> {
  public:
   ProxDouble(
     double strength,
@@ -62,12 +91,12 @@ class TProx<double> {
   virtual bool get_positive() const;
   virtual void set_positive(bool positive);
 };
-typedef TProx<double> ProxDouble;
+typedef TProx<double, double> ProxDouble;
 %rename(ProxDoublePtr) std::shared_ptr<ProxDouble>;
 typedef std::shared_ptr<ProxDouble> ProxDoublePtr;
 
-%rename(ProxFloat) TProx<float>;
-class TProx<float> {
+%rename(ProxFloat) TProx<float, float>;
+class TProx<float, float> {
  public:
   ProxFloat(
     float strength,
@@ -93,6 +122,7 @@ class TProx<float> {
   virtual bool get_positive() const;
   virtual void set_positive(bool positive);
 };
-typedef TProx<float> ProxFloat;
+
+typedef TProx<float, float> ProxFloat;
 %rename(ProxFloatPtr) std::shared_ptr<ProxFloat>;
 typedef std::shared_ptr<ProxFloat> ProxFloatPtr;

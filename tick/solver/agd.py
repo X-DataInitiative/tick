@@ -104,11 +104,8 @@ class AGD(SolverFirstOrder):
       *SIAM journal on imaging sciences*, 2009
     """
 
-    def __init__(self,
-                 step: float = None,
-                 tol: float = 1e-10,
-                 max_iter: int = 100,
-                 linesearch: bool = True,
+    def __init__(self, step: float = None, tol: float = 1e-10,
+                 max_iter: int = 100, linesearch: bool = True,
                  linesearch_step_increase: float = 2.,
                  linesearch_step_decrease: float = 0.5, verbose: bool = True,
                  print_every: int = 10, record_every: int = 1):
@@ -165,8 +162,8 @@ class AGD(SolverFirstOrder):
             prev_t = t
             prev_x[:] = x
             prev_obj = obj
-            x, y, t, step = self._gradient_step(x, prev_x, y, grad_y, t, prev_t,
-                                                step)
+            x, y, t, step = self._gradient_step(x, prev_x, y, grad_y, t,
+                                                prev_t, step)
             if step == 0:
                 print('Step equals 0... at %i' % n_iter)
                 break

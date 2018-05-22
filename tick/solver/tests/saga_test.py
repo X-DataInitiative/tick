@@ -19,18 +19,20 @@ from tick.solver.build.solver import SAGA_VarianceReductionMethod_Random
 
 from tick.simulation import weights_sparse_gauss
 
+
 class SAGATest(object):
     def test_solver_saga(self):
         """...Check SAGA solver for a Logistic Regression with Ridge penalization"""
         solver = SAGA(step=1e-3, max_iter=100, verbose=False, tol=0)
-        self.check_solver(solver, fit_intercept=True, model="logreg", decimal=1)
+        self.check_solver(solver, fit_intercept=True, model="logreg",
+                          decimal=1)
 
     def test_saga_sparse_and_dense_consistency(self):
         """...SolverTest SAGA can run all glm models and is consistent with sparsity"""
 
         def create_solver():
-            return SAGA(
-                max_iter=1, verbose=False, step=1e-5, seed=TestSolver.sto_seed)
+            return SAGA(max_iter=1, verbose=False, step=1e-5,
+                        seed=TestSolver.sto_seed)
 
         self._test_solver_sparse_and_dense_consistency(create_solver)
 
@@ -88,6 +90,7 @@ class SAGATest(object):
             model = ModelCoxRegPartialLik().fit(X, T, C)
             SAGA().set_model(model)
 
+
 class SAGATestFloat32(TestSolver, SAGATest):
     def __init__(self, *args, **kwargs):
         TestSolver.__init__(self, *args, dtype="float32", **kwargs)
@@ -97,8 +100,6 @@ class SAGATestFloat64(TestSolver, SAGATest):
     def __init__(self, *args, **kwargs):
         TestSolver.__init__(self, *args, dtype="float64", **kwargs)
 
+
 if __name__ == '__main__':
-    suite = unittest.TestSuite()
-    for dt in dtype_list:
-        suite.addTest(parameterize(SolverTest, dtype=dt))
-    unittest.TextTestRunner().run(suite)
+    unittest.main()

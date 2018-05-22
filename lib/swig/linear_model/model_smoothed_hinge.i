@@ -7,8 +7,8 @@
 %include "model_generalized_linear.i";
 %include "model_lipschitz.i";
 
-template <class T>
-class DLL_PUBLIC TModelSmoothedHinge : public virtual TModelGeneralizedLinear<T>, public TModelLipschitz<T> {
+template <class T, class K = T>
+class DLL_PUBLIC TModelSmoothedHinge : public virtual TModelGeneralizedLinear<T, K>, public TModelLipschitz<T, K> {
  public:
   TModelSmoothedHinge();
   TModelSmoothedHinge(
@@ -22,12 +22,12 @@ class DLL_PUBLIC TModelSmoothedHinge : public virtual TModelGeneralizedLinear<T>
 
   void set_smoothness(T smoothness);
 
-  bool compare(const TModelSmoothedHinge<T> &that);
+  bool compare(const TModelSmoothedHinge<T, K> &that);
 };
 
-%rename(ModelSmoothedHingeDouble) TModelSmoothedHinge<double>;
-class ModelSmoothedHingeDouble : public virtual TModelGeneralizedLinear<double>,
-                    public TModelLipschitz<double> {
+%rename(ModelSmoothedHingeDouble) TModelSmoothedHinge<double, double>;
+class ModelSmoothedHingeDouble : public virtual TModelGeneralizedLinear<double, double>,
+                    public TModelLipschitz<double, double> {
  public:
   ModelSmoothedHingeDouble();
   ModelSmoothedHingeDouble(
@@ -43,12 +43,12 @@ class ModelSmoothedHingeDouble : public virtual TModelGeneralizedLinear<double>,
 
   bool compare(const ModelSmoothedHingeDouble &that);
 };
-typedef TModelSmoothedHinge<double> ModelSmoothedHingeDouble;
+typedef TModelSmoothedHinge<double, double> ModelSmoothedHingeDouble;
 TICK_MAKE_PICKLABLE(ModelSmoothedHingeDouble);
 
-%rename(ModelSmoothedHingeFloat) TModelSmoothedHinge<float>;
-class ModelSmoothedHingeFloat : public virtual TModelGeneralizedLinear<float>,
-                    public TModelLipschitz<float> {
+%rename(ModelSmoothedHingeFloat) TModelSmoothedHinge<float, float>;
+class ModelSmoothedHingeFloat : public virtual TModelGeneralizedLinear<float, float>,
+                    public TModelLipschitz<float, float> {
  public:
   ModelSmoothedHingeFloat();
   ModelSmoothedHingeFloat(
@@ -64,5 +64,5 @@ class ModelSmoothedHingeFloat : public virtual TModelGeneralizedLinear<float>,
 
   bool compare(const ModelSmoothedHingeFloat &that);
 };
-typedef TModelSmoothedHinge<double> ModelSmoothedHingeFloat;
+typedef TModelSmoothedHinge<double, double> ModelSmoothedHingeFloat;
 TICK_MAKE_PICKLABLE(ModelSmoothedHingeFloat);

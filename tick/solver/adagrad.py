@@ -134,6 +134,7 @@ class AdaGrad(SolverFirstOrderSto):
       Learning and Stochastic Optimization, *Journal of Machine Learning
       Research* (2011)
     """
+
     def __init__(self, step: float = 1e-2, epoch_size: int = None,
                  rand_type: str = 'unif', tol: float = 1e-10,
                  max_iter: int = 100, verbose: bool = True,

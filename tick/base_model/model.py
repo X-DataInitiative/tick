@@ -161,10 +161,11 @@ class Model(ABC, Base):
     def astype(self, dtype_or_object_with_dtype):
         import tick.base.dtype_to_cpp_type
         new_prox = tick.base.dtype_to_cpp_type.copy_with(
-          self, ["_model"] # ignore _model on deepcopy
+            self,
+            ["_model"]  # ignore _model on deepcopy
         )
         new_prox._set('_model',
-            new_prox._build_cpp_model(dtype_or_object_with_dtype))
+                      new_prox._build_cpp_model(dtype_or_object_with_dtype))
         return new_prox
 
     def _build_cpp_model(self, dtype: str):

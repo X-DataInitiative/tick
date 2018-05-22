@@ -17,7 +17,7 @@ enum class RandType {
     perm
 };
 
-template <class T>
+template <class T, class K = T>
 class TStoSolver {
  public:
   TStoSolver(
@@ -40,8 +40,8 @@ class TStoSolver {
   inline void set_rand_max(unsigned long rand_max);
   inline unsigned long get_rand_max() const;
 
-  virtual void set_model(std::shared_ptr<TModel<T> > model);
-  virtual void set_prox(std::shared_ptr<TProx<T> > prox);
+  virtual void set_model(std::shared_ptr<TModel<T, K> > model);
+  virtual void set_prox(std::shared_ptr<TProx<T, K> > prox);
   void set_seed(int seed);
 };
 

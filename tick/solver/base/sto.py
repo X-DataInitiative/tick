@@ -85,7 +85,6 @@ class SolverSto(Base):
         return self
 
     def set_prox(self, prox: Prox):
-        prox._check_set_prox(dtype=self.dtype)
         if prox._prox is None:
             raise ValueError("Prox %s is not compatible with stochastic "
                              "solver %s" % (prox.__class__.__name__,
@@ -93,6 +92,7 @@ class SolverSto(Base):
             # Give the C++ wrapped prox to the solver
         if self.dtype is None or self.model is None:
             raise ValueError("Solver must call set_model before set_prox")
+
         self._solver.set_prox(prox._prox)
         return self
 
@@ -133,10 +133,12 @@ class SolverSto(Base):
 
         import tick.base.dtype_to_cpp_type
         new_solver = tick.base.dtype_to_cpp_type.copy_with(
-          self, ["prox", "model"] # ignore on deepcopy
+            self,
+            ["prox", "model"]  # ignore on deepcopy
         )
-        new_solver.dtype = tick.base.dtype_to_cpp_type.extract_dtype(dtype_or_object_with_dtype)
+        new_solver.dtype = tick.base.dtype_to_cpp_type.extract_dtype(
+            dtype_or_object_with_dtype)
+        new_solver.set_model(self.model.astype(new_solver.dtype))
         if self.prox != None:
             new_solver.set_prox(self.prox.astype(new_solver.dtype))
-        new_solver.set_model(self.model.astype(new_solver.dtype))
         return new_solver

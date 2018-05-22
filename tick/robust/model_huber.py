@@ -14,6 +14,7 @@ dtype_map = {
     np.dtype('float64'): _ModelHuberDouble
 }
 
+
 class ModelHuber(ModelFirstOrder, ModelGeneralizedLinear, ModelLipschitz):
     """Huber loss for robust regression. This model is particularly relevant
     to deal with datasets with outliers. The class gives first
@@ -116,11 +117,9 @@ class ModelHuber(ModelFirstOrder, ModelGeneralizedLinear, ModelLipschitz):
             raise ValueError('dtype provided to ModelHuber is not handled: ',
                              self.dtype)
 
-        self._set("_model", dtype_map[self.dtype](self.features,
-                                        self.labels,
-                                        self.fit_intercept,
-                                        self.threshold,
-                                        self.n_threads))
+        self._set("_model", dtype_map[self.dtype](
+            self.features, self.labels, self.fit_intercept, self.threshold,
+            self.n_threads))
 
         return self
 

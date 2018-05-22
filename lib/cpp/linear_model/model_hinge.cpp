@@ -2,8 +2,8 @@
 
 #include "tick/linear_model/model_hinge.h"
 
-template <class T>
-T TModelHinge<T>::loss_i(const ulong i, const Array<T> &coeffs) {
+template <class T, class K>
+T TModelHinge<T, K>::loss_i(const ulong i, const Array<K> &coeffs) {
   const T z = get_label(i) * get_inner_prod(i, coeffs);
   if (z <= 1.) {
     return 1 - z;
@@ -12,8 +12,8 @@ T TModelHinge<T>::loss_i(const ulong i, const Array<T> &coeffs) {
   }
 }
 
-template <class T>
-T TModelHinge<T>::grad_i_factor(const ulong i, const Array<T> &coeffs) {
+template <class T, class K>
+T TModelHinge<T, K>::grad_i_factor(const ulong i, const Array<K> &coeffs) {
   const T y = get_label(i);
   const T z = y * get_inner_prod(i, coeffs);
   if (z <= 1.) {
@@ -25,3 +25,6 @@ T TModelHinge<T>::grad_i_factor(const ulong i, const Array<T> &coeffs) {
 
 template class DLL_PUBLIC TModelHinge<double>;
 template class DLL_PUBLIC TModelHinge<float>;
+
+template class DLL_PUBLIC TModelHinge<double, std::atomic<double>>;
+template class DLL_PUBLIC TModelHinge<float, std::atomic<float>>;

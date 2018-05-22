@@ -13,6 +13,7 @@ dtype_map = {
     np.dtype('float32'): _ModelHingeFloat
 }
 
+
 class ModelHinge(ModelFirstOrder, ModelGeneralizedLinear):
     """Hinge loss model for binary classification. This class gives first order
     information (gradient and loss) for this model and can be passed
@@ -105,9 +106,8 @@ class ModelHinge(ModelFirstOrder, ModelGeneralizedLinear):
             raise ValueError('dtype provided to ModelHinge is not handled: ',
                              self.dtype)
 
-        self._set("_model",
-                  dtype_map[self.dtype](self.features, self.labels, self.fit_intercept,
-                              self.n_threads))
+        self._set("_model", dtype_map[self.dtype](
+            self.features, self.labels, self.fit_intercept, self.n_threads))
         return self
 
     def _grad(self, coeffs: np.ndarray, out: np.ndarray) -> None:
@@ -117,6 +117,7 @@ class ModelHinge(ModelFirstOrder, ModelGeneralizedLinear):
         return self._model.loss(coeffs)
 
     def _build_cpp_model(self, dtype_or_object_with_dtype):
-        model_class = self._get_typed_class(dtype_or_object_with_dtype, dtype_map)
+        model_class = self._get_typed_class(dtype_or_object_with_dtype,
+                                            dtype_map)
         return model_class(self.features, self.labels, self.fit_intercept,
                            self.n_threads)

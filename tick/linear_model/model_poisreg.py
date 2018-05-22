@@ -17,6 +17,7 @@ dtype_map = {
     np.dtype('float64'): _ModelPoisRegDouble
 }
 
+
 class ModelPoisReg(ModelGeneralizedLinear, ModelSecondOrder,
                    ModelSelfConcordant):
     """Poisson regression model with identity or exponential link for data with
@@ -190,7 +191,7 @@ class ModelPoisReg(ModelGeneralizedLinear, ModelSecondOrder,
             z1 = features.dot(coeffs)
             z2 = features.dot(point)
             # TODO: beware of zeros in z1 or z2 !
-            return np.sqrt((labels * z1**2 / z2**2).mean())
+            return np.sqrt((labels * z1 ** 2 / z2 ** 2).mean())
         elif link == "exponential":
             raise NotImplementedError("exp link is not yet implemented")
         else:
@@ -242,6 +243,7 @@ class ModelPoisReg(ModelGeneralizedLinear, ModelSecondOrder,
         return np.mean(dual_loss) * self._sdca_rand_max / self.n_samples
 
     def _build_cpp_model(self, dtype_or_object_with_dtype):
-        model_class = self._get_typed_class(dtype_or_object_with_dtype, dtype_map)
+        model_class = self._get_typed_class(dtype_or_object_with_dtype,
+                                            dtype_map)
         return model_class(self.features, self.labels, self._link_type,
-                               self.fit_intercept, self.n_threads)
+                           self.fit_intercept, self.n_threads)

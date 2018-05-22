@@ -392,7 +392,12 @@ def create_extension(extension_name, module_dir,
 
 array_extension_info = {
     "cpp_files": [],
-    "h_files": ["lib/cpp/array"],
+    "h_files": [],
+    "folders": [
+        "lib/cpp/array",
+        "lib/cpp/array/vector",
+        "lib/cpp/array/vector/unopt"
+    ],
     "swig_files": ["array_module.i"],
     "module_dir": "./tick/array/",
     "extension_name": "array"

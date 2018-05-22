@@ -1,7 +1,5 @@
-
-
-
 import numpy as np
+
 
 def extract_dtype(dtype_or_object_with_dtype):
     import six
@@ -19,6 +17,7 @@ def extract_dtype(dtype_or_object_with_dtype):
          """ + clazz.__class__.__name__).strip())
     return local_dtype
 
+
 def get_typed_class(clazz, dtype_or_object_with_dtype, dtype_map):
 
     clazz.dtype = extract_dtype(dtype_or_object_with_dtype)
@@ -27,7 +26,8 @@ def get_typed_class(clazz, dtype_or_object_with_dtype, dtype_map):
           type map for """ + clazz.__class__.__name__.strip())
     return dtype_map[np.dtype(clazz.dtype)]
 
-def copy_with(clazz, ignore_fields : dict = None):
+
+def copy_with(clazz, ignore_fields: dict = None):
     """Copies clazz, temporarily sets values to None to avoid copying
        not thread safe
     """

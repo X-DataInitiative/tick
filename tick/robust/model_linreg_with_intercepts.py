@@ -18,6 +18,7 @@ dtype_map = {
     np.dtype('float64'): _ModelLinRegWithInterceptsDouble
 }
 
+
 class ModelLinRegWithIntercepts(
         ModelFirstOrder, ModelGeneralizedLinearWithIntercepts, ModelLipschitz):
     """Linear regression model with individual intercepts.
@@ -81,13 +82,12 @@ class ModelLinRegWithIntercepts(
         ModelLipschitz.fit(self, features, labels)
 
         if self.dtype not in dtype_map:
-            raise ValueError('dtype provided to ModelLinRegWithIntercepts is not handled: ',
-                             self.dtype)
+            raise ValueError(
+                'dtype provided to ModelLinRegWithIntercepts is not handled: ',
+                self.dtype)
 
-        self._set("_model", dtype_map[self.dtype](self.features,
-                                                       self.labels,
-                                                       self.fit_intercept,
-                                                       self.n_threads))
+        self._set("_model", dtype_map[self.dtype](
+            self.features, self.labels, self.fit_intercept, self.n_threads))
         return self
 
     def _grad(self, coeffs: np.ndarray, out: np.ndarray) -> None:

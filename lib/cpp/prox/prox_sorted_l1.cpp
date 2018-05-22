@@ -2,21 +2,21 @@
 
 #include "tick/prox/prox_sorted_l1.h"
 
-template <class T>
-void TProxSortedL1<T>::compute_weights(void) {
+template <class T, class K>
+void TProxSortedL1<T, K>::compute_weights(void) {
   TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
 }
 
-template <class T>
-void TProxSortedL1<T>::call(const Array<T> &coeffs, T t, Array<T> &out,
-                            ulong start, ulong end) {
+template <class T, class K>
+void TProxSortedL1<T, K>::call(const Array<K> &coeffs, T t, Array<K> &out,
+                               ulong start, ulong end) {
   // If necessary, compute weights
   compute_weights();
   ulong size = end - start;
   T thresh = t;
 
-  Array<T> sub_coeffs = view(coeffs, start, end);
-  Array<T> sub_out = view(out, start, end);
+  auto sub_coeffs = view(coeffs, start, end);
+  auto sub_out = view(out, start, end);
   sub_out.fill(0);
 
   Array<T> weights_copy(weights);
@@ -26,7 +26,7 @@ void TProxSortedL1<T>::call(const Array<T> &coeffs, T t, Array<T> &out,
   // Will contain the indexes that sort abs(sub_coeffs) in decreasing order
   ArrayULong idx(size);
   // Sort sub_coeffs with decreasing absolute values, keeping the sorting index
-  Array<T> sub_coeffs_sorted = sort_abs(sub_coeffs, idx, false);
+  Array<K> sub_coeffs_sorted = sort_abs(sub_coeffs, idx, false);
 
   Array<T> sub_coeffs_abs_sort(size);
   // Multiply weights by the threshold, compute abs and sign of sub_coeffs,
@@ -67,15 +67,18 @@ void TProxSortedL1<T>::call(const Array<T> &coeffs, T t, Array<T> &out,
     sub_out[idx[i]] = subsub_out[i];
   }
   for (ulong i = 0; i < size; i++) {
-    sub_out[i] *= sub_coeffs_sign[i];
+    // sub_out[i] *= sub_coeffs_sign[i];
+
+    sub_out.set_data_index(
+        i, sub_out.template get_data_index<T>(i) * sub_coeffs_sign[i]);
   }
 }
 
 // This piece comes from E. Candes and co-authors
 // from SLOPE Matlab's code, see tick's documentation
 // for a precise about this
-template <class T>
-void TProxSortedL1<T>::prox_sorted_l1(
+template <class T, class K>
+void TProxSortedL1<T, K>::prox_sorted_l1(
     const Array<T> &y,       // Input vector
     const Array<T> &lambda,  // Thresholding vector
     Array<T> &x) const {     // output vector
@@ -111,16 +114,16 @@ void TProxSortedL1<T>::prox_sorted_l1(
   }
 }
 
-template <class T>
-T TProxSortedL1<T>::value(const Array<T> &coeffs, ulong start, ulong end) {
+template <class T, class K>
+T TProxSortedL1<T, K>::value(const Array<K> &coeffs, ulong start, ulong end) {
   // If necessary, compute weights
   compute_weights();
   ulong size = end - start;
-  Array<T> sub_coeffs = view(coeffs, start, end);
+  auto sub_coeffs = view(coeffs, start, end);
   ArrayULong idx(size);
   // Sort sub_coeffs with decreasing absolute values, and keeping sorting
   // indexes in idx
-  Array<T> sub_coeffs_sorted = sort_abs(sub_coeffs, idx, false);
+  Array<K> sub_coeffs_sorted = sort_abs(sub_coeffs, idx, false);
   // val is double as float prevents adequate precision of sum
   //  at least in tests
   double val = 0;
@@ -130,24 +133,27 @@ T TProxSortedL1<T>::value(const Array<T> &coeffs, ulong start, ulong end) {
   return val;
 }
 
-template <class T>
-void TProxSortedL1<T>::set_strength(T strength) {
+template <class T, class K>
+void TProxSortedL1<T, K>::set_strength(T strength) {
   if (strength != this->strength) {
     weights_ready = false;
   }
-  TProx<T>::set_strength(strength);
+  TProx<T, K>::set_strength(strength);
 }
 
 // We overload set_start_end here, since we'd need to update weights when
 // they're changed
-template <class T>
-void TProxSortedL1<T>::set_start_end(ulong start, ulong end) {
+template <class T, class K>
+void TProxSortedL1<T, K>::set_start_end(ulong start, ulong end) {
   if ((start != this->start) || (end != this->end)) {
     // If we change the range, we need to compute again the weights
     weights_ready = false;
   }
-  TProx<T>::set_start_end(start, end);
+  TProx<T, K>::set_start_end(start, end);
 }
 
-template class DLL_PUBLIC TProxSortedL1<double>;
-template class DLL_PUBLIC TProxSortedL1<float>;
+template class DLL_PUBLIC TProxSortedL1<double, double>;
+template class DLL_PUBLIC TProxSortedL1<float, float>;
+
+template class DLL_PUBLIC TProxSortedL1<double, std::atomic<double>>;
+template class DLL_PUBLIC TProxSortedL1<float, std::atomic<float>>;

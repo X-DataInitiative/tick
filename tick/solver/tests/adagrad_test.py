@@ -7,6 +7,7 @@ from tick.solver.tests import TestSolver
 
 dtype_list = ["float64", "float32"]
 
+
 class AdagradTest(object):
     def test_solver_adagrad(self):
         """...Check AdaGrad solver for Logistic Regression with Ridge penalization
@@ -17,6 +18,7 @@ class AdagradTest(object):
                           decimal=1)
         self.check_solver(solver, fit_intercept=True, model="logreg",
                           decimal=1)
+
 
 class AdagradTestFloat32(TestSolver, AdagradTest):
     def __init__(self, *args, **kwargs):
@@ -29,7 +31,4 @@ class AdagradTestFloat64(TestSolver, AdagradTest):
 
 
 if __name__ == '__main__':
-    suite = unittest.TestSuite()
-    for dt in dtype_list:
-        suite.addTest(parameterize(SolverTest, dtype=dt))
-    unittest.TextTestRunner().run(suite)
+    unittest.main()

@@ -8,28 +8,29 @@
 #include "tick/linear_model/model_poisreg.h"
 #include "tick/prox/prox_zero.h"
 
-template <class T>
-TSDCA<T>::TSDCA(T l_l2sq, ulong epoch_size, T tol, RandType rand_type, int seed)
-    : TStoSolver<T>(epoch_size, tol, rand_type, seed), l_l2sq(l_l2sq) {
+template <class T, class K>
+TSDCA<T, K>::TSDCA(T l_l2sq, ulong epoch_size, T tol, RandType rand_type,
+                   int seed)
+    : TStoSolver<T, K>(epoch_size, tol, rand_type, seed), l_l2sq(l_l2sq) {
   stored_variables_ready = false;
 }
 
-template <class T>
-void TSDCA<T>::set_model(std::shared_ptr<TModel<T> > model) {
-  TStoSolver<T>::set_model(model);
+template <class T, class K>
+void TSDCA<T, K>::set_model(std::shared_ptr<TModel<T, K> > model) {
+  TStoSolver<T, K>::set_model(model);
   this->model = model;
   this->n_coeffs = model->get_n_coeffs();
   stored_variables_ready = false;
 }
 
-template <class T>
-void TSDCA<T>::reset() {
-  TStoSolver<T>::reset();
+template <class T, class K>
+void TSDCA<T, K>::reset() {
+  TStoSolver<T, K>::reset();
   set_starting_iterate();
 }
 
-template <class T>
-void TSDCA<T>::solve() {
+template <class T, class K>
+void TSDCA<T, K>::solve() {
   if (!stored_variables_ready) {
     set_starting_iterate();
   }
@@ -72,8 +73,8 @@ void TSDCA<T>::solve() {
   }
 }
 
-template <class T>
-void TSDCA<T>::set_starting_iterate() {
+template <class T, class K>
+void TSDCA<T, K>::set_starting_iterate() {
   if (dual_vector.size() != rand_max) dual_vector = Array<T>(rand_max);
 
   dual_vector.init_to_zero();
@@ -105,14 +106,14 @@ void TSDCA<T>::set_starting_iterate() {
   }
 }
 
-template <class T>
-void TSDCA<T>::set_starting_iterate(Array<T> &dual_vector) {
+template <class T, class K>
+void TSDCA<T, K>::set_starting_iterate(Array<T> &dual_vector) {
   if (dual_vector.size() != rand_max) {
     TICK_ERROR("Starting iterate should be dual vector and have shape ("
                << rand_max << ", )");
   }
 
-  if (!dynamic_cast<TProxZero<T> *>(prox.get())) {
+  if (!dynamic_cast<TProxZero<T, K> *>(prox.get())) {
     TICK_ERROR(
         "set_starting_iterate in SDCA might be call only if prox is ProxZero. "
         "Otherwise "

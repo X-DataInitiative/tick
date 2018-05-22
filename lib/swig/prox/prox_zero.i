@@ -4,8 +4,8 @@
 #include "tick/prox/prox_zero.h"
 %}
 
-template <class T>
-class TProxZero : public TProx<T> {
+template <class T, class K>
+class TProxZero : public TProx<T, K> {
  public:
    TProxZero();
    TProxZero(T strength);
@@ -14,13 +14,13 @@ class TProxZero : public TProx<T> {
             unsigned long start,
             unsigned long end);
 
-  bool compare(const TProxZero<T> &that);
+  bool compare(const TProxZero<T, K> &that);
 };
 
-%template(ProxZeroDouble) TProxZero<double>;
-typedef TProxZero<double> ProxZeroDouble;
+%template(ProxZeroDouble) TProxZero<double, double>;
+typedef TProxZero<double, double> ProxZeroDouble;
 TICK_MAKE_TEMPLATED_PICKLABLE(TProxZero, ProxZeroDouble, double);
 
-%template(ProxZeroFloat) TProxZero<float>;
-typedef TProxZero<float> ProxZeroFloat;
+%template(ProxZeroFloat) TProxZero<float, float>;
+typedef TProxZero<float, float> ProxZeroFloat;
 TICK_MAKE_TEMPLATED_PICKLABLE(TProxZero, ProxZeroFloat , float);

@@ -26,7 +26,6 @@ from tick.solver.build.solver import SVRG_StepType_BarzilaiBorwein
 
 from tick.simulation import weights_sparse_gauss
 
-dtype_list = ["float64", "float32"]
 
 class SVRGTest(object):
     @staticmethod
@@ -34,7 +33,7 @@ class SVRGTest(object):
                          p_nnz=0.3):
         np.random.seed(123)
         idx = np.arange(1, n_features + 1)
-        weights = (-1)**(idx - 1) * np.exp(-idx / 10.)
+        weights = (-1) ** (idx - 1) * np.exp(-idx / 10.)
         corr = 0.5
         cov = toeplitz(corr ** np.arange(0, n_features))
         X = np.random.multivariate_normal(
@@ -64,14 +63,16 @@ class SVRGTest(object):
         penalization
         """
         solver = SVRG(step=1e-3, max_iter=100, verbose=False, tol=0)
-        self.check_solver(solver, fit_intercept=True, model="logreg", decimal=1)
+        self.check_solver(solver, fit_intercept=True, model="logreg",
+                          decimal=1)
 
     def test_svrg_sparse_and_dense_consistency(self):
         """...SVRGTest SVRG can run all glm models and is consistent with sparsity
         """
+
         def create_solver():
-            return SVRG(
-                max_iter=1, verbose=False, step=1e-5, seed=TestSolver.sto_seed)
+            return SVRG(max_iter=1, verbose=False, step=1e-5,
+                        seed=TestSolver.sto_seed)
 
         self._test_solver_sparse_and_dense_consistency(create_solver)
 
@@ -209,7 +210,8 @@ class SVRGTest(object):
 
         # Crazy prox examples
         proxs = [
-            ProxTV(strength=1e-2, range=(5, 13), positive=True).astype(self.dtype),
+            ProxTV(strength=1e-2, range=(5, 13), positive=True).astype(
+                self.dtype),
             ProxElasticNet(strength=1e-2, ratio=0.9).astype(self.dtype),
             ProxEquality(range=(0, n_features)).astype(self.dtype),
             ProxL1(strength=1e-3, range=(5, 17)).astype(self.dtype),
@@ -270,6 +272,7 @@ class SVRGTestFloat32(TestSolver, SVRGTest):
 class SVRGTestFloat64(TestSolver, SVRGTest):
     def __init__(self, *args, **kwargs):
         TestSolver.__init__(self, *args, dtype="float64", **kwargs)
+
 
 if __name__ == '__main__':
     unittest.main()

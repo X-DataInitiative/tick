@@ -7,8 +7,8 @@
 %include "model_generalized_linear.i";
 %include "model_lipschitz.i";
 
-template <class T>
-class TModelLinReg : public virtual TModelGeneralizedLinear<T>, public TModelLipschitz<T> {
+template <class T, class K = T>
+class TModelLinReg : public virtual TModelGeneralizedLinear<T, K>, public TModelLipschitz<T, K> {
  public:
   TModelLinReg();
   TModelLinReg(
@@ -18,11 +18,11 @@ class TModelLinReg : public virtual TModelGeneralizedLinear<T>, public TModelLip
     const int n_threads = 1
   );
 
-  bool compare(const TModelLinReg<T> &that);
+  bool compare(const TModelLinReg<T, K> &that);
 };
 
-%rename(ModelLinRegDouble) TModelLinReg<double>;
-class ModelLinRegDouble : public virtual TModelGeneralizedLinear<double>, public TModelLipschitz<double> {
+%rename(ModelLinRegDouble) TModelLinReg<double, double>;
+class ModelLinRegDouble : public virtual TModelGeneralizedLinear<double, double>, public TModelLipschitz<double, double> {
  public:
   ModelLinRegDouble();
   ModelLinRegDouble(
@@ -34,11 +34,11 @@ class ModelLinRegDouble : public virtual TModelGeneralizedLinear<double>, public
 
   bool compare(const ModelLinRegDouble &that);
 };
-typedef TModelLinReg<double> ModelLinRegDouble;
+typedef TModelLinReg<double, double> ModelLinRegDouble;
 TICK_MAKE_PICKLABLE(ModelLinRegDouble);
 
-%rename(ModelLinRegFloat) TModelLinReg<float>;
-class ModelLinRegFloat : public virtual TModelGeneralizedLinear<float>, public TModelLipschitz<float> {
+%rename(ModelLinRegFloat) TModelLinReg<float, float>;
+class ModelLinRegFloat : public virtual TModelGeneralizedLinear<float, float>, public TModelLipschitz<float, float> {
  public:
   ModelLinRegFloat();
   ModelLinRegFloat(
@@ -50,5 +50,5 @@ class ModelLinRegFloat : public virtual TModelGeneralizedLinear<float>, public T
 
   bool compare(const ModelLinRegFloat &that);
 };
-typedef TModelLinReg<float> ModelLinRegFloat;
+typedef TModelLinReg<float, float> ModelLinRegFloat;
 TICK_MAKE_PICKLABLE(ModelLinRegFloat);

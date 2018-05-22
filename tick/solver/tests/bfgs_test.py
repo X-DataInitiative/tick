@@ -15,7 +15,6 @@ dtype_list = ["float64", "float32"]
 
 
 class SolverTest(TestSolver):
-
     def test_solver_bfgs(self):
         """...Check BFGS solver for Logistic Regression with Ridge
     penalization
@@ -37,8 +36,6 @@ class SolverTest(TestSolver):
         err = TestSolver.evaluate_model(coeffs, coeffs0, interc0)
         self.assertAlmostEqual(err, 0., delta=5e-1)
 
+
 if __name__ == '__main__':
-    suite = unittest.TestSuite()
-    for dt in dtype_list:
-        suite.addTest(parameterize(SolverTest, dtype=dt))
-    unittest.TextTestRunner().run(suite)
+    unittest.main()

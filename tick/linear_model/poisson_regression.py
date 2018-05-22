@@ -101,21 +101,10 @@ class PoissonRegression(LearnerGLM):
     _attrinfos = {"_actual_kwargs": {"writable": False}}
 
     @actual_kwargs
-    def __init__(self,
-                 step=1e-3,
-                 fit_intercept=True,
-                 penalty='l2',
-                 C=1e3,
-                 tol=1e-5,
-                 max_iter=100,
-                 solver='svrg',
-                 verbose=False,
-                 warm_start=False,
-                 print_every=10,
-                 record_every=1,
-                 elastic_net_ratio=0.95,
-                 random_state=None,
-                 blocks_start=None,
+    def __init__(self, step=1e-3, fit_intercept=True, penalty='l2', C=1e3,
+                 tol=1e-5, max_iter=100, solver='svrg', verbose=False,
+                 warm_start=False, print_every=10, record_every=1,
+                 elastic_net_ratio=0.95, random_state=None, blocks_start=None,
                  blocks_length=None):
 
         self._actual_kwargs = PoissonRegression.__init__.actual_kwargs

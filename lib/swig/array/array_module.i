@@ -11,6 +11,7 @@
 #include "numpy/npy_math.h"
 #include "tick/base/debug.h"
 #include "tick/array/carray_python.h"
+#include "tick/array/vector_operations.h"
 %}
 
 

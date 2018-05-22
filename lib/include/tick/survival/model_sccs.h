@@ -35,8 +35,7 @@ class DLL_PUBLIC ModelSCCS : public ModelLipschitz {
  public:
   ModelSCCS(const SBaseArrayDouble2dPtrList1D &features,
             const SArrayIntPtrList1D &labels,
-            const SBaseArrayULongPtr censoring,
-            const SArrayULongPtr n_lags);
+            const SBaseArrayULongPtr censoring, const SArrayULongPtr n_lags);
 
   double loss(const ArrayDouble &coeffs) override;
 

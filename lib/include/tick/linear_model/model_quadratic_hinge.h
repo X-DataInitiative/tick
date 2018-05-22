@@ -6,38 +6,39 @@
 #include "tick/base_model/model_generalized_linear.h"
 #include "tick/base_model/model_lipschitz.h"
 
-template <class T>
+template <class T, class K = T>
 class DLL_PUBLIC TModelQuadraticHinge
-    : public virtual TModelGeneralizedLinear<T>,
-      public TModelLipschitz<T> {
+    : public virtual TModelGeneralizedLinear<T, K>,
+      public TModelLipschitz<T, K> {
  protected:
-  using TModelLipschitz<T>::ready_lip_consts;
-  using TModelLipschitz<T>::lip_consts;
-  using TModelGeneralizedLinear<T>::compute_features_norm_sq;
-  using TModelGeneralizedLinear<T>::n_samples;
-  using TModelGeneralizedLinear<T>::features_norm_sq;
-  using TModelGeneralizedLinear<T>::fit_intercept;
+  using TModelLipschitz<T, K>::ready_lip_consts;
+  using TModelLipschitz<T, K>::lip_consts;
+  using TModelGeneralizedLinear<T, K>::compute_features_norm_sq;
+  using TModelGeneralizedLinear<T, K>::n_samples;
+  using TModelGeneralizedLinear<T, K>::features_norm_sq;
+  using TModelGeneralizedLinear<T, K>::fit_intercept;
 
  public:
-  using TModelGeneralizedLinear<T>::get_label;
-  using TModelGeneralizedLinear<T>::use_intercept;
-  using TModelGeneralizedLinear<T>::get_inner_prod;
-  using TModelGeneralizedLinear<T>::get_class_name;
+  using TModelGeneralizedLinear<T, K>::get_label;
+  using TModelGeneralizedLinear<T, K>::use_intercept;
+  using TModelGeneralizedLinear<T, K>::get_inner_prod;
+  using TModelGeneralizedLinear<T, K>::get_class_name;
 
  public:
   // This exists soley for cereal/swig
-  TModelQuadraticHinge() : TModelQuadraticHinge<T>(nullptr, nullptr, false) {}
+  TModelQuadraticHinge()
+      : TModelQuadraticHinge<T, K>(nullptr, nullptr, false) {}
 
   TModelQuadraticHinge(const std::shared_ptr<BaseArray2d<T>> features,
                        const std::shared_ptr<SArray<T>> labels,
                        const bool fit_intercept, const int n_threads = 1)
-      : TModelLabelsFeatures<T>(features, labels),
-        TModelGeneralizedLinear<T>(features, labels, fit_intercept, n_threads) {
-  }
+      : TModelLabelsFeatures<T, K>(features, labels),
+        TModelGeneralizedLinear<T, K>(features, labels, fit_intercept,
+                                      n_threads) {}
 
-  T loss_i(const ulong i, const Array<T> &coeffs) override;
+  T loss_i(const ulong i, const Array<K> &coeffs) override;
 
-  T grad_i_factor(const ulong i, const Array<T> &coeffs) override;
+  T grad_i_factor(const ulong i, const Array<K> &coeffs) override;
 
   void compute_lip_consts() override;
 
@@ -45,37 +46,51 @@ class DLL_PUBLIC TModelQuadraticHinge
   void serialize(Archive &ar) {
     ar(cereal::make_nvp(
         "ModelGeneralizedLinear",
-        typename cereal::base_class<TModelGeneralizedLinear<T>>(this)));
-    ar(cereal::make_nvp("ModelLipschitz",
-                        typename cereal::base_class<TModelLipschitz<T>>(this)));
+        typename cereal::virtual_base_class<TModelGeneralizedLinear<T, K>>(
+            this)));
+    ar(cereal::make_nvp(
+        "ModelLipschitz",
+        typename cereal::base_class<TModelLipschitz<T, K>>(this)));
   }
 
-  BoolStrReport compare(const TModelQuadraticHinge<T> &that,
+  BoolStrReport compare(const TModelQuadraticHinge<T, K> &that,
                         std::stringstream &ss) {
     ss << get_class_name() << std::endl;
-    bool are_equal = TModelGeneralizedLinear<T>::compare(that, ss) &&
-                     TModelLipschitz<T>::compare(that, ss);
+    bool are_equal = TModelGeneralizedLinear<T, K>::compare(that, ss) &&
+                     TModelLipschitz<T, K>::compare(that, ss);
     return BoolStrReport(are_equal, ss.str());
   }
-  BoolStrReport compare(const TModelQuadraticHinge<T> &that) {
+  BoolStrReport compare(const TModelQuadraticHinge<T, K> &that) {
     std::stringstream ss;
     return compare(that, ss);
   }
-  BoolStrReport operator==(const TModelQuadraticHinge<T> &that) {
-    return TModelQuadraticHinge<T>::compare(that);
+  BoolStrReport operator==(const TModelQuadraticHinge<T, K> &that) {
+    return TModelQuadraticHinge<T, K>::compare(that);
   }
 };
 
 using ModelQuadraticHinge = TModelQuadraticHinge<double>;
-using ModelQuadraticHingeDouble = TModelQuadraticHinge<double>;
-using ModelQuadraticHingeFloat = TModelQuadraticHinge<float>;
 
+using ModelQuadraticHingeDouble = TModelQuadraticHinge<double>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelQuadraticHingeDouble,
                                    cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(ModelQuadraticHingeDouble)
 
+using ModelQuadraticHingeFloat = TModelQuadraticHinge<float>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelQuadraticHingeFloat,
                                    cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(ModelQuadraticHingeFloat)
+
+using ModelQuadraticHingeAtomicDouble =
+    TModelQuadraticHinge<double, std::atomic<double>>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelQuadraticHingeAtomicDouble,
+                                   cereal::specialization::member_serialize)
+CEREAL_REGISTER_TYPE(ModelQuadraticHingeAtomicDouble)
+
+using ModelQuadraticHingeAtomicFloat =
+    TModelQuadraticHinge<float, std::atomic<float>>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelQuadraticHingeAtomicFloat,
+                                   cereal::specialization::member_serialize)
+CEREAL_REGISTER_TYPE(ModelQuadraticHingeAtomicFloat)
 
 #endif  // LIB_INCLUDE_TICK_LINEAR_MODEL_MODEL_QUADRATIC_HINGE_H_

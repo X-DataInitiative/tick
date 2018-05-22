@@ -2,11 +2,11 @@
 
 #include "tick/robust/model_generalized_linear_with_intercepts.h"
 
-template <class T>
-T TModelGeneralizedLinearWithIntercepts<T>::get_inner_prod(
-    const ulong i, const Array<T> &coeffs) const {
+template <class T, class K>
+T TModelGeneralizedLinearWithIntercepts<T, K>::get_inner_prod(
+    const ulong i, const Array<K> &coeffs) const {
   const BaseArray<T> x_i = get_features(i);
-  const Array<T> weights = view(coeffs, 0, n_features);
+  const Array<K> weights = view(coeffs, 0, n_features);
   if (fit_intercept) {
     return x_i.dot(weights) + coeffs[n_features] + coeffs[n_features + 1 + i];
   } else {
@@ -14,9 +14,9 @@ T TModelGeneralizedLinearWithIntercepts<T>::get_inner_prod(
   }
 }
 
-template <class T>
-void TModelGeneralizedLinearWithIntercepts<T>::compute_grad_i(
-    const ulong i, const Array<T> &coeffs, Array<T> &out, const bool fill) {
+template <class T, class K>
+void TModelGeneralizedLinearWithIntercepts<T, K>::compute_grad_i(
+    const ulong i, const Array<K> &coeffs, Array<T> &out, const bool fill) {
   const BaseArray<T> x_i = get_features(i);
   const T alpha_i = grad_i_factor(i, coeffs);
   Array<T> out_weights = view(out, 0, n_features);
@@ -47,26 +47,33 @@ void TModelGeneralizedLinearWithIntercepts<T>::compute_grad_i(
   }
 }
 
-template <class T>
-void TModelGeneralizedLinearWithIntercepts<T>::grad(const Array<T> &coeffs,
-                                                    Array<T> &out) {
+template <class T, class K>
+void TModelGeneralizedLinearWithIntercepts<T, K>::grad(const Array<K> &coeffs,
+                                                       Array<T> &out) {
   out.fill(0.0);
   parallel_map_array<Array<T>>(
       n_threads, n_samples,
       [](Array<T> &r, const Array<T> &s) { r.mult_incr(s, 1.0); },
-      &TModelGeneralizedLinearWithIntercepts<T>::inc_grad_i, this, out, coeffs);
+      &TModelGeneralizedLinearWithIntercepts<T, K>::inc_grad_i, this, out,
+      coeffs);
 
   const T one_over_n_samples = 1.0 / n_samples;
   out *= one_over_n_samples;
 }
 
-template <class T>
-T TModelGeneralizedLinearWithIntercepts<T>::loss(const Array<T> &coeffs) {
+template <class T, class K>
+T TModelGeneralizedLinearWithIntercepts<T, K>::loss(const Array<K> &coeffs) {
   return parallel_map_additive_reduce(
              n_threads, n_samples,
-             &TModelGeneralizedLinearWithIntercepts<T>::loss_i, this, coeffs) /
+             &TModelGeneralizedLinearWithIntercepts<T, K>::loss_i, this,
+             coeffs) /
          n_samples;
 }
 
 template class DLL_PUBLIC TModelGeneralizedLinearWithIntercepts<double>;
 template class DLL_PUBLIC TModelGeneralizedLinearWithIntercepts<float>;
+
+// template class DLL_PUBLIC TModelGeneralizedLinearWithIntercepts<double,
+//                                                      std::atomic<double>>;
+// template class DLL_PUBLIC TModelGeneralizedLinearWithIntercepts<float,
+// std::atomic<float>>;

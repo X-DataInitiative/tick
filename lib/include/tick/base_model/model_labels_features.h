@@ -6,13 +6,11 @@
 
 #include "model.h"
 
-#include <string>
-
-template <class T>
-class DLL_PUBLIC TModelLabelsFeatures : public virtual TModel<T> {
+template <class T, class K = T>
+class DLL_PUBLIC TModelLabelsFeatures : public virtual TModel<T, K> {
  protected:
-  bool ready_columns_sparsity;
-  ulong n_samples, n_features;
+  bool ready_columns_sparsity = false;
+  ulong n_samples = 0, n_features = 0;
 
   //! Labels vector
   std::shared_ptr<SArray<T> > labels;
@@ -56,7 +54,7 @@ class DLL_PUBLIC TModelLabelsFeatures : public virtual TModel<T> {
 
   template <class Archive>
   void load(Archive &ar) {
-    ar(cereal::make_nvp("Model", cereal::base_class<TModel<T> >(this)));
+    ar(cereal::make_nvp("Model", cereal::base_class<TModel<T, K> >(this)));
     ar(CEREAL_NVP(n_samples));
     ar(CEREAL_NVP(n_features));
     ar(CEREAL_NVP(ready_columns_sparsity));
@@ -73,7 +71,7 @@ class DLL_PUBLIC TModelLabelsFeatures : public virtual TModel<T> {
 
   template <class Archive>
   void save(Archive &ar) const {
-    ar(cereal::make_nvp("Model", cereal::base_class<TModel<T> >(this)));
+    ar(cereal::make_nvp("Model", cereal::base_class<TModel<T, K> >(this)));
     ar(CEREAL_NVP(n_samples));
     ar(CEREAL_NVP(n_features));
     ar(CEREAL_NVP(ready_columns_sparsity));
@@ -84,7 +82,7 @@ class DLL_PUBLIC TModelLabelsFeatures : public virtual TModel<T> {
   }
 
  protected:
-  BoolStrReport compare(const TModelLabelsFeatures<T> &that,
+  BoolStrReport compare(const TModelLabelsFeatures<T, K> &that,
                         std::stringstream &ss) {
     bool are_equal =
         TICK_CMP_REPORT(ss, ready_columns_sparsity) &&
@@ -95,14 +93,24 @@ class DLL_PUBLIC TModelLabelsFeatures : public virtual TModel<T> {
   }
 };
 
-using ModelLabelsFeatures = TModelLabelsFeatures<double>;
+using ModelLabelsFeatures = TModelLabelsFeatures<double, double>;
 
-using ModelLabelsFeaturesDouble = TModelLabelsFeatures<double>;
+using ModelLabelsFeaturesDouble = TModelLabelsFeatures<double, double>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelLabelsFeaturesDouble,
                                    cereal::specialization::member_load_save);
 
-using ModelLabelsFeaturesFloat = TModelLabelsFeatures<float>;
+using ModelLabelsFeaturesFloat = TModelLabelsFeatures<float, float>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelLabelsFeaturesFloat,
                                    cereal::specialization::member_load_save);
+
+using ModelLabelsFeaturesAtomicDouble =
+    TModelLabelsFeatures<double, std::atomic<double> >;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelLabelsFeaturesAtomicDouble,
+                                   cereal::specialization::member_serialize)
+
+using ModelLabelsFeaturesAtomicFloat =
+    TModelLabelsFeatures<float, std::atomic<float> >;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelLabelsFeaturesAtomicFloat,
+                                   cereal::specialization::member_serialize)
 
 #endif  // LIB_INCLUDE_TICK_BASE_MODEL_MODEL_LABELS_FEATURES_H_

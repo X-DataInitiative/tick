@@ -14,6 +14,7 @@ dtype_map = {
     np.dtype('float32'): _ModelSmoothedHingeFloat
 }
 
+
 class ModelSmoothedHinge(ModelFirstOrder, ModelGeneralizedLinear,
                          ModelLipschitz):
     """Smoothed hinge loss model for binary classification. This class gives
@@ -92,9 +93,7 @@ class ModelSmoothedHinge(ModelFirstOrder, ModelGeneralizedLinear,
         }
     }
 
-    def __init__(self,
-                 fit_intercept: bool = True,
-                 smoothness: float = 1.,
+    def __init__(self, fit_intercept: bool = True, smoothness: float = 1.,
                  n_threads: int = 1):
         ModelFirstOrder.__init__(self)
         ModelGeneralizedLinear.__init__(self, fit_intercept)
@@ -124,12 +123,13 @@ class ModelSmoothedHinge(ModelFirstOrder, ModelGeneralizedLinear,
         ModelLipschitz.fit(self, features, labels)
 
         if self.dtype not in dtype_map:
-            raise ValueError('dtype provided to ModelSmoothedHinge is not handled: ',
-                             self.dtype)
+            raise ValueError(
+                'dtype provided to ModelSmoothedHinge is not handled: ',
+                self.dtype)
 
-        self._set("_model", dtype_map[self.dtype](self.features, self.labels,
-                                      self.fit_intercept, self.smoothness,
-                                      self.n_threads))
+        self._set("_model", dtype_map[self.dtype](
+            self.features, self.labels, self.fit_intercept, self.smoothness,
+            self.n_threads))
         return self
 
     def _grad(self, coeffs: np.ndarray, out: np.ndarray) -> None:
@@ -147,6 +147,7 @@ class ModelSmoothedHinge(ModelFirstOrder, ModelGeneralizedLinear,
             return s / (self.smoothness * self.n_samples)
 
     def _build_cpp_model(self, dtype_or_object_with_dtype):
-        model_class = self._get_typed_class(dtype_or_object_with_dtype, dtype_map)
+        model_class = self._get_typed_class(dtype_or_object_with_dtype,
+                                            dtype_map)
         return model_class(self.features, self.labels, self.fit_intercept,
                            self.smoothness, self.n_threads)

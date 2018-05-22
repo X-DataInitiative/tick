@@ -5,51 +5,49 @@
 
 #include "prox.h"
 
-template <class T>
-class DLL_PUBLIC TProxTV : public TProx<T> {
+template <class T, class K>
+class DLL_PUBLIC TProxTV : public TProx<T, K> {
  protected:
-  using TProx<T>::strength;
-  using TProx<T>::positive;
+  using TProx<T, K>::strength;
+  using TProx<T, K>::positive;
 
  public:
-  using TProx<T>::get_class_name;
+  using TProx<T, K>::get_class_name;
 
  public:
   // This exists soley for cereal/swig
-  TProxTV() : TProxTV(0, 0, 1, false) {}
+  TProxTV() : TProxTV<T, K>(0, 0, 1, false) {}
 
-  TProxTV(T strength, bool positive) : TProx<T>(strength, positive) {}
+  TProxTV(T strength, bool positive) : TProx<T, K>(strength, positive) {}
 
   TProxTV(T strength, ulong start, ulong end, bool positive)
-    : TProx<T>(strength, start, end, positive) {}
+      : TProx<T, K>(strength, start, end, positive) {}
 
-    T value(const Array<T>& coeffs, ulong start, ulong end) override;
+  T value(const Array<K>& coeffs, ulong start, ulong end) override;
 
-    void call(const Array<T>& coeffs, T step, Array<T>& out, ulong start,
-              ulong end) override;
+  void call(const Array<K>& coeffs, T step, Array<K>& out, ulong start,
+            ulong end) override;
 
-    template <class Archive>
-    void serialize(Archive& ar) {
-      ar(cereal::make_nvp("Prox", cereal::base_class<TProx<T> >(this)));
-    }
+  template <class Archive>
+  void serialize(Archive& ar) {
+    ar(cereal::make_nvp("Prox", cereal::base_class<TProx<T, K> >(this)));
+  }
 
-    BoolStrReport compare(const TProxTV<T>& that) {
-      std::stringstream ss;
-      ss << get_class_name();
-      auto are_equal = TProx<T>::compare(that, ss);
-      return BoolStrReport(are_equal, ss.str());
-    }
-    BoolStrReport operator==(const TProxTV<T>& that) { return compare(that); }
+  BoolStrReport compare(const TProxTV<T, K>& that) {
+    std::stringstream ss;
+    ss << get_class_name();
+    auto are_equal = TProx<T, K>::compare(that, ss);
+    return BoolStrReport(are_equal, ss.str());
+  }
+  BoolStrReport operator==(const TProxTV<T, K>& that) { return compare(that); }
 };
 
-using ProxTV = TProxTV<double>;
-using ProxTVDouble = TProxTV<double>;
-using ProxTVFloat = TProxTV<float>;
-
+using ProxTVDouble = TProxTV<double, double>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ProxTVDouble,
                                    cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(ProxTVDouble)
 
+using ProxTVFloat = TProxTV<float, float>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ProxTVFloat,
                                    cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(ProxTVFloat)

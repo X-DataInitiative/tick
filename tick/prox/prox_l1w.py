@@ -16,6 +16,7 @@ dtype_map = {
 
 # TODO: if we set a weights vector with length != end - start ???
 
+
 class ProxL1w(Prox):
     """Proximal operator of the weighted L1 norm (weighted
     soft-thresholding)
@@ -85,7 +86,8 @@ class ProxL1w(Prox):
         return dd
 
     def _build_cpp_prox(self, dtype_or_object_with_dtype):
-        prox_class = self._get_typed_class(dtype_or_object_with_dtype, dtype_map)
+        prox_class = self._get_typed_class(dtype_or_object_with_dtype,
+                                           dtype_map)
         return_prox = None
         weights = self.weights.astype(self.dtype)
         if self.range is None:

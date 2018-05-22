@@ -139,7 +139,7 @@ class SCPG(SolverFirstOrder):
         def __init__(self, model: ModelSecondOrder):
             self.original_model = model
             self.sc_constant = model._sc_constant
-            self.sc_corr = self.sc_constant**2 / 4
+            self.sc_corr = self.sc_constant ** 2 / 4
             self.sc_corr_sqrt = self.sc_constant / 2
             self._initial_n_hessiannorm_calls = 0
 
@@ -187,26 +187,20 @@ class SCPG(SolverFirstOrder):
 
         def set_self_conc_constant(self, self_conc_constant: float):
             self.sc_constant = self_conc_constant
-            self.sc_corr = self.sc_constant**2 / 4
+            self.sc_corr = self.sc_constant ** 2 / 4
 
-        def call(self,
-                 coeffs: np.ndarray,
-                 t: float = 1.,
+        def call(self, coeffs: np.ndarray, t: float = 1.,
                  out: np.ndarray = None):
-            out = self.original_prox.call(
-                coeffs, step=t * self.sc_corr, out=out)
+            out = self.original_prox.call(coeffs, step=t * self.sc_corr,
+                                          out=out)
             return out
 
         def value(self, coeffs: np.ndarray):
             return self.original_prox.value(coeffs) * self.sc_corr
 
-    def __init__(self,
-                 step: float = None,
-                 tol: float = 0.,
-                 max_iter: int = 100,
-                 verbose: bool = True,
-                 print_every: int = 10,
-                 record_every: int = 1,
+    def __init__(self, step: float = None, tol: float = 0.,
+                 max_iter: int = 100, verbose: bool = True,
+                 print_every: int = 10, record_every: int = 1,
                  linesearch_step_increase: float = 2.,
                  linesearch_step_decrease: float = 0.5, modified=False):
         SolverFirstOrder.__init__(self, step=step, tol=tol, max_iter=max_iter,
@@ -314,7 +308,7 @@ class SCPG(SolverFirstOrder):
         # Barzilai-Borwein step
         if n_iter % 10 == 1:
             tmp = x - prev_x
-            if np.linalg.norm(tmp, 2)**2 > 0:
+            if np.linalg.norm(tmp, 2) ** 2 > 0:
                 l_k = (grad_x_ssc - prev_grad_x_ssc).dot(tmp) / \
                       (np.linalg.norm(tmp, 2) ** 2)
         l_k *= 2
@@ -391,19 +385,11 @@ class SCPG(SolverFirstOrder):
             converged = rel_obj < self.tol
             # if converged, we stop the loop and record the last step in history
 
-            self._handle_history(
-                n_iter,
-                force=converged,
-                obj=obj,
-                x=x.copy(),
-                rel_delta=rel_delta,
-                step=alpha_k,
-                rel_obj=rel_obj,
-                l_k=l_k,
-                beta_k=beta_k,
-                lambda_k=lambda_k,
-                th_gain=self._th_gain,
-                obj_gain=obj_gain)
+            self._handle_history(n_iter, force=converged, obj=obj, x=x.copy(),
+                                 rel_delta=rel_delta, step=alpha_k,
+                                 rel_obj=rel_obj, l_k=l_k, beta_k=beta_k,
+                                 lambda_k=lambda_k, th_gain=self._th_gain,
+                                 obj_gain=obj_gain)
             if converged:
                 break
         self._set("solution", x)
@@ -418,9 +404,6 @@ class SCPG(SolverFirstOrder):
 
         hessiannorm_calls = self.model.n_calls_hessian_norm - \
                             self._initial_n_hessiannorm_calls
-        SolverFirstOrder._handle_history(
-            self,
-            n_iter,
-            force=force,
-            n_calls_hessiannorm=hessiannorm_calls,
-            **kwargs)
+        SolverFirstOrder._handle_history(self, n_iter, force=force,
+                                         n_calls_hessiannorm=hessiannorm_calls,
+                                         **kwargs)

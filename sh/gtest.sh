@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
 #
 # Author: Philip Deegan
-# Email : philip.deegan@polytechnique.edu 
-# Date  : 26 - September - 2017
+# Email : philip.deegan@polytechnique.edu
+# Date  : 6 - April - 2018
 #
-# This script builds and launches google test files for tick
+# This script builds and launches SIMD test files for tick
 #
 # Requires the mkn build tool
 #
-# Input arguments are optional but if used are to be the 
+# Input arguments are optional but if used are to be the
 #  test files to be compiled and run, otherwise all files
-#  with the syntax "*gtest.cpp" are used
+#  with the syntax "*_simd.cpp" are used
 #
 # Tests are expected to finish with the following code
 #
@@ -23,7 +23,7 @@
 # #endif  // ADD_MAIN
 #
 # This is used to inject main functions for testing/execution
-# 
+#
 ######################################################################
 
 CWD="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
@@ -69,7 +69,7 @@ pushd $ROOT/lib 2>&1 > /dev/null
           -tl "${LDARGS} ${LIB}" -b "$PY_INCS" \
           -M "${FILE}" -P "${MKN_P}" "${MKN_WITH[@]}" \
           -B $B_PATH ${RUN} ${MKN_X_FILE[@]}
-          
+
   done
 
 popd 2>&1 > /dev/null

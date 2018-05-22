@@ -178,11 +178,11 @@ class SimuCoxReg(SimuWithFeatures):
         scale = self.scale
         shape = self.shape
         if self.times_distribution == "weibull":
-            T = 1. / scale * E**(1. / shape)
+            T = 1. / scale * E ** (1. / shape)
         else:
             # There is not point in this test, but let's do it like that
             # since we're likely to implement other distributions
-            T = 1. / scale * E**(1. / shape)
+            T = 1. / scale * E ** (1. / shape)
         m = T.mean()
         # Simulation of the censoring
         c = self.censoring_factor

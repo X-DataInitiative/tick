@@ -3,6 +3,7 @@
 import numpy as np
 from scipy.linalg.special_matrices import toeplitz
 
+
 def features_normal_cov_uniform(n_samples: int = 200, n_features: int = 30,
                                 dtype="float64"):
     """Normal features generator with uniform covariance

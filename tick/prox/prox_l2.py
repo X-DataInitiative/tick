@@ -12,6 +12,7 @@ dtype_map = {
     np.dtype("float32"): _ProxL2Float
 }
 
+
 class ProxL2(Prox):
     """Proximal operator of the L2 penalization. Do not mix up with ProxL2sq,
     which is regular ridge (squared L2) penalization. ProxL2 induces sparsity
@@ -48,22 +49,11 @@ class ProxL2(Prox):
     }
 
     def __init__(self, strength: float, range: tuple = None,
-
                  positive: bool = False):
         Prox.__init__(self, range)
         self.positive = positive
         self.strength = strength
         self._prox = self._build_cpp_prox("float64")
-
-        self._check_set_prox(dtype=np.dtype("float64"))
-
-    def _check_set_prox(self, coeffs: np.ndarray = None, dtype=None):
-        if Prox._check_set_prox(self, coeffs, dtype):
-            if self.range is None:
-                self._prox = dtype_map[self.dtype](self.strength, self.positive)
-            else:
-                self._prox = dtype_map[self.dtype](self.strength, self.range[0],
-                                                   self.range[1], self.positive)
 
     def _call(self, coeffs: np.ndarray, step: float, out: np.ndarray):
         self._prox.call(coeffs, step, out)
@@ -85,7 +75,8 @@ class ProxL2(Prox):
         return self._prox.value(coeffs)
 
     def _build_cpp_prox(self, dtype_or_object_with_dtype):
-        prox_class = self._get_typed_class(dtype_or_object_with_dtype, dtype_map)
+        prox_class = self._get_typed_class(dtype_or_object_with_dtype,
+                                           dtype_map)
         if self.range is None:
             return prox_class(self.strength, self.positive)
         else:

@@ -15,6 +15,7 @@ dtype_class_mapper = {
 
 # TODO: preparer methodes pour set et get attributes
 
+
 class SGD(SolverFirstOrderSto):
     """Stochastic gradient descent solver
 

@@ -4,8 +4,8 @@
 #include "tick/prox/prox_elasticnet.h"
 %}
 
-template <class T>
-class TProxElasticNet : public TProxSeparable<T> {
+template <class T, class K>
+class TProxElasticNet : public TProxSeparable<T, K> {
 
  public:
  TProxElasticNet(){}
@@ -17,13 +17,11 @@ class TProxElasticNet : public TProxSeparable<T> {
 
   virtual void set_ratio(T ratio);
 
-  bool compare(const TProxElasticNet<T> &that);
+  bool compare(const TProxElasticNet<T, K> &that);
 };
 
-%template(ProxElasticNetDouble) TProxElasticNet<double>;
-typedef TProxElasticNet<double> ProxElasticNetDouble;
-TICK_MAKE_TEMPLATED_PICKLABLE(TProxElasticNet, ProxElasticNetDouble , double);
+%template(ProxElasticNetDouble) TProxElasticNet<double, double>;
+typedef TProxElasticNet<double, double> ProxElasticNetDouble;
 
-%template(ProxElasticNetFloat) TProxElasticNet<float>;
-typedef TProxElasticNet<float> ProxElasticNetFloat;
-TICK_MAKE_TEMPLATED_PICKLABLE(TProxElasticNet, ProxElasticNetFloat , float);
+%template(ProxElasticNetFloat) TProxElasticNet<float, float>;
+typedef TProxElasticNet<float, float> ProxElasticNetFloat;

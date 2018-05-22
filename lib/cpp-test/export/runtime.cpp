@@ -128,6 +128,10 @@ int main(int argc, char** argv) {
       TSAGA<double> svrg(n_samples, 0, RandType::unif,
                          linreg->get_lip_max() / 100, 1309);
     });
+    run([&]() {
+      AtomicSAGA<double> svrg(n_samples, 0, 0, RandType::unif,
+                              linreg->get_lip_max() / 100, 1309);
+    });
     run([&]() { TSDCA<double> svrg(1, n_samples, 0, RandType::unif, 1309); });
     run([&]() {
       TSGD<double> svrg(n_samples, 0, RandType::unif,
