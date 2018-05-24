@@ -75,6 +75,7 @@ class SolverSto(Base):
 
     def set_model(self, model: Model):
         # Give the C++ wrapped model to the solver
+        self.dtype = model.dtype
         self._solver.set_model(model._model)
         # If not already specified, we use the model's epoch_size
         if self.epoch_size is None:
@@ -89,6 +90,10 @@ class SolverSto(Base):
                              "solver %s" % (prox.__class__.__name__,
                                             self.__class__.__name__))
             # Give the C++ wrapped prox to the solver
+        if self.dtype is None or self.model is None:
+            raise ValueError("Solver must call set_model before set_prox")
+        if prox.dtype != self.dtype:
+            prox = prox.astype(self.dtype)
         self._solver.set_prox(prox._prox)
         return self
 
@@ -115,3 +120,10 @@ class SolverSto(Base):
     def _set_rand_max(self, model):
         model_rand_max = model._rand_max
         self._set("_rand_max", model_rand_max)
+
+    def _get_typed_class(self, dtype_or_object_with_dtype, dtype_map):
+        """Deduce dtype and return true if C++ _model should be set
+        """
+        import tick.base.dtype_to_cpp_type
+        return tick.base.dtype_to_cpp_type.get_typed_class(
+            self, dtype_or_object_with_dtype, dtype_map)

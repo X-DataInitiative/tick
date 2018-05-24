@@ -214,6 +214,7 @@ Now, we can create the model object for logistic regression
 
 .. testcode:: [optim-model-glm]
 
+    import numpy as np
     from tick.linear_model import ModelLogReg
 
     model = ModelLogReg(fit_intercept=True).fit(X, y)
@@ -225,6 +226,7 @@ outputs
     :options: +ELLIPSIS, +NORMALIZE_WHITESPACE
 
     {
+      "dtype": "float64",
       "fit_intercept": true,
       "n_calls_grad": 0,
       "n_calls_loss": 0,

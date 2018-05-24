@@ -4,9 +4,15 @@ import numpy as np
 from numpy.linalg import svd
 from tick.base_model import ModelGeneralizedLinear, ModelFirstOrder, \
     ModelLipschitz
-from .build.linear_model import ModelSmoothedHingeDouble as _ModelSmoothedHinge
+from .build.linear_model import ModelSmoothedHingeDouble as _ModelSmoothedHingeDouble
+from .build.linear_model import ModelSmoothedHingeFloat as _ModelSmoothedHingeFloat
 
 __author__ = 'Stephane Gaiffas'
+
+dtype_map = {
+    np.dtype('float64'): _ModelSmoothedHingeDouble,
+    np.dtype('float32'): _ModelSmoothedHingeFloat
+}
 
 
 class ModelSmoothedHinge(ModelFirstOrder, ModelGeneralizedLinear,
@@ -49,6 +55,13 @@ class ModelSmoothedHinge(ModelFirstOrder, ModelGeneralizedLinear,
         The smoothness parameter used in the loss. It should be > 0 and <= 1
         Note that smoothness=0 corresponds to the Hinge loss.
 
+    n_threads : `int`, default=1 (read-only)
+        Number of threads used for parallel computation.
+
+        * if ``int <= 0``: the number of threads available on
+          the CPU
+        * otherwise the desired number of threads
+
     Attributes
     ----------
     features : {`numpy.ndarray`, `scipy.sparse.csr_matrix`}, shape=(n_samples, n_features)
@@ -66,12 +79,8 @@ class ModelSmoothedHinge(ModelFirstOrder, ModelGeneralizedLinear,
     n_coeffs : `int` (read-only)
         Total number of coefficients of the model
 
-    n_threads : `int`, default=1 (read-only)
-        Number of threads used for parallel computation.
-
-        * if ``int <= 0``: the number of threads available on
-          the CPU
-        * otherwise the desired number of threads
+    dtype : `{'float64', 'float32'}`, default='float64'
+        Type of the data arrays used.
     """
 
     _attrinfos = {
@@ -109,10 +118,8 @@ class ModelSmoothedHinge(ModelFirstOrder, ModelGeneralizedLinear,
         ModelFirstOrder.fit(self, features, labels)
         ModelGeneralizedLinear.fit(self, features, labels)
         ModelLipschitz.fit(self, features, labels)
-        self._set("_model",
-                  _ModelSmoothedHinge(self.features, self.labels,
-                                      self.fit_intercept, self.smoothness,
-                                      self.n_threads))
+
+        self._set("_model", self._build_cpp_model(features.dtype))
         return self
 
     def _grad(self, coeffs: np.ndarray, out: np.ndarray) -> None:
@@ -123,8 +130,15 @@ class ModelSmoothedHinge(ModelFirstOrder, ModelGeneralizedLinear,
 
     def _get_lip_best(self):
         # TODO: Use sklearn.decomposition.TruncatedSVD instead?
+
         s = svd(self.features, full_matrices=False, compute_uv=False)[0] ** 2
+
         if self.fit_intercept:
             return (s + 1) / (self.smoothness * self.n_samples)
         else:
             return s / (self.smoothness * self.n_samples)
+
+    def _build_cpp_model(self, dtype_or_object_with_dtype):
+        model_class = self._get_typed_class(dtype_or_object_with_dtype, dtype_map)
+        return model_class(self.features, self.labels, self.fit_intercept,
+                           self.smoothness, self.n_threads)

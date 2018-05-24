@@ -125,7 +125,7 @@ class Test(InferenceTest):
                     solver_kwargs['random_state'] = sto_seed
 
                 if solver == 'sgd':
-                    solver_kwargs['step'] = 1.
+                    solver_kwargs['step'] = .3
 
                 learner = LogisticRegression(**solver_kwargs)
 
@@ -553,6 +553,21 @@ class Test(InferenceTest):
         np.testing.assert_array_almost_equal(
             learner.decision_function(X_test), decision_function_values,
             decimal=3)
+
+    def test_float_double_arrays_fitting(self):
+        X, y = Test.get_train_data(n_features=12, n_samples=300, nnz=0)
+        learner_64 = LogisticRegression(random_state=32789, tol=1e-13)
+        learner_64.fit(X, y)
+        weights_64 = learner_64.weights
+        self.assertEqual(weights_64.dtype, np.dtype('float64'))
+
+        learner_32 = LogisticRegression(random_state=32789, tol=1e-13)
+        X_32, y_32 = X.astype('float32'), y.astype('float32')
+        learner_32.fit(X_32, y_32)
+        weights_32 = learner_32.weights
+        self.assertEqual(weights_32.dtype, np.dtype('float32'))
+
+        np.testing.assert_array_almost_equal(weights_32, weights_64, decimal=5)
 
 
 if __name__ == "__main__":

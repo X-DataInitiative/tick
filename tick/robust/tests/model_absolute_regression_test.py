@@ -26,7 +26,7 @@ class Test(TestGLM):
         model = ModelAbsoluteRegression(fit_intercept=True).fit(X, y)
         model_spars = ModelAbsoluteRegression(fit_intercept=True).fit(
             X_spars, y)
-        self.run_test_for_glm(model, model_spars, 1e-5, 2e-3)
+        self.run_test_for_glm(model, model_spars)
         self._test_glm_intercept_vs_hardcoded_intercept(model)
 
         # Then check without intercept
@@ -37,7 +37,7 @@ class Test(TestGLM):
 
         model_spars = ModelAbsoluteRegression(fit_intercept=False).fit(
             X_spars, y)
-        self.run_test_for_glm(model, model_spars, 1e-5, 2e-3)
+        self.run_test_for_glm(model, model_spars)
 
 
 if __name__ == '__main__':

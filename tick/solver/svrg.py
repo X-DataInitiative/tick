@@ -1,9 +1,10 @@
 # License: BSD 3 clause
 
+import numpy as np
+
 from warnings import warn
 from tick.base_model import Model
 from .base import SolverFirstOrderSto
-from .build.solver import SVRGDouble as _SVRG
 
 from tick.solver.build.solver import SVRG_VarianceReductionMethod_Last
 from tick.solver.build.solver import SVRG_VarianceReductionMethod_Average
@@ -12,12 +13,8 @@ from tick.solver.build.solver import SVRG_VarianceReductionMethod_Random
 from tick.solver.build.solver import SVRG_StepType_Fixed
 from tick.solver.build.solver import SVRG_StepType_BarzilaiBorwein
 
-from tick.solver.build.solver import SVRG_VarianceReductionMethod_Last
-from tick.solver.build.solver import SVRG_VarianceReductionMethod_Average
-from tick.solver.build.solver import SVRG_VarianceReductionMethod_Random
-
-from tick.solver.build.solver import SVRG_StepType_Fixed
-from tick.solver.build.solver import SVRG_StepType_BarzilaiBorwein
+from .build.solver import SVRGDouble as _SVRGDouble
+from .build.solver import SVRGFloat as _SVRGFloat
 
 __author__ = "Stephane Gaiffas"
 
@@ -30,6 +27,11 @@ variance_reduction_methods_mapper = {
 step_types_mapper = {
     'fixed': SVRG_StepType_Fixed,
     'bb': SVRG_StepType_BarzilaiBorwein
+}
+
+dtype_class_mapper = {
+    np.dtype('float32'): _SVRGFloat,
+    np.dtype('float64'): _SVRGDouble
 }
 
 
@@ -173,6 +175,9 @@ class SVRG(SolverFirstOrderSto):
     time_end : `str`
         End date of the call to ``solve()``
 
+    dtype : `{'float64', 'float32'}`, default='float64'
+        Type of the arrays used. This value is set from model and prox dtypes.
+
     References
     ----------
     * L. Xiao and T. Zhang, A proximal stochastic gradient method with
@@ -182,6 +187,7 @@ class SVRG(SolverFirstOrderSto):
       Barzilai-Borwein step size for stochastic gradient descent.
       *Advances in Neural Information Processing Systems* (2016)
     """
+    _attrinfos = {"_step_type_str": {}, "_var_red_str": {}}
 
     def __init__(self, step: float = None, epoch_size: int = None,
                  rand_type: str = 'unif', tol: float = 1e-10,
@@ -189,24 +195,15 @@ class SVRG(SolverFirstOrderSto):
                  print_every: int = 1, record_every: int = 1, seed: int = -1,
                  variance_reduction: str = 'last', step_type: str = 'fixed',
                  n_threads: int = 1):
+        self.n_threads = n_threads
+        # temporary to hold step type before dtype is known
+        self._step_type_str = step_type
+        # temporary to hold varience reduction type before dtype is known
+        self._var_red_str = variance_reduction
+
         SolverFirstOrderSto.__init__(self, step, epoch_size, rand_type, tol,
                                      max_iter, verbose, print_every,
                                      record_every, seed=seed)
-        self.n_threads = n_threads
-        step = self.step
-        if step is None:
-            step = 0.
-
-        epoch_size = self.epoch_size
-        if epoch_size is None:
-            epoch_size = 0
-
-        # Construct the wrapped C++ SGD solver
-        self._solver = _SVRG(epoch_size, self.tol, self._rand_type, step,
-                             self.seed, self.n_threads)
-
-        self.variance_reduction = variance_reduction
-        self.step_type = step_type
 
     @property
     def variance_reduction(self):
@@ -258,9 +255,29 @@ class SVRG(SolverFirstOrderSto):
         """
         # We need to check that the setted model is not sparse when the
         # variance reduction method is 'avg'
-        if self.variance_reduction == 'avg' and model._model.is_sparse():
+        if self._var_red_str == 'avg' and model._model.is_sparse():
             warn("'avg' variance reduction cannot be used with sparse "
                  "datasets. Please change `variance_reduction` before "
                  "passing sparse data.", UserWarning)
-        SolverFirstOrderSto.set_model(self, model)
-        return self
+
+        return SolverFirstOrderSto.set_model(self, model)
+
+    def _set_cpp_solver(self, dtype_or_object_with_dtype):
+        self.dtype = self._extract_dtype(dtype_or_object_with_dtype)
+        solver_class = self._get_typed_class(
+            dtype_or_object_with_dtype, dtype_class_mapper)
+
+        # Type mapping None to unsigned long and double does not work...
+        step = self.step
+        if step is None:
+            step = 0.
+        epoch_size = self.epoch_size
+        if epoch_size is None:
+            epoch_size = 0
+
+        self._set('_solver', solver_class(
+            epoch_size, self.tol, self._rand_type, step, self.seed,
+            self.n_threads))
+
+        self.variance_reduction = self._var_red_str
+        self.step_type = self._step_type_str

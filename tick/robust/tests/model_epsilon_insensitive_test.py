@@ -28,7 +28,7 @@ class Test(TestGLM):
                                         threshold=1.13).fit(X, y)
         model_spars = ModelEpsilonInsensitive(fit_intercept=True,
                                               threshold=1.13).fit(X_spars, y)
-        self.run_test_for_glm(model, model_spars, 1e-5, 1e-3)
+        self.run_test_for_glm(model, model_spars)
         self._test_glm_intercept_vs_hardcoded_intercept(model)
 
         # Then check without intercept
@@ -38,7 +38,7 @@ class Test(TestGLM):
         model = ModelEpsilonInsensitive(fit_intercept=False).fit(X, y)
         model_spars = ModelEpsilonInsensitive(fit_intercept=False).fit(
             X_spars, y)
-        self.run_test_for_glm(model, model_spars, 1e-5, 1e-3)
+        self.run_test_for_glm(model, model_spars)
 
     def test_ModelEpsilonInsensitive_threshold(self):
         np.random.seed(12)

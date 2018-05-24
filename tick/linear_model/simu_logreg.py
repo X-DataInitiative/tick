@@ -55,6 +55,10 @@ class SimuLogReg(SimuWithFeatures):
     verbose : `bool`, default=True
         If `True`, print things
 
+    dtype : `{'float64', 'float32'}`, default='float64'
+        Type of the generated arrays.
+        Used in the case features is None
+
     Attributes
     ----------
     features : `numpy.ndarray`, shape=(n_samples, n_features)
@@ -71,6 +75,7 @@ class SimuLogReg(SimuWithFeatures):
 
     time_end : `str`
         End date of the simulation
+
     """
 
     _attrinfos = {"labels": {"writable": False}}
@@ -79,12 +84,12 @@ class SimuLogReg(SimuWithFeatures):
                  features: np.ndarray = None, n_samples: int = 200,
                  features_type: str = "cov_toeplitz", cov_corr: float = 0.5,
                  features_scaling: str = "none", seed: int = None,
-                 verbose: bool = True):
+                 verbose: bool = True, dtype="float64"):
 
         n_features = weights.shape[0]
         SimuWithFeatures.__init__(self, intercept, features, n_samples,
                                   n_features, features_type, cov_corr,
-                                  features_scaling, seed, verbose)
+                                  features_scaling, seed, verbose, dtype=dtype)
         self.weights = weights
         self._set("labels", None)
 
@@ -122,7 +127,7 @@ class SimuLogReg(SimuWithFeatures):
             u += self.intercept
         p = np.empty(n_samples)
         p[:] = SimuLogReg.sigmoid(u)
-        labels = np.empty(n_samples)
+        labels = np.empty(n_samples, dtype=self.dtype)
         labels[:] = np.random.binomial(1, p, size=n_samples)
         labels[labels == 0] = -1
         self._set("labels", labels)

@@ -8,14 +8,13 @@ import numpy as np
 from scipy.linalg.special_matrices import toeplitz
 from scipy.sparse import csr_matrix
 
-from tick.linear_model import ModelLinReg
+from tick.linear_model import ModelLinReg, ModelLogReg, SimuLogReg
 
 from tick.prox import ProxL1, ProxL1w, ProxTV, ProxEquality, \
     ProxElasticNet
 
 from tick.solver import SVRG
 from tick.solver.tests import TestSolver
-from tick.solver.build.solver import SVRGDouble as _SVRG
 
 from tick.solver.build.solver import SVRG_VarianceReductionMethod_Last
 from tick.solver.build.solver import SVRG_VarianceReductionMethod_Average
@@ -24,10 +23,15 @@ from tick.solver.build.solver import SVRG_VarianceReductionMethod_Random
 from tick.solver.build.solver import SVRG_StepType_Fixed
 from tick.solver.build.solver import SVRG_StepType_BarzilaiBorwein
 
+from tick.simulation import weights_sparse_gauss
 
-class Test(TestSolver):
+dtype_list = ["float64", "float32"]
+
+
+class SVRGTest(object):
     @staticmethod
-    def simu_linreg_data(n_samples=5000, n_features=50, interc=-1., p_nnz=0.3):
+    def simu_linreg_data(dtype, n_samples=5000, n_features=50, interc=-1.,
+                         p_nnz=0.3):
         np.random.seed(123)
         idx = np.arange(1, n_features + 1)
         weights = (-1) ** (idx - 1) * np.exp(-idx / 10.)
@@ -43,11 +47,14 @@ class Test(TestSolver):
         y = X.dot(weights) + noise
         if interc:
             y += interc
+        X = X.astype(dtype)
+        y = y.astype(dtype)
         return X, y
 
     @staticmethod
-    def get_dense_and_sparse_linreg_model(X_dense, y, fit_intercept=True):
-        X_sparse = csr_matrix(X_dense)
+    def get_dense_and_sparse_linreg_model(X_dense, y, dtype,
+                                          fit_intercept=True):
+        X_sparse = csr_matrix(X_dense).astype(dtype)
         model_dense = ModelLinReg(fit_intercept).fit(X_dense, y)
         model_spars = ModelLinReg(fit_intercept).fit(X_sparse, y)
         return model_dense, model_spars
@@ -74,11 +81,22 @@ class Test(TestSolver):
         """...Test that SVRG variance_reduction parameter behaves correctly
         """
         svrg = SVRG()
+
+        coeffs0 = weights_sparse_gauss(20, nnz=5, dtype=self.dtype)
+        interc0 = None
+
+        X, y = SimuLogReg(coeffs0, interc0, n_samples=3000, verbose=False,
+                          seed=123, dtype=self.dtype).simulate()
+
+        model = ModelLogReg().fit(X, y)
+        svrg.set_model(model)
+
         self.assertEqual(svrg.variance_reduction, 'last')
         self.assertEqual(svrg._solver.get_variance_reduction(),
                          SVRG_VarianceReductionMethod_Last)
 
         svrg = SVRG(variance_reduction='rand')
+        svrg.set_model(model)
         self.assertEqual(svrg.variance_reduction, 'rand')
         self.assertEqual(svrg._solver.get_variance_reduction(),
                          SVRG_VarianceReductionMethod_Random)
@@ -102,11 +120,13 @@ class Test(TestSolver):
               'got "stuff"$'
         with self.assertRaisesRegex(ValueError, msg):
             svrg = SVRG(variance_reduction='stuff')
+            svrg.set_model(model)
         with self.assertRaisesRegex(ValueError, msg):
             svrg.variance_reduction = 'stuff'
 
-        X, y = self.simu_linreg_data()
-        model_dense, model_spars = self.get_dense_and_sparse_linreg_model(X, y)
+        X, y = self.simu_linreg_data(dtype=self.dtype)
+        model_dense, model_spars = self.get_dense_and_sparse_linreg_model(
+            X, y, dtype=self.dtype)
         try:
             svrg.set_model(model_dense)
             svrg.variance_reduction = 'avg'
@@ -132,10 +152,20 @@ class Test(TestSolver):
         """...Test that SVRG step_type parameter behaves correctly
         """
         svrg = SVRG()
+
+        coeffs0 = weights_sparse_gauss(20, nnz=5, dtype=self.dtype)
+        interc0 = None
+
+        X, y = SimuLogReg(coeffs0, interc0, n_samples=3000, verbose=False,
+                          seed=123, dtype=self.dtype).simulate()
+
+        model = ModelLogReg().fit(X, y)
+        svrg.set_model(model)
         self.assertEqual(svrg.step_type, 'fixed')
         self.assertEqual(svrg._solver.get_step_type(), SVRG_StepType_Fixed)
 
         svrg = SVRG(step_type='bb')
+        svrg.set_model(model)
         self.assertEqual(svrg.step_type, 'bb')
         self.assertEqual(svrg._solver.get_step_type(),
                          SVRG_StepType_BarzilaiBorwein)
@@ -152,8 +182,9 @@ class Test(TestSolver):
     def test_set_model(self):
         """...Test SVRG set_model
         """
-        X, y = self.simu_linreg_data()
-        _, model_spars = self.get_dense_and_sparse_linreg_model(X, y)
+        X, y = self.simu_linreg_data(dtype=self.dtype)
+        _, model_spars = self.get_dense_and_sparse_linreg_model(
+            X, y, dtype=self.dtype)
         svrg = SVRG(variance_reduction='avg')
         msg = "'avg' variance reduction cannot be used with sparse datasets. " \
               "Please change `variance_reduction` before passing sparse data."
@@ -180,21 +211,22 @@ class Test(TestSolver):
 
         # Crazy prox examples
         proxs = [
-            ProxTV(strength=1e-2, range=(5, 13), positive=True),
-            ProxElasticNet(strength=1e-2, ratio=0.9),
-            ProxEquality(range=(0, n_features)),
-            ProxL1(strength=1e-3, range=(5, 17)),
+            ProxTV(strength=1e-2, range=(5, 13), positive=True).astype(self.dtype),
+            ProxElasticNet(strength=1e-2, ratio=0.9).astype(self.dtype),
+            ProxEquality(range=(0, n_features)).astype(self.dtype),
+            ProxL1(strength=1e-3, range=(5, 17)).astype(self.dtype),
             ProxL1w(strength=1e-3, weights=np.arange(5, 17, dtype=np.double),
-                    range=(5, 17)),
+                    range=(5, 17)).astype(self.dtype),
         ]
 
         for intercept in [-1, None]:
-            X, y = self.simu_linreg_data(
-                interc=intercept, n_features=n_features, n_samples=n_samples)
+            X, y = self.simu_linreg_data(dtype=self.dtype, interc=intercept,
+                                         n_features=n_features,
+                                         n_samples=n_samples)
 
             fit_intercept = intercept is not None
             model_dense, model_spars = self.get_dense_and_sparse_linreg_model(
-                X, y, fit_intercept=fit_intercept)
+                X, y, dtype=self.dtype, fit_intercept=fit_intercept)
             step = 1 / model_spars.get_lip_max()
 
             for variance_reduction, rand_type, prox in product(
@@ -202,21 +234,23 @@ class Test(TestSolver):
                 solver_sparse = SVRG(step=step, tol=tol, max_iter=max_iter,
                                      verbose=False,
                                      variance_reduction=variance_reduction,
-                                     rand_type=rand_type, seed=seed) \
-                    .set_model(model_spars) \
-                    .set_prox(prox)
+                                     rand_type=rand_type, seed=seed)
+                solver_sparse.set_model(model_spars).set_prox(prox)
 
                 solver_dense = SVRG(step=step, tol=tol, max_iter=max_iter,
                                     verbose=False,
                                     variance_reduction=variance_reduction,
-                                    rand_type=rand_type, seed=seed) \
-                    .set_model(model_dense) \
-                    .set_prox(prox)
+                                    rand_type=rand_type, seed=seed)
+                solver_dense.set_model(model_dense).set_prox(prox)
 
                 solver_sparse.solve()
                 solver_dense.solve()
+                places = 7
+                if self.dtype is "float32":
+                    places = 4
                 np.testing.assert_array_almost_equal(solver_sparse.solution,
-                                                     solver_dense.solution, 7)
+                                                     solver_dense.solution,
+                                                     decimal=places)
 
     def test_asvrg_sparse_and_dense_consistency(self):
         """...Test ASVRG can run all glm models and is consistent with sparsity
@@ -225,6 +259,29 @@ class Test(TestSolver):
         def create_solver():
             return SVRG(max_iter=1, verbose=False, step=1e-5,
                         seed=TestSolver.sto_seed, n_threads=2)
+
+        # This test is very unstable...
+        # self._test_solver_sparse_and_dense_consistency(create_solver)
+        
+    def test_svrg_dtype_can_change(self):
+        """...Test svrg astype method
+        """
+        def create_solver():
+            return SVRG(tol=1e-13, step=0.1, max_iter=1000,
+                        seed=TestSolver.sto_seed, verbose=False)
+
+        self._test_solver_astype_consistency(create_solver)
+
+
+
+class SVRGTestFloat32(TestSolver, SVRGTest):
+    def __init__(self, *args, **kwargs):
+        TestSolver.__init__(self, *args, dtype="float32", **kwargs)
+
+
+class SVRGTestFloat64(TestSolver, SVRGTest):
+    def __init__(self, *args, **kwargs):
+        TestSolver.__init__(self, *args, dtype="float64", **kwargs)
 
 
 if __name__ == '__main__':

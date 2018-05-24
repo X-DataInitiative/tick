@@ -7,6 +7,7 @@
 template <class T>
 class TProxL2Sq : public TProxSeparable<T> {
  public:
+   TProxL2Sq();
    TProxL2Sq(T strength,
             bool positive);
 
@@ -18,11 +19,10 @@ class TProxL2Sq : public TProxSeparable<T> {
   bool compare(const TProxL2Sq<T> &that);
 };
 
-%template(ProxL2Sq) TProxL2Sq<double>;
-typedef TProxL2Sq<double> ProxL2Sq;
-
 %template(ProxL2SqDouble) TProxL2Sq<double>;
 typedef TProxL2Sq<double> ProxL2SqDouble;
+TICK_MAKE_TEMPLATED_PICKLABLE(TProxL2Sq, ProxL2SqDouble , double);
 
 %template(ProxL2SqFloat) TProxL2Sq<float>;
 typedef TProxL2Sq<float> ProxL2SqFloat;
+TICK_MAKE_TEMPLATED_PICKLABLE(TProxL2Sq, ProxL2SqFloat , float);

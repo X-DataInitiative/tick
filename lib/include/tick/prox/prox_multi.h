@@ -51,7 +51,6 @@ class DLL_PUBLIC TProxMulti : public TProx<T> {
   BoolStrReport operator==(const TProxMulti<T>& that) { return compare(that); }
 };
 
-using ProxMulti = TProxMulti<double>;
 using ProxMultiDouble = TProxMulti<double>;
 using ProxMultiFloat = TProxMulti<float>;
 

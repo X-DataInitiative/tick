@@ -4,9 +4,15 @@ import numpy as np
 from numpy.linalg import svd
 from tick.base_model import ModelGeneralizedLinear, ModelFirstOrder, \
     ModelLipschitz
-from .build.linear_model import ModelQuadraticHingeDouble as _ModelModelQuadraticHinge
+from .build.linear_model import ModelQuadraticHingeDouble as _ModelModelQuadraticHingeDouble
+from .build.linear_model import ModelQuadraticHingeFloat as _ModelModelQuadraticHingeFloat
 
 __author__ = 'Stephane Gaiffas'
+
+dtype_map = {
+    np.dtype('float64'): _ModelModelQuadraticHingeDouble,
+    np.dtype('float32'): _ModelModelQuadraticHingeFloat
+}
 
 
 class ModelQuadraticHinge(ModelFirstOrder, ModelGeneralizedLinear,
@@ -42,6 +48,13 @@ class ModelQuadraticHinge(ModelFirstOrder, ModelGeneralizedLinear,
     fit_intercept : `bool`
         If `True`, the model uses an intercept
 
+    n_threads : `int`, default=1 (read-only)
+        Number of threads used for parallel computation.
+
+        * if ``int <= 0``: the number of threads available on
+          the CPU
+        * otherwise the desired number of threads
+
     Attributes
     ----------
     features : {`numpy.ndarray`, `scipy.sparse.csr_matrix`}, shape=(n_samples, n_features)
@@ -59,12 +72,8 @@ class ModelQuadraticHinge(ModelFirstOrder, ModelGeneralizedLinear,
     n_coeffs : `int` (read-only)
         Total number of coefficients of the model
 
-    n_threads : `int`, default=1 (read-only)
-        Number of threads used for parallel computation.
-
-        * if ``int <= 0``: the number of threads available on
-          the CPU
-        * otherwise the desired number of threads
+    dtype : `{'float64', 'float32'}`, default='float64'
+        Type of the data arrays used.
     """
 
     def __init__(self, fit_intercept: bool = True, n_threads: int = 1):
@@ -93,10 +102,8 @@ class ModelQuadraticHinge(ModelFirstOrder, ModelGeneralizedLinear,
         ModelFirstOrder.fit(self, features, labels)
         ModelGeneralizedLinear.fit(self, features, labels)
         ModelLipschitz.fit(self, features, labels)
-        self._set("_model",
-                  _ModelModelQuadraticHinge(self.features, self.labels,
-                                            self.fit_intercept,
-                                            self.n_threads))
+
+        self._set("_model", self._build_cpp_model(features.dtype))
         return self
 
     def _grad(self, coeffs: np.ndarray, out: np.ndarray) -> None:
@@ -112,3 +119,8 @@ class ModelQuadraticHinge(ModelFirstOrder, ModelGeneralizedLinear,
             return (s + 1) / self.n_samples
         else:
             return s / self.n_samples
+
+    def _build_cpp_model(self, dtype_or_object_with_dtype):
+        model_class = self._get_typed_class(dtype_or_object_with_dtype, dtype_map)
+        return model_class(self.features, self.labels, self.fit_intercept,
+                           self.n_threads)

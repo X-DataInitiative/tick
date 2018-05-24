@@ -26,7 +26,7 @@ class Test(TestGLM):
         model = ModelHuber(fit_intercept=True, threshold=1.3).fit(X, y)
         model_spars = ModelHuber(fit_intercept=True, threshold=1.3).fit(
             X_spars, y)
-        self.run_test_for_glm(model, model_spars, 1e-5, 1e-3)
+        self.run_test_for_glm(model, model_spars)
         self._test_glm_intercept_vs_hardcoded_intercept(model)
 
         # Then check without intercept
@@ -36,7 +36,7 @@ class Test(TestGLM):
         model = ModelHuber(fit_intercept=False).fit(X, y)
 
         model_spars = ModelHuber(fit_intercept=False).fit(X_spars, y)
-        self.run_test_for_glm(model, model_spars, 1e-5, 1e-3)
+        self.run_test_for_glm(model, model_spars)
 
         # Test for the Lipschitz constants without intercept
         self.assertAlmostEqual(model.get_lip_best(), 2.6873683857125981)

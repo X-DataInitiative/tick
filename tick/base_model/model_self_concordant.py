@@ -10,6 +10,11 @@ class ModelSelfConcordant(Model):
     """An abstract base class for a model that implements the
     self-concordant constant
 
+    Attributes
+    ----------
+    dtype : `{'float64', 'float32'}`, default='float64'
+        Type of the arrays used. This value is set from model and prox dtypes.
+
     Notes
     -----
     This class should be not used by end-users, it is intended for

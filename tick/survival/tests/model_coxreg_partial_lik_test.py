@@ -22,7 +22,7 @@ class Test(TestGLM):
         model.fit(features, times, censoring)
         model_spars = ModelCoxRegPartialLik()
         model_spars.fit(csr_matrix(features), times, censoring)
-        self.run_test_for_glm(model, model_spars, 1e-5, 1e-4)
+        self.run_test_for_glm(model, model_spars)
 
 
 if __name__ == '__main__':

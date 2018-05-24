@@ -26,7 +26,7 @@ class Test(TestGLM):
         X_spars = csr_matrix(X)
         model = ModelModifiedHuber(fit_intercept=True).fit(X, y)
         model_spars = ModelModifiedHuber(fit_intercept=True).fit(X_spars, y)
-        self.run_test_for_glm(model, model_spars, 1e-5, 1e-3)
+        self.run_test_for_glm(model, model_spars)
         self._test_glm_intercept_vs_hardcoded_intercept(model)
 
         # Then check without intercept
@@ -36,7 +36,7 @@ class Test(TestGLM):
         model = ModelModifiedHuber(fit_intercept=False).fit(X, y)
 
         model_spars = ModelModifiedHuber(fit_intercept=False).fit(X_spars, y)
-        self.run_test_for_glm(model, model_spars, 1e-5, 1e-3)
+        self.run_test_for_glm(model, model_spars)
 
         # Test for the Lipschitz constants without intercept
         self.assertAlmostEqual(model.get_lip_best(), 2 * 2.6873683857125981)

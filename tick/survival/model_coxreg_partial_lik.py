@@ -4,8 +4,15 @@ import numpy as np
 
 from tick.base_model import Model, ModelFirstOrder
 from tick.preprocessing.utils import safe_array
-from .build.survival import ModelCoxRegPartialLik \
-    as _ModelCoxRegPartialLik
+from .build.survival import ModelCoxRegPartialLikDouble \
+    as _ModelCoxRegPartialLik_d
+from .build.survival import ModelCoxRegPartialLikFloat \
+    as _ModelCoxRegPartialLik_f
+
+dtype_class_mapper = {
+    np.dtype('float32'): _ModelCoxRegPartialLik_f,
+    np.dtype('float64'): _ModelCoxRegPartialLik_d
+}
 
 
 class ModelCoxRegPartialLik(ModelFirstOrder):
@@ -107,7 +114,13 @@ class ModelCoxRegPartialLik(ModelFirstOrder):
         return Model.fit(self, features, times, censoring)
 
     def _set_data(self, features: np.ndarray, times: np.array,
-                  censoring: np.array):
+                  censoring: np.array):  #
+
+        if self.dtype is None:
+            self.dtype = features.dtype
+            if self.dtype != times.dtype:
+                raise ValueError("Features and labels differ in data types")
+
         n_samples, n_features = features.shape
         if n_samples != times.shape[0]:
             raise ValueError(("Features has %i samples while times "
@@ -116,8 +129,8 @@ class ModelCoxRegPartialLik(ModelFirstOrder):
             raise ValueError(("Features has %i samples while censoring "
                               "have %i" % (n_samples, censoring.shape[0])))
 
-        features = safe_array(features)
-        times = safe_array(times)
+        features = safe_array(features, dtype=self.dtype)
+        times = safe_array(times, dtype=self.dtype)
         censoring = safe_array(censoring, np.ushort)
 
         self._set("features", features)
@@ -125,9 +138,8 @@ class ModelCoxRegPartialLik(ModelFirstOrder):
         self._set("censoring", censoring)
         self._set("n_samples", n_samples)
         self._set("n_features", n_features)
-        self._set("_model",
-                  _ModelCoxRegPartialLik(self.features, self.times,
-                                         self.censoring))
+        self._set("_model", dtype_class_mapper[self.dtype](
+            self.features, self.times, self.censoring))
 
     def _grad(self, coeffs: np.ndarray, out: np.ndarray) -> None:
         self._model.grad(coeffs, out)

@@ -1,16 +1,21 @@
 # License: BSD 3 clause
 
-from .build.linear_model import ModelPoisRegDouble as _ModelPoisReg
-from .build.linear_model import LinkType_identity as identity
-from .build.linear_model import LinkType_exponential as exponential
-
 import numpy as np
 from scipy.special import gammaln
 
 from tick.base_model import ModelGeneralizedLinear, ModelFirstOrder, \
     ModelSecondOrder, ModelSelfConcordant
+from .build.linear_model import ModelPoisRegDouble as _ModelPoisRegDouble
+from .build.linear_model import ModelPoisRegFloat as _ModelPoisRegFloat
+from .build.linear_model import LinkType_identity as identity
+from .build.linear_model import LinkType_exponential as exponential
 
 __author__ = 'Stephane Gaiffas'
+
+dtype_map = {
+    np.dtype('float32'): _ModelPoisRegFloat,
+    np.dtype('float64'): _ModelPoisRegDouble
+}
 
 
 class ModelPoisReg(ModelGeneralizedLinear, ModelSecondOrder,
@@ -87,6 +92,9 @@ class ModelPoisReg(ModelGeneralizedLinear, ModelSecondOrder,
           the CPU
         * otherwise the desired number of threads
 
+    dtype : `{'float64', 'float32'}`, default='float64'
+        Type of the data arrays used.
+
     Notes
     -----
     The gradient and loss for the exponential link case cannot be
@@ -108,8 +116,6 @@ class ModelPoisReg(ModelGeneralizedLinear, ModelSecondOrder,
 
     def __init__(self, fit_intercept: bool = True, link: str = "exponential",
                  n_threads: int = 1):
-        """
-        """
         ModelSecondOrder.__init__(self)
         ModelGeneralizedLinear.__init__(self, fit_intercept)
         ModelSelfConcordant.__init__(self)
@@ -136,9 +142,8 @@ class ModelPoisReg(ModelGeneralizedLinear, ModelSecondOrder,
         """
         ModelFirstOrder.fit(self, features, labels)
         ModelGeneralizedLinear.fit(self, features, labels)
-        self._set("_model",
-                  _ModelPoisReg(features, labels, self._link_type,
-                                self.fit_intercept, self.n_threads))
+
+        self._set("_model", self._build_cpp_model(features.dtype))
         return self
 
     def _grad(self, coeffs: np.ndarray, out: np.ndarray) -> None:
@@ -177,7 +182,6 @@ class ModelPoisReg(ModelGeneralizedLinear, ModelSecondOrder,
 
     # TODO: C++ for this
     def _hessian_norm(self, coeffs: np.ndarray, point: np.ndarray) -> float:
-
         link = self.link
         features, labels = self.features, self.labels
         if link == "identity":
@@ -201,7 +205,7 @@ class ModelPoisReg(ModelGeneralizedLinear, ModelSecondOrder,
         else:
             scaled_l_l2sq = l_l2sq
 
-        primal_vector = np.empty(self.n_coeffs)
+        primal_vector = np.empty(self.n_coeffs, dtype=self.dtype)
         self._model.sdca_primal_dual_relation(scaled_l_l2sq, dual_vector,
                                               primal_vector)
         return primal_vector
@@ -229,10 +233,13 @@ class ModelPoisReg(ModelGeneralizedLinear, ModelSecondOrder,
         """
         if self.link != "identity":
             raise (NotImplementedError())
-
         non_zero_labels = self.labels != 0
         dual_loss = self.labels[non_zero_labels] * (
             1 + np.log(dual_coeffs / self.labels[non_zero_labels]))
         dual_loss += np.mean(gammaln(self.labels[non_zero_labels] + 1))
-
         return np.mean(dual_loss) * self._sdca_rand_max / self.n_samples
+
+    def _build_cpp_model(self, dtype_or_object_with_dtype):
+        model_class = self._get_typed_class(dtype_or_object_with_dtype, dtype_map)
+        return model_class(self.features, self.labels, self._link_type,
+                               self.fit_intercept, self.n_threads)

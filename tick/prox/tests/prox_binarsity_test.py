@@ -32,7 +32,7 @@ class Test(TestProx):
                           coeffs[start:start + d_j - 1]).sum()
         val *= l_binarsity
 
-        self.assertAlmostEqual(prox.value(coeffs), val, delta=1e-15)
+        self.assertAlmostEqual(prox.value(coeffs), val, delta=self.delta)
         assert_almost_equal(prox.call(coeffs, step=t), out, decimal=7)
 
     def test_ProxBinarsity_n_blocks(self):

@@ -4,9 +4,16 @@
 
 import numpy as np
 from .base import Prox
-from .build.prox import ProxZeroDouble as _ProxZero
+
+from .build.prox import ProxZeroDouble as _ProxZeroDouble
+from .build.prox import ProxZeroFloat as _ProxZeroFloat
 
 __author__ = 'Stephane Gaiffas'
+
+dtype_map = {
+    np.dtype("float64"): _ProxZeroDouble,
+    np.dtype("float32"): _ProxZeroFloat
+}
 
 
 class ProxZero(Prox):
@@ -18,6 +25,11 @@ class ProxZero(Prox):
         Range on which the prox is applied. If `None` then the prox is
         applied on the whole vector
 
+    Attributes
+    ----------
+    dtype : `{'float64', 'float32'}`
+        Type of the arrays used.
+
     Notes
     -----
     Using ``ProxZero`` means no penalization is applied on the model.
@@ -25,10 +37,7 @@ class ProxZero(Prox):
 
     def __init__(self, range: tuple = None):
         Prox.__init__(self, range)
-        if range is None:
-            self._prox = _ProxZero(0.)
-        else:
-            self._prox = _ProxZero(0., range[0], range[1])
+        self._prox = self._build_cpp_prox("float64")
 
     def _call(self, coeffs: np.ndarray, step: object, out: np.ndarray):
         self._prox.call(coeffs, step, out)
@@ -48,3 +57,12 @@ class ProxZero(Prox):
             Value of the penalization at ``coeffs``
         """
         return self._prox.value(coeffs)
+
+    def _build_cpp_prox(self, dtype_or_object_with_dtype):
+        self.dtype = self._extract_dtype(dtype_or_object_with_dtype)
+        prox_class = self._get_typed_class(
+            dtype_or_object_with_dtype, dtype_map)
+        if self.range is None:
+            return prox_class(0.)
+        else:
+            return prox_class(0., self.range[0], self.range[1])

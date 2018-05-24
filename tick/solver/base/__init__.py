@@ -1,6 +1,6 @@
 # License: BSD 3 clause
 
-from .solver import Solver
-from .first_order import SolverFirstOrder
-from .sto import SolverSto
-from .first_order_sto import SolverFirstOrderSto
+from tick.solver.base.solver import Solver
+from tick.solver.base.first_order import SolverFirstOrder
+from tick.solver.base.sto import SolverSto
+from tick.solver.base.first_order_sto import SolverFirstOrderSto

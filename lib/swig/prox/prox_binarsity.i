@@ -24,9 +24,6 @@ class TProxBinarsity : public TProxWithGroups<T> {
   bool compare(const TProxBinarsity<T> &that);
 };
 
-%template(ProxBinarsity) TProxBinarsity<double>;
-typedef TProxBinarsity<double> ProxBinarsity;
-
 %template(ProxBinarsityDouble) TProxBinarsity<double>;
 typedef TProxBinarsity<double> ProxBinarsityDouble;
 
