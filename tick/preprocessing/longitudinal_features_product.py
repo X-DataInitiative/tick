@@ -5,10 +5,12 @@ import scipy.sparse as sps
 from itertools import combinations
 from copy import deepcopy
 from scipy.misc import comb
-from sklearn.externals.joblib import Parallel, delayed
 from tick.preprocessing.base import LongitudinalPreprocessor
-from .build.preprocessing import SparseLongitudinalFeaturesProduct
-from .utils import check_longitudinal_features_consistency
+from tick.preprocessing.build.preprocessing \
+    import SparseLongitudinalFeaturesProduct
+from tick.preprocessing.utils import check_longitudinal_features_consistency
+from functools import partial
+from multiprocessing import Pool
 
 
 class LongitudinalFeaturesProduct(LongitudinalPreprocessor):
@@ -41,7 +43,7 @@ class LongitudinalFeaturesProduct(LongitudinalPreprocessor):
 
     Attributes
     ----------
-    mapper : `dict`
+    mapping : `dict`
         Map product features to column indexes of the resulting matrices.
 
     Examples
@@ -71,10 +73,10 @@ class LongitudinalFeaturesProduct(LongitudinalPreprocessor):
     """
 
     _attrinfos = {
-        "exposure_type": {
+        "_exposure_type": {
             "writable": False
         },
-        "_mapper": {
+        "_mapping": {
             "writable": False
         },
         "_n_init_features": {
@@ -84,9 +86,6 @@ class LongitudinalFeaturesProduct(LongitudinalPreprocessor):
             "writable": False
         },
         "_n_intervals": {
-            "writable": False
-        },
-        "_preprocessor": {
             "writable": False
         },
         "_fitted": {
@@ -99,31 +98,13 @@ class LongitudinalFeaturesProduct(LongitudinalPreprocessor):
         if exposure_type not in ["infinite", "finite"]:
             raise ValueError("exposure_type should be either 'infinite' or\
              'finite', not %s" % exposure_type)
+        self._exposure_type = None
         self.exposure_type = exposure_type
-        self._reset()
-
-    def _reset(self):
-        """Resets the object its initial construction state."""
-        self._set("_n_init_features", None)
-        self._set("_n_output_features", None)
-        self._set("_n_intervals", None)
-        self._set("_mapper", {})
-        self._set("_preprocessor", None)
-        self._set("_fitted", False)
-
-    @property
-    def mapper(self):
-        """Get the mapping between the feature products and column indexes.
-
-        Returns
-        -------
-        output : `dict`
-            The column index - feature mapping.
-        """
-        if not self._fitted:
-            raise ValueError(
-                "cannot get mapper if object has not been fitted.")
-        return deepcopy(self._mapper)
+        self._mapping = None
+        self._n_init_features = None
+        self._n_output_features = None
+        self._n_intervals = None
+        self._fitted = False
 
     def fit(self, features, labels=None, censoring=None):
         """Fit the feature product using the features matrices list.
@@ -151,17 +132,11 @@ class LongitudinalFeaturesProduct(LongitudinalPreprocessor):
         self._set("_n_init_features", n_init_features)
         self._set("_n_intervals", n_intervals)
         comb_it = combinations(range(n_init_features), 2)
-        mapper = {i + n_init_features: c for i, c in enumerate(comb_it)}
-        self._set("_mapper", mapper)
+        mapping = {i + n_init_features: c for i, c in enumerate(comb_it)}
+        self._set("_mapping", mapping)
         self._set("_n_output_features",
                   int(n_init_features + comb(n_init_features, 2)))
-
-        if sps.issparse(features[0]) and self.exposure_type == "infinite":
-            self._set("_preprocessor",
-                      SparseLongitudinalFeaturesProduct(features))
-
         self._set("_fitted", True)
-
         return self
 
     def transform(self, features, labels=None, censoring=None):
@@ -182,76 +157,116 @@ class LongitudinalFeaturesProduct(LongitudinalPreprocessor):
             The list of features matrices with added product features.
             n_new_features = n_features + comb(n_features, 2)
         """
-
         base_shape = (self._n_intervals, self._n_init_features)
         features = check_longitudinal_features_consistency(
             features, base_shape, "float64")
-        if self.exposure_type == "finite":
-            X_with_products = self._finite_exposure_products(features)
-        elif self.exposure_type == "infinite":
-            X_with_products = self._infinite_exposure_products(features)
+
+        is_sparse = sps.issparse(features[0])
+
+        callback = None
+        initializer = None
+
+        if is_sparse and self.exposure_type == 'infinite':
+            initializer = partial(self._inject_cpp_object,
+                                  n_features=self._n_init_features)
+        if is_sparse:
+            if self.exposure_type == 'infinite':
+                callback = partial(self._sparse_infinite_product,
+                                   n_intervals=self._n_intervals,
+                                   n_output_features=self._n_output_features)
+            else:
+                callback = partial(self._sparse_finite_product,
+                                   mapping=self._mapping)
         else:
-            raise ValueError("exposure_type should be either 'infinite' or\
-                         'finite', not %s" % self.exposure_type)
+            if self.exposure_type == 'infinite':
+                raise ValueError("Infinite exposures should be stored in \
+                                  sparse matrices as this hypothesis induces \
+                                  sparsity in the feature matrix.")
+            else:
+                callback = partial(self._dense_finite_product,
+                                   mapping=self._mapping)
+
+        with Pool(self.n_jobs, initializer=initializer) as pool:
+            X_with_products = pool.map(callback, features)
 
         return X_with_products, labels, censoring
 
-    def _infinite_exposure_products(self, features):
-        """Add product features to features in the infinite exposure case."""
-        if sps.issparse(features[0]):
-            X_with_products = [
-                self._sparse_infinite_product(arr) for arr in features
-            ]
-            # TODO later: fix multiprocessing
-            # X_with_products = Parallel(n_jobs=self.n_jobs)(
-            #     delayed(self._sparse_infinite_product)(arr) for arr in features)
-            # Should be done in C++
-        else:
-            raise ValueError("Infinite exposures should be stored in \
-                    sparse matrices as this hypothesis induces sparsity in the \
-                    feature matrix.")
-
-        return X_with_products
-
-    def _finite_exposure_products(self, features):
-        """Add product features to features in the finite exposure case."""
-        if sps.issparse(features[0]):
-            X_with_products = Parallel(n_jobs=self.n_jobs)(
-                delayed(self._sparse_finite_product)(arr) for arr in features)
-        else:
-            X_with_products = Parallel(n_jobs=self.n_jobs)(
-                delayed(self._dense_finite_product)(arr) for arr in features)
-
-        return X_with_products
-
-    def _dense_finite_product(self, feat_mat):
+    @staticmethod
+    def _dense_finite_product(feat_mat, mapping):
         """Performs feature product on a numpy.ndarray containing
         finite exposures."""
         feat = [feat_mat]
         feat.extend([(feat_mat[:, i] * feat_mat[:, j]).reshape((-1, 1))
-                     for i, j in self._mapper.values()])
+                     for i, j in mapping.values()])
         return np.hstack(feat)
 
-    def _sparse_finite_product(self, feat_mat):
+    @staticmethod
+    def _sparse_finite_product(feat_mat, mapping):
         """Performs feature product on a scipy.sparse.csr_matrix containing
         finite exposures."""
         feat = [feat_mat.tocsc()]
         feat.extend([(feat_mat[:, i].multiply(feat_mat[:, j]))
-                     for i, j in self.mapper.values()])
+                     for i, j in mapping.values()])
         return sps.hstack(feat).tocsr()
 
-    def _sparse_infinite_product(self, feat_mat):
+    @staticmethod
+    def _sparse_infinite_product(feat_mat, n_intervals, n_output_features):
         """Performs feature product on a scipy.sparse.csr_matrix containing
         infinite exposures."""
+        global _cpp_preprocessor
         coo = feat_mat.tocoo()
         nnz = coo.nnz
-        new_nnz = self._n_output_features * nnz
+        new_nnz = n_output_features * nnz
         new_row = np.zeros((new_nnz,), dtype="uint64")
         new_col = np.zeros((new_nnz,), dtype="uint64")
         new_data = np.zeros((new_nnz,), dtype="float64")
-        self._preprocessor.sparse_features_product(
+        _cpp_preprocessor.sparse_features_product(
             coo.row.astype("uint64"), coo.col.astype("uint64"), coo.data,
             new_row, new_col, new_data)
         return sps.csr_matrix((new_data, (new_row, new_col)),
-                              shape=(self._n_intervals,
-                                     self._n_output_features))
+                              shape=(n_intervals, n_output_features))
+
+    @staticmethod
+    def _inject_cpp_object(n_features):
+        """Creates a global instance of the CPP preprocessor object.
+
+        WARNING: to be used only as a multiprocessing.Pool initializer.
+        In multiprocessing context, each process has its own namespace, so using
+        global is not as bad as it seems. Still, it requires to proceed with
+        caution.
+        """
+        global _cpp_preprocessor
+        _cpp_preprocessor = SparseLongitudinalFeaturesProduct(n_features)
+
+    def _reset(self):
+        """Resets the object its initial construction state."""
+        self._set("_n_init_features", None)
+        self._set("_n_output_features", None)
+        self._set("_n_intervals", None)
+        self._set("_mapping", {})
+        self._set("_fitted", False)
+
+    @property
+    def mapping(self):
+        """Get the mapping between the feature products and column indexes.
+
+        Returns
+        -------
+        output : `dict`
+            The column index - feature mapping.
+        """
+        if not self._fitted:
+            raise ValueError(
+                "cannot get mapping if object has not been fitted.")
+        return deepcopy(self._mapping)
+
+    @property
+    def exposure_type(self):
+        return self._exposure_type
+
+    @exposure_type.setter
+    def exposure_type(self, value):
+        if value not in ['infinite', 'finite']:
+            raise ValueError("exposure_type should be either 'finite' or "
+                             "'infinite'")
+        self._set('_exposure_type', value)

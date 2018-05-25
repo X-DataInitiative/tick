@@ -2,6 +2,7 @@
 
 from abc import ABC, abstractmethod
 from tick.base import Base
+from multiprocessing import cpu_count
 
 
 class LongitudinalPreprocessor(ABC, Base):
@@ -14,9 +15,14 @@ class LongitudinalPreprocessor(ABC, Base):
         set to the number of cores.
     """
 
-    def __init__(self, n_jobs=-1):
+    _attrinfos = {'n_jobs': {'writable': True}}
+
+    def __init__(self, n_jobs=1):
         Base.__init__(self)
-        self.n_jobs = n_jobs
+        if n_jobs == -1:
+            self.n_jobs = cpu_count()
+        else:
+            self.n_jobs = n_jobs
 
     @abstractmethod
     def fit(self, features, labels, censoring) -> None:

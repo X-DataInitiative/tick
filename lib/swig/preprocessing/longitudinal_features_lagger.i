@@ -4,24 +4,25 @@
 #include "tick/preprocessing/longitudinal_features_lagger.h"
 %}
 
+%include serialization.i
+
 class LongitudinalFeaturesLagger {
 
  public:
-  LongitudinalFeaturesLagger(const SBaseArrayDouble2dPtrList1D &features,
-                             const SArrayULongPtr n_lags);
+  // This exists soley for cereal/swig
+  LongitudinalFeaturesLagger();
+
+  LongitudinalFeaturesLagger(ulong n_intervals,
+                             SArrayULongPtr n_lags);
 
   void dense_lag_preprocessor(ArrayDouble2d &features,
                               ArrayDouble2d &out,
                               ulong censoring) const;
 
-  void sparse_lag_preprocessor(ArrayULong &row,
-                               ArrayULong &col,
-                               ArrayDouble &data,
-                               ArrayULong &out_row,
-                               ArrayULong &out_col,
-                               ArrayDouble &out_data,
+  void sparse_lag_preprocessor(ArrayULong &row, ArrayULong &col,
+                               ArrayDouble &data, ArrayULong &out_row,
+                               ArrayULong &out_col, ArrayDouble &out_data,
                                ulong censoring) const;
-
 };
 
 TICK_MAKE_PICKLABLE(LongitudinalFeaturesLagger);

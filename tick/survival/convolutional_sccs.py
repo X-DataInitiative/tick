@@ -355,7 +355,8 @@ class ConvSCCS(ABC, Base):
             features, labels, censoring)
         # split the data with stratified KFold
         kf = StratifiedKFold(n_folds, shuffle, self.random_state)
-        labels_interval = np.nonzero(p_labels)[1]
+        # labels_interval = np.nonzero(p_labels)[1]
+        labels_interval = [np.nonzero(arr)[0][0] for arr in p_labels]
 
         # Training loop
         model_global_parameters = {

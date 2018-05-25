@@ -3,10 +3,13 @@
 import numpy as np
 import scipy.sparse as sps
 from tick.preprocessing.base import LongitudinalPreprocessor
-from .build.preprocessing import LongitudinalFeaturesLagger\
+from tick.preprocessing.build.preprocessing import LongitudinalFeaturesLagger\
     as _LongitudinalFeaturesLagger
-from .utils import check_longitudinal_features_consistency,\
+from tick.preprocessing.utils import check_longitudinal_features_consistency,\
     check_censoring_consistency
+from multiprocessing.pool import Pool
+from copy import deepcopy
+from functools import partial, partialmethod
 
 
 class LongitudinalFeaturesLagger(LongitudinalPreprocessor):
@@ -75,9 +78,6 @@ class LongitudinalFeaturesLagger(LongitudinalPreprocessor):
         "_n_intervals": {
             "writable": False
         },
-        "_cpp_preprocessor": {
-            "writable": False
-        },
         "_fitted": {
             "writable": False
         }
@@ -92,7 +92,6 @@ class LongitudinalFeaturesLagger(LongitudinalPreprocessor):
         self._n_init_features = None
         self._n_output_features = None
         self._n_intervals = None
-        self._cpp_preprocessor = None
         self._fitted = False
 
     def _reset(self):
@@ -100,7 +99,6 @@ class LongitudinalFeaturesLagger(LongitudinalPreprocessor):
         self._set("_n_init_features", None)
         self._set("_n_output_features", None)
         self._set("_n_intervals", None)
-        self._set("_cpp_preprocessor", None)
         self._set("_fitted", False)
 
     def fit(self, features, labels=None, censoring=None):
@@ -137,10 +135,7 @@ class LongitudinalFeaturesLagger(LongitudinalPreprocessor):
         self._set("_n_init_features", n_init_features)
         self._set("_n_intervals", n_intervals)
         self._set("_n_output_features", int((self.n_lags + 1).sum()))
-        self._set("_cpp_preprocessor",
-                  _LongitudinalFeaturesLagger(features, self.n_lags))
         self._set("_fitted", True)
-
         return self
 
     def transform(self, features, labels=None, censoring=None):
@@ -166,7 +161,6 @@ class LongitudinalFeaturesLagger(LongitudinalPreprocessor):
         output : `[numpy.ndarrays]`  or `[csr_matrices]`, shape=(n_intervals, n_features)
             The list of features matrices with added lagged features.
         """
-
         n_samples = len(features)
         if censoring is None:
             censoring = np.full((n_samples,), self._n_intervals,
@@ -175,36 +169,57 @@ class LongitudinalFeaturesLagger(LongitudinalPreprocessor):
         base_shape = (self._n_intervals, self._n_init_features)
         features = check_longitudinal_features_consistency(
             features, base_shape, "float64")
-        if sps.issparse(features[0]):
-            X_with_lags = [
-                self._sparse_lagger(x, int(censoring[i]))
-                for i, x in enumerate(features)
-            ]
-            # TODO: Don't get why int() is required here as censoring_i is uint64
-        else:
-            X_with_lags = [
-                self._dense_lagger(x, int(censoring[i]))
-                for i, x in enumerate(features)
-            ]
+
+        initializer = partial(self._inject_cpp_object,
+                              n_intervals=self._n_intervals,
+                              n_lags=self.n_lags)
+        callback = self._sparse_lagger if sps.issparse(features[0]) \
+            else self._dense_lagger
+        callback = partial(callback, n_intervals=self._n_intervals,
+                           n_output_features=self._n_output_features,
+                           n_lags=self.n_lags)
+
+        with Pool(self.n_jobs, initializer=initializer) as pool:
+            X_with_lags = pool.starmap(callback, zip(features, censoring))
 
         return X_with_lags, labels, censoring
 
-    def _dense_lagger(self, feature_matrix, censoring_i):
-        output = np.zeros((self._n_intervals, self._n_output_features),
-                          dtype="float64")
-        self._cpp_preprocessor.dense_lag_preprocessor(feature_matrix, output,
-                                                      censoring_i)
+    @staticmethod
+    def _inject_cpp_object(n_intervals, n_lags):
+        """Creates a global instance of the CPP preprocessor object.
+
+        WARNING: to be used only as a multiprocessing.Pool initializer.
+        In multiprocessing context, each process has its own namespace, so using
+        global is not as bad as it seems. Still, it requires to proceed with
+        caution.
+        """
+        global _cpp_preprocessor
+        _cpp_preprocessor = _LongitudinalFeaturesLagger(n_intervals, n_lags)
+
+    @staticmethod
+    def _dense_lagger(feature_matrix, censoring_i, n_intervals,
+                      n_output_features, n_lags):
+        """Creates a lagged version of a dense matrixrepresenting longitudinal
+        features."""
+        global _cpp_preprocessor
+        output = np.zeros((n_intervals, n_output_features), dtype="float64")
+        _cpp_preprocessor.dense_lag_preprocessor(feature_matrix, output,
+                                                 int(censoring_i))
         return output
 
-    def _sparse_lagger(self, feature_matrix, censoring_i):
+    @staticmethod
+    def _sparse_lagger(feature_matrix, censoring_i, n_intervals,
+                       n_output_features, n_lags):
+        """Creates a lagged version of a sparse matrix representing longitudinal
+        features."""
+        global _cpp_preprocessor
         coo = feature_matrix.tocoo()
-        estimated_nnz = coo.nnz * int((self.n_lags + 1).sum())
+        estimated_nnz = coo.nnz * int((n_lags + 1).sum())
         out_row = np.zeros((estimated_nnz,), dtype="uint64")
         out_col = np.zeros((estimated_nnz,), dtype="uint64")
         out_data = np.zeros((estimated_nnz,), dtype="float64")
-        self._cpp_preprocessor.sparse_lag_preprocessor(
+        _cpp_preprocessor.sparse_lag_preprocessor(
             coo.row.astype("uint64"), coo.col.astype("uint64"), coo.data,
-            out_row, out_col, out_data, censoring_i)
+            out_row, out_col, out_data, int(censoring_i))
         return sps.csr_matrix((out_data, (out_row, out_col)),
-                              shape=(self._n_intervals,
-                                     self._n_output_features))
+                              shape=(n_intervals, n_output_features))
