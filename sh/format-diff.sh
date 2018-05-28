@@ -9,13 +9,15 @@ DIRS=(lib/include lib/cpp lib/cpp-test)
 
 [ -z "$CLANG_FORMAT" ] && which clang-format &> /dev/null \
                        && CLANG_FORMAT="clang-format"
-[ -z "$CLANG_FORMAT" ] && echo "clang-format not on PATH, "\
-                               "add to PATH or set CLANG_FORMAT"\ && exit 1
+[ -z "$CLANG_FORMAT" ] && echo "clang-format not on PATH, " \
+                               "add to PATH or set CLANG_FORMAT" \
+                                && exit 1
 
 [ -z "$CLANG_FORMATDIFF" ] && which clang-format-diff.py &> /dev/null \
                            && CLANG_FORMATDIFF="clang-format-diff.py"
-[ -z "$CLANG_FORMATDIFF" ] && echo "clang-format-diff.py not on PATH, "\
-                                   "add to PATH or set CLANG_FORMATDIFF" && exit 1
+[ -z "$CLANG_FORMATDIFF" ] && echo "clang-format-diff.py not on PATH, " \
+                                   "add to PATH or set CLANG_FORMATDIFF" \
+                                    && exit 1
 
 BRANCH=$(git symbolic-ref HEAD | sed -e 's,.*/\(.*\),\1,')
 

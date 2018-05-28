@@ -11,6 +11,13 @@ eval "$(pyenv init -)"
 pyenv global ${PYVER}
 pyenv local ${PYVER}
 
+python -m pip install yapf --upgrade
+python -m yapf --style tools/python/yapf.conf -i tick --recursive
+
+(( $(git diff tick | wc -l) > 0 )) && echo \
+"Python has not been formatted : Please run ./sh/format_python.sh and recommit" \
+  && exit 2
+
 python -m pip install -r requirements.txt
 
 python setup.py cpplint build_ext --inplace cpptest pytest
