@@ -26,13 +26,15 @@ def safe_array(X, dtype=np.float64):
         X = X.values
 
     if isinstance(X, np.ndarray) and not X.flags['C_CONTIGUOUS']:
-        warn('Copying array of size %s to create a C-contiguous '
-             'version of it' % str(X.shape), RuntimeWarning)
+        warn(
+            'Copying array of size %s to create a C-contiguous '
+            'version of it' % str(X.shape), RuntimeWarning)
         X = np.ascontiguousarray(X)
 
     if X.dtype != dtype:
-        warn('Copying array of size %s to convert it in the right '
-             'format' % str(X.shape), RuntimeWarning)
+        warn(
+            'Copying array of size %s to convert it in the right '
+            'format' % str(X.shape), RuntimeWarning)
         X = X.astype(dtype)
 
     return X

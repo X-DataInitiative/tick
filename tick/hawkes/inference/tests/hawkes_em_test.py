@@ -72,9 +72,9 @@ class Test(unittest.TestCase):
             [[0.0246, 0.0181, 0.0027], [0.8234, 0.0275, 0.1499],
              [0.1327, 0.054, 0.0011]], decimal=3)
 
-        np.testing.assert_array_equal(em.get_kernel_supports(),
-                                      np.ones((self.n_nodes,
-                                               self.n_nodes)) * 3)
+        np.testing.assert_array_equal(
+            em.get_kernel_supports(),
+            np.ones((self.n_nodes, self.n_nodes)) * 3)
 
     def test_hawkes_em_score(self):
         """...Test score (ie. likelihood) function of Hawkes EM
@@ -135,20 +135,18 @@ class Test(unittest.TestCase):
                 em_train_score = em.score()
             else:
                 em_train_score = em.score(train_events, end_times=end_times)
-            self.assertAlmostEqual(em_train_score,
-                                   approximate_likelihood(
-                                       em, train_events, end_times,
-                                       2), delta=1e-1,
-                                   msg='Failed on train for {}'.format(kwargs))
+            self.assertAlmostEqual(
+                em_train_score,
+                approximate_likelihood(em, train_events, end_times, 2),
+                delta=1e-1, msg='Failed on train for {}'.format(kwargs))
 
             # Score on test data
             em_test_score = em.score(events=test_events)
             test_end_times = max(map(max, test_events))
-            self.assertAlmostEqual(em_test_score,
-                                   approximate_likelihood(
-                                       em, test_events, test_end_times,
-                                       4), delta=1e-3,
-                                   msg='Failed on test for {}'.format(kwargs))
+            self.assertAlmostEqual(
+                em_test_score,
+                approximate_likelihood(em, test_events, test_end_times, 4),
+                delta=1e-3, msg='Failed on test for {}'.format(kwargs))
 
     def test_hawkes_em_kernel_support(self):
         """...Test that Hawkes em kernel support parameter is correctly

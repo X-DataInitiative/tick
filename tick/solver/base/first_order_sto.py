@@ -228,7 +228,8 @@ class SolverFirstOrderSto(SolverFirstOrder, SolverSto):
 
         import tick.base.dtype_to_cpp_type
         new_solver = tick.base.dtype_to_cpp_type.copy_with(
-          self, ["prox", "model", "_solver"]  # ignore on deepcopy
+            self,
+            ["prox", "model", "_solver"]  # ignore on deepcopy
         )
         new_solver._set_cpp_solver(dtype_or_object_with_dtype)
         new_solver.set_model(self.model.astype(new_solver.dtype))

@@ -26,6 +26,7 @@ class GDTest(object):
     def test_gd_dtype_can_change(self):
         """...Test gd astype method
         """
+
         def create_solver():
             return GD(max_iter=100, verbose=False, step=0.1)
 

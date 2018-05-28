@@ -134,8 +134,8 @@ class SGD(SolverFirstOrderSto):
 
     def _set_cpp_solver(self, dtype_or_object_with_dtype):
         self.dtype = self._extract_dtype(dtype_or_object_with_dtype)
-        solver_class = self._get_typed_class(
-            dtype_or_object_with_dtype, dtype_class_mapper)
+        solver_class = self._get_typed_class(dtype_or_object_with_dtype,
+                                             dtype_class_mapper)
 
         # Type mapping None to unsigned long and double does not work...
         step = self.step
@@ -145,5 +145,7 @@ class SGD(SolverFirstOrderSto):
         if epoch_size is None:
             epoch_size = 0
 
-        self._set('_solver', solver_class(
-            epoch_size, self.tol, self._rand_type, step, self.seed))
+        self._set(
+            '_solver',
+            solver_class(epoch_size, self.tol, self._rand_type, step,
+                         self.seed))

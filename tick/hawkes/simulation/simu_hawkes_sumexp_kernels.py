@@ -128,10 +128,10 @@ class SimuHawkesSumExpKernels(SimuHawkes):
         n_decays = decays.shape[0]
 
         if adjacency.shape != (n_nodes, n_nodes, n_decays):
-            raise ValueError("adjacency matrix shape should be %s but its "
-                             "shape is %s" % (str((n_nodes, n_nodes,
-                                                   n_decays)),
-                                              str(adjacency.shape)))
+            raise ValueError(
+                "adjacency matrix shape should be %s but its "
+                "shape is %s" % (str(
+                    (n_nodes, n_nodes, n_decays)), str(adjacency.shape)))
 
         self.adjacency = adjacency
         self.decays = decays

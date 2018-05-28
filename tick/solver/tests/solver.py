@@ -197,9 +197,8 @@ class TestSolver(unittest.TestCase):
                 else:
                     iterate_dense = solver.solve()
 
-            error_msg = 'Failed for %s and %s solved with %s' % (model.name,
-                                                                 prox.name,
-                                                                 solver.name)
+            error_msg = 'Failed for %s and %s solved with %s' % (
+                model.name, prox.name, solver.name)
 
             if fit_intercept:
                 error_msg += ' with intercept'
@@ -223,8 +222,7 @@ class TestSolver(unittest.TestCase):
 
         use_intercept = True
         y_64, X_64, coeffs0_64, interc0 = self.generate_logistic_data(
-            100, 30, 'float64', use_intercept
-        )
+            100, 30, 'float64', use_intercept)
 
         model_64 = ModelLogReg(fit_intercept=use_intercept)
         model_64.fit(X_64, y_64)
@@ -240,7 +238,6 @@ class TestSolver(unittest.TestCase):
 
         np.testing.assert_array_almost_equal(solution_32, solution_64,
                                              decimal=3)
-
 
     def test_set_model_and_set_prox(self):
         np.random.seed(12)

@@ -45,14 +45,15 @@ class GDBTest(object):
         # Finally we assert that both algorithms lead to the same solution
         np.testing.assert_almost_equal(gfb_solution, agd_solution, decimal=1)
 
-
     def test_gfb_dtype_can_change(self):
         """...Test gfb astype method
         """
+
         def create_solver():
             return GFB(max_iter=100, verbose=False, step=0.1)
 
         self._test_solver_astype_consistency(create_solver)
+
 
 class GDBTestFloat32(TestSolver, GDBTest):
     def __init__(self, *args, **kwargs):

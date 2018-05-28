@@ -279,8 +279,9 @@ class Test(unittest.TestCase):
             # one following
             following_samples_are_different = \
                 np.prod(np.linalg.norm(samples[:-1] - samples[1:], axis=1) > 0)
-            self.assertEqual(following_samples_are_different, 1,
-                             "Two samples generated in parallel are identical")
+            self.assertEqual(
+                following_samples_are_different, 1,
+                "Two samples generated in parallel are identical")
 
             # We check that our generated samples are not correlated
             for (i, sample_i), (j, sample_j) in \

@@ -95,8 +95,8 @@ class ProxSlopeTest(object):
                                        decimal=self.decimal_places)
 
         strength = 2.5
-        prox = ProxSlope(strength=strength, range=(300, 3000)).astype(
-            self.dtype)
+        prox = ProxSlope(strength=strength, range=(300,
+                                                   3000)).astype(self.dtype)
         prox.value(y)
         prox.strength = 20
         size = prox.range[1] - prox.range[0]

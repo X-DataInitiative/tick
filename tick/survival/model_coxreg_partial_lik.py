@@ -138,8 +138,9 @@ class ModelCoxRegPartialLik(ModelFirstOrder):
         self._set("censoring", censoring)
         self._set("n_samples", n_samples)
         self._set("n_features", n_features)
-        self._set("_model", dtype_class_mapper[self.dtype](
-            self.features, self.times, self.censoring))
+        self._set(
+            "_model", dtype_class_mapper[self.dtype](self.features, self.times,
+                                                     self.censoring))
 
     def _grad(self, coeffs: np.ndarray, out: np.ndarray) -> None:
         self._model.grad(coeffs, out)

@@ -142,8 +142,8 @@ class SimuHawkes(SimuPointProcess):
 
         if kernels is not None:
             if kernels.shape != (self.n_nodes, self.n_nodes):
-                raise ValueError("kernels shape should be %s instead of %s" %
-                                 ((self.n_nodes, self.n_nodes), kernels.shape))
+                raise ValueError("kernels shape should be %s instead of %s" % (
+                    (self.n_nodes, self.n_nodes), kernels.shape))
             self.kernels = kernels
             self._init_kernels()
         else:

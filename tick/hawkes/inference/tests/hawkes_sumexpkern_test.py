@@ -135,10 +135,10 @@ class Test(InferenceTest):
                 learner.fit(events, start=start)
                 adjacency_error = Test.estimation_error(
                     learner.adjacency, adjacency)
-                self.assertLess(adjacency_error, initial_adjacency_error * 0.8,
-                                "solver %s with penalty %s "
-                                "reached too high baseline error" % (solver,
-                                                                     penalty))
+                self.assertLess(
+                    adjacency_error, initial_adjacency_error * 0.8,
+                    "solver %s with penalty %s "
+                    "reached too high baseline error" % (solver, penalty))
 
     def test_HawkesSumExpKern_score(self):
         """...Test HawkesSumExpKern score method

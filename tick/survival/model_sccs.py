@@ -95,9 +95,10 @@ class ModelSCCS(ModelFirstOrder, ModelLipschitz):
         ModelFirstOrder.fit(self, features, labels, censoring)
         ModelLipschitz.fit(self, features, labels)
 
-        self._set("_model",
-                  _ModelSCCS(features=self.features, labels=self.labels,
-                             censoring=self.censoring, n_lags=self.n_lags))
+        self._set(
+            "_model",
+            _ModelSCCS(features=self.features, labels=self.labels,
+                       censoring=self.censoring, n_lags=self.n_lags))
 
         self.dtype = features[0].dtype
         return self

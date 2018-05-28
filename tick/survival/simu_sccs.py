@@ -333,10 +333,11 @@ class SimuSCCS(Simu):
                 for i, j in comb:
                     adjacency[i, j] = np.random.random(1)
 
-            self._set('hawkes_exp_kernels',
-                      SimuHawkesExpKernels(adjacency=adjacency, decays=decays,
-                                           baseline=baseline, verbose=False,
-                                           seed=self.seed))
+            self._set(
+                'hawkes_exp_kernels',
+                SimuHawkesExpKernels(adjacency=adjacency, decays=decays,
+                                     baseline=baseline, verbose=False,
+                                     seed=self.seed))
 
         self.hawkes_exp_kernels.adjust_spectral_radius(
             .1)  # TODO later: allow to change this parameter

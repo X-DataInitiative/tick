@@ -45,8 +45,8 @@ class ProxL1wTest(object):
             prox.call(coeffs, step=t), out, decimal=self.decimal_places)
 
         weights = np.arange(coeffs.shape[0], dtype=np.double)[3:8]
-        prox = ProxL1w(l_l1, weights, range=(3, 8), positive=True).astype(
-            self.dtype)
+        prox = ProxL1w(l_l1, weights, range=(3, 8),
+                       positive=True).astype(self.dtype)
         thresh = t * l_l1 * weights
         out = coeffs.copy()
         out[3:8] = np.sign(sub_coeffs) \

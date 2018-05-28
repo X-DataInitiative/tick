@@ -23,8 +23,8 @@ class Test(unittest.TestCase):
         self.assertTrue(str(obj) == str(pickled))
         self.assertEqual(obj.get_support(), pickled.get_support())
         np.testing.assert_array_equal(
-            obj.get_values(self.random_times), obj.get_values(
-                self.random_times))
+            obj.get_values(self.random_times),
+            obj.get_values(self.random_times))
 
     def test_HawkesKernelExp_pickle(self):
         """...Test pickling ability of HawkesKernelExp
@@ -36,8 +36,8 @@ class Test(unittest.TestCase):
         self.assertEqual(obj.decay, pickled.decay)
         self.assertEqual(obj.intensity, pickled.intensity)
         np.testing.assert_array_equal(
-            obj.get_values(self.random_times), obj.get_values(
-                self.random_times))
+            obj.get_values(self.random_times),
+            obj.get_values(self.random_times))
 
     def test_HawkesKernelSumExp_pickle(self):
         """...Test pickling ability of HawkesKernelSumExp
@@ -51,8 +51,8 @@ class Test(unittest.TestCase):
         self.assertTrue(np.array_equal(obj.decays, pickled.decays))
         self.assertTrue(np.array_equal(obj.intensities, pickled.intensities))
         np.testing.assert_array_equal(
-            obj.get_values(self.random_times), obj.get_values(
-                self.random_times))
+            obj.get_values(self.random_times),
+            obj.get_values(self.random_times))
 
     def test_HawkesKernelPowerLaw_pickle(self):
         """...Test pickling ability of HawkesKernelPowerLaw
@@ -62,8 +62,8 @@ class Test(unittest.TestCase):
 
         self.assertTrue(str(obj) == str(pickled))
         np.testing.assert_array_equal(
-            obj.get_values(self.random_times), obj.get_values(
-                self.random_times))
+            obj.get_values(self.random_times),
+            obj.get_values(self.random_times))
 
     def test_HawkesKernelTimeFunc_pickle(self):
         """...Test pickling ability of HawkesKernelTimeFunc
@@ -85,8 +85,8 @@ class Test(unittest.TestCase):
         self.assertEqual(
             obj.time_function.value(0.75), pickled.time_function.value(0.75))
         np.testing.assert_array_equal(
-            obj.get_values(self.random_times), obj.get_values(
-                self.random_times))
+            obj.get_values(self.random_times),
+            obj.get_values(self.random_times))
 
 
 if __name__ == "__main__":

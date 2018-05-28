@@ -30,11 +30,11 @@ class ProxElasticNetTest(object):
         prox_l2.call(out, t, out)
         assert_almost_equal(prox_enet.call(coeffs, step=t), out, decimal=10)
 
-        prox_enet = ProxElasticNet(l_enet, ratio=ratio, positive=True).astype(
-            self.dtype)
+        prox_enet = ProxElasticNet(l_enet, ratio=ratio,
+                                   positive=True).astype(self.dtype)
         prox_l1 = ProxL1(ratio * l_enet, positive=True).astype(self.dtype)
-        prox_l2 = ProxL2Sq((1 - ratio) * l_enet, positive=True).astype(
-            self.dtype)
+        prox_l2 = ProxL2Sq((1 - ratio) * l_enet,
+                           positive=True).astype(self.dtype)
 
         self.assertAlmostEqual(
             prox_enet.value(coeffs),
@@ -50,9 +50,11 @@ class ProxElasticNetTestFloat32(TestProx, ProxElasticNetTest):
     def __init__(self, *args, **kwargs):
         TestProx.__init__(self, *args, dtype="float32", **kwargs)
 
+
 class ProxElasticNetTestFloat64(TestProx, ProxElasticNetTest):
     def __init__(self, *args, **kwargs):
         TestProx.__init__(self, *args, dtype="float64", **kwargs)
+
 
 if __name__ == '__main__':
     unittest.main()

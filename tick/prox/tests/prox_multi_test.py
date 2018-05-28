@@ -20,15 +20,15 @@ class ProxMultiTest(object):
         l_tv = 0.5
         t = 1.7
         prox_tv = ProxTV(strength=l_tv).astype(self.dtype)
-        prox_tv_multi = ProxTV(strength=l_tv, range=(0, half_size)).astype(
-            self.dtype)
+        prox_tv_multi = ProxTV(strength=l_tv,
+                               range=(0, half_size)).astype(self.dtype)
 
         l_enet = 3e-2
         ratio = .3
         prox_enet = ProxElasticNet(l_enet, ratio=ratio).astype(self.dtype)
         prox_enet_multi = ProxElasticNet(l_enet, ratio=ratio,
-                                         range=(half_size, full_size)).astype(
-                                             self.dtype)
+                                         range=(half_size,
+                                                full_size)).astype(self.dtype)
 
         prox_multi = ProxMulti((prox_tv_multi, prox_enet_multi))
 
@@ -50,8 +50,8 @@ class ProxMultiTest(object):
         end1 = 13
         start2 = 10
         end2 = 17
-        prox_tv = ProxTV(strength=l_tv, range=(start1, end1)).astype(
-            self.dtype)
+        prox_tv = ProxTV(strength=l_tv, range=(start1,
+                                               end1)).astype(self.dtype)
         prox_enet = ProxElasticNet(strength=l_enet, ratio=ratio,
                                    range=(start2, end2)).astype(self.dtype)
         prox_multi = ProxMulti((prox_tv, prox_enet))

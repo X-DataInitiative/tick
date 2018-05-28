@@ -180,12 +180,12 @@ class BaseMeta(ABCMeta):
                 if set_in_init:
                     base_setter(self, val)
                 else:
-                    raise AttributeError("%s is readonly in %s" %
-                                         (str(attr_name), class_name))
+                    raise AttributeError(
+                        "%s is readonly in %s" % (str(attr_name), class_name))
 
         def deletter(self):
-            raise AttributeError("can't delete %s in %s" % (str(attr_name),
-                                                            class_name))
+            raise AttributeError(
+                "can't delete %s in %s" % (str(attr_name), class_name))
 
         # We set doc to None otherwise it will interfere with
         # the docstring of the class.
@@ -529,9 +529,9 @@ class Base(metaclass=BaseMeta):
                     ])
 
                     # We copy property and add the doc found in docstring
-                    setattr(self.__class__, attr_name,
-                            property(prop.fget, prop.fset, prop.fdel,
-                                     prop_doc))
+                    setattr(
+                        self.__class__, attr_name,
+                        property(prop.fget, prop.fset, prop.fdel, prop_doc))
 
     @staticmethod
     def _get_now():

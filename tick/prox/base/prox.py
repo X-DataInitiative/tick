@@ -4,7 +4,6 @@ import numpy as np
 from abc import ABC, abstractmethod
 from tick.base import Base
 
-
 deep_copy_ignore_fields = ["_prox"]
 
 
@@ -119,10 +118,11 @@ class Prox(ABC, Base):
     def astype(self, dtype_or_object_with_dtype):
         import tick.base.dtype_to_cpp_type
         new_prox = tick.base.dtype_to_cpp_type.copy_with(
-          self, ["_prox"] # ignore _prox on deepcopy
+            self,
+            ["_prox"]  # ignore _prox on deepcopy
         )
         new_prox._set('_prox',
-            new_prox._build_cpp_prox(dtype_or_object_with_dtype))
+                      new_prox._build_cpp_prox(dtype_or_object_with_dtype))
         return new_prox
 
     def _build_cpp_prox(self, dtype):

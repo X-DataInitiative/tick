@@ -127,6 +127,7 @@ class SDCATest(object):
     def test_sdca_dtype_can_change(self):
         """...Test sdca astype method
         """
+
         def create_solver():
             return SDCA(l_l2sq=0.1, max_iter=100, verbose=False,
                         seed=TestSolver.sto_seed)

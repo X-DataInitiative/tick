@@ -208,7 +208,8 @@ class SolverFirstOrder(Solver):
 
         import tick.base.dtype_to_cpp_type
         new_solver = tick.base.dtype_to_cpp_type.copy_with(
-          self, ["prox", "model"]  # ignore on deepcopy
+            self,
+            ["prox", "model"]  # ignore on deepcopy
         )
         new_solver.dtype = tick.base.dtype_to_cpp_type.extract_dtype(
             dtype_or_object_with_dtype)

@@ -135,9 +135,9 @@ class Model(ABC, Base):
         if not self._fitted:
             raise ValueError("call ``fit`` before using ``loss``")
         if coeffs.shape[0] != self.n_coeffs:
-            raise ValueError(("``coeffs`` has size %i while the model" +
-                              " expects %i coefficients") % (len(coeffs),
-                                                             self.n_coeffs))
+            raise ValueError(
+                ("``coeffs`` has size %i while the model" +
+                 " expects %i coefficients") % (len(coeffs), self.n_coeffs))
         self._inc_attr(N_CALLS_LOSS)
         self._inc_attr(PASS_OVER_DATA, step=self.pass_per_operation[LOSS])
 
@@ -159,10 +159,11 @@ class Model(ABC, Base):
     def astype(self, dtype_or_object_with_dtype):
         import tick.base.dtype_to_cpp_type
         new_model = tick.base.dtype_to_cpp_type.copy_with(
-          self, ["_model"]  # ignore _model on deepcopy
+            self,
+            ["_model"]  # ignore _model on deepcopy
         )
         new_model._set('_model',
-            new_model._build_cpp_model(dtype_or_object_with_dtype))
+                       new_model._build_cpp_model(dtype_or_object_with_dtype))
         return new_model
 
     def _build_cpp_model(self, dtype: str):

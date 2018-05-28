@@ -67,13 +67,13 @@ class ModelSecondOrder(ModelFirstOrder):
             raise Exception(
                 "Must must fit data before calling ``hessian_norm`` ")
         if len(coeffs) != self.n_coeffs:
-            raise ValueError(("``coeffs`` has size %i while the model" +
-                              "expects %i coefficients") % (len(coeffs),
-                                                            self.n_coeffs))
+            raise ValueError(
+                ("``coeffs`` has size %i while the model" +
+                 "expects %i coefficients") % (len(coeffs), self.n_coeffs))
         if len(point) != self.n_coeffs:
-            raise ValueError(("``point`` has size %i while the model" +
-                              "expects %i coefficients") % (len(coeffs),
-                                                            self.n_coeffs))
+            raise ValueError(
+                ("``point`` has size %i while the model" +
+                 "expects %i coefficients") % (len(coeffs), self.n_coeffs))
         self._inc_attr(N_CALLS_HESSIAN_NORM)
         self._inc_attr(PASS_OVER_DATA,
                        step=self.pass_per_operation[HESSIAN_NORM])
