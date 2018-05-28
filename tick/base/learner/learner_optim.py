@@ -389,8 +389,9 @@ class LearnerOptim(ABC, Base):
         if self.penalty == 'elasticnet':
             self._prox_obj.ratio = val
         else:
-            warn('Penalty "%s" has no elastic_net_ratio attribute' %
-                 self.penalty, RuntimeWarning)
+            warn(
+                'Penalty "%s" has no elastic_net_ratio attribute' %
+                self.penalty, RuntimeWarning)
 
     @property
     def blocks_start(self):
@@ -442,8 +443,9 @@ class LearnerOptim(ABC, Base):
         if self.solver == 'sdca':
             self._solver_obj.l_l2sq = val
         else:
-            warn('Solver "%s" has no sdca_ridge_strength attribute' %
-                 self.solver, RuntimeWarning)
+            warn(
+                'Solver "%s" has no sdca_ridge_strength attribute' %
+                self.solver, RuntimeWarning)
 
     @staticmethod
     def _safe_array(X, dtype="float64"):

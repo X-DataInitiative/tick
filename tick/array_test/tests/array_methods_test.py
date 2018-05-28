@@ -183,8 +183,8 @@ class Test(unittest.TestCase):
                 array_types_1d, array_types_1d):
             test_arrays_1 = self._test_arrays(array_type_1)
             test_arrays_2 = self._test_arrays(array_type_2)
-            test_func = getattr(test, "test_dot_%s_%s" % (array_type_1,
-                                                          array_type_2))
+            test_func = getattr(
+                test, "test_dot_%s_%s" % (array_type_1, array_type_2))
             for test_array_1, test_array_2 in itertools.product(
                     test_arrays_1, test_arrays_2):
                 compare_array_1 = Test.cast_1d_array_to_1d_dense(test_array_1)

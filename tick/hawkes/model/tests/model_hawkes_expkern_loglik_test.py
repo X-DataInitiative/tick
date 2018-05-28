@@ -143,8 +143,8 @@ class Test(unittest.TestCase):
 
         model_change_decay.decay = self.decay
 
-        self.assertNotEqual(loss_old_decay, model_change_decay.loss(
-            self.coeffs))
+        self.assertNotEqual(loss_old_decay,
+                            model_change_decay.loss(self.coeffs))
 
         self.assertEqual(
             self.model_list.loss(self.coeffs),

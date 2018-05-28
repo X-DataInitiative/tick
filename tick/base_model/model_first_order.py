@@ -97,9 +97,9 @@ class ModelFirstOrder(Model):
             raise ValueError("call ``fit`` before using ``grad``")
 
         if coeffs.shape[0] != self.n_coeffs:
-            raise ValueError(("``coeffs`` has size %i while the model" +
-                              " expects %i coefficients") % (len(coeffs),
-                                                             self.n_coeffs))
+            raise ValueError(
+                ("``coeffs`` has size %i while the model" +
+                 " expects %i coefficients") % (len(coeffs), self.n_coeffs))
 
         if out is not None:
             grad = out
@@ -156,9 +156,9 @@ class ModelFirstOrder(Model):
             raise ValueError("call ``fit`` before using " "``loss_and_grad``")
 
         if coeffs.shape[0] != self.n_coeffs:
-            raise ValueError(("``coeffs`` has size %i while the model" +
-                              "expects %i coefficients") % (len(coeffs),
-                                                            self.n_coeffs))
+            raise ValueError(
+                ("``coeffs`` has size %i while the model" +
+                 "expects %i coefficients") % (len(coeffs), self.n_coeffs))
         if out is not None:
             grad = out
         else:

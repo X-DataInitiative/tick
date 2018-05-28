@@ -211,7 +211,8 @@ class SVRGTest(object):
 
         # Crazy prox examples
         proxs = [
-            ProxTV(strength=1e-2, range=(5, 13), positive=True).astype(self.dtype),
+            ProxTV(strength=1e-2, range=(5, 13),
+                   positive=True).astype(self.dtype),
             ProxElasticNet(strength=1e-2, ratio=0.9).astype(self.dtype),
             ProxEquality(range=(0, n_features)).astype(self.dtype),
             ProxL1(strength=1e-3, range=(5, 17)).astype(self.dtype),
@@ -262,16 +263,16 @@ class SVRGTest(object):
 
         # This test is very unstable...
         # self._test_solver_sparse_and_dense_consistency(create_solver)
-        
+
     def test_svrg_dtype_can_change(self):
         """...Test svrg astype method
         """
+
         def create_solver():
             return SVRG(tol=1e-13, step=0.1, max_iter=1000,
                         seed=TestSolver.sto_seed, verbose=False)
 
         self._test_solver_astype_consistency(create_solver)
-
 
 
 class SVRGTestFloat32(TestSolver, SVRGTest):

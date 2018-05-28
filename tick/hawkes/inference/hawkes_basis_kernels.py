@@ -234,10 +234,10 @@ class HawkesBasisKernels(LearnerHawkesNoParam):
             self._set("baseline", baseline_start.copy())
 
         if amplitudes_start is None:
-            self._set("amplitudes",
-                      np.random.uniform(0.5, 0.9,
-                                        size=(self.n_nodes, self.n_nodes,
-                                              self.n_basis)))
+            self._set(
+                "amplitudes",
+                np.random.uniform(
+                    0.5, 0.9, size=(self.n_nodes, self.n_nodes, self.n_basis)))
         else:
             self._set("amplitudes", amplitudes_start.copy())
 
@@ -248,9 +248,10 @@ class HawkesBasisKernels(LearnerHawkesNoParam):
         else:
             self._set("basis_kernels", basis_kernels_start.copy())
 
-        self._set('_amplitudes_2d',
-                  self.amplitudes.reshape((self.n_nodes,
-                                           self.n_nodes * self.n_basis)))
+        self._set(
+            '_amplitudes_2d',
+            self.amplitudes.reshape((self.n_nodes,
+                                     self.n_nodes * self.n_basis)))
 
         for i in range(self.max_iter + 1):
             prev_baseline = self.baseline.copy()

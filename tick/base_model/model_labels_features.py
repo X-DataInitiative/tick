@@ -57,7 +57,6 @@ class ModelLabelsFeatures(Model):
         self.n_features = None
         self.n_samples = None
 
-
     def fit(self, features: np.ndarray, labels: np.ndarray) -> Model:
         """Set the data into the model object
 
@@ -95,7 +94,8 @@ class ModelLabelsFeatures(Model):
     def astype(self, dtype_or_object_with_dtype):
         import tick.base.dtype_to_cpp_type
         new_model = tick.base.dtype_to_cpp_type.copy_with(
-          self, ["_model", "features", "labels"]  # ignore on deepcopy
+            self,
+            ["_model", "features", "labels"]  # ignore on deepcopy
         )
         new_dtype = tick.base.dtype_to_cpp_type.extract_dtype(
             dtype_or_object_with_dtype)
@@ -104,7 +104,7 @@ class ModelLabelsFeatures(Model):
         if self.labels is not None:
             new_model._set('labels', self.labels.astype(new_dtype))
         new_model._set('_model',
-            new_model._build_cpp_model(dtype_or_object_with_dtype))
+                       new_model._build_cpp_model(dtype_or_object_with_dtype))
         return new_model
 
     @property

@@ -172,15 +172,17 @@ class SDCA(SolverFirstOrderSto):
 
     def _set_cpp_solver(self, dtype_or_object_with_dtype):
         self.dtype = self._extract_dtype(dtype_or_object_with_dtype)
-        solver_class = self._get_typed_class(
-            dtype_or_object_with_dtype, dtype_class_mapper)
+        solver_class = self._get_typed_class(dtype_or_object_with_dtype,
+                                             dtype_class_mapper)
 
         epoch_size = self.epoch_size
         if epoch_size is None:
             epoch_size = 0
 
-        self._set('_solver', solver_class(
-            self.l_l2sq, epoch_size, self.tol, self._rand_type, self.seed))
+        self._set(
+            '_solver',
+            solver_class(self.l_l2sq, epoch_size, self.tol, self._rand_type,
+                         self.seed))
 
     def objective(self, coeffs, loss: float = None):
         """Compute the objective minimized by the solver at ``coeffs``

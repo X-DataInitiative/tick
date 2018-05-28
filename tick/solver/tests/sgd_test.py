@@ -29,6 +29,7 @@ class SGDTest(object):
     def test_sgd_dtype_can_change(self):
         """...Test sgd astype method
         """
+
         def create_solver():
             return SGD(max_iter=100, verbose=False, step=1e-1,
                        seed=TestSolver.sto_seed)

@@ -432,14 +432,14 @@ class Test(unittest.TestCase):
         self.assertEqual(self.a0._a0.get_cpp_int(), 15)
 
         # Test we raise correct error if setter was not a cpp method
-        with self.assertRaisesRegex(NameError,
-                                    "set_cpp_unlinked_int is not a method "
-                                    "of.*"):
+        with self.assertRaisesRegex(
+                NameError, "set_cpp_unlinked_int is not a method "
+                "of.*"):
             self.a0.cpp_unlinked_int = 3
 
-        with self.assertRaisesRegex(NameError,
-                                    "set_cpp_unlinked_int is not a method "
-                                    "of.*"):
+        with self.assertRaisesRegex(
+                NameError, "set_cpp_unlinked_int is not a method "
+                "of.*"):
             self.a0._set('cpp_unlinked_int', 3)
 
         # Test we raise correct error if _cpp_obj_name was not set

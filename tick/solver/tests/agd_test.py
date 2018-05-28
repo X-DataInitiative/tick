@@ -24,10 +24,12 @@ class AGDTest(object):
     def test_agd_dtype_can_change(self):
         """...Test agd astype method
         """
+
         def create_solver():
             return AGD(max_iter=100, verbose=False, step=0.1)
 
         self._test_solver_astype_consistency(create_solver)
+
 
 class AGDTestFloat32(TestSolver, AGDTest):
     def __init__(self, *args, **kwargs):

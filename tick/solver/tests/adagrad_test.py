@@ -20,6 +20,7 @@ class AdagradTest(object):
     def test_adagrad_dtype_can_change(self):
         """...Test adagrad astype method
         """
+
         def create_solver():
             return AdaGrad(max_iter=100, verbose=False, step=0.1,
                            seed=TestSolver.sto_seed)

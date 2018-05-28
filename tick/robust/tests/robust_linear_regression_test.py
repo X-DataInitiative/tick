@@ -84,13 +84,13 @@ class Test(InferenceTest):
 
             np.testing.assert_array_almost_equal(weights, learner.weights, 2)
             self.assertAlmostEqual(interc, learner.intercept, 2)
-            self.assertAlmostEqual(fdp_,
-                                   support_fdp(sample_intercepts0,
-                                               learner.sample_intercepts), 4)
-            self.assertAlmostEqual(power,
-                                   support_recall(sample_intercepts0,
-                                                  learner.sample_intercepts),
-                                   4)
+            self.assertAlmostEqual(
+                fdp_, support_fdp(sample_intercepts0,
+                                  learner.sample_intercepts), 4)
+            self.assertAlmostEqual(
+                power,
+                support_recall(sample_intercepts0, learner.sample_intercepts),
+                4)
 
         X, y, weights0, interc0, sample_intercepts0 = self.get_train_data(
             False)
@@ -115,13 +115,13 @@ class Test(InferenceTest):
 
             np.testing.assert_array_almost_equal(weights, learner.weights, 2)
             self.assertEqual(interc, learner.intercept)
-            self.assertAlmostEqual(fdp_,
-                                   support_fdp(sample_intercepts0,
-                                               learner.sample_intercepts), 4)
-            self.assertAlmostEqual(power,
-                                   support_recall(sample_intercepts0,
-                                                  learner.sample_intercepts),
-                                   4)
+            self.assertAlmostEqual(
+                fdp_, support_fdp(sample_intercepts0,
+                                  learner.sample_intercepts), 4)
+            self.assertAlmostEqual(
+                power,
+                support_recall(sample_intercepts0, learner.sample_intercepts),
+                4)
 
     def test_RobustLinearRegression_warm_start(self):
         """...Test RobustLinearRegression warm start
@@ -479,9 +479,8 @@ class Test(InferenceTest):
         with self.assertWarnsRegex(RuntimeWarning, msg):
             RobustLinearRegression._safe_array(self.X[::2])
 
-        np.testing.assert_array_equal(self.X,
-                                      RobustLinearRegression._safe_array(
-                                          self.X))
+        np.testing.assert_array_equal(
+            self.X, RobustLinearRegression._safe_array(self.X))
 
 
 if __name__ == "__main__":

@@ -95,9 +95,10 @@ class ModelModifiedHuber(ModelFirstOrder, ModelGeneralizedLinear,
         ModelFirstOrder.fit(self, features, labels)
         ModelGeneralizedLinear.fit(self, features, labels)
         ModelLipschitz.fit(self, features, labels)
-        self._set("_model",
-                  _ModelModifiedHuber(self.features, self.labels,
-                                      self.fit_intercept, self.n_threads))
+        self._set(
+            "_model",
+            _ModelModifiedHuber(self.features, self.labels, self.fit_intercept,
+                                self.n_threads))
         return self
 
     def _grad(self, coeffs: np.ndarray, out: np.ndarray) -> None:

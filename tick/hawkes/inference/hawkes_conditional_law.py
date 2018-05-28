@@ -1034,8 +1034,8 @@ class HawkesConditionalLaw(Base):
         # We rearrange the solution vector and compute the norms
         # Here we get phi^ij_l and the corresponding norms
         for index in range(index_first, index_last + 1):
-            y = res[(index - index_first) * n_quad:(
-                index - index_first + 1) * n_quad][:, 0]
+            y = res[(index - index_first) * n_quad:(index - index_first + 1) *
+                    n_quad][:, 0]
 
             self._phi_ijl.append((self._quad_x, y))
 
@@ -1094,9 +1094,9 @@ class HawkesConditionalLaw(Base):
                         xmin = self._mark_min[j]
                     if l == len(self.marked_components[j]) - 1:
                         xmax = self._mark_max[j]
-                    x = np.append(x,
-                                  np.arange(n) * (xmax - xmin) /
-                                  (n - 1) + xmin)
+                    x = np.append(
+                        x,
+                        np.arange(n) * (xmax - xmin) / (n - 1) + xmin)
                 self.mark_functions[i].append((x, y))
 
     def get_kernel_supports(self):

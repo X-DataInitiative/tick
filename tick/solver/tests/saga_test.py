@@ -93,8 +93,9 @@ class SAGATest(object):
     def test_saga_dtype_can_change(self):
         """...Test saga astype method
         """
+
         def create_solver():
-            return SAGA(max_iter=100, verbose=False, step=0.1,
+            return SAGA(max_iter=100, verbose=False, step=0.01,
                         seed=TestSolver.sto_seed)
 
         self._test_solver_astype_consistency(create_solver)
@@ -108,6 +109,7 @@ class SAGATestFloat32(TestSolver, SAGATest):
 class SAGATestFloat64(TestSolver, SAGATest):
     def __init__(self, *args, **kwargs):
         TestSolver.__init__(self, *args, dtype="float64", **kwargs)
+
 
 if __name__ == '__main__':
     unittest.main()

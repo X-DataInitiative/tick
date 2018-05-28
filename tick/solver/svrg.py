@@ -220,8 +220,9 @@ class SVRG(SolverFirstOrderSto):
                     val))
         if self.model is not None:
             if val == 'avg' and self.model._model.is_sparse():
-                warn("'avg' variance reduction cannot be used "
-                     "with sparse datasets", UserWarning)
+                warn(
+                    "'avg' variance reduction cannot be used "
+                    "with sparse datasets", UserWarning)
         self._solver.set_variance_reduction(
             variance_reduction_methods_mapper[val])
 
@@ -256,16 +257,17 @@ class SVRG(SolverFirstOrderSto):
         # We need to check that the setted model is not sparse when the
         # variance reduction method is 'avg'
         if self._var_red_str == 'avg' and model._model.is_sparse():
-            warn("'avg' variance reduction cannot be used with sparse "
-                 "datasets. Please change `variance_reduction` before "
-                 "passing sparse data.", UserWarning)
+            warn(
+                "'avg' variance reduction cannot be used with sparse "
+                "datasets. Please change `variance_reduction` before "
+                "passing sparse data.", UserWarning)
 
         return SolverFirstOrderSto.set_model(self, model)
 
     def _set_cpp_solver(self, dtype_or_object_with_dtype):
         self.dtype = self._extract_dtype(dtype_or_object_with_dtype)
-        solver_class = self._get_typed_class(
-            dtype_or_object_with_dtype, dtype_class_mapper)
+        solver_class = self._get_typed_class(dtype_or_object_with_dtype,
+                                             dtype_class_mapper)
 
         # Type mapping None to unsigned long and double does not work...
         step = self.step
@@ -275,9 +277,10 @@ class SVRG(SolverFirstOrderSto):
         if epoch_size is None:
             epoch_size = 0
 
-        self._set('_solver', solver_class(
-            epoch_size, self.tol, self._rand_type, step, self.seed,
-            self.n_threads))
+        self._set(
+            '_solver',
+            solver_class(epoch_size, self.tol, self._rand_type, step,
+                         self.seed, self.n_threads))
 
         self.variance_reduction = self._var_red_str
         self.step_type = self._step_type_str

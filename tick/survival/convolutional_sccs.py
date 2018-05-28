@@ -682,9 +682,9 @@ class ConvSCCS(ABC, Base):
                 prox_ranges = self._detect_support(coeffs)
                 proxs = [ProxEquality(0, range=r) for r in prox_ranges]
             else:
-                raise ValueError(
-                    "Coeffs are None. " + "Equality penalty cannot infer the "
-                    "coefficients support.")
+                raise ValueError("Coeffs are None. " +
+                                 "Equality penalty cannot infer the "
+                                 "coefficients support.")
         elif n_penalized_features > 0 and self._C_tv is not None or \
                 self._C_group_l1 is not None:
             # TV and GroupLasso penalties
@@ -1057,5 +1057,5 @@ class Log10UniformGenerator:
         self.gen = uniform(0, 1)
 
     def rvs(self, n):
-        return 10 ** (self.min_val +
-                      (self.max_val - self.min_val) * self.gen.rvs(n))
+        return 10 ** (
+            self.min_val + (self.max_val - self.min_val) * self.gen.rvs(n))

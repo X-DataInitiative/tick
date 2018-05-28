@@ -248,11 +248,12 @@ class HawkesCumulantMatching(LearnerHawkesNoParam):
                 sess.run(tf.global_variables_initializer())
                 sess.run(self._tf_model_coeffs.assign(R))
 
-                return sess.run(cost, feed_dict={
-                    L: self.mean_intensity,
-                    C: self.covariance,
-                    K_c: self.skewness
-                })
+                return sess.run(
+                    cost, feed_dict={
+                        L: self.mean_intensity,
+                        C: self.covariance,
+                        K_c: self.skewness
+                    })
 
     @property
     def _tf_model_coeffs(self):

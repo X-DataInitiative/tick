@@ -72,10 +72,10 @@ class ModelLinRegWithIntercepts(
         ModelFirstOrder.fit(self, features, labels)
         ModelGeneralizedLinearWithIntercepts.fit(self, features, labels)
         ModelLipschitz.fit(self, features, labels)
-        self._set("_model",
-                  _ModelLinRegWithIntercepts(self.features, self.labels,
-                                             self.fit_intercept,
-                                             self.n_threads))
+        self._set(
+            "_model",
+            _ModelLinRegWithIntercepts(self.features, self.labels,
+                                       self.fit_intercept, self.n_threads))
         return self
 
     def _grad(self, coeffs: np.ndarray, out: np.ndarray) -> None:

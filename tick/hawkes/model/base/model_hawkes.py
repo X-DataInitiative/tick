@@ -170,8 +170,8 @@ class ModelHawkes(ModelFirstOrder):
         data_size = (n_baselines + dim * n_alphas_i) * (1 + n_alphas_i)
 
         # looks like [0  3  6  9 12 15 18] in dimension 2
-        row_indices = np.arange(row_indices_size, dtype=sparse_dtype) * (
-            1 + n_alphas_i)
+        row_indices = np.arange(row_indices_size,
+                                dtype=sparse_dtype) * (1 + n_alphas_i)
 
         # looks like [0 2 3 1 4 5 0 2 3 0 2 3 1 4 5 1 4 5] in dimension 2
         # We first create the recurrent pattern for each dim

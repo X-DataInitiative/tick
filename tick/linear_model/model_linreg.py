@@ -122,6 +122,7 @@ class ModelLinReg(ModelFirstOrder, ModelGeneralizedLinear, ModelLipschitz):
             return s / self.n_samples
 
     def _build_cpp_model(self, dtype_or_object_with_dtype):
-        model_class = self._get_typed_class(dtype_or_object_with_dtype, dtype_map)
+        model_class = self._get_typed_class(dtype_or_object_with_dtype,
+                                            dtype_map)
         return model_class(self.features, self.labels, self.fit_intercept,
                            self.n_threads)

@@ -137,8 +137,8 @@ class ProxSortedL1(Prox):
 
     def _build_cpp_prox(self, dtype_or_object_with_dtype):
         self.dtype = self._extract_dtype(dtype_or_object_with_dtype)
-        prox_class = self._get_typed_class(
-            dtype_or_object_with_dtype, dtype_map)
+        prox_class = self._get_typed_class(dtype_or_object_with_dtype,
+                                           dtype_map)
         if self.range is None:
             return prox_class(self.strength, self.fdr, self._weights_type,
                               self.positive)

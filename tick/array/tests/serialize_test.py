@@ -12,7 +12,6 @@ from tick.array.serialize import serialize_array, load_array
 
 
 class Test(object):
-
     def __init__(self, *args, dtype="float64", **kwargs):
         unittest.TestCase.__init__(self, *args, **kwargs)
         self.dtype = dtype
@@ -49,8 +48,8 @@ class Test(object):
     def test_serialize_sparse_2d_array(self):
         """...Test serialization of 2d dense array is done as expected
         """
-        array = sparse.rand(10, 10, density=0.3, format='csr').astype(
-            self.dtype)
+        array = sparse.rand(10, 10, density=0.3,
+                            format='csr').astype(self.dtype)
         serialize_array(array, self.array_file)
 
         serialized_array = load_array(self.array_file, array_dim=2,

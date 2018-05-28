@@ -200,9 +200,9 @@ class LearnerHawkesParametric(LearnerOptim):
 
         if isinstance(start, np.ndarray):
             if start.shape != (model_obj.n_coeffs,):
-                raise ValueError("'start' array has wrong shape %s instead of "
-                                 "(%i, )" % (str(start.shape),
-                                             model_obj.n_coeffs))
+                raise ValueError(
+                    "'start' array has wrong shape %s instead of "
+                    "(%i, )" % (str(start.shape), model_obj.n_coeffs))
             coeffs_start = start.copy()
         else:
             coeffs_start = np.ones(model_obj.n_coeffs)
