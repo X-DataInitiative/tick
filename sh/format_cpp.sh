@@ -24,5 +24,5 @@ BRANCH=$(git symbolic-ref HEAD | sed -e 's,.*/\(.*\),\1,')
 echo "Using $CLANG_FORMAT and $CLANG_FORMATDIFF on branch $BRANCH"
 
 for dir in ${DIRS[@]}; do
-  git diff $dir | $CLANG_FORMATDIFF -binary $CLANG_FORMAT -p1 -i -style=google
+  git diff $dir | python2 $CLANG_FORMATDIFF -binary $CLANG_FORMAT -p1 -i -style=file
 done
