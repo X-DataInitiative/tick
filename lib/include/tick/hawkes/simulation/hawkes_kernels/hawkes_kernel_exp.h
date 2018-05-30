@@ -69,6 +69,8 @@ class DLL_PUBLIC HawkesKernelExp : public HawkesKernel {
    */
   HawkesKernelExp();
 
+  virtual ~HawkesKernelExp() {}
+
   /**
    * @brief Reset kernel for simulating a new realization
    * @note This is mandatory as soon as the process on which the convolution is

@@ -22,6 +22,8 @@ class DLL_PUBLIC HawkesConstantBaseline : public HawkesBaseline {
    */
   explicit HawkesConstantBaseline(double value = 0);
 
+  virtual ~HawkesConstantBaseline() {}
+
   //! @brief get value of the baseline at time t
   double get_value(double t) override;
 
