@@ -8,7 +8,6 @@
 #include "alloc.h"
 #include "tick/base/defs.h"
 
-#include <algorithm>
 #include <cmath>
 #include <iostream>
 #include <memory>
@@ -49,6 +48,7 @@ class Array : public BaseArray<T> {
   friend std::ostream &operator<<(std::ostream &, const Array<T1> &);
 
  protected:
+  using K = typename BaseArray<T>::K;
   using BaseArray<T>::_size;
   using BaseArray<T>::is_data_allocation_owned;
   using BaseArray<T>::_data;
@@ -57,6 +57,9 @@ class Array : public BaseArray<T> {
   using AbstractArray1d2d<T>::is_dense;
   using AbstractArray1d2d<T>::is_sparse;
   using AbstractArray1d2d<T>::init_to_zero;
+
+  using BaseArray<T>::get_data_index;
+  using BaseArray<T>::set_data_index;
 
   //! @brief Constructor for an empty array.
   Array() : BaseArray<T>(true) {}
@@ -83,7 +86,7 @@ class Array : public BaseArray<T> {
    * \warning Data from the `std::initializer_list` is copied. This should not
    * be used on big arrays
    */
-  explicit Array(std::initializer_list<T> data_list);
+  explicit Array(std::initializer_list<K> data_list);
 
   //! @brief The copy constructor
   Array(const Array<T> &other) = default;
@@ -127,22 +130,33 @@ class Array : public BaseArray<T> {
   }
 
   //! @brief Fill vector with given value
-  void fill(const T value);
+  void fill(const K value);
 
   /**
    * @brief Sort Array inplace
    * \param increasing : If true, array will be sorted in increasing order,
    * otherwise in decreasing order
    */
-  void sort(bool increasing = true);
+  template <typename Y = K>
+  typename std::enable_if<std::is_same<T, std::atomic<Y>>::value>::type
+  sort(bool increasing = true);
+
+  template <typename Y = K>
+  typename std::enable_if<!std::is_same<T, bool>::value && !std::is_same<Y, bool>::value && !std::is_same<T, std::atomic<Y>>::value>::type
+  sort(bool increasing = true);
 
   /**
    * @brief Sort Array with respect to a given function inplace and keep track
    * of index \param index : Array in which the index will be stored \param
    * order_function : function that will be used to compare two values
    */
-  template <typename F>
-  void sort_function(Array<ulong> &index, F order_function);
+  template <typename Y = K, typename F>
+  typename std::enable_if<std::is_same<T, std::atomic<Y>>::value>::type
+  sort_function(Array<uint64_t> &index, F order_function);
+
+  template <typename Y = K, typename F>
+  typename std::enable_if<!std::is_same<T, bool>::value && !std::is_same<Y, bool>::value && !std::is_same<T, std::atomic<Y>>::value>::type
+  sort_function(Array<uint64_t> &index, F order_function);
 
   /**
    * @brief Sort Array inplace and keep track of index
@@ -150,6 +164,7 @@ class Array : public BaseArray<T> {
    * \param increasing : If true, array will be sorted in increasing order,
    * otherwise in decreasing order
    */
+  template <typename Y = K>
   void sort(Array<ulong> &index, bool increasing = true);
 
   /**
@@ -158,13 +173,15 @@ class Array : public BaseArray<T> {
    * \param increasing : If true, array will be sorted in increasing order,
    * otherwise in decreasing order
    */
+  template <typename Y = K>
   void sort_abs(Array<ulong> &index, bool increasing);
 
   //! @brief Multiply an array by a factor
   //! \param fact : the factor
   //! \param out : if null then the multiplication is performed in-place,
   //!              otherwise it is stored in `out`
-  void multiply(const T fact, Array<T> *out = nullptr);
+  template <typename Y = K>
+  void multiply(const K fact, Array<T> *out = nullptr);
 
   //! @brief Multiply vector x by factor a inplace and increment this by new
   //! vector
@@ -173,20 +190,8 @@ class Array : public BaseArray<T> {
   //! \param a : a scalar of type T
   //! @note Scalar is of type T, meaning that real values will get truncated
   //! before multiplication if T is an integer type
-  void mult_incr(const BaseArray<T> &x, const T a) {
-    if (this->size() != x.size()) {
-      TICK_ERROR("Vectors don't have the same size.");
-    } else {
-      if (x.is_sparse()) {
-        for (ulong j = 0; j < x.size_sparse(); j++) {
-          _data[x.indices()[j]] += x.data()[j] * a;
-        }
-      } else {
-        tick::vector_operations<T>{}.mult_incr(this->size(), a, x.data(),
-                                               this->data());
-      }
-    }
-  }
+  template <typename Y>
+  void mult_incr(const BaseArray<Y> &x, const K a);
 
   //! @brief Multiply vector x by factor a inplace and fill using this by new
   //! vector
@@ -219,8 +224,8 @@ class Array : public BaseArray<T> {
   //! \param a : a scalar
   //! \param y : an Array (can be sparse or dense)
   //! \param b : a scalar
-  void mult_add_mult_incr(const BaseArray<T> &x, const T a,
-                          const BaseArray<T> &y, const T b) {
+  void mult_add_mult_incr(const BaseArray<T> &x, const K a,
+                          const BaseArray<T> &y, const K b) {
     if (this->size() == x.size() && x.size() == y.size()) {
       mult_incr(x, a);
       mult_incr(y, b);
@@ -228,7 +233,6 @@ class Array : public BaseArray<T> {
       TICK_ERROR("Vectors don't have the same size.");
     }
   }
-
   //! @brief Returns a shared pointer to a SArray encapsulating the array
   //! \warning : The ownership of the data is given to the returned structure
   //! THUS the array becomes a view.
@@ -258,30 +262,22 @@ Array<T>::Array(ulong size, T *data1) : BaseArray<T>(true) {
 
 // initializer_list constructor
 template <typename T>
-Array<T>::Array(std::initializer_list<T> data_list) : BaseArray<T>(true) {
+Array<T>::Array(std::initializer_list<typename Array<T>::K> data_list) : BaseArray<T>(true) {
   is_data_allocation_owned = true;
   _size = data_list.size();
   TICK_PYTHON_MALLOC(_data, T, _size);
   size_t index = 0;
   for (auto it = data_list.begin(); it != data_list.end(); ++it) {
-    _data[index] = *it;
+    set_data_index(index, *it);
     index++;
   }
 }
 
+
 // fill with given value
 template <typename T>
-void Array<T>::fill(const T value) {
+void Array<T>::fill(const typename Array<T>::K value) {
   tick::vector_operations<T>{}.set(_size, value, _data);
-}
-
-// sort array inplace
-template <typename T>
-void Array<T>::sort(bool increasing) {
-  if (increasing)
-    std::sort(_data, _data + _size);
-  else
-    std::sort(_data, _data + _size, std::greater<T>());
 }
 
 template <typename T>
@@ -307,45 +303,30 @@ bool greater_comparator_abs(const value_index<T> &l, const value_index<T> &r) {
   return std::fabs(l.first) > std::fabs(r.first);
 }
 
-// sort array given a sort function
-template <typename T>
-template <typename F>
-void Array<T>::sort_function(Array<ulong> &index, F order_function) {
-  std::vector<value_index<T>> pairs(_size);
-  for (ulong i = 0; i < _size; ++i) {
-    pairs[i].first = _data[i];
-    pairs[i].second = i;
-  }
-
-  std::sort(pairs.begin(), pairs.end(), order_function);
-
-  for (ulong i = 0; i < _size; ++i) {
-    _data[i] = pairs[i].first;
-    index[i] = pairs[i].second;
-  }
-}
-
 // sort array inplace and keep track of index
 template <typename T>
+template <typename Y>
 void Array<T>::sort(Array<ulong> &index, bool increasing) {
   if (increasing)
-    sort_function(index, less_comparator<T>);
+    sort_function<typename Array<T>::K>(index, less_comparator<T>);
   else
-    sort_function(index, greater_comparator<T>);
+    sort_function<typename Array<T>::K>(index, greater_comparator<T>);
 }
 
 // sort array in absolute value inplace and keep track of index
 template <typename T>
+template <typename Y>
 void Array<T>::sort_abs(Array<ulong> &index, bool increasing) {
   if (increasing)
-    sort_function(index, less_comparator_abs<T>);
+    sort_function<typename Array<T>::K>(index, less_comparator_abs<T>);
   else
-    sort_function(index, greater_comparator_abs<T>);
+    sort_function<typename Array<T>::K>(index, greater_comparator_abs<T>);
 }
 
 // Multiply an array with a scalar
 template <typename T>
-void Array<T>::multiply(const T fact, Array<T> *out) {
+template <typename Y>
+void Array<T>::multiply(const K fact, Array<T> *out) {
   if (out == nullptr) {
     tick::vector_operations<T>{}.scale(_size, fact, _data);
   } else {
@@ -371,12 +352,12 @@ Array<T> arange(const std::int64_t min, const std::int64_t max) {
  * \param increasing : If true, array will be sorted in increasing order,
  * otherwise in decreasing order \returns : A sorted copy of this array
  */
-template <typename T>
+template <typename T, typename K = T>
 Array<T> sort(Array<T> &array, bool increasing = true) {
   // Create a copy of array
   Array<T> sorted_array(array);
   // Sort the copy inplace
-  sorted_array.sort(increasing);
+  sorted_array.template sort<K>(increasing);
   return sorted_array;
 }
 
@@ -402,13 +383,13 @@ Array<T> sort(Array<T> &array, Array<ulong> &index, bool increasing = true) {
  * increasing order, otherwise in decreasing order \returns : A sorted copy of
  * this array
  */
-template <typename T>
+template <typename T, typename K = T>
 Array<T> sort_abs(Array<T> &array, Array<ulong> &index,
                   bool increasing = true) {
   // Create a copy of array
   Array<T> sorted_array(array);
   // Sort the copy inplace keeping track of the index
-  sorted_array.sort_abs(index, increasing);
+  sorted_array.template sort_abs<K>(index, increasing);
   return sorted_array;
 }
 
@@ -549,14 +530,6 @@ CEREAL_LOAD_FUNCTION_NAME(Archive &ar, Array<T> &arr) {
  *  @ingroup Array_typedefs_mod
  * @{
  */
-typedef Array<double> ArrayDouble;
-typedef Array<float> ArrayFloat;
-typedef Array<std::int32_t> ArrayInt;
-typedef Array<std::uint32_t> ArrayUInt;
-typedef Array<std::int16_t> ArrayShort;
-typedef Array<std::uint16_t> ArrayUShort;
-typedef Array<std::int64_t> ArrayLong;
-typedef Array<ulong> ArrayULong;
 
 /**
  * @}
@@ -567,14 +540,6 @@ typedef Array<ulong> ArrayULong;
  * @{
  */
 
-typedef std::vector<Array<float>> ArrayFloatList1D;
-typedef std::vector<Array<double>> ArrayDoubleList1D;
-typedef std::vector<Array<std::int32_t>> ArrayIntList1D;
-typedef std::vector<Array<std::uint32_t>> ArrayUIntList1D;
-typedef std::vector<Array<std::int16_t>> ArrayShortList1D;
-typedef std::vector<Array<std::uint16_t>> ArrayUShortList1D;
-typedef std::vector<Array<std::int64_t>> ArrayLongList1D;
-typedef std::vector<Array<ulong>> ArrayULongList1D;
 
 /**
  * @}
@@ -584,14 +549,22 @@ typedef std::vector<Array<ulong>> ArrayULongList1D;
  *  @ingroup Array_typedefs_mod
  * @{
  */
-typedef std::vector<ArrayFloatList1D> ArrayFloatList2D;
-typedef std::vector<ArrayIntList1D> ArrayIntList2D;
-typedef std::vector<ArrayUIntList1D> ArrayUIntList2D;
-typedef std::vector<ArrayShortList1D> ArrayShortList2D;
-typedef std::vector<ArrayUShortList1D> ArrayUShortList2D;
-typedef std::vector<ArrayLongList1D> ArrayLongList2D;
-typedef std::vector<ArrayULongList1D> ArrayULongList2D;
-typedef std::vector<ArrayDoubleList1D> ArrayDoubleList2D;
+
+#define ARRAY_DEFINE_TYPE(TYPE, NAME)\
+  typedef Array<TYPE> Array##NAME; \
+  typedef std::vector<Array##NAME> Array##NAME##List1D; \
+  typedef std::vector<Array##NAME##List1D> Array##NAME##List2D
+
+ARRAY_DEFINE_TYPE(double, Double);
+ARRAY_DEFINE_TYPE(float, Float);
+ARRAY_DEFINE_TYPE(int32_t, Int);
+ARRAY_DEFINE_TYPE(uint32_t, UInt);
+ARRAY_DEFINE_TYPE(int16_t, Short);
+ARRAY_DEFINE_TYPE(uint16_t, UShort);
+ARRAY_DEFINE_TYPE(int64_t, Long);
+ARRAY_DEFINE_TYPE(ulong, ULong);
+ARRAY_DEFINE_TYPE(std::atomic<double>, AtomicDouble);
+ARRAY_DEFINE_TYPE(std::atomic<float>, AtomicFloat);
 
 /**
  * @}
@@ -625,6 +598,68 @@ tick::TemporaryLog<E> &operator<<(tick::TemporaryLog<E> &log,
   log << "]";
 
   return log;
+}
+
+template <typename T>
+template <typename Y, typename F>
+typename std::enable_if<std::is_same<T, std::atomic<Y>>::value>::type
+Array<T>::sort_function(Array<uint64_t> &index, F order_function) {
+  TICK_CLASS_DOES_NOT_IMPLEMENT("Array<std::atomic<T>>");
+}
+
+template <typename T>
+template <typename Y, typename F>
+typename std::enable_if<!std::is_same<T, bool>::value && !std::is_same<Y, bool>::value && !std::is_same<T, std::atomic<Y>>::value>::type
+Array<T>::sort_function(Array<uint64_t> &index, F order_function) {
+  std::vector<value_index<T>> pairs(_size);
+  for (uint64_t i = 0; i < _size; ++i) {
+    pairs[i].first = _data[i];
+    pairs[i].second = i;
+  }
+
+  std::sort(pairs.begin(), pairs.end(), order_function);
+
+  for (uint64_t i = 0; i < _size; ++i) {
+    _data[i] = pairs[i].first;
+    index[i] = pairs[i].second;
+  }
+}
+
+template <class T>
+template <class Y>
+void
+Array<T>::mult_incr(const BaseArray<Y> &x, const typename Array<T>::K a) {
+  if (this->size() != x.size()) {
+    TICK_ERROR("Vectors don't have the same size.");
+  } else {
+    if (x.is_sparse()) {
+      for (uint64_t j = 0; j < x.size_sparse(); j++) {
+        auto x_index_j = x.indices()[j];
+        set_data_index(x_index_j,
+          this->template get_data_index<typename Array<T>::K>(x_index_j)
+            + (x.template get_data_index<typename Array<T>::K>(j) * a));
+      }
+    } else {
+      tick::vector_operations<T>{}.mult_incr(
+          this->size(), a, x.data(), this->data());
+    }
+  }
+}
+
+template <typename T>
+template <typename Y>
+typename std::enable_if<std::is_same<T, std::atomic<Y>>::value>::type
+Array<T>::sort(bool increasing) {
+  TICK_CLASS_DOES_NOT_IMPLEMENT("Array<std::atomic<T>>");
+}
+template <typename T>
+template <typename Y>
+typename std::enable_if<!std::is_same<T, bool>::value && !std::is_same<Y, bool>::value && !std::is_same<T, std::atomic<Y>>::value>::type
+Array<T>::sort(bool increasing) {
+  if (increasing)
+    std::sort(_data, _data + _size);
+  else
+    std::sort(_data, _data + _size, std::greater<T>());
 }
 
 #endif  // LIB_INCLUDE_TICK_ARRAY_ARRAY_H_

@@ -11,6 +11,7 @@
 #include "numpy/npy_math.h"
 #include "tick/base/debug.h"
 #include "tick/array/carray_python.h"
+#include "tick/array/vector_operations.h"
 %}
 
 
@@ -18,7 +19,6 @@
 %init %{
 	import_array();
 %}
-
 
 //
 // The following files define some macros
@@ -57,7 +57,6 @@
 // Dealing with typemap out in templates of VArray
 %include varray_typemap_out.i
 
-
 //
 // Then we define the macro that will call all the above macros
 //
@@ -92,7 +91,6 @@ SARRAY_TYPEMAPIN_MACROS(ARRAY_TYPE,ARRAY2D_TYPE,SARRAYPTR_TYPE,SARRAY_TYPE,SARRA
 
 SPARSEARRAY_TYPEMAPIN_MACROS(SPARSEARRAY_TYPE, SPARSEARRAY2D_TYPE,C_TYPE, NP_TYPE);
 
-
 SSPARSEARRAY_TYPEMAPIN_MACROS(SSPARSEARRAY_TYPE, SSPARSEARRAYPTR_TYPE, SSPARSEARRAY2D_TYPE,
                               SSPARSEARRAY2DPTR_TYPE, SPARSEARRAY_TYPE,
                               SPARSEARRAY2D_TYPE, C_TYPE)
@@ -120,18 +118,16 @@ XARRAY_FINAL_MACROS(SARRAYPTR_TYPE, SARRAY_TYPE,
 
 XSPARSEARRAY_FINAL_MACROS(SSPARSEARRAYPTR_TYPE, SSPARSEARRAY_TYPE,
                     SSPARSEARRAY2DPTR_TYPE, SSPARSEARRAY2D_TYPE,
-                    C_TYPE, NP_TYPE)                    
+                    C_TYPE, NP_TYPE)
 
 VARRAY_TYPEMAPOUT_MACROS(VARRAYPTR_TYPE, VARRAY_TYPE,
                          VARRAYPTRLIST1D_TYPE, VARRAYPTRLIST2D_TYPE,
                          C_TYPE, NP_TYPE)
 %enddef
 
-
 //
 // Then we perform the instantiation of all the types
 //
-
 
 
 INSTANTIATE(double, NPY_DOUBLE,
@@ -150,6 +146,7 @@ INSTANTIATE(double, NPY_DOUBLE,
             BaseArrayDouble2dList1D,BaseArrayDouble2dList2D,
             SBaseArrayDoublePtrList1D,SBaseArrayDoublePtrList2D,
             SBaseArrayDouble2dPtrList1D,SBaseArrayDouble2dPtrList2D);
+
 
 INSTANTIATE(std::int32_t, NPY_INT32,
             ArrayInt,ArrayInt2d,ArrayIntList1D,ArrayIntList2D,

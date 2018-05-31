@@ -28,9 +28,12 @@
 template <typename T>
 class SArray : public Array<T> {
  protected:
+  using K = typename Array<T>::K;
   using Array<T>::_size;
   using Array<T>::is_data_allocation_owned;
   using Array<T>::_data;
+  using Array<T>::get_data_index;
+  using Array<T>::set_data_index;
 
 #ifdef PYTHON_LINK
   //! @brief The (eventual) Python owner of the array _data;
@@ -162,11 +165,11 @@ ulong SArray<T>::n_allocs = 0;
 template <typename T>
 std::ostream &operator<<(std::ostream &Str, SArray<T> *v) {
 #ifdef DEBUG_SHAREDARRAY
-  Str << "SArray(" << reinterpret_cast<void *>(v) << ",size=" << v->size()
-      << ")";
+  Str << "SArray<" << typeid(T).name() << ">(" << reinterpret_cast<void *>(v)
+      << ",size=" << v->size() << ")";
 #else
-  Str << "SArray(" << reinterpret_cast<void *>(v) << ",size=" << v->size()
-      << ")";
+  Str << "SArray<" << typeid(T).name() << ">(" << reinterpret_cast<void *>(v)
+      << ",size=" << v->size() << ")";
 #endif
   return Str;
 }
@@ -247,8 +250,8 @@ template <typename T>
 SArray<T>::~SArray<T>() {
 #ifdef DEBUG_SHAREDARRAY
   n_allocs--;
-  std::cout << "SArray Destructor (->#" << n_allocs << ") : ~SArray on " << this
-            << std::endl;
+  std::cout << "SArray<" << typeid(T).name() << "> Destructor (->#" << n_allocs
+            << ") : ~SArray on " << this << std::endl;
 #endif
   clear();
 }
@@ -282,82 +285,57 @@ std::shared_ptr<SArray<T>> Array<T>::as_sarray_ptr() {
 /**
  * @}
  */
-
 /** @defgroup sarray_sub_mod The instantiations of the SArray template
  *  @ingroup SArray_typedefs_mod
  * @{
  */
-
-typedef SArray<double> SArrayDouble;
-typedef SArray<float> SArrayFloat;
-typedef SArray<std::int32_t> SArrayInt;
-typedef SArray<std::uint32_t> SArrayUInt;
-typedef SArray<std::int16_t> SArrayShort;
-typedef SArray<std::uint16_t> SArrayUShort;
-typedef SArray<std::int64_t> SArrayLong;
-typedef SArray<ulong> SArrayULong;
-
 /**
  * @}
  */
-
 /** @defgroup sarrayptr_sub_mod The shared pointer array classes
  *  @ingroup SArray_typedefs_mod
  * @{
  */
-
-typedef std::shared_ptr<SArrayFloat> SArrayFloatPtr;
-typedef std::shared_ptr<SArrayInt> SArrayIntPtr;
-typedef std::shared_ptr<SArrayUInt> SArrayUIntPtr;
-typedef std::shared_ptr<SArrayShort> SArrayShortPtr;
-typedef std::shared_ptr<SArrayUShort> SArrayUShortPtr;
-typedef std::shared_ptr<SArrayLong> SArrayLongPtr;
-typedef std::shared_ptr<SArrayULong> SArrayULongPtr;
-typedef std::shared_ptr<SArrayDouble> SArrayDoublePtr;
-
 /**
  * @}
  */
-
 /** @defgroup sarrayptrlist1d_sub_mod The classes for dealing with 1d-list of
  * shared pointer arrays
  *  @ingroup SArray_typedefs_mod
  * @{
  */
-
 // @brief The basic SArrayList1D classes
-typedef std::vector<SArrayFloatPtr> SArrayFloatPtrList1D;
-typedef std::vector<SArrayIntPtr> SArrayIntPtrList1D;
-typedef std::vector<SArrayUIntPtr> SArrayUIntPtrList1D;
-typedef std::vector<SArrayShortPtr> SArrayShortPtrList1D;
-typedef std::vector<SArrayUShortPtr> SArrayUShortPtrList1D;
-typedef std::vector<SArrayLongPtr> SArrayLongPtrList1D;
-typedef std::vector<SArrayULongPtr> SArrayULongPtrList1D;
-typedef std::vector<SArrayDoublePtr> SArrayDoublePtrList1D;
-
 /**
  * @}
  */
-
 /** @defgroup sarrayptrlist2d_sub_mod The classes for dealing with 2d-list of
  * shared pointer arrays
  *  @ingroup SArray_typedefs_mod
  * @{
  */
-
 // @brief The basic SArrayList2D classes
-typedef std::vector<SArrayFloatPtrList1D> SArrayFloatPtrList2D;
-typedef std::vector<SArrayIntPtrList1D> SArrayIntPtrList2D;
-typedef std::vector<SArrayUIntPtrList1D> SArrayUIntPtrList2D;
-typedef std::vector<SArrayShortPtrList1D> SArrayShortPtrList2D;
-typedef std::vector<SArrayUShortPtrList1D> SArrayUShortPtrList2D;
-typedef std::vector<SArrayLongPtrList1D> SArrayLongPtrList2D;
-typedef std::vector<SArrayULongPtrList1D> SArrayULongPtrList2D;
-typedef std::vector<SArrayDoublePtrList1D> SArrayDoublePtrList2D;
-
 /**
  * @}
  */
+
+#define SARRAY_DEFINE_TYPE(TYPE, NAME)\
+  typedef SArray<TYPE> SArray##NAME; \
+  typedef std::shared_ptr<SArray##NAME> SArray##NAME##Ptr; \
+  typedef std::vector<SArray##NAME##Ptr> SArray##NAME##PtrList1D; \
+  typedef std::vector<SArray##NAME##PtrList1D> SArray##NAME##PtrList2D
+
+SARRAY_DEFINE_TYPE(double, Double);
+SARRAY_DEFINE_TYPE(float, Float);
+SARRAY_DEFINE_TYPE(int32_t, Int);
+SARRAY_DEFINE_TYPE(uint32_t, UInt);
+SARRAY_DEFINE_TYPE(int16_t, Short);
+SARRAY_DEFINE_TYPE(uint16_t, UShort);
+SARRAY_DEFINE_TYPE(int64_t, Long);
+SARRAY_DEFINE_TYPE(ulong, ULong);
+SARRAY_DEFINE_TYPE(std::atomic<double>, AtomicDouble);
+SARRAY_DEFINE_TYPE(std::atomic<float>, AtomicFloat);
+
+#undef SARRAY_DEFINE_TYPE
 
 #define INSTANTIATE_SARRAY(SARRAY_TYPE, C_TYPE)                \
   template std::ostream &operator<<<C_TYPE>(std::ostream &Str, \
@@ -371,5 +349,7 @@ INSTANTIATE_SARRAY(SArrayShortPtr, std::int16_t);
 INSTANTIATE_SARRAY(SArrayUShortPtr, std::uint16_t);
 INSTANTIATE_SARRAY(SArrayLongPtr, std::int64_t);
 INSTANTIATE_SARRAY(SArrayULongPtr, ulong);
+
+#undef INSTANTIATE_SARRAY
 
 #endif  // LIB_INCLUDE_TICK_ARRAY_SARRAY_H_

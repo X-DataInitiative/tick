@@ -29,9 +29,8 @@ elseif(${USE_BLAS})
     find_package(BLAS REQUIRED)
     message(STATUS "Using BLAS")
 
-    add_definitions(-DTICK_USE_BLAS)
-
     set(TICK_BLAS_LIBRARIES ${BLAS_LIBRARIES})
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DTICK_CBLAS_AVAILABLE")
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${BLAS_LINKER_FLAGS}")
 
     message(STATUS "BLAS Libraries: " ${BLAS_LIBRARIES})
@@ -68,8 +67,8 @@ if (${TICK_REBUILD_LIBS})
     set(TICK_LIB_SURVIVAL     tick_survival)
 endif()
 
-add_subdirectory(cpp/base)
 add_subdirectory(cpp/array)
+add_subdirectory(cpp/base)
 add_subdirectory(cpp/array_test)
 add_subdirectory(cpp/random)
 add_subdirectory(cpp/base_model)
@@ -85,7 +84,7 @@ add_subdirectory(cpp/preprocessing)
 
 
 if(APPLE)
-    set(TICK_INSTALL_RPATH "${CMAKE_CURRENT_SOURCE_DIR}/../tick/base/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/array/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/base_model/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/linear_model/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/random/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/prox/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/solver/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/hawkes/inference/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/hawkes/model/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/hawkes/simulation/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/robust/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/survival/build;${TICK_EXTRA_RPATH}")
+    set(TICK_INSTALL_RPATH "${CMAKE_CURRENT_SOURCE_DIR}/../tick/array/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/base/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/base_model/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/linear_model/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/random/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/prox/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/solver/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/hawkes/inference/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/hawkes/model/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/hawkes/simulation/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/robust/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/survival/build;${TICK_EXTRA_RPATH}")
 
 
 
@@ -100,13 +99,13 @@ if (${GTEST_FOUND})
     message(STATUS "Testing in C++ enabled")
 
     find_package(Threads REQUIRED)
-    find_package(PythonInterp REQUIRED)
-    find_package(PythonLibs REQUIRED)
+    find_package(PythonInterp 3 REQUIRED)
+    find_package(PythonLibs 3 REQUIRED)
 
     include_directories(${GTEST_INCLUDE_DIRS})
 
     set(TICK_TEST_LIBS
-        ${PYTHON_LIBRARIES}
+        ${PYTHON_LIBRARY}
         ${GTEST_BOTH_LIBRARIES}
         ${CMAKE_THREAD_LIBS_INIT}
         ${TICK_BLAS_LIBRARIES})
@@ -120,7 +119,6 @@ if (${GTEST_FOUND})
     else(APPLE)
         set(TICK_TEST_LIBS ${TICK_TEST_LIBS} -lrt -ldl -lutil)
     endif(APPLE)
-
 
     add_subdirectory(cpp-test/base)
     add_subdirectory(cpp-test/array)

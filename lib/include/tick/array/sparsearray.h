@@ -140,14 +140,6 @@ Array<T> BaseArray<T>::as_array() {
  *  @ingroup Array_typedefs_mod
  * @{
  */
-typedef SparseArray<double> SparseArrayDouble;
-typedef SparseArray<float> SparseArrayFloat;
-typedef SparseArray<std::int32_t> SparseArrayInt;
-typedef SparseArray<std::uint32_t> SparseArrayUInt;
-typedef SparseArray<std::int16_t> SparseArrayShort;
-typedef SparseArray<std::uint16_t> SparseArrayUShort;
-typedef SparseArray<std::int64_t> SparseArrayLong;
-typedef SparseArray<ulong> SparseArrayULong;
 
 /**
  * @}
@@ -158,15 +150,6 @@ typedef SparseArray<ulong> SparseArrayULong;
  * @{
  */
 
-typedef std::vector<SparseArray<float>> SparseArrayFloatList1D;
-typedef std::vector<SparseArray<double>> SparseArrayDoubleList1D;
-typedef std::vector<SparseArray<std::int32_t>> SparseArrayIntList1D;
-typedef std::vector<SparseArray<std::uint32_t>> SparseArrayUIntList1D;
-typedef std::vector<SparseArray<std::int16_t>> SparseArrayShortList1D;
-typedef std::vector<SparseArray<std::uint16_t>> SparseArrayUShortList1D;
-typedef std::vector<SparseArray<std::int64_t>> SparseArrayLongList1D;
-typedef std::vector<SparseArray<ulong>> SparseArrayULongList1D;
-
 /**
  * @}
  */
@@ -175,14 +158,24 @@ typedef std::vector<SparseArray<ulong>> SparseArrayULongList1D;
  *  @ingroup Array_typedefs_mod
  * @{
  */
-typedef std::vector<SparseArrayFloatList1D> SparseArrayFloatList2D;
-typedef std::vector<SparseArrayIntList1D> SparseArrayIntList2D;
-typedef std::vector<SparseArrayUIntList1D> SparseArrayUIntList2D;
-typedef std::vector<SparseArrayShortList1D> SparseArrayShortList2D;
-typedef std::vector<SparseArrayUShortList1D> SparseArrayUShortList2D;
-typedef std::vector<SparseArrayLongList1D> SparseArrayLongList2D;
-typedef std::vector<SparseArrayULongList1D> SparseArrayULongList2D;
-typedef std::vector<SparseArrayDoubleList1D> SparseArrayDoubleList2D;
+
+#define SPARSE_ARRAY_DEFINE_TYPE(TYPE, NAME)\
+  typedef SparseArray<TYPE> SparseArray##NAME; \
+  typedef std::vector<SparseArray##NAME> SparseArray##NAME##List1D; \
+  typedef std::vector<SparseArray##NAME##List1D> SparseArray##NAME##List2D
+
+SPARSE_ARRAY_DEFINE_TYPE(double, Double);
+SPARSE_ARRAY_DEFINE_TYPE(float, Float);
+SPARSE_ARRAY_DEFINE_TYPE(int32_t, Int);
+SPARSE_ARRAY_DEFINE_TYPE(uint32_t, UInt);
+SPARSE_ARRAY_DEFINE_TYPE(int16_t, Short);
+SPARSE_ARRAY_DEFINE_TYPE(uint16_t, UShort);
+SPARSE_ARRAY_DEFINE_TYPE(int64_t, Long);
+SPARSE_ARRAY_DEFINE_TYPE(ulong, ULong);
+SPARSE_ARRAY_DEFINE_TYPE(std::atomic<double>, AtomicDouble);
+SPARSE_ARRAY_DEFINE_TYPE(std::atomic<float>, AtomicFloat);
+
+#undef SPARSE_ARRAY_DEFINE_TYPE
 
 /**
  * @}

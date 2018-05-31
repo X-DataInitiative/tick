@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 #
 # Author: Philip Deegan
-# Email : philip.deegan@polytechnique.edu 
+# Email : philip.deegan@polytechnique.edu
 # Date  : 26 - September - 2017
 #
 # This script builds and launches google test files for tick
 #
 # Requires the mkn build tool
 #
-# Input arguments are optional but if used are to be the 
+# Input arguments are optional but if used are to be the
 #  test files to be compiled and run, otherwise all files
 #  with the syntax "*gtest.cpp" are used
 #
@@ -23,7 +23,7 @@
 # #endif  // ADD_MAIN
 #
 # This is used to inject main functions for testing/execution
-# 
+#
 ######################################################################
 
 CWD="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
@@ -36,7 +36,7 @@ do
    FILES+=("${array[$i-1]}")
 done
 
-cd $CWD/.. 
+cd $CWD/..
 ROOT=$PWD
 source $ROOT/sh/configure_env.sh
 
@@ -59,10 +59,10 @@ for FILE in "${FILES[@]}"; do
     mkn compile -p gtest -a "${CARGS} -DGTEST_LINKED_AS_SHARED_LIBRARY" \
         -tb "$PY_INCS" \
         -M "${FILE}" -P "${MKN_P[@]}" \
-        ${MKN_X_FILE[@]} -B "$B_PATH" ${MKN_WITH[@]}        
+        ${MKN_X_FILE[@]} -B "$B_PATH" ${MKN_WITH[@]}
 
     mv bin/gtest bin/gtest_nodep
-    
+
     for P in "${PROFILES[@]}"; do
         cp bin/$P/obj/* bin/gtest_nodep/obj
     done

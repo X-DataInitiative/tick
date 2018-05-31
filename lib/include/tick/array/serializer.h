@@ -50,6 +50,11 @@ inline SArrayDoublePtr tick_double_array_from_file(std::string _file) {
   return array_from_file<SArrayDouble>(_file);
 }
 
+inline SArrayAtomicDoublePtr tick_atomic_double_array_from_file(
+    std::string _file) {
+  return array_from_file<SArrayAtomicDouble>(_file);
+}
+
 inline void tick_float_array2d_to_file(std::string _file,
                                        const ArrayFloat2d &array) {
   array_to_file<ArrayFloat2d>(_file, array);
@@ -85,6 +90,11 @@ inline SSparseArrayFloat2dPtr tick_float_sparse2d_from_file(std::string _file) {
 inline SSparseArrayDouble2dPtr tick_double_sparse2d_from_file(
     std::string _file) {
   return array_from_file<SSparseArrayDouble2d>(_file);
+}
+
+inline SSparseArrayAtomicDouble2dPtr tick_atomic_double_sparse2d_from_file(
+    std::string _file) {
+  return array_from_file<SSparseArrayAtomicDouble2d>(_file);
 }
 
 #endif  // LIB_INCLUDE_TICK_ARRAY_SERIALIZER_H_

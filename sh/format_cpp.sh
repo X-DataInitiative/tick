@@ -26,3 +26,14 @@ echo "Using $CLANG_FORMAT and $CLANG_FORMATDIFF on branch $BRANCH"
 for dir in ${DIRS[@]}; do
   git diff $dir | python2 $CLANG_FORMATDIFF -binary $CLANG_FORMAT -p1 -i -style=file
 done
+
+## Uncomment to run on all includes/sources
+# pushd $CWD/..
+# for f in $(find lib/cpp -type f \( -iname \*.h -o -iname \*.cpp \)); do
+#   $CLANG_FORMAT  -i -style=google $f
+# done
+# for f in $(find lib/include -type f \( -iname \*.h -o -iname \*.cpp \)); do
+#   $CLANG_FORMAT  -i -style=google $f
+# done
+# popd
+## Uncomment to run on all includes/sources
