@@ -32,6 +32,9 @@ class OnlineForestClassifier {
                          FeatureImportanceType feature_importance_type,
                          bool use_aggregation,
                          float dirichlet,
+                         bool split_pure,
+                         int32_t max_nodes,
+                         float min_extension_size,
                          int32_t n_threads,
                          int seed,
                          bool verbose);

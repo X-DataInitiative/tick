@@ -93,11 +93,12 @@ class OnlineForestClassifier(ABC, Base):
 
     _cpp_obj_name = "_forest"
 
-
     @actual_kwargs
     def __init__(self, n_classes: int, n_trees: int = 10, step: float = 1.,
                  criterion: str = 'log', use_aggregation: bool = True,
-                 dirichlet: float=0.5, n_threads: int = 1,
+                 dirichlet: float = 0.5, split_pure: bool = False,
+                 max_nodes: int = None, min_extension_size: float = 0,
+                 n_threads: int = 1,
                  use_feature_importances=True, seed: int = -1,
                  verbose: bool = True):
         Base.__init__(self)
@@ -109,6 +110,12 @@ class OnlineForestClassifier(ABC, Base):
         self.n_classes = n_classes
         self.step = step
         self.criterion = criterion
+        self.split_pure = split_pure
+        if max_nodes is not None:
+            self.max_nodes = max_nodes
+        else:
+            self.max_nodes = -1
+        self.min_extension_size = min_extension_size
         self.n_threads = n_threads
         self._forest = None
         self._given_feature_importances = None
@@ -144,10 +151,20 @@ class OnlineForestClassifier(ABC, Base):
         if self._forest is None:
             self.n_features = n_features
             _forest = _OnlineForestClassifier(
-                n_features, self.n_classes, self.n_trees, self.step,
-                self._criterion, self._feature_importances_type,
-                self.use_aggregation, self.dirichlet, self.n_threads,
-                self.seed, self.verbose
+                n_features,
+                self.n_classes,
+                self.n_trees,
+                self.step,
+                self._criterion,
+                self._feature_importances_type,
+                self.use_aggregation,
+                self.dirichlet,
+                self.split_pure,
+                self.max_nodes,
+                self.min_extension_size,
+                self.n_threads,
+                self.seed,
+                self.verbose
             )
             if self._feature_importances_type == FeatureImportanceType_given:
                 _forest.set_given_feature_importances(
@@ -294,8 +311,10 @@ class OnlineForestClassifier(ABC, Base):
         nodes_feature = np.empty(n_nodes, dtype=np.uint32)
         nodes_threshold = np.empty(n_nodes, dtype=np.float32)
         nodes_time = np.empty(n_nodes, dtype=np.float32)
-        nodes_features_min = np.empty((n_nodes, self.n_features), dtype=np.float32)
-        nodes_features_max = np.empty((n_nodes, self.n_features), dtype=np.float32)
+        nodes_features_min = np.empty((n_nodes, self.n_features),
+                                      dtype=np.float32)
+        nodes_features_max = np.empty((n_nodes, self.n_features),
+                                      dtype=np.float32)
         nodes_n_samples = np.empty(n_nodes, dtype=np.uint32)
         nodes_weight = np.empty(n_nodes, dtype=np.float32)
         nodes_weight_tree = np.empty(n_nodes, dtype=np.float32)
@@ -319,8 +338,8 @@ class OnlineForestClassifier(ABC, Base):
             nodes_counts)
         nodes = []
         for index, (parent, left, right, time) \
-            in enumerate(zip(nodes_parent, nodes_left,
-                             nodes_right, nodes_time)):
+                in enumerate(zip(nodes_parent, nodes_left,
+                                 nodes_right, nodes_time)):
             nodes.append(
                 {'index': int(index), 'left': int(left), 'right': int(right),
                  'time': float(time)}
@@ -338,8 +357,10 @@ class OnlineForestClassifier(ABC, Base):
         nodes_threshold = np.empty(n_nodes, dtype=np.float32)
         nodes_time = np.empty(n_nodes, dtype=np.float32)
         nodes_depth = np.empty(n_nodes, dtype=np.ushort)
-        nodes_features_min = np.empty((n_nodes, self.n_features), dtype=np.float32)
-        nodes_features_max = np.empty((n_nodes, self.n_features), dtype=np.float32)
+        nodes_features_min = np.empty((n_nodes, self.n_features),
+                                      dtype=np.float32)
+        nodes_features_max = np.empty((n_nodes, self.n_features),
+                                      dtype=np.float32)
         nodes_n_samples = np.empty(n_nodes, dtype=np.uint32)
         nodes_weight = np.empty(n_nodes, dtype=np.float32)
         nodes_weight_tree = np.empty(n_nodes, dtype=np.float32)
@@ -385,8 +406,10 @@ class OnlineForestClassifier(ABC, Base):
         nodes_threshold = np.empty(n_nodes, dtype=np.float32)
         nodes_time = np.empty(n_nodes, dtype=np.float32)
         nodes_depth = np.empty(n_nodes, dtype=np.ushort)
-        nodes_features_min = np.empty((n_nodes, self.n_features), dtype=np.float32)
-        nodes_features_max = np.empty((n_nodes, self.n_features), dtype=np.float32)
+        nodes_features_min = np.empty((n_nodes, self.n_features),
+                                      dtype=np.float32)
+        nodes_features_max = np.empty((n_nodes, self.n_features),
+                                      dtype=np.float32)
         nodes_n_samples = np.empty(n_nodes, dtype=np.uint32)
         nodes_weight = np.empty(n_nodes, dtype=np.float32)
         nodes_weight_tree = np.empty(n_nodes, dtype=np.float32)
@@ -411,12 +434,13 @@ class OnlineForestClassifier(ABC, Base):
             nodes_counts)
 
         index = np.arange(n_nodes)
-        nodes_info = {'index': index, 'parent': nodes_parent, 'left': nodes_left,
-                'right': nodes_right, 'depth': nodes_depth,
-                'feature': nodes_feature,
-                'threshold': nodes_threshold,
-                'leaf': nodes_is_leaf.astype(np.bool),
-                'time': nodes_time, 'n_samples': nodes_n_samples}
+        nodes_info = {'index': index, 'parent': nodes_parent,
+                      'left': nodes_left,
+                      'right': nodes_right, 'depth': nodes_depth,
+                      'feature': nodes_feature,
+                      'threshold': nodes_threshold,
+                      'leaf': nodes_is_leaf.astype(np.bool),
+                      'time': nodes_time, 'n_samples': nodes_n_samples}
         return nodes_info
 
     def print_tree(self, n_tree):

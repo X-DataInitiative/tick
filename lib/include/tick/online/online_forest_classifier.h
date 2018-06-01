@@ -67,6 +67,16 @@ class NodeClassifier {
   // Counts the number of sample seen in each class
   ArrayUInt _counts;
 
+  // Update range of the seen features
+  void update_range(const ArrayDouble &x_t);
+  // Update n_samples
+  void update_n_samples();
+  // Update to apply to a node when going forward in the tree (towards leaves)
+  float update_weight(const ArrayDouble &x_t, const double y_t);
+  // Update the prediction of the label
+  void update_count(const double y_t);
+
+
  public:
   NodeClassifier(TreeClassifier &tree, uint32_t parent, float time = 0);
   NodeClassifier(const NodeClassifier &node);
@@ -84,14 +94,6 @@ class NodeClassifier {
     }
   }
 
-  // Update range of the seen features
-  void update_range(const ArrayDouble &x_t);
-  // Update n_samples
-  void update_n_samples();
-  // Update to apply to a node when going forward in the tree (towards leaves)
-  float update_weight(const ArrayDouble &x_t, const double y_t);
-  // Update the prediction of the label
-  void update_count(const double y_t);
   // Update the prediction of the label
   void update_downwards(const ArrayDouble &x_t, const double y_t, bool do_update_weight);
   // Update to apply to a node when going upward in the tree (towards the root)
@@ -194,7 +196,7 @@ class TreeClassifier {
 
   uint32_t go_downwards(const ArrayDouble &x_t, double y_t);
 
-  float compute_split_time(uint32_t node_index, const ArrayDouble &x_t);
+  float compute_split_time(uint32_t node_index, const ArrayDouble &x_t, const double y_t);
 
   void go_upwards(uint32_t leaf_index);
 
@@ -306,6 +308,11 @@ class OnlineForestClassifier {
   bool _use_aggregation;
   //
   float _dirichlet;
+
+  bool _split_pure;
+  int32_t _max_nodes;
+  float _min_extension_size;
+
   // Number of threads to use for parallel growing of trees
   int32_t _n_threads;
   // Seed for random number generation
@@ -334,6 +341,9 @@ class OnlineForestClassifier {
                          FeatureImportanceType feature_importance_type,
                          bool use_aggregation,
                          float dirichlet,
+                         bool split_pure,
+                         int32_t max_nodes,
+                         float min_extension_size,
                          int32_t n_threads,
                          int seed,
                          bool verbose);
@@ -357,6 +367,10 @@ class OnlineForestClassifier {
   bool use_aggregation() const;
   float step() const;
   OnlineForestClassifier &set_step(const float step);
+  bool split_pure() const;
+  int32_t max_nodes() const;
+  float min_extension_size() const;
+
   float dirichlet() const;
   OnlineForestClassifier &set_dirichlet(const float dirichlet);
   bool verbose() const;

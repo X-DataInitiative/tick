@@ -36,6 +36,7 @@ of.partial_fit(X_train, y_train)
 t2 = time()
 print('OF:', t2 - t1, 'Acc:', of.score(X_test, y_test))
 
+
 # nodes = of1.get_nodes(0)
 
 exit(0)

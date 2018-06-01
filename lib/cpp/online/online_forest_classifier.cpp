@@ -309,7 +309,6 @@ void NodeClassifier::print() {
   std::cout << ")\n";
 }
 
-
 /*********************************************************************************
 * TreeClassifier methods
 *********************************************************************************/
@@ -365,7 +364,7 @@ uint32_t TreeClassifier::go_downwards(const ArrayDouble &x_t, double y_t) {
     while (true) {
       // If it's not the first iteration (otherwise the current node is root
       // with no range), we consider the possibility of a split
-      float split_time = compute_split_time(index_current_node, x_t);
+      float split_time = compute_split_time(index_current_node, x_t, y_t);
 //      std::cout << "iteration: " << iteration;
 //      std::cout << ", split_time: " << split_time << std::endl;
 
@@ -423,6 +422,8 @@ uint32_t TreeClassifier::go_downwards(const ArrayDouble &x_t, double y_t) {
           index_current_node = left;
         }
 
+        // TODO: we can use get_child ?
+
         update_depth(left, depth);
         update_depth(right, depth);
 
@@ -460,9 +461,21 @@ uint32_t TreeClassifier::go_downwards(const ArrayDouble &x_t, double y_t) {
   }
 }
 
-float TreeClassifier::compute_split_time(uint32_t node_index, const ArrayDouble &x_t) {
+float TreeClassifier::compute_split_time(uint32_t node_index, const ArrayDouble &x_t, const double y_t) {
   // std::cout << "TreeClassifier::compute_split_time with node_index: " << node_index << std::endl;
   NodeClassifier &current_node = node(node_index);
+
+  // Do all the data points in this node have the same label y_t ?
+
+  // TODO: utiliser le min_range_extension ici
+
+  // TODO: utiliser le max_nodes ici aussi !
+
+  // TODO: A FAIRE ICI le split pure
+  if (!forest.split_pure() && current_node.is_dirac(y_t)) {
+    return 0;
+  }
+
   // Let's compute the extension of the range of the current node, and its sum
   float intensities_sum = current_node.compute_range_extension(x_t, intensities);
   // TODO: Make this a parameter
@@ -614,20 +627,18 @@ void TreeClassifier::go_upwards(uint32_t leaf_index) {
   }
 }
 
-
 void TreeClassifier::update_depth(uint32_t node_index, uint8_t depth) {
 
-  NodeClassifier & current_node = node(node_index);
+  NodeClassifier &current_node = node(node_index);
   depth++;
   current_node.set_depth(depth);
-  if(current_node.is_leaf()) {
+  if (current_node.is_leaf()) {
     return;
   } else {
     update_depth(current_node.left(), depth);
     update_depth(current_node.right(), depth);
   }
 }
-
 
 void TreeClassifier::print() {
   std::cout << "Tree(n_nodes: " << _n_nodes << "," << std::endl;
@@ -638,7 +649,6 @@ void TreeClassifier::print() {
   }
   std::cout << ")" << std::endl;
 }
-
 
 void TreeClassifier::predict(const ArrayDouble &x_t, ArrayDouble &scores, bool use_aggregation) {
   uint32_t leaf = get_leaf(x_t);
@@ -863,6 +873,9 @@ OnlineForestClassifier::OnlineForestClassifier(uint32_t n_features,
                                                FeatureImportanceType feature_importance_type,
                                                bool use_aggregation,
                                                float dirichlet,
+                                               bool split_pure,
+                                               int32_t max_nodes,
+                                               float min_extension_size,
                                                int32_t n_threads,
                                                int seed,
                                                bool verbose)
@@ -874,6 +887,9 @@ OnlineForestClassifier::OnlineForestClassifier(uint32_t n_features,
       _feature_importance_type(feature_importance_type),
       _use_aggregation(use_aggregation),
       _dirichlet(dirichlet),
+      _split_pure(split_pure),
+      _max_nodes(max_nodes),
+      _min_extension_size(min_extension_size),
       _n_threads(n_threads),
       _verbose(verbose),
       rand(seed) {
@@ -1111,6 +1127,18 @@ OnlineForestClassifier &OnlineForestClassifier::set_dirichlet(const float dirich
   // TODO: check that it's > 0
   _dirichlet = dirichlet;
   return *this;
+}
+
+bool OnlineForestClassifier::split_pure() const {
+  return _split_pure;
+}
+
+int32_t OnlineForestClassifier::max_nodes() const {
+  return _max_nodes;
+}
+
+float OnlineForestClassifier::min_extension_size() const {
+  return _min_extension_size;
 }
 
 void OnlineForestClassifier::get_feature_importances(SArrayDoublePtr feature_importances) {
