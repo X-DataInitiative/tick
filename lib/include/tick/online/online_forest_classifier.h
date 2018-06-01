@@ -84,19 +84,21 @@ class NodeClassifier {
     }
   }
 
-  // Update to apply to a node when going forward in the tree (towards leaves)
-  float update_weight(const ArrayDouble &x_t, const double y_t);
-  // Update to apply to a node when going upward in the tree (towards the root)
-  void update_weight_tree();
-  // Update the prediction of the label
-  void update_count(const double y_t);
-
-  bool is_dirac(const double y_t);
-
-    // Update range of the seen features
+  // Update range of the seen features
   void update_range(const ArrayDouble &x_t);
   // Update n_samples
   void update_n_samples();
+  // Update to apply to a node when going forward in the tree (towards leaves)
+  float update_weight(const ArrayDouble &x_t, const double y_t);
+  // Update the prediction of the label
+  void update_count(const double y_t);
+  // Update the prediction of the label
+  void update_downwards(const ArrayDouble &x_t, const double y_t, bool do_update_weight);
+  // Update to apply to a node when going upward in the tree (towards the root)
+  void update_weight_tree();
+
+  bool is_dirac(const double y_t);
+
   // Get the index of the child node containing x_t
   uint32_t get_child(const ArrayDouble & x_t);
 
