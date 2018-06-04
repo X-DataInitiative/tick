@@ -47,6 +47,8 @@ class DLL_PUBLIC HawkesKernel {
   //! @brief Copy constructor
   HawkesKernel(const HawkesKernel &kernel);
 
+  virtual ~HawkesKernel() {}
+
   // Some kernels cannot be shared, so this function is called before a kernel
   // is used
   // TODO(martin) change function

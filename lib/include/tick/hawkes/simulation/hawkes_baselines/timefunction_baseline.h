@@ -20,6 +20,8 @@ class DLL_PUBLIC HawkesTimeFunctionBaseline : public HawkesBaseline {
   //! @brief default constructor (0 baseline)
   HawkesTimeFunctionBaseline();
 
+  virtual ~HawkesTimeFunctionBaseline() {}
+
   //! @brief TimeFunction constructor
   explicit HawkesTimeFunctionBaseline(TimeFunction time_function);
 

@@ -16,6 +16,8 @@ class DLL_PUBLIC HawkesBaseline {
   //! @brief Empty constuctor
   HawkesBaseline() {}
 
+  virtual ~HawkesBaseline() {}
+
   //! @brief get value of the baseline at time t
   virtual double get_value(double t) = 0;
 
