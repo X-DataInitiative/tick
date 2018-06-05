@@ -18,7 +18,7 @@ from .build.online import FeatureImportanceType_given
 
 # TODO: respect the scikit-learn API: partial_fit with classes= ?
 # TODO: clean the C++ part, optimize a little bit the code (memory allocation)
-# TODO:
+# TODO: add a random_state argument to the classifier
 
 class OnlineForestClassifier(ABC, Base):
     """Truly online random forest for regression (continuous labels). BLABLA

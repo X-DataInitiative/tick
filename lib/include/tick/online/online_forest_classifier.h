@@ -76,7 +76,6 @@ class NodeClassifier {
   // Update the prediction of the label
   void update_count(const double y_t);
 
-
  public:
   NodeClassifier(TreeClassifier &tree, uint32_t parent, float time = 0);
   NodeClassifier(const NodeClassifier &node);
@@ -102,7 +101,7 @@ class NodeClassifier {
   bool is_dirac(const double y_t);
 
   // Get the index of the child node containing x_t
-  uint32_t get_child(const ArrayDouble & x_t);
+  uint32_t get_child(const ArrayDouble &x_t);
 
   // Predict function (average of the labels of samples that passed through the node)
   void predict(ArrayDouble &scores) const;
@@ -112,7 +111,10 @@ class NodeClassifier {
   float score(uint8_t y) const;
   // Compute the exntension of the range of the node when adding x_t.
   // Output is in intensities, and returns the sum of the extensions
-  float compute_range_extension(const ArrayDouble &x_t, ArrayFloat &extensions);
+  void compute_range_extension(const ArrayDouble &x_t,
+                               ArrayFloat &extensions,
+                               float &extensions_sum,
+                               float &extensions_max);
 
   // Get node at index in the tree
   inline NodeClassifier &node(uint32_t index) const;

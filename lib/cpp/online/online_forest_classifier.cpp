@@ -135,27 +135,30 @@ float NodeClassifier::score(uint8_t c) const {
   return (_counts[c] + dirichlet()) / (_n_samples + dirichlet() * n_classes());
 }
 
-float NodeClassifier::compute_range_extension(const ArrayDouble &x_t, ArrayFloat &extensions) {
-  float sum_extensions = 0;
+void NodeClassifier::compute_range_extension(const ArrayDouble &x_t, ArrayFloat &extensions,
+                                             float &extensions_sum, float &extensions_max) {
+  extensions_sum = 0;
+  extensions_max = std::numeric_limits<float>::lowest();
   for (uint32_t j = 0; j < n_features(); ++j) {
     float x_tj = static_cast<float>(x_t[j]);
     float feature_min_j = _features_min[j];
     float feature_max_j = _features_max[j];
+    float diff;
     if (x_tj < feature_min_j) {
-      float diff = feature_min_j - x_tj;
-      extensions[j] = diff;
-      sum_extensions += diff;
+      diff = feature_min_j - x_tj;
     } else {
       if (x_tj > feature_max_j) {
-        float diff = x_tj - feature_max_j;
-        extensions[j] = diff;
-        sum_extensions += diff;
+        diff = x_tj - feature_max_j;
       } else {
-        extensions[j] = 0;
+        diff = 0;
       }
     }
+    extensions[j] = diff;
+    extensions_sum += diff;
+    if (diff > extensions_max) {
+      extensions_max = diff;
+    }
   }
-  return sum_extensions;
 }
 
 void NodeClassifier::predict(ArrayDouble &scores) const {
@@ -465,26 +468,33 @@ float TreeClassifier::compute_split_time(uint32_t node_index, const ArrayDouble 
   // std::cout << "TreeClassifier::compute_split_time with node_index: " << node_index << std::endl;
   NodeClassifier &current_node = node(node_index);
 
-  // Do all the data points in this node have the same label y_t ?
-
-  // TODO: utiliser le min_range_extension ici
-
-  // TODO: utiliser le max_nodes ici aussi !
-
-  // TODO: A FAIRE ICI le split pure
+  // Don't split if the node is pure: all labels are equal to the one of y_t
   if (!forest.split_pure() && current_node.is_dirac(y_t)) {
     return 0;
   }
 
+  // Get maximum number of nodes allowed in the tree
+  int32_t max_nodes = forest.max_nodes();
+  // Don't split if there is already too many nodes
+  if ((max_nodes > 0) and (_n_nodes >= max_nodes)) {
+    return 0;
+  }
+
   // Let's compute the extension of the range of the current node, and its sum
-  float intensities_sum = current_node.compute_range_extension(x_t, intensities);
-  // TODO: Make this a parameter
-  float min_extension_size = 1e-5;
+  float extensions_sum, extensions_max;
+  current_node.compute_range_extension(x_t, intensities, extensions_sum, extensions_max);
+  // Get the min extension size
+  float min_extension_size = forest.min_extension_size();
+  // Don't split if the extension is too small
+  if ((min_extension_size > 0) and extensions_max < min_extension_size) {
+    return 0;
+  }
+
   // If the sample x_t extends the current range of the node
-  if (intensities_sum > min_extension_size) {
+  if (extensions_sum > 0) {
     // std::cout << "intensities_sum: " << intensities_sum;
     // TODO: check that intensity is indeed intensity in the rand.h
-    float T = forest.sample_exponential(intensities_sum);
+    float T = forest.sample_exponential(extensions_sum);
     float time = current_node.time();
     // Splitting time of the node (if splitting occurs)
     float split_time = time + T;

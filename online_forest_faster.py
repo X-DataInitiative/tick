@@ -29,12 +29,13 @@ X_train, X_test, y_train, y_test = \
 #
 # exit(0)
 
-of = OnlineForestClassifier(n_classes=2, n_trees=1)
+of = OnlineForestClassifier(n_classes=2, n_trees=10)
 t1 = time()
 # of.partial_fit(X_train[:4], y_train[:4])
 of.partial_fit(X_train, y_train)
 t2 = time()
 print('OF:', t2 - t1, 'Acc:', of.score(X_test, y_test))
+
 
 
 # nodes = of1.get_nodes(0)
