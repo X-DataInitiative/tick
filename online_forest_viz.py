@@ -1,7 +1,7 @@
-
 import numpy as np
 from sklearn.datasets import make_classification
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import MinMaxScaler
 from tick.online import OnlineForestClassifier
 
 from bokeh.models.glyphs import Circle, Segment, Text
@@ -11,13 +11,16 @@ from bokeh.models import ColumnDataSource, HoverTool
 from bokeh.models.widgets import Slider, TextInput
 from bokeh.plotting import figure
 
+import pandas as pd
 
 n_samples = 500
 n_features = 2
-max_iter = 300
+max_iter = 50
 
 X, y = make_classification(n_samples=n_samples, n_features=n_features,
                            n_informative=n_features, n_redundant=0)
+
+X = MinMaxScaler().fit_transform(X)
 
 n_classes = int(y.max() + 1)
 
@@ -59,19 +62,23 @@ def get_tree(of):
 
 of = OnlineForestClassifier(n_classes=n_classes, seed=1234,
                             use_aggregation=False,
-                            n_trees=1,
+                            n_trees=1, split_pure=True,
                             dirichlet=0.5, step=1.,
                             use_feature_importances=False)
 
 dfs = {}
+df_datas = {}
 
 for t in range(0, max_iter + 1):
     of.partial_fit(X[t].reshape(1, n_features), np.array([y[t]]))
-
     dfs[t] = get_tree(of)
+    df_datas[t] = pd.DataFrame({'x1': X[:(t+1), 0],
+                                'x2': X[:(t+1), 1],
+                                'y': y[:(t+1)]},
+                               columns=['x1', 'x2', 'y'])
 
 df = dfs[1]
-
+df_data = df_datas[1]
 
 # plot_options = dict(plot_width=700, plot_height=400,
 #                     outline_line_color=None)
@@ -81,19 +88,23 @@ df = dfs[1]
 # plot = Plot(x_range=xdr, y_range=ydr, **plot_options)
 
 source = ColumnDataSource(ColumnDataSource.from_df(df))
+source_data = ColumnDataSource(ColumnDataSource.from_df(df_data))
 
+plot = figure(plot_width=400, plot_height=400, title="Mondrian Tree",
+              tools="",
+              # tools="pan,reset,save,wheel_zoom",
+              x_range=[-0.1, 1.1], y_range=[-1, 11])
 
-plot = figure(plot_width=900, plot_height=700, title="Mondrian Tree",
-              tools="pan,reset,save,wheel_zoom",
-              x_range=[0, 1], y_range=[0, 10])
+plot_data = figure(plot_width=400, plot_height=400, title="Data points",
+                   tools="",
+                   x_range=[0.1, 1.1], y_range=[0.1, 1.1])
 
+plot.outline_line_color = None
+plot.axis.visible = False
+plot.grid.visible = False
 
-# plot.add_tools(PanTool())
-# # plot.add_tools(HoverTool())
-# # plot.add_tools(BoxZoomTool())
-# plot.add_tools(ResetTool())
-# plot.add_tools(WheelZoomTool())
-#
+plot_data.outline_line_color = None
+plot_data.grid.visible = None
 
 # plot.line('x', 'y', source=source, line_width=3, line_alpha=0.6)
 
@@ -110,6 +121,31 @@ circles = plot.circle(x="x", y="y", size=10, fill_color="color", name="circles",
                       fill_alpha=0.1, source=source)
 
 
+circles_data = plot_data.circle(x="x1", y="x2", size=10,
+                                fill_color="y",
+                                name="circles",
+                                fill_alpha=0.5, source=source_data)
+
+
+# TODO: add the decision function using bokeh image. Precompute everything of course...
+# import numpy as np
+#
+# from bokeh.plotting import figure, show, output_file
+# from bokeh.models import HoverTool
+#
+# N = 500
+# x = np.linspace(0, 10, N)
+# y = np.linspace(0, 10, N)
+# xx, yy = np.meshgrid(x, y)
+# d = np.sin(xx)*np.cos(yy)
+#
+# p = figure(x_range=(0, 10), y_range=(0, 10),
+#            tools=[HoverTool(tooltips=[("x", "$x"), ("y", "$y"), ("value", "@image")])])
+#
+# # must give a vector of image data for image parameter
+# p.image(image=[d], x=0, y=0, dw=10, dh=10, palette="Spectral11")
+
+
 hover = HoverTool(
     renderers=[circles],
     tooltips=[
@@ -119,7 +155,6 @@ hover = HoverTool(
 )
 
 plot.add_tools(hover)
-
 
 plot.text(x="x", y="y", text="id", source=source)
 
@@ -133,17 +168,19 @@ plot.segment(x0="x", y0="y", x1="x0", y1="y0", line_color="#151515",
 def update_plot(attrname, old, new):
     t = iteration_slider.value
     source.data = dfs[t].to_dict('list')
+    source_data.data = df_datas[t].to_dict('list')
     # print(df)
 
 
-iteration_slider = Slider(title="Iteration", value=0, start=1,
-                          end=max_iter, step=1)
+iteration_slider = Slider(title="Iteration", value=0, start=0,
+                          end=max_iter, step=1, orientation='horizontal')
 
 iteration_slider.on_change('value', update_plot)
 
-inputs = widgetbox(iteration_slider)
+inputs = widgetbox(iteration_slider, sizing_mode='scale_both')
 
-curdoc().add_root(column(plot, inputs, width=800))
+curdoc().add_root(row(inputs, plot, plot_data, width=1200, height=500))
+
+# curdoc().add_root(column(plot, inputs, width=800))
 
 curdoc().title = "Mondrian trees"
-
