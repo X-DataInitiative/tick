@@ -468,6 +468,12 @@ float TreeClassifier::compute_split_time(uint32_t node_index, const ArrayDouble 
   // std::cout << "TreeClassifier::compute_split_time with node_index: " << node_index << std::endl;
   NodeClassifier &current_node = node(node_index);
 
+  // Don't split if the number of samples in the node is not large enough
+  int32_t min_samples_split = forest.min_samples_split();
+  if ((min_samples_split > 0) && (current_node.n_samples() < min_samples_split)) {
+    return 0;
+  }
+
   // Don't split if the node is pure: all labels are equal to the one of y_t
   if (!forest.split_pure() && current_node.is_dirac(y_t)) {
     return 0;
@@ -886,6 +892,8 @@ OnlineForestClassifier::OnlineForestClassifier(uint32_t n_features,
                                                bool split_pure,
                                                int32_t max_nodes,
                                                float min_extension_size,
+                                               int32_t min_samples_split,
+                                               int32_t max_features,
                                                int32_t n_threads,
                                                int seed,
                                                bool verbose)
@@ -900,6 +908,8 @@ OnlineForestClassifier::OnlineForestClassifier(uint32_t n_features,
       _split_pure(split_pure),
       _max_nodes(max_nodes),
       _min_extension_size(min_extension_size),
+      _min_samples_split(min_samples_split),
+      _max_features(max_features),
       _n_threads(n_threads),
       _verbose(verbose),
       rand(seed) {
@@ -1149,6 +1159,14 @@ int32_t OnlineForestClassifier::max_nodes() const {
 
 float OnlineForestClassifier::min_extension_size() const {
   return _min_extension_size;
+}
+
+int32_t OnlineForestClassifier::min_samples_split() const {
+  return _min_samples_split;
+}
+
+int32_t OnlineForestClassifier::max_features() const {
+  return _max_features;
 }
 
 void OnlineForestClassifier::get_feature_importances(SArrayDoublePtr feature_importances) {

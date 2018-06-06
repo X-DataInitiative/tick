@@ -35,6 +35,8 @@ class OnlineForestClassifier {
                          bool split_pure,
                          int32_t max_nodes,
                          float min_extension_size,
+                         int32_t min_samples_split,
+                         int32_t max_features,
                          int32_t n_threads,
                          int seed,
                          bool verbose);

@@ -98,6 +98,7 @@ class OnlineForestClassifier(ABC, Base):
                  criterion: str = 'log', use_aggregation: bool = True,
                  dirichlet: float = 0.5, split_pure: bool = False,
                  max_nodes: int = None, min_extension_size: float = 0,
+                 min_samples_split: int=-1, max_features: int=-1,
                  n_threads: int = 1,
                  use_feature_importances=True, seed: int = -1,
                  verbose: bool = True):
@@ -116,6 +117,8 @@ class OnlineForestClassifier(ABC, Base):
         else:
             self.max_nodes = -1
         self.min_extension_size = min_extension_size
+        self.min_samples_split = min_samples_split
+        self.max_features = max_features
         self.n_threads = n_threads
         self._forest = None
         self._given_feature_importances = None
@@ -162,6 +165,8 @@ class OnlineForestClassifier(ABC, Base):
                 self.split_pure,
                 self.max_nodes,
                 self.min_extension_size,
+                self.min_samples_split,
+                self.max_features,
                 self.n_threads,
                 self.seed,
                 self.verbose

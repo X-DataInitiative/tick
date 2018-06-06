@@ -29,7 +29,8 @@ X_train, X_test, y_train, y_test = \
 #
 # exit(0)
 
-of = OnlineForestClassifier(n_classes=2, n_trees=10)
+of = OnlineForestClassifier(n_classes=2, n_trees=10, split_pure=False,
+                            min_samples_split=3)
 t1 = time()
 # of.partial_fit(X_train[:4], y_train[:4])
 of.partial_fit(X_train, y_train)

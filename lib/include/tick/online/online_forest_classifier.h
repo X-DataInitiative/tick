@@ -17,6 +17,10 @@
 // TODO: memory optimization (a FeatureSplitter), maximum (sizeof(uint8_t) splits)), a set of current splits
 // TODO: only binary features version ?
 
+// TODO: add a min_sample_split option
+// TODO: column subsampling and feature selection
+
+// TODO: class balancing: sample_weights or class_weight option
 
 enum class CriterionClassifier {
   log = 0,
@@ -315,6 +319,9 @@ class OnlineForestClassifier {
   int32_t _max_nodes;
   float _min_extension_size;
 
+  int32_t _min_samples_split;
+  int32_t _max_features;
+
   // Number of threads to use for parallel growing of trees
   int32_t _n_threads;
   // Seed for random number generation
@@ -346,6 +353,8 @@ class OnlineForestClassifier {
                          bool split_pure,
                          int32_t max_nodes,
                          float min_extension_size,
+                         int32_t min_samples_split,
+                         int32_t max_features,
                          int32_t n_threads,
                          int seed,
                          bool verbose);
@@ -372,6 +381,8 @@ class OnlineForestClassifier {
   bool split_pure() const;
   int32_t max_nodes() const;
   float min_extension_size() const;
+  int32_t min_samples_split() const;
+  int32_t max_features() const;
 
   float dirichlet() const;
   OnlineForestClassifier &set_dirichlet(const float dirichlet);
