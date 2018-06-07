@@ -1,6 +1,8 @@
 import numpy as np
 import pandas as pd
 
+import os
+
 from sklearn.datasets import make_classification, make_moons
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
@@ -9,7 +11,7 @@ from tick.online import OnlineForestClassifier
 from bokeh.io import curdoc
 from bokeh.layouts import row, column, widgetbox
 from bokeh.models import ColumnDataSource, HoverTool
-from bokeh.models.widgets import Slider, TextInput
+from bokeh.models.widgets import Slider, Button
 from bokeh.plotting import figure
 from bokeh.palettes import RdBu
 
@@ -22,6 +24,7 @@ logging.basicConfig(level=logging.INFO,
 n_samples = 500
 n_features = 2
 max_iter = 100
+
 
 # X, y = make_classification(n_samples=n_samples, n_features=n_features,
 #                            n_informative=n_features, n_redundant=0)
@@ -105,10 +108,10 @@ source_decision = ColumnDataSource(data={'image': [zz]})
 
 
 plot = figure(plot_width=500, plot_height=500, title="Mondrian Tree",
-              tools="", x_range=[-0.1, 1.1], y_range=[-1, 11])
+              x_range=[-0.1, 1.1], y_range=[-1, 11])
 
 plot_data = figure(plot_width=500, plot_height=500, title="Decision and data",
-                   tools="", x_range=[0, 1], y_range=[0, 1])
+                   x_range=[0, 1], y_range=[0, 1])
 
 plot_data.image('image', source=source_decision, x=0, y=0, dw=1, dh=1,
                 palette=RdBu[11])
@@ -136,7 +139,18 @@ hover = HoverTool(
     ]
 )
 
+
+hover_data = HoverTool(
+    renderers=[circles_data],
+    tooltips=[
+        ("x1", "@x1"),
+        ("x2", "@x2")
+    ]
+)
+
 plot.add_tools(hover)
+
+plot_data.add_tools(hover_data)
 
 plot.text(x="x", y="y", text="id", source=source)
 
@@ -152,13 +166,45 @@ def update_plot(attrname, old, new):
 
 
 iteration_slider = Slider(title="Iteration", value=0, start=0,
-                          end=max_iter, step=1, orientation='horizontal')
+                          end=max_iter, step=1, width=1000)
 
 iteration_slider.on_change('value', update_plot)
 
-inputs = widgetbox(iteration_slider, sizing_mode='scale_both')
+# button = Button(label='► Play', width=60)
+#
+#
+# callback_id = 0
+#
+#
+# def animate_update():
+#     step = iteration_slider.value + 1
+#     if step > max_iter:
+#         step = 0
+#     iteration_slider.value = step
+#
+#
+# def animate():
+#     global callback_id
+#     if button.label == '► Play':
+#         button.label = '❚❚ Pause'
+#         callback_id = curdoc().add_periodic_callback(animate_update, 1000)
+#     else:
+#         button.label = '► Play'
+#         curdoc().remove_periodic_callback(callback_id)
+#
+#
+# button.on_click(animate)
 
-curdoc().add_root(row(inputs, plot, plot_data, width=1500, height=500))
+# inputs = widgetbox(button, iteration_slider)
 
+inputs = widgetbox(iteration_slider)
+
+layout = column(
+    row(plot, plot_data, width=1000, height=500),
+    row(inputs, height=50),
+)
+
+
+curdoc().add_root(layout)
 
 curdoc().title = "Mondrian trees"
