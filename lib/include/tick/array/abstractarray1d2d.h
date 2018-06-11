@@ -82,17 +82,31 @@ NonAtomicOuterType(uint16_t);
 NonAtomicOuterType(unsigned long);
 #endif
 
+template <typename T>
+class Array_Comparator {
+ public:
+  static bool VFUNCTION(const std::vector<std::shared_ptr<T>> &left,
+                        const std::vector<std::shared_ptr<T>> &right) {
+    return (left.size() == right.size() &&
+            std::equal(left.begin(), left.end(), right.begin(), FUNCTION));
+  };
+  static bool FUNCTION(const std::shared_ptr<T> &left, const std::shared_ptr<T> &right) {
+    return (*left == *right);
+  };
+};
+
 /*! \class AbstractArray1d2d
  * \brief Base template purely virtual class for
  * all the 2d and 1d-array (sparse and dense) classes of type `T`.
  */
-class RowMajor{
-};
-class ColMajor{
-};
+class RowMajor {};
+class ColMajor {};
 
 template <typename T, typename MAJ = RowMajor>
 class AbstractArray1d2d {
+  template <class T1>
+  friend std::ostream &operator<<(std::ostream &, const AbstractArray1d2d<T1> &);
+
  protected:
   //! @brief inner type used for most outputs.
   //! Basic usage: `AbstractArray1d2d<std::atomic<double>>::K` is `double`
@@ -199,9 +213,8 @@ class AbstractArray1d2d {
   virtual void _print_sparse() const = 0;
 
   //! @brief Compare two arrays by value - ignores allocation methodology !)
-  bool compare(const AbstractArray1d2d<T, MAJ> &that) {
-    bool are_equal =
-        this->_size == that._size && this->_size_sparse == that._size_sparse;
+  bool compare(const AbstractArray1d2d<T, MAJ> &that) const {
+    bool are_equal = this->_size == that._size && this->_size_sparse == that._size_sparse;
     if (are_equal && this->_indices && that._indices) {
       for (size_t i = 0; i < this->_size_sparse; i++) {
         are_equal = this->_indices[i] == that._indices[i];
@@ -216,7 +229,7 @@ class AbstractArray1d2d {
     }
     return are_equal;
   }
-  bool operator==(const AbstractArray1d2d<T, MAJ> &that) { return compare(that); }
+  bool operator==(const AbstractArray1d2d<T, MAJ> &that) const { return compare(that); }
 
  public:
   //! @brief Fill array with zeros (in case of a sparse array we do not
@@ -442,6 +455,11 @@ typename std::enable_if<!std::is_same<T, bool>::value &&
                         Y>::type
 AbstractArray1d2d<T, MAJ>::get_data_index(size_t index) const {
   return _data[index];
+}
+
+template <typename T>
+inline std::ostream &operator<<(std::ostream &s, const AbstractArray1d2d<T> &p) {
+  return s << typeid(p).name();
 }
 
 #endif  // LIB_INCLUDE_TICK_ARRAY_ABSTRACTARRAY1D2D_H_

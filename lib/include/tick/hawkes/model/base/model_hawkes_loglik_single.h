@@ -213,6 +213,35 @@ class DLL_PUBLIC ModelHawkesLogLikSingle : public ModelHawkesSingle {
   inline ulong get_rand_max() const { return n_total_jumps; }
 
   friend ModelHawkesLogLik;
+
+  template <class Archive>
+  void serialize(Archive &ar) {
+    ar(cereal::make_nvp("ModelHawkesSingle",
+                        cereal::base_class<ModelHawkesSingle>(this)));
+
+    ar(CEREAL_NVP(g));
+    ar(CEREAL_NVP(G));
+    ar(CEREAL_NVP(sum_G));
+  }
+
+  BoolStrReport compare(const ModelHawkesLogLikSingle &that, std::stringstream &ss) {
+    ss << get_class_name() << std::endl;
+    auto are_equal = ModelHawkesSingle::compare(that, ss) &&
+                     TICK_CMP_REPORT_VECTOR(ss, g) &&
+                     TICK_CMP_REPORT_VECTOR(ss, G) &&
+                     TICK_CMP_REPORT_VECTOR(ss, sum_G);
+    return BoolStrReport(are_equal, ss.str());
+  }
+  BoolStrReport compare(const ModelHawkesLogLikSingle &that) {
+    std::stringstream ss;
+    return compare(that, ss);
+  }
+  BoolStrReport operator==(const ModelHawkesLogLikSingle &that) {
+    return ModelHawkesLogLikSingle::compare(that);
+  }
 };
+
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelHawkesLogLikSingle,
+                                   cereal::specialization::member_serialize)
 
 #endif  // LIB_INCLUDE_TICK_HAWKES_MODEL_BASE_MODEL_HAWKES_LOGLIK_SINGLE_H_

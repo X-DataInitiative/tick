@@ -86,8 +86,9 @@ if [[ "$unameOut" == "CYGWIN"* ]] || [[ "$unameOut" == "MINGW"* ]] || [[ "$uname
     # which interferes with MSVC link.exe
     PATH="$(dirname $CL_PATH):$PATH"
   fi
-
-  PYDIR=$(dirname $(which $PY))
+  
+  PYDIR=$(dirname "$(which $PY)")
+  echo PYDIR $PYDIR
   PYINC="$PYDIR/include"
   [ ! -d "$PYINC" ] && \
       echo "$PYNUMINC does not exist - python in inconsistent state - reinstall"

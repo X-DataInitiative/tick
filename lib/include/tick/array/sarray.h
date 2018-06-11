@@ -39,6 +39,9 @@ class SArray : public Array<T> {
 #endif
 
  public:
+  using COMPARATOR = Array_Comparator<SArray<T>>;
+
+ public:
 #ifdef PYTHON_LINK
   void give_data_ownership(void *owner);
 
@@ -314,12 +317,17 @@ std::shared_ptr<SArray<T>> Array<T>::as_sarray_ptr() {
 /**
  * @}
  */
+#define VEC_PTR_CMP(TYPE) template class Array_Comparator<SArray<TYPE>>
+#if defined(__APPLE__) || defined(_WIN32)
+VEC_PTR_CMP(unsigned long);
+#endif
 
-#define SARRAY_DEFINE_TYPE(TYPE, NAME)                            \
-  typedef SArray<TYPE> SArray##NAME;                              \
-  typedef std::shared_ptr<SArray##NAME> SArray##NAME##Ptr;        \
-  typedef std::vector<SArray##NAME##Ptr> SArray##NAME##PtrList1D; \
-  typedef std::vector<SArray##NAME##PtrList1D> SArray##NAME##PtrList2D
+#define SARRAY_DEFINE_TYPE(TYPE, NAME)                                  \
+  typedef SArray<TYPE> SArray##NAME;                                    \
+  typedef std::shared_ptr<SArray##NAME> SArray##NAME##Ptr;              \
+  typedef std::vector<SArray##NAME##Ptr> SArray##NAME##PtrList1D;       \
+  typedef std::vector<SArray##NAME##PtrList1D> SArray##NAME##PtrList2D; \
+  VEC_PTR_CMP(TYPE);
 
 SARRAY_DEFINE_TYPE(double, Double);
 SARRAY_DEFINE_TYPE(float, Float);
@@ -333,10 +341,10 @@ SARRAY_DEFINE_TYPE(std::atomic<double>, AtomicDouble);
 SARRAY_DEFINE_TYPE(std::atomic<float>, AtomicFloat);
 
 #undef SARRAY_DEFINE_TYPE
+#undef VEC_PTR_CMP
 
-#define INSTANTIATE_SARRAY(SARRAY_TYPE, C_TYPE)                \
-  template std::ostream &operator<<<C_TYPE>(std::ostream &Str, \
-                                            SArray<C_TYPE> *v)
+#define INSTANTIATE_SARRAY(SARRAY_TYPE, C_TYPE) \
+  template std::ostream &operator<<<C_TYPE>(std::ostream &Str, SArray<C_TYPE> *v)
 
 INSTANTIATE_SARRAY(SArrayDoublePtr, double);
 INSTANTIATE_SARRAY(SArrayFloatPtr, float);

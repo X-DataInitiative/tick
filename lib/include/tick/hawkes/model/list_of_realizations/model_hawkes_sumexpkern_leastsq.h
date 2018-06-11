@@ -105,6 +105,29 @@ class DLL_PUBLIC ModelHawkesSumExpKernLeastSq : public ModelHawkesLeastSq {
     ar(CEREAL_NVP(decays));
     ar(CEREAL_NVP(n_decays));
   }
+
+  BoolStrReport compare(const ModelHawkesSumExpKernLeastSq &that, std::stringstream &ss) {
+    ss << get_class_name() << std::endl;
+    auto are_equal = ModelHawkesLeastSq::compare(that, ss) &&
+                     TICK_CMP_REPORT_VECTOR(ss, E) &&
+                     TICK_CMP_REPORT_VECTOR(ss, Dgg) &&
+                     TICK_CMP_REPORT_VECTOR(ss, C) &&
+                     TICK_CMP_REPORT_VECTOR(ss, Dg) &&
+                     TICK_CMP_REPORT(ss, L) &&
+                     TICK_CMP_REPORT_VECTOR(ss, K) &&
+                     TICK_CMP_REPORT(ss, n_baselines) &&
+                     TICK_CMP_REPORT(ss, period_length) &&
+                     TICK_CMP_REPORT(ss, decays) &&
+                     TICK_CMP_REPORT(ss, n_decays);
+    return BoolStrReport(are_equal, ss.str());
+  }
+  BoolStrReport compare(const ModelHawkesSumExpKernLeastSq &that) {
+    std::stringstream ss;
+    return compare(that, ss);
+  }
+  BoolStrReport operator==(const ModelHawkesSumExpKernLeastSq &that) {
+    return ModelHawkesSumExpKernLeastSq::compare(that);
+  }
 };
 
 #endif  // LIB_INCLUDE_TICK_HAWKES_MODEL_LIST_OF_REALIZATIONS_MODEL_HAWKES_SUMEXPKERN_LEASTSQ_H__

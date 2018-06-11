@@ -84,6 +84,32 @@ class DLL_PUBLIC ModelHawkesSumExpKernLogLikSingle
   ulong get_n_decays() const { return decays.size(); }
 
   friend ModelHawkesSumExpKernLogLik;
+
+  template <class Archive>
+  void serialize(Archive &ar) {
+    ar(cereal::make_nvp("ModelHawkesLogLikSingle",
+                        cereal::base_class<ModelHawkesLogLikSingle>(this)));
+
+    ar(CEREAL_NVP(decays));
+  }
+
+  BoolStrReport compare(const ModelHawkesSumExpKernLogLikSingle &that, std::stringstream &ss) {
+    ss << get_class_name() << std::endl;
+    auto are_equal = ModelHawkesLogLikSingle::compare(that, ss) &&
+                     TICK_CMP_REPORT(ss, decays);
+    return BoolStrReport(are_equal, ss.str());
+  }
+  BoolStrReport compare(const ModelHawkesSumExpKernLogLikSingle &that) {
+    std::stringstream ss;
+    return compare(that, ss);
+  }
+  BoolStrReport operator==(const ModelHawkesSumExpKernLogLikSingle &that) {
+    return ModelHawkesSumExpKernLogLikSingle::compare(that);
+  }
 };
+
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelHawkesSumExpKernLogLikSingle,
+                                   cereal::specialization::member_serialize)
+CEREAL_REGISTER_TYPE(ModelHawkesSumExpKernLogLikSingle)
 
 #endif  // LIB_INCLUDE_TICK_HAWKES_MODEL_MODEL_HAWKES_SUMEXPKERN_LOGLIK_SINGLE_H_

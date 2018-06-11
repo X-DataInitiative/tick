@@ -94,6 +94,24 @@ class DLL_PUBLIC ModelHawkesExpKernLeastSq : public ModelHawkesLeastSq {
     ar(CEREAL_NVP(C));
     ar(CEREAL_NVP(decays));
   }
+
+  BoolStrReport compare(const ModelHawkesExpKernLeastSq &that, std::stringstream &ss) {
+    ss << get_class_name() << std::endl;
+    auto are_equal = ModelHawkesLeastSq::compare(that, ss) &&
+                     TICK_CMP_REPORT(ss, E) &&
+                     TICK_CMP_REPORT(ss, Dg) &&
+                     TICK_CMP_REPORT(ss, Dg2) &&
+                     TICK_CMP_REPORT(ss, C) &&
+                     TICK_CMP_REPORT_PTR(ss, decays);
+    return BoolStrReport(are_equal, ss.str());
+  }
+  BoolStrReport compare(const ModelHawkesExpKernLeastSq &that) {
+    std::stringstream ss;
+    return compare(that, ss);
+  }
+  BoolStrReport operator==(const ModelHawkesExpKernLeastSq &that) {
+    return ModelHawkesExpKernLeastSq::compare(that);
+  }
 };
 
 #endif  // LIB_INCLUDE_TICK_HAWKES_MODEL_LIST_OF_REALIZATIONS_MODEL_HAWKES_EXPKERN_LEASTSQ_H__

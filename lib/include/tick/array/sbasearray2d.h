@@ -52,6 +52,18 @@ SBASE_ARRAY_DEFINE_TYPE_SERIALIZE(std::atomic<float>, AtomicFloat);
 
 #undef SBASE_ARRAY2D_DEFINE_TYPE
 
+template <typename T, typename MAJ>
+std::shared_ptr<BaseArray2d<T, MAJ>> BaseArray2d<T, MAJ>::as_sarray2d_ptr() {
+  if (!is_data_allocation_owned)
+    TICK_ERROR(
+        "This method cannot be called on an object that does not own its "
+        "allocations");
+
+  std::shared_ptr<BaseArray2d<T, MAJ>> arrayptr(std::make_shared<BaseArray2d<T, MAJ>>(*this));
+  is_data_allocation_owned = false;
+  return arrayptr;
+}
+
 /**
  * @}
  */

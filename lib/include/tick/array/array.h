@@ -5,6 +5,9 @@
 
 /** @file */
 
+#include "alloc.h"
+#include "tick/base/defs.h"
+
 #include "basearray.h"
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -36,9 +39,6 @@ class SArray;
  */
 template <typename T>
 class Array : public BaseArray<T> {
-  template <class T1>
-  friend std::ostream &operator<<(std::ostream &, const Array<T1> &);
-
  protected:
   using BaseArray<T>::_size;
   using BaseArray<T>::is_data_allocation_owned;
@@ -392,10 +392,6 @@ Array<T> sort_abs(Array<T> &array, Array<ulong> &index,
   return sorted_array;
 }
 
-template <typename T>
-inline std::ostream &operator<<(std::ostream &s, const Array<T> &p) {
-  return s << typeid(p).name() << "<" << typeid(T).name() << ">";
-}
 
 /**
  * Array serialization function for binary archives types

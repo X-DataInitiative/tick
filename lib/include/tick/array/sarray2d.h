@@ -310,7 +310,7 @@ std::shared_ptr<SArray2d<T, MAJ>> Array2d<T, MAJ>::as_sarray2d_ptr() {
   typedef std::shared_ptr<SArray##NAME##2d> SArray##NAME##2dPtr;      \
   typedef std::shared_ptr<SColMajArray##NAME##2d> SColMajArray##NAME##2dPtr;      \
   typedef std::vector<SArray##NAME##2dPtr> SArray##NAME##2dPtrList1D; \
-  typedef std::vector<SArray##NAME##2dPtrList1D> SArray##NAME##2dPtrList2D
+  typedef std::vector<SArray##NAME##2dPtrList1D> SArray##NAME##2dPtrList2D;
 
 #define SARRAY_DEFINE_TYPE_SERIALIZE(TYPE, NAME) \
   SARRAY_DEFINE_TYPE(TYPE, NAME);                \

@@ -10,9 +10,10 @@
 class ModelSCCS : public ModelLipschitz {
 
  public:
+  ModelSCCS();
   ModelSCCS(const SBaseArrayDouble2dPtrList1D &features,
             const SArrayIntPtrList1D &labels,
-            const SBaseArrayULongPtr censoring,
+            const SArrayULongPtr censoring,
             const SArrayULongPtr n_lags);
 
   double loss(ArrayDouble &coeffs);
@@ -30,4 +31,7 @@ class ModelSCCS : public ModelLipschitz {
   unsigned long get_n_coeffs() const;
 
   double get_lip_max();
+
+  bool compare(const ModelSCCS &that);
 };
+TICK_MAKE_PICKLABLE(ModelSCCS);

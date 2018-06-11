@@ -115,10 +115,8 @@ class BaseArray : public AbstractArray1d2d<T> {
   Array<T> as_array();
 
   //! @brief Compare two arrays by value - ignores allocation methodology !)
-  bool compare(const BaseArray<T> &that) {
-    return AbstractArray1d2d<T>::compare(that);
-  }
-  bool operator==(const BaseArray<T> &that) { return compare(that); }
+  bool compare(const BaseArray<T> &that) const { return AbstractArray1d2d<T>::compare(that); }
+  bool operator==(const BaseArray<T> &that) const { return compare(that); }
 
  private:
   std::string type() const { return (is_dense() ? "Array" : "SparseArray"); }
