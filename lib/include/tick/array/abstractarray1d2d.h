@@ -12,6 +12,10 @@
 // License: BSD 3 clause
 
 #include <cstring>
+#include <atomic>
+#include <algorithm>
+#include <typeinfo>
+#include <type_traits>
 
 #include "promote.h"
 #include "vector_operations.h"
@@ -27,6 +31,37 @@
 #define INDICE_TYPE std::uint32_t
 #endif
 
+template<typename T> struct InnerType{};
+
+#define AtomicOuterType(TYPE)                   \
+template<> struct InnerType<std::atomic<TYPE>>{ \
+  using type = TYPE;                            \
+};
+
+#define NonAtomicOuterType(TYPE)   \
+template<> struct InnerType<TYPE>{ \
+  using type = TYPE;               \
+};
+
+AtomicOuterType(double);
+AtomicOuterType(float);
+
+NonAtomicOuterType(double);
+NonAtomicOuterType(float);
+
+NonAtomicOuterType(int64_t);
+NonAtomicOuterType(uint64_t);
+
+NonAtomicOuterType(int32_t);
+NonAtomicOuterType(uint32_t);
+NonAtomicOuterType(int16_t);
+NonAtomicOuterType(uint16_t);
+
+#if defined(__APPLE__) || defined(_WIN32)
+NonAtomicOuterType(unsigned long);
+#endif
+
+
 /*! \class AbstractArray1d2d
  * \brief Base template purely virtual class for
  * all the 2d and 1d-array (sparse and dense) classes of type `T`.
@@ -34,6 +69,10 @@
 template <typename T>
 class AbstractArray1d2d {
  protected:
+  //! @brief inner type used for most outputs.
+  //! Basic usage: `AbstractArray1d2d<std::atomic<double>>::K` is `double`
+  using K = typename InnerType<T>::type;
+
   //! @brief The size of the array : total number of coefficients (zero and non
   //! zero)
   ulong _size;
@@ -150,27 +189,57 @@ class AbstractArray1d2d {
  public:
   //! @brief Fill array with zeros (in case of a sparse array we do not
   //! desallocate the various arrays... so it is a "lazy" but quick init !)
+
   void init_to_zero() {
-    tick::vector_operations<T>{}.set(size_data(), T{0}, _data);
+    tick::vector_operations<T>{}.template set<K>(size_data(), T{0}, _data);
   }
 
   //! @brief Returns the sum of all the elements of the array
-  tick::promote_t<T> sum() const;
+  template <typename Y = K>
+  tick::promote_t<K> sum() const;
 
   //! @brief Returns the minimum element in the array
-  T min() const;
+  template <typename Y = K>
+  K min() const;
 
   //! @brief Returns the maximum element in the array
-  T max() const;
+  template <typename Y = K>
+  K max() const;
 
   //! @brief Compute the squared Euclidean norm of the array
-  tick::promote_t<T> norm_sq() const;
+
+  template <typename Y = K>
+  tick::promote_t<K> norm_sq() const;
 
   //! @brief Multiplication in place with a scalar
-  void operator*=(const T a);
+  template <typename Y = K>
+  typename std::enable_if<std::is_same<T, std::atomic<Y>>::value>::type
+  operator*=(const K a);
+
+  template <typename Y = K>
+  typename std::enable_if<!std::is_same<T, bool>::value && !std::is_same<Y, bool>::value && !std::is_same<T, std::atomic<Y>>::value>::type
+  operator*=(const K a);
+
+  template <typename Y = K>
+  void multiply(const K a);
 
   //! @brief Division in place with a scalar
-  void operator/=(const T a);
+  template <typename Y = K>
+  typename std::enable_if<std::is_same<T, std::atomic<Y>>::value>::type
+  operator/=(const K a);
+
+  template <typename Y = K>
+  typename std::enable_if<!std::is_same<T, bool>::value && !std::is_same<Y, bool>::value && !std::is_same<T, std::atomic<Y>>::value>::type
+  operator/=(const K a);
+
+  // // useful if data is atomic
+  template <typename Y = K>
+  typename std::enable_if<std::is_same<T, std::atomic<Y>>::value, Y>::type
+  get_data_index(size_t index) const;
+
+  template <typename Y = K>
+  typename std::enable_if<!std::is_same<T, bool>::value && !std::is_same<Y, bool>::value && !std::is_same<T, std::atomic<Y>>::value, Y>::type
+  get_data_index(size_t index) const;
 
  private:
   std::string type() const { return (is_dense() ? "Array" : "SparseArray"); }
@@ -312,19 +381,22 @@ AbstractArray1d2d<T> &AbstractArray1d2d<T>::operator=(
 
 // @brief Returns the sum of all the elements of the array
 template <typename T>
-tick::promote_t<T> AbstractArray1d2d<T>::sum() const {
+template <typename Y>
+tick::promote_t<typename AbstractArray1d2d<T>::K> AbstractArray1d2d<T>::sum() const {
   if (_size == 0) TICK_ERROR("Cannot take the sum of an empty array");
   if (size_data() == 0) return 0;
 
-  return tick::vector_operations<T>{}.sum(size_data(), _data);
+
+  return tick::vector_operations<T>{}.template sum<Y>(size_data(), _data);
 }
 
 // @brief Returns the min
 template <typename T>
-T AbstractArray1d2d<T>::min() const {
+template <typename Y>
+typename AbstractArray1d2d<T>::K AbstractArray1d2d<T>::min() const {
   if (_size == 0) TICK_ERROR("Cannot take the min of an empty array");
   if (size_data() == 0) return 0;
-  T min = _data[0];
+  Y min = _data[0];
   for (ulong i = 1; i < size_data(); ++i) {
     if (_data[i] < min) min = _data[i];
   }
@@ -337,10 +409,11 @@ T AbstractArray1d2d<T>::min() const {
 
 // @brief Returns the max
 template <typename T>
-T AbstractArray1d2d<T>::max() const {
+template <typename Y>
+typename AbstractArray1d2d<T>::K AbstractArray1d2d<T>::max() const {
   if (_size == 0) TICK_ERROR("Cannot take the max of an empty array");
   if (size_data() == 0) return 0;
-  T max = _data[0];
+  Y max = _data[0];
   for (ulong i = 1; i < size_data(); ++i) {
     if (_data[i] > max) max = _data[i];
   }
@@ -353,13 +426,14 @@ T AbstractArray1d2d<T>::max() const {
 
 // @brief Compute the squared Euclidean norm of the array
 template <typename T>
-tick::promote_t<T> AbstractArray1d2d<T>::norm_sq() const {
+template <typename Y>
+tick::promote_t<typename AbstractArray1d2d<T>::K> AbstractArray1d2d<T>::norm_sq() const {
   if (_size == 0) TICK_ERROR("Cannot take the norm_sq of an empty array");
   if (size_data() == 0) return 0;
 
-  tick::promote_t<T> norm_sq{0};
+  tick::promote_t<Y> norm_sq{0};
   for (ulong i = 0; i < size_data(); ++i) {
-    const T x_i = _data[i];
+    const Y x_i = get_data_index<Y>(i);
     norm_sq += x_i * x_i;
   }
 
@@ -368,7 +442,20 @@ tick::promote_t<T> AbstractArray1d2d<T>::norm_sq() const {
 
 // @brief Multiplication in place with a scalar
 template <typename T>
-void AbstractArray1d2d<T>::operator*=(const T a) {
+template <typename Y>
+typename std::enable_if<std::is_same<T, std::atomic<Y>>::value>::type
+AbstractArray1d2d<T>::operator*=(const typename AbstractArray1d2d<T>::K a) {
+  if (_size == 0) TICK_ERROR("Cannot apply *= on an empty array");
+  if (size_data() == 0) return;
+
+  tick::vector_operations<T>{}.template scale<Y>(size_data(), a, _data);
+}
+
+
+template <typename T>
+template <typename Y>
+typename std::enable_if<!std::is_same<T, bool>::value && !std::is_same<Y, bool>::value && !std::is_same<T, std::atomic<Y>>::value>::type
+AbstractArray1d2d<T>::operator*=(const typename AbstractArray1d2d<T>::K a) {
   if (_size == 0) TICK_ERROR("Cannot apply *= on an empty array");
   if (size_data() == 0) return;
 
@@ -398,11 +485,49 @@ void fast_division(
 
 // @brief Division in place with a scalar
 template <typename T>
-void AbstractArray1d2d<T>::operator/=(const T a) {
+template <typename Y>
+typename std::enable_if<std::is_same<T, std::atomic<Y>>::value>::type
+AbstractArray1d2d<T>::operator/=(const typename AbstractArray1d2d<T>::K a) {
+  if (_size == 0) TICK_ERROR("Cannot apply /= on an empty array");
+  if (size_data() == 0) return;
+
+  for (ulong i = 0; i < this->size_data(); ++i) {
+    data()[i].store(this->template get_data_index<Y>(i) / a);
+  }
+}
+
+template <typename T>
+template <typename Y>
+typename std::enable_if<!std::is_same<T, bool>::value && !std::is_same<Y, bool>::value && !std::is_same<T, std::atomic<Y>>::value>::type
+AbstractArray1d2d<T>::operator/=(const typename AbstractArray1d2d<T>::K a) {
   if (_size == 0) TICK_ERROR("Cannot apply /= on an empty array");
   if (size_data() == 0) return;
 
   tick::fast_division<T>(*this, a);
 }
+
+template <typename T>
+template <typename Y>
+void AbstractArray1d2d<T>::multiply(const typename AbstractArray1d2d<T>::K a) {
+  if (_size == 0) TICK_ERROR("Cannot apply *= on an empty array");
+  if (size_data() == 0) return;
+
+  tick::vector_operations<T>{}.template scale<Y>(size_data(), a, _data);
+}
+
+template <typename T>
+template <typename Y>
+typename std::enable_if<std::is_same<T, std::atomic<Y>>::value, Y>::type
+AbstractArray1d2d<T>::get_data_index(size_t index) const {
+  return _data[index].load();
+}
+
+template <typename T>
+template <typename Y>
+typename std::enable_if<!std::is_same<T, bool>::value && !std::is_same<Y, bool>::value && !std::is_same<T, std::atomic<Y>>::value, Y>::type
+AbstractArray1d2d<T>::get_data_index(size_t index) const {
+  return _data[index];
+}
+
 
 #endif  // LIB_INCLUDE_TICK_ARRAY_ABSTRACTARRAY1D2D_H_

@@ -264,51 +264,24 @@ inline std::ostream &operator<<(std::ostream &s, const BaseArray2d<T> &p) {
  *  @ingroup Array_typedefs_mod
  * @{
  */
-typedef BaseArray2d<double> BaseArrayDouble2d;
-typedef BaseArray2d<float> BaseArrayFloat2d;
-typedef BaseArray2d<std::int32_t> BaseArrayInt2d;
-typedef BaseArray2d<std::uint32_t> BaseArrayUInt2d;
-typedef BaseArray2d<std::int16_t> BaseArrayShort2d;
-typedef BaseArray2d<std::uint16_t> BaseArrayUShort2d;
-typedef BaseArray2d<std::int64_t> BaseArrayLong2d;
-typedef BaseArray2d<ulong> BaseArrayULong2d;
 
-/**
- * @}
- */
+#define BASE_ARRAY2D_DEFINE_TYPE(TYPE, NAME)\
+  typedef BaseArray2d<TYPE> BaseArray##NAME##2d; \
+  typedef std::vector<BaseArray##NAME##2d> BaseArray##NAME##2dList1D; \
+  typedef std::vector<BaseArray##NAME##2dList1D> BaseArray##NAME##2dList2D
 
-/** @defgroup BaseArray2dlist1d_sub_mod The classes for dealing with 1d-list of
- * BaseArray2d
- *  @ingroup Array_typedefs_mod
- * @{
- */
+BASE_ARRAY2D_DEFINE_TYPE(double, Double);
+BASE_ARRAY2D_DEFINE_TYPE(float, Float);
+BASE_ARRAY2D_DEFINE_TYPE(int32_t, Int);
+BASE_ARRAY2D_DEFINE_TYPE(uint32_t, UInt);
+BASE_ARRAY2D_DEFINE_TYPE(int16_t, Short);
+BASE_ARRAY2D_DEFINE_TYPE(uint16_t, UShort);
+BASE_ARRAY2D_DEFINE_TYPE(int64_t, Long);
+BASE_ARRAY2D_DEFINE_TYPE(ulong, ULong);
+BASE_ARRAY2D_DEFINE_TYPE(std::atomic<double>, AtomicDouble);
+BASE_ARRAY2D_DEFINE_TYPE(std::atomic<float>, AtomicFloat);
 
-typedef std::vector<BaseArray2d<float> > BaseArrayFloat2dList1D;
-typedef std::vector<BaseArray2d<double> > BaseArrayDouble2dList1D;
-typedef std::vector<BaseArray2d<std::int32_t> > BaseArrayInt2dList1D;
-typedef std::vector<BaseArray2d<std::uint32_t> > BaseArrayUInt2dList1D;
-typedef std::vector<BaseArray2d<std::int16_t> > BaseArrayShort2dList1D;
-typedef std::vector<BaseArray2d<std::uint16_t> > BaseArrayUShort2dList1D;
-typedef std::vector<BaseArray2d<std::int64_t> > BaseArrayLong2dList1D;
-typedef std::vector<BaseArray2d<ulong> > BaseArrayULong2dList1D;
-
-/**
- * @}
- */
-
-/** @defgroup BaseArray2dlist2d_sub_mod The classes for dealing with 2d-list of
- * BaseArray2d
- *  @ingroup Array_typedefs_mod
- * @{
- */
-typedef std::vector<BaseArrayFloat2dList1D> BaseArrayFloat2dList2D;
-typedef std::vector<BaseArrayInt2dList1D> BaseArrayInt2dList2D;
-typedef std::vector<BaseArrayUInt2dList1D> BaseArrayUInt2dList2D;
-typedef std::vector<BaseArrayShort2dList1D> BaseArrayShort2dList2D;
-typedef std::vector<BaseArrayUShort2dList1D> BaseArrayUShort2dList2D;
-typedef std::vector<BaseArrayLong2dList1D> BaseArrayLong2dList2D;
-typedef std::vector<BaseArrayULong2dList1D> BaseArrayULong2dList2D;
-typedef std::vector<BaseArrayDouble2dList1D> BaseArrayDouble2dList2D;
+#undef BASE_ARRAY2D_DEFINE_TYPE
 
 /**
  * @}

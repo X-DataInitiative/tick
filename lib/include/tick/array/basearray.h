@@ -5,6 +5,7 @@
 
 #include "abstractarray1d2d.h"
 
+
 template <typename T>
 class Array;
 
@@ -20,6 +21,7 @@ class Array;
 template <typename T>
 class BaseArray : public AbstractArray1d2d<T> {
  protected:
+  using K = typename AbstractArray1d2d<T>::K;
   using AbstractArray1d2d<T>::_size;
   using AbstractArray1d2d<T>::_size_sparse;
   using AbstractArray1d2d<T>::is_data_allocation_owned;
@@ -31,6 +33,7 @@ class BaseArray : public AbstractArray1d2d<T> {
   using AbstractArray1d2d<T>::is_dense;
   using AbstractArray1d2d<T>::is_sparse;
   using AbstractArray1d2d<T>::init_to_zero;
+  using AbstractArray1d2d<T>::get_data_index;
 
   //! @brief Main constructor : builds an empty array
   //! \param flag_dense If true then creates a dense array otherwise it is
@@ -93,7 +96,14 @@ class BaseArray : public AbstractArray1d2d<T> {
 
   //! @brief Returns the scalar product of the array with `array`
   // defined in file dot.h
-  T dot(const BaseArray<T> &array) const;
+  template <typename Y>
+  typename std::enable_if<std::is_same<Y, std::atomic<T>>::value, T>::type
+  dot(const BaseArray<Y> &array) const;
+
+  template <typename Y = K>
+  typename std::enable_if<!std::is_same<T, bool>::value && !std::is_same<Y, bool>::value && !std::is_same<T, std::atomic<Y>>::value, Y>::type
+  dot(const BaseArray<K> &array) const;
+
 
   //! @brief Creates a dense Array from an BaseArray
   //! In terms of allocation owner, there are two cases
@@ -111,6 +121,15 @@ class BaseArray : public AbstractArray1d2d<T> {
 
  private:
   std::string type() const { return (is_dense() ? "Array" : "SparseArray"); }
+
+ public:
+  template <class Y = K>
+  typename std::enable_if<std::is_same<T, std::atomic<Y>>::value>::type
+  set_data_index(size_t index, K value);
+
+  template <class Y = K>
+  typename std::enable_if<!std::is_same<T, bool>::value && !std::is_same<Y, bool>::value && !std::is_same<T, std::atomic<Y>>::value>::type
+  set_data_index(size_t index, K value);
 };
 
 // @brief Prints the array
@@ -171,54 +190,42 @@ void BaseArray<T>::_print_sparse() const {
  *  @ingroup Array_typedefs_mod
  * @{
  */
-typedef BaseArray<double> BaseArrayDouble;
-typedef BaseArray<float> BaseArrayFloat;
-typedef BaseArray<std::int32_t> BaseArrayInt;
-typedef BaseArray<std::uint32_t> BaseArrayUInt;
-typedef BaseArray<std::int16_t> BaseArrayShort;
-typedef BaseArray<std::uint16_t> BaseArrayUShort;
-typedef BaseArray<std::int64_t> BaseArrayLong;
-typedef BaseArray<ulong> BaseArrayULong;
+
+#define BASEARRAY_DEFINE_TYPE(TYPE, NAME)\
+  typedef BaseArray<TYPE> BaseArray##NAME; \
+  typedef std::vector<BaseArray##NAME> BaseArray##NAME##List1D; \
+  typedef std::vector<BaseArray##NAME##List1D> BaseArray##NAME##List2D
+
+BASEARRAY_DEFINE_TYPE(double, Double);
+BASEARRAY_DEFINE_TYPE(float, Float);
+BASEARRAY_DEFINE_TYPE(int32_t, Int);
+BASEARRAY_DEFINE_TYPE(uint32_t, UInt);
+BASEARRAY_DEFINE_TYPE(int16_t, Short);
+BASEARRAY_DEFINE_TYPE(uint16_t, UShort);
+BASEARRAY_DEFINE_TYPE(int64_t, Long);
+BASEARRAY_DEFINE_TYPE(ulong, ULong);
+BASEARRAY_DEFINE_TYPE(std::atomic<double>, AtomicDouble);
+BASEARRAY_DEFINE_TYPE(std::atomic<float>, AtomicFloat);
+
+#undef BASEARRAY_DEFINE_TYPE
 
 /**
  * @}
  */
 
-/** @defgroup abstractarraylist1d_sub_mod The classes for dealing with 1d-list
- * of BaseArray
- *  @ingroup Array_typedefs_mod
- * @{
- */
+template <typename T>
+template <typename Y>
+typename std::enable_if<std::is_same<T, std::atomic<Y>>::value>::type
+BaseArray<T>::set_data_index(size_t index, typename BaseArray<T>::K value) {
+  _data[index].store(value);
+}
 
-typedef std::vector<BaseArray<float> > BaseArrayFloatList1D;
-typedef std::vector<BaseArray<double> > BaseArrayDoubleList1D;
-typedef std::vector<BaseArray<std::int32_t> > BaseArrayIntList1D;
-typedef std::vector<BaseArray<std::uint32_t> > BaseArrayUIntList1D;
-typedef std::vector<BaseArray<std::int16_t> > BaseArrayShortList1D;
-typedef std::vector<BaseArray<std::uint16_t> > BaseArrayUShortList1D;
-typedef std::vector<BaseArray<std::int64_t> > BaseArrayLongList1D;
-typedef std::vector<BaseArray<ulong> > BaseArrayULongList1D;
+template <typename T>
+template <typename Y>
+typename std::enable_if<!std::is_same<T, bool>::value && !std::is_same<Y, bool>::value && !std::is_same<T, std::atomic<Y>>::value>::type
+BaseArray<T>::set_data_index(size_t index, typename BaseArray<T>::K value) {
+  _data[index] = value;
+}
 
-/**
- * @}
- */
-
-/** @defgroup abstractarraylist2d_sub_mod The classes for dealing with 2d-list
- * of BaseArray
- *  @ingroup Array_typedefs_mod
- * @{
- */
-typedef std::vector<BaseArrayFloatList1D> BaseArrayFloatList2D;
-typedef std::vector<BaseArrayIntList1D> BaseArrayIntList2D;
-typedef std::vector<BaseArrayUIntList1D> BaseArrayUIntList2D;
-typedef std::vector<BaseArrayShortList1D> BaseArrayShortList2D;
-typedef std::vector<BaseArrayUShortList1D> BaseArrayUShortList2D;
-typedef std::vector<BaseArrayLongList1D> BaseArrayLongList2D;
-typedef std::vector<BaseArrayULongList1D> BaseArrayULongList2D;
-typedef std::vector<BaseArrayDoubleList1D> BaseArrayDoubleList2D;
-
-/**
- * @}
- */
 
 #endif  // LIB_INCLUDE_TICK_ARRAY_BASEARRAY_H_

@@ -392,7 +392,10 @@ def create_extension(extension_name, module_dir,
 
 array_extension_info = {
     "cpp_files": [],
-    "h_files": ["lib/cpp/array"],
+    "h_files": [],
+    "folders": [
+        "lib/cpp/array"
+    ],
     "swig_files": ["array_module.i"],
     "module_dir": "./tick/array/",
     "extension_name": "array"
@@ -705,6 +708,11 @@ class BuildCPPTests(TickCommand):
 
             cmake_cmd.append(
                 '-DTICK_LIB_{}={}'.format(mod.ext_name.upper(), full_path))
+
+        define_macros = []
+        if 'define_macros' in blas_info and \
+                any(key == 'HAVE_CBLAS' for key, _ in blas_info['define_macros']):
+            cmake_cmd.append('-DUSE_BLAS=ON')
 
         os.makedirs(os.path.join(self.cpp_build_dir, 'cpptest'), exist_ok=True)
         subprocess.check_call(cmake_cmd, cwd=self.cpp_build_dir)

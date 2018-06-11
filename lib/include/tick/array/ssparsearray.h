@@ -368,72 +368,56 @@ std::shared_ptr<SSparseArray<T>> SparseArray<T>::as_ssparsearray_ptr() {
  * @{
  */
 
-typedef SSparseArray<double> SSparseArrayDouble;
-typedef SSparseArray<float> SSparseArrayFloat;
-typedef SSparseArray<std::int32_t> SSparseArrayInt;
-typedef SSparseArray<std::uint32_t> SSparseArrayUInt;
-typedef SSparseArray<std::int16_t> SSparseArrayShort;
-typedef SSparseArray<std::uint16_t> SSparseArrayUShort;
-typedef SSparseArray<std::int64_t> SSparseArrayLong;
-typedef SSparseArray<ulong> SSparseArrayULong;
 
-/**
- * @}
- */
+// /**
+//  * @}
+//  */
 
-/** @defgroup sarrayptr_sub_mod The shared pointer array classes
- *  @ingroup SArray_typedefs_mod
- * @{
- */
+// /** @defgroup sarrayptr_sub_mod The shared pointer array classes
+//  *  @ingroup SArray_typedefs_mod
+//  * @{
+//  */
 
-typedef std::shared_ptr<SSparseArrayFloat> SSparseArrayFloatPtr;
-typedef std::shared_ptr<SSparseArrayInt> SSparseArrayIntPtr;
-typedef std::shared_ptr<SSparseArrayUInt> SSparseArrayUIntPtr;
-typedef std::shared_ptr<SSparseArrayShort> SSparseArrayShortPtr;
-typedef std::shared_ptr<SSparseArrayUShort> SSparseArrayUShortPtr;
-typedef std::shared_ptr<SSparseArrayLong> SSparseArrayLongPtr;
-typedef std::shared_ptr<SSparseArrayULong> SSparseArrayULongPtr;
-typedef std::shared_ptr<SSparseArrayDouble> SSparseArrayDoublePtr;
 
-/**
- * @}
- */
+// /**
+//  * @}
+//  */
 
-/** @defgroup sarrayptrlist1d_sub_mod The classes for dealing with 1d-list of
- * shared pointer arrays
- *  @ingroup SArray_typedefs_mod
- * @{
- */
+// /** @defgroup sarrayptrlist1d_sub_mod The classes for dealing with 1d-list of
+//  * shared pointer arrays
+//  *  @ingroup SArray_typedefs_mod
+//  * @{
+//  */
 
-// @brief The basic SSparseArrayList1D classes
-typedef std::vector<SSparseArrayFloatPtr> SSparseArrayFloatPtrList1D;
-typedef std::vector<SSparseArrayIntPtr> SSparseArrayIntPtrList1D;
-typedef std::vector<SSparseArrayUIntPtr> SSparseArrayUIntPtrList1D;
-typedef std::vector<SSparseArrayShortPtr> SSparseArrayShortPtrList1D;
-typedef std::vector<SSparseArrayUShortPtr> SSparseArrayUShortPtrList1D;
-typedef std::vector<SSparseArrayLongPtr> SSparseArrayLongPtrList1D;
-typedef std::vector<SSparseArrayULongPtr> SSparseArrayULongPtrList1D;
-typedef std::vector<SSparseArrayDoublePtr> SSparseArrayDoublePtrList1D;
 
-/**
- * @}
- */
+// /**
+//  * @}
+//  */
 
-/** @defgroup sarrayptrlist2d_sub_mod The classes for dealing with 2d-list of
- * shared pointer arrays
- *  @ingroup SSparseArray_typedefs_mod
- * @{
- */
+// /** @defgroup sarrayptrlist2d_sub_mod The classes for dealing with 2d-list of
+//  * shared pointer arrays
+//  *  @ingroup SSparseArray_typedefs_mod
+//  * @{
+//  */
 
-// @brief The basic SSparseArrayList2D classes
-typedef std::vector<SSparseArrayFloatPtrList1D> SSparseArrayFloatPtrList2D;
-typedef std::vector<SSparseArrayIntPtrList1D> SSparseArrayIntPtrList2D;
-typedef std::vector<SSparseArrayUIntPtrList1D> SSparseArrayUIntPtrList2D;
-typedef std::vector<SSparseArrayShortPtrList1D> SSparseArrayShortPtrList2D;
-typedef std::vector<SSparseArrayUShortPtrList1D> SSparseArrayUShortPtrList2D;
-typedef std::vector<SSparseArrayLongPtrList1D> SSparseArrayLongPtrList2D;
-typedef std::vector<SSparseArrayULongPtrList1D> SSparseArrayULongPtrList2D;
-typedef std::vector<SSparseArrayDoublePtrList1D> SSparseArrayDoublePtrList2D;
+#define SSPARSE_ARRAY_DEFINE_TYPE(TYPE, NAME)\
+  typedef SSparseArray<TYPE> SSparseArray##NAME; \
+  typedef std::shared_ptr<SSparseArray##NAME> SSparseArray##NAME##Ptr; \
+  typedef std::vector<SSparseArray##NAME##Ptr> SSparseArray##NAME##PtrList1D; \
+  typedef std::vector<SSparseArray##NAME##PtrList1D> SSparseArray##NAME##PtrList2D
+
+SSPARSE_ARRAY_DEFINE_TYPE(double, Double);
+SSPARSE_ARRAY_DEFINE_TYPE(float, Float);
+SSPARSE_ARRAY_DEFINE_TYPE(int32_t, Int);
+SSPARSE_ARRAY_DEFINE_TYPE(uint32_t, UInt);
+SSPARSE_ARRAY_DEFINE_TYPE(int16_t, Short);
+SSPARSE_ARRAY_DEFINE_TYPE(uint16_t, UShort);
+SSPARSE_ARRAY_DEFINE_TYPE(int64_t, Long);
+SSPARSE_ARRAY_DEFINE_TYPE(ulong, ULong);
+SSPARSE_ARRAY_DEFINE_TYPE(std::atomic<double>, AtomicDouble);
+SSPARSE_ARRAY_DEFINE_TYPE(std::atomic<float>, AtomicFloat);
+
+#undef SSPARSE_ARRAY_DEFINE_TYPE
 
 /**
  * @}

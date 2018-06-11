@@ -26,8 +26,11 @@ class VArray : public SArray<T> {
   static float factorIncrAlloc;
 
  protected:
+  using K = typename SArray<T>::K;
   using SArray<T>::_size;
   using SArray<T>::_data;
+  using SArray<T>::get_data_index;
+  using SArray<T>::set_data_index;
 
  public:
 #ifdef PYTHON_LINK
@@ -90,7 +93,7 @@ class VArray : public SArray<T> {
 
   /// @brief Append one value at the end of the array
   /// \param value The value to be appended at the end of the array
-  virtual void append1(T value);
+  virtual void append1(K value);
 
   /// @brief Append another array of the same type at the end of the array
   /// \param sarray The array to be appended
@@ -142,9 +145,9 @@ void VArray<T>::set_size(ulong newsize, bool flagRemember) {
 }
 
 template <typename T>
-void VArray<T>::append1(T value) {
+void VArray<T>::append1(typename VArray<T>::K value) {
   set_size(_size + 1, true);
-  _data[_size - 1] = value;
+  set_data_index(_size - 1, value);
 }
 
 template <typename T>
@@ -205,16 +208,6 @@ std::ostream &operator<<(std::ostream &Str, VArray<T> *v) {
  *  @ingroup VArray_typedefs_mod
  * @{
  */
-
-typedef VArray<double> VArrayDouble;
-typedef VArray<float> VArrayFloat;
-typedef VArray<std::int32_t> VArrayInt;
-typedef VArray<std::uint32_t> VArrayUInt;
-typedef VArray<std::int16_t> VArrayShort;
-typedef VArray<std::uint16_t> VArrayUShort;
-typedef VArray<std::int64_t> VArrayLong;
-typedef VArray<ulong> VArrayULong;
-
 /**
  * @}
  */
@@ -223,14 +216,6 @@ typedef VArray<ulong> VArrayULong;
  *  @ingroup VArray_typedefs_mod
  * @{
  */
-typedef std::shared_ptr<VArrayFloat> VArrayFloatPtr;
-typedef std::shared_ptr<VArrayInt> VArrayIntPtr;
-typedef std::shared_ptr<VArrayUInt> VArrayUIntPtr;
-typedef std::shared_ptr<VArrayShort> VArrayShortPtr;
-typedef std::shared_ptr<VArrayUShort> VArrayUShortPtr;
-typedef std::shared_ptr<VArrayLong> VArrayLongPtr;
-typedef std::shared_ptr<VArrayULong> VArrayULongPtr;
-typedef std::shared_ptr<VArrayDouble> VArrayDoublePtr;
 
 /**
  * @}
@@ -241,15 +226,6 @@ typedef std::shared_ptr<VArrayDouble> VArrayDoublePtr;
  *  @ingroup VArray_typedefs_mod
  * @{
  */
-
-typedef std::vector<VArrayFloatPtr> VArrayFloatPtrList1D;
-typedef std::vector<VArrayIntPtr> VArrayIntPtrList1D;
-typedef std::vector<VArrayUIntPtr> VArrayUIntPtrList1D;
-typedef std::vector<VArrayShortPtr> VArrayShortPtrList1D;
-typedef std::vector<VArrayUShortPtr> VArrayUShortPtrList1D;
-typedef std::vector<VArrayLongPtr> VArrayLongPtrList1D;
-typedef std::vector<VArrayULongPtr> VArrayULongPtrList1D;
-typedef std::vector<VArrayDoublePtr> VArrayDoublePtrList1D;
 
 /**
  * @}
@@ -262,17 +238,27 @@ typedef std::vector<VArrayDoublePtr> VArrayDoublePtrList1D;
  */
 
 // @brief The basic VArrayList2D classes
-typedef std::vector<VArrayFloatPtrList1D> VArrayFloatPtrList2D;
-typedef std::vector<VArrayIntPtrList1D> VArrayIntPtrList2D;
-typedef std::vector<VArrayUIntPtrList1D> VArrayUIntPtrList2D;
-typedef std::vector<VArrayShortPtrList1D> VArrayShortPtrList2D;
-typedef std::vector<VArrayUShortPtrList1D> VArrayUShortPtrList2D;
-typedef std::vector<VArrayLongPtrList1D> VArrayLongPtrList2D;
-typedef std::vector<VArrayULongPtrList1D> VArrayULongPtrList2D;
-typedef std::vector<VArrayDoublePtrList1D> VArrayDoublePtrList2D;
 
 /** @}
  */
+#define VARRAY_DEFINE_TYPE(TYPE, NAME)\
+  typedef VArray<TYPE> VArray##NAME; \
+  typedef std::shared_ptr<VArray##NAME> VArray##NAME##Ptr; \
+  typedef std::vector<VArray##NAME##Ptr> VArray##NAME##PtrList1D; \
+  typedef std::vector<VArray##NAME##PtrList1D> VArray##NAME##PtrList2D
+
+VARRAY_DEFINE_TYPE(double, Double);
+VARRAY_DEFINE_TYPE(float, Float);
+VARRAY_DEFINE_TYPE(int32_t, Int);
+VARRAY_DEFINE_TYPE(uint32_t, UInt);
+VARRAY_DEFINE_TYPE(int16_t, Short);
+VARRAY_DEFINE_TYPE(uint16_t, UShort);
+VARRAY_DEFINE_TYPE(int64_t, Long);
+VARRAY_DEFINE_TYPE(ulong, ULong);
+VARRAY_DEFINE_TYPE(std::atomic<double>, AtomicDouble);
+VARRAY_DEFINE_TYPE(std::atomic<float>, AtomicFloat);
+
+#undef VARRAY_DEFINE_TYPE
 
 #define INSTANTIATE_VARRAY(VARRAY_TYPE, C_TYPE)                \
   template std::ostream &operator<<<C_TYPE>(std::ostream &Str, \
@@ -286,5 +272,9 @@ INSTANTIATE_VARRAY(VArrayShortPtr, std::int16_t);
 INSTANTIATE_VARRAY(VArrayUShortPtr, std::uint16_t);
 INSTANTIATE_VARRAY(VArrayLongPtr, std::int64_t);
 INSTANTIATE_VARRAY(VArrayULongPtr, ulong);
+INSTANTIATE_VARRAY(VArrayAtomicDoublePtr, std::atomic<double>);
+INSTANTIATE_VARRAY(VArrayAtomicFloatPtr, std::atomic<float>);
+
+#undef INSTANTIATE_VARRAY
 
 #endif  // LIB_INCLUDE_TICK_ARRAY_VARRAY_H_

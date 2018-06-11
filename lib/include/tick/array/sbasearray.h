@@ -36,54 +36,23 @@
  * @{
  */
 
-typedef std::shared_ptr<BaseArrayFloat> SBaseArrayFloatPtr;
-typedef std::shared_ptr<BaseArrayInt> SBaseArrayIntPtr;
-typedef std::shared_ptr<BaseArrayUInt> SBaseArrayUIntPtr;
-typedef std::shared_ptr<BaseArrayShort> SBaseArrayShortPtr;
-typedef std::shared_ptr<BaseArrayUShort> SBaseArrayUShortPtr;
-typedef std::shared_ptr<BaseArrayLong> SBaseArrayLongPtr;
-typedef std::shared_ptr<BaseArrayULong> SBaseArrayULongPtr;
-typedef std::shared_ptr<BaseArrayDouble> SBaseArrayDoublePtr;
+#define SBASE_ARRAY_DEFINE_TYPE(TYPE, NAME)\
+  typedef std::shared_ptr<BaseArray##NAME> SBaseArray##NAME##Ptr; \
+  typedef std::vector<SBaseArray##NAME##Ptr> SBaseArray##NAME##PtrList1D; \
+  typedef std::vector<SBaseArray##NAME##PtrList1D> SBaseArray##NAME##PtrList2D
 
-/**
- * @}
- */
+SBASE_ARRAY_DEFINE_TYPE(double, Double);
+SBASE_ARRAY_DEFINE_TYPE(float, Float);
+SBASE_ARRAY_DEFINE_TYPE(int32_t, Int);
+SBASE_ARRAY_DEFINE_TYPE(uint32_t, UInt);
+SBASE_ARRAY_DEFINE_TYPE(int16_t, Short);
+SBASE_ARRAY_DEFINE_TYPE(uint16_t, UShort);
+SBASE_ARRAY_DEFINE_TYPE(int64_t, Long);
+SBASE_ARRAY_DEFINE_TYPE(ulong, ULong);
+SBASE_ARRAY_DEFINE_TYPE(std::atomic<double>, AtomicDouble);
+SBASE_ARRAY_DEFINE_TYPE(std::atomic<float>, AtomicFloat);
 
-/** @defgroup sabstractarrayptrlist1d_sub_mod The classes for dealing with
- * 1d-list of shared pointer basearrays
- *  @ingroup SArray_typedefs_mod
- * @{
- */
-
-// @brief The basic SArrayList1D classes
-typedef std::vector<SBaseArrayFloatPtr> SBaseArrayFloatPtrList1D;
-typedef std::vector<SBaseArrayIntPtr> SBaseArrayIntPtrList1D;
-typedef std::vector<SBaseArrayUIntPtr> SBaseArrayUIntPtrList1D;
-typedef std::vector<SBaseArrayShortPtr> SBaseArrayShortPtrList1D;
-typedef std::vector<SBaseArrayUShortPtr> SBaseArrayUShortPtrList1D;
-typedef std::vector<SBaseArrayLongPtr> SBaseArrayLongPtrList1D;
-typedef std::vector<SBaseArrayULongPtr> SBaseArrayULongPtrList1D;
-typedef std::vector<SBaseArrayDoublePtr> SBaseArrayDoublePtrList1D;
-
-/**
- * @}
- */
-
-/** @defgroup sabstractarrayptrlist2d_sub_mod The classes for dealing with
- * 2d-list of shared pointer basearrays
- *  @ingroup SArray_typedefs_mod
- * @{
- */
-
-// @brief The basic SArrayList2D classes
-typedef std::vector<SBaseArrayFloatPtrList1D> SBaseArrayFloatPtrList2D;
-typedef std::vector<SBaseArrayIntPtrList1D> SBaseArrayIntPtrList2D;
-typedef std::vector<SBaseArrayUIntPtrList1D> SBaseArrayUIntPtrList2D;
-typedef std::vector<SBaseArrayShortPtrList1D> SBaseArrayShortPtrList2D;
-typedef std::vector<SBaseArrayUShortPtrList1D> SBaseArrayUShortPtrList2D;
-typedef std::vector<SBaseArrayLongPtrList1D> SBaseArrayLongPtrList2D;
-typedef std::vector<SBaseArrayULongPtrList1D> SBaseArrayULongPtrList2D;
-typedef std::vector<SBaseArrayDoublePtrList1D> SBaseArrayDoublePtrList2D;
+#undef SBASE_ARRAY_DEFINE_TYPE
 
 /**
  * @}

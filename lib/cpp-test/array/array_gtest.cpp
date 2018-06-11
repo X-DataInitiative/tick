@@ -284,6 +284,16 @@ TYPED_TEST(ArrayTest, Fill) {
     ASSERT_DOUBLE_EQ(arr.data()[j], 1337.0);
 }
 
+TYPED_TEST(ArrayTest, Fill_Int_to_double_no_cast) {
+  TypeParam arr(TICK_TEST_DATA_SIZE);
+  uint32_t leet = 1337;
+  arr.fill(leet);
+
+  for (ulong j = 0; j < arr.size(); ++j)
+    ASSERT_DOUBLE_EQ(arr.data()[j], leet);
+}
+
+
 TYPED_TEST(ArrayTest, Sum) {
   using VT = typename TypeParam::value_type;
   TypeParam arrA = ::GenerateRandomArray<TypeParam>();

@@ -465,87 +465,56 @@ std::shared_ptr<SSparseArray2d<T>> SparseArray2d<T>::as_ssparsearray2d_ptr() {
  *  shared pointers and 1d and 2d List of these classes
  * @{
  */
-
 /**
  * @}
  */
-
 /** @defgroup ssparsearray2d_sub_mod The instantiations of the SArray2d template
  *  @ingroup SArray_typedefs_mod
  * @{
  */
-
-typedef SSparseArray2d<double> SSparseArrayDouble2d;
-typedef SSparseArray2d<float> SSparseArrayFloat2d;
-typedef SSparseArray2d<std::int32_t> SSparseArrayInt2d;
-typedef SSparseArray2d<std::uint32_t> SSparseArrayUInt2d;
-typedef SSparseArray2d<std::int16_t> SSparseArrayShort2d;
-typedef SSparseArray2d<std::uint16_t> SSparseArrayUShort2d;
-typedef SSparseArray2d<std::int64_t> SSparseArrayLong2d;
-typedef SSparseArray2d<ulong> SSparseArrayULong2d;
-
 /**
  * @}
  */
-
 /** @defgroup ssparsearray2dptr_sub_mod The 2d shared pointer array classes
  *  @ingroup SArray_typedefs_mod
  * @{
  */
-
-typedef std::shared_ptr<SSparseArrayFloat2d> SSparseArrayFloat2dPtr;
-typedef std::shared_ptr<SSparseArrayInt2d> SSparseArrayInt2dPtr;
-typedef std::shared_ptr<SSparseArrayUInt2d> SSparseArrayUInt2dPtr;
-typedef std::shared_ptr<SSparseArrayShort2d> SSparseArrayShort2dPtr;
-typedef std::shared_ptr<SSparseArrayUShort2d> SSparseArrayUShort2dPtr;
-typedef std::shared_ptr<SSparseArrayLong2d> SSparseArrayLong2dPtr;
-typedef std::shared_ptr<SSparseArrayULong2d> SSparseArrayULong2dPtr;
-typedef std::shared_ptr<SSparseArrayDouble2d> SSparseArrayDouble2dPtr;
-
 /**
  * @}
  */
-
 /** @defgroup ssparsearray2dptrlist1d_sub_mod The classes for dealing with
  * 1d-list of 2d shared pointer arrays
  *  @ingroup SArray_typedefs_mod
  * @{
  */
-
-// @brief The basic SSparseArrayList1D classes
-typedef std::vector<SSparseArrayFloat2dPtr> SSparseArrayFloat2dPtrList1D;
-typedef std::vector<SSparseArrayInt2dPtr> SSparseArrayInt2dPtrList1D;
-typedef std::vector<SSparseArrayUInt2dPtr> SSparseArrayUInt2dPtrList1D;
-typedef std::vector<SSparseArrayShort2dPtr> SSparseArrayShort2dPtrList1D;
-typedef std::vector<SSparseArrayUShort2dPtr> SSparseArrayUShort2dPtrList1D;
-typedef std::vector<SSparseArrayLong2dPtr> SSparseArrayLong2dPtrList1D;
-typedef std::vector<SSparseArrayULong2dPtr> SSparseArrayULong2dPtrList1D;
-typedef std::vector<SSparseArrayDouble2dPtr> SSparseArrayDouble2dPtrList1D;
-
 /**
  * @}
  */
-
 /** @defgroup ssparsearray2dptrlist2d_sub_mod The classes for dealing with
  * 2d-list of 2d shared pointer arrays
  *  @ingroup SSparseArray_typedefs_mod
  * @{
  */
-
-// @brief The basic SSparseArrayList2D classes
-typedef std::vector<SSparseArrayFloat2dPtrList1D> SSparseArrayFloat2dPtrList2D;
-typedef std::vector<SSparseArrayInt2dPtrList1D> SSparseArrayInt2dPtrList2D;
-typedef std::vector<SSparseArrayUInt2dPtrList1D> SSparseArrayUInt2dPtrList2D;
-typedef std::vector<SSparseArrayShort2dPtrList1D> SSparseArrayShort2dPtrList2D;
-typedef std::vector<SSparseArrayUShort2dPtrList1D>
-    SSparseArrayUShort2dPtrList2D;
-typedef std::vector<SSparseArrayLong2dPtrList1D> SSparseArrayLong2dPtrList2D;
-typedef std::vector<SSparseArrayULong2dPtrList1D> SSparseArrayULong2dPtrList2D;
-typedef std::vector<SSparseArrayDouble2dPtrList1D>
-    SSparseArrayDouble2dPtrList2D;
-
 /**
  * @}
  */
+#define SSPARSE_ARRAY2D_DEFINE_TYPE(TYPE, NAME)\
+  typedef SSparseArray2d<TYPE> SSparseArray##NAME##2d; \
+  typedef std::shared_ptr<SSparseArray##NAME##2d> SSparseArray##NAME##2dPtr; \
+  typedef std::vector<SSparseArray##NAME##2dPtr> SSparseArray##NAME##2dPtrList1D; \
+  typedef std::vector<SSparseArray##NAME##2dPtrList1D> SSparseArray##NAME##2dPtrList2D
+
+SSPARSE_ARRAY2D_DEFINE_TYPE(double, Double);
+SSPARSE_ARRAY2D_DEFINE_TYPE(float, Float);
+SSPARSE_ARRAY2D_DEFINE_TYPE(int32_t, Int);
+SSPARSE_ARRAY2D_DEFINE_TYPE(uint32_t, UInt);
+SSPARSE_ARRAY2D_DEFINE_TYPE(int16_t, Short);
+SSPARSE_ARRAY2D_DEFINE_TYPE(uint16_t, UShort);
+SSPARSE_ARRAY2D_DEFINE_TYPE(int64_t, Long);
+SSPARSE_ARRAY2D_DEFINE_TYPE(ulong, ULong);
+SSPARSE_ARRAY2D_DEFINE_TYPE(std::atomic<double>, AtomicDouble);
+SSPARSE_ARRAY2D_DEFINE_TYPE(std::atomic<float>, AtomicFloat);
+
+#undef SSPARSE_ARRAY2D_DEFINE_TYPE
 
 #endif  // LIB_INCLUDE_TICK_ARRAY_SSPARSEARRAY2D_H_

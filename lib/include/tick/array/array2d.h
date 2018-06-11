@@ -386,52 +386,23 @@ CEREAL_LOAD_FUNCTION_NAME(Archive& ar, BaseArray2d<T>& arr) {
  * @{
  */
 
-typedef Array2d<double> ArrayDouble2d;
-typedef Array2d<float> ArrayFloat2d;
-typedef Array2d<std::int32_t> ArrayInt2d;
-typedef Array2d<std::uint32_t> ArrayUInt2d;
-typedef Array2d<std::int16_t> ArrayShort2d;
-typedef Array2d<std::uint16_t> ArrayUShort2d;
-typedef Array2d<std::int64_t> ArrayLong2d;
-typedef Array2d<ulong> ArrayULong2d;
+#define ARRAY2D_DEFINE_TYPE(TYPE, NAME)\
+  typedef Array2d<TYPE> Array##NAME##2d; \
+  typedef std::vector<Array##NAME##2d> Array##NAME##2dList1D; \
+  typedef std::vector<Array##NAME##2dList1D> Array##NAME##2dList2D
 
-/**
- * @}
- */
+ARRAY2D_DEFINE_TYPE(double, Double);
+ARRAY2D_DEFINE_TYPE(float, Float);
+ARRAY2D_DEFINE_TYPE(int32_t, Int);
+ARRAY2D_DEFINE_TYPE(uint32_t, UInt);
+ARRAY2D_DEFINE_TYPE(int16_t, Short);
+ARRAY2D_DEFINE_TYPE(uint16_t, UShort);
+ARRAY2D_DEFINE_TYPE(int64_t, Long);
+ARRAY2D_DEFINE_TYPE(ulong, ULong);
+ARRAY2D_DEFINE_TYPE(std::atomic<double>, AtomicDouble);
+ARRAY2D_DEFINE_TYPE(std::atomic<float>, AtomicFloat);
 
-/** @defgroup array2dlist1d_sub_mod The classes for dealing with 1d-list of
- * Arrays2d
- *  @ingroup Array_typedefs_mod
- * @{
- */
-
-typedef std::vector<Array2d<float>> ArrayFloat2dList1D;
-typedef std::vector<Array2d<double>> ArrayDouble2dList1D;
-typedef std::vector<Array2d<std::int32_t>> ArrayInt2dList1D;
-typedef std::vector<Array2d<std::uint32_t>> ArrayUInt2dList1D;
-typedef std::vector<Array2d<std::int16_t>> ArrayShort2dList1D;
-typedef std::vector<Array2d<std::uint16_t>> ArrayUShort2dList1D;
-typedef std::vector<Array2d<std::int64_t>> ArrayLong2dList1D;
-typedef std::vector<Array2d<ulong>> ArrayULong2dList1D;
-
-/**
- * @}
- */
-
-/** @defgroup array2dlist2d_sub_mod The classes for dealing with 2d-list of
- * Arrays2d
- *  @ingroup Array_typedefs_mod
- * @{
- */
-
-typedef std::vector<std::vector<Array2d<float>>> ArrayFloat2dList2D;
-typedef std::vector<std::vector<Array2d<double>>> ArrayDouble2dList2D;
-typedef std::vector<std::vector<Array2d<std::int32_t>>> ArrayInt2dList2D;
-typedef std::vector<std::vector<Array2d<std::uint32_t>>> ArrayUInt2dList2D;
-typedef std::vector<std::vector<Array2d<std::int16_t>>> ArrayShort2dList2D;
-typedef std::vector<std::vector<Array2d<std::uint16_t>>> ArrayUShort2dList2D;
-typedef std::vector<std::vector<Array2d<std::int64_t>>> ArrayLong2dList2D;
-typedef std::vector<std::vector<Array2d<ulong>>> ArrayULong2dList2D;
+#undef ARRAY2D_DEFINE_TYPE
 
 /**
  * @}
