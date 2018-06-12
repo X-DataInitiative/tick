@@ -36,8 +36,8 @@
  * @{
  */
 
-#define SBASE_ARRAY_DEFINE_TYPE(TYPE, NAME)\
-  typedef std::shared_ptr<BaseArray##NAME> SBaseArray##NAME##Ptr; \
+#define SBASE_ARRAY_DEFINE_TYPE(TYPE, NAME)                               \
+  typedef std::shared_ptr<BaseArray##NAME> SBaseArray##NAME##Ptr;         \
   typedef std::vector<SBaseArray##NAME##Ptr> SBaseArray##NAME##PtrList1D; \
   typedef std::vector<SBaseArray##NAME##PtrList1D> SBaseArray##NAME##PtrList2D
 

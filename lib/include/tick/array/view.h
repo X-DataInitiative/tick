@@ -94,6 +94,6 @@ BaseArray<T> view(BaseArray<T> &a, ulong first, ulong last) {
   return view(static_cast<Array<T> &>(a), first, last);
 }
 
-  //! @}
+//! @}
 
 #endif  // LIB_INCLUDE_TICK_ARRAY_VIEW_H_

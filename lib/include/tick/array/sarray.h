@@ -318,9 +318,9 @@ std::shared_ptr<SArray<T>> Array<T>::as_sarray_ptr() {
  * @}
  */
 
-#define SARRAY_DEFINE_TYPE(TYPE, NAME)\
-  typedef SArray<TYPE> SArray##NAME; \
-  typedef std::shared_ptr<SArray##NAME> SArray##NAME##Ptr; \
+#define SARRAY_DEFINE_TYPE(TYPE, NAME)                            \
+  typedef SArray<TYPE> SArray##NAME;                              \
+  typedef std::shared_ptr<SArray##NAME> SArray##NAME##Ptr;        \
   typedef std::vector<SArray##NAME##Ptr> SArray##NAME##PtrList1D; \
   typedef std::vector<SArray##NAME##PtrList1D> SArray##NAME##PtrList2D
 

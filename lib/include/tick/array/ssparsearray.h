@@ -368,43 +368,36 @@ std::shared_ptr<SSparseArray<T>> SparseArray<T>::as_ssparsearray_ptr() {
  * @{
  */
 
+/**
+ * @}
+ */
+/** @defgroup sarrayptr_sub_mod The shared pointer array classes
+ *  @ingroup SArray_typedefs_mod
+ * @{
+ */
+/**
+ * @}
+ */
+/** @defgroup sarrayptrlist1d_sub_mod The classes for dealing with 1d-list of
+ * shared pointer arrays
+ *  @ingroup SArray_typedefs_mod
+ * @{
+ */
+/**
+ * @}
+ */
+/** @defgroup sarrayptrlist2d_sub_mod The classes for dealing with 2d-list of
+ * shared pointer arrays
+ *  @ingroup SSparseArray_typedefs_mod
+ * @{
+ */
 
-// /**
-//  * @}
-//  */
-
-// /** @defgroup sarrayptr_sub_mod The shared pointer array classes
-//  *  @ingroup SArray_typedefs_mod
-//  * @{
-//  */
-
-
-// /**
-//  * @}
-//  */
-
-// /** @defgroup sarrayptrlist1d_sub_mod The classes for dealing with 1d-list of
-//  * shared pointer arrays
-//  *  @ingroup SArray_typedefs_mod
-//  * @{
-//  */
-
-
-// /**
-//  * @}
-//  */
-
-// /** @defgroup sarrayptrlist2d_sub_mod The classes for dealing with 2d-list of
-//  * shared pointer arrays
-//  *  @ingroup SSparseArray_typedefs_mod
-//  * @{
-//  */
-
-#define SSPARSE_ARRAY_DEFINE_TYPE(TYPE, NAME)\
-  typedef SSparseArray<TYPE> SSparseArray##NAME; \
-  typedef std::shared_ptr<SSparseArray##NAME> SSparseArray##NAME##Ptr; \
+#define SSPARSE_ARRAY_DEFINE_TYPE(TYPE, NAME)                                 \
+  typedef SSparseArray<TYPE> SSparseArray##NAME;                              \
+  typedef std::shared_ptr<SSparseArray##NAME> SSparseArray##NAME##Ptr;        \
   typedef std::vector<SSparseArray##NAME##Ptr> SSparseArray##NAME##PtrList1D; \
-  typedef std::vector<SSparseArray##NAME##PtrList1D> SSparseArray##NAME##PtrList2D
+  typedef std::vector<SSparseArray##NAME##PtrList1D>                          \
+      SSparseArray##NAME##PtrList2D
 
 SSPARSE_ARRAY_DEFINE_TYPE(double, Double);
 SSPARSE_ARRAY_DEFINE_TYPE(float, Float);

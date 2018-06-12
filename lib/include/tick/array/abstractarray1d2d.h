@@ -11,11 +11,11 @@
 
 // License: BSD 3 clause
 
-#include <cstring>
-#include <atomic>
 #include <algorithm>
-#include <typeinfo>
+#include <atomic>
+#include <cstring>
 #include <type_traits>
+#include <typeinfo>
 
 #include "promote.h"
 #include "vector_operations.h"
@@ -31,17 +31,20 @@
 #define INDICE_TYPE std::uint32_t
 #endif
 
-template<typename T> struct InnerType{};
+template <typename T>
+struct InnerType {};
 
-#define AtomicOuterType(TYPE)                   \
-template<> struct InnerType<std::atomic<TYPE>>{ \
-  using type = TYPE;                            \
-};
+#define AtomicOuterType(TYPE)           \
+  template <>                           \
+  struct InnerType<std::atomic<TYPE>> { \
+    using type = TYPE;                  \
+  };
 
-#define NonAtomicOuterType(TYPE)   \
-template<> struct InnerType<TYPE>{ \
-  using type = TYPE;               \
-};
+#define NonAtomicOuterType(TYPE) \
+  template <>                    \
+  struct InnerType<TYPE> {       \
+    using type = TYPE;           \
+  };
 
 AtomicOuterType(double);
 AtomicOuterType(float);
@@ -60,7 +63,6 @@ NonAtomicOuterType(uint16_t);
 #if defined(__APPLE__) || defined(_WIN32)
 NonAtomicOuterType(unsigned long);
 #endif
-
 
 /*! \class AbstractArray1d2d
  * \brief Base template purely virtual class for
@@ -217,7 +219,9 @@ class AbstractArray1d2d {
   operator*=(const K a);
 
   template <typename Y = K>
-  typename std::enable_if<!std::is_same<T, bool>::value && !std::is_same<Y, bool>::value && !std::is_same<T, std::atomic<Y>>::value>::type
+  typename std::enable_if<!std::is_same<T, bool>::value &&
+                          !std::is_same<Y, bool>::value &&
+                          !std::is_same<T, std::atomic<Y>>::value>::type
   operator*=(const K a);
 
   template <typename Y = K>
@@ -229,7 +233,9 @@ class AbstractArray1d2d {
   operator/=(const K a);
 
   template <typename Y = K>
-  typename std::enable_if<!std::is_same<T, bool>::value && !std::is_same<Y, bool>::value && !std::is_same<T, std::atomic<Y>>::value>::type
+  typename std::enable_if<!std::is_same<T, bool>::value &&
+                          !std::is_same<Y, bool>::value &&
+                          !std::is_same<T, std::atomic<Y>>::value>::type
   operator/=(const K a);
 
   // // useful if data is atomic
@@ -238,7 +244,10 @@ class AbstractArray1d2d {
   get_data_index(size_t index) const;
 
   template <typename Y = K>
-  typename std::enable_if<!std::is_same<T, bool>::value && !std::is_same<Y, bool>::value && !std::is_same<T, std::atomic<Y>>::value, Y>::type
+  typename std::enable_if<!std::is_same<T, bool>::value &&
+                              !std::is_same<Y, bool>::value &&
+                              !std::is_same<T, std::atomic<Y>>::value,
+                          Y>::type
   get_data_index(size_t index) const;
 
  private:
@@ -382,10 +391,10 @@ AbstractArray1d2d<T> &AbstractArray1d2d<T>::operator=(
 // @brief Returns the sum of all the elements of the array
 template <typename T>
 template <typename Y>
-tick::promote_t<typename AbstractArray1d2d<T>::K> AbstractArray1d2d<T>::sum() const {
+tick::promote_t<typename AbstractArray1d2d<T>::K> AbstractArray1d2d<T>::sum()
+    const {
   if (_size == 0) TICK_ERROR("Cannot take the sum of an empty array");
   if (size_data() == 0) return 0;
-
 
   return tick::vector_operations<T>{}.template sum<Y>(size_data(), _data);
 }
@@ -427,7 +436,8 @@ typename AbstractArray1d2d<T>::K AbstractArray1d2d<T>::max() const {
 // @brief Compute the squared Euclidean norm of the array
 template <typename T>
 template <typename Y>
-tick::promote_t<typename AbstractArray1d2d<T>::K> AbstractArray1d2d<T>::norm_sq() const {
+tick::promote_t<typename AbstractArray1d2d<T>::K>
+AbstractArray1d2d<T>::norm_sq() const {
   if (_size == 0) TICK_ERROR("Cannot take the norm_sq of an empty array");
   if (size_data() == 0) return 0;
 
@@ -451,10 +461,11 @@ AbstractArray1d2d<T>::operator*=(const typename AbstractArray1d2d<T>::K a) {
   tick::vector_operations<T>{}.template scale<Y>(size_data(), a, _data);
 }
 
-
 template <typename T>
 template <typename Y>
-typename std::enable_if<!std::is_same<T, bool>::value && !std::is_same<Y, bool>::value && !std::is_same<T, std::atomic<Y>>::value>::type
+typename std::enable_if<!std::is_same<T, bool>::value &&
+                        !std::is_same<Y, bool>::value &&
+                        !std::is_same<T, std::atomic<Y>>::value>::type
 AbstractArray1d2d<T>::operator*=(const typename AbstractArray1d2d<T>::K a) {
   if (_size == 0) TICK_ERROR("Cannot apply *= on an empty array");
   if (size_data() == 0) return;
@@ -498,7 +509,9 @@ AbstractArray1d2d<T>::operator/=(const typename AbstractArray1d2d<T>::K a) {
 
 template <typename T>
 template <typename Y>
-typename std::enable_if<!std::is_same<T, bool>::value && !std::is_same<Y, bool>::value && !std::is_same<T, std::atomic<Y>>::value>::type
+typename std::enable_if<!std::is_same<T, bool>::value &&
+                        !std::is_same<Y, bool>::value &&
+                        !std::is_same<T, std::atomic<Y>>::value>::type
 AbstractArray1d2d<T>::operator/=(const typename AbstractArray1d2d<T>::K a) {
   if (_size == 0) TICK_ERROR("Cannot apply /= on an empty array");
   if (size_data() == 0) return;
@@ -524,10 +537,12 @@ AbstractArray1d2d<T>::get_data_index(size_t index) const {
 
 template <typename T>
 template <typename Y>
-typename std::enable_if<!std::is_same<T, bool>::value && !std::is_same<Y, bool>::value && !std::is_same<T, std::atomic<Y>>::value, Y>::type
+typename std::enable_if<!std::is_same<T, bool>::value &&
+                            !std::is_same<Y, bool>::value &&
+                            !std::is_same<T, std::atomic<Y>>::value,
+                        Y>::type
 AbstractArray1d2d<T>::get_data_index(size_t index) const {
   return _data[index];
 }
-
 
 #endif  // LIB_INCLUDE_TICK_ARRAY_ABSTRACTARRAY1D2D_H_

@@ -241,9 +241,9 @@ std::ostream &operator<<(std::ostream &Str, VArray<T> *v) {
 
 /** @}
  */
-#define VARRAY_DEFINE_TYPE(TYPE, NAME)\
-  typedef VArray<TYPE> VArray##NAME; \
-  typedef std::shared_ptr<VArray##NAME> VArray##NAME##Ptr; \
+#define VARRAY_DEFINE_TYPE(TYPE, NAME)                            \
+  typedef VArray<TYPE> VArray##NAME;                              \
+  typedef std::shared_ptr<VArray##NAME> VArray##NAME##Ptr;        \
   typedef std::vector<VArray##NAME##Ptr> VArray##NAME##PtrList1D; \
   typedef std::vector<VArray##NAME##PtrList1D> VArray##NAME##PtrList2D
 

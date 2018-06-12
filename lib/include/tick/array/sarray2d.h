@@ -337,9 +337,9 @@ std::shared_ptr<SArray2d<T>> Array2d<T>::as_sarray2d_ptr() {
  * @}
  */
 
-#define SARRAY2D_DEFINE_TYPE(TYPE, NAME)\
-  typedef SArray2d<TYPE> SArray##NAME##2d; \
-  typedef std::shared_ptr<SArray##NAME##2d> SArray##NAME##2dPtr; \
+#define SARRAY2D_DEFINE_TYPE(TYPE, NAME)                              \
+  typedef SArray2d<TYPE> SArray##NAME##2d;                            \
+  typedef std::shared_ptr<SArray##NAME##2d> SArray##NAME##2dPtr;      \
   typedef std::vector<SArray##NAME##2dPtr> SArray##NAME##2dPtrList1D; \
   typedef std::vector<SArray##NAME##2dPtrList1D> SArray##NAME##2dPtrList2D
 

@@ -86,6 +86,6 @@ BaseArray<T> view_row(BaseArray2d<T> &a, ulong i) {
     return view_row(static_cast<SparseArray2d<T> &>(a), i);
 }
 
-  //! @}
+//! @}
 
 #endif  // LIB_INCLUDE_TICK_ARRAY_VIEW2D_H_

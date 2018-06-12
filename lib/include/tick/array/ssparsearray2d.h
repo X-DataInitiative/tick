@@ -498,11 +498,13 @@ std::shared_ptr<SSparseArray2d<T>> SparseArray2d<T>::as_ssparsearray2d_ptr() {
 /**
  * @}
  */
-#define SSPARSE_ARRAY2D_DEFINE_TYPE(TYPE, NAME)\
-  typedef SSparseArray2d<TYPE> SSparseArray##NAME##2d; \
+#define SSPARSE_ARRAY2D_DEFINE_TYPE(TYPE, NAME)                              \
+  typedef SSparseArray2d<TYPE> SSparseArray##NAME##2d;                       \
   typedef std::shared_ptr<SSparseArray##NAME##2d> SSparseArray##NAME##2dPtr; \
-  typedef std::vector<SSparseArray##NAME##2dPtr> SSparseArray##NAME##2dPtrList1D; \
-  typedef std::vector<SSparseArray##NAME##2dPtrList1D> SSparseArray##NAME##2dPtrList2D
+  typedef std::vector<SSparseArray##NAME##2dPtr>                             \
+      SSparseArray##NAME##2dPtrList1D;                                       \
+  typedef std::vector<SSparseArray##NAME##2dPtrList1D>                       \
+      SSparseArray##NAME##2dPtrList2D
 
 SSPARSE_ARRAY2D_DEFINE_TYPE(double, Double);
 SSPARSE_ARRAY2D_DEFINE_TYPE(float, Float);

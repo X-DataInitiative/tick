@@ -26,20 +26,19 @@
  * associated shared pointers and 1d and 2d List of these classes
  * @{
  */
-
 /**
  * @}
  */
-
 /** @defgroup sabstractarray2dptr_sub_mod The shared pointer basearray classes
  *  @ingroup SArray2d_typedefs_mod
  * @{
  */
 
-#define SBASE_ARRAY2D_DEFINE_TYPE(TYPE, NAME)\
-  typedef std::shared_ptr<BaseArray##NAME##2d> SBaseArray##NAME##2dPtr; \
+#define SBASE_ARRAY2D_DEFINE_TYPE(TYPE, NAME)                                 \
+  typedef std::shared_ptr<BaseArray##NAME##2d> SBaseArray##NAME##2dPtr;       \
   typedef std::vector<SBaseArray##NAME##2dPtr> SBaseArray##NAME##2dPtrList1D; \
-  typedef std::vector<SBaseArray##NAME##2dPtrList1D> SBaseArray##NAME##2dPtrList2D
+  typedef std::vector<SBaseArray##NAME##2dPtrList1D>                          \
+      SBaseArray##NAME##2dPtrList2D
 
 SBASE_ARRAY2D_DEFINE_TYPE(double, Double);
 SBASE_ARRAY2D_DEFINE_TYPE(float, Float);

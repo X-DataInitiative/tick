@@ -5,8 +5,8 @@
 
 #include <numeric>
 
-#include <atomic>
 #include <algorithm>
+#include <atomic>
 #include <type_traits>
 
 #include "promote.h"
@@ -21,51 +21,51 @@ struct DLL_PUBLIC vector_operations_unoptimized {
   tick::promote_t<K> sum(const ulong n, const T *x) const;
 
   template <typename K>
-  typename std::enable_if<std::is_same<T, std::atomic<K>>::value, T>::type
-  dot(const ulong n, const T *x, const K *y) const;
+  typename std::enable_if<std::is_same<T, std::atomic<K>>::value, T>::type dot(
+      const ulong n, const T *x, const K *y) const;
 
   template <typename K>
-  typename std::enable_if<std::is_same<T, std::atomic<K>>::value, K>::type
-  dot(const ulong n, const K *x, const T *y) const;
+  typename std::enable_if<std::is_same<T, std::atomic<K>>::value, K>::type dot(
+      const ulong n, const K *x, const T *y) const;
 
   template <typename K>
-  typename std::enable_if<!std::is_same<T, std::atomic<K>>::value, T>::type
-  dot(const ulong n, const T *x, const K *y) const;
-
-
-  template <typename K>
-  typename std::enable_if<std::is_same<T, std::atomic<K>>::value>::type
-  scale(const ulong n, const K alpha, T *x) const;
+  typename std::enable_if<!std::is_same<T, std::atomic<K>>::value, T>::type dot(
+      const ulong n, const T *x, const K *y) const;
 
   template <typename K>
-  typename std::enable_if<!std::is_same<T, std::atomic<K>>::value>::type
-  scale(const ulong n, const K alpha, T *x) const;
-
-
-  template <typename K>
-  typename std::enable_if<std::is_same<T, std::atomic<K>>::value>::type
-  set(const ulong n, const K alpha, T *x) const;
+  typename std::enable_if<std::is_same<T, std::atomic<K>>::value>::type scale(
+      const ulong n, const K alpha, T *x) const;
 
   template <typename K>
-  typename std::enable_if<!std::is_same<T, std::atomic<K>>::value>::type
-  set(const ulong n, const K alpha, T *x) const;
+  typename std::enable_if<!std::is_same<T, std::atomic<K>>::value>::type scale(
+      const ulong n, const K alpha, T *x) const;
 
+  template <typename K>
+  typename std::enable_if<std::is_same<T, std::atomic<K>>::value>::type set(
+      const ulong n, const K alpha, T *x) const;
+
+  template <typename K>
+  typename std::enable_if<!std::is_same<T, std::atomic<K>>::value>::type set(
+      const ulong n, const K alpha, T *x) const;
 
   template <typename K, typename Y>
-  typename std::enable_if<std::is_same<T, std::atomic<K>>::value && !std::is_same<Y, std::atomic<K>>::value>::type
+  typename std::enable_if<std::is_same<T, std::atomic<K>>::value &&
+                          !std::is_same<Y, std::atomic<K>>::value>::type
   mult_incr(const uint64_t n, const K alpha, const Y *x, T *y) const;
 
   template <typename K, typename Y>
-  typename std::enable_if<std::is_same<Y, std::atomic<K>>::value && !std::is_same<T, std::atomic<K>>::value>::type
+  typename std::enable_if<std::is_same<Y, std::atomic<K>>::value &&
+                          !std::is_same<T, std::atomic<K>>::value>::type
   mult_incr(const uint64_t n, const K alpha, const Y *x, T *y) const;
 
   template <typename K, typename Y>
-  typename std::enable_if<std::is_same<T, std::atomic<K>>::value && std::is_same<Y, std::atomic<K>>::value>::type
+  typename std::enable_if<std::is_same<T, std::atomic<K>>::value &&
+                          std::is_same<Y, std::atomic<K>>::value>::type
   mult_incr(const uint64_t n, const K alpha, const Y *x, T *y) const;
 
-
   template <typename K, typename Y>
-  typename std::enable_if<std::is_same<T, K>::value && std::is_same<Y, K>::value>::type
+  typename std::enable_if<std::is_same<T, K>::value &&
+                          std::is_same<Y, K>::value>::type
   mult_incr(const uint64_t n, const K alpha, const Y *x, T *y) const;
 };
 
