@@ -187,24 +187,33 @@ class SolverFirstOrderSto(SolverFirstOrder, SolverSto):
         # At each iteration we call self._solver.solve that does a full
         # epoch
         for n_iter in range(self.max_iter + 1):
-            prev_minimizer[:] = minimizer
-            prev_obj = obj
+
+            # We will record on this iteration and we must be ready
+            if self._should_record_iter(n_iter):
+                prev_minimizer[:] = minimizer
+                prev_obj = self.objective(prev_minimizer)
+
             # Launch one epoch using the wrapped C++ solver
             self._solver.solve()
-            self._solver.get_minimizer(minimizer)
-            # The step might be modified by the C++ solver
-            # step = self._solver.get_step()
-            obj = self.objective(minimizer)
-            rel_delta = relative_distance(minimizer, prev_minimizer)
-            rel_obj = abs(obj - prev_obj) / abs(prev_obj)
-            converged = rel_obj < self.tol
-            # If converged, we stop the loop and record the last step
-            # in history
-            self._handle_history(n_iter, force=converged, obj=obj,
-                                 x=minimizer.copy(), rel_delta=rel_delta,
-                                 rel_obj=rel_obj)
-            if converged:
-                break
+
+            # Let's record metrics
+            if self._should_record_iter(n_iter):
+                self._solver.get_minimizer(minimizer)
+                # The step might be modified by the C++ solver
+                # step = self._solver.get_step()
+                obj = self.objective(minimizer)
+                rel_delta = relative_distance(minimizer, prev_minimizer)
+                rel_obj = abs(obj - prev_obj) / abs(prev_obj)
+                converged = rel_obj < self.tol
+                # If converged, we stop the loop and record the last step
+                # in history
+                self._handle_history(n_iter, force=converged, obj=obj,
+                                     x=minimizer.copy(), rel_delta=rel_delta,
+                                     rel_obj=rel_obj)
+                if converged:
+                    break
+
+        self._solver.get_minimizer(minimizer)
         self._set("solution", minimizer)
         return minimizer
 

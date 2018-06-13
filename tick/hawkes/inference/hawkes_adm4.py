@@ -287,13 +287,13 @@ class HawkesADM4(LearnerHawkesNoParam):
             raise ValueError("The parameter rho equals {}, while it should "
                              "be strictly positive.".format(self.rho))
 
-        objective = self.objective(self.coeffs)
-
         max_relative_distance = 1e-1
         for i in range(self.max_iter + 1):
-            prev_objective = objective
-            prev_baseline = self.baseline.copy()
-            prev_adjacency = self.adjacency.copy()
+
+            if self._should_record_iter(i):
+                prev_objective = self.objective(self.coeffs)
+                prev_baseline = self.baseline.copy()
+                prev_adjacency = self.adjacency.copy()
 
             for _ in range(self.em_max_iter):
                 inner_prev_baseline = self.baseline.copy()
@@ -323,24 +323,27 @@ class HawkesADM4(LearnerHawkesNoParam):
             u1 += self.adjacency - z1
             u2 += self.adjacency - z2
 
-            objective = self.objective(self.coeffs)
+            if self._should_record_iter(i):
+                objective = self.objective(self.coeffs)
 
-            rel_obj = abs(objective - prev_objective) / abs(prev_objective)
-            rel_baseline = relative_distance(self.baseline, prev_baseline)
-            rel_adjacency = relative_distance(self.adjacency, prev_adjacency)
+                rel_obj = abs(objective - prev_objective) / abs(prev_objective)
+                rel_baseline = relative_distance(self.baseline, prev_baseline)
+                rel_adjacency = relative_distance(self.adjacency,
+                                                  prev_adjacency)
 
-            max_relative_distance = max(rel_baseline, rel_adjacency)
-            # We perform at least 5 iterations as at start we sometimes reach a
-            # low tolerance if inner_tol is too low
-            converged = max_relative_distance <= self.tol and i > 5
-            force_print = (i == self.max_iter) or converged
+                max_relative_distance = max(rel_baseline, rel_adjacency)
+                # We perform at least 5 iterations as at start we sometimes
+                # reach a low tolerance if inner_tol is too low
+                converged = max_relative_distance <= self.tol and i > 5
+                force_print = (i == self.max_iter) or converged
 
-            self._handle_history(
-                i, obj=objective, rel_obj=rel_obj, rel_baseline=rel_baseline,
-                rel_adjacency=rel_adjacency, force=force_print)
+                self._handle_history(i, obj=objective, rel_obj=rel_obj,
+                                     rel_baseline=rel_baseline,
+                                     rel_adjacency=rel_adjacency,
+                                     force=force_print)
 
-            if converged:
-                break
+                if converged:
+                    break
 
     def objective(self, coeffs, loss: float = None):
         """Compute the objective minimized by the learner at `coeffs`

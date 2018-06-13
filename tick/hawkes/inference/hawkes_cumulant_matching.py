@@ -411,25 +411,16 @@ class HawkesCumulantMatching(LearnerHawkesNoParam):
                 sess.run(tf.global_variables_initializer())
                 sess.run(self._tf_model_coeffs.assign(start_point))
                 # Training cycle
-                prev_obj = np.finfo(np.float).max
                 for n_iter in range(self.max_iter + 1):
-                    # We don't use self.objective here as it would be very slow
-                    obj = sess.run(
-                        cost, feed_dict={
-                            L: self.mean_intensity,
-                            C: self.covariance,
-                            K_c: self.skewness
-                        })
-                    rel_obj = abs(obj - prev_obj) / abs(prev_obj)
-                    prev_obj = obj
-                    converged = rel_obj < self.tol
-
-                    force = converged or n_iter == self.max_iter
-                    self._handle_history(n_iter, objective=obj,
-                                         rel_obj=rel_obj, force=force)
-
-                    if converged:
-                        break
+                    if self._should_record_iter(n_iter):
+                        # We don't use self.objective here as it would be very
+                        # slow
+                        prev_obj = sess.run(
+                            cost, feed_dict={
+                                L: self.mean_intensity,
+                                C: self.covariance,
+                                K_c: self.skewness
+                            })
 
                     sess.run(
                         optimization, feed_dict={
@@ -437,6 +428,24 @@ class HawkesCumulantMatching(LearnerHawkesNoParam):
                             C: self.covariance,
                             K_c: self.skewness
                         })
+
+                    if self._should_record_iter(n_iter):
+                        obj = sess.run(
+                            cost, feed_dict={
+                                L: self.mean_intensity,
+                                C: self.covariance,
+                                K_c: self.skewness
+                            })
+                        rel_obj = abs(obj - prev_obj) / abs(prev_obj)
+                        prev_obj = obj
+                        converged = rel_obj < self.tol
+
+                        force = converged or n_iter == self.max_iter
+                        self._handle_history(n_iter, objective=obj,
+                                             rel_obj=rel_obj, force=force)
+
+                        if converged:
+                            break
 
                 self._set('solution', sess.run(self._tf_model_coeffs))
 

@@ -156,28 +156,35 @@ class AGD(SolverFirstOrder):
         return x, y, t, step
 
     def _solve(self, x0: np.ndarray = None, step: float = None):
-        x, prev_x, y, grad_y, t, step, obj = \
+        minimizer, prev_minimizer, y, grad_y, t, step, obj = \
             self._initialize_values(x0, step)
         for n_iter in range(self.max_iter + 1):
             prev_t = t
-            prev_x[:] = x
-            prev_obj = obj
-            x, y, t, step = self._gradient_step(x, prev_x, y, grad_y, t,
-                                                prev_t, step)
+            prev_minimizer[:] = minimizer
+
+            # We will record on this iteration and we must be ready
+            if self._should_record_iter(n_iter):
+                prev_obj = self.objective(prev_minimizer)
+
+            minimizer, y, t, step = self._gradient_step(
+                minimizer, prev_minimizer, y, grad_y, t, prev_t, step)
             if step == 0:
                 print('Step equals 0... at %i' % n_iter)
                 break
-            rel_delta = relative_distance(x, prev_x)
-            obj = self.objective(x)
-            rel_obj = abs(obj - prev_obj) / abs(prev_obj)
-            converged = rel_obj < self.tol
-            # If converged, we stop the loop and record the last step
-            # in history
 
-            self._handle_history(n_iter, force=converged, obj=obj, x=x.copy(),
-                                 rel_delta=rel_delta, step=step,
-                                 rel_obj=rel_obj)
-            if converged:
-                break
-        self._set("solution", x)
-        return x
+            # Let's record metrics
+            if self._should_record_iter(n_iter):
+                rel_delta = relative_distance(minimizer, prev_minimizer)
+                obj = self.objective(minimizer)
+                rel_obj = abs(obj - prev_obj) / abs(prev_obj)
+                converged = rel_obj < self.tol
+                # If converged, we stop the loop and record the last step
+                # in history
+                self._handle_history(n_iter, force=converged, obj=obj,
+                                     x=minimizer.copy(), rel_delta=rel_delta,
+                                     step=step, rel_obj=rel_obj)
+                if converged:
+                    break
+
+        self._set("solution", minimizer)
+        return minimizer

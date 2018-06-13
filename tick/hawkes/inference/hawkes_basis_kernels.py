@@ -254,31 +254,33 @@ class HawkesBasisKernels(LearnerHawkesNoParam):
                                      self.n_nodes * self.n_basis)))
 
         for i in range(self.max_iter + 1):
-            prev_baseline = self.baseline.copy()
-            prev_amplitudes = self.amplitudes.copy()
-            prev_basis_kernels = self.basis_kernels.copy()
+            if self._should_record_iter(i):
+                prev_baseline = self.baseline.copy()
+                prev_amplitudes = self.amplitudes.copy()
+                prev_basis_kernels = self.basis_kernels.copy()
 
             rel_ode = self._learner.solve(self.baseline, self.basis_kernels,
                                           self._amplitudes_2d,
                                           self.ode_max_iter, self.ode_tol)
 
-            rel_baseline = relative_distance(self.baseline, prev_baseline)
-            rel_amplitudes = relative_distance(self.amplitudes,
-                                               prev_amplitudes)
-            rel_basis_kernels = relative_distance(self.basis_kernels,
-                                                  prev_basis_kernels)
+            if self._should_record_iter(i):
+                rel_baseline = relative_distance(self.baseline, prev_baseline)
+                rel_amplitudes = relative_distance(self.amplitudes,
+                                                   prev_amplitudes)
+                rel_basis_kernels = relative_distance(self.basis_kernels,
+                                                      prev_basis_kernels)
 
-            converged = max(rel_baseline, rel_amplitudes,
-                            rel_basis_kernels) <= self.tol
-            force_print = (i == self.max_iter) or converged
+                converged = max(rel_baseline, rel_amplitudes,
+                                rel_basis_kernels) <= self.tol
+                force_print = (i == self.max_iter) or converged
 
-            self._handle_history(i, rel_baseline=rel_baseline,
-                                 rel_amplitudes=rel_amplitudes,
-                                 rel_basis_kernels=rel_basis_kernels,
-                                 rel_ode=rel_ode, force=force_print)
+                self._handle_history(i, rel_baseline=rel_baseline,
+                                     rel_amplitudes=rel_amplitudes,
+                                     rel_basis_kernels=rel_basis_kernels,
+                                     rel_ode=rel_ode, force=force_print)
 
-            if converged:
-                break
+                if converged:
+                    break
 
     def get_kernel_supports(self):
         return np.zeros((self.n_nodes, self.n_nodes)) + self.kernel_support

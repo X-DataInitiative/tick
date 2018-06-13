@@ -109,6 +109,20 @@ class Solver(Base):
         self._end_solve()
         return self.solution
 
+    def _should_record_iter(self, n_iter):
+        """Should solver record this iteration or not?
+        """
+        # If we are never supposed to record
+        if self.max_iter < self.print_every and \
+                self.max_iter < self.record_every:
+            return False
+        # Otherwise check that we are either at a specific moment or at the end
+        elif n_iter % self.print_every == 0 or n_iter % self.record_every == 0:
+            return True
+        elif n_iter == self.max_iter:
+            return True
+        return False
+
     def _handle_history(self, n_iter: int, force: bool = False, **kwargs):
         """Handles history for keywords and current iteration
 

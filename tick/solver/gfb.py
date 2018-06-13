@@ -192,37 +192,44 @@ class GFB(SolverFirstOrder):
         return x, x_old, z_list, z_old_list, obj, step
 
     def _solve(self, x0: np.ndarray, step: float):
-        x, x_old, z_list, z_old_list, obj, step = \
+        minimizer, prev_minimizer, z_list, z_old_list, obj, step = \
             self.initialize_values(x0, step)
 
         n_prox = self.prox.n_proxs
         for n_iter in range(self.max_iter + 1):
-            obj_old = obj
-            grad_x = self.model.grad(x)
+            # We will record on this iteration and we must be ready
+            if self._should_record_iter(n_iter):
+                prev_minimizer[:] = minimizer
+                prev_obj = self.objective(prev_minimizer)
+
+            grad_x = self.model.grad(minimizer)
             for i in range(n_prox):
                 z = z_list[i]
                 z_old = z_old_list[i]
-                z[:] = self.prox.call_i(i, 2 * x_old - z_old - step * grad_x,
-                                        n_prox * step)
+                z[:] = self.prox.call_i(
+                    i, 2 * prev_minimizer - z_old - step * grad_x,
+                    n_prox * step)
                 # Relaxation step
-                z[:] = z_old + self.surrelax * (z - x_old)
+                z[:] = z_old + self.surrelax * (z - prev_minimizer)
 
-            x[:] = 1. / n_prox * sum(z_list)
-            rel_delta = relative_distance(x, x_old)
-            obj = self.objective(x)
-            rel_obj = abs(obj - obj_old) / abs(obj_old)
+            minimizer[:] = 1. / n_prox * sum(z_list)
 
-            x_old[:] = x
             for i in range(n_prox):
                 z_old_list[i][:] = z_list[i]
 
-            converged = rel_obj < self.tol
-            # if converged, we stop the loop and record the last step
-            # in history
-            self._handle_history(n_iter, force=converged, obj=obj, x=x.copy(),
-                                 rel_delta=rel_delta, step=step,
-                                 rel_obj=rel_obj)
-            if converged:
-                break
+            # Let's record metrics
+            if self._should_record_iter(n_iter):
+                rel_delta = relative_distance(minimizer, prev_minimizer)
+                obj = self.objective(minimizer)
+                rel_obj = abs(obj - prev_obj) / abs(prev_obj)
 
-        self._set('solution', x)
+                converged = rel_obj < self.tol
+                # if converged, we stop the loop and record the last step
+                # in history
+                self._handle_history(n_iter, force=converged, obj=obj,
+                                     x=minimizer.copy(), rel_delta=rel_delta,
+                                     step=step, rel_obj=rel_obj)
+                if converged:
+                    break
+
+        self._set('solution', minimizer)

@@ -154,23 +154,24 @@ class BFGS(SolverFirstOrder):
         # A closure to maintain history along internal BFGS's iterations
         n_iter = [0]
         prev_x = x0.copy()
-        prev_obj = [obj]
 
         def insp(xk):
-            x = xk
-            rel_delta = relative_distance(x, prev_x)
-            prev_x[:] = x
-            obj = self.objective(x)
-            rel_obj = abs(obj - prev_obj[0]) / abs(prev_obj[0])
-            prev_obj[0] = obj
-            self._handle_history(n_iter[0], force=False, obj=obj, x=xk.copy(),
-                                 rel_delta=rel_delta, rel_obj=rel_obj)
+            if self._should_record_iter(n_iter[0]):
+                prev_obj = self.objective(prev_x)
+                x = xk
+                rel_delta = relative_distance(x, prev_x)
+
+                obj = self.objective(x)
+                rel_obj = abs(obj - prev_obj) / abs(prev_obj)
+                self._handle_history(n_iter[0], force=False, obj=obj,
+                                     x=xk.copy(), rel_delta=rel_delta,
+                                     rel_obj=rel_obj)
+            prev_x[:] = xk
             n_iter[0] += 1
 
         insp.n_iter = n_iter
         insp.self = self
         insp.prev_x = prev_x
-        insp.prev_obj = prev_obj
 
         # We simply call the scipy.optimize.fmin_bfgs routine
         x_min, f_min, _, _, _, _, _ = \
