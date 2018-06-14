@@ -74,8 +74,8 @@ def get_tree(of):
 
 
 of = OnlineForestClassifier(n_classes=n_classes, seed=1234,
-                            use_aggregation=True,
-                            n_trees=20, split_pure=True,
+                            use_aggregation=False,
+                            n_trees=1, split_pure=True,
                             dirichlet=0.5, step=1.,
                             use_feature_importances=False)
 
@@ -90,8 +90,9 @@ for t in range(0, max_iter + 1):
     dfs[t] = get_tree(of)
     df_data = pd.DataFrame({'x1': X[:(t + 1), 0],
                             'x2': X[:(t + 1), 1],
-                            'y': y[:(t + 1)]},
-                           columns=['x1', 'x2', 'y'])
+                            'y': y[:(t + 1)],
+                            't': np.arange(t+1)},
+                           columns=['x1', 'x2', 'y', 't'])
     df_data['y'] = df_data['y'].map(lambda y: y_color[y])
     df_datas[t] = df_data
     zzs[t] = of.predict_proba(np.array([xx.ravel(), yy.ravel()]).T)[:,1].reshape(100, 100)
@@ -99,7 +100,9 @@ for t in range(0, max_iter + 1):
         logging.info("Done with step %d" % t)
 
 df = dfs[1]
+
 df_data = df_datas[1]
+
 zz = zzs[1]
 
 source = ColumnDataSource(ColumnDataSource.from_df(df))
@@ -135,7 +138,9 @@ hover = HoverTool(
     renderers=[circles],
     tooltips=[
         ("time", "@time"),
-        ("threshold", "@threshold")
+        ("threshold", "@threshold"),
+        ("feature", "@feature"),
+
     ]
 )
 
@@ -143,6 +148,7 @@ hover = HoverTool(
 hover_data = HoverTool(
     renderers=[circles_data],
     tooltips=[
+        ("t", "@t"),
         ("x1", "@x1"),
         ("x2", "@x2")
     ]
