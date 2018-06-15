@@ -138,11 +138,13 @@ class Array : public BaseArray<T> {
    * otherwise in decreasing order
    */
   template <typename Y = K>
-  typename std::enable_if<std::is_same<T, std::atomic<Y>>::value>::type
-  sort(bool increasing = true);
+  typename std::enable_if<std::is_same<T, std::atomic<Y>>::value>::type sort(
+      bool increasing = true);
 
   template <typename Y = K>
-  typename std::enable_if<!std::is_same<T, bool>::value && !std::is_same<Y, bool>::value && !std::is_same<T, std::atomic<Y>>::value>::type
+  typename std::enable_if<!std::is_same<T, bool>::value &&
+                          !std::is_same<Y, bool>::value &&
+                          !std::is_same<T, std::atomic<Y>>::value>::type
   sort(bool increasing = true);
 
   /**
@@ -155,7 +157,9 @@ class Array : public BaseArray<T> {
   sort_function(Array<uint64_t> &index, F order_function);
 
   template <typename Y = K, typename F>
-  typename std::enable_if<!std::is_same<T, bool>::value && !std::is_same<Y, bool>::value && !std::is_same<T, std::atomic<Y>>::value>::type
+  typename std::enable_if<!std::is_same<T, bool>::value &&
+                          !std::is_same<Y, bool>::value &&
+                          !std::is_same<T, std::atomic<Y>>::value>::type
   sort_function(Array<uint64_t> &index, F order_function);
 
   /**
@@ -262,7 +266,8 @@ Array<T>::Array(ulong size, T *data1) : BaseArray<T>(true) {
 
 // initializer_list constructor
 template <typename T>
-Array<T>::Array(std::initializer_list<typename Array<T>::K> data_list) : BaseArray<T>(true) {
+Array<T>::Array(std::initializer_list<typename Array<T>::K> data_list)
+    : BaseArray<T>(true) {
   is_data_allocation_owned = true;
   _size = data_list.size();
   TICK_PYTHON_MALLOC(_data, T, _size);
@@ -272,7 +277,6 @@ Array<T>::Array(std::initializer_list<typename Array<T>::K> data_list) : BaseArr
     index++;
   }
 }
-
 
 // fill with given value
 template <typename T>
@@ -328,7 +332,8 @@ template <typename T>
 template <typename Y>
 void Array<T>::multiply(const K fact, Array<T> *out) {
   if (out == nullptr) {
-    tick::vector_operations<T>{}.scale(_size, fact, _data);
+    tick::vector_operations<T>{}.scale(
+        _size, fact, _data);
   } else {
     for (ulong i = 0; i < _size; i++) (*out)[i] = _data[i] * fact;
   }
@@ -507,11 +512,11 @@ CEREAL_LOAD_FUNCTION_NAME(Archive &ar, Array<T> &arr) {
     TICK_ERROR("Deserializing sparse arrays is not supported yet.");
 }
 
-  /////////////////////////////////////////////////////////////////
-  //
-  //  The various instances of this template
-  //
-  /////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////
+//
+//  The various instances of this template
+//
+/////////////////////////////////////////////////////////////////
 
 #include <vector>
 
@@ -540,7 +545,6 @@ CEREAL_LOAD_FUNCTION_NAME(Archive &ar, Array<T> &arr) {
  * @{
  */
 
-
 /**
  * @}
  */
@@ -550,8 +554,8 @@ CEREAL_LOAD_FUNCTION_NAME(Archive &ar, Array<T> &arr) {
  * @{
  */
 
-#define ARRAY_DEFINE_TYPE(TYPE, NAME)\
-  typedef Array<TYPE> Array##NAME; \
+#define ARRAY_DEFINE_TYPE(TYPE, NAME)                   \
+  typedef Array<TYPE> Array##NAME;                      \
   typedef std::vector<Array##NAME> Array##NAME##List1D; \
   typedef std::vector<Array##NAME##List1D> Array##NAME##List2D
 
@@ -609,7 +613,9 @@ Array<T>::sort_function(Array<uint64_t> &index, F order_function) {
 
 template <typename T>
 template <typename Y, typename F>
-typename std::enable_if<!std::is_same<T, bool>::value && !std::is_same<Y, bool>::value && !std::is_same<T, std::atomic<Y>>::value>::type
+typename std::enable_if<!std::is_same<T, bool>::value &&
+                        !std::is_same<Y, bool>::value &&
+                        !std::is_same<T, std::atomic<Y>>::value>::type
 Array<T>::sort_function(Array<uint64_t> &index, F order_function) {
   std::vector<value_index<T>> pairs(_size);
   for (uint64_t i = 0; i < _size; ++i) {
@@ -627,21 +633,21 @@ Array<T>::sort_function(Array<uint64_t> &index, F order_function) {
 
 template <class T>
 template <class Y>
-void
-Array<T>::mult_incr(const BaseArray<Y> &x, const typename Array<T>::K a) {
+void Array<T>::mult_incr(const BaseArray<Y> &x, const typename Array<T>::K a) {
   if (this->size() != x.size()) {
     TICK_ERROR("Vectors don't have the same size.");
   } else {
     if (x.is_sparse()) {
       for (uint64_t j = 0; j < x.size_sparse(); j++) {
         auto x_index_j = x.indices()[j];
-        set_data_index(x_index_j,
-          this->template get_data_index<typename Array<T>::K>(x_index_j)
-            + (x.template get_data_index<typename Array<T>::K>(j) * a));
+        set_data_index(
+            x_index_j,
+            this->template get_data_index<typename Array<T>::K>(x_index_j) +
+                (x.template get_data_index<typename Array<T>::K>(j) * a));
       }
     } else {
-      tick::vector_operations<T>{}.mult_incr(
-          this->size(), a, x.data(), this->data());
+      tick::vector_operations<T>{}.mult_incr(this->size(), a, x.data(),
+                                             this->data());
     }
   }
 }
@@ -654,7 +660,9 @@ Array<T>::sort(bool increasing) {
 }
 template <typename T>
 template <typename Y>
-typename std::enable_if<!std::is_same<T, bool>::value && !std::is_same<Y, bool>::value && !std::is_same<T, std::atomic<Y>>::value>::type
+typename std::enable_if<!std::is_same<T, bool>::value &&
+                        !std::is_same<Y, bool>::value &&
+                        !std::is_same<T, std::atomic<Y>>::value>::type
 Array<T>::sort(bool increasing) {
   if (increasing)
     std::sort(_data, _data + _size);

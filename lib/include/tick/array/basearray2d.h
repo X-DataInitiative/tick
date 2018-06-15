@@ -241,11 +241,11 @@ inline std::ostream &operator<<(std::ostream &s, const BaseArray2d<T> &p) {
   return s << typeid(p).name() << "<" << typeid(T).name() << ">";
 }
 
-  /////////////////////////////////////////////////////////////////
-  //
-  //  The various instances of this template
-  //
-  /////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////
+//
+//  The various instances of this template
+//
+/////////////////////////////////////////////////////////////////
 
 #include <vector>
 
@@ -265,8 +265,8 @@ inline std::ostream &operator<<(std::ostream &s, const BaseArray2d<T> &p) {
  * @{
  */
 
-#define BASE_ARRAY2D_DEFINE_TYPE(TYPE, NAME)\
-  typedef BaseArray2d<TYPE> BaseArray##NAME##2d; \
+#define BASE_ARRAY2D_DEFINE_TYPE(TYPE, NAME)                          \
+  typedef BaseArray2d<TYPE> BaseArray##NAME##2d;                      \
   typedef std::vector<BaseArray##NAME##2d> BaseArray##NAME##2dList1D; \
   typedef std::vector<BaseArray##NAME##2dList1D> BaseArray##NAME##2dList2D
 

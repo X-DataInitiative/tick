@@ -5,7 +5,6 @@
 
 #include "abstractarray1d2d.h"
 
-
 template <typename T>
 class Array;
 
@@ -97,13 +96,15 @@ class BaseArray : public AbstractArray1d2d<T> {
   //! @brief Returns the scalar product of the array with `array`
   // defined in file dot.h
   template <typename Y>
-  typename std::enable_if<std::is_same<Y, std::atomic<T>>::value, T>::type
-  dot(const BaseArray<Y> &array) const;
+  typename std::enable_if<std::is_same<Y, std::atomic<T>>::value, T>::type dot(
+      const BaseArray<Y> &array) const;
 
   template <typename Y = K>
-  typename std::enable_if<!std::is_same<T, bool>::value && !std::is_same<Y, bool>::value && !std::is_same<T, std::atomic<Y>>::value, Y>::type
+  typename std::enable_if<!std::is_same<T, bool>::value &&
+                              !std::is_same<Y, bool>::value &&
+                              !std::is_same<T, std::atomic<Y>>::value,
+                          Y>::type
   dot(const BaseArray<K> &array) const;
-
 
   //! @brief Creates a dense Array from an BaseArray
   //! In terms of allocation owner, there are two cases
@@ -128,7 +129,9 @@ class BaseArray : public AbstractArray1d2d<T> {
   set_data_index(size_t index, K value);
 
   template <class Y = K>
-  typename std::enable_if<!std::is_same<T, bool>::value && !std::is_same<Y, bool>::value && !std::is_same<T, std::atomic<Y>>::value>::type
+  typename std::enable_if<!std::is_same<T, bool>::value &&
+                          !std::is_same<Y, bool>::value &&
+                          !std::is_same<T, std::atomic<Y>>::value>::type
   set_data_index(size_t index, K value);
 };
 
@@ -167,11 +170,11 @@ void BaseArray<T>::_print_sparse() const {
   std::cout << "]" << std::endl;
 }
 
-  /////////////////////////////////////////////////////////////////
-  //
-  //  The various instances of this template
-  //
-  /////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////
+//
+//  The various instances of this template
+//
+/////////////////////////////////////////////////////////////////
 
 #include <vector>
 
@@ -191,8 +194,8 @@ void BaseArray<T>::_print_sparse() const {
  * @{
  */
 
-#define BASEARRAY_DEFINE_TYPE(TYPE, NAME)\
-  typedef BaseArray<TYPE> BaseArray##NAME; \
+#define BASEARRAY_DEFINE_TYPE(TYPE, NAME)                       \
+  typedef BaseArray<TYPE> BaseArray##NAME;                      \
   typedef std::vector<BaseArray##NAME> BaseArray##NAME##List1D; \
   typedef std::vector<BaseArray##NAME##List1D> BaseArray##NAME##List2D
 
@@ -222,10 +225,11 @@ BaseArray<T>::set_data_index(size_t index, typename BaseArray<T>::K value) {
 
 template <typename T>
 template <typename Y>
-typename std::enable_if<!std::is_same<T, bool>::value && !std::is_same<Y, bool>::value && !std::is_same<T, std::atomic<Y>>::value>::type
+typename std::enable_if<!std::is_same<T, bool>::value &&
+                        !std::is_same<Y, bool>::value &&
+                        !std::is_same<T, std::atomic<Y>>::value>::type
 BaseArray<T>::set_data_index(size_t index, typename BaseArray<T>::K value) {
   _data[index] = value;
 }
-
 
 #endif  // LIB_INCLUDE_TICK_ARRAY_BASEARRAY_H_

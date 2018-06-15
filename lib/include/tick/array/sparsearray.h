@@ -117,11 +117,11 @@ Array<T> BaseArray<T>::as_array() {
   }
 }
 
-  /////////////////////////////////////////////////////////////////
-  //
-  //  The various instances of this template
-  //
-  /////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////
+//
+//  The various instances of this template
+//
+/////////////////////////////////////////////////////////////////
 
 #include <vector>
 
@@ -140,27 +140,23 @@ Array<T> BaseArray<T>::as_array() {
  *  @ingroup Array_typedefs_mod
  * @{
  */
-
 /**
  * @}
  */
-
 /** @defgroup arraylist1d_sub_mod The classes for dealing with 1d-list of Arrays
  *  @ingroup Array_typedefs_mod
  * @{
  */
-
 /**
  * @}
  */
-
 /** @defgroup arraylist2d_sub_mod The classes for dealing with 2d-list of Arrays
  *  @ingroup Array_typedefs_mod
  * @{
  */
 
-#define SPARSE_ARRAY_DEFINE_TYPE(TYPE, NAME)\
-  typedef SparseArray<TYPE> SparseArray##NAME; \
+#define SPARSE_ARRAY_DEFINE_TYPE(TYPE, NAME)                        \
+  typedef SparseArray<TYPE> SparseArray##NAME;                      \
   typedef std::vector<SparseArray##NAME> SparseArray##NAME##List1D; \
   typedef std::vector<SparseArray##NAME##List1D> SparseArray##NAME##List2D
 

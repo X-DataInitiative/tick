@@ -1,5 +1,6 @@
 
 
+
 // This macro ensures that the corresponding optimized blas function is used if available
 #if (DEBUG_COSTLY_THROW && defined(TICK_CBLAS_AVAILABLE))
 // x and y are two pointers
@@ -15,9 +16,6 @@
 #define CHECK_BLAS_OPTIMIZATION_PP(x, y, func_name)
 #define CHECK_BLAS_OPTIMIZATION_PS(x, y, func_name)
 #endif
-
-
-
 
 namespace tick{ namespace detail{
 
