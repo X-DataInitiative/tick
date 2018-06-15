@@ -6,8 +6,8 @@
 
 %include "model_generalized_linear.i";
 
-template <class T>
-class DLL_PUBLIC TModelHinge : public virtual TModelGeneralizedLinear<T> {
+template <class T, class K = T>
+class DLL_PUBLIC TModelHinge : public virtual TModelGeneralizedLinear<T, K> {
  public:
   TModelHinge();
   TModelHinge(
@@ -17,11 +17,11 @@ class DLL_PUBLIC TModelHinge : public virtual TModelGeneralizedLinear<T> {
     const int n_threads
   );
 
-  bool compare(const TModelHinge<T> &that);
+  bool compare(const TModelHinge<T, K> &that);
 };
 
-%rename(ModelHingeDouble) TModelHinge<double>;
-class ModelHingeDouble : public virtual TModelGeneralizedLinear<double>{
+%rename(ModelHingeDouble) TModelHinge<double, double>;
+class ModelHingeDouble : public virtual TModelGeneralizedLinear<double, double>{
  public:
   ModelHingeDouble();
   ModelHingeDouble(
@@ -33,11 +33,11 @@ class ModelHingeDouble : public virtual TModelGeneralizedLinear<double>{
 
   bool compare(const ModelHingeDouble &that);
 };
-typedef TModelHinge<double> ModelHingeDouble;
+typedef TModelHinge<double, double> ModelHingeDouble;
 TICK_MAKE_PICKLABLE(ModelHingeDouble);
 
-%rename(ModelHingeFloat) TModelHinge<float>;
-class ModelHingeFloat : public virtual TModelGeneralizedLinear<float>{
+%rename(ModelHingeFloat) TModelHinge<float, float>;
+class ModelHingeFloat : public virtual TModelGeneralizedLinear<float, float>{
  public:
   ModelHingeFloat();
   ModelHingeFloat(
@@ -49,5 +49,5 @@ class ModelHingeFloat : public virtual TModelGeneralizedLinear<float>{
 
   bool compare(const ModelHingeFloat &that);
 };
-typedef TModelHinge<float> ModelHingeFloat;
+typedef TModelHinge<float, float> ModelHingeFloat;
 TICK_MAKE_PICKLABLE(ModelHingeFloat);

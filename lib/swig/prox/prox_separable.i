@@ -6,8 +6,8 @@
 
 %include "prox.i"
 
-template <class T>
-class TProxSeparable : public TProx<T> {
+template <class T, class K>
+class TProxSeparable : public TProx<T, K> {
  public:
   TProxSeparable(
     T strength,
@@ -20,17 +20,17 @@ class TProxSeparable : public TProx<T> {
     bool positive
   );
 
-  using TProx<T>::call;
+  using TProx<T, K>::call;
 
   virtual void call(
-    const Array<T> &coeffs,
+    const Array<K> &coeffs,
     const Array<T> &step,
-    Array<T> &out
+    Array<K> &out
   );
 };
 
-%rename(TProxSeparableDouble) TProxSeparable<double>;
-class TProxSeparable<double> : public TProx<double> {
+%rename(TProxSeparableDouble) TProxSeparable<double, double>;
+class TProxSeparable<double, double> : public TProx<double, double> {
  public:
   TProxSeparableDouble(
     double strength,
@@ -43,7 +43,7 @@ class TProxSeparable<double> : public TProx<double> {
     bool positive
   );
 
-  using TProx<double>::call;
+  using TProx<double, double>::call;
 
   virtual void call(
     const ArrayDouble &coeffs,
@@ -51,10 +51,10 @@ class TProxSeparable<double> : public TProx<double> {
     ArrayDouble &out
   );
 };
-typedef TProxSeparable<double> TProxSeparableDouble;
+typedef TProxSeparable<double, double> TProxSeparableDouble;
 
-%rename(TProxSeparableFloat) TProxSeparable<float>;
-class TProxSeparable<float> : public TProx<float> {
+%rename(TProxSeparableFloat) TProxSeparable<float, float>;
+class TProxSeparable<float, float> : public TProx<float, float> {
  public:
   TProxSeparable(
     float strength,
@@ -67,7 +67,7 @@ class TProxSeparable<float> : public TProx<float> {
     bool positive
   );
 
-  using TProx<float>::call;
+  using TProx<float, float>::call;
 
   virtual void call(
     const ArrayFloat &coeffs,
@@ -75,4 +75,11 @@ class TProxSeparable<float> : public TProx<float> {
     ArrayFloat &out
   );
 };
-typedef TProxSeparable<float> TProxSeparableFloat;
+typedef TProxSeparable<float, float> TProxSeparableFloat;
+
+%template(TProxSeparableAtomicDouble) TProxSeparable<double, std::atomic<double> >;
+typedef TProxSeparable<double, std::atomic<double> > TProxSeparableAtomicDouble;
+
+
+%template(TProxSeparableAtomicFloat) TProxSeparable<float, std::atomic<float> >;
+typedef TProxSeparable<float, std::atomic<double> > TProxSeparableAtomicFloat;

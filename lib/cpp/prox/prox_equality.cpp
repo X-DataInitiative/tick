@@ -3,9 +3,9 @@
 #include "tick/prox/prox_equality.h"
 #include "tick/base/base.h"
 
-template <class T>
-T TProxEquality<T>::value(const Array<T> &coeffs, ulong start, ulong end) {
-  Array<T> sub_coeffs = view(coeffs, start, end);
+template <class T, class K>
+T TProxEquality<T, K>::value(const Array<K> &coeffs, ulong start, ulong end) {
+  auto sub_coeffs = view(coeffs, start, end);
   if (sub_coeffs.min() == sub_coeffs.max()) {
     return 0;
   } else {
@@ -13,11 +13,11 @@ T TProxEquality<T>::value(const Array<T> &coeffs, ulong start, ulong end) {
   }
 }
 
-template <class T>
-void TProxEquality<T>::call(const Array<T> &coeffs, T step, Array<T> &out,
-                            ulong start, ulong end) {
-  Array<T> sub_coeffs = view(coeffs, start, end);
-  Array<T> sub_out = view(out, start, end);
+template <class T, class K>
+void TProxEquality<T, K>::call(const Array<K> &coeffs, T step, Array<K> &out,
+                               ulong start, ulong end) {
+  auto sub_coeffs = view(coeffs, start, end);
+  auto sub_out = view(out, start, end);
   T mean = sub_coeffs.sum() / sub_coeffs.size();
   if (positive && (mean < 0)) {
     sub_out.fill(0);
@@ -26,5 +26,8 @@ void TProxEquality<T>::call(const Array<T> &coeffs, T step, Array<T> &out,
   }
 }
 
-template class DLL_PUBLIC TProxEquality<double>;
-template class DLL_PUBLIC TProxEquality<float>;
+template class DLL_PUBLIC TProxEquality<double, double>;
+template class DLL_PUBLIC TProxEquality<float, float>;
+
+template class DLL_PUBLIC TProxEquality<double, std::atomic<double>>;
+template class DLL_PUBLIC TProxEquality<float, std::atomic<float>>;

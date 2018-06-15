@@ -98,8 +98,14 @@ int main(int argc, char** argv) {
 
   ulong n_samples = features_ptr->n_rows();
   ulong n_features = features_ptr->n_cols();
+  (void) n_samples;
+  (void) n_features;
 
   try {
+    auto a_linreg =
+      std::make_shared<TModelLinReg<double, std::atomic<double>>>(features_ptr,
+                                                         labels_ptr, false, 1);
+
     auto linreg = std::make_shared<TModelLinReg<double>>(features_ptr,
                                                          labels_ptr, false, 1);
     auto logreg = std::make_shared<TModelLogReg<double>>(features_ptr,
@@ -114,12 +120,13 @@ int main(int argc, char** argv) {
     run([&]() { TProxL2<double> t(1, true); });
     run([&]() { TProxL2Sq<double> t(1, true); });
     run([&]() { TProxSeparable<double> t(1, true); });
+    run([&]() { TProxSeparable<double, std::atomic<double>> t(1, true); });
     run([&]() { TProxSlope<double> t(1, 1, true); });
     run([&]() { TProxSortedL1<double> t(1, {}, true); });
     run([&]() { TProxTV<double> t(1, true); });
     run([&]() { TProxWithGroups<double> t(1, start, length, true); });
     run([&]() { TProxBinarsity<double> t(1, start, length, true); });
-    run([&]() { TProxMulti<double> t({}); });
+    run([&]() { TProxMulti<double> t; });
     run([&]() {
       TAdaGrad<double> svrg(n_samples, 0, RandType::unif,
                             linreg->get_lip_max() / 100, 1309);
@@ -142,7 +149,7 @@ int main(int argc, char** argv) {
       SBaseArrayDouble2dPtrList1D features;
       SArrayIntPtrList1D labels;
       SBaseArrayULongPtr censoring;
-      ulong n_lags = 0;
+      SArrayULongPtr n_lags;
       ModelSCCS t(features, labels, censoring, n_lags);
     });
     run([&]() {

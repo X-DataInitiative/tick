@@ -32,7 +32,7 @@ ModelSCCS::ModelSCCS(const SBaseArrayDouble2dPtrList1D &features,
     if ((*n_lags)[i] >= n_intervals) {
       TICK_ERROR("n_lags elements must be between 0 and (n_intervals - 1).");
     }
-    col_offset[i] = col_offset[i - 1] + (*n_lags)[i-1] + 1;
+    col_offset[i] = col_offset[i - 1] + (*n_lags)[i - 1] + 1;
   }
 
   if (n_samples != labels.size() || n_samples != (*censoring).size())

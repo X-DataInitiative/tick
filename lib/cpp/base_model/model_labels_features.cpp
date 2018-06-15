@@ -2,10 +2,10 @@
 
 #include "tick/base_model/model_labels_features.h"
 
-template <class T>
-TModelLabelsFeatures<T>::TModelLabelsFeatures(
-    const std::shared_ptr<BaseArray2d<T> > features,
-    const std::shared_ptr<SArray<T> > labels)
+template <class T, class K>
+TModelLabelsFeatures<T, K>::TModelLabelsFeatures(
+    const std::shared_ptr<BaseArray2d<T>> features,
+    const std::shared_ptr<SArray<T>> labels)
     : ready_columns_sparsity(false),
       n_samples(labels.get() ? labels->size() : 0),
       n_features(features.get() ? features->n_cols() : 0),
@@ -19,8 +19,8 @@ TModelLabelsFeatures<T>::TModelLabelsFeatures(
   }
 }
 
-template <class T>
-void TModelLabelsFeatures<T>::compute_columns_sparsity() {
+template <class T, class K>
+void TModelLabelsFeatures<T, K>::compute_columns_sparsity() {
   if (features->is_sparse()) {
     column_sparsity = Array<T>(n_features);
     column_sparsity.fill(0.);
@@ -41,5 +41,8 @@ void TModelLabelsFeatures<T>::compute_columns_sparsity() {
   }
 }
 
-template class TModelLabelsFeatures<double>;
-template class TModelLabelsFeatures<float>;
+template class TModelLabelsFeatures<double, double>;
+template class TModelLabelsFeatures<float, float>;
+
+template class TModelLabelsFeatures<double, std::atomic<double>>;
+template class TModelLabelsFeatures<float, std::atomic<float>>;

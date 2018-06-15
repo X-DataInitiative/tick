@@ -6,29 +6,29 @@
 
 #include "tick/linear_model/model_logreg.h"
 
-template <class T>
-void TModelLogReg<T>::sigmoid(const Array<T> &x, Array<T> &out) {
+template <class T, class K>
+void TModelLogReg<T, K>::sigmoid(const Array<T> &x, Array<T> &out) {
   for (ulong i = 0; i < x.size(); ++i) {
     out[i] = sigmoid(x[i]);
   }
 }
 
-template <class T>
-void TModelLogReg<T>::logistic(const Array<T> &x, Array<T> &out) {
+template <class T, class K>
+void TModelLogReg<T, K>::logistic(const Array<T> &x, Array<T> &out) {
   for (ulong i = 0; i < x.size(); ++i) {
     out[i] = logistic(x[i]);
   }
 }
 
-template <class T>
-T TModelLogReg<T>::loss_i(const ulong i, const Array<T> &coeffs) {
+template <class T, class K>
+T TModelLogReg<T, K>::loss_i(const ulong i, const Array<K> &coeffs) {
   double z_i = get_inner_prod(i, coeffs);
   z_i *= get_label(i);
   return logistic(z_i);
 }
 
-template <class T>
-T TModelLogReg<T>::grad_i_factor(const ulong i, const Array<T> &coeffs) {
+template <class T, class K>
+T TModelLogReg<T, K>::grad_i_factor(const ulong i, const Array<K> &coeffs) {
   // The label in { -1, 1 }
   const T y_i = get_label(i);
   // Contains x_i^T w + b
@@ -37,10 +37,10 @@ T TModelLogReg<T>::grad_i_factor(const ulong i, const Array<T> &coeffs) {
   return y_i * (sigmoid(y_i * z_i) - 1);
 }
 
-template <class T>
-T TModelLogReg<T>::sdca_dual_min_i(const ulong i, const T dual_i,
-                                   const Array<T> &primal_vector,
-                                   const T previous_delta_dual_i, T l_l2sq) {
+template <class T, class K>
+T TModelLogReg<T, K>::sdca_dual_min_i(const ulong i, const T dual_i,
+                                      const Array<K> &primal_vector,
+                                      const T previous_delta_dual_i, T l_l2sq) {
   compute_features_norm_sq();
   T epsilon = 1e-1;
   T normalized_features_norm = features_norm_sq[i] / (l_l2sq * n_samples);
@@ -105,8 +105,8 @@ T TModelLogReg<T>::sdca_dual_min_i(const ulong i, const T dual_i,
   return delta_dual;
 }
 
-template <class T>
-void TModelLogReg<T>::compute_lip_consts() {
+template <class T, class K>
+void TModelLogReg<T, K>::compute_lip_consts() {
   if (ready_lip_consts) {
     return;
   } else {
@@ -122,5 +122,8 @@ void TModelLogReg<T>::compute_lip_consts() {
   }
 }
 
-template class DLL_PUBLIC TModelLogReg<double>;
-template class DLL_PUBLIC TModelLogReg<float>;
+template class DLL_PUBLIC TModelLogReg<double, double>;
+template class DLL_PUBLIC TModelLogReg<float, float>;
+
+template class DLL_PUBLIC TModelLogReg<double, std::atomic<double>>;
+template class DLL_PUBLIC TModelLogReg<float, std::atomic<float>>;

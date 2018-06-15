@@ -116,7 +116,7 @@ void _parallel_map(R &map_result, unsigned int n_threads, ulong dim, T f, S obj,
   }
 }
 
-  /// @endcond
+/// @endcond
 
 #include "tick/array/view.h"
 /**

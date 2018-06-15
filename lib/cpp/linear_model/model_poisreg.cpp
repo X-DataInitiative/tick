@@ -6,10 +6,11 @@
 
 #include "tick/linear_model/model_poisreg.h"
 
-template <class T>
-T TModelPoisReg<T>::sdca_dual_min_i(const ulong i, const T dual_i,
-                                    const Array<T> &primal_vector,
-                                    const T previous_delta_dual_i, T l_l2sq) {
+template <class T, class K>
+T TModelPoisReg<T, K>::sdca_dual_min_i(const ulong i, const T dual_i,
+                                       const Array<K> &primal_vector,
+                                       const T previous_delta_dual_i,
+                                       T l_l2sq) {
   if (link_type == LinkType::identity) {
     return sdca_dual_min_i_identity(i, dual_i, primal_vector,
                                     previous_delta_dual_i, l_l2sq);
@@ -19,11 +20,10 @@ T TModelPoisReg<T>::sdca_dual_min_i(const ulong i, const T dual_i,
   }
 }
 
-template <class T>
-T TModelPoisReg<T>::sdca_dual_min_i_exponential(const ulong i, const T dual_i,
-                                                const Array<T> &primal_vector,
-                                                const T previous_delta_dual_i,
-                                                T l_l2sq) {
+template <class T, class K>
+T TModelPoisReg<T, K>::sdca_dual_min_i_exponential(
+    const ulong i, const T dual_i, const Array<K> &primal_vector,
+    const T previous_delta_dual_i, T l_l2sq) {
   compute_features_norm_sq();
   T epsilon = 1e-1;
 
@@ -71,8 +71,8 @@ T TModelPoisReg<T>::sdca_dual_min_i_exponential(const ulong i, const T dual_i,
   return delta_dual;
 }
 
-template <class T>
-void TModelPoisReg<T>::init_non_zero_label_map() {
+template <class T, class K>
+void TModelPoisReg<T, K>::init_non_zero_label_map() {
   non_zero_labels = VArrayULong::new_ptr();
   for (ulong i = 0; i < get_n_samples(); ++i) {
     if (get_label(i) != 0) {
@@ -83,11 +83,11 @@ void TModelPoisReg<T>::init_non_zero_label_map() {
   ready_non_zero_label_map = true;
 }
 
-template <class T>
-T TModelPoisReg<T>::sdca_dual_min_i_identity(const ulong i, const T dual_i,
-                                             const Array<T> &primal_vector,
-                                             const T previous_delta_dual_i,
-                                             T l_l2sq) {
+template <class T, class K>
+T TModelPoisReg<T, K>::sdca_dual_min_i_identity(const ulong i, const T dual_i,
+                                                const Array<K> &primal_vector,
+                                                const T previous_delta_dual_i,
+                                                T l_l2sq) {
   if (!ready_features_norm_sq) {
     compute_features_norm_sq();
   }
@@ -112,13 +112,12 @@ T TModelPoisReg<T>::sdca_dual_min_i_identity(const ulong i, const T dual_i,
   return new_dual - dual_i;
 }
 
-template <class T>
-void TModelPoisReg<T>::sdca_primal_dual_relation(const T l_l2sq,
-                                                 const Array<T> &dual_vector,
-                                                 Array<T> &out_primal_vector) {
+template <class T, class K>
+void TModelPoisReg<T, K>::sdca_primal_dual_relation(
+    const T l_l2sq, const Array<T> &dual_vector, Array<T> &out_primal_vector) {
   if (link_type == LinkType::exponential) {
-    TModelGeneralizedLinear<T>::sdca_primal_dual_relation(l_l2sq, dual_vector,
-                                                          out_primal_vector);
+    TModelGeneralizedLinear<T, K>::sdca_primal_dual_relation(
+        l_l2sq, dual_vector, out_primal_vector);
     return;
   }
 
@@ -160,8 +159,8 @@ void TModelPoisReg<T>::sdca_primal_dual_relation(const T l_l2sq,
   }
 }
 
-template <class T>
-T TModelPoisReg<T>::loss_i(const ulong i, const Array<T> &coeffs) {
+template <class T, class K>
+T TModelPoisReg<T, K>::loss_i(const ulong i, const Array<K> &coeffs) {
   const T z = get_inner_prod(i, coeffs);
   switch (link_type) {
     case LinkType::exponential: {
@@ -177,8 +176,8 @@ T TModelPoisReg<T>::loss_i(const ulong i, const Array<T> &coeffs) {
   }
 }
 
-template <class T>
-T TModelPoisReg<T>::grad_i_factor(const ulong i, const Array<T> &coeffs) {
+template <class T, class K>
+T TModelPoisReg<T, K>::grad_i_factor(const ulong i, const Array<K> &coeffs) {
   const double z = get_inner_prod(i, coeffs);
   switch (link_type) {
     case LinkType::exponential: {
@@ -192,5 +191,8 @@ T TModelPoisReg<T>::grad_i_factor(const ulong i, const Array<T> &coeffs) {
   }
 }
 
-template class DLL_PUBLIC TModelPoisReg<double>;
-template class DLL_PUBLIC TModelPoisReg<float>;
+template class DLL_PUBLIC TModelPoisReg<double, double>;
+template class DLL_PUBLIC TModelPoisReg<float, float>;
+
+template class DLL_PUBLIC TModelPoisReg<double, std::atomic<double>>;
+template class DLL_PUBLIC TModelPoisReg<float, std::atomic<float>>;

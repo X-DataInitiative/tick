@@ -2,8 +2,9 @@
 
 #include "tick/robust/model_epsilon_insensitive.h"
 
-template <class T>
-T TModelEpsilonInsensitive<T>::loss_i(const ulong i, const Array<T> &coeffs) {
+template <class T, class K>
+T TModelEpsilonInsensitive<T, K>::loss_i(const ulong i,
+                                         const Array<K> &coeffs) {
   const T z = std::abs(get_inner_prod(i, coeffs) - get_label(i));
   if (z > threshold) {
     return z - threshold;
@@ -12,9 +13,9 @@ T TModelEpsilonInsensitive<T>::loss_i(const ulong i, const Array<T> &coeffs) {
   }
 }
 
-template <class T>
-T TModelEpsilonInsensitive<T>::grad_i_factor(const ulong i,
-                                             const Array<T> &coeffs) {
+template <class T, class K>
+T TModelEpsilonInsensitive<T, K>::grad_i_factor(const ulong i,
+                                                const Array<K> &coeffs) {
   const T d = get_inner_prod(i, coeffs) - get_label(i);
   if (std::abs(d) > threshold) {
     if (d > 0) {
@@ -29,3 +30,7 @@ T TModelEpsilonInsensitive<T>::grad_i_factor(const ulong i,
 
 template class DLL_PUBLIC TModelEpsilonInsensitive<double>;
 template class DLL_PUBLIC TModelEpsilonInsensitive<float>;
+
+template class DLL_PUBLIC TModelEpsilonInsensitive<double,
+std::atomic<double>>; template class DLL_PUBLIC
+TModelEpsilonInsensitive<float, std::atomic<float>>;

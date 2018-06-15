@@ -23,6 +23,7 @@
 
 #include "tick/array/array.h"
 #include "tick/array/array2d.h"
+#include "tick/array/basearray.h"
 #include "tick/array/dot.h"
 #include "tick/array/sarray.h"
 #include "tick/array/sarray2d.h"

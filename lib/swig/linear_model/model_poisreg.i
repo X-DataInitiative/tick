@@ -11,8 +11,8 @@ enum class LinkType {
     exponential
 };
 
-template <class T>
-class TModelPoisReg : public TModelGeneralizedLinear<T> {
+template <class T, class K = T>
+class TModelPoisReg : public TModelGeneralizedLinear<T, K> {
  public:
   TModelPoisReg();
   TModelPoisReg(
@@ -25,11 +25,11 @@ class TModelPoisReg : public TModelGeneralizedLinear<T> {
 
   inline void set_link_type(LinkType link_type);
 
-  bool compare(const TModelPoisReg<T> &that);
+  bool compare(const TModelPoisReg<T, K> &that);
 };
 
-%rename(ModelPoisRegDouble) TModelPoisReg<double>;
-class ModelPoisRegDouble : public TModelGeneralizedLinear<double> {
+%rename(ModelPoisRegDouble) TModelPoisReg<double, double>;
+class ModelPoisRegDouble : public TModelGeneralizedLinear<double, double> {
  public:
   ModelPoisRegDouble();
   ModelPoisRegDouble(
@@ -42,11 +42,11 @@ class ModelPoisRegDouble : public TModelGeneralizedLinear<double> {
 
   bool compare(const ModelPoisRegDouble &that);
 };
-typedef TModelPoisReg<double> ModelPoisRegDouble;
+typedef TModelPoisReg<double, double> ModelPoisRegDouble;
 TICK_MAKE_PICKLABLE(ModelPoisRegDouble);
 
-%rename(ModelPoisRegFloat) TModelPoisReg<float>;
-class ModelPoisRegFloat : public TModelGeneralizedLinear<float> {
+%rename(ModelPoisRegFloat) TModelPoisReg<float, float>;
+class ModelPoisRegFloat : public TModelGeneralizedLinear<float, float> {
  public:
   ModelPoisRegFloat();
   ModelPoisRegFloat(
@@ -59,5 +59,5 @@ class ModelPoisRegFloat : public TModelGeneralizedLinear<float> {
 
   bool compare(const ModelPoisRegFloat &that);
 };
-typedef TModelPoisReg<float> ModelPoisRegFloat;
+typedef TModelPoisReg<float, float> ModelPoisRegFloat;
 TICK_MAKE_PICKLABLE(ModelPoisRegFloat);

@@ -2,8 +2,8 @@
 
 #include "tick/robust/model_linreg_with_intercepts.h"
 
-template <class T>
-void TModelLinRegWithIntercepts<T>::compute_lip_consts() {
+template <class T, class K>
+void TModelLinRegWithIntercepts<T, K>::compute_lip_consts() {
   if (ready_lip_consts) {
     return;
   } else {
@@ -21,3 +21,7 @@ void TModelLinRegWithIntercepts<T>::compute_lip_consts() {
 
 template class DLL_PUBLIC TModelLinRegWithIntercepts<double>;
 template class DLL_PUBLIC TModelLinRegWithIntercepts<float>;
+
+template class DLL_PUBLIC TModelLinRegWithIntercepts<double,
+std::atomic<double>>; template class DLL_PUBLIC
+TModelLinRegWithIntercepts<float, std::atomic<float>>;

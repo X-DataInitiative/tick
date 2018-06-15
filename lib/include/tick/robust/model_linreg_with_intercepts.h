@@ -6,28 +6,28 @@
 #include "tick/linear_model/model_linreg.h"
 #include "tick/robust/model_generalized_linear_with_intercepts.h"
 
-template <class T>
+template <class T, class K = T>
 class DLL_PUBLIC TModelLinRegWithIntercepts
-    : virtual public TModelGeneralizedLinearWithIntercepts<T>,
-      virtual public TModelLinReg<T> {
+    : virtual public TModelGeneralizedLinearWithIntercepts<T, K>,
+      virtual public TModelLinReg<T, K> {
  protected:
-  using TModelGeneralizedLinearWithIntercepts<T>::n_samples;
-  using TModelGeneralizedLinearWithIntercepts<T>::n_features;
-  using TModelGeneralizedLinearWithIntercepts<T>::compute_features_norm_sq;
-  using TModelGeneralizedLinearWithIntercepts<T>::features_norm_sq;
-  using TModelGeneralizedLinearWithIntercepts<T>::grad_i;
-  using TModelGeneralizedLinearWithIntercepts<T>::fit_intercept;
-  using TModelGeneralizedLinearWithIntercepts<T>::compute_grad_i;
-  using TModelGeneralizedLinearWithIntercepts<T>::features;
-  using TModelGeneralizedLinearWithIntercepts<T>::grad_i_factor;
-  using TModelGeneralizedLinearWithIntercepts<T>::get_features_norm_sq;
-  using TModelGeneralizedLinearWithIntercepts<T>::use_intercept;
-  using TModelGeneralizedLinearWithIntercepts<T>::get_n_samples;
-  using TModelLinReg<T>::ready_lip_consts;
-  using TModelLinReg<T>::lip_consts;
+  using TModelGeneralizedLinearWithIntercepts<T, K>::n_samples;
+  using TModelGeneralizedLinearWithIntercepts<T, K>::n_features;
+  using TModelGeneralizedLinearWithIntercepts<T, K>::compute_features_norm_sq;
+  using TModelGeneralizedLinearWithIntercepts<T, K>::features_norm_sq;
+  using TModelGeneralizedLinearWithIntercepts<T, K>::grad_i;
+  using TModelGeneralizedLinearWithIntercepts<T, K>::fit_intercept;
+  using TModelGeneralizedLinearWithIntercepts<T, K>::compute_grad_i;
+  using TModelGeneralizedLinearWithIntercepts<T, K>::features;
+  using TModelGeneralizedLinearWithIntercepts<T, K>::grad_i_factor;
+  using TModelGeneralizedLinearWithIntercepts<T, K>::get_features_norm_sq;
+  using TModelGeneralizedLinearWithIntercepts<T, K>::use_intercept;
+  using TModelGeneralizedLinearWithIntercepts<T, K>::get_n_samples;
+  using TModelLinReg<T, K>::ready_lip_consts;
+  using TModelLinReg<T, K>::lip_consts;
 
  public:
-  using TModelGeneralizedLinear<T>::get_class_name;
+  using TModelGeneralizedLinear<T, K>::get_class_name;
 
  public:
   // This exists soley for cereal/swig
@@ -37,11 +37,12 @@ class DLL_PUBLIC TModelLinRegWithIntercepts
   TModelLinRegWithIntercepts(const std::shared_ptr<BaseArray2d<T> > features,
                              const std::shared_ptr<SArray<T> > labels,
                              const bool fit_intercept, const int n_threads = 1)
-      : TModelLabelsFeatures<T>(features, labels),
-        TModelGeneralizedLinear<T>(features, labels, fit_intercept, n_threads),
-        TModelGeneralizedLinearWithIntercepts<T>(features, labels,
-                                                 fit_intercept, n_threads),
-        TModelLinReg<T>(features, labels, fit_intercept, n_threads) {}
+      : TModelLabelsFeatures<T, K>(features, labels),
+        TModelGeneralizedLinear<T, K>(features, labels, fit_intercept,
+                                      n_threads),
+        TModelGeneralizedLinearWithIntercepts<T, K>(features, labels,
+                                                    fit_intercept, n_threads),
+        TModelLinReg<T, K>(features, labels, fit_intercept, n_threads) {}
 
   virtual ~TModelLinRegWithIntercepts() {}
 
@@ -51,25 +52,26 @@ class DLL_PUBLIC TModelLinRegWithIntercepts
   void serialize(Archive &ar) {
     ar(cereal::make_nvp(
         "ModelGeneralizedLinearWithIntercepts",
-        cereal::virtual_base_class<TModelGeneralizedLinearWithIntercepts<T> >(this)));
+        cereal::virtual_base_class<
+            TModelGeneralizedLinearWithIntercepts<T, K> >(this)));
     ar(cereal::make_nvp("ModelLinReg",
-                        cereal::virtual_base_class<TModelLinReg<T> >(this)));
+                        cereal::virtual_base_class<TModelLinReg<T, K> >(this)));
   }
 
-  BoolStrReport compare(const TModelLinRegWithIntercepts<T> &that,
+  BoolStrReport compare(const TModelLinRegWithIntercepts<T, K> &that,
                         std::stringstream &ss) {
     ss << get_class_name() << std::endl;
     bool are_equal =
-        TModelGeneralizedLinearWithIntercepts<T>::compare(that, ss) &&
-        TModelLinReg<T>::compare(that, ss);
+        TModelGeneralizedLinearWithIntercepts<T, K>::compare(that, ss) &&
+        TModelLinReg<T, K>::compare(that, ss);
     return BoolStrReport(are_equal, ss.str());
   }
-  BoolStrReport compare(const TModelLinRegWithIntercepts<T> &that) {
+  BoolStrReport compare(const TModelLinRegWithIntercepts<T, K> &that) {
     std::stringstream ss;
     return compare(that, ss);
   }
-  BoolStrReport operator==(const TModelLinRegWithIntercepts<T> &that) {
-    return TModelLinRegWithIntercepts<T>::compare(that);
+  BoolStrReport operator==(const TModelLinRegWithIntercepts<T, K> &that) {
+    return TModelLinRegWithIntercepts<T, K>::compare(that);
   }
 };
 

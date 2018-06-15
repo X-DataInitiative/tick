@@ -8,8 +8,8 @@
 %include "model_generalized_linear_with_intercepts.i"
 
 template <class T>
-class TModelLinRegWithIntercepts : public virtual TModelGeneralizedLinearWithIntercepts<T>,
-                    public TModelLinReg<T> {
+class TModelLinRegWithIntercepts : public virtual TModelGeneralizedLinearWithIntercepts<T, K>,
+                    public TModelLinReg<T, K> {
  public:
   TModelLinRegWithIntercepts();
   TModelLinRegWithIntercepts(
@@ -18,10 +18,10 @@ class TModelLinRegWithIntercepts : public virtual TModelGeneralizedLinearWithInt
     const bool fit_intercept,
     const int n_threads
   );
-  bool compare(const TModelLinRegWithIntercepts<T> &that);
+  bool compare(const TModelLinRegWithIntercepts<T, K> &that);
 };
 
-%rename(ModelLinRegWithInterceptsDouble) TModelLinRegWithIntercepts<double>;
+%rename(ModelLinRegWithInterceptsDouble) TModelLinRegWithIntercepts<double, double>;
 class ModelLinRegWithInterceptsDouble : public virtual ModelGeneralizedLinearWithInterceptsDouble,
                     public ModelLinRegDouble {
  public:
@@ -34,10 +34,10 @@ class ModelLinRegWithInterceptsDouble : public virtual ModelGeneralizedLinearWit
   );
   bool compare(const ModelLinRegWithInterceptsDouble &that);
 };
-typedef TModelLinRegWithIntercepts<double> ModelLinRegWithInterceptsDouble;
+typedef TModelLinRegWithIntercepts<double, double> ModelLinRegWithInterceptsDouble;
 TICK_MAKE_PICKLABLE(ModelLinRegWithInterceptsDouble);
 
-%rename(ModelLinRegWithInterceptsFloat) TModelLinRegWithIntercepts<float>;
+%rename(ModelLinRegWithInterceptsFloat) TModelLinRegWithIntercepts<float, float>;
 class ModelLinRegWithInterceptsFloat : public virtual ModelGeneralizedLinearWithInterceptsFloat,
                     public ModelLinRegFloat {
  public:
@@ -50,5 +50,5 @@ class ModelLinRegWithInterceptsFloat : public virtual ModelGeneralizedLinearWith
   );
   bool compare(const ModelLinRegWithInterceptsFloat &that);
 };
-typedef TModelLinRegWithIntercepts<float> ModelLinRegWithInterceptsFloat;
+typedef TModelLinRegWithIntercepts<float, float> ModelLinRegWithInterceptsFloat;
 TICK_MAKE_PICKLABLE(ModelLinRegWithInterceptsFloat);

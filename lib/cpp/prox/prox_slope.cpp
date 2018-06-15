@@ -2,8 +2,8 @@
 
 #include "tick/prox/prox_slope.h"
 
-template <class T>
-void TProxSlope<T>::compute_weights(void) {
+template <class T, class K>
+void TProxSlope<T, K>::compute_weights(void) {
   if (!weights_ready) {
     ulong size = end - start;
     weights = Array<T>(size);
@@ -17,5 +17,8 @@ void TProxSlope<T>::compute_weights(void) {
   }
 }
 
-template class DLL_PUBLIC TProxSlope<double>;
-template class DLL_PUBLIC TProxSlope<float>;
+template class DLL_PUBLIC TProxSlope<double, double>;
+template class DLL_PUBLIC TProxSlope<float, float>;
+
+template class DLL_PUBLIC TProxSlope<double, std::atomic<double>>;
+template class DLL_PUBLIC TProxSlope<float, std::atomic<float>>;

@@ -5,68 +5,74 @@
 %include defs.i
 %include std_shared_ptr.i
 
-%shared_ptr(TProx<double>);
-%shared_ptr(TProx<float>);
 %shared_ptr(Prox);
+%shared_ptr(TProx<double, double>);
+%shared_ptr(TProx<float, float>);
+%shared_ptr(TProx<double, std::atomic<double>>);
+%shared_ptr(TProx<float, std::atomic<float>>);
 
-%shared_ptr(TProxWithGroups<double>);
-%shared_ptr(TProxWithGroups<float>);
+%shared_ptr(TProxWithGroups<double, double>);
+%shared_ptr(TProxWithGroups<float, float>);
 %shared_ptr(ProxWithGroups);
 
-%shared_ptr(TProxSeparable<double>);
-%shared_ptr(TProxSeparable<float>);
+%shared_ptr(TProxSeparable<double, double>);
+%shared_ptr(TProxSeparable<float, float>);
+%shared_ptr(TProxSeparable<double, std::atomic<double>>);
+%shared_ptr(TProxSeparable<float, std::atomic<float>>);
 %shared_ptr(ProxSeparable);
 
-%shared_ptr(TProxZero<double>);
-%shared_ptr(TProxZero<float>);
+%shared_ptr(TProxZero<double, double>);
+%shared_ptr(TProxZero<float, float>);
 %shared_ptr(ProxZero);
 
-%shared_ptr(TProxPositive<double>);
-%shared_ptr(TProxPositive<float>);
+%shared_ptr(TProxPositive<double, double>);
+%shared_ptr(TProxPositive<float, float>);
 %shared_ptr(ProxPositive);
 
-%shared_ptr(TProxL2Sq<double>);
-%shared_ptr(TProxL2Sq<float>);
+%shared_ptr(TProxL2Sq<double, double>);
+%shared_ptr(TProxL2Sq<float, float>);
 %shared_ptr(ProxL2Sq);
 
 %shared_ptr(ProxL1);
 %shared_ptr(ProxL1Double);
 %shared_ptr(ProxL1Float);
 
-%shared_ptr(TProxL1w<double>);
-%shared_ptr(TProxL1w<float>);
+%shared_ptr(TProxL1w<double, double>);
+%shared_ptr(TProxL1w<float, float>);
 %shared_ptr(ProxL1w);
 
-%shared_ptr(TProxTV<double>);
-%shared_ptr(TProxTV<float>);
+%shared_ptr(TProxTV<double, double>);
+%shared_ptr(TProxTV<float, float>);
 %shared_ptr(ProxTV);
 
-%shared_ptr(TProxElasticNet<double>);
-%shared_ptr(TProxElasticNet<float>);
+%shared_ptr(TProxElasticNet<double, double>);
+%shared_ptr(TProxElasticNet<float, float>);
+%shared_ptr(TProxElasticNet<double, std::atomic<double>>);
+%shared_ptr(TProxElasticNet<float, std::atomic<float>>);
 %shared_ptr(ProxElasticNet);
 
-%shared_ptr(TProxSlope<double>);
-%shared_ptr(TProxSlope<float>);
+%shared_ptr(TProxSlope<double, double>);
+%shared_ptr(TProxSlope<float, float>);
 %shared_ptr(ProxSlope);
 
-%shared_ptr(TProxMulti<double>);
-%shared_ptr(TProxMulti<float>);
+%shared_ptr(TProxMulti<double, double>);
+%shared_ptr(TProxMulti<float, float>);
 %shared_ptr(ProxMulti);
 
-%shared_ptr(TProxEquality<double>);
-%shared_ptr(TProxEquality<float>);
+%shared_ptr(TProxEquality<double, double>);
+%shared_ptr(TProxEquality<float, float>);
 %shared_ptr(ProxEquality);
 
-%shared_ptr(TProxBinarsity<double>);
-%shared_ptr(TProxBinarsity<float>);
+%shared_ptr(TProxBinarsity<double, double>);
+%shared_ptr(TProxBinarsity<float, float>);
 %shared_ptr(ProxBinarsity);
 
-%shared_ptr(TProxL2<double>);
-%shared_ptr(TProxL2<float>);
+%shared_ptr(TProxL2<double, double>);
+%shared_ptr(TProxL2<float, float>);
 %shared_ptr(ProxL2);
 
-%shared_ptr(TProxGroupL1<double>);
-%shared_ptr(TProxGroupL1<float>);
+%shared_ptr(TProxGroupL1<double, double>);
+%shared_ptr(TProxGroupL1<float, float>);
 %shared_ptr(ProxGroupL1);
 
 %{

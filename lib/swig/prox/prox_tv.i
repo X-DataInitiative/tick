@@ -4,8 +4,8 @@
 #include "tick/prox/prox_tv.h"
 %}
 
-template <class T>
-class TProxTV : public TProx<T> {
+template <class T, class K>
+class TProxTV : public TProx<T, K> {
  public:
    TProxTV(T strength,
              bool positive);
@@ -15,14 +15,14 @@ class TProxTV : public TProx<T> {
              unsigned long end,
              bool positive);
 
-  bool compare(const TProxTV<T> &that);
+  bool compare(const TProxTV<T, K> &that);
 };
 
-%template(ProxTVDouble) TProxTV<double>;
-typedef TProxTV<double> ProxTVDouble;
+%template(ProxTVDouble) TProxTV<double, double>;
+typedef TProxTV<double, double> ProxTVDouble;
 TICK_MAKE_TEMPLATED_PICKLABLE(TProxTV, ProxTVDouble , double);
 
-%template(ProxTVFloat) TProxTV<float>;
-typedef TProxTV<float> ProxTVFloat;
+%template(ProxTVFloat) TProxTV<float, float>;
+typedef TProxTV<float, float> ProxTVFloat;
 TICK_MAKE_TEMPLATED_PICKLABLE(TProxTV, ProxTVFloat , float);
 

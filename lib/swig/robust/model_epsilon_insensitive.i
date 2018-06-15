@@ -5,7 +5,7 @@
 %}
 
 template <class T>
-class TModelEpsilonInsensitive : public virtual TModelGeneralizedLinear<T>{
+class TModelEpsilonInsensitive : public virtual TModelGeneralizedLinear<T, K>{
  public:
   TModelEpsilonInsensitive();
   TModelEpsilonInsensitive(
@@ -17,11 +17,11 @@ class TModelEpsilonInsensitive : public virtual TModelGeneralizedLinear<T>{
   virtual T get_threshold(void) const;
   virtual void set_threshold(const T threshold);
 
-  bool compare(const TModelEpsilonInsensitive<T> &that);
+  bool compare(const TModelEpsilonInsensitive<T, K> &that);
 };
 
-%rename(ModelEpsilonInsensitiveDouble) TModelEpsilonInsensitive<double>;
-class ModelEpsilonInsensitiveDouble : public virtual TModelGeneralizedLinear<double>{
+%rename(ModelEpsilonInsensitiveDouble) TModelEpsilonInsensitive<double, double>;
+class ModelEpsilonInsensitiveDouble : public virtual TModelGeneralizedLinear<double, double>{
  public:
   ModelEpsilonInsensitiveDouble();
   ModelEpsilonInsensitiveDouble(
@@ -36,11 +36,11 @@ class ModelEpsilonInsensitiveDouble : public virtual TModelGeneralizedLinear<dou
 
   bool compare(const ModelEpsilonInsensitiveDouble &that);
 };
-typedef TModelEpsilonInsensitive<double> ModelEpsilonInsensitiveDouble;
+typedef TModelEpsilonInsensitive<double, double> ModelEpsilonInsensitiveDouble;
 TICK_MAKE_PICKLABLE(ModelEpsilonInsensitiveDouble);
 
-%rename(ModelEpsilonInsensitiveFloat) TModelEpsilonInsensitive<float>;
-class ModelEpsilonInsensitiveFloat : public virtual TModelGeneralizedLinear<float>{
+%rename(ModelEpsilonInsensitiveFloat) TModelEpsilonInsensitive<float, float>;
+class ModelEpsilonInsensitiveFloat : public virtual TModelGeneralizedLinear<float, float>{
  public:
   ModelEpsilonInsensitiveFloat();
   ModelEpsilonInsensitiveFloat(
@@ -55,6 +55,6 @@ class ModelEpsilonInsensitiveFloat : public virtual TModelGeneralizedLinear<floa
 
   bool compare(const ModelEpsilonInsensitiveFloat &that);
 };
-typedef TModelEpsilonInsensitive<float> ModelEpsilonInsensitiveFloat;
+typedef TModelEpsilonInsensitive<float, float> ModelEpsilonInsensitiveFloat;
 TICK_MAKE_PICKLABLE(ModelEpsilonInsensitiveFloat);
 
