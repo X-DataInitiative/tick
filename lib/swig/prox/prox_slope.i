@@ -4,8 +4,8 @@
 #include "tick/prox/prox_slope.h"
 %}
 
-template <class T>
-class TProxSlope : public TProx<T> {
+template <class T, class K>
+class TProxSlope : public TProx<T, K> {
  public:
    TProxSlope(T lambda, T fdr, bool positive);
 
@@ -17,14 +17,14 @@ class TProxSlope : public TProx<T> {
 
    inline T get_weight_i(unsigned long i);
 
-  bool compare(const TProxSlope<T> &that);
+  bool compare(const TProxSlope<T, K> &that);
 };
 
-%template(ProxSlope) TProxSlope<double>;
-typedef TProxSlope<double> ProxSlope;
+%template(ProxSlope) TProxSlope<double, double>;
+typedef TProxSlope<double, double> ProxSlope;
 
-%template(ProxSlopeDouble) TProxSlope<double>;
-typedef TProxSlope<double> ProxSlopeDouble;
+%template(ProxSlopeDouble) TProxSlope<double, double>;
+typedef TProxSlope<double, double> ProxSlopeDouble;
 
-%template(ProxSlopeFloat) TProxSlope<float>;
-typedef TProxSlope<float> ProxSlopeFloat;
+%template(ProxSlopeFloat) TProxSlope<float, float>;
+typedef TProxSlope<float, float> ProxSlopeFloat;

@@ -49,4 +49,3 @@ inline std::ostream& operator<<(std::ostream& stream,
 }
 
 #endif  // LIB_INCLUDE_TICK_BASE_REPORT_H_
-

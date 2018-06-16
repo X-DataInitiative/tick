@@ -5,7 +5,7 @@
 %}
 
 template <class T>
-class TModelAbsoluteRegression : public virtual TModelGeneralizedLinear<T>{
+class TModelAbsoluteRegression : public virtual TModelGeneralizedLinear<T, K>{
  public:
   TModelAbsoluteRegression();
   TModelAbsoluteRegression(
@@ -14,11 +14,11 @@ class TModelAbsoluteRegression : public virtual TModelGeneralizedLinear<T>{
     const bool fit_intercept,
     const int n_threads = 1
   );
-  bool compare(const TModelAbsoluteRegression<T> &that);
+  bool compare(const TModelAbsoluteRegression<T, K> &that);
 };
 
-%rename(ModelAbsoluteRegressionDouble) TModelAbsoluteRegression<double>;
-class ModelAbsoluteRegressionDouble : public virtual TModelGeneralizedLinear<double>{
+%rename(ModelAbsoluteRegressionDouble) TModelAbsoluteRegression<double, double>;
+class ModelAbsoluteRegressionDouble : public virtual TModelGeneralizedLinear<double, double>{
  public:
   ModelAbsoluteRegressionDouble();
   ModelAbsoluteRegressionDouble(
@@ -29,11 +29,11 @@ class ModelAbsoluteRegressionDouble : public virtual TModelGeneralizedLinear<dou
   );
   bool compare(const ModelAbsoluteRegressionDouble &that);
 };
-typedef TModelAbsoluteRegression<double> ModelAbsoluteRegressionDouble;
+typedef TModelAbsoluteRegression<double, double> ModelAbsoluteRegressionDouble;
 TICK_MAKE_PICKLABLE(ModelAbsoluteRegressionDouble);
 
-%rename(ModelAbsoluteRegressionFloat) TModelAbsoluteRegression<float>;
-class ModelAbsoluteRegressionFloat : public virtual TModelGeneralizedLinear<float>{
+%rename(ModelAbsoluteRegressionFloat) TModelAbsoluteRegression<float, float>;
+class ModelAbsoluteRegressionFloat : public virtual TModelGeneralizedLinear<float, float>{
  public:
   ModelAbsoluteRegressionFloat();
   ModelAbsoluteRegressionFloat(
@@ -44,5 +44,5 @@ class ModelAbsoluteRegressionFloat : public virtual TModelGeneralizedLinear<floa
   );
   bool compare(const ModelAbsoluteRegressionFloat &that);
 };
-typedef TModelAbsoluteRegression<float> ModelAbsoluteRegressionFloat;
+typedef TModelAbsoluteRegression<float, float> ModelAbsoluteRegressionFloat;
 TICK_MAKE_PICKLABLE(ModelAbsoluteRegressionFloat);

@@ -7,7 +7,7 @@
 %include "model_generalized_linear.i"
 
 template <class T>
-class TModelGeneralizedLinearWithIntercepts : public virtual TModelGeneralizedLinear<T> {
+class TModelGeneralizedLinearWithIntercepts : public virtual TModelGeneralizedLinear<T, K> {
  public:
   TModelGeneralizedLinearWithIntercepts();
   TModelGeneralizedLinearWithIntercepts(
@@ -16,11 +16,11 @@ class TModelGeneralizedLinearWithIntercepts : public virtual TModelGeneralizedLi
     const bool fit_intercept,
     const int n_threads
   );
-  bool compare(const TModelGeneralizedLinearWithIntercepts<T> &that);
+  bool compare(const TModelGeneralizedLinearWithIntercepts<T, K> &that);
 };
 
-%rename(ModelGeneralizedLinearWithInterceptsDouble) TModelGeneralizedLinearWithIntercepts<double>;
-class ModelGeneralizedLinearWithInterceptsDouble : public virtual TModelGeneralizedLinear<double> {
+%rename(ModelGeneralizedLinearWithInterceptsDouble) TModelGeneralizedLinearWithIntercepts<double, double>;
+class ModelGeneralizedLinearWithInterceptsDouble : public virtual TModelGeneralizedLinear<double, double> {
  public:
   ModelGeneralizedLinearWithInterceptsDouble();
   ModelGeneralizedLinearWithInterceptsDouble(
@@ -31,11 +31,11 @@ class ModelGeneralizedLinearWithInterceptsDouble : public virtual TModelGenerali
   );
   bool compare(const ModelGeneralizedLinearWithInterceptsDouble &that);
 };
-typedef TModelGeneralizedLinearWithIntercepts<double> ModelGeneralizedLinearWithInterceptsDouble;
+typedef TModelGeneralizedLinearWithIntercepts<double, double> ModelGeneralizedLinearWithInterceptsDouble;
 TICK_MAKE_PICKLABLE(ModelGeneralizedLinearWithInterceptsDouble);
 
-%rename(ModelGeneralizedLinearWithInterceptsFloat) TModelGeneralizedLinearWithIntercepts<float>;
-class ModelGeneralizedLinearWithInterceptsFloat : public virtual TModelGeneralizedLinear<float> {
+%rename(ModelGeneralizedLinearWithInterceptsFloat) TModelGeneralizedLinearWithIntercepts<float, float>;
+class ModelGeneralizedLinearWithInterceptsFloat : public virtual TModelGeneralizedLinear<float, float> {
  public:
   ModelGeneralizedLinearWithInterceptsFloat();
   ModelGeneralizedLinearWithInterceptsFloat(
@@ -46,5 +46,5 @@ class ModelGeneralizedLinearWithInterceptsFloat : public virtual TModelGeneraliz
   );
   bool compare(const ModelGeneralizedLinearWithInterceptsFloat &that);
 };
-typedef TModelGeneralizedLinearWithIntercepts<float> ModelGeneralizedLinearWithInterceptsFloat;
+typedef TModelGeneralizedLinearWithIntercepts<float, float> ModelGeneralizedLinearWithInterceptsFloat;
 TICK_MAKE_PICKLABLE(ModelGeneralizedLinearWithInterceptsFloat);

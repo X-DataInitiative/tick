@@ -6,17 +6,17 @@
 #include "prox.h"
 #include "prox_sorted_l1.h"
 
-template <class T>
-class DLL_PUBLIC TProxSlope : public TProxSortedL1<T> {
+template <class T, class K = T>
+class DLL_PUBLIC TProxSlope : public TProxSortedL1<T, K> {
  protected:
-  using TProxSortedL1<T>::start;
-  using TProxSortedL1<T>::end;
-  using TProxSortedL1<T>::weights_ready;
-  using TProxSortedL1<T>::weights;
-  using TProxSortedL1<T>::strength;
+  using TProxSortedL1<T, K>::start;
+  using TProxSortedL1<T, K>::end;
+  using TProxSortedL1<T, K>::weights_ready;
+  using TProxSortedL1<T, K>::weights;
+  using TProxSortedL1<T, K>::strength;
 
  public:
-  using TProxSortedL1<T>::get_class_name;
+  using TProxSortedL1<T, K>::get_class_name;
 
  protected:
   T false_discovery_rate;
@@ -27,13 +27,13 @@ class DLL_PUBLIC TProxSlope : public TProxSortedL1<T> {
   TProxSlope() : TProxSlope(0, 0, 0, 1, false) {}
 
   TProxSlope(T strength, T false_discovery_rate, bool positive)
-      : TProxSortedL1<T>(strength, WeightsType::bh, positive) {
+      : TProxSortedL1<T, K>(strength, WeightsType::bh, positive) {
     this->false_discovery_rate = false_discovery_rate;
   }
 
   TProxSlope(T strength, T false_discovery_rate, ulong start, ulong end,
              bool positive)
-      : TProxSortedL1<T>(strength, WeightsType::bh, start, end, positive) {
+      : TProxSortedL1<T, K>(strength, WeightsType::bh, start, end, positive) {
     this->false_discovery_rate = false_discovery_rate;
   }
 
@@ -52,28 +52,29 @@ class DLL_PUBLIC TProxSlope : public TProxSortedL1<T> {
 
   template <class Archive>
   void serialize(Archive& ar) {
-    ar(cereal::make_nvp("ProxSeparable", cereal::base_class<TProx<T> >(this)));
+    ar(cereal::make_nvp("ProxSeparable",
+                        cereal::base_class<TProx<T, K> >(this)));
 
     ar(CEREAL_NVP(false_discovery_rate));
   }
 
-  BoolStrReport compare(const TProxSlope<T>& that) {
+  BoolStrReport compare(const TProxSlope<T, K>& that) {
     std::stringstream ss;
     ss << get_class_name();
-    auto are_equal = TProx<T>::compare(that, ss);
+    auto are_equal = TProx<T, K>::compare(that, ss);
     return BoolStrReport(are_equal, ss.str());
   }
-  BoolStrReport operator==(const TProxSlope<T>& that) { return compare(that); }
+  BoolStrReport operator==(const TProxSlope<T, K>& that) {
+    return compare(that);
+  }
 };
 
-using ProxSlope = TProxSlope<double>;
-using ProxSlopeDouble = TProxSlope<double>;
-using ProxSlopeFloat = TProxSlope<float>;
-
+using ProxSlopeDouble = TProxSlope<double, double>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ProxSlopeDouble,
                                    cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(ProxSlopeDouble)
 
+using ProxSlopeFloat = TProxSlope<float, float>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ProxSlopeFloat,
                                    cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(ProxSlopeFloat)

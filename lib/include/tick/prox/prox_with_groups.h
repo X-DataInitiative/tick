@@ -13,17 +13,14 @@
 
 #include "prox.h"
 
-template <class T>
-class TProxWithGroups : public TProx<T> {
-  // Grants cereal access to default constructor
-  friend class cereal::access;
-
+template <class T, class K = T>
+class TProxWithGroups : public TProx<T, K> {
  protected:
-  using TProx<T>::has_range;
-  using TProx<T>::strength;
+  using TProx<T, K>::has_range;
+  using TProx<T, K>::strength;
 
  public:
-  using TProx<T>::get_class_name;
+  using TProx<T, K>::get_class_name;
 
  protected:
   // Tells us if the prox is ready (with correctly allocated sub-prox for each
@@ -37,12 +34,12 @@ class TProxWithGroups : public TProx<T> {
   SArrayULongPtr blocks_length;
 
   // A vector that contains the prox for each block
-  std::vector<std::unique_ptr<TProx<T> > > proxs;
+  std::vector<std::unique_ptr<TProx<T, K> > > proxs;
 
   void synchronize_proxs();
 
-  virtual std::unique_ptr<TProx<T> > build_prox(T strength, ulong start,
-                                                ulong end, bool positive);
+  virtual std::unique_ptr<TProx<T, K> > build_prox(T strength, ulong start,
+                                                   ulong end, bool positive);
 
  protected:
   // This exists soley for cereal/swig
@@ -56,9 +53,15 @@ class TProxWithGroups : public TProx<T> {
                   SArrayULongPtr blocks_length, ulong start, ulong end,
                   bool positive);
 
-  T value(const Array<T> &coeffs, ulong start, ulong end) override;
+  // There's something odd on windows trying to copy the unique_ptr
+  TProxWithGroups(const TProxWithGroups &) = delete;
+  TProxWithGroups(const TProxWithGroups &&) = delete;
+  TProxWithGroups &operator=(const TProxWithGroups &) = delete;
+  TProxWithGroups &operator=(const TProxWithGroups &&) = delete;
 
-  void call(const Array<T> &coeffs, T step, Array<T> &out, ulong start,
+  T value(const Array<K> &coeffs, ulong start, ulong end) override;
+
+  void call(const Array<K> &coeffs, T step, Array<K> &out, ulong start,
             ulong end) override;
 
   inline void set_positive(bool positive) override {
@@ -103,7 +106,7 @@ class TProxWithGroups : public TProx<T> {
  protected:
   template <class Archive>
   void serialize(Archive &ar) {
-    ar(cereal::make_nvp("Prox", cereal::base_class<TProx<T> >(this)));
+    ar(cereal::make_nvp("Prox", cereal::base_class<TProx<T, K> >(this)));
     ar(CEREAL_NVP(is_synchronized));
     ar(CEREAL_NVP(n_blocks));
     ar(CEREAL_NVP(blocks_start));
@@ -111,9 +114,10 @@ class TProxWithGroups : public TProx<T> {
     ar(CEREAL_NVP(proxs));
   }
 
-  BoolStrReport compare(const TProxWithGroups<T> &that, std::stringstream &ss) {
-    auto are_equal = TProx<T>::compare(that, ss)
-        && this->proxs.size() == that.proxs.size();
+  BoolStrReport compare(const TProxWithGroups<T, K> &that,
+                        std::stringstream &ss) {
+    auto are_equal = TProx<T, K>::compare(that, ss) &&
+                     this->proxs.size() == that.proxs.size();
     if (are_equal) {
       for (size_t i = 0; i < this->proxs.size(); i++) {
         are_equal = this->proxs[i] == that.proxs[i];
@@ -124,10 +128,11 @@ class TProxWithGroups : public TProx<T> {
   }
 };
 
-template <class T>
-TProxWithGroups<T>::TProxWithGroups(T strength, SArrayULongPtr blocks_start,
-                                    SArrayULongPtr blocks_length, bool positive)
-    : TProx<T>(strength, positive), is_synchronized(false) {
+template <class T, class K>
+TProxWithGroups<T, K>::TProxWithGroups(T strength, SArrayULongPtr blocks_start,
+                                       SArrayULongPtr blocks_length,
+                                       bool positive)
+    : TProx<T, K>(strength, positive), is_synchronized(false) {
   this->blocks_start = blocks_start;
   this->blocks_length = blocks_length;
   // blocks_start and blocks_end have the same size
@@ -137,11 +142,11 @@ TProxWithGroups<T>::TProxWithGroups(T strength, SArrayULongPtr blocks_start,
   is_synchronized = false;
 }
 
-template <class T>
-TProxWithGroups<T>::TProxWithGroups(T strength, SArrayULongPtr blocks_start,
-                                    SArrayULongPtr blocks_length, ulong start,
-                                    ulong end, bool positive)
-    : TProx<T>(strength, start, end, positive) {
+template <class T, class K>
+TProxWithGroups<T, K>::TProxWithGroups(T strength, SArrayULongPtr blocks_start,
+                                       SArrayULongPtr blocks_length,
+                                       ulong start, ulong end, bool positive)
+    : TProx<T, K>(strength, start, end, positive) {
   this->blocks_start = blocks_start;
   this->blocks_length = blocks_length;
   // blocks_start and blocks_end have the same size
@@ -151,8 +156,8 @@ TProxWithGroups<T>::TProxWithGroups(T strength, SArrayULongPtr blocks_start,
   is_synchronized = false;
 }
 
-template <class T>
-void TProxWithGroups<T>::synchronize_proxs() {
+template <class T, class K>
+void TProxWithGroups<T, K>::synchronize_proxs() {
   proxs.clear();
   for (ulong k = 0; k < n_blocks; k++) {
     ulong start = (*blocks_start)[k];
@@ -166,16 +171,16 @@ void TProxWithGroups<T>::synchronize_proxs() {
   is_synchronized = true;
 }
 
-template <class T>
-std::unique_ptr<TProx<T> > TProxWithGroups<T>::build_prox(T strength,
-                                                          ulong start,
-                                                          ulong end,
-                                                          bool positive) {
+template <class T, class K>
+std::unique_ptr<TProx<T, K> > TProxWithGroups<T, K>::build_prox(T strength,
+                                                                ulong start,
+                                                                ulong end,
+                                                                bool positive) {
   TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
 }
 
-template <class T>
-T TProxWithGroups<T>::value(const Array<T> &coeffs, ulong start, ulong end) {
+template <class T, class K>
+T TProxWithGroups<T, K>::value(const Array<K> &coeffs, ulong start, ulong end) {
   if (!is_synchronized) {
     synchronize_proxs();
   }
@@ -186,9 +191,9 @@ T TProxWithGroups<T>::value(const Array<T> &coeffs, ulong start, ulong end) {
   return val;
 }
 
-template <class T>
-void TProxWithGroups<T>::call(const Array<T> &coeffs, T step, Array<T> &out,
-                              ulong start, ulong end) {
+template <class T, class K>
+void TProxWithGroups<T, K>::call(const Array<K> &coeffs, T step, Array<K> &out,
+                                 ulong start, ulong end) {
   if (!is_synchronized) {
     synchronize_proxs();
   }

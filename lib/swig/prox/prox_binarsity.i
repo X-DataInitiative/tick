@@ -6,8 +6,8 @@
 
 %include "prox_with_groups.i"
 
-template <class T>
-class TProxBinarsity : public TProxWithGroups<T> {
+template <class T, class K>
+class TProxBinarsity : public TProxWithGroups<T, K> {
  public:
   TProxBinarsity(T strength, SArrayULongPtr blocks_start, SArrayULongPtr blocks_length,
                 bool positive);
@@ -21,11 +21,11 @@ class TProxBinarsity : public TProxWithGroups<T> {
 
   inline virtual void set_blocks_length(SArrayULongPtr blocks_length);
 
-  bool compare(const TProxBinarsity<T> &that);
+  bool compare(const TProxBinarsity<T, K> &that);
 };
 
-%template(ProxBinarsityDouble) TProxBinarsity<double>;
-typedef TProxBinarsity<double> ProxBinarsityDouble;
+%template(ProxBinarsityDouble) TProxBinarsity<double, double>;
+typedef TProxBinarsity<double, double> ProxBinarsityDouble;
 
-%template(ProxBinarsityFloat) TProxBinarsity<float>;
-typedef TProxBinarsity<float> ProxBinarsityFloat;
+%template(ProxBinarsityFloat) TProxBinarsity<float, float>;
+typedef TProxBinarsity<float, float> ProxBinarsityFloat;

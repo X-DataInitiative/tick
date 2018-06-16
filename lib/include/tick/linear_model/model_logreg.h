@@ -11,32 +11,33 @@
 #include "tick/base_model/model_lipschitz.h"
 
 // TODO: labels should be a ArrayInt (PD: should they?)
-template <class T>
-class DLL_PUBLIC TModelLogReg : public TModelGeneralizedLinear<T>,
-                                virtual public TModelLipschitz<T> {
- protected:
-  using TModelLipschitz<T>::ready_lip_consts;
-  using TModelLipschitz<T>::lip_consts;
 
-  using TModelGeneralizedLinear<T>::n_samples;
-  using TModelGeneralizedLinear<T>::get_label;
-  using TModelGeneralizedLinear<T>::compute_features_norm_sq;
-  using TModelGeneralizedLinear<T>::features_norm_sq;
-  using TModelGeneralizedLinear<T>::use_intercept;
-  using TModelGeneralizedLinear<T>::get_inner_prod;
-  using TModelGeneralizedLinear<T>::fit_intercept;
-  using TModelGeneralizedLinear<T>::get_class_name;
+template <class T, class K = T>
+class DLL_PUBLIC TModelLogReg : public TModelGeneralizedLinear<T, K>,
+                                virtual public TModelLipschitz<T, K> {
+ protected:
+  using TModelLipschitz<T, K>::ready_lip_consts;
+  using TModelLipschitz<T, K>::lip_consts;
+
+  using TModelGeneralizedLinear<T, K>::n_samples;
+  using TModelGeneralizedLinear<T, K>::get_label;
+  using TModelGeneralizedLinear<T, K>::compute_features_norm_sq;
+  using TModelGeneralizedLinear<T, K>::features_norm_sq;
+  using TModelGeneralizedLinear<T, K>::use_intercept;
+  using TModelGeneralizedLinear<T, K>::get_inner_prod;
+  using TModelGeneralizedLinear<T, K>::fit_intercept;
+  using TModelGeneralizedLinear<T, K>::get_class_name;
 
  public:
   // This exists soley for cereal/swig
-  TModelLogReg() : TModelLogReg<T>(nullptr, nullptr, 0, 0) {}
+  TModelLogReg() : TModelLogReg<T, K>(nullptr, nullptr, 0, 0) {}
 
   TModelLogReg(const std::shared_ptr<BaseArray2d<T> > features,
                const std::shared_ptr<SArray<T> > labels,
                const bool fit_intercept, const int n_threads = 1)
-      : TModelLabelsFeatures<T>(features, labels),
-        TModelGeneralizedLinear<T>(features, labels, fit_intercept, n_threads) {
-  }
+      : TModelLabelsFeatures<T, K>(features, labels),
+        TModelGeneralizedLinear<T, K>(features, labels, fit_intercept,
+                                      n_threads) {}
 
   static inline T sigmoid(const T z) {
     // Overflow-proof sigmoid
@@ -60,12 +61,12 @@ class DLL_PUBLIC TModelLogReg : public TModelGeneralizedLinear<T>,
 
   static void logistic(const Array<T> &x, Array<T> &out);
 
-  T loss_i(const ulong i, const Array<T> &coeffs) override;
+  T loss_i(const ulong i, const Array<K> &coeffs) override;
 
-  T grad_i_factor(const ulong i, const Array<T> &coeffs) override;
+  T grad_i_factor(const ulong i, const Array<K> &coeffs) override;
 
   T sdca_dual_min_i(const ulong i, const T dual_i,
-                    const Array<T> &primal_vector,
+                    const Array<K> &primal_vector,
                     const T previous_delta_dual_i, T l_l2sq) override;
 
   void compute_lip_consts() override;
@@ -74,38 +75,48 @@ class DLL_PUBLIC TModelLogReg : public TModelGeneralizedLinear<T>,
   void serialize(Archive &ar) {
     ar(cereal::make_nvp(
         "ModelGeneralizedLinear",
-        typename cereal::virtual_base_class<TModelGeneralizedLinear<T> >(
+        typename cereal::virtual_base_class<TModelGeneralizedLinear<T, K> >(
             this)));
     ar(cereal::make_nvp(
         "ModelLipschitz",
-        typename cereal::base_class<TModelLipschitz<T> >(this)));
+        typename cereal::base_class<TModelLipschitz<T, K> >(this)));
   }
 
-  BoolStrReport compare(const TModelLogReg<T> &that, std::stringstream &ss) {
+  BoolStrReport compare(const TModelLogReg<T, K> &that, std::stringstream &ss) {
     ss << get_class_name() << std::endl;
-    bool are_equal = TModelGeneralizedLinear<T>::compare(that, ss) &&
-                     TModelLipschitz<T>::compare(that, ss);
+    bool are_equal = TModelGeneralizedLinear<T, K>::compare(that, ss) &&
+                     TModelLipschitz<T, K>::compare(that, ss);
     return BoolStrReport(are_equal, ss.str());
   }
-  BoolStrReport compare(const TModelLogReg<T> &that) {
+  BoolStrReport compare(const TModelLogReg<T, K> &that) {
     std::stringstream ss;
     return compare(that, ss);
   }
-  BoolStrReport operator==(const TModelLogReg<T> &that) {
-    return TModelLogReg<T>::compare(that);
+  BoolStrReport operator==(const TModelLogReg<T, K> &that) {
+    return TModelLogReg<T, K>::compare(that);
   }
 };
 
-using ModelLogReg = TModelLogReg<double>;
-using ModelLogRegDouble = TModelLogReg<double>;
-using ModelLogRegFloat = TModelLogReg<float>;
+using ModelLogReg = TModelLogReg<double, double>;
 
+using ModelLogRegDouble = TModelLogReg<double, double>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelLogRegDouble,
                                    cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(ModelLogRegDouble)
 
+using ModelLogRegFloat = TModelLogReg<float, float>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelLogRegFloat,
                                    cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(ModelLogRegFloat)
+
+using ModelLogRegAtomicDouble = TModelLogReg<double, std::atomic<double> >;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelLogRegAtomicDouble,
+                                   cereal::specialization::member_serialize)
+CEREAL_REGISTER_TYPE(ModelLogRegAtomicDouble)
+
+using ModelLogRegAtomicFloat = TModelLogReg<float, std::atomic<float> >;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelLogRegAtomicFloat,
+                                   cereal::specialization::member_serialize)
+CEREAL_REGISTER_TYPE(ModelLogRegAtomicFloat)
 
 #endif  // LIB_INCLUDE_TICK_LINEAR_MODEL_MODEL_LOGREG_H_

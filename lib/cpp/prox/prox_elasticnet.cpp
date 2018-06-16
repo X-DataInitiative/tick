@@ -2,8 +2,8 @@
 
 #include "tick/prox/prox_elasticnet.h"
 
-template <class T>
-T TProxElasticNet<T>::call_single(T x, T step) const {
+template <class T, class K>
+T TProxElasticNet<T, K>::call_single(T x, T step) const {
   T thresh = step * ratio * strength;
   if (x > 0) {
     if (x > thresh) {
@@ -27,22 +27,25 @@ T TProxElasticNet<T>::call_single(T x, T step) const {
   return 0;
 }
 
-template <class T>
-T TProxElasticNet<T>::value_single(T x) const {
+template <class T, class K>
+T TProxElasticNet<T, K>::value_single(T x) const {
   return (1 - ratio) * 0.5 * x * x + ratio * std::abs(x);
 }
 
-template <class T>
-T TProxElasticNet<T>::get_ratio() const {
+template <class T, class K>
+T TProxElasticNet<T, K>::get_ratio() const {
   return ratio;
 }
 
-template <class T>
-void TProxElasticNet<T>::set_ratio(T ratio) {
+template <class T, class K>
+void TProxElasticNet<T, K>::set_ratio(T ratio) {
   if (ratio < 0 || ratio > 1)
     TICK_ERROR("Ratio should be in the [0, 1] interval");
   this->ratio = ratio;
 }
 
-template class DLL_PUBLIC TProxElasticNet<double>;
-template class DLL_PUBLIC TProxElasticNet<float>;
+template class DLL_PUBLIC TProxElasticNet<double, double>;
+template class DLL_PUBLIC TProxElasticNet<float, float>;
+
+template class DLL_PUBLIC TProxElasticNet<double, std::atomic<double>>;
+template class DLL_PUBLIC TProxElasticNet<float, std::atomic<float>>;

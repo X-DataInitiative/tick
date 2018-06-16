@@ -7,8 +7,8 @@
 
 %include "model.i"
 
-template <class T>
-class TModelLabelsFeatures : public virtual TModel<T> {
+template <class T, class K>
+class TModelLabelsFeatures : public virtual TModel<T, K> {
  public:
   TModelLabelsFeatures(
     const std::shared_ptr<BaseArray2d<T> > features,
@@ -18,12 +18,16 @@ class TModelLabelsFeatures : public virtual TModel<T> {
   virtual unsigned long get_n_features() const;
 };
 
-%template(ModelLabelsFeatures) TModelLabelsFeatures<double>;
-typedef TModelLabelsFeatures<double> ModelLabelsFeatures;
+%template(ModelLabelsFeaturesDouble) TModelLabelsFeatures<double, double>;
+typedef TModelLabelsFeatures<double, double> ModelLabelsFeaturesDouble;
 
-%template(ModelLabelsFeaturesDouble) TModelLabelsFeatures<double>;
-typedef TModelLabelsFeatures<double> ModelLabelsFeaturesDouble;
+%template(ModelLabelsFeaturesFloat) TModelLabelsFeatures<float, float>;
+typedef TModelLabelsFeatures<float, float> ModelLabelsFeaturesFloat;
 
-%template(ModelLabelsFeaturesFloat) TModelLabelsFeatures<float>;
-typedef TModelLabelsFeatures<float> ModelLabelsFeaturesFloat;
+
+%template(ModelLabelsFeaturesAtomicDouble) TModelLabelsFeatures<double, std::atomic<double> >;
+typedef TModelLabelsFeatures<double, std::atomic<double> > ModelLabelsFeaturesAtomicDouble;
+
+%template(ModelLabelsFeaturesAtomicFloat) TModelLabelsFeatures<float, std::atomic<float> >;
+typedef TModelLabelsFeatures<float, std::atomic<float> > ModelLabelsFeaturesAtomicFloat;
 
