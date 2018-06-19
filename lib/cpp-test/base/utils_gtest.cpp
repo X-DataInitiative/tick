@@ -10,8 +10,8 @@
 #define DEBUG_COSTLY_THROW 1
 #define XDATA_TEST_DATA_SIZE (1000)
 
-#include "tick/base/base.h"
 #include "tick/array/array2d.h"
+#include "tick/base/base.h"
 #include "tick/base/parallel/parallel.h"
 #include "tick/base/time_func.h"
 
@@ -347,10 +347,10 @@ TEST(DebugTest, PrintSparseArray) {
 }
 
 #ifdef ADD_MAIN
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
 #ifdef _WIN32
-  std::cout << "Skipping tests in " __FILE__
-            << " on windows due to strangeness" << std::endl;
+  std::cout << "Skipping tests in " __FILE__ << " on windows due to strangeness"
+            << std::endl;
 #else
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();

@@ -29,8 +29,8 @@ from tick.plot import plot_history
 n_samples, n_features, = 5000, 50
 weights0 = weights_sparse_gauss(n_features, nnz=10)
 intercept0 = 0.2
-X, y = SimuLogReg(weights=weights0, intercept=intercept0,
-                  n_samples=n_samples, seed=123, verbose=False).simulate()
+X, y = SimuLogReg(weights=weights0, intercept=intercept0, n_samples=n_samples,
+                  seed=123, verbose=False).simulate()
 
 model = ModelLogReg(fit_intercept=True).fit(X, y)
 prox = ProxElasticNet(strength=1e-3, ratio=0.5, range=(0, n_features))
@@ -55,13 +55,17 @@ for step in tested_steps:
 
     optimal_factor = step / optimal_step
     if optimal_factor != 1:
-        solver_labels += ['SVRG {:.2g} * optimal step'.format(optimal_factor),
-                          'SVRG BB {:.2g} * optimal step'.format(optimal_factor)]
+        solver_labels += [
+            'SVRG {:.2g} * optimal step'.format(optimal_factor),
+            'SVRG BB {:.2g} * optimal step'.format(optimal_factor)
+        ]
     else:
-        solver_labels += ['SVRG optimal step'.format(optimal_factor),
-                          'SVRG BB optimal step'.format(optimal_factor)]
+        solver_labels += [
+            'SVRG optimal step'.format(optimal_factor),
+            'SVRG BB optimal step'.format(optimal_factor)
+        ]
 
 # To easily differentiate fixed steps from Barzilai Borwein steps SVRG solvers
 plt.rc('axes', prop_cycle=(cycler('linestyle', ['-', '--'])))
-plot_history(solvers=solvers, labels=solver_labels,
-             log_scale=True, dist_min=True)
+plot_history(solvers=solvers, labels=solver_labels, log_scale=True,
+             dist_min=True)

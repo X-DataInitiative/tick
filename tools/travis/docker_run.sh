@@ -12,7 +12,7 @@ pyenv global ${PYVER}
 pyenv local ${PYVER}
 
 python -m pip install yapf --upgrade
-python -m yapf --style tools/code_style/yapf.conf -i tick --recursive
+python -m yapf --style tools/code_style/yapf.conf -i tick examples --recursive
 
 (( $(git diff tick | wc -l) > 0 )) && echo \
 "Python has not been formatted : Please run ./sh/format_python.sh and recommit" \

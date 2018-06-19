@@ -98,13 +98,12 @@ int main(int argc, char** argv) {
 
   ulong n_samples = features_ptr->n_rows();
   ulong n_features = features_ptr->n_cols();
-  (void) n_samples;
-  (void) n_features;
+  (void)n_samples;
+  (void)n_features;
 
   try {
-    auto a_linreg =
-      std::make_shared<TModelLinReg<double, std::atomic<double>>>(features_ptr,
-                                                         labels_ptr, false, 1);
+    auto a_linreg = std::make_shared<TModelLinReg<double, std::atomic<double>>>(
+        features_ptr, labels_ptr, false, 1);
 
     auto linreg = std::make_shared<TModelLinReg<double>>(features_ptr,
                                                          labels_ptr, false, 1);

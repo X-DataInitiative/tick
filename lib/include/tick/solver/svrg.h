@@ -71,7 +71,7 @@ class DLL_PUBLIC TSVRG : public TStoSolver<T> {
 
   void solve() override;
 
-  void set_model(std::shared_ptr<TModel<T> > model) override;
+  void set_model(std::shared_ptr<TModel<T>> model) override;
 
   T get_step() const { return step; }
 

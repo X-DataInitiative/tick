@@ -52,7 +52,7 @@ heatmap = ax.pcolor(sim.hawkes_exp_kernels.adjacency, cmap=cm.Blues)
 divider = make_axes_locatable(ax)
 cax = divider.append_axes("right", size="5%", pad=0.5)
 fig.colorbar(heatmap, cax=cax)
-ax.set_title('Hawkes adjacency matrix used for the simulation');
+ax.set_title('Hawkes adjacency matrix used for the simulation')
 plt.show()
 
 ## Add age_groups features to feature matrices.
@@ -65,8 +65,9 @@ for i in range(n_agegrps):
 
 feat_agegrp = csr_matrix(feat_agegrp)
 features = [hstack([f, feat_agegrp]).tocsr() for f in features]
-censored_features = [hstack([f, feat_agegrp]).tocsr() for f in
-                     censored_features]
+censored_features = [
+    hstack([f, feat_agegrp]).tocsr() for f in censored_features
+]
 n_lags = np.hstack([n_lags, np.zeros(n_agegrps)])
 
 # Learning
@@ -91,10 +92,9 @@ n_lags = np.hstack([n_lags, np.zeros(n_agegrps)])
 # confidence_intervals = cv_track.best_model['confidence_intervals']
 
 # using the parameters resulting from cross-validation
-learner = ConvSCCS(n_lags=n_lags.astype('uint64'),
-                   penalized_features=np.arange(n_features),
-                   random_state=42, C_tv=270.2722840570933,
-                   C_group_l1=5216.472772625124)
+learner = ConvSCCS(
+    n_lags=n_lags.astype('uint64'), penalized_features=np.arange(n_features),
+    random_state=42, C_tv=270.2722840570933, C_group_l1=5216.472772625124)
 
 _, confidence_intervals = learner.fit(features, labels, censoring,
                                       confidence_intervals=True,
@@ -118,8 +118,9 @@ for i, c in enumerate(y[:-6]):
     l = n_lags[i]
     ax.plot(np.exp(coeffs[i]), label="True RI")
     ax.step(np.arange(l + 1), np.exp(c), label="Estimated RI")
-    ax.fill_between(np.arange(l + 1), np.exp(lb[i]), np.exp(ub[i]), alpha=.5,
-                    color='orange', step='pre', label="95% boostrap CI")
+    ax.fill_between(
+        np.arange(l + 1), np.exp(lb[i]), np.exp(ub[i]), alpha=.5,
+        color='orange', step='pre', label="95% boostrap CI")
 plt.suptitle('Estimated relative risks with 95% confidence bands')
 axarr[0][1].legend(loc='best')
 [ax[0].set_ylabel('Relative incidence') for ax in axarr]
@@ -133,13 +134,15 @@ m = np.repeat(np.hstack(refitted_coeffs[-6:]), 125)
 lb = np.repeat(np.hstack(lower_bound[-6:]), 125)
 ub = np.repeat(np.hstack(upper_bound[-6:]), 125)
 plt.figure()
-plt.plot(np.arange(n_intervals),
-         normalize(np.exp(time_drift(np.arange(n_intervals)))))
+plt.plot(
+    np.arange(n_intervals),
+    normalize(np.exp(time_drift(np.arange(n_intervals)))))
 plt.step(np.arange(n_intervals), normalize(np.exp(m)))
-plt.fill_between(np.arange(n_intervals), np.exp(lb) / np.exp(m).sum(),
-                 np.exp(ub) / np.exp(m).sum(), alpha=.5, color='orange',
-                 step='pre')
+plt.fill_between(
+    np.arange(n_intervals),
+    np.exp(lb) / np.exp(m).sum(),
+    np.exp(ub) / np.exp(m).sum(), alpha=.5, color='orange', step='pre')
 plt.xlabel('Age')
 plt.ylabel('Normalized Age Relative Incidence')
-plt.title("Normalized age effect with 95% confidence bands");
+plt.title("Normalized age effect with 95% confidence bands")
 plt.show()

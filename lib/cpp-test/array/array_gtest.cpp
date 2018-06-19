@@ -265,8 +265,8 @@ TYPED_TEST(ArrayTest, InitList) {
   using VT = typename TypeParam::value_type;
 
   std::array<VT, 6> vals = {{static_cast<VT>(0.0), static_cast<VT>(1.0),
-                            static_cast<VT>(2.0), static_cast<VT>(4.0),
-                            static_cast<VT>(8.0), static_cast<VT>(16.0)}};
+                             static_cast<VT>(2.0), static_cast<VT>(4.0),
+                             static_cast<VT>(8.0), static_cast<VT>(16.0)}};
 
   TypeParam arr{vals[0], vals[1], vals[2], vals[3], vals[4], vals[5]};
 
@@ -289,10 +289,8 @@ TYPED_TEST(ArrayTest, Fill_Int_to_double_no_cast) {
   uint32_t leet = 1337;
   arr.fill(leet);
 
-  for (ulong j = 0; j < arr.size(); ++j)
-    ASSERT_DOUBLE_EQ(arr.data()[j], leet);
+  for (ulong j = 0; j < arr.size(); ++j) ASSERT_DOUBLE_EQ(arr.data()[j], leet);
 }
-
 
 TYPED_TEST(ArrayTest, Sum) {
   using VT = typename TypeParam::value_type;

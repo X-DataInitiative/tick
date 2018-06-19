@@ -19,9 +19,8 @@ A nonparametric EM algorithm for multiscale Hawkes processes.
 import numpy as np
 import matplotlib.pyplot as plt
 
-from tick.hawkes import (
-    SimuHawkes, HawkesKernelTimeFunc, HawkesKernelExp, HawkesEM
-)
+from tick.hawkes import (SimuHawkes, HawkesKernelTimeFunc, HawkesKernelExp,
+                         HawkesEM)
 from tick.base import TimeFunction
 from tick.plot import plot_hawkes_kernels
 

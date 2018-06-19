@@ -24,13 +24,13 @@ X = X.toarray()  # It is more visible with dense matrices
 max_iter = 50
 seed = 7108
 
-learner_64 = LogisticRegression(tol=0, max_iter=max_iter,
-                                record_every=2, random_state=seed)
+learner_64 = LogisticRegression(tol=0, max_iter=max_iter, record_every=2,
+                                random_state=seed)
 learner_64.fit(X, y)
 
 X_32, y_32 = X.astype('float32'), y.astype('float32')
-learner_32 = LogisticRegression(tol=0, max_iter=max_iter,
-                                record_every=2, random_state=seed)
+learner_32 = LogisticRegression(tol=0, max_iter=max_iter, record_every=2,
+                                random_state=seed)
 learner_32.fit(X_32, y_32)
 
 # For a fair comparison, we access private attributes to compute both
@@ -42,13 +42,11 @@ learner_32._solver_obj.history.values['obj'] = [
 
 fig, axes = plt.subplots(1, 2, figsize=(8, 4), sharey=True)
 plot_history([learner_32, learner_64], x='n_iter',
-             labels=['float 32', 'float 64'],
-             dist_min=True, log_scale=True,
-             ax=axes[0])
+             labels=['float 32',
+                     'float 64'], dist_min=True, log_scale=True, ax=axes[0])
 plot_history([learner_32, learner_64], x='time',
-             labels=['float 32', 'float 64'],
-             dist_min=True, log_scale=True,
-             ax=axes[1])
+             labels=['float 32',
+                     'float 64'], dist_min=True, log_scale=True, ax=axes[1])
 
 axes[0].set_ylabel(r'$\frac{f(w^t) - f(w^*)}{f(w^*)}$')
 axes[0].set_xlabel('n epochs')

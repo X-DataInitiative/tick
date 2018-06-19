@@ -67,7 +67,7 @@ void TProxSortedL1<T, K>::call(const Array<K> &coeffs, T t, Array<K> &out,
     sub_out[idx[i]] = subsub_out[i];
   }
   for (ulong i = 0; i < size; i++) {
-     sub_out[i] = sub_out[i] * sub_coeffs_sign[i];
+    sub_out[i] = sub_out[i] * sub_coeffs_sign[i];
   }
 }
 

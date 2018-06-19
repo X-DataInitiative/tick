@@ -24,7 +24,8 @@ class DLL_PUBLIC ModelHawkesExpKernLogLik : public ModelHawkesLogLik {
    * \param max_n_threads : number of cores to be used for multithreading. If
    * negative, the number of physical cores will be used
    */
-  explicit ModelHawkesExpKernLogLik(const double decay, const int max_n_threads = 1);
+  explicit ModelHawkesExpKernLogLik(const double decay,
+                                    const int max_n_threads = 1);
 
   /**
    * @brief Set decays and reset weights computing

@@ -2,11 +2,11 @@
 // License: BSD 3 clause
 
 /*
-*  Windows DLLs have a strange effect with static objects
-*   so that at least for the case of cereal there is 
-*   numerous instances of the same static object
-*   which causes all types to need to be registed per DLL
-*/
+ *  Windows DLLs have a strange effect with static objects
+ *   so that at least for the case of cereal there is
+ *   numerous instances of the same static object
+ *   which causes all types to need to be registed per DLL
+ */
 
 #ifdef _WIN32
 
