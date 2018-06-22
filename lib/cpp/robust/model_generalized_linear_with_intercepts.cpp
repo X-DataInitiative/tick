@@ -73,7 +73,7 @@ T TModelGeneralizedLinearWithIntercepts<T, K>::loss(const Array<K> &coeffs) {
 template class DLL_PUBLIC TModelGeneralizedLinearWithIntercepts<double>;
 template class DLL_PUBLIC TModelGeneralizedLinearWithIntercepts<float>;
 
-template class DLL_PUBLIC TModelGeneralizedLinearWithIntercepts<double,
-                                                     std::atomic<double>>;
-template class DLL_PUBLIC TModelGeneralizedLinearWithIntercepts<float,
-                                                     std::atomic<float>>;
+template class DLL_PUBLIC
+    TModelGeneralizedLinearWithIntercepts<double, std::atomic<double>>;
+template class DLL_PUBLIC
+    TModelGeneralizedLinearWithIntercepts<float, std::atomic<float>>;

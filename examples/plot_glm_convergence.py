@@ -111,20 +111,20 @@ def run_solvers(model, l_l2sq):
 model_types = ['Linear', 'Logistic', 'Poisson']
 l_l2sqs = [1e-3, 1e-2, 1e-1]
 
-fig, axes = plt.subplots(len(model_types), len(l_l2sqs),
-                         figsize=(4 * len(l_l2sqs), 3 * len(model_types)),
-                         sharey=True, sharex=True)
+fig, axes = plt.subplots(
+    len(model_types), len(l_l2sqs),
+    figsize=(4 * len(l_l2sqs), 3 * len(model_types)), sharey=True, sharex=True)
 
 n_samples = 1000
 n_features = 20
 
-for (model_type, l_l2sq), ax in zip(product(model_types, l_l2sqs),
-                                    axes.ravel()):
+for (model_type, l_l2sq), ax in zip(
+        product(model_types, l_l2sqs), axes.ravel()):
     model = create_model(model_type, n_samples, n_features)
 
     bfgs, svrg, sdca, gd, agd = run_solvers(model, l_l2sq)
-    plot_history([bfgs, svrg, sdca, gd, agd], ax=ax,
-                 dist_min=True, log_scale=True)
+    plot_history([bfgs, svrg, sdca, gd, agd], ax=ax, dist_min=True,
+                 log_scale=True)
     ax.legend_.remove()
     ax.set_xlabel('')
     ax.set_ylim([1e-9, 1])

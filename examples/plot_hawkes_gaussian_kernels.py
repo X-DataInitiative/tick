@@ -20,10 +20,9 @@ Xu, Farajtabar, and Zha (2016, June) in ICML,
 import numpy as np
 
 from tick.plot import plot_hawkes_kernels
-from tick.hawkes import (SimuHawkes, SimuHawkesMulti,
-                         HawkesKernelExp, HawkesKernelTimeFunc,
-                         HawkesKernelPowerLaw, HawkesKernel0,
-                         HawkesSumGaussians)
+from tick.hawkes import (SimuHawkes, SimuHawkesMulti, HawkesKernelExp,
+                         HawkesKernelTimeFunc, HawkesKernelPowerLaw,
+                         HawkesKernel0, HawkesSumGaussians)
 
 end_time = 1000
 n_nodes = 2
@@ -34,13 +33,13 @@ timestamps_list = []
 
 kernel_timefunction = HawkesKernelTimeFunc(
     t_values=np.array([0., .7, 2.5, 3., 4.]),
-    y_values=np.array([.3, .03, .03, .2, 0.])
-)
-kernels = [[HawkesKernelExp(.2, 2.), HawkesKernelPowerLaw(.2, .5, 1.3)],
+    y_values=np.array([.3, .03, .03, .2, 0.]))
+kernels = [[HawkesKernelExp(.2, 2.),
+            HawkesKernelPowerLaw(.2, .5, 1.3)],
            [HawkesKernel0(), kernel_timefunction]]
 
-hawkes = SimuHawkes(baseline=[.5, .2], kernels=kernels,
-                    end_time=end_time, verbose=False, seed=1039)
+hawkes = SimuHawkes(baseline=[.5, .2], kernels=kernels, end_time=end_time,
+                    verbose=False, seed=1039)
 
 multi = SimuHawkesMulti(hawkes, n_simulations=n_realizations)
 

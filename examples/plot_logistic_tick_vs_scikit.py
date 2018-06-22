@@ -67,9 +67,10 @@ plt.title(r'Model-weights in $\mathtt{scikit-learn}$', fontsize=16)
 plt.subplot2grid((2, 2), (1, 0))
 plt.plot(fpr_tick, tpr_tick, lw=2)
 plt.plot(fpr_scikit, tpr_scikit, lw=2)
-plt.legend(["tick (AUC = {:.2f})".format(auc(fpr_tick, tpr_tick)),
-            "scikit-learn (AUC = {:.2f})".format(auc(fpr_tick, tpr_tick))],
-           loc='center right', fontsize=12)
+plt.legend([
+    "tick (AUC = {:.2f})".format(auc(fpr_tick, tpr_tick)),
+    "scikit-learn (AUC = {:.2f})".format(auc(fpr_tick, tpr_tick))
+], loc='center right', fontsize=12)
 plt.ylabel("True Positive Rate", fontsize=14)
 plt.xlabel("False Positive Rate", fontsize=14)
 plt.title('ROC curves comparison', fontsize=16)

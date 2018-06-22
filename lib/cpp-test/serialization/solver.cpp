@@ -2,70 +2,69 @@
 #include "include.h"
 
 #include "tick/solver/adagrad.h"
+#include "tick/solver/saga.h"
 #include "tick/solver/sdca.h"
 #include "tick/solver/sgd.h"
-#include "tick/solver/saga.h"
 #include "tick/solver/svrg.h"
-
 
 template <class T, class MODEL>
 void test_linear_separable(std::function<std::shared_ptr<MODEL>(
-                  const std::shared_ptr<BaseArray2d<T> > &features,
-                  const std::shared_ptr<SArray<T> > &labels)>
-                  get_model) {
+                               const std::shared_ptr<BaseArray2d<T> > &features,
+                               const std::shared_ptr<SArray<T> > &labels)>
+                               get_model) {
   auto features = get_features<T>();
   auto labels = get_labels<T>();
   ulong n_samples = features->n_rows();
   const auto BETA = 1e-10;
   const auto STRENGTH = (1. / n_samples) + BETA;
   auto model = get_model(features, labels);
-  auto proxl1   = std::make_shared<TProxL1<T> >(STRENGTH, true);
-  auto proxl1w  = std::make_shared<TProxL1w<T> >(STRENGTH, get_proxl1w_weights<T>(), true);
-  auto proxl2   = std::make_shared<TProxL2<T> >(STRENGTH, 0,
-                                      model->get_n_coeffs(), 0);
+  auto proxl1 = std::make_shared<TProxL1<T> >(STRENGTH, true);
+  auto proxl1w =
+      std::make_shared<TProxL1w<T> >(STRENGTH, get_proxl1w_weights<T>(), true);
+  auto proxl2 =
+      std::make_shared<TProxL2<T> >(STRENGTH, 0, model->get_n_coeffs(), 0);
   auto proxl2sq = std::make_shared<TProxL2Sq<T> >(STRENGTH, true);
-  auto proxelas = std::make_shared<TProxElasticNet<T> >(STRENGTH, BETA / STRENGTH, 0,
-                                      model->get_n_coeffs(), 0);
-  auto proxeq   = std::make_shared<TProxEquality<T> >(STRENGTH, 0,
-                                      model->get_n_coeffs(), 0);
-  auto proxtv   = std::make_shared<TProxTV<T> >(STRENGTH, 0,
-                                      model->get_n_coeffs(), 0);
-  auto proxpos  = std::make_shared<TProxPositive<T> >(STRENGTH);
-  auto prox0    = std::make_shared<TProxZero<T> >(STRENGTH);
+  auto proxelas = std::make_shared<TProxElasticNet<T> >(
+      STRENGTH, BETA / STRENGTH, 0, model->get_n_coeffs(), 0);
+  auto proxeq = std::make_shared<TProxEquality<T> >(STRENGTH, 0,
+                                                    model->get_n_coeffs(), 0);
+  auto proxtv =
+      std::make_shared<TProxTV<T> >(STRENGTH, 0, model->get_n_coeffs(), 0);
+  auto proxpos = std::make_shared<TProxPositive<T> >(STRENGTH);
+  auto prox0 = std::make_shared<TProxZero<T> >(STRENGTH);
   {
-    auto solver = std::make_shared<TAdaGrad<T> >(n_samples, 0, RandType::unif, 1e3, -1);
+    auto solver =
+        std::make_shared<TAdaGrad<T> >(n_samples, 0, RandType::unif, 1e3, -1);
     SCOPED_TRACE("");
-    WITH_PROX(
-      proxl1, proxl1w, proxl2, proxl2sq, proxelas, proxeq, proxtv, proxpos, prox0
-    ); 
+    WITH_PROX(proxl1, proxl1w, proxl2, proxl2sq, proxelas, proxeq, proxtv,
+              proxpos, prox0);
   }
   {
     auto solver = std::make_shared<TSDCA<T> >(n_samples);
     SCOPED_TRACE("");
-    WITH_PROX(
-      proxl1, proxl1w, proxl2, proxl2sq, proxelas, proxeq, proxtv, proxpos, prox0
-    ); 
+    WITH_PROX(proxl1, proxl1w, proxl2, proxl2sq, proxelas, proxeq, proxtv,
+              proxpos, prox0);
   }
   {
-    auto solver = std::make_shared<TSGD<T> >(n_samples, 0, RandType::unif, 1e3, -1);
+    auto solver =
+        std::make_shared<TSGD<T> >(n_samples, 0, RandType::unif, 1e3, -1);
     SCOPED_TRACE("");
-    WITH_PROX(
-      proxl1, proxl1w, proxl2, proxl2sq, proxelas, proxeq, proxtv, proxpos, prox0
-    ); 
+    WITH_PROX(proxl1, proxl1w, proxl2, proxl2sq, proxelas, proxeq, proxtv,
+              proxpos, prox0);
   }
   {
-    auto solver = std::make_shared<TSVRG<T> >(n_samples, 0, RandType::unif, 1e3, -1);
+    auto solver =
+        std::make_shared<TSVRG<T> >(n_samples, 0, RandType::unif, 1e3, -1);
     SCOPED_TRACE("");
-    WITH_PROX(
-      proxl1, proxl1w, proxl2, proxl2sq, proxelas, proxeq, proxtv, proxpos, prox0
-    ); 
+    WITH_PROX(proxl1, proxl1w, proxl2, proxl2sq, proxelas, proxeq, proxtv,
+              proxpos, prox0);
   }
   {
-    auto solver = std::make_shared<TSVRG<T> >(n_samples, 0, RandType::unif, 1e3, -1);
+    auto solver =
+        std::make_shared<TSVRG<T> >(n_samples, 0, RandType::unif, 1e3, -1);
     SCOPED_TRACE("");
-    WITH_PROX(
-      proxl1, proxl1w, proxl2, proxl2sq, proxelas, proxeq, proxtv, proxpos, prox0
-    ); 
+    WITH_PROX(proxl1, proxl1w, proxl2, proxl2sq, proxelas, proxeq, proxtv,
+              proxpos, prox0);
   }
 }
 
@@ -78,10 +77,11 @@ TEST(Model, LinRegDoubleSerializationJSON) {
       });
 }
 TEST(Model, LinRegFloatSerializationJSON) {
-  test_linear_separable<float, TModelLinReg<float> >([](const SBaseArrayFloat2dPtr &features,
-                                           const SArrayFloatPtr &labels) {
-    return std::make_shared<TModelLinReg<float> >(features, labels, false, 1);
-  });
+  test_linear_separable<float, TModelLinReg<float> >(
+      [](const SBaseArrayFloat2dPtr &features, const SArrayFloatPtr &labels) {
+        return std::make_shared<TModelLinReg<float> >(features, labels, false,
+                                                      1);
+      });
 }
 //####################### LIN REG ############################################
 
@@ -95,10 +95,11 @@ TEST(Model, LogRegDoubleSerializationJSON) {
 }
 
 TEST(Model, LogRegFloatSerializationJSON) {
-  test_linear_separable<float, TModelLogReg<float> >([](const SBaseArrayFloat2dPtr &features,
-                                           const SArrayFloatPtr &labels) {
-    return std::make_shared<TModelLogReg<float> >(features, labels, false, 1);
-  });
+  test_linear_separable<float, TModelLogReg<float> >(
+      [](const SBaseArrayFloat2dPtr &features, const SArrayFloatPtr &labels) {
+        return std::make_shared<TModelLogReg<float> >(features, labels, false,
+                                                      1);
+      });
 }
 //####################### LOG REG ############################################
 
@@ -172,15 +173,15 @@ TEST(Model, SmoothHingeFloatSerializationJSON) {
 TEST(Model, AbsoluteRegressionDoubleSerializationJSON) {
   test_linear_separable<double, TModelAbsoluteRegression<double> >(
       [](const SBaseArrayDouble2dPtr &features, const SArrayDoublePtr &labels) {
-        return std::make_shared<TModelAbsoluteRegression<double> >(features, labels,
-                                                              false);
+        return std::make_shared<TModelAbsoluteRegression<double> >(
+            features, labels, false);
       });
 }
 TEST(Model, AbsoluteRegressionFloatSerializationJSON) {
   test_linear_separable<float, TModelAbsoluteRegression<float> >(
       [](const SBaseArrayFloat2dPtr &features, const SArrayFloatPtr &labels) {
-        return std::make_shared<TModelAbsoluteRegression<float> >(features, labels,
-                                                             false);
+        return std::make_shared<TModelAbsoluteRegression<float> >(
+            features, labels, false);
       });
 }
 //####################### ABSOLUTE REG #######################################
@@ -189,15 +190,15 @@ TEST(Model, AbsoluteRegressionFloatSerializationJSON) {
 TEST(Model, EpsilonInsensitiveDoubleSerializationJSON) {
   test_linear_separable<double, TModelEpsilonInsensitive<double> >(
       [](const SBaseArrayDouble2dPtr &features, const SArrayDoublePtr &labels) {
-        return std::make_shared<TModelEpsilonInsensitive<double> >(features, labels,
-                                                              false, 100);
+        return std::make_shared<TModelEpsilonInsensitive<double> >(
+            features, labels, false, 100);
       });
 }
 TEST(Model, EpsilonInsensitiveFloatSerializationJSON) {
   test_linear_separable<float, TModelEpsilonInsensitive<float> >(
       [](const SBaseArrayFloat2dPtr &features, const SArrayFloatPtr &labels) {
-        return std::make_shared<TModelEpsilonInsensitive<float> >(features, labels,
-                                                             false, 100);
+        return std::make_shared<TModelEpsilonInsensitive<float> >(
+            features, labels, false, 100);
       });
 }
 //####################### EPSIL INSENS #######################################
@@ -206,15 +207,15 @@ TEST(Model, EpsilonInsensitiveFloatSerializationJSON) {
 TEST(Model, GeneralizedLinearDoubleSerializationJSON) {
   test_linear_separable<double, TModelGeneralizedLinearWithIntercepts<double> >(
       [](const SBaseArrayDouble2dPtr &features, const SArrayDoublePtr &labels) {
-        return std::make_shared<TModelGeneralizedLinearWithIntercepts<double> >(features, labels,
-                                                              false);
+        return std::make_shared<TModelGeneralizedLinearWithIntercepts<double> >(
+            features, labels, false);
       });
 }
 TEST(Model, GeneralizedLinearSerializationJSON) {
   test_linear_separable<float, TModelGeneralizedLinearWithIntercepts<float> >(
       [](const SBaseArrayFloat2dPtr &features, const SArrayFloatPtr &labels) {
-        return std::make_shared<TModelGeneralizedLinearWithIntercepts<float> >(features, labels,
-                                                             false);
+        return std::make_shared<TModelGeneralizedLinearWithIntercepts<float> >(
+            features, labels, false);
       });
 }
 //####################### GEN LIN WITH INT ###################################
@@ -223,15 +224,15 @@ TEST(Model, GeneralizedLinearSerializationJSON) {
 TEST(Model, HuberDoubleSerializationJSON) {
   test_linear_separable<double, TModelHuber<double> >(
       [](const SBaseArrayDouble2dPtr &features, const SArrayDoublePtr &labels) {
-        return std::make_shared<TModelHuber<double> >(features, labels,
-                                                              false, 100);
+        return std::make_shared<TModelHuber<double> >(features, labels, false,
+                                                      100);
       });
 }
 TEST(Model, HuberFloatSerializationJSON) {
   test_linear_separable<float, TModelHuber<float> >(
       [](const SBaseArrayFloat2dPtr &features, const SArrayFloatPtr &labels) {
-        return std::make_shared<TModelHuber<float> >(features, labels,
-                                                             false, 100);
+        return std::make_shared<TModelHuber<float> >(features, labels, false,
+                                                     100);
       });
 }
 //####################### HUBER ##############################################
@@ -240,15 +241,15 @@ TEST(Model, HuberFloatSerializationJSON) {
 TEST(Model, LinRegWithInterceptsDoubleSerializationJSON) {
   test_linear_separable<double, TModelLinRegWithIntercepts<double> >(
       [](const SBaseArrayDouble2dPtr &features, const SArrayDoublePtr &labels) {
-        return std::make_shared<TModelLinRegWithIntercepts<double> >(features, labels,
-                                                              false);
+        return std::make_shared<TModelLinRegWithIntercepts<double> >(
+            features, labels, false);
       });
 }
 TEST(Model, LinRegWithInterceptsFloatSerializationJSON) {
   test_linear_separable<float, TModelLinRegWithIntercepts<float> >(
       [](const SBaseArrayFloat2dPtr &features, const SArrayFloatPtr &labels) {
-        return std::make_shared<TModelLinRegWithIntercepts<float> >(features, labels,
-                                                             false);
+        return std::make_shared<TModelLinRegWithIntercepts<float> >(
+            features, labels, false);
       });
 }
 //####################### LIN REG INT ########################################

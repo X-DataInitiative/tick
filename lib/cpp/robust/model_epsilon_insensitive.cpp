@@ -31,6 +31,5 @@ T TModelEpsilonInsensitive<T, K>::grad_i_factor(const ulong i,
 template class DLL_PUBLIC TModelEpsilonInsensitive<double>;
 template class DLL_PUBLIC TModelEpsilonInsensitive<float>;
 
-template class DLL_PUBLIC TModelEpsilonInsensitive<double,
-std::atomic<double>>; template class DLL_PUBLIC
-TModelEpsilonInsensitive<float, std::atomic<float>>;
+template class DLL_PUBLIC TModelEpsilonInsensitive<double, std::atomic<double>>;
+template class DLL_PUBLIC TModelEpsilonInsensitive<float, std::atomic<float>>;

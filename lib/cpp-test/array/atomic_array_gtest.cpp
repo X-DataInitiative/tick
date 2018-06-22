@@ -37,13 +37,12 @@
 namespace {
 
 template <typename T>
-Array<T> tick_array_copy_to_nonatomic(const Array<std::atomic<T>> src){
+Array<T> tick_array_copy_to_nonatomic(const Array<std::atomic<T>> src) {
   Array<T> copy(src.size());
-  for(size_t i = 0; i < src.size(); i++)
+  for (size_t i = 0; i < src.size(); i++)
     copy[i] = src.template get_data_index<T>(i);
   return copy;
 }
-
 
 /**
  * Function to get the minimum test data value for signed integers
@@ -87,8 +86,7 @@ std::mt19937 gen(rd());
 template <typename ArrType, typename NestedType>
 ArrType GenerateRandomArray(
     ulong n = TICK_TEST_DATA_SIZE,
-    typename std::enable_if<
-        std::is_floating_point<NestedType>::value>::type * =
+    typename std::enable_if<std::is_floating_point<NestedType>::value>::type * =
         0) {
   ArrType res(n);
 
@@ -104,8 +102,7 @@ ArrType GenerateRandomArray(
 template <typename ArrType, typename NestedType>
 ArrType GenerateRandomArray(
     ulong n = TICK_TEST_DATA_SIZE,
-    typename std::enable_if<
-        std::is_integral<NestedType>::value>::type * = 0) {
+    typename std::enable_if<std::is_integral<NestedType>::value>::type * = 0) {
   ArrType res(n);
 
   using value_type = typename ArrType::value_type;
@@ -124,7 +121,8 @@ Arr2dType GenerateRandomArray2d(ulong n_rows = TICK_TEST_ROW_SIZE,
   Arr2dType random_2d_array = Arr2dType(n_rows, n_cols);
 
   typedef Array<typename Arr2dType::value_type> Array1dType;
-  Array1dType random_array = GenerateRandomArray<Array1dType, NestedType>(n_rows * n_cols);
+  Array1dType random_array =
+      GenerateRandomArray<Array1dType, NestedType>(n_rows * n_cols);
 
   std::copy(random_array.data(), random_array.data() + random_array.size(),
             random_2d_array.data());
@@ -167,8 +165,7 @@ class AtomicArrayTest : public ::testing::Test {
   using value_type = typename ArrType::value_type;
 };
 
-typedef ::testing::Types<Array<float>, Array<double>>
-    MyArrayTypes;
+typedef ::testing::Types<Array<float>, Array<double>> MyArrayTypes;
 TYPED_TEST_CASE(AtomicArrayTest, MyArrayTypes);
 
 TYPED_TEST(AtomicArrayTest, InitToZero) {
@@ -248,8 +245,8 @@ TYPED_TEST(AtomicArrayTest, InitList) {
   using AtomicType = Array<std::atomic<VT>>;
 
   std::array<VT, 6> vals = {{static_cast<VT>(0.0), static_cast<VT>(1.0),
-                            static_cast<VT>(2.0), static_cast<VT>(4.0),
-                            static_cast<VT>(8.0), static_cast<VT>(16.0)}};
+                             static_cast<VT>(2.0), static_cast<VT>(4.0),
+                             static_cast<VT>(8.0), static_cast<VT>(16.0)}};
 
   AtomicType arr{vals[0], vals[1], vals[2], vals[3], vals[4], vals[5]};
 
@@ -268,7 +265,6 @@ TYPED_TEST(AtomicArrayTest, Sum) {
 
   EXPECT_DOUBLE_EQ(arrA.sum(), sum);
 }
-
 
 TYPED_TEST(AtomicArrayTest, Min) {
   using K = typename TypeParam::value_type;
@@ -302,7 +298,6 @@ TYPED_TEST(AtomicArrayTest, Fill) {
   for (ulong j = 0; j < arr.size(); ++j)
     ASSERT_DOUBLE_EQ(arr.data()[j], 1337.0);
 }
-
 
 TYPED_TEST(AtomicArrayTest, MultOperator) {
   using VT = typename TypeParam::value_type;
@@ -398,11 +393,12 @@ TYPED_TEST(AtomicArrayTest, MultAddMultIncr) {
     arrA.mult_add_mult_incr(arrB, factor, arrC, factor_2);
 
     for (ulong j = 0; j < arrA.size(); ++j) {
-      oldA.set_data_index(j,
-        oldA.get_data_index(j) + (arrB.get_data_index(j) * factor));
+      oldA.set_data_index(
+          j, oldA.get_data_index(j) + (arrB.get_data_index(j) * factor));
     }
     for (ulong j = 0; j < arrA.size(); ++j) {
-      oldA.set_data_index(j, oldA.get_data_index(j) + (arrC.get_data_index(j) * factor_2));
+      oldA.set_data_index(
+          j, oldA.get_data_index(j) + (arrC.get_data_index(j) * factor_2));
     }
 
     SCOPED_TRACE(factor);

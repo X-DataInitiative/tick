@@ -6,6 +6,7 @@
 /** @file */
 
 #include "alloc.h"
+#include "array.h"
 #include "basearray2d.h"
 #include "tick/base/defs.h"
 

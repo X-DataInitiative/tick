@@ -16,7 +16,6 @@ To obtain good speedup in a relative short time example we have designed very
 sparse and ill-conditonned problem.
 """
 
-
 from scipy import sparse
 import matplotlib.pyplot as plt
 from tick.plot import plot_history
@@ -25,7 +24,6 @@ from tick.linear_model import SimuLogReg, ModelLogReg
 from tick.simulation import weights_sparse_gauss
 from tick.solver import SVRG
 from tick.prox import ProxElasticNet
-
 
 seed = 1398
 np.random.seed(seed)
@@ -71,4 +69,3 @@ plt.ylim([3e-3, 0.3])
 plt.ylabel('log distance to optimal objective', fontsize=14)
 plt.tight_layout()
 plt.show()
-

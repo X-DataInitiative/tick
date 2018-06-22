@@ -104,7 +104,7 @@ void TProxL1w<T, K>::call_single(ulong i, const Array<K> &coeffs, T step,
       if ((i >= start) && (i < end)) {
         out[i] = call_single(coeffs[i], step, (*weights)[i - start], n_times);
       } else {
-        out.set_data_index(i,  coeffs[i]);
+        out.set_data_index(i, coeffs[i]);
       }
     } else {
       out[i] = call_single(coeffs[i], step, (*weights)[i - start], n_times);

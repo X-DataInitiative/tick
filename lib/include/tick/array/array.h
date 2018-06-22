@@ -332,8 +332,7 @@ template <typename T>
 template <typename Y>
 void Array<T>::multiply(const K fact, Array<T> *out) {
   if (out == nullptr) {
-    tick::vector_operations<T>{}.scale(
-        _size, fact, _data);
+    tick::vector_operations<T>{}.scale(_size, fact, _data);
   } else {
     for (ulong i = 0; i < _size; i++) (*out)[i] = _data[i] * fact;
   }

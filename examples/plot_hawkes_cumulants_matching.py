@@ -40,12 +40,13 @@ end_time = 1e5
 integration_support = 5
 n_realizations = 5
 
-simu_hawkes = SimuHawkesExpKernels(
-    baseline=baselines, adjacency=adjacency, decays=decays,
-    end_time=end_time, verbose=False, seed=7168)
+simu_hawkes = SimuHawkesExpKernels(baseline=baselines, adjacency=adjacency,
+                                   decays=decays, end_time=end_time,
+                                   verbose=False, seed=7168)
 simu_hawkes.threshold_negative_intensity(True)
 
-multi = SimuHawkesMulti(simu_hawkes, n_simulations=n_realizations, n_threads=-1)
+multi = SimuHawkesMulti(simu_hawkes, n_simulations=n_realizations,
+                        n_threads=-1)
 multi.simulate()
 
 nphc = HawkesCumulantMatching(integration_support, cs_ratio=.15, tol=1e-10,

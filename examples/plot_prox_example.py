@@ -26,7 +26,7 @@ proxs = [
     ProxTV(strength=s),
     ProxEquality(range=(25, 40)),
     ProxL1w(strength=s, weights=0.1 * np.arange(50, dtype=np.double)),
-    ProxGroupL1(strength=2*s, blocks_start=np.arange(0, 50, 10),
+    ProxGroupL1(strength=2 * s, blocks_start=np.arange(0, 50, 10),
                 blocks_length=10 * np.ones((5,))),
     ProxBinarsity(strength=s, blocks_start=np.arange(0, 50, 10),
                   blocks_length=10 * np.ones((5,)))

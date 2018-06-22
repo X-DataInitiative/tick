@@ -29,7 +29,7 @@ done
 
 ## Uncomment to run on all includes/sources
 # pushd $CWD/..
-# for f in $(find lib/cpp -type f \( -iname \*.h -o -iname \*.cpp \)); do
+# for f in $(find lib/cpp* -type f \( -iname \*.h -o -iname \*.cpp \)); do
 #   $CLANG_FORMAT  -i -style=google $f
 # done
 # for f in $(find lib/include -type f \( -iname \*.h -o -iname \*.cpp \)); do

@@ -84,7 +84,7 @@ void TProxBinarsity<T, K>::call(const Array<K>& coeffs, T step, Array<K>& out,
     auto out_block_k = view(out, start_k, end_k);
     T mean_k = out_block_k.sum() / (end_k - start_k);
     for (ulong j = 0; j < end_k - start_k; j++) {
-       out_block_k[j] = out_block_k[j] - mean_k;
+      out_block_k[j] = out_block_k[j] - mean_k;
     }
   }
 }

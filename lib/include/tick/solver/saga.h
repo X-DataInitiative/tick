@@ -74,7 +74,8 @@ class DLL_PUBLIC TSAGA : public TStoSolver<T> {
     return variance_reduction;
   }
 
-  void set_variance_reduction(SAGA_VarianceReductionMethod _variance_reduction) {
+  void set_variance_reduction(
+      SAGA_VarianceReductionMethod _variance_reduction) {
     variance_reduction = _variance_reduction;
   }
 
