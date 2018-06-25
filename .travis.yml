@@ -1,5 +1,7 @@
 language: generic
 
+cache: ccache
+
 branches:
   only:
     - master

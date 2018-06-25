@@ -6,6 +6,7 @@ shell_session_update() { :; }
 
 brew update
 brew install swig
+brew install ccache
 #brew upgrade pyenv
 
 if [ ! -d googletest ] || [ ! -f googletest/CMakeLists.txt ]; then
@@ -18,6 +19,8 @@ fi
 
 export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/bin:$PATH"
+export CC="ccache clang"
+export CXX="ccache clang++"
 
 eval "$(pyenv init -)"
 
