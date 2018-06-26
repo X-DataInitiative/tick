@@ -93,16 +93,16 @@ DLL_PUBLIC PyObject *_XSparseArray2d2NumpyArray(XSPARSEARRAY2D_TYPE *sig)
     PyObject* tuple = PyTuple_New(3);
     if(!tuple) throw std::runtime_error("tuple new failed");
     if(!PyTuple_Check(tuple)) throw std::runtime_error("tuple type 1 failed");
-    
+
     if(PyTuple_SetItem(tuple, 0, (PyObject *) array)) throw std::runtime_error("tuple PyTuple_SetItem 0 failed");
     if(PyTuple_SetItem(tuple, 1, (PyObject *) indices)) throw std::runtime_error("tuple PyTuple_SetItem 1 failed");
     if(PyTuple_SetItem(tuple, 2, (PyObject *) row_indices)) throw std::runtime_error("tuple PyTuple_SetItem 2 failed");
     if(!PyTuple_Check(tuple)) throw std::runtime_error("tuple type 2 failed");
-    
+
     PyObject* Otuple = PyTuple_New(1);
     if(!Otuple) throw std::runtime_error("Otuple new failed");
     if(PyTuple_SetItem(Otuple, 0, (PyObject *) tuple)) throw std::runtime_error("Otuple PyTuple_SetItem 0 failed");
-    if(!PyTuple_Check(tuple)) throw std::runtime_error("Otuple check failed");    
+    if(!PyTuple_Check(tuple)) throw std::runtime_error("Otuple check failed");
 
     PyObject* shape = Py_BuildValue("ii", sig->n_rows(), sig->n_cols());
     if(!shape) throw std::runtime_error("Shape tuple new failed");
@@ -115,7 +115,7 @@ DLL_PUBLIC PyObject *_XSparseArray2d2NumpyArray(XSPARSEARRAY2D_TYPE *sig)
     if(!PyDict_Check(dic)) throw std::runtime_error("dic is no dic");
 
     PyObject *scipy_sparse_csr, *csr_matrix, *instance;
-    scipy_sparse_csr = PyImport_ImportModule("scipy.sparse.csr"); 
+    scipy_sparse_csr = PyImport_ImportModule("scipy.sparse.csr");
 
     if(!scipy_sparse_csr) throw std::runtime_error("scipy_sparse_csr failed");
     csr_matrix = PyObject_GetAttrString(scipy_sparse_csr, "csr_matrix");
@@ -126,7 +126,8 @@ DLL_PUBLIC PyObject *_XSparseArray2d2NumpyArray(XSPARSEARRAY2D_TYPE *sig)
     #ifdef DEBUG_SHAREDARRAY
     std::cout << "NPY_API_VERSION " << std::to_string(NPY_API_VERSION) << std::endl;
     #endif
-    if (sig->data_owner()) {
+    bool has_owner = sig->data_owner();
+    if (has_owner) {
         #ifdef DEBUG_SHAREDARRAY
         std::cout << "Sparse 2d Shared Array -> NumpyArray " << sig << " owner is already Python " << sig->data_owner() << std::endl;
         #endif
@@ -162,6 +163,7 @@ DLL_PUBLIC PyObject *_XSparseArray2d2NumpyArray(XSPARSEARRAY2D_TYPE *sig)
         #endif
         sig->give_data_indices_rowindices_owners(array, indices, row_indices);
     }
+
 #ifdef DEBUG_SHAREDARRAY
     std::cout << "Sparse2d Shared Array -> array ref count " << ((PyObject *)array)->ob_refcnt << std::endl;
     std::cout << "Sparse2d Shared Array -> indices ref count " << ((PyObject *)indices)->ob_refcnt << std::endl;
@@ -181,18 +183,20 @@ DLL_PUBLIC PyObject *_XSparseArray2d2NumpyArray(XSPARSEARRAY2D_TYPE *sig)
     std::cout << "Sparse2d Shared Array -> dic ref count " << ((PyObject *)dic)->ob_refcnt << std::endl;
     std::cout << "Sparse2d Shared Array -> shape ref count " << ((PyObject *)shape)->ob_refcnt << std::endl;
 #endif
-  
+
     // Usage check for current working scenario to block unexpected outcomes.
-    if(((PyObject *)array)->ob_refcnt != 3 
-      || ((PyObject *)indices)->ob_refcnt != 2 
+    if(((PyObject *)array)->ob_refcnt != 3
+      || ((PyObject *)indices)->ob_refcnt != 2
       || ((PyObject *)row_indices)->ob_refcnt != 2){
       throw std::runtime_error("SparseArray2d Reference count unexpected in SWIG layer - recompile with -DDEBUG_SHAREDARRAY and check");
     }
 
     // these lines are required for the following arrays to be de-allocated properly when owned by python
     if(((PyObject *)array)->ob_refcnt > 2) Py_DECREF(array);
-    if(((PyObject *)indices)->ob_refcnt > 1) Py_DECREF(indices);
-    if(((PyObject *)row_indices)->ob_refcnt > 1) Py_DECREF(row_indices);
+    if(has_owner) {
+      if(((PyObject *)indices)->ob_refcnt > 1) Py_DECREF(indices);
+      if(((PyObject *)row_indices)->ob_refcnt > 1) Py_DECREF(row_indices);
+    }
 
     return (PyObject *) instance;
 }
