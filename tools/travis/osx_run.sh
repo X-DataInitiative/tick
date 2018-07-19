@@ -17,7 +17,13 @@ pyenv global ${PYVER}
 ## export PYTHONPATH=${PYTHONPATH}:`pwd` && cd doc && make doctest
 ###
 
-python setup.py cpplint build_ext --inplace cpptest pytest
+python setup.py cpplint
+set +e
+python setup.py build_ext -j 2 --inplace # mac builds are slow but -j can fail so run twice
+rm -rf build/lib # force relinking of libraries in case of failure
+set -e
+python setup.py build_ext --inplace cpptest pytest
+
 export PYTHONPATH=${PYTHONPATH}:`pwd`
 for f in $(find examples -maxdepth 1 -type f -name "*.py"); do
   FILE=$(basename $f)

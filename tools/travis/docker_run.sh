@@ -20,6 +20,11 @@ python -m yapf --style tools/code_style/yapf.conf -i tick examples --recursive
 
 python -m pip install -r requirements.txt
 
-python setup.py cpplint build_ext --inplace cpptest pytest
+python setup.py cpplint
+set +e
+python setup.py build_ext -j 2 --inplace
+rm -rf build/lib # force relinking of libraries in case of failure
+set -e
+python setup.py build_ext --inplace cpptest pytest
 
 export PYTHONPATH=${PYTHONPATH}:`pwd` && (cd doc && make doctest)

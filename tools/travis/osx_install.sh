@@ -5,9 +5,8 @@ set -e -x
 shell_session_update() { :; }
 
 brew update
+brew upgrade pyenv
 brew install swig
-brew install ccache
-#brew upgrade pyenv
 
 if [ ! -d googletest ] || [ ! -f googletest/CMakeLists.txt ]; then
   git clone https://github.com/google/googletest
@@ -19,8 +18,8 @@ fi
 
 export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/bin:$PATH"
-export CC="ccache clang"
-export CXX="ccache clang++"
+export CC="clang"
+export CXX="clang++"
 
 eval "$(pyenv init -)"
 
@@ -33,6 +32,6 @@ python -m pip install --quiet numpy pandas
 python -m pip install -r requirements.txt
 python -m pip install sphinx pillow
 python -m pip install cpplint
-python -m pip install tensorflow
+[[ "${PYVER}" != "3.7.0" ]] && python -m pip install tensorflow # does not yet exist on python 3.7
 pyenv rehash
 
