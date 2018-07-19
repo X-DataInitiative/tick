@@ -6,6 +6,7 @@ from scipy import sparse
 from tick.prox import ProxElasticNet
 from tick.solver import SAGA
 from tick.solver.tests import TestSolver
+
 from tick.solver.build.solver import SAGADouble as _SAGA
 from tick.linear_model import ModelLogReg, SimuLogReg
 from tick.survival import SimuCoxReg, ModelCoxRegPartialLik

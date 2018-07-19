@@ -38,6 +38,7 @@ done
 
 cd $CWD/..
 ROOT=$PWD
+source $ROOT/sh/configure_var.sh
 source $ROOT/sh/configure_env.sh
 
 cd $ROOT/lib

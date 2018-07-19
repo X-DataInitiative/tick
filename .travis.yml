@@ -46,3 +46,23 @@ script:
 notifications:
   slack:
     secure: m9B/ZFfTZRZTRT5yVXdHKOfO+f7Nnq5w9sewxMXFe0RQ/jaEFWt2b/jA9gTR1WJKvQ/05hmShMlz7UMCZguXqElYzsLvdribmV94TvmFpJdsoF80palZzzjRCm9lNHx66RWJ4l5p9wKAS+73tafDBBlGwaOqc234le+YxYsTIGgzeb69WS547LkHhbmPTgbhG+k8jAfE0OByXsSmaOTVyqbWerK1WF8KzlGx5WqWkGhECloTBLdcK0+oxelHYGdwI2CCRi/SfOfEyO6ceyV6hqE6Xt0g/RJhO4lEs9ahIVryUKUTpYxbgO0eWJ0LwM0OolfCAaphKHogd4Z6zHGr2EXmkXzElUcT5fMFhSD1/KxBXWxSl3TdAOpzaXG5WTYDV+38rM15FGhQD+q9monR3q7aHs/P7BkAcZBJGns61gTV1R9o+xMV4naMGH7/SRPxS9Jmz6h7Wg6WzoH2E2/Qq0YL+w3BDg6vpXNoBstmX/3D0G7S+SFmQcZqXQ18RGC5HqP1YA0gJyX89Bl8ZRBD4JTplh/Mnb20ORBNt+aaWzGEdOf7DRcGfc0Yl7Wyap92+dvX+wW7KPEUU04uRlKk/FHXA6U3NcsL9Le//+SsPveW7iCMF8e2jct9E5e7kCd2fkiExwH130zfhmDXApTBHVZGjiB/swx0X+utiXkQUbQ=
+
+before_deploy:
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then find . -maxdepth 2; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then pwd; find /home/travis/build/Dekken/tick -maxdepth 2; fi
+
+deploy:
+  - provider: bintray
+    file: tools/travis/mac_bintray.json
+    user: dekken
+    key:
+      secure: dQepGOZ7aTjyS7w0zGbvHOSstW9Nl8BblfP7XzWkNpOVN6eaFBfqKh1qmJeAeFUjgDIaVa583vZQLYIW9GXFInVo7h1SamKU09tYiFgSdsOs8NOCTJ6PYcYkh3oMdxQ0HeNW+nGy5Ptx6GG9ry16k8wiAte3u1YuBxYhF/hISZ4wcB9FkIOFBksFKhi5AYuC5X7g4WNbJtdfPln4taBCSTMGhwgFsdaCRG2edP8NaIesG4Kx3lY9y3+A3OyY9O3KMJzyvQYA6X+2EhonHw3uJt+6QlanFgFwpdWbHvWoSx8kS5jl7fF9yLUojA3hAMPIN9+Uu4VQKJ8PaLUvhVijwB/ef5emrnVa0h6YArVBjW2UKPl0KwQfAdcVqtcmooxEqhbpqfQItZaqIHT2XPDXdwPqLsGnB/mFBJwBYVtJIktUViHFRMGQC89s94qRuzWjW5V+CPEuBmVlZ11GgOzkTujeZGGnxwqUCzPgtFlL8yDIQsf7Dkwiz0FN108HswgMF44n4VtzZHJUKZ3kCc7Ew30NWrbOkNrWBkLJFvfsM3e999WAJ7Se3xxOcFXIuoOEjs8faJE6U/yQpSuIIZmxNadVVfbAxHE6pm/fm0zb5Qk0OetegXa8mxWUELLcdvc9aY7/JCJ5btIyKiVkCvsxw3CyF/qAXVfIym3g4fgmhl8=
+    edge:
+        branch: v1.8.47
+  - provider: bintray
+    file: tools/travis/nix_bintray.json
+    user: dekken
+    key:
+      secure: dQepGOZ7aTjyS7w0zGbvHOSstW9Nl8BblfP7XzWkNpOVN6eaFBfqKh1qmJeAeFUjgDIaVa583vZQLYIW9GXFInVo7h1SamKU09tYiFgSdsOs8NOCTJ6PYcYkh3oMdxQ0HeNW+nGy5Ptx6GG9ry16k8wiAte3u1YuBxYhF/hISZ4wcB9FkIOFBksFKhi5AYuC5X7g4WNbJtdfPln4taBCSTMGhwgFsdaCRG2edP8NaIesG4Kx3lY9y3+A3OyY9O3KMJzyvQYA6X+2EhonHw3uJt+6QlanFgFwpdWbHvWoSx8kS5jl7fF9yLUojA3hAMPIN9+Uu4VQKJ8PaLUvhVijwB/ef5emrnVa0h6YArVBjW2UKPl0KwQfAdcVqtcmooxEqhbpqfQItZaqIHT2XPDXdwPqLsGnB/mFBJwBYVtJIktUViHFRMGQC89s94qRuzWjW5V+CPEuBmVlZ11GgOzkTujeZGGnxwqUCzPgtFlL8yDIQsf7Dkwiz0FN108HswgMF44n4VtzZHJUKZ3kCc7Ew30NWrbOkNrWBkLJFvfsM3e999WAJ7Se3xxOcFXIuoOEjs8faJE6U/yQpSuIIZmxNadVVfbAxHE6pm/fm0zb5Qk0OetegXa8mxWUELLcdvc9aY7/JCJ5btIyKiVkCvsxw3CyF/qAXVfIym3g4fgmhl8=
+    edge:
+        branch: v1.8.47

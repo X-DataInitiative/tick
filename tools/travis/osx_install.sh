@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -ex
+set -x
 
 shell_session_update() { :; }
 
@@ -30,7 +30,7 @@ PYMAJ=$(python -c "import sys; print(sys.version_info[0])")
 PYMIN=$(python -c "import sys; print(sys.version_info[1])")
 
 python -m pip install --quiet -U pip
-python -m pip install --quiet -U setuptools psutil
+python -m pip install --quiet -U setuptools psutil wheel
 python -m pip install --quiet numpy pandas
 python -m pip install -r requirements.txt
 python -m pip install sphinx pillow cpplint tensorflow

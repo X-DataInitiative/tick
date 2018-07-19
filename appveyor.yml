@@ -11,9 +11,9 @@ image:
 - Visual Studio 2017
 
 init:
-  - git config --global core.autocrlf input
+  - git config --global core.autocrlf false
 
-clone_depth: 1
+clone_depth: 3
 
 hosts:
   queue-server: 127.0.0.1
@@ -45,5 +45,18 @@ build_script:
   - bash -c "PATH=\"$PWD:/c/Python37-x64/:/c/Program Files/Git/usr/bin:$PATH\"; tools/appveyor/run.sh"
 
 artifacts:
-  - path: "dist\\*.whl"
+  - path: "dist\\*.*"
     name: Wheels
+
+deploy:
+- provider: BinTray
+  username: dekken
+  api_key:
+    secure: dQepGOZ7aTjyS7w0zGbvHOSstW9Nl8BblfP7XzWkNpOVN6eaFBfqKh1qmJeAeFUjgDIaVa583vZQLYIW9GXFInVo7h1SamKU09tYiFgSdsOs8NOCTJ6PYcYkh3oMdxQ0HeNW+nGy5Ptx6GG9ry16k8wiAte3u1YuBxYhF/hISZ4wcB9FkIOFBksFKhi5AYuC5X7g4WNbJtdfPln4taBCSTMGhwgFsdaCRG2edP8NaIesG4Kx3lY9y3+A3OyY9O3KMJzyvQYA6X+2EhonHw3uJt+6QlanFgFwpdWbHvWoSx8kS5jl7fF9yLUojA3hAMPIN9+Uu4VQKJ8PaLUvhVijwB/ef5emrnVa0h6YArVBjW2UKPl0KwQfAdcVqtcmooxEqhbpqfQItZaqIHT2XPDXdwPqLsGnB/mFBJwBYVtJIktUViHFRMGQC89s94qRuzWjW5V+CPEuBmVlZ11GgOzkTujeZGGnxwqUCzPgtFlL8yDIQsf7Dkwiz0FN108HswgMF44n4VtzZHJUKZ3kCc7Ew30NWrbOkNrWBkLJFvfsM3e999WAJ7Se3xxOcFXIuoOEjs8faJE6U/yQpSuIIZmxNadVVfbAxHE6pm/fm0zb5Qk0OetegXa8mxWUELLcdvc9aY7/JCJ5btIyKiVkCvsxw3CyF/qAXVfIym3g4fgmhl8=
+  subject: x-datainitiative
+  repo: tick
+  package: wheels
+  publish: true
+  override: true
+  explode: true
+  artifact: dist/*

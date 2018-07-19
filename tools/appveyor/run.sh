@@ -15,30 +15,39 @@ cat appveyor/pip/numpy/numpy-1.16.4+mkl-cp37* > appveyor/pip/numpy-1.16.4+mkl-cp
 /c/Python37-x64/Scripts/pip install -r requirements.txt
 /c/Python37-x64/Scripts/pip install tensorflow psutil
 
-set +e
-/c/Python37-x64/python setup.py build_ext -j 2 --inplace
-rm -rf build/lib # force relinking of libraries in case of failure
-set -e
-/c/Python37-x64/python setup.py build_ext --inplace
-
-B_OS=$(basename $(find build -maxdepth 1 -name "lib*"))
-pushd $ROOT/build/$B_OS/tick
-for d in $(find . -type d -name build); do
-  cp -r $d/* $ROOT/tick/$d
-done
-popd
-
-ls -l $ROOT/tick/survival/build
-
 export MKN_CL_PREFERRED=1 # forces mkn to use cl even if gcc/clang are found
 # export MKN_COMPILE_THREADS=1 # mkn use 1 thread heap space issue
 export SWIG=0 # disables swig for mkn
 export CXXFLAGS="-EHsc"
 
-KLOG=3 $ROOT/sh/gtest.sh
+CHECK=$($CWD/check.sh 3.6)
+if (( $CHECK == 0 )); then
+  set +e
+  /c/Python36-x64/python setup.py build_ext -j 2 --inplace
+  rm -rf build/lib # force relinking of libraries in case of failure
+  set -e
+  /c/Python36-x64/python setup.py build_ext --inplace
 
-/c/Python37-x64/python -m unittest discover -v . "*_test.py"
-/c/Python37-x64/python setup.py bdist_wheel
+  B_OS=$(basename $(find build -maxdepth 1 -name "lib*"))
+  pushd $ROOT/build/$B_OS/tick
+  for d in $(find . -type d -name build); do
+    cp -r $d/* $ROOT/tick/$d
+  done
+  popd
+fi
 
-rm -rf build
-rm -rf lib/bin
+/c/Python36-x64/python -m unittest discover -v . "*_test.py"
+
+DIST=$($CWD/dist.sh 3.6)
+if (( DIST == 1 )); then
+  /c/Python36-x64/python setup.py bdist_wheel
+fi
+
+$($CWD/info.sh 3.6)
+
+if (( $CHECK == 0 )); then
+  ./sh/mkn.sh
+  ./sh/gtest.sh
+fi
+rm -rf $ROOT/build
+rm -rf $ROOT/lib/bin
