@@ -62,7 +62,7 @@ from tick.optim.prox import ProxElasticNet, ProxL2Sq, ProxZero, ProxL1
 prox = ProxL1(0.0, positive=True)
 prox = ProxZero()
 
-solver = AGD(step=1e-2, linesearch=False, max_iter=5000, print_every=50)
+solver = AGD(step=1e-3, linesearch=False, max_iter=10000, print_every=50)
 solver.set_model(model_list).set_prox(prox)
 
 x_real = np.array(
@@ -73,7 +73,7 @@ solver.solve(x0)
 
 print(model_list.loss(x_real))
 print(model_list.loss(solver.solution))
-print(solver.solution)
+print(solver.solution/x_real)
 
 ###########################################################################################
 # manuel grad check

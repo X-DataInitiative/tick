@@ -67,4 +67,4 @@ solver.solve(x0)
 
 print(model.loss(x_real))
 print(model.loss(solver.solution))
-print(solver.solution)
+print(solver.solution / x_real)
