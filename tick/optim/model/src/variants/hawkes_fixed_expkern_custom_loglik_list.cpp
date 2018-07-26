@@ -8,5 +8,5 @@ ModelHawkesFixedExpKernCustomLogLikList::ModelHawkesFixedExpKernCustomLogLikList
         ModelHawkesCustomLogLikList(max_n_threads), MaxN_of_f(_MaxN_of_f), decay(_decay) {}
 
 ulong ModelHawkesFixedExpKernCustomLogLikList::get_n_coeffs() const {
-  return n_nodes + n_nodes * n_nodes + n_nodes * (MaxN_of_f - 1);
+  return n_nodes + n_nodes * n_nodes + n_nodes * (MaxN_of_f);
 }

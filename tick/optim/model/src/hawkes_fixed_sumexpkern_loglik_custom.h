@@ -72,25 +72,10 @@ private:
         return n_nodes + u * n_nodes * n_nodes + i * n_nodes + j;
     }
 
-    /**
-     * @brief Return the start of f_i(n) in a coeffs vector
-     * @param i : selected dimension
-     */
-    ulong get_f_i_first_index(const ulong i) const {
-     return n_nodes + n_nodes * n_nodes * decays.size() + i * MaxN_of_f;
-    }
-
-    /**
-     * @brief Return the end of f_i(n) in a coeffs vector
-     * @param i : selected dimension
-     */
-    ulong get_f_i_last_index(const ulong i) const {
-     return n_nodes + n_nodes * n_nodes * decays.size() + (i + 1) * MaxN_of_f;
-    }
 
 public:
     ulong get_n_coeffs() const override{
-        return n_nodes + n_nodes * n_nodes * decays.size() + n_nodes * (MaxN_of_f - 1);
+        return n_nodes + n_nodes * n_nodes * decays.size() + n_nodes * (MaxN_of_f);
     }
 
     ulong get_n_decays() const {

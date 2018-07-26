@@ -146,11 +146,9 @@ double ModelHawkesSumExpCustom::loss_dim_i(const ulong i,
                                                     const ArrayDouble &coeffs) {
     const double mu_i = coeffs[i];
     ulong U = this->decays.size();
-//    const ArrayDouble f_i = view(coeffs, get_f_i_first_index(i), get_f_i_last_index(i));
     ArrayDouble f_i(MaxN_of_f);
-    f_i[0] = 1;
-    for(ulong k = 1; k != MaxN_of_f; ++k)
-        f_i[k] = coeffs[n_nodes + n_nodes * n_nodes * U + i * (MaxN_of_f - 1)+ k - 1];
+    for(ulong k = 0; k != MaxN_of_f; ++k)
+        f_i[k] = coeffs[n_nodes + n_nodes * n_nodes * U + i * MaxN_of_f + k];
     double loss = 0;
 
     //cozy at hand
@@ -221,13 +219,10 @@ void ModelHawkesSumExpCustom::grad_dim_i(const ulong i,
         return n_nodes * decays.size() * k + decays.size() * j + u;
     };
 
-//    const ArrayDouble f_i = view(coeffs, get_f_i_first_index(i), get_f_i_last_index(i));
     ArrayDouble f_i(MaxN_of_f);
-    f_i[0] = 1;
-    for(ulong k = 1; k != MaxN_of_f; ++k)
-        f_i[k] = coeffs[n_nodes + n_nodes * n_nodes * U + i * (MaxN_of_f - 1)+ k - 1];
+    for(ulong k = 0; k != MaxN_of_f; ++k)
+        f_i[k] = coeffs[n_nodes + n_nodes * n_nodes * U + i * MaxN_of_f + k];
 
-//    ArrayDouble grad_f_i = view(out, get_f_i_first_index(i), get_f_i_last_index(i));
     ArrayDouble grad_f_i(MaxN_of_f);
 
     //necessary information required
@@ -308,8 +303,8 @@ void ModelHawkesSumExpCustom::grad_dim_i(const ulong i,
         }
         grad_f_i[n] = H1_i[n] / f_i[n] + mu_i * H2_i[n] + result_dot;
     }
-    for(ulong k = 1; k != MaxN_of_f; ++k)
-        out[n_nodes + n_nodes * n_nodes * U + i * (MaxN_of_f - 1) + k - 1] = grad_f_i[k];
+    for(ulong k = 0; k != MaxN_of_f; ++k)
+        out[n_nodes + n_nodes * n_nodes * U + i * MaxN_of_f + k] = grad_f_i[k];
 }
 
 void ModelHawkesSumExpCustom::grad(const ArrayDouble &coeffs,
