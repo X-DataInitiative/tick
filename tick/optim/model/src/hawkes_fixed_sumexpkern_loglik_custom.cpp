@@ -25,8 +25,10 @@ void ModelHawkesSumExpCustom::allocate_weights() {
 
     for (ulong i = 0; i != n_nodes; i++) {
         //0 + events + T
-        g[i] = ArrayDouble2d(n_total_jumps + 2, n_nodes * U);
-        g[i].init_to_zero();
+        if(i == 0) {
+            g[i] = ArrayDouble2d(n_total_jumps + 2, n_nodes * U);
+            g[i].init_to_zero();
+        }
         G[i] = ArrayDouble2d(n_total_jumps + 2, n_nodes * U);
         G[i].init_to_zero();
         sum_G[i] = ArrayDouble(n_nodes * U);
@@ -42,7 +44,7 @@ void ModelHawkesSumExpCustom::allocate_weights() {
 }
 
 void ModelHawkesSumExpCustom::compute_weights_dim_i(const ulong i) {
-    ArrayDouble2d g_i = view(g[i]);
+    ArrayDouble2d g_i = view(g[0]);
     ArrayDouble2d G_i = view(G[i]);
 
     //! hacked code here, seperator = 1, meaning L(increasing) is timestamps[1], C,M(decreasing) are timestamps[2] timestamps[3]
@@ -62,9 +64,10 @@ void ModelHawkesSumExpCustom::compute_weights_dim_i(const ulong i) {
             for (ulong k = 1; k != 1 + n_total_jumps + 1; k++) {
                 const double t_k = (k != (1 + n_total_jumps) ? global_timestamps[k] : end_time);
                 const double ebt = std::exp(-decay * (t_k - global_timestamps[k - 1]));
-                if (k != 1 + n_total_jumps)
-                    g_i[get_index(k, j, u)] =
-                            g_i[get_index(k - 1, j, u)] * ebt + (type_n[k - 1] == j + 1 ? decay * ebt : 0);
+                if(i != 0)
+                    if (k != 1 + n_total_jumps)
+                        g_i[get_index(k, j, u)] =
+                                g_i[get_index(k - 1, j, u)] * ebt + (type_n[k - 1] == j + 1 ? decay * ebt : 0);
                 G_i[get_index(k, j, u)] =
                         (1 - ebt) / decay * g_i[get_index(k - 1, j, u)] + ((type_n[k - 1] == j + 1) ? 1 - ebt : 0);
 
@@ -142,8 +145,7 @@ double ModelHawkesSumExpCustom::loss(const ArrayDouble &coeffs) {
 }
 
 
-double ModelHawkesSumExpCustom::loss_dim_i(const ulong i,
-                                                    const ArrayDouble &coeffs) {
+double ModelHawkesSumExpCustom::loss_dim_i(const ulong i, const ArrayDouble &coeffs) {
     const double mu_i = coeffs[i];
     ulong U = this->decays.size();
 //    const ArrayDouble f_i = view(coeffs, get_f_i_first_index(i), get_f_i_last_index(i));
@@ -154,7 +156,7 @@ double ModelHawkesSumExpCustom::loss_dim_i(const ulong i,
     double loss = 0;
 
     //cozy at hand
-    const ArrayDouble2d g_i = view(g[i]);
+    const ArrayDouble2d g_i = view(g[0]);
     const ArrayDouble2d G_i = view(G[i]);
 
     auto get_index = [=](ulong k, ulong j, ulong u) {
@@ -231,7 +233,7 @@ void ModelHawkesSumExpCustom::grad_dim_i(const ulong i,
     ArrayDouble grad_f_i(MaxN_of_f);
 
     //necessary information required
-    const ArrayDouble2d g_i = view(g[i]);
+    const ArrayDouble2d g_i = view(g[0]);
     const ArrayDouble2d G_i = view(G[i]);
 
     //! grad of mu_i
@@ -301,7 +303,7 @@ void ModelHawkesSumExpCustom::grad_dim_i(const ulong i,
         double result_dot = 0; //! alpha_i_j_u.dot(H3_j_u_n);
         for (ulong j = 0; j != n_nodes; ++j) {
             const ArrayDouble H3_j = view(H3[j]);
-            for (ulong u = 0; u != U; ++u) {
+            for (ulong u = 0; u != U; ++u) {.3
                 double alpha_u_i_j = coeffs[get_alpha_u_i_j_index(u, i, j)];
                 result_dot += alpha_u_i_j * H3_j[n * U + u];
             }
