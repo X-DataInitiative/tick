@@ -298,7 +298,7 @@ void ModelHawkesSumExpCustom::grad_dim_i(const ulong i,
         double result_dot = 0; //! alpha_i_j_u.dot(H3_j_u_n);
         for (ulong j = 0; j != n_nodes; ++j) {
             const ArrayDouble H3_j = view(H3[j]);
-            for (ulong u = 0; u != U; ++u) {.3
+            for (ulong u = 0; u != U; ++u) {
                 double alpha_u_i_j = coeffs[get_alpha_u_i_j_index(u, i, j)];
                 result_dot += alpha_u_i_j * H3_j[n * U + u];
             }
