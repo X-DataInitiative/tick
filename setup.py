@@ -146,11 +146,28 @@ if os.name == 'posix':
         # one
         os.environ['MACOSX_DEPLOYMENT_TARGET'] = os_version
 
+
+# check for debug pyenv - PYVER must be exported as env var. Debug pyenv setup:
+#    PYENV=3.7.0
+#    CFLAGS="-O0 -ggdb" CONFIGURE_OPTS="--enable-shared" pyenv install -kg $PYVER
+#    PYENV=${PYENV}-debug
+#    eval "$(pyenv init -)"
+#    pyenv global ${PYVER}
+#    pyenv local ${PYVER}
+
+PYVER = ""
+PYVER_DBG = ""
+if os.environ.get('PYVER') is not None:
+    PYVER = os.environ['PYVER']
+    if PYVER.endswith("-debug"):
+        PYVER_DBG = "-pydebug"
+
 # Directory containing built .so files before they are moved either
 # in source (with build flag --inplace) or to site-packages (by install)
 #
 # E.g. build/lib.macosx-10.11-x86_64-3.5
-build_dir = "build/lib.{}-{}".format(distutils.util.get_platform(),
+build_dir = "build/lib.{}-{}"+PYVER_DBG
+build_dir = build_dir.format(distutils.util.get_platform(),
                                      sys.version[0:3])
 
 
@@ -251,6 +268,7 @@ def create_extension(extension_name, module_dir,
                               sparse_indices_flag,
                               '-std=c++11',
                               '-O2', # -O3 is sometimes dangerous and has caused segfaults on Travis
+                              '-DNDEBUG', # some assertions fail without this (TODO tbh)
                               ]
 
     if use_fast_math:
