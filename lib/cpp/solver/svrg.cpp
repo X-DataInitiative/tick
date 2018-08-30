@@ -208,20 +208,26 @@ void TSVRG<T>::sparse_single_thread_solver(const ulong& next_i,
     // Step-size correction for coordinate j
     T step_correction = steps_correction[j];
     // Gradient descent with probabilistic step-size correction
-    iterate[j] -= step * (x_i.data()[idx_nnz] * grad_i_diff +
-                          step_correction * full_gradient_j);
-    // Prox is separable, apply regularization on the current coordinate
-    // iterate[j] = casted_prox->call_single(iterate[j], step *
-    // step_correction);
-    casted_prox->call_single(j, iterate, step * step_correction, iterate);
+    T descent_direction = step * (x_i.data()[idx_nnz] * grad_i_diff +
+        step_correction * full_gradient_j);
+    if (casted_prox->is_in_range(j))
+      iterate[j] = casted_prox->call_single_with_index(
+          iterate[j] - descent_direction, step * step_correction, j);
+    else
+      iterate[j] -= descent_direction;
   }
   // And let's not forget to update the intercept as well. It's updated at each
   // step, so no step-correction. Note that we call the prox, in order to be
   // consistent with the dense case (in the case where the user has the weird
   // desire to to regularize the intercept)
   if (use_intercept) {
-    iterate[n_features] -= step * (grad_i_diff + full_gradient[n_features]);
-    casted_prox->call_single(n_features, iterate, step, iterate);
+    T descent_direction = step * (grad_i_diff + full_gradient[n_features]);
+
+    if (casted_prox->is_in_range(n_features))
+      iterate[n_features] = casted_prox->call_single_with_index(
+          iterate[n_features] - descent_direction, step, n_features);
+    else
+      iterate[n_features] -= descent_direction;
   }
   // Note that the average option for variance reduction with sparse data is a
   // very bad idea, but this is caught in the python class

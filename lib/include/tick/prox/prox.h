@@ -84,6 +84,9 @@ class DLL_PUBLIC TProx {
 
   virtual void set_positive(bool positive);
 
+  //! @brief tells whether prox should be applied to this index or not
+  bool is_in_range(ulong i) const;
+
   template <class Archive>
   void serialize(Archive& ar) {
     ar(CEREAL_NVP(strength), CEREAL_NVP(has_range), CEREAL_NVP(start),

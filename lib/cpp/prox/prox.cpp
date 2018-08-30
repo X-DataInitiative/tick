@@ -107,6 +107,11 @@ void TProx<T, K>::set_positive(bool positive) {
   this->positive = positive;
 }
 
+template <class T, class K>
+bool TProx<T, K>::is_in_range(ulong i) const {
+  return !has_range || ((i >= start) && (i < end));
+}
+
 template class TProx<double, double>;
 template class TProx<float, float>;
 
