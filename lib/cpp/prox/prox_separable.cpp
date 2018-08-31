@@ -53,6 +53,11 @@ T TProxSeparable<T, K>::call_single(T x, T step) const {
 }
 
 template <class T, class K>
+T TProxSeparable<T, K>::call_single_with_index(T x, T step, ulong i) const {
+  return is_in_range(i) ? call_single(x, step): x;
+}
+
+template <class T, class K>
 T TProxSeparable<T, K>::call_single(T x, T step, ulong n_times) const {
   if (n_times >= 1) {
     for (ulong r = 0; r < n_times; ++r) {
@@ -71,15 +76,10 @@ void TProxSeparable<T, K>::call_single(ulong i, const Array<K> &coeffs, T step,
                << "::call_single "
                << "i= " << i << " while coeffs.size()=" << coeffs.size());
   } else {
-    if (has_range) {
-      if ((i >= start) && (i < end)) {
-        out[i] = call_single(coeffs[i], step);
-      } else {
-        out[i] = coeffs.get_data_index(i);
-      }
-    } else {
+    if (is_in_range(i))
       out[i] = call_single(coeffs[i], step);
-    }
+    else
+      out[i] = coeffs.get_data_index(i);
   }
 }
 
@@ -92,15 +92,10 @@ void TProxSeparable<T, K>::call_single(ulong i, const Array<K> &coeffs, T step,
                << "::call_single "
                << "i= " << i << " while coeffs.size()=" << coeffs.size());
   } else {
-    if (has_range) {
-      if ((i >= start) && (i < end)) {
-        out[i] = call_single(coeffs[i], step, n_times);
-      } else {
-        out.set_data_index(i, coeffs[i]);
-      }
-    } else {
+    if (is_in_range(i))
       out[i] = call_single(coeffs[i], step, n_times);
-    }
+    else
+      out[i] = coeffs.get_data_index(i);
   }
 }
 

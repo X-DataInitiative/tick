@@ -31,9 +31,9 @@ np.random.seed(seed)
 n_samples = 40000
 n_features = 20000
 sparsity = 1e-4
-penalty_strength = 1e-6
+penalty_strength = 1e-5
 
-weights = weights_sparse_gauss(n_features, nnz=10)
+weights = weights_sparse_gauss(n_features, nnz=1000)
 intercept = 0.2
 features = sparse.rand(n_samples, n_features, density=sparsity, format='csr')
 
@@ -65,7 +65,7 @@ for n_threads in test_n_threads:
 
 plot_history(svrg_list, x="time", dist_min=True, log_scale=True,
              labels=svrg_labels, show=False)
-plt.ylim([3e-3, 0.3])
+
 plt.ylabel('log distance to optimal objective', fontsize=14)
 plt.tight_layout()
 plt.show()

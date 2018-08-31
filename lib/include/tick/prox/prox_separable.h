@@ -20,6 +20,7 @@ class DLL_PUBLIC TProxSeparable : public TProx<T, K> {
  public:
   using TProx<T, K>::call;
   using TProx<T, K>::get_class_name;
+  using TProx<T, K>::is_in_range;
 
  public:
   // This exists soley for cereal/swig
@@ -59,6 +60,10 @@ class DLL_PUBLIC TProxSeparable : public TProx<T, K> {
 
   //! @brief apply prox on a single value
   virtual T call_single(T x, T step) const;
+
+  //! @brief apply prox on a single value with specifying index
+  //! @note this is useful for prox that don't apply the exact same operation to all indexes
+  virtual T call_single_with_index(T x, T step, ulong i) const;
 
  private:
   //! @brief apply prox on a single value several times

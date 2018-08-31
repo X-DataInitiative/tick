@@ -70,6 +70,11 @@ void TProxL1w<T, K>::call(const Array<K> &coeffs, const Array<T> &step,
   }
 }
 
+template <class T, class K>
+T TProxL1w<T, K>::call_single_with_index(T x, T step, ulong i) const {
+  return is_in_range(i)? call_single(x, step, (*weights)[i - start]): x;
+}
+
 // We cannot implement only TProxL1w<T, K>::call_single(T x, T step) since we
 // need to know i to find the weight
 template <class T, class K>

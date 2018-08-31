@@ -17,6 +17,7 @@ class DLL_PUBLIC TProxL1w : public TProxSeparable<T, K> {
 
  public:
   using TProxSeparable<T, K>::get_class_name;
+  using TProxSeparable<T, K>::is_in_range;
 
  public:
   using SArrayTPtr = std::shared_ptr<SArray<T>>;
@@ -53,6 +54,8 @@ class DLL_PUBLIC TProxL1w : public TProxSeparable<T, K> {
 
   void call_single(ulong i, const Array<K> &coeffs, T step, Array<K> &out,
                    ulong n_times) const override;
+
+  T call_single_with_index(T x, T step, ulong i) const override;
 
   T value(const Array<K> &coeffs, ulong start, ulong end) override;
 
