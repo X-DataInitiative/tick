@@ -24,7 +24,7 @@ add_library(tick_array EXCLUDE_FROM_ALL
         ${TICK_ARRAY_INCLUDE_DIR}/promote.h
         ${TICK_ARRAY_INCLUDE_DIR}/alloc.h
         ${TICK_ARRAY_INCLUDE_DIR}/promote.h
-        ${TICK_ARRAY_INCLUDE_DIR}/vector/cblas.hpp
-        ${TICK_ARRAY_INCLUDE_DIR}/vector/un_optimized.hpp
+        ${TICK_ARRAY_INCLUDE_DIR}/vector/cblas.h
+        ${TICK_ARRAY_INCLUDE_DIR}/vector/unoptimized.h
         alloc.cpp
         )

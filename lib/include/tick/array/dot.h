@@ -7,6 +7,7 @@
 #define LIB_INCLUDE_TICK_ARRAY_DOT_H_
 
 #include "tick/array/array.h"
+#include "tick/array/array2d.h"
 #include "tick/array/sparsearray.h"
 
 // @brief Returns the scalar product of the array with `array`
@@ -168,4 +169,38 @@ BaseArray<T>::dot(const BaseArray<Y> &array) const {
   }
   return result;
 }
+
+// @brief Returns the scalar product of the array with `array`
+template <typename T>
+void BaseArray2d<T>::dot(const Array<T> &array, Array<T> &out) const {
+  if (n_cols() != array.size()) TICK_ERROR("Arrays don't have the same size");
+  if (n_rows() != out.size()) TICK_ERROR("Arrays don't have the same size");
+
+  // Case dense/dense
+  if (is_dense()) {
+    (tick::vector_operations<T>{})
+        .dot_matrix_vector(this->n_rows(), this->n_cols(), 1., this->data(), array.data(),
+                           out.data());
+  } else {
+    TICK_ERROR("Only dense dense implemented")
+  }
+}
+
+template <typename T>
+void BaseArray2d<T>::dot_incr(const Array<T> &array, const T a, Array<T> &out) const {
+  if (n_cols() != array.size())
+    TICK_ERROR("Dot array size is " << array.size() << " but should be " << n_cols());
+  if (n_rows() != out.size())
+    TICK_ERROR("out / incr array size is " << out.size() << " but should be " << n_rows());
+
+  // Case dense/dense
+  if (is_dense()) {
+    (tick::vector_operations<T>{})
+        .template dot_matrix_vector_incr<T>(this->n_rows(), this->n_cols(), 1., this->data(),
+                                            array.data(), a, out.data());
+  } else {
+    TICK_ERROR("Only dense dense implemented")
+  }
+}
+
 #endif  // LIB_INCLUDE_TICK_ARRAY_DOT_H_

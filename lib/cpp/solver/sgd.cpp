@@ -60,6 +60,43 @@ void TSGD<T>::solve_sparse() {
     prox->call(iterate, step_t, iterate);
   }
 }
+template <class T>
+void TSGD<T>::solve_sparse_batch(size_t n_threads) {
+  // The model is sparse, so it is a ModelGeneralizedLinear and the iteration looks a
+  // little bit different
+  ulong n_features = model->get_n_features();
+  bool use_intercept = model->use_intercept();
+
+  std::vector<T>  steps;
+  std::vector<T>  deltas;
+  std::vector<BaseArray<T>> barrays;
+
+  Array<T> s_iterate = iterate;
+
+  ulong start_t = t;
+  for (t = start_t; t < start_t + epoch_size; ++t) {
+      ulong i = get_next_i();
+      steps.emplace_back(get_step_t());
+      deltas.emplace_back(-step_t * model->grad_i_factor(i, iterate));
+      // barrays.emplace_back(model->get_features(i));
+      barrays.emplace_back(model->get_features(i));
+      if (use_intercept) {
+        s_iterate = view(iterate, 0, n_features);
+        iterate[n_features] += deltas[deltas.size() - 1];
+      }
+  }
+
+  std::vector<T*> barraysVP;
+  for (const auto& barray : barrays) {
+    barraysVP.emplace_back(barray.data());
+  }
+  tick::vector_operations<T>{}.batch_multi_incr(
+    n_threads, steps.size(), barrays[0].size(), deltas.data(), barraysVP.data(), s_iterate.data());
+
+  for (const auto& step : steps) {
+      prox->call(iterate, step, iterate);
+  }
+}
 
 template <class T>
 inline T TSGD<T>::get_step_t() {
