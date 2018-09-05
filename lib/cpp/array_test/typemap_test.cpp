@@ -6,208 +6,248 @@
 
 #include "tick/array_test/typemap_test.h"
 
-#define ARRAY_TYPEMAP_CPP(                                                                         \
-    TYPE, ARRAY_TYPE, ARRAY2D_TYPE, ARRAYLIST1D_TYPE, ARRAYLIST2D_TYPE, SPARSEARRAY_TYPE,          \
-    SPARSEARRAY2D_TYPE, SARRAY_TYPE, SARRAY2D_TYPE, SARRAYPTR_TYPE, SARRAY2DPTR_TYPE,              \
-    SARRAYPTRLIST1D_TYPE, SARRAYPTRLIST2D_TYPE, SARRAY2DPTR_LIST1D_TYPE, SARRAY2DPTR_LIST2D_TYPE,  \
-    VARRAY_TYPE, VARRAYPTR_TYPE, VARRAYPTRLIST1D_TYPE, VARRAYPTRLIST2D_TYPE, BASEARRAY_TYPE,       \
-    BASEARRAY2D_TYPE, SSPARSEARRAY_TYPE, SSPARSEARRAYPTR_TYPE, SSPARSEARRAY2D_TYPE,                \
-    SSPARSEARRAY2DPTR_TYPE, SBASEARRAY2DPTR_TYPE, SBASEARRAYPTR_TYPE, BASEARRAY_LIST1D_TYPE,       \
-    BASEARRAY_LIST2D_TYPE, BASEARRAY2D_LIST1D_TYPE, BASEARRAY2D_LIST2D_TYPE,                       \
-    SBASEARRAYPTR_LIST1D_TYPE, SBASEARRAYPTR_LIST2D_TYPE, SBASEARRAY2DPTR_LIST1D_TYPE,             \
-    SBASEARRAY2DPTR_LIST2D_TYPE)                                                                   \
-                                                                                                   \
-  /******************************** TYPEMAP IN   **********/                                       \
-  /* ARRAY */                                                                                      \
-  TYPE test_typemap_in_##ARRAY_TYPE(ARRAY_TYPE& array) { return array.sum(); }                     \
-  TYPE test_typemap_in_##ARRAY2D_TYPE(ARRAY2D_TYPE& array2d) { return array2d.sum(); }             \
-  TYPE test_typemap_in_##ARRAYLIST1D_TYPE(ARRAYLIST1D_TYPE& array_list) {                          \
-    return array_list[0].sum();                                                                    \
-  }                                                                                                \
-  TYPE test_typemap_in_##ARRAYLIST2D_TYPE(ARRAYLIST2D_TYPE& array_list_list) {                     \
-    return array_list_list[0][0].sum();                                                            \
-  }                                                                                                \
-                                                                                                   \
-  /* SPARSE ARRAY */                                                                               \
-  TYPE test_typemap_in_##SPARSEARRAY_TYPE(SPARSEARRAY_TYPE& sparsearray) {                         \
-    return sparsearray.sum();                                                                      \
-  }                                                                                                \
-  TYPE test_typemap_in_##SPARSEARRAY2D_TYPE(SPARSEARRAY2D_TYPE& sparsearray2d) {                   \
-    return sparsearray2d.sum();                                                                    \
-  }                                                                                                \
-                                                                                                   \
-  /* SHARED ARRAY POINTER */                                                                       \
-  TYPE test_typemap_in_##SARRAYPTR_TYPE(SARRAYPTR_TYPE sarray) { return sarray->sum(); }           \
-  TYPE test_typemap_in_##SARRAY2DPTR_TYPE(SARRAY2DPTR_TYPE sarray2d) { return sarray2d->sum(); }   \
-  TYPE test_typemap_in_##SARRAYPTRLIST1D_TYPE(SARRAYPTRLIST1D_TYPE& sarray_list) {                 \
-    return sarray_list[0]->sum();                                                                  \
-  }                                                                                                \
-  TYPE test_typemap_in_##SARRAYPTRLIST2D_TYPE(SARRAYPTRLIST2D_TYPE& sarray_list_list) {            \
-    return sarray_list_list[0][0]->sum();                                                          \
-  }                                                                                                \
-  TYPE test_typemap_in_##SARRAY2DPTR_LIST1D_TYPE(SARRAY2DPTR_LIST1D_TYPE& sarray2d_list) {         \
-    return sarray2d_list[0]->sum();                                                                \
-  }                                                                                                \
-  TYPE test_typemap_in_##SARRAY2DPTR_LIST2D_TYPE(SARRAY2DPTR_LIST2D_TYPE& sarray2d_list_list) {    \
-    return sarray2d_list_list[0][0]->sum();                                                        \
-  }                                                                                                \
-                                                                                                   \
-  /* VARIABLE ARRAY POINTER */                                                                     \
-  TYPE test_typemap_in_##VARRAYPTR_TYPE(VARRAYPTR_TYPE varray) { return varray->sum(); }           \
-                                                                                                   \
-  TYPE test_typemap_in_##VARRAYPTRLIST1D_TYPE(VARRAYPTRLIST1D_TYPE& varray_list) {                 \
-    return varray_list[0]->sum();                                                                  \
-  }                                                                                                \
-                                                                                                   \
-  TYPE test_typemap_in_##VARRAYPTRLIST2D_TYPE(VARRAYPTRLIST2D_TYPE& varray_list_list) {            \
-    return varray_list_list[0][0]->sum();                                                          \
-  }                                                                                                \
-                                                                                                   \
-  /* BASE ARRAY */                                                                                 \
-  TYPE test_typemap_in_##BASEARRAY_TYPE(BASEARRAY_TYPE& basearray) { return basearray.sum(); }     \
-  TYPE test_typemap_in_##BASEARRAY2D_TYPE(BASEARRAY2D_TYPE& basearray2d) {                         \
-    return basearray2d.sum();                                                                      \
-  }                                                                                                \
-                                                                                                   \
-  /* SPARSE ARRAY */                                                                               \
-  TYPE test_typemap_in_##SSPARSEARRAYPTR_TYPE(SSPARSEARRAYPTR_TYPE ssparsearray) {                 \
-    return ssparsearray->sum();                                                                    \
-  }                                                                                                \
-                                                                                                   \
-  TYPE test_typemap_in_##SSPARSEARRAY2DPTR_TYPE(SSPARSEARRAY2DPTR_TYPE ssparsearray2d) {           \
-    return ssparsearray2d->sum();                                                                  \
-  }                                                                                                \
-                                                                                                   \
-  /* BASE ARRAY SHARED POINTER */                                                                  \
-  TYPE test_typemap_in_##SBASEARRAYPTR_TYPE(SBASEARRAYPTR_TYPE sbasearray) {                       \
-    return sbasearray->sum();                                                                      \
-  }                                                                                                \
-                                                                                                   \
-  TYPE test_typemap_in_##SBASEARRAY2DPTR_TYPE(SBASEARRAY2DPTR_TYPE sbasearray2d) {                 \
-    return sbasearray2d->sum();                                                                    \
-  }                                                                                                \
-                                                                                                   \
-  /* BASE ARRAY LIST */                                                                            \
-  TYPE test_typemap_in_##BASEARRAY_LIST1D_TYPE(BASEARRAY_LIST1D_TYPE& basearray_list) {            \
-    return basearray_list[0].sum();                                                                \
-  }                                                                                                \
-  TYPE test_typemap_in_##BASEARRAY_LIST2D_TYPE(BASEARRAY_LIST2D_TYPE& basearray_list_list) {       \
-    return basearray_list_list[0][0].sum();                                                        \
-  }                                                                                                \
-  TYPE test_typemap_in_##BASEARRAY2D_LIST1D_TYPE(BASEARRAY2D_LIST1D_TYPE& basearray2d_list) {      \
-    return basearray2d_list[0].sum();                                                              \
-  }                                                                                                \
-  TYPE test_typemap_in_##BASEARRAY2D_LIST2D_TYPE(BASEARRAY2D_LIST2D_TYPE& basearray2d_list_list) { \
-    return basearray2d_list_list[0][0].sum();                                                      \
-  }                                                                                                \
-                                                                                                   \
-  /* BASE ARRAY SHARED POINTER LIST */                                                             \
-  TYPE test_typemap_in_##SBASEARRAYPTR_LIST1D_TYPE(SBASEARRAYPTR_LIST1D_TYPE& sbasearray_list) {   \
-    return sbasearray_list[0]->sum();                                                              \
-  }                                                                                                \
-  TYPE test_typemap_in_##SBASEARRAYPTR_LIST2D_TYPE(                                                \
-      SBASEARRAYPTR_LIST2D_TYPE& sbasearray_list_list) {                                           \
-    return sbasearray_list_list[0][0]->sum();                                                      \
-  }                                                                                                \
-  TYPE test_typemap_in_##SBASEARRAY2DPTR_LIST1D_TYPE(                                              \
-      SBASEARRAY2DPTR_LIST1D_TYPE& sbasearray2d_list) {                                            \
-    return sbasearray2d_list[0]->sum();                                                            \
-  }                                                                                                \
-  TYPE test_typemap_in_##SBASEARRAY2DPTR_LIST2D_TYPE(                                              \
-      SBASEARRAY2DPTR_LIST2D_TYPE& sbasearray2d_list_list) {                                       \
-    return sbasearray2d_list_list[0][0]->sum();                                                    \
-  }                                                                                                \
-                                                                                                   \
-  /************************* TYPE CHECK ************************/                                  \
-  /********* check function overloading ************************/                                  \
-  TYPE test_typemap_in_##ARRAY_TYPE(TYPE value) { return value; }                                  \
-                                                                                                   \
-  TYPE test_typemap_in_##ARRAY2D_TYPE(TYPE value) { return value; }                                \
-                                                                                                   \
-  TYPE test_typemap_in_##ARRAYLIST1D_TYPE(TYPE value) { return value; }                            \
-  TYPE test_typemap_in_##ARRAYLIST2D_TYPE(TYPE value) { return value; }                            \
-  TYPE test_typemap_in_##SPARSEARRAY_TYPE(TYPE value) { return value; }                            \
-  TYPE test_typemap_in_##SPARSEARRAY2D_TYPE(TYPE value) { return value; }                          \
-                                                                                                   \
-  TYPE test_typemap_in_##SARRAYPTR_TYPE(TYPE value) { return value; }                              \
-                                                                                                   \
-  TYPE test_typemap_in_##SARRAY2DPTR_TYPE(TYPE value) { return value; }                            \
-                                                                                                   \
-  TYPE test_typemap_in_##SARRAYPTRLIST1D_TYPE(TYPE value) { return value; }                        \
-                                                                                                   \
-  TYPE test_typemap_in_##SARRAYPTRLIST2D_TYPE(TYPE value) { return value; }                        \
-  TYPE test_typemap_in_##SARRAY2DPTR_LIST1D_TYPE(TYPE value) { return value; }                     \
-  TYPE test_typemap_in_##SARRAY2DPTR_LIST2D_TYPE(TYPE value) { return value; }                     \
-                                                                                                   \
-  TYPE test_typemap_in_##VARRAYPTR_TYPE(TYPE value) { return value; }                              \
-                                                                                                   \
-  TYPE test_typemap_in_##VARRAYPTRLIST1D_TYPE(TYPE value) { return value; }                        \
-                                                                                                   \
-  TYPE test_typemap_in_##VARRAYPTRLIST2D_TYPE(TYPE value) { return value; }                        \
-                                                                                                   \
-  TYPE test_typemap_in_##BASEARRAY_TYPE(TYPE value) { return value; }                              \
-  TYPE test_typemap_in_##BASEARRAY2D_TYPE(TYPE value) { return value; }                            \
-                                                                                                   \
-  TYPE test_typemap_in_##SSPARSEARRAYPTR_TYPE(TYPE value) { return value; }                        \
-                                                                                                   \
-  TYPE test_typemap_in_##SSPARSEARRAY2DPTR_TYPE(TYPE value) { return value; }                      \
-                                                                                                   \
-  TYPE test_typemap_in_##SBASEARRAYPTR_TYPE(TYPE value) { return value; }                          \
-                                                                                                   \
-  TYPE test_typemap_in_##SBASEARRAY2DPTR_TYPE(TYPE value) { return value; }                        \
-                                                                                                   \
-  TYPE test_typemap_in_##BASEARRAY_LIST1D_TYPE(TYPE value) { return value; }                       \
-  TYPE test_typemap_in_##BASEARRAY_LIST2D_TYPE(TYPE value) { return value; }                       \
-  TYPE test_typemap_in_##BASEARRAY2D_LIST1D_TYPE(TYPE value) { return value; }                     \
-  TYPE test_typemap_in_##BASEARRAY2D_LIST2D_TYPE(TYPE value) { return value; }                     \
-                                                                                                   \
-  TYPE test_typemap_in_##SBASEARRAYPTR_LIST1D_TYPE(TYPE value) { return value; }                   \
-  TYPE test_typemap_in_##SBASEARRAYPTR_LIST2D_TYPE(TYPE value) { return value; }                   \
-  TYPE test_typemap_in_##SBASEARRAY2DPTR_LIST1D_TYPE(TYPE value) { return value; }                 \
-  TYPE test_typemap_in_##SBASEARRAY2DPTR_LIST2D_TYPE(TYPE value) { return value; }                 \
-                                                                                                   \
-  void test_typemap_in_not_ol_##ARRAY_TYPE(ARRAY_TYPE& array) {}                                   \
-  void test_typemap_in_not_ol_##ARRAY2D_TYPE(ARRAY2D_TYPE& array) {}                               \
-  void test_typemap_in_not_ol_##SPARSEARRAY_TYPE(SPARSEARRAY_TYPE& spare_array) {}                 \
-  void test_typemap_in_not_ol_##BASEARRAY_TYPE(BASEARRAY_TYPE& base_array) {}                      \
-  void test_typemap_in_not_ol_##ARRAYLIST1D_TYPE(ARRAYLIST1D_TYPE& array_list) {}                  \
-  void test_typemap_in_not_ol_##ARRAYLIST2D_TYPE(ARRAYLIST2D_TYPE& array_list_list) {}             \
-                                                                                                   \
-  /***************** TYPEMAP OUT ****************************/                                     \
-  SARRAYPTR_TYPE test_typemap_out_##SARRAYPTR_TYPE(ulong size) {                                   \
-    SARRAYPTR_TYPE result = SARRAY_TYPE::new_ptr(size);                                            \
-    for (ulong i = 0; i < size; ++i) {                                                             \
-      (*result)[i] = i;                                                                            \
-    }                                                                                              \
-    return result;                                                                                 \
-  }                                                                                                \
-  SARRAYPTRLIST1D_TYPE test_typemap_out_##SARRAYPTRLIST1D_TYPE(int size) {                         \
-    SARRAYPTRLIST1D_TYPE pyramid = SARRAYPTRLIST1D_TYPE(size);                                     \
-    for (int i = 0; i < size; ++i) {                                                               \
-      pyramid[i] = SARRAY_TYPE::new_ptr(i);                                                        \
-      pyramid[i]->fill(i);                                                                         \
-    }                                                                                              \
-    return pyramid;                                                                                \
-  }                                                                                                \
-  SARRAYPTRLIST2D_TYPE test_typemap_out_##SARRAYPTRLIST2D_TYPE(int size1, int size2) {             \
-    SARRAYPTRLIST2D_TYPE pyramid = SARRAYPTRLIST2D_TYPE(size2);                                    \
-    for (int i = 0; i < size2; ++i) {                                                              \
-      pyramid[i] = SARRAYPTRLIST1D_TYPE(i);                                                        \
-      for (ulong j = 0; j < pyramid[i].size(); ++j) {                                              \
-        pyramid[i][j] = SARRAY_TYPE::new_ptr(j);                                                   \
-        pyramid[i][j]->fill(j);                                                                    \
-      }                                                                                            \
-    }                                                                                              \
-    return pyramid;                                                                                \
-  }                                                                                                \
-  SARRAY2DPTR_TYPE test_typemap_out_##SARRAY2DPTR_TYPE(ulong row_size, ulong col_size) {           \
-    SARRAY2DPTR_TYPE result = SARRAY2D_TYPE::new_ptr(row_size, col_size);                          \
-    for (ulong i = 0; i < row_size; ++i) {                                                         \
-      for (ulong j = 0; j < col_size; ++j) {                                                       \
-        (*result)(i, j) = i * col_size + j;                                                        \
-      }                                                                                            \
-    }                                                                                              \
-    return result;                                                                                 \
+#define ARRAY_TYPEMAP_CPP(                                                     \
+    TYPE, ARRAY_TYPE, ARRAY2D_TYPE, ARRAYLIST1D_TYPE, ARRAYLIST2D_TYPE,        \
+    SPARSEARRAY_TYPE, SPARSEARRAY2D_TYPE, SARRAY_TYPE, SARRAY2D_TYPE,          \
+    SARRAYPTR_TYPE, SARRAY2DPTR_TYPE, SARRAYPTRLIST1D_TYPE,                    \
+    SARRAYPTRLIST2D_TYPE, SARRAY2DPTR_LIST1D_TYPE, SARRAY2DPTR_LIST2D_TYPE,    \
+    VARRAY_TYPE, VARRAYPTR_TYPE, VARRAYPTRLIST1D_TYPE, VARRAYPTRLIST2D_TYPE,   \
+    BASEARRAY_TYPE, BASEARRAY2D_TYPE, SSPARSEARRAY_TYPE, SSPARSEARRAYPTR_TYPE, \
+    SSPARSEARRAY2D_TYPE, SSPARSEARRAY2DPTR_TYPE, SBASEARRAY2DPTR_TYPE,         \
+    SBASEARRAYPTR_TYPE, BASEARRAY_LIST1D_TYPE, BASEARRAY_LIST2D_TYPE,          \
+    BASEARRAY2D_LIST1D_TYPE, BASEARRAY2D_LIST2D_TYPE,                          \
+    SBASEARRAYPTR_LIST1D_TYPE, SBASEARRAYPTR_LIST2D_TYPE,                      \
+    SBASEARRAY2DPTR_LIST1D_TYPE, SBASEARRAY2DPTR_LIST2D_TYPE)                  \
+                                                                               \
+  /******************************** TYPEMAP IN   **********/                   \
+  /* ARRAY */                                                                  \
+  TYPE test_typemap_in_##ARRAY_TYPE(ARRAY_TYPE& array) { return array.sum(); } \
+  TYPE test_typemap_in_##ARRAY2D_TYPE(ARRAY2D_TYPE& array2d) {                 \
+    return array2d.sum();                                                      \
+  }                                                                            \
+  TYPE test_typemap_in_##ARRAYLIST1D_TYPE(ARRAYLIST1D_TYPE& array_list) {      \
+    return array_list[0].sum();                                                \
+  }                                                                            \
+  TYPE test_typemap_in_##ARRAYLIST2D_TYPE(ARRAYLIST2D_TYPE& array_list_list) { \
+    return array_list_list[0][0].sum();                                        \
+  }                                                                            \
+                                                                               \
+  /* SPARSE ARRAY */                                                           \
+  TYPE test_typemap_in_##SPARSEARRAY_TYPE(SPARSEARRAY_TYPE& sparsearray) {     \
+    return sparsearray.sum();                                                  \
+  }                                                                            \
+  TYPE test_typemap_in_##SPARSEARRAY2D_TYPE(                                   \
+      SPARSEARRAY2D_TYPE& sparsearray2d) {                                     \
+    return sparsearray2d.sum();                                                \
+  }                                                                            \
+                                                                               \
+  /* SHARED ARRAY POINTER */                                                   \
+  TYPE test_typemap_in_##SARRAYPTR_TYPE(SARRAYPTR_TYPE sarray) {               \
+    return sarray->sum();                                                      \
+  }                                                                            \
+  TYPE test_typemap_in_##SARRAY2DPTR_TYPE(SARRAY2DPTR_TYPE sarray2d) {         \
+    return sarray2d->sum();                                                    \
+  }                                                                            \
+  TYPE test_typemap_in_##SARRAYPTRLIST1D_TYPE(                                 \
+      SARRAYPTRLIST1D_TYPE& sarray_list) {                                     \
+    return sarray_list[0]->sum();                                              \
+  }                                                                            \
+  TYPE test_typemap_in_##SARRAYPTRLIST2D_TYPE(                                 \
+      SARRAYPTRLIST2D_TYPE& sarray_list_list) {                                \
+    return sarray_list_list[0][0]->sum();                                      \
+  }                                                                            \
+  TYPE test_typemap_in_##SARRAY2DPTR_LIST1D_TYPE(                              \
+      SARRAY2DPTR_LIST1D_TYPE& sarray2d_list) {                                \
+    return sarray2d_list[0]->sum();                                            \
+  }                                                                            \
+  TYPE test_typemap_in_##SARRAY2DPTR_LIST2D_TYPE(                              \
+      SARRAY2DPTR_LIST2D_TYPE& sarray2d_list_list) {                           \
+    return sarray2d_list_list[0][0]->sum();                                    \
+  }                                                                            \
+                                                                               \
+  /* VARIABLE ARRAY POINTER */                                                 \
+  TYPE test_typemap_in_##VARRAYPTR_TYPE(VARRAYPTR_TYPE varray) {               \
+    return varray->sum();                                                      \
+  }                                                                            \
+                                                                               \
+  TYPE test_typemap_in_##VARRAYPTRLIST1D_TYPE(                                 \
+      VARRAYPTRLIST1D_TYPE& varray_list) {                                     \
+    return varray_list[0]->sum();                                              \
+  }                                                                            \
+                                                                               \
+  TYPE test_typemap_in_##VARRAYPTRLIST2D_TYPE(                                 \
+      VARRAYPTRLIST2D_TYPE& varray_list_list) {                                \
+    return varray_list_list[0][0]->sum();                                      \
+  }                                                                            \
+                                                                               \
+  /* BASE ARRAY */                                                             \
+  TYPE test_typemap_in_##BASEARRAY_TYPE(BASEARRAY_TYPE& basearray) {           \
+    return basearray.sum();                                                    \
+  }                                                                            \
+  TYPE test_typemap_in_##BASEARRAY2D_TYPE(BASEARRAY2D_TYPE& basearray2d) {     \
+    return basearray2d.sum();                                                  \
+  }                                                                            \
+                                                                               \
+  /* SPARSE ARRAY */                                                           \
+  TYPE test_typemap_in_##SSPARSEARRAYPTR_TYPE(                                 \
+      SSPARSEARRAYPTR_TYPE ssparsearray) {                                     \
+    return ssparsearray->sum();                                                \
+  }                                                                            \
+                                                                               \
+  TYPE test_typemap_in_##SSPARSEARRAY2DPTR_TYPE(                               \
+      SSPARSEARRAY2DPTR_TYPE ssparsearray2d) {                                 \
+    return ssparsearray2d->sum();                                              \
+  }                                                                            \
+                                                                               \
+  /* BASE ARRAY SHARED POINTER */                                              \
+  TYPE test_typemap_in_##SBASEARRAYPTR_TYPE(SBASEARRAYPTR_TYPE sbasearray) {   \
+    return sbasearray->sum();                                                  \
+  }                                                                            \
+                                                                               \
+  TYPE test_typemap_in_##SBASEARRAY2DPTR_TYPE(                                 \
+      SBASEARRAY2DPTR_TYPE sbasearray2d) {                                     \
+    return sbasearray2d->sum();                                                \
+  }                                                                            \
+                                                                               \
+  /* BASE ARRAY LIST */                                                        \
+  TYPE test_typemap_in_##BASEARRAY_LIST1D_TYPE(                                \
+      BASEARRAY_LIST1D_TYPE& basearray_list) {                                 \
+    return basearray_list[0].sum();                                            \
+  }                                                                            \
+  TYPE test_typemap_in_##BASEARRAY_LIST2D_TYPE(                                \
+      BASEARRAY_LIST2D_TYPE& basearray_list_list) {                            \
+    return basearray_list_list[0][0].sum();                                    \
+  }                                                                            \
+  TYPE test_typemap_in_##BASEARRAY2D_LIST1D_TYPE(                              \
+      BASEARRAY2D_LIST1D_TYPE& basearray2d_list) {                             \
+    return basearray2d_list[0].sum();                                          \
+  }                                                                            \
+  TYPE test_typemap_in_##BASEARRAY2D_LIST2D_TYPE(                              \
+      BASEARRAY2D_LIST2D_TYPE& basearray2d_list_list) {                        \
+    return basearray2d_list_list[0][0].sum();                                  \
+  }                                                                            \
+                                                                               \
+  /* BASE ARRAY SHARED POINTER LIST */                                         \
+  TYPE test_typemap_in_##SBASEARRAYPTR_LIST1D_TYPE(                            \
+      SBASEARRAYPTR_LIST1D_TYPE& sbasearray_list) {                            \
+    return sbasearray_list[0]->sum();                                          \
+  }                                                                            \
+  TYPE test_typemap_in_##SBASEARRAYPTR_LIST2D_TYPE(                            \
+      SBASEARRAYPTR_LIST2D_TYPE& sbasearray_list_list) {                       \
+    return sbasearray_list_list[0][0]->sum();                                  \
+  }                                                                            \
+  TYPE test_typemap_in_##SBASEARRAY2DPTR_LIST1D_TYPE(                          \
+      SBASEARRAY2DPTR_LIST1D_TYPE& sbasearray2d_list) {                        \
+    return sbasearray2d_list[0]->sum();                                        \
+  }                                                                            \
+  TYPE test_typemap_in_##SBASEARRAY2DPTR_LIST2D_TYPE(                          \
+      SBASEARRAY2DPTR_LIST2D_TYPE& sbasearray2d_list_list) {                   \
+    return sbasearray2d_list_list[0][0]->sum();                                \
+  }                                                                            \
+                                                                               \
+  /************************* TYPE CHECK ************************/              \
+  /********* check function overloading ************************/              \
+  TYPE test_typemap_in_##ARRAY_TYPE(TYPE value) { return value; }              \
+                                                                               \
+  TYPE test_typemap_in_##ARRAY2D_TYPE(TYPE value) { return value; }            \
+                                                                               \
+  TYPE test_typemap_in_##ARRAYLIST1D_TYPE(TYPE value) { return value; }        \
+  TYPE test_typemap_in_##ARRAYLIST2D_TYPE(TYPE value) { return value; }        \
+  TYPE test_typemap_in_##SPARSEARRAY_TYPE(TYPE value) { return value; }        \
+  TYPE test_typemap_in_##SPARSEARRAY2D_TYPE(TYPE value) { return value; }      \
+                                                                               \
+  TYPE test_typemap_in_##SARRAYPTR_TYPE(TYPE value) { return value; }          \
+                                                                               \
+  TYPE test_typemap_in_##SARRAY2DPTR_TYPE(TYPE value) { return value; }        \
+                                                                               \
+  TYPE test_typemap_in_##SARRAYPTRLIST1D_TYPE(TYPE value) { return value; }    \
+                                                                               \
+  TYPE test_typemap_in_##SARRAYPTRLIST2D_TYPE(TYPE value) { return value; }    \
+  TYPE test_typemap_in_##SARRAY2DPTR_LIST1D_TYPE(TYPE value) { return value; } \
+  TYPE test_typemap_in_##SARRAY2DPTR_LIST2D_TYPE(TYPE value) { return value; } \
+                                                                               \
+  TYPE test_typemap_in_##VARRAYPTR_TYPE(TYPE value) { return value; }          \
+                                                                               \
+  TYPE test_typemap_in_##VARRAYPTRLIST1D_TYPE(TYPE value) { return value; }    \
+                                                                               \
+  TYPE test_typemap_in_##VARRAYPTRLIST2D_TYPE(TYPE value) { return value; }    \
+                                                                               \
+  TYPE test_typemap_in_##BASEARRAY_TYPE(TYPE value) { return value; }          \
+  TYPE test_typemap_in_##BASEARRAY2D_TYPE(TYPE value) { return value; }        \
+                                                                               \
+  TYPE test_typemap_in_##SSPARSEARRAYPTR_TYPE(TYPE value) { return value; }    \
+                                                                               \
+  TYPE test_typemap_in_##SSPARSEARRAY2DPTR_TYPE(TYPE value) { return value; }  \
+                                                                               \
+  TYPE test_typemap_in_##SBASEARRAYPTR_TYPE(TYPE value) { return value; }      \
+                                                                               \
+  TYPE test_typemap_in_##SBASEARRAY2DPTR_TYPE(TYPE value) { return value; }    \
+                                                                               \
+  TYPE test_typemap_in_##BASEARRAY_LIST1D_TYPE(TYPE value) { return value; }   \
+  TYPE test_typemap_in_##BASEARRAY_LIST2D_TYPE(TYPE value) { return value; }   \
+  TYPE test_typemap_in_##BASEARRAY2D_LIST1D_TYPE(TYPE value) { return value; } \
+  TYPE test_typemap_in_##BASEARRAY2D_LIST2D_TYPE(TYPE value) { return value; } \
+                                                                               \
+  TYPE test_typemap_in_##SBASEARRAYPTR_LIST1D_TYPE(TYPE value) {               \
+    return value;                                                              \
+  }                                                                            \
+  TYPE test_typemap_in_##SBASEARRAYPTR_LIST2D_TYPE(TYPE value) {               \
+    return value;                                                              \
+  }                                                                            \
+  TYPE test_typemap_in_##SBASEARRAY2DPTR_LIST1D_TYPE(TYPE value) {             \
+    return value;                                                              \
+  }                                                                            \
+  TYPE test_typemap_in_##SBASEARRAY2DPTR_LIST2D_TYPE(TYPE value) {             \
+    return value;                                                              \
+  }                                                                            \
+                                                                               \
+  void test_typemap_in_not_ol_##ARRAY_TYPE(ARRAY_TYPE& array) {}               \
+  void test_typemap_in_not_ol_##ARRAY2D_TYPE(ARRAY2D_TYPE& array) {}           \
+  void test_typemap_in_not_ol_##SPARSEARRAY_TYPE(                              \
+      SPARSEARRAY_TYPE& spare_array) {}                                        \
+  void test_typemap_in_not_ol_##BASEARRAY_TYPE(BASEARRAY_TYPE& base_array) {}  \
+  void test_typemap_in_not_ol_##ARRAYLIST1D_TYPE(                              \
+      ARRAYLIST1D_TYPE& array_list) {}                                         \
+  void test_typemap_in_not_ol_##ARRAYLIST2D_TYPE(                              \
+      ARRAYLIST2D_TYPE& array_list_list) {}                                    \
+                                                                               \
+  /***************** TYPEMAP OUT ****************************/                 \
+  SARRAYPTR_TYPE test_typemap_out_##SARRAYPTR_TYPE(ulong size) {               \
+    SARRAYPTR_TYPE result = SARRAY_TYPE::new_ptr(size);                        \
+    for (ulong i = 0; i < size; ++i) {                                         \
+      (*result)[i] = i;                                                        \
+    }                                                                          \
+    return result;                                                             \
+  }                                                                            \
+  SARRAYPTRLIST1D_TYPE test_typemap_out_##SARRAYPTRLIST1D_TYPE(int size) {     \
+    SARRAYPTRLIST1D_TYPE pyramid = SARRAYPTRLIST1D_TYPE(size);                 \
+    for (int i = 0; i < size; ++i) {                                           \
+      pyramid[i] = SARRAY_TYPE::new_ptr(i);                                    \
+      pyramid[i]->fill(i);                                                     \
+    }                                                                          \
+    return pyramid;                                                            \
+  }                                                                            \
+  SARRAYPTRLIST2D_TYPE test_typemap_out_##SARRAYPTRLIST2D_TYPE(int size1,      \
+                                                               int size2) {    \
+    SARRAYPTRLIST2D_TYPE pyramid = SARRAYPTRLIST2D_TYPE(size2);                \
+    for (int i = 0; i < size2; ++i) {                                          \
+      pyramid[i] = SARRAYPTRLIST1D_TYPE(i);                                    \
+      for (ulong j = 0; j < pyramid[i].size(); ++j) {                          \
+        pyramid[i][j] = SARRAY_TYPE::new_ptr(j);                               \
+        pyramid[i][j]->fill(j);                                                \
+      }                                                                        \
+    }                                                                          \
+    return pyramid;                                                            \
+  }                                                                            \
+  SARRAY2DPTR_TYPE test_typemap_out_##SARRAY2DPTR_TYPE(ulong row_size,         \
+                                                       ulong col_size) {       \
+    SARRAY2DPTR_TYPE result = SARRAY2D_TYPE::new_ptr(row_size, col_size);      \
+    for (ulong i = 0; i < row_size; ++i) {                                     \
+      for (ulong j = 0; j < col_size; ++j) {                                   \
+        (*result)(i, j) = i * col_size + j;                                    \
+      }                                                                        \
+    }                                                                          \
+    return result;                                                             \
   }
 
 ARRAY_TYPEMAP_CPP(double, ArrayDouble, ArrayDouble2d, ArrayDoubleList1D,

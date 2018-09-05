@@ -29,10 +29,13 @@ class DLL_PUBLIC Rand {
   std::uniform_int_distribution<int> uniform_int_dist;
   std::uniform_int_distribution<ulong> uniform_ulong_dist;
   std::uniform_real_distribution<double> uniform_dist;
+  std::uniform_real_distribution<float> uniform_dist_float;
   std::normal_distribution<double> normal_dist;
+  std::exponential_distribution<float> expon_dist_float;
   std::exponential_distribution<double> expon_dist;
   std::poisson_distribution<int> poisson_dist;
   std::discrete_distribution<ulong> discrete_dist;
+  std::discrete_distribution<uint32_t> discrete_dist_uint32_t;
 
  public:
   /**
@@ -84,6 +87,13 @@ class DLL_PUBLIC Rand {
   double uniform();
 
   /**
+ * @brief Returns a random real between two numbers
+ * \param a : lower bound
+ * \param b : upper bound
+ */
+  float uniform(float a, float b);
+
+  /**
    * @brief Returns a random real between two numbers
    * \param a : lower bound
    * \param b : upper bound
@@ -100,6 +110,12 @@ class DLL_PUBLIC Rand {
    * deviation \param mu : mean \param sigma : standard deviation
    */
   double gaussian(double mean, double std);
+
+  /**
+   * @brief Returns a realization of an exponential distribution with given
+   * intensity \param intensity : given intensity
+   */
+  float exponential(float intensity);
 
   /**
    * @brief Returns a realization of an exponential distribution with given
@@ -129,6 +145,8 @@ class DLL_PUBLIC Rand {
    * \param probabilities: probabilities of each event
    */
   ulong discrete(ArrayDouble probabilities);
+
+  uint32_t discrete(ArrayFloat probabilities);
 
   /**
    * @brief Getter for seed variable

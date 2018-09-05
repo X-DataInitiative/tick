@@ -63,7 +63,8 @@ class DLL_PUBLIC TProxSeparable : public TProx<T, K> {
   virtual T call_single(T x, T step) const;
 
   //! @brief apply prox on a single value with specifying index
-  //! @note this is useful for prox that don't apply the exact same operation to all indexes
+  //! @note this is useful for prox that don't apply the exact same operation to
+  //! all indexes
   virtual T call_single_with_index(T x, T step, ulong i) const;
 
  private:

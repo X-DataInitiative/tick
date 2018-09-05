@@ -638,13 +638,27 @@ survival_extension_info = {
 }
 survival_extension = create_extension(**survival_extension_info)
 
+online_info = {
+    "cpp_files": [],
+    "h_files": [],
+    "folders": [
+        "lib/cpp/online"
+    ],
+    "swig_files": ["online_module.i"],
+    "module_dir": "./tick/online/",
+    "extension_name": "online",
+    "include_modules": base_array_modules
+}
+online_core = create_extension(**online_info)
+
+
 tick_modules = [
     array_extension, base_extension, test_extension,
     random_extension, base_model_core, linear_model_core,
     hawkes_simulation_extension, hawkes_model_extension,
     hawkes_inference_extension,
     prox_core, preprocessing_core,
-    robust_extension, survival_extension, solver_core
+    robust_extension, survival_extension, solver_core, online_core
 ]
 
 # Abstract class for tick-specific commands that need access to common build

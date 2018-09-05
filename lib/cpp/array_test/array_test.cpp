@@ -183,33 +183,34 @@ TEST_COPY_PTR_CPP(SArrayDouble2dPtr);
 
 TEST_COPY_PTR_CPP(SSparseArrayDouble2dPtr);
 
-#define TEST_MOVE_CPP(ARRAY_TYPE)                                                   \
-  /* This function creates a local array that will be returned using move */        \
-  /* constructor */                                                                 \
-  /* It stores a pointer to the array data of the temporal array */                 \
-  ARRAY_TYPE move_##ARRAY_TYPE(ARRAY_TYPE &constructor_array, double **first_ptr) { \
-    ARRAY_TYPE array = ARRAY_TYPE(constructor_array);                               \
-    *first_ptr = array.data();                                                      \
-    return array;                                                                   \
-  }                                                                                 \
-                                                                                    \
-  /* This call the first one and check if the data array is still the same */       \
-  bool test_move_##ARRAY_TYPE(ARRAY_TYPE &constructor_array) {                      \
-    double **first_ptr = nullptr;                                                   \
-    /* first_ptr initialization */                                                  \
-    double *tmp = 0;                                                                \
-    first_ptr = &tmp;                                                               \
-    /* We use move constructor to create this array */                              \
-    ARRAY_TYPE array = move_##ARRAY_TYPE(constructor_array, first_ptr);             \
-    /* We check that the newly created array has kept the data of the */            \
-    /* original one */                                                              \
-    bool eq_constructor = *first_ptr == array.data();                               \
-    /* We use move assignment to assign this array */                               \
-    array = move_##ARRAY_TYPE(constructor_array, first_ptr);                        \
-    /* We check that the newly assigned array has kept the data of the */           \
-    /* original one */                                                              \
-    bool eq_assignment = *first_ptr == array.data();                                \
-    return eq_constructor && eq_assignment;                                         \
+#define TEST_MOVE_CPP(ARRAY_TYPE)                                             \
+  /* This function creates a local array that will be returned using move */  \
+  /* constructor */                                                           \
+  /* It stores a pointer to the array data of the temporal array */           \
+  ARRAY_TYPE move_##ARRAY_TYPE(ARRAY_TYPE &constructor_array,                 \
+                               double **first_ptr) {                          \
+    ARRAY_TYPE array = ARRAY_TYPE(constructor_array);                         \
+    *first_ptr = array.data();                                                \
+    return array;                                                             \
+  }                                                                           \
+                                                                              \
+  /* This call the first one and check if the data array is still the same */ \
+  bool test_move_##ARRAY_TYPE(ARRAY_TYPE &constructor_array) {                \
+    double **first_ptr = nullptr;                                             \
+    /* first_ptr initialization */                                            \
+    double *tmp = 0;                                                          \
+    first_ptr = &tmp;                                                         \
+    /* We use move constructor to create this array */                        \
+    ARRAY_TYPE array = move_##ARRAY_TYPE(constructor_array, first_ptr);       \
+    /* We check that the newly created array has kept the data of the */      \
+    /* original one */                                                        \
+    bool eq_constructor = *first_ptr == array.data();                         \
+    /* We use move assignment to assign this array */                         \
+    array = move_##ARRAY_TYPE(constructor_array, first_ptr);                  \
+    /* We check that the newly assigned array has kept the data of the */     \
+    /* original one */                                                        \
+    bool eq_assignment = *first_ptr == array.data();                          \
+    return eq_constructor && eq_assignment;                                   \
   }
 
 TEST_MOVE_CPP(BaseArrayDouble);

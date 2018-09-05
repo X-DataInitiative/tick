@@ -11,116 +11,141 @@
 
 /// @brief Test ArrayDouble Typemap
 
-#define ARRAY_TYPEMAP(                                                                             \
-    TYPE, ARRAY_TYPE, ARRAY2D_TYPE, ARRAYLIST1D_TYPE, ARRAYLIST2D_TYPE, SPARSEARRAY_TYPE,          \
-    SPARSEARRAY2D_TYPE, SARRAY_TYPE, SARRAY2D_TYPE, SARRAYPTR_TYPE, SARRAY2DPTR_TYPE,              \
-    SARRAYPTRLIST1D_TYPE, SARRAYPTRLIST2D_TYPE, SARRAY2DPTR_LIST1D_TYPE, SARRAY2DPTR_LIST2D_TYPE,  \
-    VARRAY_TYPE, VARRAYPTR_TYPE, VARRAYPTRLIST1D_TYPE, VARRAYPTRLIST2D_TYPE, BASEARRAY_TYPE,       \
-    BASEARRAY2D_TYPE, SSPARSEARRAY_TYPE, SSPARSEARRAYPTR_TYPE, SSPARSEARRAY2D_TYPE,                \
-    SSPARSEARRAY2DPTR_TYPE, SBASEARRAY2DPTR_TYPE, SBASEARRAYPTR_TYPE, BASEARRAY_LIST1D_TYPE,       \
-    BASEARRAY_LIST2D_TYPE, BASEARRAY2D_LIST1D_TYPE, BASEARRAY2D_LIST2D_TYPE,                       \
-    SBASEARRAYPTR_LIST1D_TYPE, SBASEARRAYPTR_LIST2D_TYPE, SBASEARRAY2DPTR_LIST1D_TYPE,             \
-    SBASEARRAY2DPTR_LIST2D_TYPE)                                                                   \
-                                                                                                   \
-  /******************* TYPEMAP IN **********************/                                          \
-  extern TYPE test_typemap_in_##ARRAY_TYPE(ARRAY_TYPE& array);                                     \
-  extern TYPE test_typemap_in_##ARRAY2D_TYPE(ARRAY2D_TYPE& array2d);                               \
-  extern TYPE test_typemap_in_##ARRAYLIST1D_TYPE(ARRAYLIST1D_TYPE& array_list);                    \
-  extern TYPE test_typemap_in_##ARRAYLIST2D_TYPE(ARRAYLIST2D_TYPE& array_list_list);               \
-                                                                                                   \
-  extern TYPE test_typemap_in_##SPARSEARRAY_TYPE(SPARSEARRAY_TYPE& sparse_array);                  \
-  extern TYPE test_typemap_in_##SPARSEARRAY2D_TYPE(SPARSEARRAY2D_TYPE& sparse_array2d);            \
-                                                                                                   \
-  extern TYPE test_typemap_in_##SARRAYPTR_TYPE(SARRAYPTR_TYPE sarray);                             \
-  extern TYPE test_typemap_in_##SARRAY2DPTR_TYPE(SARRAY2DPTR_TYPE sarray2d);                       \
-  extern TYPE test_typemap_in_##SARRAYPTRLIST1D_TYPE(SARRAYPTRLIST1D_TYPE& sarray_list);           \
-  extern TYPE test_typemap_in_##SARRAYPTRLIST2D_TYPE(SARRAYPTRLIST2D_TYPE& sarray_list_list);      \
-  extern TYPE test_typemap_in_##SARRAY2DPTR_LIST1D_TYPE(SARRAY2DPTR_LIST1D_TYPE& sarray2d_list);   \
-  extern TYPE test_typemap_in_##SARRAY2DPTR_LIST2D_TYPE(                                           \
-      SARRAY2DPTR_LIST2D_TYPE& sarray2d_list_list);                                                \
-                                                                                                   \
-  extern TYPE test_typemap_in_##VARRAYPTR_TYPE(VARRAYPTR_TYPE varray);                             \
-  extern TYPE test_typemap_in_##VARRAYPTRLIST1D_TYPE(VARRAYPTRLIST1D_TYPE& varray_list);           \
-  extern TYPE test_typemap_in_##VARRAYPTRLIST2D_TYPE(VARRAYPTRLIST2D_TYPE& varray_list_list);      \
-                                                                                                   \
-  extern TYPE test_typemap_in_##BASEARRAY_TYPE(BASEARRAY_TYPE& basearray);                         \
-  extern TYPE test_typemap_in_##BASEARRAY2D_TYPE(BASEARRAY2D_TYPE& basearray2d);                   \
-                                                                                                   \
-  extern TYPE test_typemap_in_##SSPARSEARRAYPTR_TYPE(SSPARSEARRAYPTR_TYPE ssparsearray);           \
-  extern TYPE test_typemap_in_##SSPARSEARRAY2DPTR_TYPE(SSPARSEARRAY2DPTR_TYPE ssparsearray2d);     \
-                                                                                                   \
-  extern TYPE test_typemap_in_##SBASEARRAYPTR_TYPE(SBASEARRAYPTR_TYPE sbasearray);                 \
-  extern TYPE test_typemap_in_##SBASEARRAY2DPTR_TYPE(SBASEARRAY2DPTR_TYPE sbasearray2d);           \
-                                                                                                   \
-  extern TYPE test_typemap_in_##BASEARRAY_LIST1D_TYPE(BASEARRAY_LIST1D_TYPE& basearray_list);      \
-  extern TYPE test_typemap_in_##BASEARRAY_LIST2D_TYPE(BASEARRAY_LIST2D_TYPE& basearray_list_list); \
-  extern TYPE test_typemap_in_##BASEARRAY2D_LIST1D_TYPE(                                           \
-      BASEARRAY2D_LIST1D_TYPE& basearray2d_list);                                                  \
-  extern TYPE test_typemap_in_##BASEARRAY2D_LIST2D_TYPE(                                           \
-      BASEARRAY2D_LIST2D_TYPE& basearray2s_list_list);                                             \
-                                                                                                   \
-  extern TYPE test_typemap_in_##SBASEARRAYPTR_LIST1D_TYPE(                                         \
-      SBASEARRAYPTR_LIST1D_TYPE& sbasearray_list);                                                 \
-  extern TYPE test_typemap_in_##SBASEARRAYPTR_LIST2D_TYPE(                                         \
-      SBASEARRAYPTR_LIST2D_TYPE& sbasearray_list_list);                                            \
-  extern TYPE test_typemap_in_##SBASEARRAY2DPTR_LIST1D_TYPE(                                       \
-      SBASEARRAY2DPTR_LIST1D_TYPE& sbasearray2d_list);                                             \
-  extern TYPE test_typemap_in_##SBASEARRAY2DPTR_LIST2D_TYPE(                                       \
-      SBASEARRAY2DPTR_LIST2D_TYPE& sbasearray2d_list_list);                                        \
-                                                                                                   \
-  /********************* TYPE CHECK *********************/                                         \
-  /************* check function overloading ************/                                          \
-  extern TYPE test_typemap_in_##ARRAY_TYPE(TYPE value);                                            \
-  extern TYPE test_typemap_in_##ARRAY2D_TYPE(TYPE value);                                          \
-  extern TYPE test_typemap_in_##ARRAYLIST1D_TYPE(TYPE value);                                      \
-  extern TYPE test_typemap_in_##ARRAYLIST2D_TYPE(TYPE value);                                      \
-                                                                                                   \
-  extern TYPE test_typemap_in_##SPARSEARRAY_TYPE(TYPE value);                                      \
-  extern TYPE test_typemap_in_##SPARSEARRAY2D_TYPE(TYPE value);                                    \
-                                                                                                   \
-  extern TYPE test_typemap_in_##SARRAYPTR_TYPE(TYPE value);                                        \
-  extern TYPE test_typemap_in_##SARRAY2DPTR_TYPE(TYPE value);                                      \
-  extern TYPE test_typemap_in_##SARRAYPTRLIST1D_TYPE(TYPE value);                                  \
-  extern TYPE test_typemap_in_##SARRAYPTRLIST2D_TYPE(TYPE value);                                  \
-  extern TYPE test_typemap_in_##SARRAY2DPTR_LIST1D_TYPE(TYPE value);                               \
-  extern TYPE test_typemap_in_##SARRAY2DPTR_LIST2D_TYPE(TYPE value);                               \
-                                                                                                   \
-  extern TYPE test_typemap_in_##VARRAYPTR_TYPE(TYPE value);                                        \
-  extern TYPE test_typemap_in_##VARRAYPTRLIST1D_TYPE(TYPE value);                                  \
-  extern TYPE test_typemap_in_##VARRAYPTRLIST2D_TYPE(TYPE value);                                  \
-                                                                                                   \
-  extern TYPE test_typemap_in_##BASEARRAY_TYPE(TYPE value);                                        \
-  extern TYPE test_typemap_in_##BASEARRAY2D_TYPE(TYPE value);                                      \
-                                                                                                   \
-  extern TYPE test_typemap_in_##SSPARSEARRAYPTR_TYPE(TYPE value);                                  \
-  extern TYPE test_typemap_in_##SSPARSEARRAY2DPTR_TYPE(TYPE value);                                \
-                                                                                                   \
-  extern TYPE test_typemap_in_##SBASEARRAYPTR_TYPE(TYPE value);                                    \
-  extern TYPE test_typemap_in_##SBASEARRAY2DPTR_TYPE(TYPE value);                                  \
-                                                                                                   \
-  extern TYPE test_typemap_in_##BASEARRAY_LIST1D_TYPE(TYPE value);                                 \
-  extern TYPE test_typemap_in_##BASEARRAY_LIST2D_TYPE(TYPE value);                                 \
-  extern TYPE test_typemap_in_##BASEARRAY2D_LIST1D_TYPE(TYPE value);                               \
-  extern TYPE test_typemap_in_##BASEARRAY2D_LIST2D_TYPE(TYPE value);                               \
-                                                                                                   \
-  extern TYPE test_typemap_in_##SBASEARRAYPTR_LIST1D_TYPE(TYPE value);                             \
-  extern TYPE test_typemap_in_##SBASEARRAYPTR_LIST2D_TYPE(TYPE value);                             \
-  extern TYPE test_typemap_in_##SBASEARRAY2DPTR_LIST1D_TYPE(TYPE value);                           \
-  extern TYPE test_typemap_in_##SBASEARRAY2DPTR_LIST2D_TYPE(TYPE value);                           \
-                                                                                                   \
-  /* Add functions that are not overloaded to test error messages*/                                \
-  extern void test_typemap_in_not_ol_##ARRAY_TYPE(ARRAY_TYPE& array);                              \
-  extern void test_typemap_in_not_ol_##ARRAY2D_TYPE(ARRAY2D_TYPE& array);                          \
-  extern void test_typemap_in_not_ol_##SPARSEARRAY_TYPE(SPARSEARRAY_TYPE& spare_array);            \
-  extern void test_typemap_in_not_ol_##BASEARRAY_TYPE(BASEARRAY_TYPE& base_array);                 \
-  extern void test_typemap_in_not_ol_##ARRAYLIST1D_TYPE(ARRAYLIST1D_TYPE& array_list);             \
-  extern void test_typemap_in_not_ol_##ARRAYLIST2D_TYPE(ARRAYLIST2D_TYPE& array_list_list);        \
-                                                                                                   \
-  /******************* TYPEMAP OUT ***********************/                                        \
-  extern SARRAYPTR_TYPE test_typemap_out_##SARRAYPTR_TYPE(ulong size);                             \
-  extern SARRAYPTRLIST1D_TYPE test_typemap_out_##SARRAYPTRLIST1D_TYPE(int size);                   \
-  extern SARRAYPTRLIST2D_TYPE test_typemap_out_##SARRAYPTRLIST2D_TYPE(int size1, int size2);       \
-  extern SARRAY2DPTR_TYPE test_typemap_out_##SARRAY2DPTR_TYPE(ulong row_size, ulong col_size);
+#define ARRAY_TYPEMAP(                                                         \
+    TYPE, ARRAY_TYPE, ARRAY2D_TYPE, ARRAYLIST1D_TYPE, ARRAYLIST2D_TYPE,        \
+    SPARSEARRAY_TYPE, SPARSEARRAY2D_TYPE, SARRAY_TYPE, SARRAY2D_TYPE,          \
+    SARRAYPTR_TYPE, SARRAY2DPTR_TYPE, SARRAYPTRLIST1D_TYPE,                    \
+    SARRAYPTRLIST2D_TYPE, SARRAY2DPTR_LIST1D_TYPE, SARRAY2DPTR_LIST2D_TYPE,    \
+    VARRAY_TYPE, VARRAYPTR_TYPE, VARRAYPTRLIST1D_TYPE, VARRAYPTRLIST2D_TYPE,   \
+    BASEARRAY_TYPE, BASEARRAY2D_TYPE, SSPARSEARRAY_TYPE, SSPARSEARRAYPTR_TYPE, \
+    SSPARSEARRAY2D_TYPE, SSPARSEARRAY2DPTR_TYPE, SBASEARRAY2DPTR_TYPE,         \
+    SBASEARRAYPTR_TYPE, BASEARRAY_LIST1D_TYPE, BASEARRAY_LIST2D_TYPE,          \
+    BASEARRAY2D_LIST1D_TYPE, BASEARRAY2D_LIST2D_TYPE,                          \
+    SBASEARRAYPTR_LIST1D_TYPE, SBASEARRAYPTR_LIST2D_TYPE,                      \
+    SBASEARRAY2DPTR_LIST1D_TYPE, SBASEARRAY2DPTR_LIST2D_TYPE)                  \
+                                                                               \
+  /******************* TYPEMAP IN **********************/                      \
+  extern TYPE test_typemap_in_##ARRAY_TYPE(ARRAY_TYPE& array);                 \
+  extern TYPE test_typemap_in_##ARRAY2D_TYPE(ARRAY2D_TYPE& array2d);           \
+  extern TYPE test_typemap_in_##ARRAYLIST1D_TYPE(                              \
+      ARRAYLIST1D_TYPE& array_list);                                           \
+  extern TYPE test_typemap_in_##ARRAYLIST2D_TYPE(                              \
+      ARRAYLIST2D_TYPE& array_list_list);                                      \
+                                                                               \
+  extern TYPE test_typemap_in_##SPARSEARRAY_TYPE(                              \
+      SPARSEARRAY_TYPE& sparse_array);                                         \
+  extern TYPE test_typemap_in_##SPARSEARRAY2D_TYPE(                            \
+      SPARSEARRAY2D_TYPE& sparse_array2d);                                     \
+                                                                               \
+  extern TYPE test_typemap_in_##SARRAYPTR_TYPE(SARRAYPTR_TYPE sarray);         \
+  extern TYPE test_typemap_in_##SARRAY2DPTR_TYPE(SARRAY2DPTR_TYPE sarray2d);   \
+  extern TYPE test_typemap_in_##SARRAYPTRLIST1D_TYPE(                          \
+      SARRAYPTRLIST1D_TYPE& sarray_list);                                      \
+  extern TYPE test_typemap_in_##SARRAYPTRLIST2D_TYPE(                          \
+      SARRAYPTRLIST2D_TYPE& sarray_list_list);                                 \
+  extern TYPE test_typemap_in_##SARRAY2DPTR_LIST1D_TYPE(                       \
+      SARRAY2DPTR_LIST1D_TYPE& sarray2d_list);                                 \
+  extern TYPE test_typemap_in_##SARRAY2DPTR_LIST2D_TYPE(                       \
+      SARRAY2DPTR_LIST2D_TYPE& sarray2d_list_list);                            \
+                                                                               \
+  extern TYPE test_typemap_in_##VARRAYPTR_TYPE(VARRAYPTR_TYPE varray);         \
+  extern TYPE test_typemap_in_##VARRAYPTRLIST1D_TYPE(                          \
+      VARRAYPTRLIST1D_TYPE& varray_list);                                      \
+  extern TYPE test_typemap_in_##VARRAYPTRLIST2D_TYPE(                          \
+      VARRAYPTRLIST2D_TYPE& varray_list_list);                                 \
+                                                                               \
+  extern TYPE test_typemap_in_##BASEARRAY_TYPE(BASEARRAY_TYPE& basearray);     \
+  extern TYPE test_typemap_in_##BASEARRAY2D_TYPE(                              \
+      BASEARRAY2D_TYPE& basearray2d);                                          \
+                                                                               \
+  extern TYPE test_typemap_in_##SSPARSEARRAYPTR_TYPE(                          \
+      SSPARSEARRAYPTR_TYPE ssparsearray);                                      \
+  extern TYPE test_typemap_in_##SSPARSEARRAY2DPTR_TYPE(                        \
+      SSPARSEARRAY2DPTR_TYPE ssparsearray2d);                                  \
+                                                                               \
+  extern TYPE test_typemap_in_##SBASEARRAYPTR_TYPE(                            \
+      SBASEARRAYPTR_TYPE sbasearray);                                          \
+  extern TYPE test_typemap_in_##SBASEARRAY2DPTR_TYPE(                          \
+      SBASEARRAY2DPTR_TYPE sbasearray2d);                                      \
+                                                                               \
+  extern TYPE test_typemap_in_##BASEARRAY_LIST1D_TYPE(                         \
+      BASEARRAY_LIST1D_TYPE& basearray_list);                                  \
+  extern TYPE test_typemap_in_##BASEARRAY_LIST2D_TYPE(                         \
+      BASEARRAY_LIST2D_TYPE& basearray_list_list);                             \
+  extern TYPE test_typemap_in_##BASEARRAY2D_LIST1D_TYPE(                       \
+      BASEARRAY2D_LIST1D_TYPE& basearray2d_list);                              \
+  extern TYPE test_typemap_in_##BASEARRAY2D_LIST2D_TYPE(                       \
+      BASEARRAY2D_LIST2D_TYPE& basearray2s_list_list);                         \
+                                                                               \
+  extern TYPE test_typemap_in_##SBASEARRAYPTR_LIST1D_TYPE(                     \
+      SBASEARRAYPTR_LIST1D_TYPE& sbasearray_list);                             \
+  extern TYPE test_typemap_in_##SBASEARRAYPTR_LIST2D_TYPE(                     \
+      SBASEARRAYPTR_LIST2D_TYPE& sbasearray_list_list);                        \
+  extern TYPE test_typemap_in_##SBASEARRAY2DPTR_LIST1D_TYPE(                   \
+      SBASEARRAY2DPTR_LIST1D_TYPE& sbasearray2d_list);                         \
+  extern TYPE test_typemap_in_##SBASEARRAY2DPTR_LIST2D_TYPE(                   \
+      SBASEARRAY2DPTR_LIST2D_TYPE& sbasearray2d_list_list);                    \
+                                                                               \
+  /********************* TYPE CHECK *********************/                     \
+  /************* check function overloading ************/                      \
+  extern TYPE test_typemap_in_##ARRAY_TYPE(TYPE value);                        \
+  extern TYPE test_typemap_in_##ARRAY2D_TYPE(TYPE value);                      \
+  extern TYPE test_typemap_in_##ARRAYLIST1D_TYPE(TYPE value);                  \
+  extern TYPE test_typemap_in_##ARRAYLIST2D_TYPE(TYPE value);                  \
+                                                                               \
+  extern TYPE test_typemap_in_##SPARSEARRAY_TYPE(TYPE value);                  \
+  extern TYPE test_typemap_in_##SPARSEARRAY2D_TYPE(TYPE value);                \
+                                                                               \
+  extern TYPE test_typemap_in_##SARRAYPTR_TYPE(TYPE value);                    \
+  extern TYPE test_typemap_in_##SARRAY2DPTR_TYPE(TYPE value);                  \
+  extern TYPE test_typemap_in_##SARRAYPTRLIST1D_TYPE(TYPE value);              \
+  extern TYPE test_typemap_in_##SARRAYPTRLIST2D_TYPE(TYPE value);              \
+  extern TYPE test_typemap_in_##SARRAY2DPTR_LIST1D_TYPE(TYPE value);           \
+  extern TYPE test_typemap_in_##SARRAY2DPTR_LIST2D_TYPE(TYPE value);           \
+                                                                               \
+  extern TYPE test_typemap_in_##VARRAYPTR_TYPE(TYPE value);                    \
+  extern TYPE test_typemap_in_##VARRAYPTRLIST1D_TYPE(TYPE value);              \
+  extern TYPE test_typemap_in_##VARRAYPTRLIST2D_TYPE(TYPE value);              \
+                                                                               \
+  extern TYPE test_typemap_in_##BASEARRAY_TYPE(TYPE value);                    \
+  extern TYPE test_typemap_in_##BASEARRAY2D_TYPE(TYPE value);                  \
+                                                                               \
+  extern TYPE test_typemap_in_##SSPARSEARRAYPTR_TYPE(TYPE value);              \
+  extern TYPE test_typemap_in_##SSPARSEARRAY2DPTR_TYPE(TYPE value);            \
+                                                                               \
+  extern TYPE test_typemap_in_##SBASEARRAYPTR_TYPE(TYPE value);                \
+  extern TYPE test_typemap_in_##SBASEARRAY2DPTR_TYPE(TYPE value);              \
+                                                                               \
+  extern TYPE test_typemap_in_##BASEARRAY_LIST1D_TYPE(TYPE value);             \
+  extern TYPE test_typemap_in_##BASEARRAY_LIST2D_TYPE(TYPE value);             \
+  extern TYPE test_typemap_in_##BASEARRAY2D_LIST1D_TYPE(TYPE value);           \
+  extern TYPE test_typemap_in_##BASEARRAY2D_LIST2D_TYPE(TYPE value);           \
+                                                                               \
+  extern TYPE test_typemap_in_##SBASEARRAYPTR_LIST1D_TYPE(TYPE value);         \
+  extern TYPE test_typemap_in_##SBASEARRAYPTR_LIST2D_TYPE(TYPE value);         \
+  extern TYPE test_typemap_in_##SBASEARRAY2DPTR_LIST1D_TYPE(TYPE value);       \
+  extern TYPE test_typemap_in_##SBASEARRAY2DPTR_LIST2D_TYPE(TYPE value);       \
+                                                                               \
+  /* Add functions that are not overloaded to test error messages*/            \
+  extern void test_typemap_in_not_ol_##ARRAY_TYPE(ARRAY_TYPE& array);          \
+  extern void test_typemap_in_not_ol_##ARRAY2D_TYPE(ARRAY2D_TYPE& array);      \
+  extern void test_typemap_in_not_ol_##SPARSEARRAY_TYPE(                       \
+      SPARSEARRAY_TYPE& spare_array);                                          \
+  extern void test_typemap_in_not_ol_##BASEARRAY_TYPE(                         \
+      BASEARRAY_TYPE& base_array);                                             \
+  extern void test_typemap_in_not_ol_##ARRAYLIST1D_TYPE(                       \
+      ARRAYLIST1D_TYPE& array_list);                                           \
+  extern void test_typemap_in_not_ol_##ARRAYLIST2D_TYPE(                       \
+      ARRAYLIST2D_TYPE& array_list_list);                                      \
+                                                                               \
+  /******************* TYPEMAP OUT ***********************/                    \
+  extern SARRAYPTR_TYPE test_typemap_out_##SARRAYPTR_TYPE(ulong size);         \
+  extern SARRAYPTRLIST1D_TYPE test_typemap_out_##SARRAYPTRLIST1D_TYPE(         \
+      int size);                                                               \
+  extern SARRAYPTRLIST2D_TYPE test_typemap_out_##SARRAYPTRLIST2D_TYPE(         \
+      int size1, int size2);                                                   \
+  extern SARRAY2DPTR_TYPE test_typemap_out_##SARRAY2DPTR_TYPE(ulong row_size,  \
+                                                              ulong col_size);
 
 ARRAY_TYPEMAP(double, ArrayDouble, ArrayDouble2d, ArrayDoubleList1D,
               ArrayDoubleList2D, SparseArrayDouble, SparseArrayDouble2d,

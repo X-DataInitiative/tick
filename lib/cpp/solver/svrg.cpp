@@ -209,7 +209,7 @@ void TSVRG<T, K>::sparse_single_thread_solver(
     T step_correction = steps_correction[j];
     // Gradient descent with probabilistic step-size correction
     T descent_direction = step * (x_i.data()[idx_nnz] * grad_i_diff +
-        step_correction * full_gradient_j);
+                                  step_correction * full_gradient_j);
     if (casted_prox->is_in_range(j))
       iterate[j] = casted_prox->call_single_with_index(
           iterate[j] - descent_direction, step * step_correction, j);

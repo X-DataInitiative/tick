@@ -49,6 +49,11 @@ ulong Rand::uniform_int(ulong a, ulong b) {
 
 double Rand::uniform() { return uniform_dist(generator); }
 
+float Rand::uniform(float a, float b) {
+  std::uniform_real_distribution<float>::param_type p(a, b);
+  return uniform_dist_float(generator, p);
+}
+
 double Rand::uniform(double a, double b) {
   std::uniform_real_distribution<double>::param_type p(a, b);
   return uniform_dist(generator, p);
@@ -59,6 +64,11 @@ double Rand::gaussian() { return normal_dist(generator); }
 double Rand::gaussian(double mean, double std) {
   std::normal_distribution<double>::param_type p(mean, std);
   return normal_dist(generator, p);
+}
+
+float Rand::exponential(float intensity) {
+  std::exponential_distribution<float>::param_type p(intensity);
+  return expon_dist_float(generator, p);
 }
 
 double Rand::exponential(double intensity) {
@@ -85,6 +95,13 @@ ulong Rand::discrete(ArrayDouble probabilities) {
   double *end = probabilities.data() + probabilities.size();
   std::discrete_distribution<ulong>::param_type p(start, end);
   return discrete_dist(generator, p);
+}
+
+uint32_t Rand::discrete(ArrayFloat probabilities) {
+  float *start = probabilities.data();
+  float *end = probabilities.data() + probabilities.size();
+  std::discrete_distribution<uint32_t>::param_type p(start, end);
+  return discrete_dist_uint32_t(generator, p);
 }
 
 int Rand::get_seed() const { return seed; }

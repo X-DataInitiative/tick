@@ -3,7 +3,8 @@
 set -e
 
 CWD="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-
+ROOT=$CWD/..
+cd $ROOT
 
 DIRS=(lib/include lib/cpp lib/cpp-test)
 
@@ -27,13 +28,13 @@ for dir in ${DIRS[@]}; do
   git diff $dir | python2 $CLANG_FORMATDIFF -binary $CLANG_FORMAT -p1 -i -style=file
 done
 
-## Uncomment to run on all includes/sources
+# # Uncomment to run on all includes/sources
 # pushd $CWD/..
 # for f in $(find lib/cpp* -type f \( -iname \*.h -o -iname \*.cpp \)); do
-#   $CLANG_FORMAT  -i -style=google $f
+#   $CLANG_FORMAT  -i -style=file $f
 # done
 # for f in $(find lib/include -type f \( -iname \*.h -o -iname \*.cpp \)); do
-#   $CLANG_FORMAT  -i -style=google $f
+#   $CLANG_FORMAT  -i -style=file $f
 # done
 # popd
-## Uncomment to run on all includes/sources
+# # Uncomment to run on all includes/sources

@@ -54,7 +54,7 @@ T TProxSeparable<T, K>::call_single(T x, T step) const {
 
 template <class T, class K>
 T TProxSeparable<T, K>::call_single_with_index(T x, T step, ulong i) const {
-  return is_in_range(i) ? call_single(x, step): x;
+  return is_in_range(i) ? call_single(x, step) : x;
 }
 
 template <class T, class K>

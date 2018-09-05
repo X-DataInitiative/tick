@@ -182,6 +182,7 @@ PROFILES=(
     survival
     solver
     array_test
+    online
 )
 function hash_index() {
     case $1 in
@@ -199,6 +200,7 @@ function hash_index() {
         'survival')           echo 11;;
         'solver')             echo 12;;
         'array_test')         echo 13;;
+        'online')             echo 14;;
     esac
 }
 LIBRARIES=(
@@ -216,6 +218,7 @@ LIBRARIES=(
     "tick/survival/build/_survival$LIB_POSTFIX"
     "tick/solver/build/_solver$LIB_POSTFIX"
     "tick/array_test/build/array_test${LIB_POSTFIX}"
+    "tick/online/build/online${LIB_POSTFIX}"
 )
 
 LIB_LD_PER_LIB=()
