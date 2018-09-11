@@ -164,12 +164,10 @@ if os.environ.get('PYVER') is not None:
 
 # Directory containing built .so files before they are moved either
 # in source (with build flag --inplace) or to site-packages (by install)
-#
 # E.g. build/lib.macosx-10.11-x86_64-3.5
 build_dir = "build/lib.{}-{}"+PYVER_DBG
 build_dir = build_dir.format(distutils.util.get_platform(),
                                      sys.version[0:3])
-
 
 class SwigExtension(Extension):
     """This only adds information about extension construction, useful for
@@ -180,7 +178,6 @@ class SwigExtension(Extension):
         super().__init__(*args, **kwargs)
         self.module_ref = module_ref
         self.ext_name = ext_name
-
 
 class SwigPath:
     """Small class to handle module creation and check project structure
@@ -312,6 +309,19 @@ def create_extension(extension_name, module_dir,
     if 'define_macros' in blas_info and \
             any(key == 'HAVE_CBLAS' for key, _ in blas_info['define_macros']):
         define_macros.append(('TICK_CBLAS_AVAILABLE', None))
+    if "libraries" in blas_info and "mkl_rt" in blas_info["libraries"]:
+        define_macros.append(('TICK_USE_MKL', None))
+        extra_include_dirs.extend(blas_info["include_dirs"])
+        if platform.system() != 'Windows':
+            for lib_dir in blas_info["library_dirs"]:
+                extra_link_args.append(
+                    "-Wl,-rpath,"+ lib_dir
+                )
+            # if not Linux assume MacOS
+            if platform.system() != 'Linux':
+                rel_path = os.path.relpath(lib_dir, swig_path.build)
+                if os.path.exists(rel_path):
+                    extra_link_args.append("-Wl,-rpath,@loader_path/"+ rel_path)
 
     if include_modules is None:
         include_modules = []
