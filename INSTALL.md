@@ -113,6 +113,19 @@ This will build all extensions, and install them directly in the source director
 Note also that special scripts, intended for developers, are available. `./clean_build_test.sh` removes all compiled binaries and runs the full compilation process, with all `C++` and `Python` unit-tests. This can take some time.
 Similarly, `./build_test.sh` runs the full compilation process, without removing first binaries, while `full_clean.sh` only removes them.
 
+It is possible to build with support for Intel MKL in the tick C++ libraries, to do so requires having the intel MKL libraries installed and running the build command like so (example provided is for linux with MKL installed to /opt/intel)
+
+    MKLROOT=/opt/intel/mkl python setup.py build_ext --inplace
+
+On MacOS it's possible an error may occur when trying to find a "intel_thread.dyld"
+To fix this try:
+
+export DYLD_LIBRARY_PATH="/opt/intel/lib:$DYLD_LIBRARY_PATH"
+
+Replacing "/opt/intel/lib" to "$MKLROOT/../lib" if necessary.
+
+Upgrading to the latest version of MKL may also resolve this.
+
 ### Alternative installation method
 
 Also supported is the build tool [maiken](https://github.com/dekken/maiken) which works with various compilers on major platforms.
