@@ -21,6 +21,11 @@ void TStoSolver<T, K>::reset() {
     i_perm = 0;
     shuffle();
   }
+  time_history.clear();
+  iterate_history.clear();
+  epoch_history.clear();
+  last_record_epoch = 0;
+  last_record_time = 0;
 }
 
 template <class T, class K>
@@ -65,6 +70,41 @@ void TStoSolver<T, K>::shuffle() {
 }
 
 template <class T, class K>
+void TStoSolver<T, K>::solve(int n_epochs) {
+  double initial_time = last_record_time;
+  int initial_epoch = last_record_epoch;
+
+  auto start = std::chrono::steady_clock::now();
+  for (int epoch = 1; epoch < (n_epochs + 1); ++epoch) {
+    Interruption::throw_if_raised();
+
+    solve_one_epoch();
+
+    if ((initial_epoch + epoch) == 1 || ((initial_epoch + epoch) % record_every == 0)) {
+      auto end = std::chrono::steady_clock::now();
+      double time = ((end - start).count()) * std::chrono::steady_clock::period::num /
+          static_cast<double>(std::chrono::steady_clock::period::den);
+      save_history(initial_time + time, initial_epoch + epoch);
+    }
+  }
+
+  auto end = std::chrono::steady_clock::now();
+  double time = ((end - start).count()) * std::chrono::steady_clock::period::num /
+      static_cast<double>(std::chrono::steady_clock::period::den);
+  last_record_time = time;
+  last_record_epoch = initial_epoch + n_epochs;
+}
+
+template <class T, class K>
+void TStoSolver<T, K>::save_history(double time, int epoch) {
+  time_history.emplace_back(time);
+  epoch_history.emplace_back(epoch);
+
+  iterate_history.emplace_back(iterate.size());
+  get_iterate(iterate_history.back());
+}
+
+template <class T, class K>
 void TStoSolver<T, K>::get_minimizer(Array<T> &out) {
   for (ulong i = 0; i < iterate.size(); ++i) {
     out[i] = iterate[i];
@@ -74,6 +114,16 @@ void TStoSolver<T, K>::get_minimizer(Array<T> &out) {
 template <class T, class K>
 void TStoSolver<T, K>::get_iterate(Array<T> &out) {
   for (ulong i = 0; i < iterate.size(); ++i) out[i] = iterate[i];
+}
+
+template <class T, class K>
+std::vector<std::shared_ptr<SArray<T> > >  TStoSolver<T, K>:: get_iterate_history() const {
+  std::vector<std::shared_ptr<SArray<T> > > shared_iterate_history(0);
+  for (ulong i = 0; i < iterate_history.size(); ++i) {
+    Array<T> copied_iterate_i = iterate_history[i];
+    shared_iterate_history.push_back(copied_iterate_i.as_sarray_ptr());
+  }
+  return shared_iterate_history;
 }
 
 template <class T, class K>

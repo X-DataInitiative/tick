@@ -356,7 +356,7 @@ class SCPG(SolverFirstOrder):
         step = self._perform_line_search(x, x.copy(), self.step)
         l_k = 1. / step
 
-        for n_iter in range(self.max_iter + 1):
+        for n_iter in range(self.max_iter):
 
             prev_obj = obj
 
@@ -385,7 +385,8 @@ class SCPG(SolverFirstOrder):
             converged = rel_obj < self.tol
             # if converged, we stop the loop and record the last step in history
 
-            self._handle_history(n_iter, force=converged, obj=obj, x=x.copy(),
+            self._handle_history(n_iter + 1, force=converged, obj=obj,
+                                 x=x.copy(),
                                  rel_delta=rel_delta, step=alpha_k,
                                  rel_obj=rel_obj, l_k=l_k, beta_k=beta_k,
                                  lambda_k=lambda_k, th_gain=self._th_gain,
@@ -398,7 +399,7 @@ class SCPG(SolverFirstOrder):
     def _handle_history(self, n_iter: int, force: bool = False, **kwargs):
         """Updates the history of the solver.
         """
-        if n_iter == 0:
+        if n_iter == 1:
             self._set('_initial_n_hessiannorm_calls',
                       self.model.n_calls_hessian_norm)
 

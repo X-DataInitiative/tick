@@ -79,14 +79,15 @@ TEST(SAGA, test_saga_sparse_convergence) {
   EXPECT_LE(objective300 - objective30, 0.);
   EXPECT_LE(objective30 - objective300, 0.1);
 
-  ASAGA asaga(n_samples, 300, 0, RandType::unif, model->get_lip_max() / 300, 1309);
+  ASAGA asaga(n_samples, 0, RandType::unif, model->get_lip_max() / 300, 50, 1309);
   asaga.set_rand_max(n_samples);
   asaga.set_model(model);
   asaga.set_prox(prox);
 
-  asaga.solve();
-  const auto &objective = asaga.get_computed_objective();
-  EXPECT_LE(std::abs(objective[objective.size() - 1] - objective300), 0.0001);
+  asaga.solve(300);
+  auto iterate_asaga = asaga.get_iterate_history().back();
+  const auto objective_asaga = model->loss(*iterate_asaga) + prox->value(*iterate_asaga);
+  EXPECT_LE(objective_asaga - objective300, 0.0001);
 }
 
 TEST(SAGA, test_saga_serialization) {

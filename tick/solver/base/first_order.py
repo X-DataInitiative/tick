@@ -297,7 +297,7 @@ class SolverFirstOrder(Solver):
         # solvers using this model
         # hence it might not be at 0 while starting
         # /!\ beware if parallel computing...
-        if n_iter == 0:
+        if n_iter == 1:
             self._set("_initial_n_calls_loss_and_grad",
                       self.model.n_calls_loss_and_grad)
             self._set("_initial_n_calls_loss", self.model.n_calls_loss)

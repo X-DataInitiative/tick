@@ -270,7 +270,7 @@ class HawkesSumGaussians(LearnerHawkesNoParam):
             (self.n_nodes, self.n_nodes * self.n_gaussians))
 
         max_relative_distance = 1e-1
-        for i in range(self.max_iter + 1):
+        for i in range(self.max_iter):
             if self._should_record_iter(i):
                 prev_baseline = self.baseline.copy()
                 prev_amplitudes = self.amplitudes.copy()
@@ -302,9 +302,9 @@ class HawkesSumGaussians(LearnerHawkesNoParam):
                 # We perform at least 5 iterations as at start we sometimes
                 # reach a low tolerance if inner_tol is too low
                 converged = max_relative_distance <= self.tol and i > 5
-                force_print = (i == self.max_iter) or converged
+                force_print = (i + 1 == self.max_iter) or converged
 
-                self._handle_history(i, rel_baseline=rel_baseline,
+                self._handle_history(i + 1, rel_baseline=rel_baseline,
                                      rel_amplitudes=rel_amplitudes,
                                      force=force_print)
 

@@ -17,8 +17,6 @@ class DLL_PUBLIC AtomicSAGA : public TBaseSAGA<T, T> {
   using TBaseSAGA<T, T>::get_next_i;
   using TBaseSAGA<T, T>::iterate;
   using TBaseSAGA<T, T>::steps_correction;
-  using TBaseSAGA<T, T>::solve_dense;
-  using TBaseSAGA<T, T>::solve_sparse_proba_updates;
   using TBaseSAGA<T, T>::model;
   using TBaseSAGA<T, T>::casted_model;
   using TBaseSAGA<T, T>::prox;
@@ -28,6 +26,11 @@ class DLL_PUBLIC AtomicSAGA : public TBaseSAGA<T, T> {
   using TBaseSAGA<T, T>::t;
   using TBaseSAGA<T, T>::solver_ready;
   using TBaseSAGA<T, T>::record_every;
+  using TBaseSAGA<T, T>::prepare_solve;
+  using TBaseSAGA<T, T>::save_history;
+  using TBaseSAGA<T, T>::last_record_epoch;
+  using TBaseSAGA<T, T>::last_record_time;
+
 
  public:
   using TBaseSAGA<T, T>::set_starting_iterate;
@@ -38,58 +41,28 @@ class DLL_PUBLIC AtomicSAGA : public TBaseSAGA<T, T> {
  private:
   int n_threads = 0;      // SWIG doesn't support uints
   size_t un_threads = 0;  //   uint == int = Werror
-  ulong iterations;
 
-  ArrayDouble objective, history;
-  Array2d<T> iterates_history;
-
+  // This overrides base SAGA class gradients arrays
   Array<std::atomic<T>> gradients_memory;
   Array<std::atomic<T>> gradients_average;
 
   void initialize_solver() override;
 
  public:
-  AtomicSAGA() : AtomicSAGA(0, 0, 0, RandType::unif, 0) {}
+  AtomicSAGA() : AtomicSAGA(0, 0, RandType::unif, 0) {}
 
-  AtomicSAGA(ulong epoch_size, ulong iterations, T tol, RandType rand_type,
-             T step, int seed = -1, int n_threads = 2);
+  AtomicSAGA(ulong epoch_size, T tol, RandType rand_type, T step, int record_every = 1,
+             int seed = -1, int n_threads = 2);
 
   ~AtomicSAGA() {}
 
-  void solve_dense(bool use_intercept, ulong n_features) override;
-
-  void solve_sparse_proba_updates(bool use_intercept,
-                                  ulong n_features) override;
-
-  void solve_sparse_thread(bool use_intercept, ulong n_features,
-                           TProxSeparable<T, std::atomic<T>> *,
-                           uint16_t thread_id);
-
-  const ArrayDouble &get_objective() { return objective; }
-
-  const ArrayDouble &get_computed_objective() {
-    ulong n_records = std::ceil(static_cast<double>(iterations) / record_every);
-    objective = ArrayDouble(n_records);
-    for (ulong index = 0; index < n_records; ++index) {
-      Array<T> iterate_index = view_row(iterates_history, index);
-      objective[index] =
-          model->loss(iterate_index) +
-              prox->value(iterate_index, prox->get_start(), prox->get_end());
-    }
-    return objective;
-  }
-
-  const ArrayDouble &get_history() { return history; }
+  void solve(int n_epochs = 1) override;
 
   template <class Archive>
   void load(Archive &ar) {
     ar(cereal::make_nvp("BaseSAGA", cereal::base_class<TBaseSAGA<T, T>>(this)));
     ar(CEREAL_NVP(n_threads));
     ar(CEREAL_NVP(un_threads));
-    ar(CEREAL_NVP(iterations));
-    ar(CEREAL_NVP(objective));
-    ar(CEREAL_NVP(history));
-    ar(CEREAL_NVP(iterates_history));
 
     Array<T> non_atomic_gradients_memory;
     ar(CEREAL_NVP(non_atomic_gradients_memory));
@@ -109,10 +82,6 @@ class DLL_PUBLIC AtomicSAGA : public TBaseSAGA<T, T> {
     ar(cereal::make_nvp("BaseSAGA", cereal::base_class<TBaseSAGA<T, T>>(this)));
     ar(CEREAL_NVP(n_threads));
     ar(CEREAL_NVP(un_threads));
-    ar(CEREAL_NVP(iterations));
-    ar(CEREAL_NVP(objective));
-    ar(CEREAL_NVP(history));
-    ar(CEREAL_NVP(iterates_history));
 
     Array<T> non_atomic_gradients_memory(gradients_memory.size());
     non_atomic_gradients_memory.init_to_zero();
@@ -131,10 +100,6 @@ class DLL_PUBLIC AtomicSAGA : public TBaseSAGA<T, T> {
     auto is_equal = TBaseSAGA<T, T>::compare(that, ss) &&
         TICK_CMP_REPORT(ss, n_threads) &&
         TICK_CMP_REPORT(ss, un_threads) &&
-        TICK_CMP_REPORT(ss, iterations) &&
-        TICK_CMP_REPORT(ss, objective) &&
-        TICK_CMP_REPORT(ss, history) &&
-        TICK_CMP_REPORT(ss, iterates_history) &&
         TICK_CMP_REPORT(ss, gradients_memory) &&
         TICK_CMP_REPORT(ss, gradients_average);
     return BoolStrReport(is_equal, ss.str());

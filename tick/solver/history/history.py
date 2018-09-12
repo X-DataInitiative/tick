@@ -81,15 +81,6 @@ class History(Base):
         # History function to compute history values based on parameters
         # used in a solver
         history_func = {}
-        # history_func["n_iter"] = n_iter_func
-        # history_func["obj"] = obj_func
-        # history_func["step"] = step_func
-        # history_func["rel_obj"] = rel_obj_func
-        # history_func["n_epoch"] = n_epoch_func
-        # history_func["n_inner_prod"] = n_inner_prod_func
-        # history_func["norm"] = norm_func
-        # history_func["spars"] = spars_func
-        # history_func["rank"] = rank_func
         self._history_func = history_func
 
         # Default print style of history values. Default is %.2e
@@ -126,55 +117,52 @@ class History(Base):
                 value = kwargs[key]
                 self.values[key].append(value)
 
-    # def set_print_order(self, *args):
-    #     """Allows to set the print order of the solver's history
-    #     """
-    #     self.set_params(print_order=list(args))
-    #     self.clear()
-    #     return self
-
-    # def update_history_func(self, **kwargs):
-    #     self._history_func.update(**kwargs)
-    #     self._clear()
-    #     return self
-
-    # def update_print_style(self, **kwargs):
-    #     self.print_style.update(**kwargs)
-    #     return self
-
-    def _format_last(self, name):
+    def _format(self, name, index):
         try:
             formatted_str = self._print_style[name] % \
-                            self.values[name][-1]
+                            self.values[name][index]
         except TypeError:
-            formatted_str = str(self.values[name][-1])
+            formatted_str = str(self.values[name][index])
         return formatted_str
+
+    def _print_header(self):
+        min_width = self._minimum_col_width
+        line = ' | '.join(
+            list([
+                name.center(min_width) for name in self.print_order
+                if name in self.values
+            ]))
+        names = [name.center(min_width) for name in self.print_order]
+        self._col_widths = list(map(len, names))
+        print(line)
+
+    def _print_line(self, index):
+        line = ' | '.join(
+            list([
+                self._format(name, index).rjust(self._col_widths[i])
+                for i, name in enumerate(self.print_order)
+                if name in self.values
+            ]))
+        print(line)
 
     def _print_history(self):
         """Verbose the current line of history
         """
-        values = self.values
-        n_iter = self._n_iter
-        print_order = self.print_order
         # If this is the first iteration, plot the history's column
         # names
-        if n_iter == 0:
-            min_width = self._minimum_col_width
-            line = ' | '.join(
-                list([
-                    name.center(min_width) for name in print_order
-                    if name in values
-                ]))
-            names = [name.center(min_width) for name in print_order]
-            self._col_widths = list(map(len, names))
-            print(line)
-        col_widths = self._col_widths
-        line = ' | '.join(
-            list([
-                self._format_last(name).rjust(col_widths[i])
-                for i, name in enumerate(print_order) if name in values
-            ]))
-        print(line)
+        if self._col_widths is None:
+            self._print_header()
+
+        self._print_line(-1)
+
+    def print_full_history(self):
+        """Verbose the whole history
+        """
+        self._print_header()
+        n_lines = len(next(iter(self.values.values())))
+
+        for i in range(n_lines):
+            self._print_line(i)
 
     @property
     def last_values(self):

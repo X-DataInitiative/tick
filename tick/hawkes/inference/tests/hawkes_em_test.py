@@ -36,7 +36,7 @@ class Test(unittest.TestCase):
         kernel = np.zeros((self.n_nodes, self.n_nodes, kernel_size)) + .4
 
         em = HawkesEM(kernel_support=kernel_support, kernel_size=kernel_size,
-                      n_threads=2, max_iter=10, verbose=False)
+                      n_threads=2, max_iter=11, verbose=False)
         em.fit(self.events, baseline_start=baseline, kernel_start=kernel)
 
         np.testing.assert_array_almost_equal(
@@ -57,7 +57,7 @@ class Test(unittest.TestCase):
 
         em2 = HawkesEM(
             kernel_discretization=np.array([0., 1., 2., 3.]), n_threads=1,
-            max_iter=10, verbose=False)
+            max_iter=11, verbose=False)
         em2.fit(self.events, baseline_start=baseline, kernel_start=kernel)
         np.testing.assert_array_almost_equal(em2.kernel, expected_kernel,
                                              decimal=4)

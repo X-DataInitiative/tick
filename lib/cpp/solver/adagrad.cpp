@@ -5,13 +5,13 @@
 
 template <class T>
 TAdaGrad<T>::TAdaGrad(ulong epoch_size, T tol, RandType rand_type, T step,
-                      int seed)
-    : TStoSolver<T>(epoch_size, tol, rand_type, seed),
+                      int record_every, int seed)
+    : TStoSolver<T>(epoch_size, tol, rand_type, record_every, seed),
       hist_grad(iterate.size()),
       step(step) {}
 
 template <class T>
-void TAdaGrad<T>::solve() {
+void TAdaGrad<T>::solve_one_epoch() {
   std::shared_ptr<TProxSeparable<T>> casted_prox;
   if (prox->is_separable()) {
     casted_prox = std::static_pointer_cast<TProxSeparable<T>>(prox);

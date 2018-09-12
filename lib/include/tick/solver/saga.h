@@ -34,8 +34,6 @@ class DLL_PUBLIC TBaseSAGA : public TStoSolver<T, K> {
   // given by the inverse proportion of non-zero entries in each feature column
   Array<T> steps_correction;
 
-  int record_every = 1;
-
   std::shared_ptr<TModelGeneralizedLinear<T, K>> casted_model;
 
   std::shared_ptr<TProxSeparable<T, K>> casted_prox;
@@ -46,33 +44,18 @@ class DLL_PUBLIC TBaseSAGA : public TStoSolver<T, K> {
 
   void compute_step_corrections();
 
-  virtual void solve_dense(bool use_intercept, ulong n_features) {
-    TICK_CLASS_DOES_NOT_IMPLEMENT("BaseSAGA");
-  }
-
-  virtual void solve_sparse_proba_updates(bool use_intercept,
-                                          ulong n_features) {
-    TICK_CLASS_DOES_NOT_IMPLEMENT("BaseSAGA");
-  }
-
  public:
   // This exists soley for cereal/swig
   TBaseSAGA() : TBaseSAGA<T, K>(0, 0, RandType::unif, 0, 0) {}
 
-  TBaseSAGA(ulong epoch_size, T tol, RandType rand_type, T step, int seed);
-
-  void solve() override;
+  TBaseSAGA(ulong epoch_size, T tol, RandType rand_type, T step, int record_every = 1,
+      int seed = -1);
 
   void set_model(std::shared_ptr<TModel<T, K>> model) override;
 
   T get_step() const { return step; }
 
   void set_step(T step) { this->step = step; }
-
-  int get_record_every() const { return record_every; }
-  void set_record_every(const int record_every) {
-    this->record_every = record_every;
-  }
 
  public:
   template <class Archive>
@@ -121,8 +104,7 @@ class DLL_PUBLIC TSAGA : public TBaseSAGA<T, T> {
   using TBaseSAGA<T, T>::get_next_i;
   using TBaseSAGA<T, T>::iterate;
   using TBaseSAGA<T, T>::steps_correction;
-  using TBaseSAGA<T, T>::solve_dense;
-  using TBaseSAGA<T, T>::solve_sparse_proba_updates;
+  using TBaseSAGA<T, T>::prepare_solve;
   using TBaseSAGA<T, T>::model;
   using TBaseSAGA<T, T>::casted_model;
   using TBaseSAGA<T, T>::prox;
@@ -144,18 +126,19 @@ class DLL_PUBLIC TSAGA : public TBaseSAGA<T, T> {
 
   void initialize_solver() override;
 
-  void solve_dense(bool use_intercept, ulong n_features) override;
+  void solve_dense(bool use_intercept, ulong n_features);
 
-  void solve_sparse_proba_updates(bool use_intercept,
-                                  ulong n_features) override;
+  void solve_sparse_proba_updates(bool use_intercept, ulong n_features);
 
  public:
   // This exists soley for cereal/swig
   TSAGA() : TSAGA<T>(0, 0, RandType::unif, 0, 0) {}
 
-  TSAGA(ulong epoch_size, T tol, RandType rand_type, T step, int seed = -1);
+  TSAGA(ulong epoch_size, T tol, RandType rand_type, T step, int record_every = 1, int seed = -1);
 
  public:
+  void solve_one_epoch() override;
+
   template <class Archive>
   void serialize(Archive &ar) {
     ar(cereal::make_nvp("BaseSAGA", typename cereal::base_class<TBaseSAGA<T, T>>(this)));

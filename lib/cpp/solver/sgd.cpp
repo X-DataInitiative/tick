@@ -7,11 +7,11 @@
 #include "tick/solver/sgd.h"
 
 template <class T, class K>
-TSGD<T, K>::TSGD(ulong epoch_size, T tol, RandType rand_type, T step, int seed)
-    : TStoSolver<T, K>(epoch_size, tol, rand_type, seed), step(step) {}
+TSGD<T, K>::TSGD(ulong epoch_size, T tol, RandType rand_type, T step, int record_every, int seed)
+    : TStoSolver<T, K>(epoch_size, tol, rand_type, record_every, seed), step(step) {}
 
 template <class T, class K>
-void TSGD<T, K>::solve() {
+void TSGD<T, K>::solve_one_epoch() {
   if (model->is_sparse()) {
     solve_sparse();
   } else {

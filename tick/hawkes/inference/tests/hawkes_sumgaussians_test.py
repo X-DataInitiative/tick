@@ -39,7 +39,7 @@ class Test(unittest.TestCase):
             n_gaussians=n_gaussians, max_mean_gaussian=max_mean_gaussian,
             step_size=step_size, C=C,
             lasso_grouplasso_ratio=lasso_grouplasso_ratio, n_threads=3,
-            max_iter=10, verbose=False, em_max_iter=3)
+            max_iter=11, verbose=False, em_max_iter=3)
         learner.fit(events[0], baseline_start=baseline_start,
                     amplitudes_start=amplitudes_start)
 

@@ -196,7 +196,7 @@ class GFB(SolverFirstOrder):
             self.initialize_values(x0, step)
 
         n_prox = self.prox.n_proxs
-        for n_iter in range(self.max_iter + 1):
+        for n_iter in range(self.max_iter):
             # We will record on this iteration and we must be ready
             if self._should_record_iter(n_iter):
                 prev_minimizer[:] = minimizer
@@ -226,7 +226,7 @@ class GFB(SolverFirstOrder):
                 converged = rel_obj < self.tol
                 # if converged, we stop the loop and record the last step
                 # in history
-                self._handle_history(n_iter, force=converged, obj=obj,
+                self._handle_history(n_iter + 1, force=converged, obj=obj,
                                      x=minimizer.copy(), rel_delta=rel_delta,
                                      step=step, rel_obj=rel_obj)
                 if converged:

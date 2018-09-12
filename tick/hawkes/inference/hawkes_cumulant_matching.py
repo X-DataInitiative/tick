@@ -411,7 +411,7 @@ class HawkesCumulantMatching(LearnerHawkesNoParam):
                 sess.run(tf.global_variables_initializer())
                 sess.run(self._tf_model_coeffs.assign(start_point))
                 # Training cycle
-                for n_iter in range(self.max_iter + 1):
+                for n_iter in range(self.max_iter):
                     if self._should_record_iter(n_iter):
                         # We don't use self.objective here as it would be very
                         # slow
@@ -440,8 +440,8 @@ class HawkesCumulantMatching(LearnerHawkesNoParam):
                         prev_obj = obj
                         converged = rel_obj < self.tol
 
-                        force = converged or n_iter == self.max_iter
-                        self._handle_history(n_iter, objective=obj,
+                        force = converged or n_iter + 1 == self.max_iter
+                        self._handle_history(n_iter + 1, objective=obj,
                                              rel_obj=rel_obj, force=force)
 
                         if converged:

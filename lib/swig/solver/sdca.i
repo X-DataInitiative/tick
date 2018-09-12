@@ -15,13 +15,13 @@ public:
          unsigned long epoch_size = 0,
          T tol = 0.,
          RandType rand_type = RandType::unif,
+         int record_every = 1,
          int seed = -1);
 
     void set_model(std::shared_ptr<TModel<T, K>> model);
     void reset();
     void set_starting_iterate();
     void set_starting_iterate(Array<T> &dual_vector);
-    void solve();
     T get_l_l2sq() const;
     void set_l_l2sq(T l_l2sq);
     std::shared_ptr<Array<T> > get_primal_vector();
@@ -38,13 +38,13 @@ public:
          unsigned long epoch_size = 0,
          double tol = 0.,
          RandType rand_type = RandType::unif,
+         int record_every = 1,
          int seed = -1);
 
     void set_model(ModelDoublePtr model);
     void reset();
     void set_starting_iterate();
     void set_starting_iterate(ArrayDouble &dual_vector);
-    void solve();
     double get_l_l2sq() const;
     void set_l_l2sq(double l_l2sq);
     SArrayDoublePtr get_primal_vector();
@@ -63,13 +63,13 @@ public:
          unsigned long epoch_size = 0,
          float tol = 0.,
          RandType rand_type = RandType::unif,
+         int record_every = 1,
          int seed = -1);
 
     void set_model(ModelFloatPtr model);
     void reset();
     void set_starting_iterate();
     void set_starting_iterate(ArrayFloat &dual_vector);
-    void solve();
     float get_l_l2sq() const;
     void set_l_l2sq(float l_l2sq);
     SArrayFloatPtr get_primal_vector();

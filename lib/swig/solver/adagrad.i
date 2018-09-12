@@ -15,9 +15,8 @@ public:
         T tol,
         RandType rand_type,
         T step,
-        int seed);
-
-    void solve();
+        int record_every = 1,
+        int seed = -1);
 
     bool compare(const TAdaGrad<T> &that);
 };

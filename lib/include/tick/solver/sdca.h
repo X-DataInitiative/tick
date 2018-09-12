@@ -52,11 +52,11 @@ class DLL_PUBLIC TSDCA : public TStoSolver<T, K> {
   TSDCA() : TSDCA<T, K>(0, 0, 0) {}
 
   explicit TSDCA(T l_l2sq, ulong epoch_size = 0, T tol = 0.,
-                 RandType rand_type = RandType::unif, int seed = -1);
+                 RandType rand_type = RandType::unif,  int record_every = 1, int seed = -1);
 
   void reset() override;
 
-  void solve() override;
+  void solve_one_epoch() override;
 
   void set_model(std::shared_ptr<TModel<T, K>> model) override;
 

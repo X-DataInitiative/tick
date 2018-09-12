@@ -16,13 +16,12 @@ public:
         T tol,
         RandType rand_type,
         T step,
-        int seed);
+        int record_every = 1,
+        int seed = -1);
 
     inline void set_step(T step);
 
     inline T get_step() const;
-
-    void solve();
 
     bool compare(const TSGD<T, K> &that);
 };

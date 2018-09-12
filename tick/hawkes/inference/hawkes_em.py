@@ -176,7 +176,7 @@ class HawkesEM(LearnerHawkesNoParam):
         else:
             self.baseline = baseline_start.copy()
 
-        for i in range(self.max_iter + 1):
+        for i in range(self.max_iter):
             if self._should_record_iter(i):
                 prev_baseline = self.baseline.copy()
                 prev_kernel = self.kernel.copy()
@@ -188,7 +188,7 @@ class HawkesEM(LearnerHawkesNoParam):
                 rel_kernel = relative_distance(self.kernel, prev_kernel)
 
                 converged = max(rel_baseline, rel_kernel) <= self.tol
-                force_print = (i == self.max_iter) or converged
+                force_print = (i + 1 == self.max_iter) or converged
                 self._handle_history(i, rel_baseline=rel_baseline,
                                      rel_kernel=rel_kernel, force=force_print)
 
