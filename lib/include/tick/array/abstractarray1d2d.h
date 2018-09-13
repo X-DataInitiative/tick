@@ -14,14 +14,34 @@
 #include <algorithm>
 #include <atomic>
 #include <cstring>
+#include <memory>
 #include <type_traits>
 #include <typeinfo>
 
+#include "alloc.h"
 #include "promote.h"
 #include "vector_operations.h"
 
+// clang-format off
+// Don't touch this!
+#ifndef TICK_SWIG_INCLUDE
+DISABLE_WARNING(unused, exceptions, 42)
+DISABLE_WARNING(unused, unused-private-field, 42)
+DISABLE_WARNING(delete-non-virtual-dtor, delete-non-virtual-dtor, 42)
+#endif
 #include <cereal/cereal.hpp>
 #include <cereal/types/base_class.hpp>
+#include <cereal/types/memory.hpp>
+#include <cereal/types/polymorphic.hpp>
+#include <cereal/types/vector.hpp>
+#include <cereal/archives/portable_binary.hpp>
+#ifndef TICK_SWIG_INCLUDE
+ENABLE_WARNING(unused, exceptions, 42)
+ENABLE_WARNING(unused, unused-private-field, 42)
+ENABLE_WARNING(delete-non-virtual-dtor, delete-non-virtual-dtor, 42)
+#endif
+// clang-format on
+// Carry on formatting
 
 // This macro defines the type to be used for indices of sparse arrays.
 // In python the scipy csr_matrix uses NPY_INT32 to encode them
