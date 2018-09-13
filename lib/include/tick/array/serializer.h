@@ -1,19 +1,14 @@
 #ifndef LIB_INCLUDE_TICK_ARRAY_SERIALIZER_H_
 #define LIB_INCLUDE_TICK_ARRAY_SERIALIZER_H_
 
-#include "array.h"
-#include "array2d.h"
-#include "sarray.h"
-#include "sarray2d.h"
-
-#include "sparsearray2d.h"
-#include "ssparsearray2d.h"
-
-#include <cereal/archives/portable_binary.hpp>
 #include <fstream>
 
+#include "sarray.h"
+#include "sarray2d.h"
+#include "ssparsearray2d.h"
+
 template <typename A>
-void array_to_file(std::string _file, const A &array) {
+inline void array_to_file(std::string _file, const A &array) {
   std::ofstream ss(_file, std::ios::out | std::ios::binary);
   {
     cereal::PortableBinaryOutputArchive oarchive(ss);
@@ -22,7 +17,7 @@ void array_to_file(std::string _file, const A &array) {
 }
 
 template <typename A>
-std::shared_ptr<A> array_from_file(const std::string &_file) {
+inline std::shared_ptr<A> array_from_file(const std::string &_file) {
   auto arr = std::make_shared<A>();
   {
     std::ifstream data(_file, std::ios::in | std::ios::binary);

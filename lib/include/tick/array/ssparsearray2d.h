@@ -10,7 +10,6 @@
 
 /** @file */
 
-#include <memory>
 #include "sparsearray2d.h"
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -468,43 +467,19 @@ std::shared_ptr<SSparseArray2d<T>> SparseArray2d<T>::as_ssparsearray2d_ptr() {
 /**
  * @}
  */
-/** @defgroup ssparsearray2d_sub_mod The instantiations of the SArray2d template
- *  @ingroup SArray_typedefs_mod
- * @{
- */
-/**
- * @}
- */
-/** @defgroup ssparsearray2dptr_sub_mod The 2d shared pointer array classes
- *  @ingroup SArray_typedefs_mod
- * @{
- */
-/**
- * @}
- */
-/** @defgroup ssparsearray2dptrlist1d_sub_mod The classes for dealing with
- * 1d-list of 2d shared pointer arrays
- *  @ingroup SArray_typedefs_mod
- * @{
- */
-/**
- * @}
- */
-/** @defgroup ssparsearray2dptrlist2d_sub_mod The classes for dealing with
- * 2d-list of 2d shared pointer arrays
- *  @ingroup SSparseArray_typedefs_mod
- * @{
- */
-/**
- * @}
- */
-#define SSPARSE_ARRAY2D_DEFINE_TYPE(TYPE, NAME)                              \
-  typedef SSparseArray2d<TYPE> SSparseArray##NAME##2d;                       \
-  typedef std::shared_ptr<SSparseArray##NAME##2d> SSparseArray##NAME##2dPtr; \
-  typedef std::vector<SSparseArray##NAME##2dPtr>                             \
-      SSparseArray##NAME##2dPtrList1D;                                       \
-  typedef std::vector<SSparseArray##NAME##2dPtrList1D>                       \
-      SSparseArray##NAME##2dPtrList2D
+
+#define SSPARSE_ARRAY2D_DEFINE_TYPE_BASIC(TYPE, NAME)                             \
+  typedef SSparseArray2d<TYPE> SSparseArray##NAME##2d;                            \
+  typedef std::shared_ptr<SSparseArray##NAME##2d> SSparseArray##NAME##2dPtr;      \
+  typedef std::vector<SSparseArray##NAME##2dPtr> SSparseArray##NAME##2dPtrList1D; \
+  typedef std::vector<SSparseArray##NAME##2dPtrList1D> SSparseArray##NAME##2dPtrList2D
+
+#define SSPARSE_ARRAY2D_DEFINE_TYPE(TYPE, NAME)                                 \
+  SSPARSE_ARRAY2D_DEFINE_TYPE_BASIC(TYPE, NAME);                                \
+  CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SSparseArray##NAME##2d,                    \
+                                     cereal::specialization::member_load_save); \
+  CEREAL_REGISTER_TYPE(SSparseArray##NAME##2d);                                 \
+  CEREAL_REGISTER_POLYMORPHIC_RELATION(BaseArray##NAME##2d, SSparseArray##NAME##2d)
 
 SSPARSE_ARRAY2D_DEFINE_TYPE(double, Double);
 SSPARSE_ARRAY2D_DEFINE_TYPE(float, Float);
@@ -514,9 +489,10 @@ SSPARSE_ARRAY2D_DEFINE_TYPE(int16_t, Short);
 SSPARSE_ARRAY2D_DEFINE_TYPE(uint16_t, UShort);
 SSPARSE_ARRAY2D_DEFINE_TYPE(int64_t, Long);
 SSPARSE_ARRAY2D_DEFINE_TYPE(ulong, ULong);
-SSPARSE_ARRAY2D_DEFINE_TYPE(std::atomic<double>, AtomicDouble);
-SSPARSE_ARRAY2D_DEFINE_TYPE(std::atomic<float>, AtomicFloat);
+SSPARSE_ARRAY2D_DEFINE_TYPE_BASIC(std::atomic<double>, AtomicDouble);
+SSPARSE_ARRAY2D_DEFINE_TYPE_BASIC(std::atomic<float>, AtomicFloat);
 
+#undef SSPARSE_ARRAY2D_DEFINE_TYPE_BASIC
 #undef SSPARSE_ARRAY2D_DEFINE_TYPE
 
 #endif  // LIB_INCLUDE_TICK_ARRAY_SSPARSEARRAY2D_H_

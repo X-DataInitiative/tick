@@ -5,14 +5,6 @@
 
 /** @file */
 
-#include "alloc.h"
-#include "tick/base/defs.h"
-
-#include <cmath>
-#include <iostream>
-#include <memory>
-#include <vector>
-
 #include "basearray.h"
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -553,10 +545,14 @@ CEREAL_LOAD_FUNCTION_NAME(Archive &ar, Array<T> &arr) {
  * @{
  */
 
-#define ARRAY_DEFINE_TYPE(TYPE, NAME)                   \
+#define ARRAY_DEFINE_TYPE_BASIC(TYPE, NAME)             \
   typedef Array<TYPE> Array##NAME;                      \
   typedef std::vector<Array##NAME> Array##NAME##List1D; \
   typedef std::vector<Array##NAME##List1D> Array##NAME##List2D
+
+#define ARRAY_DEFINE_TYPE(TYPE, NAME)  \
+  ARRAY_DEFINE_TYPE_BASIC(TYPE, NAME); \
+  CEREAL_REGISTER_TYPE(Array##NAME)
 
 ARRAY_DEFINE_TYPE(double, Double);
 ARRAY_DEFINE_TYPE(float, Float);
@@ -566,8 +562,11 @@ ARRAY_DEFINE_TYPE(int16_t, Short);
 ARRAY_DEFINE_TYPE(uint16_t, UShort);
 ARRAY_DEFINE_TYPE(int64_t, Long);
 ARRAY_DEFINE_TYPE(ulong, ULong);
-ARRAY_DEFINE_TYPE(std::atomic<double>, AtomicDouble);
-ARRAY_DEFINE_TYPE(std::atomic<float>, AtomicFloat);
+ARRAY_DEFINE_TYPE_BASIC(std::atomic<double>, AtomicDouble);
+ARRAY_DEFINE_TYPE_BASIC(std::atomic<float>, AtomicFloat);
+
+#undef ARRAY_DEFINE_TYPE_BASIC
+#undef ARRAY_DEFINE_TYPE
 
 /**
  * @}

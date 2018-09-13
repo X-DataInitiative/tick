@@ -18,7 +18,7 @@
 
 #include "basearray.h"
 
-// Instanciations
+// Instantiations
 
 /**
  * \defgroup SArray_typedefs_mod shared array related typedef

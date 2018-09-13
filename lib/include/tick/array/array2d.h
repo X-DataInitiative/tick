@@ -5,10 +5,7 @@
 
 /** @file */
 
-#include "alloc.h"
-#include "array.h"
 #include "basearray2d.h"
-#include "tick/base/defs.h"
 
 template <typename T>
 class SArray2d;
@@ -387,10 +384,14 @@ CEREAL_LOAD_FUNCTION_NAME(Archive& ar, BaseArray2d<T>& arr) {
  * @{
  */
 
-#define ARRAY2D_DEFINE_TYPE(TYPE, NAME)                       \
+#define ARRAY2D_DEFINE_TYPE_BASIC(TYPE, NAME)                 \
   typedef Array2d<TYPE> Array##NAME##2d;                      \
   typedef std::vector<Array##NAME##2d> Array##NAME##2dList1D; \
   typedef std::vector<Array##NAME##2dList1D> Array##NAME##2dList2D
+
+#define ARRAY2D_DEFINE_TYPE(TYPE, NAME)  \
+  ARRAY2D_DEFINE_TYPE_BASIC(TYPE, NAME); \
+  CEREAL_REGISTER_TYPE(Array##NAME##2d)
 
 ARRAY2D_DEFINE_TYPE(double, Double);
 ARRAY2D_DEFINE_TYPE(float, Float);
@@ -400,11 +401,11 @@ ARRAY2D_DEFINE_TYPE(int16_t, Short);
 ARRAY2D_DEFINE_TYPE(uint16_t, UShort);
 ARRAY2D_DEFINE_TYPE(int64_t, Long);
 ARRAY2D_DEFINE_TYPE(ulong, ULong);
-ARRAY2D_DEFINE_TYPE(std::atomic<double>, AtomicDouble);
-ARRAY2D_DEFINE_TYPE(std::atomic<float>, AtomicFloat);
+ARRAY2D_DEFINE_TYPE_BASIC(std::atomic<double>, AtomicDouble);
+ARRAY2D_DEFINE_TYPE_BASIC(std::atomic<float>, AtomicFloat);
 
+#undef ARRAY2D_DEFINE_TYPE_BASIC
 #undef ARRAY2D_DEFINE_TYPE
-
 /**
  * @}
  */
