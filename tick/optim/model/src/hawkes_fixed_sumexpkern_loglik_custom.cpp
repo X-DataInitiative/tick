@@ -179,6 +179,7 @@ double ModelHawkesSumExpCustom::loss_dim_i(const ulong i, const ArrayDouble &coe
                 }
 
             if (tmp_s <= 0) {
+                return 1e50;
                 TICK_ERROR("The sum of the influence on someone cannot be negative. "
                                    "Maybe did you forget to add a positive constraint to "
                                    "your proximal operator, in ModelHawkesSumExpCustom::loss_dim_i");

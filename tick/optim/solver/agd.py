@@ -153,11 +153,19 @@ class AGD(SolverFirstOrder):
             grad_y = self.model.grad(y)
             #! cheating here to ensure loss(coeff) has coeff positive
             next_point = y - step * grad_y
-            next_point_adj = next_point.copy()
-            next_point_adj[next_point_adj < 0] = 0
-            x[:] = self.prox.call(next_point_adj, step)
+            tau = 1.0
+            while self.model.loss(next_point) > 1e20:
+                tau /= 2
+                next_point = y - step * grad_y * tau
+
+        x = next_point
+
         t = np.sqrt((1. + (1. + 4. * t * t))) / 2.
         y[:] = x + (prev_t - 1) / t * (x - prev_x)
+        tau = 1.0
+        while self.model.loss(y) > 1e20:
+            tau /= 2
+            y[:] = x + tau * (prev_t - 1) / t * (x - prev_x)
         return x, y, t, step
 
     def _solve(self, x0: np.ndarray = None, step: float = None):
