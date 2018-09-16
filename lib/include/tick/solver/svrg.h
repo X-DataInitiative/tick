@@ -8,19 +8,19 @@
 #include "tick/prox/prox.h"
 #include "tick/prox/prox_separable.h"
 
-template <class T>
-class DLL_PUBLIC TSVRG : public TStoSolver<T> {
+template <class T, class K = T>
+class DLL_PUBLIC TSVRG : public TStoSolver<T, K> {
  protected:
-  using TStoSolver<T>::t;
-  using TStoSolver<T>::model;
-  using TStoSolver<T>::iterate;
-  using TStoSolver<T>::prox;
-  using TStoSolver<T>::epoch_size;
-  using TStoSolver<T>::get_next_i;
-  using TStoSolver<T>::rand_unif;
+  using TStoSolver<T, K>::t;
+  using TStoSolver<T, K>::model;
+  using TStoSolver<T, K>::iterate;
+  using TStoSolver<T, K>::prox;
+  using TStoSolver<T, K>::epoch_size;
+  using TStoSolver<T, K>::get_next_i;
+  using TStoSolver<T, K>::rand_unif;
 
  public:
-  using TStoSolver<T>::get_class_name;
+  using TStoSolver<T, K>::get_class_name;
 
  private:
   int n_threads = 1;
@@ -51,17 +51,17 @@ class DLL_PUBLIC TSVRG : public TStoSolver<T> {
 
   void dense_single_thread_solver(const ulong& next_i);
 
-  // TProxSeparable<T>* is a raw pointer here as the
+  // TProxSeparable<T, K>* is a raw pointer here as the
   //  ownership of the pointer is handled by
   //  a shared_ptr which is above it in the same
   //  scope so a shared_ptr is not needed
   void sparse_single_thread_solver(const ulong& next_i, const ulong& n_features,
                                    const bool use_intercept,
-                                   TProxSeparable<T>*& casted_prox);
+                                   TProxSeparable<T, K>*& casted_prox);
 
  public:
   // This exists soley for cereal/swig
-  TSVRG() : TSVRG<T>(0, 0, RandType::unif, 0) {}
+  TSVRG() : TSVRG<T, K>(0, 0, RandType::unif, 0) {}
 
   TSVRG(ulong epoch_size, T tol, RandType rand_type, T step, int seed = -1,
         int n_threads = 1,
@@ -71,31 +71,32 @@ class DLL_PUBLIC TSVRG : public TStoSolver<T> {
 
   void solve() override;
 
-  void set_model(std::shared_ptr<TModel<T>> model) override;
+  void set_model(std::shared_ptr<TModel<T, K>> model) override;
 
   T get_step() const { return step; }
 
-  void set_step(T step) { TSVRG<T>::step = step; }
+  void set_step(T step) { TSVRG<T, K>::step = step; }
 
   SVRG_VarianceReductionMethod get_variance_reduction() const {
     return variance_reduction;
   }
 
   void set_variance_reduction(SVRG_VarianceReductionMethod variance_reduction) {
-    TSVRG<T>::variance_reduction = variance_reduction;
+    TSVRG<T, K>::variance_reduction = variance_reduction;
   }
 
   SVRG_StepType get_step_type() { return step_type; }
 
   void set_step_type(SVRG_StepType step_type) {
-    TSVRG<T>::step_type = step_type;
+    TSVRG<T, K>::step_type = step_type;
   }
 
   void set_starting_iterate(Array<T>& new_iterate) override;
 
   template <class Archive>
   void serialize(Archive& ar) {
-    ar(cereal::make_nvp("StoSolver", cereal::base_class<TStoSolver<T>>(this)));
+    ar(cereal::make_nvp("StoSolver",
+                        cereal::base_class<TStoSolver<T, K>>(this)));
 
     ar(CEREAL_NVP(step));
     ar(CEREAL_NVP(steps_correction));
@@ -109,11 +110,11 @@ class DLL_PUBLIC TSVRG : public TStoSolver<T> {
     ar(CEREAL_NVP(step_type));
   }
 
-  BoolStrReport compare(const TSVRG<T>& that) {
+  BoolStrReport compare(const TSVRG<T, K>& that) {
     std::stringstream ss;
     ss << get_class_name() << std::endl;
     bool are_equal =
-        TStoSolver<T>::compare(that, ss) && TICK_CMP_REPORT(ss, step) &&
+        TStoSolver<T, K>::compare(that, ss) && TICK_CMP_REPORT(ss, step) &&
         TICK_CMP_REPORT(ss, steps_correction) &&
         TICK_CMP_REPORT(ss, variance_reduction) &&
         TICK_CMP_REPORT(ss, full_gradient) && TICK_CMP_REPORT(ss, fixed_w) &&
@@ -124,10 +125,10 @@ class DLL_PUBLIC TSVRG : public TStoSolver<T> {
     return BoolStrReport(are_equal, ss.str());
   }
 
-  BoolStrReport operator==(const TSVRG<T>& that) { return compare(that); }
+  BoolStrReport operator==(const TSVRG<T, K>& that) { return compare(that); }
 
-  static std::shared_ptr<TSVRG<T>> AS_NULL() {
-    return std::move(std::shared_ptr<TSVRG<T>>(new TSVRG<T>));
+  static std::shared_ptr<TSVRG<T, K>> AS_NULL() {
+    return std::move(std::shared_ptr<TSVRG<T, K>>(new TSVRG<T, K>));
   }
 };
 

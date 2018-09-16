@@ -134,7 +134,8 @@ if (${GTEST_FOUND})
             COMMAND cpp-test/linear_model/tick_test_linear_model
             COMMAND cpp-test/hawkes/model/tick_test_hawkes_model
             COMMAND cpp-test/hawkes/simulation/tick_test_hawkes_simulation
-            COMMAND cpp-test/solver/tick_test_solver
+            COMMAND cpp-test/solver/tick_test_svrg
+            COMMAND cpp-test/solver/tick_test_saga
             )
 
     add_subdirectory(cpp-test/benchmark)

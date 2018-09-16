@@ -5,26 +5,15 @@ import numpy as np
 from tick.base_model import ModelGeneralizedLinear
 from .base import SolverFirstOrderSto, SolverSto
 
-from tick.solver.build.solver import SAGA_VarianceReductionMethod_Last
-from tick.solver.build.solver import SAGA_VarianceReductionMethod_Average
-from tick.solver.build.solver import SAGA_VarianceReductionMethod_Random
-
 from tick.solver.build.solver import SAGADouble as _SAGADouble
 from tick.solver.build.solver import SAGAFloat as _SAGAFloat
 
 __author__ = "Stephane Gaiffas"
 
-variance_reduction_methods_mapper = {
-    'last': SAGA_VarianceReductionMethod_Last,
-    'avg': SAGA_VarianceReductionMethod_Average,
-    'rand': SAGA_VarianceReductionMethod_Random
-}
-
 dtype_class_mapper = {
     np.dtype('float32'): _SAGAFloat,
     np.dtype('float64'): _SAGADouble
 }
-
 
 class SAGA(SolverFirstOrderSto):
     """Stochastic Average Gradient solver, for the minimization of objectives
@@ -53,8 +42,7 @@ class SAGA(SolverFirstOrderSto):
 
     where :math:`i` is sampled at random (strategy depends on ``rand_type``) at
     each iteration, and where :math:`\\bar w` and :math:`\\nabla f(\\bar w)`
-    are updated at the beginning of each epoch, with a strategy that depend on
-    the ``variance_reduction`` parameter. The step-size :math:`\\eta` can be
+    are updated at the beginning of each epoch. The step-size :math:`\\eta` can be
     tuned with ``step``, the seed of the random number generator for generation
     of samples :math:`i` can be seeded with ``seed``. The iterations stop
     whenever tolerance ``tol`` is achieved, or after ``max_iter`` epochs
@@ -93,23 +81,8 @@ class SAGA(SolverFirstOrderSto):
         (different at each run) will be chosen.
 
     epoch_size : `int`, default given by model
-        Epoch size, namely how many iterations are made before updating the
-        variance reducing term. By default, this is automatically tuned using
+        Epoch size, by default, this is automatically tuned using
         information from the model object passed through ``set_model``.
-
-    variance_reduction : {'last', 'avg', 'rand'}, default='last'
-        Strategy used for the computation of the iterate used in
-        variance reduction (also called phase iterate). A warning will be
-        raised if the ``'avg'`` strategy is used when the model is a
-        generalized linear model with sparse features, since it is strongly
-        sub-optimal in this case
-
-        * ``'last'`` : the phase iterate is the last iterate of the previous
-          epoch
-        * ``'avg``' : the phase iterate is the average over the iterates in the
-          past epoch
-        * ``'rand'``: the phase iterate is a random iterate of the previous
-          epoch
 
     rand_type : {'unif', 'perm'}, default='unif'
         How samples are randomly selected from the data
@@ -161,36 +134,15 @@ class SAGA(SolverFirstOrderSto):
       method with support for non-strongly convex composite objectives,
       NIPS 2014
     """
-    _attrinfos = {"_var_red_str": {}}
 
     def __init__(self, step: float = None, epoch_size: int = None,
                  rand_type: str = "unif", tol: float = 0., max_iter: int = 100,
                  verbose: bool = True, print_every: int = 10,
-                 record_every: int = 1, seed: int = -1,
-                 variance_reduction: str = "last"):
-
-        # temporary to hold varience reduction type before dtype is known
-        self._var_red_str = variance_reduction
+                 record_every: int = 1, seed: int = -1):
 
         SolverFirstOrderSto.__init__(self, step, epoch_size, rand_type, tol,
                                      max_iter, verbose, print_every,
                                      record_every, seed=seed)
-
-    @property
-    def variance_reduction(self):
-        return next((k for k, v in variance_reduction_methods_mapper.items()
-                     if v == self._solver.get_variance_reduction()), None)
-
-    @variance_reduction.setter
-    def variance_reduction(self, val: str):
-        if val not in variance_reduction_methods_mapper:
-            raise ValueError(
-                'variance_reduction should be one of "{}", got "{}".'.format(
-                    ', '.join(variance_reduction_methods_mapper.keys()), val))
-
-        self._var_red_str = val
-        self._solver.set_variance_reduction(
-            variance_reduction_methods_mapper[val])
 
     def set_model(self, model: ModelGeneralizedLinear):
         """Set model in the solver
@@ -230,4 +182,3 @@ class SAGA(SolverFirstOrderSto):
             '_solver',
             solver_class(epoch_size, self.tol, self._rand_type, step,
                          self.seed))
-        self.variance_reduction = self._var_red_str

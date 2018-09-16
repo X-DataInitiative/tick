@@ -66,10 +66,11 @@ for FILE in "${FILES[@]}"; do
     for P in "${PROFILES[@]}"; do
         cp bin/$P/obj/* bin/gtest_nodep/obj
     done
+    cp bin/gtest_nodep/tmp/* bin/gtest_nodep/obj
 
     mkn link -p gtest_nodep  \
-            -tl "${LDARGS}" \
-            -P "${MKN_P}" \
-            -KB $B_PATH ${MKN_X_FILE[@]}
+        -tl "${LDARGS}" \
+        -M "${FILE}" -P "${MKN_P[@]}" \
+        -KB $B_PATH ${MKN_X_FILE[@]}
     mv bin/gtest_nodep/tick $ROOT/gtest/$(basename $FILE)
 done

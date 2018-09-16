@@ -29,10 +29,13 @@ inline std::ostream &operator<<(std::ostream &s, const RandType &r) {
   return s << static_cast<utype>(r);
 }
 
-template <class T>
+template <class T, class K = T>
 class DLL_PUBLIC TStoSolver {
-  template <class T1>
-  friend std::ostream &operator<<(std::ostream &, const TStoSolver<T1> &);
+  // Grants cereal access to default constructor/serialize functions
+  friend class cereal::access;
+
+  template <class T1, class K1>
+  friend std::ostream &operator<<(std::ostream &, const TStoSolver<T1, K1> &);
 
  protected:
   // A flag that specify if random permutation is ready to be used or not
@@ -61,9 +64,9 @@ class DLL_PUBLIC TStoSolver {
   T tol;
 
   // Model object
-  std::shared_ptr<TModel<T> > model;
+  std::shared_ptr<TModel<T, K> > model;
 
-  std::shared_ptr<TProx<T> > prox;
+  std::shared_ptr<TProx<T, K> > prox;
 
   // Type of random sampling
   RandType rand_type;
@@ -71,7 +74,7 @@ class DLL_PUBLIC TStoSolver {
   Rand rand;
 
   // Iterate
-  Array<T> iterate;
+  Array<K> iterate;
 
   // An array that allows to store the sampled random permutation
   ArrayULong permutation;
@@ -85,7 +88,7 @@ class DLL_PUBLIC TStoSolver {
                     RandType rand_type = RandType::unif, int seed = -1)
       : epoch_size(epoch_size),
         tol(tol),
-        prox(std::make_shared<TProxZero<T> >(0.0)),
+        prox(std::make_shared<TProxZero<T, K> >(0.0)),
         rand_type(rand_type) {
     set_seed(seed);
     permutation_ready = false;
@@ -93,14 +96,16 @@ class DLL_PUBLIC TStoSolver {
 
   virtual ~TStoSolver() {}
 
-  virtual void set_model(std::shared_ptr<TModel<T> > _model) {
+  virtual void set_model(std::shared_ptr<TModel<T, K> > _model) {
     this->model = _model;
     permutation_ready = false;
-    iterate = Array<T>(_model->get_n_coeffs());
+    iterate = Array<K>(_model->get_n_coeffs());
     iterate.init_to_zero();
   }
 
-  virtual void set_prox(std::shared_ptr<TProx<T> > prox) { this->prox = prox; }
+  virtual void set_prox(std::shared_ptr<TProx<T, K> > prox) {
+    this->prox = prox;
+  }
 
   void set_seed(int seed) {
     this->seed = seed;
@@ -113,13 +118,13 @@ class DLL_PUBLIC TStoSolver {
 
   void shuffle();
 
-  virtual void solve() { TICK_CLASS_DOES_NOT_IMPLEMENT("TStoSolver<T>"); }
+  virtual void solve() { TICK_CLASS_DOES_NOT_IMPLEMENT("TStoSolver<T, K>"); }
 
   virtual void get_minimizer(Array<T> &out);
 
   virtual void get_iterate(Array<T> &out);
 
-  virtual void set_starting_iterate(Array<T> &new_iterate);
+  virtual void set_starting_iterate(Array<K> &new_iterate);
 
   // Returns a uniform integer in the set {0, ..., m - 1}
   inline ulong rand_unif(ulong m) { return rand.uniform_int(ulong{0}, m); }
@@ -147,8 +152,8 @@ class DLL_PUBLIC TStoSolver {
     permutation_ready = false;
   }
 
-  const std::shared_ptr<TModel<T> > get_model() { return model; }
-  const std::shared_ptr<TProx<T> > get_prox() { return prox; }
+  const std::shared_ptr<TModel<T, K> > get_model() { return model; }
+  const std::shared_ptr<TProx<T, K> > get_prox() { return prox; }
 
   virtual std::string get_class_name() const {
     std::stringstream ss;
@@ -176,8 +181,8 @@ class DLL_PUBLIC TStoSolver {
 
   template <class Archive>
   void save(Archive &ar) const {
-    ar(CEREAL_NVP(prox));
     ar(CEREAL_NVP(model));
+    ar(CEREAL_NVP(prox));
     ar(CEREAL_NVP(t));
     ar(CEREAL_NVP(iterate));
     ar(CEREAL_NVP(rand_max));
@@ -194,7 +199,7 @@ class DLL_PUBLIC TStoSolver {
     ar(CEREAL_NVP(rand_seed));
   }
 
-  BoolStrReport compare(const TStoSolver<T> &that, std::stringstream &ss) {
+  BoolStrReport compare(const TStoSolver<T, K> &that, std::stringstream &ss) {
     return BoolStrReport(
         TICK_CMP_REPORT(ss, t) && TICK_CMP_REPORT(ss, iterate) &&
             TICK_CMP_REPORT(ss, rand_max) && TICK_CMP_REPORT(ss, epoch_size) &&
@@ -205,13 +210,27 @@ class DLL_PUBLIC TStoSolver {
   }
 };
 
-template <typename T>
-inline std::ostream &operator<<(std::ostream &s, const TStoSolver<T> &p) {
-  return s << typeid(p).name() << "<" << typeid(T).name() << ">";
+template <typename T, typename K>
+inline std::ostream &operator<<(std::ostream &s, const TStoSolver<T, K> &p) {
+  return s << typeid(p).name();
 }
 
-using StoSolver = TStoSolver<double>;
-using TStoSolverDouble = TStoSolver<double>;
-using TStoSolverFloat = TStoSolver<float>;
+using StoSolver = TStoSolver<double, double>;
+
+using StoSolverDouble = TStoSolver<double, double>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(StoSolverDouble,
+                                   cereal::specialization::member_load_save)
+
+using StoSolverFloat = TStoSolver<float, float>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(StoSolverFloat,
+                                   cereal::specialization::member_load_save)
+
+using StoSolverAtomicDouble = TStoSolver<double, std::atomic<double> >;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(StoSolverAtomicDouble,
+                                   cereal::specialization::member_load_save)
+
+using StoSolverAtomicFloat = TStoSolver<float, std::atomic<float> >;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(StoSolverAtomicFloat,
+                                   cereal::specialization::member_load_save)
 
 #endif  // LIB_INCLUDE_TICK_SOLVER_STO_SOLVER_H_

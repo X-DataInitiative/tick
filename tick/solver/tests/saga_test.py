@@ -1,24 +1,13 @@
 # License: BSD 3 clause
 
 import unittest
-
 import numpy as np
-
 from tick.solver import SAGA
-
 from tick.solver.tests import TestSolver
 from tick.solver.build.solver import SAGADouble as _SAGA
-
 from tick.linear_model import ModelLogReg, SimuLogReg
-
 from tick.survival import SimuCoxReg, ModelCoxRegPartialLik
-
-from tick.solver.build.solver import SAGA_VarianceReductionMethod_Last
-from tick.solver.build.solver import SAGA_VarianceReductionMethod_Average
-from tick.solver.build.solver import SAGA_VarianceReductionMethod_Random
-
 from tick.simulation import weights_sparse_gauss
-
 
 class SAGATest(object):
     def test_solver_saga(self):
@@ -29,54 +18,11 @@ class SAGATest(object):
 
     def test_saga_sparse_and_dense_consistency(self):
         """...SolverTest SAGA can run all glm models and is consistent with sparsity"""
-
         def create_solver():
             return SAGA(max_iter=1, verbose=False, step=1e-5,
                         seed=TestSolver.sto_seed)
 
         self._test_solver_sparse_and_dense_consistency(create_solver)
-
-    def test_variance_reduction_setting(self):
-        """...SolverTest SAGA variance_reduction parameter is correctly set"""
-        svrg = SAGA()
-
-        coeffs0 = weights_sparse_gauss(20, nnz=5, dtype=self.dtype)
-        interc0 = None
-
-        X, y = SimuLogReg(coeffs0, interc0, n_samples=3000, verbose=False,
-                          seed=123, dtype=self.dtype).simulate()
-
-        model = ModelLogReg().fit(X, y)
-        svrg.set_model(model)
-        svrg.astype(self.dtype)
-        self.assertEqual(svrg.variance_reduction, 'last')
-        self.assertEqual(svrg._solver.get_variance_reduction(),
-                         SAGA_VarianceReductionMethod_Last)
-
-        svrg = SAGA(variance_reduction='rand')
-        svrg.set_model(model)
-        svrg.astype(self.dtype)
-        self.assertEqual(svrg.variance_reduction, 'rand')
-        self.assertEqual(svrg._solver.get_variance_reduction(),
-                         SAGA_VarianceReductionMethod_Random)
-
-        svrg.variance_reduction = 'avg'
-        self.assertEqual(svrg.variance_reduction, 'avg')
-        self.assertEqual(svrg._solver.get_variance_reduction(),
-                         SAGA_VarianceReductionMethod_Average)
-
-        svrg.variance_reduction = 'rand'
-        self.assertEqual(svrg.variance_reduction, 'rand')
-        self.assertEqual(svrg._solver.get_variance_reduction(),
-                         SAGA_VarianceReductionMethod_Random)
-
-        svrg.variance_reduction = 'last'
-        self.assertEqual(svrg.variance_reduction, 'last')
-        self.assertEqual(svrg._solver.get_variance_reduction(),
-                         SAGA_VarianceReductionMethod_Last)
-
-        with self.assertRaises(ValueError):
-            svrg.variance_reduction = 'wrong_name'
 
     def test_set_model(self):
         """...SolverTest set_model of saga, should only accept childs of
@@ -93,13 +39,11 @@ class SAGATest(object):
     def test_saga_dtype_can_change(self):
         """...Test saga astype method
         """
-
         def create_solver():
             return SAGA(max_iter=100, verbose=False, step=0.01,
                         seed=TestSolver.sto_seed)
 
         self._test_solver_astype_consistency(create_solver)
-
 
 class SAGATestFloat32(TestSolver, SAGATest):
     def __init__(self, *args, **kwargs):
@@ -109,7 +53,6 @@ class SAGATestFloat32(TestSolver, SAGATest):
 class SAGATestFloat64(TestSolver, SAGATest):
     def __init__(self, *args, **kwargs):
         TestSolver.__init__(self, *args, dtype="float64", **kwargs)
-
 
 if __name__ == '__main__':
     unittest.main()

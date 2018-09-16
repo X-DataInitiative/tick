@@ -18,6 +18,7 @@ class DLL_PUBLIC TProxSeparable : public TProx<T, K> {
   using TProx<T, K>::positive;
 
  public:
+  using TProx<T, K>::value;
   using TProx<T, K>::call;
   using TProx<T, K>::get_class_name;
   using TProx<T, K>::is_in_range;

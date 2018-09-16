@@ -3,17 +3,6 @@
 
 // License: BSD 3 clause
 
-enum class SAGA_VarianceReductionMethod : uint16_t {
-  Last = 1,
-  Average = 2,
-  Random = 3,
-};
-inline std::ostream &operator<<(std::ostream &s,
-                                const SAGA_VarianceReductionMethod r) {
-  typedef std::underlying_type<SAGA_VarianceReductionMethod>::type utype;
-  return s << static_cast<utype>(r);
-}
-
 enum class SVRG_VarianceReductionMethod : uint16_t {
   Last = 1,
   Average = 2,
