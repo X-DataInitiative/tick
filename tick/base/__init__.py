@@ -12,9 +12,9 @@ def _set_mpl_backend():
     import sys
     # Set the backend to a non-interactive one for unices without X
     if ((os.name == 'posix' and 'DISPLAY' not in os.environ
-            and not (sys.platform == 'darwin'
-                     and matplotlib.get_backend() == 'MacOSX'))
-        or 'DISPLAY' in os.environ and os.environ['DISPLAY'] == '-1'):
+         and not (sys.platform == 'darwin'
+                  and matplotlib.get_backend() == 'MacOSX'))
+            or 'DISPLAY' in os.environ and os.environ['DISPLAY'] == '-1'):
         matplotlib.use('Agg')
 
 

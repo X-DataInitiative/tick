@@ -43,8 +43,9 @@ def plot_hawkes_kernel_norms(kernel_object, show=True, pcolor_kwargs=None,
     if node_names is None:
         node_names = range(n_nodes)
     elif len(node_names) != n_nodes:
-        ValueError('node_names must be a list of length {} but has length {}'
-                   .format(n_nodes, len(node_names)))
+        ValueError(
+            'node_names must be a list of length {} but has length {}'.format(
+                n_nodes, len(node_names)))
 
     row_labels = ['${} \\rightarrow$'.format(i) for i in node_names]
     column_labels = ['$\\rightarrow {}$'.format(i) for i in node_names]
@@ -152,8 +153,9 @@ def plot_hawkes_kernels(kernel_object, support=None, hawkes=None, n_points=300,
                                          sharey=True)
     else:
         if ax.shape != (n_nodes, n_nodes):
-            raise ValueError('Given ax has shape {} but should have shape {}'
-                             .format(ax.shape, (n_nodes, n_nodes)))
+            raise ValueError(
+                'Given ax has shape {} but should have shape {}'.format(
+                    ax.shape, (n_nodes, n_nodes)))
         ax_list_list = ax
         show = False
 

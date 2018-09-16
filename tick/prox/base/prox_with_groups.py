@@ -130,7 +130,8 @@ class ProxWithGroups(Prox):
         else:
             start, end = self.range
             i_max = self.blocks_start.argmax()
-            if end - start < self.blocks_start[i_max] + self.blocks_length[i_max]:
+            if end - start < self.blocks_start[i_max] + self.blocks_length[
+                    i_max]:
                 raise ValueError("last block is not within the range "
                                  "[0, end-start)")
             return prox_class(self.strength, self.blocks_start,

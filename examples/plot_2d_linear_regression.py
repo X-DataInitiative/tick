@@ -55,8 +55,8 @@ y_pred = regr.predict(X_test)
 print('Coefficients:')
 print(' intercept: {:.2f}'.format(regr.intercept))
 print(' average room per dwelling: {:.2f}'.format(regr.weights[0]))
-print(' percentage of low status in population: {:.2f}'
-      .format(regr.weights[1]))
+print(' percentage of low status in population: {:.2f}'.format(
+    regr.weights[1]))
 
 # The mean squared error
 print('Mean squared error on test set: {:.2f}'.format(

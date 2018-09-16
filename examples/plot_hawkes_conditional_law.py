@@ -32,10 +32,12 @@ hawkes = SimuHawkes(
     kernels=[[
         HawkesKernelPowerLaw(multiplier[0], cutoff, exponent, support),
         HawkesKernelPowerLaw(multiplier[1], cutoff, exponent, support)
-    ], [
-        HawkesKernelPowerLaw(multiplier[2], cutoff, exponent, support),
-        HawkesKernelPowerLaw(multiplier[3], cutoff, exponent, support)
-    ]], baseline=[0.05, 0.05], seed=382, verbose=False)
+    ],
+             [
+                 HawkesKernelPowerLaw(multiplier[2], cutoff, exponent,
+                                      support),
+                 HawkesKernelPowerLaw(multiplier[3], cutoff, exponent, support)
+             ]], baseline=[0.05, 0.05], seed=382, verbose=False)
 hawkes.end_time = 50000
 hawkes.simulate()
 

@@ -533,10 +533,11 @@ class Test(InferenceTest):
         learner.fit(X, y)
 
         X_test, y_test = Test.get_train_data(n_features=12, n_samples=5, nnz=0)
-        predicted_probas = np.array(
-            [[0.35851418, 0.64148582], [0.42549328, 0.57450672],
-             [0.6749705, 0.3250295], [0.39684181,
-                                      0.60315819], [0.42732443, 0.57267557]])
+        predicted_probas = np.array([[0.35851418, 0.64148582],
+                                     [0.42549328, 0.57450672],
+                                     [0.6749705, 0.3250295],
+                                     [0.39684181, 0.60315819],
+                                     [0.42732443, 0.57267557]])
         np.testing.assert_array_almost_equal(
             learner.predict_proba(X_test), predicted_probas, decimal=3)
 

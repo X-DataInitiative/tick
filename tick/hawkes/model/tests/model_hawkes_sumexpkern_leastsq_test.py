@@ -136,8 +136,8 @@ class Test(InferenceTest):
             hawkes_least_square_error(intensities, timestamps, end_time,
                                       precision=precison)
             for (intensities, timestamps,
-                 end_time) in zip(intensities_list, self.timestamps_list,
-                                  self.model_list.end_times)
+                 end_time) in zip(intensities_list, self.timestamps_list, self.
+                                  model_list.end_times)
         ])
 
         integral_approx /= self.model_list.n_jumps

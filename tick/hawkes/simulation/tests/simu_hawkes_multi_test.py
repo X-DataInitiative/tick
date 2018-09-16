@@ -15,10 +15,11 @@ class Test(unittest.TestCase):
         np.random.seed(28374)
 
         self.kernels = np.array([[HawkesKernel0(),
-                                  HawkesKernelExp(0.1, 3)], [
-                                      HawkesKernelPowerLaw(0.2, 4, 2),
-                                      HawkesKernelSumExp([0.1, 0.4], [3, 4])
-                                  ]])
+                                  HawkesKernelExp(0.1, 3)],
+                                 [
+                                     HawkesKernelPowerLaw(0.2, 4, 2),
+                                     HawkesKernelSumExp([0.1, 0.4], [3, 4])
+                                 ]])
 
         self.baseline = np.random.rand(2)
 

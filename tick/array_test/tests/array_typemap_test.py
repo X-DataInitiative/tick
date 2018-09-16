@@ -72,20 +72,24 @@ class Test(unittest.TestCase):
                 np.array([[0]]).astype(info['python_type'])
             ]
 
-            python_array_list_2d = [[
-                np.array([1, 2, 5]).astype(info['python_type'])
-            ], [
-                np.array([1, 2, 9, 5]).astype(info['python_type']),
-                np.array([0, 4, 1]).astype(info['python_type'])
-            ], []]
+            python_array_list_2d = [
+                [np.array([1, 2, 5]).astype(info['python_type'])],
+                [
+                    np.array([1, 2, 9, 5]).astype(info['python_type']),
+                    np.array([0, 4, 1]).astype(info['python_type'])
+                ], []
+            ]
 
             python_array2d_list_2d = [[
                 np.array([[1, 2, 5], [0, 4, 1]]).astype(info['python_type']),
-            ], [
-                np.array([[1, 2, 9], [1, 2, 5],
-                          [0, 4, 1]]).astype(info['python_type']),
-                np.array([[0]]).astype(info['python_type'])
-            ], []]
+            ],
+                                      [
+                                          np.array([[1, 2, 9], [1, 2, 5],
+                                                    [0, 4, 1]]).astype(
+                                                        info['python_type']),
+                                          np.array([[0]]).astype(
+                                              info['python_type'])
+                                      ], []]
 
             # The sparse array of the corresponding type
             python_sparse_array = csr_matrix(
@@ -119,27 +123,37 @@ class Test(unittest.TestCase):
                      np.array([0, 2, 3, 5]))).astype(info['python_type'])
             ]
 
-            python_sparse_array_list_2d = [[
-                csr_matrix((np.array([1.5, 2, 3, 1]), np.array([3, 5, 7, 9]),
-                            np.array([0, 4]))).astype(info['python_type'])
-            ], [
-                csr_matrix((np.array([1.5, 2, 3]), np.array([3, 5, 11]),
-                            np.array([0, 3]))).astype(info['python_type']),
-                csr_matrix((np.array([1.5, 2, 3, 1, 2]),
-                            np.array([3, 5, 7, 4, 1]),
-                            np.array([0, 5]))).astype(info['python_type'])
-            ], []]
+            python_sparse_array_list_2d = [
+                [
+                    csr_matrix((np.array([1.5, 2, 3,
+                                          1]), np.array([3, 5, 7, 9]),
+                                np.array([0, 4]))).astype(info['python_type'])
+                ],
+                [
+                    csr_matrix((np.array([1.5, 2, 3]), np.array([3, 5, 11]),
+                                np.array([0, 3]))).astype(info['python_type']),
+                    csr_matrix((np.array([1.5, 2, 3, 1, 2]),
+                                np.array([3, 5, 7, 4, 1]),
+                                np.array([0, 5]))).astype(info['python_type'])
+                ], []
+            ]
 
-            python_sparse_array2d_list_2d = [[
-                csr_matrix((np.array([1.5, 2, 3, 1]), np.array([3, 5, 7, 9]),
-                            np.array([0, 3, 4]))).astype(info['python_type'])
-            ], [
-                csr_matrix((np.array([1.5, 2, 3]), np.array([3, 5, 11]),
-                            np.array([0, 1, 3]))).astype(info['python_type']),
-                csr_matrix(
-                    (np.array([1.5, 2, 3, 1, 2]), np.array([3, 5, 7, 4, 1]),
-                     np.array([0, 2, 3, 5]))).astype(info['python_type'])
-            ], []]
+            python_sparse_array2d_list_2d = [
+                [
+                    csr_matrix(
+                        (np.array([1.5, 2, 3, 1]), np.array([3, 5, 7, 9]),
+                         np.array([0, 3, 4]))).astype(info['python_type'])
+                ],
+                [
+                    csr_matrix((np.array([1.5, 2, 3]), np.array([3, 5, 11]),
+                                np.array([0, 1,
+                                          3]))).astype(info['python_type']),
+                    csr_matrix((np.array([1.5, 2, 3, 1, 2]),
+                                np.array([3, 5, 7, 4, 1]),
+                                np.array([0, 2, 3,
+                                          5]))).astype(info['python_type'])
+                ], []
+            ]
 
             info['python_array'] = python_array
             info['python_array_2d'] = python_array_2d
