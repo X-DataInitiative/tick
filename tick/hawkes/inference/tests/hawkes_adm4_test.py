@@ -56,10 +56,11 @@ class Test(unittest.TestCase):
         events = [[
             np.array([1, 1.2, 3.4, 5.8, 10.3, 11, 13.4]),
             np.array([2, 5, 8.3, 9.10, 15, 18, 20, 33])
-        ], [
-            np.array([2, 3.2, 11.4, 12.8, 45]),
-            np.array([2, 3, 8.8, 9, 15.3, 19])
-        ]]
+        ],
+                  [
+                      np.array([2, 3.2, 11.4, 12.8, 45]),
+                      np.array([2, 3, 8.8, 9, 15.3, 19])
+                  ]]
 
         n_nodes = len(events[0])
         rho = 0.5
@@ -131,10 +132,11 @@ class Test(unittest.TestCase):
         events = [[
             np.array([1, 1.2, 3.4, 5.8, 10.3, 11, 13.4]),
             np.array([2, 5, 8.3, 9.10, 15, 18, 20, 33])
-        ], [
-            np.array([2, 3.2, 11.4, 12.8, 45]),
-            np.array([2, 3, 8.8, 9, 15.3, 19])
-        ]]
+        ],
+                  [
+                      np.array([2, 3.2, 11.4, 12.8, 45]),
+                      np.array([2, 3, 8.8, 9, 15.3, 19])
+                  ]]
 
         learner = HawkesADM4(1)
         learner._set_data(events)

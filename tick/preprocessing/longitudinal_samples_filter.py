@@ -64,8 +64,8 @@ class LongitudinalSamplesFilter(LongitudinalPreprocessor):
     def fit(self, features, labels, censoring):
         nnz = [len(np.nonzero(arr)[0]) > 0 for arr in labels]
         self._set('_mask', [
-            idx for idx, feat in enumerate(features)
-            if feat.sum() > 0 and nnz[idx]
+            idx
+            for idx, feat in enumerate(features) if feat.sum() > 0 and nnz[idx]
         ])
         self._set('_n_active_patients', len(self._mask))
         self._set('_n_patients', len(features))

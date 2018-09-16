@@ -184,8 +184,8 @@ class ConvSCCS(ABC, Base):
         self.print_every = print_every
         self.record_every = record_every
         random_state = int(
-            np.random.randint(0, 1000, 1)[0]
-            if random_state is None else random_state)
+            np.random.
+            randint(0, 1000, 1)[0] if random_state is None else random_state)
         self._random_state = None
         self.random_state = random_state
 

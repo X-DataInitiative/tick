@@ -50,7 +50,8 @@ class Test(InferenceTest):
               * np.sign(sample_intercepts0[sample_intercepts0 != 0])
 
         X = features_normal_cov_toeplitz(n_samples, n_features, 0.5)
-        y = X.dot(weights0) + noise_level * np.random.randn(n_samples) + interc0
+        y = X.dot(
+            weights0) + noise_level * np.random.randn(n_samples) + interc0
         y += sample_intercepts0
         return X, y, weights0, interc0, sample_intercepts0
 

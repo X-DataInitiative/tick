@@ -151,8 +151,9 @@ class SimuHawkes(SimuPointProcess):
 
         if baseline is not None:
             if baseline.shape[0] != self.n_nodes:
-                raise ValueError("baseline length should be {} instead of {}"
-                                 .format(self.n_nodes, baseline.shape[0]))
+                raise ValueError(
+                    "baseline length should be {} instead of {}".format(
+                        self.n_nodes, baseline.shape[0]))
             if len(baseline.shape) > 2:
                 raise ValueError("baseline should have at most {} dimensions, "
                                  "it currently has".format(
