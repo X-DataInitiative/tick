@@ -7,8 +7,8 @@
 #include "tick/base_model/model.h"
 %}
 
-template <class T>
-class TSGD : public TStoSolver<T> {
+template <class T, class K = T>
+class TSGD : public TStoSolver<T, K> {
 
 public:
     TSGD();
@@ -24,7 +24,7 @@ public:
 
     void solve();
 
-    bool compare(const TSGD<T> &that);
+    bool compare(const TSGD<T, K> &that);
 };
 
 %template(SGDDouble) TSGD<double>;

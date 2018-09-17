@@ -16,8 +16,8 @@ enum class SVRG_StepType : uint16_t {
     BarzilaiBorwein = 2,
 };
 
-template <class T>
-class TSVRG : public TStoSolver<T> {
+template <class T, class K = T>
+class TSVRG : public TStoSolver<T, K> {
   public:
     TSVRG();
     TSVRG(ulong epoch_size,
@@ -40,7 +40,7 @@ class TSVRG : public TStoSolver<T> {
     SVRG_StepType get_step_type();
     void set_step_type(SVRG_StepType step_type);
 
-    bool compare(const TSVRG<T> &that);
+    bool compare(const TSVRG<T, K> &that);
 };
 
 %template(SVRGDouble) TSVRG<double>;

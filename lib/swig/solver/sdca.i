@@ -7,8 +7,8 @@
 #include "tick/base_model/model.h"
 %}
 
-template <class T>
-class TSDCA : public TStoSolver<T> {
+template <class T, class K = T>
+class TSDCA : public TStoSolver<T, K> {
 public:
     TSDCA();
     TSDCA(T l_l2sq,
@@ -17,7 +17,7 @@ public:
          RandType rand_type = RandType::unif,
          int seed = -1);
 
-    void set_model(std::shared_ptr<TModel<T>> model);
+    void set_model(std::shared_ptr<TModel<T, K>> model);
     void reset();
     void set_starting_iterate();
     void set_starting_iterate(Array<T> &dual_vector);
@@ -27,7 +27,7 @@ public:
     std::shared_ptr<Array<T> > get_primal_vector();
     std::shared_ptr<Array<T> > get_dual_vector();
 
-    bool compare(const TSDCA<T> &that);
+    bool compare(const TSDCA<T, K> &that);
 };
 
 %rename(SDCADouble) TSDCA<double>;

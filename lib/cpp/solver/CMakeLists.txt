@@ -7,9 +7,12 @@ add_library(tick_solver EXCLUDE_FROM_ALL
         svrg.cpp
         ${TICK_SOLVER_INCLUDE_DIR}/saga.h
         saga.cpp
+        ${TICK_SOLVER_INCLUDE_DIR}/asaga.h
+        asaga.cpp
         ${TICK_SOLVER_INCLUDE_DIR}/sdca.h
         sdca.cpp
         ${TICK_SOLVER_INCLUDE_DIR}/adagrad.h
         adagrad.cpp
         ${TICK_SOLVER_INCLUDE_DIR}/sto_solver.h
-        sto_solver.cpp)
+        sto_solver.cpp
+        )

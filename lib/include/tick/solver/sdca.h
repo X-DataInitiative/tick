@@ -13,19 +13,19 @@
 // TODO: profile the code of SDCA to check if it's faster
 // TODO: code accelerated SDCA
 
-template <class T>
-class DLL_PUBLIC TSDCA : public TStoSolver<T> {
+template <class T, class K = T>
+class DLL_PUBLIC TSDCA : public TStoSolver<T, K> {
  protected:
-  using TStoSolver<T>::t;
-  using TStoSolver<T>::model;
-  using TStoSolver<T>::iterate;
-  using TStoSolver<T>::prox;
-  using TStoSolver<T>::get_next_i;
-  using TStoSolver<T>::epoch_size;
-  using TStoSolver<T>::rand_max;
+  using TStoSolver<T, K>::t;
+  using TStoSolver<T, K>::model;
+  using TStoSolver<T, K>::iterate;
+  using TStoSolver<T, K>::prox;
+  using TStoSolver<T, K>::get_next_i;
+  using TStoSolver<T, K>::epoch_size;
+  using TStoSolver<T, K>::rand_max;
 
  public:
-  using TStoSolver<T>::get_class_name;
+  using TStoSolver<T, K>::get_class_name;
   using SArrayTPtr = std::shared_ptr<SArray<T>>;
 
  protected:
@@ -49,7 +49,7 @@ class DLL_PUBLIC TSDCA : public TStoSolver<T> {
 
  public:
   // This exists soley for cereal/swig
-  TSDCA() : TSDCA<T>(0, 0, 0) {}
+  TSDCA() : TSDCA<T, K>(0, 0, 0) {}
 
   explicit TSDCA(T l_l2sq, ulong epoch_size = 0, T tol = 0.,
                  RandType rand_type = RandType::unif, int seed = -1);
@@ -58,7 +58,7 @@ class DLL_PUBLIC TSDCA : public TStoSolver<T> {
 
   void solve() override;
 
-  void set_model(std::shared_ptr<TModel<T>> model) override;
+  void set_model(std::shared_ptr<TModel<T, K>> model) override;
 
   T get_l_l2sq() const { return l_l2sq; }
 
@@ -88,7 +88,8 @@ class DLL_PUBLIC TSDCA : public TStoSolver<T> {
  public:
   template <class Archive>
   void serialize(Archive &ar) {
-    ar(cereal::make_nvp("StoSolver", cereal::base_class<TStoSolver<T>>(this)));
+    ar(cereal::make_nvp("StoSolver",
+                        cereal::base_class<TStoSolver<T, K>>(this)));
 
     ar(CEREAL_NVP(n_coeffs));
     ar(CEREAL_NVP(stored_variables_ready));
@@ -97,21 +98,21 @@ class DLL_PUBLIC TSDCA : public TStoSolver<T> {
     ar(CEREAL_NVP(dual_vector));
   }
 
-  BoolStrReport compare(const TSDCA<T> &that) {
+  BoolStrReport compare(const TSDCA<T, K> &that) {
     std::stringstream ss;
     ss << get_class_name() << std::endl;
     bool are_equal =
-        TStoSolver<T>::compare(that, ss) && TICK_CMP_REPORT(ss, n_coeffs) &&
+        TStoSolver<T, K>::compare(that, ss) && TICK_CMP_REPORT(ss, n_coeffs) &&
         TICK_CMP_REPORT(ss, stored_variables_ready) &&
         TICK_CMP_REPORT(ss, l_l2sq) && TICK_CMP_REPORT(ss, delta) &&
         TICK_CMP_REPORT(ss, dual_vector);
     return BoolStrReport(are_equal, ss.str());
   }
 
-  BoolStrReport operator==(const TSDCA<T> &that) { return compare(that); }
+  BoolStrReport operator==(const TSDCA<T, K> &that) { return compare(that); }
 
-  static std::shared_ptr<TSDCA<T>> AS_NULL() {
-    return std::move(std::shared_ptr<TSDCA<T>>(new TSDCA<T>));
+  static std::shared_ptr<TSDCA<T, K>> AS_NULL() {
+    return std::move(std::shared_ptr<TSDCA<T, K>>(new TSDCA<T, K>));
   }
 };
 
