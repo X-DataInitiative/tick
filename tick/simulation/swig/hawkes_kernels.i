@@ -4,6 +4,10 @@
 #include "hawkes.h"
 %}
 
+%{
+#include "hawkes_kernels/hawkes_kernel_exp_lag.h"
+%}
+
 %include <std_shared_ptr.i>
 %shared_ptr(HawkesKernel);
 %shared_ptr(HawkesKernelExp);
@@ -11,6 +15,7 @@
 %shared_ptr(HawkesKernelPowerLaw);
 %shared_ptr(HawkesKernelTimeFunc);
 %shared_ptr(HawkesKernel0);
+%shared_ptr(HawkesKernelExpLag);
 
 class HawkesKernel {
  public:
@@ -93,3 +98,17 @@ class HawkesKernel0 : public HawkesKernel {
 };
 
 TICK_MAKE_PICKLABLE(HawkesKernel0);
+
+class HawkesKernelExpLag : public HawkesKernel {
+public:
+
+    static void set_fast_exp(bool flag);
+    static bool get_fast_exp();
+
+    HawkesKernelExpLag(double intensity, double decay, double lag);
+
+    double get_intensity();
+    double get_decay();
+};
+
+TICK_MAKE_PICKLABLE(HawkesKernelExpLag, 0.0, 0.0, 0.0);
