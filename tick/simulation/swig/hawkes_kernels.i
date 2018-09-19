@@ -8,6 +8,10 @@
 #include "hawkes_kernels/hawkes_kernel_exp_lag.h"
 %}
 
+%{
+#include "hawkes_kernels/hawkes_kernel_sum_exp_lag.h"
+%}
+
 %include <std_shared_ptr.i>
 %shared_ptr(HawkesKernel);
 %shared_ptr(HawkesKernelExp);
@@ -16,6 +20,7 @@
 %shared_ptr(HawkesKernelTimeFunc);
 %shared_ptr(HawkesKernel0);
 %shared_ptr(HawkesKernelExpLag);
+%shared_ptr(HawkesKernelSumExpLag);
 
 class HawkesKernel {
  public:
@@ -112,3 +117,19 @@ public:
 };
 
 TICK_MAKE_PICKLABLE(HawkesKernelExpLag, 0.0, 0.0, 0.0);
+
+class HawkesKernelSumExpLag : public HawkesKernel {
+public:
+
+    static void set_fast_exp(bool flag);
+    static bool get_fast_exp();
+
+    HawkesKernelSumExpLag(const ArrayDouble &intensities, const ArrayDouble &decays, const ArrayDouble &lags);
+    HawkesKernelSumExpLag();
+
+    SArrayDoublePtr get_intensities();
+    SArrayDoublePtr get_decays();
+    ulong get_n_decays() { return n_decays; }
+};
+
+TICK_MAKE_PICKLABLE(HawkesKernelSumExpLag);

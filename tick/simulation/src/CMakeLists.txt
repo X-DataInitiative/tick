@@ -11,6 +11,7 @@ add_library(tick_simulation EXCLUDE_FROM_ALL
         hawkes_kernels/hawkes_kernel_time_func.cpp hawkes_kernels/hawkes_kernel_time_func.h
         hawkes_baselines/baseline.h
         hawkes_kernels/hawkes_kernel_exp_lag.h hawkes_kernels/hawkes_kernel_exp_lag.cpp
+        hawkes_kernels/hawkes_kernel_sum_exp_lag.h hawkes_kernels/hawkes_kernel_sum_exp_lag.cpp
         hawkes_baselines/constant_baseline.cpp hawkes_baselines/constant_baseline.h
         hawkes_baselines/timefunction_baseline.cpp hawkes_baselines/timefunction_baseline.h
         hawkes_custom.cpp hawkes_custom.h

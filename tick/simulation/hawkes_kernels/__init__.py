@@ -7,6 +7,8 @@ from .hawkes_kernel_sum_exp import HawkesKernelSumExp
 from .hawkes_kernel_power_law import HawkesKernelPowerLaw
 from .hawkes_kernel_time_func import HawkesKernelTimeFunc
 from .hawkes_kernel_exp_lag import HawkesKernelExpLag
+from .hawkes_kernel_sum_exp_lag import HawkesKernelSumExpLag
 
 __all__ = ["HawkesKernel0", "HawkesKernelExp", "HawkesKernelSumExp",
-           "HawkesKernelPowerLaw", "HawkesKernelTimeFunc", "HawkesKernelExpLag"]
+           "HawkesKernelPowerLaw", "HawkesKernelTimeFunc", "HawkesKernelExpLag",
+           "HawkesKernelSumExpLag"]
