@@ -26,7 +26,7 @@ int main(int nargs, char *args[]) {
   SArrayDoublePtr labels = SArrayDouble::new_ptr(n_samples);
 
   // Set up model and solver
-  for (int i = 0; i < n_samples; ++i) {
+  for (ulong i = 0; i < n_samples; ++i) {
     (*labels)[i] = (*int_sample)[i] - 1;
   }
 
@@ -34,14 +34,14 @@ int main(int nargs, char *args[]) {
     auto model =
         std::make_shared<ModelLogReg>(features, labels, false, num_threads);
 
-    using milli = std::chrono::microseconds;
     const auto start = std::chrono::system_clock::now();
 
     ArrayDouble coeffs = view_row(*features, 0);
 
     volatile double loss = 0;
-    for (int j = 0; j < num_iterations; ++j) {
+    for (ulong j = 0; j < num_iterations; ++j) {
       loss = model->loss(coeffs);
+      (void) loss;
     }
     const auto end = std::chrono::system_clock::now();
 

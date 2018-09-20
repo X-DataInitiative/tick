@@ -64,9 +64,33 @@ struct DLL_PUBLIC vector_operations_unoptimized {
   mult_incr(const uint64_t n, const K alpha, const Y *x, T *y) const;
 
   template <typename K, typename Y>
-  typename std::enable_if<std::is_same<T, K>::value &&
-                          std::is_same<Y, K>::value>::type
-  mult_incr(const uint64_t n, const K alpha, const Y *x, T *y) const;
+  typename std::enable_if<std::is_same<T, K>::value && std::is_same<Y, K>::value>::type mult_incr(
+      const uint64_t n, const K alpha, const Y *x, T *y) const;
+
+  template <typename K>
+  std::vector<T> batch_dot(size_t n_threads, const ulong b, const ulong n, T *x, T **const y) const;
+
+  template <typename K>
+  void batch_multi_incr(size_t n_threads, const ulong b, const ulong n, const K *alpha, T **const x,
+                        T *y) const;
+
+  template <typename K>
+  typename std::enable_if<std::is_same<T, std::atomic<K>>::value>::type dot_matrix_vector_incr(
+      const ulong m, const ulong n, const T alpha, const T *a, const T *x, const T beta,
+      T *y) const;
+
+  template <typename K>
+  typename std::enable_if<!std::is_same<T, std::atomic<K>>::value>::type dot_matrix_vector_incr(
+      const ulong m, const ulong n, const T alpha, const T *a, const T *x, const T beta,
+      T *y) const;
+
+  template <typename K>
+  typename std::enable_if<std::is_same<T, std::atomic<K>>::value>::type dot_matrix_vector(
+      const ulong m, const ulong n, const K alpha, const T *a, const T *x, T *y) const;
+
+  template <typename K>
+  typename std::enable_if<!std::is_same<T, std::atomic<K>>::value>::type dot_matrix_vector(
+      const ulong m, const ulong n, const K alpha, const T *a, const T *x, T *y) const;
 };
 
 }  // namespace detail
@@ -103,10 +127,10 @@ extern "C" {
 
 #endif  // defined(__APPLE__)
 
-#include "tick/array/vector/cblas.hpp"
+#include "tick/array/vector/cblas.h"
 
 #endif  // if !defined(TICK_CBLAS_AVAILABLE)
 
-#include "tick/array/vector/un_optimized.hpp"
+#include "tick/array/vector/unoptimized.h"
 
 #endif  // LIB_INCLUDE_TICK_ARRAY_VECTOR_OPERATIONS_H_

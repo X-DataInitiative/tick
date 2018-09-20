@@ -20,6 +20,12 @@ class DLL_PUBLIC TModelLinReg : public virtual TModelGeneralizedLinear<T, K>,
   using TModelGeneralizedLinear<T, K>::n_samples;
   using TModelGeneralizedLinear<T, K>::features_norm_sq;
   using TModelGeneralizedLinear<T, K>::fit_intercept;
+  using TModelGeneralizedLinear<T, K>::get_n_samples;
+  using TModelGeneralizedLinear<T, K>::n_threads;
+  using TModelGeneralizedLinear<T, K>::features;
+  using TModelGeneralizedLinear<T, K>::labels;
+
+  Array<T> out;
 
  public:
   using TModelGeneralizedLinear<T, K>::get_label;
@@ -32,11 +38,12 @@ class DLL_PUBLIC TModelLinReg : public virtual TModelGeneralizedLinear<T, K>,
   TModelLinReg() : TModelLinReg<T, K>(nullptr, nullptr, 0, 0) {}
 
   TModelLinReg(const std::shared_ptr<BaseArray2d<T> > features,
-               const std::shared_ptr<SArray<T> > labels,
-               const bool fit_intercept, const int n_threads = 1)
+               const std::shared_ptr<SArray<T> > labels, const bool fit_intercept,
+               const int n_threads = 1)
       : TModelLabelsFeatures<T, K>(features, labels),
-        TModelGeneralizedLinear<T, K>(features, labels, fit_intercept,
-                                      n_threads) {}
+        TModelGeneralizedLinear<T, K>(features, labels, fit_intercept, n_threads) {
+    out = Array<T>(get_n_samples());
+  }
 
   virtual ~TModelLinReg() {}
 
@@ -50,12 +57,31 @@ class DLL_PUBLIC TModelLinReg : public virtual TModelGeneralizedLinear<T, K>,
 
   void compute_lip_consts() override;
 
+  T loss2(const Array<T> &coeffs) {
+    //  out = *labels;
+    //  features->dot_incr(coeffs, -1., out);
+    //  return 0.5 * out.norm_sq() / n_samples;
+    return parallel_map_additive_reduce(n_threads, n_threads, &TModelLinReg::loss2_split_i, this,
+                                        coeffs);
+  }
+
+  T loss2_split_i(ulong i, const Array<T> &coeffs) {
+    const ulong start = i == 0 ? 0 : i * n_samples / n_threads;
+    const ulong end = i == n_threads - 1 ? n_samples - 1 : (i + 1) * n_samples / n_threads;
+    BaseArray2d<T> features_rows = view_rows(*features, start, end);
+    Array<T> out_rows = view(out, start, end);
+    Array<T> labels_rows = view(*labels, start, end);
+    out_rows.mult_fill(labels_rows, 1.);
+    features_rows.dot_incr(coeffs, -1., out_rows);
+    return 0.5 * out_rows.norm_sq() / n_samples;
+  }
+
+  void grad2(const Array<T> &coeffs, Array<T> &out) { features->dot_incr(coeffs, -1., out); }
+
   template <class Archive>
   void serialize(Archive &ar) {
-    ar(cereal::make_nvp(
-        "ModelGeneralizedLinear",
-        typename cereal::virtual_base_class<TModelGeneralizedLinear<T, K> >(
-            this)));
+    ar(cereal::make_nvp("ModelGeneralizedLinear",
+                        typename cereal::virtual_base_class<TModelGeneralizedLinear<T, K> >(this)));
     ar(cereal::make_nvp(
         "ModelLipschitz",
         typename cereal::base_class<TModelLipschitz<T, K> >(this)));

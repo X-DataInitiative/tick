@@ -42,6 +42,8 @@ class DLL_PUBLIC TSGD : public TStoSolver<T, K> {
 
   void solve_sparse();
 
+  void solve_sparse_batch(size_t n_threads = 1);
+
   inline T get_step_t();
 
   template <class Archive>

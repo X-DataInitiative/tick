@@ -78,14 +78,11 @@ std::mt19937 gen(rd());
 template <typename ArrType>
 ArrType GenerateRandomArray(
     ulong n = TICK_TEST_DATA_SIZE,
-    typename std::enable_if<
-        std::is_floating_point<typename ArrType::value_type>::value>::type * =
+    typename std::enable_if<std::is_floating_point<typename ArrType::value_type>::value>::type * =
         0) {
   ArrType res(n);
 
-  using nl = std::numeric_limits<typename ArrType::value_type>;
-  std::uniform_real_distribution<> dis(TICK_TEST_DATA_MIN_VALUE,
-                                       TICK_TEST_DATA_MAX_VALUE);
+  std::uniform_real_distribution<> dis(TICK_TEST_DATA_MIN_VALUE, TICK_TEST_DATA_MAX_VALUE);
 
   for (ulong i = 0; i < res.size(); ++i) res[i] = dis(gen);
 
@@ -100,9 +97,7 @@ ArrType GenerateRandomArray(
   ArrType res(n);
 
   using value_type = typename ArrType::value_type;
-  using nl = std::numeric_limits<value_type>;
-  std::uniform_int_distribution<> dis(GetTestMinimum<value_type>(),
-                                      TICK_TEST_DATA_MAX_VALUE);
+  std::uniform_int_distribution<> dis(GetTestMinimum<value_type>(), TICK_TEST_DATA_MAX_VALUE);
 
   for (ulong i = 0; i < res.size(); ++i) res[i] = dis(gen);
 
@@ -293,7 +288,6 @@ TYPED_TEST(ArrayTest, Fill_Int_to_double_no_cast) {
 }
 
 TYPED_TEST(ArrayTest, Sum) {
-  using VT = typename TypeParam::value_type;
   TypeParam arrA = ::GenerateRandomArray<TypeParam>();
 
   const auto sum = std::accumulate(arrA.data(), arrA.data() + arrA.size(), 0.0);
@@ -344,7 +338,6 @@ TYPED_TEST(ArrayTest, DivOperator) {
 }
 
 TYPED_TEST(ArrayTest, NormSq) {
-  using VT = typename TypeParam::value_type;
   TypeParam arrA = ::GenerateRandomArray<TypeParam>();
 
   auto norm_sq = arrA.norm_sq();
@@ -353,6 +346,26 @@ TYPED_TEST(ArrayTest, NormSq) {
   for (ulong j = 0; j < arrA.size(); ++j) result += arrA[j] * arrA[j];
 
   EXPECT_RELATIVE_ERROR(decltype(norm_sq), arrA.norm_sq(), result);
+}
+
+TYPED_TEST(Array2dTest, DotMatrixVector) {
+  ArrayDouble y({-2, 3});
+  ArrayDouble2d x(5, 2);
+  x[0] = -2;
+  x[1] = 5.2;
+  x[2] = 1.8;
+  x[3] = 1;
+  x[4] = 2.2;
+  x[5] = 1.9;
+  x[6] = 1;
+  x[7] = 2.2;
+  x[8] = 1.9;
+  x[9] = 1.9;
+
+  ArrayDouble out(5);
+  x.dot(y, out);
+
+  x.dot_incr(y, 1., out);
 }
 
 TYPED_TEST(ArrayTest, DotProduct) {
@@ -394,6 +407,24 @@ TYPED_TEST(ArrayTest, MultIncr) {
                             static_cast<VT>(oldA[j] + arrB[j] * factor));
   }
 }
+
+// TYPED_TEST(ArrayTest, BatchMultIncr) {
+//   using VT = typename TypeParam::value_type;
+//   for (VT factor : {0.0, 0.5, 1.0, 2.0}) {
+//     TypeParam arrA = ::GenerateRandomArray<TypeParam>();
+//     TypeParam oldA = arrA;
+//     TypeParam arrB = ::GenerateRandomArray<TypeParam>();
+
+//     tick::vector_operations<VT>{}.template batch_multi_incr<VT>(
+//       2, 10, arrA.size(), factor, arrB.data(), arrA.data()
+//      );
+
+//     SCOPED_TRACE(factor);
+//     for (ulong j = 0; j < arrA.size(); ++j)
+//       ASSERT_RELATIVE_ERROR(VT, arrA[j],
+//                             static_cast<VT>(oldA[j] + arrB[j] * factor));
+//   }
+// }
 
 TYPED_TEST(Array2dTest, MultIncr) {
   using VT = typename TypeParam::value_type;

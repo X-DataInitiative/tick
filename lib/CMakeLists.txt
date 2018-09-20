@@ -7,6 +7,7 @@ include_directories(${CMAKE_SOURCE_DIR}/..)
 
 option(USE_MKL "Force tick to use MKL" OFF)
 option(USE_BLAS "Force tick to use BLAS" OFF)
+option(BENCHMARK "Build benchmarks" OFF)
 
 set(TICK_EXTRA_RPATH "")
 set(TICK_BLAS_LIBRARIES "")
@@ -108,7 +109,7 @@ if (${GTEST_FOUND})
         ${PYTHON_LIBRARY}
         ${GTEST_BOTH_LIBRARIES}
         ${CMAKE_THREAD_LIBS_INIT}
-        ${TICK_BLAS_LIBRARIES})
+        ${TICK_BLAS_LIBRARIES} pthread)
 
     if(APPLE)
         find_library(ACCELERATE_LIBRARY Accelerate)
@@ -138,7 +139,9 @@ if (${GTEST_FOUND})
             COMMAND cpp-test/solver/tick_test_saga
             )
 
-    add_subdirectory(cpp-test/benchmark)
+    if (${BENCHMARK})
+      add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../tools/benchmark/src out)
+    endif()
 else()
     message(STATUS "Testing and benchmarking in C++ NOT enabled")
 
