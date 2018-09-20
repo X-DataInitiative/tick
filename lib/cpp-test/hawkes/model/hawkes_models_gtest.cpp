@@ -23,6 +23,8 @@
 #include "tick/hawkes/model/list_of_realizations/model_hawkes_sumexpkern_leastsq.h"
 #include "tick/hawkes/model/list_of_realizations/model_hawkes_sumexpkern_loglik.h"
 
+#include <cereal/archives/portable_binary.hpp>
+
 class HawkesModelTest : public ::testing::Test {
  protected:
   SArrayDoublePtrList1D timestamps;
@@ -293,13 +295,13 @@ TEST_F(HawkesModelTest, least_square_list_serialization) {
 
   std::stringstream os;
   {
-    cereal::BinaryOutputArchive outputArchive(os);
+    cereal::PortableBinaryOutputArchive outputArchive(os);
 
     outputArchive(model);
   }
 
   {
-    cereal::BinaryInputArchive inputArchive(os);
+    cereal::PortableBinaryInputArchive inputArchive(os);
 
     ModelHawkesExpKernLeastSq restored_model(nullptr, 0);
     inputArchive(restored_model);

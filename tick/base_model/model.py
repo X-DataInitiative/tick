@@ -137,7 +137,7 @@ class Model(ABC, Base):
         if coeffs.shape[0] != self.n_coeffs:
             raise ValueError(
                 ("``coeffs`` has size %i while the model" +
-                 " expects %i coefficients") % (len(coeffs), self.n_coeffs))
+                 " expects %i coefficients") % (coeffs.shape[0], self.n_coeffs))
         self._inc_attr(N_CALLS_LOSS)
         self._inc_attr(PASS_OVER_DATA, step=self.pass_per_operation[LOSS])
 

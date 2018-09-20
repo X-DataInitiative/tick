@@ -6,6 +6,7 @@ branches:
 
 # Cache is irrelevant for linux/docker builds, but useful to speed up osx
 cache:
+  - ccache
   directories:
     - $HOME/.pyenv
     - $HOME/googletest

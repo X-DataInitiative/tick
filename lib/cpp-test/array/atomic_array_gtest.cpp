@@ -32,7 +32,6 @@
 #include "tick/array/array.h"
 #include "tick/array/dot.h"
 #include "tick/base/base.h"
-#include "tick/base/serialization.h"
 
 namespace {
 

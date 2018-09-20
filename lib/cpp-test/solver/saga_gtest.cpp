@@ -1,8 +1,9 @@
 #define DEBUG_COSTLY_THROW 1
 
 #include <gtest/gtest.h>
-#include <cereal/archives/json.hpp>
 #include <cereal/types/memory.hpp>
+#include <cereal/archives/json.hpp>
+#include <cereal/archives/portable_binary.hpp>
 
 #include "tick/linear_model/model_linreg.h"
 #include "tick/prox/prox_l2sq.h"
@@ -108,12 +109,12 @@ TEST(SAGA, test_saga_serialization) {
 
   std::stringstream os;
   {
-    cereal::BinaryOutputArchive outputArchive(os);
+    cereal::PortableBinaryOutputArchive outputArchive(os);
     outputArchive(saga);
   }
 
   {
-    cereal::BinaryInputArchive inputArchive(os);
+    cereal::PortableBinaryInputArchive inputArchive(os);
 
     SAGA restored_saga;
     inputArchive(restored_saga);
