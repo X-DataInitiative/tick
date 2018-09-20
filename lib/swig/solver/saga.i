@@ -22,7 +22,6 @@ class TSAGA : public TStoSolver<T, T> {
 
     bool compare(const TSAGA<T> &that);
 };
-
 %template(SAGADouble) TSAGA<double>;
 typedef TSAGA<double> SAGADouble;
 TICK_MAKE_TEMPLATED_PICKLABLE(TSAGA, SAGADouble, double);
@@ -30,3 +29,5 @@ TICK_MAKE_TEMPLATED_PICKLABLE(TSAGA, SAGADouble, double);
 %template(SAGAFloat) TSAGA<float>;
 typedef TSAGA<float> SAGAFloat;
 TICK_MAKE_TEMPLATED_PICKLABLE(TSAGA, SAGAFloat , float);
+
+

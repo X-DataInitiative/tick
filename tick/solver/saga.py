@@ -1,19 +1,26 @@
 # License: BSD 3 clause
 
+__author__ = "Stephane Gaiffas"
+
 import numpy as np
 
 from tick.base_model import ModelGeneralizedLinear
-from .base import SolverFirstOrderSto, SolverSto
+from tick.solver.base import SolverFirstOrderSto, SolverSto
 
 from tick.solver.build.solver import SAGADouble as _SAGADouble
 from tick.solver.build.solver import SAGAFloat as _SAGAFloat
-
-__author__ = "Stephane Gaiffas"
-
 dtype_class_mapper = {
     np.dtype('float32'): _SAGAFloat,
     np.dtype('float64'): _SAGADouble
 }
+
+from tick.solver.build.solver import AtomicSAGADouble as _ASAGADouble
+from tick.solver.build.solver import AtomicSAGAFloat as _ASAGAFloat
+dtype_atomic_mapper = {
+    np.dtype('float32'): _ASAGAFloat,
+    np.dtype('float64'): _ASAGADouble
+}
+
 
 class SAGA(SolverFirstOrderSto):
     """Stochastic Average Gradient solver, for the minimization of objectives
@@ -100,6 +107,10 @@ class SAGA(SolverFirstOrderSto):
         Save history information every time the iteration number is a
         multiple of ``record_every``
 
+    n_threads : `int`, default=1
+        Number of threads to use for parallel optimization. The strategy used
+        for this is asynchronous updates of the iterates.
+
     Attributes
     ----------
     model : `Model`
@@ -133,12 +144,17 @@ class SAGA(SolverFirstOrderSto):
     * A. Defazio, F. Bach, S. Lacoste-Julien, SAGA: A fast incremental gradient
       method with support for non-strongly convex composite objectives,
       NIPS 2014
+
+    * R. Leblond, F. Pedregosa, and S. Lacoste-Julien: Asaga: Asynchronous
+      Parallel Saga, (AISTATS) 2017
     """
+    _attrinfos = {"n_threads": {"writable": False}}
 
     def __init__(self, step: float = None, epoch_size: int = None,
                  rand_type: str = "unif", tol: float = 0., max_iter: int = 100,
                  verbose: bool = True, print_every: int = 10,
-                 record_every: int = 1, seed: int = -1):
+                 record_every: int = 1, seed: int = -1, n_threads: int = 1):
+        self.n_threads = n_threads
 
         SolverFirstOrderSto.__init__(self, step, epoch_size, rand_type, tol,
                                      max_iter, verbose, print_every,
@@ -163,13 +179,12 @@ class SAGA(SolverFirstOrderSto):
             raise ValueError("SAGA accepts only childs of "
                              "`ModelGeneralizedLinear`")
 
+        if hasattr(model, "n_threads"):
+            model.n_threads = self.n_threads
+
         return SolverFirstOrderSto.set_model(self, model)
 
     def _set_cpp_solver(self, dtype_or_object_with_dtype):
-        self.dtype = self._extract_dtype(dtype_or_object_with_dtype)
-        solver_class = self._get_typed_class(dtype_or_object_with_dtype,
-                                             dtype_class_mapper)
-
         # Construct the wrapped C++ SAGA solver
         step = self.step
         if step is None:
@@ -177,8 +192,18 @@ class SAGA(SolverFirstOrderSto):
         epoch_size = self.epoch_size
         if epoch_size is None:
             epoch_size = 0
-
-        self._set(
-            '_solver',
-            solver_class(epoch_size, self.tol, self._rand_type, step,
-                         self.record_every, self.seed))
+        self.dtype = self._extract_dtype(dtype_or_object_with_dtype)
+        if self.n_threads == 1:
+            solver_class = self._get_typed_class(dtype_or_object_with_dtype,
+                                                 dtype_class_mapper)
+            self._set(
+                '_solver',
+                solver_class(epoch_size, self.tol, self._rand_type, step,
+                             self.record_every, self.seed))
+        else:
+            solver_class = self._get_typed_class(dtype_or_object_with_dtype,
+                                                 dtype_atomic_mapper)
+            self._set(
+                '_solver',
+                solver_class(epoch_size, self.tol, self._rand_type, step,
+                             self.record_every, self.seed, self.n_threads))

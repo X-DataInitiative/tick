@@ -31,7 +31,6 @@ class DLL_PUBLIC AtomicSAGA : public TBaseSAGA<T, T> {
   using TBaseSAGA<T, T>::last_record_epoch;
   using TBaseSAGA<T, T>::last_record_time;
 
-
  public:
   using TBaseSAGA<T, T>::set_starting_iterate;
   using TBaseSAGA<T, T>::get_minimizer;

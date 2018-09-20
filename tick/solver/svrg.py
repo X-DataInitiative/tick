@@ -186,6 +186,10 @@ class SVRG(SolverFirstOrderSto):
     * Tan, C., Ma, S., Dai, Y. H., & Qian, Y.
       Barzilai-Borwein step size for stochastic gradient descent.
       *Advances in Neural Information Processing Systems* (2016)
+
+    * Mania, H., Pan, X., Papailiopoulos, D., Recht, B., Ramchandran, K. and
+      Jordan, M.I., 2015.
+      Perturbed iterate analysis for asynchronous stochastic optimization.
     """
     _attrinfos = {"_step_type_str": {}, "_var_red_str": {}}
 
@@ -261,6 +265,9 @@ class SVRG(SolverFirstOrderSto):
                 "'avg' variance reduction cannot be used with sparse "
                 "datasets. Please change `variance_reduction` before "
                 "passing sparse data.", UserWarning)
+
+        if hasattr(model, "n_threads"):
+            model.n_threads = self.n_threads
 
         return SolverFirstOrderSto.set_model(self, model)
 

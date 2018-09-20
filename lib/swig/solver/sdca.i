@@ -31,7 +31,7 @@ public:
 };
 
 %rename(SDCADouble) TSDCA<double>;
-class SDCADouble : public TStoSolver<double> {
+class SDCADouble : public StoSolverDouble {
 public:
     SDCADouble();
     SDCADouble(double l_l2sq,
@@ -56,7 +56,7 @@ typedef TSDCA<double> SDCADouble;
 TICK_MAKE_PICKLABLE(SDCADouble);
 
 %rename(SDCAFloat) TSDCA<float>;
-class SDCAFloat : public TStoSolver<float> {
+class SDCAFloat : public StoSolverFloat {
 public:
     SDCAFloat();
     SDCAFloat(float l_l2sq,
