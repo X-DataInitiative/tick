@@ -11,6 +11,18 @@ option(USE_BLAS "Force tick to use BLAS" OFF)
 set(TICK_EXTRA_RPATH "")
 set(TICK_BLAS_LIBRARIES "")
 
+# Run benchmarks by default but skip them if SKIP_TICK_BENCHMARKS is set to true
+if (NOT DEFINED SKIP_TICK_BENCHMARKS)
+    set(SKIP_BENCHMARKS 0)
+elseif(${SKIP_TICK_BENCHMARKS})
+    set(SKIP_BENCHMARKS 1)
+else()
+    set(SKIP_BENCHMARKS 0)
+endif()
+
+MESSAGE("SKIP_TICK_BENCHMARKS ${SKIP_TICK_BENCHMARKS}")
+MESSAGE("SKIP_BENCHMARKS ${SKIP_BENCHMARKS}")
+
 if (${USE_MKL})
     list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/modules)
     find_package(MKL REQUIRED)
@@ -40,7 +52,7 @@ else()
 endif()
 
 include_directories(
-    ${CMAKE_CURRENT_SOURCE_DIR}/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/third_party/cereal/include)
@@ -82,6 +94,9 @@ add_subdirectory(cpp/robust)
 add_subdirectory(cpp/survival)
 add_subdirectory(cpp/preprocessing)
 
+if (NOT ${SKIP_BENCHMARKS})
+    add_subdirectory(../tools/benchmark/saga ../../tools/benchmark/saga/bin)
+endif()
 
 if(APPLE)
     set(TICK_INSTALL_RPATH "${CMAKE_CURRENT_SOURCE_DIR}/../tick/array/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/base/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/base_model/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/linear_model/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/random/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/prox/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/solver/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/hawkes/inference/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/hawkes/model/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/hawkes/simulation/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/robust/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/survival/build;${TICK_EXTRA_RPATH}")
@@ -135,8 +150,13 @@ if (${GTEST_FOUND})
             COMMAND cpp-test/hawkes/model/tick_test_hawkes_model
             COMMAND cpp-test/hawkes/simulation/tick_test_hawkes_simulation
             COMMAND cpp-test/solver/tick_test_svrg
+            )
+
+    if (NOT ${SKIP_BENCHMARKS})
+        add_custom_target(benchmarks
             COMMAND cpp-test/solver/tick_test_saga
             )
+    endif()
 
     add_subdirectory(cpp-test/benchmark)
 else()
