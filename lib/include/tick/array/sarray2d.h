@@ -13,7 +13,6 @@
 
 /** @file */
 
-#include <memory>
 #include "array2d.h"
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -337,28 +336,33 @@ std::shared_ptr<SArray2d<T>> Array2d<T>::as_sarray2d_ptr() {
  * @}
  */
 
-#define SARRAY2D_DEFINE_TYPE(TYPE, NAME)                              \
+#define SARRAY2D_DEFINE_TYPE_BASIC(TYPE, NAME)                        \
   typedef SArray2d<TYPE> SArray##NAME##2d;                            \
   typedef std::shared_ptr<SArray##NAME##2d> SArray##NAME##2dPtr;      \
   typedef std::vector<SArray##NAME##2dPtr> SArray##NAME##2dPtrList1D; \
   typedef std::vector<SArray##NAME##2dPtrList1D> SArray##NAME##2dPtrList2D
 
+#define SARRAY2D_DEFINE_TYPE(TYPE, NAME)  \
+  SARRAY2D_DEFINE_TYPE_BASIC(TYPE, NAME); \
+  CEREAL_REGISTER_TYPE(SArray##NAME##2d); \
+  CEREAL_REGISTER_POLYMORPHIC_RELATION(BaseArray##NAME##2d, SArray##NAME##2d)
+
 SARRAY2D_DEFINE_TYPE(double, Double);
 SARRAY2D_DEFINE_TYPE(float, Float);
-SARRAY2D_DEFINE_TYPE(int32_t, Int);
-SARRAY2D_DEFINE_TYPE(uint32_t, UInt);
-SARRAY2D_DEFINE_TYPE(int16_t, Short);
-SARRAY2D_DEFINE_TYPE(uint16_t, UShort);
-SARRAY2D_DEFINE_TYPE(int64_t, Long);
-SARRAY2D_DEFINE_TYPE(ulong, ULong);
-SARRAY2D_DEFINE_TYPE(std::atomic<double>, AtomicDouble);
-SARRAY2D_DEFINE_TYPE(std::atomic<float>, AtomicFloat);
+SARRAY2D_DEFINE_TYPE_BASIC(int32_t, Int);
+SARRAY2D_DEFINE_TYPE_BASIC(uint32_t, UInt);
+SARRAY2D_DEFINE_TYPE_BASIC(int16_t, Short);
+SARRAY2D_DEFINE_TYPE_BASIC(uint16_t, UShort);
+SARRAY2D_DEFINE_TYPE_BASIC(int64_t, Long);
+SARRAY2D_DEFINE_TYPE_BASIC(ulong, ULong);
+SARRAY2D_DEFINE_TYPE_BASIC(std::atomic<double>, AtomicDouble);
+SARRAY2D_DEFINE_TYPE_BASIC(std::atomic<float>, AtomicFloat);
 
+#undef SARRAY2D_DEFINE_TYPE_BASIC
 #undef SARRAY2D_DEFINE_TYPE
 
-#define INSTANTIATE_SARRAY2D(SARRAY_TYPE, C_TYPE)              \
-  template std::ostream &operator<<<C_TYPE>(std::ostream &Str, \
-                                            SArray2d<C_TYPE> *v)
+#define INSTANTIATE_SARRAY2D(SARRAY_TYPE, C_TYPE) \
+  template std::ostream &operator<<<C_TYPE>(std::ostream &Str, SArray2d<C_TYPE> *v)
 
 INSTANTIATE_SARRAY2D(SArrayDouble2dPtr, double);
 INSTANTIATE_SARRAY2D(SArrayFloat2dPtr, float);

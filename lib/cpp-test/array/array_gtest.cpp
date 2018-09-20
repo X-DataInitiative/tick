@@ -34,6 +34,8 @@
 #include "tick/base/base.h"
 #include "tick/base/serialization.h"
 
+#include <cereal/archives/portable_binary.hpp>
+
 namespace {
 
 /**
@@ -700,8 +702,8 @@ TYPED_TEST(ArrayTest, EmptySerializationJSON) {
 
 TYPED_TEST(ArrayTest, EmptySerializationBinary) {
   SCOPED_TRACE("");
-  ::TestEmptySerialization<cereal::BinaryInputArchive,
-                           cereal::BinaryOutputArchive, TypeParam>();
+  ::TestEmptySerialization<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive,
+                           TypeParam>();
 }
 
 TYPED_TEST(Array2dTest, EmptySerializationJSON) {
@@ -712,8 +714,8 @@ TYPED_TEST(Array2dTest, EmptySerializationJSON) {
 
 TYPED_TEST(Array2dTest, EmptySerializationBinary) {
   SCOPED_TRACE("");
-  ::TestEmptySerialization2D<cereal::BinaryInputArchive,
-                             cereal::BinaryOutputArchive, TypeParam>();
+  ::TestEmptySerialization2D<cereal::PortableBinaryInputArchive,
+                             cereal::PortableBinaryOutputArchive, TypeParam>();
 }
 
 TYPED_TEST(ArrayTest, SerializationJSON) {
@@ -724,7 +726,7 @@ TYPED_TEST(ArrayTest, SerializationJSON) {
 
 TYPED_TEST(ArrayTest, SerializationBinary) {
   SCOPED_TRACE("");
-  ::TestSerialization<cereal::BinaryInputArchive, cereal::BinaryOutputArchive,
+  ::TestSerialization<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive,
                       TypeParam>();
 }
 
@@ -736,7 +738,7 @@ TYPED_TEST(Array2dTest, SerializationJSON) {
 
 TYPED_TEST(Array2dTest, SerializationBinary) {
   SCOPED_TRACE("");
-  ::TestSerialization2D<cereal::BinaryInputArchive, cereal::BinaryOutputArchive,
+  ::TestSerialization2D<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive,
                         TypeParam>();
 }
 

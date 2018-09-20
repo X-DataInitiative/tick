@@ -4,6 +4,8 @@ import io, unittest
 import numpy as np
 
 import pickle
+import scipy.sparse
+from scipy.sparse import csr_matrix
 
 from tick.solver.tests import TestSolver
 
@@ -38,16 +40,16 @@ class Test(TestSolver):
         ]
         model_map = {
             ModelLinReg: SimuLinReg,
-            ModelLogReg: SimuLogReg,
-            ModelPoisReg: SimuPoisReg,
-            ModelHinge: SimuLogReg,
-            ModelQuadraticHinge: SimuLogReg,
-            ModelSmoothedHinge: SimuLogReg,
-            ModelAbsoluteRegression: SimuLinReg,
-            ModelEpsilonInsensitive: SimuLinReg,
-            ModelHuber: SimuLinReg,
-            ModelLinRegWithIntercepts: SimuLinReg,
-            ModelModifiedHuber: SimuLogReg
+            # ModelLogReg: SimuLogReg,
+            # ModelPoisReg: SimuPoisReg,
+            # ModelHinge: SimuLogReg,
+            # ModelQuadraticHinge: SimuLogReg,
+            # ModelSmoothedHinge: SimuLogReg,
+            # ModelAbsoluteRegression: SimuLinReg,
+            # ModelEpsilonInsensitive: SimuLinReg,
+            # ModelHuber: SimuLinReg,
+            # ModelLinRegWithIntercepts: SimuLinReg,
+            # ModelModifiedHuber: SimuLogReg
         }
 
         for solver in solvers:
@@ -61,7 +63,6 @@ class Test(TestSolver):
                 c0 = None
                 X, y = SimuLinReg(w0, c0, n_samples=n_samples, verbose=False,
                                   seed=2038).simulate()
-
                 if mod == ModelLinRegWithIntercepts:
                     y += intercept0
 
