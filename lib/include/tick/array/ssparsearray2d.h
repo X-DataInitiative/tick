@@ -159,6 +159,16 @@ class SSparseArray2d : public SparseArray2d<T> {
   // with the associated shared_ptr
   SSparseArray2d(const SSparseArray2d<T> &other) = delete;
   SSparseArray2d(const SSparseArray2d<T> &&other) = delete;
+
+  template <class Archive>
+  void load(Archive &ar) {
+    ar(cereal::make_nvp("SparseArray2d", cereal::base_class<SparseArray2d<T>>(this)));
+  }
+
+  template <class Archive>
+  void save(Archive &ar) const {
+    ar(cereal::make_nvp("SparseArray2d", cereal::base_class<SparseArray2d<T>>(this)));
+  }
 };
 
 #ifdef PYTHON_LINK
@@ -483,12 +493,12 @@ std::shared_ptr<SSparseArray2d<T>> SparseArray2d<T>::as_ssparsearray2d_ptr() {
 
 SSPARSE_ARRAY2D_DEFINE_TYPE(double, Double);
 SSPARSE_ARRAY2D_DEFINE_TYPE(float, Float);
-SSPARSE_ARRAY2D_DEFINE_TYPE(int32_t, Int);
-SSPARSE_ARRAY2D_DEFINE_TYPE(uint32_t, UInt);
-SSPARSE_ARRAY2D_DEFINE_TYPE(int16_t, Short);
-SSPARSE_ARRAY2D_DEFINE_TYPE(uint16_t, UShort);
-SSPARSE_ARRAY2D_DEFINE_TYPE(int64_t, Long);
-SSPARSE_ARRAY2D_DEFINE_TYPE(ulong, ULong);
+SSPARSE_ARRAY2D_DEFINE_TYPE_BASIC(int32_t, Int);
+SSPARSE_ARRAY2D_DEFINE_TYPE_BASIC(uint32_t, UInt);
+SSPARSE_ARRAY2D_DEFINE_TYPE_BASIC(int16_t, Short);
+SSPARSE_ARRAY2D_DEFINE_TYPE_BASIC(uint16_t, UShort);
+SSPARSE_ARRAY2D_DEFINE_TYPE_BASIC(int64_t, Long);
+SSPARSE_ARRAY2D_DEFINE_TYPE_BASIC(ulong, ULong);
 SSPARSE_ARRAY2D_DEFINE_TYPE_BASIC(std::atomic<double>, AtomicDouble);
 SSPARSE_ARRAY2D_DEFINE_TYPE_BASIC(std::atomic<float>, AtomicFloat);
 

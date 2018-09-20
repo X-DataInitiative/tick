@@ -9,8 +9,23 @@
 #ifndef LIB_INCLUDE_TICK_BASE_SERIALIZATION_H_
 #define LIB_INCLUDE_TICK_BASE_SERIALIZATION_H_
 
-#include "cereal/archives/json.hpp"
 #include "tick/base/base.h"
+
+// clang-format off
+// Don't touch this!
+#ifndef TICK_SWIG_INCLUDE
+DISABLE_WARNING(unused, exceptions, 42)
+DISABLE_WARNING(unused, unused-private-field, 42)
+DISABLE_WARNING(delete-non-virtual-dtor, delete-non-virtual-dtor, 42)
+#endif
+#include "cereal/archives/json.hpp"
+#ifndef TICK_SWIG_INCLUDE
+ENABLE_WARNING(unused, exceptions, 42)
+ENABLE_WARNING(unused, unused-private-field, 42)
+ENABLE_WARNING(delete-non-virtual-dtor, delete-non-virtual-dtor, 42)
+#endif
+// clang-format on
+// Carry on formatting
 
 namespace tick {
 

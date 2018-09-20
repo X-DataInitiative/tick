@@ -398,11 +398,15 @@ inline std::ostream &operator<<(std::ostream &s, const Array<T> &p) {
  * Array serialization function for binary archives types
  */
 template <class Archive, class T>
-typename std::enable_if<cereal::traits::is_output_serializable<
-                            cereal::BinaryData<T>, Archive>::value,
-                        void>::type
+typename std::enable_if<
+    cereal::traits::is_output_serializable<cereal::BinaryData<T>, Archive>::value, void>::type
 CEREAL_SAVE_FUNCTION_NAME(Archive &ar, Array<T> const &arr) {
   const bool is_sparse = arr.is_sparse();
+
+  if (is_sparse) {
+    std::cerr << typeid(arr).name() << std::endl;
+    throw std::runtime_error("this function shouldn't be called");
+  }
 
   ar(CEREAL_NVP(is_sparse));
 
@@ -419,11 +423,15 @@ CEREAL_SAVE_FUNCTION_NAME(Archive &ar, Array<T> const &arr) {
  * Array serialization function for text archives types (XML, JSON)
  */
 template <class Archive, class T>
-typename std::enable_if<!cereal::traits::is_output_serializable<
-                            cereal::BinaryData<T>, Archive>::value,
-                        void>::type
+typename std::enable_if<
+    !cereal::traits::is_output_serializable<cereal::BinaryData<T>, Archive>::value, void>::type
 CEREAL_SAVE_FUNCTION_NAME(Archive &ar, Array<T> const &arr) {
   const bool is_sparse = arr.is_sparse();
+
+  if (is_sparse) {
+    std::cerr << typeid(arr).name() << std::endl;
+    throw std::runtime_error("this function shouldn't be called");
+  }
 
   ar(CEREAL_NVP(is_sparse));
 
@@ -518,33 +526,6 @@ CEREAL_LOAD_FUNCTION_NAME(Archive &ar, Array<T> &arr) {
  * @{
  */
 
-/**
- * @}
- */
-
-/** @defgroup array_sub_mod The instantiations of the Array template
- *  @ingroup Array_typedefs_mod
- * @{
- */
-
-/**
- * @}
- */
-
-/** @defgroup arraylist1d_sub_mod The classes for dealing with 1d-list of Arrays
- *  @ingroup Array_typedefs_mod
- * @{
- */
-
-/**
- * @}
- */
-
-/** @defgroup arraylist2d_sub_mod The classes for dealing with 2d-list of Arrays
- *  @ingroup Array_typedefs_mod
- * @{
- */
-
 #define ARRAY_DEFINE_TYPE_BASIC(TYPE, NAME)             \
   typedef Array<TYPE> Array##NAME;                      \
   typedef std::vector<Array##NAME> Array##NAME##List1D; \
@@ -556,12 +537,12 @@ CEREAL_LOAD_FUNCTION_NAME(Archive &ar, Array<T> &arr) {
 
 ARRAY_DEFINE_TYPE(double, Double);
 ARRAY_DEFINE_TYPE(float, Float);
-ARRAY_DEFINE_TYPE(int32_t, Int);
-ARRAY_DEFINE_TYPE(uint32_t, UInt);
-ARRAY_DEFINE_TYPE(int16_t, Short);
-ARRAY_DEFINE_TYPE(uint16_t, UShort);
-ARRAY_DEFINE_TYPE(int64_t, Long);
-ARRAY_DEFINE_TYPE(ulong, ULong);
+ARRAY_DEFINE_TYPE_BASIC(int32_t, Int);
+ARRAY_DEFINE_TYPE_BASIC(uint32_t, UInt);
+ARRAY_DEFINE_TYPE_BASIC(int16_t, Short);
+ARRAY_DEFINE_TYPE_BASIC(uint16_t, UShort);
+ARRAY_DEFINE_TYPE_BASIC(int64_t, Long);
+ARRAY_DEFINE_TYPE_BASIC(ulong, ULong);
 ARRAY_DEFINE_TYPE_BASIC(std::atomic<double>, AtomicDouble);
 ARRAY_DEFINE_TYPE_BASIC(std::atomic<float>, AtomicFloat);
 

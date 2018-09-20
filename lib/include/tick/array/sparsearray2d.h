@@ -6,6 +6,7 @@
 
 /** @file */
 
+#include <cereal/types/vector.hpp>
 #include "basearray2d.h"
 
 template <typename T>
@@ -112,7 +113,6 @@ class SparseArray2d : public BaseArray2d<T> {
       ar(v_data);
       ar(v_indices);
       ar(v_row_indices);
-
     } catch (const std::exception &e) {
       std::cerr << e.what() << std::endl;
     }
@@ -231,12 +231,12 @@ Array2d<T> BaseArray2d<T>::as_array2d() {
 
 SPARSE_ARRAY2D_DEFINE_TYPE(double, Double);
 SPARSE_ARRAY2D_DEFINE_TYPE(float, Float);
-SPARSE_ARRAY2D_DEFINE_TYPE(int32_t, Int);
-SPARSE_ARRAY2D_DEFINE_TYPE(uint32_t, UInt);
-SPARSE_ARRAY2D_DEFINE_TYPE(int16_t, Short);
-SPARSE_ARRAY2D_DEFINE_TYPE(uint16_t, UShort);
-SPARSE_ARRAY2D_DEFINE_TYPE(int64_t, Long);
-SPARSE_ARRAY2D_DEFINE_TYPE(ulong, ULong);
+SPARSE_ARRAY2D_DEFINE_TYPE_BASIC(int32_t, Int);
+SPARSE_ARRAY2D_DEFINE_TYPE_BASIC(uint32_t, UInt);
+SPARSE_ARRAY2D_DEFINE_TYPE_BASIC(int16_t, Short);
+SPARSE_ARRAY2D_DEFINE_TYPE_BASIC(uint16_t, UShort);
+SPARSE_ARRAY2D_DEFINE_TYPE_BASIC(int64_t, Long);
+SPARSE_ARRAY2D_DEFINE_TYPE_BASIC(ulong, ULong);
 SPARSE_ARRAY2D_DEFINE_TYPE_BASIC(std::atomic<double>, AtomicDouble);
 SPARSE_ARRAY2D_DEFINE_TYPE_BASIC(std::atomic<float>, AtomicFloat);
 

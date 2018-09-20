@@ -33,8 +33,6 @@ DISABLE_WARNING(delete-non-virtual-dtor, delete-non-virtual-dtor, 42)
 #include <cereal/types/base_class.hpp>
 #include <cereal/types/memory.hpp>
 #include <cereal/types/polymorphic.hpp>
-#include <cereal/types/vector.hpp>
-#include <cereal/archives/portable_binary.hpp>
 #ifndef TICK_SWIG_INCLUDE
 ENABLE_WARNING(unused, exceptions, 42)
 ENABLE_WARNING(unused, unused-private-field, 42)
