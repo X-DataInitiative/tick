@@ -10,8 +10,8 @@
 
 template <class T, class K>
 TSDCA<T, K>::TSDCA(T l_l2sq, ulong epoch_size, T tol, RandType rand_type,
-                   int seed)
-    : TStoSolver<T, K>(epoch_size, tol, rand_type, seed), l_l2sq(l_l2sq) {
+                   int record_every, int seed)
+    : TStoSolver<T, K>(epoch_size, tol, rand_type, record_every, seed), l_l2sq(l_l2sq) {
   stored_variables_ready = false;
 }
 
@@ -30,7 +30,7 @@ void TSDCA<T, K>::reset() {
 }
 
 template <class T, class K>
-void TSDCA<T, K>::solve() {
+void TSDCA<T, K>::solve_one_epoch() {
   if (!stored_variables_ready) {
     set_starting_iterate();
   }

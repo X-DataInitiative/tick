@@ -158,7 +158,7 @@ class AGD(SolverFirstOrder):
     def _solve(self, x0: np.ndarray = None, step: float = None):
         minimizer, prev_minimizer, y, grad_y, t, step, obj = \
             self._initialize_values(x0, step)
-        for n_iter in range(self.max_iter + 1):
+        for n_iter in range(self.max_iter):
             prev_t = t
             prev_minimizer[:] = minimizer
 
@@ -180,7 +180,7 @@ class AGD(SolverFirstOrder):
                 converged = rel_obj < self.tol
                 # If converged, we stop the loop and record the last step
                 # in history
-                self._handle_history(n_iter, force=converged, obj=obj,
+                self._handle_history(n_iter + 1, force=converged, obj=obj,
                                      x=minimizer.copy(), rel_delta=rel_delta,
                                      step=step, rel_obj=rel_obj)
                 if converged:

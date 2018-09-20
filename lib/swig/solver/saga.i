@@ -14,8 +14,8 @@ class TSAGA : public TStoSolver<T, T> {
          T tol,
          RandType rand_type,
          T step,
-         int seed);
-    void solve();
+         int record_every = 1,
+         int seed = -1);
     void set_step(T step);
 
     void set_model(std::shared_ptr<TModel<T, T> > model) override;

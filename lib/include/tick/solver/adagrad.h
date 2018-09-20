@@ -26,9 +26,10 @@ class DLL_PUBLIC TAdaGrad : public TStoSolver<T> {
   // This exists soley for cereal/swig
   TAdaGrad() : TAdaGrad<T>(0, 0, RandType::unif, 0, 0) {}
 
-  TAdaGrad(ulong epoch_size, T tol, RandType rand_type, T step, int seed);
+  TAdaGrad(ulong epoch_size, T tol, RandType rand_type, T step, int record_every = 1,
+      int seed = -1);
 
-  void solve() override;
+  void solve_one_epoch() override;
 
   void set_starting_iterate(Array<T> &new_iterate) override;
 

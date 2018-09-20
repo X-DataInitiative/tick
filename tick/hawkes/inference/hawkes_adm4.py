@@ -288,7 +288,7 @@ class HawkesADM4(LearnerHawkesNoParam):
                              "be strictly positive.".format(self.rho))
 
         max_relative_distance = 1e-1
-        for i in range(self.max_iter + 1):
+        for i in range(self.max_iter):
 
             if self._should_record_iter(i):
                 prev_objective = self.objective(self.coeffs)
@@ -335,9 +335,9 @@ class HawkesADM4(LearnerHawkesNoParam):
                 # We perform at least 5 iterations as at start we sometimes
                 # reach a low tolerance if inner_tol is too low
                 converged = max_relative_distance <= self.tol and i > 5
-                force_print = (i == self.max_iter) or converged
+                force_print = (i + 1 == self.max_iter) or converged
 
-                self._handle_history(i, obj=objective, rel_obj=rel_obj,
+                self._handle_history(i + 1, obj=objective, rel_obj=rel_obj,
                                      rel_baseline=rel_baseline,
                                      rel_adjacency=rel_adjacency,
                                      force=force_print)

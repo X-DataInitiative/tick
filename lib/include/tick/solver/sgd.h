@@ -30,7 +30,7 @@ class DLL_PUBLIC TSGD : public TStoSolver<T, K> {
 
  public:
   TSGD(ulong epoch_size = 0, T tol = 0., RandType rand_type = RandType::unif,
-       T step = 0., int seed = -1);
+       T step = 0.,  int record_every = 1, int seed = -1);
 
   inline T get_step_t() const { return step_t; }
 
@@ -38,7 +38,7 @@ class DLL_PUBLIC TSGD : public TStoSolver<T, K> {
 
   inline void set_step(T step) { this->step = step; }
 
-  void solve();
+  void solve_one_epoch() override;
 
   void solve_sparse();
 

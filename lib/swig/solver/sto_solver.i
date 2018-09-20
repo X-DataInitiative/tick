@@ -1,6 +1,7 @@
 // License: BSD 3 clause
 
 %include <std_shared_ptr.i>
+%include "std_vector.i"
 
 %{
 #include "tick/solver/sto_solver.h"
@@ -10,6 +11,11 @@
 %include "array_module.i"
 %include "model.i"
 %include "prox_module.i"
+
+%template(IntVector) std::vector<int>;
+%template(DoubleVector) std::vector<double>;
+%template(SArrayDoubleVector) std::vector<std::shared_ptr<SArray<double> > >;
+%template(SArrayFloatVector) std::vector<std::shared_ptr<SArray<float> > >;
 
 // Type of randomness used when sampling at random data points
 enum class RandType {
@@ -23,9 +29,11 @@ class TStoSolver {
   TStoSolver(
     unsigned long epoch_size,
     T tol,
-    RandType rand_type
+    RandType rand_type,
+    int record_every = 1,
+    int seed = -1
   );
-  virtual void solve();
+  virtual void solve(int n_epochs = 1);
 
   virtual void get_minimizer(Array<T> &out);
   virtual void get_iterate(Array<T> &out);
@@ -39,6 +47,12 @@ class TStoSolver {
   inline RandType get_rand_type() const;
   inline void set_rand_max(unsigned long rand_max);
   inline unsigned long get_rand_max() const;
+  inline int get_record_every() const;
+  inline void set_record_every(int record_every);
+
+  std::vector<double> get_time_history() const;
+  std::vector<int> get_epoch_history() const;
+  std::vector<std::shared_ptr<SArray<T> > > get_iterate_history() const;
 
   virtual void set_model(std::shared_ptr<TModel<T, K> > model);
   virtual void set_prox(std::shared_ptr<TProx<T, K> > prox);
@@ -55,7 +69,7 @@ class TStoSolver<double> {
     RandType rand_type
   );
 
-  virtual void solve();
+  virtual void solve(int n_epochs = 1);
   virtual void get_minimizer(ArrayDouble &out);
   virtual void get_iterate(ArrayDouble &out);
   virtual void set_starting_iterate(ArrayDouble &new_iterate);
@@ -68,6 +82,12 @@ class TStoSolver<double> {
   inline RandType get_rand_type() const;
   inline void set_rand_max(unsigned long rand_max);
   inline unsigned long get_rand_max() const;
+  inline int get_record_every() const;
+  inline void set_record_every(int record_every);
+
+  std::vector<double> get_time_history() const;
+  std::vector<int> get_epoch_history() const;
+  SArrayDoublePtrList1D get_iterate_history() const;
 
   virtual void set_model(ModelDoublePtr model);
   virtual void set_prox(ProxDoublePtr prox);
@@ -85,7 +105,7 @@ class TStoSolver<float> {
     RandType rand_type
   );
 
-  virtual void solve();
+  virtual void solve(int n_epochs = 1);
 
   virtual void get_minimizer(ArrayFloat &out);
   virtual void get_iterate(ArrayFloat &out);
@@ -99,6 +119,12 @@ class TStoSolver<float> {
   inline RandType get_rand_type() const;
   inline void set_rand_max(unsigned long rand_max);
   inline unsigned long get_rand_max() const;
+  inline int get_record_every() const;
+  inline void set_record_every(int record_every);
+
+  std::vector<double> get_time_history() const;
+  std::vector<int> get_epoch_history() const;
+  SArrayFloatPtrList1D get_iterate_history() const;
 
   virtual void set_model(ModelFloatPtr model);
   virtual void set_prox(ProxFloatPtr prox);
@@ -116,7 +142,7 @@ class TStoSolver<double, std::atomic<double> > {
     RandType rand_type
   );
 
-  virtual void solve();
+  virtual void solve(int n_epochs = 1);
   virtual void get_minimizer(ArrayDouble &out);
   virtual void get_iterate(ArrayDouble &out);
   virtual void set_starting_iterate(ArrayAtomicDouble &new_iterate);
@@ -129,6 +155,12 @@ class TStoSolver<double, std::atomic<double> > {
   inline RandType get_rand_type() const;
   inline void set_rand_max(unsigned long rand_max);
   inline unsigned long get_rand_max() const;
+  inline int get_record_every() const;
+  inline void set_record_every(int record_every);
+
+  std::vector<double> get_time_history() const;
+  std::vector<int> get_epoch_history() const;
+  SArrayDoublePtrList1D get_iterate_history() const;
 
   virtual void set_model(std::shared_ptr<TModel<double, std::atomic<double>> > model);
   virtual void set_prox(std::shared_ptr<TProx<double, std::atomic<double> > > prox);
@@ -147,7 +179,7 @@ class TStoSolver<float, std::atomic<float> > {
     RandType rand_type
   );
 
-  virtual void solve();
+  virtual void solve(int n_epochs = 1);
 
   virtual void get_minimizer(ArrayFloat &out);
   virtual void get_iterate(ArrayFloat &out);
@@ -161,6 +193,12 @@ class TStoSolver<float, std::atomic<float> > {
   inline RandType get_rand_type() const;
   inline void set_rand_max(unsigned long rand_max);
   inline unsigned long get_rand_max() const;
+  inline int get_record_every() const;
+  inline void set_record_every(int record_every);
+
+  std::vector<double> get_time_history() const;
+  std::vector<int> get_epoch_history() const;
+  SArrayFloatPtrList1D get_iterate_history() const;
 
   virtual void set_model(std::shared_ptr<TModel<float, std::atomic<float>> > model);
   virtual void set_prox(std::shared_ptr<TProx<float, std::atomic<float> > > prox);

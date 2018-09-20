@@ -79,17 +79,33 @@ class DLL_PUBLIC TStoSolver {
   // An array that allows to store the sampled random permutation
   ArrayULong permutation;
 
+  int record_every = 1;
+  int last_record_epoch = 0;
+  double last_record_time = 0;
+
+  // A vector storing all timings at which history has been stored
+  std::vector<double> time_history;
+
+  // A vector storing all epoch at which history has been stored
+  std::vector<int> epoch_history;
+
+  // A vector storing all timings at which history has been stored
+  std::vector<Array<T> > iterate_history;
+
  protected:
   // Init permutation array in case of Random is srt to permutation
   void init_permutation();
 
+  virtual void save_history(double time, int epoch);
+
  public:
   inline TStoSolver(ulong epoch_size = 0, T tol = 0.,
-                    RandType rand_type = RandType::unif, int seed = -1)
+                    RandType rand_type = RandType::unif, int record_every = 1, int seed = -1)
       : epoch_size(epoch_size),
         tol(tol),
         prox(std::make_shared<TProxZero<T, K> >(0.0)),
-        rand_type(rand_type) {
+        rand_type(rand_type),
+        record_every(record_every) {
     set_seed(seed);
     permutation_ready = false;
   }
@@ -118,7 +134,9 @@ class DLL_PUBLIC TStoSolver {
 
   void shuffle();
 
-  virtual void solve() { TICK_CLASS_DOES_NOT_IMPLEMENT("TStoSolver<T, K>"); }
+  virtual void solve_one_epoch() { TICK_CLASS_DOES_NOT_IMPLEMENT("TStoSolver<T, K>"); }
+
+  virtual void solve(int n_epochs = 1);
 
   virtual void get_minimizer(Array<T> &out);
 
@@ -152,6 +170,16 @@ class DLL_PUBLIC TStoSolver {
     permutation_ready = false;
   }
 
+  inline int get_record_every() const { return record_every; }
+
+  inline void set_record_every(int record_every) { this->record_every = record_every; }
+
+  std::vector<double> get_time_history() const { return time_history; }
+
+  std::vector<int> get_epoch_history() const { return epoch_history; }
+
+  std::vector<std::shared_ptr<SArray<T> > > get_iterate_history() const;
+
   const std::shared_ptr<TModel<T, K> > get_model() { return model; }
   const std::shared_ptr<TProx<T, K> > get_prox() { return prox; }
 
@@ -174,6 +202,7 @@ class DLL_PUBLIC TStoSolver {
     ar(CEREAL_NVP(permutation));
     ar(CEREAL_NVP(i_perm));
     ar(CEREAL_NVP(permutation_ready));
+    ar(CEREAL_NVP(record_every));
     int rand_seed;
     ar(CEREAL_NVP(rand_seed));
     rand = Rand(rand_seed);
@@ -192,6 +221,7 @@ class DLL_PUBLIC TStoSolver {
     ar(CEREAL_NVP(permutation));
     ar(CEREAL_NVP(i_perm));
     ar(CEREAL_NVP(permutation_ready));
+    ar(CEREAL_NVP(record_every));
     // Note that only the seed is part of the serialization.
     // If the generator has been used (i.e. numbers have been drawn from it)
     // this will not be reflected in the restored (deserialized) object.
@@ -205,7 +235,7 @@ class DLL_PUBLIC TStoSolver {
             TICK_CMP_REPORT(ss, rand_max) && TICK_CMP_REPORT(ss, epoch_size) &&
             TICK_CMP_REPORT(ss, tol) && TICK_CMP_REPORT(ss, rand_type) &&
             TICK_CMP_REPORT(ss, permutation) && TICK_CMP_REPORT(ss, i_perm) &&
-            TICK_CMP_REPORT(ss, permutation_ready),
+            TICK_CMP_REPORT(ss, permutation_ready) && TICK_CMP_REPORT(ss, record_every),
         ss.str());
   }
 };

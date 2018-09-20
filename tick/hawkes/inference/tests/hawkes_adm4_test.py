@@ -71,7 +71,7 @@ class Test(unittest.TestCase):
 
         learner = HawkesADM4(self.decay, rho=rho, C=C,
                              lasso_nuclear_ratio=lasso_nuclear_ratio,
-                             n_threads=3, max_iter=10, verbose=False,
+                             n_threads=3, max_iter=11, verbose=False,
                              em_max_iter=3, record_every=1)
         learner.fit(events[0], baseline_start=baseline_start,
                     adjacency_start=adjacency_start)

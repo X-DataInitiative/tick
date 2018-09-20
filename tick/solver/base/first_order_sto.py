@@ -152,6 +152,19 @@ class SolverFirstOrderSto(SolverFirstOrder, SolverSto):
         if self._solver is not None:
             self._solver.set_step(val)
 
+    @property
+    def record_every(self):
+        if hasattr(self, '_solver') and self._solver is not None:
+            return self._solver.get_record_every()
+        else:
+            return self._record_every
+
+    @record_every.setter
+    def record_every(self, val):
+        self._record_every = val
+        if hasattr(self, '_solver') and self._solver is not None:
+            self._solver.set_record_every(val)
+
     def _solve(self, x0: np.array = None, step: float = None):
         """
         Launch the solver
@@ -184,14 +197,22 @@ class SolverFirstOrderSto(SolverFirstOrder, SolverSto):
             if x0 is not None:
                 self._solver.set_starting_iterate(x0)
 
+        if self.verbose or self.tol != 0:
+            self._solve_with_printing(prev_minimizer, minimizer)
+        else:
+            self._solve_and_record_in_cpp(minimizer)
+
+        self._solver.get_minimizer(minimizer)
+        self._set("solution", minimizer)
+        return minimizer
+
+    def _solve_with_printing(self, prev_minimizer, minimizer):
         # At each iteration we call self._solver.solve that does a full
         # epoch
-        for n_iter in range(self.max_iter + 1):
+        prev_minimizer[:] = minimizer
+        prev_obj = self.objective(prev_minimizer)
 
-            # We will record on this iteration and we must be ready
-            if self._should_record_iter(n_iter):
-                prev_minimizer[:] = minimizer
-                prev_obj = self.objective(prev_minimizer)
+        for n_iter in range(self.max_iter):
 
             # Launch one epoch using the wrapped C++ solver
             self._solver.solve()
@@ -203,19 +224,46 @@ class SolverFirstOrderSto(SolverFirstOrder, SolverSto):
                 # step = self._solver.get_step()
                 obj = self.objective(minimizer)
                 rel_delta = relative_distance(minimizer, prev_minimizer)
-                rel_obj = abs(obj - prev_obj) / abs(prev_obj)
+                rel_obj = abs(obj - prev_obj) / abs(prev_obj) \
+                    if prev_obj != 0 else abs(obj)
                 converged = rel_obj < self.tol
                 # If converged, we stop the loop and record the last step
                 # in history
-                self._handle_history(n_iter, force=converged, obj=obj,
+                self._handle_history(n_iter + 1, force=converged, obj=obj,
                                      x=minimizer.copy(), rel_delta=rel_delta,
                                      rel_obj=rel_obj)
+                prev_minimizer[:] = minimizer
+                prev_obj = self.objective(prev_minimizer)
                 if converged:
                     break
 
-        self._solver.get_minimizer(minimizer)
-        self._set("solution", minimizer)
-        return minimizer
+    def _solve_and_record_in_cpp(self, minimizer):
+        first_minimizer = minimizer
+        self._solver.solve(self.max_iter)
+
+        prev_iterate = first_minimizer
+        prev_obj = self.objective(prev_iterate)
+
+        for epoch, iter_time, iterate in zip(
+                self._solver.get_epoch_history(),
+                self._solver.get_time_history(),
+                self._solver.get_iterate_history()):
+            obj = self.objective(iterate)
+            rel_delta = relative_distance(iterate, prev_iterate)
+
+            # This rel_obj is not exactly the same one as prev_obj is not the
+            # objective of the previous epoch but of the previouly recorded
+            # epoch
+            rel_obj = abs(obj - prev_obj) / abs(prev_obj) \
+                    if prev_obj != 0 else abs(obj)
+
+            self._handle_history(epoch, force=True, obj=obj,
+                                 iter_time=iter_time,
+                                 x=iterate, rel_delta=rel_delta,
+                                 rel_obj=rel_obj)
+
+            prev_obj = obj
+            prev_iterate[:] = iterate
 
     def _get_typed_class(self, dtype_or_object_with_dtype, dtype_map):
         import tick.base.dtype_to_cpp_type

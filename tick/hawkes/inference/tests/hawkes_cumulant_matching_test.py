@@ -75,7 +75,7 @@ if not skip:
             """...Test that hawkes cumulant reached expected value
             """
             timestamps, baseline, adjacency = Test.get_train_data(decay=3.)
-            learner = HawkesCumulantMatching(100., cs_ratio=0.9, max_iter=299,
+            learner = HawkesCumulantMatching(100., cs_ratio=0.9, max_iter=300,
                                              print_every=30, step=1e-2,
                                              solver='adam', C=1e-3, tol=1e-5)
             learner.fit(timestamps)
@@ -148,7 +148,7 @@ if not skip:
             """
             timestamps, baseline, adjacency = Test.get_train_data(decay=3.)
             learner = HawkesCumulantMatching(
-                100., cs_ratio=0.9, max_iter=299, print_every=30, step=1e-2,
+                100., cs_ratio=0.9, max_iter=300, print_every=30, step=1e-2,
                 solver='adam', penalty='l1', C=1, tol=1e-5)
             learner.fit(timestamps)
 
@@ -183,7 +183,7 @@ if not skip:
             """
             timestamps, baseline, adjacency = Test.get_train_data(decay=3.)
             learner = HawkesCumulantMatching(
-                100., cs_ratio=0.9, max_iter=299, print_every=30, step=1e-2,
+                100., cs_ratio=0.9, max_iter=300, print_every=30, step=1e-2,
                 solver='adam', penalty='l2', C=0.1, tol=1e-5)
             learner.fit(timestamps)
 

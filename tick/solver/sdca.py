@@ -182,7 +182,7 @@ class SDCA(SolverFirstOrderSto):
         self._set(
             '_solver',
             solver_class(self.l_l2sq, epoch_size, self.tol, self._rand_type,
-                         self.seed))
+                         self.record_every, self.seed))
 
     def objective(self, coeffs, loss: float = None):
         """Compute the objective minimized by the solver at ``coeffs``

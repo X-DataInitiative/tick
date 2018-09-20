@@ -68,7 +68,8 @@ class Solver(Base):
         },
         "_time_start": {
             "writable": False
-        }
+        },
+        "_record_every": { }
     }
 
     def __init__(self, tol=0., max_iter=100, verbose=True, print_every=10,
@@ -119,7 +120,7 @@ class Solver(Base):
         # Otherwise check that we are either at a specific moment or at the end
         elif n_iter % self.print_every == 0 or n_iter % self.record_every == 0:
             return True
-        elif n_iter == self.max_iter:
+        elif n_iter + 1 == self.max_iter:
             return True
         return False
 
@@ -147,10 +148,14 @@ class Solver(Base):
         should_record = force or n_iter % print_every == 0 or \
                         n_iter % record_every == 0
         if should_record:
-            self.history._update(n_iter=n_iter, time=time() - self._time_start,
+            iter_time = kwargs.get('iter_time', time() - self._time_start)
+            self.history._update(n_iter=n_iter, time=iter_time,
                                  **kwargs)
         if should_print:
             self.history._print_history()
+
+    def print_history(self):
+        self.history.print_full_history()
 
     @abstractmethod
     def _solve(self, *args, **kwargs):
@@ -199,6 +204,14 @@ class Solver(Base):
             return self.history.values
         else:
             return val
+
+    @property
+    def record_every(self):
+        return self._record_every
+
+    @record_every.setter
+    def record_every(self, val):
+        self._record_every = val
 
     def _as_dict(self):
         dd = Base._as_dict(self)

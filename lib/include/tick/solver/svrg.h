@@ -21,6 +21,7 @@ class DLL_PUBLIC TSVRG : public TStoSolver<T, K> {
 
  public:
   using TStoSolver<T, K>::get_class_name;
+  using TStoSolver<T, K>::solve;
 
  private:
   int n_threads = 1;
@@ -63,13 +64,12 @@ class DLL_PUBLIC TSVRG : public TStoSolver<T, K> {
   // This exists soley for cereal/swig
   TSVRG() : TSVRG<T, K>(0, 0, RandType::unif, 0) {}
 
-  TSVRG(ulong epoch_size, T tol, RandType rand_type, T step, int seed = -1,
+  TSVRG(ulong epoch_size, T tol, RandType rand_type, T step, int record_every = 1, int seed = -1,
         int n_threads = 1,
-        SVRG_VarianceReductionMethod variance_reduction =
-            SVRG_VarianceReductionMethod::Last,
+        SVRG_VarianceReductionMethod variance_reduction = SVRG_VarianceReductionMethod::Last,
         SVRG_StepType step_method = SVRG_StepType::Fixed);
 
-  void solve() override;
+  void solve_one_epoch() override;
 
   void set_model(std::shared_ptr<TModel<T, K>> model) override;
 

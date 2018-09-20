@@ -5,10 +5,10 @@
 
 template <class T, class K>
 TSVRG<T, K>::TSVRG(ulong epoch_size, T tol, RandType rand_type, T step,
-                   int seed, int n_threads,
+                   int record_every, int seed, int n_threads,
                    SVRG_VarianceReductionMethod variance_reduction,
                    SVRG_StepType step_method)
-    : TStoSolver<T, K>(epoch_size, tol, rand_type, seed),
+    : TStoSolver<T, K>(epoch_size, tol, rand_type, record_every, seed),
       n_threads(n_threads),
       step(step),
       variance_reduction(variance_reduction),
@@ -65,7 +65,7 @@ void TSVRG<T, K>::prepare_solve() {
 }
 
 template <class T, class K>
-void TSVRG<T, K>::solve() {
+void TSVRG<T, K>::solve_one_epoch() {
   prepare_solve();
   if ((model->is_sparse()) && (prox->is_separable())) {
     bool use_intercept = model->use_intercept();

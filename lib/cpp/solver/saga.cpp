@@ -6,15 +6,15 @@
 
 template <class T, class K>
 TBaseSAGA<T, K>::TBaseSAGA(ulong epoch_size, T tol, RandType rand_type, T step,
-                           int seed)
-    : TStoSolver<T, K>(epoch_size, tol, rand_type, seed),
+                           int record_every, int seed)
+    : TStoSolver<T, K>(epoch_size, tol, rand_type, record_every, seed),
       solver_ready(false),
       ready_step_corrections(false),
       step(step) {}
 
 template <class T>
-TSAGA<T>::TSAGA(ulong epoch_size, T tol, RandType rand_type, T step, int seed)
-    : TBaseSAGA<T, T>(epoch_size, tol, rand_type, step, seed) {}
+TSAGA<T>::TSAGA(ulong epoch_size, T tol, RandType rand_type, T step, int record_every, int seed)
+    : TBaseSAGA<T, T>(epoch_size, tol, rand_type, step, record_every, seed) {}
 
 template <class T, class K>
 void TBaseSAGA<T, K>::set_model(std::shared_ptr<TModel<T, K> > model) {
@@ -42,25 +42,6 @@ void TBaseSAGA<T, K>::prepare_solve() {
 }
 
 template <class T, class K>
-void TBaseSAGA<T, K>::solve() {
-  prepare_solve();
-  bool use_intercept = model->use_intercept();
-  ulong n_features = model->get_n_features();
-  if ((model->is_sparse()) && (prox->is_separable())) {
-    if (prox->is_separable()) {
-      casted_prox = std::static_pointer_cast<TProxSeparable<T, K> >(prox);
-    } else {
-      TICK_ERROR(
-          "SAGA::solve_sparse_proba_updates can be used with a separable prox "
-          "only.")
-    }
-    solve_sparse_proba_updates(use_intercept, n_features);
-  } else {
-    solve_dense(use_intercept, n_features);
-  }
-}
-
-template <class T, class K>
 void TBaseSAGA<T, K>::compute_step_corrections() {
   ulong n_features = model->get_n_features();
   Array<T> columns_sparsity = casted_model->get_column_sparsity_view();
@@ -79,6 +60,26 @@ void TSAGA<T>::initialize_solver() {
   gradients_average = Array<T>(model->get_n_coeffs());
   gradients_average.fill(0);
   solver_ready = true;
+}
+
+
+template <class T>
+void TSAGA<T>::solve_one_epoch() {
+  prepare_solve();
+  bool use_intercept = model->use_intercept();
+  ulong n_features = model->get_n_features();
+  if ((model->is_sparse()) && (prox->is_separable())) {
+    if (prox->is_separable()) {
+      casted_prox = std::static_pointer_cast<TProxSeparable<T> >(prox);
+    } else {
+      TICK_ERROR(
+          "SAGA::solve_sparse_proba_updates can be used with a separable prox "
+          "only.")
+    }
+    solve_sparse_proba_updates(use_intercept, n_features);
+  } else {
+    solve_dense(use_intercept, n_features);
+  }
 }
 
 template <class T>

@@ -9,7 +9,7 @@ from tick.hawkes.inference import HawkesBasisKernels
 
 class Test(unittest.TestCase):
     def test_em_basis_kernels(self):
-        """...Test
+        """...Test fit method of HawkesBasisKernels
         """
         ticks = [[
             np.array([1, 1.2, 3.4, 5.8, 10.3, 11, 13.4]),
@@ -39,7 +39,7 @@ class Test(unittest.TestCase):
 
         em = HawkesBasisKernels(kernel_support=kernel_support,
                                 kernel_size=kernel_size, n_basis=n_basis, C=C,
-                                n_threads=2, max_iter=4, ode_max_iter=100)
+                                n_threads=2, max_iter=5, ode_max_iter=100)
 
         em.fit(ticks, baseline_start=mu, amplitudes_start=auvd,
                basis_kernels_start=gdm)

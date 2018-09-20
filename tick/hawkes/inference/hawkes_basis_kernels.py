@@ -253,7 +253,7 @@ class HawkesBasisKernels(LearnerHawkesNoParam):
             self.amplitudes.reshape((self.n_nodes,
                                      self.n_nodes * self.n_basis)))
 
-        for i in range(self.max_iter + 1):
+        for i in range(self.max_iter):
             if self._should_record_iter(i):
                 prev_baseline = self.baseline.copy()
                 prev_amplitudes = self.amplitudes.copy()
@@ -272,9 +272,9 @@ class HawkesBasisKernels(LearnerHawkesNoParam):
 
                 converged = max(rel_baseline, rel_amplitudes,
                                 rel_basis_kernels) <= self.tol
-                force_print = (i == self.max_iter) or converged
+                force_print = (i + 1 == self.max_iter) or converged
 
-                self._handle_history(i, rel_baseline=rel_baseline,
+                self._handle_history(i + 1, rel_baseline=rel_baseline,
                                      rel_amplitudes=rel_amplitudes,
                                      rel_basis_kernels=rel_basis_kernels,
                                      rel_ode=rel_ode, force=force_print)

@@ -24,12 +24,11 @@ class TSVRG : public TStoSolver<T, K> {
          T tol,
          RandType rand_type,
          T step,
+         int record_every = 1,
          int seed = -1,
          int n_threads = 1,
          SVRG_VarianceReductionMethod variance_reduction = SVRG_VarianceReductionMethod::Last,
          SVRG_StepType step_method = SVRG_StepType::Fixed);
-
-    void solve();
 
     T get_step();
     void set_step(T step);
