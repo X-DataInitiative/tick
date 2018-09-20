@@ -52,6 +52,7 @@
 
 %shared_ptr(ModelCoxRegPartialLik);
 %shared_ptr(ModelSCCS);
+%shared_ptr(ModelHawkesSumExpCustomLag);
 
 %{
 #include "tick_python.h"
@@ -108,3 +109,5 @@
 %include hawkes_fixed_sumexpkern_loglik_custom2.i
 
 %include model_rsb.i
+
+%include hawkes_fixed_sumexpkern_lag_loglik_custom.i
