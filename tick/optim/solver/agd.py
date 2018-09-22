@@ -154,10 +154,11 @@ class AGD(SolverFirstOrder):
             #! cheating here to ensure loss(coeff) has coeff positive
             next_point = y - step * grad_y
             next_point_adj = next_point.copy()
-            next_point_adj[next_point_adj < 0] = 0
+            next_point_adj[next_point_adj < 0] = 1e-4
             x[:] = self.prox.call(next_point_adj, step)
         t = np.sqrt((1. + (1. + 4. * t * t))) / 2.
         y[:] = x + (prev_t - 1) / t * (x - prev_x)
+        y[y < 0] = 1e-4
         return x, y, t, step
 
     def _solve(self, x0: np.ndarray = None, step: float = None):

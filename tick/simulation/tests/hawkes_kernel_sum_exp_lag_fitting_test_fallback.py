@@ -12,7 +12,7 @@ seed = 3007
 MaxN_of_f = 10
 f_i = [np.array([1., 0.7, 0.8, 0.6, 0.5, 0.8, 0.3, 0.6, 0.2, 0.7]), np.array([1., 0.6, 0.8, 0.8, 0.6, 0.6, 0.5, 0.8, 0.3, 0.6])]
 
-end_time = 100000
+end_time = 10000
 betas = np.array([0.1, 1, 3, 10])
 
 U = len(betas)
@@ -30,8 +30,6 @@ simu_model.track_intensity(0.1)
 # print(simu_model.simulate)
 simu_model.simulate()
 
-# plot_point_process(simu_model)
-print("nombre de point :", len(simu_model.timestamps[0]), len(simu_model.timestamps[1]))
 ##################################################################################################################
 
 
@@ -48,24 +46,32 @@ timestamps.append(np.array([]))
 global_n = np.array(simu_model._pp.get_global_n())
 global_n = np.insert(global_n, 0, 0).astype(int)
 
-model = ModelHawkesSumExpCustom(betas, MaxN_of_f)
-model.fit(timestamps, global_n, end_time)
-#############################################################################
+
+##################################################################################################################
+from tick.optim.model.hawkes_fixed_sumexpkern_lag_loglik_custom import ModelHawkesSumExpCustomLag
+from tick.optim.solver import AGD
+from tick.optim.prox import ProxZero, ProxL1
+
+
+associated_betas = betas
+associated_lags = np.zeros(len(betas))
+model_list = ModelHawkesSumExpCustomLag(associated_betas, associated_lags, MaxN_of_f, max_n_threads=8)
+model_list.fit(timestamps, global_n, end_times=end_time)
+
 prox = ProxZero()
 
-# solver = AGD(step=5e-2, linesearch=False, max_iter= 350)
-solver = AGD(step=1e-4, linesearch=False, max_iter=2000, print_every=50)
-solver.set_model(model).set_prox(prox)
+solver = AGD(step=1e-3, linesearch=False, max_iter=10000, print_every=50)
+solver.set_model(model_list).set_prox(prox)
 
 x_real = np.array(
     [0.4, 0.5,   0.2, 0.3, 0, 0,  0.15, 0, 0.2, 0.4,  0.1, 0.1, 0.2, 0, 0.1, 0.1, 0, 0.1,
      1., 0.7, 0.8, 0.6, 0.5, 0.8, 0.3, 0.6, 0.2, 0.7,  1., 0.6, 0.8, 0.8, 0.6, 0.6, 0.5, 0.8, 0.3, 0.6])
-x0 = np.array(
-    [0.6, 0.8,   0.2, 0.2, 0.2, 0.2,  0.2, 0.2, 0.2, 0.2,  0.4, 0.4, 0.4, 0.4, 0.5, 0.5, 0.5, 0.5,
-     0.5, 0.5, 0.1, 0.9, 0.9, 0.3, 0.6, 0.8, 0.5,  0.5, 0.5, 0.9, 0.9, 0.3, 0.6, 0.7, 0.8, 0.5, 0.5, 0.5])
+
+x0 = np.random.rand(model_list.n_coeffs)
 solver.solve(x0)
 
-print(model.loss(x_real))
-print(model.loss(x0))
-print(model.loss(solver.solution))
-print(solver.solution / x_real)
+print(model_list.loss(x_real))
+print(model_list.loss(solver.solution))
+# print(solver.solution/x_real)
+
+np.save("sumexplagfall.npy", solver.solution)

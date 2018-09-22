@@ -47,15 +47,12 @@ void ModelHawkesSumExpCustomLag::compute_weights_dim_i(const ulong i) {
     ArrayDouble2d g_i = view(g[0]);
     ArrayDouble2d G_i = view(G[i]);
 
-    //! hacked code here, seperator = 1, meaning L(increasing) is timestamps[1], C,M(decreasing) are timestamps[2] timestamps[3]
-
     auto get_index = [=](ulong k, ulong j, ulong u) {
         return n_nodes * get_n_decays() * k + get_n_decays() * j + u;
     };
 
     ArrayULong last_scanned_indexes;
     last_scanned_indexes = ArrayULong(decays.size());
-    last_scanned_indexes.init_to_zero();
 
     ulong U = decays.size();
     for(ulong u = 0; u != U; ++u) {//iterate over each beta and lag
@@ -66,8 +63,10 @@ void ModelHawkesSumExpCustomLag::compute_weights_dim_i(const ulong i) {
         for (ulong j = 0; j != n_nodes; j++) {//iterate to calculate g_j
             //! here k starts from 1, cause g(t_0) = G(t_0) = 0
             // 0 + Totalevents + T
+            last_scanned_indexes.init_to_zero();
             for (ulong k = 1; k != 1 + n_total_jumps + 1; k++) {//iterate over timestamps of all dims
                 //calculate g_j for all t_k
+
                 const double t_k = (k != (1 + n_total_jumps) ? global_timestamps[k] : end_time);
                 const double ebt = std::exp(-decay * (t_k - global_timestamps[k - 1]));
 
@@ -90,6 +89,8 @@ void ModelHawkesSumExpCustomLag::compute_weights_dim_i(const ulong i) {
                     // ! in the G, we calculated the difference between G without multiplying f
                     // sum_G is calculated later, in the calculation of L_dim_i and its grads
                     last_scanned_indexes[u]++;
+                        if(last_scanned_indexes[u] > n_total_jumps)
+                            break;
                 }
             }
         }
