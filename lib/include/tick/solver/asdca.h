@@ -23,6 +23,11 @@ class DLL_PUBLIC AtomicSDCA : public TStoSolver<T, std::atomic<T> > {
   using TStoSolver<T, std::atomic<T>>::get_next_i;
   using TStoSolver<T, std::atomic<T>>::epoch_size;
   using TStoSolver<T, std::atomic<T>>::rand_max;
+  using TStoSolver<T, std::atomic<T>>::save_history;
+  using TStoSolver<T, std::atomic<T>>::last_record_epoch;
+  using TStoSolver<T, std::atomic<T>>::last_record_time;
+  using TStoSolver<T, std::atomic<T>>::record_every;
+
 
  public:
   using TStoSolver<T, std::atomic<T>>::get_class_name;
@@ -47,16 +52,20 @@ class DLL_PUBLIC AtomicSDCA : public TStoSolver<T, std::atomic<T> > {
   // The dual variable
   Array<std::atomic<T>> dual_vector;
 
+  int n_threads = 0;      // SWIG doesn't support uints
+  size_t un_threads = 0;  //   uint == int = Werror
+
  public:
   // This exists soley for cereal/swig
   AtomicSDCA() : AtomicSDCA<T>(0, 0, 0) {}
 
   explicit AtomicSDCA(T l_l2sq, ulong epoch_size = 0, T tol = 0.,
-                 RandType rand_type = RandType::unif,  int record_every = 1, int seed = -1);
+                      RandType rand_type = RandType::unif,  int record_every = 1, int seed = -1,
+                      int n_threads=2);
 
   void reset() override;
 
-  void solve_one_epoch() override;
+  void solve(int n_epochs = 1) override ;
 
   void set_model(std::shared_ptr<TModel<T, std::atomic<T>>> model) override;
 

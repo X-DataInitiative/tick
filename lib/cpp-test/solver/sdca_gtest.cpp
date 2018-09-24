@@ -90,8 +90,6 @@ TEST(SDCA, test_sdca_sparse_convergence) {
   auto atomic_model = std::make_shared<TModelLinReg<double, std::atomic<double>>>(
       features_ptr, labels_ptr, false, 1);
   auto atomic_prox = std::make_shared<TProxZero<double, std::atomic<double>>>(false);
-//  auto atomic_objective_prox = std::make_shared<TProxL2Sq<double, std::atomic<double>>>(
-//      l_l2sq, false);
 
   ASDCA asdca(l_l2sq, n_samples, 0, RandType::unif, 1, 1309);
   asdca.set_rand_max(n_samples);
@@ -104,10 +102,6 @@ TEST(SDCA, test_sdca_sparse_convergence) {
   const auto objective_asdca = model->loss(*iterate_asdca) + objective_prox->value(*iterate_asdca);
   EXPECT_LE(objective_asdca - objective300, 0.0001);
   EXPECT_LE(objective300 - objective_asdca, 0.0001);
-
-  std::cout << objective_asdca << " " << objective300 << std::endl;
-  iterate_sdca->print();
-  iterate_asdca->print();
 }
 
 
