@@ -67,8 +67,8 @@ class DLL_PUBLIC TModelGeneralizedLinear
 
   T loss(const Array<K> &coeffs) override;
 
-  void sdca_primal_dual_relation(const T l_l2sq, const Array<T> &dual_vector,
-                                 Array<T> &out_primal_vector) override;
+  void sdca_primal_dual_relation(const T l_l2sq, const Array<K> &dual_vector,
+                                 Array<K> &out_primal_vector) override;
 
   bool use_intercept() const override { return fit_intercept; }
 

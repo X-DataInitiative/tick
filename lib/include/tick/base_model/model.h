@@ -83,8 +83,8 @@ class TModel {
   }
 
   virtual void sdca_primal_dual_relation(const T l_l2sq,
-                                         const Array<T> &dual_vector,
-                                         Array<T> &out_primal_vector) {
+                                         const Array<K> &dual_vector,
+                                         Array<K> &out_primal_vector) {
     TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
   }
 

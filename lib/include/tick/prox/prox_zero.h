@@ -10,6 +10,7 @@ template <class T, class K = T>
 class DLL_PUBLIC TProxZero : public TProxSeparable<T, K> {
  public:
   using TProxSeparable<T, K>::get_class_name;
+  using TProxSeparable<T, K>::value;
 
  private:
   T call_single(T x, T step) const override;

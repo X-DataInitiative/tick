@@ -63,8 +63,8 @@ class DLL_PUBLIC TModelPoisReg : public TModelGeneralizedLinear<T, K> {
                     const Array<K> &primal_vector,
                     const T previous_delta_dual_i, T l_l2sq) override;
 
-  void sdca_primal_dual_relation(const T l_l2sq, const Array<T> &dual_vector,
-                                 Array<T> &out_primal_vector) override;
+  void sdca_primal_dual_relation(const T l_l2sq, const Array<K> &dual_vector,
+                                 Array<K> &out_primal_vector) override;
 
   /**
    * Returns a mapping from the sampled observation (in [0, rand_max)) to the

@@ -96,7 +96,7 @@ T TModelGeneralizedLinear<T, K>::loss(const Array<K> &coeffs) {
 
 template <class T, class K>
 void TModelGeneralizedLinear<T, K>::sdca_primal_dual_relation(
-    const T l_l2sq, const Array<T> &dual_vector, Array<T> &out_primal_vector) {
+    const T l_l2sq, const Array<K> &dual_vector, Array<K> &out_primal_vector) {
   if (dual_vector.size() != get_n_samples()) {
     TICK_ERROR("dual vector should have shape of (" << get_n_samples()
                                                     << ", )");
@@ -116,9 +116,9 @@ void TModelGeneralizedLinear<T, K>::sdca_primal_dual_relation(
 
     if (fit_intercept) {
       // The last coefficient of out_primal_vector is the intercept
-      Array<T> w = view(out_primal_vector, 0, get_n_coeffs() - 1);
+      Array<K> w = view(out_primal_vector, 0, get_n_coeffs() - 1);
       w.mult_incr(feature_i, factor);
-      out_primal_vector[get_n_coeffs() - 1] += factor;
+      out_primal_vector[get_n_coeffs() - 1] = out_primal_vector[get_n_coeffs() - 1] + factor;
     } else {
       out_primal_vector.mult_incr(feature_i, factor);
     }
