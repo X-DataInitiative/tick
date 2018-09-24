@@ -70,3 +70,20 @@ solver.solve(x0)
 print(model_list.loss(x_real))
 print(model_list.loss(solver.solution))
 # print(solver.solution / x_real)
+# normalisation the fitting result as f_i(0) = 1
+coeff = solver.solution
+Total_States = 10
+
+for i in range(dim):
+    fi0 = coeff[dim + dim * dim * U + i * Total_States]
+    coeff[i] *= fi0
+    for u in range(U):
+        coeff[dim + dim * dim * u + i * dim: dim + dim * dim * u + (i + 1) * dim] *= fi0
+    coeff[dim + dim * dim * U + i * Total_States: dim + dim * dim * U + (i + 1) * Total_States] /= fi0
+
+
+print(coeff[:2])
+for i in range(U):
+    print(coeff[2 + 4 * i : 2 + 4 * (i+1)])
+print(coeff[-2 * Total_States:-Total_States])
+print(coeff[-Total_States:])

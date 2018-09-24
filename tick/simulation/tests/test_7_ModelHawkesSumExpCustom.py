@@ -13,7 +13,7 @@ MaxN_of_f = 10
 f_i = [np.array([1., 0.7, 0.8, 0.6, 0.5, 0.8, 0.3, 0.6, 0.2, 0.7]), np.array([1., 0.6, 0.8, 0.8, 0.6, 0.6, 0.5, 0.8, 0.3, 0.6])]
 
 end_time = 100000
-betas = np.array([0.1, 1, 3, 10])
+betas = np.array([10.0, 100, 500, 5000])
 
 U = len(betas)
 kernels = np.array([
@@ -29,9 +29,6 @@ for i in range(n_nodes):
 simu_model.track_intensity(0.1)
 # print(simu_model.simulate)
 simu_model.simulate()
-
-# plot_point_process(simu_model)
-print("nombre de point :", len(simu_model.timestamps[0]), len(simu_model.timestamps[1]))
 ##################################################################################################################
 
 
@@ -48,13 +45,13 @@ timestamps.append(np.array([]))
 global_n = np.array(simu_model._pp.get_global_n())
 global_n = np.insert(global_n, 0, 0).astype(int)
 
-model = ModelHawkesSumExpCustom(betas, MaxN_of_f)
+model = ModelHawkesSumExpCustom(betas, MaxN_of_f, n_threads=8)
 model.fit(timestamps, global_n, end_time)
 #############################################################################
 prox = ProxZero()
 
 # solver = AGD(step=5e-2, linesearch=False, max_iter= 350)
-solver = AGD(step=1e-4, linesearch=False, max_iter=2000, print_every=50)
+solver = AGD(step=1e-3, linesearch=False, max_iter=5000, print_every=50)
 solver.set_model(model).set_prox(prox)
 
 x_real = np.array(
@@ -66,6 +63,24 @@ x0 = np.array(
 solver.solve(x0)
 
 print(model.loss(x_real))
-print(model.loss(x0))
 print(model.loss(solver.solution))
-print(solver.solution / x_real)
+
+
+
+# normalisation the fitting result as f_i(0) = 1
+coeff = solver.solution
+Total_States = 10
+
+for i in range(dim):
+    fi0 = coeff[dim + dim * dim * U + i * Total_States]
+    coeff[i] *= fi0
+    for u in range(U):
+        coeff[dim + dim * dim * u + i * dim: dim + dim * dim * u + (i + 1) * dim] *= fi0
+    coeff[dim + dim * dim * U + i * Total_States: dim + dim * dim * U + (i + 1) * Total_States] /= fi0
+
+
+print(coeff[:2])
+for i in range(U):
+    print(coeff[2 + 4 * i : 2 + 4 * (i+1)])
+print(coeff[-2 * Total_States:-Total_States])
+print(coeff[-Total_States:])

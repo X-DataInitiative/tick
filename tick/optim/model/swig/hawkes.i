@@ -18,3 +18,4 @@
 %include variants/hawkes_fixed_expkern_custom2_loglik_list.i
 %include variants/custom_basic_loglik_list.i
 %include variants/hawkes_fixed_sumexpkern_custom2_loglik_list.i
+%include variants/hawkes_fixed_sumexpkern_lag_custom_loglik_list.i
