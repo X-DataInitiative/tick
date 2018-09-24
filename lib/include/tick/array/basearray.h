@@ -20,13 +20,13 @@ class Array;
 template <typename T>
 class BaseArray : public AbstractArray1d2d<T> {
  protected:
-  using K = typename AbstractArray1d2d<T>::K;
   using AbstractArray1d2d<T>::_size;
   using AbstractArray1d2d<T>::_size_sparse;
   using AbstractArray1d2d<T>::is_data_allocation_owned;
   using AbstractArray1d2d<T>::is_indices_allocation_owned;
   using AbstractArray1d2d<T>::_data;
   using AbstractArray1d2d<T>::_indices;
+  using K = typename AbstractArray1d2d<T>::K;
 
  public:
   using AbstractArray1d2d<T>::is_dense;

@@ -53,32 +53,15 @@ class DLL_PUBLIC TModelLabelsFeatures : public virtual TModel<T, K> {
   void compute_columns_sparsity();
 
   template <class Archive>
-  void load(Archive &ar) {
+  void serialize(Archive &ar) {
     ar(cereal::make_nvp("Model", cereal::base_class<TModel<T, K> >(this)));
     ar(CEREAL_NVP(n_samples));
     ar(CEREAL_NVP(n_features));
     ar(CEREAL_NVP(ready_columns_sparsity));
     ar(CEREAL_NVP(column_sparsity));
 
-    Array<T> temp_labels;
-    Array2d<T> temp_features;
-    ar(cereal::make_nvp("labels", temp_labels));
-    ar(cereal::make_nvp("features", temp_features));
-
-    labels = temp_labels.as_sarray_ptr();
-    features = temp_features.as_sarray2d_ptr();
-  }
-
-  template <class Archive>
-  void save(Archive &ar) const {
-    ar(cereal::make_nvp("Model", cereal::base_class<TModel<T, K> >(this)));
-    ar(CEREAL_NVP(n_samples));
-    ar(CEREAL_NVP(n_features));
-    ar(CEREAL_NVP(ready_columns_sparsity));
-    ar(CEREAL_NVP(column_sparsity));
-
-    ar(cereal::make_nvp("labels", *labels));
-    ar(cereal::make_nvp("features", *features));
+    ar(cereal::make_nvp("labels", labels));
+    ar(cereal::make_nvp("features", features));
   }
 
  protected:
@@ -97,20 +80,10 @@ using ModelLabelsFeatures = TModelLabelsFeatures<double, double>;
 
 using ModelLabelsFeaturesDouble = TModelLabelsFeatures<double, double>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelLabelsFeaturesDouble,
-                                   cereal::specialization::member_load_save);
+                                   cereal::specialization::member_serialize);
 
 using ModelLabelsFeaturesFloat = TModelLabelsFeatures<float, float>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelLabelsFeaturesFloat,
-                                   cereal::specialization::member_load_save);
-
-using ModelLabelsFeaturesAtomicDouble =
-    TModelLabelsFeatures<double, std::atomic<double> >;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelLabelsFeaturesAtomicDouble,
-                                   cereal::specialization::member_serialize)
-
-using ModelLabelsFeaturesAtomicFloat =
-    TModelLabelsFeatures<float, std::atomic<float> >;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelLabelsFeaturesAtomicFloat,
-                                   cereal::specialization::member_serialize)
+                                   cereal::specialization::member_serialize);
 
 #endif  // LIB_INCLUDE_TICK_BASE_MODEL_MODEL_LABELS_FEATURES_H_

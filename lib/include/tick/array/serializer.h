@@ -7,6 +7,8 @@
 #include "sarray2d.h"
 #include "ssparsearray2d.h"
 
+#include <cereal/archives/portable_binary.hpp>
+
 template <typename A>
 inline void array_to_file(std::string _file, const A &array) {
   std::ofstream ss(_file, std::ios::out | std::ios::binary);

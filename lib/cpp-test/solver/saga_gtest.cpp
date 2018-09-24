@@ -1,8 +1,9 @@
 #define DEBUG_COSTLY_THROW 1
 
 #include <gtest/gtest.h>
-#include <cereal/archives/json.hpp>
 #include <cereal/types/memory.hpp>
+#include <cereal/archives/json.hpp>
+#include <cereal/archives/portable_binary.hpp>
 
 #include "tick/linear_model/model_linreg.h"
 #include "tick/prox/prox_l2sq.h"
@@ -109,12 +110,12 @@ TEST(SAGA, test_saga_serialization) {
 
   std::stringstream os;
   {
-    cereal::BinaryOutputArchive outputArchive(os);
+    cereal::PortableBinaryOutputArchive outputArchive(os);
     outputArchive(saga);
   }
 
   {
-    cereal::BinaryInputArchive inputArchive(os);
+    cereal::PortableBinaryInputArchive inputArchive(os);
 
     SAGA restored_saga;
     inputArchive(restored_saga);
@@ -123,48 +124,41 @@ TEST(SAGA, test_saga_serialization) {
   }
 }
 
-// TODO: enable this test once sparse array deserialization is enabled
-//TEST(SAGA, test_asaga_serialization) {
-//  SArrayDoublePtr labels_ptr = get_labels();
-//  SBaseArrayDouble2dPtr features_ptr = get_sparse_features();
-//
-//  ulong n_samples = features_ptr->n_rows();
-//
-//  auto model = std::make_shared<ModelLinReg>(features_ptr, labels_ptr, false, 1);
-//  auto prox = std::make_shared<ProxL2Sq>(1e-1, false);
-//
-//  ASAGA asaga(n_samples, 300, 0, RandType::unif, model->get_lip_max() / 300, 1309);
-//  asaga.set_rand_max(n_samples);
-//  asaga.set_model(model);
-//  asaga.set_prox(prox);
-//  asaga.solve();
-//
-//  ArrayDouble iterate1(asaga.get_model()->get_n_coeffs());
-//  asaga.get_iterate(iterate1);
-//  iterate1.print();
-//
-//
-//  std::stringstream os;
-//  {
-//    cereal::BinaryOutputArchive outputArchive(os);
-//    outputArchive(asaga);
-//  }
-//
-//  {
-//    cereal::BinaryInputArchive inputArchive(os);
-//
-//    ASAGA restored_asaga;
-//    inputArchive(restored_asaga);
-//
-//    ArrayDouble iterate(restored_asaga.get_model()->get_n_coeffs());
-//    restored_asaga.get_iterate(iterate);
-//    iterate.print();
-//
-//    ASSERT_TRUE(asaga == restored_asaga);
-//  }
-//}
-//
-//
+TEST(SAGA, test_asaga_serialization) {
+  SArrayDoublePtr labels_ptr = get_labels();
+  SBaseArrayDouble2dPtr features_ptr = get_sparse_features();
+
+  ulong n_samples = features_ptr->n_rows();
+
+  auto model = std::make_shared<ModelLinReg>(features_ptr, labels_ptr, false, 1);
+  auto prox = std::make_shared<ProxL2Sq>(1e-1, false);
+
+  ASAGA asaga(n_samples, 0, RandType::unif, model->get_lip_max() / 300, 1309);
+  asaga.set_rand_max(n_samples);
+  asaga.set_model(model);
+  asaga.set_prox(prox);
+  asaga.solve();
+
+  ArrayDouble iterate1(asaga.get_model()->get_n_coeffs());
+  asaga.get_iterate(iterate1);
+
+  std::stringstream os;
+  {
+    cereal::PortableBinaryOutputArchive outputArchive(os);
+    outputArchive(asaga);
+  }
+  {
+    cereal::PortableBinaryInputArchive inputArchive(os);
+
+    ASAGA restored_asaga;
+    inputArchive(restored_asaga);
+
+    ArrayDouble iterate(restored_asaga.get_model()->get_n_coeffs());
+    restored_asaga.get_iterate(iterate);
+
+    ASSERT_TRUE(asaga == restored_asaga);
+  }
+}
 
 #ifdef ADD_MAIN
 int main(int argc, char** argv) {

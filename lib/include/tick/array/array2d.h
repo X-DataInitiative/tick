@@ -5,6 +5,7 @@
 
 /** @file */
 
+#include "array.h"
 #include "basearray2d.h"
 
 template <typename T>
@@ -41,6 +42,7 @@ class Array2d : public BaseArray2d<T> {
   using BaseArray2d<T>::_row_indices;
   using BaseArray2d<T>::_n_cols;
   using BaseArray2d<T>::_n_rows;
+  using K = typename BaseArray2d<T>::K;
 
   // NB: We always have _n_rows * _n_cols == _size
 
@@ -247,11 +249,15 @@ void Array2d<T>::mult_add_mult_incr(const Array2d<T>& x, const T a,
  * Array2d serialization function for binary archives types
  */
 template <class Archive, class T>
-typename std::enable_if<cereal::traits::is_output_serializable<
-                            cereal::BinaryData<T>, Archive>::value,
-                        void>::type
+typename std::enable_if<
+    cereal::traits::is_output_serializable<cereal::BinaryData<T>, Archive>::value, void>::type
 CEREAL_SAVE_FUNCTION_NAME(Archive& ar, BaseArray2d<T> const& arr) {
   const bool is_sparse = arr.is_sparse();
+
+  if (is_sparse) {
+    std::cerr << typeid(arr).name() << std::endl;
+    throw std::runtime_error("this function shouldn't be called");
+  }
 
   ar(CEREAL_NVP(is_sparse));
 
@@ -278,6 +284,11 @@ CEREAL_SAVE_FUNCTION_NAME(Archive& ar, BaseArray2d<T> const& arr) {
   const bool is_sparse = arr.is_sparse();
   const ulong n_cols = arr.n_cols();
   const ulong n_rows = arr.n_rows();
+
+  if (is_sparse) {
+    std::cerr << typeid(arr).name() << std::endl;
+    throw std::runtime_error("this function shouldn't be called");
+  }
 
   ar(CEREAL_NVP(is_sparse));
 
@@ -384,28 +395,30 @@ CEREAL_LOAD_FUNCTION_NAME(Archive& ar, BaseArray2d<T>& arr) {
  * @{
  */
 
-#define ARRAY2D_DEFINE_TYPE_BASIC(TYPE, NAME)                 \
+#define ARRAY_DEFINE_TYPE(TYPE, NAME)                         \
   typedef Array2d<TYPE> Array##NAME##2d;                      \
   typedef std::vector<Array##NAME##2d> Array##NAME##2dList1D; \
   typedef std::vector<Array##NAME##2dList1D> Array##NAME##2dList2D
 
-#define ARRAY2D_DEFINE_TYPE(TYPE, NAME)  \
-  ARRAY2D_DEFINE_TYPE_BASIC(TYPE, NAME); \
+#define ARRAY_DEFINE_TYPE_SERIALIZE(TYPE, NAME) \
+  ARRAY_DEFINE_TYPE(TYPE, NAME);                \
   CEREAL_REGISTER_TYPE(Array##NAME##2d)
 
-ARRAY2D_DEFINE_TYPE(double, Double);
-ARRAY2D_DEFINE_TYPE(float, Float);
-ARRAY2D_DEFINE_TYPE(int32_t, Int);
-ARRAY2D_DEFINE_TYPE(uint32_t, UInt);
-ARRAY2D_DEFINE_TYPE(int16_t, Short);
-ARRAY2D_DEFINE_TYPE(uint16_t, UShort);
-ARRAY2D_DEFINE_TYPE(int64_t, Long);
-ARRAY2D_DEFINE_TYPE(ulong, ULong);
-ARRAY2D_DEFINE_TYPE_BASIC(std::atomic<double>, AtomicDouble);
-ARRAY2D_DEFINE_TYPE_BASIC(std::atomic<float>, AtomicFloat);
+ARRAY_DEFINE_TYPE_SERIALIZE(double, Double);
+ARRAY_DEFINE_TYPE_SERIALIZE(float, Float);
 
-#undef ARRAY2D_DEFINE_TYPE_BASIC
-#undef ARRAY2D_DEFINE_TYPE
+ARRAY_DEFINE_TYPE(std::atomic<double>, AtomicDouble);
+ARRAY_DEFINE_TYPE(std::atomic<float>, AtomicFloat);
+
+ARRAY_DEFINE_TYPE(int32_t, Int);
+ARRAY_DEFINE_TYPE(uint32_t, UInt);
+ARRAY_DEFINE_TYPE(int16_t, Short);
+ARRAY_DEFINE_TYPE(uint16_t, UShort);
+ARRAY_DEFINE_TYPE(int64_t, Long);
+ARRAY_DEFINE_TYPE(ulong, ULong);
+
+#undef ARRAY_DEFINE_TYPE
+#undef ARRAY_DEFINE_TYPE_SERIALIZE
 /**
  * @}
  */

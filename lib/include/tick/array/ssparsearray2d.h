@@ -159,6 +159,16 @@ class SSparseArray2d : public SparseArray2d<T> {
   // with the associated shared_ptr
   SSparseArray2d(const SSparseArray2d<T> &other) = delete;
   SSparseArray2d(const SSparseArray2d<T> &&other) = delete;
+
+  template <class Archive>
+  void load(Archive &ar) {
+    ar(cereal::make_nvp("SparseArray2d", cereal::base_class<SparseArray2d<T>>(this)));
+  }
+
+  template <class Archive>
+  void save(Archive &ar) const {
+    ar(cereal::make_nvp("SparseArray2d", cereal::base_class<SparseArray2d<T>>(this)));
+  }
 };
 
 #ifdef PYTHON_LINK
@@ -457,40 +467,37 @@ std::shared_ptr<SSparseArray2d<T>> SparseArray2d<T>::as_ssparsearray2d_ptr() {
 }
 
 // Instanciations
-
 /**
  * \defgroup SArray_typedefs_mod SArray related typedef
  * \brief List of all the instantiations of the SArray template and associated
  *  shared pointers and 1d and 2d List of these classes
  * @{
  */
-/**
- * @}
- */
 
-#define SSPARSE_ARRAY2D_DEFINE_TYPE_BASIC(TYPE, NAME)                             \
+#define SSPARSE_ARRAY2D_DEFINE_TYPE(TYPE, NAME)                                   \
   typedef SSparseArray2d<TYPE> SSparseArray##NAME##2d;                            \
   typedef std::shared_ptr<SSparseArray##NAME##2d> SSparseArray##NAME##2dPtr;      \
   typedef std::vector<SSparseArray##NAME##2dPtr> SSparseArray##NAME##2dPtrList1D; \
   typedef std::vector<SSparseArray##NAME##2dPtrList1D> SSparseArray##NAME##2dPtrList2D
 
-#define SSPARSE_ARRAY2D_DEFINE_TYPE(TYPE, NAME)                                 \
-  SSPARSE_ARRAY2D_DEFINE_TYPE_BASIC(TYPE, NAME);                                \
+#define SSPARSE_ARRAY2D_DEFINE_TYPE_SERIALIZE(TYPE, NAME)                       \
+  SSPARSE_ARRAY2D_DEFINE_TYPE(TYPE, NAME);                                      \
   CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SSparseArray##NAME##2d,                    \
                                      cereal::specialization::member_load_save); \
   CEREAL_REGISTER_TYPE(SSparseArray##NAME##2d);                                 \
   CEREAL_REGISTER_POLYMORPHIC_RELATION(BaseArray##NAME##2d, SSparseArray##NAME##2d)
 
-SSPARSE_ARRAY2D_DEFINE_TYPE(double, Double);
-SSPARSE_ARRAY2D_DEFINE_TYPE(float, Float);
 SSPARSE_ARRAY2D_DEFINE_TYPE(int32_t, Int);
 SSPARSE_ARRAY2D_DEFINE_TYPE(uint32_t, UInt);
 SSPARSE_ARRAY2D_DEFINE_TYPE(int16_t, Short);
 SSPARSE_ARRAY2D_DEFINE_TYPE(uint16_t, UShort);
 SSPARSE_ARRAY2D_DEFINE_TYPE(int64_t, Long);
 SSPARSE_ARRAY2D_DEFINE_TYPE(ulong, ULong);
-SSPARSE_ARRAY2D_DEFINE_TYPE_BASIC(std::atomic<double>, AtomicDouble);
-SSPARSE_ARRAY2D_DEFINE_TYPE_BASIC(std::atomic<float>, AtomicFloat);
+
+SSPARSE_ARRAY2D_DEFINE_TYPE_SERIALIZE(double, Double);
+SSPARSE_ARRAY2D_DEFINE_TYPE_SERIALIZE(float, Float);
+SSPARSE_ARRAY2D_DEFINE_TYPE_SERIALIZE(std::atomic<double>, AtomicDouble);
+SSPARSE_ARRAY2D_DEFINE_TYPE_SERIALIZE(std::atomic<float>, AtomicFloat);
 
 #undef SSPARSE_ARRAY2D_DEFINE_TYPE_BASIC
 #undef SSPARSE_ARRAY2D_DEFINE_TYPE

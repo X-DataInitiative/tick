@@ -4,6 +4,8 @@ import io, unittest
 import numpy as np
 
 import pickle
+import scipy.sparse
+from scipy.sparse import csr_matrix
 
 from tick.solver.tests import TestSolver
 
@@ -61,7 +63,6 @@ class Test(TestSolver):
                 c0 = None
                 X, y = SimuLinReg(w0, c0, n_samples=n_samples, verbose=False,
                                   seed=2038).simulate()
-
                 if mod == ModelLinRegWithIntercepts:
                     y += intercept0
 

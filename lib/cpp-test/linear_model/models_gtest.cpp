@@ -16,6 +16,8 @@
 #include <cereal/archives/json.hpp>
 #include <cereal/types/memory.hpp>
 #include <cereal/types/unordered_map.hpp>
+
+#include <cereal/archives/portable_binary.hpp>
 #include <fstream>
 
 TEST(Model, PartialVsFull) {
@@ -123,8 +125,8 @@ TEST(Model, SerializationJSON) {
 
 TEST(Model, SerializationBinary) {
   SCOPED_TRACE("");
-  ::TestModelLinRegSerialization<cereal::BinaryInputArchive,
-                                 cereal::BinaryOutputArchive>();
+  ::TestModelLinRegSerialization<cereal::PortableBinaryInputArchive,
+                                 cereal::PortableBinaryOutputArchive>();
 }
 
 #ifdef ADD_MAIN

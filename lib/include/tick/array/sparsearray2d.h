@@ -6,6 +6,7 @@
 
 /** @file */
 
+#include <cereal/types/vector.hpp>
 #include "basearray2d.h"
 
 template <typename T>
@@ -51,6 +52,7 @@ class SparseArray2d : public BaseArray2d<T> {
   using BaseArray2d<T>::is_data_allocation_owned;
   using BaseArray2d<T>::is_indices_allocation_owned;
   using BaseArray2d<T>::is_row_indices_allocation_owned;
+  using K = typename BaseArray2d<T>::K;
 
  public:
   //! @brief Constructor for zero sparsearray2d.
@@ -99,23 +101,32 @@ class SparseArray2d : public BaseArray2d<T> {
 
   template <class Archive>
   void save(Archive &ar) const {
-    try {
-      ar(this->_size_sparse);
-      ar(this->_n_rows);
-      ar(this->_n_cols);
-      ar(this->_size);
+    ar(this->_size_sparse);
+    ar(this->_n_rows);
+    ar(this->_n_cols);
+    ar(this->_size);
 
-      std::vector<T> v_data(this->_data, this->_data + this->_size_sparse);
-      std::vector<INDICE_TYPE> v_indices(this->_indices, this->_indices + this->_size_sparse),
-          v_row_indices(this->_row_indices, this->_row_indices + (this->_n_rows + 1));
+    inner_save(ar);
 
-      ar(v_data);
-      ar(v_indices);
-      ar(v_row_indices);
+    std::vector<INDICE_TYPE> v_indices(this->_indices, this->_indices + this->_size_sparse),
+        v_row_indices(this->_row_indices, this->_row_indices + (this->_n_rows + 1));
+    ar(v_indices);
+    ar(v_row_indices);
+  }
 
-    } catch (const std::exception &e) {
-      std::cerr << e.what() << std::endl;
-    }
+  template <class Archive, typename Y = T>
+  typename std::enable_if<std::is_same<Y, std::atomic<K>>::value>::type inner_save(
+      Archive &ar) const {
+    std::vector<K> k_data;
+    for (size_t i = 0; i < this->_size_sparse; i++) k_data.emplace_back(this->_data[i]);
+    ar(k_data);
+  }
+
+  template <class Archive, typename Y = T>
+  typename std::enable_if<!std::is_same<Y, std::atomic<K>>::value>::type inner_save(
+      Archive &ar) const {
+    std::vector<T> v_data(this->_data, this->_data + this->_size_sparse);
+    ar(v_data);
   }
 
   template <class Archive>
@@ -125,45 +136,55 @@ class SparseArray2d : public BaseArray2d<T> {
           "SparseArray2d being used for deserializing may not have previous "
           "allocations");
 
-    try {
-      ar(this->_size_sparse);
-      ar(this->_n_rows);
-      ar(this->_n_cols);
-      ar(this->_size);
+    ar(this->_size_sparse);
+    ar(this->_n_rows);
+    ar(this->_n_cols);
+    ar(this->_size);
 
-      // using data structures directly on SparseArray2d<T> causes segfaults
-      //  when deserializing, but using intermediary is ok, and
-      //  doesn't (seem to) cause memory leaks
+    // using data structures directly on SparseArray2d<T> causes segfaults
+    //  when deserializing, but using intermediary is ok, and
+    //  doesn't (seem to) cause memory leaks
 
-      T *s_data;
-      std::vector<T> v_data(this->_size_sparse);
+    T *s_data;
+    TICK_PYTHON_MALLOC(s_data, T, this->_size_sparse);
+    inner_load(ar, s_data);
 
-      INDICE_TYPE *s_indices, *s_row_indices;
-      std::vector<INDICE_TYPE> v_indices(this->_size_sparse);
-      std::vector<INDICE_TYPE> v_row_indices(this->_n_rows + 1);
+    INDICE_TYPE *s_indices, *s_row_indices;
+    std::vector<INDICE_TYPE> v_indices(this->_size_sparse);
+    std::vector<INDICE_TYPE> v_row_indices(this->_n_rows + 1);
 
-      TICK_PYTHON_MALLOC(s_data, T, this->_size_sparse);
-      TICK_PYTHON_MALLOC(s_indices, INDICE_TYPE, this->_size_sparse);
-      TICK_PYTHON_MALLOC(s_row_indices, INDICE_TYPE, this->_n_rows + 1);
+    TICK_PYTHON_MALLOC(s_indices, INDICE_TYPE, this->_size_sparse);
+    TICK_PYTHON_MALLOC(s_row_indices, INDICE_TYPE, this->_n_rows + 1);
 
-      ar(v_data);
-      ar(v_indices);
-      ar(v_row_indices);
+    ar(v_indices);
+    ar(v_row_indices);
 
-      std::copy(v_data.begin(), v_data.end(), s_data);
-      std::copy(v_indices.begin(), v_indices.end(), s_indices);
-      std::copy(v_row_indices.begin(), v_row_indices.end(), s_row_indices);
+    std::copy(v_indices.begin(), v_indices.end(), s_indices);
+    std::copy(v_row_indices.begin(), v_row_indices.end(), s_row_indices);
 
-      this->_data = s_data;
-      this->_indices = s_indices;
-      this->_row_indices = s_row_indices;
+    this->_data = s_data;
+    this->_indices = s_indices;
+    this->_row_indices = s_row_indices;
 
-      this->is_data_allocation_owned = 1;
-      this->is_indices_allocation_owned = 1;
-      this->is_row_indices_allocation_owned = 1;
-    } catch (const std::exception &e) {
-      std::cerr << e.what() << std::endl;
-    }
+    this->is_data_allocation_owned = 1;
+    this->is_indices_allocation_owned = 1;
+    this->is_row_indices_allocation_owned = 1;
+  }
+
+  template <class Archive, typename Y = T>
+  typename std::enable_if<std::is_same<Y, std::atomic<K>>::value>::type inner_load(Archive &ar,
+                                                                                   T *s_data) {
+    std::vector<K> k_data;
+    ar(k_data);
+    for (size_t i = 0; i < this->_size_sparse; i++) s_data[i] = k_data[i];
+  }
+
+  template <class Archive, typename Y = T>
+  typename std::enable_if<!std::is_same<Y, std::atomic<K>>::value>::type inner_load(Archive &ar,
+                                                                                    T *s_data) {
+    std::vector<T> v_data(this->_size_sparse);
+    ar(v_data);
+    std::copy(v_data.begin(), v_data.end(), s_data);
   }
 };
 
@@ -220,25 +241,25 @@ Array2d<T> BaseArray2d<T>::as_array2d() {
  * @{
  */
 
-#define SPARSE_ARRAY2D_DEFINE_TYPE_BASIC(TYPE, NAME) \
-  typedef SparseArray2d<TYPE> SparseArray##NAME##2d
+#define SPARSE_ARRAY2D_DEFINE_TYPE(TYPE, NAME) typedef SparseArray2d<TYPE> SparseArray##NAME##2d
 
-#define SPARSE_ARRAY2D_DEFINE_TYPE(TYPE, NAME)                                  \
-  SPARSE_ARRAY2D_DEFINE_TYPE_BASIC(TYPE, NAME);                                 \
+#define SPARSE_ARRAY2D_DEFINE_TYPE_SERIALIZE(TYPE, NAME)                        \
+  SPARSE_ARRAY2D_DEFINE_TYPE(TYPE, NAME);                                       \
   CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SparseArray##NAME##2d,                     \
                                      cereal::specialization::member_load_save); \
   CEREAL_REGISTER_TYPE(SparseArray##NAME##2d)
 
-SPARSE_ARRAY2D_DEFINE_TYPE(double, Double);
-SPARSE_ARRAY2D_DEFINE_TYPE(float, Float);
+SPARSE_ARRAY2D_DEFINE_TYPE_SERIALIZE(double, Double);
+SPARSE_ARRAY2D_DEFINE_TYPE_SERIALIZE(float, Float);
+SPARSE_ARRAY2D_DEFINE_TYPE_SERIALIZE(std::atomic<double>, AtomicDouble);
+SPARSE_ARRAY2D_DEFINE_TYPE_SERIALIZE(std::atomic<float>, AtomicFloat);
+
 SPARSE_ARRAY2D_DEFINE_TYPE(int32_t, Int);
 SPARSE_ARRAY2D_DEFINE_TYPE(uint32_t, UInt);
 SPARSE_ARRAY2D_DEFINE_TYPE(int16_t, Short);
 SPARSE_ARRAY2D_DEFINE_TYPE(uint16_t, UShort);
 SPARSE_ARRAY2D_DEFINE_TYPE(int64_t, Long);
 SPARSE_ARRAY2D_DEFINE_TYPE(ulong, ULong);
-SPARSE_ARRAY2D_DEFINE_TYPE_BASIC(std::atomic<double>, AtomicDouble);
-SPARSE_ARRAY2D_DEFINE_TYPE_BASIC(std::atomic<float>, AtomicFloat);
 
 #undef SPARSE_ARRAY2D_DEFINE_TYPE_BASIC
 #undef SPARSE_ARRAY2D_DEFINE_TYPE

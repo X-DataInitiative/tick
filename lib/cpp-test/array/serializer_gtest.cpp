@@ -6,6 +6,23 @@
 #include <gtest/gtest.h>
 #include "tick/base/base.h"
 
+TEST(Serialize, ForceLoadError) {
+  // CSR matrix example from https://en.wikipedia.org/wiki/Sparse_matrix
+  ArrayDouble data{10, 20, 30, 40, 50, 60, 70, 80};
+  Array<INDICE_TYPE> row_indices{0, 2, 4, 7, 8};
+  Array<INDICE_TYPE> indices{0, 1, 1, 3, 2, 3, 4, 5};
+  SparseArrayDouble2d sparse_array(4, 6, row_indices.data(), indices.data(), data.data());
+  bool caught = false;
+  try {
+    std::string file_name = "test_sparse_array_2d_double.cereal";
+    array_to_file(file_name, sparse_array);
+    auto loaded_array = array_from_file<SSparseArrayFloat2d>(file_name);
+  } catch (const std::exception &e) {
+    caught = true;
+  }
+  EXPECT_EQ(caught, true);
+}
+
 TEST(Serialize, SparseArray2dDouble) {
   // CSR matrix example from https://en.wikipedia.org/wiki/Sparse_matrix
   ArrayDouble data{10, 20, 30, 40, 50, 60, 70, 80};
