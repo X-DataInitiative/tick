@@ -51,9 +51,6 @@ void ModelHawkesSumExpCustomLag::compute_weights_dim_i(const ulong i) {
         return n_nodes * get_n_decays() * k + get_n_decays() * j + u;
     };
 
-    ArrayULong last_scanned_indexes;
-    last_scanned_indexes = ArrayULong(decays.size());
-
     ulong U = decays.size();
     for(ulong u = 0; u != U; ++u) {//iterate over each beta and lag
         double decay = decays[u];
@@ -63,7 +60,7 @@ void ModelHawkesSumExpCustomLag::compute_weights_dim_i(const ulong i) {
         for (ulong j = 0; j != n_nodes; j++) {//iterate to calculate g_j
             //! here k starts from 1, cause g(t_0) = G(t_0) = 0
             // 0 + Totalevents + T
-            last_scanned_indexes.init_to_zero();
+            ulong last_scanned_index = 1;
             for (ulong k = 1; k != 1 + n_total_jumps + 1; k++) {//iterate over timestamps of all dims
                 //calculate g_j for all t_k
 
@@ -74,23 +71,19 @@ void ModelHawkesSumExpCustomLag::compute_weights_dim_i(const ulong i) {
                 if (i == 0)
                     g_i[get_index(k, j, u)] = g_i[get_index(k - 1, j, u)] * ebt;
 
-                while (global_timestamps[last_scanned_indexes[u]] < t_k - lag) {
-                    if (k != 1 + n_total_jumps)
-                        if (type_n[last_scanned_indexes[u]] == j + 1) {
-                            if (i == 0)
-                                g_i[get_index(k, j, u)] += decay *
-                                                       std::exp(-decay * (t_k - lag -
-                                                                          global_timestamps[last_scanned_indexes[u]]));
+                while (global_timestamps[last_scanned_index] < t_k - lag) {
+                    if (type_n[last_scanned_index] == j + 1) {
+                        double delta_t = t_k - lag - global_timestamps[last_scanned_index];
+                        if (i == 0)
+                            g_i[get_index(k, j, u)] += decay * std::exp(-decay * delta_t);
 
-                            G_i[get_index(k, j, u)] += 1 -
-                                                       std::exp(-decay * (t_k - lag -
-                                                                          global_timestamps[last_scanned_indexes[u]]));
-                        }
+                        G_i[get_index(k, j, u)] += 1 - std::exp(-decay * delta_t);
+                    }
                     // ! in the G, we calculated the difference between G without multiplying f
                     // sum_G is calculated later, in the calculation of L_dim_i and its grads
-                    last_scanned_indexes[u]++;
-                        if(last_scanned_indexes[u] > n_total_jumps)
-                            break;
+                    last_scanned_index++;
+                    if(last_scanned_index > n_total_jumps)
+                        break;
                 }
             }
         }
