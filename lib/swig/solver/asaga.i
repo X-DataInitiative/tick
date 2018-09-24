@@ -11,19 +11,23 @@ class AtomicSAGA : public TStoSolver<T, T> {
  public:
     AtomicSAGA();
 
-    AtomicSAGA(unsigned long epoch_size,
-               unsigned long iterations,
-               T tol, RandType rand_type,
-               T step, int record_every = 1, int seed = -1, int n_threads = 2
-               );
+    AtomicSAGA(
+      unsigned long epoch_size,
+      T tol,
+      RandType rand_type,
+      T step,
+      int record_every = 1,
+      int seed = -1,
+      int n_threads = 2
+    );
 
-    void set_step(T step);
-
-    void set_model(std::shared_ptr<TModel<T, T> > model) override;
+    void solve(int n_epochs = 1);
 };
 
 %template(AtomicSAGADouble) AtomicSAGA<double>;
 typedef AtomicSAGA<double> AtomicSAGADouble;
+TICK_MAKE_TEMPLATED_PICKLABLE(AtomicSAGA, AtomicSAGADouble , double);
 
 %template(AtomicSAGAFloat) AtomicSAGA<float>;
 typedef AtomicSAGA<float> AtomicSAGAFloat;
+TICK_MAKE_TEMPLATED_PICKLABLE(AtomicSAGA, AtomicSAGAFloat , float);

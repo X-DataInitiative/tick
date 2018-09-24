@@ -25,4 +25,5 @@
 %include sgd.i
 
 %include saga.i
+%include asaga.i
 %include svrg.i
