@@ -7,7 +7,6 @@
 
 #include "tick/solver/saga.h"
 
-
 template <class T>
 class DLL_PUBLIC AtomicSAGA : public TBaseSAGA<T, T> {
   // Grants cereal access to default constructor/serialize functions
@@ -62,18 +61,8 @@ class DLL_PUBLIC AtomicSAGA : public TBaseSAGA<T, T> {
     ar(cereal::make_nvp("BaseSAGA", cereal::base_class<TBaseSAGA<T, T>>(this)));
     ar(CEREAL_NVP(n_threads));
     ar(CEREAL_NVP(un_threads));
-
-    Array<T> non_atomic_gradients_memory;
-    ar(CEREAL_NVP(non_atomic_gradients_memory));
-    gradients_memory = Array<std::atomic<T>>(non_atomic_gradients_memory.size());
-    gradients_memory.init_to_zero();
-    gradients_memory.mult_incr(non_atomic_gradients_memory, 1);
-
-    Array<T> non_atomic_gradients_average;
-    ar(CEREAL_NVP(non_atomic_gradients_average));
-    gradients_average = Array<std::atomic<T>>(non_atomic_gradients_average.size());
-    gradients_average.init_to_zero();
-    gradients_average.mult_incr(non_atomic_gradients_average, 1);
+    ar(CEREAL_NVP(gradients_memory));
+    ar(CEREAL_NVP(gradients_average));
   }
 
   template <class Archive>
@@ -81,16 +70,8 @@ class DLL_PUBLIC AtomicSAGA : public TBaseSAGA<T, T> {
     ar(cereal::make_nvp("BaseSAGA", cereal::base_class<TBaseSAGA<T, T>>(this)));
     ar(CEREAL_NVP(n_threads));
     ar(CEREAL_NVP(un_threads));
-
-    Array<T> non_atomic_gradients_memory(gradients_memory.size());
-    non_atomic_gradients_memory.init_to_zero();
-    non_atomic_gradients_memory.mult_incr(non_atomic_gradients_memory, 1);
-    ar(CEREAL_NVP(non_atomic_gradients_memory));
-
-    Array<T> non_atomic_gradients_average(gradients_average.size());
-    non_atomic_gradients_average.init_to_zero();
-    non_atomic_gradients_average.mult_incr(non_atomic_gradients_average, 1);
-    ar(CEREAL_NVP(non_atomic_gradients_average));
+    ar(CEREAL_NVP(gradients_memory));
+    ar(CEREAL_NVP(gradients_average));
   }
 
   BoolStrReport compare(const AtomicSAGA<T> &that) {

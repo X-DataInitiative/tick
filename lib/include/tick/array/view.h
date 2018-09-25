@@ -13,7 +13,6 @@
 
 // License: BSD 3 clause
 
-#include "array.h"
 #include "sarray.h"
 #include "sparsearray.h"
 

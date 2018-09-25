@@ -34,22 +34,21 @@
  * @{
  */
 
-#define SBASE_ARRAY2D_DEFINE_TYPE(TYPE, NAME)                                 \
+#define SBASE_ARRAY_DEFINE_TYPE_SERIALIZE(TYPE, NAME)                         \
   typedef std::shared_ptr<BaseArray##NAME##2d> SBaseArray##NAME##2dPtr;       \
   typedef std::vector<SBaseArray##NAME##2dPtr> SBaseArray##NAME##2dPtrList1D; \
-  typedef std::vector<SBaseArray##NAME##2dPtrList1D>                          \
-      SBaseArray##NAME##2dPtrList2D
+  typedef std::vector<SBaseArray##NAME##2dPtrList1D> SBaseArray##NAME##2dPtrList2D
 
-SBASE_ARRAY2D_DEFINE_TYPE(double, Double);
-SBASE_ARRAY2D_DEFINE_TYPE(float, Float);
-SBASE_ARRAY2D_DEFINE_TYPE(int32_t, Int);
-SBASE_ARRAY2D_DEFINE_TYPE(uint32_t, UInt);
-SBASE_ARRAY2D_DEFINE_TYPE(int16_t, Short);
-SBASE_ARRAY2D_DEFINE_TYPE(uint16_t, UShort);
-SBASE_ARRAY2D_DEFINE_TYPE(int64_t, Long);
-SBASE_ARRAY2D_DEFINE_TYPE(ulong, ULong);
-SBASE_ARRAY2D_DEFINE_TYPE(std::atomic<double>, AtomicDouble);
-SBASE_ARRAY2D_DEFINE_TYPE(std::atomic<float>, AtomicFloat);
+SBASE_ARRAY_DEFINE_TYPE_SERIALIZE(double, Double);
+SBASE_ARRAY_DEFINE_TYPE_SERIALIZE(float, Float);
+SBASE_ARRAY_DEFINE_TYPE_SERIALIZE(int32_t, Int);
+SBASE_ARRAY_DEFINE_TYPE_SERIALIZE(uint32_t, UInt);
+SBASE_ARRAY_DEFINE_TYPE_SERIALIZE(int16_t, Short);
+SBASE_ARRAY_DEFINE_TYPE_SERIALIZE(uint16_t, UShort);
+SBASE_ARRAY_DEFINE_TYPE_SERIALIZE(int64_t, Long);
+SBASE_ARRAY_DEFINE_TYPE_SERIALIZE(ulong, ULong);
+SBASE_ARRAY_DEFINE_TYPE_SERIALIZE(std::atomic<double>, AtomicDouble);
+SBASE_ARRAY_DEFINE_TYPE_SERIALIZE(std::atomic<float>, AtomicFloat);
 
 #undef SBASE_ARRAY2D_DEFINE_TYPE
 

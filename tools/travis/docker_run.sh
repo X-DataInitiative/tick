@@ -23,7 +23,7 @@ python -m pip install -r requirements.txt
 
 python setup.py cpplint
 set +e
-python setup.py build_ext -j 2 --inplace
+python setup.py build_ext --inplace
 rm -rf build/lib # force relinking of libraries in case of failure
 set -e
 python setup.py build_ext --inplace cpptest pytest

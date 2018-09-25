@@ -25,6 +25,7 @@ class BaseArray2d : public AbstractArray1d2d<T> {
   using AbstractArray1d2d<T>::is_indices_allocation_owned;
   using AbstractArray1d2d<T>::_data;
   using AbstractArray1d2d<T>::_indices;
+  using K = typename AbstractArray1d2d<T>::K;
 
   //! \brief Number of rows
   ulong _n_rows;
@@ -265,21 +266,21 @@ inline std::ostream &operator<<(std::ostream &s, const BaseArray2d<T> &p) {
  * @{
  */
 
-#define BASE_ARRAY2D_DEFINE_TYPE(TYPE, NAME)                          \
+#define BASE_ARRAY_DEFINE_TYPE_SERIALIZE(TYPE, NAME)                  \
   typedef BaseArray2d<TYPE> BaseArray##NAME##2d;                      \
   typedef std::vector<BaseArray##NAME##2d> BaseArray##NAME##2dList1D; \
   typedef std::vector<BaseArray##NAME##2dList1D> BaseArray##NAME##2dList2D
 
-BASE_ARRAY2D_DEFINE_TYPE(double, Double);
-BASE_ARRAY2D_DEFINE_TYPE(float, Float);
-BASE_ARRAY2D_DEFINE_TYPE(int32_t, Int);
-BASE_ARRAY2D_DEFINE_TYPE(uint32_t, UInt);
-BASE_ARRAY2D_DEFINE_TYPE(int16_t, Short);
-BASE_ARRAY2D_DEFINE_TYPE(uint16_t, UShort);
-BASE_ARRAY2D_DEFINE_TYPE(int64_t, Long);
-BASE_ARRAY2D_DEFINE_TYPE(ulong, ULong);
-BASE_ARRAY2D_DEFINE_TYPE(std::atomic<double>, AtomicDouble);
-BASE_ARRAY2D_DEFINE_TYPE(std::atomic<float>, AtomicFloat);
+BASE_ARRAY_DEFINE_TYPE_SERIALIZE(double, Double);
+BASE_ARRAY_DEFINE_TYPE_SERIALIZE(float, Float);
+BASE_ARRAY_DEFINE_TYPE_SERIALIZE(int32_t, Int);
+BASE_ARRAY_DEFINE_TYPE_SERIALIZE(uint32_t, UInt);
+BASE_ARRAY_DEFINE_TYPE_SERIALIZE(int16_t, Short);
+BASE_ARRAY_DEFINE_TYPE_SERIALIZE(uint16_t, UShort);
+BASE_ARRAY_DEFINE_TYPE_SERIALIZE(int64_t, Long);
+BASE_ARRAY_DEFINE_TYPE_SERIALIZE(ulong, ULong);
+BASE_ARRAY_DEFINE_TYPE_SERIALIZE(std::atomic<double>, AtomicDouble);
+BASE_ARRAY_DEFINE_TYPE_SERIALIZE(std::atomic<float>, AtomicFloat);
 
 #undef BASE_ARRAY2D_DEFINE_TYPE
 

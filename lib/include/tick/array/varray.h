@@ -199,46 +199,7 @@ std::ostream &operator<<(std::ostream &Str, VArray<T> *v) {
  *  shared pointers and 1d and 2d List of these classes
  * @{
  */
-
-/**
- * @}
- */
-
-/** @defgroup varray_sub_mod The instantiations of the VArray template
- *  @ingroup VArray_typedefs_mod
- * @{
- */
-/**
- * @}
- */
-
-/** @defgroup varrayptr_sub_mod The shared pointer varray classes
- *  @ingroup VArray_typedefs_mod
- * @{
- */
-
-/**
- * @}
- */
-
-/** @defgroup varrayptrlist1d_sub_mod The classes for dealing with 1d-list of
- * shared pointer varrays
- *  @ingroup VArray_typedefs_mod
- * @{
- */
-
-/**
- * @}
- */
-
-/** @defgroup varrayptrlist2d_sub_mod The classes for dealing with 2d-list of
- * shared pointer varrays
- *  @ingroup VArray_typedefs_mod
- * @{
- */
-
 // @brief The basic VArrayList2D classes
-
 /** @}
  */
 #define VARRAY_DEFINE_TYPE(TYPE, NAME)                            \

@@ -9,22 +9,16 @@
 #ifndef LIB_INCLUDE_TICK_BASE_SERIALIZATION_H_
 #define LIB_INCLUDE_TICK_BASE_SERIALIZATION_H_
 
-#include "tick/base/defs.h"
+#include "tick/base/base.h"
 
 // clang-format off
-// Don't touch this!
+// Don't touch this! - it messes with the "strings" inside the macros
 #ifndef TICK_SWIG_INCLUDE
 DISABLE_WARNING(unused, exceptions, 42)
 DISABLE_WARNING(unused, unused-private-field, 42)
 DISABLE_WARNING(delete-non-virtual-dtor, delete-non-virtual-dtor, 42)
 #endif
-#include <cereal/cereal.hpp>
-#include <cereal/types/base_class.hpp>
-#include <cereal/types/memory.hpp>
-#include <cereal/types/polymorphic.hpp>
-#include <cereal/types/vector.hpp>
-#include <cereal/archives/binary.hpp>
-#include <cereal/archives/json.hpp>
+#include "cereal/archives/json.hpp"
 #ifndef TICK_SWIG_INCLUDE
 ENABLE_WARNING(unused, exceptions, 42)
 ENABLE_WARNING(unused, unused-private-field, 42)
