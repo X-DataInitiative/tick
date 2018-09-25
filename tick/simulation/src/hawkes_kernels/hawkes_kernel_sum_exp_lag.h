@@ -157,6 +157,7 @@ class HawkesKernelSumExpLag : public HawkesKernel {
   //! \param x : The value exponential is computed at
   inline double cexp(double x) {
     int optimization_level;
+    use_fast_exp = false;
     if (use_fast_exp) {
       optimization_level = 1;
     } else {

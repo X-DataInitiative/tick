@@ -55,6 +55,7 @@ HawkesKernelSumExpLag::HawkesKernelSumExpLag(const HawkesKernelSumExpLag &kernel
 
 HawkesKernelSumExpLag::HawkesKernelSumExpLag()
     : HawkesKernelSumExpLag(ArrayDouble{1}, ArrayDouble{1}, ArrayDouble{1}) {
+  printf("Default constructor called.\n");
 }
 
 // kernel value for one part of the sum
