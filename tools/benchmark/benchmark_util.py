@@ -1,9 +1,15 @@
 # License: BSD 3 clause
-
+"""This file provides utilities to easily launch the various benchmarks that
+are provided to test tick code
+"""
 
 import datetime
 import os
 from subprocess import PIPE, run
+
+from tick.array.serialize import serialize_array
+from tick.dataset import fetch_tick_dataset
+from tick.dataset.fetch_url_dataset import fetch_url_dataset
 
 BUILD_SOURCE_DIR = os.path.join(
     os.path.dirname(__file__), '../../', 'build/bench')
@@ -80,3 +86,38 @@ def run_benchmark(executable, ex_args, output_dir):
     print(executable, "Done")
 
     return result_dir
+
+
+def save_url_dataset_for_cpp_benchmarks(n_days):
+    """Fetches and saves as C++ cereal serialized file the URL dataset
+
+    Parameters
+    ----------
+    n_days : `int`
+        Number of days kept from the original dataset.
+        As this dataset is quite big, you might not want to use it in totality.
+    """
+    save_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                             '../../tools/benchmark/data')
+
+    label_path = os.path.join(save_path, 'url.{}.labels.cereal'.format(n_days))
+    features_path = os.path.join(save_path,
+                                 'url.{}.features.cereal'.format(n_days))
+
+    X, y = fetch_url_dataset(n_days=n_days)
+    serialize_array(y, label_path)
+    serialize_array(X, features_path)
+
+
+def save_adult_dataset_for_cpp_benchmarks():
+    """Fetches and saves as C++ cereal serialized file the adult dataset
+    """
+    save_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                             '../../tools/benchmark/data')
+
+    label_path = os.path.join(save_path, 'adult.labels.cereal')
+    features_path = os.path.join(save_path, 'adult.features.cereal')
+
+    X, y = fetch_tick_dataset('binary/adult/adult.trn.bz2')
+    serialize_array(y, label_path)
+    serialize_array(X, features_path)
