@@ -20,6 +20,8 @@ class DLL_PUBLIC TModelLinReg : public virtual TModelGeneralizedLinear<T, K>,
   using TModelGeneralizedLinear<T, K>::n_samples;
   using TModelGeneralizedLinear<T, K>::features_norm_sq;
   using TModelGeneralizedLinear<T, K>::fit_intercept;
+  using TModelGeneralizedLinear<T, K>::get_features;
+  using TModelGeneralizedLinear<T, K>::ready_features_norm_sq;
 
  public:
   using TModelGeneralizedLinear<T, K>::get_label;
@@ -43,6 +45,11 @@ class DLL_PUBLIC TModelLinReg : public virtual TModelGeneralizedLinear<T, K>,
   T sdca_dual_min_i(const ulong i, const T dual_i,
                     const Array<K> &primal_vector,
                     const T previous_delta_dual_i, T l_l2sq) override;
+
+  Array<T> sdca_dual_min_many(const ArrayULong indices,
+                              const Array<T> duals,
+                              const Array<K> &primal_vector,
+                              double l_l2sq) override;
 
   T loss_i(const ulong i, const Array<K> &coeffs) override;
 

@@ -65,7 +65,8 @@ class DLL_PUBLIC AtomicSDCA : public TStoSolver<T, std::atomic<T> > {
 
   void reset() override;
 
-  void solve(int n_epochs = 1) override ;
+  void solve(int n_epochs = 1) override;
+  void solve_batch(int n_epochs = 1, ulong bach_size = 2);
 
   void set_model(std::shared_ptr<TModel<T, std::atomic<T>>> model) override;
 

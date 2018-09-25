@@ -91,7 +91,7 @@ TEST(SDCA, test_sdca_sparse_convergence) {
       features_ptr, labels_ptr, false, 1);
   auto atomic_prox = std::make_shared<TProxZero<double, std::atomic<double>>>(false);
 
-  ASDCA asdca(l_l2sq, n_samples, 0, RandType::unif, 1, 1309);
+  ASDCA asdca(l_l2sq, n_samples, 0, RandType::unif, 1, 1309, 2);
   asdca.set_rand_max(n_samples);
   asdca.set_model(atomic_model);
   asdca.set_prox(atomic_prox);
@@ -102,6 +102,18 @@ TEST(SDCA, test_sdca_sparse_convergence) {
   const auto objective_asdca = model->loss(*iterate_asdca) + objective_prox->value(*iterate_asdca);
   EXPECT_LE(objective_asdca - objective300, 0.0001);
   EXPECT_LE(objective300 - objective_asdca, 0.0001);
+
+  ASDCA asdca_batch(l_l2sq, n_samples, 0, RandType::unif, 1, 1309, 2);
+  asdca_batch.set_rand_max(n_samples);
+  asdca_batch.set_model(atomic_model);
+  asdca_batch.set_prox(atomic_prox);
+
+  asdca_batch.solve_batch(300, 3);
+  auto iterate_asdca_batch = asdca_batch.get_iterate_history().back();
+  const auto objective_asdca_batch = model->loss(*iterate_asdca_batch) + objective_prox->value(*iterate_asdca_batch);
+
+  EXPECT_LE(objective_asdca_batch - objective300, 0.0001);
+  EXPECT_LE(objective300 - objective_asdca_batch, 0.0001);
 }
 
 

@@ -69,6 +69,13 @@ class TModel {
     TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
   }
 
+  virtual Array<T> sdca_dual_min_many(const ArrayULong indices,
+                                      const Array<T> duals,
+                                      const Array<K> &primal_vector,
+                                      double l_l2sq) {
+    TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
+  }
+
   /**
    * For SDCA, sometimes observations might be discarded (Poisson regression).
    * In this case this returns a mapping from the sampled observation (in [0,

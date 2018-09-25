@@ -128,6 +128,123 @@ void AtomicSDCA<T>::solve(int n_epochs) {
   }
 }
 
+
+template <class T>
+void AtomicSDCA<T>::solve_batch(int n_epochs, ulong batch_size) {
+  if (!stored_variables_ready) {
+    set_starting_iterate();
+  }
+
+  // TODO
+//  auto casted_model = std::static_pointer_cast<TModelGeneralizedLinear<T, std::atomic<T>> >(model);
+//  casted_model->compute_features_norm_sq();
+  model->get_lip_max();
+
+  const SArrayULongPtr feature_index_map = model->get_sdca_index_map();
+  const T scaled_l_l2sq = get_scaled_l_l2sq();
+
+  const T _1_over_lbda_n = 1 / (scaled_l_l2sq * rand_max);
+
+  auto lambda = [&](uint16_t n_thread) {
+    T dual_i = 0;
+    T x_ij = 0;
+    T iterate_j = 0;
+    ulong n_features = model->get_n_features();
+    Array<T> delta_duals(batch_size);
+    Array<T> duals(batch_size);
+    ArrayULong feature_indices(batch_size);
+    ArrayULong indices(batch_size);
+
+    ulong idx_nnz = 0;
+    ulong thread_epoch_size = epoch_size / n_threads;
+    thread_epoch_size += n_thread < (epoch_size % n_threads);
+
+    auto start = std::chrono::steady_clock::now();
+
+    for (int epoch = 1; epoch < (n_epochs + 1); ++epoch) {
+      for (ulong t = 0; t < thread_epoch_size; t += batch_size) {
+        // Pick i uniformly at random
+        indices.fill(rand_max + 1);
+        for (ulong i = 0; i < batch_size; ++i) {
+          ulong try_i = get_next_i();
+          while (indices.contains(try_i)) try_i = get_next_i();
+          indices[i] = try_i;
+          duals[i] = dual_vector[indices[i]];
+        }
+
+        for (ulong i = 0; i < batch_size; ++i)
+          feature_indices[i] = feature_index_map != nullptr?
+              (*feature_index_map)[indices[i]]: indices[i];
+
+        delta_duals = model->sdca_dual_min_many(indices, duals, iterate, scaled_l_l2sq);
+
+
+        for (ulong k = 0; k < batch_size; ++k) {
+          const ulong i = indices[k];
+          const ulong feature_index = feature_indices[k];
+          const double delta_dual_i = delta_duals[k];
+
+          dual_i = dual_vector[i].load();
+          while (!dual_vector[i].compare_exchange_weak(dual_i,
+                                                       dual_i + delta_dual_i)) {
+          }
+          // Keep the last ascent seen for warm-starting sdca_dual_min_i
+          delta[i] = delta_dual_i;
+
+          BaseArray<T> x_i = model->get_features(feature_index);
+          for (idx_nnz = 0; idx_nnz < x_i.size_sparse(); ++idx_nnz) {
+            // Get the index of the idx-th sparse feature of x_i
+            ulong j = x_i.indices()[idx_nnz];
+            x_ij = x_i.data()[idx_nnz];
+
+            iterate_j = iterate[j].load();
+            while (!iterate[j].compare_exchange_weak(
+                iterate_j,
+                iterate_j + (delta_dual_i * x_ij * _1_over_lbda_n))) {
+            }
+          }
+          if (model->use_intercept()) {
+            iterate_j = iterate[n_features];
+            while (!iterate[n_features].compare_exchange_weak(
+                iterate_j,
+                iterate_j + (delta_dual_i * _1_over_lbda_n))) {
+            }
+          }
+        }
+      }
+
+      // Record only on one thread
+      if (n_thread == 0) {
+        TStoSolver<T, std::atomic<T>>::t += epoch_size;
+
+        if ((last_record_epoch + epoch) == 1 || ((last_record_epoch + epoch) % record_every == 0)) {
+          auto end = std::chrono::steady_clock::now();
+          double time = ((end - start).count()) * std::chrono::steady_clock::period::num /
+              static_cast<double>(std::chrono::steady_clock::period::den);
+          save_history(last_record_time + time, last_record_epoch + epoch);
+        }
+      }
+    }
+
+    if (n_thread == 0) {
+      auto end = std::chrono::steady_clock::now();
+      double time = ((end - start).count()) * std::chrono::steady_clock::period::num /
+          static_cast<double>(std::chrono::steady_clock::period::den);
+      last_record_time = time;
+      last_record_epoch += n_epochs;
+    }
+  };
+
+  std::vector<std::thread> threads;
+  for (size_t i = 0; i < un_threads; i++) {
+    threads.emplace_back(lambda, i);
+  }
+  for (size_t i = 0; i < un_threads; i++) {
+    threads[i].join();
+  }
+}
+
+
 template <class T>
 void AtomicSDCA<T>::set_starting_iterate() {
   if (dual_vector.size() != rand_max) dual_vector = Array<std::atomic<T>>(rand_max);

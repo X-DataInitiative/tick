@@ -237,6 +237,9 @@ class Array : public BaseArray<T> {
       TICK_ERROR("Vectors don't have the same size.");
     }
   }
+
+  bool contains(T value);
+
   //! @brief Returns a shared pointer to a SArray encapsulating the array
   //! \warning : The ownership of the data is given to the returned structure
   //! THUS the array becomes a view.
@@ -649,6 +652,15 @@ void Array<T>::mult_incr(const BaseArray<Y> &x, const typename Array<T>::K a) {
                                              this->data());
     }
   }
+}
+
+template<typename T>
+bool Array<T>::contains(T value){
+  bool contain = false;
+  for (int i = 0; i < _size; ++i) {
+    contain |= _data[i] == value;
+  }
+  return contain;
 }
 
 template <typename T>

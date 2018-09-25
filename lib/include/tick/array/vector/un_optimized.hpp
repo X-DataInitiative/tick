@@ -119,6 +119,18 @@ tick::promote_t<K> vector_operations_unoptimized<T>::sum(const ulong n, const T 
 }
 
 template <typename T>
+void vector_operations_unoptimized<T>::solve_linear_system(int n, T *A, T *b, int* ipiv) const {
+  TICK_ERROR("solve_linear_system is only available for double and floats and relies on "
+             "BLAS library");
+}
+
+template <typename T>
+void vector_operations_unoptimized<T>::solve_symmetric_linear_system(int n, T *A, T *b) const {
+  TICK_ERROR("solve_symmetric_linear_system is only available for double and floats and relies on "
+             "BLAS library");
+}
+
+template <typename T>
 template <typename K>
 typename std::enable_if<std::is_same<T, std::atomic<K>>::value>::type
 vector_operations_unoptimized<T>::scale(const ulong n, const K alpha, T *x) const {
@@ -135,6 +147,8 @@ vector_operations_unoptimized<T>::scale(const ulong n, const K alpha, T *x) cons
   CHECK_BLAS_OPTIMIZATION_PS(x, alpha, "scale");
   for (uint64_t i = 0; i < n; ++i) x[i] *= alpha;
 }
+
+
 
 #undef CHECK_BLAS_OPTIMIZATION_PP
 #undef CHECK_BLAS_OPTIMIZATION_PS

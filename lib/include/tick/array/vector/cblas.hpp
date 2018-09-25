@@ -82,6 +82,36 @@ struct vector_operations_cblas<float> final
     cblas_saxpy(n, alpha, x, 1, y, 1);
   }
 
+  void solve_linear_system(int n, float *A, float *b, int* ipiv=nullptr) const {
+    int n_cols = 1;
+    int lda = n;
+    bool should_free = false;
+    if (ipiv == nullptr) {
+      ipiv = new int[n];
+      should_free = true;
+    }
+    int ldb = n;
+    int info;
+    sgesv_(&n, &n_cols, A, &lda, ipiv, b, &ldb, &info);
+    if (should_free) delete[] ipiv;
+
+    if (info != 0) {
+      TICK_ERROR("Linear solver failed with info=" << info)
+    }
+  }
+
+  void solve_symmetric_linear_system(int n, float *A, float *b) const {
+    int n_cols = 1;
+    int lda = n;
+    int ldb = n;
+    int info;
+    char UPLO = 'L';
+    sposv_(&UPLO, &n, &n_cols, A, &lda, b, &ldb, &info);
+    if (info != 0) {
+      TICK_ERROR("Symmetric linear solver failed with info=" << info)
+    }
+  }
+
 #if defined(TICK_CATLAS_AVAILABLE)
   void set(const ulong n, const float alpha, float x) const override {
     catlas_sset(n, alpha, x, 1);
@@ -145,6 +175,36 @@ struct vector_operations_cblas<double> final
   typename std::enable_if<!std::is_same<T, std::atomic<double>>::value && !std::is_same<Y, std::atomic<double>>::value>::type
   mult_incr(const uint64_t n, const double alpha, const Y *x, T *y) const {
     cblas_daxpy(n, alpha, x, 1, y, 1);
+  }
+
+  void solve_linear_system(int n, double *A, double *b, int* ipiv=nullptr) const {
+    int n_cols = 1;
+    int lda = n;
+    bool should_free = false;
+    if (ipiv == nullptr) {
+      ipiv = new int[n];
+      should_free = true;
+    }
+    int ldb = n;
+    int info;
+    dgesv_(&n, &n_cols, A, &lda, ipiv, b, &ldb, &info);
+    if (info != 0) {
+      TICK_ERROR("Linear solver failed with info=" << info)
+    }
+
+    if (should_free) delete[] ipiv;
+  }
+
+  void solve_symmetric_linear_system(int n, double *A, double *b) const {
+    int n_cols = 1;
+    int lda = n;
+    int ldb = n;
+    int info;
+    char UPLO = 'L';
+    dposv_(&UPLO, &n, &n_cols, A, &lda, b, &ldb, &info);
+    if (info != 0) {
+      TICK_ERROR("Symmetric linear solver failed with info=" << info)
+    }
   }
 
 
