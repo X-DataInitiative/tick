@@ -145,6 +145,10 @@ class DLL_PUBLIC TSDCA : public TBaseSDCA<T, T> {
   using TBaseSDCA<T, T>::delta;
   using TBaseSDCA<T, T>::dual_vector;
   using TBaseSDCA<T, T>::tmp_primal_vector;
+  using TBaseSDCA<T, T>::casted_prox;
+  using TBaseSDCA<T, T>::steps_correction;
+  using TBaseSDCA<T, T>::ready_step_corrections;
+  using TBaseSDCA<T, T>::compute_step_corrections;
 
  public:
   TSDCA() : TSDCA<T>(0, 0, 0) {}

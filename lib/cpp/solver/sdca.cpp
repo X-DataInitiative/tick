@@ -115,6 +115,10 @@ void TSDCA<T>::solve_one_epoch() {
   if (!stored_variables_ready) {
     set_starting_iterate();
   }
+  if ( model->is_sparse()) {
+    if (!ready_step_corrections) compute_step_corrections();
+    casted_prox = std::static_pointer_cast<TProxSeparable<T> >(prox);
+  }
 
   const SArrayULongPtr feature_index_map = model->get_sdca_index_map();
   const T scaled_l_l2sq = get_scaled_l_l2sq();
@@ -130,6 +134,30 @@ void TSDCA<T>::solve_one_epoch() {
       feature_index = (*feature_index_map)[i];
     }
 
+    BaseArray<T> feature_i = model->get_features(feature_index);
+    // Get iterate ready
+    if (!model->is_sparse()) {
+      // Update the primal variable
+
+      // Call prox on the primal variable
+      prox->call(tmp_primal_vector, 1. / scaled_l_l2sq, iterate);
+    } else {
+      for (ulong idx_nnz = 0; idx_nnz < feature_i.size_sparse(); ++idx_nnz) {
+        ulong j = feature_i.indices()[idx_nnz];
+        T feature_ij = feature_i.data()[idx_nnz];
+        T step_correction = steps_correction[j];
+        // Prox is separable, apply regularization on the current coordinate
+        casted_prox->call_single(j, tmp_primal_vector, 1 / scaled_l_l2sq, iterate);
+      }
+      // And let's not forget to update the intercept as well. It's updated at
+      // each step, so no step-correction. Note that we call the prox, in order to
+      // be consistent with the dense case (in the case where the user has the
+      // weird desire to to regularize the intercept)
+      if (model->use_intercept()) {
+        casted_prox->call_single(model->get_n_features(), tmp_primal_vector, 1 / scaled_l_l2sq, iterate);
+      }
+    }
+
     // Maximize the dual coordinate i
     const T delta_dual_i = model->sdca_dual_min_i(
         feature_index, dual_vector[i], iterate, delta[i], scaled_l_l2sq);
@@ -139,17 +167,13 @@ void TSDCA<T>::solve_one_epoch() {
     // Keep the last ascent seen for warm-starting sdca_dual_min_i
     delta[i] = delta_dual_i;
 
-    // Update the primal variable
-    BaseArray<T> features_i = model->get_features(feature_index);
     if (model->use_intercept()) {
-      Array<T> primal_features = view(tmp_primal_vector, 0, features_i.size());
-      primal_features.mult_incr(features_i, delta_dual_i * _1_over_lbda_n);
+      Array<T> primal_features = view(tmp_primal_vector, 0, feature_i.size());
+      primal_features.mult_incr(feature_i, delta_dual_i * _1_over_lbda_n);
       tmp_primal_vector[model->get_n_features()] += delta_dual_i * _1_over_lbda_n;
     } else {
-      tmp_primal_vector.mult_incr(features_i, delta_dual_i * _1_over_lbda_n);
+      tmp_primal_vector.mult_incr(feature_i, delta_dual_i * _1_over_lbda_n);
     }
-    // Call prox on the primal variable
-    prox->call(tmp_primal_vector, 1. / scaled_l_l2sq, iterate);
   }
 }
 

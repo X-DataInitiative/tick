@@ -7,6 +7,7 @@
 
 #include "tick/linear_model/model_linreg.h"
 #include "tick/prox/prox_zero.h"
+#include "tick/prox/prox_l1.h"
 #include "tick/solver/sdca.h"
 #include "tick/solver/asdca.h"
 #include "toy_dataset.ipp"
@@ -43,6 +44,45 @@ TEST(SDCA, test_sdca_dense_convergence) {
   sdca.get_iterate(out_iterate60);
   double objective60 = model->loss(out_iterate60) + objective_prox->value(out_iterate60);
 
+
+  out_iterate60.mult_incr(out_iterate30, -1);
+  EXPECT_LE(out_iterate60.norm_sq() / n_features, 0.1);
+  EXPECT_LE(objective60 - objective30, 0.);
+  EXPECT_LE(objective30 - objective60, 0.1);
+}
+
+TEST(SDCA, test_sdca_prox) {
+  SArrayDoublePtr labels_ptr = get_labels();
+  SBaseArrayDouble2dPtr features_ptr = get_sparse_features();
+
+  ulong n_samples = features_ptr->n_rows();
+  ulong n_features = features_ptr->n_cols();
+
+
+  auto model = std::make_shared<ModelLinReg>(features_ptr, labels_ptr, false, 1);
+  auto prox = std::make_shared<TProxL1<double> >(3e-1, false);
+
+  double l_l2sq = 1e-1;
+  auto objective_prox = std::make_shared<TProxL2Sq<double>>(l_l2sq, false);
+
+  SDCA sdca(l_l2sq, n_samples, 0, RandType::unif, 1, 1309);
+  sdca.set_rand_max(n_samples);
+  sdca.set_model(model);
+  sdca.set_prox(prox);
+
+  ArrayDouble out_iterate30(n_features);
+  sdca.solve(30);
+  sdca.get_iterate(out_iterate30);
+  double objective30 = model->loss(out_iterate30) + objective_prox->value(out_iterate30)
+      + prox->value(out_iterate30);
+
+  ArrayDouble out_iterate60(n_features);
+  for (int j = 0; j < 300; ++j) {
+    sdca.solve();
+  }
+  sdca.get_iterate(out_iterate60);
+  double objective60 = model->loss(out_iterate60) + objective_prox->value(out_iterate60)
+      + prox->value(out_iterate60);
 
   out_iterate60.mult_incr(out_iterate30, -1);
   EXPECT_LE(out_iterate60.norm_sq() / n_features, 0.1);
