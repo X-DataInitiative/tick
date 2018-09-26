@@ -110,14 +110,15 @@ double HawkesKernelSumExpLag::get_convolution(const double time, const ArrayDoub
   value = last_convolution_values.sum();
 
   if (bound) {
-    if (!intensities_all_positive) {
-      *bound = 0;
-      for (ulong u = 0; u < n_decays; ++u) {
-        if (intensities[u] > 0) *bound += last_convolution_values[u];
-      }
-    } else {
       *bound = value;
-    }
+      for (ulong i = 0; i < n_decays; ++i) {
+          ulong count = 0;
+          for (ulong k = convolution_restart_indexs[i]; k < timestamps.size(); ++k) {
+              if (timestamps[k] > time) break;
+              count++;
+          }
+          *bound += count * intensities[i] * decays[i];
+      }
   }
 
   return value;

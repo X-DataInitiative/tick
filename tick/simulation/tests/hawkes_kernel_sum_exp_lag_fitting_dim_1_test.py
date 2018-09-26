@@ -20,7 +20,7 @@ U = len(associated_lags)
 
 
 # kernel00 = HawkesKernelSumExpLag(np.array([0.2, 0.5]), associated_betas, associated_lags)
-kernel00 = HawkesKernelSumExpLag(np.array([0.1]), associated_betas, associated_lags)
+# kernel00 = HawkesKernelSumExpLag(np.array([0.1]), associated_betas, associated_lags)
 
 
 baseline = np.array([0.4])
