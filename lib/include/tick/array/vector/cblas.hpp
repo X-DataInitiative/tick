@@ -18,6 +18,16 @@ struct vector_operations_cblas_base {
   void set(const ulong n, const K alpha, T *x) const {
     return vector_operations_unoptimized<T>{}.template set<K>(n, alpha, x);
   }
+
+#if (!defined(__APPLE__))
+  void solve_linear_system(int n, T *A, T *b, int* ipiv=nullptr) const {
+    return vector_operations_unoptimized<T>{}.template solve_linear_system(n, A, b, ipiv);
+  }
+
+  void solve_symmetric_linear_system(int n, T *A, T *b) const {
+    return vector_operations_unoptimized<T>{}.template solve_linear_system(n, A, b);
+  }
+#endif
 };
 
 template <>
@@ -82,7 +92,7 @@ struct vector_operations_cblas<float> final
     cblas_saxpy(n, alpha, x, 1, y, 1);
   }
 
-#if defined(__APPLE__)
+#if (defined(__APPLE__))
   void solve_linear_system(int n, float *A, float *b, int* ipiv=nullptr) const {
     int n_cols = 1;
     int lda = n;
@@ -112,6 +122,7 @@ struct vector_operations_cblas<float> final
       TICK_ERROR("Symmetric linear solver failed with info=" << info)
     }
   }
+
 #endif
 
 #if defined(TICK_CATLAS_AVAILABLE)
@@ -180,7 +191,7 @@ struct vector_operations_cblas<double> final
   }
 
 
-#if defined(__APPLE__)
+#if (defined(__APPLE__))
   void solve_linear_system(int n, double *A, double *b, int* ipiv=nullptr) const {
     int n_cols = 1;
     int lda = n;
