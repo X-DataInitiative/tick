@@ -21,11 +21,11 @@ public:
     void set_model(std::shared_ptr<TModel<T, K>> model);
     void reset();
     void set_starting_iterate();
-    void set_starting_iterate(Array<T> &dual_vector);
+    void set_starting_iterate(Array<K> &dual_vector);
     T get_l_l2sq() const;
     void set_l_l2sq(T l_l2sq);
-    std::shared_ptr<Array<T> > get_primal_vector();
-    std::shared_ptr<Array<T> > get_dual_vector();
+    std::shared_ptr<Array<K> > get_primal_vector();
+    std::shared_ptr<Array<K> > get_dual_vector();
 
     bool compare(const TSDCA<T, K> &that);
 };

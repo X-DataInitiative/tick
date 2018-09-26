@@ -123,11 +123,11 @@ CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ProxFloat,
                                    cereal::specialization::member_serialize)
 
 using ProxAtomicDouble = TProx<double, std::atomic<double>>;
-using ProxAtomicDoublePtr = std::shared_ptr<ProxDouble>;
+using ProxAtomicDoublePtr = std::shared_ptr<ProxAtomicDouble>;
 using ProxAtomicDoublePtrVector = std::vector<ProxDoublePtr>;
 
 using ProxAtomicFloat = TProx<float, std::atomic<float>>;
-using ProxAtomicFloatPtr = std::shared_ptr<ProxFloat>;
+using ProxAtomicFloatPtr = std::shared_ptr<ProxAtomicFloat>;
 using ProxAtomicFloatPtrVector = std::vector<ProxFloatPtr>;
 
 #endif  // LIB_INCLUDE_TICK_PROX_PROX_H_

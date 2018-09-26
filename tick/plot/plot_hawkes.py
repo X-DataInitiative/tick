@@ -130,7 +130,7 @@ def plot_hawkes_kernels(kernel_object, support=None, hawkes=None, n_points=300,
 
     min_support : `float`, default=1e-4
         Start value of the plot. Only used if log_scale is `True`.
-        
+
     ax : `np.ndarray` of `matplotlib.axes`, default=None
         If not None, the figure will be plot on these axes and show will be
         set to False.
@@ -206,7 +206,7 @@ def plot_hawkes_baseline_and_kernels(
         * `kernel_object.get_baseline_values(self, i, abscissa_array)` :
           must return as a numpy 1d array the sampled `i` baseline values
           corresponding to the abscissa `abscissa_array`
-        * `kernel_object.period_length` : a field that stores the size of the 
+        * `kernel_object.period_length` : a field that stores the size of the
           baseline period
         * `kernel_object.get_kernel_supports()` : must return a 2d numpy
           array with the size of the support of each kernel
@@ -219,9 +219,9 @@ def plot_hawkes_baseline_and_kernels(
         If None or non positive then the maximum kernel supports is used
 
     hawkes : `SimuHawkes`, default=None
-        If a `SimuHawkes` object is given then the baseline and kernels plots 
-        are superposed with those of this object (considered as the `True` 
-        baseline and kernels). This is used to plot on the same plots the 
+        If a `SimuHawkes` object is given then the baseline and kernels plots
+        are superposed with those of this object (considered as the `True`
+        baseline and kernels). This is used to plot on the same plots the
         estimated value along with the true values.
 
     n_points : `int`, default=300
@@ -233,7 +233,7 @@ def plot_hawkes_baseline_and_kernels(
         function is necessary. Useful when superposing several plots.
 
     log_scale : `bool`, default=`False`
-        If `True`, then x-axis and y-axis of kernels are on a log-scale. 
+        If `True`, then x-axis and y-axis of kernels are on a log-scale.
         This is useful to plot power-law kernels.
 
     min_support : `float`, default=1e-4
@@ -264,10 +264,10 @@ def plot_hawkes_baseline_and_kernels(
     t_values = np.linspace(0, hawkes_object.period_length, n_points)
     for i in range(n_nodes):
         ax = ax_baselines[i]
-        ax.plot(t_values, hawkes_object.get_baseline_values(i, t_values),
-                label='baseline ({})'.format(i))
         ax.plot(t_values, hawkes.get_baseline_values(i, t_values),
                 label='true baseline ({})'.format(i))
+        ax.plot(t_values, hawkes_object.get_baseline_values(i, t_values),
+                label='baseline ({})'.format(i))
         ax.set_ylabel("$\mu_{}(t)$".format(i), fontsize=18)
 
         # set x_label for last line
@@ -341,7 +341,7 @@ def _find_best_match(diff_matrix):
 def plot_basis_kernels(learner, support=None, basis_kernels=None, n_points=300,
                        show=True):
     """Function used to plot basis of kernels
-    
+
     It is used jointly with `tick.hawkes.inference.HawkesBasisKernels` learner class.
 
     Parameters

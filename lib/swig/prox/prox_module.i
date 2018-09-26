@@ -23,6 +23,8 @@
 
 %shared_ptr(TProxZero<double, double>);
 %shared_ptr(TProxZero<float, float>);
+%shared_ptr(TProxZero<double, std::atomic<double>>);
+%shared_ptr(TProxZero<float, std::atomic<float>>);
 %shared_ptr(ProxZero);
 
 %shared_ptr(TProxPositive<double, double>);

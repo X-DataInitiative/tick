@@ -9,6 +9,10 @@
 %shared_ptr(TModelLinReg<float, float>);
 %shared_ptr(ModelLinRegDouble);
 %shared_ptr(ModelLinRegFloat);
+%shared_ptr(TModelLinReg<float, std::atomic<float>>);
+%shared_ptr(TModelLinReg<double, std::atomic<double>>);
+%shared_ptr(ModelLinRegAtomicDouble);
+%shared_ptr(ModelLinRegAtomicFloat);
 
 
 %shared_ptr(ModelLogReg);

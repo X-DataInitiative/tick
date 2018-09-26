@@ -126,3 +126,23 @@ class ModelLinReg(ModelFirstOrder, ModelGeneralizedLinear, ModelLipschitz):
                                             dtype_map)
         return model_class(self.features, self.labels, self.fit_intercept,
                            self.n_threads)
+
+
+from .build.linear_model import ModelLinRegAtomicDouble as _ModelLinRegAtomicDouble
+from .build.linear_model import ModelLinRegAtomicFloat as _ModelLinRegAtomicFloat
+
+atomic_dtype_map = {
+    np.dtype('float32'): _ModelLinRegAtomicFloat,
+    np.dtype('float64'): _ModelLinRegAtomicDouble
+}
+
+
+class AtomicModelLinReg(ModelLinReg):
+    def __init__(self, fit_intercept: bool = True, n_threads: int = 1):
+        ModelLinReg.__init__(self, fit_intercept, n_threads)
+
+    def _build_cpp_model(self, dtype_or_object_with_dtype):
+        model_class = self._get_typed_class(dtype_or_object_with_dtype,
+                                            atomic_dtype_map)
+        return model_class(self.features, self.labels, self.fit_intercept,
+                           self.n_threads)

@@ -657,7 +657,7 @@ void Array<T>::mult_incr(const BaseArray<Y> &x, const typename Array<T>::K a) {
 template<typename T>
 bool Array<T>::contains(T value){
   bool contain = false;
-  for (int i = 0; i < _size; ++i) {
+  for (ulong i = 0; i < _size; ++i) {
     contain |= _data[i] == value;
   }
   return contain;

@@ -22,6 +22,7 @@
 %include adagrad.i
 
 %include sdca.i
+%include asdca.i
 %include sgd.i
 
 %include saga.i

@@ -24,3 +24,11 @@ TICK_MAKE_TEMPLATED_PICKLABLE(TProxZero, ProxZeroDouble, double);
 %template(ProxZeroFloat) TProxZero<float, float>;
 typedef TProxZero<float, float> ProxZeroFloat;
 TICK_MAKE_TEMPLATED_PICKLABLE(TProxZero, ProxZeroFloat , float);
+
+
+%template(ProxZeroAtomicDouble) TProxZero<double, std::atomic<double>>;
+typedef TProxZero<double, std::atomic<double>> ProxZeroAtomicDouble;
+
+%template(ProxZeroAtomicFloat) TProxZero<float, std::atomic<float>>;
+typedef TProxZero<float, std::atomic<float>> ProxZeroAtomicFloat;
+

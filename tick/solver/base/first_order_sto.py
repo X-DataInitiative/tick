@@ -215,7 +215,10 @@ class SolverFirstOrderSto(SolverFirstOrder, SolverSto):
         for n_iter in range(self.max_iter):
 
             # Launch one epoch using the wrapped C++ solver
-            self._solver.solve()
+            if hasattr(self, 'batch_size'):
+                self._solver.solve_batch(1, self.batch_size)
+            else:
+                self._solver.solve(1)
 
             # Let's record metrics
             if self._should_record_iter(n_iter):
@@ -239,7 +242,11 @@ class SolverFirstOrderSto(SolverFirstOrder, SolverSto):
 
     def _solve_and_record_in_cpp(self, minimizer):
         first_minimizer = minimizer
-        self._solver.solve(self.max_iter)
+
+        if hasattr(self, 'batch_size'):
+            self._solver.solve_batch(self.max_iter, self.batch_size)
+        else:
+            self._solver.solve(self.max_iter)
 
         prev_iterate = first_minimizer
         prev_obj = self.objective(prev_iterate)
@@ -248,6 +255,7 @@ class SolverFirstOrderSto(SolverFirstOrder, SolverSto):
                 self._solver.get_epoch_history(),
                 self._solver.get_time_history(),
                 self._solver.get_iterate_history()):
+
             obj = self.objective(iterate)
             rel_delta = relative_distance(iterate, prev_iterate)
 
