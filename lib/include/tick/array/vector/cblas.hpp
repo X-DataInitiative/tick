@@ -82,6 +82,7 @@ struct vector_operations_cblas<float> final
     cblas_saxpy(n, alpha, x, 1, y, 1);
   }
 
+#if defined(__APPLE__)
   void solve_linear_system(int n, float *A, float *b, int* ipiv=nullptr) const {
     int n_cols = 1;
     int lda = n;
@@ -111,6 +112,7 @@ struct vector_operations_cblas<float> final
       TICK_ERROR("Symmetric linear solver failed with info=" << info)
     }
   }
+#endif
 
 #if defined(TICK_CATLAS_AVAILABLE)
   void set(const ulong n, const float alpha, float x) const override {
@@ -177,6 +179,8 @@ struct vector_operations_cblas<double> final
     cblas_daxpy(n, alpha, x, 1, y, 1);
   }
 
+
+#if defined(__APPLE__)
   void solve_linear_system(int n, double *A, double *b, int* ipiv=nullptr) const {
     int n_cols = 1;
     int lda = n;
@@ -206,6 +210,7 @@ struct vector_operations_cblas<double> final
       TICK_ERROR("Symmetric linear solver failed with info=" << info)
     }
   }
+#endif
 
 
 #if defined(TICK_CATLAS_AVAILABLE)

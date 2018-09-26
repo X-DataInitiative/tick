@@ -119,15 +119,57 @@ tick::promote_t<K> vector_operations_unoptimized<T>::sum(const ulong n, const T 
 }
 
 template <typename T>
+void solve_linear_system_with_gauss_jordan(int n, T *A, T *b) {
+  // TODO: what happens if T is not double or float?
+  for (int i = 0; i < n; i++) {
+    // Search for maximum in this column
+    T maxEl = std::abs(A[i * n + i]);
+    int maxRow = i;
+    for (int k = i + 1; k < n; k++) {
+      if (abs(A[k * n + i]) > maxEl) {
+        maxEl = abs(A[k * n + i]);
+        maxRow = k;
+      }
+    }
+
+    // Swap maximum row with current row (column by column)
+    for (int k = i; k < n + 1; k++) {
+      T tmp = A[maxRow * n + k];
+      A[maxRow * n + k] = A[i * n + k];
+      A[i * n + k] = tmp;
+    }
+
+    // Make all rows below this one 0 in current column
+    for (int k = i + 1; k < n; k++) {
+      double c = -A[k * n + i] / A[i * n + i];
+      for (int j = i; j < n + 1; j++) {
+        if (i == j) {
+          A[k * n + j] = 0;
+        } else {
+          A[k * n + j] += c * A[i * n + j];
+        }
+      }
+    }
+  }
+
+  // Solve equation Ax=b for an upper triangular matrix A
+  for (int i = n - 1; i >= 0; i--) {
+    b[i] /= A[i * n + i];
+    for (int k = i - 1; k >= 0; k--) {
+      b[k] -= A[k * n + i] * b[i];
+    }
+  }
+}
+
+
+template <typename T>
 void vector_operations_unoptimized<T>::solve_linear_system(int n, T *A, T *b, int* ipiv) const {
-  TICK_ERROR("solve_linear_system is only available for double and floats and relies on "
-             "BLAS library");
+  solve_linear_system_with_gauss_jordan(n, A, b);
 }
 
 template <typename T>
 void vector_operations_unoptimized<T>::solve_symmetric_linear_system(int n, T *A, T *b) const {
-  TICK_ERROR("solve_symmetric_linear_system is only available for double and floats and relies on "
-             "BLAS library");
+  solve_linear_system_with_gauss_jordan(n, A, b);
 }
 
 template <typename T>
