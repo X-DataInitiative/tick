@@ -5,29 +5,14 @@
 //
 
 #include "tick/solver/asdca.h"
-#include "tick/linear_model/model_poisreg.h"
+//#include "tick/linear_model/model_poisreg.h"
 
 template <class T>
 AtomicSDCA<T>::AtomicSDCA(T l_l2sq, ulong epoch_size, T tol, RandType rand_type,
                    int record_every, int seed, int n_threads)
-    : TStoSolver<T, std::atomic<T>>(epoch_size, tol, rand_type, record_every, seed),
-      l_l2sq(l_l2sq), n_threads(n_threads) {
-  stored_variables_ready = false;
+    : TBaseSDCA<T, std::atomic<T>>(l_l2sq, epoch_size, tol, rand_type, record_every, seed),
+      n_threads(n_threads) {
   un_threads = (size_t)n_threads;
-}
-
-template <class T>
-void AtomicSDCA<T>::set_model(std::shared_ptr<TModel<T, std::atomic<T>> > model) {
-  TStoSolver<T, std::atomic<T>>::set_model(model);
-  this->model = model;
-  this->n_coeffs = model->get_n_coeffs();
-  stored_variables_ready = false;
-}
-
-template <class T>
-void AtomicSDCA<T>::reset() {
-  TStoSolver<T, std::atomic<T>>::reset();
-  set_starting_iterate();
 }
 
 template <class T>
@@ -35,6 +20,7 @@ void AtomicSDCA<T>::solve(int n_epochs) {
   if (!stored_variables_ready) {
     set_starting_iterate();
   }
+  if (!ready_step_corrections) compute_step_corrections();
 
   const SArrayULongPtr feature_index_map = model->get_sdca_index_map();
   const T scaled_l_l2sq = get_scaled_l_l2sq();
@@ -98,7 +84,7 @@ void AtomicSDCA<T>::solve(int n_epochs) {
 
       // Record only on one thread
       if (n_thread == 0) {
-        TStoSolver<T, std::atomic<T>>::t += epoch_size;
+        t += epoch_size;
 
         if ((last_record_epoch + epoch) == 1 || ((last_record_epoch + epoch) % record_every == 0)) {
           auto end = std::chrono::steady_clock::now();
@@ -138,6 +124,7 @@ void AtomicSDCA<T>::solve_batch(int n_epochs, ulong batch_size) {
 //  auto casted_model = std::static_pointer_cast<TModelGeneralizedLinear<T, std::atomic<T>> >(model);
 //  casted_model->compute_features_norm_sq();
   model->get_lip_max();
+  if (!ready_step_corrections) compute_step_corrections();
 
   const SArrayULongPtr feature_index_map = model->get_sdca_index_map();
   const T scaled_l_l2sq = get_scaled_l_l2sq();
@@ -227,7 +214,7 @@ void AtomicSDCA<T>::solve_batch(int n_epochs, ulong batch_size) {
 
       // Record only on one thread
       if (n_thread == 0) {
-        TStoSolver<T, std::atomic<T>>::t += epoch_size;
+        t += epoch_size;
 
         if ((last_record_epoch + epoch) == 1 || ((last_record_epoch + epoch) % record_every == 0)) {
           auto end = std::chrono::steady_clock::now();
@@ -256,63 +243,63 @@ void AtomicSDCA<T>::solve_batch(int n_epochs, ulong batch_size) {
   }
 }
 
-
-template <class T>
-void AtomicSDCA<T>::set_starting_iterate() {
-  if (dual_vector.size() != rand_max) dual_vector = Array<std::atomic<T>>(rand_max);
-
-  dual_vector.init_to_zero();
-
-  // If it is not ModelPoisReg, primal vector will be full of 0 as dual vector
-  bool can_initialize_primal_to_zero = true;
-  if (dynamic_cast<ModelPoisReg *>(model.get())) {
-    std::shared_ptr<ModelPoisReg> casted_model =
-        std::dynamic_pointer_cast<ModelPoisReg>(model);
-    if (casted_model->get_link_type() == LinkType::identity) {
-      can_initialize_primal_to_zero = false;
-    }
-  }
-
-  if (can_initialize_primal_to_zero) {
-//    if (tmp_primal_vector.size() != n_coeffs)
-//      tmp_primal_vector = Array<T>(n_coeffs);
-
-    if (iterate.size() != n_coeffs) iterate = Array<std::atomic<T>>(n_coeffs);
-
-    if (delta.size() != rand_max) delta = Array<T>(rand_max);
-
-    iterate.init_to_zero();
-    delta.init_to_zero();
-//    tmp_primal_vector.init_to_zero();
-    stored_variables_ready = true;
-  } else {
-    set_starting_iterate(dual_vector);
-  }
-}
-
-template <class T>
-void AtomicSDCA<T>::set_starting_iterate(Array<std::atomic<T>> &dual_vector) {
-  if (dual_vector.size() != rand_max) {
-    TICK_ERROR("Starting iterate should be dual vector and have shape ("
-               << rand_max << ", )");
-  }
-
-  if (!dynamic_cast<TProxZero<T, std::atomic<T>> *>(prox.get())) {
-    TICK_ERROR(
-        "set_starting_iterate in SDCA might be call only if prox is ProxZero. "
-        "Otherwise "
-        "we need to implement the Fenchel conjugate of the prox gradient");
-  }
-
-  if (iterate.size() != n_coeffs) iterate = Array<std::atomic<T>>(n_coeffs);
-  if (delta.size() != rand_max) delta = Array<T>(rand_max);
-
-  this->dual_vector = dual_vector;
-  model->sdca_primal_dual_relation(get_scaled_l_l2sq(), dual_vector, iterate);
-//  tmp_primal_vector = iterate;
-
-  stored_variables_ready = true;
-}
+//
+//template <class T>
+//void AtomicSDCA<T>::set_starting_iterate() {
+//  if (dual_vector.size() != rand_max) dual_vector = Array<std::atomic<T>>(rand_max);
+//
+//  dual_vector.init_to_zero();
+//
+//  // If it is not ModelPoisReg, primal vector will be full of 0 as dual vector
+//  bool can_initialize_primal_to_zero = true;
+//  if (dynamic_cast<ModelPoisReg *>(model.get())) {
+//    std::shared_ptr<ModelPoisReg> casted_model =
+//        std::dynamic_pointer_cast<ModelPoisReg>(model);
+//    if (casted_model->get_link_type() == LinkType::identity) {
+//      can_initialize_primal_to_zero = false;
+//    }
+//  }
+//
+//  if (can_initialize_primal_to_zero) {
+////    if (tmp_primal_vector.size() != n_coeffs)
+////      tmp_primal_vector = Array<T>(n_coeffs);
+//
+//    if (iterate.size() != n_coeffs) iterate = Array<std::atomic<T>>(n_coeffs);
+//
+//    if (delta.size() != rand_max) delta = Array<T>(rand_max);
+//
+//    iterate.init_to_zero();
+//    delta.init_to_zero();
+////    tmp_primal_vector.init_to_zero();
+//    stored_variables_ready = true;
+//  } else {
+//    set_starting_iterate(dual_vector);
+//  }
+//}
+//
+//template <class T>
+//void AtomicSDCA<T>::set_starting_iterate(Array<std::atomic<T>> &dual_vector) {
+//  if (dual_vector.size() != rand_max) {
+//    TICK_ERROR("Starting iterate should be dual vector and have shape ("
+//               << rand_max << ", )");
+//  }
+//
+//  if (!dynamic_cast<TProxZero<T, std::atomic<T>> *>(prox.get())) {
+//    TICK_ERROR(
+//        "set_starting_iterate in SDCA might be call only if prox is ProxZero. "
+//        "Otherwise "
+//        "we need to implement the Fenchel conjugate of the prox gradient");
+//  }
+//
+//  if (iterate.size() != n_coeffs) iterate = Array<std::atomic<T>>(n_coeffs);
+//  if (delta.size() != rand_max) delta = Array<T>(rand_max);
+//
+//  this->dual_vector = dual_vector;
+//  model->sdca_primal_dual_relation(get_scaled_l_l2sq(), dual_vector, iterate);
+////  tmp_primal_vector = iterate;
+//
+//  stored_variables_ready = true;
+//}
 
 template class DLL_PUBLIC AtomicSDCA<double>;
 template class DLL_PUBLIC AtomicSDCA<float>;
