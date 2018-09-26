@@ -26,21 +26,29 @@ template <class T, class K>
 Array<T> TModelLinReg<T, K>::sdca_dual_min_many(const ArrayULong indices,
                                                 const Array<T> duals,
                                                 const Array<K> &primal_vector,
-                                                double l_l2sq) {
+                                                double l_l2sq,
+                                                Array2d<T> &g,
+                                                Array2d<T> &n_hess,
+                                                Array<T> &p,
+                                                Array<T> &n_grad,
+                                                Array<T> &sdca_labels,
+                                                Array<T> &new_duals,
+                                                Array<T> &delta_duals,
+                                                ArrayInt &ipiv) {
   const ulong n_indices = indices.size();
 
   // TODO: pass these weights by SDCA
-  Array<T> p = Array<T>(n_indices);
-  Array2d<T> g = Array2d<T>(n_indices, n_indices);
-  Array<T> sdca_labels = Array<T>(n_indices);
-
-  Array<T> n_grad = Array<T>(n_indices);
-  Array2d<T> n_hess = Array2d<T>(n_indices, n_indices);
-
-  Array<T> new_duals = Array<T>(n_indices);
-  Array<T> delta_duals = Array<T>(n_indices);
-
-  ArrayInt ipiv = ArrayInt(n_indices);
+//  Array<T> p = Array<T>(n_indices);
+//  Array2d<T> g = Array2d<T>(n_indices, n_indices);
+//  Array<T> sdca_labels = Array<T>(n_indices);
+//
+//  Array<T> n_grad = Array<T>(n_indices);
+//  Array2d<T> n_hess = Array2d<T>(n_indices, n_indices);
+//
+//  Array<T> new_duals = Array<T>(n_indices);
+//  Array<T> delta_duals = Array<T>(n_indices);
+//
+//  ArrayInt ipiv = ArrayInt(n_indices);
 
   for (ulong i = 0; i < n_indices; ++i) sdca_labels[i] = get_label(indices[i]);
 

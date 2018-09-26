@@ -6,7 +6,6 @@
 
 #include "tick/solver/asdca.h"
 #include "tick/linear_model/model_poisreg.h"
-#include "tick/prox/prox_zero.h"
 
 template <class T>
 AtomicSDCA<T>::AtomicSDCA(T l_l2sq, ulong epoch_size, T tol, RandType rand_type,
@@ -155,6 +154,18 @@ void AtomicSDCA<T>::solve_batch(int n_epochs, ulong batch_size) {
     ArrayULong feature_indices(batch_size);
     ArrayULong indices(batch_size);
 
+    Array<T> p = Array<T>(batch_size);
+    Array2d<T> g = Array2d<T>(batch_size, batch_size);
+    Array<T> sdca_labels = Array<T>(batch_size);
+
+    Array<T> n_grad = Array<T>(batch_size);
+    Array2d<T> n_hess = Array2d<T>(batch_size, batch_size);
+
+    Array<T> new_duals = Array<T>(batch_size);
+    Array<T> delta_duals_tmp = Array<T>(batch_size);
+
+    ArrayInt ipiv = ArrayInt(batch_size);
+
     ulong idx_nnz = 0;
     ulong thread_epoch_size = epoch_size / n_threads;
     thread_epoch_size += n_thread < (epoch_size % n_threads);
@@ -176,7 +187,8 @@ void AtomicSDCA<T>::solve_batch(int n_epochs, ulong batch_size) {
           feature_indices[i] = feature_index_map != nullptr?
               (*feature_index_map)[indices[i]]: indices[i];
 
-        delta_duals = model->sdca_dual_min_many(indices, duals, iterate, scaled_l_l2sq);
+        delta_duals = model->sdca_dual_min_many(indices, duals, iterate, scaled_l_l2sq, g, n_hess,
+            p, n_grad, sdca_labels, new_duals, delta_duals, ipiv);
 
 
         for (ulong k = 0; k < batch_size; ++k) {

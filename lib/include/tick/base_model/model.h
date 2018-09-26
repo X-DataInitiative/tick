@@ -70,9 +70,17 @@ class TModel {
   }
 
   virtual Array<T> sdca_dual_min_many(const ArrayULong indices,
-                                      const Array<T> duals,
-                                      const Array<K> &primal_vector,
-                                      double l_l2sq) {
+                                       const Array<T> duals,
+                                       const Array<K> &primal_vector,
+                                       double l_l2sq,
+                                       Array2d<T> &g,
+                                       Array2d<T> &n_hess,
+                                       Array<T> &p,
+                                       Array<T> &n_grad,
+                                       Array<T> &sdca_labels,
+                                       Array<T> &new_duals,
+                                       Array<T> &delta_duals,
+                                       ArrayInt &ipiv) {
     TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
   }
 

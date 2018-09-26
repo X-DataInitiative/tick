@@ -49,7 +49,15 @@ class DLL_PUBLIC TModelLinReg : public virtual TModelGeneralizedLinear<T, K>,
   Array<T> sdca_dual_min_many(const ArrayULong indices,
                               const Array<T> duals,
                               const Array<K> &primal_vector,
-                              double l_l2sq) override;
+                              double l_l2sq,
+                              Array2d<T> &g,
+                              Array2d<T> &n_hess,
+                              Array<T> &p,
+                              Array<T> &n_grad,
+                              Array<T> &sdca_labels,
+                              Array<T> &new_duals,
+                              Array<T> &delta_duals,
+                              ArrayInt &ipiv) override;
 
   T loss_i(const ulong i, const Array<K> &coeffs) override;
 
