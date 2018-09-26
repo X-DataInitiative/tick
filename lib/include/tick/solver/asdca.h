@@ -29,7 +29,6 @@ template <class T>
   using TBaseSDCA<T, std::atomic<T>>::delta;
   using TBaseSDCA<T, std::atomic<T>>::dual_vector;
   using TBaseSDCA<T, std::atomic<T>>::ready_step_corrections;
-  using TBaseSDCA<T, std::atomic<T>>::set_starting_iterate;
 
   using TStoSolver<T, std::atomic<T>>::save_history;
   using TStoSolver<T, std::atomic<T>>::last_record_epoch;
@@ -55,7 +54,7 @@ template <class T>
                       RandType rand_type = RandType::unif,  int record_every = 1, int seed = -1,
                       int n_threads=2);
 
-  void solve(int n_epochs) override;
+  void solve(int n_epochs = 1) override;
   void solve_one_epoch() override {solve(1);}
   void solve_batch(int n_epochs = 1, ulong bach_size = 2);
 

@@ -98,7 +98,7 @@ class DLL_PUBLIC TBaseSDCA : public TStoSolver<T, K> {
 
   void compute_step_corrections();
 
-// public:
+ public:
 //  template <class Archive>
 //  void serialize(Archive &ar) {
 //    ar(cereal::make_nvp("StoSolver",
@@ -111,19 +111,19 @@ class DLL_PUBLIC TBaseSDCA : public TStoSolver<T, K> {
 //    ar(CEREAL_NVP(dual_vector));
 //  }
 //
-//  BoolStrReport compare(const TBaseSDCA<T, K> &that) {
-//    std::stringstream ss;
-//    ss << get_class_name() << std::endl;
-//    bool are_equal =
-//        TStoSolver<T, K>::compare(that, ss) && TICK_CMP_REPORT(ss, n_coeffs) &&
-//        TICK_CMP_REPORT(ss, stored_variables_ready) &&
-//        TICK_CMP_REPORT(ss, l_l2sq) && TICK_CMP_REPORT(ss, delta) &&
-//        TICK_CMP_REPORT(ss, dual_vector);
-//    return BoolStrReport(are_equal, ss.str());
-//  }
-//
-//  BoolStrReport operator==(const TBaseSDCA<T, K> &that) { return compare(that); }
-//
+  BoolStrReport compare(const TBaseSDCA<T, K> &that) {
+    std::stringstream ss;
+    ss << get_class_name() << std::endl;
+    bool are_equal =
+        TStoSolver<T, K>::compare(that, ss) && TICK_CMP_REPORT(ss, n_coeffs) &&
+        TICK_CMP_REPORT(ss, stored_variables_ready) &&
+        TICK_CMP_REPORT(ss, l_l2sq) && TICK_CMP_REPORT(ss, delta) &&
+        TICK_CMP_REPORT(ss, dual_vector);
+    return BoolStrReport(are_equal, ss.str());
+  }
+
+  BoolStrReport operator==(const TBaseSDCA<T, K> &that) { return compare(that); }
+
 //  static std::shared_ptr<TBaseSDCA<T, K>> AS_NULL() {
 //    return std::move(std::shared_ptr<TBaseSDCA<T, K>>(new TBaseSDCA<T, K>));
 //  }
@@ -144,6 +144,7 @@ class DLL_PUBLIC TSDCA : public TBaseSDCA<T, T> {
   using TBaseSDCA<T, T>::set_starting_iterate;
   using TBaseSDCA<T, T>::delta;
   using TBaseSDCA<T, T>::dual_vector;
+  using TBaseSDCA<T, T>::tmp_primal_vector;
 
  public:
   TSDCA() : TSDCA<T>(0, 0, 0) {}

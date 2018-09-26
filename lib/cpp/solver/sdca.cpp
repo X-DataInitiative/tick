@@ -142,17 +142,15 @@ void TSDCA<T>::solve_one_epoch() {
     // Update the primal variable
     BaseArray<T> features_i = model->get_features(feature_index);
     if (model->use_intercept()) {
-      Array<T> primal_features = view(iterate, 0, features_i.size());
+      Array<T> primal_features = view(tmp_primal_vector, 0, features_i.size());
       primal_features.mult_incr(features_i, delta_dual_i * _1_over_lbda_n);
-      iterate[model->get_n_features()] +=
-          delta_dual_i * _1_over_lbda_n;
+      tmp_primal_vector[model->get_n_features()] += delta_dual_i * _1_over_lbda_n;
     } else {
-      iterate.mult_incr(features_i, delta_dual_i * _1_over_lbda_n);
+      tmp_primal_vector.mult_incr(features_i, delta_dual_i * _1_over_lbda_n);
     }
     // Call prox on the primal variable
-//    prox->call(tmp_primal_vector, 1. / scaled_l_l2sq, iterate);
+    prox->call(tmp_primal_vector, 1. / scaled_l_l2sq, iterate);
   }
-//  iterate.mult_fill(tmp_primal_vector, 1);
 }
 
 template class DLL_PUBLIC TBaseSDCA<double, double>;
