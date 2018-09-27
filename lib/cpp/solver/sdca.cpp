@@ -40,17 +40,6 @@ void TBaseSDCA<T, K>::reset() {
   set_starting_iterate();
 }
 
-template <class T, class K>
-void TBaseSDCA<T, K>::compute_step_corrections() {
-  ulong n_features = model->get_n_features();
-  Array<T> columns_sparsity = casted_model->get_column_sparsity_view();
-  steps_correction = Array<T>(n_features);
-  for (ulong j = 0; j < n_features; ++j) {
-    steps_correction[j] = 1. / columns_sparsity[j];
-  }
-  ready_step_corrections = true;
-}
-
 
 template <class T, class K>
 void TBaseSDCA<T, K>::set_starting_iterate() {
@@ -86,7 +75,7 @@ void TBaseSDCA<T, K>::set_starting_iterate() {
 }
 
 template <class T, class K>
-void TBaseSDCA<T, K>::set_starting_iterate(Array<K> &dual_vector) {
+void TBaseSDCA<T, K>::<set_starting_iterate(Array<K> &dual_vector) {
   if (dual_vector.size() != rand_max) {
     TICK_ERROR("Starting iterate should be dual vector and have shape ("
                << rand_max << ", )");
@@ -173,6 +162,151 @@ void TSDCA<T>::solve_one_epoch() {
       tmp_primal_vector.mult_incr(feature_i, delta_dual_i * _1_over_lbda_n);
     }
   }
+}
+
+
+template <class T>
+void TSDCA<T>::solve(int n_epochs) {
+  uint n_threads = 1;
+  uint un_threads = 1;
+
+  if (!stored_variables_ready) {
+    set_starting_iterate();
+  }
+  casted_prox = std::static_pointer_cast<TProxSeparable<T, T> >(prox);
+
+  const SArrayULongPtr feature_index_map = model->get_sdca_index_map();
+  const T scaled_l_l2sq = get_scaled_l_l2sq();
+
+  const T _1_over_lbda_n = 1 / (scaled_l_l2sq * rand_max);
+
+  auto lambda = [&](uint16_t n_thread) {
+    T dual_i = 0;
+    T feature_ij = 0;
+    T tmp_iterate_j = 0;
+    ulong thread_epoch_size = epoch_size / n_threads;
+    thread_epoch_size += n_thread < (epoch_size % n_threads);
+
+    auto start = std::chrono::steady_clock::now();
+
+    for (int epoch = 1; epoch < (n_epochs + 1); ++epoch) {
+      for (ulong t = 0; t < thread_epoch_size; ++t) {
+        // Pick i uniformly at random
+        ulong i = get_next_i();
+        ulong feature_index = i;
+        if (feature_index_map != nullptr) {
+          feature_index = (*feature_index_map)[i];
+        }
+
+        const BaseArray<T> feature_i = model->get_features(feature_index);
+        if (!model->is_sparse()) {
+          // Update the primal variable
+
+          // Call prox on the primal variable
+          prox->call(tmp_primal_vector, 1. / scaled_l_l2sq, iterate);
+        } else {
+          // Get iterate ready
+          for (ulong idx_nnz = 0; idx_nnz < feature_i.size_sparse(); ++idx_nnz) {
+            ulong j = feature_i.indices()[idx_nnz];
+            // Prox is separable, apply regularization on the current coordinate
+            casted_prox->call_single(j, tmp_primal_vector, 1 / scaled_l_l2sq, iterate);
+          }
+          // And let's not forget to update the intercept as well. It's updated at
+          // each step, so no step-correction. Note that we call the prox, in order to
+          // be consistent with the dense case (in the case where the user has the
+          // weird desire to to regularize the intercept)
+          if (model->use_intercept()) {
+            casted_prox->call_single(model->get_n_features(),
+                                     tmp_primal_vector,
+                                     1 / scaled_l_l2sq,
+                                     iterate);
+          }
+        }
+
+        // Maximize the dual coordinate i
+        const T delta_dual_i = model->sdca_dual_min_i(
+            feature_index, dual_vector[i], iterate, delta[i], scaled_l_l2sq);
+        // Update the dual variable
+
+        update_delta_dual_i(i, delta_dual_i, feature_i, _1_over_lbda_n);
+
+      }
+
+      // Record only on one thread
+      if (n_thread == 0) {
+        t += epoch_size;
+
+        if ((last_record_epoch + epoch) == 1 || ((last_record_epoch + epoch) % record_every == 0)) {
+          auto end = std::chrono::steady_clock::now();
+          double time = ((end - start).count()) * std::chrono::steady_clock::period::num /
+              static_cast<double>(std::chrono::steady_clock::period::den);
+          save_history(last_record_time + time, last_record_epoch + epoch);
+        }
+      }
+    }
+
+    if (n_thread == 0) {
+      auto end = std::chrono::steady_clock::now();
+      double time = ((end - start).count()) * std::chrono::steady_clock::period::num /
+          static_cast<double>(std::chrono::steady_clock::period::den);
+      last_record_time = time;
+      last_record_epoch += n_epochs;
+    }
+  };
+
+  // Don't spawn threads if this is sequential
+  if (un_threads == 0) {
+    lambda(0);
+  } else {
+    std::vector<std::thread> threads;
+    for (size_t i = 0; i < un_threads; i++) {
+      threads.emplace_back(lambda, i);
+    }
+    for (size_t i = 0; i < un_threads; i++) {
+      threads[i].join();
+    }
+  }
+}
+
+template <class T>
+void TSDCA<T>::update_delta_dual_i(const ulong i, const double delta_dual_i,
+                                   const BaseArray<T> &feature_i, const double _1_over_lbda_n) {
+  delta[i] = delta_dual_i;
+  dual_vector[i] += delta_dual_i;
+
+  if (model->use_intercept()) {
+    Array<T> primal_features = view(tmp_primal_vector, 0, feature_i.size());
+    primal_features.mult_incr(feature_i, delta_dual_i * _1_over_lbda_n);
+    tmp_primal_vector[model->get_n_features()] += delta_dual_i * _1_over_lbda_n;
+  } else {
+    tmp_primal_vector.mult_incr(feature_i, delta_dual_i * _1_over_lbda_n);
+  }
+//  dual_i = dual_vector[i].load();
+//  while (!dual_vector[i].compare_exchange_weak(dual_i,
+//                                               dual_i + delta_dual_i)) {
+//  }
+//
+//  // Keep the last ascent seen for warm-starting sdca_dual_min_i
+//  delta[i] = delta_dual_i;
+//
+//  for (idx_nnz = 0; idx_nnz < feature_i.size_sparse(); ++idx_nnz) {
+//    // Get the index of the idx-th sparse feature of feature_i
+//    ulong j = feature_i.indices()[idx_nnz];
+//    feature_ij = feature_i.data()[idx_nnz];
+//
+//    tmp_iterate_j = tmp_primal_vector[j].load();
+//    while (!tmp_primal_vector[j].compare_exchange_weak(
+//        tmp_iterate_j,
+//        tmp_iterate_j + (delta_dual_i * feature_ij * _1_over_lbda_n))) {
+//    }
+//  }
+//  if (model->use_intercept()) {
+//    tmp_iterate_j = tmp_primal_vector[n_features];
+//    while (!tmp_primal_vector[n_features].compare_exchange_weak(
+//        tmp_iterate_j,
+//        tmp_iterate_j + (delta_dual_i * _1_over_lbda_n))) {
+//    }
+//  }
 }
 
 template class DLL_PUBLIC TBaseSDCA<double, double>;

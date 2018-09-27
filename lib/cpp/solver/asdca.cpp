@@ -55,8 +55,8 @@ void AtomicSDCA<T>::solve(int n_epochs) {
           // Prox is separable, apply regularization on the current coordinate
           casted_prox->call_single(j, tmp_primal_vector, 1 / scaled_l_l2sq, iterate);
         }
-        // And let's not forget to update the intercept as well. It's updated at
-        // each step, so no step-correction. Note that we call the prox, in order to
+        // And let's not forget to update the intercept as well.
+         // Note that we call the prox, in order to
         // be consistent with the dense case (in the case where the user has the
         // weird desire to to regularize the intercept)
         if (model->use_intercept()) {
@@ -138,7 +138,6 @@ void AtomicSDCA<T>::solve_batch(int n_epochs, ulong batch_size) {
 //  auto casted_model = std::static_pointer_cast<TModelGeneralizedLinear<T, std::atomic<T>> >(model);
 //  casted_model->compute_features_norm_sq();
   model->get_lip_max();
-  if (!ready_step_corrections) compute_step_corrections();
 
   const SArrayULongPtr feature_index_map = model->get_sdca_index_map();
   const T scaled_l_l2sq = get_scaled_l_l2sq();

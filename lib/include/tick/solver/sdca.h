@@ -51,10 +51,6 @@ class DLL_PUBLIC TBaseSDCA : public TStoSolver<T, K> {
   std::shared_ptr<TModelGeneralizedLinear<T, K>> casted_model;
   std::shared_ptr<TProxSeparable<T, K>> casted_prox;
 
-  bool ready_step_corrections = false;
-  // Probabilistic correction of the step-sizes of all model weights,
-  // given by the inverse proportion of non-zero entries in each feature column
-  Array<T> steps_correction;
 
  public:
   // This exists soley for cereal/swig
@@ -95,8 +91,6 @@ class DLL_PUBLIC TBaseSDCA : public TStoSolver<T, K> {
     // This is useful for Poisson regression with identity link
     return l_l2sq * model->get_n_samples() / rand_max;
   }
-
-  void compute_step_corrections();
 
  public:
 //  template <class Archive>
@@ -141,14 +135,16 @@ class DLL_PUBLIC TSDCA : public TBaseSDCA<T, T> {
   using TBaseSDCA<T, T>::rand_max;
   using TBaseSDCA<T, T>::stored_variables_ready;
   using TBaseSDCA<T, T>::get_scaled_l_l2sq;
-  using TBaseSDCA<T, T>::set_starting_iterate;
   using TBaseSDCA<T, T>::delta;
   using TBaseSDCA<T, T>::dual_vector;
   using TBaseSDCA<T, T>::tmp_primal_vector;
+  using TBaseSDCA<T, T>::set_starting_iterate;
   using TBaseSDCA<T, T>::casted_prox;
-  using TBaseSDCA<T, T>::steps_correction;
-  using TBaseSDCA<T, T>::ready_step_corrections;
-  using TBaseSDCA<T, T>::compute_step_corrections;
+
+  using TStoSolver<T, T>::save_history;
+  using TStoSolver<T, T>::last_record_epoch;
+  using TStoSolver<T, T>::last_record_time;
+  using TStoSolver<T, T>::record_every;
 
  public:
   TSDCA() : TSDCA<T>(0, 0, 0) {}
@@ -156,7 +152,10 @@ class DLL_PUBLIC TSDCA : public TBaseSDCA<T, T> {
   explicit TSDCA(T l_l2sq, ulong epoch_size = 0, T tol = 0.,
       RandType rand_type = RandType::unif,  int record_every = 1, int seed = -1);
 
+  void solve(int n_epochs = 1) override;
   void solve_one_epoch() override;
+  void update_delta_dual_i(const ulong i, const double delta_dual_i,
+                           const BaseArray<T> &feature_i, const double _1_over_lbda_n);
 };
 
 using SDCA = TSDCA<double>;

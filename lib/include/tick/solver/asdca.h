@@ -25,11 +25,9 @@ template <class T>
   using TBaseSDCA<T, std::atomic<T>>::rand_max;
   using TBaseSDCA<T, std::atomic<T>>::stored_variables_ready;
   using TBaseSDCA<T, std::atomic<T>>::get_scaled_l_l2sq;
-  using TBaseSDCA<T, std::atomic<T>>::compute_step_corrections;
   using TBaseSDCA<T, std::atomic<T>>::delta;
   using TBaseSDCA<T, std::atomic<T>>::dual_vector;
   using TBaseSDCA<T, std::atomic<T>>::tmp_primal_vector;
-  using TBaseSDCA<T, std::atomic<T>>::ready_step_corrections;
   using TBaseSDCA<T, std::atomic<T>>::set_starting_iterate;
   using TBaseSDCA<T, std::atomic<T>>::casted_prox;
 
