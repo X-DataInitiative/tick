@@ -77,9 +77,7 @@ TEST(SDCA, test_sdca_prox) {
       + prox->value(out_iterate30);
 
   ArrayDouble out_iterate60(n_features);
-  for (int j = 0; j < 270; ++j) {
-    sdca.solve();
-  }
+  sdca.solve(270);
   sdca.get_iterate(out_iterate60);
   double objective300 = model->loss(out_iterate60) + objective_prox->value(out_iterate60)
       + prox->value(out_iterate60);
@@ -123,16 +121,12 @@ TEST(SDCA, test_sdca_sparse_convergence) {
   sdca.set_prox(prox);
 
   ArrayDouble out_iterate30(n_features);
-  for (int j = 0; j < 30; ++j) {
-    sdca.solve();
-  }
+  sdca.solve(30);
   sdca.get_iterate(out_iterate30);
   double objective30 = model->loss(out_iterate30) + objective_prox->value(out_iterate30);
 
   ArrayDouble out_iterate60(n_features);
-  for (int j = 0; j < 270; ++j) {
-    sdca.solve();
-  }
+  sdca.solve(270);
   sdca.get_iterate(out_iterate60);
   double objective300 = model->loss(out_iterate60) + objective_prox->value(out_iterate60);
 

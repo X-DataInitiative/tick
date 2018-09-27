@@ -30,6 +30,7 @@ template <class T>
   using TBaseSDCA<T, std::atomic<T>>::tmp_primal_vector;
   using TBaseSDCA<T, std::atomic<T>>::set_starting_iterate;
   using TBaseSDCA<T, std::atomic<T>>::casted_prox;
+   using TBaseSDCA<T, std::atomic<T>>::n_threads;
 
   using TStoSolver<T, std::atomic<T>>::save_history;
   using TStoSolver<T, std::atomic<T>>::last_record_epoch;
@@ -42,11 +43,6 @@ template <class T>
   using TBaseSDCA<T, std::atomic<T>>::get_class_name;
   using SArrayTPtr = std::shared_ptr<SArray<T>>;
 
- protected:
-
-  int n_threads = 0;      // SWIG doesn't support uints
-  size_t un_threads = 0;  //   uint == int = Werror
-
  public:
   // This exists solely for cereal/swig
   AtomicSDCA() : AtomicSDCA<T>(0, 0, 0) {}
@@ -55,8 +51,9 @@ template <class T>
                       RandType rand_type = RandType::unif,  int record_every = 1, int seed = -1,
                       int n_threads=2);
 
-  void solve(int n_epochs = 1) override;
-  void solve_one_epoch() override {solve(1);}
+//  void solve(int n_epochs = 1) override;
+   void update_delta_dual_i(ulong i, double delta_dual_i,
+                            const BaseArray<T> &feature_i, double _1_over_lbda_n) override ;
   void solve_batch(int n_epochs = 1, ulong bach_size = 2);
 
 //  void set_starting_iterate();

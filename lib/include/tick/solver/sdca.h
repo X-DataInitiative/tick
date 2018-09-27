@@ -25,6 +25,11 @@ class DLL_PUBLIC TBaseSDCA : public TStoSolver<T, K> {
   using TStoSolver<T, K>::epoch_size;
   using TStoSolver<T, K>::rand_max;
 
+  using TStoSolver<T, K>::save_history;
+  using TStoSolver<T, K>::last_record_epoch;
+  using TStoSolver<T, K>::last_record_time;
+  using TStoSolver<T, K>::record_every;
+
  public:
   using TStoSolver<T, K>::get_class_name;
   using SArrayTPtr = std::shared_ptr<SArray<T>>;
@@ -51,13 +56,16 @@ class DLL_PUBLIC TBaseSDCA : public TStoSolver<T, K> {
   std::shared_ptr<TModelGeneralizedLinear<T, K>> casted_model;
   std::shared_ptr<TProxSeparable<T, K>> casted_prox;
 
+  uint n_threads = 0;
+
 
  public:
   // This exists soley for cereal/swig
   TBaseSDCA() : TBaseSDCA<T, K>(0, 0, 0) {}
 
   explicit TBaseSDCA(T l_l2sq, ulong epoch_size = 0, T tol = 0.,
-                 RandType rand_type = RandType::unif,  int record_every = 1, int seed = -1);
+                     RandType rand_type = RandType::unif,  int record_every = 1, int seed = -1,
+                     int n_threads = 1);
 
   void reset() override;
 
@@ -68,6 +76,7 @@ class DLL_PUBLIC TBaseSDCA : public TStoSolver<T, K> {
   void set_l_l2sq(T l_l2sq) { this->l_l2sq = l_l2sq; }
 
   SArrayTPtr get_primal_vector() const {
+    // This works when K is atomic
     Array<T> copy(iterate.size());
     copy.init_to_zero();
     copy.mult_incr(iterate, 1);
@@ -75,11 +84,13 @@ class DLL_PUBLIC TBaseSDCA : public TStoSolver<T, K> {
   }
 
   SArrayTPtr get_dual_vector() const {
+    // This works when K is atomic
     Array<T> copy(dual_vector.size());
     copy.init_to_zero();
     copy.mult_incr(dual_vector, 1);
     return copy.as_sarray_ptr();
   }
+  void solve(int n_epochs = 1) override;
 
   void set_starting_iterate();
   void set_starting_iterate(Array<K> &dual_vector) override;
@@ -91,6 +102,9 @@ class DLL_PUBLIC TBaseSDCA : public TStoSolver<T, K> {
     // This is useful for Poisson regression with identity link
     return l_l2sq * model->get_n_samples() / rand_max;
   }
+
+  virtual void update_delta_dual_i(ulong i, double delta_dual_i,
+                                   const BaseArray<T> &feature_i, double _1_over_lbda_n);
 
  public:
 //  template <class Archive>
@@ -152,10 +166,8 @@ class DLL_PUBLIC TSDCA : public TBaseSDCA<T, T> {
   explicit TSDCA(T l_l2sq, ulong epoch_size = 0, T tol = 0.,
       RandType rand_type = RandType::unif,  int record_every = 1, int seed = -1);
 
-  void solve(int n_epochs = 1) override;
-  void solve_one_epoch() override;
-  void update_delta_dual_i(const ulong i, const double delta_dual_i,
-                           const BaseArray<T> &feature_i, const double _1_over_lbda_n);
+  void update_delta_dual_i(ulong i, double delta_dual_i,
+                           const BaseArray<T> &feature_i, double _1_over_lbda_n) override ;
 };
 
 using SDCA = TSDCA<double>;
