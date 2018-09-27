@@ -90,7 +90,10 @@ class DLL_PUBLIC TBaseSDCA : public TStoSolver<T, K> {
     copy.mult_incr(dual_vector, 1);
     return copy.as_sarray_ptr();
   }
+
+  void prepare_solve();
   void solve(int n_epochs = 1) override;
+  void solve_batch(int n_epochs = 1, ulong batch_size = 1);
 
   void set_starting_iterate();
   void set_starting_iterate(Array<K> &dual_vector) override;

@@ -41,9 +41,10 @@ class DLL_PUBLIC TModelGeneralizedLinear
   virtual void compute_grad_i(const ulong i, const Array<K> &coeffs,
                               Array<T> &out, const bool fill);
 
-  void compute_features_norm_sq();
-
   Array<T> &get_features_norm_sq() { return features_norm_sq; }
+
+ public:
+  void compute_features_norm_sq();
 
  public:
   TModelGeneralizedLinear(const std::shared_ptr<BaseArray2d<T> > features,
