@@ -116,7 +116,6 @@ void TSDCA<T>::solve_one_epoch() {
     set_starting_iterate();
   }
   if ( model->is_sparse()) {
-    if (!ready_step_corrections) compute_step_corrections();
     casted_prox = std::static_pointer_cast<TProxSeparable<T> >(prox);
   }
 
@@ -145,7 +144,6 @@ void TSDCA<T>::solve_one_epoch() {
       for (ulong idx_nnz = 0; idx_nnz < feature_i.size_sparse(); ++idx_nnz) {
         ulong j = feature_i.indices()[idx_nnz];
         T feature_ij = feature_i.data()[idx_nnz];
-        T step_correction = steps_correction[j];
         // Prox is separable, apply regularization on the current coordinate
         casted_prox->call_single(j, tmp_primal_vector, 1 / scaled_l_l2sq, iterate);
       }

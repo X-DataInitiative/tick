@@ -58,9 +58,9 @@ TEST(SDCA, test_sdca_prox) {
   ulong n_samples = features_ptr->n_rows();
   ulong n_features = features_ptr->n_cols();
 
-
+  double l_l1 = 0.3;
   auto model = std::make_shared<ModelLinReg>(features_ptr, labels_ptr, false, 1);
-  auto prox = std::make_shared<TProxL1<double> >(3e-1, false);
+  auto prox = std::make_shared<TProxL1<double> >(l_l1, false);
 
   double l_l2sq = 1e-1;
   auto objective_prox = std::make_shared<TProxL2Sq<double>>(l_l2sq, false);
@@ -77,17 +77,31 @@ TEST(SDCA, test_sdca_prox) {
       + prox->value(out_iterate30);
 
   ArrayDouble out_iterate60(n_features);
-  for (int j = 0; j < 300; ++j) {
+  for (int j = 0; j < 270; ++j) {
     sdca.solve();
   }
   sdca.get_iterate(out_iterate60);
-  double objective60 = model->loss(out_iterate60) + objective_prox->value(out_iterate60)
+  double objective300 = model->loss(out_iterate60) + objective_prox->value(out_iterate60)
       + prox->value(out_iterate60);
-
   out_iterate60.mult_incr(out_iterate30, -1);
   EXPECT_LE(out_iterate60.norm_sq() / n_features, 0.1);
-  EXPECT_LE(objective60 - objective30, 0.);
-  EXPECT_LE(objective30 - objective60, 0.1);
+  EXPECT_LE(objective300 - objective30, 0.);
+  EXPECT_LE(objective30 - objective300, 0.1);
+
+  auto atomic_model = std::make_shared<TModelLinReg<double, std::atomic<double>>>(
+      features_ptr, labels_ptr, false, 1);
+  auto atomic_prox = std::make_shared<TProxL1<double, std::atomic<double>>>(l_l1, false);
+  ASDCA asdca(l_l2sq, n_samples, 0, RandType::unif, 1, 1309, 3);
+  asdca.set_rand_max(n_samples);
+  asdca.set_model(atomic_model);
+  asdca.set_prox(atomic_prox);
+  asdca.solve(300);
+  auto iterate_sdca = sdca.get_iterate_history().back();
+  auto iterate_asdca = asdca.get_iterate_history().back();
+  const auto objective_asdca = model->loss(*iterate_asdca) + objective_prox->value(*iterate_asdca)
+      + prox->value(*iterate_asdca);
+  EXPECT_LE(objective_asdca - objective300, 0.0001);
+  EXPECT_LE(objective300 - objective_asdca, 0.0001);
 }
 
 TEST(SDCA, test_sdca_sparse_convergence) {

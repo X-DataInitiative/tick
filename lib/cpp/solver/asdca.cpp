@@ -20,7 +20,7 @@ void AtomicSDCA<T>::solve(int n_epochs) {
   if (!stored_variables_ready) {
     set_starting_iterate();
   }
-  if (!ready_step_corrections) compute_step_corrections();
+  casted_prox = std::static_pointer_cast<TProxSeparable<T, std::atomic<T>> >(prox);
 
   const SArrayULongPtr feature_index_map = model->get_sdca_index_map();
   const T scaled_l_l2sq = get_scaled_l_l2sq();
@@ -29,8 +29,8 @@ void AtomicSDCA<T>::solve(int n_epochs) {
 
   auto lambda = [&](uint16_t n_thread) {
     T dual_i = 0;
-    T x_ij = 0;
-    T iterate_j = 0;
+    T feature_ij = 0;
+    T tmp_iterate_j = 0;
     ulong n_features = model->get_n_features();
 
     ulong idx_nnz = 0;
@@ -48,6 +48,21 @@ void AtomicSDCA<T>::solve(int n_epochs) {
           feature_index = (*feature_index_map)[i];
         }
 
+        BaseArray<T> feature_i = model->get_features(feature_index);
+        // Get iterate ready
+        for (ulong idx_nnz = 0; idx_nnz < feature_i.size_sparse(); ++idx_nnz) {
+          ulong j = feature_i.indices()[idx_nnz];
+          // Prox is separable, apply regularization on the current coordinate
+          casted_prox->call_single(j, tmp_primal_vector, 1 / scaled_l_l2sq, iterate);
+        }
+        // And let's not forget to update the intercept as well. It's updated at
+        // each step, so no step-correction. Note that we call the prox, in order to
+        // be consistent with the dense case (in the case where the user has the
+        // weird desire to to regularize the intercept)
+        if (model->use_intercept()) {
+          casted_prox->call_single(model->get_n_features(), tmp_primal_vector, 1 / scaled_l_l2sq, iterate);
+        }
+
         // Maximize the dual coordinate i
         const T delta_dual_i = model->sdca_dual_min_i(
             feature_index, dual_vector[i], iterate, delta[i], scaled_l_l2sq);
@@ -61,23 +76,22 @@ void AtomicSDCA<T>::solve(int n_epochs) {
         // Keep the last ascent seen for warm-starting sdca_dual_min_i
         delta[i] = delta_dual_i;
 
-        BaseArray<T> x_i = model->get_features(feature_index);
-        for (idx_nnz = 0; idx_nnz < x_i.size_sparse(); ++idx_nnz) {
-          // Get the index of the idx-th sparse feature of x_i
-          ulong j = x_i.indices()[idx_nnz];
-          x_ij = x_i.data()[idx_nnz];
+        for (idx_nnz = 0; idx_nnz < feature_i.size_sparse(); ++idx_nnz) {
+          // Get the index of the idx-th sparse feature of feature_i
+          ulong j = feature_i.indices()[idx_nnz];
+          feature_ij = feature_i.data()[idx_nnz];
 
-          iterate_j = iterate[j].load();
-          while (!iterate[j].compare_exchange_weak(
-              iterate_j,
-              iterate_j + (delta_dual_i * x_ij * _1_over_lbda_n))) {
+          tmp_iterate_j = tmp_primal_vector[j].load();
+          while (!tmp_primal_vector[j].compare_exchange_weak(
+              tmp_iterate_j,
+              tmp_iterate_j + (delta_dual_i * feature_ij * _1_over_lbda_n))) {
           }
         }
         if (model->use_intercept()) {
-          iterate_j = iterate[n_features];
-          while (!iterate[n_features].compare_exchange_weak(
-              iterate_j,
-              iterate_j + (delta_dual_i * _1_over_lbda_n))) {
+          tmp_iterate_j = tmp_primal_vector[n_features];
+          while (!tmp_primal_vector[n_features].compare_exchange_weak(
+              tmp_iterate_j,
+              tmp_iterate_j + (delta_dual_i * _1_over_lbda_n))) {
           }
         }
       }
@@ -133,7 +147,7 @@ void AtomicSDCA<T>::solve_batch(int n_epochs, ulong batch_size) {
 
   auto lambda = [&](uint16_t n_thread) {
     T dual_i = 0;
-    T x_ij = 0;
+    T feature_ij = 0;
     T iterate_j = 0;
     ulong n_features = model->get_n_features();
     Array<T> delta_duals(batch_size);
@@ -190,16 +204,16 @@ void AtomicSDCA<T>::solve_batch(int n_epochs, ulong batch_size) {
           // Keep the last ascent seen for warm-starting sdca_dual_min_i
           delta[i] = delta_dual_i;
 
-          BaseArray<T> x_i = model->get_features(feature_index);
-          for (idx_nnz = 0; idx_nnz < x_i.size_sparse(); ++idx_nnz) {
-            // Get the index of the idx-th sparse feature of x_i
-            ulong j = x_i.indices()[idx_nnz];
-            x_ij = x_i.data()[idx_nnz];
+          BaseArray<T> feature_i = model->get_features(feature_index);
+          for (idx_nnz = 0; idx_nnz < feature_i.size_sparse(); ++idx_nnz) {
+            // Get the index of the idx-th sparse feature of feature_i
+            ulong j = feature_i.indices()[idx_nnz];
+            feature_ij = feature_i.data()[idx_nnz];
 
             iterate_j = iterate[j].load();
             while (!iterate[j].compare_exchange_weak(
                 iterate_j,
-                iterate_j + (delta_dual_i * x_ij * _1_over_lbda_n))) {
+                iterate_j + (delta_dual_i * feature_ij * _1_over_lbda_n))) {
             }
           }
           if (model->use_intercept()) {
