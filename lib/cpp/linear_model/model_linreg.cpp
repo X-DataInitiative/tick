@@ -23,9 +23,8 @@ T TModelLinReg<T, K>::sdca_dual_min_i(const ulong i, const T dual_i,
 }
 
 template <class T, class K>
-Array<T> TModelLinReg<T, K>::sdca_dual_min_many(const ArrayULong indices,
-                                                const Array<T> duals,
-                                                const Array<K> &primal_vector,
+Array<T> TModelLinReg<T, K>::sdca_dual_min_many(ulong n_indices,
+                                                const Array<T> &duals,
                                                 double l_l2sq,
                                                 Array2d<T> &g,
                                                 Array2d<T> &n_hess,
@@ -35,36 +34,7 @@ Array<T> TModelLinReg<T, K>::sdca_dual_min_many(const ArrayULong indices,
                                                 Array<T> &new_duals,
                                                 Array<T> &delta_duals,
                                                 ArrayInt &ipiv) {
-  const ulong n_indices = indices.size();
-
-  // TODO: pass these weights by SDCA
-//  Array<T> p = Array<T>(n_indices);
-//  Array2d<T> g = Array2d<T>(n_indices, n_indices);
-//  Array<T> sdca_labels = Array<T>(n_indices);
-//
-//  Array<T> n_grad = Array<T>(n_indices);
-//  Array2d<T> n_hess = Array2d<T>(n_indices, n_indices);
-//
-//  Array<T> new_duals = Array<T>(n_indices);
-//  Array<T> delta_duals = Array<T>(n_indices);
-//
-//  ArrayInt ipiv = ArrayInt(n_indices);
-
-  for (ulong i = 0; i < n_indices; ++i) sdca_labels[i] = get_label(indices[i]);
-
-  const double _1_lambda_n = 1 / (l_l2sq * n_samples);
-  for (ulong i = 0; i < n_indices; ++i) {
-    for (ulong j = 0; j < n_indices; ++j) {
-      if (j < i) g(i, j) = g(j, i);
-      else if (i == j) g(i, i) = features_norm_sq[indices[i]] * _1_lambda_n;
-      else g(i, j) = get_features(indices[i]).dot(get_features(indices[j])) * _1_lambda_n;
-      if (use_intercept()) g(i, j) += _1_lambda_n;
-    }
-  }
-
-  for (ulong i = 0; i < n_indices; ++i) p[i] = get_inner_prod(indices[i], primal_vector);
-  for (ulong i = 0; i < n_indices; ++i) delta_duals[i] = 0;
-
+  delta_duals.init_to_zero();
 
   for (int k = 0; k < 20; ++k) {
 
@@ -84,7 +54,7 @@ Array<T> TModelLinReg<T, K>::sdca_dual_min_many(const ArrayULong indices,
       n_hess(i, i) += 1;
     }
 
-    // it seems faster this way
+    // it seems faster this way with BLAS
     if (n_indices <= 30) {
       tick::vector_operations<T>{}.solve_linear_system(
           n_indices, n_hess.data(), n_grad.data(), ipiv.data());
@@ -112,6 +82,7 @@ Array<T> TModelLinReg<T, K>::sdca_dual_min_many(const ArrayULong indices,
   mean /= n_indices;
 
   if (mean > 1e-4) std::cout << "did not converge with mean=" << mean << std::endl;
+  if (mean > 1) delta_duals.init_to_zero();
 
   return delta_duals;
 };

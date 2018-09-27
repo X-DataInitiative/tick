@@ -168,7 +168,6 @@ void TBaseSDCA<T, K>::solve_batch(int n_epochs, ulong batch_size) {
 
   const SArrayULongPtr feature_index_map = model->get_sdca_index_map();
   const T scaled_l_l2sq = get_scaled_l_l2sq();
-
   const T _1_over_lbda_n = 1 / (scaled_l_l2sq * rand_max);
 
   auto lambda = [&](uint16_t n_thread) {
@@ -213,32 +212,14 @@ void TBaseSDCA<T, K>::solve_batch(int n_epochs, ulong batch_size) {
                                (*feature_index_map)[indices[i]] : indices[i];
         }
 
-        // Get iterate ready
-        if (!model->is_sparse()) {
-          prox->call(tmp_primal_vector, 1. / scaled_l_l2sq, iterate);
-        } else {
-          for (ulong k = 0; k < batch_size; ++k) {
-            BaseArray<T> feature_i = model->get_features(feature_indices[k]);
-            for (ulong idx_nnz = 0; idx_nnz < feature_i.size_sparse(); ++idx_nnz) {
-              ulong j = feature_i.indices()[idx_nnz];
-              // Prox is separable, apply regularization on the current coordinate
-              casted_prox->call_single(j, tmp_primal_vector, 1 / scaled_l_l2sq, iterate);
-            }
-            // And let's not forget to update the intercept as well. It's updated at
-            // each step, so no step-correction. Note that we call the prox, in order to
-            // be consistent with the dense case (in the case where the user has the
-            // weird desire to to regularize the intercept)
-            if (model->use_intercept()) {
-              casted_prox->call_single(model->get_n_features(),
-                                       tmp_primal_vector,
-                                       1 / scaled_l_l2sq,
-                                       iterate);
-            }
-          }
-        }
+        precompute_sdca_dual_min_weights(
+            batch_size, scaled_l_l2sq, _1_over_lbda_n, feature_indices, g, p);
+        for (ulong k = 0; k < batch_size; ++k)
+          sdca_labels[k] = casted_model->get_label(feature_indices[k]);
 
-        delta_duals = model->sdca_dual_min_many(indices, duals, iterate, scaled_l_l2sq, g, n_hess,
-                                                p, n_grad, sdca_labels, new_duals, delta_duals, ipiv);
+        delta_duals = model->sdca_dual_min_many(
+            batch_size, duals, scaled_l_l2sq, g, n_hess, p, n_grad, sdca_labels, new_duals,
+            delta_duals_tmp, ipiv);
 
         for (ulong k = 0; k < batch_size; ++k) {
           const ulong i = indices[k];
@@ -258,6 +239,9 @@ void TBaseSDCA<T, K>::solve_batch(int n_epochs, ulong batch_size) {
           auto end = std::chrono::steady_clock::now();
           double time = ((end - start).count()) * std::chrono::steady_clock::period::num /
               static_cast<double>(std::chrono::steady_clock::period::den);
+
+          // update iterate
+          prox->call(tmp_primal_vector, 1. / scaled_l_l2sq, iterate);
           save_history(last_record_time + time, last_record_epoch + epoch);
         }
       }
@@ -284,8 +268,72 @@ void TBaseSDCA<T, K>::solve_batch(int n_epochs, ulong batch_size) {
       threads[i].join();
     }
   }
+
+  // Put its final value in iterate
+  prox->call(tmp_primal_vector, 1. / scaled_l_l2sq, iterate);
 }
 
+
+// This is the part corresponding to the gradient and the hessian of the ridge regularization
+// used in the Newton descent steps
+// The gradient of this part writes at coordinate i
+// 1/n (w^\top x_i + 1 / (lambda n) \sum_{j \in batch} \delta \alpha x_i^\top x_j )
+// The hessian of this part writes at coorindate i,j
+// 1 / (lambda n^2) x_i^\top x_j
+// Hence we compute the weights
+// * p_i = w^top x_i
+// * g_ij = x_i^\top x_j / (lambda n)
+// In order to avoid maintaining iterate, we compute it on the fly
+template <class T, class K>
+void TBaseSDCA<T, K>::precompute_sdca_dual_min_weights(
+    ulong batch_size, double scaled_l_l2sq, double _1_over_lbda_n, const ArrayULong &feature_indices,
+    Array2d<T> &g, Array<T> &p) {
+
+  for (ulong i = 0; i < batch_size; ++i) {
+    const BaseArray<T> feature_i = model->get_features(feature_indices[i]);
+
+    for (ulong j = 0; j < batch_size; ++j) {
+      const BaseArray<T> feature_j = model->get_features(feature_indices[j]);
+
+      if (j < i) g(i, j) = g(j, i);
+      else if (i == j)
+        g(i, i) = casted_model->get_features_norm_sq_i(feature_indices[i]) * _1_over_lbda_n;
+      else
+        g(i, j) = feature_i.dot(feature_j) * _1_over_lbda_n;
+
+      if (model->use_intercept()) g(i, j) += _1_over_lbda_n;
+    }
+  }
+
+  if (!model->is_sparse()) {
+    prox->call(tmp_primal_vector, 1. / scaled_l_l2sq, iterate);
+    for (ulong i = 0; i < batch_size; ++i)
+      p[i] = casted_model->get_inner_prod(feature_indices[i], iterate);
+
+  } else {
+    p.init_to_zero();
+    for (ulong k = 0; k < batch_size; ++k) {
+      BaseArray<T> feature_i = model->get_features(feature_indices[k]);
+      for (ulong idx_nnz = 0; idx_nnz < feature_i.size_sparse(); ++idx_nnz) {
+        ulong j = feature_i.indices()[idx_nnz];
+        T feature_ij = feature_i.data()[idx_nnz];
+
+        // Prox is separable, apply regularization on the current coordinate
+        T iterate_j = casted_prox->call_single_with_index(
+            tmp_primal_vector[j], 1 / scaled_l_l2sq, j);
+        p[k] += feature_ij * iterate_j;
+      }
+      // And let's not forget to update the intercept as well.
+      // Note that we call the prox, in order to be consistent with the dense case (in the case
+      // where the user has the weird desire to to regularize the intercept)
+      if (model->use_intercept()) {
+        T iterate_j = casted_prox->call_single_with_index(
+            tmp_primal_vector[model->get_n_features()], 1 / scaled_l_l2sq, model->get_n_features());
+        p[k] += iterate_j;
+      }
+    }
+  }
+};
 
 template <class T, class K>
 void TBaseSDCA<T, K>::update_delta_dual_i(ulong i, double delta_dual_i,

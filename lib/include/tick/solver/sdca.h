@@ -94,6 +94,9 @@ class DLL_PUBLIC TBaseSDCA : public TStoSolver<T, K> {
   void prepare_solve();
   void solve(int n_epochs = 1) override;
   void solve_batch(int n_epochs = 1, ulong batch_size = 1);
+  void precompute_sdca_dual_min_weights(
+      ulong batch_size, double scaled_l_l2sq, double _1_over_lbda_n, const ArrayULong &feature_indices,
+      Array2d<T> &g, Array<T> &p);
 
   void set_starting_iterate();
   void set_starting_iterate(Array<K> &dual_vector) override;
