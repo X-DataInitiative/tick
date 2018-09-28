@@ -11,6 +11,12 @@ SArrayDoublePtr get_logreg_labels() {
   ArrayDouble labels{-1, 1, -1, -1, -1, -1, 1};
   return labels.as_sarray_ptr();
 }
+
+SArrayDoublePtr get_poisson_labels() {
+  ArrayDouble labels{0, 2, 3, 4, 0, 1, 2};
+  return labels.as_sarray_ptr();
+}
+
 SBaseArrayDouble2dPtr get_features() {
   ulong n_samples = 7;
   ulong n_features = 5;

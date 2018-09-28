@@ -63,6 +63,18 @@ class DLL_PUBLIC TModelPoisReg : public TModelGeneralizedLinear<T, K> {
                     const T primal_dot_features,
                     const T previous_delta_dual_i, T l_l2sq) override;
 
+  Array<T> sdca_dual_min_many(ulong indices,
+                              const Array<T> &duals,
+                              double l_l2sq,
+                              Array2d<T> &g,
+                              Array2d<T> &n_hess,
+                              Array<T> &p,
+                              Array<T> &n_grad,
+                              Array<T> &sdca_labels,
+                              Array<T> &new_duals,
+                              Array<T> &delta_duals,
+                              ArrayInt &ipiv) override;
+
   void sdca_primal_dual_relation(const T l_l2sq, const Array<K> &dual_vector,
                                  Array<K> &out_primal_vector) override;
 
@@ -94,6 +106,31 @@ class DLL_PUBLIC TModelPoisReg : public TModelGeneralizedLinear<T, K> {
   T sdca_dual_min_i_identity(const ulong i, const T dual_i,
                              const T primal_dot_features,
                              const T previous_delta_dual_i, T l_l2sq);
+
+
+  Array<T> sdca_dual_min_many_identity(ulong n_indices,
+                                       const Array<T> &duals,
+                                       double l_l2sq,
+                                       Array2d<T> &g,
+                                       Array2d<T> &n_hess,
+                                       Array<T> &p,
+                                       Array<T> &n_grad,
+                                       Array<T> &sdca_labels,
+                                       Array<T> &new_duals,
+                                       Array<T> &delta_duals,
+                                       ArrayInt &ipiv);
+
+  Array<T> sdca_dual_min_many_exponential(ulong n_indices,
+                                          const Array<T> &duals,
+                                          double l_l2sq,
+                                          Array2d<T> &g,
+                                          Array2d<T> &n_hess,
+                                          Array<T> &p,
+                                          Array<T> &n_grad,
+                                          Array<T> &sdca_labels,
+                                          Array<T> &new_duals,
+                                          Array<T> &delta_duals,
+                                          ArrayInt &ipiv);
 
  public:
   virtual void set_link_type(const LinkType link_type) {
@@ -146,6 +183,8 @@ using ModelPoisRegFloat = TModelPoisReg<float, float>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelPoisRegFloat,
                                    cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(ModelPoisRegFloat)
+
+using ModelPoisRegAtomic = TModelPoisReg<double, std::atomic<double> >;
 
 using ModelPoisRegAtomicDouble = TModelPoisReg<double, std::atomic<double> >;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelPoisRegAtomicDouble,

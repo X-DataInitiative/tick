@@ -5,6 +5,7 @@
 
 #include "tick/linear_model/model_linreg.h"
 #include "tick/linear_model/model_logreg.h"
+#include "tick/linear_model/model_poisreg.h"
 
 #include "tick/prox/prox_zero.h"
 #include "tick/prox/prox_l1.h"
@@ -46,6 +47,10 @@ TEST(SDCA, test_sdca_sparse) {
         features_ptr, get_logreg_labels(), false, 1));
     atomic_models.push_back(std::make_shared<ModelLogRegAtomic>(
         features_ptr, get_logreg_labels(), false, 1));
+    models.push_back(std::make_shared<ModelPoisReg>(
+        features_ptr, get_poisson_labels(), LinkType::exponential, false, 1));
+    atomic_models.push_back(std::make_shared<ModelPoisRegAtomic>(
+        features_ptr, get_poisson_labels(), LinkType::exponential, false, 1));
 
 
     // TESTED PROXS

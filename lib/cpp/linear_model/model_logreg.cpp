@@ -134,7 +134,7 @@ Array<T> TModelLogReg<T, K>::sdca_dual_min_many(ulong n_indices,
         T label = sdca_labels[i];
         new_duals[i] = epsilon / label;
         delta_duals[i] = new_duals[i] - duals[i];
-        epsilon *= 1e-1;
+        epsilon *= 0.3;
       }
       if (new_dual_times_label_i >= 1) {
         T label = sdca_labels[i];
@@ -198,13 +198,11 @@ Array<T> TModelLogReg<T, K>::sdca_dual_min_many(ulong n_indices,
       T label = sdca_labels[i];
       new_duals[i] = epsilon / label;
       delta_duals[i] = new_duals[i] - duals[i];
-      epsilon *= 1e-1;
     }
     if (new_dual_times_label_i >= 1) {
       T label = sdca_labels[i];
       new_duals[i] = (1 - epsilon) / label;
       delta_duals[i] = new_duals[i] - duals[i];
-      epsilon *= 0.3;
     }
   }
 
