@@ -89,7 +89,7 @@ std::shared_ptr<BaseArray2d<T> > get_features() {
 }
 
 template <class T>
-std::shared_ptr<SArray<T> > get_labels() {
+std::shared_ptr<SArray<T> > get_linreg_labels() {
   Array<T> labels{(T)-1.76, (T)2.6,   (T)-0.7, (T)-1.84,
                   (T)-1.88, (T)-1.78, (T)2.52};
   return labels.as_sarray_ptr();

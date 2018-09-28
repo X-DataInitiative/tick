@@ -69,6 +69,18 @@ class DLL_PUBLIC TModelLogReg : public TModelGeneralizedLinear<T, K>,
                     const T primal_dot_features,
                     const T previous_delta_dual_i, T l_l2sq) override;
 
+  Array<T> sdca_dual_min_many(ulong indices,
+                              const Array<T> &duals,
+                              double l_l2sq,
+                              Array2d<T> &g,
+                              Array2d<T> &n_hess,
+                              Array<T> &p,
+                              Array<T> &n_grad,
+                              Array<T> &sdca_labels,
+                              Array<T> &new_duals,
+                              Array<T> &delta_duals,
+                              ArrayInt &ipiv) override;
+
   void compute_lip_consts() override;
 
   template <class Archive>
@@ -109,6 +121,7 @@ CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelLogRegFloat,
                                    cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(ModelLogRegFloat)
 
+using ModelLogRegAtomic = TModelLogReg<double, std::atomic<double> >;
 using ModelLogRegAtomicDouble = TModelLogReg<double, std::atomic<double> >;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelLogRegAtomicDouble,
                                    cereal::specialization::member_serialize)

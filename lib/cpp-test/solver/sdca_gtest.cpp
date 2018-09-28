@@ -2,11 +2,14 @@
 
 #include <gtest/gtest.h>
 #include <cereal/archives/json.hpp>
-#include <lib/include/tick/prox/prox_l2sq.h>
 
 #include "tick/linear_model/model_linreg.h"
+#include "tick/linear_model/model_logreg.h"
+
 #include "tick/prox/prox_zero.h"
 #include "tick/prox/prox_l1.h"
+#include "lib/include/tick/prox/prox_l2sq.h"
+
 #include "tick/solver/sdca.h"
 #include "tick/solver/asdca.h"
 #include "toy_dataset.ipp"
@@ -25,8 +28,6 @@ double run_and_get_objective(TBaseSDCA<T, K> &sdca, std::shared_ptr<TModel<T> > 
 };
 
 TEST(SDCA, test_sdca_sparse) {
-  SArrayDoublePtr labels_ptr = get_labels();
-
   for (auto is_sparse : std::vector<bool> {false, true}) {
 
     SBaseArrayDouble2dPtr features_ptr = is_sparse? get_sparse_features() : get_features();
@@ -37,8 +38,15 @@ TEST(SDCA, test_sdca_sparse) {
     // TESTED MODELS
     std::vector<ModelPtr> models;
     std::vector<ModelAtomicPtr> atomic_models;
-    models.push_back(std::make_shared<ModelLinReg>(features_ptr, labels_ptr, false, 1));
-    atomic_models.push_back(std::make_shared<ModelLinRegAtomic>(features_ptr, labels_ptr, false, 1));
+    models.push_back(std::make_shared<ModelLinReg>(
+        features_ptr, get_linreg_labels(), false, 1));
+    atomic_models.push_back(std::make_shared<ModelLinRegAtomic>(
+        features_ptr, get_linreg_labels(), false, 1));
+    models.push_back(std::make_shared<ModelLogReg>(
+        features_ptr, get_logreg_labels(), false, 1));
+    atomic_models.push_back(std::make_shared<ModelLogRegAtomic>(
+        features_ptr, get_logreg_labels(), false, 1));
+
 
     // TESTED PROXS
     std::vector<ProxPtr> proxs;
@@ -69,15 +77,15 @@ TEST(SDCA, test_sdca_sparse) {
         auto objective_saga = run_and_get_objective(sdca, model, prox, 70);
 
         // Check it is converging
-        EXPECT_LE(objective_saga - objective_saga_30, 0.);
+        EXPECT_LE(objective_saga - objective_saga_30, 1e-13);
         EXPECT_LE(objective_saga_30 - objective_saga, 0.1);
 
         SDCA sdca_batch(l_l2sq, n_samples, 0, RandType::unif, 1, 1309);
-        sdca.set_rand_max(n_samples);
-        sdca.set_model(model);
-        sdca.set_prox(prox);
+        sdca_batch.set_rand_max(n_samples);
+        sdca_batch.set_model(model);
+        sdca_batch.set_prox(prox);
 
-        auto objective_saga_batch = run_and_get_objective(sdca, model, prox, 70, 3);
+        auto objective_saga_batch = run_and_get_objective(sdca_batch, model, prox, 70, 3);
 
         // Check it reaches the same objective
         EXPECT_LE(objective_saga_batch - objective_saga, 0.0001);

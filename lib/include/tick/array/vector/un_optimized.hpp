@@ -168,7 +168,8 @@ void vector_operations_unoptimized<T>::solve_linear_system(int n, T *A, T *b, in
 }
 
 template <typename T>
-void vector_operations_unoptimized<T>::solve_symmetric_linear_system(int n, T *A, T *b) const {
+void vector_operations_unoptimized<T>::solve_symmetric_linear_system(int n, T *A, T *b,
+                                                                     int* ipiv) const {
   solve_linear_system_with_gauss_jordan(n, A, b);
 }
 

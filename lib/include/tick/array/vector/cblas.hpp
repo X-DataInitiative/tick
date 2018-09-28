@@ -24,7 +24,7 @@ struct vector_operations_cblas_base {
     return vector_operations_unoptimized<T>{}.template solve_linear_system(n, A, b, ipiv);
   }
 
-  void solve_symmetric_linear_system(int n, T *A, T *b) const {
+  void solve_symmetric_linear_system(int n, T *A, T *b, int* ipiv=nullptr) const {
     return vector_operations_unoptimized<T>{}.template solve_linear_system(n, A, b);
   }
 #endif
@@ -111,7 +111,9 @@ struct vector_operations_cblas<float> final
     }
   }
 
-  void solve_symmetric_linear_system(int n, float *A, float *b) const {
+  void solve_symmetric_linear_system(int n, float *A, float *b, int* ipiv=nullptr) const {
+    // it seems faster this way with BLAS
+    if (n < 30) return solve_linear_system(n, A, b, ipiv);
     int n_cols = 1;
     int lda = n;
     int ldb = n;
@@ -210,7 +212,9 @@ struct vector_operations_cblas<double> final
     if (should_free) delete[] ipiv;
   }
 
-  void solve_symmetric_linear_system(int n, double *A, double *b) const {
+  void solve_symmetric_linear_system(int n, double *A, double *b, int* ipiv=nullptr) const {
+    // it seems faster this way with BLAS
+    if (n < 30) return solve_linear_system(n, A, b, ipiv);
     int n_cols = 1;
     int lda = n;
     int ldb = n;

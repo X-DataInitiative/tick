@@ -70,7 +70,7 @@ struct DLL_PUBLIC vector_operations_unoptimized {
 
   void solve_linear_system(int n, T *A, T *b, int* ipiv=nullptr) const;
 
-  void solve_symmetric_linear_system(int n, T *A, T *b) const;
+  void solve_symmetric_linear_system(int n, T *A, T *b, int* ipiv=nullptr) const;
 };
 
 }  // namespace detail

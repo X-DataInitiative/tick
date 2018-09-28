@@ -7,7 +7,7 @@
 #include "toy_dataset.ipp"
 
 TEST(SVRG, test_convergence) {
-  SArrayDoublePtr labels_ptr = get_labels();
+  SArrayDoublePtr labels_ptr = get_linreg_labels();
   SBaseArrayDouble2dPtr features_ptr = get_features();
 
   ulong n_samples = features_ptr->n_rows();
@@ -38,7 +38,7 @@ TEST(SVRG, test_convergence) {
 
 
 TEST(SVRG, test_history) {
-  SArrayDoublePtr labels_ptr = get_labels();
+  SArrayDoublePtr labels_ptr = get_linreg_labels();
   SBaseArrayDouble2dPtr features_ptr = get_features();
 
   ulong n_samples = features_ptr->n_rows();

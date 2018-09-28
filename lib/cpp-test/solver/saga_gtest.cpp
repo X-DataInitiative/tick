@@ -11,7 +11,7 @@
 #include "toy_dataset.ipp"
 
 TEST(SAGA, test_saga_dense_convergence) {
-  SArrayDoublePtr labels_ptr = get_labels();
+  SArrayDoublePtr labels_ptr = get_linreg_labels();
   SBaseArrayDouble2dPtr features_ptr = get_features();
 
   ulong n_samples = features_ptr->n_rows();
@@ -46,7 +46,7 @@ TEST(SAGA, test_saga_dense_convergence) {
 }
 
 TEST(SAGA, test_saga_sparse_convergence) {
-  SArrayDoublePtr labels_ptr = get_labels();
+  SArrayDoublePtr labels_ptr = get_linreg_labels();
   SBaseArrayDouble2dPtr features_ptr = get_sparse_features();
 
   ulong n_samples = features_ptr->n_rows();
@@ -91,7 +91,7 @@ TEST(SAGA, test_saga_sparse_convergence) {
 }
 
 TEST(SAGA, test_saga_serialization) {
-  SArrayDoublePtr labels_ptr = get_labels();
+  SArrayDoublePtr labels_ptr = get_linreg_labels();
   SBaseArrayDouble2dPtr features_ptr = get_features();
 
   ulong n_samples = features_ptr->n_rows();
@@ -125,7 +125,7 @@ TEST(SAGA, test_saga_serialization) {
 
 // TODO: enable this test once sparse array deserialization is enabled
 //TEST(SAGA, test_asaga_serialization) {
-//  SArrayDoublePtr labels_ptr = get_labels();
+//  SArrayDoublePtr labels_ptr = get_linreg_labels();
 //  SBaseArrayDouble2dPtr features_ptr = get_sparse_features();
 //
 //  ulong n_samples = features_ptr->n_rows();

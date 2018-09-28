@@ -33,6 +33,7 @@ Array<T> TModelLinReg<T, K>::sdca_dual_min_many(ulong n_indices,
                                                 Array<T> &new_duals,
                                                 Array<T> &delta_duals,
                                                 ArrayInt &ipiv) {
+  compute_features_norm_sq();
   delta_duals.init_to_zero();
 
   for (int k = 0; k < 20; ++k) {
@@ -53,14 +54,8 @@ Array<T> TModelLinReg<T, K>::sdca_dual_min_many(ulong n_indices,
       n_hess(i, i) += 1;
     }
 
-    // it seems faster this way with BLAS
-    if (n_indices <= 30) {
-      tick::vector_operations<T>{}.solve_linear_system(
-          n_indices, n_hess.data(), n_grad.data(), ipiv.data());
-    } else {
-      tick::vector_operations<T>{}.solve_symmetric_linear_system(
-          n_indices, n_hess.data(), n_grad.data());
-    }
+    tick::vector_operations<T>{}.solve_symmetric_linear_system(
+        n_indices, n_hess.data(), n_grad.data(), ipiv.data());
 
     delta_duals.mult_incr(n_grad, -1.);
 
@@ -81,7 +76,6 @@ Array<T> TModelLinReg<T, K>::sdca_dual_min_many(ulong n_indices,
   mean /= n_indices;
 
   if (mean > 1e-4) std::cout << "did not converge with mean=" << mean << std::endl;
-  if (mean > 1) delta_duals.init_to_zero();
 
   return delta_duals;
 };
