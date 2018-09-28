@@ -64,7 +64,7 @@ class TModel {
   }
 
   virtual T sdca_dual_min_i(const ulong i, const T dual_i,
-                            const Array<K> &primal_vector,
+                            const T primal_dot_features,
                             const T previous_delta_dual_i, T l_l2sq) {
     TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
   }
@@ -147,6 +147,9 @@ using ModelDoublePtr = std::shared_ptr<ModelDouble>;
 
 using ModelFloat = TModel<float, float>;
 using ModelFloatPtr = std::shared_ptr<ModelFloat>;
+
+using ModelAtomic = TModel<double, std::atomic<double> >;
+using ModelAtomicPtr = std::shared_ptr<ModelAtomic>;
 
 using ModelAtomicDouble = TModel<double, std::atomic<double> >;
 using ModelAtomicDoublePtr = std::shared_ptr<ModelAtomicDouble>;

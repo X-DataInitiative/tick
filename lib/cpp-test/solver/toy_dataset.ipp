@@ -7,7 +7,7 @@ SArrayDoublePtr get_labels() {
   return labels.as_sarray_ptr();
 }
 
-SArrayDouble2dPtr get_features() {
+SBaseArrayDouble2dPtr get_features() {
   ulong n_samples = 7;
   ulong n_features = 5;
 
@@ -24,7 +24,7 @@ SArrayDouble2dPtr get_features() {
   return features.as_sarray2d_ptr();
 }
 
-SSparseArrayDouble2dPtr get_sparse_features() {
+SBaseArrayDouble2dPtr get_sparse_features() {
   ulong n_samples = 7;
   ulong n_features = 5;
   // no need to free, it will be done by sparse array

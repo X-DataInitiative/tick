@@ -8,21 +8,21 @@
 
 template <class T, class K>
 T TModelPoisReg<T, K>::sdca_dual_min_i(const ulong i, const T dual_i,
-                                       const Array<K> &primal_vector,
+                                       const T primal_dot_features,
                                        const T previous_delta_dual_i,
                                        T l_l2sq) {
   if (link_type == LinkType::identity) {
-    return sdca_dual_min_i_identity(i, dual_i, primal_vector,
+    return sdca_dual_min_i_identity(i, dual_i, primal_dot_features,
                                     previous_delta_dual_i, l_l2sq);
   } else {
-    return sdca_dual_min_i_exponential(i, dual_i, primal_vector,
+    return sdca_dual_min_i_exponential(i, dual_i, primal_dot_features,
                                        previous_delta_dual_i, l_l2sq);
   }
 }
 
 template <class T, class K>
 T TModelPoisReg<T, K>::sdca_dual_min_i_exponential(
-    const ulong i, const T dual_i, const Array<K> &primal_vector,
+    const ulong i, const T dual_i, const T primal_dot_features,
     const T previous_delta_dual_i, T l_l2sq) {
   compute_features_norm_sq();
   T epsilon = 1e-1;
@@ -31,7 +31,6 @@ T TModelPoisReg<T, K>::sdca_dual_min_i_exponential(
   if (use_intercept()) {
     normalized_features_norm += 1. / (l_l2sq * n_samples);
   }
-  const T primal_dot_features = get_inner_prod(i, primal_vector);
   T delta_dual = previous_delta_dual_i;
   const T label = get_label(i);
   T new_dual{0.};
@@ -85,7 +84,7 @@ void TModelPoisReg<T, K>::init_non_zero_label_map() {
 
 template <class T, class K>
 T TModelPoisReg<T, K>::sdca_dual_min_i_identity(const ulong i, const T dual_i,
-                                                const Array<K> &primal_vector,
+                                                const T primal_dot_features,
                                                 const T previous_delta_dual_i,
                                                 T l_l2sq) {
   if (!ready_features_norm_sq) {
@@ -102,7 +101,6 @@ T TModelPoisReg<T, K>::sdca_dual_min_i_identity(const ulong i, const T dual_i,
   if (use_intercept()) {
     normalized_features_norm += 1. / (l_l2sq * n_non_zeros_labels);
   }
-  const T primal_dot_features = get_inner_prod(i, primal_vector);
 
   const T tmp = dual_i * normalized_features_norm - primal_dot_features;
   T new_dual =

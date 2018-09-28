@@ -75,6 +75,9 @@ void TBaseSDCA<T, K>::solve(int n_epochs) {
   const T _1_over_lbda_n = 1 / (scaled_l_l2sq * rand_max);
 
   auto lambda = [&](uint16_t n_thread) {
+    Array<K> local_iterate;
+    if (!model->is_sparse()) local_iterate = Array<K>(tmp_primal_vector.size());
+
     T dual_i = 0;
     T feature_ij = 0;
     T tmp_iterate_j = 0;
@@ -92,34 +95,39 @@ void TBaseSDCA<T, K>::solve(int n_epochs) {
           feature_index = (*feature_index_map)[i];
         }
 
+        T primal_dot_features = 0;
         const BaseArray<T> feature_i = model->get_features(feature_index);
         if (!model->is_sparse()) {
           // Update the primal variable
 
           // Call prox on the primal variable
-          prox->call(tmp_primal_vector, 1. / scaled_l_l2sq, iterate);
+          prox->call(tmp_primal_vector, 1. / scaled_l_l2sq, local_iterate);
+          primal_dot_features = casted_model->get_inner_prod(feature_index, local_iterate);
         } else {
           // Get iterate ready
           for (ulong idx_nnz = 0; idx_nnz < feature_i.size_sparse(); ++idx_nnz) {
             ulong j = feature_i.indices()[idx_nnz];
+            feature_ij = feature_i.data()[idx_nnz];
             // Prox is separable, apply regularization on the current coordinate
-            casted_prox->call_single(j, tmp_primal_vector, 1 / scaled_l_l2sq, iterate);
+            T iterate_j = casted_prox->call_single_with_index(
+                tmp_primal_vector[j], 1 / scaled_l_l2sq, j);
+            primal_dot_features += feature_ij * iterate_j;
           }
           // And let's not forget to update the intercept as well. It's updated at
           // each step, so no step-correction. Note that we call the prox, in order to
           // be consistent with the dense case (in the case where the user has the
           // weird desire to to regularize the intercept)
           if (model->use_intercept()) {
-            casted_prox->call_single(model->get_n_features(),
-                                     tmp_primal_vector,
-                                     1 / scaled_l_l2sq,
-                                     iterate);
+            T iterate_j = casted_prox->call_single_with_index(
+                tmp_primal_vector[model->get_n_features()], 1 / scaled_l_l2sq,
+                model->get_n_features());
+            primal_dot_features += iterate_j;
           }
         }
 
         // Maximize the dual coordinate i
         const T delta_dual_i = model->sdca_dual_min_i(
-            feature_index, dual_vector[i], iterate, delta[i], scaled_l_l2sq);
+            feature_index, dual_vector[i], primal_dot_features, delta[i], scaled_l_l2sq);
         // Update the dual variable
 
         update_delta_dual_i(i, delta_dual_i, feature_i, _1_over_lbda_n);
@@ -133,6 +141,8 @@ void TBaseSDCA<T, K>::solve(int n_epochs) {
           auto end = std::chrono::steady_clock::now();
           double time = ((end - start).count()) * std::chrono::steady_clock::period::num /
               static_cast<double>(std::chrono::steady_clock::period::den);
+          // get last version of iterate
+          prox->call(tmp_primal_vector, 1. / scaled_l_l2sq, iterate);
           save_history(last_record_time + time, last_record_epoch + epoch);
         }
       }
@@ -159,6 +169,8 @@ void TBaseSDCA<T, K>::solve(int n_epochs) {
       threads[i].join();
     }
   }
+  // Put its final value in iterate
+  prox->call(tmp_primal_vector, 1. / scaled_l_l2sq, iterate);
 }
 
 
@@ -171,6 +183,9 @@ void TBaseSDCA<T, K>::solve_batch(int n_epochs, ulong batch_size) {
   const T _1_over_lbda_n = 1 / (scaled_l_l2sq * rand_max);
 
   auto lambda = [&](uint16_t n_thread) {
+    Array<K> local_iterate;
+    if (!model->is_sparse()) local_iterate = Array<K>(tmp_primal_vector.size());
+
     T dual_i = 0;
     T feature_ij = 0;
     T iterate_j = 0;
@@ -213,7 +228,7 @@ void TBaseSDCA<T, K>::solve_batch(int n_epochs, ulong batch_size) {
         }
 
         precompute_sdca_dual_min_weights(
-            batch_size, scaled_l_l2sq, _1_over_lbda_n, feature_indices, g, p);
+            local_iterate, batch_size, scaled_l_l2sq, _1_over_lbda_n, feature_indices, g, p);
         for (ulong k = 0; k < batch_size; ++k)
           sdca_labels[k] = casted_model->get_label(feature_indices[k]);
 
@@ -283,11 +298,11 @@ void TBaseSDCA<T, K>::solve_batch(int n_epochs, ulong batch_size) {
 // Hence we compute the weights
 // * p_i = w^top x_i
 // * g_ij = x_i^\top x_j / (lambda n)
-// In order to avoid maintaining iterate, we compute it on the fly
+// In order to avoid maintaining iterate, we compute it on the fly from tmp_primal_vector
 template <class T, class K>
 void TBaseSDCA<T, K>::precompute_sdca_dual_min_weights(
-    ulong batch_size, double scaled_l_l2sq, double _1_over_lbda_n, const ArrayULong &feature_indices,
-    Array2d<T> &g, Array<T> &p) {
+    Array<K> &local_iterate, ulong batch_size, double scaled_l_l2sq, double _1_over_lbda_n,
+    const ArrayULong &feature_indices, Array2d<T> &g, Array<T> &p) {
 
   for (ulong i = 0; i < batch_size; ++i) {
     const BaseArray<T> feature_i = model->get_features(feature_indices[i]);
@@ -306,9 +321,9 @@ void TBaseSDCA<T, K>::precompute_sdca_dual_min_weights(
   }
 
   if (!model->is_sparse()) {
-    prox->call(tmp_primal_vector, 1. / scaled_l_l2sq, iterate);
+    prox->call(tmp_primal_vector, 1. / scaled_l_l2sq, local_iterate);
     for (ulong i = 0; i < batch_size; ++i)
-      p[i] = casted_model->get_inner_prod(feature_indices[i], iterate);
+      p[i] = casted_model->get_inner_prod(feature_indices[i], local_iterate);
 
   } else {
     p.init_to_zero();

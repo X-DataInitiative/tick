@@ -66,7 +66,7 @@ class DLL_PUBLIC TModelLogReg : public TModelGeneralizedLinear<T, K>,
   T grad_i_factor(const ulong i, const Array<K> &coeffs) override;
 
   T sdca_dual_min_i(const ulong i, const T dual_i,
-                    const Array<K> &primal_vector,
+                    const T primal_dot_features,
                     const T previous_delta_dual_i, T l_l2sq) override;
 
   void compute_lip_consts() override;

@@ -14,7 +14,7 @@
 // TODO: code accelerated SDCA
 
 template <class T>
- class DLL_PUBLIC AtomicSDCA : public TBaseSDCA<T, std::atomic<T> > {
+ class DLL_PUBLIC TAtomicSDCA : public TBaseSDCA<T, std::atomic<T> > {
  protected:
   using TBaseSDCA<T, std::atomic<T>>::model;
   using TBaseSDCA<T, std::atomic<T>>::delta;
@@ -23,9 +23,9 @@ template <class T>
 
  public:
   // This exists solely for cereal/swig
-  AtomicSDCA() : AtomicSDCA<T>(0, 0, 0) {}
+  TAtomicSDCA() : TAtomicSDCA<T>(0, 0, 0) {}
 
-  explicit AtomicSDCA(T l_l2sq, ulong epoch_size = 0, T tol = 0.,
+  explicit TAtomicSDCA(T l_l2sq, ulong epoch_size = 0, T tol = 0.,
                       RandType rand_type = RandType::unif,  int record_every = 1, int seed = -1,
                       int n_threads=2);
 
@@ -35,14 +35,14 @@ template <class T>
 
 };
 
-using ASDCA = AtomicSDCA<double>;
+using AtomicSDCA = TAtomicSDCA<double>;
 
-using ASDCADouble = AtomicSDCA<double>;
+using AtomicSDCADouble = TAtomicSDCA<double>;
 //CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SDCADouble,
 //                                   cereal::specialization::member_serialize)
 //CEREAL_REGISTER_TYPE(SDCADouble)
 
-using ASDCAFloat = AtomicSDCA<float>;
+using AtomicSDCAFloat = TAtomicSDCA<float>;
 //CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SDCAFloat,
 //                                   cereal::specialization::member_serialize)
 //CEREAL_REGISTER_TYPE(SDCAFloat)

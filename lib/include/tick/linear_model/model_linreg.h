@@ -43,7 +43,7 @@ class DLL_PUBLIC TModelLinReg : public virtual TModelGeneralizedLinear<T, K>,
   virtual ~TModelLinReg() {}
 
   T sdca_dual_min_i(const ulong i, const T dual_i,
-                    const Array<K> &primal_vector,
+                    const T primal_dot_features,
                     const T previous_delta_dual_i, T l_l2sq) override;
 
   Array<T> sdca_dual_min_many(ulong indices,
@@ -90,6 +90,8 @@ class DLL_PUBLIC TModelLinReg : public virtual TModelGeneralizedLinear<T, K>,
   }
 };
 
+
+
 using ModelLinReg = TModelLinReg<double, double>;
 
 using ModelLinRegDouble = TModelLinReg<double, double>;
@@ -101,6 +103,8 @@ using ModelLinRegFloat = TModelLinReg<float, float>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelLinRegFloat,
                                    cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(ModelLinRegFloat)
+
+using ModelLinRegAtomic = TModelLinReg<double, std::atomic<double> >;
 
 using ModelLinRegAtomicDouble = TModelLinReg<double, std::atomic<double> >;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelLinRegAtomicDouble,

@@ -8,7 +8,7 @@
 
 TEST(SVRG, test_convergence) {
   SArrayDoublePtr labels_ptr = get_labels();
-  SArrayDouble2dPtr features_ptr = get_features();
+  SBaseArrayDouble2dPtr features_ptr = get_features();
 
   ulong n_samples = features_ptr->n_rows();
   ulong n_features = features_ptr->n_cols();
@@ -39,7 +39,7 @@ TEST(SVRG, test_convergence) {
 
 TEST(SVRG, test_history) {
   SArrayDoublePtr labels_ptr = get_labels();
-  SArrayDouble2dPtr features_ptr = get_features();
+  SBaseArrayDouble2dPtr features_ptr = get_features();
 
   ulong n_samples = features_ptr->n_rows();
 

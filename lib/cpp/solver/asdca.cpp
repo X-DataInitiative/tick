@@ -8,14 +8,14 @@
 //#include "tick/linear_model/model_poisreg.h"
 
 template <class T>
-AtomicSDCA<T>::AtomicSDCA(T l_l2sq, ulong epoch_size, T tol, RandType rand_type,
+TAtomicSDCA<T>::TAtomicSDCA(T l_l2sq, ulong epoch_size, T tol, RandType rand_type,
                    int record_every, int seed, int n_threads)
     : TBaseSDCA<T, std::atomic<T>>(l_l2sq, epoch_size, tol, rand_type, record_every, seed,
                                    n_threads) {
 }
 
 template <class T>
-void AtomicSDCA<T>::update_delta_dual_i(const ulong i, const double delta_dual_i,
+void TAtomicSDCA<T>::update_delta_dual_i(const ulong i, const double delta_dual_i,
                                    const BaseArray<T> &feature_i, const double _1_over_lbda_n) {
 
   T dual_i = dual_vector[i].load();
@@ -26,10 +26,12 @@ void AtomicSDCA<T>::update_delta_dual_i(const ulong i, const double delta_dual_i
   // Keep the last ascent seen for warm-starting sdca_dual_min_i
   delta[i] = delta_dual_i;
 
-  // TODO: if model is sparse
-  for (ulong idx_nnz = 0; idx_nnz < feature_i.size_sparse(); ++idx_nnz) {
+  // iterate over array either in a sparse or non sparse manner
+  const ulong n_indices = model->is_sparse()? feature_i.size_sparse(): feature_i.size();
+
+  for (ulong idx_nnz = 0; idx_nnz < n_indices; ++idx_nnz) {
     // Get the index of the idx-th sparse feature of feature_i
-    ulong j = feature_i.indices()[idx_nnz];
+    ulong j = model->is_sparse()? feature_i.indices()[idx_nnz]: idx_nnz;
     T feature_ij = feature_i.data()[idx_nnz];
 
     T tmp_iterate_j = tmp_primal_vector[j].load();
@@ -49,5 +51,5 @@ void AtomicSDCA<T>::update_delta_dual_i(const ulong i, const double delta_dual_i
 
 
 
-template class DLL_PUBLIC AtomicSDCA<double>;
-template class DLL_PUBLIC AtomicSDCA<float>;
+template class DLL_PUBLIC TAtomicSDCA<double>;
+template class DLL_PUBLIC TAtomicSDCA<float>;

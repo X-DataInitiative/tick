@@ -109,6 +109,9 @@ inline std::ostream& operator<<(std::ostream& s, const TProx<T, K>& p) {
   return s << typeid(p).name() << "<" << typeid(T).name() << ">";
 }
 
+using Prox = TProx<double, double>;
+using ProxPtr = std::shared_ptr<Prox>;
+
 using ProxDouble = TProx<double, double>;
 using ProxDoublePtr = std::shared_ptr<ProxDouble>;
 using ProxDoublePtrVector = std::vector<ProxDoublePtr>;
@@ -121,6 +124,9 @@ using ProxFloatPtrVector = std::vector<ProxFloatPtr>;
 
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ProxFloat,
                                    cereal::specialization::member_serialize)
+
+using ProxAtomic = TProx<double, std::atomic<double>>;
+using ProxAtomicPtr = std::shared_ptr<ProxAtomic>;
 
 using ProxAtomicDouble = TProx<double, std::atomic<double>>;
 using ProxAtomicDoublePtr = std::shared_ptr<ProxAtomicDouble>;

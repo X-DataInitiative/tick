@@ -60,7 +60,7 @@ class DLL_PUBLIC TModelPoisReg : public TModelGeneralizedLinear<T, K> {
   T grad_i_factor(const ulong i, const Array<K> &coeffs) override;
 
   T sdca_dual_min_i(const ulong i, const T dual_i,
-                    const Array<K> &primal_vector,
+                    const T primal_dot_features,
                     const T previous_delta_dual_i, T l_l2sq) override;
 
   void sdca_primal_dual_relation(const T l_l2sq, const Array<K> &dual_vector,
@@ -83,7 +83,7 @@ class DLL_PUBLIC TModelPoisReg : public TModelGeneralizedLinear<T, K> {
 
  private:
   T sdca_dual_min_i_exponential(const ulong i, const T dual_i,
-                                const Array<K> &primal_vector,
+                                const T primal_dot_features,
                                 const T previous_delta_dual_i, T l_l2sq);
   /**
    * @brief Initialize the hash map that allow fast retrieving for
@@ -92,7 +92,7 @@ class DLL_PUBLIC TModelPoisReg : public TModelGeneralizedLinear<T, K> {
   void init_non_zero_label_map();
 
   T sdca_dual_min_i_identity(const ulong i, const T dual_i,
-                             const Array<K> &primal_vector,
+                             const T primal_dot_features,
                              const T previous_delta_dual_i, T l_l2sq);
 
  public:

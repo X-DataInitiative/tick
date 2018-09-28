@@ -8,14 +8,13 @@
 
 template <class T, class K>
 T TModelLinReg<T, K>::sdca_dual_min_i(const ulong i, const T dual_i,
-                                      const Array<K> &primal_vector,
+                                      const T primal_dot_features,
                                       const T previous_delta_dual_i, T l_l2sq) {
   compute_features_norm_sq();
   T normalized_features_norm = features_norm_sq[i] / (l_l2sq * n_samples);
   if (use_intercept()) {
     normalized_features_norm += 1. / (l_l2sq * n_samples);
   }
-  const T primal_dot_features = get_inner_prod(i, primal_vector);
   const T label = get_label(i);
   const T delta_dual =
       -(dual_i + primal_dot_features - label) / (1 + normalized_features_norm);

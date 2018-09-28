@@ -39,7 +39,7 @@ T TModelLogReg<T, K>::grad_i_factor(const ulong i, const Array<K> &coeffs) {
 
 template <class T, class K>
 T TModelLogReg<T, K>::sdca_dual_min_i(const ulong i, const T dual_i,
-                                      const Array<K> &primal_vector,
+                                      const T primal_dot_features,
                                       const T previous_delta_dual_i, T l_l2sq) {
   compute_features_norm_sq();
   T epsilon = 1e-1;
@@ -47,7 +47,6 @@ T TModelLogReg<T, K>::sdca_dual_min_i(const ulong i, const T dual_i,
   if (use_intercept()) {
     normalized_features_norm += 1. / (l_l2sq * n_samples);
   }
-  const T primal_dot_features = get_inner_prod(i, primal_vector);
   const T label = get_label(i);
   T new_dual_times_label{0.};
 
