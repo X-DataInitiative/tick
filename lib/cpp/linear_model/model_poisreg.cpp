@@ -236,6 +236,83 @@ Array<T> TModelPoisReg<T, K>::sdca_dual_min_many_identity(ulong n_indices,
                                                              Array<T> &new_duals,
                                                              Array<T> &delta_duals,
                                                              ArrayInt &ipiv) {
+  compute_features_norm_sq();
+
+  T epsilon = 1e-1;
+
+  delta_duals.init_to_zero();
+
+  for (int k = 0; k < 20; ++k) {
+
+    // Check we are in the correct bounds
+    for (ulong i = 0; i < n_indices; ++i) {
+      if (sdca_labels[i] == 0) {
+        TICK_ERROR("Labels 0 should not be considered in SDCA");
+      }
+
+      new_duals[i] = duals[i] + delta_duals[i];
+
+      if (new_duals[i] <= 0) {
+        new_duals[i] = epsilon;
+        delta_duals[i] = new_duals[i] - duals[i];
+        epsilon *= 0.3;
+      }
+    }
+
+    // Use the opposite to have a positive definite matrix
+    for (ulong i = 0; i < n_indices; ++i) {
+      T new_dual_times_label_i = sdca_labels[i] * new_duals[i];
+
+      n_grad[i] = - sdca_labels[i] / new_duals[i] + p[i];
+
+      for (ulong j = 0; j < n_indices; ++j) {
+        n_grad[i] += delta_duals[j] * g(i, j);
+        n_hess(i, j) = g(i, j);
+      }
+
+      n_hess(i, i) += sdca_labels[i] / (new_duals[i] * new_duals[i]);
+    }
+
+    // it seems faster this way with BLAS
+    if (n_indices <= 30) {
+      tick::vector_operations<T>{}.solve_linear_system(
+          n_indices, n_hess.data(), n_grad.data(), ipiv.data());
+    } else {
+      tick::vector_operations<T>{}.solve_symmetric_linear_system(
+          n_indices, n_hess.data(), n_grad.data());
+    }
+
+    delta_duals.mult_incr(n_grad, -1.);
+
+    bool all_converged = true;
+    for (ulong i = 0; i < n_indices; ++i) {
+      all_converged &= std::abs(n_grad[i]) < 1e-10;
+    }
+    if (all_converged) {
+      break;
+    }
+  }
+
+  double mean = 0;
+  for (ulong i = 0; i < n_indices; ++i) {
+    const double abs_grad_i = std::abs(n_grad[i]);
+    mean += abs_grad_i;
+  }
+  mean /= n_indices;
+
+  if (mean > 1e-4) std::cout << "did not converge with mean=" << mean << std::endl;
+
+  // Check we are in the correct bounds
+  for (ulong i = 0; i < n_indices; ++i) {
+    new_duals[i] = duals[i] + delta_duals[i];
+    T new_dual_times_label_i = sdca_labels[i] * new_duals[i];
+
+    if (new_duals[i] <= 0) {
+      new_duals[i] = epsilon;
+      delta_duals[i] = new_duals[i] - duals[i];
+    }
+  }
+
   return delta_duals;
 };
 
@@ -297,6 +374,7 @@ T TModelPoisReg<T, K>::loss_i(const ulong i, const Array<K> &coeffs) {
     }
     case LinkType::identity: {
       T y_i = get_label(i);
+      if (y_i == 0) return z;
       return z - y_i * log(z) + std::lgamma(y_i + 1);
     }
     default:

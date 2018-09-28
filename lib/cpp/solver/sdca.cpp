@@ -377,32 +377,7 @@ void TBaseSDCA<T, K>::set_starting_iterate() {
   if (dual_vector.size() != rand_max) dual_vector = Array<K>(rand_max);
 
   dual_vector.init_to_zero();
-
-  // If it is not ModelPoisReg, primal vector will be full of 0 as dual vector
-  bool can_initialize_primal_to_zero = true;
-  if (dynamic_cast<ModelPoisReg *>(model.get())) {
-    std::shared_ptr<ModelPoisReg> casted_model =
-        std::dynamic_pointer_cast<ModelPoisReg>(model);
-    if (casted_model->get_link_type() == LinkType::identity) {
-      can_initialize_primal_to_zero = false;
-    }
-  }
-
-  if (can_initialize_primal_to_zero) {
-    if (tmp_primal_vector.size() != n_coeffs)
-      tmp_primal_vector = Array<K>(n_coeffs);
-
-    if (iterate.size() != n_coeffs) iterate = Array<K>(n_coeffs);
-
-    if (delta.size() != rand_max) delta = Array<T>(rand_max);
-
-    iterate.init_to_zero();
-    delta.init_to_zero();
-    tmp_primal_vector.init_to_zero();
-    stored_variables_ready = true;
-  } else {
-    set_starting_iterate(dual_vector);
-  }
+  set_starting_iterate(dual_vector);
 }
 
 template <class T, class K>
@@ -412,19 +387,13 @@ void TBaseSDCA<T, K>::set_starting_iterate(Array<K> &dual_vector) {
                    << rand_max << ", )");
   }
 
-  if (!dynamic_cast<TProxZero<T, K> *>(prox.get())) {
-    TICK_ERROR(
-        "set_starting_iterate in SDCA might be call only if prox is ProxZero. "
-        "Otherwise "
-        "we need to implement the Fenchel conjugate of the prox gradient");
-  }
-
   if (iterate.size() != n_coeffs) iterate = Array<K>(n_coeffs);
+  if (tmp_primal_vector.size() != n_coeffs) tmp_primal_vector = Array<K>(n_coeffs);
   if (delta.size() != rand_max) delta = Array<T>(rand_max);
 
   this->dual_vector = dual_vector;
-  model->sdca_primal_dual_relation(get_scaled_l_l2sq(), dual_vector, iterate);
-  tmp_primal_vector = iterate;
+  model->sdca_primal_dual_relation(get_scaled_l_l2sq(), dual_vector, tmp_primal_vector);
+  prox->call(tmp_primal_vector, 1. / get_scaled_l_l2sq(), iterate);
 
   stored_variables_ready = true;
 }
