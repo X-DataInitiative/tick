@@ -25,7 +25,6 @@ double run_and_get_objective(TBaseSDCA<T, K> &sdca, std::shared_ptr<TModel<T> > 
   else sdca.solve_batch(n_epochs, batch_size);
 
   sdca.get_iterate(out_iterate);
-  out_iterate.print();
   return model->loss(out_iterate) + prox->value(out_iterate) + objective_prox->value(out_iterate);
 };
 
@@ -41,18 +40,18 @@ TEST(SDCA, test_sdca_sparse) {
     // TESTED MODELS
     std::vector<ModelPtr> models;
     std::vector<ModelAtomicPtr> atomic_models;
-//    models.push_back(std::make_shared<ModelLinReg>(
-//        features_ptr, get_linreg_labels(), false, 1));
-//    atomic_models.push_back(std::make_shared<ModelLinRegAtomic>(
-//        features_ptr, get_linreg_labels(), false, 1));
-//    models.push_back(std::make_shared<ModelLogReg>(
-//        features_ptr, get_logreg_labels(), false, 1));
-//    atomic_models.push_back(std::make_shared<ModelLogRegAtomic>(
-//        features_ptr, get_logreg_labels(), false, 1));
-//    models.push_back(std::make_shared<ModelPoisReg>(
-//        features_ptr, get_poisson_labels(), LinkType::exponential, false, 1));
-//    atomic_models.push_back(std::make_shared<ModelPoisRegAtomic>(
-//        features_ptr, get_poisson_labels(), LinkType::exponential, false, 1));
+    models.push_back(std::make_shared<ModelLinReg>(
+        features_ptr, get_linreg_labels(), false, 1));
+    atomic_models.push_back(std::make_shared<ModelLinRegAtomic>(
+        features_ptr, get_linreg_labels(), false, 1));
+    models.push_back(std::make_shared<ModelLogReg>(
+        features_ptr, get_logreg_labels(), false, 1));
+    atomic_models.push_back(std::make_shared<ModelLogRegAtomic>(
+        features_ptr, get_logreg_labels(), false, 1));
+    models.push_back(std::make_shared<ModelPoisReg>(
+        features_ptr, get_poisson_labels(), LinkType::exponential, false, 1));
+    atomic_models.push_back(std::make_shared<ModelPoisRegAtomic>(
+        features_ptr, get_poisson_labels(), LinkType::exponential, false, 1));
     models.push_back(std::make_shared<ModelPoisReg>(
         features_ptr, get_poisson_labels(), LinkType::identity, false, 1));
     atomic_models.push_back(std::make_shared<ModelPoisRegAtomic>(

@@ -64,11 +64,10 @@ class DLL_PUBLIC TModelPoisReg : public TModelGeneralizedLinear<T, K> {
 
   T sdca_dual_min_i(const ulong i, const T dual_i,
                     const T primal_dot_features,
-                    const T previous_delta_dual_i, T l_l2sq) override;
+                    const T previous_delta_dual_i, T _1_over_lbda_n) override;
 
   Array<T> sdca_dual_min_many(ulong indices,
                               const Array<T> &duals,
-                              double l_l2sq,
                               Array2d<T> &g,
                               Array2d<T> &n_hess,
                               Array<T> &p,
@@ -78,7 +77,7 @@ class DLL_PUBLIC TModelPoisReg : public TModelGeneralizedLinear<T, K> {
                               Array<T> &delta_duals,
                               ArrayInt &ipiv) override;
 
-  void sdca_primal_dual_relation(const T l_l2sq, const Array<K> &dual_vector,
+  void sdca_primal_dual_relation(const T _1_over_lbda_n, const Array<K> &dual_vector,
                                  Array<K> &out_primal_vector) override;
 
   /**
@@ -99,7 +98,7 @@ class DLL_PUBLIC TModelPoisReg : public TModelGeneralizedLinear<T, K> {
  private:
   T sdca_dual_min_i_exponential(const ulong i, const T dual_i,
                                 const T primal_dot_features,
-                                const T previous_delta_dual_i, T l_l2sq);
+                                const T previous_delta_dual_i, T _1_over_lbda_n);
   /**
    * @brief Initialize the hash map that allow fast retrieving for
    * get_non_zero_i
@@ -108,12 +107,11 @@ class DLL_PUBLIC TModelPoisReg : public TModelGeneralizedLinear<T, K> {
 
   T sdca_dual_min_i_identity(const ulong i, const T dual_i,
                              const T primal_dot_features,
-                             const T previous_delta_dual_i, T l_l2sq);
+                             const T previous_delta_dual_i, T _1_over_lbda_n);
 
 
   Array<T> sdca_dual_min_many_identity(ulong n_indices,
                                        const Array<T> &duals,
-                                       double l_l2sq,
                                        Array2d<T> &g,
                                        Array2d<T> &n_hess,
                                        Array<T> &p,
@@ -125,7 +123,6 @@ class DLL_PUBLIC TModelPoisReg : public TModelGeneralizedLinear<T, K> {
 
   Array<T> sdca_dual_min_many_exponential(ulong n_indices,
                                           const Array<T> &duals,
-                                          double l_l2sq,
                                           Array2d<T> &g,
                                           Array2d<T> &n_hess,
                                           Array<T> &p,

@@ -65,13 +65,12 @@ class TModel {
 
   virtual T sdca_dual_min_i(const ulong i, const T dual_i,
                             const T primal_dot_features,
-                            const T previous_delta_dual_i, T l_l2sq) {
+                            const T previous_delta_dual_i, T _1_over_lbda_n) {
     TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
   }
 
   virtual Array<T> sdca_dual_min_many(ulong indices,
                                       const Array<T> &duals,
-                                      double l_l2sq,
                                       Array2d<T> &g,
                                       Array2d<T> &n_hess,
                                       Array<T> &p,
@@ -96,7 +95,7 @@ class TModel {
     TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
   }
 
-  virtual void sdca_primal_dual_relation(const T l_l2sq,
+  virtual void sdca_primal_dual_relation(const T _1_over_lbda_n,
                                          const Array<K> &dual_vector,
                                          Array<K> &out_primal_vector) {
     TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());

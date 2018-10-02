@@ -67,11 +67,10 @@ class DLL_PUBLIC TModelLogReg : public TModelGeneralizedLinear<T, K>,
 
   T sdca_dual_min_i(const ulong i, const T dual_i,
                     const T primal_dot_features,
-                    const T previous_delta_dual_i, T l_l2sq) override;
+                    const T previous_delta_dual_i, T _1_over_lbda_n) override;
 
   Array<T> sdca_dual_min_many(ulong indices,
                               const Array<T> &duals,
-                              double l_l2sq,
                               Array2d<T> &g,
                               Array2d<T> &n_hess,
                               Array<T> &p,

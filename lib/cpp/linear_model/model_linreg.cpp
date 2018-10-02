@@ -9,11 +9,11 @@
 template <class T, class K>
 T TModelLinReg<T, K>::sdca_dual_min_i(const ulong i, const T dual_i,
                                       const T primal_dot_features,
-                                      const T previous_delta_dual_i, T l_l2sq) {
+                                      const T previous_delta_dual_i, T _1_over_lbda_n) {
   compute_features_norm_sq();
-  T normalized_features_norm = features_norm_sq[i] / (l_l2sq * n_samples);
+  T normalized_features_norm = features_norm_sq[i] * _1_over_lbda_n;
   if (use_intercept()) {
-    normalized_features_norm += 1. / (l_l2sq * n_samples);
+    normalized_features_norm += _1_over_lbda_n;
   }
   const T label = get_label(i);
   const T delta_dual =
@@ -24,7 +24,6 @@ T TModelLinReg<T, K>::sdca_dual_min_i(const ulong i, const T dual_i,
 template <class T, class K>
 Array<T> TModelLinReg<T, K>::sdca_dual_min_many(ulong n_indices,
                                                 const Array<T> &duals,
-                                                double l_l2sq,
                                                 Array2d<T> &g,
                                                 Array2d<T> &n_hess,
                                                 Array<T> &p,

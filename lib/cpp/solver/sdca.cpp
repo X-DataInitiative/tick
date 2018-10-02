@@ -65,7 +65,6 @@ void TBaseSDCA<T, K>::solve(int n_epochs) {
   prepare_solve();
 
   const SArrayULongPtr feature_index_map = model->get_sdca_index_map();
-  const T scaled_l_l2sq = get_scaled_l_l2sq();
 
   const T _1_over_lbda_n = 1 / (l_l2sq * model->get_n_samples());
 
@@ -119,7 +118,7 @@ void TBaseSDCA<T, K>::solve(int n_epochs) {
 
         // Maximize the dual coordinate i
         const T delta_dual_i = model->sdca_dual_min_i(
-            feature_index, dual_vector[i], primal_dot_features, delta[i], scaled_l_l2sq);
+            feature_index, dual_vector[i], primal_dot_features, delta[i], _1_over_lbda_n);
         // Update the dual variable
 
         update_delta_dual_i(i, delta_dual_i, feature_i, _1_over_lbda_n);
@@ -171,7 +170,6 @@ void TBaseSDCA<T, K>::solve_batch(int n_epochs, ulong batch_size) {
   prepare_solve();
 
   const SArrayULongPtr feature_index_map = model->get_sdca_index_map();
-  const T scaled_l_l2sq = get_scaled_l_l2sq();
   const T _1_over_lbda_n = 1 / (l_l2sq * model->get_n_samples());
 
   auto lambda = [&](uint16_t n_thread) {
@@ -217,12 +215,12 @@ void TBaseSDCA<T, K>::solve_batch(int n_epochs, ulong batch_size) {
         }
 
         precompute_sdca_dual_min_weights(
-            local_iterate, batch_size, scaled_l_l2sq, _1_over_lbda_n, feature_indices, g, p);
+            local_iterate, batch_size, _1_over_lbda_n, feature_indices, g, p);
         for (ulong k = 0; k < batch_size; ++k)
           sdca_labels[k] = casted_model->get_label(feature_indices[k]);
 
         delta_duals = model->sdca_dual_min_many(
-            batch_size, duals, scaled_l_l2sq, g, n_hess, p, n_grad, sdca_labels, new_duals,
+            batch_size, duals, g, n_hess, p, n_grad, sdca_labels, new_duals,
             delta_duals_tmp, ipiv);
 
         for (ulong k = 0; k < batch_size; ++k) {
@@ -290,7 +288,7 @@ void TBaseSDCA<T, K>::solve_batch(int n_epochs, ulong batch_size) {
 // In order to avoid maintaining iterate, we compute it on the fly from tmp_primal_vector
 template <class T, class K>
 void TBaseSDCA<T, K>::precompute_sdca_dual_min_weights(
-    Array<K> &local_iterate, ulong batch_size, double scaled_l_l2sq, double _1_over_lbda_n,
+    Array<K> &local_iterate, ulong batch_size, double _1_over_lbda_n,
     const ArrayULong &feature_indices, Array2d<T> &g, Array<T> &p) {
 
   for (ulong i = 0; i < batch_size; ++i) {
@@ -367,7 +365,9 @@ void TBaseSDCA<T, K>::set_starting_iterate(Array<T> &dual_vector) {
 
   this->dual_vector.init_to_zero();
   this->dual_vector.mult_incr(dual_vector, 1);
-  model->sdca_primal_dual_relation(get_scaled_l_l2sq(), this->dual_vector, tmp_primal_vector);
+
+  const T _1_over_lbda_n = 1 / (l_l2sq * model->get_n_samples());
+  model->sdca_primal_dual_relation(_1_over_lbda_n, this->dual_vector, tmp_primal_vector);
   prox->call(tmp_primal_vector, 1. / l_l2sq, iterate);
 
   stored_variables_ready = true;

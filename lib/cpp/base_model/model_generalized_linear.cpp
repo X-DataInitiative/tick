@@ -96,7 +96,7 @@ T TModelGeneralizedLinear<T, K>::loss(const Array<K> &coeffs) {
 
 template <class T, class K>
 void TModelGeneralizedLinear<T, K>::sdca_primal_dual_relation(
-    const T l_l2sq, const Array<K> &dual_vector, Array<K> &out_primal_vector) {
+    const T _1_over_lbda_n, const Array<K> &dual_vector, Array<K> &out_primal_vector) {
   if (dual_vector.size() != get_n_samples()) {
     TICK_ERROR("dual vector should have shape of (" << get_n_samples()
                                                     << ", )");
@@ -106,7 +106,6 @@ void TModelGeneralizedLinear<T, K>::sdca_primal_dual_relation(
                                                       << ", )");
   }
 
-  const double _1_over_lbda_n = 1 / (l_l2sq * get_n_samples());
   out_primal_vector.init_to_zero();
 
   for (ulong i = 0; i < get_n_samples(); ++i) {

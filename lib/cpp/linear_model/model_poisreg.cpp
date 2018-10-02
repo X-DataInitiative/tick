@@ -10,13 +10,13 @@ template <class T, class K>
 T TModelPoisReg<T, K>::sdca_dual_min_i(const ulong i, const T dual_i,
                                        const T primal_dot_features,
                                        const T previous_delta_dual_i,
-                                       T l_l2sq) {
+                                       T _1_over_lbda_n) {
   if (link_type == LinkType::identity) {
     return sdca_dual_min_i_identity(i, dual_i, primal_dot_features,
-                                    previous_delta_dual_i, l_l2sq);
+                                    previous_delta_dual_i, _1_over_lbda_n);
   } else {
     return sdca_dual_min_i_exponential(i, dual_i, primal_dot_features,
-                                       previous_delta_dual_i, l_l2sq);
+                                       previous_delta_dual_i, _1_over_lbda_n);
   }
 }
 
@@ -24,7 +24,6 @@ T TModelPoisReg<T, K>::sdca_dual_min_i(const ulong i, const T dual_i,
 template <class T, class K>
 Array<T> TModelPoisReg<T, K>::sdca_dual_min_many(ulong n_indices,
                                                  const Array<T> &duals,
-                                                 double l_l2sq,
                                                  Array2d<T> &g,
                                                  Array2d<T> &n_hess,
                                                  Array<T> &p,
@@ -35,11 +34,11 @@ Array<T> TModelPoisReg<T, K>::sdca_dual_min_many(ulong n_indices,
                                                  ArrayInt &ipiv) {
   if (link_type == LinkType::identity) {
     return sdca_dual_min_many_identity(
-        n_indices, duals, l_l2sq, g, n_hess, p, n_grad, sdca_labels,
+        n_indices, duals, g, n_hess, p, n_grad, sdca_labels,
         new_duals, delta_duals, ipiv);
   } else {
     return sdca_dual_min_many_exponential(
-        n_indices, duals, l_l2sq, g, n_hess, p, n_grad, sdca_labels,
+        n_indices, duals, g, n_hess, p, n_grad, sdca_labels,
         new_duals, delta_duals, ipiv);
   }
 }
@@ -48,13 +47,13 @@ Array<T> TModelPoisReg<T, K>::sdca_dual_min_many(ulong n_indices,
 template <class T, class K>
 T TModelPoisReg<T, K>::sdca_dual_min_i_exponential(
     const ulong i, const T dual_i, const T primal_dot_features,
-    const T previous_delta_dual_i, T l_l2sq) {
+    const T previous_delta_dual_i, T _1_over_lbda_n) {
   compute_features_norm_sq();
   T epsilon = 1e-1;
 
-  T normalized_features_norm = features_norm_sq[i] / (l_l2sq * n_samples);
+  T normalized_features_norm = features_norm_sq[i] * _1_over_lbda_n;
   if (use_intercept()) {
-    normalized_features_norm += 1. / (l_l2sq * n_samples);
+    normalized_features_norm += _1_over_lbda_n;
   }
   T delta_dual = previous_delta_dual_i;
   const T label = get_label(i);
@@ -98,7 +97,6 @@ T TModelPoisReg<T, K>::sdca_dual_min_i_exponential(
 template <class T, class K>
 Array<T> TModelPoisReg<T, K>::sdca_dual_min_many_exponential(ulong n_indices,
                                                       const Array<T> &duals,
-                                                      double l_l2sq,
                                                       Array2d<T> &g,
                                                       Array2d<T> &n_hess,
                                                       Array<T> &p,
@@ -196,7 +194,7 @@ template <class T, class K>
 T TModelPoisReg<T, K>::sdca_dual_min_i_identity(const ulong i, const T dual_i,
                                                 const T primal_dot_features,
                                                 const T previous_delta_dual_i,
-                                                T l_l2sq) {
+                                                T _1_over_lbda_n) {
   if (!ready_features_norm_sq) {
     compute_features_norm_sq();
   }
@@ -207,9 +205,9 @@ T TModelPoisReg<T, K>::sdca_dual_min_i_identity(const ulong i, const T dual_i,
   }
 
   T normalized_features_norm =
-      features_norm_sq[i] / (l_l2sq * n_non_zeros_labels);
+      features_norm_sq[i] * _1_over_lbda_n;
   if (use_intercept()) {
-    normalized_features_norm += 1. / (l_l2sq * n_non_zeros_labels);
+    normalized_features_norm += _1_over_lbda_n;
   }
 
   const T tmp = dual_i * normalized_features_norm - primal_dot_features;
@@ -223,7 +221,6 @@ T TModelPoisReg<T, K>::sdca_dual_min_i_identity(const ulong i, const T dual_i,
 template <class T, class K>
 Array<T> TModelPoisReg<T, K>::sdca_dual_min_many_identity(ulong n_indices,
                                                              const Array<T> &duals,
-                                                             double l_l2sq,
                                                              Array2d<T> &g,
                                                              Array2d<T> &n_hess,
                                                              Array<T> &p,
@@ -312,10 +309,10 @@ Array<T> TModelPoisReg<T, K>::sdca_dual_min_many_identity(ulong n_indices,
 
 template <class T, class K>
 void TModelPoisReg<T, K>::sdca_primal_dual_relation(
-    const T l_l2sq, const Array<K> &dual_vector, Array<K> &out_primal_vector) {
+    const T _1_over_lbda_n, const Array<K> &dual_vector, Array<K> &out_primal_vector) {
   if (link_type == LinkType::exponential) {
     TModelGeneralizedLinear<T, K>::sdca_primal_dual_relation(
-        l_l2sq, dual_vector, out_primal_vector);
+        _1_over_lbda_n, dual_vector, out_primal_vector);
     return;
   }
 
@@ -330,7 +327,6 @@ void TModelPoisReg<T, K>::sdca_primal_dual_relation(
                                                       << ", )");
   }
 
-  const T _1_over_lbda_n = 1 / (l_l2sq * n_non_zeros_labels);
   out_primal_vector.init_to_zero();
 
   ulong n_non_zero_labels_seen = 0;
@@ -343,7 +339,7 @@ void TModelPoisReg<T, K>::sdca_primal_dual_relation(
       factor = (dual_i - 1) * _1_over_lbda_n;
       n_non_zero_labels_seen += 1;
     } else {
-      factor = -_1_over_lbda_n;
+      factor = - _1_over_lbda_n;
     }
 
     if (fit_intercept) {

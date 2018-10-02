@@ -94,20 +94,13 @@ class DLL_PUBLIC TBaseSDCA : public TStoSolver<T, K> {
   void prepare_solve();
   void solve(int n_epochs = 1) override;
   void solve_batch(int n_epochs = 1, ulong batch_size = 1);
-  void precompute_sdca_dual_min_weights(
-      Array<K> &local_iterate, ulong batch_size, double scaled_l_l2sq, double _1_over_lbda_n,
-      const ArrayULong &feature_indices, Array2d<T> &g, Array<T> &p);
-
   void set_starting_iterate();
   void set_starting_iterate(Array<T> &dual_vector) override;
 
  protected:
-  T get_scaled_l_l2sq() const {
-    // In order to solve the same problem than other solvers, we need to rescale
-    // the penalty parameter if some observations are not considered in SDCA.
-    // This is useful for Poisson regression with identity link
-    return l_l2sq * model->get_n_samples() / rand_max;
-  }
+  void precompute_sdca_dual_min_weights(
+      Array<K> &local_iterate, ulong batch_size, double _1_over_lbda_n,
+      const ArrayULong &feature_indices, Array2d<T> &g, Array<T> &p);
 
   virtual void update_delta_dual_i(ulong i, double delta_dual_i,
                                    const BaseArray<T> &feature_i, double _1_over_lbda_n);
