@@ -1,27 +1,28 @@
 #!/usr/bin/env bash
 #
 # Author: Philip Deegan
-# Email : philip.deegan@polytechnique.edu 
+# Email : philip.deegan@polytechnique.edu
 # Date  : 29 - September - 2017
 #
 # This script creates swig cpp files for each module
-# 
+#
 # Notes:
 #   If the intended swig cpp file is found it is skipped
 #   Unless, the environement variable "RESWIG" = 1
 #    or call ./sh/reswig.sh
-# 
+#
 ######################################################################
 
 CWD="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-cd $CWD/.. 
+cd $CWD/..
 ROOT=$PWD
 
-if [ -z "$TICK_CONFIGURED" ]; then  
+if [ -z "$TICK_CONFIGURED" ]; then
    source $ROOT/sh/configure_env.sh
 fi
 
-SWIG_BASE="lib/swig"
+SWIG_INC="lib/swig"
+SWIG_BASE="lib/swig/tick"
 
 echo "SWIG sub-routine - START"
 # This block iterates over each module to create swig cpp files
@@ -31,23 +32,11 @@ for P in "${PROFILES[@]}"; do
   TREE=($(mkn tree -p $P -C lib))
   TREE_LEN=${#TREE[@]}
   INCS=(-Ilib/include)
-  INCS+=(-I${SWIG_BASE}/base)
-  INCS+=(-Ilib/swig/${P})
-  for idx in $(seq $TREE_LEN -1 0); do
-    LINE="${TREE[idx]}"
-    set +e  
-    echo "$LINE" | grep "+" | grep "tick" 2>&1 > /dev/null
-    WIN=$?
-    set -e
-    if [[ "$WIN" == "0" ]]; then
-      INDEX=$(echo "$LINE" | cut -d '[' -f2 | cut -d ']' -f1)
-      INCS+=(-I${SWIG_BASE}/$INDEX)      
-    fi
-  done
+  INCS+=(-I${SWIG_INC})
 
   EX=$(hash_index $P)
   VAL="${LIBRARIES[$EX]}"
-  DIR=$(pathreal "$(linkread $(dirname $VAL)/..)") 
+  DIR=$(pathreal "$(linkread $(dirname $VAL)/..)")
 
   P1=$P
   if [[ $P == *"/"* ]]; then
@@ -75,7 +64,7 @@ for P in "${PROFILES[@]}"; do
   else
     for f in $(find ${SWIG_BASE}/$P -name "*module.i"); do
         IF=$f;
-        B=$(basename $IF) 
+        B=$(basename $IF)
         B="${B%.*}"
         [ -n "$RESWIG" ] && (( "$RESWIG" == 1 )) && \
             [ -f "${SWIG_BASE}/$P/${B}_wrap.cpp" ] && \
@@ -89,7 +78,7 @@ for P in "${PROFILES[@]}"; do
   if [ -z "$IF" ] && [ -f "${DIR}/swig/${P}.i" ]; then
     [ -n "$RESWIG" ] && (( "$RESWIG" == 1 )) && \
         [ -f "${SWIG_BASE}/$P/${P1}_wrap.cpp" ] && \
-          rm "${SWIG_BASE}/$P/${P1}_wrap.cpp"     
+          rm "${SWIG_BASE}/$P/${P1}_wrap.cpp"
     [ ! -f "${SWIG_BASE}/$P/${P}_wrap.cpp" ] && \
       $SWIG -python -py3 -c++ -modern -new_repr ${INCS[@]} \
         -outdir $DIR/build "$SWIG_C_FLAGS" -o ${SWIG_BASE}/$P/${P1}_wrap.cpp \
