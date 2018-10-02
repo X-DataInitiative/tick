@@ -71,8 +71,8 @@ sdca.print_history()
 atomic_sdca.solve()
 atomic_sdca.print_history()
 
-batch_sizes = [1, 3, 10]
-test_n_threads = [1, 2, 3, 4, 8]
+batch_sizes = [1, 3]#, 10]
+test_n_threads = [1, 2]#, 3, 4, 8]
 
 fig, axes = plt.subplots(2, len(batch_sizes), figsize=(3 * len(batch_sizes), 6))
 
@@ -97,6 +97,7 @@ for i, batch_size in enumerate(batch_sizes):
             solver_labels += ['{} {}'.format(solver.name, n_threads)]
 
         solver.solve()
+        print('solver.', solver._solver.get_primal_vector())
         solver_list += [solver]
 
     plot_history(solver_list, x="time", dist_min=True, log_scale=True,

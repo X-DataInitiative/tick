@@ -128,7 +128,6 @@ Array<T> TModelPoisReg<T, K>::sdca_dual_min_many_exponential(ulong n_indices,
 
     // Use the opposite to have a positive definite matrix
     for (ulong i = 0; i < n_indices; ++i) {
-      T new_dual_times_label_i = sdca_labels[i] * new_duals[i];
 
       n_grad[i] = -log(sdca_labels[i] - new_duals[i]) + p[i];
 
@@ -172,9 +171,6 @@ Array<T> TModelPoisReg<T, K>::sdca_dual_min_many_exponential(ulong n_indices,
 
   // Check we are in the correct bounds
   for (ulong i = 0; i < n_indices; ++i) {
-    new_duals[i] = duals[i] + delta_duals[i];
-    T new_dual_times_label_i = sdca_labels[i] * new_duals[i];
-
     if (new_duals[i] >= sdca_labels[i]) {
       new_duals[i] = sdca_labels[i] - epsilon;
       delta_duals[i] = new_duals[i] - duals[i];
@@ -261,8 +257,6 @@ Array<T> TModelPoisReg<T, K>::sdca_dual_min_many_identity(ulong n_indices,
 
     // Use the opposite to have a positive definite matrix
     for (ulong i = 0; i < n_indices; ++i) {
-      T new_dual_times_label_i = sdca_labels[i] * new_duals[i];
-
       n_grad[i] = - sdca_labels[i] / new_duals[i] + p[i];
 
       for (ulong j = 0; j < n_indices; ++j) {
@@ -305,7 +299,6 @@ Array<T> TModelPoisReg<T, K>::sdca_dual_min_many_identity(ulong n_indices,
   // Check we are in the correct bounds
   for (ulong i = 0; i < n_indices; ++i) {
     new_duals[i] = duals[i] + delta_duals[i];
-    T new_dual_times_label_i = sdca_labels[i] * new_duals[i];
 
     if (new_duals[i] <= 0) {
       new_duals[i] = epsilon;
@@ -374,8 +367,8 @@ T TModelPoisReg<T, K>::loss_i(const ulong i, const Array<K> &coeffs) {
     }
     case LinkType::identity: {
       T y_i = get_label(i);
-      if (y_i == 0) return z;
-      return z - y_i * log(z) + std::lgamma(y_i + 1);
+      if (y_i == 0) return z + std::lgamma(y_i + 1);
+      return z + std::lgamma(y_i + 1) - y_i * log(z);
     }
     default:
       throw std::runtime_error("Undefined link type");
@@ -395,6 +388,40 @@ T TModelPoisReg<T, K>::grad_i_factor(const ulong i, const Array<K> &coeffs) {
     default:
       throw std::runtime_error("Undefined link type");
   }
+}
+
+template <class T, class K>
+std::shared_ptr<SArray2d<T>> TModelPoisReg<T, K>::hessian(Array<K> &coeffs) {
+  if (link_type == LinkType::exponential) {
+    TICK_ERROR("Hessian is not implemented for exponential link")
+  }
+
+  Array2d<T> hess(get_n_coeffs(), get_n_coeffs());
+  hess.init_to_zero();
+
+  for (ulong i = 0; i < n_samples; ++i) {
+    BaseArray<T> feature_i = get_features(i);
+    if (feature_i.is_sparse()) TICK_ERROR("hessian is not implemented for sparse data");
+    T inner_prod = get_inner_prod(i, coeffs);
+    T coeff = get_label(i) / (inner_prod * inner_prod);
+    for (ulong row = 0; row < n_features; ++row) {
+      for (ulong col = 0; col < n_features; ++col) {
+        hess(row, col) += coeff * feature_i.value(row) * feature_i.value(col);
+      }
+      if (fit_intercept) {
+        hess(row, n_features) += coeff * feature_i.value(row);
+      }
+    }
+    if (fit_intercept) {
+      for (ulong col = 0; col < n_features; ++col) {
+        hess(n_features, col) += coeff * feature_i.value(col);
+      }
+      hess(n_features, n_features) += coeff;
+    }
+  }
+
+  hess /= n_samples;
+  return hess.as_sarray2d_ptr();
 }
 
 template class DLL_PUBLIC TModelPoisReg<double, double>;

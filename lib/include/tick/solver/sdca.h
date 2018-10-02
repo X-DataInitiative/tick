@@ -63,7 +63,7 @@ class DLL_PUBLIC TBaseSDCA : public TStoSolver<T, K> {
   // This exists soley for cereal/swig
   TBaseSDCA() : TBaseSDCA<T, K>(0, 0, 0) {}
 
-  explicit TBaseSDCA(T l_l2sq, ulong epoch_size = 0, T tol = 0.,
+  explicit TBaseSDCA(T l_l2sq, ulong epoch_size, T tol = 0.,
                      RandType rand_type = RandType::unif,  int record_every = 1, int seed = -1,
                      int n_threads = 1);
 
@@ -99,7 +99,7 @@ class DLL_PUBLIC TBaseSDCA : public TStoSolver<T, K> {
       const ArrayULong &feature_indices, Array2d<T> &g, Array<T> &p);
 
   void set_starting_iterate();
-  void set_starting_iterate(Array<K> &dual_vector) override;
+  void set_starting_iterate(Array<T> &dual_vector) override;
 
  protected:
   T get_scaled_l_l2sq() const {
@@ -146,32 +146,18 @@ class DLL_PUBLIC TBaseSDCA : public TStoSolver<T, K> {
 template <class T>
 class DLL_PUBLIC TSDCA : public TBaseSDCA<T, T> {
  public:
-  using TBaseSDCA<T, T>::t;
   using TBaseSDCA<T, T>::model;
-  using TBaseSDCA<T, T>::iterate;
-  using TBaseSDCA<T, T>::prox;
-  using TBaseSDCA<T, T>::get_next_i;
-  using TBaseSDCA<T, T>::epoch_size;
-  using TBaseSDCA<T, T>::rand_max;
-  using TBaseSDCA<T, T>::stored_variables_ready;
-  using TBaseSDCA<T, T>::get_scaled_l_l2sq;
   using TBaseSDCA<T, T>::delta;
   using TBaseSDCA<T, T>::dual_vector;
   using TBaseSDCA<T, T>::tmp_primal_vector;
-  using TBaseSDCA<T, T>::set_starting_iterate;
-  using TBaseSDCA<T, T>::casted_prox;
-
-  using TStoSolver<T, T>::save_history;
-  using TStoSolver<T, T>::last_record_epoch;
-  using TStoSolver<T, T>::last_record_time;
-  using TStoSolver<T, T>::record_every;
 
  public:
   TSDCA() : TSDCA<T>(0, 0, 0) {}
 
-  explicit TSDCA(T l_l2sq, ulong epoch_size = 0, T tol = 0.,
+  explicit TSDCA(T l_l2sq, ulong epoch_size, T tol = 0.,
       RandType rand_type = RandType::unif,  int record_every = 1, int seed = -1);
 
+ protected:
   void update_delta_dual_i(ulong i, double delta_dual_i,
                            const BaseArray<T> &feature_i, double _1_over_lbda_n) override ;
 };
@@ -184,6 +170,41 @@ using SDCADouble = TSDCA<double>;
 //CEREAL_REGISTER_TYPE(SDCADouble)
 
 using SDCAFloat = TSDCA<float>;
+//CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SDCAFloat,
+//                                   cereal::specialization::member_serialize)
+//CEREAL_REGISTER_TYPE(SDCAFloat)
+
+
+template <class T>
+class DLL_PUBLIC TAtomicSDCA : public TBaseSDCA<T, std::atomic<T> > {
+ protected:
+  using TBaseSDCA<T, std::atomic<T>>::model;
+  using TBaseSDCA<T, std::atomic<T>>::delta;
+  using TBaseSDCA<T, std::atomic<T>>::dual_vector;
+  using TBaseSDCA<T, std::atomic<T>>::tmp_primal_vector;
+
+ public:
+  // This exists solely for cereal/swig
+  TAtomicSDCA() : TAtomicSDCA<T>(0, 0, 0) {}
+
+  explicit TAtomicSDCA(T l_l2sq, ulong epoch_size, T tol = 0.,
+                       RandType rand_type = RandType::unif, int record_every = 1, int seed = -1,
+                       int n_threads = 2);
+
+ protected:
+  void update_delta_dual_i(ulong i, double delta_dual_i,
+                           const BaseArray<T> &feature_i, double _1_over_lbda_n) override;
+
+};
+
+using AtomicSDCA = TAtomicSDCA<double>;
+
+using AtomicSDCADouble = TAtomicSDCA<double>;
+//CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SDCADouble,
+//                                   cereal::specialization::member_serialize)
+//CEREAL_REGISTER_TYPE(SDCADouble)
+
+using AtomicSDCAFloat = TAtomicSDCA<float>;
 //CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SDCAFloat,
 //                                   cereal::specialization::member_serialize)
 //CEREAL_REGISTER_TYPE(SDCAFloat)

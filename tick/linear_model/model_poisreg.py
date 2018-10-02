@@ -195,6 +195,16 @@ class ModelPoisReg(ModelGeneralizedLinear, ModelSecondOrder,
             raise ValueError("``link`` must be either 'exponential' or "
                              "'linear'.")
 
+    def hessian(self, x):
+        """Return model's hessian
+
+        Parameters
+        ----------
+        x : `np.ndarray`, shape=(n_coeffs,)
+            Value at which the hessian is computed
+        """
+        return self._model.hessian(x)
+
     def _sdca_primal_dual_relation(self, l_l2sq, dual_vector):
         # In order to solve the same problem than other solvers, we need to
         # rescale the penalty parameter if some observations are not

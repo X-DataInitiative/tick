@@ -22,6 +22,7 @@ class DLL_PUBLIC TModelPoisReg : public TModelGeneralizedLinear<T, K> {
  protected:
   using TModelGeneralizedLinear<T, K>::compute_features_norm_sq;
   using TModelGeneralizedLinear<T, K>::n_samples;
+  using TModelGeneralizedLinear<T, K>::n_features;
   using TModelGeneralizedLinear<T, K>::features_norm_sq;
   using TModelGeneralizedLinear<T, K>::fit_intercept;
   using TModelGeneralizedLinear<T, K>::ready_features_norm_sq;
@@ -58,6 +59,8 @@ class DLL_PUBLIC TModelPoisReg : public TModelGeneralizedLinear<T, K> {
   T loss_i(const ulong i, const Array<K> &coeffs) override;
 
   T grad_i_factor(const ulong i, const Array<K> &coeffs) override;
+
+  std::shared_ptr<SArray2d<T>> hessian(Array<K> &coeffs);
 
   T sdca_dual_min_i(const ulong i, const T dual_i,
                     const T primal_dot_features,

@@ -4,6 +4,7 @@
 
 %include defs.i
 %include std_shared_ptr.i
+%include std_vector.i
 
 %{
 #include "tick/base/tick_python.h"
@@ -22,7 +23,6 @@
 %include adagrad.i
 
 %include sdca.i
-%include asdca.i
 %include sgd.i
 
 %include saga.i

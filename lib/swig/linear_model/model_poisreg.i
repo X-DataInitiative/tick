@@ -26,6 +26,8 @@ class TModelPoisReg : public TModelGeneralizedLinear<T, K> {
   inline void set_link_type(LinkType link_type);
 
   bool compare(const TModelPoisReg<T, K> &that);
+
+  std::shared_ptr<SArray2d<T>> hessian(Array<K> &coeffs);
 };
 
 %rename(ModelPoisRegDouble) TModelPoisReg<double, double>;
@@ -41,6 +43,8 @@ class ModelPoisRegDouble : public TModelGeneralizedLinear<double, double> {
   );
 
   bool compare(const ModelPoisRegDouble &that);
+
+  SArrayDouble2dPtr hessian(ArrayDouble &coeffs);
 };
 typedef TModelPoisReg<double, double> ModelPoisRegDouble;
 TICK_MAKE_PICKLABLE(ModelPoisRegDouble);
@@ -58,6 +62,8 @@ class ModelPoisRegFloat : public TModelGeneralizedLinear<float, float> {
   );
 
   bool compare(const ModelPoisRegFloat &that);
+
+  SArrayFloat2dPtr hessian(ArrayFloat &coeffs);
 };
 typedef TModelPoisReg<float, float> ModelPoisRegFloat;
 TICK_MAKE_PICKLABLE(ModelPoisRegFloat);

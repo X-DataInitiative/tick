@@ -12,7 +12,7 @@
 #include "lib/include/tick/prox/prox_l2sq.h"
 
 #include "tick/solver/sdca.h"
-#include "tick/solver/asdca.h"
+
 #include "toy_dataset.ipp"
 
 template <class T, class K>
@@ -88,12 +88,12 @@ TEST(SDCA, test_sdca_sparse) {
         sdca.set_model(model);
         sdca.set_prox(prox);
 
-        auto objective_sdca_30 = run_and_get_objective(sdca, model, prox, 30);
-        auto objective_sdca = run_and_get_objective(sdca, model, prox, n_epochs - 30);
+        auto objective_sdca_20 = run_and_get_objective(sdca, model, prox, 20);
+        auto objective_sdca = run_and_get_objective(sdca, model, prox, n_epochs - 20);
 
         // Check it is converging
-        EXPECT_LE(objective_sdca - objective_sdca_30, 1e-13);
-        EXPECT_LE(objective_sdca_30 - objective_sdca, 0.1);
+        EXPECT_LE(objective_sdca - objective_sdca_20, 1e-13);
+        EXPECT_LE(objective_sdca_20 - objective_sdca, 0.1);
 
         SDCA sdca_batch(l_l2sq, n_samples, 0, RandType::unif, 1, 1309);
         sdca_batch.set_rand_max(rand_max);

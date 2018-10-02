@@ -37,7 +37,7 @@ class TStoSolver {
 
   virtual void get_minimizer(Array<T> &out);
   virtual void get_iterate(Array<T> &out);
-  virtual void set_starting_iterate(Array<K> &new_iterate);
+  virtual void set_starting_iterate(Array<T> &new_iterate);
 
   inline void set_tol(T tol);
   inline T get_tol() const;
@@ -144,9 +144,9 @@ class TStoSolver<double, std::atomic<double> > {
   );
 
   virtual void solve(int n_epochs = 1);
-//  virtual void get_minimizer(ArrayDouble &out);
-//  virtual void get_iterate(ArrayDouble &out);
-//  virtual void set_starting_iterate(ArrayDouble &new_iterate);
+  virtual void get_minimizer(ArrayDouble &out);
+  virtual void get_iterate(ArrayDouble &out);
+  virtual void set_starting_iterate(ArrayDouble &new_iterate);
 
   inline void set_tol(double tol);
   inline double get_tol() const;

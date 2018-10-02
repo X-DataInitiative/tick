@@ -28,7 +28,7 @@ import numpy as np
 from tick.linear_model import SimuLogReg, ModelLogReg
 from tick.simulation import weights_sparse_gauss
 from tick.solver import SVRG, SAGA
-from tick.prox import ProxElasticNet
+from tick.prox import ProxElasticNet, ProxL1
 
 seed = 1398
 np.random.seed(seed)
@@ -48,7 +48,7 @@ features, labels = simulator.simulate()
 
 model = ModelLogReg(fit_intercept=True)
 model.fit(features, labels)
-prox = ProxElasticNet(penalty_strength, ratio=0.5, range=(0, n_features))
+prox = ProxL1(penalty_strength)
 svrg_step = 1. / model.get_lip_max()
 
 test_n_threads = [1, 2, 4]
@@ -72,7 +72,7 @@ for ax, SolverClass in zip(axes, [SVRG, SAGA]):
         else:
             solver_labels += ['A{} {}'.format(solver.name, n_threads)]
 
-    plot_history(solver_list, x="time", dist_min=True, log_scale=True,
+    plot_history(solver_list, dist_min=True, log_scale=True,
                  labels=solver_labels, ax=ax)
 
     ax.set_ylabel('log distance to optimal objective', fontsize=14)

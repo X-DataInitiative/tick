@@ -162,8 +162,10 @@ class SDCA(SolverFirstOrderSto):
     def __init__(self, l_l2sq: float, epoch_size: int = None,
                  rand_type: str = 'unif', tol: float = 1e-10,
                  max_iter: int = 10, verbose: bool = True,
-                 print_every: int = 1, record_every: int = 1, seed: int = -1):
+                 print_every: int = 1, record_every: int = 1, seed: int = -1,
+                 batch_size=1):
 
+        self.batch_size = batch_size
         self.l_l2sq = l_l2sq
         SolverFirstOrderSto.__init__(
             self, step=0, epoch_size=epoch_size, rand_type=rand_type, tol=tol,
