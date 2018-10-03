@@ -29,19 +29,10 @@ cache:
 
 install:
   - git submodule update --init
-  - curl -o mkn.exe -L https://ci.appveyor.com/api/projects/dekken/maiken/artifacts/bin/build/mkn.exe
   - IF NOT EXIST C:\ProgramData\chocolatey\bin\swig.exe choco install tools\windows\swig.3.0.12.nupkg --yes --limit-output #> $null
   - git clone https://github.com/X-DataInitiative/tick_appveyor -b master --depth 1 appveyor
 
 build_script:
-  - cp "C:\Program Files (x86)\Windows Kits\10\bin\x64\rc.exe" %CD%
-  - cp %CD%\rc.exe %CD%\lib
-  - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
-  # doesnt exist for somereason?
-  - mkdir -p "C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\cppwinrt"
-
-  # Python 3.7 TODO
-
   # Python 3.6
   - bash -c "PATH=\"$PWD:/c/Python36-x64/:/c/Program Files/Git/usr/bin:$PATH\"; tools/appveyor/run.sh"
 
