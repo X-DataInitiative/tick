@@ -6,7 +6,7 @@ namespace tick {
 namespace detail {
 
 template <typename T>
-struct DLL_PUBLIC vector_operations_unoptimized {
+struct vector_operations_unoptimized {
   template <typename K>
   tick::promote_t<K> sum(const ulong n, const T *x) const;
 
@@ -72,6 +72,13 @@ struct DLL_PUBLIC vector_operations_unoptimized {
   template <typename K>
   typename std::enable_if<!std::is_same<T, std::atomic<K>>::value>::type dot_matrix_vector(
       const ulong m, const ulong n, const K alpha, const T *a, const T *x, T *y) const;
+
+
+
+  void solve_linear_system(int n, T *A, T *b, int* ipiv = nullptr) const;
+
+  void solve_positive_symmetric_linear_system(int n, T *A, T *b, int* ipiv = nullptr,
+                                              int switch_linear = 30) const;
 };
 
 }  // namespace detail
