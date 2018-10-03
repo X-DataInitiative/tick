@@ -67,6 +67,11 @@ struct DLL_PUBLIC vector_operations_unoptimized {
   typename std::enable_if<std::is_same<T, K>::value &&
                           std::is_same<Y, K>::value>::type
   mult_incr(const uint64_t n, const K alpha, const Y *x, T *y) const;
+
+  void solve_linear_system(int n, T *A, T *b, int* ipiv = nullptr) const;
+
+  void solve_positive_symmetric_linear_system(int n, T *A, T *b, int* ipiv = nullptr,
+                                              int switch_linear = 30) const;
 };
 
 }  // namespace detail

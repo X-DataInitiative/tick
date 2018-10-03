@@ -317,6 +317,18 @@ TYPED_TEST(ArrayTest, Max) {
                    *std::max_element(arrA.data(), arrA.data() + arrA.size()));
 }
 
+TYPED_TEST(ArrayTest, Contains) {
+  TypeParam arrA = ::GenerateRandomArray<TypeParam>();
+
+  typename TypeParam::value_type value_3 = arrA[3] + 0.;
+  typename TypeParam::value_type new_value = 7032;
+  EXPECT_TRUE(arrA.contains(value_3));
+  EXPECT_FALSE(arrA.contains(new_value));
+  arrA[3] = new_value;
+  EXPECT_FALSE(arrA.contains(value_3));
+  EXPECT_TRUE(arrA.contains(new_value));
+}
+
 TYPED_TEST(ArrayTest, MultOperator) {
   using VT = typename TypeParam::value_type;
   for (VT factor : {0.0, 0.5, 1.0, 2.0}) {

@@ -25,3 +25,10 @@ target_link_libraries(tick_test_serializer
         ${TICK_LIB_ARRAY}
         ${TICK_TEST_LIBS}
         )
+
+add_executable(linear_system linear_system_gtest.cpp)
+
+target_link_libraries(linear_system
+        ${TICK_LIB_ARRAY}
+        ${TICK_TEST_LIBS}
+        )

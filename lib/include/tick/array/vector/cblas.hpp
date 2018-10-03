@@ -18,6 +18,17 @@ struct vector_operations_cblas_base {
   void set(const ulong n, const K alpha, T *x) const {
     return vector_operations_unoptimized<T>{}.template set<K>(n, alpha, x);
   }
+
+#if (!defined(__APPLE__))
+  void solve_linear_system(int n, T *A, T *b, int* ipiv=nullptr) const {
+    return vector_operations_unoptimized<T>{}.template solve_linear_system(n, A, b, ipiv);
+  }
+
+  void solve_positive_symmetric_linear_system(int n, T *A, T *b, int* ipiv=nullptr,
+                                     int switch_linear=30) const {
+    return vector_operations_unoptimized<T>{}.template solve_linear_system(n, A, b);
+  }
+#endif
 };
 
 template <>
@@ -81,6 +92,42 @@ struct vector_operations_cblas<float> final
   mult_incr(const uint64_t n, const K alpha, const Y *x, T *y) const {
     cblas_saxpy(n, alpha, x, 1, y, 1);
   }
+
+#if (defined(__APPLE__))
+  void solve_linear_system(int n, float *A, float *b, int* ipiv=nullptr) const {
+    int n_cols = 1;
+    int lda = n;
+    bool should_free = false;
+    if (ipiv == nullptr) {
+      ipiv = new int[n];
+      should_free = true;
+    }
+    int ldb = n;
+    int info;
+    sgesv_(&n, &n_cols, A, &lda, ipiv, b, &ldb, &info);
+    if (should_free) delete[] ipiv;
+
+    if (info != 0) {
+      TICK_ERROR("Linear solver failed with info=" << info)
+    }
+  }
+
+  void solve_positive_symmetric_linear_system(int n, float *A, float *b, int* ipiv=nullptr,
+                                     int switch_linear=30) const {
+    // it seems faster this way with BLAS
+    if (n < switch_linear) return solve_linear_system(n, A, b, ipiv);
+    int n_cols = 1;
+    int lda = n;
+    int ldb = n;
+    int info;
+    char UPLO = 'L';
+    sposv_(&UPLO, &n, &n_cols, A, &lda, b, &ldb, &info);
+    if (info != 0) {
+      TICK_ERROR("Symmetric linear solver failed with info=" << info)
+    }
+  }
+
+#endif
 
 #if defined(TICK_CATLAS_AVAILABLE)
   void set(const ulong n, const float alpha, float x) const override {
@@ -147,6 +194,40 @@ struct vector_operations_cblas<double> final
     cblas_daxpy(n, alpha, x, 1, y, 1);
   }
 
+#if (defined(__APPLE__) && defined(TICK_CBLAS_AVAILABLE))
+  void solve_linear_system(int n, double *A, double *b, int *ipiv = nullptr) const {
+    int n_cols = 1;
+    int lda = n;
+    bool should_free = false;
+    if (ipiv == nullptr) {
+      ipiv = new int[n];
+      should_free = true;
+    }
+    int ldb = n;
+    int info;
+    dgesv_(&n, &n_cols, A, &lda, ipiv, b, &ldb, &info);
+
+    if (should_free) delete[] ipiv;
+    if (info != 0) {
+      TICK_ERROR("Linear solver failed with info=" << info)
+    }
+  }
+
+  void solve_positive_symmetric_linear_system(int n, double *A, double *b, int *ipiv = nullptr,
+                                              int switch_linear = 30) const {
+    // it seems faster this way with BLAS
+    if (n < switch_linear) return solve_linear_system(n, A, b, ipiv);
+    int n_cols = 1;
+    int lda = n;
+    int ldb = n;
+    int info;
+    char UPLO = 'L';
+    dposv_(&UPLO, &n, &n_cols, A, &lda, b, &ldb, &info);
+    if (info != 0) {
+      TICK_ERROR("Symmetric linear solver failed with info=" << info)
+    }
+  }
+#endif
 
 #if defined(TICK_CATLAS_AVAILABLE)
   void set(const ulong n, const T alpha, double *x) const override {
