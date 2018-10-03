@@ -18,6 +18,14 @@ from tick.array.build.array import (
     tick_double_array_from_file,
     tick_double_array2d_from_file,
     tick_double_sparse2d_from_file,
+    tick_float_colmaj_sparse2d_to_file,
+    tick_float_colmaj_sparse2d_from_file,
+    tick_double_colmaj_sparse2d_to_file,
+    tick_double_colmaj_sparse2d_from_file,
+    tick_double_colmaj_array2d_to_file,
+    tick_double_colmaj_array2d_from_file,
+    tick_float_colmaj_array2d_to_file,
+    tick_float_colmaj_array2d_from_file,
 )
 
 
@@ -48,12 +56,18 @@ def serialize_array(array, filepath):
             if len(array.shape) == 1:
                 serializer = tick_float_array_to_file
             elif len(array.shape) == 2:
-                serializer = tick_float_array2d_to_file
+                if array.flags['F_CONTIGUOUS']:
+                    serializer = tick_float_colmaj_array2d_to_file
+                else:
+                    serializer = tick_float_array2d_to_file
             else:
                 raise ValueError('Only 1d and 2d arrays can be serrialized')
         else:
             if len(array.shape) == 2:
-                serializer = tick_float_sparse2d_to_file
+                if isinstance(array, scipy.sparse.csc.csc_matrix):
+                    serializer = tick_float_colmaj_sparse2d_to_file
+                else:
+                    serializer = tick_float_sparse2d_to_file
             else:
                 raise ValueError('Only 2d sparse arrays can be serrialized')
     elif array.dtype == "float64" or array.dtype == "double":
@@ -61,12 +75,18 @@ def serialize_array(array, filepath):
             if len(array.shape) == 1:
                 serializer = tick_double_array_to_file
             elif len(array.shape) == 2:
-                serializer = tick_double_array2d_to_file
+                if array.flags['F_CONTIGUOUS']:
+                    serializer = tick_double_colmaj_array2d_to_file
+                else:
+                    serializer = tick_double_array2d_to_file
             else:
                 raise ValueError('Only 1d and 2d arrays can be serrialized')
         else:
             if len(array.shape) == 2:
-                serializer = tick_double_sparse2d_to_file
+                if isinstance(array, scipy.sparse.csc.csc_matrix):
+                    serializer = tick_double_colmaj_sparse2d_to_file
+                else:
+                    serializer = tick_double_sparse2d_to_file
             else:
                 raise ValueError('Only 2d sparse arrays can be serrialized')
     else:
@@ -76,7 +96,8 @@ def serialize_array(array, filepath):
     return os.path.abspath(filepath)
 
 
-def load_array(filepath, array_type='dense', array_dim=1, dtype="float64"):
+def load_array(filepath, array_type='dense', array_dim=1, dtype="float64",
+               major="row"):
     """Loaf an array from disk from a format that tick C++ modules can read
 
     This method is intended to be used by developpers only, mostly for
@@ -93,6 +114,12 @@ def load_array(filepath, array_type='dense', array_dim=1, dtype="float64"):
     array_dim : `int`
         Expected dimension of the array
 
+    dtype : {'float64', 'float32'}
+        Number type of the array
+
+    major : {'row', 'col'}
+        Used to associate correct templated C++ class
+
     Returns
     -------
     array : `np.ndarray` or `scipy.sparse.csr_matrix`
@@ -107,12 +134,18 @@ def load_array(filepath, array_type='dense', array_dim=1, dtype="float64"):
             if array_dim == 1:
                 reader = tick_float_array_from_file
             elif array_dim == 2:
-                reader = tick_float_array2d_from_file
+                if major == "col":
+                    reader = tick_float_colmaj_array2d_from_file
+                else:
+                    reader = tick_float_array2d_from_file
             else:
                 raise ValueError('Only 1d and 2d arrays can be loaded')
         elif array_type == 'sparse':
             if array_dim == 2:
-                reader = tick_float_sparse2d_from_file
+                if major == "col":
+                    reader = tick_float_colmaj_sparse2d_from_file
+                else:
+                    reader = tick_float_sparse2d_from_file
             else:
                 raise ValueError('Only 2d sparse arrays can be loaded')
         else:
@@ -122,12 +155,18 @@ def load_array(filepath, array_type='dense', array_dim=1, dtype="float64"):
             if array_dim == 1:
                 reader = tick_double_array_from_file
             elif array_dim == 2:
-                reader = tick_double_array2d_from_file
+                if major == "col":
+                    reader = tick_double_colmaj_array2d_from_file
+                else:
+                    reader = tick_double_array2d_from_file
             else:
                 raise ValueError('Only 1d and 2d arrays can be loaded')
         elif array_type == 'sparse':
             if array_dim == 2:
-                reader = tick_double_sparse2d_from_file
+                if major == "col":
+                    reader = tick_double_colmaj_sparse2d_from_file
+                else:
+                    reader = tick_double_sparse2d_from_file
             else:
                 raise ValueError('Only 2d sparse arrays can be loaded')
         else:

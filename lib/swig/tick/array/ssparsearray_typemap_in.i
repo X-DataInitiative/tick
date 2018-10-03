@@ -20,12 +20,12 @@
     // (returns false if an error occurred)
     // 'result' will hold the resulting array
     DLL_PUBLIC bool BuildFromPyObj_##SSPARSEARRAY2D_TYPE(PyObject *obj, SSPARSEARRAY2DPTR_TYPE *result) {
-        
+
         unsigned long n_rows, n_cols,size_sparse;
         C_TYPE *data;
         INDICE_TYPE *row_indices, *indices;
         PyObject *obj_indptr, *obj_indices, *obj_data;
-        
+
         if (!TestPyObj_##SPARSEARRAY2D_TYPE((PyObject *) obj,&n_rows,&n_cols,&row_indices,&indices,&data,&size_sparse,&obj_indptr,&obj_indices,&obj_data))
             return false;
         *result = SSPARSEARRAY2D_TYPE::new_ptr(0,0,0);
@@ -50,12 +50,11 @@
     // (returns false if an error occurred)
     // 'result' will hold the resulting array
     DLL_PUBLIC bool BuildFromPyObj_##SSPARSEARRAY_TYPE(PyObject *obj, SSPARSEARRAYPTR_TYPE *result) {
-        
         unsigned long n_rows, n_cols,size_sparse;
         C_TYPE *data;
         INDICE_TYPE *row_indices, *indices;
         PyObject *obj_indptr, *obj_indices, *obj_data;
-        
+
         if (!TestPyObj_##SPARSEARRAY2D_TYPE((PyObject *) obj,&n_rows,&n_cols,&row_indices,&indices,&data,&size_sparse,&obj_indptr,&obj_indices,&obj_data))
             return false;
         if (n_rows > 1) {
@@ -88,6 +87,9 @@
 // The final macro for dealing with sparse arrays
 %define SSPARSEARRAY_TYPEMAPIN_MACROS(SSPARSEARRAY_TYPE, SSPARSEARRAYPTR_TYPE, SSPARSEARRAY2D_TYPE, SSPARSEARRAY2DPTR_TYPE,
                                       SPARSEARRAY_TYPE, SPARSEARRAY2D_TYPE, C_TYPE)
+
 TYPEMAPIN_SSPARSEARRAY(SSPARSEARRAY_TYPE, SSPARSEARRAYPTR_TYPE, SPARSEARRAY_TYPE, SPARSEARRAY2D_TYPE, C_TYPE);
-TYPEMAPIN_SSPARSEARRAY2D(SSPARSEARRAY2D_TYPE, SSPARSEARRAY2DPTR_TYPE, SPARSEARRAY_TYPE, SPARSEARRAY2D_TYPE, C_TYPE)
+TYPEMAPIN_SSPARSEARRAY2D(SSPARSEARRAY2D_TYPE, SSPARSEARRAY2DPTR_TYPE, SPARSEARRAY_TYPE, SPARSEARRAY2D_TYPE, C_TYPE);
+TYPEMAPIN_SSPARSEARRAY2D(SColMaj##SPARSEARRAY2D_TYPE##, SColMaj##SPARSEARRAY2D_TYPE##Ptr, ColMaj##SPARSEARRAY_TYPE, ColMaj##SPARSEARRAY2D_TYPE, C_TYPE)
+
 %enddef

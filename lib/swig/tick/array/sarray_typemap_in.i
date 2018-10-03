@@ -12,7 +12,7 @@
     // A macro for creating the function that builds an Array<T> from a numpy array (returns false if an error occurred)
     // 'result' will hold the resulting array
     DLL_PUBLIC bool BuildFromPyObj_##SARRAY_TYPE(PyObject *obj, SARRAYPTR_TYPE *result) {
-        
+
         if (!TestPyObj_##ARRAY_TYPE((PyObject *) obj)) return false;
         *result = SARRAY_TYPE::new_ptr(0);
         (*result)->set_data((C_TYPE *) PyArray_DATA((PyArrayObject *) (obj)), PyArray_DIM((PyArrayObject *) (obj),0),obj);
@@ -36,7 +36,7 @@
     // A macro for creating the function that builds an Array<T> from a numpy array (returns false if an error occurred)
     // 'result' will hold the resulting array
     DLL_PUBLIC bool BuildFromPyObj_##SARRAY2D_TYPE(PyObject *obj, SARRAY2DPTR_TYPE *result) {
-        
+
         if (!TestPyObj_##ARRAY2D_TYPE((PyObject *) obj)) return false;
         *result = SARRAY2D_TYPE::new_ptr();
         (*result)->set_data((C_TYPE *) PyArray_DATA((PyArrayObject *) (obj)),
@@ -99,7 +99,7 @@
         long nCols=0;
         long nRows = PyList_Size((PyObject *) obj);
         list.resize(nRows);
-        
+
         for (long i=0;i<nRows;i++) {
             PyObject *obj_i = PyList_GetItem((PyObject *) obj,i);
             if (!PyList_Check(obj_i)) {
@@ -219,5 +219,7 @@ TYPEMAPIN_SARRAY_LIST1D(ARRAY_TYPE,SARRAY_TYPE,SARRAYPTR_LIST1D_TYPE)
 TYPEMAPIN_SARRAY_LIST2D(ARRAY_TYPE,SARRAY_TYPE,SARRAYPTR_LIST2D_TYPE)
 TYPEMAPIN_SARRAY2D_LIST1D(ARRAY2D_TYPE,SARRAY2D_TYPE,SARRAY2DPTR_LIST1D_TYPE)
 TYPEMAPIN_SARRAY2D_LIST2D(ARRAY2D_TYPE,SARRAY2D_TYPE,SARRAY2DPTR_LIST2D_TYPE)
+
+TYPEMAPIN_SARRAY2D(SColMaj##ARRAY2D_TYPE##, SColMaj##ARRAY2D_TYPE##Ptr, ColMaj##ARRAY2D_TYPE, C_TYPE, NP_TYPE)
 
 %enddef

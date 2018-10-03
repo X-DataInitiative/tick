@@ -46,7 +46,6 @@
     // (returns false if an error occurred)
     // 'result' will hold the resulting array
     DLL_PUBLIC bool BuildFromPyObj_##ARRAY2D_TYPE(PyObject *obj, ARRAY2D_TYPE *result) {
-
         if (!TestPyObj_##ARRAY2D_TYPE((PyObject *) obj)) return false;
         *result = ARRAY2D_TYPE(PyArray_DIM((PyArrayObject *) (obj), 0),
                              PyArray_DIM((PyArrayObject *) (obj), 1),
@@ -160,6 +159,11 @@ TYPEMAPIN_ARRAY(ARRAY_TYPE,C_TYPE,NP_TYPE);
 TYPEMAPIN_ARRAY2D(ARRAY2D_TYPE,C_TYPE,NP_TYPE);
 TYPEMAPIN_ARRAY_LIST1D(ARRAY_TYPE,ARRAY_LIST1D_TYPE);
 TYPEMAPIN_ARRAY_LIST2D(ARRAY_TYPE,ARRAY_LIST2D_TYPE);
+
+
+TYPEMAPIN_ARRAY2D(ColMaj##ARRAY2D_TYPE##, C_TYPE, NP_TYPE);
+
+
 %enddef
 
 

@@ -2,10 +2,13 @@ set(TICK_ARRAY_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include/tick/array)
 
 add_library(tick_array EXCLUDE_FROM_ALL
         ${TICK_ARRAY_INCLUDE_DIR}/abstractarray1d2d.h
+        ${TICK_ARRAY_INCLUDE_DIR}/abstractarray1d2d/assignment.h
+        ${TICK_ARRAY_INCLUDE_DIR}/abstractarray1d2d/constructor.h
         ${TICK_ARRAY_INCLUDE_DIR}/array.h
         ${TICK_ARRAY_INCLUDE_DIR}/array2d.h
         ${TICK_ARRAY_INCLUDE_DIR}/basearray.h
         ${TICK_ARRAY_INCLUDE_DIR}/basearray2d.h
+        ${TICK_ARRAY_INCLUDE_DIR}/basearray2d/assignment.h
         ${TICK_ARRAY_INCLUDE_DIR}/dot.h
         ${TICK_ARRAY_INCLUDE_DIR}/sarray.h
         ${TICK_ARRAY_INCLUDE_DIR}/sarray2d.h

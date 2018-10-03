@@ -30,18 +30,18 @@
  * This is the array class that introduces the ability to share its allocation
  * with Python. \warning You should always use the associated smart pointer
  * class `SArray2dPtr` and never access this class directly. Thus the only
- * constructor to be used is the `SArray2d<T>::new_ptr()` constructor. In that
+ * constructor to be used is the `SArray2d<T, MAJ>::new_ptr()` constructor. In that
  * way you can also share the allocations within C++ (using a reference
  * counter).
  */
-template <typename T>
-class SArray2d : public Array2d<T> {
+template <typename T, typename MAJ>
+class SArray2d : public Array2d<T, MAJ> {
  protected:
-  using Array2d<T>::_size;
-  using Array2d<T>::is_data_allocation_owned;
-  using Array2d<T>::_data;
-  using BaseArray2d<T>::_n_cols;
-  using BaseArray2d<T>::_n_rows;
+  using Array2d<T, MAJ>::_size;
+  using Array2d<T, MAJ>::is_data_allocation_owned;
+  using Array2d<T, MAJ>::_data;
+  using BaseArray2d<T, MAJ>::_n_cols;
+  using BaseArray2d<T, MAJ>::_n_rows;
 
 #ifdef PYTHON_LINK
   //! @brief The (eventual) Python owner of the array _data;
@@ -78,8 +78,8 @@ class SArray2d : public Array2d<T> {
  public:
   // Constructors :
   //     One should only use the constructors
-  //     SArray2d<T>::new_ptr(n_rows, n_cols) which returns a shared pointer
-  //     SArray2d<T>::new_ptr(array2d) which returns a shared pointer
+  //     SArray2d<T, MAJ>::new_ptr(n_rows, n_cols) which returns a shared pointer
+  //     SArray2d<T, MAJ>::new_ptr(array2d) which returns a shared pointer
   //
 
   //! \cond
@@ -93,16 +93,16 @@ class SArray2d : public Array2d<T> {
   //! \param n_cols : the number of rows of the array to be built
   //! \return A shared pointer to the corresponding shared array of the given
   //! size Allcoation is performed
-  static std::shared_ptr<SArray2d<T>> new_ptr(ulong n_rows = 0,
+  static std::shared_ptr<SArray2d<T, MAJ>> new_ptr(ulong n_rows = 0,
                                               ulong n_cols = 0) {
-    return std::make_shared<SArray2d<T>>(n_rows, n_cols);
+    return std::make_shared<SArray2d<T, MAJ>>(n_rows, n_cols);
   }
 
-  //! @brief The only constructor to be used from an Array2d<T>
+  //! @brief The only constructor to be used from an Array2d<T, MAJ>
   //! \param a : The array the data are copied from
   //! \return A shared pointer to the corresponding shared array
   //! \warning The data are copied
-  static std::shared_ptr<SArray2d<T>> new_ptr(Array2d<T> &a);
+  static std::shared_ptr<SArray2d<T, MAJ>> new_ptr(Array2d<T, MAJ> &a);
 
  protected:
   /**
@@ -121,16 +121,16 @@ class SArray2d : public Array2d<T> {
 
   // The following constructors should not be used as we only use SArray with
   // the associated shared_ptr
-  SArray2d(const SArray2d<T> &other) = delete;
-  SArray2d(const SArray2d<T> &&other) = delete;
+  SArray2d(const SArray2d<T, MAJ> &other) = delete;
+  SArray2d(const SArray2d<T, MAJ> &&other) = delete;
 
   // Some friendship for set_data/give_ownership access !
-  friend std::shared_ptr<SArray2d<T>> Array2d<T>::as_sarray2d_ptr();
+  friend std::shared_ptr<SArray2d<T, MAJ>> Array2d<T, MAJ>::as_sarray2d_ptr();
 };
 
 #ifdef PYTHON_LINK
-template <typename T>
-void SArray2d<T>::set_data(T *data, ulong n_rows, ulong n_cols, void *nparray) {
+template <typename T, typename MAJ>
+void SArray2d<T, MAJ>::set_data(T *data, ulong n_rows, ulong n_cols, void *nparray) {
   clear();
   _data = data;
   _n_cols = n_cols;
@@ -139,8 +139,8 @@ void SArray2d<T>::set_data(T *data, ulong n_rows, ulong n_cols, void *nparray) {
   give_data_ownership(nparray);
 }
 #else
-template <typename T>
-void SArray2d<T>::set_data(T *data, ulong n_rows, ulong n_cols) {
+template <typename T, typename MAJ>
+void SArray2d<T, MAJ>::set_data(T *data, ulong n_rows, ulong n_cols) {
   clear();
   _data = data;
   _n_cols = n_cols;
@@ -151,8 +151,8 @@ void SArray2d<T>::set_data(T *data, ulong n_rows, ulong n_cols) {
 #endif
 
 #ifdef PYTHON_LINK
-template <typename T>
-void SArray2d<T>::give_data_ownership(void *data_owner) {
+template <typename T, typename MAJ>
+void SArray2d<T, MAJ>::give_data_ownership(void *data_owner) {
 #ifdef DEBUG_SHAREDARRAY
   if (_data_owner == nullptr)
     std::cout << "SArray2d : SetOwner owner=" << data_owner << " on " << this
@@ -172,13 +172,13 @@ void SArray2d<T>::give_data_ownership(void *data_owner) {
 #endif
 
 #ifdef DEBUG_SHAREDARRAY
-template <typename T>
-ulong SArray2d<T>::n_allocs = 0;
+template <typename T, typename MAJ>
+ulong SArray2d<T, MAJ>::n_allocs = 0;
 #endif
 
 // TODO : bof !
-template <typename T>
-std::ostream &operator<<(std::ostream &Str, SArray2d<T> *v) {
+template <typename T, typename MAJ>
+std::ostream &operator<<(std::ostream &Str, SArray2d<T, MAJ> *v) {
 #ifdef DEBUG_SHAREDARRAY
   Str << "SArray2d<" << typeid(T).name() << ">(" << reinterpret_cast<void *>(v)
       << ", n_rows=" << v->n_rows() << ",n_cols=" << v->n_cols() << ")";
@@ -190,8 +190,8 @@ std::ostream &operator<<(std::ostream &Str, SArray2d<T> *v) {
 }
 
 // In order to create a Shared array2d
-template <typename T>
-SArray2d<T>::SArray2d(ulong n_rows, ulong n_cols) : Array2d<T>(n_rows, n_cols) {
+template <typename T, typename MAJ>
+SArray2d<T, MAJ>::SArray2d(ulong n_rows, ulong n_cols) : Array2d<T, MAJ>(n_rows, n_cols) {
 #ifdef PYTHON_LINK
   _data_owner = nullptr;
 #endif
@@ -204,11 +204,11 @@ SArray2d<T>::SArray2d(ulong n_rows, ulong n_cols) : Array2d<T>(n_rows, n_cols) {
 }
 
 // Constructor from an Array2d (copy is made)
-template <typename T>
-std::shared_ptr<SArray2d<T>> SArray2d<T>::new_ptr(Array2d<T> &a) {
-  if (a.size() == 0) return SArray2d<T>::new_ptr();
-  std::shared_ptr<SArray2d<T>> aptr =
-      SArray2d<T>::new_ptr(a.n_rows(), a.n_cols());
+template <typename T, typename MAJ>
+std::shared_ptr<SArray2d<T, MAJ>> SArray2d<T, MAJ>::new_ptr(Array2d<T, MAJ> &a) {
+  if (a.size() == 0) return SArray2d<T, MAJ>::new_ptr();
+  std::shared_ptr<SArray2d<T, MAJ>> aptr =
+      SArray2d<T, MAJ>::new_ptr(a.n_rows(), a.n_cols());
   memcpy(aptr->data(), a.data(), sizeof(T) * a.size());
   return aptr;
 }
@@ -216,8 +216,8 @@ std::shared_ptr<SArray2d<T>> SArray2d<T>::new_ptr(Array2d<T> &a) {
 // clears the array2d without desallocating the data pointer.
 // Returns this pointer if it should be desallocated otherwise returns NULL
 // WARNING : An SArray2d should never have a C owner
-template <typename T>
-T *SArray2d<T>::_clear() {
+template <typename T, typename MAJ>
+T *SArray2d<T, MAJ>::_clear() {
   bool result = false;
 
   // Case not empty
@@ -257,8 +257,8 @@ T *SArray2d<T>::_clear() {
 }
 
 // clear the array (including data if necessary)
-template <typename T>
-void SArray2d<T>::clear() {
+template <typename T, typename MAJ>
+void SArray2d<T, MAJ>::clear() {
   if (_clear()) {
     TICK_PYTHON_FREE(_data);
   }
@@ -266,8 +266,8 @@ void SArray2d<T>::clear() {
 }
 
 // Destructor
-template <typename T>
-SArray2d<T>::~SArray2d() {
+template <typename T, typename MAJ>
+SArray2d<T, MAJ>::~SArray2d() {
 #ifdef DEBUG_SHAREDARRAY
   n_allocs--;
   std::cout << "SArray2d<" << typeid(T).name() << "> Destructor (->#"
@@ -280,14 +280,14 @@ SArray2d<T>::~SArray2d() {
 // \warning : The ownership of the data is given to the returned structure
 // THUS the array becomes a view.
 // \warning : This method cannot be called on a view
-template <typename T>
-std::shared_ptr<SArray2d<T>> Array2d<T>::as_sarray2d_ptr() {
+template <typename T, typename MAJ>
+std::shared_ptr<SArray2d<T, MAJ>> Array2d<T, MAJ>::as_sarray2d_ptr() {
   if (!is_data_allocation_owned)
     TICK_ERROR(
         "This method cannot be called on an object that does not own its "
         "allocations");
 
-  std::shared_ptr<SArray2d<T>> arrayptr = SArray2d<T>::new_ptr();
+  std::shared_ptr<SArray2d<T, MAJ>> arrayptr = SArray2d<T, MAJ>::new_ptr();
   arrayptr->set_data(_data, _n_rows, _n_cols);
   is_data_allocation_owned = false;
   return arrayptr;
@@ -303,49 +303,22 @@ std::shared_ptr<SArray2d<T>> Array2d<T>::as_sarray2d_ptr() {
 /**
  * @}
  */
-/** @defgroup sarray2d_sub_mod The instantiations of the SArray template
- *  @ingroup SArray2d_typedefs_mod
- * @{
- */
-/**
- * @}
- */
-/** @defgroup sarray2dptr_sub_mod The shared pointer array classes
- *  @ingroup SArray2d_typedefs_mod
- * @{
- */
-/**
- * @}
- */
-/** @defgroup sarray2dptrlist1d_sub_mod The classes for dealing with 1d-list of
- * shared pointer 2darrays
- *  @ingroup SArray_typedefs_mod
- * @{
- */
-// @brief The basic SArray2dList1D classes
-/**
- * @}
- */
-/** @defgroup sarray2dptrlist2d_sub_mod The classes for dealing with 2d-list of
- * shared pointer 2darrays
- *  @ingroup SArray2d_typedefs_mod
- * @{
- */
-// @brief The basic SArray2dList2D classes
-/**
- * @}
- */
 
 #define SARRAY_DEFINE_TYPE(TYPE, NAME)                                \
   typedef SArray2d<TYPE> SArray##NAME##2d;                            \
+  typedef SArray2d<TYPE, ColMajor> SColMajArray##NAME##2d;            \
   typedef std::shared_ptr<SArray##NAME##2d> SArray##NAME##2dPtr;      \
+  typedef std::shared_ptr<SColMajArray##NAME##2d> SColMajArray##NAME##2dPtr;      \
   typedef std::vector<SArray##NAME##2dPtr> SArray##NAME##2dPtrList1D; \
   typedef std::vector<SArray##NAME##2dPtrList1D> SArray##NAME##2dPtrList2D
 
 #define SARRAY_DEFINE_TYPE_SERIALIZE(TYPE, NAME) \
   SARRAY_DEFINE_TYPE(TYPE, NAME);                \
   CEREAL_REGISTER_TYPE(SArray##NAME##2d);        \
-  CEREAL_REGISTER_POLYMORPHIC_RELATION(BaseArray##NAME##2d, SArray##NAME##2d)
+  CEREAL_REGISTER_POLYMORPHIC_RELATION(BaseArray##NAME##2d, SArray##NAME##2d) \
+  CEREAL_REGISTER_TYPE(SColMajArray##NAME##2d);        \
+  CEREAL_REGISTER_POLYMORPHIC_RELATION(ColMajBaseArray##NAME##2d, SColMajArray##NAME##2d)
+
 
 SARRAY_DEFINE_TYPE_SERIALIZE(double, Double);
 SARRAY_DEFINE_TYPE_SERIALIZE(float, Float);

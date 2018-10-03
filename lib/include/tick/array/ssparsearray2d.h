@@ -24,24 +24,24 @@
  * This is the array class that introduces the ability to share its allocation
  * with Python. \warning You should always use the associated smart pointer
  * class `SSparseArray2dPtr` and never access this class directly. Thus the only
- * constructor to be used is the `SSparseArray2d<T>::new_ptr()` constructor. In
+ * constructor to be used is the `SSparseArray2d<T, MAJ>::new_ptr()` constructor. In
  * that way you can also share the allocations within C++ (using a reference
  * counter).
  */
 
-template <typename T>
-class SSparseArray2d : public SparseArray2d<T> {
+template <typename T, typename MAJ>
+class SSparseArray2d : public SparseArray2d<T, MAJ> {
  protected:
-  using SparseArray2d<T>::_size;
-  using SparseArray2d<T>::_n_rows;
-  using SparseArray2d<T>::_n_cols;
-  using SparseArray2d<T>::is_data_allocation_owned;
-  using SparseArray2d<T>::_data;
-  using SparseArray2d<T>::_size_sparse;
-  using SparseArray2d<T>::is_indices_allocation_owned;
-  using SparseArray2d<T>::_indices;
-  using SparseArray2d<T>::is_row_indices_allocation_owned;
-  using SparseArray2d<T>::_row_indices;
+  using SparseArray2d<T, MAJ>::_size;
+  using SparseArray2d<T, MAJ>::_n_rows;
+  using SparseArray2d<T, MAJ>::_n_cols;
+  using SparseArray2d<T, MAJ>::is_data_allocation_owned;
+  using SparseArray2d<T, MAJ>::_data;
+  using SparseArray2d<T, MAJ>::_size_sparse;
+  using SparseArray2d<T, MAJ>::is_indices_allocation_owned;
+  using SparseArray2d<T, MAJ>::_indices;
+  using SparseArray2d<T, MAJ>::is_row_indices_allocation_owned;
+  using SparseArray2d<T, MAJ>::_row_indices;
 
 #ifdef PYTHON_LINK
   //! @brief The (eventual) Python owner of the array _data;
@@ -111,8 +111,8 @@ class SSparseArray2d : public SparseArray2d<T> {
   //
   // Constructors :
   //     One should only use the constructor
-  //     SSparseArray2d<T>::new_ptr(n_rows, n_cols, size_sparse) which returns a
-  //     shared pointer SSparseArray2d<T>::new_ptr(array) which returns a shared
+  //     SSparseArray2d<T, MAJ>::new_ptr(n_rows, n_cols, size_sparse) which returns a
+  //     shared pointer SSparseArray2d<T, MAJ>::new_ptr(array) which returns a shared
   //     pointer
   //
 
@@ -129,14 +129,14 @@ class SSparseArray2d : public SparseArray2d<T> {
   //! given size. So if size_sparse != 0 then allocation is performed. \warning
   //! Right after this call, you are supposed to fill up the indices array with
   //! valid values
-  static std::shared_ptr<SSparseArray2d<T>> new_ptr(ulong n_rows, ulong n_cols,
+  static std::shared_ptr<SSparseArray2d<T, MAJ>> new_ptr(ulong n_rows, ulong n_cols,
                                                     ulong size_sparse);
 
-  //! @brief The only constructor to be used from an SparseArray2d<T>
+  //! @brief The only constructor to be used from an SparseArray2d<T, MAJ>
   //! \param a : The array the data/indices are copied from
   //! \return A shared pointer to the corresponding shared sparse array
   //! \warning The data/indices are copied
-  static std::shared_ptr<SSparseArray2d<T>> new_ptr(SparseArray2d<T> &a);
+  static std::shared_ptr<SSparseArray2d<T, MAJ>> new_ptr(SparseArray2d<T, MAJ> &a);
 
  protected:
   /**
@@ -157,23 +157,23 @@ class SSparseArray2d : public SparseArray2d<T> {
 
   // The following constructors should not be used as we only use SSparseArray
   // with the associated shared_ptr
-  SSparseArray2d(const SSparseArray2d<T> &other) = delete;
-  SSparseArray2d(const SSparseArray2d<T> &&other) = delete;
+  SSparseArray2d(const SSparseArray2d<T, MAJ> &other) = delete;
+  SSparseArray2d(const SSparseArray2d<T, MAJ> &&other) = delete;
 
   template <class Archive>
   void load(Archive &ar) {
-    ar(cereal::make_nvp("SparseArray2d", cereal::base_class<SparseArray2d<T>>(this)));
+    ar(cereal::make_nvp("SparseArray2d", cereal::base_class<SparseArray2d<T, MAJ>>(this)));
   }
 
   template <class Archive>
   void save(Archive &ar) const {
-    ar(cereal::make_nvp("SparseArray2d", cereal::base_class<SparseArray2d<T>>(this)));
+    ar(cereal::make_nvp("SparseArray2d", cereal::base_class<SparseArray2d<T, MAJ>>(this)));
   }
 };
 
 #ifdef PYTHON_LINK
-template <typename T>
-void SSparseArray2d<T>::set_data_indices_rowindices(
+template <typename T, typename MAJ>
+void SSparseArray2d<T, MAJ>::set_data_indices_rowindices(
     T *data, INDICE_TYPE *indices, INDICE_TYPE *row_indices, ulong n_rows,
     ulong n_cols, void *data_owner, void *indices_owner,
     void *row_indices_owner) {
@@ -189,8 +189,8 @@ void SSparseArray2d<T>::set_data_indices_rowindices(
                                       row_indices_owner);
 }
 #else
-template <typename T>
-void SSparseArray2d<T>::set_data_indices_rowindices(T *data,
+template <typename T, typename MAJ>
+void SSparseArray2d<T, MAJ>::set_data_indices_rowindices(T *data,
                                                     INDICE_TYPE *indices,
                                                     INDICE_TYPE *row_indices,
                                                     ulong n_rows,
@@ -210,8 +210,8 @@ void SSparseArray2d<T>::set_data_indices_rowindices(T *data,
 #endif
 
 #ifdef PYTHON_LINK
-template <typename T>
-void SSparseArray2d<T>::give_data_indices_rowindices_owners(
+template <typename T, typename MAJ>
+void SSparseArray2d<T, MAJ>::give_data_indices_rowindices_owners(
     void *data_owner, void *indices_owner, void *row_indices_owner) {
 //    if (data_owner != nullptr || indices_owner != nullptr || row_indices_owner
 //    != nullptr)
@@ -265,14 +265,14 @@ void SSparseArray2d<T>::give_data_indices_rowindices_owners(
 #endif
 
 #ifdef DEBUG_SHAREDARRAY
-template <typename T>
-ulong SSparseArray2d<T>::n_allocs = 0;
+template <typename T, typename MAJ>
+ulong SSparseArray2d<T, MAJ>::n_allocs = 0;
 #endif
 
 // In order to create a Shared SparseArray
-template <typename T>
-SSparseArray2d<T>::SSparseArray2d(ulong n_rows, ulong n_cols)
-    : SparseArray2d<T>() {
+template <typename T, typename MAJ>
+SSparseArray2d<T, MAJ>::SSparseArray2d(ulong n_rows, ulong n_cols)
+    : SparseArray2d<T, MAJ>() {
   _n_rows = n_rows;
   _n_cols = n_cols;
   _size = n_rows * n_cols;
@@ -290,11 +290,11 @@ SSparseArray2d<T>::SSparseArray2d(ulong n_rows, ulong n_cols)
 }
 
 // @brief The only constructor to be used
-template <typename T>
-std::shared_ptr<SSparseArray2d<T>> SSparseArray2d<T>::new_ptr(
+template <typename T, typename MAJ>
+std::shared_ptr<SSparseArray2d<T, MAJ>> SSparseArray2d<T, MAJ>::new_ptr(
     ulong n_rows, ulong n_cols, ulong size_sparse) {
-  std::shared_ptr<SSparseArray2d<T>> aptr =
-      std::make_shared<SSparseArray2d<T>>(n_rows, n_cols);
+  std::shared_ptr<SSparseArray2d<T, MAJ>> aptr =
+      std::make_shared<SSparseArray2d<T, MAJ>>(n_rows, n_cols);
   if (n_rows == 0 || n_cols == 0 || size_sparse == 0) {
     return aptr;
   }
@@ -310,11 +310,11 @@ std::shared_ptr<SSparseArray2d<T>> SSparseArray2d<T>::new_ptr(
 }
 
 // Constructor from a SparseArray2d (copy is made)
-template <typename T>
-std::shared_ptr<SSparseArray2d<T>> SSparseArray2d<T>::new_ptr(
-    SparseArray2d<T> &a) {
-  std::shared_ptr<SSparseArray2d<T>> aptr =
-      SSparseArray2d<T>::new_ptr(a.n_rows(), a.n_cols(), a.size_sparse());
+template <typename T, typename MAJ>
+std::shared_ptr<SSparseArray2d<T, MAJ>> SSparseArray2d<T, MAJ>::new_ptr(
+    SparseArray2d<T, MAJ> &a) {
+  std::shared_ptr<SSparseArray2d<T, MAJ>> aptr =
+      SSparseArray2d<T, MAJ>::new_ptr(a.n_rows(), a.n_cols(), a.size_sparse());
   aptr->_size = a.size();
   if (a.size_sparse() != 0) {
     memcpy(aptr->data(), a.data(), sizeof(T) * a.size_sparse());
@@ -327,8 +327,8 @@ std::shared_ptr<SSparseArray2d<T>> SSparseArray2d<T>::new_ptr(
 
 // Clears the array without desallocation
 // returns some flags to understand what should be desallocated
-template <typename T>
-void SSparseArray2d<T>::_clear(bool &flag_desallocate_data,
+template <typename T, typename MAJ>
+void SSparseArray2d<T, MAJ>::_clear(bool &flag_desallocate_data,
                                bool &flag_desallocate_indices,
                                bool &flag_desallocate_row_indices) {
   flag_desallocate_data = flag_desallocate_indices =
@@ -418,8 +418,8 @@ void SSparseArray2d<T>::_clear(bool &flag_desallocate_data,
 }
 
 // clear the array (including data if necessary)
-template <typename T>
-void SSparseArray2d<T>::clear() {
+template <typename T, typename MAJ>
+void SSparseArray2d<T, MAJ>::clear() {
   bool flag_desallocate_data;
   bool flag_desallocate_indices;
   bool flag_desallocate_row_indices;
@@ -434,8 +434,8 @@ void SSparseArray2d<T>::clear() {
 }
 
 // Destructor
-template <typename T>
-SSparseArray2d<T>::~SSparseArray2d() {
+template <typename T, typename MAJ>
+SSparseArray2d<T, MAJ>::~SSparseArray2d() {
 #ifdef DEBUG_SHAREDARRAY
   n_allocs--;
   std::cout << "SSparseArray2d Destructor (->#" << n_allocs
@@ -448,16 +448,16 @@ SSparseArray2d<T>::~SSparseArray2d() {
 // array \warning : The ownership of the data is given to the returned structure
 // THUS the array becomes a view.
 // \warning : This method cannot be called on a view
-template <typename T>
-std::shared_ptr<SSparseArray2d<T>> SparseArray2d<T>::as_ssparsearray2d_ptr() {
+template <typename T, typename MAJ>
+std::shared_ptr<SSparseArray2d<T, MAJ>> SparseArray2d<T, MAJ>::as_ssparsearray2d_ptr() {
   if (!is_data_allocation_owned || !is_indices_allocation_owned ||
       !is_row_indices_allocation_owned)
     TICK_ERROR(
         "This method cannot be called on an object that does not own its "
         "allocations");
 
-  std::shared_ptr<SSparseArray2d<T>> arrayptr =
-      SSparseArray2d<T>::new_ptr(0, 0, 0);
+  std::shared_ptr<SSparseArray2d<T, MAJ>> arrayptr =
+      SSparseArray2d<T, MAJ>::new_ptr(0, 0, 0);
   arrayptr->set_data_indices_rowindices(_data, _indices, _row_indices, _n_rows,
                                         _n_cols);
   is_data_allocation_owned = false;
@@ -474,18 +474,28 @@ std::shared_ptr<SSparseArray2d<T>> SparseArray2d<T>::as_ssparsearray2d_ptr() {
  * @{
  */
 
-#define SSPARSE_ARRAY2D_DEFINE_TYPE(TYPE, NAME)                                   \
-  typedef SSparseArray2d<TYPE> SSparseArray##NAME##2d;                            \
-  typedef std::shared_ptr<SSparseArray##NAME##2d> SSparseArray##NAME##2dPtr;      \
-  typedef std::vector<SSparseArray##NAME##2dPtr> SSparseArray##NAME##2dPtrList1D; \
-  typedef std::vector<SSparseArray##NAME##2dPtrList1D> SSparseArray##NAME##2dPtrList2D
+#define SSPARSE_ARRAY2D_DEFINE_TYPE(TYPE, NAME)                              \
+  typedef SSparseArray2d<TYPE> SSparseArray##NAME##2d;                       \
+  typedef std::shared_ptr<SSparseArray##NAME##2d> SSparseArray##NAME##2dPtr; \
+  typedef SSparseArray2d<TYPE, ColMajor> SColMajSparseArray##NAME##2d;       \
+  typedef std::shared_ptr<SColMajSparseArray##NAME##2d> SColMajSparseArray##NAME##2dPtr; \
+  typedef std::vector<SSparseArray##NAME##2dPtr>                             \
+      SSparseArray##NAME##2dPtrList1D;                                       \
+  typedef std::vector<SSparseArray##NAME##2dPtrList1D>                       \
+      SSparseArray##NAME##2dPtrList2D
 
 #define SSPARSE_ARRAY2D_DEFINE_TYPE_SERIALIZE(TYPE, NAME)                       \
   SSPARSE_ARRAY2D_DEFINE_TYPE(TYPE, NAME);                                      \
   CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SSparseArray##NAME##2d,                    \
                                      cereal::specialization::member_load_save); \
+  CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SColMajSparseArray##NAME##2d,                    \
+                                     cereal::specialization::member_load_save); \
   CEREAL_REGISTER_TYPE(SSparseArray##NAME##2d);                                 \
   CEREAL_REGISTER_POLYMORPHIC_RELATION(BaseArray##NAME##2d, SSparseArray##NAME##2d)
+
+/**
+ * @}
+ */
 
 SSPARSE_ARRAY2D_DEFINE_TYPE(int32_t, Int);
 SSPARSE_ARRAY2D_DEFINE_TYPE(uint32_t, UInt);

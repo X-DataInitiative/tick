@@ -58,7 +58,7 @@
         C_TYPE *data;
         INDICE_TYPE *row_indices, *indices;
         PyObject *obj_indptr, *obj_indices, *obj_data;
-        
+
         if (!TestPyObj_##SPARSEARRAY2D_TYPE((PyObject *) obj,&n_rows,&n_cols,&row_indices,&indices,&data,&size_sparse,&obj_indptr,&obj_indices,&obj_data))
             return false;
         if (n_rows > 1) {
@@ -74,9 +74,9 @@
         PyArrayObject *obj_indptr = (PyArrayObject *) PyObject_GetAttrString(obj,"indptr");
         PyArrayObject *obj_indices = (PyArrayObject *) PyObject_GetAttrString(obj,"indices");
         PyArrayObject *obj_data = (PyArrayObject *) PyObject_GetAttrString(obj,"data");
-        
+
         int res = !(obj_indptr == NULL || obj_indices == NULL || obj_data == NULL);
-        
+
         if (obj_indptr) Py_DECREF(obj_indptr);
         if (obj_indices) Py_DECREF(obj_indices);
         if (obj_data) Py_DECREF(obj_data);
@@ -99,8 +99,10 @@
 
 // The final macro for dealing with sparse arrays
 %define SPARSEARRAY_TYPEMAPIN_MACROS(SPARSEARRAY_TYPE, SPARSEARRAY2D_TYPE, C_TYPE, NP_TYPE)
+TYPEMAPIN_SPARSEARRAY(ColMaj##SPARSEARRAY_TYPE##, ColMaj##SPARSEARRAY2D_TYPE##, C_TYPE);
 TYPEMAPIN_SPARSEARRAY(SPARSEARRAY_TYPE, SPARSEARRAY2D_TYPE, C_TYPE);
 TYPEMAPIN_SPARSEARRAY2D(SPARSEARRAY2D_TYPE, SPARSEARRAY_TYPE, C_TYPE);
+TYPEMAPIN_SPARSEARRAY2D(ColMaj##SPARSEARRAY2D_TYPE##, ColMaj##SPARSEARRAY_TYPE##, C_TYPE);
 %enddef
 
 

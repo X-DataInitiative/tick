@@ -25,3 +25,10 @@ target_link_libraries(tick_test_serializer
         ${TICK_LIB_ARRAY}
         ${TICK_TEST_LIBS}
         )
+
+add_executable(tick_test_array_majors major_gtest.cpp)
+
+target_link_libraries(tick_test_array_majors
+        ${TICK_LIB_ARRAY}
+        ${TICK_TEST_LIBS}
+        )
