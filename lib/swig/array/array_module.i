@@ -57,6 +57,12 @@
 // Dealing with typemap out in templates of VArray
 %include varray_typemap_out.i
 
+template <class T>
+class Array { };
+
+%template(ArrayDoubleNew) Array<double>;
+%template(ArrayFloatNew) Array<float>;
+
 //
 // Then we define the macro that will call all the above macros
 //

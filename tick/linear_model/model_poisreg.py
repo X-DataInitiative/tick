@@ -12,11 +12,6 @@ from .build.linear_model import LinkType_exponential as exponential
 
 __author__ = 'Stephane Gaiffas'
 
-dtype_map = {
-    np.dtype('float32'): _ModelPoisRegFloat,
-    np.dtype('float64'): _ModelPoisRegDouble
-}
-
 
 class ModelPoisReg(ModelGeneralizedLinear, ModelSecondOrder,
                    ModelSelfConcordant):
@@ -114,6 +109,11 @@ class ModelPoisReg(ModelGeneralizedLinear, ModelSecondOrder,
         }
     }
 
+    _cpp_class_dtype_map = {
+        np.dtype('float32'): _ModelPoisRegFloat,
+        np.dtype('float64'): _ModelPoisRegDouble
+    }
+
     def __init__(self, fit_intercept: bool = True, link: str = "exponential",
                  n_threads: int = 1):
         ModelSecondOrder.__init__(self)
@@ -195,6 +195,16 @@ class ModelPoisReg(ModelGeneralizedLinear, ModelSecondOrder,
             raise ValueError("``link`` must be either 'exponential' or "
                              "'linear'.")
 
+    def hessian(self, x):
+        """Return model's hessian
+
+        Parameters
+        ----------
+        x : `np.ndarray`, shape=(n_coeffs,)
+            Value at which the hessian is computed
+        """
+        return self._model.hessian(x)
+
     def _sdca_primal_dual_relation(self, l_l2sq, dual_vector):
         # In order to solve the same problem than other solvers, we need to
         # rescale the penalty parameter if some observations are not
@@ -241,6 +251,31 @@ class ModelPoisReg(ModelGeneralizedLinear, ModelSecondOrder,
 
     def _build_cpp_model(self, dtype_or_object_with_dtype):
         model_class = self._get_typed_class(dtype_or_object_with_dtype,
-                                            dtype_map)
+                                            self._cpp_class_dtype_map)
         return model_class(self.features, self.labels, self._link_type,
                            self.fit_intercept, self.n_threads)
+
+
+    def _get_params_set(self):
+        """Get the set of parameters
+        """
+        return {
+            *ModelGeneralizedLinear._get_params_set(self),
+            *ModelSecondOrder._get_params_set(self),
+            *ModelSelfConcordant._get_params_set(self), 'link'
+        }
+
+    @property
+    def _AtomicClass(self):
+        return AtomicModelPoisReg
+
+from .build.linear_model import ModelPoisRegAtomicDouble as _ModelPoisRegAtomicDouble
+from .build.linear_model import ModelPoisRegAtomicFloat as _ModelPoisRegAtomicFloat
+
+
+class AtomicModelPoisReg(ModelPoisReg):
+    _cpp_class_dtype_map = {
+        np.dtype('float32'): _ModelPoisRegAtomicFloat,
+        np.dtype('float64'): _ModelPoisRegAtomicDouble
+    }
+

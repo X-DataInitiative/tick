@@ -162,8 +162,10 @@ class SDCA(SolverFirstOrderSto):
     def __init__(self, l_l2sq: float, epoch_size: int = None,
                  rand_type: str = 'unif', tol: float = 1e-10,
                  max_iter: int = 10, verbose: bool = True,
-                 print_every: int = 1, record_every: int = 1, seed: int = -1):
+                 print_every: int = 1, record_every: int = 1, seed: int = -1,
+                 batch_size=1):
 
+        self.batch_size = batch_size
         self.l_l2sq = l_l2sq
         SolverFirstOrderSto.__init__(
             self, step=0, epoch_size=epoch_size, rand_type=rand_type, tol=tol,
@@ -236,3 +238,76 @@ class SDCA(SolverFirstOrderSto):
     @property
     def dual_solution(self):
         return self._solver.get_dual_vector()
+
+
+
+
+from .build.solver import AtomicSDCADouble as _AtomicSDCADouble
+from .build.solver import AtomicSDCAFloat as _AtomicSDCAFloat
+
+atomic_dtype_map = {
+    np.dtype('float32'): _AtomicSDCAFloat,
+    np.dtype('float64'): _AtomicSDCADouble
+}
+
+
+class AtomicSDCA(SDCA):
+    _attrinfos = {"_na_model": {}, "_na_prox": {}, "n_threads": {},
+                  "batch_size": {}}
+    
+    def __init__(self, l_l2sq: float, epoch_size: int = None,
+                 rand_type: str = 'unif', tol: float = 1e-10,
+                 max_iter: int = 10, verbose: bool = True,
+                 print_every: int = 1, record_every: int = 1, seed: int = -1,
+                 n_threads=2, batch_size=1):
+        self.n_threads = n_threads
+        self.batch_size = batch_size
+
+        SDCA.__init__(self, l_l2sq, epoch_size=epoch_size,
+                      rand_type=rand_type, tol=tol,
+                      max_iter=max_iter, verbose=verbose,
+                      print_every=print_every, record_every=record_every,
+                      seed=seed)
+
+    def set_model(self, model):
+        self._na_model = model
+        return SDCA.set_model(self, model.to_atomic())
+        
+    def set_prox(self, atomic_prox, prox):
+        self._na_prox = prox
+        return SDCA.set_prox(self, atomic_prox)
+
+    def objective(self, coeffs, loss: float = None):
+        """Compute the objective minimized by the solver at ``coeffs``
+
+        Parameters
+        ----------
+        coeffs : `numpy.ndarray`, shape=(n_coeffs,)
+            The objective is computed at this point
+
+        loss : `float`, default=`None`
+            Gives the value of the loss if already known (allows to
+            avoid its computation in some cases)
+
+        Returns
+        -------
+        output : `float`
+            Value of the objective at given ``coeffs``
+        """
+        prox_l2_value = 0.5 * self.l_l2sq * np.linalg.norm(coeffs) ** 2
+        return self._na_model.loss(coeffs) + self._na_prox.value(coeffs) + \
+               prox_l2_value
+    
+    def _set_cpp_solver(self, dtype_or_object_with_dtype):
+        self.dtype = self._extract_dtype(dtype_or_object_with_dtype)
+        solver_class = self._get_typed_class(dtype_or_object_with_dtype,
+                                             atomic_dtype_map)
+
+        epoch_size = self.epoch_size
+        if epoch_size is None:
+            epoch_size = 0
+
+        self._set(
+            '_solver',
+            solver_class(self.l_l2sq, epoch_size, self.tol, self._rand_type,
+                         self.record_every, self.seed, self.n_threads))

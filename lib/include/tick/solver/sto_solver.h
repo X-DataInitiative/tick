@@ -142,7 +142,7 @@ class DLL_PUBLIC TStoSolver {
 
   virtual void get_iterate(Array<T> &out);
 
-  virtual void set_starting_iterate(Array<K> &new_iterate);
+  virtual void set_starting_iterate(Array<T> &new_iterate);
 
   // Returns a uniform integer in the set {0, ..., m - 1}
   inline ulong rand_unif(ulong m) { return rand.uniform_int(ulong{0}, m); }

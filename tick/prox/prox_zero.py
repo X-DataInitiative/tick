@@ -66,3 +66,24 @@ class ProxZero(Prox):
             return prox_class(0.)
         else:
             return prox_class(0., self.range[0], self.range[1])
+
+
+from .build.prox import ProxZeroAtomicFloat as _ProxZeroAtomicFloat
+from .build.prox import ProxZeroAtomicDouble as _ProxZeroAtomicDouble
+
+atomic_dtype_map = {
+    np.dtype('float32'): _ProxZeroAtomicFloat,
+    np.dtype('float64'): _ProxZeroAtomicDouble
+}
+
+class AtomicProxZero(ProxZero):
+    def __init__(self, range: tuple = None):
+        ProxZero.__init__(self,range)
+
+    def _build_cpp_prox(self, dtype_or_object_with_dtype):
+        prox_class = self._get_typed_class(dtype_or_object_with_dtype,
+                                           atomic_dtype_map)
+        if self.range is None:
+            return prox_class()
+        else:
+            return prox_class(self.range[0], self.range[1])

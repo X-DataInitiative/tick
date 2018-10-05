@@ -19,36 +19,56 @@ class TProxL1 : public TProx<T, K> {
   bool compare(const TProxL1<T, K> &that);
 };
 
-%rename(ProxL1Double) TProxL1<double, double>;
-class ProxL1Double : public TProxSeparable<double, double> {
- public:
-   ProxL1Double();
-   ProxL1Double(double strength,
-            bool positive);
 
-   ProxL1Double(double strength,
-            ulong start,
-            ulong end,
-            bool positive);
 
-  bool compare(const ProxL1Double &that);
-};
+%template(ProxL1Double) TProxL1<double, double>;
 typedef TProxL1<double, double> ProxL1Double;
-TICK_MAKE_PICKLABLE(ProxL1Double);
+TICK_MAKE_TEMPLATED_PICKLABLE(TProxL1, ProxL1Double, double);
 
-%rename(ProxL1Float) TProxL1<float, float>;
-class ProxL1Float : public TProxSeparable<float, float> {
- public:
-   ProxL1Float();
-   ProxL1Float(float strength,
-            bool positive);
-
-   ProxL1Float(float strength,
-            ulong start,
-            ulong end,
-            bool positive);
-
-  bool compare(const ProxL1Float &that);
-};
+%template(ProxL1Float) TProxL1<float, float>;
 typedef TProxL1<float, float> ProxL1Float;
-TICK_MAKE_PICKLABLE(ProxL1Float);
+TICK_MAKE_TEMPLATED_PICKLABLE(TProxL1, ProxL1Float , float);
+
+
+%template(ProxL1AtomicDouble) TProxL1<double, std::atomic<double>>;
+typedef TProxL1<double, std::atomic<double>> ProxL1AtomicDouble;
+
+%template(ProxL1AtomicFloat) TProxL1<float, std::atomic<float>>;
+typedef TProxL1<float, std::atomic<float>> ProxL1AtomicFloat;
+
+
+
+//
+//%rename(ProxL1Double) TProxL1<double, double>;
+//class ProxL1Double : public TProxSeparable<double, double> {
+// public:
+//   ProxL1Double();
+//   ProxL1Double(double strength,
+//            bool positive);
+//
+//   ProxL1Double(double strength,
+//            ulong start,
+//            ulong end,
+//            bool positive);
+//
+//  bool compare(const ProxL1Double &that);
+//};
+//typedef TProxL1<double, double> ProxL1Double;
+//TICK_MAKE_PICKLABLE(ProxL1Double);
+//
+//%rename(ProxL1Float) TProxL1<float, float>;
+//class ProxL1Float : public TProxSeparable<float, float> {
+// public:
+//   ProxL1Float();
+//   ProxL1Float(float strength,
+//            bool positive);
+//
+//   ProxL1Float(float strength,
+//            ulong start,
+//            ulong end,
+//            bool positive);
+//
+//  bool compare(const ProxL1Float &that);
+//};
+//typedef TProxL1<float, float> ProxL1Float;
+//TICK_MAKE_PICKLABLE(ProxL1Float);

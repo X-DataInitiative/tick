@@ -20,6 +20,8 @@ class DLL_PUBLIC TModelLinReg : public virtual TModelGeneralizedLinear<T, K>,
   using TModelGeneralizedLinear<T, K>::n_samples;
   using TModelGeneralizedLinear<T, K>::features_norm_sq;
   using TModelGeneralizedLinear<T, K>::fit_intercept;
+  using TModelGeneralizedLinear<T, K>::get_features;
+  using TModelGeneralizedLinear<T, K>::ready_features_norm_sq;
 
  public:
   using TModelGeneralizedLinear<T, K>::get_label;
@@ -41,8 +43,19 @@ class DLL_PUBLIC TModelLinReg : public virtual TModelGeneralizedLinear<T, K>,
   virtual ~TModelLinReg() {}
 
   T sdca_dual_min_i(const ulong i, const T dual_i,
-                    const Array<K> &primal_vector,
-                    const T previous_delta_dual_i, T l_l2sq) override;
+                    const T primal_dot_features,
+                    const T previous_delta_dual_i, T _1_over_lbda_n) override;
+
+  Array<T> sdca_dual_min_many(ulong indices,
+                              const Array<T> &duals,
+                              Array2d<T> &g,
+                              Array2d<T> &n_hess,
+                              Array<T> &p,
+                              Array<T> &n_grad,
+                              Array<T> &sdca_labels,
+                              Array<T> &new_duals,
+                              Array<T> &delta_duals,
+                              ArrayInt &ipiv) override;
 
   T loss_i(const ulong i, const Array<K> &coeffs) override;
 
@@ -76,6 +89,8 @@ class DLL_PUBLIC TModelLinReg : public virtual TModelGeneralizedLinear<T, K>,
   }
 };
 
+
+
 using ModelLinReg = TModelLinReg<double, double>;
 
 using ModelLinRegDouble = TModelLinReg<double, double>;
@@ -88,6 +103,7 @@ CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelLinRegFloat,
                                    cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(ModelLinRegFloat)
 
+using ModelLinRegAtomic = TModelLinReg<double, std::atomic<double> >;
 using ModelLinRegAtomicDouble = TModelLinReg<double, std::atomic<double> >;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelLinRegAtomicDouble,
                                    cereal::specialization::member_serialize)

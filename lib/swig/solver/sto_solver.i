@@ -37,7 +37,7 @@ class TStoSolver {
 
   virtual void get_minimizer(Array<T> &out);
   virtual void get_iterate(Array<T> &out);
-  virtual void set_starting_iterate(Array<K> &new_iterate);
+  virtual void set_starting_iterate(Array<T> &new_iterate);
 
   inline void set_tol(T tol);
   inline T get_tol() const;
@@ -131,3 +131,44 @@ class TStoSolver<float, float> {
   void set_seed(int seed);
 };
 typedef TStoSolver<float, float> StoSolverFloat;
+
+//%template(AtomicStoSolverDouble) TStoSolver<double, std::atomic<double> >;
+%rename(AtomicStoSolverDouble) TStoSolver<double, std::atomic<double> >;
+class TStoSolver<double, std::atomic<double> > {
+ // Base abstract for a stochastic solver
+ public:
+  AtomicStoSolverDouble(
+    unsigned long epoch_size,
+    double tol,
+    RandType rand_type
+  );
+
+  virtual void solve(int n_epochs = 1);
+  virtual void get_minimizer(ArrayDouble &out);
+  virtual void get_iterate(ArrayDouble &out);
+  virtual void set_starting_iterate(ArrayDouble &new_iterate);
+
+  inline void set_tol(double tol);
+  inline double get_tol() const;
+  inline void set_epoch_size(unsigned long epoch_size);
+  inline unsigned long get_epoch_size() const;
+  inline void set_rand_type(RandType rand_type);
+  inline RandType get_rand_type() const;
+  inline void set_rand_max(unsigned long rand_max);
+  inline unsigned long get_rand_max() const;
+  inline int get_record_every() const;
+  inline void set_record_every(int record_every);
+
+  std::vector<double> get_time_history() const;
+  std::vector<int> get_epoch_history() const;
+  SArrayDoublePtrList1D get_iterate_history() const;
+
+  virtual void set_model(ModelAtomicDoublePtr model);
+  virtual void set_prox(ProxAtomicDoublePtr prox);
+  void set_seed(int seed);
+};
+typedef TStoSolver<double, std::atomic<double> > AtomicStoSolverDouble;
+
+
+
+%template(AtomicStoSolverFloat) TStoSolver<float, std::atomic<float> >;

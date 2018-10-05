@@ -18,12 +18,12 @@ class SDCATest(object):
         self.check_solver(solver, fit_intercept=False, model="logreg",
                           decimal=1)
 
-    def compare_solver_sdca(self):
+    def test_compare_solver_sdca(self):
         """...Compare SDCA solution with SVRG solution
         """
         np.random.seed(12)
-        n_samples = SolverTest.n_samples
-        n_features = SolverTest.n_features
+        n_samples = self.n_samples
+        n_features = self.n_features
 
         for fit_intercept in [True, False]:
             y, X, coeffs0, interc0 = TestSolver.generate_logistic_data(
@@ -38,19 +38,23 @@ class SDCATest(object):
             l_l2_sdca = ratio * l_enet
             l_l1_sdca = (1 - ratio) * l_enet
             sdca = SDCA(l_l2sq=l_l2_sdca, max_iter=100, verbose=False, tol=0,
-                        seed=SolverTest.sto_seed).set_model(model)
+                        seed=self.sto_seed).set_model(model)
             prox_l1 = ProxL1(l_l1_sdca).astype(self.dtype)
             sdca.set_prox(prox_l1)
             coeffs_sdca = sdca.solve()
 
             # Compare with SVRG
             svrg = SVRG(max_iter=100, verbose=False, tol=0,
-                        seed=SolverTest.sto_seed).set_model(model)
+                        seed=self.sto_seed).set_model(model)
             prox_enet = ProxElasticNet(l_enet, ratio).astype(self.dtype)
             svrg.set_prox(prox_enet)
             coeffs_svrg = svrg.solve(step=0.1)
 
-            np.testing.assert_allclose(coeffs_sdca, coeffs_svrg)
+            precision = 1e-7
+            if self.dtype is "float32" or self.dtype is np.dtype("float32"):
+                precision = 4
+            np.testing.assert_allclose(coeffs_sdca, coeffs_svrg,
+                                       rtol=precision)
 
     def test_sdca_sparse_and_dense_consistency(self):
         """...SolverTest SDCA can run all glm models and is consistent with sparsity

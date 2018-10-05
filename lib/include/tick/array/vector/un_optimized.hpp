@@ -1,4 +1,4 @@
-
+#include <cmath>
 
 
 // This macro ensures that the corresponding optimized blas function is used if available
@@ -129,7 +129,7 @@ void solve_linear_system_with_gauss_jordan(int n, T *A, T *b) {
     int max_row = i;
     for (int k = i + 1; k < n; k++) {
       if (abs(A[i * n + k]) > max_element) {
-        max_element = abs(A[i * n + k]);
+        max_element = std::fabs(A[i * n + k]);
         max_row = k;
       }
     }
@@ -167,6 +167,9 @@ void solve_linear_system_with_gauss_jordan(int n, T *A, T *b) {
     }
   }
 }
+
+template void solve_linear_system_with_gauss_jordan<float>(int n, float* A, float* B);
+template void solve_linear_system_with_gauss_jordan<double>(int n, double* A, double* B);
 
 template <typename T>
 void vector_operations_unoptimized<T>::solve_linear_system(int n, T *A, T *b, int *ipiv) const {

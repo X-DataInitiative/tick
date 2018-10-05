@@ -80,8 +80,6 @@ class ModelLogRegAtomicDouble : public virtual TModelGeneralizedLinear<double, s
   static void sigmoid(const ArrayDouble &x, ArrayDouble &out);
   static void logistic(const ArrayDouble &x, ArrayDouble &out);
 };
-typedef TModelLogReg<double, std::atomic<double>> ModelLogRegAtomicDouble;
-
 
 %rename(ModelLogRegAtomicFloat) TModelLogReg<float, std::atomic<float>>;
 class TModelLogReg<float, std::atomic<float>> : public virtual TModelGeneralizedLinear<float, std::atomic<float>>, public TModelLipschitz<float, std::atomic<float>> {
@@ -99,4 +97,3 @@ class TModelLogReg<float, std::atomic<float>> : public virtual TModelGeneralized
   static void sigmoid(const Array<float> &x, Array<float> &out);
   static void logistic(const Array<float> &x, Array<float> &out);
 };
-typedef TModelLogReg<float, std::atomic<float>> ModelLogRegAtomicFloat;

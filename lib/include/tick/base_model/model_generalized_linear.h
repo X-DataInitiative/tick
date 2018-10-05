@@ -11,17 +11,20 @@
 template <class T, class K = T>
 class DLL_PUBLIC TModelGeneralizedLinear
     : virtual public TModelLabelsFeatures<T, K> {
+
+ public:
+  using TModelLabelsFeatures<T, K>::get_label;
+  using TModelLabelsFeatures<T, K>::get_n_features;
+  using TModelLabelsFeatures<T, K>::get_n_samples;
+  using TModelLabelsFeatures<T, K>::get_class_name;
+
  protected:
   using TModelLabelsFeatures<T, K>::features;
   using TModelLabelsFeatures<T, K>::labels;
   using TModelLabelsFeatures<T, K>::n_samples;
-  using TModelLabelsFeatures<T, K>::get_n_samples;
   using TModelLabelsFeatures<T, K>::n_features;
-  using TModelLabelsFeatures<T, K>::get_n_features;
-  using TModelLabelsFeatures<T, K>::get_label;
   using TModelLabelsFeatures<T, K>::get_features;
   using TModelLabelsFeatures<T, K>::is_ready_columns_sparsity;
-  using TModelLabelsFeatures<T, K>::get_class_name;
 
   bool fit_intercept = false;
   bool ready_features_norm_sq = false;
@@ -41,9 +44,12 @@ class DLL_PUBLIC TModelGeneralizedLinear
   virtual void compute_grad_i(const ulong i, const Array<K> &coeffs,
                               Array<T> &out, const bool fill);
 
+  Array<T> &get_features_norm_sq() { return features_norm_sq; }
+
+ public:
   void compute_features_norm_sq();
 
-  Array<T> &get_features_norm_sq() { return features_norm_sq; }
+  T get_features_norm_sq_i(ulong i) { return features_norm_sq[i]; }
 
  public:
   TModelGeneralizedLinear(const std::shared_ptr<BaseArray2d<T> > features,
@@ -67,8 +73,8 @@ class DLL_PUBLIC TModelGeneralizedLinear
 
   T loss(const Array<K> &coeffs) override;
 
-  void sdca_primal_dual_relation(const T l_l2sq, const Array<T> &dual_vector,
-                                 Array<T> &out_primal_vector) override;
+  void sdca_primal_dual_relation(const T _1_over_lbda_n, const Array<K> &dual_vector,
+                                 Array<K> &out_primal_vector) override;
 
   bool use_intercept() const override { return fit_intercept; }
 

@@ -7,6 +7,7 @@ include_directories(${CMAKE_SOURCE_DIR}/..)
 
 option(USE_MKL "Force tick to use MKL" OFF)
 option(USE_BLAS "Force tick to use BLAS" OFF)
+set(USE_BLAS ON)
 
 set(TICK_EXTRA_RPATH "")
 set(TICK_BLAS_LIBRARIES "")

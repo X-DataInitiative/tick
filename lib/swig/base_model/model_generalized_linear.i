@@ -64,8 +64,8 @@ class TModelGeneralizedLinear<double, std::atomic<double> > : public virtual TMo
   unsigned long get_n_coeffs() const override;
   virtual void set_fit_intercept(bool fit_intercept);
   void sdca_primal_dual_relation(const double l_l2sq,
-                                 const ArrayDouble &dual_vector,
-                                 ArrayDouble &out_primal_vector);
+                                 const ArrayAtomicDouble &dual_vector,
+                                 ArrayAtomicDouble &out_primal_vector);
 };
 typedef TModelGeneralizedLinear<double, std::atomic<double> > ModelGeneralizedLinearAtomicDouble;
 
@@ -79,7 +79,7 @@ class TModelGeneralizedLinear<float, std::atomic<float> > : public virtual TMode
   unsigned long get_n_coeffs() const override;
   virtual void set_fit_intercept(bool fit_intercept);
   void sdca_primal_dual_relation(const float l_l2sq,
-                                 const ArrayFloat &dual_vector,
-                                 ArrayFloat &out_primal_vector);
+                                 const ArrayAtomicFloat &dual_vector,
+                                 ArrayAtomicFloat &out_primal_vector);
 };
 typedef TModelGeneralizedLinear<float, std::atomic<float> > ModelGeneralizedLinearAtomicFloat;

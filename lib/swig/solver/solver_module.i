@@ -4,6 +4,7 @@
 
 %include defs.i
 %include std_shared_ptr.i
+%include std_vector.i
 
 %{
 #include "tick/base/tick_python.h"

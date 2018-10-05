@@ -2,6 +2,7 @@
 
 import warnings
 from abc import ABC, abstractmethod
+
 import numpy as np
 from tick.base import Base
 
@@ -169,3 +170,44 @@ class Model(ABC, Base):
     def _build_cpp_model(self, dtype: str):
         raise ValueError("""This function is expected to
                             overriden in a subclass""".strip())
+
+    @property
+    def _AtomicClass(self):
+        raise ValueError("""This function is expected to
+                            overriden in a subclass""".strip())
+
+    def to_atomic(self):
+        atomic_model = self._AtomicClass()
+        atomic_model.set_params(**self.get_params())
+        if self._fitted:
+            atomic_model.fit(self.features, self.labels)
+        return atomic_model
+
+    def _get_params_set(self):
+        """Get the set of parameters
+        """
+        return {'dtype'}
+
+    def get_params(self):
+        """Get parameters for this model
+
+        Returns
+        -------
+        params : mapping of string to any
+            Parameter names mapped to their values.
+        """
+        params = {}
+        for param in self._get_params_set():
+            params[param] = self.__getattribute__(param)
+        return params
+
+    def set_params(self, **params):
+        """Set the parameters of this model.
+
+        Returns
+        -------
+        self
+        """
+        for param in self._get_params_set():
+            self._set(param, params[param])
+        return self

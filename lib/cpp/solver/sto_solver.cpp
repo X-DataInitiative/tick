@@ -127,24 +127,9 @@ std::vector<std::shared_ptr<SArray<T> > >  TStoSolver<T, K>:: get_iterate_histor
 }
 
 template <class T, class K>
-void TStoSolver<T, K>::set_starting_iterate(Array<K> &new_iterate) {
+void TStoSolver<T, K>::set_starting_iterate(Array<T> &new_iterate) {
   for (ulong i = 0; i < new_iterate.size(); ++i) {
     iterate[i] = new_iterate[i];
-  }
-}
-
-template <>
-void TStoSolver<double, std::atomic<double>>::set_starting_iterate(
-    Array<std::atomic<double>> &new_iterate) {
-  for (ulong i = 0; i < new_iterate.size(); ++i) {
-    iterate[i].store(new_iterate[i].load());
-  }
-}
-template <>
-void TStoSolver<float, std::atomic<float>>::set_starting_iterate(
-    Array<std::atomic<float>> &new_iterate) {
-  for (ulong i = 0; i < new_iterate.size(); ++i) {
-    iterate[i].store(new_iterate[i].load());
   }
 }
 
