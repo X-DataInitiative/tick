@@ -107,26 +107,47 @@ class SparseArray2d : public BaseArray2d<T> {
     ar(this->_size);
 
     inner_save(ar);
-
-    std::vector<INDICE_TYPE> v_indices(this->_indices, this->_indices + this->_size_sparse),
-        v_row_indices(this->_row_indices, this->_row_indices + (this->_n_rows + 1));
-    ar(v_indices);
-    ar(v_row_indices);
   }
 
+  // Atomic data, BinaryInputArchive
   template <class Archive, typename Y = T>
-  typename std::enable_if<std::is_same<Y, std::atomic<K>>::value>::type inner_save(
-      Archive &ar) const {
-    std::vector<K> k_data;
-    for (size_t i = 0; i < this->_size_sparse; i++) k_data.emplace_back(this->_data[i]);
-    ar(k_data);
+  typename std::enable_if<std::is_same<Y, std::atomic<K>>::value
+    && cereal::traits::is_output_serializable<cereal::BinaryData<T>, Archive>::value, void>::type
+  inner_save(Archive &ar) const {
+    for (size_t i = 0; i < this->_size_sparse; i++) ar(this->_data[i].load());
+    ar(cereal::binary_data(this->_indices, sizeof(INDICE_TYPE) * this->_size_sparse));
+    ar(cereal::binary_data(this->_row_indices, sizeof(INDICE_TYPE) * (this->_n_rows + 1)));
   }
 
+  // This is for JSON types that are used in pickling, TODO: try make pickly use only binary types
+  // Atomic data, NonBinaryInputArchive
   template <class Archive, typename Y = T>
-  typename std::enable_if<!std::is_same<Y, std::atomic<K>>::value>::type inner_save(
-      Archive &ar) const {
-    std::vector<T> v_data(this->_data, this->_data + this->_size_sparse);
-    ar(v_data);
+  typename std::enable_if<std::is_same<Y, std::atomic<K>>::value
+    && !cereal::traits::is_output_serializable<cereal::BinaryData<T>, Archive>::value, void>::type
+  inner_save(Archive &ar) const {
+    for (size_t i = 0; i < this->_size_sparse; i++) ar(this->_data[i].load());
+    for (size_t i = 0; i < this->_size_sparse; i++) ar(this->_indices[i]);
+    for (size_t i = 0; i < this->_n_rows + 1; i++) ar(this->_row_indices[i]);
+  }
+
+  // Non-atomic data, BinaryInputArchive
+  template <class Archive, typename Y = T>
+  typename std::enable_if<std::is_same<Y, K>::value
+    && cereal::traits::is_output_serializable<cereal::BinaryData<T>, Archive>::value, void>::type
+  inner_save(Archive &ar) const {
+    ar(cereal::binary_data(this->_data, sizeof(T) * this->_size_sparse));
+    ar(cereal::binary_data(this->_indices, sizeof(INDICE_TYPE) * this->_size_sparse));
+    ar(cereal::binary_data(this->_row_indices, sizeof(INDICE_TYPE) * (this->_n_rows + 1)));
+  }
+
+  // Non-atomic data, NonBinaryInputArchive
+  template <class Archive, typename Y = T>
+  typename std::enable_if<std::is_same<Y, K>::value
+    && !cereal::traits::is_output_serializable<cereal::BinaryData<T>, Archive>::value, void>::type
+  inner_save(Archive &ar) const {
+    for (size_t i = 0; i < this->_size_sparse; i++) ar(this->_data[i]);
+    for (size_t i = 0; i < this->_size_sparse; i++) ar(this->_indices[i]);
+    for (size_t i = 0; i < this->_n_rows + 1; i++) ar(this->_row_indices[i]);
   }
 
   template <class Archive>
@@ -147,20 +168,12 @@ class SparseArray2d : public BaseArray2d<T> {
 
     T *s_data;
     TICK_PYTHON_MALLOC(s_data, T, this->_size_sparse);
-    inner_load(ar, s_data);
 
     INDICE_TYPE *s_indices, *s_row_indices;
-    std::vector<INDICE_TYPE> v_indices(this->_size_sparse);
-    std::vector<INDICE_TYPE> v_row_indices(this->_n_rows + 1);
-
     TICK_PYTHON_MALLOC(s_indices, INDICE_TYPE, this->_size_sparse);
     TICK_PYTHON_MALLOC(s_row_indices, INDICE_TYPE, this->_n_rows + 1);
 
-    ar(v_indices);
-    ar(v_row_indices);
-
-    std::copy(v_indices.begin(), v_indices.end(), s_indices);
-    std::copy(v_row_indices.begin(), v_row_indices.end(), s_row_indices);
+    inner_load(ar, s_data, s_indices, s_row_indices);
 
     this->_data = s_data;
     this->_indices = s_indices;
@@ -171,20 +184,52 @@ class SparseArray2d : public BaseArray2d<T> {
     this->is_row_indices_allocation_owned = 1;
   }
 
+  // Atomic data, BinaryInputArchive
   template <class Archive, typename Y = T>
-  typename std::enable_if<std::is_same<Y, std::atomic<K>>::value>::type inner_load(Archive &ar,
-                                                                                   T *s_data) {
-    std::vector<K> k_data;
-    ar(k_data);
-    for (size_t i = 0; i < this->_size_sparse; i++) s_data[i] = k_data[i];
+  typename std::enable_if<std::is_same<Y, std::atomic<K>>::value
+    && cereal::traits::is_output_serializable<cereal::BinaryData<T>, Archive>::value, void>::type
+  inner_load(Archive &ar, T *s_data, INDICE_TYPE *s_indices, INDICE_TYPE *s_row_indices) {
+    K data;
+    for (size_t i = 0; i < this->_size_sparse; i++) {
+      ar(data);
+      s_data[i].store(data);
+    }
+    ar(cereal::binary_data(s_indices, sizeof(INDICE_TYPE) * this->_size_sparse));
+    ar(cereal::binary_data(s_row_indices, sizeof(INDICE_TYPE) * (this->_n_rows + 1)));
   }
 
+  // Atomic data, NonBinaryInputArchive
   template <class Archive, typename Y = T>
-  typename std::enable_if<!std::is_same<Y, std::atomic<K>>::value>::type inner_load(Archive &ar,
-                                                                                    T *s_data) {
-    std::vector<T> v_data(this->_size_sparse);
-    ar(v_data);
-    std::copy(v_data.begin(), v_data.end(), s_data);
+  typename std::enable_if<std::is_same<Y, std::atomic<K>>::value
+    && !cereal::traits::is_output_serializable<cereal::BinaryData<T>, Archive>::value, void>::type
+  inner_load(Archive &ar, T *s_data, INDICE_TYPE *s_indices, INDICE_TYPE *s_row_indices) {
+    K data;
+    for (size_t i = 0; i < this->_size_sparse; i++) {
+      ar(data);
+      s_data[i].store(data);
+    }
+    for (size_t i = 0; i < this->_size_sparse; i++) ar(s_indices[i]);
+    for (size_t i = 0; i < this->_n_rows + 1; i++) ar(s_row_indices[i]);
+  }
+
+  // Non-atomic data, BinaryInputArchive
+  template <class Archive, typename Y = T>
+  typename std::enable_if<std::is_same<Y, K>::value
+    && cereal::traits::is_output_serializable<cereal::BinaryData<T>, Archive>::value, void>::type
+  inner_load(Archive &ar, T *s_data, INDICE_TYPE *s_indices, INDICE_TYPE *s_row_indices) {
+    ar(cereal::binary_data(s_data, sizeof(T) * this->_size_sparse));
+    ar(cereal::binary_data(s_indices, sizeof(INDICE_TYPE) * this->_size_sparse));
+    ar(cereal::binary_data(s_row_indices, sizeof(INDICE_TYPE) * (this->_n_rows + 1)));
+  }
+
+  // Non-atomic data, NonBinaryInputArchive
+  template <class Archive, typename Y = T>
+  typename std::enable_if<std::is_same<Y, K>::value
+    && !cereal::traits::is_output_serializable<cereal::BinaryData<T>, Archive>::value, void>::type
+  inner_load(Archive &ar, T *s_data, INDICE_TYPE *s_indices, INDICE_TYPE *s_row_indices) {
+    for (size_t i = 0; i < this->_size_sparse; i++) ar(s_data[i]);
+    for (size_t i = 0; i < this->_size_sparse; i++) ar(s_indices[i]);
+    for (size_t i = 0; i < this->_n_rows + 1; i++) ar(s_row_indices[i]);
   }
 };
 
