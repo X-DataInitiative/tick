@@ -61,7 +61,7 @@ profile:
     self: array
     src:
       ./cpp/base
-      ./swig/base
+      ./swig/tick/base
     install: ${lib_path}/base/build
     out: _base${lib_name}
 
@@ -72,7 +72,7 @@ profile:
       ./third_party/cereal/include
     src:
       ./cpp/array
-      ./swig/array
+      ./swig/tick/array
     install: ${lib_path}/array/build
     out: _array${lib_name}
 
@@ -81,7 +81,7 @@ profile:
     self: base
     src:
       ./cpp/array_test
-      ./swig/array_test
+      ./swig/tick/array_test
     install: ${lib_path}/array_test/build
     out: _array_test${lib_name}
 
@@ -90,7 +90,7 @@ profile:
     self: base
     src:
       ./cpp/base_model
-      ./swig/base_model
+      ./swig/tick/base_model
     install: ${lib_path}/base_model/build
     out: _base_model${lib_name}
 
@@ -99,7 +99,7 @@ profile:
     self: base_model
     src:
       ./cpp/hawkes/model
-      ./swig/hawkes/model
+      ./swig/tick/hawkes/model
     install: ${lib_path}/hawkes/model/build
     out: _hawkes_model${lib_name}
 
@@ -108,7 +108,7 @@ profile:
     self: random
     src:
       ./cpp/hawkes/simulation
-      ./swig/hawkes/simulation
+      ./swig/tick/hawkes/simulation
     install: ${lib_path}/hawkes/simulation/build
     out: _hawkes_simulation${lib_name}
 
@@ -117,7 +117,7 @@ profile:
     self: hawkes/model
     src:
       ./cpp/hawkes/inference
-      ./swig/hawkes/inference
+      ./swig/tick/hawkes/inference
     install: ${lib_path}/hawkes/inference/build
     out: _hawkes_inference${lib_name}
 
@@ -126,7 +126,7 @@ profile:
     self: base_model
     src:
       ./cpp/linear_model
-      ./swig/linear_model
+      ./swig/tick/linear_model
     install: ${lib_path}/linear_model/build
     out: _linear_model${lib_name}
 
@@ -135,7 +135,7 @@ profile:
     self: base
     src:
       ./cpp/prox
-      ./swig/prox
+      ./swig/tick/prox
     install: ${lib_path}/prox/build
     out: _prox${lib_name}
 
@@ -144,7 +144,7 @@ profile:
     self: base
     src:
       ./cpp/preprocessing
-      ./swig/preprocessing
+      ./swig/tick/preprocessing
     install: ${lib_path}/preprocessing/build
     out: _preprocessing${lib_name}
 
@@ -153,7 +153,7 @@ profile:
     self: base
     src:
       ./cpp/random
-      ./swig/random
+      ./swig/tick/random
     install: ${lib_path}/random/build
     out: _crandom${lib_name}
 
@@ -162,7 +162,7 @@ profile:
     self: linear_model
     src:
       ./cpp/robust
-      ./swig/robust
+      ./swig/tick/robust
     install: ${lib_path}/robust/build
     out: _robust${lib_name}
 
@@ -171,7 +171,7 @@ profile:
     self: random linear_model prox robust
     src:
       ./cpp/solver
-      ./swig/solver
+      ./swig/tick/solver
     install: ${lib_path}/solver/build
     out: _solver${lib_name}
 
@@ -180,7 +180,7 @@ profile:
     self: base_model
     src:
       ./cpp/survival
-      ./swig/survival
+      ./swig/tick/survival
     install: ${lib_path}/survival/build
     out: _survival${lib_name}
 

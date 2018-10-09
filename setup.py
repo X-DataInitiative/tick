@@ -224,7 +224,7 @@ def create_extension(extension_name, module_dir,
     def add_dir_name(dir_name, filenames):
         return list(os.path.join(dir_name, filename) for filename in filenames)
 
-    swig_files = add_dir_name("lib/swig/" + module_dir[7:], swig_files)
+    swig_files = add_dir_name("lib/swig/tick/" + module_dir[7:], swig_files)
 
     for folder in folders:
         for file in os.listdir(folder):
@@ -247,7 +247,7 @@ def create_extension(extension_name, module_dir,
                      '-c++',
                      '-modern',
                      '-new_repr',
-                     '-Ilib/swig/base',
+                     '-Ilib/swig',
                      '-Ilib/include',
                      '-outdir', swig_path.build,
                      ]
@@ -289,15 +289,13 @@ def create_extension(extension_name, module_dir,
 
     # Include directory of module
     mod = SwigPath(module_dir, extension_name)
-    for opts in [swig_opts, extra_compile_args]:
-        opts.extend(["-Isrc/swig/"+extension_name])
 
     libraries = []
     library_dirs = []
     runtime_library_dirs = []
     extra_link_args = []
     define_macros = []
-    extra_include_dirs = ["include"]
+    extra_include_dirs = ["include", "swig"]
 
     # Deal with (optional) BLAS
     extra_compile_args.extend(blas_info.get("extra_compile_args", []))

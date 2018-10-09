@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
 # Author: Philip Deegan
-# Email : philip.deegan@polytechnique.edu 
+# Email : philip.deegan@polytechnique.edu
 # Date  : 21 - September - 2017
 #
 # This script compiles tick C++ libs in parallel
@@ -9,9 +9,9 @@
 #
 # Requires the mkn build tool
 #
-# Input arguments are optional but if used are to be the 
+# Input arguments are optional but if used are to be the
 #  modules to be compile, otherwise all modules are
-#  compiled - use command "mkn profiles" to view available 
+#  compiled - use command "mkn profiles" to view available
 #  modules/profiles
 #
 # ccache is recommended
@@ -46,7 +46,7 @@ if (( $CLI_ARGS_LEN > 0 )); then
         shift # past argument=value
         ;;
         *)
-        NPROFILES+=("$C")      
+        NPROFILES+=("$C")
         ;;
     esac
   done
@@ -65,7 +65,7 @@ MKN_C_FLAGS=" $TICK_INDICES "
 cd $ROOT
 
 (( $COMPILE == 1 )) && \
-  for P in "${PROFILES[@]}"; do 
+  for P in "${PROFILES[@]}"; do
     mkn compile -t ${MKN_COMPILE_THREADS} -a "${MKN_C_FLAGS[@]}" -b "$PY_INCS" \
       ${MKN_X_FILE[@]} -p ${P} -C lib "${MKN_WITH[@]}"
   done
@@ -76,9 +76,9 @@ TKLOG=$KLOG
       EX=$(hash_index $P)
       LIBLD=${LIB_LD_PER_LIB[$EX]}
       if [[ "$unameOut" == "CYGWIN"* ]] || [[ "$unameOut" == "MINGW"* ]]; then
-        # Here we intercept the command for linking on windows and change 
+        # Here we intercept the command for linking on windows and change
         # the output from ".dll" to ".pyd"
-        KLOG=0 
+        KLOG=0
         OUT=$(mkn link -Sp $P -l "${LDARGS} $LIBLD" \
               -P "${MKN_P}" -C lib "${MKN_WITH[@]}" \
               ${MKN_X_FILE[@]} -RB $B_PATH |  head -1)
@@ -90,12 +90,12 @@ TKLOG=$KLOG
       else
         mkn link -Sp $P -l "${LIBLDARGS} ${LDARGS} $LIBLD" \
            -P "${MKN_P}" -C lib "${MKN_WITH[@]}" \
-           ${MKN_X_FILE[@]} -B "$B_PATH" 
+           ${MKN_X_FILE[@]} -B "$B_PATH"
       fi
       PUSHD=${LIBRARIES[$EX]}
       pushd $ROOT/$(dirname ${PUSHD}) 2>&1 > /dev/null
         if [[ "$unameOut" == "CYGWIN"* ]] || [[ "$unameOut" == "MINGW"* ]] || [[ "$unameOut" == "MSYS_NT"* ]]; then
-          for f in $(find . -maxdepth 1 -type f -name "*.dll" ); do    
+          for f in $(find . -maxdepth 1 -type f -name "*.dll" ); do
             DLL="${f%.*}"
             cp ${f:2} ${DLL}.pyd
           done
