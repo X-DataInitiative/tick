@@ -305,13 +305,13 @@ TEST(TimeFuncTest, Serialization) {
 
   std::stringstream ss;
   {
-    cereal::JSONOutputArchive outputArchive(ss);
+    cereal::PortableBinaryOutputArchive outputArchive(ss);
 
     outputArchive(tf);
   }
 
   {
-    cereal::JSONInputArchive inputArchive(ss);
+    cereal::PortableBinaryInputArchive inputArchive(ss);
 
     TimeFunction tf_restored(0.0);
     inputArchive(tf_restored);

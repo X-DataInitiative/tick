@@ -8,15 +8,15 @@
 
 TEST(Serialize, ForceLoadError) {
   // CSR matrix example from https://en.wikipedia.org/wiki/Sparse_matrix
-  ArrayDouble data{10, 20, 30, 40, 50, 60, 70, 80};
+  ArrayFloat data{10, 20, 30, 40, 50, 60, 70, 80};
   Array<INDICE_TYPE> row_indices{0, 2, 4, 7, 8};
   Array<INDICE_TYPE> indices{0, 1, 1, 3, 2, 3, 4, 5};
-  SparseArrayDouble2d sparse_array(4, 6, row_indices.data(), indices.data(), data.data());
+  SparseArrayFloat2d sparse_array(4, 6, row_indices.data(), indices.data(), data.data());
   bool caught = false;
   try {
-    std::string file_name = "test_sparse_array_2d_double.cereal";
+    std::string file_name = "test_sparse_array_2d_float.cereal";
     array_to_file(file_name, sparse_array);
-    auto loaded_array = array_from_file<SSparseArrayFloat2d>(file_name);
+    SSparseArrayDouble2dPtr loaded_array = array_from_file<SSparseArrayDouble2d>(file_name);
   } catch (const std::exception &e) {
     caught = true;
   }

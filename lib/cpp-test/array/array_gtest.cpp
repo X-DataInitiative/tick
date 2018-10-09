@@ -694,9 +694,9 @@ void TestSerialization2D() {
 
 }  // namespace
 
-TYPED_TEST(ArrayTest, EmptySerializationJSON) {
+TYPED_TEST(ArrayTest, EmptySerializationPortableBinary) {
   SCOPED_TRACE("");
-  ::TestEmptySerialization<cereal::JSONInputArchive, cereal::JSONOutputArchive,
+  ::TestEmptySerialization<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive,
                            TypeParam>();
 }
 
@@ -706,10 +706,10 @@ TYPED_TEST(ArrayTest, EmptySerializationBinary) {
                            TypeParam>();
 }
 
-TYPED_TEST(Array2dTest, EmptySerializationJSON) {
+TYPED_TEST(Array2dTest, EmptySerializationPortableBinary) {
   SCOPED_TRACE("");
-  ::TestEmptySerialization2D<cereal::JSONInputArchive,
-                             cereal::JSONOutputArchive, TypeParam>();
+  ::TestEmptySerialization2D<cereal::PortableBinaryInputArchive,
+                             cereal::PortableBinaryOutputArchive, TypeParam>();
 }
 
 TYPED_TEST(Array2dTest, EmptySerializationBinary) {
@@ -718,9 +718,9 @@ TYPED_TEST(Array2dTest, EmptySerializationBinary) {
                              cereal::PortableBinaryOutputArchive, TypeParam>();
 }
 
-TYPED_TEST(ArrayTest, SerializationJSON) {
+TYPED_TEST(ArrayTest, SerializationPortableBinary) {
   SCOPED_TRACE("");
-  ::TestSerialization<cereal::JSONInputArchive, cereal::JSONOutputArchive,
+  ::TestSerialization<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive,
                       TypeParam>();
 }
 
@@ -730,9 +730,9 @@ TYPED_TEST(ArrayTest, SerializationBinary) {
                       TypeParam>();
 }
 
-TYPED_TEST(Array2dTest, SerializationJSON) {
+TYPED_TEST(Array2dTest, SerializationPortableBinary) {
   SCOPED_TRACE("");
-  ::TestSerialization2D<cereal::JSONInputArchive, cereal::JSONOutputArchive,
+  ::TestSerialization2D<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive,
                         TypeParam>();
 }
 

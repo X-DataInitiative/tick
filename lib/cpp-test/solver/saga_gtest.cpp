@@ -2,7 +2,6 @@
 
 #include <gtest/gtest.h>
 #include <cereal/types/memory.hpp>
-#include <cereal/archives/json.hpp>
 #include <cereal/archives/portable_binary.hpp>
 
 #include "tick/linear_model/model_linreg.h"

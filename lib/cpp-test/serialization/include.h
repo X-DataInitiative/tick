@@ -8,8 +8,7 @@
 #define DEBUG_COSTLY_THROW 1
 #define TICK_TEST_DATA_SIZE (1000)
 
-#include <cereal/archives/binary.hpp>
-#include <cereal/archives/json.hpp>
+#include <cereal/archives/portable_binary.hpp>
 #include <cereal/types/memory.hpp>
 #include <cereal/types/unordered_map.hpp>
 
@@ -164,8 +163,8 @@ class Wrapper {
 template <typename T1, typename H1, class SOLVER, class MODEL>
 void do_with(const std::shared_ptr<SOLVER> solver,
              const std::shared_ptr<MODEL> model, const char *label, H1 &&prox) {
-  ::Wrapper<T1, cereal::JSONInputArchive,
-            cereal::JSONOutputArchive>::TestSerializing(solver, model,
+  ::Wrapper<T1, cereal::PortableBinaryInputArchive,
+            cereal::PortableBinaryOutputArchive>::TestSerializing(solver, model,
                                                         std::forward<H1>(prox));
 }
 template <typename T1, typename H1, class SOLVER, class MODEL, typename... T>

@@ -12,12 +12,10 @@
 #include "tick/array/array.h"
 #include "tick/linear_model/model_linreg.h"
 
-#include <cereal/archives/binary.hpp>
-#include <cereal/archives/json.hpp>
 #include <cereal/types/memory.hpp>
 #include <cereal/types/unordered_map.hpp>
-
 #include <cereal/archives/portable_binary.hpp>
+
 #include <fstream>
 
 TEST(Model, PartialVsFull) {
@@ -117,10 +115,10 @@ void TestModelLinRegSerialization() {
 
 }  // namespace
 
-TEST(Model, SerializationJSON) {
+TEST(Model, SerializationPortableBinary) {
   SCOPED_TRACE("");
-  ::TestModelLinRegSerialization<cereal::JSONInputArchive,
-                                 cereal::JSONOutputArchive>();
+  ::TestModelLinRegSerialization<cereal::PortableBinaryInputArchive,
+                                 cereal::PortableBinaryOutputArchive>();
 }
 
 TEST(Model, SerializationBinary) {
