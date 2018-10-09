@@ -69,14 +69,14 @@ void test_linear_separable(std::function<std::shared_ptr<MODEL>(
 }
 
 //####################### LIN REG ############################################
-TEST(Model, LinRegDoubleSerializationJSON) {
+TEST(Model, LinRegDoubleSerializationPortableBinary) {
   test_linear_separable<double, TModelLinReg<double> >(
       [](const SBaseArrayDouble2dPtr &features, const SArrayDoublePtr &labels) {
         return std::make_shared<TModelLinReg<double> >(features, labels, false,
                                                        1);
       });
 }
-TEST(Model, LinRegFloatSerializationJSON) {
+TEST(Model, LinRegFloatSerializationPortableBinary) {
   test_linear_separable<float, TModelLinReg<float> >(
       [](const SBaseArrayFloat2dPtr &features, const SArrayFloatPtr &labels) {
         return std::make_shared<TModelLinReg<float> >(features, labels, false,
@@ -86,7 +86,7 @@ TEST(Model, LinRegFloatSerializationJSON) {
 //####################### LIN REG ############################################
 
 //####################### LOG REG ############################################
-TEST(Model, LogRegDoubleSerializationJSON) {
+TEST(Model, LogRegDoubleSerializationPortableBinary) {
   test_linear_separable<double, TModelLogReg<double> >(
       [](const SBaseArrayDouble2dPtr &features, const SArrayDoublePtr &labels) {
         return std::make_shared<TModelLogReg<double> >(features, labels, false,
@@ -94,7 +94,7 @@ TEST(Model, LogRegDoubleSerializationJSON) {
       });
 }
 
-TEST(Model, LogRegFloatSerializationJSON) {
+TEST(Model, LogRegFloatSerializationPortableBinary) {
   test_linear_separable<float, TModelLogReg<float> >(
       [](const SBaseArrayFloat2dPtr &features, const SArrayFloatPtr &labels) {
         return std::make_shared<TModelLogReg<float> >(features, labels, false,
@@ -104,14 +104,14 @@ TEST(Model, LogRegFloatSerializationJSON) {
 //####################### LOG REG ############################################
 
 //####################### POIS REG ###########################################
-TEST(Model, PoisRegDoubleSerializationJSON) {
+TEST(Model, PoisRegDoubleSerializationPortableBinary) {
   test_linear_separable<double, TModelPoisReg<double> >(
       [](const SBaseArrayDouble2dPtr &features, const SArrayDoublePtr &labels) {
         return std::make_shared<TModelPoisReg<double> >(
             features, labels, LinkType::identity, false, 1);
       });
 }
-TEST(Model, PoisRegFloatSerializationJSON) {
+TEST(Model, PoisRegFloatSerializationPortableBinary) {
   test_linear_separable<float, TModelPoisReg<float> >(
       [](const SBaseArrayFloat2dPtr &features, const SArrayFloatPtr &labels) {
         return std::make_shared<TModelPoisReg<float> >(
@@ -121,14 +121,14 @@ TEST(Model, PoisRegFloatSerializationJSON) {
 //####################### POIS REG ###########################################
 
 //####################### QUAD HINGE #########################################
-TEST(Model, QuadHingeDoubleSerializationJSON) {
+TEST(Model, QuadHingeDoubleSerializationPortableBinary) {
   test_linear_separable<double, TModelQuadraticHinge<double> >(
       [](const SBaseArrayDouble2dPtr &features, const SArrayDoublePtr &labels) {
         return std::make_shared<TModelQuadraticHinge<double> >(features, labels,
                                                                false);
       });
 }
-TEST(Model, QuadHingeFloatSerializationJSON) {
+TEST(Model, QuadHingeFloatSerializationPortableBinary) {
   test_linear_separable<float, TModelQuadraticHinge<float> >(
       [](const SBaseArrayFloat2dPtr &features, const SArrayFloatPtr &labels) {
         return std::make_shared<TModelQuadraticHinge<float> >(features, labels,
@@ -138,13 +138,13 @@ TEST(Model, QuadHingeFloatSerializationJSON) {
 //####################### QUAD HINGE #########################################
 
 //####################### HINGE ##############################################
-TEST(Model, HingeDoubleSerializationJSON) {
+TEST(Model, HingeDoubleSerializationPortableBinary) {
   test_linear_separable<double, TModelHinge<double> >(
       [](const SBaseArrayDouble2dPtr &features, const SArrayDoublePtr &labels) {
         return std::make_shared<TModelHinge<double> >(features, labels, false);
       });
 }
-TEST(Model, HingeFloatSerializationJSON) {
+TEST(Model, HingeFloatSerializationPortableBinary) {
   test_linear_separable<float, TModelHinge<float> >(
       [](const SBaseArrayFloat2dPtr &features, const SArrayFloatPtr &labels) {
         return std::make_shared<TModelHinge<float> >(features, labels, false);
@@ -153,14 +153,14 @@ TEST(Model, HingeFloatSerializationJSON) {
 //####################### HINGE ##############################################
 
 //####################### SMOOTH HINGE #######################################
-TEST(Model, SmoothHingeDoubleSerializationJSON) {
+TEST(Model, SmoothHingeDoubleSerializationPortableBinary) {
   test_linear_separable<double, TModelSmoothedHinge<double> >(
       [](const SBaseArrayDouble2dPtr &features, const SArrayDoublePtr &labels) {
         return std::make_shared<TModelSmoothedHinge<double> >(features, labels,
                                                               false);
       });
 }
-TEST(Model, SmoothHingeFloatSerializationJSON) {
+TEST(Model, SmoothHingeFloatSerializationPortableBinary) {
   test_linear_separable<float, TModelSmoothedHinge<float> >(
       [](const SBaseArrayFloat2dPtr &features, const SArrayFloatPtr &labels) {
         return std::make_shared<TModelSmoothedHinge<float> >(features, labels,
@@ -170,14 +170,14 @@ TEST(Model, SmoothHingeFloatSerializationJSON) {
 //####################### SMOOTH HINGE #######################################
 
 //####################### ABSOLUTE REG #######################################
-TEST(Model, AbsoluteRegressionDoubleSerializationJSON) {
+TEST(Model, AbsoluteRegressionDoubleSerializationPortableBinary) {
   test_linear_separable<double, TModelAbsoluteRegression<double> >(
       [](const SBaseArrayDouble2dPtr &features, const SArrayDoublePtr &labels) {
         return std::make_shared<TModelAbsoluteRegression<double> >(
             features, labels, false);
       });
 }
-TEST(Model, AbsoluteRegressionFloatSerializationJSON) {
+TEST(Model, AbsoluteRegressionFloatSerializationPortableBinary) {
   test_linear_separable<float, TModelAbsoluteRegression<float> >(
       [](const SBaseArrayFloat2dPtr &features, const SArrayFloatPtr &labels) {
         return std::make_shared<TModelAbsoluteRegression<float> >(
@@ -187,14 +187,14 @@ TEST(Model, AbsoluteRegressionFloatSerializationJSON) {
 //####################### ABSOLUTE REG #######################################
 
 //####################### EPSIL INSENS #######################################
-TEST(Model, EpsilonInsensitiveDoubleSerializationJSON) {
+TEST(Model, EpsilonInsensitiveDoubleSerializationPortableBinary) {
   test_linear_separable<double, TModelEpsilonInsensitive<double> >(
       [](const SBaseArrayDouble2dPtr &features, const SArrayDoublePtr &labels) {
         return std::make_shared<TModelEpsilonInsensitive<double> >(
             features, labels, false, 100);
       });
 }
-TEST(Model, EpsilonInsensitiveFloatSerializationJSON) {
+TEST(Model, EpsilonInsensitiveFloatSerializationPortableBinary) {
   test_linear_separable<float, TModelEpsilonInsensitive<float> >(
       [](const SBaseArrayFloat2dPtr &features, const SArrayFloatPtr &labels) {
         return std::make_shared<TModelEpsilonInsensitive<float> >(
@@ -204,14 +204,14 @@ TEST(Model, EpsilonInsensitiveFloatSerializationJSON) {
 //####################### EPSIL INSENS #######################################
 
 //####################### GEN LIN WITH INT ###################################
-TEST(Model, GeneralizedLinearDoubleSerializationJSON) {
+TEST(Model, GeneralizedLinearDoubleSerializationPortableBinary) {
   test_linear_separable<double, TModelGeneralizedLinearWithIntercepts<double> >(
       [](const SBaseArrayDouble2dPtr &features, const SArrayDoublePtr &labels) {
         return std::make_shared<TModelGeneralizedLinearWithIntercepts<double> >(
             features, labels, false);
       });
 }
-TEST(Model, GeneralizedLinearSerializationJSON) {
+TEST(Model, GeneralizedLinearSerializationPortableBinary) {
   test_linear_separable<float, TModelGeneralizedLinearWithIntercepts<float> >(
       [](const SBaseArrayFloat2dPtr &features, const SArrayFloatPtr &labels) {
         return std::make_shared<TModelGeneralizedLinearWithIntercepts<float> >(
@@ -221,14 +221,14 @@ TEST(Model, GeneralizedLinearSerializationJSON) {
 //####################### GEN LIN WITH INT ###################################
 
 //####################### HUBER ##############################################
-TEST(Model, HuberDoubleSerializationJSON) {
+TEST(Model, HuberDoubleSerializationPortableBinary) {
   test_linear_separable<double, TModelHuber<double> >(
       [](const SBaseArrayDouble2dPtr &features, const SArrayDoublePtr &labels) {
         return std::make_shared<TModelHuber<double> >(features, labels, false,
                                                       100);
       });
 }
-TEST(Model, HuberFloatSerializationJSON) {
+TEST(Model, HuberFloatSerializationPortableBinary) {
   test_linear_separable<float, TModelHuber<float> >(
       [](const SBaseArrayFloat2dPtr &features, const SArrayFloatPtr &labels) {
         return std::make_shared<TModelHuber<float> >(features, labels, false,
@@ -238,14 +238,14 @@ TEST(Model, HuberFloatSerializationJSON) {
 //####################### HUBER ##############################################
 
 //####################### LIN REG INT ########################################
-TEST(Model, LinRegWithInterceptsDoubleSerializationJSON) {
+TEST(Model, LinRegWithInterceptsDoubleSerializationPortableBinary) {
   test_linear_separable<double, TModelLinRegWithIntercepts<double> >(
       [](const SBaseArrayDouble2dPtr &features, const SArrayDoublePtr &labels) {
         return std::make_shared<TModelLinRegWithIntercepts<double> >(
             features, labels, false);
       });
 }
-TEST(Model, LinRegWithInterceptsFloatSerializationJSON) {
+TEST(Model, LinRegWithInterceptsFloatSerializationPortableBinary) {
   test_linear_separable<float, TModelLinRegWithIntercepts<float> >(
       [](const SBaseArrayFloat2dPtr &features, const SArrayFloatPtr &labels) {
         return std::make_shared<TModelLinRegWithIntercepts<float> >(
@@ -255,14 +255,14 @@ TEST(Model, LinRegWithInterceptsFloatSerializationJSON) {
 //####################### LIN REG INT ########################################
 
 //####################### MODIFIED HUBER #####################################
-TEST(Model, ModifiedHuberDoubleSerializationJSON) {
+TEST(Model, ModifiedHuberDoubleSerializationPortableBinary) {
   test_linear_separable<double, TModelModifiedHuber<double> >(
       [](const SBaseArrayDouble2dPtr &features, const SArrayDoublePtr &labels) {
         return std::make_shared<TModelModifiedHuber<double> >(features, labels,
                                                               false);
       });
 }
-TEST(Model, ModifiedHuberSerializationJSON) {
+TEST(Model, ModifiedHuberSerializationPortableBinary) {
   test_linear_separable<float, TModelModifiedHuber<float> >(
       [](const SBaseArrayFloat2dPtr &features, const SArrayFloatPtr &labels) {
         return std::make_shared<TModelModifiedHuber<float> >(features, labels,

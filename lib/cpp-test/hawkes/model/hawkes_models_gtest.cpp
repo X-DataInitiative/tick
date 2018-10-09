@@ -9,8 +9,7 @@
 #include <gtest/gtest.h>
 #include "tick/hawkes/model/model_hawkes_sumexpkern_loglik_single.h"
 
-#include <cereal/archives/binary.hpp>
-#include <cereal/archives/json.hpp>
+#include <cereal/archives/portable_binary.hpp>
 #include <cereal/types/unordered_map.hpp>
 #include <fstream>
 
@@ -158,13 +157,13 @@ TEST_F(HawkesModelTest, hawkes_least_squares_serialization) {
 
   std::stringstream os;
   {
-    cereal::JSONOutputArchive outputArchive(os);
+    cereal::PortableBinaryOutputArchive outputArchive(os);
 
     outputArchive(model);
   }
 
   {
-    cereal::JSONInputArchive inputArchive(os);
+    cereal::PortableBinaryInputArchive inputArchive(os);
 
     ModelHawkesExpKernLeastSqSingle restored_model;
     inputArchive(restored_model);
@@ -228,13 +227,13 @@ TEST_F(HawkesModelTest, hawkes_least_squares_sum_exp_serialization) {
 
   std::stringstream os;
   {
-    cereal::JSONOutputArchive outputArchive(os);
+    cereal::PortableBinaryOutputArchive outputArchive(os);
 
     outputArchive(model);
   }
 
   {
-    cereal::JSONInputArchive inputArchive(os);
+    cereal::PortableBinaryInputArchive inputArchive(os);
 
     ModelHawkesSumExpKernLeastSqSingle restored_model;
     inputArchive(restored_model);
@@ -366,13 +365,13 @@ TEST_F(HawkesModelTest, hawkes_least_squares_sum_exp_list_serialization) {
 
   std::stringstream os;
   {
-    cereal::JSONOutputArchive outputArchive(os);
+    cereal::PortableBinaryOutputArchive outputArchive(os);
 
     outputArchive(model);
   }
 
   {
-    cereal::JSONInputArchive inputArchive(os);
+    cereal::PortableBinaryInputArchive inputArchive(os);
 
     ModelHawkesSumExpKernLeastSq restored_model;
     inputArchive(restored_model);
