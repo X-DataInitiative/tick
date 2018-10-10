@@ -5,7 +5,8 @@ add_executable(tick_test_hawkes
         hawkes_kernel_time_func_gtest.cpp
         hawkes_kernel_sumexp_gtest.cpp
         hawkes_simulation.cpp
-        hawkes_custom_test.cpp)
+        hawkes_custom_test.cpp
+        hawkes_kernel_sumexp_lag_gtest.cpp)
 
 target_link_libraries(tick_test_hawkes
     ${TICK_LIB_ARRAY}

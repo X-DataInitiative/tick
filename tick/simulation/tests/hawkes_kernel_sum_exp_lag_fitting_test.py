@@ -17,7 +17,7 @@ from tick.plot import plot_hawkes_kernels
 #                     seed=2333)
 
 beta = 10.0
-betas = np.array([100.0, 50.0])
+betas = np.array([1000.0, 5000.0])
 
 kernel00 = HawkesKernelSumExpLag(np.array([0.2, 0.5]), betas, np.array([1.0, 0.5]))
 kernel01 = HawkesKernelExpLag(0.3, beta, 1.)
@@ -95,7 +95,7 @@ from tick.optim.solver import AGD
 from tick.optim.prox import ProxZero, ProxL1
 
 
-associated_betas = np.array([10.0, 10.0, 100, 50])
+associated_betas = np.array([10.0, 10.0, 1000, 5000])
 associated_lags = np.array([0, 1.0, 1.0, 0.5])
 model_list = ModelHawkesFixedSumExpKernLagCustomLogLikList(associated_betas, associated_lags, MaxN_of_f, max_n_threads=8)
 model_list.fit(timestamps_list, global_n_list, end_times=end_times)
