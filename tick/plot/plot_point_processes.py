@@ -5,8 +5,8 @@ import numpy as np
 
 
 def plot_point_process(point_process, plot_intensity=None, n_points=10000,
-                       plot_nodes=None, t_min=None, t_max=None, max_jumps=None,
-                       show=True, ax=None):
+                       plot_nodes=None, node_names=None, t_min=None, t_max=None, 
+                       max_jumps=None, show=True, ax=None):
     """Plot point process realization
 
     Parameters
@@ -23,6 +23,9 @@ def plot_point_process(point_process, plot_intensity=None, n_points=10000,
 
     plot_nodes : `list` of `int`, default=`None`
         List of nodes that will be plotted. If `None`, all nodes are considered
+
+    node_names : `list` of `str`, default=`None`
+        List of node names. If `None`, node indices are used.
 
     t_min : `float`, default=`None`
         If not `None`, time at which plot will start
@@ -46,9 +49,14 @@ def plot_point_process(point_process, plot_intensity=None, n_points=10000,
     if plot_nodes is None:
         plot_nodes = range(point_process.n_nodes)
 
+    if node_names is None:
+        node_names = list(map(lambda n: 'ticks #{}'.format(n), plot_nodes))
+    elif len(node_names) != len(plot_nodes):
+        ValueError('node_names must be a list of length {} but has length {}'
+                   .format(len(plot_nodes), len(node_names)))
     labels = []
-    for node in plot_nodes:
-        label = 'ticks #{}'.format(node)
+    for name, node in zip(node_names, plot_nodes):
+        label = name
         if t_min is not None or t_max is not None:
             if t_min is None:
                 label_t_min = '0'
