@@ -8,7 +8,7 @@ from tick.plot.plot_utilities import share_x, share_y
 
 
 def plot_hawkes_kernel_norms(kernel_object, show=True, pcolor_kwargs=None,
-                             node_names=None):
+                             node_names=None, rotate_x_labels=0.):
     """Generic function to plot Hawkes kernel norms.
 
     Parameters
@@ -33,6 +33,10 @@ def plot_hawkes_kernel_norms(kernel_object, show=True, pcolor_kwargs=None,
         node names that will be displayed on axis.
         If `None`, node index will be used.
 
+    rotate_x_labels : `float`, default=`0.`
+        Number of degrees to rotate the x-labels clockwise, to prevent 
+        overlapping.
+
     Notes
     -----
     Kernels are displayed such that it shows norm of column influence's
@@ -51,6 +55,13 @@ def plot_hawkes_kernel_norms(kernel_object, show=True, pcolor_kwargs=None,
 
     norms = kernel_object.get_kernel_norms()
     fig, ax = plt.subplots()
+
+    if rotate_x_labels != 0.:
+        # we want clockwise rotation because x-axis is on top
+        rotate_x_labels = -rotate_x_labels
+        x_label_alignment = 'right'
+    else:
+        x_label_alignment = 'center'
 
     if pcolor_kwargs is None:
         pcolor_kwargs = {}
@@ -74,7 +85,8 @@ def plot_hawkes_kernel_norms(kernel_object, show=True, pcolor_kwargs=None,
     ax.invert_yaxis()
     ax.xaxis.tick_top()
 
-    ax.set_xticklabels(row_labels, minor=False, fontsize=17)
+    ax.set_xticklabels(row_labels, minor=False, fontsize=17, 
+                       rotation=rotate_x_labels, ha=x_label_alignment)
     ax.set_yticklabels(column_labels, minor=False, fontsize=17)
 
     fig.subplots_adjust(right=0.8)
