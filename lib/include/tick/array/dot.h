@@ -87,8 +87,7 @@ BaseArray<T>::dot(const BaseArray<Y> &array) const {
 
   // Case dense/dense
   if (is_dense() && array.is_dense()) {
-    return (tick::vector_operations<T>{})
-        .template dot<std::atomic<T>>(this->size(), this->data(), array.data());
+    return (tick::vector_operations<T>{}).dot(this->size(), this->data(), array.data());
   }
 
   // Case sparse/sparse
