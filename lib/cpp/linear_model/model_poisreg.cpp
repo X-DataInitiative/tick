@@ -289,9 +289,9 @@ Array<T> TModelPoisReg<T, K>::sdca_dual_min_many_identity(ulong n_indices,
     const double abs_grad_i = std::abs(n_grad[i]);
     mean += abs_grad_i;
   }
-  mean /= n_indices;
+//  mean /= n_indices;
 
-  if (mean > 1e-4) std::cout << "did not converge with mean=" << mean << std::endl;
+//  if (mean > 1e-4) std::cout << "did not converge with mean=" << mean << std::endl;
 
   // Check we are in the correct bounds
   for (ulong i = 0; i < n_indices; ++i) {

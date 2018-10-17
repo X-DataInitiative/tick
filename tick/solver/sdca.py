@@ -1,5 +1,5 @@
 # License: BSD 3 clause
-
+from tick.prox import ProxZero
 from .base import SolverFirstOrderSto
 
 from .build.solver import SDCADouble as _SDCADouble
@@ -207,7 +207,7 @@ class SDCA(SolverFirstOrderSto):
         return SolverFirstOrderSto.objective(self, coeffs,
                                              loss) + prox_l2_value
 
-    def dual_objective(self, dual_coeffs):
+    def dual_objective(self, dual_coeffs=None):
         """Compute the dual objective at ``dual_coeffs``
 
         Parameters
@@ -220,10 +220,31 @@ class SDCA(SolverFirstOrderSto):
         output : `float`
             Value of the dual objective at given ``dual_coeffs``
         """
-        primal = self.model._sdca_primal_dual_relation(self.l_l2sq,
-                                                       dual_coeffs)
+        if not isinstance(self.prox, ProxZero):
+            raise NotImplementedError(
+                'Cannot compute dual objective when prox is not prox zero')
+
+        if dual_coeffs is None:
+            dual_coeffs = self._solver.get_dual_vector()
+            primal = self._solver.get_primal_vector()
+        else:
+            primal = self.model._sdca_primal_dual_relation(self.l_l2sq,
+                                                           dual_coeffs)
         prox_l2_value = 0.5 * self.l_l2sq * np.linalg.norm(primal) ** 2
         return self.model.dual_loss(dual_coeffs) - prox_l2_value
+
+    def extra_history(self, minimizer):
+        try:
+            dual_objective = self.dual_objective()
+            if dual_objective == - np.inf:
+                dual_objective = np.nan
+        except:
+            dual_objective = np.nan
+        return {
+            'dual_objective': - dual_objective, # take minus to reach a minimum
+            'dual_vector': self.dual_solution,
+            'duality_gap': dual_objective - self.objective(minimizer),
+        }
 
     def _set_rand_max(self, model):
         try:
@@ -267,15 +288,15 @@ class AtomicSDCA(SDCA):
                       rand_type=rand_type, tol=tol,
                       max_iter=max_iter, verbose=verbose,
                       print_every=print_every, record_every=record_every,
-                      seed=seed)
+                      seed=seed, batch_size=batch_size)
 
     def set_model(self, model):
         self._na_model = model
         return SDCA.set_model(self, model.to_atomic())
         
-    def set_prox(self, atomic_prox, prox):
+    def set_prox(self, prox):
         self._na_prox = prox
-        return SDCA.set_prox(self, atomic_prox)
+        return SDCA.set_prox(self, prox.to_atomic())
 
     def objective(self, coeffs, loss: float = None):
         """Compute the objective minimized by the solver at ``coeffs``

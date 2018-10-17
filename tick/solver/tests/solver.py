@@ -144,7 +144,7 @@ class TestSolver(unittest.TestCase):
     def _test_solver_sparse_and_dense_consistency(
             self, create_solver, model_classes=list(
                 [ModelLinReg, ModelLogReg, ModelPoisReg]), proxs_classes=list(
-                    [ProxL2Sq, ProxL1]), fit_intercepts=list([False, True])):
+                    [ProxZero, ProxL2Sq, ProxL1]), fit_intercepts=list([False, True])):
         """...Test that solvers can run all glm models and are consistent
         with sparsity
         """
@@ -188,7 +188,10 @@ class TestSolver(unittest.TestCase):
                 else:
                     model.fit(X, y)
 
-                prox = Prox(prox_strength, (0, n_features)).astype(self.dtype)
+                if Prox == ProxZero:
+                    prox = Prox(range=(0, n_features)).astype(self.dtype)
+                else:
+                    prox = Prox(prox_strength, (0, n_features)).astype(self.dtype)
                 solver = create_solver()
                 solver.set_model(model).set_prox(prox)
 

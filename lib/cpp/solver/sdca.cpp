@@ -90,9 +90,8 @@ void TBaseSDCA<T, K>::solve(int n_epochs) {
         const BaseArray<T> feature_i = model->get_features(feature_index);
         if (!model->is_sparse()) {
           // Update the primal variable
+          tmp_iterate_to_iterate(local_iterate);
 
-          // Call prox on the primal variable
-          prox->call(tmp_primal_vector, 1. / l_l2sq, local_iterate);
           primal_dot_features = casted_model->get_inner_prod(feature_index, local_iterate);
         } else {
           // Get iterate ready
@@ -121,6 +120,7 @@ void TBaseSDCA<T, K>::solve(int n_epochs) {
             feature_index, dual_vector[i], primal_dot_features, delta[i], _1_over_lbda_n);
         // Update the dual variable
 
+//        std::cout << i << " " << delta_dual_i << " " << primal_dot_features << " " << delta[i] << std::endl;
         update_delta_dual_i(i, delta_dual_i, feature_i, _1_over_lbda_n);
       }
 
@@ -133,7 +133,7 @@ void TBaseSDCA<T, K>::solve(int n_epochs) {
           double time = ((end - start).count()) * std::chrono::steady_clock::period::num /
               static_cast<double>(std::chrono::steady_clock::period::den);
           // get last version of iterate
-          prox->call(tmp_primal_vector, 1. / l_l2sq, iterate);
+          tmp_iterate_to_iterate(iterate);
           save_history(last_record_time + time, last_record_epoch + epoch);
         }
       }
@@ -161,7 +161,7 @@ void TBaseSDCA<T, K>::solve(int n_epochs) {
     }
   }
   // Put its final value in iterate
-  prox->call(tmp_primal_vector, 1. / l_l2sq, iterate);
+  tmp_iterate_to_iterate(iterate);
 }
 
 
@@ -197,9 +197,13 @@ void TBaseSDCA<T, K>::solve_batch(int n_epochs, ulong batch_size) {
     thread_epoch_size += n_thread < (epoch_size % n_threads);
 
     auto start = std::chrono::steady_clock::now();
+    double optim_time = 0;
+    double delta_dual_time = 0;
 
     for (int epoch = 1; epoch < (n_epochs + 1); ++epoch) {
       for (ulong t = 0; t < thread_epoch_size; t += batch_size) {
+
+        auto start_optim = std::chrono::steady_clock::now();
         // Pick i uniformly at random
         indices.fill(rand_max + 1);
         for (ulong i = 0; i < batch_size; ++i) {
@@ -223,6 +227,11 @@ void TBaseSDCA<T, K>::solve_batch(int n_epochs, ulong batch_size) {
             batch_size, duals, g, n_hess, p, n_grad, sdca_labels, new_duals,
             delta_duals_tmp, ipiv);
 
+        auto end_optim = std::chrono::steady_clock::now();
+        optim_time += ((end_optim - start_optim).count()) * std::chrono::steady_clock::period::num /
+            static_cast<double>(std::chrono::steady_clock::period::den);
+
+        auto start_delta_dual = std::chrono::steady_clock::now();
         for (ulong k = 0; k < batch_size; ++k) {
           const ulong i = indices[k];
           const ulong feature_index = feature_indices[k];
@@ -231,6 +240,10 @@ void TBaseSDCA<T, K>::solve_batch(int n_epochs, ulong batch_size) {
 
           update_delta_dual_i(i, delta_dual_i, feature_i, _1_over_lbda_n);
         }
+
+        auto end_delta_dual = std::chrono::steady_clock::now();
+        delta_dual_time += ((end_delta_dual - start_delta_dual).count()) * std::chrono::steady_clock::period::num /
+            static_cast<double>(std::chrono::steady_clock::period::den);
       }
 
       // Record only on one thread
@@ -243,7 +256,7 @@ void TBaseSDCA<T, K>::solve_batch(int n_epochs, ulong batch_size) {
               static_cast<double>(std::chrono::steady_clock::period::den);
 
           // update iterate
-          prox->call(tmp_primal_vector, 1. / l_l2sq, iterate);
+          tmp_iterate_to_iterate(iterate);
           save_history(last_record_time + time, last_record_epoch + epoch);
         }
       }
@@ -256,6 +269,10 @@ void TBaseSDCA<T, K>::solve_batch(int n_epochs, ulong batch_size) {
       last_record_time = time;
       last_record_epoch += n_epochs;
     }
+
+//    std::cout << "optim_time=" << optim_time
+//              << ", delta_dual_time=" << delta_dual_time
+//              << std::endl;
   };
 
   // Don't spawn threads if this is sequential
@@ -272,7 +289,7 @@ void TBaseSDCA<T, K>::solve_batch(int n_epochs, ulong batch_size) {
   }
 
   // Put its final value in iterate
-  prox->call(tmp_primal_vector, 1. / l_l2sq, iterate);
+  tmp_iterate_to_iterate(iterate);
 }
 
 
@@ -308,7 +325,7 @@ void TBaseSDCA<T, K>::precompute_sdca_dual_min_weights(
   }
 
   if (!model->is_sparse()) {
-    prox->call(tmp_primal_vector, 1. / l_l2sq, local_iterate);
+    tmp_iterate_to_iterate(local_iterate);
     for (ulong i = 0; i < batch_size; ++i)
       p[i] = casted_model->get_inner_prod(feature_indices[i], local_iterate);
 
@@ -368,10 +385,28 @@ void TBaseSDCA<T, K>::set_starting_iterate(Array<T> &dual_vector) {
 
   const T _1_over_lbda_n = 1 / (l_l2sq * model->get_n_samples());
   model->sdca_primal_dual_relation(_1_over_lbda_n, this->dual_vector, tmp_primal_vector);
-  prox->call(tmp_primal_vector, 1. / l_l2sq, iterate);
+  tmp_iterate_to_iterate(iterate);
 
+  delta.init_to_zero();
   stored_variables_ready = true;
 }
+
+
+template <class T, class K>
+void TBaseSDCA<T, K>::tmp_iterate_to_iterate(Array<K> &iterate) {
+  // copy the value for what's before the prox range
+  for (ulong i = 0; i < prox->get_start(); ++i) {
+    iterate[i] = 0 + tmp_primal_vector[i]; //  0 + is to cast to non atomic
+  }
+
+  // Call prox on the primal variable
+  prox->call(tmp_primal_vector, 1. / l_l2sq, iterate);
+
+  // copy the value for what's after the prox range
+  for (ulong i = prox->get_end(); i < model->get_n_coeffs(); ++i) {
+    iterate[i] = 0 + tmp_primal_vector[i]; //  0 + is to cast to non atomic
+  }
+};
 
 
 template <class T>
@@ -392,6 +427,14 @@ void TSDCA<T>::update_delta_dual_i(ulong i, double delta_dual_i,
     tmp_primal_vector[model->get_n_features()] += delta_dual_i * _1_over_lbda_n;
   } else {
     tmp_primal_vector.mult_incr(feature_i, delta_dual_i * _1_over_lbda_n);
+//    const ulong n_indices = model->is_sparse() ? feature_i.size_sparse() : feature_i.size();
+//    for (ulong idx_nnz = 0; idx_nnz < n_indices; ++idx_nnz) {
+//      // Get the index of the idx-th sparse feature of feature_i
+//      ulong j = model->is_sparse() ? feature_i.indices()[idx_nnz] : idx_nnz;
+//      T feature_ij = feature_i.data()[idx_nnz];
+//
+//      tmp_primal_vector[j] += delta_dual_i * feature_ij * _1_over_lbda_n;
+//    }
   }
 }
 

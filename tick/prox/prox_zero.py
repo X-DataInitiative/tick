@@ -10,11 +10,6 @@ from .build.prox import ProxZeroFloat as _ProxZeroFloat
 
 __author__ = 'Stephane Gaiffas'
 
-dtype_map = {
-    np.dtype("float64"): _ProxZeroDouble,
-    np.dtype("float32"): _ProxZeroFloat
-}
-
 
 class ProxZero(Prox):
     """Proximal operator of the null function (identity)
@@ -34,8 +29,12 @@ class ProxZero(Prox):
     -----
     Using ``ProxZero`` means no penalization is applied on the model.
     """
+    _cpp_class_dtype_map = {
+        np.dtype("float64"): _ProxZeroDouble,
+        np.dtype("float32"): _ProxZeroFloat
+    }
 
-    def __init__(self, range: tuple = None):
+    def __init__(self, range: object = None) -> object:
         Prox.__init__(self, range)
         self._prox = self._build_cpp_prox("float64")
 
@@ -61,29 +60,25 @@ class ProxZero(Prox):
     def _build_cpp_prox(self, dtype_or_object_with_dtype):
         self.dtype = self._extract_dtype(dtype_or_object_with_dtype)
         prox_class = self._get_typed_class(dtype_or_object_with_dtype,
-                                           dtype_map)
+                                           self._cpp_class_dtype_map)
         if self.range is None:
             return prox_class(0.)
         else:
             return prox_class(0., self.range[0], self.range[1])
 
 
-from .build.prox import ProxZeroAtomicFloat as _ProxZeroAtomicFloat
-from .build.prox import ProxZeroAtomicDouble as _ProxZeroAtomicDouble
+    @property
+    def _AtomicClass(self):
+        return AtomicProxZero
 
-atomic_dtype_map = {
-    np.dtype('float32'): _ProxZeroAtomicFloat,
-    np.dtype('float64'): _ProxZeroAtomicDouble
-}
+
+from .build.prox import ProxZeroAtomicDouble as _ProxZeroAtomicDouble
+from .build.prox import ProxZeroAtomicFloat as _ProxZeroAtomicFloat
+
 
 class AtomicProxZero(ProxZero):
-    def __init__(self, range: tuple = None):
-        ProxZero.__init__(self,range)
+    _cpp_class_dtype_map = {
+        np.dtype('float32'): _ProxZeroAtomicFloat,
+        np.dtype('float64'): _ProxZeroAtomicDouble
+    }
 
-    def _build_cpp_prox(self, dtype_or_object_with_dtype):
-        prox_class = self._get_typed_class(dtype_or_object_with_dtype,
-                                           atomic_dtype_map)
-        if self.range is None:
-            return prox_class()
-        else:
-            return prox_class(self.range[0], self.range[1])

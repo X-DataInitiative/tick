@@ -164,6 +164,9 @@ class SolverFirstOrderSto(SolverFirstOrder, SolverSto):
         if hasattr(self, '_solver') and self._solver is not None:
             self._solver.set_record_every(val)
 
+    def extra_history(self, minimizer):
+        return {}
+
     def _solve(self, x0: np.array = None, step: float = None):
         """
         Launch the solver
@@ -214,7 +217,7 @@ class SolverFirstOrderSto(SolverFirstOrder, SolverSto):
         for n_iter in range(self.max_iter):
 
             # Launch one epoch using the wrapped C++ solver
-            if hasattr(self, 'batch_size'):
+            if hasattr(self, 'batch_size') and self.batch_size > 1:
                 self._solver.solve_batch(1, self.batch_size)
             else:
                 self._solver.solve(1)
@@ -231,9 +234,10 @@ class SolverFirstOrderSto(SolverFirstOrder, SolverSto):
                 converged = rel_obj < self.tol
                 # If converged, we stop the loop and record the last step
                 # in history
+                extra_history = self.extra_history(minimizer)
                 self._handle_history(n_iter + 1, force=converged, obj=obj,
                                      x=minimizer.copy(), rel_delta=rel_delta,
-                                     rel_obj=rel_obj)
+                                     rel_obj=rel_obj, **extra_history)
                 prev_minimizer[:] = minimizer
                 prev_obj = self.objective(prev_minimizer)
                 if converged:
@@ -242,7 +246,8 @@ class SolverFirstOrderSto(SolverFirstOrder, SolverSto):
     def _solve_and_record_in_cpp(self, minimizer):
         first_minimizer = minimizer
 
-        if hasattr(self, 'batch_size'):
+        if hasattr(self, 'batch_size') and self.batch_size > 1:
+            print('launch batch', self.batch_size)
             self._solver.solve_batch(self.max_iter, self.batch_size)
         else:
             self._solver.solve(self.max_iter)
@@ -264,10 +269,12 @@ class SolverFirstOrderSto(SolverFirstOrder, SolverSto):
             rel_obj = abs(obj - prev_obj) / abs(prev_obj) \
                     if prev_obj != 0 else abs(obj)
 
+            extra_history = self.extra_history(minimizer)
             self._handle_history(epoch, force=True, obj=obj,
                                  iter_time=iter_time,
                                  x=iterate, rel_delta=rel_delta,
-                                 rel_obj=rel_obj)
+                                 rel_obj=rel_obj,
+                                 **extra_history)
 
             prev_obj = obj
             prev_iterate[:] = iterate

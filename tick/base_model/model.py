@@ -177,7 +177,19 @@ class Model(ABC, Base):
                             overriden in a subclass""".strip())
 
     def to_atomic(self):
-        atomic_model = self._AtomicClass()
+        import inspect
+        signature = inspect.signature(self.__class__.__init__)
+        params = self.get_params()
+        args = []
+        kwargs = {}
+        for key, param in signature.parameters.items():
+            if key in params:
+                if param.default == inspect._empty:
+                    args += [params[key]]
+                else:
+                    kwargs[key] = params[key]
+
+        atomic_model = self._AtomicClass(*args, **kwargs)
         atomic_model.set_params(**self.get_params())
         if self._fitted:
             atomic_model.fit(self.features, self.labels)

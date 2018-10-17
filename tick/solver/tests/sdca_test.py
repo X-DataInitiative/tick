@@ -92,7 +92,7 @@ class SDCATest(object):
             model = ModelPoisReg(fit_intercept=fit_intercept, link='identity')
             model.fit(features, labels)
 
-            sdca = SDCA(l_l2sq=l_l2sq, max_iter=100, verbose=False, tol=1e-14,
+            sdca = SDCA(l_l2sq=l_l2sq, max_iter=100, verbose=False, tol=0,
                         seed=TestSolver.sto_seed)
 
             sdca.set_model(model).set_prox(ProxZero().astype(self.dtype))
@@ -102,7 +102,6 @@ class SDCATest(object):
             sdca.solve(start_dual)
 
             # Check that duality gap is 0
-
             places = 7
             if self.dtype is "float32" or self.dtype is np.dtype("float32"):
                 places = 4

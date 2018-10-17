@@ -210,14 +210,10 @@ class ModelPoisReg(ModelGeneralizedLinear, ModelSecondOrder,
         # rescale the penalty parameter if some observations are not
         # considered in SDCA. This is useful for Poisson regression with
         # identity link
-        if self.link == "identity":
-            scaled_l_l2sq = l_l2sq * self.n_samples / self._sdca_rand_max
-        else:
-            scaled_l_l2sq = l_l2sq
-
+        _1_over_lbda_n = 1. / (l_l2sq * self.n_samples)
         primal_vector = np.empty(self.n_coeffs, dtype=self.dtype)
-        self._model.sdca_primal_dual_relation(scaled_l_l2sq, dual_vector,
-                                              primal_vector)
+        self._model.sdca_primal_dual_relation(
+            _1_over_lbda_n, dual_vector, primal_vector)
         return primal_vector
 
     @property

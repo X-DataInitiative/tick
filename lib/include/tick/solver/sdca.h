@@ -105,6 +105,8 @@ class DLL_PUBLIC TBaseSDCA : public TStoSolver<T, K> {
   virtual void update_delta_dual_i(ulong i, double delta_dual_i,
                                    const BaseArray<T> &feature_i, double _1_over_lbda_n);
 
+  void tmp_iterate_to_iterate(Array<K> &iterate);
+
  public:
 //  template <class Archive>
 //  void serialize(Archive &ar) {
