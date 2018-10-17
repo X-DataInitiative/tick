@@ -10,7 +10,7 @@
 // License: BSD 3 clause
 
 //
-// IMPORTANT : let us note that we do not define a class SBaseArray2d<T>
+// IMPORTANT : let us note that we do not define a class SBaseArray2d<T, MAJ>
 // it would make inheritance much more complicated.
 // Since we are not allowed to directly instantiate Base arrays. It is not
 // really a problem.

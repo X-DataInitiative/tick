@@ -8,9 +8,9 @@
 #include "array.h"
 #include "basearray2d.h"
 
-template <typename T>
+template <typename T, typename MAJ = RowMajor>
 class SArray2d;
-template <typename T>
+template <typename T, typename MAJ = RowMajor>
 class SparseArray2d;
 
 /*! \class Array2d
@@ -31,28 +31,28 @@ class SparseArray2d;
  *      b = view(c) // No copy
  *
  */
-template <typename T>
-class Array2d : public BaseArray2d<T> {
+template <typename T, typename MAJ>
+class Array2d : public BaseArray2d<T, MAJ> {
  protected:
-  using BaseArray2d<T>::_size;
-  using BaseArray2d<T>::is_data_allocation_owned;
-  using BaseArray2d<T>::is_indices_allocation_owned;
-  using BaseArray2d<T>::_data;
-  using BaseArray2d<T>::_indices;
-  using BaseArray2d<T>::_row_indices;
-  using BaseArray2d<T>::_n_cols;
-  using BaseArray2d<T>::_n_rows;
-  using K = typename BaseArray2d<T>::K;
+  using BaseArray2d<T, MAJ>::_size;
+  using BaseArray2d<T, MAJ>::is_data_allocation_owned;
+  using BaseArray2d<T, MAJ>::is_indices_allocation_owned;
+  using BaseArray2d<T, MAJ>::_data;
+  using BaseArray2d<T, MAJ>::_indices;
+  using BaseArray2d<T, MAJ>::_row_indices;
+  using BaseArray2d<T, MAJ>::_n_cols;
+  using BaseArray2d<T, MAJ>::_n_rows;
+  using K = typename BaseArray2d<T, MAJ>::K;
 
   // NB: We always have _n_rows * _n_cols == _size
 
  public:
-  using AbstractArray1d2d<T>::is_dense;
-  using AbstractArray1d2d<T>::is_sparse;
-  using AbstractArray1d2d<T>::init_to_zero;
+  using AbstractArray1d2d<T, MAJ>::is_dense;
+  using AbstractArray1d2d<T, MAJ>::is_sparse;
+  using AbstractArray1d2d<T, MAJ>::init_to_zero;
 
   //! @brief Constructor for an empty array.
-  Array2d() : BaseArray2d<T>(true) {}
+  Array2d() : BaseArray2d<T, MAJ>(true) {}
 
   /**
    * @brief Constructor for constructing a 2d array of size `n_rows, n_cols`
@@ -72,16 +72,16 @@ class Array2d : public BaseArray2d<T> {
   explicit Array2d(ulong n_rows, ulong n_cols, T* data = nullptr);
 
   //! @brief The copy constructor
-  Array2d(const Array2d<T>& other) = default;
+  Array2d(const Array2d<T, MAJ>& other) = default;
 
   //! @brief The move constructor
-  Array2d(Array2d<T>&& other) = default;
+  Array2d(Array2d<T, MAJ>&& other) = default;
 
   //! @brief The copy assignement operator
-  Array2d<T>& operator=(const Array2d<T>& other) = default;
+  Array2d<T, MAJ>& operator=(const Array2d<T, MAJ>& other) = default;
 
   //! @brief The move assignement operator
-  Array2d<T>& operator=(Array2d<T>&& other) = default;
+  Array2d<T, MAJ>& operator=(Array2d<T, MAJ>&& other) = default;
 
   //! @brief Destructor
   virtual ~Array2d() {}
@@ -96,7 +96,7 @@ class Array2d : public BaseArray2d<T> {
   //! \param a : a scalar of type T
   //! @note Scalar is of type T, meaning that real values will get truncated
   //! before multiplication if T is an integer type
-  void mult_incr(const Array2d<T>& x, const T a);
+  void mult_incr(const Array2d<T, MAJ>& x, const T a);
 
   //! @brief Multiply matrix x by factor a inplace and fill using this by new
   //! matrix
@@ -105,7 +105,7 @@ class Array2d : public BaseArray2d<T> {
   //! \param a : a scalar
   //! @note Scalar is of type T, meaning that real values will get truncated
   //! before multiplication if T is an integer type
-  void mult_fill(const Array2d<T>& x, const T a);
+  void mult_fill(const Array2d<T, MAJ>& x, const T a);
 
   //! @brief Multiply matrix x by factor c inplace and fill using this by new
   //! matrix
@@ -114,7 +114,7 @@ class Array2d : public BaseArray2d<T> {
   //! \param a : a scalar
   //! \param y : an Array2d
   //! \param b : a scalar
-  void mult_add_mult_incr(const Array2d<T>& x, const T a, const Array2d<T>& y,
+  void mult_add_mult_incr(const Array2d<T, MAJ>& x, const T a, const Array2d<T, MAJ>& y,
                           const T b);
 
   /**
@@ -190,13 +190,13 @@ class Array2d : public BaseArray2d<T> {
   //! THUS the array *this becomes a view.
   //! \warning : This method cannot be called on a view
   // The definition is in the file sarray.h
-  std::shared_ptr<SArray2d<T>> as_sarray2d_ptr();
+  std::shared_ptr<SArray2d<T, MAJ>> as_sarray2d_ptr();
 };
 
 // Constructor
-template <typename T>
-Array2d<T>::Array2d(ulong n_rows, ulong n_cols, T* data)
-    : BaseArray2d<T>(true) {
+template <typename T, typename MAJ>
+Array2d<T, MAJ>::Array2d(ulong n_rows, ulong n_cols, T* data)
+    : BaseArray2d<T, MAJ>(true) {
 #ifdef DEBUG_ARRAY
   std::cout << "Array2d Constructor : Array(n_rows=" << n_rows
             << ", n_cols=" << n_cols << ",data=" << data << ") --> " << this
@@ -217,28 +217,28 @@ Array2d<T>::Array2d(ulong n_rows, ulong n_cols, T* data)
 }
 
 // fill with given value
-template <typename T>
-void Array2d<T>::fill(T value) {
+template <typename T, typename MAJ>
+void Array2d<T, MAJ>::fill(T value) {
   tick::vector_operations<T>{}.set(_size, value, _data);
 }
 
-template <typename T>
-void Array2d<T>::mult_incr(const Array2d<T>& x, const T a) {
+template <typename T, typename MAJ>
+void Array2d<T, MAJ>::mult_incr(const Array2d<T, MAJ>& x, const T a) {
   Array<T> this_array = Array<T>(this->size(), this->data());
   Array<T> x_array = Array<T>(x.size(), x.data());
   this_array.mult_incr(x_array, a);
 }
 
-template <typename T>
-void Array2d<T>::mult_fill(const Array2d<T>& x, const T a) {
+template <typename T, typename MAJ>
+void Array2d<T, MAJ>::mult_fill(const Array2d<T, MAJ>& x, const T a) {
   Array<T> this_array = Array<T>(this->size(), this->data());
   Array<T> x_array = Array<T>(x.size(), x.data());
   this_array.mult_fill(x_array, a);
 }
 
-template <typename T>
-void Array2d<T>::mult_add_mult_incr(const Array2d<T>& x, const T a,
-                                    const Array2d<T>& y, const T b) {
+template <typename T, typename MAJ>
+void Array2d<T, MAJ>::mult_add_mult_incr(const Array2d<T, MAJ>& x, const T a,
+                                    const Array2d<T, MAJ>& y, const T b) {
   Array<T> this_array = Array<T>(this->size(), this->data());
   Array<T> x_array = Array<T>(x.size(), x.data());
   Array<T> y_array = Array<T>(y.size(), y.data());
@@ -248,10 +248,11 @@ void Array2d<T>::mult_add_mult_incr(const Array2d<T>& x, const T a,
 /**
  * Array2d serialization function for binary archives types
  */
-template <class Archive, class T>
-typename std::enable_if<
-    cereal::traits::is_output_serializable<cereal::BinaryData<T>, Archive>::value, void>::type
-CEREAL_SAVE_FUNCTION_NAME(Archive& ar, BaseArray2d<T> const& arr) {
+template <class Archive, class T, typename MAJ>
+typename std::enable_if<cereal::traits::is_output_serializable<
+                            cereal::BinaryData<T>, Archive>::value,
+                        void>::type
+CEREAL_SAVE_FUNCTION_NAME(Archive& ar, BaseArray2d<T, MAJ> const& arr) {
   const bool is_sparse = arr.is_sparse();
 
   if (is_sparse) {
@@ -276,11 +277,11 @@ CEREAL_SAVE_FUNCTION_NAME(Archive& ar, BaseArray2d<T> const& arr) {
 /**
  * Array2d serialization function for text archives types (XML, JSON)
  */
-template <class Archive, class T>
+template <class Archive, class T, typename MAJ>
 typename std::enable_if<!cereal::traits::is_output_serializable<
                             cereal::BinaryData<T>, Archive>::value,
                         void>::type
-CEREAL_SAVE_FUNCTION_NAME(Archive& ar, BaseArray2d<T> const& arr) {
+CEREAL_SAVE_FUNCTION_NAME(Archive& ar, BaseArray2d<T, MAJ> const& arr) {
   const bool is_sparse = arr.is_sparse();
   const ulong n_cols = arr.n_cols();
   const ulong n_rows = arr.n_rows();
@@ -321,11 +322,11 @@ CEREAL_SAVE_FUNCTION_NAME(Archive& ar, BaseArray2d<T> const& arr) {
 /**
  * Array2d deserialization function for binary archives types
  */
-template <class Archive, class T>
+template <class Archive, class T, typename MAJ>
 typename std::enable_if<cereal::traits::is_input_serializable<
                             cereal::BinaryData<T>, Archive>::value,
                         void>::type
-CEREAL_LOAD_FUNCTION_NAME(Archive& ar, BaseArray2d<T>& arr) {
+CEREAL_LOAD_FUNCTION_NAME(Archive& ar, BaseArray2d<T, MAJ>& arr) {
   bool is_sparse = false;
   ulong n_cols = 0;
   ulong n_rows = 0;
@@ -342,7 +343,7 @@ CEREAL_LOAD_FUNCTION_NAME(Archive& ar, BaseArray2d<T>& arr) {
                << vectorSize << ", n_rows=" << n_rows << ", n_cols=" << n_cols
                << ")");
 
-  arr = Array2d<T>(n_rows, n_cols);
+  arr = Array2d<T, MAJ>(n_rows, n_cols);
   ar(cereal::binary_data(arr.data(),
                          static_cast<std::size_t>(vectorSize) * sizeof(T)));
 
@@ -353,11 +354,11 @@ CEREAL_LOAD_FUNCTION_NAME(Archive& ar, BaseArray2d<T>& arr) {
 /**
  * Array2d deserialization function for text archives types (XML, JSON)
  */
-template <class Archive, class T>
+template <class Archive, class T, typename MAJ>
 typename std::enable_if<!cereal::traits::is_input_serializable<
                             cereal::BinaryData<T>, Archive>::value,
                         void>::type
-CEREAL_LOAD_FUNCTION_NAME(Archive& ar, BaseArray2d<T>& arr) {
+CEREAL_LOAD_FUNCTION_NAME(Archive& ar, BaseArray2d<T, MAJ>& arr) {
   bool is_sparse = false;
   ulong n_cols = 0;
   ulong n_rows = 0;
@@ -373,7 +374,7 @@ CEREAL_LOAD_FUNCTION_NAME(Archive& ar, BaseArray2d<T>& arr) {
     ulong vectorSize;
     ar(cereal::make_size_tag(vectorSize));
 
-    arr = Array2d<T>(n_rows, n_cols);
+    arr = Array2d<T, MAJ>(n_rows, n_cols);
 
     for (ulong i = 0; i < arr.size_data(); ++i) ar(arr.data()[i]);
 
@@ -397,12 +398,14 @@ CEREAL_LOAD_FUNCTION_NAME(Archive& ar, BaseArray2d<T>& arr) {
 
 #define ARRAY_DEFINE_TYPE(TYPE, NAME)                         \
   typedef Array2d<TYPE> Array##NAME##2d;                      \
+  typedef Array2d<TYPE, ColMajor> ColMajArray##NAME##2d;      \
   typedef std::vector<Array##NAME##2d> Array##NAME##2dList1D; \
   typedef std::vector<Array##NAME##2dList1D> Array##NAME##2dList2D
 
 #define ARRAY_DEFINE_TYPE_SERIALIZE(TYPE, NAME) \
   ARRAY_DEFINE_TYPE(TYPE, NAME);                \
-  CEREAL_REGISTER_TYPE(Array##NAME##2d)
+  CEREAL_REGISTER_TYPE(Array##NAME##2d)         \
+  CEREAL_REGISTER_TYPE(ColMajArray##NAME##2d)
 
 ARRAY_DEFINE_TYPE_SERIALIZE(double, Double);
 ARRAY_DEFINE_TYPE_SERIALIZE(float, Float);
@@ -431,9 +434,9 @@ ARRAY_DEFINE_TYPE(ulong, ULong);
  * ArrayDouble2d d(10, 10);
  * TICK_DEBUG() << "MyArray: " << d;
  */
-template <typename E, typename T>
+template <typename E, typename T, typename MAJ>
 tick::TemporaryLog<E>& operator<<(tick::TemporaryLog<E>& log,
-                                  const Array2d<T>& arr) {
+                                  const Array2d<T, MAJ>& arr) {
   const auto n_cols = arr.n_cols();
   const auto n_rows = arr.n_rows();
 

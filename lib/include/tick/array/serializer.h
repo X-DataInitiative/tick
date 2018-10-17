@@ -84,4 +84,40 @@ inline SSparseArrayDouble2dPtr tick_double_sparse2d_from_file(
   return array_from_file<SSparseArrayDouble2d>(_file);
 }
 
+inline void tick_float_colmaj_sparse2d_to_file(std::string _file,
+                                               const ColMajSparseArrayFloat2d &array) {
+  array_to_file<ColMajSparseArrayFloat2d>(_file, array);
+}
+
+inline SColMajSparseArrayFloat2dPtr tick_float_colmaj_sparse2d_from_file(std::string _file) {
+  return array_from_file<SColMajSparseArrayFloat2d>(_file);
+}
+
+inline void tick_double_colmaj_sparse2d_to_file(std::string _file,
+                                                const ColMajSparseArrayDouble2d &array) {
+  array_to_file<ColMajSparseArrayDouble2d>(_file, array);
+}
+
+inline SColMajSparseArrayDouble2dPtr tick_double_colmaj_sparse2d_from_file(std::string _file) {
+  return array_from_file<SColMajSparseArrayDouble2d>(_file);
+}
+
+inline void tick_float_colmaj_array2d_to_file(std::string _file,
+                                                const ColMajArrayFloat2d &array) {
+  array_to_file<ColMajArrayFloat2d>(_file, array);
+}
+
+inline SColMajArrayFloat2dPtr tick_float_colmaj_array2d_from_file(std::string _file) {
+  return array_from_file<SColMajArrayFloat2d>(_file);
+}
+
+inline void tick_double_colmaj_array2d_to_file(std::string _file,
+                                                const ColMajArrayDouble2d &array) {
+  array_to_file<ColMajArrayDouble2d>(_file, array);
+}
+
+inline SColMajArrayDouble2dPtr tick_double_colmaj_array2d_from_file(std::string _file) {
+  return array_from_file<SColMajArrayDouble2d>(_file);
+}
+
 #endif  // LIB_INCLUDE_TICK_ARRAY_SERIALIZER_H_

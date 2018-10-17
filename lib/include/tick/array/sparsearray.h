@@ -131,31 +131,9 @@ Array<T> BaseArray<T>::as_array() {
  * @{
  */
 
-/**
- * @}
- */
-
-/** @defgroup array_sub_mod The instantiations of the Array template
- *  @ingroup Array_typedefs_mod
- * @{
- */
-/**
- * @}
- */
-/** @defgroup arraylist1d_sub_mod The classes for dealing with 1d-list of Arrays
- *  @ingroup Array_typedefs_mod
- * @{
- */
-/**
- * @}
- */
-/** @defgroup arraylist2d_sub_mod The classes for dealing with 2d-list of Arrays
- *  @ingroup Array_typedefs_mod
- * @{
- */
-
 #define SPARSE_ARRAY_DEFINE_TYPE(TYPE, NAME)                        \
   typedef SparseArray<TYPE> SparseArray##NAME;                      \
+  typedef SparseArray<TYPE> ColMajSparseArray##NAME;                \
   typedef std::vector<SparseArray##NAME> SparseArray##NAME##List1D; \
   typedef std::vector<SparseArray##NAME##List1D> SparseArray##NAME##List2D
 

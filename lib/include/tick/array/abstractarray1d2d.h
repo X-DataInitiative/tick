@@ -86,7 +86,12 @@ NonAtomicOuterType(unsigned long);
  * \brief Base template purely virtual class for
  * all the 2d and 1d-array (sparse and dense) classes of type `T`.
  */
-template <typename T>
+class RowMajor{
+};
+class ColMajor{
+};
+
+template <typename T, typename MAJ = RowMajor>
 class AbstractArray1d2d {
  protected:
   //! @brief inner type used for most outputs.
@@ -126,6 +131,7 @@ class AbstractArray1d2d {
 
  public:
   using value_type = T;
+  using major_type = MAJ;
 
   //! @brief Returns true if array is dense
   inline bool is_dense() const {
@@ -142,19 +148,25 @@ class AbstractArray1d2d {
 
   //! &brief Copy constructor.
   //! \warning It copies the data creating new allocation owned by the new array
-  AbstractArray1d2d(const AbstractArray1d2d<T> &other);
+  AbstractArray1d2d(const AbstractArray1d2d<T, MAJ> &other);
 
   //! @brief Move constructor.
   //! \warning No copy of the data (owner is kept).
-  AbstractArray1d2d(AbstractArray1d2d<T> &&other);
+  AbstractArray1d2d(AbstractArray1d2d<T, MAJ> &&other);
 
   //! @brief Assignement operator.
   //! \warning It copies the data creating new allocation owned by the new array
-  AbstractArray1d2d &operator=(const AbstractArray1d2d<T> &other);
+  AbstractArray1d2d<T, MAJ>& operator=(const AbstractArray1d2d<T, MAJ> &other);
+
+  //! @brief Assignement operator from an array with another Major.
+  //! \warning It copies the data creating new allocation owned by the new array
+  template <typename RIGHT_MAJ>
+  typename std::enable_if<!std::is_same<MAJ, RIGHT_MAJ>::value, AbstractArray1d2d<T, MAJ>>::type&
+  operator=(const AbstractArray1d2d<T, RIGHT_MAJ> &other);
 
   //! @brief Move assignement.
   //! \warning No copy of the data (owner is kept).
-  AbstractArray1d2d &operator=(AbstractArray1d2d<T> &&other);
+  AbstractArray1d2d &operator=(AbstractArray1d2d<T, MAJ> &&other);
 
   //! @brief Destructor
   virtual ~AbstractArray1d2d();
@@ -187,7 +199,7 @@ class AbstractArray1d2d {
   virtual void _print_sparse() const = 0;
 
   //! @brief Compare two arrays by value - ignores allocation methodology !)
-  bool compare(const AbstractArray1d2d<T> &that) {
+  bool compare(const AbstractArray1d2d<T, MAJ> &that) {
     bool are_equal =
         this->_size == that._size && this->_size_sparse == that._size_sparse;
     if (are_equal && this->_indices && that._indices) {
@@ -204,7 +216,7 @@ class AbstractArray1d2d {
     }
     return are_equal;
   }
-  bool operator==(const AbstractArray1d2d<T> &that) { return compare(that); }
+  bool operator==(const AbstractArray1d2d<T, MAJ> &that) { return compare(that); }
 
  public:
   //! @brief Fill array with zeros (in case of a sparse array we do not
@@ -272,144 +284,13 @@ class AbstractArray1d2d {
   std::string type() const { return (is_dense() ? "Array" : "SparseArray"); }
 };
 
-// @brief Main constructor
-template <typename T>
-AbstractArray1d2d<T>::AbstractArray1d2d(bool flag_dense) {
-  _size_sparse = 0;
-  _size = 0;
-  _data = nullptr;
-  _indices = nullptr;
-  if (flag_dense) _size_sparse = 1;
-  is_data_allocation_owned = true;
-  is_indices_allocation_owned = true;
-}
-
-//! @brief Destructor
-template <typename T>
-AbstractArray1d2d<T>::~AbstractArray1d2d() {
-#ifdef DEBUG_ARRAY
-  std::cout << type() << " Destructor : ~AbstractArray1d2d on " << this
-            << std::endl;
-#endif
-  // Delete owned allocations
-  if (is_data_allocation_owned && _data != nullptr) TICK_PYTHON_FREE(_data);
-  if (is_indices_allocation_owned && _indices != nullptr)
-    TICK_PYTHON_FREE(_indices);
-
-  _data = nullptr;
-  _indices = nullptr;
-}
-
-// The copy constructor : copies its data
-template <typename T>
-AbstractArray1d2d<T>::AbstractArray1d2d(const AbstractArray1d2d<T> &other) {
-#ifdef DEBUG_ARRAY
-  std::cout << other.type()
-            << " Copy Constructor : AbstractArray1d2d(AbstractArray1d2d & "
-            << &other << ") --> " << this << std::endl;
-#endif
-  _size = other._size;
-  _size_sparse = other._size_sparse;
-  is_indices_allocation_owned = true;
-  is_data_allocation_owned = true;
-  _data = nullptr;
-  if (other.is_dense()) {
-    TICK_PYTHON_MALLOC(_data, T, _size);
-    memcpy(_data, other._data, sizeof(T) * _size);
-    _indices = nullptr;
-  } else {
-    TICK_PYTHON_MALLOC(_data, T, _size_sparse);
-    memcpy(_data, other._data, sizeof(T) * _size_sparse);
-    TICK_PYTHON_MALLOC(_indices, INDICE_TYPE, _size_sparse);
-    memcpy(_indices, other._indices, sizeof(INDICE_TYPE) * _size_sparse);
-  }
-}
-
-// The move constructor : does not copy the data
-template <typename T>
-AbstractArray1d2d<T>::AbstractArray1d2d(AbstractArray1d2d<T> &&other) {
-#ifdef DEBUG_ARRAY
-  std::cout << other.type()
-            << " Move Constructor : AbstractArray1d2d(AbstractArray1d2d && "
-            << &other << ") --> " << this << std::endl;
-#endif
-  _size = other._size;
-  _data = other._data;
-  _size_sparse = other._size_sparse;
-  _indices = other._indices;
-  is_indices_allocation_owned = other.is_indices_allocation_owned;
-  is_data_allocation_owned = other.is_data_allocation_owned;
-  if (other.is_sparse()) other._size_sparse = 0;
-  other._data = nullptr;
-  other.is_data_allocation_owned = true;
-  other._indices = nullptr;
-  other.is_indices_allocation_owned = true;
-  other._size = 0;
-}
-
-// Assignement operator : copies the data
-template <typename T>
-AbstractArray1d2d<T> &AbstractArray1d2d<T>::operator=(
-    const AbstractArray1d2d<T> &other) {
-#ifdef DEBUG_ARRAY
-  std::cout << type() << " Assignement : operator = (AbstractArray1d2d & "
-            << &other << ") --> " << this << std::endl;
-#endif
-  if (this != &other) {
-    // Delete owned allocations
-    if (is_data_allocation_owned && _data != nullptr) TICK_PYTHON_FREE(_data);
-    if (is_indices_allocation_owned && _indices != nullptr)
-      TICK_PYTHON_FREE(_indices);
-    is_indices_allocation_owned = true;
-    is_data_allocation_owned = true;
-    _size = other._size;
-    _size_sparse = other._size_sparse;
-    if (other.is_dense()) {
-      TICK_PYTHON_MALLOC(_data, T, _size);
-      memcpy(_data, other._data, sizeof(T) * _size);
-      _indices = nullptr;
-    } else {
-      if (_size_sparse > 0) {
-        TICK_PYTHON_MALLOC(_data, T, _size_sparse);
-        memcpy(_data, other._data, sizeof(T) * _size_sparse);
-        TICK_PYTHON_MALLOC(_indices, INDICE_TYPE, _size_sparse);
-        memcpy(_indices, other._indices, sizeof(INDICE_TYPE) * _size_sparse);
-      }
-    }
-  }
-  return *this;
-}
-
-// Move assignement operator : No copy
-template <typename T>
-AbstractArray1d2d<T> &AbstractArray1d2d<T>::operator=(
-    AbstractArray1d2d<T> &&other) {
-#ifdef DEBUG_ARRAY
-  std::cout << type() << " Move Assignement : operator = (AbstractArray1d2d && "
-            << &other << ") --> " << this << std::endl;
-#endif
-  if (is_data_allocation_owned && _data != nullptr) TICK_PYTHON_FREE(_data);
-  if (is_indices_allocation_owned && _indices != nullptr)
-    TICK_PYTHON_FREE(_indices);
-  _size = other._size;
-  is_indices_allocation_owned = other.is_indices_allocation_owned;
-  is_data_allocation_owned = other.is_data_allocation_owned;
-  _data = other._data;
-  _size_sparse = other._size_sparse;
-  _indices = other._indices;
-  if (other.is_sparse()) other._size_sparse = 0;
-  other._data = nullptr;
-  other.is_data_allocation_owned = true;
-  other._indices = nullptr;
-  other.is_indices_allocation_owned = true;
-  other._size = 0;
-  return *this;
-}
+#include "tick/array/abstractarray1d2d/constructor.h"
+#include "tick/array/abstractarray1d2d/assignment.h"
 
 // @brief Returns the sum of all the elements of the array
-template <typename T>
+template <typename T, typename MAJ>
 template <typename Y>
-tick::promote_t<typename AbstractArray1d2d<T>::K> AbstractArray1d2d<T>::sum()
+tick::promote_t<typename AbstractArray1d2d<T, MAJ>::K> AbstractArray1d2d<T, MAJ>::sum()
     const {
   if (_size == 0) TICK_ERROR("Cannot take the sum of an empty array");
   if (size_data() == 0) return 0;
@@ -418,9 +299,9 @@ tick::promote_t<typename AbstractArray1d2d<T>::K> AbstractArray1d2d<T>::sum()
 }
 
 // @brief Returns the min
-template <typename T>
+template <typename T, typename MAJ>
 template <typename Y>
-typename AbstractArray1d2d<T>::K AbstractArray1d2d<T>::min() const {
+typename AbstractArray1d2d<T, MAJ>::K AbstractArray1d2d<T, MAJ>::min() const {
   if (_size == 0) TICK_ERROR("Cannot take the min of an empty array");
   if (size_data() == 0) return 0;
   Y min = _data[0];
@@ -435,9 +316,9 @@ typename AbstractArray1d2d<T>::K AbstractArray1d2d<T>::min() const {
 }
 
 // @brief Returns the max
-template <typename T>
+template <typename T, typename MAJ>
 template <typename Y>
-typename AbstractArray1d2d<T>::K AbstractArray1d2d<T>::max() const {
+typename AbstractArray1d2d<T, MAJ>::K AbstractArray1d2d<T, MAJ>::max() const {
   if (_size == 0) TICK_ERROR("Cannot take the max of an empty array");
   if (size_data() == 0) return 0;
   Y max = _data[0];
@@ -452,10 +333,10 @@ typename AbstractArray1d2d<T>::K AbstractArray1d2d<T>::max() const {
 }
 
 // @brief Compute the squared Euclidean norm of the array
-template <typename T>
+template <typename T, typename MAJ>
 template <typename Y>
-tick::promote_t<typename AbstractArray1d2d<T>::K>
-AbstractArray1d2d<T>::norm_sq() const {
+tick::promote_t<typename AbstractArray1d2d<T, MAJ>::K>
+AbstractArray1d2d<T, MAJ>::norm_sq() const {
   if (_size == 0) TICK_ERROR("Cannot take the norm_sq of an empty array");
   if (size_data() == 0) return 0;
 
@@ -469,22 +350,22 @@ AbstractArray1d2d<T>::norm_sq() const {
 }
 
 // @brief Multiplication in place with a scalar
-template <typename T>
+template <typename T, typename MAJ>
 template <typename Y>
 typename std::enable_if<std::is_same<T, std::atomic<Y>>::value>::type
-AbstractArray1d2d<T>::operator*=(const typename AbstractArray1d2d<T>::K a) {
+AbstractArray1d2d<T, MAJ>::operator*=(const typename AbstractArray1d2d<T, MAJ>::K a) {
   if (_size == 0) TICK_ERROR("Cannot apply *= on an empty array");
   if (size_data() == 0) return;
 
   tick::vector_operations<T>{}.template scale<Y>(size_data(), a, _data);
 }
 
-template <typename T>
+template <typename T, typename MAJ>
 template <typename Y>
 typename std::enable_if<!std::is_same<T, bool>::value &&
                         !std::is_same<Y, bool>::value &&
                         !std::is_same<T, std::atomic<Y>>::value>::type
-AbstractArray1d2d<T>::operator*=(const typename AbstractArray1d2d<T>::K a) {
+AbstractArray1d2d<T, MAJ>::operator*=(const typename AbstractArray1d2d<T, MAJ>::K a) {
   if (_size == 0) TICK_ERROR("Cannot apply *= on an empty array");
   if (size_data() == 0) return;
 
@@ -493,18 +374,18 @@ AbstractArray1d2d<T>::operator*=(const typename AbstractArray1d2d<T>::K a) {
 
 namespace tick {
 
-template <typename T>
+template <typename T, typename MAJ>
 void fast_division(
-    AbstractArray1d2d<T> &x,
+    AbstractArray1d2d<T, MAJ> &x,
     const typename std::enable_if<std::is_integral<T>::value, T>::type a) {
   for (ulong i = 0; i < x.size_data(); ++i) {
     x.data()[i] /= a;
   }
 }
 
-template <typename T>
+template <typename T, typename MAJ>
 void fast_division(
-    AbstractArray1d2d<T> &x,
+    AbstractArray1d2d<T, MAJ> &x,
     const typename std::enable_if<std::is_floating_point<T>::value, T>::type
         a) {
   x *= (1.0 / double{a});
@@ -513,10 +394,10 @@ void fast_division(
 }  // namespace tick
 
 // @brief Division in place with a scalar
-template <typename T>
+template <typename T, typename MAJ>
 template <typename Y>
 typename std::enable_if<std::is_same<T, std::atomic<Y>>::value>::type
-AbstractArray1d2d<T>::operator/=(const typename AbstractArray1d2d<T>::K a) {
+AbstractArray1d2d<T, MAJ>::operator/=(const typename AbstractArray1d2d<T, MAJ>::K a) {
   if (_size == 0) TICK_ERROR("Cannot apply /= on an empty array");
   if (size_data() == 0) return;
 
@@ -525,41 +406,41 @@ AbstractArray1d2d<T>::operator/=(const typename AbstractArray1d2d<T>::K a) {
   }
 }
 
-template <typename T>
+template <typename T, typename MAJ>
 template <typename Y>
 typename std::enable_if<!std::is_same<T, bool>::value &&
                         !std::is_same<Y, bool>::value &&
                         !std::is_same<T, std::atomic<Y>>::value>::type
-AbstractArray1d2d<T>::operator/=(const typename AbstractArray1d2d<T>::K a) {
+AbstractArray1d2d<T, MAJ>::operator/=(const typename AbstractArray1d2d<T, MAJ>::K a) {
   if (_size == 0) TICK_ERROR("Cannot apply /= on an empty array");
   if (size_data() == 0) return;
 
   tick::fast_division<T>(*this, a);
 }
 
-template <typename T>
+template <typename T, typename MAJ>
 template <typename Y>
-void AbstractArray1d2d<T>::multiply(const typename AbstractArray1d2d<T>::K a) {
+void AbstractArray1d2d<T, MAJ>::multiply(const typename AbstractArray1d2d<T, MAJ>::K a) {
   if (_size == 0) TICK_ERROR("Cannot apply *= on an empty array");
   if (size_data() == 0) return;
 
   tick::vector_operations<T>{}.template scale<Y>(size_data(), a, _data);
 }
 
-template <typename T>
+template <typename T, typename MAJ>
 template <typename Y>
 typename std::enable_if<std::is_same<T, std::atomic<Y>>::value, Y>::type
-AbstractArray1d2d<T>::get_data_index(size_t index) const {
+AbstractArray1d2d<T, MAJ>::get_data_index(size_t index) const {
   return _data[index].load();
 }
 
-template <typename T>
+template <typename T, typename MAJ>
 template <typename Y>
 typename std::enable_if<!std::is_same<T, bool>::value &&
                             !std::is_same<Y, bool>::value &&
                             !std::is_same<T, std::atomic<Y>>::value,
                         Y>::type
-AbstractArray1d2d<T>::get_data_index(size_t index) const {
+AbstractArray1d2d<T, MAJ>::get_data_index(size_t index) const {
   return _data[index];
 }
 

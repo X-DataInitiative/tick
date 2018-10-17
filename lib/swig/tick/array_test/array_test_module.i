@@ -34,6 +34,7 @@ public:
     void initVarray(int size);
 };
 
+
 %include performance_test.i
 
 extern void test_sbasearray_container_new(SBaseArrayDoublePtr a);
@@ -43,3 +44,4 @@ extern double test_sbasearray_container_compute();
 extern void test_sbasearray2d_container_new(SBaseArrayDouble2dPtr a);
 extern void test_sbasearray2d_container_clear();
 extern double test_sbasearray2d_container_compute();
+

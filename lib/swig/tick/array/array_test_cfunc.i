@@ -10,33 +10,39 @@
 %define TEST_PYARRAY(ARRAY_TYPE,C_TYPE,NP_TYPE)
 %{
     bool TestPyObj_##ARRAY_TYPE(PyObject * obj) {
-        
+
         if (!PyArray_CheckExact(obj)) {
             PyErr_SetString(PyExc_ValueError,"Expecting a dense numpy array");
             return(false);
         }
-        
+
         PyArrayObject *arrayObject = (PyArrayObject *) (obj);
-        
-        if (!(PyArray_FLAGS(arrayObject) & NPY_ARRAY_C_CONTIGUOUS)) {
+
+        if (std::is_same<ARRAY_TYPE::major_type, RowMajor>::value) {
+          if (!(PyArray_FLAGS(arrayObject) & NPY_ARRAY_C_CONTIGUOUS)) {
+              PyErr_SetString(PyExc_ValueError,
+                              "Numpy array data should be contiguous (use numpy.ascontiguousarray)");
+              return(false);
+          }
+        } else {
             PyErr_SetString(PyExc_ValueError,
-                            "Numpy array data should be contiguous (use numpy.ascontiguousarray)");
+                            "Unexpected ARRAY_TYPE used, please contact a C++ developer");
             return(false);
         }
-        
+
         // Check dimension is 1
         if (PyArray_NDIM(arrayObject) != 1) {
             PyErr_SetString(PyExc_ValueError,"Numpy array should be 1-dimensional");
             return(false);
         }
-        
+
         // Case it is not the right type
         if (PyArray_TYPE(arrayObject) != NP_TYPE || PyArray_ITEMSIZE(arrayObject) != sizeof(C_TYPE))
         {
             PyErr_SetString(PyExc_ValueError,"Expecting a " #C_TYPE " numpy array");
             return(false);
         }
-        
+
         return true;
     }
     %}
@@ -46,33 +52,46 @@
 %define TEST_PYARRAY2D(ARRAY2D_TYPE, C_TYPE, NP_TYPE)
 %{
     bool TestPyObj_##ARRAY2D_TYPE(PyObject * obj) {
-        
+
         if (!PyArray_CheckExact(obj)) {
             PyErr_SetString(PyExc_ValueError,"Expecting a dense numpy array");
             return(false);
         }
-        
+
         PyArrayObject *arrayObject = (PyArrayObject *) (obj);
-        
-        if (!(PyArray_FLAGS(arrayObject) & NPY_ARRAY_C_CONTIGUOUS)) {
+
+        if (std::is_same<ARRAY2D_TYPE::major_type, RowMajor>::value) {
+          if (!(PyArray_FLAGS(arrayObject) & NPY_ARRAY_C_CONTIGUOUS)) {
+              PyErr_SetString(PyExc_ValueError,
+                              "Numpy array data should be contiguous (use numpy.ascontiguousarray)");
+              return(false);
+          }
+        }
+        else if (std::is_same<ARRAY2D_TYPE::major_type, ColMajor>::value) {
+          if (!(PyArray_FLAGS(arrayObject) & NPY_ARRAY_F_CONTIGUOUS)) {
+              PyErr_SetString(PyExc_ValueError,
+                              "Numpy array data should be contiguous (use numpy.asfortranarray)");
+              return(false);
+          }
+        } else {
             PyErr_SetString(PyExc_ValueError,
-                            "Numpy array data should be contiguous (use numpy.ascontiguousarray)");
+                            "Unexpected ARRAY2D_TYPE used, please contact a C++ developer");
             return(false);
         }
-        
+
         // Check dimension is 1
         if (PyArray_NDIM(arrayObject) != 2) {
             PyErr_SetString(PyExc_ValueError,"Numpy array should be 2-dimensional");
             return(false);
         }
-        
+
         // Case it is not the right type
         if (PyArray_TYPE(arrayObject) != NP_TYPE || PyArray_ITEMSIZE(arrayObject) != sizeof(C_TYPE))
         {
             PyErr_SetString(PyExc_ValueError,"Expecting a " #C_TYPE " numpy array");
             return(false);
         }
-        
+
         return true;
     }
     %}
@@ -91,7 +110,7 @@
             PyErr_SetString(PyExc_ValueError,"Expecting a sparse numpy array not a dense numpy array");
             return(false);
         }
-        
+
         PyObject *obj_shape = PyObject_GetAttrString(obj,"shape");
         PyArrayObject *obj_indptr = (PyArrayObject *) PyObject_GetAttrString(obj,"indptr");
         PyArrayObject *obj_indices = (PyArrayObject *) PyObject_GetAttrString(obj,"indices");
@@ -186,7 +205,11 @@
 
 TEST_PYARRAY(ARRAY_TYPE,C_TYPE,NP_TYPE);
 TEST_PYARRAY2D(ARRAY2D_TYPE,C_TYPE,NP_TYPE);
+TEST_PYARRAY2D(ColMaj##ARRAY2D_TYPE,C_TYPE,NP_TYPE);
+
 TEST_ARRAY_LIST(ARRAY_TYPE, ARRAY2D_TYPE);
-TEST_PYSPARSEARRAY2D(SPARSEARRAY2D_TYPE,C_TYPE,NP_TYPE)
+TEST_PYSPARSEARRAY2D(SPARSEARRAY2D_TYPE,C_TYPE,NP_TYPE);
+
+TEST_PYSPARSEARRAY2D(ColMaj##SPARSEARRAY2D_TYPE,C_TYPE,NP_TYPE)
 
 %enddef

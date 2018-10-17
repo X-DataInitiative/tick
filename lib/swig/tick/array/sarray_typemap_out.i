@@ -61,10 +61,14 @@ DLL_PUBLIC PyObject *_XArray2d2NumpyArray(XARRAY2D_TYPE *sig)
     dims[0] = sig->n_rows();
     dims[1] = sig->n_cols();
 
-    PyArrayObject *array;
-
+    PyArrayObject *array = nullptr;
     // We must build an array
-    array = (PyArrayObject *) PyArray_SimpleNewFromData(2, dims, NP_TYPE, sig->data());
+    if (std::is_same<XARRAY2D_TYPE::major_type, ColMajor>::value) {
+      array = (PyArrayObject *) PyArray_New(
+          &PyArray_Type, 2, dims, NP_TYPE, NULL, sig->data(), 0, NPY_ARRAY_F_CONTIGUOUS, NULL);
+    } else {
+      array = (PyArrayObject *) PyArray_SimpleNewFromData(2, dims, NP_TYPE, sig->data());
+    }
 
     // If data is already owned by somebody else we should inform the newly created array
     if (sig->data_owner()) {
@@ -91,6 +95,7 @@ DLL_PUBLIC PyObject *_XArray2d2NumpyArray(XARRAY2D_TYPE *sig)
         #endif
         sig->give_data_ownership(array);
     }
+
     return (PyObject *) array;
 }
 %}
@@ -206,7 +211,7 @@ DLL_PUBLIC PyObject *BuildPyListFromXArrayPtrList2D_ ##XARRAY_TYPE(XARRAYPTR_LIS
 // The final macro for dealing with arrays
 %define XARRAY_FINAL_MACROS(XARRAYPTR_TYPE, XARRAY_TYPE,
                             XARRAY2DPTR_TYPE, XARRAY2D_TYPE,
-                            XARRAYPTR_LIST1D_TYPE, XARRAYPTR_LIST2D_TYPE,
+                            XARRAYPTR_LIST1D_TYPE, XARRAYPTR_LIST2D_TYPE, ARRAY2D_TYPE,
                             C_TYPE,NP_TYPE)
 
 // The check procedure
@@ -216,6 +221,10 @@ SARRAY2D_MISC(XARRAY2D_TYPE, NP_TYPE);
 // Typemaps
 TYPEMAPOUT_XARRAYPTR(XARRAY_TYPE,XARRAYPTR_TYPE)
 TYPEMAPOUT_XARRAY2DPTR(XARRAY2D_TYPE, XARRAY2DPTR_TYPE)
+
+SARRAY2D_MISC(SColMaj##ARRAY2D_TYPE, NP_TYPE);
+TYPEMAPOUT_XARRAY2DPTR(SColMaj##ARRAY2D_TYPE, SColMaj##ARRAY2D_TYPE##Ptr)
+
 TYPEMAP_XARRAYPTR_LIST1D(XARRAY_TYPE,XARRAYPTR_TYPE,XARRAYPTR_LIST1D_TYPE);
 TYPEMAP_XARRAYPTR_LIST2D(XARRAY_TYPE,XARRAYPTR_TYPE,XARRAYPTR_LIST2D_TYPE);
 

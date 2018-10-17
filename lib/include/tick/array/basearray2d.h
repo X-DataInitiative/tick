@@ -5,7 +5,7 @@
 
 #include "abstractarray1d2d.h"
 
-template <typename T>
+template <typename T, typename MAJ = RowMajor>
 class Array2d;
 
 /*! \class BaseArray2d
@@ -13,19 +13,19 @@ class Array2d;
  * type `T`.
  *
  */
-template <typename T>
-class BaseArray2d : public AbstractArray1d2d<T> {
-  template <class T1>
-  friend std::ostream &operator<<(std::ostream &, const BaseArray2d<T1> &);
+template <typename T, typename MAJ = RowMajor>
+class BaseArray2d : public AbstractArray1d2d<T, MAJ> {
+  template <typename T1, typename MAJ1>
+  friend std::ostream &operator<<(std::ostream &, const BaseArray2d<T1, MAJ1> &);
 
  protected:
-  using AbstractArray1d2d<T>::_size;
-  using AbstractArray1d2d<T>::_size_sparse;
-  using AbstractArray1d2d<T>::is_data_allocation_owned;
-  using AbstractArray1d2d<T>::is_indices_allocation_owned;
-  using AbstractArray1d2d<T>::_data;
-  using AbstractArray1d2d<T>::_indices;
-  using K = typename AbstractArray1d2d<T>::K;
+  using AbstractArray1d2d<T, MAJ>::_size;
+  using AbstractArray1d2d<T, MAJ>::_size_sparse;
+  using AbstractArray1d2d<T, MAJ>::is_data_allocation_owned;
+  using AbstractArray1d2d<T, MAJ>::is_indices_allocation_owned;
+  using AbstractArray1d2d<T, MAJ>::_data;
+  using AbstractArray1d2d<T, MAJ>::_indices;
+  using K = typename AbstractArray1d2d<T, MAJ>::K;
 
   //! \brief Number of rows
   ulong _n_rows;
@@ -41,9 +41,9 @@ class BaseArray2d : public AbstractArray1d2d<T> {
   bool is_row_indices_allocation_owned;
 
  public:
-  using AbstractArray1d2d<T>::is_dense;
-  using AbstractArray1d2d<T>::is_sparse;
-  using AbstractArray1d2d<T>::init_to_zero;
+  using AbstractArray1d2d<T, MAJ>::is_dense;
+  using AbstractArray1d2d<T, MAJ>::is_sparse;
+  using AbstractArray1d2d<T, MAJ>::init_to_zero;
 
   //! @brief Returns the number of rows of the array
   inline ulong n_rows() const { return _n_rows; }
@@ -58,7 +58,7 @@ class BaseArray2d : public AbstractArray1d2d<T> {
   //! \param flag_dense If true then creates a dense array otherwise it is
   //! sparse.
   explicit BaseArray2d(bool flag_dense = true)
-      : AbstractArray1d2d<T>(flag_dense) {
+      : AbstractArray1d2d<T, MAJ>(flag_dense) {
     _row_indices = nullptr;
     is_row_indices_allocation_owned = true;
     _n_cols = 0;
@@ -67,11 +67,11 @@ class BaseArray2d : public AbstractArray1d2d<T> {
 
   //! &brief Copy constructor.
   //! \warning It copies the data creating new allocation owned by the new array
-  BaseArray2d(const BaseArray2d<T> &other);
+  BaseArray2d(const BaseArray2d<T, MAJ> &other);
 
   //! @brief Move constructor.
   //! \warning No copy of the data.
-  BaseArray2d(BaseArray2d<T> &&other) : AbstractArray1d2d<T>(std::move(other)) {
+  BaseArray2d(BaseArray2d<T, MAJ> &&other) : AbstractArray1d2d<T, MAJ>(std::move(other)) {
     is_row_indices_allocation_owned = other.is_row_indices_allocation_owned;
     _row_indices = other._row_indices;
     other._row_indices = nullptr;
@@ -82,29 +82,24 @@ class BaseArray2d : public AbstractArray1d2d<T> {
 
   //! @brief Assignement operator.
   //! \warning It copies the data creating new allocation owned by the new array
-  BaseArray2d &operator=(const BaseArray2d<T> &other) {
-    if (this != &other) {
-      AbstractArray1d2d<T>::operator=(other);
-      if (is_row_indices_allocation_owned && _row_indices != nullptr)
-        TICK_PYTHON_FREE(_row_indices);
-      _row_indices = nullptr;
-      is_row_indices_allocation_owned = true;
-      _n_cols = other._n_cols;
-      _n_rows = other._n_rows;
-      _size = _n_cols * _n_rows;
-      if (other.is_sparse()) {
-        TICK_PYTHON_MALLOC(_row_indices, INDICE_TYPE, _n_rows + 1);
-        memcpy(_row_indices, other._row_indices,
-               sizeof(INDICE_TYPE) * (_n_rows + 1));
-      }
-    }
-    return (*this);
-  }
+  BaseArray2d<T, MAJ>& operator=(const BaseArray2d<T, MAJ> &that);
+
+  //! @brief Assignement operator from row major to col major.
+  //! \warning It copies the data creating new allocation owned by the new array
+  template <typename RIGHT_MAJ>
+  typename std::enable_if<std::is_same<MAJ, ColMajor>::value && std::is_same<RIGHT_MAJ, RowMajor>::value, BaseArray2d<T, MAJ>>::type&
+  operator=(const BaseArray2d<T, RIGHT_MAJ> &other);
+
+  //! @brief Assignement operator from col major to row major.
+  //! \warning It copies the data creating new allocation owned by the new array
+  template <typename RIGHT_MAJ>
+  typename std::enable_if<std::is_same<MAJ, RowMajor>::value && std::is_same<RIGHT_MAJ, ColMajor>::value, BaseArray2d<T, MAJ>>::type&
+  operator=(const BaseArray2d<T, RIGHT_MAJ> &other);
 
   //! @brief Move assignement.
   //! \warning No copy of the data.
-  BaseArray2d &operator=(BaseArray2d<T> &&other) {
-    AbstractArray1d2d<T>::operator=(std::move(other));
+  BaseArray2d &operator=(BaseArray2d<T, MAJ> &&other) {
+    AbstractArray1d2d<T, MAJ>::operator=(std::move(other));
     if (is_row_indices_allocation_owned && _row_indices != nullptr)
       TICK_PYTHON_FREE(_row_indices);
     _row_indices = other._row_indices;
@@ -123,6 +118,19 @@ class BaseArray2d : public AbstractArray1d2d<T> {
   }
 
  private:
+  template <typename THIS_MAJ = MAJ>
+  typename std::enable_if<std::is_same<THIS_MAJ, ColMajor>::value, K>::type
+  _value_at_index(ulong row, ulong col) const {
+    // T{0} is added to cast from T to T when T = std::atomic<T>
+    return _data[col * _n_rows + row];
+  }
+
+  template <typename THIS_MAJ = MAJ>
+  typename std::enable_if<std::is_same<THIS_MAJ, RowMajor>::value, K>::type
+  _value_at_index(ulong row, ulong col) const {
+    return _data[row * _n_cols + col];
+  }
+
   // Method for printing (called by print() AbstractArray1d2d method
   virtual void _print_dense() const;
   virtual void _print_sparse() const;
@@ -134,11 +142,11 @@ class BaseArray2d : public AbstractArray1d2d<T> {
   //!     it does not own allocation)
   //!     - If it is a SparseArray2d, then the created array owns its allocation
   // This method is defined in sparsearray2d.h
-  Array2d<T> as_array2d();
+  Array2d<T, MAJ> as_array2d();
 
   //! @brief Compare two arrays by value - ignores allocation methodology !)
-  bool compare(const BaseArray2d<T> &that) {
-    bool are_equal = AbstractArray1d2d<T>::compare(that) &&
+  bool compare(const BaseArray2d<T, MAJ> &that) {
+    bool are_equal = AbstractArray1d2d<T, MAJ>::compare(that) &&
                      (this->_n_rows == that._n_rows) &&
                      (this->_n_cols == that._n_cols);
     if (are_equal && this->_row_indices && that._row_indices) {
@@ -149,7 +157,7 @@ class BaseArray2d : public AbstractArray1d2d<T> {
     }
     return are_equal;
   }
-  bool operator==(const BaseArray2d<T> &that) { return compare(that); }
+  bool operator==(const BaseArray2d<T, MAJ> &that) { return compare(that); }
 
  private:
   std::string type() const {
@@ -157,11 +165,13 @@ class BaseArray2d : public AbstractArray1d2d<T> {
   }
 };
 
+#include "tick/array/basearray2d/assignment.h"
+
 //! &brief Copy constructor.
 //! \warning It copies the data creating new allocation owned by the new array
-template <typename T>
-BaseArray2d<T>::BaseArray2d(const BaseArray2d<T> &other)
-    : AbstractArray1d2d<T>(other) {
+template <typename T, typename MAJ>
+BaseArray2d<T, MAJ>::BaseArray2d(const BaseArray2d<T, MAJ> &other)
+    : AbstractArray1d2d<T, MAJ>(other) {
   _n_cols = other._n_cols;
   _n_rows = other._n_rows;
   _size = _n_cols * _n_rows;
@@ -175,8 +185,8 @@ BaseArray2d<T>::BaseArray2d(const BaseArray2d<T> &other)
 }
 
 // @brief Prints the array
-template <typename T>
-void BaseArray2d<T>::_print_dense() const {
+template <typename T, typename MAJ>
+void BaseArray2d<T, MAJ>::_print_dense() const {
   std::cout << "Array2d[nrows=" << _n_rows << ",ncols=" << _n_cols << ","
             << std::endl;
   if (_n_rows < 6) {
@@ -184,14 +194,14 @@ void BaseArray2d<T>::_print_dense() const {
       if (_n_cols < 8) {
         for (ulong c = 0; c < _n_cols; c++) {
           if (c > 0) std::cout << ",";
-          std::cout << _data[r * _n_cols + c];
+          std::cout << _value_at_index(r, c);
         }
       } else {
         for (ulong c = 0; c < 4; ++c)
-          std::cout << _data[r * _n_cols + c] << ",";
+          std::cout << _value_at_index(r, c) << ",";
         std::cout << " ... ";
         for (ulong c = _size - 4; c < _n_cols; ++c)
-          std::cout << "," << _data[r * _n_cols + c];
+          std::cout << "," << _value_at_index(r, c);
       }
       std::cout << std::endl;
     }
@@ -200,14 +210,14 @@ void BaseArray2d<T>::_print_dense() const {
       if (_n_cols < 8) {
         for (ulong c = 0; c < _n_cols; c++) {
           if (c > 0) std::cout << ",";
-          std::cout << _data[r * _n_cols + c];
+          std::cout << _value_at_index(r, c);
         }
       } else {
         for (ulong c = 0; c < 4; ++c)
-          std::cout << _data[r * _n_cols + c] << ",";
+          std::cout << _value_at_index(r, c) << ",";
         std::cout << "...";
         for (ulong c = _n_cols - 4; c < _n_cols; ++c)
-          std::cout << "," << _data[r * _n_cols + c];
+          std::cout << "," << _value_at_index(r, c);
       }
       std::cout << std::endl;
     }
@@ -217,14 +227,14 @@ void BaseArray2d<T>::_print_dense() const {
       if (_n_cols < 8) {
         for (ulong c = 0; c < _n_cols; c++) {
           if (c > 0) std::cout << ",";
-          std::cout << _data[r * _n_cols + c];
+          std::cout << _value_at_index(r, c);
         }
       } else {
         for (ulong c = 0; c < 4; ++c)
-          std::cout << _data[r * _n_cols + c] << ",";
+          std::cout << _value_at_index(r, c) << ",";
         std::cout << "...";
         for (ulong c = _n_cols - 4; c < _n_cols; ++c)
-          std::cout << "," << _data[r * _n_cols + c];
+          std::cout << "," <<_value_at_index(r, c);
       }
       std::cout << std::endl;
     }
@@ -232,14 +242,14 @@ void BaseArray2d<T>::_print_dense() const {
   std::cout << "]" << std::endl;
 }
 
-template <typename T>
-void BaseArray2d<T>::_print_sparse() const {
+template <typename T, typename MAJ>
+void BaseArray2d<T, MAJ>::_print_sparse() const {
   std::cout << "_print_sparse ... not implemented" << std::endl;
 }
 
-template <typename T>
-inline std::ostream &operator<<(std::ostream &s, const BaseArray2d<T> &p) {
-  return s << typeid(p).name() << "<" << typeid(T).name() << ">";
+template <typename T, typename MAJ>
+inline std::ostream &operator<<(std::ostream &s, const BaseArray2d<T, MAJ> &p) {
+  return s << typeid(p).name();
 }
 
 /////////////////////////////////////////////////////////////////
@@ -257,17 +267,9 @@ inline std::ostream &operator<<(std::ostream &s, const BaseArray2d<T> &p) {
  * @{
  */
 
-/**
- * @}
- */
-
-/** @defgroup BaseArray2d_sub_mod The instantiations of the BaseArray template
- *  @ingroup Array_typedefs_mod
- * @{
- */
-
 #define BASE_ARRAY_DEFINE_TYPE_SERIALIZE(TYPE, NAME)                  \
   typedef BaseArray2d<TYPE> BaseArray##NAME##2d;                      \
+  typedef BaseArray2d<TYPE, ColMajor> ColMajBaseArray##NAME##2d;      \
   typedef std::vector<BaseArray##NAME##2d> BaseArray##NAME##2dList1D; \
   typedef std::vector<BaseArray##NAME##2dList1D> BaseArray##NAME##2dList2D
 

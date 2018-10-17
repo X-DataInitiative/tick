@@ -114,13 +114,20 @@ DLL_PUBLIC PyObject *_XSparseArray2d2NumpyArray(XSPARSEARRAY2D_TYPE *sig)
        throw std::runtime_error("shape set failed on dic");
     if(!PyDict_Check(dic)) throw std::runtime_error("dic is no dic");
 
-    PyObject *scipy_sparse_csr, *csr_matrix, *instance;
-    scipy_sparse_csr = PyImport_ImportModule("scipy.sparse.csr");
+    PyObject *scipy_sparse_csr, *csr_matrix, *instance,
+             *scipy_sparse_csc, *csc_matrix;
 
+    scipy_sparse_csr = PyImport_ImportModule("scipy.sparse.csr");
     if(!scipy_sparse_csr) throw std::runtime_error("scipy_sparse_csr failed");
     csr_matrix = PyObject_GetAttrString(scipy_sparse_csr, "csr_matrix");
     if(!csr_matrix) throw std::runtime_error("csr_matrix failed");
     if(!PyCallable_Check(csr_matrix)) throw std::runtime_error("csr_matrix check failed");
+
+    scipy_sparse_csc = PyImport_ImportModule("scipy.sparse.csc");
+    if(!scipy_sparse_csc) throw std::runtime_error("scipy_sparse_csc failed");
+    csc_matrix = PyObject_GetAttrString(scipy_sparse_csc, "csc_matrix");
+    if(!csc_matrix) throw std::runtime_error("csc_matrix failed");
+    if(!PyCallable_Check(csc_matrix)) throw std::runtime_error("csc_matrix check failed");
 
     // If data is already owned by somebody else we should inform the newly created array
     #ifdef DEBUG_SHAREDARRAY
@@ -170,8 +177,13 @@ DLL_PUBLIC PyObject *_XSparseArray2d2NumpyArray(XSPARSEARRAY2D_TYPE *sig)
     std::cout << "Sparse2d Shared Array -> row_indices ref count " << ((PyObject *)row_indices)->ob_refcnt << std::endl;
 #endif
 
-    instance = PyObject_Call(csr_matrix, Otuple, dic);
-    if(!instance) throw std::runtime_error("Instnace failed to call object");
+    if(typeid(XSPARSEARRAY2D_TYPE::major_type) == typeid(ColMajor)){
+      instance = PyObject_Call(csc_matrix, Otuple, dic);
+    }
+    else{
+      instance = PyObject_Call(csr_matrix, Otuple, dic);
+    }
+    if(!instance) throw std::runtime_error("Instance failed to call object");
 
 #ifdef DEBUG_SHAREDARRAY
     std::cout << "Sparse2d Shared Array -> array ref count " << ((PyObject *)array)->ob_refcnt << std::endl;
@@ -251,7 +263,7 @@ DLL_PUBLIC PyObject *_XSparseArray2d2NumpyArray(XSPARSEARRAY2D_TYPE *sig)
 
 // The final macro for dealing with arrays
 %define XSPARSEARRAY_FINAL_MACROS(XSPARSEARRAYPTR_TYPE, XSPARSEARRAY_TYPE,
-                            XSPARSEARRAY2DPTR_TYPE, XSPARSEARRAY2D_TYPE,
+                            XSPARSEARRAY2DPTR_TYPE, XSPARSEARRAY2D_TYPE, SPARSEARRAY2D_TYPE,
                             C_TYPE,NP_TYPE)
 
 // The check procedure
@@ -259,8 +271,12 @@ XSPARSEARRAY_MISC(XSPARSEARRAY_TYPE, NP_TYPE);
 SSPARSEARRAY2D_MISC(XSPARSEARRAY2D_TYPE, NP_TYPE);
 
 // Typemaps
-TYPEMAPOUT_XSPARSEARRAYPTR(XSPARSEARRAY_TYPE,XSPARSEARRAYPTR_TYPE)
-TYPEMAPOUT_XSPARSEARRAY2DPTR(XSPARSEARRAY2D_TYPE, XSPARSEARRAY2DPTR_TYPE)
+TYPEMAPOUT_XSPARSEARRAYPTR(XSPARSEARRAY_TYPE,XSPARSEARRAYPTR_TYPE);
+TYPEMAPOUT_XSPARSEARRAY2DPTR(XSPARSEARRAY2D_TYPE, XSPARSEARRAY2DPTR_TYPE);
+
+SSPARSEARRAY2D_MISC(SColMaj##SPARSEARRAY2D_TYPE, NP_TYPE);
+TYPEMAPOUT_XSPARSEARRAY2DPTR(SColMaj##SPARSEARRAY2D_TYPE, SColMaj##SPARSEARRAY2D_TYPE##Ptr);
+
 TYPEMAP_XSPARSEARRAYPTR_LIST1D(XSPARSEARRAY_TYPE,XSPARSEARRAYPTR_TYPE,XSPARSEARRAYPTR_LIST1D_TYPE);
 TYPEMAP_XSPARSEARRAYPTR_LIST2D(XSPARSEARRAY_TYPE,XSPARSEARRAYPTR_TYPE,XSPARSEARRAYPTR_LIST2D_TYPE);
 
