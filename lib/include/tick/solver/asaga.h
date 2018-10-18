@@ -45,6 +45,7 @@ class DLL_PUBLIC AtomicSAGA : public TBaseSAGA<T, T> {
   Array<std::atomic<T>> gradients_average;
 
   void initialize_solver() override;
+  void threaded_solve(int n_epochs, size_t thread);
 
  public:
   AtomicSAGA() : AtomicSAGA(0, 0, RandType::unif, 0) {}
