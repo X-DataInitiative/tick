@@ -17,7 +17,7 @@
 #include <memory>
 #include <type_traits>
 #include <typeinfo>
-
+#include <math.h>
 #include "alloc.h"
 #include "promote.h"
 #include "vector_operations.h"

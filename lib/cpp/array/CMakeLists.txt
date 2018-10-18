@@ -22,12 +22,13 @@ add_library(tick_array EXCLUDE_FROM_ALL
         ${TICK_ARRAY_INCLUDE_DIR}/view.h
         ${TICK_ARRAY_INCLUDE_DIR}/view2d.h
         ${TICK_ARRAY_INCLUDE_DIR}/carray_python.h
-        ${TICK_ARRAY_INCLUDE_DIR}/vector_operations.h
         ${TICK_ARRAY_INCLUDE_DIR}/serializer.h
         ${TICK_ARRAY_INCLUDE_DIR}/promote.h
         ${TICK_ARRAY_INCLUDE_DIR}/alloc.h
         ${TICK_ARRAY_INCLUDE_DIR}/promote.h
-        ${TICK_ARRAY_INCLUDE_DIR}/vector/cblas.hpp
-        ${TICK_ARRAY_INCLUDE_DIR}/vector/un_optimized.hpp
+        ${TICK_ARRAY_INCLUDE_DIR}/vector_operations.h
+        ${TICK_ARRAY_INCLUDE_DIR}/vector/ops_blas.h
+        ${TICK_ARRAY_INCLUDE_DIR}/vector/ops_unoptimized.h
+        ${TICK_ARRAY_INCLUDE_DIR}/vector/ops_unoptimized_impl.h
         alloc.cpp
         )

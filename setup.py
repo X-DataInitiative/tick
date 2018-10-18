@@ -115,6 +115,11 @@ except ImportError as e:
                       "correct\n "
                       " - BLAS will not be used for this build\n")
 
+# sometimes disabling blas is desired
+if os.environ.get('TICK_NO_OPTS') is not None:
+    if os.environ['TICK_NO_OPTS'] == '1':
+        blas_info = {}
+
 # By default, we assume that scipy uses 32 bit integers for indices in sparse
 # arrays
 sparse_indices_flag = "-DTICK_SPARSE_INDICES_INT32"
@@ -145,7 +150,6 @@ if os.name == 'posix':
         # We set this variable manually because anaconda set it to a deprecated
         # one
         os.environ['MACOSX_DEPLOYMENT_TARGET'] = os_version
-
 
 # check for debug pyenv - PYVER must be exported as env var. Debug pyenv setup:
 #    PYENV=3.7.0
@@ -306,7 +310,7 @@ def create_extension(extension_name, module_dir,
 
     if 'define_macros' in blas_info and \
             any(key == 'HAVE_CBLAS' for key, _ in blas_info['define_macros']):
-        define_macros.append(('TICK_CBLAS_AVAILABLE', None))
+        define_macros.append(('TICK_USE_CBLAS', None))
     if "libraries" in blas_info and "mkl_rt" in blas_info["libraries"]:
         define_macros.append(('TICK_USE_MKL', None))
         extra_include_dirs.extend(blas_info["include_dirs"])
