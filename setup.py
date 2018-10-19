@@ -743,6 +743,7 @@ class BuildCPPTests(TickCommand):
         cmake_cmd = [cmake_exe,
                      '-DPYTHON_INCLUDE_DIR={}'.format(inc_dir),
                      '-DTICK_REBUILD_LIBS=OFF',
+                     '-SKIP_TICK_BENCHMARKS=ON',
                      relpath + '/../lib']
 
         # Feed the path to the built C++ extensions so CMake does not have to

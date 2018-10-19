@@ -50,3 +50,6 @@ XCode/
 # Build directory for C++ tests
 cpp_test_build/
 lib/cmake-build-debug
+
+# benchmark data
+tools/benchmark/data

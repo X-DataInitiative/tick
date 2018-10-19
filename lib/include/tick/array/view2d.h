@@ -112,6 +112,38 @@ view_row(BaseArray2d<T, MAJ> &a, ulong i) {
     return view_row(static_cast<SparseArray2d<T, MAJ> &>(a), i);
 }
 
+template <typename T>
+Array2d<T> view_rows(Array2d<T> &a, ulong start, ulong end) {
+  if (start >= a.n_rows()) TICK_BAD_INDEX(0, start, a.n_rows());
+  if (end < start || end >= a.n_rows()) TICK_BAD_INDEX(start, end, a.n_rows());
+  const ulong n_rows = end - start;
+  return Array2d<T>(n_rows, a.n_cols(), a.data() + start * a.n_cols());
+}
+
+template <typename T>
+SparseArray2d<T> view_rows(SparseArray2d<T> &a, ulong start, ulong end) {
+  if (start >= a.n_rows()) TICK_BAD_INDEX(0, start, a.n_rows());
+  if (end < start || end >= a.n_rows()) TICK_BAD_INDEX(start, end, a.n_rows());
+  const ulong n_rows = end - start;
+
+  if (a.row_indices()[end] - a.row_indices()[start] == 0)
+    return SparseArray2d<T>(n_rows, a.n_cols(), 0, nullptr, nullptr);
+
+  TICK_ERROR(
+      "Row indices should be shifted by n_rows. Would be cool to do it with no copy by "
+      "adding a new attribute: row_shift");
+  return SparseArray2d<T>(n_rows, a.n_cols(), a.row_indices(), a.indices() + a.row_indices()[start],
+                          a.data() + a.row_indices()[start]);
+}
+
+template <typename T>
+BaseArray2d<T> view_rows(BaseArray2d<T> &a, ulong start, ulong end) {
+  if (a.is_dense())
+    return view_rows(static_cast<Array2d<T> &>(a), start, end);
+  else
+    return view_rows(static_cast<SparseArray2d<T> &>(a), start, end);
+}
+
 //! @}
 
 #endif  // LIB_INCLUDE_TICK_ARRAY_VIEW2D_H_

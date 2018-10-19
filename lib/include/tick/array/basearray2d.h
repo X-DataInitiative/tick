@@ -113,9 +113,11 @@ class BaseArray2d : public AbstractArray1d2d<T, MAJ> {
 
   //! @brief Destructor
   virtual ~BaseArray2d() {
-    if (is_row_indices_allocation_owned && _row_indices != nullptr)
-      TICK_PYTHON_FREE(_row_indices);
+    if (is_row_indices_allocation_owned && _row_indices != nullptr) TICK_PYTHON_FREE(_row_indices);
   }
+
+  void dot(const Array<T> &array, Array<T> &out) const;
+  void dot_incr(const Array<T> &array, const T a, Array<T> &out) const;
 
  private:
   template <typename THIS_MAJ = MAJ>

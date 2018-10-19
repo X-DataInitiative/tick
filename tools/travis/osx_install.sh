@@ -13,7 +13,7 @@ if [ ! -d googletest ] || [ ! -f googletest/CMakeLists.txt ]; then
   git clone https://github.com/google/googletest
   mkdir -p googletest/build
   pushd googletest/build
-  cmake .. && make -s && make -s install
+  SKIP_TICK_BENCHMARKS=ON cmake .. && make -s && make -s install
   popd
 fi
 

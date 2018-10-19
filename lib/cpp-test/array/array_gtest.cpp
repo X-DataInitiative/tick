@@ -169,7 +169,6 @@ TYPED_TEST(ArrayTest, Fill_Int_to_double_no_cast) {
 }
 
 TYPED_TEST(ArrayTest, Sum) {
-  using VT = typename TypeParam::value_type;
   TypeParam arrA = ::GenerateRandomArray<TypeParam>();
 
   const auto sum = std::accumulate(arrA.data(), arrA.data() + arrA.size(), 0.0);
@@ -232,7 +231,6 @@ TYPED_TEST(ArrayTest, DivOperator) {
 }
 
 TYPED_TEST(ArrayTest, NormSq) {
-  using VT = typename TypeParam::value_type;
   TypeParam arrA = ::GenerateRandomArray<TypeParam>();
 
   auto norm_sq = arrA.norm_sq();
@@ -241,6 +239,26 @@ TYPED_TEST(ArrayTest, NormSq) {
   for (ulong j = 0; j < arrA.size(); ++j) result += arrA[j] * arrA[j];
 
   EXPECT_RELATIVE_ERROR(decltype(norm_sq), arrA.norm_sq(), result);
+}
+
+TYPED_TEST(Array2dTest, DotMatrixVector) {
+  ArrayDouble y({-2, 3});
+  ArrayDouble2d x(5, 2);
+  x[0] = -2;
+  x[1] = 5.2;
+  x[2] = 1.8;
+  x[3] = 1;
+  x[4] = 2.2;
+  x[5] = 1.9;
+  x[6] = 1;
+  x[7] = 2.2;
+  x[8] = 1.9;
+  x[9] = 1.9;
+
+  ArrayDouble out(5);
+  x.dot(y, out);
+
+  x.dot_incr(y, 1., out);
 }
 
 TYPED_TEST(ArrayTest, DotProduct) {
