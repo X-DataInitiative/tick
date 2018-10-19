@@ -124,6 +124,69 @@ tick::promote_t<K> vector_operations_unoptimized<T>::sum(const ulong n, const T 
 }
 
 template <typename T>
+void solve_linear_system_with_gauss_jordan(int n, T *A, T *b) {
+  // Unsure behavior if T is not double or float
+  // From https://martin-thoma.com/solving-linear-equations-with-gaussian-elimination/
+  // Switched from row major to column major and extract b from last column of A
+  for (int i = 0; i < n; i++) {
+    // Search for maximum in this row
+    T max_element = std::abs(A[i * n + i]);
+    int max_row = i;
+    for (int k = i + 1; k < n; k++) {
+      if (abs(A[i * n + k]) > max_element) {
+        max_element = abs(A[i * n + k]);
+        max_row = k;
+      }
+    }
+
+    // Swap maximum row with current row (column by column)
+    for (int k = i; k < n; k++) {
+      T tmp = A[k * n + max_row];
+      A[k * n + max_row] = A[k * n + i];
+      A[k * n + i] = tmp;
+    }
+    T tmp = b[max_row];
+    b[max_row] = b[i];
+    b[i] = tmp;
+
+    // Make all rows below this one 0 in current column
+    for (int k = i + 1; k < n; k++) {
+      double c = -A[i * n + k] / A[i * n + i];
+      for (int j = i; j < n + 1; j++) {
+        if (i == j) {
+          A[j * n + k] = 0;
+        }
+        if (j < n) {
+          A[j * n + k] += c * A[j * n + i];
+        } else {
+          b[k] += c * b[i];
+        }
+      }
+    }
+  }
+
+  // Solve equation Ax=b for an upper triangular matrix A
+  for (int i = n - 1; i >= 0; i--) {
+    b[i] /= A[i * n + i];
+    for (int k = i - 1; k >= 0; k--) {
+      b[k] -= A[i * n + k] * b[i];
+    }
+  }
+}
+
+template <typename T>
+void vector_operations_unoptimized<T>::solve_linear_system(int n, T *A, T *b, int *ipiv) const {
+  solve_linear_system_with_gauss_jordan(n, A, b);
+}
+
+template <typename T>
+void vector_operations_unoptimized<T>::solve_positive_symmetric_linear_system(
+    int n, T *A, T *b, int *ipiv, int switch_linear) const {
+
+  solve_linear_system_with_gauss_jordan(n, A, b);
+}
+
+template <typename T>
 template <typename K>
 typename std::enable_if<std::is_same<T, std::atomic<K>>::value>::type
 vector_operations_unoptimized<T>::scale(const ulong n, const K alpha, T *x) const {
