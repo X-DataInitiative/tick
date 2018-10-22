@@ -250,3 +250,91 @@ void ModelHawkesExpKernLeastSqSingle::compute_weights_i(const ulong i) {
 ulong ModelHawkesExpKernLeastSqSingle::get_n_coeffs() const {
   return n_nodes + n_nodes * n_nodes;
 }
+
+void ModelHawkesExpKernLeastSqSingle::compute_penalization_constant(double x,
+                                                                    ArrayDouble &pen_mu,
+                                                                    ArrayDouble &pen_L1_alpha,
+                                                                    double pen_mu_const1,
+                                                                    double pen_mu_const2,
+                                                                    double pen_L1_const1,
+                                                                    double pen_L1_const2,
+                                                                    double normalization) {
+  if (pen_mu.size() != n_nodes) TICK_ERROR("Bad Size for array argument 'pen_mu'");
+  if (pen_L1_alpha.size() != n_nodes * n_nodes) TICK_ERROR(
+      "Bad Size for array argument 'pen_L1_alpha'");
+
+  // Penalization for mu
+  for (ulong i = 0; i < n_nodes; i++) {
+
+    double m = (6 * timestamps[i]->size() + 56 * x) / (112 * x);
+    m = std::max(m, exp(1.));
+    double l = 2 * log(log(m));
+
+    // no mu pen at the moment
+    pen_mu[i] =
+        pen_mu_const1 * sqrt((x + log(n_nodes) + l) * timestamps[i]->size() / end_time / end_time)
+            + pen_mu_const2 * (x + log(n_nodes) + l) / end_time;
+  }
+
+  // Penalization for Lasso term
+  for (unsigned long j = 0; j < n_nodes; j++) {
+    for (unsigned long k = 0; k < n_nodes; k++) {
+
+      double betajk = (*decays)[j * n_nodes + k];
+      double bjk = compute_bjk(k, betajk);
+      double vjk = compute_vjk(j, k, betajk);
+
+      // Computation of Ljk
+      double temp = (6 * end_time * vjk + 56 * x * bjk * bjk) / (112 * x * bjk * bjk);
+      temp = std::max(temp, exp(1.));
+      double ljk = 2 * log(log(temp));
+
+      double term1 = pen_L1_const1 * sqrt(((x + 2 * log(n_nodes) + ljk) * vjk) / end_time);
+      double term2 = pen_L1_const2 * (x + 2 * log(n_nodes) + ljk) * bjk / end_time;
+
+      term1 /= sqrt(normalization);
+      term2 /= normalization;
+
+      // Finally computing the Lasso penalization
+      pen_L1_alpha[j * n_nodes + k] = term1 + term2;
+    }
+  }
+}
+
+double ModelHawkesExpKernLeastSqSingle::compute_bjk(unsigned long k, double betajk) {
+  auto kernel = [betajk](double t) { return betajk * exp(-betajk * t); };
+  double hjk = betajk; // This will be Hjk(t^k_n)
+  double bjk = -1;
+
+  for (unsigned long n = 1; n < timestamps[k]->size(); n++) {
+    hjk = kernel((*timestamps[k])[n] - (*timestamps[k])[n - 1]) * hjk / betajk + betajk;
+    if (bjk < hjk) bjk = hjk;
+  }
+  return bjk;
+}
+
+double ModelHawkesExpKernLeastSqSingle::compute_vjk(unsigned long j,
+                                                    unsigned long k,
+                                                    double betajk) {
+  auto kernel = [betajk](double t) { return betajk * exp(-betajk * t); };
+  double hjk_ = 0; // This will be Hjk(t^j_n)
+
+  // We first compute it for n= 0
+  unsigned long n = 0;
+  unsigned long p;
+  for (p = 0; p < timestamps[k]->size() && (*timestamps[k])[p] <= (*timestamps[j])[n]; p++) {
+    hjk_ += kernel((*timestamps[j])[n] - (*timestamps[k])[p]);
+  }
+  double vjk = hjk_ * hjk_;
+  // Now we loop on n >= 1
+  n++;
+  for (; n < timestamps[j]->size(); n++) {
+    hjk_ *= kernel((*timestamps[j])[n] - (*timestamps[j])[n - 1]) / betajk;
+    for (; p < timestamps[k]->size() && (*timestamps[k])[p] <= (*timestamps[j])[n]; p++) {
+      hjk_ += kernel((*timestamps[j])[n] - (*timestamps[k])[p]);
+    }
+    vjk += hjk_ * hjk_;
+  }
+  vjk /= end_time;
+  return vjk;
+}

@@ -507,6 +507,59 @@ TEST_F(HawkesModelTest, compute_hessian_sumexp_loglikelihood) {
   EXPECT_DOUBLE_EQ(out[9], 0.001582373650788027);
 }
 
+
+TEST_F(HawkesModelTest, compute_penalization_weights_least_squares) {
+  ArrayDouble2d decays(2, 2);
+  decays(0, 0) = 1; decays(0, 1) = 3;
+  decays(1, 0) = 2.; decays(1, 1) = 0.5;
+
+  ModelHawkesExpKernLeastSqSingle model(decays.as_sarray2d_ptr(), 2);
+  model.set_data(timestamps, 5.65);
+
+  ArrayDouble pen_mu(model.get_n_nodes());
+  ArrayDouble pen_L1_alpha(model.get_n_nodes() * model.get_n_nodes());
+  model.compute_penalization_constant(log(5.65), pen_mu, pen_L1_alpha, 1, 2, 3, 4, 5);
+
+  EXPECT_FLOAT_EQ(pen_mu[0], 1.4746126);
+  EXPECT_FLOAT_EQ(pen_mu[1], 1.533433);
+
+  EXPECT_FLOAT_EQ(pen_L1_alpha[0], 2.3832817);
+  EXPECT_FLOAT_EQ(pen_L1_alpha[1], 3.7737);
+  EXPECT_FLOAT_EQ(pen_L1_alpha[2], 2.538518);
+  EXPECT_FLOAT_EQ(pen_L1_alpha[3], 1.7545975);
+}
+
+
+TEST_F(HawkesModelTest, compute_penalization_weights_least_squares_list) {
+  ArrayDouble2d decays(2, 2);
+  decays(0, 0) = 1; decays(0, 1) = 3;
+  decays(1, 0) = 2.; decays(1, 1) = 0.5;
+
+  ModelHawkesExpKernLeastSq model(decays.as_sarray2d_ptr(), 2);
+
+  auto timestamps_list = SArrayDoublePtrList2D(0);
+  timestamps_list.push_back(timestamps);
+  timestamps_list.push_back(timestamps);
+
+  auto end_times = VArrayDouble::new_ptr(2);
+  (*end_times)[0] = 5.65;
+  (*end_times)[1] = 5.65;
+
+  model.set_data(timestamps_list, end_times);
+
+  ArrayDouble pen_mu(model.get_n_nodes());
+  ArrayDouble pen_L1_alpha(model.get_n_nodes() * model.get_n_nodes());
+  model.compute_penalization_constant(log(5.65), pen_mu, pen_L1_alpha, 1, 2, 3, 4, 5);
+
+  EXPECT_FLOAT_EQ(pen_mu[0], 1.4746126);
+  EXPECT_FLOAT_EQ(pen_mu[1], 1.533433);
+
+  EXPECT_FLOAT_EQ(pen_L1_alpha[0], 2.3832817);
+  EXPECT_FLOAT_EQ(pen_L1_alpha[1], 3.7737);
+  EXPECT_FLOAT_EQ(pen_L1_alpha[2], 2.538518);
+  EXPECT_FLOAT_EQ(pen_L1_alpha[3], 1.7545975);
+}
+
 #ifdef ADD_MAIN
 int main(int argc, char** argv) {
   ::testing::InitGoogleTest(&argc, argv);

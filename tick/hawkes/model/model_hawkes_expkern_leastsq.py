@@ -1,14 +1,15 @@
 # License: BSD 3 clause
 
 import numpy as np
+from sklearn.utils.arpack import svds
 
-from tick.base_model import LOSS_AND_GRAD
+from tick.base_model import LOSS_AND_GRAD, ModelLipschitz
 from tick.hawkes.model.build.hawkes_model import (ModelHawkesExpKernLeastSq as
                                                   _ModelHawkesExpKernLeastSq)
 from .base import ModelHawkes
 
 
-class ModelHawkesExpKernLeastSq(ModelHawkes):
+class ModelHawkesExpKernLeastSq(ModelHawkes, ModelLipschitz):
     """Hawkes process model exponential kernels with fixed and given decays.
     It is modeled with least square loss:
 
@@ -83,6 +84,7 @@ class ModelHawkesExpKernLeastSq(ModelHawkes):
 
     def __init__(self, decays: np.ndarray, approx: int = 0,
                  n_threads: int = 1):
+        ModelLipschitz.__init__(self)
         ModelHawkes.__init__(self, approx=approx, n_threads=n_threads)
         self.decays = decays
 
@@ -155,3 +157,40 @@ class ModelHawkesExpKernLeastSq(ModelHawkes):
         # This allows to obtain the range of the random sampling when
         # using a stochastic optimization algorithm
         return self.n_nodes
+
+    def _get_lip_best(self) -> float:
+        """Returns the best Lipschitz constant, using all samples
+        Warning: this might take some time, since it requires a SVD computation.
+
+        Returns
+        -------
+        output : `float`
+            The best Lipschitz constant
+        """
+        lip_best = svds(self.hessian(None), k=1,
+                    return_singular_vectors=False)[0]
+        return lip_best
+
+    def compute_penalization_constant(self, x=None, strength=None):
+        pen_mu = np.zeros(self.n_nodes)
+        pen_L1_alpha = np.zeros(self.n_nodes * self.n_nodes)
+
+        if x is None:
+            x = np.log(max([d[-1] for d in self.data]))
+
+        if strength is None:
+            normalization = 1
+        else:
+            normalization = 1./strength
+
+        pen_mu_const1 = 6 * np.sqrt(2)
+        pen_mu_const2 = 27.93
+
+        pen_L1_const1 = 4 * np.sqrt(2)
+        pen_L1_const2 = 18.62
+
+        self._model.compute_penalization_constant(x, pen_mu, pen_L1_alpha,
+                                                  pen_mu_const1, pen_mu_const2,
+                                                  pen_L1_const1, pen_L1_const2,
+                                                  normalization)
+        return np.hstack((pen_mu, pen_L1_alpha))

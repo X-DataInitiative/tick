@@ -61,6 +61,11 @@ class DLL_PUBLIC ModelHawkesExpKernLeastSq : public ModelHawkesLeastSq {
 
   ulong get_n_coeffs() const override;
 
+  void compute_penalization_constant(double x, ArrayDouble &pen_mu , ArrayDouble &pen_L1_alpha,
+                                     double pen_mu_const1, double pen_mu_const2,
+                                     double pen_L1_const1, double pen_L1_const2,
+                                     double normalization);
+
  private:
   /**
    * @brief Compute weights for one index between 0 and n_realizations * n_nodes
