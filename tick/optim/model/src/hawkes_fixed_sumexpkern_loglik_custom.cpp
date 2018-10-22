@@ -47,8 +47,6 @@ void ModelHawkesSumExpCustom::compute_weights_dim_i(const ulong i) {
     ArrayDouble2d g_i = view(g[0]);
     ArrayDouble2d G_i = view(G[i]);
 
-    //! hacked code here, seperator = 1, meaning L(increasing) is timestamps[1], C,M(decreasing) are timestamps[2] timestamps[3]
-
     auto get_index = [=](ulong k, ulong j, ulong u) {
         return n_nodes * get_n_decays() * k + get_n_decays() * j + u;
     };
