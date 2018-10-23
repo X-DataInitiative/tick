@@ -11,7 +11,7 @@ seed = 3007
 MaxN = 10
 mu_i = [np.array([0.5, 0.7, 0.8, 0.6, 0.5, 0.4, 0.3, 0.6, 0.8, 0.1]), np.array([0.5, 0.6, 0.8, 0.8, 0.6, 0.7, 0.8, 0.6, 0.5, 0.4])]
 
-end_time = 50.0
+end_time = 500.0
 betas = np.array([5.0, 150, 2000])
 
 U = len(betas)
@@ -23,7 +23,7 @@ timestamps_list = []
 global_n_list = []
 end_times = []
 
-for num_simu in range(10000):
+for num_simu in range(1000):
     seed = num_simu * 10086 + 3007
     simu_model = SimuHawkes(kernels=kernels, end_time=end_time, custom='Type2', seed=seed, MaxN_of_f=MaxN, f_i=mu_i)
 
