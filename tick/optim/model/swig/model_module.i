@@ -50,6 +50,8 @@
 %shared_ptr(ModelHawkesCustomType2);
 %shared_ptr(ModelRsb);
 
+%shared_ptr(ModelHawkesFixedSumExpKernLeastSqQRH1);
+
 %shared_ptr(ModelCoxRegPartialLik);
 %shared_ptr(ModelSCCS);
 
@@ -108,3 +110,5 @@
 %include hawkes_fixed_sumexpkern_loglik_custom2.i
 
 %include model_rsb.i
+
+%include hawkes_fixed_sumexpkern_leastsq_qrh1.i

@@ -2,7 +2,6 @@
 
 %{
 #include "hawkes_fixed_sumexpkern_loglik_custom2.h"
-
 %}
 
 %{
