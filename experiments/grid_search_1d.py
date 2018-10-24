@@ -94,7 +94,7 @@ def plot_all_metrics(infos, metrics, ax=None):
     strength_range = strength_range_from_infos(infos)
     if ax is None:
         n_plots = len(metrics.keys())
-        fig, ax = plt.subplots(n_plots, 1, sharex=True)
+        fig, ax = plt.subplots(n_plots, 1, sharex=True, figsize=(8, 4))
 
     for i, metric in enumerate(metrics.keys()):
         metric_values = extract_metric(metric, infos)
@@ -106,56 +106,9 @@ def plot_all_metrics(infos, metrics, ax=None):
 
 
 if __name__ == '__main__':
-    def toy_auc(x):
-        if x < 1e-5: return toy_auc(1e-5) * 0.99
-        if x > 1e2: return toy_auc(1e2) * 1.01
-        return 0.5 - 0.1 * np.arctan(5 * np.log10(x / 1e-3))
+    from experiments.toy_metrics import get_toy_metrics
 
-
-    def toy_kendall(x):
-        if x == 0:
-            return toy_kendall(1e-100)
-        a = np.exp(-3 * np.abs(np.log10(x / 1e-3)))
-        b = np.cos(np.log10(x / 1e-3))
-        return a * b
-
-
-    def toy_kendall_no_diag(x):
-        if x > 1e-1:
-            return np.nan
-        return toy_kendall(x * 1e3)
-
-
-    toy_auc = np.vectorize(toy_auc)
-    xaxis = np.hstack((0, np.logspace(-9, 4)))
-    yaxis = toy_auc(xaxis)
-    ax = plt.subplot(211)
-    ax.plot(xaxis, yaxis)
-    ax.set_xscale('symlog', linthreshx=1e-10)
-    ax.set_title('toy_auc')
-
-    toy_kendall = np.vectorize(toy_kendall)
-
-    xaxis = np.hstack((0, np.logspace(-9, 4)))
-    yaxis = toy_kendall(xaxis)
-    ax = plt.subplot(212)
-    ax.plot(xaxis, yaxis)
-    ax.set_xscale('symlog', linthreshx=1e-10)
-    ax.set_title('toy_kendall')
-
-    toy_estimation_error = toy_auc
-
-    plt.show()
-
-    toy_metrics = OrderedDict()
-    toy_metrics["alpha_auc"] = {'evaluator': toy_auc, 'best': 'max'}
-    toy_metrics["estimation_error"] = {'evaluator': toy_auc, 'best': 'min'}
-    toy_metrics["kendall"] = {'evaluator': toy_kendall, 'best': 'max'}
-    toy_metrics["kendall_no_diag"] = {
-        'evaluator': lambda x: toy_kendall(x * 1e-3),
-        'best': 'max'
-    }
-
+    toy_metrics = get_toy_metrics()
 
     def toy_learn(toy_strength_range, n_models):
         toy_infos = {}

@@ -1,5 +1,4 @@
 # L1
-from collections import OrderedDict
 
 from experiments.hawkes_coeffs import dim_from_n
 from tick.prox import ProxL1, ProxL1w, ProxNuclear

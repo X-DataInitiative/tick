@@ -14,6 +14,7 @@ from experiments.hawkes_coeffs import retrieve_coeffs, coeffs_from_mus_alpha, \
     mus_alphas_from_coeffs
 from experiments.io_utils import get_precomputed_models_dir, load_directory, \
     get_simulation_dir
+from experiments.report_utils import logger
 from experiments.simulation import get_simulation_files
 from tick.hawkes import ModelHawkesExpKernLeastSq
 
@@ -24,15 +25,6 @@ report_for_pre_compute_file_name = None
 def get_precomputed_models_files(dim, run_time, directory_prefix):
     directory = get_precomputed_models_dir(dim, run_time, directory_prefix)
     return load_directory(directory, 'pkl')
-
-
-def logger(*args):
-    print(*args)
-    if report_for_pre_compute_file_name is not None:
-        with open(report_for_pre_compute_file_name, 'a') \
-                as report_for_pre_compute_file:
-            report_for_pre_compute_file.write(
-                ', '.join([str(arg) for arg in args]) + '\n')
 
 
 def extract_index(file_name, pattern, extension):
@@ -64,7 +56,7 @@ def precompute_weights(dim, run_time, simulation_file, directory_prefix):
     with open(precomputed_model_path, 'wb') as save_file:
         pickle.dump(model, save_file)
 
-    logger('saved', precompute_file_name, 'with loss = ', loss)
+    logger('saved {} ,with loss = {}'.format(precompute_file_name, loss))
 
 
 def pre_compute_hawkes(dim, run_time, max_pre_computed_hawkes,
@@ -115,7 +107,7 @@ def pre_compute_hawkes(dim, run_time, max_pre_computed_hawkes,
         finally:
             pool.terminate()
     else:
-        print('{} models already computed'
+        logger('{} models already computed'
               .format(len(already_precomputed_index)))
 
 
