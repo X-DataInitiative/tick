@@ -23,7 +23,7 @@ def get_best_point(metrics, metric, infos):
     return best_point
 
 
-def get_new_range(infos, prox_name, metrics, prox_infos):
+def get_new_range(infos, metrics, prox_info):
     strength_range = strength_range_from_infos(infos)
 
     current_min_range = min(strength_range[strength_range != 0])
@@ -54,7 +54,7 @@ def get_new_range(infos, prox_name, metrics, prox_infos):
 
             # If we are not close enough from the best point
             if next_best_strength / previous_best_strength > \
-                    prox_infos[prox_name]['max_relative_step']:
+                    prox_info['max_relative_step']:
                 new_strength_range += [
                     np.sqrt(previous_best_strength * best_strength)]
                 new_strength_range += [
@@ -173,8 +173,8 @@ if __name__ == '__main__':
     toy_strength_range = np.hstack((0, np.logspace(-5, -2, 3)))
     toy_infos = {}
 
-    prox_infos = {}
-    prox_infos['l1'] = {
+    prox_info = {
+        'name': 'l1',
         'n_initial_points': 10,
         'max_relative_step': 1.4,
         'tol': 1e-10,
@@ -188,8 +188,7 @@ if __name__ == '__main__':
 
         toy_infos = toy_learn(toy_strength_range, 3)
         toy_infos = nested_update(toy_infos, old_toy_infos)
-        toy_strength_range = get_new_range(toy_infos, 'l1', toy_metrics,
-                                           prox_infos)
+        toy_strength_range = get_new_range(toy_infos, toy_metrics, prox_info)
         if len(toy_strength_range) == 0:
             break
 

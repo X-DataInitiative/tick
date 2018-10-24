@@ -270,7 +270,6 @@ void ModelHawkesExpKernLeastSqSingle::compute_penalization_constant(double x,
     m = std::max(m, exp(1.));
     double l = 2 * log(log(m));
 
-    // no mu pen at the moment
     pen_mu[i] =
         pen_mu_const1 * sqrt((x + log(n_nodes) + l) * timestamps[i]->size() / end_time / end_time)
             + pen_mu_const2 * (x + log(n_nodes) + l) / end_time;

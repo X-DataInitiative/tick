@@ -10,6 +10,8 @@ from multiprocessing.pool import Pool
 
 import numpy as np
 
+from experiments.hawkes_coeffs import retrieve_coeffs, coeffs_from_mus_alpha, \
+    mus_alphas_from_coeffs
 from experiments.io_utils import get_precomputed_models_dir, load_directory, \
     get_simulation_dir
 from experiments.simulation import get_simulation_files
@@ -108,6 +110,7 @@ def pre_compute_hawkes(dim, run_time, max_pre_computed_hawkes,
             pool.close()
             pool.join()
         except Exception:
+            logger(traceback.format_exc())
             traceback.print_exc()
         finally:
             pool.terminate()
@@ -116,7 +119,32 @@ def pre_compute_hawkes(dim, run_time, max_pre_computed_hawkes,
               .format(len(already_precomputed_index)))
 
 
+def load_models(dim, run_time, n_models, directory_prefix):
+    precomputed_models_dir = \
+        get_precomputed_models_dir(dim, run_time, directory_prefix)
+
+    _, mu, alpha = retrieve_coeffs(dim, directory_prefix)
+    original_coeffs = coeffs_from_mus_alpha(mu, alpha)
+
+    model_file_names = load_directory(precomputed_models_dir, 'pkl')
+    logger('Retrieved {} precomputed models'.format(len(model_file_names)))
+
+    if len(model_file_names) > n_models:
+        model_file_names = model_file_names[:n_models]
+        logger('We keep {} precomputed models'.format(len(model_file_names)))
+
+    if len(model_file_names) < n_models:
+        logger('Only {} precomputed models'.format(len(model_file_names)))
+
+    model_file_paths = [
+        os.path.join(precomputed_models_dir, model_file_name)
+        for model_file_name in model_file_names]
+    return original_coeffs, model_file_paths
+
+
 if __name__ == '__main__':
+    from experiments.plot_hawkes import plot_coeffs
+
     print('extract_index',
           extract_index('simulation_003.npy', 'simulation', 'npy'))
 
@@ -124,5 +152,14 @@ if __name__ == '__main__':
     run_times = [500, 1000]
     max_pre_computed_hawkes = 10
 
+    directory_path = '/Users/martin/Downloads/jmlr_hawkes_data/'
+
     for run_time in run_times:
-        pre_compute_hawkes(dim, run_time, max_pre_computed_hawkes)
+        pre_compute_hawkes(dim, run_time, max_pre_computed_hawkes,
+                           directory_path)
+
+    original_coeffs, model_file_paths = load_models(dim, run_times[0], 5,
+                                                    directory_path)
+    mu, alpha = mus_alphas_from_coeffs(original_coeffs)
+    plot_coeffs(mu, alpha)
+    print(model_file_paths)

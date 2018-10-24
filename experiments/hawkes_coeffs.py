@@ -20,6 +20,10 @@ def mus_alphas_from_coeffs(coeffs):
     return mus, alphas
 
 
+def coeffs_from_mus_alpha(mus, alpha):
+    return np.vstack((mus, alpha)).ravel()
+
+
 def retrieve_coeffs(dim, directory_prefix):
     if dim == 30:
         betas, mu0, A0 = get_coeffs_dim_30()

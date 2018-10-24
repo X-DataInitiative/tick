@@ -70,9 +70,11 @@ def plot_ticks_hist(ticks, title=''):
 
 
 if __name__ == '__main__':
+    from experiments.hawkes_coeffs import coeffs_from_mus_alpha
+
     dim = 3
     mu = np.arange(dim)
     alpha = dim + np.arange(dim * dim).reshape(dim, dim)
-    coeffs = np.vstack((mu, alpha)).ravel() + np.random.rand(dim + dim * dim)
+    coeffs = coeffs_from_mus_alpha(mu, alpha) + np.random.rand(dim + dim * dim)
     plot_coeffs(mu, alpha, coeffs=coeffs)
 
