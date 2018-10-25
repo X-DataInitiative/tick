@@ -245,6 +245,13 @@ class Test(unittest.TestCase):
             coeffs = np.random.rand(model.n_coeffs)
             self.assertEqual(model.loss(coeffs), pickled.loss(coeffs))
 
+    def test_model_hawkes_lipschitz(self):
+        """...Test that computed losses are consistent with approximated
+        theoretical values
+        """
+        self.assertAlmostEqual(self.model.get_lip_best(), 1.55545430088)
+        self.assertAlmostEqual(self.model_list.get_lip_best(), 1.5825155743)
+
 
 if __name__ == '__main__':
     unittest.main()

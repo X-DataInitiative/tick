@@ -100,11 +100,9 @@ def learn_in_parallel(strength_range, create_prox, compute_metrics,
     return infos
 
 
-def learn_one_strength_range(dim, run_time, n_models, strength_range,
-                             prox_info, solver_kwargs, n_cpu, directory_path):
+def learn_one_strength_range(original_coeffs, model_file_paths, strength_range,
+                             prox_info, solver_kwargs, n_cpu):
     start = time.time()
-    original_coeffs, model_file_paths = \
-        load_models(dim, run_time, n_models, directory_path)
 
     SolverClass = GFB if prox_info['dim'] == 2 else AGD
 
@@ -117,8 +115,8 @@ def learn_one_strength_range(dim, run_time, n_models, strength_range,
     return infos
 
 
-def find_best_metrics_1d(dim, run_time, n_models, prox_info, solver_kwargs,
-                         n_cpu, directory_path, max_run_count=10):
+def find_best_metrics_1d(original_coeffs, model_file_paths,
+                         prox_info, solver_kwargs, n_cpu, max_run_count=10):
     run_strength_range = np.hstack(
         (0, np.logspace(-7, 2, prox_info['n_initial_points'])))
 
@@ -129,8 +127,8 @@ def find_best_metrics_1d(dim, run_time, n_models, prox_info, solver_kwargs,
                        run_count, len(run_strength_range)))
 
         run_infos = learn_one_strength_range(
-            dim, run_time, n_models, run_strength_range,
-            prox_info, solver_kwargs, n_cpu, directory_path)
+            original_coeffs, model_file_paths, strength_range,
+            prox_info, solver_kwargs, n_cpu)
 
         aggregated_run_infos = nested_update(run_infos, aggregated_run_infos)
 
@@ -147,8 +145,8 @@ def find_best_metrics_1d(dim, run_time, n_models, prox_info, solver_kwargs,
     return aggregated_run_infos
 
 
-def find_best_metrics_2d(dim, run_time, n_models, prox_info, solver_kwargs,
-                         n_cpu, directory_path, max_run_count=10):
+def find_best_metrics_2d(original_coeffs, model_file_paths,
+                         prox_info, solver_kwargs, n_cpu, max_run_count=10):
     n_initial_points = prox_info['n_initial_points']
     toy_strength_range_1 = np.logspace(-8, -2, n_initial_points)
     toy_strength_range_2 = np.logspace(-8, -2, n_initial_points)
@@ -163,8 +161,8 @@ def find_best_metrics_2d(dim, run_time, n_models, prox_info, solver_kwargs,
                        run_count, len(run_strength_range)))
 
         run_infos = learn_one_strength_range(
-            dim, run_time, n_models, run_strength_range,
-            prox_info, solver_kwargs, n_cpu, directory_path)
+            original_coeffs, model_file_paths, strength_range,
+            prox_info, solver_kwargs, n_cpu)
 
         aggregated_run_infos = nested_update(run_infos, aggregated_run_infos)
 
@@ -192,11 +190,14 @@ def find_best_metrics(dim, run_time, n_models, prox_info, solver_kwargs,
     prox_name = prox_info['name']
     logger('### For prox %s' % prox_name)
 
+    original_coeffs, model_file_paths = \
+        load_models(dim, run_time, n_models, directory_path)
+
     func = find_best_metrics_1d if prox_info['dim'] == 1 \
         else find_best_metrics_2d
 
-    infos = func(dim, run_time, n_models, prox_info, solver_kwargs,
-                 n_cpu, directory_path, max_run_count=max_run_count)
+    infos = func(original_coeffs, model_file_paths,
+                 prox_info, solver_kwargs, n_cpu, max_run_count=max_run_count)
 
     record_metrics(infos, dim, run_time, n_models, prox_name, prox_info['dim'],
                    solver_kwargs['tol'], logger, suffix)

@@ -1,7 +1,7 @@
 # License: BSD 3 clause
 
 import numpy as np
-from sklearn.utils.arpack import svds
+from scipy.sparse.linalg import svds
 
 from tick.base_model import LOSS_AND_GRAD, ModelLipschitz
 from tick.hawkes.model.build.hawkes_model import (ModelHawkesExpKernLeastSq as
@@ -167,8 +167,8 @@ class ModelHawkesExpKernLeastSq(ModelHawkes, ModelLipschitz):
         output : `float`
             The best Lipschitz constant
         """
-        lip_best = svds(self.hessian(None), k=1,
-                    return_singular_vectors=False)[0]
+        lip_best = svds(self.hessian(None), k=1, which='LM',
+                        return_singular_vectors=False)[0]
         return lip_best
 
     def compute_penalization_constant(self, x=None, strength=None):
