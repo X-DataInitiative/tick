@@ -5,9 +5,11 @@ from collections import OrderedDict
 from experiments.metrics_utils import get_confidence_interval_half_width
 
 prox_infos = OrderedDict()
-prox_infos['l1w'] = 'C1', 'wL1'
+prox_infos['l1w'] = 'C1', 'wL1 norm'
+prox_infos['l1w_un'] = 'C4', 'wL1'
 prox_infos['l1'] = 'C0', 'L1'
-prox_infos['l1w_nuclear'] = 'C3', 'wL1Nuclear'
+prox_infos['l1w_nuclear'] = 'C3', 'wL1Nuclear norm'
+prox_infos['l1w_un_nuclear'] = 'C5', 'wL1Nuclear'
 prox_infos['l1_nuclear'] = 'C2', 'L1Nuclear'
 
 
@@ -51,7 +53,7 @@ def plot_metrics_line(dim, metrics, mean_file, std_file,
                 ax[i].set_ylim([None, 1])
 
 
-def plot_metrics(dim, with_diag=True):
+def plot_metrics(dim, mean_file, std_file, with_diag=True):
     if with_diag:
         metrics = ['alpha_auc', 'estimation_error', 'kendall']
     else:
@@ -89,8 +91,9 @@ if __name__ == '__main__':
     std_file = 'metrics_std_test.csv'
 
     for dim in [30]:
-        fig, legends = plot_metrics(dim, with_diag=False)
+        fig, legends = plot_metrics(dim, mean_file, std_file, with_diag=False)
         fig.tight_layout(pad=3)
         plt.show()
         # fig.savefig('metrics_dim_{}.pdf'.format(dim), bbox_inches='tight',
         #             bbox_extra_artists=(*legends, ))
+

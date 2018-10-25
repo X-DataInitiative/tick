@@ -127,7 +127,7 @@ def find_best_metrics_1d(original_coeffs, model_file_paths,
                        run_count, len(run_strength_range)))
 
         run_infos = learn_one_strength_range(
-            original_coeffs, model_file_paths, strength_range,
+            original_coeffs, model_file_paths, run_strength_range,
             prox_info, solver_kwargs, n_cpu)
 
         aggregated_run_infos = nested_update(run_infos, aggregated_run_infos)
@@ -161,7 +161,7 @@ def find_best_metrics_2d(original_coeffs, model_file_paths,
                        run_count, len(run_strength_range)))
 
         run_infos = learn_one_strength_range(
-            original_coeffs, model_file_paths, strength_range,
+            original_coeffs, model_file_paths, run_strength_range,
             prox_info, solver_kwargs, n_cpu)
 
         aggregated_run_infos = nested_update(run_infos, aggregated_run_infos)

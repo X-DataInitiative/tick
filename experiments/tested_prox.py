@@ -42,6 +42,13 @@ def create_prox_l1w_no_mu_nuclear(strength, model):
     prox_nuclear = create_prox_nuclear(tau, model)
     return (prox_l1, prox_nuclear,)
 
+def create_prox_l1w_un_no_mu_nuclear(strength, model):
+    l1, tau = strength
+    prox_l1 = create_prox_l1w_no_mu_un(l1, model)
+    prox_nuclear = create_prox_nuclear(tau, model)
+    return (prox_l1, prox_nuclear,)
+
+
 def create_prox_l1_no_mu_nuclear(strength, model):
     l1, tau = strength
     prox_l1 = create_prox_l1_no_mu(l1, model)
