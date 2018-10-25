@@ -25,7 +25,7 @@ def read_csv(prefix, suffix, metrics):
     if os.path.exists(file_path):
         return pd.read_csv(file_path)
     else:
-        columns = ['dim', 'prox', 'end_time', 'n_train'] + list(metrics.keys())
+        columns = ['dim', 'prox', 'end_time', 'n_train', 'tol'] + list(metrics.keys())
         return pd.DataFrame(columns=columns)
 
 
@@ -54,7 +54,7 @@ def write_lambdas_csv(suffix, df):
 
 
 def save_best_metrics(suffix, metrics, infos, dim, run_time, n_trains,
-                      prox_name):
+                      prox_name, tol):
     best_metrics_mean = read_means_csv(suffix, metrics)
     best_metrics_std = read_stds_csv(suffix, metrics)
     best_lambdas = read_lambdas_csv(suffix, metrics)
@@ -64,6 +64,7 @@ def save_best_metrics(suffix, metrics, infos, dim, run_time, n_trains,
         'prox': prox_name,
         'end_time': run_time,
         'n_train': n_trains,
+        'tol': tol
     }
     run_best_lambda = run_best_metrics_mean.copy()
     run_best_metrics_std = run_best_metrics_mean.copy()
@@ -96,7 +97,7 @@ def get_image_directory(dim, run_time, prox_name):
 
 
 def record_metrics(infos, dim, run_time, n_trains, prox_name, prox_dim,
-                   logger, suffix):
+                   tol, logger, suffix):
     dir_name = get_image_directory(dim, run_time, prox_name)
 
     if prox_dim == 1:
@@ -113,7 +114,7 @@ def record_metrics(infos, dim, run_time, n_trains, prox_name, prox_dim,
     logger('![alt text](%s "Title")' % graph_file_path)
 
     save_best_metrics(suffix, get_metrics(), infos, dim, run_time, n_trains,
-                      prox_name)
+                      prox_name, tol)
 
 
 markdown = mistune.Markdown()

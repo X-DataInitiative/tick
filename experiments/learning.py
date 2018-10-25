@@ -185,7 +185,10 @@ def find_best_metrics(dim, run_time, n_models, prox_info, solver_kwargs,
                       directory_path, n_cpu=-1, max_run_count=10, suffix=''):
     if n_cpu < 1:
         n_cpu = cpu_count()
-
+    
+    if 'tol' in prox_info:
+        solver_kwargs['tol'] = prox_info['tol']
+    
     prox_name = prox_info['name']
     logger('### For prox %s' % prox_name)
 
@@ -196,7 +199,7 @@ def find_best_metrics(dim, run_time, n_models, prox_info, solver_kwargs,
                  n_cpu, directory_path, max_run_count=max_run_count)
 
     record_metrics(infos, dim, run_time, n_models, prox_name, prox_info['dim'],
-                   logger, suffix)
+                   solver_kwargs['tol'], logger, suffix)
 
 
 if __name__ == '__main__':

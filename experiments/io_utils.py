@@ -37,8 +37,11 @@ def get_precomputed_models_dir(dim, run_time, directory_prefix):
 
 def load_directory(directory, extension):
     if os.path.exists(directory):
-        return [filename for filename in os.listdir(directory)
-                if filename.endswith(extension)]
+        filenames = [
+            filename for filename in os.listdir(directory)
+            if filename.endswith(extension)]
+        filenames.sort()
+        return filenames
     else:
         return []
 
