@@ -40,6 +40,10 @@ class DLL_PUBLIC ModelHawkesSingle : public ModelHawkes {
 
   friend class ModelHawkesList;
 
+ protected:
+  double compute_bjk(unsigned long k, double betajk);
+  double compute_vjk(unsigned long j, unsigned long k, double betajk);
+
  public:
   template <class Archive>
   void serialize(Archive &ar) {

@@ -156,6 +156,72 @@ void ModelHawkesSumExpKernLeastSqSingle::grad_i(const ulong i,
   }
 }
 
+
+void ModelHawkesSumExpKernLeastSqSingle::hessian(ArrayDouble &out) {
+  if (!weights_computed) compute_weights();
+
+  // This allows to run in a multithreaded environment the computation of each
+  // component
+  parallel_run(get_n_threads(), n_nodes,
+               &ModelHawkesSumExpKernLeastSqSingle::hessian_i, this, out);
+  out /= n_total_jumps;
+}
+
+void ModelHawkesSumExpKernLeastSqSingle::hessian_i(const ulong i,
+                                                   ArrayDouble &out) {
+  if (!weights_computed)
+    TICK_ERROR("Please compute weights before calling hessian_i");
+
+  if (n_baselines != 1)
+    TICK_ERROR("hessian is only implemented for one baseline");
+
+  // number of alphas per dimension
+  const ulong n_alpha_i = n_nodes * n_decays;
+
+  // fill mu line of matrix
+  const ulong start_mu_line = i * (n_alpha_i + 1);
+
+  // fill mu mu
+  out[start_mu_line] = 2 * end_time;
+
+  // fill mu alpha
+  for (ulong j = 0; j < n_nodes; ++j) {
+    const ArrayDouble2d &Dg_j = Dg[j];
+    for (ulong u = 0; u < n_decays; ++u) {
+      out[start_mu_line + j * n_decays + u + 1] += 2 * Dg_j(u, 0);
+    }
+  }
+
+  // fill alpha lines
+  const ulong block_start = n_nodes * (n_alpha_i + 1) + i * (n_alpha_i + 1) * n_alpha_i;
+  for (ulong l = 0; l < n_nodes; ++l) {
+    const ArrayDouble2d &Dg_l = Dg[l];
+    const ArrayDouble2d &Dg2_l = Dgg[l];
+    const ArrayDouble2d &E_l = E[l];
+
+    for (ulong u = 0; u < n_decays; ++u) {
+      const ulong start_alpha_line = block_start + (l * n_decays + u) * (n_alpha_i + 1);
+
+      // fill alpha mu
+      out[start_alpha_line] += 2 * Dg_l(u, 0);
+
+      // fill alpha square
+      for (ulong m = 0; m < n_nodes; ++m) {
+        const ArrayDouble2d &E_m = E[m];
+
+        for (int u1 = 0; u1 < n_decays; ++u1) {
+          out[start_alpha_line + m * n_decays + u1 + 1] +=
+              2 * (E_l(m, u * n_decays + u1) + E_m(l, u1 * n_decays + u));
+          if (l == m) {
+            out[start_alpha_line + m * n_decays + u1 + 1] +=
+                Dg2_l[u * n_decays + u1] + Dg2_l[u1 * n_decays + u];
+          }
+        }
+      }
+    }
+  }
+}
+
 // Computes both gradient and value
 // TODO : optimization !
 double ModelHawkesSumExpKernLeastSqSingle::loss_and_grad(
@@ -182,6 +248,8 @@ void ModelHawkesSumExpKernLeastSqSingle::compute_weights_i(const ulong i) {
 
   ArrayDouble2d &C_i = C[i];
   ArrayDouble2d &Dg_i = Dg[i];
+  Dg_i.init_to_zero();
+
   ArrayDouble2d &Dgg_i = Dgg[i];
   ArrayDouble2d &E_i = E[i];
   ArrayDouble &K_i = K[i];
@@ -355,4 +423,59 @@ void ModelHawkesSumExpKernLeastSqSingle::set_period_length(
     double period_length) {
   this->period_length = period_length;
   weights_computed = false;
+}
+
+
+void ModelHawkesSumExpKernLeastSqSingle::compute_penalization_constant(double x,
+                                                                    ArrayDouble &pen_mu,
+                                                                    ArrayDouble &pen_L1_alpha,
+                                                                    double pen_mu_const1,
+                                                                    double pen_mu_const2,
+                                                                    double pen_L1_const1,
+                                                                    double pen_L1_const2,
+                                                                    double normalization) {
+  if (pen_mu.size() != n_nodes) TICK_ERROR("Bad Size for array argument 'pen_mu'");
+  if (pen_L1_alpha.size() != n_nodes * n_nodes * n_decays) TICK_ERROR(
+      "Bad Size for array argument 'pen_L1_alpha'");
+
+  // Penalization for mu
+  for (ulong i = 0; i < n_nodes; i++) {
+
+    double m = (6 * timestamps[i]->size() + 56 * x) / (112 * x);
+    m = std::max(m, exp(1.));
+    double l = 2 * log(log(m));
+
+    pen_mu[i] =
+        pen_mu_const1 * sqrt((x + log(n_nodes) + l) * timestamps[i]->size() / end_time / end_time)
+            + pen_mu_const2 * (x + log(n_nodes) + l) / end_time;
+  }
+
+  // Penalization for Lasso term
+
+  for (ulong u = 0; u < n_decays; ++u) {
+    const double beta_u = decays[u];
+    for (unsigned long j = 0; j < n_nodes; j++) {
+      for (unsigned long k = 0; k < n_nodes; k++) {
+
+        double bjk = compute_bjk(k, beta_u);
+        double vjk = compute_vjk(j, k, beta_u);
+
+        // Computation of Ljk
+        double temp = (6 * end_time * vjk + 56 * x * bjk * bjk) / (112 * x * bjk * bjk);
+        temp = std::max(temp, exp(1.));
+        double ljk = 2 * log(log(temp));
+
+        double term1 = pen_L1_const1 * sqrt(((x + 2 * log(n_nodes) + ljk) * vjk) / end_time);
+        double term2 = pen_L1_const2 * (x + 2 * log(n_nodes) + ljk) * bjk / end_time;
+
+        term1 /= sqrt(normalization);
+        term2 /= normalization;
+
+        // Finally computing the Lasso penalization
+        ulong index = j * n_nodes * n_decays + k * n_decays + u;
+        pen_L1_alpha[index] = term1 + term2;
+//        pen_L1_alpha[index] = j * 100 + k * 10 + u;
+      }
+    }
+  }
 }

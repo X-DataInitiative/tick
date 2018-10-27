@@ -118,9 +118,6 @@ class DLL_PUBLIC ModelHawkesExpKernLeastSqSingle : public ModelHawkesSingle {
    */
   void hessian_i(const ulong i, ArrayDouble &out);
 
-  inline double compute_bjk(unsigned long k, double betajk);
-  inline double compute_vjk(unsigned long j, unsigned long k, double betajk);
-
   friend class ModelHawkesExpKernLeastSq;
 
  public:

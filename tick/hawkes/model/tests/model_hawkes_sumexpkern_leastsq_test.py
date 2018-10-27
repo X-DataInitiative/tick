@@ -250,6 +250,29 @@ class Test(InferenceTest):
             self.assertAlmostEqual(
                 norm(model.grad(coeffs_min)), .0, delta=1e-4)
 
+    def test_ModelHawkesSumExpKernLeastSqHess(self):
+        """...Numerical consistency check of hessian for Hawkes contrast
+        """
+        for model in [self.model]:#, self.model_list]:
+            # this hessian is independent of x but for more generality
+            # we still put an used coeff as argument
+            hessian = model.hessian(self.coeffs).todense()
+
+            # Check that hessian is equal to its transpose
+            np.testing.assert_array_almost_equal(hessian, hessian.T,
+                                                 decimal=10)
+
+            # Check that for all dimension hessian row is consistent
+            # with its corresponding gradient coordinate.
+            for i in range(model.n_coeffs):
+                def g_i(x):
+                    return model.grad(x)[i]
+
+                def h_i(x):
+                    return np.asarray(hessian)[i, :]
+
+                self.assertLess(check_grad(g_i, h_i, self.coeffs), 1e-5)
+
     def test_model_hawkes_sum_exp_least_sq_serialization(self):
         """...Test that ModelHawkesExpKernLeastSq can be serialized
         """
@@ -278,6 +301,26 @@ class Test(InferenceTest):
             self.assertEqual(model.loss(coeffs), pickled.loss(coeffs))
 
         os.remove(file_name)
+
+    def test_model_hawkes_sum_exp_compute_penalization_constant(self):
+        coeffs = self.model.compute_penalization_constant()
+        pen_mu = coeffs[:self.dim]
+        pen_alpha = coeffs[self.dim:].reshape(self.dim, self.dim,
+                                              self.n_decays)
+        np.testing.assert_almost_equal(
+            pen_mu, [24.20802876, 23.30429652, 25.72405636])
+        np.testing.assert_almost_equal(
+            pen_alpha,
+            [[[43.96055037, 40.68166194],
+              [32.70685927, 30.17613404],
+              [35.53885668, 33.4296742]],
+             [[41.57429318, 38.52719547],
+              [33.32765935, 30.73153232],
+              [34.87880315, 32.83624514]],
+             [[42.02536846, 39.19298152],
+              [32.61460804, 30.2897428],
+              [42.70256374, 40.23993675]]]
+        )
 
 
 if __name__ == "__main__":

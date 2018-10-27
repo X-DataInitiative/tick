@@ -179,7 +179,6 @@ class ModelHawkesExpKernLeastSq(ModelHawkes, ModelLipschitz):
             end_times = np.array(self.end_times)
             x = np.log(end_times.max())
 
-        # TODO: normalization??
         if strength is None:
             normalization = 1
         else:

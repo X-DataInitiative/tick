@@ -85,6 +85,8 @@ class DLL_PUBLIC ModelHawkesSumExpKernLeastSqSingle : public ModelHawkesSingle {
    */
   void grad_i(ulong i, const ArrayDouble &coeffs, ArrayDouble &out) override;
 
+  void hessian(ArrayDouble &out);
+
   /**
    * @brief Compute loss and gradient
    * \param coeffs : Point in which loss and gradient are computed
@@ -96,11 +98,22 @@ class DLL_PUBLIC ModelHawkesSumExpKernLeastSqSingle : public ModelHawkesSingle {
   //! @brief Synchronize n_coeffs given other attributes
   ulong get_n_coeffs() const override;
 
+  ulong get_n_decays() const {return n_decays;}
+
   ulong get_n_baselines() const;
   double get_period_length() const;
 
   void set_n_baselines(ulong n_baselines);
   void set_period_length(double period_length);
+
+  void compute_penalization_constant(double x,
+                                     ArrayDouble &pen_mu,
+                                     ArrayDouble &pen_L1_alpha,
+                                     double pen_mu_const1,
+                                     double pen_mu_const2,
+                                     double pen_L1_const1,
+                                     double pen_L1_const2,
+                                     double normalization);
 
  private:
   void allocate_weights();
@@ -110,6 +123,8 @@ class DLL_PUBLIC ModelHawkesSumExpKernLeastSqSingle : public ModelHawkesSingle {
    * \param i : selected component
    */
   void compute_weights_i(const ulong i);
+
+  void hessian_i(const ulong i, ArrayDouble &out);
 
   ulong get_baseline_interval(const double t);
   double get_baseline_interval_length(const ulong interval_p);

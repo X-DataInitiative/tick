@@ -2,17 +2,25 @@
 
 from experiments.hawkes_coeffs import dim_from_n
 from tick.prox import ProxL1, ProxL1w, ProxNuclear
+from tick.hawkes import ModelHawkesExpKernLeastSq
 
 
-def create_prox_l1_no_mu(strength, model_train):
-    dim = dim_from_n(model_train.n_coeffs)
+def get_n_decays_from_model(model):
+    if isinstance(model, ModelHawkesExpKernLeastSq):
+        return 1
+    else:
+        return model.n_decays
+
+
+def create_prox_l1_no_mu(strength, model):
+    dim = dim_from_n(model.n_coeffs, get_n_decays_from_model(model))
     prox = ProxL1(strength, positive=True, range=(dim, dim * dim + dim))
     return prox
 
 
 def create_prox_l1w_no_mu(strength, model):
     weights = model.compute_penalization_constant(strength=strength)
-    dim = dim_from_n(model.n_coeffs)
+    dim = dim_from_n(model.n_coeffs, get_n_decays_from_model(model))
     weights = weights[dim:]
     prox = ProxL1w(1, positive=True, weights=weights,
                    range=(dim, dim * dim + dim))
@@ -21,7 +29,7 @@ def create_prox_l1w_no_mu(strength, model):
 
 def create_prox_l1w_no_mu_un(strength, model):
     weights = model.compute_penalization_constant()
-    dim = dim_from_n(model.n_coeffs)
+    dim = dim_from_n(model.n_coeffs, get_n_decays_from_model(model))
     weights = weights[dim:]
     prox = ProxL1w(strength, positive=True, weights=weights,
                    range=(dim, dim * dim + dim))
@@ -30,7 +38,7 @@ def create_prox_l1w_no_mu_un(strength, model):
 
 # Nuclear
 def create_prox_nuclear(strength, model):
-    dim = dim_from_n(model.n_coeffs)
+    dim = dim_from_n(model.n_coeffs, get_n_decays_from_model(model))
     prox_range = (dim, dim * dim + dim)
     n_rows = dim
     prox = ProxNuclear(strength, n_rows, range=prox_range, positive=True)

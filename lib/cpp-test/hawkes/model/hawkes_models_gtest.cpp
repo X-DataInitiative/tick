@@ -508,6 +508,29 @@ TEST_F(HawkesModelTest, compute_hessian_sumexp_loglikelihood) {
 }
 
 
+TEST_F(HawkesModelTest, compute_hessian_sumexp_least_sq) {
+  ArrayDouble decays{1., 2.};
+
+  ModelHawkesSumExpKernLeastSqSingle model(decays, 1, 1e300, 1);
+  model.set_data(timestamps, 4.25);
+  model.compute_weights();
+
+  const ulong n_nodes = 2;
+  const ulong n_alpha_i = n_nodes * decays.size();
+  ArrayDouble out((1 + n_alpha_i) * (n_nodes + n_alpha_i * n_nodes));
+  out.init_to_zero();
+
+  model.hessian(out);
+
+  EXPECT_DOUBLE_EQ(out[0], 0.77272727272727271);
+  EXPECT_DOUBLE_EQ(out[4], 0.88541497694402216);
+  EXPECT_DOUBLE_EQ(out[6], 0.68135124324440344);
+  EXPECT_DOUBLE_EQ(out[8], 0.78036647401912185);
+  EXPECT_DOUBLE_EQ(out[9], 0.88541497694402216);
+}
+
+
+
 TEST_F(HawkesModelTest, compute_penalization_weights_least_squares) {
   ArrayDouble2d decays(2, 2);
   decays(0, 0) = 1; decays(0, 1) = 3;
@@ -559,6 +582,75 @@ TEST_F(HawkesModelTest, compute_penalization_weights_least_squares_list) {
   EXPECT_FLOAT_EQ(pen_L1_alpha[2], 2.538518);
   EXPECT_FLOAT_EQ(pen_L1_alpha[3], 1.7545975);
 }
+
+
+TEST_F(HawkesModelTest, compute_penalization_weights_least_squares_sumexp) {
+  ArrayDouble decays{2., 4., 6.};
+
+  ModelHawkesSumExpKernLeastSq model(decays, 1, 1e300, 1);
+
+  auto timestamps_list = SArrayDoublePtrList2D(0);
+  timestamps_list.push_back(timestamps);
+  timestamps_list.push_back(timestamps);
+
+  auto end_times = VArrayDouble::new_ptr(2);
+  (*end_times)[0] = 5.65;
+  (*end_times)[1] = 5.65;
+  model.set_data(timestamps_list, end_times);
+
+  ArrayDouble pen_mu(model.get_n_nodes());
+  ArrayDouble pen_L1_alpha(model.get_n_nodes() * model.get_n_nodes() * model.get_n_decays());
+  model.compute_penalization_constant(log(5.65), pen_mu, pen_L1_alpha, 1, 2, 3, 4, 5);
+
+  EXPECT_FLOAT_EQ(pen_mu[0], 1.4746126);
+  EXPECT_FLOAT_EQ(pen_mu[1], 1.533433);
+
+  EXPECT_FLOAT_EQ(pen_L1_alpha[0], 3.7823451);
+  EXPECT_FLOAT_EQ(pen_L1_alpha[1], 6.2572098);
+  EXPECT_FLOAT_EQ(pen_L1_alpha[2], 8.7556677);
+  EXPECT_FLOAT_EQ(pen_L1_alpha[3], 2.9730082);
+  EXPECT_FLOAT_EQ(pen_L1_alpha[4], 4.4998579);
+  EXPECT_FLOAT_EQ(pen_L1_alpha[5], 5.7802391);
+  EXPECT_FLOAT_EQ(pen_L1_alpha[6], 2.538518);
+  EXPECT_FLOAT_EQ(pen_L1_alpha[7], 3.5776682);
+  EXPECT_FLOAT_EQ(pen_L1_alpha[8], 4.5279408);
+  EXPECT_FLOAT_EQ(pen_L1_alpha[9], 4.0402794);
+  EXPECT_FLOAT_EQ(pen_L1_alpha[10], 6.7555614);
+  EXPECT_FLOAT_EQ(pen_L1_alpha[11], 9.4871035);
+}
+
+
+
+TEST_F(HawkesModelTest, compute_penalization_weights_least_squares_sumexp_comparison) {
+  ArrayDouble decays_sumexp{2.};
+
+  ModelHawkesSumExpKernLeastSqSingle model_sumexp(decays_sumexp, 1, 1e300, 1);
+  model_sumexp.set_data(timestamps, 5.65);
+
+  ArrayDouble pen_mu_sumexp(model_sumexp.get_n_nodes());
+  ArrayDouble pen_L1_alpha_sumexp(
+      model_sumexp.get_n_nodes() * model_sumexp.get_n_nodes() * model_sumexp.get_n_decays());
+  model_sumexp.compute_penalization_constant(log(5.65), pen_mu_sumexp,
+                                             pen_L1_alpha_sumexp, 1, 2, 3, 4, 5);
+
+  ArrayDouble2d decays_exp(2, 2);
+  decays_exp.fill(3.);
+
+  ModelHawkesExpKernLeastSqSingle model_exp(decays_exp.as_sarray2d_ptr(), 2);
+  model_exp.set_data(timestamps, 5.65);
+
+  ArrayDouble pen_mu_exp(model_exp.get_n_nodes());
+  ArrayDouble pen_L1_alpha_exp(model_exp.get_n_nodes() * model_exp.get_n_nodes());
+  model_sumexp.compute_penalization_constant(log(5.65), pen_mu_exp, pen_L1_alpha_exp, 1, 2, 3, 4, 5);
+
+  for (ulong i = 0; i < pen_mu_sumexp.size(); ++i) {
+    EXPECT_FLOAT_EQ(pen_mu_exp[i], pen_mu_sumexp[i]);
+  }
+  for (ulong i = 0; i < pen_L1_alpha_sumexp.size(); ++i) {
+    EXPECT_FLOAT_EQ(pen_L1_alpha_exp[i], pen_L1_alpha_sumexp[i]);
+  }
+}
+
 
 #ifdef ADD_MAIN
 int main(int argc, char** argv) {

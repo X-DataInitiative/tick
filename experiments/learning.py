@@ -24,7 +24,6 @@ def prepare_solver(SolverClass, solver_kwargs, model, prox):
         solver_kwargs['linesearch'] = False
     solver_kwargs['step'] = 1. / model.get_lip_best()
     solver_kwargs['verbose'] = False
-
     solver = SolverClass(**solver_kwargs)
     solver.set_model(model)
     solver.set_prox(prox)
@@ -34,7 +33,7 @@ def prepare_solver(SolverClass, solver_kwargs, model, prox):
 def learn_one_model(model_file_name, strength_range, create_prox,
                     compute_metrics, original_coeffs, SolverClass,
                     solver_kwargs):
-    i = int(extract_index(model_file_name, 'precomputed', 'pkl'))
+    model_index = int(extract_index(model_file_name, 'precomputed', 'pkl'))
     with open(model_file_name, 'rb') as model_file:
         model = pickle.load(model_file)
 
@@ -57,23 +56,24 @@ def learn_one_model(model_file_name, strength_range, create_prox,
             last_rel_obj = rel_objectives[-1]
             if last_rel_obj > (tol * 1.1):
                 if isinstance(strength, tuple):
-                    strength_str = ('{.3g}'.format(s) for s in strength)
+                    strength_str = ('{:.3g}'.format(s) for s in strength)
                 else:
-                    strength_str = '{.3g}'.format(strength)
+                    strength_str = '{:.3g}'.format(strength)
                 logger('did not converge train={} strength={}, '
                        'stopped at {:.3g} for tol={:.3g}'
-                       .format(i, strength_str, last_rel_obj, tol))
+                       .format(model_index, strength_str, last_rel_obj, tol))
         else:
             logger('failed for train={} strength={:.3g}, stopped at '
-                   'first iteration'.format(i, strength))
+                   'first iteration'.format(model_index, strength))
 
         # record losses
         train_loss = model.loss(coeffs)
         info['train_loss'][strength] = train_loss
 
-        compute_metrics(original_coeffs, coeffs, info, strength)
+        compute_metrics(original_coeffs, coeffs,
+                        get_n_decays_from_model(model), info, strength)
 
-    return i, info
+    return model_index, info
 
 
 def learn_in_parallel(strength_range, create_prox, compute_metrics,
@@ -179,19 +179,20 @@ def find_best_metrics_2d(original_coeffs, model_file_paths,
     return aggregated_run_infos
 
 
-def find_best_metrics(dim, run_time, n_models, prox_info, solver_kwargs,
-                      directory_path, n_cpu=-1, max_run_count=10, suffix=''):
+def find_best_metrics(dim, run_time, n_decays, n_models, prox_info,
+                      solver_kwargs, directory_path, n_cpu=-1, max_run_count=10,
+                      suffix=''):
     if n_cpu < 1:
         n_cpu = cpu_count()
     
     if 'tol' in prox_info:
         solver_kwargs['tol'] = prox_info['tol']
-    
+
     prox_name = prox_info['name']
     logger('### For prox %s' % prox_name)
 
     original_coeffs, model_file_paths = \
-        load_models(dim, run_time, n_models, directory_path)
+        load_models(dim, run_time, n_decays, n_models, directory_path)
 
     func = find_best_metrics_1d if prox_info['dim'] == 1 \
         else find_best_metrics_2d
@@ -205,38 +206,40 @@ def find_best_metrics(dim, run_time, n_models, prox_info, solver_kwargs,
 
 if __name__ == '__main__':
     from pprint import pprint
-    from experiments.tested_prox import create_prox_l1_no_mu
+    from experiments.tested_prox import create_prox_l1_no_mu, \
+    get_n_decays_from_model
     from experiments.grid_search_1d import get_best_point
 
-    dim = 30
-    run_time = 500
-    n_models = 3
-    directory_path = '/Users/martin/Downloads/jmlr_hawkes_data/'
+    dim_ = 30
+    n_decays_ = 3
+    run_time_ = 500
+    n_models_ = 3
+    directory_path_ = '/Users/martin/Downloads/jmlr_hawkes_data/'
 
-    solver_kwargs = {'tol': 1e-4, 'max_iter': 1000}
-    original_coeffs, model_file_paths = \
-        load_models(dim, run_time, n_models, directory_path)
+    solver_kwargs_ = {'tol': 1e-4, 'max_iter': 1000}
+    original_coeffs_, model_file_paths_ = \
+        load_models(dim_, run_time_, n_decays_, n_models_, directory_path_)
 
-    strength_range = [1e-3, 1e-2]
+    strength_range_ = [1e-3, 1e-2]
 
-    create_prox = create_prox_l1_no_mu
+    create_prox_ = create_prox_l1_no_mu
 
-    _, info = learn_one_model(
-        model_file_paths[0], strength_range, create_prox, compute_metrics,
-        original_coeffs, AGD, solver_kwargs)
+    _, info_ = learn_one_model(
+        model_file_paths_[0], strength_range_, create_prox_, compute_metrics,
+        original_coeffs_, AGD, solver_kwargs_)
 
     print('\n---- one model ----')
-    pprint(info)
-
-    prox_info = {
+    pprint(info_)
+    #
+    prox_info_ = {
         'name': 'l1',
         'n_initial_points': 10,
         'max_relative_step': 1.4,
         'create_prox': create_prox_l1_no_mu,
-        'tol': 1e-10,
+        'tol': 1e-4,
         'dim': 1,
     }
-    #
+
     # n_cpu = 3
     # infos = learn_in_parallel(
     #     strength_range, create_prox, compute_metrics, original_coeffs,
@@ -255,6 +258,6 @@ if __name__ == '__main__':
     #     best_point = get_best_point(metrics, metric, infos)
     #     print(metric, best_point)
 
-    find_best_metrics(dim, run_time, n_models, prox_info, solver_kwargs,
-                      directory_path, n_cpu=-1, max_run_count=10,
-                      suffix='test')
+    find_best_metrics(dim_, run_time_, n_decays_, n_models_, prox_info_,
+                      solver_kwargs_, directory_path_, n_cpu=1,
+                      max_run_count=10, suffix='test')

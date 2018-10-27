@@ -194,7 +194,7 @@ def plot_2d_metric(infos, metric_name, best, ax=None):
 
 def plot_all_2d_metrics(infos, metrics, ax=None):
     if ax is None:
-        _, ax = plt.subplots(2, 3)
+        _, ax = plt.subplots(2, 3, figsize=(8, 5))
     fig = ax.ravel()[0].get_figure()
     for i, metric in enumerate(metrics.keys()):
         plot_2d_metric(infos, metric, metrics[metric]['best'],

@@ -17,6 +17,13 @@ ModelHawkesSumExpKernLeastSq::ModelHawkesSumExpKernLeastSq(
                                              optimization_level));
 }
 
+void ModelHawkesSumExpKernLeastSq::hessian(ArrayDouble &out) {
+  if (!weights_computed) compute_weights();
+  auto *casted_model =
+      static_cast<ModelHawkesSumExpKernLeastSqSingle *>(aggregated_model.get());
+  casted_model->hessian(out);
+}
+
 void ModelHawkesSumExpKernLeastSq::compute_weights_i_r(
     const ulong i_r,
     std::vector<ModelHawkesSumExpKernLeastSqSingle> &model_list) {
@@ -147,4 +154,38 @@ double ModelHawkesSumExpKernLeastSq::get_period_length() const {
 void ModelHawkesSumExpKernLeastSq::set_period_length(double period_length) {
   this->period_length = period_length;
   weights_computed = false;
+}
+
+
+void ModelHawkesSumExpKernLeastSq::compute_penalization_constant(double x,
+                                                              ArrayDouble &pen_mu,
+                                                              ArrayDouble &pen_L1_alpha,
+                                                              double pen_mu_const1,
+                                                              double pen_mu_const2,
+                                                              double pen_L1_const1,
+                                                              double pen_L1_const2,
+                                                              double normalization) {
+  if (timestamps_list.empty() || end_times == nullptr) {
+    TICK_ERROR("Cannot use compute_penalization_constant with incremental fit");
+  }
+
+  auto model_list =
+      std::vector<ModelHawkesSumExpKernLeastSqSingle>(n_realizations);
+
+  pen_mu.init_to_zero();
+  pen_L1_alpha.init_to_zero();
+
+  for (ulong r = 0; r < n_realizations; ++r) {
+    model_list[r] =
+        ModelHawkesSumExpKernLeastSqSingle(decays, 1, optimization_level);
+    model_list[r].set_data(timestamps_list[r], (*end_times)[r]);
+    ArrayDouble pen_mu_r(pen_mu.size());
+    ArrayDouble pen_L1_alpha_r(pen_L1_alpha.size());
+    model_list[r].compute_penalization_constant(x, pen_mu_r, pen_L1_alpha_r,
+                                                pen_mu_const1, pen_mu_const2,
+                                                pen_L1_const1, pen_L1_const2,
+                                                normalization);
+    pen_mu.mult_incr(pen_mu_r, 1. / n_realizations);
+    pen_L1_alpha.mult_incr(pen_L1_alpha_r, 1. / n_realizations);
+  }
 }
