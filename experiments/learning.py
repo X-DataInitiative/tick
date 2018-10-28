@@ -207,8 +207,7 @@ def find_best_metrics(dim, run_time, n_decays, n_models, prox_info,
 
 if __name__ == '__main__':
     from pprint import pprint
-    from experiments.tested_prox import create_prox_l1_no_mu, \
-    get_n_decays_from_model
+    from experiments.tested_prox import create_prox_l1w_no_mu_nuclear
     from experiments.grid_search_1d import get_best_point
 
     dim_ = 30
@@ -221,24 +220,24 @@ if __name__ == '__main__':
     original_coeffs_, model_file_paths_ = \
         load_models(dim_, run_time_, n_decays_, n_models_, directory_path_)
 
-    strength_range_ = [1e-3, 1e-2]
+    strength_range_ = [(1e-3, 1e-1), (1e-2, 1e-2)]
 
-    create_prox_ = create_prox_l1_no_mu
+    create_prox_ = create_prox_l1w_no_mu_nuclear
 
     _, info_ = learn_one_model(
         model_file_paths_[0], strength_range_, create_prox_, compute_metrics,
-        original_coeffs_, AGD, solver_kwargs_)
+        original_coeffs_, GFB, solver_kwargs_)
 
     print('\n---- one model ----')
     pprint(info_)
     #
     prox_info_ = {
-        'name': 'l1',
-        'n_initial_points': 10,
+        'name': 'l1_w_nuclear',
+        'n_initial_points': 3,
         'max_relative_step': 1.4,
-        'create_prox': create_prox_l1_no_mu,
+        'create_prox': create_prox_l1w_no_mu_nuclear,
         'tol': 1e-4,
-        'dim': 1,
+        'dim': 2,
     }
 
     # n_cpu = 3

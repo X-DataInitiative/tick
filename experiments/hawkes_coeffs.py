@@ -184,4 +184,3 @@ if __name__ == '__main__':
     directory_prefix = '/Users/martin/Downloads/jmlr_hawkes_data/'
 
     retrieve_coeffs(dim, 3, directory_prefix)
-

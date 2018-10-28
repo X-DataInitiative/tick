@@ -101,8 +101,8 @@ class ProxNuclear(Prox):
             Value of the penalization at ``coeffs``
         """
         x = self._get_matrix(coeffs)
-        if x.shape[0] != x.shape[1]:
-            raise ValueError('Prox nuclear must be called on a squared matrix'
-                             ', received {} np.ndarray'.format(x.shape))
+        # if x.shape[0] != x.shape[1]:
+        #     raise ValueError('Prox nuclear must be called on a squared matrix'
+        #                      ', received {} np.ndarray'.format(x.shape))
         s = svd(x, compute_uv=False, full_matrices=False)
         return self.strength * s.sum()
