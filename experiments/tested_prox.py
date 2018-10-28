@@ -20,21 +20,22 @@ def create_prox_l1_no_mu(strength, model):
 
 def create_prox_l1w_no_mu(strength, model):
     weights = model.compute_penalization_constant(strength=strength)
-    dim = dim_from_n(model.n_coeffs, get_n_decays_from_model(model))
+    n_decays = get_n_decays_from_model(model)
+    dim = dim_from_n(model.n_coeffs, n_decays)
     weights = weights[dim:]
     prox = ProxL1w(1, positive=True, weights=weights,
-                   range=(dim, dim * dim + dim))
+                   range=(dim, dim * dim * n_decays + dim))
     return prox
 
 
 def create_prox_l1w_no_mu_un(strength, model):
     weights = model.compute_penalization_constant()
-    dim = dim_from_n(model.n_coeffs, get_n_decays_from_model(model))
+    n_decays = get_n_decays_from_model(model)
+    dim = dim_from_n(model.n_coeffs, n_decays)
     weights = weights[dim:]
     prox = ProxL1w(strength, positive=True, weights=weights,
-                   range=(dim, dim * dim + dim))
+                   range=(dim, dim * dim * n_decays + dim))
     return prox
-
 
 # Nuclear
 def create_prox_nuclear(strength, model):

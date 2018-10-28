@@ -209,7 +209,7 @@ void ModelHawkesSumExpKernLeastSqSingle::hessian_i(const ulong i,
       for (ulong m = 0; m < n_nodes; ++m) {
         const ArrayDouble2d &E_m = E[m];
 
-        for (int u1 = 0; u1 < n_decays; ++u1) {
+        for (ulong u1 = 0; u1 < n_decays; ++u1) {
           out[start_alpha_line + m * n_decays + u1 + 1] +=
               2 * (E_l(m, u * n_decays + u1) + E_m(l, u1 * n_decays + u));
           if (l == m) {

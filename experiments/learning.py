@@ -14,6 +14,7 @@ from experiments.grid_search_2d import get_new_range_2d
 from experiments.report_utils import record_metrics, logger
 from experiments.metrics import get_metrics, compute_metrics
 from experiments.grid_search_1d import get_new_range
+from experiments.tested_prox import get_n_decays_from_model
 
 from experiments.weights_computation import extract_index, load_models
 from tick.solver import AGD, GFB

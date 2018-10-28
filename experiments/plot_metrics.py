@@ -50,7 +50,10 @@ def plot_metrics_line(dim, metrics, mean_file, std_file,
             ax[i].plot(times, means, color=color, label=label, ls=ls)
 
             if 'auc' in metric.lower():
-                ax[i].set_ylim([None, 1])
+                ax[i].set_ylim([0, 1])
+            
+            if 'error' in metric.lower():
+                ax[i].set_yscale('log')
 
 
 def plot_metrics(dim, mean_file, std_file, with_diag=True):
