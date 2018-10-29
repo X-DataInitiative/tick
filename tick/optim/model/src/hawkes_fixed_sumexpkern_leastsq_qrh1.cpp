@@ -41,7 +41,7 @@ double ModelHawkesFixedSumExpKernLeastSqQRH1::loss_i(const ulong i,
     double R_i = 0;
 
     const ArrayDouble2d g_i = view(g[i]);
-    const ArrayDouble2d G_i = view(G[i]);
+//    const ArrayDouble2d G_i = view(G[i]);
 
     //! Term 1
     for(ulong q; q < MaxN; ++q)
@@ -54,14 +54,16 @@ double ModelHawkesFixedSumExpKernLeastSqQRH1::loss_i(const ulong i,
     };
 
     double tmp_s = 0;
-    for (ulong j = 0; j != n_nodes; ++j)
+    for (ulong j = 0; j != n_nodes; ++j) {
+        const ArrayDouble2d G_j = view(G[j]);
         for (ulong u = 0; u != U; ++u) {
             double G_ij_u = 0; //! at T
-            for(ulong q; q < MaxN; ++q)
-                G_ij_u += f_i[q] * f_i[q] * G_i[get_G_index(q,u)];
+            for (ulong q; q < MaxN; ++q)
+                G_ij_u += f_i[q] * f_i[q] * G_j[get_G_index(q, u)];
             double alpha_u_ij = coeffs[get_alpha_u_i_j_index(u, i, j)];
             tmp_s += alpha_u_ij * G_ij_u;
         }
+    }
     R_i += 2 * mu_i * tmp_s;
 
     //! Term 4
@@ -125,61 +127,162 @@ void ModelHawkesFixedSumExpKernLeastSqQRH1::grad(const ArrayDouble &coeffs,
                coeffs,
                out);
   out /= n_total_jumps;
+
+    for (ulong k = 0; k != get_n_coeffs(); ++k)
+        out[k] = -out[k];
 }
 
 // Method that computes the component i of the gradient
 void ModelHawkesFixedSumExpKernLeastSqQRH1::grad_i(const ulong i,
                                                    const ArrayDouble &coeffs,
                                                    ArrayDouble &out) {
-  if (!weights_computed) TICK_ERROR("Please compute weights before calling hessian_i");
+    if (!weights_computed) TICK_ERROR("Please compute weights before calling hessian_i");
 
-//  ArrayDouble mu_i = view(coeffs, i * n_baselines, (i + 1) * n_baselines);
-//  ulong start_alpha_i = n_nodes * n_baselines + i * n_nodes * n_decays;
-//  ulong end_alpha_i = n_nodes * n_baselines + (i + 1) * n_nodes * n_decays;
-//  ArrayDouble alpha_i = view(coeffs, start_alpha_i, end_alpha_i);
-//
-//  ArrayDouble grad_mu_i = view(out, i * n_baselines, (i + 1) * n_baselines);
-//  ArrayDouble grad_alpha_i = view(out, start_alpha_i, end_alpha_i);
-//  grad_alpha_i.init_to_zero();
-//
-//  ArrayDouble &K_i = K[i];
-//  for (ulong p = 0; p < n_baselines; ++p) {
-//    grad_mu_i[p] = 2 * mu_i[p] * L[p] - 2 * K_i[p];
-//  }
-//
-//  ArrayDouble2d &C_i = C[i];
-//  for (ulong j = 0; j < n_nodes; ++j) {
-//    ArrayDouble2d &Dg_j = Dg[j];
-//    ArrayDouble2d &Dgg_j = Dgg[j];
-//    ArrayDouble2d &E_j = E[j];
-//
-//    for (ulong u = 0; u < n_decays; ++u) {
-//      double alpha_i_j_u = alpha_i[j * n_decays + u];
-//      double &grad_alpha_i_j_u = grad_alpha_i[j * n_decays + u];
-//
-//      grad_alpha_i_j_u -= 2 * C_i(j, u);
-//
-//      for (ulong p = 0; p < n_baselines; ++p) {
-//        grad_mu_i[p] += 2 * alpha_i_j_u * Dg_j[u * n_baselines + p];
-//        grad_alpha_i_j_u += 2 * mu_i[p] * Dg_j[u * n_baselines + p];
-//      }
-//
-//      for (ulong u1 = 0; u1 < n_decays; ++u1) {
-//        double alpha_i_j_u1 = alpha_i[j * n_decays + u1];
-//
-//        grad_alpha_i_j_u += 2 * alpha_i_j_u1 * Dgg_j(u , u1);
-//
-//        for (ulong j1 = 0; j1 < n_nodes; ++j1) {
-//          double alpha_i_j1_u1 = alpha_i[j1 * n_decays + u1];
-//          double &grad_alpha_i_j1_u1 = grad_alpha_i[j1 * n_decays + u1];
-//          double E_j_j1_u_u1 = E_j(j1, u * n_decays + u1);
-//
-//          grad_alpha_i_j_u += 2 * alpha_i_j1_u1 * E_j_j1_u_u1;
-//          grad_alpha_i_j1_u1 += 2 * alpha_i_j_u * E_j_j1_u_u1;
-//        }
-//      }
-//    }
-//  }
+    //! necessary variables
+    const double mu_i = coeffs[i];
+    ulong U = n_decays;
+
+    ArrayDouble f_i(MaxN);
+    for (ulong q = 0; q != MaxN; ++q)
+        f_i[q] = coeffs[n_nodes + n_nodes * n_nodes * U + i * MaxN + q];
+
+    const ArrayDouble2d g_i = view(g[i]);
+    const ArrayDouble2d G_i = view(G[i]);
+
+    auto get_G_index = [=](ulong q, ulong u) {
+        q -= 1; //!definition of type[k] add 1 for all dims
+        return n_decays * q + u;
+    };
+
+    auto get_g_index = [=](ulong k, ulong u) {
+        return n_decays * k + u;
+    };
+
+    auto get_H_index = [=](ulong j, ulong jj, ulong u, ulong uu, ulong q) {
+        return n_nodes * n_decays * n_decays * q + n_decays * n_decays * jj + n_decays * u + uu;
+    };
+
+    //! grad of mu_i
+    double &grad_mu_i = out[i];
+    grad_mu_i = 0;
+
+    //! Term 1
+    for (ulong q; q < MaxN; ++q)
+        grad_mu_i += 2 * mu_i * f_i[q] * f_i[q] * Length[q];
+
+    //! Term 2
+    double tmp_s = 0;
+    for (ulong j = 0; j != n_nodes; ++j) {
+        const ArrayDouble2d G_j = view(G[j]);
+        for (ulong u = 0; u != U; ++u) {
+            double G_ij_u = 0; //! at T
+            for (ulong q; q < MaxN; ++q)
+                G_ij_u += f_i[q] * f_i[q] * G_j[get_G_index(q, u)];
+            double alpha_u_ij = coeffs[get_alpha_u_i_j_index(u, i, j)];
+            tmp_s += alpha_u_ij * G_ij_u;
+        }
+    }
+    grad_mu_i += 2 * tmp_s;
+
+    //! Term 3
+    const ArrayULong Count_i = view(Count[i]);
+    for (ulong q; q < MaxN; ++q)
+        grad_mu_i -= 2 * f_i[q] * Count_i[q];
+
+    //! grad of alpha_u_{ij}, for all j and all u
+    //! Term 1
+    for (ulong j = 0; j != n_nodes; ++j) {
+        const ArrayDouble2d G_j = view(G[j]);
+        for (ulong u = 0; u != U; ++u) {
+            double G_ij_u = 0;
+            for (ulong q; q < MaxN; ++q)
+                G_ij_u += f_i[q] * f_i[q] * G_j[get_G_index(q, u)];
+
+            double &grad_alpha_u_ij = out[get_alpha_u_i_j_index(u, i, j)];
+            grad_alpha_u_ij = 2 * mu_i * G_ij_u;
+        }
+    }
+
+    //! Term 2
+    for (ulong k = 1; k != n_total_jumps + 1; ++k)
+        if (type_n[k] == i + 1)
+            for (ulong j = 0; j != n_nodes; ++j) {
+                ArrayDouble2d g_j = view(g[j]);
+                for (ulong u = 0; u != U; ++u) {
+                    double &grad_alpha_u_ij = out[get_alpha_u_i_j_index(u, i, j)];
+                    grad_alpha_u_ij -= f_i[global_n[k - 1]] * g_j[get_g_index(k, u)];;
+                }
+            }
+
+    //! Term 3
+    for (ulong j = 0; j != n_nodes; ++j) {
+        ArrayDouble2d H_j = view(H[j]);
+        for (ulong u = 0; u != U; ++u) {
+            double &grad_alpha_u_ij = out[get_alpha_u_i_j_index(u, i, j)];
+            for (ulong jj = 0; jj != n_nodes; ++jj)
+                for (ulong uu = 0; uu != U; ++uu) {
+                    double tmp_s = 0;
+                    for (ulong q; q < MaxN; ++q)
+                        tmp_s += H_j[get_H_index(j, jj, u, uu, q)] * f_i[q] * f_i[q];
+
+                    double alpha_uu_i_jj = coeffs[get_alpha_u_i_j_index(uu, i, jj)];
+                    grad_alpha_u_ij += alpha_uu_i_jj * tmp_s;
+                }
+        }
+    }
+
+    //! grad of f^i_n
+    //! Term 1
+    ArrayDouble grad_f_i(MaxN);
+    for (ulong q; q < MaxN; ++q)
+        grad_f_i[q] = 2 * f_i[q] * Length[q] * mu_i * mu_i;
+
+    //! Term 2
+    //! to be finished
+    for (ulong j = 0; j != n_nodes; ++j) {
+        const ArrayDouble2d G_j = view(G[j]);
+        for (ulong u = 0; u != U; ++u) {
+            double alpha_u_ij = coeffs[get_alpha_u_i_j_index(u, i, j)];
+            for (ulong q; q < MaxN; ++q)
+                grad_f_i[q] += 4 * f_i[q] * alpha_u_ij * G_j[get_G_index(q, u)];
+        }
+    }
+
+    //! Term 3
+    for(ulong q; q < MaxN; ++q)
+        grad_f_i[q] -= 2 * mu_i * Count_i[q];
+
+    //! Term 4
+    for (ulong k = 1; k != n_total_jumps + 1; ++k)
+        if (type_n[k] == i + 1) {
+            double tmp_s = 0;
+            for (ulong j = 0; j != n_nodes; ++j) {
+                ArrayDouble2d g_j = view(g[j]);
+                for (ulong u = 0; u != U; ++u) {
+                    double alpha_u_i_j = coeffs[get_alpha_u_i_j_index(u, i, j)];
+                    tmp_s += alpha_u_i_j * g_j[get_g_index(k, u)];
+                }
+            }
+            grad_f_i[global_n[k-1]] -= 2 * tmp_s;
+        }
+
+    //! Big Term
+    for (ulong j = 0; j != n_nodes; ++j) {
+        ArrayDouble2d H_j = view(H[j]);
+        for (ulong u = 0; u != U; ++u) {
+            double alpha_u_i_j = coeffs[get_alpha_u_i_j_index(u, i, j)];
+            for (ulong jj = 0; jj != n_nodes; ++jj)
+                for (ulong uu = 0; uu != U; ++uu) {
+                    double alpha_uu_i_jj = coeffs[get_alpha_u_i_j_index(uu, i, jj)];
+                    for (ulong q; q < MaxN; ++q)
+                        grad_f_i[q] += alpha_u_i_j * alpha_uu_i_jj * H_j[get_H_index(j, jj, u, uu, q)] * 2 * f_i[q];
+                }
+        }
+    }
+
+    //Write to the out vector
+    for(ulong q = 0; q != MaxN; ++q)
+        out[n_nodes + n_nodes * n_nodes * U + i * MaxN + q] = grad_f_i[q];
 }
 
 // Computes both gradient and value
