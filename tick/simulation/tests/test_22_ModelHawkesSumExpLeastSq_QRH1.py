@@ -29,7 +29,7 @@ simu_model.track_intensity(0.1)
 simu_model.simulate()
 
 # plot_point_process(simu_model)
-print("nombre de point :", len(simu_model.timestamps[0]), len(simu_model.timestamps[1]))
+print("Timestamps:", len(simu_model.timestamps[0]), len(simu_model.timestamps[1]))
 ##################################################################################################################
 
 
@@ -60,9 +60,9 @@ x_real = np.array(
      1.0, 0.7, 0.8, 0.6, 0.5, 0.8, 0.3, 0.6, 0.2, 0.7,  1.0, 0.6, 0.8, 0.8, 0.6, 0.6, 0.5, 0.8, 0.3, 0.6])
 # x0 = np.array(
 #     [0.6, 0.8,   0.2, 0.2, 0.2, 0.2,  0.2, 0.2, 0.2, 0.2,  0.4, 0.4, 0.4, 0.4, 0.5, 0.5, 0.5, 0.5,
-#      0.5, 0.5, 0.9, 0.9, 0.3, 0.6, 0.7, 0.8, 0.5,  0.5, 0.5, 0.9, 0.9, 0.3, 0.6, 0.7, 0.8, 0.5])
+#      0.5, 0.5, 0.5, 0.9, 0.9, 0.3, 0.6, 0.7, 0.8, 0.5,  0.5, 0.5, 0.5, 0.9, 0.9, 0.3, 0.6, 0.7, 0.8, 0.5])
 # solver.solve(x0)
-#
+
 print(model.loss(x_real))
 print(model.grad(x_real))
 # print(model.loss(solver.solution))
