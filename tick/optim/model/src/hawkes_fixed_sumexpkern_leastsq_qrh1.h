@@ -105,9 +105,6 @@ double loss_and_grad(const ArrayDouble &coeffs, ArrayDouble &out);
 //! @brief Synchronize n_coeffs given other attributes
 ulong get_n_coeffs() const override;
 
-void set_n_baselines(ulong n_baselines);
-void set_period_length(double period_length);
-
 private:
 void allocate_weights();
 
@@ -121,7 +118,10 @@ void compute_weights_H_j(const ulong j);
 
 //! you know what it is
 ulong inline get_alpha_u_i_j_index(const ulong u, const ulong i, const ulong j) const{
-    return n_nodes + u * n_nodes * n_nodes + i * n_nodes + j;
+//    return n_nodes + u * n_nodes * n_nodes + i * n_nodes + j;
+    //the old format
+    return n_nodes + i * n_decays * n_nodes + j * n_decays + u;
+    //the new format
 }
 
 //friend class ModelHawkesFixedSumExpKernLeastSqQRH1List;

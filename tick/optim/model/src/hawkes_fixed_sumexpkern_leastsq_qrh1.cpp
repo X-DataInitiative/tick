@@ -33,15 +33,14 @@ double ModelHawkesFixedSumExpKernLeastSqQRH1::loss_i(const ulong i,
                                                      const ArrayDouble &coeffs) {
     if (!weights_computed) TICK_ERROR("Please compute weights before calling loss_i");
 
+    double R_i = 0;
+
     const double mu_i = coeffs[i];
     ulong U = n_decays;
     ArrayDouble f_i(MaxN);
     for(ulong k = 0; k != MaxN; ++k)
         f_i[k] = coeffs[n_nodes + n_nodes * n_nodes * U + i * MaxN + k];
-    double R_i = 0;
-
     const ArrayDouble2d g_i = view(g[i]);
-//    const ArrayDouble2d G_i = view(G[i]);
 
     //! Term 1
     for(ulong q; q < MaxN; ++q)
@@ -291,7 +290,6 @@ double ModelHawkesFixedSumExpKernLeastSqQRH1::loss_and_grad(const ArrayDouble &c
 }
 
 // Contribution of the ith component to the initialization
-// Computation of the arrays H, Dg, Dg2 and C
 void ModelHawkesFixedSumExpKernLeastSqQRH1::compute_weights_i(const ulong i) {
     //!thread i computes weights governed by dimension i
 
@@ -300,7 +298,7 @@ void ModelHawkesFixedSumExpKernLeastSqQRH1::compute_weights_i(const ulong i) {
         const double delta_t = global_timestamps[k] - global_timestamps[k - 1];
         const ulong q = global_n[k - 1];
 
-        if (i == 0) //!thread 0
+        if (i == 0) //!thread 0 calculates array "Length"
             Length[q] += delta_t;
         if (i == type_n[k] - 1) //!thread i
             Count[i][q]++;
@@ -325,13 +323,12 @@ void ModelHawkesFixedSumExpKernLeastSqQRH1::compute_weights_i(const ulong i) {
         for (ulong k = 1; k != 1 + n_total_jumps + 1; k++) {
             const double t_k = (k != (1 + n_total_jumps) ? global_timestamps[k] : end_time);
             const double ebt = std::exp(-decay * (t_k - global_timestamps[k - 1]));
-            if (k != 1 + n_total_jumps)
+//            if (k != 1 + n_total_jumps)//!T
                 g_i[get_g_index(k, u)] = g_i[get_g_index(k - 1, u)] * ebt + (type_n[k - 1] == i + 1 ? decay * ebt : 0);
 
             if (k != (1 + n_total_jumps))//!T
-                if (i + 1 == type_n[k]) //!! so we need more n_threads than dim?
-                    G_i[get_G_index(global_n[k - 1], u)] +=
-                            (1 - ebt) / decay * g_i[get_g_index(k - 1, u)] + ((type_n[k - 1] == i + 1) ? 1 - ebt : 0);
+                G_i[get_G_index(global_n[k - 1], u)] +=
+                        (1 - ebt) / decay * g_i[get_g_index(k - 1, u)] + ((type_n[k - 1] == i + 1) ? 1 - ebt : 0);
         }
     }
 }
@@ -345,7 +342,7 @@ void ModelHawkesFixedSumExpKernLeastSqQRH1::compute_weights_H_j(const ulong j){
         return  n_nodes * n_decays * n_decays * q + n_decays * n_decays * jj + n_decays * u + uu;
     };
 
-    ulong U = decays.size();
+    ulong U = n_decays;
     ArrayDouble2d g_j = view(g[j]);
     ArrayDouble2d H_j = view(H[j]);
 
@@ -353,17 +350,35 @@ void ModelHawkesFixedSumExpKernLeastSqQRH1::compute_weights_H_j(const ulong j){
     for(ulong jj = 0; jj != n_nodes; jj++) {
         ArrayDouble2d g_jj = view(g[jj]);
         for (ulong u = 0; u != U; ++u)
-            for (ulong uu = 0; uu != U; ++uu)
-                for (ulong k = 1; k != 1 + n_total_jumps + 1; k++) {
-                    const double decay = decays[u] + decays[uu];
-                    const double t_k = (k != (1 + n_total_jumps) ? global_timestamps[k] : end_time);
-                    const double ebt = std::exp(-decay * (t_k - global_timestamps[k - 1]));
-                    const double x0 = g_j[get_g_index(k, u)] * g_jj[get_g_index(k, uu)] / ebt;
-
-                    const ulong q = global_n[k - 1];
+            for (ulong uu = 0; uu != U; ++uu) {
+                const double decay = decays[u] + decays[uu];
+                for (ulong k = 0; k != 1 + n_total_jumps; k++) {
+                    const double delta_t = (k != n_total_jumps ? global_timestamps[k + 1] : end_time) - global_timestamps[k];
+                    //! 另一种算法 用尾巴上的g来算
+                    const double ebt = std::exp(-decay * delta_t);
+                    const double xt = g_j[get_g_index(k + 1, u)] * g_jj[get_g_index(k + 1, uu)];
+                    const double x0 = xt / ebt;
+                    const ulong q = global_n[k];
                     H_j[get_H_index(j, jj, u, uu, q)] += (1 - ebt) / decay * x0;
                 }
+            }
     }
+}
+
+// Weights should be computed before loss and grad
+void ModelHawkesFixedSumExpKernLeastSqQRH1::compute_weights() {
+    allocate_weights();
+
+    // Multithreaded computation of the arrays
+    parallel_run(get_n_threads(), n_nodes,
+                 &ModelHawkesFixedSumExpKernLeastSqQRH1::compute_weights_i,
+                 this);
+
+    //! H could only be computed after we have all g_i
+    parallel_run(get_n_threads(), n_nodes,
+                 &ModelHawkesFixedSumExpKernLeastSqQRH1::compute_weights_H_j,
+                 this);
+    weights_computed = true;
 }
 
 void ModelHawkesFixedSumExpKernLeastSqQRH1::allocate_weights() {
@@ -395,22 +410,6 @@ void ModelHawkesFixedSumExpKernLeastSqQRH1::allocate_weights() {
     H[i] = ArrayDouble2d(n_nodes * n_decays * n_decays, MaxN);
     H[i].init_to_zero();
   }
-}
-
-// Weights should be computed before loss and grad
-void ModelHawkesFixedSumExpKernLeastSqQRH1::compute_weights() {
-  allocate_weights();
-
-  // Multithreaded computation of the arrays
-  parallel_run(get_n_threads(), n_nodes,
-               &ModelHawkesFixedSumExpKernLeastSqQRH1::compute_weights_i,
-               this);
-
-    //! H could only be computed after we have all g_i
-  parallel_run(get_n_threads(), n_nodes,
-               &ModelHawkesFixedSumExpKernLeastSqQRH1::compute_weights_H_j,
-               this);
-  weights_computed = true;
 }
 
 ulong ModelHawkesFixedSumExpKernLeastSqQRH1::get_n_coeffs() const {
