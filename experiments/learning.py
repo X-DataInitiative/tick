@@ -45,7 +45,7 @@ def learn_one_model(model_file_name, strength_range, create_prox,
         # Reinitialize problem (no warm start)
         coeffs = 1 * np.ones(model.n_coeffs)
 
-        prox = create_prox(strength, model)
+        prox = create_prox(strength, model, logger)
         solver = prepare_solver(SolverClass, solver_kwargs, model, prox)
 
         coeffs = solver.solve(coeffs)
@@ -57,7 +57,8 @@ def learn_one_model(model_file_name, strength_range, create_prox,
             last_rel_obj = rel_objectives[-1]
             if last_rel_obj > (tol * 1.1):
                 if isinstance(strength, tuple):
-                    strength_str = ('{:.3g}'.format(s) for s in strength)
+                    strength_str = ', '.join(
+                        '{:.3g}'.format(s) for s in strength)
                 else:
                     strength_str = '{:.3g}'.format(strength)
                 logger('did not converge train={} strength={}, '

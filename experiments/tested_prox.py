@@ -1,3 +1,4 @@
+import traceback
 from abc import abstractmethod
 
 import numpy as np
@@ -19,13 +20,17 @@ class ProxTensorNuclear(Prox):
 
     def __init__(self, strength: float, n_rows: int = None,
                  depth: int = None, range: tuple = None,
-                 positive: bool = False):
+                 positive: bool = False, logger=None):
         Prox.__init__(self, range=range)
         self.strength = strength
         self.n_rows = n_rows
         self.positive = positive
         self.depth = depth
         self._nuclear_prox = None
+        if logger is None:
+            self.logger = print
+        else:
+            self.logger = logger
 
     def _get_tensor(self, coeffs):
         if self.n_rows is None or self.depth is None:
@@ -56,7 +61,14 @@ class ProxTensorNuclear(Prox):
     def _call(self, coeffs: np.ndarray, step: float, out: np.ndarray):
         stacked_coeffs = self._get_stacked_matrix(coeffs).ravel()
         out_stacked_coeffs = np.zeros_like(stacked_coeffs)
-        self._nuclear_prox._call(stacked_coeffs, step, out=out_stacked_coeffs)
+        try:
+            self._nuclear_prox._call(stacked_coeffs, step, out=out_stacked_coeffs)
+        except np.linalg.linalg.LinAlgError:
+            self.logger('Failed convergence in call')
+            self.logger(stacked_coeffs.min(), stacked_coeffs.max())
+            self.logger(stacked_coeffs)
+            traceback.print_exc()
+            out_stacked_coeffs = stacked_coeffs
 
         stacked_delta = out_stacked_coeffs - stacked_coeffs
         flat_delta = self._get_flat_tensor_from_stacked(stacked_delta)
@@ -69,15 +81,23 @@ class ProxTensorNuclear(Prox):
 
     def value(self, coeffs: np.ndarray) -> float:
         stacked_coeffs = self._get_stacked_matrix(coeffs).ravel()
-        return self._nuclear_prox.value(stacked_coeffs)
+        try:
+            return self._nuclear_prox.value(stacked_coeffs)
+        except np.linalg.linalg.LinAlgError:
+            self.logger('Failed convergence in value')
+            self.logger(stacked_coeffs.min(), stacked_coeffs.max())
+            self.logger(stacked_coeffs)
+            traceback.print_exc()
+            return 0
 
 
 class ProxTensorHStackNuclear(ProxTensorNuclear):
     def __init__(self, strength: float, n_rows: int = None,
                  depth: int = None, range: tuple = None,
-                 positive: bool = False):
+                 positive: bool = False, logger=None):
         ProxTensorNuclear.__init__(self, strength, n_rows=n_rows,
-                                   depth=depth, range=range, positive=positive)
+                                   depth=depth, range=range, positive=positive,
+                                   logger=logger)
         self._nuclear_prox = ProxNuclear(strength, n_rows=n_rows * depth)
 
     def _get_stacked_matrix(self, coeffs):
@@ -99,9 +119,10 @@ class ProxTensorHStackNuclear(ProxTensorNuclear):
 class ProxTensorVStackNuclear(ProxTensorNuclear):
     def __init__(self, strength: float, n_rows: int = None,
                  depth: int = None, range: tuple = None,
-                 positive: bool = False):
+                 positive: bool = False, logger=None):
         ProxTensorNuclear.__init__(self, strength, n_rows=n_rows,
-                                   depth=depth, range=range, positive=positive)
+                                   depth=depth, range=range, positive=positive,
+                                   logger=logger)
         self._nuclear_prox = ProxNuclear(strength, n_rows=n_rows)
 
     def _get_stacked_matrix(self, coeffs):
@@ -127,13 +148,13 @@ def get_n_decays_from_model(model):
         return model.n_decays
 
 
-def create_prox_l1_no_mu(strength, model):
+def create_prox_l1_no_mu(strength, model, logger=None):
     dim = dim_from_n(model.n_coeffs, get_n_decays_from_model(model))
     prox = ProxL1(strength, positive=True, range=(dim, dim * dim + dim))
     return prox
 
 
-def create_prox_l1w_no_mu(strength, model):
+def create_prox_l1w_no_mu(strength, model, logger=None):
     weights = model.compute_penalization_constant(strength=strength)
     n_decays = get_n_decays_from_model(model)
     dim = dim_from_n(model.n_coeffs, n_decays)
@@ -143,7 +164,7 @@ def create_prox_l1w_no_mu(strength, model):
     return prox
 
 
-def create_prox_l1w_no_mu_un(strength, model):
+def create_prox_l1w_no_mu_un(strength, model, logger=None):
     weights = model.compute_penalization_constant()
     n_decays = get_n_decays_from_model(model)
     dim = dim_from_n(model.n_coeffs, n_decays)
@@ -153,7 +174,7 @@ def create_prox_l1w_no_mu_un(strength, model):
     return prox
 
 # Nuclear
-def create_prox_nuclear(strength, model):
+def create_prox_nuclear(strength, model, logger=None):
     n_decays = get_n_decays_from_model(model)
     dim = dim_from_n(model.n_coeffs, n_decays)
 
@@ -166,30 +187,31 @@ def create_prox_nuclear(strength, model):
         prox_range = (dim, dim * dim * n_decays + dim)
         n_rows = dim
         prox_hstack = ProxTensorHStackNuclear(strength, n_rows, n_decays,
-                                              range=prox_range, positive=True)
+                                              range=prox_range, positive=True,
+                                              logger=logger)
         prox_vstack = ProxTensorVStackNuclear(strength, n_rows, n_decays,
                                               range=prox_range, positive=True)
         return prox_hstack, prox_vstack
 
 
-def create_prox_l1w_no_mu_nuclear(strength, model):
+def create_prox_l1w_no_mu_nuclear(strength, model, logger=None):
     l1, tau = strength
     prox_l1 = create_prox_l1w_no_mu(l1, model)
-    prox_nuclear = create_prox_nuclear(tau, model)
+    prox_nuclear = create_prox_nuclear(tau, model, logger=logger)
     return (prox_l1,) + prox_nuclear
 
 
-def create_prox_l1w_un_no_mu_nuclear(strength, model):
+def create_prox_l1w_un_no_mu_nuclear(strength, model, logger=None):
     l1, tau = strength
     prox_l1 = create_prox_l1w_no_mu_un(l1, model)
-    prox_nuclear = create_prox_nuclear(tau, model)
+    prox_nuclear = create_prox_nuclear(tau, model, logger=logger)
     return (prox_l1,) + prox_nuclear
 
 
-def create_prox_l1_no_mu_nuclear(strength, model):
+def create_prox_l1_no_mu_nuclear(strength, model, logger=None):
     l1, tau = strength
     prox_l1 = create_prox_l1_no_mu(l1, model)
-    prox_nuclear = create_prox_nuclear(tau, model)
+    prox_nuclear = create_prox_nuclear(tau, model, logger=logger)
     return (prox_l1,) + prox_nuclear
 
 

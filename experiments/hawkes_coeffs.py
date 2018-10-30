@@ -69,26 +69,9 @@ def block_matrix(dimension: int = 100,
     return A
 
 
-def get_coeffs_dim_30(n_decays, spectral_radius=0.8):
-    dim = 30
-
-    if n_decays == 1:
-        beta = DECAY_1
-        betas = np.ones((dim, dim)) * beta
-    else:
-        betas = DECAYS_3
-
-    blocks_ranges = [
-        (range(0, 7), 0.3, 1),
-        (range(4, 15), 0.1, 2),
-        (range(11, 20), 0.2, 1),
-        (range(20, 27), 0.1, 1),
-        (range(27, 29), 0.8, 3),
-        (range(29, 30), 1.0, 5),
-    ]
-
-    r = np.random.RandomState(23983)
-    decay_coeffs = r.rand(n_decays, len(blocks_ranges))
+def baseline_matrix_from_block_range(blocks_ranges, decays, spectral_radius):
+    dim = blocks_ranges[-1][0].stop
+    n_decays = 1 if len(decays.shape) == 2 else decays.shape[0]
 
     if n_decays == 1:
         A0 = np.zeros((dim, dim))
@@ -101,6 +84,9 @@ def get_coeffs_dim_30(n_decays, spectral_radius=0.8):
             a, b = block_range[0], block_range[-1] + 1
             mu0[a: b] += coeff_mu
     else:
+        r = np.random.RandomState(23983)
+        decay_coeffs = r.rand(n_decays, len(blocks_ranges))
+
         A0 = np.zeros((dim, dim, n_decays))
         mu0 = np.zeros(dim)
         for i, (block_range, coeff_mu, coeff_A) in enumerate(blocks_ranges):
@@ -114,73 +100,75 @@ def get_coeffs_dim_30(n_decays, spectral_radius=0.8):
 
     simu_class = SimuHawkesExpKernels if n_decays == 1 \
         else SimuHawkesSumExpKernels
-    hawkes = simu_class(A0, betas, baseline=mu0)
+    hawkes = simu_class(A0, decays, baseline=mu0)
     hawkes.adjust_spectral_radius(spectral_radius)
 
-    return hawkes.decays, hawkes.baseline, hawkes.adjacency
+    return hawkes.baseline, hawkes.adjacency
 
 
-def get_coeffs_dim_100(spectral_radius=0.8):
-    dim = 100
+def get_coeffs_dim_30(n_decays, spectral_radius=0.8):
+    dim = 30
 
-    beta = 1
-    betas = np.ones((dim, dim)) * beta
+    if n_decays == 1:
+        beta = DECAY_1
+        decays = np.ones((dim, dim)) * beta
+    else:
+        decays = DECAYS_3
 
     blocks_ranges = [
-        range(0, 12),
-        range(10, 30),
-        range(22, 60),
-        range(60, 90),
-        range(90, 97),
-        range(97, 100)
+        (range(0, 7), 0.3, 1),
+        (range(4, 15), 0.1, 2),
+        (range(11, 20), 0.2, 1),
+        (range(20, 27), 0.1, 1),
+        (range(27, 29), 0.8, 3),
+        (range(29, 30), 1.0, 5),
     ]
-    A0 = np.zeros((dim, dim))
-    mu0 = np.zeros(dim)
-    for i, block_range in enumerate(blocks_ranges):
-        nodes = np.array(block_range, dtype=int)
-        for a in nodes:
-            for b in nodes:
-                if i == 0:
-                    A0[a, b] = 2
-                elif i == 1:
-                    A0[a, b] += 1
-                elif i == 2:
-                    A0[a, b] += 1.3
-                elif i == 3:
-                    A0[a, b] = 1.5
-                elif i == 4:
-                    A0[a, b] = 3
-                elif i == 5:
-                    A0[a, b] = 3
-        a, b = block_range[0], block_range[-1] + 1
-        if i == 0:
-            mu0[a: b] = 0.3
-        elif i == 1:
-            mu0[a: b] = 0.1
-        elif i == 2:
-            mu0[a: b] += 0.2
-        elif i == 3:
-            mu0[a: b] = 0.1
-        elif i == 4:
-            mu0[a: b] = 0.8
-        elif i == 5:
-            mu0[a: b] = 1.0
 
-    hawkes = SimuHawkesExpKernels(A0, betas, baseline=mu0)
-    hawkes.adjust_spectral_radius(spectral_radius)
+    baseline, adjacency = baseline_matrix_from_block_range(
+        blocks_ranges, decays, spectral_radius
+    )
 
-    return hawkes.decays, hawkes.baseline, hawkes.adjacency
+    return decays, baseline, adjacency
+
+
+def get_coeffs_dim_100(n_decays, spectral_radius=0.8):
+    dim = 100
+
+    if n_decays == 1:
+        beta = DECAY_1
+        decays = np.ones((dim, dim)) * beta
+    else:
+        decays = DECAYS_3
+
+    blocks_ranges = [
+        (range(0, 12), 0.3, 2),
+        (range(10, 30), 0.1, 1),
+        (range(22, 60), 0.2, 1.3),
+        (range(60, 90), 0.1, 1.5),
+        (range(90, 97), 0.8, 3),
+        (range(97, 100), 1., 3),
+    ]
+
+    baseline, adjacency = baseline_matrix_from_block_range(
+        blocks_ranges, decays, spectral_radius
+    )
+
+    return decays, baseline, adjacency
 
 
 if __name__ == '__main__':
+    import itertools
+
     print(block_matrix(5, blocks_ranges=[range(0, 3), range(2, 5)]))
 
-    betas, mu0, A0 = get_coeffs_dim_100()
-    plot_coeffs(mu0, A0)
+    betas_, mu0_, A0_ = get_coeffs_dim_100(3)
+    plot_coeffs(mu0_, A0_)
 
-    dim = 30
+    dim_ = 30
     betas, mu0, A0 = get_coeffs_dim_30(3, spectral_radius=0.8)
     plot_coeffs(mu0, A0)
-    directory_prefix = '/Users/martin/Downloads/jmlr_hawkes_data/'
-
-    retrieve_coeffs(dim, 3, directory_prefix)
+    directory_prefix_ = '/Users/martin/Downloads/jmlr_hawkes_data/'
+    
+    for dim_, n_decays_ in itertools.product([30, 100], [1, 3]):
+        print('retrieved n_nodes={}, n_decays={}'.format(dim_, n_decays_))
+        retrieve_coeffs(dim_, n_decays_, directory_prefix_)
