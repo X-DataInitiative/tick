@@ -43,8 +43,11 @@ double ModelHawkesFixedSumExpKernLeastSqQRH1::loss_i(const ulong i,
     const ArrayDouble2d g_i = view(g[i]);
 
     //! Term 1
-    for(ulong q; q < MaxN; ++q)
+    for(ulong q = 0; q < MaxN; ++q)
         R_i += f_i[q] * f_i[q] * Length[q] * mu_i * mu_i;
+
+//    printf("\n---------------------------------------------\n");
+//    printf("thread_%llu: Term 1 = %f\n" ,i, R_i);
 
     //! Term 2
     auto get_G_index = [=](ulong q, ulong u) {
@@ -56,18 +59,25 @@ double ModelHawkesFixedSumExpKernLeastSqQRH1::loss_i(const ulong i,
         const ArrayDouble2d G_j = view(G[j]);
         for (ulong u = 0; u != U; ++u) {
             double G_ij_u = 0; //! at T
-            for (ulong q; q < MaxN; ++q)
+            for (ulong q = 0; q < MaxN; ++q)
                 G_ij_u += f_i[q] * f_i[q] * G_j[get_G_index(q, u)];
             double alpha_u_ij = coeffs[get_alpha_u_i_j_index(u, i, j)];
             tmp_s += alpha_u_ij * G_ij_u;
         }
     }
     R_i += 2 * mu_i * tmp_s;
+//    printf("thread_%llu: Term 2 = %f\n" ,i, 2 * mu_i * tmp_s);
+
+    double term3 = 0;
+    double term4 = 0;
+    double term5 = 0;
 
     //! Term 4
     const ArrayULong Count_i = view(Count[i]);
-    for(ulong q; q < MaxN; ++q)
+    for(ulong q = 0; q < MaxN; ++q) {
         R_i -= 2 * mu_i * f_i[q] * Count_i[q];
+        term4 -= 2 * mu_i * f_i[q] * Count_i[q];
+    }
 
     //! Term 5
     auto get_g_index = [=](ulong k, ulong u) {
@@ -85,6 +95,7 @@ double ModelHawkesFixedSumExpKernLeastSqQRH1::loss_i(const ulong i,
                 }
             }
             R_i -= 2 * tmp_s * f_i[global_n[k-1]];
+            term5 -= 2 * tmp_s * f_i[global_n[k-1]];
         }
 
     //! Big Term
@@ -100,13 +111,19 @@ double ModelHawkesFixedSumExpKernLeastSqQRH1::loss_i(const ulong i,
                 for (ulong uu = 0; uu != U; ++uu) {
                     double alpha_uu_i_jj = coeffs[get_alpha_u_i_j_index(uu, i, jj)];
                     double tmp_s = 0;
-                    for (ulong q; q < MaxN; ++q) {
+                    for (ulong q = 0; q < MaxN; ++q) {
                         tmp_s += H_j[get_H_index(j, jj, u, uu, q)] * f_i[q] * f_i[q];
                     }
                     R_i += alpha_u_i_j * alpha_uu_i_jj * tmp_s;
+                    term3 += alpha_u_i_j * alpha_uu_i_jj * tmp_s;
                 }
         }
     }
+
+//    printf("thread_%llu: Term 3 = %f\n" ,i, term3);
+//    printf("thread_%llu: Term 4 = %f\n" ,i, term4);
+//    printf("thread_%llu: Term 5 = %f\n" ,i, term5);
+//    printf("thread_%llu: R_i = %f\n" ,i, R_i);
 
     return R_i;
 }
@@ -164,7 +181,7 @@ void ModelHawkesFixedSumExpKernLeastSqQRH1::grad_i(const ulong i,
     grad_mu_i = 0;
 
     //! Term 1
-    for (ulong q; q < MaxN; ++q)
+    for (ulong q = 0; q < MaxN; ++q)
         grad_mu_i += 2 * mu_i * f_i[q] * f_i[q] * Length[q];
 
     //! Term 2
@@ -173,7 +190,7 @@ void ModelHawkesFixedSumExpKernLeastSqQRH1::grad_i(const ulong i,
         const ArrayDouble2d G_j = view(G[j]);
         for (ulong u = 0; u != U; ++u) {
             double G_ij_u = 0; //! at T
-            for (ulong q; q < MaxN; ++q)
+            for (ulong q = 0; q < MaxN; ++q)
                 G_ij_u += f_i[q] * f_i[q] * G_j[get_G_index(q, u)];
             double alpha_u_ij = coeffs[get_alpha_u_i_j_index(u, i, j)];
             tmp_s += alpha_u_ij * G_ij_u;
@@ -183,7 +200,7 @@ void ModelHawkesFixedSumExpKernLeastSqQRH1::grad_i(const ulong i,
 
     //! Term 3
     const ArrayULong Count_i = view(Count[i]);
-    for (ulong q; q < MaxN; ++q)
+    for (ulong q = 0; q < MaxN; ++q)
         grad_mu_i -= 2 * f_i[q] * Count_i[q];
 
     //! grad of alpha_u_{ij}, for all j and all u
@@ -192,7 +209,7 @@ void ModelHawkesFixedSumExpKernLeastSqQRH1::grad_i(const ulong i,
         const ArrayDouble2d G_j = view(G[j]);
         for (ulong u = 0; u != U; ++u) {
             double G_ij_u = 0;
-            for (ulong q; q < MaxN; ++q)
+            for (ulong q = 0; q < MaxN; ++q)
                 G_ij_u += f_i[q] * f_i[q] * G_j[get_G_index(q, u)];
 
             double &grad_alpha_u_ij = out[get_alpha_u_i_j_index(u, i, j)];
@@ -219,7 +236,7 @@ void ModelHawkesFixedSumExpKernLeastSqQRH1::grad_i(const ulong i,
             for (ulong jj = 0; jj != n_nodes; ++jj)
                 for (ulong uu = 0; uu != U; ++uu) {
                     double tmp_s = 0;
-                    for (ulong q; q < MaxN; ++q)
+                    for (ulong q = 0; q < MaxN; ++q)
                         tmp_s += H_j[get_H_index(j, jj, u, uu, q)] * f_i[q] * f_i[q];
 
                     double alpha_uu_i_jj = coeffs[get_alpha_u_i_j_index(uu, i, jj)];
@@ -231,7 +248,7 @@ void ModelHawkesFixedSumExpKernLeastSqQRH1::grad_i(const ulong i,
     //! grad of f^i_n
     //! Term 1
     ArrayDouble grad_f_i(MaxN);
-    for (ulong q; q < MaxN; ++q)
+    for (ulong q = 0; q < MaxN; ++q)
         grad_f_i[q] = 2 * f_i[q] * Length[q] * mu_i * mu_i;
 
     //! Term 2
@@ -240,13 +257,13 @@ void ModelHawkesFixedSumExpKernLeastSqQRH1::grad_i(const ulong i,
         const ArrayDouble2d G_j = view(G[j]);
         for (ulong u = 0; u != U; ++u) {
             double alpha_u_ij = coeffs[get_alpha_u_i_j_index(u, i, j)];
-            for (ulong q; q < MaxN; ++q)
+            for (ulong q = 0; q < MaxN; ++q)
                 grad_f_i[q] += 4 * f_i[q] * alpha_u_ij * G_j[get_G_index(q, u)];
         }
     }
 
     //! Term 3
-    for(ulong q; q < MaxN; ++q)
+    for(ulong q = 0; q < MaxN; ++q)
         grad_f_i[q] -= 2 * mu_i * Count_i[q];
 
     //! Term 4
@@ -271,7 +288,7 @@ void ModelHawkesFixedSumExpKernLeastSqQRH1::grad_i(const ulong i,
             for (ulong jj = 0; jj != n_nodes; ++jj)
                 for (ulong uu = 0; uu != U; ++uu) {
                     double alpha_uu_i_jj = coeffs[get_alpha_u_i_j_index(uu, i, jj)];
-                    for (ulong q; q < MaxN; ++q)
+                    for (ulong q = 0; q < MaxN; ++q)
                         grad_f_i[q] += alpha_u_i_j * alpha_uu_i_jj * H_j[get_H_index(j, jj, u, uu, q)] * 2 * f_i[q];
                 }
         }
@@ -323,8 +340,7 @@ void ModelHawkesFixedSumExpKernLeastSqQRH1::compute_weights_i(const ulong i) {
         for (ulong k = 1; k != 1 + n_total_jumps + 1; k++) {
             const double t_k = (k != (1 + n_total_jumps) ? global_timestamps[k] : end_time);
             const double ebt = std::exp(-decay * (t_k - global_timestamps[k - 1]));
-//            if (k != 1 + n_total_jumps)//!T
-                g_i[get_g_index(k, u)] = g_i[get_g_index(k - 1, u)] * ebt + (type_n[k - 1] == i + 1 ? decay * ebt : 0);
+            g_i[get_g_index(k, u)] = g_i[get_g_index(k - 1, u)] * ebt + (type_n[k - 1] == i + 1 ? decay * ebt : 0);
 
             if (k != (1 + n_total_jumps))//!T
                 G_i[get_G_index(global_n[k - 1], u)] +=
@@ -353,7 +369,8 @@ void ModelHawkesFixedSumExpKernLeastSqQRH1::compute_weights_H_j(const ulong j){
             for (ulong uu = 0; uu != U; ++uu) {
                 const double decay = decays[u] + decays[uu];
                 for (ulong k = 0; k != 1 + n_total_jumps; k++) {
-                    const double delta_t = (k != n_total_jumps ? global_timestamps[k + 1] : end_time) - global_timestamps[k];
+                    const double delta_t =
+                            (k != n_total_jumps ? global_timestamps[k + 1] : end_time) - global_timestamps[k];
                     //! 另一种算法 用尾巴上的g来算
                     const double ebt = std::exp(-decay * delta_t);
                     const double xt = g_j[get_g_index(k + 1, u)] * g_jj[get_g_index(k + 1, uu)];

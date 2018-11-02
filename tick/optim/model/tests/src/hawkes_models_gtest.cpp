@@ -27,6 +27,7 @@
 #include "variants/hawkes_fixed_expkern_loglik_list.h"
 #include "variants/hawkes_fixed_sumexpkern_loglik_list.h"
 
+#include "hawkes_fixed_sumexpkern_leastsq_qrh1.h"
 
 class HawkesModelTest : public ::testing::Test {
  protected:
@@ -41,6 +42,35 @@ class HawkesModelTest : public ::testing::Test {
     timestamps.push_back(timestamps_1.as_sarray_ptr());
   }
 };
+
+TEST_F(HawkesModelTest, QRH1_LeastSq){
+    timestamps = SArrayDoublePtrList1D(0);
+    // Test will fail if process array is not sorted
+    ArrayDouble timestamps_0 = ArrayDouble {0.31, 0.93, 1.29, 2.32, 4.17, 4.25};
+    timestamps.push_back(timestamps_0.as_sarray_ptr());
+    ArrayDouble timestamps_1 = ArrayDouble {0.12, 1.19, 2.12, 2.41, 3.35, 4.21};
+    timestamps.push_back(timestamps_1.as_sarray_ptr());
+    ArrayDouble timestamps_2 = ArrayDouble {};
+    timestamps.push_back(timestamps_2.as_sarray_ptr());
+
+
+    ArrayDouble decays = ArrayDouble {0.1, 20, 100};
+    ArrayDouble coeffs = ArrayDouble {0.4, 0.5,   0.2, 0.15, 0.1,     0.3, 0.1, 0.1,     0., 0.2, 0.0,     0., 0.4, 0.1,
+            1., 1., 1., 1., 1.,     1., 1., 1., 1., 1.};
+    ArrayLong global_n = ArrayLong {0,    1,2,0,4, 1,2,3,0 ,0,2,3,4};
+
+    ModelHawkesFixedSumExpKernLeastSqQRH1 model(decays, 5);
+    model.set_data(timestamps, global_n.as_sarray_ptr(), 4.5);
+
+
+    const double loss = model.loss(coeffs);
+//    ArrayDouble grad(model.get_n_coeffs());
+//    model.grad(coeffs, grad);
+
+    EXPECT_DOUBLE_EQ(loss, 3.3706960187769379);
+
+    EXPECT_DOUBLE_EQ(model.get_n_coeffs(), 2 + 3 * 2 * 2 + 2 * 5);
+}
 
 TEST_F(HawkesModelTest, compute_weights_loglikelihood){
   ModelHawkesFixedExpKernLogLik model(2);
@@ -107,8 +137,8 @@ TEST_F(HawkesModelTest, compute_loss_loglikelihood_custom) {
     model.grad(coeffs, grad);
     grad.print();
 
-    EXPECT_DOUBLE_EQ(loss, 3.3706960187769379);
-    EXPECT_DOUBLE_EQ(model.get_n_coeffs(), 16);
+    EXPECT_DOUBLE_EQ(loss, 3.6210889783621489);
+    EXPECT_DOUBLE_EQ(model.get_n_coeffs(), 6);
 }
 
 //! test compatiable with the no-global-n-passed version

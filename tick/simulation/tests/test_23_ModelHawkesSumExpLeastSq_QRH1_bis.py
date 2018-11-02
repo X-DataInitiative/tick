@@ -11,7 +11,7 @@ MaxN_of_f = 5
 f_i = [np.array([1., 1., 1., 1., 1.]), np.array([1., 1., 1., 1., 1.])]
 
 end_time = 100000
-betas = np.array([0.1, 20, 100])
+betas = np.array([0.1, 2, 5])
 
 U = len(betas)
 kernels = np.array([
@@ -60,25 +60,45 @@ x_real_2 = np.array(
      1., 1., 1., 1., 1.,     1., 1., 1., 1., 1.])
 x_real_org = np.array(
     [0.4, 0.5,   0.2, 0.15, 0.1,     0.3, 0.1, 0.1,     0., 0.2, 0.0,     0., 0.4, 0.1])
+
+
+x0 = np.ones(len(x_real_org)) * 0.5
+x03 = np.ones(len(x_real_2)) * 0.5
+
 print('#' * 40)
 print(model.loss(x_real_2))
 print(org_model.loss(x_real_org))
 
-# from scipy.optimize import minimize
-# res = minimize(model.loss, x_real_2, method='Nelder-Mead', tol=1e-6)
-# print(res)
+############################################################################
+from scipy.optimize import minimize
+res = minimize(org_model.loss, x0, method='Nelder-Mead', tol=1e-6, options={'maxiter':100000})
+print('#' * 40)
+print('scipy.optimize.minimize')
+print(res.x)
+print(org_model.loss(res.x))
+
+###########################################################################
+from scipy.optimize import minimize
+res = minimize(model.loss, x03, method='Nelder-Mead', tol=1e-6, options={'maxiter':100000})
+print('#' * 40)
+print('scipy.optimize.minimize')
+
+coeff = res.x
+for k in range(dim):
+    fi0 = coeff[dim + U * dim * dim + k * MaxN_of_f]
+    coeff[k] *= fi0
+    coeff[dim + U * dim * k: dim + U * dim * (k + 1)] *= fi0
+    coeff[dim + U * dim * dim + k * MaxN_of_f: dim + U * dim * dim + (k + 1) * MaxN_of_f] /= fi0
+print(coeff)
+print(model.loss(res.x))
+
+
+############################################################################
+from tick.optim.solver import AGD
+from tick.optim.prox import ProxZero, ProxL1
 
 # print('#' * 40)
-# print(model.grad(x_real)[:18])
-# print(org_model.grad(x_real_org))
-
-
-'''
-最后的验证
-'''
-# from tick.optim.solver import AGD
-# from tick.optim.prox import ProxZero, ProxL1
-#
+# print('tick.agd')
 # prox = ProxZero()
 # solver = AGD(step=1e-3, linesearch=False, max_iter=5000, print_every=50)
 # solver.set_model(org_model).set_prox(prox)
@@ -88,3 +108,20 @@ print(org_model.loss(x_real_org))
 #
 # print(org_model.loss(solver.solution))
 # print(solver.solution)
+
+
+# print('#' * 40)
+# print('tick.agd')
+# prox = ProxZero()
+# solver = AGD(step=1e-3, linesearch=False, max_iter=5000, print_every=50)
+# solver.set_model(model).set_prox(prox)
+# solver.solve(x02)
+#
+# coeff = solver.solution
+# for k in range(dim):
+#     fi0 = coeff[dim + U * dim * dim + k * MaxN_of_f]
+#     coeff[k] *= fi0
+#     coeff[dim + U * dim * k: dim + U * dim * (k + 1)] *= fi0
+#     coeff[dim + U * dim * dim + k * MaxN_of_f: dim + U * dim * dim + (k + 1) * MaxN_of_f] /= fi0
+# print(coeff)
+# print(org_model.loss(solver.solution))

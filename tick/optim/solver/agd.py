@@ -154,7 +154,7 @@ class AGD(SolverFirstOrder):
             next_point = y - step * grad_y
 
         x = next_point
-        x[x<0] = 1e-4
+        x[x < 0] = 1e-4
 
         t = np.sqrt((1. + (1. + 4. * t * t))) / 2.
         y[:] = x + (prev_t - 1) / t * (x - prev_x)
