@@ -154,7 +154,6 @@ class AGD(SolverFirstOrder):
             next_point = y - step * grad_y
 
         x = next_point
-        x[x < 0] = 1e-4
 
         t = np.sqrt((1. + (1. + 4. * t * t))) / 2.
         y[:] = x + (prev_t - 1) / t * (x - prev_x)
@@ -172,6 +171,10 @@ class AGD(SolverFirstOrder):
             if step == 0:
                 print('Step equals 0... at %i' % n_iter)
                 break
+            if n_iter % 100 == 0:
+                np.save("agd_" + str(n_iter) + ".npy", x)
+                print("loss = ", obj)
+
             rel_delta = relative_distance(x, prev_x)
             obj = self.objective(x)
             rel_obj = abs(obj - prev_obj) / abs(prev_obj)

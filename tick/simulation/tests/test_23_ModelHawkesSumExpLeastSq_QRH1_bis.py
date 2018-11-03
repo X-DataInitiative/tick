@@ -52,9 +52,10 @@ model = ModelHawkesFixedSumExpKernLeastSqQRH1(betas, MaxN_of_f, n_threads=4)
 model.fit(timestamps, global_n, end_time)
 #############################################################################
 
-x_real = np.array(
-    [0.4, 0.5,   0.2, 0.3, 0, 0,   0.15, 0.1, 0.2, 0.4,   0.1, 0.1, 0., 0.1,
-     1., 1., 1., 1., 1.,     1., 1., 1., 1., 1.])
+#old format of alpha
+# x_real = np.array(
+#     [0.4, 0.5,   0.2, 0.3, 0, 0,   0.15, 0.1, 0.2, 0.4,   0.1, 0.1, 0., 0.1,
+#      1., 1., 1., 1., 1.,     1., 1., 1., 1., 1.])
 x_real_2 = np.array(
     [0.4, 0.5,   0.2, 0.15, 0.1,     0.3, 0.1, 0.1,     0., 0.2, 0.0,     0., 0.4, 0.1,
      1., 1., 1., 1., 1.,     1., 1., 1., 1., 1.])
@@ -70,27 +71,27 @@ print(model.loss(x_real_2))
 print(org_model.loss(x_real_org))
 
 ############################################################################
-from scipy.optimize import minimize
-res = minimize(org_model.loss, x0, method='Nelder-Mead', tol=1e-6, options={'maxiter':100000})
-print('#' * 40)
-print('scipy.optimize.minimize')
-print(res.x)
-print(org_model.loss(res.x))
-
-###########################################################################
-from scipy.optimize import minimize
-res = minimize(model.loss, x03, method='Nelder-Mead', tol=1e-6, options={'maxiter':100000})
-print('#' * 40)
-print('scipy.optimize.minimize')
-
-coeff = res.x
-for k in range(dim):
-    fi0 = coeff[dim + U * dim * dim + k * MaxN_of_f]
-    coeff[k] *= fi0
-    coeff[dim + U * dim * k: dim + U * dim * (k + 1)] *= fi0
-    coeff[dim + U * dim * dim + k * MaxN_of_f: dim + U * dim * dim + (k + 1) * MaxN_of_f] /= fi0
-print(coeff)
-print(model.loss(res.x))
+# from scipy.optimize import minimize
+# res = minimize(org_model.loss, x0, method='Nelder-Mead', tol=1e-6, options={'maxiter':100000})
+# print('#' * 40)
+# print('scipy.optimize.minimize')
+# print(res.x)
+# print(org_model.loss(res.x))
+#
+# ###########################################################################
+# from scipy.optimize import minimize
+# res = minimize(model.loss, x03, method='Nelder-Mead', tol=1e-6, options={'maxiter':100000})
+# print('#' * 40)
+# print('scipy.optimize.minimize')
+#
+# coeff = res.x
+# for k in range(dim):
+#     fi0 = coeff[dim + U * dim * dim + k * MaxN_of_f]
+#     coeff[k] *= fi0
+#     coeff[dim + U * dim * k: dim + U * dim * (k + 1)] *= fi0
+#     coeff[dim + U * dim * dim + k * MaxN_of_f: dim + U * dim * dim + (k + 1) * MaxN_of_f] /= fi0
+# print(coeff)
+# print(model.loss(res.x))
 
 
 ############################################################################
@@ -110,18 +111,20 @@ from tick.optim.prox import ProxZero, ProxL1
 # print(solver.solution)
 
 
-# print('#' * 40)
-# print('tick.agd')
-# prox = ProxZero()
-# solver = AGD(step=1e-3, linesearch=False, max_iter=5000, print_every=50)
-# solver.set_model(model).set_prox(prox)
-# solver.solve(x02)
-#
-# coeff = solver.solution
-# for k in range(dim):
-#     fi0 = coeff[dim + U * dim * dim + k * MaxN_of_f]
-#     coeff[k] *= fi0
-#     coeff[dim + U * dim * k: dim + U * dim * (k + 1)] *= fi0
-#     coeff[dim + U * dim * dim + k * MaxN_of_f: dim + U * dim * dim + (k + 1) * MaxN_of_f] /= fi0
-# print(coeff)
-# print(org_model.loss(solver.solution))
+print('#' * 40)
+print('tick.agd')
+prox = ProxZero()
+solver = AGD(step=1e-3, linesearch=False, max_iter=2000, print_every=50)
+solver.set_model(model).set_prox(prox)
+x0 = np.random.rand(model.n_coeffs)
+x0 = np.load("agd_3000.npy")
+solver.solve(x0)
+
+coeff = solver.solution
+for k in range(dim):
+    fi0 = coeff[dim + U * dim * dim + k * MaxN_of_f]
+    coeff[k] *= fi0
+    coeff[dim + U * dim * k: dim + U * dim * (k + 1)] *= fi0
+    coeff[dim + U * dim * dim + k * MaxN_of_f: dim + U * dim * dim + (k + 1) * MaxN_of_f] /= fi0
+print(coeff)
+print(model.loss(solver.solution))

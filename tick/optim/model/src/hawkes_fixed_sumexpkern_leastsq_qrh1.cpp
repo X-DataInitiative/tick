@@ -142,16 +142,13 @@ void ModelHawkesFixedSumExpKernLeastSqQRH1::grad(const ArrayDouble &coeffs,
                coeffs,
                out);
   out /= n_total_jumps;
-
-    for (ulong k = 0; k != get_n_coeffs(); ++k)
-        out[k] = -out[k];
 }
 
 // Method that computes the component i of the gradient
 void ModelHawkesFixedSumExpKernLeastSqQRH1::grad_i(const ulong i,
                                                    const ArrayDouble &coeffs,
                                                    ArrayDouble &out) {
-    if (!weights_computed) TICK_ERROR("Please compute weights before calling hessian_i");
+    if (!weights_computed) TICK_ERROR("Please compute weights before calling grad_i");
 
     //! necessary variables
     const double mu_i = coeffs[i];
@@ -224,7 +221,7 @@ void ModelHawkesFixedSumExpKernLeastSqQRH1::grad_i(const ulong i,
                 ArrayDouble2d g_j = view(g[j]);
                 for (ulong u = 0; u != U; ++u) {
                     double &grad_alpha_u_ij = out[get_alpha_u_i_j_index(u, i, j)];
-                    grad_alpha_u_ij -= f_i[global_n[k - 1]] * g_j[get_g_index(k, u)];;
+                    grad_alpha_u_ij -= 2 * f_i[global_n[k - 1]] * g_j[get_g_index(k, u)];;
                 }
             }
 
@@ -240,7 +237,7 @@ void ModelHawkesFixedSumExpKernLeastSqQRH1::grad_i(const ulong i,
                         tmp_s += H_j[get_H_index(j, jj, u, uu, q)] * f_i[q] * f_i[q];
 
                     double alpha_uu_i_jj = coeffs[get_alpha_u_i_j_index(uu, i, jj)];
-                    grad_alpha_u_ij += alpha_uu_i_jj * tmp_s;
+                    grad_alpha_u_ij += 2 * alpha_uu_i_jj * tmp_s;
                 }
         }
     }
@@ -258,7 +255,7 @@ void ModelHawkesFixedSumExpKernLeastSqQRH1::grad_i(const ulong i,
         for (ulong u = 0; u != U; ++u) {
             double alpha_u_ij = coeffs[get_alpha_u_i_j_index(u, i, j)];
             for (ulong q = 0; q < MaxN; ++q)
-                grad_f_i[q] += 4 * f_i[q] * alpha_u_ij * G_j[get_G_index(q, u)];
+                grad_f_i[q] += 4 * mu_i * f_i[q] * alpha_u_ij * G_j[get_G_index(q, u)];
         }
     }
 
