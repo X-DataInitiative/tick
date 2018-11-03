@@ -317,6 +317,14 @@ void ModelHawkesFixedSumExpKernLeastSqQRH1::compute_weights_i(const ulong i) {
         if (i == type_n[k] - 1) //!thread i
             Count[i][q]++;
     }
+    //!between the last one and T
+    if (i == 0)
+        if(global_timestamps[n_total_jumps] < end_time){
+            const double delta_t = end_time - global_timestamps[n_total_jumps];
+            const ulong q = global_n[n_total_jumps];
+            Length[q] += delta_t;
+    }
+
     ArrayDouble2d g_i = view(g[i]);
     ArrayDouble2d G_i = view(G[i]);
 
