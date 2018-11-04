@@ -51,6 +51,7 @@
 %shared_ptr(ModelRsb);
 
 %shared_ptr(ModelHawkesFixedSumExpKernLeastSqQRH1);
+%shared_ptr(ModelHawkesFixedSumExpKernLeastSqQRH1List);
 
 %shared_ptr(ModelCoxRegPartialLik);
 %shared_ptr(ModelSCCS);

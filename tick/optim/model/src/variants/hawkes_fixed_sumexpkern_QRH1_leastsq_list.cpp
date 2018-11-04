@@ -181,5 +181,5 @@ std::pair<ulong, ulong> ModelHawkesFixedSumExpKernLeastSqQRH1List::sampled_i_to_
 }
 
 ulong ModelHawkesFixedSumExpKernLeastSqQRH1List::get_n_coeffs() const{
-    return n_nodes * MaxN + n_nodes * n_nodes * decays.size();
+    return n_nodes + n_nodes * n_nodes * decays.size() + n_nodes * MaxN;
 }
