@@ -49,13 +49,16 @@ public:
 protected:
     virtual std::unique_ptr<ModelHawkesFixedSumExpKernLeastSqQRH1> build_model(const int n_threads) {
         return std::unique_ptr<ModelHawkesFixedSumExpKernLeastSqQRH1>(
-                new ModelHawkesFixedSumExpKernLeastSqQRH1(decays, MaxN, n_threads));
+                new ModelHawkesFixedSumExpKernLeastSqQRH1(decays, MaxN, n_threads, 0));
+        //last parameter is the optimization level
     }
 
 private:
     std::tuple<ulong, ulong> get_realization_node(ulong i_r);
 
     void compute_weights_i_r(const ulong i_r);
+
+    void compute_weights_H_j_r(const ulong j_r);
 
     double loss_i_r(const ulong i_r, const ArrayDouble &coeffs);
 

@@ -28,8 +28,6 @@ void ModelHawkesFixedSumExpKernLeastSqQRH1List::set_data(const SArrayDoublePtrLi
 
     n_nodes--;
     Total_events = get_n_total_jumps() - (*n_jumps_per_node)[n_nodes];
-
-    printf("Speical Debug Info : Total_Timestamps_Count : %llu\n", Total_events);
 }
 
 void ModelHawkesFixedSumExpKernLeastSqQRH1List::compute_weights() {
@@ -47,6 +45,9 @@ void ModelHawkesFixedSumExpKernLeastSqQRH1List::compute_weights() {
 
     parallel_run(get_n_threads(), n_realizations * n_nodes,
                  &ModelHawkesFixedSumExpKernLeastSqQRH1List::compute_weights_i_r, this);
+
+    parallel_run(get_n_threads(), n_realizations * n_nodes,
+                 &ModelHawkesFixedSumExpKernLeastSqQRH1List::compute_weights_H_j_r, this);
 
     for (auto &model : model_list) {
         model->weights_computed = true;
@@ -102,6 +103,12 @@ std::tuple<ulong, ulong> ModelHawkesFixedSumExpKernLeastSqQRH1List::get_realizat
     return std::make_tuple(r, i);
 }
 
+void ModelHawkesFixedSumExpKernLeastSqQRH1List::compute_weights_H_j_r(const ulong j_r) {
+    ulong r, j;
+    std::tie(r, j) = get_realization_node(j_r);
+    model_list[r]->compute_weights_H_j(j);
+}
+
 void ModelHawkesFixedSumExpKernLeastSqQRH1List::compute_weights_i_r(const ulong i_r) {
     ulong r, i;
     std::tie(r, i) = get_realization_node(i_r);
@@ -118,7 +125,7 @@ double ModelHawkesFixedSumExpKernLeastSqQRH1List::loss(const ArrayDouble &coeffs
     if (!weights_computed) compute_weights();
     return parallel_map_additive_reduce(
             get_n_threads(), n_realizations * n_nodes,
-            &ModelHawkesFixedSumExpKernLeastSqQRH1List::loss_i_r, this, coeffs);
+            &ModelHawkesFixedSumExpKernLeastSqQRH1List::loss_i_r, this, coeffs) / Total_events;
 }
 
 double ModelHawkesFixedSumExpKernLeastSqQRH1List::loss_i(const ulong i, const ArrayDouble &coeffs) {
