@@ -6,7 +6,7 @@ from tick.simulation import SimuHawkes
 
 n_nodes = 2
 dim = n_nodes
-seed = 3007
+seed = 8888
 MaxN_of_f = 10
 f_i = [np.array([1., 0.7, 0.8, 0.6, 0.5, 0.8, 0.3, 0.6, 0.2, 0.7]), np.array([1., 0.6, 0.8, 0.8, 0.6, 0.6, 0.5, 0.8, 0.3, 0.6])]
 
@@ -59,7 +59,7 @@ from tick.optim.prox import ProxZero, ProxL1
 print('#' * 40)
 print('tick.agd')
 prox = ProxZero()
-solver = AGD(step=1e-3, linesearch=False, max_iter=10000, print_every=50)
+solver = AGD(step=1e-3, linesearch=False, max_iter=5000, print_every=50)
 solver.set_model(model).set_prox(prox)
 x0 = np.random.rand(model.n_coeffs)
 solver.solve(x0)

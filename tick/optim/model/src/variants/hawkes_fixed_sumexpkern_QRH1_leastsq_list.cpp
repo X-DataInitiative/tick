@@ -144,7 +144,7 @@ void ModelHawkesFixedSumExpKernLeastSqQRH1List::grad_i_r(const ulong i_r,
 //    ArrayDouble tmp_grad_i(get_n_coeffs());
     tmp_grad_i.init_to_zero();
     model_list[r]->grad_i(i, coeffs, tmp_grad_i);
-    out.mult_incr(tmp_grad_i, - 1.);
+    out.mult_incr(tmp_grad_i, 1.);
 }
 
 void ModelHawkesFixedSumExpKernLeastSqQRH1List::grad(const ArrayDouble &coeffs, ArrayDouble &out) {
