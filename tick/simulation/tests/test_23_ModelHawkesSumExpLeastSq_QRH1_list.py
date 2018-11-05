@@ -23,7 +23,7 @@ kernels = np.array([
             [HawkesKernelSumExp(np.array([0., 0.2, 0.0]), betas), HawkesKernelSumExp(np.array([0., 0.4, 0.1]), betas)]
         ])
 
-for num_simu in range(100):
+for num_simu in range(1000):
     seed = num_simu * 10086 + 3007
     simu_model = SimuHawkes(kernels=kernels, end_time=end_time, custom=True, seed=seed, MaxN_of_f=MaxN_of_f, f_i=f_i)
     for i in range(n_nodes):
