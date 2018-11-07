@@ -371,19 +371,20 @@ void ModelHawkesFixedSumExpKernLeastSqQRH1::compute_weights_H_j(const ulong j){
     for(ulong jj = 0; jj != n_nodes; jj++) {
         ArrayDouble2d g_jj = view(g[jj]);
         for (ulong u = 0; u != U; ++u)
-            for (ulong uu = 0; uu != U; ++uu) {
-                const double decay = decays[u] + decays[uu];
+            for (ulong uu = 0; uu != U; ++uu)
                 for (ulong k = 0; k != 1 + n_total_jumps; k++) {
                     const double delta_t =
                             (k != n_total_jumps ? global_timestamps[k + 1] : end_time) - global_timestamps[k];
                     //! 另一种算法 用尾巴上的g来算
-                    const double ebt = std::exp(-decay * delta_t);
-                    const double xt = g_j[get_g_index(k + 1, u)] * g_jj[get_g_index(k + 1, uu)];
-                    const double x0 = xt / ebt;
+                    const double ebt_1 = std::exp(-decays[u] * delta_t);
+                    const double ebt_2 = std::exp(-decays[uu] * delta_t);
+                    const double ebt = ebt_1 * ebt_2;
+                    const double x0_1 = g_j[get_g_index(k, u)] + (type_n[k] == j + 1 ? decays[u] : 0);
+                    const double x0_2 = g_jj[get_g_index(k, uu)] + (type_n[k] == jj + 1 ? decays[uu] : 0);
+                    const double x0 = x0_1 * x0_2;
                     const ulong q = global_n[k];
-                    H_j[get_H_index(j, jj, u, uu, q)] += (1 - ebt) / decay * x0;
+                    H_j[get_H_index(j, jj, u, uu, q)] += (1 - ebt) / (decays[u] + decays[uu]) * x0;
                 }
-            }
     }
 }
 
