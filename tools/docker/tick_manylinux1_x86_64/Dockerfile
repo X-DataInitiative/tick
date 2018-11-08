@@ -7,8 +7,8 @@ ENV PATH="/root/.pyenv/bin:$PATH" SWIG_VER=3.0.12
 
 # Installing swig
 RUN curl -O https://kent.dl.sourceforge.net/project/swig/swig/swig-${SWIG_VER}/swig-${SWIG_VER}.tar.gz && tar -xf swig-${SWIG_VER}.tar.gz && \
-	cd swig-${SWIG_VER} && ./configure && make -j4 && make install && \
-	rm -rf swig-${SWIG_VER}.tar.gz swig-${SWIG_VER} 
+	cd swig-${SWIG_VER} && ./configure --without-pcre && make -j4 && make install && \
+	rm -rf swig-${SWIG_VER}.tar.gz swig-${SWIG_VER}
 
 # Installing cmake
 RUN curl -O https://cmake.org/files/v3.8/cmake-3.8.0.tar.gz && tar -xf cmake-3.8.0.tar.gz && \

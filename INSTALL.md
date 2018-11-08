@@ -4,7 +4,7 @@
 
 ### Requirements
 
-_tick_ currently works on Linux/OSX (Windows is experimental) systems and requires Python 3.5 or newer. Please have the required Python dependencies in your Python environment:
+_tick_ currently works on Linux/OSX (Windows is experimental) systems and requires Python 3.6 or newer. Please have the required Python dependencies in your Python environment:
 
 - numpy
 - scipy
@@ -151,3 +151,10 @@ Logging from mkn can be enabled with the "KLOG" environment variable
     KLOG=3 # DEBUG
 
 If there is a compile error it should be displayed without KLOG being set.
+
+
+### Python 3.5
+
+Python 3.5 is not officially supported any more, but it should still work.
+To build with it, edit "python_min_ver = (3, 6, 0)" in setup.py.
+

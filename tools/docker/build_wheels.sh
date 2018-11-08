@@ -2,7 +2,7 @@
 
 set -e -x
 
-python_versions=(cp34-cp34m  cp35-cp35m  cp36-cp36m)
+python_versions=(cp36-cp36m)
 
 for PYVER in ${python_versions[@]}; do
     PYBIN=/opt/python/${PYVER}/bin

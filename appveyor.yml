@@ -29,7 +29,7 @@ cache:
 
 install:
   - git submodule update --init
-  - curl -o mkn.exe -L https://ci.appveyor.com/api/projects/dekken/maiken/artifacts/bin/build/mkn.exe
+  - curl -o mkn.exe -L https://github.com/Dekken/maiken/raw/binaries/win10_x64/mkn.exe
   - IF NOT EXIST C:\ProgramData\chocolatey\bin\swig.exe choco install tools\windows\swig.3.0.12.nupkg --yes --limit-output #> $null
   - git clone https://github.com/X-DataInitiative/tick_appveyor -b master --depth 1 appveyor
 
