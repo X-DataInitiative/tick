@@ -219,6 +219,7 @@ if __name__ == '__main__':
     from tick.hawkes import ModelHawkesSumExpKernLeastSq
     from tick.solver import AGD, GD, GFB
 
+    np.random.seed(3029)
     n_nodes_ = 3
     n_decays_ = 2
     fake_tensor_ = np.arange(n_nodes_ * n_nodes_ * n_decays_) \
@@ -230,7 +231,7 @@ if __name__ == '__main__':
     for u in range(n_decays_):
         print(fake_tensor_[:, :, u])
 
-    prox_hstack_, prox_vstack_ = create_prox_nuclear(.01, model_)
+    prox_hstack_, prox_vstack_ = create_prox_nuclear(0.4, model_)
     fake_coeffs_ = np.hstack((np.zeros(n_nodes_), fake_tensor_.ravel()))
 
     np.testing.assert_array_equal(fake_tensor_,
@@ -279,13 +280,14 @@ if __name__ == '__main__':
     steps = [1]
     for coeff in steps:
         solver_ = GFB(step=coeff / model_.get_lip_best(),
-                      print_every=200, max_iter=10000, tol=1e-10)
+                      print_every=200, max_iter=1000, tol=1e-10,
+                      record_every=100)
         solver_.set_model(model_).set_prox((prox_hstack_, prox_vstack_))
         solver_.solve(np.ones(model_.n_coeffs))
         solvers_ += [solver_]
 
     print('solver_.solution', solver_.solution)
-    print(solver_.objective(solver_.solution))
+    print('objective', solver_.objective(solver_.solution))
 
     plot_history(solvers_, labels=steps, log_scale=True, dist_min=True)
 

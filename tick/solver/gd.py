@@ -170,7 +170,10 @@ class GD(SolverFirstOrder):
             if self._should_record_iter(n_iter):
                 rel_delta = relative_distance(minimizer, prev_minimizer)
                 obj = self.objective(minimizer)
-                rel_obj = abs(obj - prev_obj) / abs(prev_obj)
+                if prev_obj != 0:
+                    rel_obj = abs(obj - prev_obj) / abs(prev_obj)
+                else:
+                    rel_obj = abs(obj - prev_obj)
                 converged = rel_obj < self.tol
                 # If converged, we stop the loop and record the last step
                 # in history

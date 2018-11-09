@@ -198,7 +198,7 @@ class GFB(SolverFirstOrder):
         n_prox = self.prox.n_proxs
         for n_iter in range(self.max_iter):
             # We will record on this iteration and we must be ready
-            if self._should_record_iter(n_iter):
+            if self._should_record_iter(n_iter + 1):
                 prev_minimizer[:] = minimizer
                 prev_obj = self.objective(prev_minimizer)
 
@@ -218,7 +218,7 @@ class GFB(SolverFirstOrder):
                 z_old_list[i][:] = z_list[i]
 
             # Let's record metrics
-            if self._should_record_iter(n_iter):
+            if self._should_record_iter(n_iter + 1):
                 rel_delta = relative_distance(minimizer, prev_minimizer)
                 obj = self.objective(minimizer)
                 rel_obj = abs(obj - prev_obj) / abs(prev_obj)

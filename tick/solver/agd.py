@@ -163,7 +163,7 @@ class AGD(SolverFirstOrder):
             prev_minimizer[:] = minimizer
 
             # We will record on this iteration and we must be ready
-            if self._should_record_iter(n_iter):
+            if self._should_record_iter(n_iter + 1):
                 prev_obj = self.objective(prev_minimizer)
 
             minimizer, y, t, step = self._gradient_step(
@@ -173,10 +173,13 @@ class AGD(SolverFirstOrder):
                 break
 
             # Let's record metrics
-            if self._should_record_iter(n_iter):
+            if self._should_record_iter(n_iter + 1):
                 rel_delta = relative_distance(minimizer, prev_minimizer)
                 obj = self.objective(minimizer)
-                rel_obj = abs(obj - prev_obj) / abs(prev_obj)
+                if prev_obj != 0:
+                    rel_obj = abs(obj - prev_obj) / abs(prev_obj)
+                else:
+                    rel_obj = abs(obj - prev_obj)
                 converged = rel_obj < self.tol
                 # If converged, we stop the loop and record the last step
                 # in history
@@ -184,6 +187,7 @@ class AGD(SolverFirstOrder):
                                      x=minimizer.copy(), rel_delta=rel_delta,
                                      step=step, rel_obj=rel_obj)
                 if converged:
+                    print('converged', rel_obj)
                     break
 
         self._set("solution", minimizer)
