@@ -55,15 +55,17 @@ def learn_one_model(model_file_name, strength_range, create_prox,
         rel_objectives = solver.history.values['rel_obj']
         if len(rel_objectives) > 0:
             last_rel_obj = rel_objectives[-1]
+            last_time = solver.history.values['time'][-1]
             if last_rel_obj > (tol * 1.1):
                 if isinstance(strength, tuple):
                     strength_str = ', '.join(
                         '{:.3g}'.format(s) for s in strength)
                 else:
                     strength_str = '{:.3g}'.format(strength)
-                logger('did not converge train={} strength={}, '
-                       'stopped at {:.3g} for tol={:.3g}'
-                       .format(model_index, strength_str, last_rel_obj, tol))
+                logger('{} - did not converge train={} strength={}, '
+                       'stopped at {:.3g} for tol={:.3g}, took {:.3g}s'
+                       .format(datetime.datetime.today().strftime('%Y-%m-%d %H:%M'), 
+                               model_index, strength_str, last_rel_obj, tol, last_time))
         else:
             logger('failed for train={} strength={:.3g}, stopped at '
                    'first iteration'.format(model_index, strength))

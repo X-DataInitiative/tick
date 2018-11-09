@@ -5,10 +5,10 @@ from collections import OrderedDict
 from experiments.metrics_utils import get_confidence_interval_half_width
 
 prox_infos = OrderedDict()
-prox_infos['l1w'] = 'C1', 'wL1 norm'
+# prox_infos['l1w'] = 'C1', 'wL1 norm'
 prox_infos['l1w_un'] = 'C4', 'wL1'
 prox_infos['l1'] = 'C0', 'L1'
-prox_infos['l1w_nuclear'] = 'C3', 'wL1Nuclear norm'
+# prox_infos['l1w_nuclear'] = 'C3', 'wL1Nuclear norm'
 prox_infos['l1w_un_nuclear'] = 'C5', 'wL1Nuclear'
 prox_infos['l1_nuclear'] = 'C2', 'L1Nuclear'
 
@@ -49,11 +49,11 @@ def plot_metrics_line(dim, metrics, mean_file, std_file,
                                alpha=0.3, color=color)
             ax[i].plot(times, means, color=color, label=label, ls=ls)
 
-            if 'auc' in metric.lower():
-                ax[i].set_ylim([0, 1])
-            
-            if 'error' in metric.lower():
-                ax[i].set_yscale('log')
+        if 'auc' in metric.lower():
+            ax[i].set_ylim([None, 1])
+
+#        if 'error' in metric.lower():
+#            ax[i].set_yscale('log')
 
 
 def plot_metrics(dim, mean_file, std_file, with_diag=True):
