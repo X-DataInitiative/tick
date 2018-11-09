@@ -54,7 +54,7 @@ use_fast_math = True
 
 version_info = sys.version_info
 
-python_min_ver = (3, 4, 0)
+python_min_ver = (3, 6, 0)
 python_ver = (version_info.major, version_info.minor, version_info.micro)
 
 if python_ver < python_min_ver:
@@ -860,7 +860,7 @@ class CleanTick(clean):
 
 
 setup(name="tick",
-      version='0.4.0.0',
+      version='0.5.0.0',
       author="Emmanuel Bacry, "
              "Stephane Gaiffas, "
              "Martin Bompaire, "
