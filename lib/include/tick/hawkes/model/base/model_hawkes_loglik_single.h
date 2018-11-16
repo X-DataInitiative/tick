@@ -32,6 +32,9 @@ class DLL_PUBLIC ModelHawkesLogLikSingle : public ModelHawkesSingle {
   ArrayDoubleList1D sum_G;
 
  public:
+  //! @brief Weather precomputations are up to date of not.
+  bool weights_computed;
+
   /**
    * @brief Constructor
    * \param n_threads : number of threads that will be used for parallel
@@ -106,7 +109,16 @@ class DLL_PUBLIC ModelHawkesLogLikSingle : public ModelHawkesSingle {
    */
   void hessian(const ArrayDouble &coeffs, ArrayDouble &out);
 
- protected:
+  virtual void set_data(const SArrayDoublePtrList1D &_timestamps, const SArrayLongPtr _global_n,
+                        const double _end_times) {
+    TICK_CLASS_DOES_NOT_IMPLEMENT("");
+  }
+
+  void set_data(const SArrayDoublePtrList1D &timestamps, const double end_time) {
+    ModelHawkesSingle::set_data(timestamps, end_time);
+  }
+
+ public:
   virtual void allocate_weights();
   /**
    * @brief Precomputations of intermediate values for component i

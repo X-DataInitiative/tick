@@ -16,3 +16,7 @@
 %include simu_inhomogeneous_poisson.i
 %include simu_hawkes.i
 %include hawkes_kernels.i
+
+
+%include hawkes_custom.i
+%include hawkes_custom2.i

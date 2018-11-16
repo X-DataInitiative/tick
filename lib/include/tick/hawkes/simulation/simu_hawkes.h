@@ -120,7 +120,7 @@ class DLL_PUBLIC Hawkes : public PP {
    */
   SArrayDoublePtr get_baseline(unsigned int i, ArrayDouble &t);
 
- private:
+ protected:
   /**
    * @brief Virtual method called once (at startup) to set the initial
    * intensity

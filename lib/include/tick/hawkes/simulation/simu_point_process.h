@@ -25,7 +25,7 @@ class DLL_PUBLIC PP {
    */
   VArrayDoublePtrList1D timestamps;
 
- private:
+ protected:
   // Thread safe random generator
   Rand rand;
 
