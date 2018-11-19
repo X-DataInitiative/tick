@@ -18,6 +18,8 @@
 %shared_ptr(ModelHawkesList);
 %shared_ptr(ModelHawkesLeastSq);
 %shared_ptr(ModelHawkesLogLik);
+%shared_ptr(ModelHawkesSingle);
+%shared_ptr(ModelHawkesLogLikSingle);
 
 %shared_ptr(ModelHawkesExpKernLeastSq);
 %shared_ptr(ModelHawkesSumExpKernLeastSq);
@@ -29,6 +31,7 @@
 %include base/model_hawkes_list.i
 %include base/model_hawkes_leastsq.i
 %include base/model_hawkes_loglik.i
+%include base/model_hawkes_loglik_single.i
 
 %include list_of_realizations/model_hawkes_expkern_leastsq.i
 %include list_of_realizations/model_hawkes_sumexpkern_leastsq.i

@@ -10,6 +10,7 @@
 %}
 
 %include <std_shared_ptr.i>
+%include "tick/hawkes/model/base/model_hawkes_loglik_single.i"
 
 class ModelHawkesCustom : public ModelHawkesLogLikSingle {
 

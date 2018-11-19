@@ -2,21 +2,29 @@
 
 
 %{
-#include "tick/hawkes/model/base/model_hawkes_loglik.h"
+#include "tick/hawkes/model/base/model_hawkes_single.h"
 %}
 
 
-class ModelHawkesLogLikSingle : public ModelHawkesLogLik {
+class ModelHawkesSingle : public ModelHawkes {
 
 public:
 
-  ModelHawkesLogLik(const int max_n_threads = 1);
+  ModelHawkesSingle(const int max_n_threads = 1);
+
+};
+
+
+
+class ModelHawkesLogLikSingle : public ModelHawkesSingle {
+
+public:
+
+  ModelHawkesLogLikSingle(const int max_n_threads = 1);
 
   double loss_and_grad(const ArrayDouble &coeffs, ArrayDouble &out);
   double hessian_norm(const ArrayDouble &coeffs, const ArrayDouble &vector);
   void hessian(const ArrayDouble &coeffs, ArrayDouble &out);
-
-  void incremental_set_data(const SArrayDoublePtrList1D &timestamps, double end_time);
 
   void compute_weights();
 };

@@ -8,6 +8,11 @@
 %shared_ptr(HawkesKernelTimeFunc);
 %shared_ptr(HawkesKernel0);
 
+%{
+#include "tick/hawkes/simulation/hawkes_kernels/hawkes_kernel_exp_lag.h"
+%}
+%shared_ptr(HawkesKernelExpLag);
+
 class HawkesKernel {
  public:
   HawkesKernel(double support = 0);
@@ -89,3 +94,13 @@ class HawkesKernel0 : public HawkesKernel {
 };
 
 TICK_MAKE_PICKLABLE(HawkesKernel0);
+
+class HawkesKernelExpLag : public HawkesKernel {
+public:
+     static void set_fast_exp(bool flag);
+    static bool get_fast_exp();
+     HawkesKernelExpLag(double intensity, double decay, double lag);
+     double get_intensity();
+    double get_decay();
+};
+TICK_MAKE_PICKLABLE(HawkesKernelExpLag, 0.0, 0.0, 0.0);

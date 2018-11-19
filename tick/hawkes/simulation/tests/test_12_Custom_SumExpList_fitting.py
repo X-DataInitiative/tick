@@ -51,7 +51,7 @@ model_list = ModelHawkesFixedSumExpKernCustomLogLikList(betas, MaxN_of_f, n_thre
 model_list.fit(timestamps_list, global_n_list, end_times=end_times)
 x0 = np.array(
     [0.6, 0.8,   0.2,0.2,0.2,0.2,  0.2,0.2,0.2,0.2,  0.4,0.4,0.4,0.4, 0.5,0.5,0.5,0.5,
-     0.5, 0.5, 0.9, 0.9, 0.3, 0.6, 0.7, 0.8, 0.5,  0.5, 0.5, 0.9, 0.9, 0.3, 0.6, 0.7, 0.8, 0.5])
+     1, 0.5, 0.5, 0.9, 0.9, 0.3, 0.6, 0.7, 0.8, 0.5,  1, 0.5, 0.5, 0.9, 0.9, 0.3, 0.6, 0.7, 0.8, 0.5])
 
 ##################################################################################################################
 from tick.optim.solver import AGD
@@ -59,14 +59,14 @@ from tick.optim.prox import ProxElasticNet, ProxL2Sq, ProxZero, ProxL1
 prox = ProxL1(0.0, positive=True)
 prox = ProxZero()
 
-solver = AGD(step=1e-4, linesearch=False, max_iter=20000, print_every=50)
+solver = AGD(step=1e-3, linesearch=False, max_iter=5000, print_every=50)
 solver.set_model(model_list).set_prox(prox)
 
 x_real = np.array(
     [0.4, 0.5,   0.2, 0.3, 0, 0,  0.15, 0, 0.2, 0.4,  0.1, 0.1, 0.2, 0, 0.1, 0.1, 0, 0.1,
-     0.7, 0.8, 0.6, 0.5, 0.8, 0.3, 0.6, 0.2, 0.7,  0.6, 0.8, 0.8, 0.6, 0.6, 0.5, 0.8, 0.3, 0.6])
+     1, 0.7, 0.8, 0.6, 0.5, 0.8, 0.3, 0.6, 0.2, 0.7,  1, 0.6, 0.8, 0.8, 0.6, 0.6, 0.5, 0.8, 0.3, 0.6])
 solver.solve(x0)
 
 print(model_list.loss(x_real))
 print(model_list.loss(solver.solution))
-print(solver.solution / x_real)
+# print(solver.solution / x_real)
