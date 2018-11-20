@@ -50,3 +50,5 @@ XCode/
 # Build directory for C++ tests
 cpp_test_build/
 lib/cmake-build-debug
+
+notebooks
