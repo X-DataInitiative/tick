@@ -85,9 +85,11 @@ class ModelHawkesSumExpKernLogLik(ModelHawkes, ModelSecondOrder,
     }
 
     def __init__(self, decays: np.ndarray, n_threads: int = 1):
-        ModelHawkes.__init__(self, n_threads=1, approx=0)
         ModelSecondOrder.__init__(self)
         ModelSelfConcordant.__init__(self)
+        # ModelHawkes.__init__ is last to set dtype properly as
+        #  Hawkes models are not templated
+        ModelHawkes.__init__(self, n_threads=1, approx=0)
         self.decays = decays
         self._model = _ModelHawkesSumExpKernLogLik(decays, n_threads)
 
