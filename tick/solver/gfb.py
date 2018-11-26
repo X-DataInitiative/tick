@@ -184,24 +184,25 @@ class GFB(SolverFirstOrder):
         return self
 
     def initialize_values(self, x0, step):
-        step, obj, x, x_old = \
+        step, obj, x, x_old, x_old2 = \
             SolverFirstOrder._initialize_values(self, x0, step,
-                                                n_empty_vectors=1)
+                                                n_empty_vectors=2)
         z_list = [np.zeros_like(x) for _ in range(self.prox.n_proxs)]
         z_old_list = [np.zeros_like(x) for _ in range(self.prox.n_proxs)]
-        return x, x_old, z_list, z_old_list, obj, step
+        return x, x_old, x_old2, z_list, z_old_list, obj, step
 
     def _solve(self, x0: np.ndarray, step: float):
-        minimizer, prev_minimizer, z_list, z_old_list, obj, step = \
+        minimizer, prev_minimizer, prev_minimizer_obj,z_list, z_old_list, \
+                                     obj, step = \
             self.initialize_values(x0, step)
 
         n_prox = self.prox.n_proxs
         for n_iter in range(self.max_iter):
             # We will record on this iteration and we must be ready
             if self._should_record_iter(n_iter + 1):
-                prev_minimizer[:] = minimizer
-                prev_obj = self.objective(prev_minimizer)
+                prev_minimizer_obj[:] = minimizer
 
+            prev_minimizer[:] = minimizer
             grad_x = self.model.grad(minimizer)
             for i in range(n_prox):
                 z = z_list[i]
@@ -219,7 +220,8 @@ class GFB(SolverFirstOrder):
 
             # Let's record metrics
             if self._should_record_iter(n_iter + 1):
-                rel_delta = relative_distance(minimizer, prev_minimizer)
+                rel_delta = relative_distance(minimizer, prev_minimizer_obj)
+                prev_obj = self.objective(prev_minimizer)
                 obj = self.objective(minimizer)
                 rel_obj = abs(obj - prev_obj) / abs(prev_obj)
 

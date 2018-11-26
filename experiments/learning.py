@@ -21,11 +21,13 @@ from tick.solver import AGD, GFB
 
 
 def prepare_solver(SolverClass, solver_kwargs, model, prox):
+    aggregated_solver_kwargs = {}
     if SolverClass == AGD:
-        solver_kwargs['linesearch'] = False
-    solver_kwargs['step'] = 1. / model.get_lip_best()
-    solver_kwargs['verbose'] = False
-    solver = SolverClass(**solver_kwargs)
+        aggregated_solver_kwargs['linesearch'] = False
+    aggregated_solver_kwargs['step'] = 1. / model.get_lip_best()
+    aggregated_solver_kwargs['verbose'] = False
+    aggregated_solver_kwargs.update(solver_kwargs)
+    solver = SolverClass(**aggregated_solver_kwargs)
     solver.set_model(model)
     solver.set_prox(prox)
     return solver
@@ -33,8 +35,13 @@ def prepare_solver(SolverClass, solver_kwargs, model, prox):
 
 def learn_one_model(model_file_name, strength_range, create_prox,
                     compute_metrics, original_coeffs, SolverClass,
-                    solver_kwargs):
-    model_index = int(extract_index(model_file_name, 'precomputed', 'pkl'))
+                    solver_kwargs, save_coeffs=False):
+
+    try:
+        model_index = int(extract_index(model_file_name, 'precomputed', 'pkl'))
+    except AttributeError:
+        model_index = -1
+
     with open(model_file_name, 'rb') as model_file:
         model = pickle.load(model_file)
 
@@ -76,6 +83,9 @@ def learn_one_model(model_file_name, strength_range, create_prox,
 
         compute_metrics(original_coeffs, coeffs,
                         get_n_decays_from_model(model), info, strength)
+
+        if save_coeffs:
+            info['coeffs'] = coeffs
 
     return model_index, info
 
