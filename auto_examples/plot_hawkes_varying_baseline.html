@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>Hawkes process with non constant baseline &#8212; tick 0.4.0 documentation</title>
+    <title>Hawkes process with non constant baseline &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -213,23 +213,19 @@ piecewise constant.</p>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
 <span class="kn">from</span> <span class="nn">tick.plot</span> <span class="k">import</span> <span class="n">plot_hawkes_baseline_and_kernels</span>
-<span class="kn">from</span> <span class="nn">tick.hawkes</span> <span class="k">import</span> <span class="p">(</span>
-    <a href="../modules/generated/tick.hawkes.SimuHawkesSumExpKernels.html#tick.hawkes.SimuHawkesSumExpKernels"><span class="n">SimuHawkesSumExpKernels</span></a><span class="p">,</span> <a href="../modules/generated/tick.hawkes.SimuHawkesMulti.html#tick.hawkes.SimuHawkesMulti"><span class="n">SimuHawkesMulti</span></a><span class="p">,</span> <a href="../modules/generated/tick.hawkes.HawkesSumExpKern.html#tick.hawkes.HawkesSumExpKern"><span class="n">HawkesSumExpKern</span></a>
-<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">tick.hawkes</span> <span class="k">import</span> <span class="p">(</span><a href="../modules/generated/tick.hawkes.SimuHawkesSumExpKernels.html#tick.hawkes.SimuHawkesSumExpKernels"><span class="n">SimuHawkesSumExpKernels</span></a><span class="p">,</span> <a href="../modules/generated/tick.hawkes.SimuHawkesMulti.html#tick.hawkes.SimuHawkesMulti"><span class="n">SimuHawkesMulti</span></a><span class="p">,</span>
+                         <a href="../modules/generated/tick.hawkes.HawkesSumExpKern.html#tick.hawkes.HawkesSumExpKern"><span class="n">HawkesSumExpKern</span></a><span class="p">)</span>
 
 <span class="n">period_length</span> <span class="o">=</span> <span class="mi">300</span>
-<span class="n">baselines</span> <span class="o">=</span> <span class="p">[[</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-             <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">]]</span>
+<span class="n">baselines</span> <span class="o">=</span> <span class="p">[[</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">]]</span>
 <span class="n">n_baselines</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">baselines</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 <span class="n">decays</span> <span class="o">=</span> <span class="p">[</span><span class="o">.</span><span class="mi">5</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">6.</span><span class="p">]</span>
-<span class="n">adjacency</span> <span class="o">=</span> <span class="p">[[[</span><span class="mi">0</span><span class="p">,</span> <span class="o">.</span><span class="mi">1</span><span class="p">,</span> <span class="o">.</span><span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="o">.</span><span class="mi">2</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="o">.</span><span class="mi">2</span><span class="p">]],</span>
-             <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="o">.</span><span class="mi">6</span><span class="p">,</span> <span class="o">.</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]]</span>
+<span class="n">adjacency</span> <span class="o">=</span> <span class="p">[[[</span><span class="mi">0</span><span class="p">,</span> <span class="o">.</span><span class="mi">1</span><span class="p">,</span> <span class="o">.</span><span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="o">.</span><span class="mi">2</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="o">.</span><span class="mi">2</span><span class="p">]],</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="o">.</span><span class="mi">6</span><span class="p">,</span> <span class="o">.</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]]</span>
 
 <span class="c1"># simulation</span>
 <span class="n">hawkes</span> <span class="o">=</span> <a href="../modules/generated/tick.hawkes.SimuHawkesSumExpKernels.html#tick.hawkes.SimuHawkesSumExpKernels"><span class="n">SimuHawkesSumExpKernels</span></a><span class="p">(</span><span class="n">baseline</span><span class="o">=</span><span class="n">baselines</span><span class="p">,</span>
-                                 <span class="n">period_length</span><span class="o">=</span><span class="n">period_length</span><span class="p">,</span>
-                                 <span class="n">decays</span><span class="o">=</span><span class="n">decays</span><span class="p">,</span> <span class="n">adjacency</span><span class="o">=</span><span class="n">adjacency</span><span class="p">,</span>
-                                 <span class="n">seed</span><span class="o">=</span><span class="mi">2093</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                                 <span class="n">period_length</span><span class="o">=</span><span class="n">period_length</span><span class="p">,</span> <span class="n">decays</span><span class="o">=</span><span class="n">decays</span><span class="p">,</span>
+                                 <span class="n">adjacency</span><span class="o">=</span><span class="n">adjacency</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">2093</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">hawkes</span><span class="o">.</span><span class="n">end_time</span> <span class="o">=</span> <span class="mi">1000</span>
 <span class="n">hawkes</span><span class="o">.</span><span class="n">adjust_spectral_radius</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
 
@@ -237,8 +233,7 @@ piecewise constant.</p>
 <span class="n">multi</span><span class="o">.</span><span class="n">simulate</span><span class="p">()</span>
 
 <span class="c1"># estimation</span>
-<span class="n">learner</span> <span class="o">=</span> <a href="../modules/generated/tick.hawkes.HawkesSumExpKern.html#tick.hawkes.HawkesSumExpKern"><span class="n">HawkesSumExpKern</span></a><span class="p">(</span><span class="n">decays</span><span class="o">=</span><span class="n">decays</span><span class="p">,</span>
-                           <span class="n">n_baselines</span><span class="o">=</span><span class="n">n_baselines</span><span class="p">,</span>
+<span class="n">learner</span> <span class="o">=</span> <a href="../modules/generated/tick.hawkes.HawkesSumExpKern.html#tick.hawkes.HawkesSumExpKern"><span class="n">HawkesSumExpKern</span></a><span class="p">(</span><span class="n">decays</span><span class="o">=</span><span class="n">decays</span><span class="p">,</span> <span class="n">n_baselines</span><span class="o">=</span><span class="n">n_baselines</span><span class="p">,</span>
                            <span class="n">period_length</span><span class="o">=</span><span class="n">period_length</span><span class="p">)</span>
 
 <span class="n">learner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">multi</span><span class="o">.</span><span class="n">timestamps</span><span class="p">)</span>
@@ -250,8 +245,8 @@ piecewise constant.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<p><strong>Total running time of the example:</strong>  1.01 seconds
-( 0 minutes  1.01 seconds)</p>
+<p><strong>Total running time of the example:</strong>  1.13 seconds
+( 0 minutes  1.13 seconds)</p>
 <dl class="docutils">
 <dt>Mentioned <em>tick</em> classes:</dt>
 <dd><ul class="first last simple">

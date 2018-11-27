@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>Examples of proximal operators &#8212; tick 0.4.0 documentation</title>
+    <title>Examples of proximal operators &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -226,7 +226,7 @@
     <a href="../modules/generated/tick.prox.ProxTV.html#tick.prox.ProxTV"><span class="n">ProxTV</span></a><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="n">s</span><span class="p">),</span>
     <a href="../modules/generated/tick.prox.ProxEquality.html#tick.prox.ProxEquality"><span class="n">ProxEquality</span></a><span class="p">(</span><span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="mi">25</span><span class="p">,</span> <span class="mi">40</span><span class="p">)),</span>
     <a href="../modules/generated/tick.prox.ProxL1w.html#tick.prox.ProxL1w"><span class="n">ProxL1w</span></a><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="n">s</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="mf">0.1</span> <span class="o">*</span> <a href="http://docs.scipy.org/doc/numpy-1.6.0/reference/generated/numpy.arange.html#numpy.arange"><span class="n">np</span><span class="o">.</span><span class="n">arange</span></a><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">double</span><span class="p">)),</span>
-    <a href="../modules/generated/tick.prox.ProxGroupL1.html#tick.prox.ProxGroupL1"><span class="n">ProxGroupL1</span></a><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="mi">2</span><span class="o">*</span><span class="n">s</span><span class="p">,</span> <span class="n">blocks_start</span><span class="o">=</span><a href="http://docs.scipy.org/doc/numpy-1.6.0/reference/generated/numpy.arange.html#numpy.arange"><span class="n">np</span><span class="o">.</span><span class="n">arange</span></a><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
+    <a href="../modules/generated/tick.prox.ProxGroupL1.html#tick.prox.ProxGroupL1"><span class="n">ProxGroupL1</span></a><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="mi">2</span> <span class="o">*</span> <span class="n">s</span><span class="p">,</span> <span class="n">blocks_start</span><span class="o">=</span><a href="http://docs.scipy.org/doc/numpy-1.6.0/reference/generated/numpy.arange.html#numpy.arange"><span class="n">np</span><span class="o">.</span><span class="n">arange</span></a><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
                 <span class="n">blocks_length</span><span class="o">=</span><span class="mi">10</span> <span class="o">*</span> <a href="http://docs.scipy.org/doc/numpy-1.6.0/reference/generated/numpy.ones.html#numpy.ones"><span class="n">np</span><span class="o">.</span><span class="n">ones</span></a><span class="p">((</span><span class="mi">5</span><span class="p">,))),</span>
     <a href="../modules/generated/tick.prox.ProxBinarsity.html#tick.prox.ProxBinarsity"><span class="n">ProxBinarsity</span></a><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="n">s</span><span class="p">,</span> <span class="n">blocks_start</span><span class="o">=</span><a href="http://docs.scipy.org/doc/numpy-1.6.0/reference/generated/numpy.arange.html#numpy.arange"><span class="n">np</span><span class="o">.</span><span class="n">arange</span></a><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
                   <span class="n">blocks_length</span><span class="o">=</span><span class="mi">10</span> <span class="o">*</span> <a href="http://docs.scipy.org/doc/numpy-1.6.0/reference/generated/numpy.ones.html#numpy.ones"><span class="n">np</span><span class="o">.</span><span class="n">ones</span></a><span class="p">((</span><span class="mi">5</span><span class="p">,)))</span>
@@ -248,8 +248,8 @@
 <a href="http://matplotlib.org/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
 </pre></div>
 </div>
-<p><strong>Total running time of the example:</strong>  3.29 seconds
-( 0 minutes  3.29 seconds)</p>
+<p><strong>Total running time of the example:</strong>  2.15 seconds
+( 0 minutes  2.15 seconds)</p>
 <dl class="docutils">
 <dt>Mentioned <em>tick</em> classes:</dt>
 <dd><ul class="first last simple">

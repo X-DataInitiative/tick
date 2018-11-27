@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.prox.prox_binarsity &#8212; tick 0.4.0 documentation</title>
+    <title>tick.prox.prox_binarsity &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -203,9 +203,16 @@
   <h1>Source code for tick.prox.prox_binarsity</h1><div class="highlight"><pre>
 <span></span><span class="c1"># License: BSD 3 clause</span>
 
-
 <span class="kn">from</span> <span class="nn">.base</span> <span class="k">import</span> <span class="n">ProxWithGroups</span>
-<span class="kn">from</span> <span class="nn">.build.prox</span> <span class="k">import</span> <span class="n">ProxBinarsity</span> <span class="k">as</span> <span class="n">_ProxBinarsity</span>
+<span class="kn">from</span> <span class="nn">.build.prox</span> <span class="k">import</span> <span class="n">ProxBinarsityDouble</span> <span class="k">as</span> <span class="n">_ProxBinarsityDouble</span>
+<span class="kn">from</span> <span class="nn">.build.prox</span> <span class="k">import</span> <span class="n">ProxBinarsityFloat</span> <span class="k">as</span> <span class="n">_ProxBinarsityFloat</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">dtype_map</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s2">&quot;float64&quot;</span><span class="p">):</span> <span class="n">_ProxBinarsityDouble</span><span class="p">,</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s2">&quot;float32&quot;</span><span class="p">):</span> <span class="n">_ProxBinarsityFloat</span>
+<span class="p">}</span>
 
 
 <div class="viewcode-block" id="ProxBinarsity"><a class="viewcode-back" href="../../../modules/generated/tick.prox.ProxBinarsity.html#tick.prox.ProxBinarsity">[docs]</a><span class="k">class</span> <span class="nc">ProxBinarsity</span><span class="p">(</span><span class="n">ProxWithGroups</span><span class="p">):</span>
@@ -240,6 +247,9 @@
 <span class="sd">    n_blocks : `int`</span>
 <span class="sd">        Number of blocks</span>
 
+<span class="sd">    dtype : `{&#39;float64&#39;, &#39;float32&#39;}`</span>
+<span class="sd">        Type of the arrays used.</span>
+
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
 <span class="sd">    ProxBinarsity uses the fast-TV algorithm described in:</span>
@@ -249,13 +259,15 @@
 
 <span class="sd">    .. _A Direct Algorithm for 1D Total Variation Denoising: https://hal.archives-ouvertes.fr/hal-00675043v2/document</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
 <div class="viewcode-block" id="ProxBinarsity.__init__"><a class="viewcode-back" href="../../../modules/generated/tick.prox.ProxBinarsity.html#tick.prox.ProxBinarsity.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">strength</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">blocks_start</span><span class="p">,</span> <span class="n">blocks_length</span><span class="p">,</span>
                  <span class="nb">range</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">positive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
         <span class="n">ProxWithGroups</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">strength</span><span class="p">,</span> <span class="n">blocks_start</span><span class="p">,</span> <span class="n">blocks_length</span><span class="p">,</span>
-                                <span class="nb">range</span><span class="p">,</span> <span class="n">positive</span><span class="p">)</span></div>
+                                <span class="nb">range</span><span class="p">,</span> <span class="n">positive</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_prox</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_cpp_prox</span><span class="p">(</span><span class="s2">&quot;float64&quot;</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">_get_prox_class</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">_ProxBinarsity</span></div>
+    <span class="k">def</span> <span class="nf">_get_dtype_map</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">dtype_map</span></div>
 </pre></div>
 
 </div>

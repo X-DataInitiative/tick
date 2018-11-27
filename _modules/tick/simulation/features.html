@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.simulation.features &#8212; tick 0.4.0 documentation</title>
+    <title>tick.simulation.features &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -203,15 +203,14 @@
   <h1>Source code for tick.simulation.features</h1><div class="highlight"><pre>
 <span></span><span class="c1"># License: BSD 3 clause</span>
 
-
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">scipy.linalg.special_matrices</span> <span class="k">import</span> <span class="n">toeplitz</span>
 
 
-<div class="viewcode-block" id="features_normal_cov_uniform"><a class="viewcode-back" href="../../../modules/generated/tick.simulation.features_normal_cov_uniform.html#tick.simulation.features_normal_cov_uniform">[docs]</a><span class="k">def</span> <span class="nf">features_normal_cov_uniform</span><span class="p">(</span><span class="n">n_samples</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">200</span><span class="p">,</span>
-                                <span class="n">n_features</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">30</span><span class="p">):</span>
+<div class="viewcode-block" id="features_normal_cov_uniform"><a class="viewcode-back" href="../../../modules/generated/tick.simulation.features_normal_cov_uniform.html#tick.simulation.features_normal_cov_uniform">[docs]</a><span class="k">def</span> <span class="nf">features_normal_cov_uniform</span><span class="p">(</span><span class="n">n_samples</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">200</span><span class="p">,</span> <span class="n">n_features</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">30</span><span class="p">,</span>
+                                <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float64&quot;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Normal features generator with uniform covariance</span>
-<span class="sd">    </span>
+
 <span class="sd">    An example of features obtained as samples of a centered Gaussian</span>
 <span class="sd">    vector with a specific covariance matrix given by 0.5 * (U + U.T),</span>
 <span class="sd">    where U is uniform on [0, 1] and diagonal filled by ones.</span>
@@ -224,24 +223,29 @@
 <span class="sd">    n_features : `int`, default=30</span>
 <span class="sd">        Number of features</span>
 
+<span class="sd">    dtype : `{&#39;float64&#39;, &#39;float32&#39;}`, default=&#39;float64&#39;</span>
+<span class="sd">        Type of the arrays used.</span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    output : `numpy.ndarray`, shape=(n_samples, n_features)</span>
 <span class="sd">        n_samples realization of a Gaussian vector with the described</span>
 <span class="sd">        covariance</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">C</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">n_features</span><span class="p">,</span> <span class="n">n_features</span><span class="p">))</span>
+    <span class="n">C</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">n_features</span><span class="p">,</span> <span class="n">n_features</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
     <span class="n">np</span><span class="o">.</span><span class="n">fill_diagonal</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
     <span class="n">cov</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">C</span> <span class="o">+</span> <span class="n">C</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">multivariate_normal</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_features</span><span class="p">),</span> <span class="n">cov</span><span class="p">,</span>
-                                         <span class="n">size</span><span class="o">=</span><span class="n">n_samples</span><span class="p">)</span></div>
+    <span class="n">features</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">multivariate_normal</span><span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_features</span><span class="p">),</span> <span class="n">cov</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n_samples</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">dtype</span> <span class="o">!=</span> <span class="s2">&quot;float64&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">features</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">features</span></div>
 
 
-<div class="viewcode-block" id="features_normal_cov_toeplitz"><a class="viewcode-back" href="../../../modules/generated/tick.simulation.features_normal_cov_toeplitz.html#tick.simulation.features_normal_cov_toeplitz">[docs]</a><span class="k">def</span> <span class="nf">features_normal_cov_toeplitz</span><span class="p">(</span><span class="n">n_samples</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">200</span><span class="p">,</span>
-                                 <span class="n">n_features</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">30</span><span class="p">,</span>
-                                 <span class="n">cov_corr</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">):</span>
+<div class="viewcode-block" id="features_normal_cov_toeplitz"><a class="viewcode-back" href="../../../modules/generated/tick.simulation.features_normal_cov_toeplitz.html#tick.simulation.features_normal_cov_toeplitz">[docs]</a><span class="k">def</span> <span class="nf">features_normal_cov_toeplitz</span><span class="p">(</span><span class="n">n_samples</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">200</span><span class="p">,</span> <span class="n">n_features</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">30</span><span class="p">,</span>
+                                 <span class="n">cov_corr</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float64&quot;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Normal features generator with toeplitz covariance</span>
-<span class="sd">    </span>
+
 <span class="sd">    An example of features obtained as samples of a centered Gaussian</span>
 <span class="sd">    vector with a toeplitz covariance matrix</span>
 
@@ -256,6 +260,9 @@
 <span class="sd">    cov_corr : `float`, default=0.5</span>
 <span class="sd">        correlation coefficient of the Toeplitz correlation matrix</span>
 
+<span class="sd">    dtype : `{&#39;float64&#39;, &#39;float32&#39;}`, default=&#39;float64&#39;</span>
+<span class="sd">        Type of the arrays used.</span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    output : `numpy.ndarray`, shape=(n_samples, n_features)</span>
@@ -264,8 +271,11 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">cov</span> <span class="o">=</span> <span class="n">toeplitz</span><span class="p">(</span><span class="n">cov_corr</span> <span class="o">**</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_features</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">multivariate_normal</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_features</span><span class="p">),</span> <span class="n">cov</span><span class="p">,</span>
-                                         <span class="n">size</span><span class="o">=</span><span class="n">n_samples</span><span class="p">)</span></div>
+    <span class="n">features</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">multivariate_normal</span><span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_features</span><span class="p">),</span> <span class="n">cov</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n_samples</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">dtype</span> <span class="o">!=</span> <span class="s2">&quot;float64&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">features</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">features</span></div>
 </pre></div>
 
 </div>

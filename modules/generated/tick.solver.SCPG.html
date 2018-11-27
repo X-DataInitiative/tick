@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.solver.SCPG &#8212; tick 0.4.0 documentation</title>
+    <title>tick.solver.SCPG &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -61,7 +61,7 @@
         </button>
         <a class="navbar-brand" href="../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -279,6 +279,10 @@ multiple of <code class="docutils literal"><span class="pre">record_every</span>
 <div><p>Enables modified verison. The modified version of this algorithm
 consists in evaluating <span class="math">\(f\)</span> at <span class="math">\(y_k\)</span> and <span class="math">\(w^{k+1}\)</span>
 and keeping the iterate that minimizes the best <span class="math">\(f\)</span>.</p>
+</div></blockquote>
+<p><strong>dtype</strong> : <code class="xref py py-obj docutils literal"><span class="pre">{'float64',</span> <span class="pre">'float32'}</span></code>, default=’float64’</p>
+<blockquote>
+<div><p>Type of the arrays used. This value is set from model and prox dtypes.</p>
 </div></blockquote>
 </td>
 </tr>

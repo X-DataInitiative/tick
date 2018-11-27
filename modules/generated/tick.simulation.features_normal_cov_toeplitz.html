@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.simulation.features_normal_cov_toeplitz &#8212; tick 0.4.0 documentation</title>
+    <title>tick.simulation.features_normal_cov_toeplitz &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -61,7 +61,7 @@
         </button>
         <a class="navbar-brand" href="../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -206,7 +206,7 @@
 <h1>tick.simulation.features_normal_cov_toeplitz<a class="headerlink" href="#tick-simulation-features-normal-cov-toeplitz" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="tick.simulation.features_normal_cov_toeplitz">
-<code class="descclassname">tick.simulation.</code><code class="descname">features_normal_cov_toeplitz</code><span class="sig-paren">(</span><em>n_samples: int = 200</em>, <em>n_features: int = 30</em>, <em>cov_corr: float = 0.5</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/simulation/features.html#features_normal_cov_toeplitz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.simulation.features_normal_cov_toeplitz" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">tick.simulation.</code><code class="descname">features_normal_cov_toeplitz</code><span class="sig-paren">(</span><em>n_samples: int = 200</em>, <em>n_features: int = 30</em>, <em>cov_corr: float = 0.5</em>, <em>dtype='float64'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/simulation/features.html#features_normal_cov_toeplitz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.simulation.features_normal_cov_toeplitz" title="Permalink to this definition">¶</a></dt>
 <dd><p>Normal features generator with toeplitz covariance</p>
 <p>An example of features obtained as samples of a centered Gaussian
 vector with a toeplitz covariance matrix</p>
@@ -225,6 +225,10 @@ vector with a toeplitz covariance matrix</p>
 <p><strong>cov_corr</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default=0.5</p>
 <blockquote>
 <div><p>correlation coefficient of the Toeplitz correlation matrix</p>
+</div></blockquote>
+<p><strong>dtype</strong> : <code class="xref py py-obj docutils literal"><span class="pre">{'float64',</span> <span class="pre">'float32'}</span></code>, default=’float64’</p>
+<blockquote>
+<div><p>Type of the arrays used.</p>
 </div></blockquote>
 </td>
 </tr>

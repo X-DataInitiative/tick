@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.linear_model.ModelLinReg &#8212; tick 0.4.0 documentation</title>
+    <title>tick.linear_model.ModelLinReg &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -61,7 +61,7 @@
         </button>
         <a class="navbar-brand" href="../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -252,6 +252,10 @@ y is the vector of labels.</p>
 <p><strong>n_coeffs</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code> (read-only)</p>
 <blockquote>
 <div><p>Total number of coefficients of the model</p>
+</div></blockquote>
+<p><strong>dtype</strong> : <code class="xref py py-obj docutils literal"><span class="pre">{'float64',</span> <span class="pre">'float32'}</span></code></p>
+<blockquote>
+<div><p>Type of the data arrays used.</p>
 </div></blockquote>
 <p><strong>n_threads</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code>, default=1 (read-only)</p>
 <blockquote class="last">

@@ -1,0 +1,38 @@
+
+
+.. _example_plot_low_precision_learner.py:
+
+
+===========================
+Precision vs speed tradeoff
+===========================
+
+In this example we compare the convergence speed of our learners given the
+float precision used.
+
+In both case the convergence speed in term of number of iterations
+(on the left) is similar up to float 32 precision.
+But compared to the running time (on the right), we can see that using
+float 32 instead of float 64 leads to faster convergence up to
+float 32 precision.
+
+
+
+.. image:: images/plot_low_precision_learner_001.png
+    :align: center
+
+
+
+
+**Python source code:** :download:`plot_low_precision_learner.py <plot_low_precision_learner.py>`
+
+.. literalinclude:: plot_low_precision_learner.py
+    :lines: 15-
+
+**Total running time of the example:**  16.78 seconds
+( 0 minutes  16.78 seconds)
+    
+Mentioned *tick* classes:
+   * `tick.dataset.fetch_tick_dataset`
+   * `tick.linear_model.LogisticRegression`
+   * `tick.plot.plot_history`

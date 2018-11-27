@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.robust.base.learner_robust_glm &#8212; tick 0.4.0 documentation</title>
+    <title>tick.robust.base.learner_robust_glm &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../../../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -340,25 +340,20 @@
         <span class="s1">&#39;slope&#39;</span><span class="p">:</span> <span class="n">ProxSlope</span>
     <span class="p">}</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">C_sample_intercepts</span><span class="p">,</span> <span class="n">C</span><span class="o">=</span><span class="mf">1e3</span><span class="p">,</span> <span class="n">fdr</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
-                 <span class="n">penalty</span><span class="o">=</span><span class="s1">&#39;l2&#39;</span><span class="p">,</span> <span class="n">fit_intercept</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">refit</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                 <span class="n">solver</span><span class="o">=</span><span class="s1">&#39;agd&#39;</span><span class="p">,</span> <span class="n">warm_start</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">tol</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
-                 <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">print_every</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
-                 <span class="n">record_every</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">C_sample_intercepts</span><span class="p">,</span> <span class="n">C</span><span class="o">=</span><span class="mf">1e3</span><span class="p">,</span> <span class="n">fdr</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">penalty</span><span class="o">=</span><span class="s1">&#39;l2&#39;</span><span class="p">,</span>
+                 <span class="n">fit_intercept</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">refit</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="s1">&#39;agd&#39;</span><span class="p">,</span>
+                 <span class="n">warm_start</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+                 <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">print_every</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">record_every</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
                  <span class="n">elastic_net_ratio</span><span class="o">=</span><span class="mf">0.95</span><span class="p">,</span> <span class="n">slope_fdr</span><span class="o">=</span><span class="mf">0.05</span><span class="p">):</span>
 
         <span class="n">extra_model_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;fit_intercept&#39;</span><span class="p">:</span> <span class="n">fit_intercept</span><span class="p">}</span>
 
-        <span class="n">LearnerGLM</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fit_intercept</span><span class="o">=</span><span class="n">fit_intercept</span><span class="p">,</span>
-                            <span class="n">penalty</span><span class="o">=</span><span class="n">penalty</span><span class="p">,</span> <span class="n">C</span><span class="o">=</span><span class="n">C</span><span class="p">,</span>
-                            <span class="n">solver</span><span class="o">=</span><span class="n">solver</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">,</span>
-                            <span class="n">max_iter</span><span class="o">=</span><span class="n">max_iter</span><span class="p">,</span>
-                            <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="n">warm_start</span><span class="o">=</span><span class="n">warm_start</span><span class="p">,</span>
-                            <span class="n">print_every</span><span class="o">=</span><span class="n">print_every</span><span class="p">,</span> <span class="n">record_every</span><span class="o">=</span><span class="n">record_every</span><span class="p">,</span>
-                            <span class="n">elastic_net_ratio</span><span class="o">=</span><span class="n">elastic_net_ratio</span><span class="p">,</span>
-                            <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">blocks_start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                            <span class="n">blocks_length</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+        <span class="n">LearnerGLM</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">fit_intercept</span><span class="o">=</span><span class="n">fit_intercept</span><span class="p">,</span> <span class="n">penalty</span><span class="o">=</span><span class="n">penalty</span><span class="p">,</span> <span class="n">C</span><span class="o">=</span><span class="n">C</span><span class="p">,</span>
+            <span class="n">solver</span><span class="o">=</span><span class="n">solver</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="n">max_iter</span><span class="p">,</span>
+            <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="n">warm_start</span><span class="o">=</span><span class="n">warm_start</span><span class="p">,</span> <span class="n">print_every</span><span class="o">=</span><span class="n">print_every</span><span class="p">,</span>
+            <span class="n">record_every</span><span class="o">=</span><span class="n">record_every</span><span class="p">,</span> <span class="n">elastic_net_ratio</span><span class="o">=</span><span class="n">elastic_net_ratio</span><span class="p">,</span>
+            <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">blocks_start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">blocks_length</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_prox_intercepts_obj</span> <span class="o">=</span> <span class="n">ProxSlope</span><span class="p">(</span><span class="mf">1e-2</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">C_sample_intercepts</span> <span class="o">=</span> <span class="n">C_sample_intercepts</span>
@@ -475,10 +470,15 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">dd</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s1">&#39;fit_intercept&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">fit_intercept</span><span class="p">,</span>
-            <span class="s1">&#39;penalty&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">penalty</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">C</span><span class="p">,</span>
-            <span class="s1">&#39;solver&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="p">,</span> <span class="s1">&#39;step&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">,</span> <span class="s1">&#39;tol&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">tol</span><span class="p">,</span>
-            <span class="s1">&#39;max_iter&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_iter</span><span class="p">,</span> <span class="s1">&#39;verbose&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">,</span>
-            <span class="s1">&#39;warm_start&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">warm_start</span><span class="p">,</span> <span class="s1">&#39;print_every&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">print_every</span><span class="p">,</span>
+            <span class="s1">&#39;penalty&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">penalty</span><span class="p">,</span>
+            <span class="s1">&#39;C&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">C</span><span class="p">,</span>
+            <span class="s1">&#39;solver&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="p">,</span>
+            <span class="s1">&#39;step&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">,</span>
+            <span class="s1">&#39;tol&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">tol</span><span class="p">,</span>
+            <span class="s1">&#39;max_iter&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_iter</span><span class="p">,</span>
+            <span class="s1">&#39;verbose&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">,</span>
+            <span class="s1">&#39;warm_start&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">warm_start</span><span class="p">,</span>
+            <span class="s1">&#39;print_every&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">print_every</span><span class="p">,</span>
             <span class="s1">&#39;record_every&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">record_every</span><span class="p">,</span>
             <span class="s1">&#39;sdca_ridge_strength&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sdca_ridge_strength</span><span class="p">,</span>
             <span class="s1">&#39;elastic_net_ratio&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">elastic_net_ratio</span><span class="p">,</span>
@@ -523,9 +523,12 @@
         <span class="k">elif</span> <span class="n">val</span> <span class="o">==</span> <span class="mf">0.</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;``C_sample_intercepts`` cannot be 0.&quot;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">val</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;``C_sample_intercepts`` must be positive, got </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;``C_sample_intercepts`` must be positive, got </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">))</span>
         <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">isinf</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;``C_sample_intercepts`` must be a finite number, got </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;``C_sample_intercepts`` must be a finite number, got </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span>
+                <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">strength</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">val</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_prox_intercepts_obj</span><span class="o">.</span><span class="n">strength</span> <span class="o">=</span> <span class="n">strength</span>
@@ -539,7 +542,8 @@
         <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;``fdr`` cannot be `None`&quot;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">isinf</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;``fdr`` must be a finite number, got </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;``fdr`` must be a finite number, got </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">))</span>
         <span class="k">elif</span> <span class="n">val</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">val</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;``fdr`` must be in (0, 1), got </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
@@ -558,16 +562,16 @@
             <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;``slope_fdr`` cannot be `None`&quot;</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">isinf</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;``slope_fdr`` must be a finite number, got </span><span class="si">%s</span><span class="s2">&quot;</span>
-                                 <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">))</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;``slope_fdr`` must be a finite number, got </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">))</span>
             <span class="k">elif</span> <span class="n">val</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">val</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;``slope_fdr`` must be in (0, 1), got </span><span class="si">%s</span><span class="s2">&quot;</span>
-                                 <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">))</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;``slope_fdr`` must be in (0, 1), got </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_prox_obj</span><span class="o">.</span><span class="n">fdr</span> <span class="o">=</span> <span class="n">val</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Penalty &quot;</span><span class="si">%s</span><span class="s1">&quot; has no ``slope_fdr`` attribute&#39;</span> <span class="o">%</span>
-                 <span class="bp">self</span><span class="o">.</span><span class="n">penalty</span><span class="p">,</span> <span class="ne">RuntimeWarning</span><span class="p">)</span>
+            <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Penalty &quot;</span><span class="si">%s</span><span class="s1">&quot; has no ``slope_fdr`` attribute&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">penalty</span><span class="p">,</span>
+                 <span class="ne">RuntimeWarning</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">refit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

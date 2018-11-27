@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.solver.agd &#8212; tick 0.4.0 documentation</title>
+    <title>tick.solver.agd &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -310,9 +310,8 @@
 <div class="viewcode-block" id="AGD.__init__"><a class="viewcode-back" href="../../../modules/generated/tick.solver.AGD.html#tick.solver.AGD.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-10</span><span class="p">,</span>
                  <span class="n">max_iter</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span> <span class="n">linesearch</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
                  <span class="n">linesearch_step_increase</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">2.</span><span class="p">,</span>
-                 <span class="n">linesearch_step_decrease</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
-                 <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">print_every</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
-                 <span class="n">record_every</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
+                 <span class="n">linesearch_step_decrease</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                 <span class="n">print_every</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="n">record_every</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
         <span class="n">SolverFirstOrder</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="n">max_iter</span><span class="p">,</span>
                                   <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="n">print_every</span><span class="o">=</span><span class="n">print_every</span><span class="p">,</span>
                                   <span class="n">record_every</span><span class="o">=</span><span class="n">record_every</span><span class="p">)</span>
@@ -360,30 +359,38 @@
         <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">step</span>
 
     <span class="k">def</span> <span class="nf">_solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x0</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-        <span class="n">x</span><span class="p">,</span> <span class="n">prev_x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">grad_y</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">obj</span> <span class="o">=</span> \
+        <span class="n">minimizer</span><span class="p">,</span> <span class="n">prev_minimizer</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">grad_y</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">obj</span> <span class="o">=</span> \
             <span class="bp">self</span><span class="o">.</span><span class="n">_initialize_values</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">n_iter</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_iter</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">n_iter</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_iter</span><span class="p">):</span>
             <span class="n">prev_t</span> <span class="o">=</span> <span class="n">t</span>
-            <span class="n">prev_x</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">x</span>
-            <span class="n">prev_obj</span> <span class="o">=</span> <span class="n">obj</span>
-            <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gradient_step</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">prev_x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">grad_y</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span>
-                                                <span class="n">prev_t</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
+            <span class="n">prev_minimizer</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">minimizer</span>
+
+            <span class="c1"># We will record on this iteration and we must be ready</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_should_record_iter</span><span class="p">(</span><span class="n">n_iter</span><span class="p">):</span>
+                <span class="n">prev_obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">objective</span><span class="p">(</span><span class="n">prev_minimizer</span><span class="p">)</span>
+
+            <span class="n">minimizer</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gradient_step</span><span class="p">(</span>
+                <span class="n">minimizer</span><span class="p">,</span> <span class="n">prev_minimizer</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">grad_y</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">prev_t</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">step</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Step equals 0... at </span><span class="si">%i</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">n_iter</span><span class="p">)</span>
                 <span class="k">break</span>
-            <span class="n">rel_delta</span> <span class="o">=</span> <span class="n">relative_distance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">prev_x</span><span class="p">)</span>
-            <span class="n">obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">objective</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-            <span class="n">rel_obj</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">obj</span> <span class="o">-</span> <span class="n">prev_obj</span><span class="p">)</span> <span class="o">/</span> <span class="nb">abs</span><span class="p">(</span><span class="n">prev_obj</span><span class="p">)</span>
-            <span class="n">converged</span> <span class="o">=</span> <span class="n">rel_obj</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">tol</span>
-            <span class="c1"># If converged, we stop the loop and record the last step</span>
-            <span class="c1"># in history</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_handle_history</span><span class="p">(</span><span class="n">n_iter</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="n">converged</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="n">obj</span><span class="p">,</span>
-                                 <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="n">rel_delta</span><span class="o">=</span><span class="n">rel_delta</span><span class="p">,</span>
-                                 <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">,</span> <span class="n">rel_obj</span><span class="o">=</span><span class="n">rel_obj</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">converged</span><span class="p">:</span>
-                <span class="k">break</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;solution&quot;</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">x</span></div>
+
+            <span class="c1"># Let&#39;s record metrics</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_should_record_iter</span><span class="p">(</span><span class="n">n_iter</span><span class="p">):</span>
+                <span class="n">rel_delta</span> <span class="o">=</span> <span class="n">relative_distance</span><span class="p">(</span><span class="n">minimizer</span><span class="p">,</span> <span class="n">prev_minimizer</span><span class="p">)</span>
+                <span class="n">obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">objective</span><span class="p">(</span><span class="n">minimizer</span><span class="p">)</span>
+                <span class="n">rel_obj</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">obj</span> <span class="o">-</span> <span class="n">prev_obj</span><span class="p">)</span> <span class="o">/</span> <span class="nb">abs</span><span class="p">(</span><span class="n">prev_obj</span><span class="p">)</span>
+                <span class="n">converged</span> <span class="o">=</span> <span class="n">rel_obj</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">tol</span>
+                <span class="c1"># If converged, we stop the loop and record the last step</span>
+                <span class="c1"># in history</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_handle_history</span><span class="p">(</span><span class="n">n_iter</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="n">converged</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="n">obj</span><span class="p">,</span>
+                                     <span class="n">x</span><span class="o">=</span><span class="n">minimizer</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="n">rel_delta</span><span class="o">=</span><span class="n">rel_delta</span><span class="p">,</span>
+                                     <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">,</span> <span class="n">rel_obj</span><span class="o">=</span><span class="n">rel_obj</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">converged</span><span class="p">:</span>
+                    <span class="k">break</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;solution&quot;</span><span class="p">,</span> <span class="n">minimizer</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">minimizer</span></div>
 </pre></div>
 
 </div>

@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.solver.base.first_order &#8212; tick 0.4.0 documentation</title>
+    <title>tick.solver.base.first_order &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../../../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -252,6 +252,8 @@
 <span class="sd">    prox : `Prox`</span>
 <span class="sd">        Proximal operator to solve</span>
 
+<span class="sd">    dtype : `{&#39;float64&#39;, &#39;float32&#39;}`, default=&#39;float64&#39;</span>
+<span class="sd">        Type of the arrays used. This value is set from model and prox dtypes.</span>
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
@@ -279,9 +281,12 @@
         <span class="p">},</span>
     <span class="p">}</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">:</span> <span class="nb">float</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span><span class="mf">0.</span><span class="p">,</span>
-                 <span class="n">max_iter</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                 <span class="n">print_every</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">record_every</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.</span><span class="p">,</span>
+                 <span class="n">max_iter</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                 <span class="n">print_every</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="n">record_every</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="kc">None</span>
+
         <span class="n">Solver</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tol</span><span class="p">,</span> <span class="n">max_iter</span><span class="p">,</span> <span class="n">verbose</span><span class="p">,</span> <span class="n">print_every</span><span class="p">,</span>
                         <span class="n">record_every</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="kc">None</span>
@@ -292,6 +297,15 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_initial_n_calls_loss</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_initial_n_calls_grad</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_initial_n_passes_over_data</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">def</span> <span class="nf">validate_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">Model</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Passed object of class </span><span class="si">%s</span><span class="s1"> is not a &#39;</span>
+                             <span class="s1">&#39;Model class&#39;</span> <span class="o">%</span> <span class="n">model</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">model</span><span class="o">.</span><span class="n">_fitted</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Passed object </span><span class="si">%s</span><span class="s1"> has not been fitted. You must &#39;</span>
+                             <span class="s1">&#39;call ``fit`` on it before passing it to &#39;</span>
+                             <span class="s1">&#39;``set_model``&#39;</span> <span class="o">%</span> <span class="n">model</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">set_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set model in the solver</span>
@@ -308,13 +322,8 @@
 <span class="sd">        output : `Solver`</span>
 <span class="sd">            The same instance with given model</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">Model</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Passed object of class </span><span class="si">%s</span><span class="s1"> is not a &#39;</span>
-                             <span class="s1">&#39;Model class&#39;</span> <span class="o">%</span> <span class="n">model</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">model</span><span class="o">.</span><span class="n">_fitted</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Passed object </span><span class="si">%s</span><span class="s1"> has not been fitted. You must &#39;</span>
-                             <span class="s1">&#39;call ``fit`` on it before passing it to &#39;</span>
-                             <span class="s1">&#39;``set_model``&#39;</span> <span class="o">%</span> <span class="n">model</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validate_model</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">dtype</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;model&quot;</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span>
 
@@ -358,7 +367,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="n">step</span>
         <span class="k">if</span> <span class="n">x0</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">x0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">n_coeffs</span><span class="p">)</span>
+            <span class="n">x0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">n_coeffs</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
         <span class="n">iterate</span> <span class="o">=</span> <span class="n">x0</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">objective</span><span class="p">(</span><span class="n">iterate</span><span class="p">)</span>
 
@@ -389,8 +398,28 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">prox</span><span class="p">,</span> <span class="n">Prox</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Passed object of class </span><span class="si">%s</span><span class="s1"> is not a &#39;</span>
                              <span class="s1">&#39;Prox class&#39;</span> <span class="o">%</span> <span class="n">prox</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Solver must call set_model before set_prox&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">prox</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">:</span>
+            <span class="n">prox</span> <span class="o">=</span> <span class="n">prox</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;prox&quot;</span><span class="p">,</span> <span class="n">prox</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="nf">astype</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dtype_or_object_with_dtype</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot reassign solver without a model&quot;</span><span class="p">)</span>
+
+        <span class="kn">import</span> <span class="nn">tick.base.dtype_to_cpp_type</span>
+        <span class="n">new_solver</span> <span class="o">=</span> <span class="n">tick</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">dtype_to_cpp_type</span><span class="o">.</span><span class="n">copy_with</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="p">[</span><span class="s2">&quot;prox&quot;</span><span class="p">,</span> <span class="s2">&quot;model&quot;</span><span class="p">]</span>  <span class="c1"># ignore on deepcopy</span>
+        <span class="p">)</span>
+        <span class="n">new_solver</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="n">tick</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">dtype_to_cpp_type</span><span class="o">.</span><span class="n">extract_dtype</span><span class="p">(</span>
+            <span class="n">dtype_or_object_with_dtype</span><span class="p">)</span>
+        <span class="n">new_solver</span><span class="o">.</span><span class="n">set_model</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">new_solver</span><span class="o">.</span><span class="n">dtype</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">prox</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">new_solver</span><span class="o">.</span><span class="n">set_prox</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prox</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">new_solver</span><span class="o">.</span><span class="n">dtype</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">new_solver</span>
 
     <span class="k">def</span> <span class="nf">_as_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">dd</span> <span class="o">=</span> <span class="n">Solver</span><span class="o">.</span><span class="n">_as_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
@@ -400,7 +429,7 @@
             <span class="n">dd</span><span class="p">[</span><span class="s2">&quot;prox&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prox</span><span class="o">.</span><span class="n">_as_dict</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">dd</span>
 
-    <span class="k">def</span> <span class="nf">objective</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coeffs</span><span class="p">,</span> <span class="n">loss</span><span class="p">:</span> <span class="nb">float</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">objective</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coeffs</span><span class="p">,</span> <span class="n">loss</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Compute the objective function</span>
 
 <span class="sd">        Parameters</span>
@@ -445,6 +474,9 @@
 <span class="sd">        output : `np.array`, shape=(n_coeffs,)</span>
 <span class="sd">            Obtained minimizer for the problem, same as ``solution`` attribute</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">x0</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">is</span> <span class="ow">not</span> <span class="s2">&quot;float64&quot;</span><span class="p">:</span>
+            <span class="n">x0</span> <span class="o">=</span> <span class="n">x0</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;You must first set the model using &#39;</span>
                              <span class="s1">&#39;``set_model``.&#39;</span><span class="p">)</span>
@@ -454,7 +486,7 @@
         <span class="n">solution</span> <span class="o">=</span> <span class="n">Solver</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">solution</span>
 
-    <span class="k">def</span> <span class="nf">_handle_history</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_iter</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_handle_history</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_iter</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Updates the history of the solver.</span>
 
 <span class="sd">        Parameters</span>
@@ -468,7 +500,7 @@
         <span class="c1"># solvers using this model</span>
         <span class="c1"># hence it might not be at 0 while starting</span>
         <span class="c1"># /!\ beware if parallel computing...</span>
-        <span class="k">if</span> <span class="n">n_iter</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">n_iter</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;_initial_n_calls_loss_and_grad&quot;</span><span class="p">,</span>
                       <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">n_calls_loss_and_grad</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;_initial_n_calls_loss&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">n_calls_loss</span><span class="p">)</span>

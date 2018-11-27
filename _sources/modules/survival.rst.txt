@@ -25,6 +25,7 @@ Kaplan-Meier estimators.
    CoxRegression
    nelson_aalen
    kaplan_meier
+   ConvSCCS
 
 2. Models
 =========
@@ -68,4 +69,7 @@ Example
 -------
 
 .. plot:: ../examples/plot_simulation_coxreg.py
+    :include-source:
+
+.. plot:: ../examples/plot_conv_sccs_cv_results.py
     :include-source:

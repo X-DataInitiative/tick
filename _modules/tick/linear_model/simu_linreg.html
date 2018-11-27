@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.linear_model.simu_linreg &#8212; tick 0.4.0 documentation</title>
+    <title>tick.linear_model.simu_linreg &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -203,7 +203,6 @@
   <h1>Source code for tick.linear_model.simu_linreg</h1><div class="highlight"><pre>
 <span></span><span class="c1"># License: BSD 3 clause</span>
 
-
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">tick.base.simulation</span> <span class="k">import</span> <span class="n">SimuWithFeatures</span>
@@ -278,23 +277,24 @@
 
 <span class="sd">    time_end : `str`</span>
 <span class="sd">        End date of the simulation</span>
+
+<span class="sd">    dtype : `{&#39;float64&#39;, &#39;float32&#39;}`, default=&#39;float64&#39;</span>
+<span class="sd">        Type of the generated arrays.</span>
+<span class="sd">        Used in the case features is None</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">_attrinfos</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;labels&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
+    <span class="n">_attrinfos</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;labels&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}}</span>
 
 <div class="viewcode-block" id="SimuLinReg.__init__"><a class="viewcode-back" href="../../../modules/generated/tick.linear_model.SimuLinReg.html#tick.linear_model.SimuLinReg.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">weights</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">intercept</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">features</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">200</span><span class="p">,</span>
                  <span class="n">std</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.</span><span class="p">,</span> <span class="n">features_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;cov_toeplitz&quot;</span><span class="p">,</span>
                  <span class="n">cov_corr</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">features_scaling</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;none&quot;</span><span class="p">,</span>
-                 <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+                 <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float64&quot;</span><span class="p">):</span>
+
         <span class="n">n_features</span> <span class="o">=</span> <span class="n">weights</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">SimuWithFeatures</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intercept</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">,</span>
                                   <span class="n">n_features</span><span class="p">,</span> <span class="n">features_type</span><span class="p">,</span> <span class="n">cov_corr</span><span class="p">,</span>
-                                  <span class="n">features_scaling</span><span class="p">,</span> <span class="n">seed</span><span class="p">,</span> <span class="n">verbose</span><span class="p">)</span>
+                                  <span class="n">features_scaling</span><span class="p">,</span> <span class="n">seed</span><span class="p">,</span> <span class="n">verbose</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="n">weights</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">std</span> <span class="o">=</span> <span class="n">std</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;labels&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
@@ -323,6 +323,9 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">intercept</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">u</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">intercept</span>
         <span class="n">labels</span> <span class="o">=</span> <span class="n">u</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">std</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">n_samples</span><span class="p">)</span>
+        <span class="c1"># &quot;astype&quot; must be used for labels as it is always float64</span>
+        <span class="k">if</span> <span class="n">labels</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">:</span>
+            <span class="n">labels</span> <span class="o">=</span> <span class="n">labels</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;labels&quot;</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">features</span><span class="p">,</span> <span class="n">labels</span></div>
 </pre></div>

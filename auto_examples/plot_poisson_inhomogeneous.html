@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>Inhomogeneous Poisson process simulation &#8212; tick 0.4.0 documentation</title>
+    <title>Inhomogeneous Poisson process simulation &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -216,8 +216,9 @@ intensity is modeled through <a class="reference internal" href="../modules/gene
 <span class="n">run_time</span> <span class="o">=</span> <span class="mi">30</span>
 
 <span class="n">T</span> <span class="o">=</span> <a href="http://docs.scipy.org/doc/numpy-1.6.0/reference/generated/numpy.arange.html#numpy.arange"><span class="n">np</span><span class="o">.</span><span class="n">arange</span></a><span class="p">((</span><span class="n">run_time</span> <span class="o">*</span> <span class="mf">0.9</span><span class="p">)</span> <span class="o">*</span> <span class="mi">5</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span> <span class="o">/</span> <span class="mi">5</span>
-<span class="n">Y</span> <span class="o">=</span> <a href="http://docs.scipy.org/doc/numpy-1.6.0/reference/generated/numpy.maximum.html#numpy.maximum"><span class="n">np</span><span class="o">.</span><span class="n">maximum</span></a><span class="p">(</span><span class="mi">15</span> <span class="o">*</span> <a href="http://docs.scipy.org/doc/numpy-1.6.0/reference/generated/numpy.sin.html#numpy.sin"><span class="n">np</span><span class="o">.</span><span class="n">sin</span></a><span class="p">(</span><span class="n">T</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><a href="http://docs.scipy.org/doc/numpy-1.6.0/reference/generated/numpy.divide.html#numpy.divide"><span class="n">np</span><span class="o">.</span><span class="n">divide</span></a><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">T</span><span class="p">),</span>
-                                           <a href="http://docs.scipy.org/doc/numpy-1.6.0/reference/generated/numpy.sqrt.html#numpy.sqrt"><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span></a><span class="p">(</span><span class="n">T</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="n">T</span><span class="p">)),</span> <span class="mf">0.001</span><span class="p">)</span>
+<span class="n">Y</span> <span class="o">=</span> <a href="http://docs.scipy.org/doc/numpy-1.6.0/reference/generated/numpy.maximum.html#numpy.maximum"><span class="n">np</span><span class="o">.</span><span class="n">maximum</span></a><span class="p">(</span>
+    <span class="mi">15</span> <span class="o">*</span> <a href="http://docs.scipy.org/doc/numpy-1.6.0/reference/generated/numpy.sin.html#numpy.sin"><span class="n">np</span><span class="o">.</span><span class="n">sin</span></a><span class="p">(</span><span class="n">T</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><a href="http://docs.scipy.org/doc/numpy-1.6.0/reference/generated/numpy.divide.html#numpy.divide"><span class="n">np</span><span class="o">.</span><span class="n">divide</span></a><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">T</span><span class="p">),</span>
+                                <a href="http://docs.scipy.org/doc/numpy-1.6.0/reference/generated/numpy.sqrt.html#numpy.sqrt"><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span></a><span class="p">(</span><span class="n">T</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="n">T</span><span class="p">)),</span> <span class="mf">0.001</span><span class="p">)</span>
 
 <span class="n">tf</span> <span class="o">=</span> <a href="../modules/generated/tick.base.TimeFunction.html#tick.base.TimeFunction"><span class="n">TimeFunction</span></a><span class="p">((</span><span class="n">T</span><span class="p">,</span> <span class="n">Y</span><span class="p">),</span> <span class="n">dt</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
 
@@ -234,8 +235,8 @@ intensity is modeled through <a class="reference internal" href="../modules/gene
 <a href="../modules/generated/tick.plot.plot_point_process.html#tick.plot.plot_point_process"><span class="n">plot_point_process</span></a><span class="p">(</span><span class="n">in_poi</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><strong>Total running time of the example:</strong>  0.11 seconds
-( 0 minutes  0.11 seconds)</p>
+<p><strong>Total running time of the example:</strong>  0.07 seconds
+( 0 minutes  0.07 seconds)</p>
 <dl class="docutils">
 <dt>Mentioned <em>tick</em> classes:</dt>
 <dd><ul class="first last simple">

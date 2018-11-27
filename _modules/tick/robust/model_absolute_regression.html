@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.robust.model_absolute_regression &#8212; tick 0.4.0 documentation</title>
+    <title>tick.robust.model_absolute_regression &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -205,13 +205,12 @@
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">tick.base_model</span> <span class="k">import</span> <span class="n">ModelGeneralizedLinear</span><span class="p">,</span> <span class="n">ModelFirstOrder</span>
-<span class="kn">from</span> <span class="nn">.build.robust</span> <span class="k">import</span> <span class="n">ModelAbsoluteRegression</span> <span class="k">as</span> <span class="n">_ModelAbsoluteRegression</span>
+<span class="kn">from</span> <span class="nn">.build.robust</span> <span class="k">import</span> <span class="n">ModelAbsoluteRegressionDouble</span> <span class="k">as</span> <span class="n">_ModelAbsoluteRegression</span>
 
 <span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;Stephane Gaiffas&#39;</span>
 
 
-<div class="viewcode-block" id="ModelAbsoluteRegression"><a class="viewcode-back" href="../../../modules/generated/tick.robust.ModelAbsoluteRegression.html#tick.robust.ModelAbsoluteRegression">[docs]</a><span class="k">class</span> <span class="nc">ModelAbsoluteRegression</span><span class="p">(</span><span class="n">ModelFirstOrder</span><span class="p">,</span>
-                              <span class="n">ModelGeneralizedLinear</span><span class="p">):</span>
+<div class="viewcode-block" id="ModelAbsoluteRegression"><a class="viewcode-back" href="../../../modules/generated/tick.robust.ModelAbsoluteRegression.html#tick.robust.ModelAbsoluteRegression">[docs]</a><span class="k">class</span> <span class="nc">ModelAbsoluteRegression</span><span class="p">(</span><span class="n">ModelFirstOrder</span><span class="p">,</span> <span class="n">ModelGeneralizedLinear</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Absolute value (L1) loss for linear regression. This class gives first</span>
 <span class="sd">    order information (gradient and loss) for this model and can be passed</span>
 <span class="sd">    to any solver through the solver&#39;s ``set_model`` method.</span>
@@ -263,6 +262,7 @@
 <span class="sd">          the CPU</span>
 <span class="sd">        * otherwise the desired number of threads</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
 <div class="viewcode-block" id="ModelAbsoluteRegression.__init__"><a class="viewcode-back" href="../../../modules/generated/tick.robust.ModelAbsoluteRegression.html#tick.robust.ModelAbsoluteRegression.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fit_intercept</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">n_threads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
         <span class="n">ModelFirstOrder</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="n">ModelGeneralizedLinear</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fit_intercept</span><span class="p">)</span>
@@ -287,10 +287,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">ModelFirstOrder</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
         <span class="n">ModelGeneralizedLinear</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;_model&quot;</span><span class="p">,</span> <span class="n">_ModelAbsoluteRegression</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">,</span>
-                                                     <span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="p">,</span>
-                                                     <span class="bp">self</span><span class="o">.</span><span class="n">fit_intercept</span><span class="p">,</span>
-                                                     <span class="bp">self</span><span class="o">.</span><span class="n">n_threads</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span>
+            <span class="s2">&quot;_model&quot;</span><span class="p">,</span>
+            <span class="n">_ModelAbsoluteRegression</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="p">,</span>
+                                     <span class="bp">self</span><span class="o">.</span><span class="n">fit_intercept</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_threads</span><span class="p">))</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
     <span class="k">def</span> <span class="nf">_grad</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coeffs</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>

@@ -1,0 +1,51 @@
+
+
+.. _example_plot_2d_linear_regression.py:
+
+
+===================================
+Linear regression in two dimensions
+===================================
+
+In this example, we try to predict the median price of houses in Boston's
+neighbors by looking at two features: the average of the number of rooms per
+dwelling and the pencentage of low status in the population.
+The linear regression is done using the `Boston Housing Dataset`_ which
+contains 13 features used to predict the median price of houses.
+The two features selected are the most efficent on the test set.
+The 3D representation allows a better understanding of the prediction
+mechanism with two features.
+
+This example is inspired by linear regression example from
+`scikit-learn documentation`_.
+
+.. _Boston Housing Dataset: https://www.kaggle.com/c/boston-housing
+.. _scikit-learn documentation: http://scikit-learn.org/stable/auto_examples/linear_model/plot_ols.html#sphx-glr-auto-examples-linear-model-plot-ols-py
+
+
+
+.. image:: images/plot_2d_linear_regression_001.png
+    :align: center
+
+
+**Script output**::
+
+  Coefficients:
+   intercept: 0.70
+   average room per dwelling: 4.75
+   percentage of low status in population: -0.63
+  Mean squared error on test set: 26.46
+  Variance score on test set: 0.74
+
+
+
+**Python source code:** :download:`plot_2d_linear_regression.py <plot_2d_linear_regression.py>`
+
+.. literalinclude:: plot_2d_linear_regression.py
+    :lines: 21-
+
+**Total running time of the example:**  0.19 seconds
+( 0 minutes  0.19 seconds)
+    
+Mentioned *tick* classes:
+   * `tick.linear_model.LinearRegression`

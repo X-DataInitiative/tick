@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.hawkes.model.base.model_hawkes &#8212; tick 0.4.0 documentation</title>
+    <title>tick.hawkes.model.base.model_hawkes &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../../../../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -209,7 +209,8 @@
 <span class="kn">from</span> <span class="nn">tick.base_model</span> <span class="k">import</span> <span class="n">N_CALLS_LOSS</span><span class="p">,</span> <span class="n">PASS_OVER_DATA</span>
 <span class="kn">from</span> <span class="nn">tick.base_model.model_first_order</span> <span class="k">import</span> <span class="n">ModelFirstOrder</span>
 <span class="kn">from</span> <span class="nn">tick.hawkes.model.build.hawkes_model</span> <span class="k">import</span> <span class="p">(</span>
-    <span class="n">ModelHawkesSumExpKernLeastSq</span><span class="p">,</span> <span class="n">ModelHawkesExpKernLeastSq</span><span class="p">,</span>
+    <span class="n">ModelHawkesSumExpKernLeastSq</span><span class="p">,</span>
+    <span class="n">ModelHawkesExpKernLeastSq</span><span class="p">,</span>
     <span class="n">ModelHawkesSumExpKernLogLik</span><span class="p">,</span>
 <span class="p">)</span>
 
@@ -247,6 +248,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_end_times</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_model</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s2">&quot;float64&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_get_n_coeffs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">get_n_coeffs</span><span class="p">()</span>
@@ -359,8 +361,9 @@
 
         <span class="n">n_baselines</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span>
         <span class="c1"># number of alphas per dimension</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="p">,</span> <span class="p">(</span><span class="n">ModelHawkesSumExpKernLeastSq</span><span class="p">,</span>
-                                    <span class="n">ModelHawkesSumExpKernLogLik</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="p">,</span>
+            <span class="p">(</span><span class="n">ModelHawkesSumExpKernLeastSq</span><span class="p">,</span> <span class="n">ModelHawkesSumExpKernLogLik</span><span class="p">)):</span>
             <span class="n">n_alphas_i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">decays</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">n_alphas_i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span>
@@ -395,8 +398,9 @@
         <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">data_size</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
 
         <span class="c1"># In these two models, hessian does not depend on x</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="p">,</span> <span class="p">(</span><span class="n">ModelHawkesSumExpKernLeastSq</span><span class="p">,</span>
-                                    <span class="n">ModelHawkesExpKernLeastSq</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="p">,</span>
+            <span class="p">(</span><span class="n">ModelHawkesSumExpKernLeastSq</span><span class="p">,</span> <span class="n">ModelHawkesExpKernLeastSq</span><span class="p">)):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">hessian</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">hessian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>

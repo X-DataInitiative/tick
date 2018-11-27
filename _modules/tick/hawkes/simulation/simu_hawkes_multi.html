@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.hawkes.simulation.simu_hawkes_multi &#8212; tick 0.4.0 documentation</title>
+    <title>tick.hawkes.simulation.simu_hawkes_multi &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../../../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -266,8 +266,12 @@
 
     <span class="n">_attrinfos</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;_simulations&quot;</span><span class="p">:</span> <span class="p">{},</span>
-        <span class="s2">&quot;hawkes_simu&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
-        <span class="s2">&quot;n_simulations&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+        <span class="s2">&quot;hawkes_simu&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;n_simulations&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">},</span>
     <span class="p">}</span>
 
 <div class="viewcode-block" id="SimuHawkesMulti.__init__"><a class="viewcode-back" href="../../../../modules/generated/tick.hawkes.SimuHawkesMulti.html#tick.hawkes.SimuHawkesMulti.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hawkes_simu</span><span class="p">,</span> <span class="n">n_simulations</span><span class="p">,</span> <span class="n">n_threads</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
@@ -338,8 +342,8 @@
     <span class="nd">@end_time</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">end_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">end_times</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">end_times</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_simulations</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;end_time must have length </span><span class="si">{}</span><span class="s1">&#39;</span>
-                             <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_simulations</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;end_time must have length </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">n_simulations</span><span class="p">))</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">simu</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_simulations</span><span class="p">):</span>
             <span class="n">simu</span><span class="o">.</span><span class="n">end_time</span> <span class="o">=</span> <span class="n">end_times</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
 
@@ -370,8 +374,8 @@
         <span class="sd">&quot;&quot;&quot; Launches a series of n_simulations Hawkes simulation in a thread</span>
 <span class="sd">        pool</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">p</span> <span class="o">=</span> <span class="n">Pool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_threads</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_simulations</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">simulate_single</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simulations</span><span class="p">)</span></div>
+        <span class="k">with</span> <span class="n">Pool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_threads</span><span class="p">)</span> <span class="k">as</span> <span class="n">p</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_simulations</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">simulate_single</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simulations</span><span class="p">)</span></div>
 </pre></div>
 
 </div>

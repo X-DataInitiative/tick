@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.preprocessing.longitudinal_features_lagger &#8212; tick 0.4.0 documentation</title>
+    <title>tick.preprocessing.longitudinal_features_lagger &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -205,21 +205,22 @@
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">scipy.sparse</span> <span class="k">as</span> <span class="nn">sps</span>
-<span class="kn">from</span> <span class="nn">tick.base</span> <span class="k">import</span> <span class="n">Base</span>
+<span class="kn">from</span> <span class="nn">tick.preprocessing.base</span> <span class="k">import</span> <span class="n">LongitudinalPreprocessor</span>
 <span class="kn">from</span> <span class="nn">.build.preprocessing</span> <span class="k">import</span> <span class="n">LongitudinalFeaturesLagger</span>\
     <span class="k">as</span> <span class="n">_LongitudinalFeaturesLagger</span>
 <span class="kn">from</span> <span class="nn">.utils</span> <span class="k">import</span> <span class="n">check_longitudinal_features_consistency</span><span class="p">,</span>\
     <span class="n">check_censoring_consistency</span>
 
-<div class="viewcode-block" id="LongitudinalFeaturesLagger"><a class="viewcode-back" href="../../../modules/generated/tick.preprocessing.LongitudinalFeaturesLagger.html#tick.preprocessing.LongitudinalFeaturesLagger">[docs]</a><span class="k">class</span> <span class="nc">LongitudinalFeaturesLagger</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
+
+<div class="viewcode-block" id="LongitudinalFeaturesLagger"><a class="viewcode-back" href="../../../modules/generated/tick.preprocessing.LongitudinalFeaturesLagger.html#tick.preprocessing.LongitudinalFeaturesLagger">[docs]</a><span class="k">class</span> <span class="nc">LongitudinalFeaturesLagger</span><span class="p">(</span><span class="n">LongitudinalPreprocessor</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Transforms longitudinal exposure features to add columns representing</span>
 <span class="sd">    lagged features.</span>
 
-<span class="sd">    This preprocessor transform an input list of `n_samples` numpy ndarrays or</span>
+<span class="sd">    This preprocessor transform an input list of `n_cases` numpy ndarrays or</span>
 <span class="sd">    scipy.sparse.csr_matrices of shape `(n_intervals, n_features)` so as to</span>
 <span class="sd">    add columns representing the lagged exposures. It outputs a list of</span>
-<span class="sd">    `n_samples` numpy arrays or  csr_matrices of shape</span>
-<span class="sd">    `(n_intervals, n_features * (n_lags + 1))`.</span>
+<span class="sd">    `n_cases` numpy arrays or  csr_matrices of shape</span>
+<span class="sd">    `(n_intervals, n_features + sum(n_lags + 1))`.</span>
 
 <span class="sd">    Exposure can take two forms:</span>
 <span class="sd">    - short repeated exposures: in that case, each column of the numpy arrays</span>
@@ -231,15 +232,10 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    n_lags : `int`, default=0</span>
+<span class="sd">    n_lags : `numpy.ndarray`, shape=(n_features,), dtype=&quot;uint64&quot;</span>
 <span class="sd">        Number of lags to compute: the preprocessor adds columns representing</span>
-<span class="sd">        lag = 1, ..., n_lags. If lag = 0, this preprocessor does nothing.</span>
-<span class="sd">        n_lags must be non-negative.</span>
-
-<span class="sd">    Attributes</span>
-<span class="sd">    ----------</span>
-<span class="sd">    mapper : `dict`</span>
-<span class="sd">        Map lagged features to column indexes of the resulting matrices.</span>
+<span class="sd">        lag = 1, ..., n_lags[i] for each feature [i]. If `n_lags` is a null</span>
+<span class="sd">        vector, this preprocessor does nothing. `n_lags` must be non-negative.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -254,72 +250,73 @@
 <span class="sd">    ...                         [0, 0, 0]], dtype=&quot;float64&quot;)</span>
 <span class="sd">    ...             ]</span>
 <span class="sd">    &gt;&gt;&gt; censoring = np.array([3, 2], dtype=&quot;uint64&quot;)</span>
-<span class="sd">    &gt;&gt;&gt; lfl = LongitudinalFeaturesLagger(n_lags=2)</span>
+<span class="sd">    &gt;&gt;&gt; n_lags = np.array([2, 1, 0], dtype=&#39;uint64&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; lfl = LongitudinalFeaturesLagger(n_lags)</span>
 <span class="sd">    &gt;&gt;&gt; product_features = lfl.fit_transform(features)</span>
 <span class="sd">    &gt;&gt;&gt; # output comes as a list of sparse matrices or 2D numpy arrays</span>
 <span class="sd">    &gt;&gt;&gt; product_features.__class__</span>
 <span class="sd">    &lt;class &#39;list&#39;&gt;</span>
 <span class="sd">    &gt;&gt;&gt; [x.toarray() for x in product_features]</span>
-<span class="sd">    [array([[ 0.,  0.,  0.,  1.,  0.,  0.,  0.,  0.,  0.],</span>
-<span class="sd">           [ 0.,  0.,  0.,  0.,  1.,  0.,  0.,  0.,  0.],</span>
-<span class="sd">           [ 0.,  0.,  0.,  0.,  0.,  1.,  1.,  0.,  0.]]), array([[ 1.,  0.,  0.,  1.,  0.,  0.,  0.,  0.,  0.],</span>
-<span class="sd">           [ 0.,  1.,  0.,  0.,  1.,  0.,  1.,  0.,  0.],</span>
-<span class="sd">           [ 0.,  0.,  1.,  0.,  0.,  1.,  0.,  1.,  0.]])]</span>
-
+<span class="sd">    [array([[ 0.,  0.,  0.,  1.,  0.,  0.],</span>
+<span class="sd">            [ 0.,  0.,  0.,  0.,  1.,  0.],</span>
+<span class="sd">            [ 0.,  0.,  0.,  0.,  0.,  1.]]),</span>
+<span class="sd">     array([[ 1.,  0.,  0.,  1.,  0.,  0.],</span>
+<span class="sd">            [ 0.,  1.,  0.,  0.,  1.,  1.],</span>
+<span class="sd">            [ 0.,  0.,  0.,  0.,  0.,  0.]])]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">_attrinfos</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;n_lags&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
-        <span class="s2">&quot;_mapper&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
-        <span class="s2">&quot;_n_init_features&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
-        <span class="s2">&quot;_n_output_features&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
-        <span class="s2">&quot;_n_intervals&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
-        <span class="s2">&quot;_cpp_preprocessor&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
-        <span class="s2">&quot;_fitted&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
+        <span class="s2">&quot;n_lags&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;_n_init_features&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;_n_output_features&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;_n_intervals&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;_cpp_preprocessor&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;_fitted&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">}</span>
     <span class="p">}</span>
 
-<div class="viewcode-block" id="LongitudinalFeaturesLagger.__init__"><a class="viewcode-back" href="../../../modules/generated/tick.preprocessing.LongitudinalFeaturesLagger.html#tick.preprocessing.LongitudinalFeaturesLagger.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_lags</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
-        <span class="n">Base</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">n_lags</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;`n_lags` should be non-negative.&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="LongitudinalFeaturesLagger.__init__"><a class="viewcode-back" href="../../../modules/generated/tick.preprocessing.LongitudinalFeaturesLagger.html#tick.preprocessing.LongitudinalFeaturesLagger.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_lags</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">LongitudinalPreprocessor</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="n">n_jobs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">n_lags</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">or</span> <span class="n">n_lags</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="s1">&#39;uint64&#39;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;`n_lags` should be a numpy array of dtype uint64&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_lags</span> <span class="o">=</span> <span class="n">n_lags</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">n_jobs</span> <span class="o">=</span> <span class="n">n_jobs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_n_init_features</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_n_output_features</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_n_intervals</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cpp_preprocessor</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_reset</span><span class="p">()</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fitted</span> <span class="o">=</span> <span class="kc">False</span></div>
 
     <span class="k">def</span> <span class="nf">_reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Resets the object its initial construction state.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;_n_init_features&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;_n_output_features&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;_n_intervals&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;_mapper&quot;</span><span class="p">,</span> <span class="p">{})</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;_cpp_preprocessor&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;_fitted&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">mapper</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get the mapping between the feature lags and column indexes.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        output : `dict`</span>
-<span class="sd">            The column index - feature mapping.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fitted</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot get mapper if object has not been fitted.&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mapper</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-
-<div class="viewcode-block" id="LongitudinalFeaturesLagger.fit"><a class="viewcode-back" href="../../../modules/generated/tick.preprocessing.LongitudinalFeaturesLagger.html#tick.preprocessing.LongitudinalFeaturesLagger.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">censoring</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="LongitudinalFeaturesLagger.fit"><a class="viewcode-back" href="../../../modules/generated/tick.preprocessing.LongitudinalFeaturesLagger.html#tick.preprocessing.LongitudinalFeaturesLagger.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">censoring</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Fit the feature lagger using the features matrices list.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        X : `list` of `numpy.ndarray` or `list` of `scipy.sparse.csr_matrix`,</span>
-<span class="sd">            list of length n_samples, each element of the list of</span>
+<span class="sd">        features : `list` of `numpy.ndarray` or `list` of `scipy.sparse.csr_matrix`,</span>
+<span class="sd">            list of length n_cases, each element of the list of</span>
 <span class="sd">            shape=(n_intervals, n_features)</span>
 <span class="sd">            The list of features matrices.</span>
 
-<span class="sd">        censoring : `numpy.ndarray`, shape=(n_samples,), dtype=&quot;uint64&quot;</span>
+<span class="sd">        censoring : `numpy.ndarray`, shape=(n_cases,), dtype=&quot;uint64&quot;</span>
 <span class="sd">            The censoring data. This array should contain integers in</span>
 <span class="sd">            [1, n_intervals]. If the value i is equal to n_intervals, then there</span>
 <span class="sd">            is no censoring for sample i. If censoring = c &lt; n_intervals, then</span>
@@ -333,33 +330,33 @@
 <span class="sd">            The fitted current instance.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_reset</span><span class="p">()</span>
-        <span class="n">base_shape</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span>
-        <span class="n">X</span> <span class="o">=</span> <span class="n">check_longitudinal_features_consistency</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">base_shape</span><span class="p">,</span> <span class="s2">&quot;float64&quot;</span><span class="p">)</span>
+        <span class="n">base_shape</span> <span class="o">=</span> <span class="n">features</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span>
+        <span class="k">if</span> <span class="n">base_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_lags</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Number of columns from feature matrices differs&#39;</span>
+                             <span class="s1">&#39;from self.n_lags length.&#39;</span><span class="p">)</span>
+        <span class="n">features</span> <span class="o">=</span> <span class="n">check_longitudinal_features_consistency</span><span class="p">(</span>
+            <span class="n">features</span><span class="p">,</span> <span class="n">base_shape</span><span class="p">,</span> <span class="s2">&quot;float64&quot;</span><span class="p">)</span>
         <span class="n">n_intervals</span><span class="p">,</span> <span class="n">n_init_features</span> <span class="o">=</span> <span class="n">base_shape</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;_n_init_features&quot;</span><span class="p">,</span> <span class="n">n_init_features</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;_n_intervals&quot;</span><span class="p">,</span> <span class="n">n_intervals</span><span class="p">)</span>
-        <span class="n">mapper</span> <span class="o">=</span> <span class="p">{</span><span class="n">i</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="n">j</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_lags</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
-                  <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_init_features</span><span class="p">)}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;_mapper&quot;</span><span class="p">,</span> <span class="n">mapper</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;_n_output_features&quot;</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">n_init_features</span> <span class="o">*</span>
-                                            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_lags</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;_n_output_features&quot;</span><span class="p">,</span> <span class="nb">int</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_lags</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;_cpp_preprocessor&quot;</span><span class="p">,</span>
-                  <span class="n">_LongitudinalFeaturesLagger</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_lags</span><span class="p">))</span>
+                  <span class="n">_LongitudinalFeaturesLagger</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_lags</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;_fitted&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span></div>
 
-<div class="viewcode-block" id="LongitudinalFeaturesLagger.transform"><a class="viewcode-back" href="../../../modules/generated/tick.preprocessing.LongitudinalFeaturesLagger.html#tick.preprocessing.LongitudinalFeaturesLagger.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">censoring</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="LongitudinalFeaturesLagger.transform"><a class="viewcode-back" href="../../../modules/generated/tick.preprocessing.LongitudinalFeaturesLagger.html#tick.preprocessing.LongitudinalFeaturesLagger.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">censoring</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Add lagged features to the given features matrices list.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        X : `list` of `numpy.ndarray` or `list` of `scipy.sparse.csr_matrix`,</span>
-<span class="sd">            list of length n_samples, each element of the list of</span>
+<span class="sd">        features : `list` of `numpy.ndarray` or `list` of `scipy.sparse.csr_matrix`,</span>
+<span class="sd">            list of length n_cases, each element of the list of</span>
 <span class="sd">            shape=(n_intervals, n_features)</span>
 <span class="sd">            The list of features matrices.</span>
 
-<span class="sd">        censoring : `numpy.ndarray`, shape=(n_samples,), dtype=&#39;uint64&#39;, default=&#39;None&#39;</span>
+<span class="sd">        censoring : `numpy.ndarray`, shape=(n_cases,), dtype=&#39;uint64&#39;, default=&#39;None&#39;</span>
 <span class="sd">            The censoring data. This array should contain integers in</span>
 <span class="sd">            [1, n_intervals]. If the value i is equal to n_intervals, then there</span>
 <span class="sd">            is no censoring for sample i. If censoring = c &lt; n_intervals, then</span>
@@ -373,76 +370,44 @@
 <span class="sd">            The list of features matrices with added lagged features.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">n_samples</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="n">n_samples</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">censoring</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">censoring</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="n">n_samples</span><span class="p">,),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_intervals</span><span class="p">,</span>
                                 <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;uint64&quot;</span><span class="p">)</span>
         <span class="n">censoring</span> <span class="o">=</span> <span class="n">check_censoring_consistency</span><span class="p">(</span><span class="n">censoring</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">)</span>
         <span class="n">base_shape</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_intervals</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_init_features</span><span class="p">)</span>
-        <span class="n">X</span> <span class="o">=</span> <span class="n">check_longitudinal_features_consistency</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">base_shape</span><span class="p">,</span> <span class="s2">&quot;float64&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">sps</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-            <span class="n">X_with_lags</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_sparse_lagger</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">censoring</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
-                           <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">X</span><span class="p">)]</span>
-            <span class="c1"># Don&#39;t get why int() is required here as censoring_i is uint64</span>
+        <span class="n">features</span> <span class="o">=</span> <span class="n">check_longitudinal_features_consistency</span><span class="p">(</span>
+            <span class="n">features</span><span class="p">,</span> <span class="n">base_shape</span><span class="p">,</span> <span class="s2">&quot;float64&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">sps</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">features</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="n">X_with_lags</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_sparse_lagger</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">censoring</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
+            <span class="p">]</span>
+            <span class="c1"># TODO: Don&#39;t get why int() is required here as censoring_i is uint64</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">X_with_lags</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_dense_lagger</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">censoring</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
-                           <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">X</span><span class="p">)]</span>
+            <span class="n">X_with_lags</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_dense_lagger</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">censoring</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
+            <span class="p">]</span>
 
-        <span class="k">return</span> <span class="n">X_with_lags</span></div>
-
-<div class="viewcode-block" id="LongitudinalFeaturesLagger.fit_transform"><a class="viewcode-back" href="../../../modules/generated/tick.preprocessing.LongitudinalFeaturesLagger.html#tick.preprocessing.LongitudinalFeaturesLagger.fit_transform">[docs]</a>    <span class="k">def</span> <span class="nf">fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">censoring</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Fit and add the lagged features computated using the features</span>
-<span class="sd">        matrices list.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        X : `list` of `numpy.ndarray` or `list` of `scipy.sparse.csr_matrix`,</span>
-<span class="sd">            list of length n_samples, each element of the list of</span>
-<span class="sd">            shape=(n_intervals, n_features)</span>
-<span class="sd">            The list of features matrices.</span>
-
-<span class="sd">        censoring : `numpy.ndarray`, shape=(n_samples,), dtype=&#39;uint64&#39;, default=&#39;None&#39;</span>
-<span class="sd">            The censoring data. This array should contain integers in</span>
-<span class="sd">            [1, n_intervals]. If the value i is equal to n_intervals, then there</span>
-<span class="sd">            is no censoring for sample i. If censoring = c &lt; n_intervals, then</span>
-<span class="sd">            the observation of sample i is stopped at interval c, that is, the</span>
-<span class="sd">            row c - 1 of the correponding matrix. The last n_intervals - c rows</span>
-<span class="sd">            are then set to 0.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        output : `[numpy.ndarrays]`  or `[csr_matrices]`, shape=(n_intervals, n_features)</span>
-<span class="sd">            The list of features matrices with added lagged features.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">censoring</span><span class="p">)</span>
-        <span class="n">X_with_lags</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">censoring</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">X_with_lags</span></div>
+        <span class="k">return</span> <span class="n">X_with_lags</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">censoring</span></div>
 
     <span class="k">def</span> <span class="nf">_dense_lagger</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature_matrix</span><span class="p">,</span> <span class="n">censoring_i</span><span class="p">):</span>
         <span class="n">output</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_intervals</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_output_features</span><span class="p">),</span>
                           <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float64&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_cpp_preprocessor</span><span class="o">.</span><span class="n">dense_lag_preprocessor</span><span class="p">(</span>
-            <span class="n">feature_matrix</span><span class="p">,</span>
-            <span class="n">output</span><span class="p">,</span>
-            <span class="n">censoring_i</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cpp_preprocessor</span><span class="o">.</span><span class="n">dense_lag_preprocessor</span><span class="p">(</span><span class="n">feature_matrix</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span>
+                                                      <span class="n">censoring_i</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">output</span>
 
     <span class="k">def</span> <span class="nf">_sparse_lagger</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature_matrix</span><span class="p">,</span> <span class="n">censoring_i</span><span class="p">):</span>
         <span class="n">coo</span> <span class="o">=</span> <span class="n">feature_matrix</span><span class="o">.</span><span class="n">tocoo</span><span class="p">()</span>
-        <span class="n">estimated_nnz</span> <span class="o">=</span> <span class="n">coo</span><span class="o">.</span><span class="n">nnz</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_lags</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">estimated_nnz</span> <span class="o">=</span> <span class="n">coo</span><span class="o">.</span><span class="n">nnz</span> <span class="o">*</span> <span class="nb">int</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_lags</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
         <span class="n">out_row</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">estimated_nnz</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;uint64&quot;</span><span class="p">)</span>
         <span class="n">out_col</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">estimated_nnz</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;uint64&quot;</span><span class="p">)</span>
         <span class="n">out_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">estimated_nnz</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float64&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cpp_preprocessor</span><span class="o">.</span><span class="n">sparse_lag_preprocessor</span><span class="p">(</span>
-            <span class="n">coo</span><span class="o">.</span><span class="n">row</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;uint64&quot;</span><span class="p">),</span>
-            <span class="n">coo</span><span class="o">.</span><span class="n">col</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;uint64&quot;</span><span class="p">),</span>
-            <span class="n">coo</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-            <span class="n">out_row</span><span class="p">,</span>
-            <span class="n">out_col</span><span class="p">,</span>
-            <span class="n">out_data</span><span class="p">,</span>
-            <span class="n">censoring_i</span>
-            <span class="p">)</span>
+            <span class="n">coo</span><span class="o">.</span><span class="n">row</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;uint64&quot;</span><span class="p">),</span> <span class="n">coo</span><span class="o">.</span><span class="n">col</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;uint64&quot;</span><span class="p">),</span> <span class="n">coo</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+            <span class="n">out_row</span><span class="p">,</span> <span class="n">out_col</span><span class="p">,</span> <span class="n">out_data</span><span class="p">,</span> <span class="n">censoring_i</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">sps</span><span class="o">.</span><span class="n">csr_matrix</span><span class="p">((</span><span class="n">out_data</span><span class="p">,</span> <span class="p">(</span><span class="n">out_row</span><span class="p">,</span> <span class="n">out_col</span><span class="p">)),</span>
                               <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_intervals</span><span class="p">,</span>
                                      <span class="bp">self</span><span class="o">.</span><span class="n">_n_output_features</span><span class="p">))</span></div>

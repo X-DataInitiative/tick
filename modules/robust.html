@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.robust &#8212; tick 0.4.0 documentation</title>
+    <title>tick.robust &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -61,7 +61,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -321,25 +321,30 @@ the inverse of the <code class="docutils literal"><span class="pre">C_sample_int
 
 <span class="n">target_fdr</span> <span class="o">=</span> <span class="mf">0.1</span>
 <span class="n">noise_level</span> <span class="o">=</span> <span class="n">std_iqr</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-<span class="n">learner</span> <span class="o">=</span> <span class="n">RobustLinearRegression</span><span class="p">(</span><span class="n">C_sample_intercepts</span><span class="o">=</span><span class="mi">2</span> <span class="o">*</span> <span class="n">n_samples</span> <span class="o">/</span> <span class="n">noise_level</span><span class="p">,</span>
-                                 <span class="n">penalty</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">,</span> <span class="n">fdr</span><span class="o">=</span><span class="n">target_fdr</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="n">learner</span> <span class="o">=</span> <span class="n">RobustLinearRegression</span><span class="p">(</span>
+    <span class="n">C_sample_intercepts</span><span class="o">=</span><span class="mi">2</span> <span class="o">*</span> <span class="n">n_samples</span> <span class="o">/</span> <span class="n">noise_level</span><span class="p">,</span> <span class="n">penalty</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">,</span>
+    <span class="n">fdr</span><span class="o">=</span><span class="n">target_fdr</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
 <span class="n">learner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 
 <span class="n">fdp_</span> <span class="o">=</span> <span class="n">support_fdp</span><span class="p">(</span><span class="n">sample_intercepts0</span><span class="p">,</span> <span class="n">learner</span><span class="o">.</span><span class="n">sample_intercepts</span><span class="p">)</span>
 <span class="n">power_</span> <span class="o">=</span> <span class="n">support_recall</span><span class="p">(</span><span class="n">sample_intercepts0</span><span class="p">,</span> <span class="n">learner</span><span class="o">.</span><span class="n">sample_intercepts</span><span class="p">)</span>
 
 <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
-<span class="n">titles</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Model weights&#39;</span><span class="p">,</span> <span class="s1">&#39;Learned weights&#39;</span><span class="p">,</span>
-          <span class="s1">&#39;Sample intercepts&#39;</span><span class="p">,</span> <span class="s1">&#39;Learned intercepts&#39;</span><span class="p">]</span>
-<span class="n">vectors</span> <span class="o">=</span> <span class="p">[</span><span class="n">weights0</span><span class="p">,</span> <span class="n">learner</span><span class="o">.</span><span class="n">weights</span><span class="p">,</span> <span class="n">sample_intercepts0</span><span class="p">,</span>
-           <span class="n">learner</span><span class="o">.</span><span class="n">sample_intercepts</span><span class="p">]</span>
+<span class="n">titles</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;Model weights&#39;</span><span class="p">,</span> <span class="s1">&#39;Learned weights&#39;</span><span class="p">,</span> <span class="s1">&#39;Sample intercepts&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Learned intercepts&#39;</span>
+<span class="p">]</span>
+<span class="n">vectors</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">weights0</span><span class="p">,</span> <span class="n">learner</span><span class="o">.</span><span class="n">weights</span><span class="p">,</span> <span class="n">sample_intercepts0</span><span class="p">,</span> <span class="n">learner</span><span class="o">.</span><span class="n">sample_intercepts</span>
+<span class="p">]</span>
 <span class="k">for</span> <span class="n">idx_plot</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">vector</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">221</span><span class="p">,</span> <span class="mi">225</span><span class="p">),</span> <span class="n">titles</span><span class="p">,</span> <span class="n">vectors</span><span class="p">):</span>
     <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">idx_plot</span><span class="p">)</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">stem</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
-<span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s1">&#39;Robust linear regression [fdp=</span><span class="si">%.2f</span><span class="s1">, power=</span><span class="si">%.2f</span><span class="s1">]&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">fdp_</span><span class="p">,</span> <span class="n">power_</span><span class="p">),</span>
-             <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
-
+<span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span>
+    <span class="s1">&#39;Robust linear regression [fdp=</span><span class="si">%.2f</span><span class="s1">, power=</span><span class="si">%.2f</span><span class="s1">]&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">fdp_</span><span class="p">,</span> <span class="n">power_</span><span class="p">),</span>
+    <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">(</span><span class="n">rect</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.03</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">0.95</span><span class="p">])</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>

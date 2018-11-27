@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.solver.base.solver &#8212; tick 0.4.0 documentation</title>
+    <title>tick.solver.base.solver &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../../../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -271,11 +271,12 @@
         <span class="p">},</span>
         <span class="s2">&quot;_time_start&quot;</span><span class="p">:</span> <span class="p">{</span>
             <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span>
-        <span class="p">}</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;_record_every&quot;</span><span class="p">:</span> <span class="p">{</span> <span class="p">}</span>
     <span class="p">}</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                 <span class="n">print_every</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">record_every</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">print_every</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+                 <span class="n">record_every</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="n">Base</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tol</span> <span class="o">=</span> <span class="n">tol</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">max_iter</span> <span class="o">=</span> <span class="n">max_iter</span>
@@ -312,7 +313,21 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_end_solve</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">solution</span>
 
-    <span class="k">def</span> <span class="nf">_handle_history</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_iter</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_should_record_iter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_iter</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Should solver record this iteration or not?</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># If we are never supposed to record</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_iter</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">print_every</span> <span class="ow">and</span> \
+                <span class="bp">self</span><span class="o">.</span><span class="n">max_iter</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">record_every</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="c1"># Otherwise check that we are either at a specific moment or at the end</span>
+        <span class="k">elif</span> <span class="n">n_iter</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">print_every</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">n_iter</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">record_every</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">elif</span> <span class="n">n_iter</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_iter</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">_handle_history</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_iter</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Handles history for keywords and current iteration</span>
 
 <span class="sd">        Parameters</span>
@@ -336,11 +351,14 @@
         <span class="n">should_record</span> <span class="o">=</span> <span class="n">force</span> <span class="ow">or</span> <span class="n">n_iter</span> <span class="o">%</span> <span class="n">print_every</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> \
                         <span class="n">n_iter</span> <span class="o">%</span> <span class="n">record_every</span> <span class="o">==</span> <span class="mi">0</span>
         <span class="k">if</span> <span class="n">should_record</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="o">.</span><span class="n">_update</span><span class="p">(</span><span class="n">n_iter</span><span class="o">=</span><span class="n">n_iter</span><span class="p">,</span>
-                                 <span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_time_start</span><span class="p">,</span>
+            <span class="n">iter_time</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;iter_time&#39;</span><span class="p">,</span> <span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_time_start</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="o">.</span><span class="n">_update</span><span class="p">(</span><span class="n">n_iter</span><span class="o">=</span><span class="n">n_iter</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="n">iter_time</span><span class="p">,</span>
                                  <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">should_print</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="o">.</span><span class="n">_print_history</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">print_history</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="o">.</span><span class="n">print_full_history</span><span class="p">()</span>
 
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">_solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -349,7 +367,7 @@
         <span class="k">pass</span>
 
     <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">objective</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coeffs</span><span class="p">,</span> <span class="n">loss</span><span class="p">:</span> <span class="nb">float</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">objective</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coeffs</span><span class="p">,</span> <span class="n">loss</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Compute the objective minimized by the solver at ``coeffs``</span>
 
 <span class="sd">        Parameters</span>
@@ -389,6 +407,14 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="o">.</span><span class="n">values</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">val</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">record_every</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_record_every</span>
+
+    <span class="nd">@record_every</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">record_every</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_record_every</span> <span class="o">=</span> <span class="n">val</span>
 
     <span class="k">def</span> <span class="nf">_as_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">dd</span> <span class="o">=</span> <span class="n">Base</span><span class="o">.</span><span class="n">_as_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>

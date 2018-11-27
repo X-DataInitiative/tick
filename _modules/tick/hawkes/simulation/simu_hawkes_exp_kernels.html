@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.hawkes.simulation.simu_hawkes_exp_kernels &#8212; tick 0.4.0 documentation</title>
+    <title>tick.hawkes.simulation.simu_hawkes_exp_kernels &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../../../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -300,13 +300,17 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">_attrinfos</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;adjacency&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
-        <span class="s2">&quot;decays&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+        <span class="s2">&quot;adjacency&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;decays&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">},</span>
     <span class="p">}</span>
 
-<div class="viewcode-block" id="SimuHawkesExpKernels.__init__"><a class="viewcode-back" href="../../../../modules/generated/tick.hawkes.SimuHawkesExpKernels.html#tick.hawkes.SimuHawkesExpKernels.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">adjacency</span><span class="p">,</span> <span class="n">decays</span><span class="p">,</span> <span class="n">baseline</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">end_time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">period_length</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_jumps</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">force_simulation</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="SimuHawkesExpKernels.__init__"><a class="viewcode-back" href="../../../../modules/generated/tick.hawkes.SimuHawkesExpKernels.html#tick.hawkes.SimuHawkesExpKernels.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">adjacency</span><span class="p">,</span> <span class="n">decays</span><span class="p">,</span> <span class="n">baseline</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">period_length</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_jumps</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                 <span class="n">force_simulation</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">adjacency</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
             <span class="n">adjacency</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">adjacency</span><span class="p">)</span>
@@ -323,9 +327,8 @@
         <span class="n">decays_is_number</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">decays</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">decays_is_number</span> <span class="ow">and</span> <span class="n">decays</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="p">(</span><span class="n">n_nodes</span><span class="p">,</span> <span class="n">n_nodes</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;decays should be either a float or an array of &quot;</span>
-                             <span class="s2">&quot;shape </span><span class="si">%s</span><span class="s2"> but its shape is </span><span class="si">%s</span><span class="s2">&quot;</span>
-                             <span class="o">%</span> <span class="p">(</span><span class="nb">str</span><span class="p">((</span><span class="n">n_nodes</span><span class="p">,</span> <span class="n">n_nodes</span><span class="p">)),</span>
-                                <span class="nb">str</span><span class="p">(</span><span class="n">decays</span><span class="o">.</span><span class="n">shape</span><span class="p">)))</span>
+                             <span class="s2">&quot;shape </span><span class="si">%s</span><span class="s2"> but its shape is </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span>
+                                 <span class="p">(</span><span class="n">n_nodes</span><span class="p">,</span> <span class="n">n_nodes</span><span class="p">)),</span> <span class="nb">str</span><span class="p">(</span><span class="n">decays</span><span class="o">.</span><span class="n">shape</span><span class="p">)))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">adjacency</span> <span class="o">=</span> <span class="n">adjacency</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">decays</span> <span class="o">=</span> <span class="n">decays</span>

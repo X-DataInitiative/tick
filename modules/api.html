@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>API Reference &#8212; tick 0.4.0 documentation</title>
+    <title>API Reference &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -61,7 +61,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -417,13 +417,13 @@ linear models.</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.linear_model.SimuLinReg.html#tick.linear_model.SimuLinReg" title="tick.linear_model.SimuLinReg"><code class="xref py py-obj docutils literal"><span class="pre">SimuLinReg</span></code></a>(weights:&nbsp;numpy.ndarray,&nbsp;…)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.linear_model.SimuLinReg.html#tick.linear_model.SimuLinReg" title="tick.linear_model.SimuLinReg"><code class="xref py py-obj docutils literal"><span class="pre">SimuLinReg</span></code></a>(weights:&nbsp;numpy.ndarray,&nbsp;…[,&nbsp;dtype])</td>
 <td>Simulation of a Linear regression model</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/tick.linear_model.SimuLogReg.html#tick.linear_model.SimuLogReg" title="tick.linear_model.SimuLogReg"><code class="xref py py-obj docutils literal"><span class="pre">SimuLogReg</span></code></a>(weights:&nbsp;numpy.ndarray,&nbsp;…)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/tick.linear_model.SimuLogReg.html#tick.linear_model.SimuLogReg" title="tick.linear_model.SimuLogReg"><code class="xref py py-obj docutils literal"><span class="pre">SimuLogReg</span></code></a>(weights:&nbsp;numpy.ndarray,&nbsp;…[,&nbsp;dtype])</td>
 <td>Simulation of a Logistic regression model</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.linear_model.SimuPoisReg.html#tick.linear_model.SimuPoisReg" title="tick.linear_model.SimuPoisReg"><code class="xref py py-obj docutils literal"><span class="pre">SimuPoisReg</span></code></a>(weights:&nbsp;numpy.ndarray,&nbsp;…)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.linear_model.SimuPoisReg.html#tick.linear_model.SimuPoisReg" title="tick.linear_model.SimuPoisReg"><code class="xref py py-obj docutils literal"><span class="pre">SimuPoisReg</span></code></a>(weights:&nbsp;numpy.ndarray,&nbsp;…[,&nbsp;dtype])</td>
 <td>Simulation of a Poisson regression model, with identity or exponential link.</td>
 </tr>
 </tbody>
@@ -517,8 +517,8 @@ and models such as Huber regression, among others robust losses.</p>
 <tr class="row-odd"><td><a class="reference internal" href="generated/tick.survival.ModelCoxRegPartialLik.html#tick.survival.ModelCoxRegPartialLik" title="tick.survival.ModelCoxRegPartialLik"><code class="xref py py-obj docutils literal"><span class="pre">ModelCoxRegPartialLik</span></code></a>()</td>
 <td>Partial likelihood of the Cox regression model (proportional hazards).</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/tick.survival.ModelSCCS.html#tick.survival.ModelSCCS" title="tick.survival.ModelSCCS"><code class="xref py py-obj docutils literal"><span class="pre">ModelSCCS</span></code></a>(n_intervals:&nbsp;int,&nbsp;n_lags:&nbsp;int)</td>
-<td>SCCS model.</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/tick.survival.ModelSCCS.html#tick.survival.ModelSCCS" title="tick.survival.ModelSCCS"><code class="xref py py-obj docutils literal"><span class="pre">ModelSCCS</span></code></a>(n_intervals:&nbsp;int,&nbsp;…)</td>
+<td>Discrete-time Self Control Case Series (SCCS) likelihood.</td>
 </tr>
 </tbody>
 </table>
@@ -531,7 +531,7 @@ and models such as Huber regression, among others robust losses.</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.survival.SimuCoxReg.html#tick.survival.SimuCoxReg" title="tick.survival.SimuCoxReg"><code class="xref py py-obj docutils literal"><span class="pre">SimuCoxReg</span></code></a>(coeffs:&nbsp;numpy.ndarray,&nbsp;…)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.survival.SimuCoxReg.html#tick.survival.SimuCoxReg" title="tick.survival.SimuCoxReg"><code class="xref py py-obj docutils literal"><span class="pre">SimuCoxReg</span></code></a>(coeffs:&nbsp;numpy.ndarray,&nbsp;…[,&nbsp;dtype])</td>
 <td>Simulation of a Cox regression for proportional hazards</td>
 </tr>
 </tbody>
@@ -676,10 +676,10 @@ and models such as Huber regression, among others robust losses.</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.weights_sparse_exp.html#tick.simulation.weights_sparse_exp" title="tick.simulation.weights_sparse_exp"><code class="xref py py-obj docutils literal"><span class="pre">simulation.weights_sparse_exp</span></code></a>(…)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.simulation.weights_sparse_exp.html#tick.simulation.weights_sparse_exp" title="tick.simulation.weights_sparse_exp"><code class="xref py py-obj docutils literal"><span class="pre">simulation.weights_sparse_exp</span></code></a>(…[,&nbsp;dtype])</td>
 <td>Sparse and exponential model weights generator</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/tick.simulation.weights_sparse_gauss.html#tick.simulation.weights_sparse_gauss" title="tick.simulation.weights_sparse_gauss"><code class="xref py py-obj docutils literal"><span class="pre">simulation.weights_sparse_gauss</span></code></a>(…)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/tick.simulation.weights_sparse_gauss.html#tick.simulation.weights_sparse_gauss" title="tick.simulation.weights_sparse_gauss"><code class="xref py py-obj docutils literal"><span class="pre">simulation.weights_sparse_gauss</span></code></a>(…[,&nbsp;dtype])</td>
 <td>Sparse and gaussian model weights generator</td>
 </tr>
 </tbody>
@@ -777,7 +777,7 @@ and models such as Huber regression, among others robust losses.</p>
 <tr class="row-even"><td><a class="reference internal" href="generated/tick.preprocessing.LongitudinalFeaturesProduct.html#tick.preprocessing.LongitudinalFeaturesProduct" title="tick.preprocessing.LongitudinalFeaturesProduct"><code class="xref py py-obj docutils literal"><span class="pre">preprocessing.LongitudinalFeaturesProduct</span></code></a>([…])</td>
 <td>Transforms longitudinal exposure features to add the corresponding product features.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.preprocessing.LongitudinalFeaturesLagger.html#tick.preprocessing.LongitudinalFeaturesLagger" title="tick.preprocessing.LongitudinalFeaturesLagger"><code class="xref py py-obj docutils literal"><span class="pre">preprocessing.LongitudinalFeaturesLagger</span></code></a>([…])</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.preprocessing.LongitudinalFeaturesLagger.html#tick.preprocessing.LongitudinalFeaturesLagger" title="tick.preprocessing.LongitudinalFeaturesLagger"><code class="xref py py-obj docutils literal"><span class="pre">preprocessing.LongitudinalFeaturesLagger</span></code></a>(n_lags)</td>
 <td>Transforms longitudinal exposure features to add columns representing lagged features.</td>
 </tr>
 </tbody>

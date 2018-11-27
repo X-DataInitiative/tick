@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.solver.history.history &#8212; tick 0.4.0 documentation</title>
+    <title>tick.solver.history.history &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../../../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -204,6 +204,7 @@
 <span></span><span class="c1"># License: BSD 3 clause</span>
 
 <span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">defaultdict</span>
+<span class="kn">import</span> <span class="nn">dill</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">tick.base</span> <span class="k">import</span> <span class="n">Base</span>
@@ -283,15 +284,6 @@
         <span class="c1"># History function to compute history values based on parameters</span>
         <span class="c1"># used in a solver</span>
         <span class="n">history_func</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="c1"># history_func[&quot;n_iter&quot;] = n_iter_func</span>
-        <span class="c1"># history_func[&quot;obj&quot;] = obj_func</span>
-        <span class="c1"># history_func[&quot;step&quot;] = step_func</span>
-        <span class="c1"># history_func[&quot;rel_obj&quot;] = rel_obj_func</span>
-        <span class="c1"># history_func[&quot;n_epoch&quot;] = n_epoch_func</span>
-        <span class="c1"># history_func[&quot;n_inner_prod&quot;] = n_inner_prod_func</span>
-        <span class="c1"># history_func[&quot;norm&quot;] = norm_func</span>
-        <span class="c1"># history_func[&quot;spars&quot;] = spars_func</span>
-        <span class="c1"># history_func[&quot;rank&quot;] = rank_func</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_history_func</span> <span class="o">=</span> <span class="n">history_func</span>
 
         <span class="c1"># Default print style of history values. Default is %.2e</span>
@@ -328,51 +320,52 @@
                 <span class="n">value</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
-    <span class="c1"># def set_print_order(self, *args):</span>
-    <span class="c1">#     &quot;&quot;&quot;Allows to set the print order of the solver&#39;s history</span>
-    <span class="c1">#     &quot;&quot;&quot;</span>
-    <span class="c1">#     self.set_params(print_order=list(args))</span>
-    <span class="c1">#     self.clear()</span>
-    <span class="c1">#     return self</span>
-
-    <span class="c1"># def update_history_func(self, **kwargs):</span>
-    <span class="c1">#     self._history_func.update(**kwargs)</span>
-    <span class="c1">#     self._clear()</span>
-    <span class="c1">#     return self</span>
-
-    <span class="c1"># def update_print_style(self, **kwargs):</span>
-    <span class="c1">#     self.print_style.update(**kwargs)</span>
-    <span class="c1">#     return self</span>
-
-    <span class="k">def</span> <span class="nf">_format_last</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">formatted_str</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_print_style</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">%</span> \
-                            <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="n">index</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-            <span class="n">formatted_str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">formatted_str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="n">index</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">formatted_str</span>
+
+    <span class="k">def</span> <span class="nf">_print_header</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">min_width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_minimum_col_width</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="s1">&#39; | &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="nb">list</span><span class="p">([</span>
+                <span class="n">name</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="n">min_width</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">print_order</span>
+                <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span>
+            <span class="p">]))</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="n">name</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="n">min_width</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">print_order</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_col_widths</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">len</span><span class="p">,</span> <span class="n">names</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_print_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="s1">&#39; | &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="nb">list</span><span class="p">([</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_format</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span><span class="o">.</span><span class="n">rjust</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_col_widths</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">print_order</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span>
+            <span class="p">]))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_print_history</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Verbose the current line of history</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span>
-        <span class="n">n_iter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_iter</span>
-        <span class="n">print_order</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">print_order</span>
         <span class="c1"># If this is the first iteration, plot the history&#39;s column</span>
         <span class="c1"># names</span>
-        <span class="k">if</span> <span class="n">n_iter</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">min_width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_minimum_col_width</span>
-            <span class="n">line</span> <span class="o">=</span> <span class="s1">&#39; | &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">list</span><span class="p">([</span><span class="n">name</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="n">min_width</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span>
-                                    <span class="n">print_order</span> <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">values</span><span class="p">]))</span>
-            <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="n">name</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="n">min_width</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">print_order</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_col_widths</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">len</span><span class="p">,</span> <span class="n">names</span><span class="p">))</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-        <span class="n">col_widths</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_col_widths</span>
-        <span class="n">line</span> <span class="o">=</span> <span class="s1">&#39; | &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">list</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_format_last</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
-                               <span class="o">.</span><span class="n">rjust</span><span class="p">(</span><span class="n">col_widths</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-                                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">print_order</span><span class="p">)</span>
-                                <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">values</span><span class="p">]))</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_col_widths</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_print_header</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_print_line</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+<div class="viewcode-block" id="History.print_full_history"><a class="viewcode-back" href="../../../../modules/generated/tick.solver.History.html#tick.solver.History.print_full_history">[docs]</a>    <span class="k">def</span> <span class="nf">print_full_history</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Verbose the whole history</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_print_header</span><span class="p">()</span>
+        <span class="n">n_lines</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">values</span><span class="p">())))</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_lines</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_print_line</span><span class="p">(</span><span class="n">i</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">last_values</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -426,7 +419,14 @@
     <span class="k">def</span> <span class="nf">_as_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">dd</span> <span class="o">=</span> <span class="n">Base</span><span class="o">.</span><span class="n">_as_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="n">dd</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;values&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">dd</span></div>
+        <span class="k">return</span> <span class="n">dd</span>
+
+    <span class="c1"># We use dill for serialization because history uses lambda functions</span>
+    <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">dill</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+        <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;__dict__&#39;</span><span class="p">,</span> <span class="n">dill</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">state</span><span class="p">))</span></div>
 </pre></div>
 
 </div>

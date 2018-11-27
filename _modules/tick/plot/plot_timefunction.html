@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.plot.plot_timefunction &#8212; tick 0.4.0 documentation</title>
+    <title>tick.plot.plot_timefunction &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -278,19 +278,26 @@
             <span class="n">interpolation_to_legend</span> <span class="o">=</span> <span class="p">{</span>
                 <span class="n">TimeFunction</span><span class="o">.</span><span class="n">InterLinear</span><span class="p">:</span> <span class="s1">&#39;Linear&#39;</span><span class="p">,</span>
                 <span class="n">TimeFunction</span><span class="o">.</span><span class="n">InterConstLeft</span><span class="p">:</span> <span class="s1">&#39;Constant on left&#39;</span><span class="p">,</span>
-                <span class="n">TimeFunction</span><span class="o">.</span><span class="n">InterConstRight</span><span class="p">:</span> <span class="s1">&#39;Constant on right&#39;</span><span class="p">}</span>
+                <span class="n">TimeFunction</span><span class="o">.</span><span class="n">InterConstRight</span><span class="p">:</span> <span class="s1">&#39;Constant on right&#39;</span>
+            <span class="p">}</span>
 
             <span class="n">border_to_legend</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="n">TimeFunction</span><span class="o">.</span><span class="n">Border0</span><span class="p">:</span> <span class="s1">&#39;border zero&#39;</span><span class="p">,</span>
-                <span class="n">TimeFunction</span><span class="o">.</span><span class="n">BorderConstant</span><span class="p">:</span> <span class="s1">&#39;border constant at </span><span class="si">%.3g</span><span class="s1">&#39;</span>
-                                             <span class="o">%</span> <span class="n">time_function</span><span class="o">.</span><span class="n">border_value</span><span class="p">,</span>
-                <span class="n">TimeFunction</span><span class="o">.</span><span class="n">BorderContinue</span><span class="p">:</span> <span class="s1">&#39;border continue&#39;</span><span class="p">,</span>
-                <span class="n">TimeFunction</span><span class="o">.</span><span class="n">Cyclic</span><span class="p">:</span> <span class="s1">&#39;cyclic&#39;</span><span class="p">}</span>
+                <span class="n">TimeFunction</span><span class="o">.</span><span class="n">Border0</span><span class="p">:</span>
+                    <span class="s1">&#39;border zero&#39;</span><span class="p">,</span>
+                <span class="n">TimeFunction</span><span class="o">.</span><span class="n">BorderConstant</span><span class="p">:</span>
+                    <span class="s1">&#39;border constant at </span><span class="si">%.3g</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">time_function</span><span class="o">.</span><span class="n">border_value</span><span class="p">,</span>
+                <span class="n">TimeFunction</span><span class="o">.</span><span class="n">BorderContinue</span><span class="p">:</span>
+                    <span class="s1">&#39;border continue&#39;</span><span class="p">,</span>
+                <span class="n">TimeFunction</span><span class="o">.</span><span class="n">Cyclic</span><span class="p">:</span>
+                    <span class="s1">&#39;cyclic&#39;</span>
+            <span class="p">}</span>
 
-            <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;original points&#39;</span><span class="p">,</span>
-                      <span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> and </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span>
-                          <span class="n">interpolation_to_legend</span><span class="p">[</span><span class="n">time_function</span><span class="o">.</span><span class="n">inter_mode</span><span class="p">],</span>
-                          <span class="n">border_to_legend</span><span class="p">[</span><span class="n">time_function</span><span class="o">.</span><span class="n">border_type</span><span class="p">])]</span>
+            <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="s1">&#39;original points&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> and </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span>
+                <span class="p">(</span><span class="n">interpolation_to_legend</span><span class="p">[</span><span class="n">time_function</span><span class="o">.</span><span class="n">inter_mode</span><span class="p">],</span>
+                 <span class="n">border_to_legend</span><span class="p">[</span><span class="n">time_function</span><span class="o">.</span><span class="n">border_type</span><span class="p">])</span>
+            <span class="p">]</span>
 
         <span class="n">original_t</span> <span class="o">=</span> <span class="n">time_function</span><span class="o">.</span><span class="n">original_t</span>
         <span class="k">if</span> <span class="n">time_function</span><span class="o">.</span><span class="n">border_type</span> <span class="o">==</span> <span class="n">TimeFunction</span><span class="o">.</span><span class="n">Cyclic</span><span class="p">:</span>
@@ -298,11 +305,10 @@
             <span class="n">original_t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">original_t</span><span class="p">,</span> <span class="n">original_t</span> <span class="o">+</span> <span class="n">cycle_length</span><span class="p">,</span>
                                     <span class="n">original_t</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">cycle_length</span><span class="p">))</span>
 
-        <span class="n">t_values</span> <span class="o">=</span> <span class="n">_extended_discrete_xaxis</span><span class="p">(</span><span class="n">original_t</span><span class="p">,</span>
-                                            <span class="n">n_points</span><span class="o">=</span><span class="n">n_points</span><span class="p">)</span>
+        <span class="n">t_values</span> <span class="o">=</span> <span class="n">_extended_discrete_xaxis</span><span class="p">(</span><span class="n">original_t</span><span class="p">,</span> <span class="n">n_points</span><span class="o">=</span><span class="n">n_points</span><span class="p">)</span>
 
-        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">time_function</span><span class="o">.</span><span class="n">original_t</span><span class="p">,</span> <span class="n">time_function</span><span class="o">.</span><span class="n">original_y</span><span class="p">,</span>
-                <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">labels</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">time_function</span><span class="o">.</span><span class="n">original_t</span><span class="p">,</span> <span class="n">time_function</span><span class="o">.</span><span class="n">original_y</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+                <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">labels</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t_values</span><span class="p">,</span> <span class="n">time_function</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">t_values</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="n">labels</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 
     <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>

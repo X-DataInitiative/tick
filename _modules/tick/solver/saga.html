@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.solver.saga &#8212; tick 0.4.0 documentation</title>
+    <title>tick.solver.saga &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -203,16 +203,25 @@
   <h1>Source code for tick.solver.saga</h1><div class="highlight"><pre>
 <span></span><span class="c1"># License: BSD 3 clause</span>
 
-<span class="kn">from</span> <span class="nn">tick.base_model</span> <span class="k">import</span> <span class="n">ModelGeneralizedLinear</span>
-<span class="kn">from</span> <span class="nn">.base</span> <span class="k">import</span> <span class="n">SolverFirstOrderSto</span>
-<span class="kn">from</span> <span class="nn">.build.solver</span> <span class="k">import</span> <span class="n">SAGA</span> <span class="k">as</span> <span class="n">_SAGA</span>
-
 <span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;Stephane Gaiffas&quot;</span>
 
-<span class="n">variance_reduction_methods_mapper</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;last&#39;</span><span class="p">:</span> <span class="n">_SAGA</span><span class="o">.</span><span class="n">VarianceReductionMethod_Last</span><span class="p">,</span>
-    <span class="s1">&#39;avg&#39;</span><span class="p">:</span> <span class="n">_SAGA</span><span class="o">.</span><span class="n">VarianceReductionMethod_Average</span><span class="p">,</span>
-    <span class="s1">&#39;rand&#39;</span><span class="p">:</span> <span class="n">_SAGA</span><span class="o">.</span><span class="n">VarianceReductionMethod_Random</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">tick.base_model</span> <span class="k">import</span> <span class="n">ModelGeneralizedLinear</span>
+<span class="kn">from</span> <span class="nn">tick.solver.base</span> <span class="k">import</span> <span class="n">SolverFirstOrderSto</span><span class="p">,</span> <span class="n">SolverSto</span>
+
+<span class="kn">from</span> <span class="nn">tick.solver.build.solver</span> <span class="k">import</span> <span class="n">SAGADouble</span> <span class="k">as</span> <span class="n">_SAGADouble</span>
+<span class="kn">from</span> <span class="nn">tick.solver.build.solver</span> <span class="k">import</span> <span class="n">SAGAFloat</span> <span class="k">as</span> <span class="n">_SAGAFloat</span>
+<span class="n">dtype_class_mapper</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;float32&#39;</span><span class="p">):</span> <span class="n">_SAGAFloat</span><span class="p">,</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;float64&#39;</span><span class="p">):</span> <span class="n">_SAGADouble</span>
+<span class="p">}</span>
+
+<span class="kn">from</span> <span class="nn">tick.solver.build.solver</span> <span class="k">import</span> <span class="n">AtomicSAGADouble</span> <span class="k">as</span> <span class="n">_ASAGADouble</span>
+<span class="kn">from</span> <span class="nn">tick.solver.build.solver</span> <span class="k">import</span> <span class="n">AtomicSAGAFloat</span> <span class="k">as</span> <span class="n">_ASAGAFloat</span>
+<span class="n">dtype_atomic_mapper</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;float32&#39;</span><span class="p">):</span> <span class="n">_ASAGAFloat</span><span class="p">,</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;float64&#39;</span><span class="p">):</span> <span class="n">_ASAGADouble</span>
 <span class="p">}</span>
 
 
@@ -243,8 +252,7 @@
 
 <span class="sd">    where :math:`i` is sampled at random (strategy depends on ``rand_type``) at</span>
 <span class="sd">    each iteration, and where :math:`\\bar w` and :math:`\\nabla f(\\bar w)`</span>
-<span class="sd">    are updated at the beginning of each epoch, with a strategy that depend on</span>
-<span class="sd">    the ``variance_reduction`` parameter. The step-size :math:`\\eta` can be</span>
+<span class="sd">    are updated at the beginning of each epoch. The step-size :math:`\\eta` can be</span>
 <span class="sd">    tuned with ``step``, the seed of the random number generator for generation</span>
 <span class="sd">    of samples :math:`i` can be seeded with ``seed``. The iterations stop</span>
 <span class="sd">    whenever tolerance ``tol`` is achieved, or after ``max_iter`` epochs</span>
@@ -283,23 +291,8 @@
 <span class="sd">        (different at each run) will be chosen.</span>
 
 <span class="sd">    epoch_size : `int`, default given by model</span>
-<span class="sd">        Epoch size, namely how many iterations are made before updating the</span>
-<span class="sd">        variance reducing term. By default, this is automatically tuned using</span>
+<span class="sd">        Epoch size, by default, this is automatically tuned using</span>
 <span class="sd">        information from the model object passed through ``set_model``.</span>
-
-<span class="sd">    variance_reduction : {&#39;last&#39;, &#39;avg&#39;, &#39;rand&#39;}, default=&#39;last&#39;</span>
-<span class="sd">        Strategy used for the computation of the iterate used in</span>
-<span class="sd">        variance reduction (also called phase iterate). A warning will be</span>
-<span class="sd">        raised if the ``&#39;avg&#39;`` strategy is used when the model is a</span>
-<span class="sd">        generalized linear model with sparse features, since it is strongly</span>
-<span class="sd">        sub-optimal in this case</span>
-
-<span class="sd">        * ``&#39;last&#39;`` : the phase iterate is the last iterate of the previous</span>
-<span class="sd">          epoch</span>
-<span class="sd">        * ``&#39;avg``&#39; : the phase iterate is the average over the iterates in the</span>
-<span class="sd">          past epoch</span>
-<span class="sd">        * ``&#39;rand&#39;``: the phase iterate is a random iterate of the previous</span>
-<span class="sd">          epoch</span>
 
 <span class="sd">    rand_type : {&#39;unif&#39;, &#39;perm&#39;}, default=&#39;unif&#39;</span>
 <span class="sd">        How samples are randomly selected from the data</span>
@@ -316,6 +309,10 @@
 <span class="sd">    record_every : `int`, default=1</span>
 <span class="sd">        Save history information every time the iteration number is a</span>
 <span class="sd">        multiple of ``record_every``</span>
+
+<span class="sd">    n_threads : `int`, default=1</span>
+<span class="sd">        Number of threads to use for parallel optimization. The strategy used</span>
+<span class="sd">        for this is asynchronous updates of the iterates.</span>
 
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
@@ -342,52 +339,29 @@
 <span class="sd">    time_end : `str`</span>
 <span class="sd">        End date of the call to ``solve()``</span>
 
+<span class="sd">    dtype : `{&#39;float64&#39;, &#39;float32&#39;}`, default=&#39;float64&#39;</span>
+<span class="sd">        Type of the arrays used. This value is set from model and prox dtypes.</span>
+
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
 <span class="sd">    * A. Defazio, F. Bach, S. Lacoste-Julien, SAGA: A fast incremental gradient</span>
 <span class="sd">      method with support for non-strongly convex composite objectives,</span>
 <span class="sd">      NIPS 2014</span>
+
+<span class="sd">    * R. Leblond, F. Pedregosa, and S. Lacoste-Julien: Asaga: Asynchronous</span>
+<span class="sd">      Parallel Saga, (AISTATS) 2017</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_attrinfos</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;n_threads&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}}</span>
 
 <div class="viewcode-block" id="SAGA.__init__"><a class="viewcode-back" href="../../../modules/generated/tick.solver.SAGA.html#tick.solver.SAGA.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">epoch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                 <span class="n">rand_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;unif&quot;</span><span class="p">,</span> <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.</span><span class="p">,</span>
-                 <span class="n">max_iter</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-                 <span class="n">print_every</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="n">record_every</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-                 <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">variance_reduction</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;last&quot;</span><span class="p">):</span>
+                 <span class="n">rand_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;unif&quot;</span><span class="p">,</span> <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.</span><span class="p">,</span> <span class="n">max_iter</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+                 <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">print_every</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+                 <span class="n">record_every</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_threads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_threads</span> <span class="o">=</span> <span class="n">n_threads</span>
 
-        <span class="n">SolverFirstOrderSto</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">epoch_size</span><span class="p">,</span> <span class="n">rand_type</span><span class="p">,</span>
-                                     <span class="n">tol</span><span class="p">,</span> <span class="n">max_iter</span><span class="p">,</span> <span class="n">verbose</span><span class="p">,</span>
-                                     <span class="n">print_every</span><span class="p">,</span> <span class="n">record_every</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
-        <span class="n">step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span>
-        <span class="k">if</span> <span class="n">step</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">step</span> <span class="o">=</span> <span class="mf">0.</span>
-
-        <span class="n">epoch_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">epoch_size</span>
-        <span class="k">if</span> <span class="n">epoch_size</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">epoch_size</span> <span class="o">=</span> <span class="mi">0</span>
-
-        <span class="c1"># Construct the wrapped C++ SAGA solver</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_solver</span> <span class="o">=</span> <span class="n">_SAGA</span><span class="p">(</span><span class="n">epoch_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tol</span><span class="p">,</span>
-                             <span class="bp">self</span><span class="o">.</span><span class="n">_rand_type</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">seed</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">variance_reduction</span> <span class="o">=</span> <span class="n">variance_reduction</span></div>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">variance_reduction</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">next</span><span class="p">((</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">variance_reduction_methods_mapper</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-                     <span class="k">if</span> <span class="n">v</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_solver</span><span class="o">.</span><span class="n">get_variance_reduction</span><span class="p">()),</span> <span class="kc">None</span><span class="p">)</span>
-
-    <span class="nd">@variance_reduction</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">variance_reduction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-
-        <span class="k">if</span> <span class="n">val</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">variance_reduction_methods_mapper</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s1">&#39;variance_reduction should be one of &quot;</span><span class="si">{}</span><span class="s1">&quot;, got &quot;</span><span class="si">{}</span><span class="s1">&quot;.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                    <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">variance_reduction_methods_mapper</span><span class="o">.</span><span class="n">keys</span><span class="p">()),</span>
-                    <span class="n">val</span><span class="p">))</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_solver</span><span class="o">.</span><span class="n">set_variance_reduction</span><span class="p">(</span>
-            <span class="n">variance_reduction_methods_mapper</span><span class="p">[</span><span class="n">val</span><span class="p">])</span>
+        <span class="n">SolverFirstOrderSto</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">epoch_size</span><span class="p">,</span> <span class="n">rand_type</span><span class="p">,</span> <span class="n">tol</span><span class="p">,</span>
+                                     <span class="n">max_iter</span><span class="p">,</span> <span class="n">verbose</span><span class="p">,</span> <span class="n">print_every</span><span class="p">,</span>
+                                     <span class="n">record_every</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SAGA.set_model"><a class="viewcode-back" href="../../../modules/generated/tick.solver.SAGA.html#tick.solver.SAGA.set_model">[docs]</a>    <span class="k">def</span> <span class="nf">set_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">ModelGeneralizedLinear</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set model in the solver</span>
@@ -404,11 +378,38 @@
 <span class="sd">        output : `Solver`</span>
 <span class="sd">            The `Solver` with given model</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">ModelGeneralizedLinear</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">SolverFirstOrderSto</span><span class="o">.</span><span class="n">set_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">ModelGeneralizedLinear</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;SAGA accepts only childs of &quot;</span>
-                             <span class="s2">&quot;`ModelGeneralizedLinear`&quot;</span><span class="p">)</span></div></div>
+                             <span class="s2">&quot;`ModelGeneralizedLinear`&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="s2">&quot;n_threads&quot;</span><span class="p">):</span>
+            <span class="n">model</span><span class="o">.</span><span class="n">n_threads</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_threads</span>
+
+        <span class="k">return</span> <span class="n">SolverFirstOrderSto</span><span class="o">.</span><span class="n">set_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_set_cpp_solver</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dtype_or_object_with_dtype</span><span class="p">):</span>
+        <span class="c1"># Construct the wrapped C++ SAGA solver</span>
+        <span class="n">step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span>
+        <span class="k">if</span> <span class="n">step</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">step</span> <span class="o">=</span> <span class="mf">0.</span>
+        <span class="n">epoch_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">epoch_size</span>
+        <span class="k">if</span> <span class="n">epoch_size</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">epoch_size</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extract_dtype</span><span class="p">(</span><span class="n">dtype_or_object_with_dtype</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_threads</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">solver_class</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_typed_class</span><span class="p">(</span><span class="n">dtype_or_object_with_dtype</span><span class="p">,</span>
+                                                 <span class="n">dtype_class_mapper</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span>
+                <span class="s1">&#39;_solver&#39;</span><span class="p">,</span>
+                <span class="n">solver_class</span><span class="p">(</span><span class="n">epoch_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tol</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rand_type</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span>
+                             <span class="bp">self</span><span class="o">.</span><span class="n">record_every</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">seed</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">solver_class</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_typed_class</span><span class="p">(</span><span class="n">dtype_or_object_with_dtype</span><span class="p">,</span>
+                                                 <span class="n">dtype_atomic_mapper</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span>
+                <span class="s1">&#39;_solver&#39;</span><span class="p">,</span>
+                <span class="n">solver_class</span><span class="p">(</span><span class="n">epoch_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tol</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rand_type</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span>
+                             <span class="bp">self</span><span class="o">.</span><span class="n">record_every</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">seed</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_threads</span><span class="p">))</span></div>
 </pre></div>
 
 </div>

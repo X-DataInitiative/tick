@@ -21,7 +21,6 @@ Some remarks are the following:
   ``LogisticRegression``
 * In this example, the computational time of ``tick`` is better than ``scikit``'s
 """
-
 import numpy as np
 from time import time
 import matplotlib.pyplot as plt
@@ -68,9 +67,10 @@ plt.title(r'Model-weights in $\mathtt{scikit-learn}$', fontsize=16)
 plt.subplot2grid((2, 2), (1, 0))
 plt.plot(fpr_tick, tpr_tick, lw=2)
 plt.plot(fpr_scikit, tpr_scikit, lw=2)
-plt.legend(["tick (AUC = {:.2f})".format(auc(fpr_tick, tpr_tick)),
-            "scikit-learn (AUC = {:.2f})".format(auc(fpr_tick, tpr_tick))],
-           loc='center right', fontsize=12)
+plt.legend([
+    "tick (AUC = {:.2f})".format(auc(fpr_tick, tpr_tick)),
+    "scikit-learn (AUC = {:.2f})".format(auc(fpr_tick, tpr_tick))
+], loc='center right', fontsize=12)
 plt.ylabel("True Positive Rate", fontsize=14)
 plt.xlabel("False Positive Rate", fontsize=14)
 plt.title('ROC curves comparison', fontsize=16)
@@ -80,3 +80,6 @@ plt.bar([1, 2], [t_tick, t_scikit])
 ax4.set_xticks([1, 2])
 ax4.set_xticklabels(['tick', 'scikit-learn'], fontsize=14)
 plt.title('Computational time (seconds)', fontsize=16)
+
+plt.tight_layout()
+plt.show()

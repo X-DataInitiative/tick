@@ -1,0 +1,49 @@
+
+
+.. _example_plot_conv_sccs_cv_results.py:
+
+
+====================================================================
+ConvSCCS cross validation on simulated longitudinal features example
+====================================================================
+
+In this example we simulate longitudinal data with preset relative incidence
+for each feature. We then perform a cross validation of the ConvSCCS model
+and compare the estimated coefficients to the relative incidences used for
+the simulation.
+
+
+
+.. rst-class:: horizontal
+
+
+    *
+
+      .. image:: images/plot_conv_sccs_cv_results_001.png
+            :scale: 47
+
+    *
+
+      .. image:: images/plot_conv_sccs_cv_results_002.png
+            :scale: 47
+
+    *
+
+      .. image:: images/plot_conv_sccs_cv_results_003.png
+            :scale: 47
+
+
+
+
+**Python source code:** :download:`plot_conv_sccs_cv_results.py <plot_conv_sccs_cv_results.py>`
+
+.. literalinclude:: plot_conv_sccs_cv_results.py
+    :lines: 11-
+
+**Total running time of the example:**  218.54 seconds
+( 3 minutes  38.54 seconds)
+    
+Mentioned *tick* classes:
+   * `tick.survival.ConvSCCS`
+   * `tick.survival.SimuSCCS`
+   * `tick.survival.simu_sccs.CustomEffects`

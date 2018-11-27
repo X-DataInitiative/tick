@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>Comparison of solvers for Poisson regression &#8212; tick 0.4.0 documentation</title>
+    <title>Comparison of solvers for Poisson regression &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -234,14 +234,13 @@ iterations, on a logarithmic scale.</p>
 <span class="kn">from</span> <span class="nn">tick.linear_model</span> <span class="k">import</span> <a href="../modules/generated/tick.linear_model.SimuPoisReg.html#tick.linear_model.SimuPoisReg"><span class="n">SimuPoisReg</span></a><span class="p">,</span> <a href="../modules/generated/tick.linear_model.PoissonRegression.html#tick.linear_model.PoissonRegression"><span class="n">PoissonRegression</span></a>
 <span class="kn">from</span> <span class="nn">tick.plot</span> <span class="k">import</span> <a href="../modules/generated/tick.plot.plot_history.html#tick.plot.plot_history"><span class="n">plot_history</span></a>
 
-
 <span class="n">n_samples</span> <span class="o">=</span> <span class="mi">50000</span>
 <span class="n">n_features</span> <span class="o">=</span> <span class="mi">100</span>
 <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">123</span><span class="p">)</span>
-<span class="n">weight0</span> <span class="o">=</span> <a href="../modules/generated/tick.simulation.weights_sparse_gauss.html#tick.simulation.weights_sparse_gauss"><span class="n">weights_sparse_gauss</span></a><span class="p">(</span><span class="n">n_features</span><span class="p">,</span> <span class="n">nnz</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">n_features</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span> <span class="o">/</span> <span class="mf">20.</span>
+<span class="n">weight0</span> <span class="o">=</span> <a href="../modules/generated/tick.simulation.weights_sparse_gauss.html#tick.simulation.weights_sparse_gauss"><span class="n">weights_sparse_gauss</span></a><span class="p">(</span><span class="n">n_features</span><span class="p">,</span> <span class="n">nnz</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">n_features</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span> <span class="o">/</span> <span class="mf">20.</span>
 <span class="n">intercept0</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.1</span>
-<span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <a href="../modules/generated/tick.linear_model.SimuPoisReg.html#tick.linear_model.SimuPoisReg"><span class="n">SimuPoisReg</span></a><span class="p">(</span><span class="n">weight0</span><span class="p">,</span> <span class="n">intercept0</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span>
-                   <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">123</span><span class="p">)</span><span class="o">.</span><span class="n">simulate</span><span class="p">()</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <a href="../modules/generated/tick.linear_model.SimuPoisReg.html#tick.linear_model.SimuPoisReg"><span class="n">SimuPoisReg</span></a><span class="p">(</span><span class="n">weight0</span><span class="p">,</span> <span class="n">intercept0</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                   <span class="n">seed</span><span class="o">=</span><span class="mi">123</span><span class="p">)</span><span class="o">.</span><span class="n">simulate</span><span class="p">()</span>
 
 <span class="n">opts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;verbose&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;record_every&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;tol&#39;</span><span class="p">:</span> <span class="mf">1e-8</span><span class="p">,</span> <span class="s1">&#39;max_iter&#39;</span><span class="p">:</span> <span class="mi">40</span><span class="p">}</span>
 
@@ -260,8 +259,8 @@ iterations, on a logarithmic scale.</p>
 <a href="http://matplotlib.org/api/tight_layout_api.html#matplotlib.tight_layout"><span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span></a><span class="p">()</span>
 </pre></div>
 </div>
-<p><strong>Total running time of the example:</strong>  11.93 seconds
-( 0 minutes  11.93 seconds)</p>
+<p><strong>Total running time of the example:</strong>  7.83 seconds
+( 0 minutes  7.83 seconds)</p>
 <dl class="docutils">
 <dt>Mentioned <em>tick</em> classes:</dt>
 <dd><ul class="first last simple">

@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.linear_model.ModelSmoothedHinge &#8212; tick 0.4.0 documentation</title>
+    <title>tick.linear_model.ModelSmoothedHinge &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -61,7 +61,7 @@
         </button>
         <a class="navbar-brand" href="../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -243,6 +243,15 @@ matrix (dense or sparse) and y is the vector of labels.</p>
 <div><p>The smoothness parameter used in the loss. It should be &gt; 0 and &lt;= 1
 Note that smoothness=0 corresponds to the Hinge loss.</p>
 </div></blockquote>
+<p><strong>n_threads</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code>, default=1 (read-only)</p>
+<blockquote>
+<div><p>Number of threads used for parallel computation.</p>
+<ul class="simple">
+<li>if <code class="docutils literal"><span class="pre">int</span> <span class="pre">&lt;=</span> <span class="pre">0</span></code>: the number of threads available on
+the CPU</li>
+<li>otherwise the desired number of threads</li>
+</ul>
+</div></blockquote>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Attributes:</th><td class="field-body"><p class="first"><strong>features</strong> : {<code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code>, <code class="xref py py-obj docutils literal"><span class="pre">scipy.sparse.csr_matrix</span></code>}, shape=(n_samples, n_features)</p>
@@ -265,14 +274,9 @@ Note that smoothness=0 corresponds to the Hinge loss.</p>
 <blockquote>
 <div><p>Total number of coefficients of the model</p>
 </div></blockquote>
-<p><strong>n_threads</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code>, default=1 (read-only)</p>
+<p><strong>dtype</strong> : <code class="xref py py-obj docutils literal"><span class="pre">{'float64',</span> <span class="pre">'float32'}</span></code>, default=’float64’</p>
 <blockquote class="last">
-<div><p>Number of threads used for parallel computation.</p>
-<ul class="simple">
-<li>if <code class="docutils literal"><span class="pre">int</span> <span class="pre">&lt;=</span> <span class="pre">0</span></code>: the number of threads available on
-the CPU</li>
-<li>otherwise the desired number of threads</li>
-</ul>
+<div><p>Type of the data arrays used.</p>
 </div></blockquote>
 </td>
 </tr>

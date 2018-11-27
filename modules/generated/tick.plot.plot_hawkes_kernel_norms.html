@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.plot.plot_hawkes_kernel_norms &#8212; tick 0.4.0 documentation</title>
+    <title>tick.plot.plot_hawkes_kernel_norms &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -61,7 +61,7 @@
         </button>
         <a class="navbar-brand" href="../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -206,7 +206,7 @@
 <h1>tick.plot.plot_hawkes_kernel_norms<a class="headerlink" href="#tick-plot-plot-hawkes-kernel-norms" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="tick.plot.plot_hawkes_kernel_norms">
-<code class="descclassname">tick.plot.</code><code class="descname">plot_hawkes_kernel_norms</code><span class="sig-paren">(</span><em>kernel_object</em>, <em>show=True</em>, <em>pcolor_kwargs=None</em>, <em>node_names=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/plot/plot_hawkes.html#plot_hawkes_kernel_norms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.plot.plot_hawkes_kernel_norms" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">tick.plot.</code><code class="descname">plot_hawkes_kernel_norms</code><span class="sig-paren">(</span><em>kernel_object</em>, <em>show=True</em>, <em>pcolor_kwargs=None</em>, <em>node_names=None</em>, <em>rotate_x_labels=0.0</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/plot/plot_hawkes.html#plot_hawkes_kernel_norms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.plot.plot_hawkes_kernel_norms" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generic function to plot Hawkes kernel norms.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -233,9 +233,14 @@ function is necessary. Useful when superposing several plots.</p>
 <div><p>Extra pcolor kwargs such as cmap, vmin, vmax</p>
 </div></blockquote>
 <p><strong>node_names</strong> : <code class="xref py py-obj docutils literal"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal"><span class="pre">str</span></code>, shape=(n_nodes, ), default=`None`</p>
-<blockquote class="last">
+<blockquote>
 <div><p>node names that will be displayed on axis.
 If <code class="xref py py-obj docutils literal"><span class="pre">None</span></code>, node index will be used.</p>
+</div></blockquote>
+<p><strong>rotate_x_labels</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default=`0.`</p>
+<blockquote class="last">
+<div><p>Number of degrees to rotate the x-labels clockwise, to prevent 
+overlapping.</p>
 </div></blockquote>
 </td>
 </tr>

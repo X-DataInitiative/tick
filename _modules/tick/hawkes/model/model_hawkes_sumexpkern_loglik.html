@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.hawkes.model.model_hawkes_sumexpkern_loglik &#8212; tick 0.4.0 documentation</title>
+    <title>tick.hawkes.model.model_hawkes_sumexpkern_loglik &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../../../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -208,13 +208,11 @@
 <span class="kn">from</span> <span class="nn">tick.base_model</span> <span class="k">import</span> <span class="n">ModelSecondOrder</span><span class="p">,</span> <span class="n">ModelSelfConcordant</span><span class="p">,</span> \
     <span class="n">LOSS_AND_GRAD</span>
 <span class="kn">from</span> <span class="nn">tick.hawkes.model.build.hawkes_model</span> <span class="k">import</span> <span class="p">(</span>
-    <span class="n">ModelHawkesSumExpKernLogLik</span> <span class="k">as</span> <span class="n">_ModelHawkesSumExpKernLogLik</span>
-<span class="p">)</span>
+    <span class="n">ModelHawkesSumExpKernLogLik</span> <span class="k">as</span> <span class="n">_ModelHawkesSumExpKernLogLik</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">.base</span> <span class="k">import</span> <span class="n">ModelHawkes</span>
 
 
-<div class="viewcode-block" id="ModelHawkesSumExpKernLogLik"><a class="viewcode-back" href="../../../../modules/generated/tick.hawkes.ModelHawkesSumExpKernLogLik.html#tick.hawkes.ModelHawkesSumExpKernLogLik">[docs]</a><span class="k">class</span> <span class="nc">ModelHawkesSumExpKernLogLik</span><span class="p">(</span><span class="n">ModelHawkes</span><span class="p">,</span>
-                                  <span class="n">ModelSecondOrder</span><span class="p">,</span>
+<div class="viewcode-block" id="ModelHawkesSumExpKernLogLik"><a class="viewcode-back" href="../../../../modules/generated/tick.hawkes.ModelHawkesSumExpKernLogLik.html#tick.hawkes.ModelHawkesSumExpKernLogLik">[docs]</a><span class="k">class</span> <span class="nc">ModelHawkesSumExpKernLogLik</span><span class="p">(</span><span class="n">ModelHawkes</span><span class="p">,</span> <span class="n">ModelSecondOrder</span><span class="p">,</span>
                                   <span class="n">ModelSelfConcordant</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Hawkes process model for sum of exponential kernels with fixed and</span>
 <span class="sd">    given decays.</span>
@@ -290,9 +288,11 @@
     <span class="p">}</span>
 
 <div class="viewcode-block" id="ModelHawkesSumExpKernLogLik.__init__"><a class="viewcode-back" href="../../../../modules/generated/tick.hawkes.ModelHawkesSumExpKernLogLik.html#tick.hawkes.ModelHawkesSumExpKernLogLik.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">decays</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">n_threads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
-        <span class="n">ModelHawkes</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_threads</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">approx</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
         <span class="n">ModelSecondOrder</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="n">ModelSelfConcordant</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="c1"># ModelHawkes.__init__ is last to set dtype properly as</span>
+        <span class="c1">#  Hawkes models are not templated</span>
+        <span class="n">ModelHawkes</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_threads</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">approx</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">decays</span> <span class="o">=</span> <span class="n">decays</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_model</span> <span class="o">=</span> <span class="n">_ModelHawkesSumExpKernLogLik</span><span class="p">(</span><span class="n">decays</span><span class="p">,</span> <span class="n">n_threads</span><span class="p">)</span></div>
 
@@ -322,8 +322,7 @@
         <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">loss_and_grad</span><span class="p">(</span><span class="n">coeffs</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">value</span>
 
-    <span class="k">def</span> <span class="nf">_hessian_norm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coeffs</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
-                      <span class="n">point</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_hessian_norm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coeffs</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">point</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">hessian_norm</span><span class="p">(</span><span class="n">coeffs</span><span class="p">,</span> <span class="n">point</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_get_sc_constant</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>

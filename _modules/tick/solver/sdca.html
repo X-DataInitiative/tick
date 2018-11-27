@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.solver.sdca &#8212; tick 0.4.0 documentation</title>
+    <title>tick.solver.sdca &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -203,10 +203,17 @@
   <h1>Source code for tick.solver.sdca</h1><div class="highlight"><pre>
 <span></span><span class="c1"># License: BSD 3 clause</span>
 
-
 <span class="kn">from</span> <span class="nn">.base</span> <span class="k">import</span> <span class="n">SolverFirstOrderSto</span>
-<span class="kn">from</span> <span class="nn">.build.solver</span> <span class="k">import</span> <span class="n">SDCA</span> <span class="k">as</span> <span class="n">_SDCA</span>
+
+<span class="kn">from</span> <span class="nn">.build.solver</span> <span class="k">import</span> <span class="n">SDCADouble</span> <span class="k">as</span> <span class="n">_SDCADouble</span>
+<span class="kn">from</span> <span class="nn">.build.solver</span> <span class="k">import</span> <span class="n">SDCAFloat</span> <span class="k">as</span> <span class="n">_SDCAFloat</span>
+
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">dtype_class_mapper</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;float32&#39;</span><span class="p">):</span> <span class="n">_SDCAFloat</span><span class="p">,</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;float64&#39;</span><span class="p">):</span> <span class="n">_SDCADouble</span>
+<span class="p">}</span>
 
 
 <div class="viewcode-block" id="SDCA"><a class="viewcode-back" href="../../../modules/generated/tick.solver.SDCA.html#tick.solver.SDCA">[docs]</a><span class="k">class</span> <span class="nc">SDCA</span><span class="p">(</span><span class="n">SolverFirstOrderSto</span><span class="p">):</span>
@@ -344,34 +351,41 @@
 <span class="sd">    time_end : `str`</span>
 <span class="sd">        End date of the call to ``solve()``</span>
 
+<span class="sd">    dtype : `{&#39;float64&#39;, &#39;float32&#39;}`, default=&#39;float64&#39;</span>
+<span class="sd">        Type of the arrays used. This value is set from model and prox dtypes.</span>
+
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
 <span class="sd">    * S. Shalev-Shwartz and T. Zhang, Accelerated proximal stochastic dual</span>
 <span class="sd">      coordinate ascent for regularized loss minimization, *ICML 2014*</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">_attrinfos</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;l_l2sq&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;cpp_setter&#39;</span><span class="p">:</span> <span class="s1">&#39;set_l_l2sq&#39;</span><span class="p">}</span>
-    <span class="p">}</span>
+    <span class="n">_attrinfos</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;l_l2sq&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;cpp_setter&#39;</span><span class="p">:</span> <span class="s1">&#39;set_l_l2sq&#39;</span><span class="p">}}</span>
 
 <div class="viewcode-block" id="SDCA.__init__"><a class="viewcode-back" href="../../../modules/generated/tick.solver.SDCA.html#tick.solver.SDCA.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">l_l2sq</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">epoch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">rand_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;unif&#39;</span><span class="p">,</span> <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-10</span><span class="p">,</span>
                  <span class="n">max_iter</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-                 <span class="n">print_every</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">record_every</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-                 <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+                 <span class="n">print_every</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">record_every</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
 
-        <span class="n">SolverFirstOrderSto</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">epoch_size</span><span class="o">=</span><span class="n">epoch_size</span><span class="p">,</span>
-                                     <span class="n">rand_type</span><span class="o">=</span><span class="n">rand_type</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">,</span>
-                                     <span class="n">max_iter</span><span class="o">=</span><span class="n">max_iter</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
-                                     <span class="n">print_every</span><span class="o">=</span><span class="n">print_every</span><span class="p">,</span>
-                                     <span class="n">record_every</span><span class="o">=</span><span class="n">record_every</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">l_l2sq</span> <span class="o">=</span> <span class="n">l_l2sq</span>
+        <span class="n">SolverFirstOrderSto</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">epoch_size</span><span class="o">=</span><span class="n">epoch_size</span><span class="p">,</span> <span class="n">rand_type</span><span class="o">=</span><span class="n">rand_type</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">,</span>
+            <span class="n">max_iter</span><span class="o">=</span><span class="n">max_iter</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="n">print_every</span><span class="o">=</span><span class="n">print_every</span><span class="p">,</span>
+            <span class="n">record_every</span><span class="o">=</span><span class="n">record_every</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_set_cpp_solver</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dtype_or_object_with_dtype</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extract_dtype</span><span class="p">(</span><span class="n">dtype_or_object_with_dtype</span><span class="p">)</span>
+        <span class="n">solver_class</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_typed_class</span><span class="p">(</span><span class="n">dtype_or_object_with_dtype</span><span class="p">,</span>
+                                             <span class="n">dtype_class_mapper</span><span class="p">)</span>
+
         <span class="n">epoch_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">epoch_size</span>
         <span class="k">if</span> <span class="n">epoch_size</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">epoch_size</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="c1"># Construct the wrapped C++ SDCA solver</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_solver</span> <span class="o">=</span> <span class="n">_SDCA</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">l_l2sq</span><span class="p">,</span> <span class="n">epoch_size</span><span class="p">,</span>
-                             <span class="bp">self</span><span class="o">.</span><span class="n">tol</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rand_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">seed</span><span class="p">)</span></div>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span>
+            <span class="s1">&#39;_solver&#39;</span><span class="p">,</span>
+            <span class="n">solver_class</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">l_l2sq</span><span class="p">,</span> <span class="n">epoch_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tol</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rand_type</span><span class="p">,</span>
+                         <span class="bp">self</span><span class="o">.</span><span class="n">record_every</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">seed</span><span class="p">))</span>
 
 <div class="viewcode-block" id="SDCA.objective"><a class="viewcode-back" href="../../../modules/generated/tick.solver.SDCA.html#tick.solver.SDCA.objective">[docs]</a>    <span class="k">def</span> <span class="nf">objective</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coeffs</span><span class="p">,</span> <span class="n">loss</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Compute the objective minimized by the solver at ``coeffs``</span>
@@ -391,7 +405,8 @@
 <span class="sd">            Value of the objective at given ``coeffs``</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">prox_l2_value</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">l_l2sq</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">coeffs</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
-        <span class="k">return</span> <span class="n">SolverFirstOrderSto</span><span class="o">.</span><span class="n">objective</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coeffs</span><span class="p">,</span> <span class="n">loss</span><span class="p">)</span> <span class="o">+</span> <span class="n">prox_l2_value</span></div>
+        <span class="k">return</span> <span class="n">SolverFirstOrderSto</span><span class="o">.</span><span class="n">objective</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coeffs</span><span class="p">,</span>
+                                             <span class="n">loss</span><span class="p">)</span> <span class="o">+</span> <span class="n">prox_l2_value</span></div>
 
 <div class="viewcode-block" id="SDCA.dual_objective"><a class="viewcode-back" href="../../../modules/generated/tick.solver.SDCA.html#tick.solver.SDCA.dual_objective">[docs]</a>    <span class="k">def</span> <span class="nf">dual_objective</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dual_coeffs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Compute the dual objective at ``dual_coeffs``</span>
@@ -406,7 +421,8 @@
 <span class="sd">        output : `float`</span>
 <span class="sd">            Value of the dual objective at given ``dual_coeffs``</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">primal</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">_sdca_primal_dual_relation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">l_l2sq</span><span class="p">,</span> <span class="n">dual_coeffs</span><span class="p">)</span>
+        <span class="n">primal</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">_sdca_primal_dual_relation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">l_l2sq</span><span class="p">,</span>
+                                                       <span class="n">dual_coeffs</span><span class="p">)</span>
         <span class="n">prox_l2_value</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">l_l2sq</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">primal</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">dual_loss</span><span class="p">(</span><span class="n">dual_coeffs</span><span class="p">)</span> <span class="o">-</span> <span class="n">prox_l2_value</span></div>
 

@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.prox.prox_nuclear &#8212; tick 0.4.0 documentation</title>
+    <title>tick.prox.prox_nuclear &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -203,7 +203,6 @@
   <h1>Source code for tick.prox.prox_nuclear</h1><div class="highlight"><pre>
 <span></span><span class="c1"># License: BSD 3 clause</span>
 
-
 <span class="c1"># -*- coding: utf8 -*-</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -211,9 +210,7 @@
 
 <span class="kn">from</span> <span class="nn">tick.prox.base</span> <span class="k">import</span> <span class="n">Prox</span>
 
-
 <span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;Stephane Gaiffas&#39;</span>
-
 
 <span class="c1"># TODO: code the incremental strategy, where we try smaller SVDs</span>
 
@@ -251,8 +248,8 @@
 <span class="sd">    for use on large matrices</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="ProxNuclear.__init__"><a class="viewcode-back" href="../../../modules/generated/tick.prox.ProxNuclear.html#tick.prox.ProxNuclear.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">strength</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">n_rows</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="nb">range</span><span class="p">:</span> <span class="nb">tuple</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">positive</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="ProxNuclear.__init__"><a class="viewcode-back" href="../../../modules/generated/tick.prox.ProxNuclear.html#tick.prox.ProxNuclear.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">strength</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">n_rows</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="nb">range</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">positive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
         <span class="n">Prox</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">range</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">positive</span> <span class="o">=</span> <span class="n">positive</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">strength</span> <span class="o">=</span> <span class="n">strength</span>

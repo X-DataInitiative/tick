@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.linear_model.linear_regression &#8212; tick 0.4.0 documentation</title>
+    <title>tick.linear_model.linear_regression &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -203,7 +203,6 @@
   <h1>Source code for tick.linear_model.linear_regression</h1><div class="highlight"><pre>
 <span></span><span class="c1"># License: BSD 3 clause</span>
 
-
 <span class="kn">from</span> <span class="nn">tick.base</span> <span class="k">import</span> <span class="n">actual_kwargs</span>
 <span class="kn">from</span> <span class="nn">tick.base.learner</span> <span class="k">import</span> <span class="n">LearnerGLM</span>
 <span class="kn">from</span> <span class="nn">.model_linreg</span> <span class="k">import</span> <span class="n">ModelLinReg</span>
@@ -290,35 +289,25 @@
 <span class="sd">        The intercept, if ``fit_intercept=True``, otherwise `None`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">_solvers</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;gd&#39;</span><span class="p">:</span> <span class="n">GD</span><span class="p">,</span>
-        <span class="s1">&#39;agd&#39;</span><span class="p">:</span> <span class="n">AGD</span><span class="p">,</span>
-        <span class="s1">&#39;svrg&#39;</span><span class="p">:</span> <span class="n">SVRG</span>
-    <span class="p">}</span>
+    <span class="n">_solvers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;gd&#39;</span><span class="p">:</span> <span class="n">GD</span><span class="p">,</span> <span class="s1">&#39;agd&#39;</span><span class="p">:</span> <span class="n">AGD</span><span class="p">,</span> <span class="s1">&#39;svrg&#39;</span><span class="p">:</span> <span class="n">SVRG</span><span class="p">}</span>
 
-    <span class="n">_attrinfos</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;_actual_kwargs&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
-    <span class="p">}</span>
+    <span class="n">_attrinfos</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;_actual_kwargs&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}}</span>
 
     <span class="nd">@actual_kwargs</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fit_intercept</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">penalty</span><span class="o">=</span><span class="s1">&#39;l2&#39;</span><span class="p">,</span> <span class="n">C</span><span class="o">=</span><span class="mf">1e3</span><span class="p">,</span>
-                 <span class="n">solver</span><span class="o">=</span><span class="s1">&#39;svrg&#39;</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
-                 <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">warm_start</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                 <span class="n">print_every</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">record_every</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fit_intercept</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">penalty</span><span class="o">=</span><span class="s1">&#39;l2&#39;</span><span class="p">,</span> <span class="n">C</span><span class="o">=</span><span class="mf">1e3</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="s1">&#39;svrg&#39;</span><span class="p">,</span>
+                 <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">warm_start</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">print_every</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">record_every</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
                  <span class="n">elastic_net_ratio</span><span class="o">=</span><span class="mf">0.95</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">blocks_start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">blocks_length</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_actual_kwargs</span> <span class="o">=</span> <span class="n">LinearRegression</span><span class="o">.</span><span class="fm">__init__</span><span class="o">.</span><span class="n">actual_kwargs</span>
-        <span class="n">LearnerGLM</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fit_intercept</span><span class="o">=</span><span class="n">fit_intercept</span><span class="p">,</span>
-                            <span class="n">penalty</span><span class="o">=</span><span class="n">penalty</span><span class="p">,</span> <span class="n">C</span><span class="o">=</span><span class="n">C</span><span class="p">,</span>
-                            <span class="n">solver</span><span class="o">=</span><span class="n">solver</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">,</span>
-                            <span class="n">max_iter</span><span class="o">=</span><span class="n">max_iter</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
-                            <span class="n">warm_start</span><span class="o">=</span><span class="n">warm_start</span><span class="p">,</span> <span class="n">print_every</span><span class="o">=</span><span class="n">print_every</span><span class="p">,</span>
-                            <span class="n">record_every</span><span class="o">=</span><span class="n">record_every</span><span class="p">,</span>
-                            <span class="n">elastic_net_ratio</span><span class="o">=</span><span class="n">elastic_net_ratio</span><span class="p">,</span>
-                            <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span><span class="p">,</span>
-                            <span class="n">blocks_start</span><span class="o">=</span><span class="n">blocks_start</span><span class="p">,</span>
-                            <span class="n">blocks_length</span><span class="o">=</span><span class="n">blocks_length</span><span class="p">)</span>
+        <span class="n">LearnerGLM</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">fit_intercept</span><span class="o">=</span><span class="n">fit_intercept</span><span class="p">,</span> <span class="n">penalty</span><span class="o">=</span><span class="n">penalty</span><span class="p">,</span> <span class="n">C</span><span class="o">=</span><span class="n">C</span><span class="p">,</span>
+            <span class="n">solver</span><span class="o">=</span><span class="n">solver</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="n">max_iter</span><span class="p">,</span>
+            <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="n">warm_start</span><span class="o">=</span><span class="n">warm_start</span><span class="p">,</span> <span class="n">print_every</span><span class="o">=</span><span class="n">print_every</span><span class="p">,</span>
+            <span class="n">record_every</span><span class="o">=</span><span class="n">record_every</span><span class="p">,</span> <span class="n">elastic_net_ratio</span><span class="o">=</span><span class="n">elastic_net_ratio</span><span class="p">,</span>
+            <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span><span class="p">,</span> <span class="n">blocks_start</span><span class="o">=</span><span class="n">blocks_start</span><span class="p">,</span>
+            <span class="n">blocks_length</span><span class="o">=</span><span class="n">blocks_length</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_construct_model_obj</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fit_intercept</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ModelLinReg</span><span class="p">(</span><span class="n">fit_intercept</span><span class="p">)</span>
@@ -339,7 +328,7 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fitted</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;You must call ``fit`` before&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_safe_array</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+            <span class="n">X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_safe_array</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
             <span class="n">z</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">intercept</span><span class="p">:</span>
                 <span class="n">z</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">intercept</span>

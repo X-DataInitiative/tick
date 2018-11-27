@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.hawkes.inference.hawkes_basis_kernels &#8212; tick 0.4.0 documentation</title>
+    <title>tick.hawkes.inference.hawkes_basis_kernels &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../../../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -206,9 +206,8 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">tick.hawkes.inference.base</span> <span class="k">import</span> <span class="n">LearnerHawkesNoParam</span>
-<span class="kn">from</span> <span class="nn">tick.hawkes.inference.build.hawkes_inference</span> <span class="k">import</span> <span class="p">(</span>
-    <span class="n">HawkesBasisKernels</span> <span class="k">as</span> <span class="n">_HawkesBasisKernels</span>
-<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">tick.hawkes.inference.build.hawkes_inference</span> <span class="k">import</span> <span class="p">(</span><span class="n">HawkesBasisKernels</span> <span class="k">as</span>
+                                                          <span class="n">_HawkesBasisKernels</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">tick.solver.base.utils</span> <span class="k">import</span> <span class="n">relative_distance</span>
 
 
@@ -335,10 +334,18 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">_attrinfos</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;baseline&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;writable&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
-        <span class="s1">&#39;amplitudes&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;writable&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
-        <span class="s1">&#39;basis_kernels&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;writable&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
-        <span class="s1">&#39;_amplitudes_2d&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;writable&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+        <span class="s1">&#39;baseline&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;writable&#39;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;amplitudes&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;writable&#39;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;basis_kernels&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;writable&#39;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;_amplitudes_2d&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;writable&#39;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">},</span>
     <span class="p">}</span>
 
 <div class="viewcode-block" id="HawkesBasisKernels.__init__"><a class="viewcode-back" href="../../../../modules/generated/tick.hawkes.HawkesBasisKernels.html#tick.hawkes.HawkesBasisKernels.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kernel_support</span><span class="p">,</span> <span class="n">n_basis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">,</span>
@@ -361,8 +368,9 @@
                                             <span class="n">n_basis</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">n_threads</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_amplitudes_2d</span> <span class="o">=</span> <span class="kc">None</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="o">.</span><span class="n">print_order</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;n_iter&quot;</span><span class="p">,</span> <span class="s2">&quot;rel_baseline&quot;</span><span class="p">,</span> <span class="s2">&quot;rel_amplitudes&quot;</span><span class="p">,</span>
-                                    <span class="s2">&quot;rel_basis_kernels&quot;</span><span class="p">]</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="o">.</span><span class="n">print_order</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s2">&quot;n_iter&quot;</span><span class="p">,</span> <span class="s2">&quot;rel_baseline&quot;</span><span class="p">,</span> <span class="s2">&quot;rel_amplitudes&quot;</span><span class="p">,</span> <span class="s2">&quot;rel_basis_kernels&quot;</span>
+        <span class="p">]</span></div>
 
 <div class="viewcode-block" id="HawkesBasisKernels.fit"><a class="viewcode-back" href="../../../../modules/generated/tick.hawkes.HawkesBasisKernels.html#tick.hawkes.HawkesBasisKernels.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">events</span><span class="p">,</span> <span class="n">end_times</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">baseline_start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
             <span class="n">amplitudes_start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">basis_kernels_start</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -429,50 +437,53 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;baseline&quot;</span><span class="p">,</span> <span class="n">baseline_start</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
 
         <span class="k">if</span> <span class="n">amplitudes_start</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;amplitudes&quot;</span><span class="p">,</span>
-                      <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span>
-                          <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_basis</span><span class="p">)))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span>
+                <span class="s2">&quot;amplitudes&quot;</span><span class="p">,</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span>
+                    <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_basis</span><span class="p">)))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;amplitudes&quot;</span><span class="p">,</span> <span class="n">amplitudes_start</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
 
         <span class="k">if</span> <span class="n">basis_kernels_start</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;basis_kernels&quot;</span><span class="p">,</span>
-                      <span class="mf">0.1</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_basis</span><span class="p">,</span>
-                                                    <span class="bp">self</span><span class="o">.</span><span class="n">kernel_size</span><span class="p">)))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span>
+                <span class="s2">&quot;basis_kernels&quot;</span><span class="p">,</span>
+                <span class="mf">0.1</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_basis</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">kernel_size</span><span class="p">)))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;basis_kernels&quot;</span><span class="p">,</span> <span class="n">basis_kernels_start</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s1">&#39;_amplitudes_2d&#39;</span><span class="p">,</span>
-                  <span class="bp">self</span><span class="o">.</span><span class="n">amplitudes</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span> <span class="o">*</span>
-                                           <span class="bp">self</span><span class="o">.</span><span class="n">n_basis</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span>
+            <span class="s1">&#39;_amplitudes_2d&#39;</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">amplitudes</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span><span class="p">,</span>
+                                     <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_basis</span><span class="p">)))</span>
 
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_iter</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
-            <span class="n">prev_baseline</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">baseline</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-            <span class="n">prev_amplitudes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">amplitudes</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-            <span class="n">prev_basis_kernels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">basis_kernels</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_iter</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_should_record_iter</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
+                <span class="n">prev_baseline</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">baseline</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                <span class="n">prev_amplitudes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">amplitudes</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                <span class="n">prev_basis_kernels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">basis_kernels</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
             <span class="n">rel_ode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_learner</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">baseline</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">basis_kernels</span><span class="p">,</span>
                                           <span class="bp">self</span><span class="o">.</span><span class="n">_amplitudes_2d</span><span class="p">,</span>
-                                          <span class="bp">self</span><span class="o">.</span><span class="n">ode_max_iter</span><span class="p">,</span>
-                                          <span class="bp">self</span><span class="o">.</span><span class="n">ode_tol</span><span class="p">)</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">ode_max_iter</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ode_tol</span><span class="p">)</span>
 
-            <span class="n">rel_baseline</span> <span class="o">=</span> <span class="n">relative_distance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">baseline</span><span class="p">,</span> <span class="n">prev_baseline</span><span class="p">)</span>
-            <span class="n">rel_amplitudes</span> <span class="o">=</span> <span class="n">relative_distance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">amplitudes</span><span class="p">,</span> <span class="n">prev_amplitudes</span><span class="p">)</span>
-            <span class="n">rel_basis_kernels</span> <span class="o">=</span> <span class="n">relative_distance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">basis_kernels</span><span class="p">,</span>
-                                                  <span class="n">prev_basis_kernels</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_should_record_iter</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
+                <span class="n">rel_baseline</span> <span class="o">=</span> <span class="n">relative_distance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">baseline</span><span class="p">,</span> <span class="n">prev_baseline</span><span class="p">)</span>
+                <span class="n">rel_amplitudes</span> <span class="o">=</span> <span class="n">relative_distance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">amplitudes</span><span class="p">,</span>
+                                                   <span class="n">prev_amplitudes</span><span class="p">)</span>
+                <span class="n">rel_basis_kernels</span> <span class="o">=</span> <span class="n">relative_distance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">basis_kernels</span><span class="p">,</span>
+                                                      <span class="n">prev_basis_kernels</span><span class="p">)</span>
 
-            <span class="n">converged</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">rel_baseline</span><span class="p">,</span> <span class="n">rel_amplitudes</span><span class="p">,</span>
-                            <span class="n">rel_basis_kernels</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tol</span>
-            <span class="n">force_print</span> <span class="o">=</span> <span class="p">(</span><span class="n">i</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_iter</span><span class="p">)</span> <span class="ow">or</span> <span class="n">converged</span>
+                <span class="n">converged</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">rel_baseline</span><span class="p">,</span> <span class="n">rel_amplitudes</span><span class="p">,</span>
+                                <span class="n">rel_basis_kernels</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tol</span>
+                <span class="n">force_print</span> <span class="o">=</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_iter</span><span class="p">)</span> <span class="ow">or</span> <span class="n">converged</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">_handle_history</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">rel_baseline</span><span class="o">=</span><span class="n">rel_baseline</span><span class="p">,</span>
-                                 <span class="n">rel_amplitudes</span><span class="o">=</span><span class="n">rel_amplitudes</span><span class="p">,</span>
-                                 <span class="n">rel_basis_kernels</span><span class="o">=</span><span class="n">rel_basis_kernels</span><span class="p">,</span>
-                                 <span class="n">rel_ode</span><span class="o">=</span><span class="n">rel_ode</span><span class="p">,</span>
-                                 <span class="n">force</span><span class="o">=</span><span class="n">force_print</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_handle_history</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">rel_baseline</span><span class="o">=</span><span class="n">rel_baseline</span><span class="p">,</span>
+                                     <span class="n">rel_amplitudes</span><span class="o">=</span><span class="n">rel_amplitudes</span><span class="p">,</span>
+                                     <span class="n">rel_basis_kernels</span><span class="o">=</span><span class="n">rel_basis_kernels</span><span class="p">,</span>
+                                     <span class="n">rel_ode</span><span class="o">=</span><span class="n">rel_ode</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="n">force_print</span><span class="p">)</span>
 
-            <span class="k">if</span> <span class="n">converged</span><span class="p">:</span>
-                <span class="k">break</span>
+                <span class="k">if</span> <span class="n">converged</span><span class="p">:</span>
+                    <span class="k">break</span>
 
     <span class="k">def</span> <span class="nf">get_kernel_supports</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span><span class="p">))</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">kernel_support</span>
@@ -501,8 +512,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">indices_in_support</span> <span class="o">=</span> <span class="p">(</span><span class="n">abscissa_array</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> \
                              <span class="p">(</span><span class="n">abscissa_array</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">kernel_support</span><span class="p">)</span>
-        <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">searchsorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kernel_discretization</span><span class="p">,</span> <span class="n">abscissa_array</span><span class="p">[</span>
-            <span class="n">indices_in_support</span><span class="p">])</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">searchsorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kernel_discretization</span><span class="p">,</span>
+                                <span class="n">abscissa_array</span><span class="p">[</span><span class="n">indices_in_support</span><span class="p">])</span> <span class="o">-</span> <span class="mi">1</span>
 
         <span class="n">kernel_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">abscissa_array</span><span class="p">)</span>
         <span class="n">kernel_values</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">invert</span><span class="p">(</span><span class="n">indices_in_support</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">0</span>

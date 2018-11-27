@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.hawkes.simulation.hawkes_kernels.hawkes_kernel_sum_exp &#8212; tick 0.4.0 documentation</title>
+    <title>tick.hawkes.simulation.hawkes_kernels.hawkes_kernel_sum_exp &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../../../../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -206,8 +206,7 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">tick.hawkes.simulation.build.hawkes_simulation</span> <span class="k">import</span> <span class="p">(</span>
-    <span class="n">HawkesKernelSumExp</span> <span class="k">as</span> <span class="n">_HawkesKernelSumExp</span>
-<span class="p">)</span>
+    <span class="n">HawkesKernelSumExp</span> <span class="k">as</span> <span class="n">_HawkesKernelSumExp</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">HawkesKernelExp</span>
 <span class="kn">from</span> <span class="nn">.hawkes_kernel</span> <span class="k">import</span> <span class="n">HawkesKernel</span>
 
@@ -263,20 +262,28 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kernel</span><span class="o">.</span><span class="n">get_n_decays</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_generate_corresponding_single_exp_kernels</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">HawkesKernelExp</span><span class="p">(</span><span class="n">intensity</span><span class="p">,</span> <span class="n">decay</span><span class="p">)</span>
-                <span class="k">for</span> <span class="p">(</span><span class="n">intensity</span><span class="p">,</span> <span class="n">decay</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">intensities</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">decays</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="n">HawkesKernelExp</span><span class="p">(</span><span class="n">intensity</span><span class="p">,</span> <span class="n">decay</span><span class="p">)</span>
+            <span class="k">for</span> <span class="p">(</span><span class="n">intensity</span><span class="p">,</span> <span class="n">decay</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">intensities</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">decays</span><span class="p">)</span>
+        <span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s2">&quot; + &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">kernel</span><span class="p">)</span> <span class="k">for</span> <span class="n">kernel</span> <span class="ow">in</span>
-                           <span class="bp">self</span><span class="o">.</span><span class="n">_generate_corresponding_single_exp_kernels</span><span class="p">()])</span>
+        <span class="k">return</span> <span class="s2">&quot; + &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span>
+            <span class="nb">str</span><span class="p">(</span><span class="n">kernel</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">kernel</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generate_corresponding_single_exp_kernels</span><span class="p">()</span>
+        <span class="p">])</span>
 
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s2">&quot; + &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">kernel</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span> <span class="k">for</span> <span class="n">kernel</span> <span class="ow">in</span>
-                           <span class="bp">self</span><span class="o">.</span><span class="n">_generate_corresponding_single_exp_kernels</span><span class="p">()])</span>
+        <span class="k">return</span> <span class="s2">&quot; + &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span>
+            <span class="n">kernel</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">kernel</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generate_corresponding_single_exp_kernels</span><span class="p">()</span>
+        <span class="p">])</span>
 
     <span class="k">def</span> <span class="nf">__strtex__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s2">&quot; + &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">kernel</span><span class="o">.</span><span class="n">__strtex__</span><span class="p">()</span> <span class="k">for</span> <span class="n">kernel</span> <span class="ow">in</span>
-                           <span class="bp">self</span><span class="o">.</span><span class="n">_generate_corresponding_single_exp_kernels</span><span class="p">()])</span></div>
+        <span class="k">return</span> <span class="s2">&quot; + &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span>
+            <span class="n">kernel</span><span class="o">.</span><span class="n">__strtex__</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">kernel</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generate_corresponding_single_exp_kernels</span><span class="p">()</span>
+        <span class="p">])</span></div>
 </pre></div>
 
 </div>

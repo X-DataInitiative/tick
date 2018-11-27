@@ -1,0 +1,9 @@
+tick.survival.ConvSCCS
+======================
+
+.. currentmodule:: tick.survival
+
+.. autofunction:: ConvSCCS
+
+.. include:: tick.survival.ConvSCCS.examples
+    :allowmissing:

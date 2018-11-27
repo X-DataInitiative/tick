@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.solver.scpg &#8212; tick 0.4.0 documentation</title>
+    <title>tick.solver.scpg &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -281,6 +281,9 @@
 <span class="sd">        consists in evaluating :math:`f` at :math:`y_k` and :math:`w^{k+1}`</span>
 <span class="sd">        and keeping the iterate that minimizes the best :math:`f`.</span>
 
+<span class="sd">    dtype : `{&#39;float64&#39;, &#39;float32&#39;}`, default=&#39;float64&#39;</span>
+<span class="sd">        Type of the arrays used. This value is set from model and prox dtypes.</span>
+
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
 <span class="sd">    model : `Model`</span>
@@ -320,8 +323,12 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">_attrinfos</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;model_ssc&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;writable&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
-        <span class="s1">&#39;prox_ssc&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;writable&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+        <span class="s1">&#39;model_ssc&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;writable&#39;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;prox_ssc&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;writable&#39;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">},</span>
         <span class="s1">&#39;_th_gain&#39;</span><span class="p">:</span> <span class="p">{},</span>
         <span class="s2">&quot;_initial_n_hessiannorm_calls&quot;</span><span class="p">:</span> <span class="p">{</span>
             <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span>
@@ -398,8 +405,7 @@
                  <span class="n">max_iter</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
                  <span class="n">print_every</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="n">record_every</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
                  <span class="n">linesearch_step_increase</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">2.</span><span class="p">,</span>
-                 <span class="n">linesearch_step_decrease</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
-                 <span class="n">modified</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+                 <span class="n">linesearch_step_decrease</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">modified</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="n">SolverFirstOrder</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="n">max_iter</span><span class="p">,</span>
                                   <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="n">print_every</span><span class="o">=</span><span class="n">print_every</span><span class="p">,</span>
                                   <span class="n">record_every</span><span class="o">=</span><span class="n">record_every</span><span class="p">)</span>
@@ -430,6 +436,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s1">&#39;model&#39;</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s1">&#39;model_ssc&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ModelStandardSC</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">prox_ssc</span><span class="o">.</span><span class="n">set_self_conc_constant</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">_sc_constant</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s2">&quot;float64&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
 <div class="viewcode-block" id="SCPG.set_prox"><a class="viewcode-back" href="../../../modules/generated/tick.solver.SCPG.html#tick.solver.SCPG.set_prox">[docs]</a>    <span class="k">def</span> <span class="nf">set_prox</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prox</span><span class="p">:</span> <span class="n">Prox</span><span class="p">):</span>
@@ -445,6 +452,7 @@
 <span class="sd">        output : `Solver`</span>
 <span class="sd">            The solver with given prox</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">SolverFirstOrder</span><span class="o">.</span><span class="n">set_prox</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prox</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s1">&#39;prox&#39;</span><span class="p">,</span> <span class="n">prox</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">prox_ssc</span><span class="o">.</span><span class="n">set_original_prox</span><span class="p">(</span><span class="n">prox</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span></div>
@@ -495,8 +503,8 @@
             <span class="n">step</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">linesearch_step_decrease</span>
         <span class="k">return</span> <span class="n">step</span>
 
-    <span class="k">def</span> <span class="nf">_gradient_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">prev_x</span><span class="p">,</span> <span class="n">grad_x_ssc</span><span class="p">,</span> <span class="n">prev_grad_x_ssc</span><span class="p">,</span>
-                       <span class="n">n_iter</span><span class="p">,</span> <span class="n">l_k</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_gradient_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">prev_x</span><span class="p">,</span> <span class="n">grad_x_ssc</span><span class="p">,</span> <span class="n">prev_grad_x_ssc</span><span class="p">,</span> <span class="n">n_iter</span><span class="p">,</span>
+                       <span class="n">l_k</span><span class="p">):</span>
         <span class="c1"># Testing if our value of l_k fits the condition for the stepsize</span>
         <span class="c1"># alpha_k</span>
 
@@ -529,8 +537,8 @@
             <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">l_k</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;l_k is nan&#39;</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_th_gain</span> <span class="o">=</span> <span class="n">beta_k</span> <span class="o">*</span> <span class="n">beta_k</span> <span class="o">/</span> <span class="n">lambda_k</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">beta_k</span> <span class="o">*</span> <span class="n">beta_k</span>
-                                                            <span class="o">/</span> <span class="n">lambda_k</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_th_gain</span> <span class="o">=</span> <span class="n">beta_k</span> <span class="o">*</span> <span class="n">beta_k</span> <span class="o">/</span> <span class="n">lambda_k</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
+            <span class="mi">1</span> <span class="o">+</span> <span class="n">beta_k</span> <span class="o">*</span> <span class="n">beta_k</span> <span class="o">/</span> <span class="n">lambda_k</span><span class="p">)</span>
         <span class="n">x_new</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">alpha_k</span> <span class="o">*</span> <span class="n">d_k</span>
 
         <span class="c1"># we also &quot;return&quot; grad_x_ssc and prev_grad_x_ssc which are filled</span>
@@ -551,7 +559,7 @@
         <span class="n">step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_perform_line_search</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">)</span>
         <span class="n">l_k</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">step</span>
 
-        <span class="k">for</span> <span class="n">n_iter</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_iter</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">n_iter</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_iter</span><span class="p">):</span>
 
             <span class="n">prev_obj</span> <span class="o">=</span> <span class="n">obj</span>
 
@@ -580,7 +588,8 @@
             <span class="n">converged</span> <span class="o">=</span> <span class="n">rel_obj</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">tol</span>
             <span class="c1"># if converged, we stop the loop and record the last step in history</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">_handle_history</span><span class="p">(</span><span class="n">n_iter</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="n">converged</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="n">obj</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_handle_history</span><span class="p">(</span><span class="n">n_iter</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="n">converged</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="n">obj</span><span class="p">,</span>
+                                 <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
                                  <span class="n">rel_delta</span><span class="o">=</span><span class="n">rel_delta</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">alpha_k</span><span class="p">,</span>
                                  <span class="n">rel_obj</span><span class="o">=</span><span class="n">rel_obj</span><span class="p">,</span> <span class="n">l_k</span><span class="o">=</span><span class="n">l_k</span><span class="p">,</span> <span class="n">beta_k</span><span class="o">=</span><span class="n">beta_k</span><span class="p">,</span>
                                  <span class="n">lambda_k</span><span class="o">=</span><span class="n">lambda_k</span><span class="p">,</span> <span class="n">th_gain</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_th_gain</span><span class="p">,</span>
@@ -593,7 +602,7 @@
     <span class="k">def</span> <span class="nf">_handle_history</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_iter</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Updates the history of the solver.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">n_iter</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">n_iter</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s1">&#39;_initial_n_hessiannorm_calls&#39;</span><span class="p">,</span>
                       <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">n_calls_hessian_norm</span><span class="p">)</span>
 

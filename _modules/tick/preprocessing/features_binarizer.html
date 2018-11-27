@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.preprocessing.features_binarizer &#8212; tick 0.4.0 documentation</title>
+    <title>tick.preprocessing.features_binarizer &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -304,11 +304,21 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">_attrinfos</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;one_hot_encoder&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
-        <span class="s2">&quot;bins_boundaries&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
-        <span class="s2">&quot;mapper&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
-        <span class="s2">&quot;feature_type&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
-        <span class="s2">&quot;_fitted&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
+        <span class="s2">&quot;one_hot_encoder&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;bins_boundaries&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;mapper&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;feature_type&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;_fitted&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">}</span>
     <span class="p">}</span>
 
 <div class="viewcode-block" id="FeaturesBinarizer.__init__"><a class="viewcode-back" href="../../../modules/generated/tick.preprocessing.FeaturesBinarizer.html#tick.preprocessing.FeaturesBinarizer.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;quantile&quot;</span><span class="p">,</span> <span class="n">n_cuts</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">detect_column_type</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span>
@@ -341,7 +351,7 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cannot get blocks_start if object has not &quot;</span>
                              <span class="s2">&quot;been fitted&quot;</span><span class="p">)</span>
         <span class="c1"># construct from encoder</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">one_hot_encoder</span><span class="o">.</span><span class="n">feature_indices_</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">one_hot_encoder</span><span class="o">.</span><span class="n">feature_indices_</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">,]</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">blocks_length</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -500,8 +510,7 @@
                 <span class="n">feature_type</span> <span class="o">=</span> <span class="s2">&quot;discrete&quot;</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;feature name &#39;</span><span class="si">%s</span><span class="s2">&#39; should end with &quot;</span>
-                                 <span class="s2">&quot;&#39;:continuous&#39; or &#39;:discrete&#39;&quot;</span>
-                                 <span class="o">%</span> <span class="n">feature_name</span><span class="p">)</span>
+                                 <span class="s2">&quot;&#39;:continuous&#39; or &#39;:discrete&#39;&quot;</span> <span class="o">%</span> <span class="n">feature_name</span><span class="p">)</span>
 
         <span class="k">elif</span> <span class="n">detect_column_type</span> <span class="o">==</span> <span class="s2">&quot;auto&quot;</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">continuous_threshold</span> <span class="o">==</span> <span class="s2">&quot;auto&quot;</span><span class="p">:</span>
@@ -605,8 +614,8 @@
             <span class="c1"># Compute the cuts</span>
             <span class="n">boundaries</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">feat_min</span><span class="p">,</span> <span class="n">feat_max</span><span class="p">,</span> <span class="n">n_cuts</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Method &#39;</span><span class="si">%s</span><span class="s2">&#39; should be &#39;quantile&#39; or &#39;linspace&#39;&quot;</span>
-                             <span class="o">%</span> <span class="n">method</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Method &#39;</span><span class="si">%s</span><span class="s2">&#39; should be &#39;quantile&#39; or &#39;linspace&#39;&quot;</span> <span class="o">%</span> <span class="n">method</span><span class="p">)</span>
         <span class="n">boundaries</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span>
         <span class="n">boundaries</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span>
 
@@ -669,8 +678,10 @@
             <span class="n">uniques</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span>
             <span class="n">uniques</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
 
-            <span class="n">mapper</span> <span class="o">=</span> <span class="p">{</span><span class="n">category</span><span class="p">:</span> <span class="n">interval</span>
-                      <span class="k">for</span> <span class="n">interval</span><span class="p">,</span> <span class="n">category</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">uniques</span><span class="p">)}</span>
+            <span class="n">mapper</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="n">category</span><span class="p">:</span> <span class="n">interval</span>
+                <span class="k">for</span> <span class="n">interval</span><span class="p">,</span> <span class="n">category</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">uniques</span><span class="p">)</span>
+            <span class="p">}</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">mapper</span><span class="p">[</span><span class="n">feature_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapper</span>
 

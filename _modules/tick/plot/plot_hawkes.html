@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.plot.plot_hawkes &#8212; tick 0.4.0 documentation</title>
+    <title>tick.plot.plot_hawkes &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -211,7 +211,7 @@
 
 
 <div class="viewcode-block" id="plot_hawkes_kernel_norms"><a class="viewcode-back" href="../../../modules/generated/tick.plot.plot_hawkes_kernel_norms.html#tick.plot.plot_hawkes_kernel_norms">[docs]</a><span class="k">def</span> <span class="nf">plot_hawkes_kernel_norms</span><span class="p">(</span><span class="n">kernel_object</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">pcolor_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                             <span class="n">node_names</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                             <span class="n">node_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rotate_x_labels</span><span class="o">=</span><span class="mf">0.</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Generic function to plot Hawkes kernel norms.</span>
 
 <span class="sd">    Parameters</span>
@@ -236,6 +236,10 @@
 <span class="sd">        node names that will be displayed on axis.</span>
 <span class="sd">        If `None`, node index will be used.</span>
 
+<span class="sd">    rotate_x_labels : `float`, default=`0.`</span>
+<span class="sd">        Number of degrees to rotate the x-labels clockwise, to prevent </span>
+<span class="sd">        overlapping.</span>
+
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
 <span class="sd">    Kernels are displayed such that it shows norm of column influence&#39;s</span>
@@ -254,6 +258,13 @@
 
     <span class="n">norms</span> <span class="o">=</span> <span class="n">kernel_object</span><span class="o">.</span><span class="n">get_kernel_norms</span><span class="p">()</span>
     <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">rotate_x_labels</span> <span class="o">!=</span> <span class="mf">0.</span><span class="p">:</span>
+        <span class="c1"># we want clockwise rotation because x-axis is on top</span>
+        <span class="n">rotate_x_labels</span> <span class="o">=</span> <span class="o">-</span><span class="n">rotate_x_labels</span>
+        <span class="n">x_label_alignment</span> <span class="o">=</span> <span class="s1">&#39;right&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">x_label_alignment</span> <span class="o">=</span> <span class="s1">&#39;center&#39;</span>
 
     <span class="k">if</span> <span class="n">pcolor_kwargs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">pcolor_kwargs</span> <span class="o">=</span> <span class="p">{}</span>
@@ -277,7 +288,8 @@
     <span class="n">ax</span><span class="o">.</span><span class="n">invert_yaxis</span><span class="p">()</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">tick_top</span><span class="p">()</span>
 
-    <span class="n">ax</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">row_labels</span><span class="p">,</span> <span class="n">minor</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">17</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">row_labels</span><span class="p">,</span> <span class="n">minor</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">17</span><span class="p">,</span> 
+                       <span class="n">rotation</span><span class="o">=</span><span class="n">rotate_x_labels</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="n">x_label_alignment</span><span class="p">)</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">(</span><span class="n">column_labels</span><span class="p">,</span> <span class="n">minor</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">17</span><span class="p">)</span>
 
     <span class="n">fig</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">right</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
@@ -291,9 +303,8 @@
     <span class="k">return</span> <span class="n">fig</span></div>
 
 
-<div class="viewcode-block" id="plot_hawkes_kernels"><a class="viewcode-back" href="../../../modules/generated/tick.plot.plot_hawkes_kernels.html#tick.plot.plot_hawkes_kernels">[docs]</a><span class="k">def</span> <span class="nf">plot_hawkes_kernels</span><span class="p">(</span><span class="n">kernel_object</span><span class="p">,</span> <span class="n">support</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hawkes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                        <span class="n">n_points</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">log_scale</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                        <span class="n">min_support</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="plot_hawkes_kernels"><a class="viewcode-back" href="../../../modules/generated/tick.plot.plot_hawkes_kernels.html#tick.plot.plot_hawkes_kernels">[docs]</a><span class="k">def</span> <span class="nf">plot_hawkes_kernels</span><span class="p">(</span><span class="n">kernel_object</span><span class="p">,</span> <span class="n">support</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hawkes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_points</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span>
+                        <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">log_scale</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">min_support</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Generic function to plot Hawkes kernels.</span>
 
 <span class="sd">    Parameters</span>
@@ -346,8 +357,8 @@
     <span class="n">n_nodes</span> <span class="o">=</span> <span class="n">kernel_object</span><span class="o">.</span><span class="n">n_nodes</span>
 
     <span class="k">if</span> <span class="n">log_scale</span><span class="p">:</span>
-        <span class="n">x_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">min_support</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">support</span><span class="p">),</span>
-                               <span class="n">n_points</span><span class="p">)</span>
+        <span class="n">x_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">min_support</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">support</span><span class="p">),</span> <span class="n">n_points</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">x_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">support</span><span class="p">,</span> <span class="n">n_points</span><span class="p">)</span>
 
@@ -394,10 +405,9 @@
     <span class="k">return</span> <span class="n">ax_list_list</span><span class="o">.</span><span class="n">ravel</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">figure</span></div>
 
 
-<span class="k">def</span> <span class="nf">plot_hawkes_baseline_and_kernels</span><span class="p">(</span><span class="n">hawkes_object</span><span class="p">,</span> <span class="n">kernel_support</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                                     <span class="n">hawkes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_points</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                                     <span class="n">log_scale</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">min_support</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span>
-                                     <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">plot_hawkes_baseline_and_kernels</span><span class="p">(</span>
+        <span class="n">hawkes_object</span><span class="p">,</span> <span class="n">kernel_support</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hawkes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_points</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span>
+        <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">log_scale</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">min_support</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Generic function to plot Hawkes baseline and kernels.</span>
 
 <span class="sd">    Parameters</span>
@@ -512,8 +522,9 @@
 <span class="sd">        Normalization factors that have been used</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">y_values_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">y_values_list</span><span class="p">)</span>
-    <span class="n">normalizations</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">trapz</span><span class="p">(</span><span class="n">y_values</span><span class="p">,</span> <span class="n">t_values</span><span class="p">)</span>
-                      <span class="k">for</span> <span class="n">y_values</span> <span class="ow">in</span> <span class="n">y_values_list</span><span class="p">]</span>
+    <span class="n">normalizations</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="mf">1.</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">trapz</span><span class="p">(</span><span class="n">y_values</span><span class="p">,</span> <span class="n">t_values</span><span class="p">)</span> <span class="k">for</span> <span class="n">y_values</span> <span class="ow">in</span> <span class="n">y_values_list</span>
+    <span class="p">]</span>
     <span class="n">normalized_y_values_list</span> <span class="o">=</span> <span class="p">(</span><span class="n">y_values_list</span><span class="o">.</span><span class="n">T</span> <span class="o">*</span> <span class="n">normalizations</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
     <span class="k">return</span> <span class="n">normalized_y_values_list</span><span class="p">,</span> <span class="n">normalizations</span>
 
@@ -535,16 +546,15 @@
     <span class="n">matches</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">n_basis</span> <span class="o">=</span> <span class="n">diff_matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_basis</span><span class="p">):</span>
-        <span class="n">row</span><span class="p">,</span> <span class="n">col</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unravel_index</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">diff_matrix</span><span class="p">),</span>
-                                    <span class="p">(</span><span class="n">n_basis</span><span class="p">,</span> <span class="n">n_basis</span><span class="p">))</span>
+        <span class="n">row</span><span class="p">,</span> <span class="n">col</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unravel_index</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">diff_matrix</span><span class="p">),</span> <span class="p">(</span><span class="n">n_basis</span><span class="p">,</span> <span class="n">n_basis</span><span class="p">))</span>
         <span class="n">diff_matrix</span><span class="p">[</span><span class="n">row</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span>
         <span class="n">diff_matrix</span><span class="p">[:,</span> <span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span>
         <span class="n">matches</span> <span class="o">+=</span> <span class="p">[(</span><span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">)]</span>
     <span class="k">return</span> <span class="n">matches</span>
 
 
-<div class="viewcode-block" id="plot_basis_kernels"><a class="viewcode-back" href="../../../modules/generated/tick.plot.plot_basis_kernels.html#tick.plot.plot_basis_kernels">[docs]</a><span class="k">def</span> <span class="nf">plot_basis_kernels</span><span class="p">(</span><span class="n">learner</span><span class="p">,</span> <span class="n">support</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">basis_kernels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                       <span class="n">n_points</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="plot_basis_kernels"><a class="viewcode-back" href="../../../modules/generated/tick.plot.plot_basis_kernels.html#tick.plot.plot_basis_kernels">[docs]</a><span class="k">def</span> <span class="nf">plot_basis_kernels</span><span class="p">(</span><span class="n">learner</span><span class="p">,</span> <span class="n">support</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">basis_kernels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_points</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span>
+                       <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Function used to plot basis of kernels</span>
 <span class="sd">    </span>
 <span class="sd">    It is used jointly with `tick.hawkes.inference.HawkesBasisKernels` learner class.</span>
@@ -581,22 +591,24 @@
     <span class="k">if</span> <span class="n">basis_kernels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">basis_kernels</span><span class="p">)</span> <span class="o">!=</span> <span class="n">learner</span><span class="o">.</span><span class="n">n_basis</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Learner has </span><span class="si">{}</span><span class="s1"> basis kernels, cannot &#39;</span>
-                             <span class="s1">&#39;compare to </span><span class="si">{}</span><span class="s1"> basis kernels&#39;</span>
-                             <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">learner</span><span class="o">.</span><span class="n">n_basis</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">basis_kernels</span><span class="p">)))</span>
+                             <span class="s1">&#39;compare to </span><span class="si">{}</span><span class="s1"> basis kernels&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                                 <span class="n">learner</span><span class="o">.</span><span class="n">n_basis</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">basis_kernels</span><span class="p">)))</span>
 
         <span class="n">t_values</span> <span class="o">=</span> <span class="n">learner</span><span class="o">.</span><span class="n">kernel_discretization</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
-        <span class="n">basis_values_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">basis_kernel</span><span class="p">(</span><span class="n">t_values</span><span class="p">)</span>
-                             <span class="k">for</span> <span class="n">basis_kernel</span> <span class="ow">in</span> <span class="n">basis_kernels</span><span class="p">]</span>
+        <span class="n">basis_values_list</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">basis_kernel</span><span class="p">(</span><span class="n">t_values</span><span class="p">)</span> <span class="k">for</span> <span class="n">basis_kernel</span> <span class="ow">in</span> <span class="n">basis_kernels</span>
+        <span class="p">]</span>
         <span class="n">normalized_basis_kernels</span><span class="p">,</span> <span class="n">basis_normalizations</span> <span class="o">=</span> \
             <span class="n">_normalize_functions</span><span class="p">(</span><span class="n">basis_values_list</span><span class="p">,</span> <span class="n">t_values</span><span class="p">)</span>
 
         <span class="n">normalized_estimates</span><span class="p">,</span> <span class="n">estimated_normalizations</span> <span class="o">=</span> \
             <span class="n">_normalize_functions</span><span class="p">(</span><span class="n">learner</span><span class="o">.</span><span class="n">basis_kernels</span><span class="p">,</span> <span class="n">t_values</span><span class="p">)</span>
 
-        <span class="n">kernel_diff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">np</span><span class="o">.</span><span class="n">trapz</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">nbf</span> <span class="o">-</span> <span class="n">ne</span><span class="p">),</span> <span class="n">t_values</span><span class="p">)</span>
-                                 <span class="k">for</span> <span class="n">nbf</span> <span class="ow">in</span> <span class="n">normalized_basis_kernels</span><span class="p">]</span>
-                                <span class="k">for</span> <span class="n">ne</span> <span class="ow">in</span> <span class="n">normalized_estimates</span><span class="p">])</span>
+        <span class="n">kernel_diff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">trapz</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">nbf</span> <span class="o">-</span> <span class="n">ne</span><span class="p">),</span> <span class="n">t_values</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">nbf</span> <span class="ow">in</span> <span class="n">normalized_basis_kernels</span>
+        <span class="p">]</span> <span class="k">for</span> <span class="n">ne</span> <span class="ow">in</span> <span class="n">normalized_estimates</span><span class="p">])</span>
 
         <span class="n">matches</span> <span class="o">=</span> <span class="n">_find_best_match</span><span class="p">(</span><span class="n">kernel_diff</span><span class="p">)</span>
 

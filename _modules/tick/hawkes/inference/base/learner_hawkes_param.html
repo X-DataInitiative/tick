@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.hawkes.inference.base.learner_hawkes_param &#8212; tick 0.4.0 documentation</title>
+    <title>tick.hawkes.inference.base.learner_hawkes_param &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../../../../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -306,8 +306,12 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">_attrinfos</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;n_nodes&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
-        <span class="s2">&quot;coeffs&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+        <span class="s2">&quot;n_nodes&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;coeffs&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">},</span>
     <span class="p">}</span>
 
     <span class="n">_solvers</span> <span class="o">=</span> <span class="p">{</span>
@@ -326,22 +330,20 @@
     <span class="p">}</span>
 
     <span class="nd">@actual_kwargs</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">penalty</span><span class="o">=</span><span class="s2">&quot;l2&quot;</span><span class="p">,</span> <span class="n">C</span><span class="o">=</span><span class="mf">1e3</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="s2">&quot;agd&quot;</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">tol</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">print_every</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
-                 <span class="n">record_every</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">elastic_net_ratio</span><span class="o">=</span><span class="mf">0.95</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">penalty</span><span class="o">=</span><span class="s2">&quot;l2&quot;</span><span class="p">,</span> <span class="n">C</span><span class="o">=</span><span class="mf">1e3</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="s2">&quot;agd&quot;</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">,</span>
+                 <span class="n">max_iter</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">print_every</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">record_every</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+                 <span class="n">elastic_net_ratio</span><span class="o">=</span><span class="mf">0.95</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">coeffs</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">events</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="n">extra_prox_kwarg</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;positive&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
 
-        <span class="n">LearnerOptim</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">penalty</span><span class="o">=</span><span class="n">penalty</span><span class="p">,</span> <span class="n">C</span><span class="o">=</span><span class="n">C</span><span class="p">,</span>
-                              <span class="n">solver</span><span class="o">=</span><span class="n">solver</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">,</span>
-                              <span class="n">max_iter</span><span class="o">=</span><span class="n">max_iter</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
-                              <span class="n">warm_start</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">print_every</span><span class="o">=</span><span class="n">print_every</span><span class="p">,</span>
-                              <span class="n">record_every</span><span class="o">=</span><span class="n">record_every</span><span class="p">,</span>
-                              <span class="n">elastic_net_ratio</span><span class="o">=</span><span class="n">elastic_net_ratio</span><span class="p">,</span>
-                              <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span><span class="p">,</span>
-                              <span class="n">extra_prox_kwarg</span><span class="o">=</span><span class="n">extra_prox_kwarg</span><span class="p">)</span>
+        <span class="n">LearnerOptim</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">penalty</span><span class="o">=</span><span class="n">penalty</span><span class="p">,</span> <span class="n">C</span><span class="o">=</span><span class="n">C</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="n">solver</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">,</span>
+            <span class="n">max_iter</span><span class="o">=</span><span class="n">max_iter</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="n">warm_start</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">print_every</span><span class="o">=</span><span class="n">print_every</span><span class="p">,</span> <span class="n">record_every</span><span class="o">=</span><span class="n">record_every</span><span class="p">,</span>
+            <span class="n">elastic_net_ratio</span><span class="o">=</span><span class="n">elastic_net_ratio</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span><span class="p">,</span>
+            <span class="n">extra_prox_kwarg</span><span class="o">=</span><span class="n">extra_prox_kwarg</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">events</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Fit the model according to the given training data.</span>
@@ -382,7 +384,8 @@
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_model_obj</span><span class="p">,</span> <span class="n">ModelLipschitz</span><span class="p">):</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model_obj</span><span class="o">.</span><span class="n">get_lip_max</span><span class="p">()</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;SVRG step needs to be tuned manually&quot;</span><span class="p">,</span> <span class="ne">RuntimeWarning</span><span class="p">)</span>
+                    <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;SVRG step needs to be tuned manually&quot;</span><span class="p">,</span>
+                         <span class="ne">RuntimeWarning</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="mf">1.</span>
             <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver</span> <span class="o">==</span> <span class="s2">&quot;sgd&quot;</span><span class="p">:</span>
                 <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;SGD step needs to be tuned manually&quot;</span><span class="p">,</span> <span class="ne">RuntimeWarning</span><span class="p">)</span>
@@ -400,9 +403,9 @@
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">start</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="p">(</span><span class="n">model_obj</span><span class="o">.</span><span class="n">n_coeffs</span><span class="p">,):</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;start&#39; array has wrong shape </span><span class="si">%s</span><span class="s2"> instead of &quot;</span>
-                                 <span class="s2">&quot;(</span><span class="si">%i</span><span class="s2">, )&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">start</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span>
-                                             <span class="n">model_obj</span><span class="o">.</span><span class="n">n_coeffs</span><span class="p">))</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;&#39;start&#39; array has wrong shape </span><span class="si">%s</span><span class="s2"> instead of &quot;</span>
+                    <span class="s2">&quot;(</span><span class="si">%i</span><span class="s2">, )&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">start</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span> <span class="n">model_obj</span><span class="o">.</span><span class="n">n_coeffs</span><span class="p">))</span>
             <span class="n">coeffs_start</span> <span class="o">=</span> <span class="n">start</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">coeffs_start</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">model_obj</span><span class="o">.</span><span class="n">n_coeffs</span><span class="p">)</span>
@@ -530,10 +533,9 @@
             <span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_construct_model_obj</span><span class="p">()</span>
             <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">end_times</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="o">-</span> <span class="n">model</span><span class="o">.</span><span class="n">loss</span><span class="p">(</span><span class="n">coeffs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="o">-</span><span class="n">model</span><span class="o">.</span><span class="n">loss</span><span class="p">(</span><span class="n">coeffs</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">estimated_intensity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">events</span><span class="p">,</span> <span class="n">intensity_track_step</span><span class="p">,</span>
-                            <span class="n">end_time</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">estimated_intensity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">events</span><span class="p">,</span> <span class="n">intensity_track_step</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Value of intensity for a given realization with the fitted parameters</span>
 
 <span class="sd">        Parameters</span>
@@ -569,8 +571,8 @@
         <span class="n">simu</span><span class="o">.</span><span class="n">set_timestamps</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">end_time</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">simu</span><span class="o">.</span><span class="n">tracked_intensity</span><span class="p">,</span> <span class="n">simu</span><span class="o">.</span><span class="n">intensity_tracked_times</span>
 
-    <span class="k">def</span> <span class="nf">plot_estimated_intensity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">events</span><span class="p">,</span> <span class="n">n_points</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span>
-                                 <span class="n">plot_nodes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">t_min</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">t_max</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="k">def</span> <span class="nf">plot_estimated_intensity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">events</span><span class="p">,</span> <span class="n">n_points</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span> <span class="n">plot_nodes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                 <span class="n">t_min</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">t_max</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                                  <span class="n">intensity_track_step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_jumps</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                                  <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Plot value of intensity for a given realization with the fitted</span>

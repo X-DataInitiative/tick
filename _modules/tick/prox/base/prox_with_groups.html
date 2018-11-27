@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.prox.base.prox_with_groups &#8212; tick 0.4.0 documentation</title>
+    <title>tick.prox.base.prox_with_groups &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../../../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -290,22 +290,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">blocks_length</span> <span class="o">=</span> <span class="n">blocks_length</span>
 
         <span class="c1"># Get the C++ prox class, given by an overloaded method</span>
-        <span class="n">prox_class</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_prox_class</span><span class="p">()</span>
-        <span class="k">if</span> <span class="nb">range</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_prox</span> <span class="o">=</span> <span class="n">prox_class</span><span class="p">(</span><span class="n">strength</span><span class="p">,</span> <span class="n">blocks_start</span><span class="p">,</span> <span class="n">blocks_length</span><span class="p">,</span>
-                                    <span class="n">positive</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">range</span>
-            <span class="n">i_max</span> <span class="o">=</span> <span class="n">blocks_start</span><span class="o">.</span><span class="n">argmax</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">end</span> <span class="o">-</span> <span class="n">start</span> <span class="o">&lt;</span> <span class="n">blocks_start</span><span class="p">[</span><span class="n">i_max</span><span class="p">]</span> <span class="o">+</span> <span class="n">blocks_length</span><span class="p">[</span><span class="n">i_max</span><span class="p">]:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;last block is not within the range &quot;</span>
-                                 <span class="s2">&quot;[0, end-start)&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_prox</span> <span class="o">=</span> <span class="n">prox_class</span><span class="p">(</span><span class="n">strength</span><span class="p">,</span> <span class="n">blocks_start</span><span class="p">,</span> <span class="n">blocks_length</span><span class="p">,</span>
-                                    <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">positive</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">_get_prox_class</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;``_get_prox_class`` not implemented in &#39;</span>
-                                  <span class="s1">&#39;base ProxWithGroups&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_prox</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_cpp_prox</span><span class="p">(</span><span class="s2">&quot;float64&quot;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">n_blocks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -335,6 +320,28 @@
         <span class="k">del</span> <span class="n">dd</span><span class="p">[</span><span class="s2">&quot;blocks_start&quot;</span><span class="p">]</span>
         <span class="k">del</span> <span class="n">dd</span><span class="p">[</span><span class="s2">&quot;blocks_length&quot;</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">dd</span>
+
+    <span class="k">def</span> <span class="nf">_build_cpp_prox</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dtype_or_object_with_dtype</span><span class="p">):</span>
+        <span class="n">dtype_map</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_dtype_map</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extract_dtype</span><span class="p">(</span><span class="n">dtype_or_object_with_dtype</span><span class="p">)</span>
+        <span class="n">prox_class</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_typed_class</span><span class="p">(</span><span class="n">dtype_or_object_with_dtype</span><span class="p">,</span>
+                                           <span class="n">dtype_map</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">range</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">prox_class</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">strength</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">blocks_start</span><span class="p">,</span>
+                              <span class="bp">self</span><span class="o">.</span><span class="n">blocks_length</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">positive</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">range</span>
+            <span class="n">i_max</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">blocks_start</span><span class="o">.</span><span class="n">argmax</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">end</span> <span class="o">-</span> <span class="n">start</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">blocks_start</span><span class="p">[</span><span class="n">i_max</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">blocks_length</span><span class="p">[</span><span class="n">i_max</span><span class="p">]:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;last block is not within the range &quot;</span>
+                                 <span class="s2">&quot;[0, end-start)&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">prox_class</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">strength</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">blocks_start</span><span class="p">,</span>
+                              <span class="bp">self</span><span class="o">.</span><span class="n">blocks_length</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">positive</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_dtype_map</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;This function is expected to</span>
+<span class="s2">                            overriden in a subclass&quot;&quot;&quot;</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
 </pre></div>
 
 </div>

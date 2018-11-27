@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.hawkes.simulation.hawkes_kernels.hawkes_kernel_power_law &#8212; tick 0.4.0 documentation</title>
+    <title>tick.hawkes.simulation.hawkes_kernels.hawkes_kernel_power_law &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../../../../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -204,8 +204,7 @@
 <span></span><span class="c1"># License: BSD 3 clause</span>
 
 <span class="kn">from</span> <span class="nn">tick.hawkes.simulation.build.hawkes_simulation</span> <span class="k">import</span> <span class="p">(</span>
-    <span class="n">HawkesKernelPowerLaw</span> <span class="k">as</span> <span class="n">_HawkesKernelPowerLaw</span>
-<span class="p">)</span>
+    <span class="n">HawkesKernelPowerLaw</span> <span class="k">as</span> <span class="n">_HawkesKernelPowerLaw</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">.hawkes_kernel</span> <span class="k">import</span> <span class="n">HawkesKernel</span>
 
 
@@ -268,8 +267,8 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">multiplier</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="k">return</span> <span class="sa">r</span><span class="s1">&#39;$(</span><span class="si">%g</span><span class="s1">+t)^{-</span><span class="si">%g</span><span class="s1">}$&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">exponent</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">return</span> <span class="sa">r</span><span class="s1">&#39;$</span><span class="si">%g</span><span class="s1"> (</span><span class="si">%g</span><span class="s1">+t)^{-</span><span class="si">%g</span><span class="s1">}$&#39;</span> <span class="o">%</span> <span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">multiplier</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">exponent</span><span class="p">)</span></div>
+                <span class="k">return</span> <span class="sa">r</span><span class="s1">&#39;$</span><span class="si">%g</span><span class="s1"> (</span><span class="si">%g</span><span class="s1">+t)^{-</span><span class="si">%g</span><span class="s1">}$&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">multiplier</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span><span class="p">,</span>
+                                               <span class="bp">self</span><span class="o">.</span><span class="n">exponent</span><span class="p">)</span></div>
 </pre></div>
 
 </div>

@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.solver.BFGS &#8212; tick 0.4.0 documentation</title>
+    <title>tick.solver.BFGS &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -61,7 +61,7 @@
         </button>
         <a class="navbar-brand" href="../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -281,8 +281,12 @@ iterations. It should be accessed using the <code class="docutils literal"><span
 <div><p>Duration of the call to <code class="docutils literal"><span class="pre">solve()</span></code>, in seconds</p>
 </div></blockquote>
 <p><strong>time_end</strong> : <code class="xref py py-obj docutils literal"><span class="pre">str</span></code></p>
-<blockquote class="last">
+<blockquote>
 <div><p>End date of the call to <code class="docutils literal"><span class="pre">solve()</span></code></p>
+</div></blockquote>
+<p><strong>dtype</strong> : <code class="xref py py-obj docutils literal"><span class="pre">{'float64',</span> <span class="pre">'float32'}</span></code>, default=’float64’</p>
+<blockquote class="last">
+<div><p>Type of the arrays used. This value is set from model and prox dtypes.</p>
 </div></blockquote>
 </td>
 </tr>
@@ -361,7 +365,7 @@ avoid its computation in some cases)</p>
 
 <dl class="method">
 <dt id="tick.solver.BFGS.set_model">
-<code class="descname">set_model</code><span class="sig-paren">(</span><em>model: tick.base_model.model.Model</em><span class="sig-paren">)</span><a class="headerlink" href="#tick.solver.BFGS.set_model" title="Permalink to this definition">¶</a></dt>
+<code class="descname">set_model</code><span class="sig-paren">(</span><em>model: tick.base_model.model.Model</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/solver/bfgs.html#BFGS.set_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.solver.BFGS.set_model" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set model in the solver</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -377,7 +381,7 @@ other things)</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> : <code class="xref py py-obj docutils literal"><span class="pre">Solver</span></code></p>
 <blockquote class="last">
-<div><p>The same instance with given model</p>
+<div><p>The <code class="xref py py-obj docutils literal"><span class="pre">Solver</span></code> with given model</p>
 </div></blockquote>
 </td>
 </tr>

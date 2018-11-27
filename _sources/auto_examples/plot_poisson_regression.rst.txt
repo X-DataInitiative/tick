@@ -46,8 +46,8 @@ iterations, on a logarithmic scale.
 .. literalinclude:: plot_poisson_regression.py
     :lines: 32-
 
-**Total running time of the example:**  11.93 seconds
-( 0 minutes  11.93 seconds)
+**Total running time of the example:**  7.83 seconds
+( 0 minutes  7.83 seconds)
     
 Mentioned *tick* classes:
    * `tick.linear_model.PoissonRegression`

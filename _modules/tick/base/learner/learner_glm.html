@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.base.learner.learner_glm &#8212; tick 0.4.0 documentation</title>
+    <title>tick.base.learner.learner_glm &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../../../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -308,26 +308,22 @@
         <span class="p">},</span>
     <span class="p">}</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fit_intercept</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">penalty</span><span class="o">=</span><span class="s1">&#39;l2&#39;</span><span class="p">,</span> <span class="n">C</span><span class="o">=</span><span class="mf">1e3</span><span class="p">,</span>
-                 <span class="n">solver</span><span class="o">=</span><span class="s2">&quot;svrg&quot;</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
-                 <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">warm_start</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">print_every</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
-                 <span class="n">record_every</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">sdca_ridge_strength</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span>
-                 <span class="n">elastic_net_ratio</span><span class="o">=</span><span class="mf">0.95</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">blocks_start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">blocks_length</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fit_intercept</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">penalty</span><span class="o">=</span><span class="s1">&#39;l2&#39;</span><span class="p">,</span> <span class="n">C</span><span class="o">=</span><span class="mf">1e3</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="s2">&quot;svrg&quot;</span><span class="p">,</span>
+                 <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                 <span class="n">warm_start</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">print_every</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">record_every</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+                 <span class="n">sdca_ridge_strength</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span> <span class="n">elastic_net_ratio</span><span class="o">=</span><span class="mf">0.95</span><span class="p">,</span>
+                 <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">blocks_start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">blocks_length</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
         <span class="n">extra_model_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;fit_intercept&#39;</span><span class="p">:</span> <span class="n">fit_intercept</span><span class="p">}</span>
 
-        <span class="n">LearnerOptim</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">penalty</span><span class="o">=</span><span class="n">penalty</span><span class="p">,</span> <span class="n">C</span><span class="o">=</span><span class="n">C</span><span class="p">,</span>
-                              <span class="n">solver</span><span class="o">=</span><span class="n">solver</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">,</span>
-                              <span class="n">max_iter</span><span class="o">=</span><span class="n">max_iter</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
-                              <span class="n">warm_start</span><span class="o">=</span><span class="n">warm_start</span><span class="p">,</span> <span class="n">print_every</span><span class="o">=</span><span class="n">print_every</span><span class="p">,</span>
-                              <span class="n">record_every</span><span class="o">=</span><span class="n">record_every</span><span class="p">,</span>
-                              <span class="n">sdca_ridge_strength</span><span class="o">=</span><span class="n">sdca_ridge_strength</span><span class="p">,</span>
-                              <span class="n">elastic_net_ratio</span><span class="o">=</span><span class="n">elastic_net_ratio</span><span class="p">,</span>
-                              <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span><span class="p">,</span>
-                              <span class="n">extra_model_kwargs</span><span class="o">=</span><span class="n">extra_model_kwargs</span><span class="p">,</span>
-                              <span class="n">blocks_start</span><span class="o">=</span><span class="n">blocks_start</span><span class="p">,</span>
-                              <span class="n">blocks_length</span><span class="o">=</span><span class="n">blocks_length</span><span class="p">)</span>
+        <span class="n">LearnerOptim</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">penalty</span><span class="o">=</span><span class="n">penalty</span><span class="p">,</span> <span class="n">C</span><span class="o">=</span><span class="n">C</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="n">solver</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">,</span>
+            <span class="n">max_iter</span><span class="o">=</span><span class="n">max_iter</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="n">warm_start</span><span class="o">=</span><span class="n">warm_start</span><span class="p">,</span>
+            <span class="n">print_every</span><span class="o">=</span><span class="n">print_every</span><span class="p">,</span> <span class="n">record_every</span><span class="o">=</span><span class="n">record_every</span><span class="p">,</span>
+            <span class="n">sdca_ridge_strength</span><span class="o">=</span><span class="n">sdca_ridge_strength</span><span class="p">,</span>
+            <span class="n">elastic_net_ratio</span><span class="o">=</span><span class="n">elastic_net_ratio</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span><span class="p">,</span>
+            <span class="n">extra_model_kwargs</span><span class="o">=</span><span class="n">extra_model_kwargs</span><span class="p">,</span> <span class="n">blocks_start</span><span class="o">=</span><span class="n">blocks_start</span><span class="p">,</span>
+            <span class="n">blocks_length</span><span class="o">=</span><span class="n">blocks_length</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">fit_intercept</span> <span class="o">=</span> <span class="n">fit_intercept</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="kc">None</span>
@@ -374,7 +370,8 @@
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_model_obj</span><span class="p">,</span> <span class="n">ModelLipschitz</span><span class="p">):</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model_obj</span><span class="o">.</span><span class="n">get_lip_max</span><span class="p">()</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;SVRG step needs to be tuned manually&#39;</span><span class="p">,</span> <span class="ne">RuntimeWarning</span><span class="p">)</span>
+                    <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;SVRG step needs to be tuned manually&#39;</span><span class="p">,</span>
+                         <span class="ne">RuntimeWarning</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="mf">1.</span>
             <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver</span> <span class="o">==</span> <span class="s1">&#39;sgd&#39;</span><span class="p">:</span>
                 <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;SGD step needs to be tuned manually&#39;</span><span class="p">,</span> <span class="ne">RuntimeWarning</span><span class="p">)</span>
@@ -428,10 +425,15 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">dd</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s1">&#39;fit_intercept&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">fit_intercept</span><span class="p">,</span>
-            <span class="s1">&#39;penalty&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">penalty</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">C</span><span class="p">,</span>
-            <span class="s1">&#39;solver&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="p">,</span> <span class="s1">&#39;step&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">,</span> <span class="s1">&#39;tol&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">tol</span><span class="p">,</span>
-            <span class="s1">&#39;max_iter&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_iter</span><span class="p">,</span> <span class="s1">&#39;verbose&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">,</span>
-            <span class="s1">&#39;warm_start&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">warm_start</span><span class="p">,</span> <span class="s1">&#39;print_every&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">print_every</span><span class="p">,</span>
+            <span class="s1">&#39;penalty&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">penalty</span><span class="p">,</span>
+            <span class="s1">&#39;C&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">C</span><span class="p">,</span>
+            <span class="s1">&#39;solver&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="p">,</span>
+            <span class="s1">&#39;step&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">,</span>
+            <span class="s1">&#39;tol&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">tol</span><span class="p">,</span>
+            <span class="s1">&#39;max_iter&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_iter</span><span class="p">,</span>
+            <span class="s1">&#39;verbose&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">,</span>
+            <span class="s1">&#39;warm_start&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">warm_start</span><span class="p">,</span>
+            <span class="s1">&#39;print_every&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">print_every</span><span class="p">,</span>
             <span class="s1">&#39;record_every&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">record_every</span><span class="p">,</span>
             <span class="s1">&#39;sdca_ridge_strength&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sdca_ridge_strength</span><span class="p">,</span>
             <span class="s1">&#39;elastic_net_ratio&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">elastic_net_ratio</span><span class="p">,</span>

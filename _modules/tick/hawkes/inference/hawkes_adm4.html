@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.hawkes.inference.hawkes_adm4 &#8212; tick 0.4.0 documentation</title>
+    <title>tick.hawkes.inference.hawkes_adm4 &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../../../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -207,9 +207,8 @@
 
 <span class="kn">from</span> <span class="nn">tick.hawkes</span> <span class="k">import</span> <span class="n">ModelHawkesExpKernLogLik</span><span class="p">,</span> <span class="n">SimuHawkesExpKernels</span>
 <span class="kn">from</span> <span class="nn">tick.hawkes.inference.base</span> <span class="k">import</span> <span class="n">LearnerHawkesNoParam</span>
-<span class="kn">from</span> <span class="nn">tick.hawkes.inference.build.hawkes_inference</span> <span class="k">import</span> <span class="p">(</span>
-    <span class="n">HawkesADM4</span> <span class="k">as</span> <span class="n">_HawkesADM4</span>
-<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">tick.hawkes.inference.build.hawkes_inference</span> <span class="k">import</span> <span class="p">(</span><span class="n">HawkesADM4</span> <span class="k">as</span>
+                                                          <span class="n">_HawkesADM4</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">tick.prox</span> <span class="k">import</span> <span class="n">ProxNuclear</span>
 <span class="kn">from</span> <span class="nn">tick.prox.prox_l1</span> <span class="k">import</span> <span class="n">ProxL1</span>
 <span class="kn">from</span> <span class="nn">tick.solver.base.utils</span> <span class="k">import</span> <span class="n">relative_distance</span>
@@ -334,21 +333,39 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">_attrinfos</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;_learner&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
-        <span class="s2">&quot;_model&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+        <span class="s2">&quot;_learner&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;_model&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">},</span>
         <span class="s2">&quot;decay&quot;</span><span class="p">:</span> <span class="p">{</span>
             <span class="s2">&quot;cpp_setter&quot;</span><span class="p">:</span> <span class="s2">&quot;set_decay&quot;</span>
         <span class="p">},</span>
         <span class="s2">&quot;rho&quot;</span><span class="p">:</span> <span class="p">{</span>
             <span class="s2">&quot;cpp_setter&quot;</span><span class="p">:</span> <span class="s2">&quot;set_rho&quot;</span>
         <span class="p">},</span>
-        <span class="s2">&quot;_C&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
-        <span class="s2">&quot;baseline&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
-        <span class="s2">&quot;adjacency&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
-        <span class="s2">&quot;_prox_l1&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
-        <span class="s2">&quot;_prox_nuclear&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
-        <span class="s2">&quot;_lasso_nuclear_ratio&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
-        <span class="s2">&quot;approx&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
+        <span class="s2">&quot;_C&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;baseline&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;adjacency&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;_prox_l1&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;_prox_nuclear&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;_lasso_nuclear_ratio&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;approx&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">}</span>
     <span class="p">}</span>
 
 <div class="viewcode-block" id="HawkesADM4.__init__"><a class="viewcode-back" href="../../../../modules/generated/tick.hawkes.HawkesADM4.html#tick.hawkes.HawkesADM4.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">decay</span><span class="p">,</span> <span class="n">C</span><span class="o">=</span><span class="mf">1e3</span><span class="p">,</span> <span class="n">lasso_nuclear_ratio</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
@@ -356,10 +373,9 @@
                  <span class="n">record_every</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">rho</span><span class="o">=.</span><span class="mi">1</span><span class="p">,</span> <span class="n">approx</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">em_max_iter</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
                  <span class="n">em_tol</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
-        <span class="n">LearnerHawkesNoParam</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="n">max_iter</span><span class="p">,</span>
-                                      <span class="n">print_every</span><span class="o">=</span><span class="n">print_every</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">,</span>
-                                      <span class="n">n_threads</span><span class="o">=</span><span class="n">n_threads</span><span class="p">,</span>
-                                      <span class="n">record_every</span><span class="o">=</span><span class="n">record_every</span><span class="p">)</span>
+        <span class="n">LearnerHawkesNoParam</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="n">max_iter</span><span class="p">,</span> <span class="n">print_every</span><span class="o">=</span><span class="n">print_every</span><span class="p">,</span>
+            <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">,</span> <span class="n">n_threads</span><span class="o">=</span><span class="n">n_threads</span><span class="p">,</span> <span class="n">record_every</span><span class="o">=</span><span class="n">record_every</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">baseline</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">adjacency</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_C</span> <span class="o">=</span> <span class="mi">0</span>
@@ -474,23 +490,23 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The parameter rho equals </span><span class="si">{}</span><span class="s2">, while it should &quot;</span>
                              <span class="s2">&quot;be strictly positive.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rho</span><span class="p">))</span>
 
-        <span class="n">objective</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">objective</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coeffs</span><span class="p">)</span>
-
         <span class="n">max_relative_distance</span> <span class="o">=</span> <span class="mf">1e-1</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_iter</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
-            <span class="n">prev_objective</span> <span class="o">=</span> <span class="n">objective</span>
-            <span class="n">prev_baseline</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">baseline</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-            <span class="n">prev_adjacency</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">adjacency</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_iter</span><span class="p">):</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_should_record_iter</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
+                <span class="n">prev_objective</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">objective</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coeffs</span><span class="p">)</span>
+                <span class="n">prev_baseline</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">baseline</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                <span class="n">prev_adjacency</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">adjacency</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
             <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">em_max_iter</span><span class="p">):</span>
                 <span class="n">inner_prev_baseline</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">baseline</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
                 <span class="n">inner_prev_adjacency</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">adjacency</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_learner</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">baseline</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">adjacency</span><span class="p">,</span>
-                                    <span class="n">z1</span><span class="p">,</span> <span class="n">z2</span><span class="p">,</span> <span class="n">u1</span><span class="p">,</span> <span class="n">u2</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_learner</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">baseline</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">adjacency</span><span class="p">,</span> <span class="n">z1</span><span class="p">,</span> <span class="n">z2</span><span class="p">,</span> <span class="n">u1</span><span class="p">,</span>
+                                    <span class="n">u2</span><span class="p">)</span>
                 <span class="n">inner_rel_baseline</span> <span class="o">=</span> <span class="n">relative_distance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">baseline</span><span class="p">,</span>
                                                        <span class="n">inner_prev_baseline</span><span class="p">)</span>
-                <span class="n">inner_rel_adjacency</span> <span class="o">=</span> <span class="n">relative_distance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">adjacency</span><span class="p">,</span>
-                                                        <span class="n">inner_prev_adjacency</span><span class="p">)</span>
+                <span class="n">inner_rel_adjacency</span> <span class="o">=</span> <span class="n">relative_distance</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">adjacency</span><span class="p">,</span> <span class="n">inner_prev_adjacency</span><span class="p">)</span>
 
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">em_tol</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">inner_tol</span> <span class="o">=</span> <span class="n">max_relative_distance</span> <span class="o">*</span> <span class="mf">1e-2</span>
@@ -510,25 +526,27 @@
             <span class="n">u1</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">adjacency</span> <span class="o">-</span> <span class="n">z1</span>
             <span class="n">u2</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">adjacency</span> <span class="o">-</span> <span class="n">z2</span>
 
-            <span class="n">objective</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">objective</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coeffs</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_should_record_iter</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
+                <span class="n">objective</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">objective</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coeffs</span><span class="p">)</span>
 
-            <span class="n">rel_obj</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">objective</span> <span class="o">-</span> <span class="n">prev_objective</span><span class="p">)</span> <span class="o">/</span> <span class="nb">abs</span><span class="p">(</span><span class="n">prev_objective</span><span class="p">)</span>
-            <span class="n">rel_baseline</span> <span class="o">=</span> <span class="n">relative_distance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">baseline</span><span class="p">,</span> <span class="n">prev_baseline</span><span class="p">)</span>
-            <span class="n">rel_adjacency</span> <span class="o">=</span> <span class="n">relative_distance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">adjacency</span><span class="p">,</span> <span class="n">prev_adjacency</span><span class="p">)</span>
+                <span class="n">rel_obj</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">objective</span> <span class="o">-</span> <span class="n">prev_objective</span><span class="p">)</span> <span class="o">/</span> <span class="nb">abs</span><span class="p">(</span><span class="n">prev_objective</span><span class="p">)</span>
+                <span class="n">rel_baseline</span> <span class="o">=</span> <span class="n">relative_distance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">baseline</span><span class="p">,</span> <span class="n">prev_baseline</span><span class="p">)</span>
+                <span class="n">rel_adjacency</span> <span class="o">=</span> <span class="n">relative_distance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">adjacency</span><span class="p">,</span>
+                                                  <span class="n">prev_adjacency</span><span class="p">)</span>
 
-            <span class="n">max_relative_distance</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">rel_baseline</span><span class="p">,</span> <span class="n">rel_adjacency</span><span class="p">)</span>
-            <span class="c1"># We perform at least 5 iterations as at start we sometimes reach a</span>
-            <span class="c1"># low tolerance if inner_tol is too low</span>
-            <span class="n">converged</span> <span class="o">=</span> <span class="n">max_relative_distance</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tol</span> <span class="ow">and</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">5</span>
-            <span class="n">force_print</span> <span class="o">=</span> <span class="p">(</span><span class="n">i</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_iter</span><span class="p">)</span> <span class="ow">or</span> <span class="n">converged</span>
+                <span class="n">max_relative_distance</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">rel_baseline</span><span class="p">,</span> <span class="n">rel_adjacency</span><span class="p">)</span>
+                <span class="c1"># We perform at least 5 iterations as at start we sometimes</span>
+                <span class="c1"># reach a low tolerance if inner_tol is too low</span>
+                <span class="n">converged</span> <span class="o">=</span> <span class="n">max_relative_distance</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tol</span> <span class="ow">and</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">5</span>
+                <span class="n">force_print</span> <span class="o">=</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_iter</span><span class="p">)</span> <span class="ow">or</span> <span class="n">converged</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">_handle_history</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="n">objective</span><span class="p">,</span> <span class="n">rel_obj</span><span class="o">=</span><span class="n">rel_obj</span><span class="p">,</span>
-                                 <span class="n">rel_baseline</span><span class="o">=</span><span class="n">rel_baseline</span><span class="p">,</span>
-                                 <span class="n">rel_adjacency</span><span class="o">=</span><span class="n">rel_adjacency</span><span class="p">,</span>
-                                 <span class="n">force</span><span class="o">=</span><span class="n">force_print</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_handle_history</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="n">objective</span><span class="p">,</span> <span class="n">rel_obj</span><span class="o">=</span><span class="n">rel_obj</span><span class="p">,</span>
+                                     <span class="n">rel_baseline</span><span class="o">=</span><span class="n">rel_baseline</span><span class="p">,</span>
+                                     <span class="n">rel_adjacency</span><span class="o">=</span><span class="n">rel_adjacency</span><span class="p">,</span>
+                                     <span class="n">force</span><span class="o">=</span><span class="n">force_print</span><span class="p">)</span>
 
-            <span class="k">if</span> <span class="n">converged</span><span class="p">:</span>
-                <span class="k">break</span>
+                <span class="k">if</span> <span class="n">converged</span><span class="p">:</span>
+                    <span class="k">break</span>
 
 <div class="viewcode-block" id="HawkesADM4.objective"><a class="viewcode-back" href="../../../../modules/generated/tick.hawkes.HawkesADM4.html#tick.hawkes.HawkesADM4.objective">[docs]</a>    <span class="k">def</span> <span class="nf">objective</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coeffs</span><span class="p">,</span> <span class="n">loss</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Compute the objective minimized by the learner at `coeffs`</span>
@@ -604,8 +622,7 @@
         <span class="sd">&quot;&quot;&quot;Create simulation object corresponding to the obtained coefficients</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">SimuHawkesExpKernels</span><span class="p">(</span><span class="n">adjacency</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">adjacency</span><span class="p">,</span>
-                                    <span class="n">decays</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">decay</span><span class="p">,</span>
-                                    <span class="n">baseline</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">baseline</span><span class="p">)</span>
+                                    <span class="n">decays</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">decay</span><span class="p">,</span> <span class="n">baseline</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">baseline</span><span class="p">)</span>
 
 <div class="viewcode-block" id="HawkesADM4.get_kernel_supports"><a class="viewcode-back" href="../../../../modules/generated/tick.hawkes.HawkesADM4.html#tick.hawkes.HawkesADM4.get_kernel_supports">[docs]</a>    <span class="k">def</span> <span class="nf">get_kernel_supports</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Computes kernel support. This makes our learner compliant with</span>
@@ -660,7 +677,8 @@
         <span class="n">get_norm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="k">lambda</span> <span class="n">kernel</span><span class="p">:</span> <span class="n">kernel</span><span class="o">.</span><span class="n">get_norm</span><span class="p">())</span>
         <span class="k">return</span> <span class="n">get_norm</span><span class="p">(</span><span class="n">corresponding_simu</span><span class="o">.</span><span class="n">kernels</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="HawkesADM4.score"><a class="viewcode-back" href="../../../../modules/generated/tick.hawkes.HawkesADM4.html#tick.hawkes.HawkesADM4.score">[docs]</a>    <span class="k">def</span> <span class="nf">score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">events</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end_times</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">baseline</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">adjacency</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="HawkesADM4.score"><a class="viewcode-back" href="../../../../modules/generated/tick.hawkes.HawkesADM4.html#tick.hawkes.HawkesADM4.score">[docs]</a>    <span class="k">def</span> <span class="nf">score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">events</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end_times</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">baseline</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+              <span class="n">adjacency</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Compute score metric</span>
 <span class="sd">        Score metric is log likelihood (the higher the better)</span>
 
@@ -713,7 +731,7 @@
                                              <span class="n">n_threads</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_threads</span><span class="p">)</span>
             <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">end_times</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="o">-</span> <span class="n">model</span><span class="o">.</span><span class="n">loss</span><span class="p">(</span><span class="n">coeffs</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="o">-</span><span class="n">model</span><span class="o">.</span><span class="n">loss</span><span class="p">(</span><span class="n">coeffs</span><span class="p">)</span></div></div>
 </pre></div>
 
 </div>

@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.simulation.weights &#8212; tick 0.4.0 documentation</title>
+    <title>tick.simulation.weights &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -203,16 +203,13 @@
   <h1>Source code for tick.simulation.weights</h1><div class="highlight"><pre>
 <span></span><span class="c1"># License: BSD 3 clause</span>
 
-
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">warnings</span> <span class="k">import</span> <span class="n">warn</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 
-<div class="viewcode-block" id="weights_sparse_gauss"><a class="viewcode-back" href="../../../modules/generated/tick.simulation.weights_sparse_gauss.html#tick.simulation.weights_sparse_gauss">[docs]</a><span class="k">def</span> <span class="nf">weights_sparse_gauss</span><span class="p">(</span><span class="n">n_weights</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
-                         <span class="n">nnz</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
-                         <span class="n">std</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<div class="viewcode-block" id="weights_sparse_gauss"><a class="viewcode-back" href="../../../modules/generated/tick.simulation.weights_sparse_gauss.html#tick.simulation.weights_sparse_gauss">[docs]</a><span class="k">def</span> <span class="nf">weights_sparse_gauss</span><span class="p">(</span><span class="n">n_weights</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span> <span class="n">nnz</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="n">std</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.</span><span class="p">,</span>
+                         <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float64&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Sparse and gaussian model weights generator</span>
-<span class="sd">    </span>
 <span class="sd">    Instance of weights for a model, given by a sparse vector,</span>
 <span class="sd">    where non-zero coordinates (chosen at random) are centered Gaussian</span>
 <span class="sd">    with given standard-deviation</span>
@@ -228,6 +225,9 @@
 <span class="sd">    std : `float`, default=1.</span>
 <span class="sd">        Standard deviation of the Gaussian non-zero entries</span>
 
+<span class="sd">    dtype : `{&#39;float64&#39;, &#39;float32&#39;}`, default=&#39;float64&#39;</span>
+<span class="sd">        Type of the arrays used.</span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    output : `numpy.ndarray`, shape=(n_weights,)</span>
@@ -237,7 +237,7 @@
         <span class="n">warn</span><span class="p">((</span><span class="s2">&quot;nnz must be smaller than n_weights &quot;</span>
               <span class="s2">&quot;using nnz=n_weights instead&quot;</span><span class="p">))</span>
         <span class="n">nnz</span> <span class="o">=</span> <span class="n">n_weights</span>
-    <span class="n">weights0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_weights</span><span class="p">)</span>
+    <span class="n">weights0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_weights</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
     <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n_weights</span><span class="p">)</span>
     <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
     <span class="n">weights0</span><span class="p">[</span><span class="n">idx</span><span class="p">[:</span><span class="n">nnz</span><span class="p">]]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">nnz</span><span class="p">)</span>
@@ -245,11 +245,10 @@
     <span class="k">return</span> <span class="n">weights0</span></div>
 
 
-<div class="viewcode-block" id="weights_sparse_exp"><a class="viewcode-back" href="../../../modules/generated/tick.simulation.weights_sparse_exp.html#tick.simulation.weights_sparse_exp">[docs]</a><span class="k">def</span> <span class="nf">weights_sparse_exp</span><span class="p">(</span><span class="n">n_weigths</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
-                       <span class="n">nnz</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
-                       <span class="n">scale</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">10.</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<div class="viewcode-block" id="weights_sparse_exp"><a class="viewcode-back" href="../../../modules/generated/tick.simulation.weights_sparse_exp.html#tick.simulation.weights_sparse_exp">[docs]</a><span class="k">def</span> <span class="nf">weights_sparse_exp</span><span class="p">(</span><span class="n">n_weigths</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span> <span class="n">nnz</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="n">scale</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">10.</span><span class="p">,</span>
+                       <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float64&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Sparse and exponential model weights generator</span>
-<span class="sd">    </span>
+
 <span class="sd">    Instance of weights for a model, given by a vector with</span>
 <span class="sd">    exponentially decaying components: the j-th entry is given by</span>
 
@@ -268,6 +267,9 @@
 <span class="sd">    scale : `float`, default=10.</span>
 <span class="sd">        The scaling of the exponential decay</span>
 
+<span class="sd">    dtype : `{&#39;float64&#39;, &#39;float32&#39;}`, default=&#39;float64&#39;</span>
+<span class="sd">        Type of the arrays used.</span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    output : np.ndarray, shape=(n_weigths,)</span>
@@ -278,7 +280,7 @@
               <span class="s2">&quot;using nnz=n_weigths instead&quot;</span><span class="p">))</span>
         <span class="n">nnz</span> <span class="o">=</span> <span class="n">n_weigths</span>
     <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">nnz</span><span class="p">)</span>
-    <span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_weigths</span><span class="p">)</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_weigths</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
     <span class="n">out</span><span class="p">[:</span><span class="n">nnz</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">idx</span> <span class="o">/</span> <span class="n">scale</span><span class="p">)</span>
     <span class="n">out</span><span class="p">[:</span><span class="n">nnz</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">*=</span> <span class="o">-</span><span class="mi">1</span>
     <span class="k">return</span> <span class="n">out</span></div>

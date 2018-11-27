@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.hawkes.simulation.hawkes_kernels.hawkes_kernel &#8212; tick 0.4.0 documentation</title>
+    <title>tick.hawkes.simulation.hawkes_kernels.hawkes_kernel &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../../../../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -204,20 +204,15 @@
 <span></span><span class="c1"># License: BSD 3 clause</span>
 
 <span class="kn">from</span> <span class="nn">tick.base</span> <span class="k">import</span> <span class="n">Base</span>
-<span class="kn">from</span> <span class="nn">tick.hawkes.simulation.build.hawkes_simulation</span> <span class="k">import</span> <span class="p">(</span>
-    <span class="n">HawkesKernel</span> <span class="k">as</span> <span class="n">_HawkesKernel</span>
-<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">tick.hawkes.simulation.build.hawkes_simulation</span> <span class="k">import</span> <span class="p">(</span><span class="n">HawkesKernel</span> <span class="k">as</span>
+                                                            <span class="n">_HawkesKernel</span><span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">HawkesKernel</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; The kernel class allows to define 1 element of the kernel matrix of a</span>
 <span class="sd">    Hawkes process</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">_attrinfos</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;_kernel&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
+    <span class="n">_attrinfos</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;_kernel&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}}</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">Base</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>

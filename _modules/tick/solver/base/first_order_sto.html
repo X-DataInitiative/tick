@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.solver.base.first_order_sto &#8212; tick 0.4.0 documentation</title>
+    <title>tick.solver.base.first_order_sto &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../../../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -204,6 +204,7 @@
 <span></span><span class="c1"># License: BSD 3 clause</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">abc</span> <span class="k">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
 
 <span class="kn">from</span> <span class="nn">tick.base_model</span> <span class="k">import</span> <span class="n">Model</span>
 <span class="kn">from</span> <span class="nn">tick.prox.base</span> <span class="k">import</span> <span class="n">Prox</span>
@@ -211,7 +212,6 @@
 <span class="kn">from</span> <span class="nn">.utils</span> <span class="k">import</span> <span class="n">relative_distance</span>
 
 <span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;stephanegaiffas&#39;</span>
-
 
 <span class="c1"># TODO: property for step that sets it in the C++</span>
 
@@ -279,14 +279,10 @@
 <span class="sd">    This class should not be used by end-users</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">_attrinfos</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;_step&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
+    <span class="n">_attrinfos</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;_step&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}}</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">epoch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                 <span class="n">rand_type</span><span class="o">=</span><span class="s2">&quot;unif&quot;</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                 <span class="n">rand_type</span><span class="o">=</span><span class="s2">&quot;unif&quot;</span><span class="p">,</span> <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                  <span class="n">print_every</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">record_every</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">seed</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_step</span> <span class="o">=</span> <span class="kc">None</span>
@@ -298,6 +294,8 @@
         <span class="n">SolverFirstOrder</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="n">max_iter</span><span class="p">,</span>
                                   <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="n">print_every</span><span class="o">=</span><span class="n">print_every</span><span class="p">,</span>
                                   <span class="n">record_every</span><span class="o">=</span><span class="n">record_every</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_cpp_solver</span><span class="p">(</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">set_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set model in the solver</span>
@@ -314,6 +312,11 @@
 <span class="sd">        output : `Solver`</span>
 <span class="sd">            The `Solver` with given model</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validate_model</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">model</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_solver</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_cpp_solver</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">dtype</span>
         <span class="n">SolverFirstOrder</span><span class="o">.</span><span class="n">set_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
         <span class="n">SolverSto</span><span class="o">.</span><span class="n">set_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span>
@@ -352,6 +355,19 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_solver</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_solver</span><span class="o">.</span><span class="n">set_step</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
 
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">record_every</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_solver&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_solver</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_solver</span><span class="o">.</span><span class="n">get_record_every</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_record_every</span>
+
+    <span class="nd">@record_every</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">record_every</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_record_every</span> <span class="o">=</span> <span class="n">val</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_solver&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_solver</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_solver</span><span class="o">.</span><span class="n">set_record_every</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">_solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x0</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Launch the solver</span>
@@ -373,7 +389,6 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">SDCA</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">step</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="n">step</span>
-
             <span class="n">step</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">minimizer</span><span class="p">,</span> <span class="n">prev_minimizer</span> <span class="o">=</span> \
                 <span class="bp">self</span><span class="o">.</span><span class="n">_initialize_values</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">n_empty_vectors</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_solver</span><span class="o">.</span><span class="n">set_starting_iterate</span><span class="p">(</span><span class="n">minimizer</span><span class="p">)</span>
@@ -385,29 +400,102 @@
             <span class="k">if</span> <span class="n">x0</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_solver</span><span class="o">.</span><span class="n">set_starting_iterate</span><span class="p">(</span><span class="n">x0</span><span class="p">)</span>
 
-        <span class="c1"># At each iteration we call self._solver.solve that does a full</span>
-        <span class="c1"># epoch</span>
-        <span class="k">for</span> <span class="n">n_iter</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_iter</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
-            <span class="n">prev_minimizer</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">minimizer</span>
-            <span class="n">prev_obj</span> <span class="o">=</span> <span class="n">obj</span>
-            <span class="c1"># Launch one epoch using the wrapped C++ solver</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_solver</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_solver</span><span class="o">.</span><span class="n">get_minimizer</span><span class="p">(</span><span class="n">minimizer</span><span class="p">)</span>
-            <span class="c1"># The step might be modified by the C++ solver</span>
-            <span class="c1"># step = self._solver.get_step()</span>
-            <span class="n">obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">objective</span><span class="p">(</span><span class="n">minimizer</span><span class="p">)</span>
-            <span class="n">rel_delta</span> <span class="o">=</span> <span class="n">relative_distance</span><span class="p">(</span><span class="n">minimizer</span><span class="p">,</span> <span class="n">prev_minimizer</span><span class="p">)</span>
-            <span class="n">rel_obj</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">obj</span> <span class="o">-</span> <span class="n">prev_obj</span><span class="p">)</span> <span class="o">/</span> <span class="nb">abs</span><span class="p">(</span><span class="n">prev_obj</span><span class="p">)</span>
-            <span class="n">converged</span> <span class="o">=</span> <span class="n">rel_obj</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">tol</span>
-            <span class="c1"># If converged, we stop the loop and record the last step</span>
-            <span class="c1"># in history</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_handle_history</span><span class="p">(</span><span class="n">n_iter</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="n">converged</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="n">obj</span><span class="p">,</span>
-                                 <span class="n">x</span><span class="o">=</span><span class="n">minimizer</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="n">rel_delta</span><span class="o">=</span><span class="n">rel_delta</span><span class="p">,</span>
-                                 <span class="n">rel_obj</span><span class="o">=</span><span class="n">rel_obj</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">converged</span><span class="p">:</span>
-                <span class="k">break</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">tol</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_solve_with_printing</span><span class="p">(</span><span class="n">prev_minimizer</span><span class="p">,</span> <span class="n">minimizer</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_solve_and_record_in_cpp</span><span class="p">(</span><span class="n">minimizer</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_solver</span><span class="o">.</span><span class="n">get_minimizer</span><span class="p">(</span><span class="n">minimizer</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;solution&quot;</span><span class="p">,</span> <span class="n">minimizer</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">minimizer</span>
+
+    <span class="k">def</span> <span class="nf">_solve_with_printing</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prev_minimizer</span><span class="p">,</span> <span class="n">minimizer</span><span class="p">):</span>
+        <span class="c1"># At each iteration we call self._solver.solve that does a full</span>
+        <span class="c1"># epoch</span>
+        <span class="n">prev_minimizer</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">minimizer</span>
+        <span class="n">prev_obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">objective</span><span class="p">(</span><span class="n">prev_minimizer</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">n_iter</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_iter</span><span class="p">):</span>
+
+            <span class="c1"># Launch one epoch using the wrapped C++ solver</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_solver</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+
+            <span class="c1"># Let&#39;s record metrics</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_should_record_iter</span><span class="p">(</span><span class="n">n_iter</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_solver</span><span class="o">.</span><span class="n">get_minimizer</span><span class="p">(</span><span class="n">minimizer</span><span class="p">)</span>
+                <span class="c1"># The step might be modified by the C++ solver</span>
+                <span class="c1"># step = self._solver.get_step()</span>
+                <span class="n">obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">objective</span><span class="p">(</span><span class="n">minimizer</span><span class="p">)</span>
+                <span class="n">rel_delta</span> <span class="o">=</span> <span class="n">relative_distance</span><span class="p">(</span><span class="n">minimizer</span><span class="p">,</span> <span class="n">prev_minimizer</span><span class="p">)</span>
+                <span class="n">rel_obj</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">obj</span> <span class="o">-</span> <span class="n">prev_obj</span><span class="p">)</span> <span class="o">/</span> <span class="nb">abs</span><span class="p">(</span><span class="n">prev_obj</span><span class="p">)</span> \
+                    <span class="k">if</span> <span class="n">prev_obj</span> <span class="o">!=</span> <span class="mi">0</span> <span class="k">else</span> <span class="nb">abs</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+                <span class="n">converged</span> <span class="o">=</span> <span class="n">rel_obj</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">tol</span>
+                <span class="c1"># If converged, we stop the loop and record the last step</span>
+                <span class="c1"># in history</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_handle_history</span><span class="p">(</span><span class="n">n_iter</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="n">converged</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="n">obj</span><span class="p">,</span>
+                                     <span class="n">x</span><span class="o">=</span><span class="n">minimizer</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="n">rel_delta</span><span class="o">=</span><span class="n">rel_delta</span><span class="p">,</span>
+                                     <span class="n">rel_obj</span><span class="o">=</span><span class="n">rel_obj</span><span class="p">)</span>
+                <span class="n">prev_minimizer</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">minimizer</span>
+                <span class="n">prev_obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">objective</span><span class="p">(</span><span class="n">prev_minimizer</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">converged</span><span class="p">:</span>
+                    <span class="k">break</span>
+
+    <span class="k">def</span> <span class="nf">_solve_and_record_in_cpp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">minimizer</span><span class="p">):</span>
+        <span class="n">first_minimizer</span> <span class="o">=</span> <span class="n">minimizer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_solver</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_iter</span><span class="p">)</span>
+
+        <span class="n">prev_iterate</span> <span class="o">=</span> <span class="n">first_minimizer</span>
+        <span class="n">prev_obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">objective</span><span class="p">(</span><span class="n">prev_iterate</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">epoch</span><span class="p">,</span> <span class="n">iter_time</span><span class="p">,</span> <span class="n">iterate</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_solver</span><span class="o">.</span><span class="n">get_epoch_history</span><span class="p">(),</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_solver</span><span class="o">.</span><span class="n">get_time_history</span><span class="p">(),</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_solver</span><span class="o">.</span><span class="n">get_iterate_history</span><span class="p">()):</span>
+            <span class="n">obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">objective</span><span class="p">(</span><span class="n">iterate</span><span class="p">)</span>
+            <span class="n">rel_delta</span> <span class="o">=</span> <span class="n">relative_distance</span><span class="p">(</span><span class="n">iterate</span><span class="p">,</span> <span class="n">prev_iterate</span><span class="p">)</span>
+
+            <span class="c1"># This rel_obj is not exactly the same one as prev_obj is not the</span>
+            <span class="c1"># objective of the previous epoch but of the previouly recorded</span>
+            <span class="c1"># epoch</span>
+            <span class="n">rel_obj</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">obj</span> <span class="o">-</span> <span class="n">prev_obj</span><span class="p">)</span> <span class="o">/</span> <span class="nb">abs</span><span class="p">(</span><span class="n">prev_obj</span><span class="p">)</span> \
+                    <span class="k">if</span> <span class="n">prev_obj</span> <span class="o">!=</span> <span class="mi">0</span> <span class="k">else</span> <span class="nb">abs</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_handle_history</span><span class="p">(</span><span class="n">epoch</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="n">obj</span><span class="p">,</span>
+                                 <span class="n">iter_time</span><span class="o">=</span><span class="n">iter_time</span><span class="p">,</span>
+                                 <span class="n">x</span><span class="o">=</span><span class="n">iterate</span><span class="p">,</span> <span class="n">rel_delta</span><span class="o">=</span><span class="n">rel_delta</span><span class="p">,</span>
+                                 <span class="n">rel_obj</span><span class="o">=</span><span class="n">rel_obj</span><span class="p">)</span>
+
+            <span class="n">prev_obj</span> <span class="o">=</span> <span class="n">obj</span>
+            <span class="n">prev_iterate</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">iterate</span>
+
+    <span class="k">def</span> <span class="nf">_get_typed_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dtype_or_object_with_dtype</span><span class="p">,</span> <span class="n">dtype_map</span><span class="p">):</span>
+        <span class="kn">import</span> <span class="nn">tick.base.dtype_to_cpp_type</span>
+        <span class="k">return</span> <span class="n">tick</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">dtype_to_cpp_type</span><span class="o">.</span><span class="n">get_typed_class</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">dtype_or_object_with_dtype</span><span class="p">,</span> <span class="n">dtype_map</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_extract_dtype</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dtype_or_object_with_dtype</span><span class="p">):</span>
+        <span class="kn">import</span> <span class="nn">tick.base.dtype_to_cpp_type</span>
+        <span class="k">return</span> <span class="n">tick</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">dtype_to_cpp_type</span><span class="o">.</span><span class="n">extract_dtype</span><span class="p">(</span>
+            <span class="n">dtype_or_object_with_dtype</span><span class="p">)</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">_set_cpp_solver</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dtype</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">astype</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dtype_or_object_with_dtype</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot reassign solver without a model&quot;</span><span class="p">)</span>
+
+        <span class="kn">import</span> <span class="nn">tick.base.dtype_to_cpp_type</span>
+        <span class="n">new_solver</span> <span class="o">=</span> <span class="n">tick</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">dtype_to_cpp_type</span><span class="o">.</span><span class="n">copy_with</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="p">[</span><span class="s2">&quot;prox&quot;</span><span class="p">,</span> <span class="s2">&quot;model&quot;</span><span class="p">,</span> <span class="s2">&quot;_solver&quot;</span><span class="p">]</span>  <span class="c1"># ignore on deepcopy</span>
+        <span class="p">)</span>
+        <span class="n">new_solver</span><span class="o">.</span><span class="n">_set_cpp_solver</span><span class="p">(</span><span class="n">dtype_or_object_with_dtype</span><span class="p">)</span>
+        <span class="n">new_solver</span><span class="o">.</span><span class="n">set_model</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">new_solver</span><span class="o">.</span><span class="n">dtype</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">prox</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">new_solver</span><span class="o">.</span><span class="n">set_prox</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prox</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">new_solver</span><span class="o">.</span><span class="n">dtype</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">new_solver</span>
 </pre></div>
 
 </div>

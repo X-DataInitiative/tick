@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>Fit Hawkes kernel norms using cumulants &#8212; tick 0.4.0 documentation</title>
+    <title>Fit Hawkes kernel norms using cumulants &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -213,46 +213,56 @@ cumulants.
 <img alt="../_images/plot_hawkes_cumulants_matching_001.png" class="align-center" src="../_images/plot_hawkes_cumulants_matching_001.png" />
 <p><strong>Python source code:</strong> <a class="reference download internal" href="../_downloads/plot_hawkes_cumulants_matching.py" download=""><code class="xref download docutils literal"><span class="pre">plot_hawkes_cumulants_matching.py</span></code></a></p>
 <div class="highlight-default"><div class="highlight"><pre><span></span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="n">skip</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">tensorflow</span>
+    <span class="n">skip</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;tensorflow not found, skipping HawkesCumulantMatching&quot;</span><span class="p">)</span>
 
-<span class="kn">from</span> <span class="nn">tick.hawkes</span> <span class="k">import</span> <span class="p">(</span><a href="../modules/generated/tick.hawkes.HawkesCumulantMatching.html#tick.hawkes.HawkesCumulantMatching"><span class="n">HawkesCumulantMatching</span></a><span class="p">,</span> <a href="../modules/generated/tick.hawkes.SimuHawkesExpKernels.html#tick.hawkes.SimuHawkesExpKernels"><span class="n">SimuHawkesExpKernels</span></a><span class="p">,</span>
-                         <a href="../modules/generated/tick.hawkes.SimuHawkesMulti.html#tick.hawkes.SimuHawkesMulti"><span class="n">SimuHawkesMulti</span></a><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">tick.plot</span> <span class="k">import</span> <a href="../modules/generated/tick.plot.plot_hawkes_kernel_norms.html#tick.plot.plot_hawkes_kernel_norms"><span class="n">plot_hawkes_kernel_norms</span></a>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">skip</span><span class="p">:</span>
 
-<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">7168</span><span class="p">)</span>
+    <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="n">n_nodes</span> <span class="o">=</span> <span class="mi">3</span>
-<span class="n">baselines</span> <span class="o">=</span> <span class="mf">0.3</span> <span class="o">*</span> <a href="http://docs.scipy.org/doc/numpy-1.6.0/reference/generated/numpy.ones.html#numpy.ones"><span class="n">np</span><span class="o">.</span><span class="n">ones</span></a><span class="p">(</span><span class="n">n_nodes</span><span class="p">)</span>
-<span class="n">decays</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">+</span> <a href="http://docs.scipy.org/doc/numpy-1.6.0/reference/generated/numpy.random.rand.html#numpy.random.rand"><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span></a><span class="p">(</span><span class="n">n_nodes</span><span class="p">,</span> <span class="n">n_nodes</span><span class="p">)</span>
-<span class="n">adjacency</span> <span class="o">=</span> <a href="http://docs.scipy.org/doc/numpy-1.6.0/reference/generated/numpy.array.html#numpy.array"><span class="n">np</span><span class="o">.</span><span class="n">array</span></a><span class="p">([</span>
-    <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">],</span>
-    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
-<span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="kn">from</span> <span class="nn">tick.hawkes</span> <span class="k">import</span> <span class="p">(</span><a href="../modules/generated/tick.hawkes.HawkesCumulantMatching.html#tick.hawkes.HawkesCumulantMatching"><span class="n">HawkesCumulantMatching</span></a><span class="p">,</span> <a href="../modules/generated/tick.hawkes.SimuHawkesExpKernels.html#tick.hawkes.SimuHawkesExpKernels"><span class="n">SimuHawkesExpKernels</span></a><span class="p">,</span>
+                             <a href="../modules/generated/tick.hawkes.SimuHawkesMulti.html#tick.hawkes.SimuHawkesMulti"><span class="n">SimuHawkesMulti</span></a><span class="p">)</span>
+    <span class="kn">from</span> <span class="nn">tick.plot</span> <span class="k">import</span> <a href="../modules/generated/tick.plot.plot_hawkes_kernel_norms.html#tick.plot.plot_hawkes_kernel_norms"><span class="n">plot_hawkes_kernel_norms</span></a>
 
-<span class="n">adjacency</span> <span class="o">/=</span> <span class="mi">4</span>
+    <a href="http://docs.scipy.org/doc/numpy-1.6.0/reference/generated/numpy.random.seed.html#numpy.random.seed"><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span></a><span class="p">(</span><span class="mi">7168</span><span class="p">)</span>
 
-<span class="n">end_time</span> <span class="o">=</span> <span class="mf">1e5</span>
-<span class="n">integration_support</span> <span class="o">=</span> <span class="mi">5</span>
-<span class="n">n_realizations</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="n">n_nodes</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">baselines</span> <span class="o">=</span> <span class="mf">0.3</span> <span class="o">*</span> <a href="http://docs.scipy.org/doc/numpy-1.6.0/reference/generated/numpy.ones.html#numpy.ones"><span class="n">np</span><span class="o">.</span><span class="n">ones</span></a><span class="p">(</span><span class="n">n_nodes</span><span class="p">)</span>
+    <span class="n">decays</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">n_nodes</span><span class="p">,</span> <span class="n">n_nodes</span><span class="p">)</span>
+    <span class="n">adjacency</span> <span class="o">=</span> <a href="http://docs.scipy.org/doc/numpy-1.6.0/reference/generated/numpy.array.html#numpy.array"><span class="n">np</span><span class="o">.</span><span class="n">array</span></a><span class="p">([</span>
+        <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">],</span>
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+    <span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
 
-<span class="n">simu_hawkes</span> <span class="o">=</span> <a href="../modules/generated/tick.hawkes.SimuHawkesExpKernels.html#tick.hawkes.SimuHawkesExpKernels"><span class="n">SimuHawkesExpKernels</span></a><span class="p">(</span>
-    <span class="n">baseline</span><span class="o">=</span><span class="n">baselines</span><span class="p">,</span> <span class="n">adjacency</span><span class="o">=</span><span class="n">adjacency</span><span class="p">,</span> <span class="n">decays</span><span class="o">=</span><span class="n">decays</span><span class="p">,</span>
-    <span class="n">end_time</span><span class="o">=</span><span class="n">end_time</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">7168</span><span class="p">)</span>
-<span class="n">simu_hawkes</span><span class="o">.</span><span class="n">threshold_negative_intensity</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">adjacency</span> <span class="o">/=</span> <span class="mi">4</span>
 
-<span class="n">multi</span> <span class="o">=</span> <a href="../modules/generated/tick.hawkes.SimuHawkesMulti.html#tick.hawkes.SimuHawkesMulti"><span class="n">SimuHawkesMulti</span></a><span class="p">(</span><span class="n">simu_hawkes</span><span class="p">,</span> <span class="n">n_simulations</span><span class="o">=</span><span class="n">n_realizations</span><span class="p">,</span> <span class="n">n_threads</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">multi</span><span class="o">.</span><span class="n">simulate</span><span class="p">()</span>
+    <span class="n">end_time</span> <span class="o">=</span> <span class="mf">1e5</span>
+    <span class="n">integration_support</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="n">n_realizations</span> <span class="o">=</span> <span class="mi">5</span>
 
-<span class="n">nphc</span> <span class="o">=</span> <a href="../modules/generated/tick.hawkes.HawkesCumulantMatching.html#tick.hawkes.HawkesCumulantMatching"><span class="n">HawkesCumulantMatching</span></a><span class="p">(</span><span class="n">integration_support</span><span class="p">,</span> <span class="n">cs_ratio</span><span class="o">=.</span><span class="mi">15</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">,</span>
-                              <span class="n">step</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+    <span class="n">simu_hawkes</span> <span class="o">=</span> <a href="../modules/generated/tick.hawkes.SimuHawkesExpKernels.html#tick.hawkes.SimuHawkesExpKernels"><span class="n">SimuHawkesExpKernels</span></a><span class="p">(</span><span class="n">baseline</span><span class="o">=</span><span class="n">baselines</span><span class="p">,</span> <span class="n">adjacency</span><span class="o">=</span><span class="n">adjacency</span><span class="p">,</span>
+                                       <span class="n">decays</span><span class="o">=</span><span class="n">decays</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">end_time</span><span class="p">,</span>
+                                       <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">7168</span><span class="p">)</span>
+    <span class="n">simu_hawkes</span><span class="o">.</span><span class="n">threshold_negative_intensity</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 
-<span class="n">nphc</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">multi</span><span class="o">.</span><span class="n">timestamps</span><span class="p">)</span>
-<a href="../modules/generated/tick.plot.plot_hawkes_kernel_norms.html#tick.plot.plot_hawkes_kernel_norms"><span class="n">plot_hawkes_kernel_norms</span></a><span class="p">(</span><span class="n">nphc</span><span class="p">)</span>
+    <span class="n">multi</span> <span class="o">=</span> <a href="../modules/generated/tick.hawkes.SimuHawkesMulti.html#tick.hawkes.SimuHawkesMulti"><span class="n">SimuHawkesMulti</span></a><span class="p">(</span><span class="n">simu_hawkes</span><span class="p">,</span> <span class="n">n_simulations</span><span class="o">=</span><span class="n">n_realizations</span><span class="p">,</span>
+                            <span class="n">n_threads</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">multi</span><span class="o">.</span><span class="n">simulate</span><span class="p">()</span>
+
+    <span class="n">nphc</span> <span class="o">=</span> <a href="../modules/generated/tick.hawkes.HawkesCumulantMatching.html#tick.hawkes.HawkesCumulantMatching"><span class="n">HawkesCumulantMatching</span></a><span class="p">(</span><span class="n">integration_support</span><span class="p">,</span> <span class="n">cs_ratio</span><span class="o">=.</span><span class="mi">15</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">,</span>
+                                  <span class="n">step</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+
+    <span class="n">nphc</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">multi</span><span class="o">.</span><span class="n">timestamps</span><span class="p">)</span>
+    <a href="../modules/generated/tick.plot.plot_hawkes_kernel_norms.html#tick.plot.plot_hawkes_kernel_norms"><span class="n">plot_hawkes_kernel_norms</span></a><span class="p">(</span><span class="n">nphc</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><strong>Total running time of the example:</strong>  5.19 seconds
-( 0 minutes  5.19 seconds)</p>
+<p><strong>Total running time of the example:</strong>  5.67 seconds
+( 0 minutes  5.67 seconds)</p>
 <dl class="docutils">
 <dt>Mentioned <em>tick</em> classes:</dt>
 <dd><ul class="first last simple">

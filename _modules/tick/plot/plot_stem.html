@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.plot.plot_stem &#8212; tick 0.4.0 documentation</title>
+    <title>tick.plot.plot_stem &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -203,13 +203,12 @@
   <h1>Source code for tick.plot.plot_stem</h1><div class="highlight"><pre>
 <span></span><span class="c1"># License: BSD 3 clause</span>
 
-
 <span class="kn">import</span> <span class="nn">numpy</span>
 <span class="kn">from</span> <span class="nn">matplotlib.pyplot</span> <span class="k">import</span> <span class="n">Axes</span>
 
 
-<span class="k">def</span> <span class="nf">__stem_matplotlib</span><span class="p">(</span><span class="n">y</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="n">Axes</span><span class="p">,</span> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-                      <span class="n">x_range</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">y_range</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">__stem_matplotlib</span><span class="p">(</span><span class="n">y</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="n">Axes</span><span class="p">,</span> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">x_range</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span>
+                      <span class="n">y_range</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">):</span>
     <span class="n">axis</span><span class="o">.</span><span class="n">stem</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">x_range</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">axis</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">x_range</span><span class="p">)</span>
@@ -232,8 +231,7 @@
     <span class="k">return</span> <span class="n">fig</span>
 
 
-<span class="k">def</span> <span class="nf">__stem_bokeh</span><span class="p">(</span><span class="n">y</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">x_range</span><span class="p">,</span> <span class="n">y_range</span><span class="p">,</span>
-                 <span class="n">fig_size</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">__stem_bokeh</span><span class="p">(</span><span class="n">y</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">x_range</span><span class="p">,</span> <span class="n">y_range</span><span class="p">,</span> <span class="n">fig_size</span><span class="p">):</span>
     <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
     <span class="kn">from</span> <span class="nn">bokeh.plotting</span> <span class="k">import</span> <span class="n">figure</span>
 

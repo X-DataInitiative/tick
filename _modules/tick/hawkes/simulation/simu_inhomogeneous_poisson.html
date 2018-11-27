@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.hawkes.simulation.simu_inhomogeneous_poisson &#8212; tick 0.4.0 documentation</title>
+    <title>tick.hawkes.simulation.simu_inhomogeneous_poisson &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../../../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -208,8 +208,7 @@
 <span class="kn">from</span> <span class="nn">tick.base</span> <span class="k">import</span> <span class="n">TimeFunction</span>
 <span class="kn">from</span> <span class="nn">tick.hawkes.simulation.base</span> <span class="k">import</span> <span class="n">SimuPointProcess</span>
 <span class="kn">from</span> <span class="nn">tick.hawkes.simulation.build.hawkes_simulation</span> <span class="k">import</span> <span class="p">(</span>
-    <span class="n">InhomogeneousPoisson</span> <span class="k">as</span> <span class="n">_InhomogeneousPoisson</span>
-<span class="p">)</span>
+    <span class="n">InhomogeneousPoisson</span> <span class="k">as</span> <span class="n">_InhomogeneousPoisson</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="SimuInhomogeneousPoisson"><a class="viewcode-back" href="../../../../modules/generated/tick.hawkes.SimuInhomogeneousPoisson.html#tick.hawkes.SimuInhomogeneousPoisson">[docs]</a><span class="k">class</span> <span class="nc">SimuInhomogeneousPoisson</span><span class="p">(</span><span class="n">SimuPointProcess</span><span class="p">):</span>
@@ -265,8 +264,10 @@
                  <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="n">SimuPointProcess</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">end_time</span><span class="p">,</span> <span class="n">max_jumps</span><span class="o">=</span><span class="n">max_jumps</span><span class="p">,</span>
                                   <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
-        <span class="n">cpp_obj_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">intensity_function</span><span class="o">.</span><span class="n">_time_function</span>
-                        <span class="k">for</span> <span class="n">intensity_function</span> <span class="ow">in</span> <span class="n">intensities_functions</span><span class="p">]</span>
+        <span class="n">cpp_obj_list</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">intensity_function</span><span class="o">.</span><span class="n">_time_function</span>
+            <span class="k">for</span> <span class="n">intensity_function</span> <span class="ow">in</span> <span class="n">intensities_functions</span>
+        <span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_pp</span> <span class="o">=</span> <span class="n">_InhomogeneousPoisson</span><span class="p">(</span><span class="n">cpp_obj_list</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pp_init_seed</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">intensity_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">times</span><span class="p">):</span>

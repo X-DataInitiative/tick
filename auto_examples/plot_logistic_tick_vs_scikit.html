@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>Logistic regression comparison: scikit-learn versus tick &#8212; tick 0.4.0 documentation</title>
+    <title>Logistic regression comparison: scikit-learn versus tick &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -222,8 +222,7 @@ not the case in <code class="xref py py-obj docutils literal"><span class="pre">
 </ul>
 <img alt="../_images/plot_logistic_tick_vs_scikit_001.png" class="align-center" src="../_images/plot_logistic_tick_vs_scikit_001.png" />
 <p><strong>Python source code:</strong> <a class="reference download internal" href="../_downloads/plot_logistic_tick_vs_scikit.py" download=""><code class="xref download docutils literal"><span class="pre">plot_logistic_tick_vs_scikit.py</span></code></a></p>
-<div class="highlight-default"><div class="highlight"><pre><span></span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">time</span> <span class="k">import</span> <span class="n">time</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
@@ -255,36 +254,40 @@ not the case in <code class="xref py py-obj docutils literal"><span class="pre">
 
 <a href="http://matplotlib.org/api/_as_gen/matplotlib.figure.figaspect.html#matplotlib.figure"><span class="n">plt</span><span class="o">.</span><span class="n">figure</span></a><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
 
-<span class="n">ax1</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot2grid</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<span class="n">ax1</span> <span class="o">=</span> <a href="http://matplotlib.org/api/_as_gen/matplotlib.pyplot.subplot2grid.html#matplotlib.pyplot.subplot2grid"><span class="n">plt</span><span class="o">.</span><span class="n">subplot2grid</span></a><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
 <a href="http://matplotlib.org/api/_as_gen/matplotlib.pyplot.stem.html#matplotlib.pyplot.stem"><span class="n">plt</span><span class="o">.</span><span class="n">stem</span></a><span class="p">(</span><span class="n">clf_tick</span><span class="o">.</span><span class="n">weights</span><span class="p">)</span>
 <a href="http://matplotlib.org/api/_as_gen/matplotlib.pyplot.title.html#matplotlib.pyplot.title"><span class="n">plt</span><span class="o">.</span><span class="n">title</span></a><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;Model-weights in $\mathtt</span><span class="si">{tick}</span><span class="s1">$&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
 <a href="http://matplotlib.org/api/_as_gen/matplotlib.pyplot.ylim.html#matplotlib.pyplot.ylim"><span class="n">plt</span><span class="o">.</span><span class="n">ylim</span></a><span class="p">((</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">))</span>
 
-<span class="n">ax2</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot2grid</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">ax2</span> <span class="o">=</span> <a href="http://matplotlib.org/api/_as_gen/matplotlib.pyplot.subplot2grid.html#matplotlib.pyplot.subplot2grid"><span class="n">plt</span><span class="o">.</span><span class="n">subplot2grid</span></a><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
 <a href="http://matplotlib.org/api/_as_gen/matplotlib.pyplot.stem.html#matplotlib.pyplot.stem"><span class="n">plt</span><span class="o">.</span><span class="n">stem</span></a><span class="p">(</span><a href="http://docs.scipy.org/doc/numpy-1.6.0/reference/generated/numpy.ravel.html#numpy.ravel"><span class="n">np</span><span class="o">.</span><span class="n">ravel</span></a><span class="p">(</span><span class="n">clf_scikit</span><span class="o">.</span><span class="n">coef_</span><span class="p">))</span>
 <span class="c1"># plt.legend()</span>
 <a href="http://matplotlib.org/api/_as_gen/matplotlib.pyplot.ylim.html#matplotlib.pyplot.ylim"><span class="n">plt</span><span class="o">.</span><span class="n">ylim</span></a><span class="p">((</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">))</span>
 <a href="http://matplotlib.org/api/_as_gen/matplotlib.pyplot.title.html#matplotlib.pyplot.title"><span class="n">plt</span><span class="o">.</span><span class="n">title</span></a><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;Model-weights in $\mathtt{scikit-learn}$&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
 
-<span class="n">plt</span><span class="o">.</span><span class="n">subplot2grid</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<a href="http://matplotlib.org/api/_as_gen/matplotlib.pyplot.subplot2grid.html#matplotlib.pyplot.subplot2grid"><span class="n">plt</span><span class="o">.</span><span class="n">subplot2grid</span></a><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
 <a href="http://matplotlib.org/api/_as_gen/matplotlib.pyplot.plot.html#matplotlib.pyplot.plot"><span class="n">plt</span><span class="o">.</span><span class="n">plot</span></a><span class="p">(</span><span class="n">fpr_tick</span><span class="p">,</span> <span class="n">tpr_tick</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 <a href="http://matplotlib.org/api/_as_gen/matplotlib.pyplot.plot.html#matplotlib.pyplot.plot"><span class="n">plt</span><span class="o">.</span><span class="n">plot</span></a><span class="p">(</span><span class="n">fpr_scikit</span><span class="p">,</span> <span class="n">tpr_scikit</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<a href="http://matplotlib.org/api/legend_api.html#matplotlib.legend"><span class="n">plt</span><span class="o">.</span><span class="n">legend</span></a><span class="p">([</span><span class="s2">&quot;tick (AUC = </span><span class="si">{:.2f}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><a href="http://scikit-learn.org/stable/modules/generated/sklearn.metrics.auc.html#sklearn.metrics.auc"><span class="n">auc</span></a><span class="p">(</span><span class="n">fpr_tick</span><span class="p">,</span> <span class="n">tpr_tick</span><span class="p">)),</span>
-            <span class="s2">&quot;scikit-learn (AUC = </span><span class="si">{:.2f}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><a href="http://scikit-learn.org/stable/modules/generated/sklearn.metrics.auc.html#sklearn.metrics.auc"><span class="n">auc</span></a><span class="p">(</span><span class="n">fpr_tick</span><span class="p">,</span> <span class="n">tpr_tick</span><span class="p">))],</span>
-           <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;center right&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+<a href="http://matplotlib.org/api/legend_api.html#matplotlib.legend"><span class="n">plt</span><span class="o">.</span><span class="n">legend</span></a><span class="p">([</span>
+    <span class="s2">&quot;tick (AUC = </span><span class="si">{:.2f}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><a href="http://scikit-learn.org/stable/modules/generated/sklearn.metrics.auc.html#sklearn.metrics.auc"><span class="n">auc</span></a><span class="p">(</span><span class="n">fpr_tick</span><span class="p">,</span> <span class="n">tpr_tick</span><span class="p">)),</span>
+    <span class="s2">&quot;scikit-learn (AUC = </span><span class="si">{:.2f}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><a href="http://scikit-learn.org/stable/modules/generated/sklearn.metrics.auc.html#sklearn.metrics.auc"><span class="n">auc</span></a><span class="p">(</span><span class="n">fpr_tick</span><span class="p">,</span> <span class="n">tpr_tick</span><span class="p">))</span>
+<span class="p">],</span> <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;center right&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
 <a href="http://matplotlib.org/api/_as_gen/matplotlib.pyplot.ylabel.html#matplotlib.pyplot.ylabel"><span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span></a><span class="p">(</span><span class="s2">&quot;True Positive Rate&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
 <a href="http://matplotlib.org/api/_as_gen/matplotlib.pyplot.xlabel.html#matplotlib.pyplot.xlabel"><span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span></a><span class="p">(</span><span class="s2">&quot;False Positive Rate&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
 <a href="http://matplotlib.org/api/_as_gen/matplotlib.pyplot.title.html#matplotlib.pyplot.title"><span class="n">plt</span><span class="o">.</span><span class="n">title</span></a><span class="p">(</span><span class="s1">&#39;ROC curves comparison&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
 
-<span class="n">ax4</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot2grid</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">ax4</span> <span class="o">=</span> <a href="http://matplotlib.org/api/_as_gen/matplotlib.pyplot.subplot2grid.html#matplotlib.pyplot.subplot2grid"><span class="n">plt</span><span class="o">.</span><span class="n">subplot2grid</span></a><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
 <a href="http://matplotlib.org/api/_as_gen/matplotlib.pyplot.bar.html#matplotlib.pyplot.bar"><span class="n">plt</span><span class="o">.</span><span class="n">bar</span></a><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="n">t_tick</span><span class="p">,</span> <span class="n">t_scikit</span><span class="p">])</span>
 <span class="n">ax4</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
 <span class="n">ax4</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">([</span><span class="s1">&#39;tick&#39;</span><span class="p">,</span> <span class="s1">&#39;scikit-learn&#39;</span><span class="p">],</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
 <a href="http://matplotlib.org/api/_as_gen/matplotlib.pyplot.title.html#matplotlib.pyplot.title"><span class="n">plt</span><span class="o">.</span><span class="n">title</span></a><span class="p">(</span><span class="s1">&#39;Computational time (seconds)&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<a href="http://matplotlib.org/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
 </pre></div>
 </div>
-<p><strong>Total running time of the example:</strong>  17.81 seconds
-( 0 minutes  17.81 seconds)</p>
+<p><strong>Total running time of the example:</strong>  13.77 seconds
+( 0 minutes  13.77 seconds)</p>
 <dl class="docutils">
 <dt>Mentioned <em>tick</em> classes:</dt>
 <dd><ul class="first last simple">

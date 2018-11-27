@@ -39,8 +39,8 @@ or ``penalty='slope'`` can be used when the number of features is large.
 .. literalinclude:: plot_robust_linear_regression.py
     :lines: 25-
 
-**Total running time of the example:**  10.16 seconds
-( 0 minutes  10.16 seconds)
+**Total running time of the example:**  4.96 seconds
+( 0 minutes  4.96 seconds)
     
 Mentioned *tick* classes:
    * `tick.metrics.support_fdp`

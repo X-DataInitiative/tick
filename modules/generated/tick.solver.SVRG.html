@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.solver.SVRG &#8212; tick 0.4.0 documentation</title>
+    <title>tick.solver.SVRG &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -61,7 +61,7 @@
         </button>
         <a class="navbar-brand" href="../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -359,8 +359,12 @@ iterations. It should be accessed using the <code class="docutils literal"><span
 <div><p>Duration of the call to <code class="docutils literal"><span class="pre">solve()</span></code>, in seconds</p>
 </div></blockquote>
 <p><strong>time_end</strong> : <code class="xref py py-obj docutils literal"><span class="pre">str</span></code></p>
-<blockquote class="last">
+<blockquote>
 <div><p>End date of the call to <code class="docutils literal"><span class="pre">solve()</span></code></p>
+</div></blockquote>
+<p><strong>dtype</strong> : <code class="xref py py-obj docutils literal"><span class="pre">{'float64',</span> <span class="pre">'float32'}</span></code>, default=’float64’</p>
+<blockquote class="last">
+<div><p>Type of the arrays used. This value is set from model and prox dtypes.</p>
 </div></blockquote>
 </td>
 </tr>
@@ -373,6 +377,9 @@ progressive variance reduction, <em>SIAM Journal on Optimization</em> (2014)</li
 <li>Tan, C., Ma, S., Dai, Y. H., &amp; Qian, Y.
 Barzilai-Borwein step size for stochastic gradient descent.
 <em>Advances in Neural Information Processing Systems</em> (2016)</li>
+<li>Mania, H., Pan, X., Papailiopoulos, D., Recht, B., Ramchandran, K. and
+Jordan, M.I., 2015.
+Perturbed iterate analysis for asynchronous stochastic optimization.</li>
 </ul>
 <dl class="method">
 <dt id="tick.solver.SVRG.__init__">
@@ -530,7 +537,7 @@ using the <code class="docutils literal"><span class="pre">step</span></code> at
 <a class="reference external image-reference" href="./../../auto_examples/./plot_svrg_with_auto_step.html"><img alt="../../_images/plot_svrg_with_auto_step1.png" src="../../_images/plot_svrg_with_auto_step1.png" /></a>
 <p class="caption"><span class="caption-text"><a class="reference internal" href="../../auto_examples/plot_svrg_with_auto_step.html#example-plot-svrg-with-auto-step-py"><span class="std std-ref">Automatic step choice</span></a></span></p>
 </div>
-</div><div class="thumbnailContainer" tooltip="This example illustrates the convergence speed of the asynchronous version of SVRG solver. This..."><div class="figure" id="id2">
+</div><div class="thumbnailContainer" tooltip="This example illustrates the convergence speed of the asynchronous version of SVRG and SAGA sol..."><div class="figure" id="id2">
 <a class="reference external image-reference" href="./../../auto_examples/./plot_asynchronous_stochastic_solver.html"><img alt="../../_images/plot_asynchronous_stochastic_solver1.png" src="../../_images/plot_asynchronous_stochastic_solver1.png" /></a>
 <p class="caption"><span class="caption-text"><a class="reference internal" href="../../auto_examples/plot_asynchronous_stochastic_solver.html#example-plot-asynchronous-stochastic-solver-py"><span class="std std-ref">Asynchronous stochastic solver</span></a></span></p>
 </div>

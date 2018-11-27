@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.base_model.model_second_order &#8212; tick 0.4.0 documentation</title>
+    <title>tick.base_model.model_second_order &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -208,7 +208,6 @@
 
 <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">ModelFirstOrder</span>
 
-
 <span class="kn">from</span> <span class="nn">.model</span> <span class="k">import</span> <span class="n">PASS_OVER_DATA</span><span class="p">,</span> <span class="n">HESSIAN_NORM</span><span class="p">,</span> <span class="n">N_CALLS_HESSIAN_NORM</span>
 
 
@@ -222,6 +221,9 @@
 <span class="sd">    n_calls_hessian_norm : `int` (read-only)</span>
 <span class="sd">        Number of times ``hessian_norm`` has been called so far</span>
 
+<span class="sd">    dtype : `{&#39;float64&#39;, &#39;float32&#39;}`, default=&#39;float64&#39;</span>
+<span class="sd">        Type of the data arrays used.</span>
+
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
 <span class="sd">    This class should be not used by end-users, it is intended for</span>
@@ -229,16 +231,14 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># A dict which specifies for each operation how many times we pass</span>
     <span class="c1"># through data</span>
-    <span class="n">pass_per_operation</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span>
-                          <span class="p">[</span><span class="n">ModelFirstOrder</span><span class="o">.</span><span class="n">pass_per_operation</span><span class="p">,</span>
-                           <span class="p">{</span><span class="n">HESSIAN_NORM</span><span class="p">:</span> <span class="mi">1</span><span class="p">}]</span>
-                          <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-
-    <span class="n">_attrinfos</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="n">N_CALLS_HESSIAN_NORM</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span>
-        <span class="p">}</span>
+    <span class="n">pass_per_operation</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">k</span><span class="p">:</span> <span class="n">v</span>
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="p">[</span><span class="n">ModelFirstOrder</span><span class="o">.</span><span class="n">pass_per_operation</span><span class="p">,</span> <span class="p">{</span>
+            <span class="n">HESSIAN_NORM</span><span class="p">:</span> <span class="mi">1</span>
+        <span class="p">}]</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
     <span class="p">}</span>
+
+    <span class="n">_attrinfos</span> <span class="o">=</span> <span class="p">{</span><span class="n">N_CALLS_HESSIAN_NORM</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}}</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">ModelFirstOrder</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
@@ -249,8 +249,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="n">N_CALLS_HESSIAN_NORM</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span>
 
-    <span class="k">def</span> <span class="nf">hessian_norm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coeffs</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
-                     <span class="n">point</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">hessian_norm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coeffs</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">point</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Computes the norm given by coeffs^top * H * coeffs here H</span>
 <span class="sd">        is the hessian of the model computed at ``point``</span>
 
@@ -271,21 +270,20 @@
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
                 <span class="s2">&quot;Must must fit data before calling ``hessian_norm`` &quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">coeffs</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_coeffs</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s2">&quot;``coeffs`` has size </span><span class="si">%i</span><span class="s2"> while the model&quot;</span> <span class="o">+</span>
-                              <span class="s2">&quot;expects </span><span class="si">%i</span><span class="s2"> coefficients&quot;</span><span class="p">)</span> <span class="o">%</span>
-                             <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">coeffs</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_coeffs</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="p">(</span><span class="s2">&quot;``coeffs`` has size </span><span class="si">%i</span><span class="s2"> while the model&quot;</span> <span class="o">+</span>
+                 <span class="s2">&quot;expects </span><span class="si">%i</span><span class="s2"> coefficients&quot;</span><span class="p">)</span> <span class="o">%</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">coeffs</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_coeffs</span><span class="p">))</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">point</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_coeffs</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s2">&quot;``point`` has size </span><span class="si">%i</span><span class="s2"> while the model&quot;</span> <span class="o">+</span>
-                              <span class="s2">&quot;expects </span><span class="si">%i</span><span class="s2"> coefficients&quot;</span><span class="p">)</span> <span class="o">%</span>
-                             <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">coeffs</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_coeffs</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="p">(</span><span class="s2">&quot;``point`` has size </span><span class="si">%i</span><span class="s2"> while the model&quot;</span> <span class="o">+</span>
+                 <span class="s2">&quot;expects </span><span class="si">%i</span><span class="s2"> coefficients&quot;</span><span class="p">)</span> <span class="o">%</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">coeffs</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_coeffs</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_inc_attr</span><span class="p">(</span><span class="n">N_CALLS_HESSIAN_NORM</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_inc_attr</span><span class="p">(</span><span class="n">PASS_OVER_DATA</span><span class="p">,</span>
                        <span class="n">step</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pass_per_operation</span><span class="p">[</span><span class="n">HESSIAN_NORM</span><span class="p">])</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hessian_norm</span><span class="p">(</span><span class="n">coeffs</span><span class="p">,</span> <span class="n">point</span><span class="p">)</span>
 
     <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">_hessian_norm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coeffs</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
-                      <span class="n">point</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_hessian_norm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coeffs</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">point</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Computes the norm given by form coeffs^top * H * coeffs</span>
 <span class="sd">        here H is the Hessian of the model computed at ``point``</span>
 

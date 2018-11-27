@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>Fit Hawkes random kernels &#8212; tick 0.4.0 documentation</title>
+    <title>Fit Hawkes random kernels &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -215,9 +215,8 @@ A nonparametric EM algorithm for multiscale Hawkes processes.
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
-<span class="kn">from</span> <span class="nn">tick.hawkes</span> <span class="k">import</span> <span class="p">(</span>
-    <a href="../modules/generated/tick.hawkes.SimuHawkes.html#tick.hawkes.SimuHawkes"><span class="n">SimuHawkes</span></a><span class="p">,</span> <a href="../modules/generated/tick.hawkes.HawkesKernelTimeFunc.html#tick.hawkes.HawkesKernelTimeFunc"><span class="n">HawkesKernelTimeFunc</span></a><span class="p">,</span> <a href="../modules/generated/tick.hawkes.HawkesKernelExp.html#tick.hawkes.HawkesKernelExp"><span class="n">HawkesKernelExp</span></a><span class="p">,</span> <a href="../modules/generated/tick.hawkes.HawkesEM.html#tick.hawkes.HawkesEM"><span class="n">HawkesEM</span></a>
-<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">tick.hawkes</span> <span class="k">import</span> <span class="p">(</span><a href="../modules/generated/tick.hawkes.SimuHawkes.html#tick.hawkes.SimuHawkes"><span class="n">SimuHawkes</span></a><span class="p">,</span> <a href="../modules/generated/tick.hawkes.HawkesKernelTimeFunc.html#tick.hawkes.HawkesKernelTimeFunc"><span class="n">HawkesKernelTimeFunc</span></a><span class="p">,</span> <a href="../modules/generated/tick.hawkes.HawkesKernelExp.html#tick.hawkes.HawkesKernelExp"><span class="n">HawkesKernelExp</span></a><span class="p">,</span>
+                         <a href="../modules/generated/tick.hawkes.HawkesEM.html#tick.hawkes.HawkesEM"><span class="n">HawkesEM</span></a><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">tick.base</span> <span class="k">import</span> <a href="../modules/generated/tick.base.TimeFunction.html#tick.base.TimeFunction"><span class="n">TimeFunction</span></a>
 <span class="kn">from</span> <span class="nn">tick.plot</span> <span class="k">import</span> <a href="../modules/generated/tick.plot.plot_hawkes_kernels.html#tick.plot.plot_hawkes_kernels"><span class="n">plot_hawkes_kernels</span></a>
 
@@ -255,8 +254,8 @@ A nonparametric EM algorithm for multiscale Hawkes processes.
 <a href="http://matplotlib.org/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
 </pre></div>
 </div>
-<p><strong>Total running time of the example:</strong>  2.80 seconds
-( 0 minutes  2.80 seconds)</p>
+<p><strong>Total running time of the example:</strong>  1.12 seconds
+( 0 minutes  1.12 seconds)</p>
 <dl class="docutils">
 <dt>Mentioned <em>tick</em> classes:</dt>
 <dd><ul class="first last simple">

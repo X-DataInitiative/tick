@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.linear_model.model_quadratic_hinge &#8212; tick 0.4.0 documentation</title>
+    <title>tick.linear_model.model_quadratic_hinge &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -207,13 +207,18 @@
 <span class="kn">from</span> <span class="nn">numpy.linalg</span> <span class="k">import</span> <span class="n">svd</span>
 <span class="kn">from</span> <span class="nn">tick.base_model</span> <span class="k">import</span> <span class="n">ModelGeneralizedLinear</span><span class="p">,</span> <span class="n">ModelFirstOrder</span><span class="p">,</span> \
     <span class="n">ModelLipschitz</span>
-<span class="kn">from</span> <span class="nn">.build.linear_model</span> <span class="k">import</span> <span class="n">ModelQuadraticHinge</span> <span class="k">as</span> <span class="n">_ModelModelQuadraticHinge</span>
+<span class="kn">from</span> <span class="nn">.build.linear_model</span> <span class="k">import</span> <span class="n">ModelQuadraticHingeDouble</span> <span class="k">as</span> <span class="n">_ModelModelQuadraticHingeDouble</span>
+<span class="kn">from</span> <span class="nn">.build.linear_model</span> <span class="k">import</span> <span class="n">ModelQuadraticHingeFloat</span> <span class="k">as</span> <span class="n">_ModelModelQuadraticHingeFloat</span>
 
 <span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;Stephane Gaiffas&#39;</span>
 
+<span class="n">dtype_map</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;float64&#39;</span><span class="p">):</span> <span class="n">_ModelModelQuadraticHingeDouble</span><span class="p">,</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;float32&#39;</span><span class="p">):</span> <span class="n">_ModelModelQuadraticHingeFloat</span>
+<span class="p">}</span>
 
-<div class="viewcode-block" id="ModelQuadraticHinge"><a class="viewcode-back" href="../../../modules/generated/tick.linear_model.ModelQuadraticHinge.html#tick.linear_model.ModelQuadraticHinge">[docs]</a><span class="k">class</span> <span class="nc">ModelQuadraticHinge</span><span class="p">(</span><span class="n">ModelFirstOrder</span><span class="p">,</span>
-                          <span class="n">ModelGeneralizedLinear</span><span class="p">,</span>
+
+<div class="viewcode-block" id="ModelQuadraticHinge"><a class="viewcode-back" href="../../../modules/generated/tick.linear_model.ModelQuadraticHinge.html#tick.linear_model.ModelQuadraticHinge">[docs]</a><span class="k">class</span> <span class="nc">ModelQuadraticHinge</span><span class="p">(</span><span class="n">ModelFirstOrder</span><span class="p">,</span> <span class="n">ModelGeneralizedLinear</span><span class="p">,</span>
                           <span class="n">ModelLipschitz</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Quadratic hinge loss model for binary classification. This class gives</span>
 <span class="sd">    first order information (gradient and loss) for this model and can be passed</span>
@@ -246,6 +251,13 @@
 <span class="sd">    fit_intercept : `bool`</span>
 <span class="sd">        If `True`, the model uses an intercept</span>
 
+<span class="sd">    n_threads : `int`, default=1 (read-only)</span>
+<span class="sd">        Number of threads used for parallel computation.</span>
+
+<span class="sd">        * if ``int &lt;= 0``: the number of threads available on</span>
+<span class="sd">          the CPU</span>
+<span class="sd">        * otherwise the desired number of threads</span>
+
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
 <span class="sd">    features : {`numpy.ndarray`, `scipy.sparse.csr_matrix`}, shape=(n_samples, n_features)</span>
@@ -263,12 +275,8 @@
 <span class="sd">    n_coeffs : `int` (read-only)</span>
 <span class="sd">        Total number of coefficients of the model</span>
 
-<span class="sd">    n_threads : `int`, default=1 (read-only)</span>
-<span class="sd">        Number of threads used for parallel computation.</span>
-
-<span class="sd">        * if ``int &lt;= 0``: the number of threads available on</span>
-<span class="sd">          the CPU</span>
-<span class="sd">        * otherwise the desired number of threads</span>
+<span class="sd">    dtype : `{&#39;float64&#39;, &#39;float32&#39;}`, default=&#39;float64&#39;</span>
+<span class="sd">        Type of the data arrays used.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="ModelQuadraticHinge.__init__"><a class="viewcode-back" href="../../../modules/generated/tick.linear_model.ModelQuadraticHinge.html#tick.linear_model.ModelQuadraticHinge.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fit_intercept</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">n_threads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
@@ -297,10 +305,8 @@
         <span class="n">ModelFirstOrder</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
         <span class="n">ModelGeneralizedLinear</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
         <span class="n">ModelLipschitz</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;_model&quot;</span><span class="p">,</span> <span class="n">_ModelModelQuadraticHinge</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">,</span>
-                                                      <span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="p">,</span>
-                                                      <span class="bp">self</span><span class="o">.</span><span class="n">fit_intercept</span><span class="p">,</span>
-                                                      <span class="bp">self</span><span class="o">.</span><span class="n">n_threads</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;_model&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_cpp_model</span><span class="p">(</span><span class="n">features</span><span class="o">.</span><span class="n">dtype</span><span class="p">))</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
     <span class="k">def</span> <span class="nf">_grad</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coeffs</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -311,12 +317,17 @@
 
     <span class="k">def</span> <span class="nf">_get_lip_best</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># TODO: Use sklearn.decomposition.TruncatedSVD instead?</span>
-        <span class="n">s</span> <span class="o">=</span> <span class="n">svd</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">,</span> <span class="n">full_matrices</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                <span class="n">compute_uv</span><span class="o">=</span><span class="kc">False</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">svd</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">,</span> <span class="n">full_matrices</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">compute_uv</span><span class="o">=</span><span class="kc">False</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fit_intercept</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">(</span><span class="n">s</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_samples</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">s</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_samples</span></div>
+            <span class="k">return</span> <span class="n">s</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_samples</span>
+
+    <span class="k">def</span> <span class="nf">_build_cpp_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dtype_or_object_with_dtype</span><span class="p">):</span>
+        <span class="n">model_class</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_typed_class</span><span class="p">(</span><span class="n">dtype_or_object_with_dtype</span><span class="p">,</span>
+                                            <span class="n">dtype_map</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">model_class</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fit_intercept</span><span class="p">,</span>
+                           <span class="bp">self</span><span class="o">.</span><span class="n">n_threads</span><span class="p">)</span></div>
 </pre></div>
 
 </div>

@@ -37,14 +37,13 @@ from tick.simulation import weights_sparse_gauss
 from tick.linear_model import SimuPoisReg, PoissonRegression
 from tick.plot import plot_history
 
-
 n_samples = 50000
 n_features = 100
 np.random.seed(123)
-weight0 = weights_sparse_gauss(n_features, nnz=int(n_features-1)) / 20.
+weight0 = weights_sparse_gauss(n_features, nnz=int(n_features - 1)) / 20.
 intercept0 = -0.1
-X, y = SimuPoisReg(weight0, intercept0, n_samples=n_samples,
-                   verbose=False, seed=123).simulate()
+X, y = SimuPoisReg(weight0, intercept0, n_samples=n_samples, verbose=False,
+                   seed=123).simulate()
 
 opts = {'verbose': False, 'record_every': 1, 'tol': 1e-8, 'max_iter': 40}
 

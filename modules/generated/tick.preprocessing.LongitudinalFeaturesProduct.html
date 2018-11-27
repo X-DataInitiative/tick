@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.preprocessing.LongitudinalFeaturesProduct &#8212; tick 0.4.0 documentation</title>
+    <title>tick.preprocessing.LongitudinalFeaturesProduct &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -61,7 +61,7 @@
         </button>
         <a class="navbar-brand" href="../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -206,16 +206,16 @@
 <span id="longitudinalfeaturesproduct"></span><h1>tick.preprocessing.LongitudinalFeaturesProduct<a class="headerlink" href="#tick-preprocessing-longitudinalfeaturesproduct" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="tick.preprocessing.LongitudinalFeaturesProduct">
-<em class="property">class </em><code class="descclassname">tick.preprocessing.</code><code class="descname">LongitudinalFeaturesProduct</code><span class="sig-paren">(</span><em>exposure_type='infinite'</em>, <em>n_threads=-1</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/preprocessing/longitudinal_features_product.html#LongitudinalFeaturesProduct"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.preprocessing.LongitudinalFeaturesProduct" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">tick.preprocessing.</code><code class="descname">LongitudinalFeaturesProduct</code><span class="sig-paren">(</span><em>exposure_type='infinite'</em>, <em>n_jobs=-1</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/preprocessing/longitudinal_features_product.html#LongitudinalFeaturesProduct"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.preprocessing.LongitudinalFeaturesProduct" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transforms longitudinal exposure features to add the corresponding
 product features.</p>
-<p>This preprocessor transform an input list of <code class="xref py py-obj docutils literal"><span class="pre">n_samples</span></code> numpy arrays or 
+<p>This preprocessor transform an input list of <code class="xref py py-obj docutils literal"><span class="pre">n_cases</span></code> numpy arrays or
 csr_matrices of shape <code class="xref py py-obj docutils literal"><span class="pre">(n_intervals,</span> <span class="pre">n_features)</span></code> so as to add columns
 representing the product of combination of two features. It outputs a list
-of <code class="xref py py-obj docutils literal"><span class="pre">n_samples</span></code> numpy arrays or  csr_matrices of shape <code class="xref py py-obj docutils literal"><span class="pre">(n_intervals,</span> 
+of <code class="xref py py-obj docutils literal"><span class="pre">n_cases</span></code> numpy arrays or  csr_matrices of shape <code class="xref py py-obj docutils literal"><span class="pre">(n_intervals,</span>
 <span class="pre">n_features</span> <span class="pre">+</span> <span class="pre">comb(n_features,</span> <span class="pre">2))</span></code>.</p>
 <p>Exposure can take two forms:
-- short repeated exposures: in that case, each column of the numpy arrays 
+- short repeated exposures: in that case, each column of the numpy arrays
 or csr matrices can contain multiple ones, each one representing an exposure
 for a particular time bucket.
 - infinite unique exposures: in that case, each column of the numpy arrays
@@ -230,9 +230,9 @@ date of the exposure.</p>
 <div><p>Either ‘infinite’ for infinite unique exposures or ‘short’ for short
 repeated exposures.</p>
 </div></blockquote>
-<p><strong>n_threads</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code>, default=-1</p>
+<p><strong>n_jobs</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code>, default=-1</p>
 <blockquote>
-<div><p>Number of tasks to run in parallel. If set to -1, the number of tasks is 
+<div><p>Number of tasks to run in parallel. If set to -1, the number of tasks is
 set to the number of cores.</p>
 </div></blockquote>
 </td>
@@ -272,20 +272,20 @@ set to the number of cores.</p>
 </div>
 <dl class="method">
 <dt id="tick.preprocessing.LongitudinalFeaturesProduct.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>exposure_type='infinite'</em>, <em>n_threads=-1</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/preprocessing/longitudinal_features_product.html#LongitudinalFeaturesProduct.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.preprocessing.LongitudinalFeaturesProduct.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>exposure_type='infinite'</em>, <em>n_jobs=-1</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/preprocessing/longitudinal_features_product.html#LongitudinalFeaturesProduct.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.preprocessing.LongitudinalFeaturesProduct.__init__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="tick.preprocessing.LongitudinalFeaturesProduct.fit">
-<code class="descname">fit</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/preprocessing/longitudinal_features_product.html#LongitudinalFeaturesProduct.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.preprocessing.LongitudinalFeaturesProduct.fit" title="Permalink to this definition">¶</a></dt>
+<code class="descname">fit</code><span class="sig-paren">(</span><em>features</em>, <em>labels=None</em>, <em>censoring=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/preprocessing/longitudinal_features_product.html#LongitudinalFeaturesProduct.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.preprocessing.LongitudinalFeaturesProduct.fit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fit the feature product using the features matrices list.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>X</strong> : list of numpy.ndarray or list of scipy.sparse.csr_matrix,</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>features</strong> : list of numpy.ndarray or list of scipy.sparse.csr_matrix,</p>
 <blockquote>
-<div><p>list of length n_samples, each element of the list of 
+<div><p>list of length n_cases, each element of the list of
 shape=(n_intervals, n_features)
 The list of features matrices.</p>
 </div></blockquote>
@@ -302,58 +302,16 @@ The list of features matrices.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="tick.preprocessing.LongitudinalFeaturesProduct.fit_transform">
-<code class="descname">fit_transform</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/preprocessing/longitudinal_features_product.html#LongitudinalFeaturesProduct.fit_transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.preprocessing.LongitudinalFeaturesProduct.fit_transform" title="Permalink to this definition">¶</a></dt>
-<dd><p>Fit and apply the product feature computation using the features 
-matrices list.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>X</strong> : list of numpy.ndarray or list of scipy.sparse.csr_matrix,</p>
-<blockquote>
-<div><p>list of length n_samples, each element of the list of 
-shape=(n_intervals, n_features)
-The list of features matrices.</p>
-</div></blockquote>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> : list of numpy.ndarray or list of scipy.sparse.csr_matrix,</p>
-<blockquote class="last">
-<div><p>list of length n_samples, each element of the list of 
-shape=(n_intervals, n_new_features)
-The list of features matrices with added product features. 
-n_new_features = n_features + comb(n_features, 2)</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="tick.preprocessing.LongitudinalFeaturesProduct.infinite_exposure_products">
-<code class="descname">infinite_exposure_products</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/preprocessing/longitudinal_features_product.html#LongitudinalFeaturesProduct.infinite_exposure_products"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.preprocessing.LongitudinalFeaturesProduct.infinite_exposure_products" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add product features to X in the infinite exposure case.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="tick.preprocessing.LongitudinalFeaturesProduct.short_exposure_products">
-<code class="descname">short_exposure_products</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/preprocessing/longitudinal_features_product.html#LongitudinalFeaturesProduct.short_exposure_products"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.preprocessing.LongitudinalFeaturesProduct.short_exposure_products" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add product features to X in the short exposure case.</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="tick.preprocessing.LongitudinalFeaturesProduct.transform">
-<code class="descname">transform</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/preprocessing/longitudinal_features_product.html#LongitudinalFeaturesProduct.transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.preprocessing.LongitudinalFeaturesProduct.transform" title="Permalink to this definition">¶</a></dt>
+<code class="descname">transform</code><span class="sig-paren">(</span><em>features</em>, <em>labels=None</em>, <em>censoring=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/preprocessing/longitudinal_features_product.html#LongitudinalFeaturesProduct.transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.preprocessing.LongitudinalFeaturesProduct.transform" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add the product features to the given features matrices list.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>X</strong> : list of numpy.ndarray or list of scipy.sparse.csr_matrix,</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>features</strong> : list of numpy.ndarray or list of scipy.sparse.csr_matrix,</p>
 <blockquote>
-<div><p>list of length n_samples, each element of the list of 
+<div><p>list of length n_cases, each element of the list of
 shape=(n_intervals, n_features)
 The list of features matrices.</p>
 </div></blockquote>
@@ -361,9 +319,9 @@ The list of features matrices.</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> : list of numpy.ndarray or list of scipy.sparse.csr_matrix,</p>
 <blockquote class="last">
-<div><p>list of length n_samples, each element of the list of 
+<div><p>list of length n_cases, each element of the list of
 shape=(n_intervals, n_new_features)
-The list of features matrices with added product features. 
+The list of features matrices with added product features.
 n_new_features = n_features + comb(n_features, 2)</p>
 </div></blockquote>
 </td>

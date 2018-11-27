@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.prox.ProxL1w &#8212; tick 0.4.0 documentation</title>
+    <title>tick.prox.ProxL1w &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -61,7 +61,7 @@
         </button>
         <a class="navbar-brand" href="../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -227,9 +227,15 @@ soft-thresholding)</p>
 applied on the whole vector</p>
 </div></blockquote>
 <p><strong>positive</strong> : <code class="xref py py-obj docutils literal"><span class="pre">bool</span></code>, default=`False`</p>
-<blockquote class="last">
+<blockquote>
 <div><p>If True, apply L1 penalization together with a projection
 onto the set of vectors with non-negative entries</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Attributes:</th><td class="field-body"><p class="first"><strong>dtype</strong> : <code class="xref py py-obj docutils literal"><span class="pre">{'float64',</span> <span class="pre">'float32'}</span></code></p>
+<blockquote class="last">
+<div><p>Type of the arrays used.</p>
 </div></blockquote>
 </td>
 </tr>

@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.survival.SimuSCCS &#8212; tick 0.4.0 documentation</title>
+    <title>tick.survival.SimuSCCS &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -61,7 +61,7 @@
         </button>
         <a class="navbar-brand" href="../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -206,14 +206,14 @@
 <span id="simusccs"></span><h1>tick.survival.SimuSCCS<a class="headerlink" href="#tick-survival-simusccs" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="tick.survival.SimuSCCS">
-<em class="property">class </em><code class="descclassname">tick.survival.</code><code class="descname">SimuSCCS</code><span class="sig-paren">(</span><em>n_samples</em>, <em>n_intervals</em>, <em>n_features</em>, <em>n_lags</em>, <em>coeffs=None</em>, <em>sparse=True</em>, <em>exposure_type='infinite'</em>, <em>distribution='multinomial'</em>, <em>first_tick_only=True</em>, <em>censoring=True</em>, <em>censoring_prob=0.7</em>, <em>censoring_intensity=0.9</em>, <em>seed=None</em>, <em>verbose=True</em>, <em>batch_size=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/survival/simu_sccs.html#SimuSCCS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.survival.SimuSCCS" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">tick.survival.</code><code class="descname">SimuSCCS</code><span class="sig-paren">(</span><em>n_cases</em>, <em>n_intervals</em>, <em>n_features</em>, <em>n_lags</em>, <em>time_drift=None</em>, <em>exposure_type='single_exposure'</em>, <em>distribution='multinomial'</em>, <em>sparse=True</em>, <em>censoring_prob=0</em>, <em>censoring_scale=None</em>, <em>coeffs=None</em>, <em>hawkes_exp_kernels=None</em>, <em>n_correlations=0</em>, <em>batch_size=None</em>, <em>seed=None</em>, <em>verbose=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/survival/simu_sccs.html#SimuSCCS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.survival.SimuSCCS" title="Permalink to this definition">¶</a></dt>
 <dd><p>Simulation of a Self Control Case Series (SCCS) model. This simulator can
-produce exposure (features), outcomes (labels) and censoring data.</p>
-<p>The features matrices  are a <code class="xref py py-obj docutils literal"><span class="pre">n_sample</span></code> list of numpy arrays (dense case) or 
+produce exposure (features), outcomes (labels) and censoring data.
+The features matrices  are a <code class="xref py py-obj docutils literal"><span class="pre">n_cases</span></code> list of numpy arrays (dense case) or
 csr_matrices (sparse case) of shape <code class="xref py py-obj docutils literal"><span class="pre">(n_intervals,</span> <span class="pre">n_features)</span></code> containing
 exposures to each feature.
 Exposure can take two forms:
-- short repeated exposures: in that case, each column of the numpy arrays 
+- short repeated exposures: in that case, each column of the numpy arrays
 or csr matrices can contain multiple ones, each one representing an exposure
 for a particular time bucket.
 - infinite unique exposures: in that case, each column of the numpy arrays
@@ -223,23 +223,25 @@ date of the exposure.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>n_samples</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code>,</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>n_cases</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code></p>
 <blockquote>
-<div><p>Number of samples to generate.</p>
+<div><p>Number of cases to generate. A case is a sample who experience at
+least one adverse event.</p>
 </div></blockquote>
 <p><strong>n_intervals</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code></p>
 <blockquote>
 <div><p>Number of time intervals used to generate features and outcomes.</p>
 </div></blockquote>
-<p><strong>n_lags</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code></p>
+<p><strong>n_features</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code></p>
 <blockquote>
-<div><p>Number of lags to be used when simulating the outcomes. The output
-features are returned without lagging to allow the testing of lag
-misspecification in the model.</p>
+<div><p>Number of features to simulate for each case.</p>
 </div></blockquote>
-<p><strong>sparse</strong> : <code class="xref py py-obj docutils literal"><span class="pre">boolean</span></code>, default=True</p>
+<p><strong>n_lags</strong> : <code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code>, shape=(n_features,), dtype=”uint64”</p>
 <blockquote>
-<div><p>Generate sparse or dense features.</p>
+<div><p>Number of lags per feature. The model will regress labels on the
+last observed values of the features over their corresponding
+<code class="xref py py-obj docutils literal"><span class="pre">n_lags</span></code> time intervals. <code class="xref py py-obj docutils literal"><span class="pre">n_lags</span></code> values must be between 0 and
+<code class="xref py py-obj docutils literal"><span class="pre">n_intervals</span></code> - 1.</p>
 </div></blockquote>
 <p><strong>exposure_type</strong> : {‘infinite’, ‘short’}, default=’infinite’</p>
 <blockquote>
@@ -248,18 +250,18 @@ repeated exposures.</p>
 </div></blockquote>
 <p><strong>distribution</strong> : {‘multinomial’, ‘poisson’}, default=’multinomial’</p>
 <blockquote>
-<div><p>Dristribution used to generate the outcomes. In the ‘multinomial’ case,
-the Poisson process used to generate the events is conditionned by total 
-the number event per sample, which is set to be equal to one. In that
-case, the simulation matches exactly the SCCS model hypotheses. In the
-‘poisson’ case, the outcomes are generated from a Poisson process, which
-can result in more than one outcome tick per sample. See 
-<code class="xref py py-obj docutils literal"><span class="pre">first_tick_only</span></code> option to filter out additional events.</p>
+<div><p>Distribution used to generate the outcomes. In the ‘multinomial’
+case, the Poisson process used to generate the events is conditionned
+by total the number event per sample, which is set to be equal to
+one. In that case, the simulation matches exactly the SCCS model
+hypotheses. In the ‘poisson’ case, the outcomes are generated from a
+Poisson process, which can result in more than one outcome tick per
+sample. In this case, the first event is kept, and the other are
+discarded.</p>
 </div></blockquote>
-<p><strong>first_tick_only</strong> : <code class="xref py py-obj docutils literal"><span class="pre">Boolean</span></code>, default=True</p>
+<p><strong>sparse</strong> : <code class="xref py py-obj docutils literal"><span class="pre">boolean</span></code>, default=True</p>
 <blockquote>
-<div><p>Keep only the first event and drop the consecutive ones when simulating
-with Poisson distribution.</p>
+<div><p>Generate sparse or dense features.</p>
 </div></blockquote>
 <p><strong>censoring</strong> : <code class="xref py py-obj docutils literal"><span class="pre">Boolean</span></code>, default=True</p>
 <blockquote>
@@ -267,35 +269,52 @@ with Poisson distribution.</p>
 simulated, then right-censored according to the simulated censoring
 dates.</p>
 </div></blockquote>
-<p><strong>censoring_prob</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default=.7</p>
+<p><strong>censoring_prob</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default=0.</p>
 <blockquote>
-<div><p>Probability that a sample is censored. Should be in [0, 1].</p>
+<div><p>Probability that a sample is censored. Should be in [0, 1]. If 0, no
+censoring is applied.</p>
 </div></blockquote>
-<p><strong>censoring_intensity</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default=.9</p>
+<p><strong>censoring_scale</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default=None</p>
 <blockquote>
-<div><p>The number of censored time intervals are drawn from a Poisson 
-distribution with intensity equal to <code class="xref py py-obj docutils literal"><span class="pre">censoring_intensity</span></code>. The higher,
-the more intervals will be censored. Should be greater than 0.</p>
+<div><p>The number of censored time intervals are drawn from a Poisson
+distribution with intensity equal to <code class="xref py py-obj docutils literal"><span class="pre">censoring_scale</span></code>. The higher,
+the more intervals will be censored. If None, no censoring is
+applied.</p>
 </div></blockquote>
-<p><strong>coeffs</strong> : <code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code> of shape (n_features * (n_lags + 1)), default=None</p>
+<p><strong>coeffs</strong> : <code class="xref py py-obj docutils literal"><span class="pre">list</span></code> containing <code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code>, default=None</p>
 <blockquote>
-<div><p>Can be used to provide your own set of coefficients. If set to None, the
-simulator will generate coefficients randomly.</p>
+<div><p>Can be used to provide your own set of coefficients. Element <code class="xref py py-obj docutils literal"><span class="pre">i</span></code> of
+the list should be a 1-d <code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code> of shape (n_lags + 1), where
+<code class="xref py py-obj docutils literal"><span class="pre">n_lags[i]</span></code> is the number of lags associated to feature <code class="xref py py-obj docutils literal"><span class="pre">i</span></code>.
+If set to None, the simulator will generate coefficients randomly.</p>
 </div></blockquote>
-<p><strong>seed</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code></p>
+<p><strong>hawkes_exp_kernels</strong> : <code class="xref py py-obj docutils literal"><span class="pre">SimuHawkesExpKernels</span></code>, default=None</p>
+<blockquote>
+<div><p>Features are simulated with exponential kernel Hawkes proecesses.
+This parameter can be used to specify your own kernels (see
+<code class="xref py py-obj docutils literal"><span class="pre">SimuHawkesExpKernels</span></code> documentation). If None, random kernels
+are generated. The same kernels are used to generate features for
+the whole generated population.</p>
+</div></blockquote>
+<p><strong>n_correlations</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code>, default=0</p>
+<blockquote>
+<div><p>If <code class="xref py py-obj docutils literal"><span class="pre">hawkes_exp_kernels</span></code> is None, random kernels are generated. This
+parameter controls the number of non-null non-diagonal kernels.</p>
+</div></blockquote>
+<p><strong>batch_size</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code>, default=None</p>
+<blockquote>
+<div><p>When generating outcomes with Poisson distribution, the simulator will
+discard samples to which no event has occured. In this case, the
+simulator generate successive batches of samples, until it reaches
+a total of n_samples. This parameter can be used to set the batch size.</p>
+</div></blockquote>
+<p><strong>seed</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code>, default=None</p>
 <blockquote>
 <div><p>The seed of the random number generator</p>
 </div></blockquote>
-<p><strong>verbose</strong> : <code class="xref py py-obj docutils literal"><span class="pre">bool</span></code></p>
-<blockquote>
-<div><p>If True, print things</p>
-</div></blockquote>
-<p><strong>batch_size</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code>, default=None</p>
+<p><strong>verbose</strong> : <code class="xref py py-obj docutils literal"><span class="pre">bool</span></code>, default=True</p>
 <blockquote class="last">
-<div><p>When generating outcomes with Poisson distribution, the simulator will
-discard samples to which no event has occured. In this case, the
-simulator generate successive batches of samples, until it reaches 
-a total of n_samples. This parameter can be used to set the batch size.</p>
+<div><p>If True, print things</p>
 </div></blockquote>
 </td>
 </tr>
@@ -304,11 +323,11 @@ a total of n_samples. This parameter can be used to set the batch size.</p>
 <p class="rubric">Examples</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">tick.survival</span> <span class="k">import</span> <span class="n">SimuSCCS</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">sim</span> <span class="o">=</span> <span class="n">SimuSCCS</span><span class="p">(</span><span class="n">n_samples</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">n_intervals</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">n_features</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">n_lags</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-<span class="gp">... </span><span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span> <span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">exposure_type</span><span class="o">=</span><span class="s2">&quot;short&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">features</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">censoring</span><span class="p">,</span> <span class="n">coeffs</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">simulate</span><span class="p">()</span>
-<span class="go">--------------------------------------</span>
-<span class="go">Launching simulation using SimuSCCS...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">n_lags</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;uint64&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sim</span> <span class="o">=</span> <span class="n">SimuSCCS</span><span class="p">(</span><span class="n">n_cases</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">n_intervals</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">n_features</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">n_lags</span><span class="o">=</span><span class="n">n_lags</span><span class="p">,</span>
+<span class="gp">... </span><span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span> <span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">exposure_type</span><span class="o">=</span><span class="s2">&quot;single_exposure&quot;</span><span class="p">,</span>
+<span class="gp">... </span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">features</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">censoring</span><span class="p">,</span> <span class="n">_coeffs</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">simulate</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
 <span class="go">[array([[ 0.,  0.],</span>
 <span class="go">       [ 1.,  0.],</span>
@@ -319,13 +338,13 @@ a total of n_samples. This parameter can be used to set the batch size.</p>
 <span class="go">[array([0, 0, 1], dtype=int32), array([0, 0, 1], dtype=int32)]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">censoring</span><span class="p">)</span>
 <span class="go">[3 3]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">coeffs</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">_coeffs</span><span class="p">)</span>
 <span class="go">[ 0.54738557 -0.15109073  0.71345739  1.67633284 -0.25656871 -0.25655065]</span>
 </pre></div>
 </div>
 <dl class="method">
 <dt id="tick.survival.SimuSCCS.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>n_samples</em>, <em>n_intervals</em>, <em>n_features</em>, <em>n_lags</em>, <em>coeffs=None</em>, <em>sparse=True</em>, <em>exposure_type='infinite'</em>, <em>distribution='multinomial'</em>, <em>first_tick_only=True</em>, <em>censoring=True</em>, <em>censoring_prob=0.7</em>, <em>censoring_intensity=0.9</em>, <em>seed=None</em>, <em>verbose=True</em>, <em>batch_size=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/survival/simu_sccs.html#SimuSCCS.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.survival.SimuSCCS.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>n_cases</em>, <em>n_intervals</em>, <em>n_features</em>, <em>n_lags</em>, <em>time_drift=None</em>, <em>exposure_type='single_exposure'</em>, <em>distribution='multinomial'</em>, <em>sparse=True</em>, <em>censoring_prob=0</em>, <em>censoring_scale=None</em>, <em>coeffs=None</em>, <em>hawkes_exp_kernels=None</em>, <em>n_correlations=0</em>, <em>batch_size=None</em>, <em>seed=None</em>, <em>verbose=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/survival/simu_sccs.html#SimuSCCS.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.survival.SimuSCCS.__init__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -338,26 +357,26 @@ a total of n_samples. This parameter can be used to set the batch size.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>features</strong> : <code class="xref py py-obj docutils literal"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code> or <code class="xref py py-obj docutils literal"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal"><span class="pre">scipy.sparse.csr_matrix</span></code>,</p>
 <blockquote>
-<div><p>list of length n_samples, each element of the list of 
+<div><p>list of length n_cases, each element of the list of
 shape=(n_intervals, n_features)
 The list of features matrices.</p>
 </div></blockquote>
 <p><strong>labels</strong> : <code class="xref py py-obj docutils literal"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code>,</p>
 <blockquote>
-<div><p>list of length n_samples, each element of the list of 
+<div><p>list of length n_cases, each element of the list of
 shape=(n_intervals,)
 The labels vector</p>
 </div></blockquote>
-<p><strong>censoring</strong> : <code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code>, shape=(n_samples,), dtype=”uint64”</p>
+<p><strong>censoring</strong> : <code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code>, shape=(n_cases,), dtype=”uint64”</p>
 <blockquote>
-<div><p>The censoring data. This array should contain integers in 
+<div><p>The censoring data. This array should contain integers in
 [1, n_intervals]. If the value i is equal to n_intervals, then there
-is no censoring for sample i. If censoring = c &lt; n_intervals, then 
-the observation of sample i is stopped at interval c, that is, the 
+is no censoring for sample i. If censoring = c &lt; n_intervals, then
+the observation of sample i is stopped at interval c, that is, the
 row c - 1 of the corresponding matrix. The last n_intervals - c rows
 are then set to 0.</p>
 </div></blockquote>
-<p><strong>coeffs</strong> : <code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code>, shape=(n_features * (n_lags + 1),)</p>
+<p><strong>_coeffs</strong> : <code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code>, shape=(n_features * (n_lags + 1),)</p>
 <blockquote class="last">
 <div><p>The coefficients used to simulate the data.</p>
 </div></blockquote>
@@ -367,8 +386,22 @@ are then set to 0.</p>
 </table>
 </dd></dl>
 
+<dl class="method">
+<dt id="tick.survival.SimuSCCS.simulate_features">
+<code class="descname">simulate_features</code><span class="sig-paren">(</span><em>n_samples</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/survival/simu_sccs.html#SimuSCCS.simulate_features"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.survival.SimuSCCS.simulate_features" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simulates features, either <code class="xref py py-obj docutils literal"><span class="pre">single_exposure</span></code> or
+<code class="xref py py-obj docutils literal"><span class="pre">multiple_exposures</span></code> exposures.</p>
 </dd></dl>
 
+</dd></dl>
+
+<div class="section" id="examples-using-tick-survival-simusccs">
+<h2>Examples using <code class="docutils literal"><span class="pre">tick.survival.SimuSCCS</span></code><a class="headerlink" href="#examples-using-tick-survival-simusccs" title="Permalink to this headline">¶</a></h2>
+<div class="thumbnailContainer" tooltip="In this example we simulate longitudinal data with preset relative incidence for each feature. ..."><div class="figure" id="id1">
+<a class="reference external image-reference" href="./../../auto_examples/./plot_conv_sccs_cv_results.html"><img alt="../../_images/plot_conv_sccs_cv_results1.png" src="../../_images/plot_conv_sccs_cv_results1.png" /></a>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="../../auto_examples/plot_conv_sccs_cv_results.html#example-plot-conv-sccs-cv-results-py"><span class="std std-ref">ConvSCCS cross validation on simulated longitudinal features example</span></a></span></p>
+</div>
+</div></div>
 </div>
 
 

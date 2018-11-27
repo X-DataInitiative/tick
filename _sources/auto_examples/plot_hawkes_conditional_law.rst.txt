@@ -32,8 +32,8 @@ non-parametric estimation. `arXiv preprint arXiv:1401.0903`_.
 .. literalinclude:: plot_hawkes_conditional_law.py
     :lines: 18-
 
-**Total running time of the example:**  11.69 seconds
-( 0 minutes  11.69 seconds)
+**Total running time of the example:**  9.26 seconds
+( 0 minutes  9.26 seconds)
     
 Mentioned *tick* classes:
    * `tick.hawkes.HawkesConditionalLaw`

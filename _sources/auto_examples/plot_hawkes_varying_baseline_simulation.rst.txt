@@ -22,8 +22,8 @@ This example simulates a Hawkes process with a non constant, periodic baseline
 .. literalinclude:: plot_hawkes_varying_baseline_simulation.py
     :lines: 8-
 
-**Total running time of the example:**  0.28 seconds
-( 0 minutes  0.28 seconds)
+**Total running time of the example:**  0.16 seconds
+( 0 minutes  0.16 seconds)
     
 Mentioned *tick* classes:
    * `tick.base.TimeFunction`

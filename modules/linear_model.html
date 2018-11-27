@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.linear_model &#8212; tick 0.4.0 documentation</title>
+    <title>tick.linear_model &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -61,7 +61,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -453,7 +453,8 @@ First, we need to simulate data.</p>
 </pre></div>
 </div>
 <p>Now, we can create the model object for logistic regression</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tick.linear_model</span> <span class="k">import</span> <span class="n">ModelLogReg</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">tick.linear_model</span> <span class="k">import</span> <span class="n">ModelLogReg</span>
 
 <span class="n">model</span> <span class="o">=</span> <span class="n">ModelLogReg</span><span class="p">(</span><span class="n">fit_intercept</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
@@ -461,6 +462,7 @@ First, we need to simulate data.</p>
 </div>
 <p>outputs</p>
 <div class="highlight-none"><div class="highlight"><pre><span></span>{
+  &quot;dtype&quot;: &quot;float64&quot;,
   &quot;fit_intercept&quot;: true,
   &quot;n_calls_grad&quot;: 0,
   &quot;n_calls_loss&quot;: 0,

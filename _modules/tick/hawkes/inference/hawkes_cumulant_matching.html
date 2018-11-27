@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.hawkes.inference.hawkes_cumulant_matching &#8212; tick 0.4.0 documentation</title>
+    <title>tick.hawkes.inference.hawkes_cumulant_matching &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../../../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -209,9 +209,8 @@
 
 <span class="kn">from</span> <span class="nn">tick.base</span> <span class="k">import</span> <span class="n">Base</span>
 <span class="kn">from</span> <span class="nn">tick.hawkes.inference.base</span> <span class="k">import</span> <span class="n">LearnerHawkesNoParam</span>
-<span class="kn">from</span> <span class="nn">tick.hawkes.inference.build.hawkes_inference</span> <span class="k">import</span> <span class="p">(</span>
-    <span class="n">HawkesCumulant</span> <span class="k">as</span> <span class="n">_HawkesCumulant</span>
-<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">tick.hawkes.inference.build.hawkes_inference</span> <span class="k">import</span> <span class="p">(</span><span class="n">HawkesCumulant</span> <span class="k">as</span>
+                                                          <span class="n">_HawkesCumulant</span><span class="p">)</span>
 
 <span class="c1"># Tensorflow is not a project requirement but is needed for this class</span>
 <span class="k">try</span><span class="p">:</span>
@@ -341,17 +340,26 @@
 <span class="sd">    .. _Tensorflow: https://www.tensorflow.org</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">_attrinfos</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;_cumulant_computer&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;writable&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
-        <span class="s1">&#39;_solver&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;writable&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
-        <span class="s1">&#39;_elastic_net_ratio&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;writable&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
-        <span class="s1">&#39;_tf_feed_dict&#39;</span><span class="p">:</span> <span class="p">{},</span> <span class="s1">&#39;_tf_graph&#39;</span><span class="p">:</span> <span class="p">{},</span>
-        <span class="s1">&#39;_events_of_cumulants&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;writable&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
+        <span class="s1">&#39;_cumulant_computer&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;writable&#39;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;_solver&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;writable&#39;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;_elastic_net_ratio&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;writable&#39;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;_tf_feed_dict&#39;</span><span class="p">:</span> <span class="p">{},</span>
+        <span class="s1">&#39;_tf_graph&#39;</span><span class="p">:</span> <span class="p">{},</span>
+        <span class="s1">&#39;_events_of_cumulants&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;writable&#39;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">}</span>
     <span class="p">}</span>
 
-<div class="viewcode-block" id="HawkesCumulantMatching.__init__"><a class="viewcode-back" href="../../../../modules/generated/tick.hawkes.HawkesCumulantMatching.html#tick.hawkes.HawkesCumulantMatching.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">integration_support</span><span class="p">,</span> <span class="n">C</span><span class="o">=</span><span class="mf">1e3</span><span class="p">,</span> <span class="n">penalty</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="s1">&#39;adam&#39;</span><span class="p">,</span>
-                 <span class="n">step</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                 <span class="n">print_every</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">record_every</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">solver_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">cs_ratio</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">elastic_net_ratio</span><span class="o">=</span><span class="mf">0.95</span><span class="p">):</span>
+<div class="viewcode-block" id="HawkesCumulantMatching.__init__"><a class="viewcode-back" href="../../../../modules/generated/tick.hawkes.HawkesCumulantMatching.html#tick.hawkes.HawkesCumulantMatching.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">integration_support</span><span class="p">,</span> <span class="n">C</span><span class="o">=</span><span class="mf">1e3</span><span class="p">,</span> <span class="n">penalty</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">,</span>
+                 <span class="n">solver</span><span class="o">=</span><span class="s1">&#39;adam&#39;</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+                 <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">print_every</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">record_every</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+                 <span class="n">solver_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cs_ratio</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">elastic_net_ratio</span><span class="o">=</span><span class="mf">0.95</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="kn">import</span> <span class="nn">tensorflow</span>
         <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
@@ -362,8 +370,7 @@
 
         <span class="n">LearnerHawkesNoParam</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="n">max_iter</span><span class="p">,</span>
-            <span class="n">print_every</span><span class="o">=</span><span class="n">print_every</span><span class="p">,</span> <span class="n">record_every</span><span class="o">=</span><span class="n">record_every</span>
-        <span class="p">)</span>
+            <span class="n">print_every</span><span class="o">=</span><span class="n">print_every</span><span class="p">,</span> <span class="n">record_every</span><span class="o">=</span><span class="n">record_every</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_elastic_net_ratio</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">C</span> <span class="o">=</span> <span class="n">C</span>
@@ -444,9 +451,12 @@
                 <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">global_variables_initializer</span><span class="p">())</span>
                 <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tf_model_coeffs</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">R</span><span class="p">))</span>
 
-                <span class="k">return</span> <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cost</span><span class="p">,</span> <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">L</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean_intensity</span><span class="p">,</span>
-                                                 <span class="n">C</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">covariance</span><span class="p">,</span>
-                                                 <span class="n">K_c</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">skewness</span><span class="p">})</span></div>
+                <span class="k">return</span> <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+                    <span class="n">cost</span><span class="p">,</span> <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span>
+                        <span class="n">L</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean_intensity</span><span class="p">,</span>
+                        <span class="n">C</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">covariance</span><span class="p">,</span>
+                        <span class="n">K_c</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">skewness</span>
+                    <span class="p">})</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">_tf_model_coeffs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -604,27 +614,41 @@
                 <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">global_variables_initializer</span><span class="p">())</span>
                 <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tf_model_coeffs</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">start_point</span><span class="p">))</span>
                 <span class="c1"># Training cycle</span>
-                <span class="n">prev_obj</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">)</span><span class="o">.</span><span class="n">max</span>
-                <span class="k">for</span> <span class="n">n_iter</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_iter</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
-                    <span class="c1"># We don&#39;t use self.objective here as it would be very slow</span>
-                    <span class="n">obj</span> <span class="o">=</span> <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
-                        <span class="n">cost</span><span class="p">,</span> <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">L</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean_intensity</span><span class="p">,</span>
-                                         <span class="n">C</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">covariance</span><span class="p">,</span>
-                                         <span class="n">K_c</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">skewness</span><span class="p">})</span>
-                    <span class="n">rel_obj</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">obj</span> <span class="o">-</span> <span class="n">prev_obj</span><span class="p">)</span> <span class="o">/</span> <span class="nb">abs</span><span class="p">(</span><span class="n">prev_obj</span><span class="p">)</span>
-                    <span class="n">prev_obj</span> <span class="o">=</span> <span class="n">obj</span>
-                    <span class="n">converged</span> <span class="o">=</span> <span class="n">rel_obj</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">tol</span>
+                <span class="k">for</span> <span class="n">n_iter</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_iter</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_should_record_iter</span><span class="p">(</span><span class="n">n_iter</span><span class="p">):</span>
+                        <span class="c1"># We don&#39;t use self.objective here as it would be very</span>
+                        <span class="c1"># slow</span>
+                        <span class="n">prev_obj</span> <span class="o">=</span> <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+                            <span class="n">cost</span><span class="p">,</span> <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span>
+                                <span class="n">L</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean_intensity</span><span class="p">,</span>
+                                <span class="n">C</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">covariance</span><span class="p">,</span>
+                                <span class="n">K_c</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">skewness</span>
+                            <span class="p">})</span>
 
-                    <span class="n">force</span> <span class="o">=</span> <span class="n">converged</span> <span class="ow">or</span> <span class="n">n_iter</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_iter</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_history</span><span class="p">(</span><span class="n">n_iter</span><span class="p">,</span> <span class="n">objective</span><span class="o">=</span><span class="n">obj</span><span class="p">,</span> <span class="n">rel_obj</span><span class="o">=</span><span class="n">rel_obj</span><span class="p">,</span>
-                                         <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">)</span>
+                    <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+                        <span class="n">optimization</span><span class="p">,</span> <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span>
+                            <span class="n">L</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean_intensity</span><span class="p">,</span>
+                            <span class="n">C</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">covariance</span><span class="p">,</span>
+                            <span class="n">K_c</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">skewness</span>
+                        <span class="p">})</span>
 
-                    <span class="k">if</span> <span class="n">converged</span><span class="p">:</span>
-                        <span class="k">break</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_should_record_iter</span><span class="p">(</span><span class="n">n_iter</span><span class="p">):</span>
+                        <span class="n">obj</span> <span class="o">=</span> <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+                            <span class="n">cost</span><span class="p">,</span> <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span>
+                                <span class="n">L</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean_intensity</span><span class="p">,</span>
+                                <span class="n">C</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">covariance</span><span class="p">,</span>
+                                <span class="n">K_c</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">skewness</span>
+                            <span class="p">})</span>
+                        <span class="n">rel_obj</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">obj</span> <span class="o">-</span> <span class="n">prev_obj</span><span class="p">)</span> <span class="o">/</span> <span class="nb">abs</span><span class="p">(</span><span class="n">prev_obj</span><span class="p">)</span>
+                        <span class="n">prev_obj</span> <span class="o">=</span> <span class="n">obj</span>
+                        <span class="n">converged</span> <span class="o">=</span> <span class="n">rel_obj</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">tol</span>
 
-                    <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">optimization</span><span class="p">,</span> <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">L</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean_intensity</span><span class="p">,</span>
-                                                      <span class="n">C</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">covariance</span><span class="p">,</span>
-                                                      <span class="n">K_c</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">skewness</span><span class="p">})</span>
+                        <span class="n">force</span> <span class="o">=</span> <span class="n">converged</span> <span class="ow">or</span> <span class="n">n_iter</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_iter</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_handle_history</span><span class="p">(</span><span class="n">n_iter</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">objective</span><span class="o">=</span><span class="n">obj</span><span class="p">,</span>
+                                             <span class="n">rel_obj</span><span class="o">=</span><span class="n">rel_obj</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">)</span>
+
+                        <span class="k">if</span> <span class="n">converged</span><span class="p">:</span>
+                            <span class="k">break</span>
 
                 <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s1">&#39;solution&#39;</span><span class="p">,</span> <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tf_model_coeffs</span><span class="p">))</span>
 
@@ -680,11 +704,12 @@
 
     <span class="nd">@solver</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">solver</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
-        <span class="n">available_solvers</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;momentum&#39;</span><span class="p">,</span> <span class="s1">&#39;adam&#39;</span><span class="p">,</span> <span class="s1">&#39;adagrad&#39;</span><span class="p">,</span> <span class="s1">&#39;rmsprop&#39;</span><span class="p">,</span>
-                             <span class="s1">&#39;adadelta&#39;</span><span class="p">,</span> <span class="s1">&#39;gd&#39;</span><span class="p">]</span>
+        <span class="n">available_solvers</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">&#39;momentum&#39;</span><span class="p">,</span> <span class="s1">&#39;adam&#39;</span><span class="p">,</span> <span class="s1">&#39;adagrad&#39;</span><span class="p">,</span> <span class="s1">&#39;rmsprop&#39;</span><span class="p">,</span> <span class="s1">&#39;adadelta&#39;</span><span class="p">,</span> <span class="s1">&#39;gd&#39;</span>
+        <span class="p">]</span>
         <span class="k">if</span> <span class="n">val</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">available_solvers</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;solver must be one of </span><span class="si">{}</span><span class="s1">, recieved </span><span class="si">{}</span><span class="s1">&#39;</span>
-                             <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">available_solvers</span><span class="p">,</span> <span class="n">val</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;solver must be one of </span><span class="si">{}</span><span class="s1">, recieved </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">available_solvers</span><span class="p">,</span> <span class="n">val</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s1">&#39;_solver&#39;</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
 
@@ -739,9 +764,16 @@
 
     <span class="n">_cpp_obj_name</span> <span class="o">=</span> <span class="s1">&#39;_learner&#39;</span>
     <span class="n">_attrinfos</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;integration_support&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;cpp_setter&#39;</span><span class="p">:</span> <span class="s1">&#39;set_integration_support&#39;</span><span class="p">},</span>
-        <span class="s1">&#39;_learner&#39;</span><span class="p">:</span> <span class="p">{},</span> <span class="s1">&#39;L&#39;</span><span class="p">:</span> <span class="p">{},</span> <span class="s1">&#39;C&#39;</span><span class="p">:</span> <span class="p">{},</span> <span class="s1">&#39;K_c&#39;</span><span class="p">:</span> <span class="p">{},</span>
-        <span class="s1">&#39;_L_day&#39;</span><span class="p">:</span> <span class="p">{},</span> <span class="s1">&#39;_J&#39;</span><span class="p">:</span> <span class="p">{},</span> <span class="s1">&#39;_events_of_cumulants&#39;</span><span class="p">:</span> <span class="p">{},</span>
+        <span class="s1">&#39;integration_support&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;cpp_setter&#39;</span><span class="p">:</span> <span class="s1">&#39;set_integration_support&#39;</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;_learner&#39;</span><span class="p">:</span> <span class="p">{},</span>
+        <span class="s1">&#39;L&#39;</span><span class="p">:</span> <span class="p">{},</span>
+        <span class="s1">&#39;C&#39;</span><span class="p">:</span> <span class="p">{},</span>
+        <span class="s1">&#39;K_c&#39;</span><span class="p">:</span> <span class="p">{},</span>
+        <span class="s1">&#39;_L_day&#39;</span><span class="p">:</span> <span class="p">{},</span>
+        <span class="s1">&#39;_J&#39;</span><span class="p">:</span> <span class="p">{},</span>
+        <span class="s1">&#39;_events_of_cumulants&#39;</span><span class="p">:</span> <span class="p">{},</span>
     <span class="p">}</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">integration_support</span><span class="o">=</span><span class="mf">100.</span><span class="p">):</span>
@@ -822,8 +854,8 @@
             <span class="n">C</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">d</span><span class="p">,</span> <span class="n">d</span><span class="p">))</span>
             <span class="n">J</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">d</span><span class="p">,</span> <span class="n">d</span><span class="p">))</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">product</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">d</span><span class="p">),</span> <span class="n">repeat</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
-                <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_learner</span><span class="o">.</span><span class="n">compute_A_and_I_ij</span><span class="p">(</span>
-                    <span class="n">day</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_L_day</span><span class="p">[</span><span class="n">day</span><span class="p">][</span><span class="n">j</span><span class="p">])</span>
+                <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_learner</span><span class="o">.</span><span class="n">compute_A_and_I_ij</span><span class="p">(</span><span class="n">day</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span>
+                                                       <span class="bp">self</span><span class="o">.</span><span class="n">_L_day</span><span class="p">[</span><span class="n">day</span><span class="p">][</span><span class="n">j</span><span class="p">])</span>
                 <span class="n">C</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
                 <span class="n">J</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
             <span class="c1"># we keep the symmetric part to remove edge effects</span>

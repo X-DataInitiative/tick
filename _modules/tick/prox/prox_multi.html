@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.prox.prox_multi &#8212; tick 0.4.0 documentation</title>
+    <title>tick.prox.prox_multi &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -207,14 +207,20 @@
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">.base</span> <span class="k">import</span> <span class="n">Prox</span>
-<span class="kn">from</span> <span class="nn">.build.prox</span> <span class="k">import</span> <span class="n">ProxMulti</span> <span class="k">as</span> <span class="n">_ProxMulti</span>
+<span class="kn">from</span> <span class="nn">.build.prox</span> <span class="k">import</span> <span class="n">ProxMultiDouble</span> <span class="k">as</span> <span class="n">_ProxMultiDouble</span>
+<span class="kn">from</span> <span class="nn">.build.prox</span> <span class="k">import</span> <span class="n">ProxMultiFloat</span> <span class="k">as</span> <span class="n">_ProxMultiFloat</span>
+<span class="kn">from</span> <span class="nn">tick.prox</span> <span class="k">import</span> <span class="n">ProxZero</span>
 
 <span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;Stephane Gaiffas&#39;</span>
 
+<span class="n">dtype_map</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s2">&quot;float64&quot;</span><span class="p">):</span> <span class="n">_ProxMultiDouble</span><span class="p">,</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s2">&quot;float32&quot;</span><span class="p">):</span> <span class="n">_ProxMultiFloat</span>
+<span class="p">}</span>
+
 
 <div class="viewcode-block" id="ProxMulti"><a class="viewcode-back" href="../../../modules/generated/tick.prox.ProxMulti.html#tick.prox.ProxMulti">[docs]</a><span class="k">class</span> <span class="nc">ProxMulti</span><span class="p">(</span><span class="n">Prox</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Multiple proximal operator. This allows to apply sequentially a list</span>
+    <span class="sd">&quot;&quot;&quot;Multiple proximal operator. This allows to apply sequentially a list</span>
 <span class="sd">    of proximal operators. This is convenient when one wants to apply different</span>
 <span class="sd">    proximal operators on different parts of a vector.</span>
 
@@ -222,16 +228,21 @@
 <span class="sd">    ----------</span>
 <span class="sd">    proxs : `tuple` of `Prox`</span>
 <span class="sd">        A tuple of prox operators to be applied successively.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dtype : `{&#39;float64&#39;, &#39;float32&#39;}`</span>
+<span class="sd">        Type of the arrays used.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">_attrinfos</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;proxs&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
+    <span class="n">_attrinfos</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;proxs&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,}}</span>
 
 <div class="viewcode-block" id="ProxMulti.__init__"><a class="viewcode-back" href="../../../modules/generated/tick.prox.ProxMulti.html#tick.prox.ProxMulti.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proxs</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">):</span>
         <span class="n">Prox</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">proxs</span><span class="p">:</span>
+            <span class="n">proxs</span> <span class="o">=</span> <span class="p">[</span><span class="n">ProxZero</span><span class="p">()]</span>
+        <span class="n">dtype</span> <span class="o">=</span> <span class="n">proxs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="n">dtype</span>
         <span class="k">for</span> <span class="n">prox</span> <span class="ow">in</span> <span class="n">proxs</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">prox</span><span class="p">,</span> <span class="n">Prox</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> is not a Prox&#39;</span> <span class="o">%</span> <span class="n">prox</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
@@ -239,12 +250,13 @@
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> cannot be used in ProxMulti&#39;</span> <span class="o">%</span> <span class="n">prox</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">prox</span><span class="o">.</span><span class="n">_prox</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> cannot be used in ProxMulti&#39;</span> <span class="o">%</span> <span class="n">prox</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">dtype</span> <span class="o">!=</span> <span class="n">prox</span><span class="o">.</span><span class="n">dtype</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s1">&#39;ProxMulti can only handle proxes with same dtype&#39;</span><span class="p">)</span>
 
-        <span class="n">_proxs</span> <span class="o">=</span> <span class="p">[</span><span class="n">prox</span><span class="o">.</span><span class="n">_prox</span> <span class="k">for</span> <span class="n">prox</span> <span class="ow">in</span> <span class="n">proxs</span><span class="p">]</span>
         <span class="c1"># strength of ProxMulti is 0., since it&#39;s not used</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_prox</span> <span class="o">=</span> <span class="n">_ProxMulti</span><span class="p">(</span><span class="n">_proxs</span><span class="p">)</span>
-        <span class="c1"># Replace the list by a tuple to forbid changes</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">proxs</span> <span class="o">=</span> <span class="n">proxs</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">proxs</span> <span class="o">=</span> <span class="p">[</span><span class="n">prox</span><span class="o">.</span><span class="n">_prox</span> <span class="k">for</span> <span class="n">prox</span> <span class="ow">in</span> <span class="n">proxs</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_prox</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_cpp_prox</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coeffs</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">step</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_prox</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">coeffs</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
@@ -265,7 +277,17 @@
 <span class="sd">        output : `float`</span>
 <span class="sd">            Value of the penalization at ``coeffs``</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prox</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">coeffs</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prox</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">coeffs</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_build_cpp_prox</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dtype_or_object_with_dtype</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extract_dtype</span><span class="p">(</span><span class="n">dtype_or_object_with_dtype</span><span class="p">)</span>
+        <span class="n">prox_class</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_typed_class</span><span class="p">(</span><span class="n">dtype_or_object_with_dtype</span><span class="p">,</span>
+                                           <span class="n">dtype_map</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">prox_class</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">proxs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">astype</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dtype_or_object_with_dtype</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+            <span class="s2">&quot;This type requires each Prox to their &#39;astype&#39; called (for now)&quot;</span><span class="p">)</span></div>
 </pre></div>
 
 </div>

@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.solver.sgd &#8212; tick 0.4.0 documentation</title>
+    <title>tick.solver.sgd &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -203,11 +203,18 @@
   <h1>Source code for tick.solver.sgd</h1><div class="highlight"><pre>
 <span></span><span class="c1"># License: BSD 3 clause</span>
 
-<span class="kn">from</span> <span class="nn">.build.solver</span> <span class="k">import</span> <span class="n">SGD</span> <span class="k">as</span> <span class="n">_SGD</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
 <span class="kn">from</span> <span class="nn">.base</span> <span class="k">import</span> <span class="n">SolverFirstOrderSto</span>
+<span class="kn">from</span> <span class="nn">.build.solver</span> <span class="k">import</span> <span class="n">SGDDouble</span> <span class="k">as</span> <span class="n">_SGDDouble</span>
+<span class="kn">from</span> <span class="nn">.build.solver</span> <span class="k">import</span> <span class="n">SGDFloat</span> <span class="k">as</span> <span class="n">_SGDFloat</span>
 
 <span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;Stephane Gaiffas&quot;</span>
 
+<span class="n">dtype_class_mapper</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;float32&#39;</span><span class="p">):</span> <span class="n">_SGDFloat</span><span class="p">,</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;float64&#39;</span><span class="p">):</span> <span class="n">_SGDDouble</span>
+<span class="p">}</span>
 
 <span class="c1"># TODO: preparer methodes pour set et get attributes</span>
 
@@ -311,6 +318,9 @@
 <span class="sd">    time_end : `str`</span>
 <span class="sd">        End date of the call to ``solve()``</span>
 
+<span class="sd">    dtype : `{&#39;float64&#39;, &#39;float32&#39;}`, default=&#39;float64&#39;</span>
+<span class="sd">        Type of the arrays used. This value is set from model and prox dtypes.</span>
+
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
 <span class="sd">    * https://en.wikipedia.org/wiki/Stochastic_gradient_descent</span>
@@ -319,12 +329,17 @@
 <div class="viewcode-block" id="SGD.__init__"><a class="viewcode-back" href="../../../modules/generated/tick.solver.SGD.html#tick.solver.SGD.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">epoch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">rand_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;unif&quot;</span><span class="p">,</span> <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-10</span><span class="p">,</span>
                  <span class="n">max_iter</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-                 <span class="n">print_every</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="n">record_every</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-                 <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+                 <span class="n">print_every</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="n">record_every</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
 
-        <span class="n">SolverFirstOrderSto</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">epoch_size</span><span class="p">,</span> <span class="n">rand_type</span><span class="p">,</span>
-                                     <span class="n">tol</span><span class="p">,</span> <span class="n">max_iter</span><span class="p">,</span> <span class="n">verbose</span><span class="p">,</span>
-                                     <span class="n">print_every</span><span class="p">,</span> <span class="n">record_every</span><span class="p">,</span> <span class="n">seed</span><span class="p">)</span>
+        <span class="n">SolverFirstOrderSto</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">epoch_size</span><span class="p">,</span> <span class="n">rand_type</span><span class="p">,</span> <span class="n">tol</span><span class="p">,</span>
+                                     <span class="n">max_iter</span><span class="p">,</span> <span class="n">verbose</span><span class="p">,</span> <span class="n">print_every</span><span class="p">,</span>
+                                     <span class="n">record_every</span><span class="p">,</span> <span class="n">seed</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_set_cpp_solver</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dtype_or_object_with_dtype</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extract_dtype</span><span class="p">(</span><span class="n">dtype_or_object_with_dtype</span><span class="p">)</span>
+        <span class="n">solver_class</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_typed_class</span><span class="p">(</span><span class="n">dtype_or_object_with_dtype</span><span class="p">,</span>
+                                             <span class="n">dtype_class_mapper</span><span class="p">)</span>
+
         <span class="c1"># Type mapping None to unsigned long and double does not work...</span>
         <span class="n">step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span>
         <span class="k">if</span> <span class="n">step</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -332,9 +347,11 @@
         <span class="n">epoch_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">epoch_size</span>
         <span class="k">if</span> <span class="n">epoch_size</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">epoch_size</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="c1"># Construct the wrapped C++ SGD solver</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_solver</span> <span class="o">=</span> <span class="n">_SGD</span><span class="p">(</span><span class="n">epoch_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tol</span><span class="p">,</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">_rand_type</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">seed</span><span class="p">)</span></div></div>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span>
+            <span class="s1">&#39;_solver&#39;</span><span class="p">,</span>
+            <span class="n">solver_class</span><span class="p">(</span><span class="n">epoch_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tol</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rand_type</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span>
+                         <span class="bp">self</span><span class="o">.</span><span class="n">record_every</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">seed</span><span class="p">))</span></div>
 </pre></div>
 
 </div>

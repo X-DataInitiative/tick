@@ -1,0 +1,12 @@
+
+.. _LongitudinalSamplesFilter:
+
+tick.preprocessing.LongitudinalSamplesFilter
+============================================
+
+.. currentmodule:: tick.preprocessing
+
+.. autoclass:: LongitudinalSamplesFilter
+
+.. include:: tick.preprocessing.LongitudinalSamplesFilter.examples
+    :allowmissing:

@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.plot.plot_history &#8212; tick 0.4.0 documentation</title>
+    <title>tick.plot.plot_history &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -306,9 +306,8 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">show</span> <span class="o">=</span> <span class="kc">False</span>
 
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">solver</span><span class="p">,</span> <span class="n">x_array</span><span class="p">,</span>
-                <span class="n">y_array</span><span class="p">,</span> <span class="n">label</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">solvers</span><span class="p">,</span> <span class="n">x_arrays</span><span class="p">,</span>
-                                                 <span class="n">y_arrays</span><span class="p">,</span> <span class="n">labels</span><span class="p">)):</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">solver</span><span class="p">,</span> <span class="n">x_array</span><span class="p">,</span> <span class="n">y_array</span><span class="p">,</span> <span class="n">label</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
+                <span class="nb">zip</span><span class="p">(</span><span class="n">solvers</span><span class="p">,</span> <span class="n">x_arrays</span><span class="p">,</span> <span class="n">y_arrays</span><span class="p">,</span> <span class="n">labels</span><span class="p">)):</span>
             <span class="n">color</span> <span class="o">=</span> <span class="n">get_plot_color</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x_array</span><span class="p">,</span> <span class="n">y_array</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
 
@@ -357,9 +356,8 @@
         <span class="n">fig</span> <span class="o">=</span> <span class="n">bk</span><span class="o">.</span><span class="n">Figure</span><span class="p">(</span><span class="n">plot_height</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">x_range</span><span class="o">=</span><span class="p">[</span><span class="n">min_x</span><span class="p">,</span> <span class="n">max_x</span><span class="p">],</span>
                         <span class="n">y_range</span><span class="o">=</span><span class="p">[</span><span class="n">min_y</span><span class="p">,</span> <span class="n">max_y</span><span class="p">])</span>
 
-    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">solver</span><span class="p">,</span> <span class="n">x_array</span><span class="p">,</span>
-            <span class="n">y_array</span><span class="p">,</span> <span class="n">legend</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">solvers</span><span class="p">,</span> <span class="n">x_arrays</span><span class="p">,</span>
-                                              <span class="n">y_arrays</span><span class="p">,</span> <span class="n">legends</span><span class="p">)):</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">solver</span><span class="p">,</span> <span class="n">x_array</span><span class="p">,</span> <span class="n">y_array</span><span class="p">,</span> <span class="n">legend</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
+            <span class="nb">zip</span><span class="p">(</span><span class="n">solvers</span><span class="p">,</span> <span class="n">x_arrays</span><span class="p">,</span> <span class="n">y_arrays</span><span class="p">,</span> <span class="n">legends</span><span class="p">)):</span>
         <span class="n">color</span> <span class="o">=</span> <span class="n">get_plot_color</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
         <span class="n">fig</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">x_array</span><span class="p">,</span> <span class="n">y_array</span><span class="p">,</span> <span class="n">line_width</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="n">legend</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
     <span class="n">fig</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">axis_label</span> <span class="o">=</span> <span class="n">x</span>

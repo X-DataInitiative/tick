@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>Asynchronous stochastic solver &#8212; tick 0.4.0 documentation</title>
+    <title>Asynchronous stochastic solver &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -203,25 +203,28 @@
   <div class="section" id="asynchronous-stochastic-solver">
 <span id="example-plot-asynchronous-stochastic-solver-py"></span><h1>Asynchronous stochastic solver<a class="headerlink" href="#asynchronous-stochastic-solver" title="Permalink to this headline">¶</a></h1>
 <p>This example illustrates the convergence speed of the asynchronous version of
-SVRG solver. This solver called KroMagnon has been introduced in</p>
-<p>Mania, H., Pan, X., Papailiopoulos, D., Recht, B., Ramchandran, K. and Jordan, M.I., 2015.
+SVRG and SAGA solvers. This solver respectively called KroMagnon and ASAGA
+have been introduced in</p>
+<ul class="simple">
+<li>Mania, H., Pan, X., Papailiopoulos, D., Recht, B., Ramchandran, K. and Jordan, M.I., 2015.
 Perturbed iterate analysis for asynchronous stochastic optimization.
-<a class="reference external" href="https://arxiv.org/abs/1507.06970">arXiv preprint arXiv:1507.06970.</a>.</p>
+<a class="reference external" href="https://arxiv.org/abs/1507.06970">arXiv preprint arXiv:1507.06970.</a>.</li>
+<li>R. Leblond, F. Pedregosa, and S. Lacoste-Julien: Asaga: Asynchronous
+Parallel Saga, <a class="reference external" href="https://hal.inria.fr/hal-01665255/document">(AISTATS) 2017</a>.</li>
+</ul>
 <p>To obtain good speedup in a relative short time example we have designed very
 sparse and ill-conditonned problem.</p>
 <img alt="../_images/plot_asynchronous_stochastic_solver_001.png" class="align-center" src="../_images/plot_asynchronous_stochastic_solver_001.png" />
 <p><strong>Python source code:</strong> <a class="reference download internal" href="../_downloads/plot_asynchronous_stochastic_solver.py" download=""><code class="xref download docutils literal"><span class="pre">plot_asynchronous_stochastic_solver.py</span></code></a></p>
 <div class="highlight-default"><div class="highlight"><pre><span></span>
-
 <span class="kn">from</span> <span class="nn">scipy</span> <span class="k">import</span> <span class="n">sparse</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">from</span> <span class="nn">tick.plot</span> <span class="k">import</span> <a href="../modules/generated/tick.plot.plot_history.html#tick.plot.plot_history"><span class="n">plot_history</span></a>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">tick.linear_model</span> <span class="k">import</span> <a href="../modules/generated/tick.linear_model.SimuLogReg.html#tick.linear_model.SimuLogReg"><span class="n">SimuLogReg</span></a><span class="p">,</span> <a href="../modules/generated/tick.linear_model.ModelLogReg.html#tick.linear_model.ModelLogReg"><span class="n">ModelLogReg</span></a>
 <span class="kn">from</span> <span class="nn">tick.simulation</span> <span class="k">import</span> <a href="../modules/generated/tick.simulation.weights_sparse_gauss.html#tick.simulation.weights_sparse_gauss"><span class="n">weights_sparse_gauss</span></a>
-<span class="kn">from</span> <span class="nn">tick.solver</span> <span class="k">import</span> <a href="../modules/generated/tick.solver.SVRG.html#tick.solver.SVRG"><span class="n">SVRG</span></a>
+<span class="kn">from</span> <span class="nn">tick.solver</span> <span class="k">import</span> <a href="../modules/generated/tick.solver.SVRG.html#tick.solver.SVRG"><span class="n">SVRG</span></a><span class="p">,</span> <a href="../modules/generated/tick.solver.SAGA.html#tick.solver.SAGA"><span class="n">SAGA</span></a>
 <span class="kn">from</span> <span class="nn">tick.prox</span> <span class="k">import</span> <a href="../modules/generated/tick.prox.ProxElasticNet.html#tick.prox.ProxElasticNet"><span class="n">ProxElasticNet</span></a>
-
 
 <span class="n">seed</span> <span class="o">=</span> <span class="mi">1398</span>
 <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
@@ -229,9 +232,9 @@ sparse and ill-conditonned problem.</p>
 <span class="n">n_samples</span> <span class="o">=</span> <span class="mi">40000</span>
 <span class="n">n_features</span> <span class="o">=</span> <span class="mi">20000</span>
 <span class="n">sparsity</span> <span class="o">=</span> <span class="mf">1e-4</span>
-<span class="n">penalty_strength</span> <span class="o">=</span> <span class="mf">1e-6</span>
+<span class="n">penalty_strength</span> <span class="o">=</span> <span class="mf">1e-5</span>
 
-<span class="n">weights</span> <span class="o">=</span> <a href="../modules/generated/tick.simulation.weights_sparse_gauss.html#tick.simulation.weights_sparse_gauss"><span class="n">weights_sparse_gauss</span></a><span class="p">(</span><span class="n">n_features</span><span class="p">,</span> <span class="n">nnz</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">weights</span> <span class="o">=</span> <a href="../modules/generated/tick.simulation.weights_sparse_gauss.html#tick.simulation.weights_sparse_gauss"><span class="n">weights_sparse_gauss</span></a><span class="p">(</span><span class="n">n_features</span><span class="p">,</span> <span class="n">nnz</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
 <span class="n">intercept</span> <span class="o">=</span> <span class="mf">0.2</span>
 <span class="n">features</span> <span class="o">=</span> <span class="n">sparse</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">n_features</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="n">sparsity</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;csr&#39;</span><span class="p">)</span>
 
@@ -246,32 +249,36 @@ sparse and ill-conditonned problem.</p>
 
 <span class="n">test_n_threads</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
 
-<span class="n">svrg_list</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="n">svrg_labels</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <a href="http://matplotlib.org/api/_as_gen/matplotlib.pyplot.subplots.html#matplotlib.pyplot.subplots"><span class="n">plt</span><span class="o">.</span><span class="n">subplots</span></a><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
 
-<span class="k">for</span> <span class="n">n_threads</span> <span class="ow">in</span> <span class="n">test_n_threads</span><span class="p">:</span>
-    <span class="n">svrg</span> <span class="o">=</span> <a href="../modules/generated/tick.solver.SVRG.html#tick.solver.SVRG"><span class="n">SVRG</span></a><span class="p">(</span><span class="n">step</span><span class="o">=</span><span class="n">svrg_step</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                <span class="n">n_threads</span><span class="o">=</span><span class="n">n_threads</span><span class="p">)</span>
-    <span class="n">svrg</span><span class="o">.</span><span class="n">set_model</span><span class="p">(</span><span class="n">model</span><span class="p">)</span><span class="o">.</span><span class="n">set_prox</span><span class="p">(</span><span class="n">prox</span><span class="p">)</span>
-    <span class="n">svrg</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">ax</span><span class="p">,</span> <span class="n">SolverClass</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="p">[</span><a href="../modules/generated/tick.solver.SVRG.html#tick.solver.SVRG"><span class="n">SVRG</span></a><span class="p">,</span> <a href="../modules/generated/tick.solver.SAGA.html#tick.solver.SAGA"><span class="n">SAGA</span></a><span class="p">]):</span>
+    <span class="n">solver_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">solver_labels</span> <span class="o">=</span> <span class="p">[]</span>
 
-    <span class="n">svrg_list</span> <span class="o">+=</span> <span class="p">[</span><span class="n">svrg</span><span class="p">]</span>
-    <span class="k">if</span> <span class="n">n_threads</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="n">svrg_labels</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;SVRG&#39;</span><span class="p">]</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">svrg_labels</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;ASVRG </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n_threads</span><span class="p">)]</span>
+    <span class="k">for</span> <span class="n">n_threads</span> <span class="ow">in</span> <span class="n">test_n_threads</span><span class="p">:</span>
+        <span class="n">solver</span> <span class="o">=</span> <span class="n">SolverClass</span><span class="p">(</span><span class="n">step</span><span class="o">=</span><span class="n">svrg_step</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+                             <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">n_threads</span><span class="o">=</span><span class="n">n_threads</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                             <span class="n">record_every</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+        <span class="n">solver</span><span class="o">.</span><span class="n">set_model</span><span class="p">(</span><span class="n">model</span><span class="p">)</span><span class="o">.</span><span class="n">set_prox</span><span class="p">(</span><span class="n">prox</span><span class="p">)</span>
+        <span class="n">solver</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
 
-<a href="../modules/generated/tick.plot.plot_history.html#tick.plot.plot_history"><span class="n">plot_history</span></a><span class="p">(</span><span class="n">svrg_list</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="n">dist_min</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">log_scale</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-             <span class="n">labels</span><span class="o">=</span><span class="n">svrg_labels</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<a href="http://matplotlib.org/api/_as_gen/matplotlib.pyplot.ylim.html#matplotlib.pyplot.ylim"><span class="n">plt</span><span class="o">.</span><span class="n">ylim</span></a><span class="p">([</span><span class="mf">3e-3</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">])</span>
-<a href="http://matplotlib.org/api/_as_gen/matplotlib.pyplot.ylabel.html#matplotlib.pyplot.ylabel"><span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span></a><span class="p">(</span><span class="s1">&#39;log distance to optimal objective&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
-<a href="http://matplotlib.org/api/tight_layout_api.html#matplotlib.tight_layout"><span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span></a><span class="p">()</span>
+        <span class="n">solver_list</span> <span class="o">+=</span> <span class="p">[</span><span class="n">solver</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">n_threads</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">solver_labels</span> <span class="o">+=</span> <span class="p">[</span><span class="n">solver</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">solver_labels</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;A</span><span class="si">{}</span><span class="s1"> </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">n_threads</span><span class="p">)]</span>
+
+    <a href="../modules/generated/tick.plot.plot_history.html#tick.plot.plot_history"><span class="n">plot_history</span></a><span class="p">(</span><span class="n">solver_list</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="n">dist_min</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">log_scale</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                 <span class="n">labels</span><span class="o">=</span><span class="n">solver_labels</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;log distance to optimal objective&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 <a href="http://matplotlib.org/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
-
 </pre></div>
 </div>
-<p><strong>Total running time of the example:</strong>  4.59 seconds
-( 0 minutes  4.59 seconds)</p>
+<p><strong>Total running time of the example:</strong>  5.65 seconds
+( 0 minutes  5.65 seconds)</p>
 <dl class="docutils">
 <dt>Mentioned <em>tick</em> classes:</dt>
 <dd><ul class="first last simple">
@@ -280,6 +287,7 @@ sparse and ill-conditonned problem.</p>
 <li><a class="reference internal" href="../modules/generated/tick.plot.plot_history.html#tick.plot.plot_history" title="tick.plot.plot_history"><code class="xref py py-obj docutils literal"><span class="pre">tick.plot.plot_history</span></code></a></li>
 <li><a class="reference internal" href="../modules/generated/tick.prox.ProxElasticNet.html#tick.prox.ProxElasticNet" title="tick.prox.ProxElasticNet"><code class="xref py py-obj docutils literal"><span class="pre">tick.prox.ProxElasticNet</span></code></a></li>
 <li><a class="reference internal" href="../modules/generated/tick.simulation.weights_sparse_gauss.html#tick.simulation.weights_sparse_gauss" title="tick.simulation.weights_sparse_gauss"><code class="xref py py-obj docutils literal"><span class="pre">tick.simulation.weights_sparse_gauss</span></code></a></li>
+<li><a class="reference internal" href="../modules/generated/tick.solver.SAGA.html#tick.solver.SAGA" title="tick.solver.SAGA"><code class="xref py py-obj docutils literal"><span class="pre">tick.solver.SAGA</span></code></a></li>
 <li><a class="reference internal" href="../modules/generated/tick.solver.SVRG.html#tick.solver.SVRG" title="tick.solver.SVRG"><code class="xref py py-obj docutils literal"><span class="pre">tick.solver.SVRG</span></code></a></li>
 </ul>
 </dd>

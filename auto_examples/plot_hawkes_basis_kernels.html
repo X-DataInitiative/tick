@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>Fit exotic Hawkes kernels &#8212; tick 0.4.0 documentation</title>
+    <title>Fit exotic Hawkes kernels &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -240,9 +240,7 @@ is run on toy datasets in the <a class="reference external" href="http://jmlr.or
 
 
 <span class="n">t_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
-<span class="n">u_values</span> <span class="o">=</span> <span class="p">[(</span><span class="mf">0.007061</span><span class="p">,</span> <span class="mf">0.001711</span><span class="p">),</span>
-            <span class="p">(</span><span class="mf">0.005445</span><span class="p">,</span> <span class="mf">0.003645</span><span class="p">),</span>
-            <span class="p">(</span><span class="mf">0.003645</span><span class="p">,</span> <span class="mf">0.005445</span><span class="p">),</span>
+<span class="n">u_values</span> <span class="o">=</span> <span class="p">[(</span><span class="mf">0.007061</span><span class="p">,</span> <span class="mf">0.001711</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.005445</span><span class="p">,</span> <span class="mf">0.003645</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.003645</span><span class="p">,</span> <span class="mf">0.005445</span><span class="p">),</span>
             <span class="p">(</span><span class="mf">0.001790</span><span class="p">,</span> <span class="mf">0.007390</span><span class="p">)]</span>
 
 <span class="n">hawkes</span> <span class="o">=</span> <a href="../modules/generated/tick.hawkes.SimuHawkes.html#tick.hawkes.SimuHawkes"><span class="n">SimuHawkes</span></a><span class="p">(</span><span class="n">baseline</span><span class="o">=</span><span class="p">[</span><span class="mf">1e-5</span><span class="p">,</span> <span class="mf">1e-5</span><span class="p">],</span> <span class="n">seed</span><span class="o">=</span><span class="mi">1093</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -261,9 +259,8 @@ is run on toy datasets in the <a class="reference external" href="http://jmlr.or
 <span class="n">n_basis</span> <span class="o">=</span> <span class="mi">2</span>
 
 <span class="n">em</span> <span class="o">=</span> <a href="../modules/generated/tick.hawkes.HawkesBasisKernels.html#tick.hawkes.HawkesBasisKernels"><span class="n">HawkesBasisKernels</span></a><span class="p">(</span><span class="n">kernel_support</span><span class="p">,</span> <span class="n">n_basis</span><span class="o">=</span><span class="n">n_basis</span><span class="p">,</span>
-                        <span class="n">kernel_size</span><span class="o">=</span><span class="n">kernel_size</span><span class="p">,</span> <span class="n">C</span><span class="o">=</span><span class="n">C</span><span class="p">,</span>
-                        <span class="n">n_threads</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="n">max_iter</span><span class="p">,</span>
-                        <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ode_tol</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">)</span>
+                        <span class="n">kernel_size</span><span class="o">=</span><span class="n">kernel_size</span><span class="p">,</span> <span class="n">C</span><span class="o">=</span><span class="n">C</span><span class="p">,</span> <span class="n">n_threads</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+                        <span class="n">max_iter</span><span class="o">=</span><span class="n">max_iter</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ode_tol</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">)</span>
 <span class="n">em</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">ticks</span><span class="p">)</span>
 
 <span class="n">fig</span> <span class="o">=</span> <a href="../modules/generated/tick.plot.plot_hawkes_kernels.html#tick.plot.plot_hawkes_kernels"><span class="n">plot_hawkes_kernels</span></a><span class="p">(</span><span class="n">em</span><span class="p">,</span> <span class="n">hawkes</span><span class="o">=</span><span class="n">hawkes</span><span class="p">,</span> <span class="n">support</span><span class="o">=</span><span class="mf">19.9</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -277,8 +274,8 @@ is run on toy datasets in the <a class="reference external" href="http://jmlr.or
 <a href="http://matplotlib.org/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
 </pre></div>
 </div>
-<p><strong>Total running time of the example:</strong>  4.26 seconds
-( 0 minutes  4.26 seconds)</p>
+<p><strong>Total running time of the example:</strong>  2.46 seconds
+( 0 minutes  2.46 seconds)</p>
 <dl class="docutils">
 <dt>Mentioned <em>tick</em> classes:</dt>
 <dd><ul class="first last simple">

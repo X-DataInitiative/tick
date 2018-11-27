@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.base.timefunc &#8212; tick 0.4.0 documentation</title>
+    <title>tick.base.timefunc &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -276,10 +276,18 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">_attrinfos</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;_time_function&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;writable&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
-        <span class="s1">&#39;original_y&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;writable&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
-        <span class="s1">&#39;original_t&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;writable&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
-        <span class="s1">&#39;is_constant&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;writable&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+        <span class="s1">&#39;_time_function&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;writable&#39;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;original_y&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;writable&#39;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;original_t&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;writable&#39;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;is_constant&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;writable&#39;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">},</span>
     <span class="p">}</span>
 
     <span class="n">InterLinear</span> <span class="o">=</span> <span class="n">_TimeFunction</span><span class="o">.</span><span class="n">InterMode_InterLinear</span>
@@ -304,9 +312,8 @@
             <span class="n">t_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
             <span class="n">y_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">_time_function</span> <span class="o">=</span> <span class="n">_TimeFunction</span><span class="p">(</span><span class="n">t_values</span><span class="p">,</span> <span class="n">y_values</span><span class="p">,</span>
-                                                <span class="n">border_type</span><span class="p">,</span> <span class="n">inter_mode</span><span class="p">,</span>
-                                                <span class="n">dt</span><span class="p">,</span> <span class="n">border_value</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_time_function</span> <span class="o">=</span> <span class="n">_TimeFunction</span><span class="p">(</span>
+                <span class="n">t_values</span><span class="p">,</span> <span class="n">y_values</span><span class="p">,</span> <span class="n">border_type</span><span class="p">,</span> <span class="n">inter_mode</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">border_value</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">original_y</span> <span class="o">=</span> <span class="n">y_values</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">original_t</span> <span class="o">=</span> <span class="n">t_values</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">is_constant</span> <span class="o">=</span> <span class="kc">False</span></div>

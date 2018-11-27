@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.survival.survival &#8212; tick 0.4.0 documentation</title>
+    <title>tick.survival.survival &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -237,16 +237,15 @@
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">event_observed</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
         <span class="n">event_observed</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">event_observed</span><span class="p">)</span>
 
-    <span class="n">timestamps</span> <span class="o">=</span> <span class="n">timestamps</span><span class="p">[</span><span class="n">event_observed</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span>
-    <span class="n">unique_timestamps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">timestamps</span><span class="p">)))</span>
+    <span class="n">timestamps_observed</span> <span class="o">=</span> <span class="n">timestamps</span><span class="p">[</span><span class="n">event_observed</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="n">unique_timestamps_observed</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span>
+        <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">timestamps_observed</span><span class="p">)))</span>
 
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">cumprod</span><span class="p">(</span>
-        <span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">((</span>
-            <span class="mf">1.0</span> <span class="o">-</span>
-            <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">t</span> <span class="o">==</span> <span class="n">timestamps</span><span class="p">)</span> <span class="o">/</span>
-            <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">t</span> <span class="o">&lt;=</span> <span class="n">timestamps</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">unique_timestamps</span>
-        <span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float&#39;</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="n">unique_timestamps</span><span class="o">.</span><span class="n">size</span><span class="p">))</span></div>
+        <span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span>
+            <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">t</span> <span class="o">==</span> <span class="n">timestamps_observed</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">t</span> <span class="o">&lt;=</span> <span class="n">timestamps</span><span class="p">)</span>
+             <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">unique_timestamps_observed</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float&#39;</span><span class="p">,</span>
+            <span class="n">count</span><span class="o">=</span><span class="n">unique_timestamps_observed</span><span class="o">.</span><span class="n">size</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="nelson_aalen"><a class="viewcode-back" href="../../../modules/generated/tick.survival.nelson_aalen.html#tick.survival.nelson_aalen">[docs]</a><span class="k">def</span> <span class="nf">nelson_aalen</span><span class="p">(</span><span class="n">timestamps</span><span class="p">,</span> <span class="n">event_observed</span><span class="p">):</span>
@@ -282,15 +281,14 @@
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">event_observed</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
         <span class="n">event_observed</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">event_observed</span><span class="p">)</span>
 
-    <span class="n">timestamps</span> <span class="o">=</span> <span class="n">timestamps</span><span class="p">[</span><span class="n">event_observed</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span>
-    <span class="n">unique_timestamps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">timestamps</span><span class="p">)))</span>
+    <span class="n">timestamps_observed</span> <span class="o">=</span> <span class="n">timestamps</span><span class="p">[</span><span class="n">event_observed</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="n">unique_timestamps_observed</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span>
+        <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">timestamps_observed</span><span class="p">)))</span>
 
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span>
-        <span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">((</span>
-            <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">t</span> <span class="o">==</span> <span class="n">timestamps</span><span class="p">)</span> <span class="o">/</span>
-            <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">t</span> <span class="o">&lt;=</span> <span class="n">timestamps</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">unique_timestamps</span>
-        <span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float&#39;</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="n">unique_timestamps</span><span class="o">.</span><span class="n">size</span><span class="p">))</span></div>
+        <span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">t</span> <span class="o">==</span> <span class="n">timestamps_observed</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">t</span> <span class="o">&lt;=</span> <span class="n">timestamps</span><span class="p">)</span>
+                     <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">unique_timestamps_observed</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float&#39;</span><span class="p">,</span>
+                    <span class="n">count</span><span class="o">=</span><span class="n">unique_timestamps_observed</span><span class="o">.</span><span class="n">size</span><span class="p">))</span></div>
 </pre></div>
 
 </div>

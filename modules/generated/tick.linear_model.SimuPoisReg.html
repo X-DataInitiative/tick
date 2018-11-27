@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.linear_model.SimuPoisReg &#8212; tick 0.4.0 documentation</title>
+    <title>tick.linear_model.SimuPoisReg &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -61,7 +61,7 @@
         </button>
         <a class="navbar-brand" href="../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -206,7 +206,7 @@
 <span id="simupoisreg"></span><h1>tick.linear_model.SimuPoisReg<a class="headerlink" href="#tick-linear-model-simupoisreg" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="tick.linear_model.SimuPoisReg">
-<em class="property">class </em><code class="descclassname">tick.linear_model.</code><code class="descname">SimuPoisReg</code><span class="sig-paren">(</span><em>weights: numpy.ndarray</em>, <em>intercept: float = None</em>, <em>features: numpy.ndarray = None</em>, <em>n_samples: int = 200</em>, <em>link: str = 'exponential'</em>, <em>features_type: str = 'cov_toeplitz'</em>, <em>cov_corr: float = 0.5</em>, <em>features_scaling: str = 'none'</em>, <em>seed: int = None</em>, <em>verbose: bool = True</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/linear_model/simu_poisreg.html#SimuPoisReg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.linear_model.SimuPoisReg" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">tick.linear_model.</code><code class="descname">SimuPoisReg</code><span class="sig-paren">(</span><em>weights: numpy.ndarray</em>, <em>intercept: float = None</em>, <em>features: numpy.ndarray = None</em>, <em>n_samples: int = 200</em>, <em>link: str = 'exponential'</em>, <em>features_type: str = 'cov_toeplitz'</em>, <em>cov_corr: float = 0.5</em>, <em>features_scaling: str = 'none'</em>, <em>seed: int = None</em>, <em>verbose: bool = True</em>, <em>dtype='float64'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/linear_model/simu_poisreg.html#SimuPoisReg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.linear_model.SimuPoisReg" title="Permalink to this definition">¶</a></dt>
 <dd><p>Simulation of a Poisson regression model, with
 identity or exponential link.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -276,6 +276,11 @@ seeded</p>
 <blockquote>
 <div><p>If <code class="xref py py-obj docutils literal"><span class="pre">True</span></code>, print things</p>
 </div></blockquote>
+<p><strong>dtype</strong> : <code class="xref py py-obj docutils literal"><span class="pre">{'float64',</span> <span class="pre">'float32'}</span></code>, default=’float64’</p>
+<blockquote>
+<div><p>Type of the generated arrays.
+Used in the case features is None</p>
+</div></blockquote>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Attributes:</th><td class="field-body"><p class="first"><strong>features</strong> : <code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code>, shape=(n_samples, n_features)</p>
@@ -304,7 +309,7 @@ seeded</p>
 </table>
 <dl class="method">
 <dt id="tick.linear_model.SimuPoisReg.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>weights: numpy.ndarray</em>, <em>intercept: float = None</em>, <em>features: numpy.ndarray = None</em>, <em>n_samples: int = 200</em>, <em>link: str = 'exponential'</em>, <em>features_type: str = 'cov_toeplitz'</em>, <em>cov_corr: float = 0.5</em>, <em>features_scaling: str = 'none'</em>, <em>seed: int = None</em>, <em>verbose: bool = True</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/linear_model/simu_poisreg.html#SimuPoisReg.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.linear_model.SimuPoisReg.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>weights: numpy.ndarray</em>, <em>intercept: float = None</em>, <em>features: numpy.ndarray = None</em>, <em>n_samples: int = 200</em>, <em>link: str = 'exponential'</em>, <em>features_type: str = 'cov_toeplitz'</em>, <em>cov_corr: float = 0.5</em>, <em>features_scaling: str = 'none'</em>, <em>seed: int = None</em>, <em>verbose: bool = True</em>, <em>dtype='float64'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/linear_model/simu_poisreg.html#SimuPoisReg.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.linear_model.SimuPoisReg.__init__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">

@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.plot.plot_point_process &#8212; tick 0.4.0 documentation</title>
+    <title>tick.plot.plot_point_process &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -61,7 +61,7 @@
         </button>
         <a class="navbar-brand" href="../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -206,7 +206,7 @@
 <h1>tick.plot.plot_point_process<a class="headerlink" href="#tick-plot-plot-point-process" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="tick.plot.plot_point_process">
-<code class="descclassname">tick.plot.</code><code class="descname">plot_point_process</code><span class="sig-paren">(</span><em>point_process</em>, <em>plot_intensity=None</em>, <em>n_points=10000</em>, <em>plot_nodes=None</em>, <em>t_min=None</em>, <em>t_max=None</em>, <em>max_jumps=None</em>, <em>show=True</em>, <em>ax=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/plot/plot_point_processes.html#plot_point_process"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.plot.plot_point_process" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">tick.plot.</code><code class="descname">plot_point_process</code><span class="sig-paren">(</span><em>point_process</em>, <em>plot_intensity=None</em>, <em>n_points=10000</em>, <em>plot_nodes=None</em>, <em>node_names=None</em>, <em>t_min=None</em>, <em>t_max=None</em>, <em>max_jumps=None</em>, <em>show=True</em>, <em>ax=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/plot/plot_point_processes.html#plot_point_process"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.plot.plot_point_process" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot point process realization</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -228,6 +228,10 @@ be plotted if it has been tracked.</p>
 <p><strong>plot_nodes</strong> : <code class="xref py py-obj docutils literal"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal"><span class="pre">int</span></code>, default=`None`</p>
 <blockquote>
 <div><p>List of nodes that will be plotted. If <code class="xref py py-obj docutils literal"><span class="pre">None</span></code>, all nodes are considered</p>
+</div></blockquote>
+<p><strong>node_names</strong> : <code class="xref py py-obj docutils literal"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal"><span class="pre">str</span></code>, default=`None`</p>
+<blockquote>
+<div><p>List of node names. If <code class="xref py py-obj docutils literal"><span class="pre">None</span></code>, node indices are used.</p>
 </div></blockquote>
 <p><strong>t_min</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default=`None`</p>
 <blockquote>

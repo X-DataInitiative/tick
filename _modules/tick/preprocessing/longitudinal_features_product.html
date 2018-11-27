@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.preprocessing.longitudinal_features_product &#8212; tick 0.4.0 documentation</title>
+    <title>tick.preprocessing.longitudinal_features_product &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -209,23 +209,23 @@
 <span class="kn">from</span> <span class="nn">copy</span> <span class="k">import</span> <span class="n">deepcopy</span>
 <span class="kn">from</span> <span class="nn">scipy.misc</span> <span class="k">import</span> <span class="n">comb</span>
 <span class="kn">from</span> <span class="nn">sklearn.externals.joblib</span> <span class="k">import</span> <span class="n">Parallel</span><span class="p">,</span> <span class="n">delayed</span>
-<span class="kn">from</span> <span class="nn">tick.base</span> <span class="k">import</span> <span class="n">Base</span>
+<span class="kn">from</span> <span class="nn">tick.preprocessing.base</span> <span class="k">import</span> <span class="n">LongitudinalPreprocessor</span>
 <span class="kn">from</span> <span class="nn">.build.preprocessing</span> <span class="k">import</span> <span class="n">SparseLongitudinalFeaturesProduct</span>
 <span class="kn">from</span> <span class="nn">.utils</span> <span class="k">import</span> <span class="n">check_longitudinal_features_consistency</span>
 
 
-<div class="viewcode-block" id="LongitudinalFeaturesProduct"><a class="viewcode-back" href="../../../modules/generated/tick.preprocessing.LongitudinalFeaturesProduct.html#tick.preprocessing.LongitudinalFeaturesProduct">[docs]</a><span class="k">class</span> <span class="nc">LongitudinalFeaturesProduct</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
+<div class="viewcode-block" id="LongitudinalFeaturesProduct"><a class="viewcode-back" href="../../../modules/generated/tick.preprocessing.LongitudinalFeaturesProduct.html#tick.preprocessing.LongitudinalFeaturesProduct">[docs]</a><span class="k">class</span> <span class="nc">LongitudinalFeaturesProduct</span><span class="p">(</span><span class="n">LongitudinalPreprocessor</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Transforms longitudinal exposure features to add the corresponding</span>
-<span class="sd">    product features. </span>
+<span class="sd">    product features.</span>
 
-<span class="sd">    This preprocessor transform an input list of `n_samples` numpy arrays or </span>
+<span class="sd">    This preprocessor transform an input list of `n_cases` numpy arrays or</span>
 <span class="sd">    csr_matrices of shape `(n_intervals, n_features)` so as to add columns</span>
 <span class="sd">    representing the product of combination of two features. It outputs a list</span>
-<span class="sd">    of `n_samples` numpy arrays or  csr_matrices of shape `(n_intervals, </span>
+<span class="sd">    of `n_cases` numpy arrays or  csr_matrices of shape `(n_intervals,</span>
 <span class="sd">    n_features + comb(n_features, 2))`.</span>
 
 <span class="sd">    Exposure can take two forms:</span>
-<span class="sd">    - short repeated exposures: in that case, each column of the numpy arrays </span>
+<span class="sd">    - short repeated exposures: in that case, each column of the numpy arrays</span>
 <span class="sd">    or csr matrices can contain multiple ones, each one representing an exposure</span>
 <span class="sd">    for a particular time bucket.</span>
 <span class="sd">    - infinite unique exposures: in that case, each column of the numpy arrays</span>
@@ -238,8 +238,8 @@
 <span class="sd">        Either &#39;infinite&#39; for infinite unique exposures or &#39;short&#39; for short</span>
 <span class="sd">        repeated exposures.</span>
 
-<span class="sd">    n_threads : `int`, default=-1</span>
-<span class="sd">        Number of tasks to run in parallel. If set to -1, the number of tasks is </span>
+<span class="sd">    n_jobs : `int`, default=-1</span>
+<span class="sd">        Number of tasks to run in parallel. If set to -1, the number of tasks is</span>
 <span class="sd">        set to the number of cores.</span>
 
 <span class="sd">    Attributes</span>
@@ -274,21 +274,34 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">_attrinfos</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;exposure_type&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
-        <span class="s2">&quot;_mapper&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
-        <span class="s2">&quot;_n_init_features&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
-        <span class="s2">&quot;_n_output_features&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
-        <span class="s2">&quot;_n_intervals&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
-        <span class="s2">&quot;_preprocessor&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
-        <span class="s2">&quot;_fitted&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
+        <span class="s2">&quot;exposure_type&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;_mapper&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;_n_init_features&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;_n_output_features&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;_n_intervals&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;_preprocessor&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;_fitted&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">}</span>
     <span class="p">}</span>
 
-<div class="viewcode-block" id="LongitudinalFeaturesProduct.__init__"><a class="viewcode-back" href="../../../modules/generated/tick.preprocessing.LongitudinalFeaturesProduct.html#tick.preprocessing.LongitudinalFeaturesProduct.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exposure_type</span><span class="o">=</span><span class="s2">&quot;infinite&quot;</span><span class="p">,</span> <span class="n">n_threads</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
-        <span class="n">Base</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">exposure_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;infinite&quot;</span><span class="p">,</span> <span class="s2">&quot;short&quot;</span><span class="p">]:</span>
+<div class="viewcode-block" id="LongitudinalFeaturesProduct.__init__"><a class="viewcode-back" href="../../../modules/generated/tick.preprocessing.LongitudinalFeaturesProduct.html#tick.preprocessing.LongitudinalFeaturesProduct.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exposure_type</span><span class="o">=</span><span class="s2">&quot;infinite&quot;</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">LongitudinalPreprocessor</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="n">n_jobs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">exposure_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;infinite&quot;</span><span class="p">,</span> <span class="s2">&quot;finite&quot;</span><span class="p">]:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;exposure_type should be either &#39;infinite&#39; or</span><span class="se">\</span>
-<span class="s2">             &#39;short&#39;, not </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">exposure_type</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">n_threads</span> <span class="o">=</span> <span class="n">n_threads</span>
+<span class="s2">             &#39;finite&#39;, not </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">exposure_type</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">exposure_type</span> <span class="o">=</span> <span class="n">exposure_type</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_reset</span><span class="p">()</span></div>
 
@@ -311,16 +324,17 @@
 <span class="sd">            The column index - feature mapping.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fitted</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cannot get mapper if object has not been fitted.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;cannot get mapper if object has not been fitted.&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mapper</span><span class="p">)</span>
 
-<div class="viewcode-block" id="LongitudinalFeaturesProduct.fit"><a class="viewcode-back" href="../../../modules/generated/tick.preprocessing.LongitudinalFeaturesProduct.html#tick.preprocessing.LongitudinalFeaturesProduct.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+<div class="viewcode-block" id="LongitudinalFeaturesProduct.fit"><a class="viewcode-back" href="../../../modules/generated/tick.preprocessing.LongitudinalFeaturesProduct.html#tick.preprocessing.LongitudinalFeaturesProduct.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">censoring</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Fit the feature product using the features matrices list.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        X : list of numpy.ndarray or list of scipy.sparse.csr_matrix,</span>
-<span class="sd">            list of length n_samples, each element of the list of </span>
+<span class="sd">        features : list of numpy.ndarray or list of scipy.sparse.csr_matrix,</span>
+<span class="sd">            list of length n_cases, each element of the list of</span>
 <span class="sd">            shape=(n_intervals, n_features)</span>
 <span class="sd">            The list of features matrices.</span>
 
@@ -330,8 +344,9 @@
 <span class="sd">            The fitted current instance.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_reset</span><span class="p">()</span>
-        <span class="n">base_shape</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span>
-        <span class="n">X</span> <span class="o">=</span> <span class="n">check_longitudinal_features_consistency</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">base_shape</span><span class="p">,</span> <span class="s2">&quot;float64&quot;</span><span class="p">)</span>
+        <span class="n">base_shape</span> <span class="o">=</span> <span class="n">features</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">features</span> <span class="o">=</span> <span class="n">check_longitudinal_features_consistency</span><span class="p">(</span>
+            <span class="n">features</span><span class="p">,</span> <span class="n">base_shape</span><span class="p">,</span> <span class="s2">&quot;float64&quot;</span><span class="p">)</span>
         <span class="n">n_intervals</span><span class="p">,</span> <span class="n">n_init_features</span> <span class="o">=</span> <span class="n">base_shape</span>
         <span class="k">if</span> <span class="n">n_init_features</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;There should be at least two features to compute</span><span class="se">\</span>
@@ -341,109 +356,88 @@
         <span class="n">comb_it</span> <span class="o">=</span> <span class="n">combinations</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">n_init_features</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
         <span class="n">mapper</span> <span class="o">=</span> <span class="p">{</span><span class="n">i</span> <span class="o">+</span> <span class="n">n_init_features</span><span class="p">:</span> <span class="n">c</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">comb_it</span><span class="p">)}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;_mapper&quot;</span><span class="p">,</span> <span class="n">mapper</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;_n_output_features&quot;</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">n_init_features</span> <span class="o">+</span>
-                                            <span class="n">comb</span><span class="p">(</span><span class="n">n_init_features</span><span class="p">,</span> <span class="mi">2</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;_n_output_features&quot;</span><span class="p">,</span>
+                  <span class="nb">int</span><span class="p">(</span><span class="n">n_init_features</span> <span class="o">+</span> <span class="n">comb</span><span class="p">(</span><span class="n">n_init_features</span><span class="p">,</span> <span class="mi">2</span><span class="p">)))</span>
 
-        <span class="k">if</span> <span class="n">sps</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">exposure_type</span> <span class="o">==</span> <span class="s2">&quot;infinite&quot;</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;_preprocessor&quot;</span><span class="p">,</span> <span class="n">SparseLongitudinalFeaturesProduct</span><span class="p">(</span><span class="n">X</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">sps</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">features</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">exposure_type</span> <span class="o">==</span> <span class="s2">&quot;infinite&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;_preprocessor&quot;</span><span class="p">,</span>
+                      <span class="n">SparseLongitudinalFeaturesProduct</span><span class="p">(</span><span class="n">features</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;_fitted&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span></div>
 
-<div class="viewcode-block" id="LongitudinalFeaturesProduct.transform"><a class="viewcode-back" href="../../../modules/generated/tick.preprocessing.LongitudinalFeaturesProduct.html#tick.preprocessing.LongitudinalFeaturesProduct.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+<div class="viewcode-block" id="LongitudinalFeaturesProduct.transform"><a class="viewcode-back" href="../../../modules/generated/tick.preprocessing.LongitudinalFeaturesProduct.html#tick.preprocessing.LongitudinalFeaturesProduct.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">censoring</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Add the product features to the given features matrices list.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        X : list of numpy.ndarray or list of scipy.sparse.csr_matrix,</span>
-<span class="sd">            list of length n_samples, each element of the list of </span>
+<span class="sd">        features : list of numpy.ndarray or list of scipy.sparse.csr_matrix,</span>
+<span class="sd">            list of length n_cases, each element of the list of</span>
 <span class="sd">            shape=(n_intervals, n_features)</span>
 <span class="sd">            The list of features matrices.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        output : list of numpy.ndarray or list of scipy.sparse.csr_matrix,</span>
-<span class="sd">            list of length n_samples, each element of the list of </span>
+<span class="sd">            list of length n_cases, each element of the list of</span>
 <span class="sd">            shape=(n_intervals, n_new_features)</span>
-<span class="sd">            The list of features matrices with added product features. </span>
+<span class="sd">            The list of features matrices with added product features.</span>
 <span class="sd">            n_new_features = n_features + comb(n_features, 2)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">base_shape</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_intervals</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_init_features</span><span class="p">)</span>
-        <span class="n">X</span> <span class="o">=</span> <span class="n">check_longitudinal_features_consistency</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">base_shape</span><span class="p">,</span> <span class="s2">&quot;float64&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">exposure_type</span> <span class="o">==</span> <span class="s2">&quot;short&quot;</span><span class="p">:</span>
-            <span class="n">X_with_products</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">short_exposure_products</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="n">features</span> <span class="o">=</span> <span class="n">check_longitudinal_features_consistency</span><span class="p">(</span>
+            <span class="n">features</span><span class="p">,</span> <span class="n">base_shape</span><span class="p">,</span> <span class="s2">&quot;float64&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">exposure_type</span> <span class="o">==</span> <span class="s2">&quot;finite&quot;</span><span class="p">:</span>
+            <span class="n">X_with_products</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_finite_exposure_products</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">exposure_type</span> <span class="o">==</span> <span class="s2">&quot;infinite&quot;</span><span class="p">:</span>
-            <span class="n">X_with_products</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">infinite_exposure_products</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+            <span class="n">X_with_products</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_infinite_exposure_products</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;exposure_type should be either &#39;infinite&#39; or</span><span class="se">\</span>
-<span class="s2">                         &#39;short&#39;, not </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">exposure_type</span><span class="p">)</span>
+<span class="s2">                         &#39;finite&#39;, not </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">exposure_type</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">X_with_products</span></div>
+        <span class="k">return</span> <span class="n">X_with_products</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">censoring</span></div>
 
-<div class="viewcode-block" id="LongitudinalFeaturesProduct.fit_transform"><a class="viewcode-back" href="../../../modules/generated/tick.preprocessing.LongitudinalFeaturesProduct.html#tick.preprocessing.LongitudinalFeaturesProduct.fit_transform">[docs]</a>    <span class="k">def</span> <span class="nf">fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Fit and apply the product feature computation using the features </span>
-<span class="sd">        matrices list.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        X : list of numpy.ndarray or list of scipy.sparse.csr_matrix,</span>
-<span class="sd">            list of length n_samples, each element of the list of </span>
-<span class="sd">            shape=(n_intervals, n_features)</span>
-<span class="sd">            The list of features matrices.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        output : list of numpy.ndarray or list of scipy.sparse.csr_matrix,</span>
-<span class="sd">            list of length n_samples, each element of the list of </span>
-<span class="sd">            shape=(n_intervals, n_new_features)</span>
-<span class="sd">            The list of features matrices with added product features. </span>
-<span class="sd">            n_new_features = n_features + comb(n_features, 2)</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-        <span class="n">X_with_products</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">X_with_products</span></div>
-
-<div class="viewcode-block" id="LongitudinalFeaturesProduct.infinite_exposure_products"><a class="viewcode-back" href="../../../modules/generated/tick.preprocessing.LongitudinalFeaturesProduct.html#tick.preprocessing.LongitudinalFeaturesProduct.infinite_exposure_products">[docs]</a>    <span class="k">def</span> <span class="nf">infinite_exposure_products</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Add product features to X in the infinite exposure case.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">sps</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-            <span class="n">X_with_products</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_sparse_infinite_product</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span> <span class="k">for</span> <span class="n">arr</span> <span class="ow">in</span> <span class="n">X</span><span class="p">]</span>
-            <span class="c1"># TODO: fix multiprocessing</span>
-            <span class="c1"># X_with_products = Parallel(n_threads=self.n_threads)(</span>
-            <span class="c1">#     delayed(self._sparse_infinite_product)(arr) for arr in X)</span>
+    <span class="k">def</span> <span class="nf">_infinite_exposure_products</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">features</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add product features to features in the infinite exposure case.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">sps</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">features</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="n">X_with_products</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_sparse_infinite_product</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span> <span class="k">for</span> <span class="n">arr</span> <span class="ow">in</span> <span class="n">features</span>
+            <span class="p">]</span>
+            <span class="c1"># TODO later: fix multiprocessing</span>
+            <span class="c1"># X_with_products = Parallel(n_jobs=self.n_jobs)(</span>
+            <span class="c1">#     delayed(self._sparse_infinite_product)(arr) for arr in features)</span>
             <span class="c1"># Should be done in C++</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Infinite exposures should be stored in </span><span class="se">\</span>
 <span class="s2">                    sparse matrices as this hypothesis induces sparsity in the </span><span class="se">\</span>
 <span class="s2">                    feature matrix.&quot;</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">X_with_products</span></div>
+        <span class="k">return</span> <span class="n">X_with_products</span>
 
-<div class="viewcode-block" id="LongitudinalFeaturesProduct.short_exposure_products"><a class="viewcode-back" href="../../../modules/generated/tick.preprocessing.LongitudinalFeaturesProduct.html#tick.preprocessing.LongitudinalFeaturesProduct.short_exposure_products">[docs]</a>    <span class="k">def</span> <span class="nf">short_exposure_products</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Add product features to X in the short exposure case.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">sps</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-            <span class="n">X_with_products</span> <span class="o">=</span> <span class="n">Parallel</span><span class="p">(</span><span class="n">n_jobs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_threads</span><span class="p">)(</span>
-                <span class="n">delayed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sparse_short_product</span><span class="p">)(</span><span class="n">arr</span><span class="p">)</span> <span class="k">for</span> <span class="n">arr</span> <span class="ow">in</span> <span class="n">X</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_finite_exposure_products</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">features</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add product features to features in the finite exposure case.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">sps</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">features</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="n">X_with_products</span> <span class="o">=</span> <span class="n">Parallel</span><span class="p">(</span><span class="n">n_jobs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_jobs</span><span class="p">)(</span>
+                <span class="n">delayed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sparse_finite_product</span><span class="p">)(</span><span class="n">arr</span><span class="p">)</span> <span class="k">for</span> <span class="n">arr</span> <span class="ow">in</span> <span class="n">features</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">X_with_products</span> <span class="o">=</span> <span class="n">Parallel</span><span class="p">(</span><span class="n">n_jobs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_threads</span><span class="p">)(</span>
-                <span class="n">delayed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dense_short_product</span><span class="p">)(</span><span class="n">arr</span><span class="p">)</span> <span class="k">for</span> <span class="n">arr</span> <span class="ow">in</span> <span class="n">X</span><span class="p">)</span>
+            <span class="n">X_with_products</span> <span class="o">=</span> <span class="n">Parallel</span><span class="p">(</span><span class="n">n_jobs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_jobs</span><span class="p">)(</span>
+                <span class="n">delayed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dense_finite_product</span><span class="p">)(</span><span class="n">arr</span><span class="p">)</span> <span class="k">for</span> <span class="n">arr</span> <span class="ow">in</span> <span class="n">features</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">X_with_products</span></div>
+        <span class="k">return</span> <span class="n">X_with_products</span>
 
-    <span class="k">def</span> <span class="nf">_dense_short_product</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feat_mat</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_dense_finite_product</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feat_mat</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Performs feature product on a numpy.ndarray containing</span>
-<span class="sd">        short exposures.&quot;&quot;&quot;</span>
+<span class="sd">        finite exposures.&quot;&quot;&quot;</span>
         <span class="n">feat</span> <span class="o">=</span> <span class="p">[</span><span class="n">feat_mat</span><span class="p">]</span>
-        <span class="n">feat</span><span class="o">.</span><span class="n">extend</span><span class="p">([(</span><span class="n">feat_mat</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">feat_mat</span><span class="p">[:,</span> <span class="n">j</span><span class="p">]</span>
-                      <span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">feat</span><span class="o">.</span><span class="n">extend</span><span class="p">([(</span><span class="n">feat_mat</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">feat_mat</span><span class="p">[:,</span> <span class="n">j</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
                      <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mapper</span><span class="o">.</span><span class="n">values</span><span class="p">()])</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(</span><span class="n">feat</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_sparse_short_product</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feat_mat</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_sparse_finite_product</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feat_mat</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Performs feature product on a scipy.sparse.csr_matrix containing</span>
-<span class="sd">        short exposures.&quot;&quot;&quot;</span>
+<span class="sd">        finite exposures.&quot;&quot;&quot;</span>
         <span class="n">feat</span> <span class="o">=</span> <span class="p">[</span><span class="n">feat_mat</span><span class="o">.</span><span class="n">tocsc</span><span class="p">()]</span>
         <span class="n">feat</span><span class="o">.</span><span class="n">extend</span><span class="p">([(</span><span class="n">feat_mat</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">feat_mat</span><span class="p">[:,</span> <span class="n">j</span><span class="p">]))</span>
                      <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapper</span><span class="o">.</span><span class="n">values</span><span class="p">()])</span>
@@ -459,16 +453,11 @@
         <span class="n">new_col</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">new_nnz</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;uint64&quot;</span><span class="p">)</span>
         <span class="n">new_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">new_nnz</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float64&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_preprocessor</span><span class="o">.</span><span class="n">sparse_features_product</span><span class="p">(</span>
-            <span class="n">coo</span><span class="o">.</span><span class="n">row</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;uint64&quot;</span><span class="p">),</span>
-            <span class="n">coo</span><span class="o">.</span><span class="n">col</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;uint64&quot;</span><span class="p">),</span>
-            <span class="n">coo</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-            <span class="n">new_row</span><span class="p">,</span>
-            <span class="n">new_col</span><span class="p">,</span>
-            <span class="n">new_data</span><span class="p">)</span>
+            <span class="n">coo</span><span class="o">.</span><span class="n">row</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;uint64&quot;</span><span class="p">),</span> <span class="n">coo</span><span class="o">.</span><span class="n">col</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;uint64&quot;</span><span class="p">),</span> <span class="n">coo</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+            <span class="n">new_row</span><span class="p">,</span> <span class="n">new_col</span><span class="p">,</span> <span class="n">new_data</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">sps</span><span class="o">.</span><span class="n">csr_matrix</span><span class="p">((</span><span class="n">new_data</span><span class="p">,</span> <span class="p">(</span><span class="n">new_row</span><span class="p">,</span> <span class="n">new_col</span><span class="p">)),</span>
                               <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_intervals</span><span class="p">,</span>
-                                     <span class="bp">self</span><span class="o">.</span><span class="n">_n_output_features</span><span class="p">)</span>
-                              <span class="p">)</span></div>
+                                     <span class="bp">self</span><span class="o">.</span><span class="n">_n_output_features</span><span class="p">))</span></div>
 </pre></div>
 
 </div>

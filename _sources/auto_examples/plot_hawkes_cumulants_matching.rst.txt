@@ -33,8 +33,8 @@ cumulants.
 .. literalinclude:: plot_hawkes_cumulants_matching.py
     :lines: 19-
 
-**Total running time of the example:**  5.19 seconds
-( 0 minutes  5.19 seconds)
+**Total running time of the example:**  5.67 seconds
+( 0 minutes  5.67 seconds)
     
 Mentioned *tick* classes:
    * `tick.hawkes.HawkesCumulantMatching`

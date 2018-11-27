@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.preprocessing &#8212; tick 0.4.0 documentation</title>
+    <title>tick.preprocessing &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -61,7 +61,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -238,8 +238,11 @@ similar API to scikit-learn preprocessors.</p>
 <tr class="row-odd"><td><a class="reference internal" href="generated/tick.preprocessing.LongitudinalFeaturesProduct.html#tick.preprocessing.LongitudinalFeaturesProduct" title="tick.preprocessing.LongitudinalFeaturesProduct"><code class="xref py py-obj docutils literal"><span class="pre">LongitudinalFeaturesProduct</span></code></a>([exposure_type,&nbsp;…])</td>
 <td>Transforms longitudinal exposure features to add the corresponding product features.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/tick.preprocessing.LongitudinalFeaturesLagger.html#tick.preprocessing.LongitudinalFeaturesLagger" title="tick.preprocessing.LongitudinalFeaturesLagger"><code class="xref py py-obj docutils literal"><span class="pre">LongitudinalFeaturesLagger</span></code></a>([n_lags,&nbsp;n_jobs])</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/tick.preprocessing.LongitudinalFeaturesLagger.html#tick.preprocessing.LongitudinalFeaturesLagger" title="tick.preprocessing.LongitudinalFeaturesLagger"><code class="xref py py-obj docutils literal"><span class="pre">LongitudinalFeaturesLagger</span></code></a>(n_lags[,&nbsp;n_jobs])</td>
 <td>Transforms longitudinal exposure features to add columns representing lagged features.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/tick.preprocessing.LongitudinalSamplesFilter.html#tick.preprocessing.LongitudinalSamplesFilter" title="tick.preprocessing.LongitudinalSamplesFilter"><code class="xref py py-obj docutils literal"><span class="pre">LongitudinalSamplesFilter</span></code></a>([n_jobs])</td>
+<td>Longitudinal data preprocessor which filters out samples for which all labels are null over the entire observation period.</td>
 </tr>
 </tbody>
 </table>

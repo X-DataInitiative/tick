@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.hawkes.inference.hawkes_sumexpkern_fixeddecay &#8212; tick 0.4.0 documentation</title>
+    <title>tick.hawkes.inference.hawkes_sumexpkern_fixeddecay &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../../../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -206,9 +206,7 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">tick.base</span> <span class="k">import</span> <span class="n">actual_kwargs</span>
-<span class="kn">from</span> <span class="nn">tick.hawkes</span> <span class="k">import</span> <span class="p">(</span>
-    <span class="n">ModelHawkesSumExpKernLeastSq</span><span class="p">,</span> <span class="n">SimuHawkesSumExpKernels</span>
-<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">tick.hawkes</span> <span class="k">import</span> <span class="p">(</span><span class="n">ModelHawkesSumExpKernLeastSq</span><span class="p">,</span> <span class="n">SimuHawkesSumExpKernels</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">tick.hawkes.inference.base</span> <span class="k">import</span> <span class="n">LearnerHawkesParametric</span>
 <span class="kn">from</span> <span class="nn">tick.prox</span> <span class="k">import</span> <span class="n">ProxElasticNet</span><span class="p">,</span> <span class="n">ProxL1</span><span class="p">,</span> <span class="n">ProxL2Sq</span><span class="p">,</span> <span class="n">ProxPositive</span>
 
@@ -329,10 +327,18 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">_attrinfos</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;n_decays&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
-        <span class="s2">&quot;decays&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
-        <span class="s2">&quot;n_baselines&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
-        <span class="s2">&quot;period_length&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+        <span class="s2">&quot;n_decays&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;decays&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;n_baselines&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;period_length&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">},</span>
     <span class="p">}</span>
 
     <span class="n">_penalties</span> <span class="o">=</span> <span class="p">{</span>
@@ -355,18 +361,16 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">n_baselines</span> <span class="o">=</span> <span class="n">n_baselines</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">period_length</span> <span class="o">=</span> <span class="n">period_length</span>
 
-        <span class="n">LearnerHawkesParametric</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">penalty</span><span class="o">=</span><span class="n">penalty</span><span class="p">,</span> <span class="n">C</span><span class="o">=</span><span class="n">C</span><span class="p">,</span>
-                                         <span class="n">solver</span><span class="o">=</span><span class="n">solver</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">,</span>
-                                         <span class="n">max_iter</span><span class="o">=</span><span class="n">max_iter</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
-                                         <span class="n">print_every</span><span class="o">=</span><span class="n">print_every</span><span class="p">,</span>
-                                         <span class="n">record_every</span><span class="o">=</span><span class="n">record_every</span><span class="p">,</span>
-                                         <span class="n">elastic_net_ratio</span><span class="o">=</span><span class="n">elastic_net_ratio</span><span class="p">,</span>
-                                         <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span><span class="p">)</span>
+        <span class="n">LearnerHawkesParametric</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">penalty</span><span class="o">=</span><span class="n">penalty</span><span class="p">,</span> <span class="n">C</span><span class="o">=</span><span class="n">C</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="n">solver</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">,</span>
+            <span class="n">max_iter</span><span class="o">=</span><span class="n">max_iter</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="n">print_every</span><span class="o">=</span><span class="n">print_every</span><span class="p">,</span>
+            <span class="n">record_every</span><span class="o">=</span><span class="n">record_every</span><span class="p">,</span> <span class="n">elastic_net_ratio</span><span class="o">=</span><span class="n">elastic_net_ratio</span><span class="p">,</span>
+            <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_construct_model_obj</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">model</span> <span class="o">=</span> <span class="n">ModelHawkesSumExpKernLeastSq</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">decays</span><span class="p">,</span> <span class="n">n_baselines</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_baselines</span><span class="p">,</span>
-            <span class="n">period_length</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">period_length</span><span class="p">)</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">ModelHawkesSumExpKernLeastSq</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">decays</span><span class="p">,</span>
+                                             <span class="n">n_baselines</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_baselines</span><span class="p">,</span>
+                                             <span class="n">period_length</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">period_length</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">model</span>
 
     <span class="nd">@property</span>
@@ -398,12 +402,15 @@
     <span class="k">def</span> <span class="nf">_corresponding_simu</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">SimuHawkesSumExpKernels</span><span class="p">(</span>
             <span class="n">adjacency</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">adjacency</span><span class="p">,</span> <span class="n">decays</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">decays</span><span class="p">,</span>
-            <span class="n">baseline</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">baseline</span><span class="p">,</span> <span class="n">period_length</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_model_obj</span><span class="o">.</span><span class="n">period_length</span><span class="p">)</span>
+            <span class="n">baseline</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">baseline</span><span class="p">,</span>
+            <span class="n">period_length</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_model_obj</span><span class="o">.</span><span class="n">period_length</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">get_baseline_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">abscissa_array</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_corresponding_simu</span><span class="p">()</span><span class="o">.</span><span class="n">get_baseline_values</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">abscissa_array</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_corresponding_simu</span><span class="p">()</span><span class="o">.</span><span class="n">get_baseline_values</span><span class="p">(</span>
+            <span class="n">i</span><span class="p">,</span> <span class="n">abscissa_array</span><span class="p">)</span>
 
-<div class="viewcode-block" id="HawkesSumExpKern.score"><a class="viewcode-back" href="../../../../modules/generated/tick.hawkes.HawkesSumExpKern.html#tick.hawkes.HawkesSumExpKern.score">[docs]</a>    <span class="k">def</span> <span class="nf">score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">events</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end_times</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">baseline</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">adjacency</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="HawkesSumExpKern.score"><a class="viewcode-back" href="../../../../modules/generated/tick.hawkes.HawkesSumExpKern.html#tick.hawkes.HawkesSumExpKern.score">[docs]</a>    <span class="k">def</span> <span class="nf">score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">events</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end_times</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">baseline</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+              <span class="n">adjacency</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Compute score metric</span>
 <span class="sd">        Score metric is log likelihood (the higher the better)</span>
 
@@ -446,8 +453,7 @@
             <span class="n">coeffs</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="k">return</span> <span class="n">LearnerHawkesParametric</span><span class="o">.</span><span class="n">score</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">events</span><span class="o">=</span><span class="n">events</span><span class="p">,</span> <span class="n">end_times</span><span class="o">=</span><span class="n">end_times</span><span class="p">,</span>
-            <span class="n">coeffs</span><span class="o">=</span><span class="n">coeffs</span><span class="p">)</span></div></div>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">events</span><span class="o">=</span><span class="n">events</span><span class="p">,</span> <span class="n">end_times</span><span class="o">=</span><span class="n">end_times</span><span class="p">,</span> <span class="n">coeffs</span><span class="o">=</span><span class="n">coeffs</span><span class="p">)</span></div></div>
 </pre></div>
 
 </div>

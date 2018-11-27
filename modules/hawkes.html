@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.hawkes &#8212; tick 0.4.0 documentation</title>
+    <title>tick.hawkes &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -61,7 +61,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -358,9 +358,8 @@ These learners might be used to infer more exotic kernels.</p>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
 
-<span class="kn">from</span> <span class="nn">tick.hawkes</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">SimuHawkes</span><span class="p">,</span> <span class="n">HawkesKernelTimeFunc</span><span class="p">,</span> <span class="n">HawkesKernelExp</span><span class="p">,</span> <span class="n">HawkesEM</span>
-<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">tick.hawkes</span> <span class="kn">import</span> <span class="p">(</span><span class="n">SimuHawkes</span><span class="p">,</span> <span class="n">HawkesKernelTimeFunc</span><span class="p">,</span> <span class="n">HawkesKernelExp</span><span class="p">,</span>
+                         <span class="n">HawkesEM</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">tick.base</span> <span class="kn">import</span> <span class="n">TimeFunction</span>
 <span class="kn">from</span> <span class="nn">tick.plot</span> <span class="kn">import</span> <span class="n">plot_hawkes_kernels</span>
 
@@ -578,8 +577,9 @@ defined through a <a class="reference internal" href="generated/tick.base.TimeFu
 <span class="n">run_time</span> <span class="o">=</span> <span class="mi">30</span>
 
 <span class="n">T</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">((</span><span class="n">run_time</span> <span class="o">*</span> <span class="mf">0.9</span><span class="p">)</span> <span class="o">*</span> <span class="mi">5</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span> <span class="o">/</span> <span class="mi">5</span>
-<span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="mi">15</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">T</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">T</span><span class="p">),</span>
-                                           <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">T</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="n">T</span><span class="p">)),</span> <span class="mf">0.001</span><span class="p">)</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span>
+    <span class="mi">15</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">T</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">T</span><span class="p">),</span>
+                                <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">T</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="n">T</span><span class="p">)),</span> <span class="mf">0.001</span><span class="p">)</span>
 
 <span class="n">tf</span> <span class="o">=</span> <span class="n">TimeFunction</span><span class="p">((</span><span class="n">T</span><span class="p">,</span> <span class="n">Y</span><span class="p">),</span> <span class="n">dt</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
 

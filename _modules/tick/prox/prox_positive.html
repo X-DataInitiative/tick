@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.prox.prox_positive &#8212; tick 0.4.0 documentation</title>
+    <title>tick.prox.prox_positive &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -207,10 +207,16 @@
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">.base</span> <span class="k">import</span> <span class="n">Prox</span>
-<span class="kn">from</span> <span class="nn">.build.prox</span> <span class="k">import</span> <span class="n">ProxPositive</span> <span class="k">as</span> <span class="n">_ProxPositive</span>
 
+<span class="kn">from</span> <span class="nn">.build.prox</span> <span class="k">import</span> <span class="n">ProxPositiveDouble</span> <span class="k">as</span> <span class="n">_ProxPositiveDouble</span>
+<span class="kn">from</span> <span class="nn">.build.prox</span> <span class="k">import</span> <span class="n">ProxPositiveFloat</span> <span class="k">as</span> <span class="n">_ProxPositiveFloat</span>
 
 <span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;Stephane Gaiffas&#39;</span>
+
+<span class="n">dtype_map</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s2">&quot;float64&quot;</span><span class="p">):</span> <span class="n">_ProxPositiveDouble</span><span class="p">,</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s2">&quot;float32&quot;</span><span class="p">):</span> <span class="n">_ProxPositiveFloat</span>
+<span class="p">}</span>
 
 
 <div class="viewcode-block" id="ProxPositive"><a class="viewcode-back" href="../../../modules/generated/tick.prox.ProxPositive.html#tick.prox.ProxPositive">[docs]</a><span class="k">class</span> <span class="nc">ProxPositive</span><span class="p">(</span><span class="n">Prox</span><span class="p">):</span>
@@ -222,14 +228,16 @@
 <span class="sd">    range : `tuple` of two `int`, default=`None`</span>
 <span class="sd">        Range on which the prox is applied. If `None` then the prox is</span>
 <span class="sd">        applied on the whole vector</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dtype : `{&#39;float64&#39;, &#39;float32&#39;}`</span>
+<span class="sd">        Type of the arrays used.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="ProxPositive.__init__"><a class="viewcode-back" href="../../../modules/generated/tick.prox.ProxPositive.html#tick.prox.ProxPositive.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">range</span><span class="p">:</span> <span class="nb">tuple</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">positive</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="ProxPositive.__init__"><a class="viewcode-back" href="../../../modules/generated/tick.prox.ProxPositive.html#tick.prox.ProxPositive.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">range</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">positive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
         <span class="n">Prox</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">range</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">range</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_prox</span> <span class="o">=</span> <span class="n">_ProxPositive</span><span class="p">(</span><span class="mf">0.</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_prox</span> <span class="o">=</span> <span class="n">_ProxPositive</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="nb">range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">range</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_prox</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_cpp_prox</span><span class="p">(</span><span class="s2">&quot;float64&quot;</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coeffs</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">step</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_prox</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">coeffs</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
@@ -248,7 +256,16 @@
 <span class="sd">        output : `float`</span>
 <span class="sd">            Returns 0 (as this is a projection)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prox</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">coeffs</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prox</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">coeffs</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_build_cpp_prox</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dtype_or_object_with_dtype</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extract_dtype</span><span class="p">(</span><span class="n">dtype_or_object_with_dtype</span><span class="p">)</span>
+        <span class="n">prox_class</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_typed_class</span><span class="p">(</span><span class="n">dtype_or_object_with_dtype</span><span class="p">,</span>
+                                           <span class="n">dtype_map</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">range</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">prox_class</span><span class="p">(</span><span class="mf">0.</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">prox_class</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span></div>
 </pre></div>
 
 </div>

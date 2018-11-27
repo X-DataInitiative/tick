@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.survival.SimuCoxReg &#8212; tick 0.4.0 documentation</title>
+    <title>tick.survival.SimuCoxReg &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -61,7 +61,7 @@
         </button>
         <a class="navbar-brand" href="../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -206,7 +206,7 @@
 <span id="simucoxreg"></span><h1>tick.survival.SimuCoxReg<a class="headerlink" href="#tick-survival-simucoxreg" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="tick.survival.SimuCoxReg">
-<em class="property">class </em><code class="descclassname">tick.survival.</code><code class="descname">SimuCoxReg</code><span class="sig-paren">(</span><em>coeffs: numpy.ndarray</em>, <em>features: numpy.ndarray = None</em>, <em>n_samples: int = 200</em>, <em>times_distribution: str = 'weibull'</em>, <em>shape: float = 1.0</em>, <em>scale: float = 1.0</em>, <em>censoring_factor: float = 2.0</em>, <em>features_type: str = 'cov_toeplitz'</em>, <em>cov_corr: float = 0.5</em>, <em>features_scaling: str = 'none'</em>, <em>seed: int = None</em>, <em>verbose: bool = True</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/survival/simu_coxreg.html#SimuCoxReg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.survival.SimuCoxReg" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">tick.survival.</code><code class="descname">SimuCoxReg</code><span class="sig-paren">(</span><em>coeffs: numpy.ndarray</em>, <em>features: numpy.ndarray = None</em>, <em>n_samples: int = 200</em>, <em>times_distribution: str = 'weibull'</em>, <em>shape: float = 1.0</em>, <em>scale: float = 1.0</em>, <em>censoring_factor: float = 2.0</em>, <em>features_type: str = 'cov_toeplitz'</em>, <em>cov_corr: float = 0.5</em>, <em>features_scaling: str = 'none'</em>, <em>seed: int = None</em>, <em>verbose: bool = True</em>, <em>dtype='float64'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/survival/simu_coxreg.html#SimuCoxReg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.survival.SimuCoxReg" title="Permalink to this definition">¶</a></dt>
 <dd><p>Simulation of a Cox regression for proportional hazards</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -304,8 +304,13 @@ the i-th individual is a censoring time</p>
 <div><p>Duration of the simulation, in seconds</p>
 </div></blockquote>
 <p><strong>time_end</strong> : <code class="xref py py-obj docutils literal"><span class="pre">str</span></code></p>
-<blockquote class="last">
+<blockquote>
 <div><p>End date of the simulation</p>
+</div></blockquote>
+<p><strong>dtype</strong> : <code class="xref py py-obj docutils literal"><span class="pre">{'float64',</span> <span class="pre">'float32'}</span></code>, default=’float64’</p>
+<blockquote class="last">
+<div><p>Type of the generated arrays.
+Used in the case features is None</p>
 </div></blockquote>
 </td>
 </tr>
@@ -315,7 +320,7 @@ the i-th individual is a censoring time</p>
 <p>There is no intercept in this model</p>
 <dl class="method">
 <dt id="tick.survival.SimuCoxReg.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>coeffs: numpy.ndarray</em>, <em>features: numpy.ndarray = None</em>, <em>n_samples: int = 200</em>, <em>times_distribution: str = 'weibull'</em>, <em>shape: float = 1.0</em>, <em>scale: float = 1.0</em>, <em>censoring_factor: float = 2.0</em>, <em>features_type: str = 'cov_toeplitz'</em>, <em>cov_corr: float = 0.5</em>, <em>features_scaling: str = 'none'</em>, <em>seed: int = None</em>, <em>verbose: bool = True</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/survival/simu_coxreg.html#SimuCoxReg.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.survival.SimuCoxReg.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>coeffs: numpy.ndarray</em>, <em>features: numpy.ndarray = None</em>, <em>n_samples: int = 200</em>, <em>times_distribution: str = 'weibull'</em>, <em>shape: float = 1.0</em>, <em>scale: float = 1.0</em>, <em>censoring_factor: float = 2.0</em>, <em>features_type: str = 'cov_toeplitz'</em>, <em>cov_corr: float = 0.5</em>, <em>features_scaling: str = 'none'</em>, <em>seed: int = None</em>, <em>verbose: bool = True</em>, <em>dtype='float64'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/survival/simu_coxreg.html#SimuCoxReg.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.survival.SimuCoxReg.__init__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">

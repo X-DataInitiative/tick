@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.solver.SAGA &#8212; tick 0.4.0 documentation</title>
+    <title>tick.solver.SAGA &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -61,7 +61,7 @@
         </button>
         <a class="navbar-brand" href="../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -206,7 +206,7 @@
 <span id="saga"></span><h1>tick.solver.SAGA<a class="headerlink" href="#tick-solver-saga" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="tick.solver.SAGA">
-<em class="property">class </em><code class="descclassname">tick.solver.</code><code class="descname">SAGA</code><span class="sig-paren">(</span><em>step: float = None</em>, <em>epoch_size: int = None</em>, <em>rand_type: str = 'unif'</em>, <em>tol: float = 0.0</em>, <em>max_iter: int = 100</em>, <em>verbose: bool = True</em>, <em>print_every: int = 10</em>, <em>record_every: int = 1</em>, <em>seed: int = -1</em>, <em>variance_reduction: str = 'last'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/solver/saga.html#SAGA"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.solver.SAGA" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">tick.solver.</code><code class="descname">SAGA</code><span class="sig-paren">(</span><em>step: float = None</em>, <em>epoch_size: int = None</em>, <em>rand_type: str = 'unif'</em>, <em>tol: float = 0.0</em>, <em>max_iter: int = 100</em>, <em>verbose: bool = True</em>, <em>print_every: int = 10</em>, <em>record_every: int = 1</em>, <em>seed: int = -1</em>, <em>n_threads: int = 1</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/solver/saga.html#SAGA"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.solver.SAGA" title="Permalink to this definition">¶</a></dt>
 <dd><p>Stochastic Average Gradient solver, for the minimization of objectives
 of the form</p>
 <div class="math">
@@ -229,8 +229,7 @@ w &amp;\gets \mathrm{prox}_{\eta g} \Big(w - \eta \Big(\nabla f_i(w)
 \end{align*}\end{split}\]</div>
 <p>where <span class="math">\(i\)</span> is sampled at random (strategy depends on <code class="docutils literal"><span class="pre">rand_type</span></code>) at
 each iteration, and where <span class="math">\(\bar w\)</span> and <span class="math">\(\nabla f(\bar w)\)</span>
-are updated at the beginning of each epoch, with a strategy that depend on
-the <code class="docutils literal"><span class="pre">variance_reduction</span></code> parameter. The step-size <span class="math">\(\eta\)</span> can be
+are updated at the beginning of each epoch. The step-size <span class="math">\(\eta\)</span> can be
 tuned with <code class="docutils literal"><span class="pre">step</span></code>, the seed of the random number generator for generation
 of samples <span class="math">\(i\)</span> can be seeded with <code class="docutils literal"><span class="pre">seed</span></code>. The iterations stop
 whenever tolerance <code class="docutils literal"><span class="pre">tol</span></code> is achieved, or after <code class="docutils literal"><span class="pre">max_iter</span></code> epochs
@@ -275,25 +274,8 @@ but history is recorded anyway</p>
 </div></blockquote>
 <p><strong>epoch_size</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code>, default given by model</p>
 <blockquote>
-<div><p>Epoch size, namely how many iterations are made before updating the
-variance reducing term. By default, this is automatically tuned using
+<div><p>Epoch size, by default, this is automatically tuned using
 information from the model object passed through <code class="docutils literal"><span class="pre">set_model</span></code>.</p>
-</div></blockquote>
-<p><strong>variance_reduction</strong> : {‘last’, ‘avg’, ‘rand’}, default=’last’</p>
-<blockquote>
-<div><p>Strategy used for the computation of the iterate used in
-variance reduction (also called phase iterate). A warning will be
-raised if the <code class="docutils literal"><span class="pre">'avg'</span></code> strategy is used when the model is a
-generalized linear model with sparse features, since it is strongly
-sub-optimal in this case</p>
-<ul class="simple">
-<li><code class="docutils literal"><span class="pre">'last'</span></code> : the phase iterate is the last iterate of the previous
-epoch</li>
-<li><code class="docutils literal"><span class="pre">'avg</span></code>’ : the phase iterate is the average over the iterates in the
-past epoch</li>
-<li><code class="docutils literal"><span class="pre">'rand'</span></code>: the phase iterate is a random iterate of the previous
-epoch</li>
-</ul>
 </div></blockquote>
 <p><strong>rand_type</strong> : {‘unif’, ‘perm’}, default=’unif’</p>
 <blockquote>
@@ -314,6 +296,11 @@ multiple of <code class="docutils literal"><span class="pre">print_every</span><
 <blockquote>
 <div><p>Save history information every time the iteration number is a
 multiple of <code class="docutils literal"><span class="pre">record_every</span></code></p>
+</div></blockquote>
+<p><strong>n_threads</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code>, default=1</p>
+<blockquote>
+<div><p>Number of threads to use for parallel optimization. The strategy used
+for this is asynchronous updates of the iterates.</p>
 </div></blockquote>
 </td>
 </tr>
@@ -344,8 +331,12 @@ iterations. It should be accessed using the <code class="docutils literal"><span
 <div><p>Duration of the call to <code class="docutils literal"><span class="pre">solve()</span></code>, in seconds</p>
 </div></blockquote>
 <p><strong>time_end</strong> : <code class="xref py py-obj docutils literal"><span class="pre">str</span></code></p>
-<blockquote class="last">
+<blockquote>
 <div><p>End date of the call to <code class="docutils literal"><span class="pre">solve()</span></code></p>
+</div></blockquote>
+<p><strong>dtype</strong> : <code class="xref py py-obj docutils literal"><span class="pre">{'float64',</span> <span class="pre">'float32'}</span></code>, default=’float64’</p>
+<blockquote class="last">
+<div><p>Type of the arrays used. This value is set from model and prox dtypes.</p>
 </div></blockquote>
 </td>
 </tr>
@@ -356,10 +347,12 @@ iterations. It should be accessed using the <code class="docutils literal"><span
 <li>A. Defazio, F. Bach, S. Lacoste-Julien, SAGA: A fast incremental gradient
 method with support for non-strongly convex composite objectives,
 NIPS 2014</li>
+<li>R. Leblond, F. Pedregosa, and S. Lacoste-Julien: Asaga: Asynchronous
+Parallel Saga, (AISTATS) 2017</li>
 </ul>
 <dl class="method">
 <dt id="tick.solver.SAGA.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>step: float = None</em>, <em>epoch_size: int = None</em>, <em>rand_type: str = 'unif'</em>, <em>tol: float = 0.0</em>, <em>max_iter: int = 100</em>, <em>verbose: bool = True</em>, <em>print_every: int = 10</em>, <em>record_every: int = 1</em>, <em>seed: int = -1</em>, <em>variance_reduction: str = 'last'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/solver/saga.html#SAGA.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.solver.SAGA.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>step: float = None</em>, <em>epoch_size: int = None</em>, <em>rand_type: str = 'unif'</em>, <em>tol: float = 0.0</em>, <em>max_iter: int = 100</em>, <em>verbose: bool = True</em>, <em>print_every: int = 10</em>, <em>record_every: int = 1</em>, <em>seed: int = -1</em>, <em>n_threads: int = 1</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/solver/saga.html#SAGA.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.solver.SAGA.__init__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -507,6 +500,13 @@ using the <code class="docutils literal"><span class="pre">step</span></code> at
 
 </dd></dl>
 
+<div class="section" id="examples-using-tick-solver-saga">
+<h2>Examples using <code class="docutils literal"><span class="pre">tick.solver.SAGA</span></code><a class="headerlink" href="#examples-using-tick-solver-saga" title="Permalink to this headline">¶</a></h2>
+<div class="thumbnailContainer" tooltip="This example illustrates the convergence speed of the asynchronous version of SVRG and SAGA sol..."><div class="figure" id="id1">
+<a class="reference external image-reference" href="./../../auto_examples/./plot_asynchronous_stochastic_solver.html"><img alt="../../_images/plot_asynchronous_stochastic_solver1.png" src="../../_images/plot_asynchronous_stochastic_solver1.png" /></a>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="../../auto_examples/plot_asynchronous_stochastic_solver.html#example-plot-asynchronous-stochastic-solver-py"><span class="std std-ref">Asynchronous stochastic solver</span></a></span></p>
+</div>
+</div></div>
 </div>
 
 

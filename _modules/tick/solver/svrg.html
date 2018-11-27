@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.solver.svrg &#8212; tick 0.4.0 documentation</title>
+    <title>tick.solver.svrg &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -203,22 +203,38 @@
   <h1>Source code for tick.solver.svrg</h1><div class="highlight"><pre>
 <span></span><span class="c1"># License: BSD 3 clause</span>
 
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
 <span class="kn">from</span> <span class="nn">warnings</span> <span class="k">import</span> <span class="n">warn</span>
 <span class="kn">from</span> <span class="nn">tick.base_model</span> <span class="k">import</span> <span class="n">Model</span>
 <span class="kn">from</span> <span class="nn">.base</span> <span class="k">import</span> <span class="n">SolverFirstOrderSto</span>
-<span class="kn">from</span> <span class="nn">.build.solver</span> <span class="k">import</span> <span class="n">SVRG</span> <span class="k">as</span> <span class="n">_SVRG</span>
+
+<span class="kn">from</span> <span class="nn">tick.solver.build.solver</span> <span class="k">import</span> <span class="n">SVRG_VarianceReductionMethod_Last</span>
+<span class="kn">from</span> <span class="nn">tick.solver.build.solver</span> <span class="k">import</span> <span class="n">SVRG_VarianceReductionMethod_Average</span>
+<span class="kn">from</span> <span class="nn">tick.solver.build.solver</span> <span class="k">import</span> <span class="n">SVRG_VarianceReductionMethod_Random</span>
+
+<span class="kn">from</span> <span class="nn">tick.solver.build.solver</span> <span class="k">import</span> <span class="n">SVRG_StepType_Fixed</span>
+<span class="kn">from</span> <span class="nn">tick.solver.build.solver</span> <span class="k">import</span> <span class="n">SVRG_StepType_BarzilaiBorwein</span>
+
+<span class="kn">from</span> <span class="nn">.build.solver</span> <span class="k">import</span> <span class="n">SVRGDouble</span> <span class="k">as</span> <span class="n">_SVRGDouble</span>
+<span class="kn">from</span> <span class="nn">.build.solver</span> <span class="k">import</span> <span class="n">SVRGFloat</span> <span class="k">as</span> <span class="n">_SVRGFloat</span>
 
 <span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;Stephane Gaiffas&quot;</span>
 
 <span class="n">variance_reduction_methods_mapper</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;last&#39;</span><span class="p">:</span> <span class="n">_SVRG</span><span class="o">.</span><span class="n">VarianceReductionMethod_Last</span><span class="p">,</span>
-    <span class="s1">&#39;avg&#39;</span><span class="p">:</span> <span class="n">_SVRG</span><span class="o">.</span><span class="n">VarianceReductionMethod_Average</span><span class="p">,</span>
-    <span class="s1">&#39;rand&#39;</span><span class="p">:</span> <span class="n">_SVRG</span><span class="o">.</span><span class="n">VarianceReductionMethod_Random</span>
+    <span class="s1">&#39;last&#39;</span><span class="p">:</span> <span class="n">SVRG_VarianceReductionMethod_Last</span><span class="p">,</span>
+    <span class="s1">&#39;avg&#39;</span><span class="p">:</span> <span class="n">SVRG_VarianceReductionMethod_Average</span><span class="p">,</span>
+    <span class="s1">&#39;rand&#39;</span><span class="p">:</span> <span class="n">SVRG_VarianceReductionMethod_Random</span>
 <span class="p">}</span>
 
 <span class="n">step_types_mapper</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;fixed&#39;</span><span class="p">:</span> <span class="n">_SVRG</span><span class="o">.</span><span class="n">StepType_Fixed</span><span class="p">,</span>
-    <span class="s1">&#39;bb&#39;</span><span class="p">:</span> <span class="n">_SVRG</span><span class="o">.</span><span class="n">StepType_BarzilaiBorwein</span>
+    <span class="s1">&#39;fixed&#39;</span><span class="p">:</span> <span class="n">SVRG_StepType_Fixed</span><span class="p">,</span>
+    <span class="s1">&#39;bb&#39;</span><span class="p">:</span> <span class="n">SVRG_StepType_BarzilaiBorwein</span>
+<span class="p">}</span>
+
+<span class="n">dtype_class_mapper</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;float32&#39;</span><span class="p">):</span> <span class="n">_SVRGFloat</span><span class="p">,</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;float64&#39;</span><span class="p">):</span> <span class="n">_SVRGDouble</span>
 <span class="p">}</span>
 
 
@@ -362,6 +378,9 @@
 <span class="sd">    time_end : `str`</span>
 <span class="sd">        End date of the call to ``solve()``</span>
 
+<span class="sd">    dtype : `{&#39;float64&#39;, &#39;float32&#39;}`, default=&#39;float64&#39;</span>
+<span class="sd">        Type of the arrays used. This value is set from model and prox dtypes.</span>
+
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
 <span class="sd">    * L. Xiao and T. Zhang, A proximal stochastic gradient method with</span>
@@ -370,33 +389,28 @@
 <span class="sd">    * Tan, C., Ma, S., Dai, Y. H., &amp; Qian, Y.</span>
 <span class="sd">      Barzilai-Borwein step size for stochastic gradient descent.</span>
 <span class="sd">      *Advances in Neural Information Processing Systems* (2016)</span>
+
+<span class="sd">    * Mania, H., Pan, X., Papailiopoulos, D., Recht, B., Ramchandran, K. and</span>
+<span class="sd">      Jordan, M.I., 2015.</span>
+<span class="sd">      Perturbed iterate analysis for asynchronous stochastic optimization.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_attrinfos</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;_step_type_str&quot;</span><span class="p">:</span> <span class="p">{},</span> <span class="s2">&quot;_var_red_str&quot;</span><span class="p">:</span> <span class="p">{}}</span>
 
 <div class="viewcode-block" id="SVRG.__init__"><a class="viewcode-back" href="../../../modules/generated/tick.solver.SVRG.html#tick.solver.SVRG.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">epoch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">rand_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;unif&#39;</span><span class="p">,</span> <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-10</span><span class="p">,</span>
                  <span class="n">max_iter</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-                 <span class="n">print_every</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">record_every</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-                 <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">variance_reduction</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;last&#39;</span><span class="p">,</span>
-                 <span class="n">step_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;fixed&#39;</span><span class="p">,</span> <span class="n">n_threads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
-        <span class="n">SolverFirstOrderSto</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">epoch_size</span><span class="p">,</span> <span class="n">rand_type</span><span class="p">,</span>
-                                     <span class="n">tol</span><span class="p">,</span> <span class="n">max_iter</span><span class="p">,</span> <span class="n">verbose</span><span class="p">,</span>
-                                     <span class="n">print_every</span><span class="p">,</span> <span class="n">record_every</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
+                 <span class="n">print_every</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">record_every</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+                 <span class="n">variance_reduction</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;last&#39;</span><span class="p">,</span> <span class="n">step_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;fixed&#39;</span><span class="p">,</span>
+                 <span class="n">n_threads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_threads</span> <span class="o">=</span> <span class="n">n_threads</span>
-        <span class="n">step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span>
-        <span class="k">if</span> <span class="n">step</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">step</span> <span class="o">=</span> <span class="mf">0.</span>
+        <span class="c1"># temporary to hold step type before dtype is known</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_step_type_str</span> <span class="o">=</span> <span class="n">step_type</span>
+        <span class="c1"># temporary to hold varience reduction type before dtype is known</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_var_red_str</span> <span class="o">=</span> <span class="n">variance_reduction</span>
 
-        <span class="n">epoch_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">epoch_size</span>
-        <span class="k">if</span> <span class="n">epoch_size</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">epoch_size</span> <span class="o">=</span> <span class="mi">0</span>
-
-        <span class="c1"># Construct the wrapped C++ SGD solver</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_solver</span> <span class="o">=</span> <span class="n">_SVRG</span><span class="p">(</span><span class="n">epoch_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tol</span><span class="p">,</span>
-                             <span class="bp">self</span><span class="o">.</span><span class="n">_rand_type</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">seed</span><span class="p">,</span>
-                             <span class="bp">self</span><span class="o">.</span><span class="n">n_threads</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">variance_reduction</span> <span class="o">=</span> <span class="n">variance_reduction</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">step_type</span> <span class="o">=</span> <span class="n">step_type</span></div>
+        <span class="n">SolverFirstOrderSto</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">epoch_size</span><span class="p">,</span> <span class="n">rand_type</span><span class="p">,</span> <span class="n">tol</span><span class="p">,</span>
+                                     <span class="n">max_iter</span><span class="p">,</span> <span class="n">verbose</span><span class="p">,</span> <span class="n">print_every</span><span class="p">,</span>
+                                     <span class="n">record_every</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">variance_reduction</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -408,12 +422,14 @@
         <span class="k">if</span> <span class="n">val</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">variance_reduction_methods_mapper</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="s1">&#39;variance_reduction should be one of &quot;</span><span class="si">{}</span><span class="s1">&quot;, got &quot;</span><span class="si">{}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                    <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">variance_reduction_methods_mapper</span><span class="o">.</span><span class="n">keys</span><span class="p">())),</span>
+                    <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                        <span class="nb">sorted</span><span class="p">(</span><span class="n">variance_reduction_methods_mapper</span><span class="o">.</span><span class="n">keys</span><span class="p">())),</span>
                     <span class="n">val</span><span class="p">))</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">val</span> <span class="o">==</span> <span class="s1">&#39;avg&#39;</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">is_sparse</span><span class="p">():</span>
-                <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;&#39;avg&#39; variance reduction cannot be used &quot;</span>
-                     <span class="s2">&quot;with sparse datasets&quot;</span><span class="p">,</span> <span class="ne">UserWarning</span><span class="p">)</span>
+                <span class="n">warn</span><span class="p">(</span>
+                    <span class="s2">&quot;&#39;avg&#39; variance reduction cannot be used &quot;</span>
+                    <span class="s2">&quot;with sparse datasets&quot;</span><span class="p">,</span> <span class="ne">UserWarning</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_solver</span><span class="o">.</span><span class="n">set_variance_reduction</span><span class="p">(</span>
             <span class="n">variance_reduction_methods_mapper</span><span class="p">[</span><span class="n">val</span><span class="p">])</span>
 
@@ -427,8 +443,7 @@
         <span class="k">if</span> <span class="n">val</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">step_types_mapper</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="s1">&#39;step_type should be one of &quot;</span><span class="si">{}</span><span class="s1">&quot;, got &quot;</span><span class="si">{}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                    <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">step_types_mapper</span><span class="o">.</span><span class="n">keys</span><span class="p">())),</span>
-                    <span class="n">val</span><span class="p">))</span>
+                    <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">step_types_mapper</span><span class="o">.</span><span class="n">keys</span><span class="p">())),</span> <span class="n">val</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_solver</span><span class="o">.</span><span class="n">set_step_type</span><span class="p">(</span><span class="n">step_types_mapper</span><span class="p">[</span><span class="n">val</span><span class="p">])</span>
 
 <div class="viewcode-block" id="SVRG.set_model"><a class="viewcode-back" href="../../../modules/generated/tick.solver.SVRG.html#tick.solver.SVRG.set_model">[docs]</a>    <span class="k">def</span> <span class="nf">set_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">):</span>
@@ -448,12 +463,37 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># We need to check that the setted model is not sparse when the</span>
         <span class="c1"># variance reduction method is &#39;avg&#39;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">variance_reduction</span> <span class="o">==</span> <span class="s1">&#39;avg&#39;</span> <span class="ow">and</span> <span class="n">model</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">is_sparse</span><span class="p">():</span>
-            <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;&#39;avg&#39; variance reduction cannot be used with sparse &quot;</span>
-                 <span class="s2">&quot;datasets. Please change `variance_reduction` before &quot;</span>
-                 <span class="s2">&quot;passing sparse data.&quot;</span><span class="p">,</span> <span class="ne">UserWarning</span><span class="p">)</span>
-        <span class="n">SolverFirstOrderSto</span><span class="o">.</span><span class="n">set_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span></div></div>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_var_red_str</span> <span class="o">==</span> <span class="s1">&#39;avg&#39;</span> <span class="ow">and</span> <span class="n">model</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">is_sparse</span><span class="p">():</span>
+            <span class="n">warn</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;avg&#39; variance reduction cannot be used with sparse &quot;</span>
+                <span class="s2">&quot;datasets. Please change `variance_reduction` before &quot;</span>
+                <span class="s2">&quot;passing sparse data.&quot;</span><span class="p">,</span> <span class="ne">UserWarning</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="s2">&quot;n_threads&quot;</span><span class="p">):</span>
+            <span class="n">model</span><span class="o">.</span><span class="n">n_threads</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_threads</span>
+
+        <span class="k">return</span> <span class="n">SolverFirstOrderSto</span><span class="o">.</span><span class="n">set_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_set_cpp_solver</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dtype_or_object_with_dtype</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extract_dtype</span><span class="p">(</span><span class="n">dtype_or_object_with_dtype</span><span class="p">)</span>
+        <span class="n">solver_class</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_typed_class</span><span class="p">(</span><span class="n">dtype_or_object_with_dtype</span><span class="p">,</span>
+                                             <span class="n">dtype_class_mapper</span><span class="p">)</span>
+
+        <span class="c1"># Type mapping None to unsigned long and double does not work...</span>
+        <span class="n">step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span>
+        <span class="k">if</span> <span class="n">step</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">step</span> <span class="o">=</span> <span class="mf">0.</span>
+        <span class="n">epoch_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">epoch_size</span>
+        <span class="k">if</span> <span class="n">epoch_size</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">epoch_size</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span>
+            <span class="s1">&#39;_solver&#39;</span><span class="p">,</span>
+            <span class="n">solver_class</span><span class="p">(</span><span class="n">epoch_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tol</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rand_type</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span>
+                         <span class="bp">self</span><span class="o">.</span><span class="n">record_every</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">seed</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_threads</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">variance_reduction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_var_red_str</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">step_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step_type_str</span></div>
 </pre></div>
 
 </div>

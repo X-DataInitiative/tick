@@ -15,14 +15,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.survival.model_sccs &#8212; tick 0.4.0 documentation</title>
+    <title>tick.survival.model_sccs &#8212; tick 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -59,7 +59,7 @@
         </button>
         <a class="navbar-brand" href="../../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -211,40 +211,40 @@
 
 
 <div class="viewcode-block" id="ModelSCCS"><a class="viewcode-back" href="../../../modules/generated/tick.survival.ModelSCCS.html#tick.survival.ModelSCCS">[docs]</a><span class="k">class</span> <span class="nc">ModelSCCS</span><span class="p">(</span><span class="n">ModelFirstOrder</span><span class="p">,</span> <span class="n">ModelLipschitz</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;SCCS model. This class gives first order information (gradient and loss)</span>
-<span class="sd">    for this model.</span>
+    <span class="sd">&quot;&quot;&quot;Discrete-time Self Control Case Series (SCCS) likelihood. This class</span>
+<span class="sd">    provides first order information (gradient and loss) model.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    n_intervals : `int`</span>
 <span class="sd">        Number of time intervals observed for each sample.</span>
 
-<span class="sd">    n_lags : `int`</span>
-<span class="sd">        Number of lags. The model will regress labels on the last observed</span>
-<span class="sd">        values of the features over the `n_lags` time intervals. `n_lags`</span>
-<span class="sd">        must be between 0 and `n_intervals` - 1</span>
+<span class="sd">    n_lags : `numpy.ndarray`, shape=(n_features,), dtype=&quot;uint64&quot;</span>
+<span class="sd">        Number of lags per feature. The model will regress labels on the last</span>
+<span class="sd">        observed values of the features over the corresponding `n_lags` time</span>
+<span class="sd">        intervals. `n_lags` values must be between 0 and `n_intervals` - 1.</span>
 
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
 <span class="sd">    features : `list` of `numpy.ndarray` or `list` of `scipy.sparse.csr_matrix`,</span>
-<span class="sd">        list of length n_samples, each element of the list of</span>
+<span class="sd">        list of length n_cases, each element of the list of</span>
 <span class="sd">        shape=(n_intervals, n_features)</span>
 <span class="sd">        The list of features matrices.</span>
 
 <span class="sd">    labels : `list` of `numpy.ndarray`,</span>
-<span class="sd">        list of length n_samples, each element of the list of </span>
+<span class="sd">        list of length n_cases, each element of the list of</span>
 <span class="sd">        shape=(n_intervals,)</span>
 <span class="sd">        The labels vector</span>
-<span class="sd">        </span>
-<span class="sd">    censoring : `numpy.ndarray`, shape=(n_samples,), dtype=&quot;uint64&quot;</span>
+
+<span class="sd">    censoring : `numpy.ndarray`, shape=(n_cases,), dtype=&quot;uint64&quot;</span>
 <span class="sd">        The censoring data. This array should contain integers in</span>
 <span class="sd">        [1, n_intervals]. If the value i is equal to n_intervals, then there</span>
 <span class="sd">        is no censoring for sample i. If censoring = c &lt; n_intervals, then</span>
 <span class="sd">        the observation of sample i is stopped at interval c, that is, the</span>
-<span class="sd">        row c - 1 of the correponding matrix. The last n_intervals - c rows</span>
+<span class="sd">        row c - 1 of the corresponding matrix. The last n_intervals - c rows</span>
 <span class="sd">        are then set to 0.</span>
 
-<span class="sd">    n_samples : `int` (read-only)</span>
+<span class="sd">    n_cases : `int` (read-only)</span>
 <span class="sd">        Number of samples</span>
 
 <span class="sd">    n_features : `int` (read-only)</span>
@@ -254,43 +254,26 @@
 <span class="sd">        Total number of coefficients of the model</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">_attrinfos</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;labels&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span>
-        <span class="p">},</span>
-        <span class="s2">&quot;features&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span>
-        <span class="p">},</span>
-        <span class="s2">&quot;censoring&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span>
-        <span class="p">},</span>
-        <span class="s2">&quot;n_features&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span>
-        <span class="p">},</span>
-        <span class="s2">&quot;n_samples&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span>
-        <span class="p">},</span>
-        <span class="s2">&quot;n_lags&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span>
-        <span class="p">},</span>
-        <span class="s2">&quot;n_intervals&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;writable&quot;</span><span class="p">:</span> <span class="kc">False</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
+    <span class="n">_const_attr</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;labels&quot;</span><span class="p">,</span> <span class="s2">&quot;features&quot;</span><span class="p">,</span> <span class="s2">&quot;censoring&quot;</span><span class="p">,</span> <span class="s2">&quot;n_features&quot;</span><span class="p">,</span> <span class="s2">&quot;n_cases&quot;</span><span class="p">,</span> <span class="s2">&quot;n_lags&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;n_intervals&quot;</span>
+    <span class="p">]</span>
 
-<div class="viewcode-block" id="ModelSCCS.__init__"><a class="viewcode-back" href="../../../modules/generated/tick.survival.ModelSCCS.html#tick.survival.ModelSCCS.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_intervals</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">n_lags</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">n_lags</span> <span class="o">&gt;=</span> <span class="n">n_intervals</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;n_lags should be &lt; n_intervals&quot;</span><span class="p">)</span>
+    <span class="n">_attrinfos</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;writable&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">_const_attr</span><span class="p">}</span>
 
+<div class="viewcode-block" id="ModelSCCS.__init__"><a class="viewcode-back" href="../../../modules/generated/tick.survival.ModelSCCS.html#tick.survival.ModelSCCS.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_intervals</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">n_lags</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">):</span>
         <span class="n">ModelFirstOrder</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="n">ModelLipschitz</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">n_lags</span> <span class="o">=</span> <span class="n">n_lags</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_intervals</span> <span class="o">=</span> <span class="n">n_intervals</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_features</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">n_lags</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_lags</span> <span class="o">=</span> <span class="n">n_lags</span>
+        <span class="k">for</span> <span class="n">n_l</span> <span class="ow">in</span> <span class="n">n_lags</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">n_l</span> <span class="o">&gt;=</span> <span class="n">n_intervals</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;n_lags should be &lt; n_intervals&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">labels</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">features</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">censoring</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">n_features</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">n_samples</span> <span class="o">=</span> <span class="kc">None</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_cases</span> <span class="o">=</span> <span class="kc">None</span></div>
 
 <div class="viewcode-block" id="ModelSCCS.fit"><a class="viewcode-back" href="../../../modules/generated/tick.survival.ModelSCCS.html#tick.survival.ModelSCCS.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">censoring</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set the data into the model object.</span>
@@ -303,8 +286,8 @@
 
 <span class="sd">        labels : List[{1d array, csr matrix of shape (n_intervals,)]</span>
 <span class="sd">            The labels vector</span>
-<span class="sd">            </span>
-<span class="sd">        censoring : 1d array of shape (n_samples,)</span>
+
+<span class="sd">        censoring : 1d array of shape (n_cases,)</span>
 <span class="sd">            The censoring vector</span>
 
 <span class="sd">        Returns</span>
@@ -315,12 +298,12 @@
         <span class="n">ModelFirstOrder</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">censoring</span><span class="p">)</span>
         <span class="n">ModelLipschitz</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;_model&quot;</span><span class="p">,</span>
-                  <span class="n">_ModelSCCS</span><span class="p">(</span><span class="n">features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">,</span>
-                             <span class="n">labels</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="p">,</span>
-                             <span class="n">censoring</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">censoring</span><span class="p">,</span>
-                             <span class="n">n_lags</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_lags</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span>
+            <span class="s2">&quot;_model&quot;</span><span class="p">,</span>
+            <span class="n">_ModelSCCS</span><span class="p">(</span><span class="n">features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="p">,</span>
+                       <span class="n">censoring</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">censoring</span><span class="p">,</span> <span class="n">n_lags</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_lags</span><span class="p">))</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="n">features</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
     <span class="k">def</span> <span class="nf">_set_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">censoring</span><span class="p">):</span>
@@ -329,16 +312,16 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        features : `list` of `numpy.ndarray` or `list` of `scipy.sparse.csr_matrix`,</span>
-<span class="sd">            list of length n_samples, each element of the list of</span>
+<span class="sd">            list of length n_cases, each element of the list of</span>
 <span class="sd">            shape=(n_intervals, n_features)</span>
 <span class="sd">            The list of features matrices.</span>
 
 <span class="sd">        labels : `list` of `numpy.ndarray`,</span>
-<span class="sd">            list of length n_samples, each element of the list of </span>
+<span class="sd">            list of length n_cases, each element of the list of</span>
 <span class="sd">            shape=(n_intervals,)</span>
 <span class="sd">            The labels vector</span>
-<span class="sd">        </span>
-<span class="sd">        censoring : `numpy.ndarray`, shape=(n_samples,), dtype=&quot;uint64&quot;</span>
+
+<span class="sd">        censoring : `numpy.ndarray`, shape=(n_cases,), dtype=&quot;uint64&quot;</span>
 <span class="sd">            The censoring data. This array should contain integers in</span>
 <span class="sd">            [1, n_intervals]. If the value i is equal to n_intervals, then there</span>
 <span class="sd">            is no censoring for sample i. If censoring = c &lt; n_intervals, then</span>
@@ -346,24 +329,26 @@
 <span class="sd">            row c - 1 of the correponding matrix. The last n_intervals - c rows</span>
 <span class="sd">            are then set to 0.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">n_intervals</span><span class="p">,</span> <span class="n">n_features</span> <span class="o">=</span> <span class="n">features</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">n_intervals</span><span class="p">,</span> <span class="n">n_coeffs</span> <span class="o">=</span> <span class="n">features</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">n_lags</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_lags</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;n_intervals&quot;</span><span class="p">,</span> <span class="n">n_intervals</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;n_features&quot;</span><span class="p">,</span> <span class="n">n_features</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;n_samples&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">features</span><span class="p">))</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_samples</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;n_coeffs&quot;</span><span class="p">,</span> <span class="n">n_coeffs</span><span class="p">)</span>
+        <span class="c1"># TODO: implement checker as outside function</span>
+        <span class="c1"># if n_lags &gt; 0 and n_coeffs % (n_lags + 1) != 0:</span>
+        <span class="c1">#     raise ValueError(&quot;(n_lags + 1) should be a divisor of n_coeffs&quot;)</span>
+        <span class="c1"># else:</span>
+        <span class="c1">#     self._set(&quot;n_features&quot;, int(n_coeffs / (n_lags + 1)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;n_cases&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">features</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_cases</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Features and labels lists should have the same</span><span class="se">\</span>
 <span class="s2">             length.&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">censoring</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">censoring</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_samples</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_intervals</span><span class="p">,</span>
-                                <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;uint64&quot;</span><span class="p">)</span>
-        <span class="n">censoring</span> <span class="o">=</span> <span class="n">check_censoring_consistency</span><span class="p">(</span><span class="n">censoring</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_samples</span><span class="p">)</span>
-        <span class="n">features</span> <span class="o">=</span> <span class="n">check_longitudinal_features_consistency</span><span class="p">(</span><span class="n">features</span><span class="p">,</span>
-                                                           <span class="p">(</span><span class="n">n_intervals</span><span class="p">,</span>
-                                                            <span class="n">n_features</span><span class="p">),</span>
-                                                           <span class="s2">&quot;float64&quot;</span><span class="p">)</span>
-        <span class="n">labels</span> <span class="o">=</span> <span class="n">check_longitudinal_features_consistency</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span>
-                                                         <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_intervals</span><span class="p">,),</span>
-                                                         <span class="s2">&quot;int32&quot;</span><span class="p">)</span>
+            <span class="n">censoring</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_cases</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_intervals</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;uint64&quot;</span><span class="p">)</span>
+        <span class="n">censoring</span> <span class="o">=</span> <span class="n">check_censoring_consistency</span><span class="p">(</span><span class="n">censoring</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_cases</span><span class="p">)</span>
+        <span class="n">features</span> <span class="o">=</span> <span class="n">check_longitudinal_features_consistency</span><span class="p">(</span>
+            <span class="n">features</span><span class="p">,</span> <span class="p">(</span><span class="n">n_intervals</span><span class="p">,</span> <span class="n">n_coeffs</span><span class="p">),</span> <span class="s2">&quot;float64&quot;</span><span class="p">)</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="n">check_longitudinal_features_consistency</span><span class="p">(</span>
+            <span class="n">labels</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_intervals</span><span class="p">,),</span> <span class="s2">&quot;int32&quot;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;labels&quot;</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="s2">&quot;features&quot;</span><span class="p">,</span> <span class="n">features</span><span class="p">)</span>
