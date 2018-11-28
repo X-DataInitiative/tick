@@ -156,7 +156,7 @@ class GD(SolverFirstOrder):
             x0, step)
         for n_iter in range(self.max_iter):
             # We will record on this iteration and we must be ready
-            if self._should_record_iter(n_iter):
+            if self._should_record_iter(n_iter + 1):
                 prev_minimizer[:] = minimizer
                 prev_obj = self.objective(prev_minimizer)
 
@@ -167,7 +167,7 @@ class GD(SolverFirstOrder):
                 break
 
             # Let's record metrics
-            if self._should_record_iter(n_iter):
+            if self._should_record_iter(n_iter + 1):
                 rel_delta = relative_distance(minimizer, prev_minimizer)
                 obj = self.objective(minimizer)
                 if prev_obj != 0:
