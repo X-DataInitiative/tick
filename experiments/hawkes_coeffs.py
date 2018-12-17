@@ -9,6 +9,7 @@ from tick.hawkes import SimuHawkesExpKernels, SimuHawkesSumExpKernels
 DECAY_1 = 1.
 DECAYS_3 = np.array([0.5, 2., 5.])
 
+
 def dim_from_n(n, n_decays):
     dim = int(round(0.5*(np.sqrt(1 + 4 * n / n_decays) - 1)))
     return dim
@@ -30,7 +31,9 @@ def coeffs_from_mus_alpha(mus, alpha):
 
 
 def retrieve_coeffs(dim, n_decays, directory_prefix):
-    if dim == 30:
+    if dim == 10:
+        betas, mu0, A0 = get_coeffs_dim_10(n_decays)
+    elif dim == 30:
         betas, mu0, A0 = get_coeffs_dim_30(n_decays)
     elif dim == 100:
         betas, mu0, A0 = get_coeffs_dim_100(n_decays)
@@ -84,8 +87,9 @@ def baseline_matrix_from_block_range(blocks_ranges, decays, spectral_radius):
             a, b = block_range[0], block_range[-1] + 1
             mu0[a: b] += coeff_mu
     else:
-        r = np.random.RandomState(23983)
+        r = np.random.RandomState(23983)  # for dim 10
         decay_coeffs = r.rand(n_decays, len(blocks_ranges))
+        print('decay_coeffs', decay_coeffs)
 
         A0 = np.zeros((dim, dim, n_decays))
         mu0 = np.zeros(dim)
@@ -104,6 +108,28 @@ def baseline_matrix_from_block_range(blocks_ranges, decays, spectral_radius):
     hawkes.adjust_spectral_radius(spectral_radius)
 
     return hawkes.baseline, hawkes.adjacency
+
+
+def get_coeffs_dim_10(n_decays, spectral_radius=0.8):
+    dim = 10
+
+    if n_decays == 1:
+        beta = DECAY_1
+        decays = np.ones((dim, dim)) * beta
+    else:
+        decays = DECAYS_3
+
+    blocks_ranges = [
+        (range(0, 4), 0.3, 1.3),
+        (range(2, 7), 0.1, 1.),
+        (range(7, 10), 0.2, 2),
+    ]
+
+    baseline, adjacency = baseline_matrix_from_block_range(
+        blocks_ranges, decays, spectral_radius
+    )
+
+    return decays, baseline, adjacency
 
 
 def get_coeffs_dim_30(n_decays, spectral_radius=0.8):

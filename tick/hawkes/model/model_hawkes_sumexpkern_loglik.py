@@ -124,6 +124,10 @@ class ModelHawkesSumExpKernLogLik(ModelHawkes, ModelSecondOrder,
         return 2.0
 
     @property
+    def n_decays(self):
+        return len(self.decays)
+
+    @property
     def _epoch_size(self):
         # This gives the typical size of an epoch when using a
         # stochastic optimization algorithm

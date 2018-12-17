@@ -24,8 +24,14 @@ def prepare_solver(SolverClass, solver_kwargs, model, prox):
     aggregated_solver_kwargs = {}
     if SolverClass == AGD:
         aggregated_solver_kwargs['linesearch'] = False
-    aggregated_solver_kwargs['step'] = 1. / model.get_lip_best()
-    aggregated_solver_kwargs['verbose'] = False
+
+    if 'step' not in solver_kwargs:
+        aggregated_solver_kwargs['step'] = 1. / model.get_lip_best()
+    else:
+        aggregated_solver_kwargs['step'] = solver_kwargs['step']
+
+    aggregated_solver_kwargs['verbose'] = solver_kwargs.get('verbose', False)
+
     aggregated_solver_kwargs.update(solver_kwargs)
     solver = SolverClass(**aggregated_solver_kwargs)
     solver.set_model(model)
@@ -37,25 +43,33 @@ def learn_one_model(model_file_name, strength_range, create_prox,
                     compute_metrics, original_coeffs, SolverClass,
                     solver_kwargs, save_coeffs=False):
 
-    try:
-        model_index = int(extract_index(model_file_name, 'precomputed', 'pkl'))
-    except AttributeError:
-        model_index = -1
+    if isinstance(model_file_name, str):
+        try:
+            model_index = int(
+                extract_index(model_file_name, 'precomputed', 'pkl'))
+        except AttributeError:
+            model_index = -1
 
-    with open(model_file_name, 'rb') as model_file:
-        model = pickle.load(model_file)
+        with open(model_file_name, 'rb') as model_file:
+            model = pickle.load(model_file)
+    else:
+        model = model_file_name
+        model_index = 0
 
     # prepare information store
     info = {'train_loss': {}}
 
     for strength in strength_range:
         # Reinitialize problem (no warm start)
-        coeffs = 1 * np.ones(model.n_coeffs)
+        coeffs = 0.01 * np.ones(model.n_coeffs)
 
         prox = create_prox(strength, model, logger)
         solver = prepare_solver(SolverClass, solver_kwargs, model, prox)
 
-        coeffs = solver.solve(coeffs)
+        try:
+            coeffs = solver.solve(coeffs)
+        except RuntimeError:
+            pass
 
         # warn if convergence was poor
         tol = solver_kwargs['tol']
