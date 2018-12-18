@@ -48,11 +48,13 @@ AbstractArray1d2d<T, MAJ>::AbstractArray1d2d(const AbstractArray1d2d<T, MAJ> &ot
   _data = nullptr;
   if (other.is_dense()) {
     TICK_PYTHON_MALLOC(_data, T, _size);
-    memcpy(_data, other._data, sizeof(T) * _size);
+    tick::Allocator<T, typename AbstractArray1d2d<T, MAJ>::K>
+      ::memcopy(_data, other._data, _size);
     _indices = nullptr;
   } else {
     TICK_PYTHON_MALLOC(_data, T, _size_sparse);
-    memcpy(_data, other._data, sizeof(T) * _size_sparse);
+    tick::Allocator<T, typename AbstractArray1d2d<T, MAJ>::K>
+      ::memcopy(_data, other._data, _size_sparse);
     TICK_PYTHON_MALLOC(_indices, INDICE_TYPE, _size_sparse);
     memcpy(_indices, other._indices, sizeof(INDICE_TYPE) * _size_sparse);
   }
@@ -79,7 +81,5 @@ AbstractArray1d2d<T, MAJ>::AbstractArray1d2d(AbstractArray1d2d<T, MAJ> &&other) 
   other.is_indices_allocation_owned = true;
   other._size = 0;
 }
-
-
 
 #endif  // LIB_INCLUDE_TICK_ARRAY_ABSTRACTARRAY1D2D_CONSTRUCTOR_H_
