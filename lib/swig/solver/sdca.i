@@ -18,6 +18,7 @@ class TBaseSDCA : public TStoSolver<T, K> {
 
   T get_l_l2sq();
   void set_l_l2sq(T l_l2sq);
+  void set_step_size(T step_size);
 
   std::shared_ptr<SArray<T> > get_primal_vector();
   std::shared_ptr<SArray<T> > get_dual_vector();
@@ -39,6 +40,7 @@ class TBaseSDCA<double, double> : public TStoSolver<double, double> {
   
     double get_l_l2sq();
     void set_l_l2sq(double l_l2sq);
+    void set_step_size(double step_size);
   
     SArrayDoublePtr get_primal_vector();
     SArrayDoublePtr get_dual_vector();
@@ -59,6 +61,7 @@ class TBaseSDCA<float, float> : public TStoSolver<float, float> {
   
     float get_l_l2sq();
     void set_l_l2sq(float l_l2sq);
+    void set_step_size(float step_size);
   
     SArrayFloatPtr get_primal_vector();
     SArrayFloatPtr get_dual_vector();
@@ -80,6 +83,7 @@ class TBaseSDCA<double, std::atomic<double> > : public TStoSolver<double, std::a
   
     double get_l_l2sq();
     void set_l_l2sq(double l_l2sq);
+    void set_step_size(double step_size);
   
     SArrayDoublePtr get_primal_vector();
     SArrayDoublePtr get_dual_vector();
@@ -101,6 +105,7 @@ class TBaseSDCA<float, std::atomic<float> > : public TStoSolver<float, std::atom
   
     float get_l_l2sq();
     void set_l_l2sq(float l_l2sq);
+    void set_step_size(float step_size);
   
     SArrayFloatPtr get_primal_vector();
     SArrayFloatPtr get_dual_vector();

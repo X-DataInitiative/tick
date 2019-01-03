@@ -65,6 +65,7 @@ def simulate_sparse_matrix(n_samples, n_features, sparsity):
 
     return S
 
+
 def simulate_poisson(n_samples, n_features, sparsity=1e-3):
     np.random.seed(23982)
 
@@ -131,18 +132,21 @@ def simulate_poisson2(n_samples, n_features=None, sparsity=None):
 
     features = np.random.randn(n_samples, n_features)
     features = np.abs(features)
+    prop_zero = 0.7
+    mask = np.random.choice([True, False], size=features.shape,
+                            p=[prop_zero, 1 - prop_zero])
+    features[mask] = 0
     features /= n_features
-    print('sum', np.sum(features.dot(weights) > 0))
-    print('prod mean 1', features.dot(weights).mean())
-    print('prod mean 1.4',
-          (features.dot(weights)[features.dot(weights) < 0]).mean())
-    print('prod mean 1.4', (features.dot(weights)[features.dot(weights) > 0]).mean())
+
 
     epsilon = 1e-1
     while features.dot(weights).min() <= epsilon:
         n_fail = sum(features.dot(weights) <= epsilon)
-        features[features.dot(weights) <= epsilon] = \
-            np.random.randn(n_fail, n_features)
+        new_features = np.random.randn(n_fail, n_features)
+        mask = np.random.choice([True, False], size=new_features.shape,
+                                p=[prop_zero, 1 - prop_zero])
+        new_features[mask] = 0
+        features[features.dot(weights) <= epsilon] = new_features
         features = np.abs(features)
 
     simu = SimuPoisReg(weights, features=features, n_samples=n_samples,
@@ -174,21 +178,23 @@ else:
         n_samples=12000, n_features=5000, sparsity=0.1)
         # n_samples=3000, n_features=1000, sparsity=1e-2)
 
-l_l2sq = compute_l_l2sq(features, labels) * 1e-2
+l_l2sq = compute_l_l2sq(features, labels) * 1e-1
 print('l_l2sq', l_l2sq)
 model = ModelPoisReg(fit_intercept=False, link=link)
 model.fit(features, labels)
 
 prox = ProxZero()  # ProxL1(1e-5)
 
-batch_sizes = [1, 2, 3, 10]
-test_n_threads = [1, 2]# , 3, 4]#, 3, 4, 8]
+batch_sizes = [1, 3, 10]
+test_n_threads = [1, 2, 3, 4]#, 3, 4, 8]
 
-fig, axes = plt.subplots(2, len(batch_sizes) + 1, figsize=(3 * len(batch_sizes) + 3, 6))
-axes = axes.reshape(2, -1)
+n_rows = 3
+fig, axes = plt.subplots(n_rows, len(batch_sizes) + 1,
+                         figsize=(3 * len(batch_sizes) + 3, 3 * n_rows))
+axes = axes.reshape(n_rows, -1)
 
 
-max_iter = 1000
+max_iter = 50
 for i, batch_size in enumerate(batch_sizes):
     axes[0, i].set_title('batch {}'.format(batch_size))
     solver_list = []
@@ -197,18 +203,23 @@ for i, batch_size in enumerate(batch_sizes):
     for n_threads in test_n_threads:
 
         args = [l_l2sq]
-        kwargs = dict(tol=1e-14, verbose=False, seed=seed, max_iter=max_iter,
+        kwargs = dict(tol=0, verbose=False, seed=seed, max_iter=max_iter,
                       batch_size=batch_size, record_every=int(max_iter / 20))
         if n_threads == 1:
             solver = SDCA(*args, **kwargs)
             solver.set_model(model).set_prox(prox)
             solver_labels += [solver.name]
+            # solver._solver.set_step_size(1. / max(test_n_threads))
+
         else:
             solver = AtomicSDCA(*args, **kwargs, n_threads=n_threads)
             solver.set_model(model).set_prox(prox)
             solver_labels += ['{} {}'.format(solver.name, n_threads)]
 
-        print('-'*20 + '\n', solver.name)
+            # solver._solver.set_step_size(1 / np.sqrt(n_threads - 1))
+            # solver._solver.set_step_size(1 / max(test_n_threads))
+
+        print('-'*20 + '\n', solver.name, n_threads)
         solver.solve()
         solver_list += [solver]
 
@@ -220,27 +231,36 @@ for i, batch_size in enumerate(batch_sizes):
             print('GRAD', np.abs(prox.call(
                 iterate - model.grad(iterate) - l_l2sq * iterate) - iterate).mean())
             print('OBJECTIVE', solver.objective(iterate))
-            print('LOSS', model.loss(iterate))
 
     # solver.print_history()
 
-    plot_history(solver_list, y="dual_objective", x="time", dist_min=True, log_scale=True,
+    plot_history(solver_list, y="obj", x="time", dist_min=True, log_scale=True,
                  labels=solver_labels, ax=axes[0, i])
 
-    plot_speedup = False
+    plot_speedup = True
+    plot_both = True
 
-    if not plot_speedup:
-        plot_history(solver_list, y='dual_objective', x="n_iter", dist_min=True, log_scale=True,
+    if not plot_speedup or plot_both:
+        plot_history(solver_list, y='obj', x="n_iter", dist_min=True, log_scale=True,
                      labels=solver_labels, ax=axes[1, i])
-    else:
 
-        solver_objectives = np.array([
+    if plot_speedup or plot_both:
+
+        raw_solver_objectives = np.array([
             solver.history.values['obj'] for solver in solver_list])
+        max_length_solver_objective = max(map(len, raw_solver_objectives))
+
+        solver_objectives = []
+        for raw_solver_objective in raw_solver_objectives:
+            solver_objective = np.zeros(max_length_solver_objective) + np.nan
+            solver_objective[:len(raw_solver_objective)] = raw_solver_objective
+            solver_objectives += [solver_objective]
+        solver_objectives = np.array(solver_objectives)
 
         dist_solver_objectives = solver_objectives - np.nanmin(solver_objectives)
 
         # speedup
-        ax = axes[1, i]
+        ax = axes[2, i]
         ax.plot([test_n_threads[0], test_n_threads[-1]], [1, test_n_threads[-1]],
                 ls='--', lw=1, c='black')
 

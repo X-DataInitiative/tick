@@ -29,6 +29,7 @@ class DLL_PUBLIC TBaseSDCA : public TStoSolver<T, K> {
   using TStoSolver<T, K>::last_record_epoch;
   using TStoSolver<T, K>::last_record_time;
   using TStoSolver<T, K>::record_every;
+  using TStoSolver<T, K>::rand;
 
  public:
   using TStoSolver<T, K>::get_class_name;
@@ -57,6 +58,8 @@ class DLL_PUBLIC TBaseSDCA : public TStoSolver<T, K> {
   std::shared_ptr<TProxSeparable<T, K>> casted_prox;
 
   uint n_threads = 0;
+  
+  T step_size = 1.;
 
 
  public:
@@ -74,6 +77,8 @@ class DLL_PUBLIC TBaseSDCA : public TStoSolver<T, K> {
   T get_l_l2sq() const { return l_l2sq; }
 
   void set_l_l2sq(T l_l2sq) { this->l_l2sq = l_l2sq; }
+
+  void set_step_size(T step_size) { this->step_size = step_size; }
 
   SArrayTPtr get_primal_vector() const {
     // This works when K is atomic
@@ -104,6 +109,9 @@ class DLL_PUBLIC TBaseSDCA : public TStoSolver<T, K> {
 
   virtual void update_delta_dual_i(ulong i, double delta_dual_i,
                                    const BaseArray<T> &feature_i, double _1_over_lbda_n);
+
+  virtual void update_delta_dual_batch(ArrayULong &indices, ArrayULong &feature_indices,
+                                       Array<T> &delta_duals, double _1_over_lbda_n);
 
   void tmp_iterate_to_iterate(Array<K> &iterate);
 
@@ -154,7 +162,10 @@ class DLL_PUBLIC TSDCA : public TBaseSDCA<T, T> {
 
  protected:
   void update_delta_dual_i(ulong i, double delta_dual_i,
-                           const BaseArray<T> &feature_i, double _1_over_lbda_n) override ;
+                           const BaseArray<T> &feature_i, double _1_over_lbda_n) override;
+
+  void update_delta_dual_batch(ArrayULong &indices, ArrayULong &feature_indices,
+                               Array<T> &delta_duals, double _1_over_lbda_n) override;
 };
 
 using SDCA = TSDCA<double>;
@@ -190,6 +201,8 @@ class DLL_PUBLIC TAtomicSDCA : public TBaseSDCA<T, std::atomic<T> > {
   void update_delta_dual_i(ulong i, double delta_dual_i,
                            const BaseArray<T> &feature_i, double _1_over_lbda_n) override;
 
+  void update_delta_dual_batch(ArrayULong &indices, ArrayULong &feature_indices,
+                               Array<T> &delta_duals, double _1_over_lbda_n) override;
 };
 
 using AtomicSDCA = TAtomicSDCA<double>;

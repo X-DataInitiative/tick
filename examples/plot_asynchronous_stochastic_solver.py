@@ -73,7 +73,7 @@ for ax, SolverClass in zip(axes, [SVRG, SAGA]):
             solver_labels += ['A{} {}'.format(solver.name, n_threads)]
 
     plot_history(solver_list, dist_min=True, log_scale=True,
-                 labels=solver_labels, ax=ax)
+                 labels=solver_labels, ax=ax, x='time')
 
     ax.set_ylabel('log distance to optimal objective', fontsize=14)
 
