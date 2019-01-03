@@ -77,12 +77,9 @@ void TBaseSDCA<T, K>::solve(int n_epochs) {
     thread_epoch_size += n_thread < (epoch_size % n_threads);
 
     auto start = std::chrono::steady_clock::now();
-    double optim_time = 0;
-    double delta_dual_time = 0;
 
     for (int epoch = 1; epoch < (n_epochs + 1); ++epoch) {
       for (ulong t = 0; t < thread_epoch_size; ++t) {
-        auto start_optim = std::chrono::steady_clock::now();
 
         // Pick i uniformly at random
 //        ulong i = get_next_i();
@@ -128,19 +125,7 @@ void TBaseSDCA<T, K>::solve(int n_epochs) {
         delta_dual_i *= step_size;
 
         // Update the dual variable
-
-        auto end_optim = std::chrono::steady_clock::now();
-        optim_time += ((end_optim - start_optim).count()) * std::chrono::steady_clock::period::num /
-            static_cast<double>(std::chrono::steady_clock::period::den);
-
-        auto start_delta_dual = std::chrono::steady_clock::now();
-
-//        std::cout << i << " " << delta_dual_i << " " << primal_dot_features << " " << delta[i] << std::endl;
         update_delta_dual_i(i, delta_dual_i, feature_i, _1_over_lbda_n);
-
-        auto end_delta_dual = std::chrono::steady_clock::now();
-        delta_dual_time += ((end_delta_dual - start_delta_dual).count()) * std::chrono::steady_clock::period::num /
-            static_cast<double>(std::chrono::steady_clock::period::den);
       }
 
       // Record only on one thread
@@ -165,11 +150,6 @@ void TBaseSDCA<T, K>::solve(int n_epochs) {
       last_record_time = time;
       last_record_epoch += n_epochs;
     }
-
-    std::cout << "optim_time=" << optim_time
-              << ", delta_dual_time=" << delta_dual_time
-              << std::endl;
-
   };
 
   // Don't spawn threads if this is sequential
@@ -190,11 +170,6 @@ void TBaseSDCA<T, K>::solve(int n_epochs) {
   }
   // Put its final value in iterate
   tmp_iterate_to_iterate(iterate);
-
-//  Array<K> new_tmp_iterate(model->get_n_coeffs());
-//  model->sdca_primal_dual_relation(_1_over_lbda_n, dual_vector, new_tmp_iterate);
-//  new_tmp_iterate.mult_incr(tmp_primal_vector, -1);
-//  std::cout << "diff norm = " << new_tmp_iterate.norm_sq() / model->get_n_coeffs() << std::endl;
 }
 
 
@@ -230,13 +205,10 @@ void TBaseSDCA<T, K>::solve_batch(int n_epochs, ulong batch_size) {
     thread_epoch_size += n_thread < (epoch_size % n_threads);
 
     auto start = std::chrono::steady_clock::now();
-    double optim_time = 0;
-    double delta_dual_time = 0;
 
     for (int epoch = 1; epoch < (n_epochs + 1); ++epoch) {
       for (ulong t = 0; t < thread_epoch_size; t += batch_size) {
 
-        auto start_optim = std::chrono::steady_clock::now();
         // Pick i uniformly at random
         indices.fill(rand_max + 1);
         for (ulong i = 0; i < batch_size; ++i) {
@@ -262,24 +234,7 @@ void TBaseSDCA<T, K>::solve_batch(int n_epochs, ulong batch_size) {
 
         delta_duals *= step_size;
 
-        auto end_optim = std::chrono::steady_clock::now();
-        optim_time += ((end_optim - start_optim).count()) * std::chrono::steady_clock::period::num /
-            static_cast<double>(std::chrono::steady_clock::period::den);
-
-        auto start_delta_dual = std::chrono::steady_clock::now();
         update_delta_dual_batch(indices, feature_indices, delta_duals, _1_over_lbda_n);
-//        for (ulong k = 0; k < batch_size; ++k) {
-//          const ulong i = indices[k];
-//          const ulong feature_index = feature_indices[k];
-//          const double delta_dual_i = delta_duals[k];
-//          BaseArray<T> feature_i = model->get_features(feature_index);
-//
-//          update_delta_dual_i(i, delta_dual_i, feature_i, _1_over_lbda_n);
-//        }
-
-        auto end_delta_dual = std::chrono::steady_clock::now();
-        delta_dual_time += ((end_delta_dual - start_delta_dual).count()) * std::chrono::steady_clock::period::num /
-            static_cast<double>(std::chrono::steady_clock::period::den);
       }
 
       // Record only on one thread
@@ -305,10 +260,6 @@ void TBaseSDCA<T, K>::solve_batch(int n_epochs, ulong batch_size) {
       last_record_time = time;
       last_record_epoch += n_epochs;
     }
-
-    std::cout << "optim_time=" << optim_time
-              << ", delta_dual_time=" << delta_dual_time
-              << std::endl;
   };
 
   // Don't spawn threads if this is sequential
