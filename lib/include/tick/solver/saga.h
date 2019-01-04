@@ -6,7 +6,7 @@
 #include "sto_solver.h"
 #include "tick/base_model/model_generalized_linear.h"
 
-template <class T, class K>
+template <class T, class K, class L>
 class DLL_PUBLIC TBaseSAGA : public TStoSolver<T, K> {
   // Grants cereal access to default constructor/serialize functions
   friend class cereal::access;
@@ -20,6 +20,11 @@ class DLL_PUBLIC TBaseSAGA : public TStoSolver<T, K> {
   using TStoSolver<T, K>::get_next_i;
   using TStoSolver<T, K>::rand_unif;
 
+  using TStoSolver<T, K>::record_every;
+  using TStoSolver<T, K>::save_history;
+  using TStoSolver<T, K>::last_record_epoch;
+  using TStoSolver<T, K>::last_record_time;
+
  public:
   using TStoSolver<T, K>::set_model;
   using TStoSolver<T, K>::get_minimizer;
@@ -30,15 +35,19 @@ class DLL_PUBLIC TBaseSAGA : public TStoSolver<T, K> {
   bool solver_ready = false;
   bool ready_step_corrections = false;
   T step = 0;
+  uint n_threads = 1;
   // Probabilistic correction of the step-sizes of all model weights,
   // given by the inverse proportion of non-zero entries in each feature column
   Array<T> steps_correction;
+
+  Array<L> gradients_memory;
+  Array<L> gradients_average;
 
   std::shared_ptr<TModelGeneralizedLinear<T, K>> casted_model;
 
   std::shared_ptr<TProxSeparable<T, K>> casted_prox;
 
-  virtual void initialize_solver() = 0;
+  virtual void initialize_solver();
 
   void prepare_solve();
 
@@ -46,16 +55,22 @@ class DLL_PUBLIC TBaseSAGA : public TStoSolver<T, K> {
 
  public:
   // This exists soley for cereal/swig
-  TBaseSAGA() : TBaseSAGA<T, K>(0, 0, RandType::unif, 0, 0) {}
+  TBaseSAGA() : TBaseSAGA<T, K, L>(0, 0, RandType::unif, 0, 0) {}
 
   TBaseSAGA(ulong epoch_size, T tol, RandType rand_type, T step, int record_every = 1,
-      int seed = -1);
+      int seed = -1, int n_threads = 1);
 
   void set_model(std::shared_ptr<TModel<T, K>> model) override;
+  void solve(int n_epochs = 1) override;
 
   T get_step() const { return step; }
 
   void set_step(T step) { this->step = step; }
+
+ protected:
+  virtual T update_gradient_memory(ulong i);
+  virtual void update_iterate_and_gradient_average(ulong j, T grad_avg_j, T delta_grad_avg_j,
+                                                   T delta_iterate, T step_correction);
 
  public:
   template <class Archive>
@@ -67,99 +82,69 @@ class DLL_PUBLIC TBaseSAGA : public TStoSolver<T, K> {
     ar(CEREAL_NVP(steps_correction));
     ar(CEREAL_NVP(solver_ready));
     ar(CEREAL_NVP(ready_step_corrections));
+    ar(CEREAL_NVP(gradients_memory));
+    ar(CEREAL_NVP(gradients_average));
   }
 
-  BoolStrReport compare(const TBaseSAGA<T, K> &that, std::stringstream &ss) {
+  BoolStrReport compare(const TBaseSAGA<T, K, L> &that, std::stringstream &ss) {
     bool ret = TStoSolver<T, K>::compare(that, ss) &&
                TICK_CMP_REPORT(ss, step) &&
                TICK_CMP_REPORT(ss, steps_correction) &&
                TICK_CMP_REPORT(ss, solver_ready) &&
-               TICK_CMP_REPORT(ss, ready_step_corrections);
+               TICK_CMP_REPORT(ss, ready_step_corrections) &&
+               TICK_CMP_REPORT(ss, gradients_memory) &&
+               TICK_CMP_REPORT(ss, gradients_average);
     return BoolStrReport(ret, ss.str());
   }
+
+  BoolStrReport compare(const TBaseSAGA<T, K, L> &that) {
+    std::stringstream ss;
+    ss << get_class_name() << std::endl;
+
+    return compare(that, ss);
+  }
+
+  BoolStrReport operator==(const TBaseSAGA<T, K, L> &that) { return compare(that); }
 };
 
-using BaseSAGADouble = TBaseSAGA<double, double>;
+using BaseSAGADouble = TBaseSAGA<double, double, double>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(BaseSAGADouble,
                                    cereal::specialization::member_serialize)
 
-using BaseSAGAFloat = TBaseSAGA<float, float>;
+using BaseSAGAFloat = TBaseSAGA<float, float, float>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(BaseSAGAFloat,
                                    cereal::specialization::member_serialize)
 
-using BaseSAGAAtomicDouble = TBaseSAGA<double, std::atomic<double>>;
+using BaseSAGAAtomicDouble = TBaseSAGA<double, double, std::atomic<double>>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(BaseSAGAAtomicDouble,
                                    cereal::specialization::member_serialize)
 
-using BaseSAGAAtomicFloat = TBaseSAGA<float, std::atomic<float>>;
+using BaseSAGAAtomicFloat = TBaseSAGA<float, float, std::atomic<float>>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(BaseSAGAAtomicFloat,
                                    cereal::specialization::member_serialize)
 
 template <class T>
-class DLL_PUBLIC TSAGA : public TBaseSAGA<T, T> {
+class DLL_PUBLIC TSAGA : public TBaseSAGA<T, T, T> {
   // Grants cereal access to default constructor/serialize functions
   friend class cereal::access;
 
  protected:
-  using TBaseSAGA<T, T>::get_next_i;
-  using TBaseSAGA<T, T>::iterate;
-  using TBaseSAGA<T, T>::steps_correction;
-  using TBaseSAGA<T, T>::prepare_solve;
-  using TBaseSAGA<T, T>::model;
-  using TBaseSAGA<T, T>::casted_model;
-  using TBaseSAGA<T, T>::prox;
-  using TBaseSAGA<T, T>::casted_prox;
-  using TBaseSAGA<T, T>::epoch_size;
-  using TBaseSAGA<T, T>::step;
-  using TBaseSAGA<T, T>::t;
-  using TBaseSAGA<T, T>::solver_ready;
+  using TBaseSAGA<T, T, T>::iterate;
+  using TBaseSAGA<T, T, T>::model;
+  using TBaseSAGA<T, T, T>::casted_prox;
+  using TBaseSAGA<T, T, T>::step;
+  using TBaseSAGA<T, T, T>::gradients_average;
+  using TBaseSAGA<T, T, T>::gradients_memory;
 
- public:
-  using TBaseSAGA<T, T>::set_starting_iterate;
-  using TBaseSAGA<T, T>::get_minimizer;
-  using TBaseSAGA<T, T>::set_model;
-  using TBaseSAGA<T, T>::get_class_name;
-
- protected:
-  Array<T> gradients_memory;
-  Array<T> gradients_average;
-
-  void initialize_solver() override;
-
-  void solve_dense(bool use_intercept, ulong n_features);
-
-  void solve_sparse_proba_updates(bool use_intercept, ulong n_features);
+  T update_gradient_memory(ulong i) override;
+  void update_iterate_and_gradient_average(ulong j, T grad_avg_j, T delta_grad_avg_j,
+                                           T delta_iterate, T step_correction) override;
 
  public:
   // This exists soley for cereal/swig
   TSAGA() : TSAGA<T>(0, 0, RandType::unif, 0, 0) {}
 
   TSAGA(ulong epoch_size, T tol, RandType rand_type, T step, int record_every = 1, int seed = -1);
-
- public:
-  void solve_one_epoch() override;
-
-  template <class Archive>
-  void serialize(Archive &ar) {
-    ar(cereal::make_nvp("BaseSAGA", typename cereal::base_class<TBaseSAGA<T, T>>(this)));
-    ar(CEREAL_NVP(gradients_memory));
-    ar(CEREAL_NVP(gradients_average));
-  }
-
-  BoolStrReport compare(const TSAGA<T> &that) {
-    std::stringstream ss;
-    ss << get_class_name() << std::endl;
-    auto is_equal = TBaseSAGA<T, T>::compare(that, ss) &&
-                    TICK_CMP_REPORT(ss, gradients_memory) &&
-                    TICK_CMP_REPORT(ss, gradients_average);
-    return BoolStrReport(is_equal, ss.str());
-  }
-
-  BoolStrReport operator==(const TSAGA<T> &that) { return compare(that); }
-
-  static std::shared_ptr<TSAGA<T>> AS_NULL() {
-    return std::move(std::shared_ptr<TSAGA<T>>(new TSAGA<T>));
-  }
 };
 
 using SAGA = TSAGA<double>;
@@ -172,5 +157,51 @@ using SAGAFloat = TSAGA<float>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SAGAFloat,
                                    cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(SAGAFloat)
+
+
+
+template <class T>
+class DLL_PUBLIC AtomicSAGA : public TBaseSAGA<T, T, std::atomic<T>> {
+  // Grants cereal access to default constructor/serialize functions
+  friend class cereal::access;
+
+ protected:
+  using TBaseSAGA<T, T, std::atomic<T>>::iterate;
+  using TBaseSAGA<T, T, std::atomic<T>>::model;
+  using TBaseSAGA<T, T, std::atomic<T>>::casted_prox;
+  using TBaseSAGA<T, T, std::atomic<T>>::step;
+
+ public:
+  using TBaseSAGA<T, T, std::atomic<T>>::gradients_average;
+  using TBaseSAGA<T, T, std::atomic<T>>::gradients_memory;
+
+ public:
+  AtomicSAGA() : AtomicSAGA(0, 0, RandType::unif, 0) {}
+
+  AtomicSAGA(ulong epoch_size, T tol, RandType rand_type, T step, int record_every = 1,
+             int seed = -1, int n_threads = 2);
+
+  ~AtomicSAGA() {}
+
+ protected:
+  T update_gradient_memory(ulong i) override;
+  void update_iterate_and_gradient_average(ulong j, T grad_avg_j, T delta_grad_avg_j,
+                                           T delta_iterate, T step_correction) override;
+
+  static std::shared_ptr<AtomicSAGA<T>> AS_NULL() {
+    return std::move(std::shared_ptr<AtomicSAGA<T>>(new AtomicSAGA<T>));
+  }
+};
+
+using ASAGA = AtomicSAGA<double>;
+using AtomicSAGADouble = AtomicSAGA<double>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(AtomicSAGADouble,
+                                   cereal::specialization::member_serialize)
+CEREAL_REGISTER_TYPE(AtomicSAGADouble)
+using AtomicSAGAFloat = AtomicSAGA<float>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(AtomicSAGAFloat,
+                                   cereal::specialization::member_serialize)
+CEREAL_REGISTER_TYPE(AtomicSAGAFloat)
+
 
 #endif  // LIB_INCLUDE_TICK_SOLVER_SAGA_H_

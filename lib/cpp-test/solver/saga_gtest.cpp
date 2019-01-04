@@ -8,7 +8,6 @@
 #include "tick/linear_model/model_linreg.h"
 #include "tick/prox/prox_l2sq.h"
 #include "tick/solver/saga.h"
-#include "tick/solver/asaga.h"
 #include "toy_dataset.ipp"
 
 TEST(SAGA, test_saga_dense_convergence) {
