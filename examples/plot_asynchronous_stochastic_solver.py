@@ -26,14 +26,25 @@ import matplotlib.pyplot as plt
 from tick.plot import plot_history
 import numpy as np
 from tick.linear_model import SimuLogReg, ModelLogReg
+
 from tick.simulation import weights_sparse_gauss
 from tick.solver import SVRG, SAGA
 from tick.prox import ProxElasticNet, ProxL1
 
+from tick.linear_model.build.linear_model import ModelLogRegAtomicDouble
+from tick.prox.build.prox import ProxL1AtomicDouble
+
+from tick.solver.build.solver import (
+    SAGADouble as _SAGADouble,
+    AtomicSAGADouble as _ASAGADouble,
+    AtomicSAGADoubleAtomicIterate as _ASAGADoubleA,
+    SAGADoubleAtomicIterate as _SAGADoubleA
+)
+
 seed = 1398
 np.random.seed(seed)
 
-n_samples = 40000
+n_samples = 400000
 n_features = 20000
 sparsity = 1e-4
 penalty_strength = 1e-5
@@ -52,30 +63,55 @@ prox = ProxL1(penalty_strength)
 svrg_step = 1. / model.get_lip_max()
 
 test_n_threads = [1, 2, 4]
+threads_ls = {1: '-', 2: '--', 4: ':'}
 
-fig, axes = plt.subplots(1, 2, figsize=(8, 4))
+fig, ax = plt.subplots(1, 1, figsize=(8, 4))
 
-for ax, SolverClass in zip(axes, [SVRG, SAGA]):
+classes = [_SAGADouble, _SAGADoubleA, _ASAGADouble, _ASAGADoubleA]
+class_names = ['Wild', 'Atomic $w$', 'Atomic $\\alpha$', 'Atomic $w$ and $\\alpha$']
+
+for solver_class, solver_name in zip(classes, class_names):  # [SVRG, SAGA]):
     solver_list = []
     solver_labels = []
 
     for n_threads in test_n_threads:
-        solver = SolverClass(step=svrg_step, seed=seed, max_iter=50,
-                             verbose=False, n_threads=n_threads, tol=0,
-                             record_every=3)
-        solver.set_model(model).set_prox(prox)
+        solver = SAGA(step=svrg_step, seed=seed, max_iter=50,
+                      verbose=False, n_threads=n_threads, tol=0,
+                      record_every=3)
+
+        epoch_size = 0
+        tol = solver.tol
+        _rand_type = solver._rand_type
+        step = solver.step
+        record_every = solver.record_every
+        seed = solver.seed
+        n_threads = solver.n_threads
+
+        solver._set('_solver',
+                    solver_class(epoch_size, tol, _rand_type, step,
+                                 record_every, seed, n_threads))
+
+        if solver_class in [_SAGADoubleA, _ASAGADoubleA]:
+            solver.set_model(model.to_atomic()).set_prox(prox.to_atomic())
+        else:
+            solver.set_model(model).set_prox(prox)
+
         solver.solve()
 
         solver_list += [solver]
-        if n_threads == 1:
-            solver_labels += [solver.name]
-        else:
-            solver_labels += ['A{} {}'.format(solver.name, n_threads)]
+        solver_labels += ['{} {}'.format(solver_name, n_threads)]
 
     plot_history(solver_list, dist_min=True, log_scale=True,
                  labels=solver_labels, ax=ax, x='time')
 
+    for j, line in enumerate(ax.lines[-len(test_n_threads):]):
+        print(j, solver_name, test_n_threads[j])
+        line.set_color('C{}'.format(class_names.index(solver_name)))
+        line.set_linestyle(threads_ls[test_n_threads[j]])
+
     ax.set_ylabel('log distance to optimal objective', fontsize=14)
 
 fig.tight_layout()
+ax.legend()
+ax.set_ylim([1e-10, None])
 plt.show()

@@ -6,16 +6,12 @@
 
 template <class T, class K, class L>
 TBaseSAGA<T, K, L>::TBaseSAGA(ulong epoch_size, T tol, RandType rand_type, T step,
-                           int record_every, int seed, int n_threads)
+                              int record_every, int seed, int n_threads)
     : TStoSolver<T, K>(epoch_size, tol, rand_type, record_every, seed),
       solver_ready(false),
       ready_step_corrections(false),
       step(step),
       n_threads(n_threads >= 1 ? n_threads : std::thread::hardware_concurrency()){}
-
-template <class T>
-TSAGA<T>::TSAGA(ulong epoch_size, T tol, RandType rand_type, T step, int record_every, int seed)
-    : TBaseSAGA<T, T, T>(epoch_size, tol, rand_type, step, record_every, seed) {}
 
 template <class T, class K, class L>
 void TBaseSAGA<T, K, L>::set_model(std::shared_ptr<TModel<T, K> > model) {
@@ -190,7 +186,7 @@ T TBaseSAGA<T, K, L>::update_gradient_memory(ulong i){
 
 template <class T, class K, class L>
 void TBaseSAGA<T, K, L>::update_iterate_and_gradient_average(ulong j, T grad_avg_j, T delta_grad_avg_j,
-                                                          T delta_iterate, T step_correction){
+                                                             T delta_iterate, T step_correction){
   TICK_CLASS_DOES_NOT_IMPLEMENT("");
 }
 
@@ -202,8 +198,14 @@ template class DLL_PUBLIC TBaseSAGA<double, double, std::atomic<double> >;
 template class DLL_PUBLIC TBaseSAGA<float, float, std::atomic<float> >;
 
 
-template <class T>
-T TSAGA<T>::update_gradient_memory(ulong i){
+
+template <class T, class K>
+TSAGA<T, K>::TSAGA(ulong epoch_size, T tol, RandType rand_type, T step, int record_every, int seed, int n_threads)
+    : TBaseSAGA<T, K, T>(epoch_size, tol, rand_type, step, record_every, seed, n_threads) {}
+
+
+template <class T, class K>
+T TSAGA<T, K>::update_gradient_memory(ulong i){
   T grad_i_factor = model->grad_i_factor(i, iterate);
   T grad_i_factor_old = gradients_memory[i];
   gradients_memory[i] = grad_i_factor;
@@ -211,31 +213,33 @@ T TSAGA<T>::update_gradient_memory(ulong i){
   return grad_i_factor - grad_i_factor_old;
 }
 
-template <class T>
-void TSAGA<T>::update_iterate_and_gradient_average(ulong j, T grad_avg_j, T delta_grad_avg_j,
-                                                   T delta_iterate, T step_correction){
+template <class T, class K>
+void TSAGA<T, K>::update_iterate_and_gradient_average(ulong j, T grad_avg_j, T delta_grad_avg_j,
+                                                      T delta_iterate, T step_correction){
   gradients_average[j] += delta_grad_avg_j;
   // Prox is separable, apply regularization on the current coordinate
 
   T iterate_j_before_prox = iterate[j] + delta_iterate;
 
   if (model->is_sparse()) iterate[j] = casted_prox->call_single(
-      iterate_j_before_prox, step * step_correction);
+        iterate_j_before_prox, step * step_correction);
   else iterate[j] = iterate_j_before_prox;
 }
 
-template class DLL_PUBLIC TSAGA<double>;
-template class DLL_PUBLIC TSAGA<float>;
+template class DLL_PUBLIC TSAGA<double, double>;
+template class DLL_PUBLIC TSAGA<double, std::atomic<double> >;
+template class DLL_PUBLIC TSAGA<float, float>;
+template class DLL_PUBLIC TSAGA<float, std::atomic<float> >;
 
 
-template <class T>
-AtomicSAGA<T>::AtomicSAGA(ulong epoch_size, T tol,
-                          RandType rand_type, T step, int record_every, int seed, int n_threads)
-    : TBaseSAGA<T, T, std::atomic<T>>(epoch_size, tol, rand_type, step, record_every, seed,
+template <class T, class K>
+AtomicSAGA<T, K>::AtomicSAGA(ulong epoch_size, T tol,
+                             RandType rand_type, T step, int record_every, int seed, int n_threads)
+    : TBaseSAGA<T, K, std::atomic<T>>(epoch_size, tol, rand_type, step, record_every, seed,
                                       n_threads) {}
 
-template <class T>
-T AtomicSAGA<T>::update_gradient_memory(ulong i){
+template <class T, class K>
+T AtomicSAGA<T, K>::update_gradient_memory(ulong i){
   T grad_i_factor = model->grad_i_factor(i, iterate);
   T grad_i_factor_old = gradients_memory[i];
 
@@ -246,9 +250,9 @@ T AtomicSAGA<T>::update_gradient_memory(ulong i){
   return grad_i_factor - grad_i_factor_old;
 }
 
-template <class T>
-void AtomicSAGA<T>::update_iterate_and_gradient_average(ulong j, T grad_avg_j, T delta_grad_avg_j,
-                                                        T delta_iterate, T step_correction){
+template <class T, class K>
+void AtomicSAGA<T, K>::update_iterate_and_gradient_average(ulong j, T grad_avg_j, T delta_grad_avg_j,
+                                                           T delta_iterate, T step_correction){
   while (!gradients_average[j].compare_exchange_weak(
       grad_avg_j,
       grad_avg_j + delta_grad_avg_j)) {
@@ -259,5 +263,7 @@ void AtomicSAGA<T>::update_iterate_and_gradient_average(ulong j, T grad_avg_j, T
       iterate[j] + delta_iterate, step * step_correction);
 }
 
-template class DLL_PUBLIC AtomicSAGA<double>;
-template class DLL_PUBLIC AtomicSAGA<float>;
+template class DLL_PUBLIC AtomicSAGA<double, double>;
+template class DLL_PUBLIC AtomicSAGA<double, std::atomic<double> >;
+template class DLL_PUBLIC AtomicSAGA<float, float>;
+template class DLL_PUBLIC AtomicSAGA<float, std::atomic<float> >;

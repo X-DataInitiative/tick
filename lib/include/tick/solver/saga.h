@@ -6,6 +6,9 @@
 #include "sto_solver.h"
 #include "tick/base_model/model_generalized_linear.h"
 
+// T : float or double, type of feature arrays used
+// K : atomic or not: type of iterate
+// L : atomic or not: type of gradient memory and average
 template <class T, class K, class L>
 class DLL_PUBLIC TBaseSAGA : public TStoSolver<T, K> {
   // Grants cereal access to default constructor/serialize functions
@@ -111,6 +114,10 @@ using BaseSAGADouble = TBaseSAGA<double, double, double>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(BaseSAGADouble,
                                    cereal::specialization::member_serialize)
 
+using BaseSAGADoubleAtomicIterate = TBaseSAGA<double, std::atomic<double>, double>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(BaseSAGADoubleAtomicIterate,
+                                   cereal::specialization::member_serialize)
+
 using BaseSAGAFloat = TBaseSAGA<float, float, float>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(BaseSAGAFloat,
                                    cereal::specialization::member_serialize)
@@ -119,22 +126,26 @@ using BaseSAGAAtomicDouble = TBaseSAGA<double, double, std::atomic<double>>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(BaseSAGAAtomicDouble,
                                    cereal::specialization::member_serialize)
 
+using BaseSAGAAtomicDoubleAtomicIterate  = TBaseSAGA<double, std::atomic<double>, std::atomic<double>>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(BaseSAGAAtomicDoubleAtomicIterate ,
+                                   cereal::specialization::member_serialize)
+
 using BaseSAGAAtomicFloat = TBaseSAGA<float, float, std::atomic<float>>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(BaseSAGAAtomicFloat,
                                    cereal::specialization::member_serialize)
 
-template <class T>
-class DLL_PUBLIC TSAGA : public TBaseSAGA<T, T, T> {
+template <class T, class K>
+class DLL_PUBLIC TSAGA : public TBaseSAGA<T, K, T> {
   // Grants cereal access to default constructor/serialize functions
   friend class cereal::access;
 
  protected:
-  using TBaseSAGA<T, T, T>::iterate;
-  using TBaseSAGA<T, T, T>::model;
-  using TBaseSAGA<T, T, T>::casted_prox;
-  using TBaseSAGA<T, T, T>::step;
-  using TBaseSAGA<T, T, T>::gradients_average;
-  using TBaseSAGA<T, T, T>::gradients_memory;
+  using TBaseSAGA<T, K, T>::iterate;
+  using TBaseSAGA<T, K, T>::model;
+  using TBaseSAGA<T, K, T>::casted_prox;
+  using TBaseSAGA<T, K, T>::step;
+  using TBaseSAGA<T, K, T>::gradients_average;
+  using TBaseSAGA<T, K, T>::gradients_memory;
 
   T update_gradient_memory(ulong i) override;
   void update_iterate_and_gradient_average(ulong j, T grad_avg_j, T delta_grad_avg_j,
@@ -142,38 +153,48 @@ class DLL_PUBLIC TSAGA : public TBaseSAGA<T, T, T> {
 
  public:
   // This exists soley for cereal/swig
-  TSAGA() : TSAGA<T>(0, 0, RandType::unif, 0, 0) {}
+  TSAGA() : TSAGA<T, K>(0, 0, RandType::unif, 0, 0) {}
 
-  TSAGA(ulong epoch_size, T tol, RandType rand_type, T step, int record_every = 1, int seed = -1);
+  TSAGA(ulong epoch_size, T tol, RandType rand_type, T step, int record_every = 1, int seed = -1, int n_threads = 1);
+
+  template <class Archive>
+  void serialize(Archive &ar) {
+    ar(cereal::make_nvp("BaseSAGA", typename cereal::base_class<TBaseSAGA<T, K, T>>(this)));
+  }
 };
 
-using SAGA = TSAGA<double>;
-using SAGADouble = TSAGA<double>;
+using SAGA = TSAGA<double, double>;
+using SAGADouble = TSAGA<double, double>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SAGADouble,
                                    cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(SAGADouble)
 
-using SAGAFloat = TSAGA<float>;
+using SAGADoubleAtomicIterate = TSAGA<double, std::atomic<double> >;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SAGADoubleAtomicIterate,
+                                   cereal::specialization::member_serialize)
+CEREAL_REGISTER_TYPE(SAGADoubleAtomicIterate)
+
+using SAGAFloat = TSAGA<float, float>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SAGAFloat,
                                    cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(SAGAFloat)
 
 
 
-template <class T>
-class DLL_PUBLIC AtomicSAGA : public TBaseSAGA<T, T, std::atomic<T>> {
+template <class T, class K>
+class DLL_PUBLIC AtomicSAGA : public TBaseSAGA<T, K, std::atomic<T>> {
   // Grants cereal access to default constructor/serialize functions
   friend class cereal::access;
 
  protected:
-  using TBaseSAGA<T, T, std::atomic<T>>::iterate;
-  using TBaseSAGA<T, T, std::atomic<T>>::model;
-  using TBaseSAGA<T, T, std::atomic<T>>::casted_prox;
-  using TBaseSAGA<T, T, std::atomic<T>>::step;
+  using TBaseSAGA<T, K, std::atomic<T>>::iterate;
+  using TBaseSAGA<T, K, std::atomic<T>>::model;
+  using TBaseSAGA<T, K, std::atomic<T>>::casted_prox;
+  using TBaseSAGA<T, K, std::atomic<T>>::step;
 
  public:
-  using TBaseSAGA<T, T, std::atomic<T>>::gradients_average;
-  using TBaseSAGA<T, T, std::atomic<T>>::gradients_memory;
+  using TBaseSAGA<T, K, std::atomic<T>>::gradients_average;
+  using TBaseSAGA<T, K, std::atomic<T>>::gradients_memory;
 
  public:
   AtomicSAGA() : AtomicSAGA(0, 0, RandType::unif, 0) {}
@@ -188,17 +209,23 @@ class DLL_PUBLIC AtomicSAGA : public TBaseSAGA<T, T, std::atomic<T>> {
   void update_iterate_and_gradient_average(ulong j, T grad_avg_j, T delta_grad_avg_j,
                                            T delta_iterate, T step_correction) override;
 
-  static std::shared_ptr<AtomicSAGA<T>> AS_NULL() {
-    return std::move(std::shared_ptr<AtomicSAGA<T>>(new AtomicSAGA<T>));
+  static std::shared_ptr<AtomicSAGA<T, K>> AS_NULL() {
+    return std::move(std::shared_ptr<AtomicSAGA<T, K>>(new AtomicSAGA<T, K>));
   }
 };
 
-using ASAGA = AtomicSAGA<double>;
-using AtomicSAGADouble = AtomicSAGA<double>;
+using ASAGA = AtomicSAGA<double, double>;
+using AtomicSAGADouble = AtomicSAGA<double, double>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(AtomicSAGADouble,
                                    cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(AtomicSAGADouble)
-using AtomicSAGAFloat = AtomicSAGA<float>;
+
+using AtomicSAGADoubleAtomicIterate = AtomicSAGA<double, std::atomic<double>>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(AtomicSAGADoubleAtomicIterate,
+                                   cereal::specialization::member_serialize)
+CEREAL_REGISTER_TYPE(AtomicSAGADoubleAtomicIterate)
+
+using AtomicSAGAFloat = AtomicSAGA<float, float>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(AtomicSAGAFloat,
                                    cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(AtomicSAGAFloat)

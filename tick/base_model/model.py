@@ -53,6 +53,9 @@ class Model(ABC, Base):
         "_fitted": {
             "writable": False
         },
+        "_non_atomic_model": {
+            "writable": False
+        },
         N_CALLS_LOSS: {
             "writable": False
         },
@@ -193,6 +196,7 @@ class Model(ABC, Base):
         atomic_model.set_params(**self.get_params())
         if self._fitted:
             atomic_model.fit(self.features, self.labels)
+        atomic_model._set('_non_atomic_model', self)
         return atomic_model
 
     def _get_params_set(self):

@@ -21,7 +21,8 @@ class Prox(ABC, Base):
         Type of the arrays used.
     """
 
-    _attrinfos = {"_prox": {"writable": False}, "_range": {"writable": False}}
+    _attrinfos = {"_prox": {"writable": False}, "_range": {"writable": False},
+                  "_non_atomic_prox": {'writable': False}}
 
     # The name of the attribute that will contain the C++ prox object
     _cpp_obj_name = "_prox"
@@ -145,6 +146,7 @@ class Prox(ABC, Base):
 
         atomic_prox = self._AtomicClass(*args)
         atomic_prox.set_params(**params)
+        atomic_prox._set('_non_atomic_prox', self)
         return atomic_prox
 
     def _get_params_set(self):

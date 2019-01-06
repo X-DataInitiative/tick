@@ -46,7 +46,7 @@ int main(int argc, char *argv[]) {
     {
       auto model = std::make_shared<ModelLogReg>(features, labels, false);
       Array<double> minimizer(model->get_n_coeffs());
-      TSAGA<double> saga(n_samples, 0, RandType::unif, 0.00257480411965);
+      TSAGA<double, double> saga(n_samples, 0, RandType::unif, 0.00257480411965);
       saga.set_rand_max(n_samples);
       saga.set_model(model);
       auto prox = std::make_shared<TProxElasticNet<double, double>>(STRENGTH, RATIO, 0, model->get_n_coeffs(), 0);

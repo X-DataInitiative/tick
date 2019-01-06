@@ -6,33 +6,36 @@
 #include "tick/solver/saga.h"
 %}
 
-template <class T>
-class TSAGA : public TStoSolver<T, T> {
+template <class T, class K>
+class TSAGA : public TStoSolver<T, K> {
  public:
     TSAGA();
+
     TSAGA(unsigned long epoch_size,
          T tol,
          RandType rand_type,
          T step,
          int record_every = 1,
-         int seed = -1);
+         int seed = -1,
+         int n_threads = 1);
     void set_step(T step);
-
-    void set_model(std::shared_ptr<TModel<T, T> > model) override;
-
-    bool compare(const TSAGA<T> &that);
 };
-%template(SAGADouble) TSAGA<double>;
-typedef TSAGA<double> SAGADouble;
-TICK_MAKE_TEMPLATED_PICKLABLE(TSAGA, SAGADouble, double);
 
-%template(SAGAFloat) TSAGA<float>;
-typedef TSAGA<float> SAGAFloat;
-TICK_MAKE_TEMPLATED_PICKLABLE(TSAGA, SAGAFloat , float);
+%template(SAGADouble) TSAGA<double, double>;
+typedef TSAGA<double, double> SAGADouble;
+TICK_MAKE_TEMPLATED_PICKLABLE(TSAGA, SAGADouble, %arg(double, double));
+
+%template(SAGADoubleAtomicIterate) TSAGA<double, std::atomic<double> >;
+typedef TSAGA<double, std::atomic<double> > SAGADoubleAtomicIterate;
+TICK_MAKE_TEMPLATED_PICKLABLE(TSAGA, SAGADoubleAtomicIterate, %arg(double, std::atomic<double>));
+
+%template(SAGAFloat) TSAGA<float, float>;
+typedef TSAGA<float, float> SAGAFloat;
+TICK_MAKE_TEMPLATED_PICKLABLE(TSAGA, SAGAFloat, %arg(float, float));
 
 
-template <class T>
-class AtomicSAGA : public TStoSolver<T, T> {
+template <class T, class K>
+class AtomicSAGA : public TStoSolver<T, K> {
  public:
     AtomicSAGA();
 
@@ -45,14 +48,16 @@ class AtomicSAGA : public TStoSolver<T, T> {
       int seed = -1,
       int n_threads = 2
     );
-
-    void solve(int n_epochs = 1);
 };
 
-%template(AtomicSAGADouble) AtomicSAGA<double>;
-typedef AtomicSAGA<double> AtomicSAGADouble;
-TICK_MAKE_TEMPLATED_PICKLABLE(AtomicSAGA, AtomicSAGADouble , double);
+%template(AtomicSAGADouble) AtomicSAGA<double, double>;
+typedef AtomicSAGA<double, double> AtomicSAGADouble;
+TICK_MAKE_TEMPLATED_PICKLABLE(AtomicSAGA, AtomicSAGADouble, %arg(double, double));
 
-%template(AtomicSAGAFloat) AtomicSAGA<float>;
-typedef AtomicSAGA<float> AtomicSAGAFloat;
-TICK_MAKE_TEMPLATED_PICKLABLE(AtomicSAGA, AtomicSAGAFloat , float);
+%template(AtomicSAGADoubleAtomicIterate) AtomicSAGA<double, std::atomic<double> >;
+typedef AtomicSAGA<double, std::atomic<double> > AtomicSAGADoubleAtomicIterate;
+TICK_MAKE_TEMPLATED_PICKLABLE(AtomicSAGA, AtomicSAGADoubleAtomicIterate, %arg(double, std::atomic<double>));
+
+%template(AtomicSAGAFloat) AtomicSAGA<float, float>;
+typedef AtomicSAGA<float, float> AtomicSAGAFloat;
+TICK_MAKE_TEMPLATED_PICKLABLE(AtomicSAGA, AtomicSAGAFloat, %arg(float, float));

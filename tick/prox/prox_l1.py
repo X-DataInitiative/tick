@@ -103,3 +103,6 @@ class AtomicProxL1(ProxL1):
         np.dtype('float64'): _ProxL1AtomicDouble
     }
 
+    def value(self, coeffs):
+        return self._non_atomic_prox.value(coeffs)
+

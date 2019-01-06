@@ -82,8 +82,7 @@ void TBaseSDCA<T, K>::solve(int n_epochs) {
       for (ulong t = 0; t < thread_epoch_size; ++t) {
 
         // Pick i uniformly at random
-//        ulong i = get_next_i();
-        ulong i = rand.uniform_int(start_random, end_random - 1);
+        ulong i = get_next_i();
         ulong feature_index = i;
         if (feature_index_map != nullptr) {
           feature_index = (*feature_index_map)[i];

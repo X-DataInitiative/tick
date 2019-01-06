@@ -160,3 +160,6 @@ class AtomicModelLogReg(ModelLogReg):
         np.dtype('float32'): _ModelLogRegAtomicFloat,
         np.dtype('float64'): _ModelLogRegAtomicDouble
     }
+
+    def loss(self, coeffs):
+        return self._non_atomic_model.loss(coeffs)
