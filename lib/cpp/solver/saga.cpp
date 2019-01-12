@@ -82,9 +82,6 @@ void TBaseSAGA<T, K, L>::solve(int n_epochs) {
   // step-sizes using a probabilistic approximation and the
   // penalization trick: with such a model and prox, we can work only inside the
   // current support (non-zero values) of the sampled vector of features
-  T n_samples = model->get_n_samples();
-  T n_samples_inverse = 1 / n_samples;
-
   bool use_intercept = model->use_intercept();
   ulong n_features = model->get_n_features();
 
@@ -92,7 +89,6 @@ void TBaseSAGA<T, K, L>::solve(int n_epochs) {
 
   auto lambda = [&](uint16_t n_thread) {
     T x_ij = 0;
-    T grad_factor_diff = 0, grad_avg_j = 0;
 
     ulong idx_nnz = 0;
     ulong thread_epoch_size = epoch_size / n_threads;
@@ -107,16 +103,13 @@ void TBaseSAGA<T, K, L>::solve(int n_epochs) {
         // Sparse features vector
         BaseArray<T> x_i = model->get_features(i);
 
-        grad_factor_diff = update_gradient_memory(i);
+        T grad_factor_diff = update_gradient_memory(i);
 
         if (!model->is_sparse()) {
           for (ulong j = 0; j < n_features; ++j) {
             x_ij = x_i._value_dense(j);
-            grad_avg_j = gradients_average[j];
 
-            T delta_grad_avg_j = grad_factor_diff * x_ij * n_samples_inverse;
-            T delta_iterate = -step * (grad_factor_diff * x_ij + grad_avg_j);
-            update_iterate_and_gradient_average(j, grad_avg_j, delta_grad_avg_j, delta_iterate, 1);
+            update_iterate_and_gradient_average(j, x_ij, grad_factor_diff, 1);
           }
         }
         else {
@@ -125,11 +118,7 @@ void TBaseSAGA<T, K, L>::solve(int n_epochs) {
             ulong j = x_i.indices()[idx_nnz];
             x_ij = x_i.data()[idx_nnz];
 
-            grad_avg_j = gradients_average[j];
-            T delta_grad_avg_j = grad_factor_diff * x_ij * n_samples_inverse;
-            T delta_iterate = -step * (grad_factor_diff * x_ij + steps_correction[j] * grad_avg_j);
-            update_iterate_and_gradient_average(j, grad_avg_j, delta_grad_avg_j, delta_iterate,
-                                                steps_correction[j]);
+            update_iterate_and_gradient_average(j, x_ij, grad_factor_diff, steps_correction[j]);
           }
         }
         // And let's not forget to update the intercept as well. It's updated at
@@ -137,10 +126,7 @@ void TBaseSAGA<T, K, L>::solve(int n_epochs) {
         // to be consistent with the dense case (in the case where the user has
         // the weird desire to to regularize the intercept)
         if (use_intercept) {
-          T delta_grad_avg_j = grad_factor_diff * n_samples_inverse;
-          T delta_iterate = - step * (grad_factor_diff + gradients_average[n_features]);
-          update_iterate_and_gradient_average(n_features, grad_avg_j, delta_grad_avg_j,
-                                              delta_iterate, 1.);
+          update_iterate_and_gradient_average(n_features, 1., grad_factor_diff, 1.);
         }
 
         // If prox was not called during iterate update
@@ -185,8 +171,8 @@ T TBaseSAGA<T, K, L>::update_gradient_memory(ulong i){
 }
 
 template <class T, class K, class L>
-void TBaseSAGA<T, K, L>::update_iterate_and_gradient_average(ulong j, T grad_avg_j, T delta_grad_avg_j,
-                                                             T delta_iterate, T step_correction){
+void TBaseSAGA<T, K, L>::update_iterate_and_gradient_average(ulong j, T x_ij, T grad_factor_diff,
+                                                             T step_correction){
   TICK_CLASS_DOES_NOT_IMPLEMENT("");
 }
 
@@ -214,13 +200,17 @@ T TSAGA<T, K>::update_gradient_memory(ulong i){
 }
 
 template <class T, class K>
-void TSAGA<T, K>::update_iterate_and_gradient_average(ulong j, T grad_avg_j, T delta_grad_avg_j,
-                                                      T delta_iterate, T step_correction){
+void TSAGA<T, K>::update_iterate_and_gradient_average(ulong j, T x_ij, T grad_factor_diff,
+                                                      T step_correction){
+  T grad_avg_j = gradients_average[j];
+
+  T delta_grad_avg_j = grad_factor_diff * x_ij / model->get_n_samples();
+  T delta_iterate = -step * (grad_factor_diff * x_ij + step_correction * grad_avg_j);
+
   gradients_average[j] += delta_grad_avg_j;
+
   // Prox is separable, apply regularization on the current coordinate
-
   T iterate_j_before_prox = iterate[j] + delta_iterate;
-
   if (model->is_sparse()) iterate[j] = casted_prox->call_single(
         iterate_j_before_prox, step * step_correction);
   else iterate[j] = iterate_j_before_prox;
@@ -251,8 +241,13 @@ T AtomicSAGA<T, K>::update_gradient_memory(ulong i){
 }
 
 template <class T, class K>
-void AtomicSAGA<T, K>::update_iterate_and_gradient_average(ulong j, T grad_avg_j, T delta_grad_avg_j,
-                                                           T delta_iterate, T step_correction){
+void AtomicSAGA<T, K>::update_iterate_and_gradient_average(ulong j, T x_ij, T grad_factor_diff,
+                                                           T step_correction){
+  T grad_avg_j = gradients_average[j];
+
+  T delta_grad_avg_j = grad_factor_diff * x_ij / model->get_n_samples();
+  T delta_iterate = -step * (grad_factor_diff * x_ij + step_correction * grad_avg_j);
+
   while (!gradients_average[j].compare_exchange_weak(
       grad_avg_j,
       grad_avg_j + delta_grad_avg_j)) {

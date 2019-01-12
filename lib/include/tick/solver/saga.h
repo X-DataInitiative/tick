@@ -72,8 +72,8 @@ class DLL_PUBLIC TBaseSAGA : public TStoSolver<T, K> {
 
  protected:
   virtual T update_gradient_memory(ulong i);
-  virtual void update_iterate_and_gradient_average(ulong j, T grad_avg_j, T delta_grad_avg_j,
-                                                   T delta_iterate, T step_correction);
+  virtual void update_iterate_and_gradient_average(ulong j, T x_ij, T grad_factor_diff,
+                                                   T step_correction);
 
  public:
   template <class Archive>
@@ -148,8 +148,8 @@ class DLL_PUBLIC TSAGA : public TBaseSAGA<T, K, T> {
   using TBaseSAGA<T, K, T>::gradients_memory;
 
   T update_gradient_memory(ulong i) override;
-  void update_iterate_and_gradient_average(ulong j, T grad_avg_j, T delta_grad_avg_j,
-                                           T delta_iterate, T step_correction) override;
+  void update_iterate_and_gradient_average(ulong j, T x_ij, T grad_factor_diff,
+                                           T step_correction) override;
 
  public:
   // This exists soley for cereal/swig
@@ -206,8 +206,8 @@ class DLL_PUBLIC AtomicSAGA : public TBaseSAGA<T, K, std::atomic<T>> {
 
  protected:
   T update_gradient_memory(ulong i) override;
-  void update_iterate_and_gradient_average(ulong j, T grad_avg_j, T delta_grad_avg_j,
-                                           T delta_iterate, T step_correction) override;
+  void update_iterate_and_gradient_average(ulong j, T x_ij, T grad_factor_diff,
+                                           T step_correction) override;
 
   static std::shared_ptr<AtomicSAGA<T, K>> AS_NULL() {
     return std::move(std::shared_ptr<AtomicSAGA<T, K>>(new AtomicSAGA<T, K>));
