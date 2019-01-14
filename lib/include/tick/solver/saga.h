@@ -196,6 +196,10 @@ class DLL_PUBLIC AtomicSAGA : public TBaseSAGA<T, K, std::atomic<T>> {
   using TBaseSAGA<T, K, std::atomic<T>>::gradients_average;
   using TBaseSAGA<T, K, std::atomic<T>>::gradients_memory;
 
+ private:
+  bool load_before_atomic = true;
+  std::memory_order custom_memory_order = std::memory_order_seq_cst;
+
  public:
   AtomicSAGA() : AtomicSAGA(0, 0, RandType::unif, 0) {}
 
@@ -203,6 +207,21 @@ class DLL_PUBLIC AtomicSAGA : public TBaseSAGA<T, K, std::atomic<T>> {
              int seed = -1, int n_threads = 2);
 
   ~AtomicSAGA() {}
+
+  void set_memory_order(const int memory_order) {
+    switch (memory_order) {
+      case 0:
+        custom_memory_order = std::memory_order_relaxed;
+      case 1:
+        custom_memory_order = std::memory_order_acq_rel;
+      default:
+        custom_memory_order = std::memory_order_seq_cst;
+    }
+  }
+
+  void set_load_before_atomic(const bool load_before_atomic) {
+    this->load_before_atomic = load_before_atomic;
+  }
 
  protected:
   T update_gradient_memory(ulong i) override;

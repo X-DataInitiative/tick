@@ -162,6 +162,21 @@ void TBaseSAGA<T, K, L>::solve(int n_epochs) {
   for (size_t i = 0; i < n_threads; i++) {
     threads[i].join();
   }
+
+//  {
+//    Array<T> average(gradients_average.size());
+//    average.init_to_zero();
+//    for(ulong i = 0; i < model->get_n_samples(); ++i){
+//      average.mult_incr(model->get_features(i), gradients_memory[i] / model->get_n_samples());
+//    }
+//
+//    average.print();
+//    gradients_average.print();
+//
+//    for (ulong j = 0; j < average.size(); j ++) average[j] -= gradients_average[j];
+//
+//    std::cout << "Mean norm sq diff average = " << average.norm_sq() / average.size() << std::endl;
+//  }
 }
 
 
@@ -231,10 +246,13 @@ AtomicSAGA<T, K>::AtomicSAGA(ulong epoch_size, T tol,
 template <class T, class K>
 T AtomicSAGA<T, K>::update_gradient_memory(ulong i){
   T grad_i_factor = model->grad_i_factor(i, iterate);
-  T grad_i_factor_old = gradients_memory[i];
 
-  while (!gradients_memory[i].compare_exchange_weak(grad_i_factor_old,
-                                                    grad_i_factor)) {
+  T grad_i_factor_old;
+  if (load_before_atomic) grad_i_factor_old = gradients_memory[i].load(custom_memory_order);
+
+  while (!gradients_memory[i].compare_exchange_weak(
+      grad_i_factor_old, grad_i_factor,
+      custom_memory_order, custom_memory_order)) {
   }
 
   return grad_i_factor - grad_i_factor_old;
@@ -243,14 +261,16 @@ T AtomicSAGA<T, K>::update_gradient_memory(ulong i){
 template <class T, class K>
 void AtomicSAGA<T, K>::update_iterate_and_gradient_average(ulong j, T x_ij, T grad_factor_diff,
                                                            T step_correction){
-  T grad_avg_j = gradients_average[j];
+  T grad_avg_j;
+  if (load_before_atomic) grad_avg_j = gradients_average[j].load(custom_memory_order);
 
   T delta_grad_avg_j = grad_factor_diff * x_ij / model->get_n_samples();
   T delta_iterate = -step * (grad_factor_diff * x_ij + step_correction * grad_avg_j);
 
   while (!gradients_average[j].compare_exchange_weak(
       grad_avg_j,
-      grad_avg_j + delta_grad_avg_j)) {
+      grad_avg_j + delta_grad_avg_j,
+      custom_memory_order, custom_memory_order)) {
   }
 
   // Prox is separable, apply regularization on the current coordinate

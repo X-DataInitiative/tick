@@ -48,6 +48,9 @@ class AtomicSAGA : public TStoSolver<T, K> {
       int seed = -1,
       int n_threads = 2
     );
+
+    void set_memory_order(const int memory_order);
+    void set_load_before_atomic(const bool load_before_atomic);
 };
 
 %template(AtomicSAGADouble) AtomicSAGA<double, double>;
