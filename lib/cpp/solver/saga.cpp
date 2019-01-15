@@ -237,42 +237,40 @@ template class DLL_PUBLIC TSAGA<float, float>;
 template class DLL_PUBLIC TSAGA<float, std::atomic<float> >;
 
 
-template <class T, class K>
-AtomicSAGA<T, K>::AtomicSAGA(ulong epoch_size, T tol,
+template <class T, class K, std::memory_order M, std::memory_order N, bool O>
+AtomicSAGA<T, K, M, N, O>::AtomicSAGA(ulong epoch_size, T tol,
                              RandType rand_type, T step, int record_every, int seed, int n_threads)
     : TBaseSAGA<T, K, std::atomic<T>>(epoch_size, tol, rand_type, step, record_every, seed,
                                       n_threads) {}
 
-template <class T, class K>
-T AtomicSAGA<T, K>::update_gradient_memory(ulong i){
+template <class T, class K, std::memory_order M, std::memory_order N, bool O>
+T AtomicSAGA<T, K, M, N, O>::update_gradient_memory(ulong i){
   T grad_i_factor = model->grad_i_factor(i, iterate);
 
-  T grad_i_factor_old;
-  if (load_before_atomic) grad_i_factor_old = gradients_memory[i].load(custom_memory_order);
+  T grad_i_factor_old = gradients_memory[i].load(M);
 
   while (!gradients_memory[i].compare_exchange_weak(
       grad_i_factor_old, grad_i_factor,
-      custom_memory_order, custom_memory_order)) {
+      M, M)) {
   }
 
   return grad_i_factor - grad_i_factor_old;
 }
 
-template <class T, class K>
-void AtomicSAGA<T, K>::update_iterate_and_gradient_average(ulong j, T x_ij, T grad_factor_diff,
+template <class T, class K, std::memory_order M, std::memory_order N, bool O>
+void AtomicSAGA<T, K, M, N, O>::update_iterate_and_gradient_average(ulong j, T x_ij, T grad_factor_diff,
                                                            T step_correction){
-  T grad_avg_j;
-  if (load_before_atomic) grad_avg_j = gradients_average[j].load(custom_memory_order);
+  T grad_avg_j = gradients_average[j].load(M);
 
   T delta_grad_avg_j = grad_factor_diff * x_ij / model->get_n_samples();
-  T delta_iterate = -step * (grad_factor_diff * x_ij + step_correction * grad_avg_j);
 
   while (!gradients_average[j].compare_exchange_weak(
       grad_avg_j,
       grad_avg_j + delta_grad_avg_j,
-      custom_memory_order, custom_memory_order)) {
+      M, M)) {
   }
 
+  T delta_iterate = -step * (grad_factor_diff * x_ij + step_correction * grad_avg_j);
   // Prox is separable, apply regularization on the current coordinate
   iterate[j] = casted_prox->call_single(
       iterate[j] + delta_iterate, step * step_correction);
@@ -282,3 +280,47 @@ template class DLL_PUBLIC AtomicSAGA<double, double>;
 template class DLL_PUBLIC AtomicSAGA<double, std::atomic<double> >;
 template class DLL_PUBLIC AtomicSAGA<float, float>;
 template class DLL_PUBLIC AtomicSAGA<float, std::atomic<float> >;
+
+
+template <class T, class K, std::memory_order M, std::memory_order N>
+AtomicSAGA<T, K, M, N, false>::AtomicSAGA(ulong epoch_size, T tol,
+                                      RandType rand_type, T step, int record_every, int seed, int n_threads)
+    : TBaseSAGA<T, K, std::atomic<T>>(epoch_size, tol, rand_type, step, record_every, seed,
+                                      n_threads) {}
+
+template <class T, class K, std::memory_order M, std::memory_order N>
+T AtomicSAGA<T, K, M, N, false>::update_gradient_memory(ulong i){
+  T grad_i_factor = model->grad_i_factor(i, iterate);
+
+  T grad_i_factor_old;
+
+  while (!gradients_memory[i].compare_exchange_weak(
+      grad_i_factor_old, grad_i_factor,
+      M, M)) {
+  }
+
+  return grad_i_factor - grad_i_factor_old;
+}
+
+template <class T, class K, std::memory_order M, std::memory_order N>
+void AtomicSAGA<T, K, M, N, false>::update_iterate_and_gradient_average(ulong j, T x_ij, T grad_factor_diff,
+                                                                    T step_correction){
+  T grad_avg_j;
+
+  T delta_grad_avg_j = grad_factor_diff * x_ij / model->get_n_samples();
+
+  while (!gradients_average[j].compare_exchange_weak(
+      grad_avg_j,
+      grad_avg_j + delta_grad_avg_j,
+      M, M)) {
+  }
+
+  T delta_iterate = -step * (grad_factor_diff * x_ij + step_correction * grad_avg_j);
+
+  // Prox is separable, apply regularization on the current coordinate
+  iterate[j] = casted_prox->call_single(
+      iterate[j] + delta_iterate, step * step_correction);
+}
+
+template class DLL_PUBLIC AtomicSAGA<double, double, std::memory_order_relaxed, std::memory_order_relaxed>;
+template class DLL_PUBLIC AtomicSAGA<double, double, std::memory_order_seq_cst, std::memory_order_seq_cst, false>;

@@ -23,6 +23,8 @@ sparse and ill-conditonned problem.
 
 from scipy import sparse
 import matplotlib.pyplot as plt
+
+from tick.dataset import fetch_tick_dataset
 from tick.plot import plot_history
 import numpy as np
 from tick.linear_model import SimuLogReg, ModelLogReg
@@ -38,44 +40,54 @@ from tick.solver.build.solver import (
     SAGADouble as _SAGADouble,
     AtomicSAGADouble as _ASAGADouble,
     AtomicSAGADoubleAtomicIterate as _ASAGADoubleA,
-    SAGADoubleAtomicIterate as _SAGADoubleA
+    SAGADoubleAtomicIterate as _SAGADoubleA,
+    AtomicSAGARelax as _ASAGADoubleRelax,
 )
 
 seed = 1398
 np.random.seed(seed)
 
 n_samples = 40000
-n_features = 20000
-sparsity = 1e-4
+nnz = 50
+sparsity = 1e-2
+n_features = int(nnz / sparsity)
 penalty_strength = 1e-5
 
-weights = weights_sparse_gauss(n_features, nnz=1000)
-intercept = 0.2
-features = sparse.rand(n_samples, n_features, density=sparsity, format='csr')
 
-simulator = SimuLogReg(weights, n_samples=n_samples, features=features,
-                       verbose=False, intercept=intercept)
-features, labels = simulator.simulate()
+simulate = True
+if simulate:
+    weights = weights_sparse_gauss(n_features, nnz=1000)
+    intercept = 0.2
+    features = sparse.rand(n_samples, n_features, density=sparsity, format='csr')
+
+    simulator = SimuLogReg(weights, n_samples=n_samples, features=features,
+                           verbose=False, intercept=intercept)
+    features, labels = simulator.simulate()
+
+else:
+    features, labels = fetch_tick_dataset("binary/kdd2010/kdd2010.trn.bz2")
+    print(features.shape)
 
 model = ModelLogReg(fit_intercept=False)
 model.fit(features, labels)
 prox = ProxL1(penalty_strength)
 svrg_step = 1. / model.get_lip_max()
 
-test_n_threads = [1, 2, 4]
-threads_ls = {1: '-', 2: '--', 4: ':'}
+test_n_threads = [1, 2, 4, 8]
+threads_ls = {1: '-', 2: '--', 4: ':', 8: '-'}
 
 fig, ax = plt.subplots(1, 1, figsize=(8, 4))
 
-classes = [_SAGADouble, _SAGADoubleA, _ASAGADouble, _ASAGADoubleA]
-class_names = ['Wild', 'Atomic $w$', 'Atomic $\\alpha$', 'Atomic $w$ and $\\alpha$']
+classes = [_SAGADouble, _SAGADoubleA, _ASAGADouble, _ASAGADoubleA, _ASAGADoubleRelax]
+class_names = ['Wild', 'Atomic $w$', 'Atomic $\\alpha$', 'Atomic $w$ and $\\alpha$',
+               'Atomic $\\alpha$ relax']
 
 for solver_class, solver_name in zip(classes, class_names):  # [SVRG, SAGA]):
     solver_list = []
     solver_labels = []
 
     for n_threads in test_n_threads:
-        solver = SAGA(step=svrg_step, seed=seed, max_iter=50,
+        solver = SAGA(step=svrg_step, seed=seed, max_iter=100,
                       verbose=False, n_threads=n_threads, tol=0,
                       record_every=3)
 

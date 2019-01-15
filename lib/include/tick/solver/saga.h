@@ -3,6 +3,7 @@
 
 // License: BSD 3 clause
 
+#include <atomic>
 #include "sto_solver.h"
 #include "tick/base_model/model_generalized_linear.h"
 
@@ -181,7 +182,10 @@ CEREAL_REGISTER_TYPE(SAGAFloat)
 
 
 
-template <class T, class K>
+template <class T, class K,
+    std::memory_order M=std::memory_order_seq_cst,
+    std::memory_order N=std::memory_order_seq_cst,
+    bool O=true>
 class DLL_PUBLIC AtomicSAGA : public TBaseSAGA<T, K, std::atomic<T>> {
   // Grants cereal access to default constructor/serialize functions
   friend class cereal::access;
@@ -196,10 +200,6 @@ class DLL_PUBLIC AtomicSAGA : public TBaseSAGA<T, K, std::atomic<T>> {
   using TBaseSAGA<T, K, std::atomic<T>>::gradients_average;
   using TBaseSAGA<T, K, std::atomic<T>>::gradients_memory;
 
- private:
-  bool load_before_atomic = true;
-  std::memory_order custom_memory_order = std::memory_order_seq_cst;
-
  public:
   AtomicSAGA() : AtomicSAGA(0, 0, RandType::unif, 0) {}
 
@@ -208,29 +208,10 @@ class DLL_PUBLIC AtomicSAGA : public TBaseSAGA<T, K, std::atomic<T>> {
 
   ~AtomicSAGA() {}
 
-  void set_memory_order(const int memory_order) {
-    switch (memory_order) {
-      case 0:
-        custom_memory_order = std::memory_order_relaxed;
-      case 1:
-        custom_memory_order = std::memory_order_acq_rel;
-      default:
-        custom_memory_order = std::memory_order_seq_cst;
-    }
-  }
-
-  void set_load_before_atomic(const bool load_before_atomic) {
-    this->load_before_atomic = load_before_atomic;
-  }
-
  protected:
   T update_gradient_memory(ulong i) override;
   void update_iterate_and_gradient_average(ulong j, T x_ij, T grad_factor_diff,
                                            T step_correction) override;
-
-  static std::shared_ptr<AtomicSAGA<T, K>> AS_NULL() {
-    return std::move(std::shared_ptr<AtomicSAGA<T, K>>(new AtomicSAGA<T, K>));
-  }
 };
 
 using ASAGA = AtomicSAGA<double, double>;
@@ -249,5 +230,41 @@ CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(AtomicSAGAFloat,
                                    cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(AtomicSAGAFloat)
 
+
+
+template <class T, class K,
+    std::memory_order M,
+    std::memory_order N>
+class DLL_PUBLIC AtomicSAGA<T, K, M, N, false> : public TBaseSAGA<T, K, std::atomic<T>> {
+  // Grants cereal access to default constructor/serialize functions
+  friend class cereal::access;
+
+ protected:
+  using TBaseSAGA<T, K, std::atomic<T>>::iterate;
+  using TBaseSAGA<T, K, std::atomic<T>>::model;
+  using TBaseSAGA<T, K, std::atomic<T>>::casted_prox;
+  using TBaseSAGA<T, K, std::atomic<T>>::step;
+
+ public:
+  using TBaseSAGA<T, K, std::atomic<T>>::gradients_average;
+  using TBaseSAGA<T, K, std::atomic<T>>::gradients_memory;
+
+ public:
+  AtomicSAGA() : AtomicSAGA(0, 0, RandType::unif, 0) {}
+
+  AtomicSAGA(ulong epoch_size, T tol, RandType rand_type, T step, int record_every = 1,
+             int seed = -1, int n_threads = 2);
+
+  ~AtomicSAGA() {}
+
+ protected:
+  T update_gradient_memory(ulong i) override;
+  void update_iterate_and_gradient_average(ulong j, T x_ij, T grad_factor_diff,
+                                           T step_correction) override;
+};
+
+
+using AtomicSAGARelax = AtomicSAGA<double, double, std::memory_order_relaxed, std::memory_order_relaxed>;
+using AtomicSAGANoLoad = AtomicSAGA<double, double, std::memory_order_seq_cst, std::memory_order_seq_cst, false>;
 
 #endif  // LIB_INCLUDE_TICK_SOLVER_SAGA_H_

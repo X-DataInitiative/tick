@@ -79,6 +79,7 @@ TEST(SAGA, test_saga_sparse_convergence) {
   EXPECT_LE(objective300 - objective30, 0.);
   EXPECT_LE(objective30 - objective300, 0.1);
 
+  std::cout << "ASAGA" << std::endl;
   ASAGA asaga(n_samples, 0, RandType::unif, model->get_lip_max() / 300, 50, 1309, 2);
   asaga.set_rand_max(n_samples);
   asaga.set_model(model);

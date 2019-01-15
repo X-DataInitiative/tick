@@ -34,7 +34,8 @@ typedef TSAGA<float, float> SAGAFloat;
 TICK_MAKE_TEMPLATED_PICKLABLE(TSAGA, SAGAFloat, %arg(float, float));
 
 
-template <class T, class K>
+template <class T, class K, std::memory_order M=std::memory_order_seq_cst,
+           std::memory_order N=std::memory_order_seq_cst, bool O=true>
 class AtomicSAGA : public TStoSolver<T, K> {
  public:
     AtomicSAGA();
@@ -48,19 +49,23 @@ class AtomicSAGA : public TStoSolver<T, K> {
       int seed = -1,
       int n_threads = 2
     );
-
-    void set_memory_order(const int memory_order);
-    void set_load_before_atomic(const bool load_before_atomic);
 };
 
-%template(AtomicSAGADouble) AtomicSAGA<double, double>;
-typedef AtomicSAGA<double, double> AtomicSAGADouble;
-TICK_MAKE_TEMPLATED_PICKLABLE(AtomicSAGA, AtomicSAGADouble, %arg(double, double));
+%template(AtomicSAGAFloat) AtomicSAGA<float, float>;
+typedef AtomicSAGA<float, float> AtomicSAGAFloat;
+TICK_MAKE_TEMPLATED_PICKLABLE(AtomicSAGA, AtomicSAGAFloat, %arg(float, float));
 
 %template(AtomicSAGADoubleAtomicIterate) AtomicSAGA<double, std::atomic<double> >;
 typedef AtomicSAGA<double, std::atomic<double> > AtomicSAGADoubleAtomicIterate;
 TICK_MAKE_TEMPLATED_PICKLABLE(AtomicSAGA, AtomicSAGADoubleAtomicIterate, %arg(double, std::atomic<double>));
 
-%template(AtomicSAGAFloat) AtomicSAGA<float, float>;
-typedef AtomicSAGA<float, float> AtomicSAGAFloat;
-TICK_MAKE_TEMPLATED_PICKLABLE(AtomicSAGA, AtomicSAGAFloat, %arg(float, float));
+
+%template(AtomicSAGADouble) AtomicSAGA<double, double>;
+typedef AtomicSAGA<double, double> AtomicSAGADouble;
+TICK_MAKE_TEMPLATED_PICKLABLE(AtomicSAGA, AtomicSAGADouble, %arg(double, double));
+
+%template(AtomicSAGARelax) AtomicSAGA<double, double, std::memory_order_relaxed, std::memory_order_relaxed>;
+typedef AtomicSAGA<double, double, std::memory_order_relaxed, std::memory_order_relaxed> AtomicSAGARelax;
+
+%template(AtomicSAGANoLoad) AtomicSAGA<double, double, std::memory_order_seq_cst, std::memory_order_seq_cst, false>;
+typedef AtomicSAGA<double, double, std::memory_order_seq_cst, std::memory_order_seq_cst, false> AtomicSAGANoLoad;

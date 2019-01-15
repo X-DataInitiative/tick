@@ -21,8 +21,12 @@ To obtain good speedup in a relative short time example we have designed very
 sparse and ill-conditonned problem.
 """
 
+import sys
 from scipy import sparse
+import matplotlib
+# matplotlib.use('agg')
 import matplotlib.pyplot as plt
+
 from tick.plot import plot_history
 import numpy as np
 import pandas as pd
@@ -40,7 +44,9 @@ from tick.solver.build.solver import (
     SAGADouble as _SAGADouble,
     AtomicSAGADouble as _ASAGADouble,
     AtomicSAGADoubleAtomicIterate as _ASAGADoubleA,
-    SAGADoubleAtomicIterate as _SAGADoubleA
+    SAGADoubleAtomicIterate as _SAGADoubleA,
+    AtomicSAGARelax as _ASAGADoubleRelax,
+    AtomicSAGANoLoad as _ASAGADoubleNoLoad
 )
 
 
@@ -72,9 +78,10 @@ def build_saga_solver(solver_class, model, prox, step, seed, n_threads):
 seed = 1398
 np.random.seed(seed)
 
-n_samples = 400000
-n_features = 20000
-sparsity = 1e-4
+n_samples = 40000
+nnz = 20
+sparsity = 1e-1
+n_features = int(nnz / sparsity)
 penalty_strength = 1e-5
 
 weights = weights_sparse_gauss(n_features, nnz=1000)
@@ -90,46 +97,48 @@ model.fit(features, labels)
 prox = ProxL1(penalty_strength)
 svrg_step = 1. / model.get_lip_max()
 
-n_threads = 4
+n_threads = int(sys.argv[1])
+
+print('\n FOR {} THREADS'.format(n_threads))
 
 
 classes = [_SAGADouble, _SAGADoubleA, _ASAGADouble, _ASAGADoubleA]
 class_names = ['Wild', 'Atomic $w$', 'Atomic $\\alpha$', 'Atomic $w$ and $\\alpha$']
 
 
-solvers = []
-solver_names = []
-
-solvers += [build_saga_solver(_SAGADouble, model, prox, svrg_step, seed, n_threads)]
-solver_names += ['Wild']
-
-solvers += [build_saga_solver(_ASAGADoubleA, model, prox, svrg_step, seed, n_threads)]
-solver_names += ['Atomic $w$ and $\\alpha$']
-
-solver = build_saga_solver(_ASAGADouble, model, prox, svrg_step, seed, n_threads)
-solvers += [solver]
-solver_names += ['Atomic $\\alpha$']
-
-solver = build_saga_solver(_ASAGADouble, model, prox, svrg_step, seed, n_threads)
-solver._solver.set_memory_order(0)
-solvers += [solver]
-solver_names += ['Atomic $\\alpha$, relax']
-
-solver = build_saga_solver(_ASAGADouble, model, prox, svrg_step, seed, n_threads)
-solver._solver.set_memory_order(0)
-solver._solver.set_load_before_atomic(False)
-solvers += [solver]
-solver_names += ['Atomic $\\alpha$, relax, no load']
-
 df_infos = []
-for solver, solver_name in zip(solvers, solver_names):
-    for _ in range(10):
-        print(solver_name, _)
+for _ in range(3):
+    solvers = []
+    solver_names = []
+
+    solvers += [build_saga_solver(_SAGADouble, model, prox, svrg_step, seed, n_threads)]
+    solver_names += ['Wild']
+
+    solvers += [build_saga_solver(_ASAGADoubleA, model, prox, svrg_step, seed, n_threads)]
+    solver_names += ['Atomic $w$ and $\\alpha$']
+
+    solver = build_saga_solver(_ASAGADouble, model, prox, svrg_step, seed, n_threads)
+    solvers += [solver]
+    solver_names += ['Atomic $\\alpha$']
+
+    solver = build_saga_solver(_ASAGADoubleRelax, model, prox, svrg_step, seed, n_threads)
+    solvers += [solver]
+    solver_names += ['Atomic $\\alpha$, relax']
+
+    solver = build_saga_solver(_ASAGADoubleNoLoad, model, prox, svrg_step, seed, n_threads)
+    solvers += [solver]
+    solver_names += ['Atomic $\\alpha$, relax, no load']
+
+    for solver, solver_name in zip(solvers, solver_names):
         solver.solve()
+        print(solver_name.ljust(35), _, solver.history.last_values['time'])
         df_infos += [{'name': solver_name, 'time': solver.history.last_values['time']}]
+    print('-' * 45)
 
 df = pd.DataFrame(df_infos)
 
-sns.barplot(x="name", y="time", data=df)
+sns.barplot(x="name", y="time", data=df, ci='sd')
 
-plt.savefig('timings.png')
+plt.show()
+# df.to_csv('timings_{}_threads.csv'.format(n_threads))
+# plt.savefig('timings_{}_threads.png'.format(n_threads))
