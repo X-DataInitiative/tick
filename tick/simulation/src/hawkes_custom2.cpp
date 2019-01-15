@@ -147,15 +147,12 @@ void Hawkes_customType2::update_jump(int index) {
             current_num = 0;
             last_global_n = 0;
 
-            if(p_chg_at_0 > 0) {
-                srand( (unsigned)std::time(0) + Qty.size() * 1086 ); //generate the seed for random number;
-                double tmp = (double) std::rand()/RAND_MAX;
-                if(tmp < p_chg_at_0){
-                    //!terminate the simulation, becuase there is no order now
-                    //!set time large enough to terminate the simulation
-                    this->time = 1e10;
-                }
-            }
+            srand( (unsigned)std::time(0) + Qty.size() * 1086 ); //generate the seed for random number;
+            int tmp = (int) std::rand()/RAND_MAX;
+
+            current_num = tmp%(600 - 60) + 60;
+            ulong round = ceil(current_num / avg);  //round a number
+            last_global_n = (round > MaxN - 1) ? MaxN - 1 : round;
         }
 
         global_n.append1(last_global_n);
