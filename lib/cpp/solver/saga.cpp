@@ -135,7 +135,7 @@ void TBaseSAGA<T, K, L>::solve(int n_epochs) {
 
       // Record only on one thread
       if (n_thread == 0) {
-        TStoSolver<T, K>::t += epoch_size;
+        t += epoch_size;
 
         if ((last_record_epoch + epoch) == 1 || ((last_record_epoch + epoch) % record_every == 0)) {
           auto end = std::chrono::steady_clock::now();
