@@ -4,6 +4,14 @@
 #include "tick/base_model/model_labels_features.h"
 
 template <class T, class K>
+Array<T> init_from_array(Array<K> array_k){
+  Array<T> array_t(array_k.size());
+  array_t.init_to_zero();
+  array_t.mult_incr(array_k, 1);
+  return array_t;
+};
+
+template <class T, class K>
 TSVRG<T, K>::TSVRG(ulong epoch_size, T tol, RandType rand_type, T step,
                    int record_every, int seed, int n_threads,
                    SVRG_VarianceReductionMethod variance_reduction,
@@ -26,19 +34,19 @@ void TSVRG<T, K>::prepare_solve() {
   Array<T> previous_iterate;
   Array<T> previous_full_gradient;
   if (step_type == SVRG_StepType::BarzilaiBorwein && t > 1) {
-    previous_iterate = fixed_w;
+    previous_iterate = init_from_array<T, K>(fixed_w);
     previous_full_gradient = full_gradient;
   }
   // The point where we compute the full gradient for variance reduction is the
   // new iterate obtained at the previous epoch
-  next_iterate = iterate;
-  fixed_w = next_iterate;
+  next_iterate = init_from_array<T, K>(iterate);
+  fixed_w = iterate;
   // Allocation and computation of the full gradient
   full_gradient = Array<T>(iterate.size());
   model->grad(fixed_w, full_gradient);
 
   if (step_type == SVRG_StepType::BarzilaiBorwein && t > 1) {
-    Array<T> iterate_diff = iterate;
+    Array<T> iterate_diff = init_from_array<T, K>(iterate);
     iterate_diff.mult_incr(previous_iterate, -1);
     Array<T> full_gradient_diff = full_gradient;
     full_gradient_diff.mult_incr(previous_full_gradient, -1);
@@ -112,7 +120,7 @@ void TSVRG<T, K>::solve_dense() {
     }
   }
   if (variance_reduction == SVRG_VarianceReductionMethod::Last) {
-    next_iterate = iterate;
+    next_iterate = init_from_array<T, K>(iterate);
   }
   TStoSolver<T, K>::t += epoch_size;
 }
@@ -158,7 +166,7 @@ void TSVRG<T, K>::solve_sparse_proba_updates(bool use_intercept,
   }
 
   if (variance_reduction == SVRG_VarianceReductionMethod::Last) {
-    next_iterate = iterate;
+    next_iterate = init_from_array<T, K>(iterate);
   }
   TStoSolver<T, K>::t += epoch_size;
 }
@@ -166,7 +174,7 @@ void TSVRG<T, K>::solve_sparse_proba_updates(bool use_intercept,
 template <class T, class K>
 void TSVRG<T, K>::set_starting_iterate(Array<T>& new_iterate) {
   TStoSolver<T, K>::set_starting_iterate(new_iterate);
-  next_iterate = iterate;
+  next_iterate = init_from_array<T, K>(iterate);
 }
 
 template <class T, class K>
@@ -181,7 +189,7 @@ void TSVRG<T, K>::dense_single_thread_solver(const ulong& next_i) {
   prox->call(iterate, step, iterate);
   if (variance_reduction == SVRG_VarianceReductionMethod::Random &&
       t == rand_index) {
-    next_iterate = iterate;
+    next_iterate = init_from_array<T, K>(iterate);
   }
   if (variance_reduction == SVRG_VarianceReductionMethod::Average) {
     next_iterate.mult_incr(iterate, 1.0 / epoch_size);
@@ -214,7 +222,7 @@ void TSVRG<T, K>::sparse_single_thread_solver(
       iterate[j] = casted_prox->call_single_with_index(
           iterate[j] - descent_direction, step * step_correction, j);
     else
-      iterate[j] -= descent_direction;
+      iterate[j] = iterate[j] - descent_direction;
   }
   // And let's not forget to update the intercept as well. It's updated at each
   // step, so no step-correction. Note that we call the prox, in order to be
@@ -227,13 +235,13 @@ void TSVRG<T, K>::sparse_single_thread_solver(
       iterate[n_features] = casted_prox->call_single_with_index(
           iterate[n_features] - descent_direction, step, n_features);
     else
-      iterate[n_features] -= descent_direction;
+      iterate[n_features] = iterate[n_features] - descent_direction;
   }
   // Note that the average option for variance reduction with sparse data is a
   // very bad idea, but this is caught in the python class
   if (variance_reduction == SVRG_VarianceReductionMethod::Random &&
       t == rand_index) {
-    next_iterate = iterate;
+    next_iterate = init_from_array<T, K>(iterate);
   }
   if (variance_reduction == SVRG_VarianceReductionMethod::Average) {
     next_iterate.mult_incr(iterate, 1.0 / epoch_size);
@@ -242,3 +250,5 @@ void TSVRG<T, K>::sparse_single_thread_solver(
 
 template class DLL_PUBLIC TSVRG<double>;
 template class DLL_PUBLIC TSVRG<float>;
+
+template class DLL_PUBLIC TSVRG<double, std::atomic<double>>;

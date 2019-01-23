@@ -33,7 +33,7 @@ class DLL_PUBLIC TSVRG : public TStoSolver<T, K> {
   SVRG_VarianceReductionMethod variance_reduction;
 
   Array<T> full_gradient;
-  Array<T> fixed_w;
+  Array<K> fixed_w;
   Array<T> grad_i;
   Array<T> grad_i_fixed_w;
   Array<T> next_iterate;
@@ -137,6 +137,8 @@ using SVRGDouble = TSVRG<double>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SVRGDouble,
                                    cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(SVRGDouble)
+
+using SVRGDoubleAtomicIterate = TSVRG<double, std::atomic<double>>;
 
 using SVRGFloat = TSVRG<float>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SVRGFloat,

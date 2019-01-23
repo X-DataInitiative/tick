@@ -46,6 +46,9 @@ class TSVRG : public TStoSolver<T, K> {
 typedef TSVRG<double> SVRGDouble;
 TICK_MAKE_TEMPLATED_PICKLABLE(TSVRG, SVRGDouble, double);
 
+%template(SVRGDoubleAtomicIterate) TSVRG<double, std::atomic<double> >;
+typedef TSVRG<double, std::atomic<double>> SVRGDoubleAtomicIterate;
+
 %template(SVRGFloat) TSVRG<float>;
 typedef TSVRG<float> SVRGFloat;
 TICK_MAKE_TEMPLATED_PICKLABLE(TSVRG, SVRGFloat , float);
