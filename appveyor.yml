@@ -37,6 +37,7 @@ build_script:
   - cp "C:\Program Files (x86)\Windows Kits\10\bin\x64\rc.exe" %CD%
   - cp %CD%\rc.exe %CD%\lib
   - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
+  - cl # print compiler version
   # doesnt exist for somereason?
   - mkdir -p "C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\cppwinrt"
 
