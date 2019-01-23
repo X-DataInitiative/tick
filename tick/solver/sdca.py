@@ -157,15 +157,16 @@ class SDCA(SolverFirstOrderSto):
       coordinate ascent for regularized loss minimization, *ICML 2014*
     """
 
-    _attrinfos = {'l_l2sq': {'cpp_setter': 'set_l_l2sq'}}
+    _attrinfos = {'l_l2sq': {'cpp_setter': 'set_l_l2sq'}, "n_threads": {}}
 
     def __init__(self, l_l2sq: float, epoch_size: int = None,
                  rand_type: str = 'unif', tol: float = 1e-10,
                  max_iter: int = 10, verbose: bool = True,
                  print_every: int = 1, record_every: int = 1, seed: int = -1,
-                 batch_size=1):
+                 batch_size=1, n_threads=1):
 
         self.batch_size = batch_size
+        self.n_threads = n_threads
         self.l_l2sq = l_l2sq
         SolverFirstOrderSto.__init__(
             self, step=0, epoch_size=epoch_size, rand_type=rand_type, tol=tol,
@@ -184,7 +185,7 @@ class SDCA(SolverFirstOrderSto):
         self._set(
             '_solver',
             solver_class(self.l_l2sq, epoch_size, self.tol, self._rand_type,
-                         self.record_every, self.seed))
+                         self.record_every, self.seed, self.n_threads))
 
     def objective(self, coeffs, loss: float = None):
         """Compute the objective minimized by the solver at ``coeffs``

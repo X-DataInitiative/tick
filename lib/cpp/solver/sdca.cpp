@@ -401,8 +401,8 @@ void TBaseSDCA<T, K>::tmp_iterate_to_iterate(Array<K> &iterate) {
 
 
 template <class T>
-TSDCA<T>::TSDCA(T l_l2sq, ulong epoch_size, T tol, RandType rand_type, int record_every, int seed)
-    : TBaseSDCA<T, T>(l_l2sq, epoch_size, tol, rand_type, record_every, seed) {
+TSDCA<T>::TSDCA(T l_l2sq, ulong epoch_size, T tol, RandType rand_type, int record_every, int seed, int n_threads)
+    : TBaseSDCA<T, T>(l_l2sq, epoch_size, tol, rand_type, record_every, seed, n_threads) {
 }
 
 
@@ -471,7 +471,8 @@ void TAtomicSDCA<T>::update_delta_dual_i(const ulong i, const double delta_dual_
                                          const double _1_over_lbda_n) {
 
   T dual_i = dual_vector[i].load();
-  while (!dual_vector[i].compare_exchange_weak(dual_i, dual_i + delta_dual_i)) {}
+  while (!dual_vector[i].compare_exchange_weak(
+      dual_i, dual_i + delta_dual_i, std::memory_order_relaxed)) {}
 
   // Keep the last ascent seen for warm-starting sdca_dual_min_i
   delta[i] = delta_dual_i;
@@ -487,14 +488,16 @@ void TAtomicSDCA<T>::update_delta_dual_i(const ulong i, const double delta_dual_
     T tmp_iterate_j = tmp_primal_vector[j].load();
     while (!tmp_primal_vector[j].compare_exchange_weak(
         tmp_iterate_j,
-        tmp_iterate_j + (delta_dual_i * feature_ij * _1_over_lbda_n))) {
+        tmp_iterate_j + (delta_dual_i * feature_ij * _1_over_lbda_n),
+            std::memory_order_relaxed)) {
     }
   }
   if (model->use_intercept()) {
     T tmp_iterate_j = tmp_primal_vector[model->get_n_features()];
     while (!tmp_primal_vector[model->get_n_features()].compare_exchange_weak(
         tmp_iterate_j,
-        tmp_iterate_j + (delta_dual_i * _1_over_lbda_n))) {
+        tmp_iterate_j + (delta_dual_i * _1_over_lbda_n),
+        std::memory_order_relaxed)) {
     }
   }
 }

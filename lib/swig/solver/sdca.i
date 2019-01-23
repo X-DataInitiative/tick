@@ -123,7 +123,8 @@ class TSDCA : public TBaseSDCA<T, T> {
  public:
   TSDCA();
   TSDCA(T l_l2sq, ulong epoch_size, T tol,
-        RandType rand_type, int record_every = 1, int seed = -1);
+        RandType rand_type, int record_every = 1, int seed = -1,
+        int n_threads = 1);
 };
 
 %template(SDCADouble) TSDCA<double>;

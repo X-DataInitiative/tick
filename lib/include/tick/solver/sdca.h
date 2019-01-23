@@ -158,7 +158,8 @@ class DLL_PUBLIC TSDCA : public TBaseSDCA<T, T> {
   TSDCA() : TSDCA<T>(0, 0, 0) {}
 
   explicit TSDCA(T l_l2sq, ulong epoch_size, T tol = 0.,
-      RandType rand_type = RandType::unif,  int record_every = 1, int seed = -1);
+      RandType rand_type = RandType::unif,  int record_every = 1, int seed = -1,
+      int n_threads = 1);
 
  protected:
   void update_delta_dual_i(ulong i, double delta_dual_i,
