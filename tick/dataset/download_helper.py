@@ -22,28 +22,7 @@ BASE_URL = ("https://raw.githubusercontent.com/X-DataInitiative/tick-datasets"
             "/master/%s")
 
 
-def download_tick_dataset(dataset_path, data_home=None, verbose=True):
-    """Downloads dataset from tick_datasets github repository and store it
-    locally
-
-    Parameters
-    ----------
-    dataset_path : `str`
-        Dataset path on tick_datasets github repository. For example
-        "binary/adult/adult.trn.bz2" for adult train dataset
-
-    data_home : `str`, optional, default=None
-        Specify a download and cache folder for the datasets. If None,
-        all tick datasets are stored in '~/tick_datasets' subfolders.
-
-    verbose : `bool`, default=True
-        If True, download progress bar will be printed
-
-    Returns
-    -------
-    cache_path : `str`
-        File path of the downloaded data
-    """
+def download_dataset(dataset_url, dataset_path, data_home=None, verbose=True):
     data_home = get_data_home(data_home)
     cache_path = os.path.join(data_home, dataset_path)
     cache_dir = os.path.dirname(cache_path)
@@ -51,20 +30,22 @@ def download_tick_dataset(dataset_path, data_home=None, verbose=True):
     if not os.path.exists(cache_dir):
         os.makedirs(cache_dir)
 
-    file_url = BASE_URL % dataset_path
     if verbose:
-        logger.warning("Downloading dataset from %s", file_url)
-    opener = urlopen(file_url)
+        logger.warning("Downloading dataset from %s", dataset_url)
+    opener = urlopen(dataset_url)
     chunk_size = 4096
     with open(cache_path, 'wb') as f:
         n_chunks = 0
         file_size = opener.length
+        last_percent = -1
         while True:
             data = opener.read(chunk_size)
             if data:
                 percent = chunk_size * n_chunks / file_size
                 if verbose:
-                    progress_bar(percent, length=file_size)
+                    progress_bar(percent, length=file_size,
+                                 last_progress=last_percent)
+                    last_percent = percent
                 f.write(data)
                 n_chunks += 1
             else:
@@ -73,6 +54,30 @@ def download_tick_dataset(dataset_path, data_home=None, verbose=True):
                 break
 
     return cache_path
+
+
+def download_tick_dataset(dataset_path, data_home=None, verbose=True):
+    """Downloads dataset from tick_datasets github repository and store it
+    locally
+    Parameters
+    ----------
+    dataset_path : `str`
+        Dataset path on tick_datasets github repository. For example
+        "binary/adult/adult.trn.bz2" for adult train dataset
+    data_home : `str`, optional, default=None
+        Specify a download and cache folder for the datasets. If None
+        and not configured with TICK_DATASETS environement variable
+        all tick datasets are stored in '~/tick_datasets' subfolders.
+    verbose : `bool`, default=True
+        If True, download progress bar will be printed
+    Returns
+    -------
+    cache_path : `str`
+        File path of the downloaded data
+    """
+    dataset_url = BASE_URL % dataset_path
+    download_dataset(dataset_url, dataset_path, data_home=data_home,
+                     verbose=verbose)
 
 
 def fetch_tick_dataset(dataset_path, data_home=None, verbose=True):
