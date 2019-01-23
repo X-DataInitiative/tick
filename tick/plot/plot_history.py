@@ -5,6 +5,7 @@ import numpy as np
 
 from tick.base.learner import LearnerOptim
 from tick.plot.plot_utilities import get_plot_color
+from tick.solver import History
 from tick.solver.base import Solver
 
 
@@ -13,7 +14,10 @@ def extract_history(solvers, x, y, given_labels):
     y_arrays = []
     labels = []
     for i, solver in enumerate(solvers):
-        if isinstance(solver, LearnerOptim):
+        if isinstance(solver, History):
+            history = solver
+            label = history.name
+        elif isinstance(solver, LearnerOptim):
             history = solver._solver_obj.history
             label = solver._solver_obj.name
         elif isinstance(solver, Solver):
