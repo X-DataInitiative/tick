@@ -85,6 +85,14 @@ class ProxL2Sq(Prox):
             return prox_class(self.strength, self.range[0], self.range[1],
                               self.positive)
 
+    def _get_params_set(self):
+        """Get the set of parameters
+        """
+        return {*Prox._get_params_set(self), 'strength', 'range'}
+
+    @property
+    def _AtomicClass(self):
+        return AtomicProxL2Sq
 
 from .build.prox import ProxL2SqAtomicDouble as _ProxL2SqAtomicDouble
 from .build.prox import ProxL2SqAtomicFloat as _ProxL2SqAtomicFloat
