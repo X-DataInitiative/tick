@@ -33,6 +33,8 @@
 
 %shared_ptr(TProxL2Sq<double, double>);
 %shared_ptr(TProxL2Sq<float, float>);
+%shared_ptr(TProxL2Sq<double, std::atomic<double>>);
+%shared_ptr(TProxL2Sq<float, std::atomic<float>>);
 %shared_ptr(ProxL2Sq);
 
 %shared_ptr(TProxL1<double, double>);
