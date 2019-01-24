@@ -84,3 +84,17 @@ class ProxL2Sq(Prox):
         else:
             return prox_class(self.strength, self.range[0], self.range[1],
                               self.positive)
+
+
+from .build.prox import ProxL2SqAtomicDouble as _ProxL2SqAtomicDouble
+from .build.prox import ProxL2SqAtomicFloat as _ProxL2SqAtomicFloat
+
+
+class AtomicProxL2Sq(ProxL2Sq):
+    _cpp_class_dtype_map = {
+        np.dtype('float32'): _ProxL2SqAtomicFloat,
+        np.dtype('float64'): _ProxL2SqAtomicDouble
+    }
+
+    def value(self, coeffs):
+        return self._non_atomic_prox.value(coeffs)

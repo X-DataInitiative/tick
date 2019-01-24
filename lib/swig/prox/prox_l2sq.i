@@ -26,3 +26,9 @@ TICK_MAKE_TEMPLATED_PICKLABLE(TProxL2Sq, ProxL2SqDouble , double);
 %template(ProxL2SqFloat) TProxL2Sq<float, float>;
 typedef TProxL2Sq<float, float> ProxL2SqFloat;
 TICK_MAKE_TEMPLATED_PICKLABLE(TProxL2Sq, ProxL2SqFloat , float);
+
+%template(ProxL2SqAtomicDouble) TProxL2Sq<double, std::atomic<double>>;
+typedef TProxL2Sq<double, std::atomic<double>> ProxL2SqAtomicDouble;
+
+%template(ProxL2SqAtomicFloat) TProxL2Sq<float, std::atomic<float>>;
+typedef TProxL2Sq<float, std::atomic<float>> ProxL2SqAtomicFloat;
