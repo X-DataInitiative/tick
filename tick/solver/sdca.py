@@ -282,14 +282,13 @@ class AtomicSDCA(SDCA):
                  max_iter: int = 10, verbose: bool = True,
                  print_every: int = 1, record_every: int = 1, seed: int = -1,
                  n_threads=2, batch_size=1):
-        self.n_threads = n_threads
         self.batch_size = batch_size
 
         SDCA.__init__(self, l_l2sq, epoch_size=epoch_size,
                       rand_type=rand_type, tol=tol,
                       max_iter=max_iter, verbose=verbose,
                       print_every=print_every, record_every=record_every,
-                      seed=seed, batch_size=batch_size)
+                      seed=seed, batch_size=batch_size, n_threads=n_threads)
 
     def set_model(self, model):
         self._na_model = model
