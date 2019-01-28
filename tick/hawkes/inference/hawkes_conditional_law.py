@@ -862,7 +862,7 @@ class HawkesConditionalLaw(Base):
         self._phi_ijl = []
         self._norm_ijl = []
         self.kernels = []
-        self.kernels_norms = np.mat(np.zeros((self.n_nodes, self.n_nodes)))
+        self.kernels_norms = np.zeros((self.n_nodes, self.n_nodes))
 
         for i in range(0, self.n_nodes):
 
@@ -903,7 +903,7 @@ class HawkesConditionalLaw(Base):
         return V
 
     def _compute_M(self, n_index, n_quad, index_first, index_last, method):
-        M = np.mat(np.zeros((n_index * n_quad, n_index * n_quad)))
+        M = np.zeros((n_index * n_quad, n_index * n_quad))
         for index in range(index_first, index_last + 1):
             (x, j, l) = self._index2ijl[index]
             for index1 in range(index_first, index_last + 1):
@@ -1066,9 +1066,8 @@ class HawkesConditionalLaw(Base):
                 index += 1
 
     def _estimate_baseline(self):
-        M = np.mat(np.eye(self.n_nodes)) - self.kernels_norms
+        M = np.eye(self.n_nodes) - self.kernels_norms
         self.baseline = np.dot(M, self.mean_intensity)
-        self.baseline = list(np.array(self.baseline)[0, :])
 
     def _estimate_mark_functions(self):
         self.mark_functions = []

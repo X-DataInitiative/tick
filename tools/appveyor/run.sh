@@ -8,10 +8,10 @@ ROOT=$PWD
 
 /c/Python36-x64/python -m pip install --upgrade pip
 
-cat appveyor/pip/numpy/numpy-1.14.0+mkl-cp36* > appveyor/pip/numpy-1.14.0+mkl-cp36-cp36m-win_amd64.whl
-/c/Python36-x64/Scripts/pip install appveyor/pip/numpy-1.14.0+mkl-cp36-cp36m-win_amd64.whl
-/c/Python36-x64/Scripts/pip install appveyor/pip/numpydoc-0.7.0-py2.py3-none-any.whl
-/c/Python36-x64/Scripts/pip install appveyor/pip/scipy-1.0.0-cp36-cp36m-win_amd64.whl
+cat appveyor/pip/numpy/numpy-1.16.0+mkl-cp36* > appveyor/pip/numpy-1.16.0+mkl-cp36-cp36m-win_amd64.whl
+/c/Python36-x64/Scripts/pip install appveyor/pip/numpy-1.16.0+mkl-cp36-cp36m-win_amd64.whl
+/c/Python36-x64/Scripts/pip install appveyor/pip/numpydoc-0.8.0-py2.py3-none-any.whl
+/c/Python36-x64/Scripts/pip install appveyor/pip/scipy-1.2.0-cp36-cp36m-win_amd64.whl
 /c/Python36-x64/Scripts/pip install -r requirements.txt
 /c/Python36-x64/Scripts/pip install tensorflow
 
