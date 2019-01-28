@@ -20,6 +20,8 @@ have been introduced in
 To obtain good speedup in a relative short time example we have designed very
 sparse and ill-conditonned problem.
 """
+import itertools
+
 import scipy
 
 from scipy import sparse
@@ -63,17 +65,20 @@ data_dir = os.path.join("/".join(__file__.split('/')[:-1]),
                         'saved_solvers')
 
 
-def find_next_folder_name(file_prefix):
+def find_next_folder_name(file_prefix, append=False):
     import os
     os.makedirs(data_dir, exist_ok=True)
 
     i = 0
-    filename = os.path.join(data_dir, "{}_{:03}".format(file_prefix, i))
-    while os.path.exists(filename):
+    folder_name = os.path.join(data_dir, "{}_{:03}".format(file_prefix, i))
+    while os.path.exists(folder_name):
         i += 1
-        filename = os.path.join(data_dir, "{}_{:03}".format(file_prefix, i))
+        folder_name = os.path.join(data_dir, "{}_{:03}".format(file_prefix, i))
 
-    return filename
+    if append:
+        i -= 1
+        folder_name = os.path.join(data_dir, "{}_{:03}".format(file_prefix, i))
+    return folder_name
 
 
 def find_last_folder_name(file_prefix):
@@ -240,7 +245,7 @@ def create_solver(solver_class, model, prox, **kwargs):
     return solver
 
 
-def train_model(file_prefix, features, labels, specification):
+def train_model(file_prefix, features, labels, specification, append=False):
     seed = 4320932
     penalty_strength = compute_l_l2sq(features, labels)  # 1e-5
     print('penalty_strength', penalty_strength)
@@ -253,7 +258,7 @@ def train_model(file_prefix, features, labels, specification):
     solver_kwargs = specification['solver_kwargs']
     solver_kwargs.setdefault('max_iter', 10)
 
-    folder_name = find_next_folder_name(file_prefix)
+    folder_name = find_next_folder_name(file_prefix, append=append)
     for solver_class in classes:
         solver_name = class_names[solver_class]
         print(solver_name)
@@ -269,9 +274,9 @@ def train_model(file_prefix, features, labels, specification):
 
             solver_label = '{} {}'.format(solver_name, n_threads)
 
-        serialize_history(solver.history, solver_class, solver_label,
-                          solver_name, n_threads,
-                          folder_name, specification)
+            serialize_history(solver.history, solver_class, solver_label,
+                              solver_name, n_threads,
+                              folder_name, specification)
 
 
 def plot_histories(file_prefix, ax, specification):
@@ -300,10 +305,68 @@ def plot_histories(file_prefix, ax, specification):
     ax.set_title(' '.join(file_prefix.split('_')))
 
 
+def plot_speedup(file_prefix, ax):
+    histories, solver_labels, solver_names, n_threads_used = \
+        load_histories(file_prefix)
+
+    solver_names_with_threads = [
+        (solver_name, n_threads, index)
+        for index, (solver_name, n_threads)
+        in enumerate(zip(solver_names, n_threads_used))]
+
+    print(solver_names_with_threads)
+
+    for key, group in itertools.groupby(solver_names_with_threads,
+                                        lambda x: x[0]):
+        group = list(group)
+        group.sort(key=lambda g: g[1])
+
+        group_histories = []
+        group_n_threads = []
+        for _, _, index in group:
+            # print(solver_names[index], n_threads_used[index])
+            group_histories += [histories[index]]
+            group_n_threads += [n_threads_used[index]]
+            print('group_n_threads', group_n_threads)
+
+        solver_objectives = np.array([
+            history.values['obj'] for history in group_histories])
+
+        dist_solver_objectives = solver_objectives - solver_objectives.min()
+
+        # ax.plot([test_n_threads[0], test_n_threads[-1]], [1, test_n_threads[-1]],
+        #         ls='--', lw=1, c='black')
+
+        for target_precision in [1e-6]:
+            target_indexes = [
+                np.argwhere(dist_solver_objectives[i] < target_precision)[0][0]
+                if dist_solver_objectives[i].min() < target_precision
+                else np.nan
+                for i in range(len(dist_solver_objectives))
+            ]
+            print(target_precision, target_indexes)
+
+            target_times = np.array([
+                history.values['time'][index]
+                if not np.isnan(index)
+                else np.nan
+                for index, history in zip(target_indexes, group_histories)])
+
+            time_one = target_times[0]
+            y = time_one / target_times
+            ax.plot(np.array(group_n_threads)[~np.isnan(target_times)],
+                    y[~np.isnan(target_times)], marker='x',
+                    label=key)
+            ax.set_xlabel('number of cores 2')
+            ax.set_ylabel('speedup')
+            # ax.set_title(solver_name)
+
+        ax.legend()
+
 specifications = {
     'synthetic': {
         'dataset_kwargs': {
-            'n_samples': 20000,
+            'n_samples': 100000,
             'sparsity': 1e-2,
             'nnz': 50,
         },
@@ -311,7 +374,7 @@ specifications = {
             'max_iter': 20,
             'record_every': 2,
         },
-        'test_n_threads': [6],
+        'test_n_threads': [3],
     },
     'rcv1': {
         'solver_kwargs': {
@@ -336,7 +399,7 @@ class_names = {
 }
 
 class_series = {
-    'SVRG': [_SVRGDouble, _SVRGDoubleA],
+    'SVRG': [_SVRGDouble],
     'SAGA': [_SAGADouble, _SAGADoubleA, _ASAGADouble, _ASAGADoubleA],
     'SDCA': [_SDCADouble, _ASDCADouble]
 }
@@ -357,13 +420,15 @@ if __name__ == '__main__':
 
         train = False
         if train:
-            features, labels = load_dataset(dataset_name,
-                                            specification.get('dataset_kwargs', {}))
+            features, labels = load_dataset(
+                dataset_name,
+                specification.get('dataset_kwargs', {}))
             # keep = 1000
             # features, labels = features[:keep], labels[:keep]
             print(features.shape, features.nnz / np.prod(features.shape))
 
-            train_model(file_prefix, features, labels, specification)
+            train_model(file_prefix, features, labels, specification,
+                        append=True)
 
         fig, ax = plt.subplots(1, 1, figsize=(8, 4))
 
@@ -375,7 +440,12 @@ if __name__ == '__main__':
         figures_folder = os.path.join("/".join(__file__.split('/')[:-1]), 'figures')
         os.makedirs(figures_folder, exist_ok=True)
         figure_path = os.path.join(figures_folder,
-                                   '{}.png'.format(file_prefix))
+                                   '{}_histories.png'.format(file_prefix))
         print(figure_path)
         plt.savefig(figure_path, dpi=100)
 
+        plot_speedup(file_prefix, ax)
+        figure_path = os.path.join(figures_folder,
+                                   '{}_speedup.png'.format(file_prefix))
+        print(figure_path)
+        plt.savefig(figure_path, dpi=100)
