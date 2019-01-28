@@ -23,6 +23,8 @@ sparse and ill-conditonned problem.
 import scipy
 
 from scipy import sparse
+import matplotlib
+matplotlib.use('agg')
 import matplotlib.pyplot as plt
 
 from tick.dataset import fetch_tick_dataset
@@ -33,12 +35,13 @@ from tick.linear_model import SimuLogReg, ModelLogReg
 
 from tick.simulation import weights_sparse_gauss
 from tick.solver import SVRG, SAGA, SDCA
-from tick.prox import ProxElasticNet, ProxL1, ProxZero
+from tick.prox import ProxElasticNet, ProxL1, ProxL2Sq, ProxZero
 
 from collections import OrderedDict
 
 from tick.linear_model.build.linear_model import ModelLogRegAtomicDouble
 from tick.prox.build.prox import ProxL1AtomicDouble
+from tick.prox.build.prox import ProxL2SqAtomicDouble
 
 from tick.solver.build.solver import (
     SAGADouble as _SAGADouble,
@@ -92,6 +95,8 @@ def serialize_history(solver_list, solver_labels, solver_names,
     # delete space consumming iterates
     for history in histories:
         if 'x' in history.values.keys():
+            # for i, x in enumerate(history.values['x']):
+            #    print(i, x)
             del history.values['x']
 
     file_name = find_next_filename(file_prefix)
@@ -122,6 +127,7 @@ def compute_l_l2sq(features, labels):
     # return 1. / np.sqrt(len(labels))
     n = len(labels)
     norms = np.power(scipy.sparse.linalg.norm(features, axis=1), 2)
+    norms = scipy.sparse.linalg.norm(features, axis=1)
     mean_features_norm = np.mean(norms)
 
     return mean_features_norm / n
@@ -165,6 +171,7 @@ def load_dataset(dataset_name, specification):
         # originally rcv1 is multiclass classification but this class is
         # selected in 47% of cases
         labels = (rcv1.target[:, 33] == 1).toarray().reshape(-1).astype(float)
+        labels = labels * 2 - 1
 
     elif dataset_name.startswith('url'):
         n_days = int(dataset_name.split('_')[1])
@@ -230,9 +237,8 @@ def train_model(file_prefix, features, labels, specification):
 
     model = ModelLogReg(fit_intercept=False)
     model.fit(features, labels)
-    prox = ProxL1(penalty_strength)
-
-    test_n_threads = [1, 2, 4]
+    prox = ProxL2Sq(penalty_strength)
+    test_n_threads = specification.get('test_n_threads', [1, 2, 4])
 
     solver_list = []
     solver_labels = []
@@ -268,8 +274,9 @@ def plot_histories(file_prefix, ax, specification):
     histories, solver_labels, solver_names, n_threads_used = \
         load_history(file_prefix)
 
-    threads_ls = {1: '-', 2: '--', 4: ':', 8: '-'}
+    threads_ls = {1: '-', 2: '--', 4: ':', 8: '-', 16:'--'}
 
+    print(histories[0].values['obj'])
     plot_history(histories, dist_min=True, log_scale=True,
                  labels=solver_labels, ax=ax, x='time')
 
@@ -279,7 +286,7 @@ def plot_histories(file_prefix, ax, specification):
                                             n_threads_used):
         color_index = ordered_set_of_solver_names.index(solver_name)
         line.set_color('C{}'.format(color_index))
-        line.set_linestyle(threads_ls[n_threads])
+        line.set_linestyle(threads_ls.get(n_threads, '-'))
 
     ax.set_ylabel('log distance to optimal objective', fontsize=14)
 
@@ -299,13 +306,15 @@ specifications = {
         'solver_kwargs': {
             'max_iter': 20,
             'record_every': 2,
-        }
+        },
+        'test_n_threads': [12],
     },
     'rcv1': {
         'solver_kwargs': {
-            'max_iter': 100,
-            'record_every': 3,
-        }
+            'max_iter': 60,
+            'record_every': 2,
+        },
+        'test_n_threads': [1, 4, 16],
     }
 }
 
@@ -325,7 +334,7 @@ class_names = {
 class_series = {
     'SVRG': [_SVRGDouble, _SVRGDoubleA],
     'SAGA': [_SAGADouble, _SAGADoubleA, _ASAGADouble, _ASAGADoubleA],
-    'SDCA': [_ASDCADouble, _SDCADouble]
+    'SDCA': [_SDCADouble, _ASDCADouble]
 }
 
 series = 'SVRG'
@@ -333,9 +342,10 @@ series = 'SVRG'
 if __name__ == '__main__':
 
     for series in ['SVRG', 'SAGA', 'SDCA']:
+        print('\n', series)
         classes = class_series[series]
 
-        dataset_name = 'synthetic'
+        dataset_name = 'rcv1'
 
         specification = specifications[dataset_name]
 
@@ -344,7 +354,9 @@ if __name__ == '__main__':
         train = True
         if train:
             features, labels = load_dataset(dataset_name,
-                                            specification['dataset_kwargs'])
+                                            specification.get('dataset_kwargs', {}))
+            # keep = 1000
+            # features, labels = features[:keep], labels[:keep]
             print(features.shape, features.nnz / np.prod(features.shape))
 
             train_model(file_prefix, features, labels, specification)
@@ -356,9 +368,10 @@ if __name__ == '__main__':
         # plt.ylim([1e-8, None])
         # plt.show()
 
-        os.makedirs('figures', exist_ok=True)
-        figure_path = os.path.join("/".join(__file__.split('/')[:-1]),
-                                   'figures',
+        figures_folder = os.path.join("/".join(__file__.split('/')[:-1]), 'figures')
+        os.makedirs(figures_folder, exist_ok=True)
+        figure_path = os.path.join(figures_folder,
                                    '{}.png'.format(file_prefix))
-        plt.savefig(figure_path, dpi=300)
+        print(figure_path)
+        plt.savefig(figure_path, dpi=100)
 
