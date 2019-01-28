@@ -42,9 +42,9 @@ int Rand::uniform_int(int a, int b) {
   return uniform_int_dist(generator, p);
 }
 
-ulong Rand::uniform_int(ulong a, ulong b) {
+ulong Rand::uniform_int(ulong a, ulong b, std::mt19937_64 * gen) {
   std::uniform_int_distribution<ulong>::param_type p(a, b);
-  return uniform_ulong_dist(generator, p);
+  return gen == nullptr? uniform_ulong_dist(generator, p) : uniform_ulong_dist(*gen, p);
 }
 
 double Rand::uniform() { return uniform_dist(generator); }

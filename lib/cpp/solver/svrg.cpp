@@ -102,12 +102,13 @@ void TSVRG<T, K>::solve_dense() {
   if (n_threads > 1) {
     std::vector<std::thread> threadsV;
     for (int i = 0; i < n_threads; i++) {
-      threadsV.emplace_back([=]() mutable -> void {
+      threadsV.emplace_back([=](int n_thread) mutable -> void {
+        std::mt19937_64 gen = get_generator(n_thread);
         for (ulong t = 0; t < (epoch_size / n_threads); ++t) {
-          ulong next_i(get_next_i());
+          ulong next_i(get_next_i(&gen));
           dense_single_thread_solver(next_i);
         }
-      });
+      }, i);
     }
     for (int i = 0; i < n_threads; i++) {
       threadsV[i].join();

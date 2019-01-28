@@ -29,10 +29,10 @@ void TStoSolver<T, K>::reset() {
 }
 
 template <class T, class K>
-ulong TStoSolver<T, K>::get_next_i() {
+ulong TStoSolver<T, K>::get_next_i(std::mt19937_64* gen) {
   ulong i = 0;
   if (rand_type == RandType::unif) {
-    i = rand_unif(rand_max - 1);
+    i = rand_unif(rand_max - 1, gen);
   } else if (rand_type == RandType::perm) {
     if (!permutation_ready) {
       shuffle();

@@ -18,6 +18,7 @@ class DLL_PUBLIC TSVRG : public TStoSolver<T, K> {
   using TStoSolver<T, K>::epoch_size;
   using TStoSolver<T, K>::get_next_i;
   using TStoSolver<T, K>::rand_unif;
+  using TStoSolver<T, K>::get_generator;
 
  public:
   using TStoSolver<T, K>::get_class_name;

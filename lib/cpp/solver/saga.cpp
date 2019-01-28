@@ -94,12 +94,14 @@ void TBaseSAGA<T, K, L>::solve(int n_epochs) {
     ulong thread_epoch_size = epoch_size / n_threads;
     thread_epoch_size += n_thread < (epoch_size % n_threads);
 
+    std::mt19937_64 gen = get_generator(n_thread);
     auto start = std::chrono::steady_clock::now();
 
     for (int epoch = 1; epoch < (n_epochs + 1); ++epoch) {
       for (ulong t = 0; t < thread_epoch_size; ++t) {
         // Get next sample index
-        ulong i = get_next_i();
+        ulong i = get_next_i(&gen);
+
         // Sparse features vector
         BaseArray<T> x_i = model->get_features(i);
 

@@ -28,6 +28,7 @@ class DLL_PUBLIC TBaseSAGA : public TStoSolver<T, K> {
   using TStoSolver<T, K>::save_history;
   using TStoSolver<T, K>::last_record_epoch;
   using TStoSolver<T, K>::last_record_time;
+  using TStoSolver<T, K>::get_generator;
 
  public:
   using TStoSolver<T, K>::set_model;

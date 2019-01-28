@@ -24,6 +24,7 @@ class DLL_PUBLIC TBaseSDCA : public TStoSolver<T, K> {
   using TStoSolver<T, K>::get_next_i;
   using TStoSolver<T, K>::epoch_size;
   using TStoSolver<T, K>::rand_max;
+  using TStoSolver<T, K>::get_generator;
 
   using TStoSolver<T, K>::save_history;
   using TStoSolver<T, K>::last_record_epoch;

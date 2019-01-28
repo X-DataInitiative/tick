@@ -78,11 +78,12 @@ void TBaseSDCA<T, K>::solve(int n_epochs) {
 
     auto start = std::chrono::steady_clock::now();
 
+    std::mt19937_64 gen = get_generator(n_thread);
     for (int epoch = 1; epoch < (n_epochs + 1); ++epoch) {
       for (ulong t = 0; t < thread_epoch_size; ++t) {
 
         // Pick i uniformly at random
-        ulong i = get_next_i();
+        ulong i = get_next_i(&gen);
         ulong feature_index = i;
         if (feature_index_map != nullptr) {
           feature_index = (*feature_index_map)[i];

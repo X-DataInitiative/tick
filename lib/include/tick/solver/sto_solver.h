@@ -130,7 +130,7 @@ class DLL_PUBLIC TStoSolver {
 
   virtual void reset();
 
-  ulong get_next_i();
+  ulong get_next_i(std::mt19937_64* gen= nullptr);
 
   void shuffle();
 
@@ -145,7 +145,19 @@ class DLL_PUBLIC TStoSolver {
   virtual void set_starting_iterate(Array<T> &new_iterate);
 
   // Returns a uniform integer in the set {0, ..., m - 1}
-  inline ulong rand_unif(ulong m) { return rand.uniform_int(ulong{0}, m); }
+  inline ulong rand_unif(ulong m, std::mt19937_64* gen=nullptr) { return rand.uniform_int(ulong{0}, m); }
+
+  std::mt19937_64 get_generator(int n_thread = 0) {
+    if (seed < 0) {
+      std::random_device r;
+      // A seed sequence generate random numbers evenly distributed from a given
+      // seed
+      std::seed_seq seed_seq{r(), r(), r(), r(), r(), r(), r(), r()};
+      return std::mt19937_64(seed_seq);
+    } else {
+      return std::mt19937_64(static_cast<uint>(seed + n_thread));
+    }
+  }
 
   inline T get_tol() const { return tol; }
 
