@@ -62,63 +62,73 @@ from tick.solver.sdca import AtomicSDCA
 data_dir = os.path.join("/".join(__file__.split('/')[:-1]),
                         'saved_solvers')
 
-def find_next_filename(file_prefix):
+
+def find_next_folder_name(file_prefix):
     import os
     os.makedirs(data_dir, exist_ok=True)
 
     i = 0
-    filename = os.path.join(data_dir, "{}_{}.pkl".format(file_prefix, i))
+    filename = os.path.join(data_dir, "{}_{:03}".format(file_prefix, i))
     while os.path.exists(filename):
         i += 1
-        filename = os.path.join(data_dir, "{}_{}.pkl".format(file_prefix, i))
+        filename = os.path.join(data_dir, "{}_{:03}".format(file_prefix, i))
 
     return filename
 
 
-def find_last_filename(file_prefix):
+def find_last_folder_name(file_prefix):
     import re
     import os
 
-    file_names = []
-    file_regex = "{}_\d+.pkl".format(file_prefix)
-    for file_name in os.listdir(data_dir):
-        if re.match(file_regex, file_name):
-            file_names += [os.path.join(data_dir, file_name)]
-    file_names.sort()
-    return file_names[-1]
+    folder_names = []
+    file_regex = "^{}_\d+$".format(file_prefix)
+    for folder_name in os.listdir(data_dir):
+        folder_path = os.path.join(data_dir, folder_name)
+        if re.match(file_regex, folder_name) and os.path.isdir(folder_path):
+            folder_names += [folder_path]
+    folder_names.sort()
+    return folder_names[-1]
 
 
-def serialize_history(solver_list, solver_labels, solver_names,
-                      n_threads_used, file_prefix, specification):
+def serialize_history(history, solver_class, solver_label, solver_name,
+                      n_threads, folder_name, specification):
     import pickle
-    histories = [solver.history for solver in solver_list]
     # delete space consumming iterates
-    for history in histories:
-        if 'x' in history.values.keys():
-            # for i, x in enumerate(history.values['x']):
-            #    print(i, x)
-            del history.values['x']
+    if 'x' in history.values.keys():
+        del history.values['x']
 
-    file_name = find_next_filename(file_prefix)
+    os.makedirs(folder_name, exist_ok=True)
+    file_name = os.path.join(folder_name,
+                             '{}_{}_threads'.format(solver_class.__name__, n_threads))
+
     with open(file_name, 'wb') as output_file:
-        pickle.dump(dict(histories=histories, solver_labels=solver_labels,
-                         solver_names=solver_names,
-                         n_threads_used=n_threads_used,
-                         specification=specification),
+        pickle.dump(dict(history=history, solver_label=solver_label,
+                         solver_name=solver_name, specification=specification,
+                         n_threads=n_threads),
                     output_file)
 
 
-def load_history(file_prefix):
+def load_histories(file_prefix):
     import pickle
-    file_name = find_last_filename(file_prefix)
+    folder_name = find_last_folder_name(file_prefix)
 
-    with open(file_name, 'rb') as input_file:
-        infos = pickle.load(input_file)
+    specification = None
+    histories, solver_labels, solver_names, n_threads_used = [], [], [], []
+    for file_name in os.listdir(folder_name):
+        with open(os.path.join(folder_name, file_name), 'rb') as input_file:
+            infos = pickle.load(input_file)
 
-    histories = infos['histories']
-    solver_labels = infos['solver_labels']
-    solver_names = infos['solver_names']
-    n_threads_used = infos['n_threads_used']
+            histories += [infos['history']]
+            solver_labels += [infos['solver_label']]
+            solver_names += [infos['solver_name']]
+            n_threads_used += [infos['n_threads']]
+
+            # Ensure all histories share the same specifications
+            if specification is None:
+                specification = infos['specification']
+            else:
+                assert specification['dataset_kwargs'] == \
+                       infos['specification']['dataset_kwargs']
 
     return histories, solver_labels, solver_names, n_threads_used
 
@@ -240,15 +250,11 @@ def train_model(file_prefix, features, labels, specification):
     prox = ProxL2Sq(penalty_strength)
     test_n_threads = specification.get('test_n_threads', [1, 2, 4])
 
-    solver_list = []
-    solver_labels = []
-    solver_names = []
-    n_threads_used = []
-
     solver_kwargs = specification['solver_kwargs']
     solver_kwargs.setdefault('max_iter', 10)
 
-    for solver_class in classes:  # [SVRG, SAGA]):
+    folder_name = find_next_folder_name(file_prefix)
+    for solver_class in classes:
         solver_name = class_names[solver_class]
         print(solver_name)
 
@@ -261,18 +267,16 @@ def train_model(file_prefix, features, labels, specification):
 
             solver.solve()
 
-            solver_list += [solver]
-            solver_labels += ['{} {}'.format(solver_name, n_threads)]
-            solver_names += [solver_name]
-            n_threads_used += [n_threads]
+            solver_label = '{} {}'.format(solver_name, n_threads)
 
-    serialize_history(solver_list, solver_labels, solver_names, n_threads_used,
-                      file_prefix, specification)
+        serialize_history(solver.history, solver_class, solver_label,
+                          solver_name, n_threads,
+                          folder_name, specification)
 
 
 def plot_histories(file_prefix, ax, specification):
     histories, solver_labels, solver_names, n_threads_used = \
-        load_history(file_prefix)
+        load_histories(file_prefix)
 
     threads_ls = {1: '-', 2: '--', 4: ':', 8: '-', 16:'--'}
 
@@ -307,7 +311,7 @@ specifications = {
             'max_iter': 20,
             'record_every': 2,
         },
-        'test_n_threads': [12],
+        'test_n_threads': [6],
     },
     'rcv1': {
         'solver_kwargs': {
@@ -341,17 +345,17 @@ series = 'SVRG'
 
 if __name__ == '__main__':
 
-    for series in ['SVRG', 'SAGA', 'SDCA']:
+    for series in ['SVRG']:#, 'SAGA', 'SDCA']:
         print('\n', series)
         classes = class_series[series]
 
-        dataset_name = 'rcv1'
+        dataset_name = 'synthetic'
 
         specification = specifications[dataset_name]
 
         file_prefix = '{}_{}'.format(series, dataset_name)
 
-        train = True
+        train = False
         if train:
             features, labels = load_dataset(dataset_name,
                                             specification.get('dataset_kwargs', {}))
