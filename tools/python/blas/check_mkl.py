@@ -6,9 +6,9 @@
 ##
 # This file exists to check if the system
 #  being used to compile Tick has support
-#  for cblas - the "cblas.cpp" file attempts
-#  to include "cbas.h" - if it fails we are quite
-#  confident that cblas is not installed on the system
+#  for mkl - the "mkl.cpp" file attempts
+#  to include "mkl.h" - if it fails we are quite
+#  confident that mkl is not installed on the system
 ##
 
 """
@@ -26,21 +26,18 @@ from setuptools.command.install import install
 from setuptools.extension import Extension
 
 modules = [
-            Extension("blas", sources=["tools/python/blas/cblas.cpp"], language="c++",)
+            Extension("mkl", sources=["tools/python/blas/mkl.cpp"], language="c++",)
           ]
 
-class BLASBuild(build):
+class MKLBuild(build):
     def run(self):
         self.run_command('build_ext')
         build.run(self)
 
-setup(name="checkBLAS",
+setup(name="checkMKL",
       version='0.5.0.0',
       ext_modules=modules,
-      install_requires=['scipy',
-                        'numpydoc',
-                        'scikit-learn'],
       packages=find_packages(),
-      cmdclass={'build': BLASBuild
+      cmdclass={'build': MKLBuild
                }
      )
