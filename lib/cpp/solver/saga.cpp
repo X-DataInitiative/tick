@@ -326,3 +326,57 @@ void AtomicSAGA<T, K, M, N, false>::update_iterate_and_gradient_average(ulong j,
 
 template class DLL_PUBLIC AtomicSAGA<double, double, std::memory_order_relaxed, std::memory_order_relaxed>;
 template class DLL_PUBLIC AtomicSAGA<double, double, std::memory_order_seq_cst, std::memory_order_seq_cst, false>;
+
+
+
+
+template <class T, std::memory_order M, std::memory_order N>
+ExtraAtomicSAGA<T, M, N>::ExtraAtomicSAGA(ulong epoch_size, T tol,
+                                          RandType rand_type, T step, int record_every, int seed, int n_threads)
+    : TBaseSAGA<T, std::atomic<T>, std::atomic<T>>(epoch_size, tol, rand_type, step, record_every, seed,
+                                      n_threads) {}
+
+template <class T, std::memory_order M, std::memory_order N>
+T ExtraAtomicSAGA<T, M, N>::update_gradient_memory(ulong i){
+  T grad_i_factor = model->grad_i_factor(i, iterate);
+
+  T grad_i_factor_old = gradients_memory[i].load(M);
+
+  while (!gradients_memory[i].compare_exchange_weak(
+      grad_i_factor_old, grad_i_factor,
+      M, M)) {
+  }
+
+  return grad_i_factor - grad_i_factor_old;
+}
+
+template <class T, std::memory_order M, std::memory_order N>
+void ExtraAtomicSAGA<T, M, N>::update_iterate_and_gradient_average(ulong j, T x_ij, T grad_factor_diff,
+                                                                        T step_correction){
+  T grad_avg_j = gradients_average[j].load(M);
+
+  T delta_grad_avg_j = grad_factor_diff * x_ij / model->get_n_samples();
+
+  while (!gradients_average[j].compare_exchange_weak(
+      grad_avg_j,
+      grad_avg_j + delta_grad_avg_j,
+      M, M)) {
+  }
+
+  T delta_iterate = -step * (grad_factor_diff * x_ij + step_correction * grad_avg_j);
+  T iterate_j = iterate[j].load(N);
+
+  T prox_delta_iterate = casted_prox->call_single(
+      iterate_j + delta_iterate, step * step_correction) - iterate_j;
+
+  // Prox is separable, apply regularization on the current coordinate
+  while (!iterate[j].compare_exchange_weak(
+      iterate_j,
+      iterate_j + prox_delta_iterate,
+      N, N)) {
+  }
+}
+
+
+template class DLL_PUBLIC ExtraAtomicSAGA<double, std::memory_order_seq_cst, std::memory_order_seq_cst>;
+template class DLL_PUBLIC ExtraAtomicSAGA<double, std::memory_order_relaxed, std::memory_order_relaxed>;

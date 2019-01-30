@@ -69,3 +69,27 @@ typedef AtomicSAGA<double, double, std::memory_order_relaxed, std::memory_order_
 
 %template(AtomicSAGANoLoad) AtomicSAGA<double, double, std::memory_order_seq_cst, std::memory_order_seq_cst, false>;
 typedef AtomicSAGA<double, double, std::memory_order_seq_cst, std::memory_order_seq_cst, false> AtomicSAGANoLoad;
+
+
+template <class T, std::memory_order M=std::memory_order_seq_cst,
+           std::memory_order N=std::memory_order_seq_cst>
+class ExtraAtomicSAGA : public TStoSolver<T, std::atomic<T>> {
+ public:
+    ExtraAtomicSAGA();
+
+    ExtraAtomicSAGA(
+      unsigned long epoch_size,
+      T tol,
+      RandType rand_type,
+      T step,
+      int record_every = 1,
+      int seed = -1,
+      int n_threads = 2
+    );
+};
+
+%template(ExtraAtomicSAGADouble) ExtraAtomicSAGA<double>;
+typedef ExtraAtomicSAGA<double> ExtraAtomicSAGADouble;
+
+%template(ExtraAtomicSAGADoubleRelax) ExtraAtomicSAGA<double, std::memory_order_relaxed, std::memory_order_relaxed>;
+typedef ExtraAtomicSAGA<double, std::memory_order_relaxed, std::memory_order_relaxed> ExtraAtomicSAGADoubleRelax;

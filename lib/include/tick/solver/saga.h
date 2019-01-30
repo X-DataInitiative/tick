@@ -268,4 +268,39 @@ class DLL_PUBLIC AtomicSAGA<T, K, M, N, false> : public TBaseSAGA<T, K, std::ato
 using AtomicSAGARelax = AtomicSAGA<double, double, std::memory_order_relaxed, std::memory_order_relaxed>;
 using AtomicSAGANoLoad = AtomicSAGA<double, double, std::memory_order_seq_cst, std::memory_order_seq_cst, false>;
 
+template <class T,
+    std::memory_order M=std::memory_order_seq_cst,
+    std::memory_order N=std::memory_order_seq_cst>
+ class DLL_PUBLIC ExtraAtomicSAGA : public TBaseSAGA<T, std::atomic<T>, std::atomic<T>> {
+  // Grants cereal access to default constructor/serialize functions
+  friend class cereal::access;
+
+ protected:
+  using TBaseSAGA<T, std::atomic<T>, std::atomic<T>>::iterate;
+  using TBaseSAGA<T, std::atomic<T>, std::atomic<T>>::model;
+  using TBaseSAGA<T, std::atomic<T>, std::atomic<T>>::casted_prox;
+  using TBaseSAGA<T, std::atomic<T>, std::atomic<T>>::step;
+
+ public:
+  using TBaseSAGA<T, std::atomic<T>, std::atomic<T>>::gradients_average;
+  using TBaseSAGA<T, std::atomic<T>, std::atomic<T>>::gradients_memory;
+
+ public:
+   ExtraAtomicSAGA() : ExtraAtomicSAGA(0, 0, RandType::unif, 0) {}
+
+   ExtraAtomicSAGA(ulong epoch_size, T tol, RandType rand_type, T step, int record_every = 1,
+                   int seed = -1, int n_threads = 2);
+
+   ~ExtraAtomicSAGA() {}
+
+ protected:
+  T update_gradient_memory(ulong i) override;
+  void update_iterate_and_gradient_average(ulong j, T x_ij, T grad_factor_diff,
+                                           T step_correction) override;
+};
+
+
+using ExtraAtomicSAGADouble = ExtraAtomicSAGA<double, std::memory_order_seq_cst, std::memory_order_seq_cst>;
+using ExtraAtomicSAGADoubleRelax = ExtraAtomicSAGA<double, std::memory_order_relaxed, std::memory_order_relaxed>;
+
 #endif  // LIB_INCLUDE_TICK_SOLVER_SAGA_H_
