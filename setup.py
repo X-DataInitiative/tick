@@ -31,6 +31,11 @@ from setuptools import find_packages, setup, Command
 from setuptools.command.install import install
 from setuptools.extension import Extension
 
+force_blas = False
+if "--force-blas" in sys.argv:
+    force_blas = True
+    sys.argv.remove("--force-blas")
+
 # Available debug flags
 #
 #   DEBUG_C_ARRAY       : count #allocations of C-arrays
@@ -93,7 +98,9 @@ try:
         numpy_include = np.get_numpy_include()
 
     # Determine if we have an available BLAS implementation
-    if platform.system() == 'Windows':
+    if force_blas: # activated with build --force-blas
+        blas_info = get_info("blas_opt", 0)
+    elif platform.system() == 'Windows':
         try:
             with open(os.devnull, 'w') as devnull:
                 exitCode = subprocess.check_output(
@@ -103,8 +110,16 @@ try:
                 blas_info = get_info("blas_opt", 0)
         except subprocess.CalledProcessError as subError:
             print("Error executing check_cblas.py - cblas not found")
-    elif 'bdist_wheel' not in sys.argv:
-        blas_info = get_info("blas_opt", 0)
+    else:
+        try:
+            with open(os.devnull, 'w') as devnull:
+                exitCode = subprocess.check_output(
+                    "python tools/python/blas/check_mkl.py build_ext",
+                    stderr=devnull,
+                    shell=True)
+                blas_info = get_info("blas_opt", 0)
+        except subprocess.CalledProcessError as subError:
+            print("Error executing check_mkl.py - mkl not found")
 
     numpy_available = True
 except ImportError as e:
