@@ -99,7 +99,7 @@ TEST_P(ParallelTest, ReduceSum) {
   const long result = parallel_map_reduce(GetParam(), m.data.size(), plus_f,
                                           &MapFunctorsUnary::Set, &m);
 
-  const auto na = n - 1;
+  const long na = n - 1;
   EXPECT_EQ((na * (na + 1)) / 2, result);
 }
 
@@ -111,7 +111,7 @@ TEST_P(ParallelTest, ReduceSumAdditive) {
   const long result = parallel_map_additive_reduce(GetParam(), m.data.size(),
                                                    &MapFunctorsUnary::Set, &m);
 
-  const auto na = n - 1;
+  const long na = n - 1;
   EXPECT_EQ((na * (na + 1)) / 2, result);
 }
 
@@ -247,7 +247,7 @@ INSTANTIATE_TEST_CASE_P(AllParallelTests, ParallelTest,
                         ::testing::Values(1, 2, 4, 8, 16));
 
 TEST(ParallelTest, CPUCount) {
-  ASSERT_GE(std::thread::hardware_concurrency(), 2);
+  ASSERT_GE(std::thread::hardware_concurrency(), 2u);
 }
 
 TEST(ParallelTest, TooManyThreads) {
@@ -262,7 +262,7 @@ TEST(DebugTest, WarningDebug) {
   TICK_DEBUG() << "Sample debug message";
 
   const std::string out = testing::internal::GetCapturedStdout();
-  EXPECT_GE(out.length(), 0);
+  EXPECT_GE(out.length(), 0u);
   EXPECT_PRED_FORMAT2(testing::IsSubstring, "Sample debug message", out);
 
   testing::internal::CaptureStderr();
@@ -270,7 +270,7 @@ TEST(DebugTest, WarningDebug) {
   TICK_WARNING() << "Sample warning";
 
   const std::string err = testing::internal::GetCapturedStderr();
-  EXPECT_GE(err.length(), 0);
+  EXPECT_GE(err.length(), 0u);
   EXPECT_PRED_FORMAT2(testing::IsSubstring, "Sample warning", err);
 
   EXPECT_THROW(TICK_ERROR("Sample"), std::runtime_error);

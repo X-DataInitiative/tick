@@ -167,8 +167,8 @@ TEST_F(HawkesModelTest, hawkes_least_squares_serialization) {
 
     ModelHawkesExpKernLeastSqSingle restored_model;
     inputArchive(restored_model);
-
-    EXPECT_EQ(restored_model.get_n_nodes(), 2);
+    
+    EXPECT_EQ(restored_model.get_n_nodes(), 2u);
     EXPECT_EQ(restored_model.get_end_time(), 5.65);
     EXPECT_EQ(restored_model.get_n_total_jumps(), model.get_n_total_jumps());
 
@@ -238,7 +238,7 @@ TEST_F(HawkesModelTest, hawkes_least_squares_sum_exp_serialization) {
     ModelHawkesSumExpKernLeastSqSingle restored_model;
     inputArchive(restored_model);
 
-    EXPECT_EQ(restored_model.get_n_nodes(), 2);
+    EXPECT_EQ(restored_model.get_n_nodes(), 2u);
     EXPECT_EQ(restored_model.get_end_time(), 5.65);
     EXPECT_EQ(restored_model.get_n_total_jumps(), model.get_n_total_jumps());
 
@@ -270,7 +270,7 @@ TEST_F(HawkesModelTest, compute_loss_least_square_list) {
 
   EXPECT_DOUBLE_EQ(model.loss(coeffs), 43.611729071097002);
 
-  EXPECT_DOUBLE_EQ(model.get_n_coeffs(), 6);
+  EXPECT_DOUBLE_EQ(model.get_n_coeffs(), 6u);
 }
 
 TEST_F(HawkesModelTest, least_square_list_serialization) {
@@ -305,7 +305,7 @@ TEST_F(HawkesModelTest, least_square_list_serialization) {
     ModelHawkesExpKernLeastSq restored_model(nullptr, 0);
     inputArchive(restored_model);
 
-    EXPECT_EQ(restored_model.get_n_nodes(), 2);
+    EXPECT_EQ(restored_model.get_n_nodes(), 2u);
     EXPECT_EQ((*restored_model.get_end_times())[1], 5.87);
     EXPECT_EQ(restored_model.get_n_total_jumps(), model.get_n_total_jumps());
 
@@ -376,7 +376,7 @@ TEST_F(HawkesModelTest, hawkes_least_squares_sum_exp_list_serialization) {
     ModelHawkesSumExpKernLeastSq restored_model;
     inputArchive(restored_model);
 
-    EXPECT_EQ(restored_model.get_n_nodes(), 2);
+    EXPECT_EQ(restored_model.get_n_nodes(), 2u);
     EXPECT_EQ((*restored_model.get_end_times())[1], 5.87);
     EXPECT_EQ(restored_model.get_n_total_jumps(), model.get_n_total_jumps());
 

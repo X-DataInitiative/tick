@@ -76,7 +76,7 @@ TYPED_TEST(ArrayTest, Move) {
   TypeParam arrCopy = arr;
   TypeParam arrMoved = std::move(arr);
 
-  EXPECT_EQ(0, arr.size());
+  EXPECT_EQ(0u, arr.size());
   EXPECT_EQ(arrCopy.size(), arrMoved.size());
   EXPECT_NE(arr.data(), arrMoved.data());
   EXPECT_EQ(arrDataPtr, arrMoved.data());
@@ -90,7 +90,7 @@ TYPED_TEST(ArrayTest, View) {
 
   TypeParam arrView = view(arr);
 
-  EXPECT_EQ(100, arr.size());
+  EXPECT_EQ(100u, arr.size());
   EXPECT_EQ(arrView.size(), arr.size());
   EXPECT_EQ(arr.data(), arrView.data());
 
@@ -133,8 +133,8 @@ TYPED_TEST(ArrayTest, Bounds) {
 TYPED_TEST(ArrayTest, Size) {
   TypeParam arr = ::GenerateRandomArray<TypeParam>(100);
 
-  EXPECT_EQ(arr.size(), 100);
-  EXPECT_EQ(arr.size_data(), 100);
+  EXPECT_EQ(arr.size(), 100u);
+  EXPECT_EQ(arr.size_data(), 100u);
 }
 
 TYPED_TEST(ArrayTest, InitList) {
@@ -146,7 +146,7 @@ TYPED_TEST(ArrayTest, InitList) {
 
   TypeParam arr{vals[0], vals[1], vals[2], vals[3], vals[4], vals[5]};
 
-  ASSERT_EQ(arr.size(), 6);
+  ASSERT_EQ(arr.size(), 6u);
 
   for (ulong j = 0; j < arr.size(); ++j) ASSERT_DOUBLE_EQ(arr[j], vals[j]);
 }
@@ -169,7 +169,6 @@ TYPED_TEST(ArrayTest, Fill_Int_to_double_no_cast) {
 }
 
 TYPED_TEST(ArrayTest, Sum) {
-  using VT = typename TypeParam::value_type;
   TypeParam arrA = ::GenerateRandomArray<TypeParam>();
 
   const auto sum = std::accumulate(arrA.data(), arrA.data() + arrA.size(), 0.0);
@@ -232,7 +231,6 @@ TYPED_TEST(ArrayTest, DivOperator) {
 }
 
 TYPED_TEST(ArrayTest, NormSq) {
-  using VT = typename TypeParam::value_type;
   TypeParam arrA = ::GenerateRandomArray<TypeParam>();
 
   auto norm_sq = arrA.norm_sq();
@@ -502,7 +500,7 @@ void TestEmptySerialization() {
     archive_in(arrB);
 
     ASSERT_EQ(arrA.size(), arrB.size());
-    ASSERT_EQ(arrA.size(), 0);
+    ASSERT_EQ(arrA.size(), 0u);
   }
 }
 
@@ -546,11 +544,11 @@ void TestEmptySerialization2D() {
     archive_in(arrB);
 
     ASSERT_EQ(arrA.size(), arrB.size());
-    ASSERT_EQ(arrA.size(), 0);
+    ASSERT_EQ(arrA.size(), 0u);
     ASSERT_EQ(arrA.n_rows(), arrB.n_rows());
-    ASSERT_EQ(arrA.n_rows(), 0);
+    ASSERT_EQ(arrA.n_rows(), 0u);
     ASSERT_EQ(arrA.n_cols(), arrB.n_cols());
-    ASSERT_EQ(arrA.n_cols(), 0);
+    ASSERT_EQ(arrA.n_cols(), 0u);
   }
 }
 

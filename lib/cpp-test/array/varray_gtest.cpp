@@ -19,7 +19,7 @@ TEST(VArray, Append1) {
   EXPECT_NO_THROW(arr.append1(5.0));  // ok
   EXPECT_NO_THROW(arr.append1(6.0));  // resize to (7 * 1.5 = 10)
 
-  EXPECT_EQ(arr.size(), 7);
+  EXPECT_EQ(arr.size(), 7u);
   EXPECT_EQ(arr.get_alloc_size(),
             static_cast<ulong>(7 * VARRAY_FACTOR_INCRALLOC));
 
@@ -32,16 +32,16 @@ TEST(VArray, Append) {
   ArrayDouble x = arange<double>(0, 10);
   ArrayDouble y = arange<double>(10, 20);
 
-  ASSERT_EQ(x.size(), 10);
+  ASSERT_EQ(x.size(), 10u);
 
   arr.append(x.as_sarray_ptr());
-  EXPECT_EQ(arr.size(), 10);
+  EXPECT_EQ(arr.size(), 10u);
   EXPECT_EQ(arr.get_alloc_size(),
             static_cast<ulong>(10 * VARRAY_FACTOR_INCRALLOC));  // 10 * 1.5 = 15
 
   arr.append(y.as_sarray_ptr());
 
-  EXPECT_EQ(arr.size(), 20);
+  EXPECT_EQ(arr.size(), 20u);
   EXPECT_EQ(arr.get_alloc_size(),
             static_cast<ulong>(20 * VARRAY_FACTOR_INCRALLOC));  // 20 * 1.5 = 30
 

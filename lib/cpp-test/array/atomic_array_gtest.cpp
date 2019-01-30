@@ -89,7 +89,6 @@ ArrType GenerateRandomArray(
         0) {
   ArrType res(n);
 
-  using nl = std::numeric_limits<typename ArrType::value_type>;
   std::uniform_real_distribution<> dis(TICK_TEST_DATA_MIN_VALUE,
                                        TICK_TEST_DATA_MAX_VALUE);
 
@@ -105,7 +104,6 @@ ArrType GenerateRandomArray(
   ArrType res(n);
 
   using value_type = typename ArrType::value_type;
-  using nl = std::numeric_limits<value_type>;
   std::uniform_int_distribution<> dis(GetTestMinimum<value_type>(),
                                       TICK_TEST_DATA_MAX_VALUE);
 
@@ -196,7 +194,7 @@ TYPED_TEST(AtomicArrayTest, Move) {
   AtomicType arrCopy = arr;
   AtomicType arrMoved = std::move(arr);
 
-  EXPECT_EQ(0, arr.size());
+  EXPECT_EQ(0u, arr.size());
   EXPECT_EQ(arrCopy.size(), arrMoved.size());
   EXPECT_NE(arr.data(), arrMoved.data());
   EXPECT_EQ(arrDataPtr, arrMoved.data());
@@ -212,7 +210,7 @@ TYPED_TEST(AtomicArrayTest, View) {
 
   AtomicType arrView = view(arr);
 
-  EXPECT_EQ(100, arr.size());
+  EXPECT_EQ(100u, arr.size());
   EXPECT_EQ(arrView.size(), arr.size());
   EXPECT_EQ(arr.data(), arrView.data());
 
@@ -235,8 +233,8 @@ TYPED_TEST(AtomicArrayTest, Size) {
   using AtomicType = Array<std::atomic<VT>>;
   AtomicType arr = ::GenerateRandomArray<AtomicType, VT>(100);
 
-  EXPECT_EQ(arr.size(), 100);
-  EXPECT_EQ(arr.size_data(), 100);
+  EXPECT_EQ(arr.size(), 100u);
+  EXPECT_EQ(arr.size_data(), 100u);
 }
 
 TYPED_TEST(AtomicArrayTest, InitList) {
@@ -249,7 +247,7 @@ TYPED_TEST(AtomicArrayTest, InitList) {
 
   AtomicType arr{vals[0], vals[1], vals[2], vals[3], vals[4], vals[5]};
 
-  ASSERT_EQ(arr.size(), 6);
+  ASSERT_EQ(arr.size(), 6u);
 
   for (ulong j = 0; j < arr.size(); ++j) ASSERT_DOUBLE_EQ(arr[j], vals[j]);
 }

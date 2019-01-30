@@ -62,7 +62,6 @@ ArrType GenerateRandomArray(
         0) {
   ArrType res(n);
 
-  using nl = std::numeric_limits<typename ArrType::value_type>;
   std::uniform_real_distribution<> dis(TICK_TEST_DATA_MIN_VALUE,
                                        TICK_TEST_DATA_MAX_VALUE);
 
@@ -79,7 +78,6 @@ ArrType GenerateRandomArray(
   ArrType res(n);
 
   using value_type = typename ArrType::value_type;
-  using nl = std::numeric_limits<value_type>;
   std::uniform_int_distribution<> dis(GetTestMinimum<value_type>(),
                                       TICK_TEST_DATA_MAX_VALUE);
 
