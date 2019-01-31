@@ -9,11 +9,6 @@ from .build.prox import ProxElasticNetFloat as _ProxElasticNetFloat
 
 __author__ = 'Maryan Morel'
 
-dtype_map = {
-    np.dtype("float64"): _ProxElasticNetDouble,
-    np.dtype("float32"): _ProxElasticNetFloat
-}
-
 
 class ProxElasticNet(Prox):
     """
@@ -60,6 +55,11 @@ class ProxElasticNet(Prox):
         }
     }
 
+    _cpp_class_dtype_map = {
+        np.dtype("float64"): _ProxElasticNetDouble,
+        np.dtype("float32"): _ProxElasticNetFloat
+    }
+
     def __init__(self, strength: float, ratio: float, range: tuple = None,
                  positive=False):
         Prox.__init__(self, range)
@@ -90,9 +90,32 @@ class ProxElasticNet(Prox):
     def _build_cpp_prox(self, dtype_or_object_with_dtype):
         self.dtype = self._extract_dtype(dtype_or_object_with_dtype)
         prox_class = self._get_typed_class(dtype_or_object_with_dtype,
-                                           dtype_map)
+                                           self._cpp_class_dtype_map)
         if self.range is None:
             return prox_class(self.strength, self.ratio, self.positive)
         else:
             return prox_class(self.strength, self.ratio, self.range[0],
                               self.range[1], self.positive)
+
+    def _get_params_set(self):
+        """Get the set of parameters
+        """
+        return {*Prox._get_params_set(self), 'strength', 'range', 'ratio'}
+
+    @property
+    def _AtomicClass(self):
+        return AtomicProxElasticNet
+
+
+from .build.prox import ProxElasticNetAtomicDouble as _ProxElasticNetAtomicDouble
+from .build.prox import ProxElasticNetAtomicFloat as _ProxElasticNetAtomicFloat
+
+
+class AtomicProxElasticNet(ProxElasticNet):
+    _cpp_class_dtype_map = {
+        np.dtype('float32'): _ProxElasticNetAtomicFloat,
+        np.dtype('float64'): _ProxElasticNetAtomicDouble
+    }
+
+    def value(self, coeffs):
+        return self._non_atomic_prox.value(coeffs)
