@@ -43,6 +43,8 @@ class DLL_PUBLIC TSVRG : public TStoSolver<T, K> {
   bool ready_step_corrections;
   SVRG_StepType step_type;
 
+  std::shared_ptr<TProxSeparable<T, K>> casted_prox;
+
   void prepare_solve();
 
   void solve_dense();
@@ -58,8 +60,19 @@ class DLL_PUBLIC TSVRG : public TStoSolver<T, K> {
   //  a shared_ptr which is above it in the same
   //  scope so a shared_ptr is not needed
   void sparse_single_thread_solver(const ulong& next_i, const ulong& n_features,
-                                   const bool use_intercept,
-                                   TProxSeparable<T, K>*& casted_prox);
+                                   const bool use_intercept);
+
+ protected:
+  // if K == std::atomic<T> (Wild case)
+  template<class T1=T, class K1=K>
+  typename std::enable_if<std::is_same<T1, K1>::value, void>::type
+  update_iterate(ulong j, T x_ij, T grad_factor_diff, T step_correction, T full_gradient_j);
+
+  // if K == std::atomic<T> (Atomic case)
+  template<class T1=T, class K1=K>
+  typename std::enable_if<std::is_same<std::atomic<T1>, K1>::value, void>::type
+  update_iterate(ulong j, T x_ij, T grad_factor_diff, T step_correction, T full_gradient_j);
+
 
  public:
   // This exists soley for cereal/swig

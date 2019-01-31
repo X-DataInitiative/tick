@@ -366,8 +366,8 @@ void ExtraAtomicSAGA<T, M, N>::update_iterate_and_gradient_average(ulong j, T x_
   T delta_iterate = -step * (grad_factor_diff * x_ij + step_correction * grad_avg_j);
   T iterate_j = iterate[j].load(N);
 
-  T prox_delta_iterate = casted_prox->call_single(
-      iterate_j + delta_iterate, step * step_correction) - iterate_j;
+  T prox_delta_iterate = casted_prox->call_single_with_index(
+      iterate_j + delta_iterate, step * step_correction, j) - iterate_j;
 
   // Prox is separable, apply regularization on the current coordinate
   while (!iterate[j].compare_exchange_weak(
