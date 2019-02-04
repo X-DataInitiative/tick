@@ -51,6 +51,7 @@ from tick.solver.build.solver import (
     AtomicSAGADoubleAtomicIterate as _ASAGADoubleA,
     SAGADoubleAtomicIterate as _SAGADoubleA,
     AtomicSAGARelax as _ASAGADoubleRelax,
+    ExtraAtomicSAGADouble as _ExtraAtomicSAGADouble,
     SVRGDouble as _SVRGDouble,
     SVRGDoubleAtomicIterate as _SVRGDoubleA,
     SDCADouble as _SDCADouble,
@@ -75,7 +76,7 @@ def find_next_folder_name(file_prefix, append=False):
         i += 1
         folder_name = os.path.join(data_dir, "{}_{:03}".format(file_prefix, i))
 
-    if append:
+    if append and i > 0:
         i -= 1
         folder_name = os.path.join(data_dir, "{}_{:03}".format(file_prefix, i))
     return folder_name
@@ -101,7 +102,9 @@ def serialize_history(history, solver_class, solver_label, solver_name,
     # delete space consumming iterates
     if 'x' in history.values.keys():
         del history.values['x']
-
+    if 'dual_vector' in history.values.keys():
+        del history.values['dual_vector']
+        
     os.makedirs(folder_name, exist_ok=True)
     file_name = os.path.join(folder_name,
                              '{}_{}_threads'.format(solver_class.__name__, n_threads))
@@ -132,8 +135,8 @@ def load_histories(file_prefix):
             if specification is None:
                 specification = infos['specification']
             else:
-                assert specification['dataset_kwargs'] == \
-                       infos['specification']['dataset_kwargs']
+                assert specification.get('dataset_kwargs', {}) == \
+                       infos['specification'].get('dataset_kwargs', {})
 
     return histories, solver_labels, solver_names, n_threads_used
 
@@ -203,9 +206,17 @@ def load_dataset(dataset_name, specification):
     return features, labels
 
 
-def create_solver(solver_class, model, prox, **kwargs):
+def create_solver(solver_class, model, penalty_strength, **kwargs):
+    ratio = 0.5
+    # SDCA "elastic-net" formulation is different from elastic-net
+    # implementationl
+    l_l2_sdca = ratio * penalty_strength
+    l_l1_sdca = (1 - ratio) * penalty_strength
+    prox_l1 = ProxL1(l_l1_sdca)
+    prox_enet = ProxElasticNet(penalty_strength, ratio)
+    
     if solver_class in [_SAGADouble, _ASAGADouble, _ASAGADoubleA,
-                        _ASAGADoubleRelax, _SAGADoubleA,
+                        _ASAGADoubleRelax, _SAGADoubleA, _ExtraAtomicSAGADouble,
                         _SVRGDouble, _SVRGDoubleA]:
         step = 1. / model.get_lip_max()
 
@@ -227,20 +238,20 @@ def create_solver(solver_class, model, prox, **kwargs):
                                  record_every, seed, n_threads))
 
     elif solver_class == _SDCADouble:
-        solver = SDCA(prox.strength, **kwargs)
+        solver = SDCA(l_l2_sdca, **kwargs)
 
     elif solver_class == _ASDCADouble:
-        solver = AtomicSDCA(prox.strength, **kwargs)
+        solver = AtomicSDCA(l_l2_sdca, **kwargs)
     else:
         raise ValueError('Unknown solver_class {}'.format(solver_class))
 
-    if solver_class in [_SAGADoubleA, _ASAGADoubleA, _SVRGDoubleA]:
-        solver.set_model(model.to_atomic()).set_prox(prox.to_atomic())
+    if solver_class in [_SAGADoubleA, _ASAGADoubleA, _SVRGDoubleA, _ExtraAtomicSAGADouble]:
+        solver.set_model(model.to_atomic()).set_prox(prox_enet.to_atomic())
     else:
         if solver_class in [_SDCADouble, _ASDCADouble]:
-            solver.set_model(model).set_prox(ProxZero())
+            solver.set_model(model).set_prox(prox_l1)
         else:
-            solver.set_model(model).set_prox(prox)
+            solver.set_model(model).set_prox(prox_enet)
 
     return solver
 
@@ -252,7 +263,6 @@ def train_model(file_prefix, features, labels, specification, append=False):
 
     model = ModelLogReg(fit_intercept=False)
     model.fit(features, labels)
-    prox = ProxL2Sq(penalty_strength)
     test_n_threads = specification.get('test_n_threads', [1, 2, 4])
 
     solver_kwargs = specification['solver_kwargs']
@@ -266,7 +276,7 @@ def train_model(file_prefix, features, labels, specification, append=False):
         for n_threads in test_n_threads:
             print(n_threads)
             solver = create_solver(
-                solver_class, model, prox,
+                solver_class, model, penalty_strength,
                 seed=seed, verbose=False, n_threads=n_threads, tol=0,
                 **solver_kwargs)
 
@@ -277,15 +287,24 @@ def train_model(file_prefix, features, labels, specification, append=False):
             serialize_history(solver.history, solver_class, solver_label,
                               solver_name, n_threads,
                               folder_name, specification)
+            
+    print('Solution sparsity', np.mean(solver.solution != 0), np.mean(np.abs(solver.solution) < 1e-13))
 
 
-def plot_histories(file_prefix, ax, specification):
+def plot_histories(file_prefix, ax, specification, keep_threads=None):
     histories, solver_labels, solver_names, n_threads_used = \
         load_histories(file_prefix)
 
     threads_ls = {1: '-', 2: '--', 4: ':', 8: '-', 16:'--'}
 
-    print(histories[0].values['obj'])
+    if keep_threads is not None:
+        keep_indices = [i for i in range(len(n_threads_used))
+                        if n_threads_used[i] in keep_threads]
+        n_threads_used = [n_threads_used[i] for i in keep_indices]
+        histories = [histories[i] for i in keep_indices]
+        solver_labels = [solver_labels[i] for i in keep_indices]
+        solver_names = [solver_names[i] for i in keep_indices]
+
     plot_history(histories, dist_min=True, log_scale=True,
                  labels=solver_labels, ax=ax, x='time')
 
@@ -313,9 +332,8 @@ def plot_speedup(file_prefix, ax):
         (solver_name, n_threads, index)
         for index, (solver_name, n_threads)
         in enumerate(zip(solver_names, n_threads_used))]
-
-    print(solver_names_with_threads)
-
+    
+    solver_names_with_threads.sort()
     for key, group in itertools.groupby(solver_names_with_threads,
                                         lambda x: x[0]):
         group = list(group)
@@ -327,7 +345,6 @@ def plot_speedup(file_prefix, ax):
             # print(solver_names[index], n_threads_used[index])
             group_histories += [histories[index]]
             group_n_threads += [n_threads_used[index]]
-            print('group_n_threads', group_n_threads)
 
         solver_objectives = np.array([
             history.values['obj'] for history in group_histories])
@@ -374,15 +391,37 @@ specifications = {
             'max_iter': 20,
             'record_every': 2,
         },
-        'test_n_threads': [3],
+        'test_n_threads': [1, 4, 20],
     },
     'rcv1': {
         'solver_kwargs': {
             'max_iter': 60,
             'record_every': 2,
         },
-        'test_n_threads': [1, 4, 16],
+        'test_n_threads': [1, 4, 10] # [25, 30, 35, 40], #[1, 2, 4, 8, 12, 16, 20]#[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20], # [1, 4, 16], #
+    },
+    'url_20': {
+        'solver_kwargs': {
+            'max_iter': 60,
+            'record_every': 2,
+        },
+        'test_n_threads': [1, 5, 10, 15, 20], # [1, 4, 16], #
+    },
+    'url_120': {
+        'solver_kwargs': {
+            'max_iter': 60,
+            'record_every': 2,
+        },
+        'test_n_threads': [1, 4, 20, 30], # [1, 4, 16], #
+    },
+    'kdd2010': {
+        'solver_kwargs': {
+            'max_iter': 60,
+            'record_every': 2,
+        },
+        'test_n_threads': [1, 4, 20, 30], # [1, 4, 16], #
     }
+    
 }
 
 
@@ -392,6 +431,7 @@ class_names = {
     _ASAGADouble: 'Atomic $\\alpha$',
     _ASAGADoubleA: 'Atomic $w$ and $\\alpha$',
     _ASAGADoubleRelax: 'Atomic $\\alpha$ relax',
+    _ExtraAtomicSAGADouble: 'ExAtomic $w$ and $\\alpha$',
     _SVRGDouble: 'Wild',
     _SVRGDoubleA: 'Atomic $w$',
     _SDCADouble: 'Wild',
@@ -399,40 +439,44 @@ class_names = {
 }
 
 class_series = {
-    'SVRG': [_SVRGDouble],
-    'SAGA': [_SAGADouble, _SAGADoubleA, _ASAGADouble, _ASAGADoubleA],
-    'SDCA': [_SDCADouble, _ASDCADouble]
+    'SVRG': [_SVRGDouble, _SVRGDoubleA],
+    # 'SAGA': [_SAGADouble, _ExtraAtomicSAGADouble, _SAGADoubleA, _ASAGADouble, _ASAGADoubleA],
+    'SAGA': [_ExtraAtomicSAGADouble, _ASAGADouble], #[, ],
+    #'SAGA': [_ExtraAtomicSAGADouble, _ASAGADouble, _ASAGADoubleA],
+    'SDCA': [_ASDCADouble] # , _SDCADouble
 }
 
 series = 'SVRG'
 
 if __name__ == '__main__':
-
-    for series in ['SVRG']:#, 'SAGA', 'SDCA']:
+    features = None
+    for series in ['SVRG']:
         print('\n', series)
         classes = class_series[series]
 
-        dataset_name = 'synthetic'
+        dataset_name = 'rcv1'
 
         specification = specifications[dataset_name]
 
-        file_prefix = '{}_{}'.format(series, dataset_name)
+        file_prefix = '{}_enet_{}'.format(series, dataset_name)
 
-        train = False
+        train = True
         if train:
-            features, labels = load_dataset(
-                dataset_name,
-                specification.get('dataset_kwargs', {}))
+            
+            if features is None:
+                features, labels = load_dataset(
+                    dataset_name,
+                    specification.get('dataset_kwargs', {}))
             # keep = 1000
             # features, labels = features[:keep], labels[:keep]
             print(features.shape, features.nnz / np.prod(features.shape))
 
             train_model(file_prefix, features, labels, specification,
-                        append=True)
+                        append=False)
 
         fig, ax = plt.subplots(1, 1, figsize=(8, 4))
 
-        plot_histories(file_prefix, ax, specification)
+        plot_histories(file_prefix, ax, specification, keep_threads=[1, 4, 20])
         # plt.xlim([None, 3])
         # plt.ylim([1e-8, None])
         # plt.show()
@@ -443,7 +487,8 @@ if __name__ == '__main__':
                                    '{}_histories.png'.format(file_prefix))
         print(figure_path)
         plt.savefig(figure_path, dpi=100)
-
+        
+        fig, ax = plt.subplots(1, 1, figsize=(8, 4))
         plot_speedup(file_prefix, ax)
         figure_path = os.path.join(figures_folder,
                                    '{}_speedup.png'.format(file_prefix))
