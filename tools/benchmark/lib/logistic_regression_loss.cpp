@@ -1,21 +1,42 @@
-#include <chrono>
-
-#include "tick/linear_model/model_logreg.h"
+#include "tick/base/base.h"
 #include "tick/random/test_rand.h"
 
+
+//
+// Benchmark matrix vector dot products performances
+// The command lines arguments are the following
+// n_samples : number of observations (number of rows)
+// n_features : number variables per observation (number of columns)
+// n_threads : number of threads used
+// num_runs : number of run for each timing
+// num_iterations : number of timings
+//
+// Example
+// Then run a matrix vector product with 20000 rows, 10000 colums, 2 threads,  5 runs and 10 iterations
+// threads
+// ./matrix_vector_product 20000 10000 2 5 10
+//
+
+#include "tick/linear_model/model_logreg.h"
+
 int main(int nargs, char *args[]) {
-  ulong num_threads = 1;
+
   ulong n_samples = 20000;
+  if (nargs > 1) n_samples = std::stoul(args[1]);
 
-  if (nargs > 1) num_threads = std::stoul(args[1]);
+  ulong n_features = 10000;
+  if (nargs > 2) n_features = std::stoul(args[2]);
 
-  if (nargs > 2) n_samples = std::stoul(args[1]);
+  ulong num_threads = 1;
+  if (nargs > 3) num_threads = std::stoul(args[3]);
+
+  ulong num_runs = 5;
+  if (nargs > 4) num_runs = std::stoul(args[4]);
+
+  ulong num_iterations = 10;
+  if (nargs > 5) num_iterations = std::stoul(args[5]);
 
   const int seed = 1933;
-  ulong num_runs = 5;
-
-  const ulong n_features = 10000;
-  const int num_iterations = 10;
 
   // generate random data
   const auto sample = test_uniform(n_samples * n_features, seed);
@@ -51,6 +72,4 @@ int main(int nargs, char *args[]) {
               << num_threads << '\t' << n_samples << '\t' << n_features << '\t'
               << args[0] << '\t' << std::endl;
   }
-
-  return 0;
 }
