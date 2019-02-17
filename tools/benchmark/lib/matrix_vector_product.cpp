@@ -1,17 +1,34 @@
-
 #include "tick/base/base.h"
 #include "tick/random/test_rand.h"
 
+
+//
+// Benchmark matrix vector dot products performances
+// The command lines arguments are the following
+// n_rows : number of rows in the matrix
+// n_cols : number of columns in the matrix (and size of the vector)
+// num_runs : number of run for each timing
+// num_iterations : number of timings
+//
+// Example
+// Then run a matrix vector product with 20000 rows, 10000 colums, 5 runs and 10 iterations
+// threads
+// ./matrix_vector_product 20000 10000 5 10
+//
+
+
 int main(int nargs, char **args) {
   ulong n_rows = 20000;
-  ulong n_cols = 10000;
-
   if (nargs > 1) n_rows = std::stoul(args[1]);
 
+  ulong n_cols = 10000;
   if (nargs > 2) n_cols = std::stoul(args[2]);
 
-  const ulong num_runs = 5;
-  const ulong num_iterations = 10;
+  ulong num_runs = 5;
+  if (nargs > 3) num_runs = std::stoul(args[3]);
+
+  ulong num_iterations = 10;
+  if (nargs > 4) num_iterations = std::stoul(args[4]);
 
   const auto sample = test_uniform(n_rows * n_cols);
   ArrayDouble2d matrix(n_rows, n_cols, sample->data());
