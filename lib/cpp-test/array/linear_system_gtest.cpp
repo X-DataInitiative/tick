@@ -116,7 +116,7 @@ TYPED_TEST(LinearSystemTest, SymmetricLinearSystem) {
   // make it positive symmetric by computing its square B = A A'
   for (ulong i = 0; i < size; ++i) {
     for (ulong j = 0; j < size; ++j) {
-      for (int k = 0; k < size; ++k) {
+      for (ulong k = 0; k < size; ++k) {
         arrA(i, j) += sqrt_arrA(i, k) * sqrt_arrA(j, k);
       }
     }

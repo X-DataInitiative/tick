@@ -43,8 +43,8 @@ TEST(Serialize, SparseArray2dDouble) {
   SSparseArrayDouble2dPtr loaded_array =
       array_from_file<SSparseArrayDouble2d>(file_name);
 
-  EXPECT_EQ(loaded_array->n_rows(), 4);
-  EXPECT_EQ(loaded_array->n_cols(), 6);
+  EXPECT_EQ(loaded_array->n_rows(), 4u);
+  EXPECT_EQ(loaded_array->n_cols(), 6u);
   EXPECT_DOUBLE_EQ(dot_array.dot(view_row(*loaded_array, 0)), 50);
   EXPECT_DOUBLE_EQ(dot_array.dot(view_row(*loaded_array, 1)), 220);
   EXPECT_DOUBLE_EQ(dot_array.dot(view_row(*loaded_array, 2)), 740);
@@ -73,8 +73,8 @@ TEST(Serialize, SparseArray2dFloat) {
   SSparseArrayFloat2dPtr loaded_array =
       array_from_file<SSparseArrayFloat2d>(file_name);
 
-  EXPECT_EQ(loaded_array->n_rows(), 4);
-  EXPECT_EQ(loaded_array->n_cols(), 6);
+  EXPECT_EQ(loaded_array->n_rows(), 4u);
+  EXPECT_EQ(loaded_array->n_cols(), 6u);
   EXPECT_FLOAT_EQ(dot_array.dot(view_row(*loaded_array, 0)), 50);
   EXPECT_FLOAT_EQ(dot_array.dot(view_row(*loaded_array, 1)), 220);
   EXPECT_FLOAT_EQ(dot_array.dot(view_row(*loaded_array, 2)), 740);
@@ -108,8 +108,8 @@ TEST(Serialize, SparseArray2dAtomicDouble) {
   SSparseArrayDouble2dPtr loaded_array =
       array_from_file<SSparseArrayDouble2d>(file_name);
 
-  EXPECT_EQ(loaded_array->n_rows(), 4);
-  EXPECT_EQ(loaded_array->n_cols(), 6);
+  EXPECT_EQ(loaded_array->n_rows(), 4u);
+  EXPECT_EQ(loaded_array->n_cols(), 6u);
   EXPECT_DOUBLE_EQ(dot_array.dot(view_row(*loaded_array, 0)), 50);
   EXPECT_DOUBLE_EQ(dot_array.dot(view_row(*loaded_array, 1)), 220);
   EXPECT_DOUBLE_EQ(dot_array.dot(view_row(*loaded_array, 2)), 740);
@@ -142,8 +142,8 @@ TEST(Serialize, SparseArray2dAtomicFloat) {
   SSparseArrayFloat2dPtr loaded_array =
       array_from_file<SSparseArrayFloat2d>(file_name);
 
-  EXPECT_EQ(loaded_array->n_rows(), 4);
-  EXPECT_EQ(loaded_array->n_cols(), 6);
+  EXPECT_EQ(loaded_array->n_rows(), 4u);
+  EXPECT_EQ(loaded_array->n_cols(), 6u);
   EXPECT_DOUBLE_EQ(dot_array.dot(view_row(*loaded_array, 0)), 50);
   EXPECT_DOUBLE_EQ(dot_array.dot(view_row(*loaded_array, 1)), 220);
   EXPECT_DOUBLE_EQ(dot_array.dot(view_row(*loaded_array, 2)), 740);

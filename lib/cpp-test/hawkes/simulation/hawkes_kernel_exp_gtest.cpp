@@ -102,7 +102,7 @@ TEST_F(HawkesKernelExpTest, get_convolution_value) {
 TEST_F(HawkesKernelExpTest, get_convolution_value_while_appending_array) {
   VArrayDouble v_timestamps(0);
 
-  for (int k = 0; k < test_times.size() - 1; ++k) {
+  for (uint64_t k = 0; k < test_times.size() - 1; ++k) {
     double t_k = test_times[k];
     double t_k_next = test_times[k + 1];
     EXPECT_DOUBLE_EQ(

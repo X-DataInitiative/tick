@@ -52,9 +52,9 @@ TEST(SVRG, test_history) {
   svrg.solve(8);
   svrg.solve(14);
 
-  ASSERT_EQ(svrg.get_time_history().size(), 3);
-  ASSERT_EQ(svrg.get_epoch_history().size(), 3);
-  ASSERT_EQ(svrg.get_iterate_history().size(), 3);
+  ASSERT_EQ(svrg.get_time_history().size(), 3u);
+  ASSERT_EQ(svrg.get_epoch_history().size(), 3u);
+  ASSERT_EQ(svrg.get_iterate_history().size(), 3u);
 
   ASSERT_EQ(svrg.get_epoch_history()[0], 1);
   ASSERT_EQ(svrg.get_epoch_history()[1], 10);

@@ -448,10 +448,10 @@ tick::TemporaryLog<E>& operator<<(tick::TemporaryLog<E>& log,
   const ulong max_rows = 8;
   const ulong max_cols = max_rows;
 
-  for (auto r = 0; r < std::min(max_rows, n_rows); ++r) {
+  for (uint64_t r = 0; r < std::min(max_rows, n_rows); ++r) {
     log << "[";
 
-    for (auto c = 0; c < std::min(max_cols, n_cols); ++c) {
+    for (uint64_t c = 0; c < std::min(max_cols, n_cols); ++c) {
       log << arr.data()[r * n_cols + c] << ", ";
     }
 
