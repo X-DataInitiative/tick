@@ -13,6 +13,7 @@
 class DLL_PUBLIC ModelSCCS : public ModelLipschitz {
  public:
   using ModelLipschitz::get_class_name;
+  friend class cereal::access;
 
  protected:
   ulong n_intervals;
@@ -30,12 +31,12 @@ class DLL_PUBLIC ModelSCCS : public ModelLipschitz {
   SBaseArrayDouble2dPtrList1D features;
 
   // Censoring vectors
-  SBaseArrayULongPtr censoring;
+  SArrayULongPtr censoring;
 
  public:
-  ModelSCCS(const SBaseArrayDouble2dPtrList1D &features,
-            const SArrayIntPtrList1D &labels,
-            const SBaseArrayULongPtr censoring, const SArrayULongPtr n_lags);
+  ModelSCCS() {}  // for cereal
+  ModelSCCS(const SBaseArrayDouble2dPtrList1D &features, const SArrayIntPtrList1D &labels,
+            const SArrayULongPtr censoring, const SArrayULongPtr n_lags);
 
   double loss(const ArrayDouble &coeffs) override;
 
@@ -96,6 +97,56 @@ class DLL_PUBLIC ModelSCCS : public ModelLipschitz {
       out[i] = exp(x[i] - x_max) / sum;  // overflow-proof
     }
   }
+
+  template <class Archive>
+  void load(Archive &ar) {
+    ar(cereal::make_nvp("ModelSCCS",
+                        typename cereal::base_class<TModelLipschitz<double, double>>(this)));
+    ar(n_samples, n_features, n_observations, n_lagged_features, n_intervals);
+    ar(n_lags, col_offset, labels);
+
+    std::vector<BaseArrayDouble2d> tmp_features;
+    ar(tmp_features);
+    for (auto f : tmp_features) features.emplace_back(f.as_sarray2d_ptr());
+
+    ArrayULong tmp_censoring;
+    ar(cereal::make_nvp("censoring", tmp_censoring));
+    censoring = tmp_censoring.as_sarray_ptr();
+  }
+
+  template <class Archive>
+  void save(Archive &ar) const {
+    ar(cereal::make_nvp("ModelSCCS",
+                        typename cereal::base_class<TModelLipschitz<double, double>>(this)));
+    ar(n_samples, n_features, n_observations, n_lagged_features, n_intervals);
+    ar(n_lags, col_offset, labels);
+
+    std::vector<BaseArrayDouble2d> tmp_features;
+    for (auto f : features) tmp_features.emplace_back(*f);
+    ar(tmp_features);
+
+    ar(cereal::make_nvp("censoring", *censoring));
+  }
+
+  BoolStrReport compare(const ModelSCCS &that, std::stringstream &ss) {
+    ss << get_class_name() << std::endl;
+    auto are_equal = ModelLipschitz::compare(that, ss) && TICK_CMP_REPORT(ss, n_samples) &&
+                     TICK_CMP_REPORT(ss, n_features) && TICK_CMP_REPORT(ss, n_observations) &&
+                     TICK_CMP_REPORT(ss, n_lagged_features) && TICK_CMP_REPORT(ss, n_intervals) &&
+                     TICK_CMP_REPORT_PTR(ss, n_lags) && TICK_CMP_REPORT(ss, col_offset) &&
+                     TICK_CMP_REPORT_VECTOR_SPTR_1D(ss, labels, int32_t) &&
+                     TICK_CMP_REPORT_VECTOR_ARRAY2D(ss, features, double) &&
+                     TICK_CMP_REPORT_PTR(ss, censoring);
+    return BoolStrReport(are_equal, ss.str());
+  }
+  BoolStrReport compare(const ModelSCCS &that) {
+    std::stringstream ss;
+    return compare(that, ss);
+  }
+  BoolStrReport operator==(const ModelSCCS &that) { return ModelSCCS::compare(that); }
 };
+
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelSCCS, cereal::specialization::member_load_save)
+CEREAL_REGISTER_TYPE(ModelSCCS)
 
 #endif  // LIB_INCLUDE_TICK_SURVIVAL_MODEL_SCCS_H_

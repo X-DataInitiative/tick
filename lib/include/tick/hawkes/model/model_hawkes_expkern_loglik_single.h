@@ -81,6 +81,32 @@ class DLL_PUBLIC ModelHawkesExpKernLogLikSingle
   }
 
   friend ModelHawkesExpKernLogLik;
+
+  template <class Archive>
+  void serialize(Archive &ar) {
+    ar(cereal::make_nvp("ModelHawkesLogLikSingle",
+                        cereal::base_class<ModelHawkesLogLikSingle>(this)));
+
+    ar(CEREAL_NVP(decay));
+  }
+
+  BoolStrReport compare(const ModelHawkesExpKernLogLikSingle &that, std::stringstream &ss) {
+    ss << get_class_name() << std::endl;
+    auto are_equal = ModelHawkesLogLikSingle::compare(that, ss) &&
+                     TICK_CMP_REPORT(ss, decay);
+    return BoolStrReport(are_equal, ss.str());
+  }
+  BoolStrReport compare(const ModelHawkesExpKernLogLikSingle &that) {
+    std::stringstream ss;
+    return compare(that, ss);
+  }
+  BoolStrReport operator==(const ModelHawkesExpKernLogLikSingle &that) {
+    return ModelHawkesExpKernLogLikSingle::compare(that);
+  }
 };
+
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelHawkesExpKernLogLikSingle,
+                                   cereal::specialization::member_serialize)
+CEREAL_REGISTER_TYPE(ModelHawkesExpKernLogLikSingle);
 
 #endif  // LIB_INCLUDE_TICK_HAWKES_MODEL_MODEL_HAWKES_EXPKERN_LOGLIK_SINGLE_H_

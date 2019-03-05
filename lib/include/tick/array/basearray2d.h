@@ -45,6 +45,9 @@ class BaseArray2d : public AbstractArray1d2d<T, MAJ> {
   using AbstractArray1d2d<T, MAJ>::is_sparse;
   using AbstractArray1d2d<T, MAJ>::init_to_zero;
 
+ public:
+  using COMPARATOR = Array_Comparator<BaseArray2d<T, MAJ>>;
+
   //! @brief Returns the number of rows of the array
   inline ulong n_rows() const { return _n_rows; }
 
@@ -145,9 +148,8 @@ class BaseArray2d : public AbstractArray1d2d<T, MAJ> {
   Array2d<T, MAJ> as_array2d();
 
   //! @brief Compare two arrays by value - ignores allocation methodology !)
-  bool compare(const BaseArray2d<T, MAJ> &that) {
-    bool are_equal = AbstractArray1d2d<T, MAJ>::compare(that) &&
-                     (this->_n_rows == that._n_rows) &&
+  bool compare(const BaseArray2d<T, MAJ> &that) const {
+    bool are_equal = AbstractArray1d2d<T, MAJ>::compare(that) && (this->_n_rows == that._n_rows) &&
                      (this->_n_cols == that._n_cols);
     if (are_equal && this->_row_indices && that._row_indices) {
       for (size_t i = 0; i < _n_rows + 1; i++) {
@@ -157,12 +159,15 @@ class BaseArray2d : public AbstractArray1d2d<T, MAJ> {
     }
     return are_equal;
   }
-  bool operator==(const BaseArray2d<T, MAJ> &that) { return compare(that); }
+  bool operator==(const BaseArray2d<T, MAJ> &that) const { return compare(that); }
+
+  static std::shared_ptr<BaseArray2d<T, MAJ>> new_ptr(ulong n_rows = 0, ulong n_cols = 0) {
+    return std::make_shared<Array2d<T>>(n_cols, n_cols);
+  }
+  std::shared_ptr<BaseArray2d<T, MAJ>> as_sarray2d_ptr();
 
  private:
-  std::string type() const {
-    return (is_dense() ? "Array2d" : "SparseArray2d");
-  }
+  std::string type() const { return (is_dense() ? "Array2d" : "SparseArray2d"); }
 };
 
 #include "tick/array/basearray2d/assignment.h"

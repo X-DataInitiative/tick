@@ -86,6 +86,21 @@ class DLL_PUBLIC ModelHawkesLeastSq : public ModelHawkesList {
     ar(CEREAL_NVP(weights_allocated));
     ar(CEREAL_NVP(aggregated_model));
   }
+
+  BoolStrReport compare(const ModelHawkesLeastSq &that, std::stringstream &ss) {
+    ss << get_class_name() << std::endl;
+    auto are_equal = ModelHawkesList::compare(that, ss) &&
+                     TICK_CMP_REPORT(ss, weights_allocated) &&
+                     TICK_CMP_REPORT_PTR(ss, aggregated_model.get());
+    return BoolStrReport(are_equal, ss.str());
+  }
+  BoolStrReport compare(const ModelHawkesLeastSq &that) {
+    std::stringstream ss;
+    return compare(that, ss);
+  }
+  BoolStrReport operator==(const ModelHawkesLeastSq &that) {
+    return ModelHawkesLeastSq::compare(that);
+  }
 };
 
 #endif  // LIB_INCLUDE_TICK_HAWKES_MODEL_BASE_MODEL_HAWKES_LEASTSQ_H_

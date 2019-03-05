@@ -10,10 +10,8 @@
 
 // Remark: in this model, i represents a patient, not an observation (i, b)
 
-ModelSCCS::ModelSCCS(const SBaseArrayDouble2dPtrList1D &features,
-                     const SArrayIntPtrList1D &labels,
-                     const SBaseArrayULongPtr censoring,
-                     const SArrayULongPtr n_lags)
+ModelSCCS::ModelSCCS(const SBaseArrayDouble2dPtrList1D &features, const SArrayIntPtrList1D &labels,
+                     const SArrayULongPtr censoring, const SArrayULongPtr n_lags)
     : n_intervals(features[0]->n_rows()),
       n_lags(n_lags),
       n_samples(features.size()),

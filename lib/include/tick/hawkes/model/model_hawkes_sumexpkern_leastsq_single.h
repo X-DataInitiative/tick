@@ -133,8 +133,33 @@ class DLL_PUBLIC ModelHawkesSumExpKernLeastSqSingle : public ModelHawkesSingle {
     ar(CEREAL_NVP(decays));
     ar(CEREAL_NVP(n_decays));
   }
+
+  BoolStrReport compare(const ModelHawkesSumExpKernLeastSqSingle &that, std::stringstream &ss) {
+    ss << get_class_name() << std::endl;
+    auto are_equal = ModelHawkesSingle::compare(that, ss) &&
+                     TICK_CMP_REPORT_VECTOR(ss, E) &&
+                     TICK_CMP_REPORT_VECTOR(ss, Dgg) &&
+                     TICK_CMP_REPORT_VECTOR(ss, C) &&
+                     TICK_CMP_REPORT_VECTOR(ss, Dg) &&
+                     TICK_CMP_REPORT(ss, L) &&
+                     TICK_CMP_REPORT_VECTOR(ss, K) &&
+                     TICK_CMP_REPORT(ss, n_baselines) &&
+                     TICK_CMP_REPORT(ss, period_length) &&
+                     TICK_CMP_REPORT(ss, decays) &&
+                     TICK_CMP_REPORT(ss, n_decays);
+    return BoolStrReport(are_equal, ss.str());
+  }
+  BoolStrReport compare(const ModelHawkesSumExpKernLeastSqSingle &that) {
+    std::stringstream ss;
+    return compare(that, ss);
+  }
+  BoolStrReport operator==(const ModelHawkesSumExpKernLeastSqSingle &that) {
+    return ModelHawkesSumExpKernLeastSqSingle::compare(that);
+  }
 };
 
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelHawkesSumExpKernLeastSqSingle,
+                                   cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(ModelHawkesSumExpKernLeastSqSingle);
 
 #endif  // LIB_INCLUDE_TICK_HAWKES_MODEL_MODEL_HAWKES_SUMEXPKERN_LEASTSQ_SINGLE_H_

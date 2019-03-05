@@ -4,9 +4,8 @@
 
 %include tick/base_model/base_model_module.i
 
-%shared_ptr(TModelCoxRegPartialLik<double>);
-%shared_ptr(TModelCoxRegPartialLik<float>);
-%shared_ptr(ModelCoxRegPartialLik);
+%shared_ptr(ModelCoxRegPartialLikDouble);
+%shared_ptr(ModelCoxRegPartialLikFloat);
 
 %shared_ptr(ModelSCCS);
 

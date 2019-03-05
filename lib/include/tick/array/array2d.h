@@ -191,6 +191,14 @@ class Array2d : public BaseArray2d<T, MAJ> {
   //! \warning : This method cannot be called on a view
   // The definition is in the file sarray.h
   std::shared_ptr<SArray2d<T, MAJ>> as_sarray2d_ptr();
+
+ public:
+  bool compare(const Array2d<T, MAJ>& that) const {
+    bool are_equal = BaseArray2d<T, MAJ>::compare(that);
+    return are_equal;
+  }
+
+  bool operator==(const Array2d<T, MAJ>& that) const { return compare(that); }
 };
 
 // Constructor
@@ -469,6 +477,11 @@ tick::TemporaryLog<E>& operator<<(tick::TemporaryLog<E>& log,
   }
 
   return log;
+}
+
+template <typename T>
+inline std::ostream &operator<<(std::ostream &s, const std::vector<T> &p) {
+  return s << typeid(p).name() << "<" << typeid(T).name() << ">";
 }
 
 #endif  // LIB_INCLUDE_TICK_ARRAY_ARRAY2D_H_

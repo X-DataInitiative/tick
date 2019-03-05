@@ -102,6 +102,28 @@ class DLL_PUBLIC ModelHawkesLogLik : public ModelHawkesList {
 
   ulong get_n_coeffs() const override;
 
+  template <class Archive>
+  void serialize(Archive &ar) {
+    ar(cereal::make_nvp("ModelHawkesList",
+                        cereal::base_class<ModelHawkesList>(this)));
+
+    ar(CEREAL_NVP(model_list));
+  }
+
+  BoolStrReport compare(const ModelHawkesLogLik &that, std::stringstream &ss) {
+    ss << get_class_name() << std::endl;
+    auto are_equal = ModelHawkesList::compare(that, ss) &&
+                     TICK_CMP_REPORT_VECTOR_UPTR_1D(ss, model_list, ModelHawkesLogLikSingle);
+    return BoolStrReport(are_equal, ss.str());
+  }
+  BoolStrReport compare(const ModelHawkesLogLik &that) {
+    std::stringstream ss;
+    return compare(that, ss);
+  }
+  BoolStrReport operator==(const ModelHawkesLogLik &that) {
+    return ModelHawkesLogLik::compare(that);
+  }
+
  protected:
   virtual std::unique_ptr<ModelHawkesLogLikSingle> build_model(
       const int n_threads) {
@@ -160,5 +182,8 @@ class DLL_PUBLIC ModelHawkesLogLik : public ModelHawkesList {
 
   std::pair<ulong, ulong> sampled_i_to_realization(const ulong sampled_i);
 };
+
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelHawkesLogLik,
+                                   cereal::specialization::member_serialize)
 
 #endif  // LIB_INCLUDE_TICK_HAWKES_MODEL_BASE_MODEL_HAWKES_LOGLIK_H_

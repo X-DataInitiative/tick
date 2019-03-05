@@ -127,8 +127,28 @@ class DLL_PUBLIC ModelHawkesExpKernLeastSqSingle : public ModelHawkesSingle {
     ar(CEREAL_NVP(C));
     ar(CEREAL_NVP(decays));
   }
+
+  BoolStrReport compare(const ModelHawkesExpKernLeastSqSingle &that, std::stringstream &ss) {
+    ss << get_class_name() << std::endl;
+    auto are_equal = ModelHawkesSingle::compare(that, ss) &&
+                     TICK_CMP_REPORT(ss, E) &&
+                     TICK_CMP_REPORT(ss, Dg) &&
+                     TICK_CMP_REPORT(ss, Dg2) &&
+                     TICK_CMP_REPORT(ss, C) &&
+                     TICK_CMP_REPORT_PTR(ss, decays);
+    return BoolStrReport(are_equal, ss.str());
+  }
+  BoolStrReport compare(const ModelHawkesExpKernLeastSqSingle &that) {
+    std::stringstream ss;
+    return compare(that, ss);
+  }
+  BoolStrReport operator==(const ModelHawkesExpKernLeastSqSingle &that) {
+    return ModelHawkesExpKernLeastSqSingle::compare(that);
+  }
 };
 
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelHawkesExpKernLeastSqSingle,
+                                   cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(ModelHawkesExpKernLeastSqSingle);
 
 #endif  // LIB_INCLUDE_TICK_HAWKES_MODEL_MODEL_HAWKES_EXPKERN_LEASTSQ_SINGLE_H_

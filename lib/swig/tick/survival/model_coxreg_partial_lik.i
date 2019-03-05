@@ -9,34 +9,35 @@
 template <class T, class K = T>
 class TModelCoxRegPartialLik : public TModel<T, K> {
  public:
-  TModelCoxRegPartialLik(const std::shared_ptr<BaseArray2d<T> > features,
+  TModelCoxRegPartialLik(const std::shared_ptr<SArray2d<T> > features,
                          const std::shared_ptr<SArray<T> > times,
                          const SArrayUShortPtr censoring);
-};
 
-%rename(ModelCoxRegPartialLik) TModelCoxRegPartialLik<double>;
-class TModelCoxRegPartialLik<double> : public TModel<double> {
- public:
-  ModelCoxRegPartialLik(const SBaseArrayDouble2dPtr features,
-                              const SArrayDoublePtr times,
-                              const SArrayUShortPtr censoring);
+  bool compare(const TModelCoxRegPartialLik &that);
 };
-typedef TModelCoxRegPartialLik<double> ModelCoxRegPartialLik;
 
 %rename(ModelCoxRegPartialLikDouble) TModelCoxRegPartialLik<double>;
-class TModelCoxRegPartialLik<double> : public TModel<double> {
+class ModelCoxRegPartialLikDouble : public TModel<double> {
  public:
+  ModelCoxRegPartialLikDouble();
   ModelCoxRegPartialLikDouble(const SBaseArrayDouble2dPtr features,
                               const SArrayDoublePtr times,
                               const SArrayUShortPtr censoring);
+
+  bool compare(const ModelCoxRegPartialLikDouble &that);
 };
 typedef TModelCoxRegPartialLik<double> ModelCoxRegPartialLikDouble;
+TICK_MAKE_PICKLABLE(ModelCoxRegPartialLikDouble);
 
 %rename(ModelCoxRegPartialLikFloat) TModelCoxRegPartialLik<float>;
-class TModelCoxRegPartialLik<float> : public TModel<float> {
+class ModelCoxRegPartialLikFloat : public TModel<float> {
  public:
+  ModelCoxRegPartialLikFloat();
   ModelCoxRegPartialLikFloat(const SBaseArrayFloat2dPtr features,
                              const SArrayFloatPtr times,
                              const SArrayUShortPtr censoring);
+
+  bool compare(const ModelCoxRegPartialLikFloat &that);
 };
 typedef TModelCoxRegPartialLik<float> ModelCoxRegPartialLikFloat;
+TICK_MAKE_PICKLABLE(ModelCoxRegPartialLikFloat);

@@ -1,6 +1,6 @@
 # License: BSD 3 clause
 
-import unittest
+import unittest, pickle
 import numpy as np
 from scipy.optimize import check_grad, fmin_bfgs
 from scipy.linalg import norm
@@ -135,6 +135,24 @@ class ModelSCCSTest(unittest.TestCase):
         self.assertAlmostEqual(
             norm(model.grad(coeffs_min)), .0, delta=delta_model_grad)
 
+    def test_sccs_serialize_and_compare(self):
+        """Test serialization (cereal/pickle) of SCCS."""
+        X = [
+            np.array([[0, 0, 1], [0, 1, 1], [1, 1, 1]], dtype="float64"),
+            np.array([[0, 1, 1], [0, 1, 1], [1, 1, 1]], dtype="float64")
+        ]
+        y = [
+            np.array([0, 1, 0], dtype="int32"),
+            np.array([0, 1, 0], dtype="int32")
+        ]
+        n_lags = np.repeat(1, 3).astype(dtype="uint64")
+        X, _, _ = LongitudinalFeaturesLagger(n_lags=n_lags) \
+            .fit_transform(X)
+        model = ModelSCCS(n_intervals=3, n_lags=n_lags).fit(X, y)
+
+        pickled = pickle.loads(pickle.dumps(model))
+
+        self.assertTrue(model._model.compare(pickled._model))
 
 if __name__ == '__main__':
     unittest.main()

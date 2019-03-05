@@ -97,8 +97,7 @@ class ModelSCCS(ModelFirstOrder, ModelLipschitz):
 
         self._set(
             "_model",
-            _ModelSCCS(features=self.features, labels=self.labels,
-                       censoring=self.censoring, n_lags=self.n_lags))
+            _ModelSCCS(self.features, self.labels, self.censoring, self.n_lags))
 
         self.dtype = features[0].dtype
         return self
