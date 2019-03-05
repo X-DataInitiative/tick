@@ -8,7 +8,7 @@ from tick.plot.plot_utilities import share_x, share_y
 
 
 def plot_hawkes_kernel_norms(kernel_object, show=True, pcolor_kwargs=None,
-                             node_names=None, rotate_x_labels=0.):
+                             node_names=None, rotate_x_labels=0., ax=None):
     """Generic function to plot Hawkes kernel norms.
 
     Parameters
@@ -37,6 +37,10 @@ def plot_hawkes_kernel_norms(kernel_object, show=True, pcolor_kwargs=None,
         Number of degrees to rotate the x-labels clockwise, to prevent 
         overlapping.
 
+    ax : `matplotlib.axes`, default=None
+        If not None, the figure will be plot on this axis and show will be
+        set to False. Used only with matplotlib
+
     Notes
     -----
     Kernels are displayed such that it shows norm of column influence's
@@ -54,7 +58,6 @@ def plot_hawkes_kernel_norms(kernel_object, show=True, pcolor_kwargs=None,
     column_labels = ['$\\rightarrow {}$'.format(i) for i in node_names]
 
     norms = kernel_object.get_kernel_norms()
-    fig, ax = plt.subplots()
 
     if rotate_x_labels != 0.:
         # we want clockwise rotation because x-axis is on top
@@ -62,6 +65,12 @@ def plot_hawkes_kernel_norms(kernel_object, show=True, pcolor_kwargs=None,
         x_label_alignment = 'right'
     else:
         x_label_alignment = 'center'
+
+    if ax is None:
+        fig, ax = plt.subplots(1, 1, figsize=(6, 4))
+    else:
+        fig = ax.figure
+        show = False
 
     if pcolor_kwargs is None:
         pcolor_kwargs = {}

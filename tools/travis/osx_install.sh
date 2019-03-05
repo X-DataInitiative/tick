@@ -45,5 +45,15 @@ python -m pip install -r requirements.txt
 python -m pip install sphinx pillow
 python -m pip install cpplint
 [[ "${PYVER}" != "3.7.0" ]] && python -m pip install tensorflow # does not yet exist on python 3.7
+
+# Check if not already installed
+if brew ls --versions geos > /dev/null; then
+  echo "geos is already installed"
+else
+  brew install geos
+fi
+# needed for basemap see https://github.com/matplotlib/basemap/issues/414#issuecomment-436792915
+# python -m pip install https://github.com/jswhit/pyproj/archive/v1.9.5.1rel.zip
+python -m pip install https://github.com/matplotlib/basemap/archive/v1.2.0rel.tar.gz
 pyenv rehash
 
