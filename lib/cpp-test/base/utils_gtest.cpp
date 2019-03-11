@@ -210,15 +210,6 @@ struct SignalRaiser {
   }
 };
 
-TEST_P(ParallelTest, SignalInterrupt) {
-  SignalRaiser s{};
-
-  EXPECT_THROW(parallel_run(GetParam(), 1000, &SignalRaiser::DoIt, &s),
-               Interruption);
-
-  Interruption::reset();
-}
-
 TEST_P(ParallelTest, MapArray) {
   const std::size_t N{1000};
 

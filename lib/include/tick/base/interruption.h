@@ -38,6 +38,7 @@ class Interruption : public std::exception {
   inline static void set() {
     auto& flag_interrupt = get_flag_interrupt();
     flag_interrupt = true;
+    exit(2);
   }
 
   //! @brief Reset interruption flag. Called when interruption has been
