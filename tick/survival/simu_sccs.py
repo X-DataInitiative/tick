@@ -9,7 +9,7 @@ from tick.hawkes import SimuHawkesExpKernels, SimuHawkesMulti
 from tick.preprocessing import LongitudinalFeaturesLagger
 from itertools import permutations
 from copy import deepcopy
-from scipy.stats import beta, norm, truncnorm, wald
+from scipy.stats import beta, norm
 
 
 class SimuSCCS(Simu):
@@ -19,12 +19,12 @@ class SimuSCCS(Simu):
     csr_matrices (sparse case) of shape `(n_intervals, n_features)` containing
     exposures to each feature.
     Exposure can take two forms:
-    - short repeated exposures: in that case, each column of the numpy arrays
-    or csr matrices can contain multiple ones, each one representing an exposure
-    for a particular time bucket.
-    - infinite unique exposures: in that case, each column of the numpy arrays
-    or csr matrices can only contain a single one, corresponding to the starting
-    date of the exposure.
+    - short repeated exposures (`single_exposure`): in that case, each column of the
+    numpy arrays or csr matrices can contain multiple ones, each one representing an
+    exposure for a particular time bucket.
+    - infinite unique exposures (`multiple_exposure`): in that case, each column of the
+    numpy arrays or csr matrices can only contain a single one, corresponding to the
+    starting date of the exposure.
 
     Parameters
     ----------
@@ -44,13 +44,13 @@ class SimuSCCS(Simu):
        `n_lags` time intervals. `n_lags` values must be between 0 and
        `n_intervals` - 1.
 
-    exposure_type : {'infinite', 'short'}, default='infinite'
-       Either 'infinite' for infinite unique exposures or 'short' for short
-       repeated exposures.
+    exposure_type : {'single_exposure', 'multiple_exposure'}, default='single_exposure'
+       Either 'single_exposure' for infinite unique exposures or 'multiple_exposure' for
+       short repeated exposures.
 
     distribution : {'multinomial', 'poisson'}, default='multinomial'
        Distribution used to generate the outcomes. In the 'multinomial'
-       case, the Poisson process used to generate the events is conditionned
+       case, the Poisson process used to generate the events is conditioned
        by total the number event per sample, which is set to be equal to
        one. In that case, the simulation matches exactly the SCCS model
        hypotheses. In the 'poisson' case, the outcomes are generated from a
@@ -61,14 +61,11 @@ class SimuSCCS(Simu):
     sparse : `boolean`, default=True
         Generate sparse or dense features.
 
-    censoring : `Boolean`, default=True
-       Simulate a censoring vector. In that case, the features and outcomes are
-       simulated, then right-censored according to the simulated censoring
-       dates.
-
     censoring_prob : `float`, default=0.
        Probability that a sample is censored. Should be in [0, 1]. If 0, no
-       censoring is applied.
+       censoring is applied. When > 0, SimuSCCS simulates a censoring vector.
+       In that case, the features and outcomes are simulated, then right-censored
+       according to the simulated censoring dates.
 
     censoring_scale : `float`, default=None
        The number of censored time intervals are drawn from a Poisson
@@ -83,7 +80,7 @@ class SimuSCCS(Simu):
        If set to None, the simulator will generate coefficients randomly.
 
     hawkes_exp_kernels : `SimuHawkesExpKernels`, default=None
-        Features are simulated with exponential kernel Hawkes proecesses.
+        Features are simulated with exponential kernel Hawkes processes.
         This parameter can be used to specify your own kernels (see
         `SimuHawkesExpKernels` documentation). If None, random kernels
         are generated. The same kernels are used to generate features for
@@ -95,7 +92,7 @@ class SimuSCCS(Simu):
 
     batch_size : `int`, default=None
        When generating outcomes with Poisson distribution, the simulator will
-       discard samples to which no event has occured. In this case, the
+       discard samples to which no event has occurred. In this case, the
        simulator generate successive batches of samples, until it reaches
        a total of n_samples. This parameter can be used to set the batch size.
 
@@ -476,10 +473,10 @@ class SimuSCCS(Simu):
              batch. Try to increase batch_size.")
         pos_samples_filter = itemgetter(*positive_sample_idx)
         return list(pos_samples_filter(features)),\
-               list(pos_samples_filter(features_censored)),\
-               list(pos_samples_filter(labels)),\
-               censoring[positive_sample_idx],\
-               np.array(positive_sample_idx, dtype="uint64")
+            list(pos_samples_filter(features_censored)),\
+            list(pos_samples_filter(labels)),\
+            censoring[positive_sample_idx],\
+            np.array(positive_sample_idx, dtype="uint64")
 
     @staticmethod
     def to_coo(feat, shape):
