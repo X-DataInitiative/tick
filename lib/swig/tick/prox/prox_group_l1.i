@@ -10,6 +10,7 @@ class TProxGroupL1 : public TProxWithGroups<T, K> {
   std::unique_ptr<TProx<T, K> > build_prox(T strength, ulong start, ulong end, bool positive);
 
  public:
+  TProxGroupL1();
   TProxGroupL1(T strength, SArrayULongPtr blocks_start, SArrayULongPtr blocks_length,
                 bool positive);
 
@@ -27,7 +28,9 @@ class TProxGroupL1 : public TProxWithGroups<T, K> {
 
 %template(ProxGroupL1Double) TProxGroupL1<double, double>;
 typedef TProxGroupL1<double, double> ProxGroupL1Double;
+TICK_MAKE_TK_PICKLABLE(TProxGroupL1, ProxGroupL1Double ,  double,  double);
 
 %template(ProxGroupL1Float) TProxGroupL1<float, float>;
 typedef TProxGroupL1<float, float> ProxGroupL1Float;
+TICK_MAKE_TK_PICKLABLE(TProxGroupL1, ProxGroupL1Float ,  float,  float);
 

@@ -16,7 +16,7 @@ class DLL_PUBLIC TProxGroupL1 : public TProxWithGroups<T, K> {
 
  public:
   // This exists soley for cereal/swig
-  TProxGroupL1() : TProxGroupL1(0, nullptr, nullptr, false) {}
+  TProxGroupL1() {}
 
   TProxGroupL1(T strength, SArrayULongPtr blocks_start,
                SArrayULongPtr blocks_length, bool positive)

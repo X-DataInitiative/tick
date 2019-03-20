@@ -7,6 +7,7 @@
 template <class T, class K>
 class TProxSlope : public TProx<T, K> {
  public:
+   TProxSlope();
    TProxSlope(T lambda, T fdr, bool positive);
 
    TProxSlope(T lambda, T fdr, unsigned long start, unsigned long end, bool positive);
@@ -20,11 +21,10 @@ class TProxSlope : public TProx<T, K> {
   bool compare(const TProxSlope<T, K> &that);
 };
 
-%template(ProxSlope) TProxSlope<double, double>;
-typedef TProxSlope<double, double> ProxSlope;
-
 %template(ProxSlopeDouble) TProxSlope<double, double>;
 typedef TProxSlope<double, double> ProxSlopeDouble;
+TICK_MAKE_TK_PICKLABLE(TProxSlope, ProxSlopeDouble, double, double);
 
 %template(ProxSlopeFloat) TProxSlope<float, float>;
 typedef TProxSlope<float, float> ProxSlopeFloat;
+TICK_MAKE_TK_PICKLABLE(TProxSlope, ProxSlopeFloat, float, float);

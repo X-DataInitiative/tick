@@ -21,8 +21,8 @@ class TProxL2Sq : public TProxSeparable<T, K> {
 
 %template(ProxL2SqDouble) TProxL2Sq<double, double>;
 typedef TProxL2Sq<double, double> ProxL2SqDouble;
-TICK_MAKE_TEMPLATED_PICKLABLE(TProxL2Sq, ProxL2SqDouble , double);
+TICK_MAKE_TK_PICKLABLE(TProxL2Sq, ProxL2SqDouble , double, double);
 
 %template(ProxL2SqFloat) TProxL2Sq<float, float>;
 typedef TProxL2Sq<float, float> ProxL2SqFloat;
-TICK_MAKE_TEMPLATED_PICKLABLE(TProxL2Sq, ProxL2SqFloat , float);
+TICK_MAKE_TK_PICKLABLE(TProxL2Sq, ProxL2SqFloat , float, float);

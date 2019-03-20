@@ -19,8 +19,8 @@ class TProxZero : public TProx<T, K> {
 
 %template(ProxZeroDouble) TProxZero<double, double>;
 typedef TProxZero<double, double> ProxZeroDouble;
-TICK_MAKE_TEMPLATED_PICKLABLE(TProxZero, ProxZeroDouble, double);
+TICK_MAKE_TK_PICKLABLE(TProxZero, ProxZeroDouble, double, double);
 
 %template(ProxZeroFloat) TProxZero<float, float>;
 typedef TProxZero<float, float> ProxZeroFloat;
-TICK_MAKE_TEMPLATED_PICKLABLE(TProxZero, ProxZeroFloat , float);
+TICK_MAKE_TK_PICKLABLE(TProxZero, ProxZeroFloat , float , float);

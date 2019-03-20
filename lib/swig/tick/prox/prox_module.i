@@ -33,13 +33,11 @@
 %shared_ptr(TProxL2Sq<float, float>);
 %shared_ptr(ProxL2Sq);
 
-%shared_ptr(ProxL1);
 %shared_ptr(ProxL1Double);
 %shared_ptr(ProxL1Float);
 
-%shared_ptr(TProxL1w<double, double>);
-%shared_ptr(TProxL1w<float, float>);
-%shared_ptr(ProxL1w);
+%shared_ptr(ProxL1wDouble);
+%shared_ptr(ProxL1wFloat);
 
 %shared_ptr(TProxTV<double, double>);
 %shared_ptr(TProxTV<float, float>);
