@@ -5,15 +5,15 @@ set -ex
 CWD="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd $CWD/..
 ROOT=$PWD
+N_CORES=${N_CORES:=1}
+CMAKE_DIR="${ROOT}/lib"
 
 mkdir -p $ROOT/build/bench && cd $ROOT/build/bench
-
 rm -rf build_noopt && mkdir -p build_noopt
 
-CMAKE_DIR="${ROOT}/lib"
 echo ${CMAKE_DIR}
 
-builds=(build_noopt )
+builds=( build_noopt )
 
 printf "\nNo optimization build\n"
 (cd build_noopt && \
@@ -38,5 +38,5 @@ fi
 mkdir -p $ROOT/build/bench && cd $ROOT/build/bench
 
 # Use only one core if no argument is provided
-N_CORES=${N_CORES:=1}
-for d in "${builds[@]}" ; do echo ${d} && (cd ${d} && make -j${N_CORES}); done
+
+for d in "${builds[@]}" ; do (cd ${d} && make V=1 -j${N_CORES} VERBOSE=1); done
