@@ -7,6 +7,7 @@
 template <class T, class K>
 class TProxEquality : public TProx<T, K> {
  public:
+  TProxEquality();
   explicit TProxEquality(T strength, bool positive);
 
   TProxEquality(T strength, ulong start, ulong end, bool positive);
@@ -14,11 +15,10 @@ class TProxEquality : public TProx<T, K> {
   bool compare(const TProxEquality<T, K> &that);
 };
 
-%template(ProxEquality) TProxEquality<double, double>;
-typedef TProxEquality<double, double> ProxEquality;
-
 %template(ProxEqualityDouble) TProxEquality<double, double>;
 typedef TProxEquality<double, double> ProxEqualityDouble;
+TICK_MAKE_TK_PICKLABLE(TProxEquality, ProxEqualityDouble ,  double,  double);
 
 %template(ProxEqualityFloat) TProxEquality<float, float>;
 typedef TProxEquality<float, float> ProxEqualityFloat;
+TICK_MAKE_TK_PICKLABLE(TProxEquality, ProxEqualityFloat ,  float,  float);

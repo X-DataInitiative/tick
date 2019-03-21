@@ -7,6 +7,7 @@
 template <class T, class K>
 class TProxTV : public TProx<T, K> {
  public:
+   TProxTV();
    TProxTV(T strength,
              bool positive);
 
@@ -20,9 +21,9 @@ class TProxTV : public TProx<T, K> {
 
 %template(ProxTVDouble) TProxTV<double, double>;
 typedef TProxTV<double, double> ProxTVDouble;
-TICK_MAKE_TEMPLATED_PICKLABLE(TProxTV, ProxTVDouble , double);
+TICK_MAKE_TK_PICKLABLE(TProxTV, ProxTVDouble , double, double);
 
 %template(ProxTVFloat) TProxTV<float, float>;
 typedef TProxTV<float, float> ProxTVFloat;
-TICK_MAKE_TEMPLATED_PICKLABLE(TProxTV, ProxTVFloat , float);
+TICK_MAKE_TK_PICKLABLE(TProxTV, ProxTVFloat , float  , float);
 

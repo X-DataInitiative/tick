@@ -8,7 +8,7 @@ template <class T, class K>
 class TProxElasticNet : public TProxSeparable<T, K> {
 
  public:
- TProxElasticNet(){}
+  TProxElasticNet();
   TProxElasticNet(T strength, T ratio, bool positive);
 
   TProxElasticNet(T strength, T ratio, ulong start, ulong end, bool positive);
@@ -22,11 +22,11 @@ class TProxElasticNet : public TProxSeparable<T, K> {
 
 %template(ProxElasticNetDouble) TProxElasticNet<double, double>;
 typedef TProxElasticNet<double, double> ProxElasticNetDouble;
-TICK_MAKE_TEMPLATED_PICKLABLE(TProxElasticNet, ProxElasticNetDouble , double);
+TICK_MAKE_TK_PICKLABLE(TProxElasticNet, ProxElasticNetDouble , double, double);
 
 %template(ProxElasticNetFloat) TProxElasticNet<float, float>;
 typedef TProxElasticNet<float, float> ProxElasticNetFloat;
-TICK_MAKE_TEMPLATED_PICKLABLE(TProxElasticNet, ProxElasticNetFloat , float);
+TICK_MAKE_TK_PICKLABLE(TProxElasticNet, ProxElasticNetFloat ,  float,  float);
 
 %template(ProxElasticNetAtomicDouble) TProxElasticNet<double, std::atomic<double>>;
 typedef TProxElasticNet<double, std::atomic<double>> ProxElasticNetAtomicDouble;

@@ -43,7 +43,7 @@ class TProxWithGroups : public TProx<T, K> {
 
  protected:
   // This exists soley for cereal/swig
-  TProxWithGroups() : TProxWithGroups(0, nullptr, nullptr, false) {}
+  TProxWithGroups() {}
 
  public:
   TProxWithGroups(T strength, SArrayULongPtr blocks_start,

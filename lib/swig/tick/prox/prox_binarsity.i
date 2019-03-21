@@ -9,6 +9,7 @@
 template <class T, class K>
 class TProxBinarsity : public TProxWithGroups<T, K> {
  public:
+  TProxBinarsity();
   TProxBinarsity(T strength, SArrayULongPtr blocks_start, SArrayULongPtr blocks_length,
                 bool positive);
 
@@ -26,6 +27,8 @@ class TProxBinarsity : public TProxWithGroups<T, K> {
 
 %template(ProxBinarsityDouble) TProxBinarsity<double, double>;
 typedef TProxBinarsity<double, double> ProxBinarsityDouble;
+TICK_MAKE_TK_PICKLABLE(TProxBinarsity, ProxBinarsityDouble ,  double,  double);
 
 %template(ProxBinarsityFloat) TProxBinarsity<float, float>;
 typedef TProxBinarsity<float, float> ProxBinarsityFloat;
+TICK_MAKE_TK_PICKLABLE(TProxBinarsity, ProxBinarsityFloat ,  float,  float);
