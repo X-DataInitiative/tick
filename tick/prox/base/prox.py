@@ -21,7 +21,8 @@ class Prox(ABC, Base):
         Type of the arrays used.
     """
 
-    _attrinfos = {"_prox": {"writable": False}, "_range": {"writable": False}}
+    _attrinfos = {"_prox": {"writable": False}, "_range": {"writable": False},
+                  "_non_atomic_prox": {'writable': False}}
 
     # The name of the attribute that will contain the C++ prox object
     _cpp_obj_name = "_prox"
@@ -128,3 +129,51 @@ class Prox(ABC, Base):
     def _build_cpp_prox(self, dtype):
         raise ValueError("""This function is expected to
                             overriden in a subclass""".strip())
+
+    @property
+    def _AtomicClass(self):
+        raise ValueError("""This function is expected to
+                                overriden in a subclass""".strip())
+
+    def to_atomic(self):
+        import inspect
+        signature = inspect.signature(self.__class__.__init__)
+        params = self.get_params()
+        args = []
+        for key, param in signature.parameters.items():
+            if param.default == inspect._empty and key in params:
+                args += [params[key]]
+
+        atomic_prox = self._AtomicClass(*args)
+        atomic_prox.set_params(**params)
+        atomic_prox._set('_non_atomic_prox', self)
+        return atomic_prox
+
+    def _get_params_set(self):
+        """Get the set of parameters
+        """
+        return {'dtype', 'range'}
+
+    def get_params(self):
+        """Get parameters for this model
+
+        Returns
+        -------
+        params : mapping of string to any
+            Parameter names mapped to their values.
+        """
+        params = {}
+        for param in self._get_params_set():
+            params[param] = self.__getattribute__(param)
+        return params
+
+    def set_params(self, **params):
+        """Set the parameters of this model.
+
+        Returns
+        -------
+        self
+        """
+        for param in self._get_params_set():
+            self._set(param, params[param])
+        return self

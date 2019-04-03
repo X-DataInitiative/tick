@@ -64,8 +64,21 @@ class TModel {
   }
 
   virtual T sdca_dual_min_i(const ulong i, const T dual_i,
-                            const Array<K> &primal_vector,
-                            const T previous_delta_dual_i, T l_l2sq) {
+                            const T primal_dot_features,
+                            const T previous_delta_dual_i, T _1_over_lbda_n) {
+    TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
+  }
+
+  virtual Array<T> sdca_dual_min_many(ulong indices,
+                                      const Array<T> &duals,
+                                      Array2d<T> &g,
+                                      Array2d<T> &n_hess,
+                                      Array<T> &p,
+                                      Array<T> &n_grad,
+                                      Array<T> &sdca_labels,
+                                      Array<T> &new_duals,
+                                      Array<T> &delta_duals,
+                                      ArrayInt &ipiv) {
     TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
   }
 
@@ -82,9 +95,9 @@ class TModel {
     TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
   }
 
-  virtual void sdca_primal_dual_relation(const T l_l2sq,
-                                         const Array<T> &dual_vector,
-                                         Array<T> &out_primal_vector) {
+  virtual void sdca_primal_dual_relation(const T _1_over_lbda_n,
+                                         const Array<K> &dual_vector,
+                                         Array<K> &out_primal_vector) {
     TICK_CLASS_DOES_NOT_IMPLEMENT(get_class_name());
   }
 
@@ -133,6 +146,9 @@ using ModelDoublePtr = std::shared_ptr<ModelDouble>;
 
 using ModelFloat = TModel<float, float>;
 using ModelFloatPtr = std::shared_ptr<ModelFloat>;
+
+using ModelAtomic = TModel<double, std::atomic<double> >;
+using ModelAtomicPtr = std::shared_ptr<ModelAtomic>;
 
 using ModelAtomicDouble = TModel<double, std::atomic<double> >;
 using ModelAtomicDoublePtr = std::shared_ptr<ModelAtomicDouble>;

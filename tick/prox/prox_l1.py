@@ -9,11 +9,6 @@ from .build.prox import ProxL1Float as _ProxL1Float
 
 __author__ = 'Stephane Gaiffas'
 
-dtype_map = {
-    np.dtype("float64"): _ProxL1Double,
-    np.dtype("float32"): _ProxL1Float
-}
-
 
 class ProxL1(Prox):
     """Proximal operator of the L1 norm (soft-thresholding)
@@ -48,6 +43,11 @@ class ProxL1(Prox):
         }
     }
 
+    _cpp_class_dtype_map = {
+        np.dtype("float64"): _ProxL1Double,
+        np.dtype("float32"): _ProxL1Float
+    }
+
     def __init__(self, strength: float, range: tuple = None,
                  positive: bool = False):
         Prox.__init__(self, range)
@@ -76,9 +76,33 @@ class ProxL1(Prox):
     def _build_cpp_prox(self, dtype_or_object_with_dtype):
         self.dtype = self._extract_dtype(dtype_or_object_with_dtype)
         prox_class = self._get_typed_class(dtype_or_object_with_dtype,
-                                           dtype_map)
+                                           self._cpp_class_dtype_map)
         if self.range is None:
             return prox_class(self.strength, self.positive)
         else:
             return prox_class(self.strength, self.range[0], self.range[1],
                               self.positive)
+
+    def _get_params_set(self):
+        """Get the set of parameters
+        """
+        return {*Prox._get_params_set(self), 'strength', 'range'}
+
+    @property
+    def _AtomicClass(self):
+        return AtomicProxL1
+
+
+from .build.prox import ProxL1AtomicDouble as _ProxL1AtomicDouble
+from .build.prox import ProxL1AtomicFloat as _ProxL1AtomicFloat
+
+
+class AtomicProxL1(ProxL1):
+    _cpp_class_dtype_map = {
+        np.dtype('float32'): _ProxL1AtomicFloat,
+        np.dtype('float64'): _ProxL1AtomicDouble
+    }
+
+    def value(self, coeffs):
+        return self._non_atomic_prox.value(coeffs)
+

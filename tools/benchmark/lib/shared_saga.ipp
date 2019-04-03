@@ -7,7 +7,7 @@ double Variance(std::vector<double> samples) {
 
   double variance = 0;
   double t = samples[0];
-  for (int i = 1; i < size; i++) {
+  for (size_t i = 1; i < size; i++) {
     t += samples[i];
     double diff = ((i + 1) * samples[i]) - t;
     variance += (diff * diff) / ((i + 1.0) * i);
@@ -75,7 +75,7 @@ void submain(
 
     double min_objective;
     std::vector<double> samples;
-    for (int tries = 0; tries < 5; ++tries) {
+    for (size_t tries = 0; tries < 5; ++tries) {
 
       std::vector<double> history, objective;
       std::tie(history, objective) = run_solver(features, labels, n_iter, n_threads, record_every,

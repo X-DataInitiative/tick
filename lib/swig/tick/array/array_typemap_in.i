@@ -26,6 +26,9 @@
         if (PyArray_CheckExact(obj)) return 1; else return 0;
     }
 %}
+%typemap(in) (Array<C_TYPE> &) (Array<C_TYPE> res) {
+    $1 = &res; if (!BuildFromPyObj_##ARRAY_TYPE($input, &res)) SWIG_fail;
+}
 %typemap(in) (ARRAY_TYPE &) (ARRAY_TYPE res) {
     $1 = &res; if (!BuildFromPyObj_##ARRAY_TYPE($input, &res)) SWIG_fail;
 }

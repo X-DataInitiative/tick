@@ -29,10 +29,10 @@ void TStoSolver<T, K>::reset() {
 }
 
 template <class T, class K>
-ulong TStoSolver<T, K>::get_next_i() {
+ulong TStoSolver<T, K>::get_next_i(std::mt19937_64* gen) {
   ulong i = 0;
   if (rand_type == RandType::unif) {
-    i = rand_unif(rand_max - 1);
+    i = rand_unif(rand_max - 1, gen);
   } else if (rand_type == RandType::perm) {
     if (!permutation_ready) {
       shuffle();
@@ -70,12 +70,12 @@ void TStoSolver<T, K>::shuffle() {
 }
 
 template <class T, class K>
-void TStoSolver<T, K>::solve(int n_epochs) {
+void TStoSolver<T, K>::solve(size_t n_epochs) {
   double initial_time = last_record_time;
   int initial_epoch = last_record_epoch;
 
   auto start = std::chrono::steady_clock::now();
-  for (int epoch = 1; epoch < (n_epochs + 1); ++epoch) {
+  for (size_t epoch = 1; epoch < (n_epochs + 1); ++epoch) {
     Interruption::throw_if_raised();
 
     solve_one_epoch();
@@ -127,24 +127,9 @@ std::vector<std::shared_ptr<SArray<T> > >  TStoSolver<T, K>:: get_iterate_histor
 }
 
 template <class T, class K>
-void TStoSolver<T, K>::set_starting_iterate(Array<K> &new_iterate) {
+void TStoSolver<T, K>::set_starting_iterate(Array<T> &new_iterate) {
   for (ulong i = 0; i < new_iterate.size(); ++i) {
     iterate[i] = new_iterate[i];
-  }
-}
-
-template <>
-void TStoSolver<double, std::atomic<double>>::set_starting_iterate(
-    Array<std::atomic<double>> &new_iterate) {
-  for (ulong i = 0; i < new_iterate.size(); ++i) {
-    iterate[i].store(new_iterate[i].load());
-  }
-}
-template <>
-void TStoSolver<float, std::atomic<float>>::set_starting_iterate(
-    Array<std::atomic<float>> &new_iterate) {
-  for (ulong i = 0; i < new_iterate.size(); ++i) {
-    iterate[i].store(new_iterate[i].load());
   }
 }
 

@@ -7,27 +7,27 @@
 #include "toy_dataset.ipp"
 
 TEST(SVRG, test_convergence) {
-  SArrayDoublePtr labels_ptr = get_labels();
-  SArrayDouble2dPtr features_ptr = get_features();
+  SArrayDoublePtr labels_ptr = get_linreg_labels();
+  SBaseArrayDouble2dPtr features_ptr = get_features();
 
   ulong n_samples = features_ptr->n_rows();
   ulong n_features = features_ptr->n_cols();
 
   auto model =
       std::make_shared<ModelLinReg>(features_ptr, labels_ptr, false, 1);
-  SVRG svrg(n_samples, 0, RandType::unif, model->get_lip_max() / 100, 1309);
+  TSVRG<double, double> svrg(n_samples, 0, RandType::unif, model->get_lip_max() / 100, 1309);
   svrg.set_rand_max(n_samples);
   svrg.set_model(model);
   svrg.set_prox(std::make_shared<ProxL2Sq>(1e-3, false));
 
   ArrayDouble out_iterate30(n_features);
-  for (int j = 0; j < 30; ++j) {
+  for (size_t j = 0; j < 30; ++j) {
     svrg.solve();
   }
   svrg.get_iterate(out_iterate30);
 
   ArrayDouble out_iterate60(n_features);
-  for (int j = 0; j < 30; ++j) {
+  for (size_t j = 0; j < 30; ++j) {
     svrg.solve();
   }
   svrg.get_iterate(out_iterate60);
@@ -38,14 +38,14 @@ TEST(SVRG, test_convergence) {
 
 
 TEST(SVRG, test_history) {
-  SArrayDoublePtr labels_ptr = get_labels();
-  SArrayDouble2dPtr features_ptr = get_features();
+  SArrayDoublePtr labels_ptr = get_linreg_labels();
+  SBaseArrayDouble2dPtr features_ptr = get_features();
 
   ulong n_samples = features_ptr->n_rows();
 
   auto model =
       std::make_shared<ModelLinReg>(features_ptr, labels_ptr, false, 1);
-  SVRG svrg(n_samples, 0, RandType::unif, model->get_lip_max() / 100, 10, 1309);
+  TSVRG<double, double> svrg(n_samples, 0, RandType::unif, model->get_lip_max() / 100, 10, 1309);
   svrg.set_rand_max(n_samples);
   svrg.set_model(model);
   svrg.set_prox(std::make_shared<ProxL2Sq>(1e-2, false));

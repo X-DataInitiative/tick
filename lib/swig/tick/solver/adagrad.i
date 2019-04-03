@@ -11,11 +11,11 @@ template <class T>
 class TAdaGrad : public TStoSolver<T> {
 public:
     TAdaGrad();
-    TAdaGrad(unsigned long epoch_size,
+    TAdaGrad(size_t epoch_size,
         T tol,
         RandType rand_type,
         T step,
-        int record_every = 1,
+        size_t record_every = 1,
         int seed = -1);
 
     bool compare(const TAdaGrad<T> &that);

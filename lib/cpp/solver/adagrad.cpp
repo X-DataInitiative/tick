@@ -5,7 +5,7 @@
 
 template <class T>
 TAdaGrad<T>::TAdaGrad(ulong epoch_size, T tol, RandType rand_type, T step,
-                      int record_every, int seed)
+                      size_t record_every, int seed)
     : TStoSolver<T>(epoch_size, tol, rand_type, record_every, seed),
       hist_grad(iterate.size()),
       step(step) {}

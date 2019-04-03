@@ -2,6 +2,7 @@
 
 import warnings
 from abc import ABC, abstractmethod
+
 import numpy as np
 from tick.base import Base
 
@@ -50,6 +51,9 @@ class Model(ABC, Base):
 
     _attrinfos = {
         "_fitted": {
+            "writable": False
+        },
+        "_non_atomic_model": {
             "writable": False
         },
         N_CALLS_LOSS: {
@@ -169,3 +173,57 @@ class Model(ABC, Base):
     def _build_cpp_model(self, dtype: str):
         raise ValueError("""This function is expected to
                             overriden in a subclass""".strip())
+
+    @property
+    def _AtomicClass(self):
+        raise ValueError("""This function is expected to
+                            overriden in a subclass""".strip())
+
+    def to_atomic(self):
+        import inspect
+        signature = inspect.signature(self.__class__.__init__)
+        params = self.get_params()
+        args = []
+        kwargs = {}
+        for key, param in signature.parameters.items():
+            if key in params:
+                if param.default == inspect._empty:
+                    args += [params[key]]
+                else:
+                    kwargs[key] = params[key]
+
+        atomic_model = self._AtomicClass(*args, **kwargs)
+        atomic_model.set_params(**self.get_params())
+        if self._fitted:
+            atomic_model.fit(self.features, self.labels)
+        atomic_model._set('_non_atomic_model', self)
+        return atomic_model
+
+    def _get_params_set(self):
+        """Get the set of parameters
+        """
+        return {'dtype'}
+
+    def get_params(self):
+        """Get parameters for this model
+
+        Returns
+        -------
+        params : mapping of string to any
+            Parameter names mapped to their values.
+        """
+        params = {}
+        for param in self._get_params_set():
+            params[param] = self.__getattribute__(param)
+        return params
+
+    def set_params(self, **params):
+        """Set the parameters of this model.
+
+        Returns
+        -------
+        self
+        """
+        for param in self._get_params_set():
+            self._set(param, params[param])
+        return self

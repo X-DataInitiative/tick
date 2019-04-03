@@ -76,7 +76,7 @@ class DLL_PUBLIC Rand {
    * \param a : lower bound
    * \param b : upper bound
    */
-  ulong uniform_int(ulong a, ulong b);
+  ulong uniform_int(ulong a, ulong b, std::mt19937_64 * gen = nullptr);
 
   /**
    * @brief Returns a random real between 0 and 1

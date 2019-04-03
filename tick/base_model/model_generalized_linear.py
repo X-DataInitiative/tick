@@ -53,3 +53,8 @@ class ModelGeneralizedLinear(ModelLabelsFeatures):
 
     def _get_n_coeffs(self):
         return self._model.get_n_coeffs()
+
+    def _get_params_set(self):
+        """Get the set of parameters
+        """
+        return {*ModelLabelsFeatures._get_params_set(self), 'fit_intercept'}

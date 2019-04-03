@@ -79,7 +79,7 @@ class DLL_PUBLIC TStoSolver {
   // An array that allows to store the sampled random permutation
   ArrayULong permutation;
 
-  int record_every = 1;
+  size_t record_every = 1;
   int last_record_epoch = 0;
   double last_record_time = 0;
 
@@ -100,7 +100,7 @@ class DLL_PUBLIC TStoSolver {
 
  public:
   inline TStoSolver(ulong epoch_size = 0, T tol = 0.,
-                    RandType rand_type = RandType::unif, int record_every = 1, int seed = -1)
+                    RandType rand_type = RandType::unif, size_t record_every = 1, int seed = -1)
       : epoch_size(epoch_size),
         tol(tol),
         prox(std::make_shared<TProxZero<T, K> >(0.0)),
@@ -130,22 +130,34 @@ class DLL_PUBLIC TStoSolver {
 
   virtual void reset();
 
-  ulong get_next_i();
+  ulong get_next_i(std::mt19937_64* gen = nullptr);
 
   void shuffle();
 
   virtual void solve_one_epoch() { TICK_CLASS_DOES_NOT_IMPLEMENT("TStoSolver<T, K>"); }
 
-  virtual void solve(int n_epochs = 1);
+  virtual void solve(size_t n_epochs = 1);
 
   virtual void get_minimizer(Array<T> &out);
 
   virtual void get_iterate(Array<T> &out);
 
-  virtual void set_starting_iterate(Array<K> &new_iterate);
+  virtual void set_starting_iterate(Array<T> &new_iterate);
 
   // Returns a uniform integer in the set {0, ..., m - 1}
-  inline ulong rand_unif(ulong m) { return rand.uniform_int(ulong{0}, m); }
+  inline ulong rand_unif(ulong m, std::mt19937_64* gen = nullptr) { return rand.uniform_int(ulong{0}, m); }
+
+  std::mt19937_64 get_generator(int n_thread = 0) {
+    if (seed < 0) {
+      std::random_device r;
+      // A seed sequence generate random numbers evenly distributed from a given
+      // seed
+      std::seed_seq seed_seq{r(), r(), r(), r(), r(), r(), r(), r()};
+      return std::mt19937_64(seed_seq);
+    } else {
+      return std::mt19937_64(static_cast<size_t>(seed + n_thread));
+    }
+  }
 
   inline T get_tol() const { return tol; }
 
@@ -172,7 +184,7 @@ class DLL_PUBLIC TStoSolver {
 
   inline int get_record_every() const { return record_every; }
 
-  inline void set_record_every(int record_every) { this->record_every = record_every; }
+  inline void set_record_every(size_t record_every) { this->record_every = record_every; }
 
   std::vector<double> get_time_history() const { return time_history; }
 
@@ -248,19 +260,12 @@ inline std::ostream &operator<<(std::ostream &s, const TStoSolver<T, K> &p) {
 using StoSolver = TStoSolver<double, double>;
 
 using StoSolverDouble = TStoSolver<double, double>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(StoSolverDouble,
-                                   cereal::specialization::member_load_save)
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(StoSolverDouble, cereal::specialization::member_load_save)
 
 using StoSolverFloat = TStoSolver<float, float>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(StoSolverFloat,
-                                   cereal::specialization::member_load_save)
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(StoSolverFloat, cereal::specialization::member_load_save)
 
 using StoSolverAtomicDouble = TStoSolver<double, std::atomic<double> >;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(StoSolverAtomicDouble,
-                                   cereal::specialization::member_load_save)
-
 using StoSolverAtomicFloat = TStoSolver<float, std::atomic<float> >;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(StoSolverAtomicFloat,
-                                   cereal::specialization::member_load_save)
 
 #endif  // LIB_INCLUDE_TICK_SOLVER_STO_SOLVER_H_

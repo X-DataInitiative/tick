@@ -24,9 +24,9 @@ the Array classes, the SArray class and the VArray class.
 
 
 \section array_sec About Array and Array2d templates
- 
+
 \subsection array_C_sec Using Array and Array2d templates in C++ code
- 
+
 The Array template is used for temporary non resizeable arrays.
 The different instances of this template are given in \ref Main_types_module.\n
 The Array template is the simplest (and thus the most efficient) class to use in order
@@ -54,7 +54,7 @@ and so on : see @ref array_sub_mod
 For efficiency, one also has to master when the data are copied and when they are not.
 Here are a few examples
 
-\code 
+\code
 
 ArrayDouble c(10); 				  // Creates an array of double of size 10, initialized with 0's
 ArrayDouble c = ArrayDouble(10);  // Strictly equivalent to the line above
@@ -67,12 +67,12 @@ ArrayDouble e = c.view(1,5)       // Here e is a view on c starting at index 1 u
 
 Here is an example of a function using an Array as an input
 
-\code 
+\code
  // File test.cpp
  #include "base.h"
- 
+
  // Computes the sum of the array
- double test_array_double(ArrayDouble &array)  
+ double test_array_double(ArrayDouble &array)
  {
 	  double sum = 0;
 
@@ -86,12 +86,12 @@ Here is an example of a function using an Array as an input
 Let us note that there are also 2D arrays implemented by the template Array2d. It adds a view
 method for getting a Array view on a single row. Here is an example
 
-\code 
+\code
  // File test2.cpp
  #include "base.h"
- 
+
  // Computes the sum of the ith row of the 2d array
- double test_array_double(ArrayDouble2d &array, int i)  
+ double test_array_double(ArrayDouble2d &array, int i)
  {
 	  double sum = 0;
 	  ArrayDouble row = array.view_row(i);
@@ -105,7 +105,7 @@ method for getting a Array view on a single row. Here is an example
 See @ref array2d_sub_mod for aliases
 
  \subsection listarray_C_sec Using 1d and 2d list of Array's in C++
- 
+
  There are two types that are defined in C++ for dealing with list of arrays. They use the Standard
 Library (STL). For instance, for ArrayDouble this is how they are defined
 
@@ -120,10 +120,10 @@ is an example
 
 \code
 
-void f (ArrayDoubleList1D &array_list) 
+void f (ArrayDoubleList1D &array_list)
 {
 	// The following line makes a copy of the data
-	ArrayDouble a = array_list[0];  
+	ArrayDouble a = array_list[0];
 
 	// One way not to make a copy is to write
 	ArrayDouble *a = &(array_list[0]);
@@ -143,7 +143,7 @@ Python
  Let's make the last code (test.cpp) a Python extension using SWIG. You first need a .h file
  \code
  // File test.h
- 
+
  extern double test_array_double(ArrayDouble &array);
  \endcode
  Then a SWIG interface file
@@ -157,24 +157,24 @@ Python
 
 %include test.h
 \endcode
- 
-Then you just need to build your setup file (see example in directory). 
+
+Then you just need to build your setup file (see example in directory).
 Then you can use it in python
 \code{py}
 import numpy
 test_array_double(numpy.array([1.,2,3,4]))
 \endcode
 
-Here is an example with lists 
+Here is an example with lists
 
 
 \code
  // File test_list.cpp
- 
+
  double test_list_array_double(ArrayDoubleList1D &array_list)
  {
  	double sum = 0;
- 	for (int i =0; i<array_list.size(); i++) {
+ 	for (size_t i =0; i<array_list.size(); i++) {
  		for (long j=0;j<array_list[0].get_size(); j++) {
  			sum += array_list[0][j];
  		}
@@ -186,7 +186,7 @@ Here is an example with lists
 
 \code
  // File test_list.h
- 
+
  extern double test_list_array_double(ArrayDoubleList1D &array_list);
  \endcode
  The SWIG interface file
@@ -200,8 +200,8 @@ Here is an example with lists
 
 %include test_list.h
 \endcode
-And in Python  
-Then you just need to build your setup file (see example in directory). 
+And in Python
+Then you just need to build your setup file (see example in directory).
 Then you can use it in python
 \code{py}
 import numpy
@@ -372,7 +372,7 @@ shared pointer to the corresponding SArray is returned with
 all the collected values (e.g., SArrayDoublePtr), if not than a std::vector<V> is returned.
     - ::parallel_map_reduce : Same as parallel_map, but this time the method returns a value
 that will be treated by a given reduced function. The final reduced result is returned
-    - ::parallel_map_additive_reduce : Same as parallel_map_reduce, but the reduce method is 
+    - ::parallel_map_additive_reduce : Same as parallel_map_reduce, but the reduce method is
 already set to (a, b) => a + b;
 */
 
@@ -441,9 +441,9 @@ class TestInterrupt {
 
     void test(unsigned long i) {
         int res = 0;
-        for (int j = 0; j< 1000000; j++) {
+        for (size_t j = 0; j< 1000000; j++) {
             Interruption::throw_if_raised();
-            for (int k = 0; k< 1000000; k++) {
+            for (size_t k = 0; k< 1000000; k++) {
                 res += 1;
                 res = res % 100;
             }
@@ -455,7 +455,7 @@ class TestInterrupt {
 void test_interrupt()
 {
     TestInterrupt ti;
-    for (int i = 0; i< 1000000; i++)
+    for (size_t i = 0; i< 1000000; i++)
         ti.test(i);
 }
 \endcode
@@ -476,9 +476,9 @@ class TestInterrupt {
 
     void test(unsigned long i) {
         int res = 0;
-        for (int j = 0; j< 1000000; j++) {
+        for (size_t j = 0; j< 1000000; j++) {
             Interruption::throw_if_raised();
-            for (int k = 0; k< 1000000; k++) {
+            for (size_t k = 0; k< 1000000; k++) {
                 res += 1;
                 res = res % 100;
             }

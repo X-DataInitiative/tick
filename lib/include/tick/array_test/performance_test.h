@@ -10,21 +10,21 @@
 #include "tick/base/base.h"
 #include "timer.h"
 
-extern void test_element_access();
+void test_element_access();
 
-extern void test_element_access_inherited_array();
+void test_element_access_inherited_array();
 
 /// @brief compute the sum of a double* array full of one, n_loops times
-extern double test_sum_double_pointer(ulong size, ulong n_loops);
+double test_sum_double_pointer(ulong size, ulong n_loops);
 
 /// @brief compute the sum of a ArrayDouble full of one, n_loops times
-extern double test_sum_ArrayDouble(ulong size, ulong n_loops);
+double test_sum_ArrayDouble(ulong size, ulong n_loops);
 
 /// @brief compute the sum of a SArrayDoublePtr full of one, n_loops times
-extern double test_sum_SArray_shared_ptr(ulong size, ulong n_loops);
+double test_sum_SArray_shared_ptr(ulong size, ulong n_loops);
 
 /// @brief compute the sum of a VArrayDoublePtr full of one, n_loops times
-extern double test_sum_VArray_shared_ptr(ulong size, ulong n_loops);
+double test_sum_VArray_shared_ptr(ulong size, ulong n_loops);
 
 class ToyAbstractArray {
  public:

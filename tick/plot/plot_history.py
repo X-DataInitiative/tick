@@ -5,6 +5,7 @@ import numpy as np
 
 from tick.base.learner import LearnerOptim
 from tick.plot.plot_utilities import get_plot_color
+from tick.solver import History
 from tick.solver.base import Solver
 
 
@@ -13,7 +14,10 @@ def extract_history(solvers, x, y, given_labels):
     y_arrays = []
     labels = []
     for i, solver in enumerate(solvers):
-        if isinstance(solver, LearnerOptim):
+        if isinstance(solver, History):
+            history = solver
+            label = history.name
+        elif isinstance(solver, LearnerOptim):
             history = solver._solver_obj.history
             label = solver._solver_obj.name
         elif isinstance(solver, Solver):
@@ -87,11 +91,11 @@ def plot_history(solvers, x='n_iter', y='obj', labels=None, show=True,
     x_arrays, y_arrays, labels = extract_history(solvers, x, y, labels)
 
     if dist_min:
-        min_y = np.min(np.hstack(y_arrays))
+        min_y = np.nanmin(np.hstack(y_arrays))
         y_arrays = [y_array - min_y for y_array in y_arrays]
 
     min_x, max_x = np.min(np.hstack(x_arrays)), np.max(np.hstack(x_arrays))
-    min_y, max_y = np.min(np.hstack(y_arrays)), np.max(np.hstack(y_arrays))
+    min_y, max_y = np.nanmin(np.hstack(y_arrays)), np.nanmax(np.hstack(y_arrays))
 
     # We want to ensure theses plots starts at 0
     if x in ['time', 'n_iter']:

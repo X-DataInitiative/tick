@@ -47,7 +47,7 @@ int main(int nargs, char *args[]) {
   SArrayDoublePtr labels = SArrayDouble::new_ptr(n_samples);
 
   // Set up model and solver
-  for (int i = 0; i < n_samples; ++i) {
+  for (size_t i = 0; i < n_samples; ++i) {
     (*labels)[i] = (*int_sample)[i] - 1;
   }
 
@@ -61,7 +61,7 @@ int main(int nargs, char *args[]) {
     ArrayDouble coeffs = view_row(*features, 0);
 
     volatile double loss = 0;
-    for (int j = 0; j < num_iterations; ++j) {
+    for (size_t j = 0; j < num_iterations; ++j) {
       loss = model->loss(coeffs);
     }
     const auto end = std::chrono::system_clock::now();

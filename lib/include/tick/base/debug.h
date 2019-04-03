@@ -187,7 +187,7 @@ TemporaryLog<E> &operator<<(TemporaryLog<E> &&log, const T &item) {
 }
 
 struct LogExitNoop {
-  inline void operator()(const std::string &s) {}
+  inline void operator()(const std::string &s) { (void) s; }
 };
 
 struct LogExitCerr {

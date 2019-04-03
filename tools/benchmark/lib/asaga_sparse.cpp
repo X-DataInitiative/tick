@@ -51,7 +51,7 @@ std::tuple<std::vector<double>, std::vector<double>> run_asaga_solver(
   const auto &iterates = asaga.get_iterate_history();
 
   std::vector<double> objectives(iterates.size());
-  for (int i = 0; i < iterates.size(); ++i) {
+  for (size_t i = 0; i < iterates.size(); ++i) {
     objectives[i] = model->loss(*iterates[i]) + prox->value(*iterates[i]);
   }
 

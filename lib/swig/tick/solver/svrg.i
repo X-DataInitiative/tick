@@ -1,6 +1,6 @@
 // License: BSD 3 clause
 
-%include <std_shared_ptr.i>
+%include std_shared_ptr.i
 
 %{
 #include "tick/solver/svrg.h"
@@ -24,9 +24,9 @@ class TSVRG : public TStoSolver<T, K> {
          T tol,
          RandType rand_type,
          T step,
-         int record_every = 1,
+         size_t record_every = 1,
          int seed = -1,
-         int n_threads = 1,
+         size_t n_threads = 1,
          SVRG_VarianceReductionMethod variance_reduction = SVRG_VarianceReductionMethod::Last,
          SVRG_StepType step_method = SVRG_StepType::Fixed);
 
@@ -42,10 +42,13 @@ class TSVRG : public TStoSolver<T, K> {
     bool compare(const TSVRG<T, K> &that);
 };
 
-%template(SVRGDouble) TSVRG<double>;
-typedef TSVRG<double> SVRGDouble;
-TICK_MAKE_TEMPLATED_PICKLABLE(TSVRG, SVRGDouble, double);
+%template(SVRGDouble) TSVRG<double, double>;
+typedef TSVRG<double, double> SVRGDouble;
+TICK_MAKE_TK_PICKLABLE(TSVRG, SVRGDouble , double, double);
 
-%template(SVRGFloat) TSVRG<float>;
-typedef TSVRG<float> SVRGFloat;
-TICK_MAKE_TEMPLATED_PICKLABLE(TSVRG, SVRGFloat , float);
+%template(SVRGFloat) TSVRG<float, float>;
+typedef TSVRG<float, float> SVRGFloat;
+TICK_MAKE_TK_PICKLABLE(TSVRG, SVRGFloat , float, float);
+
+%template(SVRGDoubleAtomicIterate) TSVRG<double, std::atomic<double> >;
+typedef TSVRG<double, std::atomic<double>> SVRGDoubleAtomicIterate;

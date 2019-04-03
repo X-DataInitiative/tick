@@ -83,7 +83,7 @@ std::shared_ptr<BaseArray2d<T> > get_features() {
       (T)0.05,  (T)-1.50, (T)-0.50, (T)-1.41, (T)1.41,  (T)1.10,  (T)-0.00,
       (T)0.12,  (T)0.00,  (T)-0.00, (T)-1.33, (T)-0.00, (T)0.85,  (T)3.03};
   Array2d<T> features(n_samples, n_features);
-  for (int i = 0; i < features_data.size(); ++i) features[i] = features_data[i];
+  for (size_t i = 0; i < features_data.size(); ++i) features[i] = features_data[i];
   return features.as_sarray2d_ptr();
 }
 

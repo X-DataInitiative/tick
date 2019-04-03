@@ -174,24 +174,24 @@
   void test_typemap_in_not_ol_##ARRAYLIST2D_TYPE(ARRAYLIST2D_TYPE& array_list_list) {}             \
                                                                                                    \
   /***************** TYPEMAP OUT ****************************/                                     \
-  SARRAYPTR_TYPE test_typemap_out_##SARRAYPTR_TYPE(ulong size) {                                   \
+  SARRAYPTR_TYPE test_typemap_out_##SARRAYPTR_TYPE(size_t size) {                                   \
     SARRAYPTR_TYPE result = SARRAY_TYPE::new_ptr(size);                                            \
     for (ulong i = 0; i < size; ++i) {                                                             \
       (*result)[i] = i;                                                                            \
     }                                                                                              \
     return result;                                                                                 \
   }                                                                                                \
-  SARRAYPTRLIST1D_TYPE test_typemap_out_##SARRAYPTRLIST1D_TYPE(int size) {                         \
+  SARRAYPTRLIST1D_TYPE test_typemap_out_##SARRAYPTRLIST1D_TYPE(size_t size) {                      \
     SARRAYPTRLIST1D_TYPE pyramid = SARRAYPTRLIST1D_TYPE(size);                                     \
-    for (int i = 0; i < size; ++i) {                                                               \
+    for (size_t i = 0; i < size; ++i) {                                                            \
       pyramid[i] = SARRAY_TYPE::new_ptr(i);                                                        \
       pyramid[i]->fill(i);                                                                         \
     }                                                                                              \
     return pyramid;                                                                                \
   }                                                                                                \
-  SARRAYPTRLIST2D_TYPE test_typemap_out_##SARRAYPTRLIST2D_TYPE(int size1, int size2) {             \
+  SARRAYPTRLIST2D_TYPE test_typemap_out_##SARRAYPTRLIST2D_TYPE(size_t size1, size_t size2) {       \
     SARRAYPTRLIST2D_TYPE pyramid = SARRAYPTRLIST2D_TYPE(size2);                                    \
-    for (int i = 0; i < size2; ++i) {                                                              \
+    for (size_t i = 0; i < size2; ++i) {                                                           \
       pyramid[i] = SARRAYPTRLIST1D_TYPE(i);                                                        \
       for (ulong j = 0; j < pyramid[i].size(); ++j) {                                              \
         pyramid[i][j] = SARRAY_TYPE::new_ptr(j);                                                   \
@@ -200,7 +200,7 @@
     }                                                                                              \
     return pyramid;                                                                                \
   }                                                                                                \
-  SARRAY2DPTR_TYPE test_typemap_out_##SARRAY2DPTR_TYPE(ulong row_size, ulong col_size) {           \
+  SARRAY2DPTR_TYPE test_typemap_out_##SARRAY2DPTR_TYPE(size_t row_size, size_t col_size) {           \
     SARRAY2DPTR_TYPE result = SARRAY2D_TYPE::new_ptr(row_size, col_size);                          \
     for (ulong i = 0; i < row_size; ++i) {                                                         \
       for (ulong j = 0; j < col_size; ++j) {                                                       \

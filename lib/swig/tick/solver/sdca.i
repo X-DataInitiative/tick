@@ -1,81 +1,54 @@
 // License: BSD 3 clause
 
-%include <std_shared_ptr.i>
+%include "sto_solver.i"
 
 %{
 #include "tick/solver/sdca.h"
-#include "tick/base_model/model.h"
 %}
 
-template <class T, class K = T>
-class TSDCA : public TStoSolver<T, K> {
-public:
-    TSDCA();
-    TSDCA(T l_l2sq,
-         unsigned long epoch_size = 0,
-         T tol = 0.,
-         RandType rand_type = RandType::unif,
-         int record_every = 1,
-         int seed = -1);
+template <class T>
+class TSDCA : public TStoSolver<T, T> {
+ public:
+  TSDCA();
+  TSDCA(T l_l2sq, ulong epoch_size, T tol,
+        RandType rand_type, size_t record_every = 1, int seed = -1,
+        int n_threads = 1);
 
-    void set_model(std::shared_ptr<TModel<T, K>> model);
-    void reset();
-    void set_starting_iterate();
-    void set_starting_iterate(Array<T> &dual_vector);
-    T get_l_l2sq() const;
-    void set_l_l2sq(T l_l2sq);
-    std::shared_ptr<Array<T> > get_primal_vector();
-    std::shared_ptr<Array<T> > get_dual_vector();
+  T get_l_l2sq();
+  void set_l_l2sq(T l_l2sq);
+  void set_step_size(T step_size);
 
-    bool compare(const TSDCA<T, K> &that);
+  std::shared_ptr<SArray<T> > get_primal_vector();
+  std::shared_ptr<SArray<T> > get_dual_vector();
+
+  void solve_batch(size_t n_epochs = 1, ulong batch_size = 1);
+  void set_starting_iterate(Array<T> &dual_vector);
+
+  bool compare(const TSDCA<T> &that);
 };
 
-%rename(SDCADouble) TSDCA<double>;
-class SDCADouble : public StoSolverDouble {
-public:
-    SDCADouble();
-    SDCADouble(double l_l2sq,
-         unsigned long epoch_size = 0,
-         double tol = 0.,
-         RandType rand_type = RandType::unif,
-         int record_every = 1,
-         int seed = -1);
-
-    void set_model(ModelDoublePtr model);
-    void reset();
-    void set_starting_iterate();
-    void set_starting_iterate(ArrayDouble &dual_vector);
-    double get_l_l2sq() const;
-    void set_l_l2sq(double l_l2sq);
-    SArrayDoublePtr get_primal_vector();
-    SArrayDoublePtr get_dual_vector();
-
-    bool compare(const SDCADouble &that);
-};
+%template(SDCADouble) TSDCA<double>;
 typedef TSDCA<double> SDCADouble;
-TICK_MAKE_PICKLABLE(SDCADouble);
+TICK_MAKE_TEMPLATED_PICKLABLE(TSDCA, SDCADouble , double);
 
-%rename(SDCAFloat) TSDCA<float>;
-class SDCAFloat : public StoSolverFloat {
-public:
-    SDCAFloat();
-    SDCAFloat(float l_l2sq,
-         unsigned long epoch_size = 0,
-         float tol = 0.,
-         RandType rand_type = RandType::unif,
-         int record_every = 1,
-         int seed = -1);
-
-    void set_model(ModelFloatPtr model);
-    void reset();
-    void set_starting_iterate();
-    void set_starting_iterate(ArrayFloat &dual_vector);
-    float get_l_l2sq() const;
-    void set_l_l2sq(float l_l2sq);
-    SArrayFloatPtr get_primal_vector();
-    SArrayFloatPtr get_dual_vector();
-
-    bool compare(const SDCAFloat &that);
-};
+%template(SDCAFloat) TSDCA<float>;
 typedef TSDCA<float> SDCAFloat;
-TICK_MAKE_PICKLABLE(SDCAFloat);
+TICK_MAKE_TEMPLATED_PICKLABLE(TSDCA, SDCAFloat , float);
+
+// AtomicSDCA
+template <class T>
+class TAtomicSDCA : public TStoSolver<T, std::atomic<T> > {
+ public:
+  TAtomicSDCA();
+  TAtomicSDCA(T l_l2sq, ulong epoch_size, T tol,
+              RandType rand_type, size_t record_every = 1, int seed = -1,
+              int n_threads=2);
+
+  bool compare(const TAtomicSDCA<T> &that);
+};
+
+%template(AtomicSDCADouble) TAtomicSDCA<double>;
+typedef TAtomicSDCA<double> AtomicSDCADouble;
+
+%template(AtomicSDCAFloat) TAtomicSDCA<float>;
+typedef TAtomicSDCA<float> AtomicSDCAFloat;

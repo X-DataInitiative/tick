@@ -9,12 +9,13 @@
 
 #include "sto_solver.h"
 #include "tick/base_model/model.h"
+#include "tick/base_model/model_generalized_linear.h"
 
 // TODO: profile the code of SDCA to check if it's faster
 // TODO: code accelerated SDCA
 
-template <class T, class K = T>
-class DLL_PUBLIC TSDCA : public TStoSolver<T, K> {
+template <class T, class K>
+class DLL_PUBLIC TBaseSDCA : public TStoSolver<T, K> {
  protected:
   using TStoSolver<T, K>::t;
   using TStoSolver<T, K>::model;
@@ -23,6 +24,13 @@ class DLL_PUBLIC TSDCA : public TStoSolver<T, K> {
   using TStoSolver<T, K>::get_next_i;
   using TStoSolver<T, K>::epoch_size;
   using TStoSolver<T, K>::rand_max;
+  using TStoSolver<T, K>::get_generator;
+
+  using TStoSolver<T, K>::save_history;
+  using TStoSolver<T, K>::last_record_epoch;
+  using TStoSolver<T, K>::last_record_time;
+  using TStoSolver<T, K>::record_every;
+  using TStoSolver<T, K>::rand;
 
  public:
   using TStoSolver<T, K>::get_class_name;
@@ -36,7 +44,7 @@ class DLL_PUBLIC TSDCA : public TStoSolver<T, K> {
   bool stored_variables_ready;
 
   // Store for coefficient update before prox call.
-  Array<T> tmp_primal_vector;
+  Array<K> tmp_primal_vector;
 
   // Level of ridge regularization. This is mandatory for SDCA.
   T l_l2sq;
@@ -45,18 +53,25 @@ class DLL_PUBLIC TSDCA : public TStoSolver<T, K> {
   Array<T> delta;
 
   // The dual variable
-  Array<T> dual_vector;
+  Array<K> dual_vector;
+
+  std::shared_ptr<TModelGeneralizedLinear<T, K>> casted_model;
+  std::shared_ptr<TProxSeparable<T, K>> casted_prox;
+
+  size_t n_threads = 0;
+
+  T step_size = 1.;
+
 
  public:
   // This exists soley for cereal/swig
-  TSDCA() : TSDCA<T, K>(0, 0, 0) {}
+  TBaseSDCA() : TBaseSDCA<T, K>(0, 0, 0) {}
 
-  explicit TSDCA(T l_l2sq, ulong epoch_size = 0, T tol = 0.,
-                 RandType rand_type = RandType::unif,  int record_every = 1, int seed = -1);
+  explicit TBaseSDCA(T l_l2sq, ulong epoch_size, T tol = 0.,
+                     RandType rand_type = RandType::unif,  size_t record_every = 1, int seed = -1,
+                     int n_threads = 1);
 
   void reset() override;
-
-  void solve_one_epoch() override;
 
   void set_model(std::shared_ptr<TModel<T, K>> model) override;
 
@@ -64,32 +79,48 @@ class DLL_PUBLIC TSDCA : public TStoSolver<T, K> {
 
   void set_l_l2sq(T l_l2sq) { this->l_l2sq = l_l2sq; }
 
+  void set_step_size(T step_size) { this->step_size = step_size; }
+
   SArrayTPtr get_primal_vector() const {
-    Array<T> copy = iterate;
+    // This works when K is atomic
+    Array<T> copy(iterate.size());
+    copy.init_to_zero();
+    copy.mult_incr(iterate, 1);
     return copy.as_sarray_ptr();
   }
 
   SArrayTPtr get_dual_vector() const {
-    Array<T> copy = dual_vector;
+    // This works when K is atomic
+    Array<T> copy(dual_vector.size());
+    copy.init_to_zero();
+    copy.mult_incr(dual_vector, 1);
     return copy.as_sarray_ptr();
   }
 
+  void prepare_solve();
+  void solve(size_t n_epochs = 1) override;
+  void solve_batch(size_t n_epochs = 1, ulong batch_size = 1);
   void set_starting_iterate();
   void set_starting_iterate(Array<T> &dual_vector) override;
 
- private:
-  T get_scaled_l_l2sq() const {
-    // In order to solve the same problem than other solvers, we need to rescale
-    // the penalty parameter if some observations are not considered in SDCA.
-    // This is useful for Poisson regression with identity link
-    return l_l2sq * model->get_n_samples() / rand_max;
-  }
+ protected:
+  void precompute_sdca_dual_min_weights(
+      Array<K> &local_iterate, ulong batch_size, double _1_over_lbda_n,
+      const ArrayULong &feature_indices, Array2d<T> &g, Array<T> &p);
+
+  virtual void update_delta_dual_i(ulong i, double delta_dual_i,
+                                   const BaseArray<T> &feature_i, double _1_over_lbda_n);
+
+  virtual void update_delta_dual_batch(ArrayULong &indices, ArrayULong &feature_indices,
+                                       Array<T> &delta_duals, double _1_over_lbda_n);
+
+  void tmp_iterate_to_iterate(Array<K> &iterate);
 
  public:
   template <class Archive>
   void serialize(Archive &ar) {
     ar(cereal::make_nvp("StoSolver",
-                        cereal::base_class<TStoSolver<T, K>>(this)));
+                       cereal::base_class<TStoSolver<T, K>>(this)));
 
     ar(CEREAL_NVP(n_coeffs));
     ar(CEREAL_NVP(stored_variables_ready));
@@ -98,7 +129,7 @@ class DLL_PUBLIC TSDCA : public TStoSolver<T, K> {
     ar(CEREAL_NVP(dual_vector));
   }
 
-  BoolStrReport compare(const TSDCA<T, K> &that) {
+  BoolStrReport compare(const TBaseSDCA<T, K> &that) {
     std::stringstream ss;
     ss << get_class_name() << std::endl;
     bool are_equal =
@@ -109,23 +140,76 @@ class DLL_PUBLIC TSDCA : public TStoSolver<T, K> {
     return BoolStrReport(are_equal, ss.str());
   }
 
-  BoolStrReport operator==(const TSDCA<T, K> &that) { return compare(that); }
-
-  static std::shared_ptr<TSDCA<T, K>> AS_NULL() {
-    return std::move(std::shared_ptr<TSDCA<T, K>>(new TSDCA<T, K>));
-  }
+  BoolStrReport operator==(const TBaseSDCA<T, K> &that) { return compare(that); }
 };
 
-using SDCA = TSDCA<double>;
+template <class T>
+class DLL_PUBLIC TSDCA : public TBaseSDCA<T, T> {
+ public:
+  using TBaseSDCA<T, T>::model;
+  using TBaseSDCA<T, T>::delta;
+  using TBaseSDCA<T, T>::dual_vector;
+  using TBaseSDCA<T, T>::tmp_primal_vector;
+
+ public:
+  TSDCA() : TSDCA<T>(0, 0, 0) {}
+
+  explicit TSDCA(T l_l2sq, ulong epoch_size, T tol = 0.,
+      RandType rand_type = RandType::unif,  size_t record_every = 1, int seed = -1,
+      int n_threads = 1);
+
+ protected:
+  void update_delta_dual_i(ulong i, double delta_dual_i,
+                           const BaseArray<T> &feature_i, double _1_over_lbda_n) override;
+
+  void update_delta_dual_batch(ArrayULong &indices, ArrayULong &feature_indices,
+                               Array<T> &delta_duals, double _1_over_lbda_n) override;
+};
 
 using SDCADouble = TSDCA<double>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SDCADouble,
-                                   cereal::specialization::member_serialize)
+                                  cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(SDCADouble)
 
 using SDCAFloat = TSDCA<float>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SDCAFloat,
-                                   cereal::specialization::member_serialize)
+                                  cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(SDCAFloat)
+
+template <class T>
+class DLL_PUBLIC TAtomicSDCA : public TBaseSDCA<T, std::atomic<T> > {
+ protected:
+  using TBaseSDCA<T, std::atomic<T>>::model;
+  using TBaseSDCA<T, std::atomic<T>>::delta;
+  using TBaseSDCA<T, std::atomic<T>>::dual_vector;
+  using TBaseSDCA<T, std::atomic<T>>::tmp_primal_vector;
+
+ public:
+  // This exists solely for cereal/swig
+  TAtomicSDCA() : TAtomicSDCA<T>(0, 0, 0) {}
+
+  explicit TAtomicSDCA(T l_l2sq, ulong epoch_size, T tol = 0.,
+                       RandType rand_type = RandType::unif, size_t record_every = 1, int seed = -1,
+                       int n_threads = 2);
+
+ protected:
+  void update_delta_dual_i(ulong i, double delta_dual_i,
+                           const BaseArray<T> &feature_i, double _1_over_lbda_n) override;
+
+  void update_delta_dual_batch(ArrayULong &indices, ArrayULong &feature_indices,
+                               Array<T> &delta_duals, double _1_over_lbda_n) override;
+};
+
+using AtomicSDCA = TAtomicSDCA<double>;
+
+using AtomicSDCADouble = TAtomicSDCA<double>;
+// CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SDCADouble,
+//                                   cereal::specialization::member_serialize)
+// CEREAL_REGISTER_TYPE(SDCADouble)
+
+using AtomicSDCAFloat = TAtomicSDCA<float>;
+// CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SDCAFloat,
+//                                   cereal::specialization::member_serialize)
+// CEREAL_REGISTER_TYPE(SDCAFloat)
 
 #endif  // LIB_INCLUDE_TICK_SOLVER_SDCA_H_

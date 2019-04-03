@@ -75,9 +75,9 @@ struct vector_operations_unoptimized {
 
 
 
-  void solve_linear_system(int n, T *A, T *b, int* ipiv = nullptr) const;
+  void solve_linear_system(size_t n, T *A, T *b, int* ipiv = nullptr) const;
 
-  void solve_positive_symmetric_linear_system(int n, T *A, T *b, int* ipiv = nullptr,
+  void solve_positive_symmetric_linear_system(size_t n, T *A, T *b, int* ipiv = nullptr,
                                               int switch_linear = 30) const;
 };
 

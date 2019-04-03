@@ -4,8 +4,16 @@
 #include "tick/base_model/model_labels_features.h"
 
 template <class T, class K>
+Array<T> init_from_array(Array<K> array_k) {
+  Array<T> array_t(array_k.size());
+  array_t.init_to_zero();
+  array_t.mult_incr(array_k, 1);
+  return array_t;
+}
+
+template <class T, class K>
 TSVRG<T, K>::TSVRG(ulong epoch_size, T tol, RandType rand_type, T step,
-                   int record_every, int seed, int n_threads,
+                   size_t record_every, int seed, unsigned int n_threads,
                    SVRG_VarianceReductionMethod variance_reduction,
                    SVRG_StepType step_method)
     : TStoSolver<T, K>(epoch_size, tol, rand_type, record_every, seed),
@@ -26,19 +34,19 @@ void TSVRG<T, K>::prepare_solve() {
   Array<T> previous_iterate;
   Array<T> previous_full_gradient;
   if (step_type == SVRG_StepType::BarzilaiBorwein && t > 1) {
-    previous_iterate = fixed_w;
+    previous_iterate = init_from_array<T, K>(fixed_w);
     previous_full_gradient = full_gradient;
   }
   // The point where we compute the full gradient for variance reduction is the
   // new iterate obtained at the previous epoch
-  next_iterate = iterate;
-  fixed_w = next_iterate;
+  next_iterate = init_from_array<T, K>(iterate);
+  fixed_w = iterate;
   // Allocation and computation of the full gradient
   full_gradient = Array<T>(iterate.size());
   model->grad(fixed_w, full_gradient);
 
   if (step_type == SVRG_StepType::BarzilaiBorwein && t > 1) {
-    Array<T> iterate_diff = iterate;
+    Array<T> iterate_diff = init_from_array<T, K>(iterate);
     iterate_diff.mult_incr(previous_iterate, -1);
     Array<T> full_gradient_diff = full_gradient;
     full_gradient_diff.mult_incr(previous_full_gradient, -1);
@@ -93,15 +101,16 @@ template <class T, class K>
 void TSVRG<T, K>::solve_dense() {
   if (n_threads > 1) {
     std::vector<std::thread> threadsV;
-    for (int i = 0; i < n_threads; i++) {
-      threadsV.emplace_back([=]() mutable -> void {
+    for (size_t i = 0; i < n_threads; i++) {
+      threadsV.emplace_back([=](int n_thread) mutable -> void {
+        std::mt19937_64 gen = get_generator(n_thread);
         for (ulong t = 0; t < (epoch_size / n_threads); ++t) {
-          ulong next_i(get_next_i());
+          ulong next_i(get_next_i(&gen));
           dense_single_thread_solver(next_i);
         }
-      });
+      }, i);
     }
-    for (int i = 0; i < n_threads; i++) {
+    for (size_t i = 0; i < n_threads; i++) {
       threadsV[i].join();
     }
 
@@ -112,7 +121,7 @@ void TSVRG<T, K>::solve_dense() {
     }
   }
   if (variance_reduction == SVRG_VarianceReductionMethod::Last) {
-    next_iterate = iterate;
+    next_iterate = init_from_array<T, K>(iterate);
   }
   TStoSolver<T, K>::t += epoch_size;
 }
@@ -126,7 +135,6 @@ void TSVRG<T, K>::solve_sparse_proba_updates(bool use_intercept,
   // step-sizes using a probabilistic approximation and the
   // penalization trick: with such a model and prox, we can work only inside the
   // current support (non-zero values) of the sampled vector of features
-  std::shared_ptr<TProxSeparable<T, K>> casted_prox;
   if (prox->is_separable()) {
     casted_prox = std::static_pointer_cast<TProxSeparable<T, K>>(prox);
   } else {
@@ -134,31 +142,28 @@ void TSVRG<T, K>::solve_sparse_proba_updates(bool use_intercept,
         "TSVRG<T, K>::solve_sparse_proba_updates can be used with a separable "
         "prox only.")
   }
-  TProxSeparable<T, K>* p_casted_prox = casted_prox.get();
   if (n_threads > 1) {
     std::vector<std::thread> threadsV;
-    for (int i = 0; i < n_threads; i++) {
+    for (size_t i = 0; i < n_threads; i++) {
       threadsV.emplace_back([=]() mutable -> void {
         for (ulong t = 0; t < (epoch_size / n_threads); ++t) {
           ulong next_i(get_next_i());
-          sparse_single_thread_solver(next_i, n_features, use_intercept,
-                                      p_casted_prox);
+          sparse_single_thread_solver(next_i, n_features, use_intercept);
         }
       });
     }
-    for (int i = 0; i < n_threads; i++) {
+    for (size_t i = 0; i < n_threads; i++) {
       threadsV[i].join();
     }
   } else {
     for (ulong t = 0; t < epoch_size; ++t) {
       ulong next_i = get_next_i();
-      sparse_single_thread_solver(next_i, n_features, use_intercept,
-                                  p_casted_prox);
+      sparse_single_thread_solver(next_i, n_features, use_intercept);
     }
   }
 
   if (variance_reduction == SVRG_VarianceReductionMethod::Last) {
-    next_iterate = iterate;
+    next_iterate = init_from_array<T, K>(iterate);
   }
   TStoSolver<T, K>::t += epoch_size;
 }
@@ -166,7 +171,7 @@ void TSVRG<T, K>::solve_sparse_proba_updates(bool use_intercept,
 template <class T, class K>
 void TSVRG<T, K>::set_starting_iterate(Array<T>& new_iterate) {
   TStoSolver<T, K>::set_starting_iterate(new_iterate);
-  next_iterate = iterate;
+  next_iterate = init_from_array<T, K>(iterate);
 }
 
 template <class T, class K>
@@ -181,7 +186,7 @@ void TSVRG<T, K>::dense_single_thread_solver(const ulong& next_i) {
   prox->call(iterate, step, iterate);
   if (variance_reduction == SVRG_VarianceReductionMethod::Random &&
       t == rand_index) {
-    next_iterate = iterate;
+    next_iterate = init_from_array<T, K>(iterate);
   }
   if (variance_reduction == SVRG_VarianceReductionMethod::Average) {
     next_iterate.mult_incr(iterate, 1.0 / epoch_size);
@@ -190,8 +195,7 @@ void TSVRG<T, K>::dense_single_thread_solver(const ulong& next_i) {
 
 template <class T, class K>
 void TSVRG<T, K>::sparse_single_thread_solver(
-    const ulong& next_i, const ulong& n_features, const bool use_intercept,
-    TProxSeparable<T, K>*& casted_prox) {
+    const ulong& next_i, const ulong& n_features, const bool use_intercept) {
   const ulong& i = next_i;
   // Sparse features vector
   BaseArray<T> x_i = model->get_features(i);
@@ -208,37 +212,56 @@ void TSVRG<T, K>::sparse_single_thread_solver(
     // Step-size correction for coordinate j
     T step_correction = steps_correction[j];
     // Gradient descent with probabilistic step-size correction
-    T descent_direction = step * (x_i.data()[idx_nnz] * grad_i_diff +
-        step_correction * full_gradient_j);
-    if (casted_prox->is_in_range(j))
-      iterate[j] = casted_prox->call_single_with_index(
-          iterate[j] - descent_direction, step * step_correction, j);
-    else
-      iterate[j] -= descent_direction;
+    update_iterate(j, x_i.data()[idx_nnz], grad_i_diff, step_correction, full_gradient_j);
   }
   // And let's not forget to update the intercept as well. It's updated at each
   // step, so no step-correction. Note that we call the prox, in order to be
   // consistent with the dense case (in the case where the user has the weird
   // desire to to regularize the intercept)
   if (use_intercept) {
-    T descent_direction = step * (grad_i_diff + full_gradient[n_features]);
-
-    if (casted_prox->is_in_range(n_features))
-      iterate[n_features] = casted_prox->call_single_with_index(
-          iterate[n_features] - descent_direction, step, n_features);
-    else
-      iterate[n_features] -= descent_direction;
+    update_iterate(n_features, 1., grad_i_diff, 1., full_gradient[n_features]);
   }
   // Note that the average option for variance reduction with sparse data is a
   // very bad idea, but this is caught in the python class
   if (variance_reduction == SVRG_VarianceReductionMethod::Random &&
       t == rand_index) {
-    next_iterate = iterate;
+    next_iterate = init_from_array<T, K>(iterate);
   }
   if (variance_reduction == SVRG_VarianceReductionMethod::Average) {
     next_iterate.mult_incr(iterate, 1.0 / epoch_size);
   }
 }
 
-template class DLL_PUBLIC TSVRG<double>;
-template class DLL_PUBLIC TSVRG<float>;
+// if K == std::atomic<T> (Wild case)
+template <class T, class K>
+template <class T1, class K1>
+typename std::enable_if<std::is_same<T1, K1>::value, void>::type
+TSVRG<T, K>::update_iterate(ulong j, T x_ij, T grad_factor_diff, T step_correction, T full_gradient_j) {
+  T delta_iterate = - step * (x_ij * grad_factor_diff + step_correction * full_gradient_j);
+  iterate[j] = casted_prox->call_single_with_index(
+      iterate[j] + delta_iterate, step * step_correction, j);
+}
+
+// if K == std::atomic<T> (Atomic case)
+template <class T, class K>
+template <class T1, class K1>
+typename std::enable_if<std::is_same<std::atomic<T1>, K1>::value, void>::type
+TSVRG<T, K>::update_iterate(ulong j, T x_ij, T grad_factor_diff, T step_correction, T full_gradient_j) {
+  T delta_iterate = - step * (x_ij * grad_factor_diff + step_correction * full_gradient_j);
+  T iterate_j = iterate[j].load();
+
+  T prox_delta_iterate = casted_prox->call_single_with_index(
+      iterate_j + delta_iterate, step * step_correction, j) - iterate_j;
+
+  // Prox is separable, apply regularization on the current coordinate
+  while (!iterate[j].compare_exchange_weak(
+      iterate_j,
+      iterate_j + prox_delta_iterate)) {
+  }
+}
+
+template class DLL_PUBLIC TSVRG<double, double>;
+template class DLL_PUBLIC TSVRG<float, float>;
+
+template class DLL_PUBLIC TSVRG<double, std::atomic<double>>;
+template class DLL_PUBLIC TSVRG<float, std::atomic<float>>;

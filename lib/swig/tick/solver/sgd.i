@@ -1,7 +1,5 @@
 // License: BSD 3 clause
 
-%include <std_shared_ptr.i>
-
 %{
 #include "tick/solver/sgd.h"
 #include "tick/base_model/model.h"
@@ -12,11 +10,11 @@ class TSGD : public TStoSolver<T, K> {
 
 public:
     TSGD();
-    TSGD(unsigned long epoch_size,
+    TSGD(size_t epoch_size,
         T tol,
         RandType rand_type,
         T step,
-        int record_every = 1,
+        size_t record_every = 1,
         int seed = -1);
 
     inline void set_step(T step);

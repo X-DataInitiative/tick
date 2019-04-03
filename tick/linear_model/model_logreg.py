@@ -10,11 +10,6 @@ from .build.linear_model import ModelLogRegFloat as _ModelLogRegFloat
 
 __author__ = 'Stephane Gaiffas'
 
-dtype_map = {
-    np.dtype('float32'): _ModelLogRegFloat,
-    np.dtype('float64'): _ModelLogRegDouble
-}
-
 
 class ModelLogReg(ModelFirstOrder, ModelGeneralizedLinear, ModelLipschitz):
     """Logistic regression model for binary classification. This class gives
@@ -71,6 +66,10 @@ class ModelLogReg(ModelFirstOrder, ModelGeneralizedLinear, ModelLipschitz):
           the CPU
         * otherwise the desired number of threads
     """
+    _cpp_class_dtype_map = {
+        np.dtype('float32'): _ModelLogRegFloat,
+        np.dtype('float64'): _ModelLogRegDouble
+    }
 
     def __init__(self, fit_intercept: bool = True, n_threads: int = 1):
         ModelFirstOrder.__init__(self)
@@ -130,7 +129,7 @@ class ModelLogReg(ModelFirstOrder, ModelGeneralizedLinear, ModelLipschitz):
             out = np.empty(coeffs.shape[0], dtype=coeffs.dtype)
         # sigmoid is a templated static function so
         ## we must call the right version for the right dtype
-        dtype_map[coeffs.dtype].sigmoid(coeffs, out)
+        _cpp_class_dtype_map[coeffs.dtype].sigmoid(coeffs, out)
         return out
 
     def _get_lip_best(self):
@@ -143,6 +142,24 @@ class ModelLogReg(ModelFirstOrder, ModelGeneralizedLinear, ModelLipschitz):
 
     def _build_cpp_model(self, dtype_or_object_with_dtype):
         model_class = self._get_typed_class(dtype_or_object_with_dtype,
-                                            dtype_map)
+                                            self._cpp_class_dtype_map)
         return model_class(self.features, self.labels, self.fit_intercept,
                            self.n_threads)
+
+    @property
+    def _AtomicClass(self):
+        return AtomicModelLogReg
+
+
+from .build.linear_model import ModelLogRegAtomicDouble as _ModelLogRegAtomicDouble
+from .build.linear_model import ModelLogRegAtomicFloat as _ModelLogRegAtomicFloat
+
+
+class AtomicModelLogReg(ModelLogReg):
+    _cpp_class_dtype_map = {
+        np.dtype('float32'): _ModelLogRegAtomicFloat,
+        np.dtype('float64'): _ModelLogRegAtomicDouble
+    }
+
+    def loss(self, coeffs):
+        return self._non_atomic_model.loss(coeffs)

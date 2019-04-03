@@ -560,7 +560,14 @@ class Base(metaclass=BaseMeta):
         self._set(key, getattr(self, key) + step)
 
     def __str__(self):
-        dic = self._as_dict()
-        if 'dtype' in dic and isinstance(dic['dtype'], np.dtype):
-            dic['dtype'] = dic['dtype'].name
+        def _dtype_to_str(_dic):
+            print(_dic)
+            for k, v in _dic.items():
+                if type(v) is dict: _dtype_to_str(v)
+
+            if 'dtype' in _dic and isinstance(_dic['dtype'], np.dtype):
+                _dic['dtype'] = _dic['dtype'].name
+
+        dic = _dtype_to_str(self._as_dict())
+
         return json.dumps(dic, sort_keys=True, indent=2)

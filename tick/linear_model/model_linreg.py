@@ -11,11 +11,6 @@ from .build.linear_model import ModelLinRegFloat as _ModelLinRegFloat
 
 __author__ = 'Stephane Gaiffas'
 
-dtype_map = {
-    np.dtype('float64'): _ModelLinRegDouble,
-    np.dtype('float32'): _ModelLinRegFloat
-}
-
 
 class ModelLinReg(ModelFirstOrder, ModelGeneralizedLinear, ModelLipschitz):
     """Least-squares loss for linear regression. This class gives first
@@ -73,6 +68,11 @@ class ModelLinReg(ModelFirstOrder, ModelGeneralizedLinear, ModelLipschitz):
         * otherwise the desired number of threads
     """
 
+    _cpp_class_dtype_map = {
+        np.dtype('float64'): _ModelLinRegDouble,
+        np.dtype('float32'): _ModelLinRegFloat
+    }
+
     def __init__(self, fit_intercept: bool = True, n_threads: int = 1):
         ModelFirstOrder.__init__(self)
         ModelGeneralizedLinear.__init__(self, fit_intercept)
@@ -123,6 +123,30 @@ class ModelLinReg(ModelFirstOrder, ModelGeneralizedLinear, ModelLipschitz):
 
     def _build_cpp_model(self, dtype_or_object_with_dtype):
         model_class = self._get_typed_class(dtype_or_object_with_dtype,
-                                            dtype_map)
+                                            self._cpp_class_dtype_map)
         return model_class(self.features, self.labels, self.fit_intercept,
                            self.n_threads)
+
+    def _get_params_set(self):
+        """Get the set of parameters
+        """
+        return {
+            *ModelFirstOrder._get_params_set(self),
+            *ModelGeneralizedLinear._get_params_set(self),
+            *ModelLipschitz._get_params_set(self),
+            'n_threads'}
+
+    @property
+    def _AtomicClass(self):
+        return AtomicModelLinReg
+
+
+from .build.linear_model import ModelLinRegAtomicDouble as _ModelLinRegAtomicDouble
+from .build.linear_model import ModelLinRegAtomicFloat as _ModelLinRegAtomicFloat
+
+
+class AtomicModelLinReg(ModelLinReg):
+    _cpp_class_dtype_map = {
+        np.dtype('float32'): _ModelLinRegAtomicFloat,
+        np.dtype('float64'): _ModelLinRegAtomicDouble
+    }

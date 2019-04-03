@@ -79,7 +79,7 @@ SArrayDouble2dPtr get_features() {
                             0.12,  0.00,  -0.00, -1.33, -0.00, 0.85,  3.03};
 
   ArrayDouble2d features(n_samples, n_features);
-  for (int i = 0; i < features_data.size(); ++i) {
+  for (size_t i = 0; i < features_data.size(); ++i) {
     features[i] = features_data[i];
   }
   return features.as_sarray2d_ptr();
@@ -131,7 +131,7 @@ int main(int argc, char** argv) {
                             linreg->get_lip_max() / 100, 1309);
     });
     run([&]() {
-      TSAGA<double> svrg(n_samples, 0, RandType::unif,
+      TSAGA<double, double> svrg(n_samples, 0, RandType::unif,
                          linreg->get_lip_max() / 100, 1309);
     });
     run([&]() { TSDCA<double> svrg(1, n_samples, 0, RandType::unif, 1309); });

@@ -10,11 +10,9 @@
 #include "tick/base_model/model_generalized_linear.h"
 #include "tick/base_model/model_lipschitz.h"
 
-// TODO: labels should be a ArrayInt (PD: should they?)
-
 template <class T, class K = T>
-class DLL_PUBLIC TModelLogReg : public TModelGeneralizedLinear<T, K>,
-                                virtual public TModelLipschitz<T, K> {
+class DLL_PUBLIC TModelLogReg : public virtual TModelGeneralizedLinear<T, K>,
+                                public TModelLipschitz<T, K> {
  protected:
   using TModelLipschitz<T, K>::ready_lip_consts;
   using TModelLipschitz<T, K>::lip_consts;
@@ -38,6 +36,8 @@ class DLL_PUBLIC TModelLogReg : public TModelGeneralizedLinear<T, K>,
       : TModelLabelsFeatures<T, K>(features, labels),
         TModelGeneralizedLinear<T, K>(features, labels, fit_intercept,
                                       n_threads) {}
+
+  virtual ~TModelLogReg() {}
 
   static inline T sigmoid(const T z) {
     // Overflow-proof sigmoid
@@ -66,8 +66,19 @@ class DLL_PUBLIC TModelLogReg : public TModelGeneralizedLinear<T, K>,
   T grad_i_factor(const ulong i, const Array<K> &coeffs) override;
 
   T sdca_dual_min_i(const ulong i, const T dual_i,
-                    const Array<K> &primal_vector,
-                    const T previous_delta_dual_i, T l_l2sq) override;
+                    const T primal_dot_features,
+                    const T previous_delta_dual_i, T _1_over_lbda_n) override;
+
+  Array<T> sdca_dual_min_many(ulong indices,
+                              const Array<T> &duals,
+                              Array2d<T> &g,
+                              Array2d<T> &n_hess,
+                              Array<T> &p,
+                              Array<T> &n_grad,
+                              Array<T> &sdca_labels,
+                              Array<T> &new_duals,
+                              Array<T> &delta_duals,
+                              ArrayInt &ipiv) override;
 
   void compute_lip_consts() override;
 
@@ -109,6 +120,7 @@ CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelLogRegFloat,
                                    cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(ModelLogRegFloat)
 
+using ModelLogRegAtomic = TModelLogReg<double, std::atomic<double> >;
 using ModelLogRegAtomicDouble = TModelLogReg<double, std::atomic<double> >;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelLogRegAtomicDouble,
                                    cereal::specialization::member_serialize)

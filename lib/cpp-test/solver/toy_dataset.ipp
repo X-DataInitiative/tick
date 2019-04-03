@@ -2,20 +2,32 @@
 
 #include "tick/base/base.h"
 
-SArrayDoublePtr get_labels() {
+SArrayDoublePtr get_linreg_labels() {
   ArrayDouble labels{-1.76, 2.6, -0.7, -1.84, -1.88, -1.78, 2.52};
   return labels.as_sarray_ptr();
 }
 
-SArrayDouble2dPtr get_features() {
+SArrayDoublePtr get_logreg_labels() {
+  ArrayDouble labels{-1, 1, -1, -1, -1, -1, 1};
+  return labels.as_sarray_ptr();
+}
+
+SArrayDoublePtr get_poisson_labels() {
+  ArrayDouble labels{0, 2, 3, 4, 0, 1, 2};
+  return labels.as_sarray_ptr();
+}
+
+SBaseArrayDouble2dPtr get_features() {
   ulong n_samples = 7;
   ulong n_features = 5;
 
-  ArrayDouble features_data{0.55,  2.04,  0.78,  -0.00, 0.00,  -0.00, -2.62,
-                            -0.00, 0.00,  0.31,  -0.64, 0.94,  0.00,  0.55,
-                            -0.14, 0.93,  0.00,  0.00,  -0.00, -2.39, 1.13,
-                            0.05,  -1.50, -0.50, -1.41, 1.41,  1.10,  -0.00,
-                            0.12,  0.00,  -0.00, -1.33, -0.00, 0.85,  3.03};
+  ArrayDouble features_data{0.55,  2.04,  0.78,  -0.00, 0.00,
+                            -0.00, -2.62, -0.00, 0.00,  0.31,
+                            -0.64, 0.94,  0.00,  0.55, -0.14,
+                            0.93,  0.00,  0.00,  -0.00, -2.39,
+                            1.13, 0.05,  -1.50, -0.50, -1.41,
+                            1.41,  1.10,  -0.00, 0.12,  0.00,
+                            -0.00, -1.33, -0.00, 0.85,  3.03};
 
   ArrayDouble2d features(n_samples, n_features);
   for (size_t i = 0; i < features_data.size(); ++i) {
@@ -24,7 +36,7 @@ SArrayDouble2dPtr get_features() {
   return features.as_sarray2d_ptr();
 }
 
-SSparseArrayDouble2dPtr get_sparse_features() {
+SBaseArrayDouble2dPtr get_sparse_features() {
   ulong n_samples = 7;
   ulong n_features = 5;
   // no need to free, it will be done by sparse array

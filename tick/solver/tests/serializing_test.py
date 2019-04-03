@@ -1,6 +1,6 @@
 # License: BSD 3 clause
 
-import io, unittest
+import io, unittest, sys
 import numpy as np
 
 import pickle

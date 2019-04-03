@@ -40,12 +40,6 @@ class ModelLabelsFeatures(Model):
         },
         "labels": {
             "writable": False
-        },
-        "n_samples": {
-            "writable": False
-        },
-        "n_features": {
-            "writable": False
         }
     }
 
@@ -54,8 +48,6 @@ class ModelLabelsFeatures(Model):
         Model.__init__(self)
         self.features = None
         self.labels = None
-        self.n_features = None
-        self.n_samples = None
 
     def fit(self, features: np.ndarray, labels: np.ndarray) -> Model:
         """Set the data into the model object
@@ -88,8 +80,6 @@ class ModelLabelsFeatures(Model):
 
         self._set("features", features)
         self._set("labels", labels)
-        self._set("n_features", n_features)
-        self._set("n_samples", n_samples)
 
     def astype(self, dtype_or_object_with_dtype):
         import tick.base.dtype_to_cpp_type
@@ -108,6 +98,18 @@ class ModelLabelsFeatures(Model):
         return new_model
 
     @property
+    def n_samples(self):
+        if self.features is None:
+            return None
+        return self.features.shape[0]
+
+    @property
+    def n_features(self):
+        if self.features is None:
+            return None
+        return self.features.shape[1]
+
+    @property
     def _epoch_size(self):
         # This gives the typical size of an epoch when using a
         # stochastic optimization algorithm
@@ -123,4 +125,4 @@ class ModelLabelsFeatures(Model):
         dd = Model._as_dict(self)
         del dd["labels"]
         del dd["features"]
-        return dd
+

@@ -27,7 +27,6 @@ BASE_URL = ("https://raw.githubusercontent.com/X-DataInitiative/tick-datasets"
 _TICK_HOME_ENV = 'TICK_DATASETS'
 _TICK_DEFAULT_HOME = os.path.join('~', 'tick_datasets')
 
-
 def download_dataset(dataset_url, dataset_path, data_home=None, verbose=True):
     """Downloads dataset from given URL and stores it locally
 

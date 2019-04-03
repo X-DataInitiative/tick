@@ -154,9 +154,9 @@ class TProx<double, std::atomic<double>> {
   virtual bool get_positive() const;
   virtual void set_positive(bool positive);
 };
-typedef TProx<double, double> ProxAtomicDouble;
+typedef TProx<double, std::atomic<double> > ProxAtomicDouble;
 typedef std::shared_ptr<ProxAtomicDouble> ProxAtomicDoublePtr;
 
 %template(TProxAtomicFloat) TProx<float, std::atomic<float> >;
-typedef TProx<float, std::atomic<double> > TProxAtomicFloat;
+typedef TProx<float, std::atomic<float> > TProxAtomicFloat;
 typedef std::shared_ptr<ProxAtomicFloat> ProxAtomicFloatPtr;

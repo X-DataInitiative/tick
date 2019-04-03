@@ -84,7 +84,7 @@ int main(int nargs, char **args) {
     auto timestamps = generate_data(num_nodes, num_events_per_node);
 
     double end_time = 0;
-    for (int i = 0; i < num_nodes; ++i) {
+    for (size_t i = 0; i < num_nodes; ++i) {
       end_time = std::max(end_time, timestamps[i]->last());
     }
 

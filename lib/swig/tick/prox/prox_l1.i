@@ -52,3 +52,10 @@ class ProxL1Float : public TProxSeparable<float, float> {
 };
 typedef TProxL1<float, float> ProxL1Float;
 TICK_MAKE_PICKLABLE(ProxL1Float);
+
+%template(ProxL1AtomicDouble) TProxL1<double, std::atomic<double>>;
+typedef TProxL1<double, std::atomic<double>> ProxL1AtomicDouble;
+
+%template(ProxL1AtomicFloat) TProxL1<float, std::atomic<float>>;
+typedef TProxL1<float, std::atomic<float>> ProxL1AtomicFloat;
+

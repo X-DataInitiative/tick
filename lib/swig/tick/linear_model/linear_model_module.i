@@ -9,7 +9,10 @@
 %shared_ptr(TModelLinReg<float, float>);
 %shared_ptr(ModelLinRegDouble);
 %shared_ptr(ModelLinRegFloat);
-
+%shared_ptr(TModelLinReg<float, std::atomic<float>>);
+%shared_ptr(TModelLinReg<double, std::atomic<double>>);
+%shared_ptr(ModelLinRegAtomicDouble);
+%shared_ptr(ModelLinRegAtomicFloat);
 
 %shared_ptr(ModelLogReg);
 %shared_ptr(TModelLogReg<double, double>);
@@ -26,6 +29,10 @@
 %shared_ptr(TModelPoisReg<float, float>);
 %shared_ptr(ModelPoisRegDouble);
 %shared_ptr(ModelPoisRegFloat);
+%shared_ptr(TModelPoisReg<float, std::atomic<float>>);
+%shared_ptr(TModelPoisReg<double, std::atomic<double>>);
+%shared_ptr(ModelPoisRegAtomicDouble);
+%shared_ptr(ModelPoisRegAtomicFloat);
 
 %shared_ptr(ModelHinge);
 %shared_ptr(TModelHinge<double, double>);
