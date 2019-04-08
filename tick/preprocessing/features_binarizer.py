@@ -102,11 +102,21 @@ class FeaturesBinarizer(Base, BaseEstimator, TransformerMixin):
     """
 
     _attrinfos = {
-        "one_hot_encoder": {"writable": False},
-        "bins_boundaries": {"writable": True},
-        "mapper": {"writable": False},
-        "feature_type": {"writable": False},
-        "_fitted": {"writable": False}
+        "one_hot_encoder": {
+            "writable": False
+        },
+        "bins_boundaries": {
+            "writable": False
+        },
+        "mapper": {
+            "writable": False
+        },
+        "feature_type": {
+            "writable": False
+        },
+        "_fitted": {
+            "writable": False
+        }
     }
 
     def __init__(self, method="quantile", n_cuts=10, detect_column_type="auto",
@@ -155,7 +165,7 @@ class FeaturesBinarizer(Base, BaseEstimator, TransformerMixin):
             raise ValueError("cannot get blocks_start if object has not "
                              "been fitted")
         # construct from encoder
-        return self.one_hot_encoder.feature_indices_[:-1, ]
+        return self.one_hot_encoder.feature_indices_[:-1,]
 
     @property
     def blocks_length(self):
@@ -314,8 +324,7 @@ class FeaturesBinarizer(Base, BaseEstimator, TransformerMixin):
                 feature_type = "discrete"
             else:
                 raise ValueError("feature name '%s' should end with "
-                                 "':continuous' or ':discrete'"
-                                 % feature_name)
+                                 "':continuous' or ':discrete'" % feature_name)
 
         elif detect_column_type == "auto":
             if continuous_threshold == "auto":
@@ -419,8 +428,8 @@ class FeaturesBinarizer(Base, BaseEstimator, TransformerMixin):
             # Compute the cuts
             boundaries = np.linspace(feat_min, feat_max, n_cuts + 2)
         else:
-            raise ValueError("Method '%s' should be 'quantile' or 'linspace'"
-                             % method)
+            raise ValueError(
+                "Method '%s' should be 'quantile' or 'linspace'" % method)
         boundaries[0] = -np.inf
         boundaries[-1] = np.inf
 
@@ -489,8 +498,10 @@ class FeaturesBinarizer(Base, BaseEstimator, TransformerMixin):
             uniques = np.unique(feature)
             uniques.sort()
 
-            mapper = {category: interval
-                      for interval, category in enumerate(uniques)}
+            mapper = {
+                category: interval
+                for interval, category in enumerate(uniques)
+            }
 
             self.mapper[feature_name] = mapper
 

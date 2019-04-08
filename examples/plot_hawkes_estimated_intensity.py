@@ -11,37 +11,33 @@ the process.
 
 import matplotlib.pyplot as plt
 
-from tick.inference import HawkesSumExpKern
+from tick.hawkes import SimuHawkesSumExpKernels, HawkesSumExpKern
 from tick.plot import plot_point_process
-from tick.simulation import SimuHawkesSumExpKernels
 
 end_time = 1000
 
 decays = [0.1, 0.5, 1.]
 baseline = [0.12, 0.07]
-adjacency = [[[0, .1, .4], [.2, 0., .2]],
-             [[0, 0, 0], [.6, .3, 0]]]
+adjacency = [[[0, .1, .4], [.2, 0., .2]], [[0, 0, 0], [.6, .3, 0]]]
 
 hawkes_exp_kernels = SimuHawkesSumExpKernels(
-    adjacency=adjacency, decays=decays, baseline=baseline,
-    end_time=end_time, verbose=False, seed=1039)
+    adjacency=adjacency, decays=decays, baseline=baseline, end_time=end_time,
+    verbose=False, seed=1039)
 
 hawkes_exp_kernels.track_intensity(0.1)
 hawkes_exp_kernels.simulate()
 
-learner = HawkesSumExpKern(decays, penalty='elasticnet',
-                           elastic_net_ratio=0.8)
+learner = HawkesSumExpKern(decays, penalty='elasticnet', elastic_net_ratio=0.8)
 learner.fit(hawkes_exp_kernels.timestamps)
 
 t_min = 100
 t_max = 200
 fig, ax_list = plt.subplots(2, 1, figsize=(10, 6))
-learner.plot_estimated_intensity(hawkes_exp_kernels.timestamps,
-                                 t_min=t_min, t_max=t_max,
-                                 ax=ax_list)
+learner.plot_estimated_intensity(hawkes_exp_kernels.timestamps, t_min=t_min,
+                                 t_max=t_max, ax=ax_list)
 
-plot_point_process(hawkes_exp_kernels, plot_intensity=True,
-                   t_min=t_min, t_max=t_max, ax=ax_list)
+plot_point_process(hawkes_exp_kernels, plot_intensity=True, t_min=t_min,
+                   t_max=t_max, ax=ax_list)
 
 # Enhance plot
 for ax in ax_list:

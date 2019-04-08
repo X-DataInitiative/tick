@@ -4,3 +4,4 @@ scipy
 matplotlib
 scikit-learn
 pandas
+dill

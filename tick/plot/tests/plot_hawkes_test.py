@@ -5,9 +5,9 @@ import unittest
 import numpy as np
 import itertools
 
-from tick.inference import HawkesSumExpKern
+from tick.hawkes import HawkesSumExpKern
 from tick.plot import plot_hawkes_kernels
-from tick.simulation import SimuHawkesSumExpKernels
+from tick.hawkes import SimuHawkesSumExpKernels
 
 
 class Test(unittest.TestCase):
@@ -32,8 +32,8 @@ class Test(unittest.TestCase):
         # We set some specific coeffs to be free from any future learner
         # modifications
         # With 0 iteration and coeffs as start point it should remain there
-        coeffs = np.array([0.99, 0.99, 0.55, 0.37, 0.39, 0.16, 0.63, 0.49,
-                           0.49, 0.30])
+        coeffs = np.array(
+            [0.99, 0.99, 0.55, 0.37, 0.39, 0.16, 0.63, 0.49, 0.49, 0.30])
         hawkes_sumexp.fit(self.hawkes_simu.timestamps, start=coeffs)
 
         n_points = 10
@@ -54,7 +54,8 @@ class Test(unittest.TestCase):
                 t_axis = np.linspace(0, max_support, n_points)
                 np.testing.assert_array_equal(ax_t_axis, t_axis)
 
-                estimated_kernel = hawkes_sumexp.get_kernel_values(i, j, t_axis)
+                estimated_kernel = hawkes_sumexp.get_kernel_values(
+                    i, j, t_axis)
                 np.testing.assert_array_equal(ax_estimated_kernel,
                                               estimated_kernel)
 

@@ -7,20 +7,26 @@ from datetime import datetime
 from abc import ABCMeta
 import json
 import pydoc
+import numpy as np
 import numpydoc as nd
+from numpydoc import docscrape
 import copy
-
 
 # The metaclass inherits from ABCMeta and not type, since we'd like to
 # do abstract classes in tick that inherits from ABC
 
 # TODO: readonly attributes cannot be linked to c++ setters
 
+
 class BaseMeta(ABCMeta):
     # Default behaviour of an attribute is writable, with no C++ setter
     default_attrinfo = {"writable": True, "cpp_setter": None}
-    default_classinfo = {'is_prop': False, 'in_doc': False, 'doc': [],
-                         'in_init': False}
+    default_classinfo = {
+        'is_prop': False,
+        'in_doc': False,
+        'doc': [],
+        'in_init': False
+    }
 
     @staticmethod
     def hidden_attr(attr_name):
@@ -104,8 +110,7 @@ class BaseMeta(ABCMeta):
         return set_in_init
 
     @staticmethod
-    def build_property(class_name, attrs, attr_name, writable,
-                       cpp_setter):
+    def build_property(class_name, attrs, attr_name, writable, cpp_setter):
         """
         Builds a property
 
@@ -159,6 +164,7 @@ class BaseMeta(ABCMeta):
                     # We update the C++ object embedded in the class
                     # as well.
                     BaseMeta.set_cpp_attribute(self, val, cpp_setter)
+
             return setter
 
         base_setter = create_base_setter()
@@ -174,12 +180,12 @@ class BaseMeta(ABCMeta):
                 if set_in_init:
                     base_setter(self, val)
                 else:
-                    raise AttributeError("%s is readonly in %s" %
-                                         (str(attr_name), class_name))
+                    raise AttributeError(
+                        "%s is readonly in %s" % (str(attr_name), class_name))
 
         def deletter(self):
-            raise AttributeError("can't delete %s in %s" %
-                                 (str(attr_name), class_name))
+            raise AttributeError(
+                "can't delete %s in %s" % (str(attr_name), class_name))
 
         # We set doc to None otherwise it will interfere with
         # the docstring of the class.
@@ -210,8 +216,9 @@ class BaseMeta(ABCMeta):
         The formatted doc
         """
         attr_type = attr_doc[1]
-        attr_docstring = [line for line in attr_doc[2]
-                          if len(line.strip()) > 0]
+        attr_docstring = [
+            line for line in attr_doc[2] if len(line.strip()) > 0
+        ]
         attr_from = 'from %s' % class_name
 
         doc = [attr_type] + attr_docstring + [attr_from]
@@ -227,16 +234,20 @@ class BaseMeta(ABCMeta):
         if "__init__" not in attrs:
             return []
 
-        return [key for key in
-                inspect.signature(attrs["__init__"]).parameters.keys()
-                if key not in ignore]
+        return [
+            key
+            for key in inspect.signature(attrs["__init__"]).parameters.keys()
+            if key not in ignore
+        ]
 
     @staticmethod
     def find_properties(attrs):
         """Find all native properties of the class
         """
-        return [attr_name for attr_name, value in attrs.items() if
-                isinstance(value, property)]
+        return [
+            attr_name for attr_name, value in attrs.items()
+            if isinstance(value, property)
+        ]
 
     @staticmethod
     def find_documented_attributes(class_name, attrs):
@@ -248,8 +259,9 @@ class BaseMeta(ABCMeta):
             return []
 
         current_class_doc = inspect.cleandoc(attrs['__doc__'])
-        parsed_doc = nd.docscrape.ClassDoc(None, doc=current_class_doc)
-        attr_docs = parsed_doc['Parameters'] + parsed_doc['Attributes']
+        parsed_doc = docscrape.ClassDoc(None, doc=current_class_doc)
+        attr_docs = parsed_doc['Parameters'] + parsed_doc['Attributes'] + \
+            parsed_doc['Other Parameters']
 
         attr_and_doc = []
 
@@ -436,9 +448,8 @@ class BaseMeta(ABCMeta):
                 cpp_setter = info.get("cpp_setter",
                                       BaseMeta.default_attrinfo["cpp_setter"])
 
-                attrs[attr_name] = build_property(class_name, attrs,
-                                                  attr_name, writable,
-                                                  cpp_setter)
+                attrs[attr_name] = build_property(class_name, attrs, attr_name,
+                                                  writable, cpp_setter)
 
         # Add a __setattr__ method that forbids to add an non-existing
         # attribute
@@ -456,7 +467,8 @@ class BaseMeta(ABCMeta):
             """A method allowing to force set an attribute
             """
             if not isinstance(key, str):
-                raise ValueError('In _set function you must pass key as string')
+                raise ValueError(
+                    'In _set function you must pass key as string')
 
             if key not in attrinfos:
                 raise AttributeError("'%s' object has no settable attribute "
@@ -464,9 +476,8 @@ class BaseMeta(ABCMeta):
 
             object.__setattr__(self, BaseMeta.hidden_attr(key), val)
 
-            cpp_setter = self._attrinfos[key].get("cpp_setter",
-                                                  BaseMeta.default_attrinfo[
-                                                      "cpp_setter"])
+            cpp_setter = self._attrinfos[key].get(
+                "cpp_setter", BaseMeta.default_attrinfo["cpp_setter"])
             if cpp_setter is not None:
                 BaseMeta.set_cpp_attribute(self, val, cpp_setter)
 
@@ -490,7 +501,9 @@ class Base(metaclass=BaseMeta):
     """
 
     _attrinfos = {
-        "name": {"writable": False},
+        "name": {
+            "writable": False
+        },
     }
 
     def __init__(self, *args, **kwargs):
@@ -510,14 +523,15 @@ class Base(metaclass=BaseMeta):
                     # because multiline doc does not print well in iPython
 
                     prop_doc = self._attrinfos[attr_name]['doc']
-                    prop_doc = ' - '.join([str(d).strip()
-                                           for d in prop_doc
-                                           if len(str(d).strip()) > 0])
+                    prop_doc = ' - '.join([
+                        str(d).strip() for d in prop_doc
+                        if len(str(d).strip()) > 0
+                    ])
 
                     # We copy property and add the doc found in docstring
-                    setattr(self.__class__, attr_name,
-                            property(prop.fget, prop.fset, prop.fdel,
-                                     prop_doc))
+                    setattr(
+                        self.__class__, attr_name,
+                        property(prop.fget, prop.fset, prop.fdel, prop_doc))
 
     @staticmethod
     def _get_now():
@@ -546,4 +560,7 @@ class Base(metaclass=BaseMeta):
         self._set(key, getattr(self, key) + step)
 
     def __str__(self):
-        return json.dumps(self._as_dict(), sort_keys=True, indent=2)
+        dic = self._as_dict()
+        if 'dtype' in dic and isinstance(dic['dtype'], np.dtype):
+            dic['dtype'] = dic['dtype'].name
+        return json.dumps(dic, sort_keys=True, indent=2)

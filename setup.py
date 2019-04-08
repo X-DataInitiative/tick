@@ -31,6 +31,11 @@ from setuptools import find_packages, setup, Command
 from setuptools.command.install import install
 from setuptools.extension import Extension
 
+force_blas = False
+if "--force-blas" in sys.argv:
+    force_blas = True
+    sys.argv.remove("--force-blas")
+
 # Available debug flags
 #
 #   DEBUG_C_ARRAY       : count #allocations of C-arrays
@@ -54,7 +59,7 @@ use_fast_math = True
 
 version_info = sys.version_info
 
-python_min_ver = (3, 4, 0)
+python_min_ver = (3, 6, 0)
 python_ver = (version_info.major, version_info.minor, version_info.micro)
 
 if python_ver < python_min_ver:
@@ -93,7 +98,9 @@ try:
         numpy_include = np.get_numpy_include()
 
     # Determine if we have an available BLAS implementation
-    if platform.system() == 'Windows':
+    if force_blas: # activated with build --force-blas
+        blas_info = get_info("blas_opt", 0)
+    elif platform.system() == 'Windows':
         try:
             with open(os.devnull, 'w') as devnull:
                 exitCode = subprocess.check_output(
@@ -103,8 +110,16 @@ try:
                 blas_info = get_info("blas_opt", 0)
         except subprocess.CalledProcessError as subError:
             print("Error executing check_cblas.py - cblas not found")
-    elif 'bdist_wheel' not in sys.argv:
-        blas_info = get_info("blas_opt", 0)
+    else:
+        try:
+            with open(os.devnull, 'w') as devnull:
+                exitCode = subprocess.check_output(
+                    "python tools/python/blas/check_mkl.py build_ext",
+                    stderr=devnull,
+                    shell=True)
+                blas_info = get_info("blas_opt", 0)
+        except subprocess.CalledProcessError as subError:
+            print("Error executing check_mkl.py - mkl not found")
 
     numpy_available = True
 except ImportError as e:
@@ -114,6 +129,11 @@ except ImportError as e:
                       " - Include directory for numpy integration may not be "
                       "correct\n "
                       " - BLAS will not be used for this build\n")
+
+# sometimes disabling blas is desired
+if os.environ.get('TICK_NO_OPTS') is not None:
+    if os.environ['TICK_NO_OPTS'] == '1':
+        blas_info = {}
 
 # By default, we assume that scipy uses 32 bit integers for indices in sparse
 # arrays
@@ -146,13 +166,27 @@ if os.name == 'posix':
         # one
         os.environ['MACOSX_DEPLOYMENT_TARGET'] = os_version
 
+# check for debug pyenv - PYVER must be exported as env var. Debug pyenv setup:
+#    PYENV=3.7.0
+#    CFLAGS="-O0 -ggdb" CONFIGURE_OPTS="--enable-shared" pyenv install -kg $PYVER
+#    PYENV=${PYENV}-debug
+#    eval "$(pyenv init -)"
+#    pyenv global ${PYVER}
+#    pyenv local ${PYVER}
+
+PYVER = ""
+PYVER_DBG = ""
+if os.environ.get('PYVER') is not None:
+    PYVER = os.environ['PYVER']
+    if PYVER.endswith("-debug"):
+        PYVER_DBG = "-pydebug"
+
 # Directory containing built .so files before they are moved either
 # in source (with build flag --inplace) or to site-packages (by install)
-#
-# E.g. build/lib.macosx-10.11-x86_64-3.4
-build_dir = "build/lib.{}-{}".format(distutils.util.get_platform(),
+# E.g. build/lib.macosx-10.11-x86_64-3.5
+build_dir = "build/lib.{}-{}"+PYVER_DBG
+build_dir = build_dir.format(distutils.util.get_platform(),
                                      sys.version[0:3])
-
 
 class SwigExtension(Extension):
     """This only adds information about extension construction, useful for
@@ -164,7 +198,6 @@ class SwigExtension(Extension):
         self.module_ref = module_ref
         self.ext_name = ext_name
 
-
 class SwigPath:
     """Small class to handle module creation and check project structure
     """
@@ -172,11 +205,12 @@ class SwigPath:
     def __init__(self, module_path, extension_name):
         module_path = os.path.normpath(module_path)
 
-        # Module C++ source directory (e.g. lib/src/cpp/tick/base)
+
+        # Module C++ source directory (e.g. lib/cpp/tick/base)
         self.src = os.path.join(module_path, 'src')
 
         # Module SWIG interface files directory (e.g. tick/array/swig)
-        self.swig = "lib/src/swig/" + module_path[5:]
+        self.swig = "lib/swig/" + module_path[5:]
 
         # Module build directory. Will contain generated .py files, and .so
         # files if built with flag --inplace.
@@ -193,43 +227,9 @@ class SwigPath:
                                   .replace('/', '.') \
                               + '.' + self.private_extension_name
 
-        self._check_configuration()
-
         # Filename of the produced .so file (e.g. _array.so)
         self.lib_filename = '{}{}'.format(self.private_extension_name,
                                           sysconfig.get_config_var('SO'))
-
-    def _check_configuration(self):
-        exception_base_msg = (
-            "Swig directory structure must follow this structure :\n"
-            "├── module_path\n"
-            "    ├── src\n"
-            "    │   ├── file.h\n"
-            "    │   └── file.cpp\n"
-            "    ├── swig\n"
-            "    │   └── file.i\n"
-            "    └── build\n"
-            "        └── generated_files.*\n"
-        )
-        exception_missing_directory_msg = "%s folder was missing"
-        exception_file_instead_directory_msg = "%s should be a directory, " \
-                                               "not a file"
-
-        # # Check that src and swig folders do exists
-        # for directory in [self.src, self.swig]:
-        #     if not os.path.exists(directory):
-        #         raise FileNotFoundError(exception_base_msg + (
-        #             exception_missing_directory_msg % directory))
-        #     elif not os.path.isdir(directory):
-        #         raise NotADirectoryError(exception_base_msg + (
-        #             exception_file_instead_directory_msg % directory))
-
-        # # Check that build is a directory (not a file) or create it
-        # if not os.path.exists(self.build):
-        #     os.mkdir(self.build)
-        # elif not os.path.isdir(self.build):
-        #     raise NotADirectoryError(exception_base_msg + (
-        #         exception_file_instead_directory_msg % self.build))
 
 
 def create_extension(extension_name, module_dir,
@@ -243,7 +243,7 @@ def create_extension(extension_name, module_dir,
     def add_dir_name(dir_name, filenames):
         return list(os.path.join(dir_name, filename) for filename in filenames)
 
-    swig_files = add_dir_name("lib/src/swig/" + module_dir[7:], swig_files)
+    swig_files = add_dir_name("lib/swig/tick/" + module_dir[7:], swig_files)
 
     for folder in folders:
         for file in os.listdir(folder):
@@ -266,7 +266,7 @@ def create_extension(extension_name, module_dir,
                      '-c++',
                      '-modern',
                      '-new_repr',
-                     '-Ilib/src/swig/base',
+                     '-Ilib/swig',
                      '-Ilib/include',
                      '-outdir', swig_path.build,
                      ]
@@ -284,6 +284,7 @@ def create_extension(extension_name, module_dir,
                               sparse_indices_flag,
                               '-std=c++11',
                               '-O2', # -O3 is sometimes dangerous and has caused segfaults on Travis
+                              '-DNDEBUG', # some assertions fail without this (TODO tbh)
                               ]
 
     if use_fast_math:
@@ -300,24 +301,20 @@ def create_extension(extension_name, module_dir,
         extra_compile_args.append("-DBUILDING_DLL")
     else:
         ## Added -Wall to get all warnings and -Werror to treat them as errors
-        ## GITHUB ISSUE: 82 - temporary fix to avoid compile errors from
-        ##  warnings given in CEREAL files
-        # extra_compile_args.append("-Werror")
+        extra_compile_args.append("-Werror")
         ## This warning is turned off because SWIG generates files that triggers the
         ## warning
         extra_compile_args.append("-Wno-uninitialized")
 
     # Include directory of module
     mod = SwigPath(module_dir, extension_name)
-    for opts in [swig_opts, extra_compile_args]:
-        opts.extend(["-Isrc/swig/"+extension_name])
 
     libraries = []
     library_dirs = []
     runtime_library_dirs = []
     extra_link_args = []
     define_macros = []
-    extra_include_dirs = ["include"]
+    extra_include_dirs = ["include", "swig"]
 
     # Deal with (optional) BLAS
     extra_compile_args.extend(blas_info.get("extra_compile_args", []))
@@ -328,7 +325,20 @@ def create_extension(extension_name, module_dir,
 
     if 'define_macros' in blas_info and \
             any(key == 'HAVE_CBLAS' for key, _ in blas_info['define_macros']):
-        define_macros.append(('TICK_CBLAS_AVAILABLE', None))
+        define_macros.append(('TICK_USE_CBLAS', None))
+    if "libraries" in blas_info and "mkl_rt" in blas_info["libraries"]:
+        define_macros.append(('TICK_USE_MKL', None))
+        extra_include_dirs.extend(blas_info["include_dirs"])
+        if platform.system() != 'Windows':
+            for lib_dir in blas_info["library_dirs"]:
+                extra_link_args.append(
+                    "-Wl,-rpath,"+ lib_dir
+                )
+            # if not Linux assume MacOS
+            if platform.system() != 'Linux':
+                rel_path = os.path.relpath(lib_dir, swig_path.build)
+                if os.path.exists(rel_path):
+                    extra_link_args.append("-Wl,-rpath,@loader_path/"+ rel_path)
 
     if include_modules is None:
         include_modules = []
@@ -427,7 +437,10 @@ def create_extension(extension_name, module_dir,
 
 array_extension_info = {
     "cpp_files": [],
-    "h_files": ["lib/src/cpp/array"],
+    "h_files": [],
+    "folders": [
+        "lib/cpp/array"
+    ],
     "swig_files": ["array_module.i"],
     "module_dir": "./tick/array/",
     "extension_name": "array"
@@ -439,8 +452,8 @@ base_extension_info = {
     "cpp_files": [],
     "h_files": [],
     "folders": [
-        "lib/src/cpp/base",
-        "lib/src/cpp/base/math"
+        "lib/cpp/base",
+        "lib/cpp/base/math"
     ],
     "swig_files": ["base_module.i"],
     "module_dir": "./tick/base",
@@ -455,7 +468,7 @@ base_array_modules = [array_extension.module_ref, base_extension.module_ref]
 array_test_extension_info = {
     "cpp_files": [],
     "h_files": [],
-    "folders": ["lib/src/cpp/array_test"],
+    "folders": ["lib/cpp/array_test"],
     "swig_files": ["array_test_module.i"],
     "module_dir": "./tick/array_test/",
     "extension_name": "array_test",
@@ -467,7 +480,7 @@ test_extension = create_extension(**array_test_extension_info)
 random_extension_info = {
     "cpp_files": [],
     "h_files": [],
-    "folders": ["lib/src/cpp/random"],
+    "folders": ["lib/cpp/random"],
     "swig_files": ["crandom_module.i"],
     "module_dir": "./tick/random/",
     "extension_name": "crandom",
@@ -476,73 +489,138 @@ random_extension_info = {
 
 random_extension = create_extension(**random_extension_info)
 
-simulation_extension_info = {
+base_model_core_info = {
     "cpp_files": [],
     "h_files": [],
     "folders": [
-        "lib/src/cpp/simulation",
-        "lib/src/cpp/simulation/hawkes_baselines", 
-        "lib/src/cpp/simulation/hawkes_kernels"
+        "lib/cpp/base_model"
     ],
-    "swig_files": ["simulation_module.i"],
-    "module_dir": "./tick/simulation/",
-    "extension_name": "simulation",
-    "include_modules": base_array_modules + [random_extension.module_ref]
-}
-
-simulation_extension = create_extension(**simulation_extension_info)
-
-model_core_info = {
-    "cpp_files": [],
-    "h_files": [],
-    "folders": [
-        "lib/src/cpp/optim/model",
-        "lib/src/cpp/optim/model/variants", 
-        "lib/src/cpp/optim/model/base"
-    ],
-    "swig_files": ["model_module.i"],
-    "module_dir": "./tick/optim/model/",
-    "extension_name": "model",
+    "swig_files": ["base_model_module.i"],
+    "module_dir": "./tick/base_model/",
+    "extension_name": "base_model",
     "include_modules": base_array_modules
 }
+base_model_core = create_extension(**base_model_core_info)
 
-model_core = create_extension(**model_core_info)
+linear_model_core_info = {
+    "cpp_files": [],
+    "h_files": [],
+    "folders": [
+        "lib/cpp/linear_model"
+    ],
+    "swig_files": ["linear_model_module.i"],
+    "module_dir": "./tick/linear_model/",
+    "extension_name": "linear_model",
+    "include_modules": base_array_modules +
+    [
+      base_model_core.module_ref,
+    ]
+}
+linear_model_core = create_extension(**linear_model_core_info)
+
+hawkes_simulation_extension_info = {
+    "cpp_files": [],
+    "h_files": [],
+    "folders": [
+        "lib/cpp/hawkes/simulation",
+        "lib/cpp/hawkes/simulation/hawkes_baselines",
+        "lib/cpp/hawkes/simulation/hawkes_kernels"
+    ],
+    "swig_files": [
+      "hawkes_simulation_module.i"
+    ],
+    "module_dir": "./tick/hawkes/simulation/",
+    "extension_name": "hawkes_simulation",
+    "include_modules": base_array_modules + [random_extension.module_ref]
+}
+hawkes_simulation_extension = \
+    create_extension(**hawkes_simulation_extension_info)
+
+hawkes_model_extension_info = {
+    "cpp_files": [],
+    "h_files": [],
+    "folders": [
+        "lib/cpp/hawkes/model",
+        "lib/cpp/hawkes/model/base",
+        "lib/cpp/hawkes/model/list_of_realizations",
+    ],
+    "swig_files": [
+      "hawkes_model_module.i"
+    ],
+    "module_dir": "./tick/hawkes/model/",
+    "extension_name": "hawkes_model",
+    "include_modules": base_array_modules + [base_model_core.module_ref]
+}
+hawkes_model_extension = create_extension(**hawkes_model_extension_info)
+
+hawkes_inference_extension_info = {
+    "cpp_files": [],
+    "h_files": [],
+    "folders": [
+        "lib/cpp/hawkes/inference",
+    ],
+    "swig_files": [
+      "hawkes_inference_module.i"
+    ],
+    "module_dir": "./tick/hawkes/inference/",
+    "extension_name": "hawkes_inference",
+    "include_modules": base_array_modules +
+    [
+        base_model_core.module_ref,
+        hawkes_model_extension.module_ref,
+    ]
+}
+hawkes_inference_extension = create_extension(**hawkes_inference_extension_info)
 
 prox_core_info = {
     "cpp_files": [],
     "h_files": [],
     "folders": [
-        "lib/src/cpp/optim/prox"
+        "lib/cpp/prox"
     ],
     "swig_files": ["prox_module.i"],
-    "module_dir": "./tick/optim/prox/",
+    "module_dir": "./tick/prox/",
     "extension_name": "prox",
     "include_modules": base_array_modules
 }
-
 prox_core = create_extension(**prox_core_info)
+
+robust_extension_info = {
+    "cpp_files": [],
+    "h_files": [],
+    "folders": [
+        "lib/cpp/robust"
+    ],
+    "swig_files": ["robust_module.i"],
+    "module_dir": "./tick/robust/",
+    "extension_name": "robust",
+    "include_modules": base_array_modules + [
+      base_model_core.module_ref,linear_model_core.module_ref]
+}
+robust_extension = create_extension(**robust_extension_info)
 
 solver_core_info = {
     "cpp_files": [],
     "h_files": [],
     "folders": [
-        "lib/src/cpp/optim/solver"
+        "lib/cpp/solver"
     ],
     "swig_files": ["solver_module.i"],
-    "module_dir": "./tick/optim/solver/",
+    "module_dir": "./tick/solver/",
     "extension_name": "solver",
     "include_modules": base_array_modules + [random_extension.module_ref,
-                                             model_core.module_ref,
-                                             prox_core.module_ref]
+                                             base_model_core.module_ref,
+                                             linear_model_core.module_ref,
+                                             prox_core.module_ref,
+                                             robust_extension.module_ref]
 }
-
 solver_core = create_extension(**solver_core_info)
 
 preprocessing_core_info = {
     "cpp_files": [],
     "h_files": [],
     "folders": [
-        "lib/src/cpp/preprocessing"
+        "lib/cpp/preprocessing"
     ],
     "swig_files": ["preprocessing_module.i"],
     "module_dir": "./tick/preprocessing/",
@@ -552,25 +630,27 @@ preprocessing_core_info = {
 
 preprocessing_core = create_extension(**preprocessing_core_info)
 
-inference_extension_info = {
+survival_extension_info = {
     "cpp_files": [],
     "h_files": [],
     "folders": [
-        "lib/src/cpp/inference"
+        "lib/cpp/survival"
     ],
-    "swig_files": ["inference_module.i"],
-    "module_dir": "./tick/inference/",
-    "extension_name": "inference",
-    "include_modules": base_array_modules + [model_core.module_ref]
+    "swig_files": ["survival_module.i"],
+    "module_dir": "./tick/survival/",
+    "extension_name": "survival",
+    "include_modules": base_array_modules + [base_model_core.module_ref]
 }
+survival_extension = create_extension(**survival_extension_info)
 
-inference_extension = create_extension(**inference_extension_info)
-
-tick_modules = [array_extension, base_extension,
-                test_extension, random_extension, simulation_extension,
-                model_core, prox_core, solver_core,
-                inference_extension, preprocessing_core]
-
+tick_modules = [
+    array_extension, base_extension, test_extension,
+    random_extension, base_model_core, linear_model_core,
+    hawkes_simulation_extension, hawkes_model_extension,
+    hawkes_inference_extension,
+    prox_core, preprocessing_core,
+    robust_extension, survival_extension, solver_core
+]
 
 # Abstract class for tick-specific commands that need access to common build
 # directories
@@ -663,6 +743,7 @@ class BuildCPPTests(TickCommand):
         cmake_cmd = [cmake_exe,
                      '-DPYTHON_INCLUDE_DIR={}'.format(inc_dir),
                      '-DTICK_REBUILD_LIBS=OFF',
+                     '-DBENCHMARK=OFF',
                      relpath + '/../lib']
 
         # Feed the path to the built C++ extensions so CMake does not have to
@@ -673,6 +754,11 @@ class BuildCPPTests(TickCommand):
 
             cmake_cmd.append(
                 '-DTICK_LIB_{}={}'.format(mod.ext_name.upper(), full_path))
+
+        define_macros = []
+        if 'define_macros' in blas_info and \
+                any(key == 'HAVE_CBLAS' for key, _ in blas_info['define_macros']):
+            cmake_cmd.append('-DUSE_BLAS=ON')
 
         os.makedirs(os.path.join(self.cpp_build_dir, 'cpptest'), exist_ok=True)
         subprocess.check_call(cmake_cmd, cwd=self.cpp_build_dir)
@@ -685,8 +771,8 @@ class RunCPPLint(TickCommand):
     description = 'run cpplint on tick C++ source files'
 
     CPPLINT_DIRS = [
-      'lib/include',
-      'lib/src/cpp'
+        'lib/include',
+        'lib/cpp',
     ]
 
     def run(self):
@@ -728,7 +814,6 @@ class RunPyLint(TickCommand):
     def run():
         raise NotImplementedError('Running pylint from setup.py'
                                   'not supported yet')
-
 
 class RunPyTests(TickCommand):
     description = 'run tick Python tests'
@@ -791,15 +876,16 @@ class CleanTick(clean):
 
 
 setup(name="tick",
-      version='0.3.0.0',
+      version='0.5.0.0',
       author="Emmanuel Bacry, "
              "Stephane Gaiffas, "
              "Martin Bompaire, "
              "Søren V. Poulsen, "
              "Maryan Morel, "
-             "Simon Bussy",
+             "Simon Bussy, "
+             "Philip Deegan",
       author_email='martin.bompaire@polytechnique.edu, '
-                   'soren.poulsen@polytechnique.edu',
+                   'philip.deegan@polytechnique.edu',
       url="https://x-datainitiative.github.io/tick/",
       description="Module for statistical learning, with a particular emphasis "
                   "on time-dependent modelling",
@@ -832,8 +918,8 @@ setup(name="tick",
                    'Operating System :: POSIX',
                    'Operating System :: Unix',
                    'Operating System :: MacOS',
-                   'Programming Language :: Python :: 3.4',
                    'Programming Language :: Python :: 3.5',
                    'Programming Language :: Python :: 3.6',
+                   'Programming Language :: Python :: 3.7',
                    'License :: OSI Approved :: BSD License'],
       )

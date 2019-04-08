@@ -1,6 +1,6 @@
  #
 # Author: Philip Deegan
-# Email : philip.deegan@polytechnique.edu 
+# Email : philip.deegan@polytechnique.edu
 # Date  : 21 - September - 2017
 #
 # This script is to be included to setup variables to build tick
@@ -11,10 +11,10 @@
 #  $PCONF = "python-config" binary
 #  $SWIG  = "swig" binary
 #  $LDARGS=Linking arguments
-#  $LIB_POSTFIX= python library format 
+#  $LIB_POSTFIX= python library format
 #  $LIB_POSTEXT= system library file extention
 #  $PROFILES= array of mkn profiles to build
-# 
+#
 ######################################################################
 
 set -e
@@ -45,7 +45,7 @@ function relpath(){
   echo $($PY -c "import os.path; print(os.path.relpath('$1', '$2'))")
 }
 function linkread(){
-if [[ "$unameOut" == "CYGWIN"* ]] || [[ "$unameOut" == "MINGW"* ]]; then
+if [[ "$unameOut" == "CYGWIN"* ]] || [[ "$unameOut" == "MINGW"* ]] || [[ "$unameOut" == "MSYS_NT"* ]]; then
   echo $(readlink -f $1)
 else
   echo $($PY -c "import os; print(os.path.realpath(\"$1\"))")
@@ -53,41 +53,30 @@ fi
 }
 
 #################
-if [[ "$unameOut" == "CYGWIN"* ]] || [[ "$unameOut" == "MINGW"* ]]; then
+if [[ "$unameOut" == "CYGWIN"* ]] || [[ "$unameOut" == "MINGW"* ]] || [[ "$unameOut" == "MSYS_NT"* ]]; then
   function pathreal(){
     P=$1
     which cygpath.exe 2>&1 > /dev/null
     CYGPATH=$?
-    (( $CYGPATH == 0 )) && P=$(cygpath $P)
-    if [[ $P == "$PWD"* ]]; then
-        LEN=${#PWD}
-        P="${P:$LEN}"
-        P="${P:1}"
-    fi
-    echo $P
+    (( $CYGPATH == 0 )) && P=$(cygpath -w $P)
+    echo "$P" | sed -e "s/\\\/\\\\\\\/g"
   }
 else
   function pathreal(){
-    if [[ $1 == "$PWD"* ]]; then
-        IN=$1
-        LEN=${#PWD}
-        echo \.${IN:$LEN}
-    else
-        echo $1
-    fi
+    echo $1
   }
 fi
 #################
 
 # if windows - python-config does not exist
-if [[ "$unameOut" == "CYGWIN"* ]] || [[ "$unameOut" == "MINGW"* ]]; then
+if [[ "$unameOut" == "CYGWIN"* ]] || [[ "$unameOut" == "MINGW"* ]] || [[ "$unameOut" == "MSYS_NT"* ]]; then
   echo "Windows detected"
-  
+
   CL_PATH=0
   GCC_PATH=0
   which cl.exe &> /dev/null && CL_PATH=$(which cl.exe)
   which gcc.exe &> /dev/null && GCC_PATH=$(which gcc.exe)
-  if [ $CL_PATH == 0 ] && [ $GCC_PATH == 0 ] ; then
+  if [[ $CL_PATH == 0 ]] && [[ $GCC_PATH == 0 ]] ; then
     echo "Neither cl.exe or gcc.exe on path: Error"
     exit 1
   fi
@@ -97,8 +86,9 @@ if [[ "$unameOut" == "CYGWIN"* ]] || [[ "$unameOut" == "MINGW"* ]]; then
     # which interferes with MSVC link.exe
     PATH="$(dirname $CL_PATH):$PATH"
   fi
-
-  PYDIR=$(dirname $(which $PY))
+  
+  PYDIR=$(dirname "$(which $PY)")
+  echo PYDIR $PYDIR
   PYINC="$PYDIR/include"
   [ ! -d "$PYINC" ] && \
       echo "$PYNUMINC does not exist - python in inconsistent state - reinstall"
@@ -106,7 +96,7 @@ if [[ "$unameOut" == "CYGWIN"* ]] || [[ "$unameOut" == "MINGW"* ]]; then
   PYNUMINC="$PYDIR/Lib/site-packages/numpy/core/include"
   [ ! -d "$PYNUMINC" ] &&  \
       echo "$PYNUMINC does not exist - install numpy"
-  
+
   # Deducing include paths for python and numpy
   [ -z "$PINC" ] && PINC="$PYINC"
   [ -z "$PNIC" ] && PNIC="$PYNUMINC";
@@ -121,7 +111,7 @@ if [[ "$unameOut" == "CYGWIN"* ]] || [[ "$unameOut" == "MINGW"* ]]; then
   [ -z "$LIB_POSTEXT" ] && LIB_POSTEXT="lib"
 
 else
-  # Finding the installed version of "python-config" to later find 
+  # Finding the installed version of "python-config" to later find
   #  include paths and linker flags
   # To override export PCONF variable with full path to python-config binary
   [ -z "$PCONF"  ] && which python3-config &> /dev/null && PCONF="python3-config"
@@ -142,13 +132,13 @@ else
 fi
 LIB_POSTFIX="${LIB_POSTFIX%.*}"
 
-# Finding the installed version of "swig" to later find 
+# Finding the installed version of "swig" to later find
 # To override export SWIG variable with full path to swig binary
 [ -z "$SWIG"  ] && which swig &> /dev/null && SWIG="swig"
 [ -z "$SWIG"  ] && echo "swig not found on PATH, exiting with error" && exit 1;
 [ -z "$SWIG_C_FLAGS" ] && SWIG_C_FLAGS="-DDEBUG_COSTLY_THROW"
 
-# Here: "sed" is used to remove unnecessary parts of the link flags 
+# Here: "sed" is used to remove unnecessary parts of the link flags
 #  given to us by python-config
 LDARGS=$(echo "$LDARGS" | sed -e "s/ -lintl//g")
 LDARGS=$(echo "$LDARGS" | sed -e "s/ -ldl//g")
@@ -180,39 +170,51 @@ fi
 PROFILES=(
     array
     base
+    base_model
     random
-    optim/model
-    optim/prox
-    optim/solver
-    simulation
-    inference
+    linear_model
+    prox
+    hawkes/simulation
+    hawkes/model
+    hawkes/inference
     preprocessing
+    robust
+    survival
+    solver
     array_test
 )
 function hash_index() {
     case $1 in
-        'array')         echo 0;;
-        'base')          echo 1;;
-        'random')        echo 2;;
-        'optim/model')   echo 3;;
-        'optim/prox')    echo 4;;
-        'optim/solver')  echo 5;;
-        'simulation')    echo 6;;
-        'inference')     echo 7;;
-        'preprocessing') echo 8;;
-        'array_test')    echo 9;;
+        'array')              echo 0;;
+        'base')               echo 1;;
+        'base_model')         echo 2;;
+        'random')             echo 3;;
+        'linear_model')       echo 4;;
+        'prox')               echo 5;;
+        'hawkes/simulation')  echo 6;;
+        'hawkes/model')       echo 7;;
+        'hawkes/inference')   echo 8;;
+        'preprocessing')      echo 9;;
+        'robust')             echo 10;;
+        'survival')           echo 11;;
+        'solver')             echo 12;;
+        'array_test')         echo 13;;
     esac
 }
 LIBRARIES=(
     "tick/array/build/_array$LIB_POSTFIX"
     "tick/base/build/_base$LIB_POSTFIX"
+    "tick/base_model/build/_base_model$LIB_POSTFIX"
     "tick/random/build/_crandom$LIB_POSTFIX"
-    "tick/optim/model/build/_model$LIB_POSTFIX"
-    "tick/optim/prox/build/_prox$LIB_POSTFIX"
-    "tick/optim/solver/build/_solver$LIB_POSTFIX"
-    "tick/simulation/build/_simulation$LIB_POSTFIX"
-    "tick/inference/build/_inference$LIB_POSTFIX"
+    "tick/linear_model/build/_linear_model$LIB_POSTFIX"
+    "tick/prox/build/_prox$LIB_POSTFIX"
+    "tick/hawkes/simulation/build/_hawkes_simulation$LIB_POSTFIX"
+    "tick/hawkes/model/build/_hawkes_model$LIB_POSTFIX"
+    "tick/hawkes/inference/build/_hawkes_inference$LIB_POSTFIX"
     "tick/preprocessing/build/_preprocessing$LIB_POSTFIX"
+    "tick/robust/build/_robust$LIB_POSTFIX"
+    "tick/survival/build/_survival$LIB_POSTFIX"
+    "tick/solver/build/_solver$LIB_POSTFIX"
     "tick/array_test/build/array_test${LIB_POSTFIX}"
 )
 
@@ -224,7 +226,7 @@ for PROFILE in "${PROFILES[@]}"; do
   TREE_LEN=${#TREE[@]}
   for idx in $(seq $TREE_LEN -1 0); do
     LINE="${TREE[idx]}"
-    set +e  
+    set +e
     echo "$LINE" | grep "+" | grep "tick" 2>&1 > /dev/null
     WIN=$?
     set -e
@@ -233,15 +235,23 @@ for PROFILE in "${PROFILES[@]}"; do
       EX=$(hash_index $INDEX)
       ADD_LIB=${LIBRARIES[$EX]}
       if [ -n "$ADD_LIB" ]; then
+        if [ -n "$LIBS" ]; then
+          set +e
+          echo "$LIBS" | grep "$ADD_LIB" 2>&1 > /dev/null
+          WIN=$?
+          set -e
+          [[ "$WIN" == "0" ]] && continue
+        fi
+
         if [[ "$unameOut" == "Darwin"* ]]; then
           LIBS="$LIBS $(linkread ${ADD_LIB}.${LIB_POSTEXT})"
-          REL=$(dirname ${LIBRARIES[$ITER]}) 
+          REL=$(dirname ${LIBRARIES[$ITER]})
           RPATH=$(dirname $ADD_LIB)
           if [ "$REL" != "$PATH" ]; then
             LIBS="$LIBS -Wl,-rpath,@loader_path/$(relpath $RPATH $REL)"
           fi
         else
-          LIBS="$LIBS $(linkread ${ADD_LIB}.${LIB_POSTEXT})"
+          LIBS="$LIBS $(pathreal $(linkread ${ADD_LIB}.${LIB_POSTEXT}))"
         fi
       fi
     fi
@@ -249,14 +259,14 @@ for PROFILE in "${PROFILES[@]}"; do
   if [[ "$unameOut" == "Darwin"* ]]; then
     FIL=$(basename ${LIBRARIES[$ITER]})
     CLANG_LARGS+=" -Wl,-install_name,@rpath/${FIL}.${LIB_POSTEXT}"
-  fi 
+  fi
   LIB_LD_PER_LIB+=("$LIBS")
   ITER=$(($ITER + 1))
 done
 
 
 ##
-# The mkn -x option overrides the default settings file 
+# The mkn -x option overrides the default settings file
 #  to allow to build with differernt compilers/configurations
 MKN_X="${MKN_X_FILE}"
 [ -n "${MKN_X_FILE}" ] && MKN_X_FILE=(-x $MKN_X)
@@ -274,7 +284,7 @@ popd 2>&1 > /dev/null
 ##
 
 ##
-# MKN_P_ARRAY exists to allow platfrom 
+# MKN_P_ARRAY exists to allow platfrom
 #  specific properties to be passed to mkn if required
 MKN_P_ARRAY=(lib_name=$LIB_POSTFIX)
 MKN_P=""
@@ -287,7 +297,7 @@ X_MKN_P="${MKN_P:0:${MKN_P_SIZE}}"
 MKN_P=($X_MKN_P)
 
 # The argument passed to "mkn -P" is "MKN_P"
-#  such that all entries in the MKN_P_ARRAY 
+#  such that all entries in the MKN_P_ARRAY
 #  become CSV values in MKN_P
 #  Any commas (,) in array entries must
 #  be escaped with a single backslash (\)
@@ -298,7 +308,7 @@ MKN_WITH_SIZE=${#V_MKN_WITH}
 (( $MKN_WITH_SIZE > 0 )) && MKN_WITH=(-w $V_MKN_WITH)
 
 ##
-# if a file included from source ends with a non-zero exitting command 
+# if a file included from source ends with a non-zero exitting command
 #  the "set -e" can cause the script to exit
 
 

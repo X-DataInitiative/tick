@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 set -e -x
 
@@ -11,6 +11,27 @@ eval "$(pyenv init -)"
 pyenv global ${PYVER}
 pyenv local ${PYVER}
 
-python setup.py cpplint build_ext --inplace cpptest pytest
+## disabled for the moment - re-enable later
+#python -m pip install yapf --upgrade
+#python -m yapf --style tools/code_style/yapf.conf -i tick examples --recursive
+# (( $(git diff tick | wc -l) > 0 )) && echo \
+# "Python has not been formatted : Please run ./sh/format_python.sh and recommit" \
+#   && exit 2
 
-export PYTHONPATH=${PYTHONPATH}:`pwd` && (cd doc && make doctest)
+python -m pip install -r requirements.txt
+python setup.py cpplint
+PYMAJ=$(python -c "import sys; print(sys.version_info[0])")
+PYMIN=$(python -c "import sys; print(sys.version_info[1])")
+if (( PYMAJ == 3 )) && (( PYMIN == 6 )); then
+  set +e
+  python setup.py build_ext -j 2 --inplace
+  rm -rf build/lib # force relinking of libraries in case of failure
+  set -e
+fi
+python setup.py build_ext --inplace cpptest pytest
+
+if (( PYMAJ == 3 )) && (( PYMIN == 7 )); then
+  echo "Skipping doctest as sphinxext.google_analytics is missing on Travis for 3.7"
+else
+  export PYTHONPATH=${PYTHONPATH}:`pwd` && (cd doc && make doctest)
+fi

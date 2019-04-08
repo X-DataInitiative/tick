@@ -26,7 +26,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 from tick.simulation import weights_sparse_gauss, \
     features_normal_cov_toeplitz
-from tick.inference import RobustLinearRegression, std_iqr
+from tick.robust import RobustLinearRegression, std_iqr
 from tick.metrics import support_fdp, support_recall
 
 np.random.seed(1)
@@ -54,23 +54,28 @@ y = X.dot(weights0) + noise_level * np.random.randn(n_samples) \
 
 target_fdr = 0.1
 noise_level = std_iqr(y)
-learner = RobustLinearRegression(C_sample_intercepts=2 * n_samples / noise_level,
-                                 penalty='none', fdr=target_fdr, verbose=False)
+learner = RobustLinearRegression(
+    C_sample_intercepts=2 * n_samples / noise_level, penalty='none',
+    fdr=target_fdr, verbose=False)
 learner.fit(X, y)
 
 fdp_ = support_fdp(sample_intercepts0, learner.sample_intercepts)
 power_ = support_recall(sample_intercepts0, learner.sample_intercepts)
 
 fig = plt.figure(figsize=(7, 6))
-titles = ['Model weights', 'Learned weights',
-          'Sample intercepts', 'Learned intercepts']
-vectors = [weights0, learner.weights, sample_intercepts0,
-          learner.sample_intercepts]
+titles = [
+    'Model weights', 'Learned weights', 'Sample intercepts',
+    'Learned intercepts'
+]
+vectors = [
+    weights0, learner.weights, sample_intercepts0, learner.sample_intercepts
+]
 for idx_plot, title, vector in zip(range(221, 225), titles, vectors):
     ax = fig.add_subplot(idx_plot)
     ax.stem(vector)
     ax.set_title(title, fontsize=12)
-fig.suptitle('Robust linear regression [fdp=%.2f, power=%.2f]' % (fdp_, power_),
-             fontsize=14)
+fig.suptitle(
+    'Robust linear regression [fdp=%.2f, power=%.2f]' % (fdp_, power_),
+    fontsize=14)
 fig.tight_layout(rect=[0, 0.03, 1, 0.95])
 plt.show()

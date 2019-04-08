@@ -2,22 +2,22 @@
 
 .. _plot:
 
-====================================
-:mod:`tick.plot`: plotting utilities
-====================================
+================
+:mod:`tick.plot`
+================
 
-*tick* provides some plot routines able to achieve common plots from tick
-objects.
+This module gathers all the plotting utilities of `tick`, namely plots for a
+solver's history, see :ref:`plot-optim`, plots for Hawkes processes, see :ref:`plot-hawkes`,
+plots for point process simulations :ref:`plot-pp` and some other useful plots, see
+:ref:`plot-misc`.
 
-.. contents::
-    :depth: 3
-    :backlinks: none
+.. _plot-optim:
 
-Optimization
-------------
+1. History plot
+---------------
 
-Used to compare efficiency of optimization algorithms implemented in
-`tick.optim.solver`.
+This plot is used to compare the efficiency of optimization algorithms
+implemented in :mod:`tick.solver`.
 
 .. currentmodule:: tick
 
@@ -27,13 +27,18 @@ Used to compare efficiency of optimization algorithms implemented in
 
     plot.plot_history
 
-.. plot:: modules/code_samples/optim/plot_optim_comparison.py
+Example
+*******
+
+.. plot:: modules/code_samples/plot_solver_comparison.py
     :include-source:
 
-Hawkes estimation
------------------
+.. _plot-hawkes:
 
-Used to observe hawkes parameters obtained by hawkes learners.
+2. Plots for Hawkes processes
+-----------------------------
+
+These plots are used to observe hawkes parameters obtained by hawkes learners.
 
 .. currentmodule:: tick
 
@@ -45,13 +50,18 @@ Used to observe hawkes parameters obtained by hawkes learners.
    plot.plot_hawkes_kernel_norms
    plot.plot_basis_kernels
 
-.. plot:: modules/code_samples/plot/plot_hawkes_matrix_exp_kernels.py
+Example
+*******
+
+.. plot:: modules/code_samples/plot_hawkes_matrix_exp_kernels.py
     :include-source:
 
-Point process simulation
-------------------------
+.. _plot-pp:
 
-Used to observe the behavior of a point process simulation.
+3. Plots for point process simulation
+-------------------------------------
+
+This plot is used to plot a point process simulation.
 
 .. currentmodule:: tick
 
@@ -61,13 +71,20 @@ Used to observe the behavior of a point process simulation.
 
    plot.plot_point_process
 
+Example
+*******
+
 .. plot:: ../examples/plot_poisson_inhomogeneous.py
     :include-source:
 
-Others
-------
+.. _plot-misc:
 
-Some other plot utilities.
+4. Miscellaneous plots
+----------------------
+
+Some other plots are particularly useful: plots for :class:`TimeFunction <tick.base.TimeFunction>``
+and a plot generating several stem plots at the same time, allowing `matplotlib`
+or `bokeh` rendering.
 
 .. currentmodule:: tick
 
@@ -78,5 +95,8 @@ Some other plot utilities.
    plot.plot_timefunction
    plot.stems
 
-.. plot:: modules/code_samples/simulation/plot_time_function.py
+Example
+*******
+
+.. plot:: modules/code_samples/plot_time_function.py
     :include-source:

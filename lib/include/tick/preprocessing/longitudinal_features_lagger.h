@@ -7,14 +7,15 @@
 
 // License: BSD 3 clause
 
-#include "tick/base/base.h"
-#include <cereal/types/polymorphic.hpp>
 #include <cereal/types/base_class.hpp>
+#include <cereal/types/polymorphic.hpp>
+#include "tick/base/base.h"
 
 class LongitudinalFeaturesLagger {
  protected:
   ulong n_intervals;
-  ulong n_lags;
+  SArrayULongPtr n_lags;
+  ArrayULong col_offset;
   ulong n_samples;
   ulong n_observations;
   ulong n_features;
@@ -22,24 +23,21 @@ class LongitudinalFeaturesLagger {
 
  public:
   LongitudinalFeaturesLagger(const SBaseArrayDouble2dPtrList1D &features,
-                             const ulong n_lags);
+                             const SArrayULongPtr n_lags);
 
-  void dense_lag_preprocessor(ArrayDouble2d &features,
-                              ArrayDouble2d &out,
+  void dense_lag_preprocessor(ArrayDouble2d &features, ArrayDouble2d &out,
                               ulong censoring) const;
 
-  void sparse_lag_preprocessor(ArrayULong &row,
-                               ArrayULong &col,
-                               ArrayDouble &data,
-                               ArrayULong &out_row,
-                               ArrayULong &out_col,
-                               ArrayDouble &out_data,
+  void sparse_lag_preprocessor(ArrayULong &row, ArrayULong &col,
+                               ArrayDouble &data, ArrayULong &out_row,
+                               ArrayULong &out_col, ArrayDouble &out_data,
                                ulong censoring) const;
 
   template <class Archive>
-  void serialize(Archive & ar) {
+  void serialize(Archive &ar) {
     ar(CEREAL_NVP(n_intervals));
     ar(CEREAL_NVP(n_lags));
+    ar(CEREAL_NVP(col_offset));
     ar(CEREAL_NVP(n_samples));
     ar(CEREAL_NVP(n_observations));
     ar(CEREAL_NVP(n_features));

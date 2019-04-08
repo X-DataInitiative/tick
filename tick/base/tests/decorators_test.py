@@ -13,17 +13,20 @@ class Test(unittest.TestCase):
         @actual_kwargs
         def f(arg1, arg2, kwarg1=None, kwarg2='', kwarg3=1, kwarg4=True):
             kwargs_ = sorted(f.actual_kwargs.items())
-            all_kwargs_ = sorted({'arg1': arg1, 'arg2': arg2,
-                                  'kwarg1': kwarg1, 'kwarg2': kwarg2,
-                                  'kwarg3': kwarg3, 'kwarg4': kwarg4
-                                  }.items())
+            all_kwargs_ = sorted({
+                'arg1': arg1,
+                'arg2': arg2,
+                'kwarg1': kwarg1,
+                'kwarg2': kwarg2,
+                'kwarg3': kwarg3,
+                'kwarg4': kwarg4
+            }.items())
             return kwargs_, all_kwargs_
 
         arg1 = 1
         arg2 = 2
-        default_all_kwargs = [('arg1', arg1), ('arg2', arg2),
-                              ('kwarg1', None), ('kwarg2', ''), ('kwarg3', 1),
-                              ('kwarg4', True)]
+        default_all_kwargs = [('arg1', arg1), ('arg2', arg2), ('kwarg1', None),
+                              ('kwarg2', ''), ('kwarg3', 1), ('kwarg4', True)]
 
         kwargs, all_kwargs = f(arg1, arg2)
         self.assertEqual(kwargs, [])

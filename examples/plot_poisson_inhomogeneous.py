@@ -11,13 +11,14 @@ import numpy as np
 from tick.base import TimeFunction
 
 from tick.plot import plot_point_process
-from tick.simulation.inhomogeneous_poisson import SimuInhomogeneousPoisson
+from tick.hawkes import SimuInhomogeneousPoisson
 
 run_time = 30
 
 T = np.arange((run_time * 0.9) * 5, dtype=float) / 5
-Y = np.maximum(15 * np.sin(T) * (np.divide(np.ones_like(T),
-                                           np.sqrt(T + 1) + 0.1 * T)), 0.001)
+Y = np.maximum(
+    15 * np.sin(T) * (np.divide(np.ones_like(T),
+                                np.sqrt(T + 1) + 0.1 * T)), 0.001)
 
 tf = TimeFunction((T, Y), dt=0.01)
 

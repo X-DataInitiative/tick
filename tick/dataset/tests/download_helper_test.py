@@ -46,7 +46,8 @@ class Test(unittest.TestCase):
 
             # ensure the same file has been used
             file_modification_time_2 = os.path.getmtime(cache_path)
-            self.assertEqual(file_modification_time_1, file_modification_time_2)
+            self.assertEqual(file_modification_time_1,
+                             file_modification_time_2)
 
 
 if __name__ == "__main__":
