@@ -461,6 +461,7 @@ class FeaturesBinarizer(Base, BaseEstimator, TransformerMixin):
                 if self.bins_boundaries is None:
                     raise ValueError("bins_boundaries required when `method` "
                                      "equals 'given'")
+
                 if not isinstance(self.bins_boundaries[feature_name], np.ndarray):
                     raise ValueError("feature %s not found in bins_boundaries" % feature_name)
                 boundaries = self.bins_boundaries[feature_name]
