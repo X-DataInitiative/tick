@@ -1,6 +1,6 @@
 
-#ifndef TICK_OPTIM_MODEL_SRC_HAWKES_UTILS_H_
-#define TICK_OPTIM_MODEL_SRC_HAWKES_UTILS_H_
+#ifndef LIB_INCLUDE_TICK_OPTIM_MODEL_HAWKES_UTILS_H_
+#define LIB_INCLUDE_TICK_OPTIM_MODEL_HAWKES_UTILS_H_
 
 // License: BSD 3 clause
 
@@ -18,4 +18,4 @@ TimestampListDescriptor describe_timestamps_list(const SArrayDoublePtrList2D &ti
 TimestampListDescriptor describe_timestamps_list(const SArrayDoublePtrList2D &timestamps_list,
                                                  const VArrayDoublePtr end_times);
 
-#endif  // TICK_OPTIM_MODEL_SRC_HAWKES_UTILS_H_
+#endif  // LIB_INCLUDE_TICK_OPTIM_MODEL_HAWKES_UTILS_H_

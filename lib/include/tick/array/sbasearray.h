@@ -4,8 +4,8 @@
 
 /// @file
 
-#ifndef TICK_BASE_ARRAY_SRC_SBASEARRAY_H_
-#define TICK_BASE_ARRAY_SRC_SBASEARRAY_H_
+#ifndef LIB_INCLUDE_TICK_ARRAY_SBASEARRAY_H_
+#define LIB_INCLUDE_TICK_ARRAY_SBASEARRAY_H_
 
 // License: BSD 3 clause
 
@@ -86,4 +86,4 @@ typedef std::vector<SBaseArrayDoublePtrList1D> SBaseArrayDoublePtrList2D;
  * @}
  */
 
-#endif  // TICK_BASE_ARRAY_SRC_SBASEARRAY_H_
+#endif  // LIB_INCLUDE_TICK_ARRAY_SBASEARRAY_H_

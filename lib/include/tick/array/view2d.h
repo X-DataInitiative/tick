@@ -6,8 +6,8 @@
 //  Copyright (c) 2016 bacry. All rights reserved.
 //
 
-#ifndef TICK_BASE_ARRAY_SRC_VIEW2D_H_
-#define TICK_BASE_ARRAY_SRC_VIEW2D_H_
+#ifndef LIB_INCLUDE_TICK_ARRAY_VIEW2D_H_
+#define LIB_INCLUDE_TICK_ARRAY_VIEW2D_H_
 
 // License: BSD 3 clause
 
@@ -89,4 +89,4 @@ BaseArray<T> view_row(BaseArray2d<T> &a, ulong i) {
 
 //! @}
 
-#endif  // TICK_BASE_ARRAY_SRC_VIEW2D_H_
+#endif  // LIB_INCLUDE_TICK_ARRAY_VIEW2D_H_

@@ -1,5 +1,5 @@
-#ifndef TICK_INFERENCE_SRC_HAWKES_ADM4_H_
-#define TICK_INFERENCE_SRC_HAWKES_ADM4_H_
+#ifndef LIB_INCLUDE_TICK_INFERENCE_HAWKES_ADM4_H_
+#define LIB_INCLUDE_TICK_INFERENCE_HAWKES_ADM4_H_
 
 // License: BSD 3 clause
 
@@ -66,4 +66,4 @@ class HawkesADM4 : public ModelHawkesList {
   void set_rho(const double rho);
 };
 
-#endif  // TICK_INFERENCE_SRC_HAWKES_ADM4_H_
+#endif  // LIB_INCLUDE_TICK_INFERENCE_HAWKES_ADM4_H_

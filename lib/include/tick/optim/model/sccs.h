@@ -2,8 +2,8 @@
 // Created by Maryan Morel on 18/05/2017.
 //
 
-#ifndef TICK_OPTIM_MODEL_SRC_SCCS_H_
-#define TICK_OPTIM_MODEL_SRC_SCCS_H_
+#ifndef LIB_INCLUDE_TICK_OPTIM_MODEL_SCCS_H_
+#define LIB_INCLUDE_TICK_OPTIM_MODEL_SCCS_H_
 
 // License: BSD 3 clause
 
@@ -101,4 +101,4 @@ class DLL_PUBLIC ModelSCCS : public ModelLipschitz  {
   }
 };
 
-#endif  // TICK_OPTIM_MODEL_SRC_SCCS_H_
+#endif  // LIB_INCLUDE_TICK_OPTIM_MODEL_SCCS_H_

@@ -1,5 +1,5 @@
-#ifndef TICK_OPTIM_PROX_SRC_PROX_BINARSITY_H_
-#define TICK_OPTIM_PROX_SRC_PROX_BINARSITY_H_
+#ifndef LIB_INCLUDE_TICK_OPTIM_PROX_PROX_BINARSITY_H_
+#define LIB_INCLUDE_TICK_OPTIM_PROX_PROX_BINARSITY_H_
 
 // License: BSD 3 clause
 
@@ -22,4 +22,4 @@ class ProxBinarsity : public ProxWithGroups {
             ulong start, ulong end) final;
 };
 
-#endif  // TICK_OPTIM_PROX_SRC_PROX_BINARSITY_H_
+#endif  // LIB_INCLUDE_TICK_OPTIM_PROX_PROX_BINARSITY_H_

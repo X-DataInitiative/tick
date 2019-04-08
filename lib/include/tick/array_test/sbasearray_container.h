@@ -6,8 +6,8 @@
 //  Copyright (c) 2016 bacry. All rights reserved.
 //
 
-#ifndef TICK_BASE_ARRAY_TEST_SRC_SBASEARRAY_CONTAINER_H_
-#define TICK_BASE_ARRAY_TEST_SRC_SBASEARRAY_CONTAINER_H_
+#ifndef LIB_INCLUDE_TICK_ARRAY_TEST_SBASEARRAY_CONTAINER_H_
+#define LIB_INCLUDE_TICK_ARRAY_TEST_SBASEARRAY_CONTAINER_H_
 
 // License: BSD 3 clause
 
@@ -21,4 +21,4 @@ extern void test_sbasearray2d_container_new(SBaseArrayDouble2dPtr a);
 extern void test_sbasearray2d_container_clear();
 extern double test_sbasearray2d_container_compute();
 
-#endif  // TICK_BASE_ARRAY_TEST_SRC_SBASEARRAY_CONTAINER_H_
+#endif  // LIB_INCLUDE_TICK_ARRAY_TEST_SBASEARRAY_CONTAINER_H_

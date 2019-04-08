@@ -1,5 +1,5 @@
-#ifndef TICK_OPTIM_SOLVER_SRC_ADAGRAD_H_
-#define TICK_OPTIM_SOLVER_SRC_ADAGRAD_H_
+#ifndef LIB_INCLUDE_TICK_OPTIM_SOLVER_ADAGRAD_H_
+#define LIB_INCLUDE_TICK_OPTIM_SOLVER_ADAGRAD_H_
 
 // License: BSD 3 clause
 
@@ -18,4 +18,4 @@ class AdaGrad : public StoSolver {
   void set_starting_iterate(ArrayDouble &new_iterate) override;
 };
 
-#endif  // TICK_OPTIM_SOLVER_SRC_ADAGRAD_H_
+#endif  // LIB_INCLUDE_TICK_OPTIM_SOLVER_ADAGRAD_H_

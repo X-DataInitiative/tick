@@ -1,5 +1,5 @@
-#ifndef TICK_BASE_ARRAY_SRC_PROMOTE_H_
-#define TICK_BASE_ARRAY_SRC_PROMOTE_H_
+#ifndef LIB_INCLUDE_TICK_ARRAY_PROMOTE_H_
+#define LIB_INCLUDE_TICK_ARRAY_PROMOTE_H_
 
 // License: BSD 3 clause
 
@@ -30,4 +30,4 @@ using promote_t = typename promote<T>::type;
 
 }  // namespace tick
 
-#endif  // TICK_BASE_ARRAY_SRC_PROMOTE_H_
+#endif  // LIB_INCLUDE_TICK_ARRAY_PROMOTE_H_

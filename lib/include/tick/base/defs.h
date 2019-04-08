@@ -5,8 +5,8 @@
 //  Created by bacry on 27/12/2015.
 //  Copyright (c) 2015 bacry. All rights reserved.
 //
-#ifndef TICK_BASE_SRC_DEFS_H_
-#define TICK_BASE_SRC_DEFS_H_
+#ifndef LIB_INCLUDE_TICK_BASE_DEFS_H_
+#define LIB_INCLUDE_TICK_BASE_DEFS_H_
 
 // License: BSD 3 clause
 
@@ -55,4 +55,4 @@ typedef std::uint16_t ushort;
 #define _USE_MATH_DEFINES
 #endif  // _USE_MATH_DEFINES
 
-#endif  // TICK_BASE_SRC_DEFS_H_
+#endif  // LIB_INCLUDE_TICK_BASE_DEFS_H_

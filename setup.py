@@ -283,7 +283,7 @@ def create_extension(extension_name, module_dir,
                               '-Ilib/include',
                               sparse_indices_flag,
                               '-std=c++11',
-                              '-O3',
+                              '-O2', # -O3 is sometimes dangerous and has caused segfaults on Travis
                               ]
 
     if use_fast_math:
@@ -685,7 +685,8 @@ class RunCPPLint(TickCommand):
     description = 'run cpplint on tick C++ source files'
 
     CPPLINT_DIRS = [
-        'src/cpp',
+      'lib/include',
+      'lib/src/cpp'
     ]
 
     def run(self):

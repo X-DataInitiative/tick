@@ -1,5 +1,5 @@
-#ifndef TICK_OPTIM_PROX_SRC_PROX_L1W_H_
-#define TICK_OPTIM_PROX_SRC_PROX_L1W_H_
+#ifndef LIB_INCLUDE_TICK_OPTIM_PROX_PROX_L1W_H_
+#define LIB_INCLUDE_TICK_OPTIM_PROX_PROX_L1W_H_
 
 // License: BSD 3 clause
 
@@ -52,4 +52,4 @@ class ProxL1w : public ProxSeparable {
   double value_single(double x, double weight) const;
 };
 
-#endif  // TICK_OPTIM_PROX_SRC_PROX_L1W_H_
+#endif  // LIB_INCLUDE_TICK_OPTIM_PROX_PROX_L1W_H_

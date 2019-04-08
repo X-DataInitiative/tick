@@ -221,6 +221,7 @@ class SimuCoxReg(SimuWithFeatures):
 
 class SimuCoxRegWithCutPoints(SimuWithFeatures):
     """Simulation of a Cox regression for proportional hazards with cut-points
+    effects in the features
 
     Parameters
     ----------
@@ -289,6 +290,10 @@ class SimuCoxRegWithCutPoints(SimuWithFeatures):
         cut-points when n_cut_points is `None`. Increasing n_cut_points_factor
         leads to less cut-points per feature on average.
 
+    sparsity : `float`, default=0
+        Percentage of block sparcity induced in the coefficient vector. Must be
+        in [0, 1].
+
     Attributes
     ----------
     features : `numpy.ndarray`, shape=(n_samples, n_features)
@@ -334,7 +339,7 @@ class SimuCoxRegWithCutPoints(SimuWithFeatures):
                  censoring_factor: float = 2.,
                  features_type: str = "cov_toeplitz",
                  cov_corr: float = 0.5, features_scaling: str = "none",
-                 seed: int = None, verbose: bool = True):
+                 seed: int = None, verbose: bool = True, sparsity=0):
 
         # intercept=None in this model
         SimuWithFeatures.__init__(self, None, features, n_samples,
@@ -347,6 +352,7 @@ class SimuCoxRegWithCutPoints(SimuWithFeatures):
         self.times_distribution = times_distribution
         self.n_cut_points = n_cut_points
         self.n_cut_points_factor = n_cut_points_factor
+        self.sparsity = sparsity
         self.features = None
         self.times = None
         self.censoring = None
@@ -409,6 +415,14 @@ class SimuCoxRegWithCutPoints(SimuWithFeatures):
         # Simulation of cut-points
         n_cut_points = self.n_cut_points
         n_cut_points_factor = self.n_cut_points_factor
+        sparsity = self.sparsity
+        if not 0 <= sparsity <= 1:
+            raise ValueError("``sparsity`` must be in (0, 1), "
+                             "got %s" % sparsity)
+        s = round(n_features * sparsity)
+        # sparsity index set
+        S = np.random.choice(n_features, s, replace=False)
+
         if n_cut_points is None:
             n_cut_points = np.random.geometric(n_cut_points_factor, n_features)
         else:
@@ -416,17 +430,27 @@ class SimuCoxRegWithCutPoints(SimuWithFeatures):
 
         cut_points = {}
         coeffs_binarized = np.array([])
-        for i in range(n_features):
-            cut_points_ = np.random.normal(scale=.5, size=n_cut_points[i])
-            cut_points_ = np.sort(cut_points_)
-            cut_points_ = np.insert(cut_points_, 0, -np.inf)
-            cut_points_ = np.append(cut_points_, np.inf)
-            cut_points[str(i)] = cut_points_
+        for j in range(n_features):
+            feature_j = features[:, j]
+            quantile_cuts = np.linspace(10, 90, 10)
+            candidates = np.percentile(feature_j, quantile_cuts,
+                                       interpolation="nearest")
+            cut_points_j = np.random.choice(candidates, n_cut_points[j],
+                                            replace=False)
+            cut_points_j = np.sort(cut_points_j)
+            cut_points_j = np.insert(cut_points_j, 0, -np.inf)
+            cut_points_j = np.append(cut_points_j, np.inf)
+            cut_points[str(j)] = cut_points_j
             # generate beta star
-            coeffs_block = np.random.normal(0, 2, n_cut_points[i] + 1)
-            # make sure 2 consecutive coeffs are "different enough"
-            coeffs_block = np.abs(coeffs_block)
-            coeffs_block[::2] *= -1
+            if j in S:
+                coeffs_block = np.zeros(n_cut_points[j] + 1)
+            else:
+                coeffs_block = np.random.normal(1, .5, n_cut_points[j] + 1)
+                # make sure 2 consecutive coeffs are different enough
+                coeffs_block = np.abs(coeffs_block)
+                coeffs_block[::2] *= -1
+            # sum-to-zero constraint in each block
+            coeffs_block = coeffs_block - coeffs_block.mean()
             coeffs_binarized = np.append(coeffs_binarized, coeffs_block)
 
         binarizer = FeaturesBinarizer(method='given',
@@ -456,7 +480,7 @@ class SimuCoxRegWithCutPoints(SimuWithFeatures):
         censoring = (T <= C).astype(np.ushort)
         self._set("censoring", censoring)
         return self.features, self.times, self.censoring, cut_points, \
-               coeffs_binarized
+               coeffs_binarized, S
 
     def _as_dict(self):
         dd = SimuWithFeatures._as_dict(self)

@@ -1,5 +1,5 @@
-#ifndef TICK_BASE_ARRAY_SRC_ARRAY_H_
-#define TICK_BASE_ARRAY_SRC_ARRAY_H_
+#ifndef LIB_INCLUDE_TICK_ARRAY_ARRAY_H_
+#define LIB_INCLUDE_TICK_ARRAY_ARRAY_H_
 
 // License: BSD 3 clause
 
@@ -606,4 +606,4 @@ tick::TemporaryLog<E>& operator<<(tick::TemporaryLog<E>& log, const Array<T>& ar
     return log;
 }
 
-#endif  // TICK_BASE_ARRAY_SRC_ARRAY_H_
+#endif  // LIB_INCLUDE_TICK_ARRAY_ARRAY_H_

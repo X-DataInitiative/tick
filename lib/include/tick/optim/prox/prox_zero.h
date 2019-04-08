@@ -1,5 +1,5 @@
-#ifndef TICK_OPTIM_PROX_SRC_PROX_ZERO_H_
-#define TICK_OPTIM_PROX_SRC_PROX_ZERO_H_
+#ifndef LIB_INCLUDE_TICK_OPTIM_PROX_PROX_ZERO_H_
+#define LIB_INCLUDE_TICK_OPTIM_PROX_PROX_ZERO_H_
 
 // License: BSD 3 clause
 
@@ -23,4 +23,4 @@ class DLL_PUBLIC ProxZero : public ProxSeparable {
   double call_single(double x, double step, ulong n_times) const override;
 };
 
-#endif  // TICK_OPTIM_PROX_SRC_PROX_ZERO_H_
+#endif  // LIB_INCLUDE_TICK_OPTIM_PROX_PROX_ZERO_H_

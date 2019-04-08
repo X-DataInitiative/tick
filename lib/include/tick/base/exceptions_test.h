@@ -1,5 +1,5 @@
-#ifndef TICK_BASE_SRC_EXCEPTIONS_TEST_H_
-#define TICK_BASE_SRC_EXCEPTIONS_TEST_H_
+#ifndef LIB_INCLUDE_TICK_BASE_EXCEPTIONS_TEST_H_
+#define LIB_INCLUDE_TICK_BASE_EXCEPTIONS_TEST_H_
 
 // License: BSD 3 clause
 
@@ -10,4 +10,4 @@ extern void throw_domain_error();
 extern void throw_runtime_error();
 extern void throw_string();
 
-#endif  // TICK_BASE_SRC_EXCEPTIONS_TEST_H_
+#endif  // LIB_INCLUDE_TICK_BASE_EXCEPTIONS_TEST_H_

@@ -1,5 +1,5 @@
-#ifndef TICK_BASE_SRC_DEBUG_H_
-#define TICK_BASE_SRC_DEBUG_H_
+#ifndef LIB_INCLUDE_TICK_BASE_DEBUG_H_
+#define LIB_INCLUDE_TICK_BASE_DEBUG_H_
 
 // License: BSD 3 clause
 
@@ -243,4 +243,4 @@ struct LogExitCout {
   #define TICK_DEPRECATED(reason)
 #endif
 
-#endif  // TICK_BASE_SRC_DEBUG_H_
+#endif  // LIB_INCLUDE_TICK_BASE_DEBUG_H_

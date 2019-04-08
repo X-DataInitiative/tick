@@ -1,12 +1,16 @@
 # License: BSD 3 clause
 
-# -*- coding: utf8 -*-
-
+import gc
 import unittest
-import numpy as np
-from tick.array_test.build import array_test as test
 import weakref
+
+import numpy as np
+import scipy
 from scipy.sparse import csr_matrix
+
+from tick.array.build.array import tick_double_sparse2d_from_file
+from tick.array.build.array import tick_double_sparse2d_to_file
+from tick.array_test.build import array_test as test
 
 
 class Test(unittest.TestCase):
@@ -201,6 +205,69 @@ class Test(unittest.TestCase):
             self.assertAlmostEqual(first_filled_memory - initial_memory,
                                    filled_memory - initial_memory,
                                    delta=1.1*bytes_size)
+
+    def test_s_sparse_array2d_memory_leaks(self):
+        """...Test brute force method in order to see if we have a memory leak
+        during typemap out
+        """
+        import os
+
+        try:
+            import psutil
+        except ImportError:
+            print('Without psutils we cannot ensure we have no memory leaks')
+            return
+
+        def get_memory_used():
+            """Returns memory used by current process
+            """
+            process = psutil.Process(os.getpid())
+            return process.memory_info()[0]
+
+        cereal_file = "sparse.gen.cereal"
+        try:
+            n_rows = int(1e3)
+            n_cols = int(1e2)
+            s_spar = int((n_rows * n_cols) * .3)
+
+            data_size = (s_spar * 8)
+            # The size in memory of an array of ``size`` doubles
+            bytes_size = (data_size * 2) + ((n_rows + 1) * 8)
+
+            sparsearray_double = scipy.sparse.rand(n_rows, n_cols, 0.3,
+                                                   "csr", "d")
+
+            tick_double_sparse2d_to_file(cereal_file, sparsearray_double)
+
+            initial_memory = get_memory_used()
+            a = tick_double_sparse2d_from_file(cereal_file)
+            first_filled_memory = get_memory_used()
+
+            # Check that new memory is of the correct order (10%)
+            self.assertAlmostEqual(first_filled_memory - initial_memory,
+                                   bytes_size,
+                                   delta=1.1 * bytes_size)
+
+            del a
+            for i in range(10):
+                # Check memory is not increasing
+                gc.collect()
+                filled_memory = get_memory_used()
+                self.assertAlmostEqual(filled_memory, initial_memory,
+                                       delta=1.1 * bytes_size)
+
+                X = tick_double_sparse2d_from_file(cereal_file)
+                del X
+
+            gc.collect()
+
+            end = get_memory_used()
+            self.assertAlmostEqual(end, initial_memory,
+                                   delta=1.1 * bytes_size)
+
+        finally:
+            if os.path.exists(cereal_file):
+                os.remove(cereal_file)
 
     def test_varray_share_same_support(self):
         """...Test that modifications on Varray of in Python affect the same

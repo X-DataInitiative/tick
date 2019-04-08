@@ -21,8 +21,8 @@
 
 #include <cmath>
 
-#ifndef TICK_BASE_SRC_MATH_T2EXP_H_
-#define TICK_BASE_SRC_MATH_T2EXP_H_
+#ifndef LIB_INCLUDE_TICK_BASE_MATH_T2EXP_H_
+#define LIB_INCLUDE_TICK_BASE_MATH_T2EXP_H_
 
 #ifdef  __cplusplus
 extern "C" {
@@ -82,4 +82,4 @@ inline extern double optimized_exp(double x,
 }
 #endif/*__cplusplus*/
 
-#endif  // TICK_BASE_SRC_MATH_T2EXP_H_
+#endif  // LIB_INCLUDE_TICK_BASE_MATH_T2EXP_H_

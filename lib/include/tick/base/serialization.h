@@ -1,5 +1,5 @@
-#ifndef TICK_BASE_SRC_SERIALIZATION_H_
-#define TICK_BASE_SRC_SERIALIZATION_H_
+#ifndef LIB_INCLUDE_TICK_BASE_SERIALIZATION_H_
+#define LIB_INCLUDE_TICK_BASE_SERIALIZATION_H_
 
 // License: BSD 3 clause
 
@@ -30,4 +30,4 @@ void object_from_string(T* ptr, const std::string& data) {
 
 }  // namespace tick
 
-#endif  // TICK_BASE_SRC_SERIALIZATION_H_
+#endif  // LIB_INCLUDE_TICK_BASE_SERIALIZATION_H_

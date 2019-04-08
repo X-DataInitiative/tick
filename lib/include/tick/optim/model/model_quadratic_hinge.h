@@ -1,5 +1,5 @@
-#ifndef TICK_OPTIM_MODEL_SRC_MODEL_QUADRATIC_HINGE_H_
-#define TICK_OPTIM_MODEL_SRC_MODEL_QUADRATIC_HINGE_H_
+#ifndef LIB_INCLUDE_TICK_OPTIM_MODEL_MODEL_QUADRATIC_HINGE_H_
+#define LIB_INCLUDE_TICK_OPTIM_MODEL_MODEL_QUADRATIC_HINGE_H_
 
 // License: BSD 3 clause
 
@@ -32,4 +32,4 @@ class ModelQuadraticHinge : public virtual ModelGeneralizedLinear, public ModelL
 
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelQuadraticHinge, cereal::specialization::member_serialize)
 
-#endif  // TICK_OPTIM_MODEL_SRC_MODEL_QUADRATIC_HINGE_H_
+#endif  // LIB_INCLUDE_TICK_OPTIM_MODEL_MODEL_QUADRATIC_HINGE_H_

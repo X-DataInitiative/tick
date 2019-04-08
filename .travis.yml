@@ -32,16 +32,22 @@ matrix:
     sudo: required
     env: 
       - PYVER=3.4.6
+    osx_image: xcode9.1
   - os: osx
     language: generic
     sudo: required
     env:
       - PYVER=3.5.3
+    osx_image: xcode9.1
   - os: osx
     language: generic
     sudo: required
     env: 
       - PYVER=3.6.1
+    osx_image: xcode9.1
+
+before_install:
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then rvm get stable; fi
 
 install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then source tools/travis/osx_install.sh; fi

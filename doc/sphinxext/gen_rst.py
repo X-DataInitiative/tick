@@ -465,7 +465,13 @@ def extract_docstring(filename, ignore_heading=False):
                     first_par = paragraphs[0]
 
         break
-    return docstring, first_par, erow + 1 + start_row
+
+    # Fix because there is otherwise a conflict bewteen files that have a
+    # docstring and those which have not
+    if erow > 1:
+        erow += 1
+
+    return docstring, first_par, erow + start_row
 
 
 def generate_example_rst(app):
