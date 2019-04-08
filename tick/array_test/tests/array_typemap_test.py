@@ -51,12 +51,12 @@ class Test(unittest.TestCase):
             info['number'] = 148  # info['python_type'](np.exp(5))
 
             # The dense array of the corresponding type
-            python_array = np.array([1, 2, 5, 0, 4, 1]).astype(
-                info['python_type'])
+            python_array = np.array([1, 2, 5, 0, 4,
+                                     1]).astype(info['python_type'])
 
             # The dense array 2D of the corresponding type
-            python_array_2d = np.array([[1, 2, 5], [0, 4, 1]]).astype(
-                info['python_type'])
+            python_array_2d = np.array([[1, 2, 5],
+                                        [0, 4, 1]]).astype(info['python_type'])
 
             # The list of dense array of the corresponding type
             python_array_list_1d = [
@@ -67,43 +67,35 @@ class Test(unittest.TestCase):
 
             python_array2d_list_1d = [
                 np.array([[1, 2, 5], [0, 4, 1]]).astype(info['python_type']),
-                np.array([[1, 2, 9], [1, 2, 5], [0, 4, 1]]
-                         ).astype(info['python_type']),
+                np.array([[1, 2, 9], [1, 2, 5],
+                          [0, 4, 1]]).astype(info['python_type']),
                 np.array([[0]]).astype(info['python_type'])
             ]
 
-            python_array_list_2d = [
-                [
-                    np.array([1, 2, 5]).astype(info['python_type'])
-                ], [
-                    np.array([1, 2, 9, 5]).astype(info['python_type']),
-                    np.array([0, 4, 1]).astype(info['python_type'])
-                ], []
-            ]
+            python_array_list_2d = [[
+                np.array([1, 2, 5]).astype(info['python_type'])
+            ], [
+                np.array([1, 2, 9, 5]).astype(info['python_type']),
+                np.array([0, 4, 1]).astype(info['python_type'])
+            ], []]
 
-            python_array2d_list_2d = [
-                [
-                    np.array([[1, 2, 5], [0, 4, 1]]).astype(
-                        info['python_type']),
-                ],
-                [
-                    np.array([[1, 2, 9], [1, 2, 5], [0, 4, 1]]
-                             ).astype(info['python_type']),
-                    np.array([[0]]).astype(info['python_type'])
-                ], []
-            ]
+            python_array2d_list_2d = [[
+                np.array([[1, 2, 5], [0, 4, 1]]).astype(info['python_type']),
+            ], [
+                np.array([[1, 2, 9], [1, 2, 5],
+                          [0, 4, 1]]).astype(info['python_type']),
+                np.array([[0]]).astype(info['python_type'])
+            ], []]
 
             # The sparse array of the corresponding type
             python_sparse_array = csr_matrix(
                 (np.array([1.5, 2, 3, 1]), np.array([3, 5, 7, 9]),
-                 np.array([0, 4]))
-            ).astype(info['python_type'])
+                 np.array([0, 4]))).astype(info['python_type'])
 
             # The sparse array 2D of the corresponding type
             python_sparse_array_2d = csr_matrix(
                 (np.array([1.5, 2, 3, 1]), np.array([3, 5, 7, 4]),
-                 np.array([0, 3, 4]))
-            ).astype(info['python_type'])
+                 np.array([0, 3, 4]))).astype(info['python_type'])
 
             python_sparse_array_list_1d = [
                 csr_matrix((np.array([1.5, 2, 3, 1]), np.array([3, 5, 7, 9]),
@@ -122,40 +114,32 @@ class Test(unittest.TestCase):
                             np.array([0, 3, 4]))).astype(info['python_type']),
                 csr_matrix((np.array([1.5, 2, 3]), np.array([3, 5, 11]),
                             np.array([0, 1, 3]))).astype(info['python_type']),
+                csr_matrix(
+                    (np.array([1.5, 2, 3, 1, 2]), np.array([3, 5, 7, 4, 1]),
+                     np.array([0, 2, 3, 5]))).astype(info['python_type'])
+            ]
+
+            python_sparse_array_list_2d = [[
+                csr_matrix((np.array([1.5, 2, 3, 1]), np.array([3, 5, 7, 9]),
+                            np.array([0, 4]))).astype(info['python_type'])
+            ], [
+                csr_matrix((np.array([1.5, 2, 3]), np.array([3, 5, 11]),
+                            np.array([0, 3]))).astype(info['python_type']),
                 csr_matrix((np.array([1.5, 2, 3, 1, 2]),
                             np.array([3, 5, 7, 4, 1]),
-                            np.array([0, 2, 3, 5]))).astype(info['python_type'])
-            ]
+                            np.array([0, 5]))).astype(info['python_type'])
+            ], []]
 
-            python_sparse_array_list_2d = [
-                [
-                    csr_matrix(
-                        (np.array([1.5, 2, 3, 1]), np.array([3, 5, 7, 9]),
-                         np.array([0, 4]))).astype(info['python_type'])
-                ], [
-                    csr_matrix((np.array([1.5, 2, 3]), np.array([3, 5, 11]),
-                                np.array([0, 3]))).astype(info['python_type']),
-                    csr_matrix((np.array([1.5, 2, 3, 1, 2]),
-                                np.array([3, 5, 7, 4, 1]),
-                                np.array([0, 5]))).astype(info['python_type'])
-                ], []
-            ]
-
-            python_sparse_array2d_list_2d = [
-                [
-                    csr_matrix(
-                        (np.array([1.5, 2, 3, 1]), np.array([3, 5, 7, 9]),
-                         np.array([0, 3, 4]))).astype(info['python_type'])
-                ], [
-                    csr_matrix((np.array([1.5, 2, 3]), np.array([3, 5, 11]),
-                                np.array([0, 1, 3]))
-                               ).astype(info['python_type']),
-                    csr_matrix((np.array([1.5, 2, 3, 1, 2]),
-                                np.array([3, 5, 7, 4, 1]),
-                                np.array([0, 2, 3, 5]))
-                               ).astype(info['python_type'])
-                ], []
-            ]
+            python_sparse_array2d_list_2d = [[
+                csr_matrix((np.array([1.5, 2, 3, 1]), np.array([3, 5, 7, 9]),
+                            np.array([0, 3, 4]))).astype(info['python_type'])
+            ], [
+                csr_matrix((np.array([1.5, 2, 3]), np.array([3, 5, 11]),
+                            np.array([0, 1, 3]))).astype(info['python_type']),
+                csr_matrix(
+                    (np.array([1.5, 2, 3, 1, 2]), np.array([3, 5, 7, 4, 1]),
+                     np.array([0, 2, 3, 5]))).astype(info['python_type'])
+            ], []]
 
             info['python_array'] = python_array
             info['python_array_2d'] = python_array_2d
@@ -285,7 +269,8 @@ class Test(unittest.TestCase):
         for array_type, info in self.correspondence_dict.items():
             python_array = info['python_array']
             extract_function = info['typemap_in_array']
-            self.assertEqual(python_array.sum(), extract_function(python_array))
+            self.assertEqual(python_array.sum(),
+                             extract_function(python_array))
             self.assertEqual(info['number'], extract_function(info['number']))
 
     def test_array2d_typemap_in(self):
@@ -294,7 +279,8 @@ class Test(unittest.TestCase):
         for array_type, info in self.correspondence_dict.items():
             python_array = info['python_array_2d']
             extract_function = info['typemap_in_array_2d']
-            self.assertEqual(python_array.sum(), extract_function(python_array))
+            self.assertEqual(python_array.sum(),
+                             extract_function(python_array))
             self.assertEqual(info['number'], extract_function(info['number']))
 
     def test_array_list_1d_typemap_in(self):
@@ -313,8 +299,8 @@ class Test(unittest.TestCase):
         for array_type, info in self.correspondence_dict.items():
             python_array = info['python_array_list_2d']
             extract_function = info['typemap_in_array_list_2d']
-            self.assertEqual(python_array[0][0].sum(), extract_function(
-                python_array))
+            self.assertEqual(python_array[0][0].sum(),
+                             extract_function(python_array))
             self.assertEqual(info['number'], extract_function(info['number']))
 
     def test_sparsearray_typemap_in(self):
@@ -343,7 +329,8 @@ class Test(unittest.TestCase):
         for array_type, info in self.correspondence_dict.items():
             python_array = info['python_array']
             extract_function = info['typemap_in_sarray_ptr']
-            self.assertEqual(python_array.sum(), extract_function(python_array))
+            self.assertEqual(python_array.sum(),
+                             extract_function(python_array))
             self.assertEqual(info['number'], extract_function(info['number']))
 
     def test_sarray2dptr_typemap_in(self):
@@ -352,7 +339,8 @@ class Test(unittest.TestCase):
         for array_type, info in self.correspondence_dict.items():
             python_array = info['python_array_2d']
             extract_function = info['typemap_in_sarray_ptr_2d']
-            self.assertEqual(python_array.sum(), extract_function(python_array))
+            self.assertEqual(python_array.sum(),
+                             extract_function(python_array))
             self.assertEqual(info['number'], extract_function(info['number']))
 
     def test_sarray_ptr_list_1d_typemap_in(self):
@@ -372,8 +360,8 @@ class Test(unittest.TestCase):
         for array_type, info in self.correspondence_dict.items():
             python_array = info['python_array_list_2d']
             extract_function = info['typemap_in_sarray_ptr_list_2d']
-            self.assertEqual(python_array[0][0].sum(), extract_function(
-                python_array))
+            self.assertEqual(python_array[0][0].sum(),
+                             extract_function(python_array))
             self.assertEqual(info['number'], extract_function(info['number']))
 
     def test_sarray2d_ptr_list_2d_typemap_in(self):
@@ -383,8 +371,8 @@ class Test(unittest.TestCase):
         for array_type, info in self.correspondence_dict.items():
             python_array = info['python_array2d_list_1d']
             extract_function = info['typemap_in_sarray2d_ptr_list_1d']
-            self.assertEqual(python_array[0].sum(), extract_function(
-                python_array))
+            self.assertEqual(python_array[0].sum(),
+                             extract_function(python_array))
             self.assertEqual(info['number'], extract_function(info['number']))
 
     def test_sarray2d_ptr_list_2d_typemap_in(self):
@@ -394,8 +382,8 @@ class Test(unittest.TestCase):
         for array_type, info in self.correspondence_dict.items():
             python_array = info['python_array2d_list_2d']
             extract_function = info['typemap_in_sarray2d_ptr_list_2d']
-            self.assertEqual(python_array[0][0].sum(), extract_function(
-                python_array))
+            self.assertEqual(python_array[0][0].sum(),
+                             extract_function(python_array))
             self.assertEqual(info['number'], extract_function(info['number']))
 
     def test_varray_ptr_typemap_in(self):
@@ -404,7 +392,8 @@ class Test(unittest.TestCase):
         for array_type, info in self.correspondence_dict.items():
             python_array = info['python_array']
             extract_function = info['typemap_in_varray_ptr']
-            self.assertEqual(python_array.sum(), extract_function(python_array))
+            self.assertEqual(python_array.sum(),
+                             extract_function(python_array))
             self.assertEqual(info['number'], extract_function(info['number']))
 
     def test_varray_ptr_list_1d_typemap_in(self):
@@ -424,8 +413,8 @@ class Test(unittest.TestCase):
         for array_type, info in self.correspondence_dict.items():
             python_array = info['python_array_list_2d']
             extract_function = info['typemap_in_varray_ptr_list_2d']
-            self.assertEqual(python_array[0][0].sum(), extract_function(
-                python_array))
+            self.assertEqual(python_array[0][0].sum(),
+                             extract_function(python_array))
             self.assertEqual(info['number'], extract_function(info['number']))
 
     def test_basearray_typemap_in(self):
@@ -437,7 +426,8 @@ class Test(unittest.TestCase):
             python_sparse_array = info['python_sparse_array']
             extract_function = info['typemap_in_base_array']
             # Test dense
-            self.assertEqual(python_array.sum(), extract_function(python_array))
+            self.assertEqual(python_array.sum(),
+                             extract_function(python_array))
             # Test sparse
             self.assertEqual(python_sparse_array.data.sum(),
                              extract_function(python_sparse_array))
@@ -452,7 +442,8 @@ class Test(unittest.TestCase):
             python_sparse_array = info['python_sparse_array_2d']
             extract_function = info['typemap_in_base_array_2d']
             # Test dense
-            self.assertEqual(python_array.sum(), extract_function(python_array))
+            self.assertEqual(python_array.sum(),
+                             extract_function(python_array))
             # Test sparse
             self.assertEqual(python_sparse_array.data.sum(),
                              extract_function(python_sparse_array))
@@ -487,7 +478,8 @@ class Test(unittest.TestCase):
             python_sparse_array = info['python_sparse_array']
             extract_function = info['typemap_in_base_array_ptr']
             # Test dense
-            self.assertEqual(python_array.sum(), extract_function(python_array))
+            self.assertEqual(python_array.sum(),
+                             extract_function(python_array))
             # Test sparse
             self.assertEqual(python_sparse_array.data.sum(),
                              extract_function(python_sparse_array))
@@ -502,7 +494,8 @@ class Test(unittest.TestCase):
             python_sparse_array = info['python_sparse_array_2d']
             extract_function = info['typemap_in_base_array_2d_ptr']
             # Test dense
-            self.assertEqual(python_array.sum(), extract_function(python_array))
+            self.assertEqual(python_array.sum(),
+                             extract_function(python_array))
             # Test sparse
             self.assertEqual(python_sparse_array.data.sum(),
                              extract_function(python_sparse_array))
@@ -528,10 +521,10 @@ class Test(unittest.TestCase):
             python_array = info['python_array_list_2d']
             python_sparse_array = info['python_sparse_array_list_2d']
             extract_function = info['typemap_in_base_array_list_2d']
-            self.assertEqual(python_array[0][0].sum(), extract_function(
-                python_array))
-            self.assertEqual(python_sparse_array[0][0].sum(), extract_function(
-                python_sparse_array))
+            self.assertEqual(python_array[0][0].sum(),
+                             extract_function(python_array))
+            self.assertEqual(python_sparse_array[0][0].sum(),
+                             extract_function(python_sparse_array))
             self.assertEqual(info['number'], extract_function(info['number']))
 
     def test_basearray2d_list_1d_typemap_in(self):
@@ -554,10 +547,10 @@ class Test(unittest.TestCase):
             python_array = info['python_array2d_list_2d']
             python_sparse_array = info['python_sparse_array2d_list_2d']
             extract_function = info['typemap_in_base_array2d_list_2d']
-            self.assertEqual(python_array[0][0].sum(), extract_function(
-                python_array))
-            self.assertEqual(python_sparse_array[0][0].sum(), extract_function(
-                python_sparse_array))
+            self.assertEqual(python_array[0][0].sum(),
+                             extract_function(python_array))
+            self.assertEqual(python_sparse_array[0][0].sum(),
+                             extract_function(python_sparse_array))
             self.assertEqual(info['number'], extract_function(info['number']))
 
     def test_basearray_ptr_list_1d_typemap_in(self):
@@ -580,10 +573,10 @@ class Test(unittest.TestCase):
             python_array = info['python_array_list_2d']
             python_sparse_array = info['python_sparse_array_list_2d']
             extract_function = info['typemap_in_base_array_ptr_list_2d']
-            self.assertEqual(python_array[0][0].sum(), extract_function(
-                python_array))
-            self.assertEqual(python_sparse_array[0][0].sum(), extract_function(
-                python_sparse_array))
+            self.assertEqual(python_array[0][0].sum(),
+                             extract_function(python_array))
+            self.assertEqual(python_sparse_array[0][0].sum(),
+                             extract_function(python_sparse_array))
             self.assertEqual(info['number'], extract_function(info['number']))
 
     def test_basearray2d_ptr_list_1d_typemap_in(self):
@@ -606,10 +599,10 @@ class Test(unittest.TestCase):
             python_array = info['python_array2d_list_2d']
             python_sparse_array = info['python_sparse_array2d_list_2d']
             extract_function = info['typemap_in_base_array2d_ptr_list_2d']
-            self.assertEqual(python_array[0][0].sum(), extract_function(
-                python_array))
+            self.assertEqual(python_array[0][0].sum(),
+                             extract_function(python_array))
             self.assertEqual(python_sparse_array[0][0].sum(),
-                extract_function(python_sparse_array))
+                             extract_function(python_sparse_array))
             self.assertEqual(info['number'], extract_function(info['number']))
 
     def test_sarrayptr_typemap_out(self):
@@ -627,9 +620,8 @@ class Test(unittest.TestCase):
         size = 10
         for array_type, info in self.correspondence_dict.items():
             python_array = [
-                i * np.ones(i, dtype=info['python_type'])
-                for i in range(size)
-                ]
+                i * np.ones(i, dtype=info['python_type']) for i in range(size)
+            ]
             extract_function = info['typemap_out_sarray_ptr_list_1d']
             np.testing.assert_equal(python_array, extract_function(size))
 
@@ -640,13 +632,13 @@ class Test(unittest.TestCase):
         size2 = 10
 
         for array_type, info in self.correspondence_dict.items():
-            python_array = [
-                [i * np.ones(i, dtype=info['python_type']) for i in range(j)]
-                for j in range(size2)]
+            python_array = [[
+                i * np.ones(i, dtype=info['python_type']) for i in range(j)
+            ] for j in range(size2)]
             extract_function = info['typemap_out_sarray_ptr_list_2d']
 
-            np.testing.assert_equal(python_array,
-                                    extract_function(size1, size2))
+            np.testing.assert_equal(python_array, extract_function(
+                size1, size2))
 
     def test_sarray2dptr_typemap_out(self):
         """...Test we can return an SArray2d shared pointer
@@ -655,8 +647,8 @@ class Test(unittest.TestCase):
         col_size = 4
         for array_type, info in self.correspondence_dict.items():
             python_array = np.arange(row_size * col_size,
-                                     dtype=info['python_type']
-                                     ).reshape(row_size, col_size)
+                                     dtype=info['python_type']).reshape(
+                                         row_size, col_size)
             extract_function = info['typemap_out_sarray_2d_ptr']
             np.testing.assert_equal(python_array,
                                     extract_function(row_size, col_size))
@@ -675,8 +667,10 @@ class Test(unittest.TestCase):
 
             # Test if we pass an array of another type
             regex_error_wrong_type = "Expecting.*%s.*array" % info['cpp_type']
-            other_array_type = [key for key in self.correspondence_dict.keys()
-                                if key != array_type][0]
+            other_array_type = [
+                key for key in self.correspondence_dict.keys()
+                if key != array_type
+            ][0]
             python_other_type_array = self.correspondence_dict[
                 other_array_type]['python_array']
 
@@ -696,8 +690,10 @@ class Test(unittest.TestCase):
 
             # Test if we pass an array of another type
             regex_error_wrong_type = "Expecting.*%s.*array" % info['cpp_type']
-            other_array_type = [key for key in self.correspondence_dict.keys()
-                                if key != array_type][0]
+            other_array_type = [
+                key for key in self.correspondence_dict.keys()
+                if key != array_type
+            ][0]
             python_other_type_array = self.correspondence_dict[
                 other_array_type]['python_sparse_array']
 
@@ -722,8 +718,10 @@ class Test(unittest.TestCase):
 
             # Test if we pass an array of another type
             regex_error_wrong_type = "Expecting.*%s.*array" % info['cpp_type']
-            other_array_type = [key for key in self.correspondence_dict.keys()
-                                if key != array_type][0]
+            other_array_type = [
+                key for key in self.correspondence_dict.keys()
+                if key != array_type
+            ][0]
             python_other_type_array = self.correspondence_dict[
                 other_array_type]['python_array']
 
@@ -746,8 +744,8 @@ class Test(unittest.TestCase):
             extract_function = info['typemap_in_array_2d_not_ol']
 
             with self.assertRaisesRegex(ValueError, "contiguous"):
-                non_contiguous = np.arange(2, 17, dtype="double"
-                                           ).reshape(3, 5)[::2]
+                non_contiguous = np.arange(2, 17, dtype="double").reshape(
+                    3, 5)[::2]
                 extract_function(non_contiguous)
 
             with self.assertRaisesRegex(ValueError, "dimensional"):
@@ -759,8 +757,7 @@ class Test(unittest.TestCase):
         """
         for array_type, info in self.correspondence_dict.items():
             extract_function = info['typemap_in_array_list_1d_not_ol']
-            with self.assertRaisesRegex(ValueError,
-                                        "list(.*?)(a|A)rray"):
+            with self.assertRaisesRegex(ValueError, "list(.*?)(a|A)rray"):
                 extract_function(np.ones((5, 5)))
 
             extract_function = info['typemap_in_array_list_2d_not_ol']

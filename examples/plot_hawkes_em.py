@@ -7,7 +7,7 @@ This Hawkes EM (`tick.inference.HawkesEM`) algorithm assume that kernels are
 piecewise constant. Hence it can fit basically any kernel form. However it
 doesn't scale very well.
 
-I has been originally described in this paper:
+It has been originally described in this paper:
 
 Lewis, E., & Mohler, G. (2011).
 A nonparametric EM algorithm for multiscale Hawkes processes.
@@ -19,8 +19,8 @@ A nonparametric EM algorithm for multiscale Hawkes processes.
 import numpy as np
 import matplotlib.pyplot as plt
 
-from tick.inference import HawkesEM
-from tick.simulation import SimuHawkes, HawkesKernelTimeFunc, HawkesKernelExp
+from tick.hawkes import (SimuHawkes, HawkesKernelTimeFunc, HawkesKernelExp,
+                         HawkesEM)
 from tick.base import TimeFunction
 from tick.plot import plot_hawkes_kernels
 

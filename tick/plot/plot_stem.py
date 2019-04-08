@@ -1,12 +1,11 @@
 # License: BSD 3 clause
 
-
 import numpy
 from matplotlib.pyplot import Axes
 
 
-def __stem_matplotlib(y: numpy.array, axis: Axes, title: str,
-                      x_range: tuple, y_range: tuple):
+def __stem_matplotlib(y: numpy.array, axis: Axes, title: str, x_range: tuple,
+                      y_range: tuple):
     axis.stem(y, title=title)
     if x_range is not None:
         axis.set_xlim(x_range)
@@ -29,8 +28,7 @@ def __stems_matplotlib(ys: list, titles: list, x_range: tuple, y_range: tuple,
     return fig
 
 
-def __stem_bokeh(y: numpy.array, title, x_range, y_range,
-                 fig_size):
+def __stem_bokeh(y: numpy.array, title, x_range, y_range, fig_size):
     import numpy as np
     from bokeh.plotting import figure
 

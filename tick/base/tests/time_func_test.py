@@ -59,15 +59,20 @@ class Test(unittest.TestCase):
         np.random.seed(9372)
 
         size = 5
-        self.t_arrays = [np.arange(size, dtype=float),
-                         np.cumsum(np.random.uniform(0.1, 2, size))]
+        self.t_arrays = [
+            np.arange(size, dtype=float),
+            np.cumsum(np.random.uniform(0.1, 2, size))
+        ]
 
-        self.y_arrays = [np.arange(size, dtype=float),
-                         np.random.uniform(-1, 2, size)]
+        self.y_arrays = [
+            np.arange(size, dtype=float),
+            np.random.uniform(-1, 2, size)
+        ]
 
-        self.inter_modes = [TimeFunction.InterConstLeft,
-                            TimeFunction.InterConstRight,
-                            TimeFunction.InterLinear]
+        self.inter_modes = [
+            TimeFunction.InterConstLeft, TimeFunction.InterConstRight,
+            TimeFunction.InterLinear
+        ]
 
         self.samples = itertools.product(self.t_arrays, self.y_arrays,
                                          self.inter_modes)
@@ -83,8 +88,8 @@ class Test(unittest.TestCase):
             sampled_times = t_array[0] + \
                             tf.dt * np.arange(len(created_sample_y))
 
-            true_sample_y = dichotomic_value(
-                sampled_times, t_array, y_array, inter_mode=inter_mode)
+            true_sample_y = dichotomic_value(sampled_times, t_array, y_array,
+                                             inter_mode=inter_mode)
 
             np.testing.assert_almost_equal(created_sample_y, true_sample_y)
 
@@ -96,12 +101,11 @@ class Test(unittest.TestCase):
             # take random t on TimeFunction support
             t_inside_support = np.random.uniform(t_array[0], t_array[-1], 10)
             t_before_support = np.random.uniform(t_array[0] - 4, t_array[0], 5)
-            t_after_support = np.random.uniform(t_array[-1], t_array[-1] + 4, 5)
+            t_after_support = np.random.uniform(t_array[-1], t_array[-1] + 4,
+                                                5)
 
-            test_t = np.hstack((t_before_support,
-                                t_inside_support,
-                                t_after_support,
-                                t_array))
+            test_t = np.hstack((t_before_support, t_inside_support,
+                                t_after_support, t_array))
             true_values = dichotomic_value(test_t, t_array, y_array,
                                            inter_mode=inter_mode)
 
@@ -158,8 +162,9 @@ class Test(unittest.TestCase):
 
         tf = TimeFunction([T, Y], border_type=TimeFunction.Cyclic)
 
-        self.assertAlmostEqual(tf.value(0.3), tf.value(last_value + 0.3),
-                               delta=1e-8)
+        self.assertAlmostEqual(
+            tf.value(0.3), tf.value(last_value + 0.3), delta=1e-8)
+
 
 if __name__ == "__main__":
     unittest.main()

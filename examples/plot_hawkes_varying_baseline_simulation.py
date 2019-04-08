@@ -9,21 +9,22 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from tick.base import TimeFunction
-from tick.simulation import SimuHawkesExpKernels
+from tick.hawkes import SimuHawkesExpKernels
 
 from tick.plot import plot_point_process
 
 period_length = 100
 t_values = np.linspace(0, period_length)
-y_values = 0.2 * np.maximum(np.sin(t_values * (2 * np.pi) / period_length), 0.2)
-baselines = np.array([TimeFunction((t_values, y_values),
-                                   border_type=TimeFunction.Cyclic)])
+y_values = 0.2 * np.maximum(
+    np.sin(t_values * (2 * np.pi) / period_length), 0.2)
+baselines = np.array(
+    [TimeFunction((t_values, y_values), border_type=TimeFunction.Cyclic)])
 
 decay = 0.1
 adjacency = np.array([[0.5]])
 
-hawkes = SimuHawkesExpKernels(adjacency, decay, baseline=baselines,
-                              seed=2093, verbose=False)
+hawkes = SimuHawkesExpKernels(adjacency, decay, baseline=baselines, seed=2093,
+                              verbose=False)
 hawkes.track_intensity(0.1)
 hawkes.end_time = 6 * period_length
 hawkes.simulate()

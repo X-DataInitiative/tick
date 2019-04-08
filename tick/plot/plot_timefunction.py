@@ -75,19 +75,26 @@ def plot_timefunction(time_function, labels=None, n_points=300, show=True,
             interpolation_to_legend = {
                 TimeFunction.InterLinear: 'Linear',
                 TimeFunction.InterConstLeft: 'Constant on left',
-                TimeFunction.InterConstRight: 'Constant on right'}
+                TimeFunction.InterConstRight: 'Constant on right'
+            }
 
             border_to_legend = {
-                TimeFunction.Border0: 'border zero',
-                TimeFunction.BorderConstant: 'border constant at %.3g'
-                                             % time_function.border_value,
-                TimeFunction.BorderContinue: 'border continue',
-                TimeFunction.Cyclic: 'cyclic'}
+                TimeFunction.Border0:
+                    'border zero',
+                TimeFunction.BorderConstant:
+                    'border constant at %.3g' % time_function.border_value,
+                TimeFunction.BorderContinue:
+                    'border continue',
+                TimeFunction.Cyclic:
+                    'cyclic'
+            }
 
-            labels = ['original points',
-                      '%s and %s' % (
-                          interpolation_to_legend[time_function.inter_mode],
-                          border_to_legend[time_function.border_type])]
+            labels = [
+                'original points',
+                '%s and %s' %
+                (interpolation_to_legend[time_function.inter_mode],
+                 border_to_legend[time_function.border_type])
+            ]
 
         original_t = time_function.original_t
         if time_function.border_type == TimeFunction.Cyclic:
@@ -95,11 +102,10 @@ def plot_timefunction(time_function, labels=None, n_points=300, show=True,
             original_t = np.hstack((original_t, original_t + cycle_length,
                                     original_t + 2 * cycle_length))
 
-        t_values = _extended_discrete_xaxis(original_t,
-                                            n_points=n_points)
+        t_values = _extended_discrete_xaxis(original_t, n_points=n_points)
 
-        ax.plot(time_function.original_t, time_function.original_y,
-                ls='', marker='o', label=labels[0])
+        ax.plot(time_function.original_t, time_function.original_y, ls='',
+                marker='o', label=labels[0])
         ax.plot(t_values, time_function.value(t_values), label=labels[1])
 
     ax.legend()

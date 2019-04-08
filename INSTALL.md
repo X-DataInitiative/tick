@@ -4,7 +4,7 @@
 
 ### Requirements
 
-_tick_ currently works on Linux/OSX (Windows is experimental) systems and requires Python 3.4 or newer. Please have the required Python dependencies in your Python environment:
+_tick_ currently works on Linux/OSX (Windows is experimental) systems and requires Python 3.6 or newer. Please have the required Python dependencies in your Python environment:
 
 - numpy
 - scipy
@@ -33,12 +33,12 @@ Installation may take a few minutes to build and link C++ extensions. At this po
 
 ### Manual Install - Linux -OSX
 
-First you need to clone the repository with 
+First you need to clone the repository with
 
     git clone https://github.com/X-DataInitiative/tick.git
 
 and then initialize its submodules (such as cereal) with
- 
+
     git submodule update --init
 
 It's possible to manually build and install tick via the setup.py script. To do both in one step, do:
@@ -64,10 +64,10 @@ This will build all required C++ extensions, and install the extensions in your 
     numpydoc-0.7.0-py2.py3-none-any.whl
     scipy-0.19.*-cp36-cp36m-win_amd64.whl
 
-  Note: To ascertain which version of the wheel files to download you can run 
+  Note: To ascertain which version of the wheel files to download you can run
 
     python3 -c "import distutils; from distutils import sysconfig; print(sysconfig.get_config_var('SO'))"
- 
+
   Install the wheel files with pip - this is not required for Anaconda
 
     pip install wheel
@@ -80,7 +80,7 @@ This will build all required C++ extensions, and install the extensions in your 
     /path/to/VS/VC/Auxiliary/Build/vcvarsall.bat [amd64,x86]
 
   The default path for "vcvarsall.bat" for Visual Studio Build Tools:
-  
+
     C:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\VC\Auxiliary\Build\vcvarsall.bat [amd64,x86]
 
   Build Tick C++ sources
@@ -113,6 +113,19 @@ This will build all extensions, and install them directly in the source director
 Note also that special scripts, intended for developers, are available. `./clean_build_test.sh` removes all compiled binaries and runs the full compilation process, with all `C++` and `Python` unit-tests. This can take some time.
 Similarly, `./build_test.sh` runs the full compilation process, without removing first binaries, while `full_clean.sh` only removes them.
 
+It is possible to build with support for Intel MKL in the tick C++ libraries, to do so requires having the intel MKL libraries installed and running the build command like so (example provided is for linux with MKL installed to /opt/intel)
+
+    MKLROOT=/opt/intel/mkl python setup.py build_ext --inplace
+
+On MacOS it's possible an error may occur when trying to find a "intel_thread.dyld"
+To fix this try:
+
+export DYLD_LIBRARY_PATH="/opt/intel/lib:$DYLD_LIBRARY_PATH"
+
+Replacing "/opt/intel/lib" to "$MKLROOT/../lib" if necessary.
+
+Upgrading to the latest version of MKL may also resolve this.
+
 ### Alternative installation method
 
 Also supported is the build tool [maiken](https://github.com/dekken/maiken) which works with various compilers on major platforms.
@@ -123,7 +136,7 @@ Once "mkn" is installed on your system, you should execture the shell script "./
 
 As with tick in general, this requires python3 and all python pre-requisites. numpy/scipy/etc
 
-This method is provided mainly for developers to decrease compilation times. 
+This method is provided mainly for developers to decrease compilation times.
 
 To use [ccache](https://ccache.samba.org/) (or similar) with mkn, edit your ~/.maiken/settings.yaml file so it looks like one [here](https://github.com/Dekken/maiken/wiki/Alternative-configs) - this can greatly decrease repeated compilation times. ccache is a third party tool which may have to be installed manually on your system. ccache does not work on Windows.
 
@@ -138,3 +151,10 @@ Logging from mkn can be enabled with the "KLOG" environment variable
     KLOG=3 # DEBUG
 
 If there is a compile error it should be displayed without KLOG being set.
+
+
+### Python 3.5
+
+Python 3.5 is not officially supported any more, but it should still work.
+To build with it, edit "python_min_ver = (3, 6, 0)" in setup.py.
+

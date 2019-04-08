@@ -4,7 +4,7 @@
 # python setup.py build_ext --inplace
 
 ##
-# This file exists to check if the system 
+# This file exists to check if the system
 #  being used to compile Tick has support
 #  for cblas - the "cblas.cpp" file attempts
 #  to include "cbas.h" - if it fails we are quite
@@ -35,6 +35,7 @@ class BLASBuild(build):
         build.run(self)
 
 setup(name="checkBLAS",
+      version='0.5.0.0',
       ext_modules=modules,
       install_requires=['scipy',
                         'numpydoc',
@@ -43,4 +44,3 @@ setup(name="checkBLAS",
       cmdclass={'build': BLASBuild
                }
      )
-      

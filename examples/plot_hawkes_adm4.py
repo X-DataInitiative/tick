@@ -18,8 +18,7 @@ Multi-dimensional Hawkes Processes. In `AISTATS (Vol. 31, pp. 641-649)
 import numpy as np
 
 from tick.plot import plot_hawkes_kernel_norms
-from tick.simulation import SimuHawkesExpKernels, SimuHawkesMulti
-from tick.inference import HawkesADM4
+from tick.hawkes import HawkesADM4, SimuHawkesExpKernels, SimuHawkesMulti
 
 end_time = 10000
 n_realizations = 5
@@ -30,9 +29,9 @@ adjacency = np.zeros((6, 6))
 adjacency[2:, 2:] = np.ones((4, 4)) * 0.1
 adjacency[:3, :3] = np.ones((3, 3)) * 0.15
 
-hawkes_exp_kernels = SimuHawkesExpKernels(
-    adjacency=adjacency, decays=decay, baseline=baseline,
-    end_time=end_time, verbose=False, seed=1039)
+hawkes_exp_kernels = SimuHawkesExpKernels(adjacency=adjacency, decays=decay,
+                                          baseline=baseline, end_time=end_time,
+                                          verbose=False, seed=1039)
 
 multi = SimuHawkesMulti(hawkes_exp_kernels, n_simulations=n_realizations)
 

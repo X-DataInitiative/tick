@@ -9,21 +9,21 @@ This example illustrates the optimization of three linear models:
     * Poisson regression (`tick.optim.model.ModelPoisReg`)
 
 with five different solvers:
-    * LBFGS (`tick.optim.solver.BFGS`)
-    * SVRG (`tick.optim.solver.SVRG`)
-    * SDCA (`tick.optim.solver.SDCA`)
-    * GD (`tick.optim.solver.GD`)
-    * AGD (`tick.optim.solver.AGD`)
+    * LBFGS (`tick.solver.BFGS`)
+    * SVRG (`tick.solver.SVRG`)
+    * SDCA (`tick.solver.SDCA`)
+    * GD (`tick.solver.GD`)
+    * AGD (`tick.solver.AGD`)
 """
 
 import matplotlib.pyplot as plt
 from tick.plot import plot_history
 import numpy as np
 from itertools import product
-from tick.optim.model import ModelLinReg, ModelLogReg, ModelPoisReg
-from tick.optim.solver import SDCA, SVRG, BFGS, GD, AGD
-from tick.optim.prox import ProxZero, ProxL2Sq
-from tick.simulation import SimuLinReg, SimuLogReg, SimuPoisReg
+from tick.linear_model import SimuLinReg, SimuLogReg, SimuPoisReg, \
+    ModelLinReg, ModelLogReg, ModelPoisReg
+from tick.solver import SDCA, SVRG, BFGS, GD, AGD
+from tick.prox import ProxZero, ProxL2Sq
 
 seed = 1398
 np.random.seed(seed)
@@ -111,20 +111,20 @@ def run_solvers(model, l_l2sq):
 model_types = ['Linear', 'Logistic', 'Poisson']
 l_l2sqs = [1e-3, 1e-2, 1e-1]
 
-fig, axes = plt.subplots(len(model_types), len(l_l2sqs),
-                         figsize=(4 * len(l_l2sqs), 3 * len(model_types)),
-                         sharey=True, sharex=True)
+fig, axes = plt.subplots(
+    len(model_types), len(l_l2sqs),
+    figsize=(4 * len(l_l2sqs), 3 * len(model_types)), sharey=True, sharex=True)
 
 n_samples = 1000
 n_features = 20
 
-for (model_type, l_l2sq), ax in zip(product(model_types, l_l2sqs),
-                                    axes.ravel()):
+for (model_type, l_l2sq), ax in zip(
+        product(model_types, l_l2sqs), axes.ravel()):
     model = create_model(model_type, n_samples, n_features)
 
     bfgs, svrg, sdca, gd, agd = run_solvers(model, l_l2sq)
-    plot_history([bfgs, svrg, sdca, gd, agd], ax=ax,
-                 dist_min=True, log_scale=True)
+    plot_history([bfgs, svrg, sdca, gd, agd], ax=ax, dist_min=True,
+                 log_scale=True)
     ax.legend_.remove()
     ax.set_xlabel('')
     ax.set_ylim([1e-9, 1])
