@@ -36,7 +36,7 @@ class SAGATest(object):
         msg = '^SAGA accepts only childs of `ModelGeneralizedLinear`$'
         with self.assertRaisesRegex(ValueError, msg):
             w = weights_sparse_gauss(n_weights=2, nnz=0, dtype=self.dtype)
-            X, T, C = SimuCoxReg(w, dtype=self.dtype, verbose=False).simulate()
+            X, T, C = SimuCoxReg(w, verbose=False).simulate()
             model = ModelCoxRegPartialLik().fit(X, T, C)
             SAGA().set_model(model)
 
