@@ -4,6 +4,7 @@ import numpy as np
 from tick.base.simulation import SimuWithFeatures
 from tick.preprocessing.features_binarizer import FeaturesBinarizer
 
+
 # TODO: something better to tune the censoring level than this censoring factor
 
 
