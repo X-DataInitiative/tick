@@ -95,7 +95,9 @@ class Test(unittest.TestCase):
         np.testing.assert_almost_equal(features, features_)
         np.testing.assert_almost_equal(times, times_)
         np.testing.assert_almost_equal(censoring, censoring_)
-        np.testing.assert_almost_equal(cut_points, cut_points_)
+        np.testing.assert_almost_equal(cut_points_['0'], cut_points['0'])
+        np.testing.assert_almost_equal(cut_points_['1'], cut_points['1'])
+        np.testing.assert_almost_equal(cut_points_['2'], cut_points['2'])
         np.testing.assert_almost_equal(coeffs_binarized, coeffs_binarized_)
         np.testing.assert_almost_equal(S, S_)
 
