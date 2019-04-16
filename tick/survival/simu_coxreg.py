@@ -242,7 +242,7 @@ class SimuCoxRegWithCutPoints(SimuWithFeatures):
     shape : `float`, default=1.0
         Shape parameter to use in the distribution of times
 
-    censoring_factor : `float`, default=2.
+    censoring_factor : `float`, default=2.0
         Level of censoring. Increasing censoring_factor leads
         to less censored times and conversely.
 
