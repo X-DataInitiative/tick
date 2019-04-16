@@ -109,7 +109,7 @@ class CoxRegression(LearnerOptim):
 
     def _all_safe(self, features: np.ndarray, times: np.array,
                   censoring: np.array):
-        if not np.array_equal(np.unique(censoring), [0, 1]):
+        if not set(np.unique(censoring)).issubset({0, 1}):
             raise ValueError('``censoring`` must only have values in {0, 1}')
         # All times must be positive
         if not np.all(times >= 0):
