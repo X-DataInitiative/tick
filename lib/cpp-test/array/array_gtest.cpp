@@ -15,9 +15,6 @@
 #define TICK_TEST_DATA_MIN_VALUE -10000
 #define TICK_TEST_DATA_MAX_VALUE 10000
 
-#define TICK_TEST_SINGLE_RELATIVE_ERROR 1e-4
-#define TICK_TEST_DOUBLE_RELATIVE_ERROR 1e-13
-
 #include "common.h"
 
 TEST(ArrayTestSetup, RelativeErrors) {
@@ -34,10 +31,10 @@ class ArrayTest : public ::testing::Test {
   using value_type = typename ArrType::value_type;
 };
 
-typedef ::testing::Types<ArrayFloat, ArrayDouble, ArrayShort, ArrayUShort,
-                         ArrayInt, ArrayUInt, ArrayLong, ArrayULong>
+typedef ::testing::Types<ArrayFloat, ArrayDouble, ArrayShort, ArrayUShort, ArrayInt, ArrayUInt,
+                         ArrayLong, ArrayULong, ArrayHalf>
     MyArrayTypes;
-TYPED_TEST_CASE(ArrayTest, MyArrayTypes);
+TYPED_TEST_SUITE(ArrayTest, MyArrayTypes);
 
 template <typename ArrType>
 class Array2dTest : public ::testing::Test {
@@ -45,13 +42,13 @@ class Array2dTest : public ::testing::Test {
   using value_type = typename ArrType::value_type;
 };
 
-typedef ::testing::Types<ArrayFloat2d, ArrayDouble2d, ArrayShort2d,
-                         ArrayUShort2d, ArrayInt2d, ArrayUInt2d, ArrayLong2d,
-                         ArrayULong2d>
+typedef ::testing::Types<ArrayFloat2d, ArrayDouble2d, ArrayShort2d, ArrayUShort2d, ArrayInt2d,
+                         ArrayUInt2d, ArrayLong2d, ArrayULong2d, ArrayHalf2d>
     MyArray2dTypes;
-TYPED_TEST_CASE(Array2dTest, MyArray2dTypes);
+TYPED_TEST_SUITE(Array2dTest, MyArray2dTypes);
 
 TYPED_TEST(ArrayTest, InitToZero) {
+  using VT = typename TypeParam::value_type;
   TypeParam arr{TICK_TEST_DATA_SIZE};
 
   arr.init_to_zero();
@@ -152,6 +149,7 @@ TYPED_TEST(ArrayTest, InitList) {
 }
 
 TYPED_TEST(ArrayTest, Fill) {
+  using VT = typename TypeParam::value_type;
   TypeParam arr{TICK_TEST_DATA_SIZE};
 
   arr.fill(1337.0);
@@ -226,7 +224,7 @@ TYPED_TEST(ArrayTest, DivOperator) {
 
     SCOPED_TRACE(factor);
     for (ulong j = 0; j < arrA.size(); ++j)
-      ASSERT_RELATIVE_ERROR(VT, arrA[j], static_cast<VT>(oldA[j] / factor));
+      ASSERT_RELATIVE_ERROR(VT, arrA[j], static_cast<VT>((oldA[j] / factor)));
   }
 }
 
@@ -246,7 +244,7 @@ TYPED_TEST(ArrayTest, DotProduct) {
   TypeParam arrA = ::GenerateRandomArray<TypeParam>();
   TypeParam arrB = ::GenerateRandomArray<TypeParam>();
 
-  typename TypeParam::value_type res{0};
+  typename TypeParam::value_type res{VT(0.0)};
   for (ulong j = 0; j < arrA.size(); ++j) res += arrA[j] * arrB[j];
 
   EXPECT_RELATIVE_ERROR(VT, res, arrA.dot(arrB));
@@ -305,15 +303,14 @@ TYPED_TEST(ArrayTest, MultAddMultIncr) {
     TypeParam arrB = ::GenerateRandomArray<TypeParam>();
     TypeParam arrC = ::GenerateRandomArray<TypeParam>();
 
-    VT factor_2 = factor + 3.0;
+    VT factor_2 = factor + VT(3.0);
     arrA.mult_add_mult_incr(arrB, factor, arrC, factor_2);
 
     for (ulong j = 0; j < arrA.size(); ++j) oldA[j] += arrB[j] * factor;
     for (ulong j = 0; j < arrA.size(); ++j) oldA[j] += arrC[j] * factor_2;
 
     SCOPED_TRACE(factor);
-    for (ulong j = 0; j < arrA.size(); ++j)
-      ASSERT_RELATIVE_ERROR(VT, arrA[j], static_cast<VT>(oldA[j]));
+    for (ulong j = 0; j < arrA.size(); ++j) ASSERT_RELATIVE_ERROR(VT, arrA[j], oldA[j]);
   }
 }
 
@@ -325,7 +322,8 @@ TYPED_TEST(Array2dTest, MultAddMultIncr) {
     TypeParam arrB = ::GenerateRandomArray2d<TypeParam>();
     TypeParam arrC = ::GenerateRandomArray2d<TypeParam>();
 
-    VT factor_2 = factor + 3.0;
+    VT factor_2 = factor + VT(3.0);
+
     arrA.mult_add_mult_incr(arrB, factor, arrC, factor_2);
 
     for (ulong j = 0; j < arrA.size(); ++j) oldA[j] += arrB[j] * factor;
@@ -624,6 +622,44 @@ TYPED_TEST(Array2dTest, SerializationBinary) {
   SCOPED_TRACE("");
   ::TestSerialization2D<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive,
                         TypeParam>();
+}
+
+TEST(Half, MaxSigned) {
+  half_float::half neg1 = -42768, neg2 = -32768, pos1 = 42767, pos2 = 32767;
+  ASSERT_TRUE(neg1 != pos1);
+  ASSERT_TRUE(neg2 != pos2);
+}
+
+TEST(Half, MinSigned) {
+  half_float::half p001 = 0.001f, p00001 = 0.00001f;
+  {
+    half_float::half x = p001, y = p001;
+    for (size_t i = 0; i < 10000; i++) {
+      if (x == -0.015625) break;
+      x -= p00001;
+      ASSERT_TRUE(!(x == y));
+      y -= p00001;
+      ASSERT_TRUE(x == y);
+    }
+  }
+  {
+    half_float::half x = p00001, y = p00001;
+    for (size_t i = 0; i < 10000; i++) {
+      if (x == 0.015625) break;
+      x += p00001;
+      ASSERT_TRUE(!(x == y));
+      y += p00001;
+      ASSERT_TRUE(x == y);
+    }
+  }
+
+  half_float::half neg1 = -0.32768f, neg2 = -0.33333f, neg3 = -0.333252f;
+  half_float::half pos1 = 0.32767f, pos2 = 0.33333f, pos3 = 0.333252f;
+
+  ASSERT_TRUE(neg1 != neg2);
+  ASSERT_TRUE(neg2 == neg3);
+  ASSERT_TRUE(pos1 != pos2);
+  ASSERT_TRUE(pos2 == pos3);
 }
 
 #ifdef ADD_MAIN

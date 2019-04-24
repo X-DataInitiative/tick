@@ -194,8 +194,7 @@ class Array2d : public BaseArray2d<T, MAJ> {
 
  public:
   bool compare(const Array2d<T, MAJ>& that) const {
-    bool are_equal = BaseArray2d<T, MAJ>::compare(that);
-    return are_equal;
+    return BaseArray2d<T, MAJ>::compare(that);
   }
 
   bool operator==(const Array2d<T, MAJ>& that) const { return compare(that); }
@@ -427,6 +426,8 @@ ARRAY_DEFINE_TYPE(int16_t, Short);
 ARRAY_DEFINE_TYPE(uint16_t, UShort);
 ARRAY_DEFINE_TYPE(int64_t, Long);
 ARRAY_DEFINE_TYPE(ulong, ULong);
+
+ARRAY_DEFINE_TYPE(half_float::half, Half);
 
 #undef ARRAY_DEFINE_TYPE
 #undef ARRAY_DEFINE_TYPE_SERIALIZE

@@ -22,6 +22,11 @@ struct promote<float> {
 };
 
 template <>
+struct promote<half_float::half> {
+  using type = double;
+};
+
+template <>
 struct promote<std::uint8_t> {
   using type = std::uint64_t;
 };

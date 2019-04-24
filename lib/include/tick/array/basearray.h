@@ -89,7 +89,7 @@ class BaseArray : public AbstractArray1d2d<T> {
   // \return The last value (throw an error if empty)
   inline T last() const {
     if (_size == 0) TICK_ERROR("Array is empty");
-    return (is_sparse() ? (_indices == nullptr ? 0 : _data[_size_sparse - 1])
+    return (is_sparse() ? (_indices == nullptr ? T(0) : _data[_size_sparse - 1])
                         : _data[_size - 1]);
   }
 
