@@ -264,8 +264,6 @@ def create_extension(extension_name, module_dir,
 
     min_swig_opts = ['-py3',
                      '-c++',
-                     '-modern',
-                     '-new_repr',
                      '-Ilib/swig',
                      '-Ilib/include',
                      '-outdir', swig_path.build,
@@ -302,9 +300,6 @@ def create_extension(extension_name, module_dir,
     else:
         ## Added -Wall to get all warnings and -Werror to treat them as errors
         extra_compile_args.append("-Werror")
-        ## This warning is turned off because SWIG generates files that triggers the
-        ## warning
-        extra_compile_args.append("-Wno-uninitialized")
 
     # Include directory of module
     mod = SwigPath(module_dir, extension_name)

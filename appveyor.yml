@@ -30,7 +30,8 @@ cache:
 install:
   - git submodule update --init
   - curl -o mkn.exe -L https://github.com/Dekken/maiken/raw/binaries/win10_x64/mkn.exe
-  - IF NOT EXIST C:\ProgramData\chocolatey\bin\swig.exe choco install tools\windows\swig.3.0.12.nupkg --yes --limit-output #> $null
+  - IF NOT EXIST C:\ProgramData\chocolatey\bin\swig.exe choco install tools\windows\swig.4.0.0.nupkg --yes --limit-output #> $null
+  - cat C:\ProgramData\chocolatey\logs\chocolatey.log
   - git clone https://github.com/X-DataInitiative/tick_appveyor -b master --depth 1 appveyor
 
 build_script:
