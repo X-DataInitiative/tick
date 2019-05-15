@@ -58,7 +58,7 @@ for P in "${PROFILES[@]}"; do
         [ -f "${SWIG_BASE}/$P/${B}_wrap.cpp" ] && \
           rm "${SWIG_BASE}/$P/${B}_wrap.cpp"
     [ ! -f "${SWIG_BASE}/$P/${B}_wrap.cpp" ] && \
-        $SWIG -python -py3 -c++ -modern -new_repr ${INCS[@]} \
+        $SWIG -python -py3 -c++ ${INCS[@]} \
           -outdir $DIR/build "$SWIG_C_FLAGS" \
           -o ${SWIG_BASE}/$P/${B}_wrap.cpp $IF
   else
@@ -70,7 +70,7 @@ for P in "${PROFILES[@]}"; do
             [ -f "${SWIG_BASE}/$P/${B}_wrap.cpp" ] && \
             rm "${SWIG_BASE}/$P/${B}_wrap.cpp"
         [ ! -f "${SWIG_BASE}/$P/${B}_wrap.cpp" ] && \
-            $SWIG -python -py3 -c++ -modern -new_repr ${INCS[@]} \
+            $SWIG -python -py3 -c++ ${INCS[@]} \
               -outdir $DIR/build "$SWIG_C_FLAGS" \
               -o ${SWIG_BASE}/$P/${B}_wrap.cpp $IF
     done
@@ -80,7 +80,7 @@ for P in "${PROFILES[@]}"; do
         [ -f "${SWIG_BASE}/$P/${P1}_wrap.cpp" ] && \
           rm "${SWIG_BASE}/$P/${P1}_wrap.cpp"
     [ ! -f "${SWIG_BASE}/$P/${P}_wrap.cpp" ] && \
-      $SWIG -python -py3 -c++ -modern -new_repr ${INCS[@]} \
+      $SWIG -python -py3 -c++ ${INCS[@]} \
         -outdir $DIR/build "$SWIG_C_FLAGS" -o ${SWIG_BASE}/$P/${P1}_wrap.cpp \
         "${DIR}/swig/${P1}.i"
   fi

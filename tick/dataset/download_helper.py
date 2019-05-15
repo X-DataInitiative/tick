@@ -181,7 +181,7 @@ def load_dataset(dataset_path, data_home=None, n_features=None):
     cache_path = os.path.join(data_home, dataset_path)
 
     if cache_path.endswith(".npz"):
-        dataset = np.load(cache_path)
+        dataset = np.load(cache_path, allow_pickle=True)
         # If we have only one numpy array we return it directly otherwise
         # we return the row dictionary
         if len(dataset.keys()) == 1:
