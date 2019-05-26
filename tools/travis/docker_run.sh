@@ -6,8 +6,13 @@ set -e -x
 cp -R /io src
 cd src
 
-eval "$(pyenv init -)"
+( apt-get update && apt-get remove --purge -y swig* && apt-get autoremove && \
+  apt-get install -y autotools-dev automake gawk bison flex && \
+  git clone https://github.com/swig/swig -b rel-4.0.0 swig && \
+  cd swig && ./autogen.sh && ./configure --without-pcre && \
+  make && make install ) & SWIG_PID=$!
 
+eval "$(pyenv init -)"
 pyenv global ${PYVER}
 pyenv local ${PYVER}
 
@@ -20,6 +25,8 @@ pyenv local ${PYVER}
 
 python -m pip install -r requirements.txt
 python setup.py cpplint
+wait $SWIG_PID
+swig -version # should be 4.0.0
 PYMAJ=$(python -c "import sys; print(sys.version_info[0])")
 PYMIN=$(python -c "import sys; print(sys.version_info[1])")
 if (( PYMAJ == 3 )) && (( PYMIN == 6 )); then

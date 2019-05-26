@@ -27,8 +27,8 @@ matrix:
     language: generic
     sudo: required
     env:
-      - PYVER=3.6.1
-    osx_image: xcode9.1
+      - PYVER=3.6.7
+    osx_image: xcode10.2
   ## 3.7 is dropped until more mature
   # - os: osx
   #   language: generic
