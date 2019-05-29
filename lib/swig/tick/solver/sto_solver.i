@@ -9,7 +9,7 @@
 %}
 
 %include "tick/array/array_module.i"
-%include "tick/base_model/model.i"
+%include "tick/base_model/base_model_module.i"
 %include "tick/prox/prox_module.i"
 
 %template(IntVector) std::vector<int>;

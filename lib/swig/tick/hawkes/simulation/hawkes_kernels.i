@@ -1,12 +1,5 @@
 // License: BSD 3 clause
 
-%include <std_shared_ptr.i>
-%shared_ptr(HawkesKernel);
-%shared_ptr(HawkesKernelExp);
-%shared_ptr(HawkesKernelSumExp);
-%shared_ptr(HawkesKernelPowerLaw);
-%shared_ptr(HawkesKernelTimeFunc);
-%shared_ptr(HawkesKernel0);
 
 class HawkesKernel {
  public:
