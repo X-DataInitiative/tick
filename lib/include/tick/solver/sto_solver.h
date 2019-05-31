@@ -80,11 +80,14 @@ class DLL_PUBLIC TStoSolver {
   ArrayULong permutation;
 
   int record_every = 1;
-  int last_record_epoch = 0;
+  size_t last_record_epoch = 0;
   double last_record_time = 0;
+  // used for tolerance/history
+  double prev_obj = 0;
 
   // A vector storing all timings at which history has been stored
   std::vector<double> time_history;
+  std::vector<double> objectives;
 
   // A vector storing all epoch at which history has been stored
   std::vector<int> epoch_history;
@@ -136,7 +139,7 @@ class DLL_PUBLIC TStoSolver {
 
   virtual void solve_one_epoch() { TICK_CLASS_DOES_NOT_IMPLEMENT("TStoSolver<T, K>"); }
 
-  virtual void solve(int n_epochs = 1);
+  virtual void solve(size_t n_epochs = 1);
 
   virtual void get_minimizer(Array<T> &out);
 
@@ -175,6 +178,8 @@ class DLL_PUBLIC TStoSolver {
   inline void set_record_every(int record_every) { this->record_every = record_every; }
 
   std::vector<double> get_time_history() const { return time_history; }
+  std::vector<double> get_objectives() const { return objectives; }
+  void set_prev_obj(const double obj) { prev_obj = obj; }
 
   std::vector<int> get_epoch_history() const { return epoch_history; }
 

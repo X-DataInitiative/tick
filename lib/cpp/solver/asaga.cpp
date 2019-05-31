@@ -110,7 +110,7 @@ void AtomicSAGA<T>::threaded_solve(int n_epochs, size_t n_thread) {
 }
 
 template <class T>
-void AtomicSAGA<T>::solve(int n_epochs) {
+void AtomicSAGA<T>::solve(size_t n_epochs) {
   // Data is sparse, and we use the probabilistic update strategy
   // This means that the model is a child of ModelGeneralizedLinear.
   // The strategy used here uses non-delayed updates, with corrected

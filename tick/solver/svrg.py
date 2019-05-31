@@ -15,6 +15,7 @@ from tick.solver.build.solver import SVRG_StepType_BarzilaiBorwein
 
 from .build.solver import SVRGDouble as _SVRGDouble
 from .build.solver import SVRGFloat as _SVRGFloat
+from .build.solver import MultiSVRGDouble as MultiSVRG, SVRGDoublePtrVector
 
 __author__ = "Stephane Gaiffas"
 
@@ -291,3 +292,30 @@ class SVRG(SolverFirstOrderSto):
 
         self.variance_reduction = self._var_red_str
         self.step_type = self._step_type_str
+
+    def multi_solve(self, coeffes, solvers, max_iter):
+        n_jobs = len(solvers)
+        if len(coeffes) != n_jobs:
+            raise ValueError("size mismatch between coeffes and solvers")
+        sss = SVRGDoublePtrVector(0)
+        mins = []
+        prev_objs = []
+        for i in range(0, n_jobs):
+            step, obj, minimizer, prev_minimizer = \
+                self._initialize_values(coeffes[i], self.step, n_empty_vectors=1)
+            mins.append(minimizer)
+            solvers[i]._solver.set_starting_iterate(minimizer)
+            solvers[i]._solver.reset()
+            prev_objs.append(solvers[i].objective(minimizer))
+            solvers[i]._solver.set_prev_obj(prev_objs[-1])
+            MultiSVRG.push_solver(sss, solvers[i]._solver)
+        for i in range(0, n_jobs):
+            solvers[i]._start_solve()
+        MultiSVRG.multi_solve(sss, max_iter)
+        for i in range(0, n_jobs):
+            solvers[i]._set("time_elapsed", solvers[i]._solver.get_time_history()[-1])
+            if solvers[i].verbose:
+                print("Done solving using " + solvers[i].name + " in " +
+                      str(solvers[i].time_elapsed) + " seconds")
+            solvers[i]._post_solve_and_record_in_cpp(mins[i], prev_objs[i])
+        return mins

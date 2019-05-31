@@ -1,3 +1,4 @@
+import inspect
 import numpy as np
 from abc import ABC
 from operator import itemgetter
@@ -153,9 +154,13 @@ class ConvSCCS(ABC, Base):
                  C_tv=None, C_group_l1=None, step: float = None,
                  tol: float = 1e-5, max_iter: int = 100, verbose: bool = False,
                  print_every: int = 10, record_every: int = 10,
-                 random_state: int = None):
+                 random_state: int = None, n_jobs: int = 1, n_threads: int = 1,
+                 solver_class=None, step_type='fixed'):
         Base.__init__(self)
         # Init objects to be computed later
+        self.n_jobs = n_jobs
+        self.n_threads = n_threads
+        self.step_type = step_type
         self.n_cases = None
         self.n_intervals = None
         self.n_features = None
@@ -192,9 +197,13 @@ class ConvSCCS(ABC, Base):
         # Construct objects
         self._preprocessor_obj = self._construct_preprocessor_obj()
         self._model_obj = None
-        self._solver_obj = self._construct_solver_obj(
-            step, max_iter, tol, print_every, record_every, verbose,
-            random_state)
+
+        arrays = ['m_coeffs', '_models']
+        for ar in arrays:
+            object.__setattr__(self, ar, [])
+        object.__setattr__(self, "_solver_info", (
+          step, max_iter, tol, print_every, record_every, verbose, random_state, step_type, SVRG))
+        self._solver_obj = self._construct_solver_obj_with_class(*self._solver_info)
 
     # Interface
     def fit(self, features: list, labels: list, censoring: np.array,
@@ -244,6 +253,40 @@ class ConvSCCS(ABC, Base):
                       confidence_level)
 
         return self.coeffs, self.confidence_intervals
+
+    def kv_multi_fit(self):
+        solvers = []
+        p = self._construct_prox_obj()
+        for i in range(self.n_jobs):
+            solvers.append(self._construct_solver_obj_with_class(*self._solver_info))
+            solvers[i].step = self.step
+            solvers[i].set_model(self._models[i]).set_prox(p)
+            solvers[i]._solver.set_epoch_size(self._models[i]._model.get_epoch_size())
+
+        coeffes = solvers[0].multi_solve(self.m_coeffs, solvers, self.max_iter)
+
+        for i in range(self.n_jobs):
+            self.m_coeffs[i] = coeffes[i]
+
+        return coeffes
+
+    def bootstrap_multi_fit(self):
+        solvers = []
+        proxes = []
+        for i in range(self.n_jobs):
+            proxes.append(self._construct_prox_obj(coeffs=self.m_coeffs[i], project=True))
+            solvers.append(self._construct_solver_obj_with_class(*self._solver_info))
+            solvers[i].step = self.step
+            solvers[i].set_model(self._models[i]).set_prox(proxes[-1])
+            solvers[i]._solver.set_epoch_size(self._models[i]._model.get_epoch_size())
+
+        coeffes = solvers[0].multi_solve(self.m_coeffs, solvers, self.max_iter)
+
+        for i in range(self.n_jobs):
+            self.m_coeffs[i] = coeffes[i]
+
+        return coeffes
+
 
     def score(self, features=None, labels=None, censoring=None):
         """Returns the negative log-likelihood of the model, using the current
@@ -366,30 +409,55 @@ class ConvSCCS(ABC, Base):
         cv_tracker = CrossValidationTracker(model_global_parameters)
         C_tv_generator, C_group_l1_generator = self._construct_generator_obj(
             C_tv_range, C_group_l1_range, logscale)
-        # TODO later: parallelize CV
+
         i = 0
         while i < n_cv_iter:
-            self._set('_coeffs', np.zeros(self.n_coeffs))
+            for j in range(self.n_jobs):
+                self.m_coeffs[j] = np.zeros(self.n_coeffs)
+
             self.C_tv = C_tv_generator.rvs(1)[0]
             self.C_group_l1 = C_group_l1_generator.rvs(1)[0]
 
+            score_vals = []
             train_scores = []
             test_scores = []
-            for train_index, test_index in kf.split(p_features,
-                                                    labels_interval):
+
+            indexes = list(kf.split(p_features, labels_interval))
+            lindexs = len(indexes)
+            loops = lindexs // self.n_jobs
+
+            def multi_fit_job_setup(i, index):
+                train_index, test_index = indexes[i]
                 train = itemgetter(*train_index.tolist())
                 test = itemgetter(*test_index.tolist())
-                X_train, X_test = list(train(p_features)), list(
-                    test(p_features))
+                X_train, X_test = list(train(p_features)), list(test(p_features))
                 y_train, y_test = list(train(p_labels)), list(test(p_labels))
                 censoring_train, censoring_test = p_censoring[train_index], \
                     p_censoring[test_index]
 
-                self._model_obj.fit(X_train, y_train, censoring_train)
-                self._fit(project=False)
+                self._models[index].fit(X_train, y_train, censoring_train)
+                score_vals.append((X_test, y_test, censoring_test))
 
-                train_scores.append(self._score())
-                test_scores.append(self._score(X_test, y_test, censoring_test))
+            def run_multi_fit_jobs(n_jobs):
+                minimizers = self.kv_multi_fit()
+                for j1 in range(n_jobs):
+                    train_scores.append(self._models[j1].loss(self.m_coeffs[j1]))
+                    X_test, y_test, censoring_test = score_vals[j1]
+                    test_scores.append(
+                        self._construct_model_obj().fit(
+                            X_test, y_test, censoring_test).loss(self.m_coeffs[j1]))
+
+            self._set("_fitted", True)
+
+            def job_kv_fit(n_jobs):
+                for ind in range(n_jobs):
+                    multi_fit_job_setup(((j * n_jobs) + ind), ind)
+                run_multi_fit_jobs(n_jobs)
+                score_vals = []
+
+            for j in range(0, loops):
+                job_kv_fit(self.n_jobs)
+            job_kv_fit(lindexs % self.n_jobs)
 
             cv_tracker.log_cv_iteration(self.C_tv, self.C_group_l1,
                                         np.array(train_scores),
@@ -401,16 +469,13 @@ class ConvSCCS(ABC, Base):
         self.C_tv = best_parameters["C_tv"]
         self.C_group_l1 = best_parameters["C_group_l1"]
         self._set('_coeffs', np.zeros(self.n_coeffs))
-
         self._model_obj.fit(p_features, p_labels, p_censoring)
         coeffs, bootstrap_ci = self._postfit(
             p_features, p_labels, p_censoring, True, confidence_intervals,
             n_samples_bootstrap, confidence_level)
-
         cv_tracker.log_best_model(self.C_tv, self.C_group_l1,
                                   self._coeffs.tolist(), self.score(),
                                   self.confidence_intervals)
-
         return self.coeffs, cv_tracker
 
     def plot_intensities(self, figsize=(10, 6), sharex=False, sharey=False):
@@ -421,18 +486,18 @@ class ConvSCCS(ABC, Base):
         ----------
         figsize : `tuple`, default=(10, 6)
         Size of the figure
-        
+
         sharex : `bool`, default=False
         Constrain the x axes to have the same range.
-        
+
         sharey : `bool`, default=False
         Constrain the y axes to have the same range.
-        
+
         Returns
         -------
         fig : `matplotlib.figure.Figure`
         Figure to be plotted
-        
+
         axarr : `numpy.ndarray`, `dtype=object`
         `matplotlib.axes._subplots.AxesSubplot` objects associated to each
         intensity subplot.
@@ -541,8 +606,16 @@ class ConvSCCS(ABC, Base):
         # Step computation
         self._set("_model_obj", self._construct_model_obj())
         self._model_obj.fit(features, labels, censoring)
+
         if self.step is None:
             self.step = 1 / self._model_obj.get_lip_max()
+
+        for ar in ['m_coeffs', '_models']:
+            object.__setattr__(self, ar, [])
+        for i in range(self.n_jobs):
+            self._models.append(self._construct_model_obj())
+            self.m_coeffs.append(np.zeros(n_coeffs))
+        self._solver_obj.step = self.step
 
         return features, labels, censoring
 
@@ -608,11 +681,18 @@ class ConvSCCS(ABC, Base):
         bootstrap_coeffs = []
         sim = SimuSCCS(self.n_cases, self.n_intervals, self.n_features,
                        self.n_lags, coeffs=self._format_coeffs(coeffs))
-        # TODO later: parallelize bootstrap (everything should be pickable...)
-        for k in range(rep):
-            y = sim._simulate_multinomial_outcomes(p_features, coeffs)
-            self._model_obj.fit(p_features, y, p_censoring)
-            bootstrap_coeffs.append(self._fit(True))
+
+        def n_bootstrap(jobs):
+            for k in range(jobs):
+                y = sim._simulate_multinomial_outcomes(p_features, coeffs)
+                self._models[k].fit(p_features, y, p_censoring)
+            solved_coeffs = self.bootstrap_multi_fit()
+            for k in range(jobs):
+                bootstrap_coeffs.append(solved_coeffs[k])
+
+        for i in range(rep // self.n_jobs):
+            n_bootstrap(self.n_jobs)
+        n_bootstrap(rep % self.n_jobs)
 
         bootstrap_coeffs = np.exp(np.array(bootstrap_coeffs))
         bootstrap_coeffs.sort(axis=0)
@@ -747,6 +827,19 @@ class ConvSCCS(ABC, Base):
         return groups
 
     @staticmethod
+    def _construct_solver_obj_with_class(step, max_iter, tol, print_every, record_every,
+                              verbose, seed, step_type, clazz):
+        # TODO: we might want to use SAGA also later... (might be faster here)
+        # seed cannot be None in SVRG  # inspect must be first assign
+        _, _, _, kvs = inspect.getargvalues(inspect.currentframe())
+        constructor_map = kvs.copy()
+        args = inspect.getfullargspec(clazz.__init__)[0]
+        for k, v in kvs.items():
+            if k not in args:
+                del constructor_map[k]
+        return clazz(**constructor_map)
+
+    @staticmethod #backup
     def _construct_solver_obj(step, max_iter, tol, print_every, record_every,
                               verbose, seed):
         # TODO: we might want to use SAGA also later... (might be faster here)

@@ -4,8 +4,8 @@
 #include "tick/base_model/model_labels_features.h"
 
 template <class T, class K>
-TSVRG<T, K>::TSVRG(ulong epoch_size, T tol, RandType rand_type, T step,
-                   int record_every, int seed, int n_threads,
+TSVRG<T, K>::TSVRG(size_t epoch_size, T tol, RandType rand_type, T step,
+                   size_t record_every, int seed, size_t n_threads,
                    SVRG_VarianceReductionMethod variance_reduction,
                    SVRG_StepType step_method)
     : TStoSolver<T, K>(epoch_size, tol, rand_type, record_every, seed),
@@ -93,7 +93,7 @@ template <class T, class K>
 void TSVRG<T, K>::solve_dense() {
   if (n_threads > 1) {
     std::vector<std::thread> threadsV;
-    for (int i = 0; i < n_threads; i++) {
+    for (size_t i = 0; i < n_threads; i++) {
       threadsV.emplace_back([=]() mutable -> void {
         for (ulong t = 0; t < (epoch_size / n_threads); ++t) {
           ulong next_i(get_next_i());
@@ -101,7 +101,7 @@ void TSVRG<T, K>::solve_dense() {
         }
       });
     }
-    for (int i = 0; i < n_threads; i++) {
+    for (size_t i = 0; i < n_threads; i++) {
       threadsV[i].join();
     }
 
@@ -137,7 +137,7 @@ void TSVRG<T, K>::solve_sparse_proba_updates(bool use_intercept,
   TProxSeparable<T, K>* p_casted_prox = casted_prox.get();
   if (n_threads > 1) {
     std::vector<std::thread> threadsV;
-    for (int i = 0; i < n_threads; i++) {
+    for (size_t i = 0; i < n_threads; i++) {
       threadsV.emplace_back([=]() mutable -> void {
         for (ulong t = 0; t < (epoch_size / n_threads); ++t) {
           ulong next_i(get_next_i());
@@ -146,7 +146,7 @@ void TSVRG<T, K>::solve_sparse_proba_updates(bool use_intercept,
         }
       });
     }
-    for (int i = 0; i < n_threads; i++) {
+    for (size_t i = 0; i < n_threads; i++) {
       threadsV[i].join();
     }
   } else {
@@ -240,5 +240,9 @@ void TSVRG<T, K>::sparse_single_thread_solver(
   }
 }
 
-template class DLL_PUBLIC TSVRG<double>;
-template class DLL_PUBLIC TSVRG<float>;
+template class DLL_PUBLIC TSVRG<double, double>;
+template class DLL_PUBLIC TSVRG<float, float>;
+
+template class DLL_PUBLIC MultiSVRG<double, double>;
+template class DLL_PUBLIC MultiSVRG<float, float>;
+

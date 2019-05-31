@@ -24,7 +24,7 @@ class DLL_PUBLIC TSVRG : public TStoSolver<T, K> {
   using TStoSolver<T, K>::solve;
 
  private:
-  int n_threads = 1;
+  size_t n_threads = 1;
   T step;
   // Probabilistic correction of the step-sizes of all model weights,
   // given by the inverse proportion of non-zero entries in each feature column
@@ -64,8 +64,8 @@ class DLL_PUBLIC TSVRG : public TStoSolver<T, K> {
   // This exists soley for cereal/swig
   TSVRG() : TSVRG<T, K>(0, 0, RandType::unif, 0) {}
 
-  TSVRG(ulong epoch_size, T tol, RandType rand_type, T step, int record_every = 1, int seed = -1,
-        int n_threads = 1,
+  TSVRG(size_t epoch_size, T tol, RandType rand_type, T step,
+        size_t record_every = 1, int seed = -1, size_t n_threads = 1,
         SVRG_VarianceReductionMethod variance_reduction = SVRG_VarianceReductionMethod::Last,
         SVRG_StepType step_method = SVRG_StepType::Fixed);
 
@@ -126,21 +126,41 @@ class DLL_PUBLIC TSVRG : public TStoSolver<T, K> {
   }
 
   BoolStrReport operator==(const TSVRG<T, K>& that) { return compare(that); }
-
-  static std::shared_ptr<TSVRG<T, K>> AS_NULL() {
-    return std::move(std::shared_ptr<TSVRG<T, K>>(new TSVRG<T, K>));
-  }
 };
 
-using SVRG = TSVRG<double>;
-using SVRGDouble = TSVRG<double>;
+using SVRG = TSVRG<double, double>;
+using SVRGDouble = TSVRG<double, double>;
+using SVRGDoubleVector = std::vector<SVRGDouble>;
+using SVRGDoublePtrVector = std::vector<SVRGDouble*>;
+
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SVRGDouble,
                                    cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(SVRGDouble)
 
-using SVRGFloat = TSVRG<float>;
+using SVRGFloat = TSVRG<float, float>;
+using SVRGFloatVector = std::vector<SVRGFloat>;
+using SVRGFloatPtrVector = std::vector<SVRGFloat*>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SVRGFloat,
                                    cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(SVRGFloat)
+
+template <typename T, typename K>
+class DLL_PUBLIC MultiSVRG{
+ public:
+  static void multi_solve(std::vector<TSVRG<T, K>*> &solvers, size_t epochs) {
+    std::vector<std::thread> threads;
+    for (size_t i1 = 1; i1 < solvers.size(); i1++)
+      threads.emplace_back([&](size_t i) { solvers[i]->solve(epochs);}, i1);
+    solvers[0]->solve(epochs);
+    for (auto &thread : threads) thread.join();
+  }
+
+  static void push_solver(std::vector<TSVRG<T, K>*> &solvers, TSVRG<T, K> &solver) {
+    solvers.push_back(&solver);
+  }
+};
+
+using MultiSVRGDouble = MultiSVRG<double, double>;
+using MultiSVRGFloat = MultiSVRG<float, float>;
 
 #endif  // LIB_INCLUDE_TICK_SOLVER_SVRG_H_

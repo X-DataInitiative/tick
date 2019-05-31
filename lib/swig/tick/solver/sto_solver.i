@@ -52,11 +52,14 @@ class TStoSolver {
 
   std::vector<double> get_time_history() const;
   std::vector<int> get_epoch_history() const;
+  std::vector<double> get_objectives() const;
+  void set_prev_obj(const double obj);
   std::vector<std::shared_ptr<SArray<T> > > get_iterate_history() const;
 
   virtual void set_model(std::shared_ptr<TModel<T, K> > model);
   virtual void set_prox(std::shared_ptr<TProx<T, K> > prox);
   void set_seed(int seed);
+  void reset();
 };
 
 %rename(StoSolverDouble) TStoSolver<double, double>;
@@ -87,11 +90,14 @@ class TStoSolver<double, double> {
 
   std::vector<double> get_time_history() const;
   std::vector<int> get_epoch_history() const;
+  std::vector<double> get_objectives() const;
+  void set_prev_obj(const double obj);
   SArrayDoublePtrList1D get_iterate_history() const;
 
   virtual void set_model(ModelDoublePtr model);
   virtual void set_prox(ProxDoublePtr prox);
   void set_seed(int seed);
+  void reset();
 };
 typedef TStoSolver<double, double> StoSolverDouble;
 
@@ -124,10 +130,13 @@ class TStoSolver<float, float> {
 
   std::vector<double> get_time_history() const;
   std::vector<int> get_epoch_history() const;
+  std::vector<double> get_objectives() const;
+  void set_prev_obj(const double obj);
   SArrayFloatPtrList1D get_iterate_history() const;
 
   virtual void set_model(ModelFloatPtr model);
   virtual void set_prox(ProxFloatPtr prox);
   void set_seed(int seed);
+  void reset();
 };
 typedef TStoSolver<float, float> StoSolverFloat;
