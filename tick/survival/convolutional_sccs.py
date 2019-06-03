@@ -24,8 +24,6 @@ Confidence_intervals = namedtuple(
     ['refit_coeffs', 'lower_bound', 'upper_bound', 'confidence_level'])
 
 
-# TODO later: exploit new options of SVRG (parallel fit, variance_reduction...)
-# TODO later: add SAGA solver
 class ConvSCCS(ABC, Base):
     """ConvSCCS learner, estimates lagged features effect using TV and Group L1
     penalties. These penalties constrain the coefficient groups modelling the
@@ -78,6 +76,23 @@ class ConvSCCS(ABC, Base):
 
     random_state : `int`, default=None
         If not None, the seed of the random sampling.
+
+    n_jobs : `int`, default=1
+        Number of jobs to run in parallel when running k-fold cross validation or
+        boostrap computation
+
+    n_threads : `int`, default=1
+        (Experimental) Number of threads used by the solver.
+
+    step_type : {'fixed', 'bb'}, default='fixed'
+        How step will evoluate over stime
+
+        * if ``'fixed'`` step will remain equal to the given step accross
+          all iterations. This is the fastest solution if the optimal step
+          is known.
+        * if ``'bb'`` step will be chosen given Barzilai Borwein rule. This
+          choice is much more adaptive and should be used if optimal step if
+          difficult to obtain.
 
 
     Attributes
@@ -155,7 +170,7 @@ class ConvSCCS(ABC, Base):
                  tol: float = 1e-5, max_iter: int = 100, verbose: bool = False,
                  print_every: int = 10, record_every: int = 10,
                  random_state: int = None, n_jobs: int = 1, n_threads: int = 1,
-                 solver_class=None, step_type='fixed'):
+                 step_type='fixed'):
         Base.__init__(self)
         # Init objects to be computed later
         self.n_jobs = n_jobs
@@ -253,40 +268,6 @@ class ConvSCCS(ABC, Base):
                       confidence_level)
 
         return self.coeffs, self.confidence_intervals
-
-    def kv_multi_fit(self):
-        solvers = []
-        p = self._construct_prox_obj()
-        for i in range(self.n_jobs):
-            solvers.append(self._construct_solver_obj_with_class(*self._solver_info))
-            solvers[i].step = self.step
-            solvers[i].set_model(self._models[i]).set_prox(p)
-            solvers[i]._solver.set_epoch_size(self._models[i]._model.get_epoch_size())
-
-        coeffes = solvers[0].multi_solve(self.m_coeffs, solvers, self.max_iter)
-
-        for i in range(self.n_jobs):
-            self.m_coeffs[i] = coeffes[i]
-
-        return coeffes
-
-    def bootstrap_multi_fit(self):
-        solvers = []
-        proxes = []
-        for i in range(self.n_jobs):
-            proxes.append(self._construct_prox_obj(coeffs=self.m_coeffs[i], project=True))
-            solvers.append(self._construct_solver_obj_with_class(*self._solver_info))
-            solvers[i].step = self.step
-            solvers[i].set_model(self._models[i]).set_prox(proxes[-1])
-            solvers[i]._solver.set_epoch_size(self._models[i]._model.get_epoch_size())
-
-        coeffes = solvers[0].multi_solve(self.m_coeffs, solvers, self.max_iter)
-
-        for i in range(self.n_jobs):
-            self.m_coeffs[i] = coeffes[i]
-
-        return coeffes
-
 
     def score(self, features=None, labels=None, censoring=None):
         """Returns the negative log-likelihood of the model, using the current
@@ -439,7 +420,7 @@ class ConvSCCS(ABC, Base):
                 score_vals.append((X_test, y_test, censoring_test))
 
             def run_multi_fit_jobs(n_jobs):
-                minimizers = self.kv_multi_fit()
+                minimizers = self._multi_fit()
                 for j1 in range(n_jobs):
                     train_scores.append(self._models[j1].loss(self.m_coeffs[j1]))
                     X_test, y_test, censoring_test = score_vals[j1]
@@ -449,15 +430,15 @@ class ConvSCCS(ABC, Base):
 
             self._set("_fitted", True)
 
-            def job_kv_fit(n_jobs):
+            def job_parallel_fit(n_jobs):
                 for ind in range(n_jobs):
                     multi_fit_job_setup(((j * n_jobs) + ind), ind)
                 run_multi_fit_jobs(n_jobs)
                 score_vals = []
 
             for j in range(0, loops):
-                job_kv_fit(self.n_jobs)
-            job_kv_fit(lindexs % self.n_jobs)
+                job_parallel_fit(self.n_jobs)
+            job_parallel_fit(lindexs % self.n_jobs)
 
             cv_tracker.log_cv_iteration(self.C_tv, self.C_group_l1,
                                         np.array(train_scores),
@@ -581,6 +562,39 @@ class ConvSCCS(ABC, Base):
         return ax
 
     # Internals
+    def _multi_fit(self):
+        solvers = []
+        p = self._construct_prox_obj()
+        for i in range(self.n_jobs):
+            solvers.append(self._construct_solver_obj_with_class(*self._solver_info))
+            solvers[i].step = self.step
+            solvers[i].set_model(self._models[i]).set_prox(p)
+            solvers[i]._solver.set_epoch_size(self._models[i]._model.get_epoch_size())
+
+        coeffes = solvers[0].multi_solve(self.m_coeffs, solvers, self.max_iter)
+
+        for i in range(self.n_jobs):
+            self.m_coeffs[i] = coeffes[i]
+
+        return coeffes
+
+    def _bootstrap_multi_fit(self):
+        solvers = []
+        proxes = []
+        for i in range(self.n_jobs):
+            proxes.append(self._construct_prox_obj(coeffs=self.m_coeffs[i], project=True))
+            solvers.append(self._construct_solver_obj_with_class(*self._solver_info))
+            solvers[i].step = self.step
+            solvers[i].set_model(self._models[i]).set_prox(proxes[-1])
+            solvers[i]._solver.set_epoch_size(self._models[i]._model.get_epoch_size())
+
+        coeffes = solvers[0].multi_solve(self.m_coeffs, solvers, self.max_iter)
+
+        for i in range(self.n_jobs):
+            self.m_coeffs[i] = coeffes[i]
+
+        return coeffes
+
     def _prefit(self, features, labels, censoring):
         n_intervals, n_features = features[0].shape
         if any(self.n_lags > n_intervals - 1):
@@ -686,7 +700,7 @@ class ConvSCCS(ABC, Base):
             for k in range(jobs):
                 y = sim._simulate_multinomial_outcomes(p_features, coeffs)
                 self._models[k].fit(p_features, y, p_censoring)
-            solved_coeffs = self.bootstrap_multi_fit()
+            solved_coeffs = self._bootstrap_multi_fit()
             for k in range(jobs):
                 bootstrap_coeffs.append(solved_coeffs[k])
 
@@ -829,8 +843,8 @@ class ConvSCCS(ABC, Base):
     @staticmethod
     def _construct_solver_obj_with_class(step, max_iter, tol, print_every, record_every,
                               verbose, seed, step_type, clazz):
-        # TODO: we might want to use SAGA also later... (might be faster here)
-        # seed cannot be None in SVRG  # inspect must be first assign
+        # seed cannot be None in SVRG
+        # inspect must be first assign
         _, _, _, kvs = inspect.getargvalues(inspect.currentframe())
         constructor_map = kvs.copy()
         args = inspect.getfullargspec(clazz.__init__)[0]
@@ -842,7 +856,6 @@ class ConvSCCS(ABC, Base):
     @staticmethod #backup
     def _construct_solver_obj(step, max_iter, tol, print_every, record_every,
                               verbose, seed):
-        # TODO: we might want to use SAGA also later... (might be faster here)
         # seed cannot be None in SVRG
         solver_obj = SVRG(step=step, max_iter=max_iter, tol=tol,
                           print_every=print_every, record_every=record_every,
