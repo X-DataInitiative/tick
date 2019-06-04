@@ -1,3 +1,4 @@
+import inspect
 import numpy as np
 from abc import ABC
 from operator import itemgetter
@@ -145,6 +146,7 @@ class ConvSCCS(ABC, Base):
         '_step_size',
         # refit _coeffs, median, and CI data
         'confidence_intervals',
+        '_solver_info'
     ]
 
     _attrinfos = {key: {'writable': False} for key in _const_attr}
@@ -192,9 +194,9 @@ class ConvSCCS(ABC, Base):
         # Construct objects
         self._preprocessor_obj = self._construct_preprocessor_obj()
         self._model_obj = None
-        self._solver_obj = self._construct_solver_obj(
-            step, max_iter, tol, print_every, record_every, verbose,
-            random_state)
+        self._solver_info = (
+          step, max_iter, tol, print_every, record_every, verbose, self.random_state)
+        self._solver_obj = self._construct_solver_obj(*self._solver_info)
 
     # Interface
     def fit(self, features: list, labels: list, censoring: np.array,
@@ -421,18 +423,18 @@ class ConvSCCS(ABC, Base):
         ----------
         figsize : `tuple`, default=(10, 6)
         Size of the figure
-        
+
         sharex : `bool`, default=False
         Constrain the x axes to have the same range.
-        
+
         sharey : `bool`, default=False
         Constrain the y axes to have the same range.
-        
+
         Returns
         -------
         fig : `matplotlib.figure.Figure`
         Figure to be plotted
-        
+
         axarr : `numpy.ndarray`, `dtype=object`
         `matplotlib.axes._subplots.AxesSubplot` objects associated to each
         intensity subplot.
@@ -756,6 +758,23 @@ class ConvSCCS(ABC, Base):
                           verbose=verbose, seed=seed)
 
         return solver_obj
+
+
+    @staticmethod
+    def _construct_solver_obj_with_class(
+            step, max_iter, tol, print_every, record_every, verbose, seed, clazz=SVRG):
+        """All creatioon of solver by class type, removes values from constructor parameter
+           list that do not exist on the class construct to be called
+         """
+        # inspect must be first assign
+        _, _, _, kvs = inspect.getargvalues(inspect.currentframe())
+        constructor_map = kvs.copy()
+        args = inspect.getfullargspec(clazz.__init__)[0]
+        for k, v in kvs.items():
+            if k not in args:
+                del constructor_map[k]
+        return SVRG(**constructor_map)
+
 
     def _construct_generator_obj(self, C_tv_range, C_group_l1_range,
                                  logspace=True):

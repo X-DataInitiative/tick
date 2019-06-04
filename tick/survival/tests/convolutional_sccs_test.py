@@ -2,7 +2,7 @@ import unittest
 import numpy as np
 from tick.survival import SimuSCCS, ConvSCCS
 from scipy.sparse import csr_matrix
-
+from tick.survival.sccs import *
 
 class Test(unittest.TestCase):
     def setUp(self):
@@ -91,40 +91,46 @@ class Test(unittest.TestCase):
             np.hstack(estimated_coeffs), np.hstack(coeffs), decimal=1)
 
     def test_LearnerSCCS_confidence_intervals(self):
-        lrn = ConvSCCS(n_lags=self.n_lags, penalized_features=[])
-        coeffs, _ = lrn.fit(self.features, self.labels, self.censoring)
-        p_features, p_labels, p_censoring = lrn._preprocess_data(
-            self.features, self.labels, self.censoring)
-        confidence_intervals = lrn._bootstrap(p_features,
-                                              p_labels, p_censoring,
-                                              np.hstack(coeffs), 5, .90)
-        for i, c in enumerate(coeffs):
-            self.assertTrue(
-                np.all(confidence_intervals.lower_bound[i] <= c),
-                "lower bound of the confidence interval\
-                                   should be <= coeffs at index %i" % i)
-            self.assertTrue(
-                np.all(c <= confidence_intervals.upper_bound[i]),
-                "upper bound of the confidence interval\
-                                   should be >= coeffs at index %i" % i)
-        # Same with 0 lags
-        n_lags = np.zeros_like(self.n_lags, dtype='uint64')
-        lrn = ConvSCCS(n_lags=n_lags, penalized_features=[])
-        coeffs, _ = lrn.fit(self.features, self.labels, self.censoring)
-        p_features, p_labels, p_censoring = lrn._preprocess_data(
-            self.features, self.labels, self.censoring)
-        confidence_intervals = lrn._bootstrap(p_features,
-                                              p_labels, p_censoring,
-                                              np.hstack(coeffs), 5, .90)
-        for i, c in enumerate(coeffs):
-            self.assertTrue(
-                np.all(confidence_intervals.lower_bound[i] <= c),
-                "lower bound of the confidence interval\
-                                   should be <= coeffs at index %i" % i)
-            self.assertTrue(
-                np.all(c <= confidence_intervals.upper_bound[i]),
-                "upper bound of the confidence interval\
-                                   should be >= coeffs at index %i" % i)
+        def fit(clazz):
+            self.setUp()
+            lrn = clazz(n_lags=self.n_lags, penalized_features=[])
+            coeffs, _ = lrn.fit(self.features, self.labels, self.censoring)
+            p_features, p_labels, p_censoring = lrn._preprocess_data(
+                self.features, self.labels, self.censoring)
+            confidence_intervals = lrn._bootstrap(p_features,
+                                                  p_labels, p_censoring,
+                                                  np.hstack(coeffs), 5, .90)
+            for i, c in enumerate(coeffs):
+                self.assertTrue(
+                    np.all(confidence_intervals.lower_bound[i] <= c),
+                    "lower bound of the confidence interval\
+                                       should be <= coeffs at index %i" % i)
+                self.assertTrue(
+                    np.all(c <= confidence_intervals.upper_bound[i]),
+                    "upper bound of the confidence interval\
+                                       should be >= coeffs at index %i" % i)
+            # Same with 0 lags
+            n_lags = np.zeros_like(self.n_lags, dtype='uint64')
+            lrn = clazz(n_lags=n_lags, penalized_features=[])
+            coeffs, _ = lrn.fit(self.features, self.labels, self.censoring)
+            p_features, p_labels, p_censoring = lrn._preprocess_data(
+                self.features, self.labels, self.censoring)
+            confidence_intervals = lrn._bootstrap(p_features,
+                                                  p_labels, p_censoring,
+                                                  np.hstack(coeffs), 5, .90)
+            for i, c in enumerate(coeffs):
+                self.assertTrue(
+                    np.all(confidence_intervals.lower_bound[i] <= c),
+                    "lower bound of the confidence interval\
+                                       should be <= coeffs at index %i" % i)
+                self.assertTrue(
+                    np.all(c <= confidence_intervals.upper_bound[i]),
+                    "upper bound of the confidence interval\
+                                       should be >= coeffs at index %i" % i)
+
+        fit(ConvSCCS)
+        fit(BatchConvSCCS)
+        fit(StreamConvSCCS)
 
     def test_LearnerSCCS_score(self):
         lrn = ConvSCCS(n_lags=self.n_lags, penalized_features=[],
@@ -134,18 +140,28 @@ class Test(unittest.TestCase):
                          lrn.score(self.features, self.labels, self.censoring))
 
     def test_LearnerSCCS_fit_KFold_CV(self):
-        lrn = ConvSCCS(n_lags=self.n_lags, penalized_features=np.arange(
-            self.n_features), random_state=self.seed, C_tv=1e-1,
-                       C_group_l1=1e-1)
-        lrn.fit(self.features, self.labels, self.censoring)
-        score = lrn.score()
-        tv_range = (-5, -1)
-        groupl1_range = (-5, -1)
-        lrn.fit_kfold_cv(self.features, self.labels, self.censoring,
-                         C_tv_range=tv_range, C_group_l1_range=groupl1_range,
-                         n_cv_iter=4)
-        self.assertTrue(lrn.score() <= score)
+        lrn_scores = []
+        def fit(lrn):
+            self.setUp()
+            lrn.fit(self.features, self.labels, self.censoring)
+            score = lrn.score()
+            tv_range = (-5, -1)
+            groupl1_range = (-5, -1)
+            lrn.fit_kfold_cv(self.features, self.labels, self.censoring,
+                             C_tv_range=tv_range, C_group_l1_range=groupl1_range,
+                             n_cv_iter=4)
+            lrn_scores.append(lrn.score())
+            self.assertTrue(lrn_scores[-1] <= score)
 
+        fit(ConvSCCS(n_lags=self.n_lags, penalized_features=np.arange(
+            self.n_features), random_state=self.seed, C_tv=1e-1,
+                       C_group_l1=1e-1))
+        fit(BatchConvSCCS(n_lags=self.n_lags, penalized_features=np.arange(
+            self.n_features), random_state=self.seed, C_tv=1e-1,
+                       C_group_l1=1e-1))
+        fit(StreamConvSCCS(n_lags=self.n_lags, penalized_features=np.arange(
+            self.n_features), random_state=self.seed, C_tv=1e-1,
+                       C_group_l1=1e-1))
 
 if __name__ == "__main__":
     unittest.main()
