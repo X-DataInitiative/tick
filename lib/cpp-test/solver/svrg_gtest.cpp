@@ -15,7 +15,7 @@ TEST(SVRG, test_convergence) {
 
   auto model =
       std::make_shared<ModelLinReg>(features_ptr, labels_ptr, false, 1);
-  SVRG svrg(n_samples, 0, RandType::unif, model->get_lip_max() / 100, 1309);
+  TSVRG<double, double> svrg(n_samples, 0, RandType::unif, model->get_lip_max() / 100, 1309);
   svrg.set_rand_max(n_samples);
   svrg.set_model(model);
   svrg.set_prox(std::make_shared<ProxL2Sq>(1e-3, false));
@@ -45,7 +45,7 @@ TEST(SVRG, test_history) {
 
   auto model =
       std::make_shared<ModelLinReg>(features_ptr, labels_ptr, false, 1);
-  SVRG svrg(n_samples, 0, RandType::unif, model->get_lip_max() / 100, 10, 1309);
+  TSVRG<double, double> svrg(n_samples, 0, RandType::unif, model->get_lip_max() / 100, 10, 1309);
   svrg.set_rand_max(n_samples);
   svrg.set_model(model);
   svrg.set_prox(std::make_shared<ProxL2Sq>(1e-2, false));

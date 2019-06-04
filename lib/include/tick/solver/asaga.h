@@ -55,7 +55,7 @@ class DLL_PUBLIC AtomicSAGA : public TBaseSAGA<T, T> {
 
   ~AtomicSAGA() {}
 
-  void solve(int n_epochs = 1) override;
+  void solve(size_t n_epochs = 1) override;
 
   template <class Archive>
   void load(Archive &ar) {

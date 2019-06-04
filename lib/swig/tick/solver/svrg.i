@@ -20,15 +20,16 @@ template <class T, class K = T>
 class TSVRG : public TStoSolver<T, K> {
   public:
     TSVRG();
-    TSVRG(ulong epoch_size,
+    TSVRG(size_t epoch_size,
          T tol,
          RandType rand_type,
          T step,
-         int record_every = 1,
+         size_t record_every = 1,
          int seed = -1,
-         int n_threads = 1,
+         size_t n_threads = 1,
          SVRG_VarianceReductionMethod variance_reduction = SVRG_VarianceReductionMethod::Last,
          SVRG_StepType step_method = SVRG_StepType::Fixed);
+    void solve(size_t n_epochs = 1) override;
 
     T get_step();
     void set_step(T step);
@@ -40,12 +41,41 @@ class TSVRG : public TStoSolver<T, K> {
     void set_step_type(SVRG_StepType step_type);
 
     bool compare(const TSVRG<T, K> &that);
+    double get_first_obj() const;
 };
 
-%template(SVRGDouble) TSVRG<double>;
-typedef TSVRG<double> SVRGDouble;
-TICK_MAKE_TEMPLATED_PICKLABLE(TSVRG, SVRGDouble, double);
+%template(SVRGDouble) TSVRG<double, double>;
+typedef TSVRG<double, double> SVRGDouble;
+TICK_MAKE_TK_PICKLABLE(TSVRG, SVRGDouble , double, double);
 
-%template(SVRGFloat) TSVRG<float>;
-typedef TSVRG<float> SVRGFloat;
-TICK_MAKE_TEMPLATED_PICKLABLE(TSVRG, SVRGFloat , float);
+%template(SVRGFloat) TSVRG<float, float>;
+typedef TSVRG<float, float> SVRGFloat;
+TICK_MAKE_TK_PICKLABLE(TSVRG, SVRGFloat , float, float);
+
+%include std_vector.i
+
+%template(SVRGDoublePtrVector) std::vector<SVRGDouble*>;
+typedef std::vector<SVRGDouble*> SVRGDoublePtrVector;
+
+template <typename T, typename K>
+class MultiSVRG{
+ public:
+  static void multi_solve(std::vector<TSVRG<T, K>*> &solvers, size_t epochs);
+  static void multi_solve(std::vector<TSVRG<T, K>*> &solvers, size_t epochs, size_t threads);
+  static void multi_solve(
+    std::vector<TSVRG<T, K>*> &solvers, std::vector<std::shared_ptr<SArray<K>>> &starters, size_t epochs, size_t threads);
+  static void push_solver(std::vector<TSVRG<T, K>*> & solvers, TSVRG<T, K> & solver);
+};
+
+%rename(MultiSVRGDouble) MultiSVRG<double, double>;
+class MultiSVRGDouble{
+ public:
+  static void multi_solve(SVRGDoublePtrVector &solvers, size_t epochs);
+  static void multi_solve(SVRGDoublePtrVector &solvers, size_t epochs, size_t threads);
+  static void multi_solve(SVRGDoublePtrVector &solvers, SArrayDoublePtrList1D &starters, size_t epochs, size_t threads);
+  static void push_solver(SVRGDoublePtrVector &solvers, SVRGDouble & solver);
+};
+typedef MultiSVRG<double, double> MultiSVRGDouble;
+
+%template(MultiSVRGFloat) MultiSVRG<float, float>;
+typedef MultiSVRG<float, float> MultiSVRGFloat;

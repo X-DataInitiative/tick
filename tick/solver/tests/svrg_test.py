@@ -248,7 +248,7 @@ class SVRGTest(object):
                 solver_dense.solve()
                 places = 7
                 if self.dtype is "float32":
-                    places = 4
+                    places = 3
                 np.testing.assert_array_almost_equal(solver_sparse.solution,
                                                      solver_dense.solution,
                                                      decimal=places)

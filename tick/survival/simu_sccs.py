@@ -122,7 +122,7 @@ class SimuSCCS(Simu):
            [1., 1.],
            [1., 0.]]), array([[1., 0.],
            [0., 0.],
-           [0., 0.]])] 
+           [0., 0.]])]
     >>> print(censoring)
     [3 3 3 3 3]
     >>> print(_coeffs)

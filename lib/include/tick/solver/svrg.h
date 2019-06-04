@@ -7,6 +7,7 @@
 #include "tick/array/array.h"
 #include "tick/prox/prox.h"
 #include "tick/prox/prox_separable.h"
+#include "tick/base/parallel/thread_pool.h"
 
 template <class T, class K = T>
 class DLL_PUBLIC TSVRG : public TStoSolver<T, K> {
@@ -24,7 +25,7 @@ class DLL_PUBLIC TSVRG : public TStoSolver<T, K> {
   using TStoSolver<T, K>::solve;
 
  private:
-  int n_threads = 1;
+  size_t n_threads = 1;
   T step;
   // Probabilistic correction of the step-sizes of all model weights,
   // given by the inverse proportion of non-zero entries in each feature column
@@ -64,8 +65,8 @@ class DLL_PUBLIC TSVRG : public TStoSolver<T, K> {
   // This exists soley for cereal/swig
   TSVRG() : TSVRG<T, K>(0, 0, RandType::unif, 0) {}
 
-  TSVRG(ulong epoch_size, T tol, RandType rand_type, T step, int record_every = 1, int seed = -1,
-        int n_threads = 1,
+  TSVRG(size_t epoch_size, T tol, RandType rand_type, T step,
+        size_t record_every = 1, int seed = -1, size_t n_threads = 1,
         SVRG_VarianceReductionMethod variance_reduction = SVRG_VarianceReductionMethod::Last,
         SVRG_StepType step_method = SVRG_StepType::Fixed);
 
@@ -126,21 +127,82 @@ class DLL_PUBLIC TSVRG : public TStoSolver<T, K> {
   }
 
   BoolStrReport operator==(const TSVRG<T, K>& that) { return compare(that); }
-
-  static std::shared_ptr<TSVRG<T, K>> AS_NULL() {
-    return std::move(std::shared_ptr<TSVRG<T, K>>(new TSVRG<T, K>));
-  }
 };
 
-using SVRG = TSVRG<double>;
-using SVRGDouble = TSVRG<double>;
+using SVRG = TSVRG<double, double>;
+using SVRGDouble = TSVRG<double, double>;
+using SVRGDoubleVector = std::vector<SVRGDouble>;
+using SVRGDoublePtrVector = std::vector<SVRGDouble*>;
+
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SVRGDouble,
                                    cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(SVRGDouble)
 
-using SVRGFloat = TSVRG<float>;
+using SVRGFloat = TSVRG<float, float>;
+using SVRGFloatVector = std::vector<SVRGFloat>;
+using SVRGFloatPtrVector = std::vector<SVRGFloat*>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SVRGFloat,
                                    cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(SVRGFloat)
+
+template <typename T, typename K>
+class iSVRG {
+ private:
+  TSVRG<T, K>* solver = nullptr;
+  Array<K> *starting = nullptr;
+ public:
+  explicit iSVRG(TSVRG<T, K>* _solver, Array<K> *_starting = nullptr) : solver(_solver), starting(_starting) {}
+  void solve(size_t epochs){
+    if (starting) solver->set_starting_iterate(*starting);
+    auto first_obj = solver->get_objective();
+    solver->set_first_obj(first_obj).set_prev_obj(first_obj).solve(epochs);
+  }
+};
+
+template <typename T, typename K>
+class DLL_PUBLIC MultiSVRG{
+ public:
+  static void multi_solve(std::vector<TSVRG<T, K>*> &solvers, size_t epochs) {
+    std::vector<std::thread> threads;
+    for (size_t i1 = 1; i1 < solvers.size(); i1++)
+      threads.emplace_back([&](TSVRG<T, K> *solver) {
+        auto first_obj = solver->get_objective();
+        solver->set_first_obj(first_obj).set_prev_obj(first_obj).solve(epochs);
+      }, solvers[i1]);
+    solvers[0]->solve(epochs);
+    for (auto &thread : threads) thread.join();
+  }
+
+  static void multi_solve(std::vector<TSVRG<T, K>*> &solvers, size_t epochs, size_t threads) {
+    std::vector<iSVRG<T, K>> isolvers;
+    std::vector<std::function<void()> > funcs;
+    for (size_t i1 = 0; i1 < solvers.size(); i1++) {
+      isolvers.emplace_back(solvers[i1]);
+      funcs.emplace_back(std::bind(&iSVRG<T, K>::solve, isolvers.back(), epochs));
+    }
+    tick::ThreadPool tp(threads);
+    tp.async(funcs).sync();
+  }
+
+  static void multi_solve(
+      std::vector<TSVRG<T, K>*> &solvers,
+      std::vector<std::shared_ptr<SArray<K>>> &starters, size_t epochs, size_t threads) {
+    std::vector<iSVRG<T, K>> isolvers;
+    std::vector<std::function<void()> > funcs;
+    for (size_t i1 = 0; i1 < solvers.size(); i1++) {
+      isolvers.emplace_back(solvers[i1], starters[i1].get());
+      funcs.emplace_back(std::bind(&iSVRG<T, K>::solve, isolvers.back(), epochs));
+    }
+    tick::ThreadPool tp(threads);
+    tp.async(funcs).sync();
+  }
+
+  static void push_solver(std::vector<TSVRG<T, K>*> &solvers, TSVRG<T, K> &solver) {
+    solvers.push_back(&solver);
+  }
+};
+
+using MultiSVRGDouble = MultiSVRG<double, double>;
+using MultiSVRGFloat = MultiSVRG<float, float>;
 
 #endif  // LIB_INCLUDE_TICK_SOLVER_SVRG_H_

@@ -24,6 +24,7 @@ void TStoSolver<T, K>::reset() {
   time_history.clear();
   iterate_history.clear();
   epoch_history.clear();
+  objectives.clear();
   last_record_epoch = 0;
   last_record_time = 0;
 }
@@ -70,21 +71,25 @@ void TStoSolver<T, K>::shuffle() {
 }
 
 template <class T, class K>
-void TStoSolver<T, K>::solve(int n_epochs) {
+void TStoSolver<T, K>::solve(size_t n_epochs) {
+  KUL_DBG_FUNC_ENTER
   double initial_time = last_record_time;
-  int initial_epoch = last_record_epoch;
-
+  size_t initial_epoch = last_record_epoch;
   auto start = std::chrono::steady_clock::now();
-  for (int epoch = 1; epoch < (n_epochs + 1); ++epoch) {
+  for (size_t epoch = 1; epoch < (n_epochs + 1); ++epoch) {
     Interruption::throw_if_raised();
-
     solve_one_epoch();
-
     if ((initial_epoch + epoch) == 1 || ((initial_epoch + epoch) % record_every == 0)) {
       auto end = std::chrono::steady_clock::now();
       double time = ((end - start).count()) * std::chrono::steady_clock::period::num /
           static_cast<double>(std::chrono::steady_clock::period::den);
       save_history(initial_time + time, initial_epoch + epoch);
+      objectives.emplace_back(model->loss(iterate) + prox->value(iterate));
+      auto obj = objectives.back();
+      auto rel_obj = prev_obj != 0 ? std::abs(obj - prev_obj) / std::abs(prev_obj)
+                                   : std::abs(obj);
+      prev_obj = obj;
+      if (rel_obj == 0 || rel_obj <= tol) break;
     }
   }
 
