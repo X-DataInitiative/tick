@@ -116,19 +116,8 @@ Array<T> BaseArray<T>::as_array() {
   }
 }
 
-/////////////////////////////////////////////////////////////////
-//
-//  The various instances of this template
-//
-/////////////////////////////////////////////////////////////////
-
-#include <vector>
-
 /**
- * \defgroup Array_typedefs_mod Array related typedef
- * \brief List of all the instantiations of the Array template and 1d and 2d
- * List of these classes
- * @{
+ * The various instances of this template
  */
 
 #define SPARSE_ARRAY_DEFINE_TYPE(TYPE, NAME)                        \
@@ -149,10 +138,6 @@ SPARSE_ARRAY_DEFINE_TYPE(std::atomic<double>, AtomicDouble);
 SPARSE_ARRAY_DEFINE_TYPE(std::atomic<float>, AtomicFloat);
 
 #undef SPARSE_ARRAY_DEFINE_TYPE
-
-/**
- * @}
- */
 
 template <typename E, typename T>
 tick::TemporaryLog<E> &operator<<(tick::TemporaryLog<E> &log,

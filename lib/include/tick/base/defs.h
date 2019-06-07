@@ -90,4 +90,13 @@ typedef std::uint16_t ushort;
 #endif
 #endif
 
+// for function tracing and debugging activated with
+// MKN_WITH=mkn.kul ./sh/mkn.sh
+#ifdef _MKN_WITH_MKN_KUL_
+#define KUL_FORCE_TRACE
+#include "kul/dbg.hpp"
+#else
+#define KUL_DBG_FUNC_ENTER
+#endif
+
 #endif  // LIB_INCLUDE_TICK_BASE_DEFS_H_

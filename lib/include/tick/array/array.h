@@ -238,6 +238,28 @@ class Array : public BaseArray<T> {
   //! \warning : This method cannot be called on a view
   // The definition is in the file sarray.h
   std::shared_ptr<SArray<T>> as_sarray_ptr();
+
+  template <class Archive>
+  void save(Archive &ar) const {
+    const bool is_sparse = this->is_sparse();
+    if (is_sparse)
+      throw std::runtime_error("Array<T>::load - this function shouldn't be called");
+    ar(CEREAL_NVP(is_sparse));
+    ar(cereal::make_size_tag(_size));
+    ar(cereal::binary_data(_data, _size * sizeof(T)));
+  }
+
+  template <class Archive>
+  void load(Archive &ar) {
+    bool is_sparse = false;
+    ar(CEREAL_NVP(is_sparse));
+    if (is_sparse)
+      throw std::runtime_error("Array<T>::load - this function shouldn't be called");
+    ar(cereal::make_size_tag(_size));
+    this->is_data_allocation_owned = true;
+    TICK_PYTHON_MALLOC(this->_data, T, _size);
+    ar(cereal::binary_data(_data, static_cast<std::size_t>(_size) * sizeof(T)));
+  }
 };
 
 // Constructor
@@ -392,143 +414,10 @@ Array<T> sort_abs(Array<T> &array, Array<ulong> &index,
   return sorted_array;
 }
 
-
 /**
- * Array serialization function for binary archives types
+ * The various instances of this template
+ * this array
  */
-template <class Archive, class T>
-typename std::enable_if<
-    cereal::traits::is_output_serializable<cereal::BinaryData<T>, Archive>::value, void>::type
-CEREAL_SAVE_FUNCTION_NAME(Archive &ar, Array<T> const &arr) {
-  const bool is_sparse = arr.is_sparse();
-
-  if (is_sparse) {
-    std::cerr << typeid(arr).name() << std::endl;
-    throw std::runtime_error("this function shouldn't be called");
-  }
-
-  ar(CEREAL_NVP(is_sparse));
-
-  ar(cereal::make_size_tag(arr.size()));
-  ar(cereal::binary_data(arr.data(), arr.size() * sizeof(T)));
-
-  if (is_sparse) {
-    ar(cereal::make_size_tag(arr.size()));
-    ar(cereal::binary_data(arr.indices(), arr.size() * sizeof(ulong)));
-  }
-}
-
-/**
- * Array serialization function for text archives types (XML, JSON)
- */
-template <class Archive, class T>
-typename std::enable_if<
-    !cereal::traits::is_output_serializable<cereal::BinaryData<T>, Archive>::value, void>::type
-CEREAL_SAVE_FUNCTION_NAME(Archive &ar, Array<T> const &arr) {
-  const bool is_sparse = arr.is_sparse();
-
-  if (is_sparse) {
-    std::cerr << typeid(arr).name() << std::endl;
-    throw std::runtime_error("this function shouldn't be called");
-  }
-
-  ar(CEREAL_NVP(is_sparse));
-
-  {
-    ar.setNextName("values");
-    ar.startNode();
-
-    ar(cereal::make_size_tag(arr.size_data()));
-
-    for (ulong i = 0; i < arr.size_data(); ++i) ar(arr.get_data_index(i));
-
-    ar.finishNode();
-  }
-
-  if (is_sparse) {
-    ar.setNextName("indices");
-    ar.startNode();
-
-    ar(cereal::make_size_tag(arr.size_sparse()));
-
-    for (ulong i = 0; i < arr.size_sparse(); ++i) ar(arr.indices()[i]);
-
-    ar.finishNode();
-  }
-}
-
-/**
- * Array deserialization function for binary archives types
- */
-template <class Archive, class T>
-typename std::enable_if<cereal::traits::is_input_serializable<
-                            cereal::BinaryData<T>, Archive>::value,
-                        void>::type
-CEREAL_LOAD_FUNCTION_NAME(Archive &ar, Array<T> &arr) {
-  bool is_sparse = false;
-
-  ar(CEREAL_NVP(is_sparse));
-
-  ulong vectorSize = 0;
-  ar(cereal::make_size_tag(vectorSize));
-
-  arr = Array<T>(vectorSize);
-  ar(cereal::binary_data(arr.data(),
-                         static_cast<std::size_t>(vectorSize) * sizeof(T)));
-
-  if (is_sparse)
-    TICK_ERROR("Deserializing sparse arrays is not supported yet.");
-}
-
-/**
- * Array deserialization function for text archives types (XML, JSON)
- */
-template <class Archive, class T>
-typename std::enable_if<!cereal::traits::is_input_serializable<
-                            cereal::BinaryData<T>, Archive>::value,
-                        void>::type
-CEREAL_LOAD_FUNCTION_NAME(Archive &ar, Array<T> &arr) {
-  bool is_sparse = false;
-
-  ar(CEREAL_NVP(is_sparse));
-
-  {
-    ar.setNextName("values");
-    ar.startNode();
-
-    ulong vectorSize = 0;
-    ar(cereal::make_size_tag(vectorSize));
-
-    arr = Array<T>(vectorSize);
-
-    typename Array<T>::K k;
-    for (ulong i = 0; i < arr.size_data(); ++i) {
-      ar(k);
-      arr.set_data_index(i, k);
-    }
-
-    ar.finishNode();
-  }
-
-  if (is_sparse)
-    TICK_ERROR("Deserializing sparse arrays is not supported yet.");
-}
-
-/////////////////////////////////////////////////////////////////
-//
-//  The various instances of this template
-//
-/////////////////////////////////////////////////////////////////
-
-#include <vector>
-
-/**
- * \defgroup Array_typedefs_mod Array related typedef
- * \brief List of all the instantiations of the Array template and 1d and 2d
- * List of these classes
- * @{
- */
-
 #define ARRAY_DEFINE_TYPE(TYPE, NAME)                   \
   typedef Array<TYPE> Array##NAME;                      \
   typedef std::vector<Array##NAME> Array##NAME##List1D; \
@@ -537,25 +426,23 @@ CEREAL_LOAD_FUNCTION_NAME(Archive &ar, Array<T> &arr) {
 // impacts compile time and not needed for all types (yet)
 #define ARRAY_DEFINE_TYPE_SERIALIZE(TYPE, NAME) \
   ARRAY_DEFINE_TYPE(TYPE, NAME);                \
-  CEREAL_REGISTER_TYPE(Array##NAME)
+  CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(Array##NAME,                    \
+                                     cereal::specialization::member_load_save); \
+  CEREAL_REGISTER_TYPE(Array##NAME);                                 \
 
 ARRAY_DEFINE_TYPE_SERIALIZE(double, Double);
 ARRAY_DEFINE_TYPE_SERIALIZE(float, Float);
-ARRAY_DEFINE_TYPE(int32_t, Int);
-ARRAY_DEFINE_TYPE(uint32_t, UInt);
-ARRAY_DEFINE_TYPE(int16_t, Short);
-ARRAY_DEFINE_TYPE(uint16_t, UShort);
-ARRAY_DEFINE_TYPE(int64_t, Long);
-ARRAY_DEFINE_TYPE(ulong, ULong);
+ARRAY_DEFINE_TYPE_SERIALIZE(int32_t, Int);
+ARRAY_DEFINE_TYPE_SERIALIZE(uint32_t, UInt);
+ARRAY_DEFINE_TYPE_SERIALIZE(int16_t, Short);
+ARRAY_DEFINE_TYPE_SERIALIZE(uint16_t, UShort);
+ARRAY_DEFINE_TYPE_SERIALIZE(int64_t, Long);
+ARRAY_DEFINE_TYPE_SERIALIZE(ulong, ULong);
 ARRAY_DEFINE_TYPE(std::atomic<double>, AtomicDouble);
 ARRAY_DEFINE_TYPE(std::atomic<float>, AtomicFloat);
 
 #undef ARRAY_DEFINE_TYPE
 #undef ARRAY_DEFINE_TYPE_SERIALIZE
-
-/**
- * @}
- */
 
 /**
  * Output function to log.

@@ -33,5 +33,7 @@ class ModelSCCS : public ModelLipschitz {
   double get_lip_max();
 
   bool compare(const ModelSCCS &that);
+
+  void save_as_pb(std::string file);
 };
 TICK_MAKE_PICKLABLE(ModelSCCS);

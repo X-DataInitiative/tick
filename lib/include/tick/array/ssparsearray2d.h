@@ -488,9 +488,10 @@ std::shared_ptr<SSparseArray2d<T, MAJ>> SparseArray2d<T, MAJ>::as_ssparsearray2d
   SSPARSE_ARRAY2D_DEFINE_TYPE(TYPE, NAME);                                      \
   CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SSparseArray##NAME##2d,                    \
                                      cereal::specialization::member_load_save); \
-  CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SColMajSparseArray##NAME##2d,                    \
+  CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SColMajSparseArray##NAME##2d,              \
                                      cereal::specialization::member_load_save); \
   CEREAL_REGISTER_TYPE(SSparseArray##NAME##2d);                                 \
+  CEREAL_REGISTER_POLYMORPHIC_RELATION(SparseArray##NAME##2d, SSparseArray##NAME##2d) \
   CEREAL_REGISTER_POLYMORPHIC_RELATION(BaseArray##NAME##2d, SSparseArray##NAME##2d)
 
 /**

@@ -166,8 +166,11 @@ class BaseArray2d : public AbstractArray1d2d<T, MAJ> {
   }
   std::shared_ptr<BaseArray2d<T, MAJ>> as_sarray2d_ptr();
 
+  template <class Archive>
+  void serialize(Archive& ar) const {}
+
  private:
-  std::string type() const { return (is_dense() ? "Array2d" : "SparseArray2d"); }
+  // std::string type() const { return (is_dense() ? "Array2d" : "SparseArray2d"); }
 };
 
 #include "tick/array/basearray2d/assignment.h"
@@ -257,42 +260,31 @@ inline std::ostream &operator<<(std::ostream &s, const BaseArray2d<T, MAJ> &p) {
   return s << typeid(p).name();
 }
 
-/////////////////////////////////////////////////////////////////
-//
-//  The various instances of this template
-//
-/////////////////////////////////////////////////////////////////
-
-#include <vector>
-
 /**
- * \defgroup Array_typedefs_mod Array related typedef
- * \brief List of all the instantiations of the BaseArray2d template and 1d and
- * 2d List of these classes
- * @{
+ * The various instances of this template
  */
 
-#define BASE_ARRAY_DEFINE_TYPE_SERIALIZE(TYPE, NAME)                  \
+#define BASE_ARRAY2D_DEFINE_TYPE(TYPE, NAME)                          \
   typedef BaseArray2d<TYPE> BaseArray##NAME##2d;                      \
   typedef BaseArray2d<TYPE, ColMajor> ColMajBaseArray##NAME##2d;      \
   typedef std::vector<BaseArray##NAME##2d> BaseArray##NAME##2dList1D; \
   typedef std::vector<BaseArray##NAME##2dList1D> BaseArray##NAME##2dList2D
 
-BASE_ARRAY_DEFINE_TYPE_SERIALIZE(double, Double);
-BASE_ARRAY_DEFINE_TYPE_SERIALIZE(float, Float);
-BASE_ARRAY_DEFINE_TYPE_SERIALIZE(int32_t, Int);
-BASE_ARRAY_DEFINE_TYPE_SERIALIZE(uint32_t, UInt);
-BASE_ARRAY_DEFINE_TYPE_SERIALIZE(int16_t, Short);
-BASE_ARRAY_DEFINE_TYPE_SERIALIZE(uint16_t, UShort);
-BASE_ARRAY_DEFINE_TYPE_SERIALIZE(int64_t, Long);
-BASE_ARRAY_DEFINE_TYPE_SERIALIZE(ulong, ULong);
-BASE_ARRAY_DEFINE_TYPE_SERIALIZE(std::atomic<double>, AtomicDouble);
-BASE_ARRAY_DEFINE_TYPE_SERIALIZE(std::atomic<float>, AtomicFloat);
+#define BASE_ARRAY2D_DEFINE_TYPE_SERIALIZE(TYPE, NAME) \
+  BASE_ARRAY2D_DEFINE_TYPE(TYPE, NAME);
+
+BASE_ARRAY2D_DEFINE_TYPE_SERIALIZE(double, Double);
+BASE_ARRAY2D_DEFINE_TYPE_SERIALIZE(float, Float);
+BASE_ARRAY2D_DEFINE_TYPE(int32_t, Int);
+BASE_ARRAY2D_DEFINE_TYPE(uint32_t, UInt);
+BASE_ARRAY2D_DEFINE_TYPE(int16_t, Short);
+BASE_ARRAY2D_DEFINE_TYPE(uint16_t, UShort);
+BASE_ARRAY2D_DEFINE_TYPE(int64_t, Long);
+BASE_ARRAY2D_DEFINE_TYPE(ulong, ULong);
+BASE_ARRAY2D_DEFINE_TYPE(std::atomic<double>, AtomicDouble);
+BASE_ARRAY2D_DEFINE_TYPE(std::atomic<float>, AtomicFloat);
 
 #undef BASE_ARRAY2D_DEFINE_TYPE
-
-/**
- * @}
- */
+#undef BASE_ARRAY2D_DEFINE_TYPE_SERIALIZE
 
 #endif  // LIB_INCLUDE_TICK_ARRAY_BASEARRAY2D_H_

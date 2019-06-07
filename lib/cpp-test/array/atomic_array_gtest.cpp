@@ -163,7 +163,7 @@ class AtomicArrayTest : public ::testing::Test {
 };
 
 typedef ::testing::Types<Array<float>, Array<double>> MyArrayTypes;
-TYPED_TEST_CASE(AtomicArrayTest, MyArrayTypes);
+TYPED_TEST_SUITE(AtomicArrayTest, MyArrayTypes);
 
 TYPED_TEST(AtomicArrayTest, InitToZero) {
   TypeParam arr{TICK_TEST_DATA_SIZE};

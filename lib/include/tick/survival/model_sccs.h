@@ -7,7 +7,11 @@
 
 // License: BSD 3 clause
 
+#include <fstream>
+
 #include "tick/base/base.h"
+#include "tick/array/sarray2d.h"
+#include "tick/array/ssparsearray2d.h"
 #include "tick/base_model/model_lipschitz.h"
 
 class DLL_PUBLIC ModelSCCS : public ModelLipschitz {
@@ -102,30 +106,55 @@ class DLL_PUBLIC ModelSCCS : public ModelLipschitz {
   void load(Archive &ar) {
     ar(cereal::make_nvp("ModelSCCS",
                         typename cereal::base_class<TModelLipschitz<double, double>>(this)));
+    bool sparse_features = false;
+    ar(sparse_features);
     ar(n_samples, n_features, n_observations, n_lagged_features, n_intervals);
-    ar(n_lags, col_offset, labels);
-
-    std::vector<BaseArrayDouble2d> tmp_features;
-    ar(tmp_features);
-    for (auto f : tmp_features) features.emplace_back(f.as_sarray2d_ptr());
-
-    ArrayULong tmp_censoring;
-    ar(cereal::make_nvp("censoring", tmp_censoring));
-    censoring = tmp_censoring.as_sarray_ptr();
+    if (!n_lags) n_lags = std::make_shared<SArrayULong>();
+    if (!censoring) censoring = std::make_shared<SArrayULong>();
+    ar(*n_lags, col_offset);
+    labels.clear();
+    for (size_t i = 0; i < n_samples; i++) {
+      labels.emplace_back(std::make_shared<SArrayInt>());
+      labels.back()->load(ar);
+    }
+    features.clear();
+    for (size_t i = 0; i < n_samples; i++) {
+      if(sparse_features) {
+        auto ptr = std::make_shared<SSparseArray2d<double>>();
+        ptr->load(ar);
+        features.emplace_back(std::move(ptr));
+      }else {
+        auto ptr = std::make_shared<      SArray2d<double>>();
+        ptr->load(ar);
+        features.emplace_back(std::move(ptr));
+      }
+    }
+    ar(cereal::make_nvp("censoring", *censoring));
   }
 
   template <class Archive>
   void save(Archive &ar) const {
     ar(cereal::make_nvp("ModelSCCS",
                         typename cereal::base_class<TModelLipschitz<double, double>>(this)));
+    bool sparse_features = features[0]->is_sparse();
+    ar(sparse_features);
+    KLOG(INF) << sparse_features;
     ar(n_samples, n_features, n_observations, n_lagged_features, n_intervals);
-    ar(n_lags, col_offset, labels);
-
-    std::vector<BaseArrayDouble2d> tmp_features;
-    for (auto f : features) tmp_features.emplace_back(*f);
-    ar(tmp_features);
-
+    ar(*n_lags, col_offset);
+    for (size_t i = 0; i < n_samples; i++) labels[i]->save(ar);
+    for (size_t i = 0; i < n_samples; i++) {
+      if(sparse_features) static_cast<SSparseArray2d<double>*>(features[i].get())->save(ar);
+      else static_cast<SArray2d<double>*>(features[i].get())->save(ar);
+    }
     ar(cereal::make_nvp("censoring", *censoring));
+  }
+
+  void save_as_pb(std::string _file) {
+    if (!n_lags) n_lags = std::make_shared<SArrayULong>();
+    if (!censoring) censoring = std::make_shared<SArrayULong>();
+    std::ofstream ss(_file, std::ios::out | std::ios::binary);
+    cereal::PortableBinaryOutputArchive ar(ss);
+    save(ar);
   }
 
   BoolStrReport compare(const ModelSCCS &that, std::stringstream &ss) {

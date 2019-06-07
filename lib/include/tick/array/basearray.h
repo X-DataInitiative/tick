@@ -168,30 +168,9 @@ void BaseArray<T>::_print_sparse() const {
   std::cout << "]" << std::endl;
 }
 
-/////////////////////////////////////////////////////////////////
-//
-//  The various instances of this template
-//
-/////////////////////////////////////////////////////////////////
-
-#include <vector>
-
 /**
- * \defgroup Array_typedefs_mod Array related typedef
- * \brief List of all the instantiations of the BaseArray template and 1d and 2d
- * List of these classes
- * @{
+ * The various instances of this template
  */
-
-/**
- * @}
- */
-
-/** @defgroup abstractarray_sub_mod The instantiations of the BaseArray template
- *  @ingroup Array_typedefs_mod
- * @{
- */
-
 #define BASEARRAY_DEFINE_TYPE(TYPE, NAME)                       \
   typedef BaseArray<TYPE> BaseArray##NAME;                      \
   typedef std::vector<BaseArray##NAME> BaseArray##NAME##List1D; \
@@ -209,10 +188,6 @@ BASEARRAY_DEFINE_TYPE(std::atomic<double>, AtomicDouble);
 BASEARRAY_DEFINE_TYPE(std::atomic<float>, AtomicFloat);
 
 #undef BASEARRAY_DEFINE_TYPE
-
-/**
- * @}
- */
 
 template <typename T>
 template <typename Y>

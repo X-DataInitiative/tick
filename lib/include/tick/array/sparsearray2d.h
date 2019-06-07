@@ -109,7 +109,6 @@ class SparseArray2d : public BaseArray2d<T, MAJ> {
     ar(this->_n_rows);
     ar(this->_n_cols);
     ar(this->_size);
-
     inner_save(ar);
   }
 
@@ -237,15 +236,8 @@ Array2d<T, MAJ> BaseArray2d<T, MAJ>::as_array2d() {
   return c;
 }
 
-/////////////////////////////////////////////////////////////////
-//
-//  The various instances of this template
-//
-/////////////////////////////////////////////////////////////////
-
-/** @defgroup array2d_sub_mod The instantiations of the Array2d template
- *  @ingroup Array_typedefs_mod
- * @{
+/**
+ * The various instances of this template
  */
 #define SPARSE_ARRAY2D_DEFINE_TYPE(TYPE, NAME) \
   typedef SparseArray2d<TYPE> SparseArray##NAME##2d; \
@@ -255,9 +247,8 @@ Array2d<T, MAJ> BaseArray2d<T, MAJ>::as_array2d() {
   SPARSE_ARRAY2D_DEFINE_TYPE(TYPE, NAME);                                       \
   CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SparseArray##NAME##2d,                     \
                                      cereal::specialization::member_load_save); \
-  CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ColMajSparseArray##NAME##2d,                     \
-                                     cereal::specialization::member_load_save); \
-  CEREAL_REGISTER_TYPE(SparseArray##NAME##2d)
+  CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ColMajSparseArray##NAME##2d,               \
+                                     cereal::specialization::member_load_save);
 
 SPARSE_ARRAY2D_DEFINE_TYPE_SERIALIZE(double, Double);
 SPARSE_ARRAY2D_DEFINE_TYPE_SERIALIZE(float, Float);
@@ -273,8 +264,5 @@ SPARSE_ARRAY2D_DEFINE_TYPE(ulong, ULong);
 
 #undef SPARSE_ARRAY2D_DEFINE_TYPE_BASIC
 #undef SPARSE_ARRAY2D_DEFINE_TYPE
-/**
- * @}
- */
 
 #endif  // LIB_INCLUDE_TICK_ARRAY_SPARSEARRAY2D_H_

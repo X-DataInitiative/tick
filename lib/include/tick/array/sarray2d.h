@@ -126,6 +126,16 @@ class SArray2d : public Array2d<T, MAJ> {
 
   // Some friendship for set_data/give_ownership access !
   friend std::shared_ptr<SArray2d<T, MAJ>> Array2d<T, MAJ>::as_sarray2d_ptr();
+
+  template <class Archive>
+  void load(Archive &ar) {
+    ar(cereal::make_nvp("Array2d", cereal::base_class<Array2d<T, MAJ>>(this)));
+  }
+
+  template <class Archive>
+  void save(Archive &ar) const {
+    ar(cereal::make_nvp("Array2d", cereal::base_class<Array2d<T, MAJ>>(this)));
+  }
 };
 
 #ifdef PYTHON_LINK
@@ -314,10 +324,13 @@ std::shared_ptr<SArray2d<T, MAJ>> Array2d<T, MAJ>::as_sarray2d_ptr() {
 
 #define SARRAY_DEFINE_TYPE_SERIALIZE(TYPE, NAME) \
   SARRAY_DEFINE_TYPE(TYPE, NAME);                \
-  CEREAL_REGISTER_TYPE(SArray##NAME##2d);        \
-  CEREAL_REGISTER_POLYMORPHIC_RELATION(BaseArray##NAME##2d, SArray##NAME##2d) \
-  CEREAL_REGISTER_TYPE(SColMajArray##NAME##2d);        \
-  CEREAL_REGISTER_POLYMORPHIC_RELATION(ColMajBaseArray##NAME##2d, SColMajArray##NAME##2d)
+  CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SArray##NAME##2d,                    \
+                                     cereal::specialization::member_load_save); \
+  CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SColMajArray##NAME##2d,              \
+                                     cereal::specialization::member_load_save); \
+  CEREAL_REGISTER_TYPE(SArray##NAME##2d);                                 \
+  CEREAL_REGISTER_POLYMORPHIC_RELATION(Array##NAME##2d, SArray##NAME##2d) \
+  CEREAL_REGISTER_POLYMORPHIC_RELATION(BaseArray##NAME##2d, SArray##NAME##2d)
 
 
 SARRAY_DEFINE_TYPE_SERIALIZE(double, Double);

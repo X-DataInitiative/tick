@@ -199,6 +199,31 @@ class Array2d : public BaseArray2d<T, MAJ> {
   }
 
   bool operator==(const Array2d<T, MAJ>& that) const { return compare(that); }
+
+
+  template <class Archive>
+  void save(Archive& ar) const {
+    const bool is_sparse = this->is_sparse();
+    if (is_sparse)
+      throw std::runtime_error("Array2d<T, MAJ>::save - this function shouldn't be called");
+    ar(CEREAL_NVP(is_sparse));
+    ar(_n_cols, _n_rows);
+    ar(cereal::make_size_tag(_size));
+    ar(cereal::binary_data(_data, _size * sizeof(T)));
+  }
+
+  template <class Archive>
+  void load(Archive& ar) {
+    bool is_sparse = false;
+    ar(CEREAL_NVP(is_sparse));
+    if (is_sparse)
+      throw std::runtime_error("Array2d<T, MAJ>::load - this function shouldn't be called");
+    ar(_n_cols, _n_rows);
+    ar(cereal::make_size_tag(_size));
+    this->is_data_allocation_owned = true;
+    TICK_PYTHON_MALLOC(this->_data, T, _size);
+    ar(cereal::binary_data(_data, _size * sizeof(T)));
+  }
 };
 
 // Constructor
@@ -254,156 +279,8 @@ void Array2d<T, MAJ>::mult_add_mult_incr(const Array2d<T, MAJ>& x, const T a,
 }
 
 /**
- * Array2d serialization function for binary archives types
+ * The various instances of this template
  */
-template <class Archive, class T, typename MAJ>
-typename std::enable_if<cereal::traits::is_output_serializable<
-                            cereal::BinaryData<T>, Archive>::value,
-                        void>::type
-CEREAL_SAVE_FUNCTION_NAME(Archive& ar, BaseArray2d<T, MAJ> const& arr) {
-  const bool is_sparse = arr.is_sparse();
-
-  if (is_sparse) {
-    std::cerr << typeid(arr).name() << std::endl;
-    throw std::runtime_error("this function shouldn't be called");
-  }
-
-  ar(CEREAL_NVP(is_sparse));
-
-  ar(CEREAL_NVP(arr.n_cols()));
-  ar(CEREAL_NVP(arr.n_rows()));
-
-  ar(cereal::make_size_tag(arr.size()));
-  ar(cereal::binary_data(arr.data(), arr.size() * sizeof(T)));
-
-  if (is_sparse) {
-    ar(cereal::make_size_tag(arr.size()));
-    ar(cereal::binary_data(arr.indices(), arr.size() * sizeof(ulong)));
-  }
-}
-
-/**
- * Array2d serialization function for text archives types (XML, JSON)
- */
-template <class Archive, class T, typename MAJ>
-typename std::enable_if<!cereal::traits::is_output_serializable<
-                            cereal::BinaryData<T>, Archive>::value,
-                        void>::type
-CEREAL_SAVE_FUNCTION_NAME(Archive& ar, BaseArray2d<T, MAJ> const& arr) {
-  const bool is_sparse = arr.is_sparse();
-  const ulong n_cols = arr.n_cols();
-  const ulong n_rows = arr.n_rows();
-
-  if (is_sparse) {
-    std::cerr << typeid(arr).name() << std::endl;
-    throw std::runtime_error("this function shouldn't be called");
-  }
-
-  ar(CEREAL_NVP(is_sparse));
-
-  ar(CEREAL_NVP(n_cols));
-  ar(CEREAL_NVP(n_rows));
-
-  {
-    ar.setNextName("values");
-    ar.startNode();
-
-    ar(cereal::make_size_tag(arr.size_data()));
-
-    for (ulong i = 0; i < arr.size_data(); ++i) ar(arr.data()[i]);
-
-    ar.finishNode();
-  }
-
-  if (is_sparse) {
-    ar.setNextName("indices");
-    ar.startNode();
-
-    ar(cereal::make_size_tag(arr.size_sparse()));
-
-    for (ulong i = 0; i < arr.size_sparse(); ++i) ar(arr.indices()[i]);
-
-    ar.finishNode();
-  }
-}
-
-/**
- * Array2d deserialization function for binary archives types
- */
-template <class Archive, class T, typename MAJ>
-typename std::enable_if<cereal::traits::is_input_serializable<
-                            cereal::BinaryData<T>, Archive>::value,
-                        void>::type
-CEREAL_LOAD_FUNCTION_NAME(Archive& ar, BaseArray2d<T, MAJ>& arr) {
-  bool is_sparse = false;
-  ulong n_cols = 0;
-  ulong n_rows = 0;
-
-  ar(is_sparse);
-  ar(n_cols);
-  ar(n_rows);
-
-  ulong vectorSize = 0;
-  ar(cereal::make_size_tag(vectorSize));
-
-  if (vectorSize != n_cols * n_rows)
-    TICK_ERROR("Bad format in array 2d deserrialization (size="
-               << vectorSize << ", n_rows=" << n_rows << ", n_cols=" << n_cols
-               << ")");
-
-  arr = Array2d<T, MAJ>(n_rows, n_cols);
-  ar(cereal::binary_data(arr.data(),
-                         static_cast<std::size_t>(vectorSize) * sizeof(T)));
-
-  if (is_sparse)
-    TICK_ERROR("Deserializing sparse arrays is not supported yet.");
-}
-
-/**
- * Array2d deserialization function for text archives types (XML, JSON)
- */
-template <class Archive, class T, typename MAJ>
-typename std::enable_if<!cereal::traits::is_input_serializable<
-                            cereal::BinaryData<T>, Archive>::value,
-                        void>::type
-CEREAL_LOAD_FUNCTION_NAME(Archive& ar, BaseArray2d<T, MAJ>& arr) {
-  bool is_sparse = false;
-  ulong n_cols = 0;
-  ulong n_rows = 0;
-
-  ar(CEREAL_NVP(is_sparse));
-  ar(CEREAL_NVP(n_cols));
-  ar(CEREAL_NVP(n_rows));
-
-  {
-    ar.setNextName("values");
-    ar.startNode();
-
-    ulong vectorSize;
-    ar(cereal::make_size_tag(vectorSize));
-
-    arr = Array2d<T, MAJ>(n_rows, n_cols);
-
-    for (ulong i = 0; i < arr.size_data(); ++i) ar(arr.data()[i]);
-
-    ar.finishNode();
-  }
-
-  if (is_sparse)
-    TICK_ERROR("Deserializing sparse arrays is not supported yet.");
-}
-
-/////////////////////////////////////////////////////////////////
-//
-//  The various instances of this template
-//
-/////////////////////////////////////////////////////////////////
-
-/** @defgroup array2d_sub_mod The instantiations of the Array2d template
- *  @ingroup Array_typedefs_mod
- * @{
- */
-
 #define ARRAY_DEFINE_TYPE(TYPE, NAME)                         \
   typedef Array2d<TYPE> Array##NAME##2d;                      \
   typedef Array2d<TYPE, ColMajor> ColMajArray##NAME##2d;      \
@@ -412,8 +289,15 @@ CEREAL_LOAD_FUNCTION_NAME(Archive& ar, BaseArray2d<T, MAJ>& arr) {
 
 #define ARRAY_DEFINE_TYPE_SERIALIZE(TYPE, NAME) \
   ARRAY_DEFINE_TYPE(TYPE, NAME);                \
-  CEREAL_REGISTER_TYPE(Array##NAME##2d)         \
-  CEREAL_REGISTER_TYPE(ColMajArray##NAME##2d)
+  CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(Array##NAME##2d,            \
+                                     cereal::specialization::member_load_save); \
+  CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ColMajArray##NAME##2d,            \
+                                     cereal::specialization::member_load_save);
+  /*\
+  CEREAL_REGISTER_TYPE(Array##NAME##2d);        \
+  CEREAL_REGISTER_POLYMORPHIC_RELATION(Array##NAME##2d, BaseArray##NAME##2d) \
+  CEREAL_REGISTER_TYPE(ColMajArray##NAME##2d);        \
+  CEREAL_REGISTER_POLYMORPHIC_RELATION(ColMajArray##NAME##2d, ColMajBaseArray##NAME##2d)*/
 
 ARRAY_DEFINE_TYPE_SERIALIZE(double, Double);
 ARRAY_DEFINE_TYPE_SERIALIZE(float, Float);
@@ -421,12 +305,12 @@ ARRAY_DEFINE_TYPE_SERIALIZE(float, Float);
 ARRAY_DEFINE_TYPE(std::atomic<double>, AtomicDouble);
 ARRAY_DEFINE_TYPE(std::atomic<float>, AtomicFloat);
 
-ARRAY_DEFINE_TYPE(int32_t, Int);
-ARRAY_DEFINE_TYPE(uint32_t, UInt);
-ARRAY_DEFINE_TYPE(int16_t, Short);
-ARRAY_DEFINE_TYPE(uint16_t, UShort);
-ARRAY_DEFINE_TYPE(int64_t, Long);
-ARRAY_DEFINE_TYPE(ulong, ULong);
+ARRAY_DEFINE_TYPE_SERIALIZE(int32_t, Int);
+ARRAY_DEFINE_TYPE_SERIALIZE(uint32_t, UInt);
+ARRAY_DEFINE_TYPE_SERIALIZE(int16_t, Short);
+ARRAY_DEFINE_TYPE_SERIALIZE(uint16_t, UShort);
+ARRAY_DEFINE_TYPE_SERIALIZE(int64_t, Long);
+ARRAY_DEFINE_TYPE_SERIALIZE(ulong, ULong);
 
 #undef ARRAY_DEFINE_TYPE
 #undef ARRAY_DEFINE_TYPE_SERIALIZE

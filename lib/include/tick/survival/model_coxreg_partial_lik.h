@@ -66,10 +66,7 @@ class DLL_PUBLIC TModelCoxRegPartialLik : public TModel<T, K> {
     ar(n_samples, n_features, n_failures);
     ar(inner_prods, s1, idx);
     ar(times, censoring, idx_failures);
-
-    BaseArray2d<T> tmp_features;
-    ar(cereal::make_nvp("features", tmp_features));
-    features = tmp_features.as_sarray2d_ptr();
+    ar(cereal::make_nvp("features", features));
   }
 
   template <class Archive>
@@ -78,8 +75,7 @@ class DLL_PUBLIC TModelCoxRegPartialLik : public TModel<T, K> {
     ar(n_samples, n_features, n_failures);
     ar(inner_prods, s1, idx);
     ar(times, censoring, idx_failures);
-
-    ar(cereal::make_nvp("features", *features));
+    ar(cereal::make_nvp("features", features));
   }
 
   BoolStrReport compare(const TModelCoxRegPartialLik<T, K> &that, std::stringstream &ss) {

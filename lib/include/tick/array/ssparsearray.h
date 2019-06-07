@@ -349,48 +349,9 @@ std::shared_ptr<SSparseArray<T>> SparseArray<T>::as_ssparsearray_ptr() {
   return arrayptr;
 }
 
-// Instanciations
-
 /**
- * \defgroup SArray_typedefs_mod SArray related typedef
- * \brief List of all the instantiations of the SArray template and associated
- *  shared pointers and 1d and 2d List of these classes
- * @{
+ * The various instances of this template
  */
-
-/**
- * @}
- */
-
-/** @defgroup sarray_sub_mod The instantiations of the SArray template
- *  @ingroup SArray_typedefs_mod
- * @{
- */
-
-/**
- * @}
- */
-/** @defgroup sarrayptr_sub_mod The shared pointer array classes
- *  @ingroup SArray_typedefs_mod
- * @{
- */
-/**
- * @}
- */
-/** @defgroup sarrayptrlist1d_sub_mod The classes for dealing with 1d-list of
- * shared pointer arrays
- *  @ingroup SArray_typedefs_mod
- * @{
- */
-/**
- * @}
- */
-/** @defgroup sarrayptrlist2d_sub_mod The classes for dealing with 2d-list of
- * shared pointer arrays
- *  @ingroup SSparseArray_typedefs_mod
- * @{
- */
-
 #define SSPARSE_ARRAY_DEFINE_TYPE(TYPE, NAME)                                 \
   typedef SSparseArray<TYPE> SSparseArray##NAME;                              \
   typedef std::shared_ptr<SSparseArray##NAME> SSparseArray##NAME##Ptr;        \
@@ -410,9 +371,5 @@ SSPARSE_ARRAY_DEFINE_TYPE(std::atomic<double>, AtomicDouble);
 SSPARSE_ARRAY_DEFINE_TYPE(std::atomic<float>, AtomicFloat);
 
 #undef SSPARSE_ARRAY_DEFINE_TYPE
-
-/**
- * @}
- */
 
 #endif  // LIB_INCLUDE_TICK_ARRAY_SSPARSEARRAY_H_

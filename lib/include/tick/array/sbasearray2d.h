@@ -1,9 +1,3 @@
-//
-//  sabstractarray2d.h
-//
-
-/// @file
-
 #ifndef LIB_INCLUDE_TICK_ARRAY_SBASEARRAY2D_H_
 #define LIB_INCLUDE_TICK_ARRAY_SBASEARRAY2D_H_
 
@@ -17,22 +11,6 @@
 //
 
 #include "basearray2d.h"
-
-// Instanciations
-
-/**
- * \defgroup SArray2d_typedefs_mod shared array related typedef
- * \brief List of all the instantiations of the shared array2d mechanism and
- * associated shared pointers and 1d and 2d List of these classes
- * @{
- */
-/**
- * @}
- */
-/** @defgroup sabstractarray2dptr_sub_mod The shared pointer basearray classes
- *  @ingroup SArray2d_typedefs_mod
- * @{
- */
 
 #define SBASE_ARRAY_DEFINE_TYPE_SERIALIZE(TYPE, NAME)                         \
   typedef std::shared_ptr<BaseArray##NAME##2d> SBaseArray##NAME##2dPtr;       \
@@ -63,9 +41,5 @@ std::shared_ptr<BaseArray2d<T, MAJ>> BaseArray2d<T, MAJ>::as_sarray2d_ptr() {
   is_data_allocation_owned = false;
   return arrayptr;
 }
-
-/**
- * @}
- */
 
 #endif  // LIB_INCLUDE_TICK_ARRAY_SBASEARRAY2D_H_
