@@ -119,11 +119,11 @@ class DLL_PUBLIC ModelSCCS : public ModelLipschitz {
     }
     features.clear();
     for (size_t i = 0; i < n_samples; i++) {
-      if(sparse_features) {
+      if (sparse_features) {
         auto ptr = std::make_shared<SSparseArray2d<double>>();
         ptr->load(ar);
         features.emplace_back(std::move(ptr));
-      }else {
+      } else {
         auto ptr = std::make_shared<      SArray2d<double>>();
         ptr->load(ar);
         features.emplace_back(std::move(ptr));
@@ -143,8 +143,10 @@ class DLL_PUBLIC ModelSCCS : public ModelLipschitz {
     ar(*n_lags, col_offset);
     for (size_t i = 0; i < n_samples; i++) labels[i]->save(ar);
     for (size_t i = 0; i < n_samples; i++) {
-      if(sparse_features) static_cast<SSparseArray2d<double>*>(features[i].get())->save(ar);
-      else static_cast<SArray2d<double>*>(features[i].get())->save(ar);
+      if (sparse_features)
+        static_cast<SSparseArray2d<double>*>(features[i].get())->save(ar);
+      else
+        static_cast<SArray2d<double>*>(features[i].get())->save(ar);
     }
     ar(cereal::make_nvp("censoring", *censoring));
   }
