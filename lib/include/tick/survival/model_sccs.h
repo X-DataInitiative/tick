@@ -138,7 +138,6 @@ class DLL_PUBLIC ModelSCCS : public ModelLipschitz {
                         typename cereal::base_class<TModelLipschitz<double, double>>(this)));
     bool sparse_features = features[0]->is_sparse();
     ar(sparse_features);
-    KLOG(INF) << sparse_features;
     ar(n_samples, n_features, n_observations, n_lagged_features, n_intervals);
     ar(*n_lags, col_offset);
     for (size_t i = 0; i < n_samples; i++) labels[i]->save(ar);

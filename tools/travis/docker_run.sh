@@ -24,8 +24,14 @@ pyenv local ${PYVER}
 #   && exit 2
 
 python -m pip install -r requirements.txt
-python setup.py cpplint
 wait $SWIG_PID
+
+( git clone https://github.com/google/googletest -b master --depth 1 && \
+  mkdir -p googletest/build && cd googletest/build && \
+  cmake .. && make -s && make -s install) & GTEST_PID=$!
+
+python setup.py cpplint
+wait $GTEST_PID
 swig -version # should be 4.0.0
 PYMAJ=$(python -c "import sys; print(sys.version_info[0])")
 PYMIN=$(python -c "import sys; print(sys.version_info[1])")

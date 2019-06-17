@@ -7,7 +7,7 @@ shell_session_update() { :; }
 brew update
 brew install swig
 
-( git clone https://github.com/google/googletest && \
+( git clone https://github.com/google/googletest -b master --depth 1 && \
   mkdir -p googletest/build && cd googletest/build && \
   cmake .. && make -s && make -s install) & GTEST_PID=$!
 
