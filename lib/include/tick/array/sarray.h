@@ -281,39 +281,6 @@ std::shared_ptr<SArray<T>> Array<T>::as_sarray_ptr() {
  *  shared pointers and 1d and 2d List of these classes
  * @{
  */
-
-/**
- * @}
- */
-/** @defgroup sarray_sub_mod The instantiations of the SArray template
- *  @ingroup SArray_typedefs_mod
- * @{
- */
-/**
- * @}
- */
-/** @defgroup sarrayptr_sub_mod The shared pointer array classes
- *  @ingroup SArray_typedefs_mod
- * @{
- */
-/**
- * @}
- */
-/** @defgroup sarrayptrlist1d_sub_mod The classes for dealing with 1d-list of
- * shared pointer arrays
- *  @ingroup SArray_typedefs_mod
- * @{
- */
-// @brief The basic SArrayList1D classes
-/**
- * @}
- */
-/** @defgroup sarrayptrlist2d_sub_mod The classes for dealing with 2d-list of
- * shared pointer arrays
- *  @ingroup SArray_typedefs_mod
- * @{
- */
-// @brief The basic SArrayList2D classes
 /**
  * @}
  */

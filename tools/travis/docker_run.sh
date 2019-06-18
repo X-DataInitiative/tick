@@ -23,7 +23,15 @@ pyenv local ${PYVER}
 # "Python has not been formatted : Please run ./sh/format_python.sh and recommit" \
 #   && exit 2
 
-python -m pip install -r requirements.txt
+python -m pip install -r requirements.txt & PYPID=$!
+if [ ! -d googletest ] || [ ! -f googletest/CMakeLists.txt ]; then
+  git clone https://github.com/google/googletest
+  mkdir -p googletest/build
+  cd googletest/build
+  cmake .. && make -s && make -s install
+  cd ../..
+fi
+kill -s 0 $PYPID && wait $PYPID
 python setup.py cpplint
 wait $SWIG_PID
 swig -version # should be 4.0.0

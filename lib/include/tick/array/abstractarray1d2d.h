@@ -17,7 +17,11 @@
 #include <memory>
 #include <type_traits>
 #include <typeinfo>
+
 #include <math.h>
+
+#include "tick/array/half/half.hpp"
+
 #include "alloc.h"
 #include "promote.h"
 #include "vector_operations.h"
@@ -69,6 +73,7 @@ AtomicOuterType(float);
 
 NonAtomicOuterType(double);
 NonAtomicOuterType(float);
+NonAtomicOuterType(half_float::half);
 
 NonAtomicOuterType(int64_t);
 NonAtomicOuterType(uint64_t);
@@ -104,8 +109,8 @@ class ColMajor {};
 
 template <typename T, typename MAJ = RowMajor>
 class AbstractArray1d2d {
-  template <class T1>
-  friend std::ostream &operator<<(std::ostream &, const AbstractArray1d2d<T1> &);
+  template <class T1, class MAJ1>
+  friend std::ostream &operator<<(std::ostream &, const AbstractArray1d2d<T1, MAJ1> &);
 
  protected:
   //! @brief inner type used for most outputs.
@@ -323,7 +328,7 @@ typename AbstractArray1d2d<T, MAJ>::K AbstractArray1d2d<T, MAJ>::min() const {
   }
 
   if (is_sparse() && size_data() != _size)
-    return (min > 0 ? 0 : min);
+    return (min > 0 ? Y(0) : min);
   else
     return min;
 }
@@ -340,7 +345,7 @@ typename AbstractArray1d2d<T, MAJ>::K AbstractArray1d2d<T, MAJ>::max() const {
   }
 
   if (is_sparse() && size_data() != _size)
-    return (max < 0 ? 0 : max);
+    return (max < 0 ? Y(0) : max);
   else
     return max;
 }
@@ -397,11 +402,13 @@ void fast_division(
 }
 
 template <typename T, typename MAJ>
-void fast_division(
-    AbstractArray1d2d<T, MAJ> &x,
-    const typename std::enable_if<std::is_floating_point<T>::value, T>::type
-        a) {
-  x *= (1.0 / double{a});
+void fast_division(AbstractArray1d2d<T, MAJ> &x,
+    const typename std::enable_if<
+        std::is_floating_point<T>::value || std::is_same<T, half_float::half>::value, T>::type a) {
+  if (std::is_same<T, half_float::half>::value)
+    x *= (half_float::half(1.0) / half_float::half{a});
+  else
+    x *= (1.0 / double{a});
 }
 
 }  // namespace tick
@@ -457,8 +464,8 @@ AbstractArray1d2d<T, MAJ>::get_data_index(size_t index) const {
   return _data[index];
 }
 
-template <typename T>
-inline std::ostream &operator<<(std::ostream &s, const AbstractArray1d2d<T> &p) {
+template <typename T, typename MAJ>
+inline std::ostream &operator<<(std::ostream &s, const AbstractArray1d2d<T, MAJ> &p) {
   return s << typeid(p).name();
 }
 

@@ -10,6 +10,16 @@
 
 #define DEBUG_COSTLY_THROW 1
 
+#define TICK_TEST_HALF_RELATIVE_ERROR 1e-3  // TODO find the real one
+
+#ifndef TICK_TEST_SINGLE_RELATIVE_ERROR
+#define TICK_TEST_SINGLE_RELATIVE_ERROR 1e-4
+#endif
+
+#ifndef TICK_TEST_DOUBLE_RELATIVE_ERROR
+#define TICK_TEST_DOUBLE_RELATIVE_ERROR 1e-13
+#endif
+
 #include "tick/array/dot.h"
 #include "tick/base/serialization.h"
 
@@ -40,6 +50,18 @@ constexpr double GetAcceptedRelativeError(
 }
 
 template <typename T>
+constexpr float GetAcceptedRelativeError(
+    typename std::enable_if<std::is_same<T, half_float::half>::value>::type * = 0) {
+  return TICK_TEST_HALF_RELATIVE_ERROR;
+}
+
+template <typename T>
+constexpr float GetAcceptedRelativeError(
+    typename std::enable_if<std::is_same<T, half_float::detail::expr>::value>::type * = 0) {
+  return TICK_TEST_HALF_RELATIVE_ERROR;
+}
+
+template <typename T>
 constexpr double GetAcceptedRelativeError(
     typename std::enable_if<std::is_same<T, float>::value>::type * = 0) {
   return TICK_TEST_SINGLE_RELATIVE_ERROR;
@@ -58,15 +80,19 @@ template <typename ArrType>
 ArrType GenerateRandomArray(
     ulong n = TICK_TEST_DATA_SIZE,
     typename std::enable_if<
-        std::is_floating_point<typename ArrType::value_type>::value>::type * =
-        0) {
+        std::is_floating_point<typename ArrType::value_type>::value ||
+        std::is_same<typename ArrType::value_type, half_float::half>::value>::type * = 0) {
   ArrType res(n);
 
-  std::uniform_real_distribution<> dis(TICK_TEST_DATA_MIN_VALUE,
-                                       TICK_TEST_DATA_MAX_VALUE);
+  int64_t max = TICK_TEST_DATA_MIN_VALUE, min = TICK_TEST_DATA_MAX_VALUE;
+  if (std::is_same<typename ArrType::value_type, half_float::half>()) {
+    min = -100;
+    max = 100;
+  }
+
+  std::uniform_real_distribution<> dis(min, max);
 
   for (ulong i = 0; i < res.size(); ++i) res[i] = dis(gen);
-
   return res;
 }
 
@@ -102,21 +128,18 @@ Arr2dType GenerateRandomArray2d(ulong n_rows = TICK_TEST_ROW_SIZE,
 
 }  // namespace
 
-#define EXPECT_RELATIVE_ERROR(type, actual, expected)                       \
-  {                                                                         \
-    const double relE =                                                     \
-        std::fabs((expected - actual) /                                     \
-                  static_cast<double>(                                      \
-                      expected == 0 ? std::numeric_limits<float>::epsilon() \
-                                    : expected));                           \
-    EXPECT_LE(relE, ::GetAcceptedRelativeError<type>());                    \
+#define EXPECT_RELATIVE_ERROR(type, actual, expected)               \
+  {                                                                 \
+    float div = static_cast<double>(expected);                      \
+    if (expected == 0) div = std::numeric_limits<float>::epsilon(); \
+    const double relE = std::fabs((expected - actual) / div);       \
+    EXPECT_LE(relE, ::GetAcceptedRelativeError<type>());            \
   }
-#define ASSERT_RELATIVE_ERROR(type, actual, expected)                       \
-  {                                                                         \
-    const double relE =                                                     \
-        std::fabs((expected - actual) /                                     \
-                  static_cast<double>(                                      \
-                      expected == 0 ? std::numeric_limits<float>::epsilon() \
-                                    : expected));                           \
-    ASSERT_LE(relE, ::GetAcceptedRelativeError<type>());                    \
+
+#define ASSERT_RELATIVE_ERROR(type, actual, expected)               \
+  {                                                                 \
+    float div = static_cast<double>(expected);                      \
+    if (expected == 0) div = std::numeric_limits<float>::epsilon(); \
+    const double relE = std::fabs((expected - actual) / div);       \
+    ASSERT_LE(relE, ::GetAcceptedRelativeError<type>());            \
   }

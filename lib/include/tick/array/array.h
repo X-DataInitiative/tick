@@ -550,6 +550,8 @@ ARRAY_DEFINE_TYPE(ulong, ULong);
 ARRAY_DEFINE_TYPE(std::atomic<double>, AtomicDouble);
 ARRAY_DEFINE_TYPE(std::atomic<float>, AtomicFloat);
 
+ARRAY_DEFINE_TYPE(half_float::half, Half);
+
 #undef ARRAY_DEFINE_TYPE
 #undef ARRAY_DEFINE_TYPE_SERIALIZE
 
