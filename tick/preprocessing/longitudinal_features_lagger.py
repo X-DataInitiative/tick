@@ -137,7 +137,7 @@ class LongitudinalFeaturesLagger(LongitudinalPreprocessor):
         self._set("_n_intervals", n_intervals)
         self._set("_n_output_features", int((self.n_lags + 1).sum()))
         self._set("_cpp_preprocessor",
-                  _LongitudinalFeaturesLagger(features, self.n_lags))
+                  _LongitudinalFeaturesLagger(n_intervals, self.n_lags))
         self._set("_fitted", True)
 
         return self
