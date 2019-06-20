@@ -157,7 +157,7 @@ class LongitudinalFeaturesProduct(LongitudinalPreprocessor):
 
         if sps.issparse(features[0]) and self.exposure_type == "infinite":
             self._set("_preprocessor",
-                      SparseLongitudinalFeaturesProduct(features))
+                      SparseLongitudinalFeaturesProduct(n_intervals))
 
         self._set("_fitted", True)
 

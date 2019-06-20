@@ -2,9 +2,9 @@
 
 %module preprocessing
 
-%include tick/base/defs.i
 %include std_shared_ptr.i
-%include tick/base/serialization.i
+%include tick/base/defs.i
+#include tick/base/serialization.h
 
 %shared_ptr(SparseLongitudinalFeaturesProduct);
 %shared_ptr(LongitudinalFeaturesLagger);
