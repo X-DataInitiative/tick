@@ -17,11 +17,21 @@ If you build and install _tick_ via _pip_ these dependencies will automatically 
 
     pip install -r requirements.txt
 
-[Swig](http://www.swig.org/Doc3.0/SWIGDocumentation.html) might also be necessary if precompiled binaries are not available for your distribution.
+[Swig](http://www.swig.org/Doc4.0/SWIGDocumentation.html) might also be necessary if precompiled binaries are not available for your distribution.
 
 ### Source installations
 
-For source installations, a C++ compiler capable of compiling C++11 source code (such as recent versions of [gcc](https://gcc.gnu.org/) or [clang](https://clang.llvm.org/)) must be available. In addition, SWIG version 3.07 or newer must also be available.
+For source installations, a C++ compiler capable of compiling C++11 source code (such as recent versions of [gcc](https://gcc.gnu.org/) or [clang](https://clang.llvm.org/)) must be available. In addition, SWIG version 4.0 or newer must also be available. It is also recommended to build swig if necessary without PCRE
+
+The following script is provided as is with not assurance for working, and may require "sudo" permissions:
+
+    git clone https://github.com/swig/swig -b rel-4.0.0 swig && \
+    cd swig && ./autogen.sh && ./configure --without-pcre && \
+    make && make install
+
+It also may require the following (styled for a Debian type system)
+
+    apt-get install -y autotools-dev automake gawk bison flex
 
 ### Install using _pip_
 
@@ -56,7 +66,7 @@ This will build all required C++ extensions, and install the extensions in your 
   Download python and swig, and add their respective installation directories to the PATH environment variable.
 
     python  3.6   - https://www.python.org/downloads/windows/
-    swigwin 3.0.* - http://www.swig.org/download.html
+    swigwin 4.0.* - http://www.swig.org/download.html
 
   Download wheel files from http://www.lfd.uci.edu/~gohlke/pythonlibs - this is not required for Anaconda
 
