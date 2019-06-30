@@ -2,10 +2,6 @@
 
 import tick.base
 
-from .linear_regression import LinearRegression
-from .logistic_regression import LogisticRegression
-from .poisson_regression import PoissonRegression
-
 from .model_linreg import ModelLinReg
 from .model_logreg import ModelLogReg
 from .model_hinge import ModelHinge
@@ -18,7 +14,6 @@ from .simu_logreg import SimuLogReg
 from .simu_poisreg import SimuPoisReg
 
 __all__ = [
-    'LinearRegression', 'LogisticRegression', 'LogisticRegression',
     'ModelLinReg', 'ModelLogReg', 'ModelPoisReg', 'ModelHinge',
     'ModelSmoothedHinge', 'ModelQuadraticHinge', 'SimuLinReg', 'SimuLogReg',
     'SimuPoisReg'

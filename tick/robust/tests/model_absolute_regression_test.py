@@ -5,10 +5,9 @@ import unittest
 import numpy as np
 from scipy.sparse import csr_matrix
 
-from tick.robust import ModelAbsoluteRegression
 from tick.base_model.tests.generalized_linear_model import TestGLM
 from tick.linear_model import SimuLinReg
-
+from tick.robust.model_absolute_regression import ModelAbsoluteRegression
 
 class Test(TestGLM):
     def test_ModelAbsoluteRegression(self):

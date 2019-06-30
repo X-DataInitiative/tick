@@ -8,9 +8,10 @@ import numpy as np
 from scipy.linalg import norm
 
 from tick.base.inference import InferenceTest
-from tick.linear_model import SimuLinReg, LinearRegression
+from tick.linear_model import SimuLinReg
 from tick.simulation import weights_sparse_gauss
 
+from tick.linear_model.linear_regression import LinearRegression
 
 class Test(InferenceTest):
     def setUp(self):

@@ -4,9 +4,9 @@ import unittest
 
 import numpy as np
 
-from tick.linear_model import LogisticRegression
 from tick.plot import plot_history
 from tick.solver import GD, AGD, History
+from tick.linear_model.logistic_regression import LogisticRegression
 
 
 class Test(unittest.TestCase):

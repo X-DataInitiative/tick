@@ -1,9 +1,8 @@
 # License: BSD 3 clause
 
 from tick.base import actual_kwargs
-from .base import LearnerRobustGLM
 from .model_linreg_with_intercepts import ModelLinRegWithIntercepts
-
+from .base.learner_robust_glm import LearnerRobustGLM
 
 class RobustLinearRegression(LearnerRobustGLM):
     """Robust linear regression learner.

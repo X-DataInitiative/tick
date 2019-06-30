@@ -15,8 +15,10 @@ from tick.linear_model import ModelLogReg, SimuLogReg
 from tick.linear_model import ModelPoisReg, SimuPoisReg
 from tick.linear_model import ModelHinge, ModelQuadraticHinge, ModelSmoothedHinge
 
-from tick.robust import ModelAbsoluteRegression, ModelEpsilonInsensitive, ModelHuber, \
+from tick.robust import ModelEpsilonInsensitive, ModelHuber, \
                         ModelLinRegWithIntercepts, ModelModifiedHuber
+from tick.robust.model_absolute_regression import ModelAbsoluteRegression
+
 from tick.solver import AdaGrad, SGD, SDCA, SAGA, SVRG
 from tick.simulation import weights_sparse_gauss
 

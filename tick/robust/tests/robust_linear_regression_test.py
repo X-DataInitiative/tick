@@ -6,10 +6,10 @@ import unittest
 import numpy as np
 
 from tick.base.inference import InferenceTest
-from tick.robust import RobustLinearRegression
 from tick.simulation import weights_sparse_gauss, features_normal_cov_toeplitz
 from tick.metrics import support_fdp, support_recall
 
+from tick.robust.robust_linear_regression import RobustLinearRegression
 
 class Test(InferenceTest):
     n_samples = 300

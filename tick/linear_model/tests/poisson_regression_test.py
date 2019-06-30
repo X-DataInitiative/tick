@@ -6,9 +6,10 @@ from itertools import product
 import numpy as np
 
 from tick.base.inference import InferenceTest
-from tick.linear_model import SimuPoisReg, PoissonRegression
+from tick.linear_model import SimuPoisReg
 from tick.simulation import weights_sparse_gauss
 
+from tick.linear_model.poisson_regression import PoissonRegression
 
 class Test(InferenceTest):
     def setUp(self):

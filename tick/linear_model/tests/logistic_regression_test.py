@@ -7,12 +7,14 @@ import numpy as np
 from sklearn.metrics.ranking import roc_auc_score
 
 from tick.base.inference import InferenceTest
-from tick.linear_model import SimuLogReg, LogisticRegression
+from tick.linear_model import SimuLogReg
 from tick.simulation import weights_sparse_gauss
 from tick.preprocessing.features_binarizer import FeaturesBinarizer
 from tick.prox import ProxZero, ProxL1, ProxL2Sq, ProxElasticNet, ProxTV, \
     ProxBinarsity
+
 from tick.solver import AGD, GD, BFGS, SGD, SVRG, SDCA
+from tick.linear_model.logistic_regression import LogisticRegression
 
 solvers = ['gd', 'agd', 'sgd', 'sdca', 'bfgs', 'svrg']
 penalties = ['none', 'l2', 'l1', 'tv', 'elasticnet', 'binarsity']
