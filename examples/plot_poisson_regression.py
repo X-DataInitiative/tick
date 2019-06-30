@@ -34,8 +34,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from tick.simulation import weights_sparse_gauss
-from tick.linear_model import SimuPoisReg, PoissonRegression
+from tick.linear_model import SimuPoisReg
 from tick.plot import plot_history
+from tick.linear_model.poisson_regression import PoissonRegression
 
 n_samples = 50000
 n_features = 100

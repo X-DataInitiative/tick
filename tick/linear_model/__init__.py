@@ -1,6 +1,7 @@
 # License: BSD 3 clause
 
 import tick.base
+import tick.base_model.build.base_model
 
 from .model_linreg import ModelLinReg
 from .model_logreg import ModelLogReg

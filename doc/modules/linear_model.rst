@@ -47,9 +47,9 @@ model with several choices of penalizations and solvers.
    :toctree: generated/
    :template: class.rst
 
-   linear_model.LinearRegression
-   linear_model.LogisticRegression
-   linear_model.PoissonRegression
+   linear_model.linear_regression import LinearRegression
+   linear_model.logistic_regression import LogisticRegression
+   linear_model.poisson_regression import PoissonRegression
 
 These classes follow whenever possible the scikit-learn API, namely ``fit``
 and ``predict`` methods, and follow the same naming conventions.

@@ -22,6 +22,7 @@ This example is inspired by linear regression example from
 import matplotlib.pyplot as plt
 import numpy as np
 from tick import linear_model
+from tick.linear_model.linear_regression import LinearRegression
 from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.utils import shuffle
 from sklearn.datasets import load_boston
@@ -46,7 +47,7 @@ y_train = label[:n_train_data]
 y_test = label[n_train_data:]
 
 # Create linear regression and fit it on the training set
-regr = linear_model.LinearRegression()
+regr = LinearRegression()
 regr.fit(X_train, y_train)
 
 # Make predictions using the testing set

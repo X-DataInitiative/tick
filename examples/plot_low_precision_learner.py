@@ -15,8 +15,8 @@ float 32 precision.
 import matplotlib.pyplot as plt
 
 from tick.dataset import fetch_tick_dataset
-from tick.linear_model import LogisticRegression
 from tick.plot import plot_history
+from tick.linear_model.logistic_regression import LogisticRegression
 
 X, y = fetch_tick_dataset('binary/adult/adult.trn.bz2')
 X = X.toarray()  # It is more visible with dense matrices

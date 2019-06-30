@@ -26,8 +26,9 @@ import numpy as np
 from matplotlib import pyplot as plt
 from tick.simulation import weights_sparse_gauss, \
     features_normal_cov_toeplitz
-from tick.robust import RobustLinearRegression, std_iqr
 from tick.metrics import support_fdp, support_recall
+from tick.robust import std_iqr
+from tick.robust.robust_linear_regression import RobustLinearRegression
 
 np.random.seed(1)
 

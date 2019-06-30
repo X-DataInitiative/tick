@@ -10,8 +10,8 @@ regression learner (`tick.inference.LogisticRegression`).
 import matplotlib.pyplot as plt
 from sklearn.metrics import roc_curve, auc
 
-from tick.linear_model import LogisticRegression
 from tick.dataset import fetch_tick_dataset
+from tick.linear_model.logistic_regression import LogisticRegression
 
 train_set = fetch_tick_dataset('binary/adult/adult.trn.bz2')
 test_set = fetch_tick_dataset('binary/adult/adult.tst.bz2')
