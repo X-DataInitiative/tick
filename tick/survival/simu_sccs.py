@@ -108,21 +108,25 @@ class SimuSCCS(Simu):
     >>> from tick.survival import SimuSCCS
     >>> n_lags = np.repeat(2, 2).astype('uint64')
     >>> sim = SimuSCCS(n_cases=5, n_intervals=3, n_features=2, n_lags=n_lags,
-    ... seed=42, sparse=False, exposure_type="single_exposure",
+    ... seed=42, sparse=False, exposure_type="multiple_exposures",
     ... verbose=False)
-    >>> features, labels, censoring, _coeffs = sim.simulate()
+    >>> features, labels, outcomes, censoring, _coeffs = sim.simulate()
     >>> print(features)
-    [array([[ 0.,  0.],
-           [ 1.,  0.],
-           [ 1.,  1.]]), array([[ 1.,  1.],
-           [ 1.,  1.],
-           [ 1.,  1.]])]
-    >>> print(labels)
-    [array([0, 0, 1], dtype=int32), array([0, 0, 1], dtype=int32)]
+    [array([[0., 0.],
+           [1., 0.],
+           [1., 1.]]), array([[1., 0.],
+           [1., 0.],
+           [1., 1.]]), array([[1., 1.],
+           [1., 1.],
+           [1., 1.]]), array([[0., 0.],
+           [1., 1.],
+           [1., 0.]]), array([[1., 0.],
+           [0., 0.],
+           [0., 0.]])] 
     >>> print(censoring)
-    [3 3]
+    [3 3 3 3 3]
     >>> print(_coeffs)
-    [ 0.54738557 -0.15109073  0.71345739  1.67633284 -0.25656871 -0.25655065]
+    [array([ 0.54738557, -0.15109073,  0.71345739]), array([ 1.67633284, -0.25656871, -0.25655065])]
     """
 
     _const_attr = [

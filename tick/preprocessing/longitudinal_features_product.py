@@ -57,17 +57,16 @@ class LongitudinalFeaturesProduct(LongitudinalPreprocessor):
     ...                                   [0, 0, 0]], dtype="float64")
     ...                       ]
     >>> lfp = LongitudinalFeaturesProduct(exposure_type="infinite")
-    >>> product_features = lfp.fit_transform(infinite_exposures)
+    >>> product_features, _, _ = lfl.fit_transform(features)
     >>> # output comes as a list of sparse matrices or 2D numpy arrays
     >>> product_features.__class__
     <class 'list'>
-    >>> pprint([x.toarray() for x in product_features])
-    [array([[ 0.,  1.,  0.,  0.,  0.,  0.],
-           [ 0.,  0.,  0.,  0.,  0.,  0.],
-           [ 0.,  0.,  1.,  0.,  0.,  1.]]),
-     array([[ 1.,  1.,  0.,  1.,  0.,  0.],
-           [ 0.,  0.,  1.,  0.,  1.,  1.],
-           [ 0.,  0.,  0.,  0.,  0.,  0.]])]
+    >>> [x.toarray() for x in product_features]
+    [array([[0., 1., 0., 0., 0., 0.],
+           [0., 0., 0., 0., 0., 0.],
+           [0., 0., 1., 0., 0., 1.]]), array([[1., 1., 0., 1., 0., 0.],
+           [0., 0., 1., 0., 1., 1.],
+           [0., 0., 0., 0., 0., 0.]])]
     """
 
     _attrinfos = {

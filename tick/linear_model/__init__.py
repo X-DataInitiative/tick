@@ -1,6 +1,7 @@
 # License: BSD 3 clause
 
 import tick.base
+import tick.base_model.build.base_model
 
 from .linear_regression import LinearRegression
 from .logistic_regression import LogisticRegression

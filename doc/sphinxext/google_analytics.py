@@ -4,7 +4,7 @@ imported from sphinxcontrib google analytics package
 https://bitbucket.org/birkenfeld/sphinx-contrib/src/e758073384efd1ed5ed1e6286301b7bef71b27cf/googleanalytics/
 """
 
-from sphinx.application import ExtensionError
+from sphinx.errors import ExtensionError
 
 
 def add_ga_javascript(app, pagename, templatename, context, doctree):

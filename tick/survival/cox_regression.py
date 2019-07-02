@@ -5,7 +5,6 @@ import numpy as np
 from tick.base import actual_kwargs
 from tick.preprocessing.utils import safe_array
 from .model_coxreg_partial_lik import ModelCoxRegPartialLik
-from tick.solver import GD, AGD
 from tick.base.learner import LearnerOptim
 
 
@@ -84,7 +83,7 @@ class CoxRegression(LearnerOptim):
         The learned coefficients of the model
     """
 
-    _solvers = {'gd': GD, 'agd': AGD}
+    _solvers = {'gd': 'GD', 'agd': 'AGD'}
 
     _attrinfos = {"_actual_kwargs": {"writable": False}}
 

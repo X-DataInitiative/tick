@@ -5,8 +5,6 @@ import numpy as np
 from tick.base import actual_kwargs
 from tick.base.learner import LearnerGLM
 from .model_poisreg import ModelPoisReg
-from tick.solver import GD, AGD, SGD, BFGS, SVRG, AdaGrad
-
 
 class PoissonRegression(LearnerGLM):
     """Poisson regression learner, with exponential link function.
@@ -91,11 +89,11 @@ class PoissonRegression(LearnerGLM):
     """
 
     _solvers = {
-        'gd': GD,
-        'agd': AGD,
-        'sgd': SGD,
-        'svrg': SVRG,
-        'bfgs': BFGS,
+        'gd': 'GD',
+        'agd': 'AGD',
+        'sgd': 'SGD',
+        'svrg': 'SVRG',
+        'bfgs': 'BFGS',
     }
 
     _attrinfos = {"_actual_kwargs": {"writable": False}}

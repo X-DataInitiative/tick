@@ -1,6 +1,8 @@
 # License: BSD 3 clause
 
 import tick.base
+import tick.linear_model.build.linear_model
+import tick.robust.build.robust
 
 from .gd import GD
 from .agd import AGD

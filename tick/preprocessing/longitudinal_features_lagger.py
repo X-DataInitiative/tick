@@ -49,17 +49,16 @@ class LongitudinalFeaturesLagger(LongitudinalPreprocessor):
     >>> censoring = np.array([3, 2], dtype="uint64")
     >>> n_lags = np.array([2, 1, 0], dtype='uint64')
     >>> lfl = LongitudinalFeaturesLagger(n_lags)
-    >>> product_features = lfl.fit_transform(features)
+    >>> product_features, _, _ = lfl.fit_transform(features)
     >>> # output comes as a list of sparse matrices or 2D numpy arrays
     >>> product_features.__class__
     <class 'list'>
     >>> [x.toarray() for x in product_features]
-    [array([[ 0.,  0.,  0.,  1.,  0.,  0.],
-            [ 0.,  0.,  0.,  0.,  1.,  0.],
-            [ 0.,  0.,  0.,  0.,  0.,  1.]]),
-     array([[ 1.,  0.,  0.,  1.,  0.,  0.],
-            [ 0.,  1.,  0.,  0.,  1.,  1.],
-            [ 0.,  0.,  0.,  0.,  0.,  0.]])]
+    [array([[0., 0., 0., 1., 0., 0.],
+           [0., 0., 0., 0., 1., 0.],
+           [0., 0., 0., 0., 0., 1.]]), array([[1., 0., 0., 1., 0., 0.],
+           [0., 1., 0., 0., 1., 1.],
+           [0., 0., 1., 0., 0., 0.]])]
     """
 
     _attrinfos = {

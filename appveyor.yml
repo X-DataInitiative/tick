@@ -42,8 +42,7 @@ build_script:
   # doesnt exist for somereason?
   - mkdir -p "C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\cppwinrt"
 
-  # Python 3.6
-  - bash -c "PATH=\"$PWD:/c/Python36-x64/:/c/Program Files/Git/usr/bin:$PATH\"; tools/appveyor/run.sh"
+  - bash -c "PATH=\"$PWD:/c/Python37-x64/:/c/Program Files/Git/usr/bin:$PATH\"; tools/appveyor/run.sh"
 
 artifacts:
   - path: "dist\\*.whl"

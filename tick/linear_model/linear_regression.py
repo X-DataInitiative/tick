@@ -3,8 +3,6 @@
 from tick.base import actual_kwargs
 from tick.base.learner import LearnerGLM
 from .model_linreg import ModelLinReg
-from tick.solver import GD, AGD, SVRG
-
 
 class LinearRegression(LearnerGLM):
     """
@@ -86,7 +84,7 @@ class LinearRegression(LearnerGLM):
         The intercept, if ``fit_intercept=True``, otherwise `None`
     """
 
-    _solvers = {'gd': GD, 'agd': AGD, 'svrg': SVRG}
+    _solvers = {'gd': 'GD', 'agd': 'AGD', 'svrg': 'SVRG'}
 
     _attrinfos = {"_actual_kwargs": {"writable": False}}
 
