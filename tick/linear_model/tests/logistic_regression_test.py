@@ -12,7 +12,6 @@ from tick.simulation import weights_sparse_gauss
 from tick.preprocessing.features_binarizer import FeaturesBinarizer
 from tick.prox import ProxZero, ProxL1, ProxL2Sq, ProxElasticNet, ProxTV, \
     ProxBinarsity
-from tick.solver import AGD, GD, BFGS, SGD, SVRG, SDCA
 
 solvers = ['gd', 'agd', 'sgd', 'sdca', 'bfgs', 'svrg']
 penalties = ['none', 'l2', 'l1', 'tv', 'elasticnet', 'binarsity']
@@ -156,6 +155,7 @@ class Test(InferenceTest):
         """...Test LogisticRegression basic settings
         """
         # solver
+        from tick.solver import AGD, GD, BFGS, SGD, SVRG, SDCA
         solver_class_map = {
             'gd': GD,
             'agd': AGD,

@@ -6,8 +6,6 @@ from tick.base import Base
 from tick.base.learner import LearnerGLM
 from tick.prox import ProxZero, ProxL1, ProxL2Sq, ProxElasticNet, \
     ProxSlope, ProxMulti
-from tick.solver import AGD, GD
-
 
 class LearnerRobustGLM(LearnerGLM):
     """Learner for a Robust Generalized Linear Model (GML).
@@ -122,8 +120,8 @@ class LearnerRobustGLM(LearnerGLM):
     }
 
     _solvers = {
-        'gd': GD,
-        'agd': AGD,
+        'gd': 'GD',
+        'agd': 'AGD',
     }
 
     _solvers_with_linesearch = ['gd', 'agd']

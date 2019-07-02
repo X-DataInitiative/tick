@@ -160,12 +160,21 @@ class Test(InferenceTest):
         """...Test RobustLinearRegression basic settings
         """
         # solver
+        from tick.solver import AGD, GD, BFGS, SGD, SVRG, SDCA
+        solvers = {
+            'AGD': AGD,
+            'BFGS': BFGS,
+            'GD': GD,
+            'SGD': SGD,
+            'SVRG': SVRG,
+            'SDCA': SDCA
+        }
         solver_class_map = RobustLinearRegression._solvers
         for solver in RobustLinearRegression._solvers.keys():
             learner = RobustLinearRegression(
                 C_sample_intercepts=1., solver=solver,
                 **Test.specific_solver_kwargs(solver))
-            solver_class = solver_class_map[solver]
+            solver_class = solvers[solver_class_map[solver]]
             self.assertTrue(isinstance(learner._solver_obj, solver_class))
 
         msg = '^``solver`` must be one of agd, gd, got wrong_name$'

@@ -7,9 +7,7 @@ import numpy as np
 from tick.base import Base
 from tick.prox import ProxZero, ProxL1, ProxL2Sq, ProxElasticNet, \
     ProxTV, ProxBinarsity
-from tick.solver import AGD, GD, BFGS, SGD, SVRG, SDCA
 from tick.preprocessing.utils import safe_array
-
 
 class LearnerOptim(ABC, Base):
     """Learner for all models that are inferred with a `tick.solver`
@@ -85,6 +83,7 @@ class LearnerOptim(ABC, Base):
         Used in 'binarsity' penalty
     """
 
+
     _attrinfos = {
         "solver": {
             "writable": False
@@ -119,12 +118,12 @@ class LearnerOptim(ABC, Base):
     }
 
     _solvers = {
-        'gd': GD,
-        'agd': AGD,
-        'sgd': SGD,
-        'svrg': SVRG,
-        'bfgs': BFGS,
-        'sdca': SDCA
+        'gd': 'GD',
+        'agd': 'AGD',
+        'sgd': 'SGD',
+        'svrg': 'SVRG',
+        'bfgs': 'BFGS',
+        'sdca': 'SDCA'
     }
     _solvers_with_linesearch = ['gd', 'agd']
     _solvers_with_step = ['gd', 'agd', 'svrg', 'sgd']
@@ -203,6 +202,15 @@ class LearnerOptim(ABC, Base):
     def _construct_solver_obj(self, solver, step, max_iter, tol, print_every,
                               record_every, verbose, sdca_ridge_strength):
         # Parameters of the solver
+        from tick.solver import AGD, GD, BFGS, SGD, SVRG, SDCA
+        solvers = {
+            'AGD': AGD,
+            'BFGS': BFGS,
+            'GD': GD,
+            'SGD': SGD,
+            'SVRG': SVRG,
+            'SDCA': SDCA
+        }
         solver_args = []
         solver_kwargs = {
             'max_iter': max_iter,
@@ -225,7 +233,7 @@ class LearnerOptim(ABC, Base):
             if solver == 'sdca':
                 solver_args += [sdca_ridge_strength]
 
-            solver_obj = self._solvers[solver](*solver_args, **solver_kwargs)
+            solver_obj = solvers[self._solvers[solver]](*solver_args, **solver_kwargs)
 
         return solver_obj
 

@@ -14,7 +14,7 @@
 
 import sys
 import os
-
+import sphinxext.google_analytics
 try:
   import sphinx_bootstrap_theme
   use_bootstrap_theme = True
