@@ -17,11 +17,6 @@ n_samples = 30000
 n_features = 5000
 n_classes = 2
 
-print('Salut tout le monde')
-
-
-exit(0)
-
 # X, y = make_moons(n_samples=n_samples, noise=0.3, random_state=0)
 
 X, y = make_classification(n_samples=n_samples, n_features=n_features,
