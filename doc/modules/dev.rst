@@ -312,7 +312,7 @@ Create SWIG file
 ~~~~~~~~~~~~~~~~
 
 Now that our proximal operator is defined in C++ we need to make it available
-in Python. We do it thanks to `SWIG <http://www.swig.org/Doc3.0/>`_.
+in Python. We do it thanks to `SWIG <http://www.swig.org/Doc4.0/>`_.
 Hence we have to create a .i file. In tick we store them in the lib/swig folder.
 
 This .i file looks a lot like our .h file.
@@ -514,6 +514,9 @@ The macro adds a block of Python code with a `__getstate__` method to return a
 serialized copy of the object, and a `__setstate__` method to reconstruct the
 object from a string value (this is where the initialization/constructor
 parameters play in).
+
+Similarly, `TICK_MAKE_TEMPLATED_PICKLABLE` is provided if needed to specify
+a type with templated parameters.
 
 It's important to consider the initialization of the Python object. In some
 cases it might be convenient to add a parameter-less C++ constructor that
