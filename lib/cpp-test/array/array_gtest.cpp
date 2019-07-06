@@ -37,7 +37,7 @@ class ArrayTest : public ::testing::Test {
 typedef ::testing::Types<ArrayFloat, ArrayDouble, ArrayShort, ArrayUShort,
                          ArrayInt, ArrayUInt, ArrayLong, ArrayULong>
     MyArrayTypes;
-TYPED_TEST_CASE(ArrayTest, MyArrayTypes);
+TYPED_TEST_SUITE(ArrayTest, MyArrayTypes);
 
 template <typename ArrType>
 class Array2dTest : public ::testing::Test {
@@ -49,7 +49,7 @@ typedef ::testing::Types<ArrayFloat2d, ArrayDouble2d, ArrayShort2d,
                          ArrayUShort2d, ArrayInt2d, ArrayUInt2d, ArrayLong2d,
                          ArrayULong2d>
     MyArray2dTypes;
-TYPED_TEST_CASE(Array2dTest, MyArray2dTypes);
+TYPED_TEST_SUITE(Array2dTest, MyArray2dTypes);
 
 TYPED_TEST(ArrayTest, InitToZero) {
   TypeParam arr{TICK_TEST_DATA_SIZE};
@@ -624,6 +624,15 @@ TYPED_TEST(Array2dTest, SerializationBinary) {
   SCOPED_TRACE("");
   ::TestSerialization2D<cereal::PortableBinaryInputArchive, cereal::PortableBinaryOutputArchive,
                         TypeParam>();
+}
+
+TEST(SparseTesting, RandomSparse2d) {
+  auto random_sparse = SparseArray2d<double>::RANDOM(100, 100, .33);
+  auto dense = random_sparse->as_array2d();
+  auto sparse = dense.as_sparsearray2d();
+  ASSERT_EQ(random_sparse->size(), sparse->size());
+  ASSERT_EQ(random_sparse->n_rows(), sparse->n_rows());
+  ASSERT_EQ(random_sparse->n_cols(), sparse->n_cols());
 }
 
 #ifdef ADD_MAIN

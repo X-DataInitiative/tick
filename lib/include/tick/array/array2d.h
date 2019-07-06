@@ -270,6 +270,8 @@ class Array2d : public BaseArray2d<T, MAJ> {
   // The definition is in the file sarray.h
   std::shared_ptr<SArray2d<T, MAJ>> as_sarray2d_ptr();
 
+  std::shared_ptr<SparseArray2d<T, MAJ>> as_sparsearray2d() const;
+
  public:
   bool compare(const Array2d<T, MAJ>& that) const {
     bool are_equal = BaseArray2d<T, MAJ>::compare(that);
@@ -560,6 +562,38 @@ tick::TemporaryLog<E>& operator<<(tick::TemporaryLog<E>& log,
 template <typename T>
 inline std::ostream &operator<<(std::ostream &s, const std::vector<T> &p) {
   return s << typeid(p).name() << "<" << typeid(T).name() << ">";
+}
+
+template <typename T, typename MAJ>
+std::shared_ptr<SparseArray2d<T, MAJ>>  Array2d<T, MAJ>::as_sparsearray2d() const {
+  T zero {0};
+  auto this_data = this->data();
+  size_t _n_rows = this->n_rows(), _n_cols = this->n_cols(), nnz = 0, size = 0;
+  for (size_t r = 0; r < _n_rows; r++) {
+    for (size_t c = 0; c < _n_cols; c++) {
+      T val {0};
+      if ((val = this_data[(r * _n_cols) + c]) != zero) size++;
+    }
+  }
+  auto sparse = SSparseArray2d<T, MAJ>::new_ptr(_n_rows, _n_cols, size);
+  auto *data = sparse->data();
+  auto *indices = sparse->indices();
+  auto *row_indices = sparse->row_indices();
+  row_indices[0] = 0;
+  for (size_t r = 0; r < _n_rows; r++) {
+    size_t nnz_row = 0;
+    for (size_t c = 0; c < _n_cols; c++) {
+      T val {0};
+      if ((val = this_data[(r * _n_cols) + c]) != zero) {
+        data[nnz] = val;
+        indices[nnz] = c;
+        nnz++;
+        nnz_row++;
+      }
+    }
+    row_indices[r + 1] = row_indices[r] + nnz_row;
+  }
+  return sparse;
 }
 
 #endif  // LIB_INCLUDE_TICK_ARRAY_ARRAY2D_H_
