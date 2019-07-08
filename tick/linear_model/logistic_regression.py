@@ -93,14 +93,18 @@ class LogisticRegression(LearnerGLM):
     classes : `numpy.array`, shape=(n_classes,)
         The class labels of our problem
     """
-    _attrinfos = {"_actual_kwargs": {"writable": False}}
+    _attrinfos = {
+        "_actual_kwargs": {"writable": False},
+        "_X_train": {"writable": True},
+        "_y_train": {"writable": True}
+    }
 
     @actual_kwargs
     def __init__(self, fit_intercept=True, penalty='l2', C=1e3, solver="svrg",
                  step=None, tol=1e-5, max_iter=100, verbose=False,
                  warm_start=False, print_every=10, record_every=10,
                  sdca_ridge_strength=1e-3, elastic_net_ratio=0.95,
-                 random_state=None, blocks_start=None, blocks_length=None):
+                 random_state=None, blocks_start=None, blocks_length=None, smp=False):
 
         self._actual_kwargs = LogisticRegression.__init__.actual_kwargs
         LearnerGLM.__init__(
@@ -112,6 +116,7 @@ class LogisticRegression(LearnerGLM):
             blocks_start=blocks_start, blocks_length=blocks_length)
 
         self.classes = None
+        self.smp = smp
 
     def _construct_model_obj(self, fit_intercept=True):
         return ModelLogReg(fit_intercept)
@@ -172,6 +177,10 @@ class LogisticRegression(LearnerGLM):
 
         # If classes are not in the canonical shape we must transform them
         y = self._encode_labels_vector(y)
+
+        self._X_train = X
+        self._y_train = y
+
 
         LearnerGLM.fit(self, X, y)
 
@@ -239,11 +248,62 @@ class LogisticRegression(LearnerGLM):
         if not self._fitted:
             raise ValueError("You must call ``fit`` before")
         else:
-            score = self.decision_function(X)
-            n_samples = score.shape[0]
-            probs_class_1 = np.empty((n_samples,))
-            ModelLogReg.sigmoid(score, probs_class_1)
-            probs = np.empty((n_samples, 2))
-            probs[:, 1] = probs_class_1
-            probs[:, 0] = 1. - probs_class_1
-            return probs
+            if self.smp:
+                X = self._safe_array(X, dtype=X.dtype)
+                # Save the current weights and intercept
+                # weights = self.weights.copy()
+                # intercept = self.intercept
+                X_train = self._X_train
+                y_train = self._y_train
+
+                print('prediction for %d samples' % X.shape[0])
+
+                n_samples, n_features = X.shape
+                probs = np.empty((n_samples, 2))
+                for i, x in enumerate(X):
+                    X = np.vstack([X_train, x])
+
+                    y = np.concatenate([y_train, np.array([1.])])
+                    logreg = LogisticRegression(fit_intercept=self.fit_intercept,
+                                                solver=self.solver,
+                                                verbose=False)
+                    logreg.fit(X, y)
+                    sigma1 = logreg.predict_proba(x.reshape(1, n_features))[:, 1]
+
+                    y = np.concatenate([y_train, np.array([-1.])])
+                    logreg = LogisticRegression(fit_intercept=self.fit_intercept,
+                                                solver=self.solver,
+                                                verbose=False)
+                    logreg.fit(X, y)
+                    sigma0 = logreg.predict_proba(x.reshape(1, n_features))[:, 0]
+
+                    ss = sigma0 + sigma1
+
+                    probs[i, 0] = sigma0 / ss
+                    probs[i, 1] = sigma1 / ss
+
+                    score = self.decision_function(x.reshape(1, n_features))
+                    # probs_class_1 = np.empty((n_samples,))
+                    prob1 = ModelLogReg.sigmoid(score)
+                    prob0 = 1 - prob1
+
+                    # print('----')
+                    # print('Non SMP:')
+                    # print(np.array([prob0, prob1]))
+                    # print('SMP:')
+                    # print(probs[i])
+
+                    if i % 100 == 0:
+                        print('predicted for %d samples' % i)
+
+                return probs
+
+            else:
+                score = self.decision_function(X)
+                n_samples = score.shape[0]
+                probs_class_1 = np.empty((n_samples,))
+                ModelLogReg.sigmoid(score, probs_class_1)
+                probs = np.empty((n_samples, 2))
+                probs[:, 1] = probs_class_1
+                probs[:, 0] = 1. - probs_class_1
+                return probs
