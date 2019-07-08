@@ -163,7 +163,7 @@ class LearnerGLM(LearnerOptim):
         if self.step is None and self.solver in self._solvers_with_step:
             if self.solver in self._solvers_with_linesearch:
                 self._solver_obj.linesearch = True
-            elif self.solver == 'svrg':
+            elif self.solver == 'svrg' or self.solver == 'saga':
                 if isinstance(self._model_obj, ModelLipschitz):
                     self.step = 1. / self._model_obj.get_lip_max()
                 else:

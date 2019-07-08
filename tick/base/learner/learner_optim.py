@@ -120,13 +120,14 @@ class LearnerOptim(ABC, Base):
     _solvers = {
         'gd': 'GD',
         'agd': 'AGD',
+        'saga': 'SAGA',
         'sgd': 'SGD',
         'svrg': 'SVRG',
         'bfgs': 'BFGS',
         'sdca': 'SDCA'
     }
     _solvers_with_linesearch = ['gd', 'agd']
-    _solvers_with_step = ['gd', 'agd', 'svrg', 'sgd']
+    _solvers_with_step = ['gd', 'agd', 'saga', 'svrg', 'sgd']
     _solvers_stochastic = ['sgd', 'svrg', 'sdca']
     _penalties = {
         'none': ProxZero,
@@ -157,6 +158,7 @@ class LearnerOptim(ABC, Base):
         # learner, and cannot be instantiated again (using another solver type)
         # afterwards.
         self.solver = solver
+        print("step ", step)
         self._set_random_state(random_state)
         self._solver_obj = self._construct_solver_obj(
             solver, step, max_iter, tol, print_every, record_every, verbose,
@@ -202,11 +204,12 @@ class LearnerOptim(ABC, Base):
     def _construct_solver_obj(self, solver, step, max_iter, tol, print_every,
                               record_every, verbose, sdca_ridge_strength):
         # Parameters of the solver
-        from tick.solver import AGD, GD, BFGS, SGD, SVRG, SDCA
+        from tick.solver import AGD, GD, BFGS, SGD, SVRG, SDCA, SAGA
         solvers = {
             'AGD': AGD,
             'BFGS': BFGS,
             'GD': GD,
+            'SAGA': SAGA,
             'SGD': SGD,
             'SVRG': SVRG,
             'SDCA': SDCA
@@ -222,6 +225,7 @@ class LearnerOptim(ABC, Base):
 
         allowed_solvers = list(self._solvers.keys())
         allowed_solvers.sort()
+        print("solver " , solver)
         if solver not in self._solvers:
             raise ValueError("``solver`` must be one of %s, got %s" %
                              (', '.join(allowed_solvers), solver))
