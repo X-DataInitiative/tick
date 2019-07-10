@@ -8,6 +8,7 @@ from abc import ABCMeta
 import json
 import pydoc
 import numpydoc as nd
+from numpydoc import docscrape
 import copy
 
 
@@ -248,7 +249,7 @@ class BaseMeta(ABCMeta):
             return []
 
         current_class_doc = inspect.cleandoc(attrs['__doc__'])
-        parsed_doc = nd.docscrape.ClassDoc(None, doc=current_class_doc)
+        parsed_doc = docscrape.ClassDoc(None, doc=current_class_doc)
         attr_docs = parsed_doc['Parameters'] + parsed_doc['Attributes']
 
         attr_and_doc = []
