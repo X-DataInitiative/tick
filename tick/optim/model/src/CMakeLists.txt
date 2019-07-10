@@ -46,8 +46,10 @@ add_library(tick_model EXCLUDE_FROM_ALL
 		variants/custom_basic_loglik_list.h variants/custom_basic_loglik_list.cpp
 		variants/hawkes_fixed_sumexpkern_custom2_loglik_list.h variants/hawkes_fixed_sumexpkern_custom2_loglik_list.cpp
         variants/hawkes_fixed_sumexpkern_QRH1_leastsq_list.h variants/hawkes_fixed_sumexpkern_QRH1_leastsq_list.cpp
+		variants/hawkes_fixed_sumexpkern_QRH2_leastsq_list.h variants/hawkes_fixed_sumexpkern_QRH2_leastsq_list.cpp
 
 		hawkes_fixed_sumexpkern_leastsq_qrh1.cpp hawkes_fixed_sumexpkern_leastsq_qrh1.h
+		hawkes_fixed_sumexpkern_leastsq_qrh2.cpp hawkes_fixed_sumexpkern_leastsq_qrh2.h
 		)
 
 
