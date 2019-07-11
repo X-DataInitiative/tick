@@ -47,7 +47,7 @@ end_times = np.array(end_times)
 ##################################################################################################################
 from tick.optim.model.hawkes_fixed_sumexpkern_QRH1_leastsq_list import ModelHawkesFixedSumExpKernLeastSqQRH1List
 
-model_list = ModelHawkesFixedSumExpKernLeastSqQRH1List(betas, MaxN_of_f, n_threads=8)
+model_list = ModelHawkesFixedSumExpKernLeastSqQRH1List(betas, MaxN_of_f, n_threads=-1)
 model_list.fit(timestamps_list, global_n_list, end_times=end_times)
 
 x_real = np.array(
