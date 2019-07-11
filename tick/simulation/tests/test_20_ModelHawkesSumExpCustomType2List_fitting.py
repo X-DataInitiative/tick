@@ -11,7 +11,7 @@ seed = 3007
 MaxN = 10
 mu_i = [np.array([0.5, 0.7, 0.8, 0.6, 0.5, 0.4, 0.3, 0.6, 0.8, 0.1]), np.array([0.5, 0.6, 0.8, 0.8, 0.6, 0.7, 0.8, 0.6, 0.5, 0.4])]
 
-end_time = 500.0
+end_time = 1000.0
 betas = np.array([5.0, 150, 2000])
 
 U = len(betas)
@@ -62,7 +62,7 @@ from tick.optim.model.hawkes_fixed_sumexpkern_loglik_custom2_list import ModelHa
 model_list = ModelHawkesFixedSumExpKernCustomType2LogLikList(betas, MaxN, n_threads=8)
 model_list.fit(timestamps_list, global_n_list, end_times=end_times)
 
-solver = AGD(step=1e-2, linesearch=False, max_iter=2000, print_every=50)
+solver = AGD(step=1e-3, linesearch=False, max_iter=5000, print_every=50)
 solver.set_model(model_list).set_prox(prox)
 
 x_real = np.array(

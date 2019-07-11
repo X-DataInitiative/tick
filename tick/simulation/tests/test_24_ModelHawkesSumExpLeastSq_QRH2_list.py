@@ -11,7 +11,7 @@ seed = 3007
 MaxN = 10
 mu_i = [np.array([0.5, 0.7, 0.8, 0.6, 0.5, 0.4, 0.3, 0.6, 0.8, 0.1]), np.array([0.5, 0.6, 0.8, 0.8, 0.6, 0.7, 0.8, 0.6, 0.5, 0.4])]
 
-end_time = 500.0
+end_time = 1000.0
 betas = np.array([5.0, 150, 2000])
 
 U = len(betas)
@@ -62,18 +62,21 @@ from tick.optim.model.hawkes_fixed_sumexpkern_QRH2_leastsq_list import ModelHawk
 model_list = ModelHawkesFixedSumExpKernLeastSqQRH2List(betas, MaxN, n_threads=-1)
 model_list.fit(timestamps_list, global_n_list, end_times=end_times)
 
-solver = AGD(step=1e-5, linesearch=False, max_iter=5000, print_every=50)
+solver = AGD(step=1e-4, linesearch=False, max_iter=5000, print_every=50)
 solver.set_model(model_list).set_prox(prox)
 
 x_real = np.array(
     [0.5, 0.7, 0.8, 0.6, 0.5, 0.4, 0.3, 0.6, 0.8, 0.1,     0.5, 0.6, 0.8, 0.8, 0.6, 0.7, 0.8, 0.6, 0.5, 0.4,
      0.2, 0.3, 0.2, 0, 0.1, 0.1, 0.05, 0.1, 0.1, 0.15, 0.0, 0.2])
-x0 = np.array(
-    [0.5, 0.6, 0.2, 0.3, 0.8, 0.5, 0.7, 0.8, 0.6, 0.5,     0.5, 0.6, 0.2, 0.3, 0.8, 0.5, 0.7, 0.8, 0.6, 0.5,
-     0.7, 0.5, 0.2, 0.3, 0.75, 0.1, 0.1, 0.2, 0.2, 0.3, 0.75, 0.1])
-
+# x0 = np.array(
+#     [0.5, 0.6, 0.2, 0.3, 0.8, 0.5, 0.7, 0.8, 0.6, 0.5,     0.5, 0.6, 0.2, 0.3, 0.8, 0.5, 0.7, 0.8, 0.6, 0.5,
+#      0.7, 0.5, 0.2, 0.3, 0.75, 0.1, 0.1, 0.2, 0.2, 0.3, 0.75, 0.1])
+x0 = np.load("agd_5000.npy")
 solver.solve(x0)
 
 print(model_list.loss(x_real))
 print(model_list.loss(solver.solution))
 print(solver.solution)
+
+# last_solution = np.load("agd_5000.npy")
+# print(model_list.loss(last_solution))
