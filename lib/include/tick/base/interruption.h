@@ -13,8 +13,9 @@
 
 #include "defs.h"
 
-#include <atomic>
+#include <stdlib.h>  // for the "exit" function
 #include <exception>
+#include <atomic>
 
 /*! \class Interruption
  * \brief Exception Class made to handle Ctrl-C interruption
