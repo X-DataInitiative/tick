@@ -273,23 +273,23 @@ class LogisticRegression(LearnerGLM):
                     x = x.reshape(1, n_features)
                     X_train_augmented[-1] = x
 
-                    # X = np.vstack([X_train, x])
-                    # y = np.concatenate([y_train, np.array([1.])])
+                    # X_train_augmented = np.vstack([X_train, x])
+                    # y_train_augmented = np.concatenate([y_train, np.array([1.])])
 
                     y_train_augmented[-1] = 1.
                     logreg = LogisticRegression(fit_intercept=self.fit_intercept,
                                                 solver=self.solver,
                                                 verbose=False)
                     logreg.fit(X_train_augmented, y_train_augmented)
-                    sigma1 = logreg.predict_proba(x.reshape(1, n_features))[:, 1]
+                    sigma1 = logreg.predict_proba(x)[:, 1]
 
-                    # y = np.concatenate([y_train, np.array([-1.])])
-                    y_train_augmented[-1] = 1.
+                    # y_train_augmented = np.concatenate([y_train, np.array([-1.])])
+                    y_train_augmented[-1] = -1.
                     logreg = LogisticRegression(fit_intercept=self.fit_intercept,
                                                 solver=self.solver,
                                                 verbose=False)
                     logreg.fit(X_train_augmented, y_train_augmented)
-                    sigma0 = logreg.predict_proba(x.reshape(1, n_features))[:, 0]
+                    sigma0 = logreg.predict_proba(x)[:, 0]
 
                     ss = sigma0 + sigma1
 
