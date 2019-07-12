@@ -25,7 +25,7 @@ np.set_printoptions(precision=2)
 def plot_decision_classification(classifiers, datasets):
     n_classifiers = len(classifiers)
     n_datasets = len(datasets)
-    h = .2
+    h = .5
     fig = plt.figure(figsize=(2 * (n_classifiers + 1), 2 * n_datasets))
     i = 1
     # iterate over datasets
@@ -60,7 +60,7 @@ def plot_decision_classification(classifiers, datasets):
             clf.fit(X_train, y_train)
             Z = clf.predict_proba(np.array([xx.ravel(), yy.ravel()]).T)[:, 1]
 
-            score = roc_auc_score(y_test, clf.predict_proba(X_test)[:, 1])
+            # score = roc_auc_score(y_test, clf.predict_proba(X_test)[:, 1])
             # Put the result into a color plot
             Z = Z.reshape(xx.shape)
             ax.contourf(xx, yy, Z, cmap=cm, alpha=.8)
@@ -70,15 +70,15 @@ def plot_decision_classification(classifiers, datasets):
             ax.set_yticks(())
             if ds_cnt == 0:
                 ax.set_title(name)
-            ax.text(xx.max() - .3, yy.min() + .3, ('%.2f' % score).lstrip('0'),
-                    size=15, horizontalalignment='right')
+            # ax.text(xx.max() - .3, yy.min() + .3, ('%.2f' % score).lstrip('0'),
+            #         size=15, horizontalalignment='right')
             i += 1
 
     plt.tight_layout()
 
 
 # Simulation of datasets
-n_samples = 100
+n_samples = 30
 n_samples_half = int(n_samples / 2)
 n_features = 2
 n_classes = 2
@@ -106,9 +106,9 @@ y[:n_samples_half] = -1
 linearly_separable = (X, y)
 
 datasets = [
-    make_moons(n_samples=n_samples, noise=0.1, random_state=0),
-    make_circles(n_samples=n_samples, noise=0.1, factor=0.5,
-                 random_state=random_state),
+    # make_moons(n_samples=n_samples, noise=0.1, random_state=0),
+    # make_circles(n_samples=n_samples, noise=0.1, factor=0.5,
+    #              random_state=random_state),
     linearly_separable
 ]
 

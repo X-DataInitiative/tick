@@ -257,24 +257,38 @@ class LogisticRegression(LearnerGLM):
                 y_train = self._y_train
 
                 print('prediction for %d samples' % X.shape[0])
-
                 n_samples, n_features = X.shape
-                probs = np.empty((n_samples, 2))
-                for i, x in enumerate(X):
-                    X = np.vstack([X_train, x])
 
-                    y = np.concatenate([y_train, np.array([1.])])
+                # The probabilities outputed
+                probs = np.empty((n_samples, 2))
+
+                # A copy of the training dataset with one extra line
+                n_samples_train, _ = X_train.shape
+                X_train_augmented = np.empty((n_samples_train + 1, n_features))
+                y_train_augmented = np.empty((n_samples_train + 1,))
+                X_train_augmented[:n_samples_train] = X_train
+                y_train_augmented[:n_samples_train] = y_train
+
+                for i, x in enumerate(X):
+                    x = x.reshape(1, n_features)
+                    X_train_augmented[-1] = x
+
+                    # X = np.vstack([X_train, x])
+                    # y = np.concatenate([y_train, np.array([1.])])
+
+                    y_train_augmented[-1] = 1.
                     logreg = LogisticRegression(fit_intercept=self.fit_intercept,
                                                 solver=self.solver,
                                                 verbose=False)
-                    logreg.fit(X, y)
+                    logreg.fit(X_train_augmented, y_train_augmented)
                     sigma1 = logreg.predict_proba(x.reshape(1, n_features))[:, 1]
 
-                    y = np.concatenate([y_train, np.array([-1.])])
+                    # y = np.concatenate([y_train, np.array([-1.])])
+                    y_train_augmented[-1] = 1.
                     logreg = LogisticRegression(fit_intercept=self.fit_intercept,
                                                 solver=self.solver,
                                                 verbose=False)
-                    logreg.fit(X, y)
+                    logreg.fit(X_train_augmented, y_train_augmented)
                     sigma0 = logreg.predict_proba(x.reshape(1, n_features))[:, 0]
 
                     ss = sigma0 + sigma1
@@ -282,10 +296,10 @@ class LogisticRegression(LearnerGLM):
                     probs[i, 0] = sigma0 / ss
                     probs[i, 1] = sigma1 / ss
 
-                    score = self.decision_function(x.reshape(1, n_features))
+                    # score = self.decision_function(x.reshape(1, n_features))
                     # probs_class_1 = np.empty((n_samples,))
-                    prob1 = ModelLogReg.sigmoid(score)
-                    prob0 = 1 - prob1
+                    # prob1 = ModelLogReg.sigmoid(score)
+                    # prob0 = 1 - prob1
 
                     # print('----')
                     # print('Non SMP:')
