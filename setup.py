@@ -824,6 +824,11 @@ class RunPyTests(TickCommand):
         self.start_dir = '.'
 
     def run(self):
+        if platform.system() == 'Windows':
+            print("The pytest command has issues with threads on Windows")
+            print('Instead please run:')
+            print('python3 -m unittest discover -v . "*_test.py"')
+            exit(1)
         loader = unittest.TestLoader()
         alltests = loader.discover(self.start_dir, pattern="*_test.py")
         result = unittest.TextTestRunner(verbosity=2).run(alltests)
