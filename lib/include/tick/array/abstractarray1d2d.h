@@ -49,6 +49,23 @@ ENABLE_WARNING(delete-non-virtual-dtor, delete-non-virtual-dtor, 42)
 #define INDICE_TYPE std::uint32_t
 #endif
 
+namespace tick {
+template <typename T, typename K>
+class Allocator {
+ public:
+  template <typename Y = T, typename Z = K>
+  static typename std::enable_if<std::is_base_of<std::atomic<Z>, Y>::value>::type memcopy(
+      T *to, const T *from, size_t size) {
+    for (size_t i = 0; i < size; i++) to[i].store(from[i]);
+  }
+  template <typename Y = T, typename Z = K>
+  static typename std::enable_if<!std::is_base_of<std::atomic<Z>, Y>::value>::type memcopy(
+      T *to, T *from, size_t size) {
+    ::memcpy(to, from, sizeof(T) * size);
+  }
+};
+}  // namespace tick
+
 template <typename T>
 struct InnerType {};
 

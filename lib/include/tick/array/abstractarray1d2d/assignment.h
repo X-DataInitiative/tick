@@ -20,12 +20,14 @@ AbstractArray1d2d<T, MAJ>& AbstractArray1d2d<T, MAJ>::operator=(const AbstractAr
     _size_sparse = other._size_sparse;
     if (other.is_dense()) {
       TICK_PYTHON_MALLOC(_data, T, _size);
-      memcpy(_data, other._data, sizeof(T) * _size);
+      tick::Allocator<T, typename AbstractArray1d2d<T, MAJ>::K>
+        ::memcopy(_data, other._data, _size);
       _indices = nullptr;
     } else {
       if (_size_sparse > 0) {
         TICK_PYTHON_MALLOC(_data, T, _size_sparse);
-        memcpy(_data, other._data, sizeof(T) * _size_sparse);
+        tick::Allocator<T, typename AbstractArray1d2d<T, MAJ>::K>
+          ::memcopy(_data, other._data, _size_sparse);
         TICK_PYTHON_MALLOC(_indices, INDICE_TYPE, _size_sparse);
         memcpy(_indices, other._indices, sizeof(INDICE_TYPE) * _size_sparse);
       }
