@@ -171,7 +171,7 @@ class AGD(SolverFirstOrder):
             if step == 0:
                 print('Step equals 0... at %i' % n_iter)
                 break
-            if n_iter % 100 == 0:
+            if n_iter % 1000 == 0:
                 np.save("agd_" + str(n_iter) + ".npy", x)
                 print("loss = ", obj)
 
