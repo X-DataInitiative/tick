@@ -35,7 +35,7 @@ export MKN_CL_PREFERRED=1 # forces mkn to use cl even if gcc/clang are found
 export SWIG=0 # disables swig for mkn
 export CXXFLAGS="-EHsc"
 
-$ROOT/sh/gtest.sh
+KLOG=3 $ROOT/sh/gtest.sh
 
 /c/Python37-x64/python -m unittest discover -v . "*_test.py"
 /c/Python37-x64/python setup.py bdist_wheel

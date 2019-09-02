@@ -229,7 +229,7 @@ class SwigPath:
 
         # Filename of the produced .so file (e.g. _array.so)
         self.lib_filename = '{}{}'.format(self.private_extension_name,
-                                          sysconfig.get_config_var('SO'))
+                                          sysconfig.get_config_var('EXT_SUFFIX'))
 
 
 def create_extension(extension_name, module_dir,
@@ -351,7 +351,7 @@ def create_extension(extension_name, module_dir,
         # when linking libs to other libs
         if platform.system() == 'Windows':
             lib = os.path.join(build_dir, mod.build, "_"+mod.extension_name)
-            lib += os.path.splitext(sysconfig.get_config_var("SO"))[0]
+            lib += os.path.splitext(sysconfig.get_config_var("EXT_SUFFIX"))[0]
             libraries.append(lib)
         # names (i.e. not lib<name>.so) we specify the full library path
         else:
@@ -406,7 +406,7 @@ def create_extension(extension_name, module_dir,
     if platform.system() == 'Windows':
         implib = "/IMPLIB:" + os.path.abspath(
             os.path.join(build_dir, swig_path.build, "_"+extension_name))
-        implib += os.path.splitext(sysconfig.get_config_var("SO"))[0]
+        implib += os.path.splitext(sysconfig.get_config_var("EXT_SUFFIX"))[0]
         extra_link_args.append(implib + ".lib")
 
     core_module = SwigExtension(extension_path, module_ref=swig_path,
@@ -665,7 +665,7 @@ class TickCommand(Command, ABC):
 
 
 class TickBuild(build):
-    swig_min_ver = (3, 0, 7)
+    swig_min_ver = (4, 0, 0)
 
     @staticmethod
     def extract_swig_version(swig_ver_str):

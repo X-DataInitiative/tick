@@ -37,8 +37,8 @@ fi
 PYVER_MIN=$($PY -c "import sys; print(sys.version_info[1])")
 
 # We get the filename expected for C++ shared libraries
-LIB_POSTFIX=$($PY -c "import distutils; from distutils import sysconfig; print(sysconfig.get_config_var('SO'))")
-
+LIB_POSTFIX=$($PY -c "import distutils; from distutils import sysconfig; print(sysconfig.get_config_var('EXT_SUFFIX'))")
+[ -z "$LIB_POSTFIX" ] && echo "LIB_POSTFIX undefined: ERROR" && exit 1
 unameOut="$(uname -s)"
 
 function relpath(){
@@ -86,7 +86,7 @@ if [[ "$unameOut" == "CYGWIN"* ]] || [[ "$unameOut" == "MINGW"* ]] || [[ "$uname
     # which interferes with MSVC link.exe
     PATH="$(dirname $CL_PATH):$PATH"
   fi
-  
+
   PYDIR=$(dirname "$(which $PY)")
   echo PYDIR $PYDIR
   PYINC="$PYDIR/include"
