@@ -205,10 +205,8 @@ DLL_PUBLIC PyObject *_XSparseArray2d2NumpyArray(XSPARSEARRAY2D_TYPE *sig)
 
     // these lines are required for the following arrays to be de-allocated properly when owned by python
     if(((PyObject *)array)->ob_refcnt > 2) Py_DECREF(array);
-    if(has_owner) {
-      if(((PyObject *)indices)->ob_refcnt > 1) Py_DECREF(indices);
-      if(((PyObject *)row_indices)->ob_refcnt > 1) Py_DECREF(row_indices);
-    }
+    if(((PyObject *)indices)->ob_refcnt > 1) Py_DECREF(indices);
+    if(((PyObject *)row_indices)->ob_refcnt > 1) Py_DECREF(row_indices);
 
     return (PyObject *) instance;
 }

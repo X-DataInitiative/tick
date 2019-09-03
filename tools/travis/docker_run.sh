@@ -12,7 +12,7 @@ pyenv local ${PYVER}
 
 python -m pip install pip --upgrade
 python -m pip install -r requirements.txt
-python -m pip install cpplint --upgrade
+python -m pip install psutil cpplint --upgrade
 python setup.py cpplint
 swig -version # should be 4.0.0
 PYMAJ=$(python -c "import sys; print(sys.version_info[0])")
