@@ -15,6 +15,7 @@ from tick.solver.build.solver import SVRG_StepType_BarzilaiBorwein
 
 from .build.solver import SVRGDouble as _SVRGDouble
 from .build.solver import SVRGFloat as _SVRGFloat
+from .build.solver import MultiSVRGDouble as MultiSVRG, SVRGDoublePtrVector
 
 __author__ = "Stephane Gaiffas"
 
@@ -291,3 +292,52 @@ class SVRG(SolverFirstOrderSto):
 
         self.variance_reduction = self._var_red_str
         self.step_type = self._step_type_str
+
+    def multi_solve(self, coeffes, solvers, max_iter, threads = None, set_start = True):
+        """Complete function for calling solve on multiple independent SVRG C++ instances
+           Requires valid solvers setup with model and prox. Vectors of instances are
+           peculiar with SWIG, so we use a vector of pointers, populate the C++ vector from
+           Python, then run the solve on each object behind the pointer in C++
+
+        Parameters
+        ----------
+        coeffes : `np.array`, shape=(n_coeffs,)
+            First minimizer and possible starting_iterate for solvers
+        solvers : `List of SVRG`
+            Solver classes to be solved
+
+        max_iter : `int`
+            Default max number of iterations if tolerance not hit
+
+        threads : `optional int`
+            If None - len(solver) threads are spawned
+            otherwise and threadpool with number "threads" is spawned
+        set_start: `bool`
+            If True, coeffes[i] is used for the starting iterate of solvers[i]
+        """
+
+        if len(coeffes) != len(solvers):
+            raise ValueError("size mismatch between coeffes and solvers")
+        mins = []
+        sss = SVRGDoublePtrVector(0)
+        for i in range(len(solvers)):
+            solvers[i]._solver.reset()
+            mins.append(coeffes[i].copy())
+            if threads is None and set_start:
+                solvers[i]._solver.set_starting_iterate(mins[-1])
+            MultiSVRG.push_solver(sss, solvers[i]._solver) # push SVRG C++ pointer to vector sss
+            solvers[i]._start_solve()
+        if threads is None:
+            MultiSVRG.multi_solve(sss, max_iter)
+        elif set_start:
+            MultiSVRG.multi_solve(sss, coeffes, max_iter, threads)
+        else:
+            MultiSVRG.multi_solve(sss, max_iter, threads)
+        for i in range(len(solvers)):
+            solvers[i]._set("time_elapsed", solvers[i]._solver.get_time_history()[-1])
+            if solvers[i].verbose:
+                print("Done solving using " + solvers[i].name + " in " +
+                      str(solvers[i].time_elapsed) + " seconds")
+            solvers[i]._post_solve_and_record_in_cpp(mins[i], solvers[i]._solver.get_first_obj())
+        return mins
+

@@ -26,6 +26,8 @@ Kaplan-Meier estimators.
    nelson_aalen
    kaplan_meier
    ConvSCCS
+   sccs.BatchConvSCCS
+   sccs.StreamConvSCCS
 
 2. Models
 =========

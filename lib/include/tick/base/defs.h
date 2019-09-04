@@ -17,6 +17,17 @@
 #include <cstdint>
 
 #if defined _WIN32 || defined __CYGWIN__
+
+#ifndef WIN32_MEAN_AND_LEAN
+#define WIN32_MEAN_AND_LEAN
+#endif  // WIN32_MEAN_AND_LEAN
+#ifndef VC_EXTRA_LEAN
+#define VC_EXTRA_LEAN
+#endif  // VC_EXTRA_LEAN
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif  // NOMINMAX
+
 #ifdef BUILDING_DLL
 #ifdef __GNUC__
 #define DLL_PUBLIC __attribute__((dllexport))
@@ -88,6 +99,15 @@ typedef std::uint16_t ushort;
 #define ENABLE_WARNING(gcc_option, clang_option, msvc_unused) \
   DIAG_PRAGMA(GCC, warning DIAG_JOINSTR(-W, gcc_option))
 #endif
+#endif
+
+// for function tracing and debugging activated with
+// MKN_WITH=mkn.kul ./sh/mkn.sh
+#ifdef _MKN_WITH_MKN_KUL_
+#define KUL_FORCE_TRACE
+#include "kul/dbg.hpp"
+#else
+#define KUL_DBG_FUNC_ENTER
 #endif
 
 #endif  // LIB_INCLUDE_TICK_BASE_DEFS_H_

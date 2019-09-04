@@ -238,32 +238,31 @@ class SolverFirstOrderSto(SolverFirstOrder, SolverSto):
                     break
 
     def _solve_and_record_in_cpp(self, minimizer):
-        first_minimizer = minimizer
+        prev_obj = self.objective(minimizer)
+        self._solver.set_prev_obj(prev_obj)
         self._solver.solve(self.max_iter)
+        self._post_solve_and_record_in_cpp(minimizer, prev_obj)
 
-        prev_iterate = first_minimizer
-        prev_obj = self.objective(prev_iterate)
-
-        for epoch, iter_time, iterate in zip(
+    def _post_solve_and_record_in_cpp(self, minimizer, prev_obj):
+        prev_iterate = minimizer
+        for epoch, iter_time, iterate, obj in zip(
                 self._solver.get_epoch_history(),
                 self._solver.get_time_history(),
-                self._solver.get_iterate_history()):
-            obj = self.objective(iterate)
-            rel_delta = relative_distance(iterate, prev_iterate)
-
-            # This rel_obj is not exactly the same one as prev_obj is not the
-            # objective of the previous epoch but of the previouly recorded
-            # epoch
-            rel_obj = abs(obj - prev_obj) / abs(prev_obj) \
-                    if prev_obj != 0 else abs(obj)
-
-            self._handle_history(epoch, force=True, obj=obj,
-                                 iter_time=iter_time,
-                                 x=iterate, rel_delta=rel_delta,
-                                 rel_obj=rel_obj)
-
+                self._solver.get_iterate_history(),
+                self._solver.get_objectives()):
+            if epoch is self._solver.get_epoch_history()[-1]:
+                # This rel_obj is not exactly the same one as prev_obj is not the
+                # objective of the previous epoch but of the previouly recorded
+                # epoch
+                self._handle_history(
+                    epoch, force=True,
+                    obj=obj, iter_time=iter_time, x=iterate,
+                    rel_delta=relative_distance(iterate, prev_iterate),
+                    rel_obj=abs(obj - prev_obj) / abs(prev_obj) \
+                        if prev_obj != 0 else abs(obj))
             prev_obj = obj
             prev_iterate[:] = iterate
+        minimizer = prev_iterate
 
     def _get_typed_class(self, dtype_or_object_with_dtype, dtype_map):
         import tick.base.dtype_to_cpp_type

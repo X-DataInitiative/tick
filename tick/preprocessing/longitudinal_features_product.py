@@ -57,7 +57,7 @@ class LongitudinalFeaturesProduct(LongitudinalPreprocessor):
     ...                                   [0, 0, 0]], dtype="float64")
     ...                       ]
     >>> lfp = LongitudinalFeaturesProduct(exposure_type="infinite")
-    >>> product_features, _, _ = lfl.fit_transform(features)
+    >>> product_features, _, _ = lfp.fit_transform(features)
     >>> # output comes as a list of sparse matrices or 2D numpy arrays
     >>> product_features.__class__
     <class 'list'>
