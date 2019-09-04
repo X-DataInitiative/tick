@@ -201,7 +201,8 @@ void HawkesEM::compute_intensities_ur(
           break;
         last_indices[node_v]--;
       }
-      if (t_i < timestamps_v[last_indices[node_v]]) continue;
+      // if (t_i < timestamps_v[last_indices[node_v]]) continue;
+      if ( (timestamps_v.size() == 0) || (t_i < timestamps_v[last_indices[node_v]]) ) continue;
 
       // Get the corresponding kernels and their size
       ArrayDouble kernel_ruv = view_row(kernel_u, node_v);
