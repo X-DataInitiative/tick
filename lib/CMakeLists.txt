@@ -133,20 +133,37 @@ if (${GTEST_FOUND})
             COMMAND cpp-test/solver/tick_test_svrg
             )
 
-    if (${BENCHMARK})
-        add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../tools/benchmark/lib benchmarks)
-        add_custom_target(benchmarks
-                COMMAND benchmarks/tick_saga_sparse
-                COMMAND benchmarks/tick_asaga_sparse
-                COMMAND benchmarks/tick_hawkes_least_squares_weights
-                COMMAND benchmarks/tick_matrix_vector_product
-                COMMAND benchmarks/tick_logistic_regression_loss
-                )
-    endif ()
 else ()
-    message(STATUS "Testing and benchmarking in C++ NOT enabled")
+    message(STATUS "C++ Testing NOT enabled")
+    add_custom_target(
+      check COMMAND echo "Could not run C++ checks - gtest framework not found"
+    )
+endif ()
 
-    add_custom_target(check COMMAND
-            echo "Could not run C++ checks - gtest framework not found"
+if (${BENCHMARK})
+    find_package(Threads REQUIRED)
+    set(TICK_TEST_LIBS
+        ${PYTHON_LIBRARY}
+        ${CMAKE_THREAD_LIBS_INIT}
+        ${TICK_BLAS_LIBRARIES} pthread
+    )
+    if (APPLE)
+        find_library(ACCELERATE_LIBRARY Accelerate)
+
+        mark_as_advanced(ACCELERATE_LIBRARY)
+        set(TICK_TEST_LIBS ${TICK_TEST_LIBS} ${ACCELERATE_LIBRARY})
+
+    else (APPLE)
+        set(TICK_TEST_LIBS ${TICK_TEST_LIBS} -lrt -ldl -lutil -pthread)
+    endif (APPLE)
+    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../tools/benchmark/lib benchmarks)
+    add_custom_target(benchmarks
+            COMMAND benchmarks/tick_saga_sparse
+            COMMAND benchmarks/tick_asaga_sparse
+            COMMAND benchmarks/tick_hawkes_least_squares_weights
+            COMMAND benchmarks/tick_matrix_vector_product
+            COMMAND benchmarks/tick_logistic_regression_loss
             )
+else ()
+    message(STATUS "C++ benchmarking NOT enabled")
 endif ()
