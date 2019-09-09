@@ -35,7 +35,7 @@ class BLASBuild(build):
         build.run(self)
 
 setup(name="checkBLAS",
-      version='0.5.0.0',
+      version='0.6.0.0',
       ext_modules=modules,
       install_requires=['scipy',
                         'numpydoc',
