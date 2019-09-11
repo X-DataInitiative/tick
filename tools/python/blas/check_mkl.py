@@ -35,7 +35,7 @@ class MKLBuild(build):
         build.run(self)
 
 setup(name="checkMKL",
-      version='0.5.0.0',
+      version='0.6.0.0',
       ext_modules=modules,
       packages=find_packages(),
       cmdclass={'build': MKLBuild
