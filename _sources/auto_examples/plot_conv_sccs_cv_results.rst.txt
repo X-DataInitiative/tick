@@ -40,8 +40,8 @@ the simulation.
 .. literalinclude:: plot_conv_sccs_cv_results.py
     :lines: 11-
 
-**Total running time of the example:**  218.54 seconds
-( 3 minutes  38.54 seconds)
+**Total running time of the example:**  168.97 seconds
+( 2 minutes  48.97 seconds)
     
 Mentioned *tick* classes:
    * `tick.survival.ConvSCCS`

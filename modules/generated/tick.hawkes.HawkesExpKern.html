@@ -3,7 +3,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
+    <meta charset="utf-8" /><script type="text/javascript">
 
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-97947441-1']);
@@ -15,28 +15,16 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.hawkes.HawkesExpKern &#8212; tick 0.5.0 documentation</title>
+    <title>tick.hawkes.HawkesExpKern &#8212; tick 0.6.0 documentation</title>
     <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../../',
-        VERSION:     '0.5.0',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <script type="text/javascript" src="../../_static/js/jquery-1.11.0.min.js"></script>
-    <script type="text/javascript" src="../../_static/js/jquery-fix.js"></script>
-    <script type="text/javascript" src="../../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="../../_static/bootstrap-sphinx.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="shortcut icon" href="../../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -46,9 +34,12 @@
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
 <meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../../_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="../../_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="../../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="../../_static/bootstrap-sphinx.js "></script>
 
-  </head>
-  <body>
+  </head><body>
 
   <div id="navbar" class="None navbar-default navbar-fixed-top">
     <div class="container">
@@ -61,7 +52,7 @@
         </button>
         <a class="navbar-brand" href="../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.6</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -81,72 +72,72 @@
   <ul class="dropdown-menu globaltoc"
       role="menu"
       aria-labelledby="dLabelGlobalToc"><ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="../hawkes.html"><code class="docutils literal"><span class="pre">tick.hawkes</span></code></a><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../hawkes.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.hawkes</span></code></a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../hawkes.html#introduction">1. Introduction</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../hawkes.html#learners">2. Learners</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../hawkes.html#point-process-simulation">3. Point process simulation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../hawkes.html#models-for-inference">4. Models for inference</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../linear_model.html"><code class="docutils literal"><span class="pre">tick.linear_model</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../linear_model.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.linear_model</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../linear_model.html#introduction">1. Introduction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../linear_model.html#learners">2. Learners</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../linear_model.html#models">3. Models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../linear_model.html#simulation">4. Simulation</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../robust.html"><code class="docutils literal"><span class="pre">tick.robust</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../robust.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.robust</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../robust.html#regression-with-individual-intercepts">1. Regression with individual intercepts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../robust.html#robust-losses">2. Robust losses</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../survival.html"><code class="docutils literal"><span class="pre">tick.survival</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../survival.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.survival</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../survival.html#learners">1. Learners</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../survival.html#models">2. Models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../survival.html#simulation">3. Simulation</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../prox.html"><code class="docutils literal"><span class="pre">tick.prox</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../prox.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.prox</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../prox.html#available-operators">1. Available operators</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../prox.html#example">2. Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../prox.html#how-to-combine-several-prox">3. How to combine several prox ?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../prox.html#the-prox-class-api">4. The <code class="docutils literal"><span class="pre">prox</span></code> class API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../prox.html#the-prox-class-api">4. The <code class="docutils literal notranslate"><span class="pre">prox</span></code> class API</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../solver.html"><code class="docutils literal"><span class="pre">tick.solver</span></code></a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../solver.html#the-solver-class-api">1. The <code class="docutils literal"><span class="pre">solver</span></code> class API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../solver.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.solver</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../solver.html#the-solver-class-api">1. The <code class="docutils literal notranslate"><span class="pre">solver</span></code> class API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../solver.html#available-solvers">2. Available solvers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../solver.html#example">3. Example</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../simulation.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.simulation</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../simulation.html#simulation-of-model-weights">1. Simulation of model weights</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../simulation.html#simulation-of-a-features-matrix">2. Simulation of a features matrix</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../plot.html"><code class="docutils literal"><span class="pre">tick.plot</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../plot.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.plot</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../plot.html#history-plot">1. History plot</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../plot.html#plots-for-hawkes-processes">2. Plots for Hawkes processes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../plot.html#plots-for-point-process-simulation">3. Plots for point process simulation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../plot.html#miscellaneous-plots">4. Miscellaneous plots</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../dataset.html"><code class="docutils literal"><span class="pre">tick.dataset</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../dataset.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.dataset</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="tick.dataset.fetch_tick_dataset.html">tick.dataset.fetch_tick_dataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tick.dataset.fetch_hawkes_bund_data.html">tick.dataset.fetch_hawkes_bund_data</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../preprocessing.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.preprocessing</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../preprocessing.html#preprocessing-for-static-features">Preprocessing for static features</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../preprocessing.html#preprocessing-for-longitudinal-features">Preprocessing for longitudinal features</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../metrics.html"><code class="docutils literal"><span class="pre">tick.metrics</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../metrics.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.metrics</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="tick.metrics.support_fdp.html">tick.metrics.support_fdp</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tick.metrics.support_recall.html">tick.metrics.support_recall</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../R.html">How to use <code class="docutils literal"><span class="pre">tick</span></code> from the R statistical software</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../R.html">How to use <code class="docutils literal notranslate"><span class="pre">tick</span></code> from the R statistical software</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../R.html#training-a-logistic-regression-model">1. Training a logistic regression model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../R.html#simulation-of-a-hawkes-process">2. Simulation of a Hawkes process</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../R.html#using-optimization-tools-from-r">3. Using optimization tools from R</a></li>
@@ -162,17 +153,17 @@
 </li>
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">API Reference</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../api.html#table-of-contents">Table of contents</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../api.html#hawkes"><code class="docutils literal"><span class="pre">hawkes</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#linear-model"><code class="docutils literal"><span class="pre">linear_model</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#robust"><code class="docutils literal"><span class="pre">robust</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#survival"><code class="docutils literal"><span class="pre">survival</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#prox"><code class="docutils literal"><span class="pre">prox</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#solver"><code class="docutils literal"><span class="pre">solver</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#api-simulation"><code class="docutils literal"><span class="pre">simulation</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#plot"><code class="docutils literal"><span class="pre">plot</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#dataset"><code class="docutils literal"><span class="pre">dataset</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#preprocessing"><code class="docutils literal"><span class="pre">preprocessing</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#metrics"><code class="docutils literal"><span class="pre">metrics</span></code></a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../api.html#hawkes"><span class="xref std std-ref">hawkes</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#linear-model"><span class="xref std std-ref">linear_model</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#robust"><span class="xref std std-ref">robust</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#survival"><span class="xref std std-ref">survival</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#prox"><span class="xref std std-ref">prox</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#solver"><span class="xref std std-ref">solver</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#api-simulation"><span class="xref std std-ref">simulation</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#plot"><span class="xref std std-ref">plot</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#dataset"><span class="xref std std-ref">dataset</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#preprocessing"><span class="xref std std-ref">preprocessing</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#metrics"><span class="xref std std-ref">metrics</span></a></li>
 </ul>
 </li>
 </ul>
@@ -206,49 +197,47 @@
 <span id="hawkesexpkern"></span><h1>tick.hawkes.HawkesExpKern<a class="headerlink" href="#tick-hawkes-hawkesexpkern" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="tick.hawkes.HawkesExpKern">
-<em class="property">class </em><code class="descclassname">tick.hawkes.</code><code class="descname">HawkesExpKern</code><span class="sig-paren">(</span><em>decays</em>, <em>gofit='least-squares'</em>, <em>penalty='l2'</em>, <em>C=1000.0</em>, <em>solver='agd'</em>, <em>step=None</em>, <em>tol=1e-05</em>, <em>max_iter=100</em>, <em>verbose=False</em>, <em>print_every=10</em>, <em>record_every=10</em>, <em>elastic_net_ratio=0.95</em>, <em>random_state=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/hawkes/inference/hawkes_expkern_fixeddecay.html#HawkesExpKern"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.hawkes.HawkesExpKern" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tick.hawkes.</code><code class="sig-name descname">HawkesExpKern</code><span class="sig-paren">(</span><em class="sig-param">decays</em>, <em class="sig-param">gofit='least-squares'</em>, <em class="sig-param">penalty='l2'</em>, <em class="sig-param">C=1000.0</em>, <em class="sig-param">solver='agd'</em>, <em class="sig-param">step=None</em>, <em class="sig-param">tol=1e-05</em>, <em class="sig-param">max_iter=100</em>, <em class="sig-param">verbose=False</em>, <em class="sig-param">print_every=10</em>, <em class="sig-param">record_every=10</em>, <em class="sig-param">elastic_net_ratio=0.95</em>, <em class="sig-param">random_state=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/hawkes/inference/hawkes_expkern_fixeddecay.html#HawkesExpKern"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.hawkes.HawkesExpKern" title="Permalink to this definition">¶</a></dt>
 <dd><p>Hawkes process learner for exponential kernels with fixed and given decays,
 with many choices of penalization and solvers.</p>
 <p>Hawkes processes are point processes defined by the intensity:</p>
-<div class="math">
+<div class="math notranslate nohighlight">
 \[\forall i \in [1 \dots D], \quad
 \lambda_i(t) = \mu_i + \sum_{j=1}^D
 \sum_{t_k^j &lt; t} \phi_{ij}(t - t_k^j)\]</div>
 <p>where</p>
 <ul class="simple">
-<li><span class="math">\(D\)</span> is the number of nodes</li>
-<li><span class="math">\(\mu_i\)</span> are the baseline intensities</li>
-<li><span class="math">\(\phi_{ij}\)</span> are the kernels</li>
-<li><span class="math">\(t_k^j\)</span> are the timestamps of all events of node <span class="math">\(j\)</span></li>
+<li><p><span class="math notranslate nohighlight">\(D\)</span> is the number of nodes</p></li>
+<li><p><span class="math notranslate nohighlight">\(\mu_i\)</span> are the baseline intensities</p></li>
+<li><p><span class="math notranslate nohighlight">\(\phi_{ij}\)</span> are the kernels</p></li>
+<li><p><span class="math notranslate nohighlight">\(t_k^j\)</span> are the timestamps of all events of node <span class="math notranslate nohighlight">\(j\)</span></p></li>
 </ul>
 <p>and with an exponential parametrisation of the kernels</p>
-<div class="math">
+<div class="math notranslate nohighlight">
 \[\phi_{ij}(t) = \alpha^{ij} \beta^{ij}
                \exp (- \beta^{ij} t) 1_{t &gt; 0}\]</div>
 <p>In our implementation we denote:</p>
 <ul class="simple">
-<li>Integer <span class="math">\(D\)</span> by the attribute <code class="xref py py-obj docutils literal"><span class="pre">n_nodes</span></code></li>
-<li>Vector <span class="math">\(\mu \in \mathbb{R}^{D}\)</span> by the attribute
-<code class="xref py py-obj docutils literal"><span class="pre">baseline</span></code></li>
-<li>Matrix <span class="math">\(A = (\alpha^{ij})_{ij} \in \mathbb{R}^{D \times D}\)</span>
-by the attribute <code class="xref py py-obj docutils literal"><span class="pre">adjacency</span></code></li>
-<li>Matrix <span class="math">\(B = (\beta_{ij})_{ij} \in \mathbb{R}^{D \times D}\)</span> by the
-parameter <code class="xref py py-obj docutils literal"><span class="pre">decays</span></code>. This parameter is given to the model</li>
+<li><p>Integer <span class="math notranslate nohighlight">\(D\)</span> by the attribute <code class="xref py py-obj docutils literal notranslate"><span class="pre">n_nodes</span></code></p></li>
+<li><p>Vector <span class="math notranslate nohighlight">\(\mu \in \mathbb{R}^{D}\)</span> by the attribute
+<code class="xref py py-obj docutils literal notranslate"><span class="pre">baseline</span></code></p></li>
+<li><p>Matrix <span class="math notranslate nohighlight">\(A = (\alpha^{ij})_{ij} \in \mathbb{R}^{D \times D}\)</span>
+by the attribute <code class="xref py py-obj docutils literal notranslate"><span class="pre">adjacency</span></code></p></li>
+<li><p>Matrix <span class="math notranslate nohighlight">\(B = (\beta_{ij})_{ij} \in \mathbb{R}^{D \times D}\)</span> by the
+parameter <code class="xref py py-obj docutils literal notranslate"><span class="pre">decays</span></code>. This parameter is given to the model</p></li>
 </ul>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>decays</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code> or <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code>, shape=(n_nodes, n_nodes)</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>decays</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code> or <code class="xref py py-obj docutils literal notranslate"><span class="pre">np.ndarray</span></code>, shape=(n_nodes, n_nodes)</p>
 <blockquote>
-<div><p>The decays used in the exponential kernels. If a <code class="xref py py-obj docutils literal"><span class="pre">float</span></code> is given,
+<div><p>The decays used in the exponential kernels. If a <code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code> is given,
 the initial point will be the matrix filled with this float.</p>
 </div></blockquote>
 <p><strong>gofit</strong> : {‘least-squares’, ‘likelihood’}, default=’least-squares’</p>
 <blockquote>
 <div><p>Goodness-of-fit used for model’s fitting</p>
 </div></blockquote>
-<p><strong>C</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default=1e3</p>
+<p><strong>C</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>, default=1e3</p>
 <blockquote>
 <div><p>Level of penalization</p>
 </div></blockquote>
@@ -261,321 +250,295 @@ If nuclear is chosen, it is applied on the adjacency matrix.</p>
 <blockquote>
 <div><p>The name of the solver to use</p>
 </div></blockquote>
-<p><strong>step</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default=None</p>
+<p><strong>step</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>, default=None</p>
 <blockquote>
 <div><p>Initial step size used for learning. Used in ‘gd’, ‘agd’, ‘sgd’
 and ‘svrg’ solvers</p>
 </div></blockquote>
-<p><strong>tol</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default=1e-5</p>
+<p><strong>tol</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>, default=1e-5</p>
 <blockquote>
 <div><p>The tolerance of the solver (iterations stop when the stopping
-criterion is below it). If not reached the solver does <code class="docutils literal"><span class="pre">max_iter</span></code>
+criterion is below it). If not reached the solver does <code class="docutils literal notranslate"><span class="pre">max_iter</span></code>
 iterations</p>
 </div></blockquote>
-<p><strong>max_iter</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code>, default=100</p>
+<p><strong>max_iter</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code>, default=100</p>
 <blockquote>
 <div><p>Maximum number of iterations of the solver</p>
 </div></blockquote>
-<p><strong>verbose</strong> : <code class="xref py py-obj docutils literal"><span class="pre">bool</span></code>, default=False</p>
+<p><strong>verbose</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>, default=False</p>
 <blockquote>
-<div><p>If <code class="xref py py-obj docutils literal"><span class="pre">True</span></code>, we verbose things, otherwise the solver does not
+<div><p>If <code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code>, we verbose things, otherwise the solver does not
 print anything (but records information in history anyway)</p>
 </div></blockquote>
-<p><strong>print_every</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code>, default=10</p>
+<p><strong>print_every</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code>, default=10</p>
 <blockquote>
-<div><p>Print history information when <code class="docutils literal"><span class="pre">n_iter</span></code> (iteration number) is
-a multiple of <code class="docutils literal"><span class="pre">print_every</span></code></p>
+<div><p>Print history information when <code class="docutils literal notranslate"><span class="pre">n_iter</span></code> (iteration number) is
+a multiple of <code class="docutils literal notranslate"><span class="pre">print_every</span></code></p>
 </div></blockquote>
-<p><strong>record_every</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code>, default=10</p>
+<p><strong>record_every</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code>, default=10</p>
 <blockquote>
-<div><p>Record history information when <code class="docutils literal"><span class="pre">n_iter</span></code> (iteration number) is
-a multiple of <code class="docutils literal"><span class="pre">record_every</span></code></p>
+<div><p>Record history information when <code class="docutils literal notranslate"><span class="pre">n_iter</span></code> (iteration number) is
+a multiple of <code class="docutils literal notranslate"><span class="pre">record_every</span></code></p>
 </div></blockquote>
-<p><strong>elastic_net_ratio</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default=0.95</p>
+<p><strong>elastic_net_ratio</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>, default=0.95</p>
 <blockquote>
 <div><p>Ratio of elastic net mixing parameter with 0 &lt;= ratio &lt;= 1.</p>
 <ul class="simple">
-<li>For ratio = 0 this is ridge (L2 squared) regularization.</li>
-<li>For ratio = 1 this is lasso (L1) regularization.</li>
-<li>For 0 &lt; ratio &lt; 1, the regularization is a linear combination
-of L1 and L2.</li>
+<li><p>For ratio = 0 this is ridge (L2 squared) regularization.</p></li>
+<li><p>For ratio = 1 this is lasso (L1) regularization.</p></li>
+<li><p>For 0 &lt; ratio &lt; 1, the regularization is a linear combination
+of L1 and L2.</p></li>
 </ul>
 <p>Used in ‘elasticnet’ penalty</p>
 </div></blockquote>
 <p><strong>random_state</strong> : int seed, or None (default)</p>
 <blockquote>
-<div><p>The seed that will be used by stochastic solvers. If <code class="xref py py-obj docutils literal"><span class="pre">None</span></code>, a random
+<div><p>The seed that will be used by stochastic solvers. If <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>, a random
 seed will be used (based on timestamp and other physical metrics).
 Used in ‘sgd’, and ‘svrg’ solvers</p>
 </div></blockquote>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Attributes:</th><td class="field-body"><p class="first"><strong>n_nodes</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code></p>
+</dd>
+<dt class="field-even">Attributes</dt>
+<dd class="field-even"><p><strong>n_nodes</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></p>
 <blockquote>
 <div><p>Number of nodes / components in the Hawkes model</p>
 </div></blockquote>
-<p><strong>baseline</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.array</span></code>, shape=(n_nodes,)</p>
+<p><strong>baseline</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">np.array</span></code>, shape=(n_nodes,)</p>
 <blockquote>
 <div><p>Inferred baseline of each component’s intensity</p>
 </div></blockquote>
-<p><strong>adjacency</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code>, shape=(n_nodes, n_nodes)</p>
+<p><strong>adjacency</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">np.ndarray</span></code>, shape=(n_nodes, n_nodes)</p>
 <blockquote>
 <div><p>Inferred adjacency matrix</p>
 </div></blockquote>
-<p><strong>coeffs</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.array</span></code>, shape=(n_nodes * n_nodes + n_nodes, )</p>
-<blockquote class="last">
-<div><p>Raw coefficients of the model. Row stack of <code class="xref py py-obj docutils literal"><span class="pre">self.baseline</span></code> and
-<code class="xref py py-obj docutils literal"><span class="pre">self.adjacency</span></code></p>
+<p><strong>coeffs</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">np.array</span></code>, shape=(n_nodes * n_nodes + n_nodes, )</p>
+<blockquote>
+<div><p>Raw coefficients of the model. Row stack of <code class="xref py py-obj docutils literal notranslate"><span class="pre">self.baseline</span></code> and
+<code class="xref py py-obj docutils literal notranslate"><span class="pre">self.adjacency</span></code></p>
 </div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <dl class="method">
 <dt id="tick.hawkes.HawkesExpKern.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>decays</em>, <em>gofit='least-squares'</em>, <em>penalty='l2'</em>, <em>C=1000.0</em>, <em>solver='agd'</em>, <em>step=None</em>, <em>tol=1e-05</em>, <em>max_iter=100</em>, <em>verbose=False</em>, <em>print_every=10</em>, <em>record_every=10</em>, <em>elastic_net_ratio=0.95</em>, <em>random_state=None</em><span class="sig-paren">)</span><a class="headerlink" href="#tick.hawkes.HawkesExpKern.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">decays</em>, <em class="sig-param">gofit='least-squares'</em>, <em class="sig-param">penalty='l2'</em>, <em class="sig-param">C=1000.0</em>, <em class="sig-param">solver='agd'</em>, <em class="sig-param">step=None</em>, <em class="sig-param">tol=1e-05</em>, <em class="sig-param">max_iter=100</em>, <em class="sig-param">verbose=False</em>, <em class="sig-param">print_every=10</em>, <em class="sig-param">record_every=10</em>, <em class="sig-param">elastic_net_ratio=0.95</em>, <em class="sig-param">random_state=None</em><span class="sig-paren">)</span><a class="headerlink" href="#tick.hawkes.HawkesExpKern.__init__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="tick.hawkes.HawkesExpKern.estimated_intensity">
-<code class="descname">estimated_intensity</code><span class="sig-paren">(</span><em>events</em>, <em>intensity_track_step</em>, <em>end_time=None</em><span class="sig-paren">)</span><a class="headerlink" href="#tick.hawkes.HawkesExpKern.estimated_intensity" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">estimated_intensity</code><span class="sig-paren">(</span><em class="sig-param">events</em>, <em class="sig-param">intensity_track_step</em>, <em class="sig-param">end_time=None</em><span class="sig-paren">)</span><a class="headerlink" href="#tick.hawkes.HawkesExpKern.estimated_intensity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Value of intensity for a given realization with the fitted parameters</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>events</strong> : <code class="xref py py-obj docutils literal"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code>, default = None</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>events</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">np.ndarray</span></code>, default = None</p>
 <blockquote>
 <div><p>One Hawkes processes realization, a list of n_node for
-each component of the Hawkes. Namely <code class="xref py py-obj docutils literal"><span class="pre">events[i]</span></code> contains a
-one-dimensional <code class="xref py py-obj docutils literal"><span class="pre">numpy.array</span></code> of the events’ timestamps of
+each component of the Hawkes. Namely <code class="xref py py-obj docutils literal notranslate"><span class="pre">events[i]</span></code> contains a
+one-dimensional <code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.array</span></code> of the events’ timestamps of
 component i.</p>
 </div></blockquote>
-<p><strong>intensity_track_step</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default = None</p>
+<p><strong>intensity_track_step</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>, default = None</p>
 <blockquote>
 <div><p>How often the intensity should be computed</p>
 </div></blockquote>
-<p><strong>end_time</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default = None</p>
+<p><strong>end_time</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>, default = None</p>
 <blockquote>
 <div><p>End time of hawkes process.
 If None, it will be set to realization’s latest time.</p>
 </div></blockquote>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>tracked_intensity</strong> : <code class="xref py py-obj docutils literal"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal"><span class="pre">np.array</span></code></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>tracked_intensity</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">np.array</span></code></p>
 <blockquote>
 <div><p>intensity values for all components</p>
 </div></blockquote>
-<p><strong>intensity_tracked_times</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.array</span></code></p>
-<blockquote class="last">
+<p><strong>intensity_tracked_times</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">np.array</span></code></p>
+<blockquote>
 <div><p>Times at wich intensity has been recorded</p>
 </div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tick.hawkes.HawkesExpKern.fit">
-<code class="descname">fit</code><span class="sig-paren">(</span><em>events: list</em>, <em>start=None</em><span class="sig-paren">)</span><a class="headerlink" href="#tick.hawkes.HawkesExpKern.fit" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param">events: list</em>, <em class="sig-param">start=None</em><span class="sig-paren">)</span><a class="headerlink" href="#tick.hawkes.HawkesExpKern.fit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fit the model according to the given training data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>events</strong> : <code class="xref py py-obj docutils literal"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal"><span class="pre">np.array</span></code></p>
+<dl class="field-list">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>events</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">np.array</span></code></p>
 <blockquote>
 <div><p>The events of each component of the Hawkes. Namely
-<code class="xref py py-obj docutils literal"><span class="pre">events[j]</span></code> contains a one-dimensional <code class="xref py py-obj docutils literal"><span class="pre">numpy.array</span></code> of
+<code class="xref py py-obj docutils literal notranslate"><span class="pre">events[j]</span></code> contains a one-dimensional <code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.array</span></code> of
 the events’ timestamps of component j</p>
 </div></blockquote>
-<p><strong>start</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.array</span></code> or <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default=None</p>
+<p><strong>start</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">np.array</span></code> or <code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>, default=None</p>
 <blockquote>
-<div><p>If <code class="xref py py-obj docutils literal"><span class="pre">np.array</span></code>, the initial <code class="xref py py-obj docutils literal"><span class="pre">coeffs</span></code> coefficients passed to the
+<div><p>If <code class="xref py py-obj docutils literal notranslate"><span class="pre">np.array</span></code>, the initial <code class="xref py py-obj docutils literal notranslate"><span class="pre">coeffs</span></code> coefficients passed to the
 solver, ie. the optimization algorithm.
-If a <code class="xref py py-obj docutils literal"><span class="pre">float</span></code> is given, the initial point will be the vector
+If a <code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code> is given, the initial point will be the vector
 filled with this float.
-If <code class="xref py py-obj docutils literal"><span class="pre">None</span></code> it will be automatically chosen.</p>
+If <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code> it will be automatically chosen.</p>
 </div></blockquote>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> : <code class="xref py py-obj docutils literal"><span class="pre">LearnerHawkesParametric</span></code></p>
-<blockquote class="last">
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>output</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">LearnerHawkesParametric</span></code></p>
+<blockquote>
 <div><p>The current instance of the Learner</p>
 </div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tick.hawkes.HawkesExpKern.get_kernel_norms">
-<code class="descname">get_kernel_norms</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tick.hawkes.HawkesExpKern.get_kernel_norms" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_kernel_norms</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tick.hawkes.HawkesExpKern.get_kernel_norms" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes kernel norms. This makes our learner compliant with
-<a class="reference internal" href="tick.plot.plot_hawkes_kernel_norms.html#tick.plot.plot_hawkes_kernel_norms" title="tick.plot.plot_hawkes_kernel_norms"><code class="xref py py-obj docutils literal"><span class="pre">tick.plot.plot_hawkes_kernel_norms</span></code></a> API</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>norms</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code>, shape=(n_nodes, n_nodes)</p>
-<blockquote class="last">
+<a class="reference internal" href="tick.plot.plot_hawkes_kernel_norms.html#tick.plot.plot_hawkes_kernel_norms" title="tick.plot.plot_hawkes_kernel_norms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tick.plot.plot_hawkes_kernel_norms</span></code></a> API</p>
+<dl class="field-list">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>norms</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">np.ndarray</span></code>, shape=(n_nodes, n_nodes)</p>
+<blockquote>
 <div><p>2d array in which each entry i, j corresponds to the norm of
 kernel i, j</p>
 </div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tick.hawkes.HawkesExpKern.get_kernel_supports">
-<code class="descname">get_kernel_supports</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tick.hawkes.HawkesExpKern.get_kernel_supports" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_kernel_supports</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tick.hawkes.HawkesExpKern.get_kernel_supports" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes kernel support. This makes our learner compliant with
-<a class="reference internal" href="tick.plot.plot_hawkes_kernels.html#tick.plot.plot_hawkes_kernels" title="tick.plot.plot_hawkes_kernels"><code class="xref py py-obj docutils literal"><span class="pre">tick.plot.plot_hawkes_kernels</span></code></a> API</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code>, shape=(n_nodes, n_nodes)</p>
-<blockquote class="last">
+<a class="reference internal" href="tick.plot.plot_hawkes_kernels.html#tick.plot.plot_hawkes_kernels" title="tick.plot.plot_hawkes_kernels"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tick.plot.plot_hawkes_kernels</span></code></a> API</p>
+<dl class="field-list">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>output</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">np.ndarray</span></code>, shape=(n_nodes, n_nodes)</p>
+<blockquote>
 <div><p>2d array in which each entry i, j corresponds to the support of
 kernel i, j</p>
 </div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tick.hawkes.HawkesExpKern.get_kernel_values">
-<code class="descname">get_kernel_values</code><span class="sig-paren">(</span><em>i</em>, <em>j</em>, <em>abscissa_array</em><span class="sig-paren">)</span><a class="headerlink" href="#tick.hawkes.HawkesExpKern.get_kernel_values" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_kernel_values</code><span class="sig-paren">(</span><em class="sig-param">i</em>, <em class="sig-param">j</em>, <em class="sig-param">abscissa_array</em><span class="sig-paren">)</span><a class="headerlink" href="#tick.hawkes.HawkesExpKern.get_kernel_values" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes value of the specified kernel on given time values. This
-makes our learner compliant with <a class="reference internal" href="tick.plot.plot_hawkes_kernels.html#tick.plot.plot_hawkes_kernels" title="tick.plot.plot_hawkes_kernels"><code class="xref py py-obj docutils literal"><span class="pre">tick.plot.plot_hawkes_kernels</span></code></a> API</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>i</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code></p>
+makes our learner compliant with <a class="reference internal" href="tick.plot.plot_hawkes_kernels.html#tick.plot.plot_hawkes_kernels" title="tick.plot.plot_hawkes_kernels"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tick.plot.plot_hawkes_kernels</span></code></a> API</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>i</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></p>
 <blockquote>
 <div><p>First index of the kernel</p>
 </div></blockquote>
-<p><strong>j</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code></p>
+<p><strong>j</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></p>
 <blockquote>
 <div><p>Second index of the kernel</p>
 </div></blockquote>
-<p><strong>abscissa_array</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code>, shape=(n_points, )</p>
+<p><strong>abscissa_array</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">np.ndarray</span></code>, shape=(n_points, )</p>
 <blockquote>
 <div><p>1d array containing all the times at which this kernel will
 computes it value</p>
 </div></blockquote>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code>, shape=(n_points, )</p>
-<blockquote class="last">
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>output</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">np.ndarray</span></code>, shape=(n_points, )</p>
+<blockquote>
 <div><p>1d array containing the values of the specified kernels at the
 given times.</p>
 </div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tick.hawkes.HawkesExpKern.plot_estimated_intensity">
-<code class="descname">plot_estimated_intensity</code><span class="sig-paren">(</span><em>events</em>, <em>n_points=10000</em>, <em>plot_nodes=None</em>, <em>t_min=None</em>, <em>t_max=None</em>, <em>intensity_track_step=None</em>, <em>max_jumps=None</em>, <em>show=True</em>, <em>ax=None</em><span class="sig-paren">)</span><a class="headerlink" href="#tick.hawkes.HawkesExpKern.plot_estimated_intensity" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">plot_estimated_intensity</code><span class="sig-paren">(</span><em class="sig-param">events</em>, <em class="sig-param">n_points=10000</em>, <em class="sig-param">plot_nodes=None</em>, <em class="sig-param">t_min=None</em>, <em class="sig-param">t_max=None</em>, <em class="sig-param">intensity_track_step=None</em>, <em class="sig-param">max_jumps=None</em>, <em class="sig-param">show=True</em>, <em class="sig-param">ax=None</em><span class="sig-paren">)</span><a class="headerlink" href="#tick.hawkes.HawkesExpKern.plot_estimated_intensity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot value of intensity for a given realization with the fitted
 parameters</p>
-<dl class="docutils">
-<dt>events <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-obj docutils literal"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code>, default = None</span></dt>
-<dd>One Hawkes processes realization, a list of n_node for
-each component of the Hawkes. Namely <code class="xref py py-obj docutils literal"><span class="pre">events[i]</span></code> contains a
-one-dimensional <code class="xref py py-obj docutils literal"><span class="pre">numpy.array</span></code> of the events’ timestamps of
-component i.</dd>
-<dt>n_points <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-obj docutils literal"><span class="pre">int</span></code>, default=10000</span></dt>
-<dd>Number of points used for intensity plot.</dd>
-<dt>plot_nodes <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-obj docutils literal"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal"><span class="pre">int</span></code>, default=`None`</span></dt>
-<dd>List of nodes that will be plotted. If <code class="xref py py-obj docutils literal"><span class="pre">None</span></code>, all nodes are
-considered</dd>
-<dt>t_min <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default=`None`</span></dt>
-<dd>If not <code class="xref py py-obj docutils literal"><span class="pre">None</span></code>, time at which plot will start</dd>
-<dt>t_max <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default=`None`</span></dt>
-<dd>If not <code class="xref py py-obj docutils literal"><span class="pre">None</span></code>, time at which plot will stop</dd>
-<dt>intensity_track_step <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default=`None`</span></dt>
-<dd>Defines how often intensity will be computed. If this is too low,
+<dl>
+<dt>events<span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">np.ndarray</span></code>, default = None</span></dt><dd><p>One Hawkes processes realization, a list of n_node for
+each component of the Hawkes. Namely <code class="xref py py-obj docutils literal notranslate"><span class="pre">events[i]</span></code> contains a
+one-dimensional <code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.array</span></code> of the events’ timestamps of
+component i.</p>
+</dd>
+<dt>n_points<span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code>, default=10000</span></dt><dd><p>Number of points used for intensity plot.</p>
+</dd>
+<dt>plot_nodes<span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code>, default=`None`</span></dt><dd><p>List of nodes that will be plotted. If <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>, all nodes are
+considered</p>
+</dd>
+<dt>t_min<span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>, default=`None`</span></dt><dd><p>If not <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>, time at which plot will start</p>
+</dd>
+<dt>t_max<span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>, default=`None`</span></dt><dd><p>If not <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>, time at which plot will stop</p>
+</dd>
+<dt>intensity_track_step<span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>, default=`None`</span></dt><dd><p>Defines how often intensity will be computed. If this is too low,
 computations might be long. By default, a value will be
-extrapolated from (t_max - t_min) / n_points.</dd>
-<dt>max_jumps <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-obj docutils literal"><span class="pre">int</span></code>, default=`None`</span></dt>
-<dd>If not <code class="xref py py-obj docutils literal"><span class="pre">None</span></code>, maximum of jumps per coordinate that will be plotted.
+extrapolated from (t_max - t_min) / n_points.</p>
+</dd>
+<dt>max_jumps<span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code>, default=`None`</span></dt><dd><p>If not <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>, maximum of jumps per coordinate that will be plotted.
 This is useful when plotting big point processes to ensure a only
-readable part of them will be plotted</dd>
-<dt>show <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-obj docutils literal"><span class="pre">bool</span></code>, default=`True`</span></dt>
-<dd>if <code class="xref py py-obj docutils literal"><span class="pre">True</span></code>, show the plot. Otherwise an explicit call to the show
-function is necessary. Useful when superposing several plots.</dd>
-<dt>ax <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-obj docutils literal"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal"><span class="pre">matplotlib.axes</span></code>, default=None</span></dt>
-<dd>If not None, the figure will be plot on this axis and show will be
-set to False.</dd>
+readable part of them will be plotted</p>
+</dd>
+<dt>show<span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>, default=`True`</span></dt><dd><p>if <code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code>, show the plot. Otherwise an explicit call to the show
+function is necessary. Useful when superposing several plots.</p>
+</dd>
+<dt>ax<span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">matplotlib.axes</span></code>, default=None</span></dt><dd><p>If not None, the figure will be plot on this axis and show will be
+set to False.</p>
+</dd>
 </dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tick.hawkes.HawkesExpKern.score">
-<code class="descname">score</code><span class="sig-paren">(</span><em>events=None</em>, <em>end_times=None</em>, <em>baseline=None</em>, <em>adjacency=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/hawkes/inference/hawkes_expkern_fixeddecay.html#HawkesExpKern.score"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.hawkes.HawkesExpKern.score" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">score</code><span class="sig-paren">(</span><em class="sig-param">events=None</em>, <em class="sig-param">end_times=None</em>, <em class="sig-param">baseline=None</em>, <em class="sig-param">adjacency=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/hawkes/inference/hawkes_expkern_fixeddecay.html#HawkesExpKern.score"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.hawkes.HawkesExpKern.score" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute score metric
 Score metric is log likelihood (the higher the better)</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>events</strong> : <code class="xref py py-obj docutils literal"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code>, default = None</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>events</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">np.ndarray</span></code>, default = None</p>
 <blockquote>
 <div><p>List of Hawkes processes realizations used to measure score.
 Each realization of the Hawkes process is a list of n_node for
-each component of the Hawkes. Namely <code class="xref py py-obj docutils literal"><span class="pre">events[i][j]</span></code> contains a
-one-dimensional <code class="xref py py-obj docutils literal"><span class="pre">numpy.array</span></code> of the events’ timestamps of
+each component of the Hawkes. Namely <code class="xref py py-obj docutils literal notranslate"><span class="pre">events[i][j]</span></code> contains a
+one-dimensional <code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.array</span></code> of the events’ timestamps of
 component j of realization i.
 If only one realization is given, it will be wrapped into a list
 If None, events given while fitting model will be used</p>
 </div></blockquote>
-<p><strong>end_times</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code> or <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default = None</p>
+<p><strong>end_times</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">np.ndarray</span></code> or <code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>, default = None</p>
 <blockquote>
 <div><p>List of end time of all hawkes processes used to measure score.
 If None, it will be set to each realization’s latest time.
 If only one realization is provided, then a float can be given.</p>
 </div></blockquote>
-<p><strong>baseline</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code>, shape=(n_nodes, ), default = None</p>
+<p><strong>baseline</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">np.ndarray</span></code>, shape=(n_nodes, ), default = None</p>
 <blockquote>
 <div><p>Baseline vector for which the score is measured
-If <code class="xref py py-obj docutils literal"><span class="pre">None</span></code> baseline obtained during fitting is used</p>
+If <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code> baseline obtained during fitting is used</p>
 </div></blockquote>
-<p><strong>adjacency</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code>, shape=(n_nodes, n_nodes), default = None</p>
+<p><strong>adjacency</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">np.ndarray</span></code>, shape=(n_nodes, n_nodes), default = None</p>
 <blockquote>
 <div><p>Adjacency matrix for which the score is measured
-If <code class="xref py py-obj docutils literal"><span class="pre">None</span></code> adjacency obtained during fitting is used</p>
+If <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code> adjacency obtained during fitting is used</p>
 </div></blockquote>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>likelihood</strong> : <code class="xref py py-obj docutils literal"><span class="pre">double</span></code></p>
-<blockquote class="last">
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>likelihood</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">double</span></code></p>
+<blockquote>
 <div><p>Computed log likelihood value</p>
 </div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
 
 <div class="section" id="examples-using-tick-hawkes-hawkesexpkern">
-<h2>Examples using <code class="docutils literal"><span class="pre">tick.hawkes.HawkesExpKern</span></code><a class="headerlink" href="#examples-using-tick-hawkes-hawkesexpkern" title="Permalink to this headline">¶</a></h2>
-<div class="thumbnailContainer" tooltip=""><div class="figure" id="id1">
+<h2>Examples using <code class="docutils literal notranslate"><span class="pre">tick.hawkes.HawkesExpKern</span></code><a class="headerlink" href="#examples-using-tick-hawkes-hawkesexpkern" title="Permalink to this headline">¶</a></h2>
+<div class="thumbnailContainer" tooltip=""><div class="figure align-default" id="id1">
 <a class="reference external image-reference" href="./../../auto_examples/./plot_hawkes_matrix_exp_kernels.html"><img alt="../../_images/plot_hawkes_matrix_exp_kernels.png" src="../../_images/plot_hawkes_matrix_exp_kernels.png" /></a>
-<p class="caption"><span class="caption-text"><a class="reference internal" href="../../auto_examples/plot_hawkes_matrix_exp_kernels.html#example-plot-hawkes-matrix-exp-kernels-py"><span class="std std-ref">plot_hawkes_matrix_exp_kernels.py</span></a></span></p>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="../../auto_examples/plot_hawkes_matrix_exp_kernels.html#example-plot-hawkes-matrix-exp-kernels-py"><span class="std std-ref">plot_hawkes_matrix_exp_kernels.py</span></a></span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
 </div>
 </div></div>
 </div>
@@ -590,7 +553,7 @@ If <code class="xref py py-obj docutils literal"><span class="pre">None</span></
     </p>
     <p>
         &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Vinther Poulsen.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.2.<br/>
     </p>
   </div>
 </footer>

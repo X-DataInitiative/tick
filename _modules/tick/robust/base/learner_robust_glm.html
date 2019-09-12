@@ -3,7 +3,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
+    <meta charset="utf-8" /><script type="text/javascript">
 
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-97947441-1']);
@@ -15,28 +15,16 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.robust.base.learner_robust_glm &#8212; tick 0.5.0 documentation</title>
+    <title>tick.robust.base.learner_robust_glm &#8212; tick 0.6.0 documentation</title>
     <link rel="stylesheet" href="../../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/css/custom.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../../../../',
-        VERSION:     '0.5.0',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <script type="text/javascript" src="../../../../_static/js/jquery-1.11.0.min.js"></script>
-    <script type="text/javascript" src="../../../../_static/js/jquery-fix.js"></script>
-    <script type="text/javascript" src="../../../../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="../../../../_static/bootstrap-sphinx.js"></script>
+    <script type="text/javascript" src="../../../../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="shortcut icon" href="../../../../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
@@ -44,9 +32,12 @@
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
 <meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../../../../_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="../../../../_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="../../../../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="../../../../_static/bootstrap-sphinx.js "></script>
 
-  </head>
-  <body>
+  </head><body>
 
   <div id="navbar" class="None navbar-default navbar-fixed-top">
     <div class="container">
@@ -59,7 +50,7 @@
         </button>
         <a class="navbar-brand" href="../../../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.6</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -79,72 +70,72 @@
   <ul class="dropdown-menu globaltoc"
       role="menu"
       aria-labelledby="dLabelGlobalToc"><ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../modules/hawkes.html"><code class="docutils literal"><span class="pre">tick.hawkes</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/hawkes.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.hawkes</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../../modules/hawkes.html#introduction">1. Introduction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../modules/hawkes.html#learners">2. Learners</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../modules/hawkes.html#point-process-simulation">3. Point process simulation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../modules/hawkes.html#models-for-inference">4. Models for inference</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../modules/linear_model.html"><code class="docutils literal"><span class="pre">tick.linear_model</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/linear_model.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.linear_model</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../../modules/linear_model.html#introduction">1. Introduction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../modules/linear_model.html#learners">2. Learners</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../modules/linear_model.html#models">3. Models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../modules/linear_model.html#simulation">4. Simulation</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../modules/robust.html"><code class="docutils literal"><span class="pre">tick.robust</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/robust.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.robust</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../../modules/robust.html#regression-with-individual-intercepts">1. Regression with individual intercepts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../modules/robust.html#robust-losses">2. Robust losses</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../modules/survival.html"><code class="docutils literal"><span class="pre">tick.survival</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/survival.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.survival</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../../modules/survival.html#learners">1. Learners</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../modules/survival.html#models">2. Models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../modules/survival.html#simulation">3. Simulation</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../modules/prox.html"><code class="docutils literal"><span class="pre">tick.prox</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/prox.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.prox</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../../modules/prox.html#available-operators">1. Available operators</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../modules/prox.html#example">2. Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../modules/prox.html#how-to-combine-several-prox">3. How to combine several prox ?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../modules/prox.html#the-prox-class-api">4. The <code class="docutils literal"><span class="pre">prox</span></code> class API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/prox.html#the-prox-class-api">4. The <code class="docutils literal notranslate"><span class="pre">prox</span></code> class API</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../modules/solver.html"><code class="docutils literal"><span class="pre">tick.solver</span></code></a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../../modules/solver.html#the-solver-class-api">1. The <code class="docutils literal"><span class="pre">solver</span></code> class API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/solver.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.solver</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/solver.html#the-solver-class-api">1. The <code class="docutils literal notranslate"><span class="pre">solver</span></code> class API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../modules/solver.html#available-solvers">2. Available solvers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../modules/solver.html#example">3. Example</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../modules/simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/simulation.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.simulation</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../../modules/simulation.html#simulation-of-model-weights">1. Simulation of model weights</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../modules/simulation.html#simulation-of-a-features-matrix">2. Simulation of a features matrix</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../modules/plot.html"><code class="docutils literal"><span class="pre">tick.plot</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/plot.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.plot</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../../modules/plot.html#history-plot">1. History plot</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../modules/plot.html#plots-for-hawkes-processes">2. Plots for Hawkes processes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../modules/plot.html#plots-for-point-process-simulation">3. Plots for point process simulation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../modules/plot.html#miscellaneous-plots">4. Miscellaneous plots</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../modules/dataset.html"><code class="docutils literal"><span class="pre">tick.dataset</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/dataset.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.dataset</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../../modules/generated/tick.dataset.fetch_tick_dataset.html">tick.dataset.fetch_tick_dataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../modules/generated/tick.dataset.fetch_hawkes_bund_data.html">tick.dataset.fetch_hawkes_bund_data</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../modules/preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/preprocessing.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.preprocessing</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../../modules/preprocessing.html#preprocessing-for-static-features">Preprocessing for static features</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../modules/preprocessing.html#preprocessing-for-longitudinal-features">Preprocessing for longitudinal features</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../modules/metrics.html"><code class="docutils literal"><span class="pre">tick.metrics</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/metrics.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.metrics</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../../modules/generated/tick.metrics.support_fdp.html">tick.metrics.support_fdp</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../modules/generated/tick.metrics.support_recall.html">tick.metrics.support_recall</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../modules/R.html">How to use <code class="docutils literal"><span class="pre">tick</span></code> from the R statistical software</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/R.html">How to use <code class="docutils literal notranslate"><span class="pre">tick</span></code> from the R statistical software</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../../modules/R.html#training-a-logistic-regression-model">1. Training a logistic regression model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../modules/R.html#simulation-of-a-hawkes-process">2. Simulation of a Hawkes process</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../modules/R.html#using-optimization-tools-from-r">3. Using optimization tools from R</a></li>
@@ -160,17 +151,17 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../modules/api.html">API Reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../../modules/api.html#table-of-contents">Table of contents</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../modules/api.html#hawkes"><code class="docutils literal"><span class="pre">hawkes</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../modules/api.html#linear-model"><code class="docutils literal"><span class="pre">linear_model</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../modules/api.html#robust"><code class="docutils literal"><span class="pre">robust</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../modules/api.html#survival"><code class="docutils literal"><span class="pre">survival</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../modules/api.html#prox"><code class="docutils literal"><span class="pre">prox</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../modules/api.html#solver"><code class="docutils literal"><span class="pre">solver</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../modules/api.html#api-simulation"><code class="docutils literal"><span class="pre">simulation</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../modules/api.html#plot"><code class="docutils literal"><span class="pre">plot</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../modules/api.html#dataset"><code class="docutils literal"><span class="pre">dataset</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../modules/api.html#preprocessing"><code class="docutils literal"><span class="pre">preprocessing</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../modules/api.html#metrics"><code class="docutils literal"><span class="pre">metrics</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/api.html#hawkes"><span class="xref std std-ref">hawkes</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/api.html#linear-model"><span class="xref std std-ref">linear_model</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/api.html#robust"><span class="xref std std-ref">robust</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/api.html#survival"><span class="xref std std-ref">survival</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/api.html#prox"><span class="xref std std-ref">prox</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/api.html#solver"><span class="xref std std-ref">solver</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/api.html#api-simulation"><span class="xref std std-ref">simulation</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/api.html#plot"><span class="xref std std-ref">plot</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/api.html#dataset"><span class="xref std std-ref">dataset</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/api.html#preprocessing"><span class="xref std std-ref">preprocessing</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/api.html#metrics"><span class="xref std std-ref">metrics</span></a></li>
 </ul>
 </li>
 </ul>
@@ -209,8 +200,6 @@
 <span class="kn">from</span> <span class="nn">tick.base.learner</span> <span class="k">import</span> <span class="n">LearnerGLM</span>
 <span class="kn">from</span> <span class="nn">tick.prox</span> <span class="k">import</span> <span class="n">ProxZero</span><span class="p">,</span> <span class="n">ProxL1</span><span class="p">,</span> <span class="n">ProxL2Sq</span><span class="p">,</span> <span class="n">ProxElasticNet</span><span class="p">,</span> \
     <span class="n">ProxSlope</span><span class="p">,</span> <span class="n">ProxMulti</span>
-<span class="kn">from</span> <span class="nn">tick.solver</span> <span class="k">import</span> <span class="n">AGD</span><span class="p">,</span> <span class="n">GD</span>
-
 
 <span class="k">class</span> <span class="nc">LearnerRobustGLM</span><span class="p">(</span><span class="n">LearnerGLM</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Learner for a Robust Generalized Linear Model (GML).</span>
@@ -325,8 +314,8 @@
     <span class="p">}</span>
 
     <span class="n">_solvers</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;gd&#39;</span><span class="p">:</span> <span class="n">GD</span><span class="p">,</span>
-        <span class="s1">&#39;agd&#39;</span><span class="p">:</span> <span class="n">AGD</span><span class="p">,</span>
+        <span class="s1">&#39;gd&#39;</span><span class="p">:</span> <span class="s1">&#39;GD&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;agd&#39;</span><span class="p">:</span> <span class="s1">&#39;AGD&#39;</span><span class="p">,</span>
     <span class="p">}</span>
 
     <span class="n">_solvers_with_linesearch</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;gd&#39;</span><span class="p">,</span> <span class="s1">&#39;agd&#39;</span><span class="p">]</span>
@@ -593,7 +582,7 @@
     </p>
     <p>
         &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Vinther Poulsen.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.2.<br/>
     </p>
   </div>
 </footer>

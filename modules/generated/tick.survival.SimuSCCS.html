@@ -3,7 +3,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
+    <meta charset="utf-8" /><script type="text/javascript">
 
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-97947441-1']);
@@ -15,28 +15,16 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.survival.SimuSCCS &#8212; tick 0.5.0 documentation</title>
+    <title>tick.survival.SimuSCCS &#8212; tick 0.6.0 documentation</title>
     <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../../',
-        VERSION:     '0.5.0',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <script type="text/javascript" src="../../_static/js/jquery-1.11.0.min.js"></script>
-    <script type="text/javascript" src="../../_static/js/jquery-fix.js"></script>
-    <script type="text/javascript" src="../../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="../../_static/bootstrap-sphinx.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="shortcut icon" href="../../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -46,9 +34,12 @@
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
 <meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../../_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="../../_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="../../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="../../_static/bootstrap-sphinx.js "></script>
 
-  </head>
-  <body>
+  </head><body>
 
   <div id="navbar" class="None navbar-default navbar-fixed-top">
     <div class="container">
@@ -61,7 +52,7 @@
         </button>
         <a class="navbar-brand" href="../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.6</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -81,72 +72,72 @@
   <ul class="dropdown-menu globaltoc"
       role="menu"
       aria-labelledby="dLabelGlobalToc"><ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../hawkes.html"><code class="docutils literal"><span class="pre">tick.hawkes</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../hawkes.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.hawkes</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../hawkes.html#introduction">1. Introduction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../hawkes.html#learners">2. Learners</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../hawkes.html#point-process-simulation">3. Point process simulation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../hawkes.html#models-for-inference">4. Models for inference</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../linear_model.html"><code class="docutils literal"><span class="pre">tick.linear_model</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../linear_model.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.linear_model</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../linear_model.html#introduction">1. Introduction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../linear_model.html#learners">2. Learners</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../linear_model.html#models">3. Models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../linear_model.html#simulation">4. Simulation</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../robust.html"><code class="docutils literal"><span class="pre">tick.robust</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../robust.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.robust</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../robust.html#regression-with-individual-intercepts">1. Regression with individual intercepts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../robust.html#robust-losses">2. Robust losses</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current"><a class="reference internal" href="../survival.html"><code class="docutils literal"><span class="pre">tick.survival</span></code></a><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../survival.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.survival</span></code></a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../survival.html#learners">1. Learners</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../survival.html#models">2. Models</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../survival.html#simulation">3. Simulation</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../prox.html"><code class="docutils literal"><span class="pre">tick.prox</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../prox.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.prox</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../prox.html#available-operators">1. Available operators</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../prox.html#example">2. Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../prox.html#how-to-combine-several-prox">3. How to combine several prox ?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../prox.html#the-prox-class-api">4. The <code class="docutils literal"><span class="pre">prox</span></code> class API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../prox.html#the-prox-class-api">4. The <code class="docutils literal notranslate"><span class="pre">prox</span></code> class API</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../solver.html"><code class="docutils literal"><span class="pre">tick.solver</span></code></a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../solver.html#the-solver-class-api">1. The <code class="docutils literal"><span class="pre">solver</span></code> class API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../solver.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.solver</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../solver.html#the-solver-class-api">1. The <code class="docutils literal notranslate"><span class="pre">solver</span></code> class API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../solver.html#available-solvers">2. Available solvers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../solver.html#example">3. Example</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../simulation.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.simulation</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../simulation.html#simulation-of-model-weights">1. Simulation of model weights</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../simulation.html#simulation-of-a-features-matrix">2. Simulation of a features matrix</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../plot.html"><code class="docutils literal"><span class="pre">tick.plot</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../plot.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.plot</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../plot.html#history-plot">1. History plot</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../plot.html#plots-for-hawkes-processes">2. Plots for Hawkes processes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../plot.html#plots-for-point-process-simulation">3. Plots for point process simulation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../plot.html#miscellaneous-plots">4. Miscellaneous plots</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../dataset.html"><code class="docutils literal"><span class="pre">tick.dataset</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../dataset.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.dataset</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="tick.dataset.fetch_tick_dataset.html">tick.dataset.fetch_tick_dataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tick.dataset.fetch_hawkes_bund_data.html">tick.dataset.fetch_hawkes_bund_data</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../preprocessing.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.preprocessing</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../preprocessing.html#preprocessing-for-static-features">Preprocessing for static features</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../preprocessing.html#preprocessing-for-longitudinal-features">Preprocessing for longitudinal features</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../metrics.html"><code class="docutils literal"><span class="pre">tick.metrics</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../metrics.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.metrics</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="tick.metrics.support_fdp.html">tick.metrics.support_fdp</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tick.metrics.support_recall.html">tick.metrics.support_recall</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../R.html">How to use <code class="docutils literal"><span class="pre">tick</span></code> from the R statistical software</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../R.html">How to use <code class="docutils literal notranslate"><span class="pre">tick</span></code> from the R statistical software</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../R.html#training-a-logistic-regression-model">1. Training a logistic regression model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../R.html#simulation-of-a-hawkes-process">2. Simulation of a Hawkes process</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../R.html#using-optimization-tools-from-r">3. Using optimization tools from R</a></li>
@@ -162,17 +153,17 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../api.html">API Reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#table-of-contents">Table of contents</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#hawkes"><code class="docutils literal"><span class="pre">hawkes</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#linear-model"><code class="docutils literal"><span class="pre">linear_model</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#robust"><code class="docutils literal"><span class="pre">robust</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#survival"><code class="docutils literal"><span class="pre">survival</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#prox"><code class="docutils literal"><span class="pre">prox</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#solver"><code class="docutils literal"><span class="pre">solver</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#api-simulation"><code class="docutils literal"><span class="pre">simulation</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#plot"><code class="docutils literal"><span class="pre">plot</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#dataset"><code class="docutils literal"><span class="pre">dataset</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#preprocessing"><code class="docutils literal"><span class="pre">preprocessing</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#metrics"><code class="docutils literal"><span class="pre">metrics</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#hawkes"><span class="xref std std-ref">hawkes</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#linear-model"><span class="xref std std-ref">linear_model</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#robust"><span class="xref std std-ref">robust</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#survival"><span class="xref std std-ref">survival</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#prox"><span class="xref std std-ref">prox</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#solver"><span class="xref std std-ref">solver</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#api-simulation"><span class="xref std std-ref">simulation</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#plot"><span class="xref std std-ref">plot</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#dataset"><span class="xref std std-ref">dataset</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#preprocessing"><span class="xref std std-ref">preprocessing</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#metrics"><span class="xref std std-ref">metrics</span></a></li>
 </ul>
 </li>
 </ul>
@@ -206,52 +197,50 @@
 <span id="simusccs"></span><h1>tick.survival.SimuSCCS<a class="headerlink" href="#tick-survival-simusccs" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="tick.survival.SimuSCCS">
-<em class="property">class </em><code class="descclassname">tick.survival.</code><code class="descname">SimuSCCS</code><span class="sig-paren">(</span><em>n_cases</em>, <em>n_intervals</em>, <em>n_features</em>, <em>n_lags</em>, <em>time_drift=None</em>, <em>exposure_type='single_exposure'</em>, <em>distribution='multinomial'</em>, <em>sparse=True</em>, <em>censoring_prob=0</em>, <em>censoring_scale=None</em>, <em>coeffs=None</em>, <em>hawkes_exp_kernels=None</em>, <em>n_correlations=0</em>, <em>batch_size=None</em>, <em>seed=None</em>, <em>verbose=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/survival/simu_sccs.html#SimuSCCS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.survival.SimuSCCS" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tick.survival.</code><code class="sig-name descname">SimuSCCS</code><span class="sig-paren">(</span><em class="sig-param">n_cases</em>, <em class="sig-param">n_intervals</em>, <em class="sig-param">n_features</em>, <em class="sig-param">n_lags</em>, <em class="sig-param">time_drift=None</em>, <em class="sig-param">exposure_type='single_exposure'</em>, <em class="sig-param">distribution='multinomial'</em>, <em class="sig-param">sparse=True</em>, <em class="sig-param">censoring_prob=0</em>, <em class="sig-param">censoring_scale=None</em>, <em class="sig-param">coeffs=None</em>, <em class="sig-param">hawkes_exp_kernels=None</em>, <em class="sig-param">n_correlations=0</em>, <em class="sig-param">batch_size=None</em>, <em class="sig-param">seed=None</em>, <em class="sig-param">verbose=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/survival/simu_sccs.html#SimuSCCS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.survival.SimuSCCS" title="Permalink to this definition">¶</a></dt>
 <dd><p>Simulation of a Self Control Case Series (SCCS) model. This simulator can
 produce exposure (features), outcomes (labels) and censoring data.
-The features matrices  are a <code class="xref py py-obj docutils literal"><span class="pre">n_cases</span></code> list of numpy arrays (dense case) or
-csr_matrices (sparse case) of shape <code class="xref py py-obj docutils literal"><span class="pre">(n_intervals,</span> <span class="pre">n_features)</span></code> containing
+The features matrices  are a <code class="xref py py-obj docutils literal notranslate"><span class="pre">n_cases</span></code> list of numpy arrays (dense case) or
+csr_matrices (sparse case) of shape <code class="xref py py-obj docutils literal notranslate"><span class="pre">(n_intervals,</span> <span class="pre">n_features)</span></code> containing
 exposures to each feature.
 Exposure can take two forms:
-- short repeated exposures: in that case, each column of the numpy arrays
-or csr matrices can contain multiple ones, each one representing an exposure
-for a particular time bucket.
-- infinite unique exposures: in that case, each column of the numpy arrays
-or csr matrices can only contain a single one, corresponding to the starting
-date of the exposure.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>n_cases</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code></p>
+- short repeated exposures (<code class="xref py py-obj docutils literal notranslate"><span class="pre">single_exposure</span></code>): in that case, each column of the
+numpy arrays or csr matrices can contain multiple ones, each one representing an
+exposure for a particular time bucket.
+- infinite unique exposures (<code class="xref py py-obj docutils literal notranslate"><span class="pre">multiple_exposure</span></code>): in that case, each column of the
+numpy arrays or csr matrices can only contain a single one, corresponding to the
+starting date of the exposure.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>n_cases</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></p>
 <blockquote>
 <div><p>Number of cases to generate. A case is a sample who experience at
 least one adverse event.</p>
 </div></blockquote>
-<p><strong>n_intervals</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code></p>
+<p><strong>n_intervals</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></p>
 <blockquote>
 <div><p>Number of time intervals used to generate features and outcomes.</p>
 </div></blockquote>
-<p><strong>n_features</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code></p>
+<p><strong>n_features</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></p>
 <blockquote>
 <div><p>Number of features to simulate for each case.</p>
 </div></blockquote>
-<p><strong>n_lags</strong> : <code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code>, shape=(n_features,), dtype=”uint64”</p>
+<p><strong>n_lags</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>, shape=(n_features,), dtype=”uint64”</p>
 <blockquote>
 <div><p>Number of lags per feature. The model will regress labels on the
 last observed values of the features over their corresponding
-<code class="xref py py-obj docutils literal"><span class="pre">n_lags</span></code> time intervals. <code class="xref py py-obj docutils literal"><span class="pre">n_lags</span></code> values must be between 0 and
-<code class="xref py py-obj docutils literal"><span class="pre">n_intervals</span></code> - 1.</p>
+<code class="xref py py-obj docutils literal notranslate"><span class="pre">n_lags</span></code> time intervals. <code class="xref py py-obj docutils literal notranslate"><span class="pre">n_lags</span></code> values must be between 0 and
+<code class="xref py py-obj docutils literal notranslate"><span class="pre">n_intervals</span></code> - 1.</p>
 </div></blockquote>
-<p><strong>exposure_type</strong> : {‘infinite’, ‘short’}, default=’infinite’</p>
+<p><strong>exposure_type</strong> : {‘single_exposure’, ‘multiple_exposure’}, default=’single_exposure’</p>
 <blockquote>
-<div><p>Either ‘infinite’ for infinite unique exposures or ‘short’ for short
-repeated exposures.</p>
+<div><p>Either ‘single_exposure’ for infinite unique exposures or ‘multiple_exposure’ for
+short repeated exposures.</p>
 </div></blockquote>
 <p><strong>distribution</strong> : {‘multinomial’, ‘poisson’}, default=’multinomial’</p>
 <blockquote>
 <div><p>Distribution used to generate the outcomes. In the ‘multinomial’
-case, the Poisson process used to generate the events is conditionned
+case, the Poisson process used to generate the events is conditioned
 by total the number event per sample, which is set to be equal to
 one. In that case, the simulation matches exactly the SCCS model
 hypotheses. In the ‘poisson’ case, the outcomes are generated from a
@@ -259,115 +248,112 @@ Poisson process, which can result in more than one outcome tick per
 sample. In this case, the first event is kept, and the other are
 discarded.</p>
 </div></blockquote>
-<p><strong>sparse</strong> : <code class="xref py py-obj docutils literal"><span class="pre">boolean</span></code>, default=True</p>
+<p><strong>sparse</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">boolean</span></code>, default=True</p>
 <blockquote>
 <div><p>Generate sparse or dense features.</p>
 </div></blockquote>
-<p><strong>censoring</strong> : <code class="xref py py-obj docutils literal"><span class="pre">Boolean</span></code>, default=True</p>
-<blockquote>
-<div><p>Simulate a censoring vector. In that case, the features and outcomes are
-simulated, then right-censored according to the simulated censoring
-dates.</p>
-</div></blockquote>
-<p><strong>censoring_prob</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default=0.</p>
+<p><strong>censoring_prob</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>, default=0.</p>
 <blockquote>
 <div><p>Probability that a sample is censored. Should be in [0, 1]. If 0, no
-censoring is applied.</p>
+censoring is applied. When &gt; 0, SimuSCCS simulates a censoring vector.
+In that case, the features and outcomes are simulated, then right-censored
+according to the simulated censoring dates.</p>
 </div></blockquote>
-<p><strong>censoring_scale</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default=None</p>
+<p><strong>censoring_scale</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>, default=None</p>
 <blockquote>
 <div><p>The number of censored time intervals are drawn from a Poisson
-distribution with intensity equal to <code class="xref py py-obj docutils literal"><span class="pre">censoring_scale</span></code>. The higher,
+distribution with intensity equal to <code class="xref py py-obj docutils literal notranslate"><span class="pre">censoring_scale</span></code>. The higher,
 the more intervals will be censored. If None, no censoring is
 applied.</p>
 </div></blockquote>
-<p><strong>coeffs</strong> : <code class="xref py py-obj docutils literal"><span class="pre">list</span></code> containing <code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code>, default=None</p>
+<p><strong>coeffs</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> containing <code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>, default=None</p>
 <blockquote>
-<div><p>Can be used to provide your own set of coefficients. Element <code class="xref py py-obj docutils literal"><span class="pre">i</span></code> of
-the list should be a 1-d <code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code> of shape (n_lags + 1), where
-<code class="xref py py-obj docutils literal"><span class="pre">n_lags[i]</span></code> is the number of lags associated to feature <code class="xref py py-obj docutils literal"><span class="pre">i</span></code>.
+<div><p>Can be used to provide your own set of coefficients. Element <code class="xref py py-obj docutils literal notranslate"><span class="pre">i</span></code> of
+the list should be a 1-d <code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> of shape (n_lags + 1), where
+<code class="xref py py-obj docutils literal notranslate"><span class="pre">n_lags[i]</span></code> is the number of lags associated to feature <code class="xref py py-obj docutils literal notranslate"><span class="pre">i</span></code>.
 If set to None, the simulator will generate coefficients randomly.</p>
 </div></blockquote>
-<p><strong>hawkes_exp_kernels</strong> : <code class="xref py py-obj docutils literal"><span class="pre">SimuHawkesExpKernels</span></code>, default=None</p>
+<p><strong>hawkes_exp_kernels</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">SimuHawkesExpKernels</span></code>, default=None</p>
 <blockquote>
-<div><p>Features are simulated with exponential kernel Hawkes proecesses.
+<div><p>Features are simulated with exponential kernel Hawkes processes.
 This parameter can be used to specify your own kernels (see
-<code class="xref py py-obj docutils literal"><span class="pre">SimuHawkesExpKernels</span></code> documentation). If None, random kernels
+<code class="xref py py-obj docutils literal notranslate"><span class="pre">SimuHawkesExpKernels</span></code> documentation). If None, random kernels
 are generated. The same kernels are used to generate features for
 the whole generated population.</p>
 </div></blockquote>
-<p><strong>n_correlations</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code>, default=0</p>
+<p><strong>n_correlations</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code>, default=0</p>
 <blockquote>
-<div><p>If <code class="xref py py-obj docutils literal"><span class="pre">hawkes_exp_kernels</span></code> is None, random kernels are generated. This
+<div><p>If <code class="xref py py-obj docutils literal notranslate"><span class="pre">hawkes_exp_kernels</span></code> is None, random kernels are generated. This
 parameter controls the number of non-null non-diagonal kernels.</p>
 </div></blockquote>
-<p><strong>batch_size</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code>, default=None</p>
+<p><strong>batch_size</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code>, default=None</p>
 <blockquote>
 <div><p>When generating outcomes with Poisson distribution, the simulator will
-discard samples to which no event has occured. In this case, the
+discard samples to which no event has occurred. In this case, the
 simulator generate successive batches of samples, until it reaches
 a total of n_samples. This parameter can be used to set the batch size.</p>
 </div></blockquote>
-<p><strong>seed</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code>, default=None</p>
+<p><strong>seed</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code>, default=None</p>
 <blockquote>
 <div><p>The seed of the random number generator</p>
 </div></blockquote>
-<p><strong>verbose</strong> : <code class="xref py py-obj docutils literal"><span class="pre">bool</span></code>, default=True</p>
-<blockquote class="last">
+<p><strong>verbose</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>, default=True</p>
+<blockquote>
 <div><p>If True, print things</p>
 </div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p class="rubric">Examples</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">tick.survival</span> <span class="k">import</span> <span class="n">SimuSCCS</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">n_lags</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;uint64&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sim</span> <span class="o">=</span> <span class="n">SimuSCCS</span><span class="p">(</span><span class="n">n_cases</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">n_intervals</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">n_features</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">n_lags</span><span class="o">=</span><span class="n">n_lags</span><span class="p">,</span>
-<span class="gp">... </span><span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span> <span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">exposure_type</span><span class="o">=</span><span class="s2">&quot;single_exposure&quot;</span><span class="p">,</span>
+<span class="gp">... </span><span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span> <span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">exposure_type</span><span class="o">=</span><span class="s2">&quot;multiple_exposures&quot;</span><span class="p">,</span>
 <span class="gp">... </span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">features</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">censoring</span><span class="p">,</span> <span class="n">_coeffs</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">simulate</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">features</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">,</span> <span class="n">censoring</span><span class="p">,</span> <span class="n">_coeffs</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">simulate</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
-<span class="go">[array([[ 0.,  0.],</span>
-<span class="go">       [ 1.,  0.],</span>
-<span class="go">       [ 1.,  1.]]), array([[ 1.,  1.],</span>
-<span class="go">       [ 1.,  1.],</span>
-<span class="go">       [ 1.,  1.]])]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
-<span class="go">[array([0, 0, 1], dtype=int32), array([0, 0, 1], dtype=int32)]</span>
+<span class="go">[array([[0., 0.],</span>
+<span class="go">       [1., 0.],</span>
+<span class="go">       [1., 1.]]), array([[1., 0.],</span>
+<span class="go">       [1., 0.],</span>
+<span class="go">       [1., 1.]]), array([[1., 1.],</span>
+<span class="go">       [1., 1.],</span>
+<span class="go">       [1., 1.]]), array([[0., 0.],</span>
+<span class="go">       [1., 1.],</span>
+<span class="go">       [1., 0.]]), array([[1., 0.],</span>
+<span class="go">       [0., 0.],</span>
+<span class="go">       [0., 0.]])]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">censoring</span><span class="p">)</span>
-<span class="go">[3 3]</span>
+<span class="go">[3 3 3 3 3]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">_coeffs</span><span class="p">)</span>
-<span class="go">[ 0.54738557 -0.15109073  0.71345739  1.67633284 -0.25656871 -0.25655065]</span>
+<span class="go">[array([ 0.54738557, -0.15109073,  0.71345739]), array([ 1.67633284, -0.25656871, -0.25655065])]</span>
 </pre></div>
 </div>
 <dl class="method">
 <dt id="tick.survival.SimuSCCS.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>n_cases</em>, <em>n_intervals</em>, <em>n_features</em>, <em>n_lags</em>, <em>time_drift=None</em>, <em>exposure_type='single_exposure'</em>, <em>distribution='multinomial'</em>, <em>sparse=True</em>, <em>censoring_prob=0</em>, <em>censoring_scale=None</em>, <em>coeffs=None</em>, <em>hawkes_exp_kernels=None</em>, <em>n_correlations=0</em>, <em>batch_size=None</em>, <em>seed=None</em>, <em>verbose=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/survival/simu_sccs.html#SimuSCCS.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.survival.SimuSCCS.__init__" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">n_cases</em>, <em class="sig-param">n_intervals</em>, <em class="sig-param">n_features</em>, <em class="sig-param">n_lags</em>, <em class="sig-param">time_drift=None</em>, <em class="sig-param">exposure_type='single_exposure'</em>, <em class="sig-param">distribution='multinomial'</em>, <em class="sig-param">sparse=True</em>, <em class="sig-param">censoring_prob=0</em>, <em class="sig-param">censoring_scale=None</em>, <em class="sig-param">coeffs=None</em>, <em class="sig-param">hawkes_exp_kernels=None</em>, <em class="sig-param">n_correlations=0</em>, <em class="sig-param">batch_size=None</em>, <em class="sig-param">seed=None</em>, <em class="sig-param">verbose=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/survival/simu_sccs.html#SimuSCCS.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.survival.SimuSCCS.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="tick.survival.SimuSCCS.simulate">
-<code class="descname">simulate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/survival/simu_sccs.html#SimuSCCS.simulate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.survival.SimuSCCS.simulate" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">simulate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/survival/simu_sccs.html#SimuSCCS.simulate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.survival.SimuSCCS.simulate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Launch simulation of the data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>features</strong> : <code class="xref py py-obj docutils literal"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code> or <code class="xref py py-obj docutils literal"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal"><span class="pre">scipy.sparse.csr_matrix</span></code>,</p>
+<dl class="field-list">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>features</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> or <code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code>,</p>
 <blockquote>
 <div><p>list of length n_cases, each element of the list of
 shape=(n_intervals, n_features)
 The list of features matrices.</p>
 </div></blockquote>
-<p><strong>labels</strong> : <code class="xref py py-obj docutils literal"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code>,</p>
+<p><strong>labels</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>,</p>
 <blockquote>
 <div><p>list of length n_cases, each element of the list of
 shape=(n_intervals,)
 The labels vector</p>
 </div></blockquote>
-<p><strong>censoring</strong> : <code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code>, shape=(n_cases,), dtype=”uint64”</p>
+<p><strong>censoring</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>, shape=(n_cases,), dtype=”uint64”</p>
 <blockquote>
 <div><p>The censoring data. This array should contain integers in
 [1, n_intervals]. If the value i is equal to n_intervals, then there
@@ -376,30 +362,28 @@ the observation of sample i is stopped at interval c, that is, the
 row c - 1 of the corresponding matrix. The last n_intervals - c rows
 are then set to 0.</p>
 </div></blockquote>
-<p><strong>_coeffs</strong> : <code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code>, shape=(n_features * (n_lags + 1),)</p>
-<blockquote class="last">
+<p><strong>_coeffs</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>, shape=(n_features * (n_lags + 1),)</p>
+<blockquote>
 <div><p>The coefficients used to simulate the data.</p>
 </div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tick.survival.SimuSCCS.simulate_features">
-<code class="descname">simulate_features</code><span class="sig-paren">(</span><em>n_samples</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/survival/simu_sccs.html#SimuSCCS.simulate_features"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.survival.SimuSCCS.simulate_features" title="Permalink to this definition">¶</a></dt>
-<dd><p>Simulates features, either <code class="xref py py-obj docutils literal"><span class="pre">single_exposure</span></code> or
-<code class="xref py py-obj docutils literal"><span class="pre">multiple_exposures</span></code> exposures.</p>
+<code class="sig-name descname">simulate_features</code><span class="sig-paren">(</span><em class="sig-param">n_samples</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/survival/simu_sccs.html#SimuSCCS.simulate_features"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.survival.SimuSCCS.simulate_features" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simulates features, either <code class="xref py py-obj docutils literal notranslate"><span class="pre">single_exposure</span></code> or
+<code class="xref py py-obj docutils literal notranslate"><span class="pre">multiple_exposures</span></code> exposures.</p>
 </dd></dl>
 
 </dd></dl>
 
 <div class="section" id="examples-using-tick-survival-simusccs">
-<h2>Examples using <code class="docutils literal"><span class="pre">tick.survival.SimuSCCS</span></code><a class="headerlink" href="#examples-using-tick-survival-simusccs" title="Permalink to this headline">¶</a></h2>
-<div class="thumbnailContainer" tooltip="In this example we simulate longitudinal data with preset relative incidence for each feature. ..."><div class="figure" id="id1">
+<h2>Examples using <code class="docutils literal notranslate"><span class="pre">tick.survival.SimuSCCS</span></code><a class="headerlink" href="#examples-using-tick-survival-simusccs" title="Permalink to this headline">¶</a></h2>
+<div class="thumbnailContainer" tooltip="In this example we simulate longitudinal data with preset relative incidence for each feature. ..."><div class="figure align-default" id="id1">
 <a class="reference external image-reference" href="./../../auto_examples/./plot_conv_sccs_cv_results.html"><img alt="../../_images/plot_conv_sccs_cv_results1.png" src="../../_images/plot_conv_sccs_cv_results1.png" /></a>
-<p class="caption"><span class="caption-text"><a class="reference internal" href="../../auto_examples/plot_conv_sccs_cv_results.html#example-plot-conv-sccs-cv-results-py"><span class="std std-ref">ConvSCCS cross validation on simulated longitudinal features example</span></a></span></p>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="../../auto_examples/plot_conv_sccs_cv_results.html#example-plot-conv-sccs-cv-results-py"><span class="std std-ref">ConvSCCS cross validation on simulated longitudinal features example</span></a></span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
 </div>
 </div></div>
 </div>
@@ -414,7 +398,7 @@ are then set to 0.</p>
     </p>
     <p>
         &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Vinther Poulsen.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.2.<br/>
     </p>
   </div>
 </footer>

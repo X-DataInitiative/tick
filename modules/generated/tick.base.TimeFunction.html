@@ -3,7 +3,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
+    <meta charset="utf-8" /><script type="text/javascript">
 
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-97947441-1']);
@@ -15,28 +15,16 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.base.TimeFunction &#8212; tick 0.5.0 documentation</title>
+    <title>tick.base.TimeFunction &#8212; tick 0.6.0 documentation</title>
     <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../../',
-        VERSION:     '0.5.0',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <script type="text/javascript" src="../../_static/js/jquery-1.11.0.min.js"></script>
-    <script type="text/javascript" src="../../_static/js/jquery-fix.js"></script>
-    <script type="text/javascript" src="../../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="../../_static/bootstrap-sphinx.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="shortcut icon" href="../../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -46,9 +34,12 @@
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
 <meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../../_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="../../_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="../../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="../../_static/bootstrap-sphinx.js "></script>
 
-  </head>
-  <body>
+  </head><body>
 
   <div id="navbar" class="None navbar-default navbar-fixed-top">
     <div class="container">
@@ -61,7 +52,7 @@
         </button>
         <a class="navbar-brand" href="../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.6</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -81,72 +72,72 @@
   <ul class="dropdown-menu globaltoc"
       role="menu"
       aria-labelledby="dLabelGlobalToc"><ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="../hawkes.html"><code class="docutils literal"><span class="pre">tick.hawkes</span></code></a><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../hawkes.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.hawkes</span></code></a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../hawkes.html#introduction">1. Introduction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../hawkes.html#learners">2. Learners</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../hawkes.html#point-process-simulation">3. Point process simulation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../hawkes.html#models-for-inference">4. Models for inference</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../linear_model.html"><code class="docutils literal"><span class="pre">tick.linear_model</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../linear_model.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.linear_model</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../linear_model.html#introduction">1. Introduction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../linear_model.html#learners">2. Learners</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../linear_model.html#models">3. Models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../linear_model.html#simulation">4. Simulation</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../robust.html"><code class="docutils literal"><span class="pre">tick.robust</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../robust.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.robust</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../robust.html#regression-with-individual-intercepts">1. Regression with individual intercepts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../robust.html#robust-losses">2. Robust losses</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../survival.html"><code class="docutils literal"><span class="pre">tick.survival</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../survival.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.survival</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../survival.html#learners">1. Learners</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../survival.html#models">2. Models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../survival.html#simulation">3. Simulation</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../prox.html"><code class="docutils literal"><span class="pre">tick.prox</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../prox.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.prox</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../prox.html#available-operators">1. Available operators</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../prox.html#example">2. Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../prox.html#how-to-combine-several-prox">3. How to combine several prox ?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../prox.html#the-prox-class-api">4. The <code class="docutils literal"><span class="pre">prox</span></code> class API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../prox.html#the-prox-class-api">4. The <code class="docutils literal notranslate"><span class="pre">prox</span></code> class API</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../solver.html"><code class="docutils literal"><span class="pre">tick.solver</span></code></a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../solver.html#the-solver-class-api">1. The <code class="docutils literal"><span class="pre">solver</span></code> class API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../solver.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.solver</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../solver.html#the-solver-class-api">1. The <code class="docutils literal notranslate"><span class="pre">solver</span></code> class API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../solver.html#available-solvers">2. Available solvers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../solver.html#example">3. Example</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../simulation.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.simulation</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../simulation.html#simulation-of-model-weights">1. Simulation of model weights</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../simulation.html#simulation-of-a-features-matrix">2. Simulation of a features matrix</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../plot.html"><code class="docutils literal"><span class="pre">tick.plot</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../plot.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.plot</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../plot.html#history-plot">1. History plot</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../plot.html#plots-for-hawkes-processes">2. Plots for Hawkes processes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../plot.html#plots-for-point-process-simulation">3. Plots for point process simulation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../plot.html#miscellaneous-plots">4. Miscellaneous plots</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../dataset.html"><code class="docutils literal"><span class="pre">tick.dataset</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../dataset.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.dataset</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="tick.dataset.fetch_tick_dataset.html">tick.dataset.fetch_tick_dataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tick.dataset.fetch_hawkes_bund_data.html">tick.dataset.fetch_hawkes_bund_data</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../preprocessing.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.preprocessing</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../preprocessing.html#preprocessing-for-static-features">Preprocessing for static features</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../preprocessing.html#preprocessing-for-longitudinal-features">Preprocessing for longitudinal features</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../metrics.html"><code class="docutils literal"><span class="pre">tick.metrics</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../metrics.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.metrics</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="tick.metrics.support_fdp.html">tick.metrics.support_fdp</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tick.metrics.support_recall.html">tick.metrics.support_recall</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../R.html">How to use <code class="docutils literal"><span class="pre">tick</span></code> from the R statistical software</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../R.html">How to use <code class="docutils literal notranslate"><span class="pre">tick</span></code> from the R statistical software</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../R.html#training-a-logistic-regression-model">1. Training a logistic regression model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../R.html#simulation-of-a-hawkes-process">2. Simulation of a Hawkes process</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../R.html#using-optimization-tools-from-r">3. Using optimization tools from R</a></li>
@@ -162,17 +153,17 @@
 </li>
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">API Reference</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../api.html#table-of-contents">Table of contents</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../api.html#hawkes"><code class="docutils literal"><span class="pre">hawkes</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#linear-model"><code class="docutils literal"><span class="pre">linear_model</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#robust"><code class="docutils literal"><span class="pre">robust</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#survival"><code class="docutils literal"><span class="pre">survival</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#prox"><code class="docutils literal"><span class="pre">prox</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#solver"><code class="docutils literal"><span class="pre">solver</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#api-simulation"><code class="docutils literal"><span class="pre">simulation</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#plot"><code class="docutils literal"><span class="pre">plot</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#dataset"><code class="docutils literal"><span class="pre">dataset</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#preprocessing"><code class="docutils literal"><span class="pre">preprocessing</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#metrics"><code class="docutils literal"><span class="pre">metrics</span></code></a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../api.html#hawkes"><span class="xref std std-ref">hawkes</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#linear-model"><span class="xref std std-ref">linear_model</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#robust"><span class="xref std std-ref">robust</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#survival"><span class="xref std std-ref">survival</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#prox"><span class="xref std std-ref">prox</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#solver"><span class="xref std std-ref">solver</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#api-simulation"><span class="xref std std-ref">simulation</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#plot"><span class="xref std std-ref">plot</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#dataset"><span class="xref std std-ref">dataset</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#preprocessing"><span class="xref std std-ref">preprocessing</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#metrics"><span class="xref std std-ref">metrics</span></a></li>
 </ul>
 </li>
 </ul>
@@ -206,32 +197,30 @@
 <span id="timefunction"></span><h1>tick.base.TimeFunction<a class="headerlink" href="#tick-base-timefunction" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="tick.base.TimeFunction">
-<em class="property">class </em><code class="descclassname">tick.base.</code><code class="descname">TimeFunction</code><span class="sig-paren">(</span><em>values</em>, <em>border_type: int = 0</em>, <em>inter_mode: int = 0</em>, <em>dt: float = 0</em>, <em>border_value: float = 0</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/base/timefunc.html#TimeFunction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.base.TimeFunction" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tick.base.</code><code class="sig-name descname">TimeFunction</code><span class="sig-paren">(</span><em class="sig-param">values</em>, <em class="sig-param">border_type: int = 0</em>, <em class="sig-param">inter_mode: int = 0</em>, <em class="sig-param">dt: float = 0</em>, <em class="sig-param">border_value: float = 0</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/base/timefunc.html#TimeFunction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.base.TimeFunction" title="Permalink to this definition">¶</a></dt>
 <dd><p>A function depending on time.</p>
-<p>It is causal as its value is zero for all <span class="math">\(t &lt; 0\)</span>.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>values</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code> or <code class="xref py py-obj docutils literal"><span class="pre">tuple</span></code></p>
+<p>It is causal as its value is zero for all <span class="math notranslate nohighlight">\(t &lt; 0\)</span>.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>values</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code> or <code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code></p>
 <blockquote>
 <div><ul class="simple">
-<li>if a float is given the TimeFunction is constant and equal to this
-float</li>
-<li>a tuple of two numpy arrays <code class="xref py py-obj docutils literal"><span class="pre">(t_values,</span> <span class="pre">y_values)</span></code> where
-<code class="xref py py-obj docutils literal"><span class="pre">y</span></code> is the value taken by the TimeFunction at times <code class="xref py py-obj docutils literal"><span class="pre">t</span></code></li>
+<li><p>if a float is given the TimeFunction is constant and equal to this
+float</p></li>
+<li><p>a tuple of two numpy arrays <code class="xref py py-obj docutils literal notranslate"><span class="pre">(t_values,</span> <span class="pre">y_values)</span></code> where
+<code class="xref py py-obj docutils literal notranslate"><span class="pre">y</span></code> is the value taken by the TimeFunction at times <code class="xref py py-obj docutils literal notranslate"><span class="pre">t</span></code></p></li>
 </ul>
 </div></blockquote>
 <p><strong>border_type</strong> : {Border0, BorderConstant, BorderContinue}, default=Border0</p>
 <blockquote>
-<div><p>Handle the values returned after the after the last given <code class="xref py py-obj docutils literal"><span class="pre">t</span></code>.
+<div><p>Handle the values returned after the after the last given <code class="xref py py-obj docutils literal notranslate"><span class="pre">t</span></code>.
 This is only used if the TimeFunction is not a constant.</p>
 <ul class="simple">
-<li><code class="xref py py-obj docutils literal"><span class="pre">Border0</span></code> : value will be <span class="math">\(0\)</span></li>
-<li><code class="xref py py-obj docutils literal"><span class="pre">BorderConstant</span></code> : value will be given by <code class="xref py py-obj docutils literal"><span class="pre">border_value</span></code></li>
-<li><code class="xref py py-obj docutils literal"><span class="pre">BorderContinue</span></code> : value will equal to the last known value</li>
-<li><code class="xref py py-obj docutils literal"><span class="pre">Cyclic</span></code> : value will be equal the value it would have had in the 
-original given values, modulo the support.</li>
+<li><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Border0</span></code> : value will be <span class="math notranslate nohighlight">\(0\)</span></p></li>
+<li><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">BorderConstant</span></code> : value will be given by <code class="xref py py-obj docutils literal notranslate"><span class="pre">border_value</span></code></p></li>
+<li><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">BorderContinue</span></code> : value will equal to the last known value</p></li>
+<li><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Cyclic</span></code> : value will be equal the value it would have had in the 
+original given values, modulo the support.</p></li>
 </ul>
 </div></blockquote>
 <p><strong>inter_mode</strong> : {InterLinear, InterConstLeft, InterConstRight}, default=InterLinear</p>
@@ -239,32 +228,30 @@ original given values, modulo the support.</li>
 <div><p>Handle the way we extrapolate between two known values.
 This is only used if the TimeFunction is not a constant.</p>
 <ul class="simple">
-<li><code class="xref py py-obj docutils literal"><span class="pre">InterLinear</span></code> : value will be linearly interpolated following the
-formula <span class="math">\(f(x) = \frac{y_{t+1} - y_{t}}{x_{t+1} - x_{t}}\)</span></li>
-<li><code class="xref py py-obj docutils literal"><span class="pre">InterConstLeft</span></code> : value will be equal to the next known point</li>
-<li><code class="xref py py-obj docutils literal"><span class="pre">InterConstRight</span></code> : value will be equal to the previous known point</li>
+<li><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">InterLinear</span></code> : value will be linearly interpolated following the
+formula <span class="math notranslate nohighlight">\(f(x) = \frac{y_{t+1} - y_{t}}{x_{t+1} - x_{t}}\)</span></p></li>
+<li><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">InterConstLeft</span></code> : value will be equal to the next known point</p></li>
+<li><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">InterConstRight</span></code> : value will be equal to the previous known point</p></li>
 </ul>
 </div></blockquote>
-<p><strong>dt</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default=0</p>
+<p><strong>dt</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>, default=0</p>
 <blockquote>
 <div><p>The value used for the sub-sampling. If left to 0, it will be
 assigned automatically to a fifth of the smallest distance between
 two points</p>
 </div></blockquote>
-<p><strong>border_value</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default=0</p>
-<blockquote class="last">
-<div><p>See <code class="xref py py-obj docutils literal"><span class="pre">border_type</span></code>, <code class="xref py py-obj docutils literal"><span class="pre">BorderConstant</span></code> case</p>
+<p><strong>border_value</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>, default=0</p>
+<blockquote>
+<div><p>See <code class="xref py py-obj docutils literal notranslate"><span class="pre">border_type</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">BorderConstant</span></code> case</p>
 </div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p class="rubric">Notes</p>
 <p>TimeFunction are made to be very efficient when call if to  get a
-specific value (<span class="math">\(\mathcal{O}(1)\)</span>), however this leads us to
+specific value (<span class="math notranslate nohighlight">\(\mathcal{O}(1)\)</span>), however this leads us to
 have it taking a lot of space in memory.</p>
 <p class="rubric">Examples</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">tick.base</span> <span class="k">import</span> <span class="n">TimeFunction</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">t_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mf">4.1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
@@ -284,62 +271,59 @@ have it taking a lot of space in memory.</p>
 </div>
 <dl class="method">
 <dt id="tick.base.TimeFunction.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>values</em>, <em>border_type: int = 0</em>, <em>inter_mode: int = 0</em>, <em>dt: float = 0</em>, <em>border_value: float = 0</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/base/timefunc.html#TimeFunction.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.base.TimeFunction.__init__" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">values</em>, <em class="sig-param">border_type: int = 0</em>, <em class="sig-param">inter_mode: int = 0</em>, <em class="sig-param">dt: float = 0</em>, <em class="sig-param">border_value: float = 0</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/base/timefunc.html#TimeFunction.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.base.TimeFunction.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="tick.base.TimeFunction.get_norm">
-<code class="descname">get_norm</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/base/timefunc.html#TimeFunction.get_norm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.base.TimeFunction.get_norm" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_norm</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/base/timefunc.html#TimeFunction.get_norm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.base.TimeFunction.get_norm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the integral value of the TimeFunction</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tick.base.TimeFunction.value">
-<code class="descname">value</code><span class="sig-paren">(</span><em>t</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/base/timefunc.html#TimeFunction.value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.base.TimeFunction.value" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">value</code><span class="sig-paren">(</span><em class="sig-param">t</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/base/timefunc.html#TimeFunction.value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.base.TimeFunction.value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gives the value of the TimeFunction at provided time</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>t</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code> or <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code></p>
+<dl class="field-list">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>t</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code> or <code class="xref py py-obj docutils literal notranslate"><span class="pre">np.ndarray</span></code></p>
 <blockquote>
 <div><p>Time at which the value is computed</p>
 </div></blockquote>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code> or <code class="xref py py-obj docutils literal"><span class="pre">np.ndarray</span></code></p>
-<blockquote class="last">
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>output</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code> or <code class="xref py py-obj docutils literal notranslate"><span class="pre">np.ndarray</span></code></p>
+<blockquote>
 <div><p>TimeFunction value at provided time</p>
 </div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
 
 <div class="section" id="examples-using-tick-base-timefunction">
-<h2>Examples using <code class="docutils literal"><span class="pre">tick.base.TimeFunction</span></code><a class="headerlink" href="#examples-using-tick-base-timefunction" title="Permalink to this headline">¶</a></h2>
-<div class="thumbnailContainer" tooltip="This example show how to simulate any inhomogeneous Poisson process. Its intensity is modeled t..."><div class="figure" id="id1">
+<h2>Examples using <code class="docutils literal notranslate"><span class="pre">tick.base.TimeFunction</span></code><a class="headerlink" href="#examples-using-tick-base-timefunction" title="Permalink to this headline">¶</a></h2>
+<div class="thumbnailContainer" tooltip="This example show how to simulate any inhomogeneous Poisson process. Its intensity is modeled t..."><div class="figure align-default" id="id1">
 <a class="reference external image-reference" href="./../../auto_examples/./plot_poisson_inhomogeneous.html"><img alt="../../_images/plot_poisson_inhomogeneous1.png" src="../../_images/plot_poisson_inhomogeneous1.png" /></a>
-<p class="caption"><span class="caption-text"><a class="reference internal" href="../../auto_examples/plot_poisson_inhomogeneous.html#example-plot-poisson-inhomogeneous-py"><span class="std std-ref">Inhomogeneous Poisson process simulation</span></a></span></p>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="../../auto_examples/plot_poisson_inhomogeneous.html#example-plot-poisson-inhomogeneous-py"><span class="std std-ref">Inhomogeneous Poisson process simulation</span></a></span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
 </div>
-</div><div class="thumbnailContainer" tooltip="Simulation of Hawkes processes with usage of custom kernels "><div class="figure" id="id2">
+</div><div class="thumbnailContainer" tooltip="Simulation of Hawkes processes with usage of custom kernels "><div class="figure align-default" id="id2">
 <a class="reference external image-reference" href="./../../auto_examples/./plot_hawkes_time_func_simu.html"><img alt="../../_images/plot_hawkes_time_func_simu1.png" src="../../_images/plot_hawkes_time_func_simu1.png" /></a>
-<p class="caption"><span class="caption-text"><a class="reference internal" href="../../auto_examples/plot_hawkes_time_func_simu.html#example-plot-hawkes-time-func-simu-py"><span class="std std-ref">Hawkes simulation with exotic kernels</span></a></span></p>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="../../auto_examples/plot_hawkes_time_func_simu.html#example-plot-hawkes-time-func-simu-py"><span class="std std-ref">Hawkes simulation with exotic kernels</span></a></span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
 </div>
-</div><div class="thumbnailContainer" tooltip="This example simulates a Hawkes process with a non constant, periodic baseline "><div class="figure" id="id3">
+</div><div class="thumbnailContainer" tooltip="This example simulates a Hawkes process with a non constant, periodic baseline "><div class="figure align-default" id="id3">
 <a class="reference external image-reference" href="./../../auto_examples/./plot_hawkes_varying_baseline_simulation.html"><img alt="../../_images/plot_hawkes_varying_baseline_simulation1.png" src="../../_images/plot_hawkes_varying_baseline_simulation1.png" /></a>
-<p class="caption"><span class="caption-text"><a class="reference internal" href="../../auto_examples/plot_hawkes_varying_baseline_simulation.html#example-plot-hawkes-varying-baseline-simulation-py"><span class="std std-ref">Simulate Hawkes process with non constant baseline</span></a></span></p>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="../../auto_examples/plot_hawkes_varying_baseline_simulation.html#example-plot-hawkes-varying-baseline-simulation-py"><span class="std std-ref">Simulate Hawkes process with non constant baseline</span></a></span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
 </div>
-</div><div class="thumbnailContainer" tooltip="This Hawkes EM (`tick.inference.HawkesEM`) algorithm assume that kernels are piecewise constant..."><div class="figure" id="id4">
+</div><div class="thumbnailContainer" tooltip="This Hawkes EM (`tick.inference.HawkesEM`) algorithm assume that kernels are piecewise constant..."><div class="figure align-default" id="id4">
 <a class="reference external image-reference" href="./../../auto_examples/./plot_hawkes_em.html"><img alt="../../_images/plot_hawkes_em1.png" src="../../_images/plot_hawkes_em1.png" /></a>
-<p class="caption"><span class="caption-text"><a class="reference internal" href="../../auto_examples/plot_hawkes_em.html#example-plot-hawkes-em-py"><span class="std std-ref">Fit Hawkes random kernels</span></a></span></p>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="../../auto_examples/plot_hawkes_em.html#example-plot-hawkes-em-py"><span class="std std-ref">Fit Hawkes random kernels</span></a></span><a class="headerlink" href="#id4" title="Permalink to this image">¶</a></p>
 </div>
-</div><div class="thumbnailContainer" tooltip=""><div class="figure" id="id5">
+</div><div class="thumbnailContainer" tooltip=""><div class="figure align-default" id="id5">
 <a class="reference external image-reference" href="./../../auto_examples/./plot_time_function.html"><img alt="../../_images/plot_time_function.png" src="../../_images/plot_time_function.png" /></a>
-<p class="caption"><span class="caption-text"><a class="reference internal" href="../../auto_examples/plot_time_function.html#example-plot-time-function-py"><span class="std std-ref">plot_time_function.py</span></a></span></p>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="../../auto_examples/plot_time_function.html#example-plot-time-function-py"><span class="std std-ref">plot_time_function.py</span></a></span><a class="headerlink" href="#id5" title="Permalink to this image">¶</a></p>
 </div>
 </div></div>
 </div>
@@ -354,7 +338,7 @@ have it taking a lot of space in memory.</p>
     </p>
     <p>
         &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Vinther Poulsen.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.2.<br/>
     </p>
   </div>
 </footer>

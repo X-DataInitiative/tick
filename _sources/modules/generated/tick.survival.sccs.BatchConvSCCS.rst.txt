@@ -1,0 +1,9 @@
+tick.survival.sccs.BatchConvSCCS
+================================
+
+.. currentmodule:: tick.survival.sccs
+
+.. autofunction:: BatchConvSCCS
+
+.. include:: tick.survival.sccs.BatchConvSCCS.examples
+    :allowmissing:

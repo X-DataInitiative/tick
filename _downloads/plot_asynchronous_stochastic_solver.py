@@ -61,7 +61,7 @@ for ax, SolverClass in zip(axes, [SVRG, SAGA]):
 
     for n_threads in test_n_threads:
         solver = SolverClass(step=svrg_step, seed=seed, max_iter=50,
-                             verbose=False, n_threads=n_threads, tol=0,
+                             verbose=False, n_threads=n_threads, tol=1e-10,
                              record_every=3)
         solver.set_model(model).set_prox(prox)
         solver.solve()

@@ -3,7 +3,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
+    <meta charset="utf-8" /><script type="text/javascript">
 
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-97947441-1']);
@@ -15,28 +15,16 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.linear_model.SimuPoisReg &#8212; tick 0.5.0 documentation</title>
+    <title>tick.linear_model.SimuPoisReg &#8212; tick 0.6.0 documentation</title>
     <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../../',
-        VERSION:     '0.5.0',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <script type="text/javascript" src="../../_static/js/jquery-1.11.0.min.js"></script>
-    <script type="text/javascript" src="../../_static/js/jquery-fix.js"></script>
-    <script type="text/javascript" src="../../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="../../_static/bootstrap-sphinx.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="shortcut icon" href="../../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -46,9 +34,12 @@
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
 <meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../../_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="../../_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="../../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="../../_static/bootstrap-sphinx.js "></script>
 
-  </head>
-  <body>
+  </head><body>
 
   <div id="navbar" class="None navbar-default navbar-fixed-top">
     <div class="container">
@@ -61,7 +52,7 @@
         </button>
         <a class="navbar-brand" href="../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.6</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -81,72 +72,72 @@
   <ul class="dropdown-menu globaltoc"
       role="menu"
       aria-labelledby="dLabelGlobalToc"><ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../hawkes.html"><code class="docutils literal"><span class="pre">tick.hawkes</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../hawkes.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.hawkes</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../hawkes.html#introduction">1. Introduction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../hawkes.html#learners">2. Learners</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../hawkes.html#point-process-simulation">3. Point process simulation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../hawkes.html#models-for-inference">4. Models for inference</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../linear_model.html"><code class="docutils literal"><span class="pre">tick.linear_model</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../linear_model.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.linear_model</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../linear_model.html#introduction">1. Introduction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../linear_model.html#learners">2. Learners</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../linear_model.html#models">3. Models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../linear_model.html#simulation">4. Simulation</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../robust.html"><code class="docutils literal"><span class="pre">tick.robust</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../robust.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.robust</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../robust.html#regression-with-individual-intercepts">1. Regression with individual intercepts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../robust.html#robust-losses">2. Robust losses</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../survival.html"><code class="docutils literal"><span class="pre">tick.survival</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../survival.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.survival</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../survival.html#learners">1. Learners</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../survival.html#models">2. Models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../survival.html#simulation">3. Simulation</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../prox.html"><code class="docutils literal"><span class="pre">tick.prox</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../prox.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.prox</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../prox.html#available-operators">1. Available operators</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../prox.html#example">2. Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../prox.html#how-to-combine-several-prox">3. How to combine several prox ?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../prox.html#the-prox-class-api">4. The <code class="docutils literal"><span class="pre">prox</span></code> class API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../prox.html#the-prox-class-api">4. The <code class="docutils literal notranslate"><span class="pre">prox</span></code> class API</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../solver.html"><code class="docutils literal"><span class="pre">tick.solver</span></code></a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../solver.html#the-solver-class-api">1. The <code class="docutils literal"><span class="pre">solver</span></code> class API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../solver.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.solver</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../solver.html#the-solver-class-api">1. The <code class="docutils literal notranslate"><span class="pre">solver</span></code> class API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../solver.html#available-solvers">2. Available solvers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../solver.html#example">3. Example</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../simulation.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.simulation</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../simulation.html#simulation-of-model-weights">1. Simulation of model weights</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../simulation.html#simulation-of-a-features-matrix">2. Simulation of a features matrix</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../plot.html"><code class="docutils literal"><span class="pre">tick.plot</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../plot.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.plot</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../plot.html#history-plot">1. History plot</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../plot.html#plots-for-hawkes-processes">2. Plots for Hawkes processes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../plot.html#plots-for-point-process-simulation">3. Plots for point process simulation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../plot.html#miscellaneous-plots">4. Miscellaneous plots</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../dataset.html"><code class="docutils literal"><span class="pre">tick.dataset</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../dataset.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.dataset</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="tick.dataset.fetch_tick_dataset.html">tick.dataset.fetch_tick_dataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tick.dataset.fetch_hawkes_bund_data.html">tick.dataset.fetch_hawkes_bund_data</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../preprocessing.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.preprocessing</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../preprocessing.html#preprocessing-for-static-features">Preprocessing for static features</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../preprocessing.html#preprocessing-for-longitudinal-features">Preprocessing for longitudinal features</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../metrics.html"><code class="docutils literal"><span class="pre">tick.metrics</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../metrics.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.metrics</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="tick.metrics.support_fdp.html">tick.metrics.support_fdp</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tick.metrics.support_recall.html">tick.metrics.support_recall</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../R.html">How to use <code class="docutils literal"><span class="pre">tick</span></code> from the R statistical software</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../R.html">How to use <code class="docutils literal notranslate"><span class="pre">tick</span></code> from the R statistical software</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../R.html#training-a-logistic-regression-model">1. Training a logistic regression model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../R.html#simulation-of-a-hawkes-process">2. Simulation of a Hawkes process</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../R.html#using-optimization-tools-from-r">3. Using optimization tools from R</a></li>
@@ -162,17 +153,17 @@
 </li>
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">API Reference</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../api.html#table-of-contents">Table of contents</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#hawkes"><code class="docutils literal"><span class="pre">hawkes</span></code></a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../api.html#linear-model"><code class="docutils literal"><span class="pre">linear_model</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#robust"><code class="docutils literal"><span class="pre">robust</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#survival"><code class="docutils literal"><span class="pre">survival</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#prox"><code class="docutils literal"><span class="pre">prox</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#solver"><code class="docutils literal"><span class="pre">solver</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#api-simulation"><code class="docutils literal"><span class="pre">simulation</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#plot"><code class="docutils literal"><span class="pre">plot</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#dataset"><code class="docutils literal"><span class="pre">dataset</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#preprocessing"><code class="docutils literal"><span class="pre">preprocessing</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#metrics"><code class="docutils literal"><span class="pre">metrics</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#hawkes"><span class="xref std std-ref">hawkes</span></a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../api.html#linear-model"><span class="xref std std-ref">linear_model</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#robust"><span class="xref std std-ref">robust</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#survival"><span class="xref std std-ref">survival</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#prox"><span class="xref std std-ref">prox</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#solver"><span class="xref std std-ref">solver</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#api-simulation"><span class="xref std std-ref">simulation</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#plot"><span class="xref std std-ref">plot</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#dataset"><span class="xref std std-ref">dataset</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#preprocessing"><span class="xref std std-ref">preprocessing</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#metrics"><span class="xref std std-ref">metrics</span></a></li>
 </ul>
 </li>
 </ul>
@@ -206,149 +197,142 @@
 <span id="simupoisreg"></span><h1>tick.linear_model.SimuPoisReg<a class="headerlink" href="#tick-linear-model-simupoisreg" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="tick.linear_model.SimuPoisReg">
-<em class="property">class </em><code class="descclassname">tick.linear_model.</code><code class="descname">SimuPoisReg</code><span class="sig-paren">(</span><em>weights: numpy.ndarray</em>, <em>intercept: float = None</em>, <em>features: numpy.ndarray = None</em>, <em>n_samples: int = 200</em>, <em>link: str = 'exponential'</em>, <em>features_type: str = 'cov_toeplitz'</em>, <em>cov_corr: float = 0.5</em>, <em>features_scaling: str = 'none'</em>, <em>seed: int = None</em>, <em>verbose: bool = True</em>, <em>dtype='float64'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/linear_model/simu_poisreg.html#SimuPoisReg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.linear_model.SimuPoisReg" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tick.linear_model.</code><code class="sig-name descname">SimuPoisReg</code><span class="sig-paren">(</span><em class="sig-param">weights: numpy.ndarray</em>, <em class="sig-param">intercept: float = None</em>, <em class="sig-param">features: numpy.ndarray = None</em>, <em class="sig-param">n_samples: int = 200</em>, <em class="sig-param">link: str = 'exponential'</em>, <em class="sig-param">features_type: str = 'cov_toeplitz'</em>, <em class="sig-param">cov_corr: float = 0.5</em>, <em class="sig-param">features_scaling: str = 'none'</em>, <em class="sig-param">seed: int = None</em>, <em class="sig-param">verbose: bool = True</em>, <em class="sig-param">dtype='float64'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/linear_model/simu_poisreg.html#SimuPoisReg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.linear_model.SimuPoisReg" title="Permalink to this definition">¶</a></dt>
 <dd><p>Simulation of a Poisson regression model, with
 identity or exponential link.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>weights</strong> : <code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code>, shape=(n_features,)</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>weights</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>, shape=(n_features,)</p>
 <blockquote>
 <div><p>The array of weights of the model</p>
 </div></blockquote>
-<p><strong>intercept</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default=`None`</p>
+<p><strong>intercept</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>, default=`None`</p>
 <blockquote>
 <div><p>The intercept. If None, then no intercept is used</p>
 </div></blockquote>
-<p><strong>features</strong> : <code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code>, shape=(n_samples, n_features), default=`None`</p>
+<p><strong>features</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>, shape=(n_samples, n_features), default=`None`</p>
 <blockquote>
 <div><p>The features matrix to use. If None, it is simulated</p>
 </div></blockquote>
-<p><strong>n_samples</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code>, default=200</p>
+<p><strong>n_samples</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code>, default=200</p>
 <blockquote>
 <div><p>Number of samples</p>
 </div></blockquote>
-<p><strong>link</strong> : <code class="xref py py-obj docutils literal"><span class="pre">str</span></code>, default=”exponential”</p>
+<p><strong>link</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>, default=”exponential”</p>
 <blockquote>
 <div><p>Type of link function</p>
 <ul class="simple">
-<li>if <code class="docutils literal"><span class="pre">&quot;identity&quot;</span></code> : the intensity is the inner product of the
+<li><p>if <code class="docutils literal notranslate"><span class="pre">&quot;identity&quot;</span></code> : the intensity is the inner product of the
 model’s weights with the features. In this case, one must
-ensure that the intensity is non-negative</li>
-<li>if <code class="docutils literal"><span class="pre">&quot;exponential&quot;</span></code> : the intensity is the exponential of the
-inner product of the model’s weights with the features</li>
+ensure that the intensity is non-negative</p></li>
+<li><p>if <code class="docutils literal notranslate"><span class="pre">&quot;exponential&quot;</span></code> : the intensity is the exponential of the
+inner product of the model’s weights with the features</p></li>
 </ul>
 </div></blockquote>
-<p><strong>features_type</strong> : <code class="xref py py-obj docutils literal"><span class="pre">str</span></code>, default=”cov_toeplitz”</p>
+<p><strong>features_type</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>, default=”cov_toeplitz”</p>
 <blockquote>
 <div><p>The type of features matrix to simulate</p>
 <ul class="simple">
-<li>If <code class="docutils literal"><span class="pre">&quot;cov_toeplitz&quot;</span></code> : a Gaussian distribution with
-Toeplitz correlation matrix</li>
-<li>If <code class="docutils literal"><span class="pre">&quot;cov_uniform&quot;</span></code> : a Gaussian distribution with
+<li><p>If <code class="docutils literal notranslate"><span class="pre">&quot;cov_toeplitz&quot;</span></code> : a Gaussian distribution with
+Toeplitz correlation matrix</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">&quot;cov_uniform&quot;</span></code> : a Gaussian distribution with
 correlation matrix given by .5 * (U + U.T), where U is
-uniform on [0, 1] and diagonal filled with ones.</li>
+uniform on [0, 1] and diagonal filled with ones.</p></li>
 </ul>
 </div></blockquote>
-<p><strong>cov_corr</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default=.5</p>
+<p><strong>cov_corr</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>, default=.5</p>
 <blockquote>
 <div><p>Correlation to use in the Toeplitz correlation matrix</p>
 </div></blockquote>
-<p><strong>features_scaling</strong> : <code class="xref py py-obj docutils literal"><span class="pre">str</span></code>, default=”none”</p>
+<p><strong>features_scaling</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>, default=”none”</p>
 <blockquote>
 <div><p>The way the features matrix is scaled after simulation</p>
 <ul class="simple">
-<li>If <code class="docutils literal"><span class="pre">&quot;standard&quot;</span></code> : the columns are centered and
-normalized</li>
-<li>If <code class="docutils literal"><span class="pre">&quot;min-max&quot;</span></code> : remove the minimum and divide by
-max-min</li>
-<li>If <code class="docutils literal"><span class="pre">&quot;norm&quot;</span></code> : the columns are normalized but not centered</li>
-<li>If <code class="docutils literal"><span class="pre">&quot;none&quot;</span></code> : nothing is done to the features</li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">&quot;standard&quot;</span></code> : the columns are centered and
+normalized</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">&quot;min-max&quot;</span></code> : remove the minimum and divide by
+max-min</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">&quot;norm&quot;</span></code> : the columns are normalized but not centered</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">&quot;none&quot;</span></code> : nothing is done to the features</p></li>
 </ul>
 </div></blockquote>
-<p><strong>seed</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code>, default=None</p>
+<p><strong>seed</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code>, default=None</p>
 <blockquote>
-<div><p>The seed of the random number generator. If <code class="xref py py-obj docutils literal"><span class="pre">None</span></code> it is not
+<div><p>The seed of the random number generator. If <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code> it is not
 seeded</p>
 </div></blockquote>
-<p><strong>verbose</strong> : <code class="xref py py-obj docutils literal"><span class="pre">bool</span></code>, default=True</p>
+<p><strong>verbose</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>, default=True</p>
 <blockquote>
-<div><p>If <code class="xref py py-obj docutils literal"><span class="pre">True</span></code>, print things</p>
+<div><p>If <code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code>, print things</p>
 </div></blockquote>
-<p><strong>dtype</strong> : <code class="xref py py-obj docutils literal"><span class="pre">{'float64',</span> <span class="pre">'float32'}</span></code>, default=’float64’</p>
+<p><strong>dtype</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">{'float64',</span> <span class="pre">'float32'}</span></code>, default=’float64’</p>
 <blockquote>
 <div><p>Type of the generated arrays.
 Used in the case features is None</p>
 </div></blockquote>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Attributes:</th><td class="field-body"><p class="first"><strong>features</strong> : <code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code>, shape=(n_samples, n_features)</p>
+</dd>
+<dt class="field-even">Attributes</dt>
+<dd class="field-even"><p><strong>features</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>, shape=(n_samples, n_features)</p>
 <blockquote>
 <div><p>The simulated (or given) features matrix</p>
 </div></blockquote>
-<p><strong>labels</strong> : <code class="xref py py-obj docutils literal"><span class="pre">numpy.ndarray</span></code>, shape=(n_samples,)</p>
+<p><strong>labels</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>, shape=(n_samples,)</p>
 <blockquote>
 <div><p>The simulated labels</p>
 </div></blockquote>
-<p><strong>time_start</strong> : <code class="xref py py-obj docutils literal"><span class="pre">str</span></code></p>
+<p><strong>time_start</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
 <blockquote>
 <div><p>Start date of the simulation</p>
 </div></blockquote>
-<p><strong>time_elapsed</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code></p>
+<p><strong>time_elapsed</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></p>
 <blockquote>
 <div><p>Duration of the simulation, in seconds</p>
 </div></blockquote>
-<p><strong>time_end</strong> : <code class="xref py py-obj docutils literal"><span class="pre">str</span></code></p>
-<blockquote class="last">
+<p><strong>time_end</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+<blockquote>
 <div><p>End date of the simulation</p>
 </div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <dl class="method">
 <dt id="tick.linear_model.SimuPoisReg.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>weights: numpy.ndarray</em>, <em>intercept: float = None</em>, <em>features: numpy.ndarray = None</em>, <em>n_samples: int = 200</em>, <em>link: str = 'exponential'</em>, <em>features_type: str = 'cov_toeplitz'</em>, <em>cov_corr: float = 0.5</em>, <em>features_scaling: str = 'none'</em>, <em>seed: int = None</em>, <em>verbose: bool = True</em>, <em>dtype='float64'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/linear_model/simu_poisreg.html#SimuPoisReg.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.linear_model.SimuPoisReg.__init__" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">weights: numpy.ndarray</em>, <em class="sig-param">intercept: float = None</em>, <em class="sig-param">features: numpy.ndarray = None</em>, <em class="sig-param">n_samples: int = 200</em>, <em class="sig-param">link: str = 'exponential'</em>, <em class="sig-param">features_type: str = 'cov_toeplitz'</em>, <em class="sig-param">cov_corr: float = 0.5</em>, <em class="sig-param">features_scaling: str = 'none'</em>, <em class="sig-param">seed: int = None</em>, <em class="sig-param">verbose: bool = True</em>, <em class="sig-param">dtype='float64'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/linear_model/simu_poisreg.html#SimuPoisReg.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.linear_model.SimuPoisReg.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="tick.linear_model.SimuPoisReg.simulate">
-<code class="descname">simulate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/linear_model/simu_poisreg.html#SimuPoisReg.simulate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.linear_model.SimuPoisReg.simulate" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">simulate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/linear_model/simu_poisreg.html#SimuPoisReg.simulate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.linear_model.SimuPoisReg.simulate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Launch simulation of the data</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>features: `numpy.ndarray`, shape=(n_samples, n_features)</strong> :</p>
+<dl class="field-list">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>features: `numpy.ndarray`, shape=(n_samples, n_features)</strong> :</p>
 <blockquote>
 <div><p>The features matrix</p>
 </div></blockquote>
 <p><strong>labels: `numpy.ndarray`, shape=(n_samples,)</strong> :</p>
-<blockquote class="last">
+<blockquote>
 <div><p>The labels vector</p>
 </div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
 
 <div class="section" id="examples-using-tick-linear-model-simupoisreg">
-<h2>Examples using <code class="docutils literal"><span class="pre">tick.linear_model.SimuPoisReg</span></code><a class="headerlink" href="#examples-using-tick-linear-model-simupoisreg" title="Permalink to this headline">¶</a></h2>
-<div class="thumbnailContainer" tooltip="In this example, we explain how to try out different solvers for the Poisson regression model, ..."><div class="figure" id="id1">
+<h2>Examples using <code class="docutils literal notranslate"><span class="pre">tick.linear_model.SimuPoisReg</span></code><a class="headerlink" href="#examples-using-tick-linear-model-simupoisreg" title="Permalink to this headline">¶</a></h2>
+<div class="thumbnailContainer" tooltip="In this example, we explain how to try out different solvers for the Poisson regression model, ..."><div class="figure align-default" id="id1">
 <a class="reference external image-reference" href="./../../auto_examples/./plot_poisson_regression.html"><img alt="../../_images/plot_poisson_regression1.png" src="../../_images/plot_poisson_regression1.png" /></a>
-<p class="caption"><span class="caption-text"><a class="reference internal" href="../../auto_examples/plot_poisson_regression.html#example-plot-poisson-regression-py"><span class="std std-ref">Comparison of solvers for Poisson regression</span></a></span></p>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="../../auto_examples/plot_poisson_regression.html#example-plot-poisson-regression-py"><span class="std std-ref">Comparison of solvers for Poisson regression</span></a></span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
 </div>
-</div><div class="thumbnailContainer" tooltip="Generates Linear, Logistic and Poisson regression realizations given a weight vector. "><div class="figure" id="id2">
+</div><div class="thumbnailContainer" tooltip="Generates Linear, Logistic and Poisson regression realizations given a weight vector. "><div class="figure align-default" id="id2">
 <a class="reference external image-reference" href="./../../auto_examples/./plot_simulation_linear_model.html"><img alt="../../_images/plot_simulation_linear_model1.png" src="../../_images/plot_simulation_linear_model1.png" /></a>
-<p class="caption"><span class="caption-text"><a class="reference internal" href="../../auto_examples/plot_simulation_linear_model.html#example-plot-simulation-linear-model-py"><span class="std std-ref">Linear models data simulation</span></a></span></p>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="../../auto_examples/plot_simulation_linear_model.html#example-plot-simulation-linear-model-py"><span class="std std-ref">Linear models data simulation</span></a></span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
 </div>
-</div><div class="thumbnailContainer" tooltip="This example illustrates the optimization of three linear models:     * Linear regression (`tic..."><div class="figure" id="id3">
+</div><div class="thumbnailContainer" tooltip="This example illustrates the optimization of three linear models:     * Linear regression (`tic..."><div class="figure align-default" id="id3">
 <a class="reference external image-reference" href="./../../auto_examples/./plot_glm_convergence.html"><img alt="../../_images/plot_glm_convergence1.png" src="../../_images/plot_glm_convergence1.png" /></a>
-<p class="caption"><span class="caption-text"><a class="reference internal" href="../../auto_examples/plot_glm_convergence.html#example-plot-glm-convergence-py"><span class="std std-ref">Generalized linear models solver convergence</span></a></span></p>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="../../auto_examples/plot_glm_convergence.html#example-plot-glm-convergence-py"><span class="std std-ref">Generalized linear models solver convergence</span></a></span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
 </div>
 </div></div>
 </div>
@@ -363,7 +347,7 @@ Used in the case features is None</p>
     </p>
     <p>
         &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Vinther Poulsen.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.2.<br/>
     </p>
   </div>
 </footer>

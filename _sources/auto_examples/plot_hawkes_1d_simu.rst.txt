@@ -19,8 +19,8 @@
 .. literalinclude:: plot_hawkes_1d_simu.py
     :lines: 5-
 
-**Total running time of the example:**  0.28 seconds
-( 0 minutes  0.28 seconds)
+**Total running time of the example:**  0.03 seconds
+( 0 minutes  0.03 seconds)
     
 Mentioned *tick* classes:
    * `tick.hawkes.HawkesKernelSumExp`

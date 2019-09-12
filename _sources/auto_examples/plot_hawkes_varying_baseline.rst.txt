@@ -28,8 +28,8 @@ piecewise constant.
 .. literalinclude:: plot_hawkes_varying_baseline.py
     :lines: 14-
 
-**Total running time of the example:**  1.13 seconds
-( 0 minutes  1.13 seconds)
+**Total running time of the example:**  0.43 seconds
+( 0 minutes  0.43 seconds)
     
 Mentioned *tick* classes:
    * `tick.hawkes.HawkesSumExpKern`

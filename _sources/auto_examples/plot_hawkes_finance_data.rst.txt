@@ -39,8 +39,8 @@ triggering (resp. preventing) market orders at the ask (resp. at the bid).
 .. literalinclude:: plot_hawkes_finance_data.py
     :lines: 25-
 
-**Total running time of the example:**  7.46 seconds
-( 0 minutes  7.46 seconds)
+**Total running time of the example:**  2.24 seconds
+( 0 minutes  2.24 seconds)
     
 Mentioned *tick* classes:
    * `tick.dataset.fetch_hawkes_bund_data`

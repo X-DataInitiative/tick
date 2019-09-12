@@ -22,8 +22,8 @@ Plot examples of proximal operators available in tick
 .. literalinclude:: plot_prox_example.py
     :lines: 8-
 
-**Total running time of the example:**  2.15 seconds
-( 0 minutes  2.15 seconds)
+**Total running time of the example:**  1.18 seconds
+( 0 minutes  1.18 seconds)
     
 Mentioned *tick* classes:
    * `tick.prox.ProxBinarsity`

@@ -3,7 +3,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
+    <meta charset="utf-8" /><script type="text/javascript">
 
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-97947441-1']);
@@ -15,28 +15,16 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>How to use tick from the R statistical software &#8212; tick 0.5.0 documentation</title>
+    <title>How to use tick from the R statistical software &#8212; tick 0.6.0 documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../',
-        VERSION:     '0.5.0',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
-    <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
-    <script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -46,9 +34,12 @@
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
 <meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js "></script>
 
-  </head>
-  <body>
+  </head><body>
 
   <div id="navbar" class="None navbar-default navbar-fixed-top">
     <div class="container">
@@ -61,7 +52,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.6</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -81,72 +72,72 @@
   <ul class="dropdown-menu globaltoc"
       role="menu"
       aria-labelledby="dLabelGlobalToc"><ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="hawkes.html"><code class="docutils literal"><span class="pre">tick.hawkes</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="hawkes.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.hawkes</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="hawkes.html#introduction">1. Introduction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="hawkes.html#learners">2. Learners</a></li>
 <li class="toctree-l2"><a class="reference internal" href="hawkes.html#point-process-simulation">3. Point process simulation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="hawkes.html#models-for-inference">4. Models for inference</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="linear_model.html"><code class="docutils literal"><span class="pre">tick.linear_model</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="linear_model.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.linear_model</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="linear_model.html#introduction">1. Introduction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="linear_model.html#learners">2. Learners</a></li>
 <li class="toctree-l2"><a class="reference internal" href="linear_model.html#models">3. Models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="linear_model.html#simulation">4. Simulation</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="robust.html"><code class="docutils literal"><span class="pre">tick.robust</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="robust.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.robust</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="robust.html#regression-with-individual-intercepts">1. Regression with individual intercepts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="robust.html#robust-losses">2. Robust losses</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="survival.html"><code class="docutils literal"><span class="pre">tick.survival</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="survival.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.survival</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="survival.html#learners">1. Learners</a></li>
 <li class="toctree-l2"><a class="reference internal" href="survival.html#models">2. Models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="survival.html#simulation">3. Simulation</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="prox.html"><code class="docutils literal"><span class="pre">tick.prox</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="prox.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.prox</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="prox.html#available-operators">1. Available operators</a></li>
 <li class="toctree-l2"><a class="reference internal" href="prox.html#example">2. Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="prox.html#how-to-combine-several-prox">3. How to combine several prox ?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="prox.html#the-prox-class-api">4. The <code class="docutils literal"><span class="pre">prox</span></code> class API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="prox.html#the-prox-class-api">4. The <code class="docutils literal notranslate"><span class="pre">prox</span></code> class API</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="solver.html"><code class="docutils literal"><span class="pre">tick.solver</span></code></a><ul>
-<li class="toctree-l2"><a class="reference internal" href="solver.html#the-solver-class-api">1. The <code class="docutils literal"><span class="pre">solver</span></code> class API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="solver.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.solver</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="solver.html#the-solver-class-api">1. The <code class="docutils literal notranslate"><span class="pre">solver</span></code> class API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="solver.html#available-solvers">2. Available solvers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="solver.html#example">3. Example</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="simulation.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.simulation</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="simulation.html#simulation-of-model-weights">1. Simulation of model weights</a></li>
 <li class="toctree-l2"><a class="reference internal" href="simulation.html#simulation-of-a-features-matrix">2. Simulation of a features matrix</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="plot.html"><code class="docutils literal"><span class="pre">tick.plot</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="plot.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.plot</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="plot.html#history-plot">1. History plot</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plot.html#plots-for-hawkes-processes">2. Plots for Hawkes processes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plot.html#plots-for-point-process-simulation">3. Plots for point process simulation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plot.html#miscellaneous-plots">4. Miscellaneous plots</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="dataset.html"><code class="docutils literal"><span class="pre">tick.dataset</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="dataset.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.dataset</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="generated/tick.dataset.fetch_tick_dataset.html">tick.dataset.fetch_tick_dataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generated/tick.dataset.fetch_hawkes_bund_data.html">tick.dataset.fetch_hawkes_bund_data</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="preprocessing.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.preprocessing</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="preprocessing.html#preprocessing-for-static-features">Preprocessing for static features</a></li>
 <li class="toctree-l2"><a class="reference internal" href="preprocessing.html#preprocessing-for-longitudinal-features">Preprocessing for longitudinal features</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="metrics.html"><code class="docutils literal"><span class="pre">tick.metrics</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="metrics.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.metrics</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="generated/tick.metrics.support_fdp.html">tick.metrics.support_fdp</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generated/tick.metrics.support_recall.html">tick.metrics.support_recall</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">How to use <code class="docutils literal"><span class="pre">tick</span></code> from the R statistical software</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">How to use <code class="docutils literal notranslate"><span class="pre">tick</span></code> from the R statistical software</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#training-a-logistic-regression-model">1. Training a logistic regression model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#simulation-of-a-hawkes-process">2. Simulation of a Hawkes process</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#using-optimization-tools-from-r">3. Using optimization tools from R</a></li>
@@ -162,17 +153,17 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="api.html#table-of-contents">Table of contents</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#hawkes"><code class="docutils literal"><span class="pre">hawkes</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#linear-model"><code class="docutils literal"><span class="pre">linear_model</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#robust"><code class="docutils literal"><span class="pre">robust</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#survival"><code class="docutils literal"><span class="pre">survival</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#prox"><code class="docutils literal"><span class="pre">prox</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#solver"><code class="docutils literal"><span class="pre">solver</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#api-simulation"><code class="docutils literal"><span class="pre">simulation</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#plot"><code class="docutils literal"><span class="pre">plot</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#dataset"><code class="docutils literal"><span class="pre">dataset</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#preprocessing"><code class="docutils literal"><span class="pre">preprocessing</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#metrics"><code class="docutils literal"><span class="pre">metrics</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#hawkes"><span class="xref std std-ref">hawkes</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#linear-model"><span class="xref std std-ref">linear_model</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#robust"><span class="xref std std-ref">robust</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#survival"><span class="xref std std-ref">survival</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#prox"><span class="xref std std-ref">prox</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#solver"><span class="xref std std-ref">solver</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#api-simulation"><span class="xref std std-ref">simulation</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#plot"><span class="xref std std-ref">plot</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#dataset"><span class="xref std std-ref">dataset</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#preprocessing"><span class="xref std std-ref">preprocessing</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#metrics"><span class="xref std std-ref">metrics</span></a></li>
 </ul>
 </li>
 </ul>
@@ -203,121 +194,121 @@
 <div class="container content-container">
   
   <div class="section" id="how-to-use-tick-from-the-r-statistical-software">
-<span id="r-usage"></span><h1>How to use <code class="docutils literal"><span class="pre">tick</span></code> from the R statistical software<a class="headerlink" href="#how-to-use-tick-from-the-r-statistical-software" title="Permalink to this headline">¶</a></h1>
-<p><code class="docutils literal"><span class="pre">tick</span></code> really is a Python library. However, you can use it quite easily
-from the <code class="docutils literal"><span class="pre">R</span></code> statistical software using the <code class="docutils literal"><span class="pre">reticulate</span></code> library, that
+<span id="r-usage"></span><h1>How to use <code class="docutils literal notranslate"><span class="pre">tick</span></code> from the R statistical software<a class="headerlink" href="#how-to-use-tick-from-the-r-statistical-software" title="Permalink to this headline">¶</a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">tick</span></code> really is a Python library. However, you can use it quite easily
+from the <code class="docutils literal notranslate"><span class="pre">R</span></code> statistical software using the <code class="docutils literal notranslate"><span class="pre">reticulate</span></code> library, that
 builds automatically wrappers around Python code.</p>
-<p>Note that the best experience and performance for using <code class="docutils literal"><span class="pre">tick</span></code> is
+<p>Note that the best experience and performance for using <code class="docutils literal notranslate"><span class="pre">tick</span></code> is
 obviously from Python, the main problem being the fact that all two-dimensional
-arrays will be duplicated, since <code class="docutils literal"><span class="pre">R</span></code> supports only the column-major format.
+arrays will be duplicated, since <code class="docutils literal notranslate"><span class="pre">R</span></code> supports only the column-major format.
 This copy is transparent for the end-user.</p>
-<p>Before starting, you need to install the <code class="docutils literal"><span class="pre">reticulate</span></code> library in your <code class="docutils literal"><span class="pre">R</span></code>
-system, and have a working version of <code class="docutils literal"><span class="pre">tick</span></code> on your version of Python 3.
-Your <code class="docutils literal"><span class="pre">R</span></code> code should begin with</p>
-<div class="highlight-r"><div class="highlight"><pre><span></span><span class="kn">library</span><span class="p">(</span><span class="s">&#39;reticulate&#39;</span><span class="p">)</span>
-reticulate<span class="o">::</span>use_python<span class="p">(</span><span class="s">&#39;SOMEPATH1/python3&#39;</span><span class="p">)</span>
-tick <span class="o">=</span> import_from_path<span class="p">(</span><span class="s">&#39;tick&#39;</span><span class="p">,</span> <span class="s">&#39;SOMEPATH2/tick/&#39;</span><span class="p">)</span>
+<p>Before starting, you need to install the <code class="docutils literal notranslate"><span class="pre">reticulate</span></code> library in your <code class="docutils literal notranslate"><span class="pre">R</span></code>
+system, and have a working version of <code class="docutils literal notranslate"><span class="pre">tick</span></code> on your version of Python 3.
+Your <code class="docutils literal notranslate"><span class="pre">R</span></code> code should begin with</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="s">&#39;reticulate&#39;</span><span class="p">)</span>
+<span class="n">reticulate</span><span class="o">::</span><span class="nf">use_python</span><span class="p">(</span><span class="s">&#39;SOMEPATH1/python3&#39;</span><span class="p">)</span>
+<span class="n">tick</span> <span class="o">=</span> <span class="nf">import_from_path</span><span class="p">(</span><span class="s">&#39;tick&#39;</span><span class="p">,</span> <span class="s">&#39;SOMEPATH2/tick/&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>where <code class="docutils literal"><span class="pre">SOMEPATH1</span></code> is the path to the Python 3 binary used on your system
-and <code class="docutils literal"><span class="pre">SOMEPATH2</span></code> is the path to the installation of <code class="docutils literal"><span class="pre">tick</span></code> on your system
-(path to the source code if you git cloned and compiled directly <code class="docutils literal"><span class="pre">tick</span></code>).</p>
+<p>where <code class="docutils literal notranslate"><span class="pre">SOMEPATH1</span></code> is the path to the Python 3 binary used on your system
+and <code class="docutils literal notranslate"><span class="pre">SOMEPATH2</span></code> is the path to the installation of <code class="docutils literal notranslate"><span class="pre">tick</span></code> on your system
+(path to the source code if you git cloned and compiled directly <code class="docutils literal notranslate"><span class="pre">tick</span></code>).</p>
 <div class="section" id="training-a-logistic-regression-model">
 <span id="r-usage-logistic-regression"></span><h2>1. Training a logistic regression model<a class="headerlink" href="#training-a-logistic-regression-model" title="Permalink to this headline">¶</a></h2>
 <p>The example given below downloads a dataset for binary classification and
 trains a logistic regression with elastic-net penalization.
 Then it displays the ROC curve on testing data using some tools from
-<code class="docutils literal"><span class="pre">sklearn.metric</span></code> (that needs to be installed in your python distribution
+<code class="docutils literal notranslate"><span class="pre">sklearn.metric</span></code> (that needs to be installed in your python distribution
 as well).</p>
-<div class="highlight-r"><div class="highlight"><pre><span></span><span class="c1"># Fetch data</span>
-fetch_tick_dataset <span class="o">=</span> tick<span class="o">$</span>dataset<span class="o">$</span>fetch_tick_dataset
-train_set <span class="o">=</span> fetch_tick_dataset<span class="p">(</span><span class="s">&#39;binary/adult/adult.trn.bz2&#39;</span><span class="p">)</span>
-test_set <span class="o">=</span> fetch_tick_dataset<span class="p">(</span><span class="s">&#39;binary/adult/adult.tst.bz2&#39;</span><span class="p">)</span>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># Fetch data</span>
+<span class="n">fetch_tick_dataset</span> <span class="o">=</span> <span class="n">tick</span><span class="o">$</span><span class="n">dataset</span><span class="o">$</span><span class="n">fetch_tick_dataset</span>
+<span class="n">train_set</span> <span class="o">=</span> <span class="nf">fetch_tick_dataset</span><span class="p">(</span><span class="s">&#39;binary/adult/adult.trn.bz2&#39;</span><span class="p">)</span>
+<span class="n">test_set</span> <span class="o">=</span> <span class="nf">fetch_tick_dataset</span><span class="p">(</span><span class="s">&#39;binary/adult/adult.tst.bz2&#39;</span><span class="p">)</span>
 
 <span class="c1"># Logistic regression training</span>
-LogisticRegression <span class="o">=</span> tick<span class="o">$</span>linear_model<span class="o">$</span>LogisticRegression
-clf <span class="o">=</span> LogisticRegression<span class="p">(</span>penalty<span class="o">=</span><span class="s">&#39;elasticnet&#39;</span><span class="p">)</span>
-clf<span class="o">$</span>fit<span class="p">(</span>train_set<span class="p">[[</span><span class="m">1</span><span class="p">]],</span> train_set<span class="p">[[</span><span class="m">2</span><span class="p">]])</span>
+<span class="n">LogisticRegression</span> <span class="o">=</span> <span class="n">tick</span><span class="o">$</span><span class="n">linear_model</span><span class="o">$</span><span class="n">LogisticRegression</span>
+<span class="n">clf</span> <span class="o">=</span> <span class="nf">LogisticRegression</span><span class="p">(</span><span class="n">penalty</span><span class="o">=</span><span class="s">&#39;elasticnet&#39;</span><span class="p">)</span>
+<span class="n">clf</span><span class="o">$</span><span class="nf">fit</span><span class="p">(</span><span class="n">train_set[[1]]</span><span class="p">,</span> <span class="n">train_set[[2]]</span><span class="p">)</span>
 
 <span class="c1"># Plot of the ROC curve on the testing set using scikit-learn</span>
-metrics <span class="o">=</span> import<span class="p">(</span><span class="s">&#39;sklearn.metrics&#39;</span><span class="p">)</span>
-predictions <span class="o">=</span> clf<span class="o">$</span>predict_proba<span class="p">(</span>test_set<span class="p">[[</span><span class="m">1</span><span class="p">]])</span>
-res <span class="o">=</span> metrics<span class="o">$</span>roc_curve<span class="p">(</span>test_set<span class="p">[[</span><span class="m">2</span><span class="p">]],</span> predictions<span class="p">[,</span> <span class="m">2</span><span class="p">])</span>
-fpr <span class="o">=</span> res<span class="p">[[</span><span class="m">1</span><span class="p">]]</span>
-tpr <span class="o">=</span> res<span class="p">[[</span><span class="m">2</span><span class="p">]]</span>
-plot<span class="p">(</span>fpr<span class="p">,</span> tpr<span class="p">,</span> type<span class="o">=</span><span class="s">&#39;l&#39;</span><span class="p">)</span>
+<span class="n">metrics</span> <span class="o">=</span> <span class="nf">import</span><span class="p">(</span><span class="s">&#39;sklearn.metrics&#39;</span><span class="p">)</span>
+<span class="n">predictions</span> <span class="o">=</span> <span class="n">clf</span><span class="o">$</span><span class="nf">predict_proba</span><span class="p">(</span><span class="n">test_set[[1]]</span><span class="p">)</span>
+<span class="n">res</span> <span class="o">=</span> <span class="n">metrics</span><span class="o">$</span><span class="nf">roc_curve</span><span class="p">(</span><span class="n">test_set[[2]]</span><span class="p">,</span> <span class="n">predictions[</span><span class="p">,</span> <span class="m">2</span><span class="n">]</span><span class="p">)</span>
+<span class="n">fpr</span> <span class="o">=</span> <span class="n">res[[1]]</span>
+<span class="n">tpr</span> <span class="o">=</span> <span class="n">res[[2]]</span>
+<span class="nf">plot</span><span class="p">(</span><span class="n">fpr</span><span class="p">,</span> <span class="n">tpr</span><span class="p">,</span> <span class="n">type</span><span class="o">=</span><span class="s">&#39;l&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>This is very close to the equivalent <code class="docutils literal"><span class="pre">Python</span></code> code. To produce this <code class="docutils literal"><span class="pre">R</span></code>
-code from the <code class="docutils literal"><span class="pre">Python</span></code> equivalent, we simply replaced <code class="docutils literal"><span class="pre">.</span></code> by <code class="docutils literal"><span class="pre">$</span></code>
+<p>This is very close to the equivalent <code class="docutils literal notranslate"><span class="pre">Python</span></code> code. To produce this <code class="docutils literal notranslate"><span class="pre">R</span></code>
+code from the <code class="docutils literal notranslate"><span class="pre">Python</span></code> equivalent, we simply replaced <code class="docutils literal notranslate"><span class="pre">.</span></code> by <code class="docutils literal notranslate"><span class="pre">$</span></code>
 when accessing modules and classes, and when a function returns more than
-one argument (such as <code class="docutils literal"><span class="pre">metrics$roc_curve</span></code> in the previous example), we access
-the returned arguments through the <code class="docutils literal"><span class="pre">res[[1]]</span></code> syntax.</p>
+one argument (such as <code class="docutils literal notranslate"><span class="pre">metrics$roc_curve</span></code> in the previous example), we access
+the returned arguments through the <code class="docutils literal notranslate"><span class="pre">res[[1]]</span></code> syntax.</p>
 </div>
 <div class="section" id="simulation-of-a-hawkes-process">
 <span id="r-usage-hawkes-simulation"></span><h2>2. Simulation of a Hawkes process<a class="headerlink" href="#simulation-of-a-hawkes-process" title="Permalink to this headline">¶</a></h2>
 <p>This example simulates a unidimensional Hawkes process with sum of exponentials
 kernel, and plots the simulated intensity.
-Note that integer 0 must be coded as <code class="docutils literal"><span class="pre">0L</span></code>, otherwise it is interpreted as
+Note that integer 0 must be coded as <code class="docutils literal notranslate"><span class="pre">0L</span></code>, otherwise it is interpreted as
 floating point and results in errors.</p>
-<div class="highlight-r"><div class="highlight"><pre><span></span>SimuHawkes <span class="o">=</span> tick<span class="o">$</span>hawkes<span class="o">$</span>SimuHawkes
-HawkesKernelSumExp <span class="o">=</span> tick<span class="o">$</span>hawkes<span class="o">$</span>HawkesKernelSumExp
-end_time <span class="o">=</span> <span class="m">40L</span>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">SimuHawkes</span> <span class="o">=</span> <span class="n">tick</span><span class="o">$</span><span class="n">hawkes</span><span class="o">$</span><span class="n">SimuHawkes</span>
+<span class="n">HawkesKernelSumExp</span> <span class="o">=</span> <span class="n">tick</span><span class="o">$</span><span class="n">hawkes</span><span class="o">$</span><span class="n">HawkesKernelSumExp</span>
+<span class="n">end_time</span> <span class="o">=</span> <span class="m">40L</span>
 
-hawkes <span class="o">=</span> SimuHawkes<span class="p">(</span>n_nodes<span class="o">=</span><span class="m">1L</span><span class="p">,</span> end_time<span class="o">=</span>end_time<span class="p">,</span> verbose<span class="o">=</span><span class="kc">FALSE</span><span class="p">,</span> seed<span class="o">=</span><span class="m">1398L</span><span class="p">)</span>
-kernel <span class="o">=</span> HawkesKernelSumExp<span class="p">(</span><span class="kt">c</span><span class="p">(</span><span class="m">.1</span><span class="p">,</span> <span class="m">.2</span><span class="p">,</span> <span class="m">.1</span><span class="p">),</span> <span class="kt">c</span><span class="p">(</span><span class="m">1.</span><span class="p">,</span> <span class="m">3.</span><span class="p">,</span> <span class="m">7.</span><span class="p">))</span>
-hawkes<span class="o">$</span>set_kernel<span class="p">(</span><span class="m">0L</span><span class="p">,</span> <span class="m">0L</span><span class="p">,</span> kernel<span class="p">)</span>
-hawkes<span class="o">$</span>set_baseline<span class="p">(</span><span class="m">0L</span><span class="p">,</span> <span class="m">1.</span><span class="p">)</span>
+<span class="n">hawkes</span> <span class="o">=</span> <span class="nf">SimuHawkes</span><span class="p">(</span><span class="n">n_nodes</span><span class="o">=</span><span class="m">1L</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">end_time</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">FALSE</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="m">1398L</span><span class="p">)</span>
+<span class="n">kernel</span> <span class="o">=</span> <span class="nf">HawkesKernelSumExp</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="m">.1</span><span class="p">,</span> <span class="m">.2</span><span class="p">,</span> <span class="m">.1</span><span class="p">),</span> <span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="n">.,</span> <span class="m">3</span><span class="n">.,</span> <span class="m">7</span><span class="n">.)</span><span class="p">)</span>
+<span class="n">hawkes</span><span class="o">$</span><span class="nf">set_kernel</span><span class="p">(</span><span class="m">0L</span><span class="p">,</span> <span class="m">0L</span><span class="p">,</span> <span class="n">kernel</span><span class="p">)</span>
+<span class="n">hawkes</span><span class="o">$</span><span class="nf">set_baseline</span><span class="p">(</span><span class="m">0L</span><span class="p">,</span> <span class="m">1</span><span class="n">.)</span>
 
-dt <span class="o">=</span> <span class="m">0.01</span>
-hawkes<span class="o">$</span>track_intensity<span class="p">(</span>dt<span class="p">)</span>
-hawkes<span class="o">$</span>simulate<span class="p">()</span>
-timestamps <span class="o">=</span> hawkes<span class="o">$</span>timestamps
-intensity <span class="o">=</span> hawkes<span class="o">$</span>tracked_intensity
-intensity_times <span class="o">=</span> hawkes<span class="o">$</span>intensity_tracked_times
+<span class="n">dt</span> <span class="o">=</span> <span class="m">0.01</span>
+<span class="n">hawkes</span><span class="o">$</span><span class="nf">track_intensity</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span>
+<span class="n">hawkes</span><span class="o">$</span><span class="nf">simulate</span><span class="p">()</span>
+<span class="n">timestamps</span> <span class="o">=</span> <span class="n">hawkes</span><span class="o">$</span><span class="n">timestamps</span>
+<span class="n">intensity</span> <span class="o">=</span> <span class="n">hawkes</span><span class="o">$</span><span class="n">tracked_intensity</span>
+<span class="n">intensity_times</span> <span class="o">=</span> <span class="n">hawkes</span><span class="o">$</span><span class="n">intensity_tracked_times</span>
 
-plot<span class="p">(</span>intensity<span class="p">[[</span><span class="m">1</span><span class="p">]],</span> type<span class="o">=</span><span class="s">&#39;l&#39;</span><span class="p">,</span> xlab<span class="o">=</span><span class="s">&#39;Time&#39;</span><span class="p">,</span> ylab<span class="o">=</span><span class="s">&#39;Hawkes intensity&#39;</span><span class="p">)</span>
+<span class="nf">plot</span><span class="p">(</span><span class="n">intensity[[1]]</span><span class="p">,</span> <span class="n">type</span><span class="o">=</span><span class="s">&#39;l&#39;</span><span class="p">,</span> <span class="n">xlab</span><span class="o">=</span><span class="s">&#39;Time&#39;</span><span class="p">,</span> <span class="n">ylab</span><span class="o">=</span><span class="s">&#39;Hawkes intensity&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="using-optimization-tools-from-r">
 <span id="r-usage-tick-optim"></span><h2>3. Using optimization tools from R<a class="headerlink" href="#using-optimization-tools-from-r" title="Permalink to this headline">¶</a></h2>
-<p>In the following example we use <code class="docutils literal"><span class="pre">tick.linear_model</span></code> to simulate a linear
+<p>In the following example we use <code class="docutils literal notranslate"><span class="pre">tick.linear_model</span></code> to simulate a linear
 regression model with sparse weights and to estimate these
-weights, by combining a <code class="docutils literal"><span class="pre">ModelLinReg</span></code> object for linear regression, and a
-<code class="docutils literal"><span class="pre">ProxSlope</span></code> object for SLOPE penalization (Sorted-L1 norm) in a <code class="docutils literal"><span class="pre">AGD</span></code>
+weights, by combining a <code class="docutils literal notranslate"><span class="pre">ModelLinReg</span></code> object for linear regression, and a
+<code class="docutils literal notranslate"><span class="pre">ProxSlope</span></code> object for SLOPE penalization (Sorted-L1 norm) in a <code class="docutils literal notranslate"><span class="pre">AGD</span></code>
 solver, namely accelerated gradient descent.
 We then plot the true weights and estimated ones, together with the solver’s
 history. Note that the estimation of the weights can be achieved more easily
-through the <code class="docutils literal"><span class="pre">tick.linear_model.LinearRegression</span></code> class as well.</p>
-<div class="highlight-r"><div class="highlight"><pre><span></span><span class="c1"># Simulation of a linear regression model with sparse weights</span>
-weights_sparse_gauss <span class="o">=</span> tick<span class="o">$</span>simulation<span class="o">$</span>weights_sparse_gauss
-weights <span class="o">=</span> weights_sparse_gauss<span class="p">(</span>n_weights<span class="o">=</span><span class="m">50L</span><span class="p">)</span>
-SimuLinReg <span class="o">=</span> tick<span class="o">$</span>linear_model<span class="o">$</span>SimuLinReg
-simu <span class="o">=</span> SimuLinReg<span class="p">(</span>weights<span class="o">=</span>weights<span class="p">,</span> n_samples<span class="o">=</span><span class="m">5000L</span><span class="p">)</span>
-res <span class="o">=</span> simu<span class="o">$</span>simulate<span class="p">()</span>
-X <span class="o">=</span> res<span class="p">[[</span><span class="m">1</span><span class="p">]]</span>
-y <span class="o">=</span> res<span class="p">[[</span><span class="m">2</span><span class="p">]]</span>
+through the <code class="docutils literal notranslate"><span class="pre">tick.linear_model.LinearRegression</span></code> class as well.</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># Simulation of a linear regression model with sparse weights</span>
+<span class="n">weights_sparse_gauss</span> <span class="o">=</span> <span class="n">tick</span><span class="o">$</span><span class="n">simulation</span><span class="o">$</span><span class="n">weights_sparse_gauss</span>
+<span class="n">weights</span> <span class="o">=</span> <span class="nf">weights_sparse_gauss</span><span class="p">(</span><span class="n">n_weights</span><span class="o">=</span><span class="m">50L</span><span class="p">)</span>
+<span class="n">SimuLinReg</span> <span class="o">=</span> <span class="n">tick</span><span class="o">$</span><span class="n">linear_model</span><span class="o">$</span><span class="n">SimuLinReg</span>
+<span class="n">simu</span> <span class="o">=</span> <span class="nf">SimuLinReg</span><span class="p">(</span><span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="m">5000L</span><span class="p">)</span>
+<span class="n">res</span> <span class="o">=</span> <span class="n">simu</span><span class="o">$</span><span class="nf">simulate</span><span class="p">()</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">res[[1]]</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">res[[2]]</span>
 
 <span class="c1"># Use tick to train a linear regression model with SLOPE penalization</span>
-ModelLinReg <span class="o">=</span> tick<span class="o">$</span>linear_model<span class="o">$</span>ModelLinReg
-ProxSlope <span class="o">=</span> tick<span class="o">$</span>prox<span class="o">$</span>ProxSlope
-AGD <span class="o">=</span> tick<span class="o">$</span>solver<span class="o">$$</span>AGD
+<span class="n">ModelLinReg</span> <span class="o">=</span> <span class="n">tick</span><span class="o">$</span><span class="n">linear_model</span><span class="o">$</span><span class="n">ModelLinReg</span>
+<span class="n">ProxSlope</span> <span class="o">=</span> <span class="n">tick</span><span class="o">$</span><span class="n">prox</span><span class="o">$</span><span class="n">ProxSlope</span>
+<span class="n">AGD</span> <span class="o">=</span> <span class="n">tick</span><span class="o">$</span><span class="n">solver</span><span class="o">$$</span><span class="n">AGD</span>
 
-model <span class="o">=</span> ModelLinReg<span class="p">(</span>fit_intercept<span class="o">=</span><span class="kc">FALSE</span><span class="p">)</span><span class="o">$</span>fit<span class="p">(</span>X<span class="p">,</span> y<span class="p">)</span>
-prox <span class="o">=</span> ProxSlope<span class="p">(</span>strength<span class="o">=</span><span class="m">1e-2</span><span class="p">,</span> fdr<span class="o">=</span><span class="m">0.05</span><span class="p">)</span>
-step <span class="o">=</span> <span class="m">1</span> <span class="o">/</span> model<span class="o">$</span>get_lip_best<span class="p">()</span>
-solver <span class="o">=</span> AGD<span class="p">(</span>step<span class="o">=</span>step<span class="p">)</span><span class="o">$</span>set_model<span class="p">(</span>model<span class="p">)</span><span class="o">$</span>set_prox<span class="p">(</span>prox<span class="p">)</span>
-x_min <span class="o">=</span> solver<span class="o">$</span><span class="kp">solve</span><span class="p">()</span>
+<span class="n">model</span> <span class="o">=</span> <span class="nf">ModelLinReg</span><span class="p">(</span><span class="n">fit_intercept</span><span class="o">=</span><span class="kc">FALSE</span><span class="p">)</span><span class="o">$</span><span class="nf">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="n">prox</span> <span class="o">=</span> <span class="nf">ProxSlope</span><span class="p">(</span><span class="n">strength</span><span class="o">=</span><span class="m">1e-2</span><span class="p">,</span> <span class="n">fdr</span><span class="o">=</span><span class="m">0.05</span><span class="p">)</span>
+<span class="n">step</span> <span class="o">=</span> <span class="m">1</span> <span class="o">/</span> <span class="n">model</span><span class="o">$</span><span class="nf">get_lip_best</span><span class="p">()</span>
+<span class="n">solver</span> <span class="o">=</span> <span class="nf">AGD</span><span class="p">(</span><span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">)</span><span class="o">$</span><span class="nf">set_model</span><span class="p">(</span><span class="n">model</span><span class="p">)</span><span class="o">$</span><span class="nf">set_prox</span><span class="p">(</span><span class="n">prox</span><span class="p">)</span>
+<span class="n">x_min</span> <span class="o">=</span> <span class="n">solver</span><span class="o">$</span><span class="nf">solve</span><span class="p">()</span>
 
 <span class="c1"># Plot the true weights, estimated ones and solver&#39;s history</span>
-par<span class="p">(</span>mfrow<span class="o">=</span><span class="kt">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span> <span class="m">3</span><span class="p">))</span>
-plot<span class="p">(</span>weights<span class="p">,</span> type<span class="o">=</span><span class="s">&#39;h&#39;</span><span class="p">,</span> ylab<span class="o">=</span><span class="s">&#39;Weights&#39;</span><span class="p">)</span>
-title<span class="p">(</span><span class="s">&#39;Ground truth weights&#39;</span><span class="p">)</span>
-plot<span class="p">(</span>x_min<span class="p">,</span> type<span class="o">=</span><span class="s">&#39;h&#39;</span><span class="p">,</span> ylab<span class="o">=</span><span class="s">&#39;Weights&#39;</span><span class="p">)</span>
-title<span class="p">(</span><span class="s">&#39;Learned weights&#39;</span><span class="p">)</span>
-plot<span class="p">(</span>solver<span class="o">$</span>get_history<span class="p">(</span><span class="s">&#39;n_iter&#39;</span><span class="p">),</span> solver<span class="o">$</span>get_history<span class="p">(</span><span class="s">&#39;obj&#39;</span><span class="p">),</span> type<span class="o">=</span><span class="s">&#39;l&#39;</span><span class="p">)</span>
-title<span class="p">(</span><span class="s">&#39;Solver history&#39;</span><span class="p">)</span>
+<span class="nf">par</span><span class="p">(</span><span class="n">mfrow</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span> <span class="m">3</span><span class="p">))</span>
+<span class="nf">plot</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="n">type</span><span class="o">=</span><span class="s">&#39;h&#39;</span><span class="p">,</span> <span class="n">ylab</span><span class="o">=</span><span class="s">&#39;Weights&#39;</span><span class="p">)</span>
+<span class="nf">title</span><span class="p">(</span><span class="s">&#39;Ground truth weights&#39;</span><span class="p">)</span>
+<span class="nf">plot</span><span class="p">(</span><span class="n">x_min</span><span class="p">,</span> <span class="n">type</span><span class="o">=</span><span class="s">&#39;h&#39;</span><span class="p">,</span> <span class="n">ylab</span><span class="o">=</span><span class="s">&#39;Weights&#39;</span><span class="p">)</span>
+<span class="nf">title</span><span class="p">(</span><span class="s">&#39;Learned weights&#39;</span><span class="p">)</span>
+<span class="nf">plot</span><span class="p">(</span><span class="n">solver</span><span class="o">$</span><span class="nf">get_history</span><span class="p">(</span><span class="s">&#39;n_iter&#39;</span><span class="p">),</span> <span class="n">solver</span><span class="o">$</span><span class="nf">get_history</span><span class="p">(</span><span class="s">&#39;obj&#39;</span><span class="p">),</span> <span class="n">type</span><span class="o">=</span><span class="s">&#39;l&#39;</span><span class="p">)</span>
+<span class="nf">title</span><span class="p">(</span><span class="s">&#39;Solver history&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -333,7 +324,7 @@ title<span class="p">(</span><span class="s">&#39;Solver history&#39;</span><spa
     </p>
     <p>
         &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Vinther Poulsen.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.2.<br/>
     </p>
   </div>
 </footer>

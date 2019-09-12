@@ -3,7 +3,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
+    <meta charset="utf-8" /><script type="text/javascript">
 
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-97947441-1']);
@@ -15,28 +15,16 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.robust &#8212; tick 0.5.0 documentation</title>
+    <title>tick.robust &#8212; tick 0.6.0 documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../',
-        VERSION:     '0.5.0',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
-    <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
-    <script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -46,9 +34,12 @@
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
 <meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js "></script>
 
-  </head>
-  <body>
+  </head><body>
 
   <div id="navbar" class="None navbar-default navbar-fixed-top">
     <div class="container">
@@ -61,7 +52,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.6</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -81,72 +72,72 @@
   <ul class="dropdown-menu globaltoc"
       role="menu"
       aria-labelledby="dLabelGlobalToc"><ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="hawkes.html"><code class="docutils literal"><span class="pre">tick.hawkes</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="hawkes.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.hawkes</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="hawkes.html#introduction">1. Introduction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="hawkes.html#learners">2. Learners</a></li>
 <li class="toctree-l2"><a class="reference internal" href="hawkes.html#point-process-simulation">3. Point process simulation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="hawkes.html#models-for-inference">4. Models for inference</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="linear_model.html"><code class="docutils literal"><span class="pre">tick.linear_model</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="linear_model.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.linear_model</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="linear_model.html#introduction">1. Introduction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="linear_model.html#learners">2. Learners</a></li>
 <li class="toctree-l2"><a class="reference internal" href="linear_model.html#models">3. Models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="linear_model.html#simulation">4. Simulation</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#"><code class="docutils literal"><span class="pre">tick.robust</span></code></a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.robust</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#regression-with-individual-intercepts">1. Regression with individual intercepts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#robust-losses">2. Robust losses</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="survival.html"><code class="docutils literal"><span class="pre">tick.survival</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="survival.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.survival</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="survival.html#learners">1. Learners</a></li>
 <li class="toctree-l2"><a class="reference internal" href="survival.html#models">2. Models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="survival.html#simulation">3. Simulation</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="prox.html"><code class="docutils literal"><span class="pre">tick.prox</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="prox.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.prox</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="prox.html#available-operators">1. Available operators</a></li>
 <li class="toctree-l2"><a class="reference internal" href="prox.html#example">2. Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="prox.html#how-to-combine-several-prox">3. How to combine several prox ?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="prox.html#the-prox-class-api">4. The <code class="docutils literal"><span class="pre">prox</span></code> class API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="prox.html#the-prox-class-api">4. The <code class="docutils literal notranslate"><span class="pre">prox</span></code> class API</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="solver.html"><code class="docutils literal"><span class="pre">tick.solver</span></code></a><ul>
-<li class="toctree-l2"><a class="reference internal" href="solver.html#the-solver-class-api">1. The <code class="docutils literal"><span class="pre">solver</span></code> class API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="solver.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.solver</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="solver.html#the-solver-class-api">1. The <code class="docutils literal notranslate"><span class="pre">solver</span></code> class API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="solver.html#available-solvers">2. Available solvers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="solver.html#example">3. Example</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="simulation.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.simulation</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="simulation.html#simulation-of-model-weights">1. Simulation of model weights</a></li>
 <li class="toctree-l2"><a class="reference internal" href="simulation.html#simulation-of-a-features-matrix">2. Simulation of a features matrix</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="plot.html"><code class="docutils literal"><span class="pre">tick.plot</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="plot.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.plot</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="plot.html#history-plot">1. History plot</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plot.html#plots-for-hawkes-processes">2. Plots for Hawkes processes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plot.html#plots-for-point-process-simulation">3. Plots for point process simulation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plot.html#miscellaneous-plots">4. Miscellaneous plots</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="dataset.html"><code class="docutils literal"><span class="pre">tick.dataset</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="dataset.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.dataset</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="generated/tick.dataset.fetch_tick_dataset.html">tick.dataset.fetch_tick_dataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generated/tick.dataset.fetch_hawkes_bund_data.html">tick.dataset.fetch_hawkes_bund_data</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="preprocessing.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.preprocessing</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="preprocessing.html#preprocessing-for-static-features">Preprocessing for static features</a></li>
 <li class="toctree-l2"><a class="reference internal" href="preprocessing.html#preprocessing-for-longitudinal-features">Preprocessing for longitudinal features</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="metrics.html"><code class="docutils literal"><span class="pre">tick.metrics</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="metrics.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.metrics</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="generated/tick.metrics.support_fdp.html">tick.metrics.support_fdp</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generated/tick.metrics.support_recall.html">tick.metrics.support_recall</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="R.html">How to use <code class="docutils literal"><span class="pre">tick</span></code> from the R statistical software</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="R.html">How to use <code class="docutils literal notranslate"><span class="pre">tick</span></code> from the R statistical software</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="R.html#training-a-logistic-regression-model">1. Training a logistic regression model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="R.html#simulation-of-a-hawkes-process">2. Simulation of a Hawkes process</a></li>
 <li class="toctree-l2"><a class="reference internal" href="R.html#using-optimization-tools-from-r">3. Using optimization tools from R</a></li>
@@ -162,17 +153,17 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="api.html#table-of-contents">Table of contents</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#hawkes"><code class="docutils literal"><span class="pre">hawkes</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#linear-model"><code class="docutils literal"><span class="pre">linear_model</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#robust"><code class="docutils literal"><span class="pre">robust</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#survival"><code class="docutils literal"><span class="pre">survival</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#prox"><code class="docutils literal"><span class="pre">prox</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#solver"><code class="docutils literal"><span class="pre">solver</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#api-simulation"><code class="docutils literal"><span class="pre">simulation</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#plot"><code class="docutils literal"><span class="pre">plot</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#dataset"><code class="docutils literal"><span class="pre">dataset</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#preprocessing"><code class="docutils literal"><span class="pre">preprocessing</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#metrics"><code class="docutils literal"><span class="pre">metrics</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#hawkes"><span class="xref std std-ref">hawkes</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#linear-model"><span class="xref std std-ref">linear_model</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#robust"><span class="xref std std-ref">robust</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#survival"><span class="xref std std-ref">survival</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#prox"><span class="xref std std-ref">prox</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#solver"><span class="xref std std-ref">solver</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#api-simulation"><span class="xref std std-ref">simulation</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#plot"><span class="xref std std-ref">plot</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#dataset"><span class="xref std std-ref">dataset</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#preprocessing"><span class="xref std std-ref">preprocessing</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#metrics"><span class="xref std std-ref">metrics</span></a></li>
 </ul>
 </li>
 </ul>
@@ -203,7 +194,7 @@
 <div class="container content-container">
   
   <div class="section" id="tick-robust">
-<span id="robust"></span><h1><code class="xref py py-mod docutils literal"><span class="pre">tick.robust</span></code><a class="headerlink" href="#tick-robust" title="Permalink to this headline">¶</a></h1>
+<span id="robust"></span><h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.robust</span></code><a class="headerlink" href="#tick-robust" title="Permalink to this headline">¶</a></h1>
 <p>This module provides tools for robust inference of generalized linear models
 and outliers detection. It proposes two set of things: a learner for least-squares
 regression with individual intercepts, see <a class="reference internal" href="#robust-intercepts"><span class="std std-ref">1. Regression with individual intercepts</span></a> and a set of
@@ -211,61 +202,61 @@ losses for robust supervised learning, see <a class="reference internal" href="#
 <div class="section" id="regression-with-individual-intercepts">
 <span id="robust-intercepts"></span><h2>1. Regression with individual intercepts<a class="headerlink" href="#regression-with-individual-intercepts" title="Permalink to this headline">¶</a></h2>
 <p>In this section, we describe the approach used in the
-<a class="reference internal" href="generated/tick.robust.RobustLinearRegression.html#tick.robust.RobustLinearRegression" title="tick.robust.RobustLinearRegression"><code class="xref py py-class docutils literal"><span class="pre">RobustLinearRegression</span></code></a> learner.
+<a class="reference internal" href="generated/tick.robust.RobustLinearRegression.html#tick.robust.RobustLinearRegression" title="tick.robust.RobustLinearRegression"><code class="xref py py-class docutils literal notranslate"><span class="pre">RobustLinearRegression</span></code></a> learner.
 It allows to detect outliers and to fit a least-squares regression
 model at the same time. Namely, given training data
-<span class="math">\((x_i, y_i) \in \mathbb R^d \times \mathbb R\)</span> for <span class="math">\(i=1, \ldots, n\)</span>,
+<span class="math notranslate nohighlight">\((x_i, y_i) \in \mathbb R^d \times \mathbb R\)</span> for <span class="math notranslate nohighlight">\(i=1, \ldots, n\)</span>,
 it considers the following problem</p>
-<div class="math">
+<div class="math notranslate nohighlight">
 \[\frac 1n \sum_{i=1}^n \ell(y_i, x_i^\top w + b + \mu_i) + s \sum_{j=1}^{d}
 c_j | w_{(j)} | + g(w),\]</div>
-<p>where <span class="math">\(|w_{(j)}|\)</span> is decreasing, <span class="math">\(w \in \mathbb R^d\)</span> is a vector
-containing the model weights, <span class="math">\(\mu = [\mu_1 \cdots \mu_n] \in \mathbb R^n\)</span>
-is a vector containing individual intercepts, <span class="math">\(b \in \mathbb R\)</span> is the
-population intercept, <span class="math">\(\ell : \mathbb R^2 \rightarrow \mathbb R\)</span> is the
-least-squares loss and <span class="math">\(g\)</span> is a penalization function for the model weights, for
+<p>where <span class="math notranslate nohighlight">\(|w_{(j)}|\)</span> is decreasing, <span class="math notranslate nohighlight">\(w \in \mathbb R^d\)</span> is a vector
+containing the model weights, <span class="math notranslate nohighlight">\(\mu = [\mu_1 \cdots \mu_n] \in \mathbb R^n\)</span>
+is a vector containing individual intercepts, <span class="math notranslate nohighlight">\(b \in \mathbb R\)</span> is the
+population intercept, <span class="math notranslate nohighlight">\(\ell : \mathbb R^2 \rightarrow \mathbb R\)</span> is the
+least-squares loss and <span class="math notranslate nohighlight">\(g\)</span> is a penalization function for the model weights, for
 which different choices are possible, see <a class="reference internal" href="prox.html#prox"><span class="std std-ref">tick.prox</span></a>.
-Note that in this problem the vector of individual intercepts <span class="math">\(\mu\)</span> is
+Note that in this problem the vector of individual intercepts <span class="math notranslate nohighlight">\(\mu\)</span> is
 penalized by a sorted-L1 norm, also called SLOPE, see <a class="reference internal" href="prox.html#prox"><span class="std std-ref">tick.prox</span></a> for details,
 where the weights are given by</p>
-<div class="math">
+<div class="math notranslate nohighlight">
 \[w_j = \Phi \Big( 1 - \frac{j \alpha}{2 n} \Big),\]</div>
-<p>where <span class="math">\(\alpha\)</span> stands for the FDR level for the support detection of
-<span class="math">\(\mu\)</span>, that can be tuned with the <code class="docutils literal"><span class="pre">fdr</span></code> parameter.
-The global penalization level <span class="math">\(s\)</span> corresponds to
-the inverse of the <code class="docutils literal"><span class="pre">C_sample_intercepts</span></code> parameter.</p>
-<table border="1" class="longtable docutils">
+<p>where <span class="math notranslate nohighlight">\(\alpha\)</span> stands for the FDR level for the support detection of
+<span class="math notranslate nohighlight">\(\mu\)</span>, that can be tuned with the <code class="docutils literal notranslate"><span class="pre">fdr</span></code> parameter.
+The global penalization level <span class="math notranslate nohighlight">\(s\)</span> corresponds to
+the inverse of the <code class="docutils literal notranslate"><span class="pre">C_sample_intercepts</span></code> parameter.</p>
+<table class="longtable docutils align-default">
 <colgroup>
-<col width="10%" />
-<col width="90%" />
+<col style="width: 10%" />
+<col style="width: 90%" />
 </colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.robust.RobustLinearRegression.html#tick.robust.RobustLinearRegression" title="tick.robust.RobustLinearRegression"><code class="xref py py-obj docutils literal"><span class="pre">RobustLinearRegression</span></code></a>(C_sample_intercepts)</td>
-<td>Robust linear regression learner.</td>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/tick.robust.RobustLinearRegression.html#tick.robust.RobustLinearRegression" title="tick.robust.RobustLinearRegression"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RobustLinearRegression</span></code></a>(C_sample_intercepts)</p></td>
+<td><p>Robust linear regression learner.</p></td>
 </tr>
 </tbody>
 </table>
 <div class="section" id="tools-for-robust-estimation-of-the-standard-deviation">
 <h3>Tools for robust estimation of the standard-deviation<a class="headerlink" href="#tools-for-robust-estimation-of-the-standard-deviation" title="Permalink to this headline">¶</a></h3>
 <p>Some tools for the robust estimation of the standard deviation are also provided.</p>
-<table border="1" class="longtable docutils">
+<table class="longtable docutils align-default">
 <colgroup>
-<col width="10%" />
-<col width="90%" />
+<col style="width: 10%" />
+<col style="width: 90%" />
 </colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/tick.robust.std_mad.html#tick.robust.std_mad" title="tick.robust.std_mad"><code class="xref py py-obj docutils literal"><span class="pre">std_mad</span></code></a>(x)</td>
-<td>Robust estimation of the standard deviation, based on the Corrected Median Absolute Deviation (MAD) of x.</td>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/tick.robust.std_mad.html#tick.robust.std_mad" title="tick.robust.std_mad"><code class="xref py py-obj docutils literal notranslate"><span class="pre">std_mad</span></code></a>(x)</p></td>
+<td><p>Robust estimation of the standard deviation, based on the Corrected Median Absolute Deviation (MAD) of x.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/tick.robust.std_iqr.html#tick.robust.std_iqr" title="tick.robust.std_iqr"><code class="xref py py-obj docutils literal"><span class="pre">std_iqr</span></code></a>(x)</td>
-<td>Robust estimation of the standard deviation, based on the inter-quartile (IQR) distance of x.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/tick.robust.std_iqr.html#tick.robust.std_iqr" title="tick.robust.std_iqr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">std_iqr</span></code></a>(x)</p></td>
+<td><p>Robust estimation of the standard deviation, based on the inter-quartile (IQR) distance of x.</p></td>
 </tr>
 </tbody>
 </table>
 </div>
 <div class="section" id="example">
 <h3>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">===========================</span>
 <span class="sd">Robust linear model example</span>
 <span class="sd">===========================</span>
@@ -349,7 +340,7 @@ the inverse of the <code class="docutils literal"><span class="pre">C_sample_int
 </pre></div>
 </div>
 <p>(<a class="reference external" href="../../examples/plot_robust_linear_regression.py">Source code</a>, <a class="reference external" href="../../examples/plot_robust_linear_regression.png">png</a>, <a class="reference external" href="../../examples/plot_robust_linear_regression.hires.png">hires.png</a>, <a class="reference external" href="../../examples/plot_robust_linear_regression.pdf">pdf</a>)</p>
-<div class="figure">
+<div class="figure align-default">
 <img alt="../_images/plot_robust_linear_regression2.png" src="../_images/plot_robust_linear_regression2.png" />
 </div>
 </div>
@@ -358,104 +349,104 @@ the inverse of the <code class="docutils literal"><span class="pre">C_sample_int
 <span id="id1"></span><h2>2. Robust losses<a class="headerlink" href="#robust-losses" title="Permalink to this headline">¶</a></h2>
 <p>Tick also provides losses for robust inference when it is believed that data contains
 outliers. It also provides the model
-<a class="reference internal" href="generated/tick.robust.ModelLinRegWithIntercepts.html#tick.robust.ModelLinRegWithIntercepts" title="tick.robust.ModelLinRegWithIntercepts"><code class="xref py py-class docutils literal"><span class="pre">ModelLinRegWithIntercepts</span></code></a> which is
-used in the <a class="reference internal" href="generated/tick.robust.RobustLinearRegression.html#tick.robust.RobustLinearRegression" title="tick.robust.RobustLinearRegression"><code class="xref py py-class docutils literal"><span class="pre">RobustLinearRegression</span></code></a>
+<a class="reference internal" href="generated/tick.robust.ModelLinRegWithIntercepts.html#tick.robust.ModelLinRegWithIntercepts" title="tick.robust.ModelLinRegWithIntercepts"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModelLinRegWithIntercepts</span></code></a> which is
+used in the <a class="reference internal" href="generated/tick.robust.RobustLinearRegression.html#tick.robust.RobustLinearRegression" title="tick.robust.RobustLinearRegression"><code class="xref py py-class docutils literal notranslate"><span class="pre">RobustLinearRegression</span></code></a>
 described above.</p>
-<table border="1" class="docutils">
+<table class="docutils align-default">
 <colgroup>
-<col width="29%" />
-<col width="10%" />
-<col width="7%" />
-<col width="54%" />
+<col style="width: 29%" />
+<col style="width: 10%" />
+<col style="width: 7%" />
+<col style="width: 54%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Model</th>
-<th class="head">Type</th>
-<th class="head">Label type</th>
-<th class="head">Class</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>Model</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Label type</p></th>
+<th class="head"><p>Class</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td>Linear regression with intercepts</td>
-<td>Regression</td>
-<td>Continuous</td>
-<td><a class="reference internal" href="generated/tick.robust.ModelLinRegWithIntercepts.html#tick.robust.ModelLinRegWithIntercepts" title="tick.robust.ModelLinRegWithIntercepts"><code class="xref py py-class docutils literal"><span class="pre">ModelLinRegWithIntercepts</span></code></a></td>
+<tbody>
+<tr class="row-even"><td><p>Linear regression with intercepts</p></td>
+<td><p>Regression</p></td>
+<td><p>Continuous</p></td>
+<td><p><a class="reference internal" href="generated/tick.robust.ModelLinRegWithIntercepts.html#tick.robust.ModelLinRegWithIntercepts" title="tick.robust.ModelLinRegWithIntercepts"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModelLinRegWithIntercepts</span></code></a></p></td>
 </tr>
-<tr class="row-odd"><td>Huber regression</td>
-<td>Regression</td>
-<td>Continuous</td>
-<td><a class="reference internal" href="generated/tick.robust.ModelHuber.html#tick.robust.ModelHuber" title="tick.robust.ModelHuber"><code class="xref py py-class docutils literal"><span class="pre">ModelHuber</span></code></a></td>
+<tr class="row-odd"><td><p>Huber regression</p></td>
+<td><p>Regression</p></td>
+<td><p>Continuous</p></td>
+<td><p><a class="reference internal" href="generated/tick.robust.ModelHuber.html#tick.robust.ModelHuber" title="tick.robust.ModelHuber"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModelHuber</span></code></a></p></td>
 </tr>
-<tr class="row-even"><td>Epsilon-insensitive regression</td>
-<td>Regression</td>
-<td>Continuous</td>
-<td><a class="reference internal" href="generated/tick.robust.ModelEpsilonInsensitive.html#tick.robust.ModelEpsilonInsensitive" title="tick.robust.ModelEpsilonInsensitive"><code class="xref py py-class docutils literal"><span class="pre">ModelEpsilonInsensitive</span></code></a></td>
+<tr class="row-even"><td><p>Epsilon-insensitive regression</p></td>
+<td><p>Regression</p></td>
+<td><p>Continuous</p></td>
+<td><p><a class="reference internal" href="generated/tick.robust.ModelEpsilonInsensitive.html#tick.robust.ModelEpsilonInsensitive" title="tick.robust.ModelEpsilonInsensitive"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModelEpsilonInsensitive</span></code></a></p></td>
 </tr>
-<tr class="row-odd"><td>Absolute regression</td>
-<td>Regression</td>
-<td>Continuous</td>
-<td><a class="reference internal" href="generated/tick.robust.ModelAbsoluteRegression.html#tick.robust.ModelAbsoluteRegression" title="tick.robust.ModelAbsoluteRegression"><code class="xref py py-class docutils literal"><span class="pre">ModelAbsoluteRegression</span></code></a></td>
+<tr class="row-odd"><td><p>Absolute regression</p></td>
+<td><p>Regression</p></td>
+<td><p>Continuous</p></td>
+<td><p><a class="reference internal" href="generated/tick.robust.ModelAbsoluteRegression.html#tick.robust.ModelAbsoluteRegression" title="tick.robust.ModelAbsoluteRegression"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModelAbsoluteRegression</span></code></a></p></td>
 </tr>
-<tr class="row-even"><td>Modified Huber loss</td>
-<td>Classification</td>
-<td>Binary</td>
-<td><a class="reference internal" href="generated/tick.robust.ModelModifiedHuber.html#tick.robust.ModelModifiedHuber" title="tick.robust.ModelModifiedHuber"><code class="xref py py-class docutils literal"><span class="pre">ModelModifiedHuber</span></code></a></td>
+<tr class="row-even"><td><p>Modified Huber loss</p></td>
+<td><p>Classification</p></td>
+<td><p>Binary</p></td>
+<td><p><a class="reference internal" href="generated/tick.robust.ModelModifiedHuber.html#tick.robust.ModelModifiedHuber" title="tick.robust.ModelModifiedHuber"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModelModifiedHuber</span></code></a></p></td>
 </tr>
 </tbody>
 </table>
 <p>The robust losses are illustrated in the following picture, among the other losses
 provided in the <a class="reference internal" href="linear_model.html#linear-model"><span class="std std-ref">tick.linear_model</span></a> module.</p>
 <p>(<a class="reference external" href="../modules/code_samples/plot_linear_model_losses.py">Source code</a>, <a class="reference external" href="../modules/code_samples/plot_linear_model_losses.png">png</a>, <a class="reference external" href="../modules/code_samples/plot_linear_model_losses.hires.png">hires.png</a>, <a class="reference external" href="../modules/code_samples/plot_linear_model_losses.pdf">pdf</a>)</p>
-<div class="figure">
+<div class="figure align-default">
 <img alt="../_images/plot_linear_model_losses1.png" src="../_images/plot_linear_model_losses1.png" />
 </div>
 <div class="section" id="modelhuber">
-<h3><a class="reference internal" href="generated/tick.robust.ModelHuber.html#tick.robust.ModelHuber" title="tick.robust.ModelHuber"><code class="xref py py-class docutils literal"><span class="pre">ModelHuber</span></code></a><a class="headerlink" href="#modelhuber" title="Permalink to this headline">¶</a></h3>
+<h3><a class="reference internal" href="generated/tick.robust.ModelHuber.html#tick.robust.ModelHuber" title="tick.robust.ModelHuber"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModelHuber</span></code></a><a class="headerlink" href="#modelhuber" title="Permalink to this headline">¶</a></h3>
 <p>The Huber loss for robust regression (less sensitive to
 outliers) is given by</p>
-<div class="math">
+<div class="math notranslate nohighlight">
 \[\begin{split}\ell(y, y') =
 \begin{cases}
 \frac 12 (y' - y)^2 &amp;\text{ if } |y' - y| \leq \delta \\
 \delta (|y' - y| - \frac 12 \delta) &amp;\text{ if } |y' - y| &gt; \delta
 \end{cases}\end{split}\]</div>
-<p>for <span class="math">\(y, y' \in \mathbb R\)</span>, where <span class="math">\(\delta &gt; 0\)</span> can be tuned
-using the <code class="docutils literal"><span class="pre">threshold</span></code> argument.</p>
+<p>for <span class="math notranslate nohighlight">\(y, y' \in \mathbb R\)</span>, where <span class="math notranslate nohighlight">\(\delta &gt; 0\)</span> can be tuned
+using the <code class="docutils literal notranslate"><span class="pre">threshold</span></code> argument.</p>
 </div>
 <hr class="docutils" />
 <div class="section" id="modelepsiloninsensitive">
-<h3><a class="reference internal" href="generated/tick.robust.ModelEpsilonInsensitive.html#tick.robust.ModelEpsilonInsensitive" title="tick.robust.ModelEpsilonInsensitive"><code class="xref py py-class docutils literal"><span class="pre">ModelEpsilonInsensitive</span></code></a><a class="headerlink" href="#modelepsiloninsensitive" title="Permalink to this headline">¶</a></h3>
+<h3><a class="reference internal" href="generated/tick.robust.ModelEpsilonInsensitive.html#tick.robust.ModelEpsilonInsensitive" title="tick.robust.ModelEpsilonInsensitive"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModelEpsilonInsensitive</span></code></a><a class="headerlink" href="#modelepsiloninsensitive" title="Permalink to this headline">¶</a></h3>
 <p>Epsilon-insensitive loss, given by</p>
-<div class="math">
+<div class="math notranslate nohighlight">
 \[\begin{split}\ell(y, y') =
 \begin{cases}
 |y' - y| - \epsilon &amp;\text{ if } |y' - y| &gt; \epsilon \\
 0 &amp;\text{ if } |y' - y| \leq \epsilon
 \end{cases}\end{split}\]</div>
-<p>for <span class="math">\(y, y' \in \mathbb R\)</span>, where <span class="math">\(\epsilon &gt; 0\)</span> can be tuned using
-the <code class="docutils literal"><span class="pre">threshold</span></code> argument.</p>
+<p>for <span class="math notranslate nohighlight">\(y, y' \in \mathbb R\)</span>, where <span class="math notranslate nohighlight">\(\epsilon &gt; 0\)</span> can be tuned using
+the <code class="docutils literal notranslate"><span class="pre">threshold</span></code> argument.</p>
 </div>
 <hr class="docutils" />
 <div class="section" id="modelabsoluteregression">
-<h3><a class="reference internal" href="generated/tick.robust.ModelAbsoluteRegression.html#tick.robust.ModelAbsoluteRegression" title="tick.robust.ModelAbsoluteRegression"><code class="xref py py-class docutils literal"><span class="pre">ModelAbsoluteRegression</span></code></a><a class="headerlink" href="#modelabsoluteregression" title="Permalink to this headline">¶</a></h3>
+<h3><a class="reference internal" href="generated/tick.robust.ModelAbsoluteRegression.html#tick.robust.ModelAbsoluteRegression" title="tick.robust.ModelAbsoluteRegression"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModelAbsoluteRegression</span></code></a><a class="headerlink" href="#modelabsoluteregression" title="Permalink to this headline">¶</a></h3>
 <p>The L1 loss given by</p>
-<div class="math">
+<div class="math notranslate nohighlight">
 \[\ell(y, y') = |y' - y|\]</div>
-<p>for <span class="math">\(y, y' \in \mathbb R\)</span></p>
+<p>for <span class="math notranslate nohighlight">\(y, y' \in \mathbb R\)</span></p>
 </div>
 <hr class="docutils" />
 <div class="section" id="modelmodifiedhuber">
-<h3><a class="reference internal" href="generated/tick.robust.ModelModifiedHuber.html#tick.robust.ModelModifiedHuber" title="tick.robust.ModelModifiedHuber"><code class="xref py py-class docutils literal"><span class="pre">ModelModifiedHuber</span></code></a><a class="headerlink" href="#modelmodifiedhuber" title="Permalink to this headline">¶</a></h3>
+<h3><a class="reference internal" href="generated/tick.robust.ModelModifiedHuber.html#tick.robust.ModelModifiedHuber" title="tick.robust.ModelModifiedHuber"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModelModifiedHuber</span></code></a><a class="headerlink" href="#modelmodifiedhuber" title="Permalink to this headline">¶</a></h3>
 <p>The modified Huber loss, used for robust classification (less sensitive to
 outliers). The loss is given by</p>
-<div class="math">
+<div class="math notranslate nohighlight">
 \[\begin{split}\ell(y, y') =
 \begin{cases}
 - 4 y y' &amp;\text{ if } y y' \leq -1 \\
 (1 - y y')^2 &amp;\text{ if } -1 &lt; y y' &lt; 1 \\
 0 &amp;\text{ if } y y' \geq 1
 \end{cases}\end{split}\]</div>
-<p>for <span class="math">\(y \in \{ -1, 1\}\)</span> and <span class="math">\(y' \in \mathbb R\)</span></p>
+<p>for <span class="math notranslate nohighlight">\(y \in \{ -1, 1\}\)</span> and <span class="math notranslate nohighlight">\(y' \in \mathbb R\)</span></p>
 </div>
 </div>
 </div>
@@ -470,7 +461,7 @@ outliers). The loss is given by</p>
     </p>
     <p>
         &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Vinther Poulsen.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.2.<br/>
     </p>
   </div>
 </footer>

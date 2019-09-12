@@ -18,8 +18,8 @@ plot_solver_comparison.py
 .. literalinclude:: plot_solver_comparison.py
     :lines: 1-
 
-**Total running time of the example:**  2.69 seconds
-( 0 minutes  2.69 seconds)
+**Total running time of the example:**  1.88 seconds
+( 0 minutes  1.88 seconds)
     
 Mentioned *tick* classes:
    * `tick.linear_model.ModelLogReg`

@@ -32,8 +32,8 @@ Barzilai-Borwein step size for stochastic gradient descent.
 .. literalinclude:: plot_svrg_with_auto_step.py
     :lines: 18-
 
-**Total running time of the example:**  1.84 seconds
-( 0 minutes  1.84 seconds)
+**Total running time of the example:**  1.63 seconds
+( 0 minutes  1.63 seconds)
     
 Mentioned *tick* classes:
    * `tick.linear_model.ModelLogReg`

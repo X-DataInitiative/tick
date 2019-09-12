@@ -29,8 +29,8 @@ float 32 precision.
 .. literalinclude:: plot_low_precision_learner.py
     :lines: 15-
 
-**Total running time of the example:**  16.78 seconds
-( 0 minutes  16.78 seconds)
+**Total running time of the example:**  12.29 seconds
+( 0 minutes  12.29 seconds)
     
 Mentioned *tick* classes:
    * `tick.dataset.fetch_tick_dataset`

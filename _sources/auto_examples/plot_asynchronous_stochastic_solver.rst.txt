@@ -37,8 +37,8 @@ sparse and ill-conditonned problem.
 .. literalinclude:: plot_asynchronous_stochastic_solver.py
     :lines: 23-
 
-**Total running time of the example:**  5.65 seconds
-( 0 minutes  5.65 seconds)
+**Total running time of the example:**  43.76 seconds
+( 0 minutes  43.76 seconds)
     
 Mentioned *tick* classes:
    * `tick.linear_model.ModelLogReg`

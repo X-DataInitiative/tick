@@ -22,9 +22,13 @@ cumulants.
 
 
 
-.. image:: images/plot_hawkes_cumulants_matching_001.png
-    :align: center
+.. rst-class:: horizontal
 
+
+
+**Script output**::
+
+  tensorflow not found, skipping HawkesCumulantMatching
 
 
 
@@ -33,8 +37,8 @@ cumulants.
 .. literalinclude:: plot_hawkes_cumulants_matching.py
     :lines: 19-
 
-**Total running time of the example:**  5.67 seconds
-( 0 minutes  5.67 seconds)
+**Total running time of the example:**  0.00 seconds
+( 0 minutes  0.00 seconds)
     
 Mentioned *tick* classes:
    * `tick.hawkes.HawkesCumulantMatching`

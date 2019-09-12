@@ -18,8 +18,8 @@ plot_hawkes_kernels.py
 .. literalinclude:: plot_hawkes_kernels.py
     :lines: 1-
 
-**Total running time of the example:**  0.28 seconds
-( 0 minutes  0.28 seconds)
+**Total running time of the example:**  0.05 seconds
+( 0 minutes  0.05 seconds)
     
 Mentioned *tick* classes:
    * `tick.hawkes.HawkesKernel0`

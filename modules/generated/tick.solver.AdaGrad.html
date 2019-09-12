@@ -3,7 +3,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
+    <meta charset="utf-8" /><script type="text/javascript">
 
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-97947441-1']);
@@ -15,28 +15,16 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>tick.solver.AdaGrad &#8212; tick 0.5.0 documentation</title>
+    <title>tick.solver.AdaGrad &#8212; tick 0.6.0 documentation</title>
     <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../../',
-        VERSION:     '0.5.0',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <script type="text/javascript" src="../../_static/js/jquery-1.11.0.min.js"></script>
-    <script type="text/javascript" src="../../_static/js/jquery-fix.js"></script>
-    <script type="text/javascript" src="../../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="../../_static/bootstrap-sphinx.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="shortcut icon" href="../../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -46,9 +34,12 @@
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
 <meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../../_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="../../_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="../../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="../../_static/bootstrap-sphinx.js "></script>
 
-  </head>
-  <body>
+  </head><body>
 
   <div id="navbar" class="None navbar-default navbar-fixed-top">
     <div class="container">
@@ -61,7 +52,7 @@
         </button>
         <a class="navbar-brand" href="../../index.html">
           tick</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.6</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -81,72 +72,72 @@
   <ul class="dropdown-menu globaltoc"
       role="menu"
       aria-labelledby="dLabelGlobalToc"><ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../hawkes.html"><code class="docutils literal"><span class="pre">tick.hawkes</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../hawkes.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.hawkes</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../hawkes.html#introduction">1. Introduction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../hawkes.html#learners">2. Learners</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../hawkes.html#point-process-simulation">3. Point process simulation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../hawkes.html#models-for-inference">4. Models for inference</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../linear_model.html"><code class="docutils literal"><span class="pre">tick.linear_model</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../linear_model.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.linear_model</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../linear_model.html#introduction">1. Introduction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../linear_model.html#learners">2. Learners</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../linear_model.html#models">3. Models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../linear_model.html#simulation">4. Simulation</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../robust.html"><code class="docutils literal"><span class="pre">tick.robust</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../robust.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.robust</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../robust.html#regression-with-individual-intercepts">1. Regression with individual intercepts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../robust.html#robust-losses">2. Robust losses</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../survival.html"><code class="docutils literal"><span class="pre">tick.survival</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../survival.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.survival</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../survival.html#learners">1. Learners</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../survival.html#models">2. Models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../survival.html#simulation">3. Simulation</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../prox.html"><code class="docutils literal"><span class="pre">tick.prox</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../prox.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.prox</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../prox.html#available-operators">1. Available operators</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../prox.html#example">2. Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../prox.html#how-to-combine-several-prox">3. How to combine several prox ?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../prox.html#the-prox-class-api">4. The <code class="docutils literal"><span class="pre">prox</span></code> class API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../prox.html#the-prox-class-api">4. The <code class="docutils literal notranslate"><span class="pre">prox</span></code> class API</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../solver.html"><code class="docutils literal"><span class="pre">tick.solver</span></code></a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../solver.html#the-solver-class-api">1. The <code class="docutils literal"><span class="pre">solver</span></code> class API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../solver.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.solver</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../solver.html#the-solver-class-api">1. The <code class="docutils literal notranslate"><span class="pre">solver</span></code> class API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../solver.html#available-solvers">2. Available solvers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../solver.html#example">3. Example</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../simulation.html"><code class="docutils literal"><span class="pre">tick.simulation</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../simulation.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.simulation</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../simulation.html#simulation-of-model-weights">1. Simulation of model weights</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../simulation.html#simulation-of-a-features-matrix">2. Simulation of a features matrix</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../plot.html"><code class="docutils literal"><span class="pre">tick.plot</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../plot.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.plot</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../plot.html#history-plot">1. History plot</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../plot.html#plots-for-hawkes-processes">2. Plots for Hawkes processes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../plot.html#plots-for-point-process-simulation">3. Plots for point process simulation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../plot.html#miscellaneous-plots">4. Miscellaneous plots</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../dataset.html"><code class="docutils literal"><span class="pre">tick.dataset</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../dataset.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.dataset</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="tick.dataset.fetch_tick_dataset.html">tick.dataset.fetch_tick_dataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tick.dataset.fetch_hawkes_bund_data.html">tick.dataset.fetch_hawkes_bund_data</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../preprocessing.html"><code class="docutils literal"><span class="pre">tick.preprocessing</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../preprocessing.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.preprocessing</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../preprocessing.html#preprocessing-for-static-features">Preprocessing for static features</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../preprocessing.html#preprocessing-for-longitudinal-features">Preprocessing for longitudinal features</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../metrics.html"><code class="docutils literal"><span class="pre">tick.metrics</span></code></a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../metrics.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tick.metrics</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="tick.metrics.support_fdp.html">tick.metrics.support_fdp</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tick.metrics.support_recall.html">tick.metrics.support_recall</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../R.html">How to use <code class="docutils literal"><span class="pre">tick</span></code> from the R statistical software</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../R.html">How to use <code class="docutils literal notranslate"><span class="pre">tick</span></code> from the R statistical software</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../R.html#training-a-logistic-regression-model">1. Training a logistic regression model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../R.html#simulation-of-a-hawkes-process">2. Simulation of a Hawkes process</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../R.html#using-optimization-tools-from-r">3. Using optimization tools from R</a></li>
@@ -162,17 +153,17 @@
 </li>
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">API Reference</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../api.html#table-of-contents">Table of contents</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#hawkes"><code class="docutils literal"><span class="pre">hawkes</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#linear-model"><code class="docutils literal"><span class="pre">linear_model</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#robust"><code class="docutils literal"><span class="pre">robust</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#survival"><code class="docutils literal"><span class="pre">survival</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#prox"><code class="docutils literal"><span class="pre">prox</span></code></a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../api.html#solver"><code class="docutils literal"><span class="pre">solver</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#api-simulation"><code class="docutils literal"><span class="pre">simulation</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#plot"><code class="docutils literal"><span class="pre">plot</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#dataset"><code class="docutils literal"><span class="pre">dataset</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#preprocessing"><code class="docutils literal"><span class="pre">preprocessing</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#metrics"><code class="docutils literal"><span class="pre">metrics</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#hawkes"><span class="xref std std-ref">hawkes</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#linear-model"><span class="xref std std-ref">linear_model</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#robust"><span class="xref std std-ref">robust</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#survival"><span class="xref std std-ref">survival</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#prox"><span class="xref std std-ref">prox</span></a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../api.html#solver"><span class="xref std std-ref">solver</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#api-simulation"><span class="xref std std-ref">simulation</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#plot"><span class="xref std std-ref">plot</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#dataset"><span class="xref std std-ref">dataset</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#preprocessing"><span class="xref std std-ref">preprocessing</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#metrics"><span class="xref std std-ref">metrics</span></a></li>
 </ul>
 </li>
 </ul>
@@ -206,262 +197,265 @@
 <span id="adagrad"></span><h1>tick.solver.AdaGrad<a class="headerlink" href="#tick-solver-adagrad" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="tick.solver.AdaGrad">
-<em class="property">class </em><code class="descclassname">tick.solver.</code><code class="descname">AdaGrad</code><span class="sig-paren">(</span><em>step: float = 0.01</em>, <em>epoch_size: int = None</em>, <em>rand_type: str = 'unif'</em>, <em>tol: float = 1e-10</em>, <em>max_iter: int = 100</em>, <em>verbose: bool = True</em>, <em>print_every: int = 10</em>, <em>record_every: int = 1</em>, <em>seed: int = -1</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/solver/adagrad.html#AdaGrad"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.solver.AdaGrad" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tick.solver.</code><code class="sig-name descname">AdaGrad</code><span class="sig-paren">(</span><em class="sig-param">step: float = 0.01</em>, <em class="sig-param">epoch_size: int = None</em>, <em class="sig-param">rand_type: str = 'unif'</em>, <em class="sig-param">tol: float = 1e-10</em>, <em class="sig-param">max_iter: int = 100</em>, <em class="sig-param">verbose: bool = True</em>, <em class="sig-param">print_every: int = 10</em>, <em class="sig-param">record_every: int = 1</em>, <em class="sig-param">seed: int = -1</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/solver/adagrad.html#AdaGrad"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.solver.AdaGrad" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adaptive stochastic gradient descent solver</p>
 <p>For the minimization of objectives of the form</p>
-<div class="math">
+<div class="math notranslate nohighlight">
 \[\frac 1n \sum_{i=1}^n f_i(w) + g(w),\]</div>
-<p>where the functions <span class="math">\(f_i\)</span> have smooth gradients and <span class="math">\(g\)</span> is
+<p>where the functions <span class="math notranslate nohighlight">\(f_i\)</span> have smooth gradients and <span class="math notranslate nohighlight">\(g\)</span> is
 prox-capable and separable, namely</p>
-<div class="math">
+<div class="math notranslate nohighlight">
 \[g(w) = \sum_{j=1}^d g_j(w_j)\]</div>
-<p>where <span class="math">\(g_j\)</span> are prox-capable scalar functions of a single coordinate
-<span class="math">\(w_j\)</span> of the vector of weights <span class="math">\(w \in \mathbb R^d\)</span>. Function
-<span class="math">\(f = \frac 1n \sum_{i=1}^n f_i\)</span> corresponds
-to the <code class="docutils literal"><span class="pre">model.loss</span></code> method of the model (passed with <code class="docutils literal"><span class="pre">set_model</span></code> to the
-solver) and <span class="math">\(g\)</span> corresponds to the <code class="docutils literal"><span class="pre">prox.value</span></code> method of the
-prox (passed with the <code class="docutils literal"><span class="pre">set_prox</span></code> method). The given prox must be, as
+<p>where <span class="math notranslate nohighlight">\(g_j\)</span> are prox-capable scalar functions of a single coordinate
+<span class="math notranslate nohighlight">\(w_j\)</span> of the vector of weights <span class="math notranslate nohighlight">\(w \in \mathbb R^d\)</span>. Function
+<span class="math notranslate nohighlight">\(f = \frac 1n \sum_{i=1}^n f_i\)</span> corresponds
+to the <code class="docutils literal notranslate"><span class="pre">model.loss</span></code> method of the model (passed with <code class="docutils literal notranslate"><span class="pre">set_model</span></code> to the
+solver) and <span class="math notranslate nohighlight">\(g\)</span> corresponds to the <code class="docutils literal notranslate"><span class="pre">prox.value</span></code> method of the
+prox (passed with the <code class="docutils literal notranslate"><span class="pre">set_prox</span></code> method). The given prox must be, as
 explained above, separable.
-One iteration of <a class="reference internal" href="#tick.solver.AdaGrad" title="tick.solver.AdaGrad"><code class="xref py py-class docutils literal"><span class="pre">AdaGrad</span></code></a> corresponds to
-the following iteration applied <code class="docutils literal"><span class="pre">epoch_size</span></code> times:</p>
-<div class="math">
+One iteration of <a class="reference internal" href="#tick.solver.AdaGrad" title="tick.solver.AdaGrad"><code class="xref py py-class docutils literal notranslate"><span class="pre">AdaGrad</span></code></a> corresponds to
+the following iteration applied <code class="docutils literal notranslate"><span class="pre">epoch_size</span></code> times:</p>
+<div class="math notranslate nohighlight">
 \[\begin{split}\begin{align*}
-&amp;\text{for } j=1, \ldots, d \; \text{ do the following:}&nbsp;\\
+&amp;\text{for } j=1, \ldots, d \; \text{ do the following:} \\
 &amp; \quad g_j \gets ( \nabla f_i(w) )_j \\
 &amp; \quad d_j \gets d_j + g_j^2 \\
 &amp; \quad w_j \gets w_j - \frac{\eta}{\sqrt{d_j + 10^{-6}}} \; g_j \\
 &amp; \quad w_j \gets \mathrm{prox}_{\eta_j g_j}(w_j)
 \end{align*}\end{split}\]</div>
-<p>where <span class="math">\(i\)</span> is sampled at random (strategy depends on <code class="docutils literal"><span class="pre">rand_type</span></code>) at
-each iteration, where <span class="math">\(\eta\)</span> that can be tuned with <code class="docutils literal"><span class="pre">step</span></code>.
-The seed of the random number generator for generation of samples <span class="math">\(i\)</span>
-can be seeded with <code class="docutils literal"><span class="pre">seed</span></code>.
-The iterations stop whenever tolerance <code class="docutils literal"><span class="pre">tol</span></code> is achieved, or after
-<code class="docutils literal"><span class="pre">max_iter</span></code> epochs (namely <code class="docutils literal"><span class="pre">max_iter</span></code><span class="math">\(\times\)</span> <code class="docutils literal"><span class="pre">epoch_size</span></code>).
-The obtained solution <span class="math">\(w\)</span> is returned by the <code class="docutils literal"><span class="pre">solve</span></code> method, and is
-also stored in the <code class="docutils literal"><span class="pre">solution</span></code> attribute of the solver.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>step</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default=1e-2</p>
+<p>where <span class="math notranslate nohighlight">\(i\)</span> is sampled at random (strategy depends on <code class="docutils literal notranslate"><span class="pre">rand_type</span></code>) at
+each iteration, where <span class="math notranslate nohighlight">\(\eta\)</span> that can be tuned with <code class="docutils literal notranslate"><span class="pre">step</span></code>.
+The seed of the random number generator for generation of samples <span class="math notranslate nohighlight">\(i\)</span>
+can be seeded with <code class="docutils literal notranslate"><span class="pre">seed</span></code>.
+The iterations stop whenever tolerance <code class="docutils literal notranslate"><span class="pre">tol</span></code> is achieved, or after
+<code class="docutils literal notranslate"><span class="pre">max_iter</span></code> epochs (namely <code class="docutils literal notranslate"><span class="pre">max_iter</span></code><span class="math notranslate nohighlight">\(\times\)</span> <code class="docutils literal notranslate"><span class="pre">epoch_size</span></code>).
+The obtained solution <span class="math notranslate nohighlight">\(w\)</span> is returned by the <code class="docutils literal notranslate"><span class="pre">solve</span></code> method, and is
+also stored in the <code class="docutils literal notranslate"><span class="pre">solution</span></code> attribute of the solver.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>step</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>, default=1e-2</p>
 <blockquote>
 <div><p>Step-size parameter, the most important parameter of the solver.
 A try-an-improve approach should be used.</p>
 </div></blockquote>
-<p><strong>tol</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default=1e-10</p>
+<p><strong>tol</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>, default=1e-10</p>
 <blockquote>
 <div><p>The tolerance of the solver (iterations stop when the stopping
 criterion is below it)</p>
 </div></blockquote>
-<p><strong>max_iter</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code>, default=100</p>
+<p><strong>max_iter</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code>, default=100</p>
 <blockquote>
 <div><p>Maximum number of iterations of the solver, namely maximum number of
-epochs (by default full pass over the data, unless <code class="docutils literal"><span class="pre">epoch_size</span></code> has
+epochs (by default full pass over the data, unless <code class="docutils literal notranslate"><span class="pre">epoch_size</span></code> has
 been modified from default)</p>
 </div></blockquote>
 <p><strong>rand_type</strong> : {‘unif’, ‘perm’}, default=’unif’</p>
 <blockquote>
 <div><p>How samples are randomly selected from the data</p>
 <ul class="simple">
-<li>if <code class="docutils literal"><span class="pre">'unif'</span></code> samples are uniformly drawn among all possibilities</li>
-<li>if <code class="docutils literal"><span class="pre">'perm'</span></code> a random permutation of all possibilities is
+<li><p>if <code class="docutils literal notranslate"><span class="pre">'unif'</span></code> samples are uniformly drawn among all possibilities</p></li>
+<li><p>if <code class="docutils literal notranslate"><span class="pre">'perm'</span></code> a random permutation of all possibilities is
 generated and samples are sequentially taken from it. Once all of
-them have been taken, a new random permutation is generated</li>
+them have been taken, a new random permutation is generated</p></li>
 </ul>
 </div></blockquote>
-<p><strong>verbose</strong> : <code class="xref py py-obj docutils literal"><span class="pre">bool</span></code>, default=True</p>
+<p><strong>verbose</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>, default=True</p>
 <blockquote>
-<div><p>If <code class="xref py py-obj docutils literal"><span class="pre">True</span></code>, solver verboses history, otherwise nothing is displayed,
+<div><p>If <code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code>, solver verboses history, otherwise nothing is displayed,
 but history is recorded anyway</p>
 </div></blockquote>
-<p><strong>print_every</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code>, default=10</p>
+<p><strong>print_every</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code>, default=10</p>
 <blockquote>
 <div><p>Print history information every time the iteration number is a
-multiple of <code class="docutils literal"><span class="pre">print_every</span></code>. Used only is <code class="docutils literal"><span class="pre">verbose</span></code> is True</p>
+multiple of <code class="docutils literal notranslate"><span class="pre">print_every</span></code>. Used only is <code class="docutils literal notranslate"><span class="pre">verbose</span></code> is True</p>
 </div></blockquote>
-<p><strong>record_every</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code>, default=1</p>
+<p><strong>record_every</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code>, default=1</p>
 <blockquote>
 <div><p>Save history information every time the iteration number is a
-multiple of <code class="docutils literal"><span class="pre">record_every</span></code></p>
+multiple of <code class="docutils literal notranslate"><span class="pre">record_every</span></code></p>
 </div></blockquote>
-<p><strong>seed</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code>, default=-1</p>
+<p><strong>seed</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code>, default=-1</p>
 <blockquote>
 <div><p>The seed of the random sampling. If it is negative then a random seed
 (different at each run) will be chosen.</p>
 </div></blockquote>
-<p><strong>epoch_size</strong> : <code class="xref py py-obj docutils literal"><span class="pre">int</span></code>, default given by model</p>
+<p><strong>epoch_size</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code>, default given by model</p>
 <blockquote>
 <div><p>Epoch size, namely how many iterations are made before updating the
 variance reducing term. By default, this is automatically tuned using
-information from the model object passed through <code class="docutils literal"><span class="pre">set_model</span></code>.</p>
+information from the model object passed through <code class="docutils literal notranslate"><span class="pre">set_model</span></code>.</p>
 </div></blockquote>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Attributes:</th><td class="field-body"><p class="first"><strong>model</strong> : <code class="xref py py-obj docutils literal"><span class="pre">Model</span></code></p>
+</dd>
+<dt class="field-even">Attributes</dt>
+<dd class="field-even"><p><strong>model</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">Model</span></code></p>
 <blockquote>
-<div><p>The model used by the solver, passed with the <code class="docutils literal"><span class="pre">set_model</span></code> method</p>
+<div><p>The model used by the solver, passed with the <code class="docutils literal notranslate"><span class="pre">set_model</span></code> method</p>
 </div></blockquote>
-<p><strong>prox</strong> : <code class="xref py py-obj docutils literal"><span class="pre">Prox</span></code></p>
+<p><strong>prox</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">Prox</span></code></p>
 <blockquote>
-<div><p>Proximal operator used by the solver, passed with the <code class="docutils literal"><span class="pre">set_prox</span></code>
+<div><p>Proximal operator used by the solver, passed with the <code class="docutils literal notranslate"><span class="pre">set_prox</span></code>
 method</p>
 </div></blockquote>
-<p><strong>solution</strong> : <code class="xref py py-obj docutils literal"><span class="pre">numpy.array</span></code>, shape=(n_coeffs,)</p>
+<p><strong>solution</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.array</span></code>, shape=(n_coeffs,)</p>
 <blockquote>
 <div><p>Minizer found by the solver</p>
 </div></blockquote>
-<p><strong>history</strong> : <code class="xref py py-obj docutils literal"><span class="pre">dict</span></code>-like</p>
+<p><strong>history</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code>-like</p>
 <blockquote>
 <div><p>A dict-type of object that contains history of the solver along
-iterations. It should be accessed using the <code class="docutils literal"><span class="pre">get_history</span></code> method</p>
+iterations. It should be accessed using the <code class="docutils literal notranslate"><span class="pre">get_history</span></code> method</p>
 </div></blockquote>
-<p><strong>time_start</strong> : <code class="xref py py-obj docutils literal"><span class="pre">str</span></code></p>
+<p><strong>time_start</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
 <blockquote>
-<div><p>Start date of the call to <code class="docutils literal"><span class="pre">solve()</span></code></p>
+<div><p>Start date of the call to <code class="docutils literal notranslate"><span class="pre">solve()</span></code></p>
 </div></blockquote>
-<p><strong>time_elapsed</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code></p>
+<p><strong>time_elapsed</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code></p>
 <blockquote>
-<div><p>Duration of the call to <code class="docutils literal"><span class="pre">solve()</span></code>, in seconds</p>
+<div><p>Duration of the call to <code class="docutils literal notranslate"><span class="pre">solve()</span></code>, in seconds</p>
 </div></blockquote>
-<p><strong>time_end</strong> : <code class="xref py py-obj docutils literal"><span class="pre">str</span></code></p>
+<p><strong>time_end</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
 <blockquote>
-<div><p>End date of the call to <code class="docutils literal"><span class="pre">solve()</span></code></p>
+<div><p>End date of the call to <code class="docutils literal notranslate"><span class="pre">solve()</span></code></p>
 </div></blockquote>
-<p><strong>dtype</strong> : <code class="xref py py-obj docutils literal"><span class="pre">{'float64',</span> <span class="pre">'float32'}</span></code>, default=’float64’</p>
-<blockquote class="last">
+<p><strong>dtype</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">{'float64',</span> <span class="pre">'float32'}</span></code>, default=’float64’</p>
+<blockquote>
 <div><p>Type of the arrays used. This value is set from model and prox dtypes.</p>
 </div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p class="rubric">References</p>
 <ul class="simple">
-<li>J. Duchi, E. Hazan, Y. Singer, Adaptive Subgradient Methods for Online
+<li><p>J. Duchi, E. Hazan, Y. Singer, Adaptive Subgradient Methods for Online
 Learning and Stochastic Optimization, <em>Journal of Machine Learning
-Research</em> (2011)</li>
+Research</em> (2011)</p></li>
 </ul>
 <dl class="method">
 <dt id="tick.solver.AdaGrad.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>step: float = 0.01</em>, <em>epoch_size: int = None</em>, <em>rand_type: str = 'unif'</em>, <em>tol: float = 1e-10</em>, <em>max_iter: int = 100</em>, <em>verbose: bool = True</em>, <em>print_every: int = 10</em>, <em>record_every: int = 1</em>, <em>seed: int = -1</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/solver/adagrad.html#AdaGrad.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.solver.AdaGrad.__init__" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">step: float = 0.01</em>, <em class="sig-param">epoch_size: int = None</em>, <em class="sig-param">rand_type: str = 'unif'</em>, <em class="sig-param">tol: float = 1e-10</em>, <em class="sig-param">max_iter: int = 100</em>, <em class="sig-param">verbose: bool = True</em>, <em class="sig-param">print_every: int = 10</em>, <em class="sig-param">record_every: int = 1</em>, <em class="sig-param">seed: int = -1</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/solver/adagrad.html#AdaGrad.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.solver.AdaGrad.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="tick.solver.AdaGrad.get_history">
-<code class="descname">get_history</code><span class="sig-paren">(</span><em>key=None</em><span class="sig-paren">)</span><a class="headerlink" href="#tick.solver.AdaGrad.get_history" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_history</code><span class="sig-paren">(</span><em class="sig-param">key=None</em><span class="sig-paren">)</span><a class="headerlink" href="#tick.solver.AdaGrad.get_history" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns history of the solver</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>key</strong> : <code class="xref py py-obj docutils literal"><span class="pre">str</span></code>, default=None</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>key</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>, default=None</p>
 <blockquote>
 <div><ul class="simple">
-<li>If <code class="xref py py-obj docutils literal"><span class="pre">None</span></code> all history is returned as a <code class="xref py py-obj docutils literal"><span class="pre">dict</span></code></li>
-<li>If <code class="xref py py-obj docutils literal"><span class="pre">str</span></code>, name of the history element to retrieve</li>
+<li><p>If <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code> all history is returned as a <code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code></p></li>
+<li><p>If <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>, name of the history element to retrieve</p></li>
 </ul>
 </div></blockquote>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> : <code class="xref py py-obj docutils literal"><span class="pre">list</span></code> or <code class="xref py py-obj docutils literal"><span class="pre">dict</span></code></p>
-<blockquote class="last">
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>output</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> or <code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code></p>
+<blockquote>
 <div><ul class="simple">
-<li>If <code class="docutils literal"><span class="pre">key</span></code> is None or <code class="docutils literal"><span class="pre">key</span></code> is not in history then
-output is a dict containing history of all keys</li>
-<li>If <code class="docutils literal"><span class="pre">key</span></code> is the name of an element in the history,
-output is a <code class="xref py py-obj docutils literal"><span class="pre">list</span></code> containing the history of this element</li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">key</span></code> is None or <code class="docutils literal notranslate"><span class="pre">key</span></code> is not in history then
+output is a dict containing history of all keys</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">key</span></code> is the name of an element in the history,
+output is a <code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> containing the history of this element</p></li>
 </ul>
 </div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tick.solver.AdaGrad.objective">
-<code class="descname">objective</code><span class="sig-paren">(</span><em>coeffs</em>, <em>loss: float = None</em><span class="sig-paren">)</span><a class="headerlink" href="#tick.solver.AdaGrad.objective" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">objective</code><span class="sig-paren">(</span><em class="sig-param">coeffs</em>, <em class="sig-param">loss: float = None</em><span class="sig-paren">)</span><a class="headerlink" href="#tick.solver.AdaGrad.objective" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the objective function</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>coeffs</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.array</span></code>, shape=(n_coeffs,)</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>coeffs</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">np.array</span></code>, shape=(n_coeffs,)</p>
 <blockquote>
 <div><p>Point where the objective is computed</p>
 </div></blockquote>
-<p><strong>loss</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default=`None`</p>
+<p><strong>loss</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>, default=`None`</p>
 <blockquote>
 <div><p>Gives the value of the loss if already known (allows to
 avoid its computation in some cases)</p>
 </div></blockquote>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code></p>
-<blockquote class="last">
-<div><p>Value of the objective at given <code class="docutils literal"><span class="pre">coeffs</span></code></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>output</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code></p>
+<blockquote>
+<div><p>Value of the objective at given <code class="docutils literal notranslate"><span class="pre">coeffs</span></code></p>
 </div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="tick.solver.AdaGrad.set_model">
+<code class="sig-name descname">set_model</code><span class="sig-paren">(</span><em class="sig-param">model</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tick/solver/adagrad.html#AdaGrad.set_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tick.solver.AdaGrad.set_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set model in the solver</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>model</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">Model</span></code></p>
+<blockquote>
+<div><p>Sets the model in the solver. The model gives the first
+order information about the model (loss, gradient, among
+other things)</p>
+</div></blockquote>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>output</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">Solver</span></code></p>
+<blockquote>
+<div><p>The <code class="xref py py-obj docutils literal notranslate"><span class="pre">Solver</span></code> with given model</p>
+</div></blockquote>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="tick.solver.AdaGrad.set_prox">
-<code class="descname">set_prox</code><span class="sig-paren">(</span><em>prox: tick.prox.base.prox.Prox</em><span class="sig-paren">)</span><a class="headerlink" href="#tick.solver.AdaGrad.set_prox" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">set_prox</code><span class="sig-paren">(</span><em class="sig-param">prox: tick.prox.base.prox.Prox</em><span class="sig-paren">)</span><a class="headerlink" href="#tick.solver.AdaGrad.set_prox" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set proximal operator in the solver</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>prox</strong> : <code class="xref py py-obj docutils literal"><span class="pre">Prox</span></code></p>
+<dl class="field-list">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>prox</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">Prox</span></code></p>
 <blockquote>
 <div><p>The proximal operator of the penalization function</p>
 </div></blockquote>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> : <code class="xref py py-obj docutils literal"><span class="pre">Solver</span></code></p>
-<blockquote class="last">
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>output</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">Solver</span></code></p>
+<blockquote>
 <div><p>The solver with given prox</p>
 </div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p class="rubric">Notes</p>
-<p>In some solvers, <code class="docutils literal"><span class="pre">set_model</span></code> must be called before
-<code class="docutils literal"><span class="pre">set_prox</span></code>, otherwise and error might be raised</p>
+<p>In some solvers, <code class="docutils literal notranslate"><span class="pre">set_model</span></code> must be called before
+<code class="docutils literal notranslate"><span class="pre">set_prox</span></code>, otherwise and error might be raised</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tick.solver.AdaGrad.solve">
-<code class="descname">solve</code><span class="sig-paren">(</span><em>x0=None</em>, <em>step=None</em><span class="sig-paren">)</span><a class="headerlink" href="#tick.solver.AdaGrad.solve" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">solve</code><span class="sig-paren">(</span><em class="sig-param">x0=None</em>, <em class="sig-param">step=None</em><span class="sig-paren">)</span><a class="headerlink" href="#tick.solver.AdaGrad.solve" title="Permalink to this definition">¶</a></dt>
 <dd><p>Launch the solver</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>x0</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.array</span></code>, shape=(n_coeffs,), default=`None`</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x0</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">np.array</span></code>, shape=(n_coeffs,), default=`None`</p>
 <blockquote>
 <div><p>Starting point of the solver</p>
 </div></blockquote>
-<p><strong>step</strong> : <code class="xref py py-obj docutils literal"><span class="pre">float</span></code>, default=`None`</p>
+<p><strong>step</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>, default=`None`</p>
 <blockquote>
 <div><p>Step-size or learning rate for the solver. This can be tuned also
-using the <code class="docutils literal"><span class="pre">step</span></code> attribute</p>
+using the <code class="docutils literal notranslate"><span class="pre">step</span></code> attribute</p>
 </div></blockquote>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> : <code class="xref py py-obj docutils literal"><span class="pre">np.array</span></code>, shape=(n_coeffs,)</p>
-<blockquote class="last">
-<div><p>Obtained minimizer for the problem, same as <code class="docutils literal"><span class="pre">solution</span></code> attribute</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>output</strong> : <code class="xref py py-obj docutils literal notranslate"><span class="pre">np.array</span></code>, shape=(n_coeffs,)</p>
+<blockquote>
+<div><p>Obtained minimizer for the problem, same as <code class="docutils literal notranslate"><span class="pre">solution</span></code> attribute</p>
 </div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -478,7 +472,7 @@ using the <code class="docutils literal"><span class="pre">step</span></code> at
     </p>
     <p>
         &copy; Copyright Emmanuel Bacry, Martin Bompaire, Stephane Gaiffas, Maryan Morel, Søren Vinther Poulsen.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.2.<br/>
     </p>
   </div>
 </footer>

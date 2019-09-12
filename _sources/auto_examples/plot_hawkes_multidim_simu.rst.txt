@@ -19,8 +19,8 @@ Simulation of 3-dimensional hawkes process
 .. literalinclude:: plot_hawkes_multidim_simu.py
     :lines: 5-
 
-**Total running time of the example:**  0.44 seconds
-( 0 minutes  0.44 seconds)
+**Total running time of the example:**  0.20 seconds
+( 0 minutes  0.20 seconds)
     
 Mentioned *tick* classes:
    * `tick.hawkes.SimuHawkesExpKernels`

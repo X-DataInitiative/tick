@@ -32,8 +32,8 @@ A nonparametric EM algorithm for multiscale Hawkes processes.
 .. literalinclude:: plot_hawkes_em.py
     :lines: 18-
 
-**Total running time of the example:**  1.12 seconds
-( 0 minutes  1.12 seconds)
+**Total running time of the example:**  1.13 seconds
+( 0 minutes  1.13 seconds)
     
 Mentioned *tick* classes:
    * `tick.base.TimeFunction`

@@ -18,8 +18,8 @@ plot_linear_model_losses.py
 .. literalinclude:: plot_linear_model_losses.py
     :lines: 1-
 
-**Total running time of the example:**  0.81 seconds
-( 0 minutes  0.81 seconds)
+**Total running time of the example:**  0.31 seconds
+( 0 minutes  0.31 seconds)
     
 Mentioned *tick* classes:
    * `tick.linear_model.ModelHinge`

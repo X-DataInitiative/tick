@@ -1,0 +1,9 @@
+tick.survival.sccs.StreamConvSCCS
+=================================
+
+.. currentmodule:: tick.survival.sccs
+
+.. autofunction:: StreamConvSCCS
+
+.. include:: tick.survival.sccs.StreamConvSCCS.examples
+    :allowmissing:

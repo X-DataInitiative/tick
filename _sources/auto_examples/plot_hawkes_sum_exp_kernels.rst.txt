@@ -18,8 +18,8 @@ plot_hawkes_sum_exp_kernels.py
 .. literalinclude:: plot_hawkes_sum_exp_kernels.py
     :lines: 1-
 
-**Total running time of the example:**  0.51 seconds
-( 0 minutes  0.51 seconds)
+**Total running time of the example:**  0.22 seconds
+( 0 minutes  0.22 seconds)
     
 Mentioned *tick* classes:
    * `tick.hawkes.HawkesSumExpKern`
