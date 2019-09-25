@@ -876,7 +876,7 @@ class CleanTick(clean):
 
 
 setup(name="tick",
-      version='0.6.0.0',
+      version='0.6.0.1',
       author="Emmanuel Bacry, "
              "Stephane Gaiffas, "
              "Martin Bompaire, "
@@ -896,6 +896,7 @@ setup(name="tick",
                         'matplotlib',
                         'sphinx',
                         'pandas',
+                        'dill',
                         'scikit-learn'],
       packages=find_packages(),
       cmdclass={'build': TickBuild,
