@@ -12,6 +12,7 @@ _tick_ currently works on Linux/OSX (Windows is experimental) systems and requir
 - scikit-learn
 - matplotlib
 - pandas
+- dill
 
 If you build and install _tick_ via _pip_ these dependencies will automatically be resolved. If not, you can install all of these dependencies easily using:
 
