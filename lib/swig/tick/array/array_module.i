@@ -12,9 +12,15 @@
 #include "tick/base/debug.h"
 #include "tick/array/carray_python.h"
 #include "tick/array/vector_operations.h"
+
+int tick_init_py_array(){
+  return _import_array();
+}
 %}
 
-
+int tick_init_py_array(){
+  return _import_array();
+}
 // C-Initialization of numpy
 %init %{
 	import_array();
