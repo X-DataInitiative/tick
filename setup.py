@@ -353,7 +353,11 @@ def create_extension(extension_name, module_dir,
             lib = os.path.join(build_dir, mod.build, "_"+mod.extension_name)
             lib += os.path.splitext(sysconfig.get_config_var("EXT_SUFFIX"))[0]
             libraries.append(lib)
-        # names (i.e. not lib<name>.so) we specify the full library path
+        elif platform.system() == 'Linux':
+            lib_dir = os.path.abspath(os.path.join(build_dir, mod.build))
+            extra_link_args.append("-L"+lib_dir)
+            extra_link_args.append("-Wl,-rpath,"+lib_dir)
+            extra_link_args.append("-l:"+mod.lib_filename)
         else:
             extra_link_args.append(os.path.abspath(
                 os.path.join(build_dir, mod.build, mod.lib_filename)))
