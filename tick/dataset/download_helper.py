@@ -184,8 +184,8 @@ def load_dataset(dataset_path, data_home=None, n_features=None):
         dataset = np.load(cache_path, allow_pickle=True)
         # If we have only one numpy array we return it directly otherwise
         # we return the row dictionary
-        if len(dataset.keys()) == 1:
-            key_0 = dataset.keys()[0]
+        if len(dataset) == 1:
+            key_0 = list(dataset.keys())[0]
             dataset = dataset[key_0]
         else:
             dataset = dataset.items()
