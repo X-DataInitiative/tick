@@ -13,7 +13,7 @@ cat appveyor/pip/numpy/numpy-1.16.4+mkl-cp37* > appveyor/pip/numpy-1.16.4+mkl-cp
 /c/Python37-x64/Scripts/pip install appveyor/pip/numpydoc-0.8.0-py2.py3-none-any.whl
 /c/Python37-x64/Scripts/pip install appveyor/pip/scipy-1.3.0-cp37-cp37m-win_amd64.whl
 /c/Python37-x64/Scripts/pip install -r requirements.txt
-/c/Python37-x64/Scripts/pip install tensorflow psutil
+/c/Python37-x64/Scripts/pip install tensorflow==1.4.0 psutil
 
 set +e
 /c/Python37-x64/python setup.py build_ext -j 2 --inplace

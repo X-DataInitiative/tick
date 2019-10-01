@@ -160,7 +160,7 @@ class HawkesCumulantMatching(LearnerHawkesNoParam):
         try:
             import tensorflow
         except ImportError:
-            raise ImportError('`tensorflow` >= 1.4.0 must be available to use '
+            raise ImportError('`tensorflow` == 1.4.0 must be available to use '
                               'HawkesCumulantMatching')
 
         self._tf_graph = tf.Graph()
