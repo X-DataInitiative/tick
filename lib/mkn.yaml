@@ -15,14 +15,13 @@ self:
 property:
     postfix: x86_64-linux-gnu
     py_maj: 3
-    py_min: 5m
+    py_min: 6m
     py_ver: cpython-
     lib_name: .${py_ver}${py_maj}${py_min}-${postfix}
     lib_path: ./../tick
     cargs: -DNPY_NO_DEPRECATED_API=NPY_1_7_API_VERSION
            -D_FILE_OFFSET_BITS=64 -DPYTHON_LINK -DNDEBUG
-    win_cargs:
-      -Ox -GL -MD -EHsc -DBUILDING_DLL
+    win_cargs: -GL -MD -EHsc -DBUILDING_DLL
     nixish_cargs: -fwrapv -O2 -Wall
                   -fstack-protector-strong
                   -Wformat -Werror -Wdate-time
@@ -213,9 +212,7 @@ profile:
       win: -DGTEST_LINKED_AS_SHARED_LIBRARY
     if_link:
       g++: -Wl,-rpath=$PWD
-    dep:
-      - name: google.test
-        version: master
+    dep: google.test
 
   - name: gtest
     parent: gtest_nodep

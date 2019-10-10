@@ -8,7 +8,7 @@ branches:
 max_jobs: 1
 
 image:
-- Visual Studio 2017
+- Visual Studio 2019
 
 init:
   - git config --global core.autocrlf input
@@ -30,19 +30,17 @@ cache:
 install:
   - git submodule update --init
   - curl -o mkn.exe -L https://github.com/Dekken/maiken/raw/binaries/win10_x64/mkn.exe
-  - IF NOT EXIST C:\ProgramData\chocolatey\bin\swig.exe choco install tools\windows\swig.4.0.0.nupkg --yes --limit-output #> $null
-  - cat C:\ProgramData\chocolatey\logs\chocolatey.log
-  - git clone https://github.com/X-DataInitiative/tick_appveyor -b master --depth 1 appveyor
+  - IF NOT EXIST C:\ProgramData\chocolatey\bin\swig.exe choco install tools\windows\swig.4.0.0.nupkg --yes --limit-output
 
 build_script:
-  - cp "C:\Program Files (x86)\Windows Kits\10\bin\x64\rc.exe" %CD%
+  - SET PATH=C:\Program Files\Git\usr\bin;%PATH%
+  - cp "C:\Program Files (x86)\Windows Kits\10\bin\10.0.18362.0\x64\rc.exe" %CD%
   - cp %CD%\rc.exe %CD%\lib
-  - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
+  - call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"
   - cl # print compiler version
   # doesnt exist for somereason?
-  - mkdir -p "C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\cppwinrt"
-
-  - bash -c "PATH=\"$PWD:/c/Python37-x64/:/c/Program Files/Git/usr/bin:$PATH\"; tools/appveyor/run.sh"
+  #- mkdir -p "C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\cppwinrt"
+  - bash -c "PATH=\"$PWD:/c/Python36-x64/:/c/Program Files/Git/usr/bin:$PATH\"; tools/appveyor/run.sh"
 
 artifacts:
   - path: "dist\\*.whl"

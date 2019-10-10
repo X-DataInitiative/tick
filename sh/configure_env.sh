@@ -311,6 +311,9 @@ MKN_WITH_SIZE=${#V_MKN_WITH}
 # if a file included from source ends with a non-zero exitting command
 #  the "set -e" can cause the script to exit
 
+MKN_O=${MKN_O:-9}
+MKN_G=${MKN_G:-0}
+MKN=${MKN:-mkn}
 
 export TICK_CONFIGURED=1
 

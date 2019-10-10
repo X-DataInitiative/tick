@@ -66,8 +66,8 @@ cd $ROOT
 
 (( $COMPILE == 1 )) && \
   for P in "${PROFILES[@]}"; do
-    mkn compile -t ${MKN_COMPILE_THREADS} -a "${MKN_C_FLAGS[@]}" -b "$PY_INCS" \
-      ${MKN_X_FILE[@]} -p ${P} -C lib "${MKN_WITH[@]}"
+    $MKN compile -t ${MKN_COMPILE_THREADS} -a "${MKN_C_FLAGS[@]}" -b "$PY_INCS" \
+      ${MKN_X_FILE[@]} -p ${P} -C lib "${MKN_WITH[@]}" -g $MKN_G -O $MKN_O
   done
 
 TKLOG=$KLOG
@@ -79,18 +79,18 @@ TKLOG=$KLOG
         # Here we intercept the command for linking on windows and change
         # the output from ".dll" to ".pyd"
         KLOG=0
-        OUT=$(mkn link -Sp $P -l "${LDARGS} $LIBLD" \
+        OUT=$($MKN link -Sp $P -l "${LDARGS} $LIBLD" \
               -P "${MKN_P}" -C lib "${MKN_WITH[@]}" \
-              ${MKN_X_FILE[@]} -RB $B_PATH |  head -1)
+              ${MKN_X_FILE[@]} -RB $B_PATH -g $MKN_G -O $MKN_O |  head -1)
         OUT=$(echo $OUT | sed -e "s/.dll/.pyd/g")
         (( TKLOG > 0 )) && echo $OUT
         pushd lib 2>&1 > /dev/null
         cmd /c "${OUT[@]}"
         popd  2>&1 > /dev/null
       else
-        mkn link -Sp $P -l "${LIBLDARGS} ${LDARGS} $LIBLD" \
+        $MKN link -Sp $P -l "${LIBLDARGS} ${LDARGS} $LIBLD" \
            -P "${MKN_P}" -C lib "${MKN_WITH[@]}" \
-           ${MKN_X_FILE[@]} -B "$B_PATH"
+           ${MKN_X_FILE[@]} -B "$B_PATH" -g $MKN_G -O $MKN_O
       fi
       PUSHD=${LIBRARIES[$EX]}
       pushd $ROOT/$(dirname ${PUSHD}) 2>&1 > /dev/null

@@ -6,20 +6,16 @@ CWD="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd $CWD/../..
 ROOT=$PWD
 
-/c/Python37-x64/python -m pip install --upgrade pip
-
-cat appveyor/pip/numpy/numpy-1.16.4+mkl-cp37* > appveyor/pip/numpy-1.16.4+mkl-cp37-cp37m-win_amd64.whl
-/c/Python37-x64/Scripts/pip install appveyor/pip/numpy-1.16.4+mkl-cp37-cp37m-win_amd64.whl
-/c/Python37-x64/Scripts/pip install appveyor/pip/numpydoc-0.8.0-py2.py3-none-any.whl
-/c/Python37-x64/Scripts/pip install appveyor/pip/scipy-1.3.0-cp37-cp37m-win_amd64.whl
-/c/Python37-x64/Scripts/pip install -r requirements.txt
-/c/Python37-x64/Scripts/pip install tensorflow==1.14.0 psutil
+python -V
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+python -m pip install psutil wheel
 
 set +e
-/c/Python37-x64/python setup.py build_ext -j 2 --inplace
+python setup.py build_ext -j 2 --inplace
 rm -rf build/lib # force relinking of libraries in case of failure
 set -e
-/c/Python37-x64/python setup.py build_ext --inplace
+python setup.py build_ext --inplace
 
 B_OS=$(basename $(find build -maxdepth 1 -name "lib*"))
 pushd $ROOT/build/$B_OS/tick
@@ -37,8 +33,8 @@ export CXXFLAGS="-EHsc"
 
 KLOG=3 $ROOT/sh/gtest.sh
 
-/c/Python37-x64/python -m unittest discover -v . "*_test.py"
-/c/Python37-x64/python setup.py bdist_wheel
+python -m unittest discover -v . "*_test.py"
+python setup.py bdist_wheel
 
 rm -rf build
 rm -rf lib/bin
