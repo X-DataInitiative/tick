@@ -52,9 +52,21 @@ class ConvSCCS(ABC, Base):
         greater than 0.
 
     step : `float`, default=None
-        Step-size parameter, the most important parameter of the solver.
-        If set to None, it will be automatically tuned as
-        ``step = 1 / model.get_lip_max()``.
+        Step-size parameter, the most important parameter of the solver. If no step
+        is provided, it will be set to ``step = 1 / model.get_lip_max()``.
+        Beware, the computation of the lipschitz constant is costly. If you are using
+        a large dataset, you using ``step_type='bb'`` and ``step=1/4`` might be a better
+        option.
+
+    step_type : {'fixed', 'bb'}, default='fixed'
+        How step will evoluate over stime
+
+        * if ``'fixed'`` step will remain equal to the given step accross
+          all iterations. This is the fastest solution if the optimal step
+          is known.
+        * if ``'bb'`` step will be chosen given Barzilai Borwein rule. This
+          choice is much more adaptive and should be used if optimal step if
+          difficult to obtain.
 
     tol : `float`, default=1e-5
         The tolerance of the solver (iterations stop when the stopping
@@ -153,8 +165,8 @@ class ConvSCCS(ABC, Base):
 
     def __init__(self, n_lags: np.array, penalized_features: np.array = None,
                  C_tv=None, C_group_l1=None, step: float = None,
-                 tol: float = 1e-5, max_iter: int = 100, verbose: bool = False,
-                 print_every: int = 10, record_every: int = 10,
+                 step_type: str ='fixed', tol: float = 1e-5, max_iter: int = 100,
+                 verbose: bool = False, print_every: int = 10, record_every: int = 10,
                  random_state: int = None):
         Base.__init__(self)
         # Init objects to be computed later
@@ -167,6 +179,7 @@ class ConvSCCS(ABC, Base):
             list(), list(), list(), None)
         self._fitted = None
         self._step_size = None
+        self._step_type = None
 
         # Init user defined parameters
         self._features_offset = None
@@ -180,6 +193,7 @@ class ConvSCCS(ABC, Base):
         self.C_group_l1 = C_group_l1
 
         self._step_size = step
+        self.step_type = step_type
         self.tol = tol
         self.max_iter = max_iter
         self.verbose = verbose,
@@ -195,8 +209,9 @@ class ConvSCCS(ABC, Base):
         self._preprocessor_obj = self._construct_preprocessor_obj()
         self._model_obj = None
         self._solver_info = (
-          step, max_iter, tol, print_every, record_every, verbose, self.random_state)
-        self._solver_obj = self._construct_solver_obj(*self._solver_info)
+          step, step_type, max_iter, tol, print_every, record_every, verbose,
+          self.random_state)
+        self._solver_obj = None
 
     # Interface
     def fit(self, features: list, labels: list, censoring: np.array,
@@ -544,7 +559,16 @@ class ConvSCCS(ABC, Base):
         self._set("_model_obj", self._construct_model_obj())
         self._model_obj.fit(features, labels, censoring)
         if self.step is None:
-            self.step = 1 / self._model_obj.get_lip_max()
+            if self.step_type == 'fixed':
+                self.step = 1 / self._model_obj.get_lip_max()
+            else:
+                self.step = 1/4
+
+        _, _, max_iter, tol, print_every, record_every, verbose, _ = self._solver_info
+        self._solver_info = (
+          self.step, self.step_type, max_iter, tol, print_every, record_every, verbose,
+          self.random_state)
+        self._solver_obj = self._construct_solver_obj(*self._solver_info)
 
         return features, labels, censoring
 
@@ -749,16 +773,14 @@ class ConvSCCS(ABC, Base):
         return groups
 
     @staticmethod
-    def _construct_solver_obj(step, max_iter, tol, print_every, record_every,
+    def _construct_solver_obj(step, step_type, max_iter, tol, print_every, record_every,
                               verbose, seed):
-        # TODO: we might want to use SAGA also later... (might be faster here)
         # seed cannot be None in SVRG
         solver_obj = SVRG(step=step, max_iter=max_iter, tol=tol,
                           print_every=print_every, record_every=record_every,
-                          verbose=verbose, seed=seed)
+                          verbose=verbose, seed=seed, step_type=step_type)
 
         return solver_obj
-
 
     @staticmethod
     def _construct_solver_obj_with_class(
@@ -774,7 +796,6 @@ class ConvSCCS(ABC, Base):
             if k not in args:
                 del constructor_map[k]
         return SVRG(**constructor_map)
-
 
     def _construct_generator_obj(self, C_tv_range, C_group_l1_range,
                                  logspace=True):
@@ -809,6 +830,17 @@ class ConvSCCS(ABC, Base):
             self._solver_obj.step = value
         else:
             raise ValueError("step should be greater than 0.")
+
+    @property
+    def step_type(self):
+        return self._step_type
+
+    @step_type.setter
+    def step_type(self, value):
+        if value in ['bb', 'lipschitz']:
+            self._step_type = value
+        else:
+            raise ValueError("step_type should be either 'bb' or 'lipschitz'")
 
     @property
     def C_tv(self):
