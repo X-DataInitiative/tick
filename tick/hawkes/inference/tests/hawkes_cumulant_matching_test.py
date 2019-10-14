@@ -10,8 +10,9 @@ from tick.base.inference import InferenceTest
 
 skip = True
 try:
-    import tensorflow
-    skip = False
+    import tensorflow as tf
+    if int(tf.__version__[0]) == 1: # test is disabled until v2 is working
+        skip = False
 except ImportError:
     print("tensorflow not found, skipping HawkesCumulantMatching test")
 

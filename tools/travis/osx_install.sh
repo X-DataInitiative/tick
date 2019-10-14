@@ -33,5 +33,5 @@ python -m pip install --quiet -U pip
 python -m pip install --quiet -U setuptools psutil
 python -m pip install --quiet numpy pandas
 python -m pip install -r requirements.txt
-python -m pip install sphinx pillow cpplint tensorflow
+python -m pip install sphinx pillow cpplint
 pyenv rehash

@@ -62,7 +62,7 @@ This will build all required C++ extensions, and install the extensions in your 
 
   Download and install Microsoft Windows Visual Build Tools
 
-    https://www.visualstudio.com/downloads/#build-tools-for-visual-studio-2017
+    https://www.visualstudio.com/downloads/#build-tools-for-visual-studio-2019
 
   Download python and swig, and add their respective installation directories to the PATH environment variable.
 
@@ -92,7 +92,7 @@ This will build all required C++ extensions, and install the extensions in your 
 
   The default path for "vcvarsall.bat" for Visual Studio Build Tools:
 
-    C:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\VC\Auxiliary\Build\vcvarsall.bat [amd64,x86]
+    C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\VC\Auxiliary\Build\vcvarsall.bat [amd64,x86]
 
   Build Tick C++ sources
 
