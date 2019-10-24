@@ -19,9 +19,9 @@ class StreamConvSCCS(ConvSCCS):
 
     def __init__(self, n_lags: np.array, penalized_features: np.array = None,
                  C_tv=None, C_group_l1=None, step: float = None,
-                 tol: float = 1e-5, max_iter: int = 100, verbose: bool = False,
-                 print_every: int = 10, record_every: int = 10,
-                 random_state: int = None, threads = 1):
+                 step_type: str ='fixed', tol: float = 1e-5, max_iter: int = 100,
+                 verbose: bool = False, print_every: int = 10, record_every: int = 10,
+                 random_state: int = None, threads=1):
         _, _, _, kvs = inspect.getargvalues(inspect.currentframe())
         object.__setattr__(self, "threads", threads)
         del kvs['threads']

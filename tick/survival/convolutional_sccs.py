@@ -156,6 +156,7 @@ class ConvSCCS(ABC, Base):
         '_features_offset',
         '_fitted',
         '_step_size',
+        '_step_type',
         # refit _coeffs, median, and CI data
         'confidence_intervals',
         '_solver_info'
@@ -565,10 +566,10 @@ class ConvSCCS(ABC, Base):
                 self.step = 1/4
 
         _, _, max_iter, tol, print_every, record_every, verbose, _ = self._solver_info
-        self._solver_info = (
+        self._set('_solver_info', (
           self.step, self.step_type, max_iter, tol, print_every, record_every, verbose,
-          self.random_state)
-        self._solver_obj = self._construct_solver_obj(*self._solver_info)
+          self.random_state))
+        self._set('_solver_obj', self._construct_solver_obj(*self._solver_info))
 
         return features, labels, censoring
 
@@ -776,9 +777,9 @@ class ConvSCCS(ABC, Base):
     def _construct_solver_obj(step, step_type, max_iter, tol, print_every, record_every,
                               verbose, seed):
         # seed cannot be None in SVRG
-        solver_obj = SVRG(step=step, max_iter=max_iter, tol=tol,
+        solver_obj = SVRG(step=step, step_type=step_type, max_iter=max_iter, tol=tol,
                           print_every=print_every, record_every=record_every,
-                          verbose=verbose, seed=seed, step_type=step_type)
+                          verbose=verbose, seed=seed)
 
         return solver_obj
 
@@ -827,7 +828,6 @@ class ConvSCCS(ABC, Base):
     def step(self, value):
         if value > 0:
             self._set('_step_size', value)
-            self._solver_obj.step = value
         else:
             raise ValueError("step should be greater than 0.")
 
@@ -837,8 +837,8 @@ class ConvSCCS(ABC, Base):
 
     @step_type.setter
     def step_type(self, value):
-        if value in ['bb', 'lipschitz']:
-            self._step_type = value
+        if value in ['bb', 'fixed']:
+            self._set('_step_type', value)
         else:
             raise ValueError("step_type should be either 'bb' or 'lipschitz'")
 
