@@ -53,3 +53,7 @@ lib/cmake-build-debug
 
 # benchmark data
 tools/benchmark/data
+
+# Virtual Environments
+env*/
+venv*/
