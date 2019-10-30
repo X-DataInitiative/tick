@@ -8,7 +8,7 @@ from tick.base import Base
 from tick.prox import ProxZero, ProxMulti, ProxTV, ProxEquality, \
     ProxGroupL1
 from tick.solver import SVRG
-from tick.survival import SimuSCCS, ModelSCCS
+from tick.survival.sccs import SimuSCCS, ModelSCCS
 from tick.preprocessing import LongitudinalSamplesFilter, \
     LongitudinalFeaturesLagger
 from scipy.stats import uniform
@@ -17,15 +17,9 @@ from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import cm
 from tick.preprocessing.utils import check_longitudinal_features_consistency, \
     check_censoring_consistency, safe_array
-
-# Case classes
-Confidence_intervals = namedtuple(
-    'Confidence_intervals',
-    ['refit_coeffs', 'lower_bound', 'upper_bound', 'confidence_level'])
+from tick.survival.sccs.boostrap_metrics import BootstrapRelativeRisksMetrics
 
 
-# TODO later: exploit new options of SVRG (parallel fit, variance_reduction...)
-# TODO later: add SAGA solver
 class ConvSCCS(ABC, Base):
     """ConvSCCS learner, estimates lagged features effect using TV and Group L1
     penalties. These penalties constrain the coefficient groups modelling the
@@ -163,8 +157,7 @@ class ConvSCCS(ABC, Base):
         self.n_features = None
         self.n_coeffs = None
         self._coeffs = None
-        self.confidence_intervals = Confidence_intervals(
-            list(), list(), list(), None)
+        self.confidence_intervals = None
         self._fitted = None
         self._step_size = None
 
@@ -368,7 +361,6 @@ class ConvSCCS(ABC, Base):
         cv_tracker = CrossValidationTracker(model_global_parameters)
         C_tv_generator, C_group_l1_generator = self._construct_generator_obj(
             C_tv_range, C_group_l1_range, logscale)
-        # TODO later: parallelize CV
         i = 0
         while i < n_cv_iter:
             self._set('_coeffs', np.zeros(self.n_coeffs))
@@ -415,6 +407,7 @@ class ConvSCCS(ABC, Base):
 
         return self.coeffs, cv_tracker
 
+    # TODO: update plotting methods
     def plot_intensities(self, figsize=(10, 6), sharex=False, sharey=False):
         """Plot intensities estimated by the penalized model. The intensities
         subfigures are plotted on two columns.
@@ -603,28 +596,18 @@ class ConvSCCS(ABC, Base):
         # Coeffs here are assumed to be an array (same object than self._coeffs)
         if confidence <= 0 or confidence >= 1:
             raise ValueError("`confidence_level` should be in (0, 1)")
-        confidence = 1 - confidence
         if not self._fitted:
             raise RuntimeError('You must fit the model first')
 
         bootstrap_coeffs = []
         sim = SimuSCCS(self.n_cases, self.n_intervals, self.n_features,
                        self.n_lags, coeffs=self._format_coeffs(coeffs))
-        # TODO later: parallelize bootstrap (everything should be pickable...)
         for k in range(rep):
             y = sim._simulate_multinomial_outcomes(p_features, coeffs)
             self._model_obj.fit(p_features, y, p_censoring)
             bootstrap_coeffs.append(self._fit(True))
-
-        bootstrap_coeffs = np.exp(np.array(bootstrap_coeffs))
-        bootstrap_coeffs.sort(axis=0)
-        lower_bound = np.log(bootstrap_coeffs[int(
-            np.floor(rep * confidence / 2))])
-        upper_bound = np.log(bootstrap_coeffs[int(
-            np.floor(rep * (1 - confidence / 2)))])
-        return Confidence_intervals(
-            self._format_coeffs(coeffs), self._format_coeffs(lower_bound),
-            self._format_coeffs(upper_bound), confidence)
+        return BootstrapRelativeRisksMetrics(self._format_coeffs(coeffs),
+                                             bootstrap_coeffs, 1-confidence)
 
     def _score(self, features=None, labels=None, censoring=None,
                preprocess=False):

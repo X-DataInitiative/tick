@@ -1,11 +1,7 @@
-
-from tick.survival.convolutional_sccs import *
-
+from tick.survival.sccs.convolutional_sccs import *
 
 
 class BatchConvSCCS(ConvSCCS):
-
-
     """BatchConvSCCS provides parallel batch solving for ConvSCCS k_fold
         and bootstrap
 
@@ -135,7 +131,6 @@ class BatchConvSCCS(ConvSCCS):
         # Coeffs here are assumed to be an array (same object than self._coeffs)
         if confidence <= 0 or confidence >= 1:
             raise ValueError("`confidence_level` should be in (0, 1)")
-        confidence = 1 - confidence
         if not self._fitted:
             raise RuntimeError('You must fit the model first')
 
@@ -163,13 +158,8 @@ class BatchConvSCCS(ConvSCCS):
             n_bootstrap(modulo)
 
         bootstrap_coeffs = np.exp(np.array(bootstrap_coeffs))
-        bootstrap_coeffs.sort(axis=0)
-        lower_bound = np.log(bootstrap_coeffs[int(
-            np.floor(rep * confidence / 2))])
-        upper_bound = np.log(bootstrap_coeffs[int(
-            np.floor(rep * (1 - confidence / 2)))])
-        return Confidence_intervals(
-            self._format_coeffs(coeffs), self._format_coeffs(lower_bound),
-            self._format_coeffs(upper_bound), confidence)
+
+        return BootstrapRelativeRisksMetrics(self._format_coeffs(coeffs),
+                                             bootstrap_coeffs, 1-confidence)
 
 
