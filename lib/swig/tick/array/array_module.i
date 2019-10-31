@@ -9,9 +9,19 @@
 #include <system_error>
 #include "numpy/arrayobject.h"
 #include "numpy/npy_math.h"
+
+#ifndef _WIN32
+int tick_import_numpy(){
+  return _import_array();
+}
+static const int tick_numpy_import = tick_import_numpy();
+#endif
+
 #include "tick/base/debug.h"
 #include "tick/array/carray_python.h"
 #include "tick/array/vector_operations.h"
+
+
 %}
 
 
