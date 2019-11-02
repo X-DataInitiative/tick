@@ -56,6 +56,9 @@
 %shared_ptr(ModelHawkesFixedSumExpKernLeastSqQRH2);
 %shared_ptr(ModelHawkesFixedSumExpKernLeastSqQRH2List);
 
+%shared_ptr(ModelHawkesFixedSumExpKernLeastSqQRH3);
+%shared_ptr(ModelHawkesFixedSumExpKernLeastSqQRH3List);
+
 %shared_ptr(ModelCoxRegPartialLik);
 %shared_ptr(ModelSCCS);
 
