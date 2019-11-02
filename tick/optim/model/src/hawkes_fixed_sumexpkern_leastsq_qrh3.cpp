@@ -1,9 +1,9 @@
 // License: BSD 3 clause
 
 
-#include "hawkes_fixed_sumexpkern_leastsq_qrh1.h"
+#include "hawkes_fixed_sumexpkern_leastsq_qrh3.h"
 
-ModelHawkesFixedSumExpKernLeastSqQRH1::ModelHawkesFixedSumExpKernLeastSqQRH1(
+ModelHawkesFixedSumExpKernLeastSqQRH3::ModelHawkesFixedSumExpKernLeastSqQRH3(
         const ArrayDouble &decays,
         const ulong MaxN,
         const unsigned int max_n_threads,
@@ -12,7 +12,7 @@ ModelHawkesFixedSumExpKernLeastSqQRH1::ModelHawkesFixedSumExpKernLeastSqQRH1(
           decays(decays), n_decays(decays.size()), MaxN(MaxN) {}
 
 // Method that computes the value
-double ModelHawkesFixedSumExpKernLeastSqQRH1::loss(const ArrayDouble &coeffs) {
+double ModelHawkesFixedSumExpKernLeastSqQRH3::loss(const ArrayDouble &coeffs) {
   // The initialization should be performed if not performed yet
   if (!weights_computed) compute_weights();
 
@@ -20,7 +20,7 @@ double ModelHawkesFixedSumExpKernLeastSqQRH1::loss(const ArrayDouble &coeffs) {
   SArrayDoublePtr values =
           parallel_map(get_n_threads(),
                        n_nodes,
-                       &ModelHawkesFixedSumExpKernLeastSqQRH1::loss_i,
+                       &ModelHawkesFixedSumExpKernLeastSqQRH3::loss_i,
                        this,
                        coeffs);
 
@@ -29,7 +29,7 @@ double ModelHawkesFixedSumExpKernLeastSqQRH1::loss(const ArrayDouble &coeffs) {
 }
 
 // Performs the computation of the contribution of the i component to the value
-double ModelHawkesFixedSumExpKernLeastSqQRH1::loss_i(const ulong i,
+double ModelHawkesFixedSumExpKernLeastSqQRH3::loss_i(const ulong i,
                                                      const ArrayDouble &coeffs) {
     if (!weights_computed) TICK_ERROR("Please compute weights before calling loss_i");
 
@@ -42,11 +42,11 @@ double ModelHawkesFixedSumExpKernLeastSqQRH1::loss_i(const ulong i,
         f_i[k] = coeffs[n_nodes + n_nodes * n_nodes * U + i * MaxN + k];
     const ArrayDouble2d g_i = view(g[i]);
 
-    //! I.1
+    //! Term I.1
     for(ulong q = 0; q < MaxN; ++q)
-        R_i += f_i[q] * f_i[q] * Length[q] * mu_i * mu_i;
+        R_i += Length[q] * mu_i * mu_i;
 
-    //! I.2
+    //! Term I.2
     auto get_G_index = [=](ulong q, ulong u) {
         return n_decays * q + u;
     };
@@ -57,7 +57,7 @@ double ModelHawkesFixedSumExpKernLeastSqQRH1::loss_i(const ulong i,
         for (ulong u = 0; u != U; ++u) {
             double G_ij_u = 0; //! at T
             for (ulong q = 0; q < MaxN; ++q)
-                G_ij_u += f_i[q] * f_i[q] * G_j[get_G_index(q, u)];
+                G_ij_u += f_i[q] * G_j[get_G_index(q, u)];
             double alpha_u_ij = coeffs[get_alpha_u_i_j_index(u, i, j)];
             tmp_s += alpha_u_ij * G_ij_u;
         }
@@ -71,8 +71,8 @@ double ModelHawkesFixedSumExpKernLeastSqQRH1::loss_i(const ulong i,
     //! Term II.1
     const ArrayULong Count_i = view(Count[i]);
     for(ulong q = 0; q < MaxN; ++q) {
-        R_i -= 2 * mu_i * f_i[q] * Count_i[q];
-        term4 -= 2 * mu_i * f_i[q] * Count_i[q];
+        R_i -= 2 * mu_i * Count_i[q];
+        term4 -= 2 * mu_i * Count_i[q];
     }
 
     //! Term II.2
@@ -116,16 +116,11 @@ double ModelHawkesFixedSumExpKernLeastSqQRH1::loss_i(const ulong i,
         }
     }
 
-//    printf("thread_%llu: Term 3 = %f\n" ,i, term3);
-//    printf("thread_%llu: Term 4 = %f\n" ,i, term4);
-//    printf("thread_%llu: Term 5 = %f\n" ,i, term5);
-//    printf("thread_%llu: R_i = %f\n" ,i, R_i);
-
     return R_i;
 }
 
 // Method that computes the gradient
-void ModelHawkesFixedSumExpKernLeastSqQRH1::grad(const ArrayDouble &coeffs,
+void ModelHawkesFixedSumExpKernLeastSqQRH3::grad(const ArrayDouble &coeffs,
                                                  ArrayDouble &out) {
   // The initialization should be performed if not performed yet
   if (!weights_computed) compute_weights();
@@ -133,7 +128,7 @@ void ModelHawkesFixedSumExpKernLeastSqQRH1::grad(const ArrayDouble &coeffs,
   // This allows to run in a multithreaded environment the computation of each component
   parallel_run(get_n_threads(),
                n_nodes,
-               &ModelHawkesFixedSumExpKernLeastSqQRH1::grad_i,
+               &ModelHawkesFixedSumExpKernLeastSqQRH3::grad_i,
                this,
                coeffs,
                out);
@@ -141,7 +136,7 @@ void ModelHawkesFixedSumExpKernLeastSqQRH1::grad(const ArrayDouble &coeffs,
 }
 
 // Method that computes the component i of the gradient
-void ModelHawkesFixedSumExpKernLeastSqQRH1::grad_i(const ulong i,
+void ModelHawkesFixedSumExpKernLeastSqQRH3::grad_i(const ulong i,
                                                    const ArrayDouble &coeffs,
                                                    ArrayDouble &out) {
     if (!weights_computed) TICK_ERROR("Please compute weights before calling grad_i");
@@ -175,7 +170,7 @@ void ModelHawkesFixedSumExpKernLeastSqQRH1::grad_i(const ulong i,
 
     //! From I.1
     for (ulong q = 0; q < MaxN; ++q)
-        grad_mu_i += 2 * mu_i * f_i[q] * f_i[q] * Length[q];
+        grad_mu_i += 2 * mu_i * Length[q];
 
     //! From I.2
     double tmp_s = 0;
@@ -184,7 +179,7 @@ void ModelHawkesFixedSumExpKernLeastSqQRH1::grad_i(const ulong i,
         for (ulong u = 0; u != U; ++u) {
             double G_ij_u = 0; //! at T
             for (ulong q = 0; q < MaxN; ++q)
-                G_ij_u += f_i[q] * f_i[q] * G_j[get_G_index(q, u)];
+                G_ij_u += f_i[q] * G_j[get_G_index(q, u)];
             double alpha_u_ij = coeffs[get_alpha_u_i_j_index(u, i, j)];
             tmp_s += alpha_u_ij * G_ij_u;
         }
@@ -194,7 +189,7 @@ void ModelHawkesFixedSumExpKernLeastSqQRH1::grad_i(const ulong i,
     //! From II.1
     const ArrayULong Count_i = view(Count[i]);
     for (ulong q = 0; q < MaxN; ++q)
-        grad_mu_i -= 2 * f_i[q] * Count_i[q];
+        grad_mu_i -= 2 * Count_i[q];
 
     //! grad of alpha_u_{ij}, for all j and all u
     //! From I.2
@@ -203,7 +198,7 @@ void ModelHawkesFixedSumExpKernLeastSqQRH1::grad_i(const ulong i,
         for (ulong u = 0; u != U; ++u) {
             double G_ij_u = 0;
             for (ulong q = 0; q < MaxN; ++q)
-                G_ij_u += f_i[q] * f_i[q] * G_j[get_G_index(q, u)];
+                G_ij_u += f_i[q] * G_j[get_G_index(q, u)];
 
             double &grad_alpha_u_ij = out[get_alpha_u_i_j_index(u, i, j)];
             grad_alpha_u_ij = 2 * mu_i * G_ij_u;
@@ -239,10 +234,7 @@ void ModelHawkesFixedSumExpKernLeastSqQRH1::grad_i(const ulong i,
     }
 
     //! grad of f^i_n
-    //! From I.1
     ArrayDouble grad_f_i(MaxN);
-    for (ulong q = 0; q < MaxN; ++q)
-        grad_f_i[q] = 2 * f_i[q] * Length[q] * mu_i * mu_i;
 
     //! From I.2
     for (ulong j = 0; j != n_nodes; ++j) {
@@ -250,13 +242,9 @@ void ModelHawkesFixedSumExpKernLeastSqQRH1::grad_i(const ulong i,
         for (ulong u = 0; u != U; ++u) {
             double alpha_u_ij = coeffs[get_alpha_u_i_j_index(u, i, j)];
             for (ulong q = 0; q < MaxN; ++q)
-                grad_f_i[q] += 4 * mu_i * f_i[q] * alpha_u_ij * G_j[get_G_index(q, u)];
+                grad_f_i[q] += 2 * mu_i * alpha_u_ij * G_j[get_G_index(q, u)];
         }
     }
-
-    //! From II.1
-    for(ulong q = 0; q < MaxN; ++q)
-        grad_f_i[q] -= 2 * mu_i * Count_i[q];
 
     //! From II.2
     for (ulong k = 1; k != n_total_jumps + 1; ++k)
@@ -292,14 +280,14 @@ void ModelHawkesFixedSumExpKernLeastSqQRH1::grad_i(const ulong i,
 }
 
 // Computes both gradient and value
-double ModelHawkesFixedSumExpKernLeastSqQRH1::loss_and_grad(const ArrayDouble &coeffs,
+double ModelHawkesFixedSumExpKernLeastSqQRH3::loss_and_grad(const ArrayDouble &coeffs,
                                                             ArrayDouble &out) {
   grad(coeffs, out);
   return loss(coeffs);
 }
 
 // Contribution of the ith component to the initialization
-void ModelHawkesFixedSumExpKernLeastSqQRH1::compute_weights_i(const ulong i) {
+void ModelHawkesFixedSumExpKernLeastSqQRH3::compute_weights_i(const ulong i) {
     //!thread i computes weights governed by dimension i
 
     //! Length(n) and Count^i(n)
@@ -349,7 +337,7 @@ void ModelHawkesFixedSumExpKernLeastSqQRH1::compute_weights_i(const ulong i) {
     }
 }
 
-void ModelHawkesFixedSumExpKernLeastSqQRH1::compute_weights_H_j(const ulong j){
+void ModelHawkesFixedSumExpKernLeastSqQRH3::compute_weights_H_j(const ulong j){
     auto get_g_index = [=](ulong k, ulong u) {
         return n_decays * k + u;
     };
@@ -384,22 +372,22 @@ void ModelHawkesFixedSumExpKernLeastSqQRH1::compute_weights_H_j(const ulong j){
 }
 
 // Weights should be computed before loss and grad
-void ModelHawkesFixedSumExpKernLeastSqQRH1::compute_weights() {
+void ModelHawkesFixedSumExpKernLeastSqQRH3::compute_weights() {
     allocate_weights();
 
     // Multithreaded computation of the arrays
     parallel_run(get_n_threads(), n_nodes,
-                 &ModelHawkesFixedSumExpKernLeastSqQRH1::compute_weights_i,
+                 &ModelHawkesFixedSumExpKernLeastSqQRH3::compute_weights_i,
                  this);
 
     //! H could only be computed after we have all g_i
     parallel_run(get_n_threads(), n_nodes,
-                 &ModelHawkesFixedSumExpKernLeastSqQRH1::compute_weights_H_j,
+                 &ModelHawkesFixedSumExpKernLeastSqQRH3::compute_weights_H_j,
                  this);
     weights_computed = true;
 }
 
-void ModelHawkesFixedSumExpKernLeastSqQRH1::allocate_weights() {
+void ModelHawkesFixedSumExpKernLeastSqQRH3::allocate_weights() {
   if (n_nodes == 0) {
     TICK_ERROR("Please provide valid timestamps before allocating weights")
   }
@@ -430,12 +418,12 @@ void ModelHawkesFixedSumExpKernLeastSqQRH1::allocate_weights() {
   }
 }
 
-ulong ModelHawkesFixedSumExpKernLeastSqQRH1::get_n_coeffs() const {
+ulong ModelHawkesFixedSumExpKernLeastSqQRH3::get_n_coeffs() const {
   return n_nodes + n_nodes * n_nodes * n_decays + n_nodes * MaxN;
 }
 
 
-void ModelHawkesFixedSumExpKernLeastSqQRH1::set_data(const SArrayDoublePtrList1D &_timestamps,
+void ModelHawkesFixedSumExpKernLeastSqQRH3::set_data(const SArrayDoublePtrList1D &_timestamps,
                                        const SArrayLongPtr _global_n,
                                        const double _end_times){
   ModelHawkesSingle::set_data(_timestamps, _end_times);

@@ -30,6 +30,8 @@ from .hawkes_fixed_sumexpkern_loglik_custom2 import ModelHawkesSumExpCustomType2
 from .model_rsb import ModelRsb
 from .hawkes_fixed_sumexpkern_leastsq_qrh1 import ModelHawkesFixedSumExpKernLeastSqQRH1
 from .hawkes_fixed_sumexpkern_QRH1_leastsq_list import ModelHawkesFixedSumExpKernLeastSqQRH1List
+from .hawkes_fixed_sumexpkern_QRH2_leastsq_list import ModelHawkesFixedSumExpKernLeastSqQRH2List
+from .hawkes_fixed_sumexpkern_QRH3_leastsq_list import ModelHawkesFixedSumExpKernLeastSqQRH3List
 
 from .sccs import ModelSCCS
 
@@ -57,5 +59,7 @@ __all__ = ["ModelLinReg",
            "ModelHawkesSumExpCustomType2",
            "ModelRsb",
            "ModelHawkesFixedSumExpKernLeastSqQRH1",
-           "ModelHawkesFixedSumExpKernLeastSqQRH1List"
+           "ModelHawkesFixedSumExpKernLeastSqQRH1List",
+           "ModelHawkesFixedSumExpKernLeastSqQRH2List",
+           "ModelHawkesFixedSumExpKernLeastSqQRH3List"
            ]

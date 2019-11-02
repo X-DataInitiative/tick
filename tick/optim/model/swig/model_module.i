@@ -118,3 +118,5 @@
 %include hawkes_fixed_sumexpkern_leastsq_qrh1.i
 
 %include hawkes_fixed_sumexpkern_leastsq_qrh2.i
+
+%include hawkes_fixed_sumexpkern_leastsq_qrh3.i

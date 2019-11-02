@@ -20,3 +20,4 @@
 %include variants/hawkes_fixed_sumexpkern_custom2_loglik_list.i
 %include variants/hawkes_fixed_sumexpkern_QRH1_leastsq_list.i
 %include variants/hawkes_fixed_sumexpkern_QRH2_leastsq_list.i
+%include variants/hawkes_fixed_sumexpkern_QRH3_leastsq_list.i

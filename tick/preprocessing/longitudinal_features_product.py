@@ -4,7 +4,7 @@ import numpy as np
 import scipy.sparse as sps
 from itertools import combinations
 from copy import deepcopy
-from scipy.misc import comb
+# from scipy.misc import comb
 from sklearn.externals.joblib import Parallel, delayed
 from tick.base import Base
 from .build.preprocessing import SparseLongitudinalFeaturesProduct
