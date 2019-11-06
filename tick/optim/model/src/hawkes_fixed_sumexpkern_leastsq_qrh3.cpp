@@ -242,7 +242,7 @@ void ModelHawkesFixedSumExpKernLeastSqQRH3::grad_i(const ulong i,
         for (ulong u = 0; u != U; ++u) {
             double alpha_u_ij = coeffs[get_alpha_u_i_j_index(u, i, j)];
             for (ulong q = 0; q < MaxN; ++q)
-                grad_f_i[q] += 2 * mu_i * alpha_u_ij * G_j[get_G_index(q, u)];
+                grad_f_i[q] = 2 * mu_i * alpha_u_ij * G_j[get_G_index(q, u)];
         }
     }
 
