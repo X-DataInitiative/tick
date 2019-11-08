@@ -54,3 +54,4 @@ class PP {
 %include hawkes_kernels.i
 %include hawkes_custom.i
 %include hawkes_custom2.i
+%include hawkes_QRH3.i
