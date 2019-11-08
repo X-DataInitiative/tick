@@ -505,9 +505,9 @@ random_extension = create_extension(**random_extension_info)
 
 simulation_extension_info = {
     "cpp_files": ["pp.cpp", "poisson.cpp", "inhomogeneous_poisson.cpp",
-                  "hawkes.cpp", "hawkes_custom.cpp", "hawkes_custom2.cpp"],
+                  "hawkes.cpp", "hawkes_custom.cpp", "hawkes_custom2.cpp","hawkes_QRH3.cpp"],
     "h_files": ["pp.h", "poisson.h", "inhomogeneous_poisson.h",
-                "hawkes.h", "hawkes_custom.h", "hawkes_custom2.h"],
+                "hawkes.h", "hawkes_custom.h", "hawkes_custom2.h","hawkes_QRH3.h"],
     "folders": ["hawkes_baselines", "hawkes_kernels"],
     "swig_files": ["simulation_module.i"],
     "module_dir": "./tick/simulation/",
