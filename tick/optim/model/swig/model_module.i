@@ -46,6 +46,7 @@
 %shared_ptr(ModelHawkesFixedSumExpKernCustom);
 %shared_ptr(ModelHawkesSumExpCustomType2);
 %shared_ptr(ModelHawkesSumExpCustom);
+%shared_ptr(ModelHawkesSumExpCustom3);
 %shared_ptr(ModelCustomBasic);
 %shared_ptr(ModelHawkesCustomType2);
 %shared_ptr(ModelRsb);
@@ -115,6 +116,8 @@
 %include hawkes_fixed_expkern_loglik_custom2.i
 
 %include hawkes_fixed_sumexpkern_loglik_custom2.i
+
+%include hawkes_fixed_sumexpkern_loglik_custom3.i
 
 %include model_rsb.i
 

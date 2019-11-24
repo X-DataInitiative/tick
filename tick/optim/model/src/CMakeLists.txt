@@ -36,6 +36,7 @@ add_library(tick_model EXCLUDE_FROM_ALL
 		hawkes_fixed_expkern_loglik_custom2.h hawkes_fixed_expkern_loglik_custom2.cpp
 		hawkes_fixed_sumexpkern_loglik_custom.h hawkes_fixed_sumexpkern_loglik_custom.cpp
 		hawkes_fixed_sumexpkern_loglik_custom2.h hawkes_fixed_sumexpkern_loglik_custom2.cpp
+		hawkes_fixed_sumexpkern_loglik_custom3.h hawkes_fixed_sumexpkern_loglik_custom3.cpp
 		modelcustombasic.cpp modelcustombasic.h
 		model_rsb.cpp model_rsb.h
 
@@ -45,6 +46,7 @@ add_library(tick_model EXCLUDE_FROM_ALL
 		variants/hawkes_fixed_expkern_custom2_loglik_list.h variants/hawkes_fixed_expkern_custom2_loglik_list.cpp
 		variants/custom_basic_loglik_list.h variants/custom_basic_loglik_list.cpp
 		variants/hawkes_fixed_sumexpkern_custom2_loglik_list.h variants/hawkes_fixed_sumexpkern_custom2_loglik_list.cpp
+		variants/hawkes_fixed_sumexpkern_custom3_loglik_list.h variants/hawkes_fixed_sumexpkern_custom3_loglik_list.cpp
         variants/hawkes_fixed_sumexpkern_QRH1_leastsq_list.h variants/hawkes_fixed_sumexpkern_QRH1_leastsq_list.cpp
 		variants/hawkes_fixed_sumexpkern_QRH2_leastsq_list.h variants/hawkes_fixed_sumexpkern_QRH2_leastsq_list.cpp
 		variants/hawkes_fixed_sumexpkern_QRH3_leastsq_list.h variants/hawkes_fixed_sumexpkern_QRH3_leastsq_list.cpp
