@@ -16,7 +16,7 @@ f_i = [np.array([1., 0.7, 0.8, 0.6, 0.5, 0.8, 0.3, 0.6, 0.2, 0.7]), np.array([1.
 end_time = 2000.0
 end_times = []
 
-betas = np.array([1, 20, 500.0])
+betas = np.array([60.0, 1500.0, 5500])
 U = len(betas)
 kernels = np.array([
             [HawkesKernelSumExp(np.array([0.2, 0.15, 0.1]), betas), HawkesKernelSumExp(np.array([0.3, 0.1, 0.1]), betas)],
@@ -60,7 +60,7 @@ from tick.optim.solver import AGD
 from tick.optim.prox import ProxZero, ProxL1
 
 prox = ProxZero()
-solver = AGD(step=1e-3, linesearch=False, max_iter=10000, print_every=50, tol=1e-10)
+solver = AGD(step=1e-4, linesearch=False, max_iter=10000, print_every=50, tol=1e-10)
 solver.set_model(model_list).set_prox(prox)
 x0 = np.random.rand(model_list.n_coeffs)
 solver.solve(x0)

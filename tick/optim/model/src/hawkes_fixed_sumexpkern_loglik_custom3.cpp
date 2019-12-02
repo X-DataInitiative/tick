@@ -116,7 +116,6 @@ void ModelHawkesSumExpCustom3::set_data(const SArrayDoublePtrList1D &_timestamps
 
 double ModelHawkesSumExpCustom3::loss(const ArrayDouble &coeffs) {
     if (!weights_computed) compute_weights();
-
     const double loss =
             parallel_map_additive_reduce(get_n_threads(), n_nodes,
                                          &ModelHawkesSumExpCustom3::loss_dim_i,
@@ -153,7 +152,7 @@ double ModelHawkesSumExpCustom3::loss_dim_i(const ulong i, const ArrayDouble &co
                 }
 
             if (tmp_s <= 0) {
-                return 1e50;
+                return 1e99;
                 TICK_ERROR("The sum of the influence on someone cannot be negative. "
                                    "Maybe did you forget to add a positive constraint to "
                                    "your proximal operator, in ModelHawkesSumExpCustom3::loss_dim_i");
@@ -230,6 +229,10 @@ void ModelHawkesSumExpCustom3::grad_dim_i(const ulong i,
     }
 
     //! grad of alpha_u_{ij}
+    for (ulong j = 0; j != n_nodes; ++j)
+        for (ulong u = 0; u != U; ++u)
+            out[get_alpha_u_i_j_index(u, i, j)] = 0;
+
     //! here we calculate the grad of alpha_ij_u, for all j and all u
     for (ulong k = 1; k < 1 + n_total_jumps + 1; ++k) {
         int tmp_flag = 0;
@@ -275,12 +278,13 @@ void ModelHawkesSumExpCustom3::grad_dim_i(const ulong i,
             tmp_flag = 1;
         if (tmp_flag) {
             double nominator = 0;
+            double denominator = mu_i;
             for (ulong jj = 0; jj != n_nodes; ++jj)
                 for (ulong uu = 0; uu != U; ++uu) {
                     double alpha_uu_i_jj = coeffs[get_alpha_u_i_j_index(uu, i, jj)];
-                    nominator += alpha_uu_i_jj * g_i[get_index(k, jj, uu)] * f_i[global_n[k - 1]];
+                    nominator += alpha_uu_i_jj * g_i[get_index(k, jj, uu)];
+                    denominator += alpha_uu_i_jj * g_i[get_index(k, jj, uu)] * f_i[global_n[k - 1]];
                 }
-            double denominator = mu_i + nominator;
             grad_f_i[global_n[k - 1]] += nominator / denominator;
         }
     }
