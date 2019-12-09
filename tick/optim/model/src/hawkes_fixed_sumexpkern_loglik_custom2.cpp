@@ -162,7 +162,7 @@ double ModelHawkesSumExpCustomType2::loss_dim_i(const ulong i,
     }
 
     //add a constant to the loss, then inverse the loss to make it convex
-    return -end_time - loss;
+    return - loss;
 }
 
 void ModelHawkesSumExpCustomType2::grad(const ArrayDouble &coeffs,

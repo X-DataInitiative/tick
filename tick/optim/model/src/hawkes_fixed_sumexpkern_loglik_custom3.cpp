@@ -181,7 +181,7 @@ double ModelHawkesSumExpCustom3::loss_dim_i(const ulong i, const ArrayDouble &co
         }
     }
 
-    return -end_time - loss;
+    return - loss;
 }
 
 void ModelHawkesSumExpCustom3::grad_dim_i(const ulong i,
@@ -229,10 +229,6 @@ void ModelHawkesSumExpCustom3::grad_dim_i(const ulong i,
     }
 
     //! grad of alpha_u_{ij}
-    for (ulong j = 0; j != n_nodes; ++j)
-        for (ulong u = 0; u != U; ++u)
-            out[get_alpha_u_i_j_index(u, i, j)] = 0;
-
     //! here we calculate the grad of alpha_ij_u, for all j and all u
     for (ulong k = 1; k < 1 + n_total_jumps + 1; ++k) {
         int tmp_flag = 0;

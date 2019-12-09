@@ -206,7 +206,7 @@ double ModelHawkesSumExpCustom::loss_dim_i(const ulong i, const ArrayDouble &coe
         }
     }
 
-    return -end_time - loss;
+    return - loss;
 }
 
 void ModelHawkesSumExpCustom::grad_dim_i(const ulong i,
