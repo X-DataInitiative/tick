@@ -131,8 +131,9 @@ double ModelHawkesFixedKernLogLik::loss_dim_i(const ulong i,
   const double mu_i = coeffs[i];
   const ArrayDouble alpha_i = view(coeffs, get_alpha_i_first_index(i), get_alpha_i_last_index(i));
 
-  double loss = - end_time;
-  loss += end_time * mu_i;
+//  double loss = - end_time;
+//  loss += end_time * mu_i;
+double loss = end_time * mu_i;
 
   for (ulong k = 0; k < (*n_jumps_per_node)[i]; ++k) {
     const ArrayDouble g_i_k = view_row(g[i], k);
@@ -164,7 +165,8 @@ double ModelHawkesFixedKernLogLik::loss_i_k(const ulong i,
   // Both are correct, just a question of point of view
   const double t_i_k = k == (*n_jumps_per_node)[i] - 1 ? end_time : (*timestamps[i])[k];
   const double t_i_k_minus_one = k == 0 ? 0 : (*timestamps[i])[k - 1];
-  loss += (t_i_k - t_i_k_minus_one) * (mu_i - 1);
+//    loss += (t_i_k - t_i_k_minus_one) * (mu_i - 1);
+    loss += (t_i_k - t_i_k_minus_one) * mu_i;
   //  loss += end_time * (mu[i] - 1) / (*n_jumps_per_node)[i];
 
   double s = mu_i;
