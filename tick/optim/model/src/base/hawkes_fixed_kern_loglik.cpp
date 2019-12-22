@@ -80,8 +80,9 @@ double ModelHawkesFixedKernLogLik::loss_and_grad(const ArrayDouble &coeffs,
                                  &ModelHawkesFixedKernLogLik::loss_and_grad_dim_i,
                                  this,
                                  coeffs, out);
-  out /= n_total_jumps;
-  return loss / n_total_jumps;
+//  out /= n_total_jumps;
+//  return loss / n_total_jumps;
+return loss;
 }
 
 double ModelHawkesFixedKernLogLik::hessian_norm(const ArrayDouble &coeffs,
@@ -94,7 +95,8 @@ double ModelHawkesFixedKernLogLik::hessian_norm(const ArrayDouble &coeffs,
                                  this,
                                  coeffs, vector);
 
-  return norm_sum / n_total_jumps;
+//    return norm_sum / n_total_jumps;
+    return norm_sum;
 }
 
 void ModelHawkesFixedKernLogLik::hessian(const ArrayDouble &coeffs, ArrayDouble &out) {
@@ -103,7 +105,7 @@ void ModelHawkesFixedKernLogLik::hessian(const ArrayDouble &coeffs, ArrayDouble 
   // This allows to run in a multithreaded environment the computation of each component
   parallel_run(get_n_threads(), n_nodes, &ModelHawkesFixedKernLogLik::hessian_i,
                this, coeffs, out);
-  out /= n_total_jumps;
+//    out /= n_total_jumps;
 }
 
 
