@@ -27,7 +27,7 @@ double ModelHawkesFixedKernLogLik::loss(const ArrayDouble &coeffs) {
                                  &ModelHawkesFixedKernLogLik::loss_dim_i,
                                  this,
                                  coeffs);
-  return loss / n_total_jumps;
+  return loss;
 }
 
 double ModelHawkesFixedKernLogLik::loss_i(const ulong sampled_i,
@@ -52,7 +52,7 @@ void ModelHawkesFixedKernLogLik::grad(const ArrayDouble &coeffs,
                this,
                coeffs,
                out);
-  out /= n_total_jumps;
+//  out /= n_total_jumps;
 }
 
 void ModelHawkesFixedKernLogLik::grad_i(const ulong sampled_i,
