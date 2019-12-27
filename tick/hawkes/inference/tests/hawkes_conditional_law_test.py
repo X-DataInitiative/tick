@@ -33,7 +33,7 @@ class Test(InferenceTest):
         saved_phi_path = os.path.join(
             os.path.dirname(__file__),
             'hawkes_conditional_law_test-kernels.npy')
-        saved_phi = np.load(saved_phi_path)
+        saved_phi = np.load(saved_phi_path, allow_pickle=True)
         np.testing.assert_array_almost_equal(self.model.kernels, saved_phi)
 
     def test_hawkes_conditional_law_baseline(self):

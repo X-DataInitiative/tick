@@ -51,7 +51,7 @@ def check_existing_coeffs(dim, mu0, A0, n_decays, directory_prefix):
         get_coeffs_dir(dim, n_decays, directory_prefix),
         'original_coeffs.npy'.format(n_decays))
     if os.path.exists(original_coeffs_path):
-        previous_coeffs = np.load(original_coeffs_path)
+        previous_coeffs = np.load(original_coeffs_path, allow_pickle=True)
         np.testing.assert_almost_equal(previous_coeffs, original_coeffs)
         print('coeffs file existed already and was the same')
     else:

@@ -178,7 +178,7 @@ if __name__ == '__main__':
     original_coeffs_file_path_ = os.path.join(
         os.path.dirname(__file__),
         'original_coeffs_dim_{}_decays_{}.npy'.format(dim_, n_decays_))
-    originalcoeffs_ = np.load(original_coeffs_file_path_)
+    originalcoeffs_ = np.load(original_coeffs_file_path_, allow_pickle=True)
     baseline, adjacency = mus_alphas_from_coeffs(originalcoeffs_, n_decays_)
     adjacency = adjacency.reshape(dim_, dim_, n_decays_)
 

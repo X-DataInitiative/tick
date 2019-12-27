@@ -57,7 +57,7 @@ def generate_data(dim, n_decays, end_times, csv_path, n_tries):
     original_coeffs_file_path_ = os.path.join(
         os.path.dirname(__file__),
         'original_coeffs_dim_{}_decays_{}.npy'.format(dim, n_decays))
-    originalcoeffs_ = np.load(original_coeffs_file_path_)
+    originalcoeffs_ = np.load(original_coeffs_file_path_, allow_pickle=True)
     baseline, adjacency = mus_alphas_from_coeffs(originalcoeffs_, n_decays)
 
     columns = ['dim', 'n_decays', 'end_time', 'n_tries',

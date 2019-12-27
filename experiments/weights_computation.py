@@ -41,7 +41,7 @@ def precompute_weights(dim, run_time, n_decays, simulation_file,
         simulation_file)
 
     # we must convert it to a list of numpy arrays
-    ticks = list(np.load(simulation_path))
+    ticks = list(np.load(simulation_path, allow_pickle=True))
 
     # fit ticks and precompute weights
     if n_decays == 1:

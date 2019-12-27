@@ -102,7 +102,7 @@ class ProxTensorHStackNuclear(ProxTensorNuclear):
 
     def _get_stacked_matrix(self, coeffs):
         tensor = self._get_tensor(coeffs)
-        return np.hstack((tensor[:, :, k] for k in range(self.depth)))
+        return np.hstack([tensor[:, :, k] for k in range(self.depth)])
 
     def _get_flat_tensor_from_stacked(self, hstack_coeffs):
         hstack_matrix = hstack_coeffs.reshape(self.n_rows, -1)
@@ -127,7 +127,7 @@ class ProxTensorVStackNuclear(ProxTensorNuclear):
 
     def _get_stacked_matrix(self, coeffs):
         tensor = self._get_tensor(coeffs)
-        return np.vstack((tensor[:, :, k] for k in range(self.depth)))
+        return np.vstack([tensor[:, :, k] for k in range(self.depth)])
 
     def _get_flat_tensor_from_stacked(self, vstack_coeffs):
         vstack_matrix = vstack_coeffs.reshape(self.depth * self.n_rows, -1)

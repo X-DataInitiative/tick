@@ -24,7 +24,7 @@ if __name__ == '__main__':
     original_coeffs_file_path_ = os.path.join(
         os.path.dirname(__file__),
         'original_coeffs_dim_{}_decays_{}.npy'.format(dim_, n_decays_))
-    originalcoeffs_ = np.load(original_coeffs_file_path_)
+    originalcoeffs_ = np.load(original_coeffs_file_path_, allow_pickle=True)
     baseline, adjacency = mus_alphas_from_coeffs(originalcoeffs_, n_decays_)
 
     history_file_path_ = 'llh_vs_ls_convergence_speed_T_{}.pkl'.format(

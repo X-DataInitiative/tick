@@ -47,7 +47,7 @@ def plot_adjacency(ax, adjacency, u, remove_y=False, remove_x=False,
 def plot_coeffs_3_decays(coeffs_file_path, max_adjacency=None, ):
     n_decays = 3
 
-    coeffs = np.load(coeffs_file_path)
+    coeffs = np.load(coeffs_file_path, allow_pickle=True)
     baseline, adjacency = mus_alphas_from_coeffs(coeffs, n_decays)
 
     fig_width, fig_height = 8.2, 3.3
@@ -153,7 +153,7 @@ def plot_coeffs_3_decays_5_coeffs(coeffs_file_paths, labels,
 
     for coeffs_file_path, rect in zip(coeffs_file_paths, rects):
         print(coeffs_file_path)
-        coeffs = np.load(coeffs_file_path)
+        coeffs = np.load(coeffs_file_path, allow_pickle=True)
         baseline, adjacency = mus_alphas_from_coeffs(coeffs, n_decays)
         # dim = 3
         # baseline = np.random.rand(dim)
@@ -186,7 +186,7 @@ if __name__ == '__main__':
     original_coeffs_file_path_ = os.path.join(
             os.path.dirname(__file__),
             'original_coeffs_dim_{}_decays_{}.npy'.format(dim_, n_decays_))
-    originalcoeffs_ = np.load(original_coeffs_file_path_)
+    originalcoeffs_ = np.load(original_coeffs_file_path_, allow_pickle=True)
     o_baseline_, o_adjacency_ = mus_alphas_from_coeffs(originalcoeffs_, n_decays_)
 
     coeffs_file_paths_ = [original_coeffs_file_path_]

@@ -66,7 +66,7 @@ def learn_coeffs(dim, n_decays, end_time, prox_name):
 
     create_prox = prox_infos[prox_name]['create_prox']
 
-    original_coeffs = np.load(original_coeffs_file_path)
+    original_coeffs = np.load(original_coeffs_file_path, allow_pickle=True)
 
     if 'nuclear' in prox_name:
         SolverClass = GFB
