@@ -5,11 +5,11 @@ from collections import OrderedDict
 from experiments.metrics_utils import get_confidence_interval_half_width
 
 prox_infos = OrderedDict()
-# prox_infos['l1w'] = 'C1', 'wL1 norm'
-prox_infos['l1w_un'] = 'C4', 'wL1'
+prox_infos['l1w'] = 'C1', 'wL1 norm'
+#prox_infos['l1w_un'] = 'C4', 'wL1'
 prox_infos['l1'] = 'C0', 'L1'
-# prox_infos['l1w_nuclear'] = 'C3', 'wL1Nuclear norm'
-prox_infos['l1w_un_nuclear'] = 'C5', 'wL1Nuclear'
+prox_infos['l1w_nuclear'] = 'C3', 'wL1Nuclear norm'
+#prox_infos['l1w_un_nuclear'] = 'C5', 'wL1Nuclear'
 prox_infos['l1_nuclear'] = 'C2', 'L1Nuclear'
 
 
@@ -90,8 +90,12 @@ def plot_metrics(dim, mean_file, std_file, with_diag=True):
 
 if __name__ == '__main__':
 
-    mean_file = 'metrics_mean_test.csv'
-    std_file = 'metrics_std_test.csv'
+    import glob
+
+    files = [f for f in glob.glob("../", recursive=False)]
+
+    mean_file = '../notebooks-2018/metrics_mean_25000_iter.csv'
+    std_file = '../notebooks-2018/metrics_std_25000_iter.csv'
 
     for dim in [30]:
         fig, legends = plot_metrics(dim, mean_file, std_file, with_diag=False)

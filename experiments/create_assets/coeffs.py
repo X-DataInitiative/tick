@@ -44,10 +44,11 @@ def plot_adjacency(ax, adjacency, u, remove_y=False, remove_x=False,
     ax.xaxis.set_ticks_position('bottom')
 
 
-def plot_coeffs_3_decays(coeffs_file_path, max_adjacency=None, ):
+def plot_coeffs_3_decays(coeffs=None, coeffs_file_path=None, max_adjacency=None, ):
     n_decays = 3
 
-    coeffs = np.load(coeffs_file_path, allow_pickle=True)
+    if coeffs is None:
+        coeffs = np.load(coeffs_file_path, allow_pickle=True)
     baseline, adjacency = mus_alphas_from_coeffs(coeffs, n_decays)
 
     fig_width, fig_height = 8.2, 3.3
