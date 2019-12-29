@@ -65,8 +65,8 @@ class ProxTensorNuclear(Prox):
             self._nuclear_prox._call(stacked_coeffs, step, out=out_stacked_coeffs)
         except np.linalg.linalg.LinAlgError:
             self.logger('Failed convergence in call')
-            self.logger(stacked_coeffs.min(), stacked_coeffs.max())
-            self.logger(stacked_coeffs)
+            self.logger('min: {}, max: {}'.format(stacked_coeffs.min(), stacked_coeffs.max()))
+            self.logger('stacked coeffs : {}'.format(stacked_coeffs))
             traceback.print_exc()
             out_stacked_coeffs = stacked_coeffs
 
@@ -85,8 +85,8 @@ class ProxTensorNuclear(Prox):
             return self._nuclear_prox.value(stacked_coeffs)
         except np.linalg.linalg.LinAlgError:
             self.logger('Failed convergence in value')
-            self.logger(stacked_coeffs.min(), stacked_coeffs.max())
-            self.logger(stacked_coeffs)
+            self.logger('min: {}, max: {}'.format(stacked_coeffs.min(), stacked_coeffs.max()))
+            self.logger('stacked coeffs : {}'.format(stacked_coeffs))
             traceback.print_exc()
             return 0
 
@@ -174,7 +174,7 @@ def create_prox_l1w_no_mu_un(strength, model, logger=None):
     return prox
 
 # Nuclear
-def create_prox_nuclear(strength, model, logger=None):
+def create_prox_nuclear(strength, model, logger=None, stack='hstack'):
     n_decays = get_n_decays_from_model(model)
     dim = dim_from_n(model.n_coeffs, n_decays)
 
@@ -182,7 +182,7 @@ def create_prox_nuclear(strength, model, logger=None):
         prox_range = (dim, dim * dim + dim)
         n_rows = dim
         prox = ProxNuclear(strength, n_rows, range=prox_range, positive=True)
-        return prox,
+        return prox
     else:
         prox_range = (dim, dim * dim * n_decays + dim)
         n_rows = dim
@@ -191,28 +191,31 @@ def create_prox_nuclear(strength, model, logger=None):
                                               logger=logger)
         prox_vstack = ProxTensorVStackNuclear(strength, n_rows, n_decays,
                                               range=prox_range, positive=True)
-        return prox_hstack, prox_vstack
+        if stack == 'hstack':
+            return prox_hstack
+        else:
+            return prox_vstack
 
 
 def create_prox_l1w_no_mu_nuclear(strength, model, logger=None):
     l1, tau = strength
     prox_l1 = create_prox_l1w_no_mu(l1, model)
     prox_nuclear = create_prox_nuclear(tau, model, logger=logger)
-    return (prox_l1,) + prox_nuclear
+    return (prox_l1, prox_nuclear)
 
 
 def create_prox_l1w_un_no_mu_nuclear(strength, model, logger=None):
     l1, tau = strength
     prox_l1 = create_prox_l1w_no_mu_un(l1, model)
     prox_nuclear = create_prox_nuclear(tau, model, logger=logger)
-    return (prox_l1,) + prox_nuclear
+    return (prox_l1, prox_nuclear)
 
 
 def create_prox_l1_no_mu_nuclear(strength, model, logger=None):
     l1, tau = strength
     prox_l1 = create_prox_l1_no_mu(l1, model)
     prox_nuclear = create_prox_nuclear(tau, model, logger=logger)
-    return (prox_l1,) + prox_nuclear
+    return (prox_l1, prox_nuclear)
 
 
 if __name__ == '__main__':
@@ -231,7 +234,7 @@ if __name__ == '__main__':
     for u in range(n_decays_):
         print(fake_tensor_[:, :, u])
 
-    prox_hstack_, prox_vstack_ = create_prox_nuclear(0.4, model_)
+    prox_hstack_, prox_vstack_ = create_prox_nuclear(0.4, model_), create_prox_nuclear(0.4, model_, stack='v')
     fake_coeffs_ = np.hstack((np.zeros(n_nodes_), fake_tensor_.ravel()))
 
     np.testing.assert_array_equal(fake_tensor_,

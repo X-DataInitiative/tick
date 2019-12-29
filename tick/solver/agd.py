@@ -187,7 +187,6 @@ class AGD(SolverFirstOrder):
                                      x=minimizer.copy(), rel_delta=rel_delta,
                                      step=step, rel_obj=rel_obj)
                 if converged:
-                    print('converged', rel_obj)
                     break
 
         self._set("solution", minimizer)

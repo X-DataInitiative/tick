@@ -209,7 +209,7 @@ def find_best_metrics_2d(original_coeffs, model_file_paths,
 
 def find_best_metrics(dim, run_time, n_decays, n_models, prox_info,
                       solver_kwargs, directory_path, n_cpu=-1, max_run_count=10,
-                      suffix=''):
+                      suffix='', first_prox='l1'):
     if n_cpu < 1:
         n_cpu = cpu_count()
     
@@ -217,6 +217,9 @@ def find_best_metrics(dim, run_time, n_decays, n_models, prox_info,
         solver_kwargs['tol'] = prox_info['tol']
 
     prox_name = prox_info['name']
+    if prox_name == first_prox:
+        logger('## For time {}'.format(run_time))
+
     logger('### For prox %s' % prox_name)
 
     original_coeffs, model_file_paths = \
