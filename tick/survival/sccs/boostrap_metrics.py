@@ -130,6 +130,7 @@ class BootstrapRelativeRisksMetrics:
             start = int(o)
             end = int(self._features_offset[i+1])
             value.append(coeffs[start:end])
+        value = np.array(value).tolist()
         return value
 
     @staticmethod
