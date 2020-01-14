@@ -67,7 +67,8 @@ class BootstrapRelativeRisksMetrics:
         offset.extend([len(c) for c in model_coefficients])
         self._features_offset = np.cumsum(np.array(offset))
 
-        bootstrap_samples_ = np.array(bootstrap_samples)
+        bootstrap_samples_ = np.ma.masked_invalid(np.array(bootstrap_samples))
+        bootstrap_samples_.filled_value = -10
         bootstrap_relative_risk_samples = np.exp(bootstrap_samples_)
         self.relative_risk = np.exp(np.array(model_coefficients).ravel())
         self.bootstrap_relative_risk_std = np.std(bootstrap_relative_risk_samples,
