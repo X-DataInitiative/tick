@@ -70,7 +70,8 @@ class BootstrapRelativeRisksMetrics:
         bootstrap_samples_ = np.ma.masked_invalid(np.array(bootstrap_samples))
         bootstrap_samples_.filled_value = -10
         bootstrap_relative_risk_samples = np.exp(bootstrap_samples_)
-        self.relative_risk = np.exp(np.array(model_coefficients).ravel())
+        model_coefficients_ = np.ma.masked_invalid(np.hstack(model_coefficients))
+        self.relative_risk = np.exp(model_coefficients_)
         self.bootstrap_relative_risk_std = np.std(bootstrap_relative_risk_samples,
                                                   axis=0)
         self._z_alpha = norm.ppf(1 - (confidence / 2))
@@ -130,7 +131,10 @@ class BootstrapRelativeRisksMetrics:
         for i, o in enumerate(self._features_offset[:-1]):
             start = int(o)
             end = int(self._features_offset[i+1])
-            value.append(coeffs[start:end])
+            data = coeffs[start:end]
+            if type(data) == np.ma.core.MaskedArray:
+                data = data.compressed()
+            value.append(data)
         value = np.array(value).tolist()
         return value
 
