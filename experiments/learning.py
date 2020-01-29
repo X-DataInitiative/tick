@@ -3,6 +3,7 @@ import itertools
 import pickle
 import time
 import traceback
+import uuid
 from multiprocessing import cpu_count
 from multiprocessing.pool import Pool
 
@@ -11,12 +12,14 @@ import numpy as np
 from experiments.dict_utils import nested_update
 
 from experiments.grid_search_2d import get_new_range_2d
-from experiments.report_utils import record_metrics, logger
+from experiments.metrics_utils import strength_range_from_infos
+from experiments.report_utils import record_metrics, logger, get_image_directory
 from experiments.metrics import get_metrics, compute_metrics
-from experiments.grid_search_1d import get_new_range
+from experiments.grid_search_1d import get_new_range, plot_all_metrics
 from experiments.tested_prox import get_n_decays_from_model
 
 from experiments.weights_computation import extract_index, load_models
+from experiments.grid_search_1d import get_best_point
 from tick.solver import AGD, GFB
 
 
@@ -85,7 +88,7 @@ def learn_one_model(model_file_name, strength_range, create_prox,
                     strength_str = '{:.3g}'.format(strength)
                 logger('{} - did not converge train={} strength={}, '
                        'stopped at {:.3g} for tol={:.3g}, took {:.3g}s'
-                       .format(datetime.datetime.today().strftime('%Y-%m-%d %H:%M'), 
+                       .format(datetime.datetime.today().strftime('%Y-%m-%d %H:%M'),
                                model_index, strength_str, last_rel_obj, tol, last_time))
         else:
             logger('failed for train={} strength={:.3g}, stopped at '
@@ -144,7 +147,7 @@ def learn_one_strength_range(original_coeffs, model_file_paths, strength_range,
 
 
 def find_best_metrics_1d(original_coeffs, model_file_paths,
-                         prox_info, solver_kwargs, n_cpu, max_run_count=10):
+                         prox_info, solver_kwargs, n_cpu, max_run_count=10, suffix=None):
     run_strength_range = np.hstack(
         (0, np.logspace(-7, 2, prox_info['n_initial_points'])))
 
@@ -174,7 +177,7 @@ def find_best_metrics_1d(original_coeffs, model_file_paths,
 
 
 def find_best_metrics_2d(original_coeffs, model_file_paths,
-                         prox_info, solver_kwargs, n_cpu, max_run_count=10):
+                         prox_info, solver_kwargs, n_cpu, max_run_count=10, suffix=None):
     n_initial_points = prox_info['n_initial_points']
     toy_strength_range_1 = np.logspace(-8, -2, n_initial_points)
     toy_strength_range_2 = np.logspace(-8, -2, n_initial_points)
@@ -207,6 +210,153 @@ def find_best_metrics_2d(original_coeffs, model_file_paths,
     return aggregated_run_infos
 
 
+def _cast_info_2d_to_1d(aggregated_run_infos, dim_optimized, keep_strength):
+    import copy
+
+    new_infos = copy.deepcopy(aggregated_run_infos)
+    for i_model in aggregated_run_infos.keys():
+        info_i = aggregated_run_infos[i_model]
+        for metric in info_i.keys():
+            info_i_metric = info_i[metric]
+            for strength in info_i_metric.keys():
+                new_strength = strength[dim_optimized]
+                fixed_dim = 1 - dim_optimized
+                if strength[fixed_dim] == keep_strength:
+                    new_infos[i_model][metric][new_strength] = info_i_metric[strength]
+                del new_infos[i_model][metric][strength]
+
+    return new_infos
+
+
+def safe_find_best_metrics_2d(original_coeffs, model_file_paths,
+                              prox_info, solver_kwargs, n_cpu, max_run_count=10, suffix=None):
+    initial_points = prox_info['initial_points'](suffix, model_file_paths)
+    dim_0_strength_range = np.logspace(-8, -2, prox_info['n_initial_points'])
+    dim_1_strength_range = initial_points
+
+    run_strength_range = [(l1, tau) for (l1, tau)
+                          in itertools.product(dim_0_strength_range,
+                                               dim_1_strength_range)]
+
+    metrics = get_metrics()
+    aggregated_run_infos = {}
+    for run_count in range(max_run_count):
+        # keep the best...
+        dim_optimized = 0 if run_count % 2 == 0 else 1
+        fixed_strengths = dim_1_strength_range if dim_optimized == 0 else dim_0_strength_range
+
+        for inner_run_count in range(max_run_count):
+            logger('{} Run {}-{} - With {} new points'
+                   .format(datetime.datetime.today().strftime('%Y-%m-%d %H:%M'),
+                           run_count, inner_run_count, len(run_strength_range)))
+            logger(f'Strength range : {run_strength_range}')
+
+            run_infos = learn_one_strength_range(
+                original_coeffs, model_file_paths, run_strength_range,
+                prox_info, solver_kwargs, n_cpu)
+
+            aggregated_run_infos = nested_update(run_infos, aggregated_run_infos)
+
+            run_strength_range_1d = []
+            for keep_strength in fixed_strengths:
+                new_infos = _cast_info_2d_to_1d(aggregated_run_infos, dim_optimized, keep_strength)
+                run_strength_range_1d += list(get_new_range(new_infos, metrics, prox_info))
+
+            run_strength_range_1d = np.array(sorted(list(set(run_strength_range_1d))))
+
+            if dim_optimized == 0:
+                dim_0_strength_range = run_strength_range_1d
+            else:
+                dim_1_strength_range = run_strength_range_1d
+
+            run_strength_range = [(l1, tau) for (l1, tau)
+                                  in itertools.product(dim_0_strength_range,
+                                                       dim_1_strength_range)]
+
+            if len(run_strength_range) == 0:
+                break
+
+        strength_to_keep = set()
+        for metric in metrics.keys():
+            best_metric_index = get_best_point(metrics, metric, aggregated_run_infos)
+            best_strength_tuple = strength_range_from_infos(aggregated_run_infos)[best_metric_index]
+            strength_to_keep.add(best_strength_tuple[dim_optimized])
+        strength_to_keep = sorted(list(strength_to_keep))
+        logger(f'For dim {dim_optimized}, keep {strength_to_keep}')
+
+        if dim_optimized == 0:
+            dim_0_strength_range = strength_to_keep
+        else:
+            dim_1_strength_range = strength_to_keep
+
+        if run_count == max_run_count:
+            logger('Maximum number of run reached, run_strength_range was {}'
+                   .format(run_strength_range))
+
+    return aggregated_run_infos
+
+
+def dedicated_find_best_metrics_2d(original_coeffs, model_file_paths,
+                                   prox_info, solver_kwargs, n_cpu, max_run_count=10, suffix=None):
+    initial_points = prox_info['initial_points'](suffix, model_file_paths)
+
+    dim_1_n_extra_initial_points = prox_info['dim_1_n_extra_initial_points']
+    dim_1_strength_range = sorted([
+        initial_point * np.power(prox_info['max_relative_step'], -0.5 * i)
+        for initial_point in initial_points
+        for i in range(dim_1_n_extra_initial_points)
+    ])
+    logger(f'Original dim_1_strength_range : {dim_1_strength_range}')
+
+    metrics = get_metrics()
+    aggregated_run_infos = {}
+
+    dim_optimized = 0
+
+    for run_dim_1, dim_1_strength in enumerate(dim_1_strength_range):
+        dim_0_strength_range = np.logspace(-9, -4, prox_info['n_initial_points'])
+        run_strength_range = [(l1, dim_1_strength) for l1 in dim_0_strength_range]
+        run_dim_1_aggregated_run_infos = {}
+
+        for run_count in range(max_run_count):
+            logger('{} Run {}-{} - With {} new points'
+                   .format(datetime.datetime.today().strftime('%Y-%m-%d %H:%M'),
+                           run_dim_1, run_count, len(run_strength_range)))
+            # str_dim_0_strength_range = ['{:.3g}'.format(strength) for strength in dim_0_strength_range]
+            # logger(f'            {dim_1_strength} x {str_dim_0_strength_range}')
+
+            run_infos = learn_one_strength_range(
+                original_coeffs, model_file_paths, run_strength_range,
+                prox_info, solver_kwargs, n_cpu)
+
+            run_dim_1_aggregated_run_infos = nested_update(run_infos, run_dim_1_aggregated_run_infos)
+
+            new_infos = _cast_info_2d_to_1d(run_dim_1_aggregated_run_infos, dim_optimized, dim_1_strength)
+            dim_0_strength_range = get_new_range(new_infos, metrics, prox_info)
+
+            run_strength_range = [(l1, dim_1_strength) for l1 in dim_0_strength_range]
+
+            if len(run_strength_range) == 0:
+                break
+
+            if run_count == max_run_count:
+                logger('Maximum number of run reached, run_strength_range was {}'
+                       .format(run_strength_range))
+
+        run_dim_1_aggregated_run_infos_1d = _cast_info_2d_to_1d(run_dim_1_aggregated_run_infos, dim_optimized, dim_1_strength)
+        ax, fig = plot_all_metrics(run_dim_1_aggregated_run_infos_1d, get_metrics())
+        import os
+        dir_name = get_image_directory(30, f"inner_plot_{run_dim_1}", prox_info['name'])
+        graph_file_path = os.path.join(
+            dir_name, 'run_{}_{}.png'.format(int(time.time()), str(uuid.uuid4())))
+
+        fig.savefig(graph_file_path, dpi=100, format='png', bbox_inches='tight')
+        logger('![alt text](%s "Title")' % graph_file_path)
+
+        aggregated_run_infos = nested_update(run_dim_1_aggregated_run_infos, aggregated_run_infos)
+    return aggregated_run_infos
+
+
 def find_best_metrics(dim, run_time, n_decays, n_models, prox_info,
                       solver_kwargs, directory_path, n_cpu=-1, max_run_count=10,
                       suffix='', first_prox='l1'):
@@ -225,11 +375,18 @@ def find_best_metrics(dim, run_time, n_decays, n_models, prox_info,
     original_coeffs, model_file_paths = \
         load_models(dim, run_time, n_decays, n_models, directory_path)
 
-    func = find_best_metrics_1d if prox_info['dim'] == 1 \
-        else find_best_metrics_2d
+    if prox_info['dim'] == 1:
+        func = find_best_metrics_1d
+    else:
+        if prox_info['mode'] == 'safe':
+            func = safe_find_best_metrics_2d
+        elif prox_info['mode'] == 'dedicated':
+            func = dedicated_find_best_metrics_2d
+        else:
+            func = find_best_metrics_2d
 
     infos = func(original_coeffs, model_file_paths,
-                 prox_info, solver_kwargs, n_cpu, max_run_count=max_run_count)
+                 prox_info, solver_kwargs, n_cpu, max_run_count=max_run_count, suffix=suffix)
 
     record_metrics(infos, dim, run_time, n_models, prox_name, prox_info['dim'],
                    solver_kwargs['tol'], logger, suffix)
@@ -238,7 +395,6 @@ def find_best_metrics(dim, run_time, n_decays, n_models, prox_info,
 if __name__ == '__main__':
     from pprint import pprint
     from experiments.tested_prox import create_prox_l1w_no_mu_nuclear
-    from experiments.grid_search_1d import get_best_point
 
     dim_ = 30
     n_decays_ = 3

@@ -34,7 +34,15 @@ def retrieve_coeffs(dim, n_decays, directory_prefix):
     if dim == 10:
         betas, mu0, A0 = get_coeffs_dim_10(n_decays)
     elif dim == 30:
-        betas, mu0, A0 = get_coeffs_dim_30(n_decays)
+        # Dirty way to infer version for directory prefix
+        # Useful to avoid to propagate version in all functions...
+        if 'v2' in directory_prefix:
+            version = 2
+        elif 'v3' in directory_prefix:
+            version = 3
+        else:
+            version = 1
+        betas, mu0, A0 = get_coeffs_dim_30(n_decays, version)
     elif dim == 100:
         betas, mu0, A0 = get_coeffs_dim_100(n_decays)
     else:
@@ -72,9 +80,10 @@ def block_matrix(dimension: int = 100,
     return A
 
 
-def baseline_matrix_from_block_range(blocks_ranges, decays, spectral_radius):
+def baseline_matrix_from_block_range(blocks_ranges, decays, spectral_radius, noise_level=0., seed=23983):
     dim = blocks_ranges[-1][0].stop
     n_decays = 1 if len(decays.shape) == 2 else decays.shape[0]
+    r = np.random.RandomState(seed)  # for dim 10
 
     if n_decays == 1:
         A0 = np.zeros((dim, dim))
@@ -87,9 +96,7 @@ def baseline_matrix_from_block_range(blocks_ranges, decays, spectral_radius):
             a, b = block_range[0], block_range[-1] + 1
             mu0[a: b] += coeff_mu
     else:
-        r = np.random.RandomState(23983)  # for dim 10
         decay_coeffs = r.rand(n_decays, len(blocks_ranges))
-        print('decay_coeffs', decay_coeffs)
 
         A0 = np.zeros((dim, dim, n_decays))
         mu0 = np.zeros(dim)
@@ -102,9 +109,15 @@ def baseline_matrix_from_block_range(blocks_ranges, decays, spectral_radius):
             a, b = block_range[0], block_range[-1] + 1
             mu0[a: b] += coeff_mu
 
+    noise_A0 = r.rand(*A0.shape)
+    noisy_A0 = (1 - noise_level) * A0 + noise_level * noise_A0
+
+    noise_mu0 = r.rand(*mu0.shape)
+    noisy_mu0 = (1 - noise_level) * mu0 + noise_level * noise_mu0
+
     simu_class = SimuHawkesExpKernels if n_decays == 1 \
         else SimuHawkesSumExpKernels
-    hawkes = simu_class(A0, decays, baseline=mu0)
+    hawkes = simu_class(noisy_A0, decays, baseline=noisy_mu0)
     hawkes.adjust_spectral_radius(spectral_radius)
 
     return hawkes.baseline, hawkes.adjacency
@@ -132,7 +145,7 @@ def get_coeffs_dim_10(n_decays, spectral_radius=0.8):
     return decays, baseline, adjacency
 
 
-def get_coeffs_dim_30(n_decays, spectral_radius=0.8):
+def get_coeffs_dim_30(n_decays, version, spectral_radius=0.8):
     dim = 30
 
     if n_decays == 1:
@@ -141,18 +154,44 @@ def get_coeffs_dim_30(n_decays, spectral_radius=0.8):
     else:
         decays = DECAYS_3
 
-    blocks_ranges = [
-        (range(0, 7), 0.3, 1),
-        (range(4, 15), 0.1, 2),
-        (range(11, 20), 0.2, 1),
-        (range(20, 27), 0.1, 1),
-        (range(27, 29), 0.8, 3),
-        (range(29, 30), 1.0, 5),
-    ]
+    if version == 1:
+        blocks_ranges = [
+            (range(0, 7), 0.3, 1),
+            (range(4, 15), 0.1, 2),
+            (range(11, 20), 0.2, 1),
+            (range(20, 27), 0.1, 1),
+            (range(27, 29), 0.8, 3),
+            (range(29, 30), 1.0, 5),
+        ]
 
-    baseline, adjacency = baseline_matrix_from_block_range(
-        blocks_ranges, decays, spectral_radius
-    )
+        baseline, adjacency = baseline_matrix_from_block_range(
+            blocks_ranges, decays, spectral_radius
+        )
+    elif version == 2:
+        blocks_ranges = [
+            (range(0, 2), 0.3, 0.2),
+            (range(2, 6), 0.4, 0.4),
+            (range(6, 15), 0.1, 0.3),
+            (range(15, 30), 0.2, 0.2),
+        ]
+
+        baseline, adjacency = baseline_matrix_from_block_range(
+            blocks_ranges, DECAYS_3, 0.8, noise_level=0.03, seed=109230
+        )
+    elif version == 3:
+        blocks_ranges = [
+            (range(0, 10), 0.3, 0.2),
+            (range(5, 15), 0.4, 0.4),
+            (range(8, 22), 0.1, 0.3),
+            (range(15, 25), 0.2, 0.2),
+            (range(20, 30), 0.2, 0.2),
+        ]
+
+        baseline, adjacency = baseline_matrix_from_block_range(
+            blocks_ranges, DECAYS_3, 0.8, noise_level=0.08, seed=109230
+        )
+    else:
+        raise NotImplementedError('Unknown coeffs version')
 
     return decays, baseline, adjacency
 

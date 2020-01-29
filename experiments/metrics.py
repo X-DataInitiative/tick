@@ -26,7 +26,9 @@ def alphas_auc(original_coeffs, coeffs, n_decays, remove_diag=False):
     _, original_alphas = mus_alphas_from_coeffs(original_coeffs, n_decays)
     n_nodes = original_alphas.shape[0]
 
-    non_zeros = original_alphas != 0
+    # TODO: dirty fix but works as expected for the 3 coeffs matrices...
+    # non_zeros = original_alphas != 0
+    non_zeros = original_alphas > 4e-3
     labels = np.zeros_like(original_alphas)
     labels[non_zeros] = 1.
 

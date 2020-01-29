@@ -1,3 +1,4 @@
+import json
 import os
 import time
 import uuid
@@ -14,6 +15,35 @@ from experiments.metrics_utils import mean_and_std, extract_metric, \
 MEAN_PREFIX = 'metrics_mean'
 STD_PREFIX = 'metrics_std'
 LAMBDAS_PREFIX = 'used_lambdas'
+
+
+def get_json_path(prefix, suffix):
+    return "{}_{}.json".format(prefix, suffix)
+
+
+def cast_json_key(key):
+    if key.lstrip('-').isdigit():
+        return int(key)
+    else:
+        try:
+            return float(key)
+        except ValueError:
+            return key
+
+
+def read_json(prefix, suffix):
+    file_path = get_json_path(prefix, suffix)
+    if os.path.exists(file_path):
+        with open(file_path, 'r') as input_file:
+            return json.load(input_file, object_hook=lambda d: {cast_json_key(k): v for k, v in d.items()})
+    else:
+        return {}
+
+
+def write_json(prefix, suffix, infos):
+    file_path = get_json_path(prefix, suffix)
+    with open(file_path, 'w') as output_file:
+        return json.dump(infos, output_file)
 
 
 def get_csv_path(prefix, suffix):
