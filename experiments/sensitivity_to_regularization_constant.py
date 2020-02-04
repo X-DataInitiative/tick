@@ -8,9 +8,13 @@ from experiments.metrics_utils import (
     get_confidence_interval_half_width
 )
 
-from experiments.learning import learn_one_strength_range
+try:
+    from experiments.learning import learn_one_strength_range
+    from experiments.weights_computation import load_models
+except ImportError:
+    print('tick not correctly installed')
+
 from experiments.report_utils import read_json, write_json, LAMBDAS_PREFIX, get_csv_path
-from experiments.weights_computation import load_models
 
 
 def get_sensitivity_infos_prefix(prox_info):

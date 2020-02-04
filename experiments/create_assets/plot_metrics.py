@@ -5,7 +5,7 @@ from collections import OrderedDict
 from experiments.metrics_utils import get_confidence_interval_half_width
 
 prox_infos = OrderedDict()
-prox_infos['l1w'] = 'C1', 'wL1 norm'
+prox_infos['l1w'] = 'C1', 'wL1'
 #prox_infos['l1w_un'] = 'C4', 'wL1'
 prox_infos['l1'] = 'C0', 'L1'
 prox_infos['nuclear'] = 'C6', 'Nuclear'
@@ -92,20 +92,14 @@ def plot_metrics(dim, mean_file, std_file, with_diag=True):
 
 
 if __name__ == '__main__':
+    dim = 30
 
-    import glob
+    for suffix in ['v1_30_models', 'v2_30_models', 'v3_30_models']:
+        mean_file = f'../notebooks-2018/metrics_mean_{suffix}.csv'
+        std_file = f'../notebooks-2018/metrics_std_{suffix}.csv'
 
-    files = [f for f in glob.glob("../", recursive=False)]
-
-    suffix = 'v1_30_models'
-    # suffix = 'v2_30_models'
-    # suffix = 'v3_30_models'
-    mean_file = f'../notebooks-2018/metrics_mean_{suffix}.csv'
-    std_file = f'../notebooks-2018/metrics_std_{suffix}.csv'
-
-    for dim in [30]:
         fig, legends = plot_metrics(dim, mean_file, std_file, with_diag=False)
         fig.tight_layout(pad=3)
-        plt.show()
-        # fig.savefig('metrics_dim_{}_{}.pdf'.format(dim, suffix), bbox_inches='tight',
-        #             bbox_extra_artists=(*legends,))
+        # plt.show()
+        fig.savefig('figs/metrics_dim_{}_{}.pdf'.format(dim, suffix), bbox_inches='tight',
+                    bbox_extra_artists=(*legends,))

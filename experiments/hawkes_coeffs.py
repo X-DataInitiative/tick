@@ -4,7 +4,11 @@ import numpy as np
 
 from experiments.io_utils import get_coeffs_dir
 from experiments.plot_hawkes import plot_coeffs
-from tick.hawkes import SimuHawkesExpKernels, SimuHawkesSumExpKernels
+
+try:
+    from tick.hawkes import SimuHawkesExpKernels, SimuHawkesSumExpKernels
+except ImportError:
+    print('tick not correctly installed')
 
 DECAY_1 = 1.
 DECAYS_3 = np.array([0.5, 2., 5.])
