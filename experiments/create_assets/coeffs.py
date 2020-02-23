@@ -99,17 +99,17 @@ def plot_coeffs_3_decays_5_coeffs(coeffs_file_paths, labels,
                                   max_adjacency=None):
     n_decays = 3
 
-    fig_width, fig_height = 9, 12
+    fig_width, fig_height = 7.5, 12
     fig = plt.figure(figsize=(fig_width, fig_height))
 
     # hidden subplot to avoid auto call to tight_layout that is failing on Pycharm
-    fig.add_subplot(10, 10, 19)
+    # fig.add_subplot(10, 10, 19)
 
     n_rows = len(coeffs_file_paths)
 
     rects = []
 
-    margin_left_baseline = 0.17
+    margin_left_baseline = 0.19
     margin_bottom = 0.02
     margin_top = 0.02
     margin_v_adjacency = 0.02

@@ -15,7 +15,7 @@ from experiments.learning import learn_one_model
 from experiments.metrics import compute_metrics
 from experiments.tested_prox import create_prox_l1_no_mu, \
     create_prox_l1w_no_mu_un, create_prox_l1_no_mu_nuclear, \
-    create_prox_l1w_un_no_mu_nuclear
+    create_prox_l1w_un_no_mu_nuclear, create_prox_l1w_no_mu, create_prox_nuclear, create_prox_l1w_no_mu_nuclear
 
 from tick.solver import AGD, GFB
 
@@ -26,9 +26,14 @@ prox_infos['l1'] = {
     'tol': 1e-10,
 }
 
-prox_infos['l1w_un'] = {
-    'create_prox': create_prox_l1w_no_mu_un,
+prox_infos['l1w'] = {
+    'create_prox': create_prox_l1w_no_mu,
     'tol': 1e-10,
+}
+
+prox_infos['nuclear'] = {
+    'create_prox': create_prox_nuclear,
+    'tol': 1e-7,
 }
 
 
@@ -37,13 +42,13 @@ prox_infos['l1_nuclear'] = {
     'tol': 1e-8,
 }
 
-prox_infos['l1w_un_nuclear'] = {
-    'create_prox': create_prox_l1w_un_no_mu_nuclear,
+prox_infos['l1w_nuclear'] = {
+    'create_prox': create_prox_l1w_no_mu_nuclear,
     'tol': 1e-8,
 }
 
 
-def learn_coeffs(dim, n_decays, end_time, prox_name):
+def learn_coeffs(dim, n_decays, end_time, prox_name, lambdas_file):
     original_coeffs_file_path = os.path.join(
         os.path.dirname(__file__),
         'original_coeffs_dim_{}_decays_{}.npy'.format(dim, n_decays))
@@ -52,13 +57,20 @@ def learn_coeffs(dim, n_decays, end_time, prox_name):
         os.path.dirname(__file__),
         'models/dim={}_u={}_T={}.pkl'.format(dim, n_decays, end_time))
 
-    df = pd.read_csv('used_lambdas_n_decays_{}.csv'.format(n_decays))
+    df = pd.read_csv(lambdas_file)
+
+    prox_names = {
+        'l1': 'l1', 'l1w': 'l1w', 'nuclear': 'nuclear',
+        'dedicated_l1w_nuclear_1d': 'l1w_nuclear',
+        'dedicated_l1_nuclear_1d': 'l1_nuclear'
+    }
+    df['prox_name'] = df['prox'].map(prox_names)
 
     best_strengths = df[(df['end_time'] == end_time)
-                        & (df['prox'] == prox_name)]
+                        & (df['prox_name'] == prox_name)]
 
-    if 'nuclear' in prox_name:
-        best_strength = eval(best_strengths['estimation_error'].values[0])
+    if '_nuclear' in prox_name:
+        best_strength = eval(best_strengths['alpha_auc'].values[0])
     else:
         best_strength = float(best_strengths['estimation_error'])
 
@@ -68,7 +80,7 @@ def learn_coeffs(dim, n_decays, end_time, prox_name):
 
     original_coeffs = np.load(original_coeffs_file_path, allow_pickle=True)
 
-    if 'nuclear' in prox_name:
+    if '_nuclear' in prox_name:
         SolverClass = GFB
     else:
         SolverClass = AGD
@@ -94,8 +106,8 @@ def learn_coeffs(dim, n_decays, end_time, prox_name):
         np.save(output_file, info['coeffs'])
 
     o_baseline_, o_adjacency_ = mus_alphas_from_coeffs(
-        original_coeffs, n_decays_)
-    plot_coeffs_3_decays(coeff_file_path, max_adjacency=o_adjacency_.max())
+        original_coeffs, n_decays)
+    plot_coeffs_3_decays(coeffs_file_path=coeff_file_path, max_adjacency=o_adjacency_.max())
 
 
 if __name__ == '__main__':
