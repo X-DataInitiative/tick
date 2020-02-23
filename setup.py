@@ -46,7 +46,7 @@ from setuptools.extension import Extension
 #                'DEBUG_SHAREDARRAY', 'DEBUG_VARRAY', 'DEBUG_VERBOSE']
 
 
-debug_flags = ['DEBUG_COSTLY_THROW']
+debug_flags = []# ['DEBUG_COSTLY_THROW']
 
 # If true, add compilation flags to use fast (but maybe inaccurate) math
 # See https://gcc.gnu.org/wiki/FloatingPointMath
@@ -119,6 +119,8 @@ except ImportError as e:
 if os.environ.get('TICK_NO_OPTS') is not None:
     if os.environ['TICK_NO_OPTS'] == '1':
         blas_info = {}
+
+blas_info = {}
 
 # By default, we assume that scipy uses 32 bit integers for indices in sparse
 # arrays
@@ -907,3 +909,28 @@ setup(name="tick",
                    'Programming Language :: Python :: 3.7',
                    'License :: OSI Approved :: BSD License'],
       )
+
+
+if True:
+    import platform
+    if True:
+        dependencies_extensions = [array_extension, base_extension, random_extension, base_model_core, linear_model_core, robust_extension, prox_core,]
+        dependencies_path = [os.path.abspath(ext.module_ref.build) for ext in dependencies_extensions]
+
+        if 'LD_LIBRARY_PATH' in os.environ:
+            ld_library_path = os.environ['LD_LIBRARY_PATH']
+        else:
+            ld_library_path = ''
+
+        # We will add only libraries that are not already in the LD_LIBRARY_PATH
+        new_libraries = ':'.join([path for path in dependencies_path if path not in ld_library_path])
+
+
+        if len(new_libraries) > 0:
+            if len(ld_library_path) > 0:
+                command = 'export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:%s' % new_libraries
+            else:
+                command = 'export LD_LIBRARY_PATH=%s' % new_libraries
+
+            print('\n\n------------------------\nPLEASE EXPORT YOUR LD_LIBRARY_PATH BY DOING\n%s\n------------------------\n\n' % command)
+
