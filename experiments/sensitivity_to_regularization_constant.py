@@ -10,7 +10,7 @@ from experiments.metrics_utils import (
 
 try:
     from experiments.learning import learn_one_strength_range
-    from experiments.weights_computation import load_models
+    from experiments.weights_computation import load_models, LEAST_SQ_LOSS
 except ImportError:
     print('tick not correctly installed')
 
@@ -39,8 +39,8 @@ def get_range_for_metric(dim, run_time, prox_info, metric, n_train=100, training
 
 
 def get_metrics_for_strength_range(strength_range, dim, run_time, n_decays, n_models, prox_info,
-                                   solver_kwargs, directory_path, n_cpu=-1, suffix=''):
-    original_coeffs, model_file_paths = load_models(dim, run_time, n_decays, n_models, directory_path)
+                                   solver_kwargs, directory_path, n_cpu=-1, suffix='', loss=LEAST_SQ_LOSS):
+    original_coeffs, model_file_paths = load_models(dim, run_time, n_decays, n_models, directory_path, loss)
 
     infos = learn_one_strength_range(original_coeffs, model_file_paths, strength_range,
                                      prox_info, solver_kwargs, n_cpu)

@@ -16,15 +16,20 @@ from experiments.io_utils import get_precomputed_models_dir, load_directory, \
     get_simulation_dir
 from experiments.report_utils import logger
 from experiments.simulation import get_simulation_files
-from tick.hawkes import ModelHawkesExpKernLeastSq, ModelHawkesSumExpKernLeastSq
+from tick.hawkes import ModelHawkesExpKernLeastSq, ModelHawkesSumExpKernLeastSq, ModelHawkesExpKernLogLik, \
+    ModelHawkesSumExpKernLogLik
 
 PRECOMPUTED_PREFIX = 'precomputed'
+
+LEAST_SQ_LOSS = 'LEAST_SQ_LOSS'
+LLH_LOSS = 'LLH_LOSS'
+
 report_for_pre_compute_file_name = None
 
 
-def get_precomputed_models_files(dim, run_time, n_decays, directory_prefix):
+def get_precomputed_models_files(dim, run_time, n_decays, directory_prefix, loss):
     directory = get_precomputed_models_dir(dim, run_time, n_decays,
-                                           directory_prefix)
+                                           directory_prefix, loss)
     return load_directory(directory, 'pkl')
 
 
@@ -35,7 +40,7 @@ def extract_index(file_name, pattern, extension):
 
 
 def precompute_weights(dim, run_time, n_decays, simulation_file,
-                       directory_prefix):
+                       directory_prefix, loss):
     simulation_path = os.path.join(
         get_simulation_dir(dim, run_time, n_decays, directory_prefix),
         simulation_file)
@@ -45,16 +50,24 @@ def precompute_weights(dim, run_time, n_decays, simulation_file,
 
     # fit ticks and precompute weights
     if n_decays == 1:
-        model = ModelHawkesExpKernLeastSq(DECAY_1, n_threads=1).fit(ticks)
+        if loss == LEAST_SQ_LOSS:
+            model = ModelHawkesExpKernLeastSq(DECAY_1, n_threads=1).fit(ticks)
+        else:
+            model = ModelHawkesExpKernLogLik(DECAY_1, n_threads=1).fit(ticks)
     else:
-        model = ModelHawkesSumExpKernLeastSq(DECAYS_3, n_threads=1).fit(ticks)
+        if loss == LEAST_SQ_LOSS:
+            model = ModelHawkesSumExpKernLeastSq(DECAYS_3, n_threads=1).fit(ticks)
+        else:
+            model = ModelHawkesSumExpKernLogLik(DECAYS_3, n_threads=1).fit(ticks)
+            model._least_sq_model = ModelHawkesSumExpKernLeastSq(DECAYS_3, n_threads=1).fit(ticks)
+            model._least_sq_model.loss(np.ones(model.n_coeffs))
 
-    loss = model.loss(np.ones(model.n_coeffs))
-    lip_best = model.get_lip_best()
+    model_loss = model.loss(np.ones(model.n_coeffs))
+    lip_best = model.get_lip_best() if loss == LEAST_SQ_LOSS else -1
     index = extract_index(simulation_file, 'simulation', 'npy')
 
     precomputed_models_dir = \
-        get_precomputed_models_dir(dim, run_time, n_decays, directory_prefix)
+        get_precomputed_models_dir(dim, run_time, n_decays, directory_prefix, loss)
     os.makedirs(precomputed_models_dir, exist_ok=True)
 
     precompute_file_name = '{}_{}.pkl'.format(PRECOMPUTED_PREFIX, index)
@@ -65,11 +78,11 @@ def precompute_weights(dim, run_time, n_decays, simulation_file,
         pickle.dump(model, save_file)
 
     logger('saved {} , with loss = {}, lipbest={}'.format(
-        precompute_file_name, loss, lip_best))
+        precompute_file_name, model_loss, lip_best))
 
 
 def pre_compute_hawkes(dim, run_time, n_decays,
-                       max_pre_computed_hawkes, directory_prefix, n_cpu=-1):
+                       max_pre_computed_hawkes, directory_prefix,  n_cpu=-1, loss=LEAST_SQ_LOSS):
     if n_cpu < 1:
         n_cpu = cpu_count()
 
@@ -82,7 +95,7 @@ def pre_compute_hawkes(dim, run_time, n_decays,
     already_precomputed_index = [
         extract_index(precomputed_file, 'precomputed', 'pkl')
         for precomputed_file in
-        get_precomputed_models_files(dim, run_time, n_decays, directory_prefix)
+        get_precomputed_models_files(dim, run_time, n_decays, directory_prefix, loss)
     ]
 
     to_compute_simulations = [
@@ -103,7 +116,7 @@ def pre_compute_hawkes(dim, run_time, n_decays,
     logger('\n' + '-' * 30)
     logger('DIM={} T={:.0f} : {}'.format(dim, run_time, now))
     if len(selected_simulations) > 0:
-        args = [(dim, run_time, n_decays, simulation_file, directory_prefix)
+        args = [(dim, run_time, n_decays, simulation_file, directory_prefix, loss)
                 for simulation_file in selected_simulations]
         pool = Pool(min(n_cpu, len(selected_simulations)))
         try:
@@ -120,9 +133,9 @@ def pre_compute_hawkes(dim, run_time, n_decays,
               .format(len(already_precomputed_index)))
 
 
-def load_models(dim, run_time, n_decays, n_models, directory_prefix):
+def load_models(dim, run_time, n_decays, n_models, directory_prefix, loss):
     precomputed_models_dir = \
-        get_precomputed_models_dir(dim, run_time, n_decays, directory_prefix)
+        get_precomputed_models_dir(dim, run_time, n_decays, directory_prefix, loss)
 
     _, mu, alpha = retrieve_coeffs(dim, n_decays, directory_prefix)
     original_coeffs = coeffs_from_mus_alpha(mu, alpha)
@@ -161,7 +174,7 @@ if __name__ == '__main__':
                            max_pre_computed_hawkes_, directory_path_)
 
     original_coeffs_, model_file_paths_ = load_models(
-        dim_, run_times_[0], n_decays_, 5, directory_path_)
+        dim_, run_times_[0], n_decays_, 5, directory_path_, LEAST_SQ_LOSS)
 
     mu_, alpha_ = mus_alphas_from_coeffs(original_coeffs_, n_decays_)
     plot_coeffs(mu_, alpha_)

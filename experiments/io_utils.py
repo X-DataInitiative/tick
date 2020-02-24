@@ -1,5 +1,9 @@
 import os
 
+LEAST_SQ_LOSS = 'LEAST_SQ_LOSS'
+LLH_LOSS = 'LLH_LOSS'
+
+
 
 def get_next_file_name(directory, filename, extension='npy'):
     os.makedirs(directory, exist_ok=True)
@@ -28,10 +32,12 @@ def get_simulation_dir(dim, run_time, n_decays, directory_prefix):
     return train_directory_simulations
 
 
-def get_precomputed_models_dir(dim, run_time, n_decays, directory_prefix):
+def get_precomputed_models_dir(dim, run_time, n_decays, directory_prefix, loss):
+    loss_suffix = '' if loss == LEAST_SQ_LOSS else "_llh"
+
     train_directory_simulations = os.path.join(
         get_coeffs_dir(dim, n_decays, directory_prefix),
-        'T_{:.0f}/precomputed/'.format(run_time))
+        'T_{:.0f}/precomputed{}/'.format(run_time, loss_suffix))
     return train_directory_simulations
 
 

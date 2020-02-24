@@ -82,6 +82,7 @@ class ModelHawkesSumExpKernLogLik(ModelHawkes, ModelSecondOrder,
         "decays": {
             "cpp_setter": "set_decays"
         },
+        "_least_sq_model": {}
     }
 
     def __init__(self, decays: np.ndarray, n_threads: int = 1):
@@ -90,6 +91,7 @@ class ModelHawkesSumExpKernLogLik(ModelHawkes, ModelSecondOrder,
         ModelHawkes.__init__(self, n_threads=1, approx=0)
         self.decays = decays
         self._model = _ModelHawkesSumExpKernLogLik(decays, n_threads)
+        self._least_sq_model = None
 
     def fit(self, events, end_times=None):
         """Set the corresponding realization(s) of the process.
@@ -109,6 +111,8 @@ class ModelHawkesSumExpKernLogLik(ModelHawkes, ModelSecondOrder,
             model. If None, it will be set to each realization's latest time.
             If only one realization is provided, then a float can be given.
         """
+        if self._least_sq_model is not None:
+            self._least_sq_model.fit(events)
         ModelSecondOrder.fit(self, events)
         ModelSelfConcordant.fit(self, events)
         return ModelHawkes.fit(self, events, end_times=end_times)
@@ -133,8 +137,28 @@ class ModelHawkesSumExpKernLogLik(ModelHawkes, ModelSecondOrder,
         # stochastic optimization algorithm
         return self.n_jumps
 
+    def compute_penalization_constant(self, x=None, strength=None):
+        return self._least_sq_model.compute_penalization_constant(x=x, strength=strength)
+
     @property
     def _rand_max(self):
         # This allows to obtain the range of the random sampling when
         # using a stochastic optimization algorithm
         return self.n_jumps
+
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        del state['___model']
+        return state
+
+    def __setstate__(self, newstate):
+        decays, n_threads = newstate['__decays'], newstate['__n_threads']
+        _model = _ModelHawkesSumExpKernLogLik(decays, n_threads)
+
+        newstate['___model'] = _model
+        self.__dict__.update(newstate)
+
+        if '__data' in newstate:
+            events = newstate['__data']
+            end_times = newstate.get('__end_times', None)
+            self.fit(events, end_times)

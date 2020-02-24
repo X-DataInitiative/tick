@@ -18,7 +18,7 @@ from experiments.metrics import get_metrics, compute_metrics
 from experiments.grid_search_1d import get_new_range, plot_all_metrics
 from experiments.tested_prox import get_n_decays_from_model
 
-from experiments.weights_computation import extract_index, load_models
+from experiments.weights_computation import extract_index, load_models, LEAST_SQ_LOSS
 from experiments.grid_search_1d import get_best_point
 from tick.solver import AGD, GFB
 
@@ -69,13 +69,23 @@ def learn_one_model(model_file_name, strength_range, create_prox,
         prox = create_prox(strength, model, logger)
         solver = prepare_solver(SolverClass, solver_kwargs, model, prox)
 
-        try:
-            coeffs = solver.solve(coeffs)
-        except RuntimeError:
-            pass
-
         # warn if convergence was poor
         tol = solver_kwargs['tol']
+
+        new_step = solver.step
+        # TODO: dirty hack for llh models
+        for multiplier in np.logspace(0, -2, 10):
+            new_step = solver.step * multiplier
+
+            try:
+                coeffs = solver.solve(coeffs, step=new_step)
+            except RuntimeError:
+                pass
+
+            rel_obj = solver.history.values['rel_obj']
+            if (len(rel_obj) > 0) and (rel_obj[-1] < np.sqrt(tol)):
+                break
+
         rel_objectives = solver.history.values['rel_obj']
         if len(rel_objectives) > 0:
             last_rel_obj = rel_objectives[-1]
@@ -87,9 +97,9 @@ def learn_one_model(model_file_name, strength_range, create_prox,
                 else:
                     strength_str = '{:.3g}'.format(strength)
                 logger('{} - did not converge train={} strength={}, '
-                       'stopped at {:.3g} for tol={:.3g}, took {:.3g}s'
+                       'stopped at {:.3g} for tol={:.3g}, took {:.3g}s, with step {:.3g}'
                        .format(datetime.datetime.today().strftime('%Y-%m-%d %H:%M'),
-                               model_index, strength_str, last_rel_obj, tol, last_time))
+                               model_index, strength_str, last_rel_obj, tol, last_time, new_step))
         else:
             logger('failed for train={} strength={:.3g}, stopped at '
                    'first iteration'.format(model_index, strength))
@@ -149,7 +159,7 @@ def learn_one_strength_range(original_coeffs, model_file_paths, strength_range,
 def find_best_metrics_1d(original_coeffs, model_file_paths,
                          prox_info, solver_kwargs, n_cpu, max_run_count=10, suffix=None):
     run_strength_range = np.hstack(
-        (0, np.logspace(-7, 2, prox_info['n_initial_points'])))
+        (0, np.logspace(-9, -4, prox_info['n_initial_points'])))
 
     aggregated_run_infos = {}
     for run_count in range(max_run_count):
@@ -359,7 +369,7 @@ def dedicated_find_best_metrics_2d(original_coeffs, model_file_paths,
 
 def find_best_metrics(dim, run_time, n_decays, n_models, prox_info,
                       solver_kwargs, directory_path, n_cpu=-1, max_run_count=10,
-                      suffix='', first_prox='l1'):
+                      suffix='', first_prox='l1', loss=LEAST_SQ_LOSS):
     if n_cpu < 1:
         n_cpu = cpu_count()
     
@@ -373,7 +383,7 @@ def find_best_metrics(dim, run_time, n_decays, n_models, prox_info,
     logger('### For prox %s' % prox_name)
 
     original_coeffs, model_file_paths = \
-        load_models(dim, run_time, n_decays, n_models, directory_path)
+        load_models(dim, run_time, n_decays, n_models, directory_path, loss)
 
     if prox_info['dim'] == 1:
         func = find_best_metrics_1d
@@ -404,7 +414,7 @@ if __name__ == '__main__':
 
     solver_kwargs_ = {'tol': 1e-4, 'max_iter': 1000}
     original_coeffs_, model_file_paths_ = \
-        load_models(dim_, run_time_, n_decays_, n_models_, directory_path_)
+        load_models(dim_, run_time_, n_decays_, n_models_, directory_path_, LEAST_SQ_LOSS)
 
     strength_range_ = [(1e-3, 1e-1), (1e-2, 1e-2)]
 
