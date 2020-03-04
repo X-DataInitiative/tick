@@ -163,7 +163,7 @@ class SimuPointProcess(Simu):
         elif self.end_time is None and self.max_jumps is not None:
             self._pp.simulate(int(self.max_jumps))
 
-        elif self.end_time is None and self.max_jumps is None:
+        elif self.end_time is not None and self.max_jumps is not None:
             self._pp.simulate(self.end_time, self.max_jumps)
 
     def track_intensity(self, intensity_track_step=-1):
