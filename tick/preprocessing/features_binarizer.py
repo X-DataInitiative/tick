@@ -10,13 +10,13 @@ from tick.base import Base
 
 
 class FeaturesBinarizer(Base, BaseEstimator, TransformerMixin):
-    """Transforms continuous data into bucketed binary data. 
-    
+    """Transforms continuous data into bucketed binary data.
+
     This is a scikit-learn transformer that transform an input
     pandas DataFrame X of shape (n_samples, n_features) into a binary
     matrix of size (n_samples, n_new_features).
     Continous features are modified and extended into binary features, using
-    linearly or inter-quantiles spaced bins. 
+    linearly or inter-quantiles spaced bins.
     Discrete features are binary encoded with K columns, where K is the number
     of modalities.
     Other features (none of the above) are left unchanged.
@@ -67,7 +67,7 @@ class FeaturesBinarizer(Base, BaseEstimator, TransformerMixin):
     References
     ----------
     http://scikit-learn.org/stable/modules/preprocessing.html#preprocessing
-    
+
     Examples
     --------
     >>> import numpy as np
@@ -168,7 +168,7 @@ class FeaturesBinarizer(Base, BaseEstimator, TransformerMixin):
             raise ValueError("cannot get blocks_start if object has not "
                              "been fitted")
         # construct from encoder
-        return self.one_hot_encoder.feature_indices_[:-1,]
+        return self._get_feature_indices()[:-1,]
 
     @property
     def blocks_length(self):
@@ -183,7 +183,7 @@ class FeaturesBinarizer(Base, BaseEstimator, TransformerMixin):
             raise ValueError("cannot get blocks_length if object has not been "
                              "fitted")
         # construct from encoder
-        return self.one_hot_encoder.n_values_
+        return self._get_n_values()
 
     @staticmethod
     def cast_to_array(X):
@@ -217,7 +217,6 @@ class FeaturesBinarizer(Base, BaseEstimator, TransformerMixin):
         """
         self.reset()
         X, columns = FeaturesBinarizer.cast_to_array(X)
-
         categorical_X = np.empty_like(X)
         for i, column in enumerate(columns):
             feature = X[:, i]
@@ -257,8 +256,9 @@ class FeaturesBinarizer(Base, BaseEstimator, TransformerMixin):
         binarized_X = self.one_hot_encoder.transform(categorical_X)
 
         if self.remove_first:
+            feature_indices = self._get_feature_indices()
             mask = np.ones(binarized_X.shape[1], dtype=bool)
-            mask[self.one_hot_encoder.feature_indices_[:-1]] = False
+            mask[feature_indices[:-1]] = False
             binarized_X = binarized_X[:, mask]
 
         return binarized_X
@@ -555,3 +555,23 @@ class FeaturesBinarizer(Base, BaseEstimator, TransformerMixin):
             feature = self._categorical_to_interval(feature, feature_name,
                                                     fit=fit)
         return feature
+
+    def _is_sklearn_older_than(self, ver):
+        from packaging import version
+        import sklearn
+        return version.parse(sklearn.__version__) < version.parse(ver)
+
+    def _get_n_values(self):
+        if self._is_sklearn_older_than("0.22.0"):
+            return self.one_hot_encoder.n_values_
+        else:
+            return [len(x) for x in self.one_hot_encoder.categories_]
+
+    def _get_feature_indices(self):
+        if self._is_sklearn_older_than("0.22.0"):
+            return self.one_hot_encoder.feature_indices_
+        else:
+            feature_indices = [0]
+            for cat in self.one_hot_encoder.categories_:
+                feature_indices.append(feature_indices[-1] + len(cat))
+            return np.asarray(feature_indices)

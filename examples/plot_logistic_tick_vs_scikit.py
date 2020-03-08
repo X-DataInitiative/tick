@@ -34,8 +34,9 @@ from tick.linear_model import LogisticRegression as LogRegTick
 train_set = fetch_tick_dataset('binary/adult/adult.trn.bz2')
 test_set = fetch_tick_dataset('binary/adult/adult.tst.bz2')
 
+# scklearn 0.22 default solver for LogisticRegression is lbfgs
 clf_tick = LogRegTick(C=1e5, penalty='l1', tol=1e-8)
-clf_scikit = LogRegScikit(penalty='l1', tol=1e-8)
+clf_scikit = LogRegScikit(penalty='l1', solver='liblinear', tol=1e-8)
 
 t1 = time()
 clf_tick.fit(train_set[0], train_set[1])
