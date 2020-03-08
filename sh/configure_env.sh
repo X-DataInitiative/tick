@@ -21,6 +21,9 @@ set -e
 
 echo "Entering configure_env.sh"
 
+[ ! -d "$ROOT/lib/third_party/cereal/include" ] && \
+  git submodule update --init
+
 # Finding the system python binary
 # To override, export PY variable with full path to python binary
 [ -z "$PY" ] && which python3 &> /dev/null && PY="python3"
