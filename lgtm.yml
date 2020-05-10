@@ -1,0 +1,27 @@
+extraction:
+  cpp:
+    prepare:
+      packages:
+      - build-essential
+      - autotools-dev
+      - automake
+      - gawk
+      - bison
+      - flex
+      - python3
+      - python3-pip
+    configure:
+      command:
+      - python3 -m pip install pip --upgrade
+      - python3 -m pip install -r requirements.txt &
+      - export BD="$PWD"; cd ~/; mkdir usr;
+      - git clone https://github.com/swig/swig -b rel-4.0.0 swig
+      - cd swig; ./autogen.sh; ./configure --without-pcre --prefix=$HOME/usr
+      - make -j && make install
+      - git clone https://github.com/Dekken/maiken -b master --depth 1 maiken
+      - cd maiken; make nix; cp mkn $HOME/usr/bin; cd ..; rm -rf maiken; cd $BD
+    index:
+      build_command: 
+      - export PATH="$HOME/usr/bin:$PATH" 
+      - ./sh/mkn.sh
+      
