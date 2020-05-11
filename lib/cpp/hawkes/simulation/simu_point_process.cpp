@@ -27,6 +27,15 @@ PP::PP(unsigned int n_nodes, int seed) : rand(seed), n_nodes(n_nodes) {
   intensity = ArrayDouble(n_nodes);
   intensity.init_to_zero();
 
+  // Initializes intensity vector that will keep current intensity contributions of each
+  // component
+  intensity_contributions = ArrayDoubleList1D(n_nodes);
+  for (unsigned int i = 0; i < n_nodes; i++) {
+    intensity_contributions[i] = ArrayDouble(n_nodes+1);
+    intensity_contributions[i].init_to_zero();
+  }
+
+
   // By default : no track record of intensity
   itr_time_step = -1;
 }
@@ -44,6 +53,9 @@ void PP::init_intensity_(ArrayDouble &intensity, double *totalIntensityBound) {
 
   *totalIntensityBound = 0;
   total_intensity = 0;
+  if (itr_on()) for (unsigned int i = 0; i < n_nodes; i++) {
+    intensity_contributions[i].init_to_zero();
+  }
 }
 
 void PP::reset() {
@@ -68,16 +80,30 @@ void PP::activate_itr(double dt) {
 
   itr_time_step = dt;
   itr.resize(n_nodes);
-  for (unsigned int i = 0; i < n_nodes; i++) itr[i] = VArrayDouble::new_ptr();
+  itr_contributions.resize(n_nodes);
+
+  for (unsigned int i = 0; i < n_nodes; i++) {
+    itr[i] = VArrayDouble::new_ptr();
+    intensity_contributions[i].init_to_zero();
+    itr_contributions[i].resize(n_nodes+1);
+    for (unsigned int j = 0; j < n_nodes+1; j++) {
+      itr_contributions[i][j] = VArrayDouble::new_ptr();
+    }
+  }
   itr_times = VArrayDouble::new_ptr();
+  init_intensity_contributions_(intensity_contributions);
 }
 
 void PP::reseed_random_generator(int seed) { rand.reseed(seed); }
 
 void PP::itr_process() {
   if (!itr_on()) return;
-
-  for (unsigned int i = 0; i < n_nodes; i++) itr[i]->append1(intensity[i]);
+  for (unsigned int i = 0; i < n_nodes; i++) {
+    itr[i]->append1(intensity[i]);
+    for (unsigned int j = 0; j < n_nodes+1; j++) {
+      itr_contributions[i][j]->append1(intensity_contributions[i][j]);
+    }
+  }
   itr_times->append1(time);
 }
 
@@ -86,7 +112,7 @@ void PP::update_time_shift(double delay, bool flag_compute_intensity_bound,
   flag_negative_intensity = update_time_shift_(
       delay, intensity,
       (flag_compute_intensity_bound ? &total_intensity_bound : nullptr));
-
+  if (itr_on()) update_time_shift_contributions_(delay,intensity_contributions);
   time += delay;
 
   if (flag_compute_intensity_bound &&
