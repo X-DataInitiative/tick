@@ -111,6 +111,13 @@ class SimuPointProcess(Simu):
         return self._pp.get_itr()
 
     @property
+    def tracked_intensity_contributions(self):
+        if not self.is_intensity_tracked():
+            raise ValueError("Intensity has not been tracked, you should call "
+                             "track_intensity before simulation")
+        return self._pp.get_itr_contributions()
+
+    @property
     def intensity_tracked_times(self):
         if not self.is_intensity_tracked():
             raise ValueError("Intensity has not been tracked, you should call "

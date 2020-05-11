@@ -22,6 +22,16 @@ void Hawkes::init_intensity_(ArrayDouble &intensity,
   }
 }
 
+void Hawkes::init_intensity_contributions_(ArrayDoubleList1D &intensity_contributions) {
+  for (unsigned int i = 0; i < n_nodes; i++) {
+    intensity_contributions[i][0] = get_baseline(i, 0.);
+    for (unsigned int j = 0; j < n_nodes; j++) {
+        intensity_contributions[i][j+1] = 0;
+        }
+    }
+}
+
+
 bool Hawkes::update_time_shift_(double delay, ArrayDouble &intensity,
                                 double *total_intensity_bound1) {
   if (total_intensity_bound1) *total_intensity_bound1 = 0;
@@ -51,6 +61,20 @@ bool Hawkes::update_time_shift_(double delay, ArrayDouble &intensity,
     }
   }
   return flag_negative_intensity1;
+}
+
+void Hawkes::update_time_shift_contributions_(double delay, ArrayDoubleList1D &intensity_contributions) {
+  // We loop on the contributions
+  for (unsigned int i = 0; i < n_nodes; i++) {
+    intensity_contributions[i][0] = get_baseline(i, get_time());
+
+    for (unsigned int j = 0; j < n_nodes; j++) {
+        HawkesKernelPtr &k = kernels[i * n_nodes + j];
+        if (k->get_support() == 0) continue;
+        intensity_contributions[i][j+1] =
+          k->get_convolution(get_time() + delay, *timestamps[j], 0);
+    }
+  }
 }
 
 void Hawkes::reset() {

@@ -25,6 +25,7 @@ class PP {
   int get_seed() const;
   ulong get_n_total_jumps();
   VArrayDoublePtrList1D get_itr();
+  VArrayDoublePtrList2D get_itr_contributions();
   VArrayDoublePtr get_itr_times();
   double get_itr_step();
 

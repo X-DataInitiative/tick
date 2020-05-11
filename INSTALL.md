@@ -111,15 +111,20 @@ This will build all required C++ extensions, and install the extensions in your 
 
     ./tools/windows/install.sh
 
-#### In-place installation (for developers)
+### In-place installation (for developers)
 
-If you wish to work with the source code of _tick_ it's convenient to have the extensions installed inside the source directory. This way you will not have to install the module for each iteration of the code. Simply do:
+If you wish to work with the source code of _tick_ it's convenient to have the extensions installed inside the source directory. This way you will not have to install the module for each iteration of the code. After initialising the submodules simply do:
 
     python setup.py build_ext --inplace
 
 This will build all extensions, and install them directly in the source directory. To use the package outside of the build directory, the build path should be added to the `PYTHONPATH` environment variable (replace `$PWD` with the full path to the build directory if necessary):
 
     export PYTHONPATH=$PYTHONPATH:$PWD
+
+To speed up repeated compilation times you might wish to use [ccache](https://ccache.dev/). ccache is a third party tool which may have to be installed manually on your system. ccache does not work on Windows.
+To use ccache with tick do:
+
+    CC="ccache g++" python3 setup.py build_ext --inplace
 
 Note also that special scripts, intended for developers, are available. `./clean_build_test.sh` removes all compiled binaries and runs the full compilation process, with all `C++` and `Python` unit-tests. This can take some time.
 Similarly, `./build_test.sh` runs the full compilation process, without removing first binaries, while `full_clean.sh` only removes them.
@@ -149,7 +154,7 @@ As with tick in general, this requires python3 and all python pre-requisites. nu
 
 This method is provided mainly for developers to decrease compilation times.
 
-To use [ccache](https://ccache.samba.org/) (or similar) with mkn, edit your ~/.maiken/settings.yaml file so it looks like one [here](https://github.com/Dekken/maiken/wiki/Alternative-configs) - this can greatly decrease repeated compilation times. ccache is a third party tool which may have to be installed manually on your system. ccache does not work on Windows.
+To use [ccache](https://ccache.samba.org/) (or similar) with mkn, edit your ~/.maiken/settings.yaml file so it looks like one [here](https://github.com/Dekken/maiken/wiki/Alternative-configs)
 
 On windows it may be required to configure the maiken settings.yaml manually if the environment variables exported by the Visual Studio batch file "vcvars" are not found, example configurations can be found [here](https://github.com/Dekken/maiken/wiki)
 

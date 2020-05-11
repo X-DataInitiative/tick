@@ -253,6 +253,25 @@ class Test(unittest.TestCase):
         self.assertGreater(hawkes.n_total_jumps,
                            sum(map(len, original_timestamps)))
 
+    def test_hawkes_intensity_contributions(self):
+        """...Test that sum of tracked intensity contributions is identical to tracked_intensity
+        """
+        run_time = 10
+        decay = 0.5
+        baseline = [0.2, 0.4]
+        adjacency = [[0.2, 0.1], [0, 0.3]]
+
+        hawkes = SimuHawkesExpKernels(baseline=baseline, decays=decay,
+                                      adjacency=adjacency, verbose=False,end_time=run_time,
+                                      seed=1393)
+
+        hawkes.track_intensity(run_time)
+        hawkes.simulate()
+
+        for i in range(len(baseline)):
+            np.testing.assert_array_almost_equal(hawkes.tracked_intensity[i],
+                                                 sum(hawkes.tracked_intensity_contributions[i]))
+
 
 if __name__ == "__main__":
     unittest.main()

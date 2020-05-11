@@ -51,6 +51,9 @@ class DLL_PUBLIC PP {
   // Current Intensity of each component
   ArrayDouble intensity;
 
+    // Current Intensity of each component per node
+  ArrayDoubleList1D intensity_contributions;
+
   // Called to init the intensities at start
   void init_intensity();
 
@@ -75,6 +78,9 @@ class DLL_PUBLIC PP {
 
   // The track records of the intensity
   VArrayDoublePtrList1D itr;
+
+  // The track records of the intensity contributions
+  VArrayDoublePtrList2D itr_contributions;
 
   // The time corresponding to the track records of the intensity
   VArrayDoublePtr itr_times;
@@ -162,6 +168,15 @@ class DLL_PUBLIC PP {
     return false;
   }
 
+    /**
+   * @brief Updates the intensity contributions
+   * \param delay : Time to update
+   * \param intensity : The intensity_contributions matrix to update
+   */
+  virtual void update_time_shift_contributions_(double delay, ArrayDoubleList1D &intensity_contributions) {
+    return;
+  }
+
   /**
    * @brief Record a jump in ith component
    */
@@ -191,6 +206,15 @@ class DLL_PUBLIC PP {
    */
   virtual void init_intensity_(ArrayDouble &intensity,
                                double *total_intensity_bound);
+  /**
+   * @brief Virtual method called once (at startup) to set the initial
+   * intensity contributions
+   * \param intensity_contributions : The intensity matrix (of size #dimension,
+   * #dimension+1) to initialize
+   */
+  virtual void init_intensity_contributions_(ArrayDoubleList1D &intensity_contributions) {
+    return;
+  }
 
   ////////////////////////////////////////////////////////////////////////////////
   //                            Getters and setters
@@ -215,6 +239,14 @@ class DLL_PUBLIC PP {
       TICK_ERROR("``activate_itr()`` must be call before simulation");
 
     return itr;
+  }
+
+  /// @brief Returns intensity track contributions record array
+  inline VArrayDoublePtrList2D get_itr_contributions() {
+    if (!itr_on())
+      TICK_ERROR("``activate_itr()`` must be call before simulation");
+
+    return itr_contributions;
   }
 
   /// @brief Returns times at which intensity has been recorded
@@ -272,6 +304,7 @@ class DLL_PUBLIC PP {
     ar(CEREAL_NVP(itr_time));
     ar(CEREAL_NVP(itr_time_step));
     ar(CEREAL_NVP(itr));
+    ar(CEREAL_NVP(itr_contributions));
     ar(CEREAL_NVP(itr_times));
 
     int rand_seed;
@@ -295,6 +328,7 @@ class DLL_PUBLIC PP {
     ar(CEREAL_NVP(itr_time));
     ar(CEREAL_NVP(itr_time_step));
     ar(CEREAL_NVP(itr));
+    ar(CEREAL_NVP(itr_contributions));
     ar(CEREAL_NVP(itr_times));
 
     // Note that only the seed is part of the serialization.

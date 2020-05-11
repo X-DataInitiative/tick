@@ -132,6 +132,13 @@ class DLL_PUBLIC Hawkes : public PP {
                                double *total_intensity_bound);
 
   /**
+   * @brief Virtual method called once (at startup) to set the initial
+   * intensity contributions
+   * \param intensity_contributions : The intensity matrix (of size #dimension,#dimension+1) to initialize
+   */
+  virtual void init_intensity_contributions_(ArrayDoubleList1D &intensity_contributions);
+
+  /**
    * @brief Updates the current time so that it goes forward of delay seconds
    * The intensities must be updated and track recorded if needed
    * Returns false if negative intensities were encountered
@@ -142,6 +149,13 @@ class DLL_PUBLIC Hawkes : public PP {
    */
   virtual bool update_time_shift_(double delay, ArrayDouble &intensity,
                                   double *total_intensity_bound);
+
+  /**
+   * @brief Updates the intensity contributions matrix
+   * \param delay : Time to update
+   * \param intensity : The intensity_contributions matrix to update
+   */
+  virtual void update_time_shift_contributions_(double delay, ArrayDoubleList1D &intensity_contributions);
 
   /**
    * @brief Get future baseline maximum reachable value for a specific dimension

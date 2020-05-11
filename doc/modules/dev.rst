@@ -207,7 +207,7 @@ value of the C++ int.
 
 .. note::
     If the reader wants to run this example, he might find the corresponding
-    class by importing it `from tick.base.utils.build.utils import A0 as _A`.
+    class by importing it `from tick.base.build.base import A0 as _A`.
 
 How does this work?
 ^^^^^^^^^^^^^^^^^^^
