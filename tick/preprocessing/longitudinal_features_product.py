@@ -5,7 +5,7 @@ import scipy.sparse as sps
 from itertools import combinations
 from copy import deepcopy
 from scipy.special import comb
-from sklearn.externals.joblib import Parallel, delayed
+from joblib import Parallel, delayed
 from tick.preprocessing.base import LongitudinalPreprocessor
 from .build.preprocessing import SparseLongitudinalFeaturesProduct
 from .utils import check_longitudinal_features_consistency

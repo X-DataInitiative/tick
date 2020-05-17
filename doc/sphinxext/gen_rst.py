@@ -67,7 +67,7 @@ except ImportError:
     pass
 
 
-from sklearn.externals import joblib
+import joblib
 
 ###############################################################################
 # A tee object to redict streams to multiple outputs
