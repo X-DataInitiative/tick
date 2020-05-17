@@ -10,6 +10,7 @@
 
 
 # tick
+(Testing something)
 
 _tick_ is a Python 3 module for statistical learning, with a particular emphasis on time-dependent modeling. It is distributed under the 3-Clause BSD license, see [LICENSE.txt](LICENSE.txt).
 
