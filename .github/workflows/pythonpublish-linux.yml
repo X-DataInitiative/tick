@@ -1,0 +1,47 @@
+name: Python packages linux
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    name: build python packages
+    runs-on: ubuntu-latest
+    container: jeandet/manylinuxcpp2017
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+
+    - uses: allenevans/set-env@v1.0.0
+      with:
+        TICK_DEBUG: 0
+        TICK_WERROR: 0
+
+    - run: |
+          git clone https://github.com/swig/swig -b rel-4.0.0 swig
+          cd swig && ./autogen.sh && ./configure --without-pcre
+          make && make install && cd .. && rm -rf swig
+
+    - run: |
+        $PYTHON36/bin/python -m pip install twine pip --upgrade
+        $PYTHON36/bin/python -m pip install wheel -r requirements.txt
+        $PYTHON36/bin/python setup.py bdist_wheel
+
+    - run: |
+        $PYTHON37/bin/python -m pip install twine pip --upgrade
+        $PYTHON37/bin/python -m pip install wheel -r requirements.txt
+        $PYTHON37/bin/python setup.py bdist_wheel
+
+    - run: |
+        $PYTHON38/bin/python -m pip install twine pip --upgrade
+        $PYTHON38/bin/python -m pip install wheel -r requirements.txt
+        $PYTHON38/bin/python setup.py bdist_wheel
+
+    - run: for wheel in $(ls dist); do auditwheel repair dist/$wheel; done
+
+    - env:
+        TWINE_USERNAME: __token__
+        TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+      run: $PYTHON38/bin/twine upload wheelhouse/*

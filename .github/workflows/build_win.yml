@@ -1,0 +1,43 @@
+
+name: Build Tick on Windows
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    name: Python ${{ matrix.python-version }}
+    runs-on: windows-latest
+
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: ['3.6', '3.7', '3.8']
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+
+    - uses: allenevans/set-env@v1.0.0
+      with:
+        TICK_DEBUG: 0
+        TICK_CMAKE_GENERATOR: Visual Studio 16 2019
+
+    - name: install swig
+      run: choco install tools\windows\swig.4.0.0.nupkg --yes --limit-output
+
+    - uses: actions/setup-python@v1
+      with:
+        python-version: ${{ matrix.python-version }}
+        architecture: x64
+
+    - run: |
+        pip install pip --upgrade
+        pip install wheel
+        pip install -r requirements.txt
+        python setup.py build_ext --inplace cpptest pytest
+
+

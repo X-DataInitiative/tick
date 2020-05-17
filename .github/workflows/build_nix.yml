@@ -1,0 +1,44 @@
+
+name: Build Tick on Ubuntu
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    name: Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    container: jeandet/manylinuxcpp2017
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+
+    - uses: allenevans/set-env@v1.0.0
+      with:
+        TICK_DEBUG: 0
+
+    - name: install swig
+      run: |
+        git clone https://github.com/swig/swig -b rel-4.0.1 swig
+        cd swig && ./autogen.sh && ./configure --without-pcre
+        make && make install && cd .. && rm -rf swig
+
+    - run: |
+        $PYTHON36/bin/python -m pip install wheel pip --upgrade
+        $PYTHON36/bin/python -m pip install -r requirements.txt
+        $PYTHON36/bin/python setup.py build_ext --inplace cpptest pytest
+
+    - run: |
+        $PYTHON37/bin/python -m pip install wheel pip --upgrade
+        $PYTHON37/bin/python -m pip install -r requirements.txt
+        $PYTHON37/bin/python setup.py build_ext --inplace cpptest pytest
+
+    - run: |
+        $PYTHON38/bin/python -m pip install wheel pip --upgrade
+        $PYTHON38/bin/python -m pip install -r requirements.txt
+        $PYTHON38/bin/python setup.py build_ext --inplace cpptest pytest

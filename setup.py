@@ -50,8 +50,24 @@ if "--force-blas" in sys.argv:
 # debug_flags = ['DEBUG_C_ARRAY', 'DEBUG_ARRAY', 'DEBUG_COSTLY_THROW',
 #                'DEBUG_SHAREDARRAY', 'DEBUG_VARRAY', 'DEBUG_VERBOSE']
 
+TICK_DEBUG=1
+# allow disable debug
+if os.environ.get('TICK_DEBUG') is not None:
+    TICK_DEBUG=os.environ['TICK_DEBUG']
 
-debug_flags = ['DEBUG_COSTLY_THROW']
+TICK_WERROR=1
+# allow disable Werror
+if os.environ.get('TICK_WERROR') is not None:
+    TICK_WERROR=os.environ['TICK_WERROR']
+
+debug_flags = []
+
+if TICK_DEBUG == 1 or TICK_DEBUG == "1":
+    debug_flags = ['DEBUG_COSTLY_THROW']
+
+TICK_CMAKE_GENERATOR=None
+if os.environ.get('TICK_CMAKE_GENERATOR') is not None:
+    TICK_CMAKE_GENERATOR=os.environ['TICK_CMAKE_GENERATOR']
 
 # If true, add compilation flags to use fast (but maybe inaccurate) math
 # See https://gcc.gnu.org/wiki/FloatingPointMath
@@ -284,6 +300,8 @@ def create_extension(extension_name, module_dir,
                               '-O2', # -O3 is sometimes dangerous and has caused segfaults on Travis
                               '-DNDEBUG', # some assertions fail without this (TODO tbh)
                               ]
+    if TICK_DEBUG == 0 or TICK_DEBUG == "0":
+        min_extra_compile_args.append("-g0")
 
     if use_fast_math:
         min_extra_compile_args.append('-ffast-math')
@@ -297,7 +315,7 @@ def create_extension(extension_name, module_dir,
 
     if platform.system() == 'Windows':
         extra_compile_args.append("-DBUILDING_DLL")
-    else:
+    elif TICK_WERROR == 1 or TICK_WERROR == "1":
         ## Added -Wall to get all warnings and -Werror to treat them as errors
         extra_compile_args.append("-Werror")
 
@@ -745,6 +763,9 @@ class BuildCPPTests(TickCommand):
                      '-DBENCHMARK=OFF',
                      relpath + '/../lib']
 
+        if TICK_CMAKE_GENERATOR is not None:
+            cmake_cmd.extend(['-G', '{}'.format(TICK_CMAKE_GENERATOR)])
+
         # Feed the path to the built C++ extensions so CMake does not have to
         # build them again
         for mod in tick_modules:
@@ -880,7 +901,7 @@ class CleanTick(clean):
 
 
 setup(name="tick",
-      version='0.6.0.3',
+      version='0.7.0.1',
       author="Emmanuel Bacry, "
              "Stephane Gaiffas, "
              "Martin Bompaire, "
@@ -923,8 +944,8 @@ setup(name="tick",
                    'Operating System :: POSIX',
                    'Operating System :: Unix',
                    'Operating System :: MacOS',
-                   'Programming Language :: Python :: 3.5',
                    'Programming Language :: Python :: 3.6',
                    'Programming Language :: Python :: 3.7',
+                   'Programming Language :: Python :: 3.8',
                    'License :: OSI Approved :: BSD License'],
       )
