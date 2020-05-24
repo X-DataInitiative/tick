@@ -1,0 +1,40 @@
+name: Python packages Windows
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: ['3.6', '3.7', '3.8']
+    name: Python ${{ matrix.python-version }}
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+
+    - uses: actions/setup-python@v1
+      with:
+        python-version: ${{ matrix.python-version }}
+        architecture: x64
+
+    - uses: allenevans/set-env@v1.0.0
+      with:
+        TICK_DEBUG: 0
+        TICK_WERROR: 0
+
+    - run: choco install tools\windows\swig.4.0.0.nupkg --yes --limit-output
+
+    - run: |
+        pip install wheel twine pip --upgrade
+        pip install -r requirements.txt
+        python setup.py bdist_wheel
+
+    - env:
+        TWINE_USERNAME: __token__
+        TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+      run: twine upload dist/*
