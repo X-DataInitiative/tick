@@ -38,6 +38,6 @@ jobs:
         pip install pip --upgrade
         pip install wheel
         pip install -r requirements.txt
-        python setup.py build_ext --inplace cpptest pytest
+        python setup.py build_ext --inplace pytest
 
 

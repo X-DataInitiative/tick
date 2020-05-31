@@ -30,7 +30,7 @@ cache:
 install:
   - git submodule update --init
   - curl -o mkn.exe -L https://github.com/Dekken/maiken/raw/binaries/win10_x64/mkn.exe
-  - IF NOT EXIST C:\ProgramData\chocolatey\bin\swig.exe choco install tools\windows\swig.4.0.0.nupkg --yes --limit-output
+  - IF NOT EXIST C:\ProgramData\chocolatey\bin\swig.exe choco install tools\windows\swig.4.0.1.nupkg --yes --limit-output
 
 build_script:
   - SET PATH=C:\Program Files\Git\usr\bin;%PATH%
