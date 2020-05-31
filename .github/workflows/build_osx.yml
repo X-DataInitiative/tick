@@ -40,7 +40,7 @@ jobs:
 
     - run: |
         pip install pip --upgrade
-        pip install wheel
-        pip install -r requirements.txt
+        pip install wheel cython --upgrade
+        pip install -r requirements.txt --upgrade
         python setup.py build_ext --inplace cpptest pytest
 
