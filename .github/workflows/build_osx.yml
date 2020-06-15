@@ -24,6 +24,7 @@ jobs:
     - uses: allenevans/set-env@v1.0.0
       with:
         TICK_DEBUG: 0
+        TICK_WERROR: 0
 
     - name: install swig
       run: |
@@ -42,5 +43,6 @@ jobs:
         pip install pip --upgrade
         pip install wheel
         pip install -r requirements.txt
-        python setup.py build_ext --inplace cpptest pytest
+        python setup.py build_ext --inplace cpptest
+        python -m unittest discover -v . "*_test.py"
 
