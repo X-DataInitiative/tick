@@ -155,7 +155,6 @@ if os.environ.get('TICK_NO_OPTS') is not None:
 # arrays
 sparse_indices_flag = "-DTICK_SPARSE_INDICES_INT32"
 try:
-    import numpy as np
     from scipy.sparse import sputils
 
     sparsearray_type = sputils.get_index_dtype()
@@ -318,9 +317,6 @@ def create_extension(extension_name, module_dir,
     elif TICK_WERROR == 1 or TICK_WERROR == "1":
         ## Added -Wall to get all warnings and -Werror to treat them as errors
         extra_compile_args.append("-Werror")
-
-    # Include directory of module
-    mod = SwigPath(module_dir, extension_name)
 
     libraries = []
     library_dirs = []
@@ -775,7 +771,6 @@ class BuildCPPTests(TickCommand):
             cmake_cmd.append(
                 '-DTICK_LIB_{}={}'.format(mod.ext_name.upper(), full_path))
 
-        define_macros = []
         if 'define_macros' in blas_info and \
                 any(key == 'HAVE_CBLAS' for key, _ in blas_info['define_macros']):
             cmake_cmd.append('-DUSE_BLAS=ON')

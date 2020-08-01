@@ -423,8 +423,6 @@ class LearnerHawkesParametric(LearnerOptim):
             if t_min is not None:
                 display_start_time = t_min
             display_end_time = end_time
-            if t_min is not None:
-                display_start_time = t_min
 
             intensity_track_step = (display_end_time - display_start_time) \
                                    / n_points
