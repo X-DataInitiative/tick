@@ -9,6 +9,7 @@
 #ifndef LIB_INCLUDE_TICK_BASE_SERIALIZATION_H_
 #define LIB_INCLUDE_TICK_BASE_SERIALIZATION_H_
 
+#include <cassert>
 #include "tick/base/base.h"
 
 // clang-format off
@@ -33,13 +34,11 @@ ENABLE_WARNING(delete-non-virtual-dtor, delete-non-virtual-dtor, 42)
 namespace tick {
 
 inline std::string to_hex(const std::string &bytes) {
-  std::stringstream out;
-  for (const char &c : bytes) {
-    std::stringstream stream;
-    stream << std::setfill('0')<< std::setw(2) << std::hex << static_cast<unsigned int>(c);
-    out << stream.str() << " ";  // parsing back hex to binary requires spaces for some reason
-  }
-  return out.str();
+  std::stringstream hex_stream;
+  for (const char &c : bytes)
+    hex_stream << std::setfill('0') << std::setw(2) << std::hex << (0xff & (unsigned int) c);
+
+  return hex_stream.str();
 }
 
 template <typename T>
@@ -53,11 +52,13 @@ inline std::string object_to_string(T* ptr) {
 }
 
 inline std::string to_bytes(const std::string &hex) {
-  std::istringstream hex_chars_stream(hex);
-  std::vector<unsigned char> bytes;
-  unsigned int c;
-  while (hex_chars_stream >> std::hex >> std::setw(2) >> c) bytes.push_back(c);
-  return std::string(bytes.begin(), bytes.end());
+  assert(hex.size() % 2 == 0);
+  std::string bytes(hex.size() / 2, 'x'); // x is arbitrary but something is necessary
+
+  for (size_t i = 0, j = 0; i < hex.size(); i+=2, j++)
+    bytes[j] = (hex[i] % 32 + 9) % 25 * 16 + (hex[i+1] % 32 + 9) % 25;
+
+  return bytes;
 }
 
 // Convert hex into bytes to deserialize
