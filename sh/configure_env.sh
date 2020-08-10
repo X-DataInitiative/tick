@@ -1,4 +1,4 @@
- #
+#
 # Author: Philip Deegan
 # Email : philip.deegan@polytechnique.edu
 # Date  : 21 - September - 2017
@@ -80,8 +80,7 @@ if [[ "$unameOut" == "CYGWIN"* ]] || [[ "$unameOut" == "MINGW"* ]] || [[ "$uname
   which cl.exe &> /dev/null && CL_PATH=$(which cl.exe)
   which gcc.exe &> /dev/null && GCC_PATH=$(which gcc.exe)
   if [[ $CL_PATH == 0 ]] && [[ $GCC_PATH == 0 ]] ; then
-    echo "Neither cl.exe or gcc.exe on path: Error"
-    exit 1
+    echo "Warning: Neither cl.exe or gcc.exe on path"
   fi
 
   if [ -n "$CL_PATH" ]; then

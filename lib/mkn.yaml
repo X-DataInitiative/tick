@@ -58,128 +58,113 @@ profile:
   - name: base
     parent: arg
     self: array
-    src:
-      ./cpp/base
-      ./swig/tick/base
+    src: ./cpp/base
+         ./swig/tick/base
     install: ${lib_path}/base/build
     out: _base${lib_name}
 
   - name: array
     parent: arg
-    inc:
-      ./include
-      ./third_party/cereal/include
-    src:
-      ./cpp/array
-      ./swig/tick/array
+    inc: ./include
+         ./third_party/cereal/include
+    src: ./cpp/array
+         ./swig/tick/array
     install: ${lib_path}/array/build
     out: _array${lib_name}
 
   - name: array_test
     parent: arg
     self: base
-    src:
-      ./cpp/array_test
-      ./swig/tick/array_test
+    src: ./cpp/array_test
+         ./swig/tick/array_test
     install: ${lib_path}/array_test/build
     out: _array_test${lib_name}
 
   - name: base_model
     parent: arg
     self: base
-    src:
-      ./cpp/base_model
-      ./swig/tick/base_model
+    src: ./cpp/base_model
+         ./swig/tick/base_model
     install: ${lib_path}/base_model/build
     out: _base_model${lib_name}
 
   - name: hawkes/model
     parent: arg
     self: base_model
-    src:
-      ./cpp/hawkes/model
-      ./swig/tick/hawkes/model
+    src: ./cpp/hawkes/model
+         ./swig/tick/hawkes/model
     install: ${lib_path}/hawkes/model/build
     out: _hawkes_model${lib_name}
 
   - name: hawkes/simulation
     parent: arg
     self: random
-    src:
-      ./cpp/hawkes/simulation
-      ./swig/tick/hawkes/simulation
+    src: ./cpp/hawkes/simulation
+         ./swig/tick/hawkes/simulation
     install: ${lib_path}/hawkes/simulation/build
     out: _hawkes_simulation${lib_name}
 
   - name: hawkes/inference
     parent: arg
     self: hawkes/model
-    src:
-      ./cpp/hawkes/inference
-      ./swig/tick/hawkes/inference
+    src: ./cpp/hawkes/inference
+         ./swig/tick/hawkes/inference
     install: ${lib_path}/hawkes/inference/build
     out: _hawkes_inference${lib_name}
 
   - name: linear_model
     parent: arg
     self: base_model
-    src:
-      ./cpp/linear_model
-      ./swig/tick/linear_model
+    src: ./cpp/linear_model
+         ./swig/tick/linear_model
     install: ${lib_path}/linear_model/build
     out: _linear_model${lib_name}
 
   - name: prox
     parent: arg
     self: base
-    src:
-      ./cpp/prox
-      ./swig/tick/prox
+    src: ./cpp/prox
+         ./swig/tick/prox
     install: ${lib_path}/prox/build
     out: _prox${lib_name}
 
   - name: preprocessing
     parent: arg
     self: base
-    src:
-      ./cpp/preprocessing
-      ./swig/tick/preprocessing
+    src: ./cpp/preprocessing
+         ./swig/tick/preprocessing
     install: ${lib_path}/preprocessing/build
     out: _preprocessing${lib_name}
 
   - name: random
     parent: arg
     self: base
-    src:
-      ./cpp/random
-      ./swig/tick/random
+    src: ./cpp/random
+         ./swig/tick/random
     install: ${lib_path}/random/build
     out: _crandom${lib_name}
 
   - name: robust
     parent: arg
     self: linear_model
-    src:
-      ./cpp/robust
-      ./swig/tick/robust
+    src: ./cpp/robust
+         ./swig/tick/robust
     install: ${lib_path}/robust/build
     out: _robust${lib_name}
 
   - name: solver
     parent: arg
     self: random linear_model prox robust
-    src:
-      ./cpp/solver
-      ./swig/tick/solver
+    src: ./cpp/solver
+         ./swig/tick/solver
     install: ${lib_path}/solver/build
     out: _solver${lib_name}
 
   - name: survival
     parent: arg
     self: base_model
-    src:
-      ./cpp/survival
-      ./swig/tick/survival
+    src: ./cpp/survival
+         ./swig/tick/survival
     install: ${lib_path}/survival/build
     out: _survival${lib_name}
 

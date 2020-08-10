@@ -1,6 +1,6 @@
 # License: BSD 3 clause
 
-import unittest, pickle
+import unittest, dill as pickle
 
 import numpy as np
 from scipy.sparse import csr_matrix
@@ -35,6 +35,7 @@ class Test(TestGLM):
         model = ModelCoxRegPartialLik()
         model.fit(features, times, censoring)
         pickled = pickle.loads(pickle.dumps(model))
+        self.assertTrue(type(model._model) == type(pickled._model))
         self.assertTrue(model._model.compare(pickled._model))
 
 if __name__ == '__main__':
