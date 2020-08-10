@@ -38,7 +38,6 @@ jobs:
         pip install pip --upgrade
         pip install wheel
         pip install -r requirements.txt
-        python setup.py build_ext --inplace
-        python -m unittest discover -v . "*_test.py"
+        python setup.py build_ext --inplace pytest
 
 

@@ -11,11 +11,7 @@ python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 python -m pip install psutil wheel
 
-set +e
-python setup.py build_ext -j 2 --inplace
-rm -rf build/lib # force relinking of libraries in case of failure
-set -e
-python setup.py build_ext --inplace
+python setup.py build_ext --inplace pytest
 
 B_OS=$(basename $(find build -maxdepth 1 -name "lib*"))
 pushd $ROOT/build/$B_OS/tick
@@ -33,7 +29,6 @@ export CXXFLAGS="-EHsc"
 
 KLOG=3 $ROOT/sh/gtest.sh
 
-python -m unittest discover -v . "*_test.py"
 python setup.py bdist_wheel
 
 rm -rf build

@@ -6,6 +6,8 @@
 """
 setup.py file
 """
+
+import sys
 import multiprocessing
 import os
 import pathlib
@@ -13,7 +15,6 @@ import platform
 import re
 import shutil
 import subprocess
-import sys
 import sysconfig
 import time
 import unittest
@@ -849,11 +850,6 @@ class RunPyTests(TickCommand):
         self.start_dir = '.'
 
     def run(self):
-        if platform.system() == 'Windows':
-            print("The pytest command has issues with threads on Windows")
-            print('Instead please run:')
-            print('python3 -m unittest discover -v . "*_test.py"')
-            exit(1)
         loader = unittest.TestLoader()
         alltests = loader.discover(self.start_dir, pattern="*_test.py")
         result = unittest.TextTestRunner(verbosity=2).run(alltests)
@@ -899,53 +895,53 @@ class CleanTick(clean):
                 else:
                     path.unlink()
 
-
-setup(name="tick",
-      version='0.7.0.1',
-      author="Emmanuel Bacry, "
-             "Stephane Gaiffas, "
-             "Martin Bompaire, "
-             "Søren V. Poulsen, "
-             "Maryan Morel, "
-             "Simon Bussy, "
-             "Philip Deegan",
-      author_email='martin.bompaire@polytechnique.edu, '
-                   'philip.deegan@polytechnique.edu',
-      url="https://x-datainitiative.github.io/tick/",
-      description="Module for statistical learning, with a particular emphasis "
-                  "on time-dependent modelling",
-      ext_modules=tick_modules,
-      install_requires=['numpy',
-                        'scipy',
-                        'numpydoc',
-                        'matplotlib',
-                        'sphinx',
-                        'pandas',
-                        'dill',
-                        'scikit-learn'],
-      packages=find_packages(),
-      cmdclass={'build': TickBuild,
-                'install': TickInstall,
-                'makecpptest': BuildCPPTests,
-                'runcpptest': RunCPPTests,
-                'cpptest': BuildRunCPPTests,
-                'cpplint': RunCPPLint,
-                'pytest': RunPyTests,
-                'pylint': RunPyLint,
-                'test': RunTestSuites,
-                'clean': CleanTick},
-      classifiers=['Development Status :: 3 - Alpha',
-                   'Intended Audience :: Science/Research',
-                   'Intended Audience :: Developers',
-                   'Programming Language :: C++',
-                   'Programming Language :: Python',
-                   'Topic :: Software Development',
-                   'Topic :: Scientific/Engineering',
-                   'Operating System :: POSIX',
-                   'Operating System :: Unix',
-                   'Operating System :: MacOS',
-                   'Programming Language :: Python :: 3.6',
-                   'Programming Language :: Python :: 3.7',
-                   'Programming Language :: Python :: 3.8',
-                   'License :: OSI Approved :: BSD License'],
-      )
+if __name__ == '__main__': # pytest executes this for some reason
+    setup(name="tick",
+          version='0.7.0.1',
+          author="Emmanuel Bacry, "
+                 "Stephane Gaiffas, "
+                 "Martin Bompaire, "
+                 "Søren V. Poulsen, "
+                 "Maryan Morel, "
+                 "Simon Bussy, "
+                 "Philip Deegan",
+          author_email='martin.bompaire@polytechnique.edu, '
+                       'philip.deegan@polytechnique.edu',
+          url="https://x-datainitiative.github.io/tick/",
+          description="Module for statistical learning, with a particular emphasis "
+                      "on time-dependent modelling",
+          ext_modules=tick_modules,
+          install_requires=['numpy',
+                            'scipy',
+                            'numpydoc',
+                            'matplotlib',
+                            'sphinx',
+                            'pandas',
+                            'dill',
+                            'scikit-learn'],
+          packages=find_packages(),
+          cmdclass={'build': TickBuild,
+                    'install': TickInstall,
+                    'makecpptest': BuildCPPTests,
+                    'runcpptest': RunCPPTests,
+                    'cpptest': BuildRunCPPTests,
+                    'cpplint': RunCPPLint,
+                    'pytest': RunPyTests,
+                    'pylint': RunPyLint,
+                    'test': RunTestSuites,
+                    'clean': CleanTick},
+          classifiers=['Development Status :: 3 - Alpha',
+                       'Intended Audience :: Science/Research',
+                       'Intended Audience :: Developers',
+                       'Programming Language :: C++',
+                       'Programming Language :: Python',
+                       'Topic :: Software Development',
+                       'Topic :: Scientific/Engineering',
+                       'Operating System :: POSIX',
+                       'Operating System :: Unix',
+                       'Operating System :: MacOS',
+                       'Programming Language :: Python :: 3.6',
+                       'Programming Language :: Python :: 3.7',
+                       'Programming Language :: Python :: 3.8',
+                       'License :: OSI Approved :: BSD License'],
+          )
