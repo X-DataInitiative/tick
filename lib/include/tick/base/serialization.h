@@ -37,7 +37,6 @@ inline std::string to_hex(const std::string &bytes) {
   std::stringstream hex_stream;
   for (const char &c : bytes)
     hex_stream << std::setfill('0') << std::setw(2) << std::hex << (0xff & (unsigned int) c);
-
   return hex_stream.str();
 }
 
@@ -48,16 +47,15 @@ inline std::string object_to_string(T* ptr) {
     cereal::PortableBinaryOutputArchive ar(ss);
     ar(*ptr);
   }
+
   return to_hex(ss.str());
 }
 
 inline std::string to_bytes(const std::string &hex) {
   assert(hex.size() % 2 == 0);
-  std::string bytes(hex.size() / 2, 'x'); // x is arbitrary but something is necessary
-
+  std::string bytes(hex.size() / 2, 'x');  // x is arbitrary but something is necessary
   for (size_t i = 0, j = 0; i < hex.size(); i+=2, j++)
     bytes[j] = (hex[i] % 32 + 9) % 25 * 16 + (hex[i+1] % 32 + 9) % 25;
-
   return bytes;
 }
 

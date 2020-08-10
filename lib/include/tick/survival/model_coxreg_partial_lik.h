@@ -61,25 +61,13 @@ class DLL_PUBLIC TModelCoxRegPartialLik : public TModel<T, K> {
   void grad(const Array<K> &coeffs, Array<T> &out) override;
 
   template <class Archive>
-  void load(Archive &ar) {
+  void serialize(Archive &ar)  {
     ar(cereal::make_nvp("ModelCoxRegPartialLik", typename cereal::base_class<TModel<T, K> >(this)));
     ar(n_samples, n_features, n_failures);
     ar(inner_prods, s1, idx);
     ar(times, censoring, idx_failures);
 
-    BaseArray2d<T> tmp_features;
-    ar(cereal::make_nvp("features", tmp_features));
-    features = tmp_features.as_sarray2d_ptr();
-  }
-
-  template <class Archive>
-  void save(Archive &ar) const {
-    ar(cereal::make_nvp("ModelCoxRegPartialLik", typename cereal::base_class<TModel<T, K> >(this)));
-    ar(n_samples, n_features, n_failures);
-    ar(inner_prods, s1, idx);
-    ar(times, censoring, idx_failures);
-
-    ar(cereal::make_nvp("features", *features));
+    ar(cereal::make_nvp("features", features));
   }
 
   BoolStrReport compare(const TModelCoxRegPartialLik<T, K> &that, std::stringstream &ss) {
@@ -110,11 +98,11 @@ using ModelCoxRegPartialLikFloat = TModelCoxRegPartialLik<float, float>;
 using ModelCoxRegPartialLikFloatPtr = std::shared_ptr<ModelCoxRegPartialLikFloat>;
 
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelCoxRegPartialLikDouble,
-                                   cereal::specialization::member_load_save)
+                                   cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(ModelCoxRegPartialLikDouble)
 
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelCoxRegPartialLikFloat,
-                                   cereal::specialization::member_load_save)
+                                   cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(ModelCoxRegPartialLikFloat)
 
 #endif  // LIB_INCLUDE_TICK_SURVIVAL_MODEL_COXREG_PARTIAL_LIK_H_
