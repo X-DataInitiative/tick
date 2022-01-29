@@ -29,11 +29,6 @@ jobs:
         make && make install && cd .. && rm -rf swig
 
     - run: |
-        $PYTHON36/bin/python -m pip install wheel pip --upgrade
-        $PYTHON36/bin/python -m pip install -r requirements.txt
-        $PYTHON36/bin/python setup.py build_ext --inplace cpptest pytest
-
-    - run: |
         $PYTHON37/bin/python -m pip install wheel pip --upgrade
         $PYTHON37/bin/python -m pip install -r requirements.txt
         $PYTHON37/bin/python setup.py build_ext --inplace cpptest pytest

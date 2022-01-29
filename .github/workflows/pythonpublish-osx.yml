@@ -4,13 +4,18 @@ on:
   release:
     types: [published]
 
+
+env:
+  TICK_DEBUG: 0
+  TICK_WERROR: 0
+
 jobs:
   build:
     runs-on: macos-latest
     strategy:
       max-parallel: 4
       matrix:
-        python-version: ['3.6', '3.7', '3.8', '3.9', '3.10']
+        python-version: ['3.7', '3.8', '3.9', '3.10']
     name: Python ${{ matrix.python-version }}
     steps:
     - uses: actions/checkout@v2
@@ -21,11 +26,6 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
         architecture: x64
-
-    - uses: allenevans/set-env@v1.0.0
-      with:
-        TICK_DEBUG: 0
-        TICK_WERROR: 0
 
     - run: |
         brew update

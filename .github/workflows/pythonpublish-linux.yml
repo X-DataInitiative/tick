@@ -25,11 +25,6 @@ jobs:
           make && make install && cd .. && rm -rf swig
 
     - run: |
-        $PYTHON36/bin/python -m pip install twine pip --upgrade
-        $PYTHON36/bin/python -m pip install wheel -r requirements.txt
-        $PYTHON36/bin/python setup.py bdist_wheel
-
-    - run: |
         $PYTHON37/bin/python -m pip install twine pip --upgrade
         $PYTHON37/bin/python -m pip install wheel -r requirements.txt
         $PYTHON37/bin/python setup.py bdist_wheel
