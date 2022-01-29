@@ -20,7 +20,7 @@ jobs:
         TICK_WERROR: 0
 
     - run: |
-          git clone https://github.com/swig/swig -b rel-4.0.0 swig
+          git clone https://github.com/swig/swig -b rel-4.0.2 swig
           cd swig && ./autogen.sh && ./configure --without-pcre
           make && make install && cd .. && rm -rf swig
 
@@ -38,6 +38,16 @@ jobs:
         $PYTHON38/bin/python -m pip install twine pip --upgrade
         $PYTHON38/bin/python -m pip install wheel -r requirements.txt
         $PYTHON38/bin/python setup.py bdist_wheel
+
+    - run: |
+        $PYTHON39/bin/python -m pip install twine pip --upgrade
+        $PYTHON39/bin/python -m pip install wheel -r requirements.txt
+        $PYTHON39/bin/python setup.py bdist_wheel
+
+    - run: |
+        $PYTHON310/bin/python -m pip install twine pip --upgrade
+        $PYTHON310/bin/python -m pip install wheel -r requirements.txt
+        $PYTHON310/bin/python setup.py bdist_wheel
 
     - run: for wheel in $(ls dist); do auditwheel repair dist/$wheel; done
 

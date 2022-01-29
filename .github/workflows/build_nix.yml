@@ -24,7 +24,7 @@ jobs:
 
     - name: install swig
       run: |
-        git clone https://github.com/swig/swig -b rel-4.0.1 swig
+        git clone https://github.com/swig/swig -b rel-4.0.2 swig
         cd swig && ./autogen.sh && ./configure --without-pcre
         make && make install && cd .. && rm -rf swig
 
@@ -42,3 +42,13 @@ jobs:
         $PYTHON38/bin/python -m pip install wheel pip --upgrade
         $PYTHON38/bin/python -m pip install -r requirements.txt
         $PYTHON38/bin/python setup.py build_ext --inplace cpptest pytest
+
+    - run: |
+        $PYTHON39/bin/python -m pip install wheel pip --upgrade
+        $PYTHON39/bin/python -m pip install -r requirements.txt
+        $PYTHON39/bin/python setup.py build_ext --inplace cpptest pytest
+
+    - run: |
+        $PYTHON310/bin/python -m pip install wheel pip --upgrade
+        $PYTHON310/bin/python -m pip install -r requirements.txt
+        $PYTHON310/bin/python setup.py build_ext --inplace cpptest pytest
