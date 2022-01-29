@@ -26,8 +26,6 @@ jobs:
       with:
         submodules: true
 
-    - name: install swig
-      run: choco install tools\windows\swig.4.0.0.nupkg --yes --limit-output
 
     - uses: actions/setup-python@v1
       with:

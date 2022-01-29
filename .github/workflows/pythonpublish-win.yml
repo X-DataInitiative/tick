@@ -28,7 +28,6 @@ jobs:
         architecture: x64
 
 
-    - run: choco install tools\windows\swig.4.0.0.nupkg --yes --limit-output
 
     - run: |
         pip install wheel twine pip --upgrade
