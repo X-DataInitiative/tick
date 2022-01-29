@@ -4,6 +4,11 @@ on:
   release:
     types: [published]
 
+
+env:
+  TICK_DEBUG: 0
+  TICK_WERROR: 0
+
 jobs:
   build:
     runs-on: windows-latest
@@ -22,10 +27,6 @@ jobs:
         python-version: ${{ matrix.python-version }}
         architecture: x64
 
-    - uses: allenevans/set-env@v1.0.0
-      with:
-        TICK_DEBUG: 0
-        TICK_WERROR: 0
 
     - run: choco install tools\windows\swig.4.0.0.nupkg --yes --limit-output
 
