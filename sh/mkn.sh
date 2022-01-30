@@ -55,7 +55,7 @@ if (( $CLI_ARGS_LEN > 0 )); then
 fi
 
 TICK_INDICES=$($PY $ROOT/tools/python/numpy/check_sparse_indices.py)
-MKN_C_FLAGS=" $TICK_INDICES "
+MKN_C_FLAGS=" $TICK_INDICES"
 
 [ -n "$CXXFLAGS" ] && MKN_C_FLAGS+=" ${CXXFLAGS} "
 [ "$DEBUG" == "1" ] && MKN_C_FLAGS+=" -DDEBUG_COSTLY_THROW"
@@ -66,7 +66,7 @@ cd $ROOT
 
 (( $COMPILE == 1 )) && \
   for P in "${PROFILES[@]}"; do
-    $MKN compile -t ${MKN_COMPILE_THREADS} -a "${MKN_C_FLAGS[@]}" -b "$PY_INCS" \
+    $MKN compile -Dt ${MKN_COMPILE_THREADS} -a "${MKN_C_FLAGS[@]}" -b "$PY_INCS" \
       ${MKN_X_FILE[@]} -p ${P} -C lib "${MKN_WITH[@]}" -g $MKN_G -O $MKN_O
   done
 

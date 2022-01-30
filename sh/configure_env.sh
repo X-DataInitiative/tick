@@ -130,6 +130,7 @@ else
   PY_INCS="${PINC}:${PNIC}"
 
   LDARGS="$($PCONF --ldflags)"
+  (($PYVER >= 3)) && (($PYVER_MIN > 8)) && LDARGS="$($PCONF --ldflags --embed)"
   B_PATH="."
   [ -z "$LIB_POSTEXT" ] && LIB_POSTEXT="${LIB_POSTFIX##*.}"
 fi
