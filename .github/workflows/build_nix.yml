@@ -7,6 +7,9 @@ on:
   pull_request:
     branches: [ master ]
 
+env:
+  TICK_DEBUG: 0
+
 jobs:
   build:
     name: Python ${{ matrix.python-version }}
@@ -18,20 +21,11 @@ jobs:
       with:
         submodules: true
 
-    - uses: allenevans/set-env@v1.0.0
-      with:
-        TICK_DEBUG: 0
-
     - name: install swig
       run: |
         git clone https://github.com/swig/swig -b rel-4.0.1 swig
         cd swig && ./autogen.sh && ./configure --without-pcre
         make && make install && cd .. && rm -rf swig
-
-    - run: |
-        $PYTHON36/bin/python -m pip install wheel pip --upgrade
-        $PYTHON36/bin/python -m pip install -r requirements.txt
-        $PYTHON36/bin/python setup.py build_ext --inplace cpptest pytest
 
     - run: |
         $PYTHON37/bin/python -m pip install wheel pip --upgrade
@@ -42,3 +36,8 @@ jobs:
         $PYTHON38/bin/python -m pip install wheel pip --upgrade
         $PYTHON38/bin/python -m pip install -r requirements.txt
         $PYTHON38/bin/python setup.py build_ext --inplace cpptest pytest
+
+    - run: |
+        $PYTHON39/bin/python -m pip install wheel pip --upgrade
+        $PYTHON39/bin/python -m pip install -r requirements.txt
+        $PYTHON39/bin/python setup.py build_ext --inplace cpptest pytest

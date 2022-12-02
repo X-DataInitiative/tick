@@ -7,6 +7,10 @@ on:
   pull_request:
     branches: [ master ]
 
+env:
+  TICK_DEBUG: 0
+  TICK_WERROR: 0
+
 jobs:
   build:
     name: Python ${{ matrix.python-version }}
@@ -15,16 +19,11 @@ jobs:
     strategy:
       max-parallel: 4
       matrix:
-        python-version: ['3.6', '3.7', '3.8']
+        python-version: ['3.7', '3.8', '3.9']
     steps:
     - uses: actions/checkout@v2
       with:
         submodules: true
-
-    - uses: allenevans/set-env@v1.0.0
-      with:
-        TICK_DEBUG: 0
-        TICK_WERROR: 0
 
     - name: install swig
       run: |
