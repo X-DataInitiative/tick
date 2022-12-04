@@ -26,3 +26,8 @@ double HawkesKernelTimeFunc::get_value_(double x) {
 double HawkesKernelTimeFunc::get_future_max(double t, double value_at_t) {
   return time_function.future_bound(t);
 }
+
+double HawkesKernelTimeFunc::get_primitive_value_(double x) {
+  return time_function.primitive(x);
+}
+

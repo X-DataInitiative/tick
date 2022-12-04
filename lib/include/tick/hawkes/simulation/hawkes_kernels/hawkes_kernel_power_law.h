@@ -42,6 +42,9 @@ class DLL_PUBLIC HawkesKernelPowerLaw : public HawkesKernel {
   //! Getting the value of the kernel at the point x (where x is positive)
   double get_value_(double x) override;
 
+  //! Getting the value of the primitive of the kernel at the point x (where x is positive)
+  double get_primitive_value_(double x) override;
+
  public:
   //! @brief simple getter
   double get_multiplier() { return multiplier; }
@@ -58,8 +61,8 @@ class DLL_PUBLIC HawkesKernelPowerLaw : public HawkesKernel {
    * @note For specifying the support, you can either specify it directly
    * (support > 0) or specify an error such that support = f^{-1}(error)
    */
-  HawkesKernelPowerLaw(double multiplier, double cutoff, double exponent,
-                       double support = -1, double error = 1e-5);
+  HawkesKernelPowerLaw(double multiplier, double cutoff, double exponent, double support = -1,
+                       double error = 1e-5);
 
   //! @brief Copy constructor
   HawkesKernelPowerLaw(HawkesKernelPowerLaw &kernel) = default;
@@ -80,8 +83,7 @@ class DLL_PUBLIC HawkesKernelPowerLaw : public HawkesKernel {
 
   template <class Archive>
   void serialize(Archive &ar) {
-    ar(cereal::make_nvp("HawkesKernel",
-                        cereal::base_class<HawkesKernel>(this)));
+    ar(cereal::make_nvp("HawkesKernel", cereal::base_class<HawkesKernel>(this)));
 
     ar(CEREAL_NVP(multiplier));
     ar(CEREAL_NVP(exponent));
