@@ -39,7 +39,7 @@ class Test(unittest.TestCase):
                                   HawkesKernelExp(0.1, 3)], [
                                       HawkesKernelPowerLaw(0.2, 4, 2),
                                       HawkesKernelSumExp([0.1, 0.4], [3, 4])
-                                  ]])
+        ]])
 
         t_values = np.linspace(0, 10, 10)
         y_values = np.maximum(0.5 + np.sin(t_values), 0)
@@ -173,7 +173,7 @@ class Test(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, msg):
             hawkes.simulate()
 
-        msg = "^This process has already be simulated until time 0.000000$"
+        msg = "^This process has already been simulated until time 0.000000$"
         with self.assertWarnsRegex(UserWarning, msg):
             hawkes.end_time = 0
             hawkes.force_simulation = True

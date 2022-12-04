@@ -9,9 +9,7 @@
 
 const double floor_threshold = 1e-10;
 
-double threshold_floor(const double x) {
-  return std::floor((x) + floor_threshold);
-}
+double threshold_floor(const double x) { return std::floor((x) + floor_threshold); }
 
 const double timefunc_oversampling = 5.0;
 
@@ -23,22 +21,31 @@ TimeFunction::TimeFunction(double y) {
   border_type = DEFAULT_BORDER;
 }
 
-TimeFunction::TimeFunction(const ArrayDouble &Y, BorderType type,
-                           InterMode mode, double dt, double border_value)
+TimeFunction::TimeFunction(const ArrayDouble &Y, BorderType type, InterMode mode, double dt,
+                           double border_value)
     : inter_mode(mode), border_type(type), dt(dt), border_value(border_value) {
-  sampled_y = SArrayDouble::new_ptr(Y.size());
-  std::copy(Y.data(), Y.data() + Y.size(), sampled_y->data());
+  ulong size = Y.size();
+  sampled_y = SArrayDouble::new_ptr(size);
+  std::copy(Y.data(), Y.data() + size, sampled_y->data());
+
+  sampled_y_primitive = SArrayDouble::new_ptr(size);
+  for (ulong i = 0; i < size; ++i) {
+    if (i == 0) {
+      (*sampled_y_primitive)[i] = 0;
+    } else {
+      (*sampled_y_primitive)[i] =
+          (*sampled_y_primitive)[i - 1] + ((*sampled_y)[i] + (*sampled_y)[i - 1]) * dt / 2.;
+    }
+  }
 
   last_value_before_border = dt * sampled_y->size();
 }
 
-TimeFunction::TimeFunction(const ArrayDouble &T, const ArrayDouble &Y,
-                           double dt)
+TimeFunction::TimeFunction(const ArrayDouble &T, const ArrayDouble &Y, double dt)
     : TimeFunction(T, Y, DEFAULT_BORDER, DEFAULT_INTER, dt, 0.0) {}
 
-TimeFunction::TimeFunction(const ArrayDouble &T, const ArrayDouble &Y,
-                           BorderType type, InterMode mode, double dt1,
-                           double border_value1)
+TimeFunction::TimeFunction(const ArrayDouble &T, const ArrayDouble &Y, BorderType type,
+                           InterMode mode, double dt1, double border_value1)
     : inter_mode(mode), border_type(type) {
   const ulong size = T.size();
   if (size != Y.size()) TICK_ERROR("Both array should have the same size");
@@ -90,22 +97,21 @@ TimeFunction::TimeFunction(const ArrayDouble &T, const ArrayDouble &Y,
   // either dt don't (common case)
   const double length = T[size - 1] - T[0];
 
-  if (length < dt)
-    TICK_ERROR(
-        "``dt`` cannot be bigger than the time space you are considering");
+  if (length < dt) TICK_ERROR("``dt`` cannot be bigger than the time space you are considering");
 
   // We add 2 in order to be sure that we will have at least one value after the
   // last given t This value will be used to interpolate until the last given t
   ulong sample_size = (ulong)threshold_floor(length / dt) + 2;
 
   sampled_y = SArrayDouble::new_ptr(sample_size);
+  sampled_y_primitive = SArrayDouble::new_ptr(sample_size);
 
   // We iterate over all given points and evaluate the function between them to
   // fill sampled_y by dt step
   double t = t0;
 
   // Index of the left point selected
-  double index_left = 0;
+  ulong index_left = 0;
   // initialize with the first two points
   double t_left = T[index_left];
   double y_left = Y[index_left];
@@ -123,8 +129,14 @@ TimeFunction::TimeFunction(const ArrayDouble &T, const ArrayDouble &Y,
       t_right = T[index_left + 1];
       y_right = Y[index_left + 1];
     }
-
-    (*sampled_y)[i] = interpolation(t_left, y_left, t_right, y_right, t);
+    double y_i = interpolation(t_left, y_left, t_right, y_right, t);
+    (*sampled_y)[i] = y_i;
+    if (i == 0)
+      (*sampled_y_primitive)[0] = 0;
+    else {
+      (*sampled_y_primitive)[i] =
+          (*sampled_y_primitive)[i - 1] + (y_i + (*sampled_y)[i - 1]) * dt / 2.;
+    }
     t += dt;
   }
 
@@ -133,6 +145,7 @@ TimeFunction::TimeFunction(const ArrayDouble &T, const ArrayDouble &Y,
 
 TimeFunction::~TimeFunction() {
   if (sampled_y) sampled_y.reset();
+  if (sampled_y_primitive) sampled_y_primitive.reset();
   if (future_max) future_max.reset();
 }
 
@@ -185,6 +198,33 @@ double TimeFunction::value(double t) {
   const double y_left = (*sampled_y)[i_left];
   const double t_right = get_t_from_index_(i_left + 1);
   const double y_right = (*sampled_y)[i_left + 1];
+
+  return interpolation(t_left, y_left, t_right, y_right, t);
+}
+
+double TimeFunction::primitive(double t) {
+  if (t > last_value_before_border + floor_threshold) {
+    if (border_type != BorderType::Cyclic) {
+      double delay = t - last_value_before_border;
+      return primitive(last_value_before_border) + border_value * delay;
+    } else {
+      const double divider = last_value_before_border;
+      const int quotient = static_cast<int>(threshold_floor(t / divider));
+      return quotient * primitive(last_value_before_border) + primitive(t - quotient * divider);
+    }
+  } else if (t < t0) {
+    // which behavior do we want if t < t0 ?
+    return 0.0;
+  } else if (t < 0) {
+    return 0.0;
+  }
+
+  const ulong i_left = get_index_(t);
+
+  const double t_left = get_t_from_index_(i_left);
+  const double y_left = (*sampled_y_primitive)[i_left];
+  const double t_right = get_t_from_index_(i_left + 1);
+  const double y_right = (*sampled_y_primitive)[i_left + 1];
 
   return interpolation(t_left, y_left, t_right, y_right, t);
 }
@@ -309,28 +349,24 @@ double TimeFunction::get_norm() {
   return norm;
 }
 
-double TimeFunction::constant_left_interpolation(double t_left, double y_left,
-                                                 double t_right, double y_right,
-                                                 double t_value) {
+double TimeFunction::constant_left_interpolation(double t_left, double y_left, double t_right,
+                                                 double y_right, double t_value) {
   if (std::abs(t_value - t_left) < floor_threshold)
     return y_left;
   else
     return y_right;
 }
 
-double TimeFunction::constant_right_interpolation(double t_left, double y_left,
-                                                  double t_right,
-                                                  double y_right,
-                                                  double t_value) {
+double TimeFunction::constant_right_interpolation(double t_left, double y_left, double t_right,
+                                                  double y_right, double t_value) {
   if (std::abs(t_value - t_right) < floor_threshold)
     return y_right;
   else
     return y_left;
 }
 
-double TimeFunction::linear_interpolation(double t_left, double y_left,
-                                          double t_right, double y_right,
-                                          double t_value) {
+double TimeFunction::linear_interpolation(double t_left, double y_left, double t_right,
+                                          double y_right, double t_value) {
   if (std::abs(t_left - t_right) < floor_threshold) {
     return (y_left + y_right) / 2.0;
   } else {
@@ -339,8 +375,8 @@ double TimeFunction::linear_interpolation(double t_left, double y_left,
   }
 }
 
-double TimeFunction::interpolation(double t_left, double y_left, double t_right,
-                                   double y_right, double t) {
+double TimeFunction::interpolation(double t_left, double y_left, double t_right, double y_right,
+                                   double t) {
   // Second do the right interpolation
   switch (inter_mode) {
     case (InterMode::InterLinear):
@@ -354,8 +390,6 @@ double TimeFunction::interpolation(double t_left, double y_left, double t_right,
   }
 }
 
-ulong TimeFunction::get_index_(double t) {
-  return (ulong)threshold_floor((t - t0) / dt);
-}
+ulong TimeFunction::get_index_(double t) { return (ulong)threshold_floor((t - t0) / dt); }
 
 double TimeFunction::get_t_from_index_(ulong i) { return t0 + dt * i; }

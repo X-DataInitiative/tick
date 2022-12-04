@@ -45,9 +45,8 @@ class DLL_PUBLIC TimeFunction {
   TimeFunction(const ArrayDouble &T, const ArrayDouble &Y, double dt);
 
   // Main constructor
-  TimeFunction(const ArrayDouble &T, const ArrayDouble &Y,
-               BorderType type = DEFAULT_BORDER, InterMode mode = DEFAULT_INTER,
-               double dt = 0.0, double border_value = 0.0);
+  TimeFunction(const ArrayDouble &T, const ArrayDouble &Y, BorderType type = DEFAULT_BORDER,
+               InterMode mode = DEFAULT_INTER, double dt = 0.0, double border_value = 0.0);
 
   // Constant constuctor
   explicit TimeFunction(double y = 0.0);
@@ -78,13 +77,15 @@ class DLL_PUBLIC TimeFunction {
   double get_support_right() const { return support_right; }
 
   // interpolation function
-  double interpolation(double x_left, double y_left, double x_right,
-                       double y_right, double x_value);
+  double interpolation(double x_left, double y_left, double x_right, double y_right,
+                       double x_value);
 
   // Call function
   double value(double t);
 
   SArrayDoublePtr value(ArrayDouble &array);
+
+  double primitive(double t);
 
   double future_bound(double t);
 
@@ -98,6 +99,7 @@ class DLL_PUBLIC TimeFunction {
 
  private:
   SArrayDoublePtr sampled_y;
+  SArrayDoublePtr sampled_y_primitive;
   SArrayDoublePtr future_max;
   double t0;
   double dt;
@@ -109,16 +111,13 @@ class DLL_PUBLIC TimeFunction {
 
   inline double get_t_from_index_(ulong i);
 
-  inline double constant_left_interpolation(double x_left, double y_left,
-                                            double x_right, double y_right,
-                                            double x_value);
+  inline double constant_left_interpolation(double x_left, double y_left, double x_right,
+                                            double y_right, double x_value);
 
-  inline double constant_right_interpolation(double x_left, double y_left,
-                                             double x_right, double y_right,
-                                             double x_value);
+  inline double constant_right_interpolation(double x_left, double y_left, double x_right,
+                                             double y_right, double x_value);
 
-  inline double linear_interpolation(double x_left, double y_left,
-                                     double x_right, double y_right,
+  inline double linear_interpolation(double x_left, double y_left, double x_right, double y_right,
                                      double x_value);
 
  public:
@@ -135,8 +134,7 @@ class DLL_PUBLIC TimeFunction {
 
     // If future_max is empty, we let it be a nullptr instead of initializing a
     // new array
-    future_max =
-        temp_future_max.size() == 0 ? nullptr : temp_future_max.as_sarray_ptr();
+    future_max = temp_future_max.size() == 0 ? nullptr : temp_future_max.as_sarray_ptr();
 
     ar(CEREAL_NVP(inter_mode));
     ar(CEREAL_NVP(border_type));
@@ -149,10 +147,8 @@ class DLL_PUBLIC TimeFunction {
 
   template <class Archive>
   void save(Archive &ar) const {
-    ar(cereal::make_nvp("sampled_y",
-                        sampled_y.get() ? *sampled_y : ArrayDouble(0)));
-    ar(cereal::make_nvp("future_max",
-                        future_max.get() ? *future_max : ArrayDouble(0)));
+    ar(cereal::make_nvp("sampled_y", sampled_y.get() ? *sampled_y : ArrayDouble(0)));
+    ar(cereal::make_nvp("future_max", future_max.get() ? *future_max : ArrayDouble(0)));
 
     ar(CEREAL_NVP(inter_mode));
     ar(CEREAL_NVP(border_type));

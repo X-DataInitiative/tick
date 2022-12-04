@@ -8,7 +8,7 @@ from tick.base import actual_kwargs
 from tick.base.learner import LearnerOptim
 from tick.base_model import ModelLipschitz
 from tick.hawkes import SimuHawkes
-from tick.plot import plot_point_process
+from tick.plot import plot_point_process, qq_plots
 from tick.prox import ProxElasticNet, ProxL1, ProxL2Sq, ProxPositive
 
 
@@ -427,7 +427,7 @@ class LearnerHawkesParametric(LearnerOptim):
                 display_start_time = t_min
 
             intensity_track_step = (display_end_time - display_start_time) \
-                                   / n_points
+                / n_points
 
         simu.track_intensity(intensity_track_step)
         simu.set_timestamps(events, end_time)
@@ -435,3 +435,30 @@ class LearnerHawkesParametric(LearnerOptim):
         plot_point_process(simu, plot_intensity=True, n_points=n_points,
                            plot_nodes=plot_nodes, t_min=t_min, t_max=t_max,
                            max_jumps=max_jumps, show=show, ax=ax)
+
+    def qq_plots(self, events, end_time=None, **kwargs):
+        """Plot theoretical v. empirical quantile of residuals
+
+        Parameters
+        ----------
+        events : `list` of `list` of `np.ndarray`
+            Hawkes processes realizations used to compute the residuals.
+            The realization of the Hawkes process is a list of n_node for
+            each component of the Hawkes. Namely `events[i][j]` contains a
+            one-dimensional `numpy.array` of the events' timestamps of
+            component j of realization i.
+            If None, events given while fitting model will be used
+
+        end_time : `float`, default = None
+            End time of all hawkes processes used to measure score.
+            If None, it will be set to each realization's latest time.
+
+        Returns
+        -------
+        figure : `matplotlib.pyplot.Figure`
+        """
+
+        simu = self._corresponding_simu()
+        simu.set_timestamps(events, end_time=end_time)
+        simu.store_compensator_values()
+        return qq_plots(simu, **kwargs)
