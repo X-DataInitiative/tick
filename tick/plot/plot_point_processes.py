@@ -213,7 +213,7 @@ def qq_plots(
     if node_names is None:
         node_names = list(map(lambda n: 'ticks #{}'.format(n), plot_nodes))
     elif len(node_names) != len(plot_nodes):
-        ValueError('node_names must be a list of length {} but has length {}'
+        raise ValueError('node_names must be a list of length {} but has length {}'
                    .format(len(plot_nodes), len(node_names)))
     labels = node_names
 
