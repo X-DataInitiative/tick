@@ -147,16 +147,15 @@ double HawkesKernelSumExp::get_primitive_convolution(const double time,
     double a = intensities[i];
     double b = decays[i];
     double last_i = last_primitive_convolution_values[i];
-    double value_i = (m==0)? 0. : a * m - (a * m - last_i) * cexp(-b * delay);
+    double value_i = (m == 0) ? 0. : a * m - (a * m - last_i) * cexp(-b * delay);
 
     for (k = m; k < n; ++k) {
       double t_k = timestamps[k];
       if (t_k >= time) break;
       value_i += get_primitive_value_i(time - t_k, i);
     }
-    if (value_i < last_i){
-	    throw std::runtime_error("last_primitive_convolution_values[i] > new value_i"
-			    );
+    if (value_i < last_i) {
+      throw std::runtime_error("last_primitive_convolution_values[i] > new value_i");
     }
     value += value_i;
     last_primitive_convolution_values[i] = value_i;
