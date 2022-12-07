@@ -127,8 +127,13 @@ class Test(unittest.TestCase):
         mu = -10
         sigma = 0.5
 
-        seeded_sample = \
-            [-10.58093465, -10.31294449, -9.98125953, -10.34969085, -9.82447348]
+        seeded_sample = [
+            -10.58093465,
+            -10.31294449,
+            -9.98125953,
+            -10.34969085,
+            -9.82447348
+        ]
 
         self._test_dist_with_seed(seeded_sample, test_gaussian, mu, sigma)
 
@@ -163,26 +168,57 @@ class Test(unittest.TestCase):
 
         # Statistical tests
         # We take a smaller sample as chi2 test is expensive
-        sample = test_poisson(rate, int(self.stat_size * 0.05))
+        sample_size = int(self.stat_size * 0.05)
+        sample = test_poisson(rate, sample_size)
 
         # To test statistical consistency of poisson we do like if it was a
         # discrete law with a probability of sum_{k>K}(P(k)) for the last event
-        probabilities = [
-            stats.poisson.pmf(i, rate) for i in range(3 * int(rate))
+        K = 3 * int(rate)
+        probs_ = [
+            stats.poisson.pmf(i, rate) for i in range(K)
         ]
-        f_obs = [sum(sample == i) for i in range(len(probabilities))]
+        obs_ = [sum(sample == i) for i in range(K)]
 
         # We add the last event
-        f_obs.append(sum(sample >= len(probabilities)))
-        probabilities.append(1 - sum(probabilities))
+        obs_.append(sum(sample >= K))
+        probs_.append(1 - sum(probs_))
 
-        _, p = stats.chisquare(f_exp=probabilities, f_obs=f_obs)
+        f_exp = sample_size * np.array(probs_, dtype=float)
+        f_obs = np.array(obs_, dtype=float)
+        self.assertEqual(
+            f_exp.shape,
+            f_obs.shape,
+            "expected frequency vector and "
+            "observed frequency vector "
+            "do not have tha same shape! "
+        )
+        self.assertTrue(
+            np.allclose(np.sum(f_exp), np.sum(f_obs), rtol=1e-8, atol=1e-18),
+            "sum  of expected frequencies and "
+            "sum of observed frequencies "
+            "must agree with relative tolerance 1e-8."
+            "This is required by scipy.stats.chisquare . "
+            f"sample_size = {sample_size}; "
+            f"np.sum(f_exp) = {np.sum(f_exp)}; "
+            f"np.sum(f_obs) = {np.sum(f_obs)}. "
+        )
+
+        _, p = stats.chisquare(f_exp=f_exp, f_obs=f_obs)
         self.assertLess(p, 0.05)
 
     def test_discrete_random(self):
         """...Test discrete random numbers simulation
         """
-        probabilities = np.array([2.0, 0.1, 3, 5, 7])
+        probabilities = np.array([
+            0.11695906,
+            0.00584795,
+            0.1754386,
+            0.29239766,
+            0.40935673,
+        ])
+        # make sure probabilities sum to 1
+        probabilities /= np.sum(probabilities)
+        n_categories = len(probabilities)
         seeded_sample = [2., 3., 3., 0., 4.]
 
         self._test_dist_with_seed(seeded_sample, test_discrete, probabilities,
@@ -190,8 +226,30 @@ class Test(unittest.TestCase):
 
         # Statistical tests
         sample = test_discrete(probabilities, self.stat_size, self.test_seed)
-        f_obs = [sum(sample == i) for i in range(len(probabilities))]
-        _, p = stats.chisquare(f_exp=probabilities, f_obs=f_obs)
+        f_obs = np.array(
+            [sum(sample == i) for i in range(n_categories)],
+            dtype=float,
+        )
+        self.assertEqual(
+            probabilities.shape,
+            f_obs.shape,
+            "probability vector and frequency vector "
+            "do not have tha same shape! "
+            f"n_categories = {n_categories}; "
+            f"probabilities.shape = {probabilities.shape}; "
+            f"f_obs.shape = {f_obs.shape}. "
+        )
+        normalization = np.sum(f_obs)
+        f_exp = normalization * probabilities
+        self.assertTrue(
+            np.allclose(np.sum(f_exp), np.sum(f_obs), rtol=1e-8, atol=1e-18),
+            "sum  of expected frequencies and of observed frequencies "
+            "must agree with relative tolerance 1e-8."
+            "This is required by scipy.stats.chisquare . "
+            f"np.sum(f_exp) = {np.sum(f_exp)}; "
+            f"np.sum(f_obs) = {np.sum(f_obs)}. "
+        )
+        _, p = stats.chisquare(f_exp=f_exp, f_obs=f_obs)
         self.assertLess(p, 0.05)
 
         # Test that variable event with probability 0 never happens
@@ -322,14 +380,14 @@ class Test(unittest.TestCase):
                     n_workers=1)
                 time_needed_sequential = time.perf_counter() - start
                 start = time.perf_counter()
-                
+
                 # With multiprocessing it is counterproductive to have to many
                 # process for too small tasks
                 if thread_type == 'multiprocessing':
                     n_workers = min(4, multiprocessing.cpu_count())
                 else:
                     n_workers = None
-                
+
                 self._generate_samples_in_parallel(
                     parallelization_type=thread_type, wait_time=wait_time,
                     n_workers=n_workers)
