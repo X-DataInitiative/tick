@@ -153,17 +153,37 @@ class Test(unittest.TestCase):
         self._test_dist_with_seed(seeded_sample, test_exponential, intensity)
 
         # Statistical tests
+        # We test the null hypothesis that the sample is drawn
+        # from an exponential distribution with scale = 1 / intensity.
+        # We use Kolmogorov–Smirnov test.
+        # The p-value should strongly support null hypothesis, with value larger than .90;
+        # the KS statisticcs should be small
+        # For comparison notice the following example
+        """
+        >>> stats.kstest('expon', 'expon')
+        KStestResult(statistic=0.09904815307706938, pvalue=0.9782788116515602)
+        """
+
         sample = test_exponential(intensity, self.stat_size, self.test_seed)
-        threshold = 0.05
+        p_threshold = 0.725
+        ks_threshold = 0.15
         ks_stat, p = stats.kstest(sample, 'expon', (0, 1. / intensity))
-        self.assertLess(p, threshold,
+        self.assertLess(ks_stat, ks_threshold,
                         "Exponential random number generation: "
-                        "p-value of Kolmogorov-Smirnov test is "
+                        "stat of Kolmogorov-Smirnov test is "
                         "larger than threshold. "
-                        f"p-value: {p}; "
-                        f"threshold: {threshold}; "
-                        f"KS test statistics: {ks_stat}."
+                        f"stat: {ks_stat}; "
+                        f"threshold: {ks_threshold}; "
+                        f"KS test p-value: {p}."
                         )
+        self.assertGreater(p, p_threshold,
+                           "Exponential random number generation: "
+                           "p-value of Kolmogorov-Smirnov test is "
+                           "smaller than threshold. "
+                           f"p-value: {p}; "
+                           f"threshold: {p_threshold}; "
+                           f"KS test statistics: {ks_stat}."
+                           )
 
     def test_poisson_random(self):
         """...Test Poisson random numbers simulation
@@ -211,15 +231,20 @@ class Test(unittest.TestCase):
             f"np.sum(f_obs) = {np.sum(f_obs)}. "
         )
 
-        threshold = 0.05
+        # We test the null hypothesis that the sample is drawn
+        # from a Poisson distribution.
+        # We use a chi-square test.
+        # The p-value should indicate that the null hypothesis cannot be rejected.
+
+        p_threshold = 0.15
         chi_stat, p = stats.chisquare(f_exp=f_exp, f_obs=f_obs)
-        self.assertLess(p, threshold,
-                        "Poisson random number generation: "
-                        "p-value of Chi-square test is larger than threshold. "
-                        f"p-value: {p}; "
-                        f"threshold: {threshold}; "
-                        f"KS test statistics: {chi_stat}."
-                        )
+        self.assertGreater(p, p_threshold,
+                           "Poisson random number generation: "
+                           "p-value of Chi-square test is smaller than threshold. "
+                           f"p-value: {p}; "
+                           f"p_threshold: {p_threshold}; "
+                           f"Chi square test statistics: {chi_stat}."
+                           )
 
     def test_discrete_random(self):
         """...Test discrete random numbers simulation
