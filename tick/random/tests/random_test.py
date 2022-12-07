@@ -197,7 +197,7 @@ class Test(unittest.TestCase):
 
         # Statistical tests
         # We take a smaller sample as chi2 test is expensive
-        sample_size = int(self.stat_size * 0.25)
+        sample_size = self.stat_size
         sample = test_poisson(rate, sample_size)
 
         # To test statistical consistency of poisson we do like if it was a
