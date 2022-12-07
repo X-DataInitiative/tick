@@ -154,8 +154,16 @@ class Test(unittest.TestCase):
 
         # Statistical tests
         sample = test_exponential(intensity, self.stat_size, self.test_seed)
-        p, _ = stats.kstest(sample, 'expon', (0, 1. / intensity))
-        self.assertLess(p, 0.05)
+        threshold = 0.05
+        ks_stat, p = stats.kstest(sample, 'expon', (0, 1. / intensity))
+        self.assertLess(p, threshold,
+                        "Exponential random number generation: "
+                        "p-value of Kolmogorov-Smirnov test is "
+                        "larger than threshold. "
+                        f"p-value: {p}; "
+                        f"threshold: {threshold}; "
+                        f"KS test statistics: {ks_stat}."
+                        )
 
     def test_poisson_random(self):
         """...Test Poisson random numbers simulation
@@ -203,8 +211,15 @@ class Test(unittest.TestCase):
             f"np.sum(f_obs) = {np.sum(f_obs)}. "
         )
 
-        _, p = stats.chisquare(f_exp=f_exp, f_obs=f_obs)
-        self.assertLess(p, 0.05)
+        threshold = 0.05
+        chi_stat, p = stats.chisquare(f_exp=f_exp, f_obs=f_obs)
+        self.assertLess(p, threshold,
+                        "Poisson random number generation: "
+                        "p-value of Chi-square test is larger than threshold. "
+                        f"p-value: {p}; "
+                        f"threshold: {threshold}; "
+                        f"KS test statistics: {chi_stat}."
+                        )
 
     def test_discrete_random(self):
         """...Test discrete random numbers simulation
