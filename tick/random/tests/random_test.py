@@ -36,7 +36,7 @@ class Test(unittest.TestCase):
         seeded_sample_1 = test_function(*seed_args)
         seeded_sample_2 = test_function(*seed_args)
 
-        # We check that samples we same seed are equal
+        # We check that samples with same seed are equal
         np.testing.assert_almost_equal(seeded_sample_1, seeded_sample_2)
 
         # This is temporary
@@ -168,12 +168,12 @@ class Test(unittest.TestCase):
 
         # Statistical tests
         # We take a smaller sample as chi2 test is expensive
-        sample_size = int(self.stat_size * 0.05)
+        sample_size = int(self.stat_size * 0.25)
         sample = test_poisson(rate, sample_size)
 
         # To test statistical consistency of poisson we do like if it was a
         # discrete law with a probability of sum_{k>K}(P(k)) for the last event
-        K = 3 * int(rate)
+        K = 20  # Expected larger than `rate`
         probs_ = [
             stats.poisson.pmf(i, rate) for i in range(K)
         ]
