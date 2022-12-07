@@ -16,7 +16,7 @@ from tick.random import test_uniform, test_gaussian, test_poisson, \
 class Test(unittest.TestCase):
     def setUp(self):
         self.test_size = 5
-        self.test_seed = 12098
+        self.test_seed = 12099
         self.stat_size = 10000
         self.thread_types = ['multiprocessing', 'threading']
 
@@ -164,8 +164,9 @@ class Test(unittest.TestCase):
         KStestResult(statistic=0.09904815307706938, pvalue=0.9782788116515602)
         """
 
-        sample = test_exponential(intensity, self.stat_size, self.test_seed)
-        p_threshold = 0.725
+        sample = test_exponential(
+            intensity, self.stat_size, self.test_seed)
+        p_threshold = 0.125
         ks_threshold = 0.15
         ks_stat, p = stats.kstest(sample, 'expon', (0, 1. / intensity))
         self.assertLess(ks_stat, ks_threshold,
@@ -236,7 +237,7 @@ class Test(unittest.TestCase):
         # We use a chi-square test.
         # The p-value should indicate that the null hypothesis cannot be rejected.
 
-        p_threshold = 0.15
+        p_threshold = 0.10
         chi_stat, p = stats.chisquare(f_exp=f_exp, f_obs=f_obs)
         self.assertGreater(p, p_threshold,
                            "Poisson random number generation: "
@@ -289,8 +290,15 @@ class Test(unittest.TestCase):
             f"np.sum(f_exp) = {np.sum(f_exp)}; "
             f"np.sum(f_obs) = {np.sum(f_obs)}. "
         )
+        p_threshold = 0.10
         _, p = stats.chisquare(f_exp=f_exp, f_obs=f_obs)
-        self.assertLess(p, 0.05)
+        self.assertGreater(p, p_threshold,
+                           "Discrete random number generation: "
+                           "p-value of chi-square test is "
+                           "smaller than threshold. "
+                           f"p-value: {p}; "
+                           f"threshold: {p_threshold}; "
+                           )
 
         # Test that variable event with probability 0 never happens
         probabilities_zero = probabilities.copy()
