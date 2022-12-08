@@ -80,7 +80,11 @@ class DLL_PUBLIC PP {
   VArrayDoublePtr itr_times;
 
   // The track records of the compensator. In the current implementation
-  // the compensator is only tracked at the jump times of the process
+  // the compensator is only tracked at the jump times of the process, so there is no ctr
+  // equivalent to itr_time.
+  // The value of the compensator is not needed in Ogata's thinning algorithm, so
+  // there is no need to activate ctr before simulation. Instead, the activation
+  // of ctr is done automatically from within the method `store_compensator_values`.
   VArrayDoublePtrList1D ctr;
 
   ////////////////////////////////////////////////////////////////////////////////
