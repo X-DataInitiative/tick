@@ -238,7 +238,6 @@ void PP::set_timestamps(VArrayDoublePtrList1D &timestamps, double end_time) {
 }
 
 void PP::store_compensator_values() {
-  std::cout << "Storing compensator values ...";
   activate_ctr();
   for (unsigned int i = 0; i < n_nodes; ++i) {
     auto &node_tracker = ctr[i];
@@ -250,5 +249,4 @@ void PP::store_compensator_values() {
       node_tracker->append1(val);
     }
   }
-  std::cout << " done." << std::endl;
 }
