@@ -82,8 +82,8 @@ class Test(unittest.TestCase):
         self.assertEqual(f_obs.shape, f_exp.shape)
         self.assertTrue(np.allclose(
             np.sum(f_obs), np.sum(f_exp), rtol=1e-8, atol=1e-16))
-        s_threshold = 100.  # This means that we are not actually testing
-        p_threshold = 0.05  # This means that we are not actually testing
+        s_threshold = 100.
+        p_threshold = 0.05
         # TODO: make this test pass!
         s, p = stats.chisquare(f_obs=f_obs, f_exp=f_exp)
         self.assertLess(s, s_threshold,
