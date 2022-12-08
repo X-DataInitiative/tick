@@ -13,11 +13,11 @@ the process.
 import matplotlib.pyplot as plt
 
 from tick.hawkes import (
-    # SimuHawkesExpKernels,
-    # HawkesExpKern,
     SimuHawkesSumExpKernels,
     HawkesSumExpKern
 )
+from tick.hawkes import SimuHawkesExpKernels  # NOQA
+from tick.hawkes import HawkesExpKern  # NOQA
 from tick.plot import plot_point_process, qq_plots
 
 

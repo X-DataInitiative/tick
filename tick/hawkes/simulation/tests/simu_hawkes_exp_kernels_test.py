@@ -75,7 +75,7 @@ class Test(unittest.TestCase):
                 np.mean(self.hawkes.tracked_intensity[i]), mean_intensity[i],
                 delta=0.1)
 
-    def test_time_change(self):
+    def test_compensator(self):
         """...Test that Hawkes compensator yields residuals that are 1.0 on average
         """
         self.hawkes.reset()
