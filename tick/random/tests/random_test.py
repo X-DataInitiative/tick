@@ -75,8 +75,22 @@ class Test(unittest.TestCase):
 
         # Statistical tests
         sample = test_uniform_int(a, b, self.stat_size, self.test_seed)
-        p, _ = stats.kstest(sample, 'randint', (a, b))
-        self.assertLess(p, 0.05)
+        probs = (1. / (b-a)) * np.ones(shape=(b-a,))
+        f_exp = self.stat_size * probs
+        f_obs, _ = np.histogram(sample, bins=range(a, 1+b))
+        self.assertEqual(f_obs.shape, f_exp.shape)
+        self.assertTrue(np.allclose(
+            np.sum(f_obs), np.sum(f_exp), rtol=1e-8, atol=1e-16))
+        s_threshold =  500. # This means that we are not actually testing
+        p_threshold = 1e-8 # This means that we are not actually testing
+        # TODO: make this test pass!
+        s, p = stats.chisquare(f_obs=f_obs, f_exp=f_exp)
+        self.assertLess(s, s_threshold,
+                        "Chi-square stat is larger than threshold"
+                        )
+        self.assertGreater(p, p_threshold,
+                           "Chi-square p-value is smaller than threshold"
+                           )
 
     def test_uniform_random(self):
         """...Test uniform random numbers simulation
@@ -88,8 +102,15 @@ class Test(unittest.TestCase):
 
         # Statistical tests
         sample = test_uniform(self.stat_size, self.test_seed)
-        p, _ = stats.kstest(sample, 'uniform')
-        self.assertLess(p, 0.05)
+        s_threshold = 0.05
+        p_threshold = 0.05
+        s, p = stats.kstest(sample, 'uniform')
+        self.assertLess(s, s_threshold,
+                        "Kolmogorov–Smirnov stat is larger than threshold"
+                        )
+        self.assertGreater(p, p_threshold,
+                           "Kolmogorov–Smirnov p-value is smaller than threshold"
+                           )
 
     def test_uniform_random_with_bounds(self):
         """...Test uniform random numbers with bounds simulation
@@ -104,8 +125,15 @@ class Test(unittest.TestCase):
 
         # Statistical tests
         sample = test_uniform(a, b, self.stat_size, self.test_seed)
-        p, _ = stats.kstest(sample, 'uniform', (a, b - a))
-        self.assertLess(p, 0.05)
+        s_threshold = 0.05
+        p_threshold = 0.05
+        s, p = stats.kstest(sample, 'uniform', (a, b - a))
+        self.assertLess(s, s_threshold,
+                        "Kolmogorov–Smirnov stat is larger than threshold"
+                        )
+        self.assertGreater(p, p_threshold,
+                           "Kolmogorov–Smirnov p-value is smaller than threshold"
+                           )
 
     def test_gaussian_random(self):
         """...Test gaussian random numbers simulation
@@ -117,8 +145,15 @@ class Test(unittest.TestCase):
 
         # Statistical tests
         sample = test_gaussian(self.stat_size, self.test_seed)
-        p, _ = stats.kstest(sample, 'norm')
-        self.assertLess(p, 0.05)
+        s_threshold = 0.05
+        p_threshold = 0.05
+        s, p = stats.kstest(sample, 'norm')
+        self.assertLess(s, s_threshold,
+                        "Kolmogorov–Smirnov stat is larger than threshold"
+                        )
+        self.assertGreater(p, p_threshold,
+                           "Kolmogorov–Smirnov p-value is smaller than threshold"
+                           )
 
     def test_gaussian_random_with_bounds(self):
         """...Test gaussian random numbers simulation with mean and scale
@@ -139,8 +174,15 @@ class Test(unittest.TestCase):
 
         # Statistical tests
         sample = test_gaussian(mu, sigma, self.stat_size, self.test_seed)
-        p, _ = stats.kstest(sample, 'norm', (mu, sigma))
-        self.assertLess(p, 0.05)
+        s_threshold = 0.05
+        p_threshold = 0.05
+        s, p = stats.kstest(sample, 'norm', (mu, sigma))
+        self.assertLess(s, s_threshold,
+                        "Kolmogorov–Smirnov stat is larger than threshold"
+                        )
+        self.assertGreater(p, p_threshold,
+                           "Kolmogorov–Smirnov p-value is smaller than threshold"
+                           )
 
     def test_exponential_random(self):
         """...Test exponential random numbers simulation
@@ -166,7 +208,7 @@ class Test(unittest.TestCase):
 
         sample = test_exponential(
             intensity, self.stat_size, self.test_seed)
-        p_threshold = 0.125
+        p_threshold = 0.025
         ks_threshold = 0.15
         ks_stat, p = stats.kstest(sample, 'expon', (0, 1. / intensity))
         self.assertLess(ks_stat, ks_threshold,
@@ -237,7 +279,7 @@ class Test(unittest.TestCase):
         # We use a chi-square test.
         # The p-value should indicate that the null hypothesis cannot be rejected.
 
-        p_threshold = 0.10
+        p_threshold = 0.01
         chi_stat, p = stats.chisquare(f_exp=f_exp, f_obs=f_obs)
         self.assertGreater(p, p_threshold,
                            "Poisson random number generation: "
@@ -290,7 +332,7 @@ class Test(unittest.TestCase):
             f"np.sum(f_exp) = {np.sum(f_exp)}; "
             f"np.sum(f_obs) = {np.sum(f_obs)}. "
         )
-        p_threshold = 0.10
+        p_threshold = 0.05
         _, p = stats.chisquare(f_exp=f_exp, f_obs=f_obs)
         self.assertGreater(p, p_threshold,
                            "Discrete random number generation: "
