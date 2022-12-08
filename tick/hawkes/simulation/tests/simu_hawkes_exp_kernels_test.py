@@ -87,6 +87,7 @@ class Test(unittest.TestCase):
         residuals = [np.diff(c) for c in compensators]
         for res in residuals:
             self.assertAlmostEqual(np.mean(res), 1.0,   delta=0.1)
+            self.assertAlmostEqual(np.quantile(res, 0.6), 1.0, delta=0.1)
 
 
 if __name__ == "__main__":
