@@ -437,7 +437,7 @@ class LearnerHawkesParametric(LearnerOptim):
                            max_jumps=max_jumps, show=show, ax=ax)
 
     def qq_plots(self, events, end_time=None, **kwargs):
-        """Plot theoretical v. empirical quantile of residuals
+        """Plot theoretical vs. empirical quantile of residuals
 
         Parameters
         ----------
