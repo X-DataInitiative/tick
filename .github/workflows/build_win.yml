@@ -9,17 +9,19 @@ on:
 
 env:
   TICK_DEBUG: 0
-  TICK_CMAKE_GENERATOR: Visual Studio 16 2019
+#  TICK_CMAKE_GENERATOR: Visual Studio 16 2022
 
 jobs:
   build:
     name: Python ${{ matrix.python-version }}
-    runs-on: windows-latest
+    runs-on: windows-2022
 
     strategy:
+      fail-fast: false
       max-parallel: 4
       matrix:
-        python-version: ['3.7', '3.8', '3.9']
+        python-version: ['3.9']
+
     steps:
     - uses: actions/checkout@v2
       with:
@@ -31,6 +33,7 @@ jobs:
         architecture: x64
 
     - run: |
+        swig -version
         pip install pip --upgrade
         pip install wheel
         pip install -r requirements.txt
