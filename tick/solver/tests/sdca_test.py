@@ -101,7 +101,7 @@ class SDCATest(object):
             # Check that duality gap is 0
 
             places = 7
-            if self.dtype is "float32" or self.dtype is np.dtype("float32"):
+            if (self.dtype == "float32") or (self.dtype is np.dtype("float32")):
                 places = 4
             self.assertAlmostEqual(
                 sdca.objective(sdca.solution),
