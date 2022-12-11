@@ -7,30 +7,31 @@ on:
   pull_request:
     branches: [ master ]
 
+env:
+  TICK_DEBUG: 0
+  TICK_WERROR: 0
+
 jobs:
   build:
     name: Python ${{ matrix.python-version }}
     runs-on: macos-latest
 
     strategy:
+      fail-fast: false
       max-parallel: 4
       matrix:
-        python-version: ['3.6', '3.7', '3.8']
+        python-version: ['3.7', '3.8', '3.9']
+
     steps:
     - uses: actions/checkout@v2
       with:
         submodules: true
 
-    - uses: allenevans/set-env@v1.0.0
-      with:
-        TICK_DEBUG: 0
-        TICK_WERROR: 0
-
     - name: install swig
       run: |
         brew update
         brew install automake m4
-        git clone https://github.com/swig/swig -b rel-4.0.1 swig
+        git clone https://github.com/swig/swig -b rel-4.0.2 swig
         cd swig && ./autogen.sh && ./configure --without-pcre
         make && make install && cd .. && rm -rf swigkey
 
