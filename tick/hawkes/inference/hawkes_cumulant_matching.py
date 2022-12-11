@@ -10,7 +10,6 @@ from tick.hawkes.inference.build.hawkes_inference import (HawkesCumulant as
                                                           _HawkesCumulant)
 
 
-
 class HawkesCumulantMatching(LearnerHawkesNoParam):
     _attrinfos = {
         '_cumulant_computer': {
@@ -26,6 +25,7 @@ class HawkesCumulantMatching(LearnerHawkesNoParam):
             'writable': False
         }
     }
+
     def __init__(self, integration_support, C=1e3, penalty='none',
                  solver='adam', step=1e-2, tol=1e-8, max_iter=1000,
                  verbose=False, print_every=100, record_every=10,
@@ -84,7 +84,6 @@ class HawkesCumulantMatching(LearnerHawkesNoParam):
             self.compute_cumulants()
 
         return self._cumulant_computer.K_c
-
 
     def objective(self, adjacency=None, R=None):
         """Compute objective value for a given adjacency or variable R
@@ -208,7 +207,7 @@ class HawkesCumulantMatching(LearnerHawkesNoParam):
             'momentum', 'adam', 'adagrad', 'rmsprop', 'adadelta', 'gd'
         ]
         if val.lower() not in available_solvers:
-            raise ValueError('solver must be one of {}, recieved {}'.format(
+            raise ValueError('solver must be one of {}, received {}'.format(
                 available_solvers, val))
 
         self._set('_solver', val)
@@ -241,6 +240,7 @@ class HawkesCumulantMatching(LearnerHawkesNoParam):
         elif self.penalty == 'l2':
             return 1. / self.C
         return 0.
+
 
 class HawkesCumulantMatchingTf(HawkesCumulantMatching):
     """This class is used for performing non parametric estimation of
@@ -362,9 +362,9 @@ class HawkesCumulantMatchingTf(HawkesCumulantMatching):
     .. _Tensorflow: https://www.tensorflow.org
     """
     _attrinfos = {
-        'tf':{
+        'tf': {
             'writable': False
-            },
+        },
         '_cumulant_computer': {
             'writable': False
         },
@@ -394,21 +394,21 @@ class HawkesCumulantMatchingTf(HawkesCumulantMatching):
         self._tf_feed_dict = None
 
         HawkesCumulantMatching.__init__(
-                self,
-                integration_support = integration_support,
-                C=C,
-                penalty=penalty,
-                solver=solver,
-                step=step,
-                tol=tol,
-                max_iter=max_iter,
-                verbose=verbose,
-                print_every=print_every,
-                record_every=record_every,
-                solver_kwargs=solver_kwargs,
-                cs_ratio=cs_ratio,
-                elastic_net_ratio=elastic_net_ratio,
-                )
+            self,
+            integration_support=integration_support,
+            C=C,
+            penalty=penalty,
+            solver=solver,
+            step=step,
+            tol=tol,
+            max_iter=max_iter,
+            verbose=verbose,
+            print_every=print_every,
+            record_every=record_every,
+            solver_kwargs=solver_kwargs,
+            cs_ratio=cs_ratio,
+            elastic_net_ratio=elastic_net_ratio,
+        )
 
     def objective(self, adjacency=None, R=None):
         """Compute objective value for a given adjacency or variable R
@@ -456,6 +456,7 @@ class HawkesCumulantMatchingTf(HawkesCumulantMatching):
             with tf.variable_scope("model", reuse=tf.AUTO_REUSE):
                 return tf.get_variable("R", [self.n_nodes, self.n_nodes],
                                        dtype=tf.float64)
+
     def _tf_placeholders(self):
         """Tensorflow placeholders to manage cumulants data
         """
@@ -471,7 +472,7 @@ class HawkesCumulantMatchingTf(HawkesCumulantMatching):
         return self._tf_feed_dict
 
     def _tf_objective_graph(self):
-        """Objective fonction written as a tensorflow graph
+        """Objective function written as a tensorflow graph
         """
         tf = self.tf
         d = self.n_nodes
@@ -515,7 +516,6 @@ class HawkesCumulantMatchingTf(HawkesCumulantMatching):
                 cost += reg_l2((I - tf.matrix_inverse(R)))
 
             return cost
-
 
     def _solve(self, adjacency_start=None, R_start=None):
         """Launch optimization algorithm
@@ -603,7 +603,6 @@ class HawkesCumulantMatchingTf(HawkesCumulantMatching):
 
                 self._set('solution', sess.run(self._tf_model_coeffs))
 
-
     @property
     def tf_solver(self):
         tf = self.tf
@@ -620,6 +619,212 @@ class HawkesCumulantMatchingTf(HawkesCumulantMatching):
         elif self.solver.lower() == 'gd':
             return tf.train.GradientDescentOptimizer
 
+
+class HawkesCumulantMatchingPyT(HawkesCumulantMatching):
+    """This class is used for performing non parametric estimation of
+    multi-dimensional Hawkes processes based cumulant matching.
+
+    It does not make any assumptions on the kernel shape and recovers
+    the kernel norms only.
+
+    This class relies on `PyTorch`_ to perform the matching of the
+    cumulants. If `PyTorch`_ is not installed, it will not work.
+
+    Parameters
+    ----------
+    integration_support : `float`
+        Controls the maximal lag (positive or negative) upon which we
+        integrate the cumulant densities (covariance and skewness),
+        this amounts to neglect border effects. In practice, this is a
+        good approximation if the support of the kernels is smaller than
+        integration support and if the spectral norm of the kernel norms
+        is sufficiently distant from the critical value, namely 1.
+        It denoted by :math:`H` in the paper.
+
+    C : `float`, default=1e3
+        Level of penalization
+
+    penalty : {'l1', 'l2', 'elasticnet', 'none'}, default='none'
+        The penalization to use. By default no penalization is used.
+        Penalty is only applied to adjacency matrix.
+
+    solver : {'momentum', 'adam', 'adagrad', 'rmsprop', 'adadelta', 'gd'}, default='adam'
+        Name of pytorch solver that will be used.
+
+    step : `float`, default=1e-2
+        Initial step size used for learning. Also known as learning rate.
+
+    tol : `float`, default=1e-8
+        The tolerance of the solver (iterations stop when the stopping
+        criterion is below it). If not reached the solver does ``max_iter``
+        iterations
+
+    max_iter : `int`, default=1000
+        Maximum number of iterations of the solver
+
+    verbose : `bool`, default=False
+        If `True`, we verbose things, otherwise the solver does not
+        print anything (but records information in history anyway)
+
+    print_every : `int`, default=100
+        Print history information when ``n_iter`` (iteration number) is
+        a multiple of ``print_every``
+
+    record_every : `int`, default=10
+        Record history information when ``n_iter`` (iteration number) is
+        a multiple of ``record_every``
+
+    elastic_net_ratio : `float`, default=0.95
+        Ratio of elastic net mixing parameter with 0 <= ratio <= 1.
+
+        * For ratio = 0 this is ridge (L2 squared) regularization.
+        * For ratio = 1 this is lasso (L1) regularization.
+        * For 0 < ratio < 1, the regularization is a linear combination
+          of L1 and L2.
+
+        Used in 'elasticnet' penalty
+
+    solver_kwargs : `dict`, default=`None`
+        Extra arguments that will be passed to tensorflow solver
+
+    Attributes
+    ----------
+    n_nodes : `int`
+        Number of nodes / components in the Hawkes model
+
+    baseline : `np.array`, shape=(n_nodes,)
+        Inferred baseline of each component's intensity
+
+    adjacency : `np.ndarray`, shape=(n_nodes, n_nodes)
+        Inferred adjacency matrix
+
+    mean_intensity : list of `np.array` shape=(n_nodes,)
+        Estimated mean intensities, named :math:`\\widehat{L}` in the paper
+
+    covariance : list of `np.array` shape=(n_nodes,n_nodes)
+         Estimated integrated covariance, named :math:`\\widehat{C}`
+         in the paper
+
+    skewness : list of `np.array` shape=(n_nodes,n_nodes)
+        Estimated integrated skewness (sliced), named :math:`\\widehat{K^c}`
+        in the paper
+
+    R : `np.array` shape=(n_nodes,n_nodes)
+        Estimated weight, linked to the integrals of Hawkes kernels.
+        Use to derive adjacency and baseline
+
+    Other Parameters
+    ----------------
+    cs_ratio : `float`, default=`None`
+        Covariance-skewness ratio. The higher it is, themore covariance
+        has an impact the result which leads to more symmetric
+        adjacency matrices. If None, a default value is computed based
+        on the norm of the estimated covariance and skewness cumulants.
+
+    elastic_net_ratio : `float`, default=0.95
+        Ratio of elastic net mixing parameter with 0 <= ratio <= 1.
+        For ratio = 0 this is ridge (L2 squared) regularization
+        For ratio = 1 this is lasso (L1) regularization
+        For 0 < ratio < 1, the regularization is a linear combination
+        of L1 and L2.
+        Used in 'elasticnet' penalty
+
+    References
+    ----------
+    Achab, M., Bacry, E., Gaïffas, S., Mastromatteo, I., & Muzy, J. F.
+    (2017, July). Uncovering causality from multivariate Hawkes integrated
+    cumulants.
+    `In International Conference on Machine Learning (pp. 1-10)`_.
+
+    .. _In International Conference on Machine Learning (pp. 1-10): http://proceedings.mlr.press/v70/achab17a.html
+    .. _PyTorch: https://www.pytorch.org
+    """
+    _attrinfos = {
+        'pytorch': {
+            'writable': False
+        },
+        '_cumulant_computer': {
+            'writable': False
+        },
+        '_solver': {
+            'writable': False
+        },
+        '_elastic_net_ratio': {
+            'writable': False
+        },
+        '_events_of_cumulants': {
+            'writable': False
+        }
+    }
+
+    def __init__(self, integration_support, C=1e3, penalty='none',
+                 solver='adam', step=1e-2, tol=1e-8, max_iter=1000,
+                 verbose=False, print_every=100, record_every=10,
+                 solver_kwargs=None, cs_ratio=None, elastic_net_ratio=0.95):
+
+        import pytorch
+        self.pytorch = pytorch
+
+        HawkesCumulantMatching.__init__(
+            self,
+            integration_support=integration_support,
+            C=C,
+            penalty=penalty,
+            solver=solver,
+            step=step,
+            tol=tol,
+            max_iter=max_iter,
+            verbose=verbose,
+            print_every=print_every,
+            record_every=record_every,
+            solver_kwargs=solver_kwargs,
+            cs_ratio=cs_ratio,
+            elastic_net_ratio=elastic_net_ratio,
+        )
+
+    def objective(self, adjacency=None, R=None):
+        """Compute objective value for a given adjacency or variable R
+
+        Parameters
+        ----------
+        adjacency : `np.ndarray`, shape=(n_nodes, n_nodes), default=None
+            Adjacency matrix at which we compute objective.
+            If `None`, objective will be computed at `R`
+
+        R : `np.ndarray`, shape=(n_nodes, n_nodes), default=None
+            R variable at which objective is computed. Superseded by
+            adjacency if adjacency is not `None`
+
+        Returns
+        -------
+        Value of objective function
+        """
+        return 0.
+
+    def _solve(self, adjacency_start=None, R_start=None):
+        """Launch optimization algorithm
+
+        Parameters
+        ----------
+        adjacency_start : `str` or `np.ndarray, shape=(n_nodes + n_nodes * n_nodes,), default=`None`
+            Initial guess for the adjacency matrix. Will be used as 
+            starting point in optimization.
+            If `None`, a default starting point is estimated from the 
+            estimated cumulants
+            If `"random"`, as with `None`, a starting point is estimated from
+            estimated cumulants with a bit a randomness
+
+        max_iter : `int`
+            The number of training epochs.
+
+        step : `float`
+            The learning rate used by the optimizer.
+
+        solver : {'adam', 'momentum', 'adagrad', 'rmsprop', 'adadelta', 'gd'}, default='adam'
+            Solver used to minimize the loss. As the loss is not convex, it
+            cannot be optimized with `tick.optim.solver` solvers
+        """
+        pass
 
 
 class _HawkesCumulantComputer(Base):
@@ -772,7 +977,7 @@ class _HawkesCumulantComputer(Base):
     @property
     def cumulants_ready(self):
         events_didnt_change = self._events_of_cumulants is not None and \
-                              _HawkesCumulantComputer._same_realizations(
-                                  self._events_of_cumulants, self.realizations)
+            _HawkesCumulantComputer._same_realizations(
+                self._events_of_cumulants, self.realizations)
 
         return self._learner.get_are_cumulants_ready() and events_didnt_change
