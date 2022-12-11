@@ -102,8 +102,8 @@ class DLL_PUBLIC TStoSolver {
   virtual void save_history(double time, int epoch);
 
  public:
-  inline TStoSolver(ulong epoch_size = 0, T tol = 0.,
-                    RandType rand_type = RandType::unif, int record_every = 1, int seed = -1)
+  inline TStoSolver(ulong epoch_size = 0, T tol = 0., RandType rand_type = RandType::unif,
+                    int record_every = 1, int seed = -1)
       : epoch_size(epoch_size),
         tol(tol),
         prox(std::make_shared<TProxZero<T, K> >(0.0)),
@@ -122,9 +122,7 @@ class DLL_PUBLIC TStoSolver {
     iterate.init_to_zero();
   }
 
-  virtual void set_prox(std::shared_ptr<TProx<T, K> > prox) {
-    this->prox = prox;
-  }
+  virtual void set_prox(std::shared_ptr<TProx<T, K> > prox) { this->prox = prox; }
 
   void set_seed(int seed) {
     this->seed = seed;
@@ -148,7 +146,17 @@ class DLL_PUBLIC TStoSolver {
   virtual void set_starting_iterate(Array<K> &new_iterate);
 
   // Returns a uniform integer in the set {0, ..., m - 1}
-  inline ulong rand_unif(ulong m) { return rand.uniform_int(ulong{0}, m); }
+  inline ulong rand_unif(ulong m) {
+    /*
+     * Notice that
+     * ulong Rand::uniform_ulong(ulong a, ulong b)
+     * generates random unsigned long integers
+     * uniformly distributed in the set
+     * {a, ..., b}
+     * with a and b included
+     */
+    return rand.uniform_ulong(ulong{0}, m - 1);
+  }
 
   inline T get_tol() const { return tol; }
 
@@ -156,9 +164,7 @@ class DLL_PUBLIC TStoSolver {
 
   inline ulong get_epoch_size() const { return epoch_size; }
 
-  inline void set_epoch_size(ulong epoch_size) {
-    this->epoch_size = epoch_size;
-  }
+  inline void set_epoch_size(ulong epoch_size) { this->epoch_size = epoch_size; }
 
   inline ulong get_t() const { return t; }
 
@@ -180,8 +186,14 @@ class DLL_PUBLIC TStoSolver {
   std::vector<double> get_time_history() const { return time_history; }
   std::vector<double> get_objectives() const { return objectives; }
   double get_objective() const { return model->loss(iterate) + prox->value(iterate); }
-  TStoSolver<T, K> &set_prev_obj(const double obj) { prev_obj = obj; return *this; }
-  TStoSolver<T, K> &set_first_obj(const double obj) { first_obj = obj; return *this; }
+  TStoSolver<T, K> &set_prev_obj(const double obj) {
+    prev_obj = obj;
+    return *this;
+  }
+  TStoSolver<T, K> &set_first_obj(const double obj) {
+    first_obj = obj;
+    return *this;
+  }
   double get_first_obj() const { return first_obj; }
 
   std::vector<int> get_epoch_history() const { return epoch_history; }
@@ -238,13 +250,13 @@ class DLL_PUBLIC TStoSolver {
   }
 
   BoolStrReport compare(const TStoSolver<T, K> &that, std::stringstream &ss) {
-    return BoolStrReport(
-        TICK_CMP_REPORT(ss, t) && TICK_CMP_REPORT(ss, iterate) &&
-            TICK_CMP_REPORT(ss, rand_max) && TICK_CMP_REPORT(ss, epoch_size) &&
-            TICK_CMP_REPORT(ss, tol) && TICK_CMP_REPORT(ss, rand_type) &&
-            TICK_CMP_REPORT(ss, permutation) && TICK_CMP_REPORT(ss, i_perm) &&
-            TICK_CMP_REPORT(ss, permutation_ready) && TICK_CMP_REPORT(ss, record_every),
-        ss.str());
+    return BoolStrReport(TICK_CMP_REPORT(ss, t) && TICK_CMP_REPORT(ss, iterate) &&
+                             TICK_CMP_REPORT(ss, rand_max) && TICK_CMP_REPORT(ss, epoch_size) &&
+                             TICK_CMP_REPORT(ss, tol) && TICK_CMP_REPORT(ss, rand_type) &&
+                             TICK_CMP_REPORT(ss, permutation) && TICK_CMP_REPORT(ss, i_perm) &&
+                             TICK_CMP_REPORT(ss, permutation_ready) &&
+                             TICK_CMP_REPORT(ss, record_every),
+                         ss.str());
   }
 };
 
@@ -256,19 +268,15 @@ inline std::ostream &operator<<(std::ostream &s, const TStoSolver<T, K> &p) {
 using StoSolver = TStoSolver<double, double>;
 
 using StoSolverDouble = TStoSolver<double, double>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(StoSolverDouble,
-                                   cereal::specialization::member_load_save)
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(StoSolverDouble, cereal::specialization::member_load_save)
 
 using StoSolverFloat = TStoSolver<float, float>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(StoSolverFloat,
-                                   cereal::specialization::member_load_save)
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(StoSolverFloat, cereal::specialization::member_load_save)
 
 using StoSolverAtomicDouble = TStoSolver<double, std::atomic<double> >;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(StoSolverAtomicDouble,
-                                   cereal::specialization::member_load_save)
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(StoSolverAtomicDouble, cereal::specialization::member_load_save)
 
 using StoSolverAtomicFloat = TStoSolver<float, std::atomic<float> >;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(StoSolverAtomicFloat,
-                                   cereal::specialization::member_load_save)
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(StoSolverAtomicFloat, cereal::specialization::member_load_save)
 
 #endif  // LIB_INCLUDE_TICK_SOLVER_STO_SOLVER_H_

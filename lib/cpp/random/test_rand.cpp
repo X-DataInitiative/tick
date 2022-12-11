@@ -74,8 +74,7 @@ SArrayDoublePtr test_poisson(double rate, ulong size, int seed) {
   return sample;
 }
 
-SArrayDoublePtr test_discrete(ArrayDouble &probabilities, ulong size,
-                              int seed) {
+SArrayDoublePtr test_discrete(ArrayDouble &probabilities, ulong size, int seed) {
   Rand rand(seed);
   SArrayDoublePtr sample = SArrayDouble::new_ptr(size);
 
