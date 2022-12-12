@@ -746,6 +746,8 @@ class HawkesCumulantMatchingPyT(HawkesCumulantMatching):
         '_cumulant_computer': {
             'writable': False
         },
+        '_pyt_tensors':{
+        },
         '_solver': {
             'writable': False
         },
@@ -762,8 +764,8 @@ class HawkesCumulantMatchingPyT(HawkesCumulantMatching):
                  verbose=False, print_every=100, record_every=10,
                  solver_kwargs=None, cs_ratio=None, elastic_net_ratio=0.95):
 
-        import pytorch
-        self.pytorch = pytorch
+        import torch
+        self.torch = torch
 
         HawkesCumulantMatching.__init__(
             self,
@@ -799,7 +801,39 @@ class HawkesCumulantMatchingPyT(HawkesCumulantMatching):
         -------
         Value of objective function
         """
-        return 0.
+        if adiacency is not None:
+            assert R is None, "You can pass either `adiacency` or `R`, not both"
+            if isinstance(adiacency, np.ndarray):
+                adiacency = torch.Tensor(adiacency)
+            n, m= adiacency.size(dim=0), adiacency.size(dim=1)
+            R = torch.linalg.inv(torch.eye(n, m) - adiacency)
+        assert isinstance(R, torch.Tensor)
+        _L, _C, _K_c = self.cumulants
+        k = self.cs_ratio
+        loss= (1 - k) * torch.sum(
+                torch.square(
+                    torch.sqaure(R) @ torch.transpose(_C) + 
+                    2 * ( R * (_C - R @ _L))@ torch.transpose(R) - 
+                    _K_c
+                    )) + 
+                k * torch.sum(
+                        torch.square(
+                            R @ _L @ torch.transpose(R) - _C
+                            )
+                        )
+        return loss        
+
+    @property
+    def cumulants(self):
+        """Pytorch tensors of the etimated cumulant
+        """
+        return self._L, self._C, self._K_c
+
+    def _set_cumulants_from_estimates(self):
+        torch = self.torch
+        self._L = torch.Tensor(np.diag(self.mean_intensity))
+        self._C = torch.Tensor(self.convariance)
+        self._K_c = torch.Tensor(self.skewness)
 
     def _solve(self, adjacency_start=None, R_start=None):
         """Launch optimization algorithm
@@ -812,7 +846,7 @@ class HawkesCumulantMatchingPyT(HawkesCumulantMatching):
             If `None`, a default starting point is estimated from the 
             estimated cumulants
             If `"random"`, as with `None`, a starting point is estimated from
-            estimated cumulants with a bit a randomness
+            estimated cumulants with a bit of randomness
 
         max_iter : `int`
             The number of training epochs.
