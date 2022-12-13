@@ -801,13 +801,18 @@ class HawkesCumulantMatchingPyT(HawkesCumulantMatching):
         -------
         Value of objective function
         """
+        torch = self.torch
         if adiacency is not None:
             assert R is None, "You can pass either `adiacency` or `R`, not both"
             if isinstance(adiacency, np.ndarray):
                 adiacency = torch.Tensor(adiacency)
             n, m= adiacency.size(dim=0), adiacency.size(dim=1)
-            R = torch.linalg.inv(torch.eye(n, m) - adiacency)
-        assert isinstance(R, torch.Tensor)
+            R = torch.autograd.Variable(
+                    torch.linalg.inv(torch.eye(n, m) - adiacency)
+                    )
+        if R is None:
+            R = self._torch_model_coeffs
+        assert isinstance(R, torch.autograd.Variable)
         _L, _C, _K_c = self.cumulants
         k = self.cs_ratio
         loss= (1 - k) * torch.sum(
@@ -835,7 +840,20 @@ class HawkesCumulantMatchingPyT(HawkesCumulantMatching):
         self._C = torch.Tensor(self.convariance)
         self._K_c = torch.Tensor(self.skewness)
 
-    def _solve(self, adjacency_start=None, R_start=None):
+    @property
+    def _torch_model_coeffs(self):
+        return self._R
+
+    @_torch_model_coeffs.setter
+    def _torch_model_coeffs(self, R):
+        assert isinstance(R, self.torch.autograd.Variable)
+        self._R = R
+
+    def _set_torch_model_coeffs(self, random=False):
+        self._R = self.torch.autograd.Variable(
+                self.starting_point(random=random))
+
+    def _solve(self, adiacency_start=None, R_start = None):
         """Launch optimization algorithm
 
         Parameters
@@ -846,7 +864,7 @@ class HawkesCumulantMatchingPyT(HawkesCumulantMatching):
             If `None`, a default starting point is estimated from the 
             estimated cumulants
             If `"random"`, as with `None`, a starting point is estimated from
-            estimated cumulants with a bit of randomness
+            estimated cumulants with a bit a randomness
 
         max_iter : `int`
             The number of training epochs.
@@ -854,11 +872,60 @@ class HawkesCumulantMatchingPyT(HawkesCumulantMatching):
         step : `float`
             The learning rate used by the optimizer.
 
-        solver : {'adam', 'momentum', 'adagrad', 'rmsprop', 'adadelta', 'gd'}, default='adam'
+        solver : {'adam',  'adagrad', 'rmsprop', 'adadelta'}, default='adam'
             Solver used to minimize the loss. As the loss is not convex, it
             cannot be optimized with `tick.optim.solver` solvers
         """
-        pass
+        torch = self.torch
+        self.compute_cumulants()
+        self._set_cumulants_from_estimates()
+
+        if adjacency_start is None and R_start is not None:
+            self._torch_model_coeffs = torch.autograd.Variable(R_start)
+        elif adjacency_start is None or adjacency_start == 'random':
+            random = adjacency_start == 'random'
+            self._set_torch_model_coeffs(random=random)
+        else:
+            self._torch_model_coeffs = torch.autograd.Variable(
+                    scipy.linalg.inv(
+                        np.eye(self.n_nodes) - adjacency_start
+                    ))
+
+        optimizer = self.torch_solver([R], lr=self.step, **self.solver_kwargs)
+        _prev = 0.
+        for n_iter in range(self.max_iter):
+            loss = self.objective()
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
+            _new = float(loss)
+            if _new == 0.:
+                converged = True
+            else:
+                _rel_chg = abs(_new-_prev) / _new
+                converged = _rel_chg < self.tol
+            if converged:
+                break
+            else:
+                _prev = _new
+        self._set('solution', self._torch_model_coeffs.data.numpy())
+
+    @property
+    def torch_solver(self):
+        torch = self.torch
+        elif self.solver.lower() == 'adam':
+            return torch.optim.Adam
+        elif self.solver.lower() == 'adagrad':
+            return torch.optim.Adagrad
+        elif self.solver.lower() == 'rmsprop':
+            return torch.optim.RMSprop
+        elif self.solver.lower() == 'adadelta':
+            return torch.optim.Adadelta
+        else:
+            raise NotImplementedError()
+
+
+
 
 
 class _HawkesCumulantComputer(Base):
