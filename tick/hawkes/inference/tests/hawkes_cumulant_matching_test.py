@@ -11,6 +11,7 @@ from tick.base.inference import InferenceTest
 
 from tick.hawkes import HawkesCumulantMatching
 
+
 class Test(InferenceTest):
     def setUp(self):
         self.dim = 2

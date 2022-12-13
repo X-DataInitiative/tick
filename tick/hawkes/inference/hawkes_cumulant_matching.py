@@ -746,7 +746,7 @@ class HawkesCumulantMatchingPyT(HawkesCumulantMatching):
         '_cumulant_computer': {
             'writable': False
         },
-        '_pyt_tensors':{
+        '_pyt_tensors': {
         },
         '_solver': {
             'writable': False
@@ -806,27 +806,29 @@ class HawkesCumulantMatchingPyT(HawkesCumulantMatching):
             assert R is None, "You can pass either `adiacency` or `R`, not both"
             if isinstance(adiacency, np.ndarray):
                 adiacency = torch.Tensor(adiacency)
-            n, m= adiacency.size(dim=0), adiacency.size(dim=1)
+            n, m = adiacency.size(dim=0), adiacency.size(dim=1)
             R = torch.autograd.Variable(
-                    torch.linalg.inv(torch.eye(n, m) - adiacency)
-                    )
+                torch.linalg.inv(torch.eye(n, m) - adiacency)
+            )
         if R is None:
             R = self._torch_model_coeffs
         assert isinstance(R, torch.autograd.Variable)
         _L, _C, _K_c = self.cumulants
         k = self.cs_ratio
-        loss= (1 - k) * torch.sum(
+        loss = (
+            (1 - k) * torch.sum(
                 torch.square(
-                    torch.sqaure(R) @ torch.transpose(_C) + 
-                    2 * ( R * (_C - R @ _L))@ torch.transpose(R) - 
+                    torch.sqaure(R) @ torch.transpose(_C) +
+                    2 * (R * (_C - R @ _L)) @ torch.transpose(R) -
                     _K_c
-                    )) + 
-                k * torch.sum(
-                        torch.square(
-                            R @ _L @ torch.transpose(R) - _C
-                            )
-                        )
-        return loss        
+                )) +
+            k * torch.sum(
+                torch.square(
+                    R @ _L @ torch.transpose(R) - _C
+                )
+            )
+        )
+        return loss
 
     @property
     def cumulants(self):
@@ -851,9 +853,9 @@ class HawkesCumulantMatchingPyT(HawkesCumulantMatching):
 
     def _set_torch_model_coeffs(self, random=False):
         self._R = self.torch.autograd.Variable(
-                self.starting_point(random=random))
+            self.starting_point(random=random))
 
-    def _solve(self, adiacency_start=None, R_start = None):
+    def _solve(self, adiacency_start=None, R_start=None):
         """Launch optimization algorithm
 
         Parameters
@@ -887,9 +889,9 @@ class HawkesCumulantMatchingPyT(HawkesCumulantMatching):
             self._set_torch_model_coeffs(random=random)
         else:
             self._torch_model_coeffs = torch.autograd.Variable(
-                    scipy.linalg.inv(
-                        np.eye(self.n_nodes) - adjacency_start
-                    ))
+                scipy.linalg.inv(
+                    np.eye(self.n_nodes) - adjacency_start
+                ))
 
         optimizer = self.torch_solver([R], lr=self.step, **self.solver_kwargs)
         _prev = 0.
@@ -913,7 +915,7 @@ class HawkesCumulantMatchingPyT(HawkesCumulantMatching):
     @property
     def torch_solver(self):
         torch = self.torch
-        elif self.solver.lower() == 'adam':
+        if self.solver.lower() == 'adam':
             return torch.optim.Adam
         elif self.solver.lower() == 'adagrad':
             return torch.optim.Adagrad
@@ -923,9 +925,6 @@ class HawkesCumulantMatchingPyT(HawkesCumulantMatching):
             return torch.optim.Adadelta
         else:
             raise NotImplementedError()
-
-
-
 
 
 class _HawkesCumulantComputer(Base):
